@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calisthenics Pro</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1f2937">
+</head>
+<body class="bg-gray-900 text-white">
+
+  <!-- Navigation -->
+  <nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <h1 class="text-xl font-bold">💪 Calisthenics Pro</h1>
+        <div class="flex gap-4">
+          <button onclick="showView('exercises')" class="nav-btn active" data-view="exercises">
+            📚 Übungen
+          </button>
+          <button onclick="showView('plans')" class="nav-btn" data-view="plans">
+            📋 Pläne
+          </button>
+          <button onclick="showView('calendar')" class="nav-btn" data-view="calendar">
+            📅 Kalender
+          </button>
+          <button onclick="showView('progress')" class="nav-btn" data-view="progress">
+            📈 Progress
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto p-4">
+    
+    <!-- EXERCISES VIEW -->
+    <div id="view-exercises" class="view active">
+      
+      <!-- Header mit Add Button -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-3xl font-bold mb-2">Übungen-Datenbank</h2>
+          <p class="text-gray-400">Verwalte deine Calisthenics-Übungen</p>
+        </div>
+        <button onclick="openAddExerciseModal()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+          ➕ Neue Übung
+        </button>
+      </div>
+
+      <!-- Filter & Search -->
+      <div class="bg-gray-800 rounded-xl p-4 mb-6 border border-gray-700">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Search -->
+          <div>
+            <label class="block text-sm mb-2">Suche</label>
+            <input 
+              type="text" 
+              id="search-input"
+              placeholder="Übung suchen..."
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              oninput="filterExercises()"
+            />
+          </div>
+          
+          <!-- Muscle Group Filter -->
+          <div>
+            <label class="block text-sm mb-2">Muskelgruppe</label>
+            <select 
+              id="muscle-filter"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onchange="filterExercises()"
+            >
+              <option value="">Alle</option>
+              <option value="chest">Brust</option>
+              <option value="back">Rücken</option>
+              <option value="shoulders">Schultern</option>
+              <option value="arms">Arme</option>
+              <option value="core">Core</option>
+              <option value="legs">Beine</option>
+            </select>
+          </div>
+          
+          <!-- Difficulty Filter -->
+          <div>
+            <label class="block text-sm mb-2">Schwierigkeit</label>
+            <select 
+              id="difficulty-filter"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onchange="filterExercises()"
+            >
+              <option value="">Alle</option>
+              <option value="1">⭐ Anfänger</option>
+              <option value="2">⭐⭐ Leicht</option>
+              <option value="3">⭐⭐⭐ Mittel</option>
+              <option value="4">⭐⭐⭐⭐ Fortgeschritten</option>
+              <option value="5">⭐⭐⭐⭐⭐ Expert</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exercises Grid -->
+      <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Wird von JavaScript gefüllt -->
+        <div class="col-span-full text-center py-12 text-gray-400">
+          <div class="text-5xl mb-4">📚</div>
+          <p>Lade Übungen...</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PLANS VIEW -->
+    <div id="view-plans" class="view hidden">
+      <h2 class="text-3xl font-bold mb-6">Trainingspläne</h2>
+      <p class="text-gray-400">Coming soon in Session 2...</p>
+    </div>
+
+    <!-- CALENDAR VIEW -->
+    <div id="view-calendar" class="view hidden">
+      <h2 class="text-3xl font-bold mb-6">Kalender</h2>
+      <p class="text-gray-400">Coming soon in Session 3...</p>
+    </div>
+
+    <!-- PROGRESS VIEW -->
+    <div id="view-progress" class="view hidden">
+      <h2 class="text-3xl font-bold mb-6">Progress Tracking</h2>
+      <p class="text-gray-400">Coming soon in Session 5...</p>
+    </div>
+
+  </div>
+
+  <!-- ADD/EDIT EXERCISE MODAL -->
+  <div id="exercise-modal" class="modal">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold" id="modal-title">Neue Übung</h3>
+        <button onclick="closeExerciseModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Name -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Übungsname *</label>
+          <input 
+            type="text" 
+            id="exercise-name"
+            placeholder="z.B. Pull-ups"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Anleitung</label>
+          <textarea 
+            id="exercise-description"
+            rows="4"
+            placeholder="Beschreibe wie die Übung ausgeführt wird..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ></textarea>
+        </div>
+
+        <!-- Muscle Groups (Multiple Select) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Muskelgruppen *</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="chest" class="muscle-checkbox">
+              <span class="muscle-tag muscle-chest">Brust</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="back" class="muscle-checkbox">
+              <span class="muscle-tag muscle-back">Rücken</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="shoulders" class="muscle-checkbox">
+              <span class="muscle-tag muscle-shoulders">Schultern</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="arms" class="muscle-checkbox">
+              <span class="muscle-tag muscle-arms">Arme</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="core" class="muscle-checkbox">
+              <span class="muscle-tag muscle-core">Core</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="legs" class="muscle-checkbox">
+              <span class="muscle-tag muscle-legs">Beine</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Difficulty -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Schwierigkeit *</label>
+          <div class="flex gap-2">
+            <button onclick="setDifficulty(1)" class="difficulty-btn" data-difficulty="1">⭐</button>
+            <button onclick="setDifficulty(2)" class="difficulty-btn" data-difficulty="2">⭐⭐</button>
+            <button onclick="setDifficulty(3)" class="difficulty-btn" data-difficulty="3">⭐⭐⭐</button>
+            <button onclick="setDifficulty(4)" class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐</button>
+            <button onclick="setDifficulty(5)" class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐</button>
+          </div>
+          <input type="hidden" id="exercise-difficulty" value="3">
+        </div>
+
+        <!-- Image URL (später für Upload) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Bild-URL (optional)</label>
+          <input 
+            type="text" 
+            id="exercise-image"
+            placeholder="https://..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <p class="text-xs text-gray-500 mt-1">Später können wir Bilder hochladen - für jetzt URL einfügen</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button onclick="saveExercise()" class="flex-1 bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-semibold transition-colors">
+            Speichern
+          </button>
+          <button onclick="closeExerciseModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-lg font-semibold transition-colors">
+            Abbrechen
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/exercises.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
