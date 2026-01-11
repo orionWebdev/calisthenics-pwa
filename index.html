@@ -127,8 +127,87 @@
 
     <!-- CALENDAR VIEW -->
     <div id="view-calendar" class="view hidden">
-      <h2 class="text-3xl font-bold mb-6">Kalender</h2>
-      <p class="text-gray-400">Coming soon in Session 3...</p>
+      
+      <!-- Header mit View Switcher -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl font-bold">Trainingskalender</h2>
+        <div class="flex gap-2">
+          <button onclick="setCalendarView('month')" class="calendar-view-btn active" data-view="month">
+            📅 Monat
+          </button>
+          <button onclick="setCalendarView('week')" class="calendar-view-btn" data-view="week">
+            📊 Woche
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="bg-gray-800 rounded-xl p-4 mb-6 border border-gray-700 flex items-center justify-between">
+        <button onclick="navigateCalendar('prev')" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
+          ← Zurück
+        </button>
+        
+        <div class="text-center">
+          <h3 id="calendar-title" class="text-2xl font-bold">Januar 2026</h3>
+          <button onclick="goToToday()" class="text-sm text-blue-400 hover:text-blue-300 mt-1">
+            Heute
+          </button>
+        </div>
+        
+        <button onclick="navigateCalendar('next')" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
+          Weiter →
+        </button>
+      </div>
+
+      <!-- Add Plan to Day Panel -->
+      <div id="add-plan-panel" class="bg-blue-900 bg-opacity-30 border border-blue-500 rounded-xl p-4 mb-6 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-semibold">Plan hinzufügen zu: <span id="selected-date-display"></span></h4>
+          <button onclick="closeAddPlanPanel()" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        
+        <div class="flex gap-3">
+          <select id="plan-select" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2">
+            <option value="">Wähle einen Plan...</option>
+            <!-- Wird später mit echten Plänen gefüllt - für jetzt Demo-Daten -->
+            <option value="demo-push">Push Day (Demo)</option>
+            <option value="demo-pull">Pull Day (Demo)</option>
+            <option value="demo-legs">Leg Day (Demo)</option>
+            <option value="demo-cardio">Cardio (Demo)</option>
+          </select>
+          <button onclick="addPlanToDate()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+            Hinzufügen
+          </button>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">ℹ️ Echte Pläne kommen in Session 2 - das sind Demo-Pläne</p>
+      </div>
+
+      <!-- Month View -->
+      <div id="calendar-month-view" class="calendar-view active">
+        <!-- Weekday Headers -->
+        <div class="grid grid-cols-7 gap-2 mb-2">
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Mo</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Di</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Mi</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Do</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Fr</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Sa</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">So</div>
+        </div>
+        
+        <!-- Calendar Grid -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-2">
+          <!-- Wird von JavaScript gefüllt -->
+        </div>
+      </div>
+
+      <!-- Week View -->
+      <div id="calendar-week-view" class="calendar-view hidden">
+        <div id="week-grid" class="space-y-3">
+          <!-- Wird von JavaScript gefüllt -->
+        </div>
+      </div>
+
     </div>
 
     <!-- PROGRESS VIEW -->
@@ -248,6 +327,7 @@
   <script src="js/firebase.js"></script>
   <script src="js/data.js"></script>
   <script src="js/exercises.js"></script>
+  <script src="js/calendar.js"></script>
   <script src="js/app.js"></script>
 
 </body>

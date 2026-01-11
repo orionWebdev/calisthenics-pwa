@@ -41,8 +41,12 @@ async function init() {
     // 2. Load exercises
     await loadExercises();
     
-    // 3. Setup real-time listeners
+    // 3. Load calendar schedule
+    await loadSchedule();
+    
+    // 4. Setup real-time listeners
     setupExercisesListener();
+    setupScheduleListener();
     
     console.log('✅ App initialized successfully!');
   } catch (error) {
