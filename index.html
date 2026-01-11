@@ -17,11 +17,15 @@
 </head>
 <body class="bg-gray-900 text-white">
 
-  <!-- Navigation -->
-  <nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+  <!-- Navigation - Desktop -->
+  <nav class="desktop-nav bg-secondary-dark border-b border-secondary-light sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex items-center justify-between h-16">
-        <h1 class="text-xl font-bold">💪 Calisthenics Pro</h1>
+        <div class="flex items-center gap-3">
+          <!-- Logo SVG - Ersetze src mit deinem Logo-Pfad -->
+          <img src="logo.svg" alt="Calisthenics Pro" class="h-10 w-10" />
+          <h1 class="text-xl font-bold">Calisthenics Pro</h1>
+        </div>
         <div class="flex gap-4">
           <button onclick="showView('exercises')" class="nav-btn active" data-view="exercises">
             📚 Übungen
@@ -40,43 +44,84 @@
     </div>
   </nav>
 
-  <div class="max-w-6xl mx-auto p-4">
+  <!-- Mobile Navigation Header -->
+  <div class="mobile-nav-header bg-secondary-dark border-b border-secondary-light sticky top-0 z-50">
+    <div class="px-4 py-4 flex items-center justify-center gap-2">
+      <img src="logo.svg" alt="Logo" class="h-8 w-8" />
+      <div>
+        <h1 class="text-lg font-bold text-center">Calisthenics Pro</h1>
+        <p class="text-xs text-gray-400 text-center" id="mobile-view-title">Übungen</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button (Mobile) -->
+  <div class="fab-container">
+    <button id="fab-main" class="fab-main" onclick="toggleRadialMenu()">
+      <span class="fab-icon">✕</span>
+    </button>
+    
+    <!-- Radial Menu Items -->
+    <div id="radial-menu" class="radial-menu">
+      <button class="radial-menu-item" data-view="exercises" onclick="showViewFromRadial('exercises')" style="--item-index: 0">
+        <span class="radial-icon">📚</span>
+        <span class="radial-label">Übungen</span>
+      </button>
+      <button class="radial-menu-item" data-view="plans" onclick="showViewFromRadial('plans')" style="--item-index: 1">
+        <span class="radial-icon">📋</span>
+        <span class="radial-label">Pläne</span>
+      </button>
+      <button class="radial-menu-item" data-view="calendar" onclick="showViewFromRadial('calendar')" style="--item-index: 2">
+        <span class="radial-icon">📅</span>
+        <span class="radial-label">Kalender</span>
+      </button>
+      <button class="radial-menu-item" data-view="progress" onclick="showViewFromRadial('progress')" style="--item-index: 3">
+        <span class="radial-icon">📈</span>
+        <span class="radial-label">Progress</span>
+      </button>
+    </div>
+    
+    <!-- Overlay -->
+    <div id="radial-overlay" class="radial-overlay" onclick="closeRadialMenu()"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto p-4 pb-24">
     
     <!-- EXERCISES VIEW -->
     <div id="view-exercises" class="view active">
       
       <!-- Header mit Add Button -->
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
-          <h2 class="text-3xl font-bold mb-2">Übungen-Datenbank</h2>
-          <p class="text-gray-400">Verwalte deine Calisthenics-Übungen</p>
+          <h2 class="text-2xl sm:text-3xl font-bold mb-2">Übungen-Datenbank</h2>
+          <p class="text-sm sm:text-base text-gray-400">Verwalte deine Calisthenics-Übungen</p>
         </div>
-        <button onclick="openAddExerciseModal()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+        <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-primary hover:bg-[#C01963] px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg shadow-primary/30">
           ➕ Neue Übung
         </button>
       </div>
 
       <!-- Filter & Search -->
-      <div class="bg-gray-800 rounded-xl p-4 mb-6 border border-gray-700">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-gray-800 rounded-xl p-3 sm:p-4 mb-6 border border-gray-700">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <!-- Search -->
           <div>
-            <label class="block text-sm mb-2">Suche</label>
+            <label class="block text-xs sm:text-sm mb-2">Suche</label>
             <input 
               type="text" 
               id="search-input"
               placeholder="Übung suchen..."
-              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-secondary-light border border-secondary-dark rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
               oninput="filterExercises()"
             />
           </div>
           
           <!-- Muscle Group Filter -->
           <div>
-            <label class="block text-sm mb-2">Muskelgruppe</label>
+            <label class="block text-xs sm:text-sm mb-2">Muskelgruppe</label>
             <select 
               id="muscle-filter"
-              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-secondary-light border border-secondary-dark rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
               onchange="filterExercises()"
             >
               <option value="">Alle</option>
@@ -91,10 +136,10 @@
           
           <!-- Difficulty Filter -->
           <div>
-            <label class="block text-sm mb-2">Schwierigkeit</label>
+            <label class="block text-xs sm:text-sm mb-2">Schwierigkeit</label>
             <select 
               id="difficulty-filter"
-              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full bg-secondary-light border border-secondary-dark rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
               onchange="filterExercises()"
             >
               <option value="">Alle</option>
@@ -129,33 +174,33 @@
     <div id="view-calendar" class="view hidden">
       
       <!-- Header mit View Switcher -->
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-3xl font-bold">Trainingskalender</h2>
-        <div class="flex gap-2">
-          <button onclick="setCalendarView('month')" class="calendar-view-btn active" data-view="month">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <h2 class="text-2xl sm:text-3xl font-bold">Trainingskalender</h2>
+        <div class="flex gap-2 w-full sm:w-auto">
+          <button onclick="setCalendarView('month')" class="calendar-view-btn active flex-1 sm:flex-none" data-view="month">
             📅 Monat
           </button>
-          <button onclick="setCalendarView('week')" class="calendar-view-btn" data-view="week">
+          <button onclick="setCalendarView('week')" class="calendar-view-btn flex-1 sm:flex-none" data-view="week">
             📊 Woche
           </button>
         </div>
       </div>
 
       <!-- Navigation -->
-      <div class="bg-gray-800 rounded-xl p-4 mb-6 border border-gray-700 flex items-center justify-between">
-        <button onclick="navigateCalendar('prev')" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
-          ← Zurück
+      <div class="bg-gray-800 rounded-xl p-3 sm:p-4 mb-6 border border-gray-700 flex items-center justify-between">
+        <button onclick="navigateCalendar('prev')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
+          ← <span class="hidden sm:inline">Zurück</span>
         </button>
         
         <div class="text-center">
-          <h3 id="calendar-title" class="text-2xl font-bold">Januar 2026</h3>
-          <button onclick="goToToday()" class="text-sm text-blue-400 hover:text-blue-300 mt-1">
+          <h3 id="calendar-title" class="text-lg sm:text-2xl font-bold">Januar 2026</h3>
+          <button onclick="goToToday()" class="text-xs sm:text-sm text-blue-400 hover:text-blue-300 mt-1">
             Heute
           </button>
         </div>
         
-        <button onclick="navigateCalendar('next')" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
-          Weiter →
+        <button onclick="navigateCalendar('next')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
+          <span class="hidden sm:inline">Weiter</span> →
         </button>
       </div>
 
