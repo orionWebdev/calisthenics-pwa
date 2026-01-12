@@ -16,6 +16,34 @@ const muscleNames = {
   legs: 'Beine'
 };
 
+// Equipment Namen Mapping
+const equipmentNames = {
+  'none': 'Kein Equipment',
+  'pull-up-bar': 'Klimmzugstange',
+  'dip-bars': 'Dip-Barren',
+  'rings': 'Ringe',
+  'resistance-bands': 'Widerstandsbänder',
+  'parallettes': 'Paralettes',
+  'box': 'Box/Bank',
+  'wall': 'Wand',
+  'mat': 'Matte',
+  'weights': 'Gewichte'
+};
+
+// Equipment Icons Mapping
+const equipmentIcons = {
+  'none': 'accessibility',
+  'pull-up-bar': 'fitness_center',
+  'dip-bars': 'sports_gymnastics',
+  'rings': 'sports_gymnastics',
+  'resistance-bands': 'cable',
+  'parallettes': 'straighten',
+  'box': 'square',
+  'wall': 'wall',
+  'mat': 'airline_seat_flat',
+  'weights': 'fitness_center'
+};
+
 // ========================================
 // LOAD & DISPLAY EXERCISES
 // ========================================
@@ -214,22 +242,27 @@ function openAddExerciseModal() {
 function editExercise(id) {
   editingExerciseId = id;
   const exercise = allExercises.find(ex => ex.id === id);
-  
+
   if (!exercise) return;
-  
+
   document.getElementById('modal-title').textContent = 'Übung bearbeiten';
   document.getElementById('exercise-name').value = exercise.name;
   document.getElementById('exercise-description').value = exercise.description || '';
   document.getElementById('exercise-image').value = exercise.imageUrl || '';
-  
+
   // Muscle groups checkboxes
   document.querySelectorAll('.muscle-checkbox').forEach(checkbox => {
     checkbox.checked = exercise.muscleGroups.includes(checkbox.value);
   });
-  
+
+  // Equipment checkboxes
+  document.querySelectorAll('.equipment-checkbox').forEach(checkbox => {
+    checkbox.checked = exercise.equipment && exercise.equipment.includes(checkbox.value);
+  });
+
   // Difficulty
   setDifficulty(exercise.difficulty);
-  
+
   document.getElementById('exercise-modal').classList.add('active');
 }
 
@@ -243,6 +276,7 @@ function clearExerciseForm() {
   document.getElementById('exercise-description').value = '';
   document.getElementById('exercise-image').value = '';
   document.querySelectorAll('.muscle-checkbox').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.equipment-checkbox').forEach(cb => cb.checked = false);
   setDifficulty(3);
 }
 
@@ -271,30 +305,35 @@ async function saveExercise() {
   const description = document.getElementById('exercise-description').value.trim();
   const imageUrl = document.getElementById('exercise-image').value.trim();
   const difficulty = parseInt(document.getElementById('exercise-difficulty').value);
-  
+
   // Get selected muscle groups
   const muscleGroups = Array.from(document.querySelectorAll('.muscle-checkbox:checked'))
     .map(cb => cb.value);
-  
+
+  // Get selected equipment
+  const equipment = Array.from(document.querySelectorAll('.equipment-checkbox:checked'))
+    .map(cb => cb.value);
+
   // Validation
   if (!name) {
     alert('Bitte gib einen Namen für die Übung ein!');
     return;
   }
-  
+
   if (muscleGroups.length === 0) {
     alert('Bitte wähle mindestens eine Muskelgruppe!');
     return;
   }
-  
+
   const exerciseData = {
     name,
     description,
     imageUrl,
     muscleGroups,
+    equipment: equipment.length > 0 ? equipment : ['none'],
     difficulty
   };
-  
+
   try {
     if (editingExerciseId) {
       // Update existing
@@ -305,7 +344,7 @@ async function saveExercise() {
       await addDoc(exercisesCollection, exerciseData);
       console.log('✅ Exercise added!');
     }
-    
+
     closeExerciseModal();
     await loadExercises();
   } catch (error) {
@@ -367,6 +406,35 @@ function viewExerciseDetails(id) {
           Hauptmuskel
         </p>
       </div>
+
+      <!-- Equipment -->
+      ${exercise.equipment && exercise.equipment.length > 0 && exercise.equipment[0] !== 'none' ?
+        `<div>
+          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+            <span class="material-symbols-rounded" style="font-size: 18px;">build</span>
+            Benötigtes Equipment
+          </label>
+          <div class="flex flex-wrap gap-2">
+            ${exercise.equipment.map(eq =>
+              `<span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-700 border border-gray-600 rounded-lg text-sm">
+                <span class="material-symbols-rounded" style="font-size: 16px; color: var(--color-primary);">${equipmentIcons[eq]}</span>
+                ${equipmentNames[eq]}
+              </span>`
+            ).join('')}
+          </div>
+        </div>`
+        :
+        `<div>
+          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+            <span class="material-symbols-rounded" style="font-size: 18px;">build</span>
+            Benötigtes Equipment
+          </label>
+          <div class="inline-flex items-center gap-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-sm">
+            <span class="material-symbols-rounded" style="font-size: 16px; color: #10b981;">accessibility</span>
+            Kein Equipment
+          </div>
+        </div>`
+      }
 
       <!-- Beschreibung -->
       ${exercise.description ?

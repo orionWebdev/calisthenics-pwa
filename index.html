@@ -191,8 +191,28 @@
 
     <!-- PLANS VIEW -->
     <div id="view-plans" class="view hidden">
-      <h2 class="text-3xl font-bold mb-6">Trainingspläne</h2>
-      <p class="text-gray-400">Coming soon in Session 2...</p>
+
+      <!-- Header mit Add Button -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold mb-2">Trainingspläne</h2>
+          <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Workouts</p>
+        </div>
+        <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+          <span>Neuer Plan</span>
+        </button>
+      </div>
+
+      <!-- Plans Grid -->
+      <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Wird von JavaScript gefüllt -->
+        <div class="col-span-full text-center py-12 text-gray-400">
+          <div class="text-5xl mb-4">📋</div>
+          <p>Lade Pläne...</p>
+        </div>
+      </div>
+
     </div>
 
     <!-- CALENDAR VIEW -->
@@ -364,6 +384,56 @@
           </div>
         </div>
 
+        <!-- Equipment -->
+        <div>
+          <label class="flex items-center gap-2 text-sm font-medium mb-2">
+            <span class="material-symbols-rounded" style="font-size: 18px; color: var(--color-primary);">build</span>
+            <span>Benötigtes Equipment</span>
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="none" class="equipment-checkbox">
+              <span class="text-sm">Kein Equipment</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="pull-up-bar" class="equipment-checkbox">
+              <span class="text-sm">Klimmzugstange</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="dip-bars" class="equipment-checkbox">
+              <span class="text-sm">Dip-Barren</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="rings" class="equipment-checkbox">
+              <span class="text-sm">Ringe</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="resistance-bands" class="equipment-checkbox">
+              <span class="text-sm">Widerstandsbänder</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="parallettes" class="equipment-checkbox">
+              <span class="text-sm">Paralettes</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="box" class="equipment-checkbox">
+              <span class="text-sm">Box/Bank</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="wall" class="equipment-checkbox">
+              <span class="text-sm">Wand</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="mat" class="equipment-checkbox">
+              <span class="text-sm">Matte</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="weights" class="equipment-checkbox">
+              <span class="text-sm">Gewichte</span>
+            </label>
+          </div>
+        </div>
+
         <!-- Difficulty -->
         <div>
           <label class="block text-sm font-medium mb-2">Schwierigkeit *</label>
@@ -411,6 +481,7 @@
   <script src="js/firebase.js"></script>
   <script src="js/data.js"></script>
   <script src="js/exercises.js"></script>
+  <script src="js/plans.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/app.js"></script>
 

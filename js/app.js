@@ -167,21 +167,25 @@ window.addEventListener('scroll', () => {
 
 async function init() {
   console.log('🚀 Initializing Calisthenics Pro...');
-  
+
   try {
     // 1. Initialize default exercises if needed
     await initializeDefaultExercises();
-    
+
     // 2. Load exercises
     await loadExercises();
-    
-    // 3. Load calendar schedule
+
+    // 3. Load plans
+    await loadPlans();
+
+    // 4. Load calendar schedule
     await loadSchedule();
-    
-    // 4. Setup real-time listeners
+
+    // 5. Setup real-time listeners
     setupExercisesListener();
+    setupPlansListener();
     setupScheduleListener();
-    
+
     console.log('✅ App initialized successfully!');
   } catch (error) {
     console.error('❌ Error initializing app:', error);
