@@ -35,9 +35,16 @@ function renderExercises() {
   
   if (filteredExercises.length === 0) {
     grid.innerHTML = `
-      <div class="col-span-full text-center py-12 text-gray-400">
-        <div class="text-5xl mb-4">🔍</div>
-        <p>Keine Übungen gefunden</p>
+      <div class="col-span-full empty-state">
+        <div class="empty-state-icon">
+          <span class="material-symbols-rounded">search_off</span>
+        </div>
+        <h3 class="empty-state-title">Keine Übungen gefunden</h3>
+        <p class="empty-state-text">Versuche einen anderen Suchbegriff oder Filter</p>
+        <button onclick="resetFilters()" class="empty-state-btn">
+          <span class="material-symbols-rounded">refresh</span>
+          <span>Filter zurücksetzen</span>
+        </button>
       </div>
     `;
     return;
@@ -54,7 +61,9 @@ function renderExercises() {
         ${exercise.imageUrl ?
           `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="exercise-card-img" onerror="this.src='https://via.placeholder.com/400x100?text=No+Image'">`
           :
-          `<div class="exercise-card-img-placeholder">🏋️</div>`
+          `<div class="exercise-card-img-placeholder">
+            <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
+          </div>`
         }
 
         <div class="exercise-card-content">
@@ -75,7 +84,7 @@ function renderExercises() {
           class="exercise-card-edit-btn"
           title="Bearbeiten"
         >
-          ✏️
+          <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
         </button>
       </div>
     `;
@@ -90,22 +99,105 @@ function filterExercises() {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
   const muscleFilter = document.getElementById('muscle-filter').value;
   const difficultyFilter = document.getElementById('difficulty-filter').value;
-  
+
   filteredExercises = allExercises.filter(exercise => {
     // Search filter
     const matchesSearch = exercise.name.toLowerCase().includes(searchTerm) ||
                          (exercise.description && exercise.description.toLowerCase().includes(searchTerm));
-    
+
     // Muscle filter
     const matchesMuscle = !muscleFilter || exercise.muscleGroups.includes(muscleFilter);
-    
+
     // Difficulty filter
     const matchesDifficulty = !difficultyFilter || exercise.difficulty === parseInt(difficultyFilter);
-    
+
     return matchesSearch && matchesMuscle && matchesDifficulty;
   });
-  
+
   renderExercises();
+  updateActiveFilters();
+}
+
+function resetFilters() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('muscle-filter').value = '';
+  document.getElementById('difficulty-filter').value = '';
+  filterExercises();
+}
+
+// Active Filter Pills
+function updateActiveFilters() {
+  const searchTerm = document.getElementById('search-input').value;
+  const muscleFilter = document.getElementById('muscle-filter').value;
+  const difficultyFilter = document.getElementById('difficulty-filter').value;
+
+  let filterPills = '';
+
+  if (searchTerm) {
+    filterPills += `
+      <div class="filter-pill">
+        <span class="material-symbols-rounded">search</span>
+        <span>${searchTerm}</span>
+        <button onclick="clearSearchFilter()" class="filter-pill-remove">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    `;
+  }
+
+  if (muscleFilter) {
+    filterPills += `
+      <div class="filter-pill">
+        <span class="material-symbols-rounded">sports_gymnastics</span>
+        <span>${muscleNames[muscleFilter]}</span>
+        <button onclick="clearMuscleFilter()" class="filter-pill-remove">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    `;
+  }
+
+  if (difficultyFilter) {
+    filterPills += `
+      <div class="filter-pill">
+        <span class="material-symbols-rounded">star</span>
+        <span>Level ${difficultyFilter}</span>
+        <button onclick="clearDifficultyFilter()" class="filter-pill-remove">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    `;
+  }
+
+  const container = document.getElementById('active-filters');
+  if (container) {
+    if (filterPills) {
+      container.innerHTML = filterPills + `
+        <button onclick="resetFilters()" class="filter-pill filter-pill-reset">
+          <span class="material-symbols-rounded">restart_alt</span>
+          <span>Alle zurücksetzen</span>
+        </button>
+      `;
+      container.style.display = 'flex';
+    } else {
+      container.style.display = 'none';
+    }
+  }
+}
+
+function clearSearchFilter() {
+  document.getElementById('search-input').value = '';
+  filterExercises();
+}
+
+function clearMuscleFilter() {
+  document.getElementById('muscle-filter').value = '';
+  filterExercises();
+}
+
+function clearDifficultyFilter() {
+  document.getElementById('difficulty-filter').value = '';
+  filterExercises();
 }
 
 // ========================================
@@ -237,52 +329,75 @@ function viewExerciseDetails(id) {
       ${exercise.imageUrl ?
         `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-full h-[200px] object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/600x200?text=No+Image'">`
         :
-        `<div class="w-full h-[200px] bg-gray-800 rounded-lg flex items-center justify-center text-6xl">🏋️</div>`
+        `<div class="w-full h-[200px] bg-gray-800 rounded-lg flex items-center justify-center">
+          <span class="material-symbols-rounded" style="font-size: 80px; color: var(--color-primary);">fitness_center</span>
+        </div>`
       }
 
       <!-- Schwierigkeit -->
       <div>
-        <label class="block text-sm font-medium text-gray-400 mb-2">Schwierigkeit</label>
-        <div class="text-2xl text-yellow-400">
-          ${'⭐'.repeat(exercise.difficulty)}
+        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+          <span class="material-symbols-rounded" style="font-size: 18px;">star</span>
+          Schwierigkeit
+        </label>
+        <div class="flex gap-1">
+          ${Array(5).fill(0).map((_, i) =>
+            `<span class="material-symbols-rounded" style="font-size: 24px; color: ${i < exercise.difficulty ? 'var(--color-primary)' : '#374151'};">
+              ${i < exercise.difficulty ? 'star' : 'star'}
+            </span>`
+          ).join('')}
         </div>
       </div>
 
       <!-- Muskelgruppen -->
       <div>
-        <label class="block text-sm font-medium text-gray-400 mb-2">Trainierte Muskelgruppen</label>
+        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+          <span class="material-symbols-rounded" style="font-size: 18px;">sports_gymnastics</span>
+          Trainierte Muskelgruppen
+        </label>
         <div class="flex flex-wrap gap-2">
           ${exercise.muscleGroups.map((muscle, index) =>
-            `<span class="muscle-tag muscle-${muscle}">
-              ${index === 0 ? '🎯 ' : ''}${muscleNames[muscle]}
+            `<span class="muscle-tag ${index === 0 ? 'muscle-primary' : ''}">
+              ${index === 0 ? '<span class="material-symbols-rounded" style="font-size: 14px;">fiber_manual_record</span> ' : ''}${muscleNames[muscle]}
             </span>`
           ).join('')}
         </div>
-        <p class="text-xs text-gray-500 mt-2">🎯 = Hauptmuskel</p>
+        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+          <span class="material-symbols-rounded" style="font-size: 12px;">fiber_manual_record</span>
+          Hauptmuskel
+        </p>
       </div>
 
       <!-- Beschreibung -->
       ${exercise.description ?
         `<div>
-          <label class="block text-sm font-medium text-gray-400 mb-2">Anleitung</label>
+          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+            <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
+            Anleitung
+          </label>
           <p class="text-gray-300 leading-relaxed">${exercise.description}</p>
         </div>`
         :
-        `<div class="text-gray-500 italic text-center py-4">Keine Anleitung vorhanden</div>`
+        `<div class="text-gray-500 italic text-center py-4 flex flex-col items-center gap-2">
+          <span class="material-symbols-rounded" style="font-size: 32px;">description</span>
+          Keine Anleitung vorhanden
+        </div>`
       }
 
       <!-- Action Buttons -->
       <div class="flex gap-3 pt-4">
         <button
           onclick="closeGenericModal(); editExercise('${exercise.id}')"
-          class="flex-1 bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-semibold transition-colors"
+          class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
         >
-          ✏️ Bearbeiten
+          <span class="material-symbols-rounded" style="font-size: 20px;">edit</span>
+          Bearbeiten
         </button>
         <button
           onclick="closeGenericModal()"
-          class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-lg font-semibold transition-colors"
+          class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
         >
+          <span class="material-symbols-rounded" style="font-size: 20px;">close</span>
           Schließen
         </button>
       </div>

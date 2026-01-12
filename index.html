@@ -7,7 +7,10 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
+  <!-- Material Symbols (Google Icons) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
   
@@ -26,18 +29,22 @@
           <img src="assets\img\logo_.png" alt="Calisthenics Pro" class="h-10 w-10 rounded-full" />
           <h1 class="text-xl font-bold">Calisthenics Pro</h1>
         </div>
-        <div class="flex gap-4">
+        <div class="flex gap-2">
           <button onclick="showView('exercises')" class="nav-btn active" data-view="exercises">
-            Übungen
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span>Übungen</span>
           </button>
           <button onclick="showView('plans')" class="nav-btn" data-view="plans">
-            Pläne
+            <span class="material-symbols-rounded">assignment</span>
+            <span>Pläne</span>
           </button>
           <button onclick="showView('calendar')" class="nav-btn" data-view="calendar">
-            Kalender
+            <span class="material-symbols-rounded">calendar_month</span>
+            <span>Kalender</span>
           </button>
           <button onclick="showView('progress')" class="nav-btn" data-view="progress">
-            Progress
+            <span class="material-symbols-rounded">trending_up</span>
+            <span>Progress</span>
           </button>
         </div>
       </div>
@@ -58,26 +65,22 @@
   <!-- Floating Action Button (Mobile) -->
   <div class="fab-container">
     <button id="fab-main" class="fab-main" onclick="toggleRadialMenu()">
-      <span class="fab-icon">✕</span>
+      <span id="fab-icon" class="material-symbols-rounded fab-icon">fitness_center</span>
     </button>
-    
+
     <!-- Radial Menu Items -->
     <div id="radial-menu" class="radial-menu">
       <button class="radial-menu-item" data-view="exercises" onclick="showViewFromRadial('exercises')" style="--item-index: 0">
-        <span class="radial-icon">📚</span>
-        <span class="radial-label">Übungen</span>
+        <span class="material-symbols-rounded radial-icon">fitness_center</span>
       </button>
       <button class="radial-menu-item" data-view="plans" onclick="showViewFromRadial('plans')" style="--item-index: 1">
-        <span class="radial-icon">📋</span>
-        <span class="radial-label">Pläne</span>
+        <span class="material-symbols-rounded radial-icon">assignment</span>
       </button>
       <button class="radial-menu-item" data-view="calendar" onclick="showViewFromRadial('calendar')" style="--item-index: 2">
-        <span class="radial-icon">📅</span>
-        <span class="radial-label">Kalender</span>
+        <span class="material-symbols-rounded radial-icon">calendar_month</span>
       </button>
       <button class="radial-menu-item" data-view="progress" onclick="showViewFromRadial('progress')" style="--item-index: 3">
-        <span class="radial-icon">📈</span>
-        <span class="radial-label">Progress</span>
+        <span class="material-symbols-rounded radial-icon">trending_up</span>
       </button>
     </div>
     
@@ -96,62 +99,84 @@
           <h2 class="text-2xl sm:text-3xl font-bold mb-2">Übungen-Datenbank</h2>
           <p class="text-sm sm:text-base text-gray-400">Verwalte deine Calisthenics-Übungen</p>
         </div>
-        <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-primary hover:bg-[#C01963] px-6 py-3 rounded-lg font-semibold transition-colors shadow-lg shadow-primary/30">
-          ➕ Neue Übung
+        <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+          <span>Neue Übung</span>
         </button>
       </div>
 
       <!-- Filter & Search -->
-      <div class="bg-gray-800 rounded-xl p-3 sm:p-4 mb-6 border border-gray-700">
+      <div class="filter-container">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <!-- Search -->
-          <div>
-            <label class="block text-xs sm:text-sm mb-2">Suche</label>
-            <input 
-              type="text" 
-              id="search-input"
-              placeholder="Übung suchen..."
-              class="w-full bg-secondary-light border border-secondary-dark rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
-              oninput="filterExercises()"
-            />
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="material-symbols-rounded">search</span>
+              <span>Suche</span>
+            </label>
+            <div class="filter-input-wrapper">
+              <span class="material-symbols-rounded filter-input-icon">search</span>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Übung suchen..."
+                class="filter-input"
+                oninput="filterExercises()"
+              />
+            </div>
           </div>
-          
+
           <!-- Muscle Group Filter -->
-          <div>
-            <label class="block text-xs sm:text-sm mb-2">Muskelgruppe</label>
-            <select 
-              id="muscle-filter"
-              class="w-full bg-secondary-light border border-secondary-dark rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
-              onchange="filterExercises()"
-            >
-              <option value="">Alle</option>
-              <option value="chest">Brust</option>
-              <option value="back">Rücken</option>
-              <option value="shoulders">Schultern</option>
-              <option value="arms">Arme</option>
-              <option value="core">Core</option>
-              <option value="legs">Beine</option>
-            </select>
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="material-symbols-rounded">sports_gymnastics</span>
+              <span>Muskelgruppe</span>
+            </label>
+            <div class="filter-select-wrapper">
+              <span class="material-symbols-rounded filter-select-icon">filter_list</span>
+              <select
+                id="muscle-filter"
+                class="filter-select"
+                onchange="filterExercises()"
+              >
+                <option value="">Alle Muskelgruppen</option>
+                <option value="chest">Brust</option>
+                <option value="back">Rücken</option>
+                <option value="shoulders">Schultern</option>
+                <option value="arms">Arme</option>
+                <option value="core">Core</option>
+                <option value="legs">Beine</option>
+              </select>
+            </div>
           </div>
-          
+
           <!-- Difficulty Filter -->
-          <div>
-            <label class="block text-xs sm:text-sm mb-2">Schwierigkeit</label>
-            <select 
-              id="difficulty-filter"
-              class="w-full bg-secondary-light border border-secondary-dark rounded-lg px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-white"
-              onchange="filterExercises()"
-            >
-              <option value="">Alle</option>
-              <option value="1">⭐ Anfänger</option>
-              <option value="2">⭐⭐ Leicht</option>
-              <option value="3">⭐⭐⭐ Mittel</option>
-              <option value="4">⭐⭐⭐⭐ Fortgeschritten</option>
-              <option value="5">⭐⭐⭐⭐⭐ Expert</option>
-            </select>
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="material-symbols-rounded">star</span>
+              <span>Schwierigkeit</span>
+            </label>
+            <div class="filter-select-wrapper">
+              <span class="material-symbols-rounded filter-select-icon">tune</span>
+              <select
+                id="difficulty-filter"
+                class="filter-select"
+                onchange="filterExercises()"
+              >
+                <option value="">Alle Schwierigkeiten</option>
+                <option value="1">Anfänger</option>
+                <option value="2">Leicht</option>
+                <option value="3">Mittel</option>
+                <option value="4">Fortgeschritten</option>
+                <option value="5">Expert</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Active Filter Pills -->
+      <div id="active-filters" class="active-filters" style="display: none;"></div>
 
       <!-- Exercises Grid -->
       <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

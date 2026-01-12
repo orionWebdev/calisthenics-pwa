@@ -14,6 +14,14 @@ const viewTitles = {
   progress: 'Progress'
 };
 
+// View icons for FAB
+const viewIcons = {
+  exercises: 'fitness_center',
+  plans: 'assignment',
+  calendar: 'calendar_month',
+  progress: 'trending_up'
+};
+
 // ========================================
 // NAVIGATION
 // ========================================
@@ -23,24 +31,35 @@ function showView(viewName) {
   document.querySelectorAll('.view').forEach(view => {
     view.classList.remove('active');
   });
-  
+
   // Show selected view
   document.getElementById(`view-${viewName}`).classList.add('active');
-  
+
   // Update desktop navigation buttons
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.remove('active');
   });
   const desktopBtn = document.querySelector(`.desktop-nav [data-view="${viewName}"]`);
   if (desktopBtn) desktopBtn.classList.add('active');
-  
+
   // Update mobile title
   const mobileTitle = document.getElementById('mobile-view-title');
   if (mobileTitle) {
     mobileTitle.textContent = viewTitles[viewName] || viewName;
   }
-  
+
+  // Update FAB icon based on current view
+  updateFabIcon(viewName);
+
   currentView = viewName;
+}
+
+function updateFabIcon(viewName) {
+  const fabIcon = document.getElementById('fab-icon');
+  if (fabIcon && !radialMenuOpen) {
+    const icon = viewIcons[viewName] || 'fitness_center';
+    fabIcon.textContent = icon;
+  }
 }
 
 function showViewFromRadial(viewName) {
@@ -62,18 +81,41 @@ function toggleRadialMenu() {
 
 function openRadialMenu() {
   radialMenuOpen = true;
-  document.getElementById('fab-main').classList.add('active');
+  const fabMain = document.getElementById('fab-main');
+  const fabIcon = document.getElementById('fab-icon');
+
+  fabMain.classList.add('active');
   document.getElementById('radial-menu').classList.add('active');
   document.getElementById('radial-overlay').classList.add('active');
   document.body.style.overflow = 'hidden';
+
+  // Change FAB icon to close (add)
+  if (fabIcon) {
+    fabIcon.textContent = 'add';
+  }
+
+  // Haptic feedback (if available)
+  if ('vibrate' in navigator) {
+    navigator.vibrate(10);
+  }
 }
 
 function closeRadialMenu() {
   radialMenuOpen = false;
-  document.getElementById('fab-main').classList.remove('active');
+  const fabMain = document.getElementById('fab-main');
+
+  fabMain.classList.remove('active');
   document.getElementById('radial-menu').classList.remove('active');
   document.getElementById('radial-overlay').classList.remove('active');
   document.body.style.overflow = '';
+
+  // Restore FAB icon to current view icon
+  updateFabIcon(currentView);
+
+  // Haptic feedback (if available)
+  if ('vibrate' in navigator) {
+    navigator.vibrate(10);
+  }
 }
 
 // Close radial menu on escape
