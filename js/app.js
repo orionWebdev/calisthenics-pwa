@@ -85,6 +85,41 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ========================================
+// SCROLL BEHAVIOR FOR FLOATING NAV
+// ========================================
+
+let lastScrollY = 0;
+let scrollTimeout;
+
+function handleNavScroll() {
+  const desktopNav = document.getElementById('desktop-nav');
+  if (!desktopNav) return;
+
+  const currentScrollY = window.scrollY;
+
+  // Scroll down - hide nav
+  if (currentScrollY > lastScrollY && currentScrollY > 100) {
+    desktopNav.classList.add('nav-hidden');
+  }
+  // Scroll up - show nav
+  else if (currentScrollY < lastScrollY) {
+    desktopNav.classList.remove('nav-hidden');
+  }
+
+  lastScrollY = currentScrollY;
+}
+
+// Throttle scroll events for performance
+window.addEventListener('scroll', () => {
+  if (scrollTimeout) {
+    window.cancelAnimationFrame(scrollTimeout);
+  }
+  scrollTimeout = window.requestAnimationFrame(() => {
+    handleNavScroll();
+  });
+});
+
+// ========================================
 // INITIALIZATION
 // ========================================
 
