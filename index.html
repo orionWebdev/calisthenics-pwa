@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calisthenics Pro</title>
-  
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -13,10 +13,19 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
-  
+
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1f2937">
+  <meta name="theme-color" content="#060A30">
+
+  <!-- iOS-specific PWA Meta-Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CaliPro">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- Viewport für Mobile (optimiert für PWA) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 </head>
 <body class="bg-gray-900 text-white">
 
@@ -250,7 +259,7 @@
       </div>
 
       <!-- Add Plan to Day Panel -->
-      <div id="add-plan-panel" class="bg-blue-900 bg-opacity-30 border border-blue-500 rounded-xl p-4 mb-6 hidden">
+      <div id="add-plan-panel" class="bg-gradient-to-r from-pink-900/20 to-purple-900/20 border border-pink-500/50 rounded-xl p-4 mb-6 hidden backdrop-blur-sm">
         <div class="flex items-center justify-between mb-3">
           <h4 class="font-semibold">Plan hinzufügen zu: <span id="selected-date-display"></span></h4>
           <button onclick="closeAddPlanPanel()" class="text-gray-400 hover:text-white">✕</button>
@@ -259,17 +268,11 @@
         <div class="flex gap-3">
           <select id="plan-select" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2">
             <option value="">Wähle einen Plan...</option>
-            <!-- Wird später mit echten Plänen gefüllt - für jetzt Demo-Daten -->
-            <option value="demo-push">Push Day (Demo)</option>
-            <option value="demo-pull">Pull Day (Demo)</option>
-            <option value="demo-legs">Leg Day (Demo)</option>
-            <option value="demo-cardio">Cardio (Demo)</option>
           </select>
-          <button onclick="addPlanToDate()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+          <button onclick="addPlanToDate()" class="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-2 rounded-lg font-semibold transition-all">
             Hinzufügen
           </button>
         </div>
-        <p class="text-xs text-gray-400 mt-2">ℹ️ Echte Pläne kommen in Session 2 - das sind Demo-Pläne</p>
       </div>
 
       <!-- Month View -->
@@ -470,6 +473,320 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- PLAN MODAL -->
+  <div id="plan-modal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold" id="plan-modal-title">Neuer Trainingsplan</h3>
+        <button onclick="closePlanModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Plan Name -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Planname *</label>
+          <input
+            type="text"
+            id="plan-name"
+            placeholder="z.B. Push Workout"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Type, Goal, Duration Row -->
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Typ *</label>
+            <select id="plan-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="strength">Kraft</option>
+              <option value="cardio">Cardio</option>
+              <option value="mobility">Mobility</option>
+              <option value="skill">Skill</option>
+              <option value="hiit">HIIT</option>
+              <option value="mixed">Mixed</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">Ziel *</label>
+            <select id="plan-goal" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="strength">Kraft</option>
+              <option value="endurance">Ausdauer</option>
+              <option value="hypertrophy">Muskelaufbau</option>
+              <option value="skill">Skill</option>
+              <option value="mixed">Gemischt</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">Dauer (Min) *</label>
+            <input
+              type="number"
+              id="plan-duration"
+              value="45"
+              min="10"
+              max="180"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </div>
+        </div>
+
+        <!-- Difficulty -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Schwierigkeit</label>
+          <div class="flex gap-2">
+            <button type="button" class="plan-difficulty-btn" data-difficulty="1" onclick="setPlanDifficulty(1)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn" data-difficulty="2" onclick="setPlanDifficulty(2)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn active" data-difficulty="3" onclick="setPlanDifficulty(3)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn" data-difficulty="4" onclick="setPlanDifficulty(4)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn" data-difficulty="5" onclick="setPlanDifficulty(5)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+          </div>
+          <input type="hidden" id="plan-difficulty" value="3">
+        </div>
+
+        <!-- Tags -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Tags</label>
+          <div class="flex flex-wrap gap-2">
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="full-body" class="tag-checkbox">
+              <span class="text-sm">Ganzkörper</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="upper-body" class="tag-checkbox">
+              <span class="text-sm">Oberkörper</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="lower-body" class="tag-checkbox">
+              <span class="text-sm">Unterkörper</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="push" class="tag-checkbox">
+              <span class="text-sm">Push</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="pull" class="tag-checkbox">
+              <span class="text-sm">Pull</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="legs" class="tag-checkbox">
+              <span class="text-sm">Beine</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="core" class="tag-checkbox">
+              <span class="text-sm">Core</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Target Muscles -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Ziel-Muskelgruppen</label>
+          <div class="flex flex-wrap gap-2">
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="chest" class="target-muscle-checkbox">
+              <span class="text-sm">Brust</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="back" class="target-muscle-checkbox">
+              <span class="text-sm">Rücken</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="shoulders" class="target-muscle-checkbox">
+              <span class="text-sm">Schultern</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="arms" class="target-muscle-checkbox">
+              <span class="text-sm">Arme</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="legs" class="target-muscle-checkbox">
+              <span class="text-sm">Beine</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="core" class="target-muscle-checkbox">
+              <span class="text-sm">Core</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Exercises Section -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-medium">Übungen *</label>
+            <button
+              type="button"
+              onclick="openAddExerciseToPlan()"
+              class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 rounded-lg text-sm font-semibold transition-all"
+            >
+              <span class="material-symbols-rounded" style="font-size: 18px;">add</span>
+              Übung hinzufügen
+            </button>
+          </div>
+          <div id="plan-exercises-list" class="space-y-2 bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <!-- Exercises will be rendered here -->
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Notizen</label>
+          <textarea
+            id="plan-notes"
+            rows="3"
+            placeholder="Zusätzliche Informationen..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button
+            onclick="savePlan()"
+            class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all"
+          >
+            Speichern
+          </button>
+          <button
+            onclick="closePlanModal()"
+            class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors"
+          >
+            Abbrechen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISE PICKER MODAL -->
+  <div id="exercise-picker-modal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold">Übung auswählen</h3>
+        <button onclick="closeExercisePicker()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Search -->
+        <div>
+          <input
+            type="text"
+            id="exercise-picker-search"
+            placeholder="Übung suchen..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            oninput="renderExercisePicker()"
+          />
+        </div>
+
+        <!-- Exercise List -->
+        <div id="exercise-picker-list" class="space-y-2 max-h-96 overflow-y-auto">
+          <!-- Exercises will be rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISE CONFIG MODAL -->
+  <div id="exercise-config-modal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-2xl font-bold">Übung konfigurieren</h3>
+          <p class="text-gray-400 text-sm mt-1" id="exercise-config-name">Übungsname</p>
+        </div>
+        <button onclick="closeExerciseConfigModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Sets -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Sätze *</label>
+          <input
+            type="number"
+            id="exercise-sets"
+            value="3"
+            min="1"
+            max="10"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Reps OR Hold -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Wiederholungen</label>
+            <input
+              type="text"
+              id="exercise-reps"
+              placeholder="z.B. 12 oder 8-10"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Halten (Sek)</label>
+            <input
+              type="text"
+              id="exercise-hold"
+              placeholder="z.B. 30s"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </div>
+        </div>
+
+        <!-- Rest -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Pause (Sekunden)</label>
+          <input
+            type="number"
+            id="exercise-rest"
+            value="90"
+            min="0"
+            max="300"
+            step="15"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Notizen</label>
+          <textarea
+            id="exercise-notes"
+            rows="2"
+            placeholder="z.B. Tempo, Progressionen..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button
+            onclick="saveExerciseConfig()"
+            class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all"
+          >
+            Hinzufügen
+          </button>
+          <button
+            onclick="closeExerciseConfigModal()"
+            class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors"
+          >
+            Abbrechen
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

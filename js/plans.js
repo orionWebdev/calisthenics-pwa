@@ -238,12 +238,25 @@ function setPlanDifficulty(level) {
 function renderPlanExercises() {
   const container = document.getElementById('plan-exercises-list');
 
+  if (!container) return;
+
   if (!currentPlan || !currentPlan.exercises || currentPlan.exercises.length === 0) {
     container.innerHTML = `
       <div class="text-center py-8 text-gray-400">
         <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
         <p class="mt-2">Noch keine Übungen hinzugefügt</p>
         <p class="text-sm">Füge Übungen aus der Datenbank hinzu</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Safety check: ensure allExercises is available
+  if (typeof allExercises === 'undefined' || !allExercises) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-gray-400">
+        <span class="material-symbols-rounded" style="font-size: 48px;">hourglass_empty</span>
+        <p class="mt-2">Lade Übungen...</p>
       </div>
     `;
     return;
@@ -291,6 +304,20 @@ function openAddExerciseToPlan() {
 
 function renderExercisePicker() {
   const container = document.getElementById('exercise-picker-list');
+
+  if (!container) return;
+
+  // Safety check: ensure allExercises is available
+  if (typeof allExercises === 'undefined' || !allExercises || allExercises.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-gray-400">
+        <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
+        <p class="mt-2">Keine Übungen verfügbar</p>
+        <p class="text-sm">Erstelle zuerst Übungen in der Übungsdatenbank</p>
+      </div>
+    `;
+    return;
+  }
 
   container.innerHTML = allExercises.map(exercise => `
     <div class="exercise-picker-item" onclick="selectExerciseForPlan('${exercise.id}')">
@@ -496,12 +523,14 @@ async function savePlan() {
 
   // Calculate required equipment from exercises
   const requiredEquipment = new Set();
-  currentPlan.exercises.forEach(ex => {
-    const exercise = allExercises.find(e => e.id === ex.exerciseId);
-    if (exercise && exercise.equipment) {
-      exercise.equipment.forEach(eq => requiredEquipment.add(eq));
-    }
-  });
+  if (typeof allExercises !== 'undefined' && allExercises) {
+    currentPlan.exercises.forEach(ex => {
+      const exercise = allExercises.find(e => e.id === ex.exerciseId);
+      if (exercise && exercise.equipment) {
+        exercise.equipment.forEach(eq => requiredEquipment.add(eq));
+      }
+    });
+  }
 
   const planData = {
     name,
@@ -542,6 +571,12 @@ async function savePlan() {
 function viewPlanDetails(id) {
   const plan = allPlans.find(p => p.id === id);
   if (!plan) return;
+
+  // Safety check: ensure allExercises is available
+  if (typeof allExercises === 'undefined' || !allExercises) {
+    alert('Übungen werden noch geladen. Bitte versuche es gleich nochmal.');
+    return;
+  }
 
   // Build exercises list HTML
   let exercisesHTML = '';

@@ -1,0 +1,53 @@
+{
+  "name": "Calisthenics Pro",
+  "short_name": "CaliPro",
+  "description": "Deine Calisthenics Training App - Übungen, Pläne und Kalender für dein perfektes Workout",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060A30",
+  "theme_color": "#F02277",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness", "sports"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Übungen",
+      "short_name": "Übungen",
+      "description": "Zur Übungsdatenbank",
+      "url": "/?view=exercises",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Kalender",
+      "short_name": "Kalender",
+      "description": "Zum Trainingskalender",
+      "url": "/?view=calendar",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

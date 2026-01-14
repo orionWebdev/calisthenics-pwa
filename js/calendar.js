@@ -16,6 +16,8 @@ const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
                     'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
 const dayNames = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
 
+// Note: workoutTypeNames is defined in plans.js and shared globally
+
 // ========================================
 // LOAD SCHEDULE DATA
 // ========================================
@@ -24,10 +26,18 @@ async function loadSchedule() {
   try {
     // Später filtern wir hier nach userId
     // Für jetzt laden wir alle (da wir noch keine Auth haben)
-    scheduleData = await getAllDocs(scheduleCollection);
+    if (typeof scheduleCollection !== 'undefined') {
+      scheduleData = await getAllDocs(scheduleCollection);
+    } else {
+      console.warn('⚠️ scheduleCollection not defined, using empty array');
+      scheduleData = [];
+    }
     renderCalendar();
   } catch (error) {
     console.error('Error loading schedule:', error);
+    // Render calendar anyway with empty data
+    scheduleData = [];
+    renderCalendar();
   }
 }
 
@@ -74,25 +84,34 @@ function goToToday() {
 // ========================================
 
 function renderCalendar() {
-  updateCalendarTitle();
-  
-  if (currentCalendarView === 'month') {
-    renderMonthView();
-  } else {
-    renderWeekView();
+  try {
+    updateCalendarTitle();
+
+    if (currentCalendarView === 'month') {
+      renderMonthView();
+    } else {
+      renderWeekView();
+    }
+  } catch (error) {
+    console.error('Error rendering calendar:', error);
   }
 }
 
 function updateCalendarTitle() {
   const title = document.getElementById('calendar-title');
-  
+
+  if (!title) {
+    console.warn('⚠️ calendar-title element not found');
+    return;
+  }
+
   if (currentCalendarView === 'month') {
     title.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
   } else {
     const weekStart = getWeekStart(currentDate);
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 6);
-    
+
     title.textContent = `${weekStart.getDate()}. - ${weekEnd.getDate()}. ${monthNames[weekEnd.getMonth()]} ${weekEnd.getFullYear()}`;
   }
 }
@@ -103,6 +122,12 @@ function updateCalendarTitle() {
 
 function renderMonthView() {
   const grid = document.getElementById('calendar-grid');
+
+  if (!grid) {
+    console.warn('⚠️ calendar-grid element not found');
+    return;
+  }
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   
@@ -162,9 +187,9 @@ function createDayCell(date, otherMonth = false, isToday = false) {
     <div class="calendar-day-number">${date.getDate()}</div>
     <div class="calendar-day-plans">
       ${dayPlans.map(plan => `
-        <div class="calendar-plan" onclick="event.stopPropagation();">
+        <div class="calendar-plan calendar-plan-${plan.planType || 'mixed'}" onclick="event.stopPropagation(); viewCalendarPlanDetails('${plan.id}');" title="${plan.planName} (${plan.planDuration || 45} Min)">
           <span>${plan.planName}</span>
-          <span class="calendar-plan-remove" onclick="removePlanFromDate('${plan.id}')">✕</span>
+          <span class="calendar-plan-remove" onclick="event.stopPropagation(); removePlanFromDate('${plan.id}')">✕</span>
         </div>
       `).join('')}
     </div>
@@ -184,6 +209,12 @@ function createDayCell(date, otherMonth = false, isToday = false) {
 
 function renderWeekView() {
   const weekGrid = document.getElementById('week-grid');
+
+  if (!weekGrid) {
+    console.warn('⚠️ week-grid element not found');
+    return;
+  }
+
   const weekStart = getWeekStart(currentDate);
   const today = new Date();
   
@@ -217,19 +248,24 @@ function renderWeekView() {
       </div>
       
       <div class="space-y-2">
-        ${dayPlans.length === 0 ? 
+        ${dayPlans.length === 0 ?
           '<p class="text-gray-500 text-sm">Kein Training geplant</p>' :
           dayPlans.map(plan => `
-            <div class="bg-gray-700 rounded-lg p-3 flex items-center justify-between">
-              <div>
+            <div class="bg-gray-700 rounded-lg p-3 flex items-center justify-between cursor-pointer hover:bg-gray-600 transition-colors" onclick="viewCalendarPlanDetails('${plan.id}')">
+              <div class="flex-1">
                 <div class="font-semibold">${plan.planName}</div>
-                <div class="text-xs text-gray-400">Geplant</div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-xs px-2 py-0.5 rounded" style="background: ${getPlanTypeColor(plan.planType)}20; color: ${getPlanTypeColor(plan.planType)};">
+                    ${workoutTypeNames[plan.planType] || plan.planType}
+                  </span>
+                  <span class="text-xs text-gray-400">${plan.planDuration || 45} Min</span>
+                </div>
               </div>
-              <button 
-                onclick="removePlanFromDate('${plan.id}')"
-                class="text-red-400 hover:text-red-300 transition-colors"
+              <button
+                onclick="event.stopPropagation(); removePlanFromDate('${plan.id}')"
+                class="text-red-400 hover:text-red-300 transition-colors ml-2"
               >
-                🗑️
+                <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
               </button>
             </div>
           `).join('')
@@ -256,13 +292,15 @@ function getWeekStart(date) {
 
 function openAddPlanPanel(dateStr) {
   selectedDateForPlan = dateStr;
-  
+
   const date = new Date(dateStr);
   const formatted = `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-  
+
   document.getElementById('selected-date-display').textContent = formatted;
   document.getElementById('add-plan-panel').classList.remove('hidden');
-  document.getElementById('plan-select').value = '';
+
+  // Populate plan dropdown with real plans
+  populatePlanSelect();
 }
 
 function closeAddPlanPanel() {
@@ -270,25 +308,54 @@ function closeAddPlanPanel() {
   selectedDateForPlan = null;
 }
 
+function populatePlanSelect() {
+  const select = document.getElementById('plan-select');
+
+  // Clear existing options except the first one
+  select.innerHTML = '<option value="">Wähle einen Plan...</option>';
+
+  // Check if allPlans is available (from plans.js)
+  if (typeof allPlans === 'undefined' || !allPlans || allPlans.length === 0) {
+    select.innerHTML += '<option value="" disabled>Keine Pläne verfügbar - Erstelle zuerst einen Plan</option>';
+    return;
+  }
+
+  // Add real plans from the database
+  allPlans.forEach(plan => {
+    const option = document.createElement('option');
+    option.value = plan.id;
+    option.textContent = `${plan.name} (${workoutTypeNames[plan.type] || plan.type}, ${plan.duration || 45} Min)`;
+    select.appendChild(option);
+  });
+}
+
 async function addPlanToDate() {
   const planId = document.getElementById('plan-select').value;
-  
+
   if (!planId || !selectedDateForPlan) {
     alert('Bitte wähle einen Plan!');
     return;
   }
-  
-  // Get plan name from select
-  const planName = document.getElementById('plan-select').selectedOptions[0].text;
-  
+
+  // Get plan details from allPlans array
+  const plan = allPlans.find(p => p.id === planId);
+
+  if (!plan) {
+    alert('Plan nicht gefunden!');
+    return;
+  }
+
   const scheduleEntry = {
     userId: CURRENT_USER_ID, // Später durch echte User ID ersetzen
     planId: planId,
-    planName: planName, // Denormalized für schnellere Anzeige
+    planName: plan.name, // Denormalized für schnellere Anzeige
+    planType: plan.type, // Store type for styling
+    planDuration: plan.duration || 45, // Store duration
     date: selectedDateForPlan,
-    completed: false
+    completed: false,
+    createdAt: new Date().toISOString()
   };
-  
+
   try {
     await addDoc(scheduleCollection, scheduleEntry);
     console.log('✅ Plan added to calendar!');
@@ -302,7 +369,7 @@ async function addPlanToDate() {
 
 async function removePlanFromDate(scheduleId) {
   if (!confirm('Plan wirklich entfernen?')) return;
-  
+
   try {
     await deleteDoc(scheduleCollection, scheduleId);
     console.log('✅ Plan removed from calendar!');
@@ -310,6 +377,28 @@ async function removePlanFromDate(scheduleId) {
   } catch (error) {
     console.error('Error removing plan:', error);
     alert('Fehler beim Entfernen!');
+  }
+}
+
+function viewCalendarPlanDetails(scheduleId) {
+  // Find the schedule entry
+  const scheduleEntry = scheduleData.find(s => s.id === scheduleId);
+  if (!scheduleEntry) return;
+
+  // Find the actual plan
+  const plan = allPlans.find(p => p.id === scheduleEntry.planId);
+
+  if (!plan) {
+    alert('Plan nicht gefunden!');
+    return;
+  }
+
+  // Use the existing viewPlanDetails function from plans.js
+  if (typeof viewPlanDetails === 'function') {
+    viewPlanDetails(plan.id);
+  } else {
+    // Fallback: show basic info
+    alert(`Plan: ${plan.name}\nTyp: ${workoutTypeNames[plan.type]}\nDauer: ${plan.duration} Min\nDatum: ${scheduleEntry.date}`);
   }
 }
 
@@ -322,6 +411,18 @@ function formatDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+function getPlanTypeColor(type) {
+  const colors = {
+    strength: '#ef4444',
+    cardio: '#3b82f6',
+    mobility: '#22c55e',
+    skill: '#a855f7',
+    hiit: '#f97316',
+    mixed: '#db2777'
+  };
+  return colors[type] || colors.mixed;
 }
 
 function getPlansForDate(dateStr) {

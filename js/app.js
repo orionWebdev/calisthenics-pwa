@@ -51,6 +51,11 @@ function showView(viewName) {
   // Update FAB icon based on current view
   updateFabIcon(viewName);
 
+  // Load view-specific data
+  if (viewName === 'calendar' && typeof loadSchedule === 'function') {
+    loadSchedule();
+  }
+
   currentView = viewName;
 }
 
@@ -170,26 +175,46 @@ async function init() {
 
   try {
     // 1. Initialize default exercises if needed
+    console.log('📦 Initializing default exercises...');
     await initializeDefaultExercises();
 
     // 2. Load exercises
+    console.log('💪 Loading exercises...');
     await loadExercises();
 
     // 3. Load plans
-    await loadPlans();
+    console.log('📋 Loading plans...');
+    if (typeof loadPlans === 'function') {
+      await loadPlans();
+    } else {
+      console.warn('⚠️ loadPlans function not found');
+    }
 
     // 4. Load calendar schedule
-    await loadSchedule();
+    console.log('📅 Loading schedule...');
+    if (typeof loadSchedule === 'function') {
+      await loadSchedule();
+    } else {
+      console.warn('⚠️ loadSchedule function not found');
+    }
 
     // 5. Setup real-time listeners
-    setupExercisesListener();
-    setupPlansListener();
-    setupScheduleListener();
+    console.log('🔄 Setting up real-time listeners...');
+    if (typeof setupExercisesListener === 'function') {
+      setupExercisesListener();
+    }
+    if (typeof setupPlansListener === 'function') {
+      setupPlansListener();
+    }
+    if (typeof setupScheduleListener === 'function') {
+      setupScheduleListener();
+    }
 
     console.log('✅ App initialized successfully!');
   } catch (error) {
     console.error('❌ Error initializing app:', error);
-    alert('Fehler beim Laden der App. Bitte Seite neu laden.');
+    console.error('Error details:', error.message, error.stack);
+    alert('Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
   }
 }
 
@@ -203,6 +228,23 @@ document.addEventListener('click', (e) => {
     closeExerciseModal();
   }
 });
+
+// ========================================
+// SERVICE WORKER REGISTRATION
+// ========================================
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((registration) => {
+        console.log('✅ Service Worker registered successfully:', registration.scope);
+      })
+      .catch((error) => {
+        console.error('❌ Service Worker registration failed:', error);
+      });
+  });
+}
 
 // ========================================
 // START APP WHEN DOM IS READY
