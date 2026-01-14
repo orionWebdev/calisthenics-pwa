@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calisthenics Pro</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Material Symbols (Google Icons) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#060A30">
+
+  <!-- iOS-specific PWA Meta-Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CaliPro">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- Viewport für Mobile (optimiert für PWA) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+</head>
+<body class="bg-gray-900 text-white">
+
+  <!-- Navigation - Desktop (Floating) -->
+  <nav class="desktop-nav" id="desktop-nav">
+    <div class="px-6">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <!-- Logo SVG - Ersetze src mit deinem Logo-Pfad -->
+          <img src="assets\img\logo_.png" alt="Calisthenics Pro" class="h-10 w-10 rounded-full" />
+          <h1 class="text-xl font-bold">Calisthenics Pro</h1>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="showView('exercises')" class="nav-btn active" data-view="exercises">
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span>Übungen</span>
+          </button>
+          <button onclick="showView('plans')" class="nav-btn" data-view="plans">
+            <span class="material-symbols-rounded">assignment</span>
+            <span>Pläne</span>
+          </button>
+          <button onclick="showView('calendar')" class="nav-btn" data-view="calendar">
+            <span class="material-symbols-rounded">calendar_month</span>
+            <span>Kalender</span>
+          </button>
+          <button onclick="showView('progress')" class="nav-btn" data-view="progress">
+            <span class="material-symbols-rounded">trending_up</span>
+            <span>Progress</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation Header -->
+  <div class="mobile-nav-header bg-secondary-dark border-b border-secondary-light sticky top-0 z-50">
+    <div class="px-4 py-4 flex items-center justify-center gap-2">
+      <img src="logo.svg" alt="Logo" class="h-8 w-8" />
+      <div>
+        <h1 class="text-lg font-bold text-center">Calisthenics Pro</h1>
+        <p class="text-xs text-gray-400 text-center" id="mobile-view-title">Übungen</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button (Mobile) -->
+  <div class="fab-container">
+    <button id="fab-main" class="fab-main" onclick="toggleRadialMenu()">
+      <span id="fab-icon" class="material-symbols-rounded fab-icon">fitness_center</span>
+    </button>
+
+    <!-- Radial Menu Items -->
+    <div id="radial-menu" class="radial-menu">
+      <button class="radial-menu-item" data-view="exercises" onclick="showViewFromRadial('exercises')" style="--item-index: 0">
+        <span class="material-symbols-rounded radial-icon">fitness_center</span>
+      </button>
+      <button class="radial-menu-item" data-view="plans" onclick="showViewFromRadial('plans')" style="--item-index: 1">
+        <span class="material-symbols-rounded radial-icon">assignment</span>
+      </button>
+      <button class="radial-menu-item" data-view="calendar" onclick="showViewFromRadial('calendar')" style="--item-index: 2">
+        <span class="material-symbols-rounded radial-icon">calendar_month</span>
+      </button>
+      <button class="radial-menu-item" data-view="progress" onclick="showViewFromRadial('progress')" style="--item-index: 3">
+        <span class="material-symbols-rounded radial-icon">trending_up</span>
+      </button>
+    </div>
+    
+    <!-- Overlay -->
+    <div id="radial-overlay" class="radial-overlay" onclick="closeRadialMenu()"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto p-4 pb-24 pt-24">
+    
+    <!-- EXERCISES VIEW -->
+    <div id="view-exercises" class="view active">
+      
+      <!-- Header mit Add Button -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold mb-2">Übungen-Datenbank</h2>
+          <p class="text-sm sm:text-base text-gray-400">Verwalte deine Calisthenics-Übungen</p>
+        </div>
+        <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+          <span>Neue Übung</span>
+        </button>
+      </div>
+
+      <!-- Filter & Search -->
+      <div class="filter-container">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <!-- Search -->
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="material-symbols-rounded">search</span>
+              <span>Suche</span>
+            </label>
+            <div class="filter-input-wrapper">
+              <span class="material-symbols-rounded filter-input-icon">search</span>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Übung suchen..."
+                class="filter-input"
+                oninput="filterExercises()"
+              />
+            </div>
+          </div>
+
+          <!-- Muscle Group Filter -->
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="material-symbols-rounded">sports_gymnastics</span>
+              <span>Muskelgruppe</span>
+            </label>
+            <div class="filter-select-wrapper">
+              <span class="material-symbols-rounded filter-select-icon">filter_list</span>
+              <select
+                id="muscle-filter"
+                class="filter-select"
+                onchange="filterExercises()"
+              >
+                <option value="">Alle Muskelgruppen</option>
+                <option value="chest">Brust</option>
+                <option value="back">Rücken</option>
+                <option value="shoulders">Schultern</option>
+                <option value="arms">Arme</option>
+                <option value="core">Core</option>
+                <option value="legs">Beine</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Difficulty Filter -->
+          <div class="filter-item">
+            <label class="filter-label">
+              <span class="material-symbols-rounded">star</span>
+              <span>Schwierigkeit</span>
+            </label>
+            <div class="filter-select-wrapper">
+              <span class="material-symbols-rounded filter-select-icon">tune</span>
+              <select
+                id="difficulty-filter"
+                class="filter-select"
+                onchange="filterExercises()"
+              >
+                <option value="">Alle Schwierigkeiten</option>
+                <option value="1">Anfänger</option>
+                <option value="2">Leicht</option>
+                <option value="3">Mittel</option>
+                <option value="4">Fortgeschritten</option>
+                <option value="5">Expert</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filter Pills -->
+      <div id="active-filters" class="active-filters" style="display: none;"></div>
+
+      <!-- Exercises Grid -->
+      <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Wird von JavaScript gefüllt -->
+        <div class="col-span-full text-center py-12 text-gray-400">
+          <div class="text-5xl mb-4">📚</div>
+          <p>Lade Übungen...</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PLANS VIEW -->
+    <div id="view-plans" class="view hidden">
+
+      <!-- Header mit Add Button -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold mb-2">Trainingspläne</h2>
+          <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Workouts</p>
+        </div>
+        <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+          <span>Neuer Plan</span>
+        </button>
+      </div>
+
+      <!-- Plans Grid -->
+      <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Wird von JavaScript gefüllt -->
+        <div class="col-span-full text-center py-12 text-gray-400">
+          <div class="text-5xl mb-4">📋</div>
+          <p>Lade Pläne...</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CALENDAR VIEW -->
+    <div id="view-calendar" class="view hidden">
+      
+      <!-- Header mit View Switcher -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <h2 class="text-2xl sm:text-3xl font-bold">Trainingskalender</h2>
+        <div class="flex gap-2 w-full sm:w-auto">
+          <button onclick="setCalendarView('month')" class="calendar-view-btn active flex-1 sm:flex-none" data-view="month">
+            📅 Monat
+          </button>
+          <button onclick="setCalendarView('week')" class="calendar-view-btn flex-1 sm:flex-none" data-view="week">
+            📊 Woche
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="bg-gray-800 rounded-xl p-3 sm:p-4 mb-6 border border-gray-700 flex items-center justify-between">
+        <button onclick="navigateCalendar('prev')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
+          ← <span class="hidden sm:inline">Zurück</span>
+        </button>
+        
+        <div class="text-center">
+          <h3 id="calendar-title" class="text-lg sm:text-2xl font-bold">Januar 2026</h3>
+          <button onclick="goToToday()" class="text-xs sm:text-sm text-blue-400 hover:text-blue-300 mt-1">
+            Heute
+          </button>
+        </div>
+        
+        <button onclick="navigateCalendar('next')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
+          <span class="hidden sm:inline">Weiter</span> →
+        </button>
+      </div>
+
+      <!-- Add Plan to Day Panel -->
+      <div id="add-plan-panel" class="bg-gradient-to-r from-pink-900/20 to-purple-900/20 border border-pink-500/50 rounded-xl p-4 mb-6 hidden backdrop-blur-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-semibold">Plan hinzufügen zu: <span id="selected-date-display"></span></h4>
+          <button onclick="closeAddPlanPanel()" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        
+        <div class="flex gap-3">
+          <select id="plan-select" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2">
+            <option value="">Wähle einen Plan...</option>
+          </select>
+          <button onclick="addPlanToDate()" class="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-2 rounded-lg font-semibold transition-all">
+            Hinzufügen
+          </button>
+        </div>
+      </div>
+
+      <!-- Month View -->
+      <div id="calendar-month-view" class="calendar-view active">
+        <!-- Weekday Headers -->
+        <div class="grid grid-cols-7 gap-2 mb-2">
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Mo</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Di</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Mi</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Do</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Fr</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">Sa</div>
+          <div class="text-center font-semibold text-gray-400 text-sm py-2">So</div>
+        </div>
+        
+        <!-- Calendar Grid -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-2">
+          <!-- Wird von JavaScript gefüllt -->
+        </div>
+      </div>
+
+      <!-- Week View -->
+      <div id="calendar-week-view" class="calendar-view hidden">
+        <div id="week-grid" class="space-y-3">
+          <!-- Wird von JavaScript gefüllt -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PROGRESS VIEW -->
+    <div id="view-progress" class="view hidden">
+      <h2 class="text-3xl font-bold mb-6">Progress Tracking</h2>
+      <p class="text-gray-400">Coming soon in Session 5...</p>
+    </div>
+
+  </div>
+
+  <!-- WIEDERVERWENDBARE MODAL-KOMPONENTE -->
+  <!-- Generic Modal Container -->
+  <div id="generic-modal" class="modal">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold" id="generic-modal-title">Modal Titel</h3>
+        <button onclick="closeGenericModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+      <div id="generic-modal-body">
+        <!-- Content wird von JavaScript eingefügt -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD/EDIT EXERCISE MODAL -->
+  <div id="exercise-modal" class="modal">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold" id="modal-title">Neue Übung</h3>
+        <button onclick="closeExerciseModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Name -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Übungsname *</label>
+          <input
+            type="text"
+            id="exercise-name"
+            placeholder="z.B. Pull-ups"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Anleitung</label>
+          <textarea
+            id="exercise-description"
+            rows="4"
+            placeholder="Beschreibe wie die Übung ausgeführt wird..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ></textarea>
+        </div>
+
+        <!-- Muscle Groups (Multiple Select) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Muskelgruppen *</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="chest" class="muscle-checkbox">
+              <span class="muscle-tag muscle-chest">Brust</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="back" class="muscle-checkbox">
+              <span class="muscle-tag muscle-back">Rücken</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="shoulders" class="muscle-checkbox">
+              <span class="muscle-tag muscle-shoulders">Schultern</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="arms" class="muscle-checkbox">
+              <span class="muscle-tag muscle-arms">Arme</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="core" class="muscle-checkbox">
+              <span class="muscle-tag muscle-core">Core</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
+              <input type="checkbox" value="legs" class="muscle-checkbox">
+              <span class="muscle-tag muscle-legs">Beine</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Equipment -->
+        <div>
+          <label class="flex items-center gap-2 text-sm font-medium mb-2">
+            <span class="material-symbols-rounded" style="font-size: 18px; color: var(--color-primary);">build</span>
+            <span>Benötigtes Equipment</span>
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="none" class="equipment-checkbox">
+              <span class="text-sm">Kein Equipment</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="pull-up-bar" class="equipment-checkbox">
+              <span class="text-sm">Klimmzugstange</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="dip-bars" class="equipment-checkbox">
+              <span class="text-sm">Dip-Barren</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="rings" class="equipment-checkbox">
+              <span class="text-sm">Ringe</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="resistance-bands" class="equipment-checkbox">
+              <span class="text-sm">Widerstandsbänder</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="parallettes" class="equipment-checkbox">
+              <span class="text-sm">Paralettes</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="box" class="equipment-checkbox">
+              <span class="text-sm">Box/Bank</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="wall" class="equipment-checkbox">
+              <span class="text-sm">Wand</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="mat" class="equipment-checkbox">
+              <span class="text-sm">Matte</span>
+            </label>
+            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
+              <input type="checkbox" value="weights" class="equipment-checkbox">
+              <span class="text-sm">Gewichte</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Difficulty -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Schwierigkeit *</label>
+          <div class="flex gap-2">
+            <button onclick="setDifficulty(1)" class="difficulty-btn" data-difficulty="1">⭐</button>
+            <button onclick="setDifficulty(2)" class="difficulty-btn" data-difficulty="2">⭐⭐</button>
+            <button onclick="setDifficulty(3)" class="difficulty-btn" data-difficulty="3">⭐⭐⭐</button>
+            <button onclick="setDifficulty(4)" class="difficulty-btn" data-difficulty="4">⭐⭐⭐⭐</button>
+            <button onclick="setDifficulty(5)" class="difficulty-btn" data-difficulty="5">⭐⭐⭐⭐⭐</button>
+          </div>
+          <input type="hidden" id="exercise-difficulty" value="3">
+        </div>
+
+        <!-- Image URL (später für Upload) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Bild-URL (optional)</label>
+          <input
+            type="text"
+            id="exercise-image"
+            placeholder="https://..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <p class="text-xs text-gray-500 mt-1">Später können wir Bilder hochladen - für jetzt URL einfügen</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button onclick="saveExercise()" class="flex-1 bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-semibold transition-colors">
+            Speichern
+          </button>
+          <button onclick="closeExerciseModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-lg font-semibold transition-colors">
+            Abbrechen
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PLAN MODAL -->
+  <div id="plan-modal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold" id="plan-modal-title">Neuer Trainingsplan</h3>
+        <button onclick="closePlanModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Plan Name -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Planname *</label>
+          <input
+            type="text"
+            id="plan-name"
+            placeholder="z.B. Push Workout"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Type, Goal, Duration Row -->
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Typ *</label>
+            <select id="plan-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="strength">Kraft</option>
+              <option value="cardio">Cardio</option>
+              <option value="mobility">Mobility</option>
+              <option value="skill">Skill</option>
+              <option value="hiit">HIIT</option>
+              <option value="mixed">Mixed</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">Ziel *</label>
+            <select id="plan-goal" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+              <option value="strength">Kraft</option>
+              <option value="endurance">Ausdauer</option>
+              <option value="hypertrophy">Muskelaufbau</option>
+              <option value="skill">Skill</option>
+              <option value="mixed">Gemischt</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">Dauer (Min) *</label>
+            <input
+              type="number"
+              id="plan-duration"
+              value="45"
+              min="10"
+              max="180"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </div>
+        </div>
+
+        <!-- Difficulty -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Schwierigkeit</label>
+          <div class="flex gap-2">
+            <button type="button" class="plan-difficulty-btn" data-difficulty="1" onclick="setPlanDifficulty(1)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn" data-difficulty="2" onclick="setPlanDifficulty(2)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn active" data-difficulty="3" onclick="setPlanDifficulty(3)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn" data-difficulty="4" onclick="setPlanDifficulty(4)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+            <button type="button" class="plan-difficulty-btn" data-difficulty="5" onclick="setPlanDifficulty(5)">
+              <span class="material-symbols-rounded">star</span>
+            </button>
+          </div>
+          <input type="hidden" id="plan-difficulty" value="3">
+        </div>
+
+        <!-- Tags -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Tags</label>
+          <div class="flex flex-wrap gap-2">
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="full-body" class="tag-checkbox">
+              <span class="text-sm">Ganzkörper</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="upper-body" class="tag-checkbox">
+              <span class="text-sm">Oberkörper</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="lower-body" class="tag-checkbox">
+              <span class="text-sm">Unterkörper</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="push" class="tag-checkbox">
+              <span class="text-sm">Push</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="pull" class="tag-checkbox">
+              <span class="text-sm">Pull</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="legs" class="tag-checkbox">
+              <span class="text-sm">Beine</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="core" class="tag-checkbox">
+              <span class="text-sm">Core</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Target Muscles -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Ziel-Muskelgruppen</label>
+          <div class="flex flex-wrap gap-2">
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="chest" class="target-muscle-checkbox">
+              <span class="text-sm">Brust</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="back" class="target-muscle-checkbox">
+              <span class="text-sm">Rücken</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="shoulders" class="target-muscle-checkbox">
+              <span class="text-sm">Schultern</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="arms" class="target-muscle-checkbox">
+              <span class="text-sm">Arme</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="legs" class="target-muscle-checkbox">
+              <span class="text-sm">Beine</span>
+            </label>
+            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
+              <input type="checkbox" value="core" class="target-muscle-checkbox">
+              <span class="text-sm">Core</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Exercises Section -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-medium">Übungen *</label>
+            <button
+              type="button"
+              onclick="openAddExerciseToPlan()"
+              class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 rounded-lg text-sm font-semibold transition-all"
+            >
+              <span class="material-symbols-rounded" style="font-size: 18px;">add</span>
+              Übung hinzufügen
+            </button>
+          </div>
+          <div id="plan-exercises-list" class="space-y-2 bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <!-- Exercises will be rendered here -->
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Notizen</label>
+          <textarea
+            id="plan-notes"
+            rows="3"
+            placeholder="Zusätzliche Informationen..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button
+            onclick="savePlan()"
+            class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all"
+          >
+            Speichern
+          </button>
+          <button
+            onclick="closePlanModal()"
+            class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors"
+          >
+            Abbrechen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISE PICKER MODAL -->
+  <div id="exercise-picker-modal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold">Übung auswählen</h3>
+        <button onclick="closeExercisePicker()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Search -->
+        <div>
+          <input
+            type="text"
+            id="exercise-picker-search"
+            placeholder="Übung suchen..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            oninput="renderExercisePicker()"
+          />
+        </div>
+
+        <!-- Exercise List -->
+        <div id="exercise-picker-list" class="space-y-2 max-h-96 overflow-y-auto">
+          <!-- Exercises will be rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISE CONFIG MODAL -->
+  <div id="exercise-config-modal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-2xl font-bold">Übung konfigurieren</h3>
+          <p class="text-gray-400 text-sm mt-1" id="exercise-config-name">Übungsname</p>
+        </div>
+        <button onclick="closeExerciseConfigModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Sets -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Sätze *</label>
+          <input
+            type="number"
+            id="exercise-sets"
+            value="3"
+            min="1"
+            max="10"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Reps OR Hold -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Wiederholungen</label>
+            <input
+              type="text"
+              id="exercise-reps"
+              placeholder="z.B. 12 oder 8-10"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Halten (Sek)</label>
+            <input
+              type="text"
+              id="exercise-hold"
+              placeholder="z.B. 30s"
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            />
+          </div>
+        </div>
+
+        <!-- Rest -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Pause (Sekunden)</label>
+          <input
+            type="number"
+            id="exercise-rest"
+            value="90"
+            min="0"
+            max="300"
+            step="15"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Notizen</label>
+          <textarea
+            id="exercise-notes"
+            rows="2"
+            placeholder="z.B. Tempo, Progressionen..."
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button
+            onclick="saveExerciseConfig()"
+            class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all"
+          >
+            Hinzufügen
+          </button>
+          <button
+            onclick="closeExerciseConfigModal()"
+            class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors"
+          >
+            Abbrechen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/exercises.js"></script>
+  <script src="js/plans.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
