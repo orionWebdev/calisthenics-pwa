@@ -3,23 +3,27 @@
 // ========================================
 
 // Current active view
-let currentView = 'exercises';
+let currentView = 'dashboard';
 let radialMenuOpen = false;
 
 // View titles for mobile
 const viewTitles = {
+  dashboard: 'Dashboard',
   exercises: 'Übungen',
   plans: 'Pläne',
   calendar: 'Kalender',
-  progress: 'Progress'
+  progress: 'Progress',
+  profile: 'Profil'
 };
 
 // View icons for FAB
 const viewIcons = {
+  dashboard: 'home',
   exercises: 'fitness_center',
   plans: 'assignment',
   calendar: 'calendar_month',
-  progress: 'trending_up'
+  progress: 'trending_up',
+  profile: 'account_circle'
 };
 
 // ========================================
@@ -41,6 +45,13 @@ function showView(viewName) {
   });
   const desktopBtn = document.querySelector(`.desktop-nav [data-view="${viewName}"]`);
   if (desktopBtn) desktopBtn.classList.add('active');
+
+  // Update bottom navigation buttons (mobile)
+  document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const bottomNavBtn = document.querySelector(`.bottom-nav [data-view="${viewName}"]`);
+  if (bottomNavBtn) bottomNavBtn.classList.add('active');
 
   // Update mobile title
   const mobileTitle = document.getElementById('mobile-view-title');
