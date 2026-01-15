@@ -517,33 +517,87 @@ input, textarea, select, button {
   background: var(--color-primary);
 }
 
+/* Modal Close Button */
+.modal-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.6);
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.modal-close-btn:active {
+  transform: rotate(90deg) scale(0.95);
+}
+
 /* ========================================
-   DIFFICULTY BUTTONS
+   DIFFICULTY BUTTONS (Zahlen-basiert)
    ======================================== */
 
 .difficulty-btn {
   flex: 1;
   padding: 0.75rem;
   background: var(--color-secondary-light);
-  border: 2px solid transparent;
-  border-radius: 0.5rem;
+  border: 2px solid rgba(75, 85, 99, 0.5);
+  border-radius: 0.75rem;
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1rem;
-  color: var(--color-text);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #9ca3af;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
 }
 
 .difficulty-btn:hover {
   background: rgba(15, 36, 129, 0.8);
-  transform: scale(1.05);
-  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  border-color: rgba(240, 34, 119, 0.5);
+  color: #d1d5db;
 }
 
 .difficulty-btn.active {
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
   border-color: var(--color-primary);
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.4);
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(240, 34, 119, 0.4);
+}
+
+.difficulty-btn::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  border-radius: 0.75rem;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.difficulty-btn.active::after {
+  opacity: 0.2;
 }
 
 /* ========================================
@@ -605,6 +659,28 @@ input, textarea, select, button {
   animation: fadeIn 0.3s ease;
   position: relative;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Expanded Card State */
+.exercise-card-compact.expanded {
+  border-color: rgba(240, 34, 119, 0.5);
+}
+
+.exercise-card-compact.expanded::before {
+  opacity: 1;
+}
+
+/* Expanded Details Section */
+.exercise-card-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 1rem;
+}
+
+.exercise-card-compact.expanded .exercise-card-details {
+  max-height: 1000px;
+  padding: 0 1rem 1rem;
 }
 
 .exercise-card-compact::before {
@@ -711,7 +787,7 @@ input, textarea, select, button {
 
 /* Mobile Navigation */
 .mobile-nav-header {
-  display: none;
+  display: none !important; /* Komplett verstecken */
 }
 
 .desktop-nav {
@@ -739,18 +815,48 @@ input::placeholder {
 }
 
 @media (max-width: 768px) {
-  /* Hide desktop nav, show mobile */
+  /* Hide desktop nav, NEVER show mobile header */
   .desktop-nav {
     display: none;
   }
 
   .mobile-nav-header {
-    display: block;
+    display: none !important; /* Force hide */
   }
 
   /* Show FAB on mobile */
   .fab-container {
     display: block;
+  }
+
+  /* Week View Horizontal Scroll on Mobile */
+  #week-grid {
+    display: flex !important;
+    overflow-x: auto;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .week-day-card {
+    min-width: 85vw;
+    scroll-snap-align: center;
+    padding: 1.25rem;
+  }
+
+  /* Add Plan Panel Responsive */
+  #add-plan-panel {
+    flex-direction: column;
+  }
+
+  #add-plan-panel .flex {
+    flex-direction: column;
+  }
+
+  #add-plan-panel select,
+  #add-plan-panel button {
+    width: 100%;
   }
 
   /* Touch Target Optimization - Minimum 44px */
@@ -1179,22 +1285,61 @@ input::placeholder {
   border: 2px solid var(--color-secondary-light);
   border-radius: 1rem;
   padding: 1.5rem;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 280px;
+  flex-shrink: 0;
 }
 
 .week-day-card:hover {
   border-color: var(--color-primary);
-  transform: translateX(4px);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(240, 34, 119, 0.2);
 }
 
 .week-day-card.today {
   border-color: var(--color-primary);
-  background: rgba(240, 34, 119, 0.05);
+  background: rgba(240, 34, 119, 0.1);
+  box-shadow: 0 0 30px rgba(240, 34, 119, 0.3);
+}
+
+.week-day-card.past {
+  opacity: 0.6;
+  filter: grayscale(0.4);
 }
 
 .week-day-card.has-plan {
   background: rgba(34, 197, 94, 0.05);
   border-color: #22c55e;
+}
+
+/* Horizontal Week Scroll Container */
+.week-scroll-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-secondary-dark);
+}
+
+.week-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.week-scroll-container::-webkit-scrollbar-track {
+  background: var(--color-secondary-dark);
+  border-radius: 4px;
+}
+
+.week-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+
+.week-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #C01963;
 }
 
 /* Responsive Calendar */
