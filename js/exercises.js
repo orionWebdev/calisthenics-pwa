@@ -60,7 +60,7 @@ async function loadExercises() {
 
 function renderExercises() {
   const grid = document.getElementById('exercises-grid');
-  
+
   if (filteredExercises.length === 0) {
     grid.innerHTML = `
       <div class="col-span-full empty-state">
@@ -77,7 +77,7 @@ function renderExercises() {
     `;
     return;
   }
-  
+
   grid.innerHTML = filteredExercises.map(exercise => {
     // Hauptmuskel ist der erste in der Liste
     const primaryMuscle = exercise.muscleGroups[0];
@@ -85,7 +85,7 @@ function renderExercises() {
     const additionalMuscles = exercise.muscleGroups.length - 1;
 
     return `
-      <div class="exercise-card-compact" onclick="viewExerciseDetails('${exercise.id}')">
+      <div class="exercise-card-compact" id="exercise-card-${exercise.id}" onclick="toggleExerciseCard('${exercise.id}')">
         ${exercise.imageUrl ?
           `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="exercise-card-img" onerror="this.src='https://via.placeholder.com/400x100?text=No+Image'">`
           :
@@ -97,26 +97,95 @@ function renderExercises() {
         <div class="exercise-card-content">
           <h3 class="exercise-card-title">${exercise.name}</h3>
 
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between mb-2">
             <span class="muscle-tag muscle-${primaryMuscle}">${muscleNames[primaryMuscle]}</span>
-            ${additionalMuscles > 0 ?
-              `<span class="exercise-card-badge">+${additionalMuscles}</span>`
-              : ''
-            }
+            <div class="flex items-center gap-2">
+              ${additionalMuscles > 0 ?
+                `<span class="exercise-card-badge">+${additionalMuscles}</span>`
+                : ''
+              }
+              <span class="text-sm font-bold text-gray-400">Level ${exercise.difficulty}</span>
+            </div>
+          </div>
+
+          <!-- Expandable Details Section -->
+          <div class="exercise-card-details">
+            <div class="border-t border-gray-700 pt-3 mt-3 space-y-3">
+
+              <!-- Alle Muskelgruppen -->
+              ${exercise.muscleGroups.length > 1 ? `
+                <div>
+                  <p class="text-xs text-gray-400 mb-1">Alle Muskeln:</p>
+                  <div class="flex flex-wrap gap-1">
+                    ${exercise.muscleGroups.map(muscle =>
+                      `<span class="muscle-tag text-xs">${muscleNames[muscle]}</span>`
+                    ).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- Equipment -->
+              ${exercise.equipment && exercise.equipment.length > 0 && exercise.equipment[0] !== 'none' ? `
+                <div>
+                  <p class="text-xs text-gray-400 mb-1">Equipment:</p>
+                  <div class="flex flex-wrap gap-1">
+                    ${exercise.equipment.map(eq =>
+                      `<span class="text-xs px-2 py-1 bg-gray-700 border border-gray-600 rounded">${equipmentNames[eq]}</span>`
+                    ).join('')}
+                  </div>
+                </div>
+              ` : `
+                <div>
+                  <p class="text-xs text-gray-400 mb-1">Equipment:</p>
+                  <span class="text-xs px-2 py-1 bg-green-900/20 border border-green-700 rounded text-green-400">Kein Equipment</span>
+                </div>
+              `}
+
+              <!-- Beschreibung -->
+              ${exercise.description ? `
+                <div>
+                  <p class="text-xs text-gray-400 mb-1">Anleitung:</p>
+                  <p class="text-sm text-gray-300">${exercise.description}</p>
+                </div>
+              ` : ''}
+
+              <!-- Edit Button (immer sichtbar im expanded state) -->
+              <button
+                onclick="event.stopPropagation(); editExercise('${exercise.id}')"
+                class="w-full bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-4 py-2 rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
+              >
+                <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
+                <span>Bearbeiten</span>
+              </button>
+            </div>
           </div>
         </div>
-
-        <!-- Edit Button (nur sichtbar on hover) -->
-        <button
-          onclick="event.stopPropagation(); editExercise('${exercise.id}')"
-          class="exercise-card-edit-btn"
-          title="Bearbeiten"
-        >
-          <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
-        </button>
       </div>
     `;
   }).join('');
+}
+
+// Toggle Exercise Card Expansion
+function toggleExerciseCard(id) {
+  const card = document.getElementById(`exercise-card-${id}`);
+  if (!card) return;
+
+  // Close all other cards first (accordion behavior)
+  document.querySelectorAll('.exercise-card-compact.expanded').forEach(otherCard => {
+    if (otherCard.id !== `exercise-card-${id}`) {
+      otherCard.classList.remove('expanded');
+    }
+  });
+
+  // Toggle current card
+  card.classList.toggle('expanded');
+
+  // Scroll into view if expanded (optional)
+  if (card.classList.contains('expanded')) {
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
 }
 
 // ========================================

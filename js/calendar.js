@@ -3,7 +3,7 @@
 // ========================================
 
 // Calendar State
-let currentCalendarView = 'month'; // 'month' or 'week'
+let currentCalendarView = 'week'; // 'month' or 'week' - Default: week
 let currentDate = new Date();
 let scheduleData = []; // Alle geplanten Trainings
 let selectedDateForPlan = null;
@@ -217,39 +217,44 @@ function renderWeekView() {
 
   const weekStart = getWeekStart(currentDate);
   const today = new Date();
-  
+  today.setHours(0, 0, 0, 0); // Reset time for accurate comparison
+
   weekGrid.innerHTML = '';
-  
+
   for (let i = 0; i < 7; i++) {
     const date = new Date(weekStart);
     date.setDate(date.getDate() + i);
-    
+    date.setHours(0, 0, 0, 0); // Reset time for accurate comparison
+
     const isToday = date.toDateString() === today.toDateString();
+    const isPast = date < today;
     const dateStr = formatDate(date);
     const dayPlans = getPlansForDate(dateStr);
-    
+
     const card = document.createElement('div');
     card.className = 'week-day-card';
     if (isToday) card.classList.add('today');
+    if (isPast && !isToday) card.classList.add('past');
     if (dayPlans.length > 0) card.classList.add('has-plan');
-    
+
     card.innerHTML = `
       <div class="flex items-center justify-between mb-3">
         <div>
-          <div class="text-sm text-gray-400">${dayNames[i]}</div>
-          <div class="text-xl font-bold">${date.getDate()}. ${monthNames[date.getMonth()]}</div>
+          <div class="text-sm ${isToday ? 'text-pink-400 font-bold' : 'text-gray-400'}">${dayNames[i]}</div>
+          <div class="text-xl font-bold ${isToday ? 'text-pink-500' : ''}">${date.getDate()}. ${monthNames[date.getMonth()]}</div>
         </div>
-        <button 
+        <button
           onclick="openAddPlanPanel('${dateStr}')"
-          class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm transition-colors"
+          class="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-3 py-2 rounded-lg text-sm transition-all flex items-center gap-1"
         >
-          ➕ Plan
+          <span class="material-symbols-rounded" style="font-size: 16px;">add</span>
+          <span class="hidden sm:inline">Plan</span>
         </button>
       </div>
-      
+
       <div class="space-y-2">
         ${dayPlans.length === 0 ?
-          '<p class="text-gray-500 text-sm">Kein Training geplant</p>' :
+          '<p class="text-gray-500 text-sm italic">Kein Training geplant</p>' :
           dayPlans.map(plan => `
             <div class="bg-gray-700 rounded-lg p-3 flex items-center justify-between cursor-pointer hover:bg-gray-600 transition-colors" onclick="viewCalendarPlanDetails('${plan.id}')">
               <div class="flex-1">
@@ -272,8 +277,28 @@ function renderWeekView() {
         }
       </div>
     `;
-    
+
     weekGrid.appendChild(card);
+  }
+
+  // Auto-scroll to today's card on initial load
+  scrollToTodayCard();
+}
+
+// Scroll to today's card in week view
+function scrollToTodayCard() {
+  const weekGrid = document.getElementById('week-grid');
+  if (!weekGrid) return;
+
+  const todayCard = weekGrid.querySelector('.week-day-card.today');
+  if (todayCard) {
+    setTimeout(() => {
+      todayCard.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }, 100);
   }
 }
 
