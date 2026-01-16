@@ -70,7 +70,7 @@
 
   <!-- Mobile Navigation Header -->
   <div class="mobile-nav-header">
-    <div class="px-4 py-3 flex items-center justify-center gap-3 w-full">
+    <div class="px-4 py-3 flex items-center justify-start gap-3 w-full">
       <span id="mobile-view-icon" class="material-symbols-rounded" style="font-size: 32px; color: var(--color-primary);">home</span>
       <h1 id="mobile-view-title" class="text-xl font-bold">Dashboard</h1>
     </div>
@@ -131,15 +131,6 @@
     <!-- DASHBOARD VIEW -->
     <div id="view-dashboard" class="view active">
 
-      <!-- Welcome Header -->
-      <div class="mb-6">
-        <h2 class="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 32px; color: var(--color-primary);">home</span>
-          Dashboard
-        </h2>
-        <p class="text-sm sm:text-base text-gray-400">Dein Training Command Center</p>
-      </div>
-
       <!-- Today Workout Card -->
       <div id="today-workout-card" class="mb-6">
         <!-- Wird von JavaScript gefüllt -->
@@ -197,10 +188,6 @@
       
       <!-- Header mit Add Button -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-bold mb-2">Übungen-Datenbank</h2>
-          <p class="text-sm sm:text-base text-gray-400">Verwalte deine Calisthenics-Übungen</p>
-        </div>
         <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
           <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
           <span>Neue Übung</span>
@@ -322,7 +309,6 @@
       
       <!-- Header mit View Switcher -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <h2 class="text-2xl sm:text-3xl font-bold">Trainingskalender</h2>
         <div class="flex gap-2 w-full sm:w-auto">
           <button onclick="setCalendarView('month')" class="calendar-view-btn flex-1 sm:flex-none" data-view="month">
             <span class="material-symbols-rounded" style="font-size: 20px; vertical-align: middle;">calendar_month</span> Monat
@@ -400,13 +386,11 @@
 
     <!-- PROGRESS VIEW -->
     <div id="view-progress" class="view hidden">
-      <h2 class="text-3xl font-bold mb-6">Progress Tracking</h2>
       <p class="text-gray-400">Coming soon in Session 5...</p>
     </div>
 
     <!-- PROFILE VIEW -->
     <div id="view-profile" class="view hidden">
-      <h2 class="text-3xl font-bold mb-6">Profil</h2>
       <p class="text-gray-400">Coming soon...</p>
     </div>
 
