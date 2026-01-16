@@ -9,20 +9,20 @@ let radialMenuOpen = false;
 // View titles for mobile
 const viewTitles = {
   dashboard: 'Dashboard',
-  exercises: 'Übungen',
-  plans: 'Pläne',
-  calendar: 'Kalender',
   progress: 'Progress',
+  calendar: 'Kalender',
+  plans: 'Trainingspläne',
+  exercises: 'Übungen',
   profile: 'Profil'
 };
 
 // View icons for FAB
 const viewIcons = {
   dashboard: 'home',
-  exercises: 'fitness_center',
-  plans: 'assignment',
-  calendar: 'calendar_month',
   progress: 'trending_up',
+  calendar: 'calendar_month',
+  plans: 'assignment',
+  exercises: 'fitness_center',
   profile: 'account_circle'
 };
 
