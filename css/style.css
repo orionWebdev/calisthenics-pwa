@@ -50,8 +50,7 @@ input, textarea, select, button {
    ======================================== */
 
 .mobile-nav-header {
-  background: var(--color-secondary-dark);
-  border-bottom: 1px solid var(--color-secondary-light);
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 
 /* Desktop Navigation - Floating */
@@ -519,30 +518,35 @@ input, textarea, select, button {
 
 /* Modal Close Button */
 .modal-close-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(239, 68, 68, 0.1);
-  border: 2px solid rgba(239, 68, 68, 0.3);
-  color: #ef4444;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  color: #9ca3af;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 24px;
-  font-weight: 300;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.modal-close-btn .material-symbols-rounded {
+  font-size: 20px;
+  line-height: 1;
 }
 
 .modal-close-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.6);
-  transform: rotate(90deg) scale(1.1);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ef4444;
+  transform: scale(1.05);
 }
 
 .modal-close-btn:active {
-  transform: rotate(90deg) scale(0.95);
+  transform: scale(0.95);
 }
 
 /* ========================================
@@ -1143,7 +1147,15 @@ input, textarea, select, button {
 
 /* Mobile Navigation */
 .mobile-nav-header {
-  display: none !important; /* Komplett verstecken */
+  display: none; /* Hidden on desktop */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .desktop-nav {
@@ -1171,13 +1183,18 @@ input::placeholder {
 }
 
 @media (max-width: 768px) {
-  /* Hide desktop nav, NEVER show mobile header */
+  /* Hide desktop nav, show mobile header */
   .desktop-nav {
     display: none;
   }
 
   .mobile-nav-header {
-    display: none !important; /* Force hide */
+    display: flex !important;
+  }
+
+  /* Add top padding to content to account for fixed header */
+  .max-w-6xl {
+    padding-top: 4.5rem !important;
   }
 
   /* Show Bottom Nav on mobile */
@@ -1190,20 +1207,25 @@ input::placeholder {
     display: none !important;
   }
 
-  /* Week View Horizontal Scroll on Mobile */
+  /* Week View Vertical Scroll on Mobile */
   #week-grid {
     display: flex !important;
-    overflow-x: auto;
+    flex-direction: column;
     gap: 1rem;
-    padding-bottom: 1rem;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    scroll-behavior: smooth;
   }
 
   .week-day-card {
-    min-width: 85vw;
-    scroll-snap-align: center;
+    width: 100%;
     padding: 1.25rem;
+    scroll-margin-top: 1rem;
+  }
+
+  .week-day-card.today {
+    scroll-snap-align: start;
   }
 
   /* Add Plan Panel Responsive */
@@ -1508,28 +1530,33 @@ input::placeholder {
   display: block;
 }
 
-/* Calendar Day Cell */
+/* Calendar Day Cell - iOS Style */
 .calendar-day {
-  background: var(--color-secondary-dark);
-  border: 2px solid var(--color-secondary-light);
-  border-radius: 0.75rem;
-  padding: 0.75rem;
-  min-height: 120px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  padding: 0.5rem;
+  min-height: 100px;
   transition: all 0.2s;
   cursor: pointer;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.calendar-day:nth-child(7n) {
+  border-right: none;
 }
 
 .calendar-day:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .calendar-day.today {
-  border-color: var(--color-primary);
-  background: rgba(240, 34, 119, 0.1);
-  box-shadow: 0 0 20px rgba(240, 34, 119, 0.2);
+  background: rgba(240, 34, 119, 0.08);
 }
 
 .calendar-day.other-month {
@@ -1537,107 +1564,79 @@ input::placeholder {
   pointer-events: none;
 }
 
-.calendar-day.has-plan {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: #22c55e;
-}
-
 .calendar-day-number {
   font-weight: 600;
   font-size: 0.875rem;
-  margin-bottom: 0.5rem;
   color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
 }
 
 .calendar-day.today .calendar-day-number {
   color: var(--color-primary);
-  font-size: 1rem;
-}
-
-/* Plans in Calendar */
-.calendar-plan {
-  background: var(--color-primary);
-  border-radius: 0.375rem;
-  padding: 0.375rem 0.5rem;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
+  font-weight: 700;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+}
+
+.calendar-day-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+/* Plans in Calendar - iOS Style (colored bars only) */
+.calendar-plan {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid rgba(219, 39, 119, 0.4);
+  position: relative;
 }
 
 .calendar-plan:hover {
-  background: #C01963;
-  transform: scale(1.02);
+  transform: scaleY(1.25);
+  filter: brightness(1.2);
 }
 
-/* Plan Type Colors in Calendar */
-.calendar-plan-strength {
-  background: rgba(239, 68, 68, 0.3);
-  border-color: rgba(239, 68, 68, 0.5);
-}
-
-.calendar-plan-strength:hover {
-  background: rgba(239, 68, 68, 0.5);
-}
-
-.calendar-plan-cardio {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.5);
-}
-
-.calendar-plan-cardio:hover {
-  background: rgba(59, 130, 246, 0.5);
-}
-
-.calendar-plan-mobility {
-  background: rgba(34, 197, 94, 0.3);
-  border-color: rgba(34, 197, 94, 0.5);
-}
-
-.calendar-plan-mobility:hover {
-  background: rgba(34, 197, 94, 0.5);
-}
-
-.calendar-plan-skill {
-  background: rgba(168, 85, 247, 0.3);
-  border-color: rgba(168, 85, 247, 0.5);
-}
-
-.calendar-plan-skill:hover {
-  background: rgba(168, 85, 247, 0.5);
-}
-
-.calendar-plan-hiit {
-  background: rgba(249, 115, 22, 0.3);
-  border-color: rgba(249, 115, 22, 0.5);
-}
-
-.calendar-plan-hiit:hover {
-  background: rgba(249, 115, 22, 0.5);
-}
-
-.calendar-plan-mixed {
-  background: rgba(219, 39, 119, 0.3);
-  border-color: rgba(219, 39, 119, 0.5);
-}
-
-.calendar-plan-mixed:hover {
-  background: rgba(219, 39, 119, 0.5);
+.calendar-plan span {
+  display: none;
 }
 
 .calendar-plan-remove {
-  opacity: 0;
-  transition: opacity 0.2s;
-  color: #fee2e2;
-  font-weight: bold;
+  display: none;
 }
 
-.calendar-plan:hover .calendar-plan-remove {
-  opacity: 1;
+/* Plan Type Colors in Calendar - Bright, solid bars */
+.calendar-plan-strength {
+  background: #ef4444;
+}
+
+.calendar-plan-cardio {
+  background: #3b82f6;
+}
+
+.calendar-plan-mobility {
+  background: #22c55e;
+}
+
+.calendar-plan-skill {
+  background: #a855f7;
+}
+
+.calendar-plan-hiit {
+  background: #f97316;
+}
+
+.calendar-plan-mixed {
+  background: #db2777;
 }
 
 /* Week View */
@@ -1673,33 +1672,35 @@ input::placeholder {
   border-color: #22c55e;
 }
 
-/* Horizontal Week Scroll Container */
-.week-scroll-container {
+/* Vertical Week Scroll Container */
+#week-grid {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  overflow-x: auto;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
   scroll-behavior: smooth;
-  padding-bottom: 1rem;
+  padding-right: 0.5rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: var(--color-primary) var(--color-secondary-dark);
 }
 
-.week-scroll-container::-webkit-scrollbar {
-  height: 8px;
+#week-grid::-webkit-scrollbar {
+  width: 8px;
 }
 
-.week-scroll-container::-webkit-scrollbar-track {
+#week-grid::-webkit-scrollbar-track {
   background: var(--color-secondary-dark);
   border-radius: 4px;
 }
 
-.week-scroll-container::-webkit-scrollbar-thumb {
+#week-grid::-webkit-scrollbar-thumb {
   background: var(--color-primary);
   border-radius: 4px;
 }
 
-.week-scroll-container::-webkit-scrollbar-thumb:hover {
+#week-grid::-webkit-scrollbar-thumb:hover {
   background: #C01963;
 }
 

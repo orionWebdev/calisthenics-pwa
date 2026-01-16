@@ -53,10 +53,14 @@ function showView(viewName) {
   const bottomNavBtn = document.querySelector(`.bottom-nav [data-view="${viewName}"]`);
   if (bottomNavBtn) bottomNavBtn.classList.add('active');
 
-  // Update mobile title
+  // Update mobile header title and icon
   const mobileTitle = document.getElementById('mobile-view-title');
+  const mobileIcon = document.getElementById('mobile-view-icon');
   if (mobileTitle) {
     mobileTitle.textContent = viewTitles[viewName] || viewName;
+  }
+  if (mobileIcon) {
+    mobileIcon.textContent = viewIcons[viewName] || 'fitness_center';
   }
 
   // Update FAB icon based on current view
