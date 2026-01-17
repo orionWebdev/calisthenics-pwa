@@ -248,7 +248,12 @@ document.addEventListener('click', (e) => {
 // SERVICE WORKER REGISTRATION
 // ========================================
 
-if ('serviceWorker' in navigator) {
+// Only register Service Worker in production (not on localhost/127.0.0.1)
+const isLocalhost = window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.hostname === '';
+
+if ('serviceWorker' in navigator && !isLocalhost) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw.js')
@@ -259,6 +264,8 @@ if ('serviceWorker' in navigator) {
         console.error('❌ Service Worker registration failed:', error);
       });
   });
+} else if (isLocalhost) {
+  console.log('🔧 Development mode: Service Worker registration skipped');
 }
 
 // ========================================
