@@ -22,8 +22,7 @@ body {
   min-height: 100vh;
   background: var(--color-bg);
   color: var(--color-text);
-  /* PWA/Native App Support */
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  /* PWA/Native App Support - Kein Padding auf Body, da Header/Nav eigenes Handling haben */
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
@@ -1081,9 +1080,24 @@ input, textarea, select, button {
   background: rgba(9, 30, 77, 0.98);
   backdrop-filter: blur(20px);
   border-top: 2px solid var(--color-secondary-light);
-  padding: env(safe-area-inset-bottom, 0.5rem) 0 0.5rem;
+  /* PWA Safe Area: Padding unten für Home Indicator - Content wird nach oben verschoben */
+  padding-top: 0.5rem;
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0));
   z-index: 1000;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Voller Hintergrund bis zum Home Indicator für Bottom Nav */
+.bottom-nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-bottom, 0);
+  background: rgba(9, 30, 77, 0.98);
+  transform: translateY(100%);
+  z-index: -1;
 }
 
 .bottom-nav-item {
@@ -1156,6 +1170,21 @@ input, textarea, select, button {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
   backdrop-filter: blur(20px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  /* PWA Safe Area: Padding oben für Status Bar, aber Hintergrund füllt gesamten Bereich */
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Voller Hintergrund bis zur Status Bar für Mobile Header */
+.mobile-nav-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0);
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+  transform: translateY(-100%);
+  z-index: -1;
 }
 
 .desktop-nav {
@@ -1192,9 +1221,9 @@ input::placeholder {
     display: flex !important;
   }
 
-  /* Add top padding to content to account for fixed header */
+  /* Add top padding to content to account for fixed header + safe area */
   .max-w-6xl {
-    padding-top: 4.5rem !important;
+    padding-top: calc(4.5rem + env(safe-area-inset-top, 0)) !important;
   }
 
   /* Show Bottom Nav on mobile */
@@ -1357,7 +1386,7 @@ input::placeholder {
 
 .fab-main {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0));
   left: 50%;
   transform: translateX(-50%);
   width: 64px;
@@ -1422,7 +1451,7 @@ input::placeholder {
 
 .radial-menu {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0));
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
