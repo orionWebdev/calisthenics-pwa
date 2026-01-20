@@ -9,6 +9,9 @@
   --color-secondary-light: #0F2481;
   --color-text: #FFFFFF;
   --color-text-muted: #A0AEC0;
+  /* Navigation Heights für dynamisches Content-Padding */
+  --bottom-nav-height: 72px; /* Base height der Bottom Navigation */
+  --mobile-header-height: 64px; /* Base height des Mobile Headers */
 }
 
 * {
@@ -1211,6 +1214,11 @@ input::placeholder {
   color: var(--color-text-muted);
 }
 
+/* Desktop: Standard Bottom-Padding für Content */
+#main-content {
+  padding-bottom: 2rem;
+}
+
 @media (max-width: 768px) {
   /* Hide desktop nav, show mobile header */
   .desktop-nav {
@@ -1223,12 +1231,17 @@ input::placeholder {
 
   /* Add top padding to content to account for fixed header + safe area */
   .max-w-6xl {
-    padding-top: calc(4.5rem + env(safe-area-inset-top, 0)) !important;
+    padding-top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0)) !important;
   }
 
   /* Show Bottom Nav on mobile */
   .bottom-nav {
     display: flex;
+  }
+
+  /* Dynamisches Bottom-Padding für Content: Navigation-Höhe + Safe Area + Extra-Abstand */
+  #main-content {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 1rem) !important;
   }
 
   /* Hide FAB on mobile when Bottom Nav is visible */
