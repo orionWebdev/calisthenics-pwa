@@ -182,10 +182,32 @@ window.addEventListener('scroll', () => {
 });
 
 // ========================================
+// PROFILE
+// ========================================
+
+/**
+ * Update profile information with user data
+ */
+function updateProfileInfo(user) {
+  if (!user) return;
+
+  const nameElement = document.getElementById('profile-user-name');
+  const emailElement = document.getElementById('profile-user-email');
+
+  if (nameElement) {
+    nameElement.textContent = user.displayName || 'Benutzer';
+  }
+
+  if (emailElement) {
+    emailElement.textContent = user.email || '';
+  }
+}
+
+// ========================================
 // INITIALIZATION
 // ========================================
 
-async function init() {
+async function initApp() {
   console.log('🚀 Initializing Calisthenics Pro...');
 
   try {
@@ -230,6 +252,40 @@ async function init() {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
     alert('Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+  }
+}
+
+/**
+ * Initialize authentication and app
+ */
+async function init() {
+  console.log('🔐 Initializing authentication...');
+
+  try {
+    // Initialize auth listener
+    await window.authModule.initAuth();
+
+    // Subscribe to auth state changes
+    window.authModule.onAuthStateChange((user, state) => {
+      console.log('🔐 Auth state changed:', state, user?.email);
+
+      if (state === window.authModule.AUTH_STATES.LOGGED_IN) {
+        // User is authenticated and allowed - show app
+        window.authModule.showMainApp();
+        updateProfileInfo(user);
+        initApp(); // Initialize app data
+      } else if (state === window.authModule.AUTH_STATES.LOGGED_OUT ||
+                 state === window.authModule.AUTH_STATES.ACCESS_DENIED) {
+        // User is not authenticated or not allowed - show login
+        window.authModule.showLoginScreen();
+      }
+    });
+
+    console.log('✅ Auth initialized successfully!');
+  } catch (error) {
+    console.error('❌ Error initializing auth:', error);
+    // Show login screen on error
+    window.authModule.showLoginScreen();
   }
 }
 
