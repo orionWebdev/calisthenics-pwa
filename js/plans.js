@@ -150,6 +150,13 @@ function openAddPlanModal() {
   };
   document.getElementById('plan-modal-title').textContent = 'Neuer Trainingsplan';
   clearPlanForm();
+
+  // Initialize multi-select inputs
+  planTags = [];
+  planTargetMuscles = [];
+  renderPlanTagsInput();
+  renderPlanTargetMusclesInput();
+
   document.getElementById('plan-modal').classList.add('active');
 }
 
@@ -177,8 +184,11 @@ function clearPlanForm() {
   document.getElementById('plan-goal').value = 'strength';
   document.getElementById('plan-duration').value = '45';
   document.getElementById('plan-notes').value = '';
-  document.querySelectorAll('.tag-checkbox').forEach(cb => cb.checked = false);
-  document.querySelectorAll('.target-muscle-checkbox').forEach(cb => cb.checked = false);
+
+  // Clear multi-select inputs
+  planTags = [];
+  planTargetMuscles = [];
+
   setPlanDifficulty(3);
 
   // Clear exercises list
@@ -195,15 +205,13 @@ function populatePlanForm(plan) {
   document.getElementById('plan-duration').value = plan.duration || 45;
   document.getElementById('plan-notes').value = plan.notes || '';
 
-  // Tags
-  document.querySelectorAll('.tag-checkbox').forEach(checkbox => {
-    checkbox.checked = plan.tags && plan.tags.includes(checkbox.value);
-  });
+  // Set tags and target muscles for multi-select
+  planTags = plan.tags ? [...plan.tags] : [];
+  planTargetMuscles = plan.targetMuscles ? [...plan.targetMuscles] : [];
 
-  // Target muscles
-  document.querySelectorAll('.target-muscle-checkbox').forEach(checkbox => {
-    checkbox.checked = plan.targetMuscles && plan.targetMuscles.includes(checkbox.value);
-  });
+  // Render multi-select inputs
+  renderPlanTagsInput();
+  renderPlanTargetMusclesInput();
 
   // Difficulty
   setPlanDifficulty(plan.difficulty || 3);
@@ -296,14 +304,74 @@ function renderPlanExercises() {
   setupDragAndDrop();
 }
 
+// Exercise Picker Filter State
+let exercisePickerSearchTerm = '';
+let exercisePickerMuscleFilter = 'all';
+let exercisePickerSearchDebounce = null;
+
 function openAddExerciseToPlan() {
+  // Reset filters
+  exercisePickerSearchTerm = '';
+  exercisePickerMuscleFilter = 'all';
+  document.getElementById('exercise-picker-search').value = '';
+
+  // Set active chip
+  document.querySelectorAll('#exercise-picker-modal .filter-chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.filter === 'all');
+  });
+
   // Show exercise picker modal
   document.getElementById('exercise-picker-modal').classList.add('active');
+
+  // Setup search input listener
+  const searchInput = document.getElementById('exercise-picker-search');
+  searchInput.removeEventListener('input', handleExercisePickerSearch);
+  searchInput.addEventListener('input', handleExercisePickerSearch);
+
+  renderExercisePicker();
+}
+
+function handleExercisePickerSearch(e) {
+  const searchValue = e.target.value;
+  const clearBtn = document.getElementById('exercise-picker-search-clear');
+
+  // Show/hide clear button
+  clearBtn.style.display = searchValue ? 'flex' : 'none';
+
+  // Debounce search
+  if (exercisePickerSearchDebounce) {
+    clearTimeout(exercisePickerSearchDebounce);
+  }
+
+  exercisePickerSearchDebounce = setTimeout(() => {
+    exercisePickerSearchTerm = searchValue.toLowerCase().trim();
+    renderExercisePicker();
+  }, 300);
+}
+
+function clearExercisePickerSearch() {
+  const searchInput = document.getElementById('exercise-picker-search');
+  searchInput.value = '';
+  searchInput.focus();
+  document.getElementById('exercise-picker-search-clear').style.display = 'none';
+  exercisePickerSearchTerm = '';
+  renderExercisePicker();
+}
+
+function setExercisePickerMuscleFilter(muscle) {
+  exercisePickerMuscleFilter = muscle;
+
+  // Update active chip
+  document.querySelectorAll('#exercise-picker-modal .filter-chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.filter === muscle);
+  });
+
   renderExercisePicker();
 }
 
 function renderExercisePicker() {
   const container = document.getElementById('exercise-picker-list');
+  const filterInfo = document.getElementById('exercise-picker-filter-info');
 
   if (!container) return;
 
@@ -319,7 +387,48 @@ function renderExercisePicker() {
     return;
   }
 
-  container.innerHTML = allExercises.map(exercise => `
+  // Filter exercises
+  let filteredExercises = allExercises.filter(exercise => {
+    // Search filter
+    const matchesSearch = !exercisePickerSearchTerm ||
+      exercise.name.toLowerCase().includes(exercisePickerSearchTerm) ||
+      (exercise.description && exercise.description.toLowerCase().includes(exercisePickerSearchTerm));
+
+    // Muscle group filter
+    const matchesMuscle = exercisePickerMuscleFilter === 'all' ||
+      exercise.muscleGroups.includes(exercisePickerMuscleFilter);
+
+    return matchesSearch && matchesMuscle;
+  });
+
+  // Update filter info
+  if (exercisePickerSearchTerm || exercisePickerMuscleFilter !== 'all') {
+    const filterText = [];
+    if (exercisePickerSearchTerm) {
+      filterText.push(`Suche: "${exercisePickerSearchTerm}"`);
+    }
+    if (exercisePickerMuscleFilter !== 'all') {
+      filterText.push(`Muskelgruppe: ${muscleNames[exercisePickerMuscleFilter]}`);
+    }
+    filterInfo.textContent = `${filteredExercises.length} von ${allExercises.length} Übungen gefunden (${filterText.join(', ')})`;
+    filterInfo.style.display = 'block';
+  } else {
+    filterInfo.style.display = 'none';
+  }
+
+  // Render exercises
+  if (filteredExercises.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-gray-400">
+        <span class="material-symbols-rounded" style="font-size: 48px;">search_off</span>
+        <p class="mt-2">Keine Übungen gefunden</p>
+        <p class="text-sm">Versuche einen anderen Suchbegriff oder Filter</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filteredExercises.map(exercise => `
     <div class="exercise-picker-item" onclick="selectExerciseForPlan('${exercise.id}')">
       <div class="flex items-center gap-3">
         ${exercise.imageUrl ?
@@ -331,7 +440,7 @@ function renderExercisePicker() {
         }
         <div class="flex-1">
           <h4 class="font-semibold text-sm">${exercise.name}</h4>
-          <p class="text-xs text-gray-400">${muscleNames[exercise.muscleGroups[0]]}</p>
+          <p class="text-xs text-gray-400">${exercise.muscleGroups.map(m => muscleNames[m]).join(', ')}</p>
         </div>
         <span class="material-symbols-rounded text-primary">add_circle</span>
       </div>
@@ -428,6 +537,37 @@ function closeExercisePicker() {
 }
 
 // ========================================
+// NATIVE MOBILE INPUT HELPERS
+// ========================================
+
+/**
+ * Updates the rest time display when slider changes
+ */
+function updateRestDisplay(value) {
+  const seconds = parseInt(value);
+  const displaySpan = document.getElementById('exercise-rest-display');
+
+  if (seconds === 0) {
+    displaySpan.textContent = 'Keine Pause';
+  } else if (seconds < 60) {
+    displaySpan.textContent = `${seconds} Sek`;
+  } else {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    if (remainingSeconds === 0) {
+      displaySpan.textContent = `${minutes} Min`;
+    } else {
+      displaySpan.textContent = `${minutes}:${remainingSeconds.toString().padStart(2, '0')} Min`;
+    }
+  }
+
+  // Trigger haptic feedback on value change
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback('light');
+  }
+}
+
+// ========================================
 // DRAG AND DROP
 // ========================================
 
@@ -502,13 +642,9 @@ async function savePlan() {
   const notes = document.getElementById('plan-notes').value.trim();
   const difficulty = parseInt(document.getElementById('plan-difficulty').value);
 
-  // Get selected tags
-  const tags = Array.from(document.querySelectorAll('.tag-checkbox:checked'))
-    .map(cb => cb.value);
-
-  // Get target muscles
-  const targetMuscles = Array.from(document.querySelectorAll('.target-muscle-checkbox:checked'))
-    .map(cb => cb.value);
+  // Get selected tags and target muscles from state
+  const tags = planTags;
+  const targetMuscles = planTargetMuscles;
 
   // Validation
   if (!name) {
@@ -746,3 +882,107 @@ function setupPlansListener() {
     renderPlans();
   });
 }
+
+// ========================================
+// BOTTOM SHEET INTEGRATION FOR PLANS
+// ========================================
+
+// State for multi-select inputs in plan modal
+let planTags = [];
+let planTargetMuscles = [];
+
+/**
+ * Opens plan tags bottom sheet
+ */
+function openPlanTagsBottomSheet() {
+  const tagOptions = [
+    { value: 'full-body', label: 'Ganzkörper', description: 'Training für den gesamten Körper' },
+    { value: 'upper-body', label: 'Oberkörper', description: 'Fokus auf Oberkörper' },
+    { value: 'lower-body', label: 'Unterkörper', description: 'Fokus auf Unterkörper' },
+    { value: 'push', label: 'Push', description: 'Drückende Bewegungen' },
+    { value: 'pull', label: 'Pull', description: 'Ziehende Bewegungen' },
+    { value: 'legs', label: 'Beine', description: 'Bein-Training' },
+    { value: 'core', label: 'Core', description: 'Rumpf-Training' }
+  ];
+
+  openBottomSheet({
+    title: 'Tags auswählen',
+    options: tagOptions,
+    selectedValues: planTags,
+    enableSearch: true,
+    searchPlaceholder: 'Tags suchen...',
+    fieldId: 'plan-tags-wrapper',
+    onConfirm: (selectedValues) => {
+      planTags = selectedValues;
+      renderPlanTagsInput();
+    }
+  });
+}
+
+/**
+ * Opens plan target muscles bottom sheet
+ */
+function openPlanTargetMusclesBottomSheet() {
+  const muscleOptions = [
+    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur' },
+    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur' },
+    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur' },
+    { value: 'arms', label: 'Arme', description: 'Bizeps, Trizeps, Unterarme' },
+    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur' },
+    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur' }
+  ];
+
+  openBottomSheet({
+    title: 'Ziel-Muskelgruppen auswählen',
+    options: muscleOptions,
+    selectedValues: planTargetMuscles,
+    enableSearch: true,
+    searchPlaceholder: 'Muskelgruppe suchen...',
+    fieldId: 'plan-target-muscles-wrapper',
+    onConfirm: (selectedValues) => {
+      planTargetMuscles = selectedValues;
+      renderPlanTargetMusclesInput();
+    }
+  });
+}
+
+/**
+ * Renders the plan tags multi-select input
+ */
+function renderPlanTagsInput() {
+  renderMultiSelectInput('plan-tags-wrapper', {
+    icon: 'label',
+    placeholder: 'Tags auswählen...',
+    selectedValues: planTags,
+    valueLabels: tagNames
+  });
+}
+
+/**
+ * Renders the plan target muscles multi-select input
+ */
+function renderPlanTargetMusclesInput() {
+  renderMultiSelectInput('plan-target-muscles-wrapper', {
+    icon: 'fitness_center',
+    placeholder: 'Ziel-Muskelgruppen auswählen...',
+    selectedValues: planTargetMuscles,
+    valueLabels: muscleNames
+  });
+}
+
+/**
+ * Global removeMultiSelectChip handler for plans
+ * (extends the one in exercises.js)
+ */
+const originalRemoveMultiSelectChip = window.removeMultiSelectChip;
+window.removeMultiSelectChip = function(containerId, value) {
+  if (containerId === 'plan-tags-wrapper') {
+    planTags = planTags.filter(v => v !== value);
+    renderPlanTagsInput();
+  } else if (containerId === 'plan-target-muscles-wrapper') {
+    planTargetMuscles = planTargetMuscles.filter(v => v !== value);
+    renderPlanTargetMusclesInput();
+  } else if (originalRemoveMultiSelectChip) {
+    originalRemoveMultiSelectChip(containerId, value);
+  }
+};

@@ -305,6 +305,13 @@ function openAddExerciseModal() {
   editingExerciseId = null;
   document.getElementById('modal-title').textContent = 'Neue Übung';
   clearExerciseForm();
+
+  // Initialize multi-select inputs
+  exerciseMuscleGroups = [];
+  exerciseEquipment = [];
+  renderExerciseMuscleGroupsInput();
+  renderExerciseEquipmentInput();
+
   document.getElementById('exercise-modal').classList.add('active');
 }
 
@@ -319,15 +326,13 @@ function editExercise(id) {
   document.getElementById('exercise-description').value = exercise.description || '';
   document.getElementById('exercise-image').value = exercise.imageUrl || '';
 
-  // Muscle groups checkboxes
-  document.querySelectorAll('.muscle-checkbox').forEach(checkbox => {
-    checkbox.checked = exercise.muscleGroups.includes(checkbox.value);
-  });
+  // Set muscle groups and equipment for multi-select
+  exerciseMuscleGroups = [...exercise.muscleGroups];
+  exerciseEquipment = exercise.equipment ? [...exercise.equipment] : [];
 
-  // Equipment checkboxes
-  document.querySelectorAll('.equipment-checkbox').forEach(checkbox => {
-    checkbox.checked = exercise.equipment && exercise.equipment.includes(checkbox.value);
-  });
+  // Render multi-select inputs
+  renderExerciseMuscleGroupsInput();
+  renderExerciseEquipmentInput();
 
   // Difficulty
   setDifficulty(exercise.difficulty);
@@ -344,8 +349,11 @@ function clearExerciseForm() {
   document.getElementById('exercise-name').value = '';
   document.getElementById('exercise-description').value = '';
   document.getElementById('exercise-image').value = '';
-  document.querySelectorAll('.muscle-checkbox').forEach(cb => cb.checked = false);
-  document.querySelectorAll('.equipment-checkbox').forEach(cb => cb.checked = false);
+
+  // Clear multi-select inputs
+  exerciseMuscleGroups = [];
+  exerciseEquipment = [];
+
   setDifficulty(3);
 }
 
@@ -375,13 +383,9 @@ async function saveExercise() {
   const imageUrl = document.getElementById('exercise-image').value.trim();
   const difficulty = parseInt(document.getElementById('exercise-difficulty').value);
 
-  // Get selected muscle groups
-  const muscleGroups = Array.from(document.querySelectorAll('.muscle-checkbox:checked'))
-    .map(cb => cb.value);
-
-  // Get selected equipment
-  const equipment = Array.from(document.querySelectorAll('.equipment-checkbox:checked'))
-    .map(cb => cb.value);
+  // Get selected muscle groups and equipment from state
+  const muscleGroups = exerciseMuscleGroups;
+  const equipment = exerciseEquipment.length > 0 ? exerciseEquipment : ['none'];
 
   // Validation
   if (!name) {
@@ -399,7 +403,7 @@ async function saveExercise() {
     description,
     imageUrl,
     muscleGroups,
-    equipment: equipment.length > 0 ? equipment : ['none'],
+    equipment,
     difficulty
   };
 
@@ -570,4 +574,107 @@ function setupExercisesListener() {
     allExercises = exercises;
     filterExercises();
   });
+}
+
+// ========================================
+// BOTTOM SHEET INTEGRATION FOR EXERCISES
+// ========================================
+
+// State for multi-select inputs in exercise modal
+let exerciseMuscleGroups = [];
+let exerciseEquipment = [];
+
+/**
+ * Opens muscle groups bottom sheet
+ */
+function openMuscleGroupsBottomSheet() {
+  const muscleOptions = [
+    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur' },
+    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur' },
+    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur' },
+    { value: 'arms', label: 'Arme', description: 'Bizeps, Trizeps, Unterarme' },
+    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur' },
+    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur' }
+  ];
+
+  openBottomSheet({
+    title: 'Muskelgruppen auswählen',
+    options: muscleOptions,
+    selectedValues: exerciseMuscleGroups,
+    enableSearch: true,
+    searchPlaceholder: 'Muskelgruppe suchen...',
+    fieldId: 'exercise-muscle-groups-wrapper',
+    onConfirm: (selectedValues) => {
+      exerciseMuscleGroups = selectedValues;
+      renderExerciseMuscleGroupsInput();
+    }
+  });
+}
+
+/**
+ * Opens equipment bottom sheet
+ */
+function openEquipmentBottomSheet() {
+  const equipmentOptions = [
+    { value: 'none', label: 'Kein Equipment', description: 'Bodyweight Training' },
+    { value: 'pull-up-bar', label: 'Klimmzugstange', description: 'Für Klimmzüge und Hanging-Übungen' },
+    { value: 'dip-bars', label: 'Dip-Barren', description: 'Für Dips und Support-Holds' },
+    { value: 'rings', label: 'Ringe', description: 'Gymnastikringe für instabiles Training' },
+    { value: 'resistance-bands', label: 'Widerstandsbänder', description: 'Für Assistance oder zusätzlichen Widerstand' },
+    { value: 'parallettes', label: 'Paralettes', description: 'Für L-Sits, Handstands und Push-Ups' },
+    { value: 'box', label: 'Box/Bank', description: 'Erhöhte Plattform für Step-Ups, Box Jumps' },
+    { value: 'wall', label: 'Wand', description: 'Für Handstand und Wall-Sits' },
+    { value: 'mat', label: 'Matte', description: 'Für Bodenübungen' },
+    { value: 'weights', label: 'Gewichte', description: 'Kurz- oder Langhanteln' }
+  ];
+
+  openBottomSheet({
+    title: 'Equipment auswählen',
+    options: equipmentOptions,
+    selectedValues: exerciseEquipment,
+    enableSearch: true,
+    searchPlaceholder: 'Equipment suchen...',
+    fieldId: 'exercise-equipment-wrapper',
+    onConfirm: (selectedValues) => {
+      exerciseEquipment = selectedValues;
+      renderExerciseEquipmentInput();
+    }
+  });
+}
+
+/**
+ * Renders the muscle groups multi-select input
+ */
+function renderExerciseMuscleGroupsInput() {
+  renderMultiSelectInput('exercise-muscle-groups-wrapper', {
+    icon: 'fitness_center',
+    placeholder: 'Muskelgruppen auswählen...',
+    selectedValues: exerciseMuscleGroups,
+    valueLabels: muscleNames
+  });
+}
+
+/**
+ * Renders the equipment multi-select input
+ */
+function renderExerciseEquipmentInput() {
+  renderMultiSelectInput('exercise-equipment-wrapper', {
+    icon: 'build',
+    placeholder: 'Equipment auswählen...',
+    selectedValues: exerciseEquipment,
+    valueLabels: equipmentNames
+  });
+}
+
+/**
+ * Removes a muscle group chip
+ */
+function removeMultiSelectChip(containerId, value) {
+  if (containerId === 'exercise-muscle-groups-wrapper') {
+    exerciseMuscleGroups = exerciseMuscleGroups.filter(v => v !== value);
+    renderExerciseMuscleGroupsInput();
+  } else if (containerId === 'exercise-equipment-wrapper') {
+    exerciseEquipment = exerciseEquipment.filter(v => v !== value);
+    renderExerciseEquipmentInput();
+  }
 }

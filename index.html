@@ -451,31 +451,8 @@
         <!-- Muscle Groups (Multiple Select) -->
         <div>
           <label class="block text-sm font-medium mb-2">Muskelgruppen *</label>
-          <div class="grid grid-cols-2 gap-2">
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
-              <input type="checkbox" value="chest" class="muscle-checkbox">
-              <span class="muscle-tag muscle-chest">Brust</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
-              <input type="checkbox" value="back" class="muscle-checkbox">
-              <span class="muscle-tag muscle-back">Rücken</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
-              <input type="checkbox" value="shoulders" class="muscle-checkbox">
-              <span class="muscle-tag muscle-shoulders">Schultern</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
-              <input type="checkbox" value="arms" class="muscle-checkbox">
-              <span class="muscle-tag muscle-arms">Arme</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
-              <input type="checkbox" value="core" class="muscle-checkbox">
-              <span class="muscle-tag muscle-core">Core</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600">
-              <input type="checkbox" value="legs" class="muscle-checkbox">
-              <span class="muscle-tag muscle-legs">Beine</span>
-            </label>
+          <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()">
+            <!-- Dynamic content rendered by renderMultiSelectInput -->
           </div>
         </div>
 
@@ -485,47 +462,8 @@
             <span class="material-symbols-rounded" style="font-size: 18px; color: var(--color-primary);">build</span>
             <span>Benötigtes Equipment</span>
           </label>
-          <div class="grid grid-cols-2 gap-2">
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="none" class="equipment-checkbox">
-              <span class="text-sm">Kein Equipment</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="pull-up-bar" class="equipment-checkbox">
-              <span class="text-sm">Klimmzugstange</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="dip-bars" class="equipment-checkbox">
-              <span class="text-sm">Dip-Barren</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="rings" class="equipment-checkbox">
-              <span class="text-sm">Ringe</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="resistance-bands" class="equipment-checkbox">
-              <span class="text-sm">Widerstandsbänder</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="parallettes" class="equipment-checkbox">
-              <span class="text-sm">Paralettes</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="box" class="equipment-checkbox">
-              <span class="text-sm">Box/Bank</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="wall" class="equipment-checkbox">
-              <span class="text-sm">Wand</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="mat" class="equipment-checkbox">
-              <span class="text-sm">Matte</span>
-            </label>
-            <label class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded cursor-pointer hover:bg-gray-600 transition-colors">
-              <input type="checkbox" value="weights" class="equipment-checkbox">
-              <span class="text-sm">Gewichte</span>
-            </label>
+          <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()">
+            <!-- Dynamic content rendered by renderMultiSelectInput -->
           </div>
         </div>
 
@@ -655,66 +593,16 @@
         <!-- Tags -->
         <div>
           <label class="block text-sm font-medium mb-2">Tags</label>
-          <div class="flex flex-wrap gap-2">
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="full-body" class="tag-checkbox">
-              <span class="text-sm">Ganzkörper</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="upper-body" class="tag-checkbox">
-              <span class="text-sm">Oberkörper</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="lower-body" class="tag-checkbox">
-              <span class="text-sm">Unterkörper</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="push" class="tag-checkbox">
-              <span class="text-sm">Push</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="pull" class="tag-checkbox">
-              <span class="text-sm">Pull</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="legs" class="tag-checkbox">
-              <span class="text-sm">Beine</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="core" class="tag-checkbox">
-              <span class="text-sm">Core</span>
-            </label>
+          <div class="multi-select-input-wrapper" id="plan-tags-wrapper" onclick="openPlanTagsBottomSheet()">
+            <!-- Dynamic content rendered by renderMultiSelectInput -->
           </div>
         </div>
 
         <!-- Target Muscles -->
         <div>
           <label class="block text-sm font-medium mb-2">Ziel-Muskelgruppen</label>
-          <div class="flex flex-wrap gap-2">
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="chest" class="target-muscle-checkbox">
-              <span class="text-sm">Brust</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="back" class="target-muscle-checkbox">
-              <span class="text-sm">Rücken</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="shoulders" class="target-muscle-checkbox">
-              <span class="text-sm">Schultern</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="arms" class="target-muscle-checkbox">
-              <span class="text-sm">Arme</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="legs" class="target-muscle-checkbox">
-              <span class="text-sm">Beine</span>
-            </label>
-            <label class="inline-flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg cursor-pointer hover:border-pink-500 transition-colors">
-              <input type="checkbox" value="core" class="target-muscle-checkbox">
-              <span class="text-sm">Core</span>
-            </label>
+          <div class="multi-select-input-wrapper" id="plan-target-muscles-wrapper" onclick="openPlanTargetMusclesBottomSheet()">
+            <!-- Dynamic content rendered by renderMultiSelectInput -->
           </div>
         </div>
 
@@ -768,7 +656,7 @@
 
   <!-- EXERCISE PICKER MODAL -->
   <div id="exercise-picker-modal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-content" style="max-width: 700px;">
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-2xl font-bold">Übung auswählen</h3>
         <button onclick="closeExercisePicker()" class="modal-close-btn">
@@ -777,15 +665,50 @@
       </div>
 
       <div class="space-y-4">
-        <!-- Search -->
-        <div>
+        <!-- Search with Clear Button -->
+        <div class="filter-input-wrapper">
+          <span class="material-symbols-rounded filter-input-icon">search</span>
           <input
             type="text"
             id="exercise-picker-search"
             placeholder="Übung suchen..."
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            oninput="renderExercisePicker()"
+            class="filter-input"
+            autocomplete="off"
           />
+          <button type="button" class="search-clear-btn" id="exercise-picker-search-clear" style="display: none;" onclick="clearExercisePickerSearch()">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="filter-chip" data-filter="all" onclick="setExercisePickerMuscleFilter('all')">
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span>Alle</span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="chest" onclick="setExercisePickerMuscleFilter('chest')">
+            <span class="muscle-tag muscle-chest" style="padding: 0;">Brust</span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="back" onclick="setExercisePickerMuscleFilter('back')">
+            <span class="muscle-tag muscle-back" style="padding: 0;">Rücken</span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="shoulders" onclick="setExercisePickerMuscleFilter('shoulders')">
+            <span class="muscle-tag muscle-shoulders" style="padding: 0;">Schultern</span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="arms" onclick="setExercisePickerMuscleFilter('arms')">
+            <span class="muscle-tag muscle-arms" style="padding: 0;">Arme</span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="core" onclick="setExercisePickerMuscleFilter('core')">
+            <span class="muscle-tag muscle-core" style="padding: 0;">Core</span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="legs" onclick="setExercisePickerMuscleFilter('legs')">
+            <span class="muscle-tag muscle-legs" style="padding: 0;">Beine</span>
+          </button>
+        </div>
+
+        <!-- Active Filter Info -->
+        <div id="exercise-picker-filter-info" class="text-sm text-gray-400" style="display: none;">
+          <!-- Filter info will be rendered here -->
         </div>
 
         <!-- Exercise List -->
@@ -845,7 +768,10 @@
             value="3"
             min="1"
             max="10"
+            pattern="[0-9]*"
+            inputmode="numeric"
             class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            aria-label="Anzahl der Sätze"
           />
         </div>
 
@@ -857,7 +783,10 @@
               type="text"
               id="exercise-reps"
               placeholder="z.B. 12 oder 8-10"
+              pattern="[0-9\-]*"
+              inputmode="numeric"
               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              aria-label="Anzahl der Wiederholungen"
             />
           </div>
           <div>
@@ -865,24 +794,35 @@
             <input
               type="text"
               id="exercise-hold"
-              placeholder="z.B. 30s"
+              placeholder="z.B. 30"
+              pattern="[0-9]*"
+              inputmode="numeric"
               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              aria-label="Haltezeit in Sekunden"
             />
           </div>
         </div>
 
-        <!-- Rest -->
+        <!-- Rest (mit Range Slider für bessere Mobile UX) -->
         <div>
-          <label class="block text-sm font-medium mb-2">Pause (Sekunden)</label>
+          <label class="block text-sm font-medium mb-2">
+            Pause: <span id="exercise-rest-display">90 Sek</span>
+          </label>
           <input
-            type="number"
+            type="range"
             id="exercise-rest"
             value="90"
             min="0"
             max="300"
             step="15"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
+            oninput="updateRestDisplay(this.value)"
+            aria-label="Pausenzeit in Sekunden"
           />
+          <div class="flex justify-between text-xs text-gray-400 mt-1">
+            <span>0 Sek</span>
+            <span>5 Min</span>
+          </div>
         </div>
 
         <!-- Notes -->
@@ -915,6 +855,47 @@
     </div>
   </div>
 
+  <!-- Multi-Select Bottom Sheet -->
+  <div id="bottom-sheet-overlay" class="bottom-sheet-overlay" role="dialog" aria-modal="true" aria-labelledby="bottom-sheet-title">
+    <div id="bottom-sheet" class="bottom-sheet" role="document">
+      <div class="bottom-sheet-header">
+        <div class="bottom-sheet-drag-handle" aria-hidden="true"></div>
+        <h3 id="bottom-sheet-title" class="bottom-sheet-title">Auswählen</h3>
+        <button type="button" class="bottom-sheet-close-btn" onclick="closeBottomSheet()" aria-label="Schließen">
+          <span class="material-symbols-rounded" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <div class="bottom-sheet-search" id="bottom-sheet-search" style="display: none;">
+        <div class="filter-input-wrapper">
+          <span class="material-symbols-rounded filter-input-icon" aria-hidden="true">search</span>
+          <input
+            type="text"
+            id="bottom-sheet-search-input"
+            class="filter-input"
+            placeholder="Suchen..."
+            autocomplete="off"
+            aria-label="Suchfeld"
+          />
+          <button type="button" class="search-clear-btn" id="bottom-sheet-search-clear" style="display: none;" onclick="clearBottomSheetSearch()" aria-label="Suche löschen">
+            <span class="material-symbols-rounded" aria-hidden="true">close</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="bottom-sheet-content" id="bottom-sheet-content" role="list" aria-label="Optionen">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+
+      <div class="bottom-sheet-footer">
+        <button type="button" class="btn-primary" onclick="confirmBottomSheetSelection()" aria-label="Auswahl bestätigen">
+          <span class="material-symbols-rounded" aria-hidden="true">check</span>
+          Fertig
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -922,6 +903,7 @@
   <!-- App Scripts -->
   <script src="js/firebase.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/bottomSheet.js"></script>
   <script src="js/dashboard.js"></script>
   <script src="js/exercises.js"></script>
   <script src="js/plans.js"></script>
