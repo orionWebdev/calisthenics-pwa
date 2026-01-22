@@ -2236,7 +2236,9 @@ input::placeholder {
 }
 
 .plan-row-card:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
+  background: rgba(240, 34, 119, 0.08);
+  border-color: rgba(240, 34, 119, 0.4);
 }
 
 .plan-row-icon {
