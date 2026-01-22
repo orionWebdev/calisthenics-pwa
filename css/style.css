@@ -3982,51 +3982,68 @@ input[type="range"]::-moz-range-progress {
 }
 
 /* Toast Notification */
-.session-toast {
+/* Screen Edge Glow Animation - Apple Intelligence Style */
+.screen-edge-glow {
   position: fixed;
-  bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 1rem);
-  left: 50%;
-  transform: translateX(-50%) translateY(150%);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  background: rgb(31 41 55);
-  border: 1px solid rgb(55 65 81);
-  border-radius: 0.875rem;
-  color: white;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  inset: 0;
+  pointer-events: none;
   z-index: 10001;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  max-width: calc(100% - 2rem);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
 }
 
-.session-toast.active {
-  transform: translateX(-50%) translateY(0);
+.screen-edge-glow.active {
+  opacity: 1;
+  animation: edgeGlowPulse 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.session-toast.success {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
-  border-color: rgba(34, 197, 94, 0.4);
+.screen-edge-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  padding: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(34, 197, 94, 0) 0%,
+    rgba(34, 197, 94, 1) 15%,
+    rgba(16, 185, 129, 1) 30%,
+    rgba(5, 150, 105, 1) 50%,
+    rgba(16, 185, 129, 1) 70%,
+    rgba(34, 197, 94, 1) 85%,
+    rgba(34, 197, 94, 0) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  filter: blur(12px);
+  box-shadow:
+    inset 0 0 30px rgba(34, 197, 94, 0.6),
+    inset 0 0 60px rgba(16, 185, 129, 0.4);
 }
 
-.session-toast.error {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-  border-color: rgba(239, 68, 68, 0.4);
-}
-
-.session-toast .material-symbols-rounded {
-  font-size: 24px;
-}
-
-.session-toast.success .material-symbols-rounded {
-  color: #22c55e;
-}
-
-.session-toast.error .material-symbols-rounded {
-  color: #ef4444;
+@keyframes edgeGlowPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
 }
 
 /* Progress CTA Buttons */
@@ -4091,19 +4108,11 @@ input[type="range"]::-moz-range-progress {
     right: 1rem;
     bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 0.75rem);
   }
-
-  .session-toast {
-    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 0.75rem);
-  }
 }
 
 /* Desktop */
 @media (min-width: 769px) {
   .floating-add-btn {
-    bottom: 2rem;
-  }
-
-  .session-toast {
     bottom: 2rem;
   }
 }

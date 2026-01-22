@@ -199,7 +199,7 @@
       <span class="bottom-nav-label">Progress</span>
     </button>
     <button class="bottom-nav-item" data-view="calendar" onclick="showView('calendar')">
-      <span class="material-symbols-rounded">calendar_today</span>
+      <span class="material-symbols-rounded">calendar_month</span>
       <span class="bottom-nav-label">Kalender</span>
     </button>
     <button class="bottom-nav-item" data-view="plans" onclick="showView('plans')">
@@ -1039,8 +1039,8 @@
        ======================================== -->
 
   <!-- Add Cardio Session Modal -->
-  <div id="add-cardio-modal" class="modal">
-    <div class="modal-content">
+  <div id="add-cardio-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-cardio-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
       <div class="modal-header">
         <h3 class="modal-title">Cardio Session hinzufügen</h3>
         <button onclick="closeAddCardioModal()" class="modal-close-btn">
@@ -1049,6 +1049,16 @@
       </div>
 
       <div class="modal-body space-y-4">
+        <!-- Date Picker -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Datum *</label>
+          <input
+            type="date"
+            id="cardio-date"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
         <!-- Activity Type -->
         <div>
           <label class="block text-sm font-medium mb-2">Aktivität *</label>
@@ -1152,10 +1162,8 @@
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="session-toast" class="session-toast">
-    <!-- Wird von JS gefüllt -->
-  </div>
+  <!-- Screen Edge Glow Animation (Success Feedback) -->
+  <div id="screen-edge-glow" class="screen-edge-glow"></div>
 
   <!-- App Scripts -->
   <script src="js/firebase.js"></script>

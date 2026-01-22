@@ -254,11 +254,7 @@ function renderStrengthTab() {
       <div class="progress-empty-state">
         <span class="material-symbols-rounded progress-empty-icon">fitness_center</span>
         <h3>Noch keine Kraft-Trainings</h3>
-        <p>Starte ein Training, um deinen Fortschritt zu tracken</p>
-        <button onclick="showView('calendar')" class="progress-cta-btn">
-          <span class="material-symbols-rounded">calendar_month</span>
-          <span>Zum Kalender</span>
-        </button>
+        <p>Starte ein Training im Workout-Bereich, um deinen Fortschritt zu tracken</p>
       </div>
     `;
     return;

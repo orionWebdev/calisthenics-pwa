@@ -333,15 +333,35 @@ function openAddCardioModal() {
   const modal = document.getElementById('add-cardio-modal');
   if (!modal) return;
 
-  // Reset Form
-  document.getElementById('cardio-activity-type').value = 'run';
-  document.getElementById('cardio-duration').value = '';
-  document.getElementById('cardio-distance').value = '';
-  document.getElementById('cardio-computed-pace').textContent = '-';
-  document.getElementById('cardio-notes').value = '';
+  console.log('🔓 Opening cardio modal...');
 
+  // Reset inline styles
+  modal.style.display = '';
+
+  // Reset Form
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('cardio-date');
+  const activityInput = document.getElementById('cardio-activity-type');
+  const durationInput = document.getElementById('cardio-duration');
+  const distanceInput = document.getElementById('cardio-distance');
+  const paceDisplay = document.getElementById('cardio-computed-pace');
+  const notesInput = document.getElementById('cardio-notes');
+
+  if (dateInput) dateInput.value = today;
+  if (activityInput) activityInput.value = 'run';
+  if (durationInput) durationInput.value = '';
+  if (distanceInput) distanceInput.value = '';
+  if (paceDisplay) {
+    paceDisplay.textContent = '-';
+    paceDisplay.classList.remove('active');
+  }
+  if (notesInput) notesInput.value = '';
+
+  // Add active class
   modal.classList.add('active');
   triggerHapticFeedback('light');
+
+  console.log('✅ Modal opened');
 }
 
 /**
@@ -349,9 +369,39 @@ function openAddCardioModal() {
  */
 function closeAddCardioModal() {
   const modal = document.getElementById('add-cardio-modal');
-  if (modal) {
-    modal.classList.remove('active');
-  }
+  if (!modal) return;
+
+  console.log('🔒 Closing cardio modal...');
+
+  // Remove active class immediately
+  modal.classList.remove('active');
+
+  // Force display none after animation
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300);
+
+  // Reset form after animation completes
+  setTimeout(() => {
+    const dateInput = document.getElementById('cardio-date');
+    const activityInput = document.getElementById('cardio-activity-type');
+    const durationInput = document.getElementById('cardio-duration');
+    const distanceInput = document.getElementById('cardio-distance');
+    const paceDisplay = document.getElementById('cardio-computed-pace');
+    const notesInput = document.getElementById('cardio-notes');
+
+    if (dateInput) dateInput.value = '';
+    if (activityInput) activityInput.value = 'run';
+    if (durationInput) durationInput.value = '';
+    if (distanceInput) distanceInput.value = '';
+    if (paceDisplay) {
+      paceDisplay.textContent = '-';
+      paceDisplay.classList.remove('active');
+    }
+    if (notesInput) notesInput.value = '';
+
+    console.log('✅ Modal closed and form reset');
+  }, 300);
 }
 
 /**
@@ -378,14 +428,20 @@ function updateCardioLivePace() {
  * Speichert neue Cardio Session
  */
 async function saveCardioSession() {
+  const dateInput = document.getElementById('cardio-date').value;
   const activityType = document.getElementById('cardio-activity-type').value;
   const duration = parseFloat(document.getElementById('cardio-duration').value);
   const distance = parseFloat(document.getElementById('cardio-distance').value);
   const notes = document.getElementById('cardio-notes').value.trim();
 
   // Validation
+  if (!dateInput) {
+    showErrorMessage('Bitte wähle ein Datum');
+    return;
+  }
+
   if (!duration || duration <= 0) {
-    showToast('❌ Bitte gib eine gültige Dauer ein', 'error');
+    showErrorMessage('Bitte gib eine gültige Dauer ein');
     return;
   }
 
@@ -397,32 +453,40 @@ async function saveCardioSession() {
       saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
     }
 
+    // Parse date from input (YYYY-MM-DD)
+    const selectedDate = new Date(dateInput + 'T12:00:00');
     const pace = distance > 0 ? calculatePace(duration, distance) : null;
 
     const cardioSession = {
       type: 'cardio',
-      date: firebase.firestore.Timestamp.now(),
+      date: firebase.firestore.Timestamp.fromDate(selectedDate),
       activityType,
       duration,
       distanceKm: distance || null,
       pace: pace,
-      notes: notes || null
+      notes: notes || null,
+      createdAt: firebase.firestore.Timestamp.now()
     };
 
     await addDoc(sessionsCollection, cardioSession);
 
     console.log('✅ Cardio session saved');
-    showToast('✅ Cardio-Session gespeichert!', 'success');
 
+    // Close modal FIRST (before reload)
     closeAddCardioModal();
 
-    // Reload sessions and refresh current view
+    // Then reload sessions and refresh view
     await loadSessions();
-    renderCurrentProgressTab();
+    if (typeof renderCurrentProgressTab === 'function') {
+      renderCurrentProgressTab();
+    }
+
+    // Trigger success glow animation
+    triggerSuccessGlow();
 
   } catch (error) {
     console.error('❌ Error saving cardio session:', error);
-    showToast('❌ Fehler beim Speichern', 'error');
+    showErrorMessage('Fehler beim Speichern: ' + error.message);
   } finally {
     const saveBtn = document.querySelector('#add-cardio-modal .modal-save-btn');
     if (saveBtn) {
@@ -435,29 +499,35 @@ async function saveCardioSession() {
 // ==================== UI HELPERS ====================
 
 /**
- * Zeigt Toast Notification
+ * Triggert Screen Edge Glow Animation (Apple Intelligence Style)
  */
-function showToast(message, type = 'info') {
-  const toast = document.getElementById('session-toast');
-  if (!toast) return;
+function triggerSuccessGlow() {
+  const glow = document.getElementById('screen-edge-glow');
+  if (!glow) return;
 
-  const iconMap = {
-    success: 'check_circle',
-    error: 'error',
-    info: 'info'
-  };
+  // Remove active class if already present
+  glow.classList.remove('active');
 
-  toast.innerHTML = `
-    <span class="material-symbols-rounded">${iconMap[type] || 'info'}</span>
-    <span>${message}</span>
-  `;
+  // Trigger reflow to restart animation
+  void glow.offsetWidth;
 
-  toast.className = `session-toast ${type}`;
-  toast.classList.add('active');
+  // Add active class to start animation
+  glow.classList.add('active');
 
+  // Remove active class after animation completes
   setTimeout(() => {
-    toast.classList.remove('active');
-  }, 3000);
+    glow.classList.remove('active');
+  }, 1000);
+}
+
+/**
+ * Zeigt Fehler-Toast (nur für Fehler behalten wir eine Text-Notification)
+ */
+function showErrorMessage(message) {
+  // Für Fehler verwenden wir ein einfaches Alert als Fallback
+  // In einer späteren Version könnte hier eine dedizierte Error-UI kommen
+  console.error('❌', message);
+  alert(message);
 }
 
 /**
@@ -482,10 +552,24 @@ function formatDuration(minutes) {
   return `${minutes} min`;
 }
 
+/**
+ * Handles backdrop click to close modal
+ */
+function handleModalBackdropClick(event, modalId) {
+  if (event.target.id === modalId) {
+    if (modalId === 'add-cardio-modal') {
+      closeAddCardioModal();
+    }
+  }
+}
+
 // Expose functions
 window.openAddCardioModal = openAddCardioModal;
 window.closeAddCardioModal = closeAddCardioModal;
 window.updateCardioLivePace = updateCardioLivePace;
 window.saveCardioSession = saveCardioSession;
+window.handleModalBackdropClick = handleModalBackdropClick;
+window.triggerSuccessGlow = triggerSuccessGlow;
+window.showErrorMessage = showErrorMessage;
 
 console.log('📊 Sessions module loaded');
