@@ -2211,6 +2211,151 @@ input::placeholder {
   box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.3);
 }
 
+/* Compact Plan Row Cards */
+.plan-row-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  min-height: 64px;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.plan-row-card:hover {
+  border-color: var(--ui-card-border-hover);
+  box-shadow: var(--ui-card-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.plan-row-card:active {
+  transform: scale(0.98);
+}
+
+.plan-row-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 0.85rem;
+  background: var(--ui-icon-bg);
+  border: 1px solid var(--ui-icon-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.plan-row-icon .material-symbols-rounded {
+  font-size: 22px;
+  color: var(--color-primary);
+}
+
+.plan-row-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.plan-row-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-row-meta {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-row-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.plan-row-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  color: #d1d5db;
+}
+
+.plan-row-tag .material-symbols-rounded {
+  font-size: 14px;
+}
+
+.plan-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.plan-row-start-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+}
+
+.plan-row-start-btn:hover {
+  background: #ff3399;
+  transform: translateY(-1px);
+}
+
+.plan-row-start-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.plan-row-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  background: rgba(31, 41, 55, 0.6);
+  color: #cbd5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.plan-row-action-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+
 .plan-card:hover::before {
   opacity: 1;
 }

@@ -54,13 +54,13 @@ async function loadPlans() {
 function renderPlans() {
   const grid = document.getElementById('plans-grid');
 
-  if (filteredPlans.length === 0) {
+  if (filteredPlans.length == 0) {
     grid.innerHTML = `
       <div class="col-span-full empty-state">
         <div class="empty-state-icon">
           <span class="material-symbols-rounded">assignment</span>
         </div>
-        <h3 class="empty-state-title">Keine Trainingspläne gefunden</h3>
+        <h3 class="empty-state-title">Keine Trainingsplaene gefunden</h3>
         <p class="empty-state-text">Erstelle deinen ersten Trainingsplan!</p>
         <button onclick="openAddPlanModal()" class="empty-state-btn">
           <span class="material-symbols-rounded">add_circle</span>
@@ -72,83 +72,61 @@ function renderPlans() {
   }
 
   grid.innerHTML = filteredPlans.map(plan => {
-    // Calculate total exercises
     const exerciseCount = plan.exercises ? plan.exercises.length : 0;
-
-    // Get required equipment (unique)
     const equipment = plan.requiredEquipment || [];
     const equipmentCount = equipment.length;
+    const planType = plan.type || 'strength';
+    const typeLabel = workoutTypeNames[planType] || 'Kraft';
+    const typeIcon = planType === 'cardio'
+      ? 'directions_run'
+      : planType === 'mobility'
+        ? 'self_improvement'
+        : planType === 'skill'
+          ? 'psychology'
+          : planType === 'hiit'
+            ? 'bolt'
+            : 'fitness_center';
+    const goalLabel = plan.goal ? (workoutGoalNames[plan.goal] || plan.goal) : '';
+    const metaParts = [
+      `${exerciseCount} Uebungen`,
+      `${plan.duration || 45} Min`,
+      goalLabel
+    ].filter(Boolean);
 
     return `
-      <div class="plan-card" onclick="viewPlanDetails('${plan.id}')">
-        <!-- Header -->
-        <div class="plan-card-header">
-          <div class="flex items-center justify-between">
-            <span class="plan-type-badge type-${plan.type}">${workoutTypeNames[plan.type]}</span>
-            <span class="text-xs text-gray-400">${plan.duration || 45} Min</span>
+      <div class="plan-row-card" onclick="viewPlanDetails('${plan.id}')">
+        <div class="plan-row-icon">
+          <span class="material-symbols-rounded">${typeIcon}</span>
+        </div>
+        <div class="plan-row-content">
+          <div class="plan-row-title">${plan.name}</div>
+          <div class="plan-row-meta">${metaParts.join(' • ')}</div>
+          <div class="plan-row-tags">
+            <span class="plan-type-badge type-${planType}">${typeLabel}</span>
+            ${equipmentCount > 0 && equipment[0] !== 'none' ? `<span class="plan-row-tag"><span class="material-symbols-rounded">build</span>${equipmentCount}</span>` : ''}
           </div>
         </div>
-
-        <!-- Content -->
-        <div class="plan-card-content">
-          <h3 class="plan-card-title">${plan.name}</h3>
-
-          <!-- Stats -->
-          <div class="flex items-center gap-4 text-sm text-gray-400">
-            <span class="flex items-center gap-1">
-              <span class="material-symbols-rounded" style="font-size: 16px;">fitness_center</span>
-              ${exerciseCount} Übungen
-            </span>
-            ${equipmentCount > 0 && equipment[0] !== 'none' ?
-              `<span class="flex items-center gap-1">
-                <span class="material-symbols-rounded" style="font-size: 16px;">build</span>
-                ${equipmentCount}
-              </span>`
-              : ''
-            }
-          </div>
-
-          <!-- Difficulty -->
-          <div class="flex gap-1 mt-2">
-            ${Array(5).fill(0).map((_, i) =>
-              `<span class="material-symbols-rounded" style="font-size: 16px; color: ${i < (plan.difficulty || 3) ? 'var(--color-primary)' : '#374151'};">star</span>`
-            ).join('')}
-          </div>
-
-          <!-- Tags -->
-          ${plan.tags && plan.tags.length > 0 ?
-            `<div class="flex flex-wrap gap-1 mt-3">
-              ${plan.tags.map(tag =>
-                `<span class="plan-tag">${tagNames[tag] || tag}</span>`
-              ).join('')}
-            </div>`
-            : ''
-          }
-        </div>
-
-        <!-- Actions -->
-        <div class="plan-card-actions">
+        <div class="plan-row-actions">
           <button
             onclick="event.stopPropagation(); startWorkoutFromPlan('${plan.id}')"
-            class="plan-card-start-btn"
+            class="plan-row-start-btn"
             title="Workout starten"
           >
-            <span class="material-symbols-rounded" style="font-size: 18px;">play_arrow</span>
+            <span class="material-symbols-rounded">play_arrow</span>
+          </button>
+          <button
+            onclick="event.stopPropagation(); editPlan('${plan.id}')"
+            class="plan-row-action-btn"
+            title="Bearbeiten"
+          >
+            <span class="material-symbols-rounded">edit</span>
           </button>
         </div>
-
-        <!-- Edit Button -->
-        <button
-          onclick="event.stopPropagation(); editPlan('${plan.id}')"
-          class="plan-card-edit-btn"
-          title="Bearbeiten"
-        >
-          <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
-        </button>
       </div>
     `;
   }).join('');
 }
+
 
 // ========================================
 // MODAL MANAGEMENT
