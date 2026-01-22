@@ -882,6 +882,31 @@ input, textarea, select, button {
   transform: scale(0.98);
 }
 
+.exercise-toggle-btn {
+  width: 100%;
+  border: 1px solid var(--ui-card-border);
+  background: var(--ui-card-bg);
+  color: var(--color-text);
+  border-radius: 0.9rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exercise-toggle-btn:hover {
+  border-color: var(--ui-card-border-hover);
+  box-shadow: var(--ui-card-shadow-hover);
+}
+
+.exercise-toggle-btn:active {
+  transform: scale(0.98);
+}
+
 .exercise-row-icon {
   width: 40px;
   height: 40px;
@@ -3526,12 +3551,18 @@ input[type="range"]::-moz-range-progress {
   gap: 1rem;
   align-items: flex-start;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .progress-stat-card:hover {
   border-color: rgb(75 85 99);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.progress-stat-card.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(240, 34, 119, 0.2);
 }
 
 .progress-stat-icon {
@@ -3574,6 +3605,21 @@ input[type="range"]::-moz-range-progress {
   border-radius: 1rem;
   padding: 1.5rem;
   min-height: 400px;
+}
+
+.progress-chart-container.chart-animating {
+  animation: chartFadeIn 0.35s ease;
+}
+
+@keyframes chartFadeIn {
+  from {
+    opacity: 0.4;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .progress-chart-header {
@@ -3849,11 +3895,17 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   gap: 1rem;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .overview-stat-card:hover {
   border-color: rgb(75 85 99);
   transform: translateY(-2px);
+}
+
+.overview-stat-card.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(240, 34, 119, 0.2);
 }
 
 .stat-icon {
@@ -4009,6 +4061,7 @@ input[type="range"]::-moz-range-progress {
   z-index: 10000;
   display: none;
   align-items: flex-end;
+  justify-content: center;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
 }
@@ -4051,6 +4104,7 @@ input[type="range"]::-moz-range-progress {
 
 .sheet-content {
   width: 100%;
+  max-width: 640px;
   max-height: 70vh;
   background: rgb(17 24 39);
   border-radius: 1.5rem 1.5rem 0 0;

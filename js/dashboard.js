@@ -4,32 +4,16 @@
 
 // Demo-Daten (später aus Firebase berechnen)
 const dashboardData = {
-  todayWorkout: {
-    hasWorkout: true,
-    name: "Pull Day",
-    time: "18:00",
-    exerciseCount: 5,
-    duration: 45,
-    planId: null // später aus calendar
-  },
-  weekProgress: {
-    completed: 4,
-    total: 6
-  },
-  streak: 12,
-  totalReps: 1250,
   nextAchievement: {
     name: "Gorilla Mode",
     description: "500 Pull-ups total",
     current: 420,
     target: 500
-  },
-  topExercises: [
-    { name: "Pull-ups", reps: 120 },
-    { name: "Push-ups", reps: 180 },
-    { name: "Dips", reps: 90 }
-  ]
+  }
 };
+
+let dashboardExercises = [];
+
 
 // ========================================
 // RENDER FUNCTIONS
@@ -107,26 +91,33 @@ function renderTodayWorkout() {
 }
 
 function renderStats() {
+  const weeklyStats = typeof calculateOverviewStats === 'function'
+    ? calculateOverviewStats(7)
+    : { totalSessions: 0 };
+
   // Week Progress
   const weekProgressText = document.getElementById('week-progress-text');
   const weekProgressBar = document.querySelector('#week-progress-bar .dashboard-stat-progress-fill');
   if (weekProgressText && weekProgressBar) {
-    const { completed, total } = dashboardData.weekProgress;
+    const completed = weeklyStats.totalSessions || 0;
+    const total = 7;
     const percentage = total > 0 ? (completed / total) * 100 : 0;
     weekProgressText.textContent = `${completed}/${total}`;
-    weekProgressBar.style.width = `${percentage}%`;
+    weekProgressBar.style.width = `${Math.min(percentage, 100)}%`;
   }
 
   // Streak
   const streakCount = document.getElementById('streak-count');
   if (streakCount) {
-    streakCount.textContent = dashboardData.streak;
+    const streak = typeof calculateStreak === 'function' ? calculateStreak() : 0;
+    streakCount.textContent = streak;
   }
 
   // Total Reps
   const totalReps = document.getElementById('total-reps');
   if (totalReps) {
-    totalReps.textContent = dashboardData.totalReps.toLocaleString('de-DE');
+    const reps = calculateTotalReps(allSessions || []);
+    totalReps.textContent = reps.toLocaleString('de-DE');
   }
 }
 
@@ -163,7 +154,7 @@ function renderTopExercises() {
   const container = document.getElementById('top-exercises-card');
   if (!container) return;
 
-  const exercises = dashboardData.topExercises;
+  const exercises = calculateTopExercises(allSessions || [], dashboardExercises, 7);
 
   const exercisesList = exercises.map((exercise, index) => `
     <div class="dashboard-exercise-item">
@@ -184,9 +175,13 @@ function renderTopExercises() {
       </div>
     </div>
 
-    <div class="space-y-2">
-      ${exercisesList}
-    </div>
+    ${exercises.length ? `
+      <div class="space-y-2">
+        ${exercisesList}
+      </div>
+    ` : `
+      <div class="text-sm text-gray-400">Noch keine Uebungsdaten diese Woche</div>
+    `}
 
     <button onclick="showView('progress')" class="dashboard-link-btn mt-4">
       <span>Alle Stats anzeigen</span>
@@ -199,16 +194,18 @@ function renderTopExercises() {
 // INITIALIZE DASHBOARD
 // ========================================
 
-function initDashboard() {
-  console.log('📊 Initializing Dashboard...');
+async function initDashboard() {
+  console.log('Initializing Dashboard...');
 
+  await loadDashboardData();
   renderTodayWorkout();
   renderStats();
   renderAchievement();
   renderTopExercises();
 
-  console.log('✅ Dashboard initialized!');
+  console.log('Dashboard initialized!');
 }
+
 
 // ========================================
 // PLACEHOLDER FUNCTIONS
@@ -243,6 +240,75 @@ function formatDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+async function loadDashboardData() {
+  if (typeof loadSessions === 'function' && !sessionsLoaded) {
+    await loadSessions();
+  }
+
+  if (typeof allExercises !== 'undefined' && allExercises.length) {
+    dashboardExercises = allExercises;
+    return;
+  }
+
+  if (typeof getAllDocs === 'function' && typeof exercisesCollection !== 'undefined') {
+    try {
+      dashboardExercises = await getAllDocs(exercisesCollection);
+    } catch (error) {
+      console.error('Error loading exercises for dashboard:', error);
+    }
+  }
+}
+
+function getSessionDate(session) {
+  if (session?.date?.toDate) {
+    return session.date.toDate();
+  }
+  return new Date(session.date);
+}
+
+function calculateTotalReps(sessions) {
+  return sessions.reduce((sum, session) => {
+    if (session.type !== 'strength') return sum;
+    const sessionReps = session.exercises?.reduce((exerciseSum, exercise) => {
+      const reps = exercise.sets?.reduce((setSum, set) => setSum + (set.reps || 0), 0) || 0;
+      return exerciseSum + reps;
+    }, 0) || 0;
+    return sum + sessionReps;
+  }, 0);
+}
+
+function calculateTopExercises(sessions, exercises, days = 7) {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+
+  const repsByExercise = new Map();
+
+  sessions.forEach(session => {
+    if (session.type !== 'strength') return;
+    const sessionDate = getSessionDate(session);
+    if (sessionDate < cutoffDate) return;
+
+    session.exercises?.forEach(exercise => {
+      const reps = exercise.sets?.reduce((sum, set) => sum + (set.reps || 0), 0) || 0;
+      if (!reps) return;
+
+      const current = repsByExercise.get(exercise.exerciseId) || 0;
+      repsByExercise.set(exercise.exerciseId, current + reps);
+    });
+  });
+
+  const exerciseMap = new Map();
+  exercises.forEach(ex => exerciseMap.set(ex.id, ex.name));
+
+  return Array.from(repsByExercise.entries())
+    .map(([exerciseId, reps]) => ({
+      name: exerciseMap.get(exerciseId) || 'Unbekannt',
+      reps
+    }))
+    .sort((a, b) => b.reps - a.reps)
+    .slice(0, 3);
 }
 
 // ========================================

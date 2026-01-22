@@ -5,6 +5,7 @@
 let allExercises = [];
 let filteredExercises = [];
 let editingExerciseId = null;
+let exercisesExpanded = false;
 
 // Muscle Group Namen Mapping
 const muscleNames = {
@@ -78,7 +79,10 @@ function renderExercises() {
     return;
   }
 
-  grid.innerHTML = filteredExercises.map(exercise => {
+  const sortedExercises = [...filteredExercises].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  const visibleExercises = exercisesExpanded ? sortedExercises : sortedExercises.slice(0, 8);
+
+  const exerciseCards = visibleExercises.map(exercise => {
     const primaryMuscle = exercise.muscleGroups[0];
     const muscleLabel = muscleNames[primaryMuscle] || 'Muskel';
     const allMuscles = exercise.muscleGroups.map(muscle => muscleNames[muscle]).filter(Boolean).join(', ');
@@ -110,6 +114,17 @@ function renderExercises() {
       </div>
     `;
   }).join('');
+
+  const toggleButton = sortedExercises.length > 8
+    ? `
+      <button class="exercise-toggle-btn col-span-full" onclick="toggleExercisesExpanded()">
+        <span>${exercisesExpanded ? 'Weniger anzeigen' : 'Alle anzeigen'}</span>
+        <span class="material-symbols-rounded">${exercisesExpanded ? 'expand_less' : 'expand_more'}</span>
+      </button>
+    `
+    : '';
+
+  grid.innerHTML = exerciseCards + toggleButton;
 }
 
 // Toggle Exercise Card Expansion
@@ -140,8 +155,14 @@ function filterExercises() {
     return matchesSearch && matchesMuscle && matchesDifficulty;
   });
 
+  exercisesExpanded = false;
   renderExercises();
   updateActiveFilters();
+}
+
+function toggleExercisesExpanded() {
+  exercisesExpanded = !exercisesExpanded;
+  renderExercises();
 }
 
 function resetFilters() {

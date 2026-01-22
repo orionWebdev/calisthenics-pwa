@@ -6,6 +6,9 @@ let exercisesData = [];
 let exercisesLoaded = false;
 let recentWorkoutsExpanded = false;
 let currentOverviewPeriod = 7;
+let currentOverviewMetric = 'strength';
+let currentStrengthStat = 'last';
+let currentCardioStat = 'last';
 
 // ==================== INIT ====================
 
@@ -97,7 +100,7 @@ function switchProgressTab(tab) {
   console.log('📊 Switching to tab:', tab);
 
   // Update active state
-  document.querySelectorAll('.segmented-btn').forEach(btn => {
+  document.querySelectorAll('#progress-segmented-control .segmented-btn').forEach(btn => {
     if (btn.dataset.tab === tab) {
       btn.classList.add('active');
     } else {
@@ -180,15 +183,19 @@ function renderOverviewTab() {
         ${renderOverviewStatsHTML(currentStats)}
       </div>
 
+      <div id="overview-chart-container" class="progress-chart-container"></div>
+
       ${renderRecentWorkoutsHTML()}
     </div>
   `;
+
+  renderOverviewChart();
 }
 
 function renderOverviewStatsHTML(stats) {
   return `
     <div class="overview-stats-grid">
-      <div class="overview-stat-card">
+      <div class="overview-stat-card ${currentOverviewMetric === 'strength' ? 'active' : ''}" onclick="selectOverviewMetric('strength')">
         <div class="stat-icon" style="background: rgba(240, 34, 119, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">fitness_center</span>
         </div>
@@ -198,7 +205,7 @@ function renderOverviewStatsHTML(stats) {
         </div>
       </div>
 
-      <div class="overview-stat-card">
+      <div class="overview-stat-card ${currentOverviewMetric === 'cardio' ? 'active' : ''}" onclick="selectOverviewMetric('cardio')">
         <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1);">
           <span class="material-symbols-rounded" style="color: #3b82f6;">directions_run</span>
         </div>
@@ -208,7 +215,7 @@ function renderOverviewStatsHTML(stats) {
         </div>
       </div>
 
-      <div class="overview-stat-card">
+      <div class="overview-stat-card ${currentOverviewMetric === 'time' ? 'active' : ''}" onclick="selectOverviewMetric('time')">
         <div class="stat-icon" style="background: rgba(34, 197, 94, 0.1);">
           <span class="material-symbols-rounded" style="color: #22c55e;">schedule</span>
         </div>
@@ -218,7 +225,7 @@ function renderOverviewStatsHTML(stats) {
         </div>
       </div>
 
-      <div class="overview-stat-card">
+      <div class="overview-stat-card ${currentOverviewMetric === 'streak' ? 'active' : ''}" onclick="selectOverviewMetric('streak')">
         <div class="stat-icon" style="background: rgba(168, 85, 247, 0.1);">
           <span class="material-symbols-rounded" style="color: #a855f7;">local_fire_department</span>
         </div>
@@ -247,6 +254,49 @@ function switchOverviewPeriod(days) {
       btn.classList.remove('active');
     }
   });
+
+  renderOverviewChart();
+}
+
+function selectOverviewMetric(metric) {
+  currentOverviewMetric = metric;
+  renderOverviewTab();
+  triggerHapticFeedback('light');
+}
+
+function renderOverviewChart() {
+  const container = document.getElementById('overview-chart-container');
+  if (!container) return;
+
+  const data = aggregateOverviewSeries(currentOverviewMetric, 8);
+
+  if (data.length === 0) {
+    container.innerHTML = `
+      <div class="progress-empty-chart">
+        <span class="material-symbols-rounded">insert_chart</span>
+        <p>Noch keine Daten fuer diesen Zeitraum</p>
+      </div>
+    `;
+    return;
+  }
+
+  let metricLabel = 'Sessions';
+  if (currentOverviewMetric === 'strength') metricLabel = 'Kraft-Sessions';
+  if (currentOverviewMetric === 'cardio') metricLabel = 'Cardio-Sessions';
+  if (currentOverviewMetric === 'time') metricLabel = 'Trainingszeit (min)';
+  if (currentOverviewMetric === 'streak') metricLabel = 'Trainingstage';
+
+  container.innerHTML = `
+    <div class="progress-chart-header">
+      <h3 class="progress-chart-title">${metricLabel} - Letzte 8 Wochen</h3>
+    </div>
+    <div class="progress-chart-canvas-wrapper">
+      <canvas id="progress-chart-canvas"></canvas>
+    </div>
+  `;
+
+  animateChartContainer(container);
+  drawVolumeChart(data);
 }
 
 function renderRecentWorkoutsHTML() {
@@ -741,7 +791,7 @@ function renderStrengthStats() {
 
   container.innerHTML = `
     <div class="progress-stats-grid">
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentStrengthStat === 'last' ? 'active' : ''}" onclick="selectStrengthStat('last')">
         <div class="progress-stat-icon" style="background: rgba(240, 34, 119, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">trending_up</span>
         </div>
@@ -751,7 +801,7 @@ function renderStrengthStats() {
         </div>
       </div>
 
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentStrengthStat === 'best' ? 'active' : ''}" onclick="selectStrengthStat('best')">
         <div class="progress-stat-icon" style="background: rgba(34, 197, 94, 0.1);">
           <span class="material-symbols-rounded" style="color: #22c55e;">emoji_events</span>
         </div>
@@ -761,7 +811,7 @@ function renderStrengthStats() {
         </div>
       </div>
 
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentStrengthStat === 'avg' ? 'active' : ''}" onclick="selectStrengthStat('avg')">
         <div class="progress-stat-icon" style="background: rgba(59, 130, 246, 0.1);">
           <span class="material-symbols-rounded" style="color: #3b82f6;">analytics</span>
         </div>
@@ -771,7 +821,7 @@ function renderStrengthStats() {
         </div>
       </div>
 
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentStrengthStat === 'sessions' ? 'active' : ''}" onclick="selectStrengthStat('sessions')">
         <div class="progress-stat-icon" style="background: rgba(168, 85, 247, 0.1);">
           <span class="material-symbols-rounded" style="color: #a855f7;">calendar_month</span>
         </div>
@@ -788,7 +838,7 @@ function renderStrengthChart() {
   const container = document.getElementById('strength-chart-container');
   if (!container) return;
 
-  const data = aggregateStrengthData(selectedExerciseId, strengthMetric, 8);
+  const { data, label } = getStrengthChartData();
 
   if (data.length === 0) {
     container.innerHTML = `
@@ -800,17 +850,16 @@ function renderStrengthChart() {
     return;
   }
 
-  const metricLabel = strengthMetric === 'volume' ? 'Volumen (Reps)' : 'Best Set (Reps)';
-
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${metricLabel} - Letzte 8 Wochen</h3>
+      <h3 class="progress-chart-title">${label} - Letzte 8 Wochen</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
     </div>
   `;
 
+  animateChartContainer(container);
   drawVolumeChart(data);
 }
 
@@ -913,7 +962,7 @@ function renderCardioStats() {
 
   container.innerHTML = `
     <div class="progress-stats-grid">
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentCardioStat === 'last' ? 'active' : ''}" onclick="selectCardioStat('last')">
         <div class="progress-stat-icon" style="background: rgba(59, 130, 246, 0.1);">
           <span class="material-symbols-rounded" style="color: #3b82f6;">trending_up</span>
         </div>
@@ -923,7 +972,7 @@ function renderCardioStats() {
         </div>
       </div>
 
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentCardioStat === 'best' ? 'active' : ''}" onclick="selectCardioStat('best')">
         <div class="progress-stat-icon" style="background: rgba(34, 197, 94, 0.1);">
           <span class="material-symbols-rounded" style="color: #22c55e;">emoji_events</span>
         </div>
@@ -933,7 +982,7 @@ function renderCardioStats() {
         </div>
       </div>
 
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentCardioStat === 'avg' ? 'active' : ''}" onclick="selectCardioStat('avg')">
         <div class="progress-stat-icon" style="background: rgba(168, 85, 247, 0.1);">
           <span class="material-symbols-rounded" style="color: #a855f7;">analytics</span>
         </div>
@@ -943,7 +992,7 @@ function renderCardioStats() {
         </div>
       </div>
 
-      <div class="progress-stat-card">
+      <div class="progress-stat-card ${currentCardioStat === 'sessions' ? 'active' : ''}" onclick="selectCardioStat('sessions')">
         <div class="progress-stat-icon" style="background: rgba(240, 34, 119, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">calendar_month</span>
         </div>
@@ -960,7 +1009,7 @@ function renderCardioChart() {
   const container = document.getElementById('cardio-chart-container');
   if (!container) return;
 
-  const data = aggregateCardioData(selectedActivityType, cardioMetric, 8);
+  const { data, label } = getCardioChartData();
 
   if (data.length === 0) {
     container.innerHTML = `
@@ -972,18 +1021,133 @@ function renderCardioChart() {
     return;
   }
 
-  const metricLabel = cardioMetric === 'time' ? 'Zeit (min)' : 'Distanz (km)';
-
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${metricLabel} - Letzte 8 Wochen</h3>
+      <h3 class="progress-chart-title">${label} - Letzte 8 Wochen</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
     </div>
   `;
 
+  animateChartContainer(container);
   drawVolumeChart(data);
+}
+
+function selectStrengthStat(stat) {
+  currentStrengthStat = stat;
+  renderStrengthStats();
+  renderStrengthChart();
+  triggerHapticFeedback('light');
+}
+
+function selectCardioStat(stat) {
+  currentCardioStat = stat;
+  renderCardioStats();
+  renderCardioChart();
+  triggerHapticFeedback('light');
+}
+
+function getStrengthChartData() {
+  const baseData = aggregateStrengthData(selectedExerciseId, strengthMetric, 8);
+  const metricLabel = strengthMetric === 'volume' ? 'Volumen (Reps)' : 'Best Set (Reps)';
+  const label = getChartLabel(metricLabel, currentStrengthStat);
+  return {
+    data: buildStatSeries(baseData, currentStrengthStat),
+    label
+  };
+}
+
+function getCardioChartData() {
+  const baseData = aggregateCardioData(selectedActivityType, cardioMetric, 8);
+  const metricLabel = cardioMetric === 'time' ? 'Zeit (min)' : 'Distanz (km)';
+  const label = getChartLabel(metricLabel, currentCardioStat);
+  return {
+    data: buildStatSeries(baseData, currentCardioStat),
+    label
+  };
+}
+
+function getChartLabel(metricLabel, stat) {
+  if (stat === 'best') return `Bestes ${metricLabel}`;
+  if (stat === 'avg') return `Durchschnitt ${metricLabel}`;
+  if (stat === 'sessions') return 'Sessions';
+  return metricLabel;
+}
+
+function buildStatSeries(baseData, stat) {
+  if (!baseData || baseData.length === 0) return [];
+
+  if (stat === 'sessions') {
+    return baseData.map(point => ({
+      date: point.date,
+      value: point.sessionCount || 0
+    }));
+  }
+
+  if (stat === 'best') {
+    let best = 0;
+    return baseData.map(point => {
+      best = Math.max(best, point.value || 0);
+      return { date: point.date, value: best };
+    });
+  }
+
+  if (stat === 'avg') {
+    let sum = 0;
+    return baseData.map((point, index) => {
+      sum += point.value || 0;
+      return { date: point.date, value: Math.round(sum / (index + 1)) };
+    });
+  }
+
+  return baseData.map(point => ({
+    date: point.date,
+    value: point.value || 0
+  }));
+}
+
+function aggregateOverviewSeries(metric = 'strength', weeks = 8) {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - (weeks * 7));
+
+  const groupedByDate = {};
+
+  allSessions.forEach(session => {
+    const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
+    if (sessionDate < cutoffDate) return;
+
+    const dateKey = sessionDate.toISOString().split('T')[0];
+
+    if (!groupedByDate[dateKey]) {
+      groupedByDate[dateKey] = {
+        date: sessionDate,
+        strengthCount: 0,
+        cardioCount: 0,
+        totalTime: 0,
+        sessionCount: 0
+      };
+    }
+
+    groupedByDate[dateKey].sessionCount += 1;
+    if (session.type === 'strength') {
+      groupedByDate[dateKey].strengthCount += 1;
+    } else if (session.type === 'cardio') {
+      groupedByDate[dateKey].cardioCount += 1;
+    }
+    if (session.duration) {
+      groupedByDate[dateKey].totalTime += session.duration;
+    }
+  });
+
+  const series = Object.values(groupedByDate).sort((a, b) => a.date - b.date);
+
+  return series.map(point => {
+    if (metric === 'cardio') return { date: point.date, value: point.cardioCount };
+    if (metric === 'time') return { date: point.date, value: point.totalTime };
+    if (metric === 'streak') return { date: point.date, value: point.sessionCount ? 1 : 0 };
+    return { date: point.date, value: point.strengthCount };
+  });
 }
 
 // ==================== BOTTOM SHEETS ====================
@@ -1064,6 +1228,18 @@ function getExerciseName(exerciseId) {
 }
 
 // ==================== CHART DRAWING ====================
+
+function animateChartContainer(container) {
+  if (!container) return;
+
+  container.classList.remove('chart-animating');
+  void container.offsetWidth;
+  container.classList.add('chart-animating');
+
+  container.addEventListener('animationend', () => {
+    container.classList.remove('chart-animating');
+  }, { once: true });
+}
 
 function drawVolumeChart(data) {
   const canvas = document.getElementById('progress-chart-canvas');

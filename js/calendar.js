@@ -33,12 +33,12 @@ async function loadSchedule() {
       console.warn('⚠️ scheduleCollection not defined, using empty array');
       scheduleData = [];
     }
-    renderCalendar();
+    setCalendarView(currentCalendarView);
   } catch (error) {
     console.error('Error loading schedule:', error);
     // Render calendar anyway with empty data
     scheduleData = [];
-    renderCalendar();
+    setCalendarView(currentCalendarView);
   }
 }
 
