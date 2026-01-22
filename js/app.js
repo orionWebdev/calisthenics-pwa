@@ -13,6 +13,7 @@ const viewTitles = {
   calendar: 'Kalender',
   plans: 'Trainingspläne',
   exercises: 'Übungen',
+  workout: 'Workout',
   profile: 'Profil'
 };
 
@@ -23,6 +24,7 @@ const viewIcons = {
   calendar: 'calendar_month',
   plans: 'assignment',
   exercises: 'fitness_center',
+  workout: 'fitness_center',
   profile: 'account_circle'
 };
 
@@ -69,6 +71,23 @@ function showView(viewName) {
   // Load view-specific data
   if (viewName === 'calendar' && typeof loadSchedule === 'function') {
     loadSchedule();
+  }
+
+  // Initialize progress page when first opened
+  if (viewName === 'progress') {
+    if (typeof initProgressV2 === 'function') {
+      initProgressV2();
+    } else if (typeof initProgress === 'function') {
+      initProgress();
+    }
+  }
+
+  if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
+    renderWorkoutScreen();
+  }
+
+  if (viewName !== 'workout' && typeof ensureActiveWorkoutBanner === 'function') {
+    ensureActiveWorkoutBanner();
   }
 
   currentView = viewName;
@@ -247,11 +266,17 @@ async function initApp() {
       setupScheduleListener();
     }
 
+    if (typeof checkActiveWorkout === 'function') {
+      checkActiveWorkout();
+    }
+
     console.log('✅ App initialized successfully!');
   } catch (error) {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
-    alert('Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+  }
   }
 }
 

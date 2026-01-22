@@ -23,6 +23,8 @@ const exercisesCollection = db.collection('exercises');
 const plansCollection = db.collection('plans');
 const workoutsCollection = db.collection('workouts');
 const scheduleCollection = db.collection('schedule');
+const progressCollection = db.collection('progress');
+const sessionsCollection = db.collection('sessions');
 
 // ========================================
 // FIRESTORE HELPER FUNCTIONS

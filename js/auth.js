@@ -87,7 +87,16 @@ async function checkAllowlist(uid, email) {
       return data.enabled === true;
     }
 
-    // Fallback: Check by email
+    // Fallback: Check by email document id
+    if (email) {
+      const emailDoc = await allowedUsersCollection.doc(email).get();
+      if (emailDoc.exists) {
+        const data = emailDoc.data();
+        return data.enabled === true;
+      }
+    }
+
+    // Fallback: Check by email field
     const emailQuery = await allowedUsersCollection
       .where('email', '==', email)
       .where('enabled', '==', true)
@@ -363,6 +372,10 @@ function showAuthError(message) {
   if (errorContainer && errorMessage) {
     errorMessage.textContent = message;
     errorContainer.classList.add('active');
+
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', message);
+    }
 
     // Haptic feedback
     if (typeof triggerHapticFeedback === 'function') {

@@ -3,7 +3,7 @@
 // ========================================
 
 // Calendar State
-let currentCalendarView = 'week'; // 'month' or 'week' - Default: week
+let currentCalendarView = 'month'; // 'month' or 'week' - Default: month
 let currentDate = new Date();
 let scheduleData = []; // Alle geplanten Trainings
 let selectedDateForPlan = null;
@@ -50,10 +50,11 @@ function setCalendarView(view) {
   currentCalendarView = view;
   
   // Update buttons
-  document.querySelectorAll('.calendar-view-btn').forEach(btn => {
+  document.querySelectorAll('.calendar-segmented .segmented-btn').forEach(btn => {
     btn.classList.remove('active');
   });
-  document.querySelector(`[data-view="${view}"]`).classList.add('active');
+  const activeBtn = document.querySelector(`.calendar-segmented [data-view="${view}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
   
   // Show/hide views
   document.getElementById('calendar-month-view').classList.toggle('active', view === 'month');
@@ -243,7 +244,7 @@ function renderWeekView() {
           <div class="text-xl font-bold ${isToday ? 'text-pink-500' : ''}">${date.getDate()}. ${monthNames[date.getMonth()]}</div>
         </div>
         <button
-          onclick="openAddPlanPanel('${dateStr}')"
+          onclick="openDayDetailModal('${dateStr}', true)"
           class="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-3 py-2 rounded-lg text-sm transition-all flex items-center gap-1"
         >
           <span class="material-symbols-rounded" style="font-size: 16px;">add</span>
@@ -265,12 +266,22 @@ function renderWeekView() {
                   <span class="text-xs text-gray-400">${plan.planDuration || 45} Min</span>
                 </div>
               </div>
-              <button
-                onclick="event.stopPropagation(); removePlanFromDate('${plan.id}')"
-                class="text-red-400 hover:text-red-300 transition-colors ml-2"
-              >
-                <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
-              </button>
+              <div class="flex items-center gap-2 ml-2">
+                <button
+                  onclick="event.stopPropagation(); startScheduledWorkout('${plan.id}')"
+                  class="calendar-start-btn"
+                  title="Workout starten"
+                >
+                  <span class="material-symbols-rounded" style="font-size: 20px;">play_arrow</span>
+                </button>
+                <button
+                  onclick="event.stopPropagation(); removePlanFromDate('${plan.id}')"
+                  class="text-red-400 hover:text-red-300 transition-colors"
+                  title="Training entfernen"
+                >
+                  <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
+                </button>
+              </div>
             </div>
           `).join('')
         }
@@ -315,9 +326,18 @@ function getWeekStart(date) {
 // ========================================
 
 function openAddPlanPanel(dateStr) {
-  selectedDateForPlan = dateStr;
+  const targetDate = dateStr || currentDayDetailDate;
+  if (!isValidDateString(targetDate)) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Ungueltiges Datum. Bitte Tag erneut waehlen.');
+    }
+    return;
+  }
 
-  const date = new Date(dateStr);
+  selectedDateForPlan = targetDate;
+  ensureDayDetailModalOpen(targetDate);
+
+  const date = new Date(`${targetDate}T12:00:00`);
   const formatted = `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 
   document.getElementById('selected-date-display').textContent = formatted;
@@ -326,6 +346,7 @@ function openAddPlanPanel(dateStr) {
   // Populate plan dropdown with real plans
   populatePlanSelect();
 }
+
 
 function closeAddPlanPanel() {
   document.getElementById('add-plan-panel').classList.add('hidden');
@@ -356,8 +377,21 @@ function populatePlanSelect() {
 async function addPlanToDate() {
   const planId = document.getElementById('plan-select').value;
 
-  if (!planId || !selectedDateForPlan) {
-    alert('Bitte wähle einen Plan!');
+  if (!planId) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Bitte waehle einen Plan.');
+    }
+    return;
+  }
+
+  if (!selectedDateForPlan && currentDayDetailDate) {
+    selectedDateForPlan = currentDayDetailDate;
+  }
+
+  if (!isValidDateString(selectedDateForPlan)) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Bitte waehle einen gueltigen Tag.');
+    }
     return;
   }
 
@@ -365,14 +399,16 @@ async function addPlanToDate() {
   const plan = allPlans.find(p => p.id === planId);
 
   if (!plan) {
-    alert('Plan nicht gefunden!');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Plan nicht gefunden.');
+    }
     return;
   }
 
   const scheduleEntry = {
-    userId: CURRENT_USER_ID, // Später durch echte User ID ersetzen
+    userId: CURRENT_USER_ID, // Spaeter durch echte User ID ersetzen
     planId: planId,
-    planName: plan.name, // Denormalized für schnellere Anzeige
+    planName: plan.name, // Denormalized fuer schnellere Anzeige
     planType: plan.type, // Store type for styling
     planDuration: plan.duration || 45, // Store duration
     date: selectedDateForPlan,
@@ -382,14 +418,20 @@ async function addPlanToDate() {
 
   try {
     await addDoc(scheduleCollection, scheduleEntry);
-    console.log('✅ Plan added to calendar!');
+    console.log('Plan added to calendar!');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', 'Plan zum Kalender hinzugefuegt.');
+    }
     closeAddPlanPanel();
     await loadSchedule(); // Reload
   } catch (error) {
     console.error('Error adding plan:', error);
-    alert('Fehler beim Hinzufügen!');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Hinzufuegen.');
+    }
   }
 }
+
 
 async function removePlanFromDate(scheduleId) {
   if (!confirm('Plan wirklich entfernen?')) return;
@@ -400,7 +442,9 @@ async function removePlanFromDate(scheduleId) {
     await loadSchedule(); // Reload
   } catch (error) {
     console.error('Error removing plan:', error);
-    alert('Fehler beim Entfernen!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Entfernen.');
+  }
   }
 }
 
@@ -413,7 +457,9 @@ function viewCalendarPlanDetails(scheduleId) {
   const plan = allPlans.find(p => p.id === scheduleEntry.planId);
 
   if (!plan) {
-    alert('Plan nicht gefunden!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Plan nicht gefunden.');
+  }
     return;
   }
 
@@ -429,6 +475,21 @@ function viewCalendarPlanDetails(scheduleId) {
 // ========================================
 // HELPER FUNCTIONS
 // ========================================
+
+function ensureDayDetailModalOpen(dateStr) {
+  const modal = document.getElementById('day-detail-modal');
+  if (!modal) return;
+  if (!modal.classList.contains('active')) {
+    openDayDetailModal(dateStr);
+  }
+}
+
+function isValidDateString(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+  const date = new Date(`${dateStr}T12:00:00`);
+  return !isNaN(date.getTime());
+}
 
 function formatDate(date) {
   const year = date.getFullYear();
@@ -456,6 +517,29 @@ function getPlansForDate(dateStr) {
   );
 }
 
+function startScheduledWorkout(scheduleId) {
+  const scheduleEntry = scheduleData.find(s => s.id === scheduleId);
+  if (!scheduleEntry) {
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Training nicht gefunden');
+  }
+    return;
+  }
+
+  if (typeof startWorkoutFromPlan !== 'function') {
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Workout-Engine nicht geladen');
+  }
+    return;
+  }
+
+  if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
+    closeDayDetailModal();
+  }
+
+  startWorkoutFromPlan(scheduleEntry.planId, scheduleEntry.date, scheduleEntry.id);
+}
+
 // ========================================
 // REAL-TIME LISTENER
 // ========================================
@@ -471,9 +555,10 @@ function setupScheduleListener() {
 // DAY DETAIL MODAL
 // ========================================
 
-function openDayDetailModal(dateStr) {
+function openDayDetailModal(dateStr, openAddPanel = false) {
   currentDayDetailDate = dateStr;
-  const date = new Date(dateStr);
+  selectedDateForPlan = dateStr;
+  const date = new Date(`${dateStr}T12:00:00`);
   const dayPlans = getPlansForDate(dateStr);
 
   // Update modal title
@@ -505,32 +590,51 @@ function openDayDetailModal(dateStr) {
             </span>
           </div>
         </div>
-        <button
-          onclick="event.stopPropagation(); removePlanFromDayDetail('${plan.id}')"
-          class="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all p-2 rounded-lg ml-3"
-          title="Training entfernen"
-        >
-          <span class="material-symbols-rounded" style="font-size: 24px;">delete</span>
-        </button>
+        <div class="flex items-center gap-2 ml-3">
+          <button
+            onclick="event.stopPropagation(); startScheduledWorkout('${plan.id}')"
+            class="calendar-start-btn"
+            title="Workout starten"
+          >
+            <span class="material-symbols-rounded" style="font-size: 20px;">play_arrow</span>
+          </button>
+          <button
+            onclick="event.stopPropagation(); removePlanFromDayDetail('${plan.id}')"
+            class="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all p-2 rounded-lg"
+            title="Training entfernen"
+          >
+            <span class="material-symbols-rounded" style="font-size: 24px;">delete</span>
+          </button>
+        </div>
       </div>
     `).join('');
   }
 
+  closeAddPlanPanel();
+
   // Show modal
   document.getElementById('day-detail-modal').classList.add('active');
+
+  if (openAddPanel) {
+    openAddPlanPanel(dateStr);
+  }
 }
+
 
 function closeDayDetailModal() {
   document.getElementById('day-detail-modal').classList.remove('active');
   currentDayDetailDate = null;
+  selectedDateForPlan = null;
+  closeAddPlanPanel();
 }
+
 
 function openAddPlanFromDayDetail() {
   if (currentDayDetailDate) {
-    closeDayDetailModal();
     openAddPlanPanel(currentDayDetailDate);
   }
 }
+
 
 async function removePlanFromDayDetail(scheduleId) {
   if (!confirm('Training wirklich von diesem Tag entfernen?')) return;
@@ -548,7 +652,9 @@ async function removePlanFromDayDetail(scheduleId) {
     }
   } catch (error) {
     console.error('Error removing plan:', error);
-    alert('Fehler beim Entfernen!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Entfernen.');
+  }
   }
 }
 
