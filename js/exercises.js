@@ -85,18 +85,24 @@ function renderExercises() {
     const equipmentList = (exercise.equipment || []).filter(eq => eq && eq !== 'none');
     const equipmentLabel = equipmentList.length > 0
       ? equipmentList.map(eq => equipmentNames[eq]).filter(Boolean).join(', ')
-      : 'Kein Equipment';
+      : '';
     const iconKey = equipmentList[0] || 'none';
     const iconName = equipmentIcons[iconKey] || 'fitness_center';
+    const discipline = exercise.discipline || 'calisthenics';
+    const disciplineIcon = discipline === 'gym' ? 'fitness_center' : discipline === 'both' ? 'layers' : 'sports_gymnastics';
 
     return `
       <div class="exercise-row-card" id="exercise-card-${exercise.id}" onclick="viewExerciseDetails('${exercise.id}')">
+        <div class="exercise-row-accent muscle-${primaryMuscle || 'default'}"></div>
         <div class="exercise-row-icon">
           <span class="material-symbols-rounded">${iconName}</span>
         </div>
         <div class="exercise-row-content">
           <div class="exercise-row-title">${exercise.name}</div>
-          <div class="exercise-row-meta">${muscleLabel} ? ${equipmentLabel}</div>
+          <div class="exercise-row-meta">${allMuscles}${equipmentLabel ? ` ? ${equipmentLabel}` : ''}</div>
+        </div>
+        <div class="exercise-row-discipline" title="${discipline}">
+          <span class="material-symbols-rounded">${disciplineIcon}</span>
         </div>
         <div class="exercise-row-chevron">
           <span class="material-symbols-rounded">chevron_right</span>
@@ -422,24 +428,10 @@ function viewExerciseDetails(id) {
         </div>
         <div class="exercise-detail-block">
           <div class="exercise-detail-block-title">
-            <span class="material-symbols-rounded">lightbulb</span>
-            <span>Tipps</span>
-          </div>
-          <p>Halte ein gleichmaessiges Tempo und atme kontrolliert durch die Bewegung.</p>
-        </div>
-        <div class="exercise-detail-block">
-          <div class="exercise-detail-block-title">
             <span class="material-symbols-rounded">trending_up</span>
-            <span>Progression</span>
+            <span>Progressionen</span>
           </div>
           <p>Mehr Range, langsamere Exzentrik oder Zusatzgewicht erhoehen die Intensitaet.</p>
-        </div>
-        <div class="exercise-detail-block">
-          <div class="exercise-detail-block-title">
-            <span class="material-symbols-rounded">trending_down</span>
-            <span>Regression</span>
-          </div>
-          <p>Kuertzere Range, Assistenz oder leichtere Variante erleichtern den Einstieg.</p>
         </div>
       </div>
 

@@ -864,6 +864,12 @@ input, textarea, select, button {
   border-radius: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .exercise-row-card:hover {
@@ -888,6 +894,21 @@ input, textarea, select, button {
   flex-shrink: 0;
 }
 
+.exercise-row-accent {
+  width: 3px;
+  align-self: stretch;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.4);
+}
+
+.muscle-chest { background: #f472b6; }
+.muscle-back { background: #60a5fa; }
+.muscle-shoulders { background: #a78bfa; }
+.muscle-arms { background: #f59e0b; }
+.muscle-core { background: #34d399; }
+.muscle-legs { background: #fb923c; }
+.muscle-default { background: rgba(148, 163, 184, 0.4); }
+
 .exercise-row-icon .material-symbols-rounded {
   color: var(--color-primary);
   font-size: 22px;
@@ -902,6 +923,9 @@ input, textarea, select, button {
   font-size: 0.98rem;
   font-weight: 700;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .exercise-row-meta {
@@ -913,11 +937,35 @@ input, textarea, select, button {
   text-overflow: ellipsis;
 }
 
+#exercises-grid {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
 .exercise-row-chevron {
   color: #6b7280;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.exercise-row-discipline {
+  width: 32px;
+  height: 32px;
+  border-radius: 0.6rem;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5f5;
+  flex-shrink: 0;
+}
+
+.exercise-row-discipline .material-symbols-rounded {
+  font-size: 18px;
+  color: #cbd5f5;
 }
 
 .exercise-row-action {
@@ -2394,6 +2442,9 @@ input::placeholder {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .bottom-sheet-overlay.active {
@@ -3964,6 +4015,38 @@ input[type="range"]::-moz-range-progress {
 
 .bottom-sheet.active {
   display: flex;
+}
+
+/* Multi-select bottom sheet override */
+#bottom-sheet-overlay .bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  inset: auto;
+  z-index: 2001;
+  display: flex;
+  max-height: 85vh;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  top: auto;
+  background: var(--color-secondary-dark);
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-secondary-light);
+  border-bottom: none;
+}
+
+#bottom-sheet-overlay .bottom-sheet > * {
+  width: 100%;
+}
+
+#bottom-sheet-overlay.active .bottom-sheet {
+  transform: translateY(0);
 }
 
 .sheet-content {

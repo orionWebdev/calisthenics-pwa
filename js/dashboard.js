@@ -39,9 +39,19 @@ function renderTodayWorkout() {
   const container = document.getElementById('today-workout-card');
   if (!container) return;
 
-  const data = dashboardData.todayWorkout;
+  const today = new Date();
+  const dateStr = formatDate(today);
+  const userId = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
+  const todayEntry = typeof scheduleData !== 'undefined'
+    ? scheduleData.find((item) => item.date === dateStr && item.userId === userId)
+    : null;
 
-  if (data.hasWorkout) {
+  const plan = todayEntry && typeof allPlans !== 'undefined'
+    ? allPlans.find((p) => p.id === todayEntry.planId)
+    : null;
+
+  if (todayEntry && plan) {
+    const exerciseCount = plan.exercises ? plan.exercises.length : 0;
     container.innerHTML = `
       <div class="dashboard-today-card">
         <div class="flex items-center gap-2 mb-3">
@@ -52,19 +62,15 @@ function renderTodayWorkout() {
         <div class="dashboard-today-content">
           <div class="flex items-start justify-between mb-3">
             <div>
-              <h4 class="text-xl font-bold mb-1">${data.name}</h4>
+              <h4 class="text-xl font-bold mb-1">${plan.name}</h4>
               <div class="flex items-center gap-4 text-sm text-gray-400">
                 <span class="flex items-center gap-1">
-                  <span class="material-symbols-rounded" style="font-size: 16px;">schedule</span>
-                  ${data.time} Uhr
-                </span>
-                <span class="flex items-center gap-1">
                   <span class="material-symbols-rounded" style="font-size: 16px;">fitness_center</span>
-                  ${data.exerciseCount} Übungen
+                  ${exerciseCount} Übungen
                 </span>
                 <span class="flex items-center gap-1">
                   <span class="material-symbols-rounded" style="font-size: 16px;">timer</span>
-                  ~${data.duration} min
+                  ~${plan.duration || 45} min
                 </span>
               </div>
             </div>
@@ -85,10 +91,16 @@ function renderTodayWorkout() {
           <h3 class="text-lg font-bold">Heute geplant</h3>
         </div>
         <p class="text-gray-400 mb-3">Kein Training heute geplant</p>
-        <button onclick="showView('calendar')" class="dashboard-secondary-btn">
-          <span class="material-symbols-rounded">calendar_month</span>
-          <span>Zum Kalender</span>
-        </button>
+        <div class="flex gap-2">
+          <button onclick="showView('plans')" class="dashboard-secondary-btn">
+            <span class="material-symbols-rounded">assignment</span>
+            <span>Plan starten</span>
+          </button>
+          <button onclick="showView('calendar')" class="dashboard-secondary-btn">
+            <span class="material-symbols-rounded">calendar_month</span>
+            <span>Planen</span>
+          </button>
+        </div>
       </div>
     `;
   }
@@ -224,6 +236,13 @@ function startWorkout() {
     showEdgeFeedback('error', 'Kein Training fuer heute geplant. Bitte starte einen Plan manuell.');
   }
   }
+}
+
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 // ========================================

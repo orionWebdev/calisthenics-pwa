@@ -443,20 +443,26 @@ function renderExercisePicker() {
     const equipmentList = (exercise.equipment || []).filter(eq => eq && eq !== 'none');
     const equipmentLabel = equipmentList.length > 0
       ? equipmentList.map(eq => equipmentNames[eq]).filter(Boolean).join(', ')
-      : 'Kein Equipment';
+      : '';
     const primaryMuscle = exercise.muscleGroups[0];
     const muscleLabel = muscleNames[primaryMuscle] || 'Muskel';
     const iconKey = equipmentList[0] || 'none';
     const iconName = equipmentIcons[iconKey] || 'fitness_center';
+    const discipline = exercise.discipline || 'calisthenics';
+    const disciplineIcon = discipline === 'gym' ? 'fitness_center' : discipline === 'both' ? 'layers' : 'sports_gymnastics';
 
     return `
       <div class="exercise-row-card is-picker" onclick="selectExerciseForPlan('${exercise.id}')">
+        <div class="exercise-row-accent muscle-${primaryMuscle || 'default'}"></div>
         <div class="exercise-row-icon">
           <span class="material-symbols-rounded">${iconName}</span>
         </div>
         <div class="exercise-row-content">
           <div class="exercise-row-title">${exercise.name}</div>
-          <div class="exercise-row-meta">${muscleLabel} ? ${equipmentLabel}</div>
+          <div class="exercise-row-meta">${muscleLabel}${equipmentLabel ? ` ? ${equipmentLabel}` : ''}</div>
+        </div>
+        <div class="exercise-row-discipline" title="${discipline}">
+          <span class="material-symbols-rounded">${disciplineIcon}</span>
         </div>
         <button class="exercise-row-action" onclick="event.stopPropagation(); selectExerciseForPlan('${exercise.id}')">
           <span class="material-symbols-rounded">add_circle</span>

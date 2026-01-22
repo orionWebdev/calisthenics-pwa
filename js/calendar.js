@@ -244,7 +244,7 @@ function renderWeekView() {
           <div class="text-xl font-bold ${isToday ? 'text-pink-500' : ''}">${date.getDate()}. ${monthNames[date.getMonth()]}</div>
         </div>
         <button
-          onclick="openAddPlanPanel('${dateStr}')"
+          onclick="openDayDetailModal('${dateStr}', true)"
           class="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-3 py-2 rounded-lg text-sm transition-all flex items-center gap-1"
         >
           <span class="material-symbols-rounded" style="font-size: 16px;">add</span>
@@ -326,9 +326,18 @@ function getWeekStart(date) {
 // ========================================
 
 function openAddPlanPanel(dateStr) {
-  selectedDateForPlan = dateStr;
+  const targetDate = dateStr || currentDayDetailDate;
+  if (!isValidDateString(targetDate)) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Ungueltiges Datum. Bitte Tag erneut waehlen.');
+    }
+    return;
+  }
 
-  const date = new Date(dateStr);
+  selectedDateForPlan = targetDate;
+  ensureDayDetailModalOpen(targetDate);
+
+  const date = new Date(`${targetDate}T12:00:00`);
   const formatted = `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 
   document.getElementById('selected-date-display').textContent = formatted;
@@ -337,6 +346,7 @@ function openAddPlanPanel(dateStr) {
   // Populate plan dropdown with real plans
   populatePlanSelect();
 }
+
 
 function closeAddPlanPanel() {
   document.getElementById('add-plan-panel').classList.add('hidden');
@@ -367,10 +377,21 @@ function populatePlanSelect() {
 async function addPlanToDate() {
   const planId = document.getElementById('plan-select').value;
 
-  if (!planId || !selectedDateForPlan) {
-  if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Bitte wähle einen Plan!');
+  if (!planId) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Bitte waehle einen Plan.');
+    }
+    return;
   }
+
+  if (!selectedDateForPlan && currentDayDetailDate) {
+    selectedDateForPlan = currentDayDetailDate;
+  }
+
+  if (!isValidDateString(selectedDateForPlan)) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Bitte waehle einen gueltigen Tag.');
+    }
     return;
   }
 
@@ -379,15 +400,15 @@ async function addPlanToDate() {
 
   if (!plan) {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Plan nicht gefunden.');
-  }
+      showEdgeFeedback('error', 'Plan nicht gefunden.');
+    }
     return;
   }
 
   const scheduleEntry = {
-    userId: CURRENT_USER_ID, // Später durch echte User ID ersetzen
+    userId: CURRENT_USER_ID, // Spaeter durch echte User ID ersetzen
     planId: planId,
-    planName: plan.name, // Denormalized für schnellere Anzeige
+    planName: plan.name, // Denormalized fuer schnellere Anzeige
     planType: plan.type, // Store type for styling
     planDuration: plan.duration || 45, // Store duration
     date: selectedDateForPlan,
@@ -397,16 +418,20 @@ async function addPlanToDate() {
 
   try {
     await addDoc(scheduleCollection, scheduleEntry);
-    console.log('✅ Plan added to calendar!');
+    console.log('Plan added to calendar!');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', 'Plan zum Kalender hinzugefuegt.');
+    }
     closeAddPlanPanel();
     await loadSchedule(); // Reload
   } catch (error) {
     console.error('Error adding plan:', error);
-  if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Hinzufügen!');
-  }
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Hinzufuegen.');
+    }
   }
 }
+
 
 async function removePlanFromDate(scheduleId) {
   if (!confirm('Plan wirklich entfernen?')) return;
@@ -450,6 +475,21 @@ function viewCalendarPlanDetails(scheduleId) {
 // ========================================
 // HELPER FUNCTIONS
 // ========================================
+
+function ensureDayDetailModalOpen(dateStr) {
+  const modal = document.getElementById('day-detail-modal');
+  if (!modal) return;
+  if (!modal.classList.contains('active')) {
+    openDayDetailModal(dateStr);
+  }
+}
+
+function isValidDateString(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+  const date = new Date(`${dateStr}T12:00:00`);
+  return !isNaN(date.getTime());
+}
 
 function formatDate(date) {
   const year = date.getFullYear();
@@ -515,9 +555,10 @@ function setupScheduleListener() {
 // DAY DETAIL MODAL
 // ========================================
 
-function openDayDetailModal(dateStr) {
+function openDayDetailModal(dateStr, openAddPanel = false) {
   currentDayDetailDate = dateStr;
-  const date = new Date(dateStr);
+  selectedDateForPlan = dateStr;
+  const date = new Date(`${dateStr}T12:00:00`);
   const dayPlans = getPlansForDate(dateStr);
 
   // Update modal title
@@ -569,21 +610,31 @@ function openDayDetailModal(dateStr) {
     `).join('');
   }
 
+  closeAddPlanPanel();
+
   // Show modal
   document.getElementById('day-detail-modal').classList.add('active');
+
+  if (openAddPanel) {
+    openAddPlanPanel(dateStr);
+  }
 }
+
 
 function closeDayDetailModal() {
   document.getElementById('day-detail-modal').classList.remove('active');
   currentDayDetailDate = null;
+  selectedDateForPlan = null;
+  closeAddPlanPanel();
 }
+
 
 function openAddPlanFromDayDetail() {
   if (currentDayDetailDate) {
-    closeDayDetailModal();
     openAddPlanPanel(currentDayDetailDate);
   }
 }
+
 
 async function removePlanFromDayDetail(scheduleId) {
   if (!confirm('Training wirklich von diesem Tag entfernen?')) return;
