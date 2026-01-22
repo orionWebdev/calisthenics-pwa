@@ -328,6 +328,59 @@ function calculateStats(aggregatedData) {
   };
 }
 
+function computeHybridBalance(days = 14) {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+
+  let strengthMinutes = 0;
+  let cardioMinutes = 0;
+
+  allSessions.forEach(session => {
+    const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
+    if (sessionDate < cutoffDate) return;
+
+    const minutes = Number(session.duration || 0);
+    if (!minutes) return;
+
+    if (session.type === 'strength') {
+      strengthMinutes += minutes;
+    } else if (session.type === 'cardio') {
+      cardioMinutes += minutes;
+    }
+  });
+
+  const totalMinutes = strengthMinutes + cardioMinutes;
+  if (!totalMinutes) {
+    return {
+      strengthMinutes: 0,
+      cardioMinutes: 0,
+      strengthPct: 0,
+      cardioPct: 0,
+      label: 'Keine Daten',
+      status: 'empty'
+    };
+  }
+
+  const strengthPct = Math.round((strengthMinutes / totalMinutes) * 100);
+  const cardioPct = 100 - strengthPct;
+
+  let label = 'Balanced';
+  if (strengthPct >= 60) {
+    label = 'Strength-leaning';
+  } else if (cardioPct >= 60) {
+    label = 'Cardio-leaning';
+  }
+
+  return {
+    strengthMinutes,
+    cardioMinutes,
+    strengthPct,
+    cardioPct,
+    label,
+    status: 'ok'
+  };
+}
+
 // ==================== CARDIO SESSION MODAL ====================
 
 /**

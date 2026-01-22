@@ -190,6 +190,49 @@ function renderTopExercises() {
   `;
 }
 
+function renderHybridBalanceCard() {
+  const container = document.getElementById('hybrid-balance-card');
+  if (!container || typeof computeHybridBalance !== 'function') return;
+
+  const days = 14;
+  const balance = computeHybridBalance(days);
+
+  if (balance.status === 'empty') {
+    container.innerHTML = `
+      <div class="hybrid-balance-card">
+        <div class="hybrid-balance-header">
+          <div>
+            <h3 class="hybrid-balance-title">Hybrid Balance</h3>
+            <p class="hybrid-balance-subtitle">Letzte ${days} Tage</p>
+          </div>
+        </div>
+        <div class="hybrid-balance-empty">Noch keine Daten fuer Hybrid Balance</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="hybrid-balance-card">
+      <div class="hybrid-balance-header">
+        <div>
+          <h3 class="hybrid-balance-title">Hybrid Balance</h3>
+          <p class="hybrid-balance-subtitle">Letzte ${days} Tage</p>
+        </div>
+        <div class="hybrid-balance-label">${balance.label}</div>
+      </div>
+      <div class="hybrid-balance-bar" role="img" aria-label="Strength ${balance.strengthPct} Prozent, Cardio ${balance.cardioPct} Prozent">
+        <div class="hybrid-balance-segment strength" style="width: ${balance.strengthPct}%"></div>
+        <div class="hybrid-balance-segment cardio" style="width: ${balance.cardioPct}%"></div>
+      </div>
+      <div class="hybrid-balance-meta">
+        <span>Strength ${balance.strengthPct}%</span>
+        <span>Cardio ${balance.cardioPct}%</span>
+      </div>
+    </div>
+  `;
+}
+
 // ========================================
 // INITIALIZE DASHBOARD
 // ========================================
@@ -200,6 +243,7 @@ async function initDashboard() {
   await loadDashboardData();
   renderTodayWorkout();
   renderStats();
+  renderHybridBalanceCard();
   renderAchievement();
   renderTopExercises();
 
