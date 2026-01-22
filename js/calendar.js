@@ -3,7 +3,7 @@
 // ========================================
 
 // Calendar State
-let currentCalendarView = 'week'; // 'month' or 'week' - Default: week
+let currentCalendarView = 'month'; // 'month' or 'week' - Default: month
 let currentDate = new Date();
 let scheduleData = []; // Alle geplanten Trainings
 let selectedDateForPlan = null;
@@ -50,10 +50,11 @@ function setCalendarView(view) {
   currentCalendarView = view;
   
   // Update buttons
-  document.querySelectorAll('.calendar-view-btn').forEach(btn => {
+  document.querySelectorAll('.calendar-segmented .segmented-btn').forEach(btn => {
     btn.classList.remove('active');
   });
-  document.querySelector(`[data-view="${view}"]`).classList.add('active');
+  const activeBtn = document.querySelector(`.calendar-segmented [data-view="${view}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
   
   // Show/hide views
   document.getElementById('calendar-month-view').classList.toggle('active', view === 'month');

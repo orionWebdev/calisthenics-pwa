@@ -9,6 +9,15 @@
   --color-secondary-light: #0F2481;
   --color-text: #FFFFFF;
   --color-text-muted: #A0AEC0;
+  --ui-card-bg: rgb(31 41 55);
+  --ui-card-border: rgb(55 65 81);
+  --ui-card-border-hover: rgb(75 85 99);
+  --ui-card-radius: 1rem;
+  --ui-card-padding: 1.25rem;
+  --ui-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  --ui-card-shadow-hover: 0 14px 36px rgba(0, 0, 0, 0.3);
+  --ui-icon-bg: rgba(240, 34, 119, 0.12);
+  --ui-icon-border: rgba(240, 34, 119, 0.25);
   /* Navigation Heights für dynamisches Content-Padding */
   --bottom-nav-height: 72px; /* Base height der Bottom Navigation */
   --mobile-header-height: 64px; /* Base height des Mobile Headers */
@@ -30,6 +39,50 @@ body {
   -webkit-touch-callout: none;
   user-select: none;
 }
+
+/* ========================================
+   UI COMPONENT TOKENS
+   ======================================== */
+
+.ui-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-card-radius);
+  padding: var(--ui-card-padding);
+  box-shadow: var(--ui-card-shadow);
+}
+
+.ui-card:hover {
+  border-color: var(--ui-card-border-hover);
+  box-shadow: var(--ui-card-shadow-hover);
+}
+
+.ui-stat-tile {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-card-radius);
+  padding: 1rem;
+  display: flex;
+  gap: 0.875rem;
+  align-items: center;
+}
+
+.ui-icon-pill {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ui-icon-bg);
+  border: 1px solid var(--ui-icon-border);
+  flex-shrink: 0;
+}
+
+.ui-icon-pill .material-symbols-rounded {
+  color: var(--color-primary);
+}
+
 
 /* Touch-friendly inputs */
 input, textarea, select, button {
@@ -4861,5 +4914,84 @@ input[type="range"]::-moz-range-progress {
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ========================================
+   UI SYSTEM OVERRIDES
+   ======================================== */
+
+.dashboard-card,
+.dashboard-today-card,
+.dashboard-stat-card,
+.plan-card,
+.exercise-card,
+.week-day-card,
+.progress-chart-container,
+.progress-exercise-selector,
+.recent-workouts-section,
+.filter-container,
+.workout-header,
+.set-logger {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-card-radius);
+  box-shadow: var(--ui-card-shadow);
+}
+
+.dashboard-card:hover,
+.dashboard-stat-card:hover,
+.plan-card:hover,
+.exercise-card:hover,
+.week-day-card:hover,
+.recent-workouts-section:hover {
+  border-color: var(--ui-card-border-hover);
+  box-shadow: var(--ui-card-shadow-hover);
+}
+
+.dashboard-today-card {
+  border-color: rgba(240, 34, 119, 0.35);
+}
+
+.progress-stat-card,
+.overview-stat-card,
+.dashboard-stat-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-card-radius);
+  box-shadow: none;
+}
+
+.progress-stat-icon,
+.stat-icon,
+.dashboard-stat-icon,
+.workout-card-icon {
+  background: var(--ui-icon-bg);
+  border: 1px solid var(--ui-icon-border);
+}
+
+.progress-stat-icon .material-symbols-rounded,
+.stat-icon .material-symbols-rounded,
+.dashboard-stat-icon .material-symbols-rounded {
+  color: var(--color-primary);
+}
+
+.segmented-control {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+}
+
+.segmented-btn.active {
+  background: var(--color-primary);
+  box-shadow: 0 6px 16px rgba(240, 34, 119, 0.35);
+}
+
+.calendar-segmented {
+  min-width: 220px;
+}
+
+@media (max-width: 768px) {
+  .calendar-segmented {
+    min-width: 100%;
   }
 }

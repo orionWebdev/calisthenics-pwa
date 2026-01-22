@@ -395,12 +395,14 @@
       
       <!-- Header mit View Switcher -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <div class="flex gap-2 w-full sm:w-auto">
-          <button onclick="setCalendarView('month')" class="calendar-view-btn flex-1 sm:flex-none" data-view="month">
-            <span class="material-symbols-rounded" style="font-size: 20px; vertical-align: middle;">calendar_month</span> Monat
+        <div class="segmented-control calendar-segmented w-full sm:w-auto">
+          <button onclick="setCalendarView('month')" class="segmented-btn active flex-1 sm:flex-none" data-view="month">
+            <span class="material-symbols-rounded">calendar_month</span>
+            <span>Monat</span>
           </button>
-          <button onclick="setCalendarView('week')" class="calendar-view-btn active flex-1 sm:flex-none" data-view="week">
-            <span class="material-symbols-rounded" style="font-size: 20px; vertical-align: middle;">view_week</span> Woche
+          <button onclick="setCalendarView('week')" class="segmented-btn flex-1 sm:flex-none" data-view="week">
+            <span class="material-symbols-rounded">view_week</span>
+            <span>Woche</span>
           </button>
         </div>
       </div>
@@ -443,7 +445,7 @@
       </div>
 
       <!-- Month View -->
-      <div id="calendar-month-view" class="calendar-view hidden">
+      <div id="calendar-month-view" class="calendar-view active">
         <!-- Weekday Headers -->
         <div class="grid grid-cols-7 mb-2" style="background: rgba(255, 255, 255, 0.05); border-radius: 0.5rem;">
           <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Mo</div>
@@ -462,7 +464,7 @@
       </div>
 
       <!-- Week View (Default) -->
-      <div id="calendar-week-view" class="calendar-view active">
+      <div id="calendar-week-view" class="calendar-view hidden">
         <div id="week-grid">
           <!-- Wird von JavaScript gefüllt -->
         </div>
