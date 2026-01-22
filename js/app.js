@@ -13,6 +13,7 @@ const viewTitles = {
   calendar: 'Kalender',
   plans: 'Trainingspläne',
   exercises: 'Übungen',
+  workout: 'Workout',
   profile: 'Profil'
 };
 
@@ -23,6 +24,7 @@ const viewIcons = {
   calendar: 'calendar_month',
   plans: 'assignment',
   exercises: 'fitness_center',
+  workout: 'fitness_center',
   profile: 'account_circle'
 };
 
@@ -78,6 +80,10 @@ function showView(viewName) {
     } else if (typeof initProgress === 'function') {
       initProgress();
     }
+  }
+
+  if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
+    renderWorkoutScreen();
   }
 
   currentView = viewName;
@@ -254,6 +260,10 @@ async function initApp() {
     }
     if (typeof setupScheduleListener === 'function') {
       setupScheduleListener();
+    }
+
+    if (typeof checkActiveWorkout === 'function') {
+      checkActiveWorkout();
     }
 
     console.log('✅ App initialized successfully!');

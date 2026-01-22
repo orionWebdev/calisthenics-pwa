@@ -4654,6 +4654,12 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
+.workout-type-badge.type-cardio {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
 .workout-stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

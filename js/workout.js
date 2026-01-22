@@ -32,7 +32,7 @@ let activeWorkout = null;
 let restTimerInterval = null;
 let restTimerRemaining = 0;
 
-const CURRENT_USER_ID = 'demo-user-123'; // Matches calendar.js and other modules
+const WORKOUT_USER_ID = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
 
 // ==================== LIFECYCLE ====================
 
@@ -41,6 +41,10 @@ const CURRENT_USER_ID = 'demo-user-123'; // Matches calendar.js and other module
  */
 async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = null) {
   try {
+    if (activeWorkout && !confirmReplaceActiveWorkout()) {
+      return;
+    }
+
     // Find the plan
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) {
@@ -87,6 +91,9 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     }
 
     saveActiveWorkout();
+    if (typeof showView === 'function') {
+      showView('workout');
+    }
     renderWorkoutScreen();
 
     console.log('✅ Workout started:', activeWorkout.planName);
@@ -101,6 +108,10 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
  */
 async function startWorkoutFromSession(sessionId) {
   try {
+    if (activeWorkout && !confirmReplaceActiveWorkout()) {
+      return;
+    }
+
     const session = allSessions.find(s => s.id === sessionId);
     if (!session) {
       alert('Session nicht gefunden');
@@ -289,7 +300,7 @@ async function completeWorkout() {
 
     // Create session document
     const sessionData = {
-      userId: CURRENT_USER_ID,
+      userId: WORKOUT_USER_ID,
       type: 'strength',
       date: firebase.firestore.Timestamp.fromDate(workoutDate),
       planId: activeWorkout.planId,
@@ -353,7 +364,23 @@ async function completeWorkout() {
  */
 function renderWorkoutScreen() {
   const container = document.getElementById('workout-screen-container');
-  if (!container || !activeWorkout) return;
+  if (!container) return;
+  if (!activeWorkout) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <span class="material-symbols-rounded">fitness_center</span>
+        </div>
+        <h3 class="empty-state-title">Kein aktives Workout</h3>
+        <p class="empty-state-text">Starte ein Training aus dem Kalender oder einem Plan.</p>
+        <button onclick="showView('plans')" class="empty-state-btn">
+          <span class="material-symbols-rounded">assignment</span>
+          <span>Zu den Plaenen</span>
+        </button>
+      </div>
+    `;
+    return;
+  }
 
   const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
   const progress = calculateProgress();
@@ -774,6 +801,10 @@ function cancelRestTimer() {
   if (timer) timer.remove();
 
   restTimerRemaining = 0;
+}
+
+function confirmReplaceActiveWorkout() {
+  return confirm('Du hast bereits ein aktives Workout. Neues Workout starten und das aktuelle verwerfen?');
 }
 
 // ==================== UTILITIES ====================

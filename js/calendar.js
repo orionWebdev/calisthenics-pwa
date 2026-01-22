@@ -265,12 +265,22 @@ function renderWeekView() {
                   <span class="text-xs text-gray-400">${plan.planDuration || 45} Min</span>
                 </div>
               </div>
-              <button
-                onclick="event.stopPropagation(); removePlanFromDate('${plan.id}')"
-                class="text-red-400 hover:text-red-300 transition-colors ml-2"
-              >
-                <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
-              </button>
+              <div class="flex items-center gap-2 ml-2">
+                <button
+                  onclick="event.stopPropagation(); startScheduledWorkout('${plan.id}')"
+                  class="calendar-start-btn"
+                  title="Workout starten"
+                >
+                  <span class="material-symbols-rounded" style="font-size: 20px;">play_arrow</span>
+                </button>
+                <button
+                  onclick="event.stopPropagation(); removePlanFromDate('${plan.id}')"
+                  class="text-red-400 hover:text-red-300 transition-colors"
+                  title="Training entfernen"
+                >
+                  <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
+                </button>
+              </div>
             </div>
           `).join('')
         }
@@ -456,6 +466,25 @@ function getPlansForDate(dateStr) {
   );
 }
 
+function startScheduledWorkout(scheduleId) {
+  const scheduleEntry = scheduleData.find(s => s.id === scheduleId);
+  if (!scheduleEntry) {
+    alert('Training nicht gefunden');
+    return;
+  }
+
+  if (typeof startWorkoutFromPlan !== 'function') {
+    alert('Workout-Engine nicht geladen');
+    return;
+  }
+
+  if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
+    closeDayDetailModal();
+  }
+
+  startWorkoutFromPlan(scheduleEntry.planId, scheduleEntry.date, scheduleEntry.id);
+}
+
 // ========================================
 // REAL-TIME LISTENER
 // ========================================
@@ -505,13 +534,22 @@ function openDayDetailModal(dateStr) {
             </span>
           </div>
         </div>
-        <button
-          onclick="event.stopPropagation(); removePlanFromDayDetail('${plan.id}')"
-          class="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all p-2 rounded-lg ml-3"
-          title="Training entfernen"
-        >
-          <span class="material-symbols-rounded" style="font-size: 24px;">delete</span>
-        </button>
+        <div class="flex items-center gap-2 ml-3">
+          <button
+            onclick="event.stopPropagation(); startScheduledWorkout('${plan.id}')"
+            class="calendar-start-btn"
+            title="Workout starten"
+          >
+            <span class="material-symbols-rounded" style="font-size: 20px;">play_arrow</span>
+          </button>
+          <button
+            onclick="event.stopPropagation(); removePlanFromDayDetail('${plan.id}')"
+            class="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all p-2 rounded-lg"
+            title="Training entfernen"
+          >
+            <span class="material-symbols-rounded" style="font-size: 24px;">delete</span>
+          </button>
+        </div>
       </div>
     `).join('');
   }
