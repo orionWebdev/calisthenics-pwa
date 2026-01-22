@@ -471,8 +471,23 @@
     </div>
 
     <!-- PROGRESS VIEW -->
+    <!-- PROGRESS VIEW V2 -->
     <div id="view-progress" class="view hidden">
-      <p class="text-gray-400">Coming soon in Session 5...</p>
+      <!-- Progress Header -->
+      <div class="progress-header">
+        <h2 class="progress-page-title">Fortschritt</h2>
+        <p class="progress-page-subtitle">Kraft- und Cardio-Tracking</p>
+      </div>
+
+      <!-- Segmented Control -->
+      <div id="progress-segmented-control" class="progress-section">
+        <!-- Wird von JS gefüllt -->
+      </div>
+
+      <!-- Tab Content -->
+      <div id="progress-tab-content" class="progress-tab-content">
+        <!-- Wird von JS gefüllt -->
+      </div>
     </div>
 
     <!-- PROFILE VIEW -->
@@ -1019,9 +1034,133 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
+  <!-- ========================================
+       PROGRESS V2 MODALS & SHEETS
+       ======================================== -->
+
+  <!-- Add Cardio Session Modal -->
+  <div id="add-cardio-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Cardio Session hinzufügen</h3>
+        <button onclick="closeAddCardioModal()" class="modal-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body space-y-4">
+        <!-- Activity Type -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Aktivität *</label>
+          <select id="cardio-activity-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+            <option value="run">🏃 Laufen</option>
+            <option value="bike">🚴 Radfahren</option>
+            <option value="swim">🏊 Schwimmen</option>
+            <option value="row">🚣 Rudern</option>
+            <option value="other">💪 Sonstiges</option>
+          </select>
+        </div>
+
+        <!-- Duration -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Dauer (Minuten) *</label>
+          <input
+            type="number"
+            id="cardio-duration"
+            placeholder="z.B. 30"
+            min="1"
+            step="1"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500"
+            oninput="updateCardioLivePace()"
+          />
+        </div>
+
+        <!-- Distance (optional) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Distanz (km) <span class="text-gray-400">(optional)</span></label>
+          <input
+            type="number"
+            id="cardio-distance"
+            placeholder="z.B. 5.0"
+            min="0"
+            step="0.1"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500"
+            oninput="updateCardioLivePace()"
+          />
+        </div>
+
+        <!-- Computed Pace (read-only) -->
+        <div class="cardio-pace-display">
+          <div class="pace-label">
+            <span class="material-symbols-rounded">speed</span>
+            <span>Pace</span>
+          </div>
+          <div id="cardio-computed-pace" class="pace-value">-</div>
+        </div>
+
+        <!-- Notes (optional) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Notizen <span class="text-gray-400">(optional)</span></label>
+          <textarea
+            id="cardio-notes"
+            rows="3"
+            placeholder="Wie hast du dich gefühlt?"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeAddCardioModal()" class="modal-cancel-btn">
+          <span>Abbrechen</span>
+        </button>
+        <button onclick="saveCardioSession()" class="modal-save-btn">
+          <span class="material-symbols-rounded">check</span>
+          <span>Speichern</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise Picker Bottom Sheet -->
+  <div id="exercise-picker-sheet" class="bottom-sheet">
+    <div class="sheet-content">
+      <div class="sheet-header">
+        <h3 class="sheet-title">Übung auswählen</h3>
+        <button onclick="closePickerSheet('exercise-picker-sheet')" class="sheet-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div id="exercise-picker-list" class="sheet-list">
+        <!-- Wird von JS gefüllt -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Picker Bottom Sheet -->
+  <div id="activity-picker-sheet" class="bottom-sheet">
+    <div class="sheet-content">
+      <div class="sheet-header">
+        <h3 class="sheet-title">Aktivität auswählen</h3>
+        <button onclick="closePickerSheet('activity-picker-sheet')" class="sheet-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div id="activity-picker-list" class="sheet-list">
+        <!-- Wird von JS gefüllt -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="session-toast" class="session-toast">
+    <!-- Wird von JS gefüllt -->
+  </div>
+
   <!-- App Scripts -->
   <script src="js/firebase.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/checkAllowlist.js"></script>
   <script src="js/data.js"></script>
   <script src="js/bottomSheet.js"></script>
   <script src="js/modalSwipe.js"></script>
@@ -1029,6 +1168,11 @@
   <script src="js/exercises.js"></script>
   <script src="js/plans.js"></script>
   <script src="js/calendar.js"></script>
+  <script src="js/sessions.js"></script>
+  <script src="js/progressv2.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/createDemoProgress.js"></script>
+  <script src="js/createDemoSessions.js"></script>
   <script src="js/app.js"></script>
 
 </body>

@@ -71,6 +71,15 @@ function showView(viewName) {
     loadSchedule();
   }
 
+  // Initialize progress page when first opened
+  if (viewName === 'progress') {
+    if (typeof initProgressV2 === 'function') {
+      initProgressV2();
+    } else if (typeof initProgress === 'function') {
+      initProgress();
+    }
+  }
+
   currentView = viewName;
 }
 
