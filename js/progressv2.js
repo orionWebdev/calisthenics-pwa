@@ -3,6 +3,9 @@
 // ========================================
 
 let exercisesData = [];
+let exercisesLoaded = false;
+let recentWorkoutsExpanded = false;
+let currentOverviewPeriod = 7;
 
 // ==================== INIT ====================
 
@@ -38,10 +41,12 @@ async function initProgressV2() {
 async function loadExercisesForProgressV2() {
   try {
     exercisesData = await getAllDocs(exercisesCollection);
+    exercisesLoaded = true;
     console.log(`✅ Loaded ${exercisesData.length} exercises`);
     return exercisesData;
   } catch (error) {
     console.error('❌ Error loading exercises:', error);
+    exercisesLoaded = false;
     return [];
   }
 }
@@ -130,6 +135,16 @@ function renderOverviewTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
 
+  if (!sessionsLoaded) {
+    container.innerHTML = `
+      <div class="progress-loading">
+        <div class="spinner"></div>
+        <p>Lade Daten...</p>
+      </div>
+    `;
+    return;
+  }
+
   if (allSessions.length === 0) {
     container.innerHTML = `
       <div class="progress-empty-state">
@@ -148,32 +163,24 @@ function renderOverviewTab() {
   }
 
   // Calculate stats
-  const stats7d = calculateOverviewStats(7);
-  const stats30d = calculateOverviewStats(30);
+  const currentStats = calculateOverviewStats(currentOverviewPeriod);
 
   container.innerHTML = `
     <div class="overview-section">
       <div class="overview-period-selector">
-        <button class="period-btn active" onclick="switchOverviewPeriod(7)" data-period="7">
+        <button class="period-btn ${currentOverviewPeriod === 7 ? 'active' : ''}" onclick="switchOverviewPeriod(7)" data-period="7">
           7 Tage
         </button>
-        <button class="period-btn" onclick="switchOverviewPeriod(30)" data-period="30">
+        <button class="period-btn ${currentOverviewPeriod === 30 ? 'active' : ''}" onclick="switchOverviewPeriod(30)" data-period="30">
           30 Tage
         </button>
       </div>
 
       <div id="overview-stats-container">
-        ${renderOverviewStatsHTML(stats7d)}
+        ${renderOverviewStatsHTML(currentStats)}
       </div>
 
-      <!-- Quick Actions -->
-      <div class="overview-quick-actions">
-        <h3 class="section-subtitle">Schnellzugriff</h3>
-        <button onclick="openAddCardioModal()" class="quick-action-btn">
-          <span class="material-symbols-rounded">directions_run</span>
-          <span>Cardio Session hinzufügen</span>
-        </button>
-      </div>
+      ${renderRecentWorkoutsHTML()}
     </div>
   `;
 }
@@ -225,6 +232,7 @@ function renderOverviewStatsHTML(stats) {
 }
 
 function switchOverviewPeriod(days) {
+  currentOverviewPeriod = days;
   const stats = calculateOverviewStats(days);
   const container = document.getElementById('overview-stats-container');
   if (container) {
@@ -241,11 +249,398 @@ function switchOverviewPeriod(days) {
   });
 }
 
+function renderRecentWorkoutsHTML() {
+  const sortedSessions = [...allSessions].sort((a, b) => {
+    const dateA = getSessionDate(a);
+    const dateB = getSessionDate(b);
+    return dateB - dateA;
+  });
+
+  const visibleSessions = recentWorkoutsExpanded ? sortedSessions : sortedSessions.slice(0, 3);
+  const hasMore = sortedSessions.length > 3;
+
+  const listHTML = visibleSessions.length === 0
+    ? `
+      <div class="recent-workouts-empty">
+        <span class="material-symbols-rounded">history</span>
+        <p>Noch keine getrackten Workouts</p>
+      </div>
+    `
+    : visibleSessions.map((session) => {
+      const icon = getSessionIcon(session);
+      const color = getSessionColor(session);
+      const title = getSessionTitle(session);
+      const date = getSessionDate(session);
+      const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
+
+      return `
+        <div class="recent-workout-card" onclick="openRecentWorkoutModal('${session.id}')">
+          <div class="workout-card-icon" style="background: ${color}20;">
+            <span class="material-symbols-rounded" style="color: ${color};">${icon}</span>
+          </div>
+          <div class="workout-card-content">
+            <div class="workout-card-title">${title}</div>
+            <div class="workout-card-meta">${formatShortDate(date)} · ${duration}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  return `
+    <div class="recent-workouts-section">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="section-subtitle">Zuletzt getrackte Workouts</h3>
+        ${hasMore ? `
+          <button class="recent-workouts-toggle" onclick="toggleRecentWorkouts()">
+            <span>${recentWorkoutsExpanded ? 'Weniger anzeigen' : 'Alle anzeigen'}</span>
+            <span class="material-symbols-rounded" style="transform: ${recentWorkoutsExpanded ? 'rotate(180deg)' : 'none'};">expand_more</span>
+          </button>
+        ` : ''}
+      </div>
+      <div>
+        ${listHTML}
+      </div>
+    </div>
+  `;
+}
+
+function toggleRecentWorkouts() {
+  recentWorkoutsExpanded = !recentWorkoutsExpanded;
+  renderOverviewTab();
+}
+
+function getSessionDate(session) {
+  if (session?.date?.toDate) {
+    return session.date.toDate();
+  }
+  return new Date(session.date);
+}
+
+function getSessionTitle(session) {
+  if (session.type === 'cardio') {
+    return ACTIVITY_TYPES[session.activityType]?.name || 'Cardio';
+  }
+  return session.planName || 'Krafttraining';
+}
+
+function getSessionIcon(session) {
+  if (session.type === 'cardio') {
+    return ACTIVITY_TYPES[session.activityType]?.icon || 'directions_run';
+  }
+  return 'fitness_center';
+}
+
+function getSessionColor(session) {
+  if (session.type === 'cardio') {
+    return ACTIVITY_TYPES[session.activityType]?.color || '#3b82f6';
+  }
+  return '#ef4444';
+}
+
+function openRecentWorkoutModal(sessionId) {
+  const session = allSessions.find((s) => s.id === sessionId);
+  if (!session) {
+    showErrorMessage('Workout nicht gefunden');
+    return;
+  }
+
+  const date = getSessionDate(session);
+  const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
+  const title = getSessionTitle(session);
+
+  const summary = session.type === 'cardio'
+    ? renderCardioSummary(session)
+    : renderStrengthSummary(session);
+
+  const content = `
+    <div class="workout-detail-modal">
+      <div class="workout-detail-header">
+        <div class="workout-type-badge type-${session.type}">
+          ${session.type === 'cardio' ? 'Cardio' : 'Kraft'}
+        </div>
+        <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
+          ${formatFullDateDisplay(date)}
+        </div>
+      </div>
+
+      <div class="workout-stats-grid">
+        <div class="workout-stat">
+          <span class="material-symbols-rounded">schedule</span>
+          <div class="workout-stat-value">${duration}</div>
+          <div class="workout-stat-label">Dauer</div>
+        </div>
+        ${summary}
+      </div>
+
+      <div class="workout-modal-actions">
+        <button onclick="startWorkoutAgainFromSession('${session.id}')" class="btn-primary">
+          <span class="material-symbols-rounded">play_arrow</span>
+          <span>Erneut starten</span>
+        </button>
+        <button onclick="viewWorkoutDetailsFromSession('${session.id}')" class="btn-secondary">
+          <span class="material-symbols-rounded">info</span>
+          <span>Details ansehen</span>
+        </button>
+        <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">
+          <span class="material-symbols-rounded">delete</span>
+          <span>Loeschen</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  if (typeof openGenericModal === 'function') {
+    openGenericModal(title, content);
+  } else {
+    alert('Modal nicht verfuegbar');
+  }
+}
+
+function renderStrengthSummary(session) {
+  const exerciseCount = session.exercises?.length || 0;
+  const totalSets = session.exercises?.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0) || 0;
+  const totalReps = session.exercises?.reduce((sum, ex) => {
+    const reps = ex.sets?.reduce((setSum, set) => setSum + (set.reps || 0), 0) || 0;
+    return sum + reps;
+  }, 0) || 0;
+
+  return `
+    <div class="workout-stat">
+      <span class="material-symbols-rounded">fitness_center</span>
+      <div class="workout-stat-value">${exerciseCount}</div>
+      <div class="workout-stat-label">Uebungen</div>
+    </div>
+    <div class="workout-stat">
+      <span class="material-symbols-rounded">repeat</span>
+      <div class="workout-stat-value">${totalSets}</div>
+      <div class="workout-stat-label">Saetze</div>
+    </div>
+    <div class="workout-stat">
+      <span class="material-symbols-rounded">trending_up</span>
+      <div class="workout-stat-value">${totalReps}</div>
+      <div class="workout-stat-label">Reps</div>
+    </div>
+  `;
+}
+
+function renderCardioSummary(session) {
+  const distance = session.distanceKm ? `${session.distanceKm} km` : '-';
+  const pace = session.pace ? formatPace(session.pace) : '-';
+
+  return `
+    <div class="workout-stat">
+      <span class="material-symbols-rounded">straighten</span>
+      <div class="workout-stat-value">${distance}</div>
+      <div class="workout-stat-label">Distanz</div>
+    </div>
+    <div class="workout-stat">
+      <span class="material-symbols-rounded">speed</span>
+      <div class="workout-stat-value">${pace}</div>
+      <div class="workout-stat-label">Pace</div>
+    </div>
+    <div class="workout-stat">
+      <span class="material-symbols-rounded">directions_run</span>
+      <div class="workout-stat-value">${ACTIVITY_TYPES[session.activityType]?.name || 'Cardio'}</div>
+      <div class="workout-stat-label">Typ</div>
+    </div>
+  `;
+}
+
+function startWorkoutAgainFromSession(sessionId) {
+  const session = allSessions.find((s) => s.id === sessionId);
+  if (!session) {
+    showErrorMessage('Workout nicht gefunden');
+    return;
+  }
+
+  if (typeof closeGenericModal === 'function') {
+    closeGenericModal();
+  }
+
+  if (session.type === 'cardio') {
+    prefillCardioFromSession(session);
+    return;
+  }
+
+  if (typeof startWorkoutFromSession === 'function') {
+    startWorkoutFromSession(sessionId);
+  } else {
+    showErrorMessage('Workout-Engine nicht geladen');
+  }
+}
+
+function viewWorkoutDetailsFromSession(sessionId) {
+  const session = allSessions.find((s) => s.id === sessionId);
+  if (!session) {
+    showErrorMessage('Workout nicht gefunden');
+    return;
+  }
+
+  if (typeof closeGenericModal === 'function') {
+    closeGenericModal();
+  }
+
+  if (session.type === 'cardio') {
+    openCardioDetailModal(session);
+    return;
+  }
+
+  if (typeof openWorkoutDetailModal === 'function') {
+    openWorkoutDetailModal(sessionId);
+  } else {
+    showErrorMessage('Detailansicht nicht verfuegbar');
+  }
+}
+
+function openCardioDetailModal(session) {
+  const date = getSessionDate(session);
+  const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
+  const distance = session.distanceKm ? `${session.distanceKm} km` : '-';
+  const pace = session.pace ? formatPace(session.pace) : '-';
+  const activity = ACTIVITY_TYPES[session.activityType]?.name || 'Cardio';
+
+  const content = `
+    <div class="workout-detail-modal">
+      <div class="workout-detail-header">
+        <div class="workout-type-badge type-cardio">Cardio</div>
+        <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
+          ${formatFullDateDisplay(date)}
+        </div>
+      </div>
+      <div class="workout-stats-grid">
+        <div class="workout-stat">
+          <span class="material-symbols-rounded">schedule</span>
+          <div class="workout-stat-value">${duration}</div>
+          <div class="workout-stat-label">Dauer</div>
+        </div>
+        <div class="workout-stat">
+          <span class="material-symbols-rounded">straighten</span>
+          <div class="workout-stat-value">${distance}</div>
+          <div class="workout-stat-label">Distanz</div>
+        </div>
+        <div class="workout-stat">
+          <span class="material-symbols-rounded">speed</span>
+          <div class="workout-stat-value">${pace}</div>
+          <div class="workout-stat-label">Pace</div>
+        </div>
+      </div>
+      <div class="workout-exercises">
+        <h4 class="workout-section-title">Aktivitaet</h4>
+        <p class="text-sm text-gray-300">${activity}</p>
+      </div>
+      ${session.notes ? `
+        <div class="workout-exercises">
+          <h4 class="workout-section-title">Notizen</h4>
+          <p class="text-sm text-gray-300">${session.notes}</p>
+        </div>
+      ` : ''}
+      <div class="workout-modal-actions">
+        <button onclick="startWorkoutAgainFromSession('${session.id}')" class="btn-primary">
+          <span class="material-symbols-rounded">play_arrow</span>
+          <span>Erneut starten</span>
+        </button>
+        <button onclick="closeGenericModal()" class="btn-secondary">
+          <span class="material-symbols-rounded">close</span>
+          <span>Schliessen</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  if (typeof openGenericModal === 'function') {
+    openGenericModal(activity, content);
+  } else {
+    alert('Modal nicht verfuegbar');
+  }
+}
+
+function prefillCardioFromSession(session) {
+  if (typeof openAddCardioModal !== 'function') {
+    showErrorMessage('Cardio-Modal nicht verfuegbar');
+    return;
+  }
+
+  openAddCardioModal();
+
+  setTimeout(() => {
+    const activityInput = document.getElementById('cardio-activity-type');
+    const durationInput = document.getElementById('cardio-duration');
+    const distanceInput = document.getElementById('cardio-distance');
+    const notesInput = document.getElementById('cardio-notes');
+
+    if (activityInput) activityInput.value = session.activityType || 'run';
+    if (durationInput) durationInput.value = session.duration || '';
+    if (distanceInput) distanceInput.value = session.distanceKm || '';
+    if (notesInput) notesInput.value = session.notes || '';
+
+    if (typeof updateCardioLivePace === 'function') {
+      updateCardioLivePace();
+    }
+  }, 0);
+}
+
+function formatFullDateDisplay(date) {
+  const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  const months = ['Januar', 'Februar', 'Maerz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  const dayName = days[date.getDay()];
+  return `${dayName}, ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+async function deleteSessionWithReferences(sessionId) {
+  if (!confirm('Dieses Workout wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.')) {
+    return;
+  }
+
+  const session = allSessions.find((s) => s.id === sessionId);
+  if (!session) {
+    showErrorMessage('Workout nicht gefunden');
+    return;
+  }
+
+  try {
+    await deleteDoc(sessionsCollection, sessionId);
+
+    if (session.scheduleId) {
+      const updatePayload = {
+        completed: false,
+        completedAt: null,
+        sessionId: null
+      };
+      try {
+        await updateDoc(scheduleCollection, session.scheduleId, updatePayload);
+      } catch (error) {
+        console.error('❌ Error clearing schedule reference:', error);
+      }
+    }
+
+    if (typeof closeGenericModal === 'function') {
+      closeGenericModal();
+    }
+
+    await loadSessions();
+    renderCurrentProgressTab();
+    triggerSuccessGlow();
+  } catch (error) {
+    console.error('❌ Error deleting session:', error);
+    showErrorMessage('Fehler beim Loeschen: ' + error.message);
+  }
+}
+
 // ==================== STRENGTH TAB ====================
 
 function renderStrengthTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
+
+  if (!sessionsLoaded || !exercisesLoaded) {
+    container.innerHTML = `
+      <div class="progress-loading">
+        <div class="spinner"></div>
+        <p>Lade Daten...</p>
+      </div>
+    `;
+    return;
+  }
 
   const strengthSessions = allSessions.filter(s => s.type === 'strength');
 
@@ -420,6 +815,16 @@ function renderStrengthChart() {
 function renderCardioTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
+
+  if (!sessionsLoaded) {
+    container.innerHTML = `
+      <div class="progress-loading">
+        <div class="spinner"></div>
+        <p>Lade Daten...</p>
+      </div>
+    `;
+    return;
+  }
 
   const cardioSessions = allSessions.filter(s => s.type === 'cardio');
 
@@ -790,5 +1195,10 @@ window.openActivityPickerSheet = openActivityPickerSheet;
 window.closePickerSheet = closePickerSheet;
 window.selectExercise = selectExercise;
 window.selectActivity = selectActivity;
+window.toggleRecentWorkouts = toggleRecentWorkouts;
+window.openRecentWorkoutModal = openRecentWorkoutModal;
+window.startWorkoutAgainFromSession = startWorkoutAgainFromSession;
+window.viewWorkoutDetailsFromSession = viewWorkoutDetailsFromSession;
+window.deleteSessionWithReferences = deleteSessionWithReferences;
 
 console.log('📊 Progress V2 module loaded');

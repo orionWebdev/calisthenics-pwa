@@ -126,6 +126,17 @@ function renderPlans() {
           }
         </div>
 
+        <!-- Actions -->
+        <div class="plan-card-actions">
+          <button
+            onclick="event.stopPropagation(); startWorkoutFromPlan('${plan.id}')"
+            class="plan-card-start-btn"
+            title="Workout starten"
+          >
+            <span class="material-symbols-rounded" style="font-size: 18px;">play_arrow</span>
+          </button>
+        </div>
+
         <!-- Edit Button -->
         <button
           onclick="event.stopPropagation(); editPlan('${plan.id}')"

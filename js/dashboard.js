@@ -203,8 +203,25 @@ function initDashboard() {
 // ========================================
 
 function startWorkout() {
-  // TODO: Implement workout starter
-  alert('🏋️ Workout-Modus kommt bald!\n\nHier startest du dein geplantes Training und kannst Sets/Reps tracken.');
+  const today = new Date();
+  const dateStr = formatDate(today);
+  const userId = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
+
+  if (typeof scheduleData !== 'undefined') {
+    const todayEntry = scheduleData.find((item) => item.date === dateStr && item.userId === userId);
+    if (todayEntry) {
+      if (typeof startWorkoutFromPlan === 'function') {
+        startWorkoutFromPlan(todayEntry.planId, todayEntry.date, todayEntry.id);
+        return;
+      }
+    }
+  }
+
+  if (typeof showView === 'function') {
+    showView('plans');
+  } else {
+    alert('Kein Training fuer heute geplant. Bitte starte einen Plan manuell.');
+  }
 }
 
 // ========================================
@@ -217,3 +234,4 @@ if (document.readyState === 'loading') {
 } else {
   initDashboard();
 }
+

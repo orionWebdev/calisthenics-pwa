@@ -34,6 +34,7 @@
  */
 
 let allSessions = [];
+let sessionsLoaded = false;
 let currentProgressTab = 'overview'; // 'overview', 'strength', 'cardio'
 let selectedExerciseId = null;
 let selectedActivityType = 'run';
@@ -56,12 +57,15 @@ const ACTIVITY_TYPES = {
  */
 async function loadSessions() {
   try {
-    console.log('📊 Loading sessions...');
+    console.log('Loading sessions...');
+    sessionsLoaded = false;
     allSessions = await getAllDocs(sessionsCollection);
-    console.log(`✅ Loaded ${allSessions.length} sessions`);
+    sessionsLoaded = true;
+    console.log(`Loaded ${allSessions.length} sessions`);
     return allSessions;
   } catch (error) {
-    console.error('❌ Error loading sessions:', error);
+    console.error('Error loading sessions:', error);
+    sessionsLoaded = false;
     return [];
   }
 }
