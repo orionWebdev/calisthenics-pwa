@@ -163,7 +163,9 @@ async function confirmDeleteWorkout(sessionId) {
     console.log('✅ Workout deleted');
   } catch (error) {
     console.error('❌ Error deleting workout:', error);
-    alert('Fehler beim Löschen: ' + error.message);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Löschen: ' + error.message);
+  }
   }
 }
 

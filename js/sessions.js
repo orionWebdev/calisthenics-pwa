@@ -506,32 +506,19 @@ async function saveCardioSession() {
  * Triggert Screen Edge Glow Animation (Apple Intelligence Style)
  */
 function triggerSuccessGlow() {
-  const glow = document.getElementById('screen-edge-glow');
-  if (!glow) return;
-
-  // Remove active class if already present
-  glow.classList.remove('active');
-
-  // Trigger reflow to restart animation
-  void glow.offsetWidth;
-
-  // Add active class to start animation
-  glow.classList.add('active');
-
-  // Remove active class after animation completes
-  setTimeout(() => {
-    glow.classList.remove('active');
-  }, 1000);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('success');
+  }
 }
 
 /**
  * Zeigt Fehler-Toast (nur für Fehler behalten wir eine Text-Notification)
  */
 function showErrorMessage(message) {
-  // Für Fehler verwenden wir ein einfaches Alert als Fallback
-  // In einer späteren Version könnte hier eine dedizierte Error-UI kommen
   console.error('❌', message);
-  alert(message);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', message);
+  }
 }
 
 /**

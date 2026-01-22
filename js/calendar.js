@@ -368,7 +368,9 @@ async function addPlanToDate() {
   const planId = document.getElementById('plan-select').value;
 
   if (!planId || !selectedDateForPlan) {
-    alert('Bitte wähle einen Plan!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Bitte wähle einen Plan!');
+  }
     return;
   }
 
@@ -376,7 +378,9 @@ async function addPlanToDate() {
   const plan = allPlans.find(p => p.id === planId);
 
   if (!plan) {
-    alert('Plan nicht gefunden!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Plan nicht gefunden.');
+  }
     return;
   }
 
@@ -398,7 +402,9 @@ async function addPlanToDate() {
     await loadSchedule(); // Reload
   } catch (error) {
     console.error('Error adding plan:', error);
-    alert('Fehler beim Hinzufügen!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Hinzufügen!');
+  }
   }
 }
 
@@ -411,7 +417,9 @@ async function removePlanFromDate(scheduleId) {
     await loadSchedule(); // Reload
   } catch (error) {
     console.error('Error removing plan:', error);
-    alert('Fehler beim Entfernen!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Entfernen.');
+  }
   }
 }
 
@@ -424,7 +432,9 @@ function viewCalendarPlanDetails(scheduleId) {
   const plan = allPlans.find(p => p.id === scheduleEntry.planId);
 
   if (!plan) {
-    alert('Plan nicht gefunden!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Plan nicht gefunden.');
+  }
     return;
   }
 
@@ -470,12 +480,16 @@ function getPlansForDate(dateStr) {
 function startScheduledWorkout(scheduleId) {
   const scheduleEntry = scheduleData.find(s => s.id === scheduleId);
   if (!scheduleEntry) {
-    alert('Training nicht gefunden');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Training nicht gefunden');
+  }
     return;
   }
 
   if (typeof startWorkoutFromPlan !== 'function') {
-    alert('Workout-Engine nicht geladen');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Workout-Engine nicht geladen');
+  }
     return;
   }
 
@@ -587,7 +601,9 @@ async function removePlanFromDayDetail(scheduleId) {
     }
   } catch (error) {
     console.error('Error removing plan:', error);
-    alert('Fehler beim Entfernen!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Entfernen.');
+  }
   }
 }
 

@@ -79,86 +79,27 @@ function renderExercises() {
   }
 
   grid.innerHTML = filteredExercises.map(exercise => {
-    // Hauptmuskel ist der erste in der Liste
     const primaryMuscle = exercise.muscleGroups[0];
-    // Zusätzliche Muskelgruppen
-    const additionalMuscles = exercise.muscleGroups.length - 1;
+    const muscleLabel = muscleNames[primaryMuscle] || 'Muskel';
+    const allMuscles = exercise.muscleGroups.map(muscle => muscleNames[muscle]).filter(Boolean).join(', ');
+    const equipmentList = (exercise.equipment || []).filter(eq => eq && eq !== 'none');
+    const equipmentLabel = equipmentList.length > 0
+      ? equipmentList.map(eq => equipmentNames[eq]).filter(Boolean).join(', ')
+      : 'Kein Equipment';
+    const iconKey = equipmentList[0] || 'none';
+    const iconName = equipmentIcons[iconKey] || 'fitness_center';
 
     return `
-      <div class="exercise-card-compact" id="exercise-card-${exercise.id}" onclick="toggleExerciseCard('${exercise.id}')">
-        ${exercise.imageUrl ?
-          `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="exercise-card-img" onerror="this.src='https://via.placeholder.com/400x100?text=No+Image'">`
-          :
-          `<div class="exercise-card-img-placeholder">
-            <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
-          </div>`
-        }
-
-        <div class="exercise-card-content">
-          <h3 class="exercise-card-title">${exercise.name}</h3>
-
-          <div class="flex items-center justify-between mb-2">
-            <span class="muscle-tag muscle-${primaryMuscle}">${muscleNames[primaryMuscle]}</span>
-            <div class="flex items-center gap-2">
-              ${additionalMuscles > 0 ?
-                `<span class="exercise-card-badge">+${additionalMuscles}</span>`
-                : ''
-              }
-              <span class="text-sm font-bold text-gray-400">Level ${exercise.difficulty}</span>
-            </div>
-          </div>
-
-          <!-- Expandable Details Section -->
-          <div class="exercise-card-details">
-            <div class="border-t border-gray-700 pt-3 mt-3 space-y-3">
-
-              <!-- Alle Muskelgruppen -->
-              ${exercise.muscleGroups.length > 1 ? `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Alle Muskeln:</p>
-                  <div class="flex flex-wrap gap-1">
-                    ${exercise.muscleGroups.map(muscle =>
-                      `<span class="muscle-tag text-xs">${muscleNames[muscle]}</span>`
-                    ).join('')}
-                  </div>
-                </div>
-              ` : ''}
-
-              <!-- Equipment -->
-              ${exercise.equipment && exercise.equipment.length > 0 && exercise.equipment[0] !== 'none' ? `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Equipment:</p>
-                  <div class="flex flex-wrap gap-1">
-                    ${exercise.equipment.map(eq =>
-                      `<span class="text-xs px-2 py-1 bg-gray-700 border border-gray-600 rounded">${equipmentNames[eq]}</span>`
-                    ).join('')}
-                  </div>
-                </div>
-              ` : `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Equipment:</p>
-                  <span class="text-xs px-2 py-1 bg-green-900/20 border border-green-700 rounded text-green-400">Kein Equipment</span>
-                </div>
-              `}
-
-              <!-- Beschreibung -->
-              ${exercise.description ? `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Anleitung:</p>
-                  <p class="text-sm text-gray-300">${exercise.description}</p>
-                </div>
-              ` : ''}
-
-              <!-- Edit Button (immer sichtbar im expanded state) -->
-              <button
-                onclick="event.stopPropagation(); editExercise('${exercise.id}')"
-                class="w-full bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-4 py-2 rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
-              >
-                <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
-                <span>Bearbeiten</span>
-              </button>
-            </div>
-          </div>
+      <div class="exercise-row-card" id="exercise-card-${exercise.id}" onclick="viewExerciseDetails('${exercise.id}')">
+        <div class="exercise-row-icon">
+          <span class="material-symbols-rounded">${iconName}</span>
+        </div>
+        <div class="exercise-row-content">
+          <div class="exercise-row-title">${exercise.name}</div>
+          <div class="exercise-row-meta">${muscleLabel} ? ${equipmentLabel}</div>
+        </div>
+        <div class="exercise-row-chevron">
+          <span class="material-symbols-rounded">chevron_right</span>
         </div>
       </div>
     `;
@@ -167,25 +108,7 @@ function renderExercises() {
 
 // Toggle Exercise Card Expansion
 function toggleExerciseCard(id) {
-  const card = document.getElementById(`exercise-card-${id}`);
-  if (!card) return;
-
-  // Close all other cards first (accordion behavior)
-  document.querySelectorAll('.exercise-card-compact.expanded').forEach(otherCard => {
-    if (otherCard.id !== `exercise-card-${id}`) {
-      otherCard.classList.remove('expanded');
-    }
-  });
-
-  // Toggle current card
-  card.classList.toggle('expanded');
-
-  // Scroll into view if expanded (optional)
-  if (card.classList.contains('expanded')) {
-    setTimeout(() => {
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 100);
-  }
+  viewExerciseDetails(id);
 }
 
 // ========================================
@@ -389,12 +312,16 @@ async function saveExercise() {
 
   // Validation
   if (!name) {
-    alert('Bitte gib einen Namen für die Übung ein!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Bitte gib einen Namen für die Übung ein!');
+  }
     return;
   }
 
   if (muscleGroups.length === 0) {
-    alert('Bitte wähle mindestens eine Muskelgruppe!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Bitte wähle mindestens eine Muskelgruppe!');
+  }
     return;
   }
 
@@ -422,7 +349,9 @@ async function saveExercise() {
     await loadExercises();
   } catch (error) {
     console.error('Error saving exercise:', error);
-    alert('Fehler beim Speichern der Übung!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Speichern der Übung!');
+  }
   }
 }
 
@@ -435,117 +364,102 @@ function viewExerciseDetails(id) {
   if (!exercise) return;
 
   // Modal-Inhalt erstellen
+  const equipmentLabel = (exercise.equipment || []).filter(eq => eq && eq !== 'none')
+    .map(eq => equipmentNames[eq])
+    .filter(Boolean)
+    .join(', ') || 'Kein Equipment';
+  const muscleLabel = exercise.muscleGroups.map(muscle => muscleNames[muscle]).filter(Boolean).join(', ');
+  const executionText = exercise.description || 'Noch keine Ausfuehrung hinterlegt.';
+
   const modalContent = `
-    <div class="space-y-4">
-      <!-- Bild -->
-      ${exercise.imageUrl ?
-        `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-full h-[200px] object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/600x200?text=No+Image'">`
-        :
-        `<div class="w-full h-[200px] bg-gray-800 rounded-lg flex items-center justify-center">
-          <span class="material-symbols-rounded" style="font-size: 80px; color: var(--color-primary);">fitness_center</span>
-        </div>`
-      }
-
-      <!-- Schwierigkeit -->
-      <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-          <span class="material-symbols-rounded" style="font-size: 18px;">star</span>
-          Schwierigkeit
-        </label>
-        <div class="flex gap-1">
-          ${Array(5).fill(0).map((_, i) =>
-            `<span class="material-symbols-rounded" style="font-size: 24px; color: ${i < exercise.difficulty ? 'var(--color-primary)' : '#374151'};">
-              ${i < exercise.difficulty ? 'star' : 'star'}
-            </span>`
-          ).join('')}
+    <div class="exercise-detail">
+      <div class="exercise-detail-hero">
+        <div class="exercise-detail-icon">
+          <span class="material-symbols-rounded">fitness_center</span>
+        </div>
+        <div>
+          <div class="exercise-detail-title">${exercise.name}</div>
+          <div class="exercise-detail-subtitle">${muscleLabel || 'Ganzkoerper'} ? ${equipmentLabel}</div>
         </div>
       </div>
 
-      <!-- Muskelgruppen -->
-      <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-          <span class="material-symbols-rounded" style="font-size: 18px;">sports_gymnastics</span>
-          Trainierte Muskelgruppen
-        </label>
-        <div class="flex flex-wrap gap-2">
-          ${exercise.muscleGroups.map((muscle, index) =>
-            `<span class="muscle-tag ${index === 0 ? 'muscle-primary' : ''}">
-              ${index === 0 ? '<span class="material-symbols-rounded" style="font-size: 14px;">fiber_manual_record</span> ' : ''}${muscleNames[muscle]}
-            </span>`
-          ).join('')}
+      <div class="exercise-detail-meta">
+        <div class="exercise-detail-chip">
+          <span class="material-symbols-rounded">star</span>
+          <span>Level ${exercise.difficulty || 3}</span>
         </div>
-        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
-          <span class="material-symbols-rounded" style="font-size: 12px;">fiber_manual_record</span>
-          Hauptmuskel
-        </p>
+        <div class="exercise-detail-chip">
+          <span class="material-symbols-rounded">sports_gymnastics</span>
+          <span>${muscleLabel || 'Ganzkoerper'}</span>
+        </div>
+        <div class="exercise-detail-chip">
+          <span class="material-symbols-rounded">build</span>
+          <span>${equipmentLabel}</span>
+        </div>
       </div>
 
-      <!-- Equipment -->
-      ${exercise.equipment && exercise.equipment.length > 0 && exercise.equipment[0] !== 'none' ?
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">build</span>
-            Benötigtes Equipment
-          </label>
-          <div class="flex flex-wrap gap-2">
-            ${exercise.equipment.map(eq =>
-              `<span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-700 border border-gray-600 rounded-lg text-sm">
-                <span class="material-symbols-rounded" style="font-size: 16px; color: var(--color-primary);">${equipmentIcons[eq]}</span>
-                ${equipmentNames[eq]}
-              </span>`
-            ).join('')}
+      <div class="exercise-detail-grid">
+        <div class="exercise-detail-block">
+          <div class="exercise-detail-block-title">
+            <span class="material-symbols-rounded">tune</span>
+            <span>Setup</span>
           </div>
-        </div>`
-        :
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">build</span>
-            Benötigtes Equipment
-          </label>
-          <div class="inline-flex items-center gap-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-sm">
-            <span class="material-symbols-rounded" style="font-size: 16px; color: #10b981;">accessibility</span>
-            Kein Equipment
+          <p>Finde eine stabile Ausgangsposition, aktiviere Core und halte Spannung.</p>
+        </div>
+        <div class="exercise-detail-block">
+          <div class="exercise-detail-block-title">
+            <span class="material-symbols-rounded">play_arrow</span>
+            <span>Ausfuehrung</span>
           </div>
-        </div>`
-      }
+          <p>${executionText}</p>
+        </div>
+        <div class="exercise-detail-block">
+          <div class="exercise-detail-block-title">
+            <span class="material-symbols-rounded">error</span>
+            <span>Haeufige Fehler</span>
+          </div>
+          <p>Vermeide Schwung, unkontrollierte Endpositionen und instabile Gelenkwinkel.</p>
+        </div>
+        <div class="exercise-detail-block">
+          <div class="exercise-detail-block-title">
+            <span class="material-symbols-rounded">lightbulb</span>
+            <span>Tipps</span>
+          </div>
+          <p>Halte ein gleichmaessiges Tempo und atme kontrolliert durch die Bewegung.</p>
+        </div>
+        <div class="exercise-detail-block">
+          <div class="exercise-detail-block-title">
+            <span class="material-symbols-rounded">trending_up</span>
+            <span>Progression</span>
+          </div>
+          <p>Mehr Range, langsamere Exzentrik oder Zusatzgewicht erhoehen die Intensitaet.</p>
+        </div>
+        <div class="exercise-detail-block">
+          <div class="exercise-detail-block-title">
+            <span class="material-symbols-rounded">trending_down</span>
+            <span>Regression</span>
+          </div>
+          <p>Kuertzere Range, Assistenz oder leichtere Variante erleichtern den Einstieg.</p>
+        </div>
+      </div>
 
-      <!-- Beschreibung -->
-      ${exercise.description ?
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
-            Anleitung
-          </label>
-          <p class="text-gray-300 leading-relaxed">${exercise.description}</p>
-        </div>`
-        :
-        `<div class="text-gray-500 italic text-center py-4 flex flex-col items-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 32px;">description</span>
-          Keine Anleitung vorhanden
-        </div>`
-      }
-
-      <!-- Action Buttons -->
-      <div class="flex gap-3 pt-4">
+      <div class="exercise-detail-actions">
         <button
           onclick="closeGenericModal(); editExercise('${exercise.id}')"
-          class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+          class="btn-primary"
         >
-          <span class="material-symbols-rounded" style="font-size: 20px;">edit</span>
+          <span class="material-symbols-rounded">edit</span>
           Bearbeiten
         </button>
-        <button
-          onclick="closeGenericModal()"
-          class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
-        >
-          <span class="material-symbols-rounded" style="font-size: 20px;">close</span>
-          Schließen
+        <button onclick="closeGenericModal()" class="btn-secondary">
+          <span class="material-symbols-rounded">close</span>
+          Schliessen
         </button>
       </div>
     </div>
   `;
 
-  // Generic Modal öffnen
+  // Generic Modal ?ffnen öffnen
   openGenericModal(exercise.name, modalContent);
 }
 

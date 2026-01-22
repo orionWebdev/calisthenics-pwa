@@ -373,6 +373,10 @@ function showAuthError(message) {
     errorMessage.textContent = message;
     errorContainer.classList.add('active');
 
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', message);
+    }
+
     // Haptic feedback
     if (typeof triggerHapticFeedback === 'function') {
       triggerHapticFeedback('error');

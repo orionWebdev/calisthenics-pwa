@@ -439,24 +439,31 @@ function renderExercisePicker() {
     return;
   }
 
-  container.innerHTML = filteredExercises.map(exercise => `
-    <div class="exercise-picker-item" onclick="selectExerciseForPlan('${exercise.id}')">
-      <div class="flex items-center gap-3">
-        ${exercise.imageUrl ?
-          `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-12 h-12 object-cover rounded" onerror="this.src='https://via.placeholder.com/48'">`
-          :
-          `<div class="w-12 h-12 bg-gray-700 rounded flex items-center justify-center">
-            <span class="material-symbols-rounded" style="font-size: 24px;">fitness_center</span>
-          </div>`
-        }
-        <div class="flex-1">
-          <h4 class="font-semibold text-sm">${exercise.name}</h4>
-          <p class="text-xs text-gray-400">${exercise.muscleGroups.map(m => muscleNames[m]).join(', ')}</p>
+  container.innerHTML = filteredExercises.map(exercise => {
+    const equipmentList = (exercise.equipment || []).filter(eq => eq && eq !== 'none');
+    const equipmentLabel = equipmentList.length > 0
+      ? equipmentList.map(eq => equipmentNames[eq]).filter(Boolean).join(', ')
+      : 'Kein Equipment';
+    const primaryMuscle = exercise.muscleGroups[0];
+    const muscleLabel = muscleNames[primaryMuscle] || 'Muskel';
+    const iconKey = equipmentList[0] || 'none';
+    const iconName = equipmentIcons[iconKey] || 'fitness_center';
+
+    return `
+      <div class="exercise-row-card is-picker" onclick="selectExerciseForPlan('${exercise.id}')">
+        <div class="exercise-row-icon">
+          <span class="material-symbols-rounded">${iconName}</span>
         </div>
-        <span class="material-symbols-rounded text-primary">add_circle</span>
+        <div class="exercise-row-content">
+          <div class="exercise-row-title">${exercise.name}</div>
+          <div class="exercise-row-meta">${muscleLabel} ? ${equipmentLabel}</div>
+        </div>
+        <button class="exercise-row-action" onclick="event.stopPropagation(); selectExerciseForPlan('${exercise.id}')">
+          <span class="material-symbols-rounded">add_circle</span>
+        </button>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function selectExerciseForPlan(exerciseId) {
@@ -659,12 +666,16 @@ async function savePlan() {
 
   // Validation
   if (!name) {
-    alert('Bitte gib einen Namen für den Plan ein!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Bitte gib einen Namen für den Plan ein!');
+  }
     return;
   }
 
   if (!currentPlan.exercises || currentPlan.exercises.length === 0) {
-    alert('Bitte füge mindestens eine Übung hinzu!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Bitte füge mindestens eine Übung hinzu!');
+  }
     return;
   }
 
@@ -707,7 +718,9 @@ async function savePlan() {
     await loadPlans();
   } catch (error) {
     console.error('Error saving plan:', error);
-    alert('Fehler beim Speichern des Plans!');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Speichern des Plans.');
+  }
   }
 }
 
@@ -721,7 +734,9 @@ function viewPlanDetails(id) {
 
   // Safety check: ensure allExercises is available
   if (typeof allExercises === 'undefined' || !allExercises) {
-    alert('Übungen werden noch geladen. Bitte versuche es gleich nochmal.');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Übungen werden noch geladen. Bitte versuche es gleich nochmal.');
+  }
     return;
   }
 

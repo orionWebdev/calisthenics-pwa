@@ -220,7 +220,9 @@ function startWorkout() {
   if (typeof showView === 'function') {
     showView('plans');
   } else {
-    alert('Kein Training fuer heute geplant. Bitte starte einen Plan manuell.');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Kein Training fuer heute geplant. Bitte starte einen Plan manuell.');
+  }
   }
 }
 

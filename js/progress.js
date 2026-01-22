@@ -624,7 +624,9 @@ async function generateDemoProgressData() {
   }
 
   console.log('✅ Demo progress data generated!');
-  alert('Demo-Daten erstellt! Lade die Seite neu.');
+if (typeof showEdgeFeedback === 'function') {
+  showEdgeFeedback('success', 'Demo-Daten erstellt! Lade die Seite neu.');
+}
 }
 
 // Expose für Console-Testing

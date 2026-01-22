@@ -274,7 +274,9 @@ async function initApp() {
   } catch (error) {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
-    alert('Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+  }
   }
 }
 

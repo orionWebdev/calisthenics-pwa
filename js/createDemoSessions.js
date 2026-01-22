@@ -13,7 +13,9 @@ async function createDemoSessions() {
     const exercises = await getAllDocs(exercisesCollection);
 
     if (exercises.length === 0) {
-      alert('❌ Keine Übungen gefunden! Erstelle zuerst ein paar Übungen.');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', '❌ Keine Übungen gefunden! Erstelle zuerst ein paar Übungen.');
+  }
       return;
     }
 
@@ -110,7 +112,9 @@ async function createDemoSessions() {
     }
 
     console.log(`\n🎉 ${totalSessions} Demo-Sessions erstellt!`);
-    alert(`✅ Demo-Sessions erstellt!\n\n${totalSessions} Sessions (Strength + Cardio)\n\nGehe zur Progress-Seite!`);
+if (typeof showEdgeFeedback === 'function') {
+  showEdgeFeedback('success', `✅ Demo-Sessions erstellt!\n\n${totalSessions} Sessions (Strength + Cardio)\n\nGehe zur Progress-Seite!`);
+}
 
     // Zur Progress-Seite wechseln
     if (typeof showView === 'function') {
@@ -119,7 +123,9 @@ async function createDemoSessions() {
 
   } catch (error) {
     console.error('❌ Fehler beim Erstellen der Demo-Sessions:', error);
-    alert('Fehler: ' + error.message);
+if (typeof showEdgeFeedback === 'function') {
+  showEdgeFeedback('error', 'Fehler: ' + error.message);
+}
   }
 }
 
@@ -155,7 +161,9 @@ async function deleteAllSessions() {
     }
 
     console.log(`✅ Alle ${deleted} Sessions gelöscht`);
-    alert(`✅ Alle ${deleted} Sessions wurden gelöscht.`);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('success', `✅ Alle ${deleted} Sessions wurden gelöscht.`);
+  }
 
     // Progress neu laden
     if (typeof initProgressV2 === 'function') {
@@ -164,7 +172,9 @@ async function deleteAllSessions() {
 
   } catch (error) {
     console.error('❌ Fehler beim Löschen:', error);
-    alert('Fehler: ' + error.message);
+if (typeof showEdgeFeedback === 'function') {
+  showEdgeFeedback('error', 'Fehler: ' + error.message);
+}
   }
 }
 

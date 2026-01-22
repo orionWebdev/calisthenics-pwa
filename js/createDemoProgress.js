@@ -15,7 +15,9 @@ async function createDemoProgressData() {
 
     if (exercises.length === 0) {
       console.error('❌ Keine Übungen gefunden! Erstelle zuerst Übungen.');
-      alert('Keine Übungen gefunden! Bitte erstelle zuerst ein paar Übungen.');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Keine Übungen gefunden! Bitte erstelle zuerst ein paar Übungen.');
+  }
       return;
     }
 
@@ -77,7 +79,9 @@ async function createDemoProgressData() {
     console.log('\n📋 Übungen mit Demo-Daten:');
     demoExercises.forEach(ex => console.log(`  - ${ex.name}`));
 
-    alert(`✅ Demo-Daten erstellt!\n\n${totalEntries} Trainings für ${demoExercises.length} Übungen.\n\nGehe jetzt zur Progress-Seite!`);
+if (typeof showEdgeFeedback === 'function') {
+  showEdgeFeedback('success', `✅ Demo-Daten erstellt!\n\n${totalEntries} Trainings für ${demoExercises.length} Übungen.\n\nGehe jetzt zur Progress-Seite!`);
+}
 
     // Automatisch zur Progress-Seite wechseln
     if (typeof showView === 'function') {
@@ -86,7 +90,9 @@ async function createDemoProgressData() {
 
   } catch (error) {
     console.error('❌ Fehler beim Erstellen der Demo-Daten:', error);
-    alert('Fehler beim Erstellen der Demo-Daten:\n' + error.message);
+if (typeof showEdgeFeedback === 'function') {
+  showEdgeFeedback('error', 'Fehler beim Erstellen der Demo-Daten:\n' + error.message);
+}
   }
 }
 
@@ -123,7 +129,9 @@ async function deleteAllProgressData() {
     }
 
     console.log(`✅ Alle ${deleted} Progress-Einträge gelöscht`);
-    alert(`✅ Alle ${deleted} Progress-Einträge wurden gelöscht.`);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('success', `✅ Alle ${deleted} Progress-Einträge wurden gelöscht.`);
+  }
 
     // Progress-Seite neu laden
     if (typeof initProgress === 'function') {
@@ -132,7 +140,9 @@ async function deleteAllProgressData() {
 
   } catch (error) {
     console.error('❌ Fehler beim Löschen:', error);
-    alert('Fehler beim Löschen:\n' + error.message);
+if (typeof showEdgeFeedback === 'function') {
+  showEdgeFeedback('error', 'Fehler beim Löschen:\n' + error.message);
+}
   }
 }
 

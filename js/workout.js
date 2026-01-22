@@ -51,11 +51,15 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     // Find the plan
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) {
-      alert('Plan nicht gefunden');
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', 'Plan nicht gefunden');
+      }
       return;
     }
     if (!allExercises || allExercises.length === 0) {
-      alert('Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+      }
       return;
     }
 
@@ -106,7 +110,9 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     console.log('✅ Workout started:', activeWorkout.planName);
   } catch (error) {
     console.error('❌ Error starting workout:', error);
-    alert('Fehler beim Starten des Workouts');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Starten des Workouts');
+    }
   }
 }
 
@@ -124,17 +130,23 @@ async function startWorkoutFromSession(sessionId) {
 
     const session = allSessions.find(s => s.id === sessionId);
     if (!session) {
-      alert('Session nicht gefunden');
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', 'Session nicht gefunden');
+      }
       return;
     }
 
     const plan = allPlans.find(p => p.id === session.planId);
     if (!plan) {
-      alert('Plan nicht gefunden');
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', 'Plan nicht gefunden');
+      }
       return;
     }
     if (!allExercises || allExercises.length === 0) {
-      alert('Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+      }
       return;
     }
 
@@ -180,7 +192,9 @@ async function startWorkoutFromSession(sessionId) {
     console.log('✅ Workout restarted from session');
   } catch (error) {
     console.error('❌ Error restarting workout:', error);
-    alert('Fehler beim Neustarten des Workouts');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Neustarten des Workouts');
+    }
   }
 }
 
@@ -383,10 +397,14 @@ async function completeWorkout() {
     // Trigger success animation
     triggerSuccessGlow();
 
-    alert('🎉 Workout gespeichert!');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', 'Workout gespeichert!');
+    }
   } catch (error) {
     console.error('❌ Error completing workout:', error);
-    alert('Fehler beim Speichern des Workouts: ' + error.message);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Speichern des Workouts: ' + error.message);
+    }
   }
 }
 
@@ -639,7 +657,9 @@ function logSetFromInput() {
   const weight = weightInput.value ? parseFloat(weightInput.value) : null;
 
   if (!reps || reps <= 0) {
-    alert('Bitte gib die Anzahl der Wiederholungen ein');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Bitte gib die Anzahl der Wiederholungen ein');
+  }
     repsInput.focus();
     return;
   }
@@ -752,7 +772,9 @@ function goToExercise(index) {
 function goToNextExercise() {
   const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
   if (!currentExercise || currentExercise.completedSets.length === 0) {
-    alert('Bitte logge mindestens einen Satz bevor du weitergehst');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Bitte logge mindestens einen Satz bevor du weitergehst');
+  }
     return;
   }
 
@@ -840,7 +862,9 @@ function cancelRestTimer() {
 }
 
 function confirmReplaceActiveWorkout() {
-  alert('Du hast bereits ein aktives Workout. Bitte fortsetzen oder abbrechen, bevor du ein neues startest.');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Du hast bereits ein aktives Workout. Bitte fortsetzen oder abbrechen.');
+  }
   ensureActiveWorkoutBanner();
   if (typeof showView === 'function') {
     showView('workout');
@@ -885,7 +909,9 @@ function editWorkoutDate() {
 
   // Validate date format
   if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
-    alert('Ungültiges Datumsformat. Bitte verwende YYYY-MM-DD');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Ungueltiges Datumsformat. Bitte verwende YYYY-MM-DD');
+    }
     return;
   }
 

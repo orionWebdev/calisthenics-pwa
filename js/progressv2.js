@@ -392,7 +392,9 @@ function openRecentWorkoutModal(sessionId) {
   if (typeof openGenericModal === 'function') {
     openGenericModal(title, content);
   } else {
-    alert('Modal nicht verfuegbar');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Modal nicht verfuegbar');
+  }
   }
 }
 
@@ -550,7 +552,9 @@ function openCardioDetailModal(session) {
   if (typeof openGenericModal === 'function') {
     openGenericModal(activity, content);
   } else {
-    alert('Modal nicht verfuegbar');
+    if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Modal nicht verfuegbar');
+  }
   }
 }
 
