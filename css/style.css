@@ -882,6 +882,31 @@ input, textarea, select, button {
   transform: scale(0.98);
 }
 
+.exercise-toggle-btn {
+  width: 100%;
+  border: 1px solid var(--ui-card-border);
+  background: var(--ui-card-bg);
+  color: var(--color-text);
+  border-radius: 0.9rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exercise-toggle-btn:hover {
+  border-color: var(--ui-card-border-hover);
+  box-shadow: var(--ui-card-shadow-hover);
+}
+
+.exercise-toggle-btn:active {
+  transform: scale(0.98);
+}
+
 .exercise-row-icon {
   width: 40px;
   height: 40px;
@@ -2185,6 +2210,153 @@ input::placeholder {
   border-color: var(--color-primary);
   box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.3);
 }
+
+/* Compact Plan Row Cards */
+.plan-row-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  min-height: 64px;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.plan-row-card:hover {
+  border-color: var(--ui-card-border-hover);
+  box-shadow: var(--ui-card-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.plan-row-card:active {
+  transform: scale(0.985);
+  background: rgba(240, 34, 119, 0.08);
+  border-color: rgba(240, 34, 119, 0.4);
+}
+
+.plan-row-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 0.85rem;
+  background: var(--ui-icon-bg);
+  border: 1px solid var(--ui-icon-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.plan-row-icon .material-symbols-rounded {
+  font-size: 22px;
+  color: var(--color-primary);
+}
+
+.plan-row-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.plan-row-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-row-meta {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-row-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.plan-row-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  color: #d1d5db;
+}
+
+.plan-row-tag .material-symbols-rounded {
+  font-size: 14px;
+}
+
+.plan-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.plan-row-start-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+}
+
+.plan-row-start-btn:hover {
+  background: #ff3399;
+  transform: translateY(-1px);
+}
+
+.plan-row-start-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.plan-row-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  background: rgba(31, 41, 55, 0.6);
+  color: #cbd5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.plan-row-action-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
 
 .plan-card:hover::before {
   opacity: 1;
@@ -3526,12 +3698,18 @@ input[type="range"]::-moz-range-progress {
   gap: 1rem;
   align-items: flex-start;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .progress-stat-card:hover {
   border-color: rgb(75 85 99);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.progress-stat-card.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(240, 34, 119, 0.2);
 }
 
 .progress-stat-icon {
@@ -3574,6 +3752,21 @@ input[type="range"]::-moz-range-progress {
   border-radius: 1rem;
   padding: 1.5rem;
   min-height: 400px;
+}
+
+.progress-chart-container.chart-animating {
+  animation: chartFadeIn 0.35s ease;
+}
+
+@keyframes chartFadeIn {
+  from {
+    opacity: 0.4;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .progress-chart-header {
@@ -3694,7 +3887,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .progress-stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .progress-stat-card {
@@ -3806,6 +3999,77 @@ input[type="range"]::-moz-range-progress {
   gap: 1.5rem;
 }
 
+.hybrid-balance-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.hybrid-balance-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hybrid-balance-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+}
+
+.hybrid-balance-subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.hybrid-balance-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  background: rgba(75, 85, 99, 0.3);
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  white-space: nowrap;
+}
+
+.hybrid-balance-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(55, 65, 81, 0.6);
+  border: 1px solid rgba(55, 65, 81, 0.8);
+}
+
+.hybrid-balance-segment {
+  height: 100%;
+}
+
+.hybrid-balance-segment.strength {
+  background: rgba(240, 34, 119, 0.7);
+}
+
+.hybrid-balance-segment.cardio {
+  background: rgba(59, 130, 246, 0.6);
+}
+
+.hybrid-balance-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.75rem;
+}
+
+.hybrid-balance-empty {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
 .overview-period-selector {
   display: flex;
   gap: 0.5rem;
@@ -3849,11 +4113,17 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   gap: 1rem;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .overview-stat-card:hover {
   border-color: rgb(75 85 99);
   transform: translateY(-2px);
+}
+
+.overview-stat-card.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(240, 34, 119, 0.2);
 }
 
 .stat-icon {
@@ -4009,6 +4279,7 @@ input[type="range"]::-moz-range-progress {
   z-index: 10000;
   display: none;
   align-items: flex-end;
+  justify-content: center;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
 }
@@ -4051,6 +4322,7 @@ input[type="range"]::-moz-range-progress {
 
 .sheet-content {
   width: 100%;
+  max-width: 640px;
   max-height: 70vh;
   background: rgb(17 24 39);
   border-radius: 1.5rem 1.5rem 0 0;
@@ -4463,7 +4735,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .overview-stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .stat-value {
