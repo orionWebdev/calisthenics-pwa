@@ -86,6 +86,10 @@ function showView(viewName) {
     renderWorkoutScreen();
   }
 
+  if (viewName !== 'workout' && typeof ensureActiveWorkoutBanner === 'function') {
+    ensureActiveWorkoutBanner();
+  }
+
   currentView = viewName;
 }
 

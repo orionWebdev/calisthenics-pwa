@@ -3,6 +3,7 @@
 // ========================================
 
 let exercisesData = [];
+let exercisesLoaded = false;
 let recentWorkoutsExpanded = false;
 let currentOverviewPeriod = 7;
 
@@ -40,10 +41,12 @@ async function initProgressV2() {
 async function loadExercisesForProgressV2() {
   try {
     exercisesData = await getAllDocs(exercisesCollection);
+    exercisesLoaded = true;
     console.log(`✅ Loaded ${exercisesData.length} exercises`);
     return exercisesData;
   } catch (error) {
     console.error('❌ Error loading exercises:', error);
+    exercisesLoaded = false;
     return [];
   }
 }
@@ -131,6 +134,16 @@ function renderCurrentProgressTab() {
 function renderOverviewTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
+
+  if (!sessionsLoaded) {
+    container.innerHTML = `
+      <div class="progress-loading">
+        <div class="spinner"></div>
+        <p>Lade Daten...</p>
+      </div>
+    `;
+    return;
+  }
 
   if (allSessions.length === 0) {
     container.innerHTML = `
@@ -368,6 +381,10 @@ function openRecentWorkoutModal(sessionId) {
           <span class="material-symbols-rounded">info</span>
           <span>Details ansehen</span>
         </button>
+        <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">
+          <span class="material-symbols-rounded">delete</span>
+          <span>Loeschen</span>
+        </button>
       </div>
     </div>
   `;
@@ -569,11 +586,61 @@ function formatFullDateDisplay(date) {
   return `${dayName}, ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
+async function deleteSessionWithReferences(sessionId) {
+  if (!confirm('Dieses Workout wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.')) {
+    return;
+  }
+
+  const session = allSessions.find((s) => s.id === sessionId);
+  if (!session) {
+    showErrorMessage('Workout nicht gefunden');
+    return;
+  }
+
+  try {
+    await deleteDoc(sessionsCollection, sessionId);
+
+    if (session.scheduleId) {
+      const updatePayload = {
+        completed: false,
+        completedAt: null,
+        sessionId: null
+      };
+      try {
+        await updateDoc(scheduleCollection, session.scheduleId, updatePayload);
+      } catch (error) {
+        console.error('❌ Error clearing schedule reference:', error);
+      }
+    }
+
+    if (typeof closeGenericModal === 'function') {
+      closeGenericModal();
+    }
+
+    await loadSessions();
+    renderCurrentProgressTab();
+    triggerSuccessGlow();
+  } catch (error) {
+    console.error('❌ Error deleting session:', error);
+    showErrorMessage('Fehler beim Loeschen: ' + error.message);
+  }
+}
+
 // ==================== STRENGTH TAB ====================
 
 function renderStrengthTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
+
+  if (!sessionsLoaded || !exercisesLoaded) {
+    container.innerHTML = `
+      <div class="progress-loading">
+        <div class="spinner"></div>
+        <p>Lade Daten...</p>
+      </div>
+    `;
+    return;
+  }
 
   const strengthSessions = allSessions.filter(s => s.type === 'strength');
 
@@ -748,6 +815,16 @@ function renderStrengthChart() {
 function renderCardioTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
+
+  if (!sessionsLoaded) {
+    container.innerHTML = `
+      <div class="progress-loading">
+        <div class="spinner"></div>
+        <p>Lade Daten...</p>
+      </div>
+    `;
+    return;
+  }
 
   const cardioSessions = allSessions.filter(s => s.type === 'cardio');
 
@@ -1122,5 +1199,6 @@ window.toggleRecentWorkouts = toggleRecentWorkouts;
 window.openRecentWorkoutModal = openRecentWorkoutModal;
 window.startWorkoutAgainFromSession = startWorkoutAgainFromSession;
 window.viewWorkoutDetailsFromSession = viewWorkoutDetailsFromSession;
+window.deleteSessionWithReferences = deleteSessionWithReferences;
 
 console.log('📊 Progress V2 module loaded');

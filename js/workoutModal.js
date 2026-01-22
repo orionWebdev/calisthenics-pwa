@@ -136,7 +136,21 @@ async function confirmDeleteWorkout(sessionId) {
   }
 
   try {
+    const session = allSessions.find(s => s.id === sessionId);
     await deleteDoc(sessionsCollection, sessionId);
+
+    if (session?.scheduleId) {
+      const updatePayload = {
+        completed: false,
+        completedAt: null,
+        sessionId: null
+      };
+      try {
+        await updateDoc(scheduleCollection, session.scheduleId, updatePayload);
+      } catch (error) {
+        console.error('❌ Error clearing schedule reference:', error);
+      }
+    }
     closeWorkoutDetailModal();
     await loadSessions();
 
@@ -158,59 +172,6 @@ async function confirmDeleteWorkout(sessionId) {
  */
 function closeWorkoutDetailModal() {
   closeGenericModal();
-}
-
-/**
- * Open generic modal (reusable modal component)
- */
-function openGenericModal(title, content) {
-  // Check if modal already exists
-  let modal = document.getElementById('generic-modal');
-
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'generic-modal';
-    modal.className = 'modal';
-    modal.onclick = (e) => {
-      if (e.target === modal) {
-        closeGenericModal();
-      }
-    };
-    document.body.appendChild(modal);
-  }
-
-  modal.innerHTML = `
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">${title}</h3>
-        <button onclick="closeGenericModal()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ${content}
-      </div>
-    </div>
-  `;
-
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-/**
- * Close generic modal
- */
-function closeGenericModal() {
-  const modal = document.getElementById('generic-modal');
-  if (modal) {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-    setTimeout(() => {
-      if (modal.parentNode) {
-        modal.parentNode.removeChild(modal);
-      }
-    }, 300);
-  }
 }
 
 /**

@@ -41,6 +41,9 @@ const WORKOUT_USER_ID = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID
  */
 async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = null) {
   try {
+    if (!activeWorkout) {
+      loadActiveWorkout();
+    }
     if (activeWorkout && !confirmReplaceActiveWorkout()) {
       return;
     }
@@ -49,6 +52,10 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) {
       alert('Plan nicht gefunden');
+      return;
+    }
+    if (!allExercises || allExercises.length === 0) {
+      alert('Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
       return;
     }
 
@@ -108,6 +115,9 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
  */
 async function startWorkoutFromSession(sessionId) {
   try {
+    if (!activeWorkout) {
+      loadActiveWorkout();
+    }
     if (activeWorkout && !confirmReplaceActiveWorkout()) {
       return;
     }
@@ -121,6 +131,10 @@ async function startWorkoutFromSession(sessionId) {
     const plan = allPlans.find(p => p.id === session.planId);
     if (!plan) {
       alert('Plan nicht gefunden');
+      return;
+    }
+    if (!allExercises || allExercises.length === 0) {
+      alert('Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
       return;
     }
 
@@ -178,6 +192,7 @@ function loadActiveWorkout() {
     const stored = localStorage.getItem('activeWorkout');
     if (stored) {
       activeWorkout = JSON.parse(stored);
+      localStorage.setItem('activeSessionId', activeWorkout.id);
       console.log('✅ Active workout loaded from localStorage');
       return true;
     }
@@ -185,6 +200,7 @@ function loadActiveWorkout() {
   } catch (error) {
     console.error('❌ Error loading active workout:', error);
     localStorage.removeItem('activeWorkout');
+    localStorage.removeItem('activeSessionId');
     return false;
   }
 }
@@ -196,6 +212,7 @@ function saveActiveWorkout() {
   try {
     if (activeWorkout) {
       localStorage.setItem('activeWorkout', JSON.stringify(activeWorkout));
+      localStorage.setItem('activeSessionId', activeWorkout.id);
     }
   } catch (error) {
     console.error('❌ Error saving active workout:', error);
@@ -207,6 +224,12 @@ function saveActiveWorkout() {
  */
 function checkActiveWorkout() {
   if (loadActiveWorkout()) {
+    showActiveWorkoutBanner();
+  }
+}
+
+function ensureActiveWorkoutBanner() {
+  if (activeWorkout && !document.getElementById('active-workout-banner')) {
     showActiveWorkoutBanner();
   }
 }
@@ -276,6 +299,7 @@ function cancelWorkout(askConfirmation = true) {
 
   activeWorkout = null;
   localStorage.removeItem('activeWorkout');
+  localStorage.removeItem('activeSessionId');
   cancelRestTimer();
 
   showView('dashboard');
@@ -323,22 +347,31 @@ async function completeWorkout() {
     }
 
     // Save session to Firestore
-    const savedSession = await addDoc(sessionsCollection, sessionData);
-    console.log('✅ Session saved:', savedSession.id);
+    const savedSessionId = await addDoc(sessionsCollection, sessionData);
+    console.log('✅ Session saved:', savedSessionId);
 
     // If this workout was from a schedule, mark it as completed
     if (activeWorkout.scheduleId) {
-      await updateDoc(scheduleCollection, activeWorkout.scheduleId, {
+      const scheduleUpdate = {
         completed: true,
-        completedAt: firebase.firestore.Timestamp.now(),
-        sessionId: savedSession.id
-      });
-      console.log('✅ Schedule marked as completed');
+        completedAt: firebase.firestore.Timestamp.now()
+      };
+      if (savedSessionId) {
+        scheduleUpdate.sessionId = savedSessionId;
+      }
+
+      try {
+        await updateDoc(scheduleCollection, activeWorkout.scheduleId, scheduleUpdate);
+        console.log('✅ Schedule marked as completed');
+      } catch (error) {
+        console.error('❌ Error updating schedule entry:', error);
+      }
     }
 
     // Clear active workout
     activeWorkout = null;
     localStorage.removeItem('activeWorkout');
+    localStorage.removeItem('activeSessionId');
     cancelRestTimer();
 
     // Reload sessions
@@ -365,6 +398,9 @@ async function completeWorkout() {
 function renderWorkoutScreen() {
   const container = document.getElementById('workout-screen-container');
   if (!container) return;
+  if (!activeWorkout) {
+    loadActiveWorkout();
+  }
   if (!activeWorkout) {
     container.innerHTML = `
       <div class="empty-state">
@@ -804,7 +840,12 @@ function cancelRestTimer() {
 }
 
 function confirmReplaceActiveWorkout() {
-  return confirm('Du hast bereits ein aktives Workout. Neues Workout starten und das aktuelle verwerfen?');
+  alert('Du hast bereits ein aktives Workout. Bitte fortsetzen oder abbrechen, bevor du ein neues startest.');
+  ensureActiveWorkoutBanner();
+  if (typeof showView === 'function') {
+    showView('workout');
+  }
+  return false;
 }
 
 // ==================== UTILITIES ====================
@@ -886,3 +927,6 @@ function formatDate(date) {
 }
 
 console.log('✅ Workout engine loaded');
+
+window.checkActiveWorkout = checkActiveWorkout;
+window.ensureActiveWorkoutBanner = ensureActiveWorkoutBanner;
