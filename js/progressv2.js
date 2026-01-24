@@ -1195,6 +1195,34 @@ function aggregateOverviewSeries(metric = 'strength', weeks = 8) {
 
 // ==================== BOTTOM SHEETS ====================
 
+let activePickerSheetId = null;
+
+function openPickerSheet(sheetId) {
+  const sheet = document.getElementById(sheetId);
+  if (!sheet) return;
+
+  if (activePickerSheetId === sheetId) {
+    return;
+  }
+
+  if (activePickerSheetId) {
+    closePickerSheet(activePickerSheetId);
+  }
+
+  if (!sheet.dataset.backdropBound) {
+    sheet.addEventListener('click', (event) => {
+      if (event.target === sheet) {
+        closePickerSheet(sheetId);
+      }
+    });
+    sheet.dataset.backdropBound = 'true';
+  }
+
+  sheet.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  activePickerSheetId = sheetId;
+}
+
 function openExercisePickerSheet() {
   const sheet = document.getElementById('exercise-picker-sheet');
   if (!sheet) return;
@@ -1221,7 +1249,7 @@ function openExercisePickerSheet() {
     `).join('');
 
   document.getElementById('exercise-picker-list').innerHTML = listHTML;
-  sheet.classList.add('active');
+  openPickerSheet('exercise-picker-sheet');
 }
 
 function openActivityPickerSheet() {
@@ -1243,13 +1271,25 @@ function openActivityPickerSheet() {
     `).join('');
 
   document.getElementById('activity-picker-list').innerHTML = listHTML;
-  sheet.classList.add('active');
+  openPickerSheet('activity-picker-sheet');
 }
 
 function closePickerSheet(sheetId) {
   const sheet = document.getElementById(sheetId);
   if (sheet) {
     sheet.classList.remove('active');
+  }
+  if (activePickerSheetId === sheetId) {
+    activePickerSheetId = null;
+  }
+  if (!activePickerSheetId) {
+    document.body.style.overflow = '';
+  }
+}
+
+function closeAllPickerSheets() {
+  if (activePickerSheetId) {
+    closePickerSheet(activePickerSheetId);
   }
 }
 
@@ -1407,6 +1447,12 @@ function hideProgressLoading() {
   // Automatically replaced by tab content
 }
 
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && activePickerSheetId) {
+    closePickerSheet(activePickerSheetId);
+  }
+});
+
 // Expose functions
 window.initProgressV2 = initProgressV2;
 window.switchProgressTab = switchProgressTab;
@@ -1416,6 +1462,7 @@ window.switchOverviewPeriod = switchOverviewPeriod;
 window.openExercisePickerSheet = openExercisePickerSheet;
 window.openActivityPickerSheet = openActivityPickerSheet;
 window.closePickerSheet = closePickerSheet;
+window.closeAllPickerSheets = closeAllPickerSheets;
 window.selectExercise = selectExercise;
 window.selectActivity = selectActivity;
 window.toggleRecentWorkouts = toggleRecentWorkouts;

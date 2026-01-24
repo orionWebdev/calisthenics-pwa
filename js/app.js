@@ -90,6 +90,10 @@ function showView(viewName) {
     ensureActiveWorkoutBanner();
   }
 
+  if (viewName !== 'progress' && typeof closeAllPickerSheets === 'function') {
+    closeAllPickerSheets();
+  }
+
   currentView = viewName;
 }
 

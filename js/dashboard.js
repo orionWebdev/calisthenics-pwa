@@ -23,11 +23,14 @@ function renderTodayWorkout() {
   const container = document.getElementById('today-workout-card');
   if (!container) return;
 
-  const today = new Date();
-  const dateStr = formatDate(today);
+  const dateStr = getLocalDateString();
   const userId = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
   const todayEntry = typeof scheduleData !== 'undefined'
-    ? scheduleData.find((item) => item.date === dateStr && item.userId === userId)
+    ? scheduleData.find((item) => {
+        const entryDate = getScheduleDateString(item);
+        const matchesUser = !item.userId || item.userId === userId;
+        return entryDate === dateStr && matchesUser;
+      })
     : null;
 
   const plan = todayEntry && typeof allPlans !== 'undefined'
@@ -68,6 +71,47 @@ function renderTodayWorkout() {
       </div>
     `;
   } else {
+    const planName = todayEntry?.planName || 'Geplantes Training';
+    const planDuration = todayEntry?.planDuration || 45;
+    const planType = todayEntry?.planType || 'mixed';
+    const hasPlanned = Boolean(todayEntry);
+    const isPlanMissing = hasPlanned && !plan;
+
+    if (isPlanMissing) {
+      container.innerHTML = `
+        <div class="dashboard-today-card">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-rounded" style="font-size: 24px; color: var(--color-primary);">today</span>
+            <h3 class="text-lg font-bold">Heute geplant</h3>
+          </div>
+
+          <div class="dashboard-today-content">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <h4 class="text-xl font-bold mb-1">${planName}</h4>
+                <div class="flex items-center gap-4 text-sm text-gray-400">
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-rounded" style="font-size: 16px;">schedule</span>
+                    ${planDuration} min
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <span class="material-symbols-rounded" style="font-size: 16px;">category</span>
+                    ${planType}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <button onclick="showView('calendar')" class="dashboard-start-btn">
+              <span class="material-symbols-rounded">calendar_month</span>
+              <span>Zum Kalender</span>
+            </button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     container.innerHTML = `
       <div class="dashboard-today-card dashboard-today-empty">
         <div class="flex items-center gap-2 mb-3">
@@ -256,15 +300,19 @@ async function initDashboard() {
 // ========================================
 
 function startWorkout() {
-  const today = new Date();
-  const dateStr = formatDate(today);
+  const dateStr = getLocalDateString();
   const userId = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
 
   if (typeof scheduleData !== 'undefined') {
-    const todayEntry = scheduleData.find((item) => item.date === dateStr && item.userId === userId);
+    const todayEntry = scheduleData.find((item) => {
+      const entryDate = getScheduleDateString(item);
+      const matchesUser = !item.userId || item.userId === userId;
+      return entryDate === dateStr && matchesUser;
+    });
     if (todayEntry) {
       if (typeof startWorkoutFromPlan === 'function') {
-        startWorkoutFromPlan(todayEntry.planId, todayEntry.date, todayEntry.id);
+        const entryDate = getScheduleDateString(todayEntry) || dateStr;
+        startWorkoutFromPlan(todayEntry.planId, entryDate, todayEntry.id);
         return;
       }
     }
@@ -284,6 +332,23 @@ function formatDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+function getLocalDateString(baseDate = new Date()) {
+  const local = new Date(baseDate);
+  local.setHours(0, 0, 0, 0);
+  return formatDate(local);
+}
+
+function getScheduleDateString(entry) {
+  if (!entry || !entry.date) return null;
+  if (typeof entry.date === 'string') return entry.date;
+  if (entry.date?.toDate) {
+    return getLocalDateString(entry.date.toDate());
+  }
+  const parsed = new Date(entry.date);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return getLocalDateString(parsed);
 }
 
 async function loadDashboardData() {

@@ -486,13 +486,14 @@ function updateCardioLivePace() {
  */
 async function saveCardioSession() {
   const dateInput = document.getElementById('cardio-date').value;
+  const validDate = getValidDateStringForCardio(dateInput);
   const activityType = document.getElementById('cardio-activity-type').value;
   const duration = parseFloat(document.getElementById('cardio-duration').value);
   const distance = parseFloat(document.getElementById('cardio-distance').value);
   const notes = document.getElementById('cardio-notes').value.trim();
 
   // Validation
-  if (!dateInput) {
+  if (!validDate) {
     showErrorMessage('Bitte wähle ein Datum');
     return;
   }
@@ -511,7 +512,7 @@ async function saveCardioSession() {
     }
 
     // Parse date from input (YYYY-MM-DD)
-    const selectedDate = new Date(dateInput + 'T12:00:00');
+    const selectedDate = new Date(validDate + 'T12:00:00');
     const pace = distance > 0 ? calculatePace(duration, distance) : null;
 
     const cardioSession = {
@@ -594,6 +595,21 @@ function formatDuration(minutes) {
     return mins > 0 ? `${hours}:${mins.toString().padStart(2, '0')} h` : `${hours} h`;
   }
   return `${minutes} min`;
+}
+
+function getValidDateStringForCardio(dateStr) {
+  if (typeof dateStr !== 'string') return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
+
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (Number.isNaN(date.getTime())) return null;
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null;
+  }
+
+  return dateStr;
 }
 
 /**

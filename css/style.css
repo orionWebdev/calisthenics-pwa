@@ -3426,17 +3426,23 @@ input[type="range"]::-moz-range-progress {
 /* Auth Error Toast */
 .auth-error-toast {
   position: fixed;
-  bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 1rem);
+  bottom: calc(var(--bottom-nav-height, 0px) + env(safe-area-inset-bottom, 0) + 1rem);
   left: 50%;
-  transform: translateX(-50%) translateY(150%);
+  transform: translateX(-50%) translateY(200%);
   width: calc(100% - 2rem);
   max-width: 500px;
   z-index: 10001;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .auth-error-toast.active {
   transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .auth-error-content {
@@ -3501,6 +3507,10 @@ input[type="range"]::-moz-range-progress {
     min-height: 100vh;
   }
 
+  .login-screen {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0) + 4.5rem);
+  }
+
   .login-header {
     margin-top: env(safe-area-inset-top, 0);
   }
@@ -3529,7 +3539,7 @@ input[type="range"]::-moz-range-progress {
 
   /* Error toast positioning on mobile */
   .auth-error-toast {
-    bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);
+    bottom: calc(var(--bottom-nav-height, 0px) + env(safe-area-inset-bottom, 0) + 1rem);
     width: calc(100% - 1.5rem);
   }
 }
@@ -4286,6 +4296,34 @@ input[type="range"]::-moz-range-progress {
 
 .bottom-sheet.active {
   display: flex;
+}
+
+/* Progress picker sheets: isolate from multi-select bottom sheet styles */
+#exercise-picker-sheet,
+#activity-picker-sheet {
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#exercise-picker-sheet.active,
+#activity-picker-sheet.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#exercise-picker-sheet .sheet-content,
+#activity-picker-sheet .sheet-content {
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#exercise-picker-sheet.active .sheet-content,
+#activity-picker-sheet.active .sheet-content {
+  transform: translateY(0);
 }
 
 /* Multi-select bottom sheet override */
