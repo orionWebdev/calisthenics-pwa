@@ -31,6 +31,16 @@
  *   notes?: string
  *   createdAt: timestamp
  * }
+ *
+ * Recovery Session:
+ * {
+ *   id: string
+ *   type: 'recovery'
+ *   date: timestamp
+ *   duration: number (minutes, required)
+ *   notes?: string
+ *   createdAt: timestamp
+ * }
  */
 
 let allSessions = [];
@@ -783,6 +793,113 @@ function handleModalBackdropClick(event, modalId) {
     if (modalId === 'add-cardio-modal') {
       closeAddCardioModal();
     }
+    if (modalId === 'add-recovery-modal') {
+      closeAddRecoveryModal();
+    }
+  }
+}
+
+// ==================== RECOVERY SESSION MODAL ====================
+
+function openAddRecoveryModal(dateStr = null) {
+  const modal = document.getElementById('add-recovery-modal');
+  if (!modal) return;
+
+  console.log('🔓 Opening recovery modal...');
+
+  modal.style.display = '';
+
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('recovery-date');
+  const durationInput = document.getElementById('recovery-duration');
+  const notesInput = document.getElementById('recovery-notes');
+
+  if (dateInput) {
+    dateInput.value = dateStr || today;
+  }
+  if (durationInput) durationInput.value = '';
+  if (notesInput) notesInput.value = '';
+
+  modal.classList.add('active');
+  triggerHapticFeedback('light');
+}
+
+function closeAddRecoveryModal() {
+  const modal = document.getElementById('add-recovery-modal');
+  if (!modal) return;
+
+  console.log('🔒 Closing recovery modal...');
+
+  modal.classList.remove('active');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300);
+
+  setTimeout(() => {
+    const dateInput = document.getElementById('recovery-date');
+    const durationInput = document.getElementById('recovery-duration');
+    const notesInput = document.getElementById('recovery-notes');
+
+    if (dateInput) dateInput.value = '';
+    if (durationInput) durationInput.value = '';
+    if (notesInput) notesInput.value = '';
+  }, 300);
+}
+
+async function saveRecoverySession() {
+  const dateInput = document.getElementById('recovery-date').value;
+  const validDate = getValidDateStringForCardio(dateInput);
+  const duration = parseFloat(document.getElementById('recovery-duration').value);
+  const notes = document.getElementById('recovery-notes').value.trim();
+
+  if (!validDate) {
+    showErrorMessage('Bitte wähle ein Datum');
+    return;
+  }
+
+  if (!duration || duration <= 0) {
+    showErrorMessage('Bitte gib eine gültige Dauer ein');
+    return;
+  }
+
+  try {
+    const saveBtn = document.querySelector('#add-recovery-modal .modal-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+    }
+
+    const selectedDate = new Date(validDate + 'T12:00:00');
+
+    const recoverySession = {
+      type: 'recovery',
+      date: firebase.firestore.Timestamp.fromDate(selectedDate),
+      duration,
+      notes: notes || null,
+      createdAt: firebase.firestore.Timestamp.now()
+    };
+
+    await addDoc(sessionsCollection, recoverySession);
+
+    console.log('✅ Recovery session saved');
+
+    closeAddRecoveryModal();
+
+    await loadSessions();
+    if (typeof renderCurrentProgressTab === 'function') {
+      renderCurrentProgressTab();
+    }
+
+    triggerSuccessGlow();
+  } catch (error) {
+    console.error('❌ Error saving recovery session:', error);
+    showErrorMessage('Fehler beim Speichern: ' + error.message);
+  } finally {
+    const saveBtn = document.querySelector('#add-recovery-modal .modal-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<span class="material-symbols-rounded">check</span><span>Speichern</span>';
+    }
   }
 }
 
@@ -794,6 +911,9 @@ window.saveCardioSession = saveCardioSession;
 window.handleModalBackdropClick = handleModalBackdropClick;
 window.triggerSuccessGlow = triggerSuccessGlow;
 window.showErrorMessage = showErrorMessage;
+window.openAddRecoveryModal = openAddRecoveryModal;
+window.closeAddRecoveryModal = closeAddRecoveryModal;
+window.saveRecoverySession = saveRecoverySession;
 window.calculateSessionStrengthVolume = calculateSessionStrengthVolume;
 window.aggregateWeeklyStrengthVolume = aggregateWeeklyStrengthVolume;
 window.aggregateWeeklyCardio = aggregateWeeklyCardio;

@@ -99,7 +99,7 @@ function buildBalanceData(sessions, rangeDays) {
 
     if (session.type === 'cardio') {
       cardioSec += durationSec;
-    } else {
+    } else if (session.type === 'strength') {
       strengthSec += durationSec;
     }
   });
@@ -340,14 +340,18 @@ function renderRecentSessionsList(state) {
   const rows = state.recentSessions.map(session => {
     const date = getSessionDate(session);
     const duration = formatDurationShort(getSessionDurationSeconds(session));
-    const typeLabel = session.type === 'cardio' ? 'Cardio' : 'Strength';
+    const typeLabel = session.type === 'cardio'
+      ? 'Cardio'
+      : session.type === 'recovery'
+        ? 'Recovery'
+        : 'Strength';
     const distance = session.type === 'cardio' && session.distanceKm ? ` | ${Number(session.distanceKm).toFixed(1)} km` : '';
 
     const sessionId = session.id || '';
     return `
       <button class="dashboard-session-item" type="button" onclick="openSessionDetail('${sessionId}')">
         <div class="dashboard-session-main">
-          <div class="dashboard-session-type ${session.type === 'cardio' ? 'cardio' : 'strength'}">${typeLabel}</div>
+          <div class="dashboard-session-type ${session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength'}">${typeLabel}</div>
           <div class="dashboard-session-date">${formatSessionDateTime(date)}</div>
         </div>
         <div class="dashboard-session-meta">

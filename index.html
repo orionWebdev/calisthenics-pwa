@@ -618,6 +618,7 @@
             <select id="plan-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
               <option value="strength">Kraft</option>
               <option value="cardio">Cardio</option>
+              <option value="recovery">Recovery</option>
               <option value="mobility">Mobility</option>
               <option value="skill">Skill</option>
               <option value="hiit">HIIT</option>
@@ -1097,6 +1098,61 @@
           <span>Abbrechen</span>
         </button>
         <button onclick="saveCardioSession()" class="modal-save-btn">
+          <span class="material-symbols-rounded">check</span>
+          <span>Speichern</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Recovery Session Modal -->
+  <div id="add-recovery-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-recovery-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Recovery Session hinzufuegen</h3>
+        <button onclick="closeAddRecoveryModal()" class="modal-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Datum *</label>
+          <input
+            type="date"
+            id="recovery-date"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Dauer (Minuten) *</label>
+          <input
+            type="number"
+            id="recovery-duration"
+            placeholder="z.B. 20"
+            min="1"
+            step="1"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Notizen <span class="text-gray-400">(optional)</span></label>
+          <textarea
+            id="recovery-notes"
+            rows="3"
+            placeholder="Wie fuehlt sich die Recovery an?"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeAddRecoveryModal()" class="modal-cancel-btn">
+          <span>Abbrechen</span>
+        </button>
+        <button onclick="saveRecoverySession()" class="modal-save-btn">
           <span class="material-symbols-rounded">check</span>
           <span>Speichern</span>
         </button>

@@ -56,6 +56,12 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
       }
       return;
     }
+
+    if (plan.type === 'recovery' && typeof openAddRecoveryModal === 'function') {
+      scheduledDate = ensureValidDateString(scheduledDate);
+      openAddRecoveryModal(scheduledDate);
+      return;
+    }
     if (!allExercises || allExercises.length === 0) {
       if (typeof showEdgeFeedback === 'function') {
         showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');

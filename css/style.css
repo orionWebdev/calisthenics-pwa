@@ -9,6 +9,9 @@
   --color-secondary-light: #0F2481;
   --color-text: #FFFFFF;
   --color-text-muted: #A0AEC0;
+  --color-category-strength: #f59e0b;
+  --color-category-cardio: #3b82f6;
+  --color-category-recovery: #22c55e;
   --ui-card-bg: rgb(31 41 55);
   --ui-card-border: rgb(55 65 81);
   --ui-card-border-hover: rgb(75 85 99);
@@ -1255,11 +1258,11 @@ input, textarea, select, button {
 }
 
 .dashboard-balance-segment.strength {
-  background: var(--color-primary);
+  background: var(--color-category-strength);
 }
 
 .dashboard-balance-segment.cardio {
-  background: #3b82f6;
+  background: var(--color-category-cardio);
 }
 
 .dashboard-balance-meta {
@@ -1326,13 +1329,18 @@ input, textarea, select, button {
 }
 
 .dashboard-session-type.strength {
-  background: rgba(240, 34, 119, 0.15);
-  color: #fda4d8;
+  background: color-mix(in srgb, var(--color-category-strength) 20%, transparent);
+  color: var(--color-category-strength);
 }
 
 .dashboard-session-type.cardio {
-  background: rgba(59, 130, 246, 0.15);
-  color: #93c5fd;
+  background: color-mix(in srgb, var(--color-category-cardio) 20%, transparent);
+  color: var(--color-category-cardio);
+}
+
+.dashboard-session-type.recovery {
+  background: color-mix(in srgb, var(--color-category-recovery) 20%, transparent);
+  color: var(--color-category-recovery);
 }
 
 .dashboard-session-date {
@@ -2278,15 +2286,19 @@ input::placeholder {
 
 /* Plan Type Colors in Calendar - Bright, solid bars */
 .calendar-plan-strength {
-  background: #ef4444;
+  background: var(--color-category-strength);
 }
 
 .calendar-plan-cardio {
-  background: #3b82f6;
+  background: var(--color-category-cardio);
 }
 
 .calendar-plan-mobility {
   background: #22c55e;
+}
+
+.calendar-plan-recovery {
+  background: var(--color-category-recovery);
 }
 
 .calendar-plan-skill {
@@ -2623,15 +2635,15 @@ input::placeholder {
 }
 
 .plan-type-badge.type-strength {
-  background: rgba(239, 68, 68, 0.2);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: color-mix(in srgb, var(--color-category-strength) 20%, transparent);
+  color: var(--color-category-strength);
+  border: 1px solid color-mix(in srgb, var(--color-category-strength) 35%, transparent);
 }
 
 .plan-type-badge.type-cardio {
-  background: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: color-mix(in srgb, var(--color-category-cardio) 20%, transparent);
+  color: var(--color-category-cardio);
+  border: 1px solid color-mix(in srgb, var(--color-category-cardio) 35%, transparent);
 }
 
 .plan-type-badge.type-mobility {
@@ -2656,6 +2668,12 @@ input::placeholder {
   background: rgba(219, 39, 119, 0.2);
   color: #f9a8d4;
   border: 1px solid rgba(219, 39, 119, 0.3);
+}
+
+.plan-type-badge.type-recovery {
+  background: color-mix(in srgb, var(--color-category-recovery) 20%, transparent);
+  color: var(--color-category-recovery);
+  border: 1px solid color-mix(in srgb, var(--color-category-recovery) 35%, transparent);
 }
 
 /* Plan Tags */
@@ -4199,6 +4217,16 @@ input[type="range"]::-moz-range-progress {
   box-shadow: 0 2px 8px rgba(240, 34, 119, 0.3);
 }
 
+.segmented-btn.active[data-tab="strength"] {
+  background: var(--color-category-strength);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-category-strength) 40%, transparent);
+}
+
+.segmented-btn.active[data-tab="cardio"] {
+  background: var(--color-category-cardio);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-category-cardio) 40%, transparent);
+}
+
 .segmented-btn:active {
   transform: scale(0.96);
 }
@@ -4266,11 +4294,11 @@ input[type="range"]::-moz-range-progress {
 }
 
 .hybrid-balance-segment.strength {
-  background: rgba(240, 34, 119, 0.7);
+  background: color-mix(in srgb, var(--color-category-strength) 70%, transparent);
 }
 
 .hybrid-balance-segment.cardio {
-  background: rgba(59, 130, 246, 0.6);
+  background: color-mix(in srgb, var(--color-category-cardio) 60%, transparent);
 }
 
 .hybrid-balance-meta {
@@ -4422,16 +4450,20 @@ input[type="range"]::-moz-range-progress {
 .session-dot {
   display: inline-block;
   border-radius: 999px;
-  background: var(--color-primary);
+  background: var(--color-category-strength);
   opacity: 0.9;
 }
 
 .session-dot.strength {
-  background: var(--color-primary);
+  background: var(--color-category-strength);
 }
 
 .session-dot.cardio {
-  background: #3b82f6;
+  background: var(--color-category-cardio);
+}
+
+.session-dot.recovery {
+  background: var(--color-category-recovery);
 }
 
 .session-dot.size-s { width: 4px; height: 4px; }
@@ -5891,15 +5923,21 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-type-badge.type-strength {
-  background: rgba(239, 68, 68, 0.2);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: color-mix(in srgb, var(--color-category-strength) 20%, transparent);
+  color: var(--color-category-strength);
+  border: 1px solid color-mix(in srgb, var(--color-category-strength) 35%, transparent);
 }
 
 .workout-type-badge.type-cardio {
-  background: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: color-mix(in srgb, var(--color-category-cardio) 20%, transparent);
+  color: var(--color-category-cardio);
+  border: 1px solid color-mix(in srgb, var(--color-category-cardio) 35%, transparent);
+}
+
+.workout-type-badge.type-recovery {
+  background: color-mix(in srgb, var(--color-category-recovery) 20%, transparent);
+  color: var(--color-category-recovery);
+  border: 1px solid color-mix(in srgb, var(--color-category-recovery) 35%, transparent);
 }
 
 .workout-stats-grid {

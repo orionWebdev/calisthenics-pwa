@@ -153,11 +153,15 @@ function renderOverviewTab() {
       <div class="progress-empty-state">
         <span class="material-symbols-rounded progress-empty-icon">insights</span>
         <h3>Noch keine Trainings</h3>
-        <p>Starte dein erstes Training oder logge eine Cardio-Session, um deinen Fortschritt zu sehen</p>
+        <p>Starte dein erstes Training oder logge eine Session, um deinen Fortschritt zu sehen</p>
         <div class="progress-empty-actions">
           <button onclick="openAddCardioModal()" class="progress-cta-btn primary">
             <span class="material-symbols-rounded">directions_run</span>
             <span>Cardio Session hinzufügen</span>
+          </button>
+          <button onclick="openAddRecoveryModal()" class="progress-cta-btn secondary">
+            <span class="material-symbols-rounded">self_improvement</span>
+            <span>Recovery Session hinzufuegen</span>
           </button>
         </div>
       </div>
@@ -190,6 +194,17 @@ function renderOverviewTab() {
         ${renderActivityCalendarHTML()}
       </div>
 
+      <div class="progress-empty-actions">
+        <button onclick="openAddCardioModal()" class="progress-cta-btn secondary">
+          <span class="material-symbols-rounded">directions_run</span>
+          <span>Cardio Session</span>
+        </button>
+        <button onclick="openAddRecoveryModal()" class="progress-cta-btn secondary">
+          <span class="material-symbols-rounded">self_improvement</span>
+          <span>Recovery Session</span>
+        </button>
+      </div>
+
       ${renderRecentWorkoutsHTML()}
     </div>
   `;
@@ -199,8 +214,8 @@ function renderOverviewStatsHTML(stats) {
   return `
     <div class="overview-stats-grid">
       <div class="overview-stat-card">
-        <div class="stat-icon" style="background: rgba(240, 34, 119, 0.1);">
-          <span class="material-symbols-rounded" style="color: var(--color-primary);">fitness_center</span>
+        <div class="stat-icon" style="background: color-mix(in srgb, var(--color-category-strength) 20%, transparent);">
+          <span class="material-symbols-rounded" style="color: var(--color-category-strength);">fitness_center</span>
         </div>
         <div class="stat-content">
           <p class="stat-label">Kraft-Sessions</p>
@@ -209,8 +224,8 @@ function renderOverviewStatsHTML(stats) {
       </div>
 
       <div class="overview-stat-card">
-        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1);">
-          <span class="material-symbols-rounded" style="color: #3b82f6;">directions_run</span>
+        <div class="stat-icon" style="background: color-mix(in srgb, var(--color-category-cardio) 20%, transparent);">
+          <span class="material-symbols-rounded" style="color: var(--color-category-cardio);">directions_run</span>
         </div>
         <div class="stat-content">
           <p class="stat-label">Cardio-Sessions</p>
@@ -332,7 +347,7 @@ function renderRecentWorkoutsHTML() {
 
       return `
         <div class="recent-workout-card" onclick="openRecentWorkoutModal('${session.id}')">
-          <div class="workout-card-icon" style="background: ${color}20;">
+          <div class="workout-card-icon" style="background: color-mix(in srgb, ${color} 20%, transparent);">
             <span class="material-symbols-rounded" style="color: ${color};">${icon}</span>
           </div>
           <div class="workout-card-content">
@@ -373,9 +388,27 @@ function getSessionDate(session) {
   return new Date(session.date);
 }
 
+function getCategoryColorVar(type) {
+  if (type === 'cardio') return 'var(--color-category-cardio)';
+  if (type === 'recovery') return 'var(--color-category-recovery)';
+  return 'var(--color-category-strength)';
+}
+
+function getCategoryColorValue(type) {
+  const varName = type === 'cardio'
+    ? '--color-category-cardio'
+    : type === 'recovery'
+      ? '--color-category-recovery'
+      : '--color-category-strength';
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || '#ffffff';
+}
+
 function getSessionTitle(session) {
   if (session.type === 'cardio') {
     return ACTIVITY_TYPES[session.activityType]?.name || 'Cardio';
+  }
+  if (session.type === 'recovery') {
+    return 'Recovery';
   }
   return session.planName || 'Krafttraining';
 }
@@ -384,14 +417,20 @@ function getSessionIcon(session) {
   if (session.type === 'cardio') {
     return ACTIVITY_TYPES[session.activityType]?.icon || 'directions_run';
   }
+  if (session.type === 'recovery') {
+    return 'self_improvement';
+  }
   return 'fitness_center';
 }
 
 function getSessionColor(session) {
   if (session.type === 'cardio') {
-    return ACTIVITY_TYPES[session.activityType]?.color || '#3b82f6';
+    return getCategoryColorVar('cardio');
   }
-  return '#ef4444';
+  if (session.type === 'recovery') {
+    return getCategoryColorVar('recovery');
+  }
+  return getCategoryColorVar('strength');
 }
 
 function openRecentWorkoutModal(sessionId) {
@@ -407,13 +446,15 @@ function openRecentWorkoutModal(sessionId) {
 
   const summary = session.type === 'cardio'
     ? renderCardioSummary(session)
-    : renderStrengthSummary(session);
+    : session.type === 'recovery'
+      ? renderRecoverySummary(session)
+      : renderStrengthSummary(session);
 
   const content = `
     <div class="workout-detail-modal">
       <div class="workout-detail-header">
         <div class="workout-type-badge type-${session.type}">
-          ${session.type === 'cardio' ? 'Cardio' : 'Kraft'}
+          ${session.type === 'cardio' ? 'Cardio' : session.type === 'recovery' ? 'Recovery' : 'Kraft'}
         </div>
         <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
           ${formatFullDateDisplay(date)}
@@ -482,6 +523,10 @@ function renderStrengthSummary(session) {
   `;
 }
 
+function renderRecoverySummary() {
+  return '';
+}
+
 function renderCardioSummary(session) {
   const distance = session.distanceKm ? `${session.distanceKm} km` : '-';
   const pace = session.pace ? formatPace(session.pace) : '-';
@@ -520,6 +565,10 @@ function startWorkoutAgainFromSession(sessionId) {
     prefillCardioFromSession(session);
     return;
   }
+  if (session.type === 'recovery') {
+    prefillRecoveryFromSession(session);
+    return;
+  }
 
   if (typeof startWorkoutFromSession === 'function') {
     startWorkoutFromSession(sessionId);
@@ -541,6 +590,10 @@ function viewWorkoutDetailsFromSession(sessionId) {
 
   if (session.type === 'cardio') {
     openCardioDetailModal(session);
+    return;
+  }
+  if (session.type === 'recovery') {
+    openRecoveryDetailModal(session);
     return;
   }
 
@@ -612,6 +665,41 @@ function openCardioDetailModal(session) {
     if (typeof showEdgeFeedback === 'function') {
     showEdgeFeedback('error', 'Modal nicht verfuegbar');
   }
+  }
+}
+
+function openRecoveryDetailModal(session) {
+  const date = getSessionDate(session);
+  const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
+  const notes = session.notes ? session.notes : '-';
+
+  const content = `
+    <div class="workout-detail-modal">
+      <div class="workout-detail-header">
+        <div class="workout-type-badge type-recovery">Recovery</div>
+        <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
+          ${formatFullDateDisplay(date)}
+        </div>
+      </div>
+      <div class="workout-stats-grid">
+        <div class="workout-stat">
+          <span class="material-symbols-rounded">schedule</span>
+          <div class="workout-stat-value">${duration}</div>
+          <div class="workout-stat-label">Dauer</div>
+        </div>
+        <div class="workout-stat">
+          <span class="material-symbols-rounded">notes</span>
+          <div class="workout-stat-value">${notes}</div>
+          <div class="workout-stat-label">Notizen</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (typeof openGenericModal === 'function') {
+    openGenericModal('Recovery', content);
+  } else {
+    showErrorMessage('Modal nicht verfuegbar');
   }
 }
 
@@ -783,7 +871,7 @@ function renderStrengthStats() {
 
       <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(59, 130, 246, 0.1);">
-          <span class="material-symbols-rounded" style="color: #3b82f6;">analytics</span>
+          <span class="material-symbols-rounded" style="color: var(--color-category-strength);">analytics</span>
         </div>
         <div class="progress-stat-content">
           <p class="progress-stat-label">Durchschnitt</p>
@@ -900,7 +988,7 @@ function drawWeeklyChart(data) {
   // Colors
   const gridColor = 'rgba(75, 85, 99, 0.3)';
   const textColor = '#9ca3af';
-  const lineColor = '#F02277';
+  const lineColor = getCategoryColorValue('strength');
 
   // Grid
   ctx.strokeStyle = gridColor;
@@ -1098,7 +1186,7 @@ function renderCardioStats() {
     <div class="progress-stats-grid">
       <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(59, 130, 246, 0.1);">
-          <span class="material-symbols-rounded" style="color: #3b82f6;">trending_up</span>
+          <span class="material-symbols-rounded" style="color: var(--color-category-cardio);">trending_up</span>
         </div>
         <div class="progress-stat-content">
           <p class="progress-stat-label">Letzte Woche</p>
@@ -1204,7 +1292,7 @@ function drawWeeklyCardioChart(data, metric) {
   // Colors - Blue for cardio
   const gridColor = 'rgba(75, 85, 99, 0.3)';
   const textColor = '#9ca3af';
-  const lineColor = '#3b82f6';
+  const lineColor = getCategoryColorValue('cardio');
 
   // Grid
   ctx.strokeStyle = gridColor;
@@ -1302,11 +1390,37 @@ function getSessionDotMeta(session) {
   const minutes = getSessionDurationMinutes(session);
   const bucket = getDurationBucket(minutes);
   return {
-    type: session.type === 'cardio' ? 'cardio' : 'strength',
+    type: session.type === 'cardio'
+      ? 'cardio'
+      : session.type === 'recovery'
+        ? 'recovery'
+        : 'strength',
     size: bucket.size,
     rank: bucket.rank,
     minutes
   };
+}
+
+function prefillRecoveryFromSession(session) {
+  if (typeof openAddRecoveryModal !== 'function') {
+    showErrorMessage('Recovery-Modal nicht verfuegbar');
+    return;
+  }
+
+  const date = getSessionDate(session);
+  const dateKey = typeof formatDateToYYYYMMDD === 'function'
+    ? formatDateToYYYYMMDD(date)
+    : null;
+
+  openAddRecoveryModal(dateKey);
+
+  setTimeout(() => {
+    const durationInput = document.getElementById('recovery-duration');
+    const notesInput = document.getElementById('recovery-notes');
+
+    if (durationInput) durationInput.value = session.duration || '';
+    if (notesInput) notesInput.value = session.notes || '';
+  }, 0);
 }
 
 /**
@@ -1465,7 +1579,7 @@ function openActivityDaySheet(dateKey) {
 
         return `
           <div class="activity-session-item">
-            <div class="session-item-icon" style="background: ${color}20;">
+            <div class="session-item-icon" style="background: color-mix(in srgb, ${color} 20%, transparent);">
               <span class="material-symbols-rounded" style="color: ${color};">${icon}</span>
             </div>
             <div class="session-item-content">
