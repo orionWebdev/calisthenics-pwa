@@ -4202,27 +4202,42 @@ input[type="range"]::-moz-range-progress {
   margin-bottom: 2px;
 }
 
-/* Session Bars (stacked) */
-.session-bars {
+/* Session Dots */
+.session-dots {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 100%;
-  max-width: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 2px;
+  min-height: 14px;
+  flex-wrap: nowrap;
 }
 
-.session-bar {
-  height: 3px;
-  border-radius: 1.5px;
-  width: 100%;
+.session-dot {
+  display: inline-block;
+  border-radius: 999px;
+  background: var(--color-primary);
+  opacity: 0.9;
 }
 
-.session-bar.strength {
+.session-dot.strength {
   background: var(--color-primary);
 }
 
-.session-bar.cardio {
+.session-dot.cardio {
   background: #3b82f6;
+}
+
+.session-dot.size-s { width: 4px; height: 4px; }
+.session-dot.size-m { width: 6px; height: 6px; }
+.session-dot.size-l { width: 8px; height: 8px; }
+.session-dot.size-xl { width: 10px; height: 10px; }
+.session-dot.size-xxl { width: 12px; height: 12px; }
+
+.session-overflow {
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  margin-left: 2px;
 }
 
 /* Day Detail Sheet Items */

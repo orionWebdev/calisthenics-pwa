@@ -1282,6 +1282,33 @@ function drawWeeklyCardioChart(data, metric) {
 
 // ==================== ACTIVITY CALENDAR ====================
 
+const ACTIVITY_DOT_MAX = 3;
+
+function getSessionDurationMinutes(session) {
+  const raw = Number(session?.duration || 0);
+  if (!Number.isFinite(raw) || raw < 0) return 0;
+  return Math.round(raw);
+}
+
+function getDurationBucket(minutes) {
+  if (minutes <= 20) return { size: 's', rank: 1 };
+  if (minutes <= 40) return { size: 'm', rank: 2 };
+  if (minutes <= 60) return { size: 'l', rank: 3 };
+  if (minutes <= 90) return { size: 'xl', rank: 4 };
+  return { size: 'xxl', rank: 5 };
+}
+
+function getSessionDotMeta(session) {
+  const minutes = getSessionDurationMinutes(session);
+  const bucket = getDurationBucket(minutes);
+  return {
+    type: session.type === 'cardio' ? 'cardio' : 'strength',
+    size: bucket.size,
+    rank: bucket.rank,
+    minutes
+  };
+}
+
 /**
  * Rendert den Activity Calendar HTML
  */
@@ -1346,8 +1373,16 @@ function renderActivityCalendarDays(year, month, sessionsByDate) {
     const isToday = date.toDateString() === today.toDateString();
     const sessions = sessionsByDate[dateKey] || [];
 
-    const strengthSessions = sessions.filter(s => s.type === 'strength');
-    const cardioSessions = sessions.filter(s => s.type === 'cardio');
+    const dots = sessions
+      .map(getSessionDotMeta)
+      .sort((a, b) => {
+        if (b.rank !== a.rank) return b.rank - a.rank;
+        if (b.minutes !== a.minutes) return b.minutes - a.minutes;
+        return a.type.localeCompare(b.type);
+      });
+
+    const visibleDots = dots.slice(0, ACTIVITY_DOT_MAX);
+    const overflow = dots.length - visibleDots.length;
 
     const hasSessionsClass = sessions.length > 0 ? 'has-sessions' : '';
     const todayClass = isToday ? 'today' : '';
@@ -1359,9 +1394,11 @@ function renderActivityCalendarDays(year, month, sessionsByDate) {
            tabindex="0"
            aria-label="${day}. ${sessions.length} Sessions">
         <span class="day-number">${day}</span>
-        <div class="session-bars">
-          ${strengthSessions.map(() => '<div class="session-bar strength"></div>').join('')}
-          ${cardioSessions.map(() => '<div class="session-bar cardio"></div>').join('')}
+        <div class="session-dots" aria-hidden="true">
+          ${visibleDots.map(dot => `
+            <span class="session-dot ${dot.type} size-${dot.size}" title="${dot.minutes} min"></span>
+          `).join('')}
+          ${overflow > 0 ? `<span class="session-overflow">+${overflow}</span>` : ''}
         </div>
       </div>
     `;
