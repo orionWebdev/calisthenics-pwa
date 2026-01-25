@@ -429,7 +429,7 @@ function renderWorkoutScreen() {
         </div>
         <h3 class="empty-state-title">Kein aktives Workout</h3>
         <p class="empty-state-text">Starte ein Training aus dem Kalender oder einem Plan.</p>
-        <button onclick="showView('plans')" class="empty-state-btn">
+        <button onclick="showTrainingTab ? showTrainingTab('plans') : showView('training')" class="empty-state-btn">
           <span class="material-symbols-rounded">assignment</span>
           <span>Zu den Plaenen</span>
         </button>

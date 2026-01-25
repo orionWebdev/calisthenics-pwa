@@ -81,6 +81,11 @@ function goToToday() {
   renderCalendar();
 }
 
+function openCalendarQuickPlan() {
+  const todayKey = formatDate(new Date());
+  openDayDetailModal(todayKey, true);
+}
+
 // ========================================
 // RENDER CALENDAR
 // ========================================

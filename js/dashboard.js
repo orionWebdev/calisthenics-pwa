@@ -173,18 +173,25 @@ function openStartWorkoutSheet() {
     title: 'Workout starten',
     render: (container) => {
       container.innerHTML = `
-        <button class="picker-item" type="button" onclick="startManualWorkout('strength')">
+        <button class="picker-item strength" type="button" onclick="startManualWorkout('strength')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">fitness_center</span>
           </div>
           <span>Strength</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
-        <button class="picker-item" type="button" onclick="startManualWorkout('cardio')">
+        <button class="picker-item cardio" type="button" onclick="startManualWorkout('cardio')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">directions_run</span>
           </div>
           <span>Cardio</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item recovery" type="button" onclick="startManualWorkout('recovery')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">self_improvement</span>
+          </div>
+          <span>Recovery</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
       `;
@@ -208,8 +215,19 @@ function startManualWorkout(type) {
     }
   }
 
+  if (type === 'recovery') {
+    if (typeof openAddRecoveryModal === 'function') {
+      openAddRecoveryModal();
+      return;
+    }
+  }
+
   if (typeof showView === 'function') {
-    showView('plans');
+    if (typeof showTrainingTab === 'function') {
+      showTrainingTab('plans');
+      return;
+    }
+    showView('training');
   }
 }
 
@@ -237,7 +255,7 @@ function renderPrimaryActionCard(state) {
         <div>
           <h3 class="dashboard-primary-title">Workout</h3>
           <p class="dashboard-primary-subtitle">
-            ${hasActive ? 'Ein Workout ist aktiv.' : 'Waehle Strength oder Cardio.'}
+            ${hasActive ? 'Ein Workout ist aktiv.' : 'Waehle Strength, Cardio oder Recovery.'}
           </p>
         </div>
         <span class="material-symbols-rounded dashboard-primary-icon">fitness_center</span>

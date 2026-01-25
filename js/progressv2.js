@@ -4,7 +4,6 @@
 
 let exercisesData = [];
 let exercisesLoaded = false;
-let recentWorkoutsExpanded = false;
 let currentOverviewPeriod = 7;
 let strengthPeriod = 8; // weeks for strength tab
 let cardioPeriod = 8; // weeks for cardio tab
@@ -154,17 +153,10 @@ function renderOverviewTab() {
         <span class="material-symbols-rounded progress-empty-icon">insights</span>
         <h3>Noch keine Trainings</h3>
         <p>Starte dein erstes Training oder logge eine Session, um deinen Fortschritt zu sehen</p>
-        <div class="progress-empty-actions">
-          <button onclick="openAddCardioModal()" class="progress-cta-btn primary">
-            <span class="material-symbols-rounded">directions_run</span>
-            <span>Cardio Session hinzufügen</span>
-          </button>
-          <button onclick="openAddRecoveryModal()" class="progress-cta-btn secondary">
-            <span class="material-symbols-rounded">self_improvement</span>
-            <span>Recovery Session hinzufuegen</span>
-          </button>
-        </div>
       </div>
+      <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="Session hinzufuegen" type="button">
+        <span class="material-symbols-rounded">add</span>
+      </button>
     `;
     return;
   }
@@ -193,20 +185,10 @@ function renderOverviewTab() {
       <div id="activity-calendar-container" class="activity-calendar-section">
         ${renderActivityCalendarHTML()}
       </div>
-
-      <div class="progress-empty-actions">
-        <button onclick="openAddCardioModal()" class="progress-cta-btn secondary">
-          <span class="material-symbols-rounded">directions_run</span>
-          <span>Cardio Session</span>
-        </button>
-        <button onclick="openAddRecoveryModal()" class="progress-cta-btn secondary">
-          <span class="material-symbols-rounded">self_improvement</span>
-          <span>Recovery Session</span>
-        </button>
-      </div>
-
-      ${renderRecentWorkoutsHTML()}
     </div>
+    <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="Session hinzufuegen" type="button">
+      <span class="material-symbols-rounded">add</span>
+    </button>
   `;
 }
 
@@ -254,6 +236,78 @@ function renderOverviewStatsHTML(stats) {
       </div>
     </div>
   `;
+}
+
+function openOverviewAddSheet() {
+  if (typeof openSheet !== 'function') {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Aktion nicht verfuegbar.');
+    }
+    return;
+  }
+
+  openSheet({
+    title: 'Session hinzufuegen',
+    render: (container) => {
+      container.innerHTML = `
+        <button class="picker-item strength" type="button" onclick="handleOverviewQuickAdd('strength')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">fitness_center</span>
+          </div>
+          <span>Strength</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item cardio" type="button" onclick="handleOverviewQuickAdd('cardio')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">directions_run</span>
+          </div>
+          <span>Cardio</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item recovery" type="button" onclick="handleOverviewQuickAdd('recovery')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">self_improvement</span>
+          </div>
+          <span>Recovery</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      `;
+    }
+  });
+}
+
+function handleOverviewQuickAdd(type) {
+  if (typeof closeSheet === 'function') {
+    closeSheet();
+  }
+
+  if (type === 'cardio' && typeof openAddCardioModal === 'function') {
+    openAddCardioModal();
+    return;
+  }
+
+  if (type === 'recovery' && typeof openAddRecoveryModal === 'function') {
+    openAddRecoveryModal();
+    return;
+  }
+
+  if (type === 'strength') {
+    openStrengthQuickAdd();
+  }
+}
+
+function openStrengthQuickAdd() {
+  if (typeof startManualWorkout === 'function') {
+    startManualWorkout('strength');
+    return;
+  }
+  if (typeof showTrainingTab === 'function') {
+    showTrainingTab('plans');
+    return;
+  }
+  if (typeof showView === 'function') {
+    showView('training');
+  }
 }
 
 function switchOverviewPeriod(days) {
@@ -319,66 +373,6 @@ function renderHybridBalanceHTML() {
       </div>
     </div>
   `;
-}
-
-function renderRecentWorkoutsHTML() {
-  const sortedSessions = [...allSessions].sort((a, b) => {
-    const dateA = getSessionDate(a);
-    const dateB = getSessionDate(b);
-    return dateB - dateA;
-  });
-
-  const visibleSessions = recentWorkoutsExpanded ? sortedSessions : sortedSessions.slice(0, 3);
-  const hasMore = sortedSessions.length > 3;
-
-  const listHTML = visibleSessions.length === 0
-    ? `
-      <div class="recent-workouts-empty">
-        <span class="material-symbols-rounded">history</span>
-        <p>Noch keine getrackten Workouts</p>
-      </div>
-    `
-    : visibleSessions.map((session) => {
-      const icon = getSessionIcon(session);
-      const color = getSessionColor(session);
-      const title = getSessionTitle(session);
-      const date = getSessionDate(session);
-      const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
-
-      return `
-        <div class="recent-workout-card" onclick="openRecentWorkoutModal('${session.id}')">
-          <div class="workout-card-icon" style="background: color-mix(in srgb, ${color} 20%, transparent);">
-            <span class="material-symbols-rounded" style="color: ${color};">${icon}</span>
-          </div>
-          <div class="workout-card-content">
-            <div class="workout-card-title">${title}</div>
-            <div class="workout-card-meta">${formatShortDate(date)} · ${duration}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-  return `
-    <div class="recent-workouts-section">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="section-subtitle">Zuletzt getrackte Workouts</h3>
-        ${hasMore ? `
-          <button class="recent-workouts-toggle" onclick="toggleRecentWorkouts()">
-            <span>${recentWorkoutsExpanded ? 'Weniger anzeigen' : 'Alle anzeigen'}</span>
-            <span class="material-symbols-rounded" style="transform: ${recentWorkoutsExpanded ? 'rotate(180deg)' : 'none'};">expand_more</span>
-          </button>
-        ` : ''}
-      </div>
-      <div>
-        ${listHTML}
-      </div>
-    </div>
-  `;
-}
-
-function toggleRecentWorkouts() {
-  recentWorkoutsExpanded = !recentWorkoutsExpanded;
-  renderOverviewTab();
 }
 
 function getSessionDate(session) {
@@ -800,6 +794,9 @@ function renderStrengthTab() {
         <h3>Noch keine Kraft-Trainings</h3>
         <p>Starte ein Training im Workout-Bereich, um deinen Fortschritt zu tracken</p>
       </div>
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="Krafttraining hinzufuegen" type="button">
+        <span class="material-symbols-rounded">add</span>
+      </button>
     `;
     return;
   }
@@ -827,6 +824,10 @@ function renderStrengthTab() {
 
       <!-- Chart -->
       <div id="strength-chart-container" class="progress-chart-container"></div>
+
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="Krafttraining hinzufuegen" type="button">
+        <span class="material-symbols-rounded">add</span>
+      </button>
     </div>
   `;
 
@@ -1083,7 +1084,7 @@ function renderCardioTab() {
 
   if (cardioSessions.length === 0) {
     container.innerHTML = `
-      <div class="progress-empty-state">
+      <div class="progress-empty-state cardio">
         <span class="material-symbols-rounded progress-empty-icon">directions_run</span>
         <h3>Noch keine Cardio-Sessions</h3>
         <p>Logge deine erste Cardio-Session, um deinen Fortschritt zu sehen</p>
@@ -1092,6 +1093,9 @@ function renderCardioTab() {
           <span>Cardio Session hinzufuegen</span>
         </button>
       </div>
+      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="Cardio hinzufuegen" type="button">
+        <span class="material-symbols-rounded">add</span>
+      </button>
     `;
     return;
   }
@@ -1151,7 +1155,7 @@ function renderCardioTab() {
       <div id="cardio-chart-container" class="progress-chart-container"></div>
 
       <!-- Add Button -->
-      <button onclick="openAddCardioModal()" class="floating-add-btn">
+      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="Cardio hinzufuegen" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     </div>
@@ -1723,7 +1727,7 @@ function openActivityPickerSheet() {
       const listHTML = Object.entries(ACTIVITY_TYPES)
         .map(([key, config]) => `
           <button
-            class="picker-item ${key === selectedActivityType ? 'active' : ''}"
+            class="picker-item cardio ${key === selectedActivityType ? 'active' : ''}"
             onclick="selectActivity('${key}')"
             type="button"
           >
@@ -1806,7 +1810,9 @@ window.openSheet = openSheet;
 window.closeSheet = closeSheet;
 window.selectExercise = selectExercise;
 window.selectActivity = selectActivity;
-window.toggleRecentWorkouts = toggleRecentWorkouts;
+window.openOverviewAddSheet = openOverviewAddSheet;
+window.handleOverviewQuickAdd = handleOverviewQuickAdd;
+window.openStrengthQuickAdd = openStrengthQuickAdd;
 window.openRecentWorkoutModal = openRecentWorkoutModal;
 window.startWorkoutAgainFromSession = startWorkoutAgainFromSession;
 window.viewWorkoutDetailsFromSession = viewWorkoutDetailsFromSession;

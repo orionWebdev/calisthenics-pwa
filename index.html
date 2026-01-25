@@ -124,13 +124,9 @@
             <span class="material-symbols-rounded">home</span>
             <span>Dashboard</span>
           </button>
-          <button onclick="showView('exercises')" class="nav-btn" data-view="exercises">
+          <button onclick="showView('training')" class="nav-btn" data-view="training">
             <span class="material-symbols-rounded">fitness_center</span>
-            <span>Übungen</span>
-          </button>
-          <button onclick="showView('plans')" class="nav-btn" data-view="plans">
-            <span class="material-symbols-rounded">assignment</span>
-            <span>Pläne</span>
+            <span>Training</span>
           </button>
           <button onclick="showView('calendar')" class="nav-btn" data-view="calendar">
             <span class="material-symbols-rounded">calendar_month</span>
@@ -176,10 +172,7 @@
       <button class="radial-menu-item" data-view="calendar" onclick="showViewFromRadial('calendar')" style="--item-index: 1">
         <span class="material-symbols-rounded radial-icon">calendar_month</span>
       </button>
-      <button class="radial-menu-item" data-view="plans" onclick="showViewFromRadial('plans')" style="--item-index: 2">
-        <span class="material-symbols-rounded radial-icon">assignment</span>
-      </button>
-      <button class="radial-menu-item" data-view="exercises" onclick="showViewFromRadial('exercises')" style="--item-index: 3">
+      <button class="radial-menu-item" data-view="training" onclick="showViewFromRadial('training')" style="--item-index: 2">
         <span class="material-symbols-rounded radial-icon">fitness_center</span>
       </button>
     </div>
@@ -202,13 +195,9 @@
       <span class="material-symbols-rounded">calendar_month</span>
       <span class="bottom-nav-label">Kalender</span>
     </button>
-    <button class="bottom-nav-item" data-view="plans" onclick="showView('plans')">
-      <span class="material-symbols-rounded">assignment</span>
-      <span class="bottom-nav-label">Pläne</span>
-    </button>
-    <button class="bottom-nav-item" data-view="exercises" onclick="showView('exercises')">
+    <button class="bottom-nav-item" data-view="training" onclick="showView('training')">
       <span class="material-symbols-rounded">fitness_center</span>
-      <span class="bottom-nav-label">Übungen</span>
+      <span class="bottom-nav-label">Training</span>
     </button>
   </nav>
 
@@ -232,122 +221,142 @@
 
     </div>
 
-    <!-- EXERCISES VIEW -->
-    <div id="view-exercises" class="view">
-      
-      <!-- Header mit Add Button -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-          <span>Neue Übung</span>
-        </button>
+        <!-- TRAINING VIEW -->
+    <div id="view-training" class="view hidden">
+
+      <div id="training-segmented-control" class="progress-section">
+        <div class="segmented-control">
+          <button
+            class="segmented-btn active"
+            onclick="switchTrainingTab('plans')"
+            data-tab="plans"
+          >
+            <span class="material-symbols-rounded">assignment</span>
+            <span>Pläne</span>
+          </button>
+          <button
+            class="segmented-btn"
+            onclick="switchTrainingTab('exercises')"
+            data-tab="exercises"
+          >
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span>Übungen</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Filter & Search -->
-      <div class="filter-container">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-          <!-- Search -->
-          <div class="filter-item">
-            <label class="filter-label">
-              <span class="material-symbols-rounded">search</span>
-              <span>Suche</span>
-            </label>
-            <div class="filter-input-wrapper">
-              <span class="material-symbols-rounded filter-input-icon">search</span>
-              <input
-                type="text"
-                id="search-input"
-                placeholder="Übung suchen..."
-                class="filter-input"
-                oninput="filterExercises()"
-              />
-            </div>
+      <div id="training-tab-plans" class="training-tab active">
+        <!-- Header mit Add Button -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold mb-2">Trainingspläne</h2>
+            <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Workouts</p>
           </div>
+          <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+            <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+            <span>Neuer Plan</span>
+          </button>
+        </div>
 
-          <!-- Muscle Group Filter -->
-          <div class="filter-item">
-            <label class="filter-label">
-              <span class="material-symbols-rounded">sports_gymnastics</span>
-              <span>Muskelgruppe</span>
-            </label>
-            <div class="filter-select-wrapper">
-              <span class="material-symbols-rounded filter-select-icon">filter_list</span>
-              <select
-                id="muscle-filter"
-                class="filter-select"
-                onchange="filterExercises()"
-              >
-                <option value="">Alle Muskelgruppen</option>
-                <option value="chest">Brust</option>
-                <option value="back">Rücken</option>
-                <option value="shoulders">Schultern</option>
-                <option value="arms">Arme</option>
-                <option value="core">Core</option>
-                <option value="legs">Beine</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Difficulty Filter -->
-          <div class="filter-item">
-            <label class="filter-label">
-              <span class="material-symbols-rounded">star</span>
-              <span>Schwierigkeit</span>
-            </label>
-            <div class="filter-select-wrapper">
-              <span class="material-symbols-rounded filter-select-icon">tune</span>
-              <select
-                id="difficulty-filter"
-                class="filter-select"
-                onchange="filterExercises()"
-              >
-                <option value="">Alle Schwierigkeiten</option>
-                <option value="1">Anfänger</option>
-                <option value="2">Leicht</option>
-                <option value="3">Mittel</option>
-                <option value="4">Fortgeschritten</option>
-                <option value="5">Expert</option>
-              </select>
-            </div>
+        <!-- Plans Grid -->
+        <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Wird von JavaScript gefüllt -->
+          <div class="col-span-full text-center py-12 text-gray-400">
+            <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">assignment</span>
+            <p>Lade Pläne...</p>
           </div>
         </div>
       </div>
 
-      <!-- Active Filter Pills -->
-      <div id="active-filters" class="active-filters" style="display: none;"></div>
-
-      <!-- Exercises Grid -->
-      <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Wird von JavaScript gefüllt -->
-        <div class="col-span-full text-center py-12 text-gray-400">
-          <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">fitness_center</span>
-          <p>Lade Übungen...</p>
+      <div id="training-tab-exercises" class="training-tab">
+        <!-- Header mit Add Button -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+            <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+            <span>Neue Übung</span>
+          </button>
         </div>
-      </div>
 
-    </div>
+        <!-- Filter & Search -->
+        <div class="filter-container">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <!-- Search -->
+            <div class="filter-item">
+              <label class="filter-label">
+                <span class="material-symbols-rounded">search</span>
+                <span>Suche</span>
+              </label>
+              <div class="filter-input-wrapper">
+                <span class="material-symbols-rounded filter-input-icon">search</span>
+                <input
+                  type="text"
+                  id="search-input"
+                  placeholder="Übung suchen..."
+                  class="filter-input"
+                  oninput="filterExercises()"
+                />
+              </div>
+            </div>
 
-    <!-- PLANS VIEW -->
-    <div id="view-plans" class="view hidden">
+            <!-- Muscle Group Filter -->
+            <div class="filter-item">
+              <label class="filter-label">
+                <span class="material-symbols-rounded">sports_gymnastics</span>
+                <span>Muskelgruppe</span>
+              </label>
+              <div class="filter-select-wrapper">
+                <span class="material-symbols-rounded filter-select-icon">filter_list</span>
+                <select
+                  id="muscle-filter"
+                  class="filter-select"
+                  onchange="filterExercises()"
+                >
+                  <option value="">Alle Muskelgruppen</option>
+                  <option value="chest">Brust</option>
+                  <option value="back">Rücken</option>
+                  <option value="shoulders">Schultern</option>
+                  <option value="arms">Arme</option>
+                  <option value="core">Core</option>
+                  <option value="legs">Beine</option>
+                </select>
+              </div>
+            </div>
 
-      <!-- Header mit Add Button -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-bold mb-2">Trainingspläne</h2>
-          <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Workouts</p>
+            <!-- Difficulty Filter -->
+            <div class="filter-item">
+              <label class="filter-label">
+                <span class="material-symbols-rounded">star</span>
+                <span>Schwierigkeit</span>
+              </label>
+              <div class="filter-select-wrapper">
+                <span class="material-symbols-rounded filter-select-icon">tune</span>
+                <select
+                  id="difficulty-filter"
+                  class="filter-select"
+                  onchange="filterExercises()"
+                >
+                  <option value="">Alle Schwierigkeiten</option>
+                  <option value="1">Anfänger</option>
+                  <option value="2">Leicht</option>
+                  <option value="3">Mittel</option>
+                  <option value="4">Fortgeschritten</option>
+                  <option value="5">Expert</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
-        <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-          <span>Neuer Plan</span>
-        </button>
-      </div>
 
-      <!-- Plans Grid -->
-      <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Wird von JavaScript gefüllt -->
-        <div class="col-span-full text-center py-12 text-gray-400">
-          <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">assignment</span>
-          <p>Lade Pläne...</p>
+        <!-- Active Filter Pills -->
+        <div id="active-filters" class="active-filters" style="display: none;"></div>
+
+        <!-- Exercises Grid -->
+        <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Wird von JavaScript gefüllt -->
+          <div class="col-span-full text-center py-12 text-gray-400">
+            <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">fitness_center</span>
+            <p>Lade Übungen...</p>
+          </div>
         </div>
       </div>
 
@@ -412,6 +421,10 @@
           <!-- Wird von JavaScript gefüllt -->
         </div>
       </div>
+
+      <button onclick="openCalendarQuickPlan()" class="floating-add-btn" aria-label="Workout planen" type="button">
+        <span class="material-symbols-rounded">add</span>
+      </button>
 
     </div>
 

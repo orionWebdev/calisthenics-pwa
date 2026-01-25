@@ -519,7 +519,7 @@ input, textarea, select, button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(6, 10, 48, 0.95);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 1000;
   align-items: center;
   justify-content: center;
@@ -532,7 +532,7 @@ input, textarea, select, button {
 }
 
 .modal-content {
-  background: var(--color-secondary-dark);
+  background: rgb(17 24 39);
   border: 1px solid var(--color-secondary-light);
   border-radius: 1rem;
   padding: 2rem;
@@ -541,7 +541,7 @@ input, textarea, select, button {
   max-height: 90vh;
   overflow-y: auto;
   animation: slideUp 0.3s ease;
-  box-shadow: 0 20px 60px rgba(240, 34, 119, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   position: relative;
 }
 
@@ -4784,6 +4784,33 @@ input[type="range"]::-moz-range-progress {
   box-shadow: 0 2px 6px rgba(240, 34, 119, 0.3);
 }
 
+.training-tab {
+  display: none;
+}
+
+.training-tab.active {
+  display: block;
+}
+
+.strength-section .metric-btn.active {
+  background: var(--color-category-strength);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-category-strength) 35%, transparent);
+}
+
+.cardio-section .metric-btn.active {
+  background: var(--color-category-cardio);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-category-cardio) 35%, transparent);
+}
+
+.cardio-section .activity-picker-btn .material-symbols-rounded:first-child {
+  color: var(--color-category-cardio);
+}
+
+.strength-section .progress-chart-container,
+.cardio-section .progress-chart-container {
+  margin-top: 1rem;
+}
+
 /* Bottom Sheet */
 .bottom-sheet {
   position: fixed;
@@ -5027,6 +5054,7 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   gap: 1rem;
   padding: 1.125rem 1.5rem;
+  --picker-accent: var(--color-primary);
   background: transparent;
   border: none;
   border-bottom: 1px solid rgba(55, 65, 81, 0.5);
@@ -5039,7 +5067,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .picker-item:hover {
-  background: rgba(240, 34, 119, 0.05);
+  background: color-mix(in srgb, var(--picker-accent) 8%, transparent);
 }
 
 .picker-item .material-symbols-rounded:last-child {
@@ -5049,11 +5077,11 @@ input[type="range"]::-moz-range-progress {
 }
 
 .picker-item.active {
-  background: rgba(240, 34, 119, 0.1);
+  background: color-mix(in srgb, var(--picker-accent) 12%, transparent);
 }
 
 .picker-item.active .material-symbols-rounded:last-child {
-  color: var(--color-primary);
+  color: var(--picker-accent);
 }
 
 .picker-item-icon {
@@ -5062,13 +5090,26 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(240, 34, 119, 0.1);
+  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
   border-radius: 0.625rem;
 }
 
 .picker-item-icon .material-symbols-rounded {
-  color: var(--color-primary);
+  color: var(--picker-accent);
   font-size: 24px;
+}
+
+.picker-item.strength {
+  --picker-accent: var(--color-category-strength);
+}
+
+.picker-item.cardio {
+  --picker-accent: var(--color-category-cardio);
+}
+
+.picker-item.recovery {
+  --picker-accent: var(--color-category-recovery);
 }
 
 /* Cardio Modal Specific */
@@ -5196,7 +5237,7 @@ input[type="range"]::-moz-range-progress {
   cursor: not-allowed;
 }
 
-/* Floating Add Button (Cardio Tab) */
+/* Floating Add Button */
 .floating-add-btn {
   position: fixed;
   bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 1rem);
@@ -5206,20 +5247,21 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary);
+  --fab-color: var(--color-primary);
+  background: var(--fab-color);
   border: none;
   border-radius: 50%;
   color: white;
-  box-shadow: 0 4px 16px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--fab-color) 40%, transparent);
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 100;
 }
 
 .floating-add-btn:hover {
-  background: #FF3399;
+  background: color-mix(in srgb, var(--fab-color) 90%, #ffffff);
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(240, 34, 119, 0.5);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--fab-color) 55%, transparent);
 }
 
 .floating-add-btn:active {
@@ -5228,6 +5270,18 @@ input[type="range"]::-moz-range-progress {
 
 .floating-add-btn .material-symbols-rounded {
   font-size: 28px;
+}
+
+.floating-add-btn.strength {
+  --fab-color: var(--color-category-strength);
+}
+
+.floating-add-btn.cardio {
+  --fab-color: var(--color-category-cardio);
+}
+
+.floating-add-btn.recovery {
+  --fab-color: var(--color-category-recovery);
 }
 
 /* Toast Notification */
@@ -5352,12 +5406,14 @@ input[type="range"]::-moz-range-progress {
   box-shadow: 0 4px 12px rgba(240, 34, 119, 0.4);
 }
 
-.progress-empty-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-  max-width: 300px;
+.progress-empty-state.cardio .progress-cta-btn.primary {
+  background: var(--color-category-cardio);
+  border-color: var(--color-category-cardio);
+}
+
+.progress-empty-state.cardio .progress-cta-btn.primary:hover {
+  background: color-mix(in srgb, var(--color-category-cardio) 90%, #ffffff);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-category-cardio) 45%, transparent);
 }
 
 /* Mobile Optimizations */
@@ -5797,110 +5853,6 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(75, 85, 99, 0.5);
 }
 
-.recent-workouts-section {
-  background: linear-gradient(135deg, rgba(9, 30, 77, 0.6), rgba(15, 36, 129, 0.4));
-  border: 1px solid rgba(75, 85, 99, 0.3);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  margin-top: 2rem;
-}
-
-.section-subtitle {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: white;
-}
-
-.recent-workouts-toggle {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  font-size: 0.875rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: color 0.2s ease;
-}
-
-.recent-workouts-toggle:hover {
-  color: var(--color-primary);
-}
-
-.recent-workouts-toggle .material-symbols-rounded {
-  transition: transform 0.3s ease;
-}
-
-.recent-workout-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: rgba(17, 24, 39, 0.8);
-  border: 1px solid rgba(75, 85, 99, 0.3);
-  border-radius: 1rem;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.recent-workout-card:last-child {
-  margin-bottom: 0;
-}
-
-.recent-workout-card:hover {
-  border-color: var(--color-primary);
-  background: rgba(240, 34, 119, 0.05);
-  transform: translateX(4px);
-}
-
-.workout-card-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(239, 68, 68, 0.1);
-  border-radius: 0.75rem;
-  flex-shrink: 0;
-}
-
-.workout-card-icon .material-symbols-rounded {
-  color: #ef4444;
-  font-size: 28px;
-}
-
-.workout-card-content {
-  flex: 1;
-}
-
-.workout-card-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 0.25rem;
-}
-
-.workout-card-meta {
-  font-size: 0.875rem;
-  color: #9ca3af;
-}
-
-.recent-workouts-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 2rem 1rem;
-  text-align: center;
-  color: #9ca3af;
-}
-
-.recent-workouts-empty .material-symbols-rounded {
-  font-size: 64px;
-  color: rgb(55 65 81);
-}
-
 .workout-detail-modal {
   max-width: 600px;
 }
@@ -6156,7 +6108,6 @@ input[type="range"]::-moz-range-progress {
 .week-day-card,
 .progress-chart-container,
 .progress-exercise-selector,
-.recent-workouts-section,
 .filter-container,
 .workout-header,
 .set-logger {
@@ -6171,7 +6122,6 @@ input[type="range"]::-moz-range-progress {
 .plan-card:hover,
 .exercise-card:hover,
 .week-day-card:hover,
-.recent-workouts-section:hover {
   border-color: var(--ui-card-border-hover);
   box-shadow: var(--ui-card-shadow-hover);
 }
