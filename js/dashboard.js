@@ -7,6 +7,8 @@ const DASHBOARD_RECENT_LIMIT = 5;
 const DASHBOARD_BALANCE_DAYS = 7;
 let dashboardIsLoading = false;
 
+const tr = (key, params) => (typeof t === 'function' ? t(key, params) : key);
+
 function getSessionDate(session) {
   if (session?.date?.toDate) {
     return session.date.toDate();
@@ -16,6 +18,15 @@ function getSessionDate(session) {
   return parsed;
 }
 
+function getSessionDateTime(session) {
+  if (session?.createdAt?.toDate) {
+    return session.createdAt.toDate();
+  }
+  const createdParsed = new Date(session?.createdAt);
+  if (!Number.isNaN(createdParsed.getTime())) return createdParsed;
+  return getSessionDate(session);
+}
+
 function getSessionDurationSeconds(session) {
   if (!session) return 0;
   const sec = Number(session.durationSec || session.durationSeconds || 0);
@@ -23,28 +34,6 @@ function getSessionDurationSeconds(session) {
   const minutes = Number(session.duration || 0);
   if (Number.isFinite(minutes) && minutes > 0) return Math.round(minutes * 60);
   return 0;
-}
-
-function formatDurationShort(totalSeconds) {
-  const totalMinutes = Math.round((totalSeconds || 0) / 60);
-  if (!totalMinutes) return '0 min';
-  if (totalMinutes < 60) return `${totalMinutes} min`;
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  return minutes ? `${hours}h ${minutes}m` : `${hours}h`;
-}
-
-function formatSessionDateTime(date) {
-  if (!date) return 'Unbekannt';
-  const formatter = new Intl.DateTimeFormat('de-DE', {
-    timeZone: 'Europe/Berlin',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-  return formatter.format(date);
 }
 
 function getBerlinDateKey(date) {
@@ -57,15 +46,15 @@ function getBerlinDateKey(date) {
   return formatter.format(date);
 }
 
-function getBalanceContextLabel(strengthSec, cardioSec) {
+function getBalanceContextLabelKey(strengthSec, cardioSec) {
   const totalSec = strengthSec + cardioSec;
   if (totalSec < 3600) {
-    return 'noch wenig Daten - einfach weitermachen';
+    return 'balance.context.lowData';
   }
   const strengthPct = totalSec ? (strengthSec / totalSec) * 100 : 0;
-  if (strengthPct >= 55) return 'leicht strength-lastig';
-  if (strengthPct > 45 && strengthPct < 55) return 'ausgeglichen';
-  return 'leicht cardio-fokussiert';
+  if (strengthPct >= 55) return 'balance.context.strength';
+  if (strengthPct >= 45 && strengthPct < 55) return 'balance.context.balanced';
+  return 'balance.context.cardio';
 }
 
 function getActiveWorkout() {
@@ -108,7 +97,7 @@ function buildBalanceData(sessions, rangeDays) {
     strengthSec,
     cardioSec,
     rangeDays,
-    contextLabel: getBalanceContextLabel(strengthSec, cardioSec)
+    contextLabelKey: getBalanceContextLabelKey(strengthSec, cardioSec)
   };
 }
 
@@ -116,7 +105,7 @@ function getRecentSessions(sessions, limit = DASHBOARD_RECENT_LIMIT) {
   return sessions
     .map(session => ({
       session,
-      date: getSessionDate(session)
+      date: getSessionDateTime(session)
     }))
     .filter(item => item.date)
     .sort((a, b) => b.date.getTime() - a.date.getTime())
@@ -133,7 +122,7 @@ async function useDashboardData() {
       strengthSec: 0,
       cardioSec: 0,
       rangeDays: DASHBOARD_BALANCE_DAYS,
-      contextLabel: 'noch wenig Daten - einfach weitermachen'
+      contextLabelKey: 'balance.context.lowData'
     },
     recentSessions: []
   };
@@ -164,34 +153,34 @@ function openStartWorkoutSheet() {
 
   if (typeof openSheet !== 'function') {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Start-Auswahl ist nicht verfuegbar.');
+      showEdgeFeedback('error', tr('errors.startUnavailable'));
     }
     return;
   }
 
   openSheet({
-    title: 'Workout starten',
+    title: tr('dashboard.primary.title'),
     render: (container) => {
       container.innerHTML = `
         <button class="picker-item strength" type="button" onclick="startManualWorkout('strength')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">fitness_center</span>
           </div>
-          <span>Strength</span>
+          <span>${tr('common.strength')}</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
         <button class="picker-item cardio" type="button" onclick="startManualWorkout('cardio')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">directions_run</span>
           </div>
-          <span>Cardio</span>
+          <span>${tr('common.cardio')}</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
         <button class="picker-item recovery" type="button" onclick="startManualWorkout('recovery')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">self_improvement</span>
           </div>
-          <span>Recovery</span>
+          <span>${tr('common.recovery')}</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
       `;
@@ -238,25 +227,26 @@ function renderPrimaryActionCard(state) {
   if (state.loading) {
     container.innerHTML = `
       <div class="dashboard-primary-card">
-        <div class="dashboard-primary-title">Workout</div>
-        <p class="dashboard-primary-subtitle">Lade Daten...</p>
+        <div class="dashboard-primary-title">${tr('dashboard.primary.title')}</div>
+        <p class="dashboard-primary-subtitle">${tr('common.loading')}</p>
       </div>
     `;
     return;
   }
 
   const hasActive = Boolean(state.activeSession);
-  const buttonLabel = hasActive ? 'Resume Workout' : 'Start Workout';
+  const buttonLabel = hasActive ? tr('dashboard.primary.resume') : tr('dashboard.primary.start');
   const actionHandler = hasActive ? 'resumeWorkoutFromDashboard()' : 'openStartWorkoutSheet()';
 
   container.innerHTML = `
     <div class="dashboard-primary-card">
       <div class="dashboard-primary-header">
         <div>
-          <h3 class="dashboard-primary-title">Workout</h3>
+          <h3 class="dashboard-primary-title">${tr('dashboard.primary.title')}</h3>
           <p class="dashboard-primary-subtitle">
-            ${hasActive ? 'Ein Workout ist aktiv.' : 'Waehle Strength, Cardio oder Recovery.'}
+            ${hasActive ? tr('dashboard.primary.subtitleActive') : tr('dashboard.primary.subtitleInactive')}
           </p>
+          <p class="dashboard-primary-helper">${tr('dashboard.primary.helper')}</p>
         </div>
         <span class="material-symbols-rounded dashboard-primary-icon">fitness_center</span>
       </div>
@@ -286,9 +276,9 @@ function renderHybridBalanceCard(state) {
     container.innerHTML = `
       <div class="dashboard-balance-card">
         <div class="dashboard-balance-header">
-          <h3 class="dashboard-balance-title">Hybrid Balance</h3>
+          <h3 class="dashboard-balance-title">${tr('dashboard.hybridBalance.title')}</h3>
         </div>
-        <div class="dashboard-balance-empty">Lade Daten...</div>
+        <div class="dashboard-balance-empty">${tr('common.loading')}</div>
       </div>
     `;
     return;
@@ -304,20 +294,21 @@ function renderHybridBalanceCard(state) {
     <div class="dashboard-balance-card" onclick="openProgressOverview()" role="button" tabindex="0">
       <div class="dashboard-balance-header">
         <div>
-          <h3 class="dashboard-balance-title">Hybrid Balance</h3>
-          <p class="dashboard-balance-subtitle">Letzte 7 Tage</p>
+          <h3 class="dashboard-balance-title">${tr('dashboard.hybridBalance.title')}</h3>
+          <p class="dashboard-balance-subtitle">${tr('dashboard.hybridBalance.subtitle', { days: DASHBOARD_BALANCE_DAYS })}</p>
         </div>
         <span class="material-symbols-rounded dashboard-balance-arrow">chevron_right</span>
       </div>
-      <div class="dashboard-balance-bar" role="img" aria-label="Strength ${strengthPct} Prozent, Cardio ${cardioPct} Prozent">
+      <p class="dashboard-balance-description">${tr('dashboard.hybridBalance.description')}</p>
+      <div class="dashboard-balance-bar" role="img" aria-label="${tr('dashboard.hybridBalance.aria', { strength: strengthPct, cardio: cardioPct })}">
         <div class="dashboard-balance-segment strength" style="width: ${strengthPct}%;"></div>
         <div class="dashboard-balance-segment cardio" style="width: ${cardioPct}%;"></div>
       </div>
       <div class="dashboard-balance-meta">
-        <span>Strength ${formatDurationShort(balance.strengthSec)}</span>
-        <span>Cardio ${formatDurationShort(balance.cardioSec)}</span>
+        <span>${tr('common.strength')} ${formatDurationShortText(balance.strengthSec)}</span>
+        <span>${tr('common.cardio')} ${formatDurationShortText(balance.cardioSec)}</span>
       </div>
-      <div class="dashboard-balance-context">${balance.contextLabel}</div>
+      <div class="dashboard-balance-context">${tr(balance.contextLabelKey)}</div>
     </div>
   `;
 }
@@ -329,9 +320,10 @@ function renderRecentSessionsList(state) {
   if (state.loading) {
     container.innerHTML = `
       <div class="dashboard-recent-header">
-        <h3 class="dashboard-recent-title">Letzte Sessions</h3>
+        <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
+        <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
       </div>
-      <div class="dashboard-recent-empty">Lade Daten...</div>
+      <div class="dashboard-recent-empty">${tr('common.loading')}</div>
     `;
     return;
   }
@@ -339,29 +331,32 @@ function renderRecentSessionsList(state) {
   if (!state.recentSessions.length) {
     container.innerHTML = `
       <div class="dashboard-recent-header">
-        <h3 class="dashboard-recent-title">Letzte Sessions</h3>
+        <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
+        <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
       </div>
-      <div class="dashboard-recent-empty">Noch keine Sessions</div>
+      <div class="dashboard-recent-empty">${tr('dashboard.recent.empty')}</div>
     `;
     return;
   }
 
   const rows = state.recentSessions.map(session => {
-    const date = getSessionDate(session);
-    const duration = formatDurationShort(getSessionDurationSeconds(session));
+    const date = getSessionDateTime(session);
+    const duration = formatDurationShortText(getSessionDurationSeconds(session));
     const typeLabel = session.type === 'cardio'
-      ? 'Cardio'
+      ? tr('common.cardio')
       : session.type === 'recovery'
-        ? 'Recovery'
-        : 'Strength';
-    const distance = session.type === 'cardio' && session.distanceKm ? ` | ${Number(session.distanceKm).toFixed(1)} km` : '';
+        ? tr('common.recovery')
+        : tr('common.strength');
+    const distance = session.type === 'cardio' && session.distanceKm
+      ? ` | ${tr('format.distanceKm', { distance: Number(session.distanceKm).toFixed(1) })}`
+      : '';
 
     const sessionId = session.id || '';
     return `
       <button class="dashboard-session-item" type="button" onclick="openSessionDetail('${sessionId}')">
         <div class="dashboard-session-main">
           <div class="dashboard-session-type ${session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength'}">${typeLabel}</div>
-          <div class="dashboard-session-date">${formatSessionDateTime(date)}</div>
+          <div class="dashboard-session-date">${formatDateTimeText(date)}</div>
         </div>
         <div class="dashboard-session-meta">
           <span>${duration}</span>
@@ -373,7 +368,8 @@ function renderRecentSessionsList(state) {
 
   container.innerHTML = `
     <div class="dashboard-recent-header">
-      <h3 class="dashboard-recent-title">Letzte Sessions</h3>
+      <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
+      <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
     </div>
     <div class="dashboard-recent-list">
       ${rows}
