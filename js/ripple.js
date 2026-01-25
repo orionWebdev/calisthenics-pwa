@@ -96,9 +96,14 @@ function initRippleEffects() {
     makePressable(btn, { color: 'rgba(240, 34, 119, 0.2)' });
   });
 
-  // Segmented control buttons
+  // Segmented control buttons (all types)
   document.querySelectorAll('.segmented-btn').forEach(btn => {
     makePressable(btn, { color: 'rgba(255, 255, 255, 0.15)' });
+  });
+
+  // Segmented control containers
+  document.querySelectorAll('.segmented-control').forEach(control => {
+    // Don't make container pressable, only buttons inside
   });
 
   // Metric toggle buttons
@@ -106,7 +111,7 @@ function initRippleEffects() {
     makePressable(btn, { color: 'rgba(255, 255, 255, 0.15)' });
   });
 
-  // Period toggle buttons
+  // Period toggle buttons (progress period selector)
   document.querySelectorAll('.period-btn').forEach(btn => {
     makePressable(btn, { color: 'rgba(255, 255, 255, 0.15)' });
   });
@@ -116,9 +121,21 @@ function initRippleEffects() {
     makePressable(btn, { color: 'rgba(255, 255, 255, 0.15)' });
   });
 
-  // Primary/CTA buttons
+  // Primary/CTA buttons - including gradient buttons in training view
   document.querySelectorAll('.btn-primary, .dashboard-primary-btn, .progress-cta-btn').forEach(btn => {
     makePressable(btn, { color: 'rgba(255, 255, 255, 0.2)' });
+  });
+
+  // Gradient action buttons (New Plan, New Exercise buttons)
+  document.querySelectorAll('button[onclick*="openAddPlanModal"], button[onclick*="openAddExerciseModal"]').forEach(btn => {
+    makePressable(btn, { color: 'rgba(255, 255, 255, 0.25)' });
+  });
+
+  // All buttons with gradient background
+  document.querySelectorAll('.bg-gradient-to-r').forEach(btn => {
+    if (btn.tagName === 'BUTTON') {
+      makePressable(btn, { color: 'rgba(255, 255, 255, 0.2)' });
+    }
   });
 
   // Secondary buttons
@@ -149,6 +166,36 @@ function initRippleEffects() {
   // Dashboard balance card
   document.querySelectorAll('.dashboard-balance-card').forEach(card => {
     makePressable(card, { color: 'rgba(255, 255, 255, 0.05)' });
+  });
+
+  // Filter chips
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    makePressable(chip, { color: 'rgba(255, 255, 255, 0.1)' });
+  });
+
+  // Difficulty buttons
+  document.querySelectorAll('.difficulty-btn, .plan-difficulty-btn').forEach(btn => {
+    makePressable(btn, { color: 'rgba(255, 255, 255, 0.15)' });
+  });
+
+  // Modal save/action buttons
+  document.querySelectorAll('.modal-save-btn').forEach(btn => {
+    makePressable(btn, { color: 'rgba(255, 255, 255, 0.2)' });
+  });
+
+  // Calendar navigation buttons
+  document.querySelectorAll('.cal-nav-btn').forEach(btn => {
+    makePressable(btn, { color: 'rgba(255, 255, 255, 0.1)' });
+  });
+
+  // Overview/Progress stat cards
+  document.querySelectorAll('.overview-stat-card, .progress-stat-card').forEach(card => {
+    makePressable(card, { color: 'rgba(255, 255, 255, 0.05)' });
+  });
+
+  // Activity picker button
+  document.querySelectorAll('.activity-picker-btn, .exercise-picker-btn').forEach(btn => {
+    makePressable(btn, { color: 'rgba(255, 255, 255, 0.1)' });
   });
 }
 

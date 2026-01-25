@@ -3966,7 +3966,7 @@ input[type="range"]::-moz-range-progress {
 
 .progress-stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
@@ -4168,7 +4168,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .progress-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 
   .progress-stat-card {
@@ -4643,7 +4643,7 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgb(55 65 81);
   border-radius: 0.75rem;
   width: fit-content;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem auto;
 }
 
 .period-btn {
@@ -4715,7 +4715,7 @@ input[type="range"]::-moz-range-progress {
 
 .overview-stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
@@ -5530,7 +5530,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .overview-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 
   .stat-value {
