@@ -58,10 +58,10 @@ let cardioMetric = 'time'; // 'time', 'distance', or 'pace'
  * @typedef {'7D' | '30D' | '6M' | '1Y'} PeriodKey
  */
 const PERIOD_CONFIG = {
-  '7D': { days: 7, label: '7 Tage', bucketType: 'daily' },
-  '30D': { days: 30, label: '30 Tage', bucketType: 'daily' },
-  '6M': { days: 180, label: '6 Monate', bucketType: 'weekly' },
-  '1Y': { days: 365, label: '1 Jahr', bucketType: 'weekly' }
+  '7D': { days: 7, labelKey: 'progress.period.7d', bucketType: 'daily' },
+  '30D': { days: 30, labelKey: 'progress.period.30d', bucketType: 'daily' },
+  '6M': { days: 180, labelKey: 'progress.period.6m', bucketType: 'weekly' },
+  '1Y': { days: 365, labelKey: 'progress.period.1y', bucketType: 'weekly' }
 };
 
 // Current period states (default to 7D)
@@ -551,13 +551,16 @@ function aggregateWeeklyCardio(metric = 'time', weeks = 8, activityFilter = null
 }
 
 /**
- * Formatiert Datum als YYYY-MM-DD (timezone-safe)
+ * Formatiert Datum als YYYY-MM-DD (timezone-safe, Europe/Berlin)
  */
 function formatDateToYYYYMMDD(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Berlin',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  return formatter.format(date);
 }
 
 /**
@@ -792,56 +795,50 @@ function calculateStats(aggregatedData) {
   };
 }
 
-function computeHybridBalance(days = 14) {
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - days);
+function computeHybridBalance(days = 7) {
+  const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  const cutoffKey = formatDateToYYYYMMDD(cutoffDate);
 
-  let strengthMinutes = 0;
-  let cardioMinutes = 0;
+  let strengthSec = 0;
+  let cardioSec = 0;
 
   allSessions.forEach(session => {
     const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
-    if (sessionDate < cutoffDate) return;
+    if (!sessionDate || Number.isNaN(sessionDate.getTime())) return;
+    if (formatDateToYYYYMMDD(sessionDate) < cutoffKey) return;
 
+    const sec = Number(session.durationSec || session.durationSeconds || 0);
     const minutes = Number(session.duration || 0);
-    if (!minutes) return;
+    const durationSec = sec > 0 ? sec : minutes > 0 ? Math.round(minutes * 60) : 0;
+    if (!durationSec) return;
 
     if (session.type === 'strength') {
-      strengthMinutes += minutes;
+      strengthSec += durationSec;
     } else if (session.type === 'cardio') {
-      cardioMinutes += minutes;
+      cardioSec += durationSec;
     }
   });
 
-  const totalMinutes = strengthMinutes + cardioMinutes;
-  if (!totalMinutes) {
-    return {
-      strengthMinutes: 0,
-      cardioMinutes: 0,
-      strengthPct: 0,
-      cardioPct: 0,
-      label: 'Keine Daten',
-      status: 'empty'
-    };
-  }
+  const totalSec = strengthSec + cardioSec;
+  const strengthPct = totalSec ? Math.round((strengthSec / totalSec) * 100) : 0;
+  const cardioPct = totalSec ? 100 - strengthPct : 0;
 
-  const strengthPct = Math.round((strengthMinutes / totalMinutes) * 100);
-  const cardioPct = 100 - strengthPct;
-
-  let label = 'Balanced';
-  if (strengthPct >= 60) {
-    label = 'Strength-leaning';
-  } else if (cardioPct >= 60) {
-    label = 'Cardio-leaning';
+  let labelKey = 'balance.context.balanced';
+  if (totalSec < 3600) {
+    labelKey = 'balance.context.lowData';
+  } else if (strengthPct >= 55) {
+    labelKey = 'balance.context.strength';
+  } else if (strengthPct < 45) {
+    labelKey = 'balance.context.cardio';
   }
 
   return {
-    strengthMinutes,
-    cardioMinutes,
+    strengthSec,
+    cardioSec,
     strengthPct,
     cardioPct,
-    label,
-    status: 'ok'
+    labelKey,
+    status: totalSec ? 'ok' : 'empty'
   };
 }
 

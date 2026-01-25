@@ -9,6 +9,9 @@ let progressOverviewPeriod = '7D';
 let progressStrengthPeriod = '7D';
 let progressCardioPeriod = '7D';
 let activityCalendarDate = new Date(); // Current displayed month for activity calendar
+let hybridBalanceDays = 7; // 7 or 30 days for Hybrid Balance toggle on Progress
+
+const trProgress = (key, params) => (typeof t === 'function' ? t(key, params) : key);
 
 // ==================== INIT ====================
 
@@ -71,7 +74,7 @@ function renderSegmentedControl(activeTab = 'overview') {
         data-tab="overview"
       >
         <span class="material-symbols-rounded">insights</span>
-        <span>Übersicht</span>
+        <span>${trProgress('progress.tabs.overview')}</span>
       </button>
       <button
         class="segmented-btn ${activeTab === 'strength' ? 'active' : ''}"
@@ -79,7 +82,7 @@ function renderSegmentedControl(activeTab = 'overview') {
         data-tab="strength"
       >
         <span class="material-symbols-rounded">fitness_center</span>
-        <span>Kraft</span>
+        <span>${trProgress('progress.tabs.strength')}</span>
       </button>
       <button
         class="segmented-btn ${activeTab === 'cardio' ? 'active' : ''}"
@@ -87,7 +90,7 @@ function renderSegmentedControl(activeTab = 'overview') {
         data-tab="cardio"
       >
         <span class="material-symbols-rounded">directions_run</span>
-        <span>Cardio</span>
+        <span>${trProgress('progress.tabs.cardio')}</span>
       </button>
     </div>
   `;
@@ -142,7 +145,7 @@ function renderOverviewTab() {
     container.innerHTML = `
       <div class="progress-loading">
         <div class="spinner"></div>
-        <p>Lade Daten...</p>
+        <p>${trProgress('common.loading')}</p>
       </div>
     `;
     return;
@@ -152,10 +155,10 @@ function renderOverviewTab() {
     container.innerHTML = `
       <div class="progress-empty-state">
         <span class="material-symbols-rounded progress-empty-icon">insights</span>
-        <h3>Noch keine Trainings</h3>
-        <p>Starte dein erstes Training oder logge eine Session, um deinen Fortschritt zu sehen</p>
+        <h3>${trProgress('progress.overview.emptyTitle')}</h3>
+        <p>${trProgress('progress.overview.emptyBody')}</p>
       </div>
-      <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="Session hinzufuegen" type="button">
+      <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     `;
@@ -163,25 +166,29 @@ function renderOverviewTab() {
   }
 
   // Calculate stats using the new period system
-  const periodDays = PERIOD_CONFIG[progressOverviewPeriod]?.days || 7;
+  const periodDays = 7;
   const currentStats = calculateOverviewStats(periodDays);
 
   container.innerHTML = `
     <div class="overview-section">
-      ${renderProgressPeriodSelector('overview', progressOverviewPeriod)}
-
       <div id="overview-stats-container">
         ${renderOverviewStatsHTML(currentStats)}
       </div>
+      <p class="overview-helper">${trProgress('progress.overview.consistencyHelper')}</p>
 
       ${renderHybridBalanceHTML()}
+
+      <div class="overview-section-header">
+        <h3 class="overview-section-title">${trProgress('progress.overview.activityCalendarTitle')}</h3>
+        <p class="overview-section-helper">${trProgress('progress.overview.activityCalendarHelper')}</p>
+      </div>
 
       <!-- Activity Calendar -->
       <div id="activity-calendar-container" class="activity-calendar-section">
         ${renderActivityCalendarHTML()}
       </div>
     </div>
-    <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="Session hinzufuegen" type="button">
+    <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
       <span class="material-symbols-rounded">add</span>
     </button>
   `;
@@ -203,7 +210,7 @@ function renderProgressPeriodSelector(section, currentPeriod) {
           onclick="switchProgressPeriod('${section}', '${period}')"
           data-period="${period}"
         >
-          ${PERIOD_CONFIG[period].label}
+          ${trProgress(PERIOD_CONFIG[period].labelKey)}
         </button>
       `).join('')}
     </div>
@@ -237,7 +244,7 @@ function renderOverviewStatsHTML(stats) {
           <span class="material-symbols-rounded" style="color: var(--color-category-strength);">fitness_center</span>
         </div>
         <div class="stat-content">
-          <p class="stat-label">Kraft-Sessions</p>
+          <p class="stat-label">${trProgress('progress.overview.stats.strengthCount')}</p>
           <p class="stat-value">${stats.strengthCount}</p>
         </div>
       </div>
@@ -247,7 +254,7 @@ function renderOverviewStatsHTML(stats) {
           <span class="material-symbols-rounded" style="color: var(--color-category-cardio);">directions_run</span>
         </div>
         <div class="stat-content">
-          <p class="stat-label">Cardio-Sessions</p>
+          <p class="stat-label">${trProgress('progress.overview.stats.cardioCount')}</p>
           <p class="stat-value">${stats.cardioCount}</p>
         </div>
       </div>
@@ -257,8 +264,8 @@ function renderOverviewStatsHTML(stats) {
           <span class="material-symbols-rounded" style="color: #22c55e;">schedule</span>
         </div>
         <div class="stat-content">
-          <p class="stat-label">Trainingszeit</p>
-          <p class="stat-value">${formatDuration(stats.totalTime)}</p>
+          <p class="stat-label">${trProgress('progress.overview.stats.totalTime')}</p>
+          <p class="stat-value">${formatDurationText(stats.totalTime * 60)}</p>
         </div>
       </div>
 
@@ -267,8 +274,8 @@ function renderOverviewStatsHTML(stats) {
           <span class="material-symbols-rounded" style="color: #a855f7;">local_fire_department</span>
         </div>
         <div class="stat-content">
-          <p class="stat-label">Streak</p>
-          <p class="stat-value">${stats.streak} Tage</p>
+          <p class="stat-label">${trProgress('progress.overview.stats.streak')}</p>
+          <p class="stat-value">${stats.streak} ${trProgress('progress.overview.stats.streakUnit')}</p>
         </div>
       </div>
     </div>
@@ -278,34 +285,34 @@ function renderOverviewStatsHTML(stats) {
 function openOverviewAddSheet() {
   if (typeof openSheet !== 'function') {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Aktion nicht verfuegbar.');
+      showEdgeFeedback('error', trProgress('progress.modals.modalUnavailable'));
     }
     return;
   }
 
   openSheet({
-    title: 'Session hinzufuegen',
+    title: trProgress('common.add'),
     render: (container) => {
       container.innerHTML = `
         <button class="picker-item strength" type="button" onclick="handleOverviewQuickAdd('strength')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">fitness_center</span>
           </div>
-          <span>Strength</span>
+          <span>${trProgress('common.strength')}</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
         <button class="picker-item cardio" type="button" onclick="handleOverviewQuickAdd('cardio')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">directions_run</span>
           </div>
-          <span>Cardio</span>
+          <span>${trProgress('common.cardio')}</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
         <button class="picker-item recovery" type="button" onclick="handleOverviewQuickAdd('recovery')">
           <div class="picker-item-icon">
             <span class="material-symbols-rounded">self_improvement</span>
           </div>
-          <span>Recovery</span>
+          <span>${trProgress('common.recovery')}</span>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
       `;
@@ -362,43 +369,47 @@ function switchOverviewPeriod(days) {
 function renderHybridBalanceHTML() {
   if (typeof computeHybridBalance !== 'function') return '';
 
-  // Use the period days from the new system
-  const periodDays = PERIOD_CONFIG[progressOverviewPeriod]?.days || 7;
-  const balance = computeHybridBalance(periodDays);
-
-  if (balance.status === 'empty') {
-    return `
-      <div class="hybrid-balance-card">
-        <div class="hybrid-balance-header">
-          <div>
-            <h3 class="hybrid-balance-title">Hybrid Balance</h3>
-            <p class="hybrid-balance-subtitle">${PERIOD_CONFIG[progressOverviewPeriod]?.label || 'Letzte 7 Tage'}</p>
-          </div>
-        </div>
-        <div class="hybrid-balance-empty">Noch keine Daten fuer Hybrid Balance</div>
-      </div>
-    `;
-  }
+  const balance = computeHybridBalance(hybridBalanceDays);
 
   return `
     <div class="hybrid-balance-card">
       <div class="hybrid-balance-header">
         <div>
-          <h3 class="hybrid-balance-title">Hybrid Balance</h3>
-          <p class="hybrid-balance-subtitle">${PERIOD_CONFIG[progressOverviewPeriod]?.label || 'Letzte 7 Tage'}</p>
+          <h3 class="hybrid-balance-title">${trProgress('progress.hybridBalance.title')}</h3>
+          <p class="hybrid-balance-subtitle">${trProgress('progress.hybridBalance.subtitle', { days: hybridBalanceDays })}</p>
         </div>
-        <div class="hybrid-balance-label">${balance.label}</div>
+        <div class="hybrid-balance-toggle" role="group" aria-label="${trProgress('progress.hybridBalance.toggleLabel')}">
+          <button class="hybrid-toggle-btn ${hybridBalanceDays === 7 ? 'active' : ''}" onclick="switchHybridBalanceDays(7)" type="button">
+            ${trProgress('progress.hybridBalance.sevenDays')}
+          </button>
+          <button class="hybrid-toggle-btn ${hybridBalanceDays === 30 ? 'active' : ''}" onclick="switchHybridBalanceDays(30)" type="button">
+            ${trProgress('progress.hybridBalance.thirtyDays')}
+          </button>
+        </div>
       </div>
-      <div class="hybrid-balance-bar" role="img" aria-label="Strength ${balance.strengthPct} Prozent, Cardio ${balance.cardioPct} Prozent">
+      <p class="hybrid-balance-description">${trProgress('progress.overview.hybridBalanceHelper')}</p>
+      <div class="hybrid-balance-bar" role="img" aria-label="${trProgress('dashboard.hybridBalance.aria', { strength: balance.strengthPct, cardio: balance.cardioPct })}">
         <div class="hybrid-balance-segment strength" style="width: ${balance.strengthPct}%"></div>
         <div class="hybrid-balance-segment cardio" style="width: ${balance.cardioPct}%"></div>
       </div>
       <div class="hybrid-balance-meta">
-        <span>Strength ${balance.strengthPct}%</span>
-        <span>Cardio ${balance.cardioPct}%</span>
+        <span>${trProgress('progress.hybridBalance.metaStrength', { duration: formatDurationShortText(balance.strengthSec) })}</span>
+        <span>${trProgress('progress.hybridBalance.metaCardio', { duration: formatDurationShortText(balance.cardioSec) })}</span>
       </div>
+      <div class="hybrid-balance-label">${trProgress(balance.labelKey || 'balance.context.lowData')}</div>
     </div>
   `;
+}
+
+function switchHybridBalanceDays(days) {
+  const nextDays = days === 30 ? 30 : 7;
+  if (hybridBalanceDays === nextDays) return;
+  hybridBalanceDays = nextDays;
+  const balanceCard = document.querySelector('.hybrid-balance-card');
+  if (balanceCard) {
+    balanceCard.outerHTML = renderHybridBalanceHTML();
+  }
+  triggerHapticFeedback('light');
 }
 
 function getSessionDate(session) {
@@ -425,12 +436,12 @@ function getCategoryColorValue(type) {
 
 function getSessionTitle(session) {
   if (session.type === 'cardio') {
-    return ACTIVITY_TYPES[session.activityType]?.name || 'Cardio';
+    return ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio');
   }
   if (session.type === 'recovery') {
-    return 'Recovery';
+    return trProgress('common.recovery');
   }
-  return session.planName || 'Krafttraining';
+  return session.planName || trProgress('common.strength');
 }
 
 function getSessionIcon(session) {
@@ -456,13 +467,18 @@ function getSessionColor(session) {
 function openRecentWorkoutModal(sessionId) {
   const session = allSessions.find((s) => s.id === sessionId);
   if (!session) {
-    showErrorMessage('Workout nicht gefunden');
+    showErrorMessage(trProgress('progress.modals.workoutNotFound'));
     return;
   }
 
   const date = getSessionDate(session);
-  const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
+  const duration = session.duration ? formatDurationText(session.duration * 60) : trProgress('progress.session.durationNA');
   const title = getSessionTitle(session);
+  const typeLabel = session.type === 'cardio'
+    ? trProgress('progress.session.typeCardio')
+    : session.type === 'recovery'
+      ? trProgress('progress.session.typeRecovery')
+      : trProgress('progress.session.typeStrength');
 
   const summary = session.type === 'cardio'
     ? renderCardioSummary(session)
@@ -474,10 +490,10 @@ function openRecentWorkoutModal(sessionId) {
     <div class="workout-detail-modal">
       <div class="workout-detail-header">
         <div class="workout-type-badge type-${session.type}">
-          ${session.type === 'cardio' ? 'Cardio' : session.type === 'recovery' ? 'Recovery' : 'Kraft'}
+          ${typeLabel}
         </div>
         <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
-          ${formatFullDateDisplay(date)}
+          ${formatDateLongText(date)}
         </div>
       </div>
 
@@ -485,7 +501,7 @@ function openRecentWorkoutModal(sessionId) {
         <div class="workout-stat">
           <span class="material-symbols-rounded">schedule</span>
           <div class="workout-stat-value">${duration}</div>
-          <div class="workout-stat-label">Dauer</div>
+          <div class="workout-stat-label">${trProgress('common.duration')}</div>
         </div>
         ${summary}
       </div>
@@ -493,15 +509,15 @@ function openRecentWorkoutModal(sessionId) {
       <div class="workout-modal-actions">
         <button onclick="startWorkoutAgainFromSession('${session.id}')" class="btn-primary">
           <span class="material-symbols-rounded">play_arrow</span>
-          <span>Erneut starten</span>
+          <span>${trProgress('common.startAgain')}</span>
         </button>
         <button onclick="viewWorkoutDetailsFromSession('${session.id}')" class="btn-secondary">
           <span class="material-symbols-rounded">info</span>
-          <span>Details ansehen</span>
+          <span>${trProgress('common.viewDetails')}</span>
         </button>
         <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">
           <span class="material-symbols-rounded">delete</span>
-          <span>Loeschen</span>
+          <span>${trProgress('common.delete')}</span>
         </button>
       </div>
     </div>
@@ -511,8 +527,8 @@ function openRecentWorkoutModal(sessionId) {
     openGenericModal(title, content);
   } else {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Modal nicht verfuegbar');
-  }
+      showEdgeFeedback('error', trProgress('progress.modals.modalUnavailable'));
+    }
   }
 }
 
@@ -528,17 +544,17 @@ function renderStrengthSummary(session) {
     <div class="workout-stat">
       <span class="material-symbols-rounded">fitness_center</span>
       <div class="workout-stat-value">${exerciseCount}</div>
-      <div class="workout-stat-label">Uebungen</div>
+      <div class="workout-stat-label">${trProgress('progress.strength.summary.exercises')}</div>
     </div>
     <div class="workout-stat">
       <span class="material-symbols-rounded">repeat</span>
       <div class="workout-stat-value">${totalSets}</div>
-      <div class="workout-stat-label">Saetze</div>
+      <div class="workout-stat-label">${trProgress('progress.strength.summary.sets')}</div>
     </div>
     <div class="workout-stat">
       <span class="material-symbols-rounded">trending_up</span>
       <div class="workout-stat-value">${totalReps}</div>
-      <div class="workout-stat-label">Reps</div>
+      <div class="workout-stat-label">${trProgress('progress.strength.summary.reps')}</div>
     </div>
   `;
 }
@@ -548,24 +564,26 @@ function renderRecoverySummary() {
 }
 
 function renderCardioSummary(session) {
-  const distance = session.distanceKm ? `${session.distanceKm} km` : '-';
-  const pace = session.pace ? formatPace(session.pace) : '-';
+  const distance = session.distanceKm
+    ? trProgress('format.distanceKm', { distance: session.distanceKm })
+    : trProgress('format.pace.na');
+  const pace = session.pace ? formatPaceValueText(session.pace) : trProgress('format.pace.na');
 
   return `
     <div class="workout-stat">
       <span class="material-symbols-rounded">straighten</span>
       <div class="workout-stat-value">${distance}</div>
-      <div class="workout-stat-label">Distanz</div>
+      <div class="workout-stat-label">${trProgress('progress.cardio.metricDistance')}</div>
     </div>
     <div class="workout-stat">
       <span class="material-symbols-rounded">speed</span>
       <div class="workout-stat-value">${pace}</div>
-      <div class="workout-stat-label">Pace</div>
+      <div class="workout-stat-label">${trProgress('progress.cardio.metricPace')}</div>
     </div>
     <div class="workout-stat">
       <span class="material-symbols-rounded">directions_run</span>
-      <div class="workout-stat-value">${ACTIVITY_TYPES[session.activityType]?.name || 'Cardio'}</div>
-      <div class="workout-stat-label">Typ</div>
+      <div class="workout-stat-value">${ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio')}</div>
+      <div class="workout-stat-label">${trProgress('progress.cardio.activityLabel')}</div>
     </div>
   `;
 }
@@ -573,7 +591,7 @@ function renderCardioSummary(session) {
 function startWorkoutAgainFromSession(sessionId) {
   const session = allSessions.find((s) => s.id === sessionId);
   if (!session) {
-    showErrorMessage('Workout nicht gefunden');
+    showErrorMessage(trProgress('errors.workoutNotFound'));
     return;
   }
 
@@ -593,14 +611,14 @@ function startWorkoutAgainFromSession(sessionId) {
   if (typeof startWorkoutFromSession === 'function') {
     startWorkoutFromSession(sessionId);
   } else {
-    showErrorMessage('Workout-Engine nicht geladen');
+    showErrorMessage(trProgress('progress.modals.modalUnavailable'));
   }
 }
 
 function viewWorkoutDetailsFromSession(sessionId) {
   const session = allSessions.find((s) => s.id === sessionId);
   if (!session) {
-    showErrorMessage('Workout nicht gefunden');
+    showErrorMessage(trProgress('errors.workoutNotFound'));
     return;
   }
 
@@ -620,60 +638,60 @@ function viewWorkoutDetailsFromSession(sessionId) {
   if (typeof openWorkoutDetailModal === 'function') {
     openWorkoutDetailModal(sessionId);
   } else {
-    showErrorMessage('Detailansicht nicht verfuegbar');
+    showErrorMessage(trProgress('progress.modals.modalUnavailable'));
   }
 }
 
 function openCardioDetailModal(session) {
   const date = getSessionDate(session);
-  const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
-  const distance = session.distanceKm ? `${session.distanceKm} km` : '-';
-  const pace = session.pace ? formatPace(session.pace) : '-';
-  const activity = ACTIVITY_TYPES[session.activityType]?.name || 'Cardio';
+  const duration = session.duration ? formatDurationText(session.duration * 60) : trProgress('progress.session.durationNA');
+  const distance = session.distanceKm ? trProgress('format.distanceKm', { distance: session.distanceKm }) : trProgress('format.pace.na');
+  const pace = session.pace ? formatPaceValueText(session.pace) : trProgress('format.pace.na');
+  const activity = ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio');
 
   const content = `
     <div class="workout-detail-modal">
       <div class="workout-detail-header">
-        <div class="workout-type-badge type-cardio">Cardio</div>
+        <div class="workout-type-badge type-cardio">${trProgress('common.cardio')}</div>
         <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
-          ${formatFullDateDisplay(date)}
+          ${formatDateLongText(date)}
         </div>
       </div>
       <div class="workout-stats-grid">
         <div class="workout-stat">
           <span class="material-symbols-rounded">schedule</span>
           <div class="workout-stat-value">${duration}</div>
-          <div class="workout-stat-label">Dauer</div>
+          <div class="workout-stat-label">${trProgress('progress.overview.stats.totalTime')}</div>
         </div>
         <div class="workout-stat">
           <span class="material-symbols-rounded">straighten</span>
           <div class="workout-stat-value">${distance}</div>
-          <div class="workout-stat-label">Distanz</div>
+          <div class="workout-stat-label">${trProgress('progress.cardio.metricDistance')}</div>
         </div>
         <div class="workout-stat">
           <span class="material-symbols-rounded">speed</span>
           <div class="workout-stat-value">${pace}</div>
-          <div class="workout-stat-label">Pace</div>
+          <div class="workout-stat-label">${trProgress('progress.cardio.metricPace')}</div>
         </div>
       </div>
       <div class="workout-exercises">
-        <h4 class="workout-section-title">Aktivitaet</h4>
+        <h4 class="workout-section-title">${trProgress('progress.cardio.activityLabel')}</h4>
         <p class="text-sm text-gray-300">${activity}</p>
       </div>
       ${session.notes ? `
         <div class="workout-exercises">
-          <h4 class="workout-section-title">Notizen</h4>
+          <h4 class="workout-section-title">${trProgress('common.notes')}</h4>
           <p class="text-sm text-gray-300">${session.notes}</p>
         </div>
       ` : ''}
       <div class="workout-modal-actions">
         <button onclick="startWorkoutAgainFromSession('${session.id}')" class="btn-primary">
           <span class="material-symbols-rounded">play_arrow</span>
-          <span>Erneut starten</span>
+          <span>${trProgress('common.startAgain')}</span>
         </button>
         <button onclick="closeGenericModal()" class="btn-secondary">
           <span class="material-symbols-rounded">close</span>
-          <span>Schliessen</span>
+          <span>${trProgress('common.close')}</span>
         </button>
       </div>
     </div>
@@ -683,49 +701,49 @@ function openCardioDetailModal(session) {
     openGenericModal(activity, content);
   } else {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Modal nicht verfuegbar');
-  }
+      showEdgeFeedback('error', trProgress('progress.modals.modalUnavailable'));
+    }
   }
 }
 
 function openRecoveryDetailModal(session) {
   const date = getSessionDate(session);
-  const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
-  const notes = session.notes ? session.notes : '-';
+  const duration = session.duration ? formatDurationText(session.duration * 60) : trProgress('progress.session.durationNA');
+  const notes = session.notes ? session.notes : trProgress('common.notAvailable');
 
   const content = `
     <div class="workout-detail-modal">
       <div class="workout-detail-header">
-        <div class="workout-type-badge type-recovery">Recovery</div>
+        <div class="workout-type-badge type-recovery">${trProgress('common.recovery')}</div>
         <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
-          ${formatFullDateDisplay(date)}
+          ${formatDateLongText(date)}
         </div>
       </div>
       <div class="workout-stats-grid">
         <div class="workout-stat">
           <span class="material-symbols-rounded">schedule</span>
           <div class="workout-stat-value">${duration}</div>
-          <div class="workout-stat-label">Dauer</div>
+          <div class="workout-stat-label">${trProgress('progress.overview.stats.totalTime')}</div>
         </div>
         <div class="workout-stat">
           <span class="material-symbols-rounded">notes</span>
           <div class="workout-stat-value">${notes}</div>
-          <div class="workout-stat-label">Notizen</div>
+          <div class="workout-stat-label">${trProgress('common.notes')}</div>
         </div>
       </div>
     </div>
   `;
 
   if (typeof openGenericModal === 'function') {
-    openGenericModal('Recovery', content);
+    openGenericModal(trProgress('common.recovery'), content);
   } else {
-    showErrorMessage('Modal nicht verfuegbar');
+    showErrorMessage(trProgress('progress.modals.modalUnavailable'));
   }
 }
 
 function prefillCardioFromSession(session) {
   if (typeof openAddCardioModal !== 'function') {
-    showErrorMessage('Cardio-Modal nicht verfuegbar');
+    showErrorMessage(trProgress('progress.modals.cardioModalUnavailable'));
     return;
   }
 
@@ -748,21 +766,14 @@ function prefillCardioFromSession(session) {
   }, 0);
 }
 
-function formatFullDateDisplay(date) {
-  const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-  const months = ['Januar', 'Februar', 'Maerz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-  const dayName = days[date.getDay()];
-  return `${dayName}, ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
-}
-
 async function deleteSessionWithReferences(sessionId) {
-  if (!confirm('Dieses Workout wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.')) {
+  if (!confirm(trProgress('progress.modals.deleteConfirm'))) {
     return;
   }
 
   const session = allSessions.find((s) => s.id === sessionId);
   if (!session) {
-    showErrorMessage('Workout nicht gefunden');
+    showErrorMessage(trProgress('progress.modals.workoutNotFound'));
     return;
   }
 
@@ -791,7 +802,7 @@ async function deleteSessionWithReferences(sessionId) {
     triggerSuccessGlow();
   } catch (error) {
     console.error('❌ Error deleting session:', error);
-    showErrorMessage('Fehler beim Loeschen: ' + error.message);
+    showErrorMessage(trProgress('progress.modals.deleteError', { message: error.message }));
   }
 }
 
@@ -805,7 +816,7 @@ function renderStrengthTab() {
     container.innerHTML = `
       <div class="progress-loading">
         <div class="spinner"></div>
-        <p>Lade Daten...</p>
+        <p>${trProgress('common.loading')}</p>
       </div>
     `;
     return;
@@ -817,10 +828,10 @@ function renderStrengthTab() {
     container.innerHTML = `
       <div class="progress-empty-state">
         <span class="material-symbols-rounded progress-empty-icon">fitness_center</span>
-        <h3>Noch keine Kraft-Trainings</h3>
-        <p>Starte ein Training im Workout-Bereich, um deinen Fortschritt zu tracken</p>
+        <h3>${trProgress('progress.strength.emptyTitle')}</h3>
+        <p>${trProgress('progress.strength.emptyBody')}</p>
       </div>
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="Krafttraining hinzufuegen" type="button">
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     `;
@@ -834,11 +845,12 @@ function renderStrengthTab() {
 
       <!-- Stats -->
       <div id="strength-stats-container"></div>
+      <p class="section-helper">${trProgress('progress.strength.helper')}</p>
 
       <!-- Chart -->
       <div id="strength-chart-container" class="progress-chart-container"></div>
 
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="Krafttraining hinzufuegen" type="button">
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     </div>
@@ -867,9 +879,11 @@ function renderStrengthStats() {
   if (!container) return;
 
   const stats = calculateStrengthStats(progressStrengthPeriod);
-  const bucketLabel = PERIOD_CONFIG[progressStrengthPeriod]?.bucketType === 'weekly' ? 'Woche' : 'Tag';
-  const lastLabel = `Letzter ${bucketLabel}`;
-  const bestLabel = `Bester ${bucketLabel}`;
+  const bucketLabel = PERIOD_CONFIG[progressStrengthPeriod]?.bucketType === 'weekly'
+    ? trProgress('progress.period.bucket.week')
+    : trProgress('progress.period.bucket.day');
+  const lastLabel = trProgress('progress.labels.lastBucket', { bucket: bucketLabel });
+  const bestLabel = trProgress('progress.labels.bestBucket', { bucket: bucketLabel });
 
   container.innerHTML = `
     <div class="progress-stats-grid">
@@ -898,7 +912,7 @@ function renderStrengthStats() {
           <span class="material-symbols-rounded" style="color: var(--color-category-strength);">analytics</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Durchschnitt</p>
+          <p class="progress-stat-label">${trProgress('progress.strength.stats.average')}</p>
           <p class="progress-stat-value">${formatVolume(stats.avgValue)}</p>
         </div>
       </div>
@@ -908,7 +922,7 @@ function renderStrengthStats() {
           <span class="material-symbols-rounded" style="color: #a855f7;">calendar_month</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Sessions</p>
+          <p class="progress-stat-label">${trProgress('progress.strength.stats.sessions')}</p>
           <p class="progress-stat-value">${stats.totalSessions}</p>
         </div>
       </div>
@@ -962,17 +976,19 @@ function renderStrengthChart() {
     container.innerHTML = `
       <div class="progress-empty-chart">
         <span class="material-symbols-rounded">insert_chart</span>
-        <p>Noch keine Daten fuer diesen Zeitraum</p>
+        <p>${trProgress('progress.strength.noData')}</p>
       </div>
     `;
     return;
   }
 
-  const periodLabel = PERIOD_CONFIG[progressStrengthPeriod]?.label || '7 Tage';
+  const periodLabel = PERIOD_CONFIG[progressStrengthPeriod]?.labelKey
+    ? trProgress(PERIOD_CONFIG[progressStrengthPeriod].labelKey)
+    : trProgress('progress.period.7d');
 
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">Kraft-Volumen - ${periodLabel}</h3>
+      <h3 class="progress-chart-title">${trProgress('progress.strength.chartTitle', { period: periodLabel })}</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
@@ -1099,7 +1115,7 @@ function renderCardioTab() {
     container.innerHTML = `
       <div class="progress-loading">
         <div class="spinner"></div>
-        <p>Lade Daten...</p>
+        <p>${trProgress('common.loading')}</p>
       </div>
     `;
     return;
@@ -1111,14 +1127,14 @@ function renderCardioTab() {
     container.innerHTML = `
       <div class="progress-empty-state cardio">
         <span class="material-symbols-rounded progress-empty-icon">directions_run</span>
-        <h3>Noch keine Cardio-Sessions</h3>
-        <p>Logge deine erste Cardio-Session, um deinen Fortschritt zu sehen</p>
+        <h3>${trProgress('progress.cardio.emptyTitle')}</h3>
+        <p>${trProgress('progress.cardio.emptyBody')}</p>
         <button onclick="openAddCardioModal()" class="progress-cta-btn primary">
           <span class="material-symbols-rounded">add</span>
-          <span>Cardio Session hinzufuegen</span>
+          <span>${trProgress('progress.cardio.add')}</span>
         </button>
       </div>
-      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="Cardio hinzufuegen" type="button">
+      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     `;
@@ -1149,31 +1165,36 @@ function renderCardioTab() {
         <button
           class="metric-btn ${cardioMetric === 'time' ? 'active' : ''}"
           onclick="switchCardioMetric('time')"
+          data-metric="time"
         >
-          Zeit
+          ${trProgress('progress.cardio.metricTime')}
         </button>
         <button
           class="metric-btn ${cardioMetric === 'distance' ? 'active' : ''}"
           onclick="switchCardioMetric('distance')"
+          data-metric="distance"
         >
-          Distanz
+          ${trProgress('progress.cardio.metricDistance')}
         </button>
         <button
           class="metric-btn ${cardioMetric === 'pace' ? 'active' : ''}"
           onclick="switchCardioMetric('pace')"
+          data-metric="pace"
         >
-          Pace
+          ${trProgress('progress.cardio.metricPace')}
         </button>
       </div>
+      <p class="section-helper">${trProgress('progress.cardio.metricHelper')}</p>
 
       <!-- Stats -->
       <div id="cardio-stats-container"></div>
+      <p class="section-helper">${trProgress('progress.cardio.helper')}</p>
 
       <!-- Chart -->
       <div id="cardio-chart-container" class="progress-chart-container"></div>
 
       <!-- Add Button -->
-      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="Cardio hinzufuegen" type="button">
+      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     </div>
@@ -1205,11 +1226,8 @@ function switchCardioMetric(metric) {
 
   // Update active button state
   document.querySelectorAll('.cardio-metric-toggle .metric-btn').forEach(btn => {
-    const btnMetric = btn.textContent.trim().toLowerCase();
-    const isActive = (btnMetric === 'zeit' && metric === 'time') ||
-                     (btnMetric === 'distanz' && metric === 'distance') ||
-                     (btnMetric === 'pace' && metric === 'pace');
-    btn.classList.toggle('active', isActive);
+    const btnMetric = btn.dataset.metric;
+    btn.classList.toggle('active', btnMetric === metric);
   });
 }
 
@@ -1218,19 +1236,22 @@ function renderCardioStats() {
   if (!container) return;
 
   const stats = calculateCardioStats(progressCardioPeriod, cardioMetric, selectedActivityType);
-  const bucketLabel = PERIOD_CONFIG[progressCardioPeriod]?.bucketType === 'weekly' ? 'Woche' : 'Tag';
+  const bucketLabel = PERIOD_CONFIG[progressCardioPeriod]?.bucketType === 'weekly'
+    ? trProgress('progress.period.bucket.week')
+    : trProgress('progress.period.bucket.day');
 
   // Format values based on metric
   let lastValueFormatted, bestValueFormatted, avgValueFormatted, metricUnit;
-  let bestLabel = `Bester ${bucketLabel}`;
+  const lastLabel = trProgress('progress.labels.lastBucket', { bucket: bucketLabel });
+  let bestLabel = trProgress('progress.labels.bestBucket', { bucket: bucketLabel });
 
   if (cardioMetric === 'pace') {
     // For pace, format as min:sec /km
-    lastValueFormatted = stats.lastValue > 0 ? formatPaceShort(stats.lastValue) : '-';
-    bestValueFormatted = stats.bestValue > 0 ? formatPaceShort(stats.bestValue) : '-';
-    avgValueFormatted = stats.avgValue > 0 ? formatPaceShort(stats.avgValue) : '-';
-    metricUnit = '/km';
-    bestLabel = `Schnellster ${bucketLabel}`; // For pace, lower is better
+    lastValueFormatted = stats.lastValue > 0 ? formatPaceValueText(stats.lastValue) : trProgress('format.pace.na');
+    bestValueFormatted = stats.bestValue > 0 ? formatPaceValueText(stats.bestValue) : trProgress('format.pace.na');
+    avgValueFormatted = stats.avgValue > 0 ? formatPaceValueText(stats.avgValue) : trProgress('format.pace.na');
+    metricUnit = '';
+    bestLabel = trProgress('progress.labels.fastestBucket', { bucket: bucketLabel }); // For pace, lower is better
 
     // Show empty state if no pace data
     if (!stats.hasData) {
@@ -1241,9 +1262,9 @@ function renderCardioStats() {
               <span class="material-symbols-rounded" style="color: var(--color-category-cardio);">speed</span>
             </div>
             <div class="progress-stat-content">
-              <p class="progress-stat-label">Pace-Daten</p>
-              <p class="progress-stat-value" style="font-size: 1rem;">Nicht genug Daten</p>
-              <p class="progress-stat-hint">Logge Sessions mit Distanz fuer Pace-Berechnung</p>
+              <p class="progress-stat-label">${trProgress('progress.cardio.paceEmptyTitle')}</p>
+              <p class="progress-stat-value" style="font-size: 1rem;">${trProgress('progress.cardio.paceEmptyValue')}</p>
+              <p class="progress-stat-hint">${trProgress('progress.cardio.paceEmptyHint')}</p>
             </div>
           </div>
         </div>
@@ -1254,14 +1275,16 @@ function renderCardioStats() {
     lastValueFormatted = stats.lastValue.toFixed(1);
     bestValueFormatted = stats.bestValue.toFixed(1);
     avgValueFormatted = stats.avgValue.toFixed(1);
-    metricUnit = 'km';
+    metricUnit = trProgress('progress.cardio.metricUnit.distance');
   } else {
     // time
     lastValueFormatted = stats.lastValue;
     bestValueFormatted = stats.bestValue;
     avgValueFormatted = stats.avgValue;
-    metricUnit = 'min';
+    metricUnit = trProgress('progress.cardio.metricUnit.time');
   }
+
+  const unitSuffix = metricUnit ? ` ${metricUnit}` : '';
 
   container.innerHTML = `
     <div class="progress-stats-grid">
@@ -1270,8 +1293,8 @@ function renderCardioStats() {
           <span class="material-symbols-rounded" style="color: var(--color-category-cardio);">trending_up</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Letzter ${bucketLabel}</p>
-          <p class="progress-stat-value">${lastValueFormatted} ${metricUnit}</p>
+          <p class="progress-stat-label">${lastLabel}</p>
+          <p class="progress-stat-value">${lastValueFormatted}${unitSuffix}</p>
         </div>
       </div>
 
@@ -1281,7 +1304,7 @@ function renderCardioStats() {
         </div>
         <div class="progress-stat-content">
           <p class="progress-stat-label">${bestLabel}</p>
-          <p class="progress-stat-value">${bestValueFormatted} ${metricUnit}</p>
+          <p class="progress-stat-value">${bestValueFormatted}${unitSuffix}</p>
         </div>
       </div>
 
@@ -1290,8 +1313,8 @@ function renderCardioStats() {
           <span class="material-symbols-rounded" style="color: #a855f7;">analytics</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Durchschnitt</p>
-          <p class="progress-stat-value">${avgValueFormatted} ${metricUnit}</p>
+          <p class="progress-stat-label">${trProgress('progress.cardio.stats.average')}</p>
+          <p class="progress-stat-value">${avgValueFormatted}${unitSuffix}</p>
         </div>
       </div>
 
@@ -1300,7 +1323,7 @@ function renderCardioStats() {
           <span class="material-symbols-rounded" style="color: var(--color-primary);">calendar_month</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Sessions</p>
+          <p class="progress-stat-label">${trProgress('progress.cardio.stats.sessions')}</p>
           <p class="progress-stat-value">${stats.totalSessions}</p>
         </div>
       </div>
@@ -1319,8 +1342,8 @@ function renderCardioChart() {
 
   if (!hasData) {
     const emptyMessage = cardioMetric === 'pace'
-      ? 'Logge Sessions mit Distanz fuer Pace-Daten'
-      : 'Noch keine Daten fuer diese Aktivitaet';
+      ? trProgress('progress.cardio.noPaceData')
+      : trProgress('progress.cardio.noData');
 
     container.innerHTML = `
       <div class="progress-empty-chart">
@@ -1333,18 +1356,20 @@ function renderCardioChart() {
 
   let metricLabel;
   if (cardioMetric === 'time') {
-    metricLabel = 'Zeit (min)';
+    metricLabel = trProgress('progress.cardio.metricLabel.time');
   } else if (cardioMetric === 'distance') {
-    metricLabel = 'Distanz (km)';
+    metricLabel = trProgress('progress.cardio.metricLabel.distance');
   } else {
-    metricLabel = 'Pace (min/km)';
+    metricLabel = trProgress('progress.cardio.metricLabel.pace');
   }
 
-  const periodLabel = PERIOD_CONFIG[progressCardioPeriod]?.label || '7 Tage';
+  const periodLabel = PERIOD_CONFIG[progressCardioPeriod]?.labelKey
+    ? trProgress(PERIOD_CONFIG[progressCardioPeriod].labelKey)
+    : trProgress('progress.period.7d');
 
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${metricLabel} - ${periodLabel}</h3>
+      <h3 class="progress-chart-title">${trProgress('progress.cardio.chartTitle', { metric: metricLabel, period: periodLabel })}</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
@@ -1427,7 +1452,7 @@ function drawWeeklyCardioChart(data, metric) {
     if (invertYAxis) {
       // Inverted: top = min (fast), bottom = max (slow)
       value = minValue + ((maxValue - minValue) / 5) * i;
-      label = formatPaceShort(value);
+      label = formatPaceValueText(value);
     } else {
       value = Math.round(maxValue - (maxValue / 5) * i);
       label = metric === 'distance' ? value.toFixed(1) : value.toString();
@@ -1546,7 +1571,7 @@ function getSessionDotMeta(session) {
 
 function prefillRecoveryFromSession(session) {
   if (typeof openAddRecoveryModal !== 'function') {
-    showErrorMessage('Recovery-Modal nicht verfuegbar');
+    showErrorMessage(trProgress('progress.modals.recoveryModalUnavailable'));
     return;
   }
 
@@ -1574,17 +1599,27 @@ function renderActivityCalendarHTML() {
   const month = activityCalendarDate.getMonth();
   const sessionsByDate = getSessionsByDate(year, month);
 
-  const monthNames = ['Januar', 'Februar', 'Maerz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-  const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const dayLabels = [
+    trProgress('progress.activityCalendar.weekday.mon'),
+    trProgress('progress.activityCalendar.weekday.tue'),
+    trProgress('progress.activityCalendar.weekday.wed'),
+    trProgress('progress.activityCalendar.weekday.thu'),
+    trProgress('progress.activityCalendar.weekday.fri'),
+    trProgress('progress.activityCalendar.weekday.sat'),
+    trProgress('progress.activityCalendar.weekday.sun')
+  ];
+  const monthTitle = trProgress('progress.activityCalendar.monthTitle', {
+    month: formatMonthYearText(activityCalendarDate)
+  });
 
   return `
     <div class="activity-calendar">
       <div class="activity-calendar-header">
-        <button onclick="navigateActivityCalendar('prev')" class="cal-nav-btn" aria-label="Vorheriger Monat">
+        <button onclick="navigateActivityCalendar('prev')" class="cal-nav-btn" aria-label="${trProgress('progress.activityCalendar.prevMonth')}">
           <span class="material-symbols-rounded">chevron_left</span>
         </button>
-        <h3 class="activity-calendar-title">${monthNames[month]} ${year}</h3>
-        <button onclick="navigateActivityCalendar('next')" class="cal-nav-btn" aria-label="Naechster Monat">
+        <h3 class="activity-calendar-title">${monthTitle}</h3>
+        <button onclick="navigateActivityCalendar('next')" class="cal-nav-btn" aria-label="${trProgress('progress.activityCalendar.nextMonth')}">
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
       </div>
@@ -1649,13 +1684,13 @@ function renderActivityCalendarDays(year, month, sessionsByDate) {
            onclick="openActivityDaySheet('${dateKey}')"
            role="button"
            tabindex="0"
-           aria-label="${day}. ${sessions.length} Sessions">
+           aria-label="${trProgress('progress.activityCalendar.dayLabel', { day, count: sessions.length })}">
         <span class="day-number">${day}</span>
         <div class="session-dots" aria-hidden="true">
           ${visibleDots.map(dot => `
-            <span class="session-dot ${dot.type} size-${dot.size}" title="${dot.minutes} min"></span>
+            <span class="session-dot ${dot.type} size-${dot.size}" title="${trProgress('format.duration.minutes', { minutes: dot.minutes })}"></span>
           `).join('')}
-          ${overflow > 0 ? `<span class="session-overflow">+${overflow}</span>` : ''}
+          ${overflow > 0 ? `<span class="session-overflow">${trProgress('progress.activityCalendar.overflow', { count: overflow })}</span>` : ''}
         </div>
       </div>
     `;
@@ -1696,10 +1731,9 @@ function navigateActivityCalendar(direction) {
 function openActivityDaySheet(dateKey) {
   const sessions = getSessionsForDate(dateKey);
   const date = new Date(dateKey + 'T12:00:00');
-  const dayNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-  const monthNames = ['Januar', 'Februar', 'Maerz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-
-  const title = `${dayNames[date.getDay()]}, ${date.getDate()}. ${monthNames[date.getMonth()]}`;
+  const title = trProgress('progress.activityCalendar.sheetTitle', {
+    date: formatDateLongText(date, false)
+  });
 
   openSheet({
     title: title,
@@ -1708,7 +1742,7 @@ function openActivityDaySheet(dateKey) {
         container.innerHTML = `
           <div class="activity-day-empty">
             <span class="material-symbols-rounded">event_busy</span>
-            <p>Keine Sessions an diesem Tag</p>
+            <p>${trProgress('progress.overview.activityDayEmpty')}</p>
           </div>
         `;
         return;
@@ -1718,7 +1752,9 @@ function openActivityDaySheet(dateKey) {
         const icon = getSessionIcon(session);
         const color = getSessionColor(session);
         const sessionTitle = getSessionTitle(session);
-        const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
+        const duration = session.duration
+          ? formatDurationText(session.duration * 60)
+          : trProgress('progress.session.durationNA');
 
         return `
           <div class="activity-session-item">
@@ -1730,10 +1766,10 @@ function openActivityDaySheet(dateKey) {
               <div class="session-item-meta">${duration}</div>
             </div>
             <div class="session-item-actions">
-              <button onclick="viewWorkoutDetailsFromSession('${session.id}'); closeSheet();" class="session-action-btn" aria-label="Ansehen">
+              <button onclick="viewWorkoutDetailsFromSession('${session.id}'); closeSheet();" class="session-action-btn" aria-label="${trProgress('common.view')}">
                 <span class="material-symbols-rounded">visibility</span>
               </button>
-              <button onclick="deleteSessionFromCalendar('${session.id}', '${dateKey}')" class="session-action-btn danger" aria-label="Loeschen">
+              <button onclick="deleteSessionFromCalendar('${session.id}', '${dateKey}')" class="session-action-btn danger" aria-label="${trProgress('common.delete')}">
                 <span class="material-symbols-rounded">delete</span>
               </button>
             </div>
@@ -1748,7 +1784,7 @@ function openActivityDaySheet(dateKey) {
  * Loescht eine Session und aktualisiert den Kalender
  */
 async function deleteSessionFromCalendar(sessionId, dateKey) {
-  if (!confirm('Diese Session wirklich loeschen?')) {
+  if (!confirm(trProgress('progress.modals.deleteCalendarConfirm'))) {
     return;
   }
 
@@ -1768,7 +1804,7 @@ async function deleteSessionFromCalendar(sessionId, dateKey) {
     triggerSuccessGlow();
   } catch (error) {
     console.error('Error deleting session:', error);
-    showErrorMessage('Fehler beim Loeschen');
+    showErrorMessage(trProgress('progress.modals.deleteErrorShort'));
   }
 }
 
@@ -1787,8 +1823,8 @@ function createSheetRoot() {
     <div class="sheet__backdrop" data-sheet-backdrop></div>
     <div class="sheet__panel" role="dialog" aria-modal="true">
       <div class="sheet__header">
-        <h3 class="sheet__title" id="sheet-title">Auswahl</h3>
-        <button class="sheet__close" type="button" aria-label="Schliessen" data-sheet-close>
+        <h3 class="sheet__title" id="sheet-title">${trProgress('common.select')}</h3>
+        <button class="sheet__close" type="button" aria-label="${trProgress('common.close')}" data-sheet-close>
           <span class="material-symbols-rounded">close</span>
         </button>
       </div>
@@ -1823,7 +1859,7 @@ function openSheet({ title, render, listRole = 'list' }) {
   const contentEl = root.querySelector('#sheet-content');
 
   if (titleEl) {
-    titleEl.textContent = title || 'Auswahl';
+    titleEl.textContent = title || trProgress('common.select');
   }
 
   if (contentEl) {
@@ -1861,7 +1897,7 @@ function closeSheet() {
 
 function openActivityPickerSheet() {
   openSheet({
-    title: 'Aktivität auswählen',
+    title: trProgress('progress.cardio.activityPickerTitle'),
     render: (container) => {
       const listHTML = Object.entries(ACTIVITY_TYPES)
         .map(([key, config]) => `
@@ -1880,6 +1916,16 @@ function openActivityPickerSheet() {
       container.innerHTML = listHTML;
     }
   });
+}
+
+function openExercisePickerSheet() {
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', trProgress('progress.modals.modalUnavailable'));
+  }
+}
+
+function selectExercise() {
+  // Placeholder to avoid runtime errors if legacy handlers call this.
 }
 
 function closePickerSheet(sheetId) {
@@ -1918,7 +1964,7 @@ function showProgressLoading() {
     content.innerHTML = `
       <div class="progress-loading">
         <div class="spinner"></div>
-        <p>Lade Daten...</p>
+        <p>${trProgress('common.loading')}</p>
       </div>
     `;
   }
@@ -1962,3 +2008,5 @@ window.openActivityDaySheet = openActivityDaySheet;
 window.deleteSessionFromCalendar = deleteSessionFromCalendar;
 
 console.log('📊 Progress V2 module loaded');
+
+
