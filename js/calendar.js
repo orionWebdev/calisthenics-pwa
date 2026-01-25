@@ -34,17 +34,11 @@ async function loadSchedule() {
       scheduleData = [];
     }
     setCalendarView(currentCalendarView);
-    if (typeof renderTodayWorkout === 'function') {
-      renderTodayWorkout();
-    }
   } catch (error) {
     console.error('Error loading schedule:', error);
     // Render calendar anyway with empty data
     scheduleData = [];
     setCalendarView(currentCalendarView);
-    if (typeof renderTodayWorkout === 'function') {
-      renderTodayWorkout();
-    }
   }
 }
 
@@ -554,9 +548,6 @@ function setupScheduleListener() {
   onCollectionChange(scheduleCollection, (schedule) => {
     scheduleData = schedule;
     renderCalendar();
-    if (typeof renderTodayWorkout === 'function') {
-      renderTodayWorkout();
-    }
   });
 }
 

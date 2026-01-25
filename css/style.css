@@ -1147,6 +1147,212 @@ input, textarea, select, button {
   transition: all 0.3s ease;
 }
 
+/* Primary Action Card */
+.dashboard-primary-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.dashboard-primary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.dashboard-primary-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.25rem 0;
+}
+
+.dashboard-primary-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.dashboard-primary-icon {
+  font-size: 32px;
+  color: rgba(240, 34, 119, 0.6);
+}
+
+.dashboard-primary-btn {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 0.875rem;
+  border: none;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-primary-btn:active {
+  transform: scale(0.98);
+}
+
+/* Hybrid Balance Card */
+.dashboard-balance-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dashboard-balance-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dashboard-balance-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.dashboard-balance-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0.2rem 0 0 0;
+}
+
+.dashboard-balance-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dashboard-toggle-btn {
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.dashboard-toggle-btn.active {
+  color: white;
+  border-color: rgba(240, 34, 119, 0.6);
+  background: rgba(240, 34, 119, 0.15);
+}
+
+.dashboard-balance-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.dashboard-balance-segment.strength {
+  background: var(--color-primary);
+}
+
+.dashboard-balance-segment.cardio {
+  background: #3b82f6;
+}
+
+.dashboard-balance-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.dashboard-balance-context {
+  font-size: 0.85rem;
+  color: white;
+}
+
+/* Recent Sessions */
+.dashboard-recent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-recent-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.dashboard-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dashboard-session-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dashboard-session-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.dashboard-session-type {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dashboard-session-type.strength {
+  background: rgba(240, 34, 119, 0.15);
+  color: #fda4d8;
+}
+
+.dashboard-session-type.cardio {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+
+.dashboard-session-date {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.dashboard-session-meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: white;
+}
+
+.dashboard-recent-empty {
+  padding: 1rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
 /* Today Workout Card */
 .dashboard-today-card {
   background: linear-gradient(135deg,

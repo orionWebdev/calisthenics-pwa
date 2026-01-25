@@ -82,6 +82,10 @@ function showView(viewName) {
     }
   }
 
+  if (viewName === 'dashboard' && typeof refreshDashboard === 'function') {
+    refreshDashboard();
+  }
+
   if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
     renderWorkoutScreen();
   }
