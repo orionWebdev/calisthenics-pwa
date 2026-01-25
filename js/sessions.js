@@ -31,6 +31,16 @@
  *   notes?: string
  *   createdAt: timestamp
  * }
+ *
+ * Recovery Session:
+ * {
+ *   id: string
+ *   type: 'recovery'
+ *   date: timestamp
+ *   duration: number (minutes, required)
+ *   notes?: string
+ *   createdAt: timestamp
+ * }
  */
 
 let allSessions = [];
@@ -39,7 +49,25 @@ let currentProgressTab = 'overview'; // 'overview', 'strength', 'cardio'
 let selectedExerciseId = null;
 let selectedActivityType = 'run';
 let strengthMetric = 'volume'; // 'volume' or 'bestSet'
-let cardioMetric = 'time'; // 'time' or 'distance'
+let cardioMetric = 'time'; // 'time', 'distance', or 'pace'
+
+// ==================== PERIOD SYSTEM ====================
+
+/**
+ * Unified Period Keys: 7D, 30D, 6M, 1Y
+ * @typedef {'7D' | '30D' | '6M' | '1Y'} PeriodKey
+ */
+const PERIOD_CONFIG = {
+  '7D': { days: 7, label: '7 Tage', bucketType: 'daily' },
+  '30D': { days: 30, label: '30 Tage', bucketType: 'daily' },
+  '6M': { days: 180, label: '6 Monate', bucketType: 'weekly' },
+  '1Y': { days: 365, label: '1 Jahr', bucketType: 'weekly' }
+};
+
+// Current period states (default to 7D)
+let currentOverviewPeriod = '7D';
+let currentStrengthPeriod = '7D';
+let currentCardioPeriod = '7D';
 
 // Activity Types Config
 const ACTIVITY_TYPES = {
@@ -170,14 +198,73 @@ function formatWeekLabel(weekStart) {
 }
 
 /**
- * Aggregiert Strength-Volumen in WOECHENTLICHE Buckets (nicht per-exercise)
- * @param {number} weeks - Anzahl Wochen zurueck
- * @returns {Array} [{weekLabel, weekStart, value, sessionCount}]
+ * Aggregiert Strength-Volumen basierend auf PeriodKey
+ * @param {PeriodKey} periodKey - '7D', '30D', '6M', '1Y'
+ * @returns {Array} [{label, date, value, sessionCount}]
  */
-function aggregateWeeklyStrengthVolume(weeks = 8) {
+function aggregateStrengthByPeriod(periodKey = '7D') {
+  const config = PERIOD_CONFIG[periodKey];
+  if (!config) return [];
+
+  const now = new Date();
+  const cutoffDate = new Date(now.getTime() - config.days * 24 * 60 * 60 * 1000);
+
+  // Filter relevant sessions
+  const relevantSessions = allSessions.filter(s => {
+    if (s.type !== 'strength') return false;
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    return sessionDate >= cutoffDate;
+  });
+
+  // Use weekly buckets for longer periods, daily for shorter
+  if (config.bucketType === 'weekly') {
+    return aggregateStrengthWeeklyBuckets(config.days, relevantSessions);
+  } else {
+    return aggregateStrengthDailyBuckets(config.days, relevantSessions);
+  }
+}
+
+/**
+ * Aggregates strength data into daily buckets
+ */
+function aggregateStrengthDailyBuckets(days, sessions) {
+  const result = [];
+  const now = new Date();
+  now.setHours(23, 59, 59, 999);
+
+  for (let i = days - 1; i >= 0; i--) {
+    const dayStart = new Date(now);
+    dayStart.setDate(dayStart.getDate() - i);
+    dayStart.setHours(0, 0, 0, 0);
+
+    const dayEnd = new Date(dayStart);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const daySessions = sessions.filter(s => {
+      const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+      return sessionDate >= dayStart && sessionDate <= dayEnd;
+    });
+
+    const totalVolume = daySessions.reduce((sum, s) => sum + calculateSessionStrengthVolume(s), 0);
+
+    result.push({
+      label: formatDayLabel(dayStart),
+      date: dayStart,
+      value: totalVolume,
+      sessionCount: daySessions.length
+    });
+  }
+  return result;
+}
+
+/**
+ * Aggregates strength data into weekly buckets
+ */
+function aggregateStrengthWeeklyBuckets(days, sessions) {
   const result = [];
   const now = new Date();
   const currentWeekStart = getWeekStart(now);
+  const weeks = Math.ceil(days / 7);
 
   for (let i = weeks - 1; i >= 0; i--) {
     const weekStart = new Date(currentWeekStart);
@@ -186,8 +273,7 @@ function aggregateWeeklyStrengthVolume(weeks = 8) {
     weekEnd.setDate(weekEnd.getDate() + 6);
     weekEnd.setHours(23, 59, 59, 999);
 
-    const weekSessions = allSessions.filter(s => {
-      if (s.type !== 'strength') return false;
+    const weekSessions = sessions.filter(s => {
       const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
       return sessionDate >= weekStart && sessionDate <= weekEnd;
     });
@@ -195,9 +281,10 @@ function aggregateWeeklyStrengthVolume(weeks = 8) {
     const totalVolume = weekSessions.reduce((sum, s) => sum + calculateSessionStrengthVolume(s), 0);
 
     result.push({
+      label: formatWeekLabel(weekStart),
       weekLabel: formatWeekLabel(weekStart),
       weekStart: weekStart,
-      date: weekStart, // For chart compatibility
+      date: weekStart,
       value: totalVolume,
       sessionCount: weekSessions.length
     });
@@ -206,15 +293,117 @@ function aggregateWeeklyStrengthVolume(weeks = 8) {
 }
 
 /**
- * Aggregiert Cardio-Daten in WOECHENTLICHE Buckets
- * @param {string} metric - 'time', 'distance'
- * @param {number} weeks
+ * Calculates strength stats for a given period
+ * @param {PeriodKey} periodKey
+ */
+function calculateStrengthStats(periodKey) {
+  const data = aggregateStrengthByPeriod(periodKey);
+
+  if (!data || data.length === 0) {
+    return { lastValue: 0, bestValue: 0, avgValue: 0, totalSessions: 0 };
+  }
+
+  const values = data.map(d => d.value);
+  const lastValue = values[values.length - 1] || 0;
+  const bestValue = Math.max(...values);
+
+  const nonZeroValues = values.filter(v => v > 0);
+  const avgValue = nonZeroValues.length > 0
+    ? Math.round(nonZeroValues.reduce((sum, v) => sum + v, 0) / nonZeroValues.length)
+    : 0;
+
+  const totalSessions = data.reduce((sum, d) => sum + d.sessionCount, 0);
+
+  return { lastValue, bestValue, avgValue, totalSessions };
+}
+
+/**
+ * Legacy wrapper for backwards compatibility
+ * @deprecated Use aggregateStrengthByPeriod instead
+ */
+function aggregateWeeklyStrengthVolume(weeks = 8) {
+  // Convert weeks to closest period key
+  let periodKey = '30D';
+  if (weeks <= 2) periodKey = '7D';
+  else if (weeks <= 5) periodKey = '30D';
+  else if (weeks <= 26) periodKey = '6M';
+  else periodKey = '1Y';
+
+  return aggregateStrengthByPeriod(periodKey);
+}
+
+/**
+ * Aggregiert Cardio-Daten basierend auf PeriodKey
+ * @param {string} metric - 'time', 'distance', or 'pace'
+ * @param {PeriodKey} periodKey - '7D', '30D', '6M', '1Y'
  * @param {string|null} activityFilter - optional filter by activity type
  */
-function aggregateWeeklyCardio(metric = 'time', weeks = 8, activityFilter = null) {
+function aggregateCardioByPeriod(metric = 'time', periodKey = '7D', activityFilter = null) {
+  const config = PERIOD_CONFIG[periodKey];
+  if (!config) return [];
+
+  const now = new Date();
+  const cutoffDate = new Date(now.getTime() - config.days * 24 * 60 * 60 * 1000);
+
+  // Filter relevant sessions
+  const relevantSessions = allSessions.filter(s => {
+    if (s.type !== 'cardio') return false;
+    if (activityFilter && s.activityType !== activityFilter) return false;
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    return sessionDate >= cutoffDate;
+  });
+
+  // Use weekly buckets for longer periods (6M, 1Y), daily for shorter
+  if (config.bucketType === 'weekly') {
+    return aggregateCardioWeeklyBuckets(metric, config.days, relevantSessions);
+  } else {
+    return aggregateCardioDailyBuckets(metric, config.days, relevantSessions);
+  }
+}
+
+/**
+ * Aggregates cardio data into daily buckets
+ */
+function aggregateCardioDailyBuckets(metric, days, sessions) {
+  const result = [];
+  const now = new Date();
+  now.setHours(23, 59, 59, 999);
+
+  for (let i = days - 1; i >= 0; i--) {
+    const dayStart = new Date(now);
+    dayStart.setDate(dayStart.getDate() - i);
+    dayStart.setHours(0, 0, 0, 0);
+
+    const dayEnd = new Date(dayStart);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const daySessions = sessions.filter(s => {
+      const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+      return sessionDate >= dayStart && sessionDate <= dayEnd;
+    });
+
+    const bucket = computeCardioBucketValue(metric, daySessions);
+
+    result.push({
+      label: formatDayLabel(dayStart),
+      date: dayStart,
+      value: bucket.value,
+      sessionCount: daySessions.length,
+      totalDuration: bucket.totalDuration,
+      totalDistance: bucket.totalDistance
+    });
+  }
+  return result;
+}
+
+/**
+ * Aggregates cardio data into weekly buckets
+ */
+function aggregateCardioWeeklyBuckets(metric, days, sessions) {
   const result = [];
   const now = new Date();
   const currentWeekStart = getWeekStart(now);
+  const weeks = Math.ceil(days / 7);
 
   for (let i = weeks - 1; i >= 0; i--) {
     const weekStart = new Date(currentWeekStart);
@@ -223,30 +412,142 @@ function aggregateWeeklyCardio(metric = 'time', weeks = 8, activityFilter = null
     weekEnd.setDate(weekEnd.getDate() + 6);
     weekEnd.setHours(23, 59, 59, 999);
 
-    const weekSessions = allSessions.filter(s => {
-      if (s.type !== 'cardio') return false;
-      if (activityFilter && s.activityType !== activityFilter) return false;
+    const weekSessions = sessions.filter(s => {
       const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
       return sessionDate >= weekStart && sessionDate <= weekEnd;
     });
 
-    let value = 0;
-    if (metric === 'time') {
-      value = weekSessions.reduce((sum, s) => sum + (s.duration || 0), 0);
-    } else if (metric === 'distance') {
-      value = weekSessions.reduce((sum, s) => sum + (s.distanceKm || 0), 0);
-      value = Math.round(value * 10) / 10; // Round to 1 decimal
-    }
+    const bucket = computeCardioBucketValue(metric, weekSessions);
 
     result.push({
+      label: formatWeekLabel(weekStart),
       weekLabel: formatWeekLabel(weekStart),
       weekStart: weekStart,
-      date: weekStart, // For chart compatibility
-      value: value,
-      sessionCount: weekSessions.length
+      date: weekStart,
+      value: bucket.value,
+      sessionCount: weekSessions.length,
+      totalDuration: bucket.totalDuration,
+      totalDistance: bucket.totalDistance
     });
   }
   return result;
+}
+
+/**
+ * Computes the value for a bucket based on metric
+ * For pace: uses distance-weighted calculation (totalDuration / totalDistance)
+ */
+function computeCardioBucketValue(metric, sessions) {
+  let totalDuration = 0;
+  let totalDistance = 0;
+
+  sessions.forEach(s => {
+    totalDuration += s.duration || 0;
+    totalDistance += s.distanceKm || 0;
+  });
+
+  let value = 0;
+  if (metric === 'time') {
+    value = totalDuration;
+  } else if (metric === 'distance') {
+    value = Math.round(totalDistance * 10) / 10;
+  } else if (metric === 'pace') {
+    // Distance-weighted pace: totalDuration / totalDistance
+    if (totalDistance > 0 && totalDuration > 0) {
+      value = totalDuration / totalDistance; // min/km
+      value = Math.round(value * 100) / 100; // Round to 2 decimals
+    } else {
+      value = 0; // Not enough data
+    }
+  }
+
+  return { value, totalDuration, totalDistance };
+}
+
+/**
+ * Formats a day label for chart display
+ */
+function formatDayLabel(date) {
+  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  return `${date.getDate()}. ${months[date.getMonth()]}`;
+}
+
+/**
+ * Calculates cardio stats for a given period
+ * @param {PeriodKey} periodKey
+ * @param {string} metric - 'time', 'distance', or 'pace'
+ * @param {string|null} activityFilter
+ */
+function calculateCardioStats(periodKey, metric, activityFilter = null) {
+  const data = aggregateCardioByPeriod(metric, periodKey, activityFilter);
+
+  if (!data || data.length === 0) {
+    return {
+      lastValue: 0,
+      bestValue: 0,
+      avgValue: 0,
+      totalSessions: 0,
+      hasData: false
+    };
+  }
+
+  const nonZeroValues = data.filter(d => d.value > 0).map(d => d.value);
+
+  if (nonZeroValues.length === 0) {
+    return {
+      lastValue: 0,
+      bestValue: 0,
+      avgValue: 0,
+      totalSessions: data.reduce((sum, d) => sum + d.sessionCount, 0),
+      hasData: false
+    };
+  }
+
+  const lastValue = data[data.length - 1]?.value || 0;
+  let bestValue, avgValue;
+
+  if (metric === 'pace') {
+    // For pace, lower is better (faster)
+    bestValue = Math.min(...nonZeroValues);
+    avgValue = nonZeroValues.reduce((sum, v) => sum + v, 0) / nonZeroValues.length;
+    avgValue = Math.round(avgValue * 100) / 100;
+  } else {
+    bestValue = Math.max(...nonZeroValues);
+    avgValue = Math.round(nonZeroValues.reduce((sum, v) => sum + v, 0) / nonZeroValues.length);
+  }
+
+  return {
+    lastValue,
+    bestValue,
+    avgValue,
+    totalSessions: data.reduce((sum, d) => sum + d.sessionCount, 0),
+    hasData: true
+  };
+}
+
+/**
+ * Formats pace value as "5:30 /km"
+ */
+function formatPaceShort(paceMinPerKm) {
+  if (!paceMinPerKm || paceMinPerKm <= 0) return '-';
+  const minutes = Math.floor(paceMinPerKm);
+  const seconds = Math.round((paceMinPerKm - minutes) * 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+/**
+ * Legacy wrapper for backwards compatibility
+ * @deprecated Use aggregateCardioByPeriod instead
+ */
+function aggregateWeeklyCardio(metric = 'time', weeks = 8, activityFilter = null) {
+  // Convert weeks to closest period key
+  let periodKey = '30D';
+  if (weeks <= 2) periodKey = '7D';
+  else if (weeks <= 5) periodKey = '30D';
+  else if (weeks <= 26) periodKey = '6M';
+  else periodKey = '1Y';
+
+  return aggregateCardioByPeriod(metric, periodKey, activityFilter);
 }
 
 /**
@@ -783,6 +1084,113 @@ function handleModalBackdropClick(event, modalId) {
     if (modalId === 'add-cardio-modal') {
       closeAddCardioModal();
     }
+    if (modalId === 'add-recovery-modal') {
+      closeAddRecoveryModal();
+    }
+  }
+}
+
+// ==================== RECOVERY SESSION MODAL ====================
+
+function openAddRecoveryModal(dateStr = null) {
+  const modal = document.getElementById('add-recovery-modal');
+  if (!modal) return;
+
+  console.log('🔓 Opening recovery modal...');
+
+  modal.style.display = '';
+
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('recovery-date');
+  const durationInput = document.getElementById('recovery-duration');
+  const notesInput = document.getElementById('recovery-notes');
+
+  if (dateInput) {
+    dateInput.value = dateStr || today;
+  }
+  if (durationInput) durationInput.value = '';
+  if (notesInput) notesInput.value = '';
+
+  modal.classList.add('active');
+  triggerHapticFeedback('light');
+}
+
+function closeAddRecoveryModal() {
+  const modal = document.getElementById('add-recovery-modal');
+  if (!modal) return;
+
+  console.log('🔒 Closing recovery modal...');
+
+  modal.classList.remove('active');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300);
+
+  setTimeout(() => {
+    const dateInput = document.getElementById('recovery-date');
+    const durationInput = document.getElementById('recovery-duration');
+    const notesInput = document.getElementById('recovery-notes');
+
+    if (dateInput) dateInput.value = '';
+    if (durationInput) durationInput.value = '';
+    if (notesInput) notesInput.value = '';
+  }, 300);
+}
+
+async function saveRecoverySession() {
+  const dateInput = document.getElementById('recovery-date').value;
+  const validDate = getValidDateStringForCardio(dateInput);
+  const duration = parseFloat(document.getElementById('recovery-duration').value);
+  const notes = document.getElementById('recovery-notes').value.trim();
+
+  if (!validDate) {
+    showErrorMessage('Bitte wähle ein Datum');
+    return;
+  }
+
+  if (!duration || duration <= 0) {
+    showErrorMessage('Bitte gib eine gültige Dauer ein');
+    return;
+  }
+
+  try {
+    const saveBtn = document.querySelector('#add-recovery-modal .modal-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+    }
+
+    const selectedDate = new Date(validDate + 'T12:00:00');
+
+    const recoverySession = {
+      type: 'recovery',
+      date: firebase.firestore.Timestamp.fromDate(selectedDate),
+      duration,
+      notes: notes || null,
+      createdAt: firebase.firestore.Timestamp.now()
+    };
+
+    await addDoc(sessionsCollection, recoverySession);
+
+    console.log('✅ Recovery session saved');
+
+    closeAddRecoveryModal();
+
+    await loadSessions();
+    if (typeof renderCurrentProgressTab === 'function') {
+      renderCurrentProgressTab();
+    }
+
+    triggerSuccessGlow();
+  } catch (error) {
+    console.error('❌ Error saving recovery session:', error);
+    showErrorMessage('Fehler beim Speichern: ' + error.message);
+  } finally {
+    const saveBtn = document.querySelector('#add-recovery-modal .modal-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<span class="material-symbols-rounded">check</span><span>Speichern</span>';
+    }
   }
 }
 
@@ -794,11 +1202,22 @@ window.saveCardioSession = saveCardioSession;
 window.handleModalBackdropClick = handleModalBackdropClick;
 window.triggerSuccessGlow = triggerSuccessGlow;
 window.showErrorMessage = showErrorMessage;
+window.openAddRecoveryModal = openAddRecoveryModal;
+window.closeAddRecoveryModal = closeAddRecoveryModal;
+window.saveRecoverySession = saveRecoverySession;
 window.calculateSessionStrengthVolume = calculateSessionStrengthVolume;
 window.aggregateWeeklyStrengthVolume = aggregateWeeklyStrengthVolume;
 window.aggregateWeeklyCardio = aggregateWeeklyCardio;
 window.getSessionsByDate = getSessionsByDate;
 window.getSessionsForDate = getSessionsForDate;
 window.formatDateToYYYYMMDD = formatDateToYYYYMMDD;
+
+// New period-based aggregation functions
+window.PERIOD_CONFIG = PERIOD_CONFIG;
+window.aggregateCardioByPeriod = aggregateCardioByPeriod;
+window.aggregateStrengthByPeriod = aggregateStrengthByPeriod;
+window.calculateCardioStats = calculateCardioStats;
+window.calculateStrengthStats = calculateStrengthStats;
+window.formatPaceShort = formatPaceShort;
 
 console.log('📊 Sessions module loaded');

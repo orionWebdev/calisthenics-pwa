@@ -11,6 +11,7 @@
 
   <!-- Material Symbols (Google Icons) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@300;400;500;600;700&display=swap" />
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
@@ -124,13 +125,9 @@
             <span class="material-symbols-rounded">home</span>
             <span>Dashboard</span>
           </button>
-          <button onclick="showView('exercises')" class="nav-btn" data-view="exercises">
+          <button onclick="showView('training')" class="nav-btn" data-view="training">
             <span class="material-symbols-rounded">fitness_center</span>
-            <span>Übungen</span>
-          </button>
-          <button onclick="showView('plans')" class="nav-btn" data-view="plans">
-            <span class="material-symbols-rounded">assignment</span>
-            <span>Pläne</span>
+            <span>Training</span>
           </button>
           <button onclick="showView('calendar')" class="nav-btn" data-view="calendar">
             <span class="material-symbols-rounded">calendar_month</span>
@@ -176,10 +173,7 @@
       <button class="radial-menu-item" data-view="calendar" onclick="showViewFromRadial('calendar')" style="--item-index: 1">
         <span class="material-symbols-rounded radial-icon">calendar_month</span>
       </button>
-      <button class="radial-menu-item" data-view="plans" onclick="showViewFromRadial('plans')" style="--item-index: 2">
-        <span class="material-symbols-rounded radial-icon">assignment</span>
-      </button>
-      <button class="radial-menu-item" data-view="exercises" onclick="showViewFromRadial('exercises')" style="--item-index: 3">
+      <button class="radial-menu-item" data-view="training" onclick="showViewFromRadial('training')" style="--item-index: 2">
         <span class="material-symbols-rounded radial-icon">fitness_center</span>
       </button>
     </div>
@@ -202,13 +196,9 @@
       <span class="material-symbols-rounded">calendar_month</span>
       <span class="bottom-nav-label">Kalender</span>
     </button>
-    <button class="bottom-nav-item" data-view="plans" onclick="showView('plans')">
-      <span class="material-symbols-rounded">assignment</span>
-      <span class="bottom-nav-label">Pläne</span>
-    </button>
-    <button class="bottom-nav-item" data-view="exercises" onclick="showView('exercises')">
+    <button class="bottom-nav-item" data-view="training" onclick="showView('training')">
       <span class="material-symbols-rounded">fitness_center</span>
-      <span class="bottom-nav-label">Übungen</span>
+      <span class="bottom-nav-label">Training</span>
     </button>
   </nav>
 
@@ -217,177 +207,161 @@
     <!-- DASHBOARD VIEW -->
     <div id="view-dashboard" class="view active">
 
-      <!-- Today Workout Card -->
-      <div id="today-workout-card" class="mb-6">
+      <!-- Primary Action -->
+      <div id="dashboard-primary-card" class="mb-6">
         <!-- Wird von JavaScript gefüllt -->
-      </div>
-
-      <!-- Stats Cards Row -->
-      <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
-        <!-- Week Progress -->
-        <div class="dashboard-stat-card">
-          <div class="dashboard-stat-icon">
-            <span class="material-symbols-rounded">calendar_month</span>
-          </div>
-          <div class="dashboard-stat-label">Woche</div>
-          <div id="week-progress-text" class="dashboard-stat-value">0/0</div>
-          <div id="week-progress-bar" class="dashboard-stat-progress">
-            <div class="dashboard-stat-progress-fill" style="width: 0%"></div>
-          </div>
-        </div>
-
-        <!-- Streak -->
-        <div class="dashboard-stat-card">
-          <div class="dashboard-stat-icon">
-            <span class="material-symbols-rounded">local_fire_department</span>
-          </div>
-          <div class="dashboard-stat-label">Streak</div>
-          <div id="streak-count" class="dashboard-stat-value">0</div>
-          <div class="dashboard-stat-subtext">Tage</div>
-        </div>
-
-        <!-- Total Reps -->
-        <div class="dashboard-stat-card">
-          <div class="dashboard-stat-icon">
-            <span class="material-symbols-rounded">trending_up</span>
-          </div>
-          <div class="dashboard-stat-label">Total</div>
-          <div id="total-reps" class="dashboard-stat-value">0</div>
-          <div class="dashboard-stat-subtext">Reps</div>
-        </div>
       </div>
 
       <!-- Hybrid Balance -->
       <div id="hybrid-balance-card" class="dashboard-card mb-6"></div>
 
-      <!-- Achievement Preview -->
-      <div id="achievement-card" class="dashboard-card mb-6">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
-      <!-- Top Exercises -->
-      <div id="top-exercises-card" class="dashboard-card">
+      <!-- Recent Sessions -->
+      <div id="recent-sessions-card" class="dashboard-card">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
     </div>
 
-    <!-- EXERCISES VIEW -->
-    <div id="view-exercises" class="view">
-      
-      <!-- Header mit Add Button -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-          <span>Neue Übung</span>
-        </button>
+        <!-- TRAINING VIEW -->
+    <div id="view-training" class="view hidden">
+
+      <div id="training-segmented-control" class="progress-section">
+        <div class="segmented-control">
+          <button
+            class="segmented-btn active"
+            onclick="switchTrainingTab('plans')"
+            data-tab="plans"
+          >
+            <span class="material-symbols-rounded">assignment</span>
+            <span>Pläne</span>
+          </button>
+          <button
+            class="segmented-btn"
+            onclick="switchTrainingTab('exercises')"
+            data-tab="exercises"
+          >
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span>Übungen</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Filter & Search -->
-      <div class="filter-container">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-          <!-- Search -->
-          <div class="filter-item">
-            <label class="filter-label">
-              <span class="material-symbols-rounded">search</span>
-              <span>Suche</span>
-            </label>
-            <div class="filter-input-wrapper">
-              <span class="material-symbols-rounded filter-input-icon">search</span>
-              <input
-                type="text"
-                id="search-input"
-                placeholder="Übung suchen..."
-                class="filter-input"
-                oninput="filterExercises()"
-              />
-            </div>
+      <div id="training-tab-plans" class="training-tab active">
+        <!-- Header mit Add Button -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold mb-2">Trainingspläne</h2>
+            <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Workouts</p>
           </div>
+          <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+            <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+            <span>Neuer Plan</span>
+          </button>
+        </div>
 
-          <!-- Muscle Group Filter -->
-          <div class="filter-item">
-            <label class="filter-label">
-              <span class="material-symbols-rounded">sports_gymnastics</span>
-              <span>Muskelgruppe</span>
-            </label>
-            <div class="filter-select-wrapper">
-              <span class="material-symbols-rounded filter-select-icon">filter_list</span>
-              <select
-                id="muscle-filter"
-                class="filter-select"
-                onchange="filterExercises()"
-              >
-                <option value="">Alle Muskelgruppen</option>
-                <option value="chest">Brust</option>
-                <option value="back">Rücken</option>
-                <option value="shoulders">Schultern</option>
-                <option value="arms">Arme</option>
-                <option value="core">Core</option>
-                <option value="legs">Beine</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Difficulty Filter -->
-          <div class="filter-item">
-            <label class="filter-label">
-              <span class="material-symbols-rounded">star</span>
-              <span>Schwierigkeit</span>
-            </label>
-            <div class="filter-select-wrapper">
-              <span class="material-symbols-rounded filter-select-icon">tune</span>
-              <select
-                id="difficulty-filter"
-                class="filter-select"
-                onchange="filterExercises()"
-              >
-                <option value="">Alle Schwierigkeiten</option>
-                <option value="1">Anfänger</option>
-                <option value="2">Leicht</option>
-                <option value="3">Mittel</option>
-                <option value="4">Fortgeschritten</option>
-                <option value="5">Expert</option>
-              </select>
-            </div>
+        <!-- Plans Grid -->
+        <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Wird von JavaScript gefüllt -->
+          <div class="col-span-full text-center py-12 text-gray-400">
+            <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">assignment</span>
+            <p>Lade Pläne...</p>
           </div>
         </div>
       </div>
 
-      <!-- Active Filter Pills -->
-      <div id="active-filters" class="active-filters" style="display: none;"></div>
-
-      <!-- Exercises Grid -->
-      <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Wird von JavaScript gefüllt -->
-        <div class="col-span-full text-center py-12 text-gray-400">
-          <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">fitness_center</span>
-          <p>Lade Übungen...</p>
+      <div id="training-tab-exercises" class="training-tab">
+        <!-- Header mit Add Button -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold mb-2">Übungen</h2>
+            <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Übungen</p>
+          </div>
+          <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
+            <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+            <span>Neue Übung</span>
+          </button>
         </div>
-      </div>
 
-    </div>
+        <!-- Filter & Search -->
+        <div class="filter-container">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <!-- Search -->
+            <div class="filter-item">
+              <label class="filter-label">
+                <span class="material-symbols-rounded">search</span>
+                <span>Suche</span>
+              </label>
+              <div class="filter-input-wrapper">
+                <span class="material-symbols-rounded filter-input-icon">search</span>
+                <input
+                  type="text"
+                  id="search-input"
+                  placeholder="Übung suchen..."
+                  class="filter-input"
+                  oninput="filterExercises()"
+                />
+              </div>
+            </div>
 
-    <!-- PLANS VIEW -->
-    <div id="view-plans" class="view hidden">
+            <!-- Muscle Group Filter -->
+            <div class="filter-item">
+              <label class="filter-label">
+                <span class="material-symbols-rounded">sports_gymnastics</span>
+                <span>Muskelgruppe</span>
+              </label>
+              <div class="filter-select-wrapper">
+                <span class="material-symbols-rounded filter-select-icon">filter_list</span>
+                <select
+                  id="muscle-filter"
+                  class="filter-select"
+                  onchange="filterExercises()"
+                >
+                  <option value="">Alle Muskelgruppen</option>
+                  <option value="chest">Brust</option>
+                  <option value="back">Rücken</option>
+                  <option value="shoulders">Schultern</option>
+                  <option value="arms">Arme</option>
+                  <option value="core">Core</option>
+                  <option value="legs">Beine</option>
+                </select>
+              </div>
+            </div>
 
-      <!-- Header mit Add Button -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-bold mb-2">Trainingspläne</h2>
-          <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Workouts</p>
+            <!-- Difficulty Filter -->
+            <div class="filter-item">
+              <label class="filter-label">
+                <span class="material-symbols-rounded">star</span>
+                <span>Schwierigkeit</span>
+              </label>
+              <div class="filter-select-wrapper">
+                <span class="material-symbols-rounded filter-select-icon">tune</span>
+                <select
+                  id="difficulty-filter"
+                  class="filter-select"
+                  onchange="filterExercises()"
+                >
+                  <option value="">Alle Schwierigkeiten</option>
+                  <option value="1">Anfänger</option>
+                  <option value="2">Leicht</option>
+                  <option value="3">Mittel</option>
+                  <option value="4">Fortgeschritten</option>
+                  <option value="5">Expert</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
-        <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-          <span>Neuer Plan</span>
-        </button>
-      </div>
 
-      <!-- Plans Grid -->
-      <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Wird von JavaScript gefüllt -->
-        <div class="col-span-full text-center py-12 text-gray-400">
-          <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">assignment</span>
-          <p>Lade Pläne...</p>
+        <!-- Active Filter Pills -->
+        <div id="active-filters" class="active-filters" style="display: none;"></div>
+
+        <!-- Exercises Grid -->
+        <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Wird von JavaScript gefüllt -->
+          <div class="col-span-full text-center py-12 text-gray-400">
+            <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">fitness_center</span>
+            <p>Lade Übungen...</p>
+          </div>
         </div>
       </div>
 
@@ -452,8 +426,7 @@
           <!-- Wird von JavaScript gefüllt -->
         </div>
       </div>
-
-    </div>
+</div>
 
     <!-- PROGRESS VIEW -->
     <!-- PROGRESS VIEW V2 -->
@@ -658,6 +631,7 @@
             <select id="plan-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
               <option value="strength">Kraft</option>
               <option value="cardio">Cardio</option>
+              <option value="recovery">Recovery</option>
               <option value="mobility">Mobility</option>
               <option value="skill">Skill</option>
               <option value="hiit">HIIT</option>
@@ -1144,6 +1118,61 @@
     </div>
   </div>
 
+  <!-- Add Recovery Session Modal -->
+  <div id="add-recovery-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-recovery-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Recovery Session hinzufuegen</h3>
+        <button onclick="closeAddRecoveryModal()" class="modal-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Datum *</label>
+          <input
+            type="date"
+            id="recovery-date"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Dauer (Minuten) *</label>
+          <input
+            type="number"
+            id="recovery-duration"
+            placeholder="z.B. 20"
+            min="1"
+            step="1"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Notizen <span class="text-gray-400">(optional)</span></label>
+          <textarea
+            id="recovery-notes"
+            rows="3"
+            placeholder="Wie fuehlt sich die Recovery an?"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeAddRecoveryModal()" class="modal-cancel-btn">
+          <span>Abbrechen</span>
+        </button>
+        <button onclick="saveRecoverySession()" class="modal-save-btn">
+          <span class="material-symbols-rounded">check</span>
+          <span>Speichern</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Exercise Picker Bottom Sheet -->
   <div id="exercise-picker-sheet" class="bottom-sheet">
     <div class="sheet-content">
@@ -1197,6 +1226,7 @@
   <script src="js/createDemoProgress.js"></script>
   <script src="js/createDemoSessions.js"></script>
   <script src="js/workout.js"></script>
+  <script src="js/ripple.js"></script>
   <script src="js/app.js"></script>
 
 </body>

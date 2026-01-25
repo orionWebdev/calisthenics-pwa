@@ -11,6 +11,7 @@ let currentPlan = null; // Currently selected plan for editing
 const workoutTypeNames = {
   strength: 'Kraft',
   cardio: 'Cardio',
+  recovery: 'Recovery',
   mobility: 'Mobility',
   skill: 'Skill',
   hiit: 'HIIT',
@@ -79,6 +80,8 @@ function renderPlans() {
     const typeLabel = workoutTypeNames[planType] || 'Kraft';
     const typeIcon = planType === 'cardio'
       ? 'directions_run'
+      : planType === 'recovery'
+        ? 'self_improvement'
       : planType === 'mobility'
         ? 'self_improvement'
         : planType === 'skill'

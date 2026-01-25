@@ -34,17 +34,11 @@ async function loadSchedule() {
       scheduleData = [];
     }
     setCalendarView(currentCalendarView);
-    if (typeof renderTodayWorkout === 'function') {
-      renderTodayWorkout();
-    }
   } catch (error) {
     console.error('Error loading schedule:', error);
     // Render calendar anyway with empty data
     scheduleData = [];
     setCalendarView(currentCalendarView);
-    if (typeof renderTodayWorkout === 'function') {
-      renderTodayWorkout();
-    }
   }
 }
 
@@ -85,6 +79,11 @@ function navigateCalendar(direction) {
 function goToToday() {
   currentDate = new Date();
   renderCalendar();
+}
+
+function openCalendarQuickPlan() {
+  const todayKey = formatDate(new Date());
+  openDayDetailModal(todayKey, true);
 }
 
 // ========================================
@@ -266,7 +265,7 @@ function renderWeekView() {
               <div class="flex-1">
                 <div class="font-semibold">${plan.planName}</div>
                 <div class="flex items-center gap-2 mt-1">
-                  <span class="text-xs px-2 py-0.5 rounded" style="background: ${getPlanTypeColor(plan.planType)}20; color: ${getPlanTypeColor(plan.planType)};">
+                  <span class="text-xs px-2 py-0.5 rounded" style="background: color-mix(in srgb, ${getPlanTypeColor(plan.planType)} 20%, transparent); color: ${getPlanTypeColor(plan.planType)};">
                     ${workoutTypeNames[plan.planType] || plan.planType}
                   </span>
                   <span class="text-xs text-gray-400">${plan.planDuration || 45} Min</span>
@@ -506,9 +505,10 @@ function formatDate(date) {
 
 function getPlanTypeColor(type) {
   const colors = {
-    strength: '#ef4444',
-    cardio: '#3b82f6',
+    strength: 'var(--color-category-strength)',
+    cardio: 'var(--color-category-cardio)',
     mobility: '#22c55e',
+    recovery: 'var(--color-category-recovery)',
     skill: '#a855f7',
     hiit: '#f97316',
     mixed: '#db2777'
@@ -529,6 +529,14 @@ function startScheduledWorkout(scheduleId) {
     if (typeof showEdgeFeedback === 'function') {
     showEdgeFeedback('error', 'Training nicht gefunden');
   }
+    return;
+  }
+
+  if (scheduleEntry.planType === 'recovery' && typeof openAddRecoveryModal === 'function') {
+    if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
+      closeDayDetailModal();
+    }
+    openAddRecoveryModal(scheduleEntry.date);
     return;
   }
 
@@ -554,9 +562,6 @@ function setupScheduleListener() {
   onCollectionChange(scheduleCollection, (schedule) => {
     scheduleData = schedule;
     renderCalendar();
-    if (typeof renderTodayWorkout === 'function') {
-      renderTodayWorkout();
-    }
   });
 }
 
@@ -590,7 +595,7 @@ function openDayDetailModal(dateStr, openAddPanel = false) {
         <div class="flex-1">
           <div class="font-semibold text-lg mb-1">${plan.planName}</div>
           <div class="flex items-center gap-3">
-            <span class="text-xs px-2 py-1 rounded" style="background: ${getPlanTypeColor(plan.planType)}25; color: ${getPlanTypeColor(plan.planType)};">
+            <span class="text-xs px-2 py-1 rounded" style="background: color-mix(in srgb, ${getPlanTypeColor(plan.planType)} 25%, transparent); color: ${getPlanTypeColor(plan.planType)};">
               ${workoutTypeNames[plan.planType] || plan.planType}
             </span>
             <span class="text-xs text-gray-400 flex items-center gap-1">

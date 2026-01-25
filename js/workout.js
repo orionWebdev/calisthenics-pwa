@@ -56,6 +56,12 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
       }
       return;
     }
+
+    if (plan.type === 'recovery' && typeof openAddRecoveryModal === 'function') {
+      scheduledDate = ensureValidDateString(scheduledDate);
+      openAddRecoveryModal(scheduledDate);
+      return;
+    }
     if (!allExercises || allExercises.length === 0) {
       if (typeof showEdgeFeedback === 'function') {
         showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
@@ -423,7 +429,7 @@ function renderWorkoutScreen() {
         </div>
         <h3 class="empty-state-title">Kein aktives Workout</h3>
         <p class="empty-state-text">Starte ein Training aus dem Kalender oder einem Plan.</p>
-        <button onclick="showView('plans')" class="empty-state-btn">
+        <button onclick="showTrainingTab ? showTrainingTab('plans') : showView('training')" class="empty-state-btn">
           <span class="material-symbols-rounded">assignment</span>
           <span>Zu den Plaenen</span>
         </button>

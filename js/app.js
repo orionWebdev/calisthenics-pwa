@@ -11,8 +11,7 @@ const viewTitles = {
   dashboard: 'Dashboard',
   progress: 'Progress',
   calendar: 'Kalender',
-  plans: 'Trainingspläne',
-  exercises: 'Übungen',
+  training: 'Training',
   workout: 'Workout',
   profile: 'Profil'
 };
@@ -22,11 +21,42 @@ const viewIcons = {
   dashboard: 'home',
   progress: 'trending_up',
   calendar: 'calendar_month',
-  plans: 'assignment',
-  exercises: 'fitness_center',
+  training: 'fitness_center',
   workout: 'fitness_center',
   profile: 'account_circle'
 };
+
+// Training tab state
+let currentTrainingTab = 'plans';
+
+function loadTrainingTab() {
+  const stored = localStorage.getItem('trainingTab');
+  return stored === 'exercises' ? 'exercises' : 'plans';
+}
+
+function saveTrainingTab(tab) {
+  localStorage.setItem('trainingTab', tab);
+}
+
+function switchTrainingTab(tab) {
+  const nextTab = tab === 'exercises' ? 'exercises' : 'plans';
+  currentTrainingTab = nextTab;
+  saveTrainingTab(nextTab);
+
+  document.querySelectorAll('#training-segmented-control .segmented-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === nextTab);
+  });
+
+  const plansTab = document.getElementById('training-tab-plans');
+  const exercisesTab = document.getElementById('training-tab-exercises');
+  if (plansTab) plansTab.classList.toggle('active', nextTab === 'plans');
+  if (exercisesTab) exercisesTab.classList.toggle('active', nextTab === 'exercises');
+}
+
+function showTrainingTab(tab) {
+  showView('training');
+  switchTrainingTab(tab || currentTrainingTab);
+}
 
 // ========================================
 // NAVIGATION
@@ -73,6 +103,10 @@ function showView(viewName) {
     loadSchedule();
   }
 
+  if (viewName === 'training') {
+    switchTrainingTab(loadTrainingTab());
+  }
+
   // Initialize progress page when first opened
   if (viewName === 'progress') {
     if (typeof initProgressV2 === 'function') {
@@ -80,6 +114,10 @@ function showView(viewName) {
     } else if (typeof initProgress === 'function') {
       initProgress();
     }
+  }
+
+  if (viewName === 'dashboard' && typeof refreshDashboard === 'function') {
+    refreshDashboard();
   }
 
   if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
