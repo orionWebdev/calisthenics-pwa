@@ -3,8 +3,8 @@
 // ========================================
 
 const DASHBOARD_RECENT_LIMIT = 5;
-const DASHBOARD_RANGE_OPTIONS = [14, 28];
-let dashboardRangeDays = 14;
+// Dashboard Hybrid Balance fixed to 7 days - no toggle
+const DASHBOARD_BALANCE_DAYS = 7;
 let dashboardIsLoading = false;
 
 function getSessionDate(session) {
@@ -124,7 +124,7 @@ function getRecentSessions(sessions, limit = DASHBOARD_RECENT_LIMIT) {
     .map(item => item.session);
 }
 
-async function useDashboardData(rangeDays) {
+async function useDashboardData() {
   const state = {
     loading: true,
     error: null,
@@ -132,7 +132,7 @@ async function useDashboardData(rangeDays) {
     balance: {
       strengthSec: 0,
       cardioSec: 0,
-      rangeDays,
+      rangeDays: DASHBOARD_BALANCE_DAYS,
       contextLabel: 'noch wenig Daten - einfach weitermachen'
     },
     recentSessions: []
@@ -146,7 +146,7 @@ async function useDashboardData(rangeDays) {
     const sessions = Array.isArray(allSessions) ? allSessions : [];
 
     state.activeSession = getActiveWorkout();
-    state.balance = buildBalanceData(sessions, rangeDays);
+    state.balance = buildBalanceData(sessions, DASHBOARD_BALANCE_DAYS);
     state.recentSessions = getRecentSessions(sessions, DASHBOARD_RECENT_LIMIT);
   } catch (error) {
     console.error('Error loading dashboard data:', error);
@@ -299,24 +299,15 @@ function renderHybridBalanceCard(state) {
   const strengthPct = totalSec ? Math.round((balance.strengthSec / totalSec) * 100) : 0;
   const cardioPct = totalSec ? 100 - strengthPct : 0;
 
+  // Dashboard always shows 7 days - no toggle (period selection is in Progress pages)
   container.innerHTML = `
     <div class="dashboard-balance-card" onclick="openProgressOverview()" role="button" tabindex="0">
       <div class="dashboard-balance-header">
         <div>
           <h3 class="dashboard-balance-title">Hybrid Balance</h3>
-          <p class="dashboard-balance-subtitle">Letzte ${balance.rangeDays} Tage</p>
+          <p class="dashboard-balance-subtitle">Letzte 7 Tage</p>
         </div>
-        <div class="dashboard-balance-toggle">
-          ${DASHBOARD_RANGE_OPTIONS.map(days => `
-            <button
-              type="button"
-              class="dashboard-toggle-btn ${days === balance.rangeDays ? 'active' : ''}"
-              onclick="event.stopPropagation(); setDashboardRange(${days})"
-            >
-              ${days}d
-            </button>
-          `).join('')}
-        </div>
+        <span class="material-symbols-rounded dashboard-balance-arrow">chevron_right</span>
       </div>
       <div class="dashboard-balance-bar" role="img" aria-label="Strength ${strengthPct} Prozent, Cardio ${cardioPct} Prozent">
         <div class="dashboard-balance-segment strength" style="width: ${strengthPct}%;"></div>
@@ -410,17 +401,11 @@ function openProgressOverview() {
   }
 }
 
-function setDashboardRange(days) {
-  if (dashboardRangeDays === days) return;
-  dashboardRangeDays = days;
-  refreshDashboard();
-}
-
 async function refreshDashboard() {
   if (dashboardIsLoading) return;
   dashboardIsLoading = true;
 
-  const data = await useDashboardData(dashboardRangeDays);
+  const data = await useDashboardData();
   renderPrimaryActionCard(data);
   renderHybridBalanceCard(data);
   renderRecentSessionsList(data);

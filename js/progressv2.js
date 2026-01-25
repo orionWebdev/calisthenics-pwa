@@ -4,9 +4,10 @@
 
 let exercisesData = [];
 let exercisesLoaded = false;
-let currentOverviewPeriod = 7;
-let strengthPeriod = 8; // weeks for strength tab
-let cardioPeriod = 8; // weeks for cardio tab
+// New unified period system: 7D, 30D, 6M, 1Y
+let progressOverviewPeriod = '7D';
+let progressStrengthPeriod = '7D';
+let progressCardioPeriod = '7D';
 let activityCalendarDate = new Date(); // Current displayed month for activity calendar
 
 // ==================== INIT ====================
@@ -161,19 +162,13 @@ function renderOverviewTab() {
     return;
   }
 
-  // Calculate stats
-  const currentStats = calculateOverviewStats(currentOverviewPeriod);
+  // Calculate stats using the new period system
+  const periodDays = PERIOD_CONFIG[progressOverviewPeriod]?.days || 7;
+  const currentStats = calculateOverviewStats(periodDays);
 
   container.innerHTML = `
     <div class="overview-section">
-      <div class="overview-period-selector">
-        <button class="period-btn ${currentOverviewPeriod === 7 ? 'active' : ''}" onclick="switchOverviewPeriod(7)" data-period="7">
-          7 Tage
-        </button>
-        <button class="period-btn ${currentOverviewPeriod === 30 ? 'active' : ''}" onclick="switchOverviewPeriod(30)" data-period="30">
-          30 Tage
-        </button>
-      </div>
+      ${renderProgressPeriodSelector('overview', progressOverviewPeriod)}
 
       <div id="overview-stats-container">
         ${renderOverviewStatsHTML(currentStats)}
@@ -190,6 +185,48 @@ function renderOverviewTab() {
       <span class="material-symbols-rounded">add</span>
     </button>
   `;
+}
+
+/**
+ * Renders the unified period selector component
+ * @param {string} section - 'overview', 'strength', or 'cardio'
+ * @param {PeriodKey} currentPeriod - Current selected period
+ */
+function renderProgressPeriodSelector(section, currentPeriod) {
+  const periods = ['7D', '30D', '6M', '1Y'];
+
+  return `
+    <div class="progress-period-selector">
+      ${periods.map(period => `
+        <button
+          class="period-btn ${currentPeriod === period ? 'active' : ''}"
+          onclick="switchProgressPeriod('${section}', '${period}')"
+          data-period="${period}"
+        >
+          ${PERIOD_CONFIG[period].label}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+/**
+ * Switches period for a specific section
+ * @param {string} section - 'overview', 'strength', or 'cardio'
+ * @param {PeriodKey} periodKey
+ */
+function switchProgressPeriod(section, periodKey) {
+  if (section === 'overview') {
+    progressOverviewPeriod = periodKey;
+    renderOverviewTab();
+  } else if (section === 'strength') {
+    progressStrengthPeriod = periodKey;
+    renderStrengthTab();
+  } else if (section === 'cardio') {
+    progressCardioPeriod = periodKey;
+    renderCardioTab();
+  }
+  triggerHapticFeedback('light');
 }
 
 function renderOverviewStatsHTML(stats) {
@@ -310,35 +347,24 @@ function openStrengthQuickAdd() {
   }
 }
 
+/**
+ * @deprecated Use switchProgressPeriod('overview', periodKey) instead
+ */
 function switchOverviewPeriod(days) {
-  currentOverviewPeriod = days;
-  const stats = calculateOverviewStats(days);
-  const container = document.getElementById('overview-stats-container');
-  if (container) {
-    container.innerHTML = renderOverviewStatsHTML(stats);
-  }
+  // Convert days to period key for backwards compatibility
+  let periodKey = '7D';
+  if (days >= 30) periodKey = '30D';
+  else if (days >= 7) periodKey = '7D';
 
-  // Update active button
-  document.querySelectorAll('.period-btn').forEach(btn => {
-    if (parseInt(btn.dataset.period) === days) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
-  });
-
-  // Update hybrid balance
-  const balanceContainer = document.querySelector('.hybrid-balance-card');
-  if (balanceContainer) {
-    balanceContainer.outerHTML = renderHybridBalanceHTML();
-  }
+  switchProgressPeriod('overview', periodKey);
 }
 
 function renderHybridBalanceHTML() {
   if (typeof computeHybridBalance !== 'function') return '';
 
-  const days = currentOverviewPeriod >= 30 ? 28 : 14;
-  const balance = computeHybridBalance(days);
+  // Use the period days from the new system
+  const periodDays = PERIOD_CONFIG[progressOverviewPeriod]?.days || 7;
+  const balance = computeHybridBalance(periodDays);
 
   if (balance.status === 'empty') {
     return `
@@ -346,7 +372,7 @@ function renderHybridBalanceHTML() {
         <div class="hybrid-balance-header">
           <div>
             <h3 class="hybrid-balance-title">Hybrid Balance</h3>
-            <p class="hybrid-balance-subtitle">Letzte ${days} Tage</p>
+            <p class="hybrid-balance-subtitle">${PERIOD_CONFIG[progressOverviewPeriod]?.label || 'Letzte 7 Tage'}</p>
           </div>
         </div>
         <div class="hybrid-balance-empty">Noch keine Daten fuer Hybrid Balance</div>
@@ -359,7 +385,7 @@ function renderHybridBalanceHTML() {
       <div class="hybrid-balance-header">
         <div>
           <h3 class="hybrid-balance-title">Hybrid Balance</h3>
-          <p class="hybrid-balance-subtitle">Letzte ${days} Tage</p>
+          <p class="hybrid-balance-subtitle">${PERIOD_CONFIG[progressOverviewPeriod]?.label || 'Letzte 7 Tage'}</p>
         </div>
         <div class="hybrid-balance-label">${balance.label}</div>
       </div>
@@ -803,21 +829,8 @@ function renderStrengthTab() {
 
   container.innerHTML = `
     <div class="strength-section">
-      <!-- Period Toggle -->
-      <div class="metric-toggle">
-        <button
-          class="metric-btn ${strengthPeriod === 8 ? 'active' : ''}"
-          onclick="switchStrengthPeriod(8)"
-        >
-          8 Wochen
-        </button>
-        <button
-          class="metric-btn ${strengthPeriod === 12 ? 'active' : ''}"
-          onclick="switchStrengthPeriod(12)"
-        >
-          12 Wochen
-        </button>
-      </div>
+      <!-- Period Selector -->
+      ${renderProgressPeriodSelector('strength', progressStrengthPeriod)}
 
       <!-- Stats -->
       <div id="strength-stats-container"></div>
@@ -835,18 +848,28 @@ function renderStrengthTab() {
   renderStrengthChart();
 }
 
+/**
+ * @deprecated Use switchProgressPeriod('strength', periodKey) instead
+ */
 function switchStrengthPeriod(weeks) {
-  strengthPeriod = weeks;
-  renderStrengthTab();
-  triggerHapticFeedback('light');
+  // Convert weeks to period key for backwards compatibility
+  let periodKey = '30D';
+  if (weeks <= 2) periodKey = '7D';
+  else if (weeks <= 5) periodKey = '30D';
+  else if (weeks <= 26) periodKey = '6M';
+  else periodKey = '1Y';
+
+  switchProgressPeriod('strength', periodKey);
 }
 
 function renderStrengthStats() {
   const container = document.getElementById('strength-stats-container');
   if (!container) return;
 
-  const data = aggregateWeeklyStrengthVolume(strengthPeriod);
-  const stats = calculateWeeklyStats(data);
+  const stats = calculateStrengthStats(progressStrengthPeriod);
+  const bucketLabel = PERIOD_CONFIG[progressStrengthPeriod]?.bucketType === 'weekly' ? 'Woche' : 'Tag';
+  const lastLabel = `Letzter ${bucketLabel}`;
+  const bestLabel = `Bester ${bucketLabel}`;
 
   container.innerHTML = `
     <div class="progress-stats-grid">
@@ -855,7 +878,7 @@ function renderStrengthStats() {
           <span class="material-symbols-rounded" style="color: var(--color-primary);">trending_up</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Letzte Woche</p>
+          <p class="progress-stat-label">${lastLabel}</p>
           <p class="progress-stat-value">${formatVolume(stats.lastValue)}</p>
         </div>
       </div>
@@ -865,7 +888,7 @@ function renderStrengthStats() {
           <span class="material-symbols-rounded" style="color: #22c55e;">emoji_events</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Beste Woche</p>
+          <p class="progress-stat-label">${bestLabel}</p>
           <p class="progress-stat-value">${formatVolume(stats.bestValue)}</p>
         </div>
       </div>
@@ -930,7 +953,7 @@ function renderStrengthChart() {
   const container = document.getElementById('strength-chart-container');
   if (!container) return;
 
-  const data = aggregateWeeklyStrengthVolume(strengthPeriod);
+  const data = aggregateStrengthByPeriod(progressStrengthPeriod);
 
   // Check if there's any data
   const hasData = data.some(d => d.value > 0);
@@ -945,9 +968,11 @@ function renderStrengthChart() {
     return;
   }
 
+  const periodLabel = PERIOD_CONFIG[progressStrengthPeriod]?.label || '7 Tage';
+
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">Kraft-Volumen - Letzte ${strengthPeriod} Wochen</h3>
+      <h3 class="progress-chart-title">Kraft-Volumen - ${periodLabel}</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
@@ -1116,24 +1141,11 @@ function renderCardioTab() {
         </button>
       </div>
 
-      <!-- Period Toggle -->
-      <div class="metric-toggle" style="margin-bottom: 0.5rem;">
-        <button
-          class="metric-btn ${cardioPeriod === 8 ? 'active' : ''}"
-          onclick="switchCardioPeriod(8)"
-        >
-          8 Wochen
-        </button>
-        <button
-          class="metric-btn ${cardioPeriod === 12 ? 'active' : ''}"
-          onclick="switchCardioPeriod(12)"
-        >
-          12 Wochen
-        </button>
-      </div>
+      <!-- Period Selector -->
+      ${renderProgressPeriodSelector('cardio', progressCardioPeriod)}
 
-      <!-- Metric Toggle -->
-      <div class="metric-toggle">
+      <!-- Metric Toggle: Time | Distance | Pace -->
+      <div class="metric-toggle cardio-metric-toggle">
         <button
           class="metric-btn ${cardioMetric === 'time' ? 'active' : ''}"
           onclick="switchCardioMetric('time')"
@@ -1145,6 +1157,12 @@ function renderCardioTab() {
           onclick="switchCardioMetric('distance')"
         >
           Distanz
+        </button>
+        <button
+          class="metric-btn ${cardioMetric === 'pace' ? 'active' : ''}"
+          onclick="switchCardioMetric('pace')"
+        >
+          Pace
         </button>
       </div>
 
@@ -1165,26 +1183,85 @@ function renderCardioTab() {
   renderCardioChart();
 }
 
+/**
+ * @deprecated Use switchProgressPeriod('cardio', periodKey) instead
+ */
 function switchCardioPeriod(weeks) {
-  cardioPeriod = weeks;
-  renderCardioTab();
-  triggerHapticFeedback('light');
+  // Convert weeks to period key for backwards compatibility
+  let periodKey = '30D';
+  if (weeks <= 2) periodKey = '7D';
+  else if (weeks <= 5) periodKey = '30D';
+  else if (weeks <= 26) periodKey = '6M';
+  else periodKey = '1Y';
+
+  switchProgressPeriod('cardio', periodKey);
 }
 
 function switchCardioMetric(metric) {
   cardioMetric = metric;
-  renderCardioTab();
+  renderCardioStats();
+  renderCardioChart();
   triggerHapticFeedback('light');
+
+  // Update active button state
+  document.querySelectorAll('.cardio-metric-toggle .metric-btn').forEach(btn => {
+    const btnMetric = btn.textContent.trim().toLowerCase();
+    const isActive = (btnMetric === 'zeit' && metric === 'time') ||
+                     (btnMetric === 'distanz' && metric === 'distance') ||
+                     (btnMetric === 'pace' && metric === 'pace');
+    btn.classList.toggle('active', isActive);
+  });
 }
 
 function renderCardioStats() {
   const container = document.getElementById('cardio-stats-container');
   if (!container) return;
 
-  const data = aggregateWeeklyCardio(cardioMetric, cardioPeriod, selectedActivityType);
-  const stats = calculateWeeklyStats(data);
+  const stats = calculateCardioStats(progressCardioPeriod, cardioMetric, selectedActivityType);
+  const bucketLabel = PERIOD_CONFIG[progressCardioPeriod]?.bucketType === 'weekly' ? 'Woche' : 'Tag';
 
-  const metricLabel = cardioMetric === 'time' ? 'min' : 'km';
+  // Format values based on metric
+  let lastValueFormatted, bestValueFormatted, avgValueFormatted, metricUnit;
+  let bestLabel = `Bester ${bucketLabel}`;
+
+  if (cardioMetric === 'pace') {
+    // For pace, format as min:sec /km
+    lastValueFormatted = stats.lastValue > 0 ? formatPaceShort(stats.lastValue) : '-';
+    bestValueFormatted = stats.bestValue > 0 ? formatPaceShort(stats.bestValue) : '-';
+    avgValueFormatted = stats.avgValue > 0 ? formatPaceShort(stats.avgValue) : '-';
+    metricUnit = '/km';
+    bestLabel = `Schnellster ${bucketLabel}`; // For pace, lower is better
+
+    // Show empty state if no pace data
+    if (!stats.hasData) {
+      container.innerHTML = `
+        <div class="progress-stats-grid">
+          <div class="progress-stat-card pace-empty-state" style="grid-column: 1 / -1;">
+            <div class="progress-stat-icon" style="background: rgba(59, 130, 246, 0.1);">
+              <span class="material-symbols-rounded" style="color: var(--color-category-cardio);">speed</span>
+            </div>
+            <div class="progress-stat-content">
+              <p class="progress-stat-label">Pace-Daten</p>
+              <p class="progress-stat-value" style="font-size: 1rem;">Nicht genug Daten</p>
+              <p class="progress-stat-hint">Logge Sessions mit Distanz fuer Pace-Berechnung</p>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+  } else if (cardioMetric === 'distance') {
+    lastValueFormatted = stats.lastValue.toFixed(1);
+    bestValueFormatted = stats.bestValue.toFixed(1);
+    avgValueFormatted = stats.avgValue.toFixed(1);
+    metricUnit = 'km';
+  } else {
+    // time
+    lastValueFormatted = stats.lastValue;
+    bestValueFormatted = stats.bestValue;
+    avgValueFormatted = stats.avgValue;
+    metricUnit = 'min';
+  }
 
   container.innerHTML = `
     <div class="progress-stats-grid">
@@ -1193,8 +1270,8 @@ function renderCardioStats() {
           <span class="material-symbols-rounded" style="color: var(--color-category-cardio);">trending_up</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Letzte Woche</p>
-          <p class="progress-stat-value">${stats.lastValue} ${metricLabel}</p>
+          <p class="progress-stat-label">Letzter ${bucketLabel}</p>
+          <p class="progress-stat-value">${lastValueFormatted} ${metricUnit}</p>
         </div>
       </div>
 
@@ -1203,8 +1280,8 @@ function renderCardioStats() {
           <span class="material-symbols-rounded" style="color: #22c55e;">emoji_events</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Beste Woche</p>
-          <p class="progress-stat-value">${stats.bestValue} ${metricLabel}</p>
+          <p class="progress-stat-label">${bestLabel}</p>
+          <p class="progress-stat-value">${bestValueFormatted} ${metricUnit}</p>
         </div>
       </div>
 
@@ -1214,7 +1291,7 @@ function renderCardioStats() {
         </div>
         <div class="progress-stat-content">
           <p class="progress-stat-label">Durchschnitt</p>
-          <p class="progress-stat-value">${stats.avgValue} ${metricLabel}</p>
+          <p class="progress-stat-value">${avgValueFormatted} ${metricUnit}</p>
         </div>
       </div>
 
@@ -1235,26 +1312,39 @@ function renderCardioChart() {
   const container = document.getElementById('cardio-chart-container');
   if (!container) return;
 
-  const data = aggregateWeeklyCardio(cardioMetric, cardioPeriod, selectedActivityType);
+  const data = aggregateCardioByPeriod(cardioMetric, progressCardioPeriod, selectedActivityType);
 
   // Check if there's any data
   const hasData = data.some(d => d.value > 0);
 
   if (!hasData) {
+    const emptyMessage = cardioMetric === 'pace'
+      ? 'Logge Sessions mit Distanz fuer Pace-Daten'
+      : 'Noch keine Daten fuer diese Aktivitaet';
+
     container.innerHTML = `
       <div class="progress-empty-chart">
         <span class="material-symbols-rounded">insert_chart</span>
-        <p>Noch keine Daten fuer diese Aktivitaet</p>
+        <p>${emptyMessage}</p>
       </div>
     `;
     return;
   }
 
-  const metricLabel = cardioMetric === 'time' ? 'Zeit (min)' : 'Distanz (km)';
+  let metricLabel;
+  if (cardioMetric === 'time') {
+    metricLabel = 'Zeit (min)';
+  } else if (cardioMetric === 'distance') {
+    metricLabel = 'Distanz (km)';
+  } else {
+    metricLabel = 'Pace (min/km)';
+  }
+
+  const periodLabel = PERIOD_CONFIG[progressCardioPeriod]?.label || '7 Tage';
 
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${metricLabel} - Letzte ${cardioPeriod} Wochen</h3>
+      <h3 class="progress-chart-title">${metricLabel} - ${periodLabel}</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
@@ -1267,6 +1357,7 @@ function renderCardioChart() {
 
 /**
  * Zeichnet Cardio Chart fuer woechentliche Daten
+ * For pace metric: uses inverted Y-axis (faster pace = higher on chart)
  */
 function drawWeeklyCardioChart(data, metric) {
   const canvas = document.getElementById('progress-chart-canvas');
@@ -1287,9 +1378,23 @@ function drawWeeklyCardioChart(data, metric) {
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
 
-  const values = data.map(d => d.value);
-  const maxValue = Math.max(...values) || 1;
-  const minValue = 0;
+  // Filter out zero values for pace calculations
+  const nonZeroValues = data.filter(d => d.value > 0).map(d => d.value);
+  if (nonZeroValues.length === 0) return;
+
+  let minValue, maxValue, invertYAxis;
+
+  if (metric === 'pace') {
+    // For pace: lower value = faster = should be higher on chart
+    // So we invert the Y-axis
+    invertYAxis = true;
+    minValue = Math.min(...nonZeroValues) * 0.9; // Add some padding
+    maxValue = Math.max(...nonZeroValues) * 1.1;
+  } else {
+    invertYAxis = false;
+    minValue = 0;
+    maxValue = Math.max(...nonZeroValues) || 1;
+  }
 
   ctx.clearRect(0, 0, width, height);
 
@@ -1314,48 +1419,82 @@ function drawWeeklyCardioChart(data, metric) {
   ctx.font = '11px Inter, sans-serif';
   ctx.textAlign = 'right';
   ctx.textBaseline = 'middle';
+
   for (let i = 0; i <= 5; i++) {
-    const value = Math.round(maxValue - (maxValue / 5) * i);
     const y = padding.top + (chartHeight / 5) * i;
-    const label = metric === 'distance' ? value.toFixed(1) : value.toString();
+    let value, label;
+
+    if (invertYAxis) {
+      // Inverted: top = min (fast), bottom = max (slow)
+      value = minValue + ((maxValue - minValue) / 5) * i;
+      label = formatPaceShort(value);
+    } else {
+      value = Math.round(maxValue - (maxValue / 5) * i);
+      label = metric === 'distance' ? value.toFixed(1) : value.toString();
+    }
+
     ctx.fillText(label, padding.left - 10, y);
   }
 
-  // Points
+  // Calculate points
   const points = data.map((d, i) => {
     const x = padding.left + (chartWidth / (data.length - 1 || 1)) * i;
-    const y = padding.top + chartHeight - ((d.value - minValue) / (maxValue - minValue || 1)) * chartHeight;
-    return { x, y, value: d.value, label: d.weekLabel };
-  });
+    let y;
 
-  // Line
-  ctx.strokeStyle = lineColor;
-  ctx.lineWidth = 3;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
-
-  ctx.beginPath();
-  points.forEach((point, i) => {
-    if (i === 0) {
-      ctx.moveTo(point.x, point.y);
+    if (d.value <= 0) {
+      // No data point - use middle
+      y = padding.top + chartHeight / 2;
+    } else if (invertYAxis) {
+      // Inverted Y: lower value (faster) = higher on chart (smaller y)
+      const normalizedValue = (d.value - minValue) / (maxValue - minValue || 1);
+      y = padding.top + normalizedValue * chartHeight;
     } else {
-      ctx.lineTo(point.x, point.y);
+      const normalizedValue = (d.value - minValue) / (maxValue - minValue || 1);
+      y = padding.top + chartHeight - normalizedValue * chartHeight;
     }
-  });
-  ctx.stroke();
 
-  // Points
-  points.forEach(point => {
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
-    ctx.fill();
+    return {
+      x,
+      y,
+      value: d.value,
+      label: d.label || d.weekLabel,
+      hasData: d.value > 0
+    };
+  });
+
+  // Filter points with data for line drawing
+  const validPoints = points.filter(p => p.hasData);
+
+  if (validPoints.length > 0) {
+    // Line
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
 
     ctx.beginPath();
-    ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = lineColor;
-    ctx.fill();
-  });
+    validPoints.forEach((point, i) => {
+      if (i === 0) {
+        ctx.moveTo(point.x, point.y);
+      } else {
+        ctx.lineTo(point.x, point.y);
+      }
+    });
+    ctx.stroke();
+
+    // Points (only for data points)
+    validPoints.forEach(point => {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = lineColor;
+      ctx.fill();
+    });
+  }
 
   // X-axis labels
   ctx.fillStyle = textColor;
@@ -1367,7 +1506,7 @@ function drawWeeklyCardioChart(data, metric) {
   data.forEach((d, i) => {
     if (i % labelStep === 0 || i === data.length - 1) {
       const point = points[i];
-      ctx.fillText(d.weekLabel, point.x, padding.top + chartHeight + 10);
+      ctx.fillText(d.label || d.weekLabel, point.x, padding.top + chartHeight + 10);
     }
   });
 }
@@ -1802,6 +1941,7 @@ window.switchStrengthPeriod = switchStrengthPeriod;
 window.switchCardioPeriod = switchCardioPeriod;
 window.switchCardioMetric = switchCardioMetric;
 window.switchOverviewPeriod = switchOverviewPeriod;
+window.switchProgressPeriod = switchProgressPeriod;
 window.openExercisePickerSheet = openExercisePickerSheet;
 window.openActivityPickerSheet = openActivityPickerSheet;
 window.closePickerSheet = closePickerSheet;
