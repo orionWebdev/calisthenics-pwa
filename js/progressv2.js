@@ -689,6 +689,10 @@ function openCardioDetailModal(session) {
           <span class="material-symbols-rounded">play_arrow</span>
           <span>${trProgress('common.startAgain')}</span>
         </button>
+        <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">
+          <span class="material-symbols-rounded">delete</span>
+          <span>${trProgress('common.delete')}</span>
+        </button>
         <button onclick="closeGenericModal()" class="btn-secondary">
           <span class="material-symbols-rounded">close</span>
           <span>${trProgress('common.close')}</span>
@@ -730,6 +734,20 @@ function openRecoveryDetailModal(session) {
           <div class="workout-stat-value">${notes}</div>
           <div class="workout-stat-label">${trProgress('common.notes')}</div>
         </div>
+      </div>
+      <div class="workout-modal-actions">
+        <button onclick="startWorkoutAgainFromSession('${session.id}')" class="btn-primary">
+          <span class="material-symbols-rounded">play_arrow</span>
+          <span>${trProgress('common.startAgain')}</span>
+        </button>
+        <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">
+          <span class="material-symbols-rounded">delete</span>
+          <span>${trProgress('common.delete')}</span>
+        </button>
+        <button onclick="closeGenericModal()" class="btn-secondary">
+          <span class="material-symbols-rounded">close</span>
+          <span>${trProgress('common.close')}</span>
+        </button>
       </div>
     </div>
   `;

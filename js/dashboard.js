@@ -18,6 +18,15 @@ function getSessionDate(session) {
   return parsed;
 }
 
+function getSessionDateTime(session) {
+  if (session?.createdAt?.toDate) {
+    return session.createdAt.toDate();
+  }
+  const createdParsed = new Date(session?.createdAt);
+  if (!Number.isNaN(createdParsed.getTime())) return createdParsed;
+  return getSessionDate(session);
+}
+
 function getSessionDurationSeconds(session) {
   if (!session) return 0;
   const sec = Number(session.durationSec || session.durationSeconds || 0);
@@ -96,7 +105,7 @@ function getRecentSessions(sessions, limit = DASHBOARD_RECENT_LIMIT) {
   return sessions
     .map(session => ({
       session,
-      date: getSessionDate(session)
+      date: getSessionDateTime(session)
     }))
     .filter(item => item.date)
     .sort((a, b) => b.date.getTime() - a.date.getTime())
@@ -331,7 +340,7 @@ function renderRecentSessionsList(state) {
   }
 
   const rows = state.recentSessions.map(session => {
-    const date = getSessionDate(session);
+    const date = getSessionDateTime(session);
     const duration = formatDurationShortText(getSessionDurationSeconds(session));
     const typeLabel = session.type === 'cardio'
       ? tr('common.cardio')
