@@ -6,9 +6,9 @@ let exercisesData = [];
 let exercisesLoaded = false;
 let recentWorkoutsExpanded = false;
 let currentOverviewPeriod = 7;
-let currentOverviewMetric = 'strength';
-let currentStrengthStat = 'last';
-let currentCardioStat = 'last';
+let strengthPeriod = 8; // weeks for strength tab
+let cardioPeriod = 8; // weeks for cardio tab
+let activityCalendarDate = new Date(); // Current displayed month for activity calendar
 
 // ==================== INIT ====================
 
@@ -185,19 +185,20 @@ function renderOverviewTab() {
 
       ${renderHybridBalanceHTML()}
 
-      <div id="overview-chart-container" class="progress-chart-container"></div>
+      <!-- Activity Calendar -->
+      <div id="activity-calendar-container" class="activity-calendar-section">
+        ${renderActivityCalendarHTML()}
+      </div>
 
       ${renderRecentWorkoutsHTML()}
     </div>
   `;
-
-  renderOverviewChart();
 }
 
 function renderOverviewStatsHTML(stats) {
   return `
     <div class="overview-stats-grid">
-      <div class="overview-stat-card ${currentOverviewMetric === 'strength' ? 'active' : ''}" onclick="selectOverviewMetric('strength')">
+      <div class="overview-stat-card">
         <div class="stat-icon" style="background: rgba(240, 34, 119, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">fitness_center</span>
         </div>
@@ -207,7 +208,7 @@ function renderOverviewStatsHTML(stats) {
         </div>
       </div>
 
-      <div class="overview-stat-card ${currentOverviewMetric === 'cardio' ? 'active' : ''}" onclick="selectOverviewMetric('cardio')">
+      <div class="overview-stat-card">
         <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1);">
           <span class="material-symbols-rounded" style="color: #3b82f6;">directions_run</span>
         </div>
@@ -217,7 +218,7 @@ function renderOverviewStatsHTML(stats) {
         </div>
       </div>
 
-      <div class="overview-stat-card ${currentOverviewMetric === 'time' ? 'active' : ''}" onclick="selectOverviewMetric('time')">
+      <div class="overview-stat-card">
         <div class="stat-icon" style="background: rgba(34, 197, 94, 0.1);">
           <span class="material-symbols-rounded" style="color: #22c55e;">schedule</span>
         </div>
@@ -227,7 +228,7 @@ function renderOverviewStatsHTML(stats) {
         </div>
       </div>
 
-      <div class="overview-stat-card ${currentOverviewMetric === 'streak' ? 'active' : ''}" onclick="selectOverviewMetric('streak')">
+      <div class="overview-stat-card">
         <div class="stat-icon" style="background: rgba(168, 85, 247, 0.1);">
           <span class="material-symbols-rounded" style="color: #a855f7;">local_fire_department</span>
         </div>
@@ -257,7 +258,11 @@ function switchOverviewPeriod(days) {
     }
   });
 
-  renderOverviewChart();
+  // Update hybrid balance
+  const balanceContainer = document.querySelector('.hybrid-balance-card');
+  if (balanceContainer) {
+    balanceContainer.outerHTML = renderHybridBalanceHTML();
+  }
 }
 
 function renderHybridBalanceHTML() {
@@ -299,47 +304,6 @@ function renderHybridBalanceHTML() {
       </div>
     </div>
   `;
-}
-
-function selectOverviewMetric(metric) {
-  currentOverviewMetric = metric;
-  renderOverviewTab();
-  triggerHapticFeedback('light');
-}
-
-function renderOverviewChart() {
-  const container = document.getElementById('overview-chart-container');
-  if (!container) return;
-
-  const data = aggregateOverviewSeries(currentOverviewMetric, 8);
-
-  if (data.length === 0) {
-    container.innerHTML = `
-      <div class="progress-empty-chart">
-        <span class="material-symbols-rounded">insert_chart</span>
-        <p>Noch keine Daten fuer diesen Zeitraum</p>
-      </div>
-    `;
-    return;
-  }
-
-  let metricLabel = 'Sessions';
-  if (currentOverviewMetric === 'strength') metricLabel = 'Kraft-Sessions';
-  if (currentOverviewMetric === 'cardio') metricLabel = 'Cardio-Sessions';
-  if (currentOverviewMetric === 'time') metricLabel = 'Trainingszeit (min)';
-  if (currentOverviewMetric === 'streak') metricLabel = 'Trainingstage';
-
-  container.innerHTML = `
-    <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${metricLabel} - Letzte 8 Wochen</h3>
-    </div>
-    <div class="progress-chart-canvas-wrapper">
-      <canvas id="progress-chart-canvas"></canvas>
-    </div>
-  `;
-
-  animateChartContainer(container);
-  drawVolumeChart(data);
 }
 
 function renderRecentWorkoutsHTML() {
@@ -729,7 +693,7 @@ function renderStrengthTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
 
-  if (!sessionsLoaded || !exercisesLoaded) {
+  if (!sessionsLoaded) {
     container.innerHTML = `
       <div class="progress-loading">
         <div class="spinner"></div>
@@ -752,56 +716,21 @@ function renderStrengthTab() {
     return;
   }
 
-  // Collect all unique exercises from sessions
-  const exerciseIds = new Set();
-  strengthSessions.forEach(session => {
-    session.exercises?.forEach(ex => {
-      exerciseIds.add(ex.exerciseId);
-    });
-  });
-
-  const availableExercises = exercisesData.filter(ex => exerciseIds.has(ex.id));
-
-  if (availableExercises.length === 0) {
-    container.innerHTML = `
-      <div class="progress-empty-state">
-        <span class="material-symbols-rounded progress-empty-icon">search_off</span>
-        <h3>Keine Übungen gefunden</h3>
-        <p>Die Trainings enthalten keine bekannten Übungen</p>
-      </div>
-    `;
-    return;
-  }
-
-  // Select first exercise if none selected
-  if (!selectedExerciseId || !exerciseIds.has(selectedExerciseId)) {
-    selectedExerciseId = availableExercises[0].id;
-  }
-
   container.innerHTML = `
     <div class="strength-section">
-      <!-- Exercise Picker -->
-      <div class="exercise-picker-compact">
-        <button onclick="openExercisePickerSheet()" class="exercise-picker-btn">
-          <span class="material-symbols-rounded">fitness_center</span>
-          <span id="selected-exercise-name">${getExerciseName(selectedExerciseId)}</span>
-          <span class="material-symbols-rounded">expand_more</span>
-        </button>
-      </div>
-
-      <!-- Metric Toggle -->
+      <!-- Period Toggle -->
       <div class="metric-toggle">
         <button
-          class="metric-btn ${strengthMetric === 'volume' ? 'active' : ''}"
-          onclick="switchStrengthMetric('volume')"
+          class="metric-btn ${strengthPeriod === 8 ? 'active' : ''}"
+          onclick="switchStrengthPeriod(8)"
         >
-          Volumen
+          8 Wochen
         </button>
         <button
-          class="metric-btn ${strengthMetric === 'bestSet' ? 'active' : ''}"
-          onclick="switchStrengthMetric('bestSet')"
+          class="metric-btn ${strengthPeriod === 12 ? 'active' : ''}"
+          onclick="switchStrengthPeriod(12)"
         >
-          Best Set
+          12 Wochen
         </button>
       </div>
 
@@ -817,8 +746,8 @@ function renderStrengthTab() {
   renderStrengthChart();
 }
 
-function switchStrengthMetric(metric) {
-  strengthMetric = metric;
+function switchStrengthPeriod(weeks) {
+  strengthPeriod = weeks;
   renderStrengthTab();
   triggerHapticFeedback('light');
 }
@@ -827,44 +756,42 @@ function renderStrengthStats() {
   const container = document.getElementById('strength-stats-container');
   if (!container) return;
 
-  const data = aggregateStrengthData(selectedExerciseId, strengthMetric, 8);
-  const stats = calculateStats(data);
-
-  const metricLabel = strengthMetric === 'volume' ? 'Reps' : 'Reps/Set';
+  const data = aggregateWeeklyStrengthVolume(strengthPeriod);
+  const stats = calculateWeeklyStats(data);
 
   container.innerHTML = `
     <div class="progress-stats-grid">
-      <div class="progress-stat-card ${currentStrengthStat === 'last' ? 'active' : ''}" onclick="selectStrengthStat('last')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(240, 34, 119, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">trending_up</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Letztes Training</p>
-          <p class="progress-stat-value">${stats.lastValue} ${metricLabel}</p>
+          <p class="progress-stat-label">Letzte Woche</p>
+          <p class="progress-stat-value">${formatVolume(stats.lastValue)}</p>
         </div>
       </div>
 
-      <div class="progress-stat-card ${currentStrengthStat === 'best' ? 'active' : ''}" onclick="selectStrengthStat('best')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(34, 197, 94, 0.1);">
           <span class="material-symbols-rounded" style="color: #22c55e;">emoji_events</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Bestes Training</p>
-          <p class="progress-stat-value">${stats.bestValue} ${metricLabel}</p>
+          <p class="progress-stat-label">Beste Woche</p>
+          <p class="progress-stat-value">${formatVolume(stats.bestValue)}</p>
         </div>
       </div>
 
-      <div class="progress-stat-card ${currentStrengthStat === 'avg' ? 'active' : ''}" onclick="selectStrengthStat('avg')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(59, 130, 246, 0.1);">
           <span class="material-symbols-rounded" style="color: #3b82f6;">analytics</span>
         </div>
         <div class="progress-stat-content">
           <p class="progress-stat-label">Durchschnitt</p>
-          <p class="progress-stat-value">${stats.avgValue} ${metricLabel}</p>
+          <p class="progress-stat-value">${formatVolume(stats.avgValue)}</p>
         </div>
       </div>
 
-      <div class="progress-stat-card ${currentStrengthStat === 'sessions' ? 'active' : ''}" onclick="selectStrengthStat('sessions')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(168, 85, 247, 0.1);">
           <span class="material-symbols-rounded" style="color: #a855f7;">calendar_month</span>
         </div>
@@ -877,17 +804,53 @@ function renderStrengthStats() {
   `;
 }
 
+/**
+ * Berechnet Stats fuer woechentliche Daten
+ */
+function calculateWeeklyStats(weeklyData) {
+  if (!weeklyData || weeklyData.length === 0) {
+    return { lastValue: 0, bestValue: 0, avgValue: 0, totalSessions: 0 };
+  }
+
+  const values = weeklyData.map(d => d.value);
+  const lastValue = values[values.length - 1] || 0;
+  const bestValue = Math.max(...values);
+
+  // Only average weeks with data
+  const nonZeroValues = values.filter(v => v > 0);
+  const avgValue = nonZeroValues.length > 0
+    ? Math.round(nonZeroValues.reduce((sum, v) => sum + v, 0) / nonZeroValues.length)
+    : 0;
+
+  const totalSessions = weeklyData.reduce((sum, d) => sum + d.sessionCount, 0);
+
+  return { lastValue, bestValue, avgValue, totalSessions };
+}
+
+/**
+ * Formatiert Volumen mit Tausendertrennzeichen
+ */
+function formatVolume(value) {
+  if (value >= 1000) {
+    return (value / 1000).toFixed(1).replace('.', ',') + 'k';
+  }
+  return value.toString();
+}
+
 function renderStrengthChart() {
   const container = document.getElementById('strength-chart-container');
   if (!container) return;
 
-  const { data, label } = getStrengthChartData();
+  const data = aggregateWeeklyStrengthVolume(strengthPeriod);
 
-  if (data.length === 0) {
+  // Check if there's any data
+  const hasData = data.some(d => d.value > 0);
+
+  if (!hasData) {
     container.innerHTML = `
       <div class="progress-empty-chart">
         <span class="material-symbols-rounded">insert_chart</span>
-        <p>Noch keine Daten für diese Übung</p>
+        <p>Noch keine Daten fuer diesen Zeitraum</p>
       </div>
     `;
     return;
@@ -895,7 +858,7 @@ function renderStrengthChart() {
 
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${label} - Letzte 8 Wochen</h3>
+      <h3 class="progress-chart-title">Kraft-Volumen - Letzte ${strengthPeriod} Wochen</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
@@ -903,7 +866,113 @@ function renderStrengthChart() {
   `;
 
   animateChartContainer(container);
-  drawVolumeChart(data);
+  drawWeeklyChart(data);
+}
+
+/**
+ * Zeichnet Chart fuer woechentliche Daten
+ */
+function drawWeeklyChart(data) {
+  const canvas = document.getElementById('progress-chart-canvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const width = rect.width;
+  const height = rect.height;
+
+  const padding = { top: 20, right: 20, bottom: 40, left: 50 };
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+
+  const values = data.map(d => d.value);
+  const maxValue = Math.max(...values) || 1;
+  const minValue = 0; // Start from 0 for volume charts
+
+  ctx.clearRect(0, 0, width, height);
+
+  // Colors
+  const gridColor = 'rgba(75, 85, 99, 0.3)';
+  const textColor = '#9ca3af';
+  const lineColor = '#F02277';
+
+  // Grid
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = padding.top + (chartHeight / 5) * i;
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(padding.left + chartWidth, y);
+    ctx.stroke();
+  }
+
+  // Y-axis labels
+  ctx.fillStyle = textColor;
+  ctx.font = '11px Inter, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i <= 5; i++) {
+    const value = Math.round(maxValue - (maxValue / 5) * i);
+    const y = padding.top + (chartHeight / 5) * i;
+    ctx.fillText(formatVolume(value), padding.left - 10, y);
+  }
+
+  // Points
+  const points = data.map((d, i) => {
+    const x = padding.left + (chartWidth / (data.length - 1 || 1)) * i;
+    const y = padding.top + chartHeight - ((d.value - minValue) / (maxValue - minValue || 1)) * chartHeight;
+    return { x, y, value: d.value, label: d.weekLabel };
+  });
+
+  // Line
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  ctx.beginPath();
+  points.forEach((point, i) => {
+    if (i === 0) {
+      ctx.moveTo(point.x, point.y);
+    } else {
+      ctx.lineTo(point.x, point.y);
+    }
+  });
+  ctx.stroke();
+
+  // Points
+  points.forEach(point => {
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(240, 34, 119, 0.2)';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = lineColor;
+    ctx.fill();
+  });
+
+  // X-axis labels (week labels)
+  ctx.fillStyle = textColor;
+  ctx.font = '10px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+
+  const labelStep = Math.ceil(data.length / 6);
+  data.forEach((d, i) => {
+    if (i % labelStep === 0 || i === data.length - 1) {
+      const point = points[i];
+      ctx.fillText(d.weekLabel, point.x, padding.top + chartHeight + 10);
+    }
+  });
 }
 
 // ==================== CARDIO TAB ====================
@@ -932,7 +1001,7 @@ function renderCardioTab() {
         <p>Logge deine erste Cardio-Session, um deinen Fortschritt zu sehen</p>
         <button onclick="openAddCardioModal()" class="progress-cta-btn primary">
           <span class="material-symbols-rounded">add</span>
-          <span>Cardio Session hinzufügen</span>
+          <span>Cardio Session hinzufuegen</span>
         </button>
       </div>
     `;
@@ -952,6 +1021,22 @@ function renderCardioTab() {
           <span class="material-symbols-rounded">${ACTIVITY_TYPES[selectedActivityType].icon}</span>
           <span id="selected-activity-name">${ACTIVITY_TYPES[selectedActivityType].name}</span>
           <span class="material-symbols-rounded">expand_more</span>
+        </button>
+      </div>
+
+      <!-- Period Toggle -->
+      <div class="metric-toggle" style="margin-bottom: 0.5rem;">
+        <button
+          class="metric-btn ${cardioPeriod === 8 ? 'active' : ''}"
+          onclick="switchCardioPeriod(8)"
+        >
+          8 Wochen
+        </button>
+        <button
+          class="metric-btn ${cardioPeriod === 12 ? 'active' : ''}"
+          onclick="switchCardioPeriod(12)"
+        >
+          12 Wochen
         </button>
       </div>
 
@@ -988,6 +1073,12 @@ function renderCardioTab() {
   renderCardioChart();
 }
 
+function switchCardioPeriod(weeks) {
+  cardioPeriod = weeks;
+  renderCardioTab();
+  triggerHapticFeedback('light');
+}
+
 function switchCardioMetric(metric) {
   cardioMetric = metric;
   renderCardioTab();
@@ -998,34 +1089,34 @@ function renderCardioStats() {
   const container = document.getElementById('cardio-stats-container');
   if (!container) return;
 
-  const data = aggregateCardioData(selectedActivityType, cardioMetric, 8);
-  const stats = calculateStats(data);
+  const data = aggregateWeeklyCardio(cardioMetric, cardioPeriod, selectedActivityType);
+  const stats = calculateWeeklyStats(data);
 
   const metricLabel = cardioMetric === 'time' ? 'min' : 'km';
 
   container.innerHTML = `
     <div class="progress-stats-grid">
-      <div class="progress-stat-card ${currentCardioStat === 'last' ? 'active' : ''}" onclick="selectCardioStat('last')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(59, 130, 246, 0.1);">
           <span class="material-symbols-rounded" style="color: #3b82f6;">trending_up</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Letzte Session</p>
+          <p class="progress-stat-label">Letzte Woche</p>
           <p class="progress-stat-value">${stats.lastValue} ${metricLabel}</p>
         </div>
       </div>
 
-      <div class="progress-stat-card ${currentCardioStat === 'best' ? 'active' : ''}" onclick="selectCardioStat('best')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(34, 197, 94, 0.1);">
           <span class="material-symbols-rounded" style="color: #22c55e;">emoji_events</span>
         </div>
         <div class="progress-stat-content">
-          <p class="progress-stat-label">Beste Session</p>
+          <p class="progress-stat-label">Beste Woche</p>
           <p class="progress-stat-value">${stats.bestValue} ${metricLabel}</p>
         </div>
       </div>
 
-      <div class="progress-stat-card ${currentCardioStat === 'avg' ? 'active' : ''}" onclick="selectCardioStat('avg')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(168, 85, 247, 0.1);">
           <span class="material-symbols-rounded" style="color: #a855f7;">analytics</span>
         </div>
@@ -1035,7 +1126,7 @@ function renderCardioStats() {
         </div>
       </div>
 
-      <div class="progress-stat-card ${currentCardioStat === 'sessions' ? 'active' : ''}" onclick="selectCardioStat('sessions')">
+      <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(240, 34, 119, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">calendar_month</span>
         </div>
@@ -1052,21 +1143,26 @@ function renderCardioChart() {
   const container = document.getElementById('cardio-chart-container');
   if (!container) return;
 
-  const { data, label } = getCardioChartData();
+  const data = aggregateWeeklyCardio(cardioMetric, cardioPeriod, selectedActivityType);
 
-  if (data.length === 0) {
+  // Check if there's any data
+  const hasData = data.some(d => d.value > 0);
+
+  if (!hasData) {
     container.innerHTML = `
       <div class="progress-empty-chart">
         <span class="material-symbols-rounded">insert_chart</span>
-        <p>Noch keine Daten für diese Aktivität</p>
+        <p>Noch keine Daten fuer diese Aktivitaet</p>
       </div>
     `;
     return;
   }
 
+  const metricLabel = cardioMetric === 'time' ? 'Zeit (min)' : 'Distanz (km)';
+
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${label} - Letzte 8 Wochen</h3>
+      <h3 class="progress-chart-title">${metricLabel} - Letzte ${cardioPeriod} Wochen</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
@@ -1074,217 +1170,13 @@ function renderCardioChart() {
   `;
 
   animateChartContainer(container);
-  drawVolumeChart(data);
+  drawWeeklyCardioChart(data, cardioMetric);
 }
 
-function selectStrengthStat(stat) {
-  currentStrengthStat = stat;
-  renderStrengthStats();
-  renderStrengthChart();
-  triggerHapticFeedback('light');
-}
-
-function selectCardioStat(stat) {
-  currentCardioStat = stat;
-  renderCardioStats();
-  renderCardioChart();
-  triggerHapticFeedback('light');
-}
-
-function getStrengthChartData() {
-  const baseData = aggregateStrengthData(selectedExerciseId, strengthMetric, 8);
-  const metricLabel = strengthMetric === 'volume' ? 'Volumen (Reps)' : 'Best Set (Reps)';
-  const label = getChartLabel(metricLabel, currentStrengthStat);
-  return {
-    data: buildStatSeries(baseData, currentStrengthStat),
-    label
-  };
-}
-
-function getCardioChartData() {
-  const baseData = aggregateCardioData(selectedActivityType, cardioMetric, 8);
-  const metricLabel = cardioMetric === 'time' ? 'Zeit (min)' : 'Distanz (km)';
-  const label = getChartLabel(metricLabel, currentCardioStat);
-  return {
-    data: buildStatSeries(baseData, currentCardioStat),
-    label
-  };
-}
-
-function getChartLabel(metricLabel, stat) {
-  if (stat === 'best') return `Bestes ${metricLabel}`;
-  if (stat === 'avg') return `Durchschnitt ${metricLabel}`;
-  if (stat === 'sessions') return 'Sessions';
-  return metricLabel;
-}
-
-function buildStatSeries(baseData, stat) {
-  if (!baseData || baseData.length === 0) return [];
-
-  if (stat === 'sessions') {
-    return baseData.map(point => ({
-      date: point.date,
-      value: point.sessionCount || 0
-    }));
-  }
-
-  if (stat === 'best') {
-    let best = 0;
-    return baseData.map(point => {
-      best = Math.max(best, point.value || 0);
-      return { date: point.date, value: best };
-    });
-  }
-
-  if (stat === 'avg') {
-    let sum = 0;
-    return baseData.map((point, index) => {
-      sum += point.value || 0;
-      return { date: point.date, value: Math.round(sum / (index + 1)) };
-    });
-  }
-
-  return baseData.map(point => ({
-    date: point.date,
-    value: point.value || 0
-  }));
-}
-
-function aggregateOverviewSeries(metric = 'strength', weeks = 8) {
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - (weeks * 7));
-
-  const groupedByDate = {};
-
-  allSessions.forEach(session => {
-    const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
-    if (sessionDate < cutoffDate) return;
-
-    const dateKey = sessionDate.toISOString().split('T')[0];
-
-    if (!groupedByDate[dateKey]) {
-      groupedByDate[dateKey] = {
-        date: sessionDate,
-        strengthCount: 0,
-        cardioCount: 0,
-        totalTime: 0,
-        sessionCount: 0
-      };
-    }
-
-    groupedByDate[dateKey].sessionCount += 1;
-    if (session.type === 'strength') {
-      groupedByDate[dateKey].strengthCount += 1;
-    } else if (session.type === 'cardio') {
-      groupedByDate[dateKey].cardioCount += 1;
-    }
-    if (session.duration) {
-      groupedByDate[dateKey].totalTime += session.duration;
-    }
-  });
-
-  const series = Object.values(groupedByDate).sort((a, b) => a.date - b.date);
-
-  return series.map(point => {
-    if (metric === 'cardio') return { date: point.date, value: point.cardioCount };
-    if (metric === 'time') return { date: point.date, value: point.totalTime };
-    if (metric === 'streak') return { date: point.date, value: point.sessionCount ? 1 : 0 };
-    return { date: point.date, value: point.strengthCount };
-  });
-}
-
-// ==================== BOTTOM SHEETS ====================
-
-function openExercisePickerSheet() {
-  const sheet = document.getElementById('exercise-picker-sheet');
-  if (!sheet) return;
-
-  // Collect available exercises
-  const strengthSessions = allSessions.filter(s => s.type === 'strength');
-  const exerciseIds = new Set();
-  strengthSessions.forEach(session => {
-    session.exercises?.forEach(ex => exerciseIds.add(ex.exerciseId));
-  });
-
-  const available = exercisesData.filter(ex => exerciseIds.has(ex.id));
-
-  const listHTML = available
-    .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-    .map(ex => `
-      <button
-        class="picker-item ${ex.id === selectedExerciseId ? 'active' : ''}"
-        onclick="selectExercise('${ex.id}')"
-      >
-        <span>${ex.name}</span>
-        <span class="material-symbols-rounded">check</span>
-      </button>
-    `).join('');
-
-  document.getElementById('exercise-picker-list').innerHTML = listHTML;
-  sheet.classList.add('active');
-}
-
-function openActivityPickerSheet() {
-  const sheet = document.getElementById('activity-picker-sheet');
-  if (!sheet) return;
-
-  const listHTML = Object.entries(ACTIVITY_TYPES)
-    .map(([key, config]) => `
-      <button
-        class="picker-item ${key === selectedActivityType ? 'active' : ''}"
-        onclick="selectActivity('${key}')"
-      >
-        <div class="picker-item-icon">
-          <span class="material-symbols-rounded">${config.icon}</span>
-        </div>
-        <span>${config.name}</span>
-        <span class="material-symbols-rounded">check</span>
-      </button>
-    `).join('');
-
-  document.getElementById('activity-picker-list').innerHTML = listHTML;
-  sheet.classList.add('active');
-}
-
-function closePickerSheet(sheetId) {
-  const sheet = document.getElementById(sheetId);
-  if (sheet) {
-    sheet.classList.remove('active');
-  }
-}
-
-function selectExercise(exerciseId) {
-  selectedExerciseId = exerciseId;
-  closePickerSheet('exercise-picker-sheet');
-  renderStrengthTab();
-}
-
-function selectActivity(activityType) {
-  selectedActivityType = activityType;
-  closePickerSheet('activity-picker-sheet');
-  renderCardioTab();
-}
-
-function getExerciseName(exerciseId) {
-  const ex = exercisesData.find(e => e.id === exerciseId);
-  return ex?.name || 'Übung';
-}
-
-// ==================== CHART DRAWING ====================
-
-function animateChartContainer(container) {
-  if (!container) return;
-
-  container.classList.remove('chart-animating');
-  void container.offsetWidth;
-  container.classList.add('chart-animating');
-
-  container.addEventListener('animationend', () => {
-    container.classList.remove('chart-animating');
-  }, { once: true });
-}
-
-function drawVolumeChart(data) {
+/**
+ * Zeichnet Cardio Chart fuer woechentliche Daten
+ */
+function drawWeeklyCardioChart(data, metric) {
   const canvas = document.getElementById('progress-chart-canvas');
   if (!canvas) return;
 
@@ -1304,16 +1196,15 @@ function drawVolumeChart(data) {
   const chartHeight = height - padding.top - padding.bottom;
 
   const values = data.map(d => d.value);
-  const maxValue = Math.max(...values);
-  const minValue = Math.min(...values);
-  const valueRange = maxValue - minValue || 1;
+  const maxValue = Math.max(...values) || 1;
+  const minValue = 0;
 
   ctx.clearRect(0, 0, width, height);
 
-  // Colors
+  // Colors - Blue for cardio
   const gridColor = 'rgba(75, 85, 99, 0.3)';
   const textColor = '#9ca3af';
-  const lineColor = '#F02277';
+  const lineColor = '#3b82f6';
 
   // Grid
   ctx.strokeStyle = gridColor;
@@ -1332,16 +1223,17 @@ function drawVolumeChart(data) {
   ctx.textAlign = 'right';
   ctx.textBaseline = 'middle';
   for (let i = 0; i <= 5; i++) {
-    const value = Math.round(maxValue - (valueRange / 5) * i);
+    const value = Math.round(maxValue - (maxValue / 5) * i);
     const y = padding.top + (chartHeight / 5) * i;
-    ctx.fillText(value.toString(), padding.left - 10, y);
+    const label = metric === 'distance' ? value.toFixed(1) : value.toString();
+    ctx.fillText(label, padding.left - 10, y);
   }
 
   // Points
   const points = data.map((d, i) => {
     const x = padding.left + (chartWidth / (data.length - 1 || 1)) * i;
-    const y = padding.top + chartHeight - ((d.value - minValue) / valueRange) * chartHeight;
-    return { x, y, value: d.value, date: d.date };
+    const y = padding.top + chartHeight - ((d.value - minValue) / (maxValue - minValue || 1)) * chartHeight;
+    return { x, y, value: d.value, label: d.weekLabel };
   });
 
   // Line
@@ -1364,7 +1256,7 @@ function drawVolumeChart(data) {
   points.forEach(point => {
     ctx.beginPath();
     ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(240, 34, 119, 0.2)';
+    ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
     ctx.fill();
 
     ctx.beginPath();
@@ -1383,10 +1275,382 @@ function drawVolumeChart(data) {
   data.forEach((d, i) => {
     if (i % labelStep === 0 || i === data.length - 1) {
       const point = points[i];
-      const dateStr = formatShortDate(d.date);
-      ctx.fillText(dateStr, point.x, padding.top + chartHeight + 10);
+      ctx.fillText(d.weekLabel, point.x, padding.top + chartHeight + 10);
     }
   });
+}
+
+// ==================== ACTIVITY CALENDAR ====================
+
+const ACTIVITY_DOT_MAX = 3;
+
+function getSessionDurationMinutes(session) {
+  const raw = Number(session?.duration || 0);
+  if (!Number.isFinite(raw) || raw < 0) return 0;
+  return Math.round(raw);
+}
+
+function getDurationBucket(minutes) {
+  if (minutes <= 20) return { size: 's', rank: 1 };
+  if (minutes <= 40) return { size: 'm', rank: 2 };
+  if (minutes <= 60) return { size: 'l', rank: 3 };
+  if (minutes <= 90) return { size: 'xl', rank: 4 };
+  return { size: 'xxl', rank: 5 };
+}
+
+function getSessionDotMeta(session) {
+  const minutes = getSessionDurationMinutes(session);
+  const bucket = getDurationBucket(minutes);
+  return {
+    type: session.type === 'cardio' ? 'cardio' : 'strength',
+    size: bucket.size,
+    rank: bucket.rank,
+    minutes
+  };
+}
+
+/**
+ * Rendert den Activity Calendar HTML
+ */
+function renderActivityCalendarHTML() {
+  const year = activityCalendarDate.getFullYear();
+  const month = activityCalendarDate.getMonth();
+  const sessionsByDate = getSessionsByDate(year, month);
+
+  const monthNames = ['Januar', 'Februar', 'Maerz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+
+  return `
+    <div class="activity-calendar">
+      <div class="activity-calendar-header">
+        <button onclick="navigateActivityCalendar('prev')" class="cal-nav-btn" aria-label="Vorheriger Monat">
+          <span class="material-symbols-rounded">chevron_left</span>
+        </button>
+        <h3 class="activity-calendar-title">${monthNames[month]} ${year}</h3>
+        <button onclick="navigateActivityCalendar('next')" class="cal-nav-btn" aria-label="Naechster Monat">
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="activity-calendar-weekdays">
+        ${dayLabels.map(d => `<div class="weekday-label">${d}</div>`).join('')}
+      </div>
+
+      <div class="activity-calendar-grid" id="activity-calendar-grid">
+        ${renderActivityCalendarDays(year, month, sessionsByDate)}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Rendert die Tage des Activity Calendars
+ */
+function renderActivityCalendarDays(year, month, sessionsByDate) {
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Monday-based week start
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1;
+
+  const daysInMonth = lastDay.getDate();
+  let html = '';
+
+  // Previous month days (greyed out)
+  const prevMonthDays = new Date(year, month, 0).getDate();
+  for (let i = startDay - 1; i >= 0; i--) {
+    const day = prevMonthDays - i;
+    html += `<div class="activity-day other-month"><span class="day-number">${day}</span></div>`;
+  }
+
+  // Current month days
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dateKey = formatDateToYYYYMMDD(date);
+    const isToday = date.toDateString() === today.toDateString();
+    const sessions = sessionsByDate[dateKey] || [];
+
+    const dots = sessions
+      .map(getSessionDotMeta)
+      .sort((a, b) => {
+        if (b.rank !== a.rank) return b.rank - a.rank;
+        if (b.minutes !== a.minutes) return b.minutes - a.minutes;
+        return a.type.localeCompare(b.type);
+      });
+
+    const visibleDots = dots.slice(0, ACTIVITY_DOT_MAX);
+    const overflow = dots.length - visibleDots.length;
+
+    const hasSessionsClass = sessions.length > 0 ? 'has-sessions' : '';
+    const todayClass = isToday ? 'today' : '';
+
+    html += `
+      <div class="activity-day ${todayClass} ${hasSessionsClass}"
+           onclick="openActivityDaySheet('${dateKey}')"
+           role="button"
+           tabindex="0"
+           aria-label="${day}. ${sessions.length} Sessions">
+        <span class="day-number">${day}</span>
+        <div class="session-dots" aria-hidden="true">
+          ${visibleDots.map(dot => `
+            <span class="session-dot ${dot.type} size-${dot.size}" title="${dot.minutes} min"></span>
+          `).join('')}
+          ${overflow > 0 ? `<span class="session-overflow">+${overflow}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // Next month days (fill grid to 42 cells for 6 rows)
+  const totalCells = startDay + daysInMonth;
+  const remaining = totalCells <= 35 ? 35 - totalCells : 42 - totalCells;
+  for (let day = 1; day <= remaining; day++) {
+    html += `<div class="activity-day other-month"><span class="day-number">${day}</span></div>`;
+  }
+
+  return html;
+}
+
+/**
+ * Navigiert den Activity Calendar
+ */
+function navigateActivityCalendar(direction) {
+  if (direction === 'prev') {
+    activityCalendarDate.setMonth(activityCalendarDate.getMonth() - 1);
+  } else {
+    activityCalendarDate.setMonth(activityCalendarDate.getMonth() + 1);
+  }
+
+  // Re-render only the calendar section
+  const container = document.getElementById('activity-calendar-container');
+  if (container) {
+    container.innerHTML = renderActivityCalendarHTML();
+  }
+
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Oeffnet das Day Detail Sheet
+ */
+function openActivityDaySheet(dateKey) {
+  const sessions = getSessionsForDate(dateKey);
+  const date = new Date(dateKey + 'T12:00:00');
+  const dayNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  const monthNames = ['Januar', 'Februar', 'Maerz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+  const title = `${dayNames[date.getDay()]}, ${date.getDate()}. ${monthNames[date.getMonth()]}`;
+
+  openSheet({
+    title: title,
+    render: (container) => {
+      if (sessions.length === 0) {
+        container.innerHTML = `
+          <div class="activity-day-empty">
+            <span class="material-symbols-rounded">event_busy</span>
+            <p>Keine Sessions an diesem Tag</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = sessions.map(session => {
+        const icon = getSessionIcon(session);
+        const color = getSessionColor(session);
+        const sessionTitle = getSessionTitle(session);
+        const duration = session.duration ? formatDuration(session.duration) : 'Dauer n/a';
+
+        return `
+          <div class="activity-session-item">
+            <div class="session-item-icon" style="background: ${color}20;">
+              <span class="material-symbols-rounded" style="color: ${color};">${icon}</span>
+            </div>
+            <div class="session-item-content">
+              <div class="session-item-title">${sessionTitle}</div>
+              <div class="session-item-meta">${duration}</div>
+            </div>
+            <div class="session-item-actions">
+              <button onclick="viewWorkoutDetailsFromSession('${session.id}'); closeSheet();" class="session-action-btn" aria-label="Ansehen">
+                <span class="material-symbols-rounded">visibility</span>
+              </button>
+              <button onclick="deleteSessionFromCalendar('${session.id}', '${dateKey}')" class="session-action-btn danger" aria-label="Loeschen">
+                <span class="material-symbols-rounded">delete</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  });
+}
+
+/**
+ * Loescht eine Session und aktualisiert den Kalender
+ */
+async function deleteSessionFromCalendar(sessionId, dateKey) {
+  if (!confirm('Diese Session wirklich loeschen?')) {
+    return;
+  }
+
+  try {
+    await deleteDoc(sessionsCollection, sessionId);
+    await loadSessions();
+
+    // Refresh the day sheet
+    openActivityDaySheet(dateKey);
+
+    // Refresh the calendar
+    const container = document.getElementById('activity-calendar-container');
+    if (container) {
+      container.innerHTML = renderActivityCalendarHTML();
+    }
+
+    triggerSuccessGlow();
+  } catch (error) {
+    console.error('Error deleting session:', error);
+    showErrorMessage('Fehler beim Loeschen');
+  }
+}
+
+// ==================== BOTTOM SHEETS ====================
+
+let sheetRoot = null;
+let sheetIsOpen = false;
+let sheetCloseTimer = null;
+
+function createSheetRoot() {
+  if (sheetRoot) return sheetRoot;
+
+  const root = document.createElement('div');
+  root.id = 'sheet-root';
+  root.innerHTML = `
+    <div class="sheet__backdrop" data-sheet-backdrop></div>
+    <div class="sheet__panel" role="dialog" aria-modal="true">
+      <div class="sheet__header">
+        <h3 class="sheet__title" id="sheet-title">Auswahl</h3>
+        <button class="sheet__close" type="button" aria-label="Schliessen" data-sheet-close>
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div class="sheet__content" id="sheet-content" role="list"></div>
+    </div>
+  `;
+
+  document.body.appendChild(root);
+  sheetRoot = root;
+
+  const backdrop = root.querySelector('[data-sheet-backdrop]');
+  const closeBtn = root.querySelector('[data-sheet-close]');
+  const panel = root.querySelector('.sheet__panel');
+
+  backdrop.addEventListener('click', () => closeSheet());
+  closeBtn.addEventListener('click', () => closeSheet());
+  panel.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  return root;
+}
+
+function openSheet({ title, render, listRole = 'list' }) {
+  if (sheetCloseTimer) {
+    clearTimeout(sheetCloseTimer);
+    sheetCloseTimer = null;
+  }
+
+  const root = createSheetRoot();
+  const titleEl = root.querySelector('#sheet-title');
+  const contentEl = root.querySelector('#sheet-content');
+
+  if (titleEl) {
+    titleEl.textContent = title || 'Auswahl';
+  }
+
+  if (contentEl) {
+    contentEl.setAttribute('role', listRole);
+    contentEl.innerHTML = '';
+    if (typeof render === 'function') {
+      render(contentEl);
+    }
+  }
+
+  if (sheetIsOpen) return;
+
+  sheetIsOpen = true;
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => {
+    root.classList.add('is-open');
+  });
+}
+
+function closeSheet() {
+  if (!sheetRoot || !sheetIsOpen) return;
+
+  sheetIsOpen = false;
+  sheetRoot.classList.remove('is-open');
+
+  if (sheetCloseTimer) {
+    clearTimeout(sheetCloseTimer);
+  }
+
+  sheetCloseTimer = setTimeout(() => {
+    document.body.style.overflow = '';
+    sheetCloseTimer = null;
+  }, 220);
+}
+
+function openActivityPickerSheet() {
+  openSheet({
+    title: 'Aktivität auswählen',
+    render: (container) => {
+      const listHTML = Object.entries(ACTIVITY_TYPES)
+        .map(([key, config]) => `
+          <button
+            class="picker-item ${key === selectedActivityType ? 'active' : ''}"
+            onclick="selectActivity('${key}')"
+            type="button"
+          >
+            <div class="picker-item-icon">
+              <span class="material-symbols-rounded">${config.icon}</span>
+            </div>
+            <span>${config.name}</span>
+            <span class="material-symbols-rounded">check</span>
+          </button>
+        `).join('');
+      container.innerHTML = listHTML;
+    }
+  });
+}
+
+function closePickerSheet(sheetId) {
+  closeSheet();
+}
+
+function closeAllPickerSheets() {
+  closeSheet();
+}
+
+function selectActivity(activityType) {
+  selectedActivityType = activityType;
+  closeSheet();
+  renderCardioTab();
+}
+
+// ==================== CHART DRAWING ====================
+
+function animateChartContainer(container) {
+  if (!container) return;
+
+  container.classList.remove('chart-animating');
+  void container.offsetWidth;
+  container.classList.add('chart-animating');
+
+  container.addEventListener('animationend', () => {
+    container.classList.remove('chart-animating');
+  }, { once: true });
 }
 
 // ==================== LOADING ====================
@@ -1407,21 +1671,30 @@ function hideProgressLoading() {
   // Automatically replaced by tab content
 }
 
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && sheetIsOpen) {
+    closeSheet();
+  }
+});
+
 // Expose functions
 window.initProgressV2 = initProgressV2;
 window.switchProgressTab = switchProgressTab;
-window.switchStrengthMetric = switchStrengthMetric;
+window.switchStrengthPeriod = switchStrengthPeriod;
+window.switchCardioPeriod = switchCardioPeriod;
 window.switchCardioMetric = switchCardioMetric;
 window.switchOverviewPeriod = switchOverviewPeriod;
-window.openExercisePickerSheet = openExercisePickerSheet;
 window.openActivityPickerSheet = openActivityPickerSheet;
 window.closePickerSheet = closePickerSheet;
-window.selectExercise = selectExercise;
+window.closeAllPickerSheets = closeAllPickerSheets;
 window.selectActivity = selectActivity;
 window.toggleRecentWorkouts = toggleRecentWorkouts;
 window.openRecentWorkoutModal = openRecentWorkoutModal;
 window.startWorkoutAgainFromSession = startWorkoutAgainFromSession;
 window.viewWorkoutDetailsFromSession = viewWorkoutDetailsFromSession;
 window.deleteSessionWithReferences = deleteSessionWithReferences;
+window.navigateActivityCalendar = navigateActivityCalendar;
+window.openActivityDaySheet = openActivityDaySheet;
+window.deleteSessionFromCalendar = deleteSessionFromCalendar;
 
 console.log('📊 Progress V2 module loaded');

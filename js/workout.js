@@ -63,11 +63,8 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
       return;
     }
 
-    // Default to today if no scheduled date
-    if (!scheduledDate) {
-      const today = new Date();
-      scheduledDate = formatDate(today);
-    }
+    // Default to today if no scheduled date or invalid date
+    scheduledDate = ensureValidDateString(scheduledDate);
 
     // Initialize active workout
     activeWorkout = {
@@ -206,7 +203,7 @@ function loadActiveWorkout() {
     const stored = localStorage.getItem('activeWorkout');
     if (stored) {
       activeWorkout = JSON.parse(stored);
-      localStorage.setItem('activeSessionId', activeWorkout.id);
+      localStorage.setItem('activeWorkoutId', activeWorkout.id);
       console.log('✅ Active workout loaded from localStorage');
       return true;
     }
@@ -214,7 +211,7 @@ function loadActiveWorkout() {
   } catch (error) {
     console.error('❌ Error loading active workout:', error);
     localStorage.removeItem('activeWorkout');
-    localStorage.removeItem('activeSessionId');
+    localStorage.removeItem('activeWorkoutId');
     return false;
   }
 }
@@ -226,7 +223,7 @@ function saveActiveWorkout() {
   try {
     if (activeWorkout) {
       localStorage.setItem('activeWorkout', JSON.stringify(activeWorkout));
-      localStorage.setItem('activeSessionId', activeWorkout.id);
+      localStorage.setItem('activeWorkoutId', activeWorkout.id);
     }
   } catch (error) {
     console.error('❌ Error saving active workout:', error);
@@ -313,7 +310,7 @@ function cancelWorkout(askConfirmation = true) {
 
   activeWorkout = null;
   localStorage.removeItem('activeWorkout');
-  localStorage.removeItem('activeSessionId');
+  localStorage.removeItem('activeWorkoutId');
   cancelRestTimer();
 
   showView('dashboard');
@@ -332,8 +329,9 @@ async function completeWorkout() {
     const endTime = new Date();
     const durationMinutes = Math.round((endTime - startTime) / 60000);
 
-    // Parse the scheduled date
-    const [year, month, day] = activeWorkout.scheduledDate.split('-').map(Number);
+    // Parse the scheduled date (guard against invalid/epoch)
+    const normalizedDate = ensureValidDateString(activeWorkout.scheduledDate);
+    const [year, month, day] = normalizedDate.split('-').map(Number);
     const workoutDate = new Date(year, month - 1, day);
 
     // Create session document
@@ -367,12 +365,10 @@ async function completeWorkout() {
     // If this workout was from a schedule, mark it as completed
     if (activeWorkout.scheduleId) {
       const scheduleUpdate = {
-        completed: true,
+        status: 'completed',
+        sessionId: savedSessionId,
         completedAt: firebase.firestore.Timestamp.now()
       };
-      if (savedSessionId) {
-        scheduleUpdate.sessionId = savedSessionId;
-      }
 
       try {
         await updateDoc(scheduleCollection, activeWorkout.scheduleId, scheduleUpdate);
@@ -385,7 +381,7 @@ async function completeWorkout() {
     // Clear active workout
     activeWorkout = null;
     localStorage.removeItem('activeWorkout');
-    localStorage.removeItem('activeSessionId');
+    localStorage.removeItem('activeWorkoutId');
     cancelRestTimer();
 
     // Reload sessions
@@ -907,15 +903,15 @@ function editWorkoutDate() {
   const newDate = prompt('Neues Datum (YYYY-MM-DD):', activeWorkout.scheduledDate);
   if (!newDate) return;
 
-  // Validate date format
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+  const validDate = getValidDateString(newDate);
+  if (!validDate) {
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', 'Ungueltiges Datumsformat. Bitte verwende YYYY-MM-DD');
     }
     return;
   }
 
-  activeWorkout.scheduledDate = newDate;
+  activeWorkout.scheduledDate = validDate;
   saveActiveWorkout();
   renderWorkoutScreen();
 }
@@ -950,6 +946,27 @@ function formatDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+function getValidDateString(dateStr) {
+  if (typeof dateStr !== 'string') return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
+
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (Number.isNaN(date.getTime())) return null;
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null;
+  }
+
+  return dateStr;
+}
+
+function ensureValidDateString(dateStr) {
+  const valid = getValidDateString(dateStr);
+  if (valid) return valid;
+  return formatDate(new Date());
 }
 
 console.log('✅ Workout engine loaded');

@@ -24,6 +24,7 @@ const AUTH_STATES = {
 };
 
 let currentAuthState = AUTH_STATES.LOADING;
+let authErrorTimeout = null;
 
 // Firebase Auth instance
 const auth = firebase.auth();
@@ -341,6 +342,7 @@ function showLoginScreen() {
     mainApp.style.display = 'none';
   }
 
+  hideAuthError();
   hideLoadingState();
 }
 
@@ -359,6 +361,7 @@ function showMainApp() {
     mainApp.style.display = 'block';
   }
 
+  hideAuthError();
   hideLoadingState();
 }
 
@@ -370,6 +373,11 @@ function showAuthError(message) {
   const errorMessage = document.getElementById('auth-error-message');
 
   if (errorContainer && errorMessage) {
+    if (authErrorTimeout) {
+      clearTimeout(authErrorTimeout);
+      authErrorTimeout = null;
+    }
+
     errorMessage.textContent = message;
     errorContainer.classList.add('active');
 
@@ -383,8 +391,9 @@ function showAuthError(message) {
     }
 
     // Auto-hide after 5 seconds
-    setTimeout(() => {
+    authErrorTimeout = setTimeout(() => {
       errorContainer.classList.remove('active');
+      authErrorTimeout = null;
     }, 5000);
   }
 }
@@ -396,6 +405,10 @@ function hideAuthError() {
   const errorContainer = document.getElementById('auth-error');
   if (errorContainer) {
     errorContainer.classList.remove('active');
+  }
+  if (authErrorTimeout) {
+    clearTimeout(authErrorTimeout);
+    authErrorTimeout = null;
   }
 }
 

@@ -130,6 +130,169 @@ function calculateBestSet(exerciseEntry) {
   return Math.max(...exerciseEntry.sets.map(set => set.reps || 0));
 }
 
+/**
+ * Berechnet TOTAL Volumen fuer eine komplette Strength-Session
+ * Formula: sum of all sets; if set has weight AND reps => (weight * reps), else just reps
+ */
+function calculateSessionStrengthVolume(session) {
+  if (session.type !== 'strength' || !session.exercises) return 0;
+
+  let totalVolume = 0;
+  session.exercises.forEach(exercise => {
+    if (!exercise.sets || !Array.isArray(exercise.sets)) return;
+    exercise.sets.forEach(set => {
+      const reps = set.reps || 0;
+      const weight = set.weight || 0;
+      totalVolume += weight > 0 ? (weight * reps) : reps;
+    });
+  });
+  return totalVolume;
+}
+
+/**
+ * Gibt den Montag der Woche zurueck (fuer wochenbasierte Aggregation)
+ */
+function getWeekStart(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday-based
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+/**
+ * Formatiert Wochenlabel als "KW 3" oder "6. Jan"
+ */
+function formatWeekLabel(weekStart) {
+  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  return `${weekStart.getDate()}. ${months[weekStart.getMonth()]}`;
+}
+
+/**
+ * Aggregiert Strength-Volumen in WOECHENTLICHE Buckets (nicht per-exercise)
+ * @param {number} weeks - Anzahl Wochen zurueck
+ * @returns {Array} [{weekLabel, weekStart, value, sessionCount}]
+ */
+function aggregateWeeklyStrengthVolume(weeks = 8) {
+  const result = [];
+  const now = new Date();
+  const currentWeekStart = getWeekStart(now);
+
+  for (let i = weeks - 1; i >= 0; i--) {
+    const weekStart = new Date(currentWeekStart);
+    weekStart.setDate(weekStart.getDate() - (i * 7));
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    weekEnd.setHours(23, 59, 59, 999);
+
+    const weekSessions = allSessions.filter(s => {
+      if (s.type !== 'strength') return false;
+      const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+      return sessionDate >= weekStart && sessionDate <= weekEnd;
+    });
+
+    const totalVolume = weekSessions.reduce((sum, s) => sum + calculateSessionStrengthVolume(s), 0);
+
+    result.push({
+      weekLabel: formatWeekLabel(weekStart),
+      weekStart: weekStart,
+      date: weekStart, // For chart compatibility
+      value: totalVolume,
+      sessionCount: weekSessions.length
+    });
+  }
+  return result;
+}
+
+/**
+ * Aggregiert Cardio-Daten in WOECHENTLICHE Buckets
+ * @param {string} metric - 'time', 'distance'
+ * @param {number} weeks
+ * @param {string|null} activityFilter - optional filter by activity type
+ */
+function aggregateWeeklyCardio(metric = 'time', weeks = 8, activityFilter = null) {
+  const result = [];
+  const now = new Date();
+  const currentWeekStart = getWeekStart(now);
+
+  for (let i = weeks - 1; i >= 0; i--) {
+    const weekStart = new Date(currentWeekStart);
+    weekStart.setDate(weekStart.getDate() - (i * 7));
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    weekEnd.setHours(23, 59, 59, 999);
+
+    const weekSessions = allSessions.filter(s => {
+      if (s.type !== 'cardio') return false;
+      if (activityFilter && s.activityType !== activityFilter) return false;
+      const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+      return sessionDate >= weekStart && sessionDate <= weekEnd;
+    });
+
+    let value = 0;
+    if (metric === 'time') {
+      value = weekSessions.reduce((sum, s) => sum + (s.duration || 0), 0);
+    } else if (metric === 'distance') {
+      value = weekSessions.reduce((sum, s) => sum + (s.distanceKm || 0), 0);
+      value = Math.round(value * 10) / 10; // Round to 1 decimal
+    }
+
+    result.push({
+      weekLabel: formatWeekLabel(weekStart),
+      weekStart: weekStart,
+      date: weekStart, // For chart compatibility
+      value: value,
+      sessionCount: weekSessions.length
+    });
+  }
+  return result;
+}
+
+/**
+ * Formatiert Datum als YYYY-MM-DD (timezone-safe)
+ */
+function formatDateToYYYYMMDD(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Gruppiert Sessions nach YYYY-MM-DD fuer Activity Calendar
+ * @param {number} year
+ * @param {number} month (0-indexed)
+ * @returns {Object} { 'YYYY-MM-DD': [{session}, ...] }
+ */
+function getSessionsByDate(year, month) {
+  const result = {};
+
+  allSessions.forEach(session => {
+    const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
+
+    if (sessionDate.getFullYear() !== year || sessionDate.getMonth() !== month) return;
+
+    const dateKey = formatDateToYYYYMMDD(sessionDate);
+    if (!result[dateKey]) {
+      result[dateKey] = [];
+    }
+    result[dateKey].push(session);
+  });
+
+  return result;
+}
+
+/**
+ * Holt Sessions fuer ein spezifisches Datum
+ */
+function getSessionsForDate(dateKey) {
+  return allSessions.filter(session => {
+    const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
+    return formatDateToYYYYMMDD(sessionDate) === dateKey;
+  });
+}
+
 // ==================== DATA AGGREGATION ====================
 
 /**
@@ -486,13 +649,14 @@ function updateCardioLivePace() {
  */
 async function saveCardioSession() {
   const dateInput = document.getElementById('cardio-date').value;
+  const validDate = getValidDateStringForCardio(dateInput);
   const activityType = document.getElementById('cardio-activity-type').value;
   const duration = parseFloat(document.getElementById('cardio-duration').value);
   const distance = parseFloat(document.getElementById('cardio-distance').value);
   const notes = document.getElementById('cardio-notes').value.trim();
 
   // Validation
-  if (!dateInput) {
+  if (!validDate) {
     showErrorMessage('Bitte wähle ein Datum');
     return;
   }
@@ -511,7 +675,7 @@ async function saveCardioSession() {
     }
 
     // Parse date from input (YYYY-MM-DD)
-    const selectedDate = new Date(dateInput + 'T12:00:00');
+    const selectedDate = new Date(validDate + 'T12:00:00');
     const pace = distance > 0 ? calculatePace(duration, distance) : null;
 
     const cardioSession = {
@@ -596,6 +760,21 @@ function formatDuration(minutes) {
   return `${minutes} min`;
 }
 
+function getValidDateStringForCardio(dateStr) {
+  if (typeof dateStr !== 'string') return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
+
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (Number.isNaN(date.getTime())) return null;
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null;
+  }
+
+  return dateStr;
+}
+
 /**
  * Handles backdrop click to close modal
  */
@@ -615,5 +794,11 @@ window.saveCardioSession = saveCardioSession;
 window.handleModalBackdropClick = handleModalBackdropClick;
 window.triggerSuccessGlow = triggerSuccessGlow;
 window.showErrorMessage = showErrorMessage;
+window.calculateSessionStrengthVolume = calculateSessionStrengthVolume;
+window.aggregateWeeklyStrengthVolume = aggregateWeeklyStrengthVolume;
+window.aggregateWeeklyCardio = aggregateWeeklyCardio;
+window.getSessionsByDate = getSessionsByDate;
+window.getSessionsForDate = getSessionsForDate;
+window.formatDateToYYYYMMDD = formatDateToYYYYMMDD;
 
 console.log('📊 Sessions module loaded');
