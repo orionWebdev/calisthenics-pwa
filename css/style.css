@@ -33,7 +33,7 @@
 }
 
 body {
-  font-family: 'Radio Canada Big', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Zalando Sans Expanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100vh;
   background: var(--color-bg);
   color: var(--color-text);
@@ -151,7 +151,7 @@ input, textarea, select, button {
 }
 
 .nav-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: 22px;
   transition: transform 0.3s ease;
 }
 
@@ -1678,7 +1678,7 @@ input, textarea, select, button {
 }
 
 .bottom-nav-item .material-symbols-rounded {
-  font-size: 24px;
+  font-size: 28px;
   transition: all 0.3s ease;
 }
 
@@ -1701,13 +1701,13 @@ input, textarea, select, button {
 }
 
 .bottom-nav-item:active {
-  transform: scale(0.92);
+  transform: scale(0.94);
 }
 
 .bottom-nav-item:active::after {
-  transform: scale(2.5);
+  transform: scale(2.8);
   opacity: 1;
-  transition: transform 0.4s ease-out, opacity 0.3s ease-out;
+  transition: transform 0.35s ease-out, opacity 0.25s ease-out;
 }
 
 .bottom-nav-item.active {
@@ -1715,32 +1715,42 @@ input, textarea, select, button {
 }
 
 .bottom-nav-item.active .material-symbols-rounded {
-  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 28;
   transform: scale(1.15);
 }
 
-.bottom-nav-item.active::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 3px 12px rgba(240, 34, 119, 0.6);
-  animation: activeIndicatorPulse 2s ease-in-out infinite;
+.bottom-nav-item:active .material-symbols-rounded {
+  animation: bottomNavTap 240ms ease-out;
 }
 
-@keyframes activeIndicatorPulse {
-  0%, 100% {
-    opacity: 1;
-    box-shadow: 0 3px 12px rgba(240, 34, 119, 0.6);
+.bottom-nav-item:active .bottom-nav-label {
+  animation: bottomNavLabel 240ms ease-out;
+}
+
+@keyframes bottomNavTap {
+  0% {
+    transform: scale(1);
   }
-  50% {
-    opacity: 0.7;
-    box-shadow: 0 3px 8px rgba(240, 34, 119, 0.4);
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes bottomNavLabel {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  60% {
+    opacity: 0.6;
+    transform: translateY(2px);
+  }
+  100% {
+    opacity: 0.85;
+    transform: translateY(0);
   }
 }
 
