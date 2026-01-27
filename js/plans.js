@@ -6,6 +6,7 @@ let allPlans = [];
 let filteredPlans = [];
 let editingPlanId = null;
 let currentPlan = null; // Currently selected plan for editing
+let planTypeFilter = 'all';
 
 // Workout Type Namen Mapping (nur noch 3 Typen)
 const workoutTypeNames = {
@@ -135,8 +136,7 @@ async function loadPlans() {
   try {
     const plans = await getAllDocs(plansCollection);
     allPlans = plans.map(normalizePlan);
-    filteredPlans = [...allPlans];
-    renderPlans();
+    applyPlanFilters();
   } catch (error) {
     console.error('Error loading plans:', error);
   }
@@ -211,6 +211,39 @@ function renderPlans() {
   }).join('');
 }
 
+function applyPlanFilters() {
+  const list = Array.isArray(allPlans) ? allPlans : [];
+  if (planTypeFilter === 'all') {
+    filteredPlans = [...list];
+  } else {
+    filteredPlans = list.filter(plan => plan.type === planTypeFilter);
+  }
+  updatePlanTypeFilterUI();
+  renderPlans();
+}
+
+function setPlanTypeFilter(type) {
+  planTypeFilter = type || 'all';
+  applyPlanFilters();
+}
+
+function updatePlanTypeFilterUI() {
+  const container = document.getElementById('plan-type-filters');
+  if (!container) return;
+  container.querySelectorAll('.filter-chip').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === planTypeFilter);
+  });
+
+  const allLabel = document.getElementById('plan-filter-all-label');
+  if (allLabel) allLabel.textContent = t('plan.filters.all');
+  const strengthLabel = document.getElementById('plan-filter-strength-label');
+  if (strengthLabel) strengthLabel.textContent = t('plan.filters.strength');
+  const cardioLabel = document.getElementById('plan-filter-cardio-label');
+  if (cardioLabel) cardioLabel.textContent = t('plan.filters.cardio');
+  const recoveryLabel = document.getElementById('plan-filter-recovery-label');
+  if (recoveryLabel) recoveryLabel.textContent = t('plan.filters.recovery');
+}
+
 
 // ========================================
 // MODAL MANAGEMENT
@@ -222,6 +255,7 @@ function openAddPlanModal() {
     exercises: []
   };
   document.getElementById('plan-modal-title').textContent = 'Neuer Trainingsplan';
+  togglePlanDeleteButton(false);
   clearPlanForm();
 
   // Initialize multi-select inputs
@@ -241,6 +275,7 @@ function editPlan(id) {
 
   currentPlan = { ...plan };
   document.getElementById('plan-modal-title').textContent = 'Plan bearbeiten';
+  togglePlanDeleteButton(true);
   populatePlanForm(plan);
   document.getElementById('plan-modal').classList.add('active');
 }
@@ -249,6 +284,7 @@ function closePlanModal() {
   document.getElementById('plan-modal').classList.remove('active');
   clearPlanForm();
   currentPlan = null;
+  togglePlanDeleteButton(false);
 }
 
 function clearPlanForm() {
@@ -302,7 +338,7 @@ function populatePlanForm(plan) {
   }
 
   // Icon
-  setPlanIcon(plan.iconKey || 'fitness_center');
+  setPlanIcon(getPlanIconKey(plan, plan.type || 'strength'));
 
   // Trigger type change to show correct fields
   onPlanTypeChange(plan.type || 'strength');
@@ -368,6 +404,10 @@ function setPlanDiscipline(discipline) {
   document.querySelectorAll('.discipline-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.discipline === discipline);
   });
+
+  if (document.getElementById('plan-type')?.value === 'strength') {
+    applyPlanIconByDiscipline(discipline);
+  }
 }
 
 // ========================================
@@ -397,6 +437,7 @@ function onPlanTypeChange(type) {
   const disciplineSection = document.getElementById('plan-discipline-section');
   const difficultySection = document.getElementById('plan-difficulty-section');
   const cardioGoalSection = document.getElementById('plan-cardio-goal-section');
+  const iconSection = document.getElementById('plan-icon-section');
 
   // Helper to show/hide elements
   const show = (el) => { if (el) el.style.display = ''; };
@@ -410,17 +451,20 @@ function onPlanTypeChange(type) {
   hide(disciplineSection);
   hide(difficultySection);
   hide(cardioGoalSection);
+  hide(iconSection);
 
   // Apply type-specific visibility and defaults
   switch (type) {
     case 'cardio':
       // Cardio: Cardio-Ziel statt Schwierigkeit, keine Übungen
       show(cardioGoalSection);
+      show(iconSection);
       if (durationInput) durationInput.value = '30';
       break;
 
     case 'recovery':
       // Recovery: Nur Name, Dauer, Icon - keine Schwierigkeit, keine Übungen
+      show(iconSection);
       if (durationInput) durationInput.value = '20';
       break;
 
@@ -433,9 +477,15 @@ function onPlanTypeChange(type) {
       show(detailsSection);
       show(disciplineSection);
       show(difficultySection);
+      applyPlanIconByDiscipline(document.getElementById('plan-discipline')?.value || 'bodyweight');
       if (durationInput) durationInput.value = '45';
       break;
   }
+}
+
+function applyPlanIconByDiscipline(discipline) {
+  const iconKey = discipline === 'weights' ? 'fitness_center' : 'sports_gymnastics';
+  setPlanIcon(iconKey);
 }
 
 /**
@@ -894,6 +944,7 @@ async function savePlan() {
 
       const difficulty = document.getElementById('plan-difficulty')?.value || 'intermediate';
       const discipline = document.getElementById('plan-discipline')?.value || 'bodyweight';
+      planData.iconKey = discipline === 'weights' ? 'fitness_center' : 'sports_gymnastics';
 
       // Calculate required equipment from exercises
       const requiredEquipment = new Set();
@@ -945,6 +996,32 @@ async function savePlan() {
     console.error('Error saving plan:', error);
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', 'Fehler beim Speichern des Plans.');
+    }
+  }
+}
+
+function togglePlanDeleteButton(visible) {
+  const btn = document.getElementById('plan-delete-btn');
+  if (!btn) return;
+  btn.classList.toggle('hidden', !visible);
+  btn.textContent = t('common.delete');
+}
+
+async function deletePlan() {
+  if (!editingPlanId) return;
+  if (!confirm(t('plan.deleteConfirm'))) return;
+
+  try {
+    await deleteDoc(plansCollection, editingPlanId);
+    closePlanModal();
+    await loadPlans();
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', t('plan.deleteSuccess'));
+    }
+  } catch (error) {
+    console.error('Error deleting plan:', error);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('plan.deleteError'));
     }
   }
 }
@@ -1129,8 +1206,7 @@ function viewPlanDetails(id) {
 function setupPlansListener() {
   onCollectionChange(plansCollection, (plans) => {
     allPlans = plans.map(normalizePlan);
-    filteredPlans = [...allPlans];
-    renderPlans();
+    applyPlanFilters();
   });
 }
 

@@ -1081,8 +1081,141 @@ function handleModalBackdropClick(event, modalId) {
     if (modalId === 'add-cardio-modal') {
       closeAddCardioModal();
     }
+    if (modalId === 'add-strength-modal') {
+      closeAddStrengthModal();
+    }
     if (modalId === 'add-recovery-modal') {
       closeAddRecoveryModal();
+    }
+  }
+}
+
+// ==================== STRENGTH QUICK ENTRY MODAL ====================
+
+function openAddStrengthModal() {
+  const modal = document.getElementById('add-strength-modal');
+  if (!modal) return;
+
+  const title = document.getElementById('strength-modal-title');
+  if (title) title.textContent = t('workout.quick.title');
+  const nameLabel = document.getElementById('strength-name-label');
+  if (nameLabel) nameLabel.textContent = t('workout.quick.name');
+  const durationLabel = document.getElementById('strength-duration-label');
+  if (durationLabel) durationLabel.textContent = t('workout.quick.duration');
+  const typeLabel = document.getElementById('strength-type-label');
+  if (typeLabel) typeLabel.textContent = t('workout.quick.type');
+  const difficultyLabel = document.getElementById('strength-difficulty-label');
+  if (difficultyLabel) difficultyLabel.textContent = t('workout.quick.difficulty');
+  const bodyLabel = document.getElementById('strength-type-body-label');
+  if (bodyLabel) bodyLabel.textContent = t('workout.quick.bodyweight');
+  const bodyDesc = document.getElementById('strength-type-body-desc');
+  if (bodyDesc) bodyDesc.textContent = t('workout.quick.bodyweightDesc');
+  const weightsLabel = document.getElementById('strength-type-weights-label');
+  if (weightsLabel) weightsLabel.textContent = t('workout.quick.weights');
+  const weightsDesc = document.getElementById('strength-type-weights-desc');
+  if (weightsDesc) weightsDesc.textContent = t('workout.quick.weightsDesc');
+  const cancelLabel = document.getElementById('strength-cancel-label');
+  if (cancelLabel) cancelLabel.textContent = t('common.cancel');
+  const saveLabel = document.getElementById('strength-save-label');
+  if (saveLabel) saveLabel.textContent = t('common.save');
+
+  const nameInput = document.getElementById('strength-name');
+  const durationInput = document.getElementById('strength-duration');
+  if (nameInput) nameInput.value = '';
+  if (durationInput) durationInput.value = '';
+
+  setStrengthType('bodyweight');
+  setStrengthDifficulty('intermediate');
+
+  modal.style.display = '';
+  modal.classList.add('active');
+  triggerHapticFeedback('light');
+}
+
+function closeAddStrengthModal() {
+  const modal = document.getElementById('add-strength-modal');
+  if (!modal) return;
+
+  modal.classList.remove('active');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300);
+}
+
+function setStrengthType(type) {
+  const input = document.getElementById('strength-type');
+  if (input) input.value = type;
+  document.querySelectorAll('#add-strength-modal .discipline-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.discipline === type);
+  });
+}
+
+function setStrengthDifficulty(level) {
+  const input = document.getElementById('strength-difficulty');
+  if (input) input.value = level;
+  document.querySelectorAll('#add-strength-modal .difficulty-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.difficulty === level);
+  });
+
+  document.querySelectorAll('#add-strength-modal .difficulty-pill').forEach(btn => {
+    const key = btn.dataset.difficulty;
+    if (key && t) {
+      btn.textContent = t(`difficulty.${key}`);
+    }
+  });
+}
+
+async function saveStrengthSession() {
+  const name = document.getElementById('strength-name')?.value.trim();
+  const duration = parseFloat(document.getElementById('strength-duration')?.value);
+  const trainingType = document.getElementById('strength-type')?.value || 'bodyweight';
+  const difficulty = document.getElementById('strength-difficulty')?.value || 'intermediate';
+
+  if (!name) {
+    showErrorMessage(t('workout.quick.nameRequired'));
+    return;
+  }
+
+  if (!duration || duration <= 0) {
+    showErrorMessage(t('workout.quick.durationRequired'));
+    return;
+  }
+
+  try {
+    const saveBtn = document.querySelector('#add-strength-modal .modal-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+    }
+
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0];
+    const strengthSession = {
+      type: 'strength',
+      planName: name,
+      date: firebase.firestore.Timestamp.fromDate(new Date(dateStr + 'T12:00:00')),
+      duration,
+      discipline: trainingType,
+      difficulty,
+      createdAt: firebase.firestore.Timestamp.now()
+    };
+
+    await addDoc(sessionsCollection, strengthSession);
+
+    closeAddStrengthModal();
+    await loadSessions();
+    if (typeof renderCurrentProgressTab === 'function') {
+      renderCurrentProgressTab();
+    }
+    triggerSuccessGlow();
+  } catch (error) {
+    console.error('Error saving strength session:', error);
+    showErrorMessage(t('workout.quick.saveError'));
+  } finally {
+    const saveBtn = document.querySelector('#add-strength-modal .modal-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<span class="material-symbols-rounded">check</span><span>' + t('common.save') + '</span>';
     }
   }
 }
@@ -1202,6 +1335,11 @@ window.showErrorMessage = showErrorMessage;
 window.openAddRecoveryModal = openAddRecoveryModal;
 window.closeAddRecoveryModal = closeAddRecoveryModal;
 window.saveRecoverySession = saveRecoverySession;
+window.openAddStrengthModal = openAddStrengthModal;
+window.closeAddStrengthModal = closeAddStrengthModal;
+window.saveStrengthSession = saveStrengthSession;
+window.setStrengthType = setStrengthType;
+window.setStrengthDifficulty = setStrengthDifficulty;
 window.calculateSessionStrengthVolume = calculateSessionStrengthVolume;
 window.aggregateWeeklyStrengthVolume = aggregateWeeklyStrengthVolume;
 window.aggregateWeeklyCardio = aggregateWeeklyCardio;

@@ -58,6 +58,12 @@ const translations = {
         recovery: 'Recovery',
         unknown: 'Unbekannter Typ'
       },
+      filters: {
+        all: 'Alle',
+        strength: 'Kraft',
+        cardio: 'Cardio',
+        recovery: 'Recovery'
+      },
       cardioGoal: {
         label: 'Cardio-Ziel',
         liss: 'LISS',
@@ -78,7 +84,10 @@ const translations = {
       icon: 'Plan-Icon',
       notes: 'Notizen',
       exercises: 'Uebungen',
-      addExercise: 'Uebung hinzufuegen'
+      addExercise: 'Uebung hinzufuegen',
+      deleteConfirm: 'Plan wirklich loeschen?',
+      deleteSuccess: 'Plan geloescht.',
+      deleteError: 'Fehler beim Loeschen des Plans.'
     },
     exercise: {
       title: 'Uebung',
@@ -140,6 +149,20 @@ const translations = {
       }
     },
     workout: {
+      quick: {
+        title: 'Workout Schnell-Eintrag',
+        name: 'Workout Name',
+        duration: 'Dauer (Minuten)',
+        type: 'Typ',
+        difficulty: 'Schwierigkeit',
+        bodyweight: 'Bodyweight',
+        bodyweightDesc: 'Training mit Eigengewicht',
+        weights: 'Gewichte',
+        weightsDesc: 'Gym / Hanteln',
+        nameRequired: 'Bitte gib einen Workout Namen ein',
+        durationRequired: 'Bitte gib eine gueltige Dauer ein',
+        saveError: 'Fehler beim Speichern des Workouts'
+      },
       setLogger: {
         title: 'Satz {number} loggen',
         reps: 'Wiederholungen',

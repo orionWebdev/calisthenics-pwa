@@ -259,6 +259,26 @@
           </button>
         </div>
 
+        <!-- Plan Type Filter -->
+        <div class="mb-4 flex flex-wrap gap-2" id="plan-type-filters">
+          <button class="filter-chip active" data-type="all" onclick="setPlanTypeFilter('all')">
+            <span class="material-symbols-rounded">apps</span>
+            <span id="plan-filter-all-label"></span>
+          </button>
+          <button class="filter-chip" data-type="strength" onclick="setPlanTypeFilter('strength')">
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span id="plan-filter-strength-label"></span>
+          </button>
+          <button class="filter-chip" data-type="cardio" onclick="setPlanTypeFilter('cardio')">
+            <span class="material-symbols-rounded">directions_run</span>
+            <span id="plan-filter-cardio-label"></span>
+          </button>
+          <button class="filter-chip" data-type="recovery" onclick="setPlanTypeFilter('recovery')">
+            <span class="material-symbols-rounded">self_improvement</span>
+            <span id="plan-filter-recovery-label"></span>
+          </button>
+        </div>
+
         <!-- Plans Grid -->
         <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Wird von JavaScript gefüllt -->
@@ -808,7 +828,7 @@
             </div>
 
             <!-- Plan Icon -->
-            <div class="mb-4">
+            <div class="mb-4" id="plan-icon-section">
               <label class="block text-sm font-medium mb-2">Plan-Icon</label>
               <div class="exercise-icon-picker" id="plan-icon-picker">
                 <button type="button" class="icon-picker-btn active" data-icon="fitness_center" onclick="setPlanIcon('fitness_center')">
@@ -924,6 +944,13 @@
             class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all"
           >
             Speichern
+          </button>
+          <button
+            id="plan-delete-btn"
+            onclick="deletePlan()"
+            class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-semibold transition-colors hidden"
+          >
+            Loeschen
           </button>
           <button
             onclick="closePlanModal()"
@@ -1544,6 +1571,87 @@
         <button onclick="saveRecoverySession()" class="modal-save-btn">
           <span class="material-symbols-rounded">check</span>
           <span>Speichern</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Strength Session Modal -->
+  <div id="add-strength-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-strength-modal')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title" id="strength-modal-title"></h3>
+        <button onclick="closeAddStrengthModal()" class="modal-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2" id="strength-name-label"></label>
+          <input
+            type="text"
+            id="strength-name"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" id="strength-duration-label"></label>
+          <input
+            type="number"
+            id="strength-duration"
+            placeholder="z.B. 45"
+            min="1"
+            step="1"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" id="strength-type-label"></label>
+          <div class="discipline-selector">
+            <button type="button" class="discipline-btn active" data-discipline="bodyweight" onclick="setStrengthType('bodyweight')">
+              <span class="material-symbols-rounded">sports_gymnastics</span>
+              <span class="discipline-label" id="strength-type-body-label"></span>
+              <span class="discipline-desc" id="strength-type-body-desc"></span>
+            </button>
+            <button type="button" class="discipline-btn" data-discipline="weights" onclick="setStrengthType('weights')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span class="discipline-label" id="strength-type-weights-label"></span>
+              <span class="discipline-desc" id="strength-type-weights-desc"></span>
+            </button>
+          </div>
+          <input type="hidden" id="strength-type" value="bodyweight">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" id="strength-difficulty-label"></label>
+          <div class="difficulty-pills">
+            <button type="button" class="difficulty-pill" data-difficulty="beginner" onclick="setStrengthDifficulty('beginner')">
+              Anfaenger
+            </button>
+            <button type="button" class="difficulty-pill active" data-difficulty="intermediate" onclick="setStrengthDifficulty('intermediate')">
+              Mittel
+            </button>
+            <button type="button" class="difficulty-pill" data-difficulty="advanced" onclick="setStrengthDifficulty('advanced')">
+              Fortgeschritten
+            </button>
+            <button type="button" class="difficulty-pill" data-difficulty="elite" onclick="setStrengthDifficulty('elite')">
+              Elite
+            </button>
+          </div>
+          <input type="hidden" id="strength-difficulty" value="intermediate">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeAddStrengthModal()" class="modal-cancel-btn">
+          <span id="strength-cancel-label"></span>
+        </button>
+        <button onclick="saveStrengthSession()" class="modal-save-btn">
+          <span class="material-symbols-rounded">check</span>
+          <span id="strength-save-label"></span>
         </button>
       </div>
     </div>
