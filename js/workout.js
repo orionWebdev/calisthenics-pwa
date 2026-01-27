@@ -469,20 +469,10 @@ function renderWorkoutHeader(progress) {
       <div class="workout-meta">
         <span>${formatWorkoutDate(activeWorkout.scheduledDate)}</span>
         <span>·</span>
-        <span>${progress.completed} / ${progress.total} Übungen</span>
+        <span>${t('workout.exercise.progress', { completed: progress.completed, total: progress.total }) || `${progress.completed} / ${progress.total} Uebungen`}</span>
       </div>
       <div class="workout-progress-bar">
         <div class="workout-progress-fill" style="width: ${progress.percentage}%"></div>
-      </div>
-      <div class="workout-actions">
-        <button onclick="editWorkoutDate()" class="btn-secondary" style="flex: 1;">
-          <span class="material-symbols-rounded" style="font-size: 18px;">calendar_month</span>
-          <span>Datum ändern</span>
-        </button>
-        <button onclick="cancelWorkout()" class="btn-secondary" style="flex: 1;">
-          <span class="material-symbols-rounded" style="font-size: 18px;">close</span>
-          <span>Abbrechen</span>
-        </button>
       </div>
     </div>
   `;
@@ -535,76 +525,199 @@ function renderCurrentExercise(exercise) {
 }
 
 /**
- * Render set logger
+ * Render set logger - Mobile-first Exercise Card layout
  */
 function renderSetLogger(exercise) {
   if (!exercise) return '';
 
   const setNumber = exercise.completedSets.length + 1;
+  const lastSet = exercise.completedSets.length > 0
+    ? exercise.completedSets[exercise.completedSets.length - 1]
+    : null;
+
+  // Default values from last set or target
+  const defaultReps = lastSet ? lastSet.reps : (exercise.targetReps ? parseInt(exercise.targetReps) || 10 : 10);
+  const defaultWeight = lastSet ? (lastSet.weight || '') : '';
 
   return `
-    <div class="set-logger">
-      <h4 class="set-logger-title">Satz ${setNumber} loggen</h4>
-      <div class="set-input-row">
-        <div class="set-input-group">
-          <label for="reps-input">Wiederholungen *</label>
-          <input
-            type="number"
-            id="reps-input"
-            class="set-input"
-            placeholder="0"
-            min="0"
-            step="1"
-            inputmode="numeric"
-          />
+    <div class="exercise-card-logger">
+      <div class="exercise-card-header">
+        <span class="exercise-card-set-badge">${t('workout.setLogger.set')} ${setNumber}</span>
+        <span class="exercise-card-target">${t('workout.setLogger.target')}: ${exercise.targetSets} × ${exercise.targetReps}</span>
+      </div>
+
+      <div class="exercise-card-inputs">
+        <!-- Reps Input with Steppers -->
+        <div class="input-with-steppers">
+          <label class="input-stepper-label">${t('workout.setLogger.reps')} *</label>
+          <div class="stepper-group">
+            <button
+              type="button"
+              class="stepper-btn stepper-minus"
+              onclick="adjustInputValue('reps-input', -1)"
+              aria-label="Verringern"
+            >
+              <span class="material-symbols-rounded">remove</span>
+            </button>
+            <input
+              type="text"
+              id="reps-input"
+              class="stepper-input"
+              value="${defaultReps}"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              enterkeyhint="next"
+              autocomplete="off"
+              aria-label="${t('workout.setLogger.reps')}"
+            />
+            <button
+              type="button"
+              class="stepper-btn stepper-plus"
+              onclick="adjustInputValue('reps-input', 1)"
+              aria-label="Erhoehen"
+            >
+              <span class="material-symbols-rounded">add</span>
+            </button>
+          </div>
         </div>
-        <div class="set-input-group">
-          <label for="weight-input">Gewicht (kg)</label>
-          <input
-            type="number"
-            id="weight-input"
-            class="set-input"
-            placeholder="0"
-            min="0"
-            step="0.5"
-            inputmode="decimal"
-          />
+
+        <!-- Weight Input with Steppers -->
+        <div class="input-with-steppers">
+          <label class="input-stepper-label">${t('workout.setLogger.weight')} (${t('workout.setLogger.weightUnit')})</label>
+          <div class="stepper-group">
+            <button
+              type="button"
+              class="stepper-btn stepper-minus"
+              onclick="adjustInputValue('weight-input', -2.5)"
+              aria-label="Verringern"
+            >
+              <span class="material-symbols-rounded">remove</span>
+            </button>
+            <input
+              type="text"
+              id="weight-input"
+              class="stepper-input"
+              value="${defaultWeight}"
+              inputmode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
+              enterkeyhint="done"
+              autocomplete="off"
+              placeholder="0"
+              aria-label="${t('workout.setLogger.weight')}"
+            />
+            <button
+              type="button"
+              class="stepper-btn stepper-plus"
+              onclick="adjustInputValue('weight-input', 2.5)"
+              aria-label="Erhoehen"
+            >
+              <span class="material-symbols-rounded">add</span>
+            </button>
+          </div>
         </div>
       </div>
-      <button onclick="logSetFromInput()" class="log-set-btn">
-        <span class="material-symbols-rounded">add_circle</span>
-        <span>Satz loggen</span>
-      </button>
+
+      <div class="exercise-card-actions">
+        <button onclick="logSetFromInput()" class="log-set-btn-primary">
+          <span class="material-symbols-rounded">check_circle</span>
+          <span>${t('workout.setLogger.logSet')}</span>
+        </button>
+        ${lastSet ? `
+          <button onclick="duplicateLastSet()" class="log-set-btn-secondary">
+            <span class="material-symbols-rounded">content_copy</span>
+            <span>${t('workout.setLogger.duplicateLast')}</span>
+          </button>
+        ` : ''}
+      </div>
     </div>
   `;
 }
 
 /**
- * Render completed sets
+ * Adjust input value with stepper buttons
+ */
+function adjustInputValue(inputId, delta) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+
+  let currentValue = parseFloat(input.value.replace(',', '.')) || 0;
+  let newValue = currentValue + delta;
+
+  // Ensure non-negative
+  if (newValue < 0) newValue = 0;
+
+  // Round to sensible precision for weight
+  if (inputId === 'weight-input') {
+    newValue = Math.round(newValue * 2) / 2; // Round to 0.5
+  } else {
+    newValue = Math.round(newValue);
+  }
+
+  input.value = newValue || (inputId === 'weight-input' ? '' : '0');
+
+  // Haptic feedback
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Duplicate the last logged set
+ */
+function duplicateLastSet() {
+  if (!activeWorkout) return;
+
+  const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
+  if (!currentExercise || currentExercise.completedSets.length === 0) return;
+
+  const lastSet = currentExercise.completedSets[currentExercise.completedSets.length - 1];
+  logSet(lastSet.reps, lastSet.weight);
+}
+
+/**
+ * Render completed sets - Clean card-based layout
  */
 function renderCompletedSets(exercise) {
-  if (!exercise || exercise.completedSets.length === 0) return '';
+  if (!exercise || exercise.completedSets.length === 0) {
+    return `
+      <div class="completed-sets-section">
+        <h4 class="completed-sets-title">${t('workout.setLogger.completedSets')}</h4>
+        <div class="completed-sets-empty">
+          <span class="material-symbols-rounded">playlist_add</span>
+          <span>${t('workout.setLogger.noSets')}</span>
+        </div>
+      </div>
+    `;
+  }
 
   return `
     <div class="completed-sets-section">
-      <h4 class="completed-sets-title">Abgeschlossene Sätze</h4>
-      <div class="completed-sets-list">
+      <h4 class="completed-sets-title">${t('workout.setLogger.completedSets')} (${exercise.completedSets.length}/${exercise.targetSets})</h4>
+      <div class="completed-sets-grid">
         ${exercise.completedSets.map((set, setIndex) => `
-          <div class="completed-set-item">
-            <div class="set-info">
-              <span class="material-symbols-rounded" style="font-size: 20px; color: #22c55e;">check_circle</span>
-              <span>Satz ${setIndex + 1}:</span>
-              <span>${set.reps} Reps${set.weight ? ` @ ${set.weight}kg` : ''}</span>
+          <div class="completed-set-card ${setIndex === exercise.completedSets.length - 1 ? 'latest' : ''}">
+            <div class="completed-set-number">
+              <span class="material-symbols-rounded">check_circle</span>
+              <span>${setIndex + 1}</span>
             </div>
-            <div class="set-actions">
-              <button
-                onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})"
-                class="set-action-btn"
-                title="Löschen"
-              >
-                <span class="material-symbols-rounded" style="font-size: 18px;">delete</span>
-              </button>
+            <div class="completed-set-data">
+              <div class="completed-set-reps">
+                <span class="data-value">${set.reps}</span>
+                <span class="data-label">${t('workout.setLogger.reps')}</span>
+              </div>
+              ${set.weight ? `
+                <div class="completed-set-weight">
+                  <span class="data-value">${set.weight}</span>
+                  <span class="data-label">${t('workout.setLogger.weightUnit')}</span>
+                </div>
+              ` : ''}
             </div>
+            <button
+              onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})"
+              class="completed-set-delete"
+              title="${t('workout.setLogger.deleteSet')}"
+              aria-label="${t('workout.setLogger.deleteSet')}"
+            >
+              <span class="material-symbols-rounded">close</span>
+            </button>
           </div>
         `).join('')}
       </div>
@@ -613,7 +726,8 @@ function renderCompletedSets(exercise) {
 }
 
 /**
- * Render workout actions (Next/Finish)
+ * Render workout actions (Cancel, Next/Finish)
+ * Abbrechen Button ist jetzt über dem primären Button
  */
 function renderWorkoutActions() {
   const isLastExercise = activeWorkout.currentExerciseIndex === activeWorkout.exercises.length - 1;
@@ -621,25 +735,33 @@ function renderWorkoutActions() {
   const hasSets = currentExercise && currentExercise.completedSets.length > 0;
 
   return `
-    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+    <div class="workout-bottom-actions">
+      <!-- Abbrechen Button -->
+      <button
+        onclick="cancelWorkout()"
+        class="btn-secondary workout-cancel-btn"
+      >
+        <span class="material-symbols-rounded" style="font-size: 18px;">close</span>
+        <span>${t('common.cancel') || 'Abbrechen'}</span>
+      </button>
+
+      <!-- Primary Action -->
       ${!isLastExercise ? `
         <button
           onclick="goToNextExercise()"
           class="btn-primary"
-          style="flex: 1;"
           ${!hasSets ? 'disabled' : ''}
         >
-          <span>Nächste Übung</span>
+          <span>${t('workout.exercise.next') || 'Naechste Uebung'}</span>
           <span class="material-symbols-rounded">arrow_forward</span>
         </button>
       ` : `
         <button
           onclick="completeWorkout()"
           class="btn-primary"
-          style="flex: 1;"
         >
           <span class="material-symbols-rounded">check_circle</span>
-          <span>Workout beenden</span>
+          <span>${t('workout.exercise.finish') || 'Workout beenden'}</span>
         </button>
       `}
     </div>

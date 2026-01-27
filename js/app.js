@@ -296,7 +296,13 @@ async function initApp() {
       console.warn('⚠️ loadSchedule function not found');
     }
 
-    // 5. Setup real-time listeners
+    // 5. Load session templates
+    console.log('📝 Loading session templates...');
+    if (typeof loadSessionTemplates === 'function') {
+      await loadSessionTemplates();
+    }
+
+    // 6. Setup real-time listeners
     console.log('🔄 Setting up real-time listeners...');
     if (typeof setupExercisesListener === 'function') {
       setupExercisesListener();
@@ -306,6 +312,9 @@ async function initApp() {
     }
     if (typeof setupScheduleListener === 'function') {
       setupScheduleListener();
+    }
+    if (typeof setupSessionTemplatesListener === 'function') {
+      setupSessionTemplatesListener();
     }
 
     if (typeof checkActiveWorkout === 'function') {

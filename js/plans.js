@@ -7,24 +7,20 @@ let filteredPlans = [];
 let editingPlanId = null;
 let currentPlan = null; // Currently selected plan for editing
 
-// Workout Type Namen Mapping
+// Workout Type Namen Mapping (nur noch 3 Typen)
 const workoutTypeNames = {
-  strength: 'Kraft',
-  cardio: 'Cardio',
-  recovery: 'Recovery',
-  mobility: 'Mobility',
-  skill: 'Skill',
-  hiit: 'HIIT',
-  mixed: 'Mixed'
+  strength: t('plan.types.strength'),
+  cardio: t('plan.types.cardio'),
+  recovery: t('plan.types.recovery'),
+  unknown: t('plan.types.unknown')
 };
 
-// Workout Goal Namen Mapping
-const workoutGoalNames = {
-  strength: 'Kraft',
-  endurance: 'Ausdauer',
-  hypertrophy: 'Muskelaufbau',
-  skill: 'Skill',
-  mixed: 'Gemischt'
+// Cardio Goal Namen Mapping
+const cardioGoalNames = {
+  liss: 'LISS',
+  hiit: 'HIIT',
+  zone2: 'Zone 2',
+  tempo: 'Tempo'
 };
 
 // Tag Namen Mapping
@@ -38,13 +34,107 @@ const tagNames = {
   'core': 'Core'
 };
 
+const legacyPlanTypeMap = {
+  strength: 'strength',
+  kraft: 'strength',
+  krafttraining: 'strength',
+  strengthtraining: 'strength',
+  cardio: 'cardio',
+  ausdauer: 'cardio',
+  endurance: 'cardio',
+  recovery: 'recovery',
+  erholung: 'recovery',
+  regeneration: 'recovery',
+  mobility: 'recovery',
+  skill: 'strength',
+  hiit: 'cardio',
+  mixed: 'strength'
+};
+
+const planTypeIconFallbacks = {
+  strength: 'fitness_center',
+  cardio: 'directions_run',
+  recovery: 'self_improvement',
+  unknown: 'help'
+};
+
+function normalizePlanType(rawType) {
+  if (!rawType || typeof rawType !== 'string') {
+    return { type: 'strength', displayType: 'strength', wasLegacy: false, wasUnknown: false };
+  }
+
+  const normalizedKey = rawType.trim().toLowerCase();
+  const mapped = legacyPlanTypeMap[normalizedKey];
+
+  if (mapped) {
+    return {
+      type: mapped,
+      displayType: mapped,
+      wasLegacy: normalizedKey !== mapped,
+      wasUnknown: false
+    };
+  }
+
+  return {
+    type: 'strength',
+    displayType: 'unknown',
+    wasLegacy: true,
+    wasUnknown: true
+  };
+}
+
+function normalizePlan(plan) {
+  const typeInfo = normalizePlanType(plan.type);
+  const normalizedPlan = {
+    ...plan,
+    type: typeInfo.type,
+    displayType: typeInfo.displayType,
+    typeLabel: typeInfo.displayType === 'unknown'
+      ? workoutTypeNames.unknown
+      : workoutTypeNames[typeInfo.displayType] || workoutTypeNames.strength
+  };
+
+  if (typeInfo.wasLegacy) {
+    console.warn('WARN Legacy plan type mapped', {
+      planId: plan.id,
+      from: plan.type,
+      to: typeInfo.type
+    });
+  }
+
+  if (typeInfo.wasUnknown) {
+    console.warn('WARN Unknown plan type fallback', {
+      planId: plan.id,
+      from: plan.type
+    });
+  }
+
+  return normalizedPlan;
+}
+
+function getPlanTypeLabel(plan) {
+  return plan.typeLabel || workoutTypeNames[plan.displayType] || workoutTypeNames[plan.type] || workoutTypeNames.strength;
+}
+
+function getPlanIconKey(plan, fallbackType) {
+  const fallback = planTypeIconFallbacks[fallbackType] || planTypeIconFallbacks.strength;
+  return plan.iconKey || plan.icon || fallback;
+}
+
+function getPlanGoalLabel(plan) {
+  const goal = plan.cardioGoal || plan.goal;
+  if (!goal) return '';
+  return cardioGoalNames[goal] || goal;
+}
+
 // ========================================
 // LOAD & DISPLAY PLANS
 // ========================================
 
 async function loadPlans() {
   try {
-    allPlans = await getAllDocs(plansCollection);
+    const plans = await getAllDocs(plansCollection);
+    allPlans = plans.map(normalizePlan);
     filteredPlans = [...allPlans];
     renderPlans();
   } catch (error) {
@@ -77,19 +167,10 @@ function renderPlans() {
     const equipment = plan.requiredEquipment || [];
     const equipmentCount = equipment.length;
     const planType = plan.type || 'strength';
-    const typeLabel = workoutTypeNames[planType] || 'Kraft';
-    const typeIcon = planType === 'cardio'
-      ? 'directions_run'
-      : planType === 'recovery'
-        ? 'self_improvement'
-      : planType === 'mobility'
-        ? 'self_improvement'
-        : planType === 'skill'
-          ? 'psychology'
-          : planType === 'hiit'
-            ? 'bolt'
-            : 'fitness_center';
-    const goalLabel = plan.goal ? (workoutGoalNames[plan.goal] || plan.goal) : '';
+    const displayType = plan.displayType || planType;
+    const typeLabel = getPlanTypeLabel(plan);
+    const typeIcon = getPlanIconKey(plan, planType);
+    const goalLabel = getPlanGoalLabel(plan);
     const metaParts = [
       `${exerciseCount} Uebungen`,
       `${plan.duration || 45} Min`,
@@ -105,7 +186,7 @@ function renderPlans() {
           <div class="plan-row-title">${plan.name}</div>
           <div class="plan-row-meta">${metaParts.join(' • ')}</div>
           <div class="plan-row-tags">
-            <span class="plan-type-badge type-${planType}">${typeLabel}</span>
+            <span class="plan-type-badge type-${displayType}">${typeLabel}</span>
             ${equipmentCount > 0 && equipment[0] !== 'none' ? `<span class="plan-row-tag"><span class="material-symbols-rounded">build</span>${equipmentCount}</span>` : ''}
           </div>
         </div>
@@ -173,15 +254,21 @@ function closePlanModal() {
 function clearPlanForm() {
   document.getElementById('plan-name').value = '';
   document.getElementById('plan-type').value = 'strength';
-  document.getElementById('plan-goal').value = 'strength';
   document.getElementById('plan-duration').value = '45';
-  document.getElementById('plan-notes').value = '';
+  const notesEl = document.getElementById('plan-notes');
+  if (notesEl) notesEl.value = '';
 
   // Clear multi-select inputs
   planTags = [];
   planTargetMuscles = [];
 
-  setPlanDifficulty(3);
+  setPlanDifficulty('intermediate');
+  setPlanIcon('fitness_center');
+  setPlanDiscipline('bodyweight');
+  setCardioGoal('liss');
+
+  // Trigger type change to show correct fields
+  onPlanTypeChange('strength');
 
   // Clear exercises list
   if (currentPlan) {
@@ -193,9 +280,9 @@ function clearPlanForm() {
 function populatePlanForm(plan) {
   document.getElementById('plan-name').value = plan.name || '';
   document.getElementById('plan-type').value = plan.type || 'strength';
-  document.getElementById('plan-goal').value = plan.goal || 'strength';
   document.getElementById('plan-duration').value = plan.duration || 45;
-  document.getElementById('plan-notes').value = plan.notes || '';
+  const notesEl = document.getElementById('plan-notes');
+  if (notesEl) notesEl.value = plan.notes || '';
 
   // Set tags and target muscles for multi-select
   planTags = plan.tags ? [...plan.tags] : [];
@@ -205,8 +292,20 @@ function populatePlanForm(plan) {
   renderPlanTagsInput();
   renderPlanTargetMusclesInput();
 
-  // Difficulty
-  setPlanDifficulty(plan.difficulty || 3);
+  // Type-specific fields
+  if (plan.type === 'strength') {
+    const difficultyValue = convertPlanDifficultyToEnum(plan.difficulty);
+    setPlanDifficulty(difficultyValue);
+    setPlanDiscipline(plan.discipline || 'bodyweight');
+  } else if (plan.type === 'cardio') {
+    setCardioGoal(plan.cardioGoal || 'liss');
+  }
+
+  // Icon
+  setPlanIcon(plan.iconKey || 'fitness_center');
+
+  // Trigger type change to show correct fields
+  onPlanTypeChange(plan.type || 'strength');
 
   // Load exercises
   if (plan.exercises) {
@@ -216,18 +315,138 @@ function populatePlanForm(plan) {
 }
 
 // ========================================
-// DIFFICULTY SELECTION
+// DIFFICULTY SELECTION (Enum-based)
 // ========================================
 
-function setPlanDifficulty(level) {
-  document.getElementById('plan-difficulty').value = level;
+// Difficulty enum mapping
+const planDifficultyEnum = {
+  beginner: { label: 'Anfaenger', value: 1 },
+  intermediate: { label: 'Mittel', value: 2 },
+  advanced: { label: 'Fortgeschritten', value: 3 },
+  elite: { label: 'Elite', value: 4 }
+};
 
-  document.querySelectorAll('.plan-difficulty-btn').forEach(btn => {
-    if (parseInt(btn.dataset.difficulty) === level) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+function setPlanDifficulty(difficulty) {
+  document.getElementById('plan-difficulty').value = difficulty;
+
+  // Support both compact (.difficulty-pill) and full (.difficulty-pill-full) pills
+  document.querySelectorAll('#plan-modal .difficulty-pill, #plan-modal .difficulty-pill-full').forEach(pill => {
+    pill.classList.toggle('active', pill.dataset.difficulty === difficulty);
+  });
+}
+
+// Convert old numeric difficulty to new enum
+function convertPlanDifficultyToEnum(difficulty) {
+  if (typeof difficulty === 'string') return difficulty;
+  if (difficulty <= 1) return 'beginner';
+  if (difficulty <= 2) return 'intermediate';
+  if (difficulty <= 3) return 'advanced';
+  return 'elite';
+}
+
+// ========================================
+// PLAN ICON SELECTION
+// ========================================
+
+function setPlanIcon(icon) {
+  const iconInput = document.getElementById('plan-icon');
+  if (iconInput) iconInput.value = icon;
+
+  document.querySelectorAll('#plan-icon-picker .icon-picker-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.icon === icon);
+  });
+}
+
+// ========================================
+// PLAN DISCIPLINE SELECTION (Bodyweight vs Weights)
+// ========================================
+
+function setPlanDiscipline(discipline) {
+  const disciplineInput = document.getElementById('plan-discipline');
+  if (disciplineInput) disciplineInput.value = discipline;
+
+  document.querySelectorAll('.discipline-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.discipline === discipline);
+  });
+}
+
+// ========================================
+// WIZARD SECTION MANAGEMENT
+// ========================================
+
+/**
+ * Toggle a collapsible wizard section
+ */
+function toggleWizardSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.classList.toggle('open');
+  }
+}
+
+/**
+ * Handle plan type change - adjust form visibility and defaults
+ * Nur 3 Typen: strength, cardio, recovery
+ */
+function onPlanTypeChange(type) {
+  const exercisesSection = document.getElementById('plan-exercises-section');
+  const musclesSection = document.getElementById('plan-muscles-section');
+  const tagsSection = document.getElementById('plan-tags-section');
+  const detailsSection = document.getElementById('plan-details-section');
+  const durationInput = document.getElementById('plan-duration');
+  const disciplineSection = document.getElementById('plan-discipline-section');
+  const difficultySection = document.getElementById('plan-difficulty-section');
+  const cardioGoalSection = document.getElementById('plan-cardio-goal-section');
+
+  // Helper to show/hide elements
+  const show = (el) => { if (el) el.style.display = ''; };
+  const hide = (el) => { if (el) el.style.display = 'none'; };
+
+  // Hide all type-specific sections first
+  hide(exercisesSection);
+  hide(musclesSection);
+  hide(tagsSection);
+  hide(detailsSection);
+  hide(disciplineSection);
+  hide(difficultySection);
+  hide(cardioGoalSection);
+
+  // Apply type-specific visibility and defaults
+  switch (type) {
+    case 'cardio':
+      // Cardio: Cardio-Ziel statt Schwierigkeit, keine Übungen
+      show(cardioGoalSection);
+      if (durationInput) durationInput.value = '30';
+      break;
+
+    case 'recovery':
+      // Recovery: Nur Name, Dauer, Icon - keine Schwierigkeit, keine Übungen
+      if (durationInput) durationInput.value = '20';
+      break;
+
+    case 'strength':
+    default:
+      // Strength: Alle Felder inkl. Übungen, Schwierigkeit, Discipline
+      show(exercisesSection);
+      show(musclesSection);
+      show(tagsSection);
+      show(detailsSection);
+      show(disciplineSection);
+      show(difficultySection);
+      if (durationInput) durationInput.value = '45';
+      break;
+  }
+}
+
+/**
+ * Set cardio goal (LISS, HIIT, Zone2, Tempo)
+ */
+function setCardioGoal(goal) {
+  const input = document.getElementById('plan-cardio-goal');
+  if (input) input.value = goal;
+
+  document.querySelectorAll('.cardio-goal-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.goal === goal);
   });
 }
 
@@ -642,61 +861,80 @@ function reorderPlanExercises(fromIndex, toIndex) {
 async function savePlan() {
   const name = document.getElementById('plan-name').value.trim();
   const type = document.getElementById('plan-type').value;
-  const goal = document.getElementById('plan-goal').value;
   const duration = parseInt(document.getElementById('plan-duration').value);
-  const notes = document.getElementById('plan-notes').value.trim();
-  const difficulty = parseInt(document.getElementById('plan-difficulty').value);
+  const notes = document.getElementById('plan-notes')?.value.trim() || '';
+  const iconKey = document.getElementById('plan-icon')?.value || 'fitness_center';
 
-  // Get selected tags and target muscles from state
-  const tags = planTags;
-  const targetMuscles = planTargetMuscles;
-
-  // Validation
+  // Validation - Name ist immer erforderlich
   if (!name) {
-  if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Bitte gib einen Namen für den Plan ein!');
-  }
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('errors.planNameRequired') || 'Bitte gib einen Namen fuer den Plan ein!');
+    }
     return;
   }
 
-  if (!currentPlan.exercises || currentPlan.exercises.length === 0) {
-  if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Bitte füge mindestens eine Übung hinzu!');
-  }
-    return;
-  }
-
-  // Calculate required equipment from exercises
-  const requiredEquipment = new Set();
-  if (typeof allExercises !== 'undefined' && allExercises) {
-    currentPlan.exercises.forEach(ex => {
-      const exercise = allExercises.find(e => e.id === ex.exerciseId);
-      if (exercise && exercise.equipment) {
-        exercise.equipment.forEach(eq => requiredEquipment.add(eq));
-      }
-    });
-  }
-
+  // Build plan data based on type
   const planData = {
     name,
     type,
-    goal,
     duration,
-    notes,
-    difficulty,
-    tags,
-    targetMuscles,
-    exercises: currentPlan.exercises,
-    requiredEquipment: Array.from(requiredEquipment)
+    iconKey
   };
+
+  // Type-specific fields
+  switch (type) {
+    case 'strength':
+      // Strength: exercises required, difficulty, discipline, tags, muscles
+      if (!currentPlan.exercises || currentPlan.exercises.length === 0) {
+        if (typeof showEdgeFeedback === 'function') {
+          showEdgeFeedback('error', t('errors.planExercisesRequired') || 'Bitte fuege mindestens eine Uebung hinzu!');
+        }
+        return;
+      }
+
+      const difficulty = document.getElementById('plan-difficulty')?.value || 'intermediate';
+      const discipline = document.getElementById('plan-discipline')?.value || 'bodyweight';
+
+      // Calculate required equipment from exercises
+      const requiredEquipment = new Set();
+      if (typeof allExercises !== 'undefined' && allExercises && currentPlan.exercises) {
+        currentPlan.exercises.forEach(ex => {
+          const exercise = allExercises.find(e => e.id === ex.exerciseId);
+          if (exercise && exercise.equipment) {
+            exercise.equipment.forEach(eq => requiredEquipment.add(eq));
+          }
+        });
+      }
+
+      planData.difficulty = difficulty;
+      planData.discipline = discipline;
+      planData.tags = planTags || [];
+      planData.targetMuscles = planTargetMuscles || [];
+      planData.exercises = currentPlan.exercises || [];
+      planData.requiredEquipment = Array.from(requiredEquipment);
+      planData.notes = notes;
+      break;
+
+    case 'cardio':
+      // Cardio: cardioGoal statt difficulty, keine exercises
+      const cardioGoal = document.getElementById('plan-cardio-goal')?.value || 'liss';
+      planData.cardioGoal = cardioGoal;
+      planData.exercises = [];
+      planData.notes = notes;
+      break;
+
+    case 'recovery':
+      // Recovery: nur Basics - keine difficulty, keine exercises
+      planData.exercises = [];
+      planData.notes = notes;
+      break;
+  }
 
   try {
     if (editingPlanId) {
-      // Update existing
       await updateDoc(plansCollection, editingPlanId, planData);
       console.log('✅ Plan updated!');
     } else {
-      // Add new
       await addDoc(plansCollection, planData);
       console.log('✅ Plan added!');
     }
@@ -706,8 +944,8 @@ async function savePlan() {
   } catch (error) {
     console.error('Error saving plan:', error);
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Speichern des Plans.');
-  }
+      showEdgeFeedback('error', 'Fehler beim Speichern des Plans.');
+    }
   }
 }
 
@@ -778,12 +1016,16 @@ function viewPlanDetails(id) {
     }).join('');
   }
 
+  // Get difficulty info
+  const difficultyValue = convertPlanDifficultyToEnum(plan.difficulty);
+  const difficultyInfo = planDifficultyEnum[difficultyValue] || planDifficultyEnum.intermediate;
+
   // Modal content
   const modalContent = `
     <div class="space-y-4">
       <!-- Type & Duration -->
       <div class="flex items-center justify-between">
-        <span class="plan-type-badge type-${plan.type}">${workoutTypeNames[plan.type]}</span>
+        <span class="plan-type-badge type-${plan.displayType || plan.type}">${getPlanTypeLabel(plan)}</span>
         <span class="text-sm text-gray-400">
           <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle;">schedule</span>
           ${plan.duration || 45} Minuten
@@ -793,14 +1035,10 @@ function viewPlanDetails(id) {
       <!-- Difficulty -->
       <div>
         <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-          <span class="material-symbols-rounded" style="font-size: 18px;">star</span>
+          <span class="material-symbols-rounded" style="font-size: 18px;">signal_cellular_alt</span>
           Schwierigkeit
         </label>
-        <div class="flex gap-1">
-          ${Array(5).fill(0).map((_, i) =>
-            `<span class="material-symbols-rounded" style="font-size: 24px; color: ${i < (plan.difficulty || 3) ? 'var(--color-primary)' : '#374151'};">star</span>`
-          ).join('')}
-        </div>
+        <span class="difficulty-badge ${difficultyValue}">${difficultyInfo.label}</span>
       </div>
 
       <!-- Target Muscles -->
@@ -890,8 +1128,8 @@ function viewPlanDetails(id) {
 
 function setupPlansListener() {
   onCollectionChange(plansCollection, (plans) => {
-    allPlans = plans;
-    filteredPlans = [...plans];
+    allPlans = plans.map(normalizePlan);
+    filteredPlans = [...allPlans];
     renderPlans();
   });
 }

@@ -29,7 +29,217 @@ const translations = {
       distance: 'Distanz',
       pace: 'Pace',
       loading: 'Lade Daten...',
-      notAvailable: '-'
+      notAvailable: '-',
+      save: 'Speichern',
+      cancel: 'Abbrechen',
+      edit: 'Bearbeiten',
+      next: 'Weiter',
+      back: 'Zurueck',
+      done: 'Fertig',
+      optional: 'optional'
+    },
+    difficulty: {
+      beginner: 'Anfaenger',
+      intermediate: 'Mittel',
+      advanced: 'Fortgeschritten',
+      elite: 'Elite',
+      label: 'Schwierigkeit',
+      descriptions: {
+        beginner: 'Ideal fuer Einsteiger ohne Vorkenntnisse',
+        intermediate: 'Fuer Trainierende mit Grundkenntnissen',
+        advanced: 'Fuer erfahrene Athleten',
+        elite: 'Fuer Profis mit mehrjaehriger Erfahrung'
+      }
+    },
+    plan: {
+      types: {
+        strength: 'Kraft',
+        cardio: 'Cardio',
+        recovery: 'Recovery',
+        unknown: 'Unbekannter Typ'
+      },
+      cardioGoal: {
+        label: 'Cardio-Ziel',
+        liss: 'LISS',
+        hiit: 'HIIT',
+        zone2: 'Zone 2',
+        tempo: 'Tempo',
+        info: {
+          liss: 'Low Intensity Steady State - Gleichmaessige niedrige Intensitaet',
+          hiit: 'High Intensity Interval Training - Kurze intensive Intervalle',
+          zone2: 'Aerobe Zone (60-70% HFmax) - Grundlagenausdauer',
+          tempo: 'Mittlere bis hohe Intensitaet - Laktatschwelle'
+        }
+      },
+      name: 'Planname',
+      namePlaceholder: 'z.B. Push Workout',
+      type: 'Typ',
+      duration: 'Dauer (Min)',
+      icon: 'Plan-Icon',
+      notes: 'Notizen',
+      exercises: 'Uebungen',
+      addExercise: 'Uebung hinzufuegen'
+    },
+    exercise: {
+      title: 'Uebung',
+      name: 'Uebungsname',
+      namePlaceholder: 'z.B. Klimmzuege',
+      muscleGroups: 'Muskelgruppen',
+      equipment: 'Equipment',
+      discipline: 'Disziplin',
+      visual: 'Uebungs-Icon',
+      selectIcon: 'Icon auswaehlen',
+      instructions: {
+        title: 'Anleitung',
+        hint: 'Beschreibe die Ausfuehrung Schritt fuer Schritt.',
+        stepTitle: 'Schritt {number}',
+        stepPlaceholder: 'Beschreibe diesen Schritt...',
+        addStep: 'Schritt hinzufuegen',
+        removeStep: 'Schritt entfernen',
+        noSteps: 'Noch keine Schritte hinzugefuegt',
+        advanced: {
+          title: 'Erweiterte Hinweise',
+          add: 'Erweiterte Hinweise hinzufuegen',
+          hide: 'Erweiterte Hinweise ausblenden',
+          emptyList: 'Noch keine Hinweise hinzugefuegt',
+          cues: 'Cues',
+          cuesPlaceholder: 'Kurze Hinweise zur Ausfuehrung...',
+          cuesAdd: 'Cue hinzufuegen',
+          mistakes: 'Haeufige Fehler',
+          mistakesPlaceholder: 'Typische Fehler und wie man sie vermeidet...',
+          mistakesAdd: 'Fehler hinzufuegen',
+          progressions: 'Progressionen',
+          progressionsPlaceholder: 'Leichtere oder schwierigere Varianten...',
+          progressionsAdd: 'Progression hinzufuegen',
+          setup: 'Vorbereitung',
+          setupPlaceholder: 'Aufbau, Ausgangsposition und Vorbereitung...'
+        },
+        setup: 'Vorbereitung',
+        setupPlaceholder: 'Ausgangsposition und Griffhaltung...',
+        setupDefault: 'Finde eine stabile Ausgangsposition, aktiviere Core und halte Spannung.',
+        execution: 'Ausfuehrung',
+        executionPlaceholder: 'Bewegungsablauf beschreiben...',
+        executionDefault: 'Noch keine Ausfuehrung hinterlegt.',
+        cues: 'Cues',
+        cuesPlaceholder: 'Wichtige Hinweise waehrend der Ausfuehrung...',
+        cuesDefault: 'Achte auf kontrollierte Bewegung und stabile Koerperspannung.',
+        mistakes: 'Haeufige Fehler',
+        mistakesPlaceholder: 'Typische Fehler und wie man sie vermeidet...',
+        mistakesDefault: 'Vermeide Schwung, unkontrollierte Endpositionen und instabile Gelenkwinkel.',
+        progressions: 'Progressionen',
+        progressionsPlaceholder: 'Leichtere und schwierigere Varianten...',
+        progressionsDefault: 'Mehr Range, langsamere Exzentrik oder Zusatzgewicht erhoehen die Intensitaet.'
+      },
+      categories: {
+        upper: 'Oberkoerper',
+        lower: 'Unterkoerper',
+        core: 'Core',
+        fullBody: 'Ganzkoerper',
+        cardio: 'Cardio',
+        mobility: 'Mobilitaet'
+      }
+    },
+    workout: {
+      setLogger: {
+        title: 'Satz {number} loggen',
+        reps: 'Wiederholungen',
+        weight: 'Gewicht',
+        weightUnit: 'kg',
+        logSet: 'Satz loggen',
+        addSet: 'Satz hinzufuegen',
+        duplicateLast: 'Letzten Satz kopieren',
+        completedSets: 'Abgeschlossene Saetze',
+        set: 'Satz',
+        target: 'Ziel',
+        targetSets: '{sets} Saetze',
+        targetReps: '{reps} Wdh',
+        rest: '{seconds}s Pause',
+        noSets: 'Noch keine Saetze geloggt',
+        enterReps: 'Bitte gib die Anzahl der Wiederholungen ein',
+        atLeastOneSet: 'Bitte logge mindestens einen Satz bevor du weitergehst',
+        deleteSet: 'Satz loeschen',
+        deleteSetConfirm: 'Diesen Satz wirklich loeschen?'
+      },
+      exercise: {
+        current: 'Aktuelle Uebung',
+        next: 'Naechste Uebung',
+        finish: 'Workout beenden',
+        progress: '{completed} / {total} Uebungen'
+      }
+    },
+    template: {
+      sessionTemplate: 'Session-Vorlage',
+      workoutTemplate: 'Workout-Vorlage',
+      createTemplate: 'Vorlage erstellen',
+      selectType: 'Typ auswaehlen',
+      cardioTemplate: {
+        title: 'Cardio-Vorlage',
+        name: 'Name',
+        namePlaceholder: 'z.B. Morgenlauf',
+        targetDuration: 'Ziel-Dauer (Min)',
+        targetDistance: 'Ziel-Distanz (km)',
+        activityType: 'Aktivitaetstyp',
+        intervals: 'Intervalle',
+        intervalsDescription: 'Optionale Intervall-Struktur',
+        notes: 'Notizen',
+        trainingType: 'Trainingsart',
+        trainingTypes: {
+          liss: 'LISS',
+          zone2: 'Zone 2',
+          hiit: 'HIIT',
+          tempo: 'Tempo',
+          intervals: 'Intervalle'
+        },
+        trainingTypeInfo: {
+          liss: 'Low Intensity Steady State - Gleichmaessige, niedrige Intensitaet. Ideal fuer Grundlagenausdauer und aktive Erholung.',
+          zone2: 'Training in der aeroben Zone (60-70% max. Herzfrequenz). Verbessert die Fettverbrennung und Grundlagenausdauer.',
+          hiit: 'High Intensity Interval Training - Kurze, intensive Belastungsphasen mit Erholungspausen. Effizient fuer Fitness.',
+          tempo: 'Gleichmaessiges Training bei mittlerer bis hoher Intensitaet. Verbessert die Laktatschwelle.',
+          intervals: 'Wechsel zwischen Belastungs- und Erholungsphasen. Flexibel anpassbar.'
+        }
+      },
+      recoveryTemplate: {
+        title: 'Recovery-Vorlage',
+        name: 'Name',
+        namePlaceholder: 'z.B. Morgen-Yoga',
+        targetDuration: 'Ziel-Dauer (Min)',
+        focusArea: 'Fokusbereich',
+        focusAreas: {
+          fullBody: 'Ganzkoerper',
+          upperBody: 'Oberkoerper',
+          lowerBody: 'Unterkoerper',
+          back: 'Ruecken',
+          hips: 'Hueften',
+          shoulders: 'Schultern'
+        },
+        notes: 'Notizen'
+      },
+      wizard: {
+        step1: 'Typ',
+        step2: 'Details',
+        step3: 'Uebungen',
+        step4: 'Ueberpruefung'
+      },
+      strengthTemplate: {
+        title: 'Kraft-Vorlage',
+        discipline: 'Trainingsart',
+        disciplines: {
+          bodyweight: 'Bodyweight / Calisthenics',
+          weights: 'Gewichte / Gym'
+        },
+        disciplineInfo: {
+          bodyweight: 'Training mit dem eigenen Koerpergewicht. Gewicht ist optional (z.B. Gewichtsweste).',
+          weights: 'Training mit Hanteln, Maschinen oder Gewichten. Gewichtsangabe ist wichtig fuer Tracking.'
+        }
+      },
+      planIcon: 'Plan-Icon',
+      selectPlanIcon: 'Icon fuer diesen Plan waehlen'
+    },
+    planner: {
+      scheduleSession: 'Session planen',
+      scheduleWorkout: 'Workout planen',
+      selectTemplate: 'Vorlage auswaehlen',
+      noTemplates: 'Keine Vorlagen verfuegbar'
     },
     format: {
       duration: {
@@ -216,7 +426,11 @@ const translations = {
       startUnavailable: 'Start-Auswahl ist nicht verfuegbar.',
       workoutNotFound: 'Workout nicht gefunden',
       sessionNotFound: 'Workout nicht gefunden',
-      deleteFailed: 'Fehler beim Loeschen'
+      deleteFailed: 'Fehler beim Loeschen',
+      planNameRequired: 'Bitte gib einen Namen fuer den Plan ein!',
+      planExercisesRequired: 'Bitte fuege mindestens eine Uebung hinzu!',
+      exerciseNameRequired: 'Bitte gib einen Namen fuer die Uebung ein!',
+      muscleGroupsRequired: 'Bitte waehle mindestens eine Muskelgruppe!'
     }
   }
 };
