@@ -78,6 +78,14 @@ const ACTIVITY_TYPES = {
   other: { name: 'Sonstiges', icon: 'fitness_center', color: '#f59e0b' }
 };
 
+function getSessionDurationMinutesSafe(session) {
+  const sec = Number(session?.durationSec || session?.durationSeconds || 0);
+  if (Number.isFinite(sec) && sec > 0) return Math.round(sec / 60);
+  const minutes = Number(session?.duration || 0);
+  if (!Number.isFinite(minutes) || minutes <= 0) return 0;
+  return Math.round(minutes);
+}
+
 // ==================== DATA LOADING ====================
 
 /**
@@ -442,7 +450,7 @@ function computeCardioBucketValue(metric, sessions) {
   let totalDistance = 0;
 
   sessions.forEach(s => {
-    totalDuration += s.duration || 0;
+    totalDuration += getSessionDurationMinutesSafe(s);
     totalDistance += s.distanceKm || 0;
   });
 
@@ -670,7 +678,7 @@ function aggregateCardioData(activityType, metric = 'time', weeks = 8) {
 
     let value = 0;
     if (metric === 'time') {
-      value = session.duration || 0;
+      value = getSessionDurationMinutesSafe(session);
     } else if (metric === 'distance') {
       value = session.distanceKm || 0;
     }
@@ -710,9 +718,7 @@ function calculateOverviewStats(days = 7) {
   // Total training time
   let totalTime = 0;
   recentSessions.forEach(s => {
-    if (s.duration) {
-      totalTime += s.duration;
-    }
+    totalTime += getSessionDurationMinutesSafe(s);
   });
 
   // Streak berechnen (vereinfacht: aufeinanderfolgende Tage mit Training)

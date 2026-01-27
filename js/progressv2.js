@@ -472,7 +472,7 @@ function openRecentWorkoutModal(sessionId) {
   }
 
   const date = getSessionDate(session);
-  const duration = session.duration ? formatDurationText(session.duration * 60) : trProgress('progress.session.durationNA');
+  const duration = formatSessionDurationText(session);
   const title = getSessionTitle(session);
   const typeLabel = session.type === 'cardio'
     ? trProgress('progress.session.typeCardio')
@@ -644,7 +644,7 @@ function viewWorkoutDetailsFromSession(sessionId) {
 
 function openCardioDetailModal(session) {
   const date = getSessionDate(session);
-  const duration = session.duration ? formatDurationText(session.duration * 60) : trProgress('progress.session.durationNA');
+  const duration = formatSessionDurationText(session);
   const distance = session.distanceKm ? trProgress('format.distanceKm', { distance: session.distanceKm }) : trProgress('format.pace.na');
   const pace = session.pace ? formatPaceValueText(session.pace) : trProgress('format.pace.na');
   const activity = ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio');
@@ -712,7 +712,7 @@ function openCardioDetailModal(session) {
 
 function openRecoveryDetailModal(session) {
   const date = getSessionDate(session);
-  const duration = session.duration ? formatDurationText(session.duration * 60) : trProgress('progress.session.durationNA');
+  const duration = formatSessionDurationText(session);
   const notes = session.notes ? session.notes : trProgress('common.notAvailable');
 
   const content = `
@@ -1559,9 +1559,17 @@ function drawWeeklyCardioChart(data, metric) {
 const ACTIVITY_DOT_MAX = 3;
 
 function getSessionDurationMinutes(session) {
+  const sec = Number(session?.durationSec || session?.durationSeconds || 0);
+  if (Number.isFinite(sec) && sec > 0) return Math.round(sec / 60);
   const raw = Number(session?.duration || 0);
   if (!Number.isFinite(raw) || raw < 0) return 0;
   return Math.round(raw);
+}
+
+function formatSessionDurationText(session) {
+  const minutes = getSessionDurationMinutes(session);
+  if (!minutes) return trProgress('progress.session.durationNA');
+  return formatDurationText(minutes * 60);
 }
 
 function getDurationBucket(minutes) {
@@ -1770,9 +1778,7 @@ function openActivityDaySheet(dateKey) {
         const icon = getSessionIcon(session);
         const color = getSessionColor(session);
         const sessionTitle = getSessionTitle(session);
-        const duration = session.duration
-          ? formatDurationText(session.duration * 60)
-          : trProgress('progress.session.durationNA');
+        const duration = formatSessionDurationText(session);
 
         return `
           <div class="activity-session-item">
