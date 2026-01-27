@@ -1104,6 +1104,8 @@ function openAddStrengthModal() {
 
   const title = document.getElementById('strength-modal-title');
   if (title) title.textContent = t('workout.quick.title');
+  const dateLabel = document.getElementById('strength-date-label');
+  if (dateLabel) dateLabel.textContent = t('workout.quick.date');
   const nameLabel = document.getElementById('strength-name-label');
   if (nameLabel) nameLabel.textContent = t('workout.quick.name');
   const durationLabel = document.getElementById('strength-duration-label');
@@ -1125,8 +1127,11 @@ function openAddStrengthModal() {
   const saveLabel = document.getElementById('strength-save-label');
   if (saveLabel) saveLabel.textContent = t('common.save');
 
+  const dateInput = document.getElementById('strength-date');
   const nameInput = document.getElementById('strength-name');
   const durationInput = document.getElementById('strength-duration');
+  const today = new Date().toISOString().split('T')[0];
+  if (dateInput) dateInput.value = today;
   if (nameInput) nameInput.value = '';
   if (durationInput) durationInput.value = '';
 
@@ -1172,10 +1177,17 @@ function setStrengthDifficulty(level) {
 }
 
 async function saveStrengthSession() {
+  const dateInput = document.getElementById('strength-date')?.value;
+  const validDate = getValidDateStringForCardio(dateInput);
   const name = document.getElementById('strength-name')?.value.trim();
   const duration = parseFloat(document.getElementById('strength-duration')?.value);
   const trainingType = document.getElementById('strength-type')?.value || 'bodyweight';
   const difficulty = document.getElementById('strength-difficulty')?.value || 'intermediate';
+
+  if (!validDate) {
+    showErrorMessage(t('workout.quick.dateRequired'));
+    return;
+  }
 
   if (!name) {
     showErrorMessage(t('workout.quick.nameRequired'));
@@ -1194,8 +1206,7 @@ async function saveStrengthSession() {
       saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
     }
 
-    const today = new Date();
-    const dateStr = today.toISOString().split('T')[0];
+    const dateStr = validDate;
     const strengthSession = {
       type: 'strength',
       planName: name,

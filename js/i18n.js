@@ -151,6 +151,7 @@ const translations = {
     workout: {
       quick: {
         title: 'Workout Schnell-Eintrag',
+        date: 'Datum',
         name: 'Workout Name',
         duration: 'Dauer (Minuten)',
         type: 'Typ',
@@ -159,6 +160,7 @@ const translations = {
         bodyweightDesc: 'Training mit Eigengewicht',
         weights: 'Gewichte',
         weightsDesc: 'Gym / Hanteln',
+        dateRequired: 'Bitte waehle ein Datum',
         nameRequired: 'Bitte gib einen Workout Namen ein',
         durationRequired: 'Bitte gib eine gueltige Dauer ein',
         saveError: 'Fehler beim Speichern des Workouts'
