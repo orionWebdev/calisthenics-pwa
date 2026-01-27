@@ -211,6 +211,13 @@ function startManualWorkout(type) {
     }
   }
 
+  if (type === 'strength') {
+    if (typeof openAddStrengthModal === 'function') {
+      openAddStrengthModal();
+      return;
+    }
+  }
+
   if (typeof showView === 'function') {
     if (typeof showTrainingTab === 'function') {
       showTrainingTab('plans');
