@@ -3859,7 +3859,7 @@ input[type="range"]::-moz-range-progress {
   font-size: 2rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #FF3399 100%);
+  background: white;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

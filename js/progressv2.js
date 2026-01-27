@@ -158,7 +158,7 @@ function renderOverviewTab() {
         <h3>${trProgress('progress.overview.emptyTitle')}</h3>
         <p>${trProgress('progress.overview.emptyBody')}</p>
       </div>
-      <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
+      <button onclick="openOverviewAddSheet()" class="floating-add-btn m-2" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     `;
@@ -188,7 +188,7 @@ function renderOverviewTab() {
         ${renderActivityCalendarHTML()}
       </div>
     </div>
-    <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
+    <button onclick="openOverviewAddSheet()" class="floating-add-btn m-2" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
       <span class="material-symbols-rounded">add</span>
     </button>
   `;
@@ -849,7 +849,7 @@ function renderStrengthTab() {
         <h3>${trProgress('progress.strength.emptyTitle')}</h3>
         <p>${trProgress('progress.strength.emptyBody')}</p>
       </div>
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="${trProgress('common.add')}" type="button">
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength m-2" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     `;
@@ -868,7 +868,7 @@ function renderStrengthTab() {
       <!-- Chart -->
       <div id="strength-chart-container" class="progress-chart-container"></div>
 
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="${trProgress('common.add')}" type="button">
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength m-2" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     </div>
@@ -1147,12 +1147,8 @@ function renderCardioTab() {
         <span class="material-symbols-rounded progress-empty-icon">directions_run</span>
         <h3>${trProgress('progress.cardio.emptyTitle')}</h3>
         <p>${trProgress('progress.cardio.emptyBody')}</p>
-        <button onclick="openAddCardioModal()" class="progress-cta-btn primary">
-          <span class="material-symbols-rounded">add</span>
-          <span>${trProgress('progress.cardio.add')}</span>
-        </button>
       </div>
-      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
+      <button onclick="openAddCardioModal()" class="floating-add-btn cardio m-2" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     `;
@@ -1212,7 +1208,7 @@ function renderCardioTab() {
       <div id="cardio-chart-container" class="progress-chart-container"></div>
 
       <!-- Add Button -->
-      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
+      <button onclick="openAddCardioModal()" class="floating-add-btn cardio m-2" aria-label="${trProgress('common.add')}" type="button">
         <span class="material-symbols-rounded">add</span>
       </button>
     </div>
