@@ -95,10 +95,15 @@ const translations = {
       name: 'Uebungsname',
       namePlaceholder: 'z.B. Klimmzuege',
       muscleGroups: 'Muskelgruppen',
+      filters: {
+        allMuscles: 'Alle Muskelgruppen',
+        allDifficulties: 'Alle Schwierigkeiten'
+      },
       equipment: 'Equipment',
       discipline: 'Disziplin',
       visual: 'Uebungs-Icon',
       selectIcon: 'Icon auswaehlen',
+      listSectionOther: '#',
       instructions: {
         title: 'Anleitung',
         hint: 'Beschreibe die Ausfuehrung Schritt fuer Schritt.',

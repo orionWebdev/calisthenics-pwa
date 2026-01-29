@@ -6,6 +6,8 @@ let allExercises = [];
 let filteredExercises = [];
 let editingExerciseId = null;
 let exercisesExpanded = false;
+let exerciseMuscleFilter = '';
+let exerciseDifficultyFilter = '';
 
 // Muscle Group Namen Mapping
 const muscleNames = {
@@ -154,10 +156,87 @@ async function loadExercises() {
     allExercises = exercises.map(normalizeExerciseForRuntime);
     filteredExercises = [...allExercises];
     renderExercises();
+    updateExerciseFiltersUI();
   } catch (error) {
     console.error('Error loading exercises:', error);
   }
 }
+
+// ========================================
+// ALPHABETICAL GROUPING UTILITY
+// ========================================
+
+/**
+ * Normalizes a character for grouping:
+ * - Converts umlauts: Ä->A, Ö->O, Ü->U, ß->S
+ * - Uppercase A-Z returns the letter
+ * - Everything else (numbers, symbols, emojis) returns '#'
+ */
+function getExerciseInitial(name) {
+  if (!name || typeof name !== 'string') return '#';
+
+  const trimmed = name.trim();
+  if (!trimmed) return '#';
+
+  // Get first character and normalize
+  let firstChar = trimmed.charAt(0).toUpperCase();
+
+  // Umlaut mapping
+  const umlautMap = {
+    'Ä': 'A', 'Ö': 'O', 'Ü': 'U',
+    'ä': 'A', 'ö': 'O', 'ü': 'U',
+    'ß': 'S'
+  };
+
+  if (umlautMap[firstChar]) {
+    firstChar = umlautMap[firstChar];
+  }
+
+  // Check if A-Z
+  if (/^[A-Z]$/.test(firstChar)) {
+    return firstChar;
+  }
+
+  return '#';
+}
+
+/**
+ * Groups exercises by their initial letter
+ * Returns an object with letters as keys and arrays of exercises as values
+ * Sorted alphabetically, with '#' section first
+ */
+function groupExercisesByInitial(exercises) {
+  const groups = {};
+
+  // Sort exercises alphabetically first
+  const sorted = [...exercises].sort((a, b) => {
+    const nameA = (a.name || '').toLowerCase();
+    const nameB = (b.name || '').toLowerCase();
+    return nameA.localeCompare(nameB, 'de');
+  });
+
+  // Group by initial
+  sorted.forEach(exercise => {
+    const initial = getExerciseInitial(exercise.name);
+    if (!groups[initial]) {
+      groups[initial] = [];
+    }
+    groups[initial].push(exercise);
+  });
+
+  // Get sorted keys: '#' first, then A-Z
+  const sortedKeys = Object.keys(groups).sort((a, b) => {
+    if (a === '#') return -1;
+    if (b === '#') return 1;
+    return a.localeCompare(b);
+  });
+
+  return { groups, sortedKeys };
+}
+
+// ========================================
+// RENDER EXERCISES (iOS Contacts Style)
+// ========================================
 
 function renderExercises() {
   const grid = document.getElementById('exercises-grid');
@@ -179,52 +258,48 @@ function renderExercises() {
     return;
   }
 
-  const sortedExercises = [...filteredExercises].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-  const visibleExercises = exercisesExpanded ? sortedExercises : sortedExercises.slice(0, 8);
+  const { groups, sortedKeys } = groupExercisesByInitial(filteredExercises);
 
-  const exerciseCards = visibleExercises.map(exercise => {
-    const primaryMuscle = exercise.muscleGroups[0];
-    const muscleLabel = muscleNames[primaryMuscle] || 'Muskel';
-    const allMuscles = exercise.muscleGroups.map(muscle => muscleNames[muscle]).filter(Boolean).join(', ');
-    const equipmentList = (exercise.equipment || []).filter(eq => eq && eq !== 'none');
-    const equipmentLabel = equipmentList.length > 0
-      ? equipmentList.map(eq => equipmentNames[eq]).filter(Boolean).join(', ')
-      : '';
-    const iconKey = equipmentList[0] || 'none';
-    const iconName = equipmentIcons[iconKey] || 'fitness_center';
-    const discipline = exercise.discipline || 'calisthenics';
-    const disciplineIcon = discipline === 'gym' ? 'fitness_center' : discipline === 'both' ? 'layers' : 'sports_gymnastics';
+  // Build sections HTML
+  let sectionsHTML = '<div class="exercises-list-container">';
 
-    return `
-      <div class="exercise-row-card" id="exercise-card-${exercise.id}" onclick="viewExerciseDetails('${exercise.id}')">
-        <div class="exercise-row-accent muscle-${primaryMuscle || 'default'}"></div>
-        <div class="exercise-row-icon">
-          <span class="material-symbols-rounded">${iconName}</span>
+  sortedKeys.forEach(letter => {
+    const exercises = groups[letter];
+
+    sectionsHTML += `
+      <div class="exercise-section" data-section="${letter}">
+        <div class="exercise-section-header">
+          <span class="exercise-section-letter">${letter}</span>
         </div>
-        <div class="exercise-row-content">
-          <div class="exercise-row-title">${exercise.name}</div>
-          <div class="exercise-row-meta">${allMuscles}${equipmentLabel ? ` ? ${equipmentLabel}` : ''}</div>
-        </div>
-        <div class="exercise-row-discipline" title="${discipline}">
-          <span class="material-symbols-rounded">${disciplineIcon}</span>
-        </div>
-        <div class="exercise-row-chevron">
-          <span class="material-symbols-rounded">chevron_right</span>
+        <div class="exercise-section-items">
+    `;
+
+    exercises.forEach((exercise, index) => {
+      const isLast = index === exercises.length - 1;
+      sectionsHTML += renderExerciseRow(exercise, isLast);
+    });
+
+    sectionsHTML += `
         </div>
       </div>
     `;
-  }).join('');
+  });
 
-  const toggleButton = sortedExercises.length > 8
-    ? `
-      <button class="exercise-toggle-btn col-span-full" onclick="toggleExercisesExpanded()">
-        <span>${exercisesExpanded ? 'Weniger anzeigen' : 'Alle anzeigen'}</span>
-        <span class="material-symbols-rounded">${exercisesExpanded ? 'expand_less' : 'expand_more'}</span>
-      </button>
-    `
-    : '';
+  sectionsHTML += '</div>';
 
-  grid.innerHTML = exerciseCards + toggleButton;
+  grid.innerHTML = sectionsHTML;
+}
+
+/**
+ * Renders a single exercise row (minimal, text-only)
+ */
+function renderExerciseRow(exercise, isLast = false) {
+  return `
+    <div class="exercise-list-row${isLast ? ' is-last' : ''}" onclick="viewExerciseDetails('${exercise.id}')">
+      <span class="exercise-list-name">${exercise.name}</span>
+      <span class="material-symbols-rounded exercise-list-chevron">chevron_right</span>
+    </div>
+  `;
 }
 
 // Toggle Exercise Card Expansion
@@ -238,8 +313,8 @@ function toggleExerciseCard(id) {
 
 function filterExercises() {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  const muscleFilter = document.getElementById('muscle-filter').value;
-  const difficultyFilter = document.getElementById('difficulty-filter').value;
+  const muscleFilter = exerciseMuscleFilter;
+  const difficultyFilter = exerciseDifficultyFilter;
 
   filteredExercises = allExercises.filter(exercise => {
     // Search filter
@@ -264,6 +339,62 @@ function filterExercises() {
   updateActiveFilters();
 }
 
+function setExerciseMuscleFilter(value) {
+  exerciseMuscleFilter = value || '';
+  updateExerciseFiltersUI();
+  filterExercises();
+}
+
+function setExerciseDifficultyFilter(value) {
+  exerciseDifficultyFilter = value || '';
+  updateExerciseFiltersUI();
+  filterExercises();
+}
+
+function updateExerciseFiltersUI() {
+  const muscleContainer = document.getElementById('exercise-muscle-filters');
+  if (muscleContainer) {
+    muscleContainer.querySelectorAll('.filter-chip').forEach(btn => {
+      const value = btn.dataset.muscle || '';
+      btn.classList.toggle('active', value === exerciseMuscleFilter);
+    });
+  }
+
+  const difficultyContainer = document.getElementById('exercise-difficulty-filters');
+  if (difficultyContainer) {
+    difficultyContainer.querySelectorAll('.filter-chip').forEach(btn => {
+      const value = btn.dataset.difficulty || '';
+      btn.classList.toggle('active', value === exerciseDifficultyFilter);
+    });
+  }
+
+  const allMusclesLabel = document.getElementById('exercise-filter-muscle-all');
+  if (allMusclesLabel) allMusclesLabel.textContent = t('exercise.filters.allMuscles');
+  const chestLabel = document.getElementById('exercise-filter-muscle-chest');
+  if (chestLabel) chestLabel.textContent = muscleNames.chest;
+  const backLabel = document.getElementById('exercise-filter-muscle-back');
+  if (backLabel) backLabel.textContent = muscleNames.back;
+  const shouldersLabel = document.getElementById('exercise-filter-muscle-shoulders');
+  if (shouldersLabel) shouldersLabel.textContent = muscleNames.shoulders;
+  const armsLabel = document.getElementById('exercise-filter-muscle-arms');
+  if (armsLabel) armsLabel.textContent = muscleNames.arms;
+  const coreLabel = document.getElementById('exercise-filter-muscle-core');
+  if (coreLabel) coreLabel.textContent = muscleNames.core;
+  const legsLabel = document.getElementById('exercise-filter-muscle-legs');
+  if (legsLabel) legsLabel.textContent = muscleNames.legs;
+
+  const allDifficultyLabel = document.getElementById('exercise-filter-difficulty-all');
+  if (allDifficultyLabel) allDifficultyLabel.textContent = t('exercise.filters.allDifficulties');
+  const beginnerLabel = document.getElementById('exercise-filter-difficulty-beginner');
+  if (beginnerLabel) beginnerLabel.textContent = t('difficulty.beginner');
+  const intermediateLabel = document.getElementById('exercise-filter-difficulty-intermediate');
+  if (intermediateLabel) intermediateLabel.textContent = t('difficulty.intermediate');
+  const advancedLabel = document.getElementById('exercise-filter-difficulty-advanced');
+  if (advancedLabel) advancedLabel.textContent = t('difficulty.advanced');
+  const eliteLabel = document.getElementById('exercise-filter-difficulty-elite');
+  if (eliteLabel) eliteLabel.textContent = t('difficulty.elite');
+}
+
 function toggleExercisesExpanded() {
   exercisesExpanded = !exercisesExpanded;
   renderExercises();
@@ -271,16 +402,17 @@ function toggleExercisesExpanded() {
 
 function resetFilters() {
   document.getElementById('search-input').value = '';
-  document.getElementById('muscle-filter').value = '';
-  document.getElementById('difficulty-filter').value = '';
+  exerciseMuscleFilter = '';
+  exerciseDifficultyFilter = '';
+  updateExerciseFiltersUI();
   filterExercises();
 }
 
 // Active Filter Pills
 function updateActiveFilters() {
   const searchTerm = document.getElementById('search-input').value;
-  const muscleFilter = document.getElementById('muscle-filter').value;
-  const difficultyFilter = document.getElementById('difficulty-filter').value;
+  const muscleFilter = exerciseMuscleFilter;
+  const difficultyFilter = exerciseDifficultyFilter;
 
   let filterPills = '';
 
@@ -312,7 +444,7 @@ function updateActiveFilters() {
     filterPills += `
       <div class="filter-pill">
         <span class="material-symbols-rounded">star</span>
-        <span>Level ${difficultyFilter}</span>
+        <span>${t(`difficulty.${difficultyFilter}`)}</span>
         <button onclick="clearDifficultyFilter()" class="filter-pill-remove">
           <span class="material-symbols-rounded">close</span>
         </button>
@@ -342,13 +474,11 @@ function clearSearchFilter() {
 }
 
 function clearMuscleFilter() {
-  document.getElementById('muscle-filter').value = '';
-  filterExercises();
+  setExerciseMuscleFilter('');
 }
 
 function clearDifficultyFilter() {
-  document.getElementById('difficulty-filter').value = '';
-  filterExercises();
+  setExerciseDifficultyFilter('');
 }
 
 // ========================================

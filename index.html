@@ -347,51 +347,61 @@
                 />
               </div>
             </div>
+          </div>
 
-            <!-- Muscle Group Filter -->
-            <div class="filter-item">
-              <label class="filter-label">
-                <span class="material-symbols-rounded">sports_gymnastics</span>
-                <span>Muskelgruppe</span>
-              </label>
-              <div class="filter-select-wrapper">
-                <span class="material-symbols-rounded filter-select-icon">filter_list</span>
-                <select
-                  id="muscle-filter"
-                  class="filter-select"
-                  onchange="filterExercises()"
-                >
-                  <option value="">Alle Muskelgruppen</option>
-                  <option value="chest">Brust</option>
-                  <option value="back">Rücken</option>
-                  <option value="shoulders">Schultern</option>
-                  <option value="arms">Arme</option>
-                  <option value="core">Core</option>
-                  <option value="legs">Beine</option>
-                </select>
-              </div>
+          <div class="exercise-filters-bar">
+            <div class="plan-type-filters flex gap-2" id="exercise-muscle-filters">
+              <button class="filter-chip active" data-muscle="" onclick="setExerciseMuscleFilter('')">
+                <span class="material-symbols-rounded">apps</span>
+                <span id="exercise-filter-muscle-all"></span>
+              </button>
+              <button class="filter-chip" data-muscle="chest" onclick="setExerciseMuscleFilter('chest')">
+                <span class="material-symbols-rounded">favorite</span>
+                <span id="exercise-filter-muscle-chest"></span>
+              </button>
+              <button class="filter-chip" data-muscle="back" onclick="setExerciseMuscleFilter('back')">
+                <span class="material-symbols-rounded">backpack</span>
+                <span id="exercise-filter-muscle-back"></span>
+              </button>
+              <button class="filter-chip" data-muscle="shoulders" onclick="setExerciseMuscleFilter('shoulders')">
+                <span class="material-symbols-rounded">accessibility_new</span>
+                <span id="exercise-filter-muscle-shoulders"></span>
+              </button>
+              <button class="filter-chip" data-muscle="arms" onclick="setExerciseMuscleFilter('arms')">
+                <span class="material-symbols-rounded">fitness_center</span>
+                <span id="exercise-filter-muscle-arms"></span>
+              </button>
+              <button class="filter-chip" data-muscle="core" onclick="setExerciseMuscleFilter('core')">
+                <span class="material-symbols-rounded">self_improvement</span>
+                <span id="exercise-filter-muscle-core"></span>
+              </button>
+              <button class="filter-chip" data-muscle="legs" onclick="setExerciseMuscleFilter('legs')">
+                <span class="material-symbols-rounded">directions_walk</span>
+                <span id="exercise-filter-muscle-legs"></span>
+              </button>
             </div>
 
-            <!-- Difficulty Filter -->
-            <div class="filter-item">
-              <label class="filter-label">
+            <div class="plan-type-filters flex gap-2" id="exercise-difficulty-filters">
+              <button class="filter-chip active" data-difficulty="" onclick="setExerciseDifficultyFilter('')">
                 <span class="material-symbols-rounded">signal_cellular_alt</span>
-                <span>Schwierigkeit</span>
-              </label>
-              <div class="filter-select-wrapper">
-                <span class="material-symbols-rounded filter-select-icon">tune</span>
-                <select
-                  id="difficulty-filter"
-                  class="filter-select"
-                  onchange="filterExercises()"
-                >
-                  <option value="">Alle Schwierigkeiten</option>
-                  <option value="beginner">Anfaenger</option>
-                  <option value="intermediate">Mittel</option>
-                  <option value="advanced">Fortgeschritten</option>
-                  <option value="elite">Elite</option>
-                </select>
-              </div>
+                <span id="exercise-filter-difficulty-all"></span>
+              </button>
+              <button class="filter-chip" data-difficulty="beginner" onclick="setExerciseDifficultyFilter('beginner')">
+                <span class="material-symbols-rounded">bolt</span>
+                <span id="exercise-filter-difficulty-beginner"></span>
+              </button>
+              <button class="filter-chip" data-difficulty="intermediate" onclick="setExerciseDifficultyFilter('intermediate')">
+                <span class="material-symbols-rounded">trending_up</span>
+                <span id="exercise-filter-difficulty-intermediate"></span>
+              </button>
+              <button class="filter-chip" data-difficulty="advanced" onclick="setExerciseDifficultyFilter('advanced')">
+                <span class="material-symbols-rounded">fitness_center</span>
+                <span id="exercise-filter-difficulty-advanced"></span>
+              </button>
+              <button class="filter-chip" data-difficulty="elite" onclick="setExerciseDifficultyFilter('elite')">
+                <span class="material-symbols-rounded">military_tech</span>
+                <span id="exercise-filter-difficulty-elite"></span>
+              </button>
             </div>
           </div>
         </div>

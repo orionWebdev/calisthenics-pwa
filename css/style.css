@@ -579,6 +579,13 @@ input, textarea, select, button {
   margin-bottom: 1rem;
 }
 
+.exercise-filters-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
 @media (min-width: 768px) {
   .plan-filters-bar {
     flex-direction: row;
@@ -7861,5 +7868,125 @@ input[type="range"]::-moz-range-progress {
 @media (max-width: 768px) {
   .calendar-segmented {
     min-width: 100%;
+  }
+}
+
+/* ========================================
+   EXERCISES LIST - iOS Contacts Style
+   ======================================== */
+
+.exercises-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+/* Section (Letter Group) */
+.exercise-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sticky Section Header */
+.exercise-section-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-bg, #060A30);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.exercise-section-letter {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary, #F02277);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Section Items Container */
+.exercise-section-items {
+  display: flex;
+  flex-direction: column;
+  background: var(--ui-card-bg, rgba(255, 255, 255, 0.03));
+  border-radius: 0.75rem;
+  margin: 0.25rem 0 0.75rem 0;
+  overflow: hidden;
+}
+
+/* Individual Exercise Row */
+.exercise-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1rem 1rem 1.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  min-height: 52px;
+}
+
+.exercise-list-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.exercise-list-row:active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Last row in section - no border */
+.exercise-list-row.is-last {
+  border-bottom: none;
+}
+
+/* Exercise Name */
+.exercise-list-name {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.4;
+  flex: 1;
+  padding-right: 0.75rem;
+}
+
+/* Chevron Icon */
+.exercise-list-chevron {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+/* Override grid layout for exercises container */
+#exercises-grid.grid {
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .exercise-section-header {
+    padding: 0.375rem 0.75rem;
+  }
+
+  .exercise-list-row {
+    padding: 0.875rem 0.875rem 0.875rem 1rem;
+    min-height: 48px;
+  }
+
+  .exercise-list-name {
+    font-size: 0.9375rem;
+  }
+
+  .exercise-section-items {
+    margin: 0.25rem 0 0.5rem 0;
+    border-radius: 0.625rem;
+  }
+}
+
+/* Desktop: Constrain width for better readability */
+@media (min-width: 1024px) {
+  .exercises-list-container {
+    max-width: 640px;
   }
 }
