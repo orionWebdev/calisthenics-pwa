@@ -1087,20 +1087,37 @@
       </div>
 
       <!-- Add Plan to Day Panel -->
-      <div id="add-plan-panel" class="bg-gradient-to-r from-pink-900/20 to-purple-900/20 border border-pink-500/50 rounded-xl p-4 mb-6 hidden backdrop-blur-sm">
-        <div class="flex items-center justify-between mb-3">
-          <h4 class="font-semibold text-sm sm:text-base">Plan hinzufügen zu: <span id="selected-date-display" class="text-pink-400"></span></h4>
-          <button onclick="closeAddPlanPanel()" class="modal-close-btn">
+      <div id="add-plan-panel" class="add-plan-panel hidden">
+        <div class="add-plan-panel-header">
+          <h4 class="add-plan-panel-title">Hinzufügen zu: <span id="selected-date-display" class="text-pink-400"></span></h4>
+          <button onclick="closeAddPlanPanel()" class="modal-close-btn-sm">
             <span class="material-symbols-rounded">close</span>
           </button>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-3">
-          <select id="plan-select" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-sm sm:text-base">
-            <option value="">Wähle einen Plan...</option>
-          </select>
-          <button onclick="addPlanToDate()" class="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-lg font-semibold transition-all w-full sm:w-auto">
-            Hinzufügen
+        <div class="add-plan-options">
+          <!-- Option 1: Select existing plan -->
+          <button onclick="openCalendarPlanPicker()" class="add-plan-option-btn">
+            <div class="add-plan-option-icon">
+              <span class="material-symbols-rounded">assignment</span>
+            </div>
+            <div class="add-plan-option-content">
+              <div class="add-plan-option-title">Plan auswählen</div>
+              <div class="add-plan-option-desc">Aus deinen Trainingsvorlagen</div>
+            </div>
+            <span class="material-symbols-rounded add-plan-option-chevron">chevron_right</span>
+          </button>
+
+          <!-- Option 2: Quick Entry -->
+          <button onclick="openQuickEntryModal()" class="add-plan-option-btn">
+            <div class="add-plan-option-icon quick-entry">
+              <span class="material-symbols-rounded">bolt</span>
+            </div>
+            <div class="add-plan-option-content">
+              <div class="add-plan-option-title">Schnell-Eintrag</div>
+              <div class="add-plan-option-desc">Ohne Planvorlage hinzufügen</div>
+            </div>
+            <span class="material-symbols-rounded add-plan-option-chevron">chevron_right</span>
           </button>
         </div>
       </div>
@@ -1262,6 +1279,172 @@
         <button type="button" class="btn-primary" onclick="confirmBottomSheetSelection()" aria-label="Auswahl bestätigen">
           <span class="material-symbols-rounded" aria-hidden="true">check</span>
           Fertig
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       QUICK EXERCISE CREATE MODAL (Inline from Plan)
+       ======================================== -->
+  <div id="quick-exercise-modal" class="modal" onclick="if(event.target === this) closeQuickExerciseModal()">
+    <div class="modal-content modal-compact" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title" id="quick-exercise-title">Neue Übung</h3>
+        <button onclick="closeQuickExerciseModal()" class="modal-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body space-y-4">
+        <!-- Name (required) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Name *</label>
+          <input
+            type="text"
+            id="quick-exercise-name"
+            placeholder="z.B. Klimmzüge"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Muscle Groups (required) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Muskelgruppen *</label>
+          <div id="quick-exercise-muscles-wrapper" class="multi-select-wrapper" onclick="openQuickExerciseMuscleSheet()">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Difficulty (required) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Schwierigkeit</label>
+          <input type="hidden" id="quick-exercise-difficulty" value="intermediate" />
+          <div class="difficulty-pills-row">
+            <button type="button" class="difficulty-pill" data-difficulty="beginner" onclick="setQuickExerciseDifficulty('beginner')">
+              Anfänger
+            </button>
+            <button type="button" class="difficulty-pill active" data-difficulty="intermediate" onclick="setQuickExerciseDifficulty('intermediate')">
+              Mittel
+            </button>
+            <button type="button" class="difficulty-pill" data-difficulty="advanced" onclick="setQuickExerciseDifficulty('advanced')">
+              Fortgeschritten
+            </button>
+            <button type="button" class="difficulty-pill" data-difficulty="elite" onclick="setQuickExerciseDifficulty('elite')">
+              Elite
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeQuickExerciseModal()" class="btn-secondary flex-1">
+          Abbrechen
+        </button>
+        <button onclick="saveQuickExercise()" class="btn-primary flex-1">
+          <span class="material-symbols-rounded">check</span>
+          Erstellen & Hinzufügen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       PLAN PICKER BOTTOM SHEET
+       ======================================== -->
+  <div id="plan-picker-overlay" class="bottom-sheet-overlay" onclick="if(event.target === this) closePlanPickerSheet()">
+    <div id="plan-picker-sheet" class="bottom-sheet plan-picker-sheet">
+      <div class="bottom-sheet-header">
+        <div class="bottom-sheet-drag-handle"></div>
+        <h3 id="plan-picker-title" class="bottom-sheet-title">Plan auswählen</h3>
+        <button onclick="closePlanPickerSheet()" class="bottom-sheet-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="bottom-sheet-search">
+        <div class="filter-input-wrapper">
+          <span class="material-symbols-rounded filter-input-icon">search</span>
+          <input
+            type="text"
+            id="plan-picker-search"
+            class="filter-input"
+            placeholder="Plan suchen..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div id="plan-picker-list" class="plan-picker-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       CALENDAR QUICK ENTRY MODAL
+       ======================================== -->
+  <div id="calendar-quick-entry-modal" class="modal" onclick="if(event.target === this) closeQuickEntryModal()">
+    <div class="modal-content modal-compact" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Schnell-Eintrag</h3>
+        <button onclick="closeQuickEntryModal()" class="modal-close-btn">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body space-y-4">
+        <!-- Name (required) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Name *</label>
+          <input
+            type="text"
+            id="quick-entry-name"
+            placeholder="z.B. Morgenlauf"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Type (required) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Trainingsart</label>
+          <input type="hidden" id="quick-entry-type" value="strength" />
+          <div class="type-selector-row">
+            <button type="button" class="type-btn active" data-type="strength" onclick="setQuickEntryType('strength')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span>Kraft</span>
+            </button>
+            <button type="button" class="type-btn" data-type="cardio" onclick="setQuickEntryType('cardio')">
+              <span class="material-symbols-rounded">directions_run</span>
+              <span>Cardio</span>
+            </button>
+            <button type="button" class="type-btn" data-type="recovery" onclick="setQuickEntryType('recovery')">
+              <span class="material-symbols-rounded">self_improvement</span>
+              <span>Recovery</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Duration (optional for cardio/recovery) -->
+        <div id="quick-entry-duration-section" style="display: none;">
+          <label class="block text-sm font-medium mb-2">Dauer (Min) <span class="text-gray-400">(optional)</span></label>
+          <input
+            type="number"
+            id="quick-entry-duration"
+            placeholder="z.B. 30"
+            min="1"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button onclick="closeQuickEntryModal()" class="btn-secondary flex-1">
+          Abbrechen
+        </button>
+        <button onclick="saveQuickEntry()" class="btn-primary flex-1">
+          <span class="material-symbols-rounded">add</span>
+          Hinzufügen
         </button>
       </div>
     </div>

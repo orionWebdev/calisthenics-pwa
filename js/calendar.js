@@ -347,44 +347,116 @@ function openAddPlanPanel(dateStr) {
 
   document.getElementById('selected-date-display').textContent = formatted;
   document.getElementById('add-plan-panel').classList.remove('hidden');
-
-  // Populate plan dropdown with real plans
-  populatePlanSelect();
 }
-
 
 function closeAddPlanPanel() {
   document.getElementById('add-plan-panel').classList.add('hidden');
   selectedDateForPlan = null;
 }
 
-function populatePlanSelect() {
-  const select = document.getElementById('plan-select');
-
-  // Clear existing options except the first one
-  select.innerHTML = '<option value="">Wähle einen Plan...</option>';
-
-  // Check if allPlans is available (from plans.js)
-  if (typeof allPlans === 'undefined' || !allPlans || allPlans.length === 0) {
-    select.innerHTML += '<option value="" disabled>Keine Pläne verfügbar - Erstelle zuerst einen Plan</option>';
+// Open Plan Picker Bottom Sheet (replaces dropdown)
+function openCalendarPlanPicker() {
+  if (typeof openPlanPickerSheet !== 'function') {
+    console.error('Plan picker not available');
     return;
   }
 
-  // Add real plans from the database
-  allPlans.forEach(plan => {
-    const option = document.createElement('option');
-    option.value = plan.id;
-    option.textContent = `${plan.name} (${workoutTypeNames[plan.type] || plan.type}, ${plan.duration || 45} Min)`;
-    select.appendChild(option);
+  openPlanPickerSheet((planId) => {
+    addPlanToDateById(planId);
   });
 }
 
-async function addPlanToDate() {
-  const planId = document.getElementById('plan-select').value;
+async function addPlanToDateById(planId) {
+  if (!planId) return;
 
-  if (!planId) {
+  if (!selectedDateForPlan && currentDayDetailDate) {
+    selectedDateForPlan = currentDayDetailDate;
+  }
+
+  if (!isValidDateString(selectedDateForPlan)) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte waehle einen Plan.');
+      showEdgeFeedback('error', 'Bitte waehle einen gueltigen Tag.');
+    }
+    return;
+  }
+
+  const plan = allPlans.find(p => p.id === planId);
+  if (!plan) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Plan nicht gefunden.');
+    }
+    return;
+  }
+
+  const scheduleEntry = {
+    userId: CURRENT_USER_ID,
+    planId: planId,
+    planName: plan.name,
+    planType: plan.type,
+    planDuration: plan.duration || 45,
+    date: selectedDateForPlan,
+    completed: false,
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    await addDoc(scheduleCollection, scheduleEntry);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', 'Plan zum Kalender hinzugefuegt.');
+    }
+    closeAddPlanPanel();
+    await loadSchedule();
+  } catch (error) {
+    console.error('Error adding plan:', error);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Hinzufuegen.');
+    }
+  }
+}
+
+// ========================================
+// QUICK ENTRY (No Plan Template)
+// ========================================
+
+function openQuickEntryModal() {
+  const modal = document.getElementById('calendar-quick-entry-modal');
+  if (!modal) return;
+
+  // Reset form
+  document.getElementById('quick-entry-name').value = '';
+  document.getElementById('quick-entry-duration').value = '';
+  setQuickEntryType('strength');
+
+  modal.classList.add('active');
+  setTimeout(() => document.getElementById('quick-entry-name').focus(), 100);
+}
+
+function closeQuickEntryModal() {
+  document.getElementById('calendar-quick-entry-modal').classList.remove('active');
+}
+
+function setQuickEntryType(type) {
+  document.getElementById('quick-entry-type').value = type;
+
+  document.querySelectorAll('#calendar-quick-entry-modal .type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+
+  // Show/hide duration field based on type
+  const durationSection = document.getElementById('quick-entry-duration-section');
+  if (durationSection) {
+    durationSection.style.display = type === 'strength' ? 'none' : '';
+  }
+}
+
+async function saveQuickEntry() {
+  const name = document.getElementById('quick-entry-name').value.trim();
+  const type = document.getElementById('quick-entry-type').value;
+  const duration = parseInt(document.getElementById('quick-entry-duration').value) || (type === 'cardio' ? 30 : type === 'recovery' ? 20 : 45);
+
+  if (!name) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('calendar.quickEntry.nameRequired'));
     }
     return;
   }
@@ -400,39 +472,35 @@ async function addPlanToDate() {
     return;
   }
 
-  // Get plan details from allPlans array
-  const plan = allPlans.find(p => p.id === planId);
-
-  if (!plan) {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Plan nicht gefunden.');
-    }
-    return;
-  }
-
   const scheduleEntry = {
-    userId: CURRENT_USER_ID, // Spaeter durch echte User ID ersetzen
-    planId: planId,
-    planName: plan.name, // Denormalized fuer schnellere Anzeige
-    planType: plan.type, // Store type for styling
-    planDuration: plan.duration || 45, // Store duration
+    userId: CURRENT_USER_ID,
+    planId: null, // No plan template
+    planName: name,
+    planType: type,
+    planDuration: duration,
     date: selectedDateForPlan,
     completed: false,
+    isQuickEntry: true, // Mark as quick entry
     createdAt: new Date().toISOString()
   };
 
   try {
     await addDoc(scheduleCollection, scheduleEntry);
-    console.log('Plan added to calendar!');
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Plan zum Kalender hinzugefuegt.');
+      showEdgeFeedback('success', 'Training hinzugefuegt.');
     }
+    closeQuickEntryModal();
     closeAddPlanPanel();
-    await loadSchedule(); // Reload
+    await loadSchedule();
+
+    // Refresh day detail modal if open
+    if (currentDayDetailDate) {
+      openDayDetailModal(currentDayDetailDate);
+    }
   } catch (error) {
-    console.error('Error adding plan:', error);
+    console.error('Error saving quick entry:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Hinzufuegen.');
+      showEdgeFeedback('error', 'Fehler beim Speichern.');
     }
   }
 }

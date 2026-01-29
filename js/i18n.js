@@ -88,7 +88,28 @@ const translations = {
       addExercise: 'Uebung hinzufuegen',
       deleteConfirm: 'Plan wirklich loeschen?',
       deleteSuccess: 'Plan geloescht.',
-      deleteError: 'Fehler beim Loeschen des Plans.'
+      deleteError: 'Fehler beim Loeschen des Plans.',
+      picker: {
+        title: 'Plan auswaehlen',
+        searchPlaceholder: 'Plan suchen...',
+        noPlans: 'Keine Plaene verfuegbar',
+        createFirst: 'Erstelle zuerst einen Trainingsplan'
+      }
+    },
+    calendar: {
+      quickEntry: {
+        title: 'Schnell-Eintrag',
+        name: 'Name',
+        namePlaceholder: 'z.B. Morgenlauf',
+        type: 'Trainingsart',
+        duration: 'Dauer (Min)',
+        durationOptional: 'optional',
+        add: 'Hinzufuegen',
+        nameRequired: 'Bitte gib einen Namen ein'
+      },
+      addPlan: 'Plan hinzufuegen',
+      quickAdd: 'Schnell-Eintrag',
+      orQuickEntry: 'Oder Schnell-Eintrag erstellen'
     },
     exercise: {
       title: 'Uebung',
@@ -152,6 +173,12 @@ const translations = {
         fullBody: 'Ganzkoerper',
         cardio: 'Cardio',
         mobility: 'Mobilitaet'
+      },
+      quickCreate: {
+        title: 'Neue Uebung',
+        button: 'Neue Uebung erstellen',
+        hint: 'Uebung fehlt? Erstelle sie hier schnell.',
+        saved: 'Uebung erstellt und hinzugefuegt'
       }
     },
     workout: {

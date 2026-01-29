@@ -696,6 +696,10 @@ function renderExercisePicker() {
         <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
         <p class="mt-2">Keine Übungen verfügbar</p>
         <p class="text-sm">Erstelle zuerst Übungen in der Übungsdatenbank</p>
+        <button onclick="openQuickExerciseCreate()" class="btn-primary mt-4">
+          <span class="material-symbols-rounded">add_circle</span>
+          <span>${t('exercise.quickCreate.button')}</span>
+        </button>
       </div>
     `;
     return;
@@ -742,7 +746,7 @@ function renderExercisePicker() {
     return;
   }
 
-  container.innerHTML = filteredExercises.map(exercise => {
+  const exerciseRows = filteredExercises.map(exercise => {
     const equipmentList = (exercise.equipment || []).filter(eq => eq && eq !== 'none');
     const equipmentLabel = equipmentList.length > 0
       ? equipmentList.map(eq => equipmentNames[eq]).filter(Boolean).join(', ')
@@ -773,6 +777,291 @@ function renderExercisePicker() {
       </div>
     `;
   }).join('');
+
+  // Add "Create new exercise" button at the TOP
+  const createNewBtn = `
+    <div class="exercise-picker-create-new" onclick="openQuickExerciseCreate()">
+      <div class="exercise-picker-create-icon">
+        <span class="material-symbols-rounded">add_circle</span>
+      </div>
+      <div class="exercise-picker-create-content">
+        <div class="exercise-picker-create-title">${t('exercise.quickCreate.button')}</div>
+        <div class="exercise-picker-create-hint">${t('exercise.quickCreate.hint')}</div>
+      </div>
+      <span class="material-symbols-rounded exercise-picker-create-chevron">chevron_right</span>
+    </div>
+  `;
+
+  container.innerHTML = createNewBtn + exerciseRows;
+}
+
+// ========================================
+// QUICK EXERCISE CREATE (Inline from Plan)
+// ========================================
+
+let quickExerciseCallback = null;
+
+function openQuickExerciseCreate() {
+  // Store callback to add exercise to plan after creation
+  quickExerciseCallback = (exerciseId) => {
+    // Re-render picker to include new exercise
+    renderExercisePicker();
+    // Auto-select the new exercise
+    selectExerciseForPlan(exerciseId);
+  };
+
+  // Reset quick exercise form
+  document.getElementById('quick-exercise-name').value = '';
+  quickExerciseMuscleGroups = [];
+  renderQuickExerciseMuscleInput();
+  setQuickExerciseDifficulty('intermediate');
+
+  // Show modal
+  document.getElementById('quick-exercise-modal').classList.add('active');
+
+  // Focus name input
+  setTimeout(() => {
+    document.getElementById('quick-exercise-name').focus();
+  }, 100);
+}
+
+function closeQuickExerciseModal() {
+  document.getElementById('quick-exercise-modal').classList.remove('active');
+  quickExerciseCallback = null;
+}
+
+let quickExerciseMuscleGroups = [];
+
+function openQuickExerciseMuscleSheet() {
+  const muscleOptions = [
+    { value: 'chest', label: muscleNames.chest, description: 'Brustmuskulatur' },
+    { value: 'back', label: muscleNames.back, description: 'Rückenmuskulatur' },
+    { value: 'shoulders', label: muscleNames.shoulders, description: 'Schultermuskulatur' },
+    { value: 'arms', label: muscleNames.arms, description: 'Bizeps, Trizeps, Unterarme' },
+    { value: 'core', label: muscleNames.core, description: 'Bauch- und Rumpfmuskulatur' },
+    { value: 'legs', label: muscleNames.legs, description: 'Beinmuskulatur' }
+  ];
+
+  openBottomSheet({
+    title: t('exercise.muscleGroups'),
+    options: muscleOptions,
+    selectedValues: quickExerciseMuscleGroups,
+    enableSearch: false,
+    fieldId: 'quick-exercise-muscles-wrapper',
+    onConfirm: (selectedValues) => {
+      quickExerciseMuscleGroups = selectedValues;
+      renderQuickExerciseMuscleInput();
+    }
+  });
+}
+
+function renderQuickExerciseMuscleInput() {
+  renderMultiSelectInput('quick-exercise-muscles-wrapper', {
+    icon: 'fitness_center',
+    placeholder: t('exercise.muscleGroups') + '...',
+    selectedValues: quickExerciseMuscleGroups,
+    valueLabels: muscleNames
+  });
+}
+
+function setQuickExerciseDifficulty(difficulty) {
+  document.getElementById('quick-exercise-difficulty').value = difficulty;
+  document.querySelectorAll('#quick-exercise-modal .difficulty-pill').forEach(pill => {
+    pill.classList.toggle('active', pill.dataset.difficulty === difficulty);
+  });
+}
+
+async function saveQuickExercise() {
+  const name = document.getElementById('quick-exercise-name').value.trim();
+  const difficulty = document.getElementById('quick-exercise-difficulty').value;
+
+  if (!name) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('errors.exerciseNameRequired'));
+    }
+    return;
+  }
+
+  if (quickExerciseMuscleGroups.length === 0) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('errors.muscleGroupsRequired'));
+    }
+    return;
+  }
+
+  const exerciseData = {
+    name,
+    muscleGroups: quickExerciseMuscleGroups,
+    equipment: ['none'],
+    difficulty,
+    icon: 'fitness_center',
+    instructionsSteps: [],
+    discipline: 'calisthenics'
+  };
+
+  try {
+    const docRef = await addDoc(exercisesCollection, exerciseData);
+    const newExerciseId = docRef.id;
+
+    // Reload exercises
+    await loadExercises();
+
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', t('exercise.quickCreate.saved'));
+    }
+
+    closeQuickExerciseModal();
+
+    // Execute callback to add to plan
+    if (quickExerciseCallback) {
+      quickExerciseCallback(newExerciseId);
+    }
+  } catch (error) {
+    console.error('Error saving quick exercise:', error);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Speichern');
+    }
+  }
+}
+
+// Extend removeMultiSelectChip for quick exercise modal
+const _originalRemoveMultiSelectChip = window.removeMultiSelectChip;
+window.removeMultiSelectChip = function(containerId, value) {
+  if (containerId === 'quick-exercise-muscles-wrapper') {
+    quickExerciseMuscleGroups = quickExerciseMuscleGroups.filter(v => v !== value);
+    renderQuickExerciseMuscleInput();
+  } else if (_originalRemoveMultiSelectChip) {
+    _originalRemoveMultiSelectChip(containerId, value);
+  }
+};
+
+// ========================================
+// PLAN PICKER BOTTOM SHEET
+// ========================================
+
+let planPickerCallback = null;
+
+function openPlanPickerSheet(onSelect) {
+  planPickerCallback = onSelect;
+
+  const planOptions = (allPlans || []).map(plan => ({
+    value: plan.id,
+    label: plan.name,
+    description: `${workoutTypeNames[plan.type] || plan.type} • ${plan.duration || 45} Min`,
+    icon: getPlanIconKey(plan, plan.type)
+  }));
+
+  // Use custom rendering for plan picker
+  openPlanPickerBottomSheet({
+    title: t('plan.picker.title'),
+    options: planOptions,
+    searchPlaceholder: t('plan.picker.searchPlaceholder'),
+    onSelect: (planId) => {
+      if (planPickerCallback) {
+        planPickerCallback(planId);
+        planPickerCallback = null;
+      }
+    }
+  });
+}
+
+function openPlanPickerBottomSheet(config) {
+  const overlay = document.getElementById('plan-picker-overlay');
+  const sheet = document.getElementById('plan-picker-sheet');
+  const titleEl = document.getElementById('plan-picker-title');
+  const searchInput = document.getElementById('plan-picker-search');
+  const listEl = document.getElementById('plan-picker-list');
+
+  if (!overlay || !sheet) return;
+
+  // Store config
+  sheet.dataset.config = JSON.stringify(config);
+
+  // Set title
+  titleEl.textContent = config.title || t('plan.picker.title');
+  searchInput.placeholder = config.searchPlaceholder || t('plan.picker.searchPlaceholder');
+  searchInput.value = '';
+
+  // Render options
+  renderPlanPickerOptions(config.options, '');
+
+  // Setup search
+  searchInput.oninput = (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    renderPlanPickerOptions(config.options, term);
+  };
+
+  // Show
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(() => searchInput.focus(), 100);
+}
+
+function renderPlanPickerOptions(options, searchTerm) {
+  const listEl = document.getElementById('plan-picker-list');
+
+  // Handle empty plans list
+  if (!options || options.length === 0) {
+    listEl.innerHTML = `
+      <div class="plan-picker-empty">
+        <span class="material-symbols-rounded">assignment</span>
+        <p>${t('plan.picker.noPlans')}</p>
+        <p class="plan-picker-empty-hint">${t('plan.picker.createFirst')}</p>
+        <button class="btn-primary mt-4" onclick="closePlanPickerSheet(); openAddPlanModal();">
+          <span class="material-symbols-rounded">add_circle</span>
+          <span>Plan erstellen</span>
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  const filtered = options.filter(opt =>
+    opt.label.toLowerCase().includes(searchTerm) ||
+    opt.description.toLowerCase().includes(searchTerm)
+  );
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = `
+      <div class="plan-picker-empty">
+        <span class="material-symbols-rounded">search_off</span>
+        <p>Keine Treffer</p>
+      </div>
+    `;
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(opt => `
+    <button class="plan-picker-option" onclick="selectPlanFromPicker('${opt.value}')">
+      <div class="plan-picker-option-icon">
+        <span class="material-symbols-rounded">${opt.icon || 'fitness_center'}</span>
+      </div>
+      <div class="plan-picker-option-content">
+        <div class="plan-picker-option-label">${opt.label}</div>
+        <div class="plan-picker-option-desc">${opt.description}</div>
+      </div>
+      <span class="material-symbols-rounded plan-picker-option-chevron">chevron_right</span>
+    </button>
+  `).join('');
+}
+
+function selectPlanFromPicker(planId) {
+  const sheet = document.getElementById('plan-picker-sheet');
+  const config = JSON.parse(sheet.dataset.config || '{}');
+
+  closePlanPickerSheet();
+
+  if (config.onSelect) {
+    config.onSelect(planId);
+  }
+}
+
+function closePlanPickerSheet() {
+  const overlay = document.getElementById('plan-picker-overlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  planPickerCallback = null;
 }
 
 function selectExerciseForPlan(exerciseId) {
@@ -1384,3 +1673,8 @@ window.removeMultiSelectChip = function(containerId, value) {
     originalRemoveMultiSelectChip(containerId, value);
   }
 };
+
+// Export Plan Picker functions globally
+window.openPlanPickerSheet = openPlanPickerSheet;
+window.closePlanPickerSheet = closePlanPickerSheet;
+window.selectPlanFromPicker = selectPlanFromPicker;
