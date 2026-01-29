@@ -62,7 +62,8 @@ const translations = {
         all: 'Alle',
         strength: 'Kraft',
         cardio: 'Cardio',
-        recovery: 'Recovery'
+        recovery: 'Recovery',
+        difficultyAll: 'Alle Schwierigkeiten'
       },
       cardioGoal: {
         label: 'Cardio-Ziel',

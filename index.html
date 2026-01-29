@@ -260,7 +260,8 @@
         </div>
 
         <!-- Plan Type Filter -->
-        <div class="mb-4 flex flex-wrap gap-2" id="plan-type-filters">
+        <div class="plan-filters-bar">
+          <div class="plan-type-filters flex gap-2" id="plan-type-filters">
           <button class="filter-chip active" data-type="all" onclick="setPlanTypeFilter('all')">
             <span class="material-symbols-rounded">apps</span>
             <span id="plan-filter-all-label"></span>
@@ -277,6 +278,30 @@
             <span class="material-symbols-rounded">self_improvement</span>
             <span id="plan-filter-recovery-label"></span>
           </button>
+          </div>
+
+          <div class="plan-type-filters flex gap-2" id="plan-difficulty-filters">
+            <button class="filter-chip active" data-difficulty="" onclick="setPlanDifficultyFilter('')">
+              <span class="material-symbols-rounded">signal_cellular_alt</span>
+              <span id="plan-difficulty-option-all"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="beginner" onclick="setPlanDifficultyFilter('beginner')">
+              <span class="material-symbols-rounded">bolt</span>
+              <span id="plan-difficulty-option-beginner"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="intermediate" onclick="setPlanDifficultyFilter('intermediate')">
+              <span class="material-symbols-rounded">trending_up</span>
+              <span id="plan-difficulty-option-intermediate"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="advanced" onclick="setPlanDifficultyFilter('advanced')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span id="plan-difficulty-option-advanced"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="elite" onclick="setPlanDifficultyFilter('elite')">
+              <span class="material-symbols-rounded">military_tech</span>
+              <span id="plan-difficulty-option-elite"></span>
+            </button>
+          </div>
         </div>
 
         <!-- Plans Grid -->
@@ -885,10 +910,10 @@
               <button
                 type="button"
                 onclick="openAddExerciseToPlan()"
-                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 rounded-lg text-sm font-semibold transition-all"
+                id="plan-add-exercise-btn"
+                class="flex items-center justify-center px-4 py-2 min-w-[44px] min-h-[44px] bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 rounded-lg text-sm font-semibold transition-all"
               >
-                <span class="material-symbols-rounded" style="font-size: 18px;">add</span>
-                <span>Hinzufuegen</span>
+                <span class="plan-add-exercise-plus" aria-hidden="true">+</span>
               </button>
             </div>
             <div id="plan-exercises-list" class="space-y-2 bg-gray-800 rounded-lg p-4 border border-gray-700 min-h-[120px]">
@@ -990,27 +1015,33 @@
         </div>
 
         <!-- Filter Chips -->
-        <div class="flex flex-wrap gap-2">
+        <div class="exercise-picker-filters flex gap-2">
           <button type="button" class="filter-chip" data-filter="all" onclick="setExercisePickerMuscleFilter('all')">
             <span class="material-symbols-rounded">fitness_center</span>
             <span>Alle</span>
           </button>
           <button type="button" class="filter-chip" data-filter="chest" onclick="setExercisePickerMuscleFilter('chest')">
+            <span class="material-symbols-rounded">favorite</span>
             <span class="muscle-tag muscle-chest" style="padding: 0;">Brust</span>
           </button>
           <button type="button" class="filter-chip" data-filter="back" onclick="setExercisePickerMuscleFilter('back')">
+            <span class="material-symbols-rounded">backpack</span>
             <span class="muscle-tag muscle-back" style="padding: 0;">Rücken</span>
           </button>
           <button type="button" class="filter-chip" data-filter="shoulders" onclick="setExercisePickerMuscleFilter('shoulders')">
+            <span class="material-symbols-rounded">accessibility_new</span>
             <span class="muscle-tag muscle-shoulders" style="padding: 0;">Schultern</span>
           </button>
           <button type="button" class="filter-chip" data-filter="arms" onclick="setExercisePickerMuscleFilter('arms')">
+            <span class="material-symbols-rounded">fitness_center</span>
             <span class="muscle-tag muscle-arms" style="padding: 0;">Arme</span>
           </button>
           <button type="button" class="filter-chip" data-filter="core" onclick="setExercisePickerMuscleFilter('core')">
+            <span class="material-symbols-rounded">self_improvement</span>
             <span class="muscle-tag muscle-core" style="padding: 0;">Core</span>
           </button>
           <button type="button" class="filter-chip" data-filter="legs" onclick="setExercisePickerMuscleFilter('legs')">
+            <span class="material-symbols-rounded">directions_walk</span>
             <span class="muscle-tag muscle-legs" style="padding: 0;">Beine</span>
           </button>
         </div>
@@ -1146,7 +1177,7 @@
             max="300"
             step="15"
             class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-pink-500"
-            oninput="updateRestDisplay(this.value)"
+            oninput="updateRestDisplay(this)"
             aria-label="Pausenzeit in Sekunden"
           />
           <div class="flex justify-between text-xs text-gray-400 mt-1">

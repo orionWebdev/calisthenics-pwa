@@ -7,6 +7,7 @@ let filteredPlans = [];
 let editingPlanId = null;
 let currentPlan = null; // Currently selected plan for editing
 let planTypeFilter = 'all';
+let planDifficultyFilter = '';
 
 // Workout Type Namen Mapping (nur noch 3 Typen)
 const workoutTypeNames = {
@@ -213,17 +214,26 @@ function renderPlans() {
 
 function applyPlanFilters() {
   const list = Array.isArray(allPlans) ? allPlans : [];
-  if (planTypeFilter === 'all') {
-    filteredPlans = [...list];
-  } else {
-    filteredPlans = list.filter(plan => plan.type === planTypeFilter);
-  }
+  filteredPlans = list.filter(plan => {
+    const matchesType = planTypeFilter === 'all' ? true : plan.type === planTypeFilter;
+    if (!matchesType) return false;
+    if (!planDifficultyFilter) return true;
+    const hasDifficulty = plan.difficulty !== undefined && plan.difficulty !== null;
+    if (!hasDifficulty) return false;
+    const difficultyValue = convertPlanDifficultyToEnum(plan.difficulty);
+    return difficultyValue === planDifficultyFilter;
+  });
   updatePlanTypeFilterUI();
   renderPlans();
 }
 
 function setPlanTypeFilter(type) {
   planTypeFilter = type || 'all';
+  applyPlanFilters();
+}
+
+function setPlanDifficultyFilter(value) {
+  planDifficultyFilter = value || '';
   applyPlanFilters();
 }
 
@@ -242,6 +252,25 @@ function updatePlanTypeFilterUI() {
   if (cardioLabel) cardioLabel.textContent = t('plan.filters.cardio');
   const recoveryLabel = document.getElementById('plan-filter-recovery-label');
   if (recoveryLabel) recoveryLabel.textContent = t('plan.filters.recovery');
+
+  const difficultyAll = document.getElementById('plan-difficulty-option-all');
+  if (difficultyAll) difficultyAll.textContent = t('plan.filters.difficultyAll');
+  const difficultyBeginner = document.getElementById('plan-difficulty-option-beginner');
+  if (difficultyBeginner) difficultyBeginner.textContent = t('difficulty.beginner');
+  const difficultyIntermediate = document.getElementById('plan-difficulty-option-intermediate');
+  if (difficultyIntermediate) difficultyIntermediate.textContent = t('difficulty.intermediate');
+  const difficultyAdvanced = document.getElementById('plan-difficulty-option-advanced');
+  if (difficultyAdvanced) difficultyAdvanced.textContent = t('difficulty.advanced');
+  const difficultyElite = document.getElementById('plan-difficulty-option-elite');
+  if (difficultyElite) difficultyElite.textContent = t('difficulty.elite');
+
+  const difficultyContainer = document.getElementById('plan-difficulty-filters');
+  if (difficultyContainer) {
+    difficultyContainer.querySelectorAll('.filter-chip').forEach(btn => {
+      const value = btn.dataset.difficulty || '';
+      btn.classList.toggle('active', value === planDifficultyFilter);
+    });
+  }
 }
 
 
@@ -265,6 +294,7 @@ function openAddPlanModal() {
   renderPlanTargetMusclesInput();
 
   document.getElementById('plan-modal').classList.add('active');
+  resetPlanModalPosition();
 }
 
 function editPlan(id) {
@@ -278,6 +308,7 @@ function editPlan(id) {
   togglePlanDeleteButton(true);
   populatePlanForm(plan);
   document.getElementById('plan-modal').classList.add('active');
+  resetPlanModalPosition();
 }
 
 function closePlanModal() {
@@ -285,6 +316,28 @@ function closePlanModal() {
   clearPlanForm();
   currentPlan = null;
   togglePlanDeleteButton(false);
+}
+
+function resetPlanModalPosition() {
+  const modal = document.getElementById('plan-modal');
+  if (!modal) return;
+  const content = modal.querySelector('.modal-content');
+  if (content) content.scrollTop = 0;
+
+  const addBtn = document.getElementById('plan-add-exercise-btn');
+  if (addBtn) {
+    addBtn.setAttribute('aria-label', t('plan.addExercise'));
+  }
+
+  const firstField = document.getElementById('plan-name');
+  if (!firstField) return;
+  requestAnimationFrame(() => {
+    try {
+      firstField.focus({ preventScroll: true });
+    } catch (error) {
+      firstField.focus();
+    }
+  });
 }
 
 function clearPlanForm() {
@@ -759,6 +812,7 @@ function openExerciseConfigModal(exerciseId, editIndex = null) {
   }
 
   document.getElementById('exercise-config-modal').classList.add('active');
+  updateRestDisplay(document.getElementById('exercise-rest'));
 }
 
 function saveExerciseConfig() {
@@ -817,8 +871,14 @@ function closeExercisePicker() {
 /**
  * Updates the rest time display when slider changes
  */
-function updateRestDisplay(value) {
-  const seconds = parseInt(value);
+function updateRestDisplay(valueOrInput) {
+  const slider = valueOrInput && typeof valueOrInput === 'object'
+    ? valueOrInput
+    : document.getElementById('exercise-rest');
+  const rawValue = valueOrInput && typeof valueOrInput === 'object'
+    ? valueOrInput.value
+    : valueOrInput;
+  const seconds = parseInt(rawValue);
   const displaySpan = document.getElementById('exercise-rest-display');
 
   if (seconds === 0) {
@@ -835,10 +895,21 @@ function updateRestDisplay(value) {
     }
   }
 
+  updateRangeProgress(slider);
+
   // Trigger haptic feedback on value change
   if (typeof triggerHapticFeedback === 'function') {
     triggerHapticFeedback('light');
   }
+}
+
+function updateRangeProgress(slider) {
+  if (!slider) return;
+  const min = Number(slider.min || 0);
+  const max = Number(slider.max || 100);
+  const value = Number(slider.value || 0);
+  const percent = max > min ? ((value - min) / (max - min)) * 100 : 0;
+  slider.style.setProperty('--range-progress', `${percent}%`);
 }
 
 // ========================================
