@@ -465,6 +465,23 @@ const translations = {
           exercises: 'Uebungen',
           sets: 'Saetze',
           reps: 'Wiederholungen'
+        },
+        volume: {
+          weighted: 'Gewichtetes Volumen',
+          weightedShort: 'Gewichtet',
+          weightedHint: 'Gewicht x Wdh (kg)',
+          bodyweight: 'Bodyweight Volumen',
+          bodyweightShort: 'Bodyweight',
+          bodyweightHint: 'Wdh x Belastungsfaktor (Schaetzung)',
+          combined: 'Gesamt',
+          metric: 'Metrik',
+          infoTitle: 'Volumen-Berechnung',
+          infoWeighted: 'Gewichtetes Volumen: Summe aus Gewicht x Wiederholungen fuer alle Saetze mit Gewicht.',
+          infoBodyweight: 'Bodyweight Volumen: Wiederholungen x uebungsspezifischer Belastungsfaktor. Pull-ups (1.5x) > Push-ups (1.0x). Eine grobe Schaetzung zur Trend-Visualisierung.',
+          noWeighted: 'Keine gewichteten Uebungen in diesem Zeitraum',
+          noBodyweight: 'Keine Bodyweight-Uebungen in diesem Zeitraum',
+          chartTitleWeighted: 'Gewichtetes Volumen - {period}',
+          chartTitleBodyweight: 'Bodyweight Volumen - {period}'
         }
       },
       modals: {

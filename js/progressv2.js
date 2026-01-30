@@ -10,6 +10,7 @@ let progressStrengthPeriod = '7D';
 let progressCardioPeriod = '7D';
 let activityCalendarDate = new Date(); // Current displayed month for activity calendar
 let hybridBalanceDays = 7; // 7 or 30 days for Hybrid Balance toggle on Progress
+let strengthVolumeMetric = 'combined'; // 'weighted', 'bodyweight', or 'combined'
 
 const trProgress = (key, params) => (typeof t === 'function' ? t(key, params) : key);
 
@@ -856,14 +857,26 @@ function renderStrengthTab() {
     return;
   }
 
+  // Calculate dual stats to determine which metrics to show
+  const dualStats = typeof calculateDualStrengthStats === 'function'
+    ? calculateDualStrengthStats(progressStrengthPeriod, exercisesData)
+    : null;
+
+  const showMetricToggle = dualStats && (dualStats.hasWeighted || dualStats.hasBodyweight);
+
   container.innerHTML = `
     <div class="strength-section">
       <!-- Period Selector -->
       ${renderProgressPeriodSelector('strength', progressStrengthPeriod)}
 
+      <!-- Metric Toggle (only if we have data) -->
+      ${showMetricToggle ? renderStrengthMetricToggle(dualStats) : ''}
+
       <!-- Stats -->
       <div id="strength-stats-container"></div>
-      <p class="section-helper">${trProgress('progress.strength.helper')}</p>
+
+      <!-- Volume Info Hint -->
+      ${renderVolumeInfoHint()}
 
       <!-- Chart -->
       <div id="strength-chart-container" class="progress-chart-container"></div>
@@ -876,6 +889,101 @@ function renderStrengthTab() {
 
   renderStrengthStats();
   renderStrengthChart();
+}
+
+/**
+ * Renders the strength metric toggle (Weighted / Bodyweight / Combined)
+ */
+function renderStrengthMetricToggle(dualStats) {
+  const hasWeighted = dualStats?.hasWeighted;
+  const hasBodyweight = dualStats?.hasBodyweight;
+
+  // If only one type exists, auto-select it
+  if (hasWeighted && !hasBodyweight) {
+    strengthVolumeMetric = 'weighted';
+  } else if (!hasWeighted && hasBodyweight) {
+    strengthVolumeMetric = 'bodyweight';
+  }
+
+  return `
+    <div class="strength-metric-toggle">
+      ${hasWeighted ? `
+        <button
+          class="metric-btn ${strengthVolumeMetric === 'weighted' ? 'active' : ''}"
+          onclick="switchStrengthVolumeMetric('weighted')"
+          data-metric="weighted"
+        >
+          <span class="material-symbols-rounded">fitness_center</span>
+          <span class="metric-label">${trProgress('progress.strength.volume.weightedShort')}</span>
+        </button>
+      ` : ''}
+      ${hasBodyweight ? `
+        <button
+          class="metric-btn ${strengthVolumeMetric === 'bodyweight' ? 'active' : ''}"
+          onclick="switchStrengthVolumeMetric('bodyweight')"
+          data-metric="bodyweight"
+        >
+          <span class="material-symbols-rounded">self_improvement</span>
+          <span class="metric-label">${trProgress('progress.strength.volume.bodyweightShort')}</span>
+        </button>
+      ` : ''}
+      ${hasWeighted && hasBodyweight ? `
+        <button
+          class="metric-btn ${strengthVolumeMetric === 'combined' ? 'active' : ''}"
+          onclick="switchStrengthVolumeMetric('combined')"
+          data-metric="combined"
+        >
+          <span class="material-symbols-rounded">join</span>
+          <span class="metric-label">${trProgress('progress.strength.volume.combined')}</span>
+        </button>
+      ` : ''}
+    </div>
+  `;
+}
+
+/**
+ * Renders the volume info hint
+ */
+function renderVolumeInfoHint() {
+  const infoText = strengthVolumeMetric === 'weighted'
+    ? trProgress('progress.strength.volume.infoWeighted')
+    : strengthVolumeMetric === 'bodyweight'
+      ? trProgress('progress.strength.volume.infoBodyweight')
+      : trProgress('progress.strength.helper');
+
+  return `
+    <div class="volume-info-hint">
+      <span class="material-symbols-rounded">info</span>
+      <p>${infoText}</p>
+    </div>
+  `;
+}
+
+/**
+ * Switches the strength volume metric
+ */
+function switchStrengthVolumeMetric(metric) {
+  strengthVolumeMetric = metric;
+  renderStrengthStats();
+  renderStrengthChart();
+  triggerHapticFeedback('light');
+
+  // Update active button state
+  document.querySelectorAll('.strength-metric-toggle .metric-btn').forEach(btn => {
+    const btnMetric = btn.dataset.metric;
+    btn.classList.toggle('active', btnMetric === metric);
+  });
+
+  // Update info hint
+  const infoHint = document.querySelector('.volume-info-hint p');
+  if (infoHint) {
+    const infoText = metric === 'weighted'
+      ? trProgress('progress.strength.volume.infoWeighted')
+      : metric === 'bodyweight'
+        ? trProgress('progress.strength.volume.infoBodyweight')
+        : trProgress('progress.strength.helper');
+    infoHint.textContent = infoText;
+  }
 }
 
 /**
@@ -896,14 +1004,89 @@ function renderStrengthStats() {
   const container = document.getElementById('strength-stats-container');
   if (!container) return;
 
-  const stats = calculateStrengthStats(progressStrengthPeriod);
+  // Use dual stats if available
+  const dualStats = typeof calculateDualStrengthStats === 'function'
+    ? calculateDualStrengthStats(progressStrengthPeriod, exercisesData)
+    : null;
+
   const bucketLabel = PERIOD_CONFIG[progressStrengthPeriod]?.bucketType === 'weekly'
     ? trProgress('progress.period.bucket.week')
     : trProgress('progress.period.bucket.day');
   const lastLabel = trProgress('progress.labels.lastBucket', { bucket: bucketLabel });
   const bestLabel = trProgress('progress.labels.bestBucket', { bucket: bucketLabel });
 
+  // Determine which stats to show based on selected metric
+  let stats;
+  let volumeTypeLabel = '';
+  let volumeTypeIcon = 'fitness_center';
+  let volumeHint = '';
+
+  if (dualStats && strengthVolumeMetric === 'weighted') {
+    stats = {
+      lastValue: dualStats.weighted.lastValue,
+      bestValue: dualStats.weighted.bestValue,
+      avgValue: dualStats.weighted.avgValue,
+      totalSessions: dualStats.totalSessions
+    };
+    volumeTypeLabel = trProgress('progress.strength.volume.weighted');
+    volumeTypeIcon = 'fitness_center';
+    volumeHint = trProgress('progress.strength.volume.weightedHint');
+  } else if (dualStats && strengthVolumeMetric === 'bodyweight') {
+    stats = {
+      lastValue: dualStats.bodyweight.lastValue,
+      bestValue: dualStats.bodyweight.bestValue,
+      avgValue: dualStats.bodyweight.avgValue,
+      totalSessions: dualStats.totalSessions
+    };
+    volumeTypeLabel = trProgress('progress.strength.volume.bodyweight');
+    volumeTypeIcon = 'self_improvement';
+    volumeHint = trProgress('progress.strength.volume.bodyweightHint');
+  } else if (dualStats) {
+    // Combined view
+    stats = {
+      lastValue: dualStats.weighted.lastValue + dualStats.bodyweight.lastValue,
+      bestValue: Math.max(
+        dualStats.weighted.bestValue + dualStats.bodyweight.bestValue,
+        dualStats.weighted.bestValue,
+        dualStats.bodyweight.bestValue
+      ),
+      avgValue: dualStats.weighted.avgValue + dualStats.bodyweight.avgValue,
+      totalSessions: dualStats.totalSessions
+    };
+    volumeTypeLabel = trProgress('progress.strength.volume.combined');
+    volumeTypeIcon = 'join';
+    volumeHint = '';
+  } else {
+    // Fallback to legacy stats
+    stats = calculateStrengthStats(progressStrengthPeriod);
+  }
+
+  // Show dual volume cards for combined view
+  const showDualCards = dualStats && strengthVolumeMetric === 'combined' &&
+                       dualStats.hasWeighted && dualStats.hasBodyweight;
+
   container.innerHTML = `
+    ${showDualCards ? `
+      <div class="dual-volume-display">
+        <div class="volume-card weighted">
+          <div class="volume-card-header">
+            <span class="material-symbols-rounded">fitness_center</span>
+            <span class="volume-card-label">${trProgress('progress.strength.volume.weighted')}</span>
+          </div>
+          <div class="volume-card-value">${formatVolume(dualStats.weighted.lastValue)}</div>
+          <div class="volume-card-hint">${trProgress('progress.strength.volume.weightedHint')}</div>
+        </div>
+        <div class="volume-card bodyweight">
+          <div class="volume-card-header">
+            <span class="material-symbols-rounded">self_improvement</span>
+            <span class="volume-card-label">${trProgress('progress.strength.volume.bodyweight')}</span>
+          </div>
+          <div class="volume-card-value">${formatVolume(dualStats.bodyweight.lastValue)}</div>
+          <div class="volume-card-hint">${trProgress('progress.strength.volume.bodyweightHint')}</div>
+        </div>
+      </div>
+    ` : ''}
+
     <div class="progress-stats-grid">
       <div class="progress-stat-card">
         <div class="progress-stat-icon" style="background: rgba(240, 34, 119, 0.1);">
@@ -985,16 +1168,57 @@ function renderStrengthChart() {
   const container = document.getElementById('strength-chart-container');
   if (!container) return;
 
-  const data = aggregateStrengthByPeriod(progressStrengthPeriod);
+  // Get dual volume data if available
+  const dualData = typeof aggregateDualStrengthByPeriod === 'function'
+    ? aggregateDualStrengthByPeriod(progressStrengthPeriod, exercisesData)
+    : null;
+
+  // Prepare chart data based on selected metric
+  let chartData;
+  let chartTitleKey = 'progress.strength.chartTitle';
+  let chartColor = 'strength';
+
+  if (dualData && strengthVolumeMetric === 'weighted') {
+    chartData = dualData.map(d => ({
+      ...d,
+      value: d.weightedVolume,
+      weekLabel: d.label
+    }));
+    chartTitleKey = 'progress.strength.volume.chartTitleWeighted';
+  } else if (dualData && strengthVolumeMetric === 'bodyweight') {
+    chartData = dualData.map(d => ({
+      ...d,
+      value: d.bodyweightVolume,
+      weekLabel: d.label
+    }));
+    chartTitleKey = 'progress.strength.volume.chartTitleBodyweight';
+    chartColor = 'bodyweight';
+  } else if (dualData) {
+    // Combined
+    chartData = dualData.map(d => ({
+      ...d,
+      value: d.weightedVolume + d.bodyweightVolume,
+      weekLabel: d.label
+    }));
+  } else {
+    // Fallback
+    chartData = aggregateStrengthByPeriod(progressStrengthPeriod);
+  }
 
   // Check if there's any data
-  const hasData = data.some(d => d.value > 0);
+  const hasData = chartData && chartData.some(d => d.value > 0);
 
   if (!hasData) {
+    const emptyMsg = strengthVolumeMetric === 'weighted'
+      ? trProgress('progress.strength.volume.noWeighted')
+      : strengthVolumeMetric === 'bodyweight'
+        ? trProgress('progress.strength.volume.noBodyweight')
+        : trProgress('progress.strength.noData');
+
     container.innerHTML = `
       <div class="progress-empty-chart">
         <span class="material-symbols-rounded">insert_chart</span>
-        <p>${trProgress('progress.strength.noData')}</p>
+        <p>${emptyMsg}</p>
       </div>
     `;
     return;
@@ -1006,7 +1230,7 @@ function renderStrengthChart() {
 
   container.innerHTML = `
     <div class="progress-chart-header">
-      <h3 class="progress-chart-title">${trProgress('progress.strength.chartTitle', { period: periodLabel })}</h3>
+      <h3 class="progress-chart-title">${trProgress(chartTitleKey, { period: periodLabel })}</h3>
     </div>
     <div class="progress-chart-canvas-wrapper">
       <canvas id="progress-chart-canvas"></canvas>
@@ -1014,13 +1238,15 @@ function renderStrengthChart() {
   `;
 
   animateChartContainer(container);
-  drawWeeklyChart(data);
+  drawWeeklyChart(chartData, chartColor);
 }
 
 /**
  * Zeichnet Chart fuer woechentliche Daten
+ * @param {Array} data - Chart data
+ * @param {string} colorType - 'strength', 'bodyweight', or 'cardio'
  */
-function drawWeeklyChart(data) {
+function drawWeeklyChart(data, colorType = 'strength') {
   const canvas = document.getElementById('progress-chart-canvas');
   if (!canvas) return;
 
@@ -1045,10 +1271,19 @@ function drawWeeklyChart(data) {
 
   ctx.clearRect(0, 0, width, height);
 
-  // Colors
+  // Colors based on type
   const gridColor = 'rgba(75, 85, 99, 0.3)';
   const textColor = '#9ca3af';
-  const lineColor = getCategoryColorValue('strength');
+  let lineColor;
+  let pointBgColor;
+
+  if (colorType === 'bodyweight') {
+    lineColor = '#22c55e'; // Green for bodyweight
+    pointBgColor = 'rgba(34, 197, 94, 0.2)';
+  } else {
+    lineColor = getCategoryColorValue('strength');
+    pointBgColor = 'rgba(240, 34, 119, 0.2)';
+  }
 
   // Grid
   ctx.strokeStyle = gridColor;
@@ -1099,7 +1334,7 @@ function drawWeeklyChart(data) {
   points.forEach(point => {
     ctx.beginPath();
     ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(240, 34, 119, 0.2)';
+    ctx.fillStyle = pointBgColor;
     ctx.fill();
 
     ctx.beginPath();
@@ -2010,6 +2245,7 @@ window.switchProgressTab = switchProgressTab;
 window.switchStrengthPeriod = switchStrengthPeriod;
 window.switchCardioPeriod = switchCardioPeriod;
 window.switchCardioMetric = switchCardioMetric;
+window.switchStrengthVolumeMetric = switchStrengthVolumeMetric;
 window.switchOverviewPeriod = switchOverviewPeriod;
 window.switchProgressPeriod = switchProgressPeriod;
 window.openExercisePickerSheet = openExercisePickerSheet;

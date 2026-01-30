@@ -8506,3 +8506,180 @@ input[type="range"]::-moz-range-progress {
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.08);
 }
+
+/* ===================================
+   SWIPE GESTURE TRANSITIONS
+   =================================== */
+
+#progress-tab-content,
+#view-training,
+#view-calendar {
+  will-change: transform;
+  touch-action: pan-y pinch-zoom;
+}
+
+.swipe-transitioning {
+  transition: transform 0.2s ease-out !important;
+}
+
+/* ===================================
+   STRENGTH VOLUME METRIC TOGGLE
+   =================================== */
+
+.strength-metric-toggle {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.375rem;
+  background: rgb(31 41 55);
+  border: 1px solid rgb(55 65 81);
+  border-radius: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.strength-metric-toggle .metric-btn {
+  flex: 1;
+  padding: 0.625rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.625rem;
+  color: #9ca3af;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.strength-metric-toggle .metric-btn .metric-label {
+  font-size: 0.6875rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.strength-metric-toggle .metric-btn.active {
+  background: var(--color-category-strength);
+  color: white;
+  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.3);
+}
+
+.strength-metric-toggle .metric-btn:not(.active):hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+}
+
+/* Strength Volume Stats with Type Indicator */
+.strength-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.strength-volume-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  padding: 0.375rem 0.75rem;
+  background: rgba(55, 65, 81, 0.3);
+  border-radius: 0.5rem;
+}
+
+.strength-volume-type .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.strength-volume-type.weighted {
+  color: var(--color-primary);
+  background: rgba(240, 34, 119, 0.1);
+}
+
+.strength-volume-type.bodyweight {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+/* Dual Volume Display */
+.dual-volume-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.volume-card {
+  padding: 1rem;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.875rem;
+}
+
+.volume-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.volume-card-header .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.volume-card.weighted .volume-card-header {
+  color: var(--color-primary);
+}
+
+.volume-card.bodyweight .volume-card-header {
+  color: #22c55e;
+}
+
+.volume-card-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #9ca3af;
+}
+
+.volume-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+}
+
+.volume-card-hint {
+  font-size: 0.6875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Volume Info Tooltip */
+.volume-info-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(55, 65, 81, 0.2);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.volume-info-hint .material-symbols-rounded {
+  font-size: 16px;
+  color: #9ca3af;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.volume-info-hint p {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.4;
+  margin: 0;
+}
