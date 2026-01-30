@@ -3044,7 +3044,6 @@ input::placeholder {
   color: var(--color-text);
   margin: 0;
   flex: 1;
-  text-align: center;
 }
 
 .bottom-sheet-close-btn {
@@ -3060,7 +3059,7 @@ input::placeholder {
   cursor: pointer;
   transition: all 0.2s ease;
   position: absolute;
-  right: 1.25rem;
+  right: 8%;
 }
 
 .bottom-sheet-close-btn:hover {
@@ -3077,6 +3076,7 @@ input::placeholder {
   padding: 1rem 1.25rem;
   border-bottom: 1px solid rgba(75, 85, 99, 0.3);
   flex-shrink: 0;
+  width: 100%;
 }
 
 .bottom-sheet-search .filter-input-wrapper {
@@ -8065,11 +8065,11 @@ input[type="range"]::-moz-range-progress {
    PLAN PICKER BOTTOM SHEET
    ======================================== */
 
-/* Overlay background */
+/* Overlay background - matching modal overlay */
 #plan-picker-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 10, 48, 0.9);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 2000;
@@ -8086,13 +8086,13 @@ input[type="range"]::-moz-range-progress {
   visibility: visible;
 }
 
-/* Bottom sheet panel */
+/* Bottom sheet panel - matching modal-content colors */
 #plan-picker-overlay .bottom-sheet {
   position: relative;
   width: 100%;
   max-width: 640px;
   max-height: 85vh;
-  background: var(--color-secondary-dark);
+  background: rgb(17 24 39);
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   display: flex;
@@ -8102,10 +8102,31 @@ input[type="range"]::-moz-range-progress {
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
   border: 1px solid var(--color-secondary-light);
   border-bottom: none;
+  align-items: center;
 }
 
 #plan-picker-overlay.active .bottom-sheet {
   transform: translateY(0);
+}
+
+/* Header alignment fix */
+#plan-picker-overlay .bottom-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  padding-top: 1.5rem;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  position: relative;
+  width: 100%;
+}
+
+/* Spacer to balance close button for centered title */
+#plan-picker-overlay .bottom-sheet-header::before {
+  content: '';
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
 }
 
 

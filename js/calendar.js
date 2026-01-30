@@ -531,9 +531,14 @@ function viewCalendarPlanDetails(scheduleId) {
 
   if (!plan) {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Plan nicht gefunden.');
-  }
+      showEdgeFeedback('error', 'Plan nicht gefunden.');
+    }
     return;
+  }
+
+  // Close day-detail-modal before opening plan details
+  if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
+    closeDayDetailModal();
   }
 
   // Use the existing viewPlanDetails function from plans.js
