@@ -7,10 +7,10 @@ let exercisesLoaded = false;
 // New unified period system: 7D, 30D, 6M, 1Y
 let progressOverviewPeriod = '7D';
 let progressStrengthPeriod = '7D';
+let progressBodyweightPeriod = '7D';
 let progressCardioPeriod = '7D';
 let activityCalendarDate = new Date(); // Current displayed month for activity calendar
 let hybridBalanceDays = 7; // 7 or 30 days for Hybrid Balance toggle on Progress
-let strengthVolumeMetric = 'combined'; // 'weighted', 'bodyweight', or 'combined'
 
 const trProgress = (key, params) => (typeof t === 'function' ? t(key, params) : key);
 
@@ -61,14 +61,14 @@ async function loadExercisesForProgressV2() {
 // ==================== SEGMENTED CONTROL ====================
 
 /**
- * Rendert Segmented Control
+ * Rendert Segmented Control (4 Tabs: Overview, Strength, Bodyweight, Cardio)
  */
 function renderSegmentedControl(activeTab = 'overview') {
   const container = document.getElementById('progress-segmented-control');
   if (!container) return;
 
   container.innerHTML = `
-    <div class="segmented-control">
+    <div class="segmented-control segmented-control-4">
       <button
         class="segmented-btn ${activeTab === 'overview' ? 'active' : ''}"
         onclick="switchProgressTab('overview')"
@@ -84,6 +84,14 @@ function renderSegmentedControl(activeTab = 'overview') {
       >
         <span class="material-symbols-rounded">fitness_center</span>
         <span>${trProgress('progress.tabs.strength')}</span>
+      </button>
+      <button
+        class="segmented-btn ${activeTab === 'bodyweight' ? 'active' : ''}"
+        onclick="switchProgressTab('bodyweight')"
+        data-tab="bodyweight"
+      >
+        <span class="material-symbols-rounded">sports_gymnastics</span>
+        <span>${trProgress('progress.tabs.bodyweight')}</span>
       </button>
       <button
         class="segmented-btn ${activeTab === 'cardio' ? 'active' : ''}"
@@ -131,6 +139,8 @@ function renderCurrentProgressTab() {
     renderOverviewTab();
   } else if (tab === 'strength') {
     renderStrengthTab();
+  } else if (tab === 'bodyweight') {
+    renderBodyweightTab();
   } else if (tab === 'cardio') {
     renderCardioTab();
   }
@@ -167,17 +177,23 @@ function renderOverviewTab() {
   }
 
   // Calculate stats using the new period system
-  const periodDays = 7;
+  const periodDays = hybridBalanceDays;
   const currentStats = calculateOverviewStats(periodDays);
+  const consistencyStats = calculateConsistencyStats(periodDays === 7 ? '7D' : '30D');
+  const balanceData = computeHybridBalance(periodDays);
+  const insight = generateCalmInsight(consistencyStats, balanceData);
 
   container.innerHTML = `
     <div class="overview-section">
-      <div id="overview-stats-container">
-        ${renderOverviewStatsHTML(currentStats)}
-      </div>
-      <p class="overview-helper">${trProgress('progress.overview.consistencyHelper')}</p>
-
       ${renderHybridBalanceHTML()}
+
+      ${renderConsistencyCardHTML(consistencyStats)}
+
+      <!-- Calm Insight -->
+      <div class="calm-insight-card">
+        <span class="material-symbols-rounded insight-icon">lightbulb</span>
+        <p class="insight-text">${trProgress(insight.key, insight.params)}</p>
+      </div>
 
       <div class="overview-section-header">
         <h3 class="overview-section-title">${trProgress('progress.overview.activityCalendarTitle')}</h3>
@@ -192,6 +208,41 @@ function renderOverviewTab() {
     <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
       <span class="material-symbols-rounded">add</span>
     </button>
+  `;
+}
+
+/**
+ * Renders the Consistency Card (Rhythmus & Konsistenz)
+ */
+function renderConsistencyCardHTML(stats) {
+  const daysSinceText = stats.daysSinceLastSession !== null
+    ? `${stats.daysSinceLastSession} ${trProgress('progress.consistency.daysSinceLastUnit')}`
+    : '-';
+
+  return `
+    <div class="progress-card consistency-card">
+      <div class="card-header">
+        <h3 class="card-title">${trProgress('progress.consistency.title')}</h3>
+      </div>
+      <div class="consistency-stats-grid">
+        <div class="consistency-stat">
+          <span class="consistency-value">${stats.sessionsPerWeek}</span>
+          <span class="consistency-label">${trProgress('progress.consistency.sessionsPerWeek')}</span>
+        </div>
+        <div class="consistency-stat">
+          <span class="consistency-value">${formatDurationText(stats.avgTrainingMinutesPerWeek * 60)}</span>
+          <span class="consistency-label">${trProgress('progress.consistency.timePerWeek')}</span>
+        </div>
+        <div class="consistency-stat">
+          <span class="consistency-value">${daysSinceText}</span>
+          <span class="consistency-label">${trProgress('progress.consistency.daysSinceLast')}</span>
+        </div>
+        <div class="consistency-stat">
+          <span class="consistency-value">${stats.trainingDaysInPeriod}</span>
+          <span class="consistency-label">${trProgress('progress.consistency.trainingDays')}</span>
+        </div>
+      </div>
+    </div>
   `;
 }
 
@@ -220,7 +271,7 @@ function renderProgressPeriodSelector(section, currentPeriod) {
 
 /**
  * Switches period for a specific section
- * @param {string} section - 'overview', 'strength', or 'cardio'
+ * @param {string} section - 'overview', 'strength', 'bodyweight', or 'cardio'
  * @param {PeriodKey} periodKey
  */
 function switchProgressPeriod(section, periodKey) {
@@ -230,6 +281,9 @@ function switchProgressPeriod(section, periodKey) {
   } else if (section === 'strength') {
     progressStrengthPeriod = periodKey;
     renderStrengthTab();
+  } else if (section === 'bodyweight') {
+    progressBodyweightPeriod = periodKey;
+    renderBodyweightTab();
   } else if (section === 'cardio') {
     progressCardioPeriod = periodKey;
     renderCardioTab();
@@ -827,6 +881,9 @@ async function deleteSessionWithReferences(sessionId) {
 
 // ==================== STRENGTH TAB ====================
 
+/**
+ * Renders the Strength Tab - Load Index based (gewichtete Übungen only)
+ */
 function renderStrengthTab() {
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
@@ -841,9 +898,10 @@ function renderStrengthTab() {
     return;
   }
 
-  const strengthSessions = allSessions.filter(s => s.type === 'strength');
+  // Check for weighted strength sessions
+  const loadStats = calculateWeightedLoadStats(progressStrengthPeriod);
 
-  if (strengthSessions.length === 0) {
+  if (!loadStats.hasData && loadStats.totalSessions === 0) {
     container.innerHTML = `
       <div class="progress-empty-state">
         <span class="material-symbols-rounded progress-empty-icon">fitness_center</span>
@@ -857,26 +915,25 @@ function renderStrengthTab() {
     return;
   }
 
-  // Calculate dual stats to determine which metrics to show
-  const dualStats = typeof calculateDualStrengthStats === 'function'
-    ? calculateDualStrengthStats(progressStrengthPeriod, exercisesData)
-    : null;
-
-  const showMetricToggle = dualStats && (dualStats.hasWeighted || dualStats.hasBodyweight);
+  // Calculate variance
+  const variance = calculateTrainingVariance(progressStrengthPeriod);
 
   container.innerHTML = `
     <div class="strength-section">
       <!-- Period Selector -->
       ${renderProgressPeriodSelector('strength', progressStrengthPeriod)}
 
-      <!-- Metric Toggle (only if we have data) -->
-      ${showMetricToggle ? renderStrengthMetricToggle(dualStats) : ''}
+      <!-- Load Index Card -->
+      <div class="progress-card load-index-card">
+        <div class="card-header">
+          <h3 class="card-title">${trProgress('progress.strength.loadIndex.title')}</h3>
+        </div>
+        <p class="card-hint">${trProgress('progress.strength.loadIndex.hint')}</p>
+        <div id="strength-stats-container"></div>
+      </div>
 
-      <!-- Stats -->
-      <div id="strength-stats-container"></div>
-
-      <!-- Volume Info Hint -->
-      ${renderVolumeInfoHint()}
+      <!-- Variance Card -->
+      ${renderVarianceCardHTML(variance)}
 
       <!-- Chart -->
       <div id="strength-chart-container" class="progress-chart-container"></div>
@@ -887,103 +944,220 @@ function renderStrengthTab() {
     </div>
   `;
 
-  renderStrengthStats();
-  renderStrengthChart();
+  renderStrengthLoadStats();
+  renderStrengthLoadChart();
 }
 
 /**
- * Renders the strength metric toggle (Weighted / Bodyweight / Combined)
+ * Renders the Variance Card
  */
-function renderStrengthMetricToggle(dualStats) {
-  const hasWeighted = dualStats?.hasWeighted;
-  const hasBodyweight = dualStats?.hasBodyweight;
+function renderVarianceCardHTML(variance) {
+  let varianceLabel;
+  let varianceColor;
 
-  // If only one type exists, auto-select it
-  if (hasWeighted && !hasBodyweight) {
-    strengthVolumeMetric = 'weighted';
-  } else if (!hasWeighted && hasBodyweight) {
-    strengthVolumeMetric = 'bodyweight';
+  if (variance >= 0.5) {
+    varianceLabel = trProgress('progress.strength.variance.high');
+    varianceColor = 'var(--color-success)';
+  } else if (variance >= 0.25) {
+    varianceLabel = trProgress('progress.strength.variance.medium');
+    varianceColor = 'var(--color-warning)';
+  } else {
+    varianceLabel = trProgress('progress.strength.variance.low');
+    varianceColor = 'var(--color-primary)';
   }
 
   return `
-    <div class="strength-metric-toggle">
-      ${hasWeighted ? `
-        <button
-          class="metric-btn ${strengthVolumeMetric === 'weighted' ? 'active' : ''}"
-          onclick="switchStrengthVolumeMetric('weighted')"
-          data-metric="weighted"
-        >
-          <span class="material-symbols-rounded">fitness_center</span>
-          <span class="metric-label">${trProgress('progress.strength.volume.weightedShort')}</span>
-        </button>
-      ` : ''}
-      ${hasBodyweight ? `
-        <button
-          class="metric-btn ${strengthVolumeMetric === 'bodyweight' ? 'active' : ''}"
-          onclick="switchStrengthVolumeMetric('bodyweight')"
-          data-metric="bodyweight"
-        >
-          <span class="material-symbols-rounded">self_improvement</span>
-          <span class="metric-label">${trProgress('progress.strength.volume.bodyweightShort')}</span>
-        </button>
-      ` : ''}
-      ${hasWeighted && hasBodyweight ? `
-        <button
-          class="metric-btn ${strengthVolumeMetric === 'combined' ? 'active' : ''}"
-          onclick="switchStrengthVolumeMetric('combined')"
-          data-metric="combined"
-        >
-          <span class="material-symbols-rounded">join</span>
-          <span class="metric-label">${trProgress('progress.strength.volume.combined')}</span>
-        </button>
-      ` : ''}
+    <div class="progress-card variance-card">
+      <div class="card-header">
+        <h3 class="card-title">${trProgress('progress.strength.variance.title')}</h3>
+      </div>
+      <p class="card-hint">${trProgress('progress.strength.variance.hint')}</p>
+      <div class="variance-display">
+        <div class="variance-bar-container">
+          <div class="variance-bar" style="width: ${Math.round(variance * 100)}%; background: ${varianceColor};"></div>
+        </div>
+        <span class="variance-label" style="color: ${varianceColor};">${varianceLabel}</span>
+      </div>
     </div>
   `;
 }
 
 /**
- * Renders the volume info hint
+ * Renders the Load Index stats (Last/Best/Avg/Sessions)
  */
-function renderVolumeInfoHint() {
-  const infoText = strengthVolumeMetric === 'weighted'
-    ? trProgress('progress.strength.volume.infoWeighted')
-    : strengthVolumeMetric === 'bodyweight'
-      ? trProgress('progress.strength.volume.infoBodyweight')
-      : trProgress('progress.strength.helper');
+function renderStrengthLoadStats() {
+  const container = document.getElementById('strength-stats-container');
+  if (!container) return;
 
-  return `
-    <div class="volume-info-hint">
-      <span class="material-symbols-rounded">info</span>
-      <p>${infoText}</p>
+  const stats = calculateWeightedLoadStats(progressStrengthPeriod);
+  const bucketLabel = PERIOD_CONFIG[progressStrengthPeriod]?.bucketType === 'weekly'
+    ? trProgress('progress.period.bucket.week')
+    : trProgress('progress.period.bucket.day');
+  const lastLabel = trProgress('progress.labels.lastBucket', { bucket: bucketLabel });
+  const bestLabel = trProgress('progress.labels.bestBucket', { bucket: bucketLabel });
+
+  if (!stats.hasData) {
+    container.innerHTML = `
+      <div class="no-data-hint">
+        <span class="material-symbols-rounded">info</span>
+        <p>${trProgress('progress.strength.loadIndex.noData')}</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="progress-stats-grid">
+      <div class="progress-stat-card">
+        <p class="stat-label">${lastLabel}</p>
+        <p class="stat-value">${stats.lastValue > 0 ? stats.lastValue : '-'}</p>
+        <p class="stat-unit">${trProgress('progress.strength.loadIndex.unit')}</p>
+      </div>
+      <div class="progress-stat-card">
+        <p class="stat-label">${bestLabel}</p>
+        <p class="stat-value">${stats.bestValue > 0 ? stats.bestValue : '-'}</p>
+        <p class="stat-unit">${trProgress('progress.strength.loadIndex.unit')}</p>
+      </div>
+      <div class="progress-stat-card">
+        <p class="stat-label">${trProgress('progress.strength.stats.average')}</p>
+        <p class="stat-value">${stats.avgValue > 0 ? stats.avgValue : '-'}</p>
+        <p class="stat-unit">${trProgress('progress.strength.loadIndex.unit')}</p>
+      </div>
+      <div class="progress-stat-card">
+        <p class="stat-label">${trProgress('progress.strength.stats.sessions')}</p>
+        <p class="stat-value">${stats.totalSessions}</p>
+      </div>
     </div>
   `;
 }
 
 /**
- * Switches the strength volume metric
+ * Renders the Load Index Chart
  */
-function switchStrengthVolumeMetric(metric) {
-  strengthVolumeMetric = metric;
-  renderStrengthStats();
-  renderStrengthChart();
-  triggerHapticFeedback('light');
+function renderStrengthLoadChart() {
+  const container = document.getElementById('strength-chart-container');
+  if (!container) return;
 
-  // Update active button state
-  document.querySelectorAll('.strength-metric-toggle .metric-btn').forEach(btn => {
-    const btnMetric = btn.dataset.metric;
-    btn.classList.toggle('active', btnMetric === metric);
+  const data = aggregateWeightedLoadByPeriod(progressStrengthPeriod);
+
+  if (!data || data.length === 0 || data.every(d => d.avgLoad === 0)) {
+    container.innerHTML = `
+      <div class="chart-empty-state">
+        <p>${trProgress('progress.strength.noData')}</p>
+      </div>
+    `;
+    return;
+  }
+
+  const chartTitle = trProgress('progress.strength.loadIndex.chartTitle', {
+    period: trProgress(PERIOD_CONFIG[progressStrengthPeriod].labelKey)
   });
 
-  // Update info hint
-  const infoHint = document.querySelector('.volume-info-hint p');
-  if (infoHint) {
-    const infoText = metric === 'weighted'
-      ? trProgress('progress.strength.volume.infoWeighted')
-      : metric === 'bodyweight'
-        ? trProgress('progress.strength.volume.infoBodyweight')
-        : trProgress('progress.strength.helper');
-    infoHint.textContent = infoText;
+  container.innerHTML = `
+    <div class="chart-header">
+      <h4 class="chart-title">${chartTitle}</h4>
+    </div>
+    <canvas id="strength-load-chart" width="400" height="200"></canvas>
+  `;
+
+  drawLoadIndexChart('strength-load-chart', data);
+}
+
+/**
+ * Draws a Load Index line chart
+ */
+function drawLoadIndexChart(canvasId, data) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  // Set canvas dimensions
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const width = rect.width;
+  const height = rect.height;
+  const padding = { top: 20, right: 20, bottom: 40, left: 50 };
+
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+
+  // Clear canvas
+  ctx.clearRect(0, 0, width, height);
+
+  // Get values
+  const values = data.map(d => d.avgLoad || d.value || 0);
+  const maxValue = Math.max(...values, 1);
+  const minValue = 0;
+
+  // Draw grid lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.lineWidth = 1;
+
+  const gridLines = 4;
+  for (let i = 0; i <= gridLines; i++) {
+    const y = padding.top + (chartHeight / gridLines) * i;
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(width - padding.right, y);
+    ctx.stroke();
+
+    // Y-axis labels
+    const value = maxValue - (maxValue / gridLines) * i;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = '10px system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText(Math.round(value), padding.left - 8, y + 4);
   }
+
+  // Draw line
+  if (values.length > 1) {
+    ctx.beginPath();
+    ctx.strokeStyle = 'var(--color-category-strength)';
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    values.forEach((value, i) => {
+      const x = padding.left + (chartWidth / (values.length - 1)) * i;
+      const y = padding.top + chartHeight - (value / maxValue) * chartHeight;
+
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    ctx.stroke();
+
+    // Draw points
+    values.forEach((value, i) => {
+      const x = padding.left + (chartWidth / (values.length - 1)) * i;
+      const y = padding.top + chartHeight - (value / maxValue) * chartHeight;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = value > 0 ? 'var(--color-category-strength)' : 'rgba(255,255,255,0.2)';
+      ctx.fill();
+    });
+  }
+
+  // X-axis labels
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.font = '10px system-ui';
+  ctx.textAlign = 'center';
+
+  const labelStep = Math.ceil(data.length / 6);
+  data.forEach((d, i) => {
+    if (i % labelStep === 0 || i === data.length - 1) {
+      const x = padding.left + (chartWidth / (data.length - 1)) * i;
+      ctx.fillText(d.label, x, height - 10);
+    }
+  });
 }
 
 /**
@@ -1354,6 +1528,304 @@ function drawWeeklyChart(data, colorType = 'strength') {
     if (i % labelStep === 0 || i === data.length - 1) {
       const point = points[i];
       ctx.fillText(d.weekLabel, point.x, padding.top + chartHeight + 10);
+    }
+  });
+}
+
+// ==================== BODYWEIGHT TAB ====================
+
+/**
+ * Renders the Bodyweight Tab - Intensitätsniveaus und Effort-Trend
+ */
+function renderBodyweightTab() {
+  const container = document.getElementById('progress-tab-content');
+  if (!container) return;
+
+  if (!sessionsLoaded) {
+    container.innerHTML = `
+      <div class="progress-loading">
+        <div class="spinner"></div>
+        <p>${trProgress('common.loading')}</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Check for bodyweight sessions
+  const bwStats = calculateBodyweightStats(progressBodyweightPeriod, exercisesData);
+
+  if (!bwStats.hasData && bwStats.totalSessions === 0) {
+    container.innerHTML = `
+      <div class="progress-empty-state">
+        <span class="material-symbols-rounded progress-empty-icon">sports_gymnastics</span>
+        <h3>${trProgress('progress.bodyweight.emptyTitle')}</h3>
+        <p>${trProgress('progress.bodyweight.emptyBody')}</p>
+      </div>
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn bodyweight" aria-label="${trProgress('common.add')}" type="button">
+        <span class="material-symbols-rounded">add</span>
+      </button>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="bodyweight-section">
+      <!-- Period Selector -->
+      ${renderProgressPeriodSelector('bodyweight', progressBodyweightPeriod)}
+
+      <!-- Intensity Levels Card -->
+      <div class="progress-card intensity-card">
+        <div class="card-header">
+          <h3 class="card-title">${trProgress('progress.bodyweight.intensityTitle')}</h3>
+        </div>
+        <p class="card-hint">${trProgress('progress.bodyweight.intensityHint')}</p>
+        <div id="intensity-distribution-container"></div>
+      </div>
+
+      <!-- Effort Stats Card -->
+      <div class="progress-card effort-card">
+        <div class="card-header">
+          <h3 class="card-title">${trProgress('progress.bodyweight.effortTitle')}</h3>
+        </div>
+        <p class="card-hint">${trProgress('progress.bodyweight.effortHint')}</p>
+        <div id="bodyweight-stats-container"></div>
+      </div>
+
+      <!-- Chart -->
+      <div id="bodyweight-chart-container" class="progress-chart-container"></div>
+
+      <button onclick="openStrengthQuickAdd()" class="floating-add-btn bodyweight" aria-label="${trProgress('common.add')}" type="button">
+        <span class="material-symbols-rounded">add</span>
+      </button>
+    </div>
+  `;
+
+  renderIntensityDistribution();
+  renderBodyweightStats();
+  renderBodyweightChart();
+}
+
+/**
+ * Renders the Intensity Distribution (Low/Medium/High)
+ */
+function renderIntensityDistribution() {
+  const container = document.getElementById('intensity-distribution-container');
+  if (!container) return;
+
+  const data = aggregateBodyweightByPeriod(progressBodyweightPeriod, exercisesData);
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `
+      <div class="no-data-hint">
+        <span class="material-symbols-rounded">info</span>
+        <p>${trProgress('progress.bodyweight.noData')}</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Count intensity classes
+  let lowCount = 0;
+  let mediumCount = 0;
+  let highCount = 0;
+
+  data.forEach(d => {
+    if (d.sessionCount > 0) {
+      if (d.intensityClass === 'high') highCount++;
+      else if (d.intensityClass === 'medium') mediumCount++;
+      else if (d.intensityClass === 'low') lowCount++;
+    }
+  });
+
+  const total = lowCount + mediumCount + highCount;
+  const lowPct = total > 0 ? Math.round((lowCount / total) * 100) : 0;
+  const medPct = total > 0 ? Math.round((mediumCount / total) * 100) : 0;
+  const highPct = total > 0 ? Math.round((highCount / total) * 100) : 0;
+
+  container.innerHTML = `
+    <div class="intensity-bars">
+      <div class="intensity-row">
+        <span class="intensity-label">${trProgress('progress.bodyweight.intensityHigh')}</span>
+        <div class="intensity-bar-container">
+          <div class="intensity-bar high" style="width: ${highPct}%;"></div>
+        </div>
+        <span class="intensity-count">${highCount}</span>
+      </div>
+      <div class="intensity-row">
+        <span class="intensity-label">${trProgress('progress.bodyweight.intensityMedium')}</span>
+        <div class="intensity-bar-container">
+          <div class="intensity-bar medium" style="width: ${medPct}%;"></div>
+        </div>
+        <span class="intensity-count">${mediumCount}</span>
+      </div>
+      <div class="intensity-row">
+        <span class="intensity-label">${trProgress('progress.bodyweight.intensityLow')}</span>
+        <div class="intensity-bar-container">
+          <div class="intensity-bar low" style="width: ${lowPct}%;"></div>
+        </div>
+        <span class="intensity-count">${lowCount}</span>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Renders the Bodyweight Stats (Last/Best/Avg/Sessions)
+ */
+function renderBodyweightStats() {
+  const container = document.getElementById('bodyweight-stats-container');
+  if (!container) return;
+
+  const stats = calculateBodyweightStats(progressBodyweightPeriod, exercisesData);
+  const bucketLabel = PERIOD_CONFIG[progressBodyweightPeriod]?.bucketType === 'weekly'
+    ? trProgress('progress.period.bucket.week')
+    : trProgress('progress.period.bucket.day');
+  const lastLabel = trProgress('progress.labels.lastBucket', { bucket: bucketLabel });
+  const bestLabel = trProgress('progress.labels.bestBucket', { bucket: bucketLabel });
+
+  if (!stats.hasData) {
+    container.innerHTML = `
+      <div class="no-data-hint">
+        <span class="material-symbols-rounded">info</span>
+        <p>${trProgress('progress.bodyweight.noData')}</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="progress-stats-grid">
+      <div class="progress-stat-card">
+        <p class="stat-label">${lastLabel}</p>
+        <p class="stat-value">${stats.lastValue > 0 ? stats.lastValue : '-'}</p>
+      </div>
+      <div class="progress-stat-card">
+        <p class="stat-label">${bestLabel}</p>
+        <p class="stat-value">${stats.bestValue > 0 ? stats.bestValue : '-'}</p>
+      </div>
+      <div class="progress-stat-card">
+        <p class="stat-label">${trProgress('progress.bodyweight.stats.average')}</p>
+        <p class="stat-value">${stats.avgValue > 0 ? stats.avgValue : '-'}</p>
+      </div>
+      <div class="progress-stat-card">
+        <p class="stat-label">${trProgress('progress.bodyweight.stats.sessions')}</p>
+        <p class="stat-value">${stats.totalSessions}</p>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Renders the Bodyweight Effort Chart
+ */
+function renderBodyweightChart() {
+  const container = document.getElementById('bodyweight-chart-container');
+  if (!container) return;
+
+  const data = aggregateBodyweightByPeriod(progressBodyweightPeriod, exercisesData);
+
+  if (!data || data.length === 0 || data.every(d => d.effortVolume === 0)) {
+    container.innerHTML = `
+      <div class="chart-empty-state">
+        <p>${trProgress('progress.bodyweight.noData')}</p>
+      </div>
+    `;
+    return;
+  }
+
+  const chartTitle = trProgress('progress.bodyweight.chartTitle', {
+    period: trProgress(PERIOD_CONFIG[progressBodyweightPeriod].labelKey)
+  });
+
+  container.innerHTML = `
+    <div class="chart-header">
+      <h4 class="chart-title">${chartTitle}</h4>
+    </div>
+    <canvas id="bodyweight-effort-chart" width="400" height="200"></canvas>
+  `;
+
+  drawBodyweightEffortChart('bodyweight-effort-chart', data);
+}
+
+/**
+ * Draws a Bodyweight Effort chart with intensity colors
+ */
+function drawBodyweightEffortChart(canvasId, data) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const width = rect.width;
+  const height = rect.height;
+  const padding = { top: 20, right: 20, bottom: 40, left: 50 };
+
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+
+  ctx.clearRect(0, 0, width, height);
+
+  const values = data.map(d => d.effortVolume || d.value || 0);
+  const maxValue = Math.max(...values, 1);
+
+  // Draw grid lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.lineWidth = 1;
+
+  const gridLines = 4;
+  for (let i = 0; i <= gridLines; i++) {
+    const y = padding.top + (chartHeight / gridLines) * i;
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(width - padding.right, y);
+    ctx.stroke();
+
+    const value = maxValue - (maxValue / gridLines) * i;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = '10px system-ui';
+    ctx.textAlign = 'right';
+    ctx.fillText(Math.round(value), padding.left - 8, y + 4);
+  }
+
+  // Draw bars with intensity colors
+  const barWidth = Math.max(8, (chartWidth / data.length) * 0.6);
+  const barSpacing = chartWidth / data.length;
+
+  data.forEach((d, i) => {
+    const x = padding.left + barSpacing * i + (barSpacing - barWidth) / 2;
+    const barHeight = (d.effortVolume / maxValue) * chartHeight;
+    const y = padding.top + chartHeight - barHeight;
+
+    // Color based on intensity class
+    let color;
+    if (d.intensityClass === 'high') color = '#ef4444';
+    else if (d.intensityClass === 'medium') color = '#f59e0b';
+    else color = '#22c55e';
+
+    if (d.effortVolume > 0) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(x, y, barWidth, barHeight, 4);
+      ctx.fill();
+    }
+  });
+
+  // X-axis labels
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.font = '10px system-ui';
+  ctx.textAlign = 'center';
+
+  const labelStep = Math.ceil(data.length / 6);
+  data.forEach((d, i) => {
+    if (i % labelStep === 0 || i === data.length - 1) {
+      const x = padding.left + barSpacing * i + barSpacing / 2;
+      ctx.fillText(d.label, x, height - 10);
     }
   });
 }

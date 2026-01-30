@@ -300,15 +300,11 @@ function getAuthState() {
  */
 function showLoadingState(message = 'Lädt...') {
   const splash = document.getElementById('auth-splash');
-  const splashText = document.getElementById('splash-text');
+  setLoadingProgress(10);
 
   if (splash) {
     splash.classList.add('active');
     document.body.style.overflow = 'hidden';
-  }
-
-  if (splashText) {
-    splashText.textContent = message;
   }
 }
 
@@ -324,6 +320,24 @@ function hideLoadingState() {
       splash.classList.remove('active');
       document.body.style.overflow = '';
     }, 300);
+  }
+}
+
+/**
+ * Update splash progress bar (0-100)
+ */
+function setLoadingProgress(percent) {
+  const splash = document.getElementById('auth-splash');
+  const progress = document.querySelector('.splash-progress');
+  const bar = document.querySelector('.splash-progress-bar');
+  if (!progress || !bar) return;
+
+  const safeValue = Math.max(0, Math.min(100, Number(percent) || 0));
+  bar.style.width = `${safeValue}%`;
+  progress.setAttribute('aria-valuenow', String(safeValue));
+
+  if (splash && !splash.classList.contains('active')) {
+    splash.classList.add('active');
   }
 }
 
@@ -362,7 +376,6 @@ function showMainApp() {
   }
 
   hideAuthError();
-  hideLoadingState();
 }
 
 /**
@@ -487,6 +500,9 @@ window.authModule = {
   onAuthStateChange,
   handleGoogleSignIn,
   handleSignOut,
+  showLoadingState,
+  hideLoadingState,
+  setLoadingProgress,
   showLoginScreen,
   showMainApp,
   AUTH_STATES
