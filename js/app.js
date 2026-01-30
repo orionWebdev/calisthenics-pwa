@@ -9,22 +9,54 @@ let radialMenuOpen = false;
 // View titles for mobile
 const viewTitles = {
   dashboard: 'Dashboard',
-  exercises: 'Übungen',
-  plans: 'Pläne',
-  calendar: 'Kalender',
   progress: 'Progress',
+  calendar: 'Kalender',
+  training: 'Training',
+  workout: 'Workout',
   profile: 'Profil'
 };
 
 // View icons for FAB
 const viewIcons = {
   dashboard: 'home',
-  exercises: 'fitness_center',
-  plans: 'assignment',
-  calendar: 'calendar_month',
   progress: 'trending_up',
+  calendar: 'calendar_month',
+  training: 'fitness_center',
+  workout: 'fitness_center',
   profile: 'account_circle'
 };
+
+// Training tab state
+let currentTrainingTab = 'plans';
+
+function loadTrainingTab() {
+  const stored = localStorage.getItem('trainingTab');
+  return stored === 'exercises' ? 'exercises' : 'plans';
+}
+
+function saveTrainingTab(tab) {
+  localStorage.setItem('trainingTab', tab);
+}
+
+function switchTrainingTab(tab) {
+  const nextTab = tab === 'exercises' ? 'exercises' : 'plans';
+  currentTrainingTab = nextTab;
+  saveTrainingTab(nextTab);
+
+  document.querySelectorAll('#training-segmented-control .segmented-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === nextTab);
+  });
+
+  const plansTab = document.getElementById('training-tab-plans');
+  const exercisesTab = document.getElementById('training-tab-exercises');
+  if (plansTab) plansTab.classList.toggle('active', nextTab === 'plans');
+  if (exercisesTab) exercisesTab.classList.toggle('active', nextTab === 'exercises');
+}
+
+function showTrainingTab(tab) {
+  showView('training');
+  switchTrainingTab(tab || currentTrainingTab);
+}
 
 // ========================================
 // NAVIGATION
@@ -53,10 +85,14 @@ function showView(viewName) {
   const bottomNavBtn = document.querySelector(`.bottom-nav [data-view="${viewName}"]`);
   if (bottomNavBtn) bottomNavBtn.classList.add('active');
 
-  // Update mobile title
+  // Update mobile header title and icon
   const mobileTitle = document.getElementById('mobile-view-title');
+  const mobileIcon = document.getElementById('mobile-view-icon');
   if (mobileTitle) {
     mobileTitle.textContent = viewTitles[viewName] || viewName;
+  }
+  if (mobileIcon) {
+    mobileIcon.textContent = viewIcons[viewName] || 'fitness_center';
   }
 
   // Update FAB icon based on current view
@@ -65,6 +101,35 @@ function showView(viewName) {
   // Load view-specific data
   if (viewName === 'calendar' && typeof loadSchedule === 'function') {
     loadSchedule();
+  }
+
+  if (viewName === 'training') {
+    switchTrainingTab(loadTrainingTab());
+  }
+
+  // Initialize progress page when first opened
+  if (viewName === 'progress') {
+    if (typeof initProgressV2 === 'function') {
+      initProgressV2();
+    } else if (typeof initProgress === 'function') {
+      initProgress();
+    }
+  }
+
+  if (viewName === 'dashboard' && typeof refreshDashboard === 'function') {
+    refreshDashboard();
+  }
+
+  if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
+    renderWorkoutScreen();
+  }
+
+  if (viewName !== 'workout' && typeof ensureActiveWorkoutBanner === 'function') {
+    ensureActiveWorkoutBanner();
+  }
+
+  if (viewName !== 'progress' && typeof closeAllPickerSheets === 'function') {
+    closeAllPickerSheets();
   }
 
   currentView = viewName;
@@ -178,10 +243,32 @@ window.addEventListener('scroll', () => {
 });
 
 // ========================================
+// PROFILE
+// ========================================
+
+/**
+ * Update profile information with user data
+ */
+function updateProfileInfo(user) {
+  if (!user) return;
+
+  const nameElement = document.getElementById('profile-user-name');
+  const emailElement = document.getElementById('profile-user-email');
+
+  if (nameElement) {
+    nameElement.textContent = user.displayName || 'Benutzer';
+  }
+
+  if (emailElement) {
+    emailElement.textContent = user.email || '';
+  }
+}
+
+// ========================================
 // INITIALIZATION
 // ========================================
 
-async function init() {
+async function initApp() {
   console.log('🚀 Initializing Calisthenics Pro...');
 
   try {
@@ -209,7 +296,13 @@ async function init() {
       console.warn('⚠️ loadSchedule function not found');
     }
 
-    // 5. Setup real-time listeners
+    // 5. Load session templates
+    console.log('📝 Loading session templates...');
+    if (typeof loadSessionTemplates === 'function') {
+      await loadSessionTemplates();
+    }
+
+    // 6. Setup real-time listeners
     console.log('🔄 Setting up real-time listeners...');
     if (typeof setupExercisesListener === 'function') {
       setupExercisesListener();
@@ -220,12 +313,55 @@ async function init() {
     if (typeof setupScheduleListener === 'function') {
       setupScheduleListener();
     }
+    if (typeof setupSessionTemplatesListener === 'function') {
+      setupSessionTemplatesListener();
+    }
+
+    if (typeof checkActiveWorkout === 'function') {
+      checkActiveWorkout();
+    }
 
     console.log('✅ App initialized successfully!');
   } catch (error) {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
-    alert('Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+  }
+  }
+}
+
+/**
+ * Initialize authentication and app
+ */
+async function init() {
+  console.log('🔐 Initializing authentication...');
+
+  try {
+    // Initialize auth listener
+    await window.authModule.initAuth();
+
+    // Subscribe to auth state changes
+    window.authModule.onAuthStateChange((user, state) => {
+      console.log('🔐 Auth state changed:', state, user?.email);
+
+      if (state === window.authModule.AUTH_STATES.LOGGED_IN) {
+        // User is authenticated and allowed - show app
+        window.authModule.showMainApp();
+        updateProfileInfo(user);
+        initApp(); // Initialize app data
+      } else if (state === window.authModule.AUTH_STATES.LOGGED_OUT ||
+                 state === window.authModule.AUTH_STATES.ACCESS_DENIED) {
+        // User is not authenticated or not allowed - show login
+        window.authModule.showLoginScreen();
+      }
+    });
+
+    console.log('✅ Auth initialized successfully!');
+  } catch (error) {
+    console.error('❌ Error initializing auth:', error);
+    // Show login screen on error
+    window.authModule.showLoginScreen();
   }
 }
 
@@ -244,7 +380,12 @@ document.addEventListener('click', (e) => {
 // SERVICE WORKER REGISTRATION
 // ========================================
 
-if ('serviceWorker' in navigator) {
+// Only register Service Worker in production (not on localhost/127.0.0.1)
+const isLocalhost = window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.hostname === '';
+
+if ('serviceWorker' in navigator && !isLocalhost) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw.js')
@@ -255,6 +396,8 @@ if ('serviceWorker' in navigator) {
         console.error('❌ Service Worker registration failed:', error);
       });
   });
+} else if (isLocalhost) {
+  console.log('🔧 Development mode: Service Worker registration skipped');
 }
 
 // ========================================

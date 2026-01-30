@@ -1,217 +1,444 @@
 // ========================================
-// DASHBOARD - DEMO DATA & RENDERING
+// DASHBOARD - SESSIONS ONLY
 // ========================================
 
-// Demo-Daten (später aus Firebase berechnen)
-const dashboardData = {
-  todayWorkout: {
-    hasWorkout: true,
-    name: "Pull Day",
-    time: "18:00",
-    exerciseCount: 5,
-    duration: 45,
-    planId: null // später aus calendar
-  },
-  weekProgress: {
-    completed: 4,
-    total: 6
-  },
-  streak: 12,
-  totalReps: 1250,
-  nextAchievement: {
-    name: "Gorilla Mode",
-    description: "500 Pull-ups total",
-    current: 420,
-    target: 500
-  },
-  topExercises: [
-    { name: "Pull-ups", reps: 120 },
-    { name: "Push-ups", reps: 180 },
-    { name: "Dips", reps: 90 }
-  ]
-};
+const DASHBOARD_RECENT_LIMIT = 5;
+// Dashboard Hybrid Balance fixed to 7 days - no toggle
+const DASHBOARD_BALANCE_DAYS = 7;
+let dashboardIsLoading = false;
 
-// ========================================
-// RENDER FUNCTIONS
-// ========================================
+const tr = (key, params) => (typeof t === 'function' ? t(key, params) : key);
 
-function renderTodayWorkout() {
-  const container = document.getElementById('today-workout-card');
-  if (!container) return;
+function getSessionDate(session) {
+  if (session?.date?.toDate) {
+    return session.date.toDate();
+  }
+  const parsed = new Date(session?.date);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+}
 
-  const data = dashboardData.todayWorkout;
+function getSessionDateTime(session) {
+  if (session?.createdAt?.toDate) {
+    return session.createdAt.toDate();
+  }
+  const createdParsed = new Date(session?.createdAt);
+  if (!Number.isNaN(createdParsed.getTime())) return createdParsed;
+  return getSessionDate(session);
+}
 
-  if (data.hasWorkout) {
-    container.innerHTML = `
-      <div class="dashboard-today-card">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="material-symbols-rounded" style="font-size: 24px; color: var(--color-primary);">today</span>
-          <h3 class="text-lg font-bold">Heute geplant</h3>
-        </div>
+function getSessionDurationSeconds(session) {
+  if (!session) return 0;
+  const sec = Number(session.durationSec || session.durationSeconds || 0);
+  if (Number.isFinite(sec) && sec > 0) return Math.round(sec);
+  const minutes = Number(session.duration || 0);
+  if (Number.isFinite(minutes) && minutes > 0) return Math.round(minutes * 60);
+  return 0;
+}
 
-        <div class="dashboard-today-content">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <h4 class="text-xl font-bold mb-1">${data.name}</h4>
-              <div class="flex items-center gap-4 text-sm text-gray-400">
-                <span class="flex items-center gap-1">
-                  <span class="material-symbols-rounded" style="font-size: 16px;">schedule</span>
-                  ${data.time} Uhr
-                </span>
-                <span class="flex items-center gap-1">
-                  <span class="material-symbols-rounded" style="font-size: 16px;">fitness_center</span>
-                  ${data.exerciseCount} Übungen
-                </span>
-                <span class="flex items-center gap-1">
-                  <span class="material-symbols-rounded" style="font-size: 16px;">timer</span>
-                  ~${data.duration} min
-                </span>
-              </div>
-            </div>
+function getBerlinDateKey(date) {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Berlin',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  return formatter.format(date);
+}
+
+function getBalanceContextLabelKey(strengthSec, cardioSec) {
+  const totalSec = strengthSec + cardioSec;
+  if (totalSec < 3600) {
+    return 'balance.context.lowData';
+  }
+  const strengthPct = totalSec ? (strengthSec / totalSec) * 100 : 0;
+  if (strengthPct >= 55) return 'balance.context.strength';
+  if (strengthPct >= 45 && strengthPct < 55) return 'balance.context.balanced';
+  return 'balance.context.cardio';
+}
+
+function getActiveWorkout() {
+  try {
+    const stored = localStorage.getItem('activeWorkout');
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    if (!parsed || !parsed.id) return null;
+    return parsed;
+  } catch (error) {
+    localStorage.removeItem('activeWorkout');
+    return null;
+  }
+}
+
+function buildBalanceData(sessions, rangeDays) {
+  const now = new Date();
+  const cutoff = new Date(now.getTime() - rangeDays * 24 * 60 * 60 * 1000);
+  const cutoffKey = getBerlinDateKey(cutoff);
+
+  let strengthSec = 0;
+  let cardioSec = 0;
+
+  sessions.forEach(session => {
+    const date = getSessionDate(session);
+    if (!date) return;
+    if (getBerlinDateKey(date) < cutoffKey) return;
+
+    const durationSec = getSessionDurationSeconds(session);
+    if (!durationSec) return;
+
+    if (session.type === 'cardio') {
+      cardioSec += durationSec;
+    } else if (session.type === 'strength') {
+      strengthSec += durationSec;
+    }
+  });
+
+  return {
+    strengthSec,
+    cardioSec,
+    rangeDays,
+    contextLabelKey: getBalanceContextLabelKey(strengthSec, cardioSec)
+  };
+}
+
+function getRecentSessions(sessions, limit = DASHBOARD_RECENT_LIMIT) {
+  return sessions
+    .map(session => ({
+      session,
+      date: getSessionDateTime(session)
+    }))
+    .filter(item => item.date)
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .slice(0, limit)
+    .map(item => item.session);
+}
+
+async function useDashboardData() {
+  const state = {
+    loading: true,
+    error: null,
+    activeSession: null,
+    balance: {
+      strengthSec: 0,
+      cardioSec: 0,
+      rangeDays: DASHBOARD_BALANCE_DAYS,
+      contextLabelKey: 'balance.context.lowData'
+    },
+    recentSessions: []
+  };
+
+  try {
+    if (typeof loadSessions === 'function' && !sessionsLoaded) {
+      await loadSessions();
+    }
+
+    const sessions = Array.isArray(allSessions) ? allSessions : [];
+
+    state.activeSession = getActiveWorkout();
+    state.balance = buildBalanceData(sessions, DASHBOARD_BALANCE_DAYS);
+    state.recentSessions = getRecentSessions(sessions, DASHBOARD_RECENT_LIMIT);
+  } catch (error) {
+    console.error('Error loading dashboard data:', error);
+    state.error = error;
+  }
+
+  state.loading = false;
+  return state;
+}
+
+function openStartWorkoutSheet() {
+  if (getActiveWorkout()) {
+    return;
+  }
+
+  if (typeof openSheet !== 'function') {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', tr('errors.startUnavailable'));
+    }
+    return;
+  }
+
+  openSheet({
+    title: tr('dashboard.primary.title'),
+    render: (container) => {
+      container.innerHTML = `
+        <button class="picker-item strength" type="button" onclick="startManualWorkout('strength')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">fitness_center</span>
           </div>
-
-          <button onclick="startWorkout()" class="dashboard-start-btn">
-            <span class="material-symbols-rounded">play_arrow</span>
-            <span>Workout starten</span>
-          </button>
-        </div>
-      </div>
-    `;
-  } else {
-    container.innerHTML = `
-      <div class="dashboard-today-card dashboard-today-empty">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="material-symbols-rounded" style="font-size: 24px; color: #6b7280;">today</span>
-          <h3 class="text-lg font-bold">Heute geplant</h3>
-        </div>
-        <p class="text-gray-400 mb-3">Kein Training heute geplant</p>
-        <button onclick="showView('calendar')" class="dashboard-secondary-btn">
-          <span class="material-symbols-rounded">calendar_month</span>
-          <span>Zum Kalender</span>
+          <span>${tr('common.strength')}</span>
+          <span class="material-symbols-rounded">chevron_right</span>
         </button>
+        <button class="picker-item cardio" type="button" onclick="startManualWorkout('cardio')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">directions_run</span>
+          </div>
+          <span>${tr('common.cardio')}</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item recovery" type="button" onclick="startManualWorkout('recovery')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">self_improvement</span>
+          </div>
+          <span>${tr('common.recovery')}</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      `;
+    }
+  });
+}
+
+function startManualWorkout(type) {
+  if (getActiveWorkout()) {
+    return;
+  }
+
+  if (typeof closeSheet === 'function') {
+    closeSheet();
+  }
+
+  if (type === 'cardio') {
+    if (typeof openAddCardioModal === 'function') {
+      openAddCardioModal();
+      return;
+    }
+  }
+
+  if (type === 'recovery') {
+    if (typeof openAddRecoveryModal === 'function') {
+      openAddRecoveryModal();
+      return;
+    }
+  }
+
+  if (type === 'strength') {
+    if (typeof openAddStrengthModal === 'function') {
+      openAddStrengthModal();
+      return;
+    }
+  }
+
+  if (typeof showView === 'function') {
+    if (typeof showTrainingTab === 'function') {
+      showTrainingTab('plans');
+      return;
+    }
+    showView('training');
+  }
+}
+
+function renderPrimaryActionCard(state) {
+  const container = document.getElementById('dashboard-primary-card');
+  if (!container) return;
+
+  if (state.loading) {
+    container.innerHTML = `
+      <div class="dashboard-primary-card">
+        <div class="dashboard-primary-title">${tr('dashboard.primary.title')}</div>
+        <p class="dashboard-primary-subtitle">${tr('common.loading')}</p>
       </div>
     `;
-  }
-}
-
-function renderStats() {
-  // Week Progress
-  const weekProgressText = document.getElementById('week-progress-text');
-  const weekProgressBar = document.querySelector('#week-progress-bar .dashboard-stat-progress-fill');
-  if (weekProgressText && weekProgressBar) {
-    const { completed, total } = dashboardData.weekProgress;
-    const percentage = total > 0 ? (completed / total) * 100 : 0;
-    weekProgressText.textContent = `${completed}/${total}`;
-    weekProgressBar.style.width = `${percentage}%`;
+    return;
   }
 
-  // Streak
-  const streakCount = document.getElementById('streak-count');
-  if (streakCount) {
-    streakCount.textContent = dashboardData.streak;
-  }
-
-  // Total Reps
-  const totalReps = document.getElementById('total-reps');
-  if (totalReps) {
-    totalReps.textContent = dashboardData.totalReps.toLocaleString('de-DE');
-  }
-}
-
-function renderAchievement() {
-  const container = document.getElementById('achievement-card');
-  if (!container) return;
-
-  const achievement = dashboardData.nextAchievement;
-  const percentage = (achievement.current / achievement.target) * 100;
+  const hasActive = Boolean(state.activeSession);
+  const buttonLabel = hasActive ? tr('dashboard.primary.resume') : tr('dashboard.primary.start');
+  const actionHandler = hasActive ? 'resumeWorkoutFromDashboard()' : 'openStartWorkoutSheet()';
 
   container.innerHTML = `
-    <div class="flex items-center gap-2 mb-3">
-      <span class="material-symbols-rounded" style="font-size: 24px; color: #fbbf24;">emoji_events</span>
-      <h3 class="text-lg font-bold">Nächstes Achievement</h3>
-    </div>
-
-    <div class="mb-3">
-      <h4 class="text-xl font-bold text-yellow-400 mb-1">${achievement.name}</h4>
-      <p class="text-sm text-gray-400">${achievement.description}</p>
-    </div>
-
-    <div class="dashboard-achievement-progress">
-      <div class="dashboard-achievement-progress-fill" style="width: ${percentage}%"></div>
-    </div>
-
-    <div class="flex items-center justify-between mt-2 text-sm">
-      <span class="text-gray-400">${achievement.current} / ${achievement.target}</span>
-      <span class="text-yellow-400 font-semibold">${Math.round(percentage)}%</span>
+    <div class="dashboard-primary-card">
+      <div class="dashboard-primary-header">
+        <div>
+          <h3 class="dashboard-primary-title">${tr('dashboard.primary.title')}</h3>
+          <p class="dashboard-primary-subtitle">
+            ${hasActive ? tr('dashboard.primary.subtitleActive') : tr('dashboard.primary.subtitleInactive')}
+          </p>
+          <p class="dashboard-primary-helper">${tr('dashboard.primary.helper')}</p>
+        </div>
+        <span class="material-symbols-rounded dashboard-primary-icon">fitness_center</span>
+      </div>
+      <button class="dashboard-primary-btn" type="button" ${hasActive ? '' : ''} onclick="${actionHandler}">
+        <span>${buttonLabel}</span>
+      </button>
     </div>
   `;
 }
 
-function renderTopExercises() {
-  const container = document.getElementById('top-exercises-card');
+function resumeWorkoutFromDashboard() {
+  if (!getActiveWorkout()) return;
+  if (typeof resumeWorkout === 'function') {
+    resumeWorkout();
+    return;
+  }
+  if (typeof showView === 'function') {
+    showView('workout');
+  }
+}
+
+function renderHybridBalanceCard(state) {
+  const container = document.getElementById('hybrid-balance-card');
   if (!container) return;
 
-  const exercises = dashboardData.topExercises;
-
-  const exercisesList = exercises.map((exercise, index) => `
-    <div class="dashboard-exercise-item">
-      <div class="dashboard-exercise-rank">${index + 1}</div>
-      <div class="flex-1">
-        <div class="font-semibold">${exercise.name}</div>
-        <div class="text-xs text-gray-400">${exercise.reps} Wiederholungen</div>
+  if (state.loading) {
+    container.innerHTML = `
+      <div class="dashboard-balance-card">
+        <div class="dashboard-balance-header">
+          <h3 class="dashboard-balance-title">${tr('dashboard.hybridBalance.title')}</h3>
+        </div>
+        <div class="dashboard-balance-empty">${tr('common.loading')}</div>
       </div>
-      <div class="dashboard-exercise-reps">${exercise.reps}</div>
-    </div>
-  `).join('');
+    `;
+    return;
+  }
 
+  const balance = state.balance;
+  const totalSec = balance.strengthSec + balance.cardioSec;
+  const strengthPct = totalSec ? Math.round((balance.strengthSec / totalSec) * 100) : 0;
+  const cardioPct = totalSec ? 100 - strengthPct : 0;
+
+  // Dashboard always shows 7 days - no toggle (period selection is in Progress pages)
   container.innerHTML = `
-    <div class="flex items-center justify-between mb-3">
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-rounded" style="font-size: 24px; color: var(--color-primary);">local_fire_department</span>
-        <h3 class="text-lg font-bold">Top-Übungen diese Woche</h3>
+    <div class="dashboard-balance-card" onclick="openProgressOverview()" role="button" tabindex="0">
+      <div class="dashboard-balance-header">
+        <div>
+          <h3 class="dashboard-balance-title">${tr('dashboard.hybridBalance.title')}</h3>
+          <p class="dashboard-balance-subtitle">${tr('dashboard.hybridBalance.subtitle', { days: DASHBOARD_BALANCE_DAYS })}</p>
+        </div>
+        <span class="material-symbols-rounded dashboard-balance-arrow">chevron_right</span>
       </div>
+      <p class="dashboard-balance-description">${tr('dashboard.hybridBalance.description')}</p>
+      <div class="dashboard-balance-bar" role="img" aria-label="${tr('dashboard.hybridBalance.aria', { strength: strengthPct, cardio: cardioPct })}">
+        <div class="dashboard-balance-segment strength" style="width: ${strengthPct}%;"></div>
+        <div class="dashboard-balance-segment cardio" style="width: ${cardioPct}%;"></div>
+      </div>
+      <div class="dashboard-balance-meta">
+        <span>${tr('common.strength')} ${formatDurationShortText(balance.strengthSec)}</span>
+        <span>${tr('common.cardio')} ${formatDurationShortText(balance.cardioSec)}</span>
+      </div>
+      <div class="dashboard-balance-context">${tr(balance.contextLabelKey)}</div>
     </div>
-
-    <div class="space-y-2">
-      ${exercisesList}
-    </div>
-
-    <button onclick="showView('progress')" class="dashboard-link-btn mt-4">
-      <span>Alle Stats anzeigen</span>
-      <span class="material-symbols-rounded">arrow_forward</span>
-    </button>
   `;
 }
 
-// ========================================
-// INITIALIZE DASHBOARD
-// ========================================
+function renderRecentSessionsList(state) {
+  const container = document.getElementById('recent-sessions-card');
+  if (!container) return;
 
-function initDashboard() {
-  console.log('📊 Initializing Dashboard...');
+  if (state.loading) {
+    container.innerHTML = `
+      <div class="dashboard-recent-header">
+        <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
+        <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
+      </div>
+      <div class="dashboard-recent-empty">${tr('common.loading')}</div>
+    `;
+    return;
+  }
 
-  renderTodayWorkout();
-  renderStats();
-  renderAchievement();
-  renderTopExercises();
+  if (!state.recentSessions.length) {
+    container.innerHTML = `
+      <div class="dashboard-recent-header">
+        <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
+        <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
+      </div>
+      <div class="dashboard-recent-empty">${tr('dashboard.recent.empty')}</div>
+    `;
+    return;
+  }
 
-  console.log('✅ Dashboard initialized!');
+  const rows = state.recentSessions.map(session => {
+    const date = getSessionDateTime(session);
+    const duration = formatDurationShortText(getSessionDurationSeconds(session));
+    const typeLabel = session.type === 'cardio'
+      ? tr('common.cardio')
+      : session.type === 'recovery'
+        ? tr('common.recovery')
+        : tr('common.strength');
+    const distance = session.type === 'cardio' && session.distanceKm
+      ? ` | ${tr('format.distanceKm', { distance: Number(session.distanceKm).toFixed(1) })}`
+      : '';
+
+    const sessionId = session.id || '';
+    return `
+      <button class="dashboard-session-item" type="button" onclick="openSessionDetail('${sessionId}')">
+        <div class="dashboard-session-main">
+          <div class="dashboard-session-type ${session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength'}">${typeLabel}</div>
+          <div class="dashboard-session-date">${formatDateTimeText(date)}</div>
+        </div>
+        <div class="dashboard-session-meta">
+          <span>${duration}</span>
+          ${distance ? `<span>${distance}</span>` : ''}
+        </div>
+      </button>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="dashboard-recent-header">
+      <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
+      <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
+    </div>
+    <div class="dashboard-recent-list">
+      ${rows}
+    </div>
+  `;
 }
 
-// ========================================
-// PLACEHOLDER FUNCTIONS
-// ========================================
-
-function startWorkout() {
-  // TODO: Implement workout starter
-  alert('🏋️ Workout-Modus kommt bald!\n\nHier startest du dein geplantes Training und kannst Sets/Reps tracken.');
+function openSessionDetail(sessionId) {
+  if (!sessionId) return;
+  if (typeof viewWorkoutDetailsFromSession === 'function') {
+    viewWorkoutDetailsFromSession(sessionId);
+    return;
+  }
+  if (typeof openWorkoutDetailModal === 'function') {
+    openWorkoutDetailModal(sessionId);
+  }
 }
+
+function openProgressOverview() {
+  if (typeof showView === 'function') {
+    showView('progress');
+  }
+  if (typeof switchProgressTab === 'function') {
+    switchProgressTab('overview');
+  }
+}
+
+async function refreshDashboard() {
+  if (dashboardIsLoading) return;
+  dashboardIsLoading = true;
+
+  const data = await useDashboardData();
+  renderPrimaryActionCard(data);
+  renderHybridBalanceCard(data);
+  renderRecentSessionsList(data);
+
+  dashboardIsLoading = false;
+}
+
+async function initDashboard() {
+  console.log('Initializing Dashboard...');
+  if (typeof onCollectionChange === 'function' && typeof sessionsCollection !== 'undefined') {
+    onCollectionChange(sessionsCollection, (sessions) => {
+      allSessions = sessions;
+      sessionsLoaded = true;
+      refreshDashboard();
+    });
+  }
+  await refreshDashboard();
+  console.log('Dashboard initialized!');
+}
+
+// Expose functions
+window.refreshDashboard = refreshDashboard;
+window.openStartWorkoutSheet = openStartWorkoutSheet;
+window.startManualWorkout = startManualWorkout;
+window.resumeWorkoutFromDashboard = resumeWorkoutFromDashboard;
 
 // ========================================
 // AUTO-INITIALIZE
 // ========================================
 
-// Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initDashboard);
 } else {

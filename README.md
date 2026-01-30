@@ -1,7 +1,7 @@
 ## 🤖 Working with Claude
 
 This project uses Claude for AI-assisted development.
-See `CLAUDE_INSTRUCTIONS.md` for Claude's guidelines.
+See `CLAUDE_INSTRUCTIONS.md` for Claudeee's guidelines.
 ```
 
 ### **3. Git Commit Message**
@@ -20,7 +20,7 @@ Claude, kurzes Update:
 - Heute will ich Y machen
 - Bitte lies PROJECT_CONTEXT.md für Kontext
 
-Ready? 🚀
+Ready??? 🚀
 ```
 
 ### **5. Code-Review mit Claude**

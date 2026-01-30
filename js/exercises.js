@@ -5,6 +5,9 @@
 let allExercises = [];
 let filteredExercises = [];
 let editingExerciseId = null;
+let exercisesExpanded = false;
+let exerciseMuscleFilter = '';
+let exerciseDifficultyFilter = '';
 
 // Muscle Group Namen Mapping
 const muscleNames = {
@@ -45,18 +48,195 @@ const equipmentIcons = {
 };
 
 // ========================================
+// INSTRUCTIONS NORMALIZATION (Legacy Support)
+// ========================================
+
+function splitInstructionText(text) {
+  if (!text || typeof text !== 'string') return [];
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+
+  const lineSplit = trimmed
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  if (lineSplit.length > 1) return lineSplit;
+
+  const bulletSplit = trimmed
+    .split(/•|â€¢|-|\u2022/)
+    .map(part => part.trim())
+    .filter(Boolean);
+
+  if (bulletSplit.length > 1) return bulletSplit;
+
+  return [trimmed];
+}
+
+function normalizeInstructionList(value) {
+  if (Array.isArray(value)) {
+    return value.map(item => String(item || '').trim()).filter(Boolean);
+  }
+  if (typeof value === 'string') {
+    return splitInstructionText(value);
+  }
+  return [];
+}
+
+function normalizeExerciseInstructions(exercise) {
+  const normalized = {
+    instructionsSteps: [],
+    setupNotes: '',
+    cues: [],
+    commonMistakes: [],
+    progressions: []
+  };
+
+  const steps = normalizeInstructionList(exercise.instructionsSteps);
+  if (steps.length > 0) {
+    normalized.instructionsSteps = steps;
+  } else if (Array.isArray(exercise.instructions)) {
+    normalized.instructionsSteps = normalizeInstructionList(exercise.instructions);
+  } else if (exercise.instructions && typeof exercise.instructions === 'object') {
+    const legacySteps = normalizeInstructionList(exercise.instructions.execution || exercise.instructions.setup);
+    normalized.instructionsSteps = legacySteps;
+    normalized.setupNotes = typeof exercise.instructions.setup === 'string' ? exercise.instructions.setup.trim() : '';
+    normalized.cues = normalizeInstructionList(exercise.instructions.cues);
+    normalized.commonMistakes = normalizeInstructionList(exercise.instructions.mistakes);
+    normalized.progressions = normalizeInstructionList(exercise.instructions.progressions);
+  }
+
+  if (normalized.instructionsSteps.length === 0) {
+    const legacyText = exercise.instructionsText || exercise.description || '';
+    normalized.instructionsSteps = normalizeInstructionList(legacyText);
+  }
+
+  if (typeof exercise.setupNotes === 'string' && exercise.setupNotes.trim()) {
+    normalized.setupNotes = exercise.setupNotes.trim();
+  } else if (Array.isArray(exercise.setupSteps) && exercise.setupSteps.length > 0) {
+    normalized.setupNotes = normalizeInstructionList(exercise.setupSteps).join('\n');
+  }
+
+  if (Array.isArray(exercise.cues) || typeof exercise.cues === 'string') {
+    normalized.cues = normalizeInstructionList(exercise.cues);
+  }
+
+  if (Array.isArray(exercise.commonMistakes) || typeof exercise.commonMistakes === 'string') {
+    normalized.commonMistakes = normalizeInstructionList(exercise.commonMistakes);
+  } else if (Array.isArray(exercise.mistakes) || typeof exercise.mistakes === 'string') {
+    normalized.commonMistakes = normalizeInstructionList(exercise.mistakes);
+  }
+
+  if (Array.isArray(exercise.progressions) || typeof exercise.progressions === 'string') {
+    normalized.progressions = normalizeInstructionList(exercise.progressions);
+  }
+
+  return normalized;
+}
+
+function normalizeExerciseForRuntime(exercise) {
+  const normalized = normalizeExerciseInstructions(exercise);
+  return {
+    ...exercise,
+    instructionsSteps: normalized.instructionsSteps,
+    setupNotes: normalized.setupNotes,
+    cues: normalized.cues,
+    commonMistakes: normalized.commonMistakes,
+    progressions: normalized.progressions
+  };
+}
+
+// ========================================
 // LOAD & DISPLAY EXERCISES
 // ========================================
 
 async function loadExercises() {
   try {
-    allExercises = await getAllDocs(exercisesCollection);
+    const exercises = await getAllDocs(exercisesCollection);
+    allExercises = exercises.map(normalizeExerciseForRuntime);
     filteredExercises = [...allExercises];
     renderExercises();
+    updateExerciseFiltersUI();
   } catch (error) {
     console.error('Error loading exercises:', error);
   }
 }
+
+// ========================================
+// ALPHABETICAL GROUPING UTILITY
+// ========================================
+
+/**
+ * Normalizes a character for grouping:
+ * - Converts umlauts: Ä->A, Ö->O, Ü->U, ß->S
+ * - Uppercase A-Z returns the letter
+ * - Everything else (numbers, symbols, emojis) returns '#'
+ */
+function getExerciseInitial(name) {
+  if (!name || typeof name !== 'string') return '#';
+
+  const trimmed = name.trim();
+  if (!trimmed) return '#';
+
+  // Get first character and normalize
+  let firstChar = trimmed.charAt(0).toUpperCase();
+
+  // Umlaut mapping
+  const umlautMap = {
+    'Ä': 'A', 'Ö': 'O', 'Ü': 'U',
+    'ä': 'A', 'ö': 'O', 'ü': 'U',
+    'ß': 'S'
+  };
+
+  if (umlautMap[firstChar]) {
+    firstChar = umlautMap[firstChar];
+  }
+
+  // Check if A-Z
+  if (/^[A-Z]$/.test(firstChar)) {
+    return firstChar;
+  }
+
+  return '#';
+}
+
+/**
+ * Groups exercises by their initial letter
+ * Returns an object with letters as keys and arrays of exercises as values
+ * Sorted alphabetically, with '#' section first
+ */
+function groupExercisesByInitial(exercises) {
+  const groups = {};
+
+  // Sort exercises alphabetically first
+  const sorted = [...exercises].sort((a, b) => {
+    const nameA = (a.name || '').toLowerCase();
+    const nameB = (b.name || '').toLowerCase();
+    return nameA.localeCompare(nameB, 'de');
+  });
+
+  // Group by initial
+  sorted.forEach(exercise => {
+    const initial = getExerciseInitial(exercise.name);
+    if (!groups[initial]) {
+      groups[initial] = [];
+    }
+    groups[initial].push(exercise);
+  });
+
+  // Get sorted keys: '#' first, then A-Z
+  const sortedKeys = Object.keys(groups).sort((a, b) => {
+    if (a === '#') return -1;
+    if (b === '#') return 1;
+    return a.localeCompare(b);
+  });
+
+  return { groups, sortedKeys };
+}
+
+// ========================================
+// RENDER EXERCISES (iOS Contacts Style)
+// ========================================
 
 function renderExercises() {
   const grid = document.getElementById('exercises-grid');
@@ -78,114 +258,53 @@ function renderExercises() {
     return;
   }
 
-  grid.innerHTML = filteredExercises.map(exercise => {
-    // Hauptmuskel ist der erste in der Liste
-    const primaryMuscle = exercise.muscleGroups[0];
-    // Zusätzliche Muskelgruppen
-    const additionalMuscles = exercise.muscleGroups.length - 1;
+  const { groups, sortedKeys } = groupExercisesByInitial(filteredExercises);
 
-    return `
-      <div class="exercise-card-compact" id="exercise-card-${exercise.id}" onclick="toggleExerciseCard('${exercise.id}')">
-        ${exercise.imageUrl ?
-          `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="exercise-card-img" onerror="this.src='https://via.placeholder.com/400x100?text=No+Image'">`
-          :
-          `<div class="exercise-card-img-placeholder">
-            <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
-          </div>`
-        }
+  // Build sections HTML
+  let sectionsHTML = '<div class="exercises-list-container">';
 
-        <div class="exercise-card-content">
-          <h3 class="exercise-card-title">${exercise.name}</h3>
+  sortedKeys.forEach(letter => {
+    const exercises = groups[letter];
 
-          <div class="flex items-center justify-between mb-2">
-            <span class="muscle-tag muscle-${primaryMuscle}">${muscleNames[primaryMuscle]}</span>
-            <div class="flex items-center gap-2">
-              ${additionalMuscles > 0 ?
-                `<span class="exercise-card-badge">+${additionalMuscles}</span>`
-                : ''
-              }
-              <span class="text-sm font-bold text-gray-400">Level ${exercise.difficulty}</span>
-            </div>
-          </div>
+    sectionsHTML += `
+      <div class="exercise-section" data-section="${letter}">
+        <div class="exercise-section-header">
+          <span class="exercise-section-letter">${letter}</span>
+        </div>
+        <div class="exercise-section-items">
+    `;
 
-          <!-- Expandable Details Section -->
-          <div class="exercise-card-details">
-            <div class="border-t border-gray-700 pt-3 mt-3 space-y-3">
+    exercises.forEach((exercise, index) => {
+      const isLast = index === exercises.length - 1;
+      sectionsHTML += renderExerciseRow(exercise, isLast);
+    });
 
-              <!-- Alle Muskelgruppen -->
-              ${exercise.muscleGroups.length > 1 ? `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Alle Muskeln:</p>
-                  <div class="flex flex-wrap gap-1">
-                    ${exercise.muscleGroups.map(muscle =>
-                      `<span class="muscle-tag text-xs">${muscleNames[muscle]}</span>`
-                    ).join('')}
-                  </div>
-                </div>
-              ` : ''}
-
-              <!-- Equipment -->
-              ${exercise.equipment && exercise.equipment.length > 0 && exercise.equipment[0] !== 'none' ? `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Equipment:</p>
-                  <div class="flex flex-wrap gap-1">
-                    ${exercise.equipment.map(eq =>
-                      `<span class="text-xs px-2 py-1 bg-gray-700 border border-gray-600 rounded">${equipmentNames[eq]}</span>`
-                    ).join('')}
-                  </div>
-                </div>
-              ` : `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Equipment:</p>
-                  <span class="text-xs px-2 py-1 bg-green-900/20 border border-green-700 rounded text-green-400">Kein Equipment</span>
-                </div>
-              `}
-
-              <!-- Beschreibung -->
-              ${exercise.description ? `
-                <div>
-                  <p class="text-xs text-gray-400 mb-1">Anleitung:</p>
-                  <p class="text-sm text-gray-300">${exercise.description}</p>
-                </div>
-              ` : ''}
-
-              <!-- Edit Button (immer sichtbar im expanded state) -->
-              <button
-                onclick="event.stopPropagation(); editExercise('${exercise.id}')"
-                class="w-full bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-4 py-2 rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
-              >
-                <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
-                <span>Bearbeiten</span>
-              </button>
-            </div>
-          </div>
+    sectionsHTML += `
         </div>
       </div>
     `;
-  }).join('');
+  });
+
+  sectionsHTML += '</div>';
+
+  grid.innerHTML = sectionsHTML;
+}
+
+/**
+ * Renders a single exercise row (minimal, text-only)
+ */
+function renderExerciseRow(exercise, isLast = false) {
+  return `
+    <div class="exercise-list-row${isLast ? ' is-last' : ''}" onclick="viewExerciseDetails('${exercise.id}')">
+      <span class="exercise-list-name">${exercise.name}</span>
+      <span class="material-symbols-rounded exercise-list-chevron">chevron_right</span>
+    </div>
+  `;
 }
 
 // Toggle Exercise Card Expansion
 function toggleExerciseCard(id) {
-  const card = document.getElementById(`exercise-card-${id}`);
-  if (!card) return;
-
-  // Close all other cards first (accordion behavior)
-  document.querySelectorAll('.exercise-card-compact.expanded').forEach(otherCard => {
-    if (otherCard.id !== `exercise-card-${id}`) {
-      otherCard.classList.remove('expanded');
-    }
-  });
-
-  // Toggle current card
-  card.classList.toggle('expanded');
-
-  // Scroll into view if expanded (optional)
-  if (card.classList.contains('expanded')) {
-    setTimeout(() => {
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 100);
-  }
+  viewExerciseDetails(id);
 }
 
 // ========================================
@@ -194,8 +313,8 @@ function toggleExerciseCard(id) {
 
 function filterExercises() {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  const muscleFilter = document.getElementById('muscle-filter').value;
-  const difficultyFilter = document.getElementById('difficulty-filter').value;
+  const muscleFilter = exerciseMuscleFilter;
+  const difficultyFilter = exerciseDifficultyFilter;
 
   filteredExercises = allExercises.filter(exercise => {
     // Search filter
@@ -205,28 +324,95 @@ function filterExercises() {
     // Muscle filter
     const matchesMuscle = !muscleFilter || exercise.muscleGroups.includes(muscleFilter);
 
-    // Difficulty filter
-    const matchesDifficulty = !difficultyFilter || exercise.difficulty === parseInt(difficultyFilter);
+    // Difficulty filter - handle both enum strings and legacy numeric values
+    let matchesDifficulty = true;
+    if (difficultyFilter) {
+      const exerciseDiff = convertDifficultyToEnum(exercise.difficulty);
+      matchesDifficulty = exerciseDiff === difficultyFilter;
+    }
 
     return matchesSearch && matchesMuscle && matchesDifficulty;
   });
 
+  exercisesExpanded = false;
   renderExercises();
   updateActiveFilters();
 }
 
+function setExerciseMuscleFilter(value) {
+  exerciseMuscleFilter = value || '';
+  updateExerciseFiltersUI();
+  filterExercises();
+}
+
+function setExerciseDifficultyFilter(value) {
+  exerciseDifficultyFilter = value || '';
+  updateExerciseFiltersUI();
+  filterExercises();
+}
+
+function updateExerciseFiltersUI() {
+  const muscleContainer = document.getElementById('exercise-muscle-filters');
+  if (muscleContainer) {
+    muscleContainer.querySelectorAll('.filter-chip').forEach(btn => {
+      const value = btn.dataset.muscle || '';
+      btn.classList.toggle('active', value === exerciseMuscleFilter);
+    });
+  }
+
+  const difficultyContainer = document.getElementById('exercise-difficulty-filters');
+  if (difficultyContainer) {
+    difficultyContainer.querySelectorAll('.filter-chip').forEach(btn => {
+      const value = btn.dataset.difficulty || '';
+      btn.classList.toggle('active', value === exerciseDifficultyFilter);
+    });
+  }
+
+  const allMusclesLabel = document.getElementById('exercise-filter-muscle-all');
+  if (allMusclesLabel) allMusclesLabel.textContent = t('exercise.filters.allMuscles');
+  const chestLabel = document.getElementById('exercise-filter-muscle-chest');
+  if (chestLabel) chestLabel.textContent = muscleNames.chest;
+  const backLabel = document.getElementById('exercise-filter-muscle-back');
+  if (backLabel) backLabel.textContent = muscleNames.back;
+  const shouldersLabel = document.getElementById('exercise-filter-muscle-shoulders');
+  if (shouldersLabel) shouldersLabel.textContent = muscleNames.shoulders;
+  const armsLabel = document.getElementById('exercise-filter-muscle-arms');
+  if (armsLabel) armsLabel.textContent = muscleNames.arms;
+  const coreLabel = document.getElementById('exercise-filter-muscle-core');
+  if (coreLabel) coreLabel.textContent = muscleNames.core;
+  const legsLabel = document.getElementById('exercise-filter-muscle-legs');
+  if (legsLabel) legsLabel.textContent = muscleNames.legs;
+
+  const allDifficultyLabel = document.getElementById('exercise-filter-difficulty-all');
+  if (allDifficultyLabel) allDifficultyLabel.textContent = t('exercise.filters.allDifficulties');
+  const beginnerLabel = document.getElementById('exercise-filter-difficulty-beginner');
+  if (beginnerLabel) beginnerLabel.textContent = t('difficulty.beginner');
+  const intermediateLabel = document.getElementById('exercise-filter-difficulty-intermediate');
+  if (intermediateLabel) intermediateLabel.textContent = t('difficulty.intermediate');
+  const advancedLabel = document.getElementById('exercise-filter-difficulty-advanced');
+  if (advancedLabel) advancedLabel.textContent = t('difficulty.advanced');
+  const eliteLabel = document.getElementById('exercise-filter-difficulty-elite');
+  if (eliteLabel) eliteLabel.textContent = t('difficulty.elite');
+}
+
+function toggleExercisesExpanded() {
+  exercisesExpanded = !exercisesExpanded;
+  renderExercises();
+}
+
 function resetFilters() {
   document.getElementById('search-input').value = '';
-  document.getElementById('muscle-filter').value = '';
-  document.getElementById('difficulty-filter').value = '';
+  exerciseMuscleFilter = '';
+  exerciseDifficultyFilter = '';
+  updateExerciseFiltersUI();
   filterExercises();
 }
 
 // Active Filter Pills
 function updateActiveFilters() {
   const searchTerm = document.getElementById('search-input').value;
-  const muscleFilter = document.getElementById('muscle-filter').value;
-  const difficultyFilter = document.getElementById('difficulty-filter').value;
+  const muscleFilter = exerciseMuscleFilter;
+  const difficultyFilter = exerciseDifficultyFilter;
 
   let filterPills = '';
 
@@ -258,7 +444,7 @@ function updateActiveFilters() {
     filterPills += `
       <div class="filter-pill">
         <span class="material-symbols-rounded">star</span>
-        <span>Level ${difficultyFilter}</span>
+        <span>${t(`difficulty.${difficultyFilter}`)}</span>
         <button onclick="clearDifficultyFilter()" class="filter-pill-remove">
           <span class="material-symbols-rounded">close</span>
         </button>
@@ -288,13 +474,11 @@ function clearSearchFilter() {
 }
 
 function clearMuscleFilter() {
-  document.getElementById('muscle-filter').value = '';
-  filterExercises();
+  setExerciseMuscleFilter('');
 }
 
 function clearDifficultyFilter() {
-  document.getElementById('difficulty-filter').value = '';
-  filterExercises();
+  setExerciseDifficultyFilter('');
 }
 
 // ========================================
@@ -305,6 +489,16 @@ function openAddExerciseModal() {
   editingExerciseId = null;
   document.getElementById('modal-title').textContent = 'Neue Übung';
   clearExerciseForm();
+  if (exerciseInstructionSteps.length === 0) {
+    addInstructionStep();
+  }
+
+  // Initialize multi-select inputs
+  exerciseMuscleGroups = [];
+  exerciseEquipment = [];
+  renderExerciseMuscleGroupsInput();
+  renderExerciseEquipmentInput();
+
   document.getElementById('exercise-modal').classList.add('active');
 }
 
@@ -314,23 +508,43 @@ function editExercise(id) {
 
   if (!exercise) return;
 
-  document.getElementById('modal-title').textContent = 'Übung bearbeiten';
+  document.getElementById('modal-title').textContent = t('exercise.title') + ' bearbeiten';
   document.getElementById('exercise-name').value = exercise.name;
-  document.getElementById('exercise-description').value = exercise.description || '';
-  document.getElementById('exercise-image').value = exercise.imageUrl || '';
 
-  // Muscle groups checkboxes
-  document.querySelectorAll('.muscle-checkbox').forEach(checkbox => {
-    checkbox.checked = exercise.muscleGroups.includes(checkbox.value);
-  });
+  // Set muscle groups and equipment for multi-select
+  exerciseMuscleGroups = [...exercise.muscleGroups];
+  exerciseEquipment = exercise.equipment ? [...exercise.equipment] : [];
 
-  // Equipment checkboxes
-  document.querySelectorAll('.equipment-checkbox').forEach(checkbox => {
-    checkbox.checked = exercise.equipment && exercise.equipment.includes(checkbox.value);
-  });
+  // Render multi-select inputs
+  renderExerciseMuscleGroupsInput();
+  renderExerciseEquipmentInput();
 
-  // Difficulty
-  setDifficulty(exercise.difficulty);
+  // Difficulty - convert old numeric values to enum
+  const difficultyValue = convertDifficultyToEnum(exercise.difficulty);
+  setDifficulty(difficultyValue);
+
+  // Icon
+  const iconValue = exercise.icon || 'fitness_center';
+  setExerciseIcon(iconValue);
+
+  // Instructions - normalize legacy data into new fields
+  const normalized = normalizeExerciseInstructions(exercise);
+  exerciseInstructionSteps = [...normalized.instructionsSteps];
+  exerciseInstructionCues = [...normalized.cues];
+  exerciseInstructionMistakes = [...normalized.commonMistakes];
+  exerciseInstructionProgressions = [...normalized.progressions];
+  exerciseSetupNotes = normalized.setupNotes || '';
+
+  renderInstructionSteps();
+  renderInstructionLists();
+  updateSetupNotesInput();
+  applyExerciseInstructionI18n();
+
+  const hasAdvancedContent = exerciseInstructionCues.length > 0 ||
+    exerciseInstructionMistakes.length > 0 ||
+    exerciseInstructionProgressions.length > 0 ||
+    !!exerciseSetupNotes;
+  setExerciseInstructionAdvancedExpanded(hasAdvancedContent);
 
   document.getElementById('exercise-modal').classList.add('active');
 }
@@ -342,27 +556,403 @@ function closeExerciseModal() {
 
 function clearExerciseForm() {
   document.getElementById('exercise-name').value = '';
-  document.getElementById('exercise-description').value = '';
-  document.getElementById('exercise-image').value = '';
-  document.querySelectorAll('.muscle-checkbox').forEach(cb => cb.checked = false);
-  document.querySelectorAll('.equipment-checkbox').forEach(cb => cb.checked = false);
-  setDifficulty(3);
+
+  // Clear instruction steps
+  exerciseInstructionSteps = [];
+  exerciseInstructionCues = [];
+  exerciseInstructionMistakes = [];
+  exerciseInstructionProgressions = [];
+  exerciseSetupNotes = '';
+  renderInstructionSteps();
+  renderInstructionLists();
+  updateSetupNotesInput();
+  applyExerciseInstructionI18n();
+
+  // Collapse advanced instructions section
+  setExerciseInstructionAdvancedExpanded(false);
+
+  // Clear multi-select inputs
+  exerciseMuscleGroups = [];
+  exerciseEquipment = [];
+  renderExerciseMuscleGroupsInput();
+  renderExerciseEquipmentInput();
+
+  setDifficulty('intermediate');
+  setExerciseIcon('fitness_center');
+  editingExerciseId = null;
 }
 
 // ========================================
-// DIFFICULTY SELECTION
+// DIFFICULTY SELECTION (Enum-based)
 // ========================================
 
-function setDifficulty(level) {
-  document.getElementById('exercise-difficulty').value = level;
-  
-  document.querySelectorAll('.difficulty-btn').forEach(btn => {
-    if (parseInt(btn.dataset.difficulty) === level) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
+// Difficulty enum mapping (for backward compatibility)
+const exerciseDifficultyEnum = {
+  beginner: { label: 'Anfaenger', value: 1 },
+  intermediate: { label: 'Mittel', value: 2 },
+  advanced: { label: 'Fortgeschritten', value: 3 },
+  elite: { label: 'Elite', value: 4 }
+};
+
+function setDifficulty(difficulty) {
+  document.getElementById('exercise-difficulty').value = difficulty;
+
+  // Handle both standard and compact difficulty pills
+  document.querySelectorAll('#exercise-modal .difficulty-pill, #exercise-modal .difficulty-pill-sm').forEach(pill => {
+    pill.classList.toggle('active', pill.dataset.difficulty === difficulty);
+  });
+}
+
+// Convert old numeric difficulty to new enum
+function convertDifficultyToEnum(difficulty) {
+  if (typeof difficulty === 'string') return difficulty;
+  if (difficulty <= 1) return 'beginner';
+  if (difficulty <= 2) return 'intermediate';
+  if (difficulty <= 3) return 'advanced';
+  return 'elite';
+}
+
+// Convert enum to numeric value for filtering
+function getDifficultyNumericValue(difficulty) {
+  if (typeof difficulty === 'number') return difficulty;
+  const info = exerciseDifficultyEnum[difficulty];
+  return info ? info.value : 2;
+}
+
+// ========================================
+// EXERCISE ICON SELECTION
+// ========================================
+
+let selectedExerciseIcon = 'fitness_center';
+
+function setExerciseIcon(icon) {
+  selectedExerciseIcon = icon;
+  document.getElementById('exercise-icon').value = icon;
+
+  document.querySelectorAll('.icon-picker-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.icon === icon);
+  });
+}
+
+// ========================================
+// EXERCISE INSTRUCTIONS (Steps + Advanced)
+// ========================================
+
+let exerciseInstructionSteps = []; // string[] fuer nummerierte Schritte
+let exerciseInstructionCues = [];
+let exerciseInstructionMistakes = [];
+let exerciseInstructionProgressions = [];
+let exerciseSetupNotes = '';
+let exerciseInstructionsAdvancedExpanded = false;
+
+const instructionListConfig = {
+  cues: {
+    containerId: 'exercise-cues-list',
+    labelId: 'exercise-cues-label',
+    addLabelId: 'exercise-cues-add-label',
+    placeholderKey: 'exercise.instructions.advanced.cuesPlaceholder'
+  },
+  mistakes: {
+    containerId: 'exercise-mistakes-list',
+    labelId: 'exercise-mistakes-label',
+    addLabelId: 'exercise-mistakes-add-label',
+    placeholderKey: 'exercise.instructions.advanced.mistakesPlaceholder'
+  },
+  progressions: {
+    containerId: 'exercise-progressions-list',
+    labelId: 'exercise-progressions-label',
+    addLabelId: 'exercise-progressions-add-label',
+    placeholderKey: 'exercise.instructions.advanced.progressionsPlaceholder'
+  }
+};
+
+function applyExerciseInstructionI18n() {
+  const title = document.getElementById('exercise-instructions-title');
+  if (title) title.textContent = t('exercise.instructions.title');
+
+  const hint = document.getElementById('exercise-instructions-hint');
+  if (hint) hint.textContent = t('exercise.instructions.hint');
+
+  const addStepLabel = document.getElementById('exercise-add-step-label');
+  if (addStepLabel) addStepLabel.textContent = t('exercise.instructions.addStep');
+
+  Object.values(instructionListConfig).forEach(config => {
+    const label = document.getElementById(config.labelId);
+    if (label) {
+      if (config.labelId === 'exercise-cues-label') {
+        label.textContent = t('exercise.instructions.advanced.cues');
+      } else if (config.labelId === 'exercise-mistakes-label') {
+        label.textContent = t('exercise.instructions.advanced.mistakes');
+      } else if (config.labelId === 'exercise-progressions-label') {
+        label.textContent = t('exercise.instructions.advanced.progressions');
+      }
+    }
+    const addLabel = document.getElementById(config.addLabelId);
+    if (addLabel) {
+      if (config.addLabelId === 'exercise-cues-add-label') {
+        addLabel.textContent = t('exercise.instructions.advanced.cuesAdd');
+      } else if (config.addLabelId === 'exercise-mistakes-add-label') {
+        addLabel.textContent = t('exercise.instructions.advanced.mistakesAdd');
+      } else if (config.addLabelId === 'exercise-progressions-add-label') {
+        addLabel.textContent = t('exercise.instructions.advanced.progressionsAdd');
+      }
     }
   });
+
+  const setupLabel = document.getElementById('exercise-setup-notes-label');
+  if (setupLabel) setupLabel.textContent = t('exercise.instructions.advanced.setup');
+
+  const setupInput = document.getElementById('exercise-setup-notes');
+  if (setupInput) setupInput.placeholder = t('exercise.instructions.advanced.setupPlaceholder');
+
+  updateExerciseInstructionAdvancedToggle();
+}
+
+function setExerciseInstructionAdvancedExpanded(isExpanded) {
+  exerciseInstructionsAdvancedExpanded = !!isExpanded;
+  const advancedContent = document.getElementById('exercise-instructions-advanced');
+  if (advancedContent) {
+    advancedContent.classList.toggle('hidden', !exerciseInstructionsAdvancedExpanded);
+  }
+  updateExerciseInstructionAdvancedToggle();
+}
+
+function updateExerciseInstructionAdvancedToggle() {
+  const label = document.getElementById('exercise-advanced-toggle-label');
+  const icon = document.getElementById('exercise-advanced-toggle-icon');
+  if (label) {
+    label.textContent = exerciseInstructionsAdvancedExpanded
+      ? t('exercise.instructions.advanced.hide')
+      : t('exercise.instructions.advanced.add');
+  }
+  if (icon) {
+    icon.textContent = exerciseInstructionsAdvancedExpanded ? 'expand_less' : 'add_circle';
+  }
+}
+
+function toggleExerciseInstructionAdvanced() {
+  setExerciseInstructionAdvancedExpanded(!exerciseInstructionsAdvancedExpanded);
+}
+
+// ========================================
+// INSTRUCTION STEPS MANAGEMENT
+// ========================================
+
+/**
+ * Rendert alle Anleitung-Schritte
+ */
+function renderInstructionSteps() {
+  const container = document.getElementById('exercise-instruction-steps');
+  if (!container) return;
+
+  if (exerciseInstructionSteps.length === 0) {
+    container.innerHTML = `
+      <div class="empty-steps-hint">
+        <span class="material-symbols-rounded">format_list_numbered</span>
+        <span>${t('exercise.instructions.noSteps')}</span>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = exerciseInstructionSteps.map((step, index) => `
+    <div class="instruction-step" data-index="${index}">
+      <div class="instruction-step-header">
+        <span class="step-number">${index + 1}.</span>
+        <button type="button" class="remove-step-btn" onclick="removeInstructionStep(${index})" title="${t('exercise.instructions.removeStep')}">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <textarea
+        class="instruction-step-input instruction-step-input-main"
+        rows="2"
+        placeholder="${t('exercise.instructions.stepPlaceholder')}"
+        aria-label="${t('exercise.instructions.stepTitle', { number: index + 1 })}"
+        onchange="updateInstructionStep(${index}, this.value)"
+        onkeydown="handleStepKeydown(event, ${index})"
+      >${step}</textarea>
+    </div>
+  `).join('');
+}
+
+/**
+ * Fügt einen neuen Schritt hinzu
+ */
+function addInstructionStep(initialValue = '') {
+  exerciseInstructionSteps.push(initialValue);
+  renderInstructionSteps();
+
+  // Fokussiere das neue Eingabefeld
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.instruction-step-input-main');
+    const lastInput = inputs[inputs.length - 1];
+    if (lastInput) lastInput.focus();
+  }, 50);
+}
+
+/**
+ * Entfernt einen Schritt
+ */
+function removeInstructionStep(index) {
+  exerciseInstructionSteps.splice(index, 1);
+  renderInstructionSteps();
+}
+
+/**
+ * Aktualisiert einen Schritt
+ */
+function updateInstructionStep(index, value) {
+  exerciseInstructionSteps[index] = value;
+}
+
+/**
+ * Handle Enter-Taste um neuen Schritt hinzuzufügen
+ */
+function handleStepKeydown(event, index) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    // Speichere aktuellen Wert
+    exerciseInstructionSteps[index] = event.target.value;
+    // Füge neuen Schritt hinzu
+    addInstructionStep();
+  }
+}
+
+/**
+ * Holt die Schritte ohne leere trailing Steps
+ */
+function getCleanInstructionSteps() {
+  // Sync alle Input-Werte
+  const inputs = document.querySelectorAll('.instruction-step-input-main');
+  inputs.forEach((input, index) => {
+    exerciseInstructionSteps[index] = input.value.trim();
+  });
+
+  // Entferne leere trailing Steps
+  while (exerciseInstructionSteps.length > 0 && exerciseInstructionSteps[exerciseInstructionSteps.length - 1] === '') {
+    exerciseInstructionSteps.pop();
+  }
+
+  return exerciseInstructionSteps.filter(step => step.trim() !== '');
+}
+
+// ========================================
+// ADVANCED INSTRUCTION LISTS
+// ========================================
+
+function getInstructionListByKey(listKey) {
+  if (listKey === 'cues') return exerciseInstructionCues;
+  if (listKey === 'mistakes') return exerciseInstructionMistakes;
+  if (listKey === 'progressions') return exerciseInstructionProgressions;
+  return [];
+}
+
+function setInstructionListByKey(listKey, list) {
+  if (listKey === 'cues') exerciseInstructionCues = list;
+  if (listKey === 'mistakes') exerciseInstructionMistakes = list;
+  if (listKey === 'progressions') exerciseInstructionProgressions = list;
+}
+
+function renderInstructionLists() {
+  renderInstructionList('cues');
+  renderInstructionList('mistakes');
+  renderInstructionList('progressions');
+}
+
+function renderInstructionList(listKey) {
+  const config = instructionListConfig[listKey];
+  if (!config) return;
+
+  const container = document.getElementById(config.containerId);
+  if (!container) return;
+
+  const list = getInstructionListByKey(listKey);
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-steps-hint">
+        <span class="material-symbols-rounded">notes</span>
+        <span>${t('exercise.instructions.advanced.emptyList')}</span>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = list.map((item, index) => `
+    <div class="instruction-step" data-index="${index}">
+      <div class="instruction-step-header">
+        <span class="step-number">${index + 1}.</span>
+        <button type="button" class="remove-step-btn" onclick="removeInstructionListItem('${listKey}', ${index})" title="${t('exercise.instructions.removeStep')}">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <textarea
+        class="instruction-step-input instruction-step-input-advanced"
+        rows="2"
+        placeholder="${t(config.placeholderKey)}"
+        aria-label="${t('exercise.instructions.stepTitle', { number: index + 1 })}"
+        onchange="updateInstructionListItem('${listKey}', ${index}, this.value)"
+        onkeydown="handleInstructionListKeydown(event, '${listKey}', ${index})"
+      >${item}</textarea>
+    </div>
+  `).join('');
+}
+
+function addInstructionListItem(listKey, initialValue = '') {
+  const list = getInstructionListByKey(listKey);
+  list.push(initialValue);
+  setInstructionListByKey(listKey, list);
+  renderInstructionList(listKey);
+
+  setTimeout(() => {
+    const container = document.getElementById(instructionListConfig[listKey]?.containerId);
+    const inputs = container ? container.querySelectorAll('.instruction-step-input') : [];
+    const lastInput = inputs[inputs.length - 1];
+    if (lastInput) lastInput.focus();
+  }, 50);
+}
+
+function removeInstructionListItem(listKey, index) {
+  const list = getInstructionListByKey(listKey);
+  list.splice(index, 1);
+  setInstructionListByKey(listKey, list);
+  renderInstructionList(listKey);
+}
+
+function updateInstructionListItem(listKey, index, value) {
+  const list = getInstructionListByKey(listKey);
+  list[index] = value;
+  setInstructionListByKey(listKey, list);
+}
+
+function handleInstructionListKeydown(event, listKey, index) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    updateInstructionListItem(listKey, index, event.target.value);
+    addInstructionListItem(listKey);
+  }
+}
+
+function getCleanInstructionList(listKey) {
+  const config = instructionListConfig[listKey];
+  const container = document.getElementById(config?.containerId);
+  const inputs = container ? container.querySelectorAll('.instruction-step-input') : [];
+  const list = getInstructionListByKey(listKey).slice();
+
+  inputs.forEach((input, index) => {
+    list[index] = input.value.trim();
+  });
+
+  while (list.length > 0 && list[list.length - 1] === '') {
+    list.pop();
+  }
+
+  return list.filter(item => item.trim() !== '');
+}
+
+function updateSetupNotesInput() {
+  const input = document.getElementById('exercise-setup-notes');
+  if (!input) return;
+  input.value = exerciseSetupNotes || '';
 }
 
 // ========================================
@@ -371,36 +961,47 @@ function setDifficulty(level) {
 
 async function saveExercise() {
   const name = document.getElementById('exercise-name').value.trim();
-  const description = document.getElementById('exercise-description').value.trim();
-  const imageUrl = document.getElementById('exercise-image').value.trim();
-  const difficulty = parseInt(document.getElementById('exercise-difficulty').value);
+  const difficulty = document.getElementById('exercise-difficulty').value;
+  const icon = document.getElementById('exercise-icon').value || 'fitness_center';
 
-  // Get selected muscle groups
-  const muscleGroups = Array.from(document.querySelectorAll('.muscle-checkbox:checked'))
-    .map(cb => cb.value);
+  // Get instructions as string[] (nummerierte Schritte)
+  const instructionsSteps = getCleanInstructionSteps();
+  const cues = getCleanInstructionList('cues');
+  const commonMistakes = getCleanInstructionList('mistakes');
+  const progressions = getCleanInstructionList('progressions');
+  const setupNotesInput = document.getElementById('exercise-setup-notes');
+  const setupNotes = setupNotesInput ? setupNotesInput.value.trim() : '';
 
-  // Get selected equipment
-  const equipment = Array.from(document.querySelectorAll('.equipment-checkbox:checked'))
-    .map(cb => cb.value);
+  // Get selected muscle groups and equipment from state
+  const muscleGroups = exerciseMuscleGroups;
+  const equipment = exerciseEquipment.length > 0 ? exerciseEquipment : ['none'];
 
   // Validation
   if (!name) {
-    alert('Bitte gib einen Namen für die Übung ein!');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('errors.exerciseNameRequired') || 'Bitte gib einen Namen fuer die Uebung ein!');
+    }
     return;
   }
 
   if (muscleGroups.length === 0) {
-    alert('Bitte wähle mindestens eine Muskelgruppe!');
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('errors.muscleGroupsRequired') || 'Bitte waehle mindestens eine Muskelgruppe!');
+    }
     return;
   }
 
   const exerciseData = {
     name,
-    description,
-    imageUrl,
+    instructionsSteps,
     muscleGroups,
-    equipment: equipment.length > 0 ? equipment : ['none'],
-    difficulty
+    equipment,
+    difficulty,
+    icon,
+    ...(setupNotes ? { setupNotes } : {}),
+    ...(cues.length ? { cues } : {}),
+    ...(commonMistakes.length ? { commonMistakes } : {}),
+    ...(progressions.length ? { progressions } : {})
   };
 
   try {
@@ -418,7 +1019,9 @@ async function saveExercise() {
     await loadExercises();
   } catch (error) {
     console.error('Error saving exercise:', error);
-    alert('Fehler beim Speichern der Übung!');
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', 'Fehler beim Speichern der Übung!');
+  }
   }
 }
 
@@ -431,118 +1034,148 @@ function viewExerciseDetails(id) {
   if (!exercise) return;
 
   // Modal-Inhalt erstellen
+  const equipmentLabel = (exercise.equipment || []).filter(eq => eq && eq !== 'none')
+    .map(eq => equipmentNames[eq])
+    .filter(Boolean)
+    .join(', ') || 'Kein Equipment';
+  const muscleLabel = exercise.muscleGroups.map(muscle => muscleNames[muscle]).filter(Boolean).join(', ');
+  const normalizedInstructions = normalizeExerciseInstructions(exercise);
+  const difficultyValue = convertDifficultyToEnum(exercise.difficulty);
+  const difficultyInfo = exerciseDifficultyEnum[difficultyValue] || exerciseDifficultyEnum.intermediate;
+  const exerciseIcon = exercise.icon || 'fitness_center';
+
+  const stepsHtml = normalizedInstructions.instructionsSteps.length > 0
+    ? `
+      <ol class="instruction-steps-list">
+        ${normalizedInstructions.instructionsSteps.map((step, index) => `
+          <li>
+            <span class="instruction-step-index">${index + 1}.</span>
+            <span>${step}</span>
+          </li>
+        `).join('')}
+      </ol>
+    `
+    : `<p class="instruction-empty">${t('exercise.instructions.noSteps')}</p>`;
+
+  const advancedSections = [
+    normalizedInstructions.cues.length > 0
+      ? renderInstructionAccordionSection('tips_and_updates', t('exercise.instructions.advanced.cues'),
+        `<ul class="instruction-list">
+          ${normalizedInstructions.cues.map(item => `<li>${item}</li>`).join('')}
+        </ul>`)
+      : '',
+    normalizedInstructions.commonMistakes.length > 0
+      ? renderInstructionAccordionSection('warning', t('exercise.instructions.advanced.mistakes'),
+        `<ul class="instruction-list">
+          ${normalizedInstructions.commonMistakes.map(item => `<li>${item}</li>`).join('')}
+        </ul>`)
+      : '',
+    normalizedInstructions.progressions.length > 0
+      ? renderInstructionAccordionSection('trending_up', t('exercise.instructions.advanced.progressions'),
+        `<ul class="instruction-list">
+          ${normalizedInstructions.progressions.map(item => `<li>${item}</li>`).join('')}
+        </ul>`)
+      : '',
+    normalizedInstructions.setupNotes
+      ? renderInstructionAccordionSection('tune', t('exercise.instructions.advanced.setup'),
+        `<p class="instruction-text">${normalizedInstructions.setupNotes}</p>`, true)
+      : ''
+  ].filter(Boolean);
+
   const modalContent = `
-    <div class="space-y-4">
-      <!-- Bild -->
-      ${exercise.imageUrl ?
-        `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-full h-[200px] object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/600x200?text=No+Image'">`
-        :
-        `<div class="w-full h-[200px] bg-gray-800 rounded-lg flex items-center justify-center">
-          <span class="material-symbols-rounded" style="font-size: 80px; color: var(--color-primary);">fitness_center</span>
-        </div>`
-      }
-
-      <!-- Schwierigkeit -->
-      <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-          <span class="material-symbols-rounded" style="font-size: 18px;">star</span>
-          Schwierigkeit
-        </label>
-        <div class="flex gap-1">
-          ${Array(5).fill(0).map((_, i) =>
-            `<span class="material-symbols-rounded" style="font-size: 24px; color: ${i < exercise.difficulty ? 'var(--color-primary)' : '#374151'};">
-              ${i < exercise.difficulty ? 'star' : 'star'}
-            </span>`
-          ).join('')}
+    <div class="exercise-detail">
+      <div class="exercise-detail-hero">
+        <div class="exercise-detail-icon">
+          <span class="material-symbols-rounded">${exerciseIcon}</span>
+        </div>
+        <div>
+          <div class="exercise-detail-title">${exercise.name}</div>
+          <div class="exercise-detail-subtitle">${muscleLabel || 'Ganzkoerper'} ? ${equipmentLabel}</div>
         </div>
       </div>
 
-      <!-- Muskelgruppen -->
-      <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-          <span class="material-symbols-rounded" style="font-size: 18px;">sports_gymnastics</span>
-          Trainierte Muskelgruppen
-        </label>
-        <div class="flex flex-wrap gap-2">
-          ${exercise.muscleGroups.map((muscle, index) =>
-            `<span class="muscle-tag ${index === 0 ? 'muscle-primary' : ''}">
-              ${index === 0 ? '<span class="material-symbols-rounded" style="font-size: 14px;">fiber_manual_record</span> ' : ''}${muscleNames[muscle]}
-            </span>`
-          ).join('')}
+      <div class="exercise-detail-meta">
+        <span class="difficulty-badge ${difficultyValue}">${difficultyInfo.label}</span>
+        <div class="exercise-detail-chip">
+          <span class="material-symbols-rounded">sports_gymnastics</span>
+          <span>${muscleLabel || 'Ganzkoerper'}</span>
         </div>
-        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
-          <span class="material-symbols-rounded" style="font-size: 12px;">fiber_manual_record</span>
-          Hauptmuskel
-        </p>
+        <div class="exercise-detail-chip">
+          <span class="material-symbols-rounded">build</span>
+          <span>${equipmentLabel}</span>
+        </div>
       </div>
 
-      <!-- Equipment -->
-      ${exercise.equipment && exercise.equipment.length > 0 && exercise.equipment[0] !== 'none' ?
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">build</span>
-            Benötigtes Equipment
-          </label>
-          <div class="flex flex-wrap gap-2">
-            ${exercise.equipment.map(eq =>
-              `<span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-700 border border-gray-600 rounded-lg text-sm">
-                <span class="material-symbols-rounded" style="font-size: 16px; color: var(--color-primary);">${equipmentIcons[eq]}</span>
-                ${equipmentNames[eq]}
-              </span>`
-            ).join('')}
-          </div>
-        </div>`
-        :
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">build</span>
-            Benötigtes Equipment
-          </label>
-          <div class="inline-flex items-center gap-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-sm">
-            <span class="material-symbols-rounded" style="font-size: 16px; color: #10b981;">accessibility</span>
-            Kein Equipment
-          </div>
-        </div>`
-      }
+      <div class="exercise-detail-block">
+        <div class="exercise-detail-block-title">
+          <span class="material-symbols-rounded">format_list_numbered</span>
+          <span>${t('exercise.instructions.title')}</span>
+        </div>
+        ${stepsHtml}
+      </div>
 
-      <!-- Beschreibung -->
-      ${exercise.description ?
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
-            Anleitung
-          </label>
-          <p class="text-gray-300 leading-relaxed">${exercise.description}</p>
-        </div>`
-        :
-        `<div class="text-gray-500 italic text-center py-4 flex flex-col items-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 32px;">description</span>
-          Keine Anleitung vorhanden
-        </div>`
-      }
+      ${advancedSections.length > 0 ? `
+        <div class="exercise-detail-block">
+          <div class="exercise-detail-block-title">
+            <span class="material-symbols-rounded">tune</span>
+            <span>${t('exercise.instructions.advanced.title')}</span>
+          </div>
+          <div class="instruction-accordion">
+            ${advancedSections.join('')}
+          </div>
+        </div>
+      ` : ''}
 
-      <!-- Action Buttons -->
-      <div class="flex gap-3 pt-4">
+      <div class="exercise-detail-actions">
         <button
           onclick="closeGenericModal(); editExercise('${exercise.id}')"
-          class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+          class="btn-primary"
         >
-          <span class="material-symbols-rounded" style="font-size: 20px;">edit</span>
-          Bearbeiten
+          <span class="material-symbols-rounded">edit</span>
+          ${t('common.edit')}
         </button>
-        <button
-          onclick="closeGenericModal()"
-          class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
-        >
-          <span class="material-symbols-rounded" style="font-size: 20px;">close</span>
-          Schließen
+        <button onclick="closeGenericModal()" class="btn-secondary">
+          <span class="material-symbols-rounded">close</span>
+          ${t('common.close')}
         </button>
       </div>
     </div>
   `;
 
-  // Generic Modal öffnen
+  // Generic Modal ?ffnen öffnen
   openGenericModal(exercise.name, modalContent);
+}
+
+// ========================================
+// INSTRUCTION ACCORDION HELPERS
+// ========================================
+
+function renderInstructionAccordionSection(icon, title, contentHTML, isOpen = false) {
+  const itemId = 'accordion-' + title.toLowerCase().replace(/\s+/g, '-');
+  return `
+    <div class="instruction-accordion-item ${isOpen ? 'open' : ''}" data-accordion-id="${itemId}">
+      <button class="instruction-accordion-header" onclick="toggleInstructionAccordion('${itemId}')">
+        <div class="instruction-accordion-title">
+          <span class="material-symbols-rounded">${icon}</span>
+          <span>${title}</span>
+        </div>
+        <span class="material-symbols-rounded instruction-accordion-icon">expand_more</span>
+      </button>
+      <div class="instruction-accordion-content">
+        ${contentHTML}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Toggle accordion item open/closed
+ */
+function toggleInstructionAccordion(itemId) {
+  const item = document.querySelector(`[data-accordion-id="${itemId}"]`);
+  if (item) {
+    item.classList.toggle('open');
+  }
 }
 
 // ========================================
@@ -567,7 +1200,110 @@ function closeGenericModal() {
 // Übungen in Echtzeit synchronisieren
 function setupExercisesListener() {
   onCollectionChange(exercisesCollection, (exercises) => {
-    allExercises = exercises;
+    allExercises = exercises.map(normalizeExerciseForRuntime);
     filterExercises();
   });
+}
+
+// ========================================
+// BOTTOM SHEET INTEGRATION FOR EXERCISES
+// ========================================
+
+// State for multi-select inputs in exercise modal
+let exerciseMuscleGroups = [];
+let exerciseEquipment = [];
+
+/**
+ * Opens muscle groups bottom sheet
+ */
+function openMuscleGroupsBottomSheet() {
+  const muscleOptions = [
+    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur' },
+    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur' },
+    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur' },
+    { value: 'arms', label: 'Arme', description: 'Bizeps, Trizeps, Unterarme' },
+    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur' },
+    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur' }
+  ];
+
+  openBottomSheet({
+    title: 'Muskelgruppen auswählen',
+    options: muscleOptions,
+    selectedValues: exerciseMuscleGroups,
+    enableSearch: true,
+    searchPlaceholder: 'Muskelgruppe suchen...',
+    fieldId: 'exercise-muscle-groups-wrapper',
+    onConfirm: (selectedValues) => {
+      exerciseMuscleGroups = selectedValues;
+      renderExerciseMuscleGroupsInput();
+    }
+  });
+}
+
+/**
+ * Opens equipment bottom sheet
+ */
+function openEquipmentBottomSheet() {
+  const equipmentOptions = [
+    { value: 'none', label: 'Kein Equipment', description: 'Bodyweight Training' },
+    { value: 'pull-up-bar', label: 'Klimmzugstange', description: 'Für Klimmzüge und Hanging-Übungen' },
+    { value: 'dip-bars', label: 'Dip-Barren', description: 'Für Dips und Support-Holds' },
+    { value: 'rings', label: 'Ringe', description: 'Gymnastikringe für instabiles Training' },
+    { value: 'resistance-bands', label: 'Widerstandsbänder', description: 'Für Assistance oder zusätzlichen Widerstand' },
+    { value: 'parallettes', label: 'Paralettes', description: 'Für L-Sits, Handstands und Push-Ups' },
+    { value: 'box', label: 'Box/Bank', description: 'Erhöhte Plattform für Step-Ups, Box Jumps' },
+    { value: 'wall', label: 'Wand', description: 'Für Handstand und Wall-Sits' },
+    { value: 'mat', label: 'Matte', description: 'Für Bodenübungen' },
+    { value: 'weights', label: 'Gewichte', description: 'Kurz- oder Langhanteln' }
+  ];
+
+  openBottomSheet({
+    title: 'Equipment auswählen',
+    options: equipmentOptions,
+    selectedValues: exerciseEquipment,
+    enableSearch: true,
+    searchPlaceholder: 'Equipment suchen...',
+    fieldId: 'exercise-equipment-wrapper',
+    onConfirm: (selectedValues) => {
+      exerciseEquipment = selectedValues;
+      renderExerciseEquipmentInput();
+    }
+  });
+}
+
+/**
+ * Renders the muscle groups multi-select input
+ */
+function renderExerciseMuscleGroupsInput() {
+  renderMultiSelectInput('exercise-muscle-groups-wrapper', {
+    icon: 'fitness_center',
+    placeholder: 'Muskelgruppen auswählen...',
+    selectedValues: exerciseMuscleGroups,
+    valueLabels: muscleNames
+  });
+}
+
+/**
+ * Renders the equipment multi-select input
+ */
+function renderExerciseEquipmentInput() {
+  renderMultiSelectInput('exercise-equipment-wrapper', {
+    icon: 'build',
+    placeholder: 'Equipment auswählen...',
+    selectedValues: exerciseEquipment,
+    valueLabels: equipmentNames
+  });
+}
+
+/**
+ * Removes a muscle group chip
+ */
+function removeMultiSelectChip(containerId, value) {
+  if (containerId === 'exercise-muscle-groups-wrapper') {
+    exerciseMuscleGroups = exerciseMuscleGroups.filter(v => v !== value);
+    renderExerciseMuscleGroupsInput();
+  } else if (containerId === 'exercise-equipment-wrapper') {
+    exerciseEquipment = exerciseEquipment.filter(v => v !== value);
+    renderExerciseEquipmentInput();
+  }
 }
