@@ -443,7 +443,6 @@ function renderMultiSelectInput(containerId, config) {
     <div class="multi-select-input" id="${containerId}-input">
       ${hasSelection ? `<div class="multi-select-chips">${chipsHTML}</div>` : `<span class="multi-select-placeholder">${placeholder}</span>`}
     </div>
-    <span class="material-symbols-rounded multi-select-icon">${icon}</span>
     <span class="material-symbols-rounded multi-select-arrow">expand_more</span>
   `;
 }

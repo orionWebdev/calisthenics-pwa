@@ -3217,7 +3217,7 @@ input::placeholder {
 .multi-select-input {
   width: 100%;
   min-height: 48px;
-  padding: 0.625rem 2.75rem 0.625rem 2.75rem;
+  padding: 0.625rem 2.75rem 0.625rem 0.5rem;
   background: rgba(15, 36, 129, 0.3);
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 0.75rem;
@@ -3229,6 +3229,7 @@ input::placeholder {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
+  line-height: 1;
 }
 
 .multi-select-input:hover {
@@ -3250,6 +3251,7 @@ input::placeholder {
   font-size: 20px;
   pointer-events: none;
   transition: color 0.2s ease;
+  line-height: 1;
 }
 
 .multi-select-input.active + .multi-select-icon {
@@ -3258,13 +3260,14 @@ input::placeholder {
 
 .multi-select-arrow {
   position: absolute;
-  right: 0.875rem;
+  right: 10%;
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-text-muted);
   font-size: 20px;
   pointer-events: none;
   transition: transform 0.2s ease, color 0.2s ease;
+  line-height: 1;
 }
 
 .multi-select-input.active ~ .multi-select-arrow {
@@ -3276,6 +3279,9 @@ input::placeholder {
   color: var(--color-text-muted);
   font-size: 1rem;
   user-select: none;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .multi-select-chips {
@@ -5448,10 +5454,6 @@ input[type="range"]::-moz-range-progress {
 .modal-close-btn:hover {
   background: rgb(41 51 65);
   color: white;
-}
-
-.modal-body {
-  margin-bottom: 1.5rem;
 }
 
 .modal-footer {
@@ -8402,21 +8404,32 @@ input[type="range"]::-moz-range-progress {
 .difficulty-pills-row {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.difficulty-pills-row::-webkit-scrollbar {
+  display: none;
 }
 
 .difficulty-pills-row .difficulty-pill {
-  flex: 1;
-  min-width: 70px;
-  padding: 0.625rem 0.5rem;
-  font-size: 0.75rem;
+  flex: 0 0 auto;
+  min-width: unset;
+  padding: 0.625rem 1rem;
+  font-size: 0.8rem;
   text-align: center;
-  background: var(--ui-card-bg);
-  border: 1px solid var(--ui-card-border);
-  border-radius: 0.5rem;
-  color: rgba(255, 255, 255, 0.6);
+  background: rgba(55, 65, 81, 0.3);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 2rem;
+  color: #9ca3af;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .difficulty-pills-row .difficulty-pill:hover {
@@ -8424,9 +8437,27 @@ input[type="range"]::-moz-range-progress {
 }
 
 .difficulty-pills-row .difficulty-pill.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
   color: #fff;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="beginner"].active {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: #22c55e;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="intermediate"].active {
+  background: rgba(245, 158, 11, 0.3);
+  border-color: #f59e0b;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="advanced"].active {
+  background: rgba(249, 115, 22, 0.3);
+  border-color: #f97316;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="elite"].active {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #ef4444;
 }
 
 /* ========================================
@@ -8443,6 +8474,18 @@ input[type="range"]::-moz-range-progress {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#quick-exercise-modal .modal-footer .btn-secondary,
+#quick-exercise-modal .modal-footer .btn-primary {
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 0.65rem;
+  min-height: 44px;
+}
+
+#quick-exercise-modal .modal-footer .btn-primary .material-symbols-rounded {
+  font-size: 18px;
 }
 
 .btn-secondary {
