@@ -4,7 +4,7 @@
 
 :root {
   --color-primary: #F02277;
-  --color-bg: #060A30;
+  --color-bg: #000000;
   --color-secondary-dark: #091E4D;
   --color-secondary-light: #0F2481;
   --color-text: #FFFFFF;
@@ -32,15 +32,32 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 85%;
+}
+
 body {
   font-family: 'Zalando Sans Expanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100vh;
-  background: var(--color-bg);
+  background: #000;
   color: var(--color-text);
   /* PWA/Native App Support - Kein Padding auf Body, da Header/Nav eigenes Handling haben */
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
+}
+
+button,
+[data-pressable="true"],
+.clickable {
+  transition: transform 0.12s ease;
+  transform-origin: center;
+}
+
+button:active,
+[data-pressable="true"]:active,
+.clickable:active {
+  transform: scale(0.96);
 }
 
 /* ========================================
@@ -145,7 +162,7 @@ input, textarea, select, button {
    ======================================== */
 
 .mobile-nav-header {
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+  background-color: #000;
 }
 
 /* Desktop Navigation - Floating */
@@ -156,7 +173,7 @@ input, textarea, select, button {
   transform: translateX(-50%);
   width: 75%;
   max-width: 1200px;
-  background: rgba(9, 30, 77, 0.95);
+  background: #000;
   backdrop-filter: blur(12px);
   border: 2px solid var(--color-secondary-light);
   border-radius: 1rem;
@@ -542,6 +559,8 @@ input, textarea, select, button {
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
 }
 
 .exercise-picker-filters::-webkit-scrollbar,
@@ -1763,7 +1782,7 @@ input, textarea, select, button {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+  background-color: #000;
   backdrop-filter: blur(20px);
   border-top: 2px solid rgba(75, 85, 99, 0.4);
   /* PWA Safe Area: Padding unten für Home Indicator - Content wird nach oben verschoben */
@@ -7221,10 +7240,28 @@ input[type="range"]::-moz-range-progress {
   padding-bottom: 0.25rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
 }
 
 .difficulty-pills-full::-webkit-scrollbar {
   display: none;
+}
+
+@media (max-width: 768px) {
+  .exercise-picker-filters,
+  .plan-type-filters,
+  .difficulty-pills-full,
+  .difficulty-pills-row {
+    scrollbar-width: none;
+  }
+
+  .exercise-picker-filters::-webkit-scrollbar,
+  .plan-type-filters::-webkit-scrollbar,
+  .difficulty-pills-full::-webkit-scrollbar,
+  .difficulty-pills-row::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .difficulty-pill-full {
@@ -8411,6 +8448,8 @@ input[type="range"]::-moz-range-progress {
   padding-bottom: 0.25rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
 }
 
 .difficulty-pills-row::-webkit-scrollbar {
