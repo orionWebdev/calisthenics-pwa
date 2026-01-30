@@ -55,9 +55,33 @@ function initSwipeGesture(config) {
   let touchStartTime = 0;
   let isTracking = false;
   let isHorizontalSwipe = null; // null = undecided, true/false = locked
+  const swipeIgnoreSelector = [
+    '[data-swipe-ignore="true"]',
+    '.swipe-ignore',
+    '.plan-type-filters',
+    '.exercise-picker-filters',
+    '.difficulty-pills-full',
+    '.difficulty-pills-row',
+    '.exercise-filters-bar'
+  ].join(',');
+
+  function shouldIgnoreSwipe(target) {
+    if (!target || !target.closest) return false;
+    const ignoreEl = target.closest(swipeIgnoreSelector);
+    if (!ignoreEl) return false;
+    if (ignoreEl.scrollWidth && ignoreEl.clientWidth) {
+      return ignoreEl.scrollWidth > ignoreEl.clientWidth;
+    }
+    return true;
+  }
 
   function handleTouchStart(e) {
     if (e.touches.length !== 1) return;
+    if (shouldIgnoreSwipe(e.target)) {
+      isTracking = false;
+      isHorizontalSwipe = null;
+      return;
+    }
 
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
