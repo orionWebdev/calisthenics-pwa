@@ -5129,8 +5129,276 @@ input[type="range"]::-moz-range-progress {
 }
 
 .strength-section .progress-chart-container,
-.cardio-section .progress-chart-container {
+.cardio-section .progress-chart-container,
+.bodyweight-section .progress-chart-container {
   margin-top: 1rem;
+}
+
+/* ========================================
+   TRAINING CHARACTER PROGRESS
+   ======================================== */
+
+/* Segmented Control with 4 tabs */
+.segmented-control-4 {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.segmented-control-4 .segmented-btn {
+  flex: 1;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.75rem;
+}
+
+.segmented-control-4 .segmented-btn span:first-child {
+  font-size: 18px;
+}
+
+@media (min-width: 400px) {
+  .segmented-control-4 .segmented-btn {
+    padding: 0.625rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Progress Card (generic) */
+.progress-card {
+  background: rgb(31 41 55);
+  border: 1px solid rgb(55 65 81);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.progress-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.progress-card .card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.progress-card .card-hint {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+/* Consistency Card */
+.consistency-card {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+.consistency-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.consistency-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.consistency-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+}
+
+.consistency-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+/* Calm Insight Card */
+.calm-insight-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.calm-insight-card .insight-icon {
+  font-size: 20px;
+  color: #60a5fa;
+  flex-shrink: 0;
+}
+
+.calm-insight-card .insight-text {
+  font-size: 0.875rem;
+  color: #d1d5db;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Variance Card */
+.variance-card {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+.variance-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.variance-bar-container {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.variance-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.variance-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Load Index Card */
+.load-index-card {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+/* Bodyweight Section */
+.bodyweight-section .metric-btn.active {
+  background: var(--color-category-bodyweight, #10b981);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);
+}
+
+/* Intensity Card */
+.intensity-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+.intensity-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.intensity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.intensity-row .intensity-label {
+  width: 60px;
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.intensity-row .intensity-bar-container {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.intensity-row .intensity-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.intensity-row .intensity-bar.high {
+  background: #ef4444;
+}
+
+.intensity-row .intensity-bar.medium {
+  background: #f59e0b;
+}
+
+.intensity-row .intensity-bar.low {
+  background: #22c55e;
+}
+
+.intensity-row .intensity-count {
+  width: 24px;
+  text-align: right;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Effort Card */
+.effort-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+/* No Data Hint */
+.no-data-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(75, 85, 99, 0.2);
+  border-radius: 0.5rem;
+}
+
+.no-data-hint .material-symbols-rounded {
+  font-size: 20px;
+  color: #6b7280;
+}
+
+.no-data-hint p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Stat Unit */
+.progress-stat-card .stat-unit {
+  font-size: 0.6875rem;
+  color: #6b7280;
+  margin-top: 0.125rem;
+}
+
+/* Chart Empty State */
+.chart-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Chart Header */
+.chart-header {
+  margin-bottom: 0.75rem;
+}
+
+.chart-header .chart-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #d1d5db;
+  margin: 0;
 }
 
 /* Bottom Sheet */

@@ -343,6 +343,7 @@ const translations = {
       tabs: {
         overview: 'Uebersicht',
         strength: 'Kraft',
+        bodyweight: 'Bodyweight',
         cardio: 'Cardio'
       },
       overview: {
@@ -373,6 +374,43 @@ const translations = {
         thirtyDays: '30D',
         metaStrength: 'Kraft {duration}',
         metaCardio: 'Cardio {duration}'
+      },
+      consistency: {
+        title: 'Rhythmus & Konsistenz',
+        sessionsPerWeek: 'Sessions/Woche',
+        timePerWeek: 'Zeit/Woche',
+        daysSinceLast: 'Seit letzter Session',
+        daysSinceLastUnit: 'Tage',
+        restDays: 'Ruhetage',
+        trainingDays: 'Trainingstage'
+      },
+      insights: {
+        noSessions: 'Noch keine Sessions in diesem Zeitraum.',
+        balanced: 'Ausgewogene Mischung aus Kraft und Cardio.',
+        strengthFocused: 'Fokus auf Krafttraining.',
+        cardioFocused: 'Fokus auf Cardio.',
+        restDay: 'Heute Ruhetag.',
+        sessionsThisWeek: '{count} Trainingstage in diesem Zeitraum.'
+      },
+      bodyweight: {
+        title: 'Bodyweight',
+        emptyTitle: 'Noch keine Bodyweight-Sessions',
+        emptyBody: 'Starte ein Training mit Koerpergewichtsuebungen, um deinen Fortschritt zu sehen.',
+        intensityTitle: 'Intensitaetsniveaus',
+        intensityHint: 'Belastungsklasse pro Session basierend auf Wiederholungen und Uebungsart.',
+        effortTitle: 'Effort-Trend',
+        effortHint: 'Relativer Aufwand ueber Zeit (Wdh x Belastungsfaktor).',
+        intensityLow: 'Niedrig',
+        intensityMedium: 'Mittel',
+        intensityHigh: 'Hoch',
+        stats: {
+          lastWeek: 'Letzte Woche',
+          bestWeek: 'Beste Woche',
+          average: 'Durchschnitt',
+          sessions: 'Sessions'
+        },
+        chartTitle: 'Bodyweight Effort - {period}',
+        noData: 'Noch keine Bodyweight-Daten fuer diesen Zeitraum'
       },
       period: {
         '7d': '7 Tage',
@@ -465,6 +503,25 @@ const translations = {
           exercises: 'Uebungen',
           sets: 'Saetze',
           reps: 'Wiederholungen'
+        },
+        loadIndex: {
+          title: 'Belastungsniveau',
+          hint: 'Durchschnittliche Arbeitslast pro Session (Gewicht x Wdh).',
+          chartTitle: 'Belastungsniveau - {period}',
+          unit: 'kg',
+          noData: 'Noch keine gewichteten Trainings in diesem Zeitraum'
+        },
+        variance: {
+          title: 'Trainings-Varianz',
+          hint: 'Wie abwechslungsreich dein Training ist.',
+          low: 'Fokussiert',
+          medium: 'Ausgeglichen',
+          high: 'Abwechslungsreich'
+        },
+        structure: {
+          title: 'Strukturverteilung',
+          noData: 'Strukturdaten nicht verfuegbar',
+          hint: 'Push/Pull/Legs/Core basierend auf deinen Trainingsplaenen.'
         },
         volume: {
           weighted: 'Gewichtetes Volumen',
