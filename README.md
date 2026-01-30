@@ -20,7 +20,7 @@ Claude, kurzes Update:
 - Heute will ich Y machen
 - Bitte lies PROJECT_CONTEXT.md für Kontext
 
-Ready? 🚀
+Ready??? 🚀
 ```
 
 ### **5. Code-Review mit Claude**
