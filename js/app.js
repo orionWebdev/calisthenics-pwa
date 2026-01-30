@@ -270,15 +270,22 @@ function updateProfileInfo(user) {
 
 async function initApp() {
   console.log('🚀 Initializing Calisthenics Pro...');
+  const setProgress = window.authModule?.setLoadingProgress;
+  const hideLoading = window.authModule?.hideLoadingState;
+  if (typeof setProgress === 'function') {
+    setProgress(15);
+  }
 
   try {
     // 1. Initialize default exercises if needed
     console.log('📦 Initializing default exercises...');
     await initializeDefaultExercises();
+    if (typeof setProgress === 'function') setProgress(30);
 
     // 2. Load exercises
     console.log('💪 Loading exercises...');
     await loadExercises();
+    if (typeof setProgress === 'function') setProgress(45);
 
     // 3. Load plans
     console.log('📋 Loading plans...');
@@ -287,6 +294,7 @@ async function initApp() {
     } else {
       console.warn('⚠️ loadPlans function not found');
     }
+    if (typeof setProgress === 'function') setProgress(60);
 
     // 4. Load calendar schedule
     console.log('📅 Loading schedule...');
@@ -295,12 +303,14 @@ async function initApp() {
     } else {
       console.warn('⚠️ loadSchedule function not found');
     }
+    if (typeof setProgress === 'function') setProgress(70);
 
     // 5. Load session templates
     console.log('📝 Loading session templates...');
     if (typeof loadSessionTemplates === 'function') {
       await loadSessionTemplates();
     }
+    if (typeof setProgress === 'function') setProgress(80);
 
     // 6. Setup real-time listeners
     console.log('🔄 Setting up real-time listeners...');
@@ -316,18 +326,27 @@ async function initApp() {
     if (typeof setupSessionTemplatesListener === 'function') {
       setupSessionTemplatesListener();
     }
+    if (typeof setProgress === 'function') setProgress(90);
 
     if (typeof checkActiveWorkout === 'function') {
       checkActiveWorkout();
     }
 
     console.log('✅ App initialized successfully!');
+    if (typeof setProgress === 'function') setProgress(100);
+    if (typeof hideLoading === 'function') {
+      setTimeout(() => hideLoading(), 200);
+    }
   } catch (error) {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
   if (typeof showEdgeFeedback === 'function') {
     showEdgeFeedback('error', 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
   }
+    if (typeof setProgress === 'function') setProgress(100);
+    if (typeof hideLoading === 'function') {
+      setTimeout(() => hideLoading(), 200);
+    }
   }
 }
 
