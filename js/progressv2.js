@@ -168,10 +168,11 @@ function renderOverviewTab() {
         <span class="material-symbols-rounded progress-empty-icon">insights</span>
         <h3>${trProgress('progress.overview.emptyTitle')}</h3>
         <p>${trProgress('progress.overview.emptyBody')}</p>
+        <button onclick="openOverviewAddSheet()" class="header-add-btn" style="margin-top: 1rem;" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
+          <span class="material-symbols-rounded">add</span>
+          <span>${trProgress('common.add')}</span>
+        </button>
       </div>
-      <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
-        <span class="material-symbols-rounded">add</span>
-      </button>
     `;
     return;
   }
@@ -185,6 +186,14 @@ function renderOverviewTab() {
 
   container.innerHTML = `
     <div class="overview-section">
+      <!-- Header with Add Button -->
+      <div class="progress-tab-header" style="justify-content: flex-end; margin-bottom: 1rem;">
+        <button onclick="openOverviewAddSheet()" class="header-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
+          <span class="material-symbols-rounded">add</span>
+          <span>${trProgress('common.add')}</span>
+        </button>
+      </div>
+
       ${renderHybridBalanceHTML()}
 
       ${renderConsistencyCardHTML(consistencyStats)}
@@ -205,9 +214,6 @@ function renderOverviewTab() {
         ${renderActivityCalendarHTML()}
       </div>
     </div>
-    <button onclick="openOverviewAddSheet()" class="floating-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
-      <span class="material-symbols-rounded">add</span>
-    </button>
   `;
 }
 
@@ -254,7 +260,29 @@ function renderConsistencyCardHTML(stats) {
 function renderProgressPeriodSelector(section, currentPeriod) {
   const periods = ['7D', '30D', '6M', '1Y'];
 
-  return `
+  // Determine add button configuration based on section
+  let addBtnConfig = null;
+  if (section === 'strength') {
+    addBtnConfig = {
+      onclick: 'openStrengthQuickAdd()',
+      colorClass: 'strength',
+      label: trProgress('common.add')
+    };
+  } else if (section === 'bodyweight') {
+    addBtnConfig = {
+      onclick: 'openStrengthQuickAdd()',
+      colorClass: 'bodyweight',
+      label: trProgress('common.add')
+    };
+  } else if (section === 'cardio') {
+    addBtnConfig = {
+      onclick: 'openAddCardioModal()',
+      colorClass: 'cardio',
+      label: trProgress('common.add')
+    };
+  }
+
+  const periodSelector = `
     <div class="progress-period-selector">
       ${periods.map(period => `
         <button
@@ -265,6 +293,22 @@ function renderProgressPeriodSelector(section, currentPeriod) {
           ${trProgress(PERIOD_CONFIG[period].labelKey)}
         </button>
       `).join('')}
+    </div>
+  `;
+
+  // If no add button needed, return just the period selector
+  if (!addBtnConfig) {
+    return periodSelector;
+  }
+
+  // Return header with period selector and add button
+  return `
+    <div class="progress-tab-header">
+      ${periodSelector}
+      <button onclick="${addBtnConfig.onclick}" class="header-add-btn ${addBtnConfig.colorClass}" aria-label="${addBtnConfig.label}" type="button">
+        <span class="material-symbols-rounded">add</span>
+        <span>${addBtnConfig.label}</span>
+      </button>
     </div>
   `;
 }
@@ -907,10 +951,11 @@ function renderStrengthTab() {
         <span class="material-symbols-rounded progress-empty-icon">fitness_center</span>
         <h3>${trProgress('progress.strength.emptyTitle')}</h3>
         <p>${trProgress('progress.strength.emptyBody')}</p>
+        <button onclick="openStrengthQuickAdd()" class="header-add-btn strength" style="margin-top: 1rem;" aria-label="${trProgress('common.add')}" type="button">
+          <span class="material-symbols-rounded">add</span>
+          <span>${trProgress('common.add')}</span>
+        </button>
       </div>
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="${trProgress('common.add')}" type="button">
-        <span class="material-symbols-rounded">add</span>
-      </button>
     `;
     return;
   }
@@ -920,7 +965,7 @@ function renderStrengthTab() {
 
   container.innerHTML = `
     <div class="strength-section">
-      <!-- Period Selector -->
+      <!-- Period Selector with Add Button -->
       ${renderProgressPeriodSelector('strength', progressStrengthPeriod)}
 
       <!-- Load Index Card -->
@@ -937,10 +982,6 @@ function renderStrengthTab() {
 
       <!-- Chart -->
       <div id="strength-chart-container" class="progress-chart-container"></div>
-
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn strength" aria-label="${trProgress('common.add')}" type="button">
-        <span class="material-symbols-rounded">add</span>
-      </button>
     </div>
   `;
 
@@ -1057,10 +1098,13 @@ function renderStrengthLoadChart() {
     <div class="chart-header">
       <h4 class="chart-title">${chartTitle}</h4>
     </div>
-    <canvas id="strength-load-chart" width="400" height="200"></canvas>
+    <div class="chart-canvas-wrapper">
+      <canvas id="strength-load-chart"></canvas>
+    </div>
   `;
 
-  drawLoadIndexChart('strength-load-chart', data);
+  // Delay chart rendering to ensure canvas dimensions are available
+  setTimeout(() => drawLoadIndexChart('strength-load-chart', data), 50);
 }
 
 /**
@@ -1560,17 +1604,18 @@ function renderBodyweightTab() {
         <span class="material-symbols-rounded progress-empty-icon">sports_gymnastics</span>
         <h3>${trProgress('progress.bodyweight.emptyTitle')}</h3>
         <p>${trProgress('progress.bodyweight.emptyBody')}</p>
+        <button onclick="openStrengthQuickAdd()" class="header-add-btn bodyweight" style="margin-top: 1rem;" aria-label="${trProgress('common.add')}" type="button">
+          <span class="material-symbols-rounded">add</span>
+          <span>${trProgress('common.add')}</span>
+        </button>
       </div>
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn bodyweight" aria-label="${trProgress('common.add')}" type="button">
-        <span class="material-symbols-rounded">add</span>
-      </button>
     `;
     return;
   }
 
   container.innerHTML = `
     <div class="bodyweight-section">
-      <!-- Period Selector -->
+      <!-- Period Selector with Add Button -->
       ${renderProgressPeriodSelector('bodyweight', progressBodyweightPeriod)}
 
       <!-- Intensity Levels Card -->
@@ -1593,10 +1638,6 @@ function renderBodyweightTab() {
 
       <!-- Chart -->
       <div id="bodyweight-chart-container" class="progress-chart-container"></div>
-
-      <button onclick="openStrengthQuickAdd()" class="floating-add-btn bodyweight" aria-label="${trProgress('common.add')}" type="button">
-        <span class="material-symbols-rounded">add</span>
-      </button>
     </div>
   `;
 
@@ -1741,10 +1782,13 @@ function renderBodyweightChart() {
     <div class="chart-header">
       <h4 class="chart-title">${chartTitle}</h4>
     </div>
-    <canvas id="bodyweight-effort-chart" width="400" height="200"></canvas>
+    <div class="chart-canvas-wrapper">
+      <canvas id="bodyweight-effort-chart"></canvas>
+    </div>
   `;
 
-  drawBodyweightEffortChart('bodyweight-effort-chart', data);
+  // Delay chart rendering to ensure canvas dimensions are available
+  setTimeout(() => drawBodyweightEffortChart('bodyweight-effort-chart', data), 50);
 }
 
 /**
@@ -1854,14 +1898,11 @@ function renderCardioTab() {
         <span class="material-symbols-rounded progress-empty-icon">directions_run</span>
         <h3>${trProgress('progress.cardio.emptyTitle')}</h3>
         <p>${trProgress('progress.cardio.emptyBody')}</p>
-        <button onclick="openAddCardioModal()" class="progress-cta-btn primary">
+        <button onclick="openAddCardioModal()" class="header-add-btn cardio" style="margin-top: 1rem;" aria-label="${trProgress('common.add')}" type="button">
           <span class="material-symbols-rounded">add</span>
           <span>${trProgress('progress.cardio.add')}</span>
         </button>
       </div>
-      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
-        <span class="material-symbols-rounded">add</span>
-      </button>
     `;
     return;
   }
@@ -1873,17 +1914,33 @@ function renderCardioTab() {
 
   container.innerHTML = `
     <div class="cardio-section">
-      <!-- Activity Picker -->
-      <div class="activity-picker-compact">
-        <button onclick="openActivityPickerSheet()" class="activity-picker-btn">
-          <span class="material-symbols-rounded">${ACTIVITY_TYPES[selectedActivityType].icon}</span>
-          <span id="selected-activity-name">${ACTIVITY_TYPES[selectedActivityType].name}</span>
-          <span class="material-symbols-rounded">expand_more</span>
+      <!-- Header with Activity Picker and Add Button -->
+      <div class="progress-tab-header">
+        <div class="activity-picker-compact">
+          <button onclick="openActivityPickerSheet()" class="activity-picker-btn">
+            <span class="material-symbols-rounded">${ACTIVITY_TYPES[selectedActivityType].icon}</span>
+            <span id="selected-activity-name">${ACTIVITY_TYPES[selectedActivityType].name}</span>
+            <span class="material-symbols-rounded">expand_more</span>
+          </button>
+        </div>
+        <button onclick="openAddCardioModal()" class="header-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
+          <span class="material-symbols-rounded">add</span>
+          <span>${trProgress('common.add')}</span>
         </button>
       </div>
 
       <!-- Period Selector -->
-      ${renderProgressPeriodSelector('cardio', progressCardioPeriod)}
+      <div class="progress-period-selector" style="margin: 0 auto 1rem auto;">
+        ${['7D', '30D', '6M', '1Y'].map(period => `
+          <button
+            class="period-btn ${progressCardioPeriod === period ? 'active' : ''}"
+            onclick="switchProgressPeriod('cardio', '${period}')"
+            data-period="${period}"
+          >
+            ${trProgress(PERIOD_CONFIG[period].labelKey)}
+          </button>
+        `).join('')}
+      </div>
 
       <!-- Metric Toggle: Time | Distance | Pace -->
       <div class="metric-toggle cardio-metric-toggle">
@@ -1917,11 +1974,6 @@ function renderCardioTab() {
 
       <!-- Chart -->
       <div id="cardio-chart-container" class="progress-chart-container"></div>
-
-      <!-- Add Button -->
-      <button onclick="openAddCardioModal()" class="floating-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
-        <span class="material-symbols-rounded">add</span>
-      </button>
     </div>
   `;
 

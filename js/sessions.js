@@ -1353,13 +1353,15 @@ function aggregateWeightedLoadByPeriod(periodKey = '7D') {
   const now = new Date();
   const cutoffDate = new Date(now.getTime() - config.days * 24 * 60 * 60 * 1000);
 
-  // Filter weighted strength sessions
+  // Filter weighted strength sessions (includes quick-add sessions with discipline='weights')
   const relevantSessions = allSessions.filter(s => {
     if (s.type !== 'strength') return false;
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (sessionDate < cutoffDate) return false;
-    // Only include sessions with weighted exercises
-    return calculateWeightedLoadIndex(s) > 0;
+    // Include sessions with weighted exercises OR quick-add sessions with discipline='weights'
+    const hasWeightedExercises = calculateWeightedLoadIndex(s) > 0;
+    const isQuickAddWeights = s.discipline === 'weights' && !s.exercises;
+    return hasWeightedExercises || isQuickAddWeights;
   });
 
   if (config.bucketType === 'weekly') {
@@ -1367,6 +1369,24 @@ function aggregateWeightedLoadByPeriod(periodKey = '7D') {
   } else {
     return aggregateWeightedLoadDailyBuckets(config.days, relevantSessions);
   }
+}
+
+/**
+ * Estimates a load value for quick-add sessions based on duration and difficulty
+ * @param {Object} session - Session with duration and difficulty
+ * @returns {number} Estimated load
+ */
+function estimateQuickAddLoad(session) {
+  const duration = session.duration || 30;
+  const difficultyMultiplier = {
+    beginner: 0.5,
+    intermediate: 1.0,
+    advanced: 1.5,
+    elite: 2.0
+  };
+  const multiplier = difficultyMultiplier[session.difficulty] || 1.0;
+  // Base estimate: duration * difficulty multiplier * factor
+  return Math.round(duration * multiplier * 2);
 }
 
 function aggregateWeightedLoadDailyBuckets(days, sessions) {
@@ -1389,7 +1409,9 @@ function aggregateWeightedLoadDailyBuckets(days, sessions) {
 
     let totalLoad = 0;
     daySessions.forEach(s => {
-      totalLoad += calculateWeightedLoadIndex(s);
+      const exerciseLoad = calculateWeightedLoadIndex(s);
+      // Use calculated load if available, otherwise estimate from quick-add data
+      totalLoad += exerciseLoad > 0 ? exerciseLoad : estimateQuickAddLoad(s);
     });
     const avgLoad = daySessions.length > 0 ? Math.round(totalLoad / daySessions.length) : 0;
 
@@ -1424,7 +1446,9 @@ function aggregateWeightedLoadWeeklyBuckets(days, sessions) {
 
     let totalLoad = 0;
     weekSessions.forEach(s => {
-      totalLoad += calculateWeightedLoadIndex(s);
+      const exerciseLoad = calculateWeightedLoadIndex(s);
+      // Use calculated load if available, otherwise estimate from quick-add data
+      totalLoad += exerciseLoad > 0 ? exerciseLoad : estimateQuickAddLoad(s);
     });
     const avgLoad = weekSessions.length > 0 ? Math.round(totalLoad / weekSessions.length) : 0;
 
@@ -1543,13 +1567,15 @@ function aggregateBodyweightByPeriod(periodKey = '7D', exercisesData = []) {
   const now = new Date();
   const cutoffDate = new Date(now.getTime() - config.days * 24 * 60 * 60 * 1000);
 
-  // Filter sessions with bodyweight exercises
+  // Filter sessions with bodyweight exercises (includes quick-add sessions with discipline='bodyweight')
   const relevantSessions = allSessions.filter(s => {
     if (s.type !== 'strength') return false;
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (sessionDate < cutoffDate) return false;
-    // Only include sessions with bodyweight volume
-    return calculateBodyweightVolume(s, exercisesData) > 0;
+    // Include sessions with bodyweight volume OR quick-add sessions with discipline='bodyweight'
+    const hasBodyweightExercises = calculateBodyweightVolume(s, exercisesData) > 0;
+    const isQuickAddBodyweight = s.discipline === 'bodyweight' && !s.exercises;
+    return hasBodyweightExercises || isQuickAddBodyweight;
   });
 
   if (config.bucketType === 'weekly') {
@@ -1579,7 +1605,9 @@ function aggregateBodyweightDailyBuckets(days, sessions, exercisesData) {
 
     let totalEffort = 0;
     daySessions.forEach(s => {
-      totalEffort += calculateBodyweightVolume(s, exercisesData);
+      const bwVolume = calculateBodyweightVolume(s, exercisesData);
+      // Use calculated volume if available, otherwise estimate from quick-add data
+      totalEffort += bwVolume > 0 ? bwVolume : estimateQuickAddLoad(s);
     });
 
     // Determine intensity class for the day
@@ -1619,7 +1647,9 @@ function aggregateBodyweightWeeklyBuckets(days, sessions, exercisesData) {
 
     let totalEffort = 0;
     weekSessions.forEach(s => {
-      totalEffort += calculateBodyweightVolume(s, exercisesData);
+      const bwVolume = calculateBodyweightVolume(s, exercisesData);
+      // Use calculated volume if available, otherwise estimate from quick-add data
+      totalEffort += bwVolume > 0 ? bwVolume : estimateQuickAddLoad(s);
     });
 
     let intensityClass = 'low';
@@ -1926,12 +1956,14 @@ function handleModalBackdropClick(event, modalId) {
 
 // ==================== STRENGTH QUICK ENTRY MODAL ====================
 
-function openAddStrengthModal() {
+function openAddStrengthModal(dateStr = null) {
   const modal = document.getElementById('add-strength-modal');
   if (!modal) return;
 
   const title = document.getElementById('strength-modal-title');
   if (title) title.textContent = t('workout.quick.title');
+  const dateLabel = document.getElementById('strength-date-label');
+  if (dateLabel) dateLabel.textContent = t('workout.quick.date') || 'Datum *';
   const nameLabel = document.getElementById('strength-name-label');
   if (nameLabel) nameLabel.textContent = t('workout.quick.name');
   const durationLabel = document.getElementById('strength-duration-label');
@@ -1953,8 +1985,13 @@ function openAddStrengthModal() {
   const saveLabel = document.getElementById('strength-save-label');
   if (saveLabel) saveLabel.textContent = t('common.save');
 
+  // Reset form fields
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('strength-date');
   const nameInput = document.getElementById('strength-name');
   const durationInput = document.getElementById('strength-duration');
+
+  if (dateInput) dateInput.value = dateStr || today;
   if (nameInput) nameInput.value = '';
   if (durationInput) durationInput.value = '';
 
@@ -2000,10 +2037,16 @@ function setStrengthDifficulty(level) {
 }
 
 async function saveStrengthSession() {
+  const selectedDate = document.getElementById('strength-date')?.value;
   const name = document.getElementById('strength-name')?.value.trim();
   const duration = parseFloat(document.getElementById('strength-duration')?.value);
   const trainingType = document.getElementById('strength-type')?.value || 'bodyweight';
   const difficulty = document.getElementById('strength-difficulty')?.value || 'intermediate';
+
+  if (!selectedDate) {
+    showErrorMessage(t('workout.quick.dateRequired') || 'Bitte wähle ein Datum');
+    return;
+  }
 
   if (!name) {
     showErrorMessage(t('workout.quick.nameRequired'));
@@ -2022,12 +2065,10 @@ async function saveStrengthSession() {
       saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
     }
 
-    const today = new Date();
-    const dateStr = today.toISOString().split('T')[0];
     const strengthSession = {
       type: 'strength',
       planName: name,
-      date: firebase.firestore.Timestamp.fromDate(new Date(dateStr + 'T12:00:00')),
+      date: firebase.firestore.Timestamp.fromDate(new Date(selectedDate + 'T12:00:00')),
       duration,
       discipline: trainingType,
       difficulty,
