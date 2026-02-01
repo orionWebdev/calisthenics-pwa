@@ -113,6 +113,17 @@ function getRecentSessions(sessions, limit = DASHBOARD_RECENT_LIMIT) {
     .map(item => item.session);
 }
 
+function getTodaysScheduledWorkouts() {
+  if (typeof scheduleData === 'undefined' || !Array.isArray(scheduleData)) {
+    return [];
+  }
+  const today = getBerlinDateKey(new Date());
+  return scheduleData.filter(item =>
+    item.date === today &&
+    !item.completed
+  );
+}
+
 async function useDashboardData() {
   const state = {
     loading: true,
@@ -124,7 +135,8 @@ async function useDashboardData() {
       rangeDays: DASHBOARD_BALANCE_DAYS,
       contextLabelKey: 'balance.context.lowData'
     },
-    recentSessions: []
+    recentSessions: [],
+    scheduledWorkouts: []
   };
 
   try {
@@ -137,6 +149,7 @@ async function useDashboardData() {
     state.activeSession = getActiveWorkout();
     state.balance = buildBalanceData(sessions, DASHBOARD_BALANCE_DAYS);
     state.recentSessions = getRecentSessions(sessions, DASHBOARD_RECENT_LIMIT);
+    state.scheduledWorkouts = getTodaysScheduledWorkouts();
   } catch (error) {
     console.error('Error loading dashboard data:', error);
     state.error = error;
@@ -227,40 +240,152 @@ function startManualWorkout(type) {
   }
 }
 
-function renderPrimaryActionCard(state) {
-  const container = document.getElementById('dashboard-primary-card');
+function openAddWorkoutSheet() {
+  if (typeof openSheet !== 'function') {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', tr('errors.startUnavailable'));
+    }
+    return;
+  }
+
+  openSheet({
+    title: tr('dashboard.addWorkout.title'),
+    render: (container) => {
+      container.innerHTML = `
+        <button class="picker-item strength" type="button" onclick="addWorkoutOfType('strength')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">fitness_center</span>
+          </div>
+          <span>${tr('common.strength')}</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item cardio" type="button" onclick="addWorkoutOfType('cardio')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">directions_run</span>
+          </div>
+          <span>${tr('common.cardio')}</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item recovery" type="button" onclick="addWorkoutOfType('recovery')">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">self_improvement</span>
+          </div>
+          <span>${tr('common.recovery')}</span>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      `;
+    }
+  });
+}
+
+function addWorkoutOfType(type) {
+  if (typeof closeSheet === 'function') {
+    closeSheet();
+  }
+
+  if (type === 'cardio') {
+    if (typeof openAddCardioModal === 'function') {
+      openAddCardioModal();
+      return;
+    }
+  }
+
+  if (type === 'recovery') {
+    if (typeof openAddRecoveryModal === 'function') {
+      openAddRecoveryModal();
+      return;
+    }
+  }
+
+  if (type === 'strength') {
+    if (typeof openAddStrengthModal === 'function') {
+      openAddStrengthModal();
+      return;
+    }
+  }
+
+  if (typeof showView === 'function') {
+    showView('training');
+  }
+}
+
+function getPlanTypeColor(type) {
+  const colors = {
+    strength: 'var(--color-category-strength)',
+    cardio: 'var(--color-category-cardio)',
+    recovery: 'var(--color-category-recovery)'
+  };
+  return colors[type] || colors.strength;
+}
+
+function renderScheduledWorkoutsCard(state) {
+  const container = document.getElementById('dashboard-scheduled-card');
+  if (!container) return;
+
+  // Hide container if no scheduled workouts
+  if (!state.scheduledWorkouts || state.scheduledWorkouts.length === 0) {
+    container.innerHTML = '';
+    container.style.display = 'none';
+    return;
+  }
+
+  container.style.display = 'block';
+
+  const workoutTypeLabels = {
+    strength: tr('common.strength'),
+    cardio: tr('common.cardio'),
+    recovery: tr('common.recovery')
+  };
+
+  const items = state.scheduledWorkouts.map(workout => `
+    <div class="dashboard-scheduled-item" onclick="startScheduledWorkout('${workout.id}')">
+      <div class="dashboard-scheduled-info">
+        <span class="dashboard-scheduled-type" style="background: color-mix(in srgb, ${getPlanTypeColor(workout.planType)} 20%, transparent); color: ${getPlanTypeColor(workout.planType)};">
+          ${workoutTypeLabels[workout.planType] || workout.planType}
+        </span>
+        <span class="dashboard-scheduled-name">${workout.planName}</span>
+      </div>
+      <div class="dashboard-scheduled-meta">
+        <span class="dashboard-scheduled-duration">${workout.planDuration || 45} Min</span>
+        <span class="material-symbols-rounded dashboard-scheduled-play">play_arrow</span>
+      </div>
+    </div>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="dashboard-scheduled-widget">
+      <div class="dashboard-scheduled-header">
+        <span class="material-symbols-rounded">event</span>
+        <span>${tr('dashboard.scheduled.title')}</span>
+      </div>
+      <div class="dashboard-scheduled-list">
+        ${items}
+      </div>
+    </div>
+  `;
+}
+
+function renderLogWorkoutCard(state) {
+  const container = document.getElementById('dashboard-log-workout-card');
   if (!container) return;
 
   if (state.loading) {
     container.innerHTML = `
-      <div class="dashboard-primary-card">
-        <div class="dashboard-primary-title">${tr('dashboard.primary.title')}</div>
-        <p class="dashboard-primary-subtitle">${tr('common.loading')}</p>
+      <div class="dashboard-log-workout-loading">
+        <p>${tr('common.loading')}</p>
       </div>
     `;
     return;
   }
 
-  const hasActive = Boolean(state.activeSession);
-  const buttonLabel = hasActive ? tr('dashboard.primary.resume') : tr('dashboard.primary.start');
-  const actionHandler = hasActive ? 'resumeWorkoutFromDashboard()' : 'openStartWorkoutSheet()';
-
   container.innerHTML = `
-    <div class="dashboard-primary-card">
-      <div class="dashboard-primary-header">
-        <div>
-          <h3 class="dashboard-primary-title">${tr('dashboard.primary.title')}</h3>
-          <p class="dashboard-primary-subtitle">
-            ${hasActive ? tr('dashboard.primary.subtitleActive') : tr('dashboard.primary.subtitleInactive')}
-          </p>
-          <p class="dashboard-primary-helper">${tr('dashboard.primary.helper')}</p>
-        </div>
-        <span class="material-symbols-rounded dashboard-primary-icon">fitness_center</span>
+    <button class="dashboard-log-workout-btn" type="button" onclick="openAddWorkoutSheet()">
+      <div class="dashboard-log-workout-content">
+        <h3 class="dashboard-log-workout-title">${tr('dashboard.logWorkout.title')}</h3>
+        <p class="dashboard-log-workout-subtitle">${tr('dashboard.logWorkout.subtitle')}</p>
       </div>
-      <button class="dashboard-primary-btn" type="button" ${hasActive ? '' : ''} onclick="${actionHandler}">
-        <span>${buttonLabel}</span>
-      </button>
-    </div>
+      <span class="material-symbols-rounded dashboard-log-workout-icon">add</span>
+    </button>
   `;
 }
 
@@ -409,7 +534,8 @@ async function refreshDashboard() {
   dashboardIsLoading = true;
 
   const data = await useDashboardData();
-  renderPrimaryActionCard(data);
+  renderScheduledWorkoutsCard(data);
+  renderLogWorkoutCard(data);
   renderHybridBalanceCard(data);
   renderRecentSessionsList(data);
 
@@ -425,6 +551,12 @@ async function initDashboard() {
       refreshDashboard();
     });
   }
+  // Listen to schedule changes for scheduled workouts display
+  if (typeof onCollectionChange === 'function' && typeof scheduleCollection !== 'undefined') {
+    onCollectionChange(scheduleCollection, () => {
+      refreshDashboard();
+    });
+  }
   await refreshDashboard();
   console.log('Dashboard initialized!');
 }
@@ -434,6 +566,8 @@ window.refreshDashboard = refreshDashboard;
 window.openStartWorkoutSheet = openStartWorkoutSheet;
 window.startManualWorkout = startManualWorkout;
 window.resumeWorkoutFromDashboard = resumeWorkoutFromDashboard;
+window.openAddWorkoutSheet = openAddWorkoutSheet;
+window.addWorkoutOfType = addWorkoutOfType;
 
 // ========================================
 // AUTO-INITIALIZE

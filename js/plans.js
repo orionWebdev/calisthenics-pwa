@@ -1047,13 +1047,14 @@ function renderPlanPickerOptions(options, searchTerm) {
 }
 
 function selectPlanFromPicker(planId) {
-  const sheet = document.getElementById('plan-picker-sheet');
-  const config = JSON.parse(sheet.dataset.config || '{}');
+  // Store callback before closing (closePlanPickerSheet clears it)
+  const callback = planPickerCallback;
 
   closePlanPickerSheet();
 
-  if (config.onSelect) {
-    config.onSelect(planId);
+  // Use the stored callback (functions can't be serialized to JSON)
+  if (callback) {
+    callback(planId);
   }
 }
 
