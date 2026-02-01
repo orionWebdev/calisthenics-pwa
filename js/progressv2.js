@@ -186,14 +186,6 @@ function renderOverviewTab() {
 
   container.innerHTML = `
     <div class="overview-section">
-      <!-- Header with Add Button -->
-      <div class="progress-tab-header" style="justify-content: flex-end; margin-bottom: 1rem;">
-        <button onclick="openOverviewAddSheet()" class="header-add-btn" aria-label="${trProgress('progress.overview.addSessionAria')}" type="button">
-          <span class="material-symbols-rounded">add</span>
-          <span>${trProgress('common.add')}</span>
-        </button>
-      </div>
-
       ${renderHybridBalanceHTML()}
 
       ${renderConsistencyCardHTML(consistencyStats)}
@@ -260,55 +252,20 @@ function renderConsistencyCardHTML(stats) {
 function renderProgressPeriodSelector(section, currentPeriod) {
   const periods = ['7D', '30D', '6M', '1Y'];
 
-  // Determine add button configuration based on section
-  let addBtnConfig = null;
-  if (section === 'strength') {
-    addBtnConfig = {
-      onclick: 'openStrengthQuickAdd()',
-      colorClass: 'strength',
-      label: trProgress('common.add')
-    };
-  } else if (section === 'bodyweight') {
-    addBtnConfig = {
-      onclick: 'openStrengthQuickAdd()',
-      colorClass: 'bodyweight',
-      label: trProgress('common.add')
-    };
-  } else if (section === 'cardio') {
-    addBtnConfig = {
-      onclick: 'openAddCardioModal()',
-      colorClass: 'cardio',
-      label: trProgress('common.add')
-    };
-  }
-
-  const periodSelector = `
-    <div class="progress-period-selector">
-      ${periods.map(period => `
-        <button
-          class="period-btn ${currentPeriod === period ? 'active' : ''}"
-          onclick="switchProgressPeriod('${section}', '${period}')"
-          data-period="${period}"
-        >
-          ${trProgress(PERIOD_CONFIG[period].labelKey)}
-        </button>
-      `).join('')}
-    </div>
-  `;
-
-  // If no add button needed, return just the period selector
-  if (!addBtnConfig) {
-    return periodSelector;
-  }
-
-  // Return header with period selector and add button
+  // Period selector only - add buttons have been moved to dashboard
   return `
     <div class="progress-tab-header">
-      ${periodSelector}
-      <button onclick="${addBtnConfig.onclick}" class="header-add-btn ${addBtnConfig.colorClass}" aria-label="${addBtnConfig.label}" type="button">
-        <span class="material-symbols-rounded">add</span>
-        <span>${addBtnConfig.label}</span>
-      </button>
+      <div class="progress-period-selector">
+        ${periods.map(period => `
+          <button
+            class="period-btn ${currentPeriod === period ? 'active' : ''}"
+            onclick="switchProgressPeriod('${section}', '${period}')"
+            data-period="${period}"
+          >
+            ${trProgress(PERIOD_CONFIG[period].labelKey)}
+          </button>
+        `).join('')}
+      </div>
     </div>
   `;
 }
@@ -1914,7 +1871,7 @@ function renderCardioTab() {
 
   container.innerHTML = `
     <div class="cardio-section">
-      <!-- Header with Activity Picker and Add Button -->
+      <!-- Header with Activity Picker -->
       <div class="progress-tab-header">
         <div class="activity-picker-compact">
           <button onclick="openActivityPickerSheet()" class="activity-picker-btn">
@@ -1923,10 +1880,6 @@ function renderCardioTab() {
             <span class="material-symbols-rounded">expand_more</span>
           </button>
         </div>
-        <button onclick="openAddCardioModal()" class="header-add-btn cardio" aria-label="${trProgress('common.add')}" type="button">
-          <span class="material-symbols-rounded">add</span>
-          <span>${trProgress('common.add')}</span>
-        </button>
       </div>
 
       <!-- Period Selector -->

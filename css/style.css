@@ -49,17 +49,76 @@ body {
   user-select: none;
 }
 
+/* Global Click Animation for All Interactive Elements - Mobile First */
 button,
 [data-pressable="true"],
-.clickable {
-  transition: transform 0.12s ease;
+.clickable,
+[role="button"],
+[onclick],
+.dashboard-scheduled-item,
+.dashboard-log-workout-btn,
+.dashboard-session-item,
+.plan-row-card,
+.exercise-card,
+.picker-item,
+.bottom-nav-item,
+.calendar-day:not(.other-month),
+.week-day-card {
+  /* Longer transition for mobile - animation stays visible after quick tap */
+  transition: box-shadow 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform-origin: center;
+  cursor: pointer;
+  /* Optimize for touch devices */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -ms-touch-action: manipulation;
+  /* Prevent text selection on tap */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
+/* Active State - Scale Down on Click/Tap */
 button:active,
 [data-pressable="true"]:active,
-.clickable:active {
+.clickable:active,
+[role="button"]:active,
+[onclick]:active,
+.dashboard-scheduled-item:active,
+.dashboard-log-workout-btn:active,
+.dashboard-session-item:active,
+.plan-row-card:active,
+.exercise-card:active,
+.picker-item:active,
+.bottom-nav-item:active,
+.calendar-day:not(.other-month):active,
+.week-day-card:active {
   transform: scale(0.96);
+  /* Fast response on tap, slow bounce back */
+  transition: transform 0.05s ease-out;
+}
+
+/* Focus Visible State - For Accessibility */
+button:focus-visible,
+[data-pressable="true"]:focus-visible,
+.clickable:focus-visible,
+[role="button"]:focus-visible,
+.dashboard-scheduled-item:focus-visible,
+.dashboard-log-workout-btn:focus-visible,
+.dashboard-session-item:focus-visible,
+.plan-row-card:focus-visible,
+.exercise-card:focus-visible,
+.picker-item:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(240, 34, 119, 0.2);
+}
+
+/* Disabled State */
+button:disabled,
+[data-pressable="true"]:disabled,
+.clickable:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 /* ========================================
@@ -1408,6 +1467,146 @@ input, textarea, select, button {
 
 .dashboard-primary-btn:active {
   transform: scale(0.98);
+}
+
+/* Dashboard Scheduled Workouts Widget */
+.dashboard-scheduled-widget {
+  padding: 1rem;
+  background: var(--color-surface);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-scheduled-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-scheduled-header .material-symbols-rounded {
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+.dashboard-scheduled-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dashboard-scheduled-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dashboard-scheduled-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-scheduled-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.dashboard-scheduled-type {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.35rem;
+  white-space: nowrap;
+}
+
+.dashboard-scheduled-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-scheduled-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-scheduled-duration {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.dashboard-scheduled-play {
+  font-size: 22px;
+  color: var(--color-primary);
+}
+
+/* Dashboard Log Workout Widget */
+.dashboard-log-workout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.dashboard-log-workout-btn:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dashboard-log-workout-btn:active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-log-workout-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dashboard-log-workout-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.dashboard-log-workout-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.dashboard-log-workout-icon {
+  font-size: 28px;
+  color: var(--color-text-muted);
+  padding: 0.5rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.dashboard-log-workout-loading {
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-text-muted);
 }
 
 /* Hybrid Balance Card */

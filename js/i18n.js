@@ -327,6 +327,16 @@ const translations = {
         start: 'Workout starten',
         resume: 'Workout fortsetzen'
       },
+      scheduled: {
+        title: 'Geplant fuer heute'
+      },
+      addWorkout: {
+        title: 'Workout hinzufuegen'
+      },
+      logWorkout: {
+        title: 'Workout erfassen',
+        subtitle: 'Logge, starte oder plane ein Workout'
+      },
       hybridBalance: {
         title: 'Hybrid Balance',
         subtitle: 'Letzte {days} Tage',
