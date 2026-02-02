@@ -249,7 +249,49 @@ function openAddWorkoutSheet() {
   }
 
   openSheet({
-    title: tr('dashboard.addWorkout.title'),
+    title: tr('dashboard.logWorkout.title'),
+    render: (container) => {
+      container.innerHTML = `
+        <button class="picker-item" type="button" onclick="openLogWorkoutTypeSheet()">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">done</span>
+          </div>
+          <div class="picker-item-content">
+            <span class="picker-item-label">${tr('dashboard.logWorkout.log')}</span>
+            <span class="picker-item-desc">${tr('dashboard.logWorkout.logDesc')}</span>
+          </div>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item" type="button" onclick="openPlanWorkoutSheet()">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">event</span>
+          </div>
+          <div class="picker-item-content">
+            <span class="picker-item-label">${tr('dashboard.logWorkout.plan')}</span>
+            <span class="picker-item-desc">${tr('dashboard.logWorkout.planDesc')}</span>
+          </div>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item" type="button" onclick="openStartWorkoutFromPlanSheet()">
+          <div class="picker-item-icon">
+            <span class="material-symbols-rounded">play_arrow</span>
+          </div>
+          <div class="picker-item-content">
+            <span class="picker-item-label">${tr('dashboard.logWorkout.start')}</span>
+            <span class="picker-item-desc">${tr('dashboard.logWorkout.startDesc')}</span>
+          </div>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      `;
+    }
+  });
+}
+
+function openLogWorkoutTypeSheet() {
+  if (typeof openSheet !== 'function') return;
+
+  openSheet({
+    title: tr('dashboard.logWorkout.log'),
     render: (container) => {
       container.innerHTML = `
         <button class="picker-item strength" type="button" onclick="addWorkoutOfType('strength')">
@@ -276,6 +318,36 @@ function openAddWorkoutSheet() {
       `;
     }
   });
+}
+
+function openPlanWorkoutSheet() {
+  if (typeof closeSheet === 'function') {
+    closeSheet();
+  }
+  // Navigate to calendar view
+  if (typeof showView === 'function') {
+    showView('calendar');
+  }
+}
+
+function openStartWorkoutFromPlanSheet() {
+  if (typeof closeSheet === 'function') {
+    closeSheet();
+  }
+  // Open plan picker to start a workout from an existing plan
+  if (typeof openCalendarPlanPicker === 'function') {
+    openCalendarPlanPicker((planId) => {
+      if (typeof startWorkoutFromPlan === 'function') {
+        startWorkoutFromPlan(planId);
+      }
+    });
+  } else if (typeof showView === 'function') {
+    // Fallback: navigate to training tab
+    showView('training');
+    if (typeof showTrainingTab === 'function') {
+      showTrainingTab('plans');
+    }
+  }
 }
 
 function addWorkoutOfType(type) {
@@ -568,6 +640,9 @@ window.startManualWorkout = startManualWorkout;
 window.resumeWorkoutFromDashboard = resumeWorkoutFromDashboard;
 window.openAddWorkoutSheet = openAddWorkoutSheet;
 window.addWorkoutOfType = addWorkoutOfType;
+window.openLogWorkoutTypeSheet = openLogWorkoutTypeSheet;
+window.openPlanWorkoutSheet = openPlanWorkoutSheet;
+window.openStartWorkoutFromPlanSheet = openStartWorkoutFromPlanSheet;
 
 // ========================================
 // AUTO-INITIALIZE

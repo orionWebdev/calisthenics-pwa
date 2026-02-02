@@ -1597,9 +1597,9 @@ input, textarea, select, button {
 
 .dashboard-log-workout-icon {
   font-size: 28px;
-  color: var(--color-text-muted);
+  color: var(--color-primary);
   padding: 0.5rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid var(--color-primary);
   border-radius: 50%;
 }
 
@@ -6016,7 +6016,7 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.125rem 1.5rem;
+  padding: 1.125rem 0.5rem;
   --picker-accent: var(--color-primary);
   background: transparent;
   border: none;
@@ -6053,14 +6053,38 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
-  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
+  background: transparent;
+  border: none;
   border-radius: 0.625rem;
 }
 
 .picker-item-icon .material-symbols-rounded {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 28px !important;
+  font-weight: 300;
+  opacity: 1;
+}
+
+/* Colored icons for workout type selection */
+.picker-item.strength .picker-item-icon {
+  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
+}
+
+.picker-item.strength .picker-item-icon .material-symbols-rounded,
+.picker-item.cardio .picker-item-icon .material-symbols-rounded,
+.picker-item.recovery .picker-item-icon .material-symbols-rounded {
   color: var(--picker-accent);
-  font-size: 24px;
+}
+
+.picker-item.cardio .picker-item-icon {
+  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
+}
+
+.picker-item.recovery .picker-item-icon {
+  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
 }
 
 .picker-item.strength {
@@ -6073,6 +6097,24 @@ input[type="range"]::-moz-range-progress {
 
 .picker-item.recovery {
   --picker-accent: var(--color-category-recovery);
+}
+
+.picker-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.picker-item-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.picker-item-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
 }
 
 /* Cardio Modal Specific */

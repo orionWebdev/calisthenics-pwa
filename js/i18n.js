@@ -335,7 +335,13 @@ const translations = {
       },
       logWorkout: {
         title: 'Workout erfassen',
-        subtitle: 'Logge, starte oder plane ein Workout'
+        subtitle: 'Logge, starte oder plane ein Workout',
+        log: 'Workout loggen',
+        logDesc: 'Erfasse ein abgeschlossenes Training',
+        plan: 'Workout planen',
+        planDesc: 'Plane ein Training im Kalender',
+        start: 'Workout starten',
+        startDesc: 'Starte ein Training aus deinen Plaenen'
       },
       hybridBalance: {
         title: 'Hybrid Balance',
