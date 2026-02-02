@@ -226,6 +226,15 @@ const translations = {
         next: 'Naechste Uebung',
         finish: 'Workout beenden',
         progress: '{completed} / {total} Uebungen'
+      },
+      logging: {
+        exercisesOptional: 'Uebungen (optional)',
+        addExercise: 'Uebung hinzufuegen',
+        exerciseAlreadyAdded: 'Uebung bereits hinzugefuegt',
+        sets: 'Saetze',
+        reps: 'Wiederholungen pro Satz',
+        set: 'Satz',
+        totalReps: 'Wdh.'
       }
     },
     template: {

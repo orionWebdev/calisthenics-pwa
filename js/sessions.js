@@ -1959,7 +1959,14 @@ function handleModalBackdropClick(event, modalId) {
 
 // ==================== STRENGTH QUICK ENTRY MODAL ====================
 
+// State for exercises being logged
+let strengthLoggingExercises = [];
+let exercisePickerCallback = null;
+
 function openAddStrengthModal(dateStr = null) {
+  // Reset exercises list
+  strengthLoggingExercises = [];
+  renderStrengthExercisesList();
   const modal = document.getElementById('add-strength-modal');
   if (!modal) return;
 
@@ -1987,6 +1994,12 @@ function openAddStrengthModal(dateStr = null) {
   if (cancelLabel) cancelLabel.textContent = t('common.cancel');
   const saveLabel = document.getElementById('strength-save-label');
   if (saveLabel) saveLabel.textContent = t('common.save');
+
+  // Exercise logging labels
+  const exercisesLabel = document.getElementById('strength-exercises-label');
+  if (exercisesLabel) exercisesLabel.textContent = t('workout.logging.exercisesOptional') || 'Übungen (optional)';
+  const addExerciseLabel = document.getElementById('strength-add-exercise-label');
+  if (addExerciseLabel) addExerciseLabel.textContent = t('workout.logging.addExercise') || 'Übung hinzufügen';
 
   // Reset form fields
   const today = new Date().toISOString().split('T')[0];
@@ -2039,6 +2052,181 @@ function setStrengthDifficulty(level) {
   });
 }
 
+// ==================== EXERCISE LOGGING FUNCTIONS ====================
+
+/**
+ * Open exercise picker for logging a workout
+ */
+function openExercisePickerForLogging() {
+  // Set callback for when exercise is selected
+  exercisePickerCallback = (exerciseId) => {
+    addExerciseToStrengthLogging(exerciseId);
+  };
+
+  // Open the existing exercise picker
+  if (typeof openAddExerciseToPlan === 'function') {
+    // Temporarily override selectExerciseForPlan
+    window._originalSelectExerciseForPlan = window.selectExerciseForPlan;
+    window.selectExerciseForPlan = (exerciseId) => {
+      if (exercisePickerCallback) {
+        exercisePickerCallback(exerciseId);
+        exercisePickerCallback = null;
+      }
+      closeExercisePicker();
+      // Restore original function
+      window.selectExerciseForPlan = window._originalSelectExerciseForPlan;
+    };
+    openAddExerciseToPlan();
+  }
+}
+
+/**
+ * Add an exercise to the strength logging list
+ */
+function addExerciseToStrengthLogging(exerciseId) {
+  // Check if exercise already exists
+  if (strengthLoggingExercises.find(e => e.exerciseId === exerciseId)) {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('info', t('workout.logging.exerciseAlreadyAdded') || 'Übung bereits hinzugefügt');
+    }
+    return;
+  }
+
+  // Get exercise details
+  const exercise = (typeof allExercises !== 'undefined' && allExercises)
+    ? allExercises.find(e => e.id === exerciseId)
+    : null;
+
+  if (!exercise) {
+    console.error('Exercise not found:', exerciseId);
+    return;
+  }
+
+  // Add with default sets
+  strengthLoggingExercises.push({
+    exerciseId: exerciseId,
+    exerciseName: exercise.name,
+    sets: [{ reps: 10 }] // Default: 1 set of 10 reps
+  });
+
+  renderStrengthExercisesList();
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Remove an exercise from the logging list
+ */
+function removeExerciseFromLogging(index) {
+  strengthLoggingExercises.splice(index, 1);
+  renderStrengthExercisesList();
+}
+
+/**
+ * Open modal to edit exercise sets
+ */
+function editExerciseSets(index) {
+  const exercise = strengthLoggingExercises[index];
+  if (!exercise) return;
+
+  // Open a simple prompt for sets count
+  const currentSets = exercise.sets.length;
+  const currentReps = exercise.sets[0]?.reps || 10;
+
+  if (typeof openSheet === 'function') {
+    openSheet({
+      title: exercise.exerciseName,
+      render: (container) => {
+        container.innerHTML = `
+          <div class="space-y-4 p-2">
+            <div>
+              <label class="block text-sm font-medium mb-2">${t('workout.logging.sets') || 'Sätze'}</label>
+              <input type="number" id="edit-sets-count" value="${currentSets}" min="1" max="20"
+                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">${t('workout.logging.reps') || 'Wiederholungen pro Satz'}</label>
+              <input type="number" id="edit-reps-count" value="${currentReps}" min="1" max="100"
+                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500">
+            </div>
+            <button onclick="saveExerciseSets(${index})" class="w-full btn-primary mt-4">
+              <span class="material-symbols-rounded">check</span>
+              <span>${t('common.save') || 'Speichern'}</span>
+            </button>
+          </div>
+        `;
+      }
+    });
+  }
+}
+
+/**
+ * Save edited exercise sets
+ */
+function saveExerciseSets(index) {
+  const setsInput = document.getElementById('edit-sets-count');
+  const repsInput = document.getElementById('edit-reps-count');
+
+  if (!setsInput || !repsInput) return;
+
+  const setsCount = parseInt(setsInput.value) || 1;
+  const repsCount = parseInt(repsInput.value) || 10;
+
+  // Create sets array
+  const sets = [];
+  for (let i = 0; i < setsCount; i++) {
+    sets.push({ reps: repsCount });
+  }
+
+  strengthLoggingExercises[index].sets = sets;
+
+  if (typeof closeSheet === 'function') {
+    closeSheet();
+  }
+
+  renderStrengthExercisesList();
+}
+
+/**
+ * Render the list of exercises being logged
+ */
+function renderStrengthExercisesList() {
+  const container = document.getElementById('strength-exercises-list');
+  if (!container) return;
+
+  if (strengthLoggingExercises.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = strengthLoggingExercises.map((exercise, index) => {
+    const totalReps = exercise.sets.reduce((sum, set) => sum + (set.reps || 0), 0);
+    const setsCount = exercise.sets.length;
+
+    return `
+      <div class="strength-exercise-item">
+        <div class="exercise-icon">
+          <span class="material-symbols-rounded">fitness_center</span>
+        </div>
+        <div class="exercise-info">
+          <div class="exercise-name">${exercise.exerciseName}</div>
+          <div class="exercise-sets-info">
+            <span class="sets-badge">${setsCount} ${setsCount === 1 ? 'Satz' : 'Sätze'}</span>
+            <span>${totalReps} Wdh.</span>
+          </div>
+        </div>
+        <div class="exercise-actions">
+          <button type="button" onclick="editExerciseSets(${index})" title="Bearbeiten">
+            <span class="material-symbols-rounded">edit</span>
+          </button>
+          <button type="button" class="delete-btn" onclick="removeExerciseFromLogging(${index})" title="Entfernen">
+            <span class="material-symbols-rounded">delete</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 async function saveStrengthSession() {
   const selectedDate = document.getElementById('strength-date')?.value;
   const name = document.getElementById('strength-name')?.value.trim();
@@ -2077,6 +2265,14 @@ async function saveStrengthSession() {
       difficulty,
       createdAt: firebase.firestore.Timestamp.now()
     };
+
+    // Add exercises if any were logged
+    if (strengthLoggingExercises.length > 0) {
+      strengthSession.exercises = strengthLoggingExercises.map(ex => ({
+        exerciseId: ex.exerciseId,
+        sets: ex.sets
+      }));
+    }
 
     const savedDoc = await addDoc(sessionsCollection, strengthSession);
 
@@ -2253,6 +2449,12 @@ window.closeAddStrengthModal = closeAddStrengthModal;
 window.saveStrengthSession = saveStrengthSession;
 window.setStrengthType = setStrengthType;
 window.setStrengthDifficulty = setStrengthDifficulty;
+window.openExercisePickerForLogging = openExercisePickerForLogging;
+window.addExerciseToStrengthLogging = addExerciseToStrengthLogging;
+window.removeExerciseFromLogging = removeExerciseFromLogging;
+window.editExerciseSets = editExerciseSets;
+window.saveExerciseSets = saveExerciseSets;
+window.renderStrengthExercisesList = renderStrengthExercisesList;
 window.calculateSessionStrengthVolume = calculateSessionStrengthVolume;
 window.aggregateWeeklyStrengthVolume = aggregateWeeklyStrengthVolume;
 window.aggregateWeeklyCardio = aggregateWeeklyCardio;
