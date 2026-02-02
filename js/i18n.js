@@ -109,7 +109,12 @@ const translations = {
       },
       addPlan: 'Plan hinzufuegen',
       quickAdd: 'Schnell-Eintrag',
-      orQuickEntry: 'Oder Schnell-Eintrag erstellen'
+      orQuickEntry: 'Oder Schnell-Eintrag erstellen',
+      errors: {
+        notFound: 'Training nicht gefunden',
+        engineNotLoaded: 'Workout-Engine nicht geladen',
+        modalNotAvailable: 'Erfassungsmodul nicht verfuegbar'
+      }
     },
     exercise: {
       title: 'Uebung',

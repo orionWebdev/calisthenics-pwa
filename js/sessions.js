@@ -1851,9 +1851,12 @@ async function saveCardioSession() {
       createdAt: firebase.firestore.Timestamp.now()
     };
 
-    await addDoc(sessionsCollection, cardioSession);
+    const savedDoc = await addDoc(sessionsCollection, cardioSession);
 
     console.log('✅ Cardio session saved');
+
+    // Mark pending scheduled entry as completed (Quick Entry support)
+    await markPendingScheduledEntryCompleted(savedDoc.id);
 
     // Close modal FIRST (before reload)
     closeAddCardioModal();
@@ -2075,7 +2078,10 @@ async function saveStrengthSession() {
       createdAt: firebase.firestore.Timestamp.now()
     };
 
-    await addDoc(sessionsCollection, strengthSession);
+    const savedDoc = await addDoc(sessionsCollection, strengthSession);
+
+    // Mark pending scheduled entry as completed (Quick Entry support)
+    await markPendingScheduledEntryCompleted(savedDoc.id);
 
     closeAddStrengthModal();
     await loadSessions();
@@ -2175,9 +2181,12 @@ async function saveRecoverySession() {
       createdAt: firebase.firestore.Timestamp.now()
     };
 
-    await addDoc(sessionsCollection, recoverySession);
+    const savedDoc = await addDoc(sessionsCollection, recoverySession);
 
     console.log('✅ Recovery session saved');
+
+    // Mark pending scheduled entry as completed (Quick Entry support)
+    await markPendingScheduledEntryCompleted(savedDoc.id);
 
     closeAddRecoveryModal();
 
@@ -2196,6 +2205,35 @@ async function saveRecoverySession() {
       saveBtn.disabled = false;
       saveBtn.innerHTML = '<span class="material-symbols-rounded">check</span><span>Speichern</span>';
     }
+  }
+}
+
+// ==================== SCHEDULED ENTRY COMPLETION ====================
+
+/**
+ * Mark a pending scheduled entry (Quick Entry) as completed after session save
+ * @param {string} sessionId - The ID of the saved session
+ */
+async function markPendingScheduledEntryCompleted(sessionId) {
+  const pendingEntry = window.pendingScheduledEntry;
+  if (!pendingEntry || !pendingEntry.id) {
+    return; // No pending entry to mark
+  }
+
+  try {
+    const scheduleUpdate = {
+      status: 'completed',
+      sessionId: sessionId,
+      completedAt: firebase.firestore.Timestamp.now()
+    };
+
+    await updateDoc(scheduleCollection, pendingEntry.id, scheduleUpdate);
+    console.log('✅ Scheduled entry marked as completed:', pendingEntry.id);
+  } catch (error) {
+    console.error('❌ Error marking scheduled entry as completed:', error);
+  } finally {
+    // Always clear pending entry after attempt
+    window.pendingScheduledEntry = null;
   }
 }
 

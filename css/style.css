@@ -6034,7 +6034,6 @@ input[type="range"]::-moz-range-progress {
 }
 
 .picker-item .material-symbols-rounded:last-child {
-  margin-left: auto;
   color: transparent;
   transition: color 0.2s ease;
 }

@@ -253,9 +253,7 @@ function openAddWorkoutSheet() {
     render: (container) => {
       container.innerHTML = `
         <button class="picker-item" type="button" onclick="openLogWorkoutTypeSheet()">
-          <div class="picker-item-icon">
-            <span class="material-symbols-rounded">done</span>
-          </div>
+          <span class="material-symbols-rounded" style="font-size: 24px; color: white;">done</span>
           <div class="picker-item-content">
             <span class="picker-item-label">${tr('dashboard.logWorkout.log')}</span>
             <span class="picker-item-desc">${tr('dashboard.logWorkout.logDesc')}</span>
@@ -263,9 +261,7 @@ function openAddWorkoutSheet() {
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
         <button class="picker-item" type="button" onclick="openPlanWorkoutSheet()">
-          <div class="picker-item-icon">
-            <span class="material-symbols-rounded">event</span>
-          </div>
+          <span class="material-symbols-rounded" style="font-size: 24px; color: white;">event</span>
           <div class="picker-item-content">
             <span class="picker-item-label">${tr('dashboard.logWorkout.plan')}</span>
             <span class="picker-item-desc">${tr('dashboard.logWorkout.planDesc')}</span>
@@ -273,9 +269,7 @@ function openAddWorkoutSheet() {
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
         <button class="picker-item" type="button" onclick="openStartWorkoutFromPlanSheet()">
-          <div class="picker-item-icon">
-            <span class="material-symbols-rounded">play_arrow</span>
-          </div>
+          <span class="material-symbols-rounded" style="font-size: 24px; color: white;">play_arrow</span>
           <div class="picker-item-content">
             <span class="picker-item-label">${tr('dashboard.logWorkout.start')}</span>
             <span class="picker-item-desc">${tr('dashboard.logWorkout.startDesc')}</span>
