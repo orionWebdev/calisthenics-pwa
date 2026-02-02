@@ -1888,6 +1888,20 @@
           </div>
           <input type="hidden" id="strength-difficulty" value="intermediate">
         </div>
+
+        <!-- Exercises Section (Optional) -->
+        <div class="strength-exercises-section">
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-medium" id="strength-exercises-label">Übungen (optional)</label>
+            <button type="button" onclick="openExercisePickerForLogging()" class="btn-sm btn-outline-primary">
+              <span class="material-symbols-rounded" style="font-size: 18px;">add</span>
+              <span id="strength-add-exercise-label">Übung hinzufügen</span>
+            </button>
+          </div>
+          <div id="strength-exercises-list" class="strength-exercises-list">
+            <!-- Exercises will be rendered here -->
+          </div>
+        </div>
       </div>
 
       <div class="modal-footer">
