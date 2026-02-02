@@ -413,7 +413,9 @@ async function completeWorkout() {
 // ==================== RENDERING ====================
 
 /**
- * Render workout screen
+ * Render workout screen - Accordion Layout
+ * Alle Übungen sind in einer Liste als Accordion dargestellt.
+ * Die aktuelle Übung ist ausgeklappt mit Set Logger.
  */
 function renderWorkoutScreen() {
   const container = document.getElementById('workout-screen-container');
@@ -427,40 +429,44 @@ function renderWorkoutScreen() {
         <div class="empty-state-icon">
           <span class="material-symbols-rounded">fitness_center</span>
         </div>
-        <h3 class="empty-state-title">Kein aktives Workout</h3>
-        <p class="empty-state-text">Starte ein Training aus dem Kalender oder einem Plan.</p>
+        <h3 class="empty-state-title">${t('workout.screen.noActiveWorkout')}</h3>
+        <p class="empty-state-text">${t('workout.screen.noActiveWorkoutText')}</p>
         <button onclick="showTrainingTab ? showTrainingTab('plans') : showView('training')" class="empty-state-btn">
           <span class="material-symbols-rounded">assignment</span>
-          <span>Zu den Plaenen</span>
+          <span>${t('workout.screen.toPlans')}</span>
         </button>
       </div>
     `;
     return;
   }
 
-  const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
   const progress = calculateProgress();
 
   container.innerHTML = `
-    <div class="workout-screen">
-      ${renderWorkoutHeader(progress)}
-      ${renderExerciseList()}
-      ${renderCurrentExercise(currentExercise)}
-      ${renderSetLogger(currentExercise)}
-      ${renderCompletedSets(currentExercise)}
-      ${renderWorkoutActions()}
+    <div class="workout-screen workout-screen--accordion">
+      ${renderWorkoutHeaderCompact(progress)}
+      ${renderExerciseAccordionList()}
     </div>
+    ${renderStickyBottomBar()}
   `;
 
-  // Auto-focus reps input
+  // Auto-focus reps input der aktiven Übung
   const repsInput = document.getElementById('reps-input');
   if (repsInput) {
     setTimeout(() => repsInput.focus(), 100);
   }
+
+  // Scroll zur aktiven Übung
+  const activeAccordion = document.querySelector('.exercise-accordion-item.expanded');
+  if (activeAccordion) {
+    setTimeout(() => {
+      activeAccordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+  }
 }
 
 /**
- * Render workout header
+ * Render workout header (legacy - kept for compatibility)
  */
 function renderWorkoutHeader(progress) {
   return `
@@ -476,6 +482,264 @@ function renderWorkoutHeader(progress) {
       </div>
     </div>
   `;
+}
+
+/**
+ * Render compact workout header
+ * Zeigt Plan-Name, Datum, Fortschritt
+ */
+function renderWorkoutHeaderCompact(progress) {
+  const exerciseIndex = activeWorkout.currentExerciseIndex + 1;
+  const totalExercises = activeWorkout.exercises.length;
+
+  return `
+    <div class="workout-header workout-header--compact">
+      <div class="workout-header-top">
+        <div class="workout-header-info">
+          <h2 class="workout-title">${activeWorkout.planName}</h2>
+          <div class="workout-meta">
+            <span>${formatWorkoutDate(activeWorkout.scheduledDate)}</span>
+            <span class="workout-meta-separator">·</span>
+            <span>${t('workout.screen.exerciseOf', { current: exerciseIndex, total: totalExercises })}</span>
+          </div>
+        </div>
+        <div class="workout-header-progress-badge">
+          <span class="material-symbols-rounded">check_circle</span>
+          <span>${progress.completed}/${progress.total}</span>
+        </div>
+      </div>
+      <div class="workout-progress-bar">
+        <div class="workout-progress-fill" style="width: ${progress.percentage}%"></div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Render active exercise card - Fokus auf die aktuelle Übung (Legacy)
+ */
+function renderActiveExerciseCard(exercise) {
+  if (!exercise) return '';
+
+  const restText = exercise.targetRest ? `${exercise.targetRest}s` : '';
+
+  return `
+    <div class="active-exercise-card">
+      <div class="active-exercise-badge">
+        <span class="material-symbols-rounded">fitness_center</span>
+        <span>${t('workout.screen.currentExercise')}</span>
+      </div>
+      <h3 class="active-exercise-name">${exercise.exerciseName}</h3>
+      <div class="active-exercise-meta">
+        <div class="active-exercise-goal">
+          <span class="material-symbols-rounded">target</span>
+          <span>${t('workout.screen.goal')}: ${exercise.targetSets} × ${exercise.targetReps}</span>
+        </div>
+        ${restText ? `
+          <div class="active-exercise-rest">
+            <span class="material-symbols-rounded">timer</span>
+            <span>${t('workout.screen.rest')}: ${restText}</span>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Render exercise accordion list - Alle Übungen als Accordion
+ */
+function renderExerciseAccordionList() {
+  if (!activeWorkout) return '';
+
+  return `
+    <div class="exercise-accordion-list">
+      ${activeWorkout.exercises.map((exercise, index) => renderExerciseAccordionItem(exercise, index)).join('')}
+    </div>
+  `;
+}
+
+/**
+ * Render single exercise accordion item
+ */
+function renderExerciseAccordionItem(exercise, index) {
+  const isActive = index === activeWorkout.currentExerciseIndex;
+  const isCompleted = exercise.status === 'completed';
+  const setsProgress = `${exercise.completedSets.length}/${exercise.targetSets}`;
+  const isExpanded = isActive; // Standardmäßig ist nur die aktive Übung offen
+
+  return `
+    <div class="exercise-accordion-item ${isExpanded ? 'expanded' : ''} ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}" data-exercise-index="${index}">
+      <button
+        type="button"
+        class="exercise-accordion-header"
+        onclick="toggleExerciseAccordion(${index})"
+        aria-expanded="${isExpanded}"
+        aria-controls="exercise-accordion-content-${index}"
+      >
+        <div class="exercise-accordion-number ${isCompleted ? 'completed' : ''}">
+          ${isCompleted
+            ? '<span class="material-symbols-rounded">check</span>'
+            : index + 1
+          }
+        </div>
+        <div class="exercise-accordion-info">
+          <div class="exercise-accordion-name">${exercise.exerciseName}</div>
+          <div class="exercise-accordion-target">${exercise.targetSets} × ${exercise.targetReps}${exercise.targetRest ? ` · ${exercise.targetRest}s` : ''}</div>
+        </div>
+        <div class="exercise-accordion-right">
+          <span class="exercise-accordion-progress ${isCompleted ? 'completed' : ''}">${setsProgress}</span>
+          <span class="material-symbols-rounded exercise-accordion-chevron">${isExpanded ? 'expand_less' : 'expand_more'}</span>
+        </div>
+      </button>
+      <div id="exercise-accordion-content-${index}" class="exercise-accordion-content" ${isExpanded ? '' : 'hidden'}>
+        ${renderAccordionExerciseContent(exercise, index)}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Render accordion content for an exercise
+ */
+function renderAccordionExerciseContent(exercise, exerciseIndex) {
+  const isActive = exerciseIndex === activeWorkout.currentExerciseIndex;
+
+  return `
+    <div class="accordion-exercise-content">
+      <!-- Completed Sets als Rows -->
+      ${exercise.completedSets.length > 0 ? `
+        <div class="accordion-sets-list">
+          ${exercise.completedSets.map((set, setIndex) => `
+            <div class="accordion-set-row ${setIndex === exercise.completedSets.length - 1 ? 'latest' : ''}">
+              <div class="accordion-set-number">
+                <span class="material-symbols-rounded">check_circle</span>
+                <span>${t('workout.setLogger.set')} ${setIndex + 1}</span>
+              </div>
+              <div class="accordion-set-data">
+                <span class="accordion-set-value">${set.reps} ${t('workout.setLogger.reps')}</span>
+                ${set.weight ? `<span class="accordion-set-value">${set.weight} ${t('workout.setLogger.weightUnit')}</span>` : ''}
+              </div>
+              <button
+                type="button"
+                onclick="deleteSet(${exerciseIndex}, ${setIndex})"
+                class="accordion-set-delete"
+                aria-label="${t('workout.setLogger.deleteSet')}"
+              >
+                <span class="material-symbols-rounded">close</span>
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <!-- Set Logger nur für aktive Übung -->
+      ${isActive ? renderAccordionSetLogger(exercise, exerciseIndex) : `
+        <button
+          type="button"
+          class="accordion-goto-btn"
+          onclick="goToExercise(${exerciseIndex})"
+        >
+          <span class="material-symbols-rounded">play_arrow</span>
+          <span>${t('workout.screen.switchToExercise')}</span>
+        </button>
+      `}
+    </div>
+  `;
+}
+
+/**
+ * Render set logger inside accordion
+ */
+function renderAccordionSetLogger(exercise, exerciseIndex) {
+  const setNumber = exercise.completedSets.length + 1;
+  const lastSet = exercise.completedSets.length > 0
+    ? exercise.completedSets[exercise.completedSets.length - 1]
+    : null;
+
+  const defaultReps = lastSet ? lastSet.reps : (exercise.targetReps ? parseInt(exercise.targetReps) || 10 : 10);
+  const defaultWeight = lastSet ? (lastSet.weight || '') : '';
+
+  return `
+    <div class="accordion-set-logger">
+      <div class="accordion-logger-header">
+        <span class="accordion-logger-badge">${t('workout.setLogger.set')} ${setNumber}</span>
+        <span class="accordion-logger-target">${t('workout.setLogger.target')}: ${exercise.targetSets} × ${exercise.targetReps}</span>
+      </div>
+
+      <div class="exercise-card-inputs">
+        <!-- Reps Input -->
+        <div class="input-with-steppers">
+          <label class="input-stepper-label">${t('workout.setLogger.reps')} *</label>
+          <div class="stepper-group">
+            <button type="button" class="stepper-btn stepper-minus" onclick="adjustInputValue('reps-input', -1)" aria-label="Verringern">
+              <span class="material-symbols-rounded">remove</span>
+            </button>
+            <input type="text" id="reps-input" class="stepper-input" value="${defaultReps}" inputmode="numeric" pattern="[0-9]*" enterkeyhint="next" autocomplete="off" aria-label="${t('workout.setLogger.reps')}" />
+            <button type="button" class="stepper-btn stepper-plus" onclick="adjustInputValue('reps-input', 1)" aria-label="Erhoehen">
+              <span class="material-symbols-rounded">add</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Weight Input -->
+        <div class="input-with-steppers">
+          <label class="input-stepper-label">${t('workout.setLogger.weight')} (${t('workout.setLogger.weightUnit')})</label>
+          <div class="stepper-group">
+            <button type="button" class="stepper-btn stepper-minus" onclick="adjustInputValue('weight-input', -2.5)" aria-label="Verringern">
+              <span class="material-symbols-rounded">remove</span>
+            </button>
+            <input type="text" id="weight-input" class="stepper-input" value="${defaultWeight}" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" enterkeyhint="done" autocomplete="off" placeholder="0" aria-label="${t('workout.setLogger.weight')}" />
+            <button type="button" class="stepper-btn stepper-plus" onclick="adjustInputValue('weight-input', 2.5)" aria-label="Erhoehen">
+              <span class="material-symbols-rounded">add</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-logger-actions">
+        <button type="button" onclick="logSetFromInput()" class="log-set-btn-primary">
+          <span class="material-symbols-rounded">check_circle</span>
+          <span>${t('workout.setLogger.logSet')}</span>
+        </button>
+        ${lastSet ? `
+          <button type="button" onclick="duplicateLastSet()" class="log-set-btn-secondary">
+            <span class="material-symbols-rounded">content_copy</span>
+            <span>${t('workout.setLogger.duplicateLast')}</span>
+          </button>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Toggle exercise accordion open/closed
+ */
+function toggleExerciseAccordion(index) {
+  const item = document.querySelector(`.exercise-accordion-item[data-exercise-index="${index}"]`);
+  if (!item) return;
+
+  const isExpanded = item.classList.contains('expanded');
+  const content = item.querySelector('.exercise-accordion-content');
+  const chevron = item.querySelector('.exercise-accordion-chevron');
+  const header = item.querySelector('.exercise-accordion-header');
+
+  if (isExpanded) {
+    // Schließen
+    item.classList.remove('expanded');
+    content.hidden = true;
+    chevron.textContent = 'expand_more';
+    header.setAttribute('aria-expanded', 'false');
+  } else {
+    // Öffnen
+    item.classList.add('expanded');
+    content.hidden = false;
+    chevron.textContent = 'expand_less';
+    header.setAttribute('aria-expanded', 'true');
+  }
+
+  triggerHapticFeedback('light');
 }
 
 /**
@@ -726,8 +990,7 @@ function renderCompletedSets(exercise) {
 }
 
 /**
- * Render workout actions (Cancel, Next/Finish)
- * Abbrechen Button ist jetzt über dem primären Button
+ * Render workout actions (Cancel, Next/Finish) - Legacy
  */
 function renderWorkoutActions() {
   const isLastExercise = activeWorkout.currentExerciseIndex === activeWorkout.exercises.length - 1;
@@ -766,6 +1029,427 @@ function renderWorkoutActions() {
       `}
     </div>
   `;
+}
+
+/**
+ * Render completed sets - Collapsible version for focus mode
+ */
+function renderCompletedSetsCollapsible(exercise) {
+  if (!exercise) return '';
+
+  const setCount = exercise.completedSets.length;
+  const isEmpty = setCount === 0;
+
+  if (isEmpty) {
+    return `
+      <div class="completed-sets-section completed-sets-section--collapsible">
+        <div class="completed-sets-header">
+          <h4 class="completed-sets-title">${t('workout.setLogger.completedSets')}</h4>
+          <span class="completed-sets-count">0/${exercise.targetSets}</span>
+        </div>
+        <div class="completed-sets-empty">
+          <span class="material-symbols-rounded">playlist_add</span>
+          <span>${t('workout.setLogger.noSets')}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="completed-sets-section completed-sets-section--collapsible">
+      <button
+        type="button"
+        class="completed-sets-header completed-sets-header--clickable"
+        onclick="toggleCompletedSets()"
+        aria-expanded="true"
+        aria-controls="completed-sets-content"
+      >
+        <h4 class="completed-sets-title">${t('workout.setLogger.completedSets')}</h4>
+        <div class="completed-sets-header-right">
+          <span class="completed-sets-count">${setCount}/${exercise.targetSets}</span>
+          <span class="material-symbols-rounded completed-sets-chevron">expand_less</span>
+        </div>
+      </button>
+      <div id="completed-sets-content" class="completed-sets-content">
+        <div class="completed-sets-grid">
+          ${exercise.completedSets.map((set, setIndex) => `
+            <div class="completed-set-card ${setIndex === exercise.completedSets.length - 1 ? 'latest' : ''}">
+              <div class="completed-set-number">
+                <span class="material-symbols-rounded">check_circle</span>
+                <span>${setIndex + 1}</span>
+              </div>
+              <div class="completed-set-data">
+                <div class="completed-set-reps">
+                  <span class="data-value">${set.reps}</span>
+                  <span class="data-label">${t('workout.setLogger.reps')}</span>
+                </div>
+                ${set.weight ? `
+                  <div class="completed-set-weight">
+                    <span class="data-value">${set.weight}</span>
+                    <span class="data-label">${t('workout.setLogger.weightUnit')}</span>
+                  </div>
+                ` : ''}
+              </div>
+              <button
+                onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})"
+                class="completed-set-delete"
+                title="${t('workout.setLogger.deleteSet')}"
+                aria-label="${t('workout.setLogger.deleteSet')}"
+              >
+                <span class="material-symbols-rounded">close</span>
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Toggle completed sets visibility
+ */
+function toggleCompletedSets() {
+  const content = document.getElementById('completed-sets-content');
+  const header = content?.previousElementSibling;
+  if (!content || !header) return;
+
+  const isExpanded = header.getAttribute('aria-expanded') === 'true';
+  header.setAttribute('aria-expanded', !isExpanded);
+  content.classList.toggle('collapsed', isExpanded);
+
+  const chevron = header.querySelector('.completed-sets-chevron');
+  if (chevron) {
+    chevron.textContent = isExpanded ? 'expand_more' : 'expand_less';
+  }
+}
+
+/**
+ * Render sticky bottom bar - Always visible actions
+ * "Workout beenden" ist IMMER verfügbar (mit Confirm Modal)
+ */
+function renderStickyBottomBar() {
+  const isLastExercise = activeWorkout.currentExerciseIndex === activeWorkout.exercises.length - 1;
+  const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
+  const hasSets = currentExercise && currentExercise.completedSets.length > 0;
+
+  return `
+    <div class="workout-sticky-bar">
+      <div class="workout-sticky-bar-inner">
+        <!-- Secondary Actions Row -->
+        <div class="workout-sticky-secondary">
+          <button
+            type="button"
+            onclick="cancelWorkout()"
+            class="workout-sticky-btn workout-sticky-btn--cancel"
+            aria-label="${t('workout.screen.cancelWorkout')}"
+          >
+            <span class="material-symbols-rounded">close</span>
+            <span>${t('workout.screen.cancelWorkout')}</span>
+          </button>
+          <button
+            type="button"
+            onclick="confirmEndWorkout()"
+            class="workout-sticky-btn workout-sticky-btn--end"
+            aria-label="${t('workout.screen.endWorkout')}"
+          >
+            <span class="material-symbols-rounded">stop_circle</span>
+            <span>${t('workout.screen.endWorkout')}</span>
+          </button>
+        </div>
+
+        <!-- Primary Action -->
+        ${!isLastExercise ? `
+          <button
+            type="button"
+            onclick="goToNextExercise()"
+            class="workout-sticky-btn workout-sticky-btn--primary"
+            ${!hasSets ? 'disabled' : ''}
+            aria-label="${t('workout.screen.nextExercise')}"
+          >
+            <span>${t('workout.screen.nextExercise')}</span>
+            <span class="material-symbols-rounded">arrow_forward</span>
+          </button>
+        ` : `
+          <button
+            type="button"
+            onclick="confirmEndWorkout()"
+            class="workout-sticky-btn workout-sticky-btn--primary workout-sticky-btn--finish"
+            aria-label="${t('workout.screen.finishWorkout')}"
+          >
+            <span class="material-symbols-rounded">check_circle</span>
+            <span>${t('workout.screen.finishWorkout')}</span>
+          </button>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Confirm end workout modal
+ */
+function confirmEndWorkout() {
+  // Zeige Confirm Modal
+  showWorkoutEndConfirmModal();
+}
+
+/**
+ * Show workout end confirmation modal
+ */
+function showWorkoutEndConfirmModal() {
+  // Entferne existierendes Modal falls vorhanden
+  const existing = document.getElementById('workout-end-confirm-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'workout-end-confirm-modal';
+  modal.className = 'workout-confirm-modal-overlay';
+  modal.innerHTML = `
+    <div class="workout-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="workout-end-title">
+      <div class="workout-confirm-modal-icon">
+        <span class="material-symbols-rounded">check_circle</span>
+      </div>
+      <h3 id="workout-end-title" class="workout-confirm-modal-title">${t('workout.screen.endWorkoutConfirm')}</h3>
+      <p class="workout-confirm-modal-text">${t('workout.screen.endWorkoutConfirmText')}</p>
+      <div class="workout-confirm-modal-actions">
+        <button
+          type="button"
+          onclick="closeWorkoutEndConfirmModal()"
+          class="workout-confirm-btn workout-confirm-btn--secondary"
+        >
+          ${t('common.cancel')}
+        </button>
+        <button
+          type="button"
+          onclick="closeWorkoutEndConfirmModal(); completeWorkout();"
+          class="workout-confirm-btn workout-confirm-btn--primary"
+        >
+          ${t('workout.screen.finishWorkout')}
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Focus trap
+  setTimeout(() => {
+    const firstBtn = modal.querySelector('.workout-confirm-btn--secondary');
+    if (firstBtn) firstBtn.focus();
+  }, 100);
+
+  // Escape to close
+  modal.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeWorkoutEndConfirmModal();
+    }
+  });
+
+  // Click outside to close
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeWorkoutEndConfirmModal();
+    }
+  });
+}
+
+/**
+ * Close workout end confirmation modal
+ */
+function closeWorkoutEndConfirmModal() {
+  const modal = document.getElementById('workout-end-confirm-modal');
+  if (modal) {
+    modal.classList.add('closing');
+    setTimeout(() => modal.remove(), 200);
+  }
+}
+
+// ==================== EXERCISES BOTTOM SHEET ====================
+
+let exercisesSheetOpen = false;
+
+/**
+ * Open exercises overview bottom sheet
+ */
+function openExercisesSheet() {
+  if (exercisesSheetOpen) return;
+  exercisesSheetOpen = true;
+
+  // Entferne existierendes Sheet falls vorhanden
+  const existing = document.getElementById('exercises-overview-sheet');
+  if (existing) existing.remove();
+
+  const sheet = document.createElement('div');
+  sheet.id = 'exercises-overview-sheet';
+  sheet.className = 'exercises-sheet-overlay';
+  sheet.innerHTML = `
+    <div class="exercises-sheet" role="dialog" aria-modal="true" aria-labelledby="exercises-sheet-title">
+      <div class="exercises-sheet-header">
+        <div class="exercises-sheet-drag-handle"></div>
+        <h3 id="exercises-sheet-title" class="exercises-sheet-title">${t('workout.screen.exercisesSheetTitle')}</h3>
+        <button
+          type="button"
+          onclick="closeExercisesSheet()"
+          class="exercises-sheet-close"
+          aria-label="${t('common.close')}"
+        >
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div class="exercises-sheet-content">
+        ${renderExercisesSheetList()}
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(sheet);
+  document.body.style.overflow = 'hidden';
+
+  // Animate in
+  requestAnimationFrame(() => {
+    sheet.classList.add('active');
+  });
+
+  // Setup swipe to close
+  setupExercisesSheetSwipe(sheet);
+
+  // Escape to close
+  sheet.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeExercisesSheet();
+    }
+  });
+
+  // Click outside to close
+  sheet.addEventListener('click', (e) => {
+    if (e.target === sheet) {
+      closeExercisesSheet();
+    }
+  });
+
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Close exercises overview bottom sheet
+ */
+function closeExercisesSheet() {
+  const sheet = document.getElementById('exercises-overview-sheet');
+  if (!sheet) return;
+
+  sheet.classList.remove('active');
+  sheet.classList.add('closing');
+
+  setTimeout(() => {
+    sheet.remove();
+    document.body.style.overflow = '';
+    exercisesSheetOpen = false;
+  }, 300);
+}
+
+/**
+ * Render exercises list for the bottom sheet
+ */
+function renderExercisesSheetList() {
+  if (!activeWorkout) return '';
+
+  return `
+    <div class="exercises-sheet-list">
+      ${activeWorkout.exercises.map((ex, index) => {
+        const isActive = index === activeWorkout.currentExerciseIndex;
+        const isCompleted = ex.status === 'completed';
+        const setsProgress = `${ex.completedSets.length}/${ex.targetSets}`;
+
+        return `
+          <button
+            type="button"
+            class="exercises-sheet-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}"
+            onclick="selectExerciseFromSheet(${index})"
+            aria-current="${isActive ? 'true' : 'false'}"
+          >
+            <div class="exercises-sheet-item-number ${isCompleted ? 'completed' : ''}">
+              ${isCompleted
+                ? '<span class="material-symbols-rounded">check</span>'
+                : index + 1
+              }
+            </div>
+            <div class="exercises-sheet-item-info">
+              <div class="exercises-sheet-item-name">${ex.exerciseName}</div>
+              <div class="exercises-sheet-item-target">${ex.targetSets} × ${ex.targetReps}</div>
+            </div>
+            <div class="exercises-sheet-item-status">
+              <span class="exercises-sheet-item-progress">${setsProgress}</span>
+              ${isActive ? '<span class="material-symbols-rounded exercises-sheet-item-active-icon">play_arrow</span>' : ''}
+            </div>
+          </button>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+/**
+ * Select exercise from sheet and close it
+ */
+function selectExerciseFromSheet(index) {
+  closeExercisesSheet();
+  // Kleine Verzögerung für smoothe Animation
+  setTimeout(() => {
+    goToExercise(index);
+  }, 150);
+}
+
+/**
+ * Setup swipe to close for exercises sheet
+ */
+function setupExercisesSheetSwipe(overlay) {
+  const sheet = overlay.querySelector('.exercises-sheet');
+  const header = sheet.querySelector('.exercises-sheet-header');
+  if (!header) return;
+
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+  let startTime = 0;
+
+  header.addEventListener('touchstart', (e) => {
+    startY = e.touches[0].clientY;
+    startTime = Date.now();
+    isDragging = true;
+    sheet.style.transition = 'none';
+  }, { passive: true });
+
+  header.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    currentY = e.touches[0].clientY;
+    const deltaY = currentY - startY;
+
+    if (deltaY > 0) {
+      e.preventDefault();
+      const resistance = 1 - (deltaY / window.innerHeight) * 0.5;
+      sheet.style.transform = `translateY(${deltaY * resistance}px)`;
+    }
+  }, { passive: false });
+
+  header.addEventListener('touchend', () => {
+    if (!isDragging) return;
+
+    const deltaY = currentY - startY;
+    const duration = Date.now() - startTime;
+    const velocity = deltaY / duration;
+
+    sheet.style.transition = '';
+    sheet.style.transform = '';
+
+    if (deltaY > 100 || (velocity > 0.5 && deltaY > 30)) {
+      closeExercisesSheet();
+    }
+
+    isDragging = false;
+    startY = 0;
+    currentY = 0;
+  });
 }
 
 // ==================== SET MANAGEMENT ====================
@@ -817,20 +1501,42 @@ function logSet(reps, weight = null) {
     currentExercise.status = 'in-progress';
   }
 
-  // Check if target sets reached
-  if (currentExercise.completedSets.length >= currentExercise.targetSets) {
+  // Check if target sets reached - auto advance to next exercise
+  const exerciseJustCompleted = currentExercise.completedSets.length >= currentExercise.targetSets;
+  if (exerciseJustCompleted) {
     currentExercise.status = 'completed';
   }
 
   saveActiveWorkout();
-  renderWorkoutScreen();
 
   // Haptic feedback
   triggerHapticFeedback('medium');
 
-  // Start rest timer if configured and not last set
-  if (currentExercise.targetRest && currentExercise.completedSets.length < currentExercise.targetSets) {
+  // Start rest timer if configured and not last set of this exercise
+  if (currentExercise.targetRest && !exerciseJustCompleted) {
     startRestTimer(currentExercise.targetRest);
+  }
+
+  // Auto-advance to next exercise when completed
+  if (exerciseJustCompleted) {
+    const isLastExercise = activeWorkout.currentExerciseIndex >= activeWorkout.exercises.length - 1;
+    if (!isLastExercise) {
+      // Gehe zur nächsten Übung
+      setTimeout(() => {
+        goToExercise(activeWorkout.currentExerciseIndex + 1);
+        if (typeof showEdgeFeedback === 'function') {
+          showEdgeFeedback('success', t('workout.exercise.next'));
+        }
+      }, 300);
+    } else {
+      // Letzte Übung fertig - re-render und zeige Finish-Option
+      renderWorkoutScreen();
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('success', t('workout.screen.finishWorkout'));
+      }
+    }
+  } else {
+    renderWorkoutScreen();
   }
 
   console.log('✅ Set logged:', reps, 'reps', weight ? `@ ${weight}kg` : '');
@@ -892,19 +1598,24 @@ function goToExercise(index) {
 
 /**
  * Go to next exercise
+ * Bei der letzten Übung wird der Finish Flow getriggert
  */
 function goToNextExercise() {
   const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
   if (!currentExercise || currentExercise.completedSets.length === 0) {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Bitte logge mindestens einen Satz bevor du weitergehst');
-  }
+      showEdgeFeedback('error', t('workout.setLogger.atLeastOneSet'));
+    }
     return;
   }
 
-  if (activeWorkout.currentExerciseIndex < activeWorkout.exercises.length - 1) {
-    goToExercise(activeWorkout.currentExerciseIndex + 1);
+  // Wenn letzte Übung: Finish Flow triggern
+  if (activeWorkout.currentExerciseIndex >= activeWorkout.exercises.length - 1) {
+    confirmEndWorkout();
+    return;
   }
+
+  goToExercise(activeWorkout.currentExerciseIndex + 1);
 }
 
 /**
@@ -932,7 +1643,9 @@ function startRestTimer(seconds) {
 
   const timer = document.createElement('div');
   timer.id = 'rest-timer';
-  timer.className = 'rest-timer';
+  // Add focus-mode class if sticky bar is present
+  const hasStickyBar = document.querySelector('.workout-sticky-bar');
+  timer.className = hasStickyBar ? 'rest-timer rest-timer--with-sticky' : 'rest-timer';
   document.body.appendChild(timer);
 
   // Update display
@@ -1099,5 +1812,13 @@ function ensureValidDateString(dateStr) {
 
 console.log('✅ Workout engine loaded');
 
+// Global exports
 window.checkActiveWorkout = checkActiveWorkout;
 window.ensureActiveWorkoutBanner = ensureActiveWorkoutBanner;
+window.openExercisesSheet = openExercisesSheet;
+window.closeExercisesSheet = closeExercisesSheet;
+window.selectExerciseFromSheet = selectExerciseFromSheet;
+window.toggleCompletedSets = toggleCompletedSets;
+window.confirmEndWorkout = confirmEndWorkout;
+window.closeWorkoutEndConfirmModal = closeWorkoutEndConfirmModal;
+window.toggleExerciseAccordion = toggleExerciseAccordion;

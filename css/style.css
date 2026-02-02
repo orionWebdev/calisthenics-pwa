@@ -6831,8 +6831,8 @@ input[type="range"]::-moz-range-progress {
 .exercise-card-inputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
   width: 100%;
   min-width: 0;
 }
@@ -6840,7 +6840,7 @@ input[type="range"]::-moz-range-progress {
 @media (max-width: 360px) {
   .exercise-card-inputs {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
 }
 
@@ -8210,6 +8210,963 @@ input[type="range"]::-moz-range-progress {
   font-weight: 600;
   color: #3b82f6;
   white-space: nowrap;
+}
+
+/* ===================================
+   WORKOUT SCREEN - FOCUS MODE
+   Mobile-first modernized layout
+   =================================== */
+
+.workout-screen--focus-mode {
+  padding-bottom: calc(var(--bottom-nav-height) + 180px);
+}
+
+/* Compact Header */
+.workout-header--compact {
+  background: linear-gradient(135deg, rgba(9, 30, 77, 0.9), rgba(15, 36, 129, 0.8));
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.workout-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.workout-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.workout-header--compact .workout-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workout-header--compact .workout-meta {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.workout-meta-separator {
+  color: #6b7280;
+}
+
+.workout-header--compact .workout-progress-bar {
+  margin-top: 0.75rem;
+  height: 6px;
+}
+
+/* Exercises Button */
+.workout-exercises-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(240, 34, 119, 0.15);
+  border: 1px solid rgba(240, 34, 119, 0.3);
+  border-radius: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.workout-exercises-btn:hover {
+  background: rgba(240, 34, 119, 0.25);
+  border-color: rgba(240, 34, 119, 0.5);
+}
+
+.workout-exercises-btn:active {
+  transform: scale(0.95);
+}
+
+.workout-exercises-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.workout-exercises-btn-text {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Progress Badge (alternative to exercises button) */
+.workout-header-progress-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 0.625rem;
+  color: #22c55e;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.workout-header-progress-badge .material-symbols-rounded {
+  font-size: 16px;
+}
+
+/* Active Exercise Card */
+.active-exercise-card {
+  background: rgba(17, 24, 39, 0.8);
+  border: 2px solid rgba(240, 34, 119, 0.3);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.active-exercise-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  background: rgba(240, 34, 119, 0.15);
+  border-radius: 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.active-exercise-badge .material-symbols-rounded {
+  font-size: 14px;
+}
+
+.active-exercise-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.active-exercise-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.active-exercise-goal,
+.active-exercise-rest {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.active-exercise-goal .material-symbols-rounded,
+.active-exercise-rest .material-symbols-rounded {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* ===================================
+   WORKOUT SCREEN - ACCORDION MODE
+   =================================== */
+
+.workout-screen--accordion {
+  padding-bottom: calc(var(--bottom-nav-height) + 160px);
+}
+
+.exercise-accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Accordion Item */
+.exercise-accordion-item {
+  background: rgba(17, 24, 39, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 0.875rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.exercise-accordion-item.active {
+  border-color: rgba(240, 34, 119, 0.4);
+  background: rgba(240, 34, 119, 0.05);
+}
+
+.exercise-accordion-item.completed {
+  opacity: 0.8;
+}
+
+.exercise-accordion-item.completed .exercise-accordion-header {
+  background: rgba(34, 197, 94, 0.05);
+}
+
+/* Accordion Header */
+.exercise-accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.exercise-accordion-header:hover {
+  background: rgba(55, 65, 81, 0.2);
+}
+
+.exercise-accordion-header:active {
+  background: rgba(55, 65, 81, 0.3);
+}
+
+.exercise-accordion-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(75, 85, 99, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.exercise-accordion-number.completed {
+  background: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+.exercise-accordion-number .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.exercise-accordion-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-accordion-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exercise-accordion-target {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.125rem;
+}
+
+.exercise-accordion-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.exercise-accordion-progress {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+
+.exercise-accordion-progress.completed {
+  color: #22c55e;
+}
+
+.exercise-accordion-chevron {
+  font-size: 20px;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+}
+
+/* Accordion Content */
+.exercise-accordion-content {
+  border-top: 1px solid rgba(75, 85, 99, 0.2);
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.exercise-accordion-content[hidden] {
+  display: none;
+}
+
+.accordion-exercise-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Sets List */
+.accordion-sets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.accordion-set-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 0.625rem;
+}
+
+.accordion-set-row.latest {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.accordion-set-number {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #22c55e;
+  min-width: 60px;
+}
+
+.accordion-set-number .material-symbols-rounded {
+  font-size: 14px;
+}
+
+.accordion-set-data {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.accordion-set-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+}
+
+.accordion-set-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(55, 65, 81, 0.4);
+  border: none;
+  border-radius: 50%;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  opacity: 0.6;
+}
+
+.accordion-set-delete:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  opacity: 1;
+}
+
+.accordion-set-delete .material-symbols-rounded {
+  font-size: 14px;
+}
+
+/* Set Logger inside Accordion */
+.accordion-set-logger {
+  border: 1px solid rgba(240, 34, 119, 0.3);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+}
+
+.accordion-logger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accordion-logger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.accordion-logger-target {
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+.accordion-logger-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.accordion-logger-actions .log-set-btn-primary {
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+}
+
+.accordion-logger-actions .log-set-btn-secondary {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+/* Go to Exercise Button */
+.accordion-goto-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(55, 65, 81, 0.4);
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  border-radius: 0.625rem;
+  color: #9ca3af;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.accordion-goto-btn:hover {
+  background: rgba(240, 34, 119, 0.15);
+  border-color: rgba(240, 34, 119, 0.3);
+  color: var(--color-primary);
+}
+
+.accordion-goto-btn .material-symbols-rounded {
+  font-size: 18px;
+}
+
+/* Completed Sets - Collapsible */
+.completed-sets-section--collapsible {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.completed-sets-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.completed-sets-header--clickable {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.completed-sets-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.completed-sets-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #22c55e;
+  font-variant-numeric: tabular-nums;
+}
+
+.completed-sets-chevron {
+  font-size: 20px;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+}
+
+.completed-sets-content {
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  overflow: hidden;
+}
+
+.completed-sets-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ===================================
+   STICKY BOTTOM BAR
+   =================================== */
+
+.workout-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.95) 80%, transparent 100%);
+  padding: 1rem 1rem calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 0.5rem);
+  pointer-events: none;
+}
+
+.workout-sticky-bar-inner {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: auto;
+}
+
+.workout-sticky-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.workout-sticky-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  touch-action: manipulation;
+}
+
+.workout-sticky-btn--cancel {
+  background: rgba(55, 65, 81, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  color: #9ca3af;
+}
+
+.workout-sticky-btn--cancel:hover {
+  background: rgba(55, 65, 81, 0.8);
+  color: white;
+}
+
+.workout-sticky-btn--end {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.workout-sticky-btn--end:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.workout-sticky-btn--primary {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  color: white;
+  font-size: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+}
+
+.workout-sticky-btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(240, 34, 119, 0.4);
+}
+
+.workout-sticky-btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.workout-sticky-btn--finish {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.workout-sticky-btn--finish:hover {
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+.workout-sticky-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+/* ===================================
+   EXERCISES OVERVIEW BOTTOM SHEET
+   =================================== */
+
+.exercises-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+}
+
+.exercises-sheet-overlay.active {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.exercises-sheet-overlay.closing {
+  background: rgba(0, 0, 0, 0);
+}
+
+.exercises-sheet {
+  width: 100%;
+  max-height: 75vh;
+  background: linear-gradient(180deg, #111827 0%, #0a0f1a 100%);
+  border-radius: 1.5rem 1.5rem 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.exercises-sheet-overlay.active .exercises-sheet {
+  transform: translateY(0);
+}
+
+.exercises-sheet-overlay.closing .exercises-sheet {
+  transform: translateY(100%);
+}
+
+.exercises-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.exercises-sheet-drag-handle {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  background: rgba(75, 85, 99, 0.5);
+  border-radius: 2px;
+}
+
+.exercises-sheet-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.exercises-sheet-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(55, 65, 81, 0.5);
+  border: none;
+  border-radius: 50%;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exercises-sheet-close:hover {
+  background: rgba(55, 65, 81, 0.8);
+  color: white;
+}
+
+.exercises-sheet-content {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+.exercises-sheet-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.exercises-sheet-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.exercises-sheet-item:hover {
+  background: rgba(55, 65, 81, 0.3);
+}
+
+.exercises-sheet-item.active {
+  background: rgba(240, 34, 119, 0.1);
+  border: 1px solid rgba(240, 34, 119, 0.3);
+}
+
+.exercises-sheet-item.completed {
+  opacity: 0.7;
+}
+
+.exercises-sheet-item-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(75, 85, 99, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.exercises-sheet-item-number.completed {
+  background: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+.exercises-sheet-item-number .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.exercises-sheet-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.exercises-sheet-item-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exercises-sheet-item-target {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.exercises-sheet-item-status {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.exercises-sheet-item-progress {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+
+.exercises-sheet-item-active-icon {
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+/* ===================================
+   WORKOUT END CONFIRM MODAL
+   =================================== */
+
+.workout-confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1002;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.workout-confirm-modal-overlay.closing {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+.workout-confirm-modal {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  animation: slideUpFade 0.3s ease;
+}
+
+.workout-confirm-modal-overlay.closing .workout-confirm-modal {
+  animation: slideDownFade 0.2s ease forwards;
+}
+
+.workout-confirm-modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  background: rgba(34, 197, 94, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workout-confirm-modal-icon .material-symbols-rounded {
+  font-size: 32px;
+  color: #22c55e;
+}
+
+.workout-confirm-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.workout-confirm-modal-text {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+.workout-confirm-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.workout-confirm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.workout-confirm-btn--secondary {
+  background: rgba(55, 65, 81, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  color: #9ca3af;
+}
+
+.workout-confirm-btn--secondary:hover {
+  background: rgba(55, 65, 81, 0.8);
+  color: white;
+}
+
+.workout-confirm-btn--primary {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.workout-confirm-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Mobile adjustments for sticky bar */
+@media (max-width: 480px) {
+  .workout-sticky-btn {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .workout-sticky-btn--primary {
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+  }
+
+  .workout-exercises-btn {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Adjust rest timer position when sticky bar is present */
+.rest-timer--with-sticky {
+  bottom: calc(var(--bottom-nav-height) + 150px) !important;
 }
 
 .rest-timer {
