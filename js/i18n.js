@@ -201,6 +201,24 @@ const translations = {
         durationRequired: 'Bitte gib eine gueltige Dauer ein',
         saveError: 'Fehler beim Speichern des Workouts'
       },
+      screen: {
+        exercisesButton: 'Uebungen ({completed}/{total})',
+        exercisesSheetTitle: 'Uebungen',
+        cancelWorkout: 'Abbrechen',
+        endWorkout: 'Workout beenden',
+        endWorkoutConfirm: 'Workout wirklich beenden?',
+        endWorkoutConfirmText: 'Alle bisherigen Saetze werden gespeichert.',
+        nextExercise: 'Naechste Uebung',
+        finishWorkout: 'Workout abschliessen',
+        currentExercise: 'Aktuelle Uebung',
+        goal: 'Ziel',
+        rest: 'Pause',
+        exerciseOf: 'Uebung {current} von {total}',
+        noActiveWorkout: 'Kein aktives Workout',
+        noActiveWorkoutText: 'Starte ein Training aus dem Kalender oder einem Plan.',
+        toPlans: 'Zu den Plaenen',
+        switchToExercise: 'Zu dieser Uebung wechseln'
+      },
       setLogger: {
         title: 'Satz {number} loggen',
         reps: 'Wiederholungen',
