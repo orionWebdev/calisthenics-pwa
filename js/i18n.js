@@ -109,7 +109,12 @@ const translations = {
       },
       addPlan: 'Plan hinzufuegen',
       quickAdd: 'Schnell-Eintrag',
-      orQuickEntry: 'Oder Schnell-Eintrag erstellen'
+      orQuickEntry: 'Oder Schnell-Eintrag erstellen',
+      errors: {
+        notFound: 'Training nicht gefunden',
+        engineNotLoaded: 'Workout-Engine nicht geladen',
+        modalNotAvailable: 'Erfassungsmodul nicht verfuegbar'
+      }
     },
     exercise: {
       title: 'Uebung',
@@ -221,6 +226,15 @@ const translations = {
         next: 'Naechste Uebung',
         finish: 'Workout beenden',
         progress: '{completed} / {total} Uebungen'
+      },
+      logging: {
+        exercisesOptional: 'Uebungen (optional)',
+        addExercise: 'Uebung hinzufuegen',
+        exerciseAlreadyAdded: 'Uebung bereits hinzugefuegt',
+        sets: 'Saetze',
+        reps: 'Wiederholungen pro Satz',
+        set: 'Satz',
+        totalReps: 'Wdh.'
       }
     },
     template: {
@@ -335,7 +349,13 @@ const translations = {
       },
       logWorkout: {
         title: 'Workout erfassen',
-        subtitle: 'Logge, starte oder plane ein Workout'
+        subtitle: 'Logge, starte oder plane ein Workout',
+        log: 'Workout loggen',
+        logDesc: 'Erfasse ein abgeschlossenes Training',
+        plan: 'Workout planen',
+        planDesc: 'Plane ein Training im Kalender',
+        start: 'Workout starten',
+        startDesc: 'Starte ein Training aus deinen Plaenen'
       },
       hybridBalance: {
         title: 'Hybrid Balance',

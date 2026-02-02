@@ -600,31 +600,96 @@ function startScheduledWorkout(scheduleId) {
   const scheduleEntry = scheduleData.find(s => s.id === scheduleId);
   if (!scheduleEntry) {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Training nicht gefunden');
-  }
-    return;
-  }
-
-  if (scheduleEntry.planType === 'recovery' && typeof openAddRecoveryModal === 'function') {
-    if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
-      closeDayDetailModal();
+      showEdgeFeedback('error', t('calendar.errors.notFound'));
     }
-    openAddRecoveryModal(scheduleEntry.date);
     return;
   }
 
-  if (typeof startWorkoutFromPlan !== 'function') {
-    if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Workout-Engine nicht geladen');
-  }
-    return;
-  }
-
+  // Close day detail modal if open
   if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
     closeDayDetailModal();
   }
 
+  // Handle Quick Entries (no plan template)
+  if (scheduleEntry.isQuickEntry || !scheduleEntry.planId) {
+    startQuickEntrySession(scheduleEntry);
+    return;
+  }
+
+  // Handle Recovery type (uses simple logging modal)
+  if (scheduleEntry.planType === 'recovery' && typeof openAddRecoveryModal === 'function') {
+    // Set pending scheduled entry for completion tracking
+    window.pendingScheduledEntry = scheduleEntry;
+    openAddRecoveryModal(scheduleEntry.date);
+    return;
+  }
+
+  // Handle regular plan-based workouts
+  if (typeof startWorkoutFromPlan !== 'function') {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('calendar.errors.engineNotLoaded'));
+    }
+    return;
+  }
+
   startWorkoutFromPlan(scheduleEntry.planId, scheduleEntry.date, scheduleEntry.id);
+}
+
+/**
+ * Start a session from a Quick Entry (no plan/template)
+ * Opens the appropriate modal based on type and tracks the scheduled entry
+ */
+function startQuickEntrySession(scheduleEntry) {
+  // Store the scheduled entry for completion tracking after session save
+  window.pendingScheduledEntry = scheduleEntry;
+
+  const type = scheduleEntry.planType;
+
+  if (type === 'cardio' && typeof openAddCardioModal === 'function') {
+    openAddCardioModal(scheduleEntry.date);
+    // Pre-fill duration if available
+    setTimeout(() => {
+      const durationInput = document.getElementById('cardio-duration');
+      if (durationInput && scheduleEntry.planDuration) {
+        durationInput.value = scheduleEntry.planDuration;
+      }
+    }, 100);
+    return;
+  }
+
+  if (type === 'recovery' && typeof openAddRecoveryModal === 'function') {
+    openAddRecoveryModal(scheduleEntry.date);
+    // Pre-fill duration if available
+    setTimeout(() => {
+      const durationInput = document.getElementById('recovery-duration');
+      if (durationInput && scheduleEntry.planDuration) {
+        durationInput.value = scheduleEntry.planDuration;
+      }
+    }, 100);
+    return;
+  }
+
+  if (type === 'strength' && typeof openAddStrengthModal === 'function') {
+    openAddStrengthModal(scheduleEntry.date);
+    // Pre-fill name and duration if available
+    setTimeout(() => {
+      const nameInput = document.getElementById('strength-workout-name');
+      const durationInput = document.getElementById('strength-duration');
+      if (nameInput && scheduleEntry.planName) {
+        nameInput.value = scheduleEntry.planName;
+      }
+      if (durationInput && scheduleEntry.planDuration) {
+        durationInput.value = scheduleEntry.planDuration;
+      }
+    }, 100);
+    return;
+  }
+
+  // Fallback: clear pending entry if no modal available
+  window.pendingScheduledEntry = null;
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', t('calendar.errors.modalNotAvailable'));
+  }
 }
 
 // ========================================
@@ -759,5 +824,8 @@ document.addEventListener('click', (e) => {
     closeDayDetailModal();
   }
 });
+
+// Expose functions globally for dashboard access
+window.startScheduledWorkout = startScheduledWorkout;
 
 console.log('📅 Calendar module loaded!');

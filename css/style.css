@@ -1597,9 +1597,9 @@ input, textarea, select, button {
 
 .dashboard-log-workout-icon {
   font-size: 28px;
-  color: var(--color-text-muted);
+  color: var(--color-primary);
   padding: 0.5rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid var(--color-primary);
   border-radius: 50%;
 }
 
@@ -6016,7 +6016,7 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.125rem 1.5rem;
+  padding: 1.125rem 0.5rem;
   --picker-accent: var(--color-primary);
   background: transparent;
   border: none;
@@ -6034,7 +6034,6 @@ input[type="range"]::-moz-range-progress {
 }
 
 .picker-item .material-symbols-rounded:last-child {
-  margin-left: auto;
   color: transparent;
   transition: color 0.2s ease;
 }
@@ -6053,14 +6052,38 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
-  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
+  background: transparent;
+  border: none;
   border-radius: 0.625rem;
 }
 
 .picker-item-icon .material-symbols-rounded {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 28px !important;
+  font-weight: 300;
+  opacity: 1;
+}
+
+/* Colored icons for workout type selection */
+.picker-item.strength .picker-item-icon {
+  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
+}
+
+.picker-item.strength .picker-item-icon .material-symbols-rounded,
+.picker-item.cardio .picker-item-icon .material-symbols-rounded,
+.picker-item.recovery .picker-item-icon .material-symbols-rounded {
   color: var(--picker-accent);
-  font-size: 24px;
+}
+
+.picker-item.cardio .picker-item-icon {
+  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
+}
+
+.picker-item.recovery .picker-item-icon {
+  background: color-mix(in srgb, var(--picker-accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--picker-accent) 30%, transparent);
 }
 
 .picker-item.strength {
@@ -6073,6 +6096,24 @@ input[type="range"]::-moz-range-progress {
 
 .picker-item.recovery {
   --picker-accent: var(--color-category-recovery);
+}
+
+.picker-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.picker-item-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.picker-item-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
 }
 
 /* Cardio Modal Specific */
@@ -9212,6 +9253,133 @@ input[type="range"]::-moz-range-progress {
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===================================
+   STRENGTH EXERCISES LOGGING
+   =================================== */
+
+.strength-exercises-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.strength-exercises-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.strength-exercises-list:empty {
+  display: none;
+}
+
+.strength-exercise-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(55, 65, 81, 0.3);
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  border-radius: 0.75rem;
+}
+
+.strength-exercise-item .exercise-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(236, 72, 153, 0.2);
+  border-radius: 0.5rem;
+  color: var(--accent-pink);
+}
+
+.strength-exercise-item .exercise-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.strength-exercise-item .exercise-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.strength-exercise-item .exercise-sets-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.strength-exercise-item .sets-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  background: rgba(236, 72, 153, 0.15);
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  color: var(--accent-pink);
+}
+
+.strength-exercise-item .exercise-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.strength-exercise-item .exercise-actions button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.strength-exercise-item .exercise-actions button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.strength-exercise-item .exercise-actions button.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.btn-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-outline-primary {
+  background: transparent;
+  border: 1px solid var(--accent-pink);
+  color: var(--accent-pink);
+}
+
+.btn-outline-primary:hover {
+  background: rgba(236, 72, 153, 0.1);
 }
 
 /* ===================================
