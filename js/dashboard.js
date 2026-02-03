@@ -633,23 +633,78 @@ function getDashboardSessionsByDate(sessions, year, month) {
   return result;
 }
 
-function getDashboardDotMeta(session) {
-  const durationSec = getSessionDurationSeconds(session);
-  const minutes = Math.round(durationSec / 60);
+/**
+ * Aggregiert Sessions pro Typ pro Tag und berechnet Dot-Größen
+ * @param {Array} daySessions - Sessions eines Tages
+ * @returns {Array} - Array von {type, size, rank, minutes} sortiert nach Größe (größte zuerst)
+ */
+function aggregateDayByType(daySessions) {
+  // Summiere Minuten pro Typ
+  const typeMinutes = {};
+  daySessions.forEach(session => {
+    const type = session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength';
+    const durationSec = getSessionDurationSeconds(session);
+    const minutes = Math.round(durationSec / 60);
+    typeMinutes[type] = (typeMinutes[type] || 0) + minutes;
+  });
 
-  let size = 's';
-  let rank = 1;
-  if (minutes > 90) { size = 'xxl'; rank = 5; }
-  else if (minutes > 60) { size = 'xl'; rank = 4; }
-  else if (minutes > 40) { size = 'l'; rank = 3; }
-  else if (minutes > 20) { size = 'm'; rank = 2; }
+  // Konvertiere zu Dot-Metadaten mit Größe basierend auf Gesamtdauer
+  const dots = Object.entries(typeMinutes).map(([type, minutes]) => {
+    const { size, rank } = getSizeFromMinutes(minutes);
+    return { type, size, rank, minutes };
+  });
 
-  return {
-    type: session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength',
-    size,
-    rank,
-    minutes
-  };
+  // Sortiere nach rank (größte zuerst für z-index Stacking)
+  dots.sort((a, b) => b.rank - a.rank);
+
+  return dots;
+}
+
+/**
+ * Mappt Minuten zu Dot-Größe nach Spezifikation
+ * < 15min => S, < 30min => M, < 45min => L, < 60min => XL, >= 60min => XXL
+ */
+function getSizeFromMinutes(minutes) {
+  if (minutes >= 60) return { size: 'xxl', rank: 5 };
+  if (minutes >= 45) return { size: 'xl', rank: 4 };
+  if (minutes >= 30) return { size: 'l', rank: 3 };
+  if (minutes >= 15) return { size: 'm', rank: 2 };
+  return { size: 's', rank: 1 };
+}
+
+/**
+ * Rendert nested Dots für einen Tag
+ * - Größte Dots unten (niedrigster z-index), kleinste oben
+ * - Micro-offset bei gleicher Größe
+ */
+function renderNestedDots(dots) {
+  if (!dots || dots.length === 0) return '';
+
+  // Erkenne Größen-Duplikate und markiere diese für offset
+  const sizeCount = {};
+  dots.forEach(dot => {
+    sizeCount[dot.size] = (sizeCount[dot.size] || 0) + 1;
+  });
+
+  // Sortiere nach rank absteigend (größte zuerst für Rendering-Reihenfolge)
+  // Größte werden zuerst gerendert = unterste Schicht
+  const sortedDots = [...dots].sort((a, b) => b.rank - a.rank);
+
+  const sizeOffsetUsed = {};
+  const dotElements = sortedDots.map(dot => {
+    let offsetClass = '';
+    // Wenn es mehrere Dots mit dieser Größe gibt, gib dem zweiten/dritten ein offset
+    if (sizeCount[dot.size] > 1) {
+      if (!sizeOffsetUsed[dot.size]) {
+        sizeOffsetUsed[dot.size] = true;
+      } else {
+        offsetClass = ' offset';
+      }
+    }
+    return `<span class="mini-dot ${dot.type} size-${dot.size}${offsetClass}"></span>`;
+  });
+
+  return `<div class="mini-dot-stack">${dotElements.join('')}</div>`;
 }
 
 function formatDurationHoursMinutes(totalMinutes) {
@@ -719,19 +774,14 @@ function renderDashboardActivityCalendar(state) {
     const isToday = date.toDateString() === today.toDateString();
     const daySessions = sessionsByDate[dateKey] || [];
 
-    // Get dot info (show max 1 dot per day in mini view, pick strongest)
-    let dotHTML = '';
-    if (daySessions.length > 0) {
-      const dots = daySessions.map(getDashboardDotMeta).sort((a, b) => b.rank - a.rank);
-      const topDot = dots[0];
-      dotHTML = `<span class="mini-dot ${topDot.type} size-${topDot.size}"></span>`;
-    }
+    // Aggregiere pro Typ pro Tag und rendere nested Dots
+    const aggregatedDots = aggregateDayByType(daySessions);
+    const dotHTML = renderNestedDots(aggregatedDots);
 
     const todayClass = isToday ? 'today' : '';
-    const hasActivityClass = daySessions.length > 0 ? 'has-activity' : '';
 
     calendarHTML += `
-      <div class="mini-cal-cell ${todayClass} ${hasActivityClass}">
+      <div class="mini-cal-cell ${todayClass}">
         ${dotHTML}
       </div>
     `;
