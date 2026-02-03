@@ -595,14 +595,330 @@ function openProgressOverview() {
   }
 }
 
+// ========================================
+// DASHBOARD ACTIVITY CALENDAR WIDGET (Suunto Style)
+// ========================================
+
+function getDashboardMonthDuration(sessions) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  let totalMinutes = 0;
+
+  sessions.forEach(session => {
+    const date = getSessionDate(session);
+    if (!date) return;
+    if (date.getFullYear() !== year || date.getMonth() !== month) return;
+
+    const durationSec = getSessionDurationSeconds(session);
+    if (durationSec > 0) {
+      totalMinutes += Math.round(durationSec / 60);
+    }
+  });
+
+  return totalMinutes;
+}
+
+function getDashboardSessionsByDate(sessions, year, month) {
+  const result = {};
+  sessions.forEach(session => {
+    const date = getSessionDate(session);
+    if (!date) return;
+    if (date.getFullYear() !== year || date.getMonth() !== month) return;
+    const dateKey = getBerlinDateKey(date);
+    if (!result[dateKey]) result[dateKey] = [];
+    result[dateKey].push(session);
+  });
+  return result;
+}
+
+/**
+ * Aggregiert Sessions pro Typ pro Tag und berechnet Dot-Größen
+ * @param {Array} daySessions - Sessions eines Tages
+ * @returns {Array} - Array von {type, size, rank, minutes} sortiert nach Größe (größte zuerst)
+ */
+function aggregateDayByType(daySessions) {
+  // Summiere Minuten pro Typ
+  const typeMinutes = {};
+  daySessions.forEach(session => {
+    const type = session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength';
+    const durationSec = getSessionDurationSeconds(session);
+    const minutes = Math.round(durationSec / 60);
+    typeMinutes[type] = (typeMinutes[type] || 0) + minutes;
+  });
+
+  // Konvertiere zu Dot-Metadaten mit Größe basierend auf Gesamtdauer
+  const dots = Object.entries(typeMinutes).map(([type, minutes]) => {
+    const { size, rank } = getSizeFromMinutes(minutes);
+    return { type, size, rank, minutes };
+  });
+
+  // Sortiere nach rank (größte zuerst für z-index Stacking)
+  dots.sort((a, b) => b.rank - a.rank);
+
+  return dots;
+}
+
+/**
+ * Mappt Minuten zu Dot-Größe nach Spezifikation
+ * < 15min => S, < 30min => M, < 45min => L, < 60min => XL, >= 60min => XXL
+ */
+function getSizeFromMinutes(minutes) {
+  if (minutes >= 60) return { size: 'xxl', rank: 5 };
+  if (minutes >= 45) return { size: 'xl', rank: 4 };
+  if (minutes >= 30) return { size: 'l', rank: 3 };
+  if (minutes >= 15) return { size: 'm', rank: 2 };
+  return { size: 's', rank: 1 };
+}
+
+/**
+ * Rendert nested Dots für einen Tag
+ * - Größte Dots unten (niedrigster z-index), kleinste oben
+ * - Micro-offset bei gleicher Größe
+ */
+function renderNestedDots(dots) {
+  if (!dots || dots.length === 0) return '';
+
+  // Erkenne Größen-Duplikate und markiere diese für offset
+  const sizeCount = {};
+  dots.forEach(dot => {
+    sizeCount[dot.size] = (sizeCount[dot.size] || 0) + 1;
+  });
+
+  // Sortiere nach rank absteigend (größte zuerst für Rendering-Reihenfolge)
+  // Größte werden zuerst gerendert = unterste Schicht
+  const sortedDots = [...dots].sort((a, b) => b.rank - a.rank);
+
+  const sizeOffsetUsed = {};
+  const dotElements = sortedDots.map(dot => {
+    let offsetClass = '';
+    // Wenn es mehrere Dots mit dieser Größe gibt, gib dem zweiten/dritten ein offset
+    if (sizeCount[dot.size] > 1) {
+      if (!sizeOffsetUsed[dot.size]) {
+        sizeOffsetUsed[dot.size] = true;
+      } else {
+        offsetClass = ' offset';
+      }
+    }
+    return `<span class="mini-dot ${dot.type} size-${dot.size}${offsetClass}"></span>`;
+  });
+
+  return `<div class="mini-dot-stack">${dotElements.join('')}</div>`;
+}
+
+function formatDurationHoursMinutes(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0 && minutes > 0) {
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+  }
+  if (hours > 0) {
+    return `${hours}:00`;
+  }
+  return `0:${String(minutes).padStart(2, '0')}`;
+}
+
+/**
+ * Formatiert Dauer als "Xh Xm" String
+ */
+function formatDurationText(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0 && minutes > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (hours > 0) {
+    return `${hours}h`;
+  }
+  return `${minutes}m`;
+}
+
+/**
+ * Aggregiert Sessions pro Trainingstyp für einen Zeitraum
+ * @returns {Array} [{type, minutes, color}] sortiert nach Minuten absteigend
+ */
+function aggregateSessionsByType(sessions, year, month) {
+  const typeMinutes = {
+    strength: 0,
+    cardio: 0,
+    recovery: 0
+  };
+
+  sessions.forEach(session => {
+    const date = getSessionDate(session);
+    if (!date) return;
+    if (date.getFullYear() !== year || date.getMonth() !== month) return;
+
+    const type = session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength';
+    const durationSec = getSessionDurationSeconds(session);
+    typeMinutes[type] += Math.round(durationSec / 60);
+  });
+
+  // Konvertiere zu Array und sortiere nach Minuten absteigend
+  const typeColors = {
+    strength: 'var(--color-category-strength)',
+    cardio: 'var(--color-category-cardio)',
+    recovery: 'var(--color-category-recovery)'
+  };
+
+  return Object.entries(typeMinutes)
+    .filter(([_, minutes]) => minutes > 0)
+    .map(([type, minutes]) => ({
+      type,
+      minutes,
+      color: typeColors[type]
+    }))
+    .sort((a, b) => b.minutes - a.minutes);
+}
+
+/**
+ * Wiederverwendbare Activity Calendar Grid Komponente
+ * @param {Object} options - { year, month, sessionsByDate, detailed, dayLabels }
+ */
+function renderActivityCalendarGrid(options) {
+  const { year, month, sessionsByDate, detailed = false, dayLabels } = options;
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1; // Monday-based
+  const daysInMonth = lastDay.getDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const cellClass = detailed ? 'activity-cal-cell' : 'mini-cal-cell';
+  const gridClass = detailed ? 'activity-cal-grid' : 'mini-cal-grid';
+  const headerClass = detailed ? 'activity-cal-header' : 'mini-cal-header';
+  const labelClass = detailed ? 'activity-cal-day-label' : 'mini-cal-day-label';
+
+  let html = `<div class="${headerClass}">`;
+  html += dayLabels.map(d => `<span class="${labelClass}">${d}</span>`).join('');
+  html += `</div>`;
+  html += `<div class="${gridClass}">`;
+
+  // Empty cells for previous month
+  for (let i = 0; i < startDay; i++) {
+    html += `<div class="${cellClass} empty"></div>`;
+  }
+
+  // Days of current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dateKey = getBerlinDateKey(date);
+    const isToday = date.toDateString() === today.toDateString();
+    const daySessions = sessionsByDate[dateKey] || [];
+
+    const aggregatedDots = aggregateDayByType(daySessions);
+    const dotHTML = renderNestedDots(aggregatedDots);
+
+    const todayClass = isToday ? 'today' : '';
+    const dayNumberHTML = detailed ? `<span class="day-number">${day}</span>` : '';
+
+    html += `
+      <div class="${cellClass} ${todayClass}" data-date="${dateKey}">
+        ${dayNumberHTML}
+        ${dotHTML}
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function renderDashboardActivityCalendar(state) {
+  const container = document.getElementById('dashboard-activity-calendar');
+  if (!container) return;
+
+  if (state.loading) {
+    container.innerHTML = `
+      <div class="dashboard-activity-widget">
+        <div class="dashboard-activity-loading">${tr('common.loading')}</div>
+      </div>
+    `;
+    return;
+  }
+
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  const totalMinutes = getDashboardMonthDuration(sessions);
+  const sessionsByDate = getDashboardSessionsByDate(sessions, year, month);
+
+  // Get current month name
+  const monthNames = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  const monthName = monthNames[month];
+
+  // Build mini calendar grid (current month only, compact 7-column)
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1; // Monday-based
+  const daysInMonth = lastDay.getDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Day labels (abbreviated)
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  let calendarHTML = `<div class="dashboard-mini-calendar">`;
+  calendarHTML += `<div class="mini-cal-header">`;
+  calendarHTML += dayLabels.map(d => `<span class="mini-cal-day-label">${d}</span>`).join('');
+  calendarHTML += `</div>`;
+  calendarHTML += `<div class="mini-cal-grid">`;
+
+  // Empty cells for previous month
+  for (let i = 0; i < startDay; i++) {
+    calendarHTML += `<div class="mini-cal-cell empty"></div>`;
+  }
+
+  // Days of current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dateKey = getBerlinDateKey(date);
+    const isToday = date.toDateString() === today.toDateString();
+    const daySessions = sessionsByDate[dateKey] || [];
+
+    // Aggregiere pro Typ pro Tag und rendere nested Dots
+    const aggregatedDots = aggregateDayByType(daySessions);
+    const dotHTML = renderNestedDots(aggregatedDots);
+
+    const todayClass = isToday ? 'today' : '';
+
+    calendarHTML += `
+      <div class="mini-cal-cell ${todayClass}">
+        ${dotHTML}
+      </div>
+    `;
+  }
+
+  calendarHTML += `</div></div>`;
+
+  container.innerHTML = `
+    <div class="dashboard-activity-widget" role="button" tabindex="0">
+      <div class="dashboard-activity-left">
+        <span class="dashboard-activity-label">${tr('dashboard.activityCalendar.thisMonth') || 'Diesen Monat'}</span>
+        <div class="dashboard-activity-duration">${formatDurationHoursMinutes(totalMinutes)}</div>
+        <span class="dashboard-activity-unit">${tr('dashboard.activityCalendar.durationUnit') || 'Duration h'}</span>
+      </div>
+      <div class="dashboard-activity-right">
+        ${calendarHTML}
+      </div>
+    </div>
+  `;
+}
+
 async function refreshDashboard() {
   if (dashboardIsLoading) return;
   dashboardIsLoading = true;
 
   const data = await useDashboardData();
   renderScheduledWorkoutsCard(data);
+  renderDashboardActivityCalendar(data);
   renderLogWorkoutCard(data);
-  renderHybridBalanceCard(data);
   renderRecentSessionsList(data);
 
   dashboardIsLoading = false;
@@ -637,6 +953,18 @@ window.addWorkoutOfType = addWorkoutOfType;
 window.openLogWorkoutTypeSheet = openLogWorkoutTypeSheet;
 window.openPlanWorkoutSheet = openPlanWorkoutSheet;
 window.openStartWorkoutFromPlanSheet = openStartWorkoutFromPlanSheet;
+
+// Shared Activity Calendar functions (used by calendar.js)
+window.aggregateDayByType = aggregateDayByType;
+window.getSizeFromMinutes = getSizeFromMinutes;
+window.renderNestedDots = renderNestedDots;
+window.aggregateSessionsByType = aggregateSessionsByType;
+window.formatDurationText = formatDurationText;
+window.renderActivityCalendarGrid = renderActivityCalendarGrid;
+window.getDashboardSessionsByDate = getDashboardSessionsByDate;
+window.getSessionDurationSeconds = getSessionDurationSeconds;
+window.getSessionDate = getSessionDate;
+window.getBerlinDateKey = getBerlinDateKey;
 
 // ========================================
 // AUTO-INITIALIZE

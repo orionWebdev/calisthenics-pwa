@@ -185,6 +185,7 @@ function renderOverviewTab() {
   const insight = generateCalmInsight(consistencyStats, balanceData);
 
   container.innerHTML = `
+    <h3 style="margin-bottom: 1.5rem;">Balance</h3>
     <div class="overview-section">
       ${renderHybridBalanceHTML()}
 
@@ -194,16 +195,6 @@ function renderOverviewTab() {
       <div class="calm-insight-card">
         <span class="material-symbols-rounded insight-icon">lightbulb</span>
         <p class="insight-text">${trProgress(insight.key, insight.params)}</p>
-      </div>
-
-      <div class="overview-section-header">
-        <h3 class="overview-section-title">${trProgress('progress.overview.activityCalendarTitle')}</h3>
-        <p class="overview-section-helper">${trProgress('progress.overview.activityCalendarHelper')}</p>
-      </div>
-
-      <!-- Activity Calendar -->
-      <div id="activity-calendar-container" class="activity-calendar-section">
-        ${renderActivityCalendarHTML()}
       </div>
     </div>
   `;
@@ -921,6 +912,7 @@ function renderStrengthTab() {
   const variance = calculateTrainingVariance(progressStrengthPeriod);
 
   container.innerHTML = `
+    <h3 style="margin-bottom: 1.5rem;">Krafttraining</h3>
     <div class="strength-section">
       <!-- Period Selector with Add Button -->
       ${renderProgressPeriodSelector('strength', progressStrengthPeriod)}
@@ -1571,6 +1563,7 @@ function renderBodyweightTab() {
   }
 
   container.innerHTML = `
+    <h3 style="margin-bottom: 1.5rem;">Bodyweight</h3>
     <div class="bodyweight-section">
       <!-- Period Selector with Add Button -->
       ${renderProgressPeriodSelector('bodyweight', progressBodyweightPeriod)}
@@ -1870,6 +1863,7 @@ function renderCardioTab() {
   }
 
   container.innerHTML = `
+    <h3 style="margin-bottom: 1.5rem;">Cardio</h3>
     <div class="cardio-section">
       <!-- Header with Activity Picker -->
       <div class="progress-tab-header">

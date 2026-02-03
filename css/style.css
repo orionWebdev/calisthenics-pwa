@@ -3,6 +3,7 @@
    ======================================== */
 
 :root {
+  /* Colors */
   --color-primary: #F02277;
   --color-bg: #000000;
   --color-secondary-dark: #091E4D;
@@ -13,6 +14,25 @@
   --color-category-bodyweight: #10b981;
   --color-category-cardio: #3b82f6;
   --color-category-recovery: #22c55e;
+
+  /* Typography Scale - Konsistentes System */
+  --font-size-xs: 0.75rem;     /* 12px - Labels, Hints */
+  --font-size-sm: 0.875rem;    /* 14px - Small text, Captions */
+  --font-size-base: 1rem;      /* 16px - Body text */
+  --font-size-md: 1.125rem;    /* 18px - Large body */
+  --font-size-lg: 1.25rem;     /* 20px - H3, Subheadings */
+  --font-size-xl: 1.5rem;      /* 24px - H2 */
+  --font-size-2xl: 1.75rem;    /* 28px - H1 */
+  --font-size-3xl: 2rem;       /* 32px - Display */
+  --font-size-4xl: 2.5rem;     /* 40px - Hero */
+
+  /* Font Weights - Semantisch */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* UI Components */
   --ui-card-bg: rgb(31 41 55);
   --ui-card-border: rgb(55 65 81);
   --ui-card-border-hover: rgb(75 85 99);
@@ -22,9 +42,14 @@
   --ui-card-shadow-hover: 0 14px 36px rgba(0, 0, 0, 0.3);
   --ui-icon-bg: rgba(240, 34, 119, 0.12);
   --ui-icon-border: rgba(240, 34, 119, 0.25);
+
   /* Navigation Heights für dynamisches Content-Padding */
-  --bottom-nav-height: 72px; /* Base height der Bottom Navigation */
-  --mobile-header-height: 64px; /* Base height des Mobile Headers */
+  --bottom-nav-height: 72px;
+  --mobile-header-height: 64px;
+}
+
+html {
+  font-size: 92%;
 }
 
 * {
@@ -33,9 +58,6 @@
   box-sizing: border-box;
 }
 
-html {
-  font-size: 93.5%;
-}
 
 body {
   font-family: 'Zalando Sans Expanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -47,6 +69,64 @@ body {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
+}
+
+/* ========================================
+   GLOBAL TYPOGRAPHY - Konsistentes System
+   ======================================== */
+
+h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+}
+
+h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+}
+
+h4 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.35;
+}
+
+p {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5;
+}
+
+small, .text-sm {
+  font-size: var(--font-size-sm);
+}
+
+.text-xs {
+  font-size: var(--font-size-xs);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.font-bold {
+  font-weight: var(--font-weight-bold);
 }
 
 /* Global Click Animation for All Interactive Elements - Mobile First */
@@ -184,11 +264,11 @@ input, textarea, select, button {
 }
 
 .text-sm {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .font-medium {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .mb-2 {
@@ -226,11 +306,11 @@ input, textarea, select, button {
 }
 
 .text-xl {
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
 }
 
 .font-semibold {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .focus\:outline-none:focus {
@@ -333,14 +413,14 @@ input, textarea, select, button {
   border: none;
   color: var(--color-text-muted);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   position: relative;
   overflow: hidden;
 }
 
 .nav-btn .material-symbols-rounded {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
   transition: transform 0.3s ease;
 }
 
@@ -420,13 +500,13 @@ input, textarea, select, button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #D1D5DB;
 }
 
 .filter-label .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
   color: var(--color-primary);
 }
 
@@ -441,7 +521,7 @@ input, textarea, select, button {
   top: 50%;
   transform: translateY(-50%);
   color: #9CA3AF;
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   pointer-events: none;
 }
 
@@ -452,7 +532,7 @@ input, textarea, select, button {
   border-radius: 0.75rem;
   padding: 0.75rem 1rem 0.75rem 3rem;
   color: white;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   transition: all 0.2s ease;
 }
 
@@ -478,7 +558,7 @@ input, textarea, select, button {
   top: 50%;
   transform: translateY(-50%);
   color: #9CA3AF;
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   pointer-events: none;
   z-index: 1;
 }
@@ -490,7 +570,7 @@ input, textarea, select, button {
   border-radius: 0.75rem;
   padding: 0.75rem 2.5rem 0.75rem 3rem;
   color: white;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   cursor: pointer;
   transition: all 0.2s ease;
   appearance: none;
@@ -533,14 +613,14 @@ input, textarea, select, button {
   background: rgba(240, 34, 119, 0.15);
   border: 1px solid rgba(240, 34, 119, 0.3);
   border-radius: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-primary);
   animation: slideIn 0.2s ease;
 }
 
 .filter-pill .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
 }
 
 .filter-pill-remove {
@@ -558,7 +638,7 @@ input, textarea, select, button {
 }
 
 .filter-pill-remove .material-symbols-rounded {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   color: var(--color-primary);
 }
 
@@ -618,19 +698,19 @@ input, textarea, select, button {
 }
 
 .empty-state-icon .material-symbols-rounded {
-  font-size: 48px;
+  font-size: var(--font-size-4xl);
   color: #6B7280;
 }
 
 .empty-state-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: #D1D5DB;
   margin-bottom: 0.5rem;
 }
 
 .empty-state-text {
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   color: #9CA3AF;
   margin-bottom: 1.5rem;
 }
@@ -644,7 +724,7 @@ input, textarea, select, button {
   border: 1px solid rgba(240, 34, 119, 0.3);
   border-radius: 0.75rem;
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   /* Touch target size for mobile */
@@ -652,7 +732,7 @@ input, textarea, select, button {
 }
 
 .empty-state-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 .empty-state-btn:hover {
@@ -671,8 +751,8 @@ input, textarea, select, button {
   gap: 0.25rem;
   padding: 0.375rem 0.875rem;
   border-radius: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   background: rgba(55, 65, 81, 0.5);
   border: 1px solid rgba(75, 85, 99, 0.5);
   color: #D1D5DB;
@@ -710,14 +790,14 @@ input, textarea, select, button {
   justify-content: center;
   gap: 0.4rem;
   padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   line-height: 1;
   scroll-snap-align: start;
 }
 
 .exercise-picker-filters .filter-chip .material-symbols-rounded,
 .plan-type-filters .filter-chip .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
   line-height: 1;
 }
 
@@ -753,7 +833,7 @@ input, textarea, select, button {
 }
 
 .plan-add-exercise-plus {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
   line-height: 1;
 }
 
@@ -762,7 +842,7 @@ input, textarea, select, button {
   background: rgba(240, 34, 119, 0.2);
   border-color: rgba(240, 34, 119, 0.4);
   color: var(--color-primary);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .muscle-primary:hover {
@@ -795,7 +875,6 @@ input, textarea, select, button {
 
 .modal-content {
   background: rgb(17 24 39);
-  border: 1px solid var(--color-secondary-light);
   border-radius: 1rem;
   padding: 2rem;
   max-width: 600px;
@@ -866,7 +945,7 @@ input, textarea, select, button {
 }
 
 .modal-close-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   line-height: 1;
 }
 
@@ -893,8 +972,8 @@ input, textarea, select, button {
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: #9ca3af;
   position: relative;
   display: flex;
@@ -1059,7 +1138,7 @@ input, textarea, select, button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: var(--font-size-4xl);
 }
 
 .exercise-card-content {
@@ -1067,8 +1146,8 @@ input, textarea, select, button {
 }
 
 .exercise-card-title {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   margin-bottom: 0.75rem;
   color: var(--color-text);
 }
@@ -1082,8 +1161,8 @@ input, textarea, select, button {
   background: var(--color-secondary-light);
   border: 1px solid var(--color-primary);
   border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
   color: var(--color-primary);
 }
 
@@ -1101,7 +1180,7 @@ input, textarea, select, button {
   cursor: pointer;
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   z-index: 10;
 }
 
@@ -1158,7 +1237,7 @@ input, textarea, select, button {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -1201,7 +1280,7 @@ input, textarea, select, button {
 
 .exercise-row-icon .material-symbols-rounded {
   color: var(--color-primary);
-  font-size: 22px;
+  font-size: var(--font-size-xl);
 }
 
 .exercise-row-content {
@@ -1210,8 +1289,8 @@ input, textarea, select, button {
 }
 
 .exercise-row-title {
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   color: white;
   white-space: nowrap;
   overflow: hidden;
@@ -1219,7 +1298,7 @@ input, textarea, select, button {
 }
 
 .exercise-row-meta {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
   margin-top: 0.2rem;
   white-space: nowrap;
@@ -1254,7 +1333,7 @@ input, textarea, select, button {
 }
 
 .exercise-row-discipline .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
   color: #cbd5f5;
 }
 
@@ -1310,18 +1389,18 @@ input, textarea, select, button {
 }
 
 .exercise-detail-icon .material-symbols-rounded {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
   color: var(--color-primary);
 }
 
 .exercise-detail-title {
-  font-size: 1.4rem;
-  font-weight: 800;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
 .exercise-detail-subtitle {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
   margin-top: 0.25rem;
 }
@@ -1340,12 +1419,12 @@ input, textarea, select, button {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(55, 65, 81, 0.8);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #d1d5db;
 }
 
 .exercise-detail-chip .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   color: var(--color-primary);
 }
 
@@ -1365,18 +1444,18 @@ input, textarea, select, button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #f3f4f6;
   margin-bottom: 0.4rem;
 }
 
 .exercise-detail-block-title .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
   color: var(--color-primary);
 }
 
 .exercise-detail-block p {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   line-height: 1.4;
   color: #9ca3af;
 }
@@ -1430,26 +1509,26 @@ input, textarea, select, button {
 }
 
 .dashboard-primary-title {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0 0 0.25rem 0;
 }
 
 .dashboard-primary-subtitle {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
 }
 
 .dashboard-primary-helper {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0.35rem 0 0;
 }
 
 .dashboard-primary-icon {
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   color: rgba(240, 34, 119, 0.6);
 }
 
@@ -1460,7 +1539,7 @@ input, textarea, select, button {
   border: none;
   background: linear-gradient(135deg, var(--color-primary), #C01963);
   color: white;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1471,24 +1550,28 @@ input, textarea, select, button {
 
 /* Dashboard Scheduled Workouts Widget */
 .dashboard-scheduled-widget {
-  padding: 1rem;
-  background: var(--color-surface);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.5rem;
+  background: linear-gradient(135deg,
+    rgba(9, 30, 77, 0.9) 0%,
+    rgba(15, 36, 129, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(15, 36, 129, 0.5);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .dashboard-scheduled-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: white;
   margin-bottom: 0.75rem;
 }
 
 .dashboard-scheduled-header .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: var(--color-primary);
 }
 
@@ -1521,16 +1604,16 @@ input, textarea, select, button {
 }
 
 .dashboard-scheduled-type {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   padding: 0.25rem 0.5rem;
   border-radius: 0.35rem;
   white-space: nowrap;
 }
 
 .dashboard-scheduled-name {
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   color: white;
   white-space: nowrap;
   overflow: hidden;
@@ -1544,12 +1627,12 @@ input, textarea, select, button {
 }
 
 .dashboard-scheduled-duration {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
 .dashboard-scheduled-play {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
   color: var(--color-primary);
 }
 
@@ -1583,20 +1666,20 @@ input, textarea, select, button {
 }
 
 .dashboard-log-workout-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0;
 }
 
 .dashboard-log-workout-subtitle {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
 }
 
 .dashboard-log-workout-icon {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
   color: var(--color-primary);
   padding: 0.5rem;
   border: 1.5px solid var(--color-primary);
@@ -1624,20 +1707,20 @@ input, textarea, select, button {
 }
 
 .dashboard-balance-title {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0;
 }
 
 .dashboard-balance-subtitle {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0.2rem 0 0 0;
 }
 
 .dashboard-balance-description {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
 }
@@ -1653,7 +1736,7 @@ input, textarea, select, button {
   border: 1px solid rgba(148, 163, 184, 0.2);
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   cursor: pointer;
 }
 
@@ -1682,13 +1765,377 @@ input, textarea, select, button {
 .dashboard-balance-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
 .dashboard-balance-context {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: white;
+}
+
+/* Dashboard Activity Calendar Widget (Suunto Style) */
+.dashboard-activity-widget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboard-activity-widget:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.dashboard-activity-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 80px;
+}
+
+.dashboard-activity-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-activity-duration {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  color: white;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-activity-unit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+.dashboard-activity-right {
+  flex: 1;
+  max-width: 240px;
+}
+
+.dashboard-activity-loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* Mini Calendar Grid */
+.dashboard-mini-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mini-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.mini-cal-day-label {
+  font-size: 8px;
+  color: var(--color-text-muted);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.mini-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  min-width: 24px;
+  min-height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mini-cal-cell.empty {
+  background: transparent;
+}
+
+.mini-cal-cell.today {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dot Stack Container for nested dots */
+.mini-dot-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mini Calendar Dots - Nested/Stacked */
+.mini-dot {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.mini-dot.strength {
+  background: var(--color-category-strength);
+}
+
+.mini-dot.cardio {
+  background: var(--color-category-cardio);
+}
+
+.mini-dot.recovery {
+  background: var(--color-category-recovery);
+}
+
+/* Dot Sizes: S=8px, M=12px, L=16px, XL=20px, XXL=24px */
+.mini-dot.size-s {
+  width: 8px;
+  height: 8px;
+  z-index: 50;
+}
+
+.mini-dot.size-m {
+  width: 12px;
+  height: 12px;
+  z-index: 40;
+}
+
+.mini-dot.size-l {
+  width: 16px;
+  height: 16px;
+  z-index: 30;
+}
+
+.mini-dot.size-xl {
+  width: 20px;
+  height: 20px;
+  z-index: 20;
+}
+
+.mini-dot.size-xxl {
+  width: 24px;
+  height: 24px;
+  z-index: 10;
+}
+
+/* Micro-offset for same-size dots (+2px) */
+.mini-dot.size-s.offset { width: 10px; height: 10px; z-index: 49; }
+.mini-dot.size-m.offset { width: 14px; height: 14px; z-index: 39; }
+.mini-dot.size-l.offset { width: 18px; height: 18px; z-index: 29; }
+.mini-dot.size-xl.offset { width: 22px; height: 22px; z-index: 19; }
+.mini-dot.size-xxl.offset { width: 26px; height: 26px; z-index: 9; }
+
+@media (max-width: 480px) {
+  .dashboard-activity-widget {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .dashboard-activity-left {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .dashboard-activity-duration {
+    font-size: 2rem;
+  }
+
+  .dashboard-activity-right {
+    max-width: 100%;
+  }
+
+  /* Mobile: kleinere Dots, Cells bleiben proportional */
+  .mini-cal-cell {
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  .mini-dot.size-s { width: 6px; height: 6px; }
+  .mini-dot.size-m { width: 9px; height: 9px; }
+  .mini-dot.size-l { width: 12px; height: 12px; }
+  .mini-dot.size-xl { width: 15px; height: 15px; }
+  .mini-dot.size-xxl { width: 18px; height: 18px; }
+
+  .mini-dot.size-s.offset { width: 8px; height: 8px; }
+  .mini-dot.size-m.offset { width: 11px; height: 11px; }
+  .mini-dot.size-l.offset { width: 14px; height: 14px; }
+  .mini-dot.size-xl.offset { width: 17px; height: 17px; }
+  .mini-dot.size-xxl.offset { width: 20px; height: 20px; }
+}
+
+/* ========================================
+   DETAILED ACTIVITY CALENDAR (Calendar Page)
+   ======================================== */
+
+.activity-calendar-detailed {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.activity-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.activity-cal-day-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+}
+
+.activity-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.activity-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  position: relative;
+  min-height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.activity-cal-cell:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.activity-cal-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.activity-cal-cell.today {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.activity-cal-day-number {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: white;
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+}
+
+.activity-cal-cell .mini-dot-stack {
+  margin-top: 16px;
+}
+
+/* Training Types List */
+.training-types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.training-type-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.training-type-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.training-type-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: white;
+}
+
+.training-type-duration {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.training-type-bar-bg {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.training-type-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.training-types-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+}
+
+.training-types-empty .material-symbols-rounded {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+.training-types-empty p {
+  margin: 0;
+  font-size: var(--font-size-sm);
 }
 
 /* Recent Sessions */
@@ -1700,14 +2147,14 @@ input, textarea, select, button {
 }
 
 .dashboard-recent-title {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0;
 }
 
 .dashboard-recent-description {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0.25rem 0 0;
 }
@@ -1740,8 +2187,8 @@ input, textarea, select, button {
 }
 
 .dashboard-session-type {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   padding: 0.2rem 0.5rem;
   border-radius: 999px;
   text-transform: uppercase;
@@ -1764,21 +2211,21 @@ input, textarea, select, button {
 }
 
 .dashboard-session-date {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
 .dashboard-session-meta {
   display: flex;
   gap: 0.75rem;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: white;
 }
 
 .dashboard-recent-empty {
   padding: 1rem 0;
   color: var(--color-text-muted);
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
 }
 
 /* Today Workout Card */
@@ -1820,8 +2267,8 @@ input, textarea, select, button {
   border: none;
   border-radius: 0.75rem;
   color: white;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 16px rgba(240, 34, 119, 0.4);
@@ -1837,7 +2284,7 @@ input, textarea, select, button {
 }
 
 .dashboard-start-btn .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 .dashboard-secondary-btn {
@@ -1849,7 +2296,7 @@ input, textarea, select, button {
   border: 1px solid rgba(107, 114, 128, 0.5);
   border-radius: 0.75rem;
   color: #d1d5db;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -1860,7 +2307,7 @@ input, textarea, select, button {
 }
 
 .dashboard-secondary-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 /* Stats Cards */
@@ -1895,13 +2342,13 @@ input, textarea, select, button {
 }
 
 .dashboard-stat-icon .material-symbols-rounded {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
   font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 28;
 }
 
 .dashboard-stat-label {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -1909,14 +2356,14 @@ input, textarea, select, button {
 }
 
 .dashboard-stat-value {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   color: white;
   line-height: 1;
 }
 
 .dashboard-stat-subtext {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #6b7280;
   margin-top: 0.25rem;
 }
@@ -1981,14 +2428,14 @@ input, textarea, select, button {
   justify-content: center;
   background: linear-gradient(135deg, var(--color-primary), #ec4899);
   border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
   color: white;
 }
 
 .dashboard-exercise-reps {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: var(--color-primary);
 }
 
@@ -2004,7 +2451,7 @@ input, textarea, select, button {
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 0.75rem;
   color: #9ca3af;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -2016,7 +2463,7 @@ input, textarea, select, button {
 }
 
 .dashboard-link-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 /* Mobile Responsive */
@@ -2031,11 +2478,11 @@ input, textarea, select, button {
   }
 
   .dashboard-stat-icon .material-symbols-rounded {
-    font-size: 24px;
+    font-size: var(--font-size-xl);
   }
 
   .dashboard-stat-value {
-    font-size: 1.5rem;
+    font-size: var(--font-size-xl);
   }
 
   .dashboard-today-card {
@@ -2098,13 +2545,13 @@ input, textarea, select, button {
 }
 
 .bottom-nav-item .material-symbols-rounded {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
   transition: all 0.3s ease;
 }
 
 .bottom-nav-item .bottom-nav-label {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.025em;
   transition: all 0.3s ease;
 }
@@ -2302,7 +2749,7 @@ input::placeholder {
 
   /* Touch Target Optimization - Minimum 44px */
   .nav-btn {
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
     padding: 0.75rem;
     min-height: 44px;
     min-width: 44px;
@@ -2311,12 +2758,12 @@ input::placeholder {
   .filter-input,
   .filter-select {
     min-height: 48px;
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: var(--font-size-base); /* Prevents zoom on iOS */
   }
 
   .muscle-tag {
     padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
   }
 
   .filter-pill {
@@ -2407,11 +2854,11 @@ input::placeholder {
   }
 
   .calendar-day-number {
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
   }
 
   .calendar-plan {
-    font-size: 0.625rem;
+    font-size: var(--font-size-xs);
     padding: 0.25rem 0.375rem;
   }
 
@@ -2452,7 +2899,7 @@ input::placeholder {
   }
 
   .empty-state-icon .material-symbols-rounded {
-    font-size: 36px;
+    font-size: var(--font-size-3xl);
   }
 }
 
@@ -2500,7 +2947,7 @@ input::placeholder {
 }
 
 .fab-icon {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
   color: white;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 28;
@@ -2600,7 +3047,7 @@ input::placeholder {
 }
 
 .radial-icon {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 28;
 }
@@ -2622,7 +3069,7 @@ input::placeholder {
   border: none;
   color: var(--color-text-muted);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .calendar-view-btn:hover {
@@ -2679,15 +3126,15 @@ input::placeholder {
 }
 
 .calendar-day-number {
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin-bottom: 0.25rem;
 }
 
 .calendar-day.today .calendar-day-number {
   color: var(--color-primary);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   width: 28px;
   height: 28px;
   display: flex;
@@ -2830,11 +3277,11 @@ input::placeholder {
   }
   
   .calendar-day-number {
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
   }
   
   .calendar-plan {
-    font-size: 0.625rem;
+    font-size: var(--font-size-xs);
     padding: 0.25rem 0.375rem;
   }
 }
@@ -2916,7 +3363,7 @@ input::placeholder {
 }
 
 .plan-row-icon .material-symbols-rounded {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
   color: var(--color-primary);
 }
 
@@ -2929,8 +3376,8 @@ input::placeholder {
 }
 
 .plan-row-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text);
   white-space: nowrap;
   overflow: hidden;
@@ -2938,7 +3385,7 @@ input::placeholder {
 }
 
 .plan-row-meta {
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -2958,14 +3405,14 @@ input::placeholder {
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   background: rgba(31, 41, 55, 0.6);
   border: 1px solid rgba(75, 85, 99, 0.4);
   color: #d1d5db;
 }
 
 .plan-row-tag .material-symbols-rounded {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 .plan-row-actions {
@@ -2997,7 +3444,7 @@ input::placeholder {
 }
 
 .plan-row-start-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 .plan-row-action-btn {
@@ -3034,8 +3481,8 @@ input::placeholder {
 }
 
 .plan-card-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   margin-bottom: 0.75rem;
   color: white;
 }
@@ -3072,8 +3519,8 @@ input::placeholder {
   display: inline-block;
   padding: 0.375rem 0.75rem;
   border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -3133,7 +3580,7 @@ input::placeholder {
   background: rgba(55, 65, 81, 0.5);
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #d1d5db;
 }
 
@@ -3165,7 +3612,7 @@ input::placeholder {
 }
 
 .plan-difficulty-btn .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 /* Plan Exercise Items */
@@ -3214,8 +3661,8 @@ input::placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
   flex-shrink: 0;
 }
 
@@ -3250,7 +3697,7 @@ input::placeholder {
   background: rgba(55, 65, 81, 0.5);
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #d1d5db;
 }
 
@@ -3261,7 +3708,7 @@ input::placeholder {
   }
 
   .plan-card-title {
-    font-size: 1.125rem;
+    font-size: var(--font-size-md);
   }
 
   .plan-difficulty-btn {
@@ -3270,7 +3717,7 @@ input::placeholder {
   }
 
   .plan-difficulty-btn .material-symbols-rounded {
-    font-size: 20px;
+    font-size: var(--font-size-lg);
   }
 }
 
@@ -3312,7 +3759,6 @@ input::placeholder {
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--color-secondary-light);
   border-bottom: none;
 }
 
@@ -3348,8 +3794,8 @@ input::placeholder {
 }
 
 .bottom-sheet-title {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   margin: 0;
   flex: 1;
@@ -3378,7 +3824,7 @@ input::placeholder {
 }
 
 .bottom-sheet-close-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 .bottom-sheet-search {
@@ -3418,7 +3864,7 @@ input::placeholder {
 }
 
 .search-clear-btn .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .bottom-sheet-content {
@@ -3469,7 +3915,7 @@ input::placeholder {
 }
 
 .bottom-sheet-option-checkbox .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
   color: white;
   display: none;
 }
@@ -3484,8 +3930,8 @@ input::placeholder {
 }
 
 .bottom-sheet-option-label {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text);
   margin: 0 0 0.25rem 0;
 }
@@ -3495,7 +3941,7 @@ input::placeholder {
 }
 
 .bottom-sheet-option-description {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
 }
@@ -3514,8 +3960,8 @@ input::placeholder {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
 }
 
 /* Multi-Select Input Field with Chips */
@@ -3531,7 +3977,7 @@ input::placeholder {
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 0.75rem;
   color: var(--color-text);
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -3557,7 +4003,7 @@ input::placeholder {
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-text-muted);
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   pointer-events: none;
   transition: color 0.2s ease;
   line-height: 1;
@@ -3573,7 +4019,7 @@ input::placeholder {
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-text-muted);
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   pointer-events: none;
   transition: transform 0.2s ease, color 0.2s ease;
   line-height: 1;
@@ -3586,7 +4032,7 @@ input::placeholder {
 
 .multi-select-placeholder {
   color: var(--color-text-muted);
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   user-select: none;
   display: inline-flex;
   align-items: center;
@@ -3609,8 +4055,8 @@ input::placeholder {
   border: 1px solid rgba(240, 34, 119, 0.4);
   border-radius: 1rem;
   color: var(--color-text);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   white-space: nowrap;
   animation: chipSlideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -3661,7 +4107,7 @@ input::placeholder {
 }
 
 .multi-select-chip-remove .material-symbols-rounded {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 /* Empty State */
@@ -3676,14 +4122,14 @@ input::placeholder {
 }
 
 .bottom-sheet-empty .material-symbols-rounded {
-  font-size: 48px;
+  font-size: var(--font-size-4xl);
   margin-bottom: 1rem;
   opacity: 0.5;
 }
 
 .bottom-sheet-empty p {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
 }
 
 /* Scrollbar Styling for Bottom Sheet */
@@ -3730,8 +4176,8 @@ input::placeholder {
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 1.5rem;
   color: var(--color-text);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -3749,11 +4195,11 @@ input::placeholder {
 }
 
 .filter-chip .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .filter-chip .muscle-tag {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   padding: 0 !important;
   background: none !important;
   border: none !important;
@@ -3884,8 +4330,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .splash-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   background: linear-gradient(135deg, var(--color-primary), #C01963);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -3911,7 +4357,7 @@ input[type="range"]::-moz-range-progress {
 
 .splash-text {
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   animation: fadeInOut 1.5s ease-in-out infinite;
 }
 
@@ -3990,8 +4436,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .login-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   background: linear-gradient(135deg, var(--color-primary), #C01963);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -4000,7 +4446,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .login-subtitle {
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   color: var(--color-text-muted);
   margin: 0;
 }
@@ -4008,7 +4454,6 @@ input[type="range"]::-moz-range-progress {
 /* Login Card */
 .login-card {
   background: var(--color-secondary-dark);
-  border: 1px solid var(--color-secondary-light);
   border-radius: 1.5rem;
   padding: 2rem;
   display: flex;
@@ -4019,15 +4464,15 @@ input[type="range"]::-moz-range-progress {
 }
 
 .login-card-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0;
   text-align: center;
 }
 
 .login-card-subtitle {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
   text-align: center;
@@ -4045,8 +4490,8 @@ input[type="range"]::-moz-range-progress {
   justify-content: center;
   gap: 0.75rem;
   padding: 0.875rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: #1f2937;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -4104,7 +4549,7 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   text-align: center;
   padding: 0.75rem;
@@ -4127,7 +4572,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .login-footer-text {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   margin: 0;
   display: flex;
@@ -4170,17 +4615,17 @@ input[type="range"]::-moz-range-progress {
 }
 
 .auth-error-icon {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
   color: white;
   flex-shrink: 0;
 }
 
 .auth-error-message {
   flex: 1;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: white;
   margin: 0;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .auth-error-close {
@@ -4208,7 +4653,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .auth-error-close .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 /* Mobile Responsive Adjustments */
@@ -4233,7 +4678,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .login-title {
-    font-size: 1.75rem;
+    font-size: var(--font-size-2xl);
   }
 
   .login-card {
@@ -4241,12 +4686,12 @@ input[type="range"]::-moz-range-progress {
   }
 
   .login-card-title {
-    font-size: 1.25rem;
+    font-size: var(--font-size-lg);
   }
 
   .google-signin-btn {
     min-height: 52px;
-    font-size: 0.9375rem;
+    font-size: var(--font-size-base);
   }
 
   /* Error toast positioning on mobile */
@@ -4273,8 +4718,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-page-title {
-  font-size: 2rem;
-  font-weight: 800;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--color-primary) 0%, #FF3399 100%);
   -webkit-background-clip: text;
@@ -4284,7 +4729,7 @@ input[type="range"]::-moz-range-progress {
 
 .progress-page-subtitle {
   color: #9ca3af;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 /* Progress Sections */
@@ -4293,8 +4738,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-section-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   margin-bottom: 1rem;
   color: #f3f4f6;
 }
@@ -4319,7 +4764,7 @@ input[type="range"]::-moz-range-progress {
   top: 50%;
   transform: translateY(-50%);
   color: #9ca3af;
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   pointer-events: none;
 }
 
@@ -4330,7 +4775,7 @@ input[type="range"]::-moz-range-progress {
   border-radius: 0.75rem;
   padding: 0.75rem 1rem 0.75rem 2.75rem;
   color: white;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   outline: none;
   transition: all 0.2s ease;
 }
@@ -4356,7 +4801,7 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-bottom: 1px solid rgba(55, 65, 81, 0.5);
   color: white;
-  font-size: 0.9375rem;
+  font-size: var(--font-size-base);
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -4381,12 +4826,12 @@ input[type="range"]::-moz-range-progress {
 
 .progress-exercise-name {
   flex: 1;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .progress-exercise-item .material-symbols-rounded {
   color: #6b7280;
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   transition: all 0.2s ease;
 }
 
@@ -4400,8 +4845,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-stats-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
@@ -4445,7 +4890,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-stat-icon .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 .progress-stat-content {
@@ -4453,17 +4898,17 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-stat-label {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
   margin-bottom: 0.25rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .progress-stat-value {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
@@ -4508,8 +4953,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-chart-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: white;
 }
 
@@ -4562,14 +5007,14 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-empty-state h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin-bottom: 0.75rem;
 }
 
 .progress-empty-state p {
-  font-size: 0.9375rem;
+  font-size: var(--font-size-base);
   color: #9ca3af;
   max-width: 400px;
   margin-bottom: 2rem;
@@ -4584,8 +5029,8 @@ input[type="range"]::-moz-range-progress {
   color: white;
   border: none;
   border-radius: 0.75rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -4617,7 +5062,7 @@ input[type="range"]::-moz-range-progress {
 /* Mobile Optimizations */
 @media (max-width: 768px) {
   .progress-page-title {
-    font-size: 1.75rem;
+    font-size: var(--font-size-2xl);
   }
 
   .progress-stats-grid {
@@ -4634,11 +5079,11 @@ input[type="range"]::-moz-range-progress {
   }
 
   .progress-stat-icon .material-symbols-rounded {
-    font-size: 20px;
+    font-size: var(--font-size-lg);
   }
 
   .progress-stat-value {
-    font-size: 1.25rem;
+    font-size: var(--font-size-lg);
   }
 
   .progress-chart-container {
@@ -4697,14 +5142,14 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-radius: 0.625rem;
   color: #9ca3af;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .segmented-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 .segmented-btn:hover {
@@ -4745,7 +5190,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .overview-helper {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
 }
@@ -4757,20 +5202,20 @@ input[type="range"]::-moz-range-progress {
 }
 
 .overview-section-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   margin: 0;
   color: var(--color-text);
 }
 
 .overview-section-helper {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0;
 }
 
 .section-helper {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0.5rem 0 0;
 }
@@ -4804,7 +5249,7 @@ input[type="range"]::-moz-range-progress {
   border: none;
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
   cursor: pointer;
@@ -4821,25 +5266,25 @@ input[type="range"]::-moz-range-progress {
 }
 
 .hybrid-balance-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   margin: 0 0 0.25rem 0;
 }
 
 .hybrid-balance-subtitle {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   margin: 0;
 }
 
 .hybrid-balance-description {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin: 0 0 0.75rem;
 }
 
 .hybrid-balance-label {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   background: rgba(75, 85, 99, 0.3);
   border: 1px solid rgba(75, 85, 99, 0.4);
@@ -4872,13 +5317,13 @@ input[type="range"]::-moz-range-progress {
 .hybrid-balance-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   margin-top: 0.75rem;
 }
 
 .hybrid-balance-empty {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
@@ -4906,8 +5351,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .activity-calendar-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text);
 }
 
@@ -4944,8 +5389,8 @@ input[type="range"]::-moz-range-progress {
 
 .weekday-label {
   text-align: center;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-muted);
   padding: 0.5rem 0;
 }
@@ -4998,8 +5443,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .day-number {
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   color: var(--color-text);
   margin-bottom: 2px;
 }
@@ -5041,7 +5486,7 @@ input[type="range"]::-moz-range-progress {
 .session-dot.size-xxl { width: 12px; height: 12px; }
 
 .session-overflow {
-  font-size: 0.625rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   margin-left: 2px;
 }
@@ -5057,7 +5502,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .activity-day-empty .material-symbols-rounded {
-  font-size: 48px;
+  font-size: var(--font-size-4xl);
   margin-bottom: 1rem;
   opacity: 0.5;
 }
@@ -5083,7 +5528,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .session-item-icon .material-symbols-rounded {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
 }
 
 .session-item-content {
@@ -5092,13 +5537,13 @@ input[type="range"]::-moz-range-progress {
 }
 
 .session-item-title {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   margin-bottom: 0.25rem;
 }
 
 .session-item-meta {
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
@@ -5138,7 +5583,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .day-number {
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
   }
 
   .session-bar {
@@ -5177,8 +5622,8 @@ input[type="range"]::-moz-range-progress {
   background: transparent;
   border: 2px solid currentColor;
   border-radius: 0.75rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -5196,7 +5641,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .header-add-btn .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .header-add-btn.strength {
@@ -5229,8 +5674,8 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-radius: 0.5rem;
   color: #9ca3af;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -5261,7 +5706,7 @@ input[type="range"]::-moz-range-progress {
 
 /* Pace stat hint */
 .progress-stat-hint {
-  font-size: 0.6875rem;
+  font-size: var(--font-size-xs);
   color: #6b7280;
   margin-top: 0.25rem;
 }
@@ -5269,7 +5714,7 @@ input[type="range"]::-moz-range-progress {
 /* Dashboard balance arrow (replaces toggle) */
 .dashboard-balance-arrow {
   color: #6b7280;
-  font-size: 24px;
+  font-size: var(--font-size-xl);
   transition: transform 0.2s ease;
 }
 
@@ -5301,7 +5746,7 @@ input[type="range"]::-moz-range-progress {
   .period-btn {
     flex: 1;
     padding: 0.5rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -5344,7 +5789,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .stat-icon .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 .stat-content {
@@ -5352,17 +5797,17 @@ input[type="range"]::-moz-range-progress {
 }
 
 .stat-label {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.25rem;
 }
 
 .stat-value {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
@@ -5372,8 +5817,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .section-subtitle {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -5391,8 +5836,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(240, 34, 119, 0.3);
   border-radius: 0.875rem;
   color: white;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -5404,7 +5849,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .quick-action-btn .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 /* Exercise/Activity Picker Compact */
@@ -5424,8 +5869,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgb(55 65 81);
   border-radius: 0.875rem;
   color: white;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -5439,7 +5884,7 @@ input[type="range"]::-moz-range-progress {
 
 .exercise-picker-btn .material-symbols-rounded:first-child,
 .activity-picker-btn .material-symbols-rounded:first-child {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
   color: var(--color-primary);
 }
 
@@ -5467,8 +5912,8 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-radius: 0.5rem;
   color: #9ca3af;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -5520,17 +5965,17 @@ input[type="range"]::-moz-range-progress {
 .segmented-control-4 .segmented-btn {
   flex: 1;
   padding: 0.5rem 0.25rem;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
 }
 
 .segmented-control-4 .segmented-btn span:first-child {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 @media (min-width: 400px) {
   .segmented-control-4 .segmented-btn {
     padding: 0.625rem 0.5rem;
-    font-size: 0.8125rem;
+    font-size: var(--font-size-sm);
   }
 }
 
@@ -5551,14 +5996,14 @@ input[type="range"]::-moz-range-progress {
 }
 
 .progress-card .card-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0;
 }
 
 .progress-card .card-hint {
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
   margin: 0 0 1rem 0;
   line-height: 1.4;
@@ -5583,13 +6028,13 @@ input[type="range"]::-moz-range-progress {
 }
 
 .consistency-value {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
 .consistency-label {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
   margin-top: 0.25rem;
 }
@@ -5607,13 +6052,13 @@ input[type="range"]::-moz-range-progress {
 }
 
 .calm-insight-card .insight-icon {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: #60a5fa;
   flex-shrink: 0;
 }
 
 .calm-insight-card .insight-text {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #d1d5db;
   margin: 0;
   line-height: 1.5;
@@ -5645,8 +6090,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .variance-label {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   white-space: nowrap;
 }
 
@@ -5680,7 +6125,7 @@ input[type="range"]::-moz-range-progress {
 
 .intensity-row .intensity-label {
   width: 60px;
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
   flex-shrink: 0;
 }
@@ -5714,8 +6159,8 @@ input[type="range"]::-moz-range-progress {
 .intensity-row .intensity-count {
   width: 24px;
   text-align: right;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: white;
 }
 
@@ -5735,19 +6180,19 @@ input[type="range"]::-moz-range-progress {
 }
 
 .no-data-hint .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: #6b7280;
 }
 
 .no-data-hint p {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
 }
 
 /* Stat Unit */
 .progress-stat-card .stat-unit {
-  font-size: 0.6875rem;
+  font-size: var(--font-size-xs);
   color: #6b7280;
   margin-top: 0.125rem;
 }
@@ -5759,7 +6204,7 @@ input[type="range"]::-moz-range-progress {
   justify-content: center;
   padding: 2rem;
   color: #6b7280;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 /* Chart Header */
@@ -5768,8 +6213,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .chart-header .chart-title {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #d1d5db;
   margin: 0;
 }
@@ -5822,7 +6267,6 @@ input[type="range"]::-moz-range-progress {
   background: rgb(17 24 39);
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
-  border: 1px solid var(--color-secondary-light);
   border-bottom: none;
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
   transform: translateY(100%);
@@ -5856,8 +6300,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .sheet__title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0;
 }
@@ -5929,7 +6373,6 @@ input[type="range"]::-moz-range-progress {
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--color-secondary-light);
   border-bottom: none;
 }
 
@@ -5981,8 +6424,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .sheet-title {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
@@ -6022,8 +6465,8 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-bottom: 1px solid rgba(55, 65, 81, 0.5);
   color: white;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -6060,7 +6503,7 @@ input[type="range"]::-moz-range-progress {
 .picker-item-icon .material-symbols-rounded {
   color: rgba(255, 255, 255, 0.9) !important;
   font-size: 28px !important;
-  font-weight: 300;
+  font-weight: var(--font-weight-normal);
   opacity: 1;
 }
 
@@ -6106,13 +6549,13 @@ input[type="range"]::-moz-range-progress {
 }
 
 .picker-item-label {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: white;
 }
 
 .picker-item-desc {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
@@ -6132,17 +6575,17 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   gap: 0.5rem;
   color: #9ca3af;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
 }
 
 .pace-label .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 .pace-value {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: #6b7280;
   transition: all 0.3s ease;
 }
@@ -6160,8 +6603,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .modal-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
@@ -6198,8 +6641,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgb(55 65 81);
   border-radius: 0.75rem;
   color: white;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -6220,8 +6663,8 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-radius: 0.75rem;
   color: white;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -6269,7 +6712,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .floating-add-btn .material-symbols-rounded {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
 }
 
 .floating-add-btn.strength {
@@ -6385,8 +6828,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgb(55 65 81);
   border-radius: 0.75rem;
   color: white;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -6431,7 +6874,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .stat-value {
-    font-size: 1.25rem;
+    font-size: var(--font-size-lg);
   }
 
   .floating-add-btn {
@@ -6481,14 +6924,14 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin-bottom: 0.5rem;
 }
 
 .workout-meta {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
   display: flex;
   gap: 1rem;
@@ -6553,7 +6996,7 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 0.75rem;
   color: white;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -6608,7 +7051,7 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: white;
   flex-shrink: 0;
 }
@@ -6623,21 +7066,21 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-name {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
   color: white;
   margin-bottom: 0.25rem;
 }
 
 .exercise-target {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
 }
 
 .exercise-status {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .set-logger {
@@ -6650,8 +7093,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .set-logger-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin-bottom: 1rem;
   text-align: center;
@@ -6665,8 +7108,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .set-input-group label {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #d1d5db;
   margin-bottom: 0.5rem;
   display: block;
@@ -6679,8 +7122,8 @@ input[type="range"]::-moz-range-progress {
   border-radius: 0.75rem;
   padding: 1rem;
   color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   text-align: center;
   transition: all 0.2s ease;
 }
@@ -6698,8 +7141,8 @@ input[type="range"]::-moz-range-progress {
   border-radius: 1rem;
   padding: 1rem;
   color: white;
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -6727,8 +7170,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .completed-sets-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: #d1d5db;
   margin-bottom: 0.75rem;
 }
@@ -6754,7 +7197,7 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   gap: 1rem;
   color: white;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .set-actions {
@@ -6814,8 +7257,8 @@ input[type="range"]::-moz-range-progress {
   gap: 0.5rem;
   background: var(--color-primary);
   color: white;
-  font-weight: 700;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
   padding: 0.5rem 1rem;
   border-radius: 2rem;
   text-transform: uppercase;
@@ -6823,9 +7266,9 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-card-target {
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .exercise-card-inputs {
@@ -6852,8 +7295,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .input-stepper-label {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   color: #d1d5db;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -6903,8 +7346,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .stepper-btn .material-symbols-rounded {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
 }
 
 .stepper-minus {
@@ -6922,8 +7365,8 @@ input[type="range"]::-moz-range-progress {
   background: transparent;
   border: none;
   text-align: center;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
   padding: 0.5rem 0.125rem;
   -moz-appearance: textfield;
@@ -6941,7 +7384,7 @@ input[type="range"]::-moz-range-progress {
 
 .stepper-input::placeholder {
   color: #6b7280;
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
 }
 
 .exercise-card-actions {
@@ -6961,8 +7404,8 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-radius: 1rem;
   color: white;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: all 0.2s ease;
   touch-action: manipulation;
@@ -6979,7 +7422,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .log-set-btn-primary .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 .log-set-btn-secondary {
@@ -6993,8 +7436,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 0.875rem;
   color: #d1d5db;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -7005,7 +7448,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .log-set-btn-secondary .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 /* ===================================
@@ -7022,11 +7465,11 @@ input[type="range"]::-moz-range-progress {
   border: 1px dashed rgba(75, 85, 99, 0.5);
   border-radius: 1rem;
   color: #6b7280;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .completed-sets-empty .material-symbols-rounded {
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   opacity: 0.5;
 }
 
@@ -7059,13 +7502,13 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-weight: 700;
-  font-size: 0.75rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xs);
   color: #22c55e;
 }
 
 .completed-set-number .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
 }
 
 .completed-set-data {
@@ -7083,15 +7526,15 @@ input[type="range"]::-moz-range-progress {
 }
 
 .completed-set-data .data-value {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: white;
   line-height: 1;
 }
 
 .completed-set-data .data-label {
-  font-size: 0.625rem;
-  font-weight: 500;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -7125,7 +7568,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .completed-set-delete .material-symbols-rounded {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 /* Touch devices - always show delete */
@@ -7156,7 +7599,7 @@ input[type="range"]::-moz-range-progress {
   border: 2px solid rgba(75, 85, 99, 0.5);
   border-radius: 1rem;
   color: #9ca3af;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -7183,7 +7626,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .template-type-btn .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 /* Difficulty Pills */
@@ -7199,8 +7642,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 2rem;
   color: #9ca3af;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -7251,8 +7694,8 @@ input[type="range"]::-moz-range-progress {
   border: 2px solid rgba(75, 85, 99, 0.5);
   border-radius: 0.75rem;
   color: #9ca3af;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -7300,7 +7743,7 @@ input[type="range"]::-moz-range-progress {
 
 .wizard-section-header .expand-icon {
   margin-left: auto;
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: #9ca3af;
   transition: transform 0.2s ease;
 }
@@ -7349,7 +7792,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .session-template-icon .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 .session-template-content {
@@ -7358,7 +7801,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .session-template-name {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: white;
   margin-bottom: 0.25rem;
   white-space: nowrap;
@@ -7370,7 +7813,7 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
 }
 
@@ -7378,14 +7821,14 @@ input[type="range"]::-moz-range-progress {
   display: inline-block;
   padding: 0.125rem 0.5rem;
   border-radius: 1rem;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
 }
 
 .session-template-difficulty {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.25rem 0.5rem;
@@ -7427,7 +7870,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .session-template-action-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 .empty-state-inline {
@@ -7441,7 +7884,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .empty-state-inline .material-symbols-rounded {
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   opacity: 0.5;
 }
 
@@ -7455,8 +7898,8 @@ input[type="range"]::-moz-range-progress {
   gap: 0.25rem;
   padding: 0.25rem 0.75rem;
   border-radius: 2rem;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -7522,7 +7965,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .icon-picker-btn .material-symbols-rounded {
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 /* ===================================
@@ -7548,14 +7991,14 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #d1d5db;
   margin-bottom: 0.5rem;
 }
 
 .instruction-label .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   color: var(--color-primary);
 }
 
@@ -7566,7 +8009,7 @@ input[type="range"]::-moz-range-progress {
   border-radius: 0.75rem;
   padding: 0.75rem;
   color: white;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   resize: vertical;
   min-height: 60px;
   transition: all 0.2s ease;
@@ -7605,8 +8048,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .step-number {
-  font-weight: 700;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
   color: var(--color-primary);
 }
 
@@ -7631,7 +8074,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .remove-step-btn .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
 }
 
 .instruction-step-input {
@@ -7641,7 +8084,7 @@ input[type="range"]::-moz-range-progress {
   border-radius: 0.5rem;
   padding: 0.625rem;
   color: white;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   resize: vertical;
   min-height: 50px;
   transition: all 0.2s ease;
@@ -7668,8 +8111,8 @@ input[type="range"]::-moz-range-progress {
   border: 2px dashed rgba(59, 130, 246, 0.3);
   border-radius: 0.75rem;
   color: #3b82f6;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -7680,7 +8123,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .add-step-btn .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .empty-steps-hint {
@@ -7690,11 +8133,11 @@ input[type="range"]::-moz-range-progress {
   gap: 0.5rem;
   padding: 1.5rem;
   color: #6b7280;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .empty-steps-hint .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 /* Instruction Accordion (for detail view) */
@@ -7735,12 +8178,12 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
 }
 
 .instruction-accordion-title .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: var(--color-primary);
 }
 
@@ -7757,7 +8200,7 @@ input[type="range"]::-moz-range-progress {
   display: none;
   padding: 0 1rem 1rem 1rem;
   color: #d1d5db;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   line-height: 1.6;
 }
 
@@ -7808,18 +8251,18 @@ input[type="range"]::-moz-range-progress {
   background: rgba(17, 24, 39, 0.4);
   border: 1px solid rgba(75, 85, 99, 0.3);
   color: #d1d5db;
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
 }
 
 .instruction-step-index {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   min-width: 1.5rem;
 }
 
 .instruction-empty {
   color: #9ca3af;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
 }
 
 .instruction-list {
@@ -7833,7 +8276,7 @@ input[type="range"]::-moz-range-progress {
 
 .instruction-text {
   color: #d1d5db;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   line-height: 1.5;
 }
 
@@ -7880,21 +8323,21 @@ input[type="range"]::-moz-range-progress {
   height: 28px;
   background: var(--color-primary);
   border-radius: 50%;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
   color: white;
   flex-shrink: 0;
 }
 
 .wizard-section-title {
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
   color: white;
 }
 
 .wizard-section-badge {
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   color: #9ca3af;
   background: rgba(55, 65, 81, 0.5);
   padding: 0.125rem 0.5rem;
@@ -7935,7 +8378,7 @@ input[type="range"]::-moz-range-progress {
 .difficulty-pills.compact .difficulty-pill {
   padding: 0.5rem 0.75rem;
   min-width: 36px;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
 }
 
 /* Full difficulty pills with complete labels */
@@ -7983,8 +8426,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(75, 85, 99, 0.5);
   border-radius: 2rem;
   color: #9ca3af;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -8052,12 +8495,12 @@ input[type="range"]::-moz-range-progress {
 }
 
 .cardio-goal-label {
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
 }
 
 .cardio-goal-desc {
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   opacity: 0.7;
 }
 
@@ -8094,16 +8537,16 @@ input[type="range"]::-moz-range-progress {
 }
 
 .discipline-btn .material-symbols-rounded {
-  font-size: 28px;
+  font-size: var(--font-size-2xl);
 }
 
 .discipline-label {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
 }
 
 .discipline-desc {
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   opacity: 0.7;
 }
 
@@ -8119,8 +8562,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .training-type-header label {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   color: #9ca3af;
 }
 
@@ -8144,7 +8587,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .info-icon-btn .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .training-type-selector {
@@ -8165,8 +8608,8 @@ input[type="range"]::-moz-range-progress {
   color: #9ca3af;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
 }
 
 .training-type-btn:hover {
@@ -8193,7 +8636,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .training-type-info-panel p {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
   line-height: 1.5;
   margin: 0;
@@ -8206,8 +8649,8 @@ input[type="range"]::-moz-range-progress {
   padding: 0.125rem 0.5rem;
   background: rgba(59, 130, 246, 0.15);
   border-radius: 0.375rem;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   color: #3b82f6;
   white-space: nowrap;
 }
@@ -8243,8 +8686,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-header--compact .workout-title {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin-bottom: 0.25rem;
   white-space: nowrap;
@@ -8253,7 +8696,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-header--compact .workout-meta {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
   display: flex;
   flex-wrap: wrap;
@@ -8280,8 +8723,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(240, 34, 119, 0.3);
   border-radius: 0.75rem;
   color: var(--color-primary);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -8297,7 +8740,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-exercises-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 .workout-exercises-btn-text {
@@ -8314,13 +8757,13 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(34, 197, 94, 0.3);
   border-radius: 0.625rem;
   color: #22c55e;
-  font-weight: 600;
-  font-size: 0.8125rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   font-variant-numeric: tabular-nums;
 }
 
 .workout-header-progress-badge .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
 }
 
 /* Active Exercise Card */
@@ -8339,8 +8782,8 @@ input[type="range"]::-moz-range-progress {
   padding: 0.25rem 0.625rem;
   background: rgba(240, 34, 119, 0.15);
   border-radius: 0.5rem;
-  font-size: 0.625rem;
-  font-weight: 700;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -8348,12 +8791,12 @@ input[type="range"]::-moz-range-progress {
 }
 
 .active-exercise-badge .material-symbols-rounded {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 .active-exercise-name {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin-bottom: 0.5rem;
 }
@@ -8369,13 +8812,13 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
 }
 
 .active-exercise-goal .material-symbols-rounded,
 .active-exercise-rest .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   color: #6b7280;
 }
 
@@ -8445,8 +8888,8 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.8rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
   color: white;
   flex-shrink: 0;
 }
@@ -8457,7 +8900,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-accordion-number .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
 }
 
 .exercise-accordion-info {
@@ -8466,8 +8909,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-accordion-name {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: white;
   white-space: nowrap;
   overflow: hidden;
@@ -8475,7 +8918,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-accordion-target {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
   margin-top: 0.125rem;
 }
@@ -8488,8 +8931,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-accordion-progress {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #9ca3af;
   font-variant-numeric: tabular-nums;
 }
@@ -8499,7 +8942,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-accordion-chevron {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: #6b7280;
   transition: transform 0.2s ease;
 }
@@ -8547,14 +8990,14 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   color: #22c55e;
   min-width: 60px;
 }
 
 .accordion-set-number .material-symbols-rounded {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 .accordion-set-data {
@@ -8565,8 +9008,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .accordion-set-value {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: white;
 }
 
@@ -8592,7 +9035,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .accordion-set-delete .material-symbols-rounded {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 /* Set Logger inside Accordion */
@@ -8617,8 +9060,8 @@ input[type="range"]::-moz-range-progress {
   gap: 0.375rem;
   background: var(--color-primary);
   color: white;
-  font-weight: 700;
-  font-size: 0.75rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xs);
   padding: 0.375rem 0.75rem;
   border-radius: 1rem;
   text-transform: uppercase;
@@ -8626,7 +9069,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .accordion-logger-target {
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
 }
 
@@ -8638,12 +9081,12 @@ input[type="range"]::-moz-range-progress {
 
 .accordion-logger-actions .log-set-btn-primary {
   padding: 0.75rem 1rem;
-  font-size: 0.9375rem;
+  font-size: var(--font-size-base);
 }
 
 .accordion-logger-actions .log-set-btn-secondary {
   padding: 0.5rem 0.75rem;
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
 }
 
 /* Go to Exercise Button */
@@ -8658,8 +9101,8 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid rgba(75, 85, 99, 0.4);
   border-radius: 0.625rem;
   color: #9ca3af;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -8671,7 +9114,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .accordion-goto-btn .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 /* Completed Sets - Collapsible */
@@ -8703,14 +9146,14 @@ input[type="range"]::-moz-range-progress {
 }
 
 .completed-sets-count {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #22c55e;
   font-variant-numeric: tabular-nums;
 }
 
 .completed-sets-chevron {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: #6b7280;
   transition: transform 0.2s ease;
 }
@@ -8762,8 +9205,8 @@ input[type="range"]::-moz-range-progress {
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
@@ -8797,7 +9240,7 @@ input[type="range"]::-moz-range-progress {
   padding: 1rem 1.5rem;
   background: linear-gradient(135deg, var(--color-primary), #C01963);
   color: white;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
 }
@@ -8823,7 +9266,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-sticky-btn .material-symbols-rounded {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
 }
 
 /* ===================================
@@ -8890,8 +9333,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercises-sheet-title {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin: 0;
 }
@@ -8964,8 +9407,8 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
   color: white;
   flex-shrink: 0;
 }
@@ -8976,7 +9419,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercises-sheet-item-number .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .exercises-sheet-item-info {
@@ -8985,8 +9428,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercises-sheet-item-name {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: white;
   margin-bottom: 0.125rem;
   white-space: nowrap;
@@ -8995,7 +9438,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercises-sheet-item-target {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
 }
 
@@ -9007,14 +9450,14 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercises-sheet-item-progress {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #9ca3af;
   font-variant-numeric: tabular-nums;
 }
 
 .exercises-sheet-item-active-icon {
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: var(--color-primary);
 }
 
@@ -9066,19 +9509,19 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-confirm-modal-icon .material-symbols-rounded {
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   color: #22c55e;
 }
 
 .workout-confirm-modal-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: white;
   margin-bottom: 0.5rem;
 }
 
 .workout-confirm-modal-text {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
   margin-bottom: 1.5rem;
 }
@@ -9096,8 +9539,8 @@ input[type="range"]::-moz-range-progress {
   gap: 0.5rem;
   padding: 0.875rem 1rem;
   border-radius: 0.75rem;
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
@@ -9150,17 +9593,17 @@ input[type="range"]::-moz-range-progress {
 @media (max-width: 480px) {
   .workout-sticky-btn {
     padding: 0.625rem 0.75rem;
-    font-size: 0.8125rem;
+    font-size: var(--font-size-sm);
   }
 
   .workout-sticky-btn--primary {
     padding: 0.875rem 1rem;
-    font-size: 0.9375rem;
+    font-size: var(--font-size-base);
   }
 
   .workout-exercises-btn {
     padding: 0.375rem 0.5rem;
-    font-size: 0.8125rem;
+    font-size: var(--font-size-sm);
   }
 }
 
@@ -9188,15 +9631,15 @@ input[type="range"]::-moz-range-progress {
 }
 
 .rest-timer-countdown {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   min-width: 80px;
   text-align: center;
 }
 
 .rest-timer-label {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
 }
 
@@ -9206,7 +9649,7 @@ input[type="range"]::-moz-range-progress {
   border-radius: 0.75rem;
   padding: 0.5rem 1rem;
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -9238,7 +9681,7 @@ input[type="range"]::-moz-range-progress {
   gap: 0.75rem;
   margin-bottom: 0.75rem;
   color: white;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .banner-actions {
@@ -9251,7 +9694,7 @@ input[type="range"]::-moz-range-progress {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -9282,8 +9725,8 @@ input[type="range"]::-moz-range-progress {
   display: inline-block;
   padding: 0.375rem 0.75rem;
   border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -9327,17 +9770,17 @@ input[type="range"]::-moz-range-progress {
 
 .workout-stat .material-symbols-rounded {
   color: var(--color-primary);
-  font-size: 24px;
+  font-size: var(--font-size-xl);
 }
 
 .workout-stat-value {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: white;
 }
 
 .workout-stat-label {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
 }
 
@@ -9346,8 +9789,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .workout-section-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: white;
   margin-bottom: 0.75rem;
 }
@@ -9377,7 +9820,7 @@ input[type="range"]::-moz-range-progress {
   padding: 0.25rem 0.5rem;
   background: rgba(75, 85, 99, 0.3);
   border-radius: 0.5rem;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #d1d5db;
 }
 
@@ -9395,7 +9838,7 @@ input[type="range"]::-moz-range-progress {
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
   border-radius: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -9483,7 +9926,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .rest-timer-countdown {
-    font-size: 1.5rem;
+    font-size: var(--font-size-xl);
     min-width: 60px;
   }
 }
@@ -9581,9 +10024,24 @@ input[type="range"]::-moz-range-progress {
   min-width: 220px;
 }
 
+/* Kalender Toggle: Labels immer sichtbar (keine Icons) */
+.calendar-segmented .segmented-btn span {
+  display: inline !important;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
 @media (max-width: 768px) {
   .calendar-segmented {
     min-width: 100%;
+  }
+
+  .calendar-segmented .segmented-btn {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .calendar-segmented .segmented-btn span {
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -9615,8 +10073,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-section-letter {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-primary, #F02277);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -9659,8 +10117,8 @@ input[type="range"]::-moz-range-progress {
 
 /* Exercise Name */
 .exercise-list-name {
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
   color: #fff;
   line-height: 1.4;
   flex: 1;
@@ -9669,7 +10127,7 @@ input[type="range"]::-moz-range-progress {
 
 /* Chevron Icon */
 .exercise-list-chevron {
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   color: rgba(255, 255, 255, 0.3);
   flex-shrink: 0;
 }
@@ -9691,7 +10149,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .exercise-list-name {
-    font-size: 0.9375rem;
+    font-size: var(--font-size-base);
   }
 
   .exercise-section-items {
@@ -9741,7 +10199,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-picker-create-icon .material-symbols-rounded {
-  font-size: 1.5rem;
+  font-size: var(--font-size-xl);
   color: #fff;
 }
 
@@ -9750,20 +10208,20 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-picker-create-title {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #fff;
-  font-size: 0.9375rem;
+  font-size: var(--font-size-base);
 }
 
 .exercise-picker-create-hint {
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.5);
   margin-top: 0.125rem;
 }
 
 .exercise-picker-create-chevron {
   color: rgba(255, 255, 255, 0.3);
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
 }
 
 /* ========================================
@@ -9805,7 +10263,6 @@ input[type="range"]::-moz-range-progress {
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--color-secondary-light);
   border-bottom: none;
   align-items: center;
 }
@@ -9880,7 +10337,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .plan-picker-option-icon .material-symbols-rounded {
-  font-size: 1.5rem;
+  font-size: var(--font-size-xl);
   color: var(--color-primary);
 }
 
@@ -9890,23 +10347,23 @@ input[type="range"]::-moz-range-progress {
 }
 
 .plan-picker-option-label {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #fff;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .plan-picker-option-desc {
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.5);
   margin-top: 0.25rem;
 }
 
 .plan-picker-option-chevron {
   color: rgba(255, 255, 255, 0.3);
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   flex-shrink: 0;
 }
 
@@ -9917,13 +10374,13 @@ input[type="range"]::-moz-range-progress {
 }
 
 .plan-picker-empty-hint {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.3);
   margin-top: 0.5rem;
 }
 
 .plan-picker-empty .material-symbols-rounded {
-  font-size: 3rem;
+  font-size: var(--font-size-4xl);
   display: block;
   margin-bottom: 1rem;
 }
@@ -9948,8 +10405,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .add-plan-panel-title {
-  font-weight: 600;
-  font-size: 0.9375rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
   color: #fff;
 }
 
@@ -9971,7 +10428,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .modal-close-btn-sm .material-symbols-rounded {
-  font-size: 1rem;
+  font-size: var(--font-size-base);
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -10017,7 +10474,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .add-plan-option-icon .material-symbols-rounded {
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   color: var(--color-primary);
 }
 
@@ -10036,20 +10493,20 @@ input[type="range"]::-moz-range-progress {
 }
 
 .add-plan-option-title {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: #fff;
-  font-size: 0.9375rem;
+  font-size: var(--font-size-base);
 }
 
 .add-plan-option-desc {
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: rgba(255, 255, 255, 0.5);
   margin-top: 0.125rem;
 }
 
 .add-plan-option-chevron {
   color: rgba(255, 255, 255, 0.3);
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg);
   flex-shrink: 0;
 }
 
@@ -10088,7 +10545,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .type-btn .material-symbols-rounded {
-  font-size: 1.5rem;
+  font-size: var(--font-size-xl);
 }
 
 .type-btn.active .material-symbols-rounded {
@@ -10096,8 +10553,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .type-btn span:last-child {
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 /* ========================================
@@ -10126,7 +10583,7 @@ input[type="range"]::-moz-range-progress {
   flex: 0 0 auto;
   min-width: unset;
   padding: 0.625rem 1rem;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   text-align: center;
   background: rgba(55, 65, 81, 0.3);
   border: 1px solid rgba(75, 85, 99, 0.5);
@@ -10184,13 +10641,13 @@ input[type="range"]::-moz-range-progress {
 #quick-exercise-modal .modal-footer .btn-secondary,
 #quick-exercise-modal .modal-footer .btn-primary {
   padding: 0.7rem 1rem;
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   border-radius: 0.65rem;
   min-height: 44px;
 }
 
 #quick-exercise-modal .modal-footer .btn-primary .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .btn-secondary {
@@ -10203,7 +10660,7 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid var(--ui-card-border);
   border-radius: 0.75rem;
   color: #fff;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -10260,8 +10717,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .strength-exercise-item .exercise-name {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -10272,7 +10729,7 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.25rem;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   color: #9ca3af;
 }
 
@@ -10283,7 +10740,7 @@ input[type="range"]::-moz-range-progress {
   padding: 0.125rem 0.5rem;
   background: rgba(236, 72, 153, 0.15);
   border-radius: 1rem;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--accent-pink);
 }
 
@@ -10322,8 +10779,8 @@ input[type="range"]::-moz-range-progress {
   align-items: center;
   gap: 0.25rem;
   padding: 0.5rem 0.75rem;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -10375,8 +10832,8 @@ input[type="range"]::-moz-range-progress {
   border: none;
   border-radius: 0.625rem;
   color: #9ca3af;
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -10386,7 +10843,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .strength-metric-toggle .metric-btn .metric-label {
-  font-size: 0.6875rem;
+  font-size: var(--font-size-xs);
   opacity: 0.7;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -10415,7 +10872,7 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
   padding: 0.375rem 0.75rem;
   background: rgba(55, 65, 81, 0.3);
@@ -10423,7 +10880,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .strength-volume-type .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
 }
 
 .strength-volume-type.weighted {
@@ -10459,7 +10916,7 @@ input[type="range"]::-moz-range-progress {
 }
 
 .volume-card-header .material-symbols-rounded {
-  font-size: 18px;
+  font-size: var(--font-size-md);
 }
 
 .volume-card.weighted .volume-card-header {
@@ -10471,21 +10928,21 @@ input[type="range"]::-moz-range-progress {
 }
 
 .volume-card-label {
-  font-size: 0.6875rem;
+  font-size: var(--font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   color: #9ca3af;
 }
 
 .volume-card-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: white;
   line-height: 1.2;
 }
 
 .volume-card-hint {
-  font-size: 0.6875rem;
+  font-size: var(--font-size-xs);
   color: #6b7280;
   margin-top: 0.25rem;
 }
@@ -10503,14 +10960,14 @@ input[type="range"]::-moz-range-progress {
 }
 
 .volume-info-hint .material-symbols-rounded {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   color: #9ca3af;
   flex-shrink: 0;
   margin-top: 0.125rem;
 }
 
 .volume-info-hint p {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: #9ca3af;
   line-height: 1.4;
   margin: 0;

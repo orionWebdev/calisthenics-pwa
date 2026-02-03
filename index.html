@@ -156,7 +156,6 @@
   <div class="mobile-nav-header">
     <div class="px-4 py-3 flex items-center justify-between w-full">
       <div class="flex items-center gap-3">
-        <span id="mobile-view-icon" class="material-symbols-rounded" style="font-size: 32px; color: var(--color-primary);">home</span>
         <h1 id="mobile-view-title" class="text-xl font-bold">Dashboard</h1>
       </div>
       <button onclick="showView('profile')" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-700 border-2 border-gray-600 hover:border-pink-500 transition-all">
@@ -213,6 +212,11 @@
     <!-- DASHBOARD VIEW -->
     <div id="view-dashboard" class="view active">
 
+      <!-- Activity Calendar Widget (Suunto Style) -->
+      <div id="dashboard-activity-calendar" class="dashboard-card mb-4" onclick="navigateToActivityCalendar()">
+        <!-- Wird von JavaScript gefüllt -->
+      </div>
+
       <!-- Scheduled Workouts Today -->
       <div id="dashboard-scheduled-card" class="mb-4">
         <!-- Wird von JavaScript gefüllt -->
@@ -222,9 +226,6 @@
       <div id="dashboard-log-workout-card" class="dashboard-card mb-6">
         <!-- Wird von JavaScript gefüllt -->
       </div>
-
-      <!-- Hybrid Balance -->
-      <div id="hybrid-balance-card" class="dashboard-card mb-6"></div>
 
       <!-- Recent Sessions -->
       <div id="recent-sessions-card" class="dashboard-card">
@@ -438,13 +439,11 @@
       <!-- Header mit View Switcher -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div class="segmented-control calendar-segmented w-full sm:w-auto">
-          <button onclick="setCalendarView('month')" class="segmented-btn active flex-1 sm:flex-none" data-view="month">
-            <span class="material-symbols-rounded">calendar_month</span>
-            <span>Monat</span>
+          <button onclick="setCalendarView('activity')" class="segmented-btn flex-1 sm:flex-none" data-view="activity">
+            <span>Aktivitätskalender</span>
           </button>
-          <button onclick="setCalendarView('week')" class="segmented-btn flex-1 sm:flex-none" data-view="week">
-            <span class="material-symbols-rounded">view_week</span>
-            <span>Woche</span>
+          <button onclick="setCalendarView('plan')" class="segmented-btn active flex-1 sm:flex-none" data-view="plan">
+            <span>Plankalender</span>
           </button>
         </div>
       </div>
@@ -466,8 +465,15 @@
           <span class="hidden sm:inline">Weiter</span> →
         </button>
       </div>
-      <!-- Month View -->
-      <div id="calendar-month-view" class="calendar-view active">
+      <!-- Activity Calendar View -->
+      <div id="calendar-activity-view" class="calendar-view">
+        <div id="calendar-activity-container" class="activity-calendar-section">
+          <!-- Wird von JavaScript gefüllt -->
+        </div>
+      </div>
+
+      <!-- Plan Calendar View (Month View) -->
+      <div id="calendar-plan-view" class="calendar-view active">
         <!-- Weekday Headers -->
         <div class="grid grid-cols-7 mb-2" style="background: rgba(255, 255, 255, 0.05); border-radius: 0.5rem;">
           <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Mo</div>
@@ -484,24 +490,11 @@
           <!-- Wird von JavaScript gefüllt -->
         </div>
       </div>
-
-      <!-- Week View (Default) -->
-      <div id="calendar-week-view" class="calendar-view hidden">
-        <div id="week-grid">
-          <!-- Wird von JavaScript gefüllt -->
-        </div>
-      </div>
 </div>
 
     <!-- PROGRESS VIEW -->
     <!-- PROGRESS VIEW V2 -->
     <div id="view-progress" class="view hidden">
-      <!-- Progress Header -->
-      <div class="progress-header">
-        <h2 class="progress-page-title">Fortschritt</h2>
-        <p class="progress-page-subtitle">Kraft- und Cardio-Tracking</p>
-      </div>
-
       <!-- Segmented Control -->
       <div id="progress-segmented-control" class="progress-section">
         <!-- Wird von JS gefüllt -->
