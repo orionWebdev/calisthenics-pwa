@@ -3,7 +3,8 @@
 // ========================================
 
 // Calendar State
-let currentCalendarView = 'month'; // 'month' or 'week' - Default: month
+let currentCalendarView = 'plan'; // 'activity' or 'plan' - Default: plan
+let calendarActivityDate = new Date(); // Current displayed month for activity calendar in calendar view
 let currentDate = new Date();
 let scheduleData = []; // Alle geplanten Trainings
 let selectedDateForPlan = null;
@@ -48,18 +49,21 @@ async function loadSchedule() {
 
 function setCalendarView(view) {
   currentCalendarView = view;
-  
+
   // Update buttons
   document.querySelectorAll('.calendar-segmented .segmented-btn').forEach(btn => {
     btn.classList.remove('active');
   });
   const activeBtn = document.querySelector(`.calendar-segmented [data-view="${view}"]`);
   if (activeBtn) activeBtn.classList.add('active');
-  
+
   // Show/hide views
-  document.getElementById('calendar-month-view').classList.toggle('active', view === 'month');
-  document.getElementById('calendar-week-view').classList.toggle('active', view === 'week');
-  
+  const activityView = document.getElementById('calendar-activity-view');
+  const planView = document.getElementById('calendar-plan-view');
+
+  if (activityView) activityView.classList.toggle('active', view === 'activity');
+  if (planView) planView.classList.toggle('active', view === 'plan');
+
   renderCalendar();
 }
 
@@ -68,10 +72,10 @@ function setCalendarView(view) {
 // ========================================
 
 function navigateCalendar(direction) {
-  if (currentCalendarView === 'month') {
-    currentDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
+  if (currentCalendarView === 'activity') {
+    calendarActivityDate.setMonth(calendarActivityDate.getMonth() + (direction === 'next' ? 1 : -1));
   } else {
-    currentDate.setDate(currentDate.getDate() + (direction === 'next' ? 7 : -7));
+    currentDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
   }
   renderCalendar();
 }
@@ -94,10 +98,10 @@ function renderCalendar() {
   try {
     updateCalendarTitle();
 
-    if (currentCalendarView === 'month') {
-      renderMonthView();
+    if (currentCalendarView === 'activity') {
+      renderCalendarActivityView();
     } else {
-      renderWeekView();
+      renderMonthView();
     }
   } catch (error) {
     console.error('Error rendering calendar:', error);
@@ -112,14 +116,10 @@ function updateCalendarTitle() {
     return;
   }
 
-  if (currentCalendarView === 'month') {
-    title.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+  if (currentCalendarView === 'activity') {
+    title.textContent = `${monthNames[calendarActivityDate.getMonth()]} ${calendarActivityDate.getFullYear()}`;
   } else {
-    const weekStart = getWeekStart(currentDate);
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 6);
-
-    title.textContent = `${weekStart.getDate()}. - ${weekEnd.getDate()}. ${monthNames[weekEnd.getMonth()]} ${weekEnd.getFullYear()}`;
+    title.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
   }
 }
 
@@ -827,5 +827,234 @@ document.addEventListener('click', (e) => {
 
 // Expose functions globally for dashboard access
 window.startScheduledWorkout = startScheduledWorkout;
+
+// ========================================
+// ACTIVITY CALENDAR VIEW (in Calendar Page)
+// Uses shared components from dashboard.js
+// ========================================
+
+function getCalendarSessionsByDateLocal(year, month) {
+  // Use dashboard function if available, otherwise fallback
+  if (typeof getDashboardSessionsByDate === 'function') {
+    const sessions = Array.isArray(allSessions) ? allSessions : [];
+    return getDashboardSessionsByDate(sessions, year, month);
+  }
+  // Fallback: group sessions manually
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  const result = {};
+  sessions.forEach(session => {
+    const date = session?.date?.toDate ? session.date.toDate() : new Date(session?.date);
+    if (!date || isNaN(date.getTime())) return;
+    if (date.getFullYear() !== year || date.getMonth() !== month) return;
+    const dateKey = formatDate(date);
+    if (!result[dateKey]) result[dateKey] = [];
+    result[dateKey].push(session);
+  });
+  return result;
+}
+
+function renderCalendarActivityView() {
+  const container = document.getElementById('calendar-activity-container');
+  if (!container) return;
+
+  const year = calendarActivityDate.getFullYear();
+  const month = calendarActivityDate.getMonth();
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  const sessionsByDate = getCalendarSessionsByDateLocal(year, month);
+
+  const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+
+  // Build calendar grid (detailed mode with day numbers)
+  const calendarGridHTML = renderDetailedActivityCalendarGrid(year, month, sessionsByDate, dayLabels);
+
+  // Build training types list
+  const trainingTypesHTML = renderTrainingTypesList(sessions, year, month);
+
+  container.innerHTML = `
+    <div class="activity-calendar-detailed">
+      ${calendarGridHTML}
+    </div>
+    ${trainingTypesHTML}
+  `;
+}
+
+/**
+ * Rendert den detaillierten Activity Calendar Grid für die Kalender-Seite
+ * Mit Tag-Nummer in der Mitte jeder Zelle
+ */
+function renderDetailedActivityCalendarGrid(year, month, sessionsByDate, dayLabels) {
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1; // Monday-based
+  const daysInMonth = lastDay.getDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let html = `<div class="activity-cal-header">`;
+  html += dayLabels.map(d => `<span class="activity-cal-day-label">${d}</span>`).join('');
+  html += `</div>`;
+  html += `<div class="activity-cal-grid">`;
+
+  // Empty cells for previous month
+  for (let i = 0; i < startDay; i++) {
+    html += `<div class="activity-cal-cell empty"></div>`;
+  }
+
+  // Days of current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dateKey = formatDate(date);
+    const isToday = date.toDateString() === today.toDateString();
+    const daySessions = sessionsByDate[dateKey] || [];
+
+    // Use shared aggregation from dashboard.js
+    const aggregatedDots = typeof aggregateDayByType === 'function'
+      ? aggregateDayByType(daySessions)
+      : [];
+    const dotHTML = typeof renderNestedDots === 'function'
+      ? renderNestedDots(aggregatedDots)
+      : '';
+
+    const todayClass = isToday ? 'today' : '';
+
+    html += `
+      <div class="activity-cal-cell ${todayClass}"
+           onclick="openCalendarActivityDaySheet('${dateKey}')"
+           role="button"
+           tabindex="0">
+        <span class="activity-cal-day-number">${day}</span>
+        ${dotHTML}
+      </div>
+    `;
+  }
+
+  // Fill remaining cells
+  const totalCells = startDay + daysInMonth;
+  const remaining = totalCells <= 35 ? 35 - totalCells : 42 - totalCells;
+  for (let i = 0; i < remaining; i++) {
+    html += `<div class="activity-cal-cell empty"></div>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+/**
+ * Rendert die Trainingsarten-Liste unter dem Kalender
+ * Sortiert nach Gesamtdauer absteigend
+ */
+function renderTrainingTypesList(sessions, year, month) {
+  // Use shared aggregation from dashboard.js
+  const typeData = typeof aggregateSessionsByType === 'function'
+    ? aggregateSessionsByType(sessions, year, month)
+    : [];
+
+  if (typeData.length === 0) {
+    const emptyText = typeof t === 'function'
+      ? t('dashboard.activityCalendar.emptyState')
+      : 'Noch keine Sessions in diesem Zeitraum';
+    return `
+      <div class="training-types-empty">
+        <span class="material-symbols-rounded">event_busy</span>
+        <p>${emptyText}</p>
+      </div>
+    `;
+  }
+
+  const maxMinutes = typeData[0]?.minutes || 1;
+
+  const typeLabels = {
+    strength: typeof t === 'function' ? t('dashboard.trainingTypes.strength') : 'Krafttraining',
+    cardio: typeof t === 'function' ? t('dashboard.trainingTypes.cardio') : 'Cardio',
+    recovery: typeof t === 'function' ? t('dashboard.trainingTypes.recovery') : 'Recovery'
+  };
+
+  const items = typeData.map(item => {
+    const label = typeLabels[item.type] || item.type;
+    const durationText = typeof formatDurationText === 'function'
+      ? formatDurationText(item.minutes)
+      : `${Math.floor(item.minutes / 60)}h ${item.minutes % 60}m`;
+    const percentage = Math.round((item.minutes / maxMinutes) * 100);
+
+    return `
+      <div class="training-type-item">
+        <div class="training-type-header">
+          <span class="training-type-label">${label}</span>
+          <span class="training-type-duration">${durationText}</span>
+        </div>
+        <div class="training-type-bar-bg">
+          <div class="training-type-bar" style="width: ${percentage}%; background: ${item.color};"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="training-types-list">
+      ${items}
+    </div>
+  `;
+}
+
+function openCalendarActivityDaySheet(dateKey) {
+  // Use existing openActivityDaySheet from progressv2.js if available
+  if (typeof openActivityDaySheet === 'function') {
+    openActivityDaySheet(dateKey);
+    return;
+  }
+
+  // Fallback: get sessions and show basic info
+  const sessions = typeof getSessionsForDate === 'function' ? getSessionsForDate(dateKey) : [];
+  const date = new Date(dateKey + 'T12:00:00');
+
+  if (typeof openSheet === 'function') {
+    openSheet({
+      title: `Sessions am ${date.getDate()}. ${monthNames[date.getMonth()]}`,
+      render: (sheetContainer) => {
+        if (sessions.length === 0) {
+          const emptyText = typeof t === 'function'
+            ? t('dashboard.activityCalendar.emptyState')
+            : 'Keine Sessions an diesem Tag';
+          sheetContainer.innerHTML = `
+            <div class="activity-day-empty">
+              <span class="material-symbols-rounded">event_busy</span>
+              <p>${emptyText}</p>
+            </div>
+          `;
+          return;
+        }
+
+        sheetContainer.innerHTML = sessions.map(session => {
+          const typeLabel = session.type === 'cardio' ? 'Cardio' : session.type === 'recovery' ? 'Recovery' : 'Kraft';
+          const durationSec = typeof getSessionDurationSeconds === 'function'
+            ? getSessionDurationSeconds(session)
+            : 0;
+          const duration = Math.round(durationSec / 60);
+
+          return `
+            <div class="activity-session-item">
+              <div class="session-item-content">
+                <div class="session-item-title">${session.planName || session.name || typeLabel}</div>
+                <div class="session-item-meta">${duration} Min</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    });
+  }
+}
+
+// Navigate to activity calendar from dashboard
+function navigateToActivityCalendar() {
+  if (typeof showView === 'function') {
+    showView('calendar');
+  }
+  setCalendarView('activity');
+}
+
+window.navigateToActivityCalendar = navigateToActivityCalendar;
+window.openCalendarActivityDaySheet = openCalendarActivityDaySheet;
 
 console.log('📅 Calendar module loaded!');

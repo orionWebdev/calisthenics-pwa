@@ -385,6 +385,17 @@ const translations = {
         title: 'Letzte Sessions',
         description: 'Die letzten Sessions in chronologischer Reihenfolge.',
         empty: 'Noch keine Sessions'
+      },
+      activityCalendar: {
+        thisMonth: 'Diesen Monat',
+        durationUnit: 'Bewegungsstunden',
+        emptyState: 'Noch keine Sessions in diesem Zeitraum'
+      },
+      trainingTypes: {
+        strength: 'Krafttraining',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        recovery: 'Recovery'
       }
     },
     progress: {

@@ -196,16 +196,6 @@ function renderOverviewTab() {
         <span class="material-symbols-rounded insight-icon">lightbulb</span>
         <p class="insight-text">${trProgress(insight.key, insight.params)}</p>
       </div>
-
-      <div class="overview-section-header">
-        <h3 class="overview-section-title">${trProgress('progress.overview.activityCalendarTitle')}</h3>
-        <p class="overview-section-helper">${trProgress('progress.overview.activityCalendarHelper')}</p>
-      </div>
-
-      <!-- Activity Calendar -->
-      <div id="activity-calendar-container" class="activity-calendar-section">
-        ${renderActivityCalendarHTML()}
-      </div>
     </div>
   `;
 }
