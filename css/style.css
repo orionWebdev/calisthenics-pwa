@@ -48,6 +48,10 @@
   --mobile-header-height: 64px;
 }
 
+html {
+  font-size: 92%;
+}
+
 * {
   margin: 0;
   padding: 0;
