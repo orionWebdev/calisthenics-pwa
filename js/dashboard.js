@@ -595,14 +595,172 @@ function openProgressOverview() {
   }
 }
 
+// ========================================
+// DASHBOARD ACTIVITY CALENDAR WIDGET (Suunto Style)
+// ========================================
+
+function getDashboardMonthDuration(sessions) {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  let totalMinutes = 0;
+
+  sessions.forEach(session => {
+    const date = getSessionDate(session);
+    if (!date) return;
+    if (date.getFullYear() !== year || date.getMonth() !== month) return;
+
+    const durationSec = getSessionDurationSeconds(session);
+    if (durationSec > 0) {
+      totalMinutes += Math.round(durationSec / 60);
+    }
+  });
+
+  return totalMinutes;
+}
+
+function getDashboardSessionsByDate(sessions, year, month) {
+  const result = {};
+  sessions.forEach(session => {
+    const date = getSessionDate(session);
+    if (!date) return;
+    if (date.getFullYear() !== year || date.getMonth() !== month) return;
+    const dateKey = getBerlinDateKey(date);
+    if (!result[dateKey]) result[dateKey] = [];
+    result[dateKey].push(session);
+  });
+  return result;
+}
+
+function getDashboardDotMeta(session) {
+  const durationSec = getSessionDurationSeconds(session);
+  const minutes = Math.round(durationSec / 60);
+
+  let size = 's';
+  let rank = 1;
+  if (minutes > 90) { size = 'xxl'; rank = 5; }
+  else if (minutes > 60) { size = 'xl'; rank = 4; }
+  else if (minutes > 40) { size = 'l'; rank = 3; }
+  else if (minutes > 20) { size = 'm'; rank = 2; }
+
+  return {
+    type: session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength',
+    size,
+    rank,
+    minutes
+  };
+}
+
+function formatDurationHoursMinutes(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0 && minutes > 0) {
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+  }
+  if (hours > 0) {
+    return `${hours}:00`;
+  }
+  return `0:${String(minutes).padStart(2, '0')}`;
+}
+
+function renderDashboardActivityCalendar(state) {
+  const container = document.getElementById('dashboard-activity-calendar');
+  if (!container) return;
+
+  if (state.loading) {
+    container.innerHTML = `
+      <div class="dashboard-activity-widget">
+        <div class="dashboard-activity-loading">${tr('common.loading')}</div>
+      </div>
+    `;
+    return;
+  }
+
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  const totalMinutes = getDashboardMonthDuration(sessions);
+  const sessionsByDate = getDashboardSessionsByDate(sessions, year, month);
+
+  // Get current month name
+  const monthNames = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  const monthName = monthNames[month];
+
+  // Build mini calendar grid (current month only, compact 7-column)
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1; // Monday-based
+  const daysInMonth = lastDay.getDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Day labels (abbreviated)
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  let calendarHTML = `<div class="dashboard-mini-calendar">`;
+  calendarHTML += `<div class="mini-cal-header">`;
+  calendarHTML += dayLabels.map(d => `<span class="mini-cal-day-label">${d}</span>`).join('');
+  calendarHTML += `</div>`;
+  calendarHTML += `<div class="mini-cal-grid">`;
+
+  // Empty cells for previous month
+  for (let i = 0; i < startDay; i++) {
+    calendarHTML += `<div class="mini-cal-cell empty"></div>`;
+  }
+
+  // Days of current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dateKey = getBerlinDateKey(date);
+    const isToday = date.toDateString() === today.toDateString();
+    const daySessions = sessionsByDate[dateKey] || [];
+
+    // Get dot info (show max 1 dot per day in mini view, pick strongest)
+    let dotHTML = '';
+    if (daySessions.length > 0) {
+      const dots = daySessions.map(getDashboardDotMeta).sort((a, b) => b.rank - a.rank);
+      const topDot = dots[0];
+      dotHTML = `<span class="mini-dot ${topDot.type} size-${topDot.size}"></span>`;
+    }
+
+    const todayClass = isToday ? 'today' : '';
+    const hasActivityClass = daySessions.length > 0 ? 'has-activity' : '';
+
+    calendarHTML += `
+      <div class="mini-cal-cell ${todayClass} ${hasActivityClass}">
+        ${dotHTML}
+      </div>
+    `;
+  }
+
+  calendarHTML += `</div></div>`;
+
+  container.innerHTML = `
+    <div class="dashboard-activity-widget" role="button" tabindex="0">
+      <div class="dashboard-activity-left">
+        <span class="dashboard-activity-label">${tr('dashboard.activityCalendar.thisMonth') || 'Diesen Monat'}</span>
+        <div class="dashboard-activity-duration">${formatDurationHoursMinutes(totalMinutes)}</div>
+        <span class="dashboard-activity-unit">${tr('dashboard.activityCalendar.durationUnit') || 'Duration h'}</span>
+      </div>
+      <div class="dashboard-activity-right">
+        ${calendarHTML}
+      </div>
+    </div>
+  `;
+}
+
 async function refreshDashboard() {
   if (dashboardIsLoading) return;
   dashboardIsLoading = true;
 
   const data = await useDashboardData();
   renderScheduledWorkoutsCard(data);
+  renderDashboardActivityCalendar(data);
   renderLogWorkoutCard(data);
-  renderHybridBalanceCard(data);
   renderRecentSessionsList(data);
 
   dashboardIsLoading = false;

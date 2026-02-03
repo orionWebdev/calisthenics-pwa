@@ -54,9 +54,6 @@
   box-sizing: border-box;
 }
 
-html {
-  font-size: 93.5%;
-}
 
 body {
   font-family: 'Zalando Sans Expanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -1767,6 +1764,189 @@ input, textarea, select, button {
 .dashboard-balance-context {
   font-size: var(--font-size-sm);
   color: white;
+}
+
+/* Dashboard Activity Calendar Widget (Suunto Style) */
+.dashboard-activity-widget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboard-activity-widget:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.dashboard-activity-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 80px;
+}
+
+.dashboard-activity-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-activity-duration {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  color: white;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-activity-unit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+.dashboard-activity-right {
+  flex: 1;
+  max-width: 200px;
+}
+
+.dashboard-activity-loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* Mini Calendar Grid */
+.dashboard-mini-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mini-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.mini-cal-day-label {
+  font-size: 8px;
+  color: var(--color-text-muted);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.mini-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.mini-cal-cell.empty {
+  background: transparent;
+}
+
+.mini-cal-cell.today {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mini-cal-cell.has-activity {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Mini Calendar Dots */
+.mini-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+}
+
+.mini-dot.strength {
+  background: var(--color-category-strength);
+}
+
+.mini-dot.cardio {
+  background: var(--color-category-cardio);
+}
+
+.mini-dot.recovery {
+  background: var(--color-category-recovery);
+}
+
+.mini-dot.size-s {
+  width: 4px;
+  height: 4px;
+}
+
+.mini-dot.size-m {
+  width: 6px;
+  height: 6px;
+}
+
+.mini-dot.size-l {
+  width: 8px;
+  height: 8px;
+}
+
+.mini-dot.size-xl {
+  width: 10px;
+  height: 10px;
+}
+
+.mini-dot.size-xxl {
+  width: 12px;
+  height: 12px;
+}
+
+@media (max-width: 480px) {
+  .dashboard-activity-widget {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .dashboard-activity-left {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .dashboard-activity-duration {
+    font-size: 2rem;
+  }
+
+  .dashboard-activity-right {
+    max-width: 100%;
+  }
+
+  .mini-cal-cell {
+    min-width: 12px;
+    min-height: 12px;
+  }
 }
 
 /* Recent Sessions */

@@ -385,6 +385,10 @@ const translations = {
         title: 'Letzte Sessions',
         description: 'Die letzten Sessions in chronologischer Reihenfolge.',
         empty: 'Noch keine Sessions'
+      },
+      activityCalendar: {
+        thisMonth: 'Diesen Monat',
+        durationUnit: 'Duration h'
       }
     },
     progress: {
