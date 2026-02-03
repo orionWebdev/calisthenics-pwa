@@ -719,6 +719,114 @@ function formatDurationHoursMinutes(totalMinutes) {
   return `0:${String(minutes).padStart(2, '0')}`;
 }
 
+/**
+ * Formatiert Dauer als "Xh Xm" String
+ */
+function formatDurationText(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0 && minutes > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (hours > 0) {
+    return `${hours}h`;
+  }
+  return `${minutes}m`;
+}
+
+/**
+ * Aggregiert Sessions pro Trainingstyp für einen Zeitraum
+ * @returns {Array} [{type, minutes, color}] sortiert nach Minuten absteigend
+ */
+function aggregateSessionsByType(sessions, year, month) {
+  const typeMinutes = {
+    strength: 0,
+    cardio: 0,
+    recovery: 0
+  };
+
+  sessions.forEach(session => {
+    const date = getSessionDate(session);
+    if (!date) return;
+    if (date.getFullYear() !== year || date.getMonth() !== month) return;
+
+    const type = session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength';
+    const durationSec = getSessionDurationSeconds(session);
+    typeMinutes[type] += Math.round(durationSec / 60);
+  });
+
+  // Konvertiere zu Array und sortiere nach Minuten absteigend
+  const typeColors = {
+    strength: 'var(--color-category-strength)',
+    cardio: 'var(--color-category-cardio)',
+    recovery: 'var(--color-category-recovery)'
+  };
+
+  return Object.entries(typeMinutes)
+    .filter(([_, minutes]) => minutes > 0)
+    .map(([type, minutes]) => ({
+      type,
+      minutes,
+      color: typeColors[type]
+    }))
+    .sort((a, b) => b.minutes - a.minutes);
+}
+
+/**
+ * Wiederverwendbare Activity Calendar Grid Komponente
+ * @param {Object} options - { year, month, sessionsByDate, detailed, dayLabels }
+ */
+function renderActivityCalendarGrid(options) {
+  const { year, month, sessionsByDate, detailed = false, dayLabels } = options;
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1; // Monday-based
+  const daysInMonth = lastDay.getDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const cellClass = detailed ? 'activity-cal-cell' : 'mini-cal-cell';
+  const gridClass = detailed ? 'activity-cal-grid' : 'mini-cal-grid';
+  const headerClass = detailed ? 'activity-cal-header' : 'mini-cal-header';
+  const labelClass = detailed ? 'activity-cal-day-label' : 'mini-cal-day-label';
+
+  let html = `<div class="${headerClass}">`;
+  html += dayLabels.map(d => `<span class="${labelClass}">${d}</span>`).join('');
+  html += `</div>`;
+  html += `<div class="${gridClass}">`;
+
+  // Empty cells for previous month
+  for (let i = 0; i < startDay; i++) {
+    html += `<div class="${cellClass} empty"></div>`;
+  }
+
+  // Days of current month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dateKey = getBerlinDateKey(date);
+    const isToday = date.toDateString() === today.toDateString();
+    const daySessions = sessionsByDate[dateKey] || [];
+
+    const aggregatedDots = aggregateDayByType(daySessions);
+    const dotHTML = renderNestedDots(aggregatedDots);
+
+    const todayClass = isToday ? 'today' : '';
+    const dayNumberHTML = detailed ? `<span class="day-number">${day}</span>` : '';
+
+    html += `
+      <div class="${cellClass} ${todayClass}" data-date="${dateKey}">
+        ${dayNumberHTML}
+        ${dotHTML}
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
 function renderDashboardActivityCalendar(state) {
   const container = document.getElementById('dashboard-activity-calendar');
   if (!container) return;
@@ -845,6 +953,18 @@ window.addWorkoutOfType = addWorkoutOfType;
 window.openLogWorkoutTypeSheet = openLogWorkoutTypeSheet;
 window.openPlanWorkoutSheet = openPlanWorkoutSheet;
 window.openStartWorkoutFromPlanSheet = openStartWorkoutFromPlanSheet;
+
+// Shared Activity Calendar functions (used by calendar.js)
+window.aggregateDayByType = aggregateDayByType;
+window.getSizeFromMinutes = getSizeFromMinutes;
+window.renderNestedDots = renderNestedDots;
+window.aggregateSessionsByType = aggregateSessionsByType;
+window.formatDurationText = formatDurationText;
+window.renderActivityCalendarGrid = renderActivityCalendarGrid;
+window.getDashboardSessionsByDate = getDashboardSessionsByDate;
+window.getSessionDurationSeconds = getSessionDurationSeconds;
+window.getSessionDate = getSessionDate;
+window.getBerlinDateKey = getBerlinDateKey;
 
 // ========================================
 // AUTO-INITIALIZE

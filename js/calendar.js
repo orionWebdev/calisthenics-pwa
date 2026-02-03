@@ -830,44 +830,14 @@ window.startScheduledWorkout = startScheduledWorkout;
 
 // ========================================
 // ACTIVITY CALENDAR VIEW (in Calendar Page)
+// Uses shared components from dashboard.js
 // ========================================
 
-const CALENDAR_ACTIVITY_DOT_MAX = 3;
-
-function getCalendarSessionDurationMinutes(session) {
-  const sec = Number(session?.durationSec || session?.durationSeconds || 0);
-  if (Number.isFinite(sec) && sec > 0) return Math.round(sec / 60);
-  const raw = Number(session?.duration || 0);
-  if (!Number.isFinite(raw) || raw < 0) return 0;
-  return Math.round(raw);
-}
-
-function getCalendarDurationBucket(minutes) {
-  if (minutes <= 20) return { size: 's', rank: 1 };
-  if (minutes <= 40) return { size: 'm', rank: 2 };
-  if (minutes <= 60) return { size: 'l', rank: 3 };
-  if (minutes <= 90) return { size: 'xl', rank: 4 };
-  return { size: 'xxl', rank: 5 };
-}
-
-function getCalendarSessionDotMeta(session) {
-  const minutes = getCalendarSessionDurationMinutes(session);
-  const bucket = getCalendarDurationBucket(minutes);
-  return {
-    type: session.type === 'cardio'
-      ? 'cardio'
-      : session.type === 'recovery'
-        ? 'recovery'
-        : 'strength',
-    size: bucket.size,
-    rank: bucket.rank,
-    minutes
-  };
-}
-
-function getCalendarSessionsByDate(year, month) {
-  if (typeof getSessionsByDate === 'function') {
-    return getSessionsByDate(year, month);
+function getCalendarSessionsByDateLocal(year, month) {
+  // Use dashboard function if available, otherwise fallback
+  if (typeof getDashboardSessionsByDate === 'function') {
+    const sessions = Array.isArray(allSessions) ? allSessions : [];
+    return getDashboardSessionsByDate(sessions, year, month);
   }
   // Fallback: group sessions manually
   const sessions = Array.isArray(allSessions) ? allSessions : [];
@@ -889,89 +859,142 @@ function renderCalendarActivityView() {
 
   const year = calendarActivityDate.getFullYear();
   const month = calendarActivityDate.getMonth();
-  const sessionsByDate = getCalendarSessionsByDate(year, month);
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  const sessionsByDate = getCalendarSessionsByDateLocal(year, month);
 
   const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
-  container.innerHTML = `
-    <div class="activity-calendar">
-      <div class="activity-calendar-weekdays">
-        ${dayLabels.map(d => `<div class="weekday-label">${d}</div>`).join('')}
-      </div>
+  // Build calendar grid (detailed mode with day numbers)
+  const calendarGridHTML = renderDetailedActivityCalendarGrid(year, month, sessionsByDate, dayLabels);
 
-      <div class="activity-calendar-grid" id="calendar-activity-grid">
-        ${renderCalendarActivityDays(year, month, sessionsByDate)}
-      </div>
+  // Build training types list
+  const trainingTypesHTML = renderTrainingTypesList(sessions, year, month);
+
+  container.innerHTML = `
+    <div class="activity-calendar-detailed">
+      ${calendarGridHTML}
     </div>
+    ${trainingTypesHTML}
   `;
 }
 
-function renderCalendarActivityDays(year, month, sessionsByDate) {
+/**
+ * Rendert den detaillierten Activity Calendar Grid für die Kalender-Seite
+ * Mit Tag-Nummer in der Mitte jeder Zelle
+ */
+function renderDetailedActivityCalendarGrid(year, month, sessionsByDate, dayLabels) {
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1; // Monday-based
+  const daysInMonth = lastDay.getDate();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Monday-based week start
-  let startDay = firstDay.getDay();
-  startDay = startDay === 0 ? 6 : startDay - 1;
+  let html = `<div class="activity-cal-header">`;
+  html += dayLabels.map(d => `<span class="activity-cal-day-label">${d}</span>`).join('');
+  html += `</div>`;
+  html += `<div class="activity-cal-grid">`;
 
-  const daysInMonth = lastDay.getDate();
-  let html = '';
-
-  // Previous month days (greyed out)
-  const prevMonthDays = new Date(year, month, 0).getDate();
-  for (let i = startDay - 1; i >= 0; i--) {
-    const day = prevMonthDays - i;
-    html += `<div class="activity-day other-month"><span class="day-number">${day}</span></div>`;
+  // Empty cells for previous month
+  for (let i = 0; i < startDay; i++) {
+    html += `<div class="activity-cal-cell empty"></div>`;
   }
 
-  // Current month days
+  // Days of current month
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
     const dateKey = formatDate(date);
     const isToday = date.toDateString() === today.toDateString();
-    const sessions = sessionsByDate[dateKey] || [];
+    const daySessions = sessionsByDate[dateKey] || [];
 
-    const dots = sessions
-      .map(getCalendarSessionDotMeta)
-      .sort((a, b) => {
-        if (b.rank !== a.rank) return b.rank - a.rank;
-        if (b.minutes !== a.minutes) return b.minutes - a.minutes;
-        return a.type.localeCompare(b.type);
-      });
+    // Use shared aggregation from dashboard.js
+    const aggregatedDots = typeof aggregateDayByType === 'function'
+      ? aggregateDayByType(daySessions)
+      : [];
+    const dotHTML = typeof renderNestedDots === 'function'
+      ? renderNestedDots(aggregatedDots)
+      : '';
 
-    const visibleDots = dots.slice(0, CALENDAR_ACTIVITY_DOT_MAX);
-    const overflow = dots.length - visibleDots.length;
-
-    const hasSessionsClass = sessions.length > 0 ? 'has-sessions' : '';
     const todayClass = isToday ? 'today' : '';
 
     html += `
-      <div class="activity-day ${todayClass} ${hasSessionsClass}"
+      <div class="activity-cal-cell ${todayClass}"
            onclick="openCalendarActivityDaySheet('${dateKey}')"
            role="button"
-           tabindex="0"
-           aria-label="${day}. ${sessions.length} Sessions">
-        <span class="day-number">${day}</span>
-        <div class="session-dots" aria-hidden="true">
-          ${visibleDots.map(dot => `
-            <span class="session-dot ${dot.type} size-${dot.size}" title="${dot.minutes} Min"></span>
-          `).join('')}
-          ${overflow > 0 ? `<span class="session-overflow">+${overflow}</span>` : ''}
-        </div>
+           tabindex="0">
+        <span class="activity-cal-day-number">${day}</span>
+        ${dotHTML}
       </div>
     `;
   }
 
-  // Next month days (fill grid to 42 cells for 6 rows)
+  // Fill remaining cells
   const totalCells = startDay + daysInMonth;
   const remaining = totalCells <= 35 ? 35 - totalCells : 42 - totalCells;
-  for (let day = 1; day <= remaining; day++) {
-    html += `<div class="activity-day other-month"><span class="day-number">${day}</span></div>`;
+  for (let i = 0; i < remaining; i++) {
+    html += `<div class="activity-cal-cell empty"></div>`;
   }
 
+  html += `</div>`;
   return html;
+}
+
+/**
+ * Rendert die Trainingsarten-Liste unter dem Kalender
+ * Sortiert nach Gesamtdauer absteigend
+ */
+function renderTrainingTypesList(sessions, year, month) {
+  // Use shared aggregation from dashboard.js
+  const typeData = typeof aggregateSessionsByType === 'function'
+    ? aggregateSessionsByType(sessions, year, month)
+    : [];
+
+  if (typeData.length === 0) {
+    const emptyText = typeof t === 'function'
+      ? t('dashboard.activityCalendar.emptyState')
+      : 'Noch keine Sessions in diesem Zeitraum';
+    return `
+      <div class="training-types-empty">
+        <span class="material-symbols-rounded">event_busy</span>
+        <p>${emptyText}</p>
+      </div>
+    `;
+  }
+
+  const maxMinutes = typeData[0]?.minutes || 1;
+
+  const typeLabels = {
+    strength: typeof t === 'function' ? t('dashboard.trainingTypes.strength') : 'Krafttraining',
+    cardio: typeof t === 'function' ? t('dashboard.trainingTypes.cardio') : 'Cardio',
+    recovery: typeof t === 'function' ? t('dashboard.trainingTypes.recovery') : 'Recovery'
+  };
+
+  const items = typeData.map(item => {
+    const label = typeLabels[item.type] || item.type;
+    const durationText = typeof formatDurationText === 'function'
+      ? formatDurationText(item.minutes)
+      : `${Math.floor(item.minutes / 60)}h ${item.minutes % 60}m`;
+    const percentage = Math.round((item.minutes / maxMinutes) * 100);
+
+    return `
+      <div class="training-type-item">
+        <div class="training-type-header">
+          <span class="training-type-label">${label}</span>
+          <span class="training-type-duration">${durationText}</span>
+        </div>
+        <div class="training-type-bar-bg">
+          <div class="training-type-bar" style="width: ${percentage}%; background: ${item.color};"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="training-types-list">
+      ${items}
+    </div>
+  `;
 }
 
 function openCalendarActivityDaySheet(dateKey) {
@@ -982,26 +1005,32 @@ function openCalendarActivityDaySheet(dateKey) {
   }
 
   // Fallback: get sessions and show basic info
-  const sessions = getSessionsForDate ? getSessionsForDate(dateKey) : [];
+  const sessions = typeof getSessionsForDate === 'function' ? getSessionsForDate(dateKey) : [];
   const date = new Date(dateKey + 'T12:00:00');
 
   if (typeof openSheet === 'function') {
     openSheet({
       title: `Sessions am ${date.getDate()}. ${monthNames[date.getMonth()]}`,
-      render: (container) => {
+      render: (sheetContainer) => {
         if (sessions.length === 0) {
-          container.innerHTML = `
+          const emptyText = typeof t === 'function'
+            ? t('dashboard.activityCalendar.emptyState')
+            : 'Keine Sessions an diesem Tag';
+          sheetContainer.innerHTML = `
             <div class="activity-day-empty">
               <span class="material-symbols-rounded">event_busy</span>
-              <p>Keine Sessions an diesem Tag</p>
+              <p>${emptyText}</p>
             </div>
           `;
           return;
         }
 
-        container.innerHTML = sessions.map(session => {
+        sheetContainer.innerHTML = sessions.map(session => {
           const typeLabel = session.type === 'cardio' ? 'Cardio' : session.type === 'recovery' ? 'Recovery' : 'Kraft';
-          const duration = getCalendarSessionDurationMinutes(session);
+          const durationSec = typeof getSessionDurationSeconds === 'function'
+            ? getSessionDurationSeconds(session)
+            : 0;
+          const duration = Math.round(durationSec / 60);
 
           return `
             <div class="activity-session-item">

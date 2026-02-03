@@ -1550,10 +1550,14 @@ input, textarea, select, button {
 
 /* Dashboard Scheduled Workouts Widget */
 .dashboard-scheduled-widget {
-  padding: 1rem;
-  background: var(--color-surface);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.5rem;
+  background: linear-gradient(135deg,
+    rgba(9, 30, 77, 0.9) 0%,
+    rgba(15, 36, 129, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(15, 36, 129, 0.5);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .dashboard-scheduled-header {
@@ -1985,6 +1989,153 @@ input, textarea, select, button {
   .mini-dot.size-l.offset { width: 14px; height: 14px; }
   .mini-dot.size-xl.offset { width: 17px; height: 17px; }
   .mini-dot.size-xxl.offset { width: 20px; height: 20px; }
+}
+
+/* ========================================
+   DETAILED ACTIVITY CALENDAR (Calendar Page)
+   ======================================== */
+
+.activity-calendar-detailed {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.activity-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.activity-cal-day-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+}
+
+.activity-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.activity-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  position: relative;
+  min-height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.activity-cal-cell:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.activity-cal-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.activity-cal-cell.today {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.activity-cal-day-number {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: white;
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+}
+
+.activity-cal-cell .mini-dot-stack {
+  margin-top: 16px;
+}
+
+/* Training Types List */
+.training-types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.training-type-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.training-type-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.training-type-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: white;
+}
+
+.training-type-duration {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.training-type-bar-bg {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.training-type-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.training-types-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+}
+
+.training-types-empty .material-symbols-rounded {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+.training-types-empty p {
+  margin: 0;
+  font-size: var(--font-size-sm);
 }
 
 /* Recent Sessions */

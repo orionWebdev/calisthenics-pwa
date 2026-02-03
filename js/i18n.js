@@ -388,7 +388,14 @@ const translations = {
       },
       activityCalendar: {
         thisMonth: 'Diesen Monat',
-        durationUnit: 'Duration h'
+        durationUnit: 'Bewegungsstunden',
+        emptyState: 'Noch keine Sessions in diesem Zeitraum'
+      },
+      trainingTypes: {
+        strength: 'Krafttraining',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        recovery: 'Recovery'
       }
     },
     progress: {
