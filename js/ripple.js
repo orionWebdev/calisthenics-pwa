@@ -86,11 +86,6 @@ function makePressable(element, options = {}) {
  * Initialize ripple effects on all matching elements
  */
 function initRippleEffects() {
-  // Bottom navigation items
-  document.querySelectorAll('.bottom-nav-item').forEach(item => {
-    makePressable(item, { color: 'rgba(240, 34, 119, 0.25)' });
-  });
-
   // Desktop navigation buttons
   document.querySelectorAll('.nav-btn').forEach(btn => {
     makePressable(btn, { color: 'rgba(240, 34, 119, 0.2)' });

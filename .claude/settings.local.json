@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(wc:*)",
-      "Bash(node -c:*)"
+      "Bash(node -c:*)",
+      "Bash(grep:*)"
     ]
   }
 }
