@@ -32,6 +32,9 @@ let activeWorkout = null;
 let restTimerInterval = null;
 let restTimerRemaining = 0;
 
+// State for active set row (iOS-style set logger)
+let activeSetValues = { reps: 10, weight: 0 };
+
 const WORKOUT_USER_ID = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
 
 // ==================== LIFECYCLE ====================
@@ -649,68 +652,287 @@ function renderAccordionExerciseContent(exercise, exerciseIndex) {
 }
 
 /**
- * Render set logger inside accordion
+ * Render iOS-style set logger inside accordion
+ * Shows set rows with value buttons instead of stepper inputs
  */
 function renderAccordionSetLogger(exercise, exerciseIndex) {
-  const setNumber = exercise.completedSets.length + 1;
+  // Determine if bodyweight or weighted exercise
+  const isBodyweight = isBodyweightExercise();
+
+  // Initialize active set values with defaults
+  initActiveSetValues(exercise);
+
+  return `
+    <div class="set-logger-modern">
+      <!-- Completed Sets as Rows -->
+      ${renderSetRows(exercise, exerciseIndex, isBodyweight)}
+
+      <!-- Active Set Input Row -->
+      ${renderActiveSetRow(exercise, exerciseIndex, isBodyweight)}
+
+      <!-- Target Info -->
+      <div class="set-logger-target">
+        <span class="material-symbols-rounded">target</span>
+        <span>${t('workout.setLogger.target')}: ${exercise.targetSets} × ${exercise.targetReps}</span>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Check if current workout is bodyweight-based
+ * Derives from plan discipline
+ * Default: Show weight (isBodyweight = false) to allow all exercises
+ */
+function isBodyweightExercise() {
+  if (!activeWorkout) return false; // Default: show weight
+
+  // Get plan to check discipline
+  const plan = typeof allPlans !== 'undefined'
+    ? allPlans.find(p => p.id === activeWorkout.planId)
+    : null;
+
+  if (!plan) return false; // Default: show weight
+
+  const discipline = plan.discipline || '';
+
+  // Only hide weight for explicitly bodyweight/calisthenics plans
+  return discipline === 'bodyweight' || discipline === 'calisthenics';
+}
+
+/**
+ * Get default values for new set based on last set or targets
+ */
+function getDefaultSetValues(exercise) {
   const lastSet = exercise.completedSets.length > 0
     ? exercise.completedSets[exercise.completedSets.length - 1]
     : null;
 
-  const defaultReps = lastSet ? lastSet.reps : (exercise.targetReps ? parseInt(exercise.targetReps) || 10 : 10);
-  const defaultWeight = lastSet ? (lastSet.weight || '') : '';
+  return {
+    reps: lastSet ? lastSet.reps : (parseInt(exercise.targetReps) || 10),
+    weight: lastSet ? (lastSet.weight || 0) : 0
+  };
+}
+
+/**
+ * Initialize active set values from exercise defaults
+ */
+function initActiveSetValues(exercise) {
+  const defaults = getDefaultSetValues(exercise);
+  activeSetValues = {
+    reps: defaults.reps,
+    weight: defaults.weight
+  };
+}
+
+/**
+ * Render completed sets as rows
+ */
+function renderSetRows(exercise, exerciseIndex, isBodyweight) {
+  if (exercise.completedSets.length === 0) return '';
 
   return `
-    <div class="accordion-set-logger">
-      <div class="accordion-logger-header">
-        <span class="accordion-logger-badge">${t('workout.setLogger.set')} ${setNumber}</span>
-        <span class="accordion-logger-target">${t('workout.setLogger.target')}: ${exercise.targetSets} × ${exercise.targetReps}</span>
-      </div>
+    <div class="set-rows-list">
+      ${exercise.completedSets.map((set, setIndex) => {
+        const isLatest = setIndex === exercise.completedSets.length - 1;
+        const weightDisplay = set.weight != null && set.weight > 0
+          ? (set.weight % 1 !== 0 ? set.weight.toFixed(1).replace('.', ',') : set.weight)
+          : 0;
 
-      <div class="exercise-card-inputs">
-        <!-- Reps Input -->
-        <div class="input-with-steppers">
-          <label class="input-stepper-label">${t('workout.setLogger.reps')} *</label>
-          <div class="stepper-group">
-            <button type="button" class="stepper-btn stepper-minus" onclick="adjustInputValue('reps-input', -1)" aria-label="Verringern">
-              <span class="material-symbols-rounded">remove</span>
-            </button>
-            <input type="text" id="reps-input" class="stepper-input" value="${defaultReps}" inputmode="numeric" pattern="[0-9]*" enterkeyhint="next" autocomplete="off" aria-label="${t('workout.setLogger.reps')}" />
-            <button type="button" class="stepper-btn stepper-plus" onclick="adjustInputValue('reps-input', 1)" aria-label="Erhoehen">
-              <span class="material-symbols-rounded">add</span>
+        return `
+          <div class="set-row ${isLatest ? 'set-row--latest' : ''}" data-set-index="${setIndex}">
+            <!-- Set Number Pill -->
+            <div class="set-row-pill">
+              <span>${setIndex + 1}</span>
+            </div>
+
+            <!-- Value Buttons -->
+            <div class="set-row-values">
+              <button
+                type="button"
+                class="set-row-value-btn"
+                onclick="openNumberPickerForSet(${exerciseIndex}, ${setIndex}, 'reps')"
+                aria-label="${t('workout.setLogger.reps')}: ${set.reps}"
+              >
+                <span class="set-row-value">${set.reps}</span>
+                <span class="set-row-unit">${t('workout.logging.totalReps')}</span>
+              </button>
+
+              ${!isBodyweight ? `
+                <button
+                  type="button"
+                  class="set-row-value-btn"
+                  onclick="openNumberPickerForSet(${exerciseIndex}, ${setIndex}, 'weight')"
+                  aria-label="${t('workout.setLogger.weight')}: ${weightDisplay}"
+                >
+                  <span class="set-row-value">${weightDisplay}</span>
+                  <span class="set-row-unit">${t('workout.setLogger.weightUnit')}</span>
+                </button>
+              ` : ''}
+            </div>
+
+            <!-- Delete Button (shows X on hover) -->
+            <button
+              type="button"
+              class="set-row-check set-row-check--completed"
+              onclick="deleteSet(${exerciseIndex}, ${setIndex})"
+              aria-label="${t('workout.setLogger.deleteSet')}"
+            >
+              <span class="material-symbols-rounded">check</span>
             </button>
           </div>
-        </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
 
-        <!-- Weight Input -->
-        <div class="input-with-steppers">
-          <label class="input-stepper-label">${t('workout.setLogger.weight')} (${t('workout.setLogger.weightUnit')})</label>
-          <div class="stepper-group">
-            <button type="button" class="stepper-btn stepper-minus" onclick="adjustInputValue('weight-input', -2.5)" aria-label="Verringern">
-              <span class="material-symbols-rounded">remove</span>
-            </button>
-            <input type="text" id="weight-input" class="stepper-input" value="${defaultWeight}" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" enterkeyhint="done" autocomplete="off" placeholder="0" aria-label="${t('workout.setLogger.weight')}" />
-            <button type="button" class="stepper-btn stepper-plus" onclick="adjustInputValue('weight-input', 2.5)" aria-label="Erhoehen">
-              <span class="material-symbols-rounded">add</span>
-            </button>
-          </div>
-        </div>
+/**
+ * Render active set input row
+ */
+function renderActiveSetRow(exercise, exerciseIndex, isBodyweight) {
+  const setNumber = exercise.completedSets.length + 1;
+  const weightDisplay = activeSetValues.weight % 1 !== 0
+    ? activeSetValues.weight.toFixed(1).replace('.', ',')
+    : activeSetValues.weight;
+
+  return `
+    <div class="set-row set-row--active" data-set-index="new">
+      <!-- Set Number Pill -->
+      <div class="set-row-pill set-row-pill--active">
+        <span>${setNumber}</span>
       </div>
 
-      <div class="accordion-logger-actions">
-        <button type="button" onclick="logSetFromInput()" class="log-set-btn-primary">
-          <span class="material-symbols-rounded">check_circle</span>
-          <span>${t('workout.setLogger.logSet')}</span>
+      <!-- Value Buttons -->
+      <div class="set-row-values">
+        <button
+          type="button"
+          class="set-row-value-btn set-row-value-btn--editable"
+          onclick="openNumberPickerForNewSet('reps')"
+          id="active-reps-btn"
+          data-value="${activeSetValues.reps}"
+          aria-label="${t('workout.setLogger.reps')}: ${activeSetValues.reps}"
+        >
+          <span class="set-row-value" id="active-reps-value">${activeSetValues.reps}</span>
+          <span class="set-row-unit">${t('workout.logging.totalReps')}</span>
         </button>
-        ${lastSet ? `
-          <button type="button" onclick="duplicateLastSet()" class="log-set-btn-secondary">
-            <span class="material-symbols-rounded">content_copy</span>
-            <span>${t('workout.setLogger.duplicateLast')}</span>
+
+        ${!isBodyweight ? `
+          <button
+            type="button"
+            class="set-row-value-btn set-row-value-btn--editable"
+            onclick="openNumberPickerForNewSet('weight')"
+            id="active-weight-btn"
+            data-value="${activeSetValues.weight}"
+            aria-label="${t('workout.setLogger.weight')}: ${weightDisplay}"
+          >
+            <span class="set-row-value" id="active-weight-value">${weightDisplay}</span>
+            <span class="set-row-unit">${t('workout.setLogger.weightUnit')}</span>
           </button>
         ` : ''}
       </div>
+
+      <!-- Log Button -->
+      <button
+        type="button"
+        class="set-row-check set-row-check--log"
+        onclick="logSetFromActiveRow()"
+        aria-label="${t('workout.setLogger.logSet')}"
+      >
+        <span class="material-symbols-rounded">check</span>
+      </button>
     </div>
   `;
+}
+
+/**
+ * Open number picker for an existing set
+ */
+function openNumberPickerForSet(exerciseIndex, setIndex, type) {
+  if (!activeWorkout) return;
+
+  const exercise = activeWorkout.exercises[exerciseIndex];
+  if (!exercise) return;
+
+  const set = exercise.completedSets[setIndex];
+  if (!set) return;
+
+  const initialValue = type === 'reps' ? set.reps : (set.weight || 0);
+
+  openNumberPicker({
+    type: type,
+    initialValue: initialValue,
+    onConfirm: (newValue) => {
+      // Update existing set
+      if (type === 'reps') {
+        set.reps = newValue;
+      } else {
+        set.weight = newValue;
+      }
+      saveActiveWorkout();
+      renderWorkoutScreen();
+      triggerHapticFeedback('success');
+    }
+  });
+}
+
+/**
+ * Open number picker for new set input
+ */
+function openNumberPickerForNewSet(type) {
+  const initialValue = type === 'reps' ? activeSetValues.reps : activeSetValues.weight;
+
+  openNumberPicker({
+    type: type,
+    initialValue: initialValue,
+    onConfirm: (newValue) => {
+      if (type === 'reps') {
+        activeSetValues.reps = newValue;
+        updateActiveRowDisplay('reps', newValue);
+      } else {
+        activeSetValues.weight = newValue;
+        updateActiveRowDisplay('weight', newValue);
+      }
+      triggerHapticFeedback('light');
+    }
+  });
+}
+
+/**
+ * Update active row display after picker selection
+ */
+function updateActiveRowDisplay(type, value) {
+  const valueEl = document.getElementById(`active-${type}-value`);
+  const btnEl = document.getElementById(`active-${type}-btn`);
+
+  if (valueEl) {
+    const displayValue = type === 'weight' && value % 1 !== 0
+      ? value.toFixed(1).replace('.', ',')
+      : value;
+    valueEl.textContent = displayValue;
+  }
+  if (btnEl) {
+    btnEl.dataset.value = value;
+  }
+}
+
+/**
+ * Log set from active row values
+ */
+function logSetFromActiveRow() {
+  const reps = activeSetValues.reps;
+
+  if (!reps || reps <= 0) {
+    showEdgeFeedback('error', t('workout.setLogger.enterReps'));
+    return;
+  }
+
+  // Get weight only if not bodyweight
+  const isBodyweight = isBodyweightExercise();
+  const weight = isBodyweight ? null : (activeSetValues.weight || null);
+
+  // Log the set using existing function
+  logSet(reps, weight);
 }
 
 /**
