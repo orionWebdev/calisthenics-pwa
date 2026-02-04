@@ -189,21 +189,30 @@
 
   <!-- BOTTOM NAVIGATION (Mobile) -->
   <nav class="bottom-nav">
+    <span class="bottom-nav-indicator" aria-hidden="true"></span>
     <button class="bottom-nav-item active" data-view="dashboard" onclick="showView('dashboard')">
-      <span class="material-symbols-rounded">home</span>
-      <span class="bottom-nav-label">Home</span>
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">home</span>
+        <span class="bottom-nav-label" data-i18n="nav.dashboard">Home</span>
+      </span>
     </button>
     <button class="bottom-nav-item" data-view="progress" onclick="showView('progress')">
-      <span class="material-symbols-rounded">trending_up</span>
-      <span class="bottom-nav-label">Progress</span>
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">trending_up</span>
+        <span class="bottom-nav-label" data-i18n="nav.progress">Progress</span>
+      </span>
     </button>
     <button class="bottom-nav-item" data-view="calendar" onclick="showView('calendar')">
-      <span class="material-symbols-rounded">calendar_month</span>
-      <span class="bottom-nav-label">Kalender</span>
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">calendar_month</span>
+        <span class="bottom-nav-label" data-i18n="nav.calendar">Kalender</span>
+      </span>
     </button>
     <button class="bottom-nav-item" data-view="training" onclick="showView('training')">
-      <span class="material-symbols-rounded">fitness_center</span>
-      <span class="bottom-nav-label">Training</span>
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">fitness_center</span>
+        <span class="bottom-nav-label" data-i18n="nav.training">Training</span>
+      </span>
     </button>
   </nav>
 

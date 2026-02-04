@@ -38,6 +38,13 @@ const translations = {
       done: 'Fertig',
       optional: 'optional'
     },
+    nav: {
+      dashboard: 'Home',
+      progress: 'Progress',
+      calendar: 'Kalender',
+      training: 'Training',
+      profile: 'Profil'
+    },
     difficulty: {
       beginner: 'Anfaenger',
       intermediate: 'Mittel',

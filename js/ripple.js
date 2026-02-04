@@ -88,7 +88,7 @@ function makePressable(element, options = {}) {
 function initRippleEffects() {
   // Bottom navigation items
   document.querySelectorAll('.bottom-nav-item').forEach(item => {
-    makePressable(item, { color: 'rgba(240, 34, 119, 0.25)' });
+    makePressable(item, { color: 'rgba(255, 255, 255, 0.12)' });
   });
 
   // Desktop navigation buttons
