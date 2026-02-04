@@ -2543,6 +2543,8 @@ input, textarea, select, button {
   justify-content: space-between;
   gap: 0.25rem;
   --bottom-nav-pill-padding: 10px;
+  --bottom-nav-pill-inset: 4px;
+  --bottom-nav-pill-tighten: 4px;
   --bottom-nav-pill-height: 40px;
   --bottom-nav-pill-bg: rgba(255, 255, 255, 0.08);
   --bottom-nav-pill-border: rgba(255, 255, 255, 0.08);
@@ -2581,10 +2583,6 @@ input, textarea, select, button {
     opacity 200ms ease;
   will-change: transform, width;
   z-index: 0;
-}
-
-.bottom-nav.bottom-nav--ready .bottom-nav-indicator {
-  opacity: 1;
 }
 
 .bottom-nav-item {

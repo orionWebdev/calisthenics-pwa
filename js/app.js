@@ -171,18 +171,24 @@ function updateBottomNavIndicator() {
   const navRect = nav.getBoundingClientRect();
   const itemRect = activeItem.getBoundingClientRect();
   const contentRect = content.getBoundingClientRect();
-  const pillPadding = parseFloat(getComputedStyle(nav).getPropertyValue('--bottom-nav-pill-padding')) || 10;
+  const navStyles = getComputedStyle(nav);
+  const pillPadding = parseFloat(navStyles.getPropertyValue('--bottom-nav-pill-padding')) || 10;
+  const pillInset = parseFloat(navStyles.getPropertyValue('--bottom-nav-pill-inset')) || 4;
+  const pillTighten = parseFloat(navStyles.getPropertyValue('--bottom-nav-pill-tighten')) || 0;
+  const paddingLeft = parseFloat(navStyles.paddingLeft) || 0;
+  const paddingRight = parseFloat(navStyles.paddingRight) || 0;
 
   const contentWidth = Math.max(content.scrollWidth, contentRect.width);
   const navWidth = nav.clientWidth;
-  const maxWidth = Math.max(48, navWidth - 12);
-  let width = Math.max(44, contentWidth + pillPadding * 2);
+  const innerWidth = Math.max(0, navWidth - paddingLeft - paddingRight);
+  const maxWidth = Math.max(48, innerWidth);
+  let width = Math.max(40, contentWidth + pillPadding * 2 - pillTighten);
   width = Math.min(width, maxWidth);
 
-  const centerX = contentRect.left - navRect.left + contentRect.width / 2;
+  const centerX = contentRect.left - (navRect.left + paddingLeft) + contentRect.width / 2;
   let x = Math.round(centerX - width / 2);
-  const minX = 6;
-  const maxX = Math.max(minX, Math.round(navWidth - width - 6));
+  const minX = pillInset;
+  const maxX = Math.max(minX, Math.round(innerWidth - width - pillInset));
   x = Math.min(Math.max(x, minX), maxX);
 
   nav.style.setProperty('--bottom-nav-indicator-x', `${x}px`);
