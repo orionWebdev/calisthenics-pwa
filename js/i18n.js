@@ -263,6 +263,10 @@ const translations = {
         totalReps: 'Wdh.'
       }
     },
+    numberPicker: {
+      repsTitle: 'Wiederholungen',
+      weightTitle: 'Gewicht'
+    },
     template: {
       sessionTemplate: 'Session-Vorlage',
       workoutTemplate: 'Workout-Vorlage',

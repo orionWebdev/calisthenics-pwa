@@ -2523,7 +2523,7 @@ input, textarea, select, button {
 .bottom-nav {
   display: none; /* Versteckt auf Desktop */
   position: fixed;
-  bottom: 0.5rem;
+  bottom: calc(0.5rem + env(safe-area-inset-bottom, 0));
   left: 50%;
   right: auto;
   width: 90%;
@@ -2532,11 +2532,9 @@ input, textarea, select, button {
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(75, 85, 99, 0.35);
   border-radius: 999px;
-  /* PWA Safe Area: Padding unten für Home Indicator - Content wird nach oben verschoben */
-  padding-top: 0.5rem;
-  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0));
-  padding-left: 0.35rem;
-  padding-right: 0.35rem;
+  /* Feste Hoehe fuer konsistente Navigation */
+  height: 56px;
+  padding: 0 0.35rem;
   z-index: 1000;
   box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.35);
   align-items: center;
@@ -2553,17 +2551,7 @@ input, textarea, select, button {
   --bottom-nav-indicator-width: 64px;
 }
 
-/* Voller Hintergrund bis zum Home Indicator für Bottom Nav */
-.bottom-nav::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: env(safe-area-inset-bottom, 0);
-  transform: translateY(100%);
-  z-index: -1;
-}
+/* Bottom Nav - kein ::after mehr noetig da safe-area im bottom-Wert */
 
 .bottom-nav-indicator {
   position: absolute;
@@ -11489,4 +11477,408 @@ input[type="range"]::-moz-range-progress {
 
 .edit-add-set-btn .material-symbols-rounded {
   font-size: 1rem;
+}
+
+/* ===================================
+   NUMBER PICKER SHEET - iOS Style
+   =================================== */
+
+.number-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.number-picker-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.number-picker-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ui-card-bg);
+  border-radius: 1.5rem 1.5rem 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.number-picker-overlay.active .number-picker-sheet {
+  transform: translateY(0);
+}
+
+/* Drag Handle */
+.number-picker-drag-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  margin: 0.75rem auto 0.5rem;
+  cursor: grab;
+}
+
+.number-picker-drag-handle:active {
+  cursor: grabbing;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Header */
+.number-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem 0.75rem;
+}
+
+.number-picker-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  text-align: center;
+  margin: 0;
+}
+
+/* Wheel Content */
+.number-picker-content {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+
+.number-picker-highlight {
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  top: 50%;
+  height: 56px;
+  transform: translateY(-50%);
+  background: rgba(240, 34, 119, 0.12);
+  border: 1px solid rgba(240, 34, 119, 0.3);
+  border-radius: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.number-picker-wheel {
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 112px 1.25rem; /* (280 - 56) / 2 = 112 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.number-picker-wheel::-webkit-scrollbar {
+  display: none;
+}
+
+.number-picker-item {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  scroll-snap-align: center;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  opacity: 0.35;
+}
+
+.number-picker-item.selected {
+  opacity: 1;
+}
+
+.number-picker-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  min-width: 3ch;
+  text-align: right;
+}
+
+.number-picker-suffix {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+/* Footer */
+.number-picker-footer {
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.number-picker-confirm {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-category-bodyweight);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+.number-picker-confirm:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.4);
+}
+
+.number-picker-confirm:active {
+  transform: scale(0.95);
+}
+
+.number-picker-confirm .material-symbols-rounded {
+  font-size: 32px;
+  color: white;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .number-picker-sheet {
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    max-width: 400px;
+    border-radius: 1.5rem;
+    bottom: 2rem;
+  }
+
+  .number-picker-overlay.active .number-picker-sheet {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ===================================
+   MODERN SET LOGGER - iOS Style Rows
+   =================================== */
+
+.set-logger-modern {
+  padding: 0.25rem 0;
+}
+
+/* Set Rows List */
+.set-rows-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Individual Set Row */
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.set-row--latest {
+  border-color: rgba(34, 197, 94, 0.25);
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.set-row--active {
+  border-color: rgba(240, 34, 119, 0.35);
+  background: rgba(240, 34, 119, 0.06);
+}
+
+/* Set Number Pill */
+.set-row-pill {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+}
+
+.set-row-pill--active {
+  background: rgba(240, 34, 119, 0.15);
+  color: var(--color-primary);
+}
+
+/* Value Buttons Container */
+.set-row-values {
+  flex: 1;
+  display: flex;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* Value Button */
+.set-row-value-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.0625rem;
+  padding: 0.375rem 0.5rem;
+  min-height: 44px;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.set-row-value-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.set-row-value-btn:active {
+  transform: scale(0.97);
+}
+
+.set-row-value-btn--editable {
+  border-color: rgba(240, 34, 119, 0.25);
+  background: rgba(240, 34, 119, 0.06);
+}
+
+.set-row-value-btn--editable:hover {
+  border-color: rgba(240, 34, 119, 0.4);
+  background: rgba(240, 34, 119, 0.1);
+}
+
+.set-row-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.set-row-unit {
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Check Button */
+.set-row-check {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.set-row-check--completed {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.set-row-check--completed:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.set-row-check--log {
+  background: var(--color-category-bodyweight);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.set-row-check--log:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.set-row-check--log:active {
+  transform: scale(0.95);
+}
+
+.set-row-check .material-symbols-rounded {
+  font-size: 22px;
+}
+
+/* Target Info */
+.set-logger-target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem;
+  margin-top: 0.375rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  opacity: 0.8;
+}
+
+.set-logger-target .material-symbols-rounded {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Responsive Adjustments for very small screens */
+@media (max-width: 360px) {
+  .set-row {
+    gap: 0.5rem;
+    padding: 0.25rem;
+  }
+
+  .set-row-values {
+    gap: 0.375rem;
+  }
+
+  .set-row-value-btn {
+    padding: 0.25rem 0.375rem;
+  }
+
+  .set-row-value {
+    font-size: var(--font-size-base);
+  }
+
+  .set-row-pill {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    font-size: 0.625rem;
+  }
+
+  .set-row-check {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .set-row-check .material-symbols-rounded {
+    font-size: 20px;
+  }
 }
