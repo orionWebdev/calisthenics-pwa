@@ -13,7 +13,8 @@ const viewTitles = {
   calendar: 'Kalender',
   training: 'Training',
   workout: 'Workout',
-  profile: 'Profil'
+  profile: 'Profil',
+  allSessions: 'Alle Sessions'
 };
 
 // View icons for FAB
@@ -23,7 +24,8 @@ const viewIcons = {
   calendar: 'calendar_month',
   training: 'fitness_center',
   workout: 'fitness_center',
-  profile: 'account_circle'
+  profile: 'account_circle',
+  allSessions: 'history'
 };
 
 // Training tab state
@@ -84,6 +86,7 @@ function showView(viewName) {
   });
   const bottomNavBtn = document.querySelector(`.bottom-nav [data-view="${viewName}"]`);
   if (bottomNavBtn) bottomNavBtn.classList.add('active');
+  scheduleBottomNavIndicatorUpdate();
 
   // Update mobile header title and icon
   const mobileTitle = document.getElementById('mobile-view-title');
@@ -120,6 +123,10 @@ function showView(viewName) {
     refreshDashboard();
   }
 
+  if (viewName === 'allSessions' && typeof renderAllSessionsPage === 'function') {
+    renderAllSessionsPage();
+  }
+
   if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
     renderWorkoutScreen();
   }
@@ -133,6 +140,80 @@ function showView(viewName) {
   }
 
   currentView = viewName;
+}
+
+let bottomNavIndicatorRaf = null;
+let bottomNavIndicatorTimer = null;
+let bottomNavResizeObserver = null;
+let bottomNavObservedEl = null;
+
+function updateBottomNavLabels() {
+  if (typeof t !== 'function') return;
+  document.querySelectorAll('.bottom-nav-label[data-i18n]').forEach(label => {
+    const key = label.dataset.i18n;
+    if (key) label.textContent = t(key);
+  });
+}
+
+function updateBottomNavIndicator() {
+  const nav = document.querySelector('.bottom-nav');
+  if (!nav) return;
+  if (getComputedStyle(nav).display === 'none') return;
+  const indicator = nav.querySelector('.bottom-nav-indicator');
+  const activeItem = nav.querySelector('.bottom-nav-item.active');
+  if (!indicator || !activeItem) return;
+
+  const content = activeItem.querySelector('.bottom-nav-item-content') || activeItem;
+  if ('ResizeObserver' in window) {
+    if (!bottomNavResizeObserver) {
+      bottomNavResizeObserver = new ResizeObserver(() => scheduleBottomNavIndicatorUpdate());
+    }
+    if (bottomNavObservedEl !== content) {
+      if (bottomNavObservedEl) bottomNavResizeObserver.unobserve(bottomNavObservedEl);
+      bottomNavResizeObserver.observe(content);
+      bottomNavObservedEl = content;
+    }
+  }
+  const navRect = nav.getBoundingClientRect();
+  const itemRect = activeItem.getBoundingClientRect();
+  const contentRect = content.getBoundingClientRect();
+  const navStyles = getComputedStyle(nav);
+  const pillPadding = parseFloat(navStyles.getPropertyValue('--bottom-nav-pill-padding')) || 10;
+  const pillInset = parseFloat(navStyles.getPropertyValue('--bottom-nav-pill-inset')) || 4;
+  const pillTighten = parseFloat(navStyles.getPropertyValue('--bottom-nav-pill-tighten')) || 0;
+  const paddingLeft = parseFloat(navStyles.paddingLeft) || 0;
+  const paddingRight = parseFloat(navStyles.paddingRight) || 0;
+
+  const contentWidth = Math.max(content.scrollWidth, contentRect.width);
+  const navWidth = nav.clientWidth;
+  const innerWidth = Math.max(0, navWidth - paddingLeft - paddingRight);
+  const maxWidth = Math.max(48, innerWidth);
+  let width = Math.max(40, contentWidth + pillPadding * 2 - pillTighten);
+  width = Math.min(width, maxWidth);
+
+  const centerX = contentRect.left - (navRect.left + paddingLeft) + contentRect.width / 2;
+  let x = Math.round(centerX - width / 2);
+  const minX = pillInset;
+  const maxX = Math.max(minX, Math.round(innerWidth - width - pillInset));
+  x = Math.min(Math.max(x, minX), maxX);
+
+  nav.style.setProperty('--bottom-nav-indicator-x', `${x}px`);
+  nav.style.setProperty('--bottom-nav-indicator-width', `${Math.round(width)}px`);
+  nav.classList.add('bottom-nav--ready');
+}
+
+function scheduleBottomNavIndicatorUpdate() {
+  if (bottomNavIndicatorRaf) cancelAnimationFrame(bottomNavIndicatorRaf);
+  bottomNavIndicatorRaf = requestAnimationFrame(updateBottomNavIndicator);
+  clearTimeout(bottomNavIndicatorTimer);
+  bottomNavIndicatorTimer = setTimeout(updateBottomNavIndicator, 360);
+}
+
+function initBottomNav() {
+  updateBottomNavLabels();
+  scheduleBottomNavIndicatorUpdate();
+  window.addEventListener('resize', scheduleBottomNavIndicatorUpdate);
+  window.addEventListener('orientationchange', scheduleBottomNavIndicatorUpdate);
 }
 
 function updateFabIcon(viewName) {
@@ -355,6 +436,7 @@ async function initApp() {
  */
 async function init() {
   console.log('🔐 Initializing authentication...');
+  initBottomNav();
 
   try {
     // Initialize auth listener

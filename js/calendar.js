@@ -964,23 +964,35 @@ function renderTrainingTypesList(sessions, year, month) {
 
   const maxMinutes = typeData[0]?.minutes || 1;
 
-  const typeLabels = {
-    strength: typeof t === 'function' ? t('dashboard.trainingTypes.strength') : 'Krafttraining',
-    cardio: typeof t === 'function' ? t('dashboard.trainingTypes.cardio') : 'Cardio',
-    recovery: typeof t === 'function' ? t('dashboard.trainingTypes.recovery') : 'Recovery'
+  const typeConfig = {
+    strength: {
+      label: typeof t === 'function' ? t('dashboard.trainingTypes.strength') : 'Krafttraining',
+      icon: 'fitness_center'
+    },
+    cardio: {
+      label: typeof t === 'function' ? t('dashboard.trainingTypes.cardio') : 'Cardio',
+      icon: 'directions_run'
+    },
+    recovery: {
+      label: typeof t === 'function' ? t('dashboard.trainingTypes.recovery') : 'Recovery',
+      icon: 'self_improvement'
+    }
   };
 
   const items = typeData.map(item => {
-    const label = typeLabels[item.type] || item.type;
-    const durationText = typeof formatDurationText === 'function'
-      ? formatDurationText(item.minutes)
+    const config = typeConfig[item.type] || { label: item.type, icon: 'fitness_center' };
+    const durationText = typeof formatDurationMinutesText === 'function'
+      ? formatDurationMinutesText(item.minutes)
       : `${Math.floor(item.minutes / 60)}h ${item.minutes % 60}m`;
     const percentage = Math.round((item.minutes / maxMinutes) * 100);
 
     return `
       <div class="training-type-item">
         <div class="training-type-header">
-          <span class="training-type-label">${label}</span>
+          <span class="training-type-icon" style="color: ${item.color};">
+            <span class="material-symbols-rounded">${config.icon}</span>
+          </span>
+          <span class="training-type-label">${config.label}</span>
           <span class="training-type-duration">${durationText}</span>
         </div>
         <div class="training-type-bar-bg">
