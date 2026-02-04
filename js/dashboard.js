@@ -515,11 +515,14 @@ function renderRecentSessionsList(state) {
   const container = document.getElementById('recent-sessions-card');
   if (!container) return;
 
+  // Prüfe ob es mehr Sessions gibt als angezeigt werden
+  const allSessionsArray = Array.isArray(allSessions) ? allSessions : [];
+  const hasMoreSessions = allSessionsArray.length > DASHBOARD_RECENT_LIMIT;
+
   if (state.loading) {
     container.innerHTML = `
       <div class="dashboard-recent-header">
         <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
-        <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
       </div>
       <div class="dashboard-recent-empty">${tr('common.loading')}</div>
     `;
@@ -530,7 +533,6 @@ function renderRecentSessionsList(state) {
     container.innerHTML = `
       <div class="dashboard-recent-header">
         <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
-        <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
       </div>
       <div class="dashboard-recent-empty">${tr('dashboard.recent.empty')}</div>
     `;
@@ -564,16 +566,155 @@ function renderRecentSessionsList(state) {
     `;
   }).join('');
 
+  // Chevron nur anzeigen wenn mehr Sessions existieren
+  const chevronHtml = hasMoreSessions ? `
+    <span class="material-symbols-rounded dashboard-recent-chevron">chevron_right</span>
+  ` : '';
+
   container.innerHTML = `
-    <div class="dashboard-recent-header">
+    <div class="dashboard-recent-header${hasMoreSessions ? ' clickable' : ''}" ${hasMoreSessions ? 'onclick="navigateToAllSessions()" role="button" tabindex="0"' : ''}>
       <h3 class="dashboard-recent-title">${tr('dashboard.recent.title')}</h3>
-      <p class="dashboard-recent-description">${tr('dashboard.recent.description')}</p>
+      ${chevronHtml}
     </div>
     <div class="dashboard-recent-list">
       ${rows}
     </div>
   `;
 }
+
+function navigateToAllSessions() {
+  if (typeof showView === 'function') {
+    showView('allSessions');
+  }
+}
+
+// ========================================
+// ALL SESSIONS PAGE
+// ========================================
+
+function getDateGroupKey(date) {
+  if (!date) return 'earlier';
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const sessionDate = new Date(date);
+  sessionDate.setHours(0, 0, 0, 0);
+
+  if (sessionDate.getTime() === today.getTime()) {
+    return 'today';
+  }
+  if (sessionDate.getTime() === yesterday.getTime()) {
+    return 'yesterday';
+  }
+  return 'earlier';
+}
+
+function renderAllSessionsPage() {
+  const container = document.getElementById('all-sessions-list');
+  const titleEl = document.getElementById('all-sessions-title');
+
+  if (!container) return;
+
+  // Setze den i18n-Titel
+  if (titleEl) {
+    titleEl.textContent = tr('dashboard.allSessions.title');
+  }
+
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+
+  if (!sessions.length) {
+    container.innerHTML = `
+      <div class="all-sessions-empty">
+        <span class="material-symbols-rounded">history</span>
+        <p>${tr('dashboard.allSessions.empty')}</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Sortiere nach Datum (neueste zuerst)
+  const sortedSessions = sessions
+    .map(session => ({
+      session,
+      date: getSessionDateTime(session)
+    }))
+    .filter(item => item.date)
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .map(item => item.session);
+
+  // Gruppiere nach Datum
+  const groups = {
+    today: [],
+    yesterday: [],
+    earlier: []
+  };
+
+  sortedSessions.forEach(session => {
+    const date = getSessionDateTime(session);
+    const groupKey = getDateGroupKey(date);
+    groups[groupKey].push(session);
+  });
+
+  const groupLabels = {
+    today: tr('dashboard.allSessions.today'),
+    yesterday: tr('dashboard.allSessions.yesterday'),
+    earlier: tr('dashboard.allSessions.earlier')
+  };
+
+  let html = '';
+
+  ['today', 'yesterday', 'earlier'].forEach(groupKey => {
+    const groupSessions = groups[groupKey];
+    if (!groupSessions.length) return;
+
+    html += `
+      <div class="all-sessions-group">
+        <h3 class="all-sessions-group-title">${groupLabels[groupKey]}</h3>
+        <div class="all-sessions-group-list">
+    `;
+
+    groupSessions.forEach(session => {
+      const date = getSessionDateTime(session);
+      const duration = formatDurationShortText(getSessionDurationSeconds(session));
+      const typeLabel = session.type === 'cardio'
+        ? tr('common.cardio')
+        : session.type === 'recovery'
+          ? tr('common.recovery')
+          : tr('common.strength');
+      const distance = session.type === 'cardio' && session.distanceKm
+        ? ` | ${tr('format.distanceKm', { distance: Number(session.distanceKm).toFixed(1) })}`
+        : '';
+      const sessionId = session.id || '';
+
+      html += `
+        <button class="all-sessions-item" type="button" onclick="openSessionDetail('${sessionId}')">
+          <div class="all-sessions-item-main">
+            <div class="all-sessions-item-type ${session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength'}">${typeLabel}</div>
+            <div class="all-sessions-item-date">${formatDateTimeText(date)}</div>
+          </div>
+          <div class="all-sessions-item-meta">
+            <span>${duration}</span>
+            ${distance ? `<span>${distance}</span>` : ''}
+            <span class="material-symbols-rounded all-sessions-item-chevron">chevron_right</span>
+          </div>
+        </button>
+      `;
+    });
+
+    html += `
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+window.renderAllSessionsPage = renderAllSessionsPage;
 
 function openSessionDetail(sessionId) {
   if (!sessionId) return;
@@ -720,9 +861,10 @@ function formatDurationHoursMinutes(totalMinutes) {
 }
 
 /**
- * Formatiert Dauer als "Xh Xm" String
+ * Formatiert Dauer als "Xh Xm" String (für Activity Calendar)
+ * Erwartet Minuten als Input
  */
-function formatDurationText(totalMinutes) {
+function formatDurationMinutesText(totalMinutes) {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   if (hours > 0 && minutes > 0) {
@@ -953,13 +1095,14 @@ window.addWorkoutOfType = addWorkoutOfType;
 window.openLogWorkoutTypeSheet = openLogWorkoutTypeSheet;
 window.openPlanWorkoutSheet = openPlanWorkoutSheet;
 window.openStartWorkoutFromPlanSheet = openStartWorkoutFromPlanSheet;
+window.navigateToAllSessions = navigateToAllSessions;
 
 // Shared Activity Calendar functions (used by calendar.js)
 window.aggregateDayByType = aggregateDayByType;
 window.getSizeFromMinutes = getSizeFromMinutes;
 window.renderNestedDots = renderNestedDots;
 window.aggregateSessionsByType = aggregateSessionsByType;
-window.formatDurationText = formatDurationText;
+window.formatDurationMinutesText = formatDurationMinutesText;
 window.renderActivityCalendarGrid = renderActivityCalendarGrid;
 window.getDashboardSessionsByDate = getDashboardSessionsByDate;
 window.getSessionDurationSeconds = getSessionDurationSeconds;

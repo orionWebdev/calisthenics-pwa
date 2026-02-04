@@ -221,6 +221,11 @@
     <!-- DASHBOARD VIEW -->
     <div id="view-dashboard" class="view active">
 
+      <!-- Log Workout CTA -->
+      <div id="dashboard-log-workout-card" class="dashboard-card mb-6">
+        <!-- Wird von JavaScript gefüllt -->
+      </div>
+
       <!-- Activity Calendar Widget (Suunto Style) -->
       <div id="dashboard-activity-calendar" class="dashboard-card mb-4" onclick="navigateToActivityCalendar()">
         <!-- Wird von JavaScript gefüllt -->
@@ -231,16 +236,29 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Log Workout CTA -->
-      <div id="dashboard-log-workout-card" class="dashboard-card mb-6">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
       <!-- Recent Sessions -->
       <div id="recent-sessions-card" class="dashboard-card">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
+    </div>
+
+    <!-- ALL SESSIONS VIEW -->
+    <div id="view-allSessions" class="view hidden">
+      <div class="all-sessions-page">
+        <!-- Header mit Back-Button -->
+        <div class="all-sessions-header">
+          <button class="all-sessions-back-btn" onclick="showView('dashboard')" aria-label="Zurück">
+            <span class="material-symbols-rounded">arrow_back</span>
+          </button>
+          <h2 class="all-sessions-title" id="all-sessions-title">Alle Sessions</h2>
+        </div>
+
+        <!-- Sessions Liste -->
+        <div id="all-sessions-list" class="all-sessions-list">
+          <!-- Wird von JavaScript gefüllt -->
+        </div>
+      </div>
     </div>
 
         <!-- TRAINING VIEW -->
@@ -253,7 +271,6 @@
             onclick="switchTrainingTab('plans')"
             data-tab="plans"
           >
-            <span class="material-symbols-rounded">assignment</span>
             <span>Pläne</span>
           </button>
           <button
@@ -261,7 +278,6 @@
             onclick="switchTrainingTab('exercises')"
             data-tab="exercises"
           >
-            <span class="material-symbols-rounded">fitness_center</span>
             <span>Übungen</span>
           </button>
         </div>
@@ -270,10 +286,6 @@
       <div id="training-tab-plans" class="training-tab active">
         <!-- Header mit Add Button -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <div>
-            <h2 class="text-2xl sm:text-3xl font-bold mb-2">Trainingspläne</h2>
-            <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Workouts</p>
-          </div>
           <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
             <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
             <span>Neuer Plan</span>
@@ -338,10 +350,6 @@
       <div id="training-tab-exercises" class="training-tab">
         <!-- Header mit Add Button -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <div>
-            <h2 class="text-2xl sm:text-3xl font-bold mb-2">Übungen</h2>
-            <p class="text-sm sm:text-base text-gray-400">Erstelle und verwalte deine Übungen</p>
-          </div>
           <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
             <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
             <span>Neue Übung</span>

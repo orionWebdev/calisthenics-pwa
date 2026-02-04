@@ -22,6 +22,7 @@ const translations = {
       select: 'Auswahl',
       start: 'Starten',
       startAgain: 'Erneut starten',
+      editSession: 'Session bearbeiten',
       duration: 'Dauer',
       notes: 'Notizen',
       activity: 'Aktivitaet',
@@ -391,7 +392,15 @@ const translations = {
       recent: {
         title: 'Letzte Sessions',
         description: 'Die letzten Sessions in chronologischer Reihenfolge.',
-        empty: 'Noch keine Sessions'
+        empty: 'Noch keine Sessions',
+        viewAll: 'Alle anzeigen'
+      },
+      allSessions: {
+        title: 'Alle Sessions',
+        empty: 'Noch keine Sessions vorhanden',
+        today: 'Heute',
+        yesterday: 'Gestern',
+        earlier: 'Frueher'
       },
       activityCalendar: {
         thisMonth: 'Diesen Monat',

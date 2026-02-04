@@ -13,7 +13,8 @@ const viewTitles = {
   calendar: 'Kalender',
   training: 'Training',
   workout: 'Workout',
-  profile: 'Profil'
+  profile: 'Profil',
+  allSessions: 'Alle Sessions'
 };
 
 // View icons for FAB
@@ -23,7 +24,8 @@ const viewIcons = {
   calendar: 'calendar_month',
   training: 'fitness_center',
   workout: 'fitness_center',
-  profile: 'account_circle'
+  profile: 'account_circle',
+  allSessions: 'history'
 };
 
 // Training tab state
@@ -119,6 +121,10 @@ function showView(viewName) {
 
   if (viewName === 'dashboard' && typeof refreshDashboard === 'function') {
     refreshDashboard();
+  }
+
+  if (viewName === 'allSessions' && typeof renderAllSessionsPage === 'function') {
+    renderAllSessionsPage();
   }
 
   if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {

@@ -981,8 +981,8 @@ function renderTrainingTypesList(sessions, year, month) {
 
   const items = typeData.map(item => {
     const config = typeConfig[item.type] || { label: item.type, icon: 'fitness_center' };
-    const durationText = typeof formatDurationText === 'function'
-      ? formatDurationText(item.minutes)
+    const durationText = typeof formatDurationMinutesText === 'function'
+      ? formatDurationMinutesText(item.minutes)
       : `${Math.floor(item.minutes / 60)}h ${item.minutes % 60}m`;
     const percentage = Math.round((item.minutes / maxMinutes) * 100);
 
