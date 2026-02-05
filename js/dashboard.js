@@ -2,10 +2,12 @@
 // DASHBOARD - SESSIONS ONLY
 // ========================================
 
-const DASHBOARD_RECENT_LIMIT = 5;
+const DASHBOARD_RECENT_LIMIT = 3;
 // Dashboard Hybrid Balance fixed to 7 days - no toggle
 const DASHBOARD_BALANCE_DAYS = 7;
 let dashboardIsLoading = false;
+// Dashboard Activity Calendar state
+let dashboardActivityMonth = new Date();
 
 const tr = (key, params) => (typeof t === 'function' ? t(key, params) : key);
 
@@ -969,13 +971,65 @@ function renderActivityCalendarGrid(options) {
   return html;
 }
 
+function navigateDashboardActivityMonth(direction) {
+  dashboardActivityMonth.setMonth(dashboardActivityMonth.getMonth() + (direction === 'next' ? 1 : -1));
+  renderDashboardActivityCalendar({ loading: false });
+}
+
+function openDashboardActivityDaySheet(dateKey) {
+  // Use existing openActivityDaySheet from progressv2.js if available
+  if (typeof openActivityDaySheet === 'function') {
+    openActivityDaySheet(dateKey);
+    return;
+  }
+
+  // Fallback: get sessions and show basic info
+  const sessions = typeof getSessionsForDate === 'function' ? getSessionsForDate(dateKey) : [];
+  const date = new Date(dateKey + 'T12:00:00');
+  const monthNamesFull = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                          'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+  if (typeof openSheet === 'function') {
+    openSheet({
+      title: `Sessions am ${date.getDate()}. ${monthNamesFull[date.getMonth()]}`,
+      render: (sheetContainer) => {
+        if (sessions.length === 0) {
+          const emptyText = tr('dashboard.activityCalendar.emptyState') || 'Keine Sessions an diesem Tag';
+          sheetContainer.innerHTML = `
+            <div class="activity-day-empty">
+              <span class="material-symbols-rounded">event_busy</span>
+              <p>${emptyText}</p>
+            </div>
+          `;
+          return;
+        }
+
+        sheetContainer.innerHTML = sessions.map(session => {
+          const typeLabel = session.type === 'cardio' ? 'Cardio' : session.type === 'recovery' ? 'Recovery' : 'Kraft';
+          const durationSec = getSessionDurationSeconds(session);
+          const duration = Math.round(durationSec / 60);
+
+          return `
+            <div class="activity-session-item">
+              <div class="session-item-content">
+                <span class="session-type-badge ${session.type}">${typeLabel}</span>
+                <span class="session-duration">${duration} min</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    });
+  }
+}
+
 function renderDashboardActivityCalendar(state) {
   const container = document.getElementById('dashboard-activity-calendar');
   if (!container) return;
 
   if (state.loading) {
     container.innerHTML = `
-      <div class="dashboard-activity-widget">
+      <div class="dashboard-activity-widget-expanded">
         <div class="dashboard-activity-loading">${tr('common.loading')}</div>
       </div>
     `;
@@ -983,16 +1037,15 @@ function renderDashboardActivityCalendar(state) {
   }
 
   const sessions = Array.isArray(allSessions) ? allSessions : [];
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
+  const year = dashboardActivityMonth.getFullYear();
+  const month = dashboardActivityMonth.getMonth();
 
-  const totalMinutes = getDashboardMonthDuration(sessions);
   const sessionsByDate = getDashboardSessionsByDate(sessions, year, month);
 
-  // Get current month name
-  const monthNames = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-  const monthName = monthNames[month];
+  // Full month names for display
+  const monthNamesFull = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                          'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  const monthDisplay = `${monthNamesFull[month]} ${year}`;
 
   // Build mini calendar grid (current month only, compact 7-column)
   const firstDay = new Date(year, month, 1);
@@ -1004,17 +1057,17 @@ function renderDashboardActivityCalendar(state) {
   today.setHours(0, 0, 0, 0);
 
   // Day labels (abbreviated)
-  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
-  let calendarHTML = `<div class="dashboard-mini-calendar">`;
-  calendarHTML += `<div class="mini-cal-header">`;
-  calendarHTML += dayLabels.map(d => `<span class="mini-cal-day-label">${d}</span>`).join('');
+  let calendarHTML = `<div class="dashboard-mini-calendar-expanded">`;
+  calendarHTML += `<div class="mini-cal-header-expanded">`;
+  calendarHTML += dayLabels.map(d => `<span class="mini-cal-day-label-expanded">${d}</span>`).join('');
   calendarHTML += `</div>`;
-  calendarHTML += `<div class="mini-cal-grid">`;
+  calendarHTML += `<div class="mini-cal-grid-expanded">`;
 
   // Empty cells for previous month
   for (let i = 0; i < startDay; i++) {
-    calendarHTML += `<div class="mini-cal-cell empty"></div>`;
+    calendarHTML += `<div class="mini-cal-cell-expanded empty"></div>`;
   }
 
   // Days of current month
@@ -1029,9 +1082,14 @@ function renderDashboardActivityCalendar(state) {
     const dotHTML = renderNestedDots(aggregatedDots);
 
     const todayClass = isToday ? 'today' : '';
+    const hasSessionsClass = daySessions.length > 0 ? 'has-sessions' : '';
 
     calendarHTML += `
-      <div class="mini-cal-cell ${todayClass}">
+      <div class="mini-cal-cell-expanded ${todayClass} ${hasSessionsClass}"
+           onclick="openDashboardActivityDaySheet('${dateKey}')"
+           role="button"
+           tabindex="0">
+        <span class="mini-cal-day-number">${day}</span>
         ${dotHTML}
       </div>
     `;
@@ -1039,16 +1097,74 @@ function renderDashboardActivityCalendar(state) {
 
   calendarHTML += `</div></div>`;
 
+  // Build training types list
+  const trainingTypesHTML = renderDashboardTrainingTypesList(sessions, year, month);
+
   container.innerHTML = `
-    <div class="dashboard-activity-widget" role="button" tabindex="0">
-      <div class="dashboard-activity-left">
-        <span class="dashboard-activity-label">${tr('dashboard.activityCalendar.thisMonth') || 'Diesen Monat'}</span>
-        <div class="dashboard-activity-duration">${formatDurationHoursMinutes(totalMinutes)}</div>
-        <span class="dashboard-activity-unit">${tr('dashboard.activityCalendar.durationUnit') || 'Duration h'}</span>
+    <div class="dashboard-activity-widget-expanded">
+      <div class="dashboard-activity-month-nav">
+        <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('prev')" aria-label="Vorheriger Monat">
+          <span class="material-symbols-rounded">chevron_left</span>
+        </button>
+        <span class="activity-month-title">${monthDisplay}</span>
+        <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('next')" aria-label="Nächster Monat">
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
       </div>
-      <div class="dashboard-activity-right">
-        ${calendarHTML}
+      ${calendarHTML}
+      ${trainingTypesHTML}
+    </div>
+  `;
+}
+
+function renderDashboardTrainingTypesList(sessions, year, month) {
+  const typeData = aggregateSessionsByType(sessions, year, month);
+
+  if (typeData.length === 0) {
+    return '';
+  }
+
+  const maxMinutes = typeData[0]?.minutes || 1;
+
+  const typeConfig = {
+    strength: {
+      label: tr('dashboard.trainingTypes.strength') || 'Krafttraining',
+      icon: 'fitness_center'
+    },
+    cardio: {
+      label: tr('dashboard.trainingTypes.cardio') || 'Cardio',
+      icon: 'directions_run'
+    },
+    recovery: {
+      label: tr('dashboard.trainingTypes.recovery') || 'Recovery',
+      icon: 'self_improvement'
+    }
+  };
+
+  const items = typeData.map(item => {
+    const config = typeConfig[item.type] || { label: item.type, icon: 'fitness_center' };
+    const durationText = formatDurationMinutesText(item.minutes);
+    const percentage = Math.round((item.minutes / maxMinutes) * 100);
+
+    return `
+      <div class="dashboard-training-type-item">
+        <div class="dashboard-training-type-header">
+          <span class="dashboard-training-type-icon" style="color: ${item.color};">
+            <span class="material-symbols-rounded">${config.icon}</span>
+          </span>
+          <span class="dashboard-training-type-label">${config.label}</span>
+          <span class="dashboard-training-type-duration">${durationText}</span>
+        </div>
+        <div class="dashboard-training-type-bar-bg">
+          <div class="dashboard-training-type-bar" style="width: ${percentage}%; background: ${item.color};"></div>
+        </div>
       </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="dashboard-training-types-list">
+      ${items}
     </div>
   `;
 }
@@ -1096,6 +1212,8 @@ window.openLogWorkoutTypeSheet = openLogWorkoutTypeSheet;
 window.openPlanWorkoutSheet = openPlanWorkoutSheet;
 window.openStartWorkoutFromPlanSheet = openStartWorkoutFromPlanSheet;
 window.navigateToAllSessions = navigateToAllSessions;
+window.navigateDashboardActivityMonth = navigateDashboardActivityMonth;
+window.openDashboardActivityDaySheet = openDashboardActivityDaySheet;
 
 // Shared Activity Calendar functions (used by calendar.js)
 window.aggregateDayByType = aggregateDayByType;

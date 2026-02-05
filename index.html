@@ -226,8 +226,8 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Activity Calendar Widget (Suunto Style) -->
-      <div id="dashboard-activity-calendar" class="dashboard-card mb-4" onclick="navigateToActivityCalendar()">
+      <!-- Activity Calendar Widget (Expanded with Month Navigation) -->
+      <div id="dashboard-activity-calendar" class="dashboard-card mb-4">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
@@ -450,43 +450,25 @@
 
     </div>
 
-    <!-- CALENDAR VIEW -->
+    <!-- CALENDAR VIEW (Plan Calendar Only) -->
     <div id="view-calendar" class="view hidden">
-      
-      <!-- Header mit View Switcher -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <div class="segmented-control calendar-segmented w-full sm:w-auto">
-          <button onclick="setCalendarView('activity')" class="segmented-btn flex-1 sm:flex-none" data-view="activity">
-            <span>Aktivitätskalender</span>
-          </button>
-          <button onclick="setCalendarView('plan')" class="segmented-btn active flex-1 sm:flex-none" data-view="plan">
-            <span>Plankalender</span>
-          </button>
-        </div>
-      </div>
 
       <!-- Navigation -->
       <div class="bg-gray-800 rounded-xl p-3 sm:p-4 mb-6 border border-gray-700 flex items-center justify-between">
         <button onclick="navigateCalendar('prev')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
           ← <span class="hidden sm:inline">Zurück</span>
         </button>
-        
+
         <div class="text-center">
           <h3 id="calendar-title" class="text-lg sm:text-2xl font-bold">Januar 2026</h3>
           <button onclick="goToToday()" class="text-xs sm:text-sm text-blue-400 hover:text-blue-300 mt-1">
             Heute
           </button>
         </div>
-        
+
         <button onclick="navigateCalendar('next')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
           <span class="hidden sm:inline">Weiter</span> →
         </button>
-      </div>
-      <!-- Activity Calendar View -->
-      <div id="calendar-activity-view" class="calendar-view">
-        <div id="calendar-activity-container" class="activity-calendar-section">
-          <!-- Wird von JavaScript gefüllt -->
-        </div>
       </div>
 
       <!-- Plan Calendar View (Month View) -->

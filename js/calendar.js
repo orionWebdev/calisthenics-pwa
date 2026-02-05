@@ -3,8 +3,7 @@
 // ========================================
 
 // Calendar State
-let currentCalendarView = 'plan'; // 'activity' or 'plan' - Default: plan
-let calendarActivityDate = new Date(); // Current displayed month for activity calendar in calendar view
+let currentCalendarView = 'plan'; // Only plan view now (activity calendar moved to dashboard)
 let currentDate = new Date();
 let scheduleData = []; // Alle geplanten Trainings
 let selectedDateForPlan = null;
@@ -47,22 +46,12 @@ async function loadSchedule() {
 // CALENDAR VIEW SWITCHING
 // ========================================
 
-function setCalendarView(view) {
-  currentCalendarView = view;
+function setCalendarView() {
+  // Only plan view is supported now (activity calendar moved to dashboard)
+  currentCalendarView = 'plan';
 
-  // Update buttons
-  document.querySelectorAll('.calendar-segmented .segmented-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  const activeBtn = document.querySelector(`.calendar-segmented [data-view="${view}"]`);
-  if (activeBtn) activeBtn.classList.add('active');
-
-  // Show/hide views
-  const activityView = document.getElementById('calendar-activity-view');
   const planView = document.getElementById('calendar-plan-view');
-
-  if (activityView) activityView.classList.toggle('active', view === 'activity');
-  if (planView) planView.classList.toggle('active', view === 'plan');
+  if (planView) planView.classList.add('active');
 
   renderCalendar();
 }
@@ -72,11 +61,7 @@ function setCalendarView(view) {
 // ========================================
 
 function navigateCalendar(direction) {
-  if (currentCalendarView === 'activity') {
-    calendarActivityDate.setMonth(calendarActivityDate.getMonth() + (direction === 'next' ? 1 : -1));
-  } else {
-    currentDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
-  }
+  currentDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
   renderCalendar();
 }
 
@@ -97,12 +82,7 @@ function openCalendarQuickPlan() {
 function renderCalendar() {
   try {
     updateCalendarTitle();
-
-    if (currentCalendarView === 'activity') {
-      renderCalendarActivityView();
-    } else {
-      renderMonthView();
-    }
+    renderMonthView();
   } catch (error) {
     console.error('Error rendering calendar:', error);
   }
@@ -116,11 +96,7 @@ function updateCalendarTitle() {
     return;
   }
 
-  if (currentCalendarView === 'activity') {
-    title.textContent = `${monthNames[calendarActivityDate.getMonth()]} ${calendarActivityDate.getFullYear()}`;
-  } else {
-    title.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-  }
+  title.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
 }
 
 // ========================================
