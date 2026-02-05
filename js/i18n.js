@@ -37,7 +37,8 @@ const translations = {
       next: 'Weiter',
       back: 'Zurueck',
       done: 'Fertig',
-      optional: 'optional'
+      optional: 'optional',
+      minutes: 'Minuten'
     },
     nav: {
       dashboard: 'Home',
@@ -363,6 +364,13 @@ const translations = {
       }
     },
     dashboard: {
+      today: 'Heute',
+      quickStats: {
+        thisWeek: 'Diese Woche',
+        sessions: 'Sessions',
+        average: 'Durchschnitt',
+        avgPeriodDays: 'letzte 14 Tage'
+      },
       primary: {
         title: 'Workout',
         subtitleActive: 'Ein Workout ist aktiv.',

@@ -10,6 +10,14 @@ let edgeFeedbackQueue = [];
 let edgeFeedbackActive = false;
 let lastEdgeFeedback = { type: null, time: 0 };
 
+function getEdgeFeedbackTarget() {
+  const bottomNav = document.querySelector('.bottom-nav');
+  if (bottomNav && getComputedStyle(bottomNav).display !== 'none') return bottomNav;
+  const desktopNav = document.querySelector('.desktop-nav');
+  if (desktopNav && getComputedStyle(desktopNav).display !== 'none') return desktopNav;
+  return null;
+}
+
 function showEdgeFeedback(type = 'success', message = '', options = {}) {
   const normalizedType = type === 'error' ? 'error' : 'success';
   const now = Date.now();
@@ -42,22 +50,20 @@ function runEdgeFeedbackQueue() {
 
   edgeFeedbackActive = true;
 
-  const glow = document.getElementById('screen-edge-glow');
-  if (!glow) {
+  updateEdgeFeedbackMessage(next.message);
+
+  const target = getEdgeFeedbackTarget();
+  if (!target) {
     edgeFeedbackActive = false;
+    setTimeout(runEdgeFeedbackQueue, 150);
     return;
   }
 
-  glow.classList.remove('edge-success', 'edge-error');
-  glow.classList.add(`edge-${next.type}`);
-  glow.style.setProperty('--edge-duration', `${next.duration}ms`);
-
-  updateEdgeFeedbackMessage(next.message);
-
-  glow.classList.add('active');
+  target.classList.remove('edge-success', 'edge-error', 'edge-feedback-active');
+  target.classList.add(`edge-${next.type}`, 'edge-feedback-active');
 
   setTimeout(() => {
-    glow.classList.remove('active');
+    target.classList.remove('edge-feedback-active', `edge-${next.type}`);
     setTimeout(runEdgeFeedbackQueue, 150);
   }, next.duration);
 }
