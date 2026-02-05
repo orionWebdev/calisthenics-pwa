@@ -678,14 +678,28 @@ input, textarea, select, button {
   backdrop-filter: blur(12px);
   border: 2px solid var(--color-secondary-light);
   border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --desktop-nav-shadow-base: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --desktop-nav-feedback-shadow: 0 8px 32px rgba(240, 34, 119, 0.3);
+  box-shadow: var(--desktop-nav-shadow-base);
   z-index: 1000;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 220ms ease;
 }
 
 .desktop-nav.nav-hidden {
   transform: translateX(-50%) translateY(-120%);
   opacity: 0;
+}
+
+.desktop-nav.edge-feedback-active {
+  box-shadow: var(--desktop-nav-shadow-base), var(--desktop-nav-feedback-shadow);
+}
+
+.desktop-nav.edge-success {
+  --desktop-nav-feedback-shadow: 0 10px 36px rgba(34, 197, 94, 0.55);
+}
+
+.desktop-nav.edge-error {
+  --desktop-nav-feedback-shadow: 0 10px 36px rgba(239, 68, 68, 0.55);
 }
 
 .nav-btn {
@@ -1920,12 +1934,13 @@ input, textarea, select, button {
 }
 
 .dashboard-today-header {
-  padding: 1rem 1.5rem 0.25rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
 .dashboard-today-title {
   margin: 0;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: #fff;
 }
@@ -3098,7 +3113,6 @@ input, textarea, select, button {
   right: auto;
   width: 90%;
   transform: translateX(-50%);
-  background-color: #222831;
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(75, 85, 99, 0.35);
   border-radius: 999px;
@@ -3106,7 +3120,10 @@ input, textarea, select, button {
   height: 56px;
   padding: 0 0.35rem;
   z-index: 1000;
-  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.35);
+  --bottom-nav-shadow-base: 0 -6px 18px rgba(0, 0, 0, 0.35);
+  --bottom-nav-feedback-shadow: 0 8px 32px rgba(240, 34, 119, 0.3);
+  box-shadow: var(--bottom-nav-shadow-base);
+  transition: box-shadow 220ms ease;
   align-items: center;
   justify-content: space-between;
   gap: 0.25rem;
@@ -3119,6 +3136,18 @@ input, textarea, select, button {
   --bottom-nav-pill-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
   --bottom-nav-indicator-x: 0px;
   --bottom-nav-indicator-width: 64px;
+}
+
+.bottom-nav.edge-feedback-active {
+  box-shadow: var(--bottom-nav-shadow-base), var(--bottom-nav-feedback-shadow);
+}
+
+.bottom-nav.edge-success {
+  --bottom-nav-feedback-shadow: 0 8px 32px rgba(34, 197, 94, 0.35);
+}
+
+.bottom-nav.edge-error {
+  --bottom-nav-feedback-shadow: 0 8px 32px rgba(239, 68, 68, 0.35);
 }
 
 /* Bottom Nav - kein ::after mehr noetig da safe-area im bottom-Wert */

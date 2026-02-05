@@ -516,6 +516,19 @@ function renderLogWorkoutCard(state) {
   const container = document.getElementById('dashboard-log-workout-card');
   if (!container) return;
 
+  const todayTitle = tr('dashboard.today') || 'Heute';
+  const todayDate = typeof formatDateLongText === 'function'
+    ? formatDateLongText(new Date(), false)
+    : new Intl.DateTimeFormat('de-DE', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    }).format(new Date());
+  const todayTitleEl = document.getElementById('dashboard-today-title');
+  const todayDateEl = document.getElementById('dashboard-today-date');
+  if (todayTitleEl) todayTitleEl.textContent = todayTitle;
+  if (todayDateEl) todayDateEl.textContent = todayDate;
+
   if (state.loading) {
     container.innerHTML = `
       <div class="dashboard-log-workout-loading">
@@ -525,20 +538,7 @@ function renderLogWorkoutCard(state) {
     return;
   }
 
-  const todayTitle = tr('dashboard.today') || 'Heute';
-  const todayDate = typeof formatDateLongText === 'function'
-    ? formatDateLongText(new Date(), false)
-    : new Intl.DateTimeFormat('de-DE', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long'
-    }).format(new Date());
-
   container.innerHTML = `
-    <div class="dashboard-today-header">
-      <h3 class="dashboard-today-title">${todayTitle}</h3>
-      <p class="dashboard-today-date">${todayDate}</p>
-    </div>
     <button class="dashboard-log-workout-btn" type="button" onclick="openAddWorkoutSheet()">
       <div class="dashboard-log-workout-content">
         <h3 class="dashboard-log-workout-title">${tr('dashboard.logWorkout.title')}</h3>
