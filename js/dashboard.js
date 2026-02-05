@@ -21,12 +21,14 @@ function getSessionDate(session) {
 }
 
 function getSessionDateTime(session) {
+  const sessionDate = getSessionDate(session);
+  if (sessionDate) return sessionDate;
   if (session?.createdAt?.toDate) {
     return session.createdAt.toDate();
   }
   const createdParsed = new Date(session?.createdAt);
   if (!Number.isNaN(createdParsed.getTime())) return createdParsed;
-  return getSessionDate(session);
+  return null;
 }
 
 function getSessionDurationSeconds(session) {
@@ -46,6 +48,76 @@ function getBerlinDateKey(date) {
     day: '2-digit'
   });
   return formatter.format(date);
+}
+
+// ========================================
+// QUICK STATS HELPERS
+// ========================================
+
+const QUICK_STATS_AVG_DAYS = 14;
+
+/**
+ * Berechnet die ISO-Wochennummer für ein Datum (Europe/Berlin)
+ * @returns {Object} { year, week } - ISO Jahr und Wochennummer
+ */
+function getISOWeekBerlin(date) {
+  // Konvertiere zu Berlin-Zeit
+  const berlinDate = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+  berlinDate.setHours(0, 0, 0, 0);
+
+  // ISO-Woche: Woche beginnt am Montag, erste Woche enthält den 4. Januar
+  const thursday = new Date(berlinDate);
+  thursday.setDate(berlinDate.getDate() - ((berlinDate.getDay() + 6) % 7) + 3);
+
+  const firstThursday = new Date(thursday.getFullYear(), 0, 4);
+  firstThursday.setDate(firstThursday.getDate() - ((firstThursday.getDay() + 6) % 7) + 3);
+
+  const weekNumber = Math.round((thursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
+
+  return { year: thursday.getFullYear(), week: weekNumber };
+}
+
+/**
+ * Zählt Sessions in der aktuellen Kalenderwoche (ISO, Europe/Berlin)
+ */
+function getSessionsThisWeekCount(sessions) {
+  if (!Array.isArray(sessions) || sessions.length === 0) return 0;
+
+  const now = new Date();
+  const currentWeek = getISOWeekBerlin(now);
+
+  return sessions.filter(session => {
+    const date = getSessionDate(session);
+    if (!date) return false;
+    const sessionWeek = getISOWeekBerlin(date);
+    return sessionWeek.year === currentWeek.year && sessionWeek.week === currentWeek.week;
+  }).length;
+}
+
+/**
+ * Berechnet die durchschnittliche Session-Dauer in Minuten (letzte 14 Tage)
+ */
+function getAvgSessionMinutes(sessions, rangeDays = QUICK_STATS_AVG_DAYS) {
+  if (!Array.isArray(sessions) || sessions.length === 0) return 0;
+
+  const now = new Date();
+  const cutoff = new Date(now.getTime() - rangeDays * 24 * 60 * 60 * 1000);
+  const cutoffKey = getBerlinDateKey(cutoff);
+
+  const recentSessions = sessions.filter(session => {
+    const date = getSessionDate(session);
+    if (!date) return false;
+    return getBerlinDateKey(date) >= cutoffKey;
+  });
+
+  if (recentSessions.length === 0) return 0;
+
+  const totalSeconds = recentSessions.reduce((sum, session) => {
+    return sum + getSessionDurationSeconds(session);
+  }, 0);
+
+  const avgSeconds = totalSeconds / recentSessions.length;
+  return Math.round(avgSeconds / 60);
 }
 
 function getBalanceContextLabelKey(strengthSec, cardioSec) {
@@ -138,7 +210,10 @@ async function useDashboardData() {
       contextLabelKey: 'balance.context.lowData'
     },
     recentSessions: [],
-    scheduledWorkouts: []
+    scheduledWorkouts: [],
+    // Quick Stats
+    sessionsThisWeekCount: 0,
+    avgSessionMinutes: 0
   };
 
   try {
@@ -152,6 +227,10 @@ async function useDashboardData() {
     state.balance = buildBalanceData(sessions, DASHBOARD_BALANCE_DAYS);
     state.recentSessions = getRecentSessions(sessions, DASHBOARD_RECENT_LIMIT);
     state.scheduledWorkouts = getTodaysScheduledWorkouts();
+
+    // Quick Stats berechnen
+    state.sessionsThisWeekCount = getSessionsThisWeekCount(sessions);
+    state.avgSessionMinutes = getAvgSessionMinutes(sessions, QUICK_STATS_AVG_DAYS);
   } catch (error) {
     console.error('Error loading dashboard data:', error);
     state.error = error;
@@ -446,7 +525,20 @@ function renderLogWorkoutCard(state) {
     return;
   }
 
+  const todayTitle = tr('dashboard.today') || 'Heute';
+  const todayDate = typeof formatDateLongText === 'function'
+    ? formatDateLongText(new Date(), false)
+    : new Intl.DateTimeFormat('de-DE', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    }).format(new Date());
+
   container.innerHTML = `
+    <div class="dashboard-today-header">
+      <h3 class="dashboard-today-title">${todayTitle}</h3>
+      <p class="dashboard-today-date">${todayDate}</p>
+    </div>
     <button class="dashboard-log-workout-btn" type="button" onclick="openAddWorkoutSheet()">
       <div class="dashboard-log-workout-content">
         <h3 class="dashboard-log-workout-title">${tr('dashboard.logWorkout.title')}</h3>
@@ -454,6 +546,57 @@ function renderLogWorkoutCard(state) {
       </div>
       <span class="material-symbols-rounded dashboard-log-workout-icon">add</span>
     </button>
+  `;
+}
+
+// ========================================
+// QUICK STATS WIDGET
+// ========================================
+
+function renderQuickStatsWidget(state) {
+  const container = document.getElementById('dashboard-quick-stats');
+  if (!container) return;
+
+  if (state.loading) {
+    container.innerHTML = `
+      <div class="quick-stats-grid">
+        <div class="quick-stats-card">
+          <div class="quick-stats-skeleton"></div>
+        </div>
+        <div class="quick-stats-card">
+          <div class="quick-stats-skeleton"></div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const sessionsCount = state.sessionsThisWeekCount || 0;
+  const avgMinutes = state.avgSessionMinutes || 0;
+
+  container.innerHTML = `
+    <div class="quick-stats-grid">
+      <div class="quick-stats-card">
+        <div class="quick-stats-header">
+          <span class="quick-stats-label">${tr('dashboard.quickStats.thisWeek')}</span>
+          <span class="quick-stats-icon">
+            <span class="material-symbols-rounded">fitness_center</span>
+          </span>
+        </div>
+        <div class="quick-stats-value">${sessionsCount}</div>
+        <div class="quick-stats-subtext">${tr('dashboard.quickStats.sessions')}</div>
+      </div>
+      <div class="quick-stats-card">
+        <div class="quick-stats-header">
+          <span class="quick-stats-label">${tr('dashboard.quickStats.average')}</span>
+          <span class="quick-stats-icon">
+            <span class="material-symbols-rounded">schedule</span>
+          </span>
+        </div>
+        <div class="quick-stats-value">${avgMinutes}</div>
+        <div class="quick-stats-subtext">${tr('common.minutes')}</div>
+      </div>
+    </div>
   `;
 }
 
@@ -1175,8 +1318,9 @@ async function refreshDashboard() {
 
   const data = await useDashboardData();
   renderScheduledWorkoutsCard(data);
-  renderDashboardActivityCalendar(data);
   renderLogWorkoutCard(data);
+  renderQuickStatsWidget(data);
+  renderDashboardActivityCalendar(data);
   renderRecentSessionsList(data);
 
   dashboardIsLoading = false;

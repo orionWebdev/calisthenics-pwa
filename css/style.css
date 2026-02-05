@@ -1919,6 +1919,23 @@ input, textarea, select, button {
   overflow: hidden;
 }
 
+.dashboard-today-header {
+  padding: 1rem 1.5rem 0.25rem;
+}
+
+.dashboard-today-title {
+  margin: 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: #fff;
+}
+
+.dashboard-today-date {
+  margin: 0.15rem 0 0;
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.65);
+}
+
 .dashboard-log-workout-btn {
   width: 100%;
   display: flex;
@@ -1973,6 +1990,82 @@ input, textarea, select, button {
   padding: 1.25rem;
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================
+   QUICK STATS WIDGET
+   ======================================== */
+
+.quick-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.quick-stats-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius-xl);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.quick-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.quick-stats-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.quick-stats-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+}
+
+.quick-stats-icon .material-symbols-rounded {
+  font-size: 1.25rem;
+}
+
+.quick-stats-value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.quick-stats-subtext {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Quick Stats Skeleton Loading */
+.quick-stats-skeleton {
+  height: 4.5rem;
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface) 0%,
+    var(--bg-surface-hover) 50%,
+    var(--bg-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: quick-stats-shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes quick-stats-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Hybrid Balance Card */

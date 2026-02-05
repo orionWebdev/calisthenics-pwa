@@ -34,11 +34,17 @@ async function loadSchedule() {
       scheduleData = [];
     }
     setCalendarView(currentCalendarView);
+    if (typeof refreshDashboard === 'function') {
+      refreshDashboard();
+    }
   } catch (error) {
     console.error('Error loading schedule:', error);
     // Render calendar anyway with empty data
     scheduleData = [];
     setCalendarView(currentCalendarView);
+    if (typeof refreshDashboard === 'function') {
+      refreshDashboard();
+    }
   }
 }
 
@@ -676,6 +682,9 @@ function setupScheduleListener() {
   onCollectionChange(scheduleCollection, (schedule) => {
     scheduleData = schedule;
     renderCalendar();
+    if (typeof refreshDashboard === 'function') {
+      refreshDashboard();
+    }
   });
 }
 
