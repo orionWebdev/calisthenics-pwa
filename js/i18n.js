@@ -240,6 +240,8 @@ const translations = {
     workout: {
       quick: {
         title: 'Workout Schnell-Eintrag',
+        date: 'Datum *',
+        dateRequired: 'Bitte waehle ein Datum',
         name: 'Workout Name',
         duration: 'Dauer (Minuten)',
         type: 'Typ',

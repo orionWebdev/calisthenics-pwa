@@ -1860,7 +1860,7 @@ input, textarea, select, button {
 
 .dashboard-scheduled-header .material-symbols-rounded {
   font-size: var(--font-size-lg);
-  color: var(--color-primary);
+  color: var(--color-text);
 }
 
 .dashboard-scheduled-list {
@@ -3430,7 +3430,7 @@ input::placeholder {
   .modal-content {
     width: 100%;
     max-width: 100%;
-    max-height: 90vh;
+    max-height: 85vh;
     border-radius: 1.5rem 1.5rem 0 0;
     padding: 0;
     animation: slideUpFromBottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -3438,6 +3438,7 @@ input::placeholder {
     display: flex;
     flex-direction: column;
     padding-bottom: env(safe-area-inset-bottom, 0);
+    overflow-y: hidden;
   }
 
   /* Drag Handle für Mobile Modale */
@@ -3470,6 +3471,22 @@ input::placeholder {
     padding-bottom: 1.5rem;
   }
 
+  /* Modal body scrollable on mobile */
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-header {
+    flex-shrink: 0;
+  }
+
+  .modal-footer {
+    flex-shrink: 0;
+  }
+
   /* Fix input field sizing on mobile */
   .modal input[type="text"],
   .modal input[type="number"],
@@ -3482,6 +3499,18 @@ input::placeholder {
 
   .modal .space-y-4 > div {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .modal .discipline-selector {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .modal .difficulty-pills {
+    flex-wrap: wrap;
     max-width: 100%;
   }
 
@@ -12869,7 +12898,30 @@ input[type="range"]::-moz-range-progress {
 .calendar-event-actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-md);
+}
+
+.calendar-event-delete {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.15);
+  border: none;
+  border-radius: 0.5rem;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.calendar-event-delete:hover {
+  background: rgba(239, 68, 68, 0.25);
+  transform: translateY(-1px);
+}
+
+.calendar-event-delete .material-symbols-rounded {
+  font-size: 18px;
 }
 
 .calendar-event-play {

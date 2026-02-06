@@ -391,6 +391,13 @@ function renderEventRow(event, isPast = false) {
       ${isLocalEvent(event) ? `
       <div class="calendar-event-actions">
         <button
+          class="calendar-event-delete"
+          onclick="event.stopPropagation(); removePlanFromDate('${event.id}')"
+          aria-label="${t('common.delete')}"
+        >
+          <span class="material-symbols-rounded">delete</span>
+        </button>
+        <button
           class="calendar-event-play"
           onclick="event.stopPropagation(); startScheduledWorkout('${event.id}')"
           aria-label="${t('common.start')}"
@@ -862,5 +869,6 @@ window.setQuickAddType = setQuickAddType;
 window.saveQuickAddEntry = saveQuickAddEntry;
 window.openCalendarPlanPicker = openCalendarPlanPicker;
 window.handleEventTap = handleEventTap;
+window.removePlanFromDate = removePlanFromDate;
 
 console.log('Calendar module loaded!');
