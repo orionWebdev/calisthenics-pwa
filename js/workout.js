@@ -556,14 +556,6 @@ function renderSTDetail(exercise) {
         <h3 class="st-detail-name">${exercise.exerciseName}</h3>
         <span class="st-detail-type">${typeLabel}</span>
       </div>
-      <button
-        type="button"
-        class="st-detail-add"
-        onclick="addEmptySet()"
-        aria-label="${t('workout.screen.addSet')}"
-      >
-        <span class="material-symbols-rounded">add</span>
-      </button>
     </div>
   `;
 }
@@ -2044,6 +2036,26 @@ function logSet(reps, weight = null) {
   }
 
   console.log('✅ Set logged:', reps, 'reps', weight ? `@ ${weight}kg` : '');
+
+  // Auto-advance to next exercise after short delay so user sees completion
+  if (exerciseJustCompleted) {
+    const nextIndex = activeWorkout.exercises.findIndex(
+      (ex, i) => i > activeWorkout.currentExerciseIndex && ex.status !== 'completed'
+    );
+    if (nextIndex !== -1) {
+      setTimeout(() => {
+        goToExercise(nextIndex);
+        if (typeof showEdgeFeedback === 'function') {
+          showEdgeFeedback('success', t('workout.screen.exerciseComplete') || 'Übung abgeschlossen!');
+        }
+      }, 800);
+    } else if (activeWorkout.exercises.every(ex => ex.status === 'completed')) {
+      // All exercises completed - trigger finish flow
+      setTimeout(() => {
+        confirmEndWorkout();
+      }, 800);
+    }
+  }
 }
 
 /**
@@ -2182,13 +2194,24 @@ function startTimerTick() {
   if (restTimerTickId) clearInterval(restTimerTickId);
 
   restTimerTickId = setInterval(() => {
+    // Guard: stop if timer was already cancelled
+    if (!isRestTimerActive()) {
+      clearInterval(restTimerTickId);
+      restTimerTickId = null;
+      return;
+    }
+
     const remaining = getRestTimerRemainingMs();
 
     if (remaining <= 0 && !isRestTimerPaused()) {
-      // Timer finished
-      cancelRestTimer();
+      // Timer finished - clean up and notify
+      clearInterval(restTimerTickId);
+      restTimerTickId = null;
+      restTimerEndAt = null;
+      restTimerTotalMs = 0;
+      restTimerPausedRemaining = 0;
+
       triggerHapticFeedback('heavy');
-      // Show "done" state briefly
       showTimerDoneFlash();
       return;
     }
@@ -2208,6 +2231,12 @@ function pauseRestTimer() {
 
   restTimerPausedRemaining = Math.max(0, restTimerEndAt - Date.now());
   restTimerEndAt = null;
+
+  // Stop tick - nothing changes while paused
+  if (restTimerTickId) {
+    clearInterval(restTimerTickId);
+    restTimerTickId = null;
+  }
 
   updateTimerWidgetDisplay();
   updateTimerModalDisplay();
@@ -2263,8 +2292,8 @@ function cancelRestTimer() {
   restTimerTotalMs = 0;
   restTimerPausedRemaining = 0;
 
-  // Remove widget
-  removeTimerWidget();
+  // Remove widget immediately to prevent stale elements
+  removeTimerWidget(true);
   // Close modal if open
   closeTimerModal();
 
@@ -2275,12 +2304,13 @@ function cancelRestTimer() {
 
 /**
  * Brief "done" flash when timer expires
+ * State cleanup is handled by the caller (tick or cancelRestTimer)
  */
 function showTimerDoneFlash() {
   if (typeof showEdgeFeedback === 'function') {
     showEdgeFeedback('success', t('workout.screen.timerDone'));
   }
-  removeTimerWidget();
+  removeTimerWidget(); // animated fade-out
   closeTimerModal();
 }
 
@@ -2290,7 +2320,7 @@ function showTimerDoneFlash() {
  * Render/create the mini live widget at bottom of screen
  */
 function renderTimerWidget() {
-  removeTimerWidget();
+  removeTimerWidget(true); // immediate removal to prevent duplicate ID conflicts
 
   const widget = document.createElement('div');
   widget.id = 'rest-timer-widget';
@@ -2326,13 +2356,18 @@ function renderTimerWidget() {
 
 /**
  * Remove the mini widget
+ * @param {boolean} immediate - Skip fade-out animation (used when re-creating widget)
  */
-function removeTimerWidget() {
+function removeTimerWidget(immediate = false) {
   const widget = document.getElementById('rest-timer-widget');
   if (!widget) return;
 
-  widget.classList.remove('timer-widget--visible');
-  setTimeout(() => widget.remove(), 200);
+  if (immediate) {
+    widget.remove();
+  } else {
+    widget.classList.remove('timer-widget--visible');
+    setTimeout(() => widget.remove(), 200);
+  }
 }
 
 /**

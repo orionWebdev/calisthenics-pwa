@@ -10752,7 +10752,7 @@ input[type="range"]::-moz-range-progress {
   left: 0;
   right: 0;
   bottom: var(--bottom-nav-height, 72px);
-  z-index: 900;
+  z-index: 1001;
   padding: 0 0.75rem;
   transform: translateY(100%);
   opacity: 0;
@@ -10835,7 +10835,7 @@ input[type="range"]::-moz-range-progress {
 .timer-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1002;
+  z-index: 9998;
   background: rgba(0, 0, 0, 0);
   transition: background 0.25s ease;
   display: flex;
