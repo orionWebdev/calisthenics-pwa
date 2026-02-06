@@ -2,6 +2,14 @@
    CALISTHENICS PRO - CUSTOM STYLES
    ======================================== */
 
+/* Global: Scrollbalken ausblenden */
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
   /* ========================================
      DESIGN TOKENS - Calm Hybrid Training
@@ -3438,7 +3446,8 @@ input::placeholder {
     display: flex;
     flex-direction: column;
     padding-bottom: env(safe-area-inset-bottom, 0);
-    overflow-y: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Drag Handle für Mobile Modale */
