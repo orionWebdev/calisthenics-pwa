@@ -273,16 +273,16 @@ function setupNumberPickerEvents(overlay) {
 function handleWheelScrollEnd(wheel) {
   const itemHeight = 56;
   const scrollTop = wheel.scrollTop;
-  const containerHeight = wheel.clientHeight;
-  const centerOffset = (containerHeight - itemHeight) / 2;
 
-  // Find item closest to center
-  const centerScrollPosition = scrollTop + centerOffset;
-  const nearestIndex = Math.round(centerScrollPosition / itemHeight);
+  // With border-box and padding-top matching centerOffset,
+  // scrollTop directly maps to item index (scroll-snap centers items)
+  const nearestIndex = Math.round(scrollTop / itemHeight);
 
   const items = wheel.querySelectorAll('.number-picker-item');
-  if (nearestIndex >= 0 && nearestIndex < items.length) {
-    const newValue = parseFloat(items[nearestIndex].dataset.value);
+  const clampedIndex = Math.max(0, Math.min(items.length - 1, nearestIndex));
+
+  if (clampedIndex >= 0 && clampedIndex < items.length) {
+    const newValue = parseFloat(items[clampedIndex].dataset.value);
 
     // Only update if value changed
     if (newValue !== numberPickerConfig.currentValue) {
@@ -300,8 +300,6 @@ function handleWheelScrollEnd(wheel) {
 function scrollToValue(wheel, value, smooth = true) {
   const items = wheel.querySelectorAll('.number-picker-item');
   const itemHeight = 56;
-  const containerHeight = wheel.clientHeight;
-  const centerOffset = (containerHeight - itemHeight) / 2;
 
   let targetIndex = 0;
   items.forEach((item, index) => {
@@ -310,7 +308,9 @@ function scrollToValue(wheel, value, smooth = true) {
     }
   });
 
-  const targetScroll = targetIndex * itemHeight - centerOffset;
+  // scrollTop = index * itemHeight centers the item in the highlight
+  // (padding-top ensures the first item can be scrolled to center)
+  const targetScroll = targetIndex * itemHeight;
 
   if (smooth) {
     wheel.scrollTo({
