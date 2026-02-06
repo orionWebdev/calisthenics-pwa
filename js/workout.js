@@ -29,8 +29,12 @@
  */
 
 let activeWorkout = null;
-let restTimerInterval = null;
-let restTimerRemaining = 0;
+
+// Timestamp-based rest timer state (no drift)
+let restTimerEndAt = null;         // Date.now() + remainingMs when running
+let restTimerTotalMs = 0;          // Total duration in ms
+let restTimerPausedRemaining = 0;  // Remaining ms when paused (>0 = paused)
+let restTimerTickId = null;        // requestAnimationFrame / setInterval ID for UI ticks
 
 // State for active set row (iOS-style set logger)
 let activeSetValues = { reps: 10, weight: 0 };
@@ -327,6 +331,14 @@ function cancelWorkout(askConfirmation = true) {
 }
 
 /**
+ * Confirm discard workout with i18n confirm dialog
+ */
+function confirmDiscardWorkout() {
+  if (!confirm(t('workout.screen.discardConfirm'))) return;
+  cancelWorkout(false);
+}
+
+/**
  * Complete workout and save to Firestore
  */
 async function completeWorkout() {
@@ -416,9 +428,8 @@ async function completeWorkout() {
 // ==================== RENDERING ====================
 
 /**
- * Render workout screen - Accordion Layout
- * Alle Übungen sind in einer Liste als Accordion dargestellt.
- * Die aktuelle Übung ist ausgeklappt mit Set Logger.
+ * Render workout screen - Session Tracker Layout
+ * Calm, non-linear, iOS-style workout tracking
  */
 function renderWorkoutScreen() {
   const container = document.getElementById('workout-screen-container');
@@ -444,28 +455,318 @@ function renderWorkoutScreen() {
   }
 
   const progress = calculateProgress();
+  const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
 
   container.innerHTML = `
-    <div class="workout-screen workout-screen--accordion">
-      ${renderWorkoutHeaderCompact(progress)}
-      ${renderExerciseAccordionList()}
+    <div class="st-screen">
+      ${renderSTHeader(progress)}
+      ${renderSTSwitcher()}
+      ${renderSTDetail(currentExercise)}
+      ${renderSTSetList(currentExercise)}
     </div>
-    ${renderStickyBottomBar()}
   `;
 
-  // Auto-focus reps input der aktiven Übung
-  const repsInput = document.getElementById('reps-input');
-  if (repsInput) {
-    setTimeout(() => repsInput.focus(), 100);
+  // Scroll active Pill in Switcher in Sichtbereich
+  const activePill = container.querySelector('.st-pill--active');
+  if (activePill) {
+    setTimeout(() => {
+      activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }, 50);
   }
 
-  // Scroll zur aktiven Übung
-  const activeAccordion = document.querySelector('.exercise-accordion-item.expanded');
-  if (activeAccordion) {
-    setTimeout(() => {
-      activeAccordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 150);
+  // Scroll to top on mount
+  window.scrollTo(0, 0);
+
+  // Re-render timer widget if timer is active (survives re-renders)
+  if (isRestTimerActive()) {
+    renderTimerWidget();
   }
+}
+
+/**
+ * Session Tracker Header
+ */
+function renderSTHeader(progress) {
+  const startTime = activeWorkout.startedAt.toDate
+    ? activeWorkout.startedAt.toDate()
+    : new Date(activeWorkout.startedAt.seconds * 1000);
+  const timeStr = startTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+  return `
+    <div class="st-header">
+      <button type="button" class="st-header-back" onclick="showView('dashboard')" aria-label="${t('common.back')}">
+        <span class="material-symbols-rounded">arrow_back</span>
+      </button>
+      <div class="st-header-center">
+        <h2 class="st-header-title">${activeWorkout.planName}</h2>
+        <div class="st-header-sub">
+          <span>${formatWorkoutDate(activeWorkout.scheduledDate)}</span>
+          <span class="st-header-dot">&middot;</span>
+          <span>${timeStr}</span>
+          <span class="st-header-dot">&middot;</span>
+          <span>${progress.completed} / ${progress.total} ${t('common.workout') === 'Workout' ? 'Uebungen' : 'exercises'}</span>
+        </div>
+      </div>
+      <button type="button" class="st-header-menu" onclick="showWorkoutMenu()" aria-label="Menue">
+        <span class="material-symbols-rounded">more_horiz</span>
+      </button>
+    </div>
+  `;
+}
+
+/**
+ * Exercise Switcher - Horizontal scrollable Pills
+ */
+function renderSTSwitcher() {
+  return `
+    <div class="st-switcher" role="tablist">
+      ${activeWorkout.exercises.map((ex, index) => {
+        const isActive = index === activeWorkout.currentExerciseIndex;
+        const isCompleted = ex.status === 'completed';
+        const hasProgress = ex.completedSets.length > 0;
+        return `
+          <button
+            type="button"
+            class="st-pill ${isActive ? 'st-pill--active' : ''} ${isCompleted ? 'st-pill--completed' : ''} ${hasProgress && !isCompleted ? 'st-pill--progress' : ''}"
+            onclick="switchToExercise(${index})"
+            role="tab"
+            aria-selected="${isActive}"
+          >
+            ${isCompleted ? '<span class="material-symbols-rounded st-pill-check">check</span>' : ''}
+            <span class="st-pill-label">${ex.exerciseName}</span>
+          </button>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+/**
+ * Exercise Detail Section
+ */
+function renderSTDetail(exercise) {
+  if (!exercise) return '';
+
+  const isBodyweight = isBodyweightExercise();
+  const typeLabel = isBodyweight ? t('workout.screen.bodyweight') : t('workout.screen.weighted');
+
+  return `
+    <div class="st-detail">
+      <div class="st-detail-info">
+        <h3 class="st-detail-name">${exercise.exerciseName}</h3>
+        <span class="st-detail-type">${typeLabel}</span>
+      </div>
+      <button
+        type="button"
+        class="st-detail-add"
+        onclick="addEmptySet()"
+        aria-label="${t('workout.screen.addSet')}"
+      >
+        <span class="material-symbols-rounded">add</span>
+      </button>
+    </div>
+  `;
+}
+
+/**
+ * Set List - Calm vertical set rows
+ */
+function renderSTSetList(exercise) {
+  if (!exercise) return '';
+
+  const isBodyweight = isBodyweightExercise();
+  const targetSets = exercise.targetSets || 3;
+  const completedCount = exercise.completedSets.length;
+
+  // Build rows: completed sets + one active set + remaining empty sets
+  let rows = '';
+
+  // Completed sets
+  exercise.completedSets.forEach((set, setIndex) => {
+    const weightDisplay = !isBodyweight && set.weight != null && set.weight > 0
+      ? (set.weight % 1 !== 0 ? set.weight.toFixed(1).replace('.', ',') : set.weight)
+      : null;
+
+    rows += `
+      <div class="st-set-row st-set-row--done" data-set-index="${setIndex}">
+        <div class="st-set-num st-set-num--done">${setIndex + 1}</div>
+        <div class="st-set-values">
+          <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'reps')">
+            <span class="st-set-val-num">${set.reps}</span>
+            <span class="st-set-val-unit">${t('workout.logging.totalReps')}</span>
+          </button>
+          ${!isBodyweight ? `
+            <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'weight')">
+              <span class="st-set-val-num">${weightDisplay || '—'}</span>
+              <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+            </button>
+          ` : ''}
+        </div>
+        <button type="button" class="st-set-check st-set-check--done" onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})" aria-label="${t('workout.setLogger.deleteSet')}">
+          <span class="material-symbols-rounded">check</span>
+        </button>
+      </div>
+    `;
+  });
+
+  // Active set (next to log)
+  const activeSetNum = completedCount + 1;
+  const defaults = getDefaultSetValues(exercise);
+  const activeWeightDisplay = !isBodyweight
+    ? (defaults.weight % 1 !== 0 ? defaults.weight.toFixed(1).replace('.', ',') : defaults.weight)
+    : null;
+
+  // Initialize active set values
+  initActiveSetValues(exercise);
+
+  rows += `
+    <div class="st-set-row st-set-row--active" data-set-index="active">
+      <div class="st-set-num st-set-num--active">${activeSetNum}</div>
+      <div class="st-set-values">
+        <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('reps')" id="active-reps-btn" data-value="${activeSetValues.reps}">
+          <span class="st-set-val-num" id="active-reps-value">${activeSetValues.reps}</span>
+          <span class="st-set-val-unit">${t('workout.logging.totalReps')}</span>
+        </button>
+        ${!isBodyweight ? `
+          <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('weight')" id="active-weight-btn" data-value="${activeSetValues.weight}">
+            <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
+            <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+          </button>
+        ` : ''}
+      </div>
+      <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
+        <span class="material-symbols-rounded">check</span>
+      </button>
+    </div>
+  `;
+
+  // Remaining empty sets (placeholders)
+  for (let i = activeSetNum + 1; i <= targetSets; i++) {
+    rows += `
+      <div class="st-set-row st-set-row--empty" data-set-index="empty-${i}">
+        <div class="st-set-num">${i}</div>
+        <div class="st-set-values">
+          <div class="st-set-val st-set-val--placeholder">
+            <span class="st-set-val-num">—</span>
+            <span class="st-set-val-unit">${t('workout.logging.totalReps')}</span>
+          </div>
+          ${!isBodyweight ? `
+            <div class="st-set-val st-set-val--placeholder">
+              <span class="st-set-val-num">—</span>
+              <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+            </div>
+          ` : ''}
+        </div>
+        <div class="st-set-check st-set-check--empty">
+          <span class="material-symbols-rounded">radio_button_unchecked</span>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="st-sets">
+      ${rows}
+    </div>
+  `;
+}
+
+// renderSTRestTimer() removed - timer is now a separate fixed widget (renderTimerWidget)
+
+/**
+ * Show workout menu (three-dot menu)
+ */
+function showWorkoutMenu() {
+  // Remove existing menu
+  const existing = document.getElementById('st-menu-overlay');
+  if (existing) { existing.remove(); return; }
+
+  const overlay = document.createElement('div');
+  overlay.id = 'st-menu-overlay';
+  overlay.className = 'st-menu-overlay';
+  overlay.innerHTML = `
+    <div class="st-menu" role="menu">
+      <button type="button" class="st-menu-item" onclick="closeWorkoutMenu(); confirmEndWorkout();" role="menuitem">
+        <span class="material-symbols-rounded">stop_circle</span>
+        <span>${t('workout.screen.endWorkout')}</span>
+      </button>
+      <div class="st-menu-divider"></div>
+      <button type="button" class="st-menu-item st-menu-item--danger" onclick="closeWorkoutMenu(); confirmDiscardWorkout();" role="menuitem">
+        <span class="material-symbols-rounded">delete_forever</span>
+        <span>${t('workout.screen.discardWorkout')}</span>
+      </button>
+    </div>
+  `;
+
+  // Close on overlay click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeWorkoutMenu();
+  });
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('active'));
+
+  triggerHapticFeedback('light');
+}
+
+function closeWorkoutMenu() {
+  const overlay = document.getElementById('st-menu-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+  setTimeout(() => overlay.remove(), 200);
+}
+
+/**
+ * Save workout snapshot (keep workout active)
+ */
+async function saveWorkoutSnapshot() {
+  if (!activeWorkout) return;
+  saveActiveWorkout();
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('success', t('workout.screen.saveWorkout'));
+  }
+}
+
+/**
+ * Switch to exercise (non-linear, doesn't interrupt timer)
+ */
+function switchToExercise(index) {
+  if (!activeWorkout) return;
+  if (index < 0 || index >= activeWorkout.exercises.length) return;
+  if (index === activeWorkout.currentExerciseIndex) return;
+
+  // Mark current as in-progress if not completed
+  const current = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
+  if (current && current.completedSets.length > 0 && current.status !== 'completed') {
+    current.status = 'in-progress';
+  }
+
+  activeWorkout.currentExerciseIndex = index;
+
+  // Mark new exercise as in-progress if not started
+  const newExercise = activeWorkout.exercises[index];
+  if (newExercise && newExercise.status === 'not-started') {
+    newExercise.status = 'in-progress';
+  }
+
+  // DO NOT cancel rest timer on exercise switch
+  saveActiveWorkout();
+  renderWorkoutScreen();
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Add empty set slot (extends target sets for current exercise)
+ */
+function addEmptySet() {
+  if (!activeWorkout) return;
+  const exercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
+  if (!exercise) return;
+
+  exercise.targetSets = (exercise.targetSets || 3) + 1;
+  saveActiveWorkout();
+  renderWorkoutScreen();
+  triggerHapticFeedback('light');
 }
 
 /**
@@ -1734,31 +2035,12 @@ function logSet(reps, weight = null) {
   // Haptic feedback
   triggerHapticFeedback('medium');
 
-  // Start rest timer if configured and not last set of this exercise
-  if (currentExercise.targetRest && !exerciseJustCompleted) {
-    startRestTimer(currentExercise.targetRest);
-  }
+  // Always re-render the set list
+  renderWorkoutScreen();
 
-  // Auto-advance to next exercise when completed
-  if (exerciseJustCompleted) {
-    const isLastExercise = activeWorkout.currentExerciseIndex >= activeWorkout.exercises.length - 1;
-    if (!isLastExercise) {
-      // Gehe zur nächsten Übung
-      setTimeout(() => {
-        goToExercise(activeWorkout.currentExerciseIndex + 1);
-        if (typeof showEdgeFeedback === 'function') {
-          showEdgeFeedback('success', t('workout.exercise.next'));
-        }
-      }, 300);
-    } else {
-      // Letzte Übung fertig - re-render und zeige Finish-Option
-      renderWorkoutScreen();
-      if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('success', t('workout.screen.finishWorkout'));
-      }
-    }
-  } else {
-    renderWorkoutScreen();
+  // Start rest timer if configured (separate widget, no re-render needed)
+  if (currentExercise.targetRest) {
+    startRestTimer(currentExercise.targetRest);
   }
 
   console.log('✅ Set logged:', reps, 'reps', weight ? `@ ${weight}kg` : '');
@@ -1793,6 +2075,7 @@ function deleteSet(exerciseIndex, setIndex) {
  * Go to specific exercise
  */
 function goToExercise(index) {
+  if (!activeWorkout) return;
   if (index < 0 || index >= activeWorkout.exercises.length) return;
 
   // Mark current as in-progress if not completed
@@ -1809,7 +2092,7 @@ function goToExercise(index) {
     newExercise.status = 'in-progress';
   }
 
-  cancelRestTimer();
+  // DO NOT cancel rest timer - it persists across exercise switches
   saveActiveWorkout();
   renderWorkoutScreen();
   triggerHapticFeedback('light');
@@ -1849,75 +2132,371 @@ function goToPreviousExercise() {
   }
 }
 
-// ==================== REST TIMER ====================
+// ==================== REST TIMER (Timestamp-based) ====================
 
 /**
- * Start rest timer
+ * Get remaining ms from timestamp (no drift)
  */
-function startRestTimer(seconds) {
-  cancelRestTimer(); // Clear any existing timer
-
-  restTimerRemaining = seconds;
-
-  // Create timer element
-  const existing = document.getElementById('rest-timer');
-  if (existing) existing.remove();
-
-  const timer = document.createElement('div');
-  timer.id = 'rest-timer';
-  // Add focus-mode class if sticky bar is present
-  const hasStickyBar = document.querySelector('.workout-sticky-bar');
-  timer.className = hasStickyBar ? 'rest-timer rest-timer--with-sticky' : 'rest-timer';
-  document.body.appendChild(timer);
-
-  // Update display
-  updateRestTimerDisplay();
-
-  // Start countdown
-  restTimerInterval = setInterval(() => {
-    restTimerRemaining--;
-    updateRestTimerDisplay();
-
-    if (restTimerRemaining <= 0) {
-      cancelRestTimer();
-      triggerHapticFeedback('heavy');
-    }
-  }, 1000);
+function getRestTimerRemainingMs() {
+  if (restTimerPausedRemaining > 0) return restTimerPausedRemaining;
+  if (!restTimerEndAt) return 0;
+  return Math.max(0, restTimerEndAt - Date.now());
 }
 
 /**
- * Update rest timer display
+ * Check if rest timer is active (running or paused)
  */
-function updateRestTimerDisplay() {
-  const timer = document.getElementById('rest-timer');
-  if (!timer) return;
+function isRestTimerActive() {
+  return restTimerEndAt !== null || restTimerPausedRemaining > 0;
+}
 
-  const minutes = Math.floor(restTimerRemaining / 60);
-  const seconds = restTimerRemaining % 60;
-  const timeStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+/**
+ * Check if rest timer is paused
+ */
+function isRestTimerPaused() {
+  return restTimerPausedRemaining > 0 && restTimerEndAt === null;
+}
 
-  timer.innerHTML = `
-    <div class="rest-timer-countdown">${timeStr}</div>
-    <div class="rest-timer-label">Pause</div>
-    <button onclick="cancelRestTimer()" class="skip-rest-btn">
-      Skip
-    </button>
-  `;
+/**
+ * Start rest timer - timestamp-based (no drift)
+ */
+function startRestTimer(seconds) {
+  cancelRestTimer();
+
+  const ms = seconds * 1000;
+  restTimerEndAt = Date.now() + ms;
+  restTimerTotalMs = ms;
+  restTimerPausedRemaining = 0;
+
+  // Show the mini widget
+  renderTimerWidget();
+  startTimerTick();
+
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Start the UI tick loop (updates every 250ms for smooth display)
+ */
+function startTimerTick() {
+  if (restTimerTickId) clearInterval(restTimerTickId);
+
+  restTimerTickId = setInterval(() => {
+    const remaining = getRestTimerRemainingMs();
+
+    if (remaining <= 0 && !isRestTimerPaused()) {
+      // Timer finished
+      cancelRestTimer();
+      triggerHapticFeedback('heavy');
+      // Show "done" state briefly
+      showTimerDoneFlash();
+      return;
+    }
+
+    // Update widget display
+    updateTimerWidgetDisplay();
+    // Update modal display if open
+    updateTimerModalDisplay();
+  }, 250);
+}
+
+/**
+ * Pause rest timer
+ */
+function pauseRestTimer() {
+  if (!restTimerEndAt) return;
+
+  restTimerPausedRemaining = Math.max(0, restTimerEndAt - Date.now());
+  restTimerEndAt = null;
+
+  updateTimerWidgetDisplay();
+  updateTimerModalDisplay();
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Resume rest timer after pause
+ */
+function resumeRestTimer() {
+  if (restTimerPausedRemaining <= 0) return;
+
+  restTimerEndAt = Date.now() + restTimerPausedRemaining;
+  restTimerPausedRemaining = 0;
+
+  if (!restTimerTickId) startTimerTick();
+
+  updateTimerWidgetDisplay();
+  updateTimerModalDisplay();
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Adjust timer by delta ms (+/- 10s etc.)
+ */
+function adjustRestTimer(deltaMs) {
+  if (!isRestTimerActive()) return;
+
+  if (isRestTimerPaused()) {
+    restTimerPausedRemaining = Math.max(1000, restTimerPausedRemaining + deltaMs);
+    restTimerTotalMs = Math.max(restTimerTotalMs, restTimerPausedRemaining);
+  } else if (restTimerEndAt) {
+    restTimerEndAt = Math.max(Date.now() + 1000, restTimerEndAt + deltaMs);
+    const newRemaining = restTimerEndAt - Date.now();
+    if (newRemaining > restTimerTotalMs) restTimerTotalMs = newRemaining;
+  }
+
+  updateTimerWidgetDisplay();
+  updateTimerModalDisplay();
+  triggerHapticFeedback('light');
 }
 
 /**
  * Cancel rest timer
  */
 function cancelRestTimer() {
-  if (restTimerInterval) {
-    clearInterval(restTimerInterval);
-    restTimerInterval = null;
+  if (restTimerTickId) {
+    clearInterval(restTimerTickId);
+    restTimerTickId = null;
   }
 
+  restTimerEndAt = null;
+  restTimerTotalMs = 0;
+  restTimerPausedRemaining = 0;
+
+  // Remove widget
+  removeTimerWidget();
+  // Close modal if open
+  closeTimerModal();
+
+  // Clean up legacy floating timer if exists
   const timer = document.getElementById('rest-timer');
   if (timer) timer.remove();
+}
 
-  restTimerRemaining = 0;
+/**
+ * Brief "done" flash when timer expires
+ */
+function showTimerDoneFlash() {
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('success', t('workout.screen.timerDone'));
+  }
+  removeTimerWidget();
+  closeTimerModal();
+}
+
+// ==================== TIMER MINI WIDGET (Fixed Bottom) ====================
+
+/**
+ * Render/create the mini live widget at bottom of screen
+ */
+function renderTimerWidget() {
+  removeTimerWidget();
+
+  const widget = document.createElement('div');
+  widget.id = 'rest-timer-widget';
+  widget.className = 'timer-widget';
+  widget.onclick = openTimerModal;
+
+  widget.innerHTML = `
+    <div class="timer-widget-inner">
+      <div class="timer-widget-bar">
+        <div class="timer-widget-bar-fill" id="tw-bar-fill"></div>
+      </div>
+      <div class="timer-widget-content">
+        <span class="material-symbols-rounded timer-widget-icon">timer</span>
+        <span class="timer-widget-label">${t('workout.screen.restTimer')}</span>
+        <span class="timer-widget-time" id="tw-time">0:00</span>
+        <span class="material-symbols-rounded timer-widget-chevron">expand_less</span>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(widget);
+
+  // Animate in
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      widget.classList.add('timer-widget--visible');
+    });
+  });
+
+  // Initial display update
+  updateTimerWidgetDisplay();
+}
+
+/**
+ * Remove the mini widget
+ */
+function removeTimerWidget() {
+  const widget = document.getElementById('rest-timer-widget');
+  if (!widget) return;
+
+  widget.classList.remove('timer-widget--visible');
+  setTimeout(() => widget.remove(), 200);
+}
+
+/**
+ * Update widget display (called by tick)
+ */
+function updateTimerWidgetDisplay() {
+  const barFill = document.getElementById('tw-bar-fill');
+  const timeEl = document.getElementById('tw-time');
+  if (!barFill || !timeEl) return;
+
+  const remainingMs = getRestTimerRemainingMs();
+  const totalMs = restTimerTotalMs || 1;
+  const progressPct = Math.min(100, ((totalMs - remainingMs) / totalMs) * 100);
+
+  const totalSec = Math.ceil(remainingMs / 1000);
+  const minutes = Math.floor(totalSec / 60);
+  const seconds = totalSec % 60;
+
+  barFill.style.width = `${progressPct}%`;
+  timeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+  // Paused visual indicator
+  const widget = document.getElementById('rest-timer-widget');
+  if (widget) {
+    widget.classList.toggle('timer-widget--paused', isRestTimerPaused());
+  }
+}
+
+// ==================== TIMER MODAL (Bottom Sheet) ====================
+
+/**
+ * Open timer modal (bottom sheet with full controls)
+ */
+function openTimerModal() {
+  if (!isRestTimerActive()) return;
+
+  // Remove existing
+  const existing = document.getElementById('timer-modal-overlay');
+  if (existing) { closeTimerModal(); return; }
+
+  const overlay = document.createElement('div');
+  overlay.id = 'timer-modal-overlay';
+  overlay.className = 'timer-modal-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+
+  overlay.innerHTML = `
+    <div class="timer-modal" id="timer-modal-sheet">
+      <div class="timer-modal-handle"></div>
+      <div class="timer-modal-body">
+        <div class="timer-modal-time-display">
+          <span class="timer-modal-time" id="tm-time">0:00</span>
+          <span class="timer-modal-label">${t('workout.screen.restTimer')}</span>
+        </div>
+        <div class="timer-modal-bar">
+          <div class="timer-modal-bar-fill" id="tm-bar-fill"></div>
+        </div>
+        <div class="timer-modal-controls">
+          <button type="button" class="timer-modal-btn timer-modal-btn--adjust" onclick="adjustRestTimer(-10000)" aria-label="${t('workout.screen.timerSub')}">
+            <span>-10s</span>
+          </button>
+          <button type="button" class="timer-modal-btn timer-modal-btn--main" id="tm-pause-btn" onclick="toggleTimerPause()" aria-label="${t('workout.screen.timerPause')}">
+            <span class="material-symbols-rounded" id="tm-pause-icon">pause</span>
+          </button>
+          <button type="button" class="timer-modal-btn timer-modal-btn--adjust" onclick="adjustRestTimer(10000)" aria-label="${t('workout.screen.timerAdd')}">
+            <span>+10s</span>
+          </button>
+        </div>
+        <button type="button" class="timer-modal-skip" onclick="cancelRestTimer()">
+          <span class="material-symbols-rounded">skip_next</span>
+          <span>${t('workout.screen.timerSkip')}</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Close on overlay click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeTimerModal();
+  });
+
+  // Swipe-to-close on handle
+  const sheet = overlay.querySelector('.timer-modal');
+  const handle = overlay.querySelector('.timer-modal-handle');
+  let startY = 0, currentY = 0, dragging = false;
+
+  const onTouchStart = (e) => {
+    startY = e.touches[0].clientY;
+    currentY = startY;
+    dragging = true;
+    sheet.style.transition = 'none';
+  };
+  const onTouchMove = (e) => {
+    if (!dragging) return;
+    currentY = e.touches[0].clientY;
+    const dy = currentY - startY;
+    if (dy > 0) sheet.style.transform = `translateY(${dy}px)`;
+  };
+  const onTouchEnd = () => {
+    if (!dragging) return;
+    dragging = false;
+    sheet.style.transition = '';
+    if (currentY - startY > 80) { closeTimerModal(); }
+    else { sheet.style.transform = ''; }
+  };
+
+  if (handle) {
+    handle.addEventListener('touchstart', onTouchStart, { passive: true });
+    handle.addEventListener('touchmove', onTouchMove, { passive: true });
+    handle.addEventListener('touchend', onTouchEnd);
+  }
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('active'));
+
+  // Initial display update
+  updateTimerModalDisplay();
+  triggerHapticFeedback('light');
+}
+
+/**
+ * Close timer modal
+ */
+function closeTimerModal() {
+  const overlay = document.getElementById('timer-modal-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+  setTimeout(() => overlay.remove(), 250);
+}
+
+/**
+ * Update modal display (called by tick)
+ */
+function updateTimerModalDisplay() {
+  const barFill = document.getElementById('tm-bar-fill');
+  const timeEl = document.getElementById('tm-time');
+  const pauseIcon = document.getElementById('tm-pause-icon');
+  if (!timeEl) return;
+
+  const remainingMs = getRestTimerRemainingMs();
+  const totalMs = restTimerTotalMs || 1;
+  const progressPct = Math.min(100, ((totalMs - remainingMs) / totalMs) * 100);
+
+  const totalSec = Math.ceil(remainingMs / 1000);
+  const minutes = Math.floor(totalSec / 60);
+  const seconds = totalSec % 60;
+
+  if (barFill) barFill.style.width = `${progressPct}%`;
+  timeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+  if (pauseIcon) {
+    pauseIcon.textContent = isRestTimerPaused() ? 'play_arrow' : 'pause';
+  }
+}
+
+/**
+ * Toggle pause/resume from modal
+ */
+function toggleTimerPause() {
+  if (isRestTimerPaused()) {
+    resumeRestTimer();
+  } else {
+    pauseRestTimer();
+  }
 }
 
 function confirmReplaceActiveWorkout() {
@@ -2044,3 +2623,17 @@ window.toggleCompletedSets = toggleCompletedSets;
 window.confirmEndWorkout = confirmEndWorkout;
 window.closeWorkoutEndConfirmModal = closeWorkoutEndConfirmModal;
 window.toggleExerciseAccordion = toggleExerciseAccordion;
+window.switchToExercise = switchToExercise;
+window.showWorkoutMenu = showWorkoutMenu;
+window.closeWorkoutMenu = closeWorkoutMenu;
+window.addEmptySet = addEmptySet;
+window.confirmDiscardWorkout = confirmDiscardWorkout;
+// Timer exports
+window.startRestTimer = startRestTimer;
+window.pauseRestTimer = pauseRestTimer;
+window.resumeRestTimer = resumeRestTimer;
+window.cancelRestTimer = cancelRestTimer;
+window.adjustRestTimer = adjustRestTimer;
+window.toggleTimerPause = toggleTimerPause;
+window.openTimerModal = openTimerModal;
+window.closeTimerModal = closeTimerModal;
