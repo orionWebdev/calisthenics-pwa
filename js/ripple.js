@@ -57,6 +57,9 @@ function createRipple(element, event, options = {}) {
 function makePressable(element, options = {}) {
   if (!element || element.dataset.pressable === 'true') return;
 
+  // Skip elements inside modals to prevent unwanted click animations
+  if (element.closest('.modal')) return;
+
   const {
     color = 'rgba(255, 255, 255, 0.15)',
     duration = 450,

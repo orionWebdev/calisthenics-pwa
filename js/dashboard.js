@@ -410,8 +410,8 @@ function openStartWorkoutFromPlanSheet() {
     closeSheet();
   }
   // Open plan picker to start a workout from an existing plan
-  if (typeof openCalendarPlanPicker === 'function') {
-    openCalendarPlanPicker((planId) => {
+  if (typeof openPlanPickerSheet === 'function') {
+    openPlanPickerSheet((planId) => {
       if (typeof startWorkoutFromPlan === 'function') {
         startWorkoutFromPlan(planId);
       }
@@ -501,9 +501,10 @@ function renderScheduledWorkoutsCard(state) {
 
   container.innerHTML = `
     <div class="dashboard-scheduled-widget">
-      <div class="dashboard-scheduled-header">
+      <div class="dashboard-scheduled-header" onclick="if(typeof showView==='function') showView('calendar')" style="cursor: pointer;">
         <span class="material-symbols-rounded">event</span>
         <span>${tr('dashboard.scheduled.title')}</span>
+        <span class="material-symbols-rounded" style="margin-left: auto; font-size: 18px; opacity: 0.5;">chevron_right</span>
       </div>
       <div class="dashboard-scheduled-list">
         ${items}

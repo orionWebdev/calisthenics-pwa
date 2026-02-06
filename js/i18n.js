@@ -119,6 +119,48 @@ const translations = {
       addPlan: 'Plan hinzufuegen',
       quickAdd: 'Schnell-Eintrag',
       orQuickEntry: 'Oder Schnell-Eintrag erstellen',
+      orSelectPlan: 'oder Plan auswaehlen',
+      today: 'Heute',
+      noPlannedWorkouts: 'Keine Trainings geplant',
+      entryAdded: 'Training hinzugefuegt',
+      saveError: 'Fehler beim Speichern',
+      untitled: 'Unbenannt',
+      confirmRemove: 'Training wirklich entfernen?',
+      monthNames: {
+        january: 'Januar',
+        february: 'Februar',
+        march: 'Maerz',
+        april: 'April',
+        may: 'Mai',
+        june: 'Juni',
+        july: 'Juli',
+        august: 'August',
+        september: 'September',
+        october: 'Oktober',
+        november: 'November',
+        december: 'Dezember'
+      },
+      dayNames: {
+        monday: 'Montag',
+        tuesday: 'Dienstag',
+        wednesday: 'Mittwoch',
+        thursday: 'Donnerstag',
+        friday: 'Freitag',
+        saturday: 'Samstag',
+        sunday: 'Sonntag'
+      },
+      dayNamesShort: {
+        mon: 'Mo',
+        tue: 'Di',
+        wed: 'Mi',
+        thu: 'Do',
+        fri: 'Fr',
+        sat: 'Sa',
+        sun: 'So'
+      },
+      agenda: {
+        title: 'Geplante Trainings'
+      },
       errors: {
         notFound: 'Training nicht gefunden',
         engineNotLoaded: 'Workout-Engine nicht geladen',
@@ -198,6 +240,8 @@ const translations = {
     workout: {
       quick: {
         title: 'Workout Schnell-Eintrag',
+        date: 'Datum *',
+        dateRequired: 'Bitte waehle ein Datum',
         name: 'Workout Name',
         duration: 'Dauer (Minuten)',
         type: 'Typ',

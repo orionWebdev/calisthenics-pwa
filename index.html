@@ -460,46 +460,55 @@
 
     </div>
 
-    <!-- CALENDAR VIEW (Plan Calendar Only) -->
-    <div id="view-calendar" class="view hidden">
+    <!-- CALENDAR VIEW (iOS Calendar Style - Fixed Layout) -->
+    <div id="view-calendar" class="view hidden plan-calendar-view">
 
-      <!-- Navigation -->
-      <div class="bg-gray-800 rounded-xl p-3 sm:p-4 mb-6 border border-gray-700 flex items-center justify-between">
-        <button onclick="navigateCalendar('prev')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
-          ← <span class="hidden sm:inline">Zurück</span>
-        </button>
+      <!-- UPPER SECTION: Month Calendar (~66vh) -->
+      <div class="calendar-month-section">
+        <!-- Month Header -->
+        <div class="plan-calendar-header">
+          <button onclick="navigateCalendar('prev')" class="plan-calendar-nav-btn" aria-label="Vorheriger Monat">
+            <span class="material-symbols-rounded">chevron_left</span>
+          </button>
 
-        <div class="text-center">
-          <h3 id="calendar-title" class="text-lg sm:text-2xl font-bold">Januar 2026</h3>
-          <button onclick="goToToday()" class="text-xs sm:text-sm text-blue-400 hover:text-blue-300 mt-1">
-            Heute
+          <h2 id="calendar-title" class="plan-calendar-title">Januar 2026</h2>
+
+          <button onclick="navigateCalendar('next')" class="plan-calendar-nav-btn" aria-label="Nächster Monat">
+            <span class="material-symbols-rounded">chevron_right</span>
           </button>
         </div>
 
-        <button onclick="navigateCalendar('next')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
-          <span class="hidden sm:inline">Weiter</span> →
-        </button>
-      </div>
-
-      <!-- Plan Calendar View (Month View) -->
-      <div id="calendar-plan-view" class="calendar-view active">
-        <!-- Weekday Headers -->
-        <div class="grid grid-cols-7 mb-2" style="background: rgba(255, 255, 255, 0.05); border-radius: 0.5rem;">
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Mo</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Di</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Mi</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Do</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Fr</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Sa</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2">So</div>
+        <!-- Weekday Labels -->
+        <div class="plan-calendar-weekdays">
+          <span>Mo</span>
+          <span>Di</span>
+          <span>Mi</span>
+          <span>Do</span>
+          <span>Fr</span>
+          <span>Sa</span>
+          <span>So</span>
         </div>
 
         <!-- Calendar Grid -->
-        <div id="calendar-grid" class="grid grid-cols-7" style="background: rgba(255, 255, 255, 0.03); border-radius: 0.5rem; overflow: hidden;">
-          <!-- Wird von JavaScript gefüllt -->
+        <div id="calendar-grid" class="plan-calendar-grid">
+          <!-- Populated by JavaScript -->
         </div>
       </div>
-</div>
+
+      <!-- LOWER SECTION: Day Agenda (~34vh, scrollable) -->
+      <div class="calendar-agenda-container">
+        <div class="calendar-agenda-list-header">
+          <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
+          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="Training hinzufuegen">
+            <span class="material-symbols-rounded">add</span>
+          </button>
+        </div>
+        <div id="calendar-agenda-list" class="calendar-agenda-list">
+          <!-- Populated by JavaScript: date sections with events -->
+        </div>
+      </div>
+
+    </div>
 
     <!-- PROGRESS VIEW -->
     <!-- PROGRESS VIEW V2 -->
@@ -1082,69 +1091,7 @@
     </div>
   </div>
 
-  <!-- DAY DETAIL MODAL -->
-  <div id="day-detail-modal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h3 class="text-2xl font-bold" id="day-detail-title">Trainings am Tag</h3>
-          <p class="text-gray-400 text-sm mt-1" id="day-detail-date">Datum</p>
-        </div>
-        <button onclick="closeDayDetailModal()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-
-      <div id="day-detail-plans" class="space-y-3">
-        <!-- Plans will be rendered here -->
-      </div>
-
-      <!-- Add Plan to Day Panel -->
-      <div id="add-plan-panel" class="add-plan-panel hidden">
-        <div class="add-plan-panel-header">
-          <h4 class="add-plan-panel-title">Hinzufügen zu: <span id="selected-date-display" class="text-pink-400"></span></h4>
-          <button onclick="closeAddPlanPanel()" class="modal-close-btn-sm">
-            <span class="material-symbols-rounded">close</span>
-          </button>
-        </div>
-
-        <div class="add-plan-options">
-          <!-- Option 1: Select existing plan -->
-          <button onclick="openCalendarPlanPicker()" class="add-plan-option-btn">
-            <div class="add-plan-option-icon">
-              <span class="material-symbols-rounded">assignment</span>
-            </div>
-            <div class="add-plan-option-content">
-              <div class="add-plan-option-title">Plan auswählen</div>
-              <div class="add-plan-option-desc">Aus deinen Trainingsvorlagen</div>
-            </div>
-            <span class="material-symbols-rounded add-plan-option-chevron">chevron_right</span>
-          </button>
-
-          <!-- Option 2: Quick Entry -->
-          <button onclick="openQuickEntryModal()" class="add-plan-option-btn">
-            <div class="add-plan-option-icon quick-entry">
-              <span class="material-symbols-rounded">bolt</span>
-            </div>
-            <div class="add-plan-option-content">
-              <div class="add-plan-option-title">Schnell-Eintrag</div>
-              <div class="add-plan-option-desc">Ohne Planvorlage hinzufügen</div>
-            </div>
-            <span class="material-symbols-rounded add-plan-option-chevron">chevron_right</span>
-          </button>
-        </div>
-      </div>
-
-      
-
-      <div class="mt-6">
-        <button onclick="openAddPlanFromDayDetail()" class="w-full bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-          <span>Training hinzufügen</span>
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- Day Detail Modal removed - replaced by Agenda Bottom Sheet -->
 
   <!-- EXERCISE CONFIG MODAL -->
   <div id="exercise-config-modal" class="modal">
@@ -1394,74 +1341,7 @@
     </div>
   </div>
 
-  <!-- ========================================
-       CALENDAR QUICK ENTRY MODAL
-       ======================================== -->
-  <div id="calendar-quick-entry-modal" class="modal" onclick="if(event.target === this) closeQuickEntryModal()">
-    <div class="modal-content modal-compact" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">Schnell-Eintrag</h3>
-        <button onclick="closeQuickEntryModal()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-
-      <div class="modal-body space-y-4">
-        <!-- Name (required) -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Name *</label>
-          <input
-            type="text"
-            id="quick-entry-name"
-            placeholder="z.B. Morgenlauf"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
-
-        <!-- Type (required) -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Trainingsart</label>
-          <input type="hidden" id="quick-entry-type" value="strength" />
-          <div class="type-selector-row">
-            <button type="button" class="type-btn active" data-type="strength" onclick="setQuickEntryType('strength')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Kraft</span>
-            </button>
-            <button type="button" class="type-btn" data-type="cardio" onclick="setQuickEntryType('cardio')">
-              <span class="material-symbols-rounded">directions_run</span>
-              <span>Cardio</span>
-            </button>
-            <button type="button" class="type-btn" data-type="recovery" onclick="setQuickEntryType('recovery')">
-              <span class="material-symbols-rounded">self_improvement</span>
-              <span>Recovery</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Duration (optional for cardio/recovery) -->
-        <div id="quick-entry-duration-section" style="display: none;">
-          <label class="block text-sm font-medium mb-2">Dauer (Min) <span class="text-gray-400">(optional)</span></label>
-          <input
-            type="number"
-            id="quick-entry-duration"
-            placeholder="z.B. 30"
-            min="1"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button onclick="closeQuickEntryModal()" class="btn-secondary flex-1">
-          Abbrechen
-        </button>
-        <button onclick="saveQuickEntry()" class="btn-primary flex-1">
-          <span class="material-symbols-rounded">add</span>
-          Hinzufügen
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- Calendar Quick Entry Modal removed - replaced by openQuickAddSheet() -->
 
   </div> <!-- END #app-container -->
 
@@ -1826,7 +1706,7 @@
       <div class="modal-body space-y-4">
         <!-- Date Picker -->
         <div>
-          <label class="block text-sm font-medium mb-2" id="strength-date-label">Datum *</label>
+          <label class="block text-sm font-medium mb-2" id="strength-date-label"></label>
           <input
             type="date"
             id="strength-date"
