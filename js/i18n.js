@@ -703,7 +703,10 @@ const translations = {
         title: 'Progress',
         rhythm: {
           title: 'Trainingsrhythmus',
-          subtitle: 'Letzte 12 Wochen',
+          subtitle: 'Letzte 12 Monate',
+          subtitleDays: 'Letzte 7 Tage',
+          subtitleWeeks: 'Letzte 5 Wochen',
+          subtitle6m: 'Letzte 6 Monate',
           minutesPerWeek: 'min',
           noData: 'Noch keine Trainingsdaten vorhanden'
         },

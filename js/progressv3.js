@@ -149,8 +149,10 @@ function renderProgressV3() {
   if (!container) return;
 
   container.innerHTML = `
-    <div class="pv3-scroll-view">
+    <div class="pv3-sticky-bar">
       ${renderV3PeriodSelector()}
+    </div>
+    <div class="pv3-scroll-view">
       ${renderV3Rhythm()}
       ${renderV3BlockComparison()}
       ${renderV3Mix()}
@@ -185,100 +187,158 @@ function renderV3PeriodSelector() {
     { key: '6M', label: trV3('progress.period.6m') },
     { key: '1Y', label: trV3('progress.period.1y') }
   ];
-  const pills = periods.map(p =>
-    `<button class="pv3-period-pill${p.key === progressV3PeriodKey ? ' active' : ''}" data-period="${p.key}">${p.label}</button>`
+  const activeIndex = Math.max(0, periods.findIndex(p => p.key === progressV3PeriodKey));
+  const segmentCount = periods.length;
+
+  const buttons = periods.map(p =>
+    `<button class="pv3-seg-btn${p.key === progressV3PeriodKey ? ' active' : ''}" data-period="${p.key}">${p.label}</button>`
   ).join('');
 
-  return `<div class="pv3-period-selector">${pills}</div>`;
+  return `
+    <div class="pv3-segmented-control" style="--seg-count:${segmentCount};--active-idx:${activeIndex}">
+      <div class="pv3-seg-indicator"></div>
+      ${buttons}
+    </div>`;
 }
 
 function attachV3PeriodListeners() {
-  document.querySelectorAll('.pv3-period-pill').forEach(btn => {
+  const control = document.querySelector('.pv3-segmented-control');
+  if (!control) return;
+
+  control.querySelectorAll('.pv3-seg-btn').forEach((btn, idx) => {
     btn.addEventListener('click', () => {
+      if (btn.dataset.period === progressV3PeriodKey) return;
       progressV3PeriodKey = btn.dataset.period;
       localStorage.setItem('progressPeriodKey', progressV3PeriodKey);
-      renderProgressV3();
+
+      // Animate pill before re-render
+      control.style.setProperty('--active-idx', idx);
+      control.querySelectorAll('.pv3-seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Re-render content after pill animation
+      setTimeout(() => renderProgressV3(), 220);
     });
   });
 }
 
 // ==================== MODULE 1: TRAINING RHYTHM ====================
 
-function renderV3Rhythm() {
-  const WEEKS = 12;
+// Kurze Wochentag-Labels (DE) – Index 0 = Montag
+const V3_DAY_LABELS_DE = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+// Kurze Monats-Buchstaben (DE)
+const V3_MONTH_LABELS_DE = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+
+function v3BuildRhythmBuckets(periodKey) {
   const now = new Date();
   const nowLocal = new Date(now.toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' }) + 'T23:59:59');
+  const emptyData = () => ({ strength: 0, bodyweight: 0, cardio: 0, recovery: 0 });
 
-  // Build weekly buckets for last 12 weeks
-  const weeks = [];
-  for (let i = WEEKS - 1; i >= 0; i--) {
-    const weekEnd = new Date(nowLocal);
-    weekEnd.setDate(weekEnd.getDate() - i * 7);
-    const weekStart = new Date(weekEnd);
-    weekStart.setDate(weekStart.getDate() - 6);
-    weekStart.setHours(0, 0, 0, 0);
-    weeks.push({ start: weekStart, end: weekEnd, data: { strength: 0, bodyweight: 0, cardio: 0, recovery: 0 } });
+  if (periodKey === '7D') {
+    // 7 Tages-Buckets
+    const buckets = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(nowLocal);
+      d.setDate(d.getDate() - i);
+      const start = new Date(d); start.setHours(0, 0, 0, 0);
+      const end = new Date(d); end.setHours(23, 59, 59);
+      const dayIdx = (start.getDay() + 6) % 7; // Mo=0..So=6
+      buckets.push({ start, end, data: emptyData(), label: V3_DAY_LABELS_DE[dayIdx], isCurrent: i === 0 });
+    }
+    return buckets;
   }
 
+  if (periodKey === '30D') {
+    // ~4-5 Wochen-Buckets
+    const buckets = [];
+    const weeksBack = 5;
+    for (let i = weeksBack - 1; i >= 0; i--) {
+      const end = new Date(nowLocal); end.setDate(end.getDate() - i * 7);
+      const start = new Date(end); start.setDate(start.getDate() - 6); start.setHours(0, 0, 0, 0);
+      const wn = v3WeekNumber(end);
+      buckets.push({ start, end, data: emptyData(), label: `KW ${wn}`, isCurrent: i === 0 });
+    }
+    return buckets;
+  }
+
+  // 6M / 1Y → Monats-Buckets
+  const monthsBack = periodKey === '1Y' ? 12 : 6;
+  const buckets = [];
+  for (let i = monthsBack - 1; i >= 0; i--) {
+    const ref = new Date(nowLocal.getFullYear(), nowLocal.getMonth() - i, 1);
+    const start = new Date(ref.getFullYear(), ref.getMonth(), 1, 0, 0, 0);
+    const end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0, 23, 59, 59);
+    buckets.push({ start, end, data: emptyData(), label: V3_MONTH_LABELS_DE[ref.getMonth()], isCurrent: i === 0 });
+  }
+  return buckets;
+}
+
+function v3RhythmSubtitle(periodKey) {
+  if (periodKey === '7D') return trV3('progress.v3.rhythm.subtitleDays');
+  if (periodKey === '30D') return trV3('progress.v3.rhythm.subtitleWeeks');
+  if (periodKey === '6M') return trV3('progress.v3.rhythm.subtitle6m');
+  return trV3('progress.v3.rhythm.subtitle');
+}
+
+function renderV3Rhythm() {
+  const buckets = v3BuildRhythmBuckets(progressV3PeriodKey);
+
   // Fill buckets
-  const cutoff = weeks[0].start;
+  const cutoff = buckets[0].start;
   allSessions.forEach(s => {
     const d = v3ToLocalDate(s);
     if (d < cutoff) return;
     const type = mapSessionType(s);
     if (!type) return;
     const mins = v3GetDurationMin(s);
-    for (const w of weeks) {
-      if (d >= w.start && d <= w.end) {
-        w.data[type] += mins;
+    for (const b of buckets) {
+      if (d >= b.start && d <= b.end) {
+        b.data[type] += mins;
         break;
       }
     }
   });
 
   // Find max for scaling
-  const maxMin = Math.max(1, ...weeks.map(w => V3_KNOWN_TYPES.reduce((sum, t) => sum + w.data[t], 0)));
+  const maxMin = Math.max(1, ...buckets.map(b => V3_KNOWN_TYPES.reduce((sum, t) => sum + b.data[t], 0)));
 
   // Check if any data
-  const hasData = weeks.some(w => V3_KNOWN_TYPES.some(t => w.data[t] > 0));
+  const hasData = buckets.some(b => V3_KNOWN_TYPES.some(t => b.data[t] > 0));
 
   if (!hasData) {
     return `
       <div class="pv3-card">
         <div class="pv3-card-header">
           <h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3>
-          <span class="pv3-card-subtitle">${trV3('progress.v3.rhythm.subtitle')}</span>
+          <span class="pv3-card-subtitle">${v3RhythmSubtitle(progressV3PeriodKey)}</span>
         </div>
         <div class="pv3-empty-state">${trV3('progress.v3.rhythm.noData')}</div>
       </div>`;
   }
 
   // Render stacked bars
-  const barsHtml = weeks.map((w, idx) => {
-    const total = V3_KNOWN_TYPES.reduce((sum, t) => sum + w.data[t], 0);
+  const barsHtml = buckets.map((b, idx) => {
+    const total = V3_KNOWN_TYPES.reduce((sum, t) => sum + b.data[t], 0);
     const heightPct = Math.max(0, (total / maxMin) * 100);
     const segments = V3_KNOWN_TYPES
-      .filter(t => w.data[t] > 0)
+      .filter(t => b.data[t] > 0)
       .map(t => {
-        const segPct = (w.data[t] / total) * 100;
-        return `<div class="pv3-rhythm-seg" style="height:${segPct}%;background:${V3_TYPE_COLORS[t]}" title="${trV3('progress.v3.types.' + t)}: ${w.data[t]} min"></div>`;
+        const segPct = (b.data[t] / total) * 100;
+        return `<div class="pv3-rhythm-seg" style="height:${segPct}%;background:${V3_TYPE_COLORS[t]}" title="${trV3('progress.v3.types.' + t)}: ${Math.round(b.data[t])} min"></div>`;
       }).join('');
 
-    const weekLabel = `${w.start.getDate()}.${w.start.getMonth() + 1}`;
-    const isCurrentWeek = idx === weeks.length - 1;
-
     return `
-      <div class="pv3-rhythm-col${isCurrentWeek ? ' current' : ''}">
+      <div class="pv3-rhythm-col${b.isCurrent ? ' current' : ''}">
         <div class="pv3-rhythm-bar" style="height:${heightPct}%">
           ${segments}
         </div>
-        <span class="pv3-rhythm-label">${weekLabel}</span>
+        <span class="pv3-rhythm-label">${b.label}</span>
       </div>`;
   }).join('');
 
   // Legend
   const legendHtml = V3_KNOWN_TYPES
-    .filter(t => weeks.some(w => w.data[t] > 0))
+    .filter(t => buckets.some(b => b.data[t] > 0))
     .map(t => `<span class="pv3-legend-item"><span class="pv3-legend-dot" style="background:${V3_TYPE_COLORS[t]}"></span>${trV3('progress.v3.types.' + t)}</span>`)
     .join('');
 
@@ -286,7 +346,7 @@ function renderV3Rhythm() {
     <div class="pv3-card pv3-rhythm-card">
       <div class="pv3-card-header">
         <h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3>
-        <span class="pv3-card-subtitle">${trV3('progress.v3.rhythm.subtitle')}</span>
+        <span class="pv3-card-subtitle">${v3RhythmSubtitle(progressV3PeriodKey)}</span>
       </div>
       <div class="pv3-rhythm-chart">${barsHtml}</div>
       <div class="pv3-legend">${legendHtml}</div>
@@ -458,29 +518,45 @@ function renderV3CardioSnapshot() {
   // Check if distance data exists
   const hasDistance = sessions.some(s => (s.distanceKm || 0) > 0);
 
-  // Build weekly buckets
-  const weekMap = {};
-  const weekOrder = [];
+  // Bucket-Typ je nach Period
+  const cardioBucketType = (progressV3PeriodKey === '7D') ? 'daily'
+    : (progressV3PeriodKey === '30D') ? 'weekly'
+    : 'monthly';
+
+  const bucketMap = {};
+  const bucketOrder = [];
+
   sessions.forEach(s => {
     const d = v3ToLocalDate(s);
-    const wk = v3WeekKey(d);
-    if (!weekMap[wk]) {
-      weekMap[wk] = { time: 0, distance: 0, sessionsWithDist: 0, weekNum: v3WeekNumber(d) };
-      weekOrder.push(wk);
+    let key, label;
+    if (cardioBucketType === 'daily') {
+      key = d.toISOString().slice(0, 10);
+      const dayIdx = (d.getDay() + 6) % 7;
+      label = V3_DAY_LABELS_DE[dayIdx];
+    } else if (cardioBucketType === 'weekly') {
+      key = v3WeekKey(d);
+      label = `KW ${v3WeekNumber(d)}`;
+    } else {
+      key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      label = V3_MONTH_LABELS_DE[d.getMonth()];
+    }
+    if (!bucketMap[key]) {
+      bucketMap[key] = { time: 0, distance: 0, sessionsWithDist: 0, label };
+      bucketOrder.push(key);
     }
     const mins = v3GetDurationMin(s);
-    weekMap[wk].time += mins;
+    bucketMap[key].time += mins;
     const dist = Number(s.distanceKm) || 0;
     if (dist > 0) {
-      weekMap[wk].distance += dist;
-      weekMap[wk].sessionsWithDist++;
+      bucketMap[key].distance += dist;
+      bucketMap[key].sessionsWithDist++;
     }
   });
 
-  // Calculate pace per week (distance-weighted)
-  weekOrder.forEach(wk => {
-    const w = weekMap[wk];
-    w.pace = w.distance > 0 ? w.time / w.distance : null; // min/km
+  // Calculate pace per bucket
+  bucketOrder.forEach(key => {
+    const b = bucketMap[key];
+    b.pace = b.distance > 0 ? b.time / b.distance : null; // min/km
   });
 
   // Determine if pace toggle is disabled
@@ -491,17 +567,20 @@ function renderV3CardioSnapshot() {
   if (metric === 'pace' && paceDisabled) metric = 'time';
 
   // Chart data
-  const chartValues = weekOrder.map(wk => {
-    const w = weekMap[wk];
-    if (metric === 'time') return w.time;
-    if (metric === 'distance') return w.distance;
-    if (metric === 'pace') return w.pace || 0;
+  const chartValues = bucketOrder.map(key => {
+    const b = bucketMap[key];
+    if (metric === 'time') return b.time;
+    if (metric === 'distance') return b.distance;
+    if (metric === 'pace') return b.pace || 0;
     return 0;
   });
 
-  const chartLabels = weekOrder.map(wk => {
-    const w = weekMap[wk];
-    return trV3('progress.v3.cardioSnapshot.weekLabel', { week: w.weekNum });
+  // Labels mit Tick-Reduktion: bei vielen Buckets nur jeden 2. anzeigen
+  const totalBuckets = bucketOrder.length;
+  const showEveryN = totalBuckets > 8 ? 2 : 1;
+  const chartLabels = bucketOrder.map((key, i) => {
+    if (showEveryN > 1 && i % showEveryN !== 0 && i !== totalBuckets - 1) return '';
+    return bucketMap[key].label;
   });
 
   const maxVal = Math.max(1, ...chartValues);
@@ -523,9 +602,12 @@ function renderV3CardioSnapshot() {
     else if (metric === 'distance') displayVal = val.toFixed(1);
     else displayVal = val > 0 ? formatPaceVal(val) : '-';
 
+    // Bei vielen Datenpunkten Werte über Bars ausdünnen
+    const showVal = totalBuckets <= 10 || i % showEveryN === 0 || i === totalBuckets - 1;
+
     return `
       <div class="pv3-cardio-col">
-        <span class="pv3-cardio-val">${displayVal}</span>
+        <span class="pv3-cardio-val">${showVal ? displayVal : ''}</span>
         <div class="pv3-cardio-bar" style="height:${Math.max(2, heightPct)}%;background:var(--color-category-cardio)"></div>
         <span class="pv3-cardio-label">${chartLabels[i]}</span>
       </div>`;
