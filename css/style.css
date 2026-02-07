@@ -2414,8 +2414,8 @@ input, textarea, select, button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: transparent;
   border: none;
   color: var(--color-text-muted);
@@ -2428,7 +2428,31 @@ input, textarea, select, button {
 }
 
 .activity-nav-btn .material-symbols-rounded {
-  font-size: 24px;
+  font-size: 20px;
+}
+
+/* "Mehr" Link im Kalender-Header */
+.activity-calendar-more-link {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.2s ease;
+}
+
+.activity-calendar-more-link:hover {
+  color: white;
+}
+
+.activity-calendar-more-link .material-symbols-rounded {
+  font-size: 16px;
 }
 
 .activity-month-title {
@@ -2474,13 +2498,13 @@ input, textarea, select, button {
   position: relative;
   min-width: 36px;
   min-height: 36px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .mini-cal-cell-expanded:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .mini-cal-cell-expanded.empty {
@@ -2493,8 +2517,7 @@ input, textarea, select, button {
 }
 
 .mini-cal-cell-expanded.today {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid var(--accent-primary);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .mini-cal-cell-expanded.has-sessions {

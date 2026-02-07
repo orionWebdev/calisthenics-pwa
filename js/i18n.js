@@ -429,8 +429,7 @@ const translations = {
       quickStats: {
         thisWeek: 'Diese Woche',
         sessions: 'Sessions',
-        average: 'Durchschnitt',
-        avgPeriodDays: 'letzte 14 Tage'
+        movementMinutes: 'Bewegungsmin.'
       },
       primary: {
         title: 'Workout',
@@ -478,7 +477,8 @@ const translations = {
       activityCalendar: {
         thisMonth: 'Diesen Monat',
         durationUnit: 'Bewegungsstunden',
-        emptyState: 'Noch keine Sessions in diesem Zeitraum'
+        emptyState: 'Noch keine Sessions in diesem Zeitraum',
+        more: 'Mehr'
       },
       trainingTypes: {
         strength: 'Krafttraining',
