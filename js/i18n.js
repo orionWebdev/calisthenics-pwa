@@ -698,6 +698,57 @@ const translations = {
         modalUnavailable: 'Modal nicht verfuegbar',
         cardioModalUnavailable: 'Cardio-Modal nicht verfuegbar',
         recoveryModalUnavailable: 'Recovery-Modal nicht verfuegbar'
+      },
+      v3: {
+        title: 'Progress',
+        rhythm: {
+          title: 'Trainingsrhythmus',
+          subtitle: 'Letzte 12 Monate',
+          subtitleDays: 'Letzte 7 Tage',
+          subtitleWeeks: 'Letzte 5 Wochen',
+          subtitle6m: 'Letzte 6 Monate',
+          minutesPerWeek: 'min',
+          noData: 'Noch keine Trainingsdaten vorhanden'
+        },
+        blockComparison: {
+          title: 'Blockvergleich',
+          last4w: 'Letzte 4 Wochen',
+          prev4w: 'Vorherige 4 Wochen',
+          sessionsPerWeek: 'Sessions / Woche',
+          minutesPerWeek: 'Minuten / Woche',
+          cardioShare: 'Cardio-Anteil',
+          noChange: 'unveraendert',
+          noPrevData: 'Keine Vergleichsdaten'
+        },
+        mix: {
+          title: 'Trainingsmix',
+          noData: 'Keine Daten im Zeitraum'
+        },
+        cardioSnapshot: {
+          title: 'Cardio',
+          toggleTime: 'Zeit',
+          toggleDistance: 'Distanz',
+          togglePace: 'Pace',
+          totalTime: 'Gesamtzeit',
+          totalDistance: 'Gesamtdistanz',
+          avgPace: 'Durchschn. Pace',
+          noPaceData: 'Nicht genug Distanzdaten',
+          noData: 'Keine Cardio-Daten im Zeitraum',
+          weekLabel: 'KW {week}'
+        },
+        stories: {
+          title: 'Zusammenfassung',
+          sessionsSummary: 'Letzte {days} Tage: {count} Sessions (Ø {avg} min)',
+          longestBreak: 'Laengste Pause: {days} Tage',
+          strengthWeeks: 'Krafttraining in {active} von {total} Wochen',
+          noData: 'Noch keine Sessions vorhanden'
+        },
+        types: {
+          strength: 'Kraft',
+          bodyweight: 'Bodyweight',
+          cardio: 'Cardio',
+          recovery: 'Recovery'
+        }
       }
     },
     errors: {

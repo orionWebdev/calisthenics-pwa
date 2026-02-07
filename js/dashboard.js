@@ -22,13 +22,24 @@ function getSessionDate(session) {
 
 function getSessionDateTime(session) {
   const sessionDate = getSessionDate(session);
-  if (sessionDate) return sessionDate;
+
+  // Resolve createdAt (contains the actual time)
+  let createdAt = null;
   if (session?.createdAt?.toDate) {
-    return session.createdAt.toDate();
+    createdAt = session.createdAt.toDate();
+  } else if (session?.createdAt) {
+    const parsed = new Date(session.createdAt);
+    if (!Number.isNaN(parsed.getTime())) createdAt = parsed;
   }
-  const createdParsed = new Date(session?.createdAt);
-  if (!Number.isNaN(createdParsed.getTime())) return createdParsed;
-  return null;
+
+  // Combine: date from session.date, time from createdAt
+  if (sessionDate && createdAt) {
+    const combined = new Date(sessionDate);
+    combined.setHours(createdAt.getHours(), createdAt.getMinutes(), createdAt.getSeconds());
+    return combined;
+  }
+
+  return createdAt || sessionDate || null;
 }
 
 function getSessionDurationSeconds(session) {

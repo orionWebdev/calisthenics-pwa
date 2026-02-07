@@ -112,7 +112,9 @@ function showView(viewName) {
 
   // Initialize progress page when first opened
   if (viewName === 'progress') {
-    if (typeof initProgressV2 === 'function') {
+    if (typeof initProgressV3 === 'function') {
+      initProgressV3();
+    } else if (typeof initProgressV2 === 'function') {
       initProgressV2();
     } else if (typeof initProgress === 'function') {
       initProgress();
