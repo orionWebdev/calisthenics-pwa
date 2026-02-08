@@ -267,6 +267,7 @@ async function loadExercises() {
     const exercises = await getAllDocs(exercisesCollection);
     allExercises = exercises.map(mapExerciseToV3);
     filteredExercises = [...allExercises];
+    applyExerciseSearchI18n();
     renderExercises();
     updateExerciseFiltersUI();
   } catch (error) {
@@ -352,6 +353,7 @@ function groupExercisesByInitial(exercises) {
 
 function renderExercises() {
   const grid = document.getElementById('exercises-grid');
+  const isSearchActive = !!_exerciseSearchTerm;
 
   if (filteredExercises.length === 0) {
     grid.innerHTML = `
@@ -359,25 +361,43 @@ function renderExercises() {
         <div class="empty-state-icon">
           <span class="material-symbols-rounded">search_off</span>
         </div>
-        <h3 class="empty-state-title">Keine Übungen gefunden</h3>
-        <p class="empty-state-text">Versuche einen anderen Suchbegriff oder Filter</p>
-        <button onclick="resetFilters()" class="empty-state-btn">
-          <span class="material-symbols-rounded">refresh</span>
-          <span>Filter zurücksetzen</span>
-        </button>
+        <h3 class="empty-state-title">${t('exercise.noResultsTitle')}</h3>
+        <p class="empty-state-text">${t('exercise.noResultsHint')}</p>
+        <div class="empty-state-actions">
+          <button onclick="resetFilters()" class="empty-state-btn btn-secondary">
+            <span class="material-symbols-rounded">refresh</span>
+            <span>Filter zuruecksetzen</span>
+          </button>
+          <button onclick="openExerciseCreateSheet()" class="empty-state-btn btn-primary">
+            <span class="material-symbols-rounded">add_circle</span>
+            <span>${t('exercise.createNew')}</span>
+          </button>
+        </div>
       </div>
     `;
     return;
   }
 
-  const { groups, sortedKeys } = groupExercisesByInitial(filteredExercises);
+  // Bei aktiver Suche: flache, alphabetisch sortierte Liste (keine Buchstaben-Sections)
+  if (isSearchActive) {
+    const sorted = [...filteredExercises].sort((a, b) =>
+      (a.name || '').localeCompare(b.name || '', 'de')
+    );
+    let html = '<div class="exercises-list-container"><div class="exercise-section-items">';
+    sorted.forEach((exercise, index) => {
+      html += renderExerciseRow(exercise, index === sorted.length - 1);
+    });
+    html += '</div></div>';
+    grid.innerHTML = html;
+    return;
+  }
 
-  // Build sections HTML
+  // Standard: Alphabetische Gruppierung
+  const { groups, sortedKeys } = groupExercisesByInitial(filteredExercises);
   let sectionsHTML = '<div class="exercises-list-container">';
 
   sortedKeys.forEach(letter => {
     const exercises = groups[letter];
-
     sectionsHTML += `
       <div class="exercise-section" data-section="${letter}">
         <div class="exercise-section-header">
@@ -385,20 +405,13 @@ function renderExercises() {
         </div>
         <div class="exercise-section-items">
     `;
-
     exercises.forEach((exercise, index) => {
-      const isLast = index === exercises.length - 1;
-      sectionsHTML += renderExerciseRow(exercise, isLast);
+      sectionsHTML += renderExerciseRow(exercise, index === exercises.length - 1);
     });
-
-    sectionsHTML += `
-        </div>
-      </div>
-    `;
+    sectionsHTML += '</div></div>';
   });
 
   sectionsHTML += '</div>';
-
   grid.innerHTML = sectionsHTML;
 }
 
@@ -436,23 +449,72 @@ function toggleExerciseCard(id) {
 }
 
 // ========================================
-// FILTER & SEARCH
+// FILTER & SEARCH (Debounced)
 // ========================================
 
+let _exerciseSearchTimer = null;
+let _exerciseSearchTerm = '';
+
+/** Called on every keypress – debounces the actual filter */
+function onExerciseSearchInput() {
+  clearTimeout(_exerciseSearchTimer);
+  _exerciseSearchTimer = setTimeout(() => {
+    filterExercises();
+  }, 180);
+
+  // Sofort Clear-Button togglen (kein Debounce noetig)
+  const input = document.getElementById('search-input');
+  const clearBtn = document.getElementById('exercise-search-clear');
+  if (input && clearBtn) {
+    clearBtn.classList.toggle('hidden', !input.value);
+  }
+}
+
+/** Clears search input and re-filters */
+function clearExerciseSearch() {
+  const input = document.getElementById('search-input');
+  if (input) input.value = '';
+  const clearBtn = document.getElementById('exercise-search-clear');
+  if (clearBtn) clearBtn.classList.add('hidden');
+  filterExercises();
+  if (input) input.focus();
+}
+
+/** Applies search placeholder via i18n */
+function applyExerciseSearchI18n() {
+  const input = document.getElementById('search-input');
+  if (input) input.placeholder = t('exercise.searchPlaceholder');
+}
+
 function filterExercises() {
-  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  const input = document.getElementById('search-input');
+  const searchTerm = input ? input.value.trim() : '';
+  _exerciseSearchTerm = searchTerm;
+  const searchLower = searchTerm.toLocaleLowerCase('de-DE');
   const muscleFilter = exerciseMuscleFilter;
   const difficultyFilter = exerciseDifficultyFilter;
 
   filteredExercises = allExercises.filter(exercise => {
-    // Search filter
-    const matchesSearch = exercise.name.toLowerCase().includes(searchTerm) ||
-                         (exercise.description && exercise.description.toLowerCase().includes(searchTerm));
+    // Search filter – Name hat Prioritaet, dann type/pattern/difficulty
+    let matchesSearch = true;
+    if (searchLower) {
+      const nameLower = (exercise.name || '').toLocaleLowerCase('de-DE');
+      if (nameLower.includes(searchLower)) {
+        matchesSearch = true;
+      } else {
+        const typeLabel = (t('exercise.type.' + exercise.type) || '').toLocaleLowerCase('de-DE');
+        const patternLabel = (t('exercise.pattern.' + exercise.pattern) || '').toLocaleLowerCase('de-DE');
+        const diffLabel = (t('difficulty.' + exercise.difficulty) || '').toLocaleLowerCase('de-DE');
+        matchesSearch = typeLabel.includes(searchLower) ||
+                        patternLabel.includes(searchLower) ||
+                        diffLabel.includes(searchLower);
+      }
+    }
 
     // Muscle filter
     const matchesMuscle = !muscleFilter || exercise.muscleGroups.includes(muscleFilter);
 
-    // Difficulty filter - handle both enum strings and legacy numeric values
+    // Difficulty filter
     let matchesDifficulty = true;
     if (difficultyFilter) {
       const exerciseDiff = convertDifficultyToEnum(exercise.difficulty);
@@ -529,7 +591,10 @@ function toggleExercisesExpanded() {
 }
 
 function resetFilters() {
-  document.getElementById('search-input').value = '';
+  const input = document.getElementById('search-input');
+  if (input) input.value = '';
+  const clearBtn = document.getElementById('exercise-search-clear');
+  if (clearBtn) clearBtn.classList.add('hidden');
   exerciseMuscleFilter = '';
   exerciseDifficultyFilter = '';
   updateExerciseFiltersUI();
@@ -538,7 +603,8 @@ function resetFilters() {
 
 // Active Filter Pills
 function updateActiveFilters() {
-  const searchTerm = document.getElementById('search-input').value;
+  const searchInput = document.getElementById('search-input');
+  const searchTerm = searchInput ? searchInput.value : '';
   const muscleFilter = exerciseMuscleFilter;
   const difficultyFilter = exerciseDifficultyFilter;
 
@@ -597,8 +663,7 @@ function updateActiveFilters() {
 }
 
 function clearSearchFilter() {
-  document.getElementById('search-input').value = '';
-  filterExercises();
+  clearExerciseSearch();
 }
 
 function clearMuscleFilter() {
@@ -1421,9 +1486,9 @@ function viewExerciseDetails(id) {
   // Chips: Type, Pattern, Difficulty
   const chipsHTML = `
     <div class="exercise-detail-chips">
-      <span class="exercise-chip exercise-chip-type">${typeLabel}</span>
-      <span class="exercise-chip exercise-chip-pattern">${patternLabel}</span>
-      <span class="exercise-chip exercise-chip-difficulty ${difficultyValue}">${difficultyLabel}</span>
+      <span class="exercise-chip">${typeLabel}</span>
+      <span class="exercise-chip">${patternLabel}</span>
+      <span class="exercise-chip">${difficultyLabel}</span>
     </div>
   `;
 

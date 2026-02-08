@@ -273,7 +273,11 @@ const translations = {
       },
       detail: {
         useInPlan: 'In Plan verwenden'
-      }
+      },
+      searchPlaceholder: 'Uebungen suchen...',
+      noResultsTitle: 'Keine Treffer',
+      noResultsHint: 'Versuch einen anderen Begriff oder erstelle eine neue Uebung.',
+      createNew: 'Neue Uebung erstellen'
     },
     workout: {
       quick: {
