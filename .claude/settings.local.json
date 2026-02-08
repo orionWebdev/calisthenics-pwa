@@ -4,7 +4,8 @@
       "Bash(wc:*)",
       "Bash(node -c:*)",
       "Bash(grep:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(node --check:*)"
     ]
   }
 }

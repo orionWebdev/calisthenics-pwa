@@ -747,29 +747,19 @@ function renderExercisePicker() {
   }
 
   const exerciseRows = filteredExercises.map(exercise => {
-    const equipmentList = (exercise.equipment || []).filter(eq => eq && eq !== 'none');
-    const equipmentLabel = equipmentList.length > 0
-      ? equipmentList.map(eq => equipmentNames[eq]).filter(Boolean).join(', ')
-      : '';
-    const primaryMuscle = exercise.muscleGroups[0];
-    const muscleLabel = muscleNames[primaryMuscle] || 'Muskel';
-    const iconKey = equipmentList[0] || 'none';
-    const iconName = equipmentIcons[iconKey] || 'fitness_center';
-    const discipline = exercise.discipline || 'calisthenics';
-    const disciplineIcon = discipline === 'gym' ? 'fitness_center' : discipline === 'both' ? 'layers' : 'sports_gymnastics';
+    const typeLabel = t('exercise.type.' + (exercise.type || 'strength')) || exercise.type || '';
+    const patternLabel = t('exercise.pattern.' + (exercise.pattern || 'full')) || exercise.pattern || '';
+    const iconName = exercise.icon || 'fitness_center';
+    const metaText = typeLabel && patternLabel ? (typeLabel + ' \u00B7 ' + patternLabel) : (typeLabel || patternLabel);
 
     return `
       <div class="exercise-row-card is-picker" onclick="selectExerciseForPlan('${exercise.id}')">
-        <div class="exercise-row-accent muscle-${primaryMuscle || 'default'}"></div>
         <div class="exercise-row-icon">
           <span class="material-symbols-rounded">${iconName}</span>
         </div>
         <div class="exercise-row-content">
           <div class="exercise-row-title">${exercise.name}</div>
-          <div class="exercise-row-meta">${muscleLabel}${equipmentLabel ? ` ? ${equipmentLabel}` : ''}</div>
-        </div>
-        <div class="exercise-row-discipline" title="${discipline}">
-          <span class="material-symbols-rounded">${disciplineIcon}</span>
+          <div class="exercise-row-meta">${metaText}</div>
         </div>
         <button class="exercise-row-action" onclick="event.stopPropagation(); selectExerciseForPlan('${exercise.id}')">
           <span class="material-symbols-rounded">add_circle</span>
@@ -802,27 +792,13 @@ function renderExercisePicker() {
 let quickExerciseCallback = null;
 
 function openQuickExerciseCreate() {
-  // Store callback to add exercise to plan after creation
-  quickExerciseCallback = (exerciseId) => {
-    // Re-render picker to include new exercise
-    renderExercisePicker();
-    // Auto-select the new exercise
-    selectExerciseForPlan(exerciseId);
-  };
-
-  // Reset quick exercise form
-  document.getElementById('quick-exercise-name').value = '';
-  quickExerciseMuscleGroups = [];
-  renderQuickExerciseMuscleInput();
-  setQuickExerciseDifficulty('intermediate');
-
-  // Show modal
-  document.getElementById('quick-exercise-modal').classList.add('active');
-
-  // Focus name input
-  setTimeout(() => {
-    document.getElementById('quick-exercise-name').focus();
-  }, 100);
+  // V3: Delegate to shared exercise create flow with callback
+  openExerciseCreateSheet({
+    onCreated: (exerciseId) => {
+      renderExercisePicker();
+      selectExerciseForPlan(exerciseId);
+    }
+  });
 }
 
 function closeQuickExerciseModal() {

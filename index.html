@@ -597,133 +597,143 @@
       </div>
 
       <div class="space-y-5">
-        <!-- Section 1: Grundlagen -->
+        <!-- Section 1: Grundlagen (immer sichtbar) -->
         <div class="wizard-section">
           <div class="wizard-section-header">
             <span class="wizard-section-number">1</span>
-            <span class="wizard-section-title">Grundlagen</span>
+            <span class="wizard-section-title" id="exercise-step1-title">Grundlagen</span>
           </div>
           <div class="wizard-section-content">
             <!-- Name -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">Übungsname *</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-name-label">Uebungsname *</label>
               <input
                 type="text"
                 id="exercise-name"
                 placeholder="z.B. Pull-ups, Liegestuetze, Kniebeugen"
-                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
               />
             </div>
 
-            <!-- Exercise Icon & Difficulty Row -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Exercise Icon -->
-              <div>
-                <label class="block text-sm font-medium mb-2">Icon</label>
-                <div class="exercise-icon-picker" id="exercise-icon-picker">
-                  <button type="button" class="icon-picker-btn active" data-icon="fitness_center" onclick="setExerciseIcon('fitness_center')">
-                    <span class="material-symbols-rounded">fitness_center</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="sports_gymnastics" onclick="setExerciseIcon('sports_gymnastics')">
-                    <span class="material-symbols-rounded">sports_gymnastics</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="exercise" onclick="setExerciseIcon('exercise')">
-                    <span class="material-symbols-rounded">exercise</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="self_improvement" onclick="setExerciseIcon('self_improvement')">
-                    <span class="material-symbols-rounded">self_improvement</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="sports_martial_arts" onclick="setExerciseIcon('sports_martial_arts')">
-                    <span class="material-symbols-rounded">sports_martial_arts</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="accessibility_new" onclick="setExerciseIcon('accessibility_new')">
-                    <span class="material-symbols-rounded">accessibility_new</span>
-                  </button>
-                </div>
-                <input type="hidden" id="exercise-icon" value="fitness_center">
+            <!-- Type -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-type-label">Typ *</label>
+              <div class="exercise-type-pills" id="exercise-type-pills">
+                <button type="button" class="difficulty-pill active" data-type="strength" onclick="setExerciseType('strength')">Kraft</button>
+                <button type="button" class="difficulty-pill" data-type="bodyweight" onclick="setExerciseType('bodyweight')">Bodyweight</button>
+                <button type="button" class="difficulty-pill" data-type="cardio" onclick="setExerciseType('cardio')">Cardio</button>
+                <button type="button" class="difficulty-pill" data-type="mobility" onclick="setExerciseType('mobility')">Mobilitaet</button>
+                <button type="button" class="difficulty-pill" data-type="recovery" onclick="setExerciseType('recovery')">Recovery</button>
               </div>
+              <input type="hidden" id="exercise-type" value="strength">
+            </div>
 
-              <!-- Difficulty -->
-              <div>
-                <label class="block text-sm font-medium mb-2">Schwierigkeit *</label>
-                <div class="difficulty-pills-compact">
-                  <button type="button" onclick="setDifficulty('beginner')" class="difficulty-pill-sm" data-difficulty="beginner">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">eco</span>
-                    Anfaenger
-                  </button>
-                  <button type="button" onclick="setDifficulty('intermediate')" class="difficulty-pill-sm active" data-difficulty="intermediate">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">trending_up</span>
-                    Mittel
-                  </button>
-                  <button type="button" onclick="setDifficulty('advanced')" class="difficulty-pill-sm" data-difficulty="advanced">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">bolt</span>
-                    Fortgeschritten
-                  </button>
-                  <button type="button" onclick="setDifficulty('elite')" class="difficulty-pill-sm" data-difficulty="elite">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">local_fire_department</span>
-                    Elite
-                  </button>
-                </div>
-                <input type="hidden" id="exercise-difficulty" value="intermediate">
+            <!-- Pattern -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-pattern-label">Bewegungsmuster *</label>
+              <div class="exercise-pattern-pills" id="exercise-pattern-pills">
+                <button type="button" class="difficulty-pill" data-pattern="push" onclick="setExercisePattern('push')">Push</button>
+                <button type="button" class="difficulty-pill" data-pattern="pull" onclick="setExercisePattern('pull')">Pull</button>
+                <button type="button" class="difficulty-pill" data-pattern="legs" onclick="setExercisePattern('legs')">Beine</button>
+                <button type="button" class="difficulty-pill" data-pattern="core" onclick="setExercisePattern('core')">Core</button>
+                <button type="button" class="difficulty-pill active" data-pattern="full" onclick="setExercisePattern('full')">Ganzkoerper</button>
               </div>
+              <input type="hidden" id="exercise-pattern" value="full">
+            </div>
+
+            <!-- Difficulty -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-difficulty-label">Schwierigkeit *</label>
+              <div class="difficulty-pills-compact">
+                <button type="button" onclick="setDifficulty('beginner')" class="difficulty-pill-sm" data-difficulty="beginner">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">eco</span>
+                  Anfaenger
+                </button>
+                <button type="button" onclick="setDifficulty('intermediate')" class="difficulty-pill-sm active" data-difficulty="intermediate">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">trending_up</span>
+                  Fortgeschritten
+                </button>
+                <button type="button" onclick="setDifficulty('advanced')" class="difficulty-pill-sm" data-difficulty="advanced">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">bolt</span>
+                  Profi
+                </button>
+                <button type="button" onclick="setDifficulty('elite')" class="difficulty-pill-sm" data-difficulty="elite">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">local_fire_department</span>
+                  Elite
+                </button>
+              </div>
+              <input type="hidden" id="exercise-difficulty" value="intermediate">
+              <input type="hidden" id="exercise-icon" value="fitness_center">
             </div>
           </div>
         </div>
 
-        <!-- Section 2: Klassifikation -->
-        <div class="wizard-section">
-          <div class="wizard-section-header">
-            <span class="wizard-section-number">2</span>
-            <span class="wizard-section-title">Klassifikation</span>
-          </div>
-          <div class="wizard-section-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Muscle Groups -->
-              <div>
-                <label class="block text-sm font-medium mb-2">
-                  <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">body_system</span>
-                  Muskelgruppen *
-                </label>
-                <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()">
-                  <!-- Dynamic content rendered by renderMultiSelectInput -->
-                </div>
-              </div>
-
-              <!-- Equipment -->
-              <div>
-                <label class="block text-sm font-medium mb-2">
-                  <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">build</span>
-                  Equipment <span class="text-gray-400">(optional)</span>
-                </label>
-                <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()">
-                  <!-- Dynamic content rendered by renderMultiSelectInput -->
-                </div>
+        <!-- Section 2: Details (aufklappbar, progressive disclosure) -->
+        <div class="wizard-section collapsible" id="exercise-step2-section">
+          <button type="button" class="wizard-section-header clickable" onclick="toggleExerciseStep2()">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+              <span class="wizard-section-number">2</span>
+              <span class="wizard-section-title" id="exercise-step2-title">Details</span>
+              <span class="wizard-section-badge" id="exercise-step2-badge">optional</span>
+            </div>
+            <span class="material-symbols-rounded wizard-section-toggle" id="exercise-step2-toggle">expand_more</span>
+          </button>
+          <div class="wizard-section-content collapsed" id="exercise-step2-content">
+            <!-- Visual -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-visual-label">Visual</label>
+              <div id="exercise-visual-container">
+                <!-- Rendered by JS -->
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Section 3: Anleitung als nummerierte Schritte -->
-        <div class="wizard-section">
-          <div class="wizard-section-header">
-            <span class="wizard-section-number">3</span>
-            <span class="wizard-section-title" id="exercise-instructions-title"></span>
-          </div>
-          <div class="wizard-section-content" id="exercise-instructions-content">
-            <p class="text-sm text-gray-400 mb-4" id="exercise-instructions-hint"></p>
-
-            <!-- Nummerierte Schritte Container -->
-            <div id="exercise-instruction-steps" class="instruction-steps-container">
-              <!-- Schritte werden dynamisch gerendert -->
+            <!-- Instructions (nummerierte Schritte) -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-instructions-title">Anleitung</label>
+              <p class="text-sm text-gray-400 mb-4" id="exercise-instructions-hint"></p>
+              <div id="exercise-instruction-steps" class="instruction-steps-container"></div>
+              <button type="button" onclick="addInstructionStep()" class="add-step-btn">
+                <span class="material-symbols-rounded">add</span>
+                <span id="exercise-add-step-label"></span>
+              </button>
             </div>
 
-            <!-- Schritt hinzufuegen Button -->
-            <button type="button" onclick="addInstructionStep()" class="add-step-btn">
-              <span class="material-symbols-rounded">add</span>
-              <span id="exercise-add-step-label"></span>
-            </button>
+            <!-- Variants -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-variants-label">Varianten</label>
+              <div id="exercise-variants-list" class="exercise-variants-edit-container"></div>
+              <button type="button" onclick="addVariant()" class="add-step-btn">
+                <span class="material-symbols-rounded">add</span>
+                <span>Variante hinzufuegen</span>
+              </button>
+            </div>
 
-            <!-- Advanced toggle -->
+            <!-- Notes -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-notes-label">Notizen</label>
+              <textarea id="exercise-notes" rows="3" class="instruction-step-input"
+                placeholder="Allgemeine Notizen zur Uebung..."></textarea>
+            </div>
+
+            <!-- Muscle Groups (de-emphasized) -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">
+                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">body_system</span>
+                Muskelgruppen
+              </label>
+              <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()"></div>
+            </div>
+
+            <!-- Equipment (de-emphasized) -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">
+                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">build</span>
+                Equipment <span class="text-gray-400">(optional)</span>
+              </label>
+              <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()"></div>
+            </div>
+
+            <!-- Advanced instructions toggle -->
             <div class="instruction-advanced-toggle">
               <button type="button" class="btn-secondary instruction-advanced-toggle-btn" onclick="toggleExerciseInstructionAdvanced()">
                 <span class="material-symbols-rounded" id="exercise-advanced-toggle-icon">add_circle</span>
@@ -731,7 +741,7 @@
               </button>
             </div>
 
-            <!-- Advanced instructions -->
+            <!-- Advanced instructions content -->
             <div id="exercise-instructions-advanced" class="instruction-advanced-content hidden">
               <div class="instruction-advanced-group">
                 <label class="block text-sm font-medium mb-2" id="exercise-cues-label"></label>

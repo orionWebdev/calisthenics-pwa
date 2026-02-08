@@ -49,8 +49,8 @@ const translations = {
     },
     difficulty: {
       beginner: 'Anfaenger',
-      intermediate: 'Mittel',
-      advanced: 'Fortgeschritten',
+      intermediate: 'Fortgeschritten',
+      advanced: 'Profi',
       elite: 'Elite',
       label: 'Schwierigkeit',
       descriptions: {
@@ -235,6 +235,44 @@ const translations = {
         button: 'Neue Uebung erstellen',
         hint: 'Uebung fehlt? Erstelle sie hier schnell.',
         saved: 'Uebung erstellt und hinzugefuegt'
+      },
+      type: {
+        label: 'Typ',
+        strength: 'Kraft',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        mobility: 'Mobilitaet',
+        recovery: 'Recovery'
+      },
+      pattern: {
+        label: 'Bewegungsmuster',
+        push: 'Push',
+        pull: 'Pull',
+        legs: 'Beine',
+        core: 'Core',
+        full: 'Ganzkoerper'
+      },
+      visualAdd: 'Visual hinzufuegen',
+      visualUrlPlaceholder: 'Bild-URL eingeben...',
+      visualRemove: 'Visual entfernen',
+      variants: {
+        label: 'Varianten',
+        add: 'Variante hinzufuegen',
+        namePlaceholder: 'Variantenname...',
+        notePlaceholder: 'Kurze Notiz (optional)...',
+        remove: 'Variante entfernen',
+        empty: 'Noch keine Varianten'
+      },
+      notesLabel: 'Notizen',
+      notesPlaceholder: 'Allgemeine Notizen zur Uebung...',
+      create: {
+        title: 'Neue Uebung',
+        stepBasics: 'Grundlagen',
+        stepDetails: 'Details',
+        stepOptional: 'optional'
+      },
+      detail: {
+        useInPlan: 'In Plan verwenden'
       }
     },
     workout: {

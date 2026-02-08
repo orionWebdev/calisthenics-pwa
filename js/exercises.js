@@ -9,6 +9,15 @@ let exercisesExpanded = false;
 let exerciseMuscleFilter = '';
 let exerciseDifficultyFilter = '';
 
+// V3 State
+let exerciseType = 'strength';
+let exercisePattern = 'full';
+let exerciseVariants = [];
+let exerciseNotes = '';
+let exerciseVisual = null;
+let exerciseStep2Expanded = false;
+let exerciseCreateCallback = null;
+
 // Muscle Group Namen Mapping
 const muscleNames = {
   chest: 'Brust',
@@ -45,6 +54,26 @@ const equipmentIcons = {
   'wall': 'wall',
   'mat': 'airline_seat_flat',
   'weights': 'fitness_center'
+};
+
+// ========================================
+// EXERCISE V3 TYPE & PATTERN CONSTANTS
+// ========================================
+
+const exerciseTypes = {
+  strength: { icon: 'fitness_center' },
+  bodyweight: { icon: 'sports_gymnastics' },
+  cardio: { icon: 'directions_run' },
+  mobility: { icon: 'self_improvement' },
+  recovery: { icon: 'spa' }
+};
+
+const exercisePatterns = {
+  push: { icon: 'arrow_upward' },
+  pull: { icon: 'arrow_downward' },
+  legs: { icon: 'directions_walk' },
+  core: { icon: 'self_improvement' },
+  full: { icon: 'accessibility_new' }
 };
 
 // ========================================
@@ -147,13 +176,96 @@ function normalizeExerciseForRuntime(exercise) {
 }
 
 // ========================================
+// EXERCISE V3 MAPPERS
+// ========================================
+
+/**
+ * Maps any exercise document (legacy or new) to v3 runtime shape.
+ * Adds defaults for missing v3 fields, maps imageUrl to visual.
+ */
+function mapExerciseToV3(exercise) {
+  const normalized = normalizeExerciseInstructions(exercise);
+
+  // Type: default 'strength' for legacy
+  const type = exercise.type && exerciseTypes[exercise.type] ? exercise.type : 'strength';
+
+  // Pattern: default 'full' for legacy
+  const pattern = exercise.pattern && exercisePatterns[exercise.pattern] ? exercise.pattern : 'full';
+
+  // Difficulty: ensure enum string
+  const difficulty = convertDifficultyToEnum(exercise.difficulty) || 'intermediate';
+
+  // Instructions: use normalized
+  const instructions = normalized.instructionsSteps;
+
+  // Visual: map from legacy imageUrl if needed
+  let visual = exercise.visual || null;
+  if (!visual && exercise.imageUrl) {
+    visual = { kind: 'url', value: exercise.imageUrl };
+  }
+
+  // Variants: keep if array, default empty
+  const variants = Array.isArray(exercise.variants) ? exercise.variants : [];
+
+  // Notes
+  const notes = exercise.notes || '';
+
+  return {
+    ...exercise,
+    type,
+    pattern,
+    difficulty,
+    instructions,
+    instructionsSteps: instructions,
+    visual,
+    variants,
+    notes,
+    setupNotes: normalized.setupNotes,
+    cues: normalized.cues,
+    commonMistakes: normalized.commonMistakes,
+    progressions: normalized.progressions,
+    muscleGroups: exercise.muscleGroups || [],
+    equipment: exercise.equipment || ['none'],
+    icon: exercise.icon || 'fitness_center'
+  };
+}
+
+/**
+ * Maps v3 runtime shape to Firestore document for saving.
+ * Writes both new and legacy fields for backward compat.
+ */
+function mapV3ToExerciseDoc(v3) {
+  const doc = {
+    name: v3.name,
+    type: v3.type || 'strength',
+    pattern: v3.pattern || 'full',
+    difficulty: v3.difficulty || 'intermediate',
+    instructionsSteps: v3.instructions || [],
+    muscleGroups: v3.muscleGroups || [],
+    equipment: v3.equipment?.length ? v3.equipment : ['none'],
+    icon: v3.icon || 'fitness_center'
+  };
+
+  // Optional fields - only write if non-empty
+  if (v3.visual) doc.visual = v3.visual;
+  if (v3.variants?.length) doc.variants = v3.variants;
+  if (v3.notes) doc.notes = v3.notes;
+  if (v3.setupNotes) doc.setupNotes = v3.setupNotes;
+  if (v3.cues?.length) doc.cues = v3.cues;
+  if (v3.commonMistakes?.length) doc.commonMistakes = v3.commonMistakes;
+  if (v3.progressions?.length) doc.progressions = v3.progressions;
+
+  return doc;
+}
+
+// ========================================
 // LOAD & DISPLAY EXERCISES
 // ========================================
 
 async function loadExercises() {
   try {
     const exercises = await getAllDocs(exercisesCollection);
-    allExercises = exercises.map(normalizeExerciseForRuntime);
+    allExercises = exercises.map(mapExerciseToV3);
     filteredExercises = [...allExercises];
     renderExercises();
     updateExerciseFiltersUI();
@@ -291,12 +403,28 @@ function renderExercises() {
 }
 
 /**
- * Renders a single exercise row (minimal, text-only)
+ * Renders a single exercise row (v3: visual + name + meta)
  */
 function renderExerciseRow(exercise, isLast = false) {
+  // Visual: small thumbnail or placeholder icon
+  const visualHTML = exercise.visual && exercise.visual.value
+    ? `<img src="${exercise.visual.value}" alt="" class="exercise-list-visual" loading="lazy">`
+    : `<div class="exercise-list-visual-placeholder">
+        <span class="material-symbols-rounded">${exercise.icon || 'fitness_center'}</span>
+      </div>`;
+
+  // Meta line: type + pattern (subdued)
+  const typeLabel = t('exercise.type.' + exercise.type) || exercise.type || '';
+  const patternLabel = t('exercise.pattern.' + exercise.pattern) || exercise.pattern || '';
+  const metaText = typeLabel && patternLabel ? (typeLabel + ' \u00B7 ' + patternLabel) : (typeLabel || patternLabel);
+
   return `
     <div class="exercise-list-row${isLast ? ' is-last' : ''}" onclick="viewExerciseDetails('${exercise.id}')">
-      <span class="exercise-list-name">${exercise.name}</span>
+      ${visualHTML}
+      <div class="exercise-list-text">
+        <span class="exercise-list-name">${exercise.name}</span>
+        <span class="exercise-list-meta">${metaText}</span>
+      </div>
       <span class="material-symbols-rounded exercise-list-chevron">chevron_right</span>
     </div>
   `;
@@ -487,7 +615,7 @@ function clearDifficultyFilter() {
 
 function openAddExerciseModal() {
   editingExerciseId = null;
-  document.getElementById('modal-title').textContent = 'Neue Übung';
+  document.getElementById('modal-title').textContent = t('exercise.create.title');
   clearExerciseForm();
   if (exerciseInstructionSteps.length === 0) {
     addInstructionStep();
@@ -498,6 +626,24 @@ function openAddExerciseModal() {
   exerciseEquipment = [];
   renderExerciseMuscleGroupsInput();
   renderExerciseEquipmentInput();
+
+  // V3 fields
+  setExerciseType('strength');
+  setExercisePattern('full');
+  exerciseVariants = [];
+  exerciseNotes = '';
+  exerciseVisual = null;
+  renderVariants();
+  renderVisualInput();
+
+  // Collapse step 2
+  exerciseStep2Expanded = false;
+  const section = document.getElementById('exercise-step2-section');
+  const content = document.getElementById('exercise-step2-content');
+  const toggle = document.getElementById('exercise-step2-toggle');
+  if (section) section.classList.remove('open');
+  if (content) content.classList.add('collapsed');
+  if (toggle) toggle.style.transform = '';
 
   document.getElementById('exercise-modal').classList.add('active');
 }
@@ -527,6 +673,19 @@ function editExercise(id) {
   const iconValue = exercise.icon || 'fitness_center';
   setExerciseIcon(iconValue);
 
+  // V3 fields
+  setExerciseType(exercise.type || 'strength');
+  setExercisePattern(exercise.pattern || 'full');
+  exerciseVariants = exercise.variants ? exercise.variants.map(v => ({...v})) : [];
+  exerciseNotes = exercise.notes || '';
+  exerciseVisual = exercise.visual ? {...exercise.visual} : null;
+  renderVariants();
+  renderVisualInput();
+
+  // Notes textarea
+  const notesInput = document.getElementById('exercise-notes');
+  if (notesInput) notesInput.value = exerciseNotes;
+
   // Instructions - normalize legacy data into new fields
   const normalized = normalizeExerciseInstructions(exercise);
   exerciseInstructionSteps = [...normalized.instructionsSteps];
@@ -545,6 +704,24 @@ function editExercise(id) {
     exerciseInstructionProgressions.length > 0 ||
     !!exerciseSetupNotes;
   setExerciseInstructionAdvancedExpanded(hasAdvancedContent);
+
+  // Expand step 2 if exercise has detail content
+  const hasStep2Content = exerciseInstructionSteps.length > 0 ||
+    exerciseVariants.length > 0 || exerciseNotes || exerciseVisual ||
+    hasAdvancedContent;
+  exerciseStep2Expanded = hasStep2Content;
+  const section = document.getElementById('exercise-step2-section');
+  const contentEl = document.getElementById('exercise-step2-content');
+  const toggle = document.getElementById('exercise-step2-toggle');
+  if (hasStep2Content) {
+    if (section) section.classList.add('open');
+    if (contentEl) contentEl.classList.remove('collapsed');
+    if (toggle) toggle.style.transform = 'rotate(180deg)';
+  } else {
+    if (section) section.classList.remove('open');
+    if (contentEl) contentEl.classList.add('collapsed');
+    if (toggle) toggle.style.transform = '';
+  }
 
   document.getElementById('exercise-modal').classList.add('active');
 }
@@ -579,6 +756,16 @@ function clearExerciseForm() {
 
   setDifficulty('intermediate');
   setExerciseIcon('fitness_center');
+
+  // V3 fields
+  exerciseType = 'strength';
+  exercisePattern = 'full';
+  exerciseVariants = [];
+  exerciseNotes = '';
+  exerciseVisual = null;
+  const notesInput = document.getElementById('exercise-notes');
+  if (notesInput) notesInput.value = '';
+
   editingExerciseId = null;
 }
 
@@ -589,8 +776,8 @@ function clearExerciseForm() {
 // Difficulty enum mapping (for backward compatibility)
 const exerciseDifficultyEnum = {
   beginner: { label: 'Anfaenger', value: 1 },
-  intermediate: { label: 'Mittel', value: 2 },
-  advanced: { label: 'Fortgeschritten', value: 3 },
+  intermediate: { label: 'Fortgeschritten', value: 2 },
+  advanced: { label: 'Profi', value: 3 },
   elite: { label: 'Elite', value: 4 }
 };
 
@@ -632,6 +819,186 @@ function setExerciseIcon(icon) {
   document.querySelectorAll('.icon-picker-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.icon === icon);
   });
+}
+
+// ========================================
+// EXERCISE V3 SETTERS & RENDERERS
+// ========================================
+
+function setExerciseType(type) {
+  exerciseType = type;
+  const hidden = document.getElementById('exercise-type');
+  if (hidden) hidden.value = type;
+  document.querySelectorAll('#exercise-type-pills .difficulty-pill').forEach(pill => {
+    pill.classList.toggle('active', pill.dataset.type === type);
+  });
+}
+
+function setExercisePattern(pattern) {
+  exercisePattern = pattern;
+  const hidden = document.getElementById('exercise-pattern');
+  if (hidden) hidden.value = pattern;
+  document.querySelectorAll('#exercise-pattern-pills .difficulty-pill').forEach(pill => {
+    pill.classList.toggle('active', pill.dataset.pattern === pattern);
+  });
+}
+
+function toggleExerciseStep2() {
+  exerciseStep2Expanded = !exerciseStep2Expanded;
+  const section = document.getElementById('exercise-step2-section');
+  const content = document.getElementById('exercise-step2-content');
+  const toggle = document.getElementById('exercise-step2-toggle');
+  if (exerciseStep2Expanded) {
+    if (section) section.classList.add('open');
+    if (content) content.classList.remove('collapsed');
+    if (toggle) toggle.style.transform = 'rotate(180deg)';
+  } else {
+    if (section) section.classList.remove('open');
+    if (content) content.classList.add('collapsed');
+    if (toggle) toggle.style.transform = '';
+  }
+}
+
+// --- Variants ---
+
+function renderVariants() {
+  const container = document.getElementById('exercise-variants-list');
+  if (!container) return;
+
+  if (exerciseVariants.length === 0) {
+    container.innerHTML = `
+      <div class="empty-steps-hint">
+        <span class="material-symbols-rounded">swap_horiz</span>
+        <span>${t('exercise.variants.empty')}</span>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = exerciseVariants.map((v, i) => `
+    <div class="variant-edit-row" data-index="${i}">
+      <div class="variant-edit-inputs">
+        <input type="text" class="variant-name-input" value="${(v.name || '').replace(/"/g, '&quot;')}"
+          placeholder="${t('exercise.variants.namePlaceholder')}"
+          onchange="updateVariant(${i}, 'name', this.value)"
+          onkeydown="handleVariantKeydown(event, ${i})">
+        <input type="text" class="variant-note-input" value="${(v.note || '').replace(/"/g, '&quot;')}"
+          placeholder="${t('exercise.variants.notePlaceholder')}"
+          onchange="updateVariant(${i}, 'note', this.value)">
+      </div>
+      <button type="button" class="remove-step-btn" onclick="removeVariant(${i})"
+        title="${t('exercise.variants.remove')}">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+  `).join('');
+}
+
+function addVariant() {
+  if (exerciseVariants.length >= 10) return;
+  exerciseVariants.push({ name: '', note: '' });
+  renderVariants();
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.variant-name-input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 50);
+}
+
+function removeVariant(index) {
+  exerciseVariants.splice(index, 1);
+  renderVariants();
+}
+
+function updateVariant(index, field, value) {
+  if (exerciseVariants[index]) {
+    exerciseVariants[index][field] = value;
+  }
+}
+
+function handleVariantKeydown(event, index) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    updateVariant(index, 'name', event.target.value);
+    addVariant();
+  }
+}
+
+function getCleanVariants() {
+  document.querySelectorAll('.variant-name-input').forEach((input, i) => {
+    if (exerciseVariants[i]) exerciseVariants[i].name = input.value.trim();
+  });
+  document.querySelectorAll('.variant-note-input').forEach((input, i) => {
+    if (exerciseVariants[i]) exerciseVariants[i].note = input.value.trim();
+  });
+  return exerciseVariants.filter(v => v.name.trim() !== '');
+}
+
+// --- Visual ---
+
+function renderVisualInput() {
+  const container = document.getElementById('exercise-visual-container');
+  if (!container) return;
+
+  if (exerciseVisual && exerciseVisual.value) {
+    container.innerHTML = `
+      <div class="exercise-visual-preview">
+        <img src="${exerciseVisual.value}" alt="" class="exercise-visual-preview-img"
+          onerror="this.style.display='none'">
+        <button type="button" class="exercise-visual-remove" onclick="removeExerciseVisual()">
+          <span class="material-symbols-rounded">close</span>
+          <span>${t('exercise.visualRemove')}</span>
+        </button>
+      </div>`;
+  } else {
+    container.innerHTML = `
+      <div class="exercise-visual-add">
+        <button type="button" class="btn-secondary exercise-visual-add-btn" onclick="showVisualUrlInput()">
+          <span class="material-symbols-rounded">add_photo_alternate</span>
+          <span>${t('exercise.visualAdd')}</span>
+        </button>
+        <div id="exercise-visual-url-input" style="display:none;" class="mt-2">
+          <input type="url" id="exercise-visual-url"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            placeholder="${t('exercise.visualUrlPlaceholder')}"
+            onchange="setVisualFromUrl(this.value)">
+        </div>
+      </div>`;
+  }
+}
+
+function showVisualUrlInput() {
+  const urlInput = document.getElementById('exercise-visual-url-input');
+  if (urlInput) {
+    urlInput.style.display = 'block';
+    const input = document.getElementById('exercise-visual-url');
+    if (input) input.focus();
+  }
+}
+
+function setVisualFromUrl(url) {
+  const trimmed = (url || '').trim();
+  if (!trimmed) return;
+  try {
+    new URL(trimmed);
+  } catch {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Keine gueltige URL');
+    }
+    return;
+  }
+  exerciseVisual = { kind: 'url', value: trimmed };
+  renderVisualInput();
+}
+
+function removeExerciseVisual() {
+  exerciseVisual = null;
+  renderVisualInput();
+}
+
+// --- Inline Create Hook ---
+
+function openExerciseCreateSheet(options) {
+  exerciseCreateCallback = (options && options.onCreated) ? options.onCreated : null;
+  openAddExerciseModal();
 }
 
 // ========================================
@@ -779,6 +1146,7 @@ function renderInstructionSteps() {
  * Fügt einen neuen Schritt hinzu
  */
 function addInstructionStep(initialValue = '') {
+  if (exerciseInstructionSteps.length >= 10) return;
   exerciseInstructionSteps.push(initialValue);
   renderInstructionSteps();
 
@@ -961,8 +1329,10 @@ function updateSetupNotesInput() {
 
 async function saveExercise() {
   const name = document.getElementById('exercise-name').value.trim();
+  const type = document.getElementById('exercise-type')?.value || 'strength';
+  const pattern = document.getElementById('exercise-pattern')?.value || 'full';
   const difficulty = document.getElementById('exercise-difficulty').value;
-  const icon = document.getElementById('exercise-icon').value || 'fitness_center';
+  const icon = document.getElementById('exercise-icon')?.value || 'fitness_center';
 
   // Get instructions as string[] (nummerierte Schritte)
   const instructionsSteps = getCleanInstructionSteps();
@@ -971,12 +1341,15 @@ async function saveExercise() {
   const progressions = getCleanInstructionList('progressions');
   const setupNotesInput = document.getElementById('exercise-setup-notes');
   const setupNotes = setupNotesInput ? setupNotesInput.value.trim() : '';
+  const notesEl = document.getElementById('exercise-notes');
+  const notes = notesEl ? notesEl.value.trim() : '';
+  const variants = getCleanVariants();
 
   // Get selected muscle groups and equipment from state
   const muscleGroups = exerciseMuscleGroups;
   const equipment = exerciseEquipment.length > 0 ? exerciseEquipment : ['none'];
 
-  // Validation
+  // Validation - only name required in v3
   if (!name) {
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', t('errors.exerciseNameRequired') || 'Bitte gib einen Namen fuer die Uebung ein!');
@@ -984,44 +1357,42 @@ async function saveExercise() {
     return;
   }
 
-  if (muscleGroups.length === 0) {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('errors.muscleGroupsRequired') || 'Bitte waehle mindestens eine Muskelgruppe!');
-    }
-    return;
-  }
-
-  const exerciseData = {
-    name,
-    instructionsSteps,
-    muscleGroups,
-    equipment,
-    difficulty,
-    icon,
-    ...(setupNotes ? { setupNotes } : {}),
-    ...(cues.length ? { cues } : {}),
-    ...(commonMistakes.length ? { commonMistakes } : {}),
-    ...(progressions.length ? { progressions } : {})
+  // Build v3 data and map to Firestore format
+  const v3Data = {
+    name, type, pattern, difficulty, icon,
+    instructions: instructionsSteps,
+    muscleGroups, equipment,
+    visual: exerciseVisual,
+    variants, notes,
+    setupNotes, cues, commonMistakes, progressions
   };
+
+  const exerciseData = mapV3ToExerciseDoc(v3Data);
 
   try {
     if (editingExerciseId) {
-      // Update existing
       await updateDoc(exercisesCollection, editingExerciseId, exerciseData);
-      console.log('✅ Exercise updated!');
     } else {
-      // Add new
-      await addDoc(exercisesCollection, exerciseData);
-      console.log('✅ Exercise added!');
+      const newId = await addDoc(exercisesCollection, exerciseData);
+
+      // Inline create callback (for plan integration)
+      if (typeof exerciseCreateCallback === 'function') {
+        const callbackFn = exerciseCreateCallback;
+        exerciseCreateCallback = null;
+        closeExerciseModal();
+        await loadExercises();
+        callbackFn(newId);
+        return;
+      }
     }
 
     closeExerciseModal();
     await loadExercises();
   } catch (error) {
     console.error('Error saving exercise:', error);
-  if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Speichern der Übung!');
-  }
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Speichern der Uebung!');
+    }
   }
 }
 
@@ -1033,77 +1404,114 @@ function viewExerciseDetails(id) {
   const exercise = allExercises.find(ex => ex.id === id);
   if (!exercise) return;
 
-  // Modal-Inhalt erstellen
-  const equipmentLabel = (exercise.equipment || []).filter(eq => eq && eq !== 'none')
-    .map(eq => equipmentNames[eq])
-    .filter(Boolean)
-    .join(', ') || 'Kein Equipment';
-  const muscleLabel = exercise.muscleGroups.map(muscle => muscleNames[muscle]).filter(Boolean).join(', ');
-  const normalizedInstructions = normalizeExerciseInstructions(exercise);
   const difficultyValue = convertDifficultyToEnum(exercise.difficulty);
-  const difficultyInfo = exerciseDifficultyEnum[difficultyValue] || exerciseDifficultyEnum.intermediate;
-  const exerciseIcon = exercise.icon || 'fitness_center';
+  const typeLabel = t('exercise.type.' + exercise.type) || exercise.type || '';
+  const patternLabel = t('exercise.pattern.' + exercise.pattern) || exercise.pattern || '';
+  const difficultyLabel = t('difficulty.' + difficultyValue) || difficultyValue;
+  const normalizedInstructions = normalizeExerciseInstructions(exercise);
 
+  // Visual section (large)
+  const visualHTML = exercise.visual && exercise.visual.value
+    ? `<div class="exercise-detail-visual">
+        <img src="${exercise.visual.value}" alt="${exercise.name}" class="exercise-detail-visual-img"
+          onerror="this.parentElement.style.display='none'">
+      </div>`
+    : '';
+
+  // Chips: Type, Pattern, Difficulty
+  const chipsHTML = `
+    <div class="exercise-detail-chips">
+      <span class="exercise-chip exercise-chip-type">${typeLabel}</span>
+      <span class="exercise-chip exercise-chip-pattern">${patternLabel}</span>
+      <span class="exercise-chip exercise-chip-difficulty ${difficultyValue}">${difficultyLabel}</span>
+    </div>
+  `;
+
+  // Instructions
   const stepsHtml = normalizedInstructions.instructionsSteps.length > 0
-    ? `
-      <ol class="instruction-steps-list">
+    ? `<ol class="instruction-steps-list">
         ${normalizedInstructions.instructionsSteps.map((step, index) => `
           <li>
             <span class="instruction-step-index">${index + 1}.</span>
             <span>${step}</span>
           </li>
         `).join('')}
-      </ol>
-    `
+      </ol>`
     : `<p class="instruction-empty">${t('exercise.instructions.noSteps')}</p>`;
 
+  // Variants
+  const variantsHTML = exercise.variants && exercise.variants.length > 0
+    ? `<div class="exercise-detail-block">
+        <div class="exercise-detail-block-title">
+          <span class="material-symbols-rounded">swap_horiz</span>
+          <span>${t('exercise.variants.label')}</span>
+        </div>
+        <ul class="exercise-variants-list">
+          ${exercise.variants.map(v => `
+            <li class="exercise-variant-item">
+              <span class="exercise-variant-name">${v.name}</span>
+              ${v.note ? '<span class="exercise-variant-note">' + v.note + '</span>' : ''}
+            </li>
+          `).join('')}
+        </ul>
+      </div>`
+    : '';
+
+  // Notes
+  const notesHTML = exercise.notes
+    ? `<div class="exercise-detail-block">
+        <div class="exercise-detail-block-title">
+          <span class="material-symbols-rounded">notes</span>
+          <span>${t('exercise.notesLabel')}</span>
+        </div>
+        <p class="instruction-text">${exercise.notes}</p>
+      </div>`
+    : '';
+
+  // Advanced sections (cues, mistakes, progressions, setup)
   const advancedSections = [
     normalizedInstructions.cues.length > 0
       ? renderInstructionAccordionSection('tips_and_updates', t('exercise.instructions.advanced.cues'),
-        `<ul class="instruction-list">
-          ${normalizedInstructions.cues.map(item => `<li>${item}</li>`).join('')}
-        </ul>`)
+        '<ul class="instruction-list">' +
+          normalizedInstructions.cues.map(item => '<li>' + item + '</li>').join('') +
+        '</ul>')
       : '',
     normalizedInstructions.commonMistakes.length > 0
       ? renderInstructionAccordionSection('warning', t('exercise.instructions.advanced.mistakes'),
-        `<ul class="instruction-list">
-          ${normalizedInstructions.commonMistakes.map(item => `<li>${item}</li>`).join('')}
-        </ul>`)
+        '<ul class="instruction-list">' +
+          normalizedInstructions.commonMistakes.map(item => '<li>' + item + '</li>').join('') +
+        '</ul>')
       : '',
     normalizedInstructions.progressions.length > 0
       ? renderInstructionAccordionSection('trending_up', t('exercise.instructions.advanced.progressions'),
-        `<ul class="instruction-list">
-          ${normalizedInstructions.progressions.map(item => `<li>${item}</li>`).join('')}
-        </ul>`)
+        '<ul class="instruction-list">' +
+          normalizedInstructions.progressions.map(item => '<li>' + item + '</li>').join('') +
+        '</ul>')
       : '',
     normalizedInstructions.setupNotes
       ? renderInstructionAccordionSection('tune', t('exercise.instructions.advanced.setup'),
-        `<p class="instruction-text">${normalizedInstructions.setupNotes}</p>`, true)
+        '<p class="instruction-text">' + normalizedInstructions.setupNotes + '</p>', true)
       : ''
   ].filter(Boolean);
 
+  // Muscle groups + equipment (de-emphasized footer)
+  const muscleLabel = (exercise.muscleGroups || []).map(m => muscleNames[m]).filter(Boolean).join(', ');
+  const equipmentLabel = (exercise.equipment || []).filter(eq => eq && eq !== 'none')
+    .map(eq => equipmentNames[eq]).filter(Boolean).join(', ');
+
+  const metaFooterHTML = (muscleLabel || equipmentLabel) ? `
+    <div class="exercise-detail-meta-footer">
+      ${muscleLabel ? '<div class="exercise-detail-chip"><span class="material-symbols-rounded">sports_gymnastics</span><span>' + muscleLabel + '</span></div>' : ''}
+      ${equipmentLabel ? '<div class="exercise-detail-chip"><span class="material-symbols-rounded">build</span><span>' + equipmentLabel + '</span></div>' : ''}
+    </div>` : '';
+
   const modalContent = `
     <div class="exercise-detail">
-      <div class="exercise-detail-hero">
-        <div class="exercise-detail-icon">
-          <span class="material-symbols-rounded">${exerciseIcon}</span>
-        </div>
-        <div>
-          <div class="exercise-detail-title">${exercise.name}</div>
-          <div class="exercise-detail-subtitle">${muscleLabel || 'Ganzkoerper'} ? ${equipmentLabel}</div>
-        </div>
-      </div>
+      ${visualHTML}
 
-      <div class="exercise-detail-meta">
-        <span class="difficulty-badge ${difficultyValue}">${difficultyInfo.label}</span>
-        <div class="exercise-detail-chip">
-          <span class="material-symbols-rounded">sports_gymnastics</span>
-          <span>${muscleLabel || 'Ganzkoerper'}</span>
-        </div>
-        <div class="exercise-detail-chip">
-          <span class="material-symbols-rounded">build</span>
-          <span>${equipmentLabel}</span>
-        </div>
+      <div class="exercise-detail-header">
+        <div class="exercise-detail-title">${exercise.name}</div>
+        ${chipsHTML}
       </div>
 
       <div class="exercise-detail-block">
@@ -1113,6 +1521,10 @@ function viewExerciseDetails(id) {
         </div>
         ${stepsHtml}
       </div>
+
+      ${variantsHTML}
+      ${notesHTML}
+      ${metaFooterHTML}
 
       ${advancedSections.length > 0 ? `
         <div class="exercise-detail-block">
@@ -1127,10 +1539,7 @@ function viewExerciseDetails(id) {
       ` : ''}
 
       <div class="exercise-detail-actions">
-        <button
-          onclick="closeGenericModal(); editExercise('${exercise.id}')"
-          class="btn-primary"
-        >
+        <button onclick="closeGenericModal(); editExercise('${exercise.id}')" class="btn-primary">
           <span class="material-symbols-rounded">edit</span>
           ${t('common.edit')}
         </button>
@@ -1142,7 +1551,6 @@ function viewExerciseDetails(id) {
     </div>
   `;
 
-  // Generic Modal ?ffnen öffnen
   openGenericModal(exercise.name, modalContent);
 }
 
@@ -1200,7 +1608,7 @@ function closeGenericModal() {
 // Übungen in Echtzeit synchronisieren
 function setupExercisesListener() {
   onCollectionChange(exercisesCollection, (exercises) => {
-    allExercises = exercises.map(normalizeExerciseForRuntime);
+    allExercises = exercises.map(mapExerciseToV3);
     filterExercises();
   });
 }
