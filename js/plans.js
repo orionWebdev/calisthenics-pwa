@@ -7,40 +7,44 @@ let filteredPlans = [];
 let editingPlanId = null;
 let currentPlan = null; // Currently selected plan for editing
 let planTypeFilter = 'all';
-let planDifficultyFilter = '';
 
-// Workout Type Namen Mapping (nur noch 3 Typen)
+let planIconSelection = null;
+let planIconSelectionIsManual = false;
+
+// Workout Type Namen Mapping (4 Typen)
 const workoutTypeNames = {
   strength: t('plan.types.strength'),
+  bodyweight: t('plan.types.bodyweight'),
   cardio: t('plan.types.cardio'),
   recovery: t('plan.types.recovery'),
   unknown: t('plan.types.unknown')
 };
 
-// Cardio Goal Namen Mapping
-const cardioGoalNames = {
-  liss: 'LISS',
-  hiit: 'HIIT',
-  zone2: 'Zone 2',
-  tempo: 'Tempo'
+const legacyCardioGoalMap = {
+  liss: 'liss',
+  hiit: 'hiit',
+  zone2: 'liss',
+  tempo: 'intervals',
+  intervals: 'intervals',
+  freestyle: 'freestyle'
 };
 
-// Tag Namen Mapping
-const tagNames = {
-  'full-body': 'Ganzkörper',
-  'upper-body': 'Oberkörper',
-  'lower-body': 'Unterkörper',
-  'push': 'Push',
-  'pull': 'Pull',
-  'legs': 'Beine',
-  'core': 'Core'
+const cardioGoalNames = {
+  liss: t('plan.cardioGoalType.liss'),
+  hiit: t('plan.cardioGoalType.hiit'),
+  intervals: t('plan.cardioGoalType.intervals'),
+  freestyle: t('plan.cardioGoalType.freestyle')
 };
 
 const legacyPlanTypeMap = {
   strength: 'strength',
+  weights: 'strength',
+  gym: 'strength',
   kraft: 'strength',
   krafttraining: 'strength',
   strengthtraining: 'strength',
+  bodyweight: 'bodyweight',
+  calisthenics: 'bodyweight',
   cardio: 'cardio',
   ausdauer: 'cardio',
   endurance: 'cardio',
@@ -55,6 +59,7 @@ const legacyPlanTypeMap = {
 
 const planTypeIconFallbacks = {
   strength: 'fitness_center',
+  bodyweight: 'sports_gymnastics',
   cardio: 'directions_run',
   recovery: 'self_improvement',
   unknown: 'help'
@@ -87,13 +92,27 @@ function normalizePlanType(rawType) {
 
 function normalizePlan(plan) {
   const typeInfo = normalizePlanType(plan.type);
+  let normalizedType = typeInfo.type;
+  let displayType = typeInfo.displayType;
+
+  // Strength plans with bodyweight discipline should be treated as bodyweight
+  if (normalizedType === 'strength') {
+    const discipline = String(plan.discipline || '').toLowerCase();
+    if (discipline === 'bodyweight' || discipline === 'calisthenics') {
+      normalizedType = 'bodyweight';
+      displayType = 'bodyweight';
+    }
+  }
+
+  const normalizedItems = normalizePlanItems(plan.items || plan.exercises);
   const normalizedPlan = {
     ...plan,
-    type: typeInfo.type,
-    displayType: typeInfo.displayType,
-    typeLabel: typeInfo.displayType === 'unknown'
+    type: normalizedType,
+    displayType: displayType,
+    items: normalizedItems,
+    typeLabel: displayType === 'unknown'
       ? workoutTypeNames.unknown
-      : workoutTypeNames[typeInfo.displayType] || workoutTypeNames.strength
+      : workoutTypeNames[displayType] || workoutTypeNames.strength
   };
 
   if (typeInfo.wasLegacy) {
@@ -118,15 +137,157 @@ function getPlanTypeLabel(plan) {
   return plan.typeLabel || workoutTypeNames[plan.displayType] || workoutTypeNames[plan.type] || workoutTypeNames.strength;
 }
 
-function getPlanIconKey(plan, fallbackType) {
-  const fallback = planTypeIconFallbacks[fallbackType] || planTypeIconFallbacks.strength;
-  return plan.iconKey || plan.icon || fallback;
+function normalizeIconValue(icon) {
+  if (!icon) return null;
+  if (typeof icon === 'string') {
+    return { kind: 'preset', value: icon };
+  }
+  if (typeof icon === 'object' && icon.value) {
+    return {
+      kind: icon.kind === 'url' ? 'url' : 'preset',
+      value: icon.value
+    };
+  }
+  return null;
 }
 
-function getPlanGoalLabel(plan) {
-  const goal = plan.cardioGoal || plan.goal;
-  if (!goal) return '';
-  return cardioGoalNames[goal] || goal;
+function getPlanIconValue(plan, fallbackType) {
+  const fallback = {
+    kind: 'preset',
+    value: planTypeIconFallbacks[fallbackType] || planTypeIconFallbacks.strength
+  };
+  const icon = normalizeIconValue(plan.icon) || normalizeIconValue(plan.iconKey);
+  return icon || fallback;
+}
+
+function renderPlanIconMarkup(plan, fallbackType, extraClass = '') {
+  const icon = getPlanIconValue(plan, fallbackType);
+  const className = extraClass ? ` ${extraClass}` : '';
+  if (icon.kind === 'url') {
+    return `<img src="${icon.value}" alt="" class="plan-icon-img${className}" loading="lazy" />`;
+  }
+  return `<span class="material-symbols-rounded${className}">${icon.value}</span>`;
+}
+
+function getPlanCardioGoalType(plan) {
+  const raw = (plan.cardioGoalType || plan.cardioGoal || plan.goal || '').toString().toLowerCase().trim();
+  if (!raw) return '';
+  return legacyCardioGoalMap[raw] || raw;
+}
+
+function getPlanCardioGoalLabel(plan) {
+  const goalType = getPlanCardioGoalType(plan);
+  if (!goalType) return '';
+  return cardioGoalNames[goalType] || goalType;
+}
+
+function getPlanTimestampValue(value) {
+  if (!value) return 0;
+  if (typeof value.toDate === 'function') {
+    return value.toDate().getTime();
+  }
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
+}
+
+function getPlanSortValue(plan) {
+  const updated = getPlanTimestampValue(plan.updatedAt);
+  if (updated) return updated;
+  return getPlanTimestampValue(plan.createdAt);
+}
+
+function normalizePlanItems(rawItems) {
+  if (!Array.isArray(rawItems)) return [];
+  return rawItems.map(item => {
+    if (!item || typeof item !== 'object') return null;
+    const exerciseId = item.exerciseId || item.id;
+    if (!exerciseId) return null;
+
+    const target = isPlainObject(item.target) ? { ...item.target } : {};
+    if (item.sets !== undefined && target.sets === undefined) {
+      target.sets = Number(item.sets) || item.sets;
+    }
+    if (item.reps !== undefined && target.reps === undefined) {
+      target.reps = item.reps;
+    }
+    if (item.holdSec !== undefined && target.holdSec === undefined) {
+      target.holdSec = Number(item.holdSec) || item.holdSec;
+    }
+    if (item.hold !== undefined && target.holdSec === undefined) {
+      const holdValue = Number(item.hold);
+      target.holdSec = Number.isFinite(holdValue) ? holdValue : item.hold;
+    }
+
+    const restRaw = item.restSec !== undefined ? item.restSec : item.rest;
+    const hasRest = restRaw !== undefined && restRaw !== null && restRaw !== '';
+    const restSec = hasRest ? Number(restRaw) : NaN;
+
+    const normalized = { exerciseId };
+    if (Object.keys(target).length) {
+      normalized.target = target;
+    }
+    if (Number.isFinite(restSec)) {
+      normalized.restSec = restSec;
+    }
+    return normalized;
+  }).filter(Boolean);
+}
+
+function getPlanItems(plan) {
+  if (!plan) return [];
+  if (Array.isArray(plan.items)) {
+    return normalizePlanItems(plan.items);
+  }
+  if (Array.isArray(plan.exercises)) {
+    return normalizePlanItems(plan.exercises);
+  }
+  return [];
+}
+
+function formatPlanMinutes(minutes) {
+  const value = Number(minutes);
+  if (!Number.isFinite(value) || value <= 0) return '';
+  return t('format.duration.minutes', { minutes: value });
+}
+
+function formatPlanDistance(distanceKm) {
+  const value = Number(distanceKm);
+  if (!Number.isFinite(value) || value <= 0) return '';
+  const formatted = value % 1 === 0 ? value.toFixed(0) : value.toFixed(1).replace('.', ',');
+  return t('format.distanceKm', { distance: formatted });
+}
+
+function getPlanCardioMetaParts(plan) {
+  const parts = [];
+  const goalLabel = getPlanCardioGoalLabel(plan);
+  if (goalLabel) {
+    parts.push(`${t('plan.meta.goalPrefix')}: ${goalLabel}`);
+  }
+  const durationLabel = formatPlanMinutes(plan.targetDurationMin || plan.targetDuration || plan.duration);
+  const distanceLabel = formatPlanDistance(plan.targetDistanceKm || plan.targetDistance || plan.distanceKm || plan.distance);
+  if (durationLabel) parts.push(durationLabel);
+  if (distanceLabel) parts.push(distanceLabel);
+  if (!durationLabel && !distanceLabel && !goalLabel) {
+    parts.push(t('plan.meta.cardioFallback'));
+  }
+  return parts;
+}
+
+function getPlanRecoveryMetaParts(plan) {
+  const durationLabel = formatPlanMinutes(plan.targetDurationMin || plan.targetDuration || plan.duration);
+  if (durationLabel) return [durationLabel];
+  return [t('plan.meta.recoveryFallback')];
+}
+
+function getPlanPickerDescription(plan) {
+  const typeLabel = getPlanTypeLabel(plan);
+  const type = plan.type || 'strength';
+  const meta = type === 'strength' || type === 'bodyweight'
+    ? [t('plan.meta.exercises', { count: getPlanItems(plan).length })]
+    : type === 'cardio'
+      ? getPlanCardioMetaParts(plan)
+      : getPlanRecoveryMetaParts(plan);
+  return `${typeLabel} • ${meta.join(' · ')}`;
 }
 
 // ========================================
@@ -145,6 +306,7 @@ async function loadPlans() {
 
 function renderPlans() {
   const grid = document.getElementById('plans-grid');
+  if (!grid) return;
 
   if (filteredPlans.length == 0) {
     grid.innerHTML = `
@@ -152,11 +314,11 @@ function renderPlans() {
         <div class="empty-state-icon">
           <span class="material-symbols-rounded">assignment</span>
         </div>
-        <h3 class="empty-state-title">Keine Trainingsplaene gefunden</h3>
-        <p class="empty-state-text">Erstelle deinen ersten Trainingsplan!</p>
+        <h3 class="empty-state-title">${t('plan.list.emptyTitle')}</h3>
+        <p class="empty-state-text">${t('plan.list.emptyBody')}</p>
         <button onclick="openAddPlanModal()" class="empty-state-btn">
           <span class="material-symbols-rounded">add_circle</span>
-          <span>Plan erstellen</span>
+          <span>${t('plan.list.emptyCta')}</span>
         </button>
       </div>
     `;
@@ -164,45 +326,40 @@ function renderPlans() {
   }
 
   grid.innerHTML = filteredPlans.map(plan => {
-    const exerciseCount = plan.exercises ? plan.exercises.length : 0;
-    const equipment = plan.requiredEquipment || [];
-    const equipmentCount = equipment.length;
+    const items = getPlanItems(plan);
+    const exerciseCount = items.length;
     const planType = plan.type || 'strength';
-    const displayType = plan.displayType || planType;
     const typeLabel = getPlanTypeLabel(plan);
-    const typeIcon = getPlanIconKey(plan, planType);
-    const goalLabel = getPlanGoalLabel(plan);
-    const metaParts = [
-      `${exerciseCount} Uebungen`,
-      `${plan.duration || 45} Min`,
-      goalLabel
-    ].filter(Boolean);
+    const metaParts = planType === 'strength' || planType === 'bodyweight'
+      ? [t('plan.meta.exercises', { count: exerciseCount })]
+      : planType === 'cardio'
+        ? getPlanCardioMetaParts(plan)
+        : getPlanRecoveryMetaParts(plan);
 
     return `
       <div class="plan-row-card" onclick="viewPlanDetails('${plan.id}')">
         <div class="plan-row-icon">
-          <span class="material-symbols-rounded">${typeIcon}</span>
+          ${renderPlanIconMarkup(plan, planType)}
         </div>
         <div class="plan-row-content">
           <div class="plan-row-title">${plan.name}</div>
           <div class="plan-row-meta">${metaParts.join(' • ')}</div>
           <div class="plan-row-tags">
-            <span class="plan-type-badge type-${displayType}">${typeLabel}</span>
-            ${equipmentCount > 0 && equipment[0] !== 'none' ? `<span class="plan-row-tag"><span class="material-symbols-rounded">build</span>${equipmentCount}</span>` : ''}
+            <span class="plan-type-badge plan-type-badge--neutral">${typeLabel}</span>
           </div>
         </div>
         <div class="plan-row-actions">
           <button
             onclick="event.stopPropagation(); startWorkoutFromPlan('${plan.id}')"
             class="plan-row-start-btn"
-            title="Workout starten"
+            title="${t('plan.actions.start')}"
           >
             <span class="material-symbols-rounded">play_arrow</span>
           </button>
           <button
             onclick="event.stopPropagation(); editPlan('${plan.id}')"
             class="plan-row-action-btn"
-            title="Bearbeiten"
+            title="${t('plan.actions.edit')}"
           >
             <span class="material-symbols-rounded">edit</span>
           </button>
@@ -214,26 +371,22 @@ function renderPlans() {
 
 function applyPlanFilters() {
   const list = Array.isArray(allPlans) ? allPlans : [];
-  filteredPlans = list.filter(plan => {
-    const matchesType = planTypeFilter === 'all' ? true : plan.type === planTypeFilter;
-    if (!matchesType) return false;
-    if (!planDifficultyFilter) return true;
-    const hasDifficulty = plan.difficulty !== undefined && plan.difficulty !== null;
-    if (!hasDifficulty) return false;
-    const difficultyValue = convertPlanDifficultyToEnum(plan.difficulty);
-    return difficultyValue === planDifficultyFilter;
-  });
+  filteredPlans = list
+    .filter(plan => (planTypeFilter === 'all' ? true : plan.type === planTypeFilter))
+    .sort((a, b) => {
+      const aTime = getPlanSortValue(a);
+      const bTime = getPlanSortValue(b);
+      if (aTime !== bTime) return bTime - aTime;
+      const aName = (a.name || '').toString();
+      const bName = (b.name || '').toString();
+      return aName.localeCompare(bName, 'de', { sensitivity: 'base' });
+    });
   updatePlanTypeFilterUI();
   renderPlans();
 }
 
 function setPlanTypeFilter(type) {
   planTypeFilter = type || 'all';
-  applyPlanFilters();
-}
-
-function setPlanDifficultyFilter(value) {
-  planDifficultyFilter = value || '';
   applyPlanFilters();
 }
 
@@ -248,29 +401,140 @@ function updatePlanTypeFilterUI() {
   if (allLabel) allLabel.textContent = t('plan.filters.all');
   const strengthLabel = document.getElementById('plan-filter-strength-label');
   if (strengthLabel) strengthLabel.textContent = t('plan.filters.strength');
+  const bodyweightLabel = document.getElementById('plan-filter-bodyweight-label');
+  if (bodyweightLabel) bodyweightLabel.textContent = t('plan.filters.bodyweight');
   const cardioLabel = document.getElementById('plan-filter-cardio-label');
   if (cardioLabel) cardioLabel.textContent = t('plan.filters.cardio');
   const recoveryLabel = document.getElementById('plan-filter-recovery-label');
   if (recoveryLabel) recoveryLabel.textContent = t('plan.filters.recovery');
+}
 
-  const difficultyAll = document.getElementById('plan-difficulty-option-all');
-  if (difficultyAll) difficultyAll.textContent = t('plan.filters.difficultyAll');
-  const difficultyBeginner = document.getElementById('plan-difficulty-option-beginner');
-  if (difficultyBeginner) difficultyBeginner.textContent = t('difficulty.beginner');
-  const difficultyIntermediate = document.getElementById('plan-difficulty-option-intermediate');
-  if (difficultyIntermediate) difficultyIntermediate.textContent = t('difficulty.intermediate');
-  const difficultyAdvanced = document.getElementById('plan-difficulty-option-advanced');
-  if (difficultyAdvanced) difficultyAdvanced.textContent = t('difficulty.advanced');
-  const difficultyElite = document.getElementById('plan-difficulty-option-elite');
-  if (difficultyElite) difficultyElite.textContent = t('difficulty.elite');
+function applyPlanI18n() {
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+  const setPlaceholder = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = text;
+  };
+  const setAriaLabel = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('aria-label', text);
+  };
 
-  const difficultyContainer = document.getElementById('plan-difficulty-filters');
-  if (difficultyContainer) {
-    difficultyContainer.querySelectorAll('.filter-chip').forEach(btn => {
-      const value = btn.dataset.difficulty || '';
-      btn.classList.toggle('active', value === planDifficultyFilter);
+  setText('plan-add-btn-label', t('plan.actions.newPlan'));
+  setText('plans-loading-text', t('plan.list.loading'));
+
+  setText('plan-section-basics-title', t('plan.sections.basics'));
+  setText('plan-name-label', `${t('plan.name')} *`);
+  setPlaceholder('plan-name', t('plan.namePlaceholder'));
+  setText('plan-type-label', `${t('plan.type')} *`);
+  setText('plan-icon-label', t('plan.icon'));
+
+  const planTypeSelect = document.getElementById('plan-type');
+  if (planTypeSelect) {
+    const optionLabels = {
+      strength: t('plan.typeOptions.strength'),
+      bodyweight: t('plan.typeOptions.bodyweight'),
+      cardio: t('plan.typeOptions.cardio'),
+      recovery: t('plan.typeOptions.recovery')
+    };
+    planTypeSelect.querySelectorAll('option').forEach(option => {
+      const label = optionLabels[option.value];
+      if (label) option.textContent = label;
     });
   }
+
+  const currentType = document.getElementById('plan-type')?.value || 'strength';
+  const exercisesTitleKey = currentType === 'bodyweight'
+    ? 'plan.sections.contentBodyweight'
+    : 'plan.sections.contentStrength';
+  setText('plan-section-exercises-title', t(exercisesTitleKey));
+  setText('plan-exercises-hint', t('plan.exercisesHint'));
+
+  setText('plan-section-cardio-title', t('plan.sections.contentCardio'));
+  setText('plan-cardio-goal-label', t('plan.cardioGoalType.label'));
+  setText('plan-cardio-duration-label', t('plan.cardio.durationLabel'));
+  setText('plan-cardio-distance-label', t('plan.cardio.distanceLabel'));
+  setText('plan-cardio-activity-label', t('plan.cardio.activityLabel'));
+  setText('plan-cardio-target-hint', t('plan.cardio.targetHint'));
+
+  const cardioGoalLabels = {
+    liss: t('plan.cardioGoalType.liss'),
+    hiit: t('plan.cardioGoalType.hiit'),
+    intervals: t('plan.cardioGoalType.intervals'),
+    freestyle: t('plan.cardioGoalType.freestyle')
+  };
+  document.querySelectorAll('#plan-cardio-goal-selector .training-type-btn').forEach(btn => {
+    const goal = btn.dataset.goal;
+    const label = cardioGoalLabels[goal];
+    const labelEl = btn.querySelector('.training-type-label');
+    if (labelEl && label) labelEl.textContent = label;
+  });
+
+  const activityLabels = {
+    run: t('plan.cardio.activityOptions.run'),
+    bike: t('plan.cardio.activityOptions.bike'),
+    swim: t('plan.cardio.activityOptions.swim'),
+    row: t('plan.cardio.activityOptions.row'),
+    other: t('plan.cardio.activityOptions.other')
+  };
+  const activitySelect = document.getElementById('plan-cardio-activity');
+  if (activitySelect) {
+    activitySelect.querySelectorAll('option').forEach(option => {
+      const label = activityLabels[option.value];
+      if (label) option.textContent = label;
+    });
+  }
+
+  setText('plan-section-recovery-title', t('plan.sections.contentRecovery'));
+  setText('plan-recovery-duration-label', t('plan.recovery.durationLabel'));
+  setText('plan-recovery-target-hint', t('plan.recovery.targetHint'));
+
+  setText('plan-section-notes-title', t('plan.notes'));
+  setText('plan-section-notes-badge', t('common.optional'));
+  setText('plan-notes-label', t('plan.notes'));
+  setPlaceholder('plan-notes', t('plan.notesPlaceholder'));
+
+  setText('plan-save-btn-label', t('plan.actions.save'));
+  setText('plan-delete-btn-label', t('common.delete'));
+  setText('plan-cancel-btn-label', t('plan.actions.cancel'));
+
+  setText('exercise-picker-title', t('plan.exercisePicker.title'));
+  setPlaceholder('exercise-picker-search', t('plan.exercisePicker.searchPlaceholder'));
+
+  const muscleLabelMap = typeof muscleNames === 'object' && muscleNames !== null ? muscleNames : {};
+  setText('exercise-picker-filter-all-label', t('plan.filters.all'));
+  setText('exercise-picker-filter-chest-label', muscleLabelMap.chest || '');
+  setText('exercise-picker-filter-back-label', muscleLabelMap.back || '');
+  setText('exercise-picker-filter-shoulders-label', muscleLabelMap.shoulders || '');
+  setText('exercise-picker-filter-arms-label', muscleLabelMap.arms || '');
+  setText('exercise-picker-filter-core-label', muscleLabelMap.core || '');
+  setText('exercise-picker-filter-legs-label', muscleLabelMap.legs || '');
+
+  setText('exercise-config-title', t('plan.exerciseConfig.title'));
+  setText('exercise-config-sets-label', t('plan.exerciseConfig.setsLabel'));
+  setText('exercise-config-reps-label', t('plan.exerciseConfig.repsLabel'));
+  setPlaceholder('exercise-reps', t('plan.exerciseConfig.repsPlaceholder'));
+  setText('exercise-config-hold-label', t('plan.exerciseConfig.holdLabel'));
+  setPlaceholder('exercise-hold', t('plan.exerciseConfig.holdPlaceholder'));
+  setAriaLabel('exercise-sets', t('plan.exerciseConfig.setsLabel'));
+  setAriaLabel('exercise-reps', t('plan.exerciseConfig.repsLabel'));
+  setAriaLabel('exercise-hold', t('plan.exerciseConfig.holdLabel'));
+  setText('exercise-rest-label-text', t('plan.exerciseConfig.restLabel'));
+  setText('exercise-rest-min-label', `0 ${t('plan.exerciseConfig.restSec')}`);
+  setText('exercise-rest-max-label', `5 ${t('plan.exerciseConfig.restMin')}`);
+  setText('exercise-config-save-label', t('common.add'));
+  setText('exercise-config-cancel-label', t('common.cancel'));
+
+  const restSlider = document.getElementById('exercise-rest');
+  if (restSlider) {
+    updateRestDisplay(restSlider);
+  }
+
+  const currentGoal = document.getElementById('plan-cardio-goal-type')?.value || 'liss';
+  updatePlanCardioGoalInfo(currentGoal);
 }
 
 
@@ -281,18 +545,14 @@ function updatePlanTypeFilterUI() {
 function openAddPlanModal() {
   editingPlanId = null;
   currentPlan = {
-    exercises: []
+    items: [],
+    icon: null
   };
-  document.getElementById('plan-modal-title').textContent = 'Neuer Trainingsplan';
+  const titleEl = document.getElementById('plan-modal-title');
+  if (titleEl) titleEl.textContent = t('plan.modal.createTitle');
   togglePlanDeleteButton(false);
   clearPlanForm();
-
-  // Initialize multi-select inputs
-  planTags = [];
-  planTargetMuscles = [];
-  renderPlanTagsInput();
-  renderPlanTargetMusclesInput();
-
+  applyPlanI18n();
   document.getElementById('plan-modal').classList.add('active');
   resetPlanModalPosition();
 }
@@ -304,9 +564,11 @@ function editPlan(id) {
   if (!plan) return;
 
   currentPlan = { ...plan };
-  document.getElementById('plan-modal-title').textContent = 'Plan bearbeiten';
+  const titleEl = document.getElementById('plan-modal-title');
+  if (titleEl) titleEl.textContent = t('plan.modal.editTitle');
   togglePlanDeleteButton(true);
   populatePlanForm(plan);
+  applyPlanI18n();
   document.getElementById('plan-modal').classList.add('active');
   resetPlanModalPosition();
 }
@@ -343,25 +605,28 @@ function resetPlanModalPosition() {
 function clearPlanForm() {
   document.getElementById('plan-name').value = '';
   document.getElementById('plan-type').value = 'strength';
-  document.getElementById('plan-duration').value = '45';
   const notesEl = document.getElementById('plan-notes');
   if (notesEl) notesEl.value = '';
 
-  // Clear multi-select inputs
-  planTags = [];
-  planTargetMuscles = [];
-
-  setPlanDifficulty('intermediate');
-  setPlanIcon('fitness_center');
-  setPlanDiscipline('bodyweight');
-  setCardioGoal('liss');
+  planIconSelection = null;
+  planIconSelectionIsManual = false;
+  setPlanIcon(planTypeIconFallbacks.strength);
+  setPlanCardioGoalType('liss');
+  const cardioDuration = document.getElementById('plan-cardio-duration');
+  if (cardioDuration) cardioDuration.value = '';
+  const cardioDistance = document.getElementById('plan-cardio-distance');
+  if (cardioDistance) cardioDistance.value = '';
+  const cardioActivity = document.getElementById('plan-cardio-activity');
+  if (cardioActivity) cardioActivity.value = 'run';
+  const recoveryDuration = document.getElementById('plan-recovery-duration');
+  if (recoveryDuration) recoveryDuration.value = '';
 
   // Trigger type change to show correct fields
   onPlanTypeChange('strength');
 
   // Clear exercises list
   if (currentPlan) {
-    currentPlan.exercises = [];
+    currentPlan.items = [];
   }
   renderPlanExercises();
 }
@@ -369,98 +634,64 @@ function clearPlanForm() {
 function populatePlanForm(plan) {
   document.getElementById('plan-name').value = plan.name || '';
   document.getElementById('plan-type').value = plan.type || 'strength';
-  document.getElementById('plan-duration').value = plan.duration || 45;
   const notesEl = document.getElementById('plan-notes');
   if (notesEl) notesEl.value = plan.notes || '';
 
-  // Set tags and target muscles for multi-select
-  planTags = plan.tags ? [...plan.tags] : [];
-  planTargetMuscles = plan.targetMuscles ? [...plan.targetMuscles] : [];
-
-  // Render multi-select inputs
-  renderPlanTagsInput();
-  renderPlanTargetMusclesInput();
-
   // Type-specific fields
-  if (plan.type === 'strength') {
-    const difficultyValue = convertPlanDifficultyToEnum(plan.difficulty);
-    setPlanDifficulty(difficultyValue);
-    setPlanDiscipline(plan.discipline || 'bodyweight');
-  } else if (plan.type === 'cardio') {
-    setCardioGoal(plan.cardioGoal || 'liss');
+  if (plan.type === 'cardio') {
+    const goalType = getPlanCardioGoalType(plan) || 'liss';
+    setPlanCardioGoalType(goalType);
+    const durationInput = document.getElementById('plan-cardio-duration');
+    if (durationInput) durationInput.value = plan.targetDurationMin || plan.targetDuration || plan.duration || '';
+    const distanceInput = document.getElementById('plan-cardio-distance');
+    if (distanceInput) distanceInput.value = plan.targetDistanceKm || plan.targetDistance || plan.distanceKm || plan.distance || '';
+    const activityInput = document.getElementById('plan-cardio-activity');
+    if (activityInput) activityInput.value = plan.activityType || 'run';
+  } else if (plan.type === 'recovery') {
+    const recoveryInput = document.getElementById('plan-recovery-duration');
+    if (recoveryInput) recoveryInput.value = plan.targetDurationMin || plan.targetDuration || plan.duration || '';
   }
 
   // Icon
-  setPlanIcon(getPlanIconKey(plan, plan.type || 'strength'));
+  const icon = getPlanIconValue(plan, plan.type || 'strength');
+  if (icon.kind === 'preset') {
+    planIconSelectionIsManual = true;
+    setPlanIcon(icon.value);
+  } else {
+    planIconSelectionIsManual = true;
+    planIconSelection = icon;
+    setPlanIcon(planTypeIconFallbacks[plan.type] || planTypeIconFallbacks.strength, { trackSelection: false });
+  }
 
   // Trigger type change to show correct fields
   onPlanTypeChange(plan.type || 'strength');
 
   // Load exercises
-  if (plan.exercises) {
-    currentPlan.exercises = [...plan.exercises];
-    renderPlanExercises();
-  }
-}
-
-// ========================================
-// DIFFICULTY SELECTION (Enum-based)
-// ========================================
-
-// Difficulty enum mapping
-const planDifficultyEnum = {
-  beginner: { label: 'Anfaenger', value: 1 },
-  intermediate: { label: 'Mittel', value: 2 },
-  advanced: { label: 'Fortgeschritten', value: 3 },
-  elite: { label: 'Elite', value: 4 }
-};
-
-function setPlanDifficulty(difficulty) {
-  document.getElementById('plan-difficulty').value = difficulty;
-
-  // Support both compact (.difficulty-pill) and full (.difficulty-pill-full) pills
-  document.querySelectorAll('#plan-modal .difficulty-pill, #plan-modal .difficulty-pill-full').forEach(pill => {
-    pill.classList.toggle('active', pill.dataset.difficulty === difficulty);
-  });
-}
-
-// Convert old numeric difficulty to new enum
-function convertPlanDifficultyToEnum(difficulty) {
-  if (typeof difficulty === 'string') return difficulty;
-  if (difficulty <= 1) return 'beginner';
-  if (difficulty <= 2) return 'intermediate';
-  if (difficulty <= 3) return 'advanced';
-  return 'elite';
+  currentPlan.items = getPlanItems(plan);
+  renderPlanExercises();
 }
 
 // ========================================
 // PLAN ICON SELECTION
 // ========================================
 
-function setPlanIcon(icon) {
+function setPlanIcon(icon, options = {}) {
   const iconInput = document.getElementById('plan-icon');
   if (iconInput) iconInput.value = icon;
 
   document.querySelectorAll('#plan-icon-picker .icon-picker-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.icon === icon);
   });
+
+  const trackSelection = options.trackSelection !== false;
+  if (trackSelection) {
+    planIconSelection = icon;
+  }
 }
 
-// ========================================
-// PLAN DISCIPLINE SELECTION (Bodyweight vs Weights)
-// ========================================
-
-function setPlanDiscipline(discipline) {
-  const disciplineInput = document.getElementById('plan-discipline');
-  if (disciplineInput) disciplineInput.value = discipline;
-
-  document.querySelectorAll('.discipline-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.discipline === discipline);
-  });
-
-  if (document.getElementById('plan-type')?.value === 'strength') {
-    applyPlanIconByDiscipline(discipline);
-  }
+function selectPlanIcon(icon) {
+  planIconSelectionIsManual = true;
+  setPlanIcon(icon);
 }
 
 // ========================================
@@ -479,18 +710,13 @@ function toggleWizardSection(sectionId) {
 
 /**
  * Handle plan type change - adjust form visibility and defaults
- * Nur 3 Typen: strength, cardio, recovery
+ * 4 Typen: strength, bodyweight, cardio, recovery
  */
 function onPlanTypeChange(type) {
   const exercisesSection = document.getElementById('plan-exercises-section');
-  const musclesSection = document.getElementById('plan-muscles-section');
-  const tagsSection = document.getElementById('plan-tags-section');
-  const detailsSection = document.getElementById('plan-details-section');
-  const durationInput = document.getElementById('plan-duration');
-  const disciplineSection = document.getElementById('plan-discipline-section');
-  const difficultySection = document.getElementById('plan-difficulty-section');
-  const cardioGoalSection = document.getElementById('plan-cardio-goal-section');
-  const iconSection = document.getElementById('plan-icon-section');
+  const cardioSection = document.getElementById('plan-cardio-section');
+  const recoverySection = document.getElementById('plan-recovery-section');
+  const notesSection = document.getElementById('plan-notes-section');
 
   // Helper to show/hide elements
   const show = (el) => { if (el) el.style.display = ''; };
@@ -498,59 +724,65 @@ function onPlanTypeChange(type) {
 
   // Hide all type-specific sections first
   hide(exercisesSection);
-  hide(musclesSection);
-  hide(tagsSection);
-  hide(detailsSection);
-  hide(disciplineSection);
-  hide(difficultySection);
-  hide(cardioGoalSection);
-  hide(iconSection);
+  hide(cardioSection);
+  hide(recoverySection);
+  show(notesSection);
 
   // Apply type-specific visibility and defaults
+  const applyDefaultIcon = (icon) => {
+    if (!planIconSelectionIsManual) {
+      setPlanIcon(icon);
+    }
+  };
+
   switch (type) {
     case 'cardio':
-      // Cardio: Cardio-Ziel statt Schwierigkeit, keine Übungen
-      show(cardioGoalSection);
-      show(iconSection);
-      if (durationInput) durationInput.value = '30';
+      show(cardioSection);
+      applyDefaultIcon(planTypeIconFallbacks.cardio);
       break;
 
     case 'recovery':
-      // Recovery: Nur Name, Dauer, Icon - keine Schwierigkeit, keine Übungen
-      show(iconSection);
-      if (durationInput) durationInput.value = '20';
+      show(recoverySection);
+      applyDefaultIcon(planTypeIconFallbacks.recovery);
+      break;
+
+    case 'bodyweight':
+      show(exercisesSection);
+      applyDefaultIcon(planTypeIconFallbacks.bodyweight);
       break;
 
     case 'strength':
     default:
-      // Strength: Alle Felder inkl. Übungen, Schwierigkeit, Discipline
       show(exercisesSection);
-      show(musclesSection);
-      show(tagsSection);
-      show(detailsSection);
-      show(disciplineSection);
-      show(difficultySection);
-      applyPlanIconByDiscipline(document.getElementById('plan-discipline')?.value || 'bodyweight');
-      if (durationInput) durationInput.value = '45';
+      applyDefaultIcon(planTypeIconFallbacks.strength);
       break;
   }
+
+  applyPlanI18n();
 }
 
-function applyPlanIconByDiscipline(discipline) {
-  const iconKey = discipline === 'weights' ? 'fitness_center' : 'sports_gymnastics';
-  setPlanIcon(iconKey);
-}
-
-/**
- * Set cardio goal (LISS, HIIT, Zone2, Tempo)
- */
-function setCardioGoal(goal) {
-  const input = document.getElementById('plan-cardio-goal');
+function setPlanCardioGoalType(goal) {
+  const input = document.getElementById('plan-cardio-goal-type');
   if (input) input.value = goal;
 
-  document.querySelectorAll('.cardio-goal-btn').forEach(btn => {
+  document.querySelectorAll('#plan-cardio-goal-selector .training-type-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.goal === goal);
   });
+
+  updatePlanCardioGoalInfo(goal);
+}
+
+function updatePlanCardioGoalInfo(goal) {
+  const text = t(`plan.cardioGoalType.info.${goal}`);
+  const infoText = document.getElementById('plan-cardio-goal-info-text');
+  if (infoText) infoText.textContent = text;
+}
+
+function togglePlanCardioGoalInfo() {
+  const panel = document.getElementById('plan-cardio-goal-info');
+  if (!panel) return;
+  const isVisible = panel.style.display !== 'none';
+  panel.style.display = isVisible ? 'none' : 'block';
 }
 
 // ========================================
@@ -562,12 +794,14 @@ function renderPlanExercises() {
 
   if (!container) return;
 
-  if (!currentPlan || !currentPlan.exercises || currentPlan.exercises.length === 0) {
+  const items = currentPlan && Array.isArray(currentPlan.items) ? currentPlan.items : [];
+
+  if (!items || items.length === 0) {
     container.innerHTML = `
       <div class="text-center py-8 text-gray-400">
         <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
-        <p class="mt-2">Noch keine Übungen hinzugefügt</p>
-        <p class="text-sm">Füge Übungen aus der Datenbank hinzu</p>
+        <p class="mt-2">${t('plan.exercisesEmptyTitle')}</p>
+        <p class="text-sm">${t('plan.exercisesEmptyBody')}</p>
       </div>
     `;
     return;
@@ -578,15 +812,22 @@ function renderPlanExercises() {
     container.innerHTML = `
       <div class="text-center py-8 text-gray-400">
         <span class="material-symbols-rounded" style="font-size: 48px;">hourglass_empty</span>
-        <p class="mt-2">Lade Übungen...</p>
+        <p class="mt-2">${t('common.loading')}</p>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = currentPlan.exercises.map((ex, index) => {
-    const exercise = allExercises.find(e => e.id === ex.exerciseId);
+  container.innerHTML = items.map((item, index) => {
+    const exercise = allExercises.find(e => e.id === item.exerciseId);
     if (!exercise) return '';
+
+    const target = item.target || {};
+    const sets = target.sets !== undefined && target.sets !== null ? target.sets : '-';
+    const reps = target.reps ? target.reps : '';
+    const holdSec = target.holdSec ? `${target.holdSec} ${t('plan.exerciseConfig.restSec')}` : '';
+    const targetValue = reps || holdSec || '-';
+    const setsLabel = t('plan.exerciseConfig.setsShort');
 
     return `
       <div class="plan-exercise-item" draggable="true" data-index="${index}">
@@ -598,7 +839,7 @@ function renderPlanExercises() {
         <!-- Exercise Info -->
         <div class="plan-exercise-info">
           <h4 class="font-semibold">${exercise.name}</h4>
-          <p class="text-xs text-gray-400">${ex.sets} Sätze × ${ex.reps || ex.hold || '-'}</p>
+          <p class="text-xs text-gray-400">${sets} ${setsLabel} × ${targetValue}</p>
         </div>
 
         <!-- Actions -->
@@ -694,8 +935,8 @@ function renderExercisePicker() {
     container.innerHTML = `
       <div class="text-center py-8 text-gray-400">
         <span class="material-symbols-rounded" style="font-size: 48px;">fitness_center</span>
-        <p class="mt-2">Keine Übungen verfügbar</p>
-        <p class="text-sm">Erstelle zuerst Übungen in der Übungsdatenbank</p>
+        <p class="mt-2">${t('plan.exercisePicker.noExercisesTitle')}</p>
+        <p class="text-sm">${t('plan.exercisePicker.noExercisesBody')}</p>
         <button onclick="openQuickExerciseCreate()" class="btn-primary mt-4">
           <span class="material-symbols-rounded">add_circle</span>
           <span>${t('exercise.quickCreate.button')}</span>
@@ -713,8 +954,9 @@ function renderExercisePicker() {
       (exercise.description && exercise.description.toLowerCase().includes(exercisePickerSearchTerm));
 
     // Muscle group filter
+    const muscleGroups = Array.isArray(exercise.muscleGroups) ? exercise.muscleGroups : [];
     const matchesMuscle = exercisePickerMuscleFilter === 'all' ||
-      exercise.muscleGroups.includes(exercisePickerMuscleFilter);
+      muscleGroups.includes(exercisePickerMuscleFilter);
 
     return matchesSearch && matchesMuscle;
   });
@@ -723,12 +965,19 @@ function renderExercisePicker() {
   if (exercisePickerSearchTerm || exercisePickerMuscleFilter !== 'all') {
     const filterText = [];
     if (exercisePickerSearchTerm) {
-      filterText.push(`Suche: "${exercisePickerSearchTerm}"`);
+      filterText.push(t('plan.exercisePicker.filterSearch', { term: exercisePickerSearchTerm }));
     }
     if (exercisePickerMuscleFilter !== 'all') {
-      filterText.push(`Muskelgruppe: ${muscleNames[exercisePickerMuscleFilter]}`);
+      const muscleLabel = muscleNames && muscleNames[exercisePickerMuscleFilter]
+        ? muscleNames[exercisePickerMuscleFilter]
+        : exercisePickerMuscleFilter;
+      filterText.push(t('plan.exercisePicker.filterMuscle', { muscle: muscleLabel }));
     }
-    filterInfo.textContent = `${filteredExercises.length} von ${allExercises.length} Übungen gefunden (${filterText.join(', ')})`;
+    filterInfo.textContent = t('plan.exercisePicker.filterInfo', {
+      count: filteredExercises.length,
+      total: allExercises.length,
+      filters: filterText.join(', ')
+    });
     filterInfo.style.display = 'block';
   } else {
     filterInfo.style.display = 'none';
@@ -739,8 +988,8 @@ function renderExercisePicker() {
     container.innerHTML = `
       <div class="text-center py-8 text-gray-400">
         <span class="material-symbols-rounded" style="font-size: 48px;">search_off</span>
-        <p class="mt-2">Keine Übungen gefunden</p>
-        <p class="text-sm">Versuche einen anderen Suchbegriff oder Filter</p>
+        <p class="mt-2">${t('plan.exercisePicker.noResultsTitle')}</p>
+        <p class="text-sm">${t('plan.exercisePicker.noResultsBody')}</p>
       </div>
     `;
     return;
@@ -923,8 +1172,8 @@ function openPlanPickerSheet(onSelect) {
   const planOptions = (allPlans || []).map(plan => ({
     value: plan.id,
     label: plan.name,
-    description: `${workoutTypeNames[plan.type] || plan.type} • ${plan.duration || 45} Min`,
-    icon: getPlanIconKey(plan, plan.type)
+    description: getPlanPickerDescription(plan),
+    icon: getPlanIconValue(plan, plan.type)
   }));
 
   // Use custom rendering for plan picker
@@ -986,7 +1235,7 @@ function renderPlanPickerOptions(options, searchTerm) {
         <p class="plan-picker-empty-hint">${t('plan.picker.createFirst')}</p>
         <button class="btn-primary mt-4" onclick="closePlanPickerSheet(); openAddPlanModal();">
           <span class="material-symbols-rounded">add_circle</span>
-          <span>Plan erstellen</span>
+          <span>${t('plan.actions.create')}</span>
         </button>
       </div>
     `;
@@ -1002,24 +1251,29 @@ function renderPlanPickerOptions(options, searchTerm) {
     listEl.innerHTML = `
       <div class="plan-picker-empty">
         <span class="material-symbols-rounded">search_off</span>
-        <p>Keine Treffer</p>
+        <p>${t('plan.picker.noResults')}</p>
       </div>
     `;
     return;
   }
 
-  listEl.innerHTML = filtered.map(opt => `
-    <button class="plan-picker-option" onclick="selectPlanFromPicker('${opt.value}')">
-      <div class="plan-picker-option-icon">
-        <span class="material-symbols-rounded">${opt.icon || 'fitness_center'}</span>
-      </div>
-      <div class="plan-picker-option-content">
-        <div class="plan-picker-option-label">${opt.label}</div>
-        <div class="plan-picker-option-desc">${opt.description}</div>
-      </div>
-      <span class="material-symbols-rounded plan-picker-option-chevron">chevron_right</span>
-    </button>
-  `).join('');
+  listEl.innerHTML = filtered.map(opt => {
+    const iconMarkup = opt.icon && opt.icon.kind === 'url'
+      ? `<img src="${opt.icon.value}" alt="" class="plan-icon-img" loading="lazy" />`
+      : `<span class="material-symbols-rounded">${opt.icon?.value || opt.icon || 'fitness_center'}</span>`;
+    return `
+      <button class="plan-picker-option" onclick="selectPlanFromPicker('${opt.value}')">
+        <div class="plan-picker-option-icon">
+          ${iconMarkup}
+        </div>
+        <div class="plan-picker-option-content">
+          <div class="plan-picker-option-label">${opt.label}</div>
+          <div class="plan-picker-option-desc">${opt.description}</div>
+        </div>
+        <span class="material-symbols-rounded plan-picker-option-chevron">chevron_right</span>
+      </button>
+    `;
+  }).join('');
 }
 
 function selectPlanFromPicker(planId) {
@@ -1061,20 +1315,19 @@ function openExerciseConfigModal(exerciseId, editIndex = null) {
   document.getElementById('exercise-config-name').textContent = exercise.name;
 
   // If editing, load existing config
-  if (editIndex !== null && currentPlan.exercises[editIndex]) {
-    const ex = currentPlan.exercises[editIndex];
-    document.getElementById('exercise-sets').value = ex.sets || 3;
-    document.getElementById('exercise-reps').value = ex.reps || '';
-    document.getElementById('exercise-hold').value = ex.hold || '';
-    document.getElementById('exercise-rest').value = ex.rest || 90;
-    document.getElementById('exercise-notes').value = ex.notes || '';
+  if (editIndex !== null && currentPlan.items && currentPlan.items[editIndex]) {
+    const item = currentPlan.items[editIndex];
+    const target = item.target || {};
+    document.getElementById('exercise-sets').value = target.sets || 3;
+    document.getElementById('exercise-reps').value = target.reps || '';
+    document.getElementById('exercise-hold').value = target.holdSec || '';
+    document.getElementById('exercise-rest').value = item.restSec !== undefined ? item.restSec : 90;
   } else {
     // Default values
     document.getElementById('exercise-sets').value = 3;
-    document.getElementById('exercise-reps').value = '12';
+    document.getElementById('exercise-reps').value = '';
     document.getElementById('exercise-hold').value = '';
     document.getElementById('exercise-rest').value = 90;
-    document.getElementById('exercise-notes').value = '';
   }
 
   document.getElementById('exercise-config-modal').classList.add('active');
@@ -1086,24 +1339,31 @@ function saveExerciseConfig() {
   const exerciseId = modal.dataset.exerciseId;
   const editIndex = modal.dataset.editIndex;
 
+  const setsValue = parseInt(document.getElementById('exercise-sets').value, 10);
+  const repsValue = document.getElementById('exercise-reps').value.trim();
+  const holdValue = parseInt(document.getElementById('exercise-hold').value, 10);
+  const restValue = parseInt(document.getElementById('exercise-rest').value, 10);
+
+  const target = {};
+  if (Number.isFinite(setsValue) && setsValue > 0) target.sets = setsValue;
+  if (repsValue) target.reps = repsValue;
+  if (Number.isFinite(holdValue) && holdValue > 0) target.holdSec = holdValue;
+
   const exerciseConfig = {
     exerciseId,
-    sets: parseInt(document.getElementById('exercise-sets').value) || 3,
-    reps: document.getElementById('exercise-reps').value || null,
-    hold: document.getElementById('exercise-hold').value || null,
-    rest: parseInt(document.getElementById('exercise-rest').value) || 90,
-    notes: document.getElementById('exercise-notes').value || ''
+    target: Object.keys(target).length ? target : undefined,
+    restSec: Number.isFinite(restValue) ? restValue : undefined
   };
 
   if (editIndex !== '') {
     // Update existing
-    currentPlan.exercises[parseInt(editIndex)] = exerciseConfig;
+    currentPlan.items[parseInt(editIndex, 10)] = exerciseConfig;
   } else {
     // Add new
-    if (!currentPlan.exercises) {
-      currentPlan.exercises = [];
+    if (!currentPlan.items) {
+      currentPlan.items = [];
     }
-    currentPlan.exercises.push(exerciseConfig);
+    currentPlan.items.push(exerciseConfig);
   }
 
   closeExerciseConfigModal();
@@ -1115,13 +1375,14 @@ function closeExerciseConfigModal() {
 }
 
 function editPlanExercise(index) {
-  const ex = currentPlan.exercises[index];
-  openExerciseConfigModal(ex.exerciseId, index);
+  const item = currentPlan.items[index];
+  if (!item) return;
+  openExerciseConfigModal(item.exerciseId, index);
 }
 
 function removePlanExercise(index) {
-  if (confirm('Übung aus dem Plan entfernen?')) {
-    currentPlan.exercises.splice(index, 1);
+  if (confirm(t('plan.exerciseRemoveConfirm'))) {
+    currentPlan.items.splice(index, 1);
     renderPlanExercises();
   }
 }
@@ -1146,18 +1407,21 @@ function updateRestDisplay(valueOrInput) {
     : valueOrInput;
   const seconds = parseInt(rawValue);
   const displaySpan = document.getElementById('exercise-rest-display');
+  const noneLabel = t('plan.exerciseConfig.restNone');
+  const secLabel = t('plan.exerciseConfig.restSec');
+  const minLabel = t('plan.exerciseConfig.restMin');
 
   if (seconds === 0) {
-    displaySpan.textContent = 'Keine Pause';
+    displaySpan.textContent = noneLabel;
   } else if (seconds < 60) {
-    displaySpan.textContent = `${seconds} Sek`;
+    displaySpan.textContent = `${seconds} ${secLabel}`;
   } else {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     if (remainingSeconds === 0) {
-      displaySpan.textContent = `${minutes} Min`;
+      displaySpan.textContent = `${minutes} ${minLabel}`;
     } else {
-      displaySpan.textContent = `${minutes}:${remainingSeconds.toString().padStart(2, '0')} Min`;
+      displaySpan.textContent = `${minutes}:${remainingSeconds.toString().padStart(2, '0')} ${minLabel}`;
     }
   }
 
@@ -1236,8 +1500,8 @@ function getDragAfterElement(container, y) {
 }
 
 function reorderPlanExercises(fromIndex, toIndex) {
-  const [removed] = currentPlan.exercises.splice(fromIndex, 1);
-  currentPlan.exercises.splice(toIndex, 0, removed);
+  const [removed] = currentPlan.items.splice(fromIndex, 1);
+  currentPlan.items.splice(toIndex, 0, removed);
   renderPlanExercises();
 }
 
@@ -1248,14 +1512,13 @@ function reorderPlanExercises(fromIndex, toIndex) {
 async function savePlan() {
   const name = document.getElementById('plan-name').value.trim();
   const type = document.getElementById('plan-type').value;
-  const duration = parseInt(document.getElementById('plan-duration').value);
   const notes = document.getElementById('plan-notes')?.value.trim() || '';
-  const iconKey = document.getElementById('plan-icon')?.value || 'fitness_center';
+  const iconSelection = planIconSelection || document.getElementById('plan-icon')?.value;
 
   // Validation - Name ist immer erforderlich
   if (!name) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('errors.planNameRequired') || 'Bitte gib einen Namen fuer den Plan ein!');
+      showEdgeFeedback('error', t('errors.planNameRequired'));
     }
     return;
   }
@@ -1263,58 +1526,66 @@ async function savePlan() {
   // Build plan data based on type
   const planData = {
     name,
-    type,
-    duration,
-    iconKey
+    type
   };
+
+  // Resolve icon (preset string or existing object)
+  if (iconSelection) {
+    planData.icon = iconSelection;
+  } else if (currentPlan && currentPlan.icon) {
+    planData.icon = currentPlan.icon;
+  } else {
+    planData.icon = planTypeIconFallbacks[type] || planTypeIconFallbacks.strength;
+  }
+
+  if (notes) {
+    planData.notes = notes;
+  }
+
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    planData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+    if (!editingPlanId) {
+      planData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+    }
+  }
 
   // Type-specific fields
   switch (type) {
     case 'strength':
-      // Strength: exercises required, difficulty, discipline, tags, muscles
-      if (!currentPlan.exercises || currentPlan.exercises.length === 0) {
+    case 'bodyweight': {
+      const items = normalizePlanItems(currentPlan && currentPlan.items ? currentPlan.items : []);
+      if (items.length === 0) {
         if (typeof showEdgeFeedback === 'function') {
-          showEdgeFeedback('error', t('errors.planExercisesRequired') || 'Bitte fuege mindestens eine Uebung hinzu!');
+          showEdgeFeedback('error', t('errors.planExercisesRequired'));
         }
         return;
       }
-
-      const difficulty = document.getElementById('plan-difficulty')?.value || 'intermediate';
-      const discipline = document.getElementById('plan-discipline')?.value || 'bodyweight';
-      planData.iconKey = discipline === 'weights' ? 'fitness_center' : 'sports_gymnastics';
-
-      // Calculate required equipment from exercises
-      const requiredEquipment = new Set();
-      if (typeof allExercises !== 'undefined' && allExercises && currentPlan.exercises) {
-        currentPlan.exercises.forEach(ex => {
-          const exercise = allExercises.find(e => e.id === ex.exerciseId);
-          if (exercise && exercise.equipment) {
-            exercise.equipment.forEach(eq => requiredEquipment.add(eq));
-          }
-        });
-      }
-
-      planData.difficulty = difficulty;
-      planData.discipline = discipline;
-      planData.tags = planTags || [];
-      planData.targetMuscles = planTargetMuscles || [];
-      planData.exercises = currentPlan.exercises || [];
-      planData.requiredEquipment = Array.from(requiredEquipment);
-      planData.notes = notes;
+      planData.items = items;
       break;
-
+    }
     case 'cardio':
-      // Cardio: cardioGoal statt difficulty, keine exercises
-      const cardioGoal = document.getElementById('plan-cardio-goal')?.value || 'liss';
-      planData.cardioGoal = cardioGoal;
-      planData.exercises = [];
-      planData.notes = notes;
+      // Cardio: goal type + optional duration/distance/activity
+      planData.cardioGoalType = document.getElementById('plan-cardio-goal-type')?.value || 'liss';
+      const cardioDuration = parseFloat(document.getElementById('plan-cardio-duration')?.value);
+      const cardioDistance = parseFloat(document.getElementById('plan-cardio-distance')?.value);
+      const activityType = document.getElementById('plan-cardio-activity')?.value;
+      if (Number.isFinite(cardioDuration) && cardioDuration > 0) {
+        planData.targetDurationMin = cardioDuration;
+      }
+      if (Number.isFinite(cardioDistance) && cardioDistance > 0) {
+        planData.targetDistanceKm = cardioDistance;
+      }
+      if (activityType) {
+        planData.activityType = activityType;
+      }
       break;
 
     case 'recovery':
-      // Recovery: nur Basics - keine difficulty, keine exercises
-      planData.exercises = [];
-      planData.notes = notes;
+      // Recovery: optional duration
+      const recoveryDuration = parseFloat(document.getElementById('plan-recovery-duration')?.value);
+      if (Number.isFinite(recoveryDuration) && recoveryDuration > 0) {
+        planData.targetDurationMin = recoveryDuration;
+      }
       break;
   }
 
@@ -1332,7 +1603,7 @@ async function savePlan() {
   } catch (error) {
     console.error('Error saving plan:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern des Plans.');
+      showEdgeFeedback('error', t('errors.saveFailed'));
     }
   }
 }
@@ -1341,7 +1612,8 @@ function togglePlanDeleteButton(visible) {
   const btn = document.getElementById('plan-delete-btn');
   if (!btn) return;
   btn.classList.toggle('hidden', !visible);
-  btn.textContent = t('common.delete');
+  const label = document.getElementById('plan-delete-btn-label');
+  if (label) label.textContent = t('common.delete');
 }
 
 async function deletePlan() {
@@ -1373,18 +1645,34 @@ function viewPlanDetails(id) {
 
   // Safety check: ensure allExercises is available
   if (typeof allExercises === 'undefined' || !allExercises) {
-  if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Übungen werden noch geladen. Bitte versuche es gleich nochmal.');
-  }
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('errors.exercisesLoading'));
+    }
     return;
   }
 
-  // Build exercises list HTML
+  const planType = plan.type || 'strength';
+  const typeLabel = getPlanTypeLabel(plan);
+  const metaParts = planType === 'strength' || planType === 'bodyweight'
+    ? [t('plan.meta.exercises', { count: getPlanItems(plan).length })]
+    : planType === 'cardio'
+      ? getPlanCardioMetaParts(plan)
+      : getPlanRecoveryMetaParts(plan);
+
+  const items = getPlanItems(plan);
   let exercisesHTML = '';
-  if (plan.exercises && plan.exercises.length > 0) {
-    exercisesHTML = plan.exercises.map((ex, index) => {
-      const exercise = allExercises.find(e => e.id === ex.exerciseId);
+  if ((planType === 'strength' || planType === 'bodyweight') && items.length > 0) {
+    exercisesHTML = items.map((item, index) => {
+      const exercise = allExercises.find(e => e.id === item.exerciseId);
       if (!exercise) return '';
+      const target = item.target || {};
+      const sets = target.sets !== undefined && target.sets !== null ? target.sets : '-';
+      const reps = target.reps ? target.reps : '';
+      const holdSec = target.holdSec ? `${target.holdSec} ${t('plan.exerciseConfig.restSec')}` : '';
+      const targetValue = reps || holdSec || '-';
+      const restValue = item.restSec !== undefined && item.restSec !== null
+        ? `${item.restSec} ${t('plan.exerciseConfig.restSec')}`
+        : '';
 
       return `
         <div class="plan-detail-exercise-item">
@@ -1395,34 +1683,19 @@ function viewPlanDetails(id) {
               <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-400">
                 <span class="flex items-center gap-1">
                   <span class="material-symbols-rounded" style="font-size: 16px;">repeat</span>
-                  ${ex.sets} Sätze
+                  ${sets} ${t('plan.exerciseConfig.setsShort')}
                 </span>
-                ${ex.reps ?
-                  `<span class="flex items-center gap-1">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">fitness_center</span>
-                    ${ex.reps} Wdh
-                  </span>`
-                  : ''
-                }
-                ${ex.hold ?
-                  `<span class="flex items-center gap-1">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">timer</span>
-                    ${ex.hold}
-                  </span>`
-                  : ''
-                }
-                ${ex.rest ?
-                  `<span class="flex items-center gap-1">
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">fitness_center</span>
+                  ${targetValue}
+                </span>
+                ${restValue ? `
+                  <span class="flex items-center gap-1">
                     <span class="material-symbols-rounded" style="font-size: 16px;">hourglass_empty</span>
-                    ${ex.rest}s Pause
-                  </span>`
-                  : ''
-                }
+                    ${restValue}
+                  </span>
+                ` : ''}
               </div>
-              ${ex.notes ?
-                `<p class="text-xs text-gray-500 mt-2 italic">${ex.notes}</p>`
-                : ''
-              }
             </div>
           </div>
         </div>
@@ -1430,88 +1703,46 @@ function viewPlanDetails(id) {
     }).join('');
   }
 
-  // Get difficulty info
-  const difficultyValue = convertPlanDifficultyToEnum(plan.difficulty);
-  const difficultyInfo = planDifficultyEnum[difficultyValue] || planDifficultyEnum.intermediate;
-
   // Modal content
   const modalContent = `
     <div class="space-y-4">
-      <!-- Type & Duration -->
-      <div class="flex items-center justify-between">
-        <span class="plan-type-badge type-${plan.displayType || plan.type}">${getPlanTypeLabel(plan)}</span>
-        <span class="text-sm text-gray-400">
-          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle;">schedule</span>
-          ${plan.duration || 45} Minuten
-        </span>
+      <div class="flex items-center gap-3">
+        <div class="plan-row-icon">
+          ${renderPlanIconMarkup(plan, planType)}
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="plan-type-badge plan-type-badge--neutral">${typeLabel}</span>
+          <span class="text-sm text-gray-400">${metaParts.join(' · ')}</span>
+        </div>
       </div>
-
-      <!-- Difficulty -->
-      <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-          <span class="material-symbols-rounded" style="font-size: 18px;">signal_cellular_alt</span>
-          Schwierigkeit
-        </label>
-        <span class="difficulty-badge ${difficultyValue}">${difficultyInfo.label}</span>
-      </div>
-
-      <!-- Target Muscles -->
-      ${plan.targetMuscles && plan.targetMuscles.length > 0 ?
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">sports_gymnastics</span>
-            Trainierte Muskelgruppen
-          </label>
-          <div class="flex flex-wrap gap-2">
-            ${plan.targetMuscles.map(muscle =>
-              `<span class="muscle-tag">${muscleNames[muscle]}</span>`
-            ).join('')}
-          </div>
-        </div>`
-        : ''
-      }
-
-      <!-- Required Equipment -->
-      ${plan.requiredEquipment && plan.requiredEquipment.length > 0 && plan.requiredEquipment[0] !== 'none' ?
-        `<div>
-          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
-            <span class="material-symbols-rounded" style="font-size: 18px;">build</span>
-            Benötigtes Equipment
-          </label>
-          <div class="flex flex-wrap gap-2">
-            ${plan.requiredEquipment.map(eq =>
-              `<span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-700 border border-gray-600 rounded-lg text-sm">
-                <span class="material-symbols-rounded" style="font-size: 16px; color: var(--color-primary);">${equipmentIcons[eq]}</span>
-                ${equipmentNames[eq]}
-              </span>`
-            ).join('')}
-          </div>
-        </div>`
-        : ''
-      }
 
       <!-- Notes -->
       ${plan.notes ?
         `<div>
           <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
             <span class="material-symbols-rounded" style="font-size: 18px;">description</span>
-            Notizen
+            ${t('plan.notes')}
           </label>
           <p class="text-gray-300 leading-relaxed">${plan.notes}</p>
         </div>`
         : ''
       }
 
-      <!-- Exercises -->
-      <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-3">
-          <span class="material-symbols-rounded" style="font-size: 18px;">fitness_center</span>
-          Übungen (${plan.exercises ? plan.exercises.length : 0})
-        </label>
-        <div class="space-y-2">
-          ${exercisesHTML}
+      ${planType === 'strength' || planType === 'bodyweight' ? `
+        <div>
+          <label class="flex items-center gap-2 text-sm font-medium text-gray-400 mb-3">
+            <span class="material-symbols-rounded" style="font-size: 18px;">fitness_center</span>
+            ${t('plan.exercises')} (${items.length})
+          </label>
+          <div class="space-y-2">
+            ${exercisesHTML}
+          </div>
         </div>
-      </div>
+      ` : `
+        <div class="text-sm text-gray-400">
+          ${metaParts.join(' · ')}
+        </div>
+      `}
 
       <!-- Action Buttons -->
       <div class="flex gap-3 pt-4">
@@ -1520,14 +1751,14 @@ function viewPlanDetails(id) {
           class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
         >
           <span class="material-symbols-rounded" style="font-size: 20px;">edit</span>
-          Bearbeiten
+          ${t('plan.actions.edit')}
         </button>
         <button
           onclick="closeGenericModal()"
           class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
         >
           <span class="material-symbols-rounded" style="font-size: 20px;">close</span>
-          Schließen
+          ${t('common.close')}
         </button>
       </div>
     </div>
@@ -1547,111 +1778,12 @@ function setupPlansListener() {
   });
 }
 
-// ========================================
-// BOTTOM SHEET INTEGRATION FOR PLANS
-// ========================================
-
-// State for multi-select inputs in plan modal
-let planTags = [];
-let planTargetMuscles = [];
-
-/**
- * Opens plan tags bottom sheet
- */
-function openPlanTagsBottomSheet() {
-  const tagOptions = [
-    { value: 'full-body', label: 'Ganzkörper', description: 'Training für den gesamten Körper' },
-    { value: 'upper-body', label: 'Oberkörper', description: 'Fokus auf Oberkörper' },
-    { value: 'lower-body', label: 'Unterkörper', description: 'Fokus auf Unterkörper' },
-    { value: 'push', label: 'Push', description: 'Drückende Bewegungen' },
-    { value: 'pull', label: 'Pull', description: 'Ziehende Bewegungen' },
-    { value: 'legs', label: 'Beine', description: 'Bein-Training' },
-    { value: 'core', label: 'Core', description: 'Rumpf-Training' }
-  ];
-
-  openBottomSheet({
-    title: 'Tags auswählen',
-    options: tagOptions,
-    selectedValues: planTags,
-    enableSearch: true,
-    searchPlaceholder: 'Tags suchen...',
-    fieldId: 'plan-tags-wrapper',
-    onConfirm: (selectedValues) => {
-      planTags = selectedValues;
-      renderPlanTagsInput();
-    }
-  });
-}
-
-/**
- * Opens plan target muscles bottom sheet
- */
-function openPlanTargetMusclesBottomSheet() {
-  const muscleOptions = [
-    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur' },
-    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur' },
-    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur' },
-    { value: 'arms', label: 'Arme', description: 'Bizeps, Trizeps, Unterarme' },
-    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur' },
-    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur' }
-  ];
-
-  openBottomSheet({
-    title: 'Ziel-Muskelgruppen auswählen',
-    options: muscleOptions,
-    selectedValues: planTargetMuscles,
-    enableSearch: true,
-    searchPlaceholder: 'Muskelgruppe suchen...',
-    fieldId: 'plan-target-muscles-wrapper',
-    onConfirm: (selectedValues) => {
-      planTargetMuscles = selectedValues;
-      renderPlanTargetMusclesInput();
-    }
-  });
-}
-
-/**
- * Renders the plan tags multi-select input
- */
-function renderPlanTagsInput() {
-  renderMultiSelectInput('plan-tags-wrapper', {
-    icon: 'label',
-    placeholder: 'Tags auswählen...',
-    selectedValues: planTags,
-    valueLabels: tagNames
-  });
-}
-
-/**
- * Renders the plan target muscles multi-select input
- */
-function renderPlanTargetMusclesInput() {
-  renderMultiSelectInput('plan-target-muscles-wrapper', {
-    icon: 'fitness_center',
-    placeholder: 'Ziel-Muskelgruppen auswählen...',
-    selectedValues: planTargetMuscles,
-    valueLabels: muscleNames
-  });
-}
-
-/**
- * Global removeMultiSelectChip handler for plans
- * (extends the one in exercises.js)
- */
-const originalRemoveMultiSelectChip = window.removeMultiSelectChip;
-window.removeMultiSelectChip = function(containerId, value) {
-  if (containerId === 'plan-tags-wrapper') {
-    planTags = planTags.filter(v => v !== value);
-    renderPlanTagsInput();
-  } else if (containerId === 'plan-target-muscles-wrapper') {
-    planTargetMuscles = planTargetMuscles.filter(v => v !== value);
-    renderPlanTargetMusclesInput();
-  } else if (originalRemoveMultiSelectChip) {
-    originalRemoveMultiSelectChip(containerId, value);
-  }
-};
-
 // Export Plan Picker functions globally
 window.openPlanPickerSheet = openPlanPickerSheet;
 window.closePlanPickerSheet = closePlanPickerSheet;
 window.selectPlanFromPicker = selectPlanFromPicker;
+window.setPlanCardioGoalType = setPlanCardioGoalType;
+window.togglePlanCardioGoalInfo = togglePlanCardioGoalInfo;
+window.selectPlanIcon = selectPlanIcon;
+
+applyPlanI18n();

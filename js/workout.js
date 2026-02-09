@@ -59,25 +59,70 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Plan nicht gefunden');
+        showEdgeFeedback('error', t('errors.planNotFound'));
       }
       return;
     }
 
+    const normalizedDate = ensureValidDateString(scheduledDate);
+
+    if (plan.type === 'cardio' && typeof openAddCardioModal === 'function') {
+      if (scheduleId) {
+        window.pendingScheduledEntry = { id: scheduleId };
+      }
+      openAddCardioModal();
+      setTimeout(() => {
+        const dateInput = document.getElementById('cardio-date');
+        if (dateInput) dateInput.value = normalizedDate;
+        const activityInput = document.getElementById('cardio-activity-type');
+        if (activityInput && plan.activityType) {
+          activityInput.value = plan.activityType;
+        }
+        const durationInput = document.getElementById('cardio-duration');
+        const distanceInput = document.getElementById('cardio-distance');
+        if (durationInput && plan.targetDurationMin) {
+          durationInput.value = plan.targetDurationMin;
+        }
+        if (distanceInput && plan.targetDistanceKm) {
+          distanceInput.value = plan.targetDistanceKm;
+        }
+        if (typeof updateCardioLivePace === 'function') {
+          updateCardioLivePace();
+        }
+      }, 100);
+      return;
+    }
+
     if (plan.type === 'recovery' && typeof openAddRecoveryModal === 'function') {
-      scheduledDate = ensureValidDateString(scheduledDate);
-      openAddRecoveryModal(scheduledDate);
+      if (scheduleId) {
+        window.pendingScheduledEntry = { id: scheduleId };
+      }
+      openAddRecoveryModal(normalizedDate);
+      setTimeout(() => {
+        const durationInput = document.getElementById('recovery-duration');
+        if (durationInput && plan.targetDurationMin) {
+          durationInput.value = plan.targetDurationMin;
+        }
+      }, 100);
       return;
     }
     if (!allExercises || allExercises.length === 0) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+        showEdgeFeedback('error', t('errors.exercisesLoading'));
       }
       return;
     }
 
     // Default to today if no scheduled date or invalid date
-    scheduledDate = ensureValidDateString(scheduledDate);
+    scheduledDate = normalizedDate;
+
+    const planItems = typeof getPlanItems === 'function' ? getPlanItems(plan) : (plan.items || plan.exercises || []);
+    if (!planItems || planItems.length === 0) {
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', t('errors.planExercisesRequired'));
+      }
+      return;
+    }
 
     // Initialize active workout
     activeWorkout = {
@@ -89,14 +134,16 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
       scheduleId: scheduleId,
       scheduledDate: scheduledDate,
       startedAt: firebase.firestore.Timestamp.now(),
-      exercises: plan.exercises.map(ex => {
-        const exercise = allExercises.find(e => e.id === ex.exerciseId);
+      exercises: planItems.map(item => {
+        const exercise = allExercises.find(e => e.id === item.exerciseId);
+        const target = item.target || {};
+        const targetReps = target.reps || (target.holdSec ? `${target.holdSec}s` : '10-12');
         return {
-          exerciseId: ex.exerciseId,
-          exerciseName: exercise ? exercise.name : 'Übung',
-          targetSets: ex.sets || 3,
-          targetReps: ex.reps || '10-12',
-          targetRest: ex.rest || 90,
+          exerciseId: item.exerciseId,
+          exerciseName: exercise ? exercise.name : t('exercise.title'),
+          targetSets: target.sets || 3,
+          targetReps: targetReps,
+          targetRest: item.restSec || 90,
           completedSets: [],
           status: 'not-started',
           notes: ''
@@ -121,7 +168,7 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
   } catch (error) {
     console.error('❌ Error starting workout:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Starten des Workouts');
+      showEdgeFeedback('error', t('errors.workoutStartFailed'));
     }
   }
 }
@@ -141,7 +188,7 @@ async function startWorkoutFromSession(sessionId) {
     const session = allSessions.find(s => s.id === sessionId);
     if (!session) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Session nicht gefunden');
+        showEdgeFeedback('error', t('errors.sessionNotFound'));
       }
       return;
     }
@@ -149,13 +196,13 @@ async function startWorkoutFromSession(sessionId) {
     const plan = allPlans.find(p => p.id === session.planId);
     if (!plan) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Plan nicht gefunden');
+        showEdgeFeedback('error', t('errors.planNotFound'));
       }
       return;
     }
     if (!allExercises || allExercises.length === 0) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+        showEdgeFeedback('error', t('errors.exercisesLoading'));
       }
       return;
     }
@@ -163,6 +210,14 @@ async function startWorkoutFromSession(sessionId) {
     // Create new workout based on session template
     const today = new Date();
     const dateStr = formatDate(today);
+
+    const planItems = typeof getPlanItems === 'function' ? getPlanItems(plan) : (plan.items || plan.exercises || []);
+    if (!planItems || planItems.length === 0) {
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', t('errors.planExercisesRequired'));
+      }
+      return;
+    }
 
     activeWorkout = {
       id: generateTempId(),
@@ -173,14 +228,16 @@ async function startWorkoutFromSession(sessionId) {
       scheduleId: null, // No schedule link for manual workouts
       scheduledDate: dateStr,
       startedAt: firebase.firestore.Timestamp.now(),
-      exercises: plan.exercises.map(ex => {
-        const exercise = allExercises.find(e => e.id === ex.exerciseId);
+      exercises: planItems.map(item => {
+        const exercise = allExercises.find(e => e.id === item.exerciseId);
+        const target = item.target || {};
+        const targetReps = target.reps || (target.holdSec ? `${target.holdSec}s` : '10-12');
         return {
-          exerciseId: ex.exerciseId,
-          exerciseName: exercise ? exercise.name : 'Übung',
-          targetSets: ex.sets || 3,
-          targetReps: ex.reps || '10-12',
-          targetRest: ex.rest || 90,
+          exerciseId: item.exerciseId,
+          exerciseName: exercise ? exercise.name : t('exercise.title'),
+          targetSets: target.sets || 3,
+          targetReps: targetReps,
+          targetRest: item.restSec || 90,
           completedSets: [],
           status: 'not-started',
           notes: ''
@@ -989,8 +1046,8 @@ function isBodyweightExercise() {
 
   const discipline = plan.discipline || '';
 
-  // Only hide weight for explicitly bodyweight/calisthenics plans
-  return discipline === 'bodyweight' || discipline === 'calisthenics';
+  // Only hide weight for explicitly bodyweight/calisthenics plans or bodyweight type
+  return plan.type === 'bodyweight' || discipline === 'bodyweight' || discipline === 'calisthenics';
 }
 
 /**

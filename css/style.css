@@ -4073,6 +4073,20 @@ input::placeholder {
   color: var(--color-primary);
 }
 
+.plan-icon-img {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+}
+
+.plan-row-icon .plan-icon-img,
+.plan-picker-option-icon .plan-icon-img {
+  width: 26px;
+  height: 26px;
+}
+
 .plan-row-content {
   flex: 1;
   min-width: 0;
@@ -4229,6 +4243,14 @@ input::placeholder {
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.plan-type-badge.plan-type-badge--neutral {
+  background: rgba(148, 163, 184, 0.12);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  text-transform: none;
+  letter-spacing: 0.02em;
 }
 
 .plan-type-badge.type-strength {
