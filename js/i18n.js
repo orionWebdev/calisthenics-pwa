@@ -39,7 +39,8 @@ const translations = {
       back: 'Zurueck',
       done: 'Fertig',
       optional: 'optional',
-      minutes: 'Minuten'
+      minutes: 'Minuten',
+      secondsShort: '{n}s'
     },
     nav: {
       dashboard: 'Home',
@@ -436,6 +437,9 @@ const translations = {
         discardConfirmTitle: 'Workout verwerfen?',
         endWorkoutAction: 'Beenden'
       },
+      targetHold: 'Ziel: {seconds} halten',
+      holdDurationLabel: 'Haltedauer (Sek.)',
+      hold: 'Halten',
       setLogger: {
         title: 'Satz {number} loggen',
         reps: 'Wiederholungen',
@@ -452,6 +456,7 @@ const translations = {
         rest: '{seconds}s Pause',
         noSets: 'Noch keine Saetze geloggt',
         enterReps: 'Bitte gib die Anzahl der Wiederholungen ein',
+        enterHold: 'Bitte gib die Haltedauer ein',
         atLeastOneSet: 'Bitte logge mindestens einen Satz bevor du weitergehst',
         deleteSet: 'Satz loeschen',
         deleteSetConfirm: 'Diesen Satz wirklich loeschen?'
@@ -474,7 +479,8 @@ const translations = {
     },
     numberPicker: {
       repsTitle: 'Wiederholungen',
-      weightTitle: 'Gewicht'
+      weightTitle: 'Gewicht',
+      holdTitle: 'Haltedauer'
     },
     template: {
       sessionTemplate: 'Session-Vorlage',
