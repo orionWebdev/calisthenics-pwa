@@ -37,7 +37,90 @@ let restTimerPausedRemaining = 0;  // Remaining ms when paused (>0 = paused)
 let restTimerTickId = null;        // requestAnimationFrame / setInterval ID for UI ticks
 
 // State for active set row (iOS-style set logger)
-let activeSetValues = { reps: 10, weight: 0 };
+let activeSetValues = { reps: 10, weight: 0, holdSec: 0 };
+
+function isHoldTarget(exercise) {
+  if (!exercise) return false;
+  if (exercise.targetMode === 'hold') return true;
+  if (exercise.targetMode === 'reps') return false;
+  const holdSec = Number(exercise.targetHoldSec);
+  return Number.isFinite(holdSec) && holdSec > 0;
+}
+
+function getTargetHoldSeconds(exercise) {
+  const holdSec = Number(exercise?.targetHoldSec);
+  return Number.isFinite(holdSec) ? holdSec : 0;
+}
+
+function formatHoldSeconds(seconds) {
+  const value = Number(seconds);
+  if (!Number.isFinite(value) || value <= 0) return '';
+  if (value >= 60) {
+    const minutes = Math.floor(value / 60);
+    const remaining = Math.round(value % 60);
+    return `${minutes}:${remaining.toString().padStart(2, '0')}`;
+  }
+  return t('common.secondsShort', { n: value });
+}
+
+function getExerciseTargetLine(exercise, options = {}) {
+  const includeLabel = options.includeLabel !== false;
+  if (isHoldTarget(exercise)) {
+    const formatted = formatHoldSeconds(getTargetHoldSeconds(exercise));
+    if (!formatted) {
+      return includeLabel
+        ? `${t('workout.setLogger.target')}: ${t('workout.hold')}`
+        : t('workout.hold');
+    }
+    if (includeLabel) {
+      return t('workout.targetHold', { seconds: formatted });
+    }
+    return `${formatted} ${t('workout.hold')}`;
+  }
+  const sets = exercise?.targetSets ?? 0;
+  const reps = exercise?.targetReps ?? '-';
+  return includeLabel
+    ? `${t('workout.setLogger.target')}: ${sets} × ${reps}`
+    : `${sets} × ${reps}`;
+}
+
+function getExerciseTargetDetailLine(exercise) {
+  if (!exercise) return '';
+  const restText = exercise.targetRest ? t('workout.setLogger.rest', { seconds: exercise.targetRest }) : '';
+  if (isHoldTarget(exercise)) {
+    const formatted = formatHoldSeconds(getTargetHoldSeconds(exercise));
+    const base = formatted
+      ? t('workout.targetHold', { seconds: formatted })
+      : `${t('workout.setLogger.target')}: ${t('workout.hold')}`;
+    return restText ? `${base} · ${restText}` : base;
+  }
+  const sets = exercise.targetSets ?? 0;
+  const reps = exercise.targetReps ?? '-';
+  const base = `${t('workout.setLogger.target')}: ${t('workout.setLogger.targetSets', { sets })} × ${t('workout.setLogger.targetReps', { reps })}`;
+  return restText ? `${base} · ${restText}` : base;
+}
+
+function mapPlanItemToWorkoutExercise(item) {
+  const exercise = allExercises.find(e => e.id === item.exerciseId);
+  const target = item.target || {};
+  const holdSec = Number(target.holdSec);
+  const hasHold = Number.isFinite(holdSec) && holdSec > 0;
+  const targetMode = hasHold ? 'hold' : 'reps';
+  const targetReps = !hasHold ? (target.reps || '10-12') : undefined;
+
+  return {
+    exerciseId: item.exerciseId,
+    exerciseName: exercise ? exercise.name : t('exercise.title'),
+    targetSets: target.sets || 3,
+    targetMode,
+    targetHoldSec: hasHold ? holdSec : undefined,
+    targetReps,
+    targetRest: item.restSec || 90,
+    completedSets: [],
+    status: 'not-started',
+    notes: ''
+  };
+}
 
 const WORKOUT_USER_ID = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
 
@@ -59,25 +142,70 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Plan nicht gefunden');
+        showEdgeFeedback('error', t('errors.planNotFound'));
       }
       return;
     }
 
+    const normalizedDate = ensureValidDateString(scheduledDate);
+
+    if (plan.type === 'cardio' && typeof openAddCardioModal === 'function') {
+      if (scheduleId) {
+        window.pendingScheduledEntry = { id: scheduleId };
+      }
+      openAddCardioModal();
+      setTimeout(() => {
+        const dateInput = document.getElementById('cardio-date');
+        if (dateInput) dateInput.value = normalizedDate;
+        const activityInput = document.getElementById('cardio-activity-type');
+        if (activityInput && plan.activityType) {
+          activityInput.value = plan.activityType;
+        }
+        const durationInput = document.getElementById('cardio-duration');
+        const distanceInput = document.getElementById('cardio-distance');
+        if (durationInput && plan.targetDurationMin) {
+          durationInput.value = plan.targetDurationMin;
+        }
+        if (distanceInput && plan.targetDistanceKm) {
+          distanceInput.value = plan.targetDistanceKm;
+        }
+        if (typeof updateCardioLivePace === 'function') {
+          updateCardioLivePace();
+        }
+      }, 100);
+      return;
+    }
+
     if (plan.type === 'recovery' && typeof openAddRecoveryModal === 'function') {
-      scheduledDate = ensureValidDateString(scheduledDate);
-      openAddRecoveryModal(scheduledDate);
+      if (scheduleId) {
+        window.pendingScheduledEntry = { id: scheduleId };
+      }
+      openAddRecoveryModal(normalizedDate);
+      setTimeout(() => {
+        const durationInput = document.getElementById('recovery-duration');
+        if (durationInput && plan.targetDurationMin) {
+          durationInput.value = plan.targetDurationMin;
+        }
+      }, 100);
       return;
     }
     if (!allExercises || allExercises.length === 0) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+        showEdgeFeedback('error', t('errors.exercisesLoading'));
       }
       return;
     }
 
     // Default to today if no scheduled date or invalid date
-    scheduledDate = ensureValidDateString(scheduledDate);
+    scheduledDate = normalizedDate;
+
+    const planItems = typeof getPlanItems === 'function' ? getPlanItems(plan) : (plan.items || plan.exercises || []);
+    if (!planItems || planItems.length === 0) {
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', t('errors.planExercisesRequired'));
+      }
+      return;
+    }
 
     // Initialize active workout
     activeWorkout = {
@@ -89,19 +217,7 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
       scheduleId: scheduleId,
       scheduledDate: scheduledDate,
       startedAt: firebase.firestore.Timestamp.now(),
-      exercises: plan.exercises.map(ex => {
-        const exercise = allExercises.find(e => e.id === ex.exerciseId);
-        return {
-          exerciseId: ex.exerciseId,
-          exerciseName: exercise ? exercise.name : 'Übung',
-          targetSets: ex.sets || 3,
-          targetReps: ex.reps || '10-12',
-          targetRest: ex.rest || 90,
-          completedSets: [],
-          status: 'not-started',
-          notes: ''
-        };
-      }),
+      exercises: planItems.map(item => mapPlanItemToWorkoutExercise(item)),
       notes: '',
       currentExerciseIndex: 0
     };
@@ -121,7 +237,7 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
   } catch (error) {
     console.error('❌ Error starting workout:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Starten des Workouts');
+      showEdgeFeedback('error', t('errors.workoutStartFailed'));
     }
   }
 }
@@ -141,7 +257,7 @@ async function startWorkoutFromSession(sessionId) {
     const session = allSessions.find(s => s.id === sessionId);
     if (!session) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Session nicht gefunden');
+        showEdgeFeedback('error', t('errors.sessionNotFound'));
       }
       return;
     }
@@ -149,13 +265,13 @@ async function startWorkoutFromSession(sessionId) {
     const plan = allPlans.find(p => p.id === session.planId);
     if (!plan) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Plan nicht gefunden');
+        showEdgeFeedback('error', t('errors.planNotFound'));
       }
       return;
     }
     if (!allExercises || allExercises.length === 0) {
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('error', 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.');
+        showEdgeFeedback('error', t('errors.exercisesLoading'));
       }
       return;
     }
@@ -163,6 +279,14 @@ async function startWorkoutFromSession(sessionId) {
     // Create new workout based on session template
     const today = new Date();
     const dateStr = formatDate(today);
+
+    const planItems = typeof getPlanItems === 'function' ? getPlanItems(plan) : (plan.items || plan.exercises || []);
+    if (!planItems || planItems.length === 0) {
+      if (typeof showEdgeFeedback === 'function') {
+        showEdgeFeedback('error', t('errors.planExercisesRequired'));
+      }
+      return;
+    }
 
     activeWorkout = {
       id: generateTempId(),
@@ -173,19 +297,7 @@ async function startWorkoutFromSession(sessionId) {
       scheduleId: null, // No schedule link for manual workouts
       scheduledDate: dateStr,
       startedAt: firebase.firestore.Timestamp.now(),
-      exercises: plan.exercises.map(ex => {
-        const exercise = allExercises.find(e => e.id === ex.exerciseId);
-        return {
-          exerciseId: ex.exerciseId,
-          exerciseName: exercise ? exercise.name : 'Übung',
-          targetSets: ex.sets || 3,
-          targetReps: ex.reps || '10-12',
-          targetRest: ex.rest || 90,
-          completedSets: [],
-          status: 'not-started',
-          notes: ''
-        };
-      }),
+      exercises: planItems.map(item => mapPlanItemToWorkoutExercise(item)),
       notes: '',
       currentExerciseIndex: 0
     };
@@ -567,70 +679,111 @@ function renderSTSetList(exercise) {
   if (!exercise) return '';
 
   const isBodyweight = isBodyweightExercise();
+  const holdMode = isHoldTarget(exercise);
   const targetSets = exercise.targetSets || 3;
   const completedCount = exercise.completedSets.length;
+  const valueUnit = holdMode ? t('workout.holdDurationLabel') : t('workout.logging.totalReps');
 
   // Build rows: completed sets + one active set + remaining empty sets
   let rows = '';
 
   // Completed sets
   exercise.completedSets.forEach((set, setIndex) => {
-    const weightDisplay = !isBodyweight && set.weight != null && set.weight > 0
-      ? (set.weight % 1 !== 0 ? set.weight.toFixed(1).replace('.', ',') : set.weight)
-      : null;
-
-    rows += `
-      <div class="st-set-row st-set-row--done" data-set-index="${setIndex}">
-        <div class="st-set-num st-set-num--done">${setIndex + 1}</div>
-        <div class="st-set-values">
-          <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'reps')">
-            <span class="st-set-val-num">${set.reps}</span>
-            <span class="st-set-val-unit">${t('workout.logging.totalReps')}</span>
-          </button>
-          ${!isBodyweight ? `
-            <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'weight')">
-              <span class="st-set-val-num">${weightDisplay || '—'}</span>
-              <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+    if (holdMode) {
+      // Hold mode: show holdSec only, no weight
+      rows += `
+        <div class="st-set-row st-set-row--done" data-set-index="${setIndex}">
+          <div class="st-set-num st-set-num--done">${setIndex + 1}</div>
+          <div class="st-set-values">
+            <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'hold')">
+              <span class="st-set-val-num">${set.holdSec || 0}</span>
+              <span class="st-set-val-unit">${valueUnit}</span>
             </button>
-          ` : ''}
+          </div>
+          <button type="button" class="st-set-check st-set-check--done" onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})" aria-label="${t('workout.setLogger.deleteSet')}">
+            <span class="material-symbols-rounded">check</span>
+          </button>
         </div>
-        <button type="button" class="st-set-check st-set-check--done" onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})" aria-label="${t('workout.setLogger.deleteSet')}">
-          <span class="material-symbols-rounded">check</span>
-        </button>
-      </div>
-    `;
+      `;
+    } else {
+      // Reps mode: show reps + optional weight
+      const weightDisplay = !isBodyweight && set.weight != null && set.weight > 0
+        ? (set.weight % 1 !== 0 ? set.weight.toFixed(1).replace('.', ',') : set.weight)
+        : null;
+
+      rows += `
+        <div class="st-set-row st-set-row--done" data-set-index="${setIndex}">
+          <div class="st-set-num st-set-num--done">${setIndex + 1}</div>
+          <div class="st-set-values">
+            <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'reps')">
+              <span class="st-set-val-num">${set.reps}</span>
+              <span class="st-set-val-unit">${valueUnit}</span>
+            </button>
+            ${!isBodyweight ? `
+              <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'weight')">
+                <span class="st-set-val-num">${weightDisplay || '—'}</span>
+                <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+              </button>
+            ` : ''}
+          </div>
+          <button type="button" class="st-set-check st-set-check--done" onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})" aria-label="${t('workout.setLogger.deleteSet')}">
+            <span class="material-symbols-rounded">check</span>
+          </button>
+        </div>
+      `;
+    }
   });
 
   // Active set (next to log)
   const activeSetNum = completedCount + 1;
   const defaults = getDefaultSetValues(exercise);
-  const activeWeightDisplay = !isBodyweight
-    ? (defaults.weight % 1 !== 0 ? defaults.weight.toFixed(1).replace('.', ',') : defaults.weight)
-    : null;
 
   // Initialize active set values
   initActiveSetValues(exercise);
 
-  rows += `
-    <div class="st-set-row st-set-row--active" data-set-index="active">
-      <div class="st-set-num st-set-num--active">${activeSetNum}</div>
-      <div class="st-set-values">
-        <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('reps')" id="active-reps-btn" data-value="${activeSetValues.reps}">
-          <span class="st-set-val-num" id="active-reps-value">${activeSetValues.reps}</span>
-          <span class="st-set-val-unit">${t('workout.logging.totalReps')}</span>
-        </button>
-        ${!isBodyweight ? `
-          <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('weight')" id="active-weight-btn" data-value="${activeSetValues.weight}">
-            <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
-            <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+  if (holdMode) {
+    // Hold mode: single holdSec input
+    rows += `
+      <div class="st-set-row st-set-row--active" data-set-index="active">
+        <div class="st-set-num st-set-num--active">${activeSetNum}</div>
+        <div class="st-set-values">
+          <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('hold')" id="active-hold-btn" data-value="${activeSetValues.holdSec}">
+            <span class="st-set-val-num" id="active-hold-value">${activeSetValues.holdSec}</span>
+            <span class="st-set-val-unit">${valueUnit}</span>
           </button>
-        ` : ''}
+        </div>
+        <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
+          <span class="material-symbols-rounded">check</span>
+        </button>
       </div>
-      <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
-        <span class="material-symbols-rounded">check</span>
-      </button>
-    </div>
-  `;
+    `;
+  } else {
+    // Reps mode: reps + optional weight
+    const activeWeightDisplay = !isBodyweight
+      ? (defaults.weight % 1 !== 0 ? defaults.weight.toFixed(1).replace('.', ',') : defaults.weight)
+      : null;
+
+    rows += `
+      <div class="st-set-row st-set-row--active" data-set-index="active">
+        <div class="st-set-num st-set-num--active">${activeSetNum}</div>
+        <div class="st-set-values">
+          <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('reps')" id="active-reps-btn" data-value="${activeSetValues.reps}">
+            <span class="st-set-val-num" id="active-reps-value">${activeSetValues.reps}</span>
+            <span class="st-set-val-unit">${valueUnit}</span>
+          </button>
+          ${!isBodyweight ? `
+            <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('weight')" id="active-weight-btn" data-value="${activeSetValues.weight}">
+              <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
+              <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+            </button>
+          ` : ''}
+        </div>
+        <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
+          <span class="material-symbols-rounded">check</span>
+        </button>
+      </div>
+    `;
+  }
 
   // Remaining empty sets (placeholders)
   for (let i = activeSetNum + 1; i <= targetSets; i++) {
@@ -640,9 +793,9 @@ function renderSTSetList(exercise) {
         <div class="st-set-values">
           <div class="st-set-val st-set-val--placeholder">
             <span class="st-set-val-num">—</span>
-            <span class="st-set-val-unit">${t('workout.logging.totalReps')}</span>
+            <span class="st-set-val-unit">${valueUnit}</span>
           </div>
-          ${!isBodyweight ? `
+          ${!holdMode && !isBodyweight ? `
             <div class="st-set-val st-set-val--placeholder">
               <span class="st-set-val-num">—</span>
               <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
@@ -881,7 +1034,7 @@ function renderExerciseAccordionItem(exercise, index) {
         </div>
         <div class="exercise-accordion-info">
           <div class="exercise-accordion-name">${exercise.exerciseName}</div>
-          <div class="exercise-accordion-target">${exercise.targetSets} × ${exercise.targetReps}${exercise.targetRest ? ` · ${exercise.targetRest}s` : ''}</div>
+          <div class="exercise-accordion-target">${getExerciseTargetLine(exercise, { includeLabel: false })}${exercise.targetRest ? ` · ${exercise.targetRest}s` : ''}</div>
         </div>
         <div class="exercise-accordion-right">
           <span class="exercise-accordion-progress ${isCompleted ? 'completed' : ''}">${setsProgress}</span>
@@ -913,8 +1066,11 @@ function renderAccordionExerciseContent(exercise, exerciseIndex) {
                 <span>${t('workout.setLogger.set')} ${setIndex + 1}</span>
               </div>
               <div class="accordion-set-data">
-                <span class="accordion-set-value">${set.reps} ${t('workout.setLogger.reps')}</span>
-                ${set.weight ? `<span class="accordion-set-value">${set.weight} ${t('workout.setLogger.weightUnit')}</span>` : ''}
+                ${set.type === 'hold' || (isHoldTarget(exercise) && set.holdSec)
+                  ? `<span class="accordion-set-value">${t('common.secondsShort', { n: set.holdSec })} ${t('workout.hold')}</span>`
+                  : `<span class="accordion-set-value">${set.reps} ${t('workout.setLogger.reps')}</span>
+                     ${set.weight ? `<span class="accordion-set-value">${set.weight} ${t('workout.setLogger.weightUnit')}</span>` : ''}`
+                }
               </div>
               <button
                 type="button"
@@ -966,7 +1122,7 @@ function renderAccordionSetLogger(exercise, exerciseIndex) {
       <!-- Target Info -->
       <div class="set-logger-target">
         <span class="material-symbols-rounded">target</span>
-        <span>${t('workout.setLogger.target')}: ${exercise.targetSets} × ${exercise.targetReps}</span>
+        <span>${getExerciseTargetLine(exercise)}</span>
       </div>
     </div>
   `;
@@ -989,8 +1145,8 @@ function isBodyweightExercise() {
 
   const discipline = plan.discipline || '';
 
-  // Only hide weight for explicitly bodyweight/calisthenics plans
-  return discipline === 'bodyweight' || discipline === 'calisthenics';
+  // Only hide weight for explicitly bodyweight/calisthenics plans or bodyweight type
+  return plan.type === 'bodyweight' || discipline === 'bodyweight' || discipline === 'calisthenics';
 }
 
 /**
@@ -1001,9 +1157,18 @@ function getDefaultSetValues(exercise) {
     ? exercise.completedSets[exercise.completedSets.length - 1]
     : null;
 
+  if (isHoldTarget(exercise)) {
+    return {
+      holdSec: lastSet ? (lastSet.holdSec || getTargetHoldSeconds(exercise)) : getTargetHoldSeconds(exercise),
+      reps: 0,
+      weight: 0
+    };
+  }
+
   return {
     reps: lastSet ? lastSet.reps : (parseInt(exercise.targetReps) || 10),
-    weight: lastSet ? (lastSet.weight || 0) : 0
+    weight: lastSet ? (lastSet.weight || 0) : 0,
+    holdSec: 0
   };
 }
 
@@ -1014,7 +1179,8 @@ function initActiveSetValues(exercise) {
   const defaults = getDefaultSetValues(exercise);
   activeSetValues = {
     reps: defaults.reps,
-    weight: defaults.weight
+    weight: defaults.weight,
+    holdSec: defaults.holdSec || 0
   };
 }
 
@@ -1024,22 +1190,51 @@ function initActiveSetValues(exercise) {
 function renderSetRows(exercise, exerciseIndex, isBodyweight) {
   if (exercise.completedSets.length === 0) return '';
 
+  const holdMode = isHoldTarget(exercise);
+
   return `
     <div class="set-rows-list">
       ${exercise.completedSets.map((set, setIndex) => {
         const isLatest = setIndex === exercise.completedSets.length - 1;
+
+        if (holdMode) {
+          return `
+            <div class="set-row ${isLatest ? 'set-row--latest' : ''}" data-set-index="${setIndex}">
+              <div class="set-row-pill">
+                <span>${setIndex + 1}</span>
+              </div>
+              <div class="set-row-values">
+                <button
+                  type="button"
+                  class="set-row-value-btn"
+                  onclick="openNumberPickerForSet(${exerciseIndex}, ${setIndex}, 'hold')"
+                  aria-label="${t('workout.holdDurationLabel')}: ${set.holdSec || 0}"
+                >
+                  <span class="set-row-value">${set.holdSec || 0}</span>
+                  <span class="set-row-unit">${t('workout.holdDurationLabel')}</span>
+                </button>
+              </div>
+              <button
+                type="button"
+                class="set-row-check set-row-check--completed"
+                onclick="deleteSet(${exerciseIndex}, ${setIndex})"
+                aria-label="${t('workout.setLogger.deleteSet')}"
+              >
+                <span class="material-symbols-rounded">check</span>
+              </button>
+            </div>
+          `;
+        }
+
         const weightDisplay = set.weight != null && set.weight > 0
           ? (set.weight % 1 !== 0 ? set.weight.toFixed(1).replace('.', ',') : set.weight)
           : 0;
 
         return `
           <div class="set-row ${isLatest ? 'set-row--latest' : ''}" data-set-index="${setIndex}">
-            <!-- Set Number Pill -->
             <div class="set-row-pill">
               <span>${setIndex + 1}</span>
             </div>
-
-            <!-- Value Buttons -->
             <div class="set-row-values">
               <button
                 type="button"
@@ -1063,8 +1258,6 @@ function renderSetRows(exercise, exerciseIndex, isBodyweight) {
                 </button>
               ` : ''}
             </div>
-
-            <!-- Delete Button (shows X on hover) -->
             <button
               type="button"
               class="set-row-check set-row-check--completed"
@@ -1085,18 +1278,48 @@ function renderSetRows(exercise, exerciseIndex, isBodyweight) {
  */
 function renderActiveSetRow(exercise, exerciseIndex, isBodyweight) {
   const setNumber = exercise.completedSets.length + 1;
+  const holdMode = isHoldTarget(exercise);
+
+  if (holdMode) {
+    return `
+      <div class="set-row set-row--active" data-set-index="new">
+        <div class="set-row-pill set-row-pill--active">
+          <span>${setNumber}</span>
+        </div>
+        <div class="set-row-values">
+          <button
+            type="button"
+            class="set-row-value-btn set-row-value-btn--editable"
+            onclick="openNumberPickerForNewSet('hold')"
+            id="active-hold-btn"
+            data-value="${activeSetValues.holdSec}"
+            aria-label="${t('workout.holdDurationLabel')}: ${activeSetValues.holdSec}"
+          >
+            <span class="set-row-value" id="active-hold-value">${activeSetValues.holdSec}</span>
+            <span class="set-row-unit">${t('workout.holdDurationLabel')}</span>
+          </button>
+        </div>
+        <button
+          type="button"
+          class="set-row-check set-row-check--log"
+          onclick="logSetFromActiveRow()"
+          aria-label="${t('workout.setLogger.logSet')}"
+        >
+          <span class="material-symbols-rounded">check</span>
+        </button>
+      </div>
+    `;
+  }
+
   const weightDisplay = activeSetValues.weight % 1 !== 0
     ? activeSetValues.weight.toFixed(1).replace('.', ',')
     : activeSetValues.weight;
 
   return `
     <div class="set-row set-row--active" data-set-index="new">
-      <!-- Set Number Pill -->
       <div class="set-row-pill set-row-pill--active">
         <span>${setNumber}</span>
       </div>
-
-      <!-- Value Buttons -->
       <div class="set-row-values">
         <button
           type="button"
@@ -1124,8 +1347,6 @@ function renderActiveSetRow(exercise, exerciseIndex, isBodyweight) {
           </button>
         ` : ''}
       </div>
-
-      <!-- Log Button -->
       <button
         type="button"
         class="set-row-check set-row-check--log"
@@ -1150,14 +1371,23 @@ function openNumberPickerForSet(exerciseIndex, setIndex, type) {
   const set = exercise.completedSets[setIndex];
   if (!set) return;
 
-  const initialValue = type === 'reps' ? set.reps : (set.weight || 0);
+  let initialValue;
+  if (type === 'hold') {
+    initialValue = set.holdSec || 0;
+  } else if (type === 'reps') {
+    initialValue = set.reps;
+  } else {
+    initialValue = set.weight || 0;
+  }
 
   openNumberPicker({
     type: type,
     initialValue: initialValue,
     onConfirm: (newValue) => {
       // Update existing set
-      if (type === 'reps') {
+      if (type === 'hold') {
+        set.holdSec = newValue;
+      } else if (type === 'reps') {
         set.reps = newValue;
       } else {
         set.weight = newValue;
@@ -1173,13 +1403,23 @@ function openNumberPickerForSet(exerciseIndex, setIndex, type) {
  * Open number picker for new set input
  */
 function openNumberPickerForNewSet(type) {
-  const initialValue = type === 'reps' ? activeSetValues.reps : activeSetValues.weight;
+  let initialValue;
+  if (type === 'hold') {
+    initialValue = activeSetValues.holdSec;
+  } else if (type === 'reps') {
+    initialValue = activeSetValues.reps;
+  } else {
+    initialValue = activeSetValues.weight;
+  }
 
   openNumberPicker({
     type: type,
     initialValue: initialValue,
     onConfirm: (newValue) => {
-      if (type === 'reps') {
+      if (type === 'hold') {
+        activeSetValues.holdSec = newValue;
+        updateActiveRowDisplay('hold', newValue);
+      } else if (type === 'reps') {
         activeSetValues.reps = newValue;
         updateActiveRowDisplay('reps', newValue);
       } else {
@@ -1213,18 +1453,28 @@ function updateActiveRowDisplay(type, value) {
  * Log set from active row values
  */
 function logSetFromActiveRow() {
-  const reps = activeSetValues.reps;
+  const currentExercise = activeWorkout?.exercises[activeWorkout.currentExerciseIndex];
 
+  // Hold mode: log holdSec instead of reps
+  if (isHoldTarget(currentExercise)) {
+    const holdSec = activeSetValues.holdSec;
+    if (!holdSec || holdSec <= 0) {
+      showEdgeFeedback('error', t('workout.setLogger.enterHold'));
+      return;
+    }
+    logSet(null, null, holdSec);
+    return;
+  }
+
+  // Reps mode
+  const reps = activeSetValues.reps;
   if (!reps || reps <= 0) {
     showEdgeFeedback('error', t('workout.setLogger.enterReps'));
     return;
   }
 
-  // Get weight only if not bodyweight
   const isBodyweight = isBodyweightExercise();
   const weight = isBodyweight ? null : (activeSetValues.weight || null);
-
-  // Log the set using existing function
   logSet(reps, weight);
 }
 
@@ -1998,18 +2248,26 @@ function logSetFromInput() {
 /**
  * Log a set
  */
-function logSet(reps, weight = null) {
+function logSet(reps, weight = null, holdSec = null) {
   if (!activeWorkout) return;
 
   const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
   if (!currentExercise) return;
 
-  // Add set
-  currentExercise.completedSets.push({
-    reps: reps,
-    weight: weight,
+  // Build set data based on mode
+  const setData = {
     completedAt: firebase.firestore.Timestamp.now()
-  });
+  };
+
+  if (holdSec != null && holdSec > 0) {
+    setData.type = 'hold';
+    setData.holdSec = holdSec;
+  } else {
+    setData.reps = reps;
+    setData.weight = weight;
+  }
+
+  currentExercise.completedSets.push(setData);
 
   // Update status
   if (currentExercise.status === 'not-started') {
@@ -2035,7 +2293,7 @@ function logSet(reps, weight = null) {
     startRestTimer(currentExercise.targetRest);
   }
 
-  console.log('✅ Set logged:', reps, 'reps', weight ? `@ ${weight}kg` : '');
+  console.log('✅ Set logged:', holdSec ? `${holdSec}s hold` : `${reps} reps`, weight ? `@ ${weight}kg` : '');
 
   // Auto-advance to next exercise after short delay so user sees completion
   if (exerciseJustCompleted) {

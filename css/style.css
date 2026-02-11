@@ -1122,7 +1122,7 @@ input, textarea, select, button {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-top: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -1718,16 +1718,16 @@ input, textarea, select, button {
   align-items: center;
   gap: 0.35rem;
   padding: 0.35rem 0.75rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(55, 65, 81, 0.8);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 999px;
   font-size: var(--font-size-xs);
-  color: #d1d5db;
+  color: var(--text-tertiary);
 }
 
 .exercise-detail-chip .material-symbols-rounded {
   font-size: var(--font-size-base);
-  color: var(--color-primary);
+  color: var(--text-tertiary);
 }
 
 .exercise-detail-grid {
@@ -4073,6 +4073,20 @@ input::placeholder {
   color: var(--color-primary);
 }
 
+.plan-icon-img {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+}
+
+.plan-row-icon .plan-icon-img,
+.plan-picker-option-icon .plan-icon-img {
+  width: 26px;
+  height: 26px;
+}
+
 .plan-row-content {
   flex: 1;
   min-width: 0;
@@ -4229,6 +4243,14 @@ input::placeholder {
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.plan-type-badge.plan-type-badge--neutral {
+  background: rgba(148, 163, 184, 0.12);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  text-transform: none;
+  letter-spacing: 0.02em;
 }
 
 .plan-type-badge.type-strength {
@@ -4895,9 +4917,9 @@ input::placeholder {
 }
 
 .filter-chip.active {
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
-  border-color: var(--color-primary);
-  color: white;
+  background: rgba(240, 34, 119, 0.16);
+  border-color: rgba(240, 34, 119, 0.35);
+  color: var(--color-primary);
 }
 
 .filter-chip .material-symbols-rounded {
@@ -11581,12 +11603,12 @@ input[type="range"]::-moz-range-progress {
 .exercise-list-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1rem 1rem 1.25rem;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem 0.75rem 1.25rem;
   cursor: pointer;
   transition: background-color 0.15s ease;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  min-height: 52px;
+  min-height: 56px;
 }
 
 .exercise-list-row:hover {
@@ -11607,9 +11629,10 @@ input[type="range"]::-moz-range-progress {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
   color: #fff;
-  line-height: 1.4;
-  flex: 1;
-  padding-right: 0.75rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Chevron Icon */
@@ -11631,12 +11654,13 @@ input[type="range"]::-moz-range-progress {
   }
 
   .exercise-list-row {
-    padding: 0.875rem 0.875rem 0.875rem 1rem;
-    min-height: 48px;
+    padding: 0.625rem 0.875rem 0.625rem 0.875rem;
+    min-height: 52px;
+    gap: 0.625rem;
   }
 
   .exercise-list-name {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
   }
 
   .exercise-section-items {
@@ -11650,6 +11674,357 @@ input[type="range"]::-moz-range-progress {
   .exercises-list-container {
     max-width: 640px;
   }
+}
+
+/* ========================================
+   EXERCISE V3 - List Visual & Meta
+   ======================================== */
+
+.exercise-list-visual {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.625rem;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.exercise-list-visual-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.625rem;
+  background: rgba(55, 65, 81, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exercise-list-visual-placeholder .material-symbols-rounded {
+  font-size: 20px;
+  color: #6b7280;
+}
+
+.exercise-list-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.exercise-list-meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  line-height: 1.3;
+}
+
+/* ========================================
+   EXERCISE V3 - Detail View
+   ======================================== */
+
+.exercise-detail-visual {
+  width: 100%;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.exercise-detail-visual-img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.exercise-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.exercise-detail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+/* Calm neutral chips – informativ, nicht gamified */
+.exercise-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 2rem;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: var(--text-secondary);
+}
+
+/* Variants list in detail view */
+.exercise-variants-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.exercise-variant-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.exercise-variant-item:last-child {
+  border-bottom: none;
+}
+
+.exercise-variant-name {
+  font-size: var(--font-size-sm);
+  color: #f3f4f6;
+  font-weight: var(--font-weight-medium);
+}
+
+.exercise-variant-note {
+  font-size: var(--font-size-xs);
+  color: #9ca3af;
+  margin-top: 0.125rem;
+}
+
+.exercise-detail-meta-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ========================================
+   EXERCISE V3 - Create/Edit Form
+   ======================================== */
+
+/* ========================================
+   EXERCISE SEARCH BAR – Sticky, Calm
+   ======================================== */
+
+.exercise-search-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background: var(--color-bg, #000000);
+  padding: 0.75rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.exercise-search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.exercise-search-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.exercise-search-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 0.875rem;
+  padding: 0.75rem 2.75rem 0.75rem 2.75rem;
+  color: #fff;
+  font-size: var(--font-size-base);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 48px;
+}
+
+.exercise-search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(240, 34, 119, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.exercise-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.exercise-search-clear {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  padding: 0;
+}
+
+.exercise-search-clear .material-symbols-rounded {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.exercise-search-clear:active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.exercise-search-clear.hidden {
+  display: none;
+}
+
+/* Empty State Actions */
+.empty-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.exercise-type-pills,
+.exercise-pattern-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+/* Collapsible wizard section */
+.wizard-section.collapsible .wizard-section-header.clickable {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+}
+
+.wizard-section-toggle {
+  font-size: 20px;
+  color: #9ca3af;
+  transition: transform 0.25s ease;
+}
+
+.wizard-section-badge {
+  font-size: var(--font-size-xs);
+  color: #6b7280;
+  padding: 0.125rem 0.5rem;
+  background: rgba(55, 65, 81, 0.3);
+  border-radius: 1rem;
+}
+
+.wizard-section-content.collapsed {
+  display: none;
+}
+
+/* Variant edit rows */
+.exercise-variants-edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.variant-edit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.variant-edit-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.variant-name-input,
+.variant-note-input {
+  width: 100%;
+  background: rgba(55, 65, 81, 0.3);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+}
+
+.variant-name-input:focus,
+.variant-note-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.variant-note-input {
+  font-size: var(--font-size-xs);
+  color: #9ca3af;
+}
+
+/* Visual preview in edit mode */
+.exercise-visual-preview {
+  position: relative;
+}
+
+.exercise-visual-preview-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  display: block;
+}
+
+.exercise-visual-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.5rem;
+  color: #f87171;
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.exercise-visual-remove:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.exercise-visual-remove .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.exercise-visual-add-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.exercise-visual-add-btn .material-symbols-rounded {
+  font-size: 18px;
 }
 
 /* ========================================

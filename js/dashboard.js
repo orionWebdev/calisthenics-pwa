@@ -463,6 +463,7 @@ function addWorkoutOfType(type) {
 function getPlanTypeColor(type) {
   const colors = {
     strength: 'var(--color-category-strength)',
+    bodyweight: 'var(--color-category-bodyweight)',
     cardio: 'var(--color-category-cardio)',
     recovery: 'var(--color-category-recovery)'
   };
@@ -484,6 +485,7 @@ function renderScheduledWorkoutsCard(state) {
 
   const workoutTypeLabels = {
     strength: tr('common.strength'),
+    bodyweight: tr('common.bodyweight'),
     cardio: tr('common.cardio'),
     recovery: tr('common.recovery')
   };

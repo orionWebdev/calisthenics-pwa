@@ -7,6 +7,7 @@ const translations = {
     common: {
       workout: 'Workout',
       strength: 'Kraft',
+      bodyweight: 'Bodyweight',
       cardio: 'Cardio',
       recovery: 'Recovery',
       session: 'Session',
@@ -38,7 +39,8 @@ const translations = {
       back: 'Zurueck',
       done: 'Fertig',
       optional: 'optional',
-      minutes: 'Minuten'
+      minutes: 'Minuten',
+      secondsShort: '{n}s'
     },
     nav: {
       dashboard: 'Home',
@@ -49,8 +51,8 @@ const translations = {
     },
     difficulty: {
       beginner: 'Anfaenger',
-      intermediate: 'Mittel',
-      advanced: 'Fortgeschritten',
+      intermediate: 'Fortgeschritten',
+      advanced: 'Profi',
       elite: 'Elite',
       label: 'Schwierigkeit',
       descriptions: {
@@ -63,16 +65,58 @@ const translations = {
     plan: {
       types: {
         strength: 'Kraft',
+        bodyweight: 'Bodyweight',
         cardio: 'Cardio',
         recovery: 'Recovery',
         unknown: 'Unbekannter Typ'
       },
+      typeOptions: {
+        strength: 'Kraft (Gym)',
+        bodyweight: 'Bodyweight (Calisthenics)',
+        cardio: 'Cardio',
+        recovery: 'Recovery'
+      },
       filters: {
         all: 'Alle',
         strength: 'Kraft',
+        bodyweight: 'Bodyweight',
         cardio: 'Cardio',
         recovery: 'Recovery',
         difficultyAll: 'Alle Schwierigkeiten'
+      },
+      sections: {
+        basics: 'Grundlagen',
+        contentStrength: 'Uebungen',
+        contentBodyweight: 'Uebungen',
+        contentCardio: 'Cardio-Ziel',
+        contentRecovery: 'Recovery-Ziel'
+      },
+      list: {
+        emptyTitle: 'Keine Plaene gefunden',
+        emptyBody: 'Erstelle deinen ersten Plan',
+        emptyCta: 'Plan erstellen',
+        loading: 'Lade Plaene...'
+      },
+      meta: {
+        exercises: '{count} Uebungen',
+        goalPrefix: 'Ziel',
+        duration: '{minutes} min',
+        distance: '{distance} km',
+        recoveryFallback: 'Ohne Ziel',
+        cardioFallback: 'Cardio'
+      },
+      actions: {
+        newPlan: 'Neuer Plan',
+        create: 'Plan erstellen',
+        start: 'Workout starten',
+        edit: 'Bearbeiten',
+        save: 'Speichern',
+        cancel: 'Abbrechen',
+        next: 'Weiter'
+      },
+      modal: {
+        createTitle: 'Neuer Plan',
+        editTitle: 'Plan bearbeiten'
       },
       cardioGoal: {
         label: 'Cardio-Ziel',
@@ -87,14 +131,75 @@ const translations = {
           tempo: 'Mittlere bis hohe Intensitaet - Laktatschwelle'
         }
       },
+      cardioGoalType: {
+        label: 'Zieltyp',
+        liss: 'LISS',
+        hiit: 'HIIT',
+        intervals: 'Intervals',
+        freestyle: 'Freestyle',
+        info: {
+          liss: 'Gleichmaessige niedrige Intensitaet fuer Grundlagenausdauer.',
+          hiit: 'Kurze, intensive Intervalle mit Pausen.',
+          intervals: 'Wiederholte Belastungsbloecke mit definierten Pausen.',
+          freestyle: 'Freies Cardio ohne festen Intensitaetsplan.'
+        }
+      },
+      cardio: {
+        durationLabel: 'Dauer (Minuten)',
+        distanceLabel: 'Distanz (km)',
+        activityLabel: 'Aktivitaetstyp',
+        targetHint: 'Mind. Dauer oder Distanz empfohlen',
+        activityOptions: {
+          run: 'Laufen',
+          bike: 'Radfahren',
+          swim: 'Schwimmen',
+          row: 'Rudern',
+          other: 'Sonstiges'
+        }
+      },
+      recovery: {
+        durationLabel: 'Dauer (Minuten)',
+        targetHint: 'Optional, aber empfohlen'
+      },
       name: 'Planname',
       namePlaceholder: 'z.B. Push Workout',
       type: 'Typ',
       duration: 'Dauer (Min)',
       icon: 'Plan-Icon',
       notes: 'Notizen',
+      notesPlaceholder: 'Zusaetzliche Informationen...',
       exercises: 'Uebungen',
       addExercise: 'Uebung hinzufuegen',
+      exercisesHint: 'Fuege Uebungen zu deinem Plan hinzu',
+      exercisesEmptyTitle: 'Noch keine Uebungen hinzugefuegt',
+      exercisesEmptyBody: 'Fuege Uebungen aus der Datenbank hinzu',
+      exerciseRemoveConfirm: 'Uebung aus dem Plan entfernen?',
+      exerciseConfig: {
+        title: 'Uebung konfigurieren',
+        setsLabel: 'Saetze *',
+        setsShort: 'Saetze',
+        repsLabel: 'Wiederholungen',
+        repsPlaceholder: 'z.B. 12 oder 8-10',
+        holdLabel: 'Halten (Sek)',
+        holdPlaceholder: 'z.B. 30',
+        restLabel: 'Pause',
+        restNone: 'Keine Pause',
+        restMin: 'Min',
+        restSec: 'Sek',
+        notesLabel: 'Notizen',
+        notesPlaceholder: 'z.B. Tempo, Progressionen...'
+      },
+      exercisePicker: {
+        title: 'Uebung auswaehlen',
+        searchPlaceholder: 'Uebung suchen...',
+        noExercisesTitle: 'Keine Uebungen verfuegbar',
+        noExercisesBody: 'Erstelle zuerst Uebungen in der Uebungsdatenbank',
+        noResultsTitle: 'Keine Uebungen gefunden',
+        noResultsBody: 'Versuche einen anderen Suchbegriff oder Filter',
+        filterInfo: '{count} von {total} Uebungen gefunden ({filters})',
+        filterSearch: 'Suche: "{term}"',
+        filterMuscle: 'Muskelgruppe: {muscle}'
+      },
       deleteConfirm: 'Plan wirklich loeschen?',
       deleteSuccess: 'Plan geloescht.',
       deleteError: 'Fehler beim Loeschen des Plans.',
@@ -102,7 +207,8 @@ const translations = {
         title: 'Plan auswaehlen',
         searchPlaceholder: 'Plan suchen...',
         noPlans: 'Keine Plaene verfuegbar',
-        createFirst: 'Erstelle zuerst einen Trainingsplan'
+        createFirst: 'Erstelle zuerst einen Trainingsplan',
+        noResults: 'Keine Treffer'
       }
     },
     calendar: {
@@ -235,7 +341,49 @@ const translations = {
         button: 'Neue Uebung erstellen',
         hint: 'Uebung fehlt? Erstelle sie hier schnell.',
         saved: 'Uebung erstellt und hinzugefuegt'
-      }
+      },
+      type: {
+        label: 'Typ',
+        strength: 'Kraft',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        mobility: 'Mobilitaet',
+        recovery: 'Recovery'
+      },
+      pattern: {
+        label: 'Bewegungsmuster',
+        push: 'Push',
+        pull: 'Pull',
+        legs: 'Beine',
+        core: 'Core',
+        full: 'Ganzkoerper'
+      },
+      visualAdd: 'Visual hinzufuegen',
+      visualUrlPlaceholder: 'Bild-URL eingeben...',
+      visualRemove: 'Visual entfernen',
+      variants: {
+        label: 'Varianten',
+        add: 'Variante hinzufuegen',
+        namePlaceholder: 'Variantenname...',
+        notePlaceholder: 'Kurze Notiz (optional)...',
+        remove: 'Variante entfernen',
+        empty: 'Noch keine Varianten'
+      },
+      notesLabel: 'Notizen',
+      notesPlaceholder: 'Allgemeine Notizen zur Uebung...',
+      create: {
+        title: 'Neue Uebung',
+        stepBasics: 'Grundlagen',
+        stepDetails: 'Details',
+        stepOptional: 'optional'
+      },
+      detail: {
+        useInPlan: 'In Plan verwenden'
+      },
+      searchPlaceholder: 'Uebungen suchen...',
+      noResultsTitle: 'Keine Treffer',
+      noResultsHint: 'Versuch einen anderen Begriff oder erstelle eine neue Uebung.',
+      createNew: 'Neue Uebung erstellen'
     },
     workout: {
       quick: {
@@ -289,6 +437,9 @@ const translations = {
         discardConfirmTitle: 'Workout verwerfen?',
         endWorkoutAction: 'Beenden'
       },
+      targetHold: 'Ziel: {seconds} halten',
+      holdDurationLabel: 'Haltedauer (Sek.)',
+      hold: 'Halten',
       setLogger: {
         title: 'Satz {number} loggen',
         reps: 'Wiederholungen',
@@ -305,6 +456,7 @@ const translations = {
         rest: '{seconds}s Pause',
         noSets: 'Noch keine Saetze geloggt',
         enterReps: 'Bitte gib die Anzahl der Wiederholungen ein',
+        enterHold: 'Bitte gib die Haltedauer ein',
         atLeastOneSet: 'Bitte logge mindestens einen Satz bevor du weitergehst',
         deleteSet: 'Satz loeschen',
         deleteSetConfirm: 'Diesen Satz wirklich loeschen?'
@@ -327,7 +479,8 @@ const translations = {
     },
     numberPicker: {
       repsTitle: 'Wiederholungen',
-      weightTitle: 'Gewicht'
+      weightTitle: 'Gewicht',
+      holdTitle: 'Haltedauer'
     },
     template: {
       sessionTemplate: 'Session-Vorlage',
@@ -754,8 +907,12 @@ const translations = {
     errors: {
       startUnavailable: 'Start-Auswahl ist nicht verfuegbar.',
       workoutNotFound: 'Workout nicht gefunden',
-      sessionNotFound: 'Workout nicht gefunden',
+      sessionNotFound: 'Session nicht gefunden',
+      planNotFound: 'Plan nicht gefunden',
+      workoutStartFailed: 'Fehler beim Starten des Workouts',
       deleteFailed: 'Fehler beim Loeschen',
+      saveFailed: 'Fehler beim Speichern.',
+      exercisesLoading: 'Uebungen werden noch geladen. Bitte versuche es gleich erneut.',
       planNameRequired: 'Bitte gib einen Namen fuer den Plan ein!',
       planExercisesRequired: 'Bitte fuege mindestens eine Uebung hinzu!',
       exerciseNameRequired: 'Bitte gib einen Namen fuer die Uebung ein!',

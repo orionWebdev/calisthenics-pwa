@@ -657,7 +657,9 @@ async function addPlanToDateById(planId) {
     planId: planId,
     planName: plan.name,
     planType: plan.type,
-    planDuration: plan.duration || 45,
+    planDuration: plan.type === 'cardio' || plan.type === 'recovery'
+      ? (plan.targetDurationMin || plan.targetDuration || plan.duration || 45)
+      : (plan.duration || 45),
     date: selectedDate,
     completed: false,
     createdAt: new Date().toISOString()

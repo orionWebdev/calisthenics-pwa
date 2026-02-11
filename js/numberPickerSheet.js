@@ -7,7 +7,7 @@
  */
 const numberPickerConfig = {
   isOpen: false,
-  type: null,           // 'reps' | 'weight'
+  type: null,           // 'reps' | 'weight' | 'hold'
   currentValue: 0,
   onConfirm: null,
   onCancel: null
@@ -38,6 +38,14 @@ const PICKER_CONFIGS = {
       }
       return values;
     }
+  },
+  hold: {
+    min: 0,
+    max: 600,
+    step: 1,
+    suffixKey: 'common.secondsShort',
+    titleKey: 'numberPicker.holdTitle',
+    generateValues: () => Array.from({ length: 601 }, (_, i) => i)
   }
 };
 
@@ -103,6 +111,9 @@ function renderNumberPickerSheet() {
   const values = typeConfig.generateValues();
   const title = typeof t === 'function' ? t(typeConfig.titleKey) : typeConfig.titleKey;
   const cancelText = typeof t === 'function' ? t('common.cancel') : 'Abbrechen';
+  const suffix = typeConfig.suffixKey
+    ? (typeof t === 'function' ? t(typeConfig.suffixKey, { n: '' }) : '')
+    : (typeConfig.suffix || '');
 
   const overlay = document.createElement('div');
   overlay.id = 'number-picker-overlay';
@@ -137,7 +148,7 @@ function renderNumberPickerSheet() {
                 aria-selected="${value === numberPickerConfig.currentValue}"
               >
                 <span class="number-picker-value">${displayValue}</span>
-                <span class="number-picker-suffix">${typeConfig.suffix}</span>
+                <span class="number-picker-suffix">${suffix}</span>
               </div>
             `;
           }).join('')}
