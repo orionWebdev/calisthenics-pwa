@@ -231,11 +231,6 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Quick Stats Widget -->
-      <div id="dashboard-quick-stats" class="mb-4">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
       <!-- Activity Calendar Widget (Expanded with Month Navigation) -->
       <div id="dashboard-activity-calendar" class="dashboard-card mb-4">
         <!-- Wird von JavaScript gefüllt -->
@@ -243,6 +238,11 @@
 
       <!-- Scheduled Workouts Today -->
       <div id="dashboard-scheduled-card" class="mb-4">
+        <!-- Wird von JavaScript gefüllt -->
+      </div>
+
+      <!-- Quick Stats Widget -->
+      <div id="dashboard-quick-stats" class="mb-4">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
@@ -1232,8 +1232,9 @@
   <!-- ========================================
        QUICK EXERCISE CREATE MODAL (Inline from Plan)
        ======================================== -->
-  <div id="quick-exercise-modal" class="modal" onclick="if(event.target === this) closeQuickExerciseModal()">
-    <div class="modal-content modal-compact" onclick="event.stopPropagation()">
+  <div id="quick-exercise-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeQuickExerciseModal()"></div>
+    <div class="modal-content modal-compact">
       <div class="modal-header">
         <h3 class="modal-title" id="quick-exercise-title">Neue Übung</h3>
         <button onclick="closeQuickExerciseModal()" class="modal-close-btn">
@@ -1340,8 +1341,9 @@
        ======================================== -->
 
   <!-- Add Cardio Session Modal -->
-  <div id="add-cardio-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-cardio-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="add-cardio-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeAddCardioModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Cardio Session hinzufügen</h3>
         <button onclick="closeAddCardioModal()" class="modal-close-btn">
@@ -1434,8 +1436,9 @@
   </div>
 
   <!-- Session Template Modal -->
-  <div id="session-template-modal" class="modal" onclick="handleModalBackdropClick(event, 'session-template-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="session-template-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeSessionTemplateModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="session-template-modal-title">Session-Vorlage erstellen</h3>
         <button onclick="closeSessionTemplateModal()" class="modal-close-btn">
@@ -1624,8 +1627,9 @@
   </div>
 
   <!-- Add Recovery Session Modal -->
-  <div id="add-recovery-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-recovery-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="add-recovery-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeAddRecoveryModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Recovery Session hinzufuegen</h3>
         <button onclick="closeAddRecoveryModal()" class="modal-close-btn">
@@ -1679,8 +1683,9 @@
   </div>
 
   <!-- Add Strength Session Modal -->
-  <div id="add-strength-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-strength-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="add-strength-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeAddStrengthModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="strength-modal-title"></h3>
         <button onclick="closeAddStrengthModal()" class="modal-close-btn">
@@ -1842,6 +1847,15 @@
   <script src="js/workout.js"></script>
   <script src="js/ripple.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- POST-WORKOUT SUMMARY MODAL -->
+  <div id="post-workout-summary-modal" class="modal modal--elevated">
+    <div class="modal-content post-workout-summary-content">
+      <div id="post-workout-summary-body">
+        <!-- Wird von JS gerendert -->
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

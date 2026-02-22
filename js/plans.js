@@ -1447,39 +1447,91 @@ function updateRangeProgress(slider) {
 // ========================================
 
 let draggedIndex = null;
+let touchDragItem = null;
+let touchDragStartY = 0;
 
 function setupDragAndDrop() {
   const items = document.querySelectorAll('.plan-exercise-item');
 
   items.forEach((item, index) => {
+    // --- Desktop: HTML5 Drag API ---
     item.addEventListener('dragstart', (e) => {
       draggedIndex = index;
       item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
     });
 
     item.addEventListener('dragend', (e) => {
       item.classList.remove('dragging');
+      document.querySelectorAll('.plan-exercise-item').forEach(el => el.classList.remove('drag-over'));
       draggedIndex = null;
     });
 
     item.addEventListener('dragover', (e) => {
       e.preventDefault();
-      const afterElement = getDragAfterElement(item.parentElement, e.clientY);
-      const dragging = document.querySelector('.dragging');
-
-      if (afterElement == null) {
-        item.parentElement.appendChild(dragging);
-      } else {
-        item.parentElement.insertBefore(dragging, afterElement);
+      e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('.plan-exercise-item').forEach(el => el.classList.remove('drag-over'));
+      if (!item.classList.contains('dragging')) {
+        item.classList.add('drag-over');
       }
+    });
+
+    item.addEventListener('dragleave', () => {
+      item.classList.remove('drag-over');
     });
 
     item.addEventListener('drop', (e) => {
       e.preventDefault();
-      if (draggedIndex !== null) {
-        const targetIndex = parseInt(item.dataset.index);
-        reorderPlanExercises(draggedIndex, targetIndex);
+      item.classList.remove('drag-over');
+      if (draggedIndex !== null && draggedIndex !== index) {
+        reorderPlanExercises(draggedIndex, index);
       }
+    });
+
+    // --- Mobile: Touch Events ---
+    const handle = item.querySelector('.plan-exercise-drag-handle');
+    const touchTarget = handle || item;
+
+    touchTarget.addEventListener('touchstart', (e) => {
+      touchDragItem = item;
+      touchDragStartY = e.touches[0].clientY;
+      draggedIndex = index;
+      setTimeout(() => {
+        if (touchDragItem === item) item.classList.add('dragging');
+      }, 80);
+    }, { passive: true });
+
+    touchTarget.addEventListener('touchmove', (e) => {
+      if (!touchDragItem || touchDragItem !== item) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const targetItem = el ? el.closest('.plan-exercise-item') : null;
+
+      document.querySelectorAll('.plan-exercise-item').forEach(i => i.classList.remove('drag-over'));
+      if (targetItem && targetItem !== item) {
+        targetItem.classList.add('drag-over');
+      }
+    }, { passive: false });
+
+    touchTarget.addEventListener('touchend', (e) => {
+      if (!touchDragItem || touchDragItem !== item) return;
+      item.classList.remove('dragging');
+      document.querySelectorAll('.plan-exercise-item').forEach(i => i.classList.remove('drag-over'));
+
+      const touch = e.changedTouches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const targetItem = el ? el.closest('.plan-exercise-item') : null;
+
+      if (targetItem && targetItem !== item) {
+        const targetIndex = parseInt(targetItem.dataset.index);
+        if (!isNaN(targetIndex) && draggedIndex !== targetIndex) {
+          reorderPlanExercises(draggedIndex, targetIndex);
+        }
+      }
+
+      touchDragItem = null;
+      draggedIndex = null;
     });
   });
 }
@@ -1500,6 +1552,8 @@ function getDragAfterElement(container, y) {
 }
 
 function reorderPlanExercises(fromIndex, toIndex) {
+  if (!currentPlan || !Array.isArray(currentPlan.items)) return;
+  if (fromIndex === toIndex) return;
   const [removed] = currentPlan.items.splice(fromIndex, 1);
   currentPlan.items.splice(toIndex, 0, removed);
   renderPlanExercises();

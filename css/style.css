@@ -52,7 +52,7 @@
 
   /* Category Colors */
   --color-category-strength: #f59e0b;
-  --color-category-bodyweight: #10b981;
+  --color-category-bodyweight: #f59e0b;
   --color-category-cardio: #3b82f6;
   --color-category-recovery: #22c55e;
 
@@ -1178,6 +1178,26 @@ input, textarea, select, button {
   display: flex;
 }
 
+/* Modal Stacking: Erhöhte Ebene für verschachtelte Modals */
+.modal--elevated {
+  z-index: 1100;
+}
+
+/* Modal temporär durch Stack verborgen (aber noch im DOM) */
+.modal--hidden-by-stack {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Backdrop-Klickfläche: liegt hinter dem Content, empfängt Klicks NUR außerhalb */
+.modal-backdrop-click {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .modal-content {
   background: var(--bg-card);
   border: 1px solid var(--border-primary);
@@ -1190,6 +1210,7 @@ input, textarea, select, button {
   animation: slideUp 0.3s ease;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   position: relative;
+  z-index: 1; /* immer über dem Backdrop */
 }
 
 @keyframes slideUp {
@@ -3144,8 +3165,9 @@ input, textarea, select, button {
   right: auto;
   width: 90%;
   transform: translateX(-50%);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(75, 85, 99, 0.35);
+  border-top: 1px solid var(--border-primary);
   border-radius: 999px;
   /* Feste Hoehe fuer konsistente Navigation */
   height: 56px;
@@ -4353,6 +4375,10 @@ input::placeholder {
   border: 1px solid rgba(75, 85, 99, 0.3);
   border-radius: 8px;
   transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: pan-y;
 }
 
 .plan-exercise-item:hover {
@@ -4362,6 +4388,15 @@ input::placeholder {
 
 .plan-exercise-item.dragging {
   opacity: 0.5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transform: scale(1.02);
+  z-index: 10;
+  border-color: var(--border-accent);
+}
+
+.plan-exercise-item.drag-over {
+  border-color: var(--color-primary);
+  background: rgba(240, 34, 119, 0.06);
 }
 
 .plan-exercise-drag-handle {
@@ -10612,6 +10647,37 @@ input[type="range"]::-moz-range-progress {
   font-size: 24px;
 }
 
+/* --- Target Info + Last Performance --- */
+.st-target-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.st-target-info,
+.st-last-perf-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.st-target-info .material-symbols-rounded,
+.st-last-perf-info .material-symbols-rounded {
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.st-last-perf-info {
+  font-weight: var(--font-weight-medium);
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-surface);
+  border-radius: 0.5rem;
+}
+
 /* --- Set List --- */
 .st-sets {
   display: flex;
@@ -10630,6 +10696,12 @@ input[type="range"]::-moz-range-progress {
   transition: all 0.2s ease;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid transparent;
+  /* Nur Buttons und Inputs sind interaktiv */
+  pointer-events: none;
+}
+.st-set-row button,
+.st-set-row input {
+  pointer-events: auto;
 }
 
 .st-set-row--done {
@@ -13667,6 +13739,180 @@ input[type="range"]::-moz-range-progress {
 .set-logger-target .material-symbols-rounded {
   font-size: 14px;
   opacity: 0.7;
+}
+
+/* Letzte Leistung Hint */
+.last-performance-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.75rem;
+  margin-top: 0.25rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: var(--bg-surface);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-secondary);
+}
+
+.last-performance-hint .material-symbols-rounded {
+  font-size: 13px;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   POST-WORKOUT SUMMARY SCREEN
+   ======================================== */
+
+.post-workout-summary-content {
+  max-width: 480px;
+  text-align: center;
+}
+
+.pws-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.pws-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 50%;
+  margin: 0 auto var(--spacing-md);
+}
+
+.pws-success-icon .material-symbols-rounded {
+  font-size: 36px;
+  color: #22c55e;
+}
+
+.pws-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 0.25rem;
+}
+
+.pws-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.pws-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.pws-quick-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius);
+  min-width: 72px;
+}
+
+.pws-quick-stat-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.pws-quick-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.pws-section-title {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-sm);
+  text-align: left;
+}
+
+.pws-comparison-grid {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.pws-stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: var(--spacing-md) var(--spacing-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius);
+}
+
+.pws-stat-icon {
+  font-size: 18px;
+  color: var(--color-text-muted);
+}
+
+.pws-stat-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pws-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.pws-stat-delta {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.4rem;
+}
+
+.pws-stat-delta.positive {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.pws-stat-delta.negative {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.pws-dismiss-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  border: none;
+  border-radius: var(--ui-card-radius);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  margin-top: var(--spacing-sm);
+}
+
+.pws-dismiss-btn:hover {
+  opacity: 0.9;
 }
 
 /* Responsive Adjustments for very small screens */
