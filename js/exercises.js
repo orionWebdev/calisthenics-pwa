@@ -792,7 +792,16 @@ function editExercise(id) {
 }
 
 function closeExerciseModal() {
-  document.getElementById('exercise-modal').classList.remove('active');
+  const exerciseModal = document.getElementById('exercise-modal');
+  if (exerciseModal) {
+    exerciseModal.classList.remove('active');
+    exerciseModal.classList.remove('modal--elevated');
+  }
+  // Modal-Stacking: Exercise-Picker wieder einblenden falls versteckt
+  const pickerModal = document.getElementById('exercise-picker-modal');
+  if (pickerModal) {
+    pickerModal.classList.remove('modal--hidden-by-stack');
+  }
   clearExerciseForm();
 }
 
@@ -1063,6 +1072,15 @@ function removeExerciseVisual() {
 
 function openExerciseCreateSheet(options) {
   exerciseCreateCallback = (options && options.onCreated) ? options.onCreated : null;
+  // Modal-Stacking: Exercise-Picker verbergen und Exercise-Modal anheben
+  const pickerModal = document.getElementById('exercise-picker-modal');
+  if (pickerModal && pickerModal.classList.contains('active')) {
+    pickerModal.classList.add('modal--hidden-by-stack');
+  }
+  const exerciseModal = document.getElementById('exercise-modal');
+  if (exerciseModal) {
+    exerciseModal.classList.add('modal--elevated');
+  }
   openAddExerciseModal();
 }
 

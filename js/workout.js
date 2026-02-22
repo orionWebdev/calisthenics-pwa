@@ -520,11 +520,11 @@ async function completeWorkout() {
     // Reload sessions
     await loadSessions();
 
-    // Navigate to progress page
-    showView('progress');
+    // Vorherige Session für Vergleich suchen (exkl. gerade gespeicherte)
+    const prevSession = getPreviousSessionForPlan(activeWorkout.planId, savedSessionId);
 
-    // Trigger success animation
-    triggerSuccessGlow();
+    // Post-Workout Summary zeigen statt direkt zu Progress
+    showPostWorkoutSummary(sessionData, prevSession, durationMinutes);
 
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('success', 'Workout gespeichert!');
@@ -536,6 +536,190 @@ async function completeWorkout() {
     }
   }
 }
+
+// ==================== POST-WORKOUT SUMMARY ====================
+
+/**
+ * Gibt die letzte abgeschlossene Session für einen Plan zurück,
+ * exklusive der gerade gespeicherten Session (per ID).
+ */
+function getPreviousSessionForPlan(planId, excludeId) {
+  if (!planId) return null;
+  const userId = typeof WORKOUT_USER_ID !== 'undefined' ? WORKOUT_USER_ID : null;
+  const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
+  const relevant = sessions.filter(s =>
+    s.planId === planId &&
+    s.id !== excludeId &&
+    (!userId || s.userId === userId)
+  );
+  if (!relevant.length) return null;
+  relevant.sort((a, b) => {
+    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return db - da;
+  });
+  return relevant[0];
+}
+
+/**
+ * Berechnet Gesamtvolumen einer Session: Σ (reps × weight) oder Σ reps falls kein Gewicht.
+ */
+function calcSessionVolume(session) {
+  if (!session?.exercises) return 0;
+  return session.exercises.reduce((total, ex) => {
+    return total + (ex.sets || []).reduce((s, set) => {
+      const reps = set.reps || 0;
+      const weight = set.weight || 0;
+      return s + (weight > 0 ? reps * weight : reps);
+    }, 0);
+  }, 0);
+}
+
+/**
+ * Berechnet Gesamtanzahl Sätze einer Session.
+ */
+function calcSessionSets(session) {
+  if (!session?.exercises) return 0;
+  return session.exercises.reduce((total, ex) => total + (ex.sets?.length || 0), 0);
+}
+
+/**
+ * Formatiert ein Delta für die Anzeige: +5%, −2 Min, etc.
+ */
+function formatDelta(current, previous, unit) {
+  if (previous == null || previous === 0) return null;
+  const diff = current - previous;
+  if (diff === 0) return null;
+  const pct = Math.round((diff / previous) * 100);
+  const sign = diff > 0 ? '+' : '';
+  if (unit === '%') return `${sign}${pct}%`;
+  return `${sign}${diff} ${unit}`;
+}
+
+/**
+ * Zeigt den Post-Workout Summary Screen.
+ */
+function showPostWorkoutSummary(savedSession, prevSession, durationMinutes) {
+  const modal = document.getElementById('post-workout-summary-modal');
+  const body = document.getElementById('post-workout-summary-body');
+  if (!modal || !body) {
+    showView('progress');
+    triggerSuccessGlow();
+    return;
+  }
+
+  const currentSets = savedSession.exercises
+    ? savedSession.exercises.reduce((t, ex) => t + (ex.sets?.length || 0), 0)
+    : 0;
+  const currentVol = calcSessionVolume(savedSession);
+
+  let comparisonHTML = '';
+  if (prevSession) {
+    const prevDuration = prevSession.duration || 0;
+    const prevSets = calcSessionSets(prevSession);
+    const prevVol = calcSessionVolume(prevSession);
+
+    const items = [];
+
+    // Dauer
+    const durDelta = formatDelta(durationMinutes, prevDuration, 'Min');
+    items.push({
+      icon: 'schedule',
+      label: 'Zeit',
+      current: `${durationMinutes} Min`,
+      delta: durDelta,
+      positive: durationMinutes >= prevDuration
+    });
+
+    // Sätze
+    const setsDelta = formatDelta(currentSets, prevSets, 'Sätze');
+    items.push({
+      icon: 'repeat',
+      label: 'Sätze',
+      current: String(currentSets),
+      delta: setsDelta,
+      positive: currentSets >= prevSets
+    });
+
+    // Volumen (nur wenn Gewichtsdaten vorhanden)
+    if (currentVol > 0 || prevVol > 0) {
+      const volDelta = formatDelta(currentVol, prevVol, '%');
+      items.push({
+        icon: 'fitness_center',
+        label: 'Volumen',
+        current: currentVol > 0 ? `${currentVol} kg·Wdh` : '—',
+        delta: volDelta,
+        positive: currentVol >= prevVol
+      });
+    }
+
+    comparisonHTML = `
+      <div class="pws-section-title">Vergleich zum letzten Mal</div>
+      <div class="pws-comparison-grid">
+        ${items.map(item => `
+          <div class="pws-stat-card">
+            <span class="material-symbols-rounded pws-stat-icon">${item.icon}</span>
+            <div class="pws-stat-value">${item.current}</div>
+            <div class="pws-stat-label">${item.label}</div>
+            ${item.delta ? `<div class="pws-stat-delta ${item.positive ? 'positive' : 'negative'}">${item.delta}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  body.innerHTML = `
+    <div class="pws-header">
+      <div class="pws-success-icon">
+        <span class="material-symbols-rounded">check_circle</span>
+      </div>
+      <h2 class="pws-title">Workout abgeschlossen!</h2>
+      <p class="pws-subtitle">${savedSession.planName || 'Training'}</p>
+    </div>
+
+    <div class="pws-stats-row">
+      <div class="pws-quick-stat">
+        <div class="pws-quick-stat-value">${durationMinutes}</div>
+        <div class="pws-quick-stat-label">Minuten</div>
+      </div>
+      <div class="pws-quick-stat">
+        <div class="pws-quick-stat-value">${currentSets}</div>
+        <div class="pws-quick-stat-label">Sätze</div>
+      </div>
+      ${(savedSession.exercises || []).length > 0 ? `
+      <div class="pws-quick-stat">
+        <div class="pws-quick-stat-value">${savedSession.exercises.length}</div>
+        <div class="pws-quick-stat-label">Übungen</div>
+      </div>
+      ` : ''}
+    </div>
+
+    ${comparisonHTML}
+
+    <button
+      type="button"
+      class="pws-dismiss-btn"
+      onclick="dismissPostWorkoutSummary()"
+    >
+      <span class="material-symbols-rounded">bar_chart</span>
+      <span>Zum Fortschritt</span>
+    </button>
+  `;
+
+  modal.classList.add('active');
+}
+
+/**
+ * Schließt den Summary Screen und navigiert zum Fortschritt.
+ */
+function dismissPostWorkoutSummary() {
+  const modal = document.getElementById('post-workout-summary-modal');
+  if (modal) modal.classList.remove('active');
+  showView('progress');
+  triggerSuccessGlow();
+}
+
+window.dismissPostWorkoutSummary = dismissPostWorkoutSummary;
 
 // ==================== RENDERING ====================
 
@@ -574,6 +758,7 @@ function renderWorkoutScreen() {
       ${renderSTHeader(progress)}
       ${renderSTSwitcher()}
       ${renderSTDetail(currentExercise)}
+      ${renderSTTargetAndLastPerf(currentExercise)}
       ${renderSTSetList(currentExercise)}
     </div>
   `;
@@ -668,6 +853,32 @@ function renderSTDetail(exercise) {
         <h3 class="st-detail-name">${exercise.exerciseName}</h3>
         <span class="st-detail-type">${typeLabel}</span>
       </div>
+    </div>
+  `;
+}
+
+/**
+ * Target + Last Performance Info (zwischen Detail und Set List)
+ */
+function renderSTTargetAndLastPerf(exercise) {
+  if (!exercise) return '';
+
+  const targetLine = getExerciseTargetLine(exercise);
+  const lastSet = activeWorkout?.planId ? getLastPlanPerformance(activeWorkout.planId, exercise.exerciseId) : null;
+  const lastPerfHint = formatLastPerformanceHint(lastSet);
+
+  return `
+    <div class="st-target-section">
+      <div class="st-target-info">
+        <span class="material-symbols-rounded">target</span>
+        <span>${targetLine}</span>
+      </div>
+      ${lastPerfHint ? `
+      <div class="st-last-perf-info">
+        <span class="material-symbols-rounded">history</span>
+        <span>${lastPerfHint}</span>
+      </div>
+      ` : ''}
     </div>
   `;
 }
@@ -1124,6 +1335,21 @@ function renderAccordionSetLogger(exercise, exerciseIndex) {
         <span class="material-symbols-rounded">target</span>
         <span>${getExerciseTargetLine(exercise)}</span>
       </div>
+
+      <!-- Letzte Leistung aus vorheriger Session -->
+      ${(() => {
+        if (!activeWorkout?.planId || !exercise?.exerciseId) return '';
+        const lastSet = getLastPlanPerformance(activeWorkout.planId, exercise.exerciseId);
+        const hint = formatLastPerformanceHint(lastSet);
+        const label = typeof t === 'function' ? (t('workout.lastPerformance') || 'Letztes Mal') : 'Letztes Mal';
+        const fallback = typeof t === 'function' ? (t('workout.noLastPerformance') || 'Kein vorheriger Wert') : 'Kein vorheriger Wert';
+        return `
+          <div class="last-performance-hint">
+            <span class="material-symbols-rounded">history</span>
+            <span>${label}: ${hint || fallback}</span>
+          </div>
+        `;
+      })()}
     </div>
   `;
 }
@@ -1182,6 +1408,49 @@ function initActiveSetValues(exercise) {
     weight: defaults.weight,
     holdSec: defaults.holdSec || 0
   };
+}
+
+/**
+ * Liefert den letzten geloggten Satz einer Übung aus der vorherigen Session desselben Plans.
+ * Berücksichtigt nur Sessions des aktuellen Users.
+ */
+function getLastPlanPerformance(planId, exerciseId) {
+  if (!planId || !exerciseId) return null;
+  const userId = typeof WORKOUT_USER_ID !== 'undefined' ? WORKOUT_USER_ID : null;
+  const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
+  const relevant = sessions.filter(s =>
+    s.planId === planId &&
+    (!userId || s.userId === userId)
+  );
+  if (!relevant.length) return null;
+  relevant.sort((a, b) => {
+    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return db - da;
+  });
+  const lastSession = relevant[0];
+  const ex = (lastSession.exercises || []).find(e => e.exerciseId === exerciseId);
+  if (!ex || !ex.sets?.length) return null;
+  return ex.sets[ex.sets.length - 1];
+}
+
+/**
+ * Gibt einen lesbaren String für die letzte Leistung zurück.
+ */
+function formatLastPerformanceHint(lastSet) {
+  if (!lastSet) return null;
+  const parts = [];
+  if (lastSet.holdSec != null && lastSet.holdSec > 0) {
+    parts.push(`${lastSet.holdSec}${t ? t('common.secondsShort', { n: '' }).trim() || 's' : 's'}`);
+  } else {
+    if (lastSet.reps != null && lastSet.reps > 0) {
+      parts.push(`${lastSet.reps} ${t ? t('workout.setLogger.reps') || 'Wdh.' : 'Wdh.'}`);
+    }
+    if (lastSet.weight != null && lastSet.weight > 0) {
+      parts.push(`${lastSet.weight} ${t ? t('workout.setLogger.weightUnit') || 'kg' : 'kg'}`);
+    }
+  }
+  return parts.length ? parts.join(' / ') : null;
 }
 
 /**
