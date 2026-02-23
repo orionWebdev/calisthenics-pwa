@@ -511,6 +511,9 @@ async function completeWorkout() {
       }
     }
 
+    // Save planId before clearing activeWorkout
+    const planId = activeWorkout.planId;
+
     // Clear active workout
     activeWorkout = null;
     localStorage.removeItem('activeWorkout');
@@ -521,7 +524,7 @@ async function completeWorkout() {
     await loadSessions();
 
     // Vorherige Session für Vergleich suchen (exkl. gerade gespeicherte)
-    const prevSession = getPreviousSessionForPlan(activeWorkout.planId, savedSessionId);
+    const prevSession = getPreviousSessionForPlan(planId, savedSessionId);
 
     // Post-Workout Summary zeigen statt direkt zu Progress
     showPostWorkoutSummary(sessionData, prevSession, durationMinutes);
@@ -859,13 +862,21 @@ function renderSTDetail(exercise) {
 
 /**
  * Target + Last Performance Info (zwischen Detail und Set List)
+ * Zeigt den Vergleich für den AKTUELLEN Satz (nächster zu loggender Satz)
  */
 function renderSTTargetAndLastPerf(exercise) {
   if (!exercise) return '';
 
   const targetLine = getExerciseTargetLine(exercise);
-  const lastSet = activeWorkout?.planId ? getLastPlanPerformance(activeWorkout.planId, exercise.exerciseId) : null;
-  const lastPerfHint = formatLastPerformanceHint(lastSet);
+
+  // Aktueller Satz = nächster zu loggender Satz = Anzahl bereits gelогter Sätze
+  const currentSetIndex = exercise.completedSets.length;
+
+  // Hole Vergleich zu demselben Satz aus vorheriger Session
+  const lastSetPerformance = activeWorkout?.planId
+    ? getLastPlanPerformance(activeWorkout.planId, exercise.exerciseId, currentSetIndex)
+    : null;
+  const lastPerfHint = formatLastPerformanceHint(lastSetPerformance);
 
   return `
     <div class="st-target-section">
@@ -876,7 +887,7 @@ function renderSTTargetAndLastPerf(exercise) {
       ${lastPerfHint ? `
       <div class="st-last-perf-info">
         <span class="material-symbols-rounded">history</span>
-        <span>${lastPerfHint}</span>
+        <span>Satz ${currentSetIndex + 1}: ${lastPerfHint}</span>
       </div>
       ` : ''}
     </div>
@@ -1411,10 +1422,12 @@ function initActiveSetValues(exercise) {
 }
 
 /**
- * Liefert den letzten geloggten Satz einer Übung aus der vorherigen Session desselben Plans.
+ * Liefert einen bestimmten Satz einer Übung aus der vorherigen Session desselben Plans.
  * Berücksichtigt nur Sessions des aktuellen Users.
+ * setIndex: 0-basiert (0 = erster Satz, 1 = zweiter Satz, etc.)
+ *           null = nimmt letzten Satz
  */
-function getLastPlanPerformance(planId, exerciseId) {
+function getLastPlanPerformance(planId, exerciseId, setIndex = null) {
   if (!planId || !exerciseId) return null;
   const userId = typeof WORKOUT_USER_ID !== 'undefined' ? WORKOUT_USER_ID : null;
   const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
@@ -1431,7 +1444,14 @@ function getLastPlanPerformance(planId, exerciseId) {
   const lastSession = relevant[0];
   const ex = (lastSession.exercises || []).find(e => e.exerciseId === exerciseId);
   if (!ex || !ex.sets?.length) return null;
-  return ex.sets[ex.sets.length - 1];
+
+  // Wenn setIndex null: nimm letzten Satz (fallback)
+  if (setIndex === null) {
+    return ex.sets[ex.sets.length - 1];
+  }
+
+  // Sonst: nimm den Satz an Position setIndex (falls vorhanden)
+  return ex.sets[setIndex] || null;
 }
 
 /**
