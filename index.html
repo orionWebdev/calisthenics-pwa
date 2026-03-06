@@ -605,8 +605,6 @@
                 <button type="button" class="difficulty-pill active" data-type="strength" onclick="setExerciseType('strength')">Kraft</button>
                 <button type="button" class="difficulty-pill" data-type="bodyweight" onclick="setExerciseType('bodyweight')">Bodyweight</button>
                 <button type="button" class="difficulty-pill" data-type="cardio" onclick="setExerciseType('cardio')">Cardio</button>
-                <button type="button" class="difficulty-pill" data-type="mobility" onclick="setExerciseType('mobility')">Mobilitaet</button>
-                <button type="button" class="difficulty-pill" data-type="recovery" onclick="setExerciseType('recovery')">Recovery</button>
               </div>
               <input type="hidden" id="exercise-type" value="strength">
             </div>
@@ -820,31 +818,8 @@
               </select>
             </div>
 
-            <!-- Plan Icon -->
-            <div class="mb-4" id="plan-icon-section">
-              <label class="block text-sm font-medium mb-2" id="plan-icon-label"></label>
-              <div class="exercise-icon-picker" id="plan-icon-picker">
-                <button type="button" class="icon-picker-btn active" data-icon="fitness_center" onclick="selectPlanIcon('fitness_center')">
-                  <span class="material-symbols-rounded">fitness_center</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="sports_gymnastics" onclick="selectPlanIcon('sports_gymnastics')">
-                  <span class="material-symbols-rounded">sports_gymnastics</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="directions_run" onclick="selectPlanIcon('directions_run')">
-                  <span class="material-symbols-rounded">directions_run</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="self_improvement" onclick="selectPlanIcon('self_improvement')">
-                  <span class="material-symbols-rounded">self_improvement</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="bolt" onclick="selectPlanIcon('bolt')">
-                  <span class="material-symbols-rounded">bolt</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="exercise" onclick="selectPlanIcon('exercise')">
-                  <span class="material-symbols-rounded">exercise</span>
-                </button>
-              </div>
-              <input type="hidden" id="plan-icon" value="fitness_center">
-            </div>
+            <!-- Plan Icon (removed – no individual plan icons) -->
+            <input type="hidden" id="plan-icon" value="fitness_center">
           </div>
         </div>
 
@@ -1016,19 +991,20 @@
     </div>
   </div>
 
-  <!-- EXERCISE PICKER MODAL -->
+  <!-- EXERCISE PICKER MODAL (multi-select) -->
   <div id="exercise-picker-modal" class="modal">
-    <div class="modal-content" style="max-width: 700px;">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold" id="exercise-picker-title"></h3>
-        <button onclick="closeExercisePicker()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
+    <div class="modal-content exercise-picker-modal-content" style="max-width: 700px;">
+      <!-- Fixed Header: title, search, filters -->
+      <div class="exercise-picker-header">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-bold" id="exercise-picker-title"></h3>
+          <button onclick="closeExercisePicker()" class="modal-close-btn">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
 
-      <div class="space-y-4">
         <!-- Search with Clear Button -->
-        <div class="filter-input-wrapper">
+        <div class="filter-input-wrapper mb-3">
           <span class="material-symbols-rounded filter-input-icon">search</span>
           <input
             type="text"
@@ -1075,14 +1051,22 @@
         </div>
 
         <!-- Active Filter Info -->
-        <div id="exercise-picker-filter-info" class="text-sm text-gray-400" style="display: none;">
-          <!-- Filter info will be rendered here -->
-        </div>
+        <div id="exercise-picker-filter-info" class="text-sm text-gray-400 mt-2" style="display: none;"></div>
+      </div>
 
-        <!-- Exercise List -->
-        <div id="exercise-picker-list" class="space-y-2 max-h-96 overflow-y-auto">
-          <!-- Exercises will be rendered here -->
-        </div>
+      <!-- Scrollable Exercise List -->
+      <div id="exercise-picker-list" class="exercise-picker-list-scroll space-y-2">
+        <!-- Exercises will be rendered here -->
+      </div>
+
+      <!-- Sticky Footer: Add Button (multi-select mode) -->
+      <div class="exercise-picker-footer" id="exercise-picker-footer">
+        <button id="exercise-picker-add-btn"
+                class="btn-primary btn-full"
+                onclick="addSelectedExercisesToPlan()"
+                disabled>
+          <span id="exercise-picker-add-btn-label"></span>
+        </button>
       </div>
     </div>
   </div>
@@ -1834,6 +1818,7 @@
   <script src="js/modalSwipe.js"></script>
   <script src="js/swipeGesture.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/muscleIcons.js"></script>
   <script src="js/exercises.js"></script>
   <script src="js/workoutModal.js"></script>
   <script src="js/plans.js"></script>
