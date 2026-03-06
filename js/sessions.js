@@ -2063,7 +2063,7 @@ function openExercisePickerForLogging() {
     addExerciseToStrengthLogging(exerciseId);
   };
 
-  // Open the existing exercise picker
+  // Open the existing exercise picker in single-select mode
   if (typeof openAddExerciseToPlan === 'function') {
     // Temporarily override selectExerciseForPlan
     window._originalSelectExerciseForPlan = window.selectExerciseForPlan;
@@ -2077,6 +2077,12 @@ function openExercisePickerForLogging() {
       window.selectExerciseForPlan = window._originalSelectExerciseForPlan;
     };
     openAddExerciseToPlan();
+    // Switch to single-select mode for sessions
+    if (typeof exercisePickerMode !== 'undefined') {
+      exercisePickerMode = 'single';
+      renderExercisePicker();
+      updateExercisePickerAddButton();
+    }
   }
 }
 

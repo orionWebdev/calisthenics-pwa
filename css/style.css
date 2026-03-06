@@ -1111,6 +1111,64 @@ input, textarea, select, button {
   line-height: 1;
 }
 
+/* Exercise Picker Modal Layout */
+.exercise-picker-modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+}
+
+.exercise-picker-header {
+  flex-shrink: 0;
+  padding-bottom: 0.75rem;
+}
+
+.exercise-picker-list-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+  overscroll-behavior: contain;
+  padding: 0.25rem 0;
+}
+
+.exercise-picker-footer {
+  flex-shrink: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-primary, rgba(255, 255, 255, 0.1));
+  margin-top: 0.5rem;
+}
+
+.exercise-picker-footer .btn-full {
+  width: 100%;
+}
+
+/* Exercise picker selection states */
+.exercise-row-card.is-picker {
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.exercise-row-card.is-picker.is-selected {
+  border-color: var(--color-primary, #F02277);
+  background: rgba(240, 34, 119, 0.05);
+}
+.exercise-picker-checkbox {
+  color: var(--text-tertiary, #6b7280);
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+}
+.exercise-picker-checkbox.checked {
+  color: var(--color-primary, #F02277);
+}
+
+/* Body scroll lock when modal is open */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
 .plan-filters-bar {
   display: flex;
   flex-direction: column;
@@ -11776,6 +11834,38 @@ input[type="range"]::-moz-range-progress {
   color: #6b7280;
 }
 
+/* ========================================
+   MUSCLE GROUP ICONS
+   ======================================== */
+.muscle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(240, 34, 119, 0.55);
+}
+.muscle-icon svg {
+  width: 1em;
+  height: 1em;
+}
+.muscle-icon--sm svg { width: 16px; height: 16px; }
+.muscle-icon--md svg { width: 20px; height: 20px; }
+.muscle-icon--lg svg { width: 32px; height: 32px; }
+.muscle-icon--xl svg { width: 48px; height: 48px; }
+
+/* Difficulty stripe on exercise rows */
+.exercise-list-row {
+  position: relative;
+}
+.exercise-difficulty-stripe {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 3px;
+  height: calc(100% - 16px);
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
 .exercise-list-text {
   flex: 1;
   display: flex;
@@ -11806,6 +11896,21 @@ input[type="range"]::-moz-range-progress {
   max-height: 220px;
   object-fit: cover;
   display: block;
+}
+
+.exercise-detail-muscle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0 0.5rem;
+  color: rgba(240, 34, 119, 0.45);
+}
+
+.exercise-chip--diff {
+  border-width: 1px;
+  border-style: solid;
+  background: transparent !important;
+  font-size: 0.7rem;
 }
 
 .exercise-detail-header {

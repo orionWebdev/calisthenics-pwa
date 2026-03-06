@@ -338,15 +338,9 @@ function renderPlans() {
 
     return `
       <div class="plan-row-card" onclick="viewPlanDetails('${plan.id}')">
-        <div class="plan-row-icon">
-          ${renderPlanIconMarkup(plan, planType)}
-        </div>
         <div class="plan-row-content">
           <div class="plan-row-title">${plan.name}</div>
-          <div class="plan-row-meta">${metaParts.join(' • ')}</div>
-          <div class="plan-row-tags">
-            <span class="plan-type-badge plan-type-badge--neutral">${typeLabel}</span>
-          </div>
+          <div class="plan-row-meta">${typeLabel} · ${metaParts.join(' · ')}</div>
         </div>
         <div class="plan-row-actions">
           <button
@@ -863,11 +857,15 @@ function renderPlanExercises() {
 let exercisePickerSearchTerm = '';
 let exercisePickerMuscleFilter = 'all';
 let exercisePickerSearchDebounce = null;
+let exercisePickerSelectedIds = new Set();
+let exercisePickerMode = 'multi'; // 'multi' for plans, 'single' for sessions
 
 function openAddExerciseToPlan() {
-  // Reset filters
+  // Reset filters and selection
   exercisePickerSearchTerm = '';
   exercisePickerMuscleFilter = 'all';
+  exercisePickerSelectedIds = new Set();
+  exercisePickerMode = 'multi';
   document.getElementById('exercise-picker-search').value = '';
 
   // Set active chip
@@ -877,6 +875,7 @@ function openAddExerciseToPlan() {
 
   // Show exercise picker modal
   document.getElementById('exercise-picker-modal').classList.add('active');
+  document.body.classList.add('modal-open');
 
   // Setup search input listener
   const searchInput = document.getElementById('exercise-picker-search');
@@ -884,6 +883,7 @@ function openAddExerciseToPlan() {
   searchInput.addEventListener('input', handleExercisePickerSearch);
 
   renderExercisePicker();
+  updateExercisePickerAddButton();
 }
 
 function handleExercisePickerSearch(e) {
@@ -996,25 +996,43 @@ function renderExercisePicker() {
   }
 
   const exerciseRows = filteredExercises.map(exercise => {
-    const typeLabel = t('exercise.type.' + (exercise.type || 'strength')) || exercise.type || '';
-    const patternLabel = t('exercise.pattern.' + (exercise.pattern || 'full')) || exercise.pattern || '';
-    const iconName = exercise.icon || 'fitness_center';
-    const metaText = typeLabel && patternLabel ? (typeLabel + ' \u00B7 ' + patternLabel) : (typeLabel || patternLabel);
+    const muscleLabel = (exercise.muscleGroups || [])
+      .map(m => muscleNames[m]).filter(Boolean).slice(0, 2).join(', ');
+    const metaText = muscleLabel || t('exercise.type.' + (exercise.type || 'strength')) || '';
 
-    return `
-      <div class="exercise-row-card is-picker" onclick="selectExerciseForPlan('${exercise.id}')">
-        <div class="exercise-row-icon">
-          <span class="material-symbols-rounded">${iconName}</span>
+    if (exercisePickerMode === 'multi') {
+      const isSelected = exercisePickerSelectedIds.has(exercise.id);
+      return `
+        <div class="exercise-row-card is-picker ${isSelected ? 'is-selected' : ''}" onclick="toggleExercisePickerSelection('${exercise.id}')">
+          <div class="exercise-row-icon">
+            ${getPrimaryMuscleIcon(exercise.muscleGroups, 'muscle-icon--md')}
+          </div>
+          <div class="exercise-row-content">
+            <div class="exercise-row-title">${exercise.name}</div>
+            <div class="exercise-row-meta">${metaText}</div>
+          </div>
+          <div class="exercise-picker-checkbox ${isSelected ? 'checked' : ''}">
+            <span class="material-symbols-rounded">${isSelected ? 'check_circle' : 'radio_button_unchecked'}</span>
+          </div>
         </div>
-        <div class="exercise-row-content">
-          <div class="exercise-row-title">${exercise.name}</div>
-          <div class="exercise-row-meta">${metaText}</div>
+      `;
+    } else {
+      // Single-select mode (for sessions)
+      return `
+        <div class="exercise-row-card is-picker" onclick="selectExerciseForPlan('${exercise.id}')">
+          <div class="exercise-row-icon">
+            ${getPrimaryMuscleIcon(exercise.muscleGroups, 'muscle-icon--md')}
+          </div>
+          <div class="exercise-row-content">
+            <div class="exercise-row-title">${exercise.name}</div>
+            <div class="exercise-row-meta">${metaText}</div>
+          </div>
+          <button class="exercise-row-action" onclick="event.stopPropagation(); selectExerciseForPlan('${exercise.id}')">
+            <span class="material-symbols-rounded">add_circle</span>
+          </button>
         </div>
-        <button class="exercise-row-action" onclick="event.stopPropagation(); selectExerciseForPlan('${exercise.id}')">
-          <span class="material-symbols-rounded">add_circle</span>
-        </button>
-      </div>
-    `;
+      `;
+    }
   }).join('');
 
   // Add "Create new exercise" button at the TOP
@@ -1045,7 +1063,14 @@ function openQuickExerciseCreate() {
   openExerciseCreateSheet({
     onCreated: (exerciseId) => {
       renderExercisePicker();
-      selectExerciseForPlan(exerciseId);
+      if (exercisePickerMode === 'multi') {
+        // Auto-select the newly created exercise
+        exercisePickerSelectedIds.add(exerciseId);
+        renderExercisePicker();
+        updateExercisePickerAddButton();
+      } else {
+        selectExerciseForPlan(exerciseId);
+      }
     }
   });
 }
@@ -1387,8 +1412,71 @@ function removePlanExercise(index) {
   }
 }
 
+// ========================================
+// MULTI-SELECT EXERCISE PICKER
+// ========================================
+
+function toggleExercisePickerSelection(exerciseId) {
+  if (exercisePickerSelectedIds.has(exerciseId)) {
+    exercisePickerSelectedIds.delete(exerciseId);
+  } else {
+    exercisePickerSelectedIds.add(exerciseId);
+  }
+  renderExercisePicker();
+  updateExercisePickerAddButton();
+}
+
+function updateExercisePickerAddButton() {
+  const btn = document.getElementById('exercise-picker-add-btn');
+  const btnLabel = document.getElementById('exercise-picker-add-btn-label');
+  const footer = document.getElementById('exercise-picker-footer');
+  if (!btn || !footer) return;
+
+  // Hide footer in single-select mode
+  if (exercisePickerMode === 'single') {
+    footer.style.display = 'none';
+    return;
+  }
+
+  footer.style.display = '';
+  const count = exercisePickerSelectedIds.size;
+
+  if (count === 0) {
+    btnLabel.textContent = t('plan.exercisePicker.selectHint');
+    btn.disabled = true;
+  } else if (count === 1) {
+    btnLabel.textContent = t('plan.exercisePicker.addSelectedOne');
+    btn.disabled = false;
+  } else {
+    btnLabel.textContent = t('plan.exercisePicker.addSelected', { count });
+    btn.disabled = false;
+  }
+}
+
+function addSelectedExercisesToPlan() {
+  if (exercisePickerSelectedIds.size === 0) return;
+
+  if (!currentPlan.items) currentPlan.items = [];
+
+  for (const exerciseId of exercisePickerSelectedIds) {
+    // Don't add duplicates
+    if (!currentPlan.items.find(item => item.exerciseId === exerciseId)) {
+      currentPlan.items.push({
+        exerciseId,
+        target: { sets: 3 },
+        restSec: 90
+      });
+    }
+  }
+
+  exercisePickerSelectedIds.clear();
+  closeExercisePicker();
+  renderPlanExercises();
+}
+
 function closeExercisePicker() {
   document.getElementById('exercise-picker-modal').classList.remove('active');
+  document.body.classList.remove('modal-open');
 }
 
 // ========================================
@@ -1760,14 +1848,9 @@ function viewPlanDetails(id) {
   // Modal content
   const modalContent = `
     <div class="space-y-4">
-      <div class="flex items-center gap-3">
-        <div class="plan-row-icon">
-          ${renderPlanIconMarkup(plan, planType)}
-        </div>
-        <div class="flex flex-col gap-1">
-          <span class="plan-type-badge plan-type-badge--neutral">${typeLabel}</span>
-          <span class="text-sm text-gray-400">${metaParts.join(' · ')}</span>
-        </div>
+      <div class="flex flex-col gap-1">
+        <span class="plan-type-badge plan-type-badge--neutral">${typeLabel}</span>
+        <span class="text-sm text-gray-400">${metaParts.join(' · ')}</span>
       </div>
 
       <!-- Notes -->

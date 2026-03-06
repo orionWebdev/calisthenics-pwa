@@ -190,7 +190,7 @@ const translations = {
         notesPlaceholder: 'z.B. Tempo, Progressionen...'
       },
       exercisePicker: {
-        title: 'Uebung auswaehlen',
+        title: 'Uebungen auswaehlen',
         searchPlaceholder: 'Uebung suchen...',
         noExercisesTitle: 'Keine Uebungen verfuegbar',
         noExercisesBody: 'Erstelle zuerst Uebungen in der Uebungsdatenbank',
@@ -198,7 +198,10 @@ const translations = {
         noResultsBody: 'Versuche einen anderen Suchbegriff oder Filter',
         filterInfo: '{count} von {total} Uebungen gefunden ({filters})',
         filterSearch: 'Suche: "{term}"',
-        filterMuscle: 'Muskelgruppe: {muscle}'
+        filterMuscle: 'Muskelgruppe: {muscle}',
+        addSelected: '{count} Uebungen hinzufuegen',
+        addSelectedOne: '1 Uebung hinzufuegen',
+        selectHint: 'Uebungen auswaehlen'
       },
       deleteConfirm: 'Plan wirklich loeschen?',
       deleteSuccess: 'Plan geloescht.',
@@ -383,7 +386,11 @@ const translations = {
       searchPlaceholder: 'Uebungen suchen...',
       noResultsTitle: 'Keine Treffer',
       noResultsHint: 'Versuch einen anderen Begriff oder erstelle eine neue Uebung.',
-      createNew: 'Neue Uebung erstellen'
+      createNew: 'Neue Uebung erstellen',
+      deleteConfirm: 'Uebung wirklich loeschen?',
+      deleteUsedInPlans: 'Diese Uebung wird in {count} Plaenen verwendet ({plans}). Trotzdem loeschen? Sie bleibt in bestehenden Sessions erhalten.',
+      deleted: 'Uebung geloescht.',
+      deleteError: 'Fehler beim Loeschen der Uebung.'
     },
     workout: {
       quick: {

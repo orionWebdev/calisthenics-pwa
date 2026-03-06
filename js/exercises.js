@@ -24,8 +24,13 @@ const muscleNames = {
   back: 'Rücken',
   shoulders: 'Schultern',
   arms: 'Arme',
+  biceps: 'Bizeps',
+  triceps: 'Trizeps',
   core: 'Core',
-  legs: 'Beine'
+  legs: 'Beine',
+  'full-body': 'Ganzkörper',
+  cardio: 'Cardio',
+  mobility: 'Mobility'
 };
 
 // Equipment Namen Mapping
@@ -64,8 +69,9 @@ const exerciseTypes = {
   strength: { icon: 'fitness_center' },
   bodyweight: { icon: 'sports_gymnastics' },
   cardio: { icon: 'directions_run' },
-  mobility: { icon: 'self_improvement' },
-  recovery: { icon: 'spa' }
+  // Legacy – hidden from UI, still valid in data
+  mobility: { icon: 'self_improvement', hidden: true },
+  recovery: { icon: 'spa', hidden: true }
 };
 
 const exercisePatterns = {
@@ -186,8 +192,9 @@ function normalizeExerciseForRuntime(exercise) {
 function mapExerciseToV3(exercise) {
   const normalized = normalizeExerciseInstructions(exercise);
 
-  // Type: default 'strength' for legacy
-  const type = exercise.type && exerciseTypes[exercise.type] ? exercise.type : 'strength';
+  // Type: default 'strength' for legacy; map removed types to bodyweight
+  let type = exercise.type && exerciseTypes[exercise.type] ? exercise.type : 'strength';
+  if (type === 'mobility' || type === 'recovery') type = 'bodyweight';
 
   // Pattern: default 'full' for legacy
   const pattern = exercise.pattern && exercisePatterns[exercise.pattern] ? exercise.pattern : 'full';
@@ -226,7 +233,11 @@ function mapExerciseToV3(exercise) {
     progressions: normalized.progressions,
     muscleGroups: exercise.muscleGroups || [],
     equipment: exercise.equipment || ['none'],
-    icon: exercise.icon || 'fitness_center'
+    icon: exercise.icon || 'fitness_center',
+    // Additive fields (Phase 5)
+    parentId: exercise.parentId || null,
+    source: exercise.source || 'user',
+    progressionLinks: exercise.progressionLinks || null
   };
 }
 
@@ -254,6 +265,11 @@ function mapV3ToExerciseDoc(v3) {
   if (v3.cues?.length) doc.cues = v3.cues;
   if (v3.commonMistakes?.length) doc.commonMistakes = v3.commonMistakes;
   if (v3.progressions?.length) doc.progressions = v3.progressions;
+
+  // Additive fields (Phase 5)
+  if (v3.parentId) doc.parentId = v3.parentId;
+  if (v3.source) doc.source = v3.source;
+  if (v3.progressionLinks) doc.progressionLinks = v3.progressionLinks;
 
   return doc;
 }
@@ -419,20 +435,27 @@ function renderExercises() {
  * Renders a single exercise row (v3: visual + name + meta)
  */
 function renderExerciseRow(exercise, isLast = false) {
-  // Visual: small thumbnail or placeholder icon
-  const visualHTML = exercise.visual && exercise.visual.value
-    ? `<img src="${exercise.visual.value}" alt="" class="exercise-list-visual" loading="lazy">`
-    : `<div class="exercise-list-visual-placeholder">
-        <span class="material-symbols-rounded">${exercise.icon || 'fitness_center'}</span>
-      </div>`;
+  // Visual: muscle group icon instead of photo/icon
+  const visualHTML = `<div class="exercise-list-visual-placeholder">
+      ${getPrimaryMuscleIcon(exercise.muscleGroups, 'muscle-icon--md')}
+    </div>`;
 
-  // Meta line: type + pattern (subdued)
-  const typeLabel = t('exercise.type.' + exercise.type) || exercise.type || '';
-  const patternLabel = t('exercise.pattern.' + exercise.pattern) || exercise.pattern || '';
-  const metaText = typeLabel && patternLabel ? (typeLabel + ' \u00B7 ' + patternLabel) : (typeLabel || patternLabel);
+  // Meta line: muscle groups (replaces type · pattern)
+  const muscleLabel = (exercise.muscleGroups || [])
+    .map(m => muscleNames[m]).filter(Boolean).slice(0, 3).join(', ');
+  const metaText = muscleLabel || t('exercise.type.' + exercise.type) || '';
+
+  // Difficulty stripe color
+  const diffColor = {
+    beginner: '#4CAF50',
+    intermediate: '#FF9800',
+    advanced: '#F44336',
+    elite: '#9C27B0'
+  }[exercise.difficulty] || 'transparent';
 
   return `
     <div class="exercise-list-row${isLast ? ' is-last' : ''}" onclick="viewExerciseDetails('${exercise.id}')">
+      <div class="exercise-difficulty-stripe" style="background: ${diffColor}"></div>
       ${visualHTML}
       <div class="exercise-list-text">
         <span class="exercise-list-name">${exercise.name}</span>
@@ -1480,6 +1503,43 @@ async function saveExercise() {
 }
 
 // ========================================
+// DELETE EXERCISE
+// ========================================
+
+async function deleteExercise(exerciseId) {
+  // Check if exercise is used in any plan
+  const usedInPlans = (typeof allPlans !== 'undefined' ? allPlans : []).filter(plan => {
+    const items = plan.items || plan.exercises || [];
+    return items.some(item => item.exerciseId === exerciseId);
+  });
+
+  let confirmMessage = t('exercise.deleteConfirm');
+  if (usedInPlans.length > 0) {
+    const planNames = usedInPlans.map(p => p.name).join(', ');
+    confirmMessage = t('exercise.deleteUsedInPlans', {
+      count: usedInPlans.length,
+      plans: planNames
+    });
+  }
+
+  if (!confirm(confirmMessage)) return;
+
+  try {
+    await deleteDoc(exercisesCollection, exerciseId);
+    closeGenericModal();
+    await loadExercises();
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', t('exercise.deleted'));
+    }
+  } catch (error) {
+    console.error('Error deleting exercise:', error);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('exercise.deleteError'));
+    }
+  }
+}
+
+// ========================================
 // VIEW EXERCISE DETAILS
 // ========================================
 
@@ -1493,20 +1553,29 @@ function viewExerciseDetails(id) {
   const difficultyLabel = t('difficulty.' + difficultyValue) || difficultyValue;
   const normalizedInstructions = normalizeExerciseInstructions(exercise);
 
-  // Visual section (large)
-  const visualHTML = exercise.visual && exercise.visual.value
-    ? `<div class="exercise-detail-visual">
-        <img src="${exercise.visual.value}" alt="${exercise.name}" class="exercise-detail-visual-img"
-          onerror="this.parentElement.style.display='none'">
-      </div>`
-    : '';
+  // Visual: muscle group icon (replaces hero image)
+  const visualHTML = `<div class="exercise-detail-muscle-icon">
+      ${getPrimaryMuscleIcon(exercise.muscleGroups, 'muscle-icon--xl')}
+    </div>`;
 
-  // Chips: Type, Pattern, Difficulty
+  // Difficulty color for subtle badge
+  const diffColor = {
+    beginner: '#4CAF50',
+    intermediate: '#FF9800',
+    advanced: '#F44336',
+    elite: '#9C27B0'
+  }[difficultyValue] || '#6b7280';
+
+  // Muscle group label (replaces pattern chip)
+  const muscleChipLabel = (exercise.muscleGroups || [])
+    .map(m => muscleNames[m]).filter(Boolean).join(', ');
+
+  // Chips: Type + Muscle groups (subtle), difficulty as small badge
   const chipsHTML = `
     <div class="exercise-detail-chips">
       <span class="exercise-chip">${typeLabel}</span>
-      <span class="exercise-chip">${patternLabel}</span>
-      <span class="exercise-chip">${difficultyLabel}</span>
+      ${muscleChipLabel ? `<span class="exercise-chip">${muscleChipLabel}</span>` : ''}
+      <span class="exercise-chip exercise-chip--diff" style="border-color: ${diffColor}; color: ${diffColor}">${difficultyLabel}</span>
     </div>
   `;
 
@@ -1625,6 +1694,10 @@ function viewExerciseDetails(id) {
         <button onclick="closeGenericModal(); editExercise('${exercise.id}')" class="btn-primary">
           <span class="material-symbols-rounded">edit</span>
           ${t('common.edit')}
+        </button>
+        <button onclick="deleteExercise('${exercise.id}')" class="btn-danger">
+          <span class="material-symbols-rounded">delete</span>
+          ${t('common.delete')}
         </button>
         <button onclick="closeGenericModal()" class="btn-secondary">
           <span class="material-symbols-rounded">close</span>
