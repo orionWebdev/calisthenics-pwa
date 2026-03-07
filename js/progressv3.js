@@ -134,8 +134,9 @@ async function initProgressV3() {
     await loadSessions();
   }
 
-  // Load period from localStorage
-  progressV3PeriodKey = localStorage.getItem('progressPeriodKey') || '30D';
+  // Load period from settings (fallback to localStorage)
+  progressV3PeriodKey = localStorage.getItem('progressPeriodKey')
+    || (typeof getSettingValue === 'function' ? getSettingValue('defaultProgressPeriod') : '30D');
 
   // Render all modules
   renderProgressV3();

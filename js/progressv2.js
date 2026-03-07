@@ -642,9 +642,7 @@ function startWorkoutAgainFromSession(sessionId) {
     return;
   }
 
-  if (typeof closeGenericModal === 'function') {
-    closeGenericModal();
-  }
+  closeGenericModal();
 
   if (session.type === 'cardio') {
     prefillCardioFromSession(session);
@@ -669,9 +667,7 @@ function viewWorkoutDetailsFromSession(sessionId) {
     return;
   }
 
-  if (typeof closeGenericModal === 'function') {
-    closeGenericModal();
-  }
+  closeGenericModal();
 
   if (session.type === 'cardio') {
     openCardioDetailModal(session);
@@ -740,10 +736,6 @@ function openCardioDetailModal(session) {
           <span class="material-symbols-rounded">delete</span>
           <span>${trProgress('common.delete')}</span>
         </button>
-        <button onclick="closeGenericModal()" class="btn-secondary">
-          <span class="material-symbols-rounded">close</span>
-          <span>${trProgress('common.close')}</span>
-        </button>
       </div>
     </div>
   `;
@@ -790,10 +782,6 @@ function openRecoveryDetailModal(session) {
         <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">
           <span class="material-symbols-rounded">delete</span>
           <span>${trProgress('common.delete')}</span>
-        </button>
-        <button onclick="closeGenericModal()" class="btn-secondary">
-          <span class="material-symbols-rounded">close</span>
-          <span>${trProgress('common.close')}</span>
         </button>
       </div>
     </div>
@@ -858,10 +846,7 @@ async function deleteSessionWithReferences(sessionId) {
       }
     }
 
-    if (typeof closeGenericModal === 'function') {
-      closeGenericModal();
-    }
-
+    closeGenericModal();
     await loadSessions();
     renderCurrentProgressTab();
     triggerSuccessGlow();

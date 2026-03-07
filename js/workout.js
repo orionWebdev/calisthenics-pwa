@@ -2578,8 +2578,10 @@ function logSet(reps, weight = null, holdSec = null) {
   renderWorkoutScreen();
 
   // Start rest timer if configured (separate widget, no re-render needed)
-  if (currentExercise.targetRest) {
-    startRestTimer(currentExercise.targetRest);
+  const restSeconds = currentExercise.targetRest
+    || (typeof getSettingValue === 'function' ? getSettingValue('defaultRestTimer') : 60);
+  if (restSeconds) {
+    startRestTimer(restSeconds);
   }
 
   console.log('✅ Set logged:', holdSec ? `${holdSec}s hold` : `${reps} reps`, weight ? `@ ${weight}kg` : '');
@@ -3152,6 +3154,7 @@ function generateTempId() {
  */
 function triggerHapticFeedback(type = 'light') {
   if (!('vibrate' in navigator)) return;
+  if (typeof getSettingValue === 'function' && !getSettingValue('hapticsEnabled')) return;
 
   const patterns = {
     light: 10,

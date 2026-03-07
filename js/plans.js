@@ -1890,13 +1890,6 @@ function viewPlanDetails(id) {
           <span class="material-symbols-rounded" style="font-size: 20px;">edit</span>
           ${t('plan.actions.edit')}
         </button>
-        <button
-          onclick="closeGenericModal()"
-          class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
-        >
-          <span class="material-symbols-rounded" style="font-size: 20px;">close</span>
-          ${t('common.close')}
-        </button>
       </div>
     </div>
   `;

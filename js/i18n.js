@@ -911,6 +911,48 @@ const translations = {
         }
       }
     },
+    profile: {
+      title: 'Profil',
+      bodyWeight: 'Koerpergewicht',
+      bodyHeight: 'Koerpergroesse',
+      trainingStyle: 'Trainingsart',
+      gym: 'Gym',
+      bodyweight: 'Bodyweight',
+      hybrid: 'Hybrid',
+      editName: 'Name bearbeiten',
+      nameUpdated: 'Name aktualisiert',
+      profileUpdated: 'Profil aktualisiert'
+    },
+    settings: {
+      general: 'Allgemein',
+      workout: 'Workout',
+      progress: 'Fortschritt',
+      integrations: 'Integrationen',
+      account: 'Account',
+      appInfo: 'App Information',
+      language: 'Sprache',
+      unitSystem: 'Einheiten',
+      metric: 'KG',
+      imperial: 'LBS',
+      langDe: 'DE',
+      langEn: 'EN',
+      defaultRestTimer: 'Standard Pausenzeit',
+      haptics: 'Haptisches Feedback',
+      defaultPeriod: 'Standard Zeitraum',
+      comingSoon: 'Demnaechst',
+      connect: 'Verbinden',
+      connected: 'Verbunden',
+      email: 'E-Mail',
+      signOut: 'Abmelden',
+      deleteAccount: 'Account loeschen',
+      deleteAccountConfirm: 'Account wirklich loeschen?',
+      deleteAccountConfirmText: 'Alle Daten werden unwiderruflich geloescht. Diese Aktion kann nicht rueckgaengig gemacht werden.',
+      deleteAccountButton: 'Endgueltig loeschen',
+      saved: 'Gespeichert',
+      seconds: '{n}s',
+      version: 'Version',
+      build: 'Build'
+    },
     errors: {
       startUnavailable: 'Start-Auswahl ist nicht verfuegbar.',
       workoutNotFound: 'Workout nicht gefunden',
@@ -924,6 +966,971 @@ const translations = {
       planExercisesRequired: 'Bitte fuege mindestens eine Uebung hinzu!',
       exerciseNameRequired: 'Bitte gib einen Namen fuer die Uebung ein!',
       muscleGroupsRequired: 'Bitte waehle mindestens eine Muskelgruppe!'
+    }
+  },
+  en: {
+    common: {
+      workout: 'Workout',
+      strength: 'Strength',
+      bodyweight: 'Bodyweight',
+      cardio: 'Cardio',
+      recovery: 'Recovery',
+      session: 'Session',
+      sessions: 'Sessions',
+      days: 'Days',
+      weeks: 'Weeks',
+      add: 'Add',
+      addSession: 'Add session',
+      view: 'View',
+      viewDetails: 'View details',
+      delete: 'Delete',
+      close: 'Close',
+      select: 'Select',
+      start: 'Start',
+      startAgain: 'Start again',
+      editSession: 'Edit session',
+      duration: 'Duration',
+      notes: 'Notes',
+      activity: 'Activity',
+      time: 'Time',
+      distance: 'Distance',
+      pace: 'Pace',
+      loading: 'Loading...',
+      notAvailable: '-',
+      save: 'Save',
+      cancel: 'Cancel',
+      edit: 'Edit',
+      next: 'Next',
+      back: 'Back',
+      done: 'Done',
+      optional: 'optional',
+      minutes: 'Minutes',
+      secondsShort: '{n}s'
+    },
+    nav: {
+      dashboard: 'Home',
+      progress: 'Progress',
+      calendar: 'Calendar',
+      training: 'Training',
+      profile: 'Profile'
+    },
+    difficulty: {
+      beginner: 'Beginner',
+      intermediate: 'Intermediate',
+      advanced: 'Advanced',
+      elite: 'Elite',
+      label: 'Difficulty',
+      descriptions: {
+        beginner: 'Ideal for beginners with no prior experience',
+        intermediate: 'For trainees with basic knowledge',
+        advanced: 'For experienced athletes',
+        elite: 'For professionals with years of experience'
+      }
+    },
+    plan: {
+      types: {
+        strength: 'Strength',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        recovery: 'Recovery',
+        unknown: 'Unknown type'
+      },
+      typeOptions: {
+        strength: 'Strength (Gym)',
+        bodyweight: 'Bodyweight (Calisthenics)',
+        cardio: 'Cardio',
+        recovery: 'Recovery'
+      },
+      filters: {
+        all: 'All',
+        strength: 'Strength',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        recovery: 'Recovery',
+        difficultyAll: 'All difficulties'
+      },
+      sections: {
+        basics: 'Basics',
+        contentStrength: 'Exercises',
+        contentBodyweight: 'Exercises',
+        contentCardio: 'Cardio goal',
+        contentRecovery: 'Recovery goal'
+      },
+      list: {
+        emptyTitle: 'No plans found',
+        emptyBody: 'Create your first plan',
+        emptyCta: 'Create plan',
+        loading: 'Loading plans...'
+      },
+      meta: {
+        exercises: '{count} exercises',
+        goalPrefix: 'Goal',
+        duration: '{minutes} min',
+        distance: '{distance} km',
+        recoveryFallback: 'No goal',
+        cardioFallback: 'Cardio'
+      },
+      actions: {
+        newPlan: 'New plan',
+        create: 'Create plan',
+        start: 'Start workout',
+        edit: 'Edit',
+        save: 'Save',
+        cancel: 'Cancel',
+        next: 'Next'
+      },
+      modal: {
+        createTitle: 'New plan',
+        editTitle: 'Edit plan'
+      },
+      cardioGoal: {
+        label: 'Cardio goal',
+        liss: 'LISS',
+        hiit: 'HIIT',
+        zone2: 'Zone 2',
+        tempo: 'Tempo',
+        info: {
+          liss: 'Low Intensity Steady State - Consistent low intensity',
+          hiit: 'High Intensity Interval Training - Short intense intervals',
+          zone2: 'Aerobic zone (60-70% HRmax) - Base endurance',
+          tempo: 'Medium to high intensity - Lactate threshold'
+        }
+      },
+      cardioGoalType: {
+        label: 'Goal type',
+        liss: 'LISS',
+        hiit: 'HIIT',
+        intervals: 'Intervals',
+        freestyle: 'Freestyle',
+        info: {
+          liss: 'Consistent low intensity for base endurance.',
+          hiit: 'Short, intense intervals with rest periods.',
+          intervals: 'Repeated work blocks with defined rest periods.',
+          freestyle: 'Free cardio without a fixed intensity plan.'
+        }
+      },
+      cardio: {
+        durationLabel: 'Duration (minutes)',
+        distanceLabel: 'Distance (km)',
+        activityLabel: 'Activity type',
+        targetHint: 'At least duration or distance recommended',
+        activityOptions: {
+          run: 'Running',
+          bike: 'Cycling',
+          swim: 'Swimming',
+          row: 'Rowing',
+          other: 'Other'
+        }
+      },
+      recovery: {
+        durationLabel: 'Duration (minutes)',
+        targetHint: 'Optional but recommended'
+      },
+      name: 'Plan name',
+      namePlaceholder: 'e.g. Push Workout',
+      type: 'Type',
+      duration: 'Duration (min)',
+      icon: 'Plan icon',
+      notes: 'Notes',
+      notesPlaceholder: 'Additional information...',
+      exercises: 'Exercises',
+      addExercise: 'Add exercise',
+      exercisesHint: 'Add exercises to your plan',
+      exercisesEmptyTitle: 'No exercises added yet',
+      exercisesEmptyBody: 'Add exercises from the database',
+      exerciseRemoveConfirm: 'Remove exercise from plan?',
+      exerciseConfig: {
+        title: 'Configure exercise',
+        setsLabel: 'Sets *',
+        setsShort: 'Sets',
+        repsLabel: 'Reps',
+        repsPlaceholder: 'e.g. 12 or 8-10',
+        holdLabel: 'Hold (sec)',
+        holdPlaceholder: 'e.g. 30',
+        restLabel: 'Rest',
+        restNone: 'No rest',
+        restMin: 'Min',
+        restSec: 'Sec',
+        notesLabel: 'Notes',
+        notesPlaceholder: 'e.g. Tempo, progressions...'
+      },
+      exercisePicker: {
+        title: 'Select exercises',
+        searchPlaceholder: 'Search exercises...',
+        noExercisesTitle: 'No exercises available',
+        noExercisesBody: 'Create exercises in the exercise database first',
+        noResultsTitle: 'No exercises found',
+        noResultsBody: 'Try a different search term or filter',
+        filterInfo: '{count} of {total} exercises found ({filters})',
+        filterSearch: 'Search: "{term}"',
+        filterMuscle: 'Muscle group: {muscle}',
+        addSelected: 'Add {count} exercises',
+        addSelectedOne: 'Add 1 exercise',
+        selectHint: 'Select exercises'
+      },
+      deleteConfirm: 'Really delete this plan?',
+      deleteSuccess: 'Plan deleted.',
+      deleteError: 'Error deleting plan.',
+      picker: {
+        title: 'Select plan',
+        searchPlaceholder: 'Search plans...',
+        noPlans: 'No plans available',
+        createFirst: 'Create a training plan first',
+        noResults: 'No results'
+      }
+    },
+    calendar: {
+      quickEntry: {
+        title: 'Quick entry',
+        name: 'Name',
+        namePlaceholder: 'e.g. Morning run',
+        type: 'Training type',
+        duration: 'Duration (min)',
+        durationOptional: 'optional',
+        add: 'Add',
+        nameRequired: 'Please enter a name'
+      },
+      addPlan: 'Add plan',
+      quickAdd: 'Quick entry',
+      orQuickEntry: 'Or create quick entry',
+      orSelectPlan: 'or select plan',
+      today: 'Today',
+      noPlannedWorkouts: 'No workouts planned',
+      entryAdded: 'Workout added',
+      saveError: 'Error saving',
+      untitled: 'Untitled',
+      confirmRemove: 'Really remove workout?',
+      monthNames: {
+        january: 'January',
+        february: 'February',
+        march: 'March',
+        april: 'April',
+        may: 'May',
+        june: 'June',
+        july: 'July',
+        august: 'August',
+        september: 'September',
+        october: 'October',
+        november: 'November',
+        december: 'December'
+      },
+      dayNames: {
+        monday: 'Monday',
+        tuesday: 'Tuesday',
+        wednesday: 'Wednesday',
+        thursday: 'Thursday',
+        friday: 'Friday',
+        saturday: 'Saturday',
+        sunday: 'Sunday'
+      },
+      dayNamesShort: {
+        mon: 'Mo',
+        tue: 'Tu',
+        wed: 'We',
+        thu: 'Th',
+        fri: 'Fr',
+        sat: 'Sa',
+        sun: 'Su'
+      },
+      agenda: {
+        title: 'Planned workouts'
+      },
+      errors: {
+        notFound: 'Workout not found',
+        engineNotLoaded: 'Workout engine not loaded',
+        modalNotAvailable: 'Recording module not available'
+      }
+    },
+    exercise: {
+      title: 'Exercise',
+      name: 'Exercise name',
+      namePlaceholder: 'e.g. Pull-ups',
+      muscleGroups: 'Muscle groups',
+      filters: {
+        allMuscles: 'All muscle groups',
+        allDifficulties: 'All difficulties'
+      },
+      equipment: 'Equipment',
+      discipline: 'Discipline',
+      visual: 'Exercise icon',
+      selectIcon: 'Select icon',
+      listSectionOther: '#',
+      instructions: {
+        title: 'Instructions',
+        hint: 'Describe the execution step by step.',
+        stepTitle: 'Step {number}',
+        stepPlaceholder: 'Describe this step...',
+        addStep: 'Add step',
+        removeStep: 'Remove step',
+        noSteps: 'No steps added yet',
+        advanced: {
+          title: 'Advanced notes',
+          add: 'Add advanced notes',
+          hide: 'Hide advanced notes',
+          emptyList: 'No notes added yet',
+          cues: 'Cues',
+          cuesPlaceholder: 'Short execution cues...',
+          cuesAdd: 'Add cue',
+          mistakes: 'Common mistakes',
+          mistakesPlaceholder: 'Typical mistakes and how to avoid them...',
+          mistakesAdd: 'Add mistake',
+          progressions: 'Progressions',
+          progressionsPlaceholder: 'Easier or harder variants...',
+          progressionsAdd: 'Add progression',
+          setup: 'Setup',
+          setupPlaceholder: 'Setup, starting position and preparation...'
+        },
+        setup: 'Setup',
+        setupPlaceholder: 'Starting position and grip...',
+        setupDefault: 'Find a stable starting position, engage core and maintain tension.',
+        execution: 'Execution',
+        executionPlaceholder: 'Describe the movement...',
+        executionDefault: 'No execution details added yet.',
+        cues: 'Cues',
+        cuesPlaceholder: 'Important cues during execution...',
+        cuesDefault: 'Focus on controlled movement and stable body tension.',
+        mistakes: 'Common mistakes',
+        mistakesPlaceholder: 'Typical mistakes and how to avoid them...',
+        mistakesDefault: 'Avoid momentum, uncontrolled end positions and unstable joint angles.',
+        progressions: 'Progressions',
+        progressionsPlaceholder: 'Easier and harder variants...',
+        progressionsDefault: 'More range, slower eccentric or added weight increase intensity.'
+      },
+      categories: {
+        upper: 'Upper body',
+        lower: 'Lower body',
+        core: 'Core',
+        fullBody: 'Full body',
+        cardio: 'Cardio',
+        mobility: 'Mobility'
+      },
+      quickCreate: {
+        title: 'New exercise',
+        button: 'Create new exercise',
+        hint: 'Exercise missing? Create it here quickly.',
+        saved: 'Exercise created and added'
+      },
+      type: {
+        label: 'Type',
+        strength: 'Strength',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        mobility: 'Mobility',
+        recovery: 'Recovery'
+      },
+      pattern: {
+        label: 'Movement pattern',
+        push: 'Push',
+        pull: 'Pull',
+        legs: 'Legs',
+        core: 'Core',
+        full: 'Full body'
+      },
+      visualAdd: 'Add visual',
+      visualUrlPlaceholder: 'Enter image URL...',
+      visualRemove: 'Remove visual',
+      variants: {
+        label: 'Variants',
+        add: 'Add variant',
+        namePlaceholder: 'Variant name...',
+        notePlaceholder: 'Short note (optional)...',
+        remove: 'Remove variant',
+        empty: 'No variants yet'
+      },
+      notesLabel: 'Notes',
+      notesPlaceholder: 'General notes about the exercise...',
+      create: {
+        title: 'New exercise',
+        stepBasics: 'Basics',
+        stepDetails: 'Details',
+        stepOptional: 'optional'
+      },
+      detail: {
+        useInPlan: 'Use in plan'
+      },
+      searchPlaceholder: 'Search exercises...',
+      noResultsTitle: 'No results',
+      noResultsHint: 'Try a different term or create a new exercise.',
+      createNew: 'Create new exercise',
+      deleteConfirm: 'Really delete this exercise?',
+      deleteUsedInPlans: 'This exercise is used in {count} plans ({plans}). Delete anyway? It will remain in existing sessions.',
+      deleted: 'Exercise deleted.',
+      deleteError: 'Error deleting exercise.'
+    },
+    workout: {
+      quick: {
+        title: 'Quick workout entry',
+        date: 'Date *',
+        dateRequired: 'Please select a date',
+        name: 'Workout name',
+        duration: 'Duration (minutes)',
+        type: 'Type',
+        difficulty: 'Difficulty',
+        bodyweight: 'Bodyweight',
+        bodyweightDesc: 'Bodyweight training',
+        weights: 'Weights',
+        weightsDesc: 'Gym / Dumbbells',
+        nameRequired: 'Please enter a workout name',
+        durationRequired: 'Please enter a valid duration',
+        saveError: 'Error saving workout'
+      },
+      screen: {
+        exercisesButton: 'Exercises ({completed}/{total})',
+        exercisesSheetTitle: 'Exercises',
+        cancelWorkout: 'Cancel',
+        endWorkout: 'End workout',
+        endWorkoutConfirm: 'Really end workout?',
+        endWorkoutConfirmText: 'All sets so far will be saved.',
+        nextExercise: 'Next exercise',
+        finishWorkout: 'Finish workout',
+        currentExercise: 'Current exercise',
+        goal: 'Goal',
+        rest: 'Rest',
+        exerciseOf: 'Exercise {current} of {total}',
+        noActiveWorkout: 'No active workout',
+        noActiveWorkoutText: 'Start a training from the calendar or a plan.',
+        toPlans: 'Go to plans',
+        switchToExercise: 'Switch to this exercise',
+        saveWorkout: 'Save workout',
+        discardWorkout: 'Discard workout',
+        discardConfirm: 'Really discard workout? All progress will be lost.',
+        restTimer: 'Rest',
+        bodyweight: 'Bodyweight',
+        weighted: 'Weighted',
+        addSet: 'Add set',
+        exerciseProgress: '{completed} / {total} exercises',
+        timerPause: 'Pause',
+        timerResume: 'Resume',
+        timerSkip: 'Skip',
+        timerStart: 'Start timer',
+        timerAdd: '+10s',
+        timerSub: '-10s',
+        timerDone: 'Rest done!',
+        discardConfirmTitle: 'Discard workout?',
+        endWorkoutAction: 'End'
+      },
+      targetHold: 'Goal: hold {seconds}',
+      holdDurationLabel: 'Hold duration (sec)',
+      hold: 'Hold',
+      setLogger: {
+        title: 'Log set {number}',
+        reps: 'Reps',
+        weight: 'Weight',
+        weightUnit: 'kg',
+        logSet: 'Log set',
+        addSet: 'Add set',
+        duplicateLast: 'Copy last set',
+        completedSets: 'Completed sets',
+        set: 'Set',
+        target: 'Goal',
+        targetSets: '{sets} sets',
+        targetReps: '{reps} reps',
+        rest: '{seconds}s rest',
+        noSets: 'No sets logged yet',
+        enterReps: 'Please enter the number of reps',
+        enterHold: 'Please enter the hold duration',
+        atLeastOneSet: 'Please log at least one set before continuing',
+        deleteSet: 'Delete set',
+        deleteSetConfirm: 'Really delete this set?'
+      },
+      exercise: {
+        current: 'Current exercise',
+        next: 'Next exercise',
+        finish: 'End workout',
+        progress: '{completed} / {total} exercises'
+      },
+      logging: {
+        exercisesOptional: 'Exercises (optional)',
+        addExercise: 'Add exercise',
+        exerciseAlreadyAdded: 'Exercise already added',
+        sets: 'Sets',
+        reps: 'Reps per set',
+        set: 'Set',
+        totalReps: 'Reps'
+      }
+    },
+    numberPicker: {
+      repsTitle: 'Reps',
+      weightTitle: 'Weight',
+      holdTitle: 'Hold duration'
+    },
+    template: {
+      sessionTemplate: 'Session template',
+      workoutTemplate: 'Workout template',
+      createTemplate: 'Create template',
+      selectType: 'Select type',
+      cardioTemplate: {
+        title: 'Cardio template',
+        name: 'Name',
+        namePlaceholder: 'e.g. Morning run',
+        targetDuration: 'Target duration (min)',
+        targetDistance: 'Target distance (km)',
+        activityType: 'Activity type',
+        intervals: 'Intervals',
+        intervalsDescription: 'Optional interval structure',
+        notes: 'Notes',
+        trainingType: 'Training type',
+        trainingTypes: {
+          liss: 'LISS',
+          zone2: 'Zone 2',
+          hiit: 'HIIT',
+          tempo: 'Tempo',
+          intervals: 'Intervals'
+        },
+        trainingTypeInfo: {
+          liss: 'Low Intensity Steady State - Consistent low intensity. Ideal for base endurance and active recovery.',
+          zone2: 'Training in the aerobic zone (60-70% max HR). Improves fat burning and base endurance.',
+          hiit: 'High Intensity Interval Training - Short, intense work phases with recovery periods. Efficient for fitness.',
+          tempo: 'Consistent training at medium to high intensity. Improves lactate threshold.',
+          intervals: 'Alternating between work and recovery phases. Flexibly adjustable.'
+        }
+      },
+      recoveryTemplate: {
+        title: 'Recovery template',
+        name: 'Name',
+        namePlaceholder: 'e.g. Morning yoga',
+        targetDuration: 'Target duration (min)',
+        focusArea: 'Focus area',
+        focusAreas: {
+          fullBody: 'Full body',
+          upperBody: 'Upper body',
+          lowerBody: 'Lower body',
+          back: 'Back',
+          hips: 'Hips',
+          shoulders: 'Shoulders'
+        },
+        notes: 'Notes'
+      },
+      wizard: {
+        step1: 'Type',
+        step2: 'Details',
+        step3: 'Exercises',
+        step4: 'Review'
+      },
+      strengthTemplate: {
+        title: 'Strength template',
+        discipline: 'Training type',
+        disciplines: {
+          bodyweight: 'Bodyweight / Calisthenics',
+          weights: 'Weights / Gym'
+        },
+        disciplineInfo: {
+          bodyweight: 'Training with your own bodyweight. Weight is optional (e.g. weight vest).',
+          weights: 'Training with dumbbells, machines or weights. Weight tracking is important.'
+        }
+      },
+      planIcon: 'Plan icon',
+      selectPlanIcon: 'Choose an icon for this plan'
+    },
+    planner: {
+      scheduleSession: 'Schedule session',
+      scheduleWorkout: 'Schedule workout',
+      selectTemplate: 'Select template',
+      noTemplates: 'No templates available'
+    },
+    format: {
+      duration: {
+        zero: '0 min',
+        minutes: '{minutes} min',
+        hours: '{hours}h',
+        hoursMinutes: '{hours}h {minutes}m'
+      },
+      distanceKm: '{distance} km',
+      pace: {
+        na: '-',
+        value: '{min}:{sec} min/km'
+      }
+    },
+    balance: {
+      context: {
+        balanced: 'balanced',
+        strength: 'slightly strength-focused',
+        cardio: 'slightly cardio-focused',
+        lowData: 'Not enough data yet - just keep going'
+      }
+    },
+    dashboard: {
+      today: 'Today',
+      quickStats: {
+        thisWeek: 'This week',
+        sessions: 'Sessions',
+        movementMinutes: 'Movement min.'
+      },
+      primary: {
+        title: 'Workout',
+        subtitleActive: 'A workout is active.',
+        subtitleInactive: 'Choose strength, cardio or recovery.',
+        helper: 'Start or continue your current training.',
+        start: 'Start workout',
+        resume: 'Resume workout'
+      },
+      scheduled: {
+        title: 'Planned for today'
+      },
+      addWorkout: {
+        title: 'Add workout'
+      },
+      logWorkout: {
+        title: 'Log workout',
+        subtitle: 'Log, start or plan a workout',
+        log: 'Log workout',
+        logDesc: 'Record a completed training',
+        plan: 'Plan workout',
+        planDesc: 'Plan a training in the calendar',
+        start: 'Start workout',
+        startDesc: 'Start a training from your plans'
+      },
+      hybridBalance: {
+        title: 'Hybrid Balance',
+        subtitle: 'Last {days} days',
+        description: 'Shows time distribution between strength and cardio.',
+        aria: 'Strength {strength} percent, Cardio {cardio} percent'
+      },
+      recent: {
+        title: 'Recent sessions',
+        description: 'Last sessions in chronological order.',
+        empty: 'No sessions yet',
+        viewAll: 'View all'
+      },
+      allSessions: {
+        title: 'All sessions',
+        empty: 'No sessions yet',
+        today: 'Today',
+        yesterday: 'Yesterday',
+        earlier: 'Earlier'
+      },
+      activityCalendar: {
+        thisMonth: 'This month',
+        durationUnit: 'Movement hours',
+        emptyState: 'No sessions in this period yet',
+        more: 'More'
+      },
+      trainingTypes: {
+        strength: 'Strength training',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio',
+        recovery: 'Recovery'
+      }
+    },
+    progress: {
+      tabs: {
+        overview: 'Overview',
+        strength: 'Strength',
+        bodyweight: 'Bodyweight',
+        cardio: 'Cardio'
+      },
+      overview: {
+        title: 'Progress',
+        subtitle: 'Strength and cardio tracking',
+        emptyTitle: 'No workouts yet',
+        emptyBody: 'Start your first training or log a session to see your progress',
+        periodDays: '{days} days',
+        stats: {
+          strengthCount: 'Strength sessions',
+          cardioCount: 'Cardio sessions',
+          totalTime: 'Training time',
+          streak: 'Streak',
+          streakUnit: 'days'
+        },
+        consistencyHelper: 'Consistency is based on your workouts in this period.',
+        hybridBalanceHelper: 'Balance shows the time split between strength and cardio.',
+        activityCalendarTitle: 'Activity calendar',
+        activityCalendarHelper: 'Tap a day to see sessions.',
+        activityDayEmpty: 'No sessions on this day',
+        addSessionAria: 'Add session'
+      },
+      hybridBalance: {
+        title: 'Hybrid Balance',
+        subtitle: 'Last {days} days',
+        toggleLabel: 'Period',
+        sevenDays: '7D',
+        thirtyDays: '30D',
+        metaStrength: 'Strength {duration}',
+        metaCardio: 'Cardio {duration}'
+      },
+      consistency: {
+        title: 'Rhythm & Consistency',
+        sessionsPerWeek: 'Sessions/week',
+        timePerWeek: 'Time/week',
+        daysSinceLast: 'Since last session',
+        daysSinceLastUnit: 'days',
+        restDays: 'Rest days',
+        trainingDays: 'Training days'
+      },
+      insights: {
+        noSessions: 'No sessions in this period yet.',
+        balanced: 'Balanced mix of strength and cardio.',
+        strengthFocused: 'Focus on strength training.',
+        cardioFocused: 'Focus on cardio.',
+        restDay: 'Rest day today.',
+        sessionsThisWeek: '{count} training days in this period.'
+      },
+      bodyweight: {
+        title: 'Bodyweight',
+        emptyTitle: 'No bodyweight sessions yet',
+        emptyBody: 'Start a bodyweight training to see your progress.',
+        intensityTitle: 'Intensity levels',
+        intensityHint: 'Load class per session based on reps and exercise type.',
+        effortTitle: 'Effort trend',
+        effortHint: 'Relative effort over time (reps x load factor).',
+        intensityLow: 'Low',
+        intensityMedium: 'Medium',
+        intensityHigh: 'High',
+        stats: {
+          lastWeek: 'Last week',
+          bestWeek: 'Best week',
+          average: 'Average',
+          sessions: 'Sessions'
+        },
+        chartTitle: 'Bodyweight Effort - {period}',
+        noData: 'No bodyweight data for this period yet'
+      },
+      period: {
+        '7d': '7 days',
+        '30d': '30 days',
+        '6m': '6 months',
+        '1y': '1 year',
+        bucket: {
+          day: 'Days',
+          week: 'Weeks'
+        }
+      },
+      labels: {
+        lastBucket: 'Last {bucket}',
+        bestBucket: 'Best {bucket}',
+        fastestBucket: 'Fastest {bucket}'
+      },
+      activityCalendar: {
+        monthTitle: '{month}',
+        sheetTitle: 'Sessions on {date}',
+        prevMonth: 'Previous month',
+        nextMonth: 'Next month',
+        dayLabel: '{day}. {count} sessions',
+        overflow: '+{count}',
+        weekday: {
+          mon: 'Mo',
+          tue: 'Tu',
+          wed: 'We',
+          thu: 'Th',
+          fri: 'Fr',
+          sat: 'Sa',
+          sun: 'Su'
+        }
+      },
+      session: {
+        typeStrength: 'Strength',
+        typeCardio: 'Cardio',
+        typeRecovery: 'Recovery',
+        durationNA: 'Duration n/a'
+      },
+      cardio: {
+        emptyTitle: 'No cardio sessions yet',
+        emptyBody: 'Log your first cardio session to see your progress',
+        add: 'Add cardio session',
+        activityPicker: 'Select activity',
+        activityPickerTitle: 'Select activity',
+        activityLabel: 'Activity',
+        periodShort: '{weeks} weeks',
+        metricTime: 'Time',
+        metricDistance: 'Distance',
+        metricPace: 'Pace',
+        metricLabel: {
+          time: 'Time (min)',
+          distance: 'Distance (km)',
+          pace: 'Pace (min/km)'
+        },
+        metricUnit: {
+          time: 'min',
+          distance: 'km',
+          pace: 'min/km'
+        },
+        metricHelper: 'Pace is calculated from time and distance.',
+        helper: 'Values are based on your cardio sessions in the selected period.',
+        paceEmptyTitle: 'Pace data',
+        paceEmptyValue: 'Not enough data',
+        paceEmptyHint: 'Log sessions with distance for pace calculation',
+        stats: {
+          lastWeek: 'Last week',
+          bestWeek: 'Best week',
+          average: 'Average',
+          sessions: 'Sessions'
+        },
+        chartTitle: '{metric} - {period}',
+        noData: 'No data for this activity yet',
+        noPaceData: 'Log sessions with distance for pace data'
+      },
+      strength: {
+        emptyTitle: 'No strength workouts yet',
+        emptyBody: 'Start a workout to track your progress',
+        periodShort: '{weeks} weeks',
+        stats: {
+          lastWeek: 'Last week',
+          bestWeek: 'Best week',
+          average: 'Average',
+          sessions: 'Sessions'
+        },
+        chartTitle: 'Strength volume - {period}',
+        noData: 'No data for this period yet',
+        helper: 'Volume is based on your tracked strength sessions.',
+        summary: {
+          exercises: 'Exercises',
+          sets: 'Sets',
+          reps: 'Reps'
+        },
+        loadIndex: {
+          title: 'Load level',
+          hint: 'Average workload per session (weight x reps).',
+          chartTitle: 'Load level - {period}',
+          unit: 'kg',
+          noData: 'No weighted workouts in this period yet'
+        },
+        variance: {
+          title: 'Training variance',
+          hint: 'How varied your training is.',
+          low: 'Focused',
+          medium: 'Balanced',
+          high: 'Varied'
+        },
+        structure: {
+          title: 'Structure distribution',
+          noData: 'Structure data not available',
+          hint: 'Push/Pull/Legs/Core based on your training plans.'
+        },
+        volume: {
+          weighted: 'Weighted volume',
+          weightedShort: 'Weighted',
+          weightedHint: 'Weight x reps (kg)',
+          bodyweight: 'Bodyweight volume',
+          bodyweightShort: 'Bodyweight',
+          bodyweightHint: 'Reps x load factor (estimate)',
+          combined: 'Total',
+          metric: 'Metric',
+          infoTitle: 'Volume calculation',
+          infoWeighted: 'Weighted volume: Sum of weight x reps for all weighted sets.',
+          infoBodyweight: 'Bodyweight volume: Reps x exercise-specific load factor. Pull-ups (1.5x) > Push-ups (1.0x). A rough estimate for trend visualization.',
+          noWeighted: 'No weighted exercises in this period',
+          noBodyweight: 'No bodyweight exercises in this period',
+          chartTitleWeighted: 'Weighted volume - {period}',
+          chartTitleBodyweight: 'Bodyweight volume - {period}'
+        }
+      },
+      modals: {
+        workoutNotFound: 'Workout not found',
+        deleteConfirm: 'Really delete this workout? This action cannot be undone.',
+        deleteCalendarConfirm: 'Really delete this session?',
+        deleteError: 'Error deleting: {message}',
+        deleteErrorShort: 'Error deleting',
+        modalUnavailable: 'Modal not available',
+        cardioModalUnavailable: 'Cardio modal not available',
+        recoveryModalUnavailable: 'Recovery modal not available'
+      },
+      v3: {
+        title: 'Progress',
+        rhythm: {
+          title: 'Training rhythm',
+          subtitle: 'Last 12 months',
+          subtitleDays: 'Last 7 days',
+          subtitleWeeks: 'Last 5 weeks',
+          subtitle6m: 'Last 6 months',
+          minutesPerWeek: 'min',
+          noData: 'No training data yet'
+        },
+        blockComparison: {
+          title: 'Block comparison',
+          last4w: 'Last 4 weeks',
+          prev4w: 'Previous 4 weeks',
+          sessionsPerWeek: 'Sessions / week',
+          minutesPerWeek: 'Minutes / week',
+          cardioShare: 'Cardio share',
+          noChange: 'unchanged',
+          noPrevData: 'No comparison data'
+        },
+        mix: {
+          title: 'Training mix',
+          noData: 'No data in this period'
+        },
+        cardioSnapshot: {
+          title: 'Cardio',
+          toggleTime: 'Time',
+          toggleDistance: 'Distance',
+          togglePace: 'Pace',
+          totalTime: 'Total time',
+          totalDistance: 'Total distance',
+          avgPace: 'Avg. pace',
+          noPaceData: 'Not enough distance data',
+          noData: 'No cardio data in this period',
+          weekLabel: 'CW {week}'
+        },
+        stories: {
+          title: 'Summary',
+          sessionsSummary: 'Last {days} days: {count} sessions (avg {avg} min)',
+          longestBreak: 'Longest break: {days} days',
+          strengthWeeks: 'Strength training in {active} of {total} weeks',
+          noData: 'No sessions yet'
+        },
+        types: {
+          strength: 'Strength',
+          bodyweight: 'Bodyweight',
+          cardio: 'Cardio',
+          recovery: 'Recovery'
+        }
+      }
+    },
+    profile: {
+      title: 'Profile',
+      bodyWeight: 'Body weight',
+      bodyHeight: 'Height',
+      trainingStyle: 'Training style',
+      gym: 'Gym',
+      bodyweight: 'Bodyweight',
+      hybrid: 'Hybrid',
+      editName: 'Edit name',
+      nameUpdated: 'Name updated',
+      profileUpdated: 'Profile updated'
+    },
+    settings: {
+      general: 'General',
+      workout: 'Workout',
+      progress: 'Progress',
+      integrations: 'Integrations',
+      account: 'Account',
+      appInfo: 'App Information',
+      language: 'Language',
+      unitSystem: 'Units',
+      metric: 'KG',
+      imperial: 'LBS',
+      langDe: 'DE',
+      langEn: 'EN',
+      defaultRestTimer: 'Default rest timer',
+      haptics: 'Haptic feedback',
+      defaultPeriod: 'Default period',
+      comingSoon: 'Coming soon',
+      connect: 'Connect',
+      connected: 'Connected',
+      email: 'Email',
+      signOut: 'Sign out',
+      deleteAccount: 'Delete account',
+      deleteAccountConfirm: 'Really delete account?',
+      deleteAccountConfirmText: 'All data will be permanently deleted. This action cannot be undone.',
+      deleteAccountButton: 'Delete permanently',
+      saved: 'Saved',
+      seconds: '{n}s',
+      version: 'Version',
+      build: 'Build'
+    },
+    errors: {
+      startUnavailable: 'Start selection is not available.',
+      workoutNotFound: 'Workout not found',
+      sessionNotFound: 'Session not found',
+      planNotFound: 'Plan not found',
+      workoutStartFailed: 'Error starting workout',
+      deleteFailed: 'Error deleting',
+      saveFailed: 'Error saving.',
+      exercisesLoading: 'Exercises are still loading. Please try again shortly.',
+      planNameRequired: 'Please enter a name for the plan!',
+      planExercisesRequired: 'Please add at least one exercise!',
+      exerciseNameRequired: 'Please enter a name for the exercise!',
+      muscleGroupsRequired: 'Please select at least one muscle group!'
     }
   }
 };

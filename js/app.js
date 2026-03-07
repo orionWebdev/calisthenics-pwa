@@ -88,6 +88,16 @@ function showView(viewName) {
   if (bottomNavBtn) bottomNavBtn.classList.add('active');
   scheduleBottomNavIndicatorUpdate();
 
+  // Update settings icon button
+  const settingsBtn = document.getElementById('settings-btn');
+  if (settingsBtn) {
+    if (viewName === 'profile') {
+      settingsBtn.classList.add('active');
+    } else {
+      settingsBtn.classList.remove('active');
+    }
+  }
+
   // Update mobile header title and icon
   const mobileTitle = document.getElementById('mobile-view-title');
   const mobileIcon = document.getElementById('mobile-view-icon');
@@ -127,6 +137,10 @@ function showView(viewName) {
 
   if (viewName === 'allSessions' && typeof renderAllSessionsPage === 'function') {
     renderAllSessionsPage();
+  }
+
+  if (viewName === 'profile' && typeof initProfileView === 'function') {
+    initProfileView();
   }
 
   if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
@@ -334,16 +348,9 @@ window.addEventListener('scroll', () => {
  */
 function updateProfileInfo(user) {
   if (!user) return;
-
-  const nameElement = document.getElementById('profile-user-name');
-  const emailElement = document.getElementById('profile-user-email');
-
-  if (nameElement) {
-    nameElement.textContent = user.displayName || 'Benutzer';
-  }
-
-  if (emailElement) {
-    emailElement.textContent = user.email || '';
+  // Profile is now rendered by settings.js via initProfileView()
+  if (currentView === 'profile' && typeof initProfileView === 'function') {
+    initProfileView();
   }
 }
 
