@@ -1699,10 +1699,6 @@ function viewExerciseDetails(id) {
           <span class="material-symbols-rounded">delete</span>
           ${t('common.delete')}
         </button>
-        <button onclick="closeGenericModal()" class="btn-secondary">
-          <span class="material-symbols-rounded">close</span>
-          ${t('common.close')}
-        </button>
       </div>
     </div>
   `;

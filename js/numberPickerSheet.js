@@ -46,6 +46,46 @@ const PICKER_CONFIGS = {
     suffixKey: 'common.secondsShort',
     titleKey: 'numberPicker.holdTitle',
     generateValues: () => Array.from({ length: 601 }, (_, i) => i)
+  },
+  bodyWeightKg: {
+    min: 30,
+    max: 200,
+    step: 0.5,
+    suffix: 'kg',
+    titleKey: 'profile.bodyWeight',
+    generateValues: () => {
+      const values = [];
+      for (let i = 30; i <= 200; i += 0.5) values.push(i);
+      return values;
+    }
+  },
+  bodyWeightLbs: {
+    min: 66,
+    max: 440,
+    step: 1,
+    suffix: 'lbs',
+    titleKey: 'profile.bodyWeight',
+    generateValues: () => Array.from({ length: 375 }, (_, i) => i + 66)
+  },
+  bodyHeight: {
+    min: 100,
+    max: 220,
+    step: 1,
+    suffix: 'cm',
+    titleKey: 'profile.bodyHeight',
+    generateValues: () => Array.from({ length: 121 }, (_, i) => i + 100)
+  },
+  restTimer: {
+    min: 10,
+    max: 300,
+    step: 5,
+    suffix: 's',
+    titleKey: 'settings.defaultRestTimer',
+    generateValues: () => {
+      const values = [];
+      for (let i = 10; i <= 300; i += 5) values.push(i);
+      return values;
+    }
   }
 };
 

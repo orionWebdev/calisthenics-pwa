@@ -124,6 +124,20 @@ service cloud.firestore {
       allow delete: if isAllowed();
     }
 
+    // ==================== USER PROFILES COLLECTION ====================
+
+    /**
+     * userProfiles collection
+     * - Users can only read/write their own profile document
+     * - Document ID must match the authenticated user's UID
+     */
+    match /userProfiles/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if isAuthenticated() && request.auth.uid == userId;
+    }
+
     // ==================== DEFAULT DENY ====================
 
     /**
