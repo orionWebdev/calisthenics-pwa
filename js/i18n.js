@@ -909,6 +909,62 @@ const translations = {
           cardio: 'Cardio',
           recovery: 'Recovery'
         }
+      },
+      v4: {
+        tabs: {
+          overview: 'Uebersicht',
+          exercises: 'Uebungen',
+          plans: 'Plaene'
+        },
+        overview: {
+          workouts: 'Workouts',
+          trainingTime: 'Trainingszeit',
+          totalVolume: 'Gesamtvolumen',
+          activeDays: 'Aktive Tage',
+          sessionHistory: 'Trainingshistorie',
+          noSessions: 'Keine Sessions im Zeitraum',
+          minutes: 'min',
+          showMore: '{count} weitere anzeigen',
+          showLess: 'Weniger anzeigen',
+          runningStats: 'Laufstatistik',
+          runs: 'Laeufe',
+          totalTime: 'Gesamtzeit',
+          totalDistance: 'Distanz',
+          avgPace: 'Pace'
+        },
+        exercises: {
+          title: 'Uebungs-Trends',
+          sessions: '{count} Sessions',
+          noExercises: 'Noch keine Uebungen absolviert',
+          detail: {
+            pr: 'Bestleistung',
+            average: 'Durchschnitt',
+            lastSession: 'Letzte Session',
+            history: 'Verlauf',
+            sets: 'Saetze',
+            volume: 'Volumen'
+          }
+        },
+        plans: {
+          title: 'Plan-Fortschritt',
+          lastSession: 'Zuletzt: {date}',
+          sessions: '{count} Sessions',
+          noPlans: 'Noch keine Plaene absolviert',
+          detail: {
+            timeline: 'Zeitverlauf',
+            vsLast: 'vs. letztes Mal',
+            session: 'Session {num}',
+            noComparison: 'Erste Session'
+          }
+        },
+        postWorkout: {
+          exercisesTitle: 'Uebungen im Detail',
+          badgeNew: 'Neu',
+          badgeRemoved: 'Letztes Mal',
+          noChange: 'gleich',
+          improved: 'verbessert',
+          declined: 'verschlechtert'
+        }
       }
     },
     profile: {
@@ -1873,6 +1929,62 @@ const translations = {
           bodyweight: 'Bodyweight',
           cardio: 'Cardio',
           recovery: 'Recovery'
+        }
+      },
+      v4: {
+        tabs: {
+          overview: 'Overview',
+          exercises: 'Exercises',
+          plans: 'Plans'
+        },
+        overview: {
+          workouts: 'Workouts',
+          trainingTime: 'Training Time',
+          totalVolume: 'Total Volume',
+          activeDays: 'Active Days',
+          sessionHistory: 'Session History',
+          noSessions: 'No sessions in this period',
+          minutes: 'min',
+          showMore: 'Show {count} more',
+          showLess: 'Show less',
+          runningStats: 'Running Stats',
+          runs: 'runs',
+          totalTime: 'Total time',
+          totalDistance: 'Distance',
+          avgPace: 'Pace'
+        },
+        exercises: {
+          title: 'Exercise Trends',
+          sessions: '{count} sessions',
+          noExercises: 'No exercises completed yet',
+          detail: {
+            pr: 'Personal Record',
+            average: 'Average',
+            lastSession: 'Last Session',
+            history: 'History',
+            sets: 'Sets',
+            volume: 'Volume'
+          }
+        },
+        plans: {
+          title: 'Plan Progress',
+          lastSession: 'Last: {date}',
+          sessions: '{count} sessions',
+          noPlans: 'No plans completed yet',
+          detail: {
+            timeline: 'Timeline',
+            vsLast: 'vs. last time',
+            session: 'Session {num}',
+            noComparison: 'First session'
+          }
+        },
+        postWorkout: {
+          exercisesTitle: 'Exercise Details',
+          badgeNew: 'New',
+          badgeRemoved: 'Last time',
+          noChange: 'same',
+          improved: 'improved',
+          declined: 'declined'
         }
       }
     },
