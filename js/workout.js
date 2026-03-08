@@ -523,11 +523,13 @@ async function completeWorkout() {
     // Reload sessions
     await loadSessions();
 
-    // Vorherige Session für Vergleich suchen (exkl. gerade gespeicherte)
+    // Vorherige Session + letzte 5 Sessions fuer Sparklines
     const prevSession = getPreviousSessionForPlan(planId, savedSessionId);
+    const planSessions = typeof getSessionsForPlan === 'function'
+      ? getSessionsForPlan(planId, 5, savedSessionId) : [];
 
     // Post-Workout Summary zeigen statt direkt zu Progress
-    showPostWorkoutSummary(sessionData, prevSession, durationMinutes);
+    showPostWorkoutSummary(sessionData, prevSession, durationMinutes, planSessions);
 
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('success', 'Workout gespeichert!');
@@ -600,9 +602,118 @@ function formatDelta(current, previous, unit) {
 }
 
 /**
+ * Baut per-exercise Vergleich zwischen aktueller und vorheriger Session.
+ */
+function buildExerciseComparison(currentSession, prevSession, planSessions) {
+  const currentExercises = currentSession?.exercises || [];
+  const prevExercises = prevSession?.exercises || [];
+  const prevMap = {};
+  prevExercises.forEach(ex => { prevMap[ex.exerciseId] = ex; });
+  const currentMap = {};
+  currentExercises.forEach(ex => { currentMap[ex.exerciseId] = ex; });
+
+  const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+  const result = [];
+
+  // Current exercises
+  currentExercises.forEach(ex => {
+    const prev = prevMap[ex.exerciseId];
+    const exData = exercises.find(e => e.id === ex.exerciseId);
+    const name = exData?.name || ex.exerciseId;
+    const curVol = typeof calculateExerciseWeightedVolume === 'function'
+      ? calculateExerciseWeightedVolume(ex) : (ex.sets || []).reduce((s, set) => s + (set.reps || 0), 0);
+    const prevVol = prev ? (typeof calculateExerciseWeightedVolume === 'function'
+      ? calculateExerciseWeightedVolume(prev) : (prev.sets || []).reduce((s, set) => s + (set.reps || 0), 0)) : null;
+
+    const curSets = ex.sets?.length || 0;
+    const curAvgReps = curSets > 0 ? Math.round((ex.sets || []).reduce((s, set) => s + (set.reps || 0), 0) / curSets) : 0;
+    const prevSets = prev ? (prev.sets?.length || 0) : null;
+    const prevAvgReps = prevSets > 0 ? Math.round((prev.sets || []).reduce((s, set) => s + (set.reps || 0), 0) / prevSets) : null;
+
+    const sparkline = planSessions.length > 0 && typeof getExerciseSparklineData === 'function'
+      ? getExerciseSparklineData(planSessions, ex.exerciseId) : [];
+
+    result.push({
+      exerciseId: ex.exerciseId, name,
+      curSets, curAvgReps, prevSets, prevAvgReps,
+      curVol, prevVol,
+      isNew: !prev, isRemoved: false,
+      sparkline,
+      trend: prevVol !== null ? (curVol > prevVol ? 'up' : curVol < prevVol ? 'down' : 'same') : null
+    });
+  });
+
+  // Removed exercises
+  prevExercises.forEach(ex => {
+    if (!currentMap[ex.exerciseId]) {
+      const exData = exercises.find(e => e.id === ex.exerciseId);
+      const name = exData?.name || ex.exerciseId;
+      const prevSets = ex.sets?.length || 0;
+      const prevAvgReps = prevSets > 0 ? Math.round((ex.sets || []).reduce((s, set) => s + (set.reps || 0), 0) / prevSets) : 0;
+      result.push({
+        exerciseId: ex.exerciseId, name,
+        curSets: null, curAvgReps: null, prevSets, prevAvgReps,
+        curVol: null, prevVol: typeof calculateExerciseWeightedVolume === 'function' ? calculateExerciseWeightedVolume(ex) : 0,
+        isNew: false, isRemoved: true, sparkline: [], trend: null
+      });
+    }
+  });
+
+  return result;
+}
+window.buildExerciseComparison = buildExerciseComparison;
+
+/**
+ * Zeichnet Mini-Sparkline in ein Canvas.
+ */
+function drawMiniSparkline(canvasId, values, trendColor) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || values.length < 2) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  const w = rect.width, h = rect.height, pad = 2;
+  const max = Math.max(...values), min = Math.min(...values);
+  const range = max - min || 1;
+  ctx.beginPath();
+  ctx.strokeStyle = trendColor;
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  values.forEach((v, i) => {
+    const x = pad + (i / (values.length - 1)) * (w - 2 * pad);
+    const y = h - pad - ((v - min) / range) * (h - 2 * pad);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+}
+window.drawMiniSparkline = drawMiniSparkline;
+
+/**
+ * Trend-Farbe bestimmen.
+ */
+function getTrendColor(trend) {
+  if (trend === 'up') return '#22c55e';
+  if (trend === 'down') return '#ef4444';
+  return '#9ca3af';
+}
+
+/**
+ * Trend-Icon bestimmen.
+ */
+function getTrendIcon(trend) {
+  if (trend === 'up') return 'trending_up';
+  if (trend === 'down') return 'trending_down';
+  return 'trending_flat';
+}
+
+/**
  * Zeigt den Post-Workout Summary Screen.
  */
-function showPostWorkoutSummary(savedSession, prevSession, durationMinutes) {
+function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, planSessions) {
   const modal = document.getElementById('post-workout-summary-modal');
   const body = document.getElementById('post-workout-summary-body');
   if (!modal || !body) {
@@ -611,51 +722,27 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes) {
     return;
   }
 
+  const tr = typeof t === 'function' ? t : (k) => k;
   const currentSets = savedSession.exercises
     ? savedSession.exercises.reduce((t, ex) => t + (ex.sets?.length || 0), 0)
     : 0;
   const currentVol = calcSessionVolume(savedSession);
 
+  // Overall comparison
   let comparisonHTML = '';
   if (prevSession) {
     const prevDuration = prevSession.duration || 0;
     const prevSets = calcSessionSets(prevSession);
     const prevVol = calcSessionVolume(prevSession);
-
     const items = [];
-
-    // Dauer
     const durDelta = formatDelta(durationMinutes, prevDuration, 'Min');
-    items.push({
-      icon: 'schedule',
-      label: 'Zeit',
-      current: `${durationMinutes} Min`,
-      delta: durDelta,
-      positive: durationMinutes >= prevDuration
-    });
-
-    // Sätze
-    const setsDelta = formatDelta(currentSets, prevSets, 'Sätze');
-    items.push({
-      icon: 'repeat',
-      label: 'Sätze',
-      current: String(currentSets),
-      delta: setsDelta,
-      positive: currentSets >= prevSets
-    });
-
-    // Volumen (nur wenn Gewichtsdaten vorhanden)
+    items.push({ icon: 'schedule', label: 'Zeit', current: `${durationMinutes} Min`, delta: durDelta, positive: durationMinutes >= prevDuration });
+    const setsDelta = formatDelta(currentSets, prevSets, 'Sets');
+    items.push({ icon: 'repeat', label: 'Sets', current: String(currentSets), delta: setsDelta, positive: currentSets >= prevSets });
     if (currentVol > 0 || prevVol > 0) {
       const volDelta = formatDelta(currentVol, prevVol, '%');
-      items.push({
-        icon: 'fitness_center',
-        label: 'Volumen',
-        current: currentVol > 0 ? `${currentVol} kg·Wdh` : '—',
-        delta: volDelta,
-        positive: currentVol >= prevVol
-      });
+      items.push({ icon: 'fitness_center', label: 'Volumen', current: currentVol > 0 ? `${currentVol} kg` : '\u2014', delta: volDelta, positive: currentVol >= prevVol });
     }
-
     comparisonHTML = `
       <div class="pws-section-title">Vergleich zum letzten Mal</div>
       <div class="pws-comparison-grid">
@@ -667,6 +754,44 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes) {
             ${item.delta ? `<div class="pws-stat-delta ${item.positive ? 'positive' : 'negative'}">${item.delta}</div>` : ''}
           </div>
         `).join('')}
+      </div>
+    `;
+  }
+
+  // Per-exercise comparison
+  const exComparison = buildExerciseComparison(savedSession, prevSession, planSessions || []);
+  let exercisesHTML = '';
+  if (exComparison.length > 0) {
+    const exTitle = tr('progress.v4.postWorkout.exercisesTitle') || 'Uebungen im Detail';
+    const badgeNew = tr('progress.v4.postWorkout.badgeNew') || 'Neu';
+    const badgeRemoved = tr('progress.v4.postWorkout.badgeRemoved') || 'Letztes Mal';
+    exercisesHTML = `
+      <div class="pws-exercises-section">
+        <div class="pws-section-title">${exTitle}</div>
+        <div class="pws-exercise-list">
+          ${exComparison.map(ex => {
+            const curLabel = ex.curSets !== null ? `${ex.curSets}x${ex.curAvgReps}` : '\u2014';
+            const prevLabel = ex.prevSets !== null ? `${ex.prevSets}x${ex.prevAvgReps}` : '';
+            const badge = ex.isNew ? `<span class="pws-exercise-badge new">${badgeNew}</span>`
+              : ex.isRemoved ? `<span class="pws-exercise-badge removed">${badgeRemoved}</span>` : '';
+            const trendClass = ex.trend || 'same';
+            const trendIcon = getTrendIcon(ex.trend);
+            const hasSparkline = ex.sparkline && ex.sparkline.length >= 2;
+            const sparkId = `pws-spark-${ex.exerciseId.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            return `
+              <div class="pws-exercise-row${ex.isRemoved ? ' removed' : ''}">
+                <div class="pws-exercise-info">
+                  <div class="pws-exercise-name">${ex.name} ${badge}</div>
+                  <div class="pws-exercise-sets">
+                    ${curLabel}${prevLabel && !ex.isNew ? ` <span class="pws-exercise-vs">vs ${prevLabel}</span>` : ''}
+                  </div>
+                </div>
+                ${hasSparkline ? `<canvas class="pws-exercise-sparkline" id="${sparkId}"></canvas>` : '<div class="pws-exercise-sparkline"></div>'}
+                ${ex.trend ? `<span class="material-symbols-rounded pws-exercise-trend ${trendClass}">${trendIcon}</span>` : '<div style="width:20px"></div>'}
+              </div>
+            `;
+          }).join('')}
+        </div>
       </div>
     `;
   }
@@ -687,29 +812,36 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes) {
       </div>
       <div class="pws-quick-stat">
         <div class="pws-quick-stat-value">${currentSets}</div>
-        <div class="pws-quick-stat-label">Sätze</div>
+        <div class="pws-quick-stat-label">Sets</div>
       </div>
       ${(savedSession.exercises || []).length > 0 ? `
       <div class="pws-quick-stat">
         <div class="pws-quick-stat-value">${savedSession.exercises.length}</div>
-        <div class="pws-quick-stat-label">Übungen</div>
+        <div class="pws-quick-stat-label">Uebungen</div>
       </div>
       ` : ''}
     </div>
 
     ${comparisonHTML}
+    ${exercisesHTML}
 
-    <button
-      type="button"
-      class="pws-dismiss-btn"
-      onclick="dismissPostWorkoutSummary()"
-    >
+    <button type="button" class="pws-dismiss-btn" onclick="dismissPostWorkoutSummary()">
       <span class="material-symbols-rounded">bar_chart</span>
       <span>Zum Fortschritt</span>
     </button>
   `;
 
   modal.classList.add('active');
+
+  // Draw sparklines after DOM is ready
+  requestAnimationFrame(() => {
+    exComparison.forEach(ex => {
+      if (ex.sparkline && ex.sparkline.length >= 2) {
+        const sparkId = `pws-spark-${ex.exerciseId.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        drawMiniSparkline(sparkId, ex.sparkline, getTrendColor(ex.trend));
+      }
+    });
+  });
 }
 
 /**

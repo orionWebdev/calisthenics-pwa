@@ -1328,7 +1328,7 @@ async function refreshDashboard() {
   renderLogWorkoutCard(data);
   renderQuickStatsWidget(data);
   renderDashboardActivityCalendar(data);
-  renderRecentSessionsList(data);
+  // Recent sessions removed - now in Progress > Overview
 
   dashboardIsLoading = false;
 }
