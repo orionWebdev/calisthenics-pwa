@@ -14,6 +14,7 @@ const DEFAULT_PROFILE = {
   defaultRestTimer: 60,
   hapticsEnabled: true,
   defaultProgressPeriod: '30D',
+  theme: 'dark',
   integrations: {
     garmin: { connected: false },
     appleHealth: { connected: false },
@@ -128,6 +129,28 @@ function debouncedSaveToFirestore() {
     }
   }, 300);
 }
+
+// ========================================
+// THEME
+// ========================================
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = theme === 'light' ? '#F2F2F7' : '#000000';
+}
+
+// Apply theme early from cache (before full profile init)
+(function() {
+  try {
+    const cached = localStorage.getItem('userProfile');
+    if (cached) {
+      const theme = JSON.parse(cached).theme || 'dark';
+      applyTheme(theme);
+    }
+  } catch (e) { /* fallback to dark */ }
+})();
 
 // ========================================
 // INIT
@@ -274,6 +297,14 @@ function renderProfileCard(user, isMetric) {
 function renderGeneralSettings() {
   return `
     <div class="settings-row">
+      <span class="material-symbols-rounded settings-row-icon">dark_mode</span>
+      <span class="settings-row-label">${t('settings.theme')}</span>
+      ${renderSegmented('theme', [
+        { value: 'dark', label: t('settings.themeDark') },
+        { value: 'light', label: t('settings.themeLight') }
+      ], userProfile.theme || 'dark')}
+    </div>
+    <div class="settings-row">
       <span class="material-symbols-rounded settings-row-icon">translate</span>
       <span class="settings-row-label">${t('settings.language')}</span>
       ${renderSegmented('language', [
@@ -396,6 +427,10 @@ function renderToggle(field, isActive) {
 
 function handleSegmentedChange(field, value) {
   updateProfileField(field, value);
+
+  if (field === 'theme') {
+    applyTheme(value);
+  }
 
   if (field === 'unitSystem') {
     renderProfileView();
