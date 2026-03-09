@@ -251,10 +251,6 @@ function openEditStrengthSessionModal(sessionId) {
             <span class="material-symbols-rounded">save</span>
             <span>${trEdit('common.save')}</span>
           </button>
-          <button type="button" onclick="closeGenericModal()" class="btn-secondary">
-            <span class="material-symbols-rounded">close</span>
-            <span>${trEdit('common.cancel')}</span>
-          </button>
         </div>
       </form>
     </div>
@@ -477,10 +473,7 @@ async function saveStrengthSessionEdit(event, sessionId) {
     };
 
     await updateDoc(sessionsCollection, sessionId, updateData);
-
-    if (typeof closeGenericModal === 'function') {
-      closeGenericModal();
-    }
+    closeGenericModal();
 
     if (typeof loadSessions === 'function') {
       await loadSessions();
@@ -537,10 +530,6 @@ function openEditCardioSessionModal(sessionId) {
             <span class="material-symbols-rounded">save</span>
             <span>${trEdit('common.save')}</span>
           </button>
-          <button type="button" onclick="closeGenericModal()" class="btn-secondary">
-            <span class="material-symbols-rounded">close</span>
-            <span>${trEdit('common.cancel')}</span>
-          </button>
         </div>
       </form>
     </div>
@@ -586,10 +575,7 @@ async function saveCardioSessionEdit(event, sessionId) {
     }
 
     await updateDoc(sessionsCollection, sessionId, updateData);
-
-    if (typeof closeGenericModal === 'function') {
-      closeGenericModal();
-    }
+    closeGenericModal();
 
     if (typeof loadSessions === 'function') {
       await loadSessions();
@@ -641,10 +627,6 @@ function openEditRecoverySessionModal(sessionId) {
             <span class="material-symbols-rounded">save</span>
             <span>${trEdit('common.save')}</span>
           </button>
-          <button type="button" onclick="closeGenericModal()" class="btn-secondary">
-            <span class="material-symbols-rounded">close</span>
-            <span>${trEdit('common.cancel')}</span>
-          </button>
         </div>
       </form>
     </div>
@@ -682,10 +664,7 @@ async function saveRecoverySessionEdit(event, sessionId) {
     };
 
     await updateDoc(sessionsCollection, sessionId, updateData);
-
-    if (typeof closeGenericModal === 'function') {
-      closeGenericModal();
-    }
+    closeGenericModal();
 
     if (typeof loadSessions === 'function') {
       await loadSessions();

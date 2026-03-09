@@ -14,7 +14,6 @@ const viewTitles = {
   training: 'Training',
   workout: 'Workout',
   profile: 'Profil',
-  allSessions: 'Alle Sessions'
 };
 
 // View icons for FAB
@@ -24,8 +23,7 @@ const viewIcons = {
   calendar: 'calendar_month',
   training: 'fitness_center',
   workout: 'fitness_center',
-  profile: 'account_circle',
-  allSessions: 'history'
+  profile: 'account_circle'
 };
 
 // Training tab state
@@ -88,6 +86,16 @@ function showView(viewName) {
   if (bottomNavBtn) bottomNavBtn.classList.add('active');
   scheduleBottomNavIndicatorUpdate();
 
+  // Update settings icon button
+  const settingsBtn = document.getElementById('settings-btn');
+  if (settingsBtn) {
+    if (viewName === 'profile') {
+      settingsBtn.classList.add('active');
+    } else {
+      settingsBtn.classList.remove('active');
+    }
+  }
+
   // Update mobile header title and icon
   const mobileTitle = document.getElementById('mobile-view-title');
   const mobileIcon = document.getElementById('mobile-view-icon');
@@ -112,7 +120,9 @@ function showView(viewName) {
 
   // Initialize progress page when first opened
   if (viewName === 'progress') {
-    if (typeof initProgressV2 === 'function') {
+    if (typeof initProgressV3 === 'function') {
+      initProgressV3();
+    } else if (typeof initProgressV2 === 'function') {
       initProgressV2();
     } else if (typeof initProgress === 'function') {
       initProgress();
@@ -123,8 +133,8 @@ function showView(viewName) {
     refreshDashboard();
   }
 
-  if (viewName === 'allSessions' && typeof renderAllSessionsPage === 'function') {
-    renderAllSessionsPage();
+  if (viewName === 'profile' && typeof initProfileView === 'function') {
+    initProfileView();
   }
 
   if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
@@ -332,16 +342,9 @@ window.addEventListener('scroll', () => {
  */
 function updateProfileInfo(user) {
   if (!user) return;
-
-  const nameElement = document.getElementById('profile-user-name');
-  const emailElement = document.getElementById('profile-user-email');
-
-  if (nameElement) {
-    nameElement.textContent = user.displayName || 'Benutzer';
-  }
-
-  if (emailElement) {
-    emailElement.textContent = user.email || '';
+  // Profile is now rendered by settings.js via initProfileView()
+  if (currentView === 'profile' && typeof initProfileView === 'function') {
+    initProfileView();
   }
 }
 

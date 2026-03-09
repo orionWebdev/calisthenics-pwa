@@ -1,23 +1,84 @@
 // ========================================
-// CALENDAR MANAGEMENT
+// CALENDAR MANAGEMENT - Month Grid + Agenda List
 // ========================================
 
 // Calendar State
-let currentCalendarView = 'plan'; // Only plan view now (activity calendar moved to dashboard)
 let currentDate = new Date();
 let scheduleData = []; // Alle geplanten Trainings
-let selectedDateForPlan = null;
-let currentDayDetailDate = null;
+let selectedDate = formatDate(new Date()); // Aktuell ausgewaehlter Tag
 
-// Demo User ID (später wird das durch Firebase Auth ersetzt)
+// Demo User ID (spaeter wird das durch Firebase Auth ersetzt)
 const CURRENT_USER_ID = 'demo-user-123';
 
-// Month/Day Names
-const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-                    'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-const dayNames = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+// ========================================
+// CALENDAR EVENT VIEWMODEL (Sync-Ready)
+// Prepared for Google Calendar, iOS Calendar,
+// Outlook integration via originId + provider
+// ========================================
 
-// Note: workoutTypeNames is defined in plans.js and shared globally
+/**
+ * @typedef {'plan'|'quick'|'google'|'apple'|'outlook'|'external'} CalendarEventSource
+ *
+ * @typedef {Object} CalendarEvent
+ * @property {string} id - Unique identifier
+ * @property {CalendarEventSource} source - Where this event comes from
+ * @property {string} title - Display title
+ * @property {'strength'|'cardio'|'recovery'|'bodyweight'|'event'} type
+ * @property {string} startDate - YYYY-MM-DD
+ * @property {string|null} [startTime] - HH:mm (optional, for timed events)
+ * @property {string|null} [endTime] - HH:mm (optional, for timed events)
+ * @property {number|null} [durationMin] - Duration in minutes
+ * @property {string|null} [originId] - External calendar event ID for sync
+ * @property {string|null} [calendarId] - External calendar ID (e.g. Google Calendar ID)
+ * @property {string|null} [provider] - 'google'|'apple'|'outlook' for external events
+ * @property {string|null} [planId] - Reference to plans collection
+ * @property {boolean} completed - Completion status
+ * @property {string|null} [color] - Override color for external events
+ * @property {Object} _original - Original Firestore entry
+ */
+
+/**
+ * Maps a schedule entry from Firestore to CalendarEvent ViewModel
+ * @param {Object} entry - Raw schedule entry from Firestore
+ * @returns {CalendarEvent}
+ */
+function mapScheduleToCalendarEvent(entry) {
+  let source = 'external';
+  if (entry.planId) source = 'plan';
+  else if (entry.isQuickEntry) source = 'quick';
+  else if (entry.provider === 'google') source = 'google';
+  else if (entry.provider === 'apple') source = 'apple';
+  else if (entry.provider === 'outlook') source = 'outlook';
+
+  return {
+    id: entry.id,
+    source: source,
+    title: entry.planName || t('calendar.untitled'),
+    type: entry.planType || 'strength',
+    startDate: entry.date,
+    startTime: entry.startTime || null,
+    endTime: entry.endTime || null,
+    durationMin: entry.planDuration || null,
+    originId: entry.originId || null,
+    calendarId: entry.calendarId || null,
+    provider: entry.provider || null,
+    planId: entry.planId || null,
+    completed: entry.completed || false,
+    color: entry.color || null,
+    _original: entry
+  };
+}
+
+/**
+ * Gets CalendarEvents for a specific date
+ * @param {string} dateStr - YYYY-MM-DD format
+ * @returns {CalendarEvent[]}
+ */
+function getCalendarEventsForDate(dateStr) {
+  const plans = getPlansForDate(dateStr);
+  return plans.map(mapScheduleToCalendarEvent);
+}
+
 
 // ========================================
 // LOAD SCHEDULE DATA
@@ -25,23 +86,20 @@ const dayNames = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Sa
 
 async function loadSchedule() {
   try {
-    // Später filtern wir hier nach userId
-    // Für jetzt laden wir alle (da wir noch keine Auth haben)
     if (typeof scheduleCollection !== 'undefined') {
       scheduleData = await getAllDocs(scheduleCollection);
     } else {
-      console.warn('⚠️ scheduleCollection not defined, using empty array');
+      console.warn('scheduleCollection not defined, using empty array');
       scheduleData = [];
     }
-    setCalendarView(currentCalendarView);
+    renderCalendar();
     if (typeof refreshDashboard === 'function') {
       refreshDashboard();
     }
   } catch (error) {
     console.error('Error loading schedule:', error);
-    // Render calendar anyway with empty data
     scheduleData = [];
-    setCalendarView(currentCalendarView);
+    renderCalendar();
     if (typeof refreshDashboard === 'function') {
       refreshDashboard();
     }
@@ -49,16 +107,10 @@ async function loadSchedule() {
 }
 
 // ========================================
-// CALENDAR VIEW SWITCHING
+// CALENDAR VIEW INITIALIZATION
 // ========================================
 
 function setCalendarView() {
-  // Only plan view is supported now (activity calendar moved to dashboard)
-  currentCalendarView = 'plan';
-
-  const planView = document.getElementById('calendar-plan-view');
-  if (planView) planView.classList.add('active');
-
   renderCalendar();
 }
 
@@ -68,17 +120,29 @@ function setCalendarView() {
 
 function navigateCalendar(direction) {
   currentDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
+
+  // Wenn selectedDate nicht mehr im sichtbaren Monat
+  const selectedDateObj = new Date(`${selectedDate}T12:00:00`);
+  if (selectedDateObj.getMonth() !== currentDate.getMonth() ||
+      selectedDateObj.getFullYear() !== currentDate.getFullYear()) {
+    selectedDate = formatDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1));
+  }
+
   renderCalendar();
+
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback('light');
+  }
 }
 
 function goToToday() {
   currentDate = new Date();
+  selectedDate = formatDate(currentDate);
   renderCalendar();
-}
 
-function openCalendarQuickPlan() {
-  const todayKey = formatDate(new Date());
-  openDayDetailModal(todayKey, true);
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback('selection');
+  }
 }
 
 // ========================================
@@ -88,7 +152,8 @@ function openCalendarQuickPlan() {
 function renderCalendar() {
   try {
     updateCalendarTitle();
-    renderMonthView();
+    renderMonthGrid();
+    renderDayAgenda();
   } catch (error) {
     console.error('Error rendering calendar:', error);
   }
@@ -96,251 +161,479 @@ function renderCalendar() {
 
 function updateCalendarTitle() {
   const title = document.getElementById('calendar-title');
+  if (!title) return;
 
-  if (!title) {
-    console.warn('⚠️ calendar-title element not found');
-    return;
-  }
+  const monthName = t(`calendar.monthNames.${getMonthKey(currentDate.getMonth())}`);
+  title.textContent = `${monthName} ${currentDate.getFullYear()}`;
+}
 
-  title.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+function getMonthKey(monthIndex) {
+  const keys = ['january', 'february', 'march', 'april', 'may', 'june',
+                'july', 'august', 'september', 'october', 'november', 'december'];
+  return keys[monthIndex];
 }
 
 // ========================================
-// MONTH VIEW
+// MONTH GRID
 // ========================================
 
-function renderMonthView() {
+function renderMonthGrid() {
   const grid = document.getElementById('calendar-grid');
-
-  if (!grid) {
-    console.warn('⚠️ calendar-grid element not found');
-    return;
-  }
+  if (!grid) return;
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  
-  // First day of month (0 = Sunday, 6 = Saturday)
+  const today = formatDate(new Date());
+
+  // First day (Monday-based)
   const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  
-  // Adjust to Monday-based week (1 = Monday, 0 = Sunday)
   let startDay = firstDay.getDay();
-  startDay = startDay === 0 ? 6 : startDay - 1; // Convert to Monday = 0
-  
-  const daysInMonth = lastDay.getDate();
-  const today = new Date();
-  
+  startDay = startDay === 0 ? 6 : startDay - 1;
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
   grid.innerHTML = '';
-  
-  // Previous month's days
+
+  // Previous month padding
   const prevMonthDays = new Date(year, month, 0).getDate();
   for (let i = startDay - 1; i >= 0; i--) {
     const day = prevMonthDays - i;
     const date = new Date(year, month - 1, day);
-    grid.appendChild(createDayCell(date, true));
+    grid.appendChild(createDayCell(date, { otherMonth: true }));
   }
-  
-  // Current month's days
+
+  // Current month days
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
-    const isToday = date.toDateString() === today.toDateString();
-    grid.appendChild(createDayCell(date, false, isToday));
+    const dateStr = formatDate(date);
+    const isToday = dateStr === today;
+    const isSelected = dateStr === selectedDate;
+    grid.appendChild(createDayCell(date, { isToday, isSelected }));
   }
-  
-  // Next month's days to fill grid
+
+  // Next month padding (fill to 42 cells for 6 rows)
   const totalCells = grid.children.length;
-  const remainingCells = 42 - totalCells; // 6 rows × 7 days
-  for (let day = 1; day <= remainingCells; day++) {
+  const remaining = 42 - totalCells;
+  for (let day = 1; day <= remaining; day++) {
     const date = new Date(year, month + 1, day);
-    grid.appendChild(createDayCell(date, true));
+    grid.appendChild(createDayCell(date, { otherMonth: true }));
   }
 }
 
-function createDayCell(date, otherMonth = false, isToday = false) {
+function createDayCell(date, options = {}) {
+  const { otherMonth = false, isToday = false, isSelected = false } = options;
+  const dateStr = formatDate(date);
+  const events = getCalendarEventsForDate(dateStr);
+
   const cell = document.createElement('div');
-  cell.className = 'calendar-day';
+  cell.className = 'plan-calendar-day';
+  cell.setAttribute('data-date', dateStr);
+  cell.setAttribute('role', 'gridcell');
 
   if (otherMonth) cell.classList.add('other-month');
-  if (isToday) cell.classList.add('today');
+  if (isToday) cell.classList.add('is-today');
+  if (isSelected) cell.classList.add('is-selected');
+  if (events.length > 0) cell.classList.add('has-events');
 
-  // Get plans for this day
-  const dateStr = formatDate(date);
-  const dayPlans = getPlansForDate(dateStr);
+  // Day number
+  const dayNum = document.createElement('span');
+  dayNum.className = 'plan-calendar-day-number';
+  dayNum.textContent = date.getDate();
+  cell.appendChild(dayNum);
 
-  if (dayPlans.length > 0) {
-    cell.classList.add('has-plan');
+  // Event dots (max 3 unique types)
+  if (events.length > 0) {
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'plan-calendar-dots';
+
+    const uniqueTypes = [...new Set(events.map(e => e.type))].slice(0, 3);
+    uniqueTypes.forEach(type => {
+      const dot = document.createElement('span');
+      dot.className = `plan-calendar-dot plan-calendar-dot-${type}`;
+      dotsContainer.appendChild(dot);
+    });
+
+    cell.appendChild(dotsContainer);
   }
 
-  cell.innerHTML = `
-    <div class="calendar-day-number">${date.getDate()}</div>
-    <div class="calendar-day-plans">
-      ${dayPlans.map(plan => `
-        <div class="calendar-plan calendar-plan-${plan.planType || 'mixed'}" title="${plan.planName} (${plan.planDuration || 45} Min)">
-        </div>
-      `).join('')}
-    </div>
-  `;
-
-  // Click to open day detail modal
+  // Click handler
   if (!otherMonth) {
-    cell.onclick = () => openDayDetailModal(dateStr);
+    cell.onclick = () => selectDay(dateStr);
+    cell.setAttribute('tabindex', '0');
+    cell.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectDay(dateStr);
+      }
+    };
   }
 
   return cell;
 }
 
 // ========================================
-// WEEK VIEW
+// DAY AGENDA (Single Day View)
 // ========================================
 
-function renderWeekView() {
-  const weekGrid = document.getElementById('week-grid');
+/**
+ * Selects a day and updates the day agenda view
+ */
+function selectDay(dateStr) {
+  selectedDate = dateStr;
 
-  if (!weekGrid) {
-    console.warn('⚠️ week-grid element not found');
+  // Update grid selection
+  document.querySelectorAll('.plan-calendar-day.is-selected')
+    .forEach(el => el.classList.remove('is-selected'));
+
+  const selectedCell = document.querySelector(`.plan-calendar-day[data-date="${dateStr}"]`);
+  if (selectedCell) {
+    selectedCell.classList.add('is-selected');
+  }
+
+  // Render day agenda
+  renderDayAgenda();
+
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback('selection');
+  }
+}
+
+/**
+ * Renders the day agenda for the selected date
+ */
+function renderDayAgenda() {
+  const container = document.getElementById('calendar-agenda-list');
+  const titleEl = document.getElementById('agenda-list-title');
+  if (!container) return;
+
+  const date = new Date(`${selectedDate}T12:00:00`);
+  const today = formatDate(new Date());
+  const isToday = selectedDate === today;
+  const isPast = selectedDate < today;
+  const events = getCalendarEventsForDate(selectedDate);
+
+  // Update title
+  if (titleEl) {
+    const dateLabel = formatAgendaDateLabel(date, isToday);
+    titleEl.textContent = dateLabel;
+  }
+
+  // Empty state
+  if (events.length === 0) {
+    container.innerHTML = `
+      <div class="calendar-agenda-empty">
+        <span class="material-symbols-rounded">event_busy</span>
+        <p>${t('calendar.noPlannedWorkouts')}</p>
+      </div>
+    `;
     return;
   }
 
-  const weekStart = getWeekStart(currentDate);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Reset time for accurate comparison
+  // Render events
+  const eventRows = events.map(event => renderEventRow(event, isPast)).join('');
 
-  weekGrid.innerHTML = '';
+  container.innerHTML = `
+    <div class="calendar-agenda-section ${isPast ? 'is-past' : ''} ${isToday ? 'is-today' : ''}" data-date="${selectedDate}">
+      <div class="calendar-agenda-items">
+        ${eventRows}
+      </div>
+    </div>
+  `;
+}
 
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(weekStart);
-    date.setDate(date.getDate() + i);
-    date.setHours(0, 0, 0, 0); // Reset time for accurate comparison
+/**
+ * Formats a date for the agenda section header
+ * e.g. "Dienstag, 16. August" or "Do, 3. Maerz"
+ */
+function formatAgendaDateLabel(date, isToday) {
+  if (typeof formatDateLongText === 'function') {
+    return formatDateLongText(date, false);
+  }
+  // Fallback
+  const dayIndex = date.getDay() === 0 ? 6 : date.getDay() - 1;
+  const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const dayName = t(`calendar.dayNames.${dayKeys[dayIndex]}`);
+  const monthName = t(`calendar.monthNames.${getMonthKey(date.getMonth())}`);
+  return `${dayName}, ${date.getDate()}. ${monthName}`;
+}
 
-    const isToday = date.toDateString() === today.toDateString();
-    const isPast = date < today;
-    const dateStr = formatDate(date);
-    const dayPlans = getPlansForDate(dateStr);
+// ========================================
+// CALENDAR EVENT ROW
+// ========================================
 
-    const card = document.createElement('div');
-    card.className = 'week-day-card';
-    if (isToday) card.classList.add('today');
-    if (isPast && !isToday) card.classList.add('past');
-    if (dayPlans.length > 0) card.classList.add('has-plan');
+function renderEventRow(event, isPast = false) {
+  const typeColor = getEventColor(event);
+  const typeLabel = getEventTypeLabel(event);
+  const durationText = event.durationMin
+    ? `${event.durationMin} ${t('common.minutes')}`
+    : '';
+  const timeText = event.startTime
+    ? event.startTime
+    : '';
 
-    card.innerHTML = `
-      <div class="flex items-center justify-between mb-3">
-        <div>
-          <div class="text-sm ${isToday ? 'text-pink-400 font-bold' : 'text-gray-400'}">${dayNames[i]}</div>
-          <div class="text-xl font-bold ${isToday ? 'text-pink-500' : ''}">${date.getDate()}. ${monthNames[date.getMonth()]}</div>
+  return `
+    <div
+      class="calendar-event-row ${event.completed ? 'is-completed' : ''} ${isPast ? 'is-past' : ''}"
+      onclick="handleEventTap('${event.id}')"
+      role="button"
+      tabindex="0"
+      data-source="${event.source}"
+    >
+      <div class="calendar-event-bar" style="background: ${typeColor};"></div>
+      <div class="calendar-event-content">
+        <span class="calendar-event-title">${event.title}</span>
+        <div class="calendar-event-meta">
+          ${timeText ? `<span class="calendar-event-time">${timeText}</span>` : ''}
+          <span class="calendar-event-type" style="color: ${typeColor};">${typeLabel}</span>
+          ${durationText ? `<span class="calendar-event-duration">${durationText}</span>` : ''}
         </div>
+      </div>
+      ${isLocalEvent(event) ? `
+      <div class="calendar-event-actions">
         <button
-          onclick="openDayDetailModal('${dateStr}', true)"
-          class="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-3 py-2 rounded-lg text-sm transition-all flex items-center gap-1"
+          class="calendar-event-delete"
+          onclick="event.stopPropagation(); removePlanFromDate('${event.id}')"
+          aria-label="${t('common.delete')}"
         >
-          <span class="material-symbols-rounded" style="font-size: 16px;">add</span>
-          <span class="hidden sm:inline">Plan</span>
+          <span class="material-symbols-rounded">delete</span>
         </button>
-      </div>
+        <button
+          class="calendar-event-play"
+          onclick="event.stopPropagation(); startScheduledWorkout('${event.id}')"
+          aria-label="${t('common.start')}"
+        >
+          <span class="material-symbols-rounded">play_arrow</span>
+        </button>
+      </div>` : ''}
+    </div>
+  `;
+}
 
-      <div class="space-y-2">
-        ${dayPlans.length === 0 ?
-          '<p class="text-gray-500 text-sm italic">Kein Training geplant</p>' :
-          dayPlans.map(plan => `
-            <div class="bg-gray-700 rounded-lg p-3 flex items-center justify-between cursor-pointer hover:bg-gray-600 transition-colors" onclick="viewCalendarPlanDetails('${plan.id}')">
-              <div class="flex-1">
-                <div class="font-semibold">${plan.planName}</div>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-xs px-2 py-0.5 rounded" style="background: color-mix(in srgb, ${getPlanTypeColor(plan.planType)} 20%, transparent); color: ${getPlanTypeColor(plan.planType)};">
-                    ${workoutTypeNames[plan.planType] || plan.planType}
-                  </span>
-                  <span class="text-xs text-gray-400">${plan.planDuration || 45} Min</span>
-                </div>
-              </div>
-              <div class="flex items-center gap-2 ml-2">
-                <button
-                  onclick="event.stopPropagation(); startScheduledWorkout('${plan.id}')"
-                  class="calendar-start-btn"
-                  title="Workout starten"
-                >
-                  <span class="material-symbols-rounded" style="font-size: 20px;">play_arrow</span>
-                </button>
-                <button
-                  onclick="event.stopPropagation(); removePlanFromDate('${plan.id}')"
-                  class="text-red-400 hover:text-red-300 transition-colors"
-                  title="Training entfernen"
-                >
-                  <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
-                </button>
-              </div>
+/**
+ * Gets the display color for an event.
+ * External calendar events can override with their own color.
+ */
+function getEventColor(event) {
+  if (event.color) return event.color;
+  return getPlanTypeColor(event.type);
+}
+
+/**
+ * Gets the type label for an event.
+ * External events show provider name.
+ */
+function getEventTypeLabel(event) {
+  if (event.source === 'google') return 'Google';
+  if (event.source === 'apple') return 'Apple';
+  if (event.source === 'outlook') return 'Outlook';
+  return t(`plan.types.${event.type}`) || event.type;
+}
+
+/**
+ * Checks if event is local (plan/quick) vs external (synced)
+ * Only local events can be started as workouts.
+ */
+function isLocalEvent(event) {
+  return event.source === 'plan' || event.source === 'quick';
+}
+
+function handleEventTap(eventId) {
+  const entry = scheduleData.find(s => s.id === eventId);
+  if (!entry) return;
+
+  if (entry.planId && typeof viewPlanDetails === 'function') {
+    viewPlanDetails(entry.planId);
+  }
+}
+
+// ========================================
+// QUICK ADD SHEET
+// ========================================
+
+let quickAddSelectedType = 'strength';
+
+function openQuickAddSheet() {
+  if (typeof openSheet !== 'function') {
+    console.error('openSheet not available');
+    return;
+  }
+
+  openSheet({
+    title: t('calendar.quickEntry.title'),
+    render: (container) => {
+      container.innerHTML = `
+        <div class="quick-add-form">
+          <!-- Name Input -->
+          <div class="quick-add-field">
+            <label class="quick-add-label" for="quick-add-name">
+              ${t('calendar.quickEntry.name')}
+            </label>
+            <input
+              type="text"
+              id="quick-add-name"
+              class="quick-add-input"
+              placeholder="${t('calendar.quickEntry.namePlaceholder')}"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- Type Selection -->
+          <div class="quick-add-field">
+            <label class="quick-add-label">${t('calendar.quickEntry.type')}</label>
+            <div class="quick-add-type-buttons">
+              <button
+                type="button"
+                class="type-select-btn active"
+                data-type="strength"
+                onclick="setQuickAddType('strength')"
+              >
+                <span class="material-symbols-rounded">fitness_center</span>
+                <span>${t('plan.types.strength')}</span>
+              </button>
+              <button
+                type="button"
+                class="type-select-btn"
+                data-type="cardio"
+                onclick="setQuickAddType('cardio')"
+              >
+                <span class="material-symbols-rounded">directions_run</span>
+                <span>${t('plan.types.cardio')}</span>
+              </button>
+              <button
+                type="button"
+                class="type-select-btn"
+                data-type="recovery"
+                onclick="setQuickAddType('recovery')"
+              >
+                <span class="material-symbols-rounded">self_improvement</span>
+                <span>${t('plan.types.recovery')}</span>
+              </button>
             </div>
-          `).join('')
-        }
-      </div>
-    `;
+          </div>
 
-    weekGrid.appendChild(card);
+          <!-- Duration (Optional) -->
+          <div class="quick-add-field">
+            <label class="quick-add-label" for="quick-add-duration">
+              ${t('calendar.quickEntry.duration')}
+              <span class="quick-add-optional">(${t('common.optional')})</span>
+            </label>
+            <input
+              type="number"
+              id="quick-add-duration"
+              class="quick-add-input"
+              placeholder="45"
+              min="1"
+              max="300"
+            />
+          </div>
+
+          <!-- Divider -->
+          <div class="quick-add-divider">
+            <span>${t('calendar.orSelectPlan')}</span>
+          </div>
+
+          <!-- Select Plan Button -->
+          <button
+            type="button"
+            class="quick-add-plan-btn"
+            onclick="openCalendarPlanPicker()"
+          >
+            <span class="material-symbols-rounded">assignment</span>
+            <span>${t('calendar.addPlan')}</span>
+            <span class="material-symbols-rounded">chevron_right</span>
+          </button>
+
+          <!-- Submit Button -->
+          <button
+            type="button"
+            class="btn-primary quick-add-submit"
+            onclick="saveQuickAddEntry()"
+          >
+            ${t('calendar.quickEntry.add')}
+          </button>
+        </div>
+      `;
+
+      // Reset type
+      quickAddSelectedType = 'strength';
+
+      // Focus name input after render
+      setTimeout(() => {
+        document.getElementById('quick-add-name')?.focus();
+      }, 300);
+    }
+  });
+}
+
+function setQuickAddType(type) {
+  quickAddSelectedType = type;
+
+  document.querySelectorAll('.quick-add-type-buttons .type-select-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback('selection');
   }
-
-  // Auto-scroll to today's card on initial load
-  scrollToTodayCard();
 }
 
-// Scroll to today's card in week view
-function scrollToTodayCard() {
-  const weekGrid = document.getElementById('week-grid');
-  if (!weekGrid) return;
+async function saveQuickAddEntry() {
+  const name = document.getElementById('quick-add-name')?.value.trim();
+  const duration = parseInt(document.getElementById('quick-add-duration')?.value) || null;
 
-  const todayCard = weekGrid.querySelector('.week-day-card.today');
-  if (todayCard) {
-    setTimeout(() => {
-      todayCard.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
-    }, 100);
-  }
-}
-
-function getWeekStart(date) {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day; // Monday as start
-  d.setDate(d.getDate() + diff);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
-
-// ========================================
-// ADD/REMOVE PLANS
-// ========================================
-
-function openAddPlanPanel(dateStr) {
-  const targetDate = dateStr || currentDayDetailDate;
-  if (!isValidDateString(targetDate)) {
+  if (!name) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Ungueltiges Datum. Bitte Tag erneut waehlen.');
+      showEdgeFeedback('error', t('calendar.quickEntry.nameRequired'));
     }
     return;
   }
 
-  selectedDateForPlan = targetDate;
-  ensureDayDetailModalOpen(targetDate);
+  const entry = {
+    userId: CURRENT_USER_ID,
+    planId: null,
+    planName: name,
+    planType: quickAddSelectedType,
+    planDuration: duration || getDefaultDuration(quickAddSelectedType),
+    date: selectedDate,
+    completed: false,
+    isQuickEntry: true,
+    createdAt: new Date().toISOString()
+  };
 
-  const date = new Date(`${targetDate}T12:00:00`);
-  const formatted = `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-
-  document.getElementById('selected-date-display').textContent = formatted;
-  document.getElementById('add-plan-panel').classList.remove('hidden');
+  try {
+    await addDoc(scheduleCollection, entry);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', t('calendar.entryAdded'));
+    }
+    if (typeof closeSheet === 'function') {
+      closeSheet();
+    }
+    await loadSchedule();
+  } catch (error) {
+    console.error('Error saving quick entry:', error);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('calendar.saveError'));
+    }
+  }
 }
 
-function closeAddPlanPanel() {
-  document.getElementById('add-plan-panel').classList.add('hidden');
-  selectedDateForPlan = null;
+function getDefaultDuration(type) {
+  const defaults = { strength: 45, cardio: 30, recovery: 20 };
+  return defaults[type] || 45;
 }
 
-// Open Plan Picker Bottom Sheet (replaces dropdown)
+// ========================================
+// PLAN PICKER
+// ========================================
+
 function openCalendarPlanPicker() {
   if (typeof openPlanPickerSheet !== 'function') {
     console.error('Plan picker not available');
     return;
+  }
+
+  if (typeof closeSheet === 'function') {
+    closeSheet();
   }
 
   openPlanPickerSheet((planId) => {
@@ -351,21 +644,10 @@ function openCalendarPlanPicker() {
 async function addPlanToDateById(planId) {
   if (!planId) return;
 
-  if (!selectedDateForPlan && currentDayDetailDate) {
-    selectedDateForPlan = currentDayDetailDate;
-  }
-
-  if (!isValidDateString(selectedDateForPlan)) {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte waehle einen gueltigen Tag.');
-    }
-    return;
-  }
-
   const plan = allPlans.find(p => p.id === planId);
   if (!plan) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Plan nicht gefunden.');
+      showEdgeFeedback('error', t('calendar.errors.notFound'));
     }
     return;
   }
@@ -375,8 +657,10 @@ async function addPlanToDateById(planId) {
     planId: planId,
     planName: plan.name,
     planType: plan.type,
-    planDuration: plan.duration || 45,
-    date: selectedDateForPlan,
+    planDuration: plan.type === 'cardio' || plan.type === 'recovery'
+      ? (plan.targetDurationMin || plan.targetDuration || plan.duration || 45)
+      : (plan.duration || 45),
+    date: selectedDate,
     completed: false,
     createdAt: new Date().toISOString()
   };
@@ -384,165 +668,123 @@ async function addPlanToDateById(planId) {
   try {
     await addDoc(scheduleCollection, scheduleEntry);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Plan zum Kalender hinzugefuegt.');
+      showEdgeFeedback('success', t('calendar.entryAdded'));
     }
-    closeAddPlanPanel();
     await loadSchedule();
   } catch (error) {
     console.error('Error adding plan:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Hinzufuegen.');
+      showEdgeFeedback('error', t('calendar.saveError'));
     }
   }
 }
 
 // ========================================
-// QUICK ENTRY (No Plan Template)
+// REMOVE/DELETE PLAN
 // ========================================
-
-function openQuickEntryModal() {
-  const modal = document.getElementById('calendar-quick-entry-modal');
-  if (!modal) return;
-
-  // Reset form
-  document.getElementById('quick-entry-name').value = '';
-  document.getElementById('quick-entry-duration').value = '';
-  setQuickEntryType('strength');
-
-  modal.classList.add('active');
-  setTimeout(() => document.getElementById('quick-entry-name').focus(), 100);
-}
-
-function closeQuickEntryModal() {
-  document.getElementById('calendar-quick-entry-modal').classList.remove('active');
-}
-
-function setQuickEntryType(type) {
-  document.getElementById('quick-entry-type').value = type;
-
-  document.querySelectorAll('#calendar-quick-entry-modal .type-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.type === type);
-  });
-
-  // Show/hide duration field based on type
-  const durationSection = document.getElementById('quick-entry-duration-section');
-  if (durationSection) {
-    durationSection.style.display = type === 'strength' ? 'none' : '';
-  }
-}
-
-async function saveQuickEntry() {
-  const name = document.getElementById('quick-entry-name').value.trim();
-  const type = document.getElementById('quick-entry-type').value;
-  const duration = parseInt(document.getElementById('quick-entry-duration').value) || (type === 'cardio' ? 30 : type === 'recovery' ? 20 : 45);
-
-  if (!name) {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('calendar.quickEntry.nameRequired'));
-    }
-    return;
-  }
-
-  if (!selectedDateForPlan && currentDayDetailDate) {
-    selectedDateForPlan = currentDayDetailDate;
-  }
-
-  if (!isValidDateString(selectedDateForPlan)) {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte waehle einen gueltigen Tag.');
-    }
-    return;
-  }
-
-  const scheduleEntry = {
-    userId: CURRENT_USER_ID,
-    planId: null, // No plan template
-    planName: name,
-    planType: type,
-    planDuration: duration,
-    date: selectedDateForPlan,
-    completed: false,
-    isQuickEntry: true, // Mark as quick entry
-    createdAt: new Date().toISOString()
-  };
-
-  try {
-    await addDoc(scheduleCollection, scheduleEntry);
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Training hinzugefuegt.');
-    }
-    closeQuickEntryModal();
-    closeAddPlanPanel();
-    await loadSchedule();
-
-    // Refresh day detail modal if open
-    if (currentDayDetailDate) {
-      openDayDetailModal(currentDayDetailDate);
-    }
-  } catch (error) {
-    console.error('Error saving quick entry:', error);
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern.');
-    }
-  }
-}
-
 
 async function removePlanFromDate(scheduleId) {
-  if (!confirm('Plan wirklich entfernen?')) return;
+  if (!confirm(t('calendar.confirmRemove'))) return;
 
   try {
     await deleteDoc(scheduleCollection, scheduleId);
-    console.log('✅ Plan removed from calendar!');
-    await loadSchedule(); // Reload
+    await loadSchedule();
   } catch (error) {
     console.error('Error removing plan:', error);
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Entfernen.');
-  }
+      showEdgeFeedback('error', t('calendar.saveError'));
+    }
   }
 }
 
-function viewCalendarPlanDetails(scheduleId) {
-  // Find the schedule entry
+// ========================================
+// START WORKOUT
+// ========================================
+
+function startScheduledWorkout(scheduleId) {
   const scheduleEntry = scheduleData.find(s => s.id === scheduleId);
-  if (!scheduleEntry) return;
-
-  // Find the actual plan
-  const plan = allPlans.find(p => p.id === scheduleEntry.planId);
-
-  if (!plan) {
+  if (!scheduleEntry) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Plan nicht gefunden.');
+      showEdgeFeedback('error', t('calendar.errors.notFound'));
     }
     return;
   }
 
-  // Close day-detail-modal before opening plan details
-  if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
-    closeDayDetailModal();
+  // Handle Quick Entries (no plan template)
+  if (scheduleEntry.isQuickEntry || !scheduleEntry.planId) {
+    startQuickEntrySession(scheduleEntry);
+    return;
   }
 
-  // Use the existing viewPlanDetails function from plans.js
-  if (typeof viewPlanDetails === 'function') {
-    viewPlanDetails(plan.id);
-  } else {
-    // Fallback: show basic info
-    alert(`Plan: ${plan.name}\nTyp: ${workoutTypeNames[plan.type]}\nDauer: ${plan.duration} Min\nDatum: ${scheduleEntry.date}`);
+  // Handle Recovery type
+  if (scheduleEntry.planType === 'recovery' && typeof openAddRecoveryModal === 'function') {
+    window.pendingScheduledEntry = scheduleEntry;
+    openAddRecoveryModal(scheduleEntry.date);
+    return;
+  }
+
+  // Handle regular plan-based workouts
+  if (typeof startWorkoutFromPlan !== 'function') {
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', t('calendar.errors.engineNotLoaded'));
+    }
+    return;
+  }
+
+  startWorkoutFromPlan(scheduleEntry.planId, scheduleEntry.date, scheduleEntry.id);
+}
+
+function startQuickEntrySession(scheduleEntry) {
+  window.pendingScheduledEntry = scheduleEntry;
+
+  const type = scheduleEntry.planType;
+
+  if (type === 'cardio' && typeof openAddCardioModal === 'function') {
+    openAddCardioModal(scheduleEntry.date);
+    setTimeout(() => {
+      const durationInput = document.getElementById('cardio-duration');
+      if (durationInput && scheduleEntry.planDuration) {
+        durationInput.value = scheduleEntry.planDuration;
+      }
+    }, 100);
+    return;
+  }
+
+  if (type === 'recovery' && typeof openAddRecoveryModal === 'function') {
+    openAddRecoveryModal(scheduleEntry.date);
+    setTimeout(() => {
+      const durationInput = document.getElementById('recovery-duration');
+      if (durationInput && scheduleEntry.planDuration) {
+        durationInput.value = scheduleEntry.planDuration;
+      }
+    }, 100);
+    return;
+  }
+
+  if (type === 'strength' && typeof openAddStrengthModal === 'function') {
+    openAddStrengthModal(scheduleEntry.date);
+    setTimeout(() => {
+      const nameInput = document.getElementById('strength-workout-name');
+      const durationInput = document.getElementById('strength-duration');
+      if (nameInput && scheduleEntry.planName) {
+        nameInput.value = scheduleEntry.planName;
+      }
+      if (durationInput && scheduleEntry.planDuration) {
+        durationInput.value = scheduleEntry.planDuration;
+      }
+    }, 100);
+    return;
+  }
+
+  window.pendingScheduledEntry = null;
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', t('calendar.errors.modalNotAvailable'));
   }
 }
 
 // ========================================
 // HELPER FUNCTIONS
 // ========================================
-
-function ensureDayDetailModalOpen(dateStr) {
-  const modal = document.getElementById('day-detail-modal');
-  if (!modal) return;
-  if (!modal.classList.contains('active')) {
-    openDayDetailModal(dateStr);
-  }
-}
 
 function isValidDateString(dateStr) {
   if (!dateStr || typeof dateStr !== 'string') return false;
@@ -562,116 +804,19 @@ function getPlanTypeColor(type) {
   const colors = {
     strength: 'var(--color-category-strength)',
     cardio: 'var(--color-category-cardio)',
-    mobility: '#22c55e',
     recovery: 'var(--color-category-recovery)',
-    skill: '#a855f7',
-    hiit: '#f97316',
-    mixed: '#db2777'
+    bodyweight: 'var(--color-category-bodyweight)',
+    event: 'var(--accent-primary)',
+    mixed: 'var(--accent-primary)'
   };
   return colors[type] || colors.mixed;
 }
 
 function getPlansForDate(dateStr) {
-  return scheduleData.filter(item => 
-    item.date === dateStr && 
-    item.userId === CURRENT_USER_ID // Multi-user ready!
+  return scheduleData.filter(item =>
+    item.date === dateStr &&
+    item.userId === CURRENT_USER_ID
   );
-}
-
-function startScheduledWorkout(scheduleId) {
-  const scheduleEntry = scheduleData.find(s => s.id === scheduleId);
-  if (!scheduleEntry) {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('calendar.errors.notFound'));
-    }
-    return;
-  }
-
-  // Close day detail modal if open
-  if (document.getElementById('day-detail-modal')?.classList.contains('active')) {
-    closeDayDetailModal();
-  }
-
-  // Handle Quick Entries (no plan template)
-  if (scheduleEntry.isQuickEntry || !scheduleEntry.planId) {
-    startQuickEntrySession(scheduleEntry);
-    return;
-  }
-
-  // Handle Recovery type (uses simple logging modal)
-  if (scheduleEntry.planType === 'recovery' && typeof openAddRecoveryModal === 'function') {
-    // Set pending scheduled entry for completion tracking
-    window.pendingScheduledEntry = scheduleEntry;
-    openAddRecoveryModal(scheduleEntry.date);
-    return;
-  }
-
-  // Handle regular plan-based workouts
-  if (typeof startWorkoutFromPlan !== 'function') {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('calendar.errors.engineNotLoaded'));
-    }
-    return;
-  }
-
-  startWorkoutFromPlan(scheduleEntry.planId, scheduleEntry.date, scheduleEntry.id);
-}
-
-/**
- * Start a session from a Quick Entry (no plan/template)
- * Opens the appropriate modal based on type and tracks the scheduled entry
- */
-function startQuickEntrySession(scheduleEntry) {
-  // Store the scheduled entry for completion tracking after session save
-  window.pendingScheduledEntry = scheduleEntry;
-
-  const type = scheduleEntry.planType;
-
-  if (type === 'cardio' && typeof openAddCardioModal === 'function') {
-    openAddCardioModal(scheduleEntry.date);
-    // Pre-fill duration if available
-    setTimeout(() => {
-      const durationInput = document.getElementById('cardio-duration');
-      if (durationInput && scheduleEntry.planDuration) {
-        durationInput.value = scheduleEntry.planDuration;
-      }
-    }, 100);
-    return;
-  }
-
-  if (type === 'recovery' && typeof openAddRecoveryModal === 'function') {
-    openAddRecoveryModal(scheduleEntry.date);
-    // Pre-fill duration if available
-    setTimeout(() => {
-      const durationInput = document.getElementById('recovery-duration');
-      if (durationInput && scheduleEntry.planDuration) {
-        durationInput.value = scheduleEntry.planDuration;
-      }
-    }, 100);
-    return;
-  }
-
-  if (type === 'strength' && typeof openAddStrengthModal === 'function') {
-    openAddStrengthModal(scheduleEntry.date);
-    // Pre-fill name and duration if available
-    setTimeout(() => {
-      const nameInput = document.getElementById('strength-workout-name');
-      const durationInput = document.getElementById('strength-duration');
-      if (nameInput && scheduleEntry.planName) {
-        nameInput.value = scheduleEntry.planName;
-      }
-      if (durationInput && scheduleEntry.planDuration) {
-        durationInput.value = scheduleEntry.planDuration;
-      }
-    }, 100);
-    return;
-  }
-
-  // Fallback: clear pending entry if no modal available
-  window.pendingScheduledEntry = null;
-  if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', t('calendar.errors.modalNotAvailable'));
-  }
 }
 
 // ========================================
@@ -679,152 +824,28 @@ function startQuickEntrySession(scheduleEntry) {
 // ========================================
 
 function setupScheduleListener() {
-  onCollectionChange(scheduleCollection, (schedule) => {
-    scheduleData = schedule;
-    renderCalendar();
-    if (typeof refreshDashboard === 'function') {
-      refreshDashboard();
-    }
-  });
+  if (typeof onCollectionChange === 'function' && typeof scheduleCollection !== 'undefined') {
+    onCollectionChange(scheduleCollection, (schedule) => {
+      scheduleData = schedule;
+      renderCalendar();
+      if (typeof refreshDashboard === 'function') {
+        refreshDashboard();
+      }
+    });
+  }
 }
 
 // ========================================
-// DAY DETAIL MODAL
+// ACTIVITY CALENDAR (Dashboard Integration)
 // ========================================
 
-function openDayDetailModal(dateStr, openAddPanel = false) {
-  currentDayDetailDate = dateStr;
-  selectedDateForPlan = dateStr;
-  const date = new Date(`${dateStr}T12:00:00`);
-  const dayPlans = getPlansForDate(dateStr);
-
-  // Update modal title
-  document.getElementById('day-detail-title').textContent = `Trainings am ${dayNames[date.getDay() === 0 ? 6 : date.getDay() - 1]}`;
-  document.getElementById('day-detail-date').textContent = `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-
-  // Render plans
-  const container = document.getElementById('day-detail-plans');
-
-  if (dayPlans.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-8 text-gray-400">
-        <span class="material-symbols-rounded" style="font-size: 48px; display: block; margin: 0 auto 1rem;">event_busy</span>
-        <p>Keine Trainings an diesem Tag geplant</p>
-      </div>
-    `;
-  } else {
-    container.innerHTML = dayPlans.map(plan => `
-      <div class="bg-gray-700 rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-gray-600 transition-colors" onclick="viewCalendarPlanDetails('${plan.id}')">
-        <div class="flex-1">
-          <div class="font-semibold text-lg mb-1">${plan.planName}</div>
-          <div class="flex items-center gap-3">
-            <span class="text-xs px-2 py-1 rounded" style="background: color-mix(in srgb, ${getPlanTypeColor(plan.planType)} 25%, transparent); color: ${getPlanTypeColor(plan.planType)};">
-              ${workoutTypeNames[plan.planType] || plan.planType}
-            </span>
-            <span class="text-xs text-gray-400 flex items-center gap-1">
-              <span class="material-symbols-rounded" style="font-size: 14px;">schedule</span>
-              ${plan.planDuration || 45} Min
-            </span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2 ml-3">
-          <button
-            onclick="event.stopPropagation(); startScheduledWorkout('${plan.id}')"
-            class="calendar-start-btn"
-            title="Workout starten"
-          >
-            <span class="material-symbols-rounded" style="font-size: 20px;">play_arrow</span>
-          </button>
-          <button
-            onclick="event.stopPropagation(); removePlanFromDayDetail('${plan.id}')"
-            class="text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all p-2 rounded-lg"
-            title="Training entfernen"
-          >
-            <span class="material-symbols-rounded" style="font-size: 24px;">delete</span>
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  closeAddPlanPanel();
-
-  // Show modal
-  document.getElementById('day-detail-modal').classList.add('active');
-
-  if (openAddPanel) {
-    openAddPlanPanel(dateStr);
-  }
-}
-
-
-function closeDayDetailModal() {
-  document.getElementById('day-detail-modal').classList.remove('active');
-  currentDayDetailDate = null;
-  selectedDateForPlan = null;
-  closeAddPlanPanel();
-}
-
-
-function openAddPlanFromDayDetail() {
-  if (currentDayDetailDate) {
-    openAddPlanPanel(currentDayDetailDate);
-  }
-}
-
-
-async function removePlanFromDayDetail(scheduleId) {
-  if (!confirm('Training wirklich von diesem Tag entfernen?')) return;
-
-  try {
-    await deleteDoc(scheduleCollection, scheduleId);
-    console.log('✅ Plan removed from day!');
-
-    // Reload schedule and refresh modal
-    await loadSchedule();
-
-    // Refresh modal if still open
-    if (currentDayDetailDate) {
-      openDayDetailModal(currentDayDetailDate);
-    }
-  } catch (error) {
-    console.error('Error removing plan:', error);
-    if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Entfernen.');
-  }
-  }
-}
-
-// Close modal on escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    closeDayDetailModal();
-  }
-});
-
-// Close modal on outside click
-document.addEventListener('click', (e) => {
-  const modal = document.getElementById('day-detail-modal');
-  if (e.target === modal) {
-    closeDayDetailModal();
-  }
-});
-
-// Expose functions globally for dashboard access
-window.startScheduledWorkout = startScheduledWorkout;
-
-// ========================================
-// ACTIVITY CALENDAR VIEW (in Calendar Page)
-// Uses shared components from dashboard.js
-// ========================================
+let calendarActivityDate = new Date();
 
 function getCalendarSessionsByDateLocal(year, month) {
-  // Use dashboard function if available, otherwise fallback
   if (typeof getDashboardSessionsByDate === 'function') {
     const sessions = Array.isArray(allSessions) ? allSessions : [];
     return getDashboardSessionsByDate(sessions, year, month);
   }
-  // Fallback: group sessions manually
   const sessions = Array.isArray(allSessions) ? allSessions : [];
   const result = {};
   sessions.forEach(session => {
@@ -838,220 +859,18 @@ function getCalendarSessionsByDateLocal(year, month) {
   return result;
 }
 
-function renderCalendarActivityView() {
-  const container = document.getElementById('calendar-activity-container');
-  if (!container) return;
+// ========================================
+// EXPOSE FUNCTIONS GLOBALLY
+// ========================================
 
-  const year = calendarActivityDate.getFullYear();
-  const month = calendarActivityDate.getMonth();
-  const sessions = Array.isArray(allSessions) ? allSessions : [];
-  const sessionsByDate = getCalendarSessionsByDateLocal(year, month);
+window.startScheduledWorkout = startScheduledWorkout;
+window.goToToday = goToToday;
+window.navigateCalendar = navigateCalendar;
+window.openQuickAddSheet = openQuickAddSheet;
+window.setQuickAddType = setQuickAddType;
+window.saveQuickAddEntry = saveQuickAddEntry;
+window.openCalendarPlanPicker = openCalendarPlanPicker;
+window.handleEventTap = handleEventTap;
+window.removePlanFromDate = removePlanFromDate;
 
-  const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-
-  // Build calendar grid (detailed mode with day numbers)
-  const calendarGridHTML = renderDetailedActivityCalendarGrid(year, month, sessionsByDate, dayLabels);
-
-  // Build training types list
-  const trainingTypesHTML = renderTrainingTypesList(sessions, year, month);
-
-  container.innerHTML = `
-    <div class="activity-calendar-detailed">
-      ${calendarGridHTML}
-    </div>
-    ${trainingTypesHTML}
-  `;
-}
-
-/**
- * Rendert den detaillierten Activity Calendar Grid für die Kalender-Seite
- * Mit Tag-Nummer in der Mitte jeder Zelle
- */
-function renderDetailedActivityCalendarGrid(year, month, sessionsByDate, dayLabels) {
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  let startDay = firstDay.getDay();
-  startDay = startDay === 0 ? 6 : startDay - 1; // Monday-based
-  const daysInMonth = lastDay.getDate();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  let html = `<div class="activity-cal-header">`;
-  html += dayLabels.map(d => `<span class="activity-cal-day-label">${d}</span>`).join('');
-  html += `</div>`;
-  html += `<div class="activity-cal-grid">`;
-
-  // Empty cells for previous month
-  for (let i = 0; i < startDay; i++) {
-    html += `<div class="activity-cal-cell empty"></div>`;
-  }
-
-  // Days of current month
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
-    const dateKey = formatDate(date);
-    const isToday = date.toDateString() === today.toDateString();
-    const daySessions = sessionsByDate[dateKey] || [];
-
-    // Use shared aggregation from dashboard.js
-    const aggregatedDots = typeof aggregateDayByType === 'function'
-      ? aggregateDayByType(daySessions)
-      : [];
-    const dotHTML = typeof renderNestedDots === 'function'
-      ? renderNestedDots(aggregatedDots)
-      : '';
-
-    const todayClass = isToday ? 'today' : '';
-
-    html += `
-      <div class="activity-cal-cell ${todayClass}"
-           onclick="openCalendarActivityDaySheet('${dateKey}')"
-           role="button"
-           tabindex="0">
-        <span class="activity-cal-day-number">${day}</span>
-        ${dotHTML}
-      </div>
-    `;
-  }
-
-  // Fill remaining cells
-  const totalCells = startDay + daysInMonth;
-  const remaining = totalCells <= 35 ? 35 - totalCells : 42 - totalCells;
-  for (let i = 0; i < remaining; i++) {
-    html += `<div class="activity-cal-cell empty"></div>`;
-  }
-
-  html += `</div>`;
-  return html;
-}
-
-/**
- * Rendert die Trainingsarten-Liste unter dem Kalender
- * Sortiert nach Gesamtdauer absteigend
- */
-function renderTrainingTypesList(sessions, year, month) {
-  // Use shared aggregation from dashboard.js
-  const typeData = typeof aggregateSessionsByType === 'function'
-    ? aggregateSessionsByType(sessions, year, month)
-    : [];
-
-  if (typeData.length === 0) {
-    const emptyText = typeof t === 'function'
-      ? t('dashboard.activityCalendar.emptyState')
-      : 'Noch keine Sessions in diesem Zeitraum';
-    return `
-      <div class="training-types-empty">
-        <span class="material-symbols-rounded">event_busy</span>
-        <p>${emptyText}</p>
-      </div>
-    `;
-  }
-
-  const maxMinutes = typeData[0]?.minutes || 1;
-
-  const typeConfig = {
-    strength: {
-      label: typeof t === 'function' ? t('dashboard.trainingTypes.strength') : 'Krafttraining',
-      icon: 'fitness_center'
-    },
-    cardio: {
-      label: typeof t === 'function' ? t('dashboard.trainingTypes.cardio') : 'Cardio',
-      icon: 'directions_run'
-    },
-    recovery: {
-      label: typeof t === 'function' ? t('dashboard.trainingTypes.recovery') : 'Recovery',
-      icon: 'self_improvement'
-    }
-  };
-
-  const items = typeData.map(item => {
-    const config = typeConfig[item.type] || { label: item.type, icon: 'fitness_center' };
-    const durationText = typeof formatDurationMinutesText === 'function'
-      ? formatDurationMinutesText(item.minutes)
-      : `${Math.floor(item.minutes / 60)}h ${item.minutes % 60}m`;
-    const percentage = Math.round((item.minutes / maxMinutes) * 100);
-
-    return `
-      <div class="training-type-item">
-        <div class="training-type-header">
-          <span class="training-type-icon" style="color: ${item.color};">
-            <span class="material-symbols-rounded">${config.icon}</span>
-          </span>
-          <span class="training-type-label">${config.label}</span>
-          <span class="training-type-duration">${durationText}</span>
-        </div>
-        <div class="training-type-bar-bg">
-          <div class="training-type-bar" style="width: ${percentage}%; background: ${item.color};"></div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  return `
-    <div class="training-types-list">
-      ${items}
-    </div>
-  `;
-}
-
-function openCalendarActivityDaySheet(dateKey) {
-  // Use existing openActivityDaySheet from progressv2.js if available
-  if (typeof openActivityDaySheet === 'function') {
-    openActivityDaySheet(dateKey);
-    return;
-  }
-
-  // Fallback: get sessions and show basic info
-  const sessions = typeof getSessionsForDate === 'function' ? getSessionsForDate(dateKey) : [];
-  const date = new Date(dateKey + 'T12:00:00');
-
-  if (typeof openSheet === 'function') {
-    openSheet({
-      title: `Sessions am ${date.getDate()}. ${monthNames[date.getMonth()]}`,
-      render: (sheetContainer) => {
-        if (sessions.length === 0) {
-          const emptyText = typeof t === 'function'
-            ? t('dashboard.activityCalendar.emptyState')
-            : 'Keine Sessions an diesem Tag';
-          sheetContainer.innerHTML = `
-            <div class="activity-day-empty">
-              <span class="material-symbols-rounded">event_busy</span>
-              <p>${emptyText}</p>
-            </div>
-          `;
-          return;
-        }
-
-        sheetContainer.innerHTML = sessions.map(session => {
-          const typeLabel = session.type === 'cardio' ? 'Cardio' : session.type === 'recovery' ? 'Recovery' : 'Kraft';
-          const durationSec = typeof getSessionDurationSeconds === 'function'
-            ? getSessionDurationSeconds(session)
-            : 0;
-          const duration = Math.round(durationSec / 60);
-
-          return `
-            <div class="activity-session-item">
-              <div class="session-item-content">
-                <div class="session-item-title">${session.planName || session.name || typeLabel}</div>
-                <div class="session-item-meta">${duration} Min</div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-    });
-  }
-}
-
-// Navigate to activity calendar from dashboard
-function navigateToActivityCalendar() {
-  if (typeof showView === 'function') {
-    showView('calendar');
-  }
-  setCalendarView('activity');
-}
-
-window.navigateToActivityCalendar = navigateToActivityCalendar;
-window.openCalendarActivityDaySheet = openCalendarActivityDaySheet;
-
-console.log('📅 Calendar module loaded!');
+console.log('Calendar module loaded!');

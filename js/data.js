@@ -1,127 +1,379 @@
 // ========================================
-// PREDEFINED EXERCISES DATA
+// PREDEFINED EXERCISES DATA (CURATED CORE)
 // ========================================
+// ~60 curated exercises covering all muscle groups and difficulty levels.
+// source: 'curated' marks these as read-only default exercises.
 
 const defaultExercises = [
-  {
-    name: 'Pull-ups',
-    description: 'Hänge dich an die Stange, Hände schulterbreit. Ziehe deinen Körper hoch bis das Kinn über der Stange ist. Langsam wieder runter.',
-    muscleGroups: ['back', 'arms'],
-    equipment: ['pull-up-bar'],
-    difficulty: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400'
-  },
+  // === CHEST / PUSH ===
   {
     name: 'Push-ups',
-    description: 'Liegestützposition, Hände schulterbreit. Körper gerade halten. Runter bis die Brust fast den Boden berührt, dann explosiv hoch.',
+    type: 'bodyweight', pattern: 'push',
     muscleGroups: ['chest', 'arms', 'shoulders'],
-    equipment: ['none'],
-    difficulty: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1598971639058-fab3c3109a00?w=400'
-  },
-  {
-    name: 'Dips',
-    description: 'An Barren abstützen, Körper gerade. Runter bis die Schultern auf Ellenbogenhöhe sind. Hoch drücken.',
-    muscleGroups: ['chest', 'arms', 'shoulders'],
-    equipment: ['dip-bars'],
-    difficulty: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400'
-  },
-  {
-    name: 'Muscle-up',
-    description: 'Pull-up + Dip in einer Bewegung. Explosiv hochziehen, Körper über die Stange bringen, in Dip-Position drücken.',
-    muscleGroups: ['back', 'chest', 'arms', 'shoulders'],
-    equipment: ['pull-up-bar', 'rings'],
-    difficulty: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400'
-  },
-  {
-    name: 'Handstand Push-ups',
-    description: 'Handstand an der Wand. Kontrolliert runter bis der Kopf fast den Boden berührt. Hoch drücken.',
-    muscleGroups: ['shoulders', 'arms'],
-    equipment: ['wall'],
-    difficulty: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=400'
-  },
-  {
-    name: 'Pistol Squats',
-    description: 'Einbeinige Kniebeuge. Ein Bein nach vorne gestreckt, mit dem anderen tief runter. Balance halten!',
-    muscleGroups: ['legs'],
-    equipment: ['none'],
-    difficulty: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400'
-  },
-  {
-    name: 'L-Sit',
-    description: 'Auf Barren oder Boden. Beine gestreckt nach vorne, Körper nur mit Armen in der Luft halten.',
-    muscleGroups: ['core', 'arms'],
-    equipment: ['parallettes', 'dip-bars'],
-    difficulty: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400'
-  },
-  {
-    name: 'Planche',
-    description: 'Körper parallel zum Boden, nur mit Händen gestützt. Extrem anspruchsvoll!',
-    muscleGroups: ['shoulders', 'core', 'chest'],
-    equipment: ['parallettes'],
-    difficulty: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=400'
-  },
-  {
-    name: 'Front Lever',
-    description: 'Körper waagerecht unter der Stange halten, nur mit Händen. Körperspannung maximal!',
-    muscleGroups: ['back', 'core'],
-    equipment: ['pull-up-bar', 'rings'],
-    difficulty: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400'
-  },
-  {
-    name: 'Dragon Flag',
-    description: 'Rückenlage auf Bank, Körper steif nach oben, nur Schultern berühren Bank. Langsam runter.',
-    muscleGroups: ['core'],
-    equipment: ['box'],
-    difficulty: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400'
-  },
-  {
-    name: 'Archer Push-ups',
-    description: 'Breite Liegestütz-Position. Gewicht auf eine Seite verlagern, andere Arm gestreckt lassen.',
-    muscleGroups: ['chest', 'shoulders', 'arms'],
-    equipment: ['none'],
-    difficulty: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=400'
-  },
-  {
-    name: 'Hanging Leg Raises',
-    description: 'An Stange hängen, Beine gestreckt bis 90° hochheben. Kontrolliert runter.',
-    muscleGroups: ['core'],
-    equipment: ['pull-up-bar'],
-    difficulty: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400'
-  },
-  {
-    name: 'Typewriter Pull-ups',
-    description: 'Pull-up hoch, dann seitlich zur einen Hand, zur anderen, runter. Fließende Bewegung.',
-    muscleGroups: ['back', 'arms'],
-    equipment: ['pull-up-bar'],
-    difficulty: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400'
-  },
-  {
-    name: 'Human Flag',
-    description: 'Seitlich an vertikaler Stange, Körper waagerecht halten. Extrem schwer!',
-    muscleGroups: ['core', 'shoulders', 'back'],
-    equipment: ['pull-up-bar', 'wall'],
-    difficulty: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400'
+    equipment: ['none'], difficulty: 1, source: 'curated'
   },
   {
     name: 'Decline Push-ups',
-    description: 'Füße erhöht (auf Bank/Box), normale Push-ups. Mehr Gewicht auf Armen.',
+    type: 'bodyweight', pattern: 'push',
     muscleGroups: ['chest', 'shoulders', 'arms'],
-    equipment: ['box'],
-    difficulty: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400'
+    equipment: ['box'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Diamond Push-ups',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['chest', 'arms'],
+    equipment: ['none'], difficulty: 2, source: 'curated',
+    parentId: null
+  },
+  {
+    name: 'Archer Push-ups',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['chest', 'shoulders', 'arms'],
+    equipment: ['none'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Pseudo Planche Push-ups',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['chest', 'shoulders', 'core'],
+    equipment: ['none'], difficulty: 4, source: 'curated'
+  },
+  {
+    name: 'Dips',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['chest', 'arms', 'shoulders'],
+    equipment: ['dip-bars'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Ring Dips',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['chest', 'arms', 'shoulders'],
+    equipment: ['rings'], difficulty: 4, source: 'curated'
+  },
+
+  // === BACK / PULL ===
+  {
+    name: 'Pull-ups',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'arms'],
+    equipment: ['pull-up-bar'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Chin-ups',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'arms'],
+    equipment: ['pull-up-bar'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Negative Pull-ups',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'arms'],
+    equipment: ['pull-up-bar'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Wide Grip Pull-ups',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'shoulders'],
+    equipment: ['pull-up-bar'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Typewriter Pull-ups',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'arms'],
+    equipment: ['pull-up-bar'], difficulty: 4, source: 'curated'
+  },
+  {
+    name: 'Muscle-up',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'chest', 'arms', 'shoulders'],
+    equipment: ['pull-up-bar'], difficulty: 5, source: 'curated'
+  },
+  {
+    name: 'Ring Muscle-up',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'chest', 'arms', 'shoulders'],
+    equipment: ['rings'], difficulty: 5, source: 'curated'
+  },
+  {
+    name: 'Australian Pull-ups',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'arms'],
+    equipment: ['pull-up-bar'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Front Lever',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'core'],
+    equipment: ['pull-up-bar'], difficulty: 5, source: 'curated'
+  },
+  {
+    name: 'Front Lever Raises',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'core'],
+    equipment: ['pull-up-bar'], difficulty: 4, source: 'curated'
+  },
+
+  // === SHOULDERS ===
+  {
+    name: 'Pike Push-ups',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['shoulders', 'arms'],
+    equipment: ['none'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Handstand Push-ups',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['shoulders', 'arms'],
+    equipment: ['wall'], difficulty: 4, source: 'curated'
+  },
+  {
+    name: 'Handstand Hold',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['shoulders', 'core'],
+    equipment: ['wall'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Freestanding Handstand',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['shoulders', 'core'],
+    equipment: ['none'], difficulty: 5, source: 'curated'
+  },
+
+  // === CORE ===
+  {
+    name: 'Plank',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Side Plank',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Hollow Body Hold',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core'],
+    equipment: ['mat'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'L-Sit',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core', 'arms'],
+    equipment: ['parallettes'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'V-Sit',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core', 'arms'],
+    equipment: ['parallettes'], difficulty: 5, source: 'curated'
+  },
+  {
+    name: 'Hanging Leg Raises',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core'],
+    equipment: ['pull-up-bar'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Toes to Bar',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core'],
+    equipment: ['pull-up-bar'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Dragon Flag',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core'],
+    equipment: ['box'], difficulty: 4, source: 'curated'
+  },
+  {
+    name: 'Ab Wheel Rollout',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core', 'shoulders'],
+    equipment: ['none'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Human Flag',
+    type: 'bodyweight', pattern: 'core',
+    muscleGroups: ['core', 'shoulders', 'back'],
+    equipment: ['pull-up-bar'], difficulty: 5, source: 'curated'
+  },
+
+  // === LEGS ===
+  {
+    name: 'Air Squats',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Bulgarian Split Squats',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['box'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Pistol Squats',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 4, source: 'curated'
+  },
+  {
+    name: 'Shrimp Squats',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 4, source: 'curated'
+  },
+  {
+    name: 'Jump Squats',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Nordic Hamstring Curl',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Calf Raises',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Step-ups',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['box'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Lunges',
+    type: 'bodyweight', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+
+  // === FULL BODY / STATICS ===
+  {
+    name: 'Planche',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['shoulders', 'core', 'chest'],
+    equipment: ['parallettes'], difficulty: 5, source: 'curated'
+  },
+  {
+    name: 'Tuck Planche',
+    type: 'bodyweight', pattern: 'push',
+    muscleGroups: ['shoulders', 'core'],
+    equipment: ['parallettes'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Back Lever',
+    type: 'bodyweight', pattern: 'pull',
+    muscleGroups: ['back', 'shoulders', 'core'],
+    equipment: ['rings'], difficulty: 4, source: 'curated'
+  },
+  {
+    name: 'Burpees',
+    type: 'bodyweight', pattern: 'full',
+    muscleGroups: ['chest', 'legs', 'core'],
+    equipment: ['none'], difficulty: 2, source: 'curated'
+  },
+
+  // === STRENGTH (GYM) ===
+  {
+    name: 'Bench Press',
+    type: 'strength', pattern: 'push',
+    muscleGroups: ['chest', 'arms', 'shoulders'],
+    equipment: ['weights'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Overhead Press',
+    type: 'strength', pattern: 'push',
+    muscleGroups: ['shoulders', 'arms'],
+    equipment: ['weights'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Barbell Row',
+    type: 'strength', pattern: 'pull',
+    muscleGroups: ['back', 'arms'],
+    equipment: ['weights'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Deadlift',
+    type: 'strength', pattern: 'pull',
+    muscleGroups: ['back', 'legs', 'core'],
+    equipment: ['weights'], difficulty: 3, source: 'curated'
+  },
+  {
+    name: 'Barbell Squat',
+    type: 'strength', pattern: 'legs',
+    muscleGroups: ['legs', 'core'],
+    equipment: ['weights'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Dumbbell Curl',
+    type: 'strength', pattern: 'pull',
+    muscleGroups: ['arms'],
+    equipment: ['weights'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Tricep Extension',
+    type: 'strength', pattern: 'push',
+    muscleGroups: ['arms'],
+    equipment: ['weights'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Lateral Raises',
+    type: 'strength', pattern: 'push',
+    muscleGroups: ['shoulders'],
+    equipment: ['weights'], difficulty: 1, source: 'curated'
+  },
+
+  // === CARDIO ===
+  {
+    name: 'Laufen',
+    type: 'cardio', pattern: 'full',
+    muscleGroups: ['legs', 'core'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Seilspringen',
+    type: 'cardio', pattern: 'full',
+    muscleGroups: ['legs', 'shoulders'],
+    equipment: ['none'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Radfahren',
+    type: 'cardio', pattern: 'legs',
+    muscleGroups: ['legs'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'Schwimmen',
+    type: 'cardio', pattern: 'full',
+    muscleGroups: ['back', 'shoulders', 'legs'],
+    equipment: ['none'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Rudern',
+    type: 'cardio', pattern: 'pull',
+    muscleGroups: ['back', 'legs', 'arms'],
+    equipment: ['none'], difficulty: 2, source: 'curated'
+  },
+  {
+    name: 'Mountain Climbers',
+    type: 'cardio', pattern: 'full',
+    muscleGroups: ['core', 'legs'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
+  },
+  {
+    name: 'High Knees',
+    type: 'cardio', pattern: 'full',
+    muscleGroups: ['legs', 'core'],
+    equipment: ['none'], difficulty: 1, source: 'curated'
   }
 ];
 
@@ -132,20 +384,20 @@ const defaultExercises = [
 // Wird beim ersten Laden aufgerufen
 async function initializeDefaultExercises() {
   try {
-    // Check ob schon Übungen existieren
+    // Check ob schon Uebungen existieren
     const existing = await getAllDocs(exercisesCollection);
-    
+
     if (existing.length === 0) {
-      console.log('📚 Initializing default exercises...');
-      
-      // Alle default Übungen hinzufügen
+      console.log('Initializing default exercises...');
+
+      // Alle default Uebungen hinzufuegen
       for (const exercise of defaultExercises) {
         await addDoc(exercisesCollection, exercise);
       }
-      
-      console.log('✅ Default exercises added!');
+
+      console.log('Default exercises added: ' + defaultExercises.length);
     } else {
-      console.log(`📚 ${existing.length} exercises already in database`);
+      console.log(existing.length + ' exercises already in database');
     }
   } catch (error) {
     console.error('Error initializing exercises:', error);

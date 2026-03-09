@@ -7,7 +7,7 @@
  */
 const numberPickerConfig = {
   isOpen: false,
-  type: null,           // 'reps' | 'weight'
+  type: null,           // 'reps' | 'weight' | 'hold'
   currentValue: 0,
   onConfirm: null,
   onCancel: null
@@ -36,6 +36,54 @@ const PICKER_CONFIGS = {
       for (let i = 0; i <= 250; i += 2.5) {
         values.push(i);
       }
+      return values;
+    }
+  },
+  hold: {
+    min: 0,
+    max: 600,
+    step: 1,
+    suffixKey: 'common.secondsShort',
+    titleKey: 'numberPicker.holdTitle',
+    generateValues: () => Array.from({ length: 601 }, (_, i) => i)
+  },
+  bodyWeightKg: {
+    min: 30,
+    max: 200,
+    step: 0.5,
+    suffix: 'kg',
+    titleKey: 'profile.bodyWeight',
+    generateValues: () => {
+      const values = [];
+      for (let i = 30; i <= 200; i += 0.5) values.push(i);
+      return values;
+    }
+  },
+  bodyWeightLbs: {
+    min: 66,
+    max: 440,
+    step: 1,
+    suffix: 'lbs',
+    titleKey: 'profile.bodyWeight',
+    generateValues: () => Array.from({ length: 375 }, (_, i) => i + 66)
+  },
+  bodyHeight: {
+    min: 100,
+    max: 220,
+    step: 1,
+    suffix: 'cm',
+    titleKey: 'profile.bodyHeight',
+    generateValues: () => Array.from({ length: 121 }, (_, i) => i + 100)
+  },
+  restTimer: {
+    min: 10,
+    max: 300,
+    step: 5,
+    suffix: 's',
+    titleKey: 'settings.defaultRestTimer',
+    generateValues: () => {
+      const values = [];
+      for (let i = 10; i <= 300; i += 5) values.push(i);
       return values;
     }
   }
@@ -103,6 +151,9 @@ function renderNumberPickerSheet() {
   const values = typeConfig.generateValues();
   const title = typeof t === 'function' ? t(typeConfig.titleKey) : typeConfig.titleKey;
   const cancelText = typeof t === 'function' ? t('common.cancel') : 'Abbrechen';
+  const suffix = typeConfig.suffixKey
+    ? (typeof t === 'function' ? t(typeConfig.suffixKey, { n: '' }) : '')
+    : (typeConfig.suffix || '');
 
   const overlay = document.createElement('div');
   overlay.id = 'number-picker-overlay';
@@ -137,7 +188,7 @@ function renderNumberPickerSheet() {
                 aria-selected="${value === numberPickerConfig.currentValue}"
               >
                 <span class="number-picker-value">${displayValue}</span>
-                <span class="number-picker-suffix">${typeConfig.suffix}</span>
+                <span class="number-picker-suffix">${suffix}</span>
               </div>
             `;
           }).join('')}
@@ -273,16 +324,16 @@ function setupNumberPickerEvents(overlay) {
 function handleWheelScrollEnd(wheel) {
   const itemHeight = 56;
   const scrollTop = wheel.scrollTop;
-  const containerHeight = wheel.clientHeight;
-  const centerOffset = (containerHeight - itemHeight) / 2;
 
-  // Find item closest to center
-  const centerScrollPosition = scrollTop + centerOffset;
-  const nearestIndex = Math.round(centerScrollPosition / itemHeight);
+  // With border-box and padding-top matching centerOffset,
+  // scrollTop directly maps to item index (scroll-snap centers items)
+  const nearestIndex = Math.round(scrollTop / itemHeight);
 
   const items = wheel.querySelectorAll('.number-picker-item');
-  if (nearestIndex >= 0 && nearestIndex < items.length) {
-    const newValue = parseFloat(items[nearestIndex].dataset.value);
+  const clampedIndex = Math.max(0, Math.min(items.length - 1, nearestIndex));
+
+  if (clampedIndex >= 0 && clampedIndex < items.length) {
+    const newValue = parseFloat(items[clampedIndex].dataset.value);
 
     // Only update if value changed
     if (newValue !== numberPickerConfig.currentValue) {
@@ -300,8 +351,6 @@ function handleWheelScrollEnd(wheel) {
 function scrollToValue(wheel, value, smooth = true) {
   const items = wheel.querySelectorAll('.number-picker-item');
   const itemHeight = 56;
-  const containerHeight = wheel.clientHeight;
-  const centerOffset = (containerHeight - itemHeight) / 2;
 
   let targetIndex = 0;
   items.forEach((item, index) => {
@@ -310,7 +359,9 @@ function scrollToValue(wheel, value, smooth = true) {
     }
   });
 
-  const targetScroll = targetIndex * itemHeight - centerOffset;
+  // scrollTop = index * itemHeight centers the item in the highlight
+  // (padding-top ensures the first item can be scrolled to center)
+  const targetScroll = targetIndex * itemHeight;
 
   if (smooth) {
     wheel.scrollTo({

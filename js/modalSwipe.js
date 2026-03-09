@@ -12,6 +12,15 @@ let modalDragStartTime = 0;
 let activeModal = null;
 let activeModalContent = null;
 
+function updateBodyScrollLock() {
+  const anyModalOpen = document.querySelector('.modal.active');
+  if (anyModalOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+}
+
 function initModalSwipeToClose() {
   // Find all modals and add touch event listeners
   const modals = document.querySelectorAll('.modal');
@@ -33,6 +42,12 @@ function initModalSwipeToClose() {
         closeModalWithAnimation(modal, modalContent);
       }
     });
+
+    // Watch for active class changes to lock/unlock body scroll
+    const observer = new MutationObserver(() => {
+      updateBodyScrollLock();
+    });
+    observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
   });
 
   // Escape key to close (existing behavior, now with animation)
@@ -154,8 +169,8 @@ function closeModalWithAnimation(modal, modalContent) {
     modalContent.style.transform = ''; // Reset for next open
     modal.style.opacity = '';
 
-    // Restore body scroll
-    document.body.style.overflow = '';
+    // Restore body scroll (handled by MutationObserver via updateBodyScrollLock)
+    updateBodyScrollLock();
   }, 300);
 }
 

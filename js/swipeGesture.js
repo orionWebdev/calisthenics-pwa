@@ -230,6 +230,8 @@ function destroySwipeGesture(containerId) {
  * Initialize swipe for Progress tabs
  */
 function initProgressSwipe() {
+  // V3: Progress has no tabs anymore, swipe disabled
+  if (typeof initProgressV3 === 'function') return;
   initSwipeGesture({
     containerId: 'progress-tab-content',
     tabs: ['overview', 'strength', 'cardio'],
@@ -318,7 +320,8 @@ if (typeof originalShowView === 'function') {
     originalShowView(viewName);
     // Re-init swipes after view transition
     setTimeout(() => {
-      if (viewName === 'progress') initProgressSwipe();
+      // V3: Progress swipe disabled (no tabs)
+      if (viewName === 'progress' && typeof initProgressV3 !== 'function') initProgressSwipe();
       if (viewName === 'training') initTrainingSwipe();
       if (viewName === 'calendar') initCalendarSwipe();
     }, 100);

@@ -18,7 +18,7 @@
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#060A30">
+  <meta name="theme-color" content="#000000">
 
   <!-- iOS-specific PWA Meta-Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,7 +26,7 @@
   <meta name="apple-mobile-web-app-title" content="CaliPro">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
-<body class="bg-gray-900 text-white">
+<body>
 
   <!-- ==================== AUTH SPLASH SCREEN (Loading) ==================== -->
   <div id="auth-splash" class="auth-splash active">
@@ -158,8 +158,8 @@
       <div class="flex items-center gap-3">
         <h1 id="mobile-view-title" class="text-xl font-bold">Dashboard</h1>
       </div>
-      <button onclick="showView('profile')" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-700 border-2 border-gray-600 hover:border-pink-500 transition-all">
-        <span class="material-symbols-rounded" style="font-size: 24px; color: #9ca3af;">account_circle</span>
+      <button id="settings-btn" onclick="showView('profile')" class="settings-icon-btn">
+        <span class="material-symbols-rounded">more_horiz</span>
       </button>
     </div>
   </div>
@@ -231,11 +231,6 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Quick Stats Widget -->
-      <div id="dashboard-quick-stats" class="mb-4">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
       <!-- Activity Calendar Widget (Expanded with Month Navigation) -->
       <div id="dashboard-activity-calendar" class="dashboard-card mb-4">
         <!-- Wird von JavaScript gefüllt -->
@@ -246,30 +241,14 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Recent Sessions -->
-      <div id="recent-sessions-card" class="dashboard-card">
+      <!-- Quick Stats Widget -->
+      <div id="dashboard-quick-stats" class="mb-4">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
+
     </div>
 
-    <!-- ALL SESSIONS VIEW -->
-    <div id="view-allSessions" class="view hidden">
-      <div class="all-sessions-page">
-        <!-- Header mit Back-Button -->
-        <div class="all-sessions-header">
-          <button class="all-sessions-back-btn" onclick="showView('dashboard')" aria-label="Zurück">
-            <span class="material-symbols-rounded">arrow_back</span>
-          </button>
-          <h2 class="all-sessions-title" id="all-sessions-title">Alle Sessions</h2>
-        </div>
-
-        <!-- Sessions Liste -->
-        <div id="all-sessions-list" class="all-sessions-list">
-          <!-- Wird von JavaScript gefüllt -->
-        </div>
-      </div>
-    </div>
 
         <!-- TRAINING VIEW -->
     <div id="view-training" class="view hidden">
@@ -298,7 +277,7 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
             <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-            <span>Neuer Plan</span>
+            <span id="plan-add-btn-label"></span>
           </button>
         </div>
 
@@ -313,6 +292,10 @@
             <span class="material-symbols-rounded">fitness_center</span>
             <span id="plan-filter-strength-label"></span>
           </button>
+          <button class="filter-chip" data-type="bodyweight" onclick="setPlanTypeFilter('bodyweight')">
+            <span class="material-symbols-rounded">sports_gymnastics</span>
+            <span id="plan-filter-bodyweight-label"></span>
+          </button>
           <button class="filter-chip" data-type="cardio" onclick="setPlanTypeFilter('cardio')">
             <span class="material-symbols-rounded">directions_run</span>
             <span id="plan-filter-cardio-label"></span>
@@ -322,37 +305,14 @@
             <span id="plan-filter-recovery-label"></span>
           </button>
           </div>
-
-          <div class="plan-type-filters flex gap-2" id="plan-difficulty-filters">
-            <button class="filter-chip active" data-difficulty="" onclick="setPlanDifficultyFilter('')">
-              <span class="material-symbols-rounded">signal_cellular_alt</span>
-              <span id="plan-difficulty-option-all"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="beginner" onclick="setPlanDifficultyFilter('beginner')">
-              <span class="material-symbols-rounded">bolt</span>
-              <span id="plan-difficulty-option-beginner"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="intermediate" onclick="setPlanDifficultyFilter('intermediate')">
-              <span class="material-symbols-rounded">trending_up</span>
-              <span id="plan-difficulty-option-intermediate"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="advanced" onclick="setPlanDifficultyFilter('advanced')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span id="plan-difficulty-option-advanced"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="elite" onclick="setPlanDifficultyFilter('elite')">
-              <span class="material-symbols-rounded">military_tech</span>
-              <span id="plan-difficulty-option-elite"></span>
-            </button>
-          </div>
         </div>
 
         <!-- Plans Grid -->
-        <div id="plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div id="plans-grid" class="grid grid-cols-1 gap-4">
           <!-- Wird von JavaScript gefüllt -->
           <div class="col-span-full text-center py-12 text-gray-400">
             <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">assignment</span>
-            <p>Lade Pläne...</p>
+            <p id="plans-loading-text"></p>
           </div>
         </div>
       </div>
@@ -366,82 +326,84 @@
           </button>
         </div>
 
-        <!-- Filter & Search -->
-        <div class="filter-container">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            <!-- Search -->
-            <div class="filter-item">
-              <label class="filter-label">
-                <span class="material-symbols-rounded">search</span>
-                <span>Suche</span>
-              </label>
-              <div class="filter-input-wrapper">
-                <span class="material-symbols-rounded filter-input-icon">search</span>
-                <input
-                  type="text"
-                  id="search-input"
-                  placeholder="Übung suchen..."
-                  class="filter-input"
-                  oninput="filterExercises()"
-                />
-              </div>
-            </div>
+        <!-- Sticky Search Bar -->
+        <div class="exercise-search-sticky" id="exercise-search-sticky">
+          <div class="exercise-search-bar">
+            <span class="material-symbols-rounded exercise-search-icon">search</span>
+            <input
+              type="text"
+              id="search-input"
+              class="exercise-search-input"
+              oninput="onExerciseSearchInput()"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button
+              type="button"
+              id="exercise-search-clear"
+              class="exercise-search-clear hidden"
+              onclick="clearExerciseSearch()"
+              aria-label="Suche leeren"
+            >
+              <span class="material-symbols-rounded">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="exercise-filters-bar">
+          <div class="plan-type-filters flex gap-2" id="exercise-muscle-filters">
+            <button class="filter-chip active" data-muscle="" onclick="setExerciseMuscleFilter('')">
+              <span class="material-symbols-rounded">apps</span>
+              <span id="exercise-filter-muscle-all"></span>
+            </button>
+            <button class="filter-chip" data-muscle="chest" onclick="setExerciseMuscleFilter('chest')">
+              <span class="material-symbols-rounded">favorite</span>
+              <span id="exercise-filter-muscle-chest"></span>
+            </button>
+            <button class="filter-chip" data-muscle="back" onclick="setExerciseMuscleFilter('back')">
+              <span class="material-symbols-rounded">backpack</span>
+              <span id="exercise-filter-muscle-back"></span>
+            </button>
+            <button class="filter-chip" data-muscle="shoulders" onclick="setExerciseMuscleFilter('shoulders')">
+              <span class="material-symbols-rounded">accessibility_new</span>
+              <span id="exercise-filter-muscle-shoulders"></span>
+            </button>
+            <button class="filter-chip" data-muscle="arms" onclick="setExerciseMuscleFilter('arms')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span id="exercise-filter-muscle-arms"></span>
+            </button>
+            <button class="filter-chip" data-muscle="core" onclick="setExerciseMuscleFilter('core')">
+              <span class="material-symbols-rounded">self_improvement</span>
+              <span id="exercise-filter-muscle-core"></span>
+            </button>
+            <button class="filter-chip" data-muscle="legs" onclick="setExerciseMuscleFilter('legs')">
+              <span class="material-symbols-rounded">directions_walk</span>
+              <span id="exercise-filter-muscle-legs"></span>
+            </button>
           </div>
 
-          <div class="exercise-filters-bar">
-            <div class="plan-type-filters flex gap-2" id="exercise-muscle-filters">
-              <button class="filter-chip active" data-muscle="" onclick="setExerciseMuscleFilter('')">
-                <span class="material-symbols-rounded">apps</span>
-                <span id="exercise-filter-muscle-all"></span>
-              </button>
-              <button class="filter-chip" data-muscle="chest" onclick="setExerciseMuscleFilter('chest')">
-                <span class="material-symbols-rounded">favorite</span>
-                <span id="exercise-filter-muscle-chest"></span>
-              </button>
-              <button class="filter-chip" data-muscle="back" onclick="setExerciseMuscleFilter('back')">
-                <span class="material-symbols-rounded">backpack</span>
-                <span id="exercise-filter-muscle-back"></span>
-              </button>
-              <button class="filter-chip" data-muscle="shoulders" onclick="setExerciseMuscleFilter('shoulders')">
-                <span class="material-symbols-rounded">accessibility_new</span>
-                <span id="exercise-filter-muscle-shoulders"></span>
-              </button>
-              <button class="filter-chip" data-muscle="arms" onclick="setExerciseMuscleFilter('arms')">
-                <span class="material-symbols-rounded">fitness_center</span>
-                <span id="exercise-filter-muscle-arms"></span>
-              </button>
-              <button class="filter-chip" data-muscle="core" onclick="setExerciseMuscleFilter('core')">
-                <span class="material-symbols-rounded">self_improvement</span>
-                <span id="exercise-filter-muscle-core"></span>
-              </button>
-              <button class="filter-chip" data-muscle="legs" onclick="setExerciseMuscleFilter('legs')">
-                <span class="material-symbols-rounded">directions_walk</span>
-                <span id="exercise-filter-muscle-legs"></span>
-              </button>
-            </div>
-
-            <div class="plan-type-filters flex gap-2" id="exercise-difficulty-filters">
-              <button class="filter-chip active" data-difficulty="" onclick="setExerciseDifficultyFilter('')">
-                <span class="material-symbols-rounded">signal_cellular_alt</span>
-                <span id="exercise-filter-difficulty-all"></span>
-              </button>
-              <button class="filter-chip" data-difficulty="beginner" onclick="setExerciseDifficultyFilter('beginner')">
-                <span class="material-symbols-rounded">bolt</span>
-                <span id="exercise-filter-difficulty-beginner"></span>
-              </button>
-              <button class="filter-chip" data-difficulty="intermediate" onclick="setExerciseDifficultyFilter('intermediate')">
-                <span class="material-symbols-rounded">trending_up</span>
-                <span id="exercise-filter-difficulty-intermediate"></span>
-              </button>
-              <button class="filter-chip" data-difficulty="advanced" onclick="setExerciseDifficultyFilter('advanced')">
-                <span class="material-symbols-rounded">fitness_center</span>
-                <span id="exercise-filter-difficulty-advanced"></span>
-              </button>
-              <button class="filter-chip" data-difficulty="elite" onclick="setExerciseDifficultyFilter('elite')">
-                <span class="material-symbols-rounded">military_tech</span>
-                <span id="exercise-filter-difficulty-elite"></span>
-              </button>
-            </div>
+          <div class="plan-type-filters flex gap-2" id="exercise-difficulty-filters">
+            <button class="filter-chip active" data-difficulty="" onclick="setExerciseDifficultyFilter('')">
+              <span class="material-symbols-rounded">signal_cellular_alt</span>
+              <span id="exercise-filter-difficulty-all"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="beginner" onclick="setExerciseDifficultyFilter('beginner')">
+              <span class="material-symbols-rounded">bolt</span>
+              <span id="exercise-filter-difficulty-beginner"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="intermediate" onclick="setExerciseDifficultyFilter('intermediate')">
+              <span class="material-symbols-rounded">trending_up</span>
+              <span id="exercise-filter-difficulty-intermediate"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="advanced" onclick="setExerciseDifficultyFilter('advanced')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span id="exercise-filter-difficulty-advanced"></span>
+            </button>
+            <button class="filter-chip" data-difficulty="elite" onclick="setExerciseDifficultyFilter('elite')">
+              <span class="material-symbols-rounded">military_tech</span>
+              <span id="exercise-filter-difficulty-elite"></span>
+            </button>
           </div>
         </div>
 
@@ -460,46 +422,55 @@
 
     </div>
 
-    <!-- CALENDAR VIEW (Plan Calendar Only) -->
-    <div id="view-calendar" class="view hidden">
+    <!-- CALENDAR VIEW (iOS Calendar Style - Fixed Layout) -->
+    <div id="view-calendar" class="view hidden plan-calendar-view">
 
-      <!-- Navigation -->
-      <div class="bg-gray-800 rounded-xl p-3 sm:p-4 mb-6 border border-gray-700 flex items-center justify-between">
-        <button onclick="navigateCalendar('prev')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
-          ← <span class="hidden sm:inline">Zurück</span>
-        </button>
+      <!-- UPPER SECTION: Month Calendar (~66vh) -->
+      <div class="calendar-month-section">
+        <!-- Month Header -->
+        <div class="plan-calendar-header">
+          <button onclick="navigateCalendar('prev')" class="plan-calendar-nav-btn" aria-label="Vorheriger Monat">
+            <span class="material-symbols-rounded">chevron_left</span>
+          </button>
 
-        <div class="text-center">
-          <h3 id="calendar-title" class="text-lg sm:text-2xl font-bold">Januar 2026</h3>
-          <button onclick="goToToday()" class="text-xs sm:text-sm text-blue-400 hover:text-blue-300 mt-1">
-            Heute
+          <h2 id="calendar-title" class="plan-calendar-title">Januar 2026</h2>
+
+          <button onclick="navigateCalendar('next')" class="plan-calendar-nav-btn" aria-label="Nächster Monat">
+            <span class="material-symbols-rounded">chevron_right</span>
           </button>
         </div>
 
-        <button onclick="navigateCalendar('next')" class="bg-gray-700 hover:bg-gray-600 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
-          <span class="hidden sm:inline">Weiter</span> →
-        </button>
-      </div>
-
-      <!-- Plan Calendar View (Month View) -->
-      <div id="calendar-plan-view" class="calendar-view active">
-        <!-- Weekday Headers -->
-        <div class="grid grid-cols-7 mb-2" style="background: rgba(255, 255, 255, 0.05); border-radius: 0.5rem;">
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Mo</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Di</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Mi</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Do</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Fr</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2 border-r border-white/5 last:border-r-0">Sa</div>
-          <div class="text-center font-semibold text-gray-400 text-sm py-2">So</div>
+        <!-- Weekday Labels -->
+        <div class="plan-calendar-weekdays">
+          <span>Mo</span>
+          <span>Di</span>
+          <span>Mi</span>
+          <span>Do</span>
+          <span>Fr</span>
+          <span>Sa</span>
+          <span>So</span>
         </div>
 
         <!-- Calendar Grid -->
-        <div id="calendar-grid" class="grid grid-cols-7" style="background: rgba(255, 255, 255, 0.03); border-radius: 0.5rem; overflow: hidden;">
-          <!-- Wird von JavaScript gefüllt -->
+        <div id="calendar-grid" class="plan-calendar-grid">
+          <!-- Populated by JavaScript -->
         </div>
       </div>
-</div>
+
+      <!-- LOWER SECTION: Day Agenda (~34vh, scrollable) -->
+      <div class="calendar-agenda-container">
+        <div class="calendar-agenda-list-header">
+          <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
+          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="Training hinzufuegen">
+            <span class="material-symbols-rounded">add</span>
+          </button>
+        </div>
+        <div id="calendar-agenda-list" class="calendar-agenda-list">
+          <!-- Populated by JavaScript: date sections with events -->
+        </div>
+      </div>
+
+    </div>
 
     <!-- PROGRESS VIEW -->
     <!-- PROGRESS VIEW V2 -->
@@ -521,41 +492,10 @@
         <!-- Wird von JS gefuellt -->
       </div>
     </div>
-    <!-- PROFILE VIEW -->
+    <!-- PROFILE & SETTINGS VIEW -->
     <div id="view-profile" class="view hidden">
-      <div class="space-y-6">
-        <!-- User Info Card -->
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6">
-          <div class="flex items-center gap-4 mb-6">
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center">
-              <span class="material-symbols-rounded" style="font-size: 32px; color: white;">account_circle</span>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold" id="profile-user-name">Benutzer</h3>
-              <p class="text-sm text-gray-400" id="profile-user-email">email@example.com</p>
-            </div>
-          </div>
-
-          <!-- Sign Out Button -->
-          <button
-            onclick="handleSignOut()"
-            class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-all font-semibold"
-            type="button"
-          >
-            <span class="material-symbols-rounded">logout</span>
-            <span>Abmelden</span>
-          </button>
-        </div>
-
-        <!-- App Info -->
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6">
-          <h3 class="text-lg font-bold mb-3">App Information</h3>
-          <div class="space-y-2 text-sm text-gray-400">
-            <p><strong class="text-white">Version:</strong> 1.0.0</p>
-            <p><strong class="text-white">Build:</strong> PWA</p>
-            <p><strong class="text-white">Firebase:</strong> Connected</p>
-          </div>
-        </div>
+      <div id="settings-container" class="space-y-6">
+        <!-- Wird von js/settings.js gerendert -->
       </div>
     </div>
 
@@ -567,9 +507,6 @@
     <div class="modal-content">
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-2xl font-bold" id="generic-modal-title">Modal Titel</h3>
-        <button onclick="closeGenericModal()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
       </div>
       <div id="generic-modal-body">
         <!-- Content wird von JavaScript eingefügt -->
@@ -588,133 +525,141 @@
       </div>
 
       <div class="space-y-5">
-        <!-- Section 1: Grundlagen -->
+        <!-- Section 1: Grundlagen (immer sichtbar) -->
         <div class="wizard-section">
           <div class="wizard-section-header">
             <span class="wizard-section-number">1</span>
-            <span class="wizard-section-title">Grundlagen</span>
+            <span class="wizard-section-title" id="exercise-step1-title">Grundlagen</span>
           </div>
           <div class="wizard-section-content">
             <!-- Name -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">Übungsname *</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-name-label">Uebungsname *</label>
               <input
                 type="text"
                 id="exercise-name"
                 placeholder="z.B. Pull-ups, Liegestuetze, Kniebeugen"
-                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
               />
             </div>
 
-            <!-- Exercise Icon & Difficulty Row -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Exercise Icon -->
-              <div>
-                <label class="block text-sm font-medium mb-2">Icon</label>
-                <div class="exercise-icon-picker" id="exercise-icon-picker">
-                  <button type="button" class="icon-picker-btn active" data-icon="fitness_center" onclick="setExerciseIcon('fitness_center')">
-                    <span class="material-symbols-rounded">fitness_center</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="sports_gymnastics" onclick="setExerciseIcon('sports_gymnastics')">
-                    <span class="material-symbols-rounded">sports_gymnastics</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="exercise" onclick="setExerciseIcon('exercise')">
-                    <span class="material-symbols-rounded">exercise</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="self_improvement" onclick="setExerciseIcon('self_improvement')">
-                    <span class="material-symbols-rounded">self_improvement</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="sports_martial_arts" onclick="setExerciseIcon('sports_martial_arts')">
-                    <span class="material-symbols-rounded">sports_martial_arts</span>
-                  </button>
-                  <button type="button" class="icon-picker-btn" data-icon="accessibility_new" onclick="setExerciseIcon('accessibility_new')">
-                    <span class="material-symbols-rounded">accessibility_new</span>
-                  </button>
-                </div>
-                <input type="hidden" id="exercise-icon" value="fitness_center">
+            <!-- Type -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-type-label">Typ *</label>
+              <div class="exercise-type-pills" id="exercise-type-pills">
+                <button type="button" class="difficulty-pill active" data-type="strength" onclick="setExerciseType('strength')">Kraft</button>
+                <button type="button" class="difficulty-pill" data-type="bodyweight" onclick="setExerciseType('bodyweight')">Bodyweight</button>
+                <button type="button" class="difficulty-pill" data-type="cardio" onclick="setExerciseType('cardio')">Cardio</button>
               </div>
+              <input type="hidden" id="exercise-type" value="strength">
+            </div>
 
-              <!-- Difficulty -->
-              <div>
-                <label class="block text-sm font-medium mb-2">Schwierigkeit *</label>
-                <div class="difficulty-pills-compact">
-                  <button type="button" onclick="setDifficulty('beginner')" class="difficulty-pill-sm" data-difficulty="beginner">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">eco</span>
-                    Anfaenger
-                  </button>
-                  <button type="button" onclick="setDifficulty('intermediate')" class="difficulty-pill-sm active" data-difficulty="intermediate">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">trending_up</span>
-                    Mittel
-                  </button>
-                  <button type="button" onclick="setDifficulty('advanced')" class="difficulty-pill-sm" data-difficulty="advanced">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">bolt</span>
-                    Fortgeschritten
-                  </button>
-                  <button type="button" onclick="setDifficulty('elite')" class="difficulty-pill-sm" data-difficulty="elite">
-                    <span class="material-symbols-rounded" style="font-size: 16px;">local_fire_department</span>
-                    Elite
-                  </button>
-                </div>
-                <input type="hidden" id="exercise-difficulty" value="intermediate">
+            <!-- Pattern -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-pattern-label">Bewegungsmuster *</label>
+              <div class="exercise-pattern-pills" id="exercise-pattern-pills">
+                <button type="button" class="difficulty-pill" data-pattern="push" onclick="setExercisePattern('push')">Push</button>
+                <button type="button" class="difficulty-pill" data-pattern="pull" onclick="setExercisePattern('pull')">Pull</button>
+                <button type="button" class="difficulty-pill" data-pattern="legs" onclick="setExercisePattern('legs')">Beine</button>
+                <button type="button" class="difficulty-pill" data-pattern="core" onclick="setExercisePattern('core')">Core</button>
+                <button type="button" class="difficulty-pill active" data-pattern="full" onclick="setExercisePattern('full')">Ganzkoerper</button>
               </div>
+              <input type="hidden" id="exercise-pattern" value="full">
+            </div>
+
+            <!-- Difficulty -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-difficulty-label">Schwierigkeit *</label>
+              <div class="difficulty-pills-compact">
+                <button type="button" onclick="setDifficulty('beginner')" class="difficulty-pill-sm" data-difficulty="beginner">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">eco</span>
+                  Anfaenger
+                </button>
+                <button type="button" onclick="setDifficulty('intermediate')" class="difficulty-pill-sm active" data-difficulty="intermediate">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">trending_up</span>
+                  Fortgeschritten
+                </button>
+                <button type="button" onclick="setDifficulty('advanced')" class="difficulty-pill-sm" data-difficulty="advanced">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">bolt</span>
+                  Profi
+                </button>
+                <button type="button" onclick="setDifficulty('elite')" class="difficulty-pill-sm" data-difficulty="elite">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">local_fire_department</span>
+                  Elite
+                </button>
+              </div>
+              <input type="hidden" id="exercise-difficulty" value="intermediate">
+              <input type="hidden" id="exercise-icon" value="fitness_center">
             </div>
           </div>
         </div>
 
-        <!-- Section 2: Klassifikation -->
-        <div class="wizard-section">
-          <div class="wizard-section-header">
-            <span class="wizard-section-number">2</span>
-            <span class="wizard-section-title">Klassifikation</span>
-          </div>
-          <div class="wizard-section-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Muscle Groups -->
-              <div>
-                <label class="block text-sm font-medium mb-2">
-                  <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">body_system</span>
-                  Muskelgruppen *
-                </label>
-                <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()">
-                  <!-- Dynamic content rendered by renderMultiSelectInput -->
-                </div>
-              </div>
-
-              <!-- Equipment -->
-              <div>
-                <label class="block text-sm font-medium mb-2">
-                  <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">build</span>
-                  Equipment <span class="text-gray-400">(optional)</span>
-                </label>
-                <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()">
-                  <!-- Dynamic content rendered by renderMultiSelectInput -->
-                </div>
+        <!-- Section 2: Details (aufklappbar, progressive disclosure) -->
+        <div class="wizard-section collapsible" id="exercise-step2-section">
+          <button type="button" class="wizard-section-header clickable" onclick="toggleExerciseStep2()">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+              <span class="wizard-section-number">2</span>
+              <span class="wizard-section-title" id="exercise-step2-title">Details</span>
+              <span class="wizard-section-badge" id="exercise-step2-badge">optional</span>
+            </div>
+            <span class="material-symbols-rounded wizard-section-toggle" id="exercise-step2-toggle">expand_more</span>
+          </button>
+          <div class="wizard-section-content collapsed" id="exercise-step2-content">
+            <!-- Visual -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-visual-label">Visual</label>
+              <div id="exercise-visual-container">
+                <!-- Rendered by JS -->
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Section 3: Anleitung als nummerierte Schritte -->
-        <div class="wizard-section">
-          <div class="wizard-section-header">
-            <span class="wizard-section-number">3</span>
-            <span class="wizard-section-title" id="exercise-instructions-title"></span>
-          </div>
-          <div class="wizard-section-content" id="exercise-instructions-content">
-            <p class="text-sm text-gray-400 mb-4" id="exercise-instructions-hint"></p>
-
-            <!-- Nummerierte Schritte Container -->
-            <div id="exercise-instruction-steps" class="instruction-steps-container">
-              <!-- Schritte werden dynamisch gerendert -->
+            <!-- Instructions (nummerierte Schritte) -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-instructions-title">Anleitung</label>
+              <p class="text-sm text-gray-400 mb-4" id="exercise-instructions-hint"></p>
+              <div id="exercise-instruction-steps" class="instruction-steps-container"></div>
+              <button type="button" onclick="addInstructionStep()" class="add-step-btn">
+                <span class="material-symbols-rounded">add</span>
+                <span id="exercise-add-step-label"></span>
+              </button>
             </div>
 
-            <!-- Schritt hinzufuegen Button -->
-            <button type="button" onclick="addInstructionStep()" class="add-step-btn">
-              <span class="material-symbols-rounded">add</span>
-              <span id="exercise-add-step-label"></span>
-            </button>
+            <!-- Variants -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-variants-label">Varianten</label>
+              <div id="exercise-variants-list" class="exercise-variants-edit-container"></div>
+              <button type="button" onclick="addVariant()" class="add-step-btn">
+                <span class="material-symbols-rounded">add</span>
+                <span>Variante hinzufuegen</span>
+              </button>
+            </div>
 
-            <!-- Advanced toggle -->
+            <!-- Notes -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-notes-label">Notizen</label>
+              <textarea id="exercise-notes" rows="3" class="instruction-step-input"
+                placeholder="Allgemeine Notizen zur Uebung..."></textarea>
+            </div>
+
+            <!-- Muscle Groups (de-emphasized) -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">
+                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">body_system</span>
+                Muskelgruppen
+              </label>
+              <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()"></div>
+            </div>
+
+            <!-- Equipment (de-emphasized) -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">
+                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">build</span>
+                Equipment <span class="text-gray-400">(optional)</span>
+              </label>
+              <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()"></div>
+            </div>
+
+            <!-- Advanced instructions toggle -->
             <div class="instruction-advanced-toggle">
               <button type="button" class="btn-secondary instruction-advanced-toggle-btn" onclick="toggleExerciseInstructionAdvanced()">
                 <span class="material-symbols-rounded" id="exercise-advanced-toggle-icon">add_circle</span>
@@ -722,7 +667,7 @@
               </button>
             </div>
 
-            <!-- Advanced instructions -->
+            <!-- Advanced instructions content -->
             <div id="exercise-instructions-advanced" class="instruction-advanced-content hidden">
               <div class="instruction-advanced-group">
                 <label class="block text-sm font-medium mb-2" id="exercise-cues-label"></label>
@@ -782,7 +727,7 @@
   <div id="plan-modal" class="modal">
     <div class="modal-content" style="max-width: 900px;">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold" id="plan-modal-title">Neuer Trainingsplan</h3>
+        <h3 class="text-2xl font-bold" id="plan-modal-title"></h3>
         <button onclick="closePlanModal()" class="modal-close-btn">
           <span class="material-symbols-rounded">close</span>
         </button>
@@ -793,131 +738,33 @@
         <div class="wizard-section">
           <div class="wizard-section-header">
             <span class="wizard-section-number">1</span>
-            <span class="wizard-section-title">Grundlagen</span>
+            <span class="wizard-section-title" id="plan-section-basics-title"></span>
           </div>
           <div class="wizard-section-content">
             <!-- Plan Name -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">Planname *</label>
+              <label class="block text-sm font-medium mb-2" id="plan-name-label"></label>
               <input
                 type="text"
                 id="plan-name"
-                placeholder="z.B. Push Workout"
+                placeholder=""
                 class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
               />
             </div>
 
             <!-- Type -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">Typ *</label>
+              <label class="block text-sm font-medium mb-2" id="plan-type-label"></label>
               <select id="plan-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500" onchange="onPlanTypeChange(this.value)">
-                <option value="strength">Kraft</option>
-                <option value="cardio">Cardio</option>
-                <option value="recovery">Recovery</option>
+                <option value="strength"></option>
+                <option value="bodyweight"></option>
+                <option value="cardio"></option>
+                <option value="recovery"></option>
               </select>
             </div>
 
-            <!-- Duration -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">Dauer (Min)</label>
-              <input
-                type="number"
-                id="plan-duration"
-                value="45"
-                min="10"
-                max="180"
-                inputmode="numeric"
-                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-              />
-            </div>
-
-            <!-- Difficulty with full labels (nur für Strength) -->
-            <div class="mb-4" id="plan-difficulty-section">
-              <label class="block text-sm font-medium mb-2">Schwierigkeit</label>
-              <div class="difficulty-pills-full">
-                <button type="button" class="difficulty-pill-full" data-difficulty="beginner" onclick="setPlanDifficulty('beginner')">
-                  <span class="pill-label">Anfaenger</span>
-                </button>
-                <button type="button" class="difficulty-pill-full active" data-difficulty="intermediate" onclick="setPlanDifficulty('intermediate')">
-                  <span class="pill-label">Mittel</span>
-                </button>
-                <button type="button" class="difficulty-pill-full" data-difficulty="advanced" onclick="setPlanDifficulty('advanced')">
-                  <span class="pill-label">Fortgeschritten</span>
-                </button>
-                <button type="button" class="difficulty-pill-full" data-difficulty="elite" onclick="setPlanDifficulty('elite')">
-                  <span class="pill-label">Elite</span>
-                </button>
-              </div>
-              <input type="hidden" id="plan-difficulty" value="intermediate">
-            </div>
-
-            <!-- Cardio Goal (nur für Cardio) -->
-            <div class="mb-4" id="plan-cardio-goal-section" style="display: none;">
-              <label class="block text-sm font-medium mb-2">Cardio-Ziel</label>
-              <div class="cardio-goal-selector">
-                <button type="button" class="cardio-goal-btn active" data-goal="liss" onclick="setCardioGoal('liss')">
-                  <span class="cardio-goal-label">LISS</span>
-                  <span class="cardio-goal-desc">Niedrige Intensitaet</span>
-                </button>
-                <button type="button" class="cardio-goal-btn" data-goal="hiit" onclick="setCardioGoal('hiit')">
-                  <span class="cardio-goal-label">HIIT</span>
-                  <span class="cardio-goal-desc">Intervall-Training</span>
-                </button>
-                <button type="button" class="cardio-goal-btn" data-goal="zone2" onclick="setCardioGoal('zone2')">
-                  <span class="cardio-goal-label">Zone 2</span>
-                  <span class="cardio-goal-desc">Grundlagenausdauer</span>
-                </button>
-                <button type="button" class="cardio-goal-btn" data-goal="tempo" onclick="setCardioGoal('tempo')">
-                  <span class="cardio-goal-label">Tempo</span>
-                  <span class="cardio-goal-desc">Laktatschwelle</span>
-                </button>
-              </div>
-              <input type="hidden" id="plan-cardio-goal" value="liss">
-            </div>
-
-            <!-- Plan Icon -->
-            <div class="mb-4" id="plan-icon-section">
-              <label class="block text-sm font-medium mb-2">Plan-Icon</label>
-              <div class="exercise-icon-picker" id="plan-icon-picker">
-                <button type="button" class="icon-picker-btn active" data-icon="fitness_center" onclick="setPlanIcon('fitness_center')">
-                  <span class="material-symbols-rounded">fitness_center</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="sports_gymnastics" onclick="setPlanIcon('sports_gymnastics')">
-                  <span class="material-symbols-rounded">sports_gymnastics</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="directions_run" onclick="setPlanIcon('directions_run')">
-                  <span class="material-symbols-rounded">directions_run</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="self_improvement" onclick="setPlanIcon('self_improvement')">
-                  <span class="material-symbols-rounded">self_improvement</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="bolt" onclick="setPlanIcon('bolt')">
-                  <span class="material-symbols-rounded">bolt</span>
-                </button>
-                <button type="button" class="icon-picker-btn" data-icon="exercise" onclick="setPlanIcon('exercise')">
-                  <span class="material-symbols-rounded">exercise</span>
-                </button>
-              </div>
-              <input type="hidden" id="plan-icon" value="fitness_center">
-            </div>
-
-            <!-- Discipline (for Strength only) -->
-            <div class="mb-4" id="plan-discipline-section" style="display: none;">
-              <label class="block text-sm font-medium mb-2">Trainingsart</label>
-              <div class="discipline-selector">
-                <button type="button" class="discipline-btn active" data-discipline="bodyweight" onclick="setPlanDiscipline('bodyweight')">
-                  <span class="material-symbols-rounded">sports_gymnastics</span>
-                  <span class="discipline-label">Bodyweight</span>
-                  <span class="discipline-desc">Eigengewicht-Training</span>
-                </button>
-                <button type="button" class="discipline-btn" data-discipline="weights" onclick="setPlanDiscipline('weights')">
-                  <span class="material-symbols-rounded">fitness_center</span>
-                  <span class="discipline-label">Gewichte</span>
-                  <span class="discipline-desc">Gym / Hanteln</span>
-                </button>
-              </div>
-              <input type="hidden" id="plan-discipline" value="bodyweight">
-            </div>
+            <!-- Plan Icon (removed – no individual plan icons) -->
+            <input type="hidden" id="plan-icon" value="fitness_center">
           </div>
         </div>
 
@@ -925,11 +772,11 @@
         <div class="wizard-section" id="plan-exercises-section">
           <div class="wizard-section-header">
             <span class="wizard-section-number">2</span>
-            <span class="wizard-section-title">Uebungen</span>
+            <span class="wizard-section-title" id="plan-section-exercises-title"></span>
           </div>
           <div class="wizard-section-content">
             <div class="flex items-center justify-between mb-3">
-              <span class="text-sm text-gray-400">Fuege Uebungen zu deinem Plan hinzu</span>
+              <span class="text-sm text-gray-400" id="plan-exercises-hint"></span>
               <button
                 type="button"
                 onclick="openAddExerciseToPlan()"
@@ -945,43 +792,121 @@
           </div>
         </div>
 
-        <!-- Section 3: Details (collapsible) -->
-        <div class="wizard-section collapsible" id="plan-details-section">
-          <button type="button" class="wizard-section-header clickable" onclick="toggleWizardSection('plan-details-section')">
+        <!-- Section 2b: Cardio (for cardio plans) -->
+        <div class="wizard-section" id="plan-cardio-section" style="display: none;">
+          <div class="wizard-section-header">
+            <span class="wizard-section-number">2</span>
+            <span class="wizard-section-title" id="plan-section-cardio-title"></span>
+          </div>
+          <div class="wizard-section-content space-y-4">
+            <div>
+              <div class="training-type-header">
+                <label class="text-sm font-medium" id="plan-cardio-goal-label"></label>
+                <button type="button" class="info-icon-btn" onclick="togglePlanCardioGoalInfo()">
+                  <span class="material-symbols-rounded">info</span>
+                </button>
+              </div>
+              <div class="training-type-selector" id="plan-cardio-goal-selector">
+                <button type="button" class="training-type-btn active" data-goal="liss" onclick="setPlanCardioGoalType('liss')">
+                  <span class="training-type-label"></span>
+                </button>
+                <button type="button" class="training-type-btn" data-goal="hiit" onclick="setPlanCardioGoalType('hiit')">
+                  <span class="training-type-label"></span>
+                </button>
+                <button type="button" class="training-type-btn" data-goal="intervals" onclick="setPlanCardioGoalType('intervals')">
+                  <span class="training-type-label"></span>
+                </button>
+                <button type="button" class="training-type-btn" data-goal="freestyle" onclick="setPlanCardioGoalType('freestyle')">
+                  <span class="training-type-label"></span>
+                </button>
+              </div>
+              <input type="hidden" id="plan-cardio-goal-type" value="liss" />
+              <div id="plan-cardio-goal-info" class="training-type-info-panel" style="display: none;">
+                <div class="info-panel-content">
+                  <p id="plan-cardio-goal-info-text"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-2" id="plan-cardio-duration-label"></label>
+                <input
+                  type="number"
+                  id="plan-cardio-duration"
+                  min="0"
+                  max="600"
+                  inputmode="numeric"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-2" id="plan-cardio-distance-label"></label>
+                <input
+                  type="number"
+                  id="plan-cardio-distance"
+                  min="0"
+                  step="0.1"
+                  inputmode="decimal"
+                  class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-2" id="plan-cardio-activity-label"></label>
+              <select id="plan-cardio-activity" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <option value="run"></option>
+                <option value="bike"></option>
+                <option value="swim"></option>
+                <option value="row"></option>
+                <option value="other"></option>
+              </select>
+            </div>
+
+            <p class="text-xs text-gray-400" id="plan-cardio-target-hint"></p>
+          </div>
+        </div>
+
+        <!-- Section 2c: Recovery (for recovery plans) -->
+        <div class="wizard-section" id="plan-recovery-section" style="display: none;">
+          <div class="wizard-section-header">
+            <span class="wizard-section-number">2</span>
+            <span class="wizard-section-title" id="plan-section-recovery-title"></span>
+          </div>
+          <div class="wizard-section-content space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-2" id="plan-recovery-duration-label"></label>
+              <input
+                type="number"
+                id="plan-recovery-duration"
+                min="0"
+                max="600"
+                inputmode="numeric"
+                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+              />
+            </div>
+            <p class="text-xs text-gray-400" id="plan-recovery-target-hint"></p>
+          </div>
+        </div>
+
+        <!-- Section 3: Notes -->
+        <div class="wizard-section" id="plan-notes-section">
+          <div class="wizard-section-header">
             <div class="flex items-center gap-2">
               <span class="wizard-section-number">3</span>
-              <span class="wizard-section-title">Details</span>
-              <span class="wizard-section-badge">Optional</span>
+              <span class="wizard-section-title" id="plan-section-notes-title"></span>
+              <span class="wizard-section-badge" id="plan-section-notes-badge"></span>
             </div>
-            <span class="material-symbols-rounded wizard-section-toggle">expand_more</span>
-          </button>
-          <div class="wizard-section-content collapsed">
-            <!-- Tags -->
-            <div class="mb-4" id="plan-tags-section">
-              <label class="block text-sm font-medium mb-2">Tags</label>
-              <div class="multi-select-input-wrapper" id="plan-tags-wrapper" onclick="openPlanTagsBottomSheet()">
-                <!-- Dynamic content rendered by renderMultiSelectInput -->
-              </div>
-            </div>
-
-            <!-- Target Muscles -->
-            <div class="mb-4" id="plan-muscles-section">
-              <label class="block text-sm font-medium mb-2">Ziel-Muskelgruppen</label>
-              <div class="multi-select-input-wrapper" id="plan-target-muscles-wrapper" onclick="openPlanTargetMusclesBottomSheet()">
-                <!-- Dynamic content rendered by renderMultiSelectInput -->
-              </div>
-            </div>
-
-            <!-- Notes -->
-            <div>
-              <label class="block text-sm font-medium mb-2">Notizen</label>
-              <textarea
-                id="plan-notes"
-                rows="3"
-                placeholder="Zusaetzliche Informationen..."
-                class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-              ></textarea>
-            </div>
+          </div>
+          <div class="wizard-section-content">
+            <label class="block text-sm font-medium mb-2" id="plan-notes-label"></label>
+            <textarea
+              id="plan-notes"
+              rows="3"
+              placeholder=""
+              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            ></textarea>
           </div>
         </div>
 
@@ -991,44 +916,45 @@
             onclick="savePlan()"
             class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all"
           >
-            Speichern
+            <span id="plan-save-btn-label"></span>
           </button>
           <button
             id="plan-delete-btn"
             onclick="deletePlan()"
             class="flex-1 bg-red-600 hover:bg-red-500 py-3 rounded-xl font-semibold transition-colors hidden"
           >
-            Loeschen
+            <span id="plan-delete-btn-label"></span>
           </button>
           <button
             onclick="closePlanModal()"
             class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors"
           >
-            Abbrechen
+            <span id="plan-cancel-btn-label"></span>
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- EXERCISE PICKER MODAL -->
+  <!-- EXERCISE PICKER MODAL (multi-select) -->
   <div id="exercise-picker-modal" class="modal">
-    <div class="modal-content" style="max-width: 700px;">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold">Übung auswählen</h3>
-        <button onclick="closeExercisePicker()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
+    <div class="modal-content exercise-picker-modal-content" style="max-width: 700px;">
+      <!-- Fixed Header: title, search, filters -->
+      <div class="exercise-picker-header">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-bold" id="exercise-picker-title"></h3>
+          <button onclick="closeExercisePicker()" class="modal-close-btn">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
 
-      <div class="space-y-4">
         <!-- Search with Clear Button -->
-        <div class="filter-input-wrapper">
+        <div class="filter-input-wrapper mb-3">
           <span class="material-symbols-rounded filter-input-icon">search</span>
           <input
             type="text"
             id="exercise-picker-search"
-            placeholder="Übung suchen..."
+            placeholder=""
             class="filter-input"
             autocomplete="off"
           />
@@ -1041,128 +967,74 @@
         <div class="exercise-picker-filters flex gap-2">
           <button type="button" class="filter-chip" data-filter="all" onclick="setExercisePickerMuscleFilter('all')">
             <span class="material-symbols-rounded">fitness_center</span>
-            <span>Alle</span>
+            <span id="exercise-picker-filter-all-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="chest" onclick="setExercisePickerMuscleFilter('chest')">
             <span class="material-symbols-rounded">favorite</span>
-            <span class="muscle-tag muscle-chest" style="padding: 0;">Brust</span>
+            <span class="muscle-tag muscle-chest" style="padding: 0;" id="exercise-picker-filter-chest-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="back" onclick="setExercisePickerMuscleFilter('back')">
             <span class="material-symbols-rounded">backpack</span>
-            <span class="muscle-tag muscle-back" style="padding: 0;">Rücken</span>
+            <span class="muscle-tag muscle-back" style="padding: 0;" id="exercise-picker-filter-back-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="shoulders" onclick="setExercisePickerMuscleFilter('shoulders')">
             <span class="material-symbols-rounded">accessibility_new</span>
-            <span class="muscle-tag muscle-shoulders" style="padding: 0;">Schultern</span>
+            <span class="muscle-tag muscle-shoulders" style="padding: 0;" id="exercise-picker-filter-shoulders-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="arms" onclick="setExercisePickerMuscleFilter('arms')">
             <span class="material-symbols-rounded">fitness_center</span>
-            <span class="muscle-tag muscle-arms" style="padding: 0;">Arme</span>
+            <span class="muscle-tag muscle-arms" style="padding: 0;" id="exercise-picker-filter-arms-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="core" onclick="setExercisePickerMuscleFilter('core')">
             <span class="material-symbols-rounded">self_improvement</span>
-            <span class="muscle-tag muscle-core" style="padding: 0;">Core</span>
+            <span class="muscle-tag muscle-core" style="padding: 0;" id="exercise-picker-filter-core-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="legs" onclick="setExercisePickerMuscleFilter('legs')">
             <span class="material-symbols-rounded">directions_walk</span>
-            <span class="muscle-tag muscle-legs" style="padding: 0;">Beine</span>
+            <span class="muscle-tag muscle-legs" style="padding: 0;" id="exercise-picker-filter-legs-label"></span>
           </button>
         </div>
 
         <!-- Active Filter Info -->
-        <div id="exercise-picker-filter-info" class="text-sm text-gray-400" style="display: none;">
-          <!-- Filter info will be rendered here -->
-        </div>
-
-        <!-- Exercise List -->
-        <div id="exercise-picker-list" class="space-y-2 max-h-96 overflow-y-auto">
-          <!-- Exercises will be rendered here -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DAY DETAIL MODAL -->
-  <div id="day-detail-modal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h3 class="text-2xl font-bold" id="day-detail-title">Trainings am Tag</h3>
-          <p class="text-gray-400 text-sm mt-1" id="day-detail-date">Datum</p>
-        </div>
-        <button onclick="closeDayDetailModal()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
+        <div id="exercise-picker-filter-info" class="text-sm text-gray-400 mt-2" style="display: none;"></div>
       </div>
 
-      <div id="day-detail-plans" class="space-y-3">
-        <!-- Plans will be rendered here -->
+      <!-- Scrollable Exercise List -->
+      <div id="exercise-picker-list" class="exercise-picker-list-scroll space-y-2">
+        <!-- Exercises will be rendered here -->
       </div>
 
-      <!-- Add Plan to Day Panel -->
-      <div id="add-plan-panel" class="add-plan-panel hidden">
-        <div class="add-plan-panel-header">
-          <h4 class="add-plan-panel-title">Hinzufügen zu: <span id="selected-date-display" class="text-pink-400"></span></h4>
-          <button onclick="closeAddPlanPanel()" class="modal-close-btn-sm">
-            <span class="material-symbols-rounded">close</span>
-          </button>
-        </div>
-
-        <div class="add-plan-options">
-          <!-- Option 1: Select existing plan -->
-          <button onclick="openCalendarPlanPicker()" class="add-plan-option-btn">
-            <div class="add-plan-option-icon">
-              <span class="material-symbols-rounded">assignment</span>
-            </div>
-            <div class="add-plan-option-content">
-              <div class="add-plan-option-title">Plan auswählen</div>
-              <div class="add-plan-option-desc">Aus deinen Trainingsvorlagen</div>
-            </div>
-            <span class="material-symbols-rounded add-plan-option-chevron">chevron_right</span>
-          </button>
-
-          <!-- Option 2: Quick Entry -->
-          <button onclick="openQuickEntryModal()" class="add-plan-option-btn">
-            <div class="add-plan-option-icon quick-entry">
-              <span class="material-symbols-rounded">bolt</span>
-            </div>
-            <div class="add-plan-option-content">
-              <div class="add-plan-option-title">Schnell-Eintrag</div>
-              <div class="add-plan-option-desc">Ohne Planvorlage hinzufügen</div>
-            </div>
-            <span class="material-symbols-rounded add-plan-option-chevron">chevron_right</span>
-          </button>
-        </div>
-      </div>
-
-      
-
-      <div class="mt-6">
-        <button onclick="openAddPlanFromDayDetail()" class="w-full bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
-          <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-          <span>Training hinzufügen</span>
+      <!-- Sticky Footer: Add Button (multi-select mode) -->
+      <div class="exercise-picker-footer" id="exercise-picker-footer">
+        <button id="exercise-picker-add-btn"
+                class="btn-primary btn-full"
+                onclick="addSelectedExercisesToPlan()"
+                disabled>
+          <span id="exercise-picker-add-btn-label"></span>
         </button>
       </div>
     </div>
   </div>
+
+  <!-- Day Detail Modal removed - replaced by Agenda Bottom Sheet -->
 
   <!-- EXERCISE CONFIG MODAL -->
   <div id="exercise-config-modal" class="modal">
     <div class="modal-content" style="max-width: 500px;">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h3 class="text-2xl font-bold">Übung konfigurieren</h3>
-          <p class="text-gray-400 text-sm mt-1" id="exercise-config-name">Übungsname</p>
+          <h3 class="text-2xl font-bold" id="exercise-config-title"></h3>
+          <p class="text-gray-400 text-sm mt-1" id="exercise-config-name"></p>
         </div>
         <button onclick="closeExerciseConfigModal()" class="modal-close-btn">
           <span class="material-symbols-rounded">close</span>
         </button>
       </div>
 
-      <div class="space-y-4">
+        <div class="space-y-4">
         <!-- Sets -->
         <div>
-          <label class="block text-sm font-medium mb-2">Sätze *</label>
+          <label class="block text-sm font-medium mb-2" id="exercise-config-sets-label"></label>
           <input
             type="number"
             id="exercise-sets"
@@ -1172,42 +1044,42 @@
             pattern="[0-9]*"
             inputmode="numeric"
             class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            aria-label="Anzahl der Sätze"
+            aria-label=""
           />
         </div>
 
         <!-- Reps OR Hold -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium mb-2">Wiederholungen</label>
+            <label class="block text-sm font-medium mb-2" id="exercise-config-reps-label"></label>
             <input
               type="text"
               id="exercise-reps"
-              placeholder="z.B. 12 oder 8-10"
+              placeholder=""
               pattern="[0-9\-]*"
               inputmode="numeric"
               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-              aria-label="Anzahl der Wiederholungen"
+              aria-label=""
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2">Halten (Sek)</label>
+            <label class="block text-sm font-medium mb-2" id="exercise-config-hold-label"></label>
             <input
               type="text"
               id="exercise-hold"
-              placeholder="z.B. 30"
+              placeholder=""
               pattern="[0-9]*"
               inputmode="numeric"
               class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-              aria-label="Haltezeit in Sekunden"
+              aria-label=""
             />
           </div>
         </div>
 
         <!-- Rest (mit Range Slider für bessere Mobile UX) -->
         <div>
-          <label class="block text-sm font-medium mb-2">
-            Pause: <span id="exercise-rest-display">90 Sek</span>
+          <label class="block text-sm font-medium mb-2" id="exercise-config-rest-label">
+            <span id="exercise-rest-label-text"></span>: <span id="exercise-rest-display"></span>
           </label>
           <input
             type="range"
@@ -1221,20 +1093,9 @@
             aria-label="Pausenzeit in Sekunden"
           />
           <div class="flex justify-between text-xs text-gray-400 mt-1">
-            <span>0 Sek</span>
-            <span>5 Min</span>
+            <span id="exercise-rest-min-label"></span>
+            <span id="exercise-rest-max-label"></span>
           </div>
-        </div>
-
-        <!-- Notes -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Notizen</label>
-          <textarea
-            id="exercise-notes"
-            rows="2"
-            placeholder="z.B. Tempo, Progressionen..."
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-          ></textarea>
         </div>
 
         <!-- Action Buttons -->
@@ -1243,13 +1104,13 @@
             onclick="saveExerciseConfig()"
             class="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 py-3 rounded-xl font-semibold transition-all"
           >
-            Hinzufügen
+            <span id="exercise-config-save-label"></span>
           </button>
           <button
             onclick="closeExerciseConfigModal()"
             class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-semibold transition-colors"
           >
-            Abbrechen
+            <span id="exercise-config-cancel-label"></span>
           </button>
         </div>
       </div>
@@ -1300,8 +1161,9 @@
   <!-- ========================================
        QUICK EXERCISE CREATE MODAL (Inline from Plan)
        ======================================== -->
-  <div id="quick-exercise-modal" class="modal" onclick="if(event.target === this) closeQuickExerciseModal()">
-    <div class="modal-content modal-compact" onclick="event.stopPropagation()">
+  <div id="quick-exercise-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeQuickExerciseModal()"></div>
+    <div class="modal-content modal-compact">
       <div class="modal-header">
         <h3 class="modal-title" id="quick-exercise-title">Neue Übung</h3>
         <button onclick="closeQuickExerciseModal()" class="modal-close-btn">
@@ -1394,74 +1256,7 @@
     </div>
   </div>
 
-  <!-- ========================================
-       CALENDAR QUICK ENTRY MODAL
-       ======================================== -->
-  <div id="calendar-quick-entry-modal" class="modal" onclick="if(event.target === this) closeQuickEntryModal()">
-    <div class="modal-content modal-compact" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">Schnell-Eintrag</h3>
-        <button onclick="closeQuickEntryModal()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-
-      <div class="modal-body space-y-4">
-        <!-- Name (required) -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Name *</label>
-          <input
-            type="text"
-            id="quick-entry-name"
-            placeholder="z.B. Morgenlauf"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
-
-        <!-- Type (required) -->
-        <div>
-          <label class="block text-sm font-medium mb-2">Trainingsart</label>
-          <input type="hidden" id="quick-entry-type" value="strength" />
-          <div class="type-selector-row">
-            <button type="button" class="type-btn active" data-type="strength" onclick="setQuickEntryType('strength')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Kraft</span>
-            </button>
-            <button type="button" class="type-btn" data-type="cardio" onclick="setQuickEntryType('cardio')">
-              <span class="material-symbols-rounded">directions_run</span>
-              <span>Cardio</span>
-            </button>
-            <button type="button" class="type-btn" data-type="recovery" onclick="setQuickEntryType('recovery')">
-              <span class="material-symbols-rounded">self_improvement</span>
-              <span>Recovery</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Duration (optional for cardio/recovery) -->
-        <div id="quick-entry-duration-section" style="display: none;">
-          <label class="block text-sm font-medium mb-2">Dauer (Min) <span class="text-gray-400">(optional)</span></label>
-          <input
-            type="number"
-            id="quick-entry-duration"
-            placeholder="z.B. 30"
-            min="1"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button onclick="closeQuickEntryModal()" class="btn-secondary flex-1">
-          Abbrechen
-        </button>
-        <button onclick="saveQuickEntry()" class="btn-primary flex-1">
-          <span class="material-symbols-rounded">add</span>
-          Hinzufügen
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- Calendar Quick Entry Modal removed - replaced by openQuickAddSheet() -->
 
   </div> <!-- END #app-container -->
 
@@ -1475,8 +1270,9 @@
        ======================================== -->
 
   <!-- Add Cardio Session Modal -->
-  <div id="add-cardio-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-cardio-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="add-cardio-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeAddCardioModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Cardio Session hinzufügen</h3>
         <button onclick="closeAddCardioModal()" class="modal-close-btn">
@@ -1569,8 +1365,9 @@
   </div>
 
   <!-- Session Template Modal -->
-  <div id="session-template-modal" class="modal" onclick="handleModalBackdropClick(event, 'session-template-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="session-template-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeSessionTemplateModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="session-template-modal-title">Session-Vorlage erstellen</h3>
         <button onclick="closeSessionTemplateModal()" class="modal-close-btn">
@@ -1759,8 +1556,9 @@
   </div>
 
   <!-- Add Recovery Session Modal -->
-  <div id="add-recovery-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-recovery-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="add-recovery-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeAddRecoveryModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">Recovery Session hinzufuegen</h3>
         <button onclick="closeAddRecoveryModal()" class="modal-close-btn">
@@ -1814,8 +1612,9 @@
   </div>
 
   <!-- Add Strength Session Modal -->
-  <div id="add-strength-modal" class="modal" onclick="handleModalBackdropClick(event, 'add-strength-modal')">
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <div id="add-strength-modal" class="modal">
+    <div class="modal-backdrop-click" onclick="closeAddStrengthModal()"></div>
+    <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="strength-modal-title"></h3>
         <button onclick="closeAddStrengthModal()" class="modal-close-btn">
@@ -1826,7 +1625,7 @@
       <div class="modal-body space-y-4">
         <!-- Date Picker -->
         <div>
-          <label class="block text-sm font-medium mb-2" id="strength-date-label">Datum *</label>
+          <label class="block text-sm font-medium mb-2" id="strength-date-label"></label>
           <input
             type="date"
             id="strength-date"
@@ -1964,6 +1763,7 @@
   <script src="js/modalSwipe.js"></script>
   <script src="js/swipeGesture.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/muscleIcons.js"></script>
   <script src="js/exercises.js"></script>
   <script src="js/workoutModal.js"></script>
   <script src="js/plans.js"></script>
@@ -1971,11 +1771,22 @@
   <script src="js/calendar.js"></script>
   <script src="js/sessions.js"></script>
   <script src="js/progressv2.js"></script>
+  <script src="js/progressv3.js"></script>
   <script src="js/createDemoProgress.js"></script>
   <script src="js/createDemoSessions.js"></script>
   <script src="js/workout.js"></script>
+  <script src="js/settings.js"></script>
   <script src="js/ripple.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- POST-WORKOUT SUMMARY MODAL -->
+  <div id="post-workout-summary-modal" class="modal modal--elevated">
+    <div class="modal-content post-workout-summary-content">
+      <div id="post-workout-summary-body">
+        <!-- Wird von JS gerendert -->
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

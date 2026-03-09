@@ -22,13 +22,24 @@ function getSessionDate(session) {
 
 function getSessionDateTime(session) {
   const sessionDate = getSessionDate(session);
-  if (sessionDate) return sessionDate;
+
+  // Resolve createdAt (contains the actual time)
+  let createdAt = null;
   if (session?.createdAt?.toDate) {
-    return session.createdAt.toDate();
+    createdAt = session.createdAt.toDate();
+  } else if (session?.createdAt) {
+    const parsed = new Date(session.createdAt);
+    if (!Number.isNaN(parsed.getTime())) createdAt = parsed;
   }
-  const createdParsed = new Date(session?.createdAt);
-  if (!Number.isNaN(createdParsed.getTime())) return createdParsed;
-  return null;
+
+  // Combine: date from session.date, time from createdAt
+  if (sessionDate && createdAt) {
+    const combined = new Date(sessionDate);
+    combined.setHours(createdAt.getHours(), createdAt.getMinutes(), createdAt.getSeconds());
+    return combined;
+  }
+
+  return createdAt || sessionDate || null;
 }
 
 function getSessionDurationSeconds(session) {
@@ -54,7 +65,6 @@ function getBerlinDateKey(date) {
 // QUICK STATS HELPERS
 // ========================================
 
-const QUICK_STATS_AVG_DAYS = 14;
 
 /**
  * Berechnet die ISO-Wochennummer für ein Datum (Europe/Berlin)
@@ -95,29 +105,23 @@ function getSessionsThisWeekCount(sessions) {
 }
 
 /**
- * Berechnet die durchschnittliche Session-Dauer in Minuten (letzte 14 Tage)
+ * Berechnet die Gesamtbewegungsminuten der aktuellen ISO-Woche (Europe/Berlin)
  */
-function getAvgSessionMinutes(sessions, rangeDays = QUICK_STATS_AVG_DAYS) {
+function getMovementMinutesThisWeek(sessions) {
   if (!Array.isArray(sessions) || sessions.length === 0) return 0;
 
   const now = new Date();
-  const cutoff = new Date(now.getTime() - rangeDays * 24 * 60 * 60 * 1000);
-  const cutoffKey = getBerlinDateKey(cutoff);
+  const currentWeek = getISOWeekBerlin(now);
 
-  const recentSessions = sessions.filter(session => {
+  const totalSeconds = sessions.reduce((sum, session) => {
     const date = getSessionDate(session);
-    if (!date) return false;
-    return getBerlinDateKey(date) >= cutoffKey;
-  });
-
-  if (recentSessions.length === 0) return 0;
-
-  const totalSeconds = recentSessions.reduce((sum, session) => {
+    if (!date) return sum;
+    const sessionWeek = getISOWeekBerlin(date);
+    if (sessionWeek.year !== currentWeek.year || sessionWeek.week !== currentWeek.week) return sum;
     return sum + getSessionDurationSeconds(session);
   }, 0);
 
-  const avgSeconds = totalSeconds / recentSessions.length;
-  return Math.round(avgSeconds / 60);
+  return Math.round(totalSeconds / 60);
 }
 
 function getBalanceContextLabelKey(strengthSec, cardioSec) {
@@ -213,7 +217,7 @@ async function useDashboardData() {
     scheduledWorkouts: [],
     // Quick Stats
     sessionsThisWeekCount: 0,
-    avgSessionMinutes: 0
+    movementMinutesThisWeek: 0
   };
 
   try {
@@ -230,7 +234,7 @@ async function useDashboardData() {
 
     // Quick Stats berechnen
     state.sessionsThisWeekCount = getSessionsThisWeekCount(sessions);
-    state.avgSessionMinutes = getAvgSessionMinutes(sessions, QUICK_STATS_AVG_DAYS);
+    state.movementMinutesThisWeek = getMovementMinutesThisWeek(sessions);
   } catch (error) {
     console.error('Error loading dashboard data:', error);
     state.error = error;
@@ -410,8 +414,8 @@ function openStartWorkoutFromPlanSheet() {
     closeSheet();
   }
   // Open plan picker to start a workout from an existing plan
-  if (typeof openCalendarPlanPicker === 'function') {
-    openCalendarPlanPicker((planId) => {
+  if (typeof openPlanPickerSheet === 'function') {
+    openPlanPickerSheet((planId) => {
       if (typeof startWorkoutFromPlan === 'function') {
         startWorkoutFromPlan(planId);
       }
@@ -459,6 +463,7 @@ function addWorkoutOfType(type) {
 function getPlanTypeColor(type) {
   const colors = {
     strength: 'var(--color-category-strength)',
+    bodyweight: 'var(--color-category-bodyweight)',
     cardio: 'var(--color-category-cardio)',
     recovery: 'var(--color-category-recovery)'
   };
@@ -480,6 +485,7 @@ function renderScheduledWorkoutsCard(state) {
 
   const workoutTypeLabels = {
     strength: tr('common.strength'),
+    bodyweight: tr('common.bodyweight'),
     cardio: tr('common.cardio'),
     recovery: tr('common.recovery')
   };
@@ -501,9 +507,10 @@ function renderScheduledWorkoutsCard(state) {
 
   container.innerHTML = `
     <div class="dashboard-scheduled-widget">
-      <div class="dashboard-scheduled-header">
+      <div class="dashboard-scheduled-header" onclick="if(typeof showView==='function') showView('calendar')" style="cursor: pointer;">
         <span class="material-symbols-rounded">event</span>
         <span>${tr('dashboard.scheduled.title')}</span>
+        <span class="material-symbols-rounded" style="margin-left: auto; font-size: 18px; opacity: 0.5;">chevron_right</span>
       </div>
       <div class="dashboard-scheduled-list">
         ${items}
@@ -572,7 +579,7 @@ function renderQuickStatsWidget(state) {
   }
 
   const sessionsCount = state.sessionsThisWeekCount || 0;
-  const avgMinutes = state.avgSessionMinutes || 0;
+  const movementMinutes = state.movementMinutesThisWeek || 0;
 
   container.innerHTML = `
     <div class="quick-stats-grid">
@@ -588,13 +595,13 @@ function renderQuickStatsWidget(state) {
       </div>
       <div class="quick-stats-card">
         <div class="quick-stats-header">
-          <span class="quick-stats-label">${tr('dashboard.quickStats.average')}</span>
+          <span class="quick-stats-label">${tr('dashboard.quickStats.movementMinutes')}</span>
           <span class="quick-stats-icon">
-            <span class="material-symbols-rounded">schedule</span>
+            <span class="material-symbols-rounded">timer</span>
           </span>
         </div>
-        <div class="quick-stats-value">${avgMinutes}</div>
-        <div class="quick-stats-subtext">${tr('common.minutes')}</div>
+        <div class="quick-stats-value">${movementMinutes}</div>
+        <div class="quick-stats-subtext">${tr('dashboard.quickStats.thisWeek')}</div>
       </div>
     </div>
   `;
@@ -1240,9 +1247,6 @@ function renderDashboardActivityCalendar(state) {
 
   calendarHTML += `</div></div>`;
 
-  // Build training types list
-  const trainingTypesHTML = renderDashboardTrainingTypesList(sessions, year, month);
-
   container.innerHTML = `
     <div class="dashboard-activity-widget-expanded">
       <div class="dashboard-activity-month-nav">
@@ -1253,9 +1257,12 @@ function renderDashboardActivityCalendar(state) {
         <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('next')" aria-label="Nächster Monat">
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
+        <button class="activity-calendar-more-link" onclick="event.stopPropagation(); if(typeof showView==='function') showView('progress')">
+          ${tr('dashboard.activityCalendar.more')}
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
       </div>
       ${calendarHTML}
-      ${trainingTypesHTML}
     </div>
   `;
 }
@@ -1321,7 +1328,7 @@ async function refreshDashboard() {
   renderLogWorkoutCard(data);
   renderQuickStatsWidget(data);
   renderDashboardActivityCalendar(data);
-  renderRecentSessionsList(data);
+  // Recent sessions removed - now in Progress > Overview
 
   dashboardIsLoading = false;
 }

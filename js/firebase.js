@@ -25,6 +25,7 @@ const workoutsCollection = db.collection('workouts');
 const scheduleCollection = db.collection('schedule');
 const progressCollection = db.collection('progress');
 const sessionsCollection = db.collection('sessions');
+const userProfilesCollection = db.collection('userProfiles');
 
 // ========================================
 // FIRESTORE HELPER FUNCTIONS
