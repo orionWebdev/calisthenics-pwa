@@ -86,9 +86,59 @@ function makePressable(element, options = {}) {
 }
 
 /**
+ * Full-bar ripple for bottom navigation
+ * Ripple originates from touch point and expands across entire nav
+ */
+function initBottomNavRipple() {
+  const nav = document.querySelector('.bottom-nav');
+  if (!nav || nav.dataset.navRipple === 'true') return;
+
+  nav.style.overflow = 'hidden';
+
+  nav.addEventListener('pointerdown', (event) => {
+    // Only trigger on nav item clicks
+    const item = event.target.closest('.bottom-nav-item');
+    if (!item || item.disabled) return;
+
+    const rect = nav.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Calculate max distance from click point to any corner of the nav
+    const maxX = Math.max(x, rect.width - x);
+    const maxY = Math.max(y, rect.height - y);
+    const size = Math.sqrt(maxX * maxX + maxY * maxY) * 2;
+
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple-effect';
+    ripple.style.cssText = `
+      position: absolute;
+      left: ${x - size / 2}px;
+      top: ${y - size / 2}px;
+      width: ${size}px;
+      height: ${size}px;
+      background: radial-gradient(circle, rgba(240, 34, 119, 0.18) 0%, rgba(240, 34, 119, 0.06) 70%, transparent 100%);
+      border-radius: 50%;
+      transform: scale(0);
+      opacity: 1;
+      pointer-events: none;
+      animation: ripple-expand 400ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    `;
+
+    nav.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 400);
+  });
+
+  nav.dataset.navRipple = 'true';
+}
+
+/**
  * Initialize ripple effects on all matching elements
  */
 function initRippleEffects() {
+  // Bottom navigation - full-bar ripple from touch point
+  initBottomNavRipple();
+
   // Desktop navigation buttons
   document.querySelectorAll('.nav-btn').forEach(btn => {
     makePressable(btn, { color: 'rgba(240, 34, 119, 0.2)' });

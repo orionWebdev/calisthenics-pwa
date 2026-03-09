@@ -1006,6 +1006,9 @@ const translations = {
       deleteAccountButton: 'Endgueltig loeschen',
       saved: 'Gespeichert',
       seconds: '{n}s',
+      theme: 'Erscheinungsbild',
+      themeDark: 'Dunkel',
+      themeLight: 'Hell',
       version: 'Version',
       build: 'Build'
     },
@@ -2027,6 +2030,9 @@ const translations = {
       deleteAccountButton: 'Delete permanently',
       saved: 'Saved',
       seconds: '{n}s',
+      theme: 'Appearance',
+      themeDark: 'Dark',
+      themeLight: 'Light',
       version: 'Version',
       build: 'Build'
     },
