@@ -1249,6 +1249,7 @@ function renderDashboardActivityCalendar(state) {
 
   container.innerHTML = `
     <div class="dashboard-activity-widget-expanded">
+      <div class="dashboard-activity-calendar-title">Aktivitätskalender</div>
       <div class="dashboard-activity-month-nav">
         <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('prev')" aria-label="Vorheriger Monat">
           <span class="material-symbols-rounded">chevron_left</span>

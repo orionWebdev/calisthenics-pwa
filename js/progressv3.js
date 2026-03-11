@@ -135,9 +135,7 @@ function renderProgressV4() {
   }
 
   container.innerHTML = `
-    <div class="pv3-sticky-bar">
-      ${renderV4TabBar()}
-    </div>
+    ${renderV4TabBar()}
     <div class="pv3-scroll-view">
       ${renderV4TabContent()}
     </div>
@@ -204,11 +202,13 @@ function renderV4PeriodSelector() {
   ];
   const activeIndex = Math.max(0, periods.findIndex(p => p.key === pv4Period));
   return `
-    <div class="pv3-segmented-control" style="--seg-count:${periods.length};--active-idx:${activeIndex}">
-      <div class="pv3-seg-indicator"></div>
-      ${periods.map(p =>
-        `<button class="pv3-seg-btn${p.key === pv4Period ? ' active' : ''}" data-period="${p.key}">${p.label}</button>`
-      ).join('')}
+    <div class="pv3-sticky-bar">
+      <div class="pv3-segmented-control" style="--seg-count:${periods.length};--active-idx:${activeIndex}">
+        <div class="pv3-seg-indicator"></div>
+        ${periods.map(p =>
+          `<button class="pv3-seg-btn${p.key === pv4Period ? ' active' : ''}" data-period="${p.key}">${p.label}</button>`
+        ).join('')}
+      </div>
     </div>`;
 }
 
@@ -364,9 +364,20 @@ function renderV4Rhythm(sessions) {
       </div>`;
   }).join('');
 
+  const typeTotals = {};
+  V3_KNOWN_TYPES.forEach(t => {
+    typeTotals[t] = buckets.reduce((sum, b) => sum + b.data[t], 0);
+  });
+
   const legendHtml = V3_KNOWN_TYPES
     .filter(t => buckets.some(b => b.data[t] > 0))
-    .map(t => `<span class="pv3-legend-item"><span class="pv3-legend-dot" style="background:${V3_TYPE_COLORS[t]}"></span>${trV3('progress.v3.types.' + t)}</span>`)
+    .map(t => {
+      const mins = typeTotals[t];
+      const timeStr = mins >= 60
+        ? `${Math.floor(mins / 60)}h ${mins % 60}min`
+        : `${mins} min`;
+      return `<span class="pv3-legend-item"><span class="pv3-legend-dot" style="background:${V3_TYPE_COLORS[t]}"></span>${trV3('progress.v3.types.' + t)}<span class="pv3-legend-time">${timeStr}</span></span>`;
+    })
     .join('');
 
   return `
