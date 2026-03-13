@@ -11,10 +11,8 @@ let exerciseDifficultyFilter = '';
 
 // V3 State
 let exerciseType = 'strength';
-let exercisePattern = 'full';
 let exerciseVariants = [];
 let exerciseNotes = '';
-let exerciseVisual = null;
 let exerciseStep2Expanded = false;
 let exerciseCreateCallback = null;
 
@@ -23,25 +21,32 @@ const muscleNames = {
   chest: 'Brust',
   back: 'Rücken',
   shoulders: 'Schultern',
-  arms: 'Arme',
   biceps: 'Bizeps',
   triceps: 'Trizeps',
   core: 'Core',
   legs: 'Beine',
-  calf: 'Waden',
   'full-body': 'Ganzkörper',
+  // Legacy keys kept for backward compat display
+  arms: 'Arme',
+  calf: 'Waden',
   cardio: 'Cardio',
   mobility: 'Mobility'
 };
 
 // Equipment Namen Mapping
 const equipmentNames = {
-  'none': 'Kein Equipment',
+  'bodyweight': 'Bodyweight',
   'pull-up-bar': 'Klimmzugstange',
-  'dip-bars': 'Dip-Barren',
-  'rings': 'Ringe',
+  'barbell': 'Langhantel',
+  'dumbbell': 'Kurzhantel',
   'resistance-bands': 'Widerstandsbänder',
+  'gym-machine': 'Maschine',
   'parallettes': 'Paralettes',
+  'rings': 'Ringe',
+  'bench': 'Bank',
+  // Legacy keys kept for backward compat display
+  'none': 'Kein Equipment',
+  'dip-bars': 'Dip-Barren',
   'box': 'Box/Bank',
   'wall': 'Wand',
   'mat': 'Matte',
@@ -50,12 +55,18 @@ const equipmentNames = {
 
 // Equipment Icons Mapping
 const equipmentIcons = {
-  'none': 'accessibility',
+  'bodyweight': 'accessibility_new',
   'pull-up-bar': 'fitness_center',
-  'dip-bars': 'sports_gymnastics',
-  'rings': 'sports_gymnastics',
+  'barbell': 'fitness_center',
+  'dumbbell': 'fitness_center',
   'resistance-bands': 'cable',
+  'gym-machine': 'precision_manufacturing',
   'parallettes': 'straighten',
+  'rings': 'sports_gymnastics',
+  'bench': 'airline_seat_flat',
+  // Legacy
+  'none': 'accessibility',
+  'dip-bars': 'sports_gymnastics',
   'box': 'square',
   'wall': 'wall',
   'mat': 'airline_seat_flat',
@@ -70,9 +81,9 @@ const exerciseTypes = {
   strength: { icon: 'fitness_center' },
   bodyweight: { icon: 'sports_gymnastics' },
   cardio: { icon: 'directions_run' },
+  recovery: { icon: 'spa' },
   // Legacy – hidden from UI, still valid in data
-  mobility: { icon: 'self_improvement', hidden: true },
-  recovery: { icon: 'spa', hidden: true }
+  mobility: { icon: 'self_improvement', hidden: true }
 };
 
 const exercisePatterns = {
@@ -195,7 +206,7 @@ function mapExerciseToV3(exercise) {
 
   // Type: default 'strength' for legacy; map removed types to bodyweight
   let type = exercise.type && exerciseTypes[exercise.type] ? exercise.type : 'strength';
-  if (type === 'mobility' || type === 'recovery') type = 'bodyweight';
+  if (type === 'mobility') type = 'bodyweight';
 
   // Pattern: default 'full' for legacy
   const pattern = exercise.pattern && exercisePatterns[exercise.pattern] ? exercise.pattern : 'full';
@@ -250,7 +261,6 @@ function mapV3ToExerciseDoc(v3) {
   const doc = {
     name: v3.name,
     type: v3.type || 'strength',
-    pattern: v3.pattern || 'full',
     difficulty: v3.difficulty || 'intermediate',
     instructionsSteps: v3.instructions || [],
     muscleGroups: v3.muscleGroups || [],
@@ -259,7 +269,6 @@ function mapV3ToExerciseDoc(v3) {
   };
 
   // Optional fields - only write if non-empty
-  if (v3.visual) doc.visual = v3.visual;
   if (v3.variants?.length) doc.variants = v3.variants;
   if (v3.notes) doc.notes = v3.notes;
   if (v3.setupNotes) doc.setupNotes = v3.setupNotes;
@@ -519,7 +528,7 @@ function filterExercises() {
   const difficultyFilter = exerciseDifficultyFilter;
 
   filteredExercises = allExercises.filter(exercise => {
-    // Search filter – Name hat Prioritaet, dann type/pattern/difficulty
+    // Search filter – Name hat Prioritaet, dann type/difficulty
     let matchesSearch = true;
     if (searchLower) {
       const nameLower = (exercise.name || '').toLocaleLowerCase('de-DE');
@@ -527,10 +536,8 @@ function filterExercises() {
         matchesSearch = true;
       } else {
         const typeLabel = (t('exercise.type.' + exercise.type) || '').toLocaleLowerCase('de-DE');
-        const patternLabel = (t('exercise.pattern.' + exercise.pattern) || '').toLocaleLowerCase('de-DE');
         const diffLabel = (t('difficulty.' + exercise.difficulty) || '').toLocaleLowerCase('de-DE');
         matchesSearch = typeLabel.includes(searchLower) ||
-                        patternLabel.includes(searchLower) ||
                         diffLabel.includes(searchLower);
       }
     }
@@ -565,13 +572,47 @@ function setExerciseDifficultyFilter(value) {
   filterExercises();
 }
 
+/**
+ * Opens muscle group filter as a bottom sheet (single-select)
+ */
+function openMuscleGroupFilterSheet() {
+  const filterOptions = [
+    { value: '', label: t('exercise.filters.allMuscles') || 'Alle Muskeln', description: 'Alle Übungen anzeigen' },
+    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur', icon: getMuscleIconPath('chest') },
+    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur', icon: getMuscleIconPath('back') },
+    { value: 'biceps', label: 'Bizeps', description: 'Bizepsmuskulatur', icon: getMuscleIconPath('biceps') },
+    { value: 'triceps', label: 'Trizeps', description: 'Trizepsmuskulatur', icon: getMuscleIconPath('triceps') },
+    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur', icon: getMuscleIconPath('shoulders') },
+    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur', icon: getMuscleIconPath('core') },
+    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur', icon: getMuscleIconPath('legs') },
+    { value: 'full-body', label: 'Ganzkörper', description: 'Ganzkörpertraining', icon: getMuscleIconPath('full-body') }
+  ];
+
+  openBottomSheet({
+    title: 'Muskelgruppe filtern',
+    options: filterOptions,
+    selectedValues: exerciseMuscleFilter ? [exerciseMuscleFilter] : [''],
+    enableSearch: false,
+    fieldId: 'exercise-muscle-filter-btn',
+    onConfirm: (selectedValues) => {
+      // Single-select: use the last selected value
+      const selected = selectedValues.length > 0 ? selectedValues[selectedValues.length - 1] : '';
+      setExerciseMuscleFilter(selected);
+    }
+  });
+}
+
 function updateExerciseFiltersUI() {
-  const muscleContainer = document.getElementById('exercise-muscle-filters');
-  if (muscleContainer) {
-    muscleContainer.querySelectorAll('.filter-chip').forEach(btn => {
-      const value = btn.dataset.muscle || '';
-      btn.classList.toggle('active', value === exerciseMuscleFilter);
-    });
+  // Update muscle filter button label
+  const muscleFilterLabel = document.getElementById('exercise-muscle-filter-label');
+  const muscleFilterBtn = document.getElementById('exercise-muscle-filter-btn');
+  if (muscleFilterLabel) {
+    muscleFilterLabel.textContent = exerciseMuscleFilter
+      ? (muscleNames[exerciseMuscleFilter] || exerciseMuscleFilter)
+      : (t('exercise.filters.allMuscles') || 'Alle Muskeln');
+  }
+  if (muscleFilterBtn) {
+    muscleFilterBtn.classList.toggle('active', !!exerciseMuscleFilter);
   }
 
   const difficultyContainer = document.getElementById('exercise-difficulty-filters');
@@ -581,13 +622,6 @@ function updateExerciseFiltersUI() {
       btn.classList.toggle('active', value === exerciseDifficultyFilter);
     });
   }
-
-  const allMusclesLabel = document.getElementById('exercise-filter-muscle-all');
-  if (allMusclesLabel) allMusclesLabel.textContent = t('exercise.filters.allMuscles');
-  ['chest', 'back', 'shoulders', 'arms', 'biceps', 'triceps', 'core', 'legs', 'calf'].forEach(m => {
-    const label = document.getElementById(`exercise-filter-muscle-${m}`);
-    if (label) label.textContent = muscleNames[m] || m;
-  });
 
   const allDifficultyLabel = document.getElementById('exercise-filter-difficulty-all');
   if (allDifficultyLabel) allDifficultyLabel.textContent = t('exercise.filters.allDifficulties');
@@ -710,12 +744,9 @@ function openAddExerciseModal() {
 
   // V3 fields
   setExerciseType('strength');
-  setExercisePattern('full');
   exerciseVariants = [];
   exerciseNotes = '';
-  exerciseVisual = null;
   renderVariants();
-  renderVisualInput();
 
   // Collapse step 2
   exerciseStep2Expanded = false;
@@ -756,12 +787,9 @@ function editExercise(id) {
 
   // V3 fields
   setExerciseType(exercise.type || 'strength');
-  setExercisePattern(exercise.pattern || 'full');
   exerciseVariants = exercise.variants ? exercise.variants.map(v => ({...v})) : [];
   exerciseNotes = exercise.notes || '';
-  exerciseVisual = exercise.visual ? {...exercise.visual} : null;
   renderVariants();
-  renderVisualInput();
 
   // Notes textarea
   const notesInput = document.getElementById('exercise-notes');
@@ -788,7 +816,7 @@ function editExercise(id) {
 
   // Expand step 2 if exercise has detail content
   const hasStep2Content = exerciseInstructionSteps.length > 0 ||
-    exerciseVariants.length > 0 || exerciseNotes || exerciseVisual ||
+    exerciseVariants.length > 0 || exerciseNotes ||
     hasAdvancedContent;
   exerciseStep2Expanded = hasStep2Content;
   const section = document.getElementById('exercise-step2-section');
@@ -849,10 +877,8 @@ function clearExerciseForm() {
 
   // V3 fields
   exerciseType = 'strength';
-  exercisePattern = 'full';
   exerciseVariants = [];
   exerciseNotes = '';
-  exerciseVisual = null;
   const notesInput = document.getElementById('exercise-notes');
   if (notesInput) notesInput.value = '';
 
@@ -921,15 +947,6 @@ function setExerciseType(type) {
   if (hidden) hidden.value = type;
   document.querySelectorAll('#exercise-type-pills .difficulty-pill').forEach(pill => {
     pill.classList.toggle('active', pill.dataset.type === type);
-  });
-}
-
-function setExercisePattern(pattern) {
-  exercisePattern = pattern;
-  const hidden = document.getElementById('exercise-pattern');
-  if (hidden) hidden.value = pattern;
-  document.querySelectorAll('#exercise-pattern-pills .difficulty-pill').forEach(pill => {
-    pill.classList.toggle('active', pill.dataset.pattern === pattern);
   });
 }
 
@@ -1020,68 +1037,6 @@ function getCleanVariants() {
     if (exerciseVariants[i]) exerciseVariants[i].note = input.value.trim();
   });
   return exerciseVariants.filter(v => v.name.trim() !== '');
-}
-
-// --- Visual ---
-
-function renderVisualInput() {
-  const container = document.getElementById('exercise-visual-container');
-  if (!container) return;
-
-  if (exerciseVisual && exerciseVisual.value) {
-    container.innerHTML = `
-      <div class="exercise-visual-preview">
-        <img src="${exerciseVisual.value}" alt="" class="exercise-visual-preview-img"
-          onerror="this.style.display='none'">
-        <button type="button" class="exercise-visual-remove" onclick="removeExerciseVisual()">
-          <span class="material-symbols-rounded">close</span>
-          <span>${t('exercise.visualRemove')}</span>
-        </button>
-      </div>`;
-  } else {
-    container.innerHTML = `
-      <div class="exercise-visual-add">
-        <button type="button" class="btn-secondary exercise-visual-add-btn" onclick="showVisualUrlInput()">
-          <span class="material-symbols-rounded">add_photo_alternate</span>
-          <span>${t('exercise.visualAdd')}</span>
-        </button>
-        <div id="exercise-visual-url-input" style="display:none;" class="mt-2">
-          <input type="url" id="exercise-visual-url"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            placeholder="${t('exercise.visualUrlPlaceholder')}"
-            onchange="setVisualFromUrl(this.value)">
-        </div>
-      </div>`;
-  }
-}
-
-function showVisualUrlInput() {
-  const urlInput = document.getElementById('exercise-visual-url-input');
-  if (urlInput) {
-    urlInput.style.display = 'block';
-    const input = document.getElementById('exercise-visual-url');
-    if (input) input.focus();
-  }
-}
-
-function setVisualFromUrl(url) {
-  const trimmed = (url || '').trim();
-  if (!trimmed) return;
-  try {
-    new URL(trimmed);
-  } catch {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Keine gueltige URL');
-    }
-    return;
-  }
-  exerciseVisual = { kind: 'url', value: trimmed };
-  renderVisualInput();
-}
-
-function removeExerciseVisual() {
-  exerciseVisual = null;
-  renderVisualInput();
 }
 
 // --- Inline Create Hook ---
@@ -1429,7 +1384,6 @@ function updateSetupNotesInput() {
 async function saveExercise() {
   const name = document.getElementById('exercise-name').value.trim();
   const type = document.getElementById('exercise-type')?.value || 'strength';
-  const pattern = document.getElementById('exercise-pattern')?.value || 'full';
   const difficulty = document.getElementById('exercise-difficulty').value;
   const icon = document.getElementById('exercise-icon')?.value || 'fitness_center';
 
@@ -1458,10 +1412,9 @@ async function saveExercise() {
 
   // Build v3 data and map to Firestore format
   const v3Data = {
-    name, type, pattern, difficulty, icon,
+    name, type, difficulty, icon,
     instructions: instructionsSteps,
     muscleGroups, equipment,
-    visual: exerciseVisual,
     variants, notes,
     setupNotes, cues, commonMistakes, progressions
   };
@@ -1542,7 +1495,6 @@ function viewExerciseDetails(id) {
 
   const difficultyValue = convertDifficultyToEnum(exercise.difficulty);
   const typeLabel = t('exercise.type.' + exercise.type) || exercise.type || '';
-  const patternLabel = t('exercise.pattern.' + exercise.pattern) || exercise.pattern || '';
   const difficultyLabel = t('difficulty.' + difficultyValue) || difficultyValue;
   const normalizedInstructions = normalizeExerciseInstructions(exercise);
 
@@ -1771,15 +1723,14 @@ let exerciseEquipment = [];
  */
 function openMuscleGroupsBottomSheet() {
   const muscleOptions = [
-    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur' },
-    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur' },
-    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur' },
-    { value: 'arms', label: 'Arme', description: 'Bizeps, Trizeps, Unterarme' },
-    { value: 'biceps', label: 'Bizeps', description: 'Bizepsmuskulatur' },
-    { value: 'triceps', label: 'Trizeps', description: 'Trizepsmuskulatur' },
-    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur' },
-    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur' },
-    { value: 'calf', label: 'Waden', description: 'Wadenmuskulatur' }
+    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur', icon: getMuscleIconPath('chest') },
+    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur', icon: getMuscleIconPath('back') },
+    { value: 'biceps', label: 'Bizeps', description: 'Bizepsmuskulatur', icon: getMuscleIconPath('biceps') },
+    { value: 'triceps', label: 'Trizeps', description: 'Trizepsmuskulatur', icon: getMuscleIconPath('triceps') },
+    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur', icon: getMuscleIconPath('shoulders') },
+    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur', icon: getMuscleIconPath('core') },
+    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur', icon: getMuscleIconPath('legs') },
+    { value: 'full-body', label: 'Ganzkörper', description: 'Ganzkörpertraining', icon: getMuscleIconPath('full-body') }
   ];
 
   openBottomSheet({
@@ -1801,16 +1752,15 @@ function openMuscleGroupsBottomSheet() {
  */
 function openEquipmentBottomSheet() {
   const equipmentOptions = [
-    { value: 'none', label: 'Kein Equipment', description: 'Bodyweight Training' },
+    { value: 'bodyweight', label: 'Bodyweight', description: 'Kein Equipment nötig' },
     { value: 'pull-up-bar', label: 'Klimmzugstange', description: 'Für Klimmzüge und Hanging-Übungen' },
-    { value: 'dip-bars', label: 'Dip-Barren', description: 'Für Dips und Support-Holds' },
-    { value: 'rings', label: 'Ringe', description: 'Gymnastikringe für instabiles Training' },
+    { value: 'barbell', label: 'Langhantel', description: 'Langhantel-Training' },
+    { value: 'dumbbell', label: 'Kurzhantel', description: 'Kurzhantel-Training' },
     { value: 'resistance-bands', label: 'Widerstandsbänder', description: 'Für Assistance oder zusätzlichen Widerstand' },
+    { value: 'gym-machine', label: 'Maschine', description: 'Geräte im Fitnessstudio' },
     { value: 'parallettes', label: 'Paralettes', description: 'Für L-Sits, Handstands und Push-Ups' },
-    { value: 'box', label: 'Box/Bank', description: 'Erhöhte Plattform für Step-Ups, Box Jumps' },
-    { value: 'wall', label: 'Wand', description: 'Für Handstand und Wall-Sits' },
-    { value: 'mat', label: 'Matte', description: 'Für Bodenübungen' },
-    { value: 'weights', label: 'Gewichte', description: 'Kurz- oder Langhanteln' }
+    { value: 'rings', label: 'Ringe', description: 'Gymnastikringe für instabiles Training' },
+    { value: 'bench', label: 'Bank', description: 'Flach-/Schrägbank' }
   ];
 
   openBottomSheet({

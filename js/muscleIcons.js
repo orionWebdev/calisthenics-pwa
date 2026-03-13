@@ -14,9 +14,10 @@ const MUSCLE_ICON_PATHS = {
   legs:      'assets/icons/dark/legs.png',
   calf:      'assets/icons/dark/calf.png',
   arms:      'assets/icons/dark/biceps.png',
+  'full-body': 'assets/icons/dark/body.png',
 };
 
-const MUSCLE_ICON_FALLBACK = 'assets/icons/dark/chest.png';
+const MUSCLE_ICON_FALLBACK = 'assets/icons/dark/body.png';
 
 // ========================================
 // HELPER FUNCTIONS
