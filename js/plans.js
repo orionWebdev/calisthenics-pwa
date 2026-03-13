@@ -6,7 +6,7 @@ let allPlans = [];
 let filteredPlans = [];
 let editingPlanId = null;
 let currentPlan = null; // Currently selected plan for editing
-let planTypeFilter = 'all';
+let planMuscleFilter = 'all';
 
 let planIconSelection = null;
 let planIconSelectionIsManual = false;
@@ -366,7 +366,17 @@ function renderPlans() {
 function applyPlanFilters() {
   const list = Array.isArray(allPlans) ? allPlans : [];
   filteredPlans = list
-    .filter(plan => (planTypeFilter === 'all' ? true : plan.type === planTypeFilter))
+    .filter(plan => {
+      if (planMuscleFilter === 'all') return true;
+      const items = getPlanItems(plan);
+      return items.some(item => {
+        const exercise = (typeof allExercises !== 'undefined' ? allExercises : [])
+          .find(e => e.id === item.exerciseId);
+        if (!exercise) return false;
+        const groups = Array.isArray(exercise.muscleGroups) ? exercise.muscleGroups : [];
+        return groups.includes(planMuscleFilter);
+      });
+    })
     .sort((a, b) => {
       const aTime = getPlanSortValue(a);
       const bTime = getPlanSortValue(b);
@@ -375,32 +385,30 @@ function applyPlanFilters() {
       const bName = (b.name || '').toString();
       return aName.localeCompare(bName, 'de', { sensitivity: 'base' });
     });
-  updatePlanTypeFilterUI();
+  updatePlanMuscleFilterUI();
   renderPlans();
 }
 
-function setPlanTypeFilter(type) {
-  planTypeFilter = type || 'all';
+function setPlanMuscleFilter(muscle) {
+  planMuscleFilter = muscle || 'all';
   applyPlanFilters();
 }
 
-function updatePlanTypeFilterUI() {
-  const container = document.getElementById('plan-type-filters');
+function updatePlanMuscleFilterUI() {
+  const container = document.getElementById('plan-muscle-filters');
   if (!container) return;
   container.querySelectorAll('.filter-chip').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.type === planTypeFilter);
+    btn.classList.toggle('active', btn.dataset.muscle === planMuscleFilter);
   });
 
   const allLabel = document.getElementById('plan-filter-all-label');
   if (allLabel) allLabel.textContent = t('plan.filters.all');
-  const strengthLabel = document.getElementById('plan-filter-strength-label');
-  if (strengthLabel) strengthLabel.textContent = t('plan.filters.strength');
-  const bodyweightLabel = document.getElementById('plan-filter-bodyweight-label');
-  if (bodyweightLabel) bodyweightLabel.textContent = t('plan.filters.bodyweight');
-  const cardioLabel = document.getElementById('plan-filter-cardio-label');
-  if (cardioLabel) cardioLabel.textContent = t('plan.filters.cardio');
-  const recoveryLabel = document.getElementById('plan-filter-recovery-label');
-  if (recoveryLabel) recoveryLabel.textContent = t('plan.filters.recovery');
+
+  const muscles = ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'calf'];
+  muscles.forEach(m => {
+    const label = document.getElementById(`plan-filter-${m}-label`);
+    if (label) label.textContent = muscleNames[m] || m;
+  });
 }
 
 function applyPlanI18n() {
@@ -500,22 +508,20 @@ function applyPlanI18n() {
 
   const muscleLabelMap = typeof muscleNames === 'object' && muscleNames !== null ? muscleNames : {};
   setText('exercise-picker-filter-all-label', t('plan.filters.all'));
-  setText('exercise-picker-filter-chest-label', muscleLabelMap.chest || '');
-  setText('exercise-picker-filter-back-label', muscleLabelMap.back || '');
-  setText('exercise-picker-filter-shoulders-label', muscleLabelMap.shoulders || '');
-  setText('exercise-picker-filter-arms-label', muscleLabelMap.arms || '');
-  setText('exercise-picker-filter-core-label', muscleLabelMap.core || '');
-  setText('exercise-picker-filter-legs-label', muscleLabelMap.legs || '');
+  ['chest', 'back', 'shoulders', 'arms', 'biceps', 'triceps', 'core', 'legs', 'calf'].forEach(m => {
+    setText(`exercise-picker-filter-${m}-label`, muscleLabelMap[m] || '');
+  });
 
   setText('exercise-config-title', t('plan.exerciseConfig.title'));
   setText('exercise-config-sets-label', t('plan.exerciseConfig.setsLabel'));
   setText('exercise-config-reps-label', t('plan.exerciseConfig.repsLabel'));
-  setPlaceholder('exercise-reps', t('plan.exerciseConfig.repsPlaceholder'));
   setText('exercise-config-hold-label', t('plan.exerciseConfig.holdLabel'));
-  setPlaceholder('exercise-hold', t('plan.exerciseConfig.holdPlaceholder'));
-  setAriaLabel('exercise-sets', t('plan.exerciseConfig.setsLabel'));
-  setAriaLabel('exercise-reps', t('plan.exerciseConfig.repsLabel'));
-  setAriaLabel('exercise-hold', t('plan.exerciseConfig.holdLabel'));
+  setText('exercise-sets-unit', t('workout.logging.sets'));
+  setText('exercise-reps-unit', t('workout.logging.totalReps'));
+  setText('exercise-hold-unit', t('common.secondsShort', { n: '' }));
+  setAriaLabel('exercise-sets-btn', t('plan.exerciseConfig.setsLabel'));
+  setAriaLabel('exercise-reps-btn', t('plan.exerciseConfig.repsLabel'));
+  setAriaLabel('exercise-hold-btn', t('plan.exerciseConfig.holdLabel'));
   setText('exercise-rest-label-text', t('plan.exerciseConfig.restLabel'));
   setText('exercise-rest-min-label', `0 ${t('plan.exerciseConfig.restSec')}`);
   setText('exercise-rest-max-label', `5 ${t('plan.exerciseConfig.restMin')}`);
@@ -1088,8 +1094,11 @@ function openQuickExerciseMuscleSheet() {
     { value: 'back', label: muscleNames.back, description: 'Rückenmuskulatur' },
     { value: 'shoulders', label: muscleNames.shoulders, description: 'Schultermuskulatur' },
     { value: 'arms', label: muscleNames.arms, description: 'Bizeps, Trizeps, Unterarme' },
+    { value: 'biceps', label: muscleNames.biceps, description: 'Bizepsmuskulatur' },
+    { value: 'triceps', label: muscleNames.triceps, description: 'Trizepsmuskulatur' },
     { value: 'core', label: muscleNames.core, description: 'Bauch- und Rumpfmuskulatur' },
-    { value: 'legs', label: muscleNames.legs, description: 'Beinmuskulatur' }
+    { value: 'legs', label: muscleNames.legs, description: 'Beinmuskulatur' },
+    { value: 'calf', label: muscleNames.calf, description: 'Wadenmuskulatur' }
   ];
 
   openBottomSheet({
@@ -1328,6 +1337,38 @@ function selectExerciseForPlan(exerciseId) {
   openExerciseConfigModal(exerciseId);
 }
 
+function setExerciseConfigValue(type, value) {
+  const input = document.getElementById(`exercise-${type}`);
+  const valueEl = document.getElementById(`exercise-${type}-value`);
+  if (!input || !valueEl) return;
+
+  const rawValue = value ?? '';
+  input.value = rawValue === null || rawValue === undefined ? '' : String(rawValue);
+
+  let display = input.value;
+  const numericValue = Number(display);
+  if (!display || ((type === 'reps' || type === 'hold') && Number.isFinite(numericValue) && numericValue <= 0)) {
+    display = '—';
+  }
+  valueEl.textContent = display;
+}
+
+function openExerciseConfigPicker(type) {
+  const input = document.getElementById(`exercise-${type}`);
+  if (!input || typeof openNumberPicker !== 'function') return;
+
+  const raw = input.value.trim();
+  const parsed = Number(raw);
+  const initialValue = Number.isFinite(parsed) ? parsed : (type === 'sets' ? 3 : 0);
+  const pickerType = type === 'sets' ? 'sets' : type;
+
+  openNumberPicker({
+    type: pickerType,
+    initialValue,
+    onConfirm: (value) => setExerciseConfigValue(type, value)
+  });
+}
+
 function openExerciseConfigModal(exerciseId, editIndex = null) {
   const exercise = allExercises.find(e => e.id === exerciseId);
   if (!exercise) return;
@@ -1343,15 +1384,15 @@ function openExerciseConfigModal(exerciseId, editIndex = null) {
   if (editIndex !== null && currentPlan.items && currentPlan.items[editIndex]) {
     const item = currentPlan.items[editIndex];
     const target = item.target || {};
-    document.getElementById('exercise-sets').value = target.sets || 3;
-    document.getElementById('exercise-reps').value = target.reps || '';
-    document.getElementById('exercise-hold').value = target.holdSec || '';
+    setExerciseConfigValue('sets', target.sets || 3);
+    setExerciseConfigValue('reps', target.reps || '');
+    setExerciseConfigValue('hold', target.holdSec || '');
     document.getElementById('exercise-rest').value = item.restSec !== undefined ? item.restSec : 90;
   } else {
     // Default values
-    document.getElementById('exercise-sets').value = 3;
-    document.getElementById('exercise-reps').value = '';
-    document.getElementById('exercise-hold').value = '';
+    setExerciseConfigValue('sets', 3);
+    setExerciseConfigValue('reps', '');
+    setExerciseConfigValue('hold', '');
     document.getElementById('exercise-rest').value = 90;
   }
 
@@ -1371,7 +1412,12 @@ function saveExerciseConfig() {
 
   const target = {};
   if (Number.isFinite(setsValue) && setsValue > 0) target.sets = setsValue;
-  if (repsValue) target.reps = repsValue;
+  if (repsValue) {
+    const repsNum = Number(repsValue);
+    if (!Number.isFinite(repsNum) || repsNum > 0) {
+      target.reps = repsValue;
+    }
+  }
   if (Number.isFinite(holdValue) && holdValue > 0) target.holdSec = holdValue;
 
   const exerciseConfig = {

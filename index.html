@@ -281,28 +281,44 @@
           </button>
         </div>
 
-        <!-- Plan Type Filter -->
+        <!-- Plan Muscle Group Filter -->
         <div class="plan-filters-bar">
-          <div class="plan-type-filters flex gap-2" id="plan-type-filters">
-          <button class="filter-chip active" data-type="all" onclick="setPlanTypeFilter('all')">
+          <div class="plan-type-filters flex gap-2" id="plan-muscle-filters">
+          <button class="filter-chip active" data-muscle="all" onclick="setPlanMuscleFilter('all')">
             <span class="material-symbols-rounded">apps</span>
             <span id="plan-filter-all-label"></span>
           </button>
-          <button class="filter-chip" data-type="strength" onclick="setPlanTypeFilter('strength')">
-            <span class="material-symbols-rounded">fitness_center</span>
-            <span id="plan-filter-strength-label"></span>
+          <button class="filter-chip" data-muscle="chest" onclick="setPlanMuscleFilter('chest')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/chest.png" alt="chest"></span>
+            <span id="plan-filter-chest-label"></span>
           </button>
-          <button class="filter-chip" data-type="bodyweight" onclick="setPlanTypeFilter('bodyweight')">
-            <span class="material-symbols-rounded">sports_gymnastics</span>
-            <span id="plan-filter-bodyweight-label"></span>
+          <button class="filter-chip" data-muscle="back" onclick="setPlanMuscleFilter('back')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/back.png" alt="back"></span>
+            <span id="plan-filter-back-label"></span>
           </button>
-          <button class="filter-chip" data-type="cardio" onclick="setPlanTypeFilter('cardio')">
-            <span class="material-symbols-rounded">directions_run</span>
-            <span id="plan-filter-cardio-label"></span>
+          <button class="filter-chip" data-muscle="shoulders" onclick="setPlanMuscleFilter('shoulders')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/shoulder.png" alt="shoulders"></span>
+            <span id="plan-filter-shoulders-label"></span>
           </button>
-          <button class="filter-chip" data-type="recovery" onclick="setPlanTypeFilter('recovery')">
-            <span class="material-symbols-rounded">self_improvement</span>
-            <span id="plan-filter-recovery-label"></span>
+          <button class="filter-chip" data-muscle="biceps" onclick="setPlanMuscleFilter('biceps')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/biceps.png" alt="biceps"></span>
+            <span id="plan-filter-biceps-label"></span>
+          </button>
+          <button class="filter-chip" data-muscle="triceps" onclick="setPlanMuscleFilter('triceps')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/triceps.png" alt="triceps"></span>
+            <span id="plan-filter-triceps-label"></span>
+          </button>
+          <button class="filter-chip" data-muscle="core" onclick="setPlanMuscleFilter('core')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/core.png" alt="core"></span>
+            <span id="plan-filter-core-label"></span>
+          </button>
+          <button class="filter-chip" data-muscle="legs" onclick="setPlanMuscleFilter('legs')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/legs.png" alt="legs"></span>
+            <span id="plan-filter-legs-label"></span>
+          </button>
+          <button class="filter-chip" data-muscle="calf" onclick="setPlanMuscleFilter('calf')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/calf.png" alt="calf"></span>
+            <span id="plan-filter-calf-label"></span>
           </button>
           </div>
         </div>
@@ -353,33 +369,10 @@
         <!-- Filter Chips -->
         <div class="exercise-filters-bar">
           <div class="plan-type-filters flex gap-2" id="exercise-muscle-filters">
-            <button class="filter-chip active" data-muscle="" onclick="setExerciseMuscleFilter('')">
-              <span class="material-symbols-rounded">apps</span>
-              <span id="exercise-filter-muscle-all"></span>
-            </button>
-            <button class="filter-chip" data-muscle="chest" onclick="setExerciseMuscleFilter('chest')">
-              <span class="material-symbols-rounded">favorite</span>
-              <span id="exercise-filter-muscle-chest"></span>
-            </button>
-            <button class="filter-chip" data-muscle="back" onclick="setExerciseMuscleFilter('back')">
-              <span class="material-symbols-rounded">backpack</span>
-              <span id="exercise-filter-muscle-back"></span>
-            </button>
-            <button class="filter-chip" data-muscle="shoulders" onclick="setExerciseMuscleFilter('shoulders')">
-              <span class="material-symbols-rounded">accessibility_new</span>
-              <span id="exercise-filter-muscle-shoulders"></span>
-            </button>
-            <button class="filter-chip" data-muscle="arms" onclick="setExerciseMuscleFilter('arms')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span id="exercise-filter-muscle-arms"></span>
-            </button>
-            <button class="filter-chip" data-muscle="core" onclick="setExerciseMuscleFilter('core')">
-              <span class="material-symbols-rounded">self_improvement</span>
-              <span id="exercise-filter-muscle-core"></span>
-            </button>
-            <button class="filter-chip" data-muscle="legs" onclick="setExerciseMuscleFilter('legs')">
-              <span class="material-symbols-rounded">directions_walk</span>
-              <span id="exercise-filter-muscle-legs"></span>
+            <button class="filter-chip active" id="exercise-muscle-filter-btn" onclick="openMuscleGroupFilterSheet()">
+              <span class="material-symbols-rounded">body_system</span>
+              <span id="exercise-muscle-filter-label">Alle Muskeln</span>
+              <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
             </button>
           </div>
 
@@ -550,21 +543,27 @@
                 <button type="button" class="difficulty-pill active" data-type="strength" onclick="setExerciseType('strength')">Kraft</button>
                 <button type="button" class="difficulty-pill" data-type="bodyweight" onclick="setExerciseType('bodyweight')">Bodyweight</button>
                 <button type="button" class="difficulty-pill" data-type="cardio" onclick="setExerciseType('cardio')">Cardio</button>
+                <button type="button" class="difficulty-pill" data-type="recovery" onclick="setExerciseType('recovery')">Recovery</button>
               </div>
               <input type="hidden" id="exercise-type" value="strength">
             </div>
 
-            <!-- Pattern -->
+            <!-- Muscle Groups -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-pattern-label">Bewegungsmuster *</label>
-              <div class="exercise-pattern-pills" id="exercise-pattern-pills">
-                <button type="button" class="difficulty-pill" data-pattern="push" onclick="setExercisePattern('push')">Push</button>
-                <button type="button" class="difficulty-pill" data-pattern="pull" onclick="setExercisePattern('pull')">Pull</button>
-                <button type="button" class="difficulty-pill" data-pattern="legs" onclick="setExercisePattern('legs')">Beine</button>
-                <button type="button" class="difficulty-pill" data-pattern="core" onclick="setExercisePattern('core')">Core</button>
-                <button type="button" class="difficulty-pill active" data-pattern="full" onclick="setExercisePattern('full')">Ganzkoerper</button>
-              </div>
-              <input type="hidden" id="exercise-pattern" value="full">
+              <label class="block text-sm font-medium mb-2">
+                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">body_system</span>
+                Muskelgruppen
+              </label>
+              <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()"></div>
+            </div>
+
+            <!-- Equipment -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">
+                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">build</span>
+                Equipment <span class="text-gray-400">(optional)</span>
+              </label>
+              <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()"></div>
             </div>
 
             <!-- Difficulty -->
@@ -591,6 +590,13 @@
               <input type="hidden" id="exercise-difficulty" value="intermediate">
               <input type="hidden" id="exercise-icon" value="fitness_center">
             </div>
+
+            <!-- Notes -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2" id="exercise-notes-label">Notizen</label>
+              <textarea id="exercise-notes" rows="3" class="instruction-step-input"
+                placeholder="Allgemeine Notizen zur Uebung..."></textarea>
+            </div>
           </div>
         </div>
 
@@ -605,14 +611,6 @@
             <span class="material-symbols-rounded wizard-section-toggle" id="exercise-step2-toggle">expand_more</span>
           </button>
           <div class="wizard-section-content collapsed" id="exercise-step2-content">
-            <!-- Visual -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-visual-label">Visual</label>
-              <div id="exercise-visual-container">
-                <!-- Rendered by JS -->
-              </div>
-            </div>
-
             <!-- Instructions (nummerierte Schritte) -->
             <div class="mb-4">
               <label class="block text-sm font-medium mb-2" id="exercise-instructions-title">Anleitung</label>
@@ -632,31 +630,6 @@
                 <span class="material-symbols-rounded">add</span>
                 <span>Variante hinzufuegen</span>
               </button>
-            </div>
-
-            <!-- Notes -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-notes-label">Notizen</label>
-              <textarea id="exercise-notes" rows="3" class="instruction-step-input"
-                placeholder="Allgemeine Notizen zur Uebung..."></textarea>
-            </div>
-
-            <!-- Muscle Groups (de-emphasized) -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">
-                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">body_system</span>
-                Muskelgruppen
-              </label>
-              <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()"></div>
-            </div>
-
-            <!-- Equipment (de-emphasized) -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">
-                <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">build</span>
-                Equipment <span class="text-gray-400">(optional)</span>
-              </label>
-              <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()"></div>
             </div>
 
             <!-- Advanced instructions toggle -->
@@ -966,32 +939,44 @@
         <!-- Filter Chips -->
         <div class="exercise-picker-filters flex gap-2">
           <button type="button" class="filter-chip" data-filter="all" onclick="setExercisePickerMuscleFilter('all')">
-            <span class="material-symbols-rounded">fitness_center</span>
+            <span class="material-symbols-rounded">apps</span>
             <span id="exercise-picker-filter-all-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="chest" onclick="setExercisePickerMuscleFilter('chest')">
-            <span class="material-symbols-rounded">favorite</span>
-            <span class="muscle-tag muscle-chest" style="padding: 0;" id="exercise-picker-filter-chest-label"></span>
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/chest.png" alt="chest"></span>
+            <span id="exercise-picker-filter-chest-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="back" onclick="setExercisePickerMuscleFilter('back')">
-            <span class="material-symbols-rounded">backpack</span>
-            <span class="muscle-tag muscle-back" style="padding: 0;" id="exercise-picker-filter-back-label"></span>
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/back.png" alt="back"></span>
+            <span id="exercise-picker-filter-back-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="shoulders" onclick="setExercisePickerMuscleFilter('shoulders')">
-            <span class="material-symbols-rounded">accessibility_new</span>
-            <span class="muscle-tag muscle-shoulders" style="padding: 0;" id="exercise-picker-filter-shoulders-label"></span>
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/shoulder.png" alt="shoulders"></span>
+            <span id="exercise-picker-filter-shoulders-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="arms" onclick="setExercisePickerMuscleFilter('arms')">
-            <span class="material-symbols-rounded">fitness_center</span>
-            <span class="muscle-tag muscle-arms" style="padding: 0;" id="exercise-picker-filter-arms-label"></span>
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/biceps.png" alt="arms"></span>
+            <span id="exercise-picker-filter-arms-label"></span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="biceps" onclick="setExercisePickerMuscleFilter('biceps')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/biceps.png" alt="biceps"></span>
+            <span id="exercise-picker-filter-biceps-label"></span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="triceps" onclick="setExercisePickerMuscleFilter('triceps')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/triceps.png" alt="triceps"></span>
+            <span id="exercise-picker-filter-triceps-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="core" onclick="setExercisePickerMuscleFilter('core')">
-            <span class="material-symbols-rounded">self_improvement</span>
-            <span class="muscle-tag muscle-core" style="padding: 0;" id="exercise-picker-filter-core-label"></span>
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/core.png" alt="core"></span>
+            <span id="exercise-picker-filter-core-label"></span>
           </button>
           <button type="button" class="filter-chip" data-filter="legs" onclick="setExercisePickerMuscleFilter('legs')">
-            <span class="material-symbols-rounded">directions_walk</span>
-            <span class="muscle-tag muscle-legs" style="padding: 0;" id="exercise-picker-filter-legs-label"></span>
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/legs.png" alt="legs"></span>
+            <span id="exercise-picker-filter-legs-label"></span>
+          </button>
+          <button type="button" class="filter-chip" data-filter="calf" onclick="setExercisePickerMuscleFilter('calf')">
+            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/calf.png" alt="calf"></span>
+            <span id="exercise-picker-filter-calf-label"></span>
           </button>
         </div>
 
@@ -1033,47 +1018,32 @@
 
         <div class="space-y-4">
         <!-- Sets -->
-        <div>
+        <div class="exercise-config-field">
           <label class="block text-sm font-medium mb-2" id="exercise-config-sets-label"></label>
-          <input
-            type="number"
-            id="exercise-sets"
-            value="3"
-            min="1"
-            max="10"
-            pattern="[0-9]*"
-            inputmode="numeric"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            aria-label=""
-          />
+          <button type="button" id="exercise-sets-btn" class="st-set-val st-set-val--editable config-picker-btn" onclick="openExerciseConfigPicker('sets')" aria-label="">
+            <span class="st-set-val-num" id="exercise-sets-value">3</span>
+            <span class="st-set-val-unit" id="exercise-sets-unit"></span>
+          </button>
+          <input type="hidden" id="exercise-sets" value="3" />
         </div>
 
         <!-- Reps OR Hold -->
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-2" id="exercise-config-reps-label"></label>
-            <input
-              type="text"
-              id="exercise-reps"
-              placeholder=""
-              pattern="[0-9\-]*"
-              inputmode="numeric"
-              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-              aria-label=""
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-2" id="exercise-config-hold-label"></label>
-            <input
-              type="text"
-              id="exercise-hold"
-              placeholder=""
-              pattern="[0-9]*"
-              inputmode="numeric"
-              class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-              aria-label=""
-            />
-          </div>
+        <div class="exercise-config-field">
+          <label class="block text-sm font-medium mb-2" id="exercise-config-reps-label"></label>
+          <button type="button" id="exercise-reps-btn" class="st-set-val st-set-val--editable config-picker-btn" onclick="openExerciseConfigPicker('reps')" aria-label="">
+            <span class="st-set-val-num" id="exercise-reps-value">—</span>
+            <span class="st-set-val-unit" id="exercise-reps-unit"></span>
+          </button>
+          <input type="hidden" id="exercise-reps" value="" />
+        </div>
+
+        <div class="exercise-config-field">
+          <label class="block text-sm font-medium mb-2" id="exercise-config-hold-label"></label>
+          <button type="button" id="exercise-hold-btn" class="st-set-val st-set-val--editable config-picker-btn" onclick="openExerciseConfigPicker('hold')" aria-label="">
+            <span class="st-set-val-num" id="exercise-hold-value">—</span>
+            <span class="st-set-val-unit" id="exercise-hold-unit"></span>
+          </button>
+          <input type="hidden" id="exercise-hold" value="" />
         </div>
 
         <!-- Rest (mit Range Slider für bessere Mobile UX) -->
