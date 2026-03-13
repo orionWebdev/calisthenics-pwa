@@ -1796,8 +1796,11 @@ body.modal-open {
 .muscle-back { background: #60a5fa; }
 .muscle-shoulders { background: #a78bfa; }
 .muscle-arms { background: #f59e0b; }
+.muscle-biceps { background: #fbbf24; }
+.muscle-triceps { background: #e879f9; }
 .muscle-core { background: #34d399; }
 .muscle-legs { background: #fb923c; }
+.muscle-calf { background: #2dd4bf; }
 .muscle-default { background: rgba(148, 163, 184, 0.4); }
 
 .exercise-row-icon .material-symbols-rounded {
@@ -7632,6 +7635,19 @@ input[type="range"]::-moz-range-progress {
   border-top: 1px solid rgb(55 65 81);
 }
 
+.exercise-config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-picker-btn {
+  align-self: flex-start;
+  flex: 0 0 auto;
+  min-width: 140px;
+  padding: 0.65rem 0.9rem;
+}
+
 .modal-cancel-btn {
   flex: 1;
   padding: 0.875rem 1.5rem;
@@ -12020,14 +12036,16 @@ input[type="range"]::-moz-range-progress {
   justify-content: center;
   color: rgba(240, 34, 119, 0.55);
 }
-.muscle-icon svg {
+.muscle-icon img {
   width: 1em;
   height: 1em;
+  object-fit: contain;
 }
-.muscle-icon--sm svg { width: 16px; height: 16px; }
-.muscle-icon--md svg { width: 20px; height: 20px; }
-.muscle-icon--lg svg { width: 32px; height: 32px; }
-.muscle-icon--xl svg { width: 48px; height: 48px; }
+.muscle-icon--sm img { width: 16px; height: 16px; }
+.muscle-icon--md img { width: 40px; height: 40px; }
+.muscle-icon--lg img { width: 32px; height: 32px; }
+.muscle-icon--xl img { width: 48px; height: 48px; }
+.muscle-icon--filter img { width: 18px; height: 18px; }
 
 /* Difficulty stripe on exercise rows */
 .exercise-list-row {

@@ -28,6 +28,7 @@ const muscleNames = {
   triceps: 'Trizeps',
   core: 'Core',
   legs: 'Beine',
+  calf: 'Waden',
   'full-body': 'Ganzkörper',
   cardio: 'Cardio',
   mobility: 'Mobility'
@@ -583,18 +584,10 @@ function updateExerciseFiltersUI() {
 
   const allMusclesLabel = document.getElementById('exercise-filter-muscle-all');
   if (allMusclesLabel) allMusclesLabel.textContent = t('exercise.filters.allMuscles');
-  const chestLabel = document.getElementById('exercise-filter-muscle-chest');
-  if (chestLabel) chestLabel.textContent = muscleNames.chest;
-  const backLabel = document.getElementById('exercise-filter-muscle-back');
-  if (backLabel) backLabel.textContent = muscleNames.back;
-  const shouldersLabel = document.getElementById('exercise-filter-muscle-shoulders');
-  if (shouldersLabel) shouldersLabel.textContent = muscleNames.shoulders;
-  const armsLabel = document.getElementById('exercise-filter-muscle-arms');
-  if (armsLabel) armsLabel.textContent = muscleNames.arms;
-  const coreLabel = document.getElementById('exercise-filter-muscle-core');
-  if (coreLabel) coreLabel.textContent = muscleNames.core;
-  const legsLabel = document.getElementById('exercise-filter-muscle-legs');
-  if (legsLabel) legsLabel.textContent = muscleNames.legs;
+  ['chest', 'back', 'shoulders', 'arms', 'biceps', 'triceps', 'core', 'legs', 'calf'].forEach(m => {
+    const label = document.getElementById(`exercise-filter-muscle-${m}`);
+    if (label) label.textContent = muscleNames[m] || m;
+  });
 
   const allDifficultyLabel = document.getElementById('exercise-filter-difficulty-all');
   if (allDifficultyLabel) allDifficultyLabel.textContent = t('exercise.filters.allDifficulties');
@@ -1782,8 +1775,11 @@ function openMuscleGroupsBottomSheet() {
     { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur' },
     { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur' },
     { value: 'arms', label: 'Arme', description: 'Bizeps, Trizeps, Unterarme' },
+    { value: 'biceps', label: 'Bizeps', description: 'Bizepsmuskulatur' },
+    { value: 'triceps', label: 'Trizeps', description: 'Trizepsmuskulatur' },
     { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur' },
-    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur' }
+    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur' },
+    { value: 'calf', label: 'Waden', description: 'Wadenmuskulatur' }
   ];
 
   openBottomSheet({
