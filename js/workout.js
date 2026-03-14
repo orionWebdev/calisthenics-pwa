@@ -110,7 +110,7 @@ function mapPlanItemToWorkoutExercise(item) {
 
   return {
     exerciseId: item.exerciseId,
-    exerciseName: exercise ? exercise.name : t('exercise.title'),
+    exerciseName: exercise?.name || item.exerciseId || t('exercise.title'),
     targetSets: target.sets || 3,
     targetMode,
     targetHoldSec: hasHold ? holdSec : undefined,

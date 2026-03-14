@@ -308,6 +308,49 @@
             <span id="plan-filter-calf-label"></span>
           </button>
           </div>
+
+          <div class="plan-type-filters flex gap-2" id="plan-equipment-filters">
+            <button class="filter-chip active" data-equipment="all" onclick="setPlanEquipmentFilter('all')">
+              <span class="material-symbols-rounded">apps</span>
+              <span id="plan-filter-equipment-all-label"></span>
+            </button>
+            <button class="filter-chip" data-equipment="bodyweight" onclick="setPlanEquipmentFilter('bodyweight')">
+              <span class="material-symbols-rounded">accessibility_new</span>
+              <span>Bodyweight</span>
+            </button>
+            <button class="filter-chip" data-equipment="pull-up-bar" onclick="setPlanEquipmentFilter('pull-up-bar')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span>Klimmzugstange</span>
+            </button>
+            <button class="filter-chip" data-equipment="parallettes" onclick="setPlanEquipmentFilter('parallettes')">
+              <span class="material-symbols-rounded">straighten</span>
+              <span>Paralettes</span>
+            </button>
+            <button class="filter-chip" data-equipment="rings" onclick="setPlanEquipmentFilter('rings')">
+              <span class="material-symbols-rounded">sports_gymnastics</span>
+              <span>Ringe</span>
+            </button>
+            <button class="filter-chip" data-equipment="dumbbell" onclick="setPlanEquipmentFilter('dumbbell')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span>Kurzhantel</span>
+            </button>
+            <button class="filter-chip" data-equipment="barbell" onclick="setPlanEquipmentFilter('barbell')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span>Langhantel</span>
+            </button>
+            <button class="filter-chip" data-equipment="resistance-bands" onclick="setPlanEquipmentFilter('resistance-bands')">
+              <span class="material-symbols-rounded">cable</span>
+              <span>Bänder</span>
+            </button>
+            <button class="filter-chip" data-equipment="gym-machine" onclick="setPlanEquipmentFilter('gym-machine')">
+              <span class="material-symbols-rounded">precision_manufacturing</span>
+              <span>Maschine</span>
+            </button>
+            <button class="filter-chip" data-equipment="bench" onclick="setPlanEquipmentFilter('bench')">
+              <span class="material-symbols-rounded">airline_seat_flat</span>
+              <span>Bank</span>
+            </button>
+          </div>
         </div>
 
         <!-- Plans Grid -->
@@ -383,6 +426,49 @@
             <button class="filter-chip" data-difficulty="elite" onclick="setExerciseDifficultyFilter('elite')">
               <span class="material-symbols-rounded">military_tech</span>
               <span id="exercise-filter-difficulty-elite"></span>
+            </button>
+          </div>
+
+          <div class="plan-type-filters flex gap-2" id="exercise-equipment-filters">
+            <button class="filter-chip active" data-equipment="" onclick="setExerciseEquipmentFilter('')">
+              <span class="material-symbols-rounded">apps</span>
+              <span id="exercise-filter-equipment-all"></span>
+            </button>
+            <button class="filter-chip" data-equipment="bodyweight" onclick="setExerciseEquipmentFilter('bodyweight')">
+              <span class="material-symbols-rounded">accessibility_new</span>
+              <span>Bodyweight</span>
+            </button>
+            <button class="filter-chip" data-equipment="pull-up-bar" onclick="setExerciseEquipmentFilter('pull-up-bar')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span>Klimmzugstange</span>
+            </button>
+            <button class="filter-chip" data-equipment="parallettes" onclick="setExerciseEquipmentFilter('parallettes')">
+              <span class="material-symbols-rounded">straighten</span>
+              <span>Paralettes</span>
+            </button>
+            <button class="filter-chip" data-equipment="rings" onclick="setExerciseEquipmentFilter('rings')">
+              <span class="material-symbols-rounded">sports_gymnastics</span>
+              <span>Ringe</span>
+            </button>
+            <button class="filter-chip" data-equipment="dumbbell" onclick="setExerciseEquipmentFilter('dumbbell')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span>Kurzhantel</span>
+            </button>
+            <button class="filter-chip" data-equipment="barbell" onclick="setExerciseEquipmentFilter('barbell')">
+              <span class="material-symbols-rounded">fitness_center</span>
+              <span>Langhantel</span>
+            </button>
+            <button class="filter-chip" data-equipment="resistance-bands" onclick="setExerciseEquipmentFilter('resistance-bands')">
+              <span class="material-symbols-rounded">cable</span>
+              <span>Bänder</span>
+            </button>
+            <button class="filter-chip" data-equipment="gym-machine" onclick="setExerciseEquipmentFilter('gym-machine')">
+              <span class="material-symbols-rounded">precision_manufacturing</span>
+              <span>Maschine</span>
+            </button>
+            <button class="filter-chip" data-equipment="bench" onclick="setExerciseEquipmentFilter('bench')">
+              <span class="material-symbols-rounded">airline_seat_flat</span>
+              <span>Bank</span>
             </button>
           </div>
         </div>

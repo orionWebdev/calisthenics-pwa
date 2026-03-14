@@ -53,10 +53,22 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ==================== CURATED EXERCISES COLLECTION ====================
+
+    /**
+     * exercises_curated collection
+     * - Read-only for allowed users (system exercises)
+     * - Write access only via Admin SDK (import script)
+     */
+    match /exercises_curated/{exerciseId} {
+      allow read: if isAllowed();
+      allow write: if false;
+    }
+
     // ==================== EXERCISES COLLECTION ====================
 
     /**
-     * exercises collection
+     * exercises collection (user-created exercises)
      * - Allowed users can read, create, update, delete exercises
      * - All exercises are shared across all allowed users
      */
