@@ -177,6 +177,9 @@ function renderBottomSheetOptions(optionsToRender = null) {
   content.innerHTML = options.map(option => {
     const isSelected = bottomSheetConfig.selectedValues.includes(option.value);
     const ariaLabel = `${option.label}${option.description ? ', ' + option.description : ''}${isSelected ? ', ausgewählt' : ''}`;
+    const iconHtml = option.icon
+      ? `<span class="bottom-sheet-option-icon"><img src="${option.icon}" alt="" /></span>`
+      : '';
     return `
       <button
         type="button"
@@ -189,6 +192,7 @@ function renderBottomSheetOptions(optionsToRender = null) {
         <div class="bottom-sheet-option-checkbox" aria-hidden="true">
           <span class="material-symbols-rounded">check</span>
         </div>
+        ${iconHtml}
         <div class="bottom-sheet-option-content">
           <div class="bottom-sheet-option-label">${option.label}</div>
           ${option.description ? `<div class="bottom-sheet-option-description">${option.description}</div>` : ''}

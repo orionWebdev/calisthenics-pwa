@@ -47,6 +47,14 @@ const PICKER_CONFIGS = {
     titleKey: 'numberPicker.holdTitle',
     generateValues: () => Array.from({ length: 601 }, (_, i) => i)
   },
+  sets: {
+    min: 1,
+    max: 10,
+    step: 1,
+    suffixKey: 'workout.logging.set',
+    titleKey: 'numberPicker.setsTitle',
+    generateValues: () => Array.from({ length: 10 }, (_, i) => i + 1)
+  },
   bodyWeightKg: {
     min: 30,
     max: 200,

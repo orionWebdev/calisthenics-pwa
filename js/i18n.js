@@ -486,6 +486,7 @@ const translations = {
     },
     numberPicker: {
       repsTitle: 'Wiederholungen',
+      setsTitle: 'Saetze',
       weightTitle: 'Gewicht',
       holdTitle: 'Haltedauer'
     },
@@ -1510,6 +1511,7 @@ const translations = {
     },
     numberPicker: {
       repsTitle: 'Reps',
+      setsTitle: 'Sets',
       weightTitle: 'Weight',
       holdTitle: 'Hold duration'
     },

@@ -34,7 +34,7 @@
   --bg-surface-active: rgba(255, 255, 255, 0.08);
 
   /* Legacy secondary colors (for backwards compatibility) */
-  --color-secondary-dark: #091E4D;
+  --color-secondary-dark: #161618;
   --color-secondary-light: #0F2481;
 
   /* Text Colors */
@@ -59,8 +59,8 @@
   /* Typography Scale - Konsistentes System */
   --font-size-xs: 0.75rem;     /* 12px - Labels, Hints */
   --font-size-sm: 0.875rem;    /* 14px - Small text, Captions */
-  --font-size-base: 1rem;      /* 16px - Body text */
-  --font-size-md: 1.125rem;    /* 18px - Large body */
+  --font-size-base: 1.15rem;      /* 16px - Body text */
+  --font-size-md: 1.175rem;    /* 18px - Large body */
   --font-size-lg: 1.25rem;     /* 20px - H3, Subheadings */
   --font-size-xl: 1.5rem;      /* 24px - H2 */
   --font-size-2xl: 1.75rem;    /* 28px - H1 */
@@ -1796,8 +1796,11 @@ body.modal-open {
 .muscle-back { background: #60a5fa; }
 .muscle-shoulders { background: #a78bfa; }
 .muscle-arms { background: #f59e0b; }
+.muscle-biceps { background: #fbbf24; }
+.muscle-triceps { background: #e879f9; }
 .muscle-core { background: #34d399; }
 .muscle-legs { background: #fb923c; }
+.muscle-calf { background: #2dd4bf; }
 .muscle-default { background: rgba(148, 163, 184, 0.4); }
 
 .exercise-row-icon .material-symbols-rounded {
@@ -2625,6 +2628,84 @@ body.modal-open {
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   margin-bottom: 0.25rem;
+}
+
+/* Calendar Widget Segmented Control (iOS-style, copied from pv3) */
+.cal-widget-segmented-control {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  height: 36px;
+  padding: 3px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 999px;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
+
+.cal-widget-seg-indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  width: calc((100% - 6px) / var(--seg-count));
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 1px 4px rgba(240, 34, 119, 0.3);
+  transform: translateX(calc(var(--active-idx) * 100%));
+  transition: transform 0.28s cubic-bezier(0.4, 0.0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cal-widget-seg-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cal-widget-seg-btn.active {
+  color: #fff;
+}
+
+.cal-widget-seg-btn:not(.active):hover {
+  color: #d1d5db;
+}
+
+/* Plan Calendar Widget Wrapper (embedded in dashboard card) */
+.plan-calendar-widget-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-calendar-widget-wrapper .calendar-month-section {
+  flex: none;
+}
+
+.plan-calendar-widget-wrapper .plan-calendar-grid {
+  grid-template-rows: none;
+  grid-auto-rows: minmax(40px, auto);
+}
+
+.plan-calendar-widget-wrapper .calendar-agenda-container {
+  max-height: 280px;
+  overflow-y: auto;
+  border-top: 1px solid var(--border-secondary);
 }
 
 /* Month Navigation Header */
@@ -3932,7 +4013,6 @@ input::placeholder {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(6, 10, 48, 0.9);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -4405,18 +4485,17 @@ input::placeholder {
   height: 40px;
   border-radius: 0.75rem;
   border: none;
-  background: var(--color-primary);
+  border: 2px solid #059669;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
 }
 
 .plan-row-start-btn:hover {
-  background: #ff3399;
+  background: #059669;
   transform: translateY(-1px);
 }
 
@@ -4727,7 +4806,6 @@ input::placeholder {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(6, 10, 48, 0.9);
   backdrop-filter: blur(8px);
   z-index: 2000;
   opacity: 0;
@@ -4920,6 +4998,24 @@ input::placeholder {
 
 .bottom-sheet-option.selected .bottom-sheet-option-checkbox .material-symbols-rounded {
   display: block;
+}
+
+.bottom-sheet-option-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+.bottom-sheet-option-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background-color: #fff;
 }
 
 .bottom-sheet-option-content {
@@ -7262,7 +7358,7 @@ input[type="range"]::-moz-range-progress {
   max-width: 640px;
   width: 100%;
   max-height: 90vh;
-  background: rgb(17 24 39);
+  background: var(--bg-card);
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   border-bottom: none;
@@ -7630,6 +7726,19 @@ input[type="range"]::-moz-range-progress {
   gap: 0.75rem;
   padding-top: 1rem;
   border-top: 1px solid rgb(55 65 81);
+}
+
+.exercise-config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-picker-btn {
+  align-self: flex-start;
+  flex: 0 0 auto;
+  min-width: 140px;
+  padding: 0.65rem 0.9rem;
 }
 
 .modal-cancel-btn {
@@ -11635,7 +11744,7 @@ input[type="range"]::-moz-range-progress {
   margin-top: 1rem;
 }
 
-.btn-primary, .btn-danger {
+.btn-primary, .btn-danger, .btn-edit {
   flex: 1;
   display: flex;
   align-items: center;
@@ -11659,14 +11768,26 @@ input[type="range"]::-moz-range-progress {
   box-shadow: 0 4px 12px rgba(240, 34, 119, 0.4);
 }
 
+.btn-edit {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  color: white;
+}
+
+.btn-edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
 .btn-danger {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #ef4444;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: none;
+  color: white;
 }
 
 .btn-danger:hover {
-  background: rgba(239, 68, 68, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
 .calendar-start-btn {
@@ -11967,7 +12088,7 @@ input[type="range"]::-moz-range-progress {
   }
 
   .exercise-list-name {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
   }
 
   .exercise-section-items {
@@ -12020,14 +12141,19 @@ input[type="range"]::-moz-range-progress {
   justify-content: center;
   color: rgba(240, 34, 119, 0.55);
 }
-.muscle-icon svg {
+.muscle-icon img {
   width: 1em;
   height: 1em;
+  object-fit: contain;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: #fff;
 }
-.muscle-icon--sm svg { width: 16px; height: 16px; }
-.muscle-icon--md svg { width: 20px; height: 20px; }
-.muscle-icon--lg svg { width: 32px; height: 32px; }
-.muscle-icon--xl svg { width: 48px; height: 48px; }
+.muscle-icon--sm img { width: 16px; height: 16px; }
+.muscle-icon--md img { width: 40px; height: 40px; }
+.muscle-icon--lg img { width: 32px; height: 32px; }
+.muscle-icon--xl img { width: 48px; height: 48px; }
+.muscle-icon--filter img { width: 18px; height: 18px; }
 
 /* Difficulty stripe on exercise rows */
 .exercise-list-row {
@@ -12253,8 +12379,7 @@ input[type="range"]::-moz-range-progress {
   margin-top: 0.75rem;
 }
 
-.exercise-type-pills,
-.exercise-pattern-pills {
+.exercise-type-pills {
   display: flex;
   flex-wrap: wrap;
   gap: 0.375rem;
@@ -12508,7 +12633,46 @@ input[type="range"]::-moz-range-progress {
 }
 
 
+.plan-picker-filter {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.plan-picker-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.plan-picker-filter-btn {
+  flex-shrink: 0;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-primary);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.plan-picker-filter-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.plan-picker-filter-btn:not(.active):hover {
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
+}
+
 .plan-picker-list {
+  width: 100%;
   flex: 1;
   overflow-y: auto;
   padding: 0.5rem 1rem;
@@ -14339,6 +14503,129 @@ input[type="range"]::-moz-range-progress {
   font-weight: 500;
 }
 
+/* ==================== EXERCISE DETAIL TABS ==================== */
+
+/* Full-height modal variant */
+.modal-content--full-height {
+  height: 75vh;
+  max-height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content--full-height #generic-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.exercise-detail-tab-panel {
+  display: none;
+}
+
+.exercise-detail-tab-panel.active {
+  display: block;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Sticky action buttons at modal bottom */
+.exercise-detail-actions--sticky {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-card);
+  padding: 0.75rem 0 0;
+  margin-top: auto;
+  border-top: 1px solid var(--border-primary);
+  z-index: 2;
+}
+
+/* Quick stats vertical variant for exercise detail */
+.quick-stats-grid--3col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.quick-stats-grid--3col .quick-stats-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
+
+.quick-stats-grid--3col .quick-stats-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.quick-stats-grid--3col .quick-stats-value {
+  font-size: var(--font-size-xl, 1.25rem);
+  margin: 0;
+}
+
+.quick-stats-grid--3col .quick-stats-subtext {
+  display: none;
+}
+
+/* Exercise history */
+.exercise-history-date-group {
+  margin-bottom: 1rem;
+}
+
+.exercise-history-date-header {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.exercise-history-entry {
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid var(--border-primary, rgba(75, 85, 99, 0.3));
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exercise-history-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary, #fff);
+}
+
+.exercise-history-delete {
+  background: none;
+  border: none;
+  color: var(--text-tertiary, #6b7280);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  transition: color 0.2s;
+}
+
+.exercise-history-delete:hover {
+  color: #ef4444;
+}
+
+.exercise-history-empty {
+  text-align: center;
+  color: var(--text-tertiary, #6b7280);
+  padding: 2rem;
+  font-size: var(--font-size-sm);
+}
+
 /* ==================== PROGRESS V4 OVERVIEW ==================== */
 
 .pv4-summary-grid {
@@ -14810,7 +15097,6 @@ input[type="range"]::-moz-range-progress {
   flex-direction: column;
   overflow: hidden;
   border-top: 1px solid var(--border-primary);
-  background: var(--bg-secondary);
 }
 
 /* Month Header */
