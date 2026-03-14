@@ -411,10 +411,37 @@ function openPlanWorkoutSheet() {
 }
 
 function openStartWorkoutFromPlanSheet() {
+  if (typeof openSheet !== 'function') return;
+
+  openSheet({
+    title: tr('dashboard.logWorkout.start'),
+    render: (container) => {
+      container.innerHTML = `
+        <button class="picker-item" type="button" onclick="startWorkoutFromPlanOption()">
+          <span class="material-symbols-rounded" style="font-size: 24px; color: white;">description</span>
+          <div class="picker-item-content">
+            <span class="picker-item-label">Plan auswählen</span>
+            <span class="picker-item-desc">Starte ein Training aus deinen Plänen</span>
+          </div>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+        <button class="picker-item" type="button" onclick="startFreeWorkoutOption()">
+          <span class="material-symbols-rounded" style="font-size: 24px; color: white;">add_circle</span>
+          <div class="picker-item-content">
+            <span class="picker-item-label">Neues Training</span>
+            <span class="picker-item-desc">Starte ein leeres Workout und füge Übungen hinzu</span>
+          </div>
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      `;
+    }
+  });
+}
+
+function startWorkoutFromPlanOption() {
   if (typeof closeSheet === 'function') {
     closeSheet();
   }
-  // Open plan picker to start a workout from an existing plan
   if (typeof openPlanPickerSheet === 'function') {
     openPlanPickerSheet((planId) => {
       if (typeof startWorkoutFromPlan === 'function') {
@@ -422,11 +449,19 @@ function openStartWorkoutFromPlanSheet() {
       }
     });
   } else if (typeof showView === 'function') {
-    // Fallback: navigate to training tab
     showView('training');
     if (typeof showTrainingTab === 'function') {
       showTrainingTab('plans');
     }
+  }
+}
+
+function startFreeWorkoutOption() {
+  if (typeof closeSheet === 'function') {
+    closeSheet();
+  }
+  if (typeof startEmptyWorkout === 'function') {
+    startEmptyWorkout();
   }
 }
 
