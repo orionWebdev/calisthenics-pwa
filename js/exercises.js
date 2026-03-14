@@ -8,6 +8,7 @@ let editingExerciseId = null;
 let exercisesExpanded = false;
 let exerciseMuscleFilter = '';
 let exerciseDifficultyFilter = '';
+let exerciseEquipmentFilter = '';
 
 // V3 State
 let exerciseType = 'strength';
@@ -290,8 +291,22 @@ function mapV3ToExerciseDoc(v3) {
 
 async function loadExercises() {
   try {
-    const exercises = await getAllDocs(exercisesCollection);
-    allExercises = exercises.map(mapExerciseToV3);
+    // Load curated (read-only) and user exercises in parallel
+    const [curatedRaw, userRaw] = await Promise.all([
+      getAllDocs(exercisesCuratedCollection),
+      getAllDocs(exercisesCollection)
+    ]);
+
+    // Curated first, then user exercises override by ID
+    const exerciseMap = new Map();
+    for (const ex of curatedRaw) {
+      exerciseMap.set(ex.id, mapExerciseToV3(ex));
+    }
+    for (const ex of userRaw) {
+      exerciseMap.set(ex.id, mapExerciseToV3(ex));
+    }
+
+    allExercises = Array.from(exerciseMap.values());
     filteredExercises = [...allExercises];
     applyExerciseSearchI18n();
     renderExercises();
@@ -526,6 +541,7 @@ function filterExercises() {
   const searchLower = searchTerm.toLocaleLowerCase('de-DE');
   const muscleFilter = exerciseMuscleFilter;
   const difficultyFilter = exerciseDifficultyFilter;
+  const equipmentFilter = exerciseEquipmentFilter;
 
   filteredExercises = allExercises.filter(exercise => {
     // Search filter – Name hat Prioritaet, dann type/difficulty
@@ -552,7 +568,10 @@ function filterExercises() {
       matchesDifficulty = exerciseDiff === difficultyFilter;
     }
 
-    return matchesSearch && matchesMuscle && matchesDifficulty;
+    // Equipment filter
+    const matchesEquipment = !equipmentFilter || (exercise.equipment || []).includes(equipmentFilter);
+
+    return matchesSearch && matchesMuscle && matchesDifficulty && matchesEquipment;
   });
 
   exercisesExpanded = false;
@@ -568,6 +587,12 @@ function setExerciseMuscleFilter(value) {
 
 function setExerciseDifficultyFilter(value) {
   exerciseDifficultyFilter = value || '';
+  updateExerciseFiltersUI();
+  filterExercises();
+}
+
+function setExerciseEquipmentFilter(value) {
+  exerciseEquipmentFilter = value || '';
   updateExerciseFiltersUI();
   filterExercises();
 }
@@ -623,6 +648,17 @@ function updateExerciseFiltersUI() {
     });
   }
 
+  const equipmentContainer = document.getElementById('exercise-equipment-filters');
+  if (equipmentContainer) {
+    equipmentContainer.querySelectorAll('.filter-chip').forEach(btn => {
+      const value = btn.dataset.equipment !== undefined ? btn.dataset.equipment : '';
+      btn.classList.toggle('active', value === exerciseEquipmentFilter);
+    });
+  }
+
+  const allEquipmentLabel = document.getElementById('exercise-filter-equipment-all');
+  if (allEquipmentLabel) allEquipmentLabel.textContent = t('plan.filters.all') || 'Alle';
+
   const allDifficultyLabel = document.getElementById('exercise-filter-difficulty-all');
   if (allDifficultyLabel) allDifficultyLabel.textContent = t('exercise.filters.allDifficulties');
   const beginnerLabel = document.getElementById('exercise-filter-difficulty-beginner');
@@ -647,6 +683,7 @@ function resetFilters() {
   if (clearBtn) clearBtn.classList.add('hidden');
   exerciseMuscleFilter = '';
   exerciseDifficultyFilter = '';
+  exerciseEquipmentFilter = '';
   updateExerciseFiltersUI();
   filterExercises();
 }
@@ -657,6 +694,7 @@ function updateActiveFilters() {
   const searchTerm = searchInput ? searchInput.value : '';
   const muscleFilter = exerciseMuscleFilter;
   const difficultyFilter = exerciseDifficultyFilter;
+  const equipmentFilter = exerciseEquipmentFilter;
 
   let filterPills = '';
 
@@ -690,6 +728,18 @@ function updateActiveFilters() {
         <span class="material-symbols-rounded">star</span>
         <span>${t(`difficulty.${difficultyFilter}`)}</span>
         <button onclick="clearDifficultyFilter()" class="filter-pill-remove">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    `;
+  }
+
+  if (equipmentFilter) {
+    filterPills += `
+      <div class="filter-pill">
+        <span class="material-symbols-rounded">build</span>
+        <span>${equipmentNames[equipmentFilter] || equipmentFilter}</span>
+        <button onclick="setExerciseEquipmentFilter('')" class="filter-pill-remove">
           <span class="material-symbols-rounded">close</span>
         </button>
       </div>
@@ -1905,11 +1955,31 @@ function closeGenericModal() {
 // REAL-TIME LISTENER
 // ========================================
 
-// Übungen in Echtzeit synchronisieren
+// Übungen in Echtzeit synchronisieren (curated + user exercises)
 function setupExercisesListener() {
-  onCollectionChange(exercisesCollection, (exercises) => {
-    allExercises = exercises.map(mapExerciseToV3);
+  let curatedExercises = [];
+  let userExercises = [];
+
+  function mergeAndUpdate() {
+    const exerciseMap = new Map();
+    for (const ex of curatedExercises) {
+      exerciseMap.set(ex.id, ex);
+    }
+    for (const ex of userExercises) {
+      exerciseMap.set(ex.id, ex);
+    }
+    allExercises = Array.from(exerciseMap.values());
     filterExercises();
+  }
+
+  onCollectionChange(exercisesCuratedCollection, (exercises) => {
+    curatedExercises = exercises.map(mapExerciseToV3);
+    mergeAndUpdate();
+  });
+
+  onCollectionChange(exercisesCollection, (exercises) => {
+    userExercises = exercises.map(mapExerciseToV3);
+    mergeAndUpdate();
   });
 }
 

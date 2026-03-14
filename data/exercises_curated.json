@@ -1,0 +1,904 @@
+[
+  {
+    "id": "push_up",
+    "name": "Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "triceps", "shoulders"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "decline_push_up",
+    "name": "Decline Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "shoulders"],
+    "equipment": ["bodyweight", "box"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "diamond_push_up",
+    "name": "Diamond Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "triceps"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "wide_push_up",
+    "name": "Wide Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "shoulders"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "archer_push_up",
+    "name": "Archer Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "triceps", "shoulders"],
+    "equipment": ["bodyweight"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "pseudo_planche_push_up",
+    "name": "Pseudo Planche Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "shoulders", "triceps"],
+    "equipment": ["bodyweight"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "dips",
+    "name": "Dips",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "triceps", "shoulders"],
+    "equipment": ["dip-bars"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "ring_dips",
+    "name": "Ring Dips",
+    "type": "bodyweight",
+    "muscleGroups": ["chest", "triceps", "shoulders"],
+    "equipment": ["rings"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "pull_up",
+    "name": "Pull Up",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "chin_up",
+    "name": "Chin Up",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "wide_pull_up",
+    "name": "Wide Pull Up",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "shoulders"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "australian_pull_up",
+    "name": "Australian Pull Up",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "muscle_up",
+    "name": "Muscle Up",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "chest", "triceps"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 5,
+    "source": "curated"
+  },
+  {
+    "id": "ring_muscle_up",
+    "name": "Ring Muscle Up",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "chest", "triceps"],
+    "equipment": ["rings"],
+    "difficulty": 5,
+    "source": "curated"
+  },
+  {
+    "id": "typewriter_pull_up",
+    "name": "Typewriter Pull Up",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "biceps", "shoulders"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "pike_push_up",
+    "name": "Pike Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["shoulders", "triceps"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "handstand_push_up",
+    "name": "Handstand Push Up",
+    "type": "bodyweight",
+    "muscleGroups": ["shoulders", "triceps"],
+    "equipment": ["wall"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "handstand_hold",
+    "name": "Handstand Hold",
+    "type": "bodyweight",
+    "muscleGroups": ["shoulders", "core"],
+    "equipment": ["wall"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "plank",
+    "name": "Plank",
+    "type": "bodyweight",
+    "muscleGroups": ["core"],
+    "equipment": ["mat"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "side_plank",
+    "name": "Side Plank",
+    "type": "bodyweight",
+    "muscleGroups": ["core"],
+    "equipment": ["mat"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "hanging_leg_raise",
+    "name": "Hanging Leg Raise",
+    "type": "bodyweight",
+    "muscleGroups": ["core"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "l_sit",
+    "name": "L-Sit",
+    "type": "bodyweight",
+    "muscleGroups": ["core", "quads"],
+    "equipment": ["parallettes"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "dragon_flag",
+    "name": "Dragon Flag",
+    "type": "bodyweight",
+    "muscleGroups": ["core"],
+    "equipment": ["bench"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "ab_wheel_rollout",
+    "name": "Ab Wheel Rollout",
+    "type": "bodyweight",
+    "muscleGroups": ["core", "shoulders"],
+    "equipment": ["bodyweight"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "hollow_body_hold",
+    "name": "Hollow Body Hold",
+    "type": "bodyweight",
+    "muscleGroups": ["core"],
+    "equipment": ["mat"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "bodyweight_squat",
+    "name": "Bodyweight Squat",
+    "type": "bodyweight",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "lunges",
+    "name": "Lunges",
+    "type": "bodyweight",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "pistol_squat",
+    "name": "Pistol Squat",
+    "type": "bodyweight",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["bodyweight"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "jump_squat",
+    "name": "Jump Squat",
+    "type": "bodyweight",
+    "muscleGroups": ["quads", "glutes", "calves"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "nordic_curl",
+    "name": "Nordic Curl",
+    "type": "bodyweight",
+    "muscleGroups": ["hamstrings"],
+    "equipment": ["bodyweight"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "glute_bridge",
+    "name": "Glute Bridge",
+    "type": "bodyweight",
+    "muscleGroups": ["glutes", "hamstrings"],
+    "equipment": ["mat"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "calf_raise",
+    "name": "Calf Raise",
+    "type": "bodyweight",
+    "muscleGroups": ["calves"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "front_lever",
+    "name": "Front Lever",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "core"],
+    "equipment": ["pull-up-bar"],
+    "difficulty": 5,
+    "source": "curated"
+  },
+  {
+    "id": "back_lever",
+    "name": "Back Lever",
+    "type": "bodyweight",
+    "muscleGroups": ["shoulders", "back", "core"],
+    "equipment": ["rings"],
+    "difficulty": 4,
+    "source": "curated"
+  },
+  {
+    "id": "planche",
+    "name": "Planche",
+    "type": "bodyweight",
+    "muscleGroups": ["shoulders", "chest", "core"],
+    "equipment": ["parallettes"],
+    "difficulty": 5,
+    "source": "curated"
+  },
+  {
+    "id": "skin_the_cat",
+    "name": "Skin The Cat",
+    "type": "bodyweight",
+    "muscleGroups": ["shoulders", "back", "core"],
+    "equipment": ["rings"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "ring_row",
+    "name": "Ring Row",
+    "type": "bodyweight",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["rings"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "burpee",
+    "name": "Burpee",
+    "type": "bodyweight",
+    "muscleGroups": ["full_body"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "mountain_climber",
+    "name": "Mountain Climber",
+    "type": "bodyweight",
+    "muscleGroups": ["core", "shoulders"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "box_jump",
+    "name": "Box Jump",
+    "type": "bodyweight",
+    "muscleGroups": ["quads", "glutes", "calves"],
+    "equipment": ["box"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+
+  {
+    "id": "bench_press",
+    "name": "Bench Press",
+    "type": "strength",
+    "muscleGroups": ["chest", "triceps", "shoulders"],
+    "equipment": ["barbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "incline_bench_press",
+    "name": "Incline Bench Press",
+    "type": "strength",
+    "muscleGroups": ["chest", "shoulders"],
+    "equipment": ["barbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "dumbbell_bench_press",
+    "name": "Dumbbell Bench Press",
+    "type": "strength",
+    "muscleGroups": ["chest", "triceps"],
+    "equipment": ["dumbbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "incline_dumbbell_press",
+    "name": "Incline Dumbbell Press",
+    "type": "strength",
+    "muscleGroups": ["chest", "shoulders"],
+    "equipment": ["dumbbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "dumbbell_fly",
+    "name": "Dumbbell Fly",
+    "type": "strength",
+    "muscleGroups": ["chest"],
+    "equipment": ["dumbbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "cable_crossover",
+    "name": "Cable Crossover",
+    "type": "strength",
+    "muscleGroups": ["chest"],
+    "equipment": ["machine"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "barbell_row",
+    "name": "Barbell Row",
+    "type": "strength",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["barbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "dumbbell_row",
+    "name": "Dumbbell Row",
+    "type": "strength",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["dumbbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "lat_pulldown",
+    "name": "Lat Pulldown",
+    "type": "strength",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "seated_cable_row",
+    "name": "Seated Cable Row",
+    "type": "strength",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "t_bar_row",
+    "name": "T-Bar Row",
+    "type": "strength",
+    "muscleGroups": ["back", "biceps"],
+    "equipment": ["barbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "face_pull",
+    "name": "Face Pull",
+    "type": "strength",
+    "muscleGroups": ["shoulders", "back"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "overhead_press",
+    "name": "Overhead Press",
+    "type": "strength",
+    "muscleGroups": ["shoulders", "triceps"],
+    "equipment": ["barbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "dumbbell_shoulder_press",
+    "name": "Dumbbell Shoulder Press",
+    "type": "strength",
+    "muscleGroups": ["shoulders", "triceps"],
+    "equipment": ["dumbbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "lateral_raise",
+    "name": "Lateral Raise",
+    "type": "strength",
+    "muscleGroups": ["shoulders"],
+    "equipment": ["dumbbell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "rear_delt_fly",
+    "name": "Rear Delt Fly",
+    "type": "strength",
+    "muscleGroups": ["shoulders", "back"],
+    "equipment": ["dumbbell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "shrug",
+    "name": "Shrug",
+    "type": "strength",
+    "muscleGroups": ["shoulders", "back"],
+    "equipment": ["dumbbell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "barbell_curl",
+    "name": "Barbell Curl",
+    "type": "strength",
+    "muscleGroups": ["biceps"],
+    "equipment": ["barbell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "dumbbell_curl",
+    "name": "Dumbbell Curl",
+    "type": "strength",
+    "muscleGroups": ["biceps"],
+    "equipment": ["dumbbell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "hammer_curl",
+    "name": "Hammer Curl",
+    "type": "strength",
+    "muscleGroups": ["biceps"],
+    "equipment": ["dumbbell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "tricep_pushdown",
+    "name": "Tricep Pushdown",
+    "type": "strength",
+    "muscleGroups": ["triceps"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "skull_crusher",
+    "name": "Skull Crusher",
+    "type": "strength",
+    "muscleGroups": ["triceps"],
+    "equipment": ["barbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "overhead_tricep_extension",
+    "name": "Overhead Tricep Extension",
+    "type": "strength",
+    "muscleGroups": ["triceps"],
+    "equipment": ["dumbbell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "back_squat",
+    "name": "Back Squat",
+    "type": "strength",
+    "muscleGroups": ["quads", "glutes", "core"],
+    "equipment": ["barbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "front_squat",
+    "name": "Front Squat",
+    "type": "strength",
+    "muscleGroups": ["quads", "core"],
+    "equipment": ["barbell"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "goblet_squat",
+    "name": "Goblet Squat",
+    "type": "strength",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["kettlebell"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "bulgarian_split_squat",
+    "name": "Bulgarian Split Squat",
+    "type": "strength",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["dumbbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "leg_press",
+    "name": "Leg Press",
+    "type": "strength",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "leg_extension",
+    "name": "Leg Extension",
+    "type": "strength",
+    "muscleGroups": ["quads"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "leg_curl",
+    "name": "Leg Curl",
+    "type": "strength",
+    "muscleGroups": ["hamstrings"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "deadlift",
+    "name": "Deadlift",
+    "type": "strength",
+    "muscleGroups": ["hamstrings", "glutes", "back"],
+    "equipment": ["barbell"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "romanian_deadlift",
+    "name": "Romanian Deadlift",
+    "type": "strength",
+    "muscleGroups": ["hamstrings", "glutes"],
+    "equipment": ["barbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "hip_thrust",
+    "name": "Hip Thrust",
+    "type": "strength",
+    "muscleGroups": ["glutes", "hamstrings"],
+    "equipment": ["barbell", "bench"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "barbell_lunge",
+    "name": "Barbell Lunge",
+    "type": "strength",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["barbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "kettlebell_swing",
+    "name": "Kettlebell Swing",
+    "type": "strength",
+    "muscleGroups": ["glutes", "hamstrings", "core"],
+    "equipment": ["kettlebell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "farmers_walk",
+    "name": "Farmer's Walk",
+    "type": "strength",
+    "muscleGroups": ["full_body"],
+    "equipment": ["dumbbell"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "cable_fly",
+    "name": "Cable Fly",
+    "type": "strength",
+    "muscleGroups": ["chest"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "machine_chest_press",
+    "name": "Machine Chest Press",
+    "type": "strength",
+    "muscleGroups": ["chest", "triceps"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "seated_calf_raise",
+    "name": "Seated Calf Raise",
+    "type": "strength",
+    "muscleGroups": ["calves"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "standing_calf_raise",
+    "name": "Standing Calf Raise",
+    "type": "strength",
+    "muscleGroups": ["calves"],
+    "equipment": ["machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+
+  {
+    "id": "running",
+    "name": "Running",
+    "type": "cardio",
+    "muscleGroups": ["quads", "hamstrings", "calves", "core"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "walking",
+    "name": "Walking",
+    "type": "cardio",
+    "muscleGroups": ["quads", "calves"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "cycling",
+    "name": "Cycling",
+    "type": "cardio",
+    "muscleGroups": ["quads", "hamstrings", "calves"],
+    "equipment": ["cardio-machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "jump_rope",
+    "name": "Jump Rope",
+    "type": "cardio",
+    "muscleGroups": ["calves", "shoulders", "core"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "rowing",
+    "name": "Rowing",
+    "type": "cardio",
+    "muscleGroups": ["back", "quads", "core"],
+    "equipment": ["cardio-machine"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "swimming",
+    "name": "Swimming",
+    "type": "cardio",
+    "muscleGroups": ["full_body"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "stair_climber",
+    "name": "Stair Climber",
+    "type": "cardio",
+    "muscleGroups": ["quads", "glutes", "calves"],
+    "equipment": ["cardio-machine"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "elliptical",
+    "name": "Elliptical",
+    "type": "cardio",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["cardio-machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "hiking",
+    "name": "Hiking",
+    "type": "cardio",
+    "muscleGroups": ["quads", "glutes", "calves", "core"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "sprints",
+    "name": "Sprints",
+    "type": "cardio",
+    "muscleGroups": ["quads", "hamstrings", "glutes", "calves"],
+    "equipment": ["bodyweight"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "battle_ropes",
+    "name": "Battle Ropes",
+    "type": "cardio",
+    "muscleGroups": ["shoulders", "core", "back"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "box_step_up",
+    "name": "Box Step Up",
+    "type": "cardio",
+    "muscleGroups": ["quads", "glutes"],
+    "equipment": ["box"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "jumping_jacks",
+    "name": "Jumping Jacks",
+    "type": "cardio",
+    "muscleGroups": ["full_body"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "high_knees",
+    "name": "High Knees",
+    "type": "cardio",
+    "muscleGroups": ["quads", "core"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "sled_push",
+    "name": "Sled Push",
+    "type": "cardio",
+    "muscleGroups": ["quads", "glutes", "core"],
+    "equipment": ["machine"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "assault_bike",
+    "name": "Assault Bike",
+    "type": "cardio",
+    "muscleGroups": ["full_body"],
+    "equipment": ["cardio-machine"],
+    "difficulty": 3,
+    "source": "curated"
+  },
+  {
+    "id": "ski_erg",
+    "name": "Ski Erg",
+    "type": "cardio",
+    "muscleGroups": ["back", "shoulders", "core"],
+    "equipment": ["cardio-machine"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "treadmill_incline_walk",
+    "name": "Treadmill Incline Walk",
+    "type": "cardio",
+    "muscleGroups": ["quads", "glutes", "calves"],
+    "equipment": ["cardio-machine"],
+    "difficulty": 1,
+    "source": "curated"
+  },
+  {
+    "id": "bear_crawl",
+    "name": "Bear Crawl",
+    "type": "cardio",
+    "muscleGroups": ["shoulders", "core", "quads"],
+    "equipment": ["bodyweight"],
+    "difficulty": 2,
+    "source": "curated"
+  },
+  {
+    "id": "shadow_boxing",
+    "name": "Shadow Boxing",
+    "type": "cardio",
+    "muscleGroups": ["shoulders", "core"],
+    "equipment": ["bodyweight"],
+    "difficulty": 1,
+    "source": "curated"
+  }
+]

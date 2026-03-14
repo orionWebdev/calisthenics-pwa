@@ -19,6 +19,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // Collections (unsere "Tabellen")
+const exercisesCuratedCollection = db.collection('exercises_curated');
 const exercisesCollection = db.collection('exercises');
 const plansCollection = db.collection('plans');
 const workoutsCollection = db.collection('workouts');

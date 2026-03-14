@@ -7,6 +7,7 @@ let filteredPlans = [];
 let editingPlanId = null;
 let currentPlan = null; // Currently selected plan for editing
 let planMuscleFilter = 'all';
+let planEquipmentFilter = 'all';
 
 let planIconSelection = null;
 let planIconSelectionIsManual = false;
@@ -367,15 +368,30 @@ function applyPlanFilters() {
   const list = Array.isArray(allPlans) ? allPlans : [];
   filteredPlans = list
     .filter(plan => {
-      if (planMuscleFilter === 'all') return true;
+      const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
       const items = getPlanItems(plan);
-      return items.some(item => {
-        const exercise = (typeof allExercises !== 'undefined' ? allExercises : [])
-          .find(e => e.id === item.exerciseId);
-        if (!exercise) return false;
-        const groups = Array.isArray(exercise.muscleGroups) ? exercise.muscleGroups : [];
-        return groups.includes(planMuscleFilter);
-      });
+
+      if (planMuscleFilter !== 'all') {
+        const hasMuscle = items.some(item => {
+          const exercise = exercises.find(e => e.id === item.exerciseId);
+          if (!exercise) return false;
+          const groups = Array.isArray(exercise.muscleGroups) ? exercise.muscleGroups : [];
+          return groups.includes(planMuscleFilter);
+        });
+        if (!hasMuscle) return false;
+      }
+
+      if (planEquipmentFilter !== 'all') {
+        const hasEquipment = items.some(item => {
+          const exercise = exercises.find(e => e.id === item.exerciseId);
+          if (!exercise) return false;
+          const eq = Array.isArray(exercise.equipment) ? exercise.equipment : [];
+          return eq.includes(planEquipmentFilter);
+        });
+        if (!hasEquipment) return false;
+      }
+
+      return true;
     })
     .sort((a, b) => {
       const aTime = getPlanSortValue(a);
@@ -394,6 +410,11 @@ function setPlanMuscleFilter(muscle) {
   applyPlanFilters();
 }
 
+function setPlanEquipmentFilter(equipment) {
+  planEquipmentFilter = equipment || 'all';
+  applyPlanFilters();
+}
+
 function updatePlanMuscleFilterUI() {
   const container = document.getElementById('plan-muscle-filters');
   if (!container) return;
@@ -409,6 +430,16 @@ function updatePlanMuscleFilterUI() {
     const label = document.getElementById(`plan-filter-${m}-label`);
     if (label) label.textContent = muscleNames[m] || m;
   });
+
+  const equipmentContainer = document.getElementById('plan-equipment-filters');
+  if (equipmentContainer) {
+    equipmentContainer.querySelectorAll('.filter-chip').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.equipment === planEquipmentFilter);
+    });
+  }
+
+  const equipmentAllLabel = document.getElementById('plan-filter-equipment-all-label');
+  if (equipmentAllLabel) equipmentAllLabel.textContent = t('plan.filters.all');
 }
 
 function applyPlanI18n() {
