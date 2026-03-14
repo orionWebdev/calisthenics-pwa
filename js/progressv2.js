@@ -728,8 +728,8 @@ function openCardioDetailModal(session) {
         </div>
       ` : ''}
       <div class="workout-modal-actions">
-        <button onclick="openEditCardioSessionModal('${session.id}')" class="btn-primary">
-          <span class="material-symbols-rounded">edit</span>
+        <button onclick="openEditCardioSessionModal('${session.id}')" class="btn-edit">
+          <span class="material-symbols-rounded">settings</span>
           <span>${trProgress('common.editSession')}</span>
         </button>
         <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">
@@ -775,8 +775,8 @@ function openRecoveryDetailModal(session) {
         </div>
       </div>
       <div class="workout-modal-actions">
-        <button onclick="openEditRecoverySessionModal('${session.id}')" class="btn-primary">
-          <span class="material-symbols-rounded">edit</span>
+        <button onclick="openEditRecoverySessionModal('${session.id}')" class="btn-edit">
+          <span class="material-symbols-rounded">settings</span>
           <span>${trProgress('common.editSession')}</span>
         </button>
         <button onclick="deleteSessionWithReferences('${session.id}')" class="btn-danger">

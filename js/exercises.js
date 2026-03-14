@@ -1486,6 +1486,180 @@ async function deleteExercise(exerciseId) {
 }
 
 // ========================================
+// EXERCISE DETAIL HELPERS
+// ========================================
+
+function getExerciseSetsFromSessions(exerciseId) {
+  const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
+  const results = [];
+  sessions.forEach(session => {
+    if (!session.exercises || !Array.isArray(session.exercises)) return;
+    session.exercises.forEach(ex => {
+      if (ex.exerciseId !== exerciseId) return;
+      if (!ex.sets || !Array.isArray(ex.sets)) return;
+      let sessionDate;
+      if (session.date && session.date.toDate) sessionDate = session.date.toDate();
+      else if (session.date instanceof Date) sessionDate = session.date;
+      else if (typeof session.date === 'string') sessionDate = new Date(session.date);
+      else sessionDate = new Date();
+      results.push({ sessionId: session.id, date: sessionDate, sets: ex.sets });
+    });
+  });
+  return results;
+}
+
+function computeExerciseQuickStats(exerciseId) {
+  const exerciseEntries = getExerciseSetsFromSessions(exerciseId);
+
+  let bestReps = 0;
+  let heaviestWeight = 0;
+  let bestSetVolume = 0;
+
+  exerciseEntries.forEach(entry => {
+    entry.sets.forEach(s => {
+      const reps = s.reps || 0;
+      const weight = s.weight || 0;
+      if (reps > bestReps) bestReps = reps;
+      if (weight > heaviestWeight) heaviestWeight = weight;
+      const volume = weight > 0 ? reps * weight : reps;
+      if (volume > bestSetVolume) bestSetVolume = volume;
+    });
+  });
+
+  return { bestReps, heaviestWeight, bestSetVolume };
+}
+
+function renderExerciseHistoryTab(exerciseId) {
+  const exerciseEntries = getExerciseSetsFromSessions(exerciseId);
+
+  if (exerciseEntries.length === 0) {
+    return '<div class="exercise-history-empty"><span class="material-symbols-rounded" style="font-size:40px;display:block;margin-bottom:0.5rem;">history</span>Noch keine Historie vorhanden</div>';
+  }
+
+  // Sort descending by date
+  exerciseEntries.sort((a, b) => b.date - a.date);
+
+  // Group by date key
+  const groups = {};
+  exerciseEntries.forEach(e => {
+    const key = e.date.toISOString().split('T')[0];
+    if (!groups[key]) groups[key] = { date: e.date, entries: [] };
+    groups[key].entries.push(e);
+  });
+
+  let html = '';
+  Object.keys(groups).sort().reverse().forEach(key => {
+    const g = groups[key];
+    const dateStr = g.date.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    html += `<div class="exercise-history-date-group">
+      <div class="exercise-history-date-header">${dateStr}</div>`;
+
+    g.entries.forEach(entry => {
+      const setsStr = entry.sets.map((s, i) =>
+        `Satz ${i + 1}: ${s.reps || 0} Wdh${s.weight ? ' × ' + s.weight + ' kg' : ''}`
+      ).join('<br>');
+
+      html += `<div class="exercise-history-entry">
+        <div class="exercise-history-sets">${setsStr}</div>
+        <button class="exercise-history-delete" onclick="deleteExerciseFromSession('${entry.sessionId}', '${exerciseId}')" title="Eintrag löschen">
+          <span class="material-symbols-rounded" style="font-size:20px;">delete</span>
+        </button>
+      </div>`;
+    });
+
+    html += '</div>';
+  });
+
+  return html;
+}
+
+async function deleteExerciseFromSession(sessionId, exerciseId) {
+  if (!confirm('Diese Übung aus der Session löschen?')) return;
+
+  try {
+    const session = allSessions.find(s => s.id === sessionId);
+    if (!session) return;
+
+    // Remove exercise from session
+    const updatedExercises = (session.exercises || []).filter(ex => ex.exerciseId !== exerciseId);
+
+    if (updatedExercises.length === 0) {
+      // No exercises left -> delete entire session
+      await deleteDoc(sessionsCollection, sessionId);
+      const idx = allSessions.findIndex(s => s.id === sessionId);
+      if (idx !== -1) allSessions.splice(idx, 1);
+    } else {
+      // Update session with remaining exercises
+      await updateDoc(sessionsCollection, sessionId, { exercises: updatedExercises });
+      session.exercises = updatedExercises;
+    }
+
+    // Re-render history tab
+    const historyPanel = document.querySelector('[data-panel="history"]');
+    if (historyPanel) {
+      historyPanel.innerHTML = renderExerciseHistoryTab(exerciseId);
+    }
+    // Re-render info tab stats
+    const statsContainer = document.getElementById('exercise-detail-stats');
+    if (statsContainer) {
+      const stats = computeExerciseQuickStats(exerciseId);
+      statsContainer.innerHTML = renderExerciseQuickStatsHTML(stats);
+    }
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('success', 'Eintrag gelöscht');
+    }
+  } catch (error) {
+    console.error('Error deleting exercise from session:', error);
+    if (typeof showEdgeFeedback === 'function') {
+      showEdgeFeedback('error', 'Fehler beim Löschen');
+    }
+  }
+}
+
+function renderExerciseQuickStatsHTML(stats) {
+  return `
+    <div class="quick-stats-grid quick-stats-grid--3col">
+      <div class="quick-stats-card">
+        <div class="quick-stats-header">
+          <span class="quick-stats-icon"><span class="material-symbols-rounded">repeat</span></span>
+          <span class="quick-stats-label">Beste Wiederholungen</span>
+        </div>
+        <div class="quick-stats-value">${stats.bestReps || '–'}</div>
+      </div>
+      <div class="quick-stats-card">
+        <div class="quick-stats-header">
+          <span class="quick-stats-icon"><span class="material-symbols-rounded">fitness_center</span></span>
+          <span class="quick-stats-label">Meistes Gewicht</span>
+        </div>
+        <div class="quick-stats-value">${stats.heaviestWeight ? stats.heaviestWeight + ' kg' : '–'}</div>
+      </div>
+      <div class="quick-stats-card">
+        <div class="quick-stats-header">
+          <span class="quick-stats-icon"><span class="material-symbols-rounded">speed</span></span>
+          <span class="quick-stats-label">Bestes Satzvolumen</span>
+        </div>
+        <div class="quick-stats-value">${stats.bestSetVolume || '–'}</div>
+      </div>
+    </div>`;
+}
+
+function attachExerciseDetailTabListeners() {
+  const control = document.querySelector('#generic-modal-body .cal-widget-segmented-control');
+  const btns = document.querySelectorAll('#generic-modal-body [data-detail-tab]');
+  btns.forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (control) control.style.setProperty('--active-idx', idx);
+      const tab = btn.dataset.detailTab;
+      document.querySelectorAll('.exercise-detail-tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.dataset.panel === tab);
+      });
+    });
+  });
+}
+
+// ========================================
 // VIEW EXERCISE DETAILS
 // ========================================
 
@@ -1498,11 +1672,6 @@ function viewExerciseDetails(id) {
   const difficultyLabel = t('difficulty.' + difficultyValue) || difficultyValue;
   const normalizedInstructions = normalizeExerciseInstructions(exercise);
 
-  // Visual: muscle group icon (replaces hero image)
-  const visualHTML = `<div class="exercise-detail-muscle-icon">
-      ${getPrimaryMuscleIcon(exercise.muscleGroups, 'muscle-icon--xl')}
-    </div>`;
-
   // Difficulty color for subtle badge
   const diffColor = {
     beginner: '#4CAF50',
@@ -1511,11 +1680,11 @@ function viewExerciseDetails(id) {
     elite: '#9C27B0'
   }[difficultyValue] || '#6b7280';
 
-  // Muscle group label (replaces pattern chip)
+  // Muscle group label
   const muscleChipLabel = (exercise.muscleGroups || [])
     .map(m => muscleNames[m]).filter(Boolean).join(', ');
 
-  // Chips: Type + Muscle groups (subtle), difficulty as small badge
+  // Chips: Type + Muscle groups + difficulty
   const chipsHTML = `
     <div class="exercise-detail-chips">
       <span class="exercise-chip">${typeLabel}</span>
@@ -1524,7 +1693,38 @@ function viewExerciseDetails(id) {
     </div>
   `;
 
-  // Instructions
+  // Equipment label
+  const equipmentLabel = (exercise.equipment || []).filter(eq => eq && eq !== 'none')
+    .map(eq => equipmentNames[eq]).filter(Boolean).join(', ');
+
+  const metaFooterHTML = (muscleChipLabel || equipmentLabel) ? `
+    <div class="exercise-detail-meta-footer">
+      ${muscleChipLabel ? '<div class="exercise-detail-chip"><span class="material-symbols-rounded">sports_gymnastics</span><span>' + muscleChipLabel + '</span></div>' : ''}
+      ${equipmentLabel ? '<div class="exercise-detail-chip"><span class="material-symbols-rounded">build</span><span>' + equipmentLabel + '</span></div>' : ''}
+    </div>` : '';
+
+  // Quick stats
+  const stats = computeExerciseQuickStats(exercise.id);
+
+  // Only show edit/delete for user-created exercises
+  const isCustomExercise = !exercise.source || exercise.source === 'user' || exercise.source === 'custom';
+
+  // === TAB 1: INFO ===
+  const infoTabHTML = `
+    <div class="exercise-detail">
+      <div class="exercise-detail-header">
+        ${chipsHTML}
+      </div>
+      ${metaFooterHTML}
+      <div id="exercise-detail-stats" style="margin-top: 1rem;">
+        ${renderExerciseQuickStatsHTML(stats)}
+      </div>
+    </div>`;
+
+  // === TAB 2: HISTORIE ===
+  const historyTabHTML = renderExerciseHistoryTab(exercise.id);
+
+  // === TAB 3: ANLEITUNG ===
   const stepsHtml = normalizedInstructions.instructionsSteps.length > 0
     ? `<ol class="instruction-steps-list">
         ${normalizedInstructions.instructionsSteps.map((step, index) => `
@@ -1536,7 +1736,6 @@ function viewExerciseDetails(id) {
       </ol>`
     : `<p class="instruction-empty">${t('exercise.instructions.noSteps')}</p>`;
 
-  // Variants
   const variantsHTML = exercise.variants && exercise.variants.length > 0
     ? `<div class="exercise-detail-block">
         <div class="exercise-detail-block-title">
@@ -1554,7 +1753,6 @@ function viewExerciseDetails(id) {
       </div>`
     : '';
 
-  // Notes
   const notesHTML = exercise.notes
     ? `<div class="exercise-detail-block">
         <div class="exercise-detail-block-title">
@@ -1565,7 +1763,6 @@ function viewExerciseDetails(id) {
       </div>`
     : '';
 
-  // Advanced sections (cues, mistakes, progressions, setup)
   const advancedSections = [
     normalizedInstructions.cues.length > 0
       ? renderInstructionAccordionSection('tips_and_updates', t('exercise.instructions.advanced.cues'),
@@ -1591,26 +1788,8 @@ function viewExerciseDetails(id) {
       : ''
   ].filter(Boolean);
 
-  // Muscle groups + equipment (de-emphasized footer)
-  const muscleLabel = (exercise.muscleGroups || []).map(m => muscleNames[m]).filter(Boolean).join(', ');
-  const equipmentLabel = (exercise.equipment || []).filter(eq => eq && eq !== 'none')
-    .map(eq => equipmentNames[eq]).filter(Boolean).join(', ');
-
-  const metaFooterHTML = (muscleLabel || equipmentLabel) ? `
-    <div class="exercise-detail-meta-footer">
-      ${muscleLabel ? '<div class="exercise-detail-chip"><span class="material-symbols-rounded">sports_gymnastics</span><span>' + muscleLabel + '</span></div>' : ''}
-      ${equipmentLabel ? '<div class="exercise-detail-chip"><span class="material-symbols-rounded">build</span><span>' + equipmentLabel + '</span></div>' : ''}
-    </div>` : '';
-
-  const modalContent = `
+  const instructionsTabHTML = `
     <div class="exercise-detail">
-      ${visualHTML}
-
-      <div class="exercise-detail-header">
-        <div class="exercise-detail-title">${exercise.name}</div>
-        ${chipsHTML}
-      </div>
-
       <div class="exercise-detail-block">
         <div class="exercise-detail-block-title">
           <span class="material-symbols-rounded">format_list_numbered</span>
@@ -1618,11 +1797,8 @@ function viewExerciseDetails(id) {
         </div>
         ${stepsHtml}
       </div>
-
       ${variantsHTML}
       ${notesHTML}
-      ${metaFooterHTML}
-
       ${advancedSections.length > 0 ? `
         <div class="exercise-detail-block">
           <div class="exercise-detail-block-title">
@@ -1634,21 +1810,46 @@ function viewExerciseDetails(id) {
           </div>
         </div>
       ` : ''}
+    </div>`;
 
-      <div class="exercise-detail-actions">
-        <button onclick="closeGenericModal(); editExercise('${exercise.id}')" class="btn-primary">
-          <span class="material-symbols-rounded">edit</span>
-          ${t('common.edit')}
-        </button>
-        <button onclick="deleteExercise('${exercise.id}')" class="btn-danger">
-          <span class="material-symbols-rounded">delete</span>
-          ${t('common.delete')}
-        </button>
-      </div>
+  // Sticky action buttons (only for custom exercises)
+  const actionsHTML = isCustomExercise ? `
+    <div class="exercise-detail-actions exercise-detail-actions--sticky">
+      <button onclick="closeGenericModal(); editExercise('${exercise.id}')" class="btn-edit">
+        <span class="material-symbols-rounded">settings</span>
+      </button>
+      <button onclick="deleteExercise('${exercise.id}')" class="btn-danger">
+        <span class="material-symbols-rounded">delete</span>
+      </button>
+    </div>` : '';
+
+  // === MODAL CONTENT WITH TABS ===
+  const modalContent = `
+    <div class="cal-widget-segmented-control" style="--seg-count:3;--active-idx:0">
+      <div class="cal-widget-seg-indicator"></div>
+      <button class="cal-widget-seg-btn active" data-detail-tab="info">Info</button>
+      <button class="cal-widget-seg-btn" data-detail-tab="history">Historie</button>
+      <button class="cal-widget-seg-btn" data-detail-tab="instructions">Anleitung</button>
     </div>
+
+    <div class="exercise-detail-tab-panel active" data-panel="info">
+      ${infoTabHTML}
+    </div>
+    <div class="exercise-detail-tab-panel" data-panel="history">
+      ${historyTabHTML}
+    </div>
+    <div class="exercise-detail-tab-panel" data-panel="instructions">
+      ${instructionsTabHTML}
+    </div>
+
+    ${actionsHTML}
   `;
 
   openGenericModal(exercise.name, modalContent);
+  // Make modal full height
+  const modalContentEl = document.querySelector('#generic-modal .modal-content');
+  if (modalContentEl) modalContentEl.classList.add('modal-content--full-height');
+  attachExerciseDetailTabListeners();
 }
 
 // ========================================
@@ -1696,6 +1897,8 @@ function openGenericModal(title, bodyHTML) {
 function closeGenericModal() {
   document.getElementById('generic-modal').classList.remove('active');
   document.getElementById('generic-modal-body').innerHTML = '';
+  const modalContentEl = document.querySelector('#generic-modal .modal-content');
+  if (modalContentEl) modalContentEl.classList.remove('modal-content--full-height');
 }
 
 // ========================================
