@@ -2630,6 +2630,84 @@ body.modal-open {
   margin-bottom: 0.25rem;
 }
 
+/* Calendar Widget Segmented Control (iOS-style, copied from pv3) */
+.cal-widget-segmented-control {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  height: 36px;
+  padding: 3px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 999px;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
+
+.cal-widget-seg-indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  width: calc((100% - 6px) / var(--seg-count));
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 1px 4px rgba(240, 34, 119, 0.3);
+  transform: translateX(calc(var(--active-idx) * 100%));
+  transition: transform 0.28s cubic-bezier(0.4, 0.0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cal-widget-seg-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cal-widget-seg-btn.active {
+  color: #fff;
+}
+
+.cal-widget-seg-btn:not(.active):hover {
+  color: #d1d5db;
+}
+
+/* Plan Calendar Widget Wrapper (embedded in dashboard card) */
+.plan-calendar-widget-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-calendar-widget-wrapper .calendar-month-section {
+  flex: none;
+}
+
+.plan-calendar-widget-wrapper .plan-calendar-grid {
+  grid-template-rows: none;
+  grid-auto-rows: minmax(40px, auto);
+}
+
+.plan-calendar-widget-wrapper .calendar-agenda-container {
+  max-height: 280px;
+  overflow-y: auto;
+  border-top: 1px solid var(--border-secondary);
+}
+
 /* Month Navigation Header */
 .dashboard-activity-month-nav {
   display: flex;
@@ -4407,18 +4485,17 @@ input::placeholder {
   height: 40px;
   border-radius: 0.75rem;
   border: none;
-  background: var(--color-primary);
+  border: 2px solid #059669;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
 }
 
 .plan-row-start-btn:hover {
-  background: #ff3399;
+  background: #059669;
   transform: translateY(-1px);
 }
 
@@ -7278,7 +7355,7 @@ input[type="range"]::-moz-range-progress {
   max-width: 640px;
   width: 100%;
   max-height: 90vh;
-  background: rgb(17 24 39);
+  background: var(--bg-card);
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   border-bottom: none;
@@ -12538,6 +12615,44 @@ input[type="range"]::-moz-range-progress {
 }
 
 
+.plan-picker-filter {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.plan-picker-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.plan-picker-filter-btn {
+  flex-shrink: 0;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-primary);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.plan-picker-filter-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.plan-picker-filter-btn:not(.active):hover {
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
+}
+
 .plan-picker-list {
   width: 100%;
   flex: 1;
@@ -14841,7 +14956,6 @@ input[type="range"]::-moz-range-progress {
   flex-direction: column;
   overflow: hidden;
   border-top: 1px solid var(--border-primary);
-  background: var(--bg-secondary);
 }
 
 /* Month Header */

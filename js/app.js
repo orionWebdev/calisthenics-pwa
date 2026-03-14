@@ -10,7 +10,6 @@ let radialMenuOpen = false;
 const viewTitles = {
   dashboard: 'Dashboard',
   progress: 'Progress',
-  calendar: 'Kalender',
   training: 'Training',
   workout: 'Workout',
   profile: 'Profil',
@@ -20,7 +19,6 @@ const viewTitles = {
 const viewIcons = {
   dashboard: 'home',
   progress: 'trending_up',
-  calendar: 'calendar_month',
   training: 'fitness_center',
   workout: 'fitness_center',
   profile: 'account_circle'
@@ -110,10 +108,6 @@ function showView(viewName) {
   updateFabIcon(viewName);
 
   // Load view-specific data
-  if (viewName === 'calendar' && typeof loadSchedule === 'function') {
-    loadSchedule();
-  }
-
   if (viewName === 'training') {
     switchTrainingTab(loadTrainingTab());
   }

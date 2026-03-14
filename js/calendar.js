@@ -150,6 +150,8 @@ function goToToday() {
 // ========================================
 
 function renderCalendar() {
+  // Only render if plan calendar elements exist in DOM (tab may not be active)
+  if (!document.getElementById('calendar-grid')) return;
   try {
     updateCalendarTitle();
     renderMonthGrid();
@@ -872,5 +874,8 @@ window.saveQuickAddEntry = saveQuickAddEntry;
 window.openCalendarPlanPicker = openCalendarPlanPicker;
 window.handleEventTap = handleEventTap;
 window.removePlanFromDate = removePlanFromDate;
+window.renderCalendar = renderCalendar;
+window.loadSchedule = loadSchedule;
+window.setupScheduleListener = setupScheduleListener;
 
 console.log('Calendar module loaded!');

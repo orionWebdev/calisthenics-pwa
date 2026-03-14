@@ -1199,6 +1199,7 @@ window.removeMultiSelectChip = function(containerId, value) {
 // ========================================
 
 let planPickerCallback = null;
+let planPickerTypeFilter = 'all';
 
 function openPlanPickerSheet(onSelect) {
   planPickerCallback = onSelect;
@@ -1206,6 +1207,7 @@ function openPlanPickerSheet(onSelect) {
   const planOptions = (allPlans || []).map(plan => ({
     value: plan.id,
     label: plan.name,
+    type: normalizePlanType(plan.type).type,
     description: getPlanPickerDescription(plan),
     icon: getPlanIconValue(plan, plan.type)
   }));
@@ -1241,13 +1243,18 @@ function openPlanPickerBottomSheet(config) {
   searchInput.placeholder = config.searchPlaceholder || t('plan.picker.searchPlaceholder');
   searchInput.value = '';
 
+  // Reset type filter
+  planPickerTypeFilter = 'all';
+  const filterBtns = document.querySelectorAll('.plan-picker-filter-btn');
+  filterBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.type === 'all'));
+
   // Render options
-  renderPlanPickerOptions(config.options, '');
+  renderPlanPickerOptions(config.options, '', 'all');
 
   // Setup search
   searchInput.oninput = (e) => {
     const term = e.target.value.toLowerCase().trim();
-    renderPlanPickerOptions(config.options, term);
+    renderPlanPickerOptions(config.options, term, planPickerTypeFilter);
   };
 
   // Show
@@ -1257,8 +1264,9 @@ function openPlanPickerBottomSheet(config) {
   setTimeout(() => searchInput.focus(), 100);
 }
 
-function renderPlanPickerOptions(options, searchTerm) {
+function renderPlanPickerOptions(options, searchTerm, typeFilter) {
   const listEl = document.getElementById('plan-picker-list');
+  typeFilter = typeFilter || 'all';
 
   // Handle empty plans list
   if (!options || options.length === 0) {
@@ -1276,7 +1284,11 @@ function renderPlanPickerOptions(options, searchTerm) {
     return;
   }
 
-  const filtered = options.filter(opt =>
+  let filtered = options;
+  if (typeFilter !== 'all') {
+    filtered = filtered.filter(opt => opt.type === typeFilter);
+  }
+  filtered = filtered.filter(opt =>
     opt.label.toLowerCase().includes(searchTerm) ||
     opt.description.toLowerCase().includes(searchTerm)
   );
@@ -1327,6 +1339,24 @@ function closePlanPickerSheet() {
   overlay.classList.remove('active');
   document.body.style.overflow = '';
   planPickerCallback = null;
+}
+
+function filterPlanPicker(type) {
+  planPickerTypeFilter = type;
+
+  // Update active state on filter buttons
+  document.querySelectorAll('.plan-picker-filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+
+  // Re-render with current search term and new type filter
+  const sheet = document.getElementById('plan-picker-sheet');
+  const searchInput = document.getElementById('plan-picker-search');
+  if (!sheet) return;
+
+  const config = JSON.parse(sheet.dataset.config || '{}');
+  const term = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  renderPlanPickerOptions(config.options, term, type);
 }
 
 function selectExerciseForPlan(exerciseId) {
@@ -1958,6 +1988,7 @@ function setupPlansListener() {
 window.openPlanPickerSheet = openPlanPickerSheet;
 window.closePlanPickerSheet = closePlanPickerSheet;
 window.selectPlanFromPicker = selectPlanFromPicker;
+window.filterPlanPicker = filterPlanPicker;
 window.setPlanCardioGoalType = setPlanCardioGoalType;
 window.togglePlanCardioGoalInfo = togglePlanCardioGoalInfo;
 window.selectPlanIcon = selectPlanIcon;
