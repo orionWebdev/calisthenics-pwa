@@ -823,10 +823,8 @@ input, textarea, select, button {
   transform: translateX(-50%);
   width: 75%;
   max-width: 1200px;
-  background: var(--color-bg);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
-  border: 2px solid var(--color-secondary-light);
-  border-radius: 1rem;
   --desktop-nav-shadow-base: 0 8px 32px rgba(0, 0, 0, 0.4);
   --desktop-nav-feedback-shadow: 0 8px 32px rgba(240, 34, 119, 0.3);
   box-shadow: var(--desktop-nav-shadow-base);
@@ -8093,6 +8091,41 @@ input[type="range"]::-moz-range-progress {
   border-color: rgba(239, 68, 68, 0.5);
 }
 
+/* Workout action outline buttons */
+.workout-action-btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.625rem 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(240, 34, 119, 0.4);
+  border-radius: 0.75rem;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.workout-action-btn-outline:hover {
+  background: rgba(240, 34, 119, 0.1);
+}
+
+.workout-action-btn-outline:active {
+  transform: scale(0.97);
+}
+
+.workout-action-btn-outline--danger {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.workout-action-btn-outline--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
 .btn-secondary {
   display: flex;
   align-items: center;
@@ -10849,24 +10882,26 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  background: none;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  background: transparent;
   border: none;
-  color: var(--color-text-muted, #9ca3af);
   cursor: pointer;
+  padding: 0;
   border-radius: 50%;
-  transition: background 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.st-header-menu:hover {
-  background: rgba(255, 255, 255, 0.08);
+.st-header-menu .material-symbols-rounded {
+  font-size: 28px;
+  color: #ffffff;
+  transition: color 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.st-header-menu .material-symbols-rounded {
-  font-size: 24px;
+.st-header-menu:active .material-symbols-rounded {
+  color: #ec4899;
+  transform: rotate(90deg);
 }
 
 /* --- Exercise Switcher (Pills) --- */
@@ -11461,9 +11496,9 @@ input[type="range"]::-moz-range-progress {
   background: rgba(0, 0, 0, 0);
   transition: background 0.2s ease;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 4rem 1rem 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
 .st-menu-overlay.active {
@@ -11574,7 +11609,7 @@ input[type="range"]::-moz-range-progress {
 
 .active-workout-banner {
   position: fixed;
-  top: 1rem;
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg-card-elevated);
@@ -12596,7 +12631,7 @@ input[type="range"]::-moz-range-progress {
   width: 100%;
   max-width: 640px;
   max-height: 90vh;
-  background: rgb(17 24 39);
+  background: var(--bg-card);
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   display: flex;
@@ -12640,6 +12675,7 @@ input[type="range"]::-moz-range-progress {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  width: 95%;
 }
 
 .plan-picker-filter::-webkit-scrollbar {
