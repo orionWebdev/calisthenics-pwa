@@ -321,6 +321,35 @@ async function startWorkoutFromSession(sessionId) {
 }
 
 /**
+ * Start an empty (free) workout without a plan
+ */
+function startEmptyWorkout() {
+  if (activeWorkout && !confirmReplaceActiveWorkout()) return;
+
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+  activeWorkout = {
+    id: generateTempId(),
+    status: 'in-progress',
+    type: 'strength',
+    planId: null,
+    planName: '',
+    scheduleId: null,
+    scheduledDate: dateStr,
+    startedAt: firebase.firestore.Timestamp.now(),
+    exercises: [],
+    notes: '',
+    currentExerciseIndex: 0,
+    isFreeWorkout: true
+  };
+
+  saveActiveWorkout();
+  showView('workout');
+  renderWorkoutScreen();
+}
+
+/**
  * Load active workout from localStorage
  */
 function loadActiveWorkout() {
@@ -383,7 +412,7 @@ function showActiveWorkoutBanner() {
   banner.innerHTML = `
     <div class="banner-content">
       <span class="material-symbols-rounded">play_circle</span>
-      <span>Du hast ein aktives Workout: ${activeWorkout.planName}</span>
+      <span>Aktives Workout: ${activeWorkout.planName}</span>
     </div>
     <div class="banner-actions">
       <button onclick="resumeWorkout()" class="banner-btn primary">Fortsetzen</button>
@@ -474,13 +503,15 @@ async function completeWorkout() {
       date: firebase.firestore.Timestamp.fromDate(workoutDate),
       planId: activeWorkout.planId,
       planName: activeWorkout.planName,
-      exercises: activeWorkout.exercises.map(ex => ({
-        exerciseId: ex.exerciseId,
-        sets: ex.completedSets.map(set => ({
-          reps: set.reps,
-          weight: set.weight
-        }))
-      })),
+      exercises: activeWorkout.exercises
+        .filter(ex => ex.completedSets && ex.completedSets.length > 0)
+        .map(ex => ({
+          exerciseId: ex.exerciseId,
+          sets: ex.completedSets.map(set => ({
+            reps: set.reps,
+            weight: set.weight
+          }))
+        })),
       duration: durationMinutes,
       notes: activeWorkout.notes,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -511,14 +542,22 @@ async function completeWorkout() {
       }
     }
 
-    // Save planId before clearing activeWorkout
+    // Save data before clearing activeWorkout
     const planId = activeWorkout.planId;
+    const isFreeWorkout = activeWorkout.isFreeWorkout || !activeWorkout.planId;
+    const workoutExercises = activeWorkout.exercises.map(ex => ({
+      exerciseId: ex.exerciseId,
+      exerciseName: ex.exerciseName,
+      targetSets: ex.targetSets || ex.completedSets.length || 3,
+      targetReps: ex.targetReps || '10'
+    }));
 
     // Clear active workout
     activeWorkout = null;
     localStorage.removeItem('activeWorkout');
     localStorage.removeItem('activeWorkoutId');
     cancelRestTimer();
+    stopWorkoutTimer();
 
     // Reload sessions
     await loadSessions();
@@ -533,6 +572,13 @@ async function completeWorkout() {
 
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('success', 'Workout gespeichert!');
+    }
+
+    // For free workouts: ask if user wants to save as plan
+    if (isFreeWorkout && workoutExercises.length > 0) {
+      setTimeout(() => {
+        askSaveWorkoutAsPlan(workoutExercises);
+      }, 500);
     }
   } catch (error) {
     console.error('❌ Error completing workout:', error);
@@ -876,6 +922,10 @@ function renderWorkoutScreen() {
         </div>
         <h3 class="empty-state-title">${t('workout.screen.noActiveWorkout')}</h3>
         <p class="empty-state-text">${t('workout.screen.noActiveWorkoutText')}</p>
+        <button onclick="startEmptyWorkout()" class="empty-state-btn btn-primary" style="margin-bottom:0.5rem;">
+          <span class="material-symbols-rounded">add</span>
+          <span>Workout erfassen</span>
+        </button>
         <button onclick="showTrainingTab ? showTrainingTab('plans') : showView('training')" class="empty-state-btn">
           <span class="material-symbols-rounded">assignment</span>
           <span>${t('workout.screen.toPlans')}</span>
@@ -888,13 +938,26 @@ function renderWorkoutScreen() {
   const progress = calculateProgress();
   const currentExercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
 
+  const hasExercises = activeWorkout.exercises.length > 0;
+
+  const emptyWorkoutContent = `
+    <div style="text-align:center;padding:2rem 1rem;">
+      <span class="material-symbols-rounded" style="font-size:48px;color:var(--text-tertiary);margin-bottom:0.5rem;display:block;">add_circle</span>
+      <p style="color:var(--text-secondary);margin-bottom:1rem;">Füge Übungen hinzu, um dein Workout zu starten</p>
+      <button onclick="openAddExerciseToWorkout()" class="btn-primary" style="margin:0 auto;">
+        <span class="material-symbols-rounded">add</span>
+        Übung hinzufügen
+      </button>
+    </div>`;
+
   container.innerHTML = `
     <div class="st-screen">
       ${renderSTHeader(progress)}
-      ${renderSTSwitcher()}
-      ${renderSTDetail(currentExercise)}
-      ${renderSTTargetAndLastPerf(currentExercise)}
-      ${renderSTSetList(currentExercise)}
+      ${hasExercises ? renderSTSwitcher() : ''}
+      ${hasExercises ? renderSTDetail(currentExercise) : emptyWorkoutContent}
+      ${hasExercises ? renderSTTargetAndLastPerf(currentExercise) : ''}
+      ${hasExercises ? renderSTSetList(currentExercise) : ''}
+      ${hasExercises ? renderWorkoutBottomActions() : ''}
     </div>
   `;
 
@@ -913,30 +976,60 @@ function renderWorkoutScreen() {
   if (isRestTimerActive()) {
     renderTimerWidget();
   }
+
+  // Start elapsed workout timer
+  startWorkoutTimer();
+}
+
+/**
+ * Elapsed timer state
+ */
+let workoutTimerIntervalId = null;
+
+function getWorkoutElapsedStr() {
+  if (!activeWorkout || !activeWorkout.startedAt) return '00:00';
+  const startTime = activeWorkout.startedAt.toDate
+    ? activeWorkout.startedAt.toDate()
+    : new Date(activeWorkout.startedAt.seconds * 1000);
+  const elapsed = Math.floor((Date.now() - startTime.getTime()) / 1000);
+  const h = Math.floor(elapsed / 3600);
+  const m = Math.floor((elapsed % 3600) / 60);
+  const s = elapsed % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function startWorkoutTimer() {
+  stopWorkoutTimer();
+  workoutTimerIntervalId = setInterval(() => {
+    const el = document.getElementById('workout-elapsed-timer');
+    if (el) el.textContent = getWorkoutElapsedStr();
+  }, 1000);
+}
+
+function stopWorkoutTimer() {
+  if (workoutTimerIntervalId) {
+    clearInterval(workoutTimerIntervalId);
+    workoutTimerIntervalId = null;
+  }
 }
 
 /**
  * Session Tracker Header
  */
 function renderSTHeader(progress) {
-  const startTime = activeWorkout.startedAt.toDate
-    ? activeWorkout.startedAt.toDate()
-    : new Date(activeWorkout.startedAt.seconds * 1000);
-  const timeStr = startTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-
   return `
     <div class="st-header">
       <button type="button" class="st-header-back" onclick="showView('dashboard')" aria-label="${t('common.back')}">
         <span class="material-symbols-rounded">arrow_back</span>
       </button>
       <div class="st-header-center">
-        <h2 class="st-header-title">${activeWorkout.planName}</h2>
+        <h2 class="st-header-title">${activeWorkout.planName || 'Freies Workout'}</h2>
         <div class="st-header-sub">
-          <span>${formatWorkoutDate(activeWorkout.scheduledDate)}</span>
+          <span class="material-symbols-rounded" style="font-size:14px;">timer</span>
+          <span id="workout-elapsed-timer">${getWorkoutElapsedStr()}</span>
           <span class="st-header-dot">&middot;</span>
-          <span>${timeStr}</span>
-          <span class="st-header-dot">&middot;</span>
-          <span>${progress.completed} / ${progress.total} ${t('common.workout') === 'Workout' ? 'Uebungen' : 'exercises'}</span>
+          <span>${progress.completed} / ${progress.total} Übungen</span>
         </div>
       </div>
       <button type="button" class="st-header-menu" onclick="showWorkoutMenu()" aria-label="Menue">
@@ -2217,6 +2310,27 @@ function renderWorkoutActions() {
   `;
 }
 
+function renderWorkoutBottomActions() {
+  return `
+    <div class="workout-bottom-actions">
+      <button onclick="replacingExerciseIndex=null;openAddExerciseToWorkout()" class="btn-primary" style="width:100%;">
+        <span class="material-symbols-rounded" style="font-size:18px;">add</span>
+        <span>Übung hinzufügen</span>
+      </button>
+      <div style="display:flex;gap:0.5rem;width:100%;">
+        <button onclick="replaceCurrentExerciseInWorkout()" class="workout-action-btn-outline" style="flex:1;">
+          <span class="material-symbols-rounded" style="font-size:16px;">swap_horiz</span>
+          <span>Übung ersetzen</span>
+        </button>
+        <button onclick="removeCurrentExerciseFromWorkout()" class="workout-action-btn-outline workout-action-btn-outline--danger" style="flex:1;">
+          <span class="material-symbols-rounded" style="font-size:16px;">delete</span>
+          <span>Übung löschen</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 /**
  * Render completed sets - Collapsible version for focus mode
  */
@@ -3326,6 +3440,196 @@ function ensureValidDateString(dateStr) {
   const valid = getValidDateString(dateStr);
   if (valid) return valid;
   return formatDate(new Date());
+}
+
+// ========================================
+// SAVE WORKOUT AS PLAN
+// ========================================
+
+function askSaveWorkoutAsPlan(workoutExercises) {
+  if (!confirm('Workout als Plan speichern?')) return;
+  openPlanModalWithExercises(workoutExercises);
+}
+
+function openPlanModalWithExercises(workoutExercises) {
+  if (typeof openAddPlanModal !== 'function') return;
+
+  // Open the plan modal fresh
+  openAddPlanModal();
+
+  // Pre-fill exercises into currentPlan
+  if (typeof currentPlan !== 'undefined' && currentPlan) {
+    currentPlan.items = workoutExercises.map(ex => ({
+      exerciseId: ex.exerciseId,
+      target: {
+        sets: ex.targetSets || 3,
+        reps: ex.targetReps || '10'
+      }
+    }));
+
+    if (typeof renderPlanExercises === 'function') {
+      renderPlanExercises();
+    }
+  }
+}
+
+// ========================================
+// ADD/REMOVE EXERCISES DURING WORKOUT
+// ========================================
+
+function openAddExerciseToWorkout() {
+  // Use existing exercise picker bottom sheet pattern
+  const existing = document.getElementById('workout-exercise-picker-sheet');
+  if (existing) existing.remove();
+
+  const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+
+  const sheet = document.createElement('div');
+  sheet.id = 'workout-exercise-picker-sheet';
+  sheet.className = 'exercises-sheet-overlay';
+  sheet.innerHTML = `
+    <div class="exercises-sheet" role="dialog" aria-modal="true">
+      <div class="exercises-sheet-header">
+        <div class="exercises-sheet-drag-handle"></div>
+        <h3 class="exercises-sheet-title">Übung hinzufügen</h3>
+        <button type="button" onclick="closeWorkoutExercisePicker()" class="exercises-sheet-close" aria-label="Schließen">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div class="exercises-sheet-content" style="padding:0.5rem 1rem;">
+        <input type="text" id="workout-exercise-search" placeholder="Übung suchen..."
+          class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          oninput="filterWorkoutExercisePicker(this.value)" />
+        <div id="workout-exercise-picker-list" class="exercises-sheet-list">
+          ${renderWorkoutExercisePickerList(exercises, '')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(sheet);
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => sheet.classList.add('active'));
+
+  sheet.addEventListener('click', (e) => {
+    if (e.target === sheet) closeWorkoutExercisePicker();
+  });
+}
+
+function renderWorkoutExercisePickerList(exercises, filter) {
+  const filtered = filter
+    ? exercises.filter(ex => ex.name.toLowerCase().includes(filter.toLowerCase()))
+    : exercises;
+
+  if (filtered.length === 0) {
+    return '<p style="text-align:center;color:var(--text-tertiary);padding:1rem;">Keine Übungen gefunden</p>';
+  }
+
+  return filtered.map(ex => `
+    <button type="button" class="exercises-sheet-item" onclick="addExerciseToWorkout('${ex.id}')">
+      <div class="exercises-sheet-item-number">
+        <span class="material-symbols-rounded" style="font-size:18px;">add</span>
+      </div>
+      <div class="exercises-sheet-item-info">
+        <div class="exercises-sheet-item-name">${ex.name}</div>
+        <div class="exercises-sheet-item-target" style="font-size:0.75rem;color:var(--text-tertiary);">
+          ${(ex.muscleGroups || []).map(m => typeof muscleNames !== 'undefined' ? (muscleNames[m] || m) : m).join(', ')}
+        </div>
+      </div>
+    </button>
+  `).join('');
+}
+
+function filterWorkoutExercisePicker(value) {
+  const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+  const list = document.getElementById('workout-exercise-picker-list');
+  if (list) list.innerHTML = renderWorkoutExercisePickerList(exercises, value);
+}
+
+function addExerciseToWorkout(exerciseId) {
+  addExerciseToWorkoutOrReplace(exerciseId);
+}
+
+function closeWorkoutExercisePicker() {
+  const sheet = document.getElementById('workout-exercise-picker-sheet');
+  if (!sheet) return;
+  sheet.classList.remove('active');
+  sheet.classList.add('closing');
+  setTimeout(() => {
+    sheet.remove();
+    document.body.style.overflow = '';
+  }, 300);
+}
+
+function removeCurrentExerciseFromWorkout() {
+  if (!activeWorkout || activeWorkout.exercises.length === 0) return;
+  const currentEx = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
+  if (!confirm(`"${currentEx.exerciseName}" aus dem Workout entfernen?`)) return;
+
+  activeWorkout.exercises.splice(activeWorkout.currentExerciseIndex, 1);
+
+  // Adjust current index
+  if (activeWorkout.exercises.length === 0) {
+    activeWorkout.currentExerciseIndex = 0;
+  } else if (activeWorkout.currentExerciseIndex >= activeWorkout.exercises.length) {
+    activeWorkout.currentExerciseIndex = activeWorkout.exercises.length - 1;
+  }
+
+  // Mark new current as in-progress if needed
+  if (activeWorkout.exercises.length > 0) {
+    const current = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
+    if (current.status === 'not-started') current.status = 'in-progress';
+  }
+
+  saveActiveWorkout();
+  renderWorkoutScreen();
+}
+
+let replacingExerciseIndex = null;
+
+function replaceCurrentExerciseInWorkout() {
+  if (!activeWorkout || activeWorkout.exercises.length === 0) return;
+  replacingExerciseIndex = activeWorkout.currentExerciseIndex;
+  openAddExerciseToWorkout();
+}
+
+function addExerciseToWorkoutOrReplace(exerciseId) {
+  if (!activeWorkout) return;
+  const exercise = allExercises.find(ex => ex.id === exerciseId);
+  if (!exercise) return;
+
+  const newExercise = {
+    exerciseId: exercise.id,
+    exerciseName: exercise.name,
+    targetSets: 3,
+    targetReps: '10',
+    targetRest: 90,
+    completedSets: [],
+    status: 'not-started',
+    notes: ''
+  };
+
+  if (replacingExerciseIndex !== null && replacingExerciseIndex < activeWorkout.exercises.length) {
+    // Replace
+    newExercise.status = activeWorkout.exercises[replacingExerciseIndex].status;
+    activeWorkout.exercises[replacingExerciseIndex] = newExercise;
+    replacingExerciseIndex = null;
+  } else {
+    // Add
+    activeWorkout.exercises.push(newExercise);
+    if (activeWorkout.exercises.length === 1) {
+      activeWorkout.currentExerciseIndex = 0;
+      activeWorkout.exercises[0].status = 'in-progress';
+    }
+  }
+
+  saveActiveWorkout();
+  closeWorkoutExercisePicker();
+  renderWorkoutScreen();
+
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('success', `${exercise.name} hinzugefügt`);
+  }
 }
 
 console.log('✅ Workout engine loaded');
