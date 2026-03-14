@@ -135,10 +135,6 @@
             <span class="material-symbols-rounded">fitness_center</span>
             <span>Training</span>
           </button>
-          <button onclick="showView('calendar')" class="nav-btn" data-view="calendar">
-            <span class="material-symbols-rounded">calendar_month</span>
-            <span>Kalender</span>
-          </button>
           <button onclick="showView('progress')" class="nav-btn" data-view="progress">
             <span class="material-symbols-rounded">trending_up</span>
             <span>Progress</span>
@@ -175,10 +171,7 @@
       <button class="radial-menu-item" data-view="progress" onclick="showViewFromRadial('progress')" style="--item-index: 0">
         <span class="material-symbols-rounded radial-icon">trending_up</span>
       </button>
-      <button class="radial-menu-item" data-view="calendar" onclick="showViewFromRadial('calendar')" style="--item-index: 1">
-        <span class="material-symbols-rounded radial-icon">calendar_month</span>
-      </button>
-      <button class="radial-menu-item" data-view="training" onclick="showViewFromRadial('training')" style="--item-index: 2">
+      <button class="radial-menu-item" data-view="training" onclick="showViewFromRadial('training')" style="--item-index: 1">
         <span class="material-symbols-rounded radial-icon">fitness_center</span>
       </button>
     </div>
@@ -200,12 +193,6 @@
       <span class="bottom-nav-item-content">
         <span class="material-symbols-rounded">trending_up</span>
         <span class="bottom-nav-label" data-i18n="nav.progress">Progress</span>
-      </span>
-    </button>
-    <button class="bottom-nav-item" data-view="calendar" onclick="showView('calendar')">
-      <span class="bottom-nav-item-content">
-        <span class="material-symbols-rounded">calendar_month</span>
-        <span class="bottom-nav-label" data-i18n="nav.calendar">Kalender</span>
       </span>
     </button>
     <button class="bottom-nav-item" data-view="training" onclick="showView('training')">
@@ -415,56 +402,6 @@
 
     </div>
 
-    <!-- CALENDAR VIEW (iOS Calendar Style - Fixed Layout) -->
-    <div id="view-calendar" class="view hidden plan-calendar-view">
-
-      <!-- UPPER SECTION: Month Calendar (~66vh) -->
-      <div class="calendar-month-section">
-        <!-- Month Header -->
-        <div class="plan-calendar-header">
-          <button onclick="navigateCalendar('prev')" class="plan-calendar-nav-btn" aria-label="Vorheriger Monat">
-            <span class="material-symbols-rounded">chevron_left</span>
-          </button>
-
-          <h2 id="calendar-title" class="plan-calendar-title">Januar 2026</h2>
-
-          <button onclick="navigateCalendar('next')" class="plan-calendar-nav-btn" aria-label="Nächster Monat">
-            <span class="material-symbols-rounded">chevron_right</span>
-          </button>
-        </div>
-
-        <!-- Weekday Labels -->
-        <div class="plan-calendar-weekdays">
-          <span>Mo</span>
-          <span>Di</span>
-          <span>Mi</span>
-          <span>Do</span>
-          <span>Fr</span>
-          <span>Sa</span>
-          <span>So</span>
-        </div>
-
-        <!-- Calendar Grid -->
-        <div id="calendar-grid" class="plan-calendar-grid">
-          <!-- Populated by JavaScript -->
-        </div>
-      </div>
-
-      <!-- LOWER SECTION: Day Agenda (~34vh, scrollable) -->
-      <div class="calendar-agenda-container">
-        <div class="calendar-agenda-list-header">
-          <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
-          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="Training hinzufuegen">
-            <span class="material-symbols-rounded">add</span>
-          </button>
-        </div>
-        <div id="calendar-agenda-list" class="calendar-agenda-list">
-          <!-- Populated by JavaScript: date sections with events -->
-        </div>
-      </div>
-
-    </div>
-
     <!-- PROGRESS VIEW -->
     <!-- PROGRESS VIEW V2 -->
     <div id="view-progress" class="view hidden">
@@ -510,13 +447,6 @@
   <!-- ADD/EDIT EXERCISE MODAL -->
   <div id="exercise-modal" class="modal">
     <div class="modal-content">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold" id="modal-title">Neue Übung</h3>
-        <button onclick="closeExerciseModal()" class="modal-close-btn">
-          <span class="material-symbols-rounded">close</span>
-        </button>
-      </div>
-
       <div class="space-y-5">
         <!-- Section 1: Grundlagen (immer sichtbar) -->
         <div class="wizard-section">
@@ -1218,6 +1148,14 @@
             autocomplete="off"
           />
         </div>
+      </div>
+
+      <div id="plan-picker-filter" class="plan-picker-filter">
+        <button class="plan-picker-filter-btn active" data-type="all" onclick="filterPlanPicker('all')">Alle</button>
+        <button class="plan-picker-filter-btn" data-type="strength" onclick="filterPlanPicker('strength')">Kraft</button>
+        <button class="plan-picker-filter-btn" data-type="bodyweight" onclick="filterPlanPicker('bodyweight')">Bodyweight</button>
+        <button class="plan-picker-filter-btn" data-type="cardio" onclick="filterPlanPicker('cardio')">Cardio</button>
+        <button class="plan-picker-filter-btn" data-type="recovery" onclick="filterPlanPicker('recovery')">Recovery</button>
       </div>
 
       <div id="plan-picker-list" class="plan-picker-list">

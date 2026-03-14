@@ -61,8 +61,8 @@ function openWorkoutDetailModal(sessionId) {
 
       <!-- Actions -->
       <div class="workout-modal-actions">
-        <button onclick="openEditStrengthSessionModal('${session.id}')" class="btn-primary">
-          <span class="material-symbols-rounded">edit</span>
+        <button onclick="openEditStrengthSessionModal('${session.id}')" class="btn-edit">
+          <span class="material-symbols-rounded">settings</span>
           <span>${typeof t === 'function' ? t('common.editSession') : 'Session bearbeiten'}</span>
         </button>
         <button onclick="confirmDeleteWorkout('${session.id}')" class="btn-danger">
