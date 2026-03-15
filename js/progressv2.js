@@ -187,8 +187,6 @@ function renderOverviewTab() {
   container.innerHTML = `
     <h3 style="margin-bottom: 1.5rem;">Balance</h3>
     <div class="overview-section">
-      ${renderHybridBalanceHTML()}
-
       ${renderConsistencyCardHTML(consistencyStats)}
 
       <!-- Calm Insight -->
@@ -848,7 +846,11 @@ async function deleteSessionWithReferences(sessionId) {
 
     closeGenericModal();
     await loadSessions();
-    renderCurrentProgressTab();
+
+    // Always navigate to progress after deletion
+    if (typeof showView === 'function') {
+      showView('progress');
+    }
     triggerSuccessGlow();
   } catch (error) {
     console.error('❌ Error deleting session:', error);

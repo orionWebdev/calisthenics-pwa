@@ -465,7 +465,7 @@ function renderProgressStats(exerciseId) {
 
   // Exercise Name
   const exercise = exercisesData.find(ex => ex.id === exerciseId);
-  const exerciseName = exercise?.name || 'Übung';
+  const exerciseName = (typeof getExerciseName === 'function' && exercise ? getExerciseName(exercise) : exercise?.name) || 'Übung';
 
   container.innerHTML = `
     <div class="progress-stats-header">
