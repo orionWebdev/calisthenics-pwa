@@ -384,13 +384,13 @@ const defaultExercises = [
 // Wird beim ersten Laden aufgerufen
 async function initializeDefaultExercises() {
   try {
-    // Check ob schon Uebungen existieren
+    // Check ob schon Übungen existieren
     const existing = await getAllDocs(exercisesCollection);
 
     if (existing.length === 0) {
       console.log('Initializing default exercises...');
 
-      // Alle default Uebungen hinzufuegen
+      // Alle default Übungen hinzufügen
       for (const exercise of defaultExercises) {
         await addDoc(exercisesCollection, exercise);
       }

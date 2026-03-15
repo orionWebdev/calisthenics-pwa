@@ -562,7 +562,7 @@ async function completeWorkout() {
     // Reload sessions
     await loadSessions();
 
-    // Vorherige Session + letzte 5 Sessions fuer Sparklines
+    // Vorherige Session + letzte 5 Sessions für Sparklines
     const prevSession = getPreviousSessionForPlan(planId, savedSessionId);
     const planSessions = typeof getSessionsForPlan === 'function'
       ? getSessionsForPlan(planId, 5, savedSessionId) : [];
@@ -808,7 +808,7 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
   const exComparison = buildExerciseComparison(savedSession, prevSession, planSessions || []);
   let exercisesHTML = '';
   if (exComparison.length > 0) {
-    const exTitle = tr('progress.v4.postWorkout.exercisesTitle') || 'Uebungen im Detail';
+    const exTitle = tr('progress.v4.postWorkout.exercisesTitle') || 'Übungen im Detail';
     const badgeNew = tr('progress.v4.postWorkout.badgeNew') || 'Neu';
     const badgeRemoved = tr('progress.v4.postWorkout.badgeRemoved') || 'Letztes Mal';
     exercisesHTML = `
@@ -863,7 +863,7 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
       ${(savedSession.exercises || []).length > 0 ? `
       <div class="pws-quick-stat">
         <div class="pws-quick-stat-value">${savedSession.exercises.length}</div>
-        <div class="pws-quick-stat-label">Uebungen</div>
+        <div class="pws-quick-stat-label">Übungen</div>
       </div>
       ` : ''}
     </div>
@@ -1371,7 +1371,7 @@ function renderWorkoutHeader(progress) {
       <div class="workout-meta">
         <span>${formatWorkoutDate(activeWorkout.scheduledDate)}</span>
         <span>·</span>
-        <span>${t('workout.exercise.progress', { completed: progress.completed, total: progress.total }) || `${progress.completed} / ${progress.total} Uebungen`}</span>
+        <span>${t('workout.exercise.progress', { completed: progress.completed, total: progress.total }) || `${progress.completed} / ${progress.total} Übungen`}</span>
       </div>
       <div class="workout-progress-bar">
         <div class="workout-progress-fill" style="width: ${progress.percentage}%"></div>
@@ -2294,7 +2294,7 @@ function renderWorkoutActions() {
           class="btn-primary"
           ${!hasSets ? 'disabled' : ''}
         >
-          <span>${t('workout.exercise.next') || 'Naechste Uebung'}</span>
+          <span>${t('workout.exercise.next') || 'Nächste Übung'}</span>
           <span class="material-symbols-rounded">arrow_forward</span>
         </button>
       ` : `
@@ -3378,7 +3378,7 @@ function editWorkoutDate() {
   const validDate = getValidDateString(newDate);
   if (!validDate) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Ungueltiges Datumsformat. Bitte verwende YYYY-MM-DD');
+      showEdgeFeedback('error', 'Ungültiges Datumsformat. Bitte verwende YYYY-MM-DD');
     }
     return;
   }

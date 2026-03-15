@@ -167,7 +167,7 @@ function calculateBestSet(exerciseEntry) {
 }
 
 /**
- * Berechnet TOTAL Volumen fuer eine komplette Strength-Session
+ * Berechnet TOTAL Volumen für eine komplette Strength-Session
  * Formula: sum of all sets; if set has weight AND reps => (weight * reps), else just reps
  */
 function calculateSessionStrengthVolume(session) {
@@ -539,7 +539,7 @@ function calculateDualStrengthStats(periodKey, exercisesData = []) {
 }
 
 /**
- * Gibt den Montag der Woche zurueck (fuer wochenbasierte Aggregation)
+ * Gibt den Montag der Woche zurück (für wochenbasierte Aggregation)
  */
 function getWeekStart(date) {
   const d = new Date(date);
@@ -925,7 +925,7 @@ function formatDateToYYYYMMDD(date) {
 }
 
 /**
- * Gruppiert Sessions nach YYYY-MM-DD fuer Activity Calendar
+ * Gruppiert Sessions nach YYYY-MM-DD für Activity Calendar
  * @param {number} year
  * @param {number} month (0-indexed)
  * @returns {Object} { 'YYYY-MM-DD': [{session}, ...] }
@@ -949,7 +949,7 @@ function getSessionsByDate(year, month) {
 }
 
 /**
- * Holt Sessions fuer ein spezifisches Datum
+ * Holt Sessions für ein spezifisches Datum
  */
 function getSessionsForDate(dateKey) {
   return allSessions.filter(session => {
@@ -2530,7 +2530,7 @@ function calculateExerciseWeightedVolume(exerciseEntry) {
 }
 
 /**
- * Sparkline-Daten fuer eine Exercise aus gegebenen Sessions.
+ * Sparkline-Daten für eine Exercise aus gegebenen Sessions.
  * Return: Array oldest-first [12, 15, 14, 16, 18]
  */
 function getExerciseSparklineData(sessions, exerciseId) {
@@ -2543,7 +2543,7 @@ function getExerciseSparklineData(sessions, exerciseId) {
 }
 
 /**
- * Sparkline-Daten fuer eine Exercise ueber alle Sessions (nicht plan-spezifisch).
+ * Sparkline-Daten für eine Exercise über alle Sessions (nicht plan-spezifisch).
  */
 function getExerciseGlobalSparkline(exerciseId, limit = 8) {
   const sessions = (typeof allSessions !== 'undefined' ? allSessions : [])

@@ -407,7 +407,7 @@ function renderExercises() {
         <div class="empty-state-actions">
           <button onclick="resetFilters()" class="empty-state-btn btn-secondary">
             <span class="material-symbols-rounded">refresh</span>
-            <span>Filter zuruecksetzen</span>
+            <span>Filter zurücksetzen</span>
           </button>
           <button onclick="openExerciseCreateSheet()" class="empty-state-btn btn-primary">
             <span class="material-symbols-rounded">add_circle</span>
@@ -941,7 +941,7 @@ function clearExerciseForm() {
 
 // Difficulty enum mapping (for backward compatibility)
 const exerciseDifficultyEnum = {
-  beginner: { label: 'Anfaenger', value: 1 },
+  beginner: { label: 'Anfänger', value: 1 },
   intermediate: { label: 'Fortgeschritten', value: 2 },
   advanced: { label: 'Profi', value: 3 },
   elite: { label: 'Elite', value: 4 }
@@ -1109,7 +1109,7 @@ function openExerciseCreateSheet(options) {
 // EXERCISE INSTRUCTIONS (Steps + Advanced)
 // ========================================
 
-let exerciseInstructionSteps = []; // string[] fuer nummerierte Schritte
+let exerciseInstructionSteps = []; // string[] für nummerierte Schritte
 let exerciseInstructionCues = [];
 let exerciseInstructionMistakes = [];
 let exerciseInstructionProgressions = [];
@@ -1455,7 +1455,7 @@ async function saveExercise() {
   // Validation - only name required in v3
   if (!name) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('errors.exerciseNameRequired') || 'Bitte gib einen Namen fuer die Uebung ein!');
+      showEdgeFeedback('error', t('errors.exerciseNameRequired') || 'Bitte gib einen Namen für die Übung ein!');
     }
     return;
   }
@@ -1493,7 +1493,7 @@ async function saveExercise() {
   } catch (error) {
     console.error('Error saving exercise:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern der Uebung!');
+      showEdgeFeedback('error', 'Fehler beim Speichern der Übung!');
     }
   }
 }

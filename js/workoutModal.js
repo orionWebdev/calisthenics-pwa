@@ -424,7 +424,7 @@ async function saveStrengthSessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gueltige Dauer ein.');
+      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
     }
     return;
   }
@@ -556,7 +556,7 @@ async function saveCardioSessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gueltige Dauer ein.');
+      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
     }
     return;
   }
@@ -651,7 +651,7 @@ async function saveRecoverySessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gueltige Dauer ein.');
+      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
     }
     return;
   }

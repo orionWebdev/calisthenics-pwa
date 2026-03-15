@@ -1284,7 +1284,7 @@ function renderStrengthStats() {
 }
 
 /**
- * Berechnet Stats fuer woechentliche Daten
+ * Berechnet Stats für wöchentliche Daten
  */
 function calculateWeeklyStats(weeklyData) {
   if (!weeklyData || weeklyData.length === 0) {
@@ -1394,7 +1394,7 @@ function renderStrengthChart() {
 }
 
 /**
- * Zeichnet Chart fuer woechentliche Daten
+ * Zeichnet Chart für wöchentliche Daten
  * @param {Array} data - Chart data
  * @param {string} colorType - 'strength', 'bodyweight', or 'cardio'
  */
@@ -2090,7 +2090,7 @@ function renderCardioChart() {
 }
 
 /**
- * Zeichnet Cardio Chart fuer woechentliche Daten
+ * Zeichnet Cardio Chart für wöchentliche Daten
  * For pace metric: uses inverted Y-axis (faster pace = higher on chart)
  */
 function drawWeeklyCardioChart(data, metric) {

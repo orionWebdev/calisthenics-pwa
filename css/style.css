@@ -3455,7 +3455,7 @@ body.modal-open {
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
-  /* Feste Hoehe fuer konsistente Navigation */
+  /* Feste Höhe für konsistente Navigation */
   height: 56px;
   padding: 0 0.35rem;
   z-index: 1000;
@@ -14750,6 +14750,62 @@ input[type="range"]::-moz-range-progress {
 }
 
 /* ==================== PROGRESS V4 EXERCISE TRENDS ==================== */
+
+/* ==================== EXERCISE FILTER BAR ==================== */
+
+.pv4-exercise-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.pv4-muscle-filter-chips {
+  display: flex;
+  gap: 0.375rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.pv4-muscle-filter-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.pv4-muscle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 1rem;
+  border: 1px solid var(--ui-card-border, rgba(255,255,255,0.08));
+  background: var(--bg-card, #161618);
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex: 0 0 auto;
+}
+
+.pv4-muscle-chip.active {
+  background: rgba(240, 34, 119, 0.16);
+  border-color: rgba(240, 34, 119, 0.35);
+  color: var(--color-primary, #f02277);
+}
+
+.pv4-muscle-chip .muscle-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.pv4-muscle-chip .muscle-icon img {
+  width: 14px;
+  height: 14px;
+}
+
+/* ==================== EXERCISE LIST ==================== */
 
 .pv4-exercise-list {
   display: flex;
