@@ -14,6 +14,11 @@ let pv4ExerciseDetailId = null;
 let pv4PlanDetailId = null;
 let progressV3Initialized = false;
 
+// Exercise filter state
+let pv4ExerciseSearchTerm = '';
+let pv4ExerciseMuscleFilter = '';
+let _pv4ExerciseSearchTimer = null;
+
 // ==================== TYPE MAPPING ====================
 
 const V3_TYPE_MAP = {
@@ -228,7 +233,7 @@ function attachV4PeriodListeners() {
   });
 }
 
-// Kurze Labels fuer Rhythmus-Buckets
+// Kurze Labels für Rhythmus-Buckets
 const V3_DAY_LABELS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 const V3_MONTH_LABELS = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
@@ -494,6 +499,41 @@ function renderV4SessionHistory(sessions) {
 
 // ==================== TAB 2: EXERCISE TRENDS ====================
 
+function renderV4ExerciseFilterBar() {
+  const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+  const muscleKeys = ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'full-body'];
+  const names = typeof muscleNames !== 'undefined' ? muscleNames : {};
+
+  const chips = muscleKeys.map(key => {
+    const active = pv4ExerciseMuscleFilter === key ? ' active' : '';
+    const icon = typeof getMuscleIcon === 'function' ? getMuscleIcon(key, 'muscle-icon--xs') : '';
+    return `<button class="pv4-muscle-chip${active}" data-muscle="${key}" onclick="setPv4MuscleFilter('${key}')">${icon}<span>${names[key] || key}</span></button>`;
+  }).join('');
+
+  const allActive = !pv4ExerciseMuscleFilter ? ' active' : '';
+  const clearVal = pv4ExerciseSearchTerm ? '' : ' hidden';
+
+  return `
+    <div class="pv4-exercise-filter-bar">
+      <div class="exercise-search-bar">
+        <span class="material-symbols-rounded exercise-search-icon">search</span>
+        <input type="text" id="pv4-exercise-search" class="exercise-search-input"
+               placeholder="${trV3('progress.v4.exercises.searchPlaceholder') || 'Übung suchen...'}"
+               value="${pv4ExerciseSearchTerm}"
+               oninput="onPv4ExerciseSearchInput()" />
+        <button id="pv4-exercise-search-clear" class="exercise-search-clear${clearVal}" onclick="clearPv4ExerciseSearch()">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div class="pv4-muscle-filter-chips">
+        <button class="pv4-muscle-chip${allActive}" data-muscle="" onclick="setPv4MuscleFilter('')">
+          <span>${trV3('progress.v4.exercises.allMuscles') || 'Alle'}</span>
+        </button>
+        ${chips}
+      </div>
+    </div>`;
+}
+
 function renderV4ExerciseTrends() {
   const exerciseMap = {};
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
@@ -506,6 +546,7 @@ function renderV4ExerciseTrends() {
         exerciseMap[ex.exerciseId] = {
           exerciseId: ex.exerciseId,
           name: data?.name || ex.exerciseId,
+          muscleGroups: data?.muscleGroups || [],
           sessionCount: 0,
           sparklineData: [],
           trend: null
@@ -525,13 +566,33 @@ function renderV4ExerciseTrends() {
     }
   });
 
-  const sorted = Object.values(exerciseMap).sort((a, b) => b.sessionCount - a.sessionCount);
+  let filtered = Object.values(exerciseMap);
 
-  if (sorted.length === 0) {
-    return `<div class="pv3-empty-state">${trV3('progress.v4.exercises.noExercises')}</div>`;
+  // Apply search filter
+  if (pv4ExerciseSearchTerm) {
+    const searchLower = pv4ExerciseSearchTerm.toLocaleLowerCase('de-DE');
+    filtered = filtered.filter(ex => ex.name.toLocaleLowerCase('de-DE').includes(searchLower));
   }
 
-  const rows = sorted.map(ex => {
+  // Apply muscle group filter
+  if (pv4ExerciseMuscleFilter) {
+    filtered = filtered.filter(ex => ex.muscleGroups.includes(pv4ExerciseMuscleFilter));
+  }
+
+  // Sort by session count
+  filtered.sort((a, b) => b.sessionCount - a.sessionCount);
+
+  const filterBar = renderV4ExerciseFilterBar();
+
+  if (Object.keys(exerciseMap).length === 0) {
+    return `${filterBar}<div class="pv3-empty-state">${trV3('progress.v4.exercises.noExercises')}</div>`;
+  }
+
+  if (filtered.length === 0) {
+    return `${filterBar}<div class="pv3-empty-state">${trV3('progress.v4.exercises.noFilterResults') || 'Keine Übungen gefunden'}</div>`;
+  }
+
+  const rows = filtered.map(ex => {
     const trendClass = ex.trend || 'same';
     const trendIcon = ex.trend === 'up' ? 'trending_up' : ex.trend === 'down' ? 'trending_down' : 'trending_flat';
     const hasSparkline = ex.sparklineData.length >= 2;
@@ -547,8 +608,52 @@ function renderV4ExerciseTrends() {
       </button>`;
   }).join('');
 
-  return `<div class="pv4-exercise-list">${rows}</div>`;
+  return `${filterBar}<div class="pv4-exercise-list">${rows}</div>`;
 }
+
+// Exercise filter & favorites event handlers
+function onPv4ExerciseSearchInput() {
+  const input = document.getElementById('pv4-exercise-search');
+  const clearBtn = document.getElementById('pv4-exercise-search-clear');
+  if (clearBtn) clearBtn.classList.toggle('hidden', !input?.value);
+
+  clearTimeout(_pv4ExerciseSearchTimer);
+  _pv4ExerciseSearchTimer = setTimeout(() => {
+    pv4ExerciseSearchTerm = input ? input.value.trim() : '';
+    rerenderV4ExerciseTab();
+  }, 180);
+}
+
+function clearPv4ExerciseSearch() {
+  pv4ExerciseSearchTerm = '';
+  rerenderV4ExerciseTab();
+}
+
+function setPv4MuscleFilter(value) {
+  pv4ExerciseMuscleFilter = (pv4ExerciseMuscleFilter === value) ? '' : value;
+  rerenderV4ExerciseTab();
+}
+
+function rerenderV4ExerciseTab() {
+  const savedSearch = pv4ExerciseSearchTerm;
+  const savedMuscle = pv4ExerciseMuscleFilter;
+  renderProgressV4();
+  requestAnimationFrame(() => {
+    const input = document.getElementById('pv4-exercise-search');
+    if (input) {
+      input.value = savedSearch;
+      if (savedSearch) input.focus();
+    }
+    const clearBtn = document.getElementById('pv4-exercise-search-clear');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !savedSearch);
+    drawAllV4Sparklines();
+  });
+}
+
+// Expose to global scope for onclick handlers
+window.onPv4ExerciseSearchInput = onPv4ExerciseSearchInput;
+window.clearPv4ExerciseSearch = clearPv4ExerciseSearch;
+window.setPv4MuscleFilter = setPv4MuscleFilter;
 
 function drawAllV4Sparklines() {
   document.querySelectorAll('.pv4-sparkline-canvas').forEach(canvas => {

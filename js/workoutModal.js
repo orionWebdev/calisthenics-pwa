@@ -86,7 +86,7 @@ function renderWorkoutExercises(session) {
 
   return session.exercises.map((ex, index) => {
     const exercise = allExercises.find(e => e.id === ex.exerciseId);
-    const exerciseName = exercise?.name || ex.exerciseName || ex.exerciseId || 'Übung';
+    const exerciseName = (typeof getExerciseName === 'function' && exercise ? getExerciseName(exercise) : exercise?.name) || ex.exerciseName || ex.exerciseId || 'Übung';
 
     return `
       <div class="workout-exercise-item">
@@ -96,11 +96,21 @@ function renderWorkoutExercises(session) {
             ${exerciseName}
           </h5>
           <div class="exercise-sets">
-            ${ex.sets && ex.sets.length > 0 ? ex.sets.map((set, i) => `
-              <span class="set-badge">
-                ${i + 1}: ${set.reps} reps${set.weight ? ` @ ${set.weight}kg` : ''}
-              </span>
-            `).join('') : '<span class="set-badge">Keine Sätze</span>'}
+            ${ex.sets && ex.sets.length > 0 ? ex.sets.map((set, i) => {
+              let label = '';
+              if (set.type === 'cardio') {
+                label = `${set.duration || 0} min`;
+                if (set.distance) label += ` / ${set.distance} km`;
+                if (set.rpe) label += ` / RPE ${set.rpe}`;
+              } else if (set.type === 'recovery') {
+                label = `${set.duration || 0} min`;
+              } else if (set.holdSec) {
+                label = `${set.holdSec}s`;
+              } else {
+                label = `${set.reps || 0} reps${set.weight ? ` @ ${set.weight} ${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}` : ''}`;
+              }
+              return `<span class="set-badge">${i + 1}: ${label}</span>`;
+            }).join('') : '<span class="set-badge">Keine Sätze</span>'}
           </div>
         </div>
       </div>
@@ -154,9 +164,9 @@ async function confirmDeleteWorkout(sessionId) {
     closeWorkoutDetailModal();
     await loadSessions();
 
-    // Re-render progress if we're on that view
-    if (currentView === 'progress') {
-      renderCurrentProgressTab();
+    // Always navigate to progress after deletion
+    if (typeof showView === 'function') {
+      showView('progress');
     }
 
     triggerSuccessGlow();
@@ -295,8 +305,8 @@ function renderEditExercise(exercise, exIndex) {
                  min="0"
                  max="999"
                  step="0.5"
-                 placeholder="kg" />
-          <span class="edit-set-label">kg</span>
+                 placeholder="${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}" />
+          <span class="edit-set-label">${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}</span>
         </div>
       </div>
       <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${setIndex})" aria-label="Satz entfernen">
@@ -359,8 +369,8 @@ function addEditSet(exIndex) {
                  min="0"
                  max="999"
                  step="0.5"
-                 placeholder="kg" />
-          <span class="edit-set-label">kg</span>
+                 placeholder="${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}" />
+          <span class="edit-set-label">${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}</span>
         </div>
       </div>
       <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${newSetIndex})" aria-label="Satz entfernen">
@@ -424,7 +434,7 @@ async function saveStrengthSessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gueltige Dauer ein.');
+      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
     }
     return;
   }
@@ -556,7 +566,7 @@ async function saveCardioSessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gueltige Dauer ein.');
+      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
     }
     return;
   }
@@ -651,7 +661,7 @@ async function saveRecoverySessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gueltige Dauer ein.');
+      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
     }
     return;
   }

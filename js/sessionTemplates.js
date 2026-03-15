@@ -45,17 +45,17 @@ const activityTypeIcons = {
 
 // Focus area names mapping
 const focusAreaNames = {
-  fullBody: 'Ganzkoerper',
-  upperBody: 'Oberkoerper',
-  lowerBody: 'Unterkoerper',
-  back: 'Ruecken',
-  hips: 'Hueften',
+  fullBody: 'Ganzkörper',
+  upperBody: 'Oberkörper',
+  lowerBody: 'Unterkörper',
+  back: 'Rücken',
+  hips: 'Hüften',
   shoulders: 'Schultern'
 };
 
 // Difficulty level mapping
 const difficultyLevels = {
-  beginner: { label: 'Anfaenger', value: 1, color: '#22c55e' },
+  beginner: { label: 'Anfänger', value: 1, color: '#22c55e' },
   intermediate: { label: 'Mittel', value: 2, color: '#f59e0b' },
   advanced: { label: 'Fortgeschritten', value: 3, color: '#f97316' },
   elite: { label: 'Elite', value: 4, color: '#ef4444' }
@@ -250,7 +250,7 @@ async function saveSessionTemplate() {
 }
 
 async function deleteSessionTemplate(id) {
-  if (!confirm('Diese Vorlage wirklich loeschen?')) {
+  if (!confirm('Diese Vorlage wirklich löschen?')) {
     return;
   }
 
@@ -260,12 +260,12 @@ async function deleteSessionTemplate(id) {
     await loadSessionTemplates();
 
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Vorlage geloescht');
+      showEdgeFeedback('success', 'Vorlage gelöscht');
     }
   } catch (error) {
     console.error('❌ Error deleting session template:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Loeschen');
+      showEdgeFeedback('error', 'Fehler beim Löschen');
     }
   }
 }

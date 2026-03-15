@@ -75,6 +75,22 @@ const equipmentIcons = {
 };
 
 // ========================================
+// EXERCISE LOCALE HELPERS
+// ========================================
+
+function getExerciseName(exercise) {
+  if (!exercise) return '';
+  if (currentLocale === 'de' && exercise.name_de) return exercise.name_de;
+  return exercise.name || '';
+}
+
+function applyExerciseLocale(exercise) {
+  const localeData = exercise.i18n?.[currentLocale];
+  if (!localeData) return exercise;
+  return { ...exercise, ...localeData };
+}
+
+// ========================================
 // EXERCISE V3 TYPE & PATTERN CONSTANTS
 // ========================================
 
@@ -203,7 +219,8 @@ function normalizeExerciseForRuntime(exercise) {
  * Adds defaults for missing v3 fields, maps imageUrl to visual.
  */
 function mapExerciseToV3(exercise) {
-  const normalized = normalizeExerciseInstructions(exercise);
+  const localized = applyExerciseLocale(exercise);
+  const normalized = normalizeExerciseInstructions(localized);
 
   // Type: default 'strength' for legacy; map removed types to bodyweight
   let type = exercise.type && exerciseTypes[exercise.type] ? exercise.type : 'strength';
@@ -371,7 +388,7 @@ function groupExercisesByInitial(exercises) {
 
   // Group by initial
   sorted.forEach(exercise => {
-    const initial = getExerciseInitial(exercise.name);
+    const initial = getExerciseInitial(getExerciseName(exercise));
     if (!groups[initial]) {
       groups[initial] = [];
     }
@@ -404,16 +421,6 @@ function renderExercises() {
         </div>
         <h3 class="empty-state-title">${t('exercise.noResultsTitle')}</h3>
         <p class="empty-state-text">${t('exercise.noResultsHint')}</p>
-        <div class="empty-state-actions">
-          <button onclick="resetFilters()" class="empty-state-btn btn-secondary">
-            <span class="material-symbols-rounded">refresh</span>
-            <span>Filter zuruecksetzen</span>
-          </button>
-          <button onclick="openExerciseCreateSheet()" class="empty-state-btn btn-primary">
-            <span class="material-symbols-rounded">add_circle</span>
-            <span>${t('exercise.createNew')}</span>
-          </button>
-        </div>
       </div>
     `;
     return;
@@ -483,7 +490,7 @@ function renderExerciseRow(exercise, isLast = false) {
       <div class="exercise-difficulty-stripe" style="background: ${diffColor}"></div>
       ${visualHTML}
       <div class="exercise-list-text">
-        <span class="exercise-list-name">${exercise.name}</span>
+        <span class="exercise-list-name">${getExerciseName(exercise)}</span>
         <span class="exercise-list-meta">${metaText}</span>
       </div>
       <span class="material-symbols-rounded exercise-list-chevron">chevron_right</span>
@@ -547,8 +554,9 @@ function filterExercises() {
     // Search filter – Name hat Prioritaet, dann type/difficulty
     let matchesSearch = true;
     if (searchLower) {
-      const nameLower = (exercise.name || '').toLocaleLowerCase('de-DE');
-      if (nameLower.includes(searchLower)) {
+      const nameLower = (getExerciseName(exercise)).toLocaleLowerCase('de-DE');
+      const nameEnLower = (exercise.name || '').toLocaleLowerCase('de-DE');
+      if (nameLower.includes(searchLower) || nameEnLower.includes(searchLower)) {
         matchesSearch = true;
       } else {
         const typeLabel = (t('exercise.type.' + exercise.type) || '').toLocaleLowerCase('de-DE');
@@ -817,7 +825,7 @@ function editExercise(id) {
   if (!exercise) return;
 
   document.getElementById('modal-title').textContent = t('exercise.title') + ' bearbeiten';
-  document.getElementById('exercise-name').value = exercise.name;
+  document.getElementById('exercise-name').value = getExerciseName(exercise);
 
   // Set muscle groups and equipment for multi-select
   exerciseMuscleGroups = [...exercise.muscleGroups];
@@ -941,7 +949,7 @@ function clearExerciseForm() {
 
 // Difficulty enum mapping (for backward compatibility)
 const exerciseDifficultyEnum = {
-  beginner: { label: 'Anfaenger', value: 1 },
+  beginner: { label: 'Anfänger', value: 1 },
   intermediate: { label: 'Fortgeschritten', value: 2 },
   advanced: { label: 'Profi', value: 3 },
   elite: { label: 'Elite', value: 4 }
@@ -1109,7 +1117,7 @@ function openExerciseCreateSheet(options) {
 // EXERCISE INSTRUCTIONS (Steps + Advanced)
 // ========================================
 
-let exerciseInstructionSteps = []; // string[] fuer nummerierte Schritte
+let exerciseInstructionSteps = []; // string[] für nummerierte Schritte
 let exerciseInstructionCues = [];
 let exerciseInstructionMistakes = [];
 let exerciseInstructionProgressions = [];
@@ -1455,7 +1463,7 @@ async function saveExercise() {
   // Validation - only name required in v3
   if (!name) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('errors.exerciseNameRequired') || 'Bitte gib einen Namen fuer die Uebung ein!');
+      showEdgeFeedback('error', t('errors.exerciseNameRequired') || 'Bitte gib einen Namen für die Übung ein!');
     }
     return;
   }
@@ -1493,7 +1501,7 @@ async function saveExercise() {
   } catch (error) {
     console.error('Error saving exercise:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern der Uebung!');
+      showEdgeFeedback('error', 'Fehler beim Speichern der Übung!');
     }
   }
 }
@@ -1895,7 +1903,7 @@ function viewExerciseDetails(id) {
     ${actionsHTML}
   `;
 
-  openGenericModal(exercise.name, modalContent);
+  openGenericModal(getExerciseName(exercise), modalContent);
   // Make modal full height
   const modalContentEl = document.querySelector('#generic-modal .modal-content');
   if (modalContentEl) modalContentEl.classList.add('modal-content--full-height');

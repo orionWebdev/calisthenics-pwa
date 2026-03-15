@@ -869,7 +869,7 @@ function renderPlanExercises() {
 
         <!-- Exercise Info -->
         <div class="plan-exercise-info">
-          <h4 class="font-semibold">${exercise.name}</h4>
+          <h4 class="font-semibold">${getExerciseName(exercise)}</h4>
           <p class="text-xs text-gray-400">${sets} ${setsLabel} × ${targetValue}</p>
         </div>
 
@@ -987,7 +987,8 @@ function renderExercisePicker() {
   let filteredExercises = allExercises.filter(exercise => {
     // Search filter
     const matchesSearch = !exercisePickerSearchTerm ||
-      exercise.name.toLowerCase().includes(exercisePickerSearchTerm) ||
+      getExerciseName(exercise).toLowerCase().includes(exercisePickerSearchTerm) ||
+      (exercise.name && exercise.name.toLowerCase().includes(exercisePickerSearchTerm)) ||
       (exercise.description && exercise.description.toLowerCase().includes(exercisePickerSearchTerm));
 
     // Muscle group filter
@@ -1045,7 +1046,7 @@ function renderExercisePicker() {
             ${getPrimaryMuscleIcon(exercise.muscleGroups, 'muscle-icon--md')}
           </div>
           <div class="exercise-row-content">
-            <div class="exercise-row-title">${exercise.name}</div>
+            <div class="exercise-row-title">${getExerciseName(exercise)}</div>
             <div class="exercise-row-meta">${metaText}</div>
           </div>
           <div class="exercise-picker-checkbox ${isSelected ? 'checked' : ''}">
@@ -1061,7 +1062,7 @@ function renderExercisePicker() {
             ${getPrimaryMuscleIcon(exercise.muscleGroups, 'muscle-icon--md')}
           </div>
           <div class="exercise-row-content">
-            <div class="exercise-row-title">${exercise.name}</div>
+            <div class="exercise-row-title">${getExerciseName(exercise)}</div>
             <div class="exercise-row-meta">${metaText}</div>
           </div>
           <button class="exercise-row-action" onclick="event.stopPropagation(); selectExerciseForPlan('${exercise.id}')">
@@ -1439,7 +1440,7 @@ function openExerciseConfigModal(exerciseId, editIndex = null) {
   document.getElementById('exercise-config-modal').dataset.editIndex = editIndex !== null ? editIndex : '';
 
   // Populate form
-  document.getElementById('exercise-config-name').textContent = exercise.name;
+  document.getElementById('exercise-config-name').textContent = getExerciseName(exercise);
 
   // If editing, load existing config
   if (editIndex !== null && currentPlan.items && currentPlan.items[editIndex]) {
@@ -1928,7 +1929,7 @@ function viewPlanDetails(id) {
           <div class="flex items-start gap-3">
             <div class="plan-exercise-number">${index + 1}</div>
             <div class="flex-1">
-              <h4 class="font-semibold text-white">${exercise.name}</h4>
+              <h4 class="font-semibold text-white">${getExerciseName(exercise)}</h4>
               <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-400">
                 <span class="flex items-center gap-1">
                   <span class="material-symbols-rounded" style="font-size: 16px;">repeat</span>

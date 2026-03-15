@@ -1349,7 +1349,7 @@ function renderPlanCalendarInWidget() {
       <div class="calendar-agenda-container">
         <div class="calendar-agenda-list-header">
           <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
-          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="Training hinzufuegen">
+          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="Training hinzufügen">
             <span class="material-symbols-rounded">add</span>
           </button>
         </div>
