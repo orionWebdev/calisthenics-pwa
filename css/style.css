@@ -4999,8 +4999,8 @@ input::placeholder {
 }
 
 .bottom-sheet-option-icon {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5008,8 +5008,8 @@ input::placeholder {
   flex-shrink: 0;
 }
 .bottom-sheet-option-icon img {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   border: 1px solid #fff;
   border-radius: 50%;
@@ -12152,8 +12152,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-list-visual-placeholder {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 0.625rem;
   background: rgba(55, 65, 81, 0.3);
   display: flex;
@@ -12185,7 +12185,7 @@ input[type="range"]::-moz-range-progress {
   background: #fff;
 }
 .muscle-icon--sm img { width: 16px; height: 16px; }
-.muscle-icon--md img { width: 40px; height: 40px; }
+.muscle-icon--md img { width: 60px; height: 60px; }
 .muscle-icon--lg img { width: 32px; height: 32px; }
 .muscle-icon--xl img { width: 48px; height: 48px; }
 .muscle-icon--filter img { width: 18px; height: 18px; }
@@ -15710,7 +15710,7 @@ input[type="range"]::-moz-range-progress {
 
 @media (max-width: 768px) {
   .pv3-sticky-bar {
-    top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px));
+    top: calc(var(--mobile-header-height) + -2px);
   }
 }
 
