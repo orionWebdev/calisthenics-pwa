@@ -2119,7 +2119,7 @@ function addExerciseToStrengthLogging(exerciseId) {
   // Add with default sets
   strengthLoggingExercises.push({
     exerciseId: exerciseId,
-    exerciseName: exercise.name,
+    exerciseName: getExerciseName(exercise),
     sets: [{ reps: 10 }] // Default: 1 set of 10 reps
   });
 

@@ -86,7 +86,7 @@ function renderWorkoutExercises(session) {
 
   return session.exercises.map((ex, index) => {
     const exercise = allExercises.find(e => e.id === ex.exerciseId);
-    const exerciseName = exercise?.name || ex.exerciseName || ex.exerciseId || 'Übung';
+    const exerciseName = (typeof getExerciseName === 'function' && exercise ? getExerciseName(exercise) : exercise?.name) || ex.exerciseName || ex.exerciseId || 'Übung';
 
     return `
       <div class="workout-exercise-item">

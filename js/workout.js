@@ -118,7 +118,7 @@ function mapPlanItemToWorkoutExercise(item) {
 
   return {
     exerciseId: item.exerciseId,
-    exerciseName: exercise?.name || item.exerciseId || t('exercise.title'),
+    exerciseName: (typeof getExerciseName === 'function' ? getExerciseName(exercise) : exercise?.name) || item.exerciseId || t('exercise.title'),
     exerciseType: exType,
     targetSets: isCardioOrRecovery ? 1 : (target.sets || 3),
     targetMode,
@@ -4171,7 +4171,7 @@ function addExerciseToWorkoutOrReplace(exerciseId) {
 
   const newExercise = {
     exerciseId: exercise.id,
-    exerciseName: exercise.name,
+    exerciseName: getExerciseName(exercise),
     targetSets: 3,
     targetReps: '10',
     targetRest: 90,
@@ -4199,7 +4199,7 @@ function addExerciseToWorkoutOrReplace(exerciseId) {
   renderWorkoutScreen();
 
   if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('success', `${exercise.name} hinzugefügt`);
+    showEdgeFeedback('success', `${getExerciseName(exercise)} hinzugefügt`);
   }
 }
 
