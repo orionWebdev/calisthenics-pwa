@@ -189,13 +189,13 @@ function renderBottomSheetOptions(optionsToRender = null) {
         aria-label="${ariaLabel}"
         aria-checked="${isSelected}"
       >
-        <div class="bottom-sheet-option-checkbox" aria-hidden="true">
-          <span class="material-symbols-rounded">check</span>
-        </div>
         ${iconHtml}
         <div class="bottom-sheet-option-content">
           <div class="bottom-sheet-option-label">${option.label}</div>
           ${option.description ? `<div class="bottom-sheet-option-description">${option.description}</div>` : ''}
+        </div>
+        <div class="bottom-sheet-option-checkbox" aria-hidden="true">
+          <span class="material-symbols-rounded">check</span>
         </div>
       </button>
     `;
