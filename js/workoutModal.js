@@ -96,11 +96,21 @@ function renderWorkoutExercises(session) {
             ${exerciseName}
           </h5>
           <div class="exercise-sets">
-            ${ex.sets && ex.sets.length > 0 ? ex.sets.map((set, i) => `
-              <span class="set-badge">
-                ${i + 1}: ${set.reps} reps${set.weight ? ` @ ${set.weight}kg` : ''}
-              </span>
-            `).join('') : '<span class="set-badge">Keine Sätze</span>'}
+            ${ex.sets && ex.sets.length > 0 ? ex.sets.map((set, i) => {
+              let label = '';
+              if (set.type === 'cardio') {
+                label = `${set.duration || 0} min`;
+                if (set.distance) label += ` / ${set.distance} km`;
+                if (set.rpe) label += ` / RPE ${set.rpe}`;
+              } else if (set.type === 'recovery') {
+                label = `${set.duration || 0} min`;
+              } else if (set.holdSec) {
+                label = `${set.holdSec}s`;
+              } else {
+                label = `${set.reps || 0} reps${set.weight ? ` @ ${set.weight}kg` : ''}`;
+              }
+              return `<span class="set-badge">${i + 1}: ${label}</span>`;
+            }).join('') : '<span class="set-badge">Keine Sätze</span>'}
           </div>
         </div>
       </div>

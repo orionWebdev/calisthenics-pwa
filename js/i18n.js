@@ -432,6 +432,8 @@ const translations = {
         restTimer: 'Pause',
         bodyweight: 'Bodyweight',
         weighted: 'Gewichte',
+        cardio: 'Cardio',
+        recovery: 'Recovery',
         addSet: 'Satz hinzufügen',
         exerciseProgress: '{completed} / {total} Übungen',
         timerPause: 'Pausieren',
@@ -482,6 +484,27 @@ const translations = {
         reps: 'Wiederholungen pro Satz',
         set: 'Satz',
         totalReps: 'Wdh.'
+      },
+      lastPerformance: 'Letztes Mal',
+      noPreviousData: 'Keine vorherigen Daten',
+      copyLastSet: 'Letzten Satz kopieren',
+      relativeTime: {
+        today: 'heute',
+        yesterday: 'gestern',
+        daysAgo: 'vor {n} Tagen',
+        oneWeekAgo: 'vor 1 Woche',
+        weeksAgo: 'vor {n} Wochen'
+      },
+      cardio: {
+        duration: 'Dauer (Min.)',
+        distance: 'Distanz (km)',
+        rpe: 'Belastung (1–5)',
+        pace: 'Pace',
+        log: 'Cardio loggen'
+      },
+      recovery: {
+        duration: 'Dauer (Min.)',
+        log: 'Recovery loggen'
       }
     },
     numberPicker: {
@@ -1460,6 +1483,8 @@ const translations = {
         restTimer: 'Rest',
         bodyweight: 'Bodyweight',
         weighted: 'Weighted',
+        cardio: 'Cardio',
+        recovery: 'Recovery',
         addSet: 'Add set',
         exerciseProgress: '{completed} / {total} exercises',
         timerPause: 'Pause',
@@ -1510,6 +1535,27 @@ const translations = {
         reps: 'Reps per set',
         set: 'Set',
         totalReps: 'Reps'
+      },
+      lastPerformance: 'Last time',
+      noPreviousData: 'No previous data',
+      copyLastSet: 'Copy last set',
+      relativeTime: {
+        today: 'today',
+        yesterday: 'yesterday',
+        daysAgo: '{n} days ago',
+        oneWeekAgo: '1 week ago',
+        weeksAgo: '{n} weeks ago'
+      },
+      cardio: {
+        duration: 'Duration (min)',
+        distance: 'Distance (km)',
+        rpe: 'Effort (1–5)',
+        pace: 'Pace',
+        log: 'Log cardio'
+      },
+      recovery: {
+        duration: 'Duration (min)',
+        log: 'Log recovery'
       }
     },
     numberPicker: {
