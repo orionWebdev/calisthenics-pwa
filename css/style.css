@@ -910,6 +910,22 @@ input, textarea, select, button {
   display: block;
 }
 
+/* Fullscreen workout mode: hide all chrome */
+body.workout-fullscreen .mobile-nav-header,
+body.workout-fullscreen .bottom-nav,
+body.workout-fullscreen .fab-container,
+body.workout-fullscreen .desktop-nav {
+  display: none !important;
+}
+
+body.workout-fullscreen #main-content {
+  padding-top: 0 !important;
+}
+
+body.workout-fullscreen .st-screen {
+  padding-bottom: 2rem;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1491,7 +1507,7 @@ body.modal-open {
 .difficulty-btn {
   flex: 1;
   padding: 0.75rem;
-  background: var(--color-secondary-light);
+  background: var(--color-secondary-dark);
   border: 2px solid rgba(75, 85, 99, 0.5);
   border-radius: 0.75rem;
   cursor: pointer;
@@ -7733,8 +7749,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .config-picker-btn {
-  align-self: flex-start;
-  flex: 0 0 auto;
+  align-self: stretch;
+  flex: 1;
   min-width: 140px;
   padding: 0.65rem 0.9rem;
 }
@@ -10708,6 +10724,123 @@ input[type="range"]::-moz-range-progress {
   box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
 }
 
+/* RPE FEEDBACK MODAL */
+#rpe-feedback-modal {
+  perspective: 800px;
+  animation: rpeFadeIn 0.4s ease forwards;
+}
+
+#rpe-feedback-modal.closing {
+  animation: rpeFadeOut 0.25s ease forwards;
+}
+
+.rpe-feedback-modal {
+  max-width: 400px;
+  text-align: left;
+  padding: 2rem 1.5rem;
+  animation: rpeZoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#rpe-feedback-modal.closing .rpe-feedback-modal {
+  animation: rpeZoomOut 0.25s ease forwards;
+}
+
+@keyframes rpeFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rpeFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes rpeZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateZ(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+@keyframes rpeZoomOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85) translateZ(-40px);
+  }
+}
+
+.rpe-feedback-section {
+  margin-bottom: 1.25rem;
+}
+
+.rpe-feedback-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.rpe-feedback-label-hint {
+  font-size: var(--font-size-xs);
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+  min-height: 1.125rem;
+  transition: color 0.2s ease;
+}
+
+.rpe-btn-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.rpe-btn-row .difficulty-btn {
+  min-width: 0;
+  padding: 0.625rem 0;
+  font-size: var(--font-size-base);
+}
+
+.rpe-feedback-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.rpe-feedback-actions .workout-confirm-btn--primary {
+  width: 100%;
+}
+
+.rpe-feedback-actions .workout-confirm-btn--primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.rpe-skip-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  padding: 0.5rem;
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.rpe-skip-btn:hover {
+  color: var(--text-primary);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -11807,7 +11940,7 @@ input[type="range"]::-moz-range-progress {
 
 .active-workout-banner {
   position: fixed;
-  bottom: 10%;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg-card-elevated);

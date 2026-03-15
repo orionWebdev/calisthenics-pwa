@@ -131,8 +131,14 @@ function showView(viewName) {
     initProfileView();
   }
 
-  if (viewName === 'workout' && typeof renderWorkoutScreen === 'function') {
-    renderWorkoutScreen();
+  // Toggle fullscreen mode for workout view
+  if (viewName === 'workout') {
+    document.body.classList.add('workout-fullscreen');
+    if (typeof renderWorkoutScreen === 'function') {
+      renderWorkoutScreen();
+    }
+  } else {
+    document.body.classList.remove('workout-fullscreen');
   }
 
   if (viewName !== 'workout' && typeof ensureActiveWorkoutBanner === 'function') {

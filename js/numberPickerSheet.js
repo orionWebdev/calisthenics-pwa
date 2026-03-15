@@ -25,19 +25,38 @@ const PICKER_CONFIGS = {
     titleKey: 'numberPicker.repsTitle',
     generateValues: () => Array.from({ length: 101 }, (_, i) => i)
   },
-  weight: {
-    min: 0,
-    max: 250,
-    step: 2.5,
-    suffix: 'kg',
-    titleKey: 'numberPicker.weightTitle',
-    generateValues: () => {
-      const values = [];
-      for (let i = 0; i <= 250; i += 2.5) {
-        values.push(i);
-      }
-      return values;
+  get weight() {
+    const isImperial = typeof userProfile !== 'undefined' && userProfile.unitSystem === 'imperial';
+    if (isImperial) {
+      return {
+        min: 0,
+        max: 550,
+        step: 5,
+        suffix: 'lbs',
+        titleKey: 'numberPicker.weightTitle',
+        generateValues: () => {
+          const values = [];
+          for (let i = 0; i <= 550; i += 5) {
+            values.push(i);
+          }
+          return values;
+        }
+      };
     }
+    return {
+      min: 0,
+      max: 250,
+      step: 2.5,
+      suffix: 'kg',
+      titleKey: 'numberPicker.weightTitle',
+      generateValues: () => {
+        const values = [];
+        for (let i = 0; i <= 250; i += 2.5) {
+          values.push(i);
+        }
+        return values;
+      }
+    };
   },
   hold: {
     min: 0,

@@ -1052,6 +1052,36 @@ const translations = {
       planExercisesRequired: 'Bitte füge mindestens eine Übung hinzu!',
       exerciseNameRequired: 'Bitte gib einen Namen für die Übung ein!',
       muscleGroupsRequired: 'Bitte wähle mindestens eine Muskelgruppe!'
+    },
+    feedback: {
+      title: 'Wie war dein Training?',
+      subtitle: 'Kurzes Feedback hilft dir, deinen Fortschritt besser zu verstehen.',
+      preEnergy: 'Energie vor dem Training',
+      postFeeling: 'Gefühl nach dem Training',
+      rpeLabel: 'Anstrengung (RPE)',
+      submit: 'Speichern',
+      skip: 'Überspringen',
+      energy: {
+        1: 'Sehr niedrig',
+        2: 'Niedrig',
+        3: 'Normal',
+        4: 'Hoch',
+        5: 'Sehr hoch'
+      },
+      feeling: {
+        1: 'Sehr schlecht',
+        2: 'Schlecht',
+        3: 'Okay',
+        4: 'Gut',
+        5: 'Sehr gut'
+      },
+      rpe: {
+        1: 'Sehr leicht',
+        2: 'Leicht',
+        3: 'Moderat',
+        4: 'Hart',
+        5: 'Maximal'
+      }
     }
   },
   en: {
@@ -2103,6 +2133,36 @@ const translations = {
       planExercisesRequired: 'Please add at least one exercise!',
       exerciseNameRequired: 'Please enter a name for the exercise!',
       muscleGroupsRequired: 'Please select at least one muscle group!'
+    },
+    feedback: {
+      title: 'How was your workout?',
+      subtitle: 'Quick feedback helps you track your progress better.',
+      preEnergy: 'Pre-workout energy',
+      postFeeling: 'Post-workout feeling',
+      rpeLabel: 'Effort (RPE)',
+      submit: 'Save',
+      skip: 'Skip',
+      energy: {
+        1: 'Very low',
+        2: 'Low',
+        3: 'Normal',
+        4: 'High',
+        5: 'Very high'
+      },
+      feeling: {
+        1: 'Very bad',
+        2: 'Bad',
+        3: 'Okay',
+        4: 'Good',
+        5: 'Very good'
+      },
+      rpe: {
+        1: 'Very easy',
+        2: 'Easy',
+        3: 'Moderate',
+        4: 'Hard',
+        5: 'Maximum'
+      }
     }
   }
 };

@@ -1858,8 +1858,16 @@ async function saveCardioSession() {
     // Mark pending scheduled entry as completed (Quick Entry support)
     await markPendingScheduledEntryCompleted(savedDoc.id);
 
-    // Close modal FIRST (before reload)
+    // Close modal FIRST (before feedback/reload)
     closeAddCardioModal();
+
+    // Show RPE feedback modal and patch session if provided
+    if (typeof showRpeFeedbackModal === 'function') {
+      const feedbackData = await showRpeFeedbackModal();
+      if (feedbackData) {
+        await updateDoc(sessionsCollection, savedDoc.id, feedbackData);
+      }
+    }
 
     // Then reload sessions and refresh view
     await loadSessions();
@@ -2286,6 +2294,14 @@ async function saveStrengthSession() {
     await markPendingScheduledEntryCompleted(savedDoc.id);
 
     closeAddStrengthModal();
+
+    // Show RPE feedback modal and patch session if provided
+    if (typeof showRpeFeedbackModal === 'function') {
+      const feedbackData = await showRpeFeedbackModal();
+      if (feedbackData) {
+        await updateDoc(sessionsCollection, savedDoc.id, feedbackData);
+      }
+    }
     await loadSessions();
     if (typeof renderCurrentProgressTab === 'function') {
       renderCurrentProgressTab();
@@ -2391,6 +2407,14 @@ async function saveRecoverySession() {
     await markPendingScheduledEntryCompleted(savedDoc.id);
 
     closeAddRecoveryModal();
+
+    // Show RPE feedback modal and patch session if provided
+    if (typeof showRpeFeedbackModal === 'function') {
+      const feedbackData = await showRpeFeedbackModal();
+      if (feedbackData) {
+        await updateDoc(sessionsCollection, savedDoc.id, feedbackData);
+      }
+    }
 
     await loadSessions();
     if (typeof renderCurrentProgressTab === 'function') {

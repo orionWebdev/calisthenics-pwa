@@ -39,6 +39,11 @@ let restTimerTickId = null;        // requestAnimationFrame / setInterval ID for
 // State for active set row (iOS-style set logger)
 let activeSetValues = { reps: 10, weight: 0, holdSec: 0 };
 
+function getWeightUnit() {
+  if (typeof userProfile !== 'undefined' && userProfile.unitSystem === 'imperial') return 'lbs';
+  return 'kg';
+}
+
 function isHoldTarget(exercise) {
   if (!exercise) return false;
   if (exercise.targetMode === 'hold') return true;
@@ -566,6 +571,12 @@ async function completeWorkout() {
       }
     }
 
+    // Show RPE feedback modal and patch session if provided
+    const feedbackData = await showRpeFeedbackModal();
+    if (feedbackData) {
+      await updateDoc(sessionsCollection, savedSessionId, feedbackData);
+    }
+
     // Save data before clearing activeWorkout
     const planId = activeWorkout.planId;
     const isFreeWorkout = activeWorkout.isFreeWorkout || !activeWorkout.planId;
@@ -811,7 +822,7 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
     items.push({ icon: 'repeat', label: 'Sets', current: String(currentSets), delta: setsDelta, positive: currentSets >= prevSets });
     if (currentVol > 0 || prevVol > 0) {
       const volDelta = formatDelta(currentVol, prevVol, '%');
-      items.push({ icon: 'fitness_center', label: 'Volumen', current: currentVol > 0 ? `${currentVol} kg` : '\u2014', delta: volDelta, positive: currentVol >= prevVol });
+      items.push({ icon: 'fitness_center', label: 'Volumen', current: currentVol > 0 ? `${currentVol} ${getWeightUnit()}` : '\u2014', delta: volDelta, positive: currentVol >= prevVol });
     }
     comparisonHTML = `
       <div class="pws-section-title">Vergleich zum letzten Mal</div>
@@ -1136,7 +1147,7 @@ function renderSTTargetAndLastPerf(exercise) {
         parts.push(`${set.holdSec}${t('common.secondsShort', { n: '' }).trim() || 's'}`);
       } else {
         if (set.reps != null) parts.push(`${set.reps} ${t('workout.setLogger.reps') || 'Wdh.'}`);
-        if (set.weight != null && set.weight > 0) parts.push(`${set.weight} ${t('workout.setLogger.weightUnit') || 'kg'}`);
+        if (set.weight != null && set.weight > 0) parts.push(`${set.weight} ${getWeightUnit()}`);
       }
       if (set.duration != null) parts.push(`${set.duration} min`);
       if (set.distance != null) parts.push(`${set.distance} km`);
@@ -1499,7 +1510,7 @@ function renderSTSetList(exercise) {
             </button>
             <button type="button" class="st-set-val" onclick="openNumberPickerForSet(${activeWorkout.currentExerciseIndex}, ${setIndex}, 'weight')">
               <span class="st-set-val-num">${weightDisplay || '—'}</span>
-              <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+              <span class="st-set-val-unit">${getWeightUnit()}</span>
             </button>
           </div>
           <button type="button" class="st-set-check st-set-check--done" onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})" aria-label="${t('workout.setLogger.deleteSet')}">
@@ -1559,7 +1570,7 @@ function renderSTSetList(exercise) {
             </button>
             <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('weight')" id="active-weight-btn" data-value="${activeSetValues.weight}">
               <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
-              <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+              <span class="st-set-val-unit">${getWeightUnit()}</span>
             </button>
             <button type="button" class="st-stepper-btn" onclick="adjustActiveSetValue('weight', 2.5)" aria-label="+2.5">
               <span class="material-symbols-rounded">add</span>
@@ -1593,7 +1604,7 @@ function renderSTSetList(exercise) {
           ${!holdMode ? `
             <div class="st-set-val st-set-val--placeholder">
               <span class="st-set-val-num">—</span>
-              <span class="st-set-val-unit">${t('workout.setLogger.weightUnit')}</span>
+              <span class="st-set-val-unit">${getWeightUnit()}</span>
             </div>
           ` : ''}
         </div>
@@ -1864,7 +1875,7 @@ function renderAccordionExerciseContent(exercise, exerciseIndex) {
                 ${set.type === 'hold' || (isHoldTarget(exercise) && set.holdSec)
                   ? `<span class="accordion-set-value">${t('common.secondsShort', { n: set.holdSec })} ${t('workout.hold')}</span>`
                   : `<span class="accordion-set-value">${set.reps} ${t('workout.setLogger.reps')}</span>
-                     ${set.weight ? `<span class="accordion-set-value">${set.weight} ${t('workout.setLogger.weightUnit')}</span>` : ''}`
+                     ${set.weight ? `<span class="accordion-set-value">${set.weight} ${getWeightUnit()}</span>` : ''}`
                 }
               </div>
               <button
@@ -2095,7 +2106,7 @@ function formatLastPerformanceHint(lastSet) {
       parts.push(`${lastSet.reps} ${t ? t('workout.setLogger.reps') || 'Wdh.' : 'Wdh.'}`);
     }
     if (lastSet.weight != null && lastSet.weight > 0) {
-      parts.push(`${lastSet.weight} ${t ? t('workout.setLogger.weightUnit') || 'kg' : 'kg'}`);
+      parts.push(`${lastSet.weight} ${t ? getWeightUnit() : 'kg'}`);
     }
   }
   return parts.length ? parts.join(' / ') : null;
@@ -2171,7 +2182,7 @@ function renderSetRows(exercise, exerciseIndex, isBodyweight) {
                   aria-label="${t('workout.setLogger.weight')}: ${weightDisplay}"
                 >
                   <span class="set-row-value">${weightDisplay}</span>
-                  <span class="set-row-unit">${t('workout.setLogger.weightUnit')}</span>
+                  <span class="set-row-unit">${getWeightUnit()}</span>
                 </button>
               ` : ''}
             </div>
@@ -2260,7 +2271,7 @@ function renderActiveSetRow(exercise, exerciseIndex, isBodyweight) {
             aria-label="${t('workout.setLogger.weight')}: ${weightDisplay}"
           >
             <span class="set-row-value" id="active-weight-value">${weightDisplay}</span>
-            <span class="set-row-unit">${t('workout.setLogger.weightUnit')}</span>
+            <span class="set-row-unit">${getWeightUnit()}</span>
           </button>
         ` : ''}
       </div>
@@ -2562,7 +2573,7 @@ function renderSetLogger(exercise) {
 
         <!-- Weight Input with Steppers -->
         <div class="input-with-steppers">
-          <label class="input-stepper-label">${t('workout.setLogger.weight')} (${t('workout.setLogger.weightUnit')})</label>
+          <label class="input-stepper-label">${t('workout.setLogger.weight')} (${getWeightUnit()})</label>
           <div class="stepper-group">
             <button
               type="button"
@@ -2685,7 +2696,7 @@ function renderCompletedSets(exercise) {
               ${set.weight ? `
                 <div class="completed-set-weight">
                   <span class="data-value">${set.weight}</span>
-                  <span class="data-label">${t('workout.setLogger.weightUnit')}</span>
+                  <span class="data-label">${getWeightUnit()}</span>
                 </div>
               ` : ''}
             </div>
@@ -2822,7 +2833,7 @@ function renderCompletedSetsCollapsible(exercise) {
                 ${set.weight ? `
                   <div class="completed-set-weight">
                     <span class="data-value">${set.weight}</span>
-                    <span class="data-label">${t('workout.setLogger.weightUnit')}</span>
+                    <span class="data-label">${getWeightUnit()}</span>
                   </div>
                 ` : ''}
               </div>
@@ -3000,6 +3011,130 @@ function closeWorkoutEndConfirmModal() {
     setTimeout(() => modal.remove(), 200);
   }
 }
+
+// ==================== RPE FEEDBACK MODAL ====================
+
+let _rpeFeedbackResolve = null;
+const _rpeFeedbackValues = { preWorkoutEnergy: null, postWorkoutFeeling: null, rpe: null };
+
+function showRpeFeedbackModal() {
+  return new Promise((resolve) => {
+    _rpeFeedbackResolve = resolve;
+    _rpeFeedbackValues.preWorkoutEnergy = null;
+    _rpeFeedbackValues.postWorkoutFeeling = null;
+    _rpeFeedbackValues.rpe = null;
+
+    const existing = document.getElementById('rpe-feedback-modal');
+    if (existing) existing.remove();
+
+    const tr = typeof t === 'function' ? t : (k) => k;
+
+    const modal = document.createElement('div');
+    modal.id = 'rpe-feedback-modal';
+    modal.className = 'workout-confirm-modal-overlay';
+
+    const buildRow = (field, labelKey, hintId) => {
+      return `
+        <div class="rpe-feedback-section">
+          <label class="rpe-feedback-label">${tr('feedback.' + labelKey)}</label>
+          <div class="rpe-feedback-label-hint" id="${hintId}"></div>
+          <div class="rpe-btn-row" data-field="${field}">
+            ${[1,2,3,4,5].map(n =>
+              `<button type="button" class="difficulty-btn" data-value="${n}" onclick="selectRpeValue('${field}', ${n})">${n}</button>`
+            ).join('')}
+          </div>
+        </div>
+      `;
+    };
+
+    modal.innerHTML = `
+      <div class="workout-confirm-modal rpe-feedback-modal" role="dialog" aria-modal="true">
+        <div class="workout-confirm-modal-icon">
+          <span class="material-symbols-rounded">mood</span>
+        </div>
+        <h3 class="workout-confirm-modal-title">${tr('feedback.title')}</h3>
+        <p class="workout-confirm-modal-text">${tr('feedback.subtitle')}</p>
+
+        ${buildRow('preWorkoutEnergy', 'preEnergy', 'rpe-energy-hint')}
+        ${buildRow('postWorkoutFeeling', 'postFeeling', 'rpe-feeling-hint')}
+        ${buildRow('rpe', 'rpeLabel', 'rpe-rpe-hint')}
+
+        <div class="rpe-feedback-actions">
+          <button type="button" class="workout-confirm-btn workout-confirm-btn--primary" onclick="submitRpeFeedback()" id="rpe-submit-btn" disabled>
+            ${tr('feedback.submit')}
+          </button>
+          <button type="button" class="rpe-skip-btn" onclick="skipRpeFeedback()">
+            ${tr('feedback.skip')}
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    if (typeof triggerHapticFeedback === 'function') {
+      triggerHapticFeedback('light');
+    }
+  });
+}
+
+function selectRpeValue(field, value) {
+  _rpeFeedbackValues[field] = value;
+
+  const row = document.querySelector(`.rpe-btn-row[data-field="${field}"]`);
+  if (row) {
+    row.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.value) === value);
+    });
+  }
+
+  // Show hint label
+  const tr = typeof t === 'function' ? t : (k) => k;
+  const hintMap = { preWorkoutEnergy: 'energy', postWorkoutFeeling: 'feeling', rpe: 'rpe' };
+  const hintIdMap = { preWorkoutEnergy: 'rpe-energy-hint', postWorkoutFeeling: 'rpe-feeling-hint', rpe: 'rpe-rpe-hint' };
+  const hintEl = document.getElementById(hintIdMap[field]);
+  if (hintEl) {
+    hintEl.textContent = tr('feedback.' + hintMap[field] + '.' + value);
+  }
+
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback('selection');
+  }
+
+  // Enable submit when all 3 are selected
+  const allSelected = _rpeFeedbackValues.preWorkoutEnergy && _rpeFeedbackValues.postWorkoutFeeling && _rpeFeedbackValues.rpe;
+  const submitBtn = document.getElementById('rpe-submit-btn');
+  if (submitBtn) submitBtn.disabled = !allSelected;
+}
+
+function submitRpeFeedback() {
+  const modal = document.getElementById('rpe-feedback-modal');
+  if (modal) {
+    modal.classList.add('closing');
+    setTimeout(() => modal.remove(), 200);
+  }
+  if (_rpeFeedbackResolve) {
+    _rpeFeedbackResolve({ ...(_rpeFeedbackValues) });
+    _rpeFeedbackResolve = null;
+  }
+}
+
+function skipRpeFeedback() {
+  const modal = document.getElementById('rpe-feedback-modal');
+  if (modal) {
+    modal.classList.add('closing');
+    setTimeout(() => modal.remove(), 200);
+  }
+  if (_rpeFeedbackResolve) {
+    _rpeFeedbackResolve(null);
+    _rpeFeedbackResolve = null;
+  }
+}
+
+window.showRpeFeedbackModal = showRpeFeedbackModal;
+window.selectRpeValue = selectRpeValue;
+window.submitRpeFeedback = submitRpeFeedback;
+window.skipRpeFeedback = skipRpeFeedback;
 
 // ==================== EXERCISES BOTTOM SHEET ====================
 

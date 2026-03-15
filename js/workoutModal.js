@@ -107,7 +107,7 @@ function renderWorkoutExercises(session) {
               } else if (set.holdSec) {
                 label = `${set.holdSec}s`;
               } else {
-                label = `${set.reps || 0} reps${set.weight ? ` @ ${set.weight}kg` : ''}`;
+                label = `${set.reps || 0} reps${set.weight ? ` @ ${set.weight} ${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}` : ''}`;
               }
               return `<span class="set-badge">${i + 1}: ${label}</span>`;
             }).join('') : '<span class="set-badge">Keine Sätze</span>'}
@@ -164,9 +164,9 @@ async function confirmDeleteWorkout(sessionId) {
     closeWorkoutDetailModal();
     await loadSessions();
 
-    // Re-render progress if we're on that view
-    if (currentView === 'progress') {
-      renderCurrentProgressTab();
+    // Always navigate to progress after deletion
+    if (typeof showView === 'function') {
+      showView('progress');
     }
 
     triggerSuccessGlow();
@@ -305,8 +305,8 @@ function renderEditExercise(exercise, exIndex) {
                  min="0"
                  max="999"
                  step="0.5"
-                 placeholder="kg" />
-          <span class="edit-set-label">kg</span>
+                 placeholder="${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}" />
+          <span class="edit-set-label">${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}</span>
         </div>
       </div>
       <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${setIndex})" aria-label="Satz entfernen">
@@ -369,8 +369,8 @@ function addEditSet(exIndex) {
                  min="0"
                  max="999"
                  step="0.5"
-                 placeholder="kg" />
-          <span class="edit-set-label">kg</span>
+                 placeholder="${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}" />
+          <span class="edit-set-label">${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}</span>
         </div>
       </div>
       <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${newSetIndex})" aria-label="Satz entfernen">
