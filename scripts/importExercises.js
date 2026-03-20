@@ -62,11 +62,13 @@ const exercises = JSON.parse(fs.readFileSync(exercisesPath, 'utf-8'));
 console.log(`Loaded ${exercises.length} exercises from ${exercisesPath}`);
 
 // ---------------------------------------------------------------------------
-// 4. Import into Firestore (skip existing)
+// 4. Import into Firestore (merge mode: updates existing, inserts new)
 // ---------------------------------------------------------------------------
+const forceUpdate = process.argv.includes('--force');
+
 async function importExercises() {
   let inserted = 0;
-  let skipped = 0;
+  let updated = 0;
   let errors = 0;
 
   for (const exercise of exercises) {
@@ -76,12 +78,13 @@ async function importExercises() {
       const doc = await docRef.get();
 
       if (doc.exists) {
-        skipped++;
-        continue;
+        // Merge new fields into existing document (preserves user-added fields)
+        await docRef.set(exercise, { merge: !forceUpdate });
+        updated++;
+      } else {
+        await docRef.set(exercise);
+        inserted++;
       }
-
-      await docRef.set(exercise);
-      inserted++;
     } catch (err) {
       errors++;
       console.error(`  Error importing "${exercise.id}": ${err.message}`);
@@ -90,11 +93,16 @@ async function importExercises() {
 
   console.log('\n--- Import complete ---');
   console.log(`  Inserted: ${inserted}`);
-  console.log(`  Skipped (already exist): ${skipped}`);
+  console.log(`  Updated (merged): ${updated}`);
   if (errors > 0) {
     console.log(`  Errors: ${errors}`);
   }
   console.log(`  Total processed: ${exercises.length}`);
+  if (forceUpdate) {
+    console.log('  Mode: --force (full replace)');
+  } else {
+    console.log('  Mode: merge (new fields added, existing preserved)');
+  }
 }
 
 importExercises()
