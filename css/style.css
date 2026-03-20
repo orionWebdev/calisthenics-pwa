@@ -11261,6 +11261,7 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   gap: 0.5rem;
   min-width: 0;
+  flex-direction: column;
 }
 
 .st-set-val {
