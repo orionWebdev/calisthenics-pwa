@@ -1578,11 +1578,6 @@ function renderSTSetList(exercise) {
           </div>
         </div>
         <div class="st-set-actions">
-          ${completedCount > 0 ? `
-            <button type="button" class="st-set-copy" onclick="duplicateLastSetST()" aria-label="${t('workout.copyLastSet') || 'Copy last set'}" title="${t('workout.copyLastSet') || 'Copy last set'}">
-              <span class="material-symbols-rounded">content_copy</span>
-            </button>
-          ` : ''}
           <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
             <span class="material-symbols-rounded">check</span>
           </button>
