@@ -257,7 +257,7 @@ function openEditStrengthSessionModal(sessionId) {
           <textarea id="edit-strength-notes" rows="3" placeholder="${trEdit('common.notes')}">${notes}</textarea>
         </div>
         <div class="session-edit-actions">
-          <button type="submit" class="btn-primary">
+          <button type="submit" id="edit-strength-save-btn" class="btn-primary">
             <span class="material-symbols-rounded">save</span>
             <span>${trEdit('common.save')}</span>
           </button>
@@ -474,6 +474,14 @@ async function saveStrengthSessionEdit(event, sessionId) {
     });
   });
 
+  // Show loading
+  const saveBtn = document.getElementById('edit-strength-save-btn');
+  const saveBtnOriginalHTML = saveBtn ? saveBtn.innerHTML : '';
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+  }
+
   try {
     const updateData = {
       duration: duration,
@@ -502,6 +510,11 @@ async function saveStrengthSessionEdit(event, sessionId) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', 'Fehler beim Speichern: ' + error.message);
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = saveBtnOriginalHTML;
     }
   }
 }
@@ -536,7 +549,7 @@ function openEditCardioSessionModal(sessionId) {
           <textarea id="edit-cardio-notes" rows="3" placeholder="${trEdit('common.notes')}">${notes}</textarea>
         </div>
         <div class="session-edit-actions">
-          <button type="submit" class="btn-primary">
+          <button type="submit" id="edit-cardio-save-btn" class="btn-primary">
             <span class="material-symbols-rounded">save</span>
             <span>${trEdit('common.save')}</span>
           </button>
@@ -569,6 +582,14 @@ async function saveCardioSessionEdit(event, sessionId) {
       showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
     }
     return;
+  }
+
+  // Show loading
+  const saveBtn = document.getElementById('edit-cardio-save-btn');
+  const saveBtnOriginalHTML = saveBtn ? saveBtn.innerHTML : '';
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
   }
 
   try {
@@ -605,6 +626,11 @@ async function saveCardioSessionEdit(event, sessionId) {
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', 'Fehler beim Speichern: ' + error.message);
     }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = saveBtnOriginalHTML;
+    }
   }
 }
 
@@ -633,7 +659,7 @@ function openEditRecoverySessionModal(sessionId) {
           <textarea id="edit-recovery-notes" rows="3" placeholder="${trEdit('common.notes')}">${notes}</textarea>
         </div>
         <div class="session-edit-actions">
-          <button type="submit" class="btn-primary">
+          <button type="submit" id="edit-recovery-save-btn" class="btn-primary">
             <span class="material-symbols-rounded">save</span>
             <span>${trEdit('common.save')}</span>
           </button>
@@ -666,6 +692,14 @@ async function saveRecoverySessionEdit(event, sessionId) {
     return;
   }
 
+  // Show loading
+  const saveBtn = document.getElementById('edit-recovery-save-btn');
+  const saveBtnOriginalHTML = saveBtn ? saveBtn.innerHTML : '';
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+  }
+
   try {
     const updateData = {
       duration: duration,
@@ -693,6 +727,11 @@ async function saveRecoverySessionEdit(event, sessionId) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', 'Fehler beim Speichern: ' + error.message);
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = saveBtnOriginalHTML;
     }
   }
 }

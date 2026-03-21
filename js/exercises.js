@@ -1479,6 +1479,14 @@ async function saveExercise() {
 
   const exerciseData = mapV3ToExerciseDoc(v3Data);
 
+  // Show loading
+  const saveBtn = document.getElementById('exercise-save-btn');
+  const saveBtnOriginalHTML = saveBtn ? saveBtn.innerHTML : '';
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+  }
+
   try {
     if (editingExerciseId) {
       await updateDoc(exercisesCollection, editingExerciseId, exerciseData);
@@ -1502,6 +1510,11 @@ async function saveExercise() {
     console.error('Error saving exercise:', error);
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', 'Fehler beim Speichern der Übung!');
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = saveBtnOriginalHTML;
     }
   }
 }

@@ -226,6 +226,13 @@ async function saveSessionTemplate() {
     if (focusArea) templateData.focusArea = focusArea.value;
   }
 
+  // Show loading
+  const saveBtn = document.querySelector('#session-template-modal .modal-save-btn');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+  }
+
   try {
     if (editingSessionTemplateId) {
       await updateDoc(sessionTemplatesCollection, editingSessionTemplateId, templateData);
@@ -245,6 +252,11 @@ async function saveSessionTemplate() {
     console.error('❌ Error saving session template:', error);
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', 'Fehler beim Speichern');
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<span class="material-symbols-rounded">check</span><span>Speichern</span>';
     }
   }
 }

@@ -12039,13 +12039,9 @@ input[type="range"]::-moz-range-progress {
 
 .workout-stat {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px solid rgba(75, 85, 99, 0.3);
-  border-radius: 0.75rem;
+  gap: 1rem;
   text-align: center;
 }
 

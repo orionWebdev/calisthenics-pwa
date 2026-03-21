@@ -1839,6 +1839,14 @@ async function savePlan() {
       break;
   }
 
+  // Show loading
+  const saveBtn = document.getElementById('plan-save-btn');
+  const saveBtnOriginalHTML = saveBtn ? saveBtn.innerHTML : '';
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<div class="spinner-small"></div><span>Speichert...</span>';
+  }
+
   try {
     if (editingPlanId) {
       await updateDoc(plansCollection, editingPlanId, planData);
@@ -1854,6 +1862,11 @@ async function savePlan() {
     console.error('Error saving plan:', error);
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', t('errors.saveFailed'));
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = saveBtnOriginalHTML;
     }
   }
 }
