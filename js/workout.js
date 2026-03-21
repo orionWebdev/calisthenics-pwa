@@ -528,6 +528,13 @@ async function completeWorkout() {
         .filter(ex => ex.completedSets && ex.completedSets.length > 0)
         .map(ex => {
           const entry = { exerciseId: ex.exerciseId };
+          // Resolve usesBodyweight from exercise metadata
+          const exMeta = typeof allExercises !== 'undefined'
+            ? allExercises.find(e => e.id === ex.exerciseId)
+            : null;
+          if (exMeta?.usesBodyweight || ex.exerciseType === 'bodyweight') {
+            entry.usesBodyweight = true;
+          }
           entry.sets = ex.completedSets.map(set => {
             const s = {};
             if (set.reps != null) s.reps = set.reps;
