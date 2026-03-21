@@ -264,6 +264,8 @@ function mapExerciseToV3(exercise) {
     muscleGroups: exercise.muscleGroups || [],
     equipment: exercise.equipment || ['none'],
     icon: exercise.icon || 'fitness_center',
+    // Bodyweight flag for load calculation
+    usesBodyweight: exercise.usesBodyweight ?? (type === 'bodyweight'),
     // Additive fields (Phase 5)
     parentId: exercise.parentId || null,
     source: exercise.source || 'user',

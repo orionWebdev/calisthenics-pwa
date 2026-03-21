@@ -1583,7 +1583,9 @@ function addSelectedExercisesToPlan() {
 }
 
 function closeExercisePicker() {
-  document.getElementById('exercise-picker-modal').classList.remove('active');
+  const pickerModal = document.getElementById('exercise-picker-modal');
+  pickerModal.classList.remove('active');
+  pickerModal.classList.remove('modal--elevated');
   document.body.classList.remove('modal-open');
 }
 

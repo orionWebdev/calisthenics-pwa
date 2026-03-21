@@ -150,6 +150,8 @@ function renderProgressV4() {
 
   if (pv4Tab === 'overview') {
     attachV4PeriodListeners();
+    // Initialize Weekly Score Chart after DOM is ready
+    setTimeout(() => initWeeklyScoreChart(), 50);
   }
 
   // Draw sparklines
@@ -247,6 +249,9 @@ function v3WeekNumber(date) {
 
 const V3_KNOWN_TYPES = ['strength', 'bodyweight', 'cardio', 'recovery'];
 
+// ---- Weekly Score Chart instance (Chart.js) ----
+let weeklyScoreChartInstance = null;
+
 function renderV4Overview() {
   const days = v3PeriodDays(pv4Period);
   const sessions = v3SessionsInRange(days);
@@ -273,6 +278,10 @@ function renderV4Overview() {
     </div>
   `).join('');
 
+  // Training Readiness + Weekly Score Chart
+  const readinessHTML = renderV4ReadinessWidget();
+  const weeklyScoreChartHTML = renderV4WeeklyScoreChartHTML();
+
   // Training Rhythm widget
   const rhythmHTML = renderV4Rhythm(sessions);
 
@@ -284,11 +293,232 @@ function renderV4Overview() {
 
   return `
     ${renderV4PeriodSelector()}
+    ${readinessHTML}
     <div class="pv4-summary-grid">${cardsHTML}</div>
+    ${weeklyScoreChartHTML}
     ${rhythmHTML}
     ${runningHTML}
     ${historyHTML}
   `;
+}
+
+// ==================== TRAINING READINESS WIDGET ====================
+
+function renderV4ReadinessWidget() {
+  if (typeof computeWeeklyScore !== 'function') return '';
+
+  const currentScore = computeWeeklyScore(new Date());
+  const status = getTrainingStatus(currentScore.weeklyScore);
+  const score = currentScore.weeklyScore;
+
+  return `
+    <div class="pv3-card readiness-widget">
+      <span class="material-symbols-rounded readiness-icon" style="color: ${status.color};">monitoring</span>
+      <div class="readiness-score-display" style="color: ${status.color};">${score}</div>
+      <div class="readiness-status-label" style="color: ${status.color};">${status.label}</div>
+      <div class="readiness-bar-container">
+        <div class="readiness-bar-fill" style="width: ${score}%; background: ${status.color};"></div>
+      </div>
+      <p class="readiness-description">${status.description}</p>
+    </div>
+  `;
+}
+
+// ==================== WEEKLY SCORE CHART ====================
+
+function renderV4WeeklyScoreChartHTML() {
+  if (typeof aggregateWeeklyScoresByPeriod !== 'function') return '';
+
+  const data = aggregateWeeklyScoresByPeriod(pv4Period);
+  const hasData = data && data.length > 0 && data.some(d => d.weeklyScore > 0);
+
+  if (!hasData) {
+    return `
+      <div class="pv3-card weekly-score-chart-card">
+        <div class="card-header">
+          <h3 class="card-title">${trV3('progress.weeklyScore.chartTitle')}</h3>
+        </div>
+        <div style="padding: 2rem; text-align: center;">
+          <p style="color: var(--text-tertiary);">${trV3('progress.weeklyScore.noData')}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="pv3-card weekly-score-chart-card">
+      <h3 class="card-title" style="margin-bottom: 0.75rem;">${trV3('progress.weeklyScore.chartTitle')}</h3>
+      <div class="weekly-score-legend">
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--color-primary);"></span>
+          ${trV3('progress.weeklyScore.legend.score')}
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot" style="background: var(--text-tertiary);"></span>
+          ${trV3('progress.weeklyScore.legend.baseline')}
+        </span>
+      </div>
+      <div class="weekly-score-chart-wrapper">
+        <canvas id="weekly-score-canvas"></canvas>
+      </div>
+    </div>
+  `;
+}
+
+function getCssVarValue(varName) {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+}
+
+function initWeeklyScoreChart() {
+  if (typeof Chart === 'undefined' || typeof aggregateWeeklyScoresByPeriod !== 'function') return;
+
+  const canvas = document.getElementById('weekly-score-canvas');
+  if (!canvas) return;
+
+  // Destroy previous instance
+  if (weeklyScoreChartInstance) {
+    weeklyScoreChartInstance.destroy();
+    weeklyScoreChartInstance = null;
+  }
+
+  const data = aggregateWeeklyScoresByPeriod(pv4Period);
+  if (!data || !data.length || data.every(d => d.weeklyScore === 0)) return;
+
+  const ctx = canvas.getContext('2d');
+
+  // Theme-aware colors
+  const primaryColor = getCssVarValue('--color-primary') || '#F02277';
+  const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
+  const textTertiary = getCssVarValue('--text-tertiary') || '#6b7280';
+  const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const zoneOpacity = isDark ? 0.06 : 0.08;
+
+  const labels = data.map(d => d.label);
+  const scores = data.map(d => d.weeklyScore);
+  const baselineScores = data.map(() => 70);
+
+  weeklyScoreChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: trV3('progress.weeklyScore.legend.score'),
+          data: scores,
+          borderColor: primaryColor,
+          backgroundColor: primaryColor,
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: primaryColor,
+          tension: 0.3,
+          fill: false,
+          order: 1,
+        },
+        {
+          label: trV3('progress.weeklyScore.legend.baseline'),
+          data: baselineScores,
+          borderColor: textTertiary,
+          backgroundColor: 'transparent',
+          borderWidth: 1,
+          borderDash: [4, 4],
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          tension: 0,
+          fill: false,
+          order: 2,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          grid: { color: borderPrimary },
+          ticks: {
+            color: textSecondary,
+            font: { size: 11 },
+            stepSize: 25,
+          },
+          border: { display: false },
+        },
+        x: {
+          grid: { display: false },
+          ticks: {
+            color: textSecondary,
+            font: { size: 10 },
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 6,
+          },
+          border: { display: false },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        annotation: {
+          annotations: {
+            zoneLow: {
+              type: 'box',
+              yMin: 0,
+              yMax: 50,
+              backgroundColor: `rgba(245, 158, 11, ${zoneOpacity})`,
+              borderWidth: 0,
+            },
+            zoneOptimal: {
+              type: 'box',
+              yMin: 50,
+              yMax: 85,
+              backgroundColor: `rgba(34, 197, 94, ${zoneOpacity})`,
+              borderWidth: 0,
+            },
+            zoneHigh: {
+              type: 'box',
+              yMin: 85,
+              yMax: 100,
+              backgroundColor: `rgba(239, 68, 68, ${zoneOpacity})`,
+              borderWidth: 0,
+            },
+          }
+        },
+        tooltip: {
+          backgroundColor: isDark ? '#1c1c1e' : '#ffffff',
+          titleColor: isDark ? '#ffffff' : '#1C1C1E',
+          bodyColor: isDark ? '#d1d5db' : '#6b7280',
+          borderColor: borderPrimary,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            title: function(tooltipItems) {
+              const idx = tooltipItems[0].dataIndex;
+              return data[idx].label;
+            },
+            label: function(context) {
+              if (context.datasetIndex !== 0) return null;
+              const idx = context.dataIndex;
+              const d = data[idx];
+              return [
+                `${trV3('progress.weeklyScore.tooltip.score')}: ${d.weeklyScore}`,
+                `${trV3('progress.weeklyScore.tooltip.strength')}: ${Math.round(d.strengthLoad)}`,
+                `${trV3('progress.weeklyScore.tooltip.cardio')}: ${Math.round(d.cardioLoad)}`,
+                `${trV3('progress.weeklyScore.tooltip.baseline')}: ${Math.round(d.baseline)}`,
+              ];
+            },
+          }
+        }
+      }
+    }
+  });
 }
 
 // ==================== TRAINING RHYTHM WIDGET ====================

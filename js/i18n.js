@@ -724,6 +724,30 @@ const translations = {
         restDay: 'Heute Ruhetag.',
         sessionsThisWeek: '{count} Trainingstage in diesem Zeitraum.'
       },
+      weeklyScore: {
+        chartTitle: 'Wochenleistung',
+        noData: 'Noch keine Daten für den Wochenscore',
+        legend: {
+          score: 'Wochenscore',
+          baseline: 'Baseline'
+        },
+        tooltip: {
+          week: 'Woche',
+          score: 'Score',
+          strength: 'Kraft',
+          cardio: 'Cardio',
+          baseline: 'Baseline'
+        }
+      },
+      readiness: {
+        title: 'Trainingsbereitschaft',
+        lowLoad: 'Niedrige Belastung',
+        balanced: 'Ausgewogen',
+        highLoad: 'Hohe Belastung',
+        descLow: 'Deine Trainingsbelastung liegt unter deinem Durchschnitt.',
+        descBalanced: 'Deine Trainingsbelastung ist im optimalen Bereich.',
+        descHigh: 'Deine Trainingsbelastung ist hoch. Achte auf Erholung.'
+      },
       bodyweight: {
         title: 'Bodyweight',
         emptyTitle: 'Noch keine Bodyweight-Sessions',
@@ -1804,6 +1828,30 @@ const translations = {
         cardioFocused: 'Focus on cardio.',
         restDay: 'Rest day today.',
         sessionsThisWeek: '{count} training days in this period.'
+      },
+      weeklyScore: {
+        chartTitle: 'Weekly Score',
+        noData: 'No weekly score data yet',
+        legend: {
+          score: 'Weekly Score',
+          baseline: 'Baseline'
+        },
+        tooltip: {
+          week: 'Week',
+          score: 'Score',
+          strength: 'Strength Load',
+          cardio: 'Cardio Load',
+          baseline: 'Baseline'
+        }
+      },
+      readiness: {
+        title: 'Training Readiness',
+        lowLoad: 'Low Load',
+        balanced: 'Balanced',
+        highLoad: 'High Load',
+        descLow: 'Your current training load is below your average.',
+        descBalanced: 'Your training load is in the optimal range.',
+        descHigh: 'Your training load is high. Make sure to recover.'
       },
       bodyweight: {
         title: 'Bodyweight',

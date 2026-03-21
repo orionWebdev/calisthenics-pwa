@@ -2085,6 +2085,8 @@ function openExercisePickerForLogging() {
       window.selectExerciseForPlan = window._originalSelectExerciseForPlan;
     };
     openAddExerciseToPlan();
+    // Elevate exercise picker above the strength modal
+    document.getElementById('exercise-picker-modal').classList.add('modal--elevated');
     // Switch to single-select mode for sessions
     if (typeof exercisePickerMode !== 'undefined') {
       exercisePickerMode = 'single';
@@ -2463,6 +2465,195 @@ async function markPendingScheduledEntryCompleted(sessionId) {
   }
 }
 
+// ==================== WEEKLY SCORE CALCULATIONS ====================
+
+const LOAD_RPE_FACTORS = { 1: 0.6, 2: 0.8, 3: 1.0, 4: 1.2, 5: 1.4 };
+
+function getLoadRpeFactor(rpe) {
+  if (rpe == null) return 1.0;
+  return LOAD_RPE_FACTORS[rpe] ?? 1.0;
+}
+
+/**
+ * Calculates raw load for a session (ports calculateSessionLoad.ts)
+ * @param {Object} session
+ * @returns {{ rawLoad: number, type: string }}
+ */
+function calculateSessionLoadValue(session) {
+  const type = session?.type;
+  if (!type || type === 'recovery') return { rawLoad: 0, type: type || 'recovery' };
+
+  if (type === 'strength') {
+    let totalVolume = 0;
+    const bodyWeight = (typeof userProfile !== 'undefined' && userProfile?.bodyWeight) || 0;
+
+    if (session.exercises && Array.isArray(session.exercises)) {
+      for (const exercise of session.exercises) {
+        if (!exercise.sets || !Array.isArray(exercise.sets)) continue;
+        for (const set of exercise.sets) {
+          const reps = set.reps || 0;
+          if (reps <= 0) continue;
+          const effectiveLoad = exercise.usesBodyweight
+            ? bodyWeight + (set.weight || 0)
+            : (set.weight || 0);
+          totalVolume += effectiveLoad * reps;
+        }
+      }
+    }
+    return { rawLoad: totalVolume * getLoadRpeFactor(session.rpe), type };
+  }
+
+  if (type === 'cardio') {
+    const duration = session.duration || 0;
+    if (duration <= 0) return { rawLoad: 0, type };
+    return { rawLoad: duration * getLoadRpeFactor(session.rpe) * 10, type };
+  }
+
+  return { rawLoad: 0, type };
+}
+
+/**
+ * Computes weekly raw load for a 7-day window ending at referenceDate
+ * @param {Date} referenceDate
+ * @returns {{ rawLoad: number, strengthLoad: number, cardioLoad: number, sessionCount: number }}
+ */
+function computeWeeklyRawLoad(referenceDate) {
+  const startDate = new Date(referenceDate);
+  startDate.setDate(startDate.getDate() - 6);
+  startDate.setHours(0, 0, 0, 0);
+
+  const endDate = new Date(referenceDate);
+  endDate.setHours(23, 59, 59, 999);
+
+  let strengthLoad = 0;
+  let cardioLoad = 0;
+  let sessionCount = 0;
+
+  for (const s of allSessions) {
+    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (isNaN(sessionDate.getTime())) continue;
+    if (sessionDate < startDate || sessionDate > endDate) continue;
+
+    const result = calculateSessionLoadValue(s);
+    if (result.type === 'strength') {
+      strengthLoad += result.rawLoad;
+    } else if (result.type === 'cardio') {
+      cardioLoad += result.rawLoad;
+    }
+    sessionCount++;
+  }
+
+  return { rawLoad: strengthLoad + cardioLoad, strengthLoad, cardioLoad, sessionCount };
+}
+
+/**
+ * Computes weekly score (0-100) for a given reference date
+ * @param {Date} referenceDate
+ * @returns {{ weeklyScore: number, rawLoad: number, strengthLoad: number, cardioLoad: number, baseline: number, sessionCount: number }}
+ */
+function computeWeeklyScore(referenceDate) {
+  const currentWeek = computeWeeklyRawLoad(referenceDate);
+
+  // Previous 6 weeks for baseline
+  const previousWeeks = [];
+  for (let i = 1; i <= 6; i++) {
+    const refDate = new Date(referenceDate);
+    refDate.setDate(refDate.getDate() - i * 7);
+    previousWeeks.push(computeWeeklyRawLoad(refDate));
+  }
+
+  const weeksWithData = previousWeeks.filter(w => w.rawLoad > 0);
+  let baseline;
+
+  if (weeksWithData.length < 2) {
+    baseline = currentWeek.rawLoad;
+  } else {
+    const totalLoad = weeksWithData.reduce((sum, w) => sum + w.rawLoad, 0);
+    baseline = totalLoad / weeksWithData.length;
+  }
+
+  const weeklyScore = baseline === 0
+    ? 0
+    : Math.min(100, Math.max(0, Math.round((currentWeek.rawLoad / baseline) * 70)));
+
+  return {
+    weeklyScore,
+    rawLoad: currentWeek.rawLoad,
+    strengthLoad: currentWeek.strengthLoad,
+    cardioLoad: currentWeek.cardioLoad,
+    baseline,
+    sessionCount: currentWeek.sessionCount,
+  };
+}
+
+/**
+ * Aggregates weekly scores by period for chart data
+ * @param {string} periodKey - '7D', '30D', '6M', '1Y'
+ * @returns {Array<{ label: string, date: Date, weeklyScore: number, baseline: number, strengthLoad: number, cardioLoad: number, sessionCount: number }>}
+ */
+function aggregateWeeklyScoresByPeriod(periodKey) {
+  const WEEKS_FOR_PERIOD = { '7D': 4, '30D': 4, '6M': 26, '1Y': 52 };
+  const numWeeks = WEEKS_FOR_PERIOD[periodKey] || 4;
+
+  const result = [];
+  const now = new Date();
+  const currentWeekEnd = new Date(now);
+  currentWeekEnd.setHours(23, 59, 59, 999);
+
+  for (let i = numWeeks - 1; i >= 0; i--) {
+    const weekEnd = new Date(currentWeekEnd);
+    weekEnd.setDate(weekEnd.getDate() - i * 7);
+
+    const weekStart = new Date(weekEnd);
+    weekStart.setDate(weekStart.getDate() - 6);
+
+    const score = computeWeeklyScore(weekEnd);
+
+    result.push({
+      label: formatWeekLabel(weekStart),
+      date: weekStart,
+      weeklyScore: score.weeklyScore,
+      baseline: score.baseline,
+      strengthLoad: score.strengthLoad,
+      cardioLoad: score.cardioLoad,
+      sessionCount: score.sessionCount,
+    });
+  }
+
+  return result;
+}
+
+/**
+ * Returns training status based on weekly score
+ * @param {number} weeklyScore - Score 0-100
+ * @returns {{ label: string, color: string, description: string }}
+ */
+function getTrainingStatus(weeklyScore) {
+  const tr = typeof t === 'function' ? t : (key) => key;
+
+  if (weeklyScore < 50) {
+    return {
+      label: tr('progress.readiness.lowLoad'),
+      color: 'var(--color-category-strength)',
+      description: tr('progress.readiness.descLow'),
+    };
+  } else if (weeklyScore <= 85) {
+    return {
+      label: tr('progress.readiness.balanced'),
+      color: 'var(--color-category-recovery)',
+      description: tr('progress.readiness.descBalanced'),
+    };
+  } else {
+    return {
+      label: tr('progress.readiness.highLoad'),
+      color: 'var(--color-primary)',
+      description: tr('progress.readiness.descHigh'),
+    };
+  }
+}
+
 // Expose functions
 window.openAddCardioModal = openAddCardioModal;
 window.closeAddCardioModal = closeAddCardioModal;
@@ -2521,6 +2712,13 @@ window.classifyBodyweightIntensity = classifyBodyweightIntensity;
 window.aggregateBodyweightByPeriod = aggregateBodyweightByPeriod;
 window.calculateBodyweightStats = calculateBodyweightStats;
 window.computeHybridBalance = computeHybridBalance;
+
+// Weekly score functions
+window.calculateSessionLoadValue = calculateSessionLoadValue;
+window.computeWeeklyRawLoad = computeWeeklyRawLoad;
+window.computeWeeklyScore = computeWeeklyScore;
+window.aggregateWeeklyScoresByPeriod = aggregateWeeklyScoresByPeriod;
+window.getTrainingStatus = getTrainingStatus;
 
 // ==================== PROGRESS DATA QUERIES ====================
 
