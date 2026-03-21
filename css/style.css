@@ -1788,8 +1788,8 @@ body.modal-open {
 }
 
 .exercise-row-icon {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 0.75rem;
   background: var(--ui-icon-bg);
   border: 1px solid var(--ui-icon-border);
