@@ -15515,6 +15515,39 @@ input[type="range"]::-moz-range-progress {
   margin-top: 0.1rem;
 }
 
+/* ==================== RUN ANALYTICS CHARTS ==================== */
+
+.run-charts-card {
+  padding-bottom: 0.75rem;
+}
+
+.run-chart-section {
+  margin-top: 1rem;
+}
+
+.run-chart-section:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.run-chart-subtitle {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.run-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+}
+
+.run-chart-wrapper canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 /* ==================== CLICKABLE SESSION ROWS ==================== */
 
 .pv4-session-clickable {

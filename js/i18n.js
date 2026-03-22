@@ -978,7 +978,11 @@ const translations = {
           runs: 'Läufe',
           totalTime: 'Gesamtzeit',
           totalDistance: 'Distanz',
-          avgPace: 'Pace'
+          avgPace: 'Pace',
+          runCharts: 'Lauftrends',
+          distancePerWeek: 'Distanz pro Woche',
+          paceTrend: 'Pace-Verlauf',
+          runChartTooltipRuns: 'Läufe',
         },
         exercises: {
           title: 'Übungs-Trends',
@@ -2083,7 +2087,11 @@ const translations = {
           runs: 'runs',
           totalTime: 'Total time',
           totalDistance: 'Distance',
-          avgPace: 'Pace'
+          avgPace: 'Pace',
+          runCharts: 'Run Trends',
+          distancePerWeek: 'Distance per Week',
+          paceTrend: 'Pace Trend',
+          runChartTooltipRuns: 'Runs',
         },
         exercises: {
           title: 'Exercise Trends',

@@ -825,6 +825,74 @@ function computeCardioBucketValue(metric, sessions) {
   return { value, totalDuration, totalDistance };
 }
 
+// ==================== RUN ANALYTICS ====================
+
+const RUN_ACTIVITY_TYPES = ['run', 'running', 'laufen'];
+const RUN_WEEKS_MAP = { '7D': 4, '30D': 4, '6M': 26, '1Y': 52 };
+
+/**
+ * Aggregates run sessions into weekly buckets for chart display.
+ * Returns: [{ weekLabel, totalDistanceKm, totalDurationMin, runCount, avgRpe, avgPace }]
+ * @param {PeriodKey} periodKey
+ */
+function aggregateRunByPeriod(periodKey) {
+  const numWeeks = RUN_WEEKS_MAP[periodKey] || 4;
+  const now = new Date();
+  const currentWeekStart = getWeekStart(now);
+
+  // Filter run sessions
+  const cutoff = new Date(currentWeekStart);
+  cutoff.setDate(cutoff.getDate() - ((numWeeks - 1) * 7));
+
+  const runSessions = allSessions.filter(s => {
+    if (s.type !== 'cardio') return false;
+    const activity = (s.activityType || '').toLowerCase();
+    if (!RUN_ACTIVITY_TYPES.includes(activity)) return false;
+    const d = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    return d >= cutoff;
+  });
+
+  // Build weekly buckets
+  const result = [];
+  for (let i = numWeeks - 1; i >= 0; i--) {
+    const weekStart = new Date(currentWeekStart);
+    weekStart.setDate(weekStart.getDate() - (i * 7));
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    weekEnd.setHours(23, 59, 59, 999);
+
+    let totalDist = 0;
+    let totalDur = 0;
+    let count = 0;
+    let rpeSum = 0;
+    let rpeCount = 0;
+
+    runSessions.forEach(s => {
+      const d = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+      if (d >= weekStart && d <= weekEnd) {
+        totalDist += Number(s.distanceKm) || 0;
+        totalDur += getSessionDurationMinutesSafe(s);
+        count += 1;
+        if (s.rpe != null && Number.isFinite(Number(s.rpe))) {
+          rpeSum += Number(s.rpe);
+          rpeCount += 1;
+        }
+      }
+    });
+
+    result.push({
+      weekLabel: formatWeekLabel(weekStart),
+      totalDistanceKm: Math.round(totalDist * 10) / 10,
+      totalDurationMin: Math.round(totalDur),
+      runCount: count,
+      avgPace: totalDist > 0 ? Math.round((totalDur / totalDist) * 100) / 100 : null,
+      avgRpe: rpeCount > 0 ? Math.round((rpeSum / rpeCount) * 10) / 10 : null,
+    });
+  }
+
+  return result;
+}
+
 /**
  * Formats a day label for chart display
  */
@@ -2719,6 +2787,9 @@ window.computeWeeklyRawLoad = computeWeeklyRawLoad;
 window.computeWeeklyScore = computeWeeklyScore;
 window.aggregateWeeklyScoresByPeriod = aggregateWeeklyScoresByPeriod;
 window.getTrainingStatus = getTrainingStatus;
+
+// Run analytics
+window.aggregateRunByPeriod = aggregateRunByPeriod;
 
 // ==================== PROGRESS DATA QUERIES ====================
 
