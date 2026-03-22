@@ -2657,6 +2657,77 @@ function computeWeeklyScore(referenceDate) {
 }
 
 /**
+ * Computes Acute:Chronic Workload Ratio (ports getACWR.ts)
+ * @param {Array} sessions
+ * @param {Date} referenceDate
+ * @returns {{ acuteLoad: number, chronicLoad: number, acwr: number|null, readinessScore: number|null }}
+ */
+function getACWR(sessions, referenceDate) {
+  if (!sessions || !sessions.length) {
+    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null };
+  }
+
+  const end = new Date(referenceDate);
+  end.setHours(23, 59, 59, 999);
+
+  const acuteStart = new Date(referenceDate);
+  acuteStart.setDate(acuteStart.getDate() - 6);
+  acuteStart.setHours(0, 0, 0, 0);
+
+  const chronicStart = new Date(referenceDate);
+  chronicStart.setDate(chronicStart.getDate() - 27);
+  chronicStart.setHours(0, 0, 0, 0);
+
+  let acuteLoad = 0;
+  let chronicTotal = 0;
+  let earliestSessionDate = null;
+
+  for (const s of sessions) {
+    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (isNaN(sessionDate.getTime())) continue;
+    if (sessionDate < chronicStart || sessionDate > end) continue;
+
+    const { rawLoad } = calculateSessionLoadValue(s);
+
+    chronicTotal += rawLoad;
+
+    if (sessionDate >= acuteStart) {
+      acuteLoad += rawLoad;
+    }
+
+    if (!earliestSessionDate || sessionDate < earliestSessionDate) {
+      earliestSessionDate = sessionDate;
+    }
+  }
+
+  const chronicLoad = chronicTotal / 4;
+
+  if (!earliestSessionDate) {
+    return { acuteLoad, chronicLoad, acwr: null, readinessScore: null };
+  }
+
+  const daySpan = (end.getTime() - earliestSessionDate.getTime()) / (1000 * 60 * 60 * 24);
+  if (daySpan < 14) {
+    return { acuteLoad, chronicLoad, acwr: null, readinessScore: null };
+  }
+
+  const acwr = chronicLoad === 0
+    ? 1
+    : Math.round((acuteLoad / chronicLoad) * 100) / 100;
+
+  let readinessScore;
+  if (acwr < 0.8) readinessScore = 60;
+  else if (acwr < 1.0) readinessScore = 75;
+  else if (acwr <= 1.2) readinessScore = 85;
+  else if (acwr <= 1.4) readinessScore = 65;
+  else readinessScore = 40;
+
+  return { acuteLoad, chronicLoad, acwr, readinessScore };
+}
+
+/**
  * Aggregates weekly scores by period for chart data
  * @param {string} periodKey - '7D', '30D', '6M', '1Y'
  * @returns {Array<{ label: string, date: Date, weeklyScore: number, baseline: number, strengthLoad: number, cardioLoad: number, sessionCount: number }>}
@@ -2787,6 +2858,9 @@ window.computeWeeklyRawLoad = computeWeeklyRawLoad;
 window.computeWeeklyScore = computeWeeklyScore;
 window.aggregateWeeklyScoresByPeriod = aggregateWeeklyScoresByPeriod;
 window.getTrainingStatus = getTrainingStatus;
+
+// ACWR
+window.getACWR = getACWR;
 
 // Run analytics
 window.aggregateRunByPeriod = aggregateRunByPeriod;
