@@ -150,8 +150,11 @@ function renderProgressV4() {
 
   if (pv4Tab === 'overview') {
     attachV4PeriodListeners();
-    // Initialize Weekly Score Chart after DOM is ready
-    setTimeout(() => initWeeklyScoreChart(), 50);
+    // Initialize charts after DOM is ready
+    setTimeout(() => {
+      initWeeklyScoreChart();
+      initRunCharts();
+    }, 50);
   }
 
   // Draw sparklines
@@ -249,8 +252,10 @@ function v3WeekNumber(date) {
 
 const V3_KNOWN_TYPES = ['strength', 'bodyweight', 'cardio', 'recovery'];
 
-// ---- Weekly Score Chart instance (Chart.js) ----
+// ---- Chart instances (Chart.js) ----
 let weeklyScoreChartInstance = null;
+let runDistanceChartInstance = null;
+let runPaceChartInstance = null;
 
 function renderV4Overview() {
   const days = v3PeriodDays(pv4Period);
@@ -279,14 +284,14 @@ function renderV4Overview() {
   `).join('');
 
   // Training Readiness + Weekly Score Chart
-  const readinessHTML = renderV4ReadinessWidget();
+  const readinessHTML = renderReadinessWidget();
   const weeklyScoreChartHTML = renderV4WeeklyScoreChartHTML();
 
   // Training Rhythm widget
   const rhythmHTML = renderV4Rhythm(sessions);
 
-  // Running Stats widget
-  const runningHTML = renderV4RunningStats(sessions);
+  // Running Stats widget + Run Charts
+  const runningHTML = renderV4RunningStats(sessions) + renderRunChartsHTML();
 
   // Session history (collapsible)
   const historyHTML = renderV4SessionHistory(sessions);
@@ -302,26 +307,94 @@ function renderV4Overview() {
   `;
 }
 
-// ==================== TRAINING READINESS WIDGET ====================
+// ==================== TRAINING READINESS WIDGET (ACWR) ====================
 
-function renderV4ReadinessWidget() {
-  if (typeof computeWeeklyScore !== 'function') return '';
+function getACWRZone(acwr) {
+  if (acwr < 0.8) return {
+    label: trV3('progress.readiness.zoneUnderreached'),
+    color: '#f97316'
+  };
+  if (acwr <= 1.2) return {
+    label: trV3('progress.readiness.zoneBalanced'),
+    color: '#22c55e'
+  };
+  if (acwr <= 1.4) return {
+    label: trV3('progress.readiness.zoneHighLoad'),
+    color: '#3b82f6'
+  };
+  return {
+    label: trV3('progress.readiness.zoneOverreaching'),
+    color: '#ef4444'
+  };
+}
 
-  const currentScore = computeWeeklyScore(new Date());
-  const status = getTrainingStatus(currentScore.weeklyScore);
-  const score = currentScore.weeklyScore;
+function renderReadinessWidget() {
+  if (typeof getACWR !== 'function') return '';
+
+  const data = getACWR(allSessions, new Date());
+
+  if (data.readinessScore === null) {
+    return `
+      <div class="pv3-card acwr-widget">
+        <div class="acwr-widget-header">
+          <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
+        </div>
+        <div class="acwr-no-data">
+          <span class="material-symbols-rounded acwr-no-data-icon">hourglass_empty</span>
+          <p>${trV3('progress.readiness.noData')}</p>
+        </div>
+      </div>`;
+  }
+
+  const zone = getACWRZone(data.acwr);
+  const score = data.readinessScore;
 
   return `
-    <div class="pv3-card readiness-widget">
-      <span class="material-symbols-rounded readiness-icon" style="color: ${status.color};">monitoring</span>
-      <div class="readiness-score-display" style="color: ${status.color};">${score}</div>
-      <div class="readiness-status-label" style="color: ${status.color};">${status.label}</div>
-      <div class="readiness-bar-container">
-        <div class="readiness-bar-fill" style="width: ${score}%; background: ${status.color};"></div>
+    <div class="pv3-card acwr-widget">
+      <div class="acwr-widget-header">
+        <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
+        <div class="acwr-widget-header-right">
+          <span class="acwr-window-label">${trV3('progress.readiness.windowLabel')}</span>
+          <button class="acwr-info-btn" onclick="openACWRInfoModal()" aria-label="Info">
+            <span class="material-symbols-rounded">info</span>
+          </button>
+        </div>
       </div>
-      <p class="readiness-description">${status.description}</p>
-    </div>
-  `;
+      <div class="acwr-score-section">
+        <div class="acwr-score-display" style="color: ${zone.color};">${score}</div>
+        <div class="acwr-zone-label" style="color: ${zone.color};">${zone.label}</div>
+      </div>
+      <div class="acwr-bar-track">
+        <div class="acwr-bar-marker" style="left: ${score}%;"></div>
+      </div>
+      <div class="acwr-stats">
+        <span class="acwr-stat">${trV3('progress.readiness.acwrLabel')}: ${data.acwr.toFixed(2)}</span>
+        <span class="acwr-stat-separator"></span>
+        <span class="acwr-stat">${trV3('progress.readiness.acuteLabel')}: ${Math.round(data.acuteLoad)}</span>
+        <span class="acwr-stat-separator"></span>
+        <span class="acwr-stat">${trV3('progress.readiness.chronicLabel')}: ${Math.round(data.chronicLoad)}</span>
+      </div>
+    </div>`;
+}
+
+function openACWRInfoModal() {
+  if (typeof openGenericModal !== 'function') return;
+  openGenericModal(
+    trV3('progress.readiness.infoTitle'),
+    `<div class="acwr-info-content">
+      <p>${trV3('progress.readiness.infoBody')}</p>
+      <div class="acwr-info-zones">
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#ef4444;"></span> &lt;0.8 – ${trV3('progress.readiness.zoneUnderreached')}</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#22c55e;"></span> 0.8–1.2 – ${trV3('progress.readiness.zoneBalanced')}</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#3b82f6;"></span> 1.2–1.4 – ${trV3('progress.readiness.zoneHighLoad')}</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#ef4444;"></span> &gt;1.4 – ${trV3('progress.readiness.zoneOverreaching')}</div>
+      </div>
+    </div>`
+  );
+}
+
+function initReadinessWidget() {
+  // No-op – exists for modularity / future extensibility
 }
 
 // ==================== WEEKLY SCORE CHART ====================
@@ -512,6 +585,228 @@ function initWeeklyScoreChart() {
                 `${trV3('progress.weeklyScore.tooltip.strength')}: ${Math.round(d.strengthLoad)}`,
                 `${trV3('progress.weeklyScore.tooltip.cardio')}: ${Math.round(d.cardioLoad)}`,
                 `${trV3('progress.weeklyScore.tooltip.baseline')}: ${Math.round(d.baseline)}`,
+              ];
+            },
+          }
+        }
+      }
+    }
+  });
+}
+
+// ==================== RUN ANALYTICS CHARTS ====================
+
+function renderRunChartsHTML() {
+  if (typeof aggregateRunByPeriod !== 'function') return '';
+
+  const data = aggregateRunByPeriod(pv4Period);
+  if (!data || !data.length || data.every(d => d.runCount === 0)) return '';
+
+  return `
+    <div class="pv3-card run-charts-card">
+      <div class="pv3-card-header">
+        <h3 class="pv3-card-title">
+          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px;color:var(--color-category-cardio)">show_chart</span>
+          ${trV3('progress.v4.overview.runCharts')}
+        </h3>
+      </div>
+      <div class="run-chart-section">
+        <h4 class="run-chart-subtitle">${trV3('progress.v4.overview.distancePerWeek')}</h4>
+        <div class="run-chart-wrapper">
+          <canvas id="run-distance-canvas"></canvas>
+        </div>
+      </div>
+      <div class="run-chart-section">
+        <h4 class="run-chart-subtitle">${trV3('progress.v4.overview.paceTrend')}</h4>
+        <div class="run-chart-wrapper">
+          <canvas id="run-pace-canvas"></canvas>
+        </div>
+      </div>
+    </div>`;
+}
+
+function initRunCharts() {
+  if (typeof Chart === 'undefined' || typeof aggregateRunByPeriod !== 'function') return;
+
+  const data = aggregateRunByPeriod(pv4Period);
+  if (!data || !data.length || data.every(d => d.runCount === 0)) return;
+
+  initRunDistanceChart(data);
+  initRunPaceChart(data);
+}
+
+function initRunDistanceChart(data) {
+  const canvas = document.getElementById('run-distance-canvas');
+  if (!canvas) return;
+
+  if (runDistanceChartInstance) {
+    runDistanceChartInstance.destroy();
+    runDistanceChartInstance = null;
+  }
+
+  const ctx = canvas.getContext('2d');
+  const cardioColor = getCssVarValue('--color-category-cardio') || '#3b82f6';
+  const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
+  const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+  runDistanceChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.weekLabel),
+      datasets: [{
+        label: trV3('progress.v4.overview.totalDistance'),
+        data: data.map(d => d.totalDistanceKm),
+        backgroundColor: cardioColor,
+        borderRadius: 4,
+        maxBarThickness: 24,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: borderPrimary },
+          ticks: {
+            color: textSecondary,
+            font: { size: 11 },
+            callback: function(val) { return val + ' km'; },
+          },
+          border: { display: false },
+        },
+        x: {
+          grid: { display: false },
+          ticks: {
+            color: textSecondary,
+            font: { size: 10 },
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 8,
+          },
+          border: { display: false },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: isDark ? '#1c1c1e' : '#ffffff',
+          titleColor: isDark ? '#ffffff' : '#1C1C1E',
+          bodyColor: isDark ? '#d1d5db' : '#6b7280',
+          borderColor: borderPrimary,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              const d = data[context.dataIndex];
+              const lines = [`${trV3('progress.v4.overview.totalDistance')}: ${d.totalDistanceKm} km`];
+              lines.push(`${trV3('progress.v4.overview.runChartTooltipRuns')}: ${d.runCount}`);
+              if (d.totalDurationMin > 0) lines.push(`${trV3('progress.v4.overview.totalTime')}: ${d.totalDurationMin} min`);
+              return lines;
+            },
+          }
+        }
+      }
+    }
+  });
+}
+
+function initRunPaceChart(data) {
+  const canvas = document.getElementById('run-pace-canvas');
+  if (!canvas) return;
+
+  if (runPaceChartInstance) {
+    runPaceChartInstance.destroy();
+    runPaceChartInstance = null;
+  }
+
+  // Filter out weeks with no pace data
+  const paceData = data.filter(d => d.avgPace != null);
+  if (paceData.length < 2) {
+    // Hide the canvas wrapper if not enough data
+    const wrapper = canvas.closest('.run-chart-section');
+    if (wrapper) wrapper.style.display = 'none';
+    return;
+  }
+
+  const ctx = canvas.getContext('2d');
+  const cardioColor = getCssVarValue('--color-category-cardio') || '#3b82f6';
+  const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
+  const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+  const fmtPace = (p) => {
+    if (!p || p <= 0) return '-';
+    const m = Math.floor(p);
+    let sec = Math.round((p - m) * 60);
+    if (sec >= 60) return `${m + 1}:00`;
+    return `${m}:${String(sec).padStart(2, '0')}`;
+  };
+
+  runPaceChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: paceData.map(d => d.weekLabel),
+      datasets: [{
+        label: trV3('progress.v4.overview.avgPace'),
+        data: paceData.map(d => d.avgPace),
+        borderColor: cardioColor,
+        backgroundColor: cardioColor,
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: cardioColor,
+        tension: 0.3,
+        fill: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          reverse: true,
+          grid: { color: borderPrimary },
+          ticks: {
+            color: textSecondary,
+            font: { size: 11 },
+            callback: function(val) { return fmtPace(val); },
+          },
+          border: { display: false },
+        },
+        x: {
+          grid: { display: false },
+          ticks: {
+            color: textSecondary,
+            font: { size: 10 },
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 8,
+          },
+          border: { display: false },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: isDark ? '#1c1c1e' : '#ffffff',
+          titleColor: isDark ? '#ffffff' : '#1C1C1E',
+          bodyColor: isDark ? '#d1d5db' : '#6b7280',
+          borderColor: borderPrimary,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              const d = paceData[context.dataIndex];
+              return [
+                `${trV3('progress.v4.overview.avgPace')}: ${fmtPace(d.avgPace)} min/km`,
+                `${trV3('progress.v4.overview.totalDistance')}: ${d.totalDistanceKm} km`,
+                `${trV3('progress.v4.overview.runChartTooltipRuns')}: ${d.runCount}`,
               ];
             },
           }
@@ -1236,5 +1531,6 @@ function renderPlanDetail(planId) {
 window.initProgressV3 = initProgressV3;
 window.renderProgressV3 = renderProgressV3;
 window.renderProgressV4 = renderProgressV4;
+window.openACWRInfoModal = openACWRInfoModal;
 window.pv4ExerciseDetailId = null;
 window.pv4PlanDetailId = null;

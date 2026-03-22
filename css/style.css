@@ -7176,56 +7176,163 @@ input[type="range"]::-moz-range-progress {
   line-height: 1.5;
 }
 
-/* ==================== TRAINING READINESS WIDGET ==================== */
+/* ==================== ACWR READINESS WIDGET ==================== */
 
-.readiness-widget {
+.acwr-widget {
+  padding: var(--ui-card-padding, 1.25rem);
+}
+
+.acwr-widget-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md, 1rem);
+}
+
+.acwr-widget-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.acwr-window-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.acwr-info-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+}
+
+.acwr-info-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+}
+
+.acwr-info-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.acwr-score-section {
   text-align: center;
-  gap: 0.5rem;
-  padding: 1.5rem;
+  margin-bottom: var(--spacing-md, 1rem);
 }
 
-.readiness-widget .readiness-icon {
-  font-size: 2rem;
-  margin-bottom: 0.25rem;
-}
-
-.readiness-score-display {
+.acwr-score-display {
   font-size: var(--font-size-4xl);
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--spacing-xs, 0.25rem);
 }
 
-.readiness-status-label {
+.acwr-zone-label {
   font-size: var(--font-size-md);
   font-weight: 600;
 }
 
-.readiness-bar-container {
+.acwr-bar-track {
+  position: relative;
   width: 100%;
-  max-width: 240px;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--surface-hover);
-  margin: 0.75rem 0;
-  overflow: hidden;
+  height: 8px;
+  border-radius: 4px;
+  margin: var(--spacing-md, 1rem) 0;
+  background: linear-gradient(
+    to right,
+    #ef4444 0%,
+    #ef4444 50%,
+    #f97316 50%,
+    #f97316 70%,
+    #22c55e 70%,
+    #22c55e 90%,
+    #3b82f6 90%,
+    #3b82f6 100%
+  );
 }
 
-.readiness-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.4s ease;
+.acwr-bar-marker {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  border: 2px solid var(--bg-card);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: left 0.4s ease;
 }
 
-.readiness-description {
+.acwr-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+  flex-wrap: wrap;
+}
+
+.acwr-stat {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.acwr-stat-separator {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+
+.acwr-no-data {
+  text-align: center;
+  padding: var(--spacing-lg, 1.5rem) 0;
+}
+
+.acwr-no-data-icon {
+  font-size: 2rem;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.acwr-no-data p {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   margin: 0;
-  max-width: 300px;
-  line-height: 1.5;
+}
+
+.acwr-info-content p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 var(--spacing-md, 1rem) 0;
+}
+
+.acwr-info-zones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+.acwr-info-zone {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+.acwr-info-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* ==================== WEEKLY SCORE CHART ==================== */
@@ -15513,6 +15620,39 @@ input[type="range"]::-moz-range-progress {
   font-size: 0.625rem;
   color: var(--color-text-muted, #9ca3af);
   margin-top: 0.1rem;
+}
+
+/* ==================== RUN ANALYTICS CHARTS ==================== */
+
+.run-charts-card {
+  padding-bottom: 0.75rem;
+}
+
+.run-chart-section {
+  margin-top: 1rem;
+}
+
+.run-chart-section:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.run-chart-subtitle {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.run-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+}
+
+.run-chart-wrapper canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* ==================== CLICKABLE SESSION ROWS ==================== */
