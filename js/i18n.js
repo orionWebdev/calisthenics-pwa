@@ -746,7 +746,18 @@ const translations = {
         highLoad: 'Hohe Belastung',
         descLow: 'Deine Trainingsbelastung liegt unter deinem Durchschnitt.',
         descBalanced: 'Deine Trainingsbelastung ist im optimalen Bereich.',
-        descHigh: 'Deine Trainingsbelastung ist hoch. Achte auf Erholung.'
+        descHigh: 'Deine Trainingsbelastung ist hoch. Achte auf Erholung.',
+        acwrLabel: 'ACWR',
+        acuteLabel: 'Akut',
+        chronicLabel: 'Chronisch',
+        zoneUnderreached: 'Unterbelastet',
+        zoneBalanced: 'Ausgewogen',
+        zoneHighLoad: 'Hohe Belastung',
+        zoneOverreaching: 'Überbelastung',
+        infoTitle: 'Was ist ACWR?',
+        infoBody: 'Die Acute:Chronic Workload Ratio (ACWR) vergleicht deine aktuelle Trainingsbelastung (letzte 7 Tage) mit deinem Durchschnitt der letzten 4 Wochen (28 Tage). Ein Wert zwischen 0.8 und 1.3 gilt als optimal.',
+        noData: 'Mindestens 14 Tage Trainingsdaten nötig',
+        windowLabel: '7/28 Tage'
       },
       bodyweight: {
         title: 'Bodyweight',
@@ -1855,7 +1866,18 @@ const translations = {
         highLoad: 'High Load',
         descLow: 'Your current training load is below your average.',
         descBalanced: 'Your training load is in the optimal range.',
-        descHigh: 'Your training load is high. Make sure to recover.'
+        descHigh: 'Your training load is high. Make sure to recover.',
+        acwrLabel: 'ACWR',
+        acuteLabel: 'Acute',
+        chronicLabel: 'Chronic',
+        zoneUnderreached: 'Underreached',
+        zoneBalanced: 'Balanced',
+        zoneHighLoad: 'High Load',
+        zoneOverreaching: 'Overreaching',
+        infoTitle: 'What is ACWR?',
+        infoBody: 'The Acute:Chronic Workload Ratio (ACWR) compares your current training load (last 7 days) against your 4-week average (28 days). A value between 0.8 and 1.3 is considered optimal.',
+        noData: 'At least 14 days of training data needed',
+        windowLabel: '7/28 days'
       },
       bodyweight: {
         title: 'Bodyweight',

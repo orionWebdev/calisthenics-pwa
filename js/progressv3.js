@@ -284,7 +284,7 @@ function renderV4Overview() {
   `).join('');
 
   // Training Readiness + Weekly Score Chart
-  const readinessHTML = renderV4ReadinessWidget();
+  const readinessHTML = renderReadinessWidget();
   const weeklyScoreChartHTML = renderV4WeeklyScoreChartHTML();
 
   // Training Rhythm widget
@@ -307,26 +307,94 @@ function renderV4Overview() {
   `;
 }
 
-// ==================== TRAINING READINESS WIDGET ====================
+// ==================== TRAINING READINESS WIDGET (ACWR) ====================
 
-function renderV4ReadinessWidget() {
-  if (typeof computeWeeklyScore !== 'function') return '';
+function getACWRZone(acwr) {
+  if (acwr < 0.8) return {
+    label: trV3('progress.readiness.zoneUnderreached'),
+    color: '#f97316'
+  };
+  if (acwr <= 1.2) return {
+    label: trV3('progress.readiness.zoneBalanced'),
+    color: '#22c55e'
+  };
+  if (acwr <= 1.4) return {
+    label: trV3('progress.readiness.zoneHighLoad'),
+    color: '#3b82f6'
+  };
+  return {
+    label: trV3('progress.readiness.zoneOverreaching'),
+    color: '#ef4444'
+  };
+}
 
-  const currentScore = computeWeeklyScore(new Date());
-  const status = getTrainingStatus(currentScore.weeklyScore);
-  const score = currentScore.weeklyScore;
+function renderReadinessWidget() {
+  if (typeof getACWR !== 'function') return '';
+
+  const data = getACWR(allSessions, new Date());
+
+  if (data.readinessScore === null) {
+    return `
+      <div class="pv3-card acwr-widget">
+        <div class="acwr-widget-header">
+          <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
+        </div>
+        <div class="acwr-no-data">
+          <span class="material-symbols-rounded acwr-no-data-icon">hourglass_empty</span>
+          <p>${trV3('progress.readiness.noData')}</p>
+        </div>
+      </div>`;
+  }
+
+  const zone = getACWRZone(data.acwr);
+  const score = data.readinessScore;
 
   return `
-    <div class="pv3-card readiness-widget">
-      <span class="material-symbols-rounded readiness-icon" style="color: ${status.color};">monitoring</span>
-      <div class="readiness-score-display" style="color: ${status.color};">${score}</div>
-      <div class="readiness-status-label" style="color: ${status.color};">${status.label}</div>
-      <div class="readiness-bar-container">
-        <div class="readiness-bar-fill" style="width: ${score}%; background: ${status.color};"></div>
+    <div class="pv3-card acwr-widget">
+      <div class="acwr-widget-header">
+        <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
+        <div class="acwr-widget-header-right">
+          <span class="acwr-window-label">${trV3('progress.readiness.windowLabel')}</span>
+          <button class="acwr-info-btn" onclick="openACWRInfoModal()" aria-label="Info">
+            <span class="material-symbols-rounded">info</span>
+          </button>
+        </div>
       </div>
-      <p class="readiness-description">${status.description}</p>
-    </div>
-  `;
+      <div class="acwr-score-section">
+        <div class="acwr-score-display" style="color: ${zone.color};">${score}</div>
+        <div class="acwr-zone-label" style="color: ${zone.color};">${zone.label}</div>
+      </div>
+      <div class="acwr-bar-track">
+        <div class="acwr-bar-marker" style="left: ${score}%;"></div>
+      </div>
+      <div class="acwr-stats">
+        <span class="acwr-stat">${trV3('progress.readiness.acwrLabel')}: ${data.acwr.toFixed(2)}</span>
+        <span class="acwr-stat-separator"></span>
+        <span class="acwr-stat">${trV3('progress.readiness.acuteLabel')}: ${Math.round(data.acuteLoad)}</span>
+        <span class="acwr-stat-separator"></span>
+        <span class="acwr-stat">${trV3('progress.readiness.chronicLabel')}: ${Math.round(data.chronicLoad)}</span>
+      </div>
+    </div>`;
+}
+
+function openACWRInfoModal() {
+  if (typeof openGenericModal !== 'function') return;
+  openGenericModal(
+    trV3('progress.readiness.infoTitle'),
+    `<div class="acwr-info-content">
+      <p>${trV3('progress.readiness.infoBody')}</p>
+      <div class="acwr-info-zones">
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#ef4444;"></span> &lt;0.8 – ${trV3('progress.readiness.zoneUnderreached')}</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#22c55e;"></span> 0.8–1.2 – ${trV3('progress.readiness.zoneBalanced')}</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#3b82f6;"></span> 1.2–1.4 – ${trV3('progress.readiness.zoneHighLoad')}</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#ef4444;"></span> &gt;1.4 – ${trV3('progress.readiness.zoneOverreaching')}</div>
+      </div>
+    </div>`
+  );
+}
+
+function initReadinessWidget() {
+  // No-op – exists for modularity / future extensibility
 }
 
 // ==================== WEEKLY SCORE CHART ====================
@@ -1463,5 +1531,6 @@ function renderPlanDetail(planId) {
 window.initProgressV3 = initProgressV3;
 window.renderProgressV3 = renderProgressV3;
 window.renderProgressV4 = renderProgressV4;
+window.openACWRInfoModal = openACWRInfoModal;
 window.pv4ExerciseDetailId = null;
 window.pv4PlanDetailId = null;

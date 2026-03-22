@@ -2574,7 +2574,7 @@ function calculateSessionLoadValue(session) {
   if (type === 'cardio') {
     const duration = session.duration || 0;
     if (duration <= 0) return { rawLoad: 0, type };
-    return { rawLoad: duration * getLoadRpeFactor(session.rpe) * 10, type };
+    return { rawLoad: duration * getLoadRpeFactor(session.rpe) * 4, type };
   }
 
   return { rawLoad: 0, type };

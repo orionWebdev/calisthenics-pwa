@@ -77,7 +77,7 @@ function calculateStrengthLoad(session: Session, userProfile: UserProfile): numb
 function calculateCardioLoad(session: Session): number {
   const duration = session.duration ?? 0;
   if (duration <= 0) return 0;
-  return duration * getRpeFactor(session.rpe) * 10;
+  return duration * getRpeFactor(session.rpe) * 4;
 }
 
 // ---------- Main ----------
