@@ -693,6 +693,18 @@ function aggregateWeeklyStrengthVolume(weeks = 8) {
   return aggregateStrengthByPeriod(periodKey);
 }
 
+// Normalize localized/variant activity types to canonical keys
+const ACTIVITY_ALIASES = {
+  running: 'run', laufen: 'run',
+  cycling: 'bike', radfahren: 'bike',
+  swimming: 'swim', schwimmen: 'swim',
+  rowing: 'row', rudern: 'row'
+};
+function normalizeActivityType(raw) {
+  const key = (raw || '').toLowerCase();
+  return ACTIVITY_ALIASES[key] || key;
+}
+
 /**
  * Aggregiert Cardio-Daten basierend auf PeriodKey
  * @param {string} metric - 'time', 'distance', or 'pace'
@@ -709,7 +721,7 @@ function aggregateCardioByPeriod(metric = 'time', periodKey = '7D', activityFilt
   // Filter relevant sessions
   const relevantSessions = allSessions.filter(s => {
     if (s.type !== 'cardio') return false;
-    if (activityFilter && s.activityType !== activityFilter) return false;
+    if (activityFilter && normalizeActivityType(s.activityType) !== activityFilter) return false;
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     return sessionDate >= cutoffDate;
   });
@@ -823,6 +835,26 @@ function computeCardioBucketValue(metric, sessions) {
   }
 
   return { value, totalDuration, totalDistance };
+}
+
+/**
+ * Returns which endurance sports (run/bike/swim) have sessions in the given period.
+ * @param {PeriodKey} periodKey
+ * @returns {string[]}
+ */
+function getAvailableEnduranceSports(periodKey) {
+  const config = PERIOD_CONFIG[periodKey];
+  if (!config) return [];
+  const cutoff = new Date(Date.now() - config.days * 86400000);
+  const found = new Set();
+  allSessions.forEach(s => {
+    if (s.type !== 'cardio') return;
+    const d = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (d < cutoff) return;
+    const norm = normalizeActivityType(s.activityType);
+    if (['run', 'bike', 'swim'].includes(norm)) found.add(norm);
+  });
+  return ['run', 'bike', 'swim'].filter(s => found.has(s));
 }
 
 // ==================== RUN ANALYTICS ====================
@@ -2824,7 +2856,9 @@ window.formatDateToYYYYMMDD = formatDateToYYYYMMDD;
 
 // New period-based aggregation functions
 window.PERIOD_CONFIG = PERIOD_CONFIG;
+window.ACTIVITY_TYPES = ACTIVITY_TYPES;
 window.aggregateCardioByPeriod = aggregateCardioByPeriod;
+window.getAvailableEnduranceSports = getAvailableEnduranceSports;
 window.aggregateStrengthByPeriod = aggregateStrengthByPeriod;
 window.calculateCardioStats = calculateCardioStats;
 window.calculateStrengthStats = calculateStrengthStats;
