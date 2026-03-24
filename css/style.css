@@ -50,6 +50,13 @@
   --border-secondary: rgba(255, 255, 255, 0.06);
   --border-accent: rgba(240, 34, 119, 0.3);
 
+  /* Zone Colors – Readiness */
+  --zone-exhausted: #ff3b30;   /* rot */
+  --zone-fatigued: #ff9500;    /* orange */
+  --zone-loaded: #34c759;      /* grün */
+  --zone-ready: #30b0ff;       /* blau */
+  --zone-fresh: #5856d6;       /* violett */
+
   /* Category Colors */
   --color-category-strength: #f59e0b;
   --color-category-bodyweight: #f59e0b;
@@ -7189,17 +7196,6 @@ input[type="range"]::-moz-range-progress {
   margin-bottom: var(--spacing-md, 1rem);
 }
 
-.acwr-widget-header-right {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs, 0.25rem);
-}
-
-.acwr-window-label {
-  font-size: var(--font-size-xs);
-  color: var(--text-tertiary);
-}
-
 .acwr-info-btn {
   background: none;
   border: none;
@@ -7239,55 +7235,24 @@ input[type="range"]::-moz-range-progress {
 }
 
 .acwr-bar-track {
-  position: relative;
   width: 100%;
   height: 8px;
   border-radius: 4px;
   margin: var(--spacing-md, 1rem) 0;
-  background: linear-gradient(
-    to right,
-    #ef4444 0%,
-    #ef4444 50%,
-    #f97316 50%,
-    #f97316 70%,
-    #22c55e 70%,
-    #22c55e 90%,
-    #3b82f6 90%,
-    #3b82f6 100%
-  );
+  background: var(--bg-surface-active);
+  overflow: hidden;
 }
 
-.acwr-bar-marker {
-  position: absolute;
-  top: 50%;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--text-primary);
-  border: 2px solid var(--bg-card);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  transition: left 0.4s ease;
+.acwr-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
 }
 
-.acwr-stats {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--spacing-sm, 0.5rem);
-  flex-wrap: wrap;
-}
-
-.acwr-stat {
+.acwr-subtitle {
   font-size: var(--font-size-xs);
   color: var(--text-secondary);
-}
-
-.acwr-stat-separator {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--text-tertiary);
+  text-align: center;
 }
 
 .acwr-no-data {
@@ -7311,7 +7276,40 @@ input[type="range"]::-moz-range-progress {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   line-height: 1.6;
-  margin: 0 0 var(--spacing-md, 1rem) 0;
+  margin: 0 0 var(--spacing-sm, 0.5rem) 0;
+}
+
+.acwr-info-compare {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: var(--spacing-sm, 0.5rem);
+}
+
+.acwr-info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-sm, 0.5rem) 0;
+}
+
+.acwr-info-list li {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: var(--spacing-md, 1rem);
+  position: relative;
+}
+
+.acwr-info-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--text-tertiary);
+}
+
+.acwr-info-goal {
+  font-style: italic;
+  margin-top: var(--spacing-sm, 0.5rem);
+  margin-bottom: var(--spacing-md, 1rem);
 }
 
 .acwr-info-zones {
@@ -7324,7 +7322,7 @@ input[type="range"]::-moz-range-progress {
   font-size: var(--font-size-sm);
   color: var(--text-primary);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-sm, 0.5rem);
 }
 
@@ -7333,6 +7331,16 @@ input[type="range"]::-moz-range-progress {
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.acwr-info-zone-text {
+  line-height: 1.5;
+}
+
+.acwr-info-zone-desc {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
 }
 
 /* ==================== WEEKLY SCORE CHART ==================== */
@@ -15622,10 +15630,63 @@ input[type="range"]::-moz-range-progress {
   margin-top: 0.1rem;
 }
 
-/* ==================== RUN ANALYTICS CHARTS ==================== */
+/* ==================== ENDURANCE TRENDS CARD ==================== */
 
-.run-charts-card {
+.endurance-card {
   padding-bottom: 0.75rem;
+}
+
+.endurance-sport-toggle {
+  display: flex;
+  gap: 0.375rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.75rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.endurance-sport-toggle::-webkit-scrollbar {
+  display: none;
+}
+
+.endurance-sport-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 1rem;
+  border: 1px solid var(--ui-card-border, rgba(255,255,255,0.08));
+  background: var(--bg-card, #161618);
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex: 0 0 auto;
+}
+
+.endurance-sport-chip .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.endurance-sport-chip.active[data-sport="run"] {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: #3b82f6;
+}
+
+.endurance-sport-chip.active[data-sport="bike"] {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #10b981;
+}
+
+.endurance-sport-chip.active[data-sport="swim"] {
+  background: rgba(6, 182, 212, 0.16);
+  border-color: rgba(6, 182, 212, 0.35);
+  color: #06b6d4;
 }
 
 .run-chart-section {

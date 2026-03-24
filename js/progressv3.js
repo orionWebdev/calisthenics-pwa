@@ -12,6 +12,7 @@ let pv4Tab = 'overview'; // 'overview' | 'exercises' | 'plans'
 let pv4Period = localStorage.getItem('progressPeriodKey') || '30D';
 let pv4ExerciseDetailId = null;
 let pv4PlanDetailId = null;
+let pv4EnduranceSport = localStorage.getItem('enduranceSportKey') || 'run';
 let progressV3Initialized = false;
 
 // Exercise filter state
@@ -153,7 +154,8 @@ function renderProgressV4() {
     // Initialize charts after DOM is ready
     setTimeout(() => {
       initWeeklyScoreChart();
-      initRunCharts();
+      initEnduranceCharts();
+      attachEnduranceSportListeners();
     }, 50);
   }
 
@@ -254,8 +256,8 @@ const V3_KNOWN_TYPES = ['strength', 'bodyweight', 'cardio', 'recovery'];
 
 // ---- Chart instances (Chart.js) ----
 let weeklyScoreChartInstance = null;
-let runDistanceChartInstance = null;
-let runPaceChartInstance = null;
+let enduranceDistanceChartInstance = null;
+let endurancePaceChartInstance = null;
 
 function renderV4Overview() {
   const days = v3PeriodDays(pv4Period);
@@ -290,8 +292,8 @@ function renderV4Overview() {
   // Training Rhythm widget
   const rhythmHTML = renderV4Rhythm(sessions);
 
-  // Running Stats widget + Run Charts
-  const runningHTML = renderV4RunningStats(sessions) + renderRunChartsHTML();
+  // Endurance Trends card (distance, pace, summary)
+  const runningHTML = renderEnduranceCard(sessions);
 
   // Session history (collapsible)
   const historyHTML = renderV4SessionHistory(sessions);
@@ -309,23 +311,35 @@ function renderV4Overview() {
 
 // ==================== TRAINING READINESS WIDGET (ACWR) ====================
 
-function getACWRZone(acwr) {
-  if (acwr < 0.8) return {
-    label: trV3('progress.readiness.zoneUnderreached'),
-    color: '#f97316'
+function getReadinessLabel(score) {
+  if (score <= 40) return {
+    label: trV3('progress.readiness.zoneExhausted'),
+    color: 'var(--zone-exhausted)'
   };
-  if (acwr <= 1.2) return {
-    label: trV3('progress.readiness.zoneBalanced'),
-    color: '#22c55e'
+  if (score <= 60) return {
+    label: trV3('progress.readiness.zoneFatigued'),
+    color: 'var(--zone-fatigued)'
   };
-  if (acwr <= 1.4) return {
-    label: trV3('progress.readiness.zoneHighLoad'),
-    color: '#3b82f6'
+  if (score <= 75) return {
+    label: trV3('progress.readiness.zoneLoaded'),
+    color: 'var(--zone-loaded)'
+  };
+  if (score <= 90) return {
+    label: trV3('progress.readiness.zoneReady'),
+    color: 'var(--zone-ready)'
   };
   return {
-    label: trV3('progress.readiness.zoneOverreaching'),
-    color: '#ef4444'
+    label: trV3('progress.readiness.zoneFresh'),
+    color: 'var(--zone-fresh)'
   };
+}
+
+function getReadinessBarColor(score) {
+  if (score <= 40) return 'var(--zone-exhausted)';
+  if (score <= 60) return 'var(--zone-fatigued)';
+  if (score <= 75) return 'var(--zone-loaded)';
+  if (score <= 90) return 'var(--zone-ready)';
+  return 'var(--zone-fresh)';
 }
 
 function renderReadinessWidget() {
@@ -339,41 +353,33 @@ function renderReadinessWidget() {
         <div class="acwr-widget-header">
           <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
         </div>
-        <div class="acwr-no-data">
-          <span class="material-symbols-rounded acwr-no-data-icon">hourglass_empty</span>
-          <p>${trV3('progress.readiness.noData')}</p>
+        <div class="acwr-score-section">
+          <div class="acwr-score-display" style="color: var(--text-tertiary);">--</div>
+          <div class="acwr-zone-label" style="color: var(--text-tertiary);">${trV3('progress.readiness.buildingBaseline')}</div>
         </div>
       </div>`;
   }
 
-  const zone = getACWRZone(data.acwr);
   const score = data.readinessScore;
+  const zone = getReadinessLabel(score);
+  const barColor = getReadinessBarColor(score);
 
   return `
     <div class="pv3-card acwr-widget">
       <div class="acwr-widget-header">
         <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
-        <div class="acwr-widget-header-right">
-          <span class="acwr-window-label">${trV3('progress.readiness.windowLabel')}</span>
-          <button class="acwr-info-btn" onclick="openACWRInfoModal()" aria-label="Info">
-            <span class="material-symbols-rounded">info</span>
-          </button>
-        </div>
+        <button class="acwr-info-btn" onclick="openACWRInfoModal()" aria-label="Info">
+          <span class="material-symbols-rounded">info</span>
+        </button>
       </div>
       <div class="acwr-score-section">
         <div class="acwr-score-display" style="color: ${zone.color};">${score}</div>
         <div class="acwr-zone-label" style="color: ${zone.color};">${zone.label}</div>
       </div>
       <div class="acwr-bar-track">
-        <div class="acwr-bar-marker" style="left: ${score}%;"></div>
+        <div class="acwr-bar-fill" style="width: ${score}%; background: ${barColor};"></div>
       </div>
-      <div class="acwr-stats">
-        <span class="acwr-stat">${trV3('progress.readiness.acwrLabel')}: ${data.acwr.toFixed(2)}</span>
-        <span class="acwr-stat-separator"></span>
-        <span class="acwr-stat">${trV3('progress.readiness.acuteLabel')}: ${Math.round(data.acuteLoad)}</span>
-        <span class="acwr-stat-separator"></span>
-        <span class="acwr-stat">${trV3('progress.readiness.chronicLabel')}: ${Math.round(data.chronicLoad)}</span>
-      </div>
+      <div class="acwr-subtitle">${trV3('progress.readiness.loadRatioLabel')}: ${data.acwr.toFixed(2)}</div>
     </div>`;
 }
 
@@ -383,11 +389,35 @@ function openACWRInfoModal() {
     trV3('progress.readiness.infoTitle'),
     `<div class="acwr-info-content">
       <p>${trV3('progress.readiness.infoBody')}</p>
+      <p class="acwr-info-compare">${trV3('progress.readiness.infoCompare')}</p>
+      <ul class="acwr-info-list">
+        <li>${trV3('progress.readiness.infoRecent')}</li>
+        <li>${trV3('progress.readiness.infoLongTerm')}</li>
+      </ul>
+      <p>${trV3('progress.readiness.infoHighLoad')}</p>
+      <p>${trV3('progress.readiness.infoLowLoad')}</p>
+      <p class="acwr-info-goal">${trV3('progress.readiness.infoGoalNote')}</p>
       <div class="acwr-info-zones">
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#ef4444;"></span> &lt;0.8 – ${trV3('progress.readiness.zoneUnderreached')}</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#22c55e;"></span> 0.8–1.2 – ${trV3('progress.readiness.zoneBalanced')}</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#3b82f6;"></span> 1.2–1.4 – ${trV3('progress.readiness.zoneHighLoad')}</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:#ef4444;"></span> &gt;1.4 – ${trV3('progress.readiness.zoneOverreaching')}</div>
+        <div class="acwr-info-zone">
+          <span class="acwr-info-dot" style="background:var(--zone-exhausted);"></span>
+          <div class="acwr-info-zone-text"><strong>0–40 · ${trV3('progress.readiness.zoneExhausted')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescExhausted')}</span></div>
+        </div>
+        <div class="acwr-info-zone">
+          <span class="acwr-info-dot" style="background:var(--zone-fatigued);"></span>
+          <div class="acwr-info-zone-text"><strong>41–60 · ${trV3('progress.readiness.zoneFatigued')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescFatigued')}</span></div>
+        </div>
+        <div class="acwr-info-zone">
+          <span class="acwr-info-dot" style="background:var(--zone-loaded);"></span>
+          <div class="acwr-info-zone-text"><strong>61–75 · ${trV3('progress.readiness.zoneLoaded')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescLoaded')}</span></div>
+        </div>
+        <div class="acwr-info-zone">
+          <span class="acwr-info-dot" style="background:var(--zone-ready);"></span>
+          <div class="acwr-info-zone-text"><strong>76–90 · ${trV3('progress.readiness.zoneReady')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescReady')}</span></div>
+        </div>
+        <div class="acwr-info-zone">
+          <span class="acwr-info-dot" style="background:var(--zone-fresh);"></span>
+          <div class="acwr-info-zone-text"><strong>&gt;90 · ${trV3('progress.readiness.zoneFresh')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescFresh')}</span></div>
+        </div>
       </div>
     </div>`
   );
@@ -594,70 +624,134 @@ function initWeeklyScoreChart() {
   });
 }
 
-// ==================== RUN ANALYTICS CHARTS ====================
+// ==================== ENDURANCE TRENDS CARD ====================
 
-function renderRunChartsHTML() {
-  if (typeof aggregateRunByPeriod !== 'function') return '';
+const ENDURANCE_SPORT_CONFIG = {
+  run: { iconKey: 'directions_run', labelKey: 'progress.v4.overview.sportRun' },
+  bike: { iconKey: 'directions_bike', labelKey: 'progress.v4.overview.sportBike' },
+  swim: { iconKey: 'pool', labelKey: 'progress.v4.overview.sportSwim' },
+};
 
-  const data = aggregateRunByPeriod(pv4Period);
-  if (!data || !data.length || data.every(d => d.runCount === 0)) return '';
+function renderEnduranceCard(sessions) {
+  if (typeof getAvailableEnduranceSports !== 'function') return '';
+
+  const availableSports = getAvailableEnduranceSports(pv4Period);
+  if (availableSports.length === 0) return '';
+
+  // Auto-fallback if selected sport has no data in this period
+  if (!availableSports.includes(pv4EnduranceSport)) {
+    pv4EnduranceSport = availableSports[0];
+  }
+
+  const sportInfo = ACTIVITY_TYPES[pv4EnduranceSport] || ACTIVITY_TYPES.run;
+  const sportCfg = ENDURANCE_SPORT_CONFIG[pv4EnduranceSport] || ENDURANCE_SPORT_CONFIG.run;
+
+  // Summary metrics from filtered sessions
+  const sportSessions = sessions.filter(s => {
+    const type = (s.activityType || '').toLowerCase();
+    const norm = ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim' })[type] || type;
+    return norm === pv4EnduranceSport;
+  });
+
+  const totalTime = sportSessions.reduce((sum, s) => sum + v3GetDurationMin(s), 0);
+  const totalDist = sportSessions.reduce((sum, s) => sum + (Number(s.distanceKm) || 0), 0);
+  const avgPace = totalDist > 0 ? totalTime / totalDist : null;
+
+  function fmtPace(p) {
+    if (!p || p <= 0) return '-';
+    const m = Math.floor(p);
+    let sec = Math.round((p - m) * 60);
+    if (sec >= 60) return `${m + 1}:00`;
+    return `${m}:${String(sec).padStart(2, '0')}`;
+  }
+
+  // Sport filter chips
+  const chipsHTML = availableSports.map(sport => {
+    const cfg = ENDURANCE_SPORT_CONFIG[sport];
+    const active = sport === pv4EnduranceSport ? ' active' : '';
+    return `<button class="endurance-sport-chip${active}" data-sport="${sport}">
+      <span class="material-symbols-rounded">${cfg.iconKey}</span>
+      ${trV3(cfg.labelKey)}
+    </button>`;
+  }).join('');
+
+  const toggleHTML = availableSports.length > 1 ? `
+    <div class="endurance-sport-toggle">${chipsHTML}</div>` : '';
 
   return `
-    <div class="pv3-card run-charts-card">
+    <div class="pv3-card endurance-card">
       <div class="pv3-card-header">
         <h3 class="pv3-card-title">
-          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px;color:var(--color-category-cardio)">show_chart</span>
-          ${trV3('progress.v4.overview.runCharts')}
+          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px;color:${sportInfo.color}">${sportCfg.iconKey}</span>
+          ${trV3('progress.v4.overview.enduranceTrends')}
         </h3>
+        <span class="pv3-card-subtitle">${sportSessions.length} ${trV3('progress.v4.overview.sessions')}</span>
+      </div>
+      ${toggleHTML}
+      <div class="pv4-running-stats">
+        <div class="pv4-running-stat">
+          <div class="pv4-running-stat-value">${totalTime} min</div>
+          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.totalTime')}</div>
+        </div>
+        <div class="pv4-running-stat">
+          <div class="pv4-running-stat-value">${totalDist > 0 ? totalDist.toFixed(1) + ' km' : '-'}</div>
+          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.totalDistance')}</div>
+        </div>
+        <div class="pv4-running-stat">
+          <div class="pv4-running-stat-value">${avgPace ? fmtPace(avgPace) : '-'}</div>
+          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.avgPace')}</div>
+        </div>
       </div>
       <div class="run-chart-section">
         <h4 class="run-chart-subtitle">${trV3('progress.v4.overview.distancePerWeek')}</h4>
         <div class="run-chart-wrapper">
-          <canvas id="run-distance-canvas"></canvas>
+          <canvas id="endurance-distance-canvas"></canvas>
         </div>
       </div>
-      <div class="run-chart-section">
+      <div class="run-chart-section" id="endurance-pace-section">
         <h4 class="run-chart-subtitle">${trV3('progress.v4.overview.paceTrend')}</h4>
         <div class="run-chart-wrapper">
-          <canvas id="run-pace-canvas"></canvas>
+          <canvas id="endurance-pace-canvas"></canvas>
         </div>
       </div>
     </div>`;
 }
 
-function initRunCharts() {
-  if (typeof Chart === 'undefined' || typeof aggregateRunByPeriod !== 'function') return;
+function initEnduranceCharts() {
+  if (typeof Chart === 'undefined' || typeof aggregateCardioByPeriod !== 'function') return;
 
-  const data = aggregateRunByPeriod(pv4Period);
-  if (!data || !data.length || data.every(d => d.runCount === 0)) return;
+  const distData = aggregateCardioByPeriod('distance', pv4Period, pv4EnduranceSport);
+  const paceData = aggregateCardioByPeriod('pace', pv4Period, pv4EnduranceSport);
 
-  initRunDistanceChart(data);
-  initRunPaceChart(data);
+  if (!distData || !distData.length) return;
+
+  initEnduranceDistanceChart(distData);
+  initEndurancePaceChart(paceData);
 }
 
-function initRunDistanceChart(data) {
-  const canvas = document.getElementById('run-distance-canvas');
+function initEnduranceDistanceChart(data) {
+  const canvas = document.getElementById('endurance-distance-canvas');
   if (!canvas) return;
 
-  if (runDistanceChartInstance) {
-    runDistanceChartInstance.destroy();
-    runDistanceChartInstance = null;
+  if (enduranceDistanceChartInstance) {
+    enduranceDistanceChartInstance.destroy();
+    enduranceDistanceChartInstance = null;
   }
 
   const ctx = canvas.getContext('2d');
-  const cardioColor = getCssVarValue('--color-category-cardio') || '#3b82f6';
+  const sportColor = (ACTIVITY_TYPES[pv4EnduranceSport] || ACTIVITY_TYPES.run).color;
   const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
   const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
 
-  runDistanceChartInstance = new Chart(ctx, {
+  enduranceDistanceChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: data.map(d => d.weekLabel),
+      labels: data.map(d => d.label),
       datasets: [{
         label: trV3('progress.v4.overview.totalDistance'),
-        data: data.map(d => d.totalDistanceKm),
-        backgroundColor: cardioColor,
+        data: data.map(d => d.value),
+        backgroundColor: sportColor,
         borderRadius: 4,
         maxBarThickness: 24,
       }]
@@ -702,9 +796,9 @@ function initRunDistanceChart(data) {
           callbacks: {
             label: function(context) {
               const d = data[context.dataIndex];
-              const lines = [`${trV3('progress.v4.overview.totalDistance')}: ${d.totalDistanceKm} km`];
-              lines.push(`${trV3('progress.v4.overview.runChartTooltipRuns')}: ${d.runCount}`);
-              if (d.totalDurationMin > 0) lines.push(`${trV3('progress.v4.overview.totalTime')}: ${d.totalDurationMin} min`);
+              const lines = [`${trV3('progress.v4.overview.totalDistance')}: ${d.value} km`];
+              lines.push(`${trV3('progress.v4.overview.sessions')}: ${d.sessionCount}`);
+              if (d.totalDuration > 0) lines.push(`${trV3('progress.v4.overview.totalTime')}: ${Math.round(d.totalDuration)} min`);
               return lines;
             },
           }
@@ -714,26 +808,25 @@ function initRunDistanceChart(data) {
   });
 }
 
-function initRunPaceChart(data) {
-  const canvas = document.getElementById('run-pace-canvas');
+function initEndurancePaceChart(data) {
+  const canvas = document.getElementById('endurance-pace-canvas');
   if (!canvas) return;
 
-  if (runPaceChartInstance) {
-    runPaceChartInstance.destroy();
-    runPaceChartInstance = null;
+  if (endurancePaceChartInstance) {
+    endurancePaceChartInstance.destroy();
+    endurancePaceChartInstance = null;
   }
 
-  // Filter out weeks with no pace data
-  const paceData = data.filter(d => d.avgPace != null);
+  // Filter out buckets with no pace data
+  const paceData = data.filter(d => d.value > 0);
   if (paceData.length < 2) {
-    // Hide the canvas wrapper if not enough data
-    const wrapper = canvas.closest('.run-chart-section');
-    if (wrapper) wrapper.style.display = 'none';
+    const section = document.getElementById('endurance-pace-section');
+    if (section) section.style.display = 'none';
     return;
   }
 
   const ctx = canvas.getContext('2d');
-  const cardioColor = getCssVarValue('--color-category-cardio') || '#3b82f6';
+  const sportColor = (ACTIVITY_TYPES[pv4EnduranceSport] || ACTIVITY_TYPES.run).color;
   const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
   const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
@@ -746,19 +839,19 @@ function initRunPaceChart(data) {
     return `${m}:${String(sec).padStart(2, '0')}`;
   };
 
-  runPaceChartInstance = new Chart(ctx, {
+  endurancePaceChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: paceData.map(d => d.weekLabel),
+      labels: paceData.map(d => d.label),
       datasets: [{
         label: trV3('progress.v4.overview.avgPace'),
-        data: paceData.map(d => d.avgPace),
-        borderColor: cardioColor,
-        backgroundColor: cardioColor,
+        data: paceData.map(d => d.value),
+        borderColor: sportColor,
+        backgroundColor: sportColor,
         borderWidth: 2.5,
         pointRadius: 4,
         pointHoverRadius: 6,
-        pointBackgroundColor: cardioColor,
+        pointBackgroundColor: sportColor,
         tension: 0.3,
         fill: false,
       }]
@@ -804,15 +897,27 @@ function initRunPaceChart(data) {
             label: function(context) {
               const d = paceData[context.dataIndex];
               return [
-                `${trV3('progress.v4.overview.avgPace')}: ${fmtPace(d.avgPace)} min/km`,
-                `${trV3('progress.v4.overview.totalDistance')}: ${d.totalDistanceKm} km`,
-                `${trV3('progress.v4.overview.runChartTooltipRuns')}: ${d.runCount}`,
+                `${trV3('progress.v4.overview.avgPace')}: ${fmtPace(d.value)} min/km`,
+                `${trV3('progress.v4.overview.totalDistance')}: ${d.totalDistance.toFixed(1)} km`,
+                `${trV3('progress.v4.overview.sessions')}: ${d.sessionCount}`,
               ];
             },
           }
         }
       }
     }
+  });
+}
+
+function attachEnduranceSportListeners() {
+  document.querySelectorAll('.endurance-sport-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sport = btn.dataset.sport;
+      if (sport === pv4EnduranceSport) return;
+      pv4EnduranceSport = sport;
+      localStorage.setItem('enduranceSportKey', sport);
+      renderProgressV4();
+    });
   });
 }
 
@@ -917,54 +1022,6 @@ function renderV4Rhythm(sessions) {
       </div>
       <div class="pv3-rhythm-chart">${barsHtml}</div>
       <div class="pv3-legend">${legendHtml}</div>
-    </div>`;
-}
-
-// ==================== RUNNING STATS WIDGET ====================
-
-function renderV4RunningStats(sessions) {
-  const runSessions = sessions.filter(s => {
-    const type = (s.activityType || '').toLowerCase();
-    return type === 'run' || type === 'running' || type === 'laufen';
-  });
-
-  if (runSessions.length === 0) return '';
-
-  const totalTime = runSessions.reduce((sum, s) => sum + v3GetDurationMin(s), 0);
-  const totalDist = runSessions.reduce((sum, s) => sum + (Number(s.distanceKm) || 0), 0);
-  const avgPace = totalDist > 0 ? totalTime / totalDist : null;
-
-  function fmtPace(p) {
-    if (!p || p <= 0) return '-';
-    const m = Math.floor(p);
-    let sec = Math.round((p - m) * 60);
-    if (sec >= 60) return `${m + 1}:00`;
-    return `${m}:${String(sec).padStart(2, '0')}`;
-  }
-
-  return `
-    <div class="pv3-card">
-      <div class="pv3-card-header">
-        <h3 class="pv3-card-title">
-          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px;color:var(--color-category-cardio)">directions_run</span>
-          ${trV3('progress.v4.overview.runningStats')}
-        </h3>
-        <span class="pv3-card-subtitle">${runSessions.length} ${trV3('progress.v4.overview.runs')}</span>
-      </div>
-      <div class="pv4-running-stats">
-        <div class="pv4-running-stat">
-          <div class="pv4-running-stat-value">${totalTime} min</div>
-          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.totalTime')}</div>
-        </div>
-        <div class="pv4-running-stat">
-          <div class="pv4-running-stat-value">${totalDist > 0 ? totalDist.toFixed(1) + ' km' : '-'}</div>
-          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.totalDistance')}</div>
-        </div>
-        <div class="pv4-running-stat">
-          <div class="pv4-running-stat-value">${avgPace ? fmtPace(avgPace) : '-'}</div>
-          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.avgPace')}</div>
-        </div>
-      </div>
     </div>`;
 }
 

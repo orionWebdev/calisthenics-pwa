@@ -49,6 +49,11 @@ function mapReadiness(acwr: number): number {
   return clamp(readiness, 0, 100);
 }
 
+// ---------- EMA Constants ----------
+
+const ACUTE_ALPHA = 2 / (7 + 1);
+const CHRONIC_ALPHA = 2 / (28 + 1);
+
 // ---------- Main ----------
 
 export function getACWR(
@@ -61,56 +66,41 @@ export function getACWR(
   const end = new Date(referenceDate);
   end.setHours(23, 59, 59, 999);
 
-  const acuteStart = new Date(referenceDate);
-  acuteStart.setDate(acuteStart.getDate() - 6);
-  acuteStart.setHours(0, 0, 0, 0);
-
-  const chronicStart = new Date(referenceDate);
-  chronicStart.setDate(chronicStart.getDate() - 27);
-  chronicStart.setHours(0, 0, 0, 0);
-
-  let acuteLoad = 0;
-  let chronicTotal = 0;
-  let earliestSessionDate: Date | null = null;
+  // Build daily load map (aggregate same-day sessions, skip recovery)
+  const dailyLoads = new Map<string, number>();
 
   for (const s of sessions) {
     if (s.type !== 'strength' && s.type !== 'cardio') continue;
 
     const sessionDate = parseSessionDate(s.date);
-    if (!sessionDate) continue;
-    if (sessionDate < chronicStart || sessionDate > end) continue;
+    if (!sessionDate || sessionDate > end) continue;
 
     const { rawLoad } = calculateSessionLoad(s, userProfile);
-
-    chronicTotal += rawLoad;
-
-    if (sessionDate >= acuteStart) {
-      acuteLoad += rawLoad;
-    }
-
-    if (!earliestSessionDate || sessionDate < earliestSessionDate) {
-      earliestSessionDate = sessionDate;
-    }
+    const key = sessionDate.toISOString().slice(0, 10);
+    dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
 
-  const chronicLoad = chronicTotal / 4;
-
-  // Need at least 14 days of data to produce a meaningful ratio
-  if (earliestSessionDate) {
-    const daySpan =
-      (end.getTime() - earliestSessionDate.getTime()) / (1000 * 60 * 60 * 24);
-    if (daySpan < 14) {
-      return { acuteLoad, chronicLoad, acwr: null, readinessScore: null };
-    }
-  } else {
-    return { acuteLoad, chronicLoad, acwr: null, readinessScore: null };
+  // Need at least 14 unique days of data
+  if (dailyLoads.size < 14) {
+    return { acuteLoad: 0, chronicLoad : 0, acwr: null, readinessScore: null };
   }
 
-  const acwr = chronicLoad === 0
+  // Sort days ascending and iterate with EMA
+  const sortedDays = [...dailyLoads.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+
+  let acuteEMA = 0;
+  let chronicEMA = 0;
+
+  for (const [, load] of sortedDays) {
+    acuteEMA = load * ACUTE_ALPHA + acuteEMA * (1 - ACUTE_ALPHA);
+    chronicEMA = load * CHRONIC_ALPHA + chronicEMA * (1 - CHRONIC_ALPHA);
+  }
+
+  const acwr = chronicEMA === 0
     ? 1
-    : Math.round((acuteLoad / chronicLoad) * 100) / 100;
+    : Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
   const readinessScore = mapReadiness(acwr);
 
-  return { acuteLoad, chronicLoad, acwr, readinessScore };
+  return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore };
 }

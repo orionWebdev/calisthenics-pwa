@@ -42,6 +42,8 @@ const RPE_FACTORS: Record<number, number> = {
   5: 1.4,
 };
 
+const STRENGTH_SCALE = 0.01;
+
 function getRpeFactor(rpe?: number | null): number {
   if (rpe == null) return 1.0;
   return RPE_FACTORS[rpe] ?? 1.0;
@@ -69,7 +71,7 @@ function calculateStrengthLoad(session: Session, userProfile: UserProfile): numb
     }
   }
 
-  return totalVolume * getRpeFactor(session.rpe);
+  return totalVolume * getRpeFactor(session.rpe) * STRENGTH_SCALE;
 }
 
 // ---------- Cardio ----------
