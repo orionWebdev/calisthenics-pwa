@@ -7338,6 +7338,65 @@ input[type="range"]::-moz-range-progress {
   transition: background 0.2s ease;
 }
 
+/* ==================== TRAINING PHASE INSIGHTS ==================== */
+
+.training-insight {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.training-breakdown {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.training-phase-hint {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.training-phases-info {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.training-phases-info > summary {
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.training-phases-info > summary::-webkit-details-marker {
+  display: none;
+}
+
+.training-phases-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.training-phases-list > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.phase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
 /* ==================== WEEKLY SCORE CHART ==================== */
 
 .weekly-score-chart-card {

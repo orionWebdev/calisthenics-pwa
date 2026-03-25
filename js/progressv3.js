@@ -352,6 +352,32 @@ function getPhaseFromZone(zone) {
   };
 }
 
+function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, daysSinceLastSession }) {
+  if (acwr === null || readinessScore === null) {
+    return trV3('progress.readiness.insightNoData');
+  }
+  if (daysSinceLastSession !== null && daysSinceLastSession >= 5) {
+    return trV3('progress.readiness.insightNoRecent');
+  }
+  if (acwr < 0.7) {
+    return trV3('progress.readiness.insightLowAcwr');
+  }
+  if (acwr <= 1.2) {
+    return trV3('progress.readiness.insightBalanced');
+  }
+  if (acwr <= 1.5) {
+    return trV3('progress.readiness.insightHighLoad');
+  }
+  return trV3('progress.readiness.insightOverreaching');
+}
+
+function getPhaseHint(score) {
+  if (score < 60) return trV3('progress.readiness.hintLow');
+  if (score <= 75) return trV3('progress.readiness.hintMaintaining');
+  if (score <= 90) return trV3('progress.readiness.hintBuilding');
+  return trV3('progress.readiness.hintPeak');
+}
+
 function renderTrainingPhaseTimeline(days = 7) {
   if (typeof getACWR !== 'function' || !allSessions?.length) return '';
 
@@ -392,16 +418,34 @@ function renderReadinessWidget() {
           <div class="acwr-zone-label" style="color: var(--text-tertiary);">--</div>
           <div class="acwr-score-display" style="color: var(--text-tertiary);">${trV3('progress.readiness.buildingBaseline')}</div>
         </div>
+        <div class="training-insight">
+          <div class="insight-text">${getReadinessInsight({ acwr: null, readinessScore: null, acuteLoad: 0, chronicLoad: 0, daysSinceLastSession: null })}</div>
+        </div>
       </div>`;
   }
 
   const phase = getPhaseFromZone(data.zone);
   const zoneColor = getZoneColor(data.zone);
   const zoneBg = getZoneBg(data.zone);
-  const subtitle = data.zone === 'form_loss'
-    ? trV3('progress.readiness.subtitleFormLoss')
-    : trV3('progress.readiness.subtitle');
   const timeline = renderTrainingPhaseTimeline(7);
+  const insight = getReadinessInsight(data);
+  const phaseHint = getPhaseHint(data.readinessScore);
+
+  const acuteRounded = Math.round(data.acuteLoad);
+  const chronicRounded = Math.round(data.chronicLoad);
+  const ratioDisplay = data.acwr !== null ? data.acwr.toFixed(2) : '–';
+
+  const phasesHTML = `
+    <details class="training-phases-info">
+      <summary>${trV3('progress.readiness.phasesTitle')}</summary>
+      <div class="training-phases-list">
+        <div><span class="phase-dot" style="background:${getZoneColor('overreaching')};"></span>${trV3('progress.readiness.zoneOverreaching')} &nbsp;0–35</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('fatigued')};"></span>${trV3('progress.readiness.zoneFatigued')} &nbsp;36–55</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('maintaining')};"></span>${trV3('progress.readiness.zoneMaintaining')} &nbsp;56–70</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('building')};"></span>${trV3('progress.readiness.zoneBuilding')} &nbsp;71–85</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('peak')};"></span>${trV3('progress.readiness.zonePeak')} &nbsp;86–100</div>
+      </div>
+    </details>`;
 
   return `
     <div class="pv3-card acwr-widget" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
@@ -419,7 +463,12 @@ function renderReadinessWidget() {
         <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${zoneColor};"></div>
       </div>
       ${timeline}
-      <div class="acwr-subtitle">${subtitle}</div>
+      <div class="training-insight">
+        <div class="insight-text">${insight}</div>
+      </div>
+      <div class="training-breakdown">Acute ${acuteRounded} · Chronic ${chronicRounded} · Ratio ${ratioDisplay}</div>
+      <div class="training-phase-hint">${phaseHint}</div>
+      ${phasesHTML}
     </div>`;
 }
 

@@ -765,7 +765,18 @@ const translations = {
         subtitle: 'Basierend auf deinem Trainingsvolumen der letzten Wochen',
         subtitleFormLoss: 'Längere Trainingspause erkannt',
         noData: 'Noch nicht genug Trainingsdaten',
-        windowLabel: '7/28 Tage'
+        windowLabel: '7/28 Tage',
+        insightNoData: 'Starte mit dem Loggen deines Trainings, um eine Baseline aufzubauen.',
+        insightNoRecent: 'Du hast seit einigen Tagen nicht trainiert. Deine kurzfristige Belastung sinkt, was dich in Richtung Erholung verschiebt.',
+        insightLowAcwr: 'Deine aktuelle Trainingsbelastung liegt unter deinem gewohnten Niveau. Das bringt dich in eine Erholungs- oder Detrainingsphase.',
+        insightBalanced: 'Deine kurzfristige und langfristige Belastung sind gut ausbalanciert. Das ist eine stabile Trainingszone.',
+        insightHighLoad: 'Deine aktuelle Belastung steigt schneller als deine Baseline. Du baust Fitness auf, aber Ermüdung nimmt zu.',
+        insightOverreaching: 'Deine kurzfristige Belastung liegt deutlich über deiner Baseline. Das kann zu Ermüdung oder Übertraining führen.',
+        hintLow: 'Erhöhe deine Trainingsbelastung, um einen ausgeglichenen Zustand zu erreichen.',
+        hintMaintaining: 'Du bist nah am optimalen Gleichgewicht. Bleib konsequent.',
+        hintBuilding: 'Du befindest dich in einer produktiven Trainingsphase. Steigere behutsam.',
+        hintPeak: 'Du bist in Höchstform. Ideal für intensive Trainingseinheiten.',
+        phasesTitle: 'Was bedeuten die Phasen?'
       },
       bodyweight: {
         title: 'Bodyweight',
@@ -1898,7 +1909,18 @@ const translations = {
         subtitle: 'Based on your training volume over the past weeks',
         subtitleFormLoss: 'Extended training break detected',
         noData: 'Not enough training data yet',
-        windowLabel: '7/28 days'
+        windowLabel: '7/28 days',
+        insightNoData: 'Start logging training to build your baseline.',
+        insightNoRecent: "You haven't trained for a few days. Your short-term load is dropping, which shifts you toward recovery.",
+        insightLowAcwr: 'Your recent training load is lower than your usual level. This puts you in a recovery or detraining phase.',
+        insightBalanced: 'Your short-term and long-term load are well balanced. This is a stable training zone.',
+        insightHighLoad: "Your recent training load is increasing faster than your baseline. You're building fitness, but fatigue is rising.",
+        insightOverreaching: 'Your short-term load is much higher than your baseline. This may lead to fatigue or overtraining.',
+        hintLow: 'Increase training load to move toward a balanced state.',
+        hintMaintaining: 'You are close to optimal balance. Maintain consistency.',
+        hintBuilding: 'You are in a productive training phase. Progress carefully.',
+        hintPeak: 'You are at peak readiness. Ideal for high performance efforts.',
+        phasesTitle: 'What do the phases mean?'
       },
       bodyweight: {
         title: 'Bodyweight',
