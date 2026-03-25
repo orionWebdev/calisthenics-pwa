@@ -18,6 +18,7 @@ export interface SessionExercise {
 
 export interface Session {
   type: 'strength' | 'cardio' | 'recovery';
+  discipline?: 'bodyweight' | 'weights' | string;
   exercises?: SessionExercise[];
   rpe?: number | null;
   duration?: number | null;
@@ -42,8 +43,6 @@ const RPE_FACTORS: Record<number, number> = {
   5: 1.4,
 };
 
-const STRENGTH_SCALE = 0.01;
-
 function getRpeFactor(rpe?: number | null): number {
   if (rpe == null) return 1.0;
   return RPE_FACTORS[rpe] ?? 1.0;
@@ -52,9 +51,17 @@ function getRpeFactor(rpe?: number | null): number {
 // ---------- Strength ----------
 
 function calculateStrengthLoad(session: Session, userProfile: UserProfile): number {
-  if (!session.exercises?.length) return 0;
+  const rpe = session.rpe ?? 3;
+  const rpeFactor = getRpeFactor(rpe);
 
-  let totalVolume = 0;
+  if (!session.exercises?.length) {
+    const duration = session.duration ?? 0;
+    if (duration <= 0) return 0;
+    const multiplier = session.discipline === 'bodyweight' ? 4.5 : 6;
+    return duration * rpeFactor * multiplier;
+  }
+
+  let sessionVolume = 0;
 
   for (const exercise of session.exercises) {
     if (!exercise.sets?.length) continue;
@@ -63,15 +70,17 @@ function calculateStrengthLoad(session: Session, userProfile: UserProfile): numb
       const reps = set.reps ?? 0;
       if (reps <= 0) continue;
 
-      const effectiveLoad = exercise.usesBodyweight
-        ? (userProfile.bodyWeight ?? 0) + (set.weight ?? 0)
+      const effectiveWeight = exercise.usesBodyweight === true
+        ? (userProfile.bodyWeight ?? 0)
         : (set.weight ?? 0);
 
-      totalVolume += effectiveLoad * reps;
+      if (effectiveWeight === 0) continue;
+
+      sessionVolume += reps * effectiveWeight;
     }
   }
 
-  return totalVolume * getRpeFactor(session.rpe) * STRENGTH_SCALE;
+  return (sessionVolume / 100) * rpeFactor;
 }
 
 // ---------- Cardio ----------
@@ -79,7 +88,8 @@ function calculateStrengthLoad(session: Session, userProfile: UserProfile): numb
 function calculateCardioLoad(session: Session): number {
   const duration = session.duration ?? 0;
   if (duration <= 0) return 0;
-  return duration * getRpeFactor(session.rpe) * 4;
+  const rpe = session.rpe ?? 3;
+  return duration * getRpeFactor(rpe) * 4;
 }
 
 // ---------- Main ----------
@@ -95,12 +105,13 @@ export function calculateSessionLoad(
   }
 
   const safeProfile: UserProfile = userProfile ?? {};
+  const round = (v: number) => Math.round(v * 100) / 100;
 
   switch (type) {
     case 'strength':
-      return { rawLoad: calculateStrengthLoad(session, safeProfile), type };
+      return { rawLoad: round(calculateStrengthLoad(session, safeProfile)), type };
     case 'cardio':
-      return { rawLoad: calculateCardioLoad(session), type };
+      return { rawLoad: round(calculateCardioLoad(session)), type };
     case 'recovery':
       return { rawLoad: 0, type };
     default:

@@ -361,6 +361,13 @@ async function initApp() {
   }
 
   try {
+    // 0. Load user profile (needed for session load calculations)
+    if (typeof loadUserProfileFromFirestore === 'function') {
+      await loadUserProfileFromFirestore();
+    } else if (typeof loadUserProfileFromCache === 'function') {
+      loadUserProfileFromCache();
+    }
+
     // 1. Initialize default exercises if needed
     console.log('📦 Initializing default exercises...');
     await initializeDefaultExercises();

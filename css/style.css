@@ -50,12 +50,21 @@
   --border-secondary: rgba(255, 255, 255, 0.06);
   --border-accent: rgba(240, 34, 119, 0.3);
 
-  /* Zone Colors – Readiness */
-  --zone-exhausted: #ff3b30;   /* rot */
-  --zone-fatigued: #ff9500;    /* orange */
-  --zone-loaded: #34c759;      /* grün */
-  --zone-ready: #30b0ff;       /* blau */
-  --zone-fresh: #5856d6;       /* violett */
+  /* Zone Colors – Training Phase */
+  --zone-exhausted: #ef4444;      /* rot — overreaching */
+  --zone-fatigued: #f97316;       /* orange — fatigued */
+  --zone-loaded: #eab308;         /* gelb — maintaining */
+  --zone-ready: #22c55e;          /* grün — building */
+  --zone-fresh: #3b82f6;          /* blau — peak */
+  --zone-form-loss: #8e8e93;      /* grau — form_loss */
+
+  /* Zone Background Tints – Training Phase (8% opacity) */
+  --zone-exhausted-bg: rgba(239, 68, 68, 0.08);
+  --zone-fatigued-bg: rgba(249, 115, 22, 0.08);
+  --zone-loaded-bg: rgba(234, 179, 8, 0.08);
+  --zone-ready-bg: rgba(34, 197, 94, 0.08);
+  --zone-fresh-bg: rgba(59, 130, 246, 0.08);
+  --zone-form-loss-bg: rgba(142, 142, 147, 0.08);
 
   /* Category Colors */
   --color-category-strength: #f59e0b;
@@ -194,7 +203,7 @@
 [data-theme="light"] .pv4-tab-bar,
 [data-theme="light"] .pv4-summary-card,
 [data-theme="light"] .pv4-session-row,
-[data-theme="light"] .pv4-exercise-row {
+[data-theme="light"] .exercise-card {
   color: var(--color-text);
 }
 
@@ -7183,10 +7192,11 @@ input[type="range"]::-moz-range-progress {
   line-height: 1.5;
 }
 
-/* ==================== ACWR READINESS WIDGET ==================== */
+/* ==================== TRAINING PHASE WIDGET ==================== */
 
 .acwr-widget {
   padding: var(--ui-card-padding, 1.25rem);
+  transition: background 0.3s ease;
 }
 
 .acwr-widget-header {
@@ -7223,15 +7233,18 @@ input[type="range"]::-moz-range-progress {
 }
 
 .acwr-score-display {
-  font-size: var(--font-size-4xl);
-  font-weight: 700;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
   line-height: 1;
-  margin-bottom: var(--spacing-xs, 0.25rem);
+  margin-top: var(--spacing-xs, 0.25rem);
 }
 
 .acwr-zone-label {
-  font-size: var(--font-size-md);
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: var(--spacing-xs, 0.25rem);
 }
 
 .acwr-bar-track {
@@ -7246,7 +7259,7 @@ input[type="range"]::-moz-range-progress {
 .acwr-bar-fill {
   height: 100%;
   border-radius: 4px;
-  transition: width 0.4s ease;
+  transition: width 0.3s ease;
 }
 
 .acwr-subtitle {
@@ -7279,33 +7292,6 @@ input[type="range"]::-moz-range-progress {
   margin: 0 0 var(--spacing-sm, 0.5rem) 0;
 }
 
-.acwr-info-compare {
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-top: var(--spacing-sm, 0.5rem);
-}
-
-.acwr-info-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 var(--spacing-sm, 0.5rem) 0;
-}
-
-.acwr-info-list li {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  padding-left: var(--spacing-md, 1rem);
-  position: relative;
-}
-
-.acwr-info-list li::before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: var(--text-tertiary);
-}
-
 .acwr-info-goal {
   font-style: italic;
   margin-top: var(--spacing-sm, 0.5rem);
@@ -7322,7 +7308,7 @@ input[type="range"]::-moz-range-progress {
   font-size: var(--font-size-sm);
   color: var(--text-primary);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--spacing-sm, 0.5rem);
 }
 
@@ -7331,16 +7317,84 @@ input[type="range"]::-moz-range-progress {
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
-  margin-top: 5px;
 }
 
-.acwr-info-zone-text {
+/* ==================== TRAINING PHASE TIMELINE ==================== */
+
+.acwr-timeline {
+  margin-top: 12px;
+}
+
+.acwr-timeline-track {
+  display: flex;
+  gap: 3px;
+}
+
+.acwr-timeline-segment {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-surface-active);
+  transition: background 0.2s ease;
+}
+
+/* ==================== TRAINING PHASE INSIGHTS ==================== */
+
+.training-insight {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
-.acwr-info-zone-desc {
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
+.training-breakdown {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.training-phase-hint {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.training-phases-info {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.training-phases-info > summary {
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.training-phases-info > summary::-webkit-details-marker {
+  display: none;
+}
+
+.training-phases-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.training-phases-list > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.phase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 /* ==================== WEEKLY SCORE CHART ==================== */
@@ -15361,65 +15415,104 @@ input[type="range"]::-moz-range-progress {
   height: 14px;
 }
 
-/* ==================== EXERCISE LIST ==================== */
+/* ==================== EXERCISE CARD GRID ==================== */
 
-.pv4-exercise-list {
+.pv4-exercise-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .pv4-exercise-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+.exercise-card {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
-}
-
-.pv4-exercise-row {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.75rem;
   background: var(--bg-card, #161618);
-  border: 1px solid var(--border-primary, rgba(255,255,255,0.06));
-  border-radius: 0.875rem;
+  border: 1px solid var(--border-primary, rgba(255,255,255,0.1));
+  border-radius: 0.75rem;
+  padding: 0.875rem;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
   cursor: pointer;
-  transition: background 0.15s ease;
   text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.pv4-exercise-row:active {
+.exercise-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.exercise-card:active {
   background: var(--bg-surface-active, rgba(255,255,255,0.08));
 }
 
-.pv4-exercise-info {
-  flex: 1;
-  min-width: 0;
+.exercise-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.pv4-exercise-name {
+.exercise-title {
   font-size: 0.8125rem;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
-.pv4-exercise-meta {
+.exercise-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.exercise-trend-badge.up {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.exercise-trend-badge.down {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.exercise-trend-badge.same {
+  color: var(--color-text-muted, #9ca3af);
+  background: rgba(156, 163, 175, 0.12);
+}
+
+.exercise-meta {
   font-size: 0.6875rem;
   color: var(--color-text-muted, #9ca3af);
-  margin-top: 0.1rem;
+  margin-top: 0.25rem;
 }
 
-.pv4-sparkline-canvas {
-  width: 64px;
-  height: 24px;
-  flex-shrink: 0;
+.exercise-sparkline-wrapper {
+  margin-top: 0.625rem;
 }
 
-.pv4-trend-indicator {
-  font-size: 18px;
-  flex-shrink: 0;
+.exercise-sparkline-wrapper canvas {
+  width: 100%;
+  height: 32px;
+  display: block;
 }
-
-.pv4-trend-indicator.up { color: #22c55e; }
-.pv4-trend-indicator.down { color: #ef4444; }
-.pv4-trend-indicator.same { color: var(--color-text-muted, #9ca3af); }
 
 /* ==================== PROGRESS V4 PLAN PROGRESS ==================== */
 

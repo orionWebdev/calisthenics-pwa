@@ -309,37 +309,98 @@ function renderV4Overview() {
   `;
 }
 
-// ==================== TRAINING READINESS WIDGET (ACWR) ====================
+// ==================== TRAINING PHASE WIDGET (ACWR) ====================
 
-function getReadinessLabel(score) {
-  if (score <= 40) return {
-    label: trV3('progress.readiness.zoneExhausted'),
-    color: 'var(--zone-exhausted)'
+function getZoneColor(zone) {
+  const map = {
+    overreaching: 'var(--zone-exhausted)',
+    fatigued: 'var(--zone-fatigued)',
+    maintaining: 'var(--zone-loaded)',
+    building: 'var(--zone-ready)',
+    peak: 'var(--zone-fresh)',
+    form_loss: 'var(--zone-form-loss)'
   };
-  if (score <= 60) return {
-    label: trV3('progress.readiness.zoneFatigued'),
-    color: 'var(--zone-fatigued)'
+  return map[zone] || map.maintaining;
+}
+
+function getZoneBg(zone) {
+  const map = {
+    overreaching: 'var(--zone-exhausted-bg)',
+    fatigued: 'var(--zone-fatigued-bg)',
+    maintaining: 'var(--zone-loaded-bg)',
+    building: 'var(--zone-ready-bg)',
+    peak: 'var(--zone-fresh-bg)',
+    form_loss: 'var(--zone-form-loss-bg)'
   };
-  if (score <= 75) return {
-    label: trV3('progress.readiness.zoneLoaded'),
-    color: 'var(--zone-loaded)'
+  return map[zone] || map.maintaining;
+}
+
+function getPhaseFromZone(zone) {
+  const zoneMap = {
+    overreaching: { label: trV3('progress.readiness.zoneOverreaching') },
+    fatigued: { label: trV3('progress.readiness.zoneFatigued') },
+    maintaining: { label: trV3('progress.readiness.zoneMaintaining') },
+    building: { label: trV3('progress.readiness.zoneBuilding') },
+    peak: { label: trV3('progress.readiness.zonePeak') },
+    form_loss: { label: trV3('progress.readiness.zoneFormLoss') }
   };
-  if (score <= 90) return {
-    label: trV3('progress.readiness.zoneReady'),
-    color: 'var(--zone-ready)'
-  };
+  const entry = zoneMap[zone] || zoneMap.maintaining;
   return {
-    label: trV3('progress.readiness.zoneFresh'),
-    color: 'var(--zone-fresh)'
+    label: entry.label,
+    color: getZoneColor(zone),
+    bgTint: `linear-gradient(${getZoneBg(zone)}, ${getZoneBg(zone)}), var(--bg-card)`
   };
 }
 
-function getReadinessBarColor(score) {
-  if (score <= 40) return 'var(--zone-exhausted)';
-  if (score <= 60) return 'var(--zone-fatigued)';
-  if (score <= 75) return 'var(--zone-loaded)';
-  if (score <= 90) return 'var(--zone-ready)';
-  return 'var(--zone-fresh)';
+function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, daysSinceLastSession }) {
+  if (acwr === null || readinessScore === null) {
+    return trV3('progress.readiness.insightNoData');
+  }
+  if (daysSinceLastSession !== null && daysSinceLastSession >= 5) {
+    return trV3('progress.readiness.insightNoRecent');
+  }
+  if (acwr < 0.7) {
+    return trV3('progress.readiness.insightLowAcwr');
+  }
+  if (acwr <= 1.2) {
+    return trV3('progress.readiness.insightBalanced');
+  }
+  if (acwr <= 1.5) {
+    return trV3('progress.readiness.insightHighLoad');
+  }
+  return trV3('progress.readiness.insightOverreaching');
+}
+
+function getPhaseHint(score) {
+  if (score < 60) return trV3('progress.readiness.hintLow');
+  if (score <= 75) return trV3('progress.readiness.hintMaintaining');
+  if (score <= 90) return trV3('progress.readiness.hintBuilding');
+  return trV3('progress.readiness.hintPeak');
+}
+
+function renderTrainingPhaseTimeline(days = 7) {
+  if (typeof getACWR !== 'function' || !allSessions?.length) return '';
+
+  const segments = [];
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  for (let i = 0; i < days; i++) {
+    const dayDate = new Date(today);
+    dayDate.setDate(dayDate.getDate() - (days - 1 - i));
+
+    const data = getACWR(allSessions, dayDate);
+    const hasZone = data.zone !== null;
+    const color = hasZone ? getZoneColor(data.zone) : 'var(--bg-surface-active)';
+    const opacity = 0.5 + 0.5 * (i / (days - 1));
+
+    segments.push(`<div class="acwr-timeline-segment" style="background: ${color}; opacity: ${opacity.toFixed(2)};"></div>`);
+  }
+
+  return `
+    <div class="acwr-timeline">
+      <div class="acwr-timeline-track">${segments.join('')}</div>
+    </div>`;
 }
 
 function renderReadinessWidget() {
@@ -347,25 +408,47 @@ function renderReadinessWidget() {
 
   const data = getACWR(allSessions, new Date());
 
-  if (data.readinessScore === null) {
+  if (data.readinessScore === null || data.zone === null) {
     return `
       <div class="pv3-card acwr-widget">
         <div class="acwr-widget-header">
           <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
         </div>
         <div class="acwr-score-section">
-          <div class="acwr-score-display" style="color: var(--text-tertiary);">--</div>
-          <div class="acwr-zone-label" style="color: var(--text-tertiary);">${trV3('progress.readiness.buildingBaseline')}</div>
+          <div class="acwr-zone-label" style="color: var(--text-tertiary);">--</div>
+          <div class="acwr-score-display" style="color: var(--text-tertiary);">${trV3('progress.readiness.buildingBaseline')}</div>
+        </div>
+        <div class="training-insight">
+          <div class="insight-text">${getReadinessInsight({ acwr: null, readinessScore: null, acuteLoad: 0, chronicLoad: 0, daysSinceLastSession: null })}</div>
         </div>
       </div>`;
   }
 
-  const score = data.readinessScore;
-  const zone = getReadinessLabel(score);
-  const barColor = getReadinessBarColor(score);
+  const phase = getPhaseFromZone(data.zone);
+  const zoneColor = getZoneColor(data.zone);
+  const zoneBg = getZoneBg(data.zone);
+  const timeline = renderTrainingPhaseTimeline(7);
+  const insight = getReadinessInsight(data);
+  const phaseHint = getPhaseHint(data.readinessScore);
+
+  const acuteRounded = Math.round(data.acuteLoad);
+  const chronicRounded = Math.round(data.chronicLoad);
+  const ratioDisplay = data.acwr !== null ? data.acwr.toFixed(2) : '–';
+
+  const phasesHTML = `
+    <details class="training-phases-info">
+      <summary>${trV3('progress.readiness.phasesTitle')}</summary>
+      <div class="training-phases-list">
+        <div><span class="phase-dot" style="background:${getZoneColor('overreaching')};"></span>${trV3('progress.readiness.zoneOverreaching')} &nbsp;0–35</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('fatigued')};"></span>${trV3('progress.readiness.zoneFatigued')} &nbsp;36–55</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('maintaining')};"></span>${trV3('progress.readiness.zoneMaintaining')} &nbsp;56–70</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('building')};"></span>${trV3('progress.readiness.zoneBuilding')} &nbsp;71–85</div>
+        <div><span class="phase-dot" style="background:${getZoneColor('peak')};"></span>${trV3('progress.readiness.zonePeak')} &nbsp;86–100</div>
+      </div>
+    </details>`;
 
   return `
-    <div class="pv3-card acwr-widget">
+    <div class="pv3-card acwr-widget" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
       <div class="acwr-widget-header">
         <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
         <button class="acwr-info-btn" onclick="openACWRInfoModal()" aria-label="Info">
@@ -373,52 +456,46 @@ function renderReadinessWidget() {
         </button>
       </div>
       <div class="acwr-score-section">
-        <div class="acwr-score-display" style="color: ${zone.color};">${score}</div>
-        <div class="acwr-zone-label" style="color: ${zone.color};">${zone.label}</div>
+        <div class="acwr-zone-label" style="color: ${zoneColor};">${phase.label}</div>
+        <div class="acwr-score-display">${data.readinessScore}</div>
       </div>
       <div class="acwr-bar-track">
-        <div class="acwr-bar-fill" style="width: ${score}%; background: ${barColor};"></div>
+        <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${zoneColor};"></div>
       </div>
-      <div class="acwr-subtitle">${trV3('progress.readiness.loadRatioLabel')}: ${data.acwr.toFixed(2)}</div>
+      ${timeline}
+      <div class="training-insight">
+        <div class="insight-text">${insight}</div>
+      </div>
+      <div class="training-breakdown">Acute ${acuteRounded} · Chronic ${chronicRounded} · Ratio ${ratioDisplay}</div>
+      <div class="training-phase-hint">${phaseHint}</div>
+      ${phasesHTML}
     </div>`;
 }
 
 function openACWRInfoModal() {
   if (typeof openGenericModal !== 'function') return;
+
+  const zones = [
+    { label: 'zoneOverreaching', info: 'infoZoneOverreaching', color: getZoneColor('overreaching') },
+    { label: 'zoneFatigued', info: 'infoZoneFatigued', color: getZoneColor('fatigued') },
+    { label: 'zoneMaintaining', info: 'infoZoneMaintaining', color: getZoneColor('maintaining') },
+    { label: 'zoneBuilding', info: 'infoZoneBuilding', color: getZoneColor('building') },
+    { label: 'zonePeak', info: 'infoZonePeak', color: getZoneColor('peak') },
+    { label: 'zoneFormLoss', info: 'infoZoneFormLoss', color: getZoneColor('form_loss') }
+  ];
+
+  const zonesHTML = zones.map(z => `
+    <div class="acwr-info-zone">
+      <span class="acwr-info-dot" style="background:${z.color};"></span>
+      <span><strong>${trV3('progress.readiness.' + z.label)}</strong> – ${trV3('progress.readiness.' + z.info)}</span>
+    </div>
+  `).join('');
+
   openGenericModal(
     trV3('progress.readiness.infoTitle'),
     `<div class="acwr-info-content">
       <p>${trV3('progress.readiness.infoBody')}</p>
-      <p class="acwr-info-compare">${trV3('progress.readiness.infoCompare')}</p>
-      <ul class="acwr-info-list">
-        <li>${trV3('progress.readiness.infoRecent')}</li>
-        <li>${trV3('progress.readiness.infoLongTerm')}</li>
-      </ul>
-      <p>${trV3('progress.readiness.infoHighLoad')}</p>
-      <p>${trV3('progress.readiness.infoLowLoad')}</p>
-      <p class="acwr-info-goal">${trV3('progress.readiness.infoGoalNote')}</p>
-      <div class="acwr-info-zones">
-        <div class="acwr-info-zone">
-          <span class="acwr-info-dot" style="background:var(--zone-exhausted);"></span>
-          <div class="acwr-info-zone-text"><strong>0–40 · ${trV3('progress.readiness.zoneExhausted')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescExhausted')}</span></div>
-        </div>
-        <div class="acwr-info-zone">
-          <span class="acwr-info-dot" style="background:var(--zone-fatigued);"></span>
-          <div class="acwr-info-zone-text"><strong>41–60 · ${trV3('progress.readiness.zoneFatigued')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescFatigued')}</span></div>
-        </div>
-        <div class="acwr-info-zone">
-          <span class="acwr-info-dot" style="background:var(--zone-loaded);"></span>
-          <div class="acwr-info-zone-text"><strong>61–75 · ${trV3('progress.readiness.zoneLoaded')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescLoaded')}</span></div>
-        </div>
-        <div class="acwr-info-zone">
-          <span class="acwr-info-dot" style="background:var(--zone-ready);"></span>
-          <div class="acwr-info-zone-text"><strong>76–90 · ${trV3('progress.readiness.zoneReady')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescReady')}</span></div>
-        </div>
-        <div class="acwr-info-zone">
-          <span class="acwr-info-dot" style="background:var(--zone-fresh);"></span>
-          <div class="acwr-info-zone-text"><strong>&gt;90 · ${trV3('progress.readiness.zoneFresh')}</strong><br><span class="acwr-info-zone-desc">${trV3('progress.readiness.zoneDescFresh')}</span></div>
-        </div>
-      </div>
+      <div class="acwr-info-zones">${zonesHTML}</div>
     </div>`
   );
 }
@@ -1174,23 +1251,26 @@ function renderV4ExerciseTrends() {
     return `${filterBar}<div class="pv3-empty-state">${trV3('progress.v4.exercises.noFilterResults') || 'Keine Übungen gefunden'}</div>`;
   }
 
-  const rows = filtered.map(ex => {
+  const cards = filtered.map(ex => {
     const trendClass = ex.trend || 'same';
-    const trendIcon = ex.trend === 'up' ? 'trending_up' : ex.trend === 'down' ? 'trending_down' : 'trending_flat';
+    const trendArrow = ex.trend === 'up' ? '↑' : ex.trend === 'down' ? '↓' : '→';
+    const trendLabel = ex.trend === 'up' ? (trV3('progress.v4.exercises.trendUp') || 'Improving')
+      : ex.trend === 'down' ? (trV3('progress.v4.exercises.trendDown') || 'Declining')
+      : (trV3('progress.v4.exercises.trendSame') || 'Stable');
     const hasSparkline = ex.sparklineData.length >= 2;
     const sparkId = `pv4-spark-${ex.exerciseId.replace(/[^a-zA-Z0-9]/g, '_')}`;
     return `
-      <button class="pv4-exercise-row" data-exercise-id="${ex.exerciseId}">
-        <div class="pv4-exercise-info">
-          <div class="pv4-exercise-name">${ex.name}</div>
-          <div class="pv4-exercise-meta">${trV3('progress.v4.exercises.sessions', { count: ex.sessionCount })}</div>
+      <button class="exercise-card" data-exercise-id="${ex.exerciseId}">
+        <div class="exercise-card-header">
+          <span class="exercise-title">${ex.name}</span>
+          <span class="exercise-trend-badge ${trendClass}">${trendArrow} ${trendLabel}</span>
         </div>
-        ${hasSparkline ? `<canvas class="pv4-sparkline-canvas" id="${sparkId}"></canvas>` : '<div class="pv4-sparkline-canvas"></div>'}
-        <span class="material-symbols-rounded pv4-trend-indicator ${trendClass}">${trendIcon}</span>
+        <div class="exercise-meta">${trV3('progress.v4.exercises.sessions', { count: ex.sessionCount })}</div>
+        ${hasSparkline ? `<div class="exercise-sparkline-wrapper"><canvas id="${sparkId}"></canvas></div>` : ''}
       </button>`;
   }).join('');
 
-  return `${filterBar}<div class="pv4-exercise-list">${rows}</div>`;
+  return `${filterBar}<div class="pv4-exercise-grid">${cards}</div>`;
 }
 
 // Exercise filter & favorites event handlers
@@ -1238,7 +1318,7 @@ window.clearPv4ExerciseSearch = clearPv4ExerciseSearch;
 window.setPv4MuscleFilter = setPv4MuscleFilter;
 
 function drawAllV4Sparklines() {
-  document.querySelectorAll('.pv4-sparkline-canvas').forEach(canvas => {
+  document.querySelectorAll('.exercise-sparkline-wrapper canvas').forEach(canvas => {
     const id = canvas.id;
     if (!id) return;
     const exId = id.replace('pv4-spark-', '').replace(/_/g, '-');
@@ -1256,7 +1336,7 @@ function drawAllV4Sparklines() {
   });
 
   // Attach click listeners for exercise rows
-  document.querySelectorAll('.pv4-exercise-row').forEach(row => {
+  document.querySelectorAll('.exercise-card').forEach(row => {
     row.addEventListener('click', () => {
       pv4ExerciseDetailId = row.dataset.exerciseId;
       renderProgressV4();

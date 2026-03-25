@@ -493,6 +493,10 @@ async function saveStrengthSessionEdit(event, sessionId) {
       refreshDashboard();
     }
 
+    if (typeof renderProgressV4 === 'function') {
+      renderProgressV4();
+    }
+
     if (typeof triggerSuccessGlow === 'function') {
       triggerSuccessGlow();
     }
@@ -595,6 +599,10 @@ async function saveCardioSessionEdit(event, sessionId) {
       refreshDashboard();
     }
 
+    if (typeof renderProgressV4 === 'function') {
+      renderProgressV4();
+    }
+
     if (typeof triggerSuccessGlow === 'function') {
       triggerSuccessGlow();
     }
@@ -682,6 +690,10 @@ async function saveRecoverySessionEdit(event, sessionId) {
 
     if (typeof refreshDashboard === 'function') {
       refreshDashboard();
+    }
+
+    if (typeof renderProgressV4 === 'function') {
+      renderProgressV4();
     }
 
     if (typeof triggerSuccessGlow === 'function') {
