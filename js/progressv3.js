@@ -311,40 +311,70 @@ function renderV4Overview() {
 
 // ==================== TRAINING PHASE WIDGET (ACWR) ====================
 
+function getZoneColor(zone) {
+  const map = {
+    overreaching: 'var(--zone-exhausted)',
+    fatigued: 'var(--zone-fatigued)',
+    maintaining: 'var(--zone-loaded)',
+    building: 'var(--zone-ready)',
+    peak: 'var(--zone-fresh)',
+    form_loss: 'var(--zone-form-loss)'
+  };
+  return map[zone] || map.maintaining;
+}
+
+function getZoneBg(zone) {
+  const map = {
+    overreaching: 'var(--zone-exhausted-bg)',
+    fatigued: 'var(--zone-fatigued-bg)',
+    maintaining: 'var(--zone-loaded-bg)',
+    building: 'var(--zone-ready-bg)',
+    peak: 'var(--zone-fresh-bg)',
+    form_loss: 'var(--zone-form-loss-bg)'
+  };
+  return map[zone] || map.maintaining;
+}
+
 function getPhaseFromZone(zone) {
   const zoneMap = {
-    overreaching: {
-      label: trV3('progress.readiness.zoneOverreaching'),
-      color: 'var(--zone-overreaching)',
-      bgTint: 'linear-gradient(var(--danger-bg-soft), var(--danger-bg-soft)), var(--bg-card)'
-    },
-    fatigued: {
-      label: trV3('progress.readiness.zoneFatigued'),
-      color: 'var(--zone-fatigued)',
-      bgTint: 'linear-gradient(var(--warning-bg-soft), var(--warning-bg-soft)), var(--bg-card)'
-    },
-    maintaining: {
-      label: trV3('progress.readiness.zoneMaintaining'),
-      color: 'var(--zone-maintaining)',
-      bgTint: 'var(--bg-card)'
-    },
-    building: {
-      label: trV3('progress.readiness.zoneBuilding'),
-      color: 'var(--zone-building)',
-      bgTint: 'linear-gradient(var(--success-bg-soft), var(--success-bg-soft)), var(--bg-card)'
-    },
-    peak: {
-      label: trV3('progress.readiness.zonePeak'),
-      color: 'var(--zone-peak)',
-      bgTint: 'linear-gradient(var(--info-bg-soft), var(--info-bg-soft)), var(--bg-card)'
-    },
-    form_loss: {
-      label: trV3('progress.readiness.zoneFormLoss'),
-      color: 'var(--zone-form-loss)',
-      bgTint: 'linear-gradient(var(--muted-bg-soft), var(--muted-bg-soft)), var(--bg-card)'
-    }
+    overreaching: { label: trV3('progress.readiness.zoneOverreaching') },
+    fatigued: { label: trV3('progress.readiness.zoneFatigued') },
+    maintaining: { label: trV3('progress.readiness.zoneMaintaining') },
+    building: { label: trV3('progress.readiness.zoneBuilding') },
+    peak: { label: trV3('progress.readiness.zonePeak') },
+    form_loss: { label: trV3('progress.readiness.zoneFormLoss') }
   };
-  return zoneMap[zone] || zoneMap.maintaining;
+  const entry = zoneMap[zone] || zoneMap.maintaining;
+  return {
+    label: entry.label,
+    color: getZoneColor(zone),
+    bgTint: `linear-gradient(${getZoneBg(zone)}, ${getZoneBg(zone)}), var(--bg-card)`
+  };
+}
+
+function renderTrainingPhaseTimeline(days = 7) {
+  if (typeof getACWR !== 'function' || !allSessions?.length) return '';
+
+  const segments = [];
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  for (let i = 0; i < days; i++) {
+    const dayDate = new Date(today);
+    dayDate.setDate(dayDate.getDate() - (days - 1 - i));
+
+    const data = getACWR(allSessions, dayDate);
+    const hasZone = data.zone !== null;
+    const color = hasZone ? getZoneColor(data.zone) : 'var(--bg-surface-active)';
+    const opacity = 0.5 + 0.5 * (i / (days - 1));
+
+    segments.push(`<div class="acwr-timeline-segment" style="background: ${color}; opacity: ${opacity.toFixed(2)};"></div>`);
+  }
+
+  return `
+    <div class="acwr-timeline">
+      <div class="acwr-timeline-track">${segments.join('')}</div>
+    </div>`;
 }
 
 function renderReadinessWidget() {
@@ -366,12 +396,15 @@ function renderReadinessWidget() {
   }
 
   const phase = getPhaseFromZone(data.zone);
+  const zoneColor = getZoneColor(data.zone);
+  const zoneBg = getZoneBg(data.zone);
   const subtitle = data.zone === 'form_loss'
     ? trV3('progress.readiness.subtitleFormLoss')
     : trV3('progress.readiness.subtitle');
+  const timeline = renderTrainingPhaseTimeline(7);
 
   return `
-    <div class="pv3-card acwr-widget" style="background: ${phase.bgTint};">
+    <div class="pv3-card acwr-widget" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
       <div class="acwr-widget-header">
         <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
         <button class="acwr-info-btn" onclick="openACWRInfoModal()" aria-label="Info">
@@ -379,12 +412,13 @@ function renderReadinessWidget() {
         </button>
       </div>
       <div class="acwr-score-section">
-        <div class="acwr-zone-label" style="color: ${phase.color};">${phase.label}</div>
+        <div class="acwr-zone-label" style="color: ${zoneColor};">${phase.label}</div>
         <div class="acwr-score-display">${data.readinessScore}</div>
       </div>
       <div class="acwr-bar-track">
-        <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${phase.color};"></div>
+        <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${zoneColor};"></div>
       </div>
+      ${timeline}
       <div class="acwr-subtitle">${subtitle}</div>
     </div>`;
 }
@@ -393,12 +427,12 @@ function openACWRInfoModal() {
   if (typeof openGenericModal !== 'function') return;
 
   const zones = [
-    { label: 'zoneOverreaching', info: 'infoZoneOverreaching', color: 'var(--zone-overreaching)' },
-    { label: 'zoneFatigued', info: 'infoZoneFatigued', color: 'var(--zone-fatigued)' },
-    { label: 'zoneMaintaining', info: 'infoZoneMaintaining', color: 'var(--zone-maintaining)' },
-    { label: 'zoneBuilding', info: 'infoZoneBuilding', color: 'var(--zone-building)' },
-    { label: 'zonePeak', info: 'infoZonePeak', color: 'var(--zone-peak)' },
-    { label: 'zoneFormLoss', info: 'infoZoneFormLoss', color: 'var(--zone-form-loss)' }
+    { label: 'zoneOverreaching', info: 'infoZoneOverreaching', color: getZoneColor('overreaching') },
+    { label: 'zoneFatigued', info: 'infoZoneFatigued', color: getZoneColor('fatigued') },
+    { label: 'zoneMaintaining', info: 'infoZoneMaintaining', color: getZoneColor('maintaining') },
+    { label: 'zoneBuilding', info: 'infoZoneBuilding', color: getZoneColor('building') },
+    { label: 'zonePeak', info: 'infoZonePeak', color: getZoneColor('peak') },
+    { label: 'zoneFormLoss', info: 'infoZoneFormLoss', color: getZoneColor('form_loss') }
   ];
 
   const zonesHTML = zones.map(z => `

@@ -2609,41 +2609,46 @@ function calculateSessionLoadValue(session) {
   if (!type || type === 'recovery') return { rawLoad: 0, type: type || 'recovery' };
 
   if (type === 'strength') {
-    let totalVolume = 0;
     const bodyWeight = (typeof userProfile !== 'undefined' && userProfile?.bodyWeight) || 0;
+    const rpe = session.rpe ?? 3;
+    const rpeFactor = getLoadRpeFactor(rpe);
 
-    console.log('strength session detail:', {
-      hasExercises: !!(session.exercises?.length),
-      exerciseCount: session.exercises?.length || 0,
-      bodyWeight,
-      rpe: session.rpe
-    });
+    // No exercises: duration-based fallback (Quick Log)
+    if (!session.exercises || !Array.isArray(session.exercises) || session.exercises.length === 0) {
+      const duration = session.duration || 0;
+      if (duration <= 0) return { rawLoad: 0, type };
+      const multiplier = session.discipline === 'bodyweight' ? 4.5 : 6;
+      const rawLoad = Math.round(duration * rpeFactor * multiplier * 100) / 100;
+      console.log('TEST LOAD:', { type, rawLoad, duration, exercises: 0, discipline: session.discipline });
+      return { rawLoad, type };
+    }
 
-    if (session.exercises && Array.isArray(session.exercises)) {
-      for (const exercise of session.exercises) {
-        if (!exercise.sets || !Array.isArray(exercise.sets)) continue;
+    // Has exercises: volume-based calculation
+    let totalVolume = 0;
+    for (const exercise of session.exercises) {
+      if (!exercise.sets || !Array.isArray(exercise.sets)) continue;
 
-        // Resolve usesBodyweight: stored flag, or fallback to exercise metadata
-        let usesBodyweight = exercise.usesBodyweight;
-        if (usesBodyweight === undefined && exercise.exerciseId
-            && typeof allExercises !== 'undefined' && allExercises) {
-          const exMeta = allExercises.find(e => e.id === exercise.exerciseId);
-          if (exMeta?.usesBodyweight) usesBodyweight = true;
-        }
+      // Resolve usesBodyweight: stored flag, or fallback to exercise metadata
+      let usesBodyweight = exercise.usesBodyweight;
+      if (usesBodyweight === undefined && exercise.exerciseId
+          && typeof allExercises !== 'undefined' && allExercises) {
+        const exMeta = allExercises.find(e => e.id === exercise.exerciseId);
+        if (exMeta?.usesBodyweight) usesBodyweight = true;
+      }
 
-        for (const set of exercise.sets) {
-          const reps = set.reps || 0;
-          if (reps <= 0) continue;
-          const effectiveLoad = usesBodyweight
-            ? bodyWeight + (set.weight || 0)
-            : (set.weight || 0);
-          totalVolume += effectiveLoad * reps;
-        }
+      for (const set of exercise.sets) {
+        const reps = set.reps || 0;
+        if (reps <= 0) continue;
+        const effectiveWeight = usesBodyweight
+          ? bodyWeight
+          : (set.weight || 0);
+        if (effectiveWeight === 0) continue;
+        totalVolume += effectiveWeight * reps;
       }
     }
-    const rpe = session.rpe ?? 3;
-    const rawLoad = totalVolume * getLoadRpeFactor(rpe) * 0.01;
-    console.log(session.type, rawLoad);
+
+    const rawLoad = Math.round((totalVolume / 100) * rpeFactor * 100) / 100;
+    console.log('TEST LOAD:', { type, rawLoad, duration: session.duration, exercises: session.exercises?.length });
     return { rawLoad, type };
   }
 
@@ -2759,73 +2764,73 @@ function getACWR(sessions, referenceDate) {
     return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
   }
 
-  console.log('ACWR input sessions:', sessions.map(s => ({ type: s.type, date: s.date })));
+  const ACUTE_ALPHA = 0.35;
+  const CHRONIC_ALPHA = 0.10;
+  const CHRONIC_DECAY_FACTOR = 0.96;
 
   const end = new Date(referenceDate);
   end.setHours(23, 59, 59, 999);
 
-  const acuteStart = new Date(referenceDate);
-  acuteStart.setDate(acuteStart.getDate() - 6);
-  acuteStart.setHours(0, 0, 0, 0);
-
-  const chronicStart = new Date(referenceDate);
-  chronicStart.setDate(chronicStart.getDate() - 27);
-  chronicStart.setHours(0, 0, 0, 0);
-
-  let acuteLoad = 0;
-  let chronicTotal = 0;
-  let earliestSessionDate = null;
-  let latestSessionDate = null;
+  // Build daily load map (aggregate same-day sessions, skip recovery)
+  const dailyLoads = new Map();
 
   for (const s of sessions) {
     if (s.type !== 'strength' && s.type !== 'cardio') continue;
 
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (isNaN(sessionDate.getTime())) continue;
-    if (sessionDate < chronicStart || sessionDate > end) continue;
+    if (sessionDate > end) continue;
 
     const { rawLoad } = calculateSessionLoadValue(s);
-
-    chronicTotal += rawLoad;
-
-    if (sessionDate >= acuteStart) {
-      acuteLoad += rawLoad;
-    }
-
-    if (!earliestSessionDate || sessionDate < earliestSessionDate) {
-      earliestSessionDate = sessionDate;
-    }
-    if (!latestSessionDate || sessionDate > latestSessionDate) {
-      latestSessionDate = sessionDate;
-    }
+    const key = sessionDate.toISOString().slice(0, 10);
+    dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
 
-  const chronicLoad = chronicTotal / 4;
+  // Need at least 14 unique days of data
+  if (dailyLoads.size < 14) {
+    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
+  }
+
+  // Sort days ascending and iterate with EMA
+  const sortedDays = [...dailyLoads.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 
   // daysSinceLastSession
-  let daysSinceLastSession = null;
-  if (latestSessionDate) {
-    const refDay = new Date(referenceDate);
-    refDay.setHours(0, 0, 0, 0);
-    daysSinceLastSession = Math.floor((refDay.getTime() - latestSessionDate.getTime()) / (1000 * 60 * 60 * 24));
+  const lastSessionKey = sortedDays[sortedDays.length - 1][0];
+  const lastSessionDate = new Date(lastSessionKey + 'T00:00:00');
+  const refDay = new Date(referenceDate);
+  refDay.setHours(0, 0, 0, 0);
+  const daysSinceLastSession = Math.floor((refDay.getTime() - lastSessionDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  // 4-week boundary for tracking max chronic
+  const fourWeeksAgo = new Date(refDay);
+  fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+  const fourWeeksAgoKey = fourWeeksAgo.toISOString().slice(0, 10);
+
+  let acuteEMA = 0;
+  let chronicEMA = 0;
+  let maxChronicIn4Weeks = 0;
+
+  for (const [day, load] of sortedDays) {
+    acuteEMA = load * ACUTE_ALPHA + acuteEMA * (1 - ACUTE_ALPHA);
+    chronicEMA = load * CHRONIC_ALPHA + chronicEMA * (1 - CHRONIC_ALPHA);
+
+    if (day >= fourWeeksAgoKey) {
+      maxChronicIn4Weeks = Math.max(maxChronicIn4Weeks, chronicEMA);
+    }
   }
 
-  if (!earliestSessionDate) {
-    return { acuteLoad, chronicLoad, acwr: null, readinessScore: null, zone: null, daysSinceLastSession };
+  // Accelerated chronic decay for extended rest
+  if (daysSinceLastSession > 5) {
+    chronicEMA *= Math.pow(CHRONIC_DECAY_FACTOR, daysSinceLastSession - 5);
   }
 
-  const daySpan = (end.getTime() - earliestSessionDate.getTime()) / (1000 * 60 * 60 * 24);
-  if (daySpan < 14) {
-    return { acuteLoad, chronicLoad, acwr: null, readinessScore: null, zone: null, daysSinceLastSession };
-  }
-
-  const acwr = chronicLoad === 0
+  const acwr = chronicEMA === 0
     ? 1
-    : Math.round((acuteLoad / chronicLoad) * 100) / 100;
+    : Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
-  // Readiness score with recovery boost (ports getACWR.ts)
+  // Readiness score: recovery boost when no recent training, else normal mapping
   let readinessScore;
-  if (daysSinceLastSession !== null && daysSinceLastSession >= 7) {
+  if (daysSinceLastSession >= 7) {
     readinessScore = Math.min(75 + daysSinceLastSession * 2.5, 95);
   } else if (acwr < 0.8) readinessScore = 60;
   else if (acwr < 1.0) readinessScore = 75;
@@ -2837,11 +2842,12 @@ function getACWR(sessions, referenceDate) {
   // Zone mapping with form_loss override
   let zone = mapZone(readinessScore);
 
-  if (daysSinceLastSession !== null && daysSinceLastSession > 10 && chronicLoad < 1) {
+  if (daysSinceLastSession > 10 && chronicEMA < 0.4 * maxChronicIn4Weeks) {
     zone = 'form_loss';
   }
 
-  return { acuteLoad, chronicLoad, acwr, readinessScore, zone, daysSinceLastSession };
+  console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession });
+  return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };
 }
 
 /**

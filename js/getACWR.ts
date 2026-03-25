@@ -65,8 +65,8 @@ function mapZone(score: number): ACWRZone {
 
 // ---------- EMA Constants ----------
 
-const ACUTE_ALPHA = 2 / (7 + 1);
-const CHRONIC_ALPHA = 2 / (28 + 1);
+const ACUTE_ALPHA = 0.35;
+const CHRONIC_ALPHA = 0.10;
 const CHRONIC_DECAY_FACTOR = 0.96;
 
 // ---------- Main ----------
@@ -156,5 +156,6 @@ export function getACWR(
     zone = 'form_loss';
   }
 
+  console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession });
   return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };
 }

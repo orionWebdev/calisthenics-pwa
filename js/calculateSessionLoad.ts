@@ -57,7 +57,8 @@ function calculateStrengthLoad(session: Session, userProfile: UserProfile): numb
   if (!session.exercises?.length) {
     const duration = session.duration ?? 0;
     if (duration <= 0) return 0;
-    return duration * rpeFactor * 6;
+    const multiplier = session.discipline === 'bodyweight' ? 4.5 : 6;
+    return duration * rpeFactor * multiplier;
   }
 
   let sessionVolume = 0;
