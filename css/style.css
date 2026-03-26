@@ -203,7 +203,8 @@
 [data-theme="light"] .pv4-tab-bar,
 [data-theme="light"] .pv4-summary-card,
 [data-theme="light"] .pv4-session-row,
-[data-theme="light"] .exercise-card {
+[data-theme="light"] .exercise-card,
+[data-theme="light"] .pv4-exercise-card {
   color: var(--color-text);
 }
 
@@ -562,6 +563,7 @@ button,
 .dashboard-session-item,
 .plan-row-card,
 .exercise-card,
+.pv4-exercise-card,
 .picker-item,
 .bottom-nav-item,
 .calendar-day:not(.other-month),
@@ -590,6 +592,7 @@ button:active,
 .dashboard-session-item:active,
 .plan-row-card:active,
 .exercise-card:active,
+.pv4-exercise-card:active,
 .picker-item:active,
 .bottom-nav-item:active,
 .calendar-day:not(.other-month):active,
@@ -609,6 +612,7 @@ button:focus-visible,
 .dashboard-session-item:focus-visible,
 .plan-row-card:focus-visible,
 .exercise-card:focus-visible,
+.pv4-exercise-card:focus-visible,
 .picker-item:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(240, 34, 119, 0.2);
@@ -2138,7 +2142,6 @@ body.modal-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.875rem 1rem;
   background: var(--bg-surface);
   border-radius: var(--ui-card-radius);
   cursor: pointer;
@@ -15386,6 +15389,12 @@ input[type="range"]::-moz-range-progress {
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background: var(--bg-body, #000);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .pv4-muscle-filter-chips {
@@ -15438,22 +15447,24 @@ input[type="range"]::-moz-range-progress {
 .pv4-exercise-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 @media (min-width: 768px) {
   .pv4-exercise-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   }
 }
 
-.exercise-card {
+/* New exercise trend card */
+.pv4-exercise-card {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
   background: var(--bg-card, #161618);
   border: 1px solid var(--border-primary, rgba(255,255,255,0.1));
-  border-radius: 0.75rem;
-  padding: 0.875rem;
+  border-radius: 1rem;
+  padding: 1rem;
   width: 100%;
   min-width: 0;
   overflow: hidden;
@@ -15462,16 +15473,17 @@ input[type="range"]::-moz-range-progress {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.exercise-card:hover {
+.pv4-exercise-card:hover {
   border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
-.exercise-card:active {
+.pv4-exercise-card:active {
   background: var(--bg-surface-active, rgba(255,255,255,0.08));
 }
 
-.exercise-card-header {
+/* Card header */
+.exercise-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15479,8 +15491,8 @@ input[type="range"]::-moz-range-progress {
 }
 
 .exercise-title {
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -15516,20 +15528,55 @@ input[type="range"]::-moz-range-progress {
   background: rgba(156, 163, 175, 0.12);
 }
 
-.exercise-meta {
-  font-size: 0.6875rem;
-  color: var(--color-text-muted, #9ca3af);
-  margin-top: 0.25rem;
+/* Stats row */
+.exercise-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
-.exercise-sparkline-wrapper {
-  margin-top: 0.625rem;
+.exercise-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
 }
 
-.exercise-sparkline-wrapper canvas {
+.exercise-stat-label {
+  font-size: 0.625rem;
+  color: var(--text-tertiary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.exercise-stat-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sparkline chart */
+.exercise-chart canvas {
   width: 100%;
-  height: 32px;
+  height: 36px;
   display: block;
+}
+
+/* Load contribution meta */
+.exercise-meta-load {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* Empty state per card */
+.exercise-empty-state {
+  font-size: 0.75rem;
+  color: var(--text-tertiary, #6b7280);
+  padding: 0.5rem 0;
+  text-align: center;
 }
 
 /* ==================== PROGRESS V4 PLAN PROGRESS ==================== */

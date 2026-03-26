@@ -752,11 +752,39 @@ function buildExerciseComparison(currentSession, prevSession, planSessions) {
 window.buildExerciseComparison = buildExerciseComparison;
 
 /**
- * Zeichnet Mini-Sparkline in ein Canvas.
+ * Monotone cubic tangents (Fritsch-Carlson) for smooth sparkline curves.
  */
-function drawMiniSparkline(canvasId, values, trendColor) {
+function _monotoneTangents(points) {
+  const n = points.length;
+  if (n < 2) return [];
+  const d = [], m = [];
+  for (let i = 0; i < n - 1; i++) {
+    const dx = points[i + 1].x - points[i].x;
+    d[i] = dx === 0 ? 0 : (points[i + 1].y - points[i].y) / dx;
+  }
+  m[0] = d[0];
+  for (let i = 1; i < n - 1; i++) {
+    if (d[i - 1] * d[i] <= 0) { m[i] = 0; }
+    else { m[i] = (d[i - 1] + d[i]) / 2; }
+  }
+  m[n - 1] = d[n - 2];
+  for (let i = 0; i < n - 1; i++) {
+    if (Math.abs(d[i]) < 1e-6) { m[i] = m[i + 1] = 0; continue; }
+    const a = m[i] / d[i], b = m[i + 1] / d[i];
+    const s = a * a + b * b;
+    if (s > 9) { const t = 3 / Math.sqrt(s); m[i] = t * a * d[i]; m[i + 1] = t * b * d[i]; }
+  }
+  return m;
+}
+
+/**
+ * Zeichnet Mini-Sparkline in ein Canvas.
+ * options: { smooth: bool, fill: bool, lineWidth: number }
+ */
+function drawMiniSparkline(canvasId, values, trendColor, options) {
   const canvas = document.getElementById(canvasId);
   if (!canvas || values.length < 2) return;
+  const opts = options || {};
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
@@ -766,19 +794,54 @@ function drawMiniSparkline(canvasId, values, trendColor) {
   const w = rect.width, h = rect.height, pad = 2;
   const max = Math.max(...values), min = Math.min(...values);
   const range = max - min || 1;
+
+  // Compute point coordinates
+  const points = values.map((v, i) => ({
+    x: pad + (i / (values.length - 1)) * (w - 2 * pad),
+    y: h - pad - ((v - min) / range) * (h - 2 * pad)
+  }));
+
+  // Draw line path
   ctx.beginPath();
   ctx.strokeStyle = trendColor;
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = opts.lineWidth || 1.5;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
-  values.forEach((v, i) => {
-    const x = pad + (i / (values.length - 1)) * (w - 2 * pad);
-    const y = h - pad - ((v - min) / range) * (h - 2 * pad);
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  });
+
+  if (opts.smooth && points.length >= 3) {
+    const m = _monotoneTangents(points);
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      const prev = points[i - 1];
+      const cur = points[i];
+      const dx = (cur.x - prev.x) / 3;
+      ctx.bezierCurveTo(
+        prev.x + dx, prev.y + m[i - 1] * dx,
+        cur.x - dx, cur.y - m[i] * dx,
+        cur.x, cur.y
+      );
+    }
+  } else {
+    points.forEach((p, i) => {
+      if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    });
+  }
   ctx.stroke();
+
+  // Gradient fill under curve
+  if (opts.fill) {
+    ctx.lineTo(points[points.length - 1].x, h);
+    ctx.lineTo(points[0].x, h);
+    ctx.closePath();
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, trendColor + '33'); // ~0.2 opacity
+    grad.addColorStop(1, trendColor + '00'); // transparent
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
 }
 window.drawMiniSparkline = drawMiniSparkline;
+window._monotoneTangents = _monotoneTangents;
 
 /**
  * Trend-Farbe bestimmen.
