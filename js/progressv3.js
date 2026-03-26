@@ -371,6 +371,43 @@ function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, day
   return trV3('progress.readiness.insightOverreaching');
 }
 
+function getScoreChangeInsight(changeData) {
+  if (!changeData || changeData.driver === null) {
+    return { main: trV3('progress.readiness.changeNoData'), sub: null };
+  }
+  if (changeData.driver === 'none') {
+    return { main: trV3('progress.readiness.changeNone'), sub: null };
+  }
+
+  const { scoreDelta, acuteDelta, driver, todayLoad, daysSinceLastSession, biggestSession } = changeData;
+  let main = '';
+  let sub = null;
+
+  if (scoreDelta > 0 && driver === 'training') {
+    main = trV3('progress.readiness.changeUpTraining');
+    if (todayLoad > 0) sub = trV3('progress.readiness.changeSubLoad', { load: todayLoad });
+  } else if (scoreDelta > 0 && driver === 'recovery') {
+    main = trV3('progress.readiness.changeUpRecovery');
+    sub = trV3('progress.readiness.changeSubRest', { load: Math.abs(Math.round(acuteDelta)), days: daysSinceLastSession });
+  } else if (scoreDelta < 0 && driver === 'training') {
+    main = trV3('progress.readiness.changeDownTraining');
+    if (todayLoad > 0) sub = trV3('progress.readiness.changeSubLoad', { load: todayLoad });
+  } else if (scoreDelta < 0 && driver === 'recovery') {
+    main = trV3('progress.readiness.changeDownRecovery');
+  } else if (driver === 'baseline_shift') {
+    main = trV3('progress.readiness.changeBaseline');
+  } else {
+    main = trV3('progress.readiness.changeNone');
+  }
+
+  if (biggestSession && todayLoad > 0) {
+    const driverText = trV3('progress.readiness.changeDriver', { name: biggestSession.name, duration: biggestSession.duration });
+    sub = sub ? sub + ' \u00B7 ' + driverText : driverText;
+  }
+
+  return { main, sub };
+}
+
 function getPhaseHint(score) {
   if (score < 60) return trV3('progress.readiness.hintLow');
   if (score <= 75) return trV3('progress.readiness.hintMaintaining');
@@ -407,6 +444,7 @@ function renderReadinessWidget() {
   if (typeof getACWR !== 'function') return '';
 
   const data = getACWR(allSessions, new Date());
+  const changeData = typeof getScoreChange === 'function' ? getScoreChange(allSessions, new Date()) : null;
 
   if (data.readinessScore === null || data.zone === null) {
     return `
@@ -430,6 +468,7 @@ function renderReadinessWidget() {
   const timeline = renderTrainingPhaseTimeline(7);
   const insight = getReadinessInsight(data);
   const phaseHint = getPhaseHint(data.readinessScore);
+  const scoreChange = changeData ? getScoreChangeInsight(changeData) : null;
 
   const acuteRounded = Math.round(data.acuteLoad);
   const chronicRounded = Math.round(data.chronicLoad);
@@ -466,6 +505,11 @@ function renderReadinessWidget() {
       <div class="training-insight">
         <div class="insight-text">${insight}</div>
       </div>
+      ${scoreChange && scoreChange.main ? `
+      <div class="score-change">
+        <div class="score-change-text">${scoreChange.main}</div>
+        ${scoreChange.sub ? `<div class="score-change-sub">${scoreChange.sub}</div>` : ''}
+      </div>` : ''}
       <div class="training-breakdown">Acute ${acuteRounded} · Chronic ${chronicRounded} · Ratio ${ratioDisplay}</div>
       <div class="training-phase-hint">${phaseHint}</div>
       ${phasesHTML}
@@ -1193,12 +1237,49 @@ function renderV4ExerciseFilterBar() {
     </div>`;
 }
 
+function _computeLoadContributionMap() {
+  const now = new Date();
+  const weekAgo = new Date(now);
+  weekAgo.setDate(weekAgo.getDate() - 6);
+  weekAgo.setHours(0, 0, 0, 0);
+
+  const weeklyLoad = typeof computeWeeklyRawLoad === 'function' ? computeWeeklyRawLoad(now) : null;
+  if (!weeklyLoad || weeklyLoad.rawLoad <= 0) return {};
+
+  const loadMap = {};
+  allSessions.forEach(s => {
+    if (s.type !== 'strength' || !s.exercises) return;
+    const d = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (d < weekAgo || d > now) return;
+    const totalVol = s.exercises.reduce((sum, e) => {
+      return sum + (typeof calculateExerciseWeightedVolume === 'function' ? calculateExerciseWeightedVolume(e) : 0);
+    }, 0);
+    if (totalVol <= 0) return;
+    const sessionLoad = typeof calculateSessionLoadValue === 'function' ? calculateSessionLoadValue(s).rawLoad : 0;
+    s.exercises.forEach(e => {
+      const exVol = typeof calculateExerciseWeightedVolume === 'function' ? calculateExerciseWeightedVolume(e) : 0;
+      if (exVol <= 0) return;
+      if (!loadMap[e.exerciseId]) loadMap[e.exerciseId] = 0;
+      loadMap[e.exerciseId] += (exVol / totalVol) * sessionLoad;
+    });
+  });
+
+  const result = {};
+  Object.keys(loadMap).forEach(id => {
+    const pct = Math.round((loadMap[id] / weeklyLoad.rawLoad) * 100);
+    if (pct > 0) result[id] = pct;
+  });
+  return result;
+}
+
 function renderV4ExerciseTrends() {
   const exerciseMap = {};
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+  const loadContributionMap = _computeLoadContributionMap();
 
   allSessions.forEach(session => {
     if (!session.exercises) return;
+    const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
     session.exercises.forEach(ex => {
       if (!exerciseMap[ex.exerciseId]) {
         const data = exercises.find(e => e.id === ex.exerciseId);
@@ -1208,16 +1289,31 @@ function renderV4ExerciseTrends() {
           muscleGroups: data?.muscleGroups || [],
           sessionCount: 0,
           sparklineData: [],
-          trend: null
+          trend: null,
+          lastSessionSets: [],
+          lastSessionDate: null,
+          bestSet: 0,
+          loadPct: loadContributionMap[ex.exerciseId] || null
         };
       }
-      exerciseMap[ex.exerciseId].sessionCount++;
+      const entry = exerciseMap[ex.exerciseId];
+      entry.sessionCount++;
+
+      // Track most recent session's sets
+      if (!entry.lastSessionDate || sessionDate > entry.lastSessionDate) {
+        entry.lastSessionDate = sessionDate;
+        entry.lastSessionSets = (ex.sets || []).map(s => s.reps || 0);
+      }
+
+      // Track best single-set reps
+      const exBest = typeof calculateBestSet === 'function' ? calculateBestSet(ex) : 0;
+      if (exBest > entry.bestSet) entry.bestSet = exBest;
     });
   });
 
   Object.values(exerciseMap).forEach(entry => {
     entry.sparklineData = typeof getExerciseGlobalSparkline === 'function'
-      ? getExerciseGlobalSparkline(entry.exerciseId, 8) : [];
+      ? getExerciseGlobalSparkline(entry.exerciseId, 12) : [];
     if (entry.sparklineData.length >= 2) {
       const last = entry.sparklineData[entry.sparklineData.length - 1];
       const prev = entry.sparklineData[entry.sparklineData.length - 2];
@@ -1238,8 +1334,9 @@ function renderV4ExerciseTrends() {
     filtered = filtered.filter(ex => ex.muscleGroups.includes(pv4ExerciseMuscleFilter));
   }
 
-  // Sort by session count
+  // Sort by session count, limit to top 20
   filtered.sort((a, b) => b.sessionCount - a.sessionCount);
+  filtered = filtered.slice(0, 20);
 
   const filterBar = renderV4ExerciseFilterBar();
 
@@ -1254,19 +1351,43 @@ function renderV4ExerciseTrends() {
   const cards = filtered.map(ex => {
     const trendClass = ex.trend || 'same';
     const trendArrow = ex.trend === 'up' ? '↑' : ex.trend === 'down' ? '↓' : '→';
-    const trendLabel = ex.trend === 'up' ? (trV3('progress.v4.exercises.trendUp') || 'Improving')
-      : ex.trend === 'down' ? (trV3('progress.v4.exercises.trendDown') || 'Declining')
-      : (trV3('progress.v4.exercises.trendSame') || 'Stable');
+    const _t = (k, fb) => { const v = trV3(k); return v !== k ? v : fb; };
+    const trendLabel = ex.trend === 'up' ? _t('progress.v4.exercises.trendUp', 'Improving')
+      : ex.trend === 'down' ? _t('progress.v4.exercises.trendDown', 'Declining')
+      : _t('progress.v4.exercises.trendSame', 'Stable');
     const hasSparkline = ex.sparklineData.length >= 2;
     const sparkId = `pv4-spark-${ex.exerciseId.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+    const lastPerf = ex.lastSessionSets.length > 0 ? ex.lastSessionSets.join(' / ') : '-';
+    const bestPerf = ex.bestSet > 0 ? `${ex.bestSet} reps` : '-';
+    const loadMeta = ex.loadPct != null && ex.loadPct > 0
+      ? `<div class="exercise-meta-load">~${ex.loadPct}% ${_t('progress.v4.exercises.loadContribution', 'deiner Wochenlast')}</div>`
+      : '';
+
     return `
-      <button class="exercise-card" data-exercise-id="${ex.exerciseId}">
-        <div class="exercise-card-header">
+      <button class="pv4-exercise-card" data-exercise-id="${ex.exerciseId}">
+        <div class="exercise-header">
           <span class="exercise-title">${ex.name}</span>
           <span class="exercise-trend-badge ${trendClass}">${trendArrow} ${trendLabel}</span>
         </div>
-        <div class="exercise-meta">${trV3('progress.v4.exercises.sessions', { count: ex.sessionCount })}</div>
-        ${hasSparkline ? `<div class="exercise-sparkline-wrapper"><canvas id="${sparkId}"></canvas></div>` : ''}
+        <div class="exercise-stats">
+          <div class="exercise-stat">
+            <span class="exercise-stat-label">${_t('progress.v4.exercises.lastPerf', 'Letztes')}</span>
+            <span class="exercise-stat-value">${lastPerf}</span>
+          </div>
+          <div class="exercise-stat">
+            <span class="exercise-stat-label">${_t('progress.v4.exercises.bestPerf', 'Best')}</span>
+            <span class="exercise-stat-value">${bestPerf}</span>
+          </div>
+          <div class="exercise-stat">
+            <span class="exercise-stat-label">Sessions</span>
+            <span class="exercise-stat-value">${ex.sessionCount}</span>
+          </div>
+        </div>
+        ${hasSparkline
+          ? `<div class="exercise-chart"><canvas id="${sparkId}"></canvas></div>`
+          : `<div class="exercise-empty-state">${_t('progress.v4.exercises.emptyState', 'Starte mit dem Loggen, um Trends zu sehen.')}</div>`}
+        ${loadMeta}
       </button>`;
   }).join('');
 
@@ -1317,26 +1438,44 @@ window.onPv4ExerciseSearchInput = onPv4ExerciseSearchInput;
 window.clearPv4ExerciseSearch = clearPv4ExerciseSearch;
 window.setPv4MuscleFilter = setPv4MuscleFilter;
 
-function drawAllV4Sparklines() {
-  document.querySelectorAll('.exercise-sparkline-wrapper canvas').forEach(canvas => {
-    const id = canvas.id;
-    if (!id) return;
-    const exId = id.replace('pv4-spark-', '').replace(/_/g, '-');
-    // Find matching exercise data
-    const sparkData = typeof getExerciseGlobalSparkline === 'function'
-      ? getExerciseGlobalSparkline(exId, 8) : [];
-    if (sparkData.length < 2) return;
-    const last = sparkData[sparkData.length - 1];
-    const prev = sparkData[sparkData.length - 2];
-    const trend = last > prev ? 'up' : last < prev ? 'down' : 'same';
-    const color = trend === 'up' ? '#22c55e' : trend === 'down' ? '#ef4444' : '#9ca3af';
-    if (typeof drawMiniSparkline === 'function') {
-      drawMiniSparkline(id, sparkData, color);
-    }
-  });
+let _sparklineObserver = null;
 
-  // Attach click listeners for exercise rows
-  document.querySelectorAll('.exercise-card').forEach(row => {
+function _drawSparklineForCanvas(canvas) {
+  const id = canvas.id;
+  if (!id || canvas.dataset.drawn) return;
+  const exId = id.replace('pv4-spark-', '').replace(/_/g, '-');
+  const sparkData = typeof getExerciseGlobalSparkline === 'function'
+    ? getExerciseGlobalSparkline(exId, 12) : [];
+  if (sparkData.length < 2) return;
+  const last = sparkData[sparkData.length - 1];
+  const prev = sparkData[sparkData.length - 2];
+  const trend = last > prev ? 'up' : last < prev ? 'down' : 'same';
+  const color = trend === 'up' ? '#22c55e' : trend === 'down' ? '#ef4444' : '#9ca3af';
+  if (typeof drawMiniSparkline === 'function') {
+    drawMiniSparkline(id, sparkData, color, { smooth: true, fill: true, lineWidth: 2 });
+  }
+  canvas.dataset.drawn = '1';
+}
+
+function drawAllV4Sparklines() {
+  // Clean up previous observer
+  if (_sparklineObserver) _sparklineObserver.disconnect();
+
+  // Lazy render sparklines via IntersectionObserver
+  const canvases = document.querySelectorAll('.exercise-chart canvas');
+  if ('IntersectionObserver' in window && canvases.length > 0) {
+    _sparklineObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) _drawSparklineForCanvas(entry.target);
+      });
+    }, { rootMargin: '100px' });
+    canvases.forEach(canvas => _sparklineObserver.observe(canvas));
+  } else {
+    canvases.forEach(canvas => _drawSparklineForCanvas(canvas));
+  }
+
+  // Attach click listeners for exercise cards
+  document.querySelectorAll('.pv4-exercise-card').forEach(row => {
     row.addEventListener('click', () => {
       pv4ExerciseDetailId = row.dataset.exerciseId;
       renderProgressV4();
@@ -1401,6 +1540,7 @@ function renderExerciseDetail(exerciseId) {
       volume: vol,
       bestSet,
       sets: ex.sets?.length || 0,
+      setReps: (ex.sets || []).map(s => s.reps || 0),
       planName: s.planName || ''
     };
   });
@@ -1412,14 +1552,16 @@ function renderExerciseDetail(exerciseId) {
   const lastEntry = chartData.length > 0 ? chartData[chartData.length - 1] : null;
 
   // History (newest first)
-  const historyRows = [...chartData].reverse().slice(0, 20).map(d => `
+  const historyRows = [...chartData].reverse().slice(0, 20).map(d => {
+    const repsStr = d.setReps.length > 0 ? d.setReps.join(' / ') : '';
+    return `
     <div class="pv4-session-row">
       <div class="pv4-session-info">
-        <div class="pv4-session-name">${d.sets} ${trV3('progress.v4.exercises.detail.sets')} \u00B7 ${trV3('progress.v4.exercises.detail.volume')}: ${d.volume}</div>
+        <div class="pv4-session-name">${d.sets} ${trV3('progress.v4.exercises.detail.sets')} \u00B7 ${repsStr}${repsStr ? ` \u00B7 ` : ''}${trV3('progress.v4.exercises.detail.volume')}: ${d.volume}</div>
         <div class="pv4-session-meta">${v3FormatDate(d.date)}${d.planName ? ` \u00B7 ${d.planName}` : ''}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   return `
     <div class="pv4-detail-view">
@@ -1511,21 +1653,47 @@ function drawExerciseDetailChart(exerciseId) {
   const prev = values[values.length - 2];
   const lineColor = last >= prev ? '#22c55e' : '#ef4444';
 
+  const points = values.map((v, i) => ({
+    x: padL + (i / (values.length - 1)) * chartW,
+    y: padT + (1 - (v - min) / range) * chartH
+  }));
+
+  // Smooth curve with monotone cubic interpolation
   ctx.beginPath();
   ctx.strokeStyle = lineColor;
   ctx.lineWidth = 2;
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
 
-  const points = values.map((v, i) => ({
-    x: padL + (i / (values.length - 1)) * chartW,
-    y: padT + (1 - (v - min) / range) * chartH
-  }));
-
-  points.forEach((p, i) => {
-    if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
-  });
+  if (points.length >= 3 && typeof _monotoneTangents === 'function') {
+    const m = _monotoneTangents(points);
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      const prev = points[i - 1];
+      const cur = points[i];
+      const dx = (cur.x - prev.x) / 3;
+      ctx.bezierCurveTo(
+        prev.x + dx, prev.y + m[i - 1] * dx,
+        cur.x - dx, cur.y - m[i] * dx,
+        cur.x, cur.y
+      );
+    }
+  } else {
+    points.forEach((p, i) => {
+      if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    });
+  }
   ctx.stroke();
+
+  // Gradient fill under curve
+  ctx.lineTo(points[points.length - 1].x, padT + chartH);
+  ctx.lineTo(points[0].x, padT + chartH);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
+  grad.addColorStop(0, lineColor + '33');
+  grad.addColorStop(1, lineColor + '00');
+  ctx.fillStyle = grad;
+  ctx.fill();
 
   // Data points
   points.forEach(p => {

@@ -776,7 +776,17 @@ const translations = {
         hintMaintaining: 'Du bist nah am optimalen Gleichgewicht. Bleib konsequent.',
         hintBuilding: 'Du befindest dich in einer produktiven Trainingsphase. Steigere behutsam.',
         hintPeak: 'Du bist in Höchstform. Ideal für intensive Trainingseinheiten.',
-        phasesTitle: 'Was bedeuten die Phasen?'
+        phasesTitle: 'Was bedeuten die Phasen?',
+        changeNoData: 'Starte mit dem Training, um zu sehen, wie sich deine Trainingsphase entwickelt.',
+        changeNone: 'Deine Trainingsbalance hat sich nicht verändert.',
+        changeUpTraining: 'Dein letztes Training hat die kurzfristige Belastung erhöht und deine Trainingsphase verbessert.',
+        changeUpRecovery: 'Erholung hat die Ermüdung reduziert und deine Trainingsbereitschaft verbessert.',
+        changeDownTraining: 'Dein letztes Training hat die Ermüdung erhöht und deine Trainingsbereitschaft gesenkt.',
+        changeDownRecovery: 'Reduziertes Training hat deine kurzfristige Belastung gesenkt und dich von deiner Baseline entfernt.',
+        changeBaseline: 'Deine langfristige Trainingsbaseline hat sich deutlich verschoben.',
+        changeSubLoad: '+{load} Belastung durch dein letztes Training',
+        changeSubRest: '\u2212{load} Belastung durch {days} Ruhetage',
+        changeDriver: 'Haupttreiber: {name} ({duration} min)'
       },
       bodyweight: {
         title: 'Bodyweight',
@@ -1920,7 +1930,17 @@ const translations = {
         hintMaintaining: 'You are close to optimal balance. Maintain consistency.',
         hintBuilding: 'You are in a productive training phase. Progress carefully.',
         hintPeak: 'You are at peak readiness. Ideal for high performance efforts.',
-        phasesTitle: 'What do the phases mean?'
+        phasesTitle: 'What do the phases mean?',
+        changeNoData: 'Start training to see how your readiness evolves.',
+        changeNone: "Your training balance hasn't changed.",
+        changeUpTraining: 'Your recent training increased your short-term load, improving your training phase.',
+        changeUpRecovery: 'Recovery reduced fatigue, improving your readiness.',
+        changeDownTraining: 'Your recent training increased fatigue, lowering your readiness.',
+        changeDownRecovery: 'Reduced training lowered your short-term load, moving you away from your baseline.',
+        changeBaseline: 'Your long-term training baseline has shifted significantly.',
+        changeSubLoad: '+{load} load from your last workout',
+        changeSubRest: '\u2212{load} load due to {days} rest days',
+        changeDriver: 'Main driver: {name} ({duration} min)'
       },
       bodyweight: {
         title: 'Bodyweight',
