@@ -67,7 +67,6 @@ function mapZone(score: number): ACWRZone {
 
 const ACUTE_ALPHA = 0.35;
 const CHRONIC_ALPHA = 0.10;
-const CHRONIC_DECAY_FACTOR = 0.96;
 
 // ---------- Main ----------
 
@@ -80,9 +79,6 @@ export function getACWR(
 
   const end = new Date(referenceDate);
   end.setHours(23, 59, 59, 999);
-
-  console.log("ACWR RAW SESSIONS:", sessions);
-  console.log("ACWR COUNT:", sessions.length);
 
   // Build daily load map (aggregate same-day sessions, skip recovery)
   const dailyLoads = new Map<string, number>();
@@ -98,63 +94,52 @@ export function getACWR(
     dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
 
-  // Need at least 14 unique days of data
-  if (dailyLoads.size < 14) {
+  if (dailyLoads.size === 0) return { ...ZERO_RESULT };
+
+  // Sort keys to find earliest session and compute day span
+  const sortedKeys = [...dailyLoads.keys()].sort();
+  const refDay = new Date(referenceDate);
+  refDay.setHours(0, 0, 0, 0);
+  const earliestDate = new Date(sortedKeys[0] + 'T00:00:00');
+  const daySpan = Math.floor((refDay.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Need at least 14 days of history
+  if (daySpan < 14) {
     return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
   }
 
-  // Sort days ascending and iterate with EMA
-  const sortedDays = [...dailyLoads.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-
-  // daysSinceLastSession
-  const lastSessionKey = sortedDays[sortedDays.length - 1][0];
+  // daysSinceLastSession (for UI/insights only, not score manipulation)
+  const lastSessionKey = sortedKeys[sortedKeys.length - 1];
   const lastSessionDate = new Date(lastSessionKey + 'T00:00:00');
-  const refDay = new Date(referenceDate);
-  refDay.setHours(0, 0, 0, 0);
   const daysSinceLastSession = Math.floor((refDay.getTime() - lastSessionDate.getTime()) / (1000 * 60 * 60 * 24));
 
-  // 4-week boundary for tracking max chronic
-  const fourWeeksAgo = new Date(refDay);
-  fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
-  const fourWeeksAgoKey = fourWeeksAgo.toISOString().slice(0, 10);
+  // Continuous EMA over ALL days (including rest days with load=0)
+  const loopStart = new Date(Math.max(
+    earliestDate.getTime(),
+    refDay.getTime() - 56 * 24 * 60 * 60 * 1000
+  ));
 
   let acuteEMA = 0;
   let chronicEMA = 0;
-  let maxChronicIn4Weeks = 0;
+  const cursor = new Date(loopStart);
 
-  for (const [day, load] of sortedDays) {
-    acuteEMA = load * ACUTE_ALPHA + acuteEMA * (1 - ACUTE_ALPHA);
-    chronicEMA = load * CHRONIC_ALPHA + chronicEMA * (1 - CHRONIC_ALPHA);
+  while (cursor <= refDay) {
+    const dateKey = cursor.toISOString().slice(0, 10);
+    const dailyLoad = dailyLoads.get(dateKey) || 0;
 
-    if (day >= fourWeeksAgoKey) {
-      maxChronicIn4Weeks = Math.max(maxChronicIn4Weeks, chronicEMA);
-    }
-  }
+    acuteEMA = ACUTE_ALPHA * dailyLoad + (1 - ACUTE_ALPHA) * acuteEMA;
+    chronicEMA = CHRONIC_ALPHA * dailyLoad + (1 - CHRONIC_ALPHA) * chronicEMA;
 
-  // Accelerated chronic decay for extended rest
-  if (daysSinceLastSession > 5) {
-    chronicEMA *= Math.pow(CHRONIC_DECAY_FACTOR, daysSinceLastSession - 5);
+    console.log("ACWR DAILY STEP:", { date: dateKey, dailyLoad, acuteEMA, chronicEMA });
+    cursor.setDate(cursor.getDate() + 1);
   }
 
   const acwr = chronicEMA === 0
     ? 1
     : Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
-  // Readiness score: recovery boost when no recent training, else normal mapping
-  let readinessScore: number;
-  if (daysSinceLastSession >= 7) {
-    readinessScore = Math.min(75 + daysSinceLastSession * 2.5, 95);
-  } else {
-    readinessScore = mapReadiness(acwr);
-  }
-  readinessScore = Math.round(readinessScore);
-
-  // Zone mapping with form-loss override
-  let zone: ACWRZone = mapZone(readinessScore);
-
-  if (daysSinceLastSession > 10 && chronicEMA < 0.4 * maxChronicIn4Weeks) {
-    zone = 'form_loss';
-  }
+  const readinessScore = Math.round(mapReadiness(acwr));
+  const zone: ACWRZone = mapZone(readinessScore);
 
   console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession });
   return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };

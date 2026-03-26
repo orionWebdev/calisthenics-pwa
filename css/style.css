@@ -7360,6 +7360,24 @@ input[type="range"]::-moz-range-progress {
   font-style: italic;
 }
 
+.score-change {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bg-surface-active);
+}
+
+.score-change-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.score-change-sub {
+  margin-top: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
 .training-phases-info {
   margin-top: 12px;
   font-size: 0.8rem;

@@ -371,6 +371,43 @@ function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, day
   return trV3('progress.readiness.insightOverreaching');
 }
 
+function getScoreChangeInsight(changeData) {
+  if (!changeData || changeData.driver === null) {
+    return { main: trV3('progress.readiness.changeNoData'), sub: null };
+  }
+  if (changeData.driver === 'none') {
+    return { main: trV3('progress.readiness.changeNone'), sub: null };
+  }
+
+  const { scoreDelta, acuteDelta, driver, todayLoad, daysSinceLastSession, biggestSession } = changeData;
+  let main = '';
+  let sub = null;
+
+  if (scoreDelta > 0 && driver === 'training') {
+    main = trV3('progress.readiness.changeUpTraining');
+    if (todayLoad > 0) sub = trV3('progress.readiness.changeSubLoad', { load: todayLoad });
+  } else if (scoreDelta > 0 && driver === 'recovery') {
+    main = trV3('progress.readiness.changeUpRecovery');
+    sub = trV3('progress.readiness.changeSubRest', { load: Math.abs(Math.round(acuteDelta)), days: daysSinceLastSession });
+  } else if (scoreDelta < 0 && driver === 'training') {
+    main = trV3('progress.readiness.changeDownTraining');
+    if (todayLoad > 0) sub = trV3('progress.readiness.changeSubLoad', { load: todayLoad });
+  } else if (scoreDelta < 0 && driver === 'recovery') {
+    main = trV3('progress.readiness.changeDownRecovery');
+  } else if (driver === 'baseline_shift') {
+    main = trV3('progress.readiness.changeBaseline');
+  } else {
+    main = trV3('progress.readiness.changeNone');
+  }
+
+  if (biggestSession && todayLoad > 0) {
+    const driverText = trV3('progress.readiness.changeDriver', { name: biggestSession.name, duration: biggestSession.duration });
+    sub = sub ? sub + ' \u00B7 ' + driverText : driverText;
+  }
+
+  return { main, sub };
+}
+
 function getPhaseHint(score) {
   if (score < 60) return trV3('progress.readiness.hintLow');
   if (score <= 75) return trV3('progress.readiness.hintMaintaining');
@@ -407,6 +444,7 @@ function renderReadinessWidget() {
   if (typeof getACWR !== 'function') return '';
 
   const data = getACWR(allSessions, new Date());
+  const changeData = typeof getScoreChange === 'function' ? getScoreChange(allSessions, new Date()) : null;
 
   if (data.readinessScore === null || data.zone === null) {
     return `
@@ -430,6 +468,7 @@ function renderReadinessWidget() {
   const timeline = renderTrainingPhaseTimeline(7);
   const insight = getReadinessInsight(data);
   const phaseHint = getPhaseHint(data.readinessScore);
+  const scoreChange = changeData ? getScoreChangeInsight(changeData) : null;
 
   const acuteRounded = Math.round(data.acuteLoad);
   const chronicRounded = Math.round(data.chronicLoad);
@@ -466,6 +505,11 @@ function renderReadinessWidget() {
       <div class="training-insight">
         <div class="insight-text">${insight}</div>
       </div>
+      ${scoreChange && scoreChange.main ? `
+      <div class="score-change">
+        <div class="score-change-text">${scoreChange.main}</div>
+        ${scoreChange.sub ? `<div class="score-change-sub">${scoreChange.sub}</div>` : ''}
+      </div>` : ''}
       <div class="training-breakdown">Acute ${acuteRounded} · Chronic ${chronicRounded} · Ratio ${ratioDisplay}</div>
       <div class="training-phase-hint">${phaseHint}</div>
       ${phasesHTML}

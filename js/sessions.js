@@ -2743,6 +2743,19 @@ function computeWeeklyScore(referenceDate) {
 }
 
 /**
+ * Maps ACWR ratio to a readiness score (ports getACWR.ts mapReadiness)
+ */
+function mapReadiness(acwr) {
+  let readiness;
+  if (acwr < 0.8) readiness = 60;
+  else if (acwr < 1.0) readiness = 75;
+  else if (acwr <= 1.2) readiness = 85;
+  else if (acwr <= 1.4) readiness = 65;
+  else readiness = 40;
+  return Math.min(Math.max(readiness, 0), 100);
+}
+
+/**
  * Maps readiness score to a training zone (ports getACWR.ts mapZone)
  */
 function mapZone(score) {
@@ -2766,7 +2779,6 @@ function getACWR(sessions, referenceDate) {
 
   const ACUTE_ALPHA = 0.35;
   const CHRONIC_ALPHA = 0.10;
-  const CHRONIC_DECAY_FACTOR = 0.96;
 
   const end = new Date(referenceDate);
   end.setHours(23, 59, 59, 999);
@@ -2786,68 +2798,133 @@ function getACWR(sessions, referenceDate) {
     dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
 
-  // Need at least 14 unique days of data
-  if (dailyLoads.size < 14) {
+  if (dailyLoads.size === 0) {
     return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
   }
 
-  // Sort days ascending and iterate with EMA
-  const sortedDays = [...dailyLoads.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-
-  // daysSinceLastSession
-  const lastSessionKey = sortedDays[sortedDays.length - 1][0];
-  const lastSessionDate = new Date(lastSessionKey + 'T00:00:00');
+  // Sort keys to find earliest session and compute day span
+  const sortedKeys = [...dailyLoads.keys()].sort();
   const refDay = new Date(referenceDate);
   refDay.setHours(0, 0, 0, 0);
+  const earliestDate = new Date(sortedKeys[0] + 'T00:00:00');
+  const daySpan = Math.floor((refDay.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Need at least 14 days of history
+  if (daySpan < 14) {
+    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
+  }
+
+  // daysSinceLastSession (for UI/insights only, not score manipulation)
+  const lastSessionKey = sortedKeys[sortedKeys.length - 1];
+  const lastSessionDate = new Date(lastSessionKey + 'T00:00:00');
   const daysSinceLastSession = Math.floor((refDay.getTime() - lastSessionDate.getTime()) / (1000 * 60 * 60 * 24));
 
-  // 4-week boundary for tracking max chronic
-  const fourWeeksAgo = new Date(refDay);
-  fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
-  const fourWeeksAgoKey = fourWeeksAgo.toISOString().slice(0, 10);
+  // Continuous EMA over ALL days (including rest days with load=0)
+  const loopStart = new Date(Math.max(
+    earliestDate.getTime(),
+    refDay.getTime() - 56 * 24 * 60 * 60 * 1000
+  ));
 
   let acuteEMA = 0;
   let chronicEMA = 0;
-  let maxChronicIn4Weeks = 0;
+  const cursor = new Date(loopStart);
 
-  for (const [day, load] of sortedDays) {
-    acuteEMA = load * ACUTE_ALPHA + acuteEMA * (1 - ACUTE_ALPHA);
-    chronicEMA = load * CHRONIC_ALPHA + chronicEMA * (1 - CHRONIC_ALPHA);
+  while (cursor <= refDay) {
+    const dateKey = cursor.toISOString().slice(0, 10);
+    const dailyLoad = dailyLoads.get(dateKey) || 0;
 
-    if (day >= fourWeeksAgoKey) {
-      maxChronicIn4Weeks = Math.max(maxChronicIn4Weeks, chronicEMA);
-    }
-  }
+    acuteEMA = ACUTE_ALPHA * dailyLoad + (1 - ACUTE_ALPHA) * acuteEMA;
+    chronicEMA = CHRONIC_ALPHA * dailyLoad + (1 - CHRONIC_ALPHA) * chronicEMA;
 
-  // Accelerated chronic decay for extended rest
-  if (daysSinceLastSession > 5) {
-    chronicEMA *= Math.pow(CHRONIC_DECAY_FACTOR, daysSinceLastSession - 5);
+    console.log("ACWR DAILY STEP:", { date: dateKey, dailyLoad, acuteEMA, chronicEMA });
+    cursor.setDate(cursor.getDate() + 1);
   }
 
   const acwr = chronicEMA === 0
     ? 1
     : Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
-  // Readiness score: recovery boost when no recent training, else normal mapping
-  let readinessScore;
-  if (daysSinceLastSession >= 7) {
-    readinessScore = Math.min(75 + daysSinceLastSession * 2.5, 95);
-  } else if (acwr < 0.8) readinessScore = 60;
-  else if (acwr < 1.0) readinessScore = 75;
-  else if (acwr <= 1.2) readinessScore = 85;
-  else if (acwr <= 1.4) readinessScore = 65;
-  else readinessScore = 40;
-  readinessScore = Math.round(readinessScore);
-
-  // Zone mapping with form_loss override
-  let zone = mapZone(readinessScore);
-
-  if (daysSinceLastSession > 10 && chronicEMA < 0.4 * maxChronicIn4Weeks) {
-    zone = 'form_loss';
-  }
+  const readinessScore = Math.round(mapReadiness(acwr));
+  const zone = mapZone(readinessScore);
 
   console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession });
   return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };
+}
+
+/**
+ * Compares today's ACWR with yesterday's to explain why the readiness score changed.
+ * @param {Array} sessions
+ * @param {Date} referenceDate
+ * @returns {{ scoreDelta: number, acuteDelta: number, chronicDelta: number, daysSinceLastSession: number|null, driver: string|null, todayLoad: number, biggestSession: object|null, previous: object|null, current: object|null }}
+ */
+function getScoreChange(sessions, referenceDate) {
+  const nullResult = { scoreDelta: 0, acuteDelta: 0, chronicDelta: 0, daysSinceLastSession: null, driver: null, todayLoad: 0, biggestSession: null, previous: null, current: null };
+
+  const current = getACWR(sessions, referenceDate);
+  if (current.readinessScore === null) return nullResult;
+
+  const yesterday = new Date(referenceDate);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const previous = getACWR(sessions, yesterday);
+  if (previous.readinessScore === null) return nullResult;
+
+  const scoreDelta = current.readinessScore - previous.readinessScore;
+  const acuteDelta = current.acuteLoad - previous.acuteLoad;
+  const chronicDelta = current.chronicLoad - previous.chronicLoad;
+  const daysSinceLastSession = current.daysSinceLastSession;
+
+  // Determine primary driver
+  let driver = 'none';
+  if (scoreDelta !== 0) {
+    if (acuteDelta > 0.5) {
+      driver = 'training';
+    } else if (acuteDelta <= 0 && daysSinceLastSession >= 1) {
+      driver = 'recovery';
+    } else if (Math.abs(chronicDelta) > 1) {
+      driver = 'baseline_shift';
+    }
+  }
+
+  // Find sessions from last 24h for load context
+  const refEnd = new Date(referenceDate);
+  refEnd.setHours(23, 59, 59, 999);
+  const refStart = new Date(referenceDate);
+  refStart.setHours(0, 0, 0, 0);
+
+  let todayLoad = 0;
+  let biggestSession = null;
+  let biggestLoad = 0;
+
+  for (const s of (sessions || [])) {
+    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (isNaN(sessionDate.getTime())) continue;
+    if (sessionDate < refStart || sessionDate > refEnd) continue;
+
+    const { rawLoad } = calculateSessionLoadValue(s);
+    todayLoad += rawLoad;
+
+    if (rawLoad > biggestLoad) {
+      biggestLoad = rawLoad;
+      biggestSession = {
+        name: s.planName || s.activityType || s.type,
+        duration: s.duration || 0,
+        load: rawLoad
+      };
+    }
+  }
+
+  return {
+    scoreDelta,
+    acuteDelta,
+    chronicDelta,
+    daysSinceLastSession,
+    driver,
+    todayLoad: Math.round(todayLoad),
+    biggestSession,
+    previous: { readinessScore: previous.readinessScore, acuteLoad: previous.acuteLoad, chronicLoad: previous.chronicLoad },
+    current: { readinessScore: current.readinessScore, acuteLoad: current.acuteLoad, chronicLoad: current.chronicLoad }
+  };
 }
 
 /**
@@ -2986,6 +3063,7 @@ window.getTrainingStatus = getTrainingStatus;
 
 // ACWR
 window.getACWR = getACWR;
+window.getScoreChange = getScoreChange;
 
 // Run analytics
 window.aggregateRunByPeriod = aggregateRunByPeriod;
