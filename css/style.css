@@ -15912,33 +15912,23 @@ input[type="range"]::-moz-range-progress {
   background: var(--endurance-sport-color, var(--sport-run));
 }
 
-/* -- Skeleton State -- */
+/* -- Empty State -- */
 .endurance-skeleton {
-  padding: 0.5rem 0;
-}
-
-.endurance-skeleton .skeleton-stat {
-  height: 3.5rem;
-  border-radius: 0.5rem;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-  background-size: 200% 100%;
-  animation: pv3-shimmer 1.5s ease-in-out infinite;
-}
-
-.endurance-skeleton .skeleton-chart {
-  height: 180px;
-  border-radius: 0.5rem;
-  margin-top: 1rem;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-  background-size: 200% 100%;
-  animation: pv3-shimmer 1.5s ease-in-out infinite;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.75rem;
+  padding: 2rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
 }
 
 .endurance-skeleton-hint {
   text-align: center;
   color: var(--text-tertiary);
-  font-size: var(--font-size-xs);
-  padding: 0.75rem 0 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  max-width: 260px;
 }
 
 .run-chart-section {

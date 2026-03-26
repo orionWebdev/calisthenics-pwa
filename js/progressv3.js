@@ -258,6 +258,8 @@ const V3_KNOWN_TYPES = ['strength', 'bodyweight', 'cardio', 'recovery'];
 let weeklyScoreChartInstance = null;
 let enduranceDistanceChartInstance = null;
 let endurancePaceChartInstance = null;
+let enduranceDurationChartInstance = null;
+let enduranceSessionsChartInstance = null;
 
 function renderV4Overview() {
   const days = v3PeriodDays(pv4Period);
@@ -633,9 +635,12 @@ function initWeeklyScoreChart() {
           borderColor: primaryColor,
           backgroundColor: primaryColor,
           borderWidth: 2.5,
-          pointRadius: 4,
-          pointHoverRadius: 6,
+          pointRadius: 6,
+          pointHoverRadius: 9,
           pointBackgroundColor: primaryColor,
+          pointBorderColor: isDark ? '#161618' : '#ffffff',
+          pointBorderWidth: 2,
+          pointHitRadius: 12,
           tension: 0.3,
           fill: false,
           order: 1,
@@ -658,6 +663,9 @@ function initWeeklyScoreChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: { left: 6, right: 6, top: 6, bottom: 0 },
+      },
       interaction: {
         mode: 'index',
         intersect: false,
@@ -665,12 +673,13 @@ function initWeeklyScoreChart() {
       scales: {
         y: {
           min: 0,
-          max: 100,
+          max: 105,
           grid: { color: borderPrimary },
           ticks: {
             color: textSecondary,
             font: { size: 11 },
             stepSize: 25,
+            callback: function(val) { return val <= 100 ? val : ''; },
           },
           border: { display: false },
         },
@@ -754,8 +763,8 @@ const ENDURANCE_SPORT_CONFIG = {
     slides: [
       { type: 'chart', key: 'distance', labelKey: 'progress.v4.overview.distancePerWeek', canvasId: 'endurance-distance-canvas' },
       { type: 'chart', key: 'pace', labelKey: 'progress.v4.overview.paceTrend', canvasId: 'endurance-pace-canvas' },
-      { type: 'stat', key: 'duration', labelKey: 'progress.v4.overview.totalTime', unit: 'min' },
-      { type: 'stat', key: 'sessions', labelKey: 'progress.v4.overview.sessions', unit: '' },
+      { type: 'chart', key: 'duration', labelKey: 'progress.v4.overview.durationPerMonth', canvasId: 'endurance-duration-canvas' },
+      { type: 'chart', key: 'sessions', labelKey: 'progress.v4.overview.sessionsPerMonth', canvasId: 'endurance-sessions-canvas' },
     ]
   },
   bike: {
@@ -865,10 +874,8 @@ function renderEnduranceCard(sessions) {
     const sportLabel = trV3(sportCfg.labelKey);
     contentHTML = `
       <div class="endurance-skeleton">
-        <div class="skeleton-stat"></div>
-        <div class="skeleton-chart"></div>
         <p class="endurance-skeleton-hint">
-          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px">info</span>
+          <span class="material-symbols-rounded" style="font-size:20px;display:block;margin-bottom:0.5rem">info</span>
           ${trV3('progress.v4.overview.noDataHint', { sport: sportLabel })}
         </p>
       </div>`;
@@ -935,11 +942,51 @@ function initEnduranceCharts() {
 
   const distData = aggregateCardioByPeriod('distance', pv4Period, pv4EnduranceSport);
   const paceData = aggregateCardioByPeriod('pace', pv4Period, pv4EnduranceSport);
+  const timeData = aggregateCardioByPeriod('time', pv4Period, pv4EnduranceSport);
 
   if (!distData || !distData.length) return;
 
   initEnduranceDistanceChart(distData);
   initEndurancePaceChart(paceData);
+
+  // Duration & Sessions charts — aggregated by month
+  if (document.getElementById('endurance-duration-canvas') || document.getElementById('endurance-sessions-canvas')) {
+    const monthlyData = aggregateToMonthlyBuckets(distData);
+    if (monthlyData.length) {
+      if (document.getElementById('endurance-duration-canvas')) {
+        initEnduranceDurationChart(monthlyData);
+      }
+      if (document.getElementById('endurance-sessions-canvas')) {
+        initEnduranceSessionsChart(monthlyData);
+      }
+    }
+  }
+}
+
+function aggregateToMonthlyBuckets(buckets) {
+  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  const map = new Map();
+
+  buckets.forEach(b => {
+    if (!b.date) return;
+    const d = b.date instanceof Date ? b.date : new Date(b.date);
+    const key = `${d.getFullYear()}-${d.getMonth()}`;
+    if (!map.has(key)) {
+      map.set(key, {
+        label: `${months[d.getMonth()]} ${d.getFullYear()}`,
+        date: new Date(d.getFullYear(), d.getMonth(), 1),
+        totalDuration: 0,
+        totalDistance: 0,
+        sessionCount: 0,
+      });
+    }
+    const m = map.get(key);
+    m.totalDuration += (b.totalDuration || 0);
+    m.totalDistance += (b.totalDistance || 0);
+    m.sessionCount += (b.sessionCount || 0);
+  });
+
+  return Array.from(map.values()).sort((a, b) => a.date - b.date);
 }
 
 function initEnduranceDistanceChart(data) {
@@ -972,6 +1019,9 @@ function initEnduranceDistanceChart(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: { left: 6, right: 6, top: 6, bottom: 0 },
+      },
       scales: {
         y: {
           beginAtZero: true,
@@ -1062,9 +1112,12 @@ function initEndurancePaceChart(data) {
         borderColor: sportColor,
         backgroundColor: sportColor,
         borderWidth: 2.5,
-        pointRadius: 4,
-        pointHoverRadius: 6,
+        pointRadius: 6,
+        pointHoverRadius: 9,
         pointBackgroundColor: sportColor,
+        pointBorderColor: isDark ? '#161618' : '#ffffff',
+        pointBorderWidth: 2,
+        pointHitRadius: 12,
         tension: 0.3,
         fill: false,
       }]
@@ -1072,6 +1125,9 @@ function initEndurancePaceChart(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: {
+        padding: { left: 6, right: 6, top: 6, bottom: 0 },
+      },
       scales: {
         y: {
           reverse: true,
@@ -1122,6 +1178,171 @@ function initEndurancePaceChart(data) {
   });
 }
 
+function initEnduranceDurationChart(data) {
+  const canvas = document.getElementById('endurance-duration-canvas');
+  if (!canvas) return;
+
+  if (enduranceDurationChartInstance) {
+    enduranceDurationChartInstance.destroy();
+    enduranceDurationChartInstance = null;
+  }
+
+  const ctx = canvas.getContext('2d');
+  const sportColor = getSportColor(pv4EnduranceSport);
+  const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
+  const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+  enduranceDurationChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [{
+        label: trV3('progress.v4.overview.totalTime'),
+        data: data.map(d => Math.round(d.totalDuration)),
+        backgroundColor: sportColor,
+        borderRadius: 4,
+        maxBarThickness: 32,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: { left: 6, right: 6, top: 6, bottom: 0 },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: borderPrimary },
+          ticks: {
+            color: textSecondary,
+            font: { size: 11 },
+            callback: function(val) { return val + ' min'; },
+          },
+          border: { display: false },
+        },
+        x: {
+          grid: { display: false },
+          ticks: {
+            color: textSecondary,
+            font: { size: 10 },
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 6,
+          },
+          border: { display: false },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: isDark ? '#1c1c1e' : '#ffffff',
+          titleColor: isDark ? '#ffffff' : '#1C1C1E',
+          bodyColor: isDark ? '#d1d5db' : '#6b7280',
+          borderColor: borderPrimary,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              const d = data[context.dataIndex];
+              return [
+                `${trV3('progress.v4.overview.totalTime')}: ${Math.round(d.totalDuration)} min`,
+                `${trV3('progress.v4.overview.sessions')}: ${d.sessionCount}`,
+              ];
+            },
+          }
+        }
+      }
+    }
+  });
+}
+
+function initEnduranceSessionsChart(data) {
+  const canvas = document.getElementById('endurance-sessions-canvas');
+  if (!canvas) return;
+
+  if (enduranceSessionsChartInstance) {
+    enduranceSessionsChartInstance.destroy();
+    enduranceSessionsChartInstance = null;
+  }
+
+  const ctx = canvas.getContext('2d');
+  const sportColor = getSportColor(pv4EnduranceSport);
+  const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
+  const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+  enduranceSessionsChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [{
+        label: trV3('progress.v4.overview.sessions'),
+        data: data.map(d => d.sessionCount),
+        backgroundColor: sportColor,
+        borderRadius: 4,
+        maxBarThickness: 32,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: { left: 6, right: 6, top: 6, bottom: 0 },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: borderPrimary },
+          ticks: {
+            color: textSecondary,
+            font: { size: 11 },
+            stepSize: 1,
+            precision: 0,
+          },
+          border: { display: false },
+        },
+        x: {
+          grid: { display: false },
+          ticks: {
+            color: textSecondary,
+            font: { size: 10 },
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 6,
+          },
+          border: { display: false },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: isDark ? '#1c1c1e' : '#ffffff',
+          titleColor: isDark ? '#ffffff' : '#1C1C1E',
+          bodyColor: isDark ? '#d1d5db' : '#6b7280',
+          borderColor: borderPrimary,
+          borderWidth: 1,
+          cornerRadius: 8,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              const d = data[context.dataIndex];
+              return [
+                `${trV3('progress.v4.overview.sessions')}: ${d.sessionCount}`,
+                `${trV3('progress.v4.overview.totalTime')}: ${Math.round(d.totalDuration)} min`,
+              ];
+            },
+          }
+        }
+      }
+    }
+  });
+}
+
 function attachEnduranceSportListeners() {
   const toggle = document.querySelector('.endurance-sport-toggle');
   if (!toggle) return;
@@ -1146,7 +1367,7 @@ function attachEnduranceSportListeners() {
     });
   });
 
-  // Stat slider dot sync
+  // Stat slider dot sync + prevent snap-back on tooltip interaction
   const slider = document.querySelector('.endurance-stat-slider');
   const dots = document.querySelectorAll('.endurance-stat-dot');
   if (slider && dots.length) {
@@ -1154,6 +1375,17 @@ function attachEnduranceSportListeners() {
       const idx = Math.round(slider.scrollLeft / slider.clientWidth);
       dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
     }, { passive: true });
+
+    // Disable scroll-snap while touching/clicking inside a chart slide
+    // to prevent tooltip reflow from snapping back to slide 0
+    slider.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.endurance-chart-slide')) {
+        slider.style.scrollSnapType = 'none';
+      }
+    });
+    slider.addEventListener('pointerup', () => {
+      setTimeout(() => { slider.style.scrollSnapType = ''; }, 300);
+    });
   }
 }
 
