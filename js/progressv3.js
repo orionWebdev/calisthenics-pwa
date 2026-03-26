@@ -748,36 +748,146 @@ function initWeeklyScoreChart() {
 // ==================== ENDURANCE TRENDS CARD ====================
 
 const ENDURANCE_SPORT_CONFIG = {
-  run: { iconKey: 'directions_run', labelKey: 'progress.v4.overview.sportRun' },
-  bike: { iconKey: 'directions_bike', labelKey: 'progress.v4.overview.sportBike' },
-  swim: { iconKey: 'pool', labelKey: 'progress.v4.overview.sportSwim' },
+  run: {
+    iconKey: 'directions_run',
+    labelKey: 'progress.v4.overview.sportRun',
+    slides: [
+      { type: 'chart', key: 'distance', labelKey: 'progress.v4.overview.distancePerWeek', canvasId: 'endurance-distance-canvas' },
+      { type: 'chart', key: 'pace', labelKey: 'progress.v4.overview.paceTrend', canvasId: 'endurance-pace-canvas' },
+      { type: 'stat', key: 'duration', labelKey: 'progress.v4.overview.totalTime', unit: 'min' },
+      { type: 'stat', key: 'sessions', labelKey: 'progress.v4.overview.sessions', unit: '' },
+    ]
+  },
+  bike: {
+    iconKey: 'directions_bike',
+    labelKey: 'progress.v4.overview.sportBike',
+    slides: [
+      { type: 'chart', key: 'distance', labelKey: 'progress.v4.overview.distancePerWeek', canvasId: 'endurance-distance-canvas' },
+      { type: 'chart', key: 'speed', labelKey: 'progress.v4.overview.speedTrend', canvasId: 'endurance-pace-canvas' },
+      { type: 'stat', key: 'duration', labelKey: 'progress.v4.overview.totalTime', unit: 'min' },
+      { type: 'stat', key: 'sessions', labelKey: 'progress.v4.overview.sessions', unit: '' },
+    ]
+  },
+  swim: {
+    iconKey: 'pool',
+    labelKey: 'progress.v4.overview.sportSwim',
+    slides: [
+      { type: 'chart', key: 'distance', labelKey: 'progress.v4.overview.distancePerWeek', canvasId: 'endurance-distance-canvas' },
+      { type: 'chart', key: 'pace', labelKey: 'progress.v4.overview.swimPace', canvasId: 'endurance-pace-canvas' },
+      { type: 'stat', key: 'duration', labelKey: 'progress.v4.overview.totalTime', unit: 'min' },
+      { type: 'stat', key: 'sessions', labelKey: 'progress.v4.overview.sessions', unit: '' },
+    ]
+  },
 };
+
+const SPORT_COLOR_VARS = { run: '--sport-run', bike: '--sport-bike', swim: '--sport-swim' };
+
+function getSportColor(sport) {
+  return getCssVarValue(SPORT_COLOR_VARS[sport] || SPORT_COLOR_VARS.run) || '#1e3a8a';
+}
 
 function renderEnduranceCard(sessions) {
   if (typeof getAvailableEnduranceSports !== 'function') return '';
 
+  const allSports = ['run', 'bike', 'swim'];
   const availableSports = getAvailableEnduranceSports(pv4Period);
-  if (availableSports.length === 0) return '';
 
-  // Auto-fallback if selected sport has no data in this period
-  if (!availableSports.includes(pv4EnduranceSport)) {
-    pv4EnduranceSport = availableSports[0];
+  // Keep selected sport even if it has no data (skeleton will show)
+  if (!allSports.includes(pv4EnduranceSport)) {
+    pv4EnduranceSport = 'run';
   }
 
-  const sportInfo = ACTIVITY_TYPES[pv4EnduranceSport] || ACTIVITY_TYPES.run;
   const sportCfg = ENDURANCE_SPORT_CONFIG[pv4EnduranceSport] || ENDURANCE_SPORT_CONFIG.run;
+  const sportColor = getSportColor(pv4EnduranceSport);
+  const activeIdx = allSports.indexOf(pv4EnduranceSport);
+  const hasData = availableSports.includes(pv4EnduranceSport);
 
-  // Summary metrics from filtered sessions
-  const sportSessions = sessions.filter(s => {
-    const type = (s.activityType || '').toLowerCase();
-    const norm = ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim' })[type] || type;
-    return norm === pv4EnduranceSport;
-  });
+  // --- Sport segmented toggle ---
+  const toggleHTML = `
+    <div class="endurance-sport-toggle" style="--active-idx:${activeIdx};--endurance-sport-color:${sportColor}">
+      <div class="endurance-seg-indicator"></div>
+      ${allSports.map(sport => {
+        const cfg = ENDURANCE_SPORT_CONFIG[sport];
+        const active = sport === pv4EnduranceSport ? ' active' : '';
+        return `<button class="endurance-seg-btn${active}" data-sport="${sport}">
+          <span class="material-symbols-rounded">${cfg.iconKey}</span>
+          ${trV3(cfg.labelKey)}
+        </button>`;
+      }).join('')}
+    </div>`;
 
-  const totalTime = sportSessions.reduce((sum, s) => sum + v3GetDurationMin(s), 0);
-  const totalDist = sportSessions.reduce((sum, s) => sum + (Number(s.distanceKm) || 0), 0);
-  const avgPace = totalDist > 0 ? totalTime / totalDist : null;
+  // --- Content: slides (charts + stats) OR skeleton ---
+  let contentHTML;
 
+  if (hasData) {
+    const sportSessions = sessions.filter(s => {
+      const type = (s.activityType || '').toLowerCase();
+      const norm = ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim' })[type] || type;
+      return norm === pv4EnduranceSport;
+    });
+
+    const totalTime = sportSessions.reduce((sum, s) => sum + v3GetDurationMin(s), 0);
+    const totalDist = sportSessions.reduce((sum, s) => sum + (Number(s.distanceKm) || 0), 0);
+    const sessionCount = sportSessions.length;
+
+    // Compute sport-specific stat values
+    const statValues = computeEnduranceStats(pv4EnduranceSport, totalDist, totalTime, sessionCount);
+
+    // Build slides — charts and stats all inside the slider
+    const slidesHTML = sportCfg.slides.map(slide => {
+      if (slide.type === 'chart') {
+        return `<div class="endurance-stat-slide endurance-chart-slide">
+          <h4 class="run-chart-subtitle">${trV3(slide.labelKey)}</h4>
+          <div class="run-chart-wrapper">
+            <canvas id="${slide.canvasId}"></canvas>
+          </div>
+        </div>`;
+      }
+      const val = statValues[slide.key];
+      const displayVal = val !== null && val !== undefined ? val : '-';
+      return `<div class="endurance-stat-slide">
+        <div class="endurance-stat-value">${displayVal}</div>
+        <div class="endurance-stat-label">${trV3(slide.labelKey)}${slide.unit ? ' (' + slide.unit + ')' : ''}</div>
+      </div>`;
+    }).join('');
+
+    const dotsHTML = sportCfg.slides.map((_, i) =>
+      `<div class="endurance-stat-dot${i === 0 ? ' active' : ''}"></div>`
+    ).join('');
+
+    contentHTML = `
+      <div class="endurance-stat-slider" style="--endurance-sport-color:${sportColor}">
+        <div class="endurance-stat-track">${slidesHTML}</div>
+      </div>
+      <div class="endurance-stat-dots">${dotsHTML}</div>`;
+  } else {
+    // Skeleton state for sports with no data
+    const sportLabel = trV3(sportCfg.labelKey);
+    contentHTML = `
+      <div class="endurance-skeleton">
+        <div class="skeleton-stat"></div>
+        <div class="skeleton-chart"></div>
+        <p class="endurance-skeleton-hint">
+          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px">info</span>
+          ${trV3('progress.v4.overview.noDataHint', { sport: sportLabel })}
+        </p>
+      </div>`;
+  }
+
+  return `
+    <div class="pv3-card endurance-card" style="--endurance-sport-color:${sportColor}">
+      <div class="pv3-card-header">
+        <h3 class="pv3-card-title">
+          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px;color:${sportColor}">${sportCfg.iconKey}</span>
+          ${trV3('progress.v4.overview.enduranceTrends')}
+        </h3>
+      </div>
+      ${toggleHTML}
+      ${contentHTML}
+    </div>`;
+}
+
+function computeEnduranceStats(sport, totalDist, totalTime, sessionCount) {
   function fmtPace(p) {
     if (!p || p <= 0) return '-';
     const m = Math.floor(p);
@@ -786,60 +896,42 @@ function renderEnduranceCard(sessions) {
     return `${m}:${String(sec).padStart(2, '0')}`;
   }
 
-  // Sport filter chips
-  const chipsHTML = availableSports.map(sport => {
-    const cfg = ENDURANCE_SPORT_CONFIG[sport];
-    const active = sport === pv4EnduranceSport ? ' active' : '';
-    return `<button class="endurance-sport-chip${active}" data-sport="${sport}">
-      <span class="material-symbols-rounded">${cfg.iconKey}</span>
-      ${trV3(cfg.labelKey)}
-    </button>`;
-  }).join('');
+  const stats = {};
 
-  const toggleHTML = availableSports.length > 1 ? `
-    <div class="endurance-sport-toggle">${chipsHTML}</div>` : '';
+  // Distance
+  if (sport === 'swim') {
+    stats.distance = totalDist > 0 ? Math.round(totalDist * 1000) : '-';
+  } else {
+    stats.distance = totalDist > 0 ? totalDist.toFixed(1) : '-';
+  }
 
-  return `
-    <div class="pv3-card endurance-card">
-      <div class="pv3-card-header">
-        <h3 class="pv3-card-title">
-          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px;color:${sportInfo.color}">${sportCfg.iconKey}</span>
-          ${trV3('progress.v4.overview.enduranceTrends')}
-        </h3>
-        <span class="pv3-card-subtitle">${sportSessions.length} ${trV3('progress.v4.overview.sessions')}</span>
-      </div>
-      ${toggleHTML}
-      <div class="pv4-running-stats">
-        <div class="pv4-running-stat">
-          <div class="pv4-running-stat-value">${totalTime} min</div>
-          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.totalTime')}</div>
-        </div>
-        <div class="pv4-running-stat">
-          <div class="pv4-running-stat-value">${totalDist > 0 ? totalDist.toFixed(1) + ' km' : '-'}</div>
-          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.totalDistance')}</div>
-        </div>
-        <div class="pv4-running-stat">
-          <div class="pv4-running-stat-value">${avgPace ? fmtPace(avgPace) : '-'}</div>
-          <div class="pv4-running-stat-label">${trV3('progress.v4.overview.avgPace')}</div>
-        </div>
-      </div>
-      <div class="run-chart-section">
-        <h4 class="run-chart-subtitle">${trV3('progress.v4.overview.distancePerWeek')}</h4>
-        <div class="run-chart-wrapper">
-          <canvas id="endurance-distance-canvas"></canvas>
-        </div>
-      </div>
-      <div class="run-chart-section" id="endurance-pace-section">
-        <h4 class="run-chart-subtitle">${trV3('progress.v4.overview.paceTrend')}</h4>
-        <div class="run-chart-wrapper">
-          <canvas id="endurance-pace-canvas"></canvas>
-        </div>
-      </div>
-    </div>`;
+  // Pace / Speed
+  if (sport === 'run') {
+    const pace = totalDist > 0 ? totalTime / totalDist : null;
+    stats.pace = pace ? fmtPace(pace) : '-';
+  } else if (sport === 'bike') {
+    const speed = totalTime > 0 ? (totalDist / (totalTime / 60)) : null;
+    stats.speed = speed ? speed.toFixed(1) : '-';
+  } else if (sport === 'swim') {
+    // min per 100m: totalTime / (totalDist * 10)
+    const swimPace = totalDist > 0 ? totalTime / (totalDist * 10) : null;
+    stats.pace = swimPace ? fmtPace(swimPace) : '-';
+  }
+
+  // Duration
+  stats.duration = totalTime > 0 ? totalTime : '-';
+
+  // Sessions
+  stats.sessions = sessionCount;
+
+  return stats;
 }
 
 function initEnduranceCharts() {
   if (typeof Chart === 'undefined' || typeof aggregateCardioByPeriod !== 'function') return;
+
+  // Skip chart init when skeleton is showing (no canvas in DOM)
+  if (!document.getElementById('endurance-distance-canvas')) return;
 
   const distData = aggregateCardioByPeriod('distance', pv4Period, pv4EnduranceSport);
   const paceData = aggregateCardioByPeriod('pace', pv4Period, pv4EnduranceSport);
@@ -860,7 +952,7 @@ function initEnduranceDistanceChart(data) {
   }
 
   const ctx = canvas.getContext('2d');
-  const sportColor = (ACTIVITY_TYPES[pv4EnduranceSport] || ACTIVITY_TYPES.run).color;
+  const sportColor = getSportColor(pv4EnduranceSport);
   const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
   const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
@@ -947,7 +1039,7 @@ function initEndurancePaceChart(data) {
   }
 
   const ctx = canvas.getContext('2d');
-  const sportColor = (ACTIVITY_TYPES[pv4EnduranceSport] || ACTIVITY_TYPES.run).color;
+  const sportColor = getSportColor(pv4EnduranceSport);
   const textSecondary = getCssVarValue('--text-secondary') || '#9ca3af';
   const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
@@ -1031,15 +1123,38 @@ function initEndurancePaceChart(data) {
 }
 
 function attachEnduranceSportListeners() {
-  document.querySelectorAll('.endurance-sport-chip').forEach(btn => {
+  const toggle = document.querySelector('.endurance-sport-toggle');
+  if (!toggle) return;
+
+  const allSports = ['run', 'bike', 'swim'];
+
+  toggle.querySelectorAll('.endurance-seg-btn').forEach((btn, idx) => {
     btn.addEventListener('click', () => {
       const sport = btn.dataset.sport;
       if (sport === pv4EnduranceSport) return;
       pv4EnduranceSport = sport;
       localStorage.setItem('enduranceSportKey', sport);
-      renderProgressV4();
+
+      // Animate indicator
+      const sportColor = getSportColor(sport);
+      toggle.style.setProperty('--active-idx', idx);
+      toggle.style.setProperty('--endurance-sport-color', sportColor);
+      toggle.querySelectorAll('.endurance-seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      setTimeout(() => renderProgressV4(), 220);
     });
   });
+
+  // Stat slider dot sync
+  const slider = document.querySelector('.endurance-stat-slider');
+  const dots = document.querySelectorAll('.endurance-stat-dot');
+  if (slider && dots.length) {
+    slider.addEventListener('scroll', () => {
+      const idx = Math.round(slider.scrollLeft / slider.clientWidth);
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+    }, { passive: true });
+  }
 }
 
 // ==================== TRAINING RHYTHM WIDGET ====================

@@ -1028,6 +1028,10 @@ const translations = {
           sportBike: 'Radfahren',
           sportSwim: 'Schwimmen',
           sessions: 'Sessions',
+          avgSpeed: 'Geschwindigkeit',
+          speedTrend: 'Speed-Verlauf',
+          swimPace: 'Pace (100m)',
+          noDataHint: 'Noch nicht genügend Daten vorhanden. Absolviere ein Training dieser Art, um Auswertungen zu sehen.',
         },
         exercises: {
           title: 'Übungs-Trends',
@@ -2182,6 +2186,10 @@ const translations = {
           sportBike: 'Bike',
           sportSwim: 'Swim',
           sessions: 'Sessions',
+          avgSpeed: 'Speed',
+          speedTrend: 'Speed Trend',
+          swimPace: 'Pace (100m)',
+          noDataHint: 'Not enough data yet. Complete a workout of this type to see insights.',
         },
         exercises: {
           title: 'Exercise Trends',
