@@ -80,6 +80,13 @@ function calculateStrengthLoad(session: Session, userProfile: UserProfile): numb
     }
   }
 
+  // Fallback: if all exercises had 0 effective weight (e.g. bodyweight without profile weight),
+  // use duration-based calculation so the session still contributes to ACWR
+  if (sessionVolume === 0 && (session.duration ?? 0) > 0) {
+    const multiplier = session.discipline === 'bodyweight' ? 4.5 : 6;
+    return (session.duration ?? 0) * rpeFactor * multiplier;
+  }
+
   return (sessionVolume / 100) * rpeFactor;
 }
 

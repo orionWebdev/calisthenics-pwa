@@ -1971,7 +1971,9 @@ async function saveCardioSession() {
 
     // Then reload sessions and refresh view
     await loadSessions();
-    if (typeof renderCurrentProgressTab === 'function') {
+    if (typeof renderProgressV4 === 'function') {
+      renderProgressV4();
+    } else if (typeof renderCurrentProgressTab === 'function') {
       renderCurrentProgressTab();
     }
 
@@ -2430,7 +2432,9 @@ async function saveStrengthSession() {
       }
     }
     await loadSessions();
-    if (typeof renderCurrentProgressTab === 'function') {
+    if (typeof renderProgressV4 === 'function') {
+      renderProgressV4();
+    } else if (typeof renderCurrentProgressTab === 'function') {
       renderCurrentProgressTab();
     }
     triggerSuccessGlow();
@@ -2544,7 +2548,9 @@ async function saveRecoverySession() {
     }
 
     await loadSessions();
-    if (typeof renderCurrentProgressTab === 'function') {
+    if (typeof renderProgressV4 === 'function') {
+      renderProgressV4();
+    } else if (typeof renderCurrentProgressTab === 'function') {
       renderCurrentProgressTab();
     }
 
@@ -2645,6 +2651,15 @@ function calculateSessionLoadValue(session) {
         if (effectiveWeight === 0) continue;
         totalVolume += effectiveWeight * reps;
       }
+    }
+
+    // Fallback: if all exercises had 0 effective weight (e.g. bodyweight without profile weight),
+    // use duration-based calculation so the session still contributes to ACWR
+    if (totalVolume === 0 && session.duration > 0) {
+      const multiplier = session.discipline === 'bodyweight' ? 4.5 : 6;
+      const rawLoad = Math.round(session.duration * rpeFactor * multiplier * 100) / 100;
+      console.log('TEST LOAD (bw fallback):', { type, rawLoad, duration: session.duration, discipline: session.discipline });
+      return { rawLoad, type };
     }
 
     const rawLoad = Math.round((totalVolume / 100) * rpeFactor * 100) / 100;
@@ -2780,6 +2795,14 @@ function getACWR(sessions, referenceDate) {
   const ACUTE_ALPHA = 0.35;
   const CHRONIC_ALPHA = 0.10;
 
+  // Use local date keys (YYYY-MM-DD) to avoid UTC/local timezone mismatch
+  function toLocalDateKey(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+  }
+
   const end = new Date(referenceDate);
   end.setHours(23, 59, 59, 999);
 
@@ -2794,7 +2817,7 @@ function getACWR(sessions, referenceDate) {
     if (sessionDate > end) continue;
 
     const { rawLoad } = calculateSessionLoadValue(s);
-    const key = sessionDate.toISOString().slice(0, 10);
+    const key = toLocalDateKey(sessionDate);
     dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
 
@@ -2830,7 +2853,7 @@ function getACWR(sessions, referenceDate) {
   const cursor = new Date(loopStart);
 
   while (cursor <= refDay) {
-    const dateKey = cursor.toISOString().slice(0, 10);
+    const dateKey = toLocalDateKey(cursor);
     const dailyLoad = dailyLoads.get(dateKey) || 0;
 
     acuteEMA = ACUTE_ALPHA * dailyLoad + (1 - ACUTE_ALPHA) * acuteEMA;
