@@ -68,6 +68,15 @@ function mapZone(score: number): ACWRZone {
 const ACUTE_ALPHA = 0.35;
 const CHRONIC_ALPHA = 0.10;
 
+// ---------- Helpers ----------
+
+function toLocalDateKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
+}
+
 // ---------- Main ----------
 
 export function getACWR(
@@ -90,7 +99,7 @@ export function getACWR(
     if (!sessionDate || sessionDate > end) continue;
 
     const { rawLoad } = calculateSessionLoad(s, userProfile);
-    const key = sessionDate.toISOString().slice(0, 10);
+    const key = toLocalDateKey(sessionDate);
     dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
 
@@ -124,7 +133,7 @@ export function getACWR(
   const cursor = new Date(loopStart);
 
   while (cursor <= refDay) {
-    const dateKey = cursor.toISOString().slice(0, 10);
+    const dateKey = toLocalDateKey(cursor);
     const dailyLoad = dailyLoads.get(dateKey) || 0;
 
     acuteEMA = ACUTE_ALPHA * dailyLoad + (1 - ACUTE_ALPHA) * acuteEMA;

@@ -101,12 +101,21 @@ async function initProgressV3() {
   const segCtrl = document.getElementById('progress-segmented-control');
   if (segCtrl) segCtrl.style.display = 'none';
 
+  const skeletonStart = Date.now();
+
   if (!sessionsLoaded || !allSessions.length) {
     await loadSessions();
   }
 
   pv4Period = localStorage.getItem('progressPeriodKey')
     || (typeof getSettingValue === 'function' ? getSettingValue('defaultProgressPeriod') : '30D');
+
+  // Show skeleton for at least 1.5s so data can load without visual glitches
+  const elapsed = Date.now() - skeletonStart;
+  const remaining = Math.max(0, 1500 - elapsed);
+  if (remaining > 0) {
+    await new Promise(r => setTimeout(r, remaining));
+  }
 
   renderProgressV4();
   progressV3Initialized = true;
@@ -564,8 +573,9 @@ function renderV4WeeklyScoreChartHTML() {
         <div class="card-header">
           <h3 class="card-title">${trV3('progress.weeklyScore.chartTitle')}</h3>
         </div>
-        <div style="padding: 2rem; text-align: center;">
-          <p style="color: var(--text-tertiary);">${trV3('progress.weeklyScore.noData')}</p>
+        <div class="pv3-empty-state">
+          <span class="material-symbols-rounded">info</span>
+          ${trV3('progress.weeklyScore.noData')}
         </div>
       </div>
     `;
@@ -1449,7 +1459,10 @@ function renderV4Rhythm(sessions) {
     return `
       <div class="pv3-card">
         <div class="pv3-card-header"><h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3></div>
-        <div class="pv3-empty-state">${trV3('progress.v3.rhythm.noData')}</div>
+        <div class="pv3-empty-state">
+          <span class="material-symbols-rounded">info</span>
+          ${trV3('progress.v3.rhythm.noData')}
+        </div>
       </div>`;
   }
 
@@ -1499,7 +1512,7 @@ const PV4_HISTORY_COLLAPSED_LIMIT = 5;
 
 function renderV4SessionHistory(sessions) {
   if (sessions.length === 0) {
-    return `<div class="pv3-empty-state">${trV3('progress.v4.overview.noSessions')}</div>`;
+    return `<div class="pv3-empty-state"><span class="material-symbols-rounded">info</span>${trV3('progress.v4.overview.noSessions')}</div>`;
   }
 
   const sorted = [...sessions].sort((a, b) => {
@@ -1688,11 +1701,11 @@ function renderV4ExerciseTrends() {
   const filterBar = renderV4ExerciseFilterBar();
 
   if (Object.keys(exerciseMap).length === 0) {
-    return `${filterBar}<div class="pv3-empty-state">${trV3('progress.v4.exercises.noExercises')}</div>`;
+    return `${filterBar}<div class="pv3-empty-state"><span class="material-symbols-rounded">info</span>${trV3('progress.v4.exercises.noExercises')}</div>`;
   }
 
   if (filtered.length === 0) {
-    return `${filterBar}<div class="pv3-empty-state">${trV3('progress.v4.exercises.noFilterResults') || 'Keine Übungen gefunden'}</div>`;
+    return `${filterBar}<div class="pv3-empty-state"><span class="material-symbols-rounded">search_off</span>${trV3('progress.v4.exercises.noFilterResults') || 'Keine Übungen gefunden'}</div>`;
   }
 
   const cards = filtered.map(ex => {
@@ -2087,7 +2100,7 @@ function renderV4PlanProgress() {
   const sorted = Object.values(planMap).sort((a, b) => (b.lastDate || 0) - (a.lastDate || 0));
 
   if (sorted.length === 0) {
-    return `<div class="pv3-empty-state">${trV3('progress.v4.plans.noPlans')}</div>`;
+    return `<div class="pv3-empty-state"><span class="material-symbols-rounded">info</span>${trV3('progress.v4.plans.noPlans')}</div>`;
   }
 
   const rows = sorted.map(plan => {

@@ -15581,10 +15581,13 @@ input[type="range"]::-moz-range-progress {
 
 /* Empty state per card */
 .exercise-empty-state {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--text-tertiary, #6b7280);
-  padding: 0.5rem 0;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.5rem;
+  padding: 1rem 0.75rem;
   text-align: center;
+  line-height: 1.4;
 }
 
 /* ==================== PROGRESS V4 PLAN PROGRESS ==================== */
@@ -16737,10 +16740,23 @@ input[type="range"]::-moz-range-progress {
 }
 
 .pv3-empty-state {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.75rem;
+  padding: 2rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   font-size: var(--font-size-sm);
-  padding: 1.5rem 0;
+  line-height: 1.5;
+}
+
+.pv3-empty-state .material-symbols-rounded {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 20px;
 }
 
 /* Skeleton loading */
