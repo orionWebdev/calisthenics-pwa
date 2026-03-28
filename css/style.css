@@ -15849,24 +15849,18 @@ input[type="range"]::-moz-range-progress {
 
 /* -- Stat Slider -- */
 .endurance-stat-slider {
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.endurance-stat-slider::-webkit-scrollbar {
-  display: none;
+  overflow: hidden;
+  position: relative;
 }
 
 .endurance-stat-track {
   display: flex;
+  transition: transform 0.3s ease;
 }
 
 .endurance-stat-slide {
   min-width: 100%;
   flex: 0 0 100%;
-  scroll-snap-align: start;
   text-align: center;
   padding: 1rem 0;
 }
@@ -15909,6 +15903,7 @@ input[type="range"]::-moz-range-progress {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
   transition: background 0.2s;
+  cursor: pointer;
 }
 
 .endurance-stat-dot.active {
