@@ -783,8 +783,8 @@ const ENDURANCE_SPORT_CONFIG = {
     slides: [
       { type: 'chart', key: 'distance', labelKey: 'progress.v4.overview.distancePerWeek', canvasId: 'endurance-distance-canvas' },
       { type: 'chart', key: 'speed', labelKey: 'progress.v4.overview.speedTrend', canvasId: 'endurance-pace-canvas' },
-      { type: 'stat', key: 'duration', labelKey: 'progress.v4.overview.totalTime', unit: 'min' },
-      { type: 'stat', key: 'sessions', labelKey: 'progress.v4.overview.sessions', unit: '' },
+      { type: 'chart', key: 'duration', labelKey: 'progress.v4.overview.durationPerMonth', canvasId: 'endurance-duration-canvas' },
+      { type: 'chart', key: 'sessions', labelKey: 'progress.v4.overview.sessionsPerMonth', canvasId: 'endurance-sessions-canvas' },
     ]
   },
   swim: {
@@ -793,8 +793,8 @@ const ENDURANCE_SPORT_CONFIG = {
     slides: [
       { type: 'chart', key: 'distance', labelKey: 'progress.v4.overview.distancePerWeek', canvasId: 'endurance-distance-canvas' },
       { type: 'chart', key: 'pace', labelKey: 'progress.v4.overview.swimPace', canvasId: 'endurance-pace-canvas' },
-      { type: 'stat', key: 'duration', labelKey: 'progress.v4.overview.totalTime', unit: 'min' },
-      { type: 'stat', key: 'sessions', labelKey: 'progress.v4.overview.sessions', unit: '' },
+      { type: 'chart', key: 'duration', labelKey: 'progress.v4.overview.durationPerMonth', canvasId: 'endurance-duration-canvas' },
+      { type: 'chart', key: 'sessions', labelKey: 'progress.v4.overview.sessionsPerMonth', canvasId: 'endurance-sessions-canvas' },
     ]
   },
 };
@@ -952,7 +952,6 @@ function initEnduranceCharts() {
 
   const distData = aggregateCardioByPeriod('distance', pv4Period, pv4EnduranceSport);
   const paceData = aggregateCardioByPeriod('pace', pv4Period, pv4EnduranceSport);
-  const timeData = aggregateCardioByPeriod('time', pv4Period, pv4EnduranceSport);
 
   if (!distData || !distData.length) return;
 
@@ -1092,9 +1091,7 @@ function initEndurancePaceChart(data) {
 
   // Filter out buckets with no pace data
   const paceData = data.filter(d => d.value > 0);
-  if (paceData.length < 2) {
-    const section = document.getElementById('endurance-pace-section');
-    if (section) section.style.display = 'none';
+  if (paceData.length < 1) {
     return;
   }
 
@@ -1104,6 +1101,22 @@ function initEndurancePaceChart(data) {
   const borderPrimary = getCssVarValue('--border-primary') || 'rgba(255,255,255,0.1)';
   const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
 
+  // Sport-specific pace/speed configuration
+  // Raw data is always min/km from aggregateCardioByPeriod
+  const isBike = pv4EnduranceSport === 'bike';
+  const isSwim = pv4EnduranceSport === 'swim';
+
+  const transformValue = (minPerKm) => {
+    if (!minPerKm || minPerKm <= 0) return 0;
+    if (isBike) return 60 / minPerKm;    // km/h
+    if (isSwim) return minPerKm / 10;     // min/100m
+    return minPerKm;                       // min/km (run)
+  };
+
+  const reverseY = !isBike; // Bike: higher = faster (normal), Run/Swim: lower = faster (reversed)
+  const unitStr = isBike ? 'km/h' : (isSwim ? 'min/100m' : 'min/km');
+  const labelKey = isBike ? 'progress.v4.overview.avgSpeed' : 'progress.v4.overview.avgPace';
+
   const fmtPace = (p) => {
     if (!p || p <= 0) return '-';
     const m = Math.floor(p);
@@ -1112,13 +1125,23 @@ function initEndurancePaceChart(data) {
     return `${m}:${String(sec).padStart(2, '0')}`;
   };
 
+  const fmtValue = (val) => {
+    if (isBike) return val > 0 ? val.toFixed(1) : '-';
+    return fmtPace(val);
+  };
+
+  const fmtTickValue = (val) => {
+    if (isBike) return val.toFixed(1) + ' km/h';
+    return fmtPace(val);
+  };
+
   endurancePaceChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
       labels: paceData.map(d => d.label),
       datasets: [{
-        label: trV3('progress.v4.overview.avgPace'),
-        data: paceData.map(d => d.value),
+        label: trV3(labelKey),
+        data: paceData.map(d => transformValue(d.value)),
         borderColor: sportColor,
         backgroundColor: sportColor,
         borderWidth: 2.5,
@@ -1140,12 +1163,12 @@ function initEndurancePaceChart(data) {
       },
       scales: {
         y: {
-          reverse: true,
+          reverse: reverseY,
           grid: { color: borderPrimary },
           ticks: {
             color: textSecondary,
             font: { size: 11 },
-            callback: function(val) { return fmtPace(val); },
+            callback: function(val) { return fmtTickValue(val); },
           },
           border: { display: false },
         },
@@ -1175,8 +1198,9 @@ function initEndurancePaceChart(data) {
           callbacks: {
             label: function(context) {
               const d = paceData[context.dataIndex];
+              const displayVal = fmtValue(transformValue(d.value));
               return [
-                `${trV3('progress.v4.overview.avgPace')}: ${fmtPace(d.value)} min/km`,
+                `${trV3(labelKey)}: ${displayVal} ${unitStr}`,
                 `${trV3('progress.v4.overview.totalDistance')}: ${d.totalDistance.toFixed(1)} km`,
                 `${trV3('progress.v4.overview.sessions')}: ${d.sessionCount}`,
               ];
@@ -1377,25 +1401,44 @@ function attachEnduranceSportListeners() {
     });
   });
 
-  // Stat slider dot sync + prevent snap-back on tooltip interaction
+  // Transform-based slider with swipe support and clickable dots
   const slider = document.querySelector('.endurance-stat-slider');
+  const track = slider?.querySelector('.endurance-stat-track');
   const dots = document.querySelectorAll('.endurance-stat-dot');
-  if (slider && dots.length) {
-    slider.addEventListener('scroll', () => {
-      const idx = Math.round(slider.scrollLeft / slider.clientWidth);
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+  const slideCount = track?.children.length || 0;
+
+  if (slider && track && slideCount > 0) {
+    let currentSlide = 0;
+
+    const goToSlide = (idx) => {
+      currentSlide = Math.max(0, Math.min(idx, slideCount - 1));
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+    };
+
+    // Clickable dots
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => goToSlide(i));
+    });
+
+    // Swipe detection
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    slider.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
     }, { passive: true });
 
-    // Disable scroll-snap while touching/clicking inside a chart slide
-    // to prevent tooltip reflow from snapping back to slide 0
-    slider.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('.endurance-chart-slide')) {
-        slider.style.scrollSnapType = 'none';
+    slider.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      // Only swipe if horizontal movement > 40px and dominant over vertical
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) goToSlide(currentSlide + 1);
+        else goToSlide(currentSlide - 1);
       }
-    });
-    slider.addEventListener('pointerup', () => {
-      setTimeout(() => { slider.style.scrollSnapType = ''; }, 300);
-    });
+    }, { passive: true });
   }
 }
 
