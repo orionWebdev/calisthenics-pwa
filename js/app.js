@@ -512,6 +512,50 @@ if ('serviceWorker' in navigator && !isLocalhost) {
 }
 
 // ========================================
+// VERSION CHECK (PWA Update Detection)
+// ========================================
+
+function checkAppVersion() {
+  fetch('/version.json', { cache: 'no-store' })
+    .then((response) => response.json())
+    .then((data) => {
+      const serverVersion = data.version;
+      const localVersion = localStorage.getItem('app_version');
+
+      if (!localVersion) {
+        // Erster Besuch — Version speichern, kein Reload
+        console.log('📦 App Version gespeichert:', serverVersion);
+        localStorage.setItem('app_version', serverVersion);
+        return;
+      }
+
+      if (localVersion !== serverVersion) {
+        console.log('🔄 Version Mismatch! Lokal:', localVersion, '→ Server:', serverVersion);
+        localStorage.setItem('app_version', serverVersion);
+
+        // Service Worker Cache löschen
+        if ('caches' in window) {
+          caches.keys().then((names) => {
+            return Promise.all(names.map((name) => caches.delete(name)));
+          }).then(() => {
+            console.log('🗑️ Cache gelöscht, lade neu...');
+            window.location.reload(true);
+          });
+        } else {
+          window.location.reload(true);
+        }
+      } else {
+        console.log('✅ App ist aktuell (Version ' + serverVersion + ')');
+      }
+    })
+    .catch((error) => {
+      console.warn('⚠️ Version-Check fehlgeschlagen:', error);
+    });
+}
+
+checkAppVersion();
+
+// ========================================
 // START APP WHEN DOM IS READY
 // ========================================
 

@@ -65,9 +65,10 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event - Serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
-  // Skip Firebase requests (always fetch from network)
+  // Skip Firebase requests and version.json (always fetch from network)
   if (event.request.url.includes('firestore.googleapis.com') ||
-      event.request.url.includes('firebase')) {
+      event.request.url.includes('firebase') ||
+      event.request.url.includes('version.json')) {
     return;
   }
 
