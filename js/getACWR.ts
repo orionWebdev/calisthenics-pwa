@@ -46,16 +46,40 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function mapReadiness(acwr: number): number {
-  let readiness: number;
-  if (acwr < 0.8) readiness = 60;
-  else if (acwr < 1.0) readiness = 75;
-  else if (acwr <= 1.2) readiness = 85;
-  else if (acwr <= 1.4) readiness = 65;
-  else readiness = 40;
-  return clamp(readiness, 0, 100);
+  const curve: [number, number][] = [
+    [0.0,  15],
+    [0.3,  28],
+    [0.5,  45],
+    [0.65, 58],
+    [0.8,  72],
+    [0.9,  83],
+    [1.0,  92],
+    [1.1,  89],
+    [1.2,  78],
+    [1.3,  66],
+    [1.5,  46],
+    [1.7,  30],
+    [2.0,  16],
+    [2.5,  8],
+  ];
+
+  const clamped = clamp(acwr, 0, 2.5);
+  if (clamped <= curve[0][0]) return curve[0][1];
+
+  for (let i = 0; i < curve.length - 1; i++) {
+    const [x0, y0] = curve[i];
+    const [x1, y1] = curve[i + 1];
+    if (clamped >= x0 && clamped <= x1) {
+      const t = (clamped - x0) / (x1 - x0);
+      return Math.round(y0 + (y1 - y0) * t);
+    }
+  }
+
+  return curve[curve.length - 1][1];
 }
 
-function mapZone(score: number): ACWRZone {
+function mapZone(score: number, acwr?: number): ACWRZone {
+  if (acwr !== undefined && acwr < 0.8 && score <= 50) return 'form_loss';
   if (score <= 35) return 'overreaching';
   if (score <= 55) return 'fatigued';
   if (score <= 70) return 'maintaining';
@@ -148,7 +172,7 @@ export function getACWR(
     : Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
   const readinessScore = Math.round(mapReadiness(acwr));
-  const zone: ACWRZone = mapZone(readinessScore);
+  const zone: ACWRZone = mapZone(readinessScore, acwr);
 
   console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession });
   return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };
