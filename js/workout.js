@@ -336,7 +336,7 @@ async function startWorkoutFromSession(sessionId) {
   } catch (error) {
     console.error('❌ Error restarting workout:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Neustarten des Workouts');
+      showEdgeFeedback('error', t('workout.feedback.restartError'));
     }
   }
 }
@@ -433,11 +433,11 @@ function showActiveWorkoutBanner() {
   banner.innerHTML = `
     <div class="banner-content">
       <span class="material-symbols-rounded">play_circle</span>
-      <span>Aktives Workout: ${activeWorkout.planName}</span>
+      <span>${t('workout.banner.active', { name: activeWorkout.planName })}</span>
     </div>
     <div class="banner-actions">
-      <button onclick="resumeWorkout()" class="banner-btn primary">Fortsetzen</button>
-      <button onclick="cancelActiveWorkoutFromBanner()" class="banner-btn secondary">Abbrechen</button>
+      <button onclick="resumeWorkout()" class="banner-btn primary">${t('workout.banner.resume')}</button>
+      <button onclick="cancelActiveWorkoutFromBanner()" class="banner-btn secondary">${t('workout.banner.cancel')}</button>
     </div>
   `;
 
@@ -467,7 +467,7 @@ function resumeWorkout() {
  * Cancel active workout from banner
  */
 function cancelActiveWorkoutFromBanner() {
-  if (confirm('Aktives Workout wirklich abbrechen? Alle Fortschritte gehen verloren.')) {
+  if (confirm(t('workout.banner.cancelConfirm'))) {
     const banner = document.getElementById('active-workout-banner');
     if (banner) banner.remove();
 
@@ -479,7 +479,7 @@ function cancelActiveWorkoutFromBanner() {
  * Cancel workout
  */
 function cancelWorkout(askConfirmation = true) {
-  if (askConfirmation && !confirm('Workout wirklich abbrechen? Alle Fortschritte gehen verloren.')) {
+  if (askConfirmation && !confirm(t('workout.banner.cancelWorkoutConfirm'))) {
     return;
   }
 
@@ -613,7 +613,7 @@ async function completeWorkout() {
     showPostWorkoutSummary(sessionData, prevSession, durationMinutes, planSessions);
 
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Workout gespeichert!');
+      showEdgeFeedback('success', t('workout.feedback.saved'));
     }
 
     // For free workouts: ask if user wants to save as plan
@@ -625,7 +625,7 @@ async function completeWorkout() {
   } catch (error) {
     console.error('❌ Error completing workout:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern des Workouts: ' + error.message);
+      showEdgeFeedback('error', t('workout.feedback.saveError') + ': ' + error.message);
     }
   }
 }
@@ -887,15 +887,15 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
     const prevVol = calcSessionVolume(prevSession);
     const items = [];
     const durDelta = formatDelta(durationMinutes, prevDuration, 'Min');
-    items.push({ icon: 'schedule', label: 'Zeit', current: `${durationMinutes} Min`, delta: durDelta, positive: durationMinutes >= prevDuration });
+    items.push({ icon: 'schedule', label: t('workout.postWorkout.time'), current: `${durationMinutes} Min`, delta: durDelta, positive: durationMinutes >= prevDuration });
     const setsDelta = formatDelta(currentSets, prevSets, 'Sets');
-    items.push({ icon: 'repeat', label: 'Sets', current: String(currentSets), delta: setsDelta, positive: currentSets >= prevSets });
+    items.push({ icon: 'repeat', label: t('workout.postWorkout.sets'), current: String(currentSets), delta: setsDelta, positive: currentSets >= prevSets });
     if (currentVol > 0 || prevVol > 0) {
       const volDelta = formatDelta(currentVol, prevVol, '%');
-      items.push({ icon: 'fitness_center', label: 'Volumen', current: currentVol > 0 ? `${currentVol} ${getWeightUnit()}` : '\u2014', delta: volDelta, positive: currentVol >= prevVol });
+      items.push({ icon: 'fitness_center', label: t('workout.postWorkout.volume'), current: currentVol > 0 ? `${currentVol} ${getWeightUnit()}` : '\u2014', delta: volDelta, positive: currentVol >= prevVol });
     }
     comparisonHTML = `
-      <div class="pws-section-title">Vergleich zum letzten Mal</div>
+      <div class="pws-section-title">${t('workout.postWorkout.comparisonTitle')}</div>
       <div class="pws-comparison-grid">
         ${items.map(item => `
           <div class="pws-stat-card">
@@ -952,23 +952,23 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
       <div class="pws-success-icon">
         <span class="material-symbols-rounded">check_circle</span>
       </div>
-      <h2 class="pws-title">Workout abgeschlossen!</h2>
-      <p class="pws-subtitle">${savedSession.planName || 'Training'}</p>
+      <h2 class="pws-title">${t('workout.postWorkout.title')}</h2>
+      <p class="pws-subtitle">${savedSession.planName || t('workout.postWorkout.fallbackName')}</p>
     </div>
 
     <div class="pws-stats-row">
       <div class="pws-quick-stat">
         <div class="pws-quick-stat-value">${durationMinutes}</div>
-        <div class="pws-quick-stat-label">Minuten</div>
+        <div class="pws-quick-stat-label">${t('workout.postWorkout.minutes')}</div>
       </div>
       <div class="pws-quick-stat">
         <div class="pws-quick-stat-value">${currentSets}</div>
-        <div class="pws-quick-stat-label">Sets</div>
+        <div class="pws-quick-stat-label">${t('workout.postWorkout.sets')}</div>
       </div>
       ${(savedSession.exercises || []).length > 0 ? `
       <div class="pws-quick-stat">
         <div class="pws-quick-stat-value">${savedSession.exercises.length}</div>
-        <div class="pws-quick-stat-label">Übungen</div>
+        <div class="pws-quick-stat-label">${t('workout.postWorkout.exercises')}</div>
       </div>
       ` : ''}
     </div>
@@ -978,7 +978,7 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
 
     <button type="button" class="pws-dismiss-btn" onclick="dismissPostWorkoutSummary()">
       <span class="material-symbols-rounded">bar_chart</span>
-      <span>Zum Fortschritt</span>
+      <span>${t('workout.postWorkout.toProgress')}</span>
     </button>
   `;
 
@@ -1029,7 +1029,7 @@ function renderWorkoutScreen() {
         <p class="empty-state-text">${t('workout.screen.noActiveWorkoutText')}</p>
         <button onclick="startEmptyWorkout()" class="empty-state-btn btn-primary" style="margin-bottom:0.5rem;">
           <span class="material-symbols-rounded">add</span>
-          <span>Workout erfassen</span>
+          <span>${t('workout.screen.logWorkout')}</span>
         </button>
         <button onclick="showTrainingTab ? showTrainingTab('plans') : showView('training')" class="empty-state-btn">
           <span class="material-symbols-rounded">assignment</span>
@@ -1048,10 +1048,10 @@ function renderWorkoutScreen() {
   const emptyWorkoutContent = `
     <div style="text-align:center;padding:2rem 1rem;">
       <span class="material-symbols-rounded" style="font-size:48px;color:var(--text-tertiary);margin-bottom:0.5rem;display:block;">add_circle</span>
-      <p style="color:var(--text-secondary);margin-bottom:1rem;">Füge Übungen hinzu, um dein Workout zu starten</p>
+      <p style="color:var(--text-secondary);margin-bottom:1rem;">${t('workout.screen.emptyHint')}</p>
       <button onclick="openAddExerciseToWorkout()" class="btn-primary" style="margin:0 auto;">
         <span class="material-symbols-rounded">add</span>
-        Übung hinzufügen
+        ${t('workout.screen.addExercise')}
       </button>
     </div>`;
 
@@ -1129,15 +1129,15 @@ function renderSTHeader(progress) {
         <span class="material-symbols-rounded">arrow_back</span>
       </button>
       <div class="st-header-center">
-        <h2 class="st-header-title">${activeWorkout.planName || 'Freies Workout'}</h2>
+        <h2 class="st-header-title">${activeWorkout.planName || t('workout.screen.freeWorkout')}</h2>
         <div class="st-header-sub">
           <span class="material-symbols-rounded" style="font-size:14px;">timer</span>
           <span id="workout-elapsed-timer">${getWorkoutElapsedStr()}</span>
           <span class="st-header-dot">&middot;</span>
-          <span>${progress.completed} / ${progress.total} Übungen</span>
+          <span>${t('workout.screen.exerciseProgress', { completed: progress.completed, total: progress.total })}</span>
         </div>
       </div>
-      <button type="button" class="st-header-menu" onclick="showWorkoutMenu()" aria-label="Menue">
+      <button type="button" class="st-header-menu" onclick="showWorkoutMenu()" aria-label="${t('workout.screen.menu')}">
         <span class="material-symbols-rounded">more_horiz</span>
       </button>
     </div>
@@ -1432,7 +1432,7 @@ function updateCardioPace() {
 function logCardioSetFromInput() {
   const duration = parseFloat(document.getElementById('cardio-duration')?.value) || 0;
   if (duration <= 0) {
-    if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', 'Bitte Dauer eingeben');
+    if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', t('workout.feedback.enterDuration'));
     return;
   }
   const distance = parseFloat(document.getElementById('cardio-distance')?.value) || null;
@@ -1448,7 +1448,7 @@ function logCardioSetFromInput() {
 function logRecoverySetFromInput() {
   const duration = parseFloat(document.getElementById('recovery-duration')?.value) || 0;
   if (duration <= 0) {
-    if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', 'Bitte Dauer eingeben');
+    if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', t('workout.feedback.enterDuration'));
     return;
   }
   logRecoverySet(duration);
@@ -1485,7 +1485,7 @@ function logCardioSet(duration, distance, rpe) {
     setTimeout(() => {
       goToExercise(nextIndex);
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('success', t('workout.screen.exerciseComplete') || 'Übung abgeschlossen!');
+        showEdgeFeedback('success', t('workout.feedback.exerciseComplete'));
       }
     }, 800);
   } else if (activeWorkout.exercises.every(ex => ex.status === 'completed')) {
@@ -1522,7 +1522,7 @@ function logRecoverySet(duration) {
     setTimeout(() => {
       goToExercise(nextIndex);
       if (typeof showEdgeFeedback === 'function') {
-        showEdgeFeedback('success', t('workout.screen.exerciseComplete') || 'Übung abgeschlossen!');
+        showEdgeFeedback('success', t('workout.feedback.exerciseComplete'));
       }
     }, 800);
   } else if (activeWorkout.exercises.every(ex => ex.status === 'completed')) {
@@ -3477,7 +3477,7 @@ function logSet(reps, weight = null, holdSec = null) {
       setTimeout(() => {
         goToExercise(nextIndex);
         if (typeof showEdgeFeedback === 'function') {
-          showEdgeFeedback('success', t('workout.screen.exerciseComplete') || 'Übung abgeschlossen!');
+          showEdgeFeedback('success', t('workout.feedback.exerciseComplete'));
         }
       }, 800);
     } else if (activeWorkout.exercises.every(ex => ex.status === 'completed')) {
@@ -3997,24 +3997,21 @@ function calculateProgress() {
 function formatWorkoutDate(dateStr) {
   const [year, month, day] = dateStr.split('-').map(Number);
   const date = new Date(year, month - 1, day);
-
-  const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-  const dayName = days[date.getDay()];
-
-  return `${dayName}, ${day}.${month}.${year}`;
+  if (typeof formatDateLongText === 'function') return formatDateLongText(date, true);
+  return date.toLocaleDateString();
 }
 
 /**
  * Edit workout date
  */
 function editWorkoutDate() {
-  const newDate = prompt('Neues Datum (YYYY-MM-DD):', activeWorkout.scheduledDate);
+  const newDate = prompt(t('workout.editDate.prompt'), activeWorkout.scheduledDate);
   if (!newDate) return;
 
   const validDate = getValidDateString(newDate);
   if (!validDate) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Ungültiges Datumsformat. Bitte verwende YYYY-MM-DD');
+      showEdgeFeedback('error', t('workout.editDate.error'));
     }
     return;
   }
@@ -4127,13 +4124,13 @@ function openAddExerciseToWorkout() {
     <div class="exercises-sheet" role="dialog" aria-modal="true">
       <div class="exercises-sheet-header">
         <div class="exercises-sheet-drag-handle"></div>
-        <h3 class="exercises-sheet-title">Übung hinzufügen</h3>
-        <button type="button" onclick="closeWorkoutExercisePicker()" class="exercises-sheet-close" aria-label="Schließen">
+        <h3 class="exercises-sheet-title">${t('workout.screen.addExercise')}</h3>
+        <button type="button" onclick="closeWorkoutExercisePicker()" class="exercises-sheet-close" aria-label="${t('common.close')}">
           <span class="material-symbols-rounded">close</span>
         </button>
       </div>
       <div class="exercises-sheet-content" style="padding:0.5rem 1rem;">
-        <input type="text" id="workout-exercise-search" placeholder="Übung suchen..."
+        <input type="text" id="workout-exercise-search" placeholder="${t('workout.screen.searchExercise')}"
           class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
           oninput="filterWorkoutExercisePicker(this.value)" />
         <div id="workout-exercise-picker-list" class="exercises-sheet-list">
@@ -4158,7 +4155,7 @@ function renderWorkoutExercisePickerList(exercises, filter) {
     : exercises;
 
   if (filtered.length === 0) {
-    return '<p style="text-align:center;color:var(--text-tertiary);padding:1rem;">Keine Übungen gefunden</p>';
+    return `<p style="text-align:center;color:var(--text-tertiary);padding:1rem;">${t('workout.screen.noExercisesFound')}</p>`;
   }
 
   return filtered.map(ex => `
@@ -4169,7 +4166,7 @@ function renderWorkoutExercisePickerList(exercises, filter) {
       <div class="exercises-sheet-item-info">
         <div class="exercises-sheet-item-name">${ex.name}</div>
         <div class="exercises-sheet-item-target" style="font-size:0.75rem;color:var(--text-tertiary);">
-          ${(ex.muscleGroups || []).map(m => typeof muscleNames !== 'undefined' ? (muscleNames[m] || m) : m).join(', ')}
+          ${(ex.muscleGroups || []).map(m => typeof getMuscleNames === 'function' ? (getMuscleNames()[m] || m) : m).join(', ')}
         </div>
       </div>
     </button>

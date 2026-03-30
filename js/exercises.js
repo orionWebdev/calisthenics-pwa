@@ -17,21 +17,23 @@ let exerciseNotes = '';
 let exerciseStep2Expanded = false;
 let exerciseCreateCallback = null;
 
-// Muscle Group Namen Mapping
-const muscleNames = {
-  chest: 'Brust',
-  back: 'Rücken',
-  shoulders: 'Schultern',
-  biceps: 'Bizeps',
-  triceps: 'Trizeps',
-  core: 'Core',
-  legs: 'Beine',
-  'full-body': 'Ganzkörper',
-  // Legacy keys kept for backward compat display
-  arms: 'Arme',
-  calf: 'Waden',
-  cardio: 'Cardio',
-  mobility: 'Mobility'
+// Muscle Group Namen Mapping (i18n-aware)
+function getMuscleNames() {
+  return {
+    chest: t('exercise.muscles.chest') || 'Chest',
+    back: t('exercise.muscles.back') || 'Back',
+    shoulders: t('exercise.muscles.shoulders') || 'Shoulders',
+    biceps: t('exercise.muscles.biceps') || 'Biceps',
+    triceps: t('exercise.muscles.triceps') || 'Triceps',
+    core: t('exercise.muscles.core') || 'Core',
+    legs: t('exercise.muscles.legs') || 'Legs',
+    'full-body': t('exercise.muscles.fullBody') || 'Full body',
+    // Legacy keys kept for backward compat display
+    arms: t('exercise.muscles.arms') || 'Arms',
+    calf: t('exercise.muscles.calf') || 'Calves',
+    cardio: t('exercise.muscles.cardio') || 'Cardio',
+    mobility: t('exercise.muscles.mobility') || 'Mobility'
+  }
 };
 
 // Equipment Namen Mapping
@@ -475,8 +477,9 @@ function renderExerciseRow(exercise, isLast = false) {
     </div>`;
 
   // Meta line: muscle groups (replaces type · pattern)
+  const names = getMuscleNames();
   const muscleLabel = (exercise.muscleGroups || [])
-    .map(m => muscleNames[m]).filter(Boolean).slice(0, 3).join(', ');
+    .map(m => names[m]).filter(Boolean).slice(0, 3).join(', ');
   const metaText = muscleLabel || t('exercise.type.' + exercise.type) || '';
 
   // Difficulty stripe color
@@ -611,20 +614,21 @@ function setExerciseEquipmentFilter(value) {
  * Opens muscle group filter as a bottom sheet (single-select)
  */
 function openMuscleGroupFilterSheet() {
+  const mn = getMuscleNames();
   const filterOptions = [
-    { value: '', label: t('exercise.filters.allMuscles') || 'Alle Muskeln', description: 'Alle Übungen anzeigen' },
-    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur', icon: getMuscleIconPath('chest') },
-    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur', icon: getMuscleIconPath('back') },
-    { value: 'biceps', label: 'Bizeps', description: 'Bizepsmuskulatur', icon: getMuscleIconPath('biceps') },
-    { value: 'triceps', label: 'Trizeps', description: 'Trizepsmuskulatur', icon: getMuscleIconPath('triceps') },
-    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur', icon: getMuscleIconPath('shoulders') },
-    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur', icon: getMuscleIconPath('core') },
-    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur', icon: getMuscleIconPath('legs') },
-    { value: 'full-body', label: 'Ganzkörper', description: 'Ganzkörpertraining', icon: getMuscleIconPath('full-body') }
+    { value: '', label: t('exercise.filters.allMuscles'), description: t('exercise.muscleDescriptions.all') },
+    { value: 'chest', label: mn.chest, description: t('exercise.muscleDescriptions.chest'), icon: getMuscleIconPath('chest') },
+    { value: 'back', label: mn.back, description: t('exercise.muscleDescriptions.back'), icon: getMuscleIconPath('back') },
+    { value: 'biceps', label: mn.biceps, description: t('exercise.muscleDescriptions.biceps'), icon: getMuscleIconPath('biceps') },
+    { value: 'triceps', label: mn.triceps, description: t('exercise.muscleDescriptions.triceps'), icon: getMuscleIconPath('triceps') },
+    { value: 'shoulders', label: mn.shoulders, description: t('exercise.muscleDescriptions.shoulders'), icon: getMuscleIconPath('shoulders') },
+    { value: 'core', label: mn.core, description: t('exercise.muscleDescriptions.core'), icon: getMuscleIconPath('core') },
+    { value: 'legs', label: mn.legs, description: t('exercise.muscleDescriptions.legs'), icon: getMuscleIconPath('legs') },
+    { value: 'full-body', label: mn['full-body'], description: t('exercise.muscleDescriptions.fullBody'), icon: getMuscleIconPath('full-body') }
   ];
 
   openBottomSheet({
-    title: 'Muskelgruppe filtern',
+    title: t('exercise.muscleFilter.title'),
     options: filterOptions,
     selectedValues: exerciseMuscleFilter ? [exerciseMuscleFilter] : [''],
     enableSearch: false,
@@ -637,48 +641,98 @@ function openMuscleGroupFilterSheet() {
   });
 }
 
+/**
+ * Opens difficulty filter as a bottom sheet (single-select)
+ */
+function openDifficultyFilterSheet() {
+  const filterOptions = [
+    { value: '', label: t('exercise.filters.allDifficulties'), description: '' },
+    { value: 'beginner', label: t('difficulty.beginner'), description: t('difficulty.descriptions.beginner') },
+    { value: 'intermediate', label: t('difficulty.intermediate'), description: t('difficulty.descriptions.intermediate') },
+    { value: 'advanced', label: t('difficulty.advanced'), description: t('difficulty.descriptions.advanced') },
+    { value: 'elite', label: t('difficulty.elite'), description: t('difficulty.descriptions.elite') }
+  ];
+
+  openBottomSheet({
+    title: t('exercise.difficultyFilter.title'),
+    options: filterOptions,
+    selectedValues: exerciseDifficultyFilter ? [exerciseDifficultyFilter] : [''],
+    enableSearch: false,
+    fieldId: 'exercise-difficulty-filter-btn',
+    onConfirm: (selectedValues) => {
+      const selected = selectedValues.length > 0 ? selectedValues[selectedValues.length - 1] : '';
+      setExerciseDifficultyFilter(selected);
+    }
+  });
+}
+
+/**
+ * Opens equipment filter as a bottom sheet (single-select)
+ */
+function openEquipmentFilterSheet() {
+  const mainEquipment = ['bodyweight', 'pull-up-bar', 'parallettes', 'rings', 'dumbbell', 'barbell', 'resistance-bands', 'gym-machine', 'bench'];
+
+  const filterOptions = [
+    { value: '', label: t('plan.filters.all'), description: '' }
+  ];
+
+  mainEquipment.forEach(eq => {
+    filterOptions.push({
+      value: eq,
+      label: equipmentNames[eq] || eq,
+      description: ''
+    });
+  });
+
+  openBottomSheet({
+    title: t('exercise.equipmentFilter.title'),
+    options: filterOptions,
+    selectedValues: exerciseEquipmentFilter ? [exerciseEquipmentFilter] : [''],
+    enableSearch: false,
+    fieldId: 'exercise-equipment-filter-btn',
+    onConfirm: (selectedValues) => {
+      const selected = selectedValues.length > 0 ? selectedValues[selectedValues.length - 1] : '';
+      setExerciseEquipmentFilter(selected);
+    }
+  });
+}
+
 function updateExerciseFiltersUI() {
   // Update muscle filter button label
   const muscleFilterLabel = document.getElementById('exercise-muscle-filter-label');
   const muscleFilterBtn = document.getElementById('exercise-muscle-filter-btn');
   if (muscleFilterLabel) {
     muscleFilterLabel.textContent = exerciseMuscleFilter
-      ? (muscleNames[exerciseMuscleFilter] || exerciseMuscleFilter)
-      : (t('exercise.filters.allMuscles') || 'Alle Muskeln');
+      ? (getMuscleNames()[exerciseMuscleFilter] || exerciseMuscleFilter)
+      : t('exercise.filters.allMuscles');
   }
   if (muscleFilterBtn) {
     muscleFilterBtn.classList.toggle('active', !!exerciseMuscleFilter);
   }
 
-  const difficultyContainer = document.getElementById('exercise-difficulty-filters');
-  if (difficultyContainer) {
-    difficultyContainer.querySelectorAll('.filter-chip').forEach(btn => {
-      const value = btn.dataset.difficulty || '';
-      btn.classList.toggle('active', value === exerciseDifficultyFilter);
-    });
+  // Update difficulty filter button label
+  const difficultyFilterLabel = document.getElementById('exercise-difficulty-filter-label');
+  const difficultyFilterBtn = document.getElementById('exercise-difficulty-filter-btn');
+  if (difficultyFilterLabel) {
+    difficultyFilterLabel.textContent = exerciseDifficultyFilter
+      ? (t('difficulty.' + exerciseDifficultyFilter) || exerciseDifficultyFilter)
+      : t('exercise.filters.allDifficulties');
+  }
+  if (difficultyFilterBtn) {
+    difficultyFilterBtn.classList.toggle('active', !!exerciseDifficultyFilter);
   }
 
-  const equipmentContainer = document.getElementById('exercise-equipment-filters');
-  if (equipmentContainer) {
-    equipmentContainer.querySelectorAll('.filter-chip').forEach(btn => {
-      const value = btn.dataset.equipment !== undefined ? btn.dataset.equipment : '';
-      btn.classList.toggle('active', value === exerciseEquipmentFilter);
-    });
+  // Update equipment filter button label
+  const equipmentFilterLabel = document.getElementById('exercise-equipment-filter-label');
+  const equipmentFilterBtn = document.getElementById('exercise-equipment-filter-btn');
+  if (equipmentFilterLabel) {
+    equipmentFilterLabel.textContent = exerciseEquipmentFilter
+      ? (equipmentNames[exerciseEquipmentFilter] || exerciseEquipmentFilter)
+      : t('plan.filters.all');
   }
-
-  const allEquipmentLabel = document.getElementById('exercise-filter-equipment-all');
-  if (allEquipmentLabel) allEquipmentLabel.textContent = t('plan.filters.all') || 'Alle';
-
-  const allDifficultyLabel = document.getElementById('exercise-filter-difficulty-all');
-  if (allDifficultyLabel) allDifficultyLabel.textContent = t('exercise.filters.allDifficulties');
-  const beginnerLabel = document.getElementById('exercise-filter-difficulty-beginner');
-  if (beginnerLabel) beginnerLabel.textContent = t('difficulty.beginner');
-  const intermediateLabel = document.getElementById('exercise-filter-difficulty-intermediate');
-  if (intermediateLabel) intermediateLabel.textContent = t('difficulty.intermediate');
-  const advancedLabel = document.getElementById('exercise-filter-difficulty-advanced');
-  if (advancedLabel) advancedLabel.textContent = t('difficulty.advanced');
-  const eliteLabel = document.getElementById('exercise-filter-difficulty-elite');
-  if (eliteLabel) eliteLabel.textContent = t('difficulty.elite');
+  if (equipmentFilterBtn) {
+    equipmentFilterBtn.classList.toggle('active', !!exerciseEquipmentFilter);
+  }
 }
 
 function toggleExercisesExpanded() {
@@ -724,7 +778,7 @@ function updateActiveFilters() {
     filterPills += `
       <div class="filter-pill">
         <span class="material-symbols-rounded">sports_gymnastics</span>
-        <span>${muscleNames[muscleFilter]}</span>
+        <span>${getMuscleNames()[muscleFilter]}</span>
         <button onclick="clearMuscleFilter()" class="filter-pill-remove">
           <span class="material-symbols-rounded">close</span>
         </button>
@@ -826,7 +880,7 @@ function editExercise(id) {
 
   if (!exercise) return;
 
-  document.getElementById('modal-title').textContent = t('exercise.title') + ' bearbeiten';
+  document.getElementById('modal-title').textContent = t('exercise.editTitle');
   document.getElementById('exercise-name').value = getExerciseName(exercise);
 
   // Set muscle groups and equipment for multi-select
@@ -1503,7 +1557,7 @@ async function saveExercise() {
   } catch (error) {
     console.error('Error saving exercise:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern der Übung!');
+      showEdgeFeedback('error', t('exercise.feedback.saveError'));
     }
   }
 }
@@ -1666,12 +1720,12 @@ async function deleteExerciseFromSession(sessionId, exerciseId) {
       statsContainer.innerHTML = renderExerciseQuickStatsHTML(stats);
     }
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Eintrag gelöscht');
+      showEdgeFeedback('success', t('exercise.feedback.deleted'));
     }
   } catch (error) {
     console.error('Error deleting exercise from session:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Löschen');
+      showEdgeFeedback('error', t('exercise.feedback.deleteError'));
     }
   }
 }
@@ -1741,8 +1795,9 @@ function viewExerciseDetails(id) {
   }[difficultyValue] || '#6b7280';
 
   // Muscle group label
+  const muscleNamesMap = getMuscleNames();
   const muscleChipLabel = (exercise.muscleGroups || [])
-    .map(m => muscleNames[m]).filter(Boolean).join(', ');
+    .map(m => muscleNamesMap[m]).filter(Boolean).join(', ');
 
   // Chips: Type + Muscle groups + difficulty
   const chipsHTML = `
@@ -2005,23 +2060,24 @@ let exerciseEquipment = [];
  * Opens muscle groups bottom sheet
  */
 function openMuscleGroupsBottomSheet() {
+  const mn = getMuscleNames();
   const muscleOptions = [
-    { value: 'chest', label: 'Brust', description: 'Brustmuskulatur', icon: getMuscleIconPath('chest') },
-    { value: 'back', label: 'Rücken', description: 'Rückenmuskulatur', icon: getMuscleIconPath('back') },
-    { value: 'biceps', label: 'Bizeps', description: 'Bizepsmuskulatur', icon: getMuscleIconPath('biceps') },
-    { value: 'triceps', label: 'Trizeps', description: 'Trizepsmuskulatur', icon: getMuscleIconPath('triceps') },
-    { value: 'shoulders', label: 'Schultern', description: 'Schultermuskulatur', icon: getMuscleIconPath('shoulders') },
-    { value: 'core', label: 'Core', description: 'Bauch- und Rumpfmuskulatur', icon: getMuscleIconPath('core') },
-    { value: 'legs', label: 'Beine', description: 'Beinmuskulatur', icon: getMuscleIconPath('legs') },
-    { value: 'full-body', label: 'Ganzkörper', description: 'Ganzkörpertraining', icon: getMuscleIconPath('full-body') }
+    { value: 'chest', label: mn.chest, description: t('exercise.muscleDescriptions.chest'), icon: getMuscleIconPath('chest') },
+    { value: 'back', label: mn.back, description: t('exercise.muscleDescriptions.back'), icon: getMuscleIconPath('back') },
+    { value: 'biceps', label: mn.biceps, description: t('exercise.muscleDescriptions.biceps'), icon: getMuscleIconPath('biceps') },
+    { value: 'triceps', label: mn.triceps, description: t('exercise.muscleDescriptions.triceps'), icon: getMuscleIconPath('triceps') },
+    { value: 'shoulders', label: mn.shoulders, description: t('exercise.muscleDescriptions.shoulders'), icon: getMuscleIconPath('shoulders') },
+    { value: 'core', label: mn.core, description: t('exercise.muscleDescriptions.core'), icon: getMuscleIconPath('core') },
+    { value: 'legs', label: mn.legs, description: t('exercise.muscleDescriptions.legs'), icon: getMuscleIconPath('legs') },
+    { value: 'full-body', label: mn['full-body'], description: t('exercise.muscleDescriptions.fullBody'), icon: getMuscleIconPath('full-body') }
   ];
 
   openBottomSheet({
-    title: 'Muskelgruppen auswählen',
+    title: t('exercise.muscleFilter.selectTitle'),
     options: muscleOptions,
     selectedValues: exerciseMuscleGroups,
     enableSearch: true,
-    searchPlaceholder: 'Muskelgruppe suchen...',
+    searchPlaceholder: t('exercise.muscleFilter.searchPlaceholder'),
     fieldId: 'exercise-muscle-groups-wrapper',
     onConfirm: (selectedValues) => {
       exerciseMuscleGroups = selectedValues;
@@ -2066,9 +2122,9 @@ function openEquipmentBottomSheet() {
 function renderExerciseMuscleGroupsInput() {
   renderMultiSelectInput('exercise-muscle-groups-wrapper', {
     icon: 'fitness_center',
-    placeholder: 'Muskelgruppen auswählen...',
+    placeholder: t('exercise.muscleFilter.selectPlaceholder'),
     selectedValues: exerciseMuscleGroups,
-    valueLabels: muscleNames
+    valueLabels: getMuscleNames()
   });
 }
 

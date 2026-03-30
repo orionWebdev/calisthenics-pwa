@@ -247,14 +247,14 @@
             onclick="switchTrainingTab('plans')"
             data-tab="plans"
           >
-            <span>Pläne</span>
+            <span data-i18n="nav.plans">Pläne</span>
           </button>
           <button
             class="segmented-btn"
             onclick="switchTrainingTab('exercises')"
             data-tab="exercises"
           >
-            <span>Übungen</span>
+            <span data-i18n="nav.exercises">Übungen</span>
           </button>
         </div>
       </div>
@@ -368,7 +368,7 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
             <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
-            <span>Neue Übung</span>
+            <span data-i18n="exercise.create.title">Neue Übung</span>
           </button>
         </div>
 
@@ -398,79 +398,21 @@
 
         <!-- Filter Chips -->
         <div class="exercise-filters-bar">
-          <div class="plan-type-filters flex gap-2" id="exercise-muscle-filters">
-            <button class="filter-chip active" id="exercise-muscle-filter-btn" onclick="openMuscleGroupFilterSheet()">
-              <span class="material-symbols-rounded">body_system</span>
-              <span id="exercise-muscle-filter-label">Alle Muskeln</span>
-              <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
-            </button>
-          </div>
-
-          <div class="plan-type-filters flex gap-2" id="exercise-difficulty-filters">
-            <button class="filter-chip active" data-difficulty="" onclick="setExerciseDifficultyFilter('')">
-              <span class="material-symbols-rounded">signal_cellular_alt</span>
-              <span id="exercise-filter-difficulty-all"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="beginner" onclick="setExerciseDifficultyFilter('beginner')">
-              <span class="material-symbols-rounded">bolt</span>
-              <span id="exercise-filter-difficulty-beginner"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="intermediate" onclick="setExerciseDifficultyFilter('intermediate')">
-              <span class="material-symbols-rounded">trending_up</span>
-              <span id="exercise-filter-difficulty-intermediate"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="advanced" onclick="setExerciseDifficultyFilter('advanced')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span id="exercise-filter-difficulty-advanced"></span>
-            </button>
-            <button class="filter-chip" data-difficulty="elite" onclick="setExerciseDifficultyFilter('elite')">
-              <span class="material-symbols-rounded">military_tech</span>
-              <span id="exercise-filter-difficulty-elite"></span>
-            </button>
-          </div>
-
-          <div class="plan-type-filters flex gap-2" id="exercise-equipment-filters">
-            <button class="filter-chip active" data-equipment="" onclick="setExerciseEquipmentFilter('')">
-              <span class="material-symbols-rounded">apps</span>
-              <span id="exercise-filter-equipment-all"></span>
-            </button>
-            <button class="filter-chip" data-equipment="bodyweight" onclick="setExerciseEquipmentFilter('bodyweight')">
-              <span class="material-symbols-rounded">accessibility_new</span>
-              <span>Bodyweight</span>
-            </button>
-            <button class="filter-chip" data-equipment="pull-up-bar" onclick="setExerciseEquipmentFilter('pull-up-bar')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Klimmzugstange</span>
-            </button>
-            <button class="filter-chip" data-equipment="parallettes" onclick="setExerciseEquipmentFilter('parallettes')">
-              <span class="material-symbols-rounded">straighten</span>
-              <span>Paralettes</span>
-            </button>
-            <button class="filter-chip" data-equipment="rings" onclick="setExerciseEquipmentFilter('rings')">
-              <span class="material-symbols-rounded">sports_gymnastics</span>
-              <span>Ringe</span>
-            </button>
-            <button class="filter-chip" data-equipment="dumbbell" onclick="setExerciseEquipmentFilter('dumbbell')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Kurzhantel</span>
-            </button>
-            <button class="filter-chip" data-equipment="barbell" onclick="setExerciseEquipmentFilter('barbell')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Langhantel</span>
-            </button>
-            <button class="filter-chip" data-equipment="resistance-bands" onclick="setExerciseEquipmentFilter('resistance-bands')">
-              <span class="material-symbols-rounded">cable</span>
-              <span>Bänder</span>
-            </button>
-            <button class="filter-chip" data-equipment="gym-machine" onclick="setExerciseEquipmentFilter('gym-machine')">
-              <span class="material-symbols-rounded">precision_manufacturing</span>
-              <span>Maschine</span>
-            </button>
-            <button class="filter-chip" data-equipment="bench" onclick="setExerciseEquipmentFilter('bench')">
-              <span class="material-symbols-rounded">airline_seat_flat</span>
-              <span>Bank</span>
-            </button>
-          </div>
+          <button class="filter-chip active" id="exercise-muscle-filter-btn" onclick="openMuscleGroupFilterSheet()">
+            <span class="material-symbols-rounded">body_system</span>
+            <span id="exercise-muscle-filter-label"></span>
+            <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
+          </button>
+          <button class="filter-chip" id="exercise-difficulty-filter-btn" onclick="openDifficultyFilterSheet()">
+            <span class="material-symbols-rounded">signal_cellular_alt</span>
+            <span id="exercise-difficulty-filter-label"></span>
+            <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
+          </button>
+          <button class="filter-chip" id="exercise-equipment-filter-btn" onclick="openEquipmentFilterSheet()">
+            <span class="material-symbols-rounded">apps</span>
+            <span id="exercise-equipment-filter-label"></span>
+            <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
+          </button>
         </div>
 
         <!-- Active Filter Pills -->
@@ -481,7 +423,7 @@
           <!-- Wird von JavaScript gefüllt -->
           <div class="col-span-full text-center py-12 text-gray-400">
             <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">fitness_center</span>
-            <p>Lade Übungen...</p>
+            <p data-i18n="exercise.loading">Lade Übungen...</p>
           </div>
         </div>
       </div>
@@ -534,7 +476,7 @@
   <div id="exercise-modal" class="modal">
     <div class="modal-content">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold" id="modal-title">Neue Übung</h3>
+        <h3 class="text-2xl font-bold" id="modal-title" data-i18n="exercise.create.title">Neue Übung</h3>
         <button onclick="closeExerciseModal()" class="modal-close-btn">
           <span class="material-symbols-rounded">close</span>
         </button>
@@ -544,12 +486,12 @@
         <div class="wizard-section">
           <div class="wizard-section-header">
             <span class="wizard-section-number">1</span>
-            <span class="wizard-section-title" id="exercise-step1-title">Grundlagen</span>
+            <span class="wizard-section-title" id="exercise-step1-title" data-i18n="exercise.create.stepBasics">Grundlagen</span>
           </div>
           <div class="wizard-section-content">
             <!-- Name -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-name-label">Übungsname *</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-name-label" data-i18n="exercise.name">Übungsname</label>
               <input
                 type="text"
                 id="exercise-name"
@@ -560,12 +502,12 @@
 
             <!-- Type -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-type-label">Typ *</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-type-label" data-i18n="exercise.type.label">Typ</label>
               <div class="exercise-type-pills" id="exercise-type-pills">
-                <button type="button" class="difficulty-pill active" data-type="strength" onclick="setExerciseType('strength')">Kraft</button>
-                <button type="button" class="difficulty-pill" data-type="bodyweight" onclick="setExerciseType('bodyweight')">Bodyweight</button>
-                <button type="button" class="difficulty-pill" data-type="cardio" onclick="setExerciseType('cardio')">Cardio</button>
-                <button type="button" class="difficulty-pill" data-type="recovery" onclick="setExerciseType('recovery')">Recovery</button>
+                <button type="button" class="difficulty-pill active" data-type="strength" data-i18n="exercise.type.strength" onclick="setExerciseType('strength')">Kraft</button>
+                <button type="button" class="difficulty-pill" data-type="bodyweight" data-i18n="exercise.type.bodyweight" onclick="setExerciseType('bodyweight')">Bodyweight</button>
+                <button type="button" class="difficulty-pill" data-type="cardio" data-i18n="exercise.type.cardio" onclick="setExerciseType('cardio')">Cardio</button>
+                <button type="button" class="difficulty-pill" data-type="recovery" data-i18n="exercise.type.recovery" onclick="setExerciseType('recovery')">Recovery</button>
               </div>
               <input type="hidden" id="exercise-type" value="strength">
             </div>
@@ -574,7 +516,7 @@
             <div class="mb-4">
               <label class="block text-sm font-medium mb-2">
                 <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">body_system</span>
-                Muskelgruppen
+                <span data-i18n="exercise.muscleGroups">Muskelgruppen</span>
               </label>
               <div class="multi-select-input-wrapper" id="exercise-muscle-groups-wrapper" onclick="openMuscleGroupsBottomSheet()"></div>
             </div>
@@ -583,30 +525,30 @@
             <div class="mb-4">
               <label class="block text-sm font-medium mb-2">
                 <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 0.25rem; color: var(--color-primary);">build</span>
-                Equipment <span class="text-gray-400">(optional)</span>
+                <span data-i18n="exercise.equipment">Equipment</span> <span class="text-gray-400" data-i18n="common.optional">(optional)</span>
               </label>
               <div class="multi-select-input-wrapper" id="exercise-equipment-wrapper" onclick="openEquipmentBottomSheet()"></div>
             </div>
 
             <!-- Difficulty -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-difficulty-label">Schwierigkeit *</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-difficulty-label" data-i18n="difficulty.label">Schwierigkeit</label>
               <div class="difficulty-pills-compact">
                 <button type="button" onclick="setDifficulty('beginner')" class="difficulty-pill-sm" data-difficulty="beginner">
                   <span class="material-symbols-rounded" style="font-size: 16px;">eco</span>
-                  Anfänger
+                  <span data-i18n="difficulty.beginner">Anfänger</span>
                 </button>
                 <button type="button" onclick="setDifficulty('intermediate')" class="difficulty-pill-sm active" data-difficulty="intermediate">
                   <span class="material-symbols-rounded" style="font-size: 16px;">trending_up</span>
-                  Fortgeschritten
+                  <span data-i18n="difficulty.intermediate">Fortgeschritten</span>
                 </button>
                 <button type="button" onclick="setDifficulty('advanced')" class="difficulty-pill-sm" data-difficulty="advanced">
                   <span class="material-symbols-rounded" style="font-size: 16px;">bolt</span>
-                  Profi
+                  <span data-i18n="difficulty.advanced">Profi</span>
                 </button>
                 <button type="button" onclick="setDifficulty('elite')" class="difficulty-pill-sm" data-difficulty="elite">
                   <span class="material-symbols-rounded" style="font-size: 16px;">local_fire_department</span>
-                  Elite
+                  <span data-i18n="difficulty.elite">Elite</span>
                 </button>
               </div>
               <input type="hidden" id="exercise-difficulty" value="intermediate">
@@ -615,9 +557,9 @@
 
             <!-- Notes -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-notes-label">Notizen</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-notes-label" data-i18n="exercise.notesLabel">Notizen</label>
               <textarea id="exercise-notes" rows="3" class="instruction-step-input"
-                placeholder="Allgemeine Notizen zur Übung..."></textarea>
+                data-i18n-placeholder="exercise.notesPlaceholder" placeholder="Allgemeine Notizen zur Übung..."></textarea>
             </div>
           </div>
         </div>
@@ -627,15 +569,15 @@
           <button type="button" class="wizard-section-header clickable" onclick="toggleExerciseStep2()">
             <div style="display:flex;align-items:center;gap:0.75rem;">
               <span class="wizard-section-number">2</span>
-              <span class="wizard-section-title" id="exercise-step2-title">Details</span>
-              <span class="wizard-section-badge" id="exercise-step2-badge">optional</span>
+              <span class="wizard-section-title" id="exercise-step2-title" data-i18n="exercise.create.stepDetails">Details</span>
+              <span class="wizard-section-badge" id="exercise-step2-badge" data-i18n="exercise.create.stepOptional">optional</span>
             </div>
             <span class="material-symbols-rounded wizard-section-toggle" id="exercise-step2-toggle">expand_more</span>
           </button>
           <div class="wizard-section-content collapsed" id="exercise-step2-content">
             <!-- Instructions (nummerierte Schritte) -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-instructions-title">Anleitung</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-instructions-title" data-i18n="exercise.instructions.title">Anleitung</label>
               <p class="text-sm text-gray-400 mb-4" id="exercise-instructions-hint"></p>
               <div id="exercise-instruction-steps" class="instruction-steps-container"></div>
               <button type="button" onclick="addInstructionStep()" class="add-step-btn">
@@ -646,11 +588,11 @@
 
             <!-- Variants -->
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-2" id="exercise-variants-label">Varianten</label>
+              <label class="block text-sm font-medium mb-2" id="exercise-variants-label" data-i18n="exercise.variants.label">Varianten</label>
               <div id="exercise-variants-list" class="exercise-variants-edit-container"></div>
               <button type="button" onclick="addVariant()" class="add-step-btn">
                 <span class="material-symbols-rounded">add</span>
-                <span>Variante hinzufügen</span>
+                <span data-i18n="exercise.variants.add">Variante hinzufügen</span>
               </button>
             </div>
 
@@ -707,10 +649,10 @@
         <div class="flex gap-3 pt-2">
           <button onclick="saveExercise()" class="flex-1 bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 py-3 rounded-lg font-semibold transition-all shadow-lg">
             <span class="material-symbols-rounded" style="font-size: 18px; vertical-align: middle; margin-right: 0.5rem;">save</span>
-            Speichern
+            <span data-i18n="common.save">Speichern</span>
           </button>
           <button onclick="closeExerciseModal()" class="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-lg font-semibold transition-colors">
-            Abbrechen
+            <span data-i18n="common.cancel">Abbrechen</span>
           </button>
         </div>
       </div>
@@ -1114,8 +1056,8 @@
     <div id="bottom-sheet" class="bottom-sheet" role="document">
       <div class="bottom-sheet-header">
         <div class="bottom-sheet-drag-handle" aria-hidden="true"></div>
-        <h3 id="bottom-sheet-title" class="bottom-sheet-title">Auswählen</h3>
-        <button type="button" class="bottom-sheet-close-btn" onclick="closeBottomSheet()" aria-label="Schließen">
+        <h3 id="bottom-sheet-title" class="bottom-sheet-title"></h3>
+        <button type="button" class="bottom-sheet-close-btn" onclick="closeBottomSheet()" aria-label="Close">
           <span class="material-symbols-rounded" aria-hidden="true">close</span>
         </button>
       </div>
@@ -1177,7 +1119,7 @@
 
         <!-- Muscle Groups (required) -->
         <div>
-          <label class="block text-sm font-medium mb-2">Muskelgruppen *</label>
+          <label id="quick-exercise-muscles-label" class="block text-sm font-medium mb-2"></label>
           <div id="quick-exercise-muscles-wrapper" class="multi-select-wrapper" onclick="openQuickExerciseMuscleSheet()">
             <!-- Rendered by JS -->
           </div>
@@ -1223,7 +1165,7 @@
     <div id="plan-picker-sheet" class="bottom-sheet plan-picker-sheet">
       <div class="bottom-sheet-header">
         <div class="bottom-sheet-drag-handle"></div>
-        <h3 id="plan-picker-title" class="bottom-sheet-title">Plan auswählen</h3>
+        <h3 id="plan-picker-title" class="bottom-sheet-title"></h3>
         <button onclick="closePlanPickerSheet()" class="bottom-sheet-close-btn">
           <span class="material-symbols-rounded">close</span>
         </button>
@@ -1243,11 +1185,11 @@
       </div>
 
       <div id="plan-picker-filter" class="plan-picker-filter">
-        <button class="plan-picker-filter-btn active" data-type="all" onclick="filterPlanPicker('all')">Alle</button>
-        <button class="plan-picker-filter-btn" data-type="strength" onclick="filterPlanPicker('strength')">Kraft</button>
-        <button class="plan-picker-filter-btn" data-type="bodyweight" onclick="filterPlanPicker('bodyweight')">Bodyweight</button>
-        <button class="plan-picker-filter-btn" data-type="cardio" onclick="filterPlanPicker('cardio')">Cardio</button>
-        <button class="plan-picker-filter-btn" data-type="recovery" onclick="filterPlanPicker('recovery')">Recovery</button>
+        <button class="plan-picker-filter-btn active" data-type="all" data-i18n="plan.filters.all" onclick="filterPlanPicker('all')">Alle</button>
+        <button class="plan-picker-filter-btn" data-type="strength" data-i18n="plan.filters.strength" onclick="filterPlanPicker('strength')">Kraft</button>
+        <button class="plan-picker-filter-btn" data-type="bodyweight" data-i18n="plan.filters.bodyweight" onclick="filterPlanPicker('bodyweight')">Bodyweight</button>
+        <button class="plan-picker-filter-btn" data-type="cardio" data-i18n="plan.filters.cardio" onclick="filterPlanPicker('cardio')">Cardio</button>
+        <button class="plan-picker-filter-btn" data-type="recovery" data-i18n="plan.filters.recovery" onclick="filterPlanPicker('recovery')">Recovery</button>
       </div>
 
       <div id="plan-picker-list" class="plan-picker-list">

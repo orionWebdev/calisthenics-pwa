@@ -420,16 +420,16 @@ function openStartWorkoutFromPlanSheet() {
         <button class="picker-item" type="button" onclick="startWorkoutFromPlanOption()">
           <span class="material-symbols-rounded" style="font-size: 24px; color: white;">description</span>
           <div class="picker-item-content">
-            <span class="picker-item-label">Plan auswählen</span>
-            <span class="picker-item-desc">Starte ein Training aus deinen Plänen</span>
+            <span class="picker-item-label">${tr('dashboard.startWorkout.selectPlan')}</span>
+            <span class="picker-item-desc">${tr('dashboard.startWorkout.selectPlanDesc')}</span>
           </div>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
         <button class="picker-item" type="button" onclick="startFreeWorkoutOption()">
           <span class="material-symbols-rounded" style="font-size: 24px; color: white;">add_circle</span>
           <div class="picker-item-content">
-            <span class="picker-item-label">Neues Training</span>
-            <span class="picker-item-desc">Starte ein leeres Workout und füge Übungen hinzu</span>
+            <span class="picker-item-label">${tr('dashboard.startWorkout.newWorkout')}</span>
+            <span class="picker-item-desc">${tr('dashboard.startWorkout.newWorkoutDesc')}</span>
           </div>
           <span class="material-symbols-rounded">chevron_right</span>
         </button>
@@ -562,11 +562,7 @@ function renderLogWorkoutCard(state) {
   const todayTitle = tr('dashboard.today') || 'Heute';
   const todayDate = typeof formatDateLongText === 'function'
     ? formatDateLongText(new Date(), false)
-    : new Intl.DateTimeFormat('de-DE', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long'
-    }).format(new Date());
+    : new Date().toLocaleDateString();
   const todayTitleEl = document.getElementById('dashboard-today-title');
   const todayDateEl = document.getElementById('dashboard-today-date');
   if (todayTitleEl) todayTitleEl.textContent = todayTitle;
@@ -1228,8 +1224,8 @@ function renderDashboardActivityCalendar(state) {
   const segmentedControl = `
     <div class="cal-widget-segmented-control" style="--seg-count:2;--active-idx:${activeIdx}">
       <div class="cal-widget-seg-indicator"></div>
-      <button class="cal-widget-seg-btn${dashboardCalendarTab === 'activity' ? ' active' : ''}" data-tab="activity" onclick="switchCalendarWidgetTab('activity')">Aktivität</button>
-      <button class="cal-widget-seg-btn${dashboardCalendarTab === 'planen' ? ' active' : ''}" data-tab="planen" onclick="switchCalendarWidgetTab('planen')">Planen</button>
+      <button class="cal-widget-seg-btn${dashboardCalendarTab === 'activity' ? ' active' : ''}" data-tab="activity" onclick="switchCalendarWidgetTab('activity')">${tr('dashboard.calendar.tabActivity')}</button>
+      <button class="cal-widget-seg-btn${dashboardCalendarTab === 'planen' ? ' active' : ''}" data-tab="planen" onclick="switchCalendarWidgetTab('planen')">${tr('dashboard.calendar.tabPlan')}</button>
     </div>
   `;
 
@@ -1258,9 +1254,9 @@ function renderActivityCalendarContent() {
 
   const sessionsByDate = getDashboardSessionsByDate(sessions, year, month);
 
-  const monthNamesFull = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-                          'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-  const monthDisplay = `${monthNamesFull[month]} ${year}`;
+  const monthKeys = ['january', 'february', 'march', 'april', 'may', 'june',
+                     'july', 'august', 'september', 'october', 'november', 'december'];
+  const monthDisplay = `${tr('calendar.monthNames.' + monthKeys[month])} ${year}`;
 
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -1270,7 +1266,8 @@ function renderActivityCalendarContent() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const dayLabels = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  const dayLabels = dayKeys.map(k => tr('calendar.dayNamesShort.' + k));
 
   let calendarHTML = `<div class="dashboard-mini-calendar-expanded">`;
   calendarHTML += `<div class="mini-cal-header-expanded">`;
@@ -1309,11 +1306,11 @@ function renderActivityCalendarContent() {
 
   contentEl.innerHTML = `
     <div class="dashboard-activity-month-nav">
-      <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('prev')" aria-label="Vorheriger Monat">
+      <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('prev')" aria-label="${tr('dashboard.calendar.prevMonth')}">
         <span class="material-symbols-rounded">chevron_left</span>
       </button>
       <span class="activity-month-title">${monthDisplay}</span>
-      <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('next')" aria-label="Nächster Monat">
+      <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('next')" aria-label="${tr('dashboard.calendar.nextMonth')}">
         <span class="material-symbols-rounded">chevron_right</span>
       </button>
       <button class="activity-calendar-more-link" onclick="event.stopPropagation(); if(typeof showView==='function') showView('progress')">
@@ -1333,23 +1330,23 @@ function renderPlanCalendarInWidget() {
     <div class="plan-calendar-widget-wrapper">
       <div class="calendar-month-section">
         <div class="dashboard-activity-month-nav">
-          <button class="activity-nav-btn" onclick="navigateCalendar('prev')" aria-label="Vorheriger Monat">
+          <button class="activity-nav-btn" onclick="navigateCalendar('prev')" aria-label="${tr('dashboard.calendar.prevMonth')}">
             <span class="material-symbols-rounded">chevron_left</span>
           </button>
-          <span class="activity-month-title" id="calendar-title">Januar 2026</span>
-          <button class="activity-nav-btn" onclick="navigateCalendar('next')" aria-label="Nächster Monat">
+          <span class="activity-month-title" id="calendar-title"></span>
+          <button class="activity-nav-btn" onclick="navigateCalendar('next')" aria-label="${tr('dashboard.calendar.nextMonth')}">
             <span class="material-symbols-rounded">chevron_right</span>
           </button>
         </div>
         <div class="plan-calendar-weekdays">
-          <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+          ${['mon','tue','wed','thu','fri','sat','sun'].map(k => `<span>${tr('calendar.dayNamesShort.' + k)}</span>`).join('')}
         </div>
         <div id="calendar-grid" class="plan-calendar-grid"></div>
       </div>
       <div class="calendar-agenda-container">
         <div class="calendar-agenda-list-header">
           <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
-          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="Training hinzufügen">
+          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="${tr('dashboard.calendar.addTraining')}">
             <span class="material-symbols-rounded">add</span>
           </button>
         </div>

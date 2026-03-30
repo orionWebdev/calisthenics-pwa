@@ -296,7 +296,8 @@ function renderV4Overview() {
     </div>
   `).join('');
 
-  // Training Readiness + Weekly Score Chart
+  // Training Form (prominent) + Readiness (compact)
+  const formHTML = renderFormWidget();
   const readinessHTML = renderReadinessWidget();
   const weeklyScoreChartHTML = renderV4WeeklyScoreChartHTML();
 
@@ -311,6 +312,7 @@ function renderV4Overview() {
 
   return `
     ${renderV4PeriodSelector()}
+    ${formHTML}
     ${readinessHTML}
     <div class="pv4-summary-grid">${cardsHTML}</div>
     ${weeklyScoreChartHTML}
@@ -451,24 +453,187 @@ function renderTrainingPhaseTimeline(days = 7) {
     </div>`;
 }
 
+// ─── FORM WIDGET (prominent) ───────────────────────────────────
+
+function getFormZoneColor(zone) {
+  const map = {
+    detrained: 'var(--zone-form-loss)',
+    base: 'var(--zone-fatigued)',
+    developing: 'var(--zone-loaded)',
+    trained: 'var(--zone-ready)',
+    peak_form: 'var(--zone-fresh)'
+  };
+  return map[zone] || map.developing;
+}
+
+function getFormZoneBg(zone) {
+  const map = {
+    detrained: 'var(--zone-form-loss-bg)',
+    base: 'var(--zone-fatigued-bg)',
+    developing: 'var(--zone-loaded-bg)',
+    trained: 'var(--zone-ready-bg)',
+    peak_form: 'var(--zone-fresh-bg)'
+  };
+  return map[zone] || map.developing;
+}
+
+function getFormPhaseLabel(zone) {
+  const map = {
+    detrained: trV3('progress.form.zoneDetrained'),
+    base: trV3('progress.form.zoneBase'),
+    developing: trV3('progress.form.zoneDeveloping'),
+    trained: trV3('progress.form.zoneTrained'),
+    peak_form: trV3('progress.form.zonePeakForm')
+  };
+  return map[zone] || map.developing;
+}
+
+function getFormHint(score) {
+  if (score <= 20) return trV3('progress.form.hintDetrained');
+  if (score <= 40) return trV3('progress.form.hintBase');
+  if (score <= 60) return trV3('progress.form.hintDeveloping');
+  if (score <= 80) return trV3('progress.form.hintTrained');
+  return trV3('progress.form.hintPeakForm');
+}
+
+function getFormTrendLabel(trend) {
+  const map = {
+    rising: trV3('progress.form.trendRising'),
+    stable: trV3('progress.form.trendStable'),
+    falling: trV3('progress.form.trendFalling')
+  };
+  return map[trend] || map.stable;
+}
+
+function getFormTrendIcon(trend) {
+  if (trend === 'rising') return 'trending_up';
+  if (trend === 'falling') return 'trending_down';
+  return 'trending_flat';
+}
+
+function renderFormTimeline(days = 7) {
+  if (typeof computeFormScore !== 'function' || !allSessions?.length) return '';
+
+  const segments = [];
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  for (let i = 0; i < days; i++) {
+    const dayDate = new Date(today);
+    dayDate.setDate(dayDate.getDate() - (days - 1 - i));
+
+    const data = computeFormScore(allSessions, dayDate);
+    const hasZone = data.zone !== null;
+    const color = hasZone ? getFormZoneColor(data.zone) : 'var(--bg-surface-active)';
+    const opacity = 0.5 + 0.5 * (i / (days - 1));
+
+    segments.push(`<div class="acwr-timeline-segment" style="background: ${color}; opacity: ${opacity.toFixed(2)};"></div>`);
+  }
+
+  return `
+    <div class="acwr-timeline">
+      <div class="acwr-timeline-track">${segments.join('')}</div>
+    </div>`;
+}
+
+function renderFormWidget() {
+  if (typeof computeFormScore !== 'function') return '';
+
+  const data = computeFormScore(allSessions, new Date());
+
+  if (data.formScore === null || data.zone === null) {
+    return `
+      <div class="pv3-card acwr-widget">
+        <div class="acwr-widget-header">
+          <h3 class="pv3-card-title">${trV3('progress.form.title')}</h3>
+        </div>
+        <div class="acwr-score-section">
+          <div class="acwr-zone-label" style="color: var(--text-tertiary);">--</div>
+          <div class="acwr-score-display" style="color: var(--text-tertiary);">${trV3('progress.form.buildingBaseline')}</div>
+        </div>
+      </div>`;
+  }
+
+  const zoneColor = getFormZoneColor(data.zone);
+  const zoneBg = getFormZoneBg(data.zone);
+  const phaseLabel = getFormPhaseLabel(data.zone);
+  const timeline = renderFormTimeline(7);
+  const hint = getFormHint(data.formScore);
+  const trendLabel = getFormTrendLabel(data.trend);
+  const trendIcon = getFormTrendIcon(data.trend);
+
+  const phasesHTML = `
+    <details class="training-phases-info">
+      <summary>${trV3('progress.form.phasesTitle')}</summary>
+      <div class="training-phases-list">
+        <div><span class="phase-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} &nbsp;0–20</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} &nbsp;21–40</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} &nbsp;41–60</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} &nbsp;61–80</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} &nbsp;81–100</div>
+      </div>
+    </details>`;
+
+  return `
+    <div class="pv3-card acwr-widget" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
+      <div class="acwr-widget-header">
+        <h3 class="pv3-card-title">${trV3('progress.form.title')}</h3>
+        <button class="acwr-info-btn" onclick="openFormInfoModal()" aria-label="Info">
+          <span class="material-symbols-rounded">info</span>
+        </button>
+      </div>
+      <div class="acwr-score-section">
+        <div class="acwr-zone-label" style="color: ${zoneColor};">${phaseLabel}</div>
+        <div class="acwr-score-display">${data.formScore}</div>
+      </div>
+      <div class="acwr-bar-track">
+        <div class="acwr-bar-fill" style="width: ${data.formScore}%; background: ${zoneColor};"></div>
+      </div>
+      ${timeline}
+      <div class="training-insight">
+        <div class="insight-text">
+          <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px; color: ${zoneColor};">${trendIcon}</span>
+          ${trendLabel}
+        </div>
+      </div>
+      <div class="training-phase-hint">${hint}</div>
+      ${phasesHTML}
+    </div>`;
+}
+
+function openFormInfoModal() {
+  if (typeof openGenericModal !== 'function') return;
+  openGenericModal(
+    trV3('progress.form.infoTitle'),
+    `<div class="acwr-info-content">
+      <p>${trV3('progress.form.infoBody')}</p>
+      <div class="acwr-info-zones">
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (81–100)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} (61–80)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} (41–60)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} (21–40)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} (0–20)</div>
+      </div>
+    </div>`
+  );
+}
+
+// ─── READINESS WIDGET (compact) ────────────────────────────────
+
 function renderReadinessWidget() {
   if (typeof getACWR !== 'function') return '';
 
   const data = getACWR(allSessions, new Date());
-  const changeData = typeof getScoreChange === 'function' ? getScoreChange(allSessions, new Date()) : null;
 
   if (data.readinessScore === null || data.zone === null) {
     return `
-      <div class="pv3-card acwr-widget">
-        <div class="acwr-widget-header">
+      <div class="pv3-card readiness-compact">
+        <div class="readiness-compact-header">
           <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
         </div>
-        <div class="acwr-score-section">
-          <div class="acwr-zone-label" style="color: var(--text-tertiary);">--</div>
-          <div class="acwr-score-display" style="color: var(--text-tertiary);">${trV3('progress.readiness.buildingBaseline')}</div>
-        </div>
-        <div class="training-insight">
-          <div class="insight-text">${getReadinessInsight({ acwr: null, readinessScore: null, acuteLoad: 0, chronicLoad: 0, daysSinceLastSession: null })}</div>
+        <div class="readiness-compact-body">
+          <span class="readiness-compact-label" style="color: var(--text-tertiary);">--</span>
+          <span class="readiness-compact-score" style="color: var(--text-tertiary);">${trV3('progress.readiness.buildingBaseline')}</span>
         </div>
       </div>`;
   }
@@ -476,54 +641,33 @@ function renderReadinessWidget() {
   const phase = getPhaseFromZone(data.zone);
   const zoneColor = getZoneColor(data.zone);
   const zoneBg = getZoneBg(data.zone);
-  const timeline = renderTrainingPhaseTimeline(7);
   const insight = getReadinessInsight(data);
-  const phaseHint = getPhaseHint(data.readinessScore);
-  const scoreChange = changeData ? getScoreChangeInsight(changeData) : null;
 
   const acuteRounded = Math.round(data.acuteLoad);
   const chronicRounded = Math.round(data.chronicLoad);
   const ratioDisplay = data.acwr !== null ? data.acwr.toFixed(2) : '–';
 
-  const phasesHTML = `
-    <details class="training-phases-info">
-      <summary>${trV3('progress.readiness.phasesTitle')}</summary>
-      <div class="training-phases-list">
-        <div><span class="phase-dot" style="background:${getZoneColor('overreaching')};"></span>${trV3('progress.readiness.zoneOverreaching')} &nbsp;0–35</div>
-        <div><span class="phase-dot" style="background:${getZoneColor('fatigued')};"></span>${trV3('progress.readiness.zoneFatigued')} &nbsp;36–55</div>
-        <div><span class="phase-dot" style="background:${getZoneColor('maintaining')};"></span>${trV3('progress.readiness.zoneMaintaining')} &nbsp;56–70</div>
-        <div><span class="phase-dot" style="background:${getZoneColor('building')};"></span>${trV3('progress.readiness.zoneBuilding')} &nbsp;71–85</div>
-        <div><span class="phase-dot" style="background:${getZoneColor('peak')};"></span>${trV3('progress.readiness.zonePeak')} &nbsp;86–100</div>
-      </div>
-    </details>`;
-
   return `
-    <div class="pv3-card acwr-widget" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
-      <div class="acwr-widget-header">
+    <div class="pv3-card readiness-compact" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
+      <div class="readiness-compact-header">
         <h3 class="pv3-card-title">${trV3('progress.readiness.title')}</h3>
         <button class="acwr-info-btn" onclick="openACWRInfoModal()" aria-label="Info">
           <span class="material-symbols-rounded">info</span>
         </button>
       </div>
-      <div class="acwr-score-section">
-        <div class="acwr-zone-label" style="color: ${zoneColor};">${phase.label}</div>
-        <div class="acwr-score-display">${data.readinessScore}</div>
+      <div class="readiness-compact-body">
+        <div class="readiness-compact-left">
+          <span class="readiness-compact-label" style="color: ${zoneColor};">${phase.label}</span>
+          <span class="readiness-compact-score">${data.readinessScore}</span>
+        </div>
+        <div class="readiness-compact-bar-track">
+          <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${zoneColor};"></div>
+        </div>
       </div>
-      <div class="acwr-bar-track">
-        <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${zoneColor};"></div>
+      <div class="readiness-compact-details">
+        <span>Acute ${acuteRounded} · Chronic ${chronicRounded} · Ratio ${ratioDisplay}</span>
       </div>
-      ${timeline}
-      <div class="training-insight">
-        <div class="insight-text">${insight}</div>
-      </div>
-      ${scoreChange && scoreChange.main ? `
-      <div class="score-change">
-        <div class="score-change-text">${scoreChange.main}</div>
-        ${scoreChange.sub ? `<div class="score-change-sub">${scoreChange.sub}</div>` : ''}
-      </div>` : ''}
-      <div class="training-breakdown">Acute ${acuteRounded} · Chronic ${chronicRounded} · Ratio ${ratioDisplay}</div>
-      <div class="training-phase-hint">${phaseHint}</div>
-      ${phasesHTML}
+      <div class="readiness-compact-insight">${insight}</div>
     </div>`;
 }
 
@@ -1608,7 +1752,7 @@ function renderV4SessionHistory(sessions) {
 function renderV4ExerciseFilterBar() {
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
   const muscleKeys = ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'full-body'];
-  const names = typeof muscleNames !== 'undefined' ? muscleNames : {};
+  const names = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
 
   const chips = muscleKeys.map(key => {
     const active = pv4ExerciseMuscleFilter === key ? ' active' : '';
@@ -1633,7 +1777,7 @@ function renderV4ExerciseFilterBar() {
       </div>
       <div class="pv4-muscle-filter-chips">
         <button class="pv4-muscle-chip${allActive}" data-muscle="" onclick="setPv4MuscleFilter('')">
-          <span>${trV3('progress.v4.exercises.allMuscles') || 'Alle'}</span>
+          <span>${trV3('progress.v4.exercises.allMuscles') || 'All'}</span>
         </button>
         ${chips}
       </div>

@@ -7,8 +7,8 @@ let bottomSheetConfig = {
   selectedValues: [],
   onConfirm: null,
   enableSearch: false,
-  title: 'Auswählen',
-  searchPlaceholder: 'Suchen...',
+  title: '',
+  searchPlaceholder: '',
   searchDebounceTimer: null
 };
 
@@ -31,8 +31,8 @@ function openBottomSheet(config) {
     selectedValues: [...(config.selectedValues || [])],
     onConfirm: config.onConfirm || null,
     enableSearch: config.enableSearch !== false, // Default true
-    title: config.title || 'Auswählen',
-    searchPlaceholder: config.searchPlaceholder || 'Suchen...',
+    title: config.title || (typeof t === 'function' ? t('bottomSheet.title') : 'Select'),
+    searchPlaceholder: config.searchPlaceholder || (typeof t === 'function' ? t('bottomSheet.searchPlaceholder') : 'Search...'),
     searchDebounceTimer: null
   };
 
@@ -168,7 +168,7 @@ function renderBottomSheetOptions(optionsToRender = null) {
     content.innerHTML = `
       <div class="bottom-sheet-empty">
         <span class="material-symbols-rounded">search_off</span>
-        <p>Keine Optionen gefunden</p>
+        <p>${typeof t === 'function' ? t('bottomSheet.noOptions') : 'No options found'}</p>
       </div>
     `;
     return;
@@ -176,7 +176,8 @@ function renderBottomSheetOptions(optionsToRender = null) {
 
   content.innerHTML = options.map(option => {
     const isSelected = bottomSheetConfig.selectedValues.includes(option.value);
-    const ariaLabel = `${option.label}${option.description ? ', ' + option.description : ''}${isSelected ? ', ausgewählt' : ''}`;
+    const selectedText = typeof t === 'function' ? t('bottomSheet.selected') : 'selected';
+    const ariaLabel = `${option.label}${option.description ? ', ' + option.description : ''}${isSelected ? ', ' + selectedText : ''}`;
     const iconHtml = option.icon
       ? `<span class="bottom-sheet-option-icon"><img src="${option.icon}" alt="" /></span>`
       : '';
@@ -420,7 +421,7 @@ function renderMultiSelectInput(containerId, config) {
   const selectedValues = config.selectedValues || [];
   const valueLabels = config.valueLabels || {};
   const icon = config.icon || 'check_box';
-  const placeholder = config.placeholder || 'Auswählen...';
+  const placeholder = config.placeholder || (typeof t === 'function' ? t('bottomSheet.title') + '...' : 'Select...');
 
   const hasSelection = selectedValues.length > 0;
 

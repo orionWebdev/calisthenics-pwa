@@ -20,7 +20,7 @@ function openWorkoutDetailModal(sessionId) {
     <div class="workout-detail-modal">
       <!-- Header -->
       <div class="workout-detail-header">
-        <div class="workout-type-badge type-strength">Kraft</div>
+        <div class="workout-type-badge type-strength">${t('common.strength')}</div>
         <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
           ${formatFullDate(date)}
         </div>
@@ -31,30 +31,30 @@ function openWorkoutDetailModal(sessionId) {
         <div class="workout-stat">
           <span class="material-symbols-rounded">schedule</span>
           <div class="workout-stat-value">${session.duration || '-'}</div>
-          <div class="workout-stat-label">Minuten</div>
+          <div class="workout-stat-label">${t('common.minutes')}</div>
         </div>
         <div class="workout-stat">
           <span class="material-symbols-rounded">fitness_center</span>
           <div class="workout-stat-value">${session.exercises?.length || 0}</div>
-          <div class="workout-stat-label">Übungen</div>
+          <div class="workout-stat-label">${t('workoutModal.exercises')}</div>
         </div>
         <div class="workout-stat">
           <span class="material-symbols-rounded">repeat</span>
           <div class="workout-stat-value">${totalSets}</div>
-          <div class="workout-stat-label">Sätze</div>
+          <div class="workout-stat-label">${t('workoutModal.sets')}</div>
         </div>
       </div>
 
       <!-- Exercises List -->
       <div class="workout-exercises">
-        <h4 class="workout-section-title">Übungen</h4>
+        <h4 class="workout-section-title">${t('workoutModal.exercises')}</h4>
         ${renderWorkoutExercises(session)}
       </div>
 
       <!-- Notes -->
       ${session.notes ? `
         <div class="workout-notes" style="margin-bottom: 1.5rem;">
-          <h4 class="workout-section-title">Notizen</h4>
+          <h4 class="workout-section-title">${t('common.notes')}</h4>
           <p style="color: #d1d5db; font-size: 0.875rem;">${session.notes}</p>
         </div>
       ` : ''}
@@ -63,11 +63,11 @@ function openWorkoutDetailModal(sessionId) {
       <div class="workout-modal-actions">
         <button onclick="openEditStrengthSessionModal('${session.id}')" class="btn-edit">
           <span class="material-symbols-rounded">settings</span>
-          <span>${typeof t === 'function' ? t('common.editSession') : 'Session bearbeiten'}</span>
+          <span>${t('common.editSession')}</span>
         </button>
         <button onclick="confirmDeleteWorkout('${session.id}')" class="btn-danger">
           <span class="material-symbols-rounded">delete</span>
-          <span>${typeof t === 'function' ? t('common.delete') : 'Löschen'}</span>
+          <span>${t('common.delete')}</span>
         </button>
       </div>
     </div>
@@ -81,12 +81,12 @@ function openWorkoutDetailModal(sessionId) {
  */
 function renderWorkoutExercises(session) {
   if (!session.exercises || session.exercises.length === 0) {
-    return '<p style="color: #9ca3af;">Keine Übungen</p>';
+    return `<p style="color: #9ca3af;">${t('workoutModal.noExercises')}</p>`;
   }
 
   return session.exercises.map((ex, index) => {
     const exercise = allExercises.find(e => e.id === ex.exerciseId);
-    const exerciseName = (typeof getExerciseName === 'function' && exercise ? getExerciseName(exercise) : exercise?.name) || ex.exerciseName || ex.exerciseId || 'Übung';
+    const exerciseName = (typeof getExerciseName === 'function' && exercise ? getExerciseName(exercise) : exercise?.name) || ex.exerciseName || ex.exerciseId || t('workoutModal.exercise');
 
     return `
       <div class="workout-exercise-item">
@@ -110,7 +110,7 @@ function renderWorkoutExercises(session) {
                 label = `${set.reps || 0} reps${set.weight ? ` @ ${set.weight} ${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}` : ''}`;
               }
               return `<span class="set-badge">${i + 1}: ${label}</span>`;
-            }).join('') : '<span class="set-badge">Keine Sätze</span>'}
+            }).join('') : `<span class="set-badge">${t('workoutModal.noSets')}</span>`}
           </div>
         </div>
       </div>
@@ -141,7 +141,7 @@ function calculateTotalVolume(session) {
  * Confirm and delete workout
  */
 async function confirmDeleteWorkout(sessionId) {
-  if (!confirm('Dieses Workout wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+  if (!confirm(t('workoutModal.deleteConfirm'))) {
     return;
   }
 
@@ -174,7 +174,7 @@ async function confirmDeleteWorkout(sessionId) {
   } catch (error) {
     console.error('❌ Error deleting workout:', error);
   if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Löschen: ' + error.message);
+    showEdgeFeedback('error', t('workoutModal.deleteError') + ': ' + error.message);
   }
   }
 }
@@ -190,25 +190,16 @@ function closeWorkoutDetailModal() {
  * Format date (short): "22. Jan"
  */
 function formatShortDate(date) {
-  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  return `${day}. ${month}`;
+  if (typeof formatDateShortText === 'function') return formatDateShortText(date);
+  return date.toLocaleDateString();
 }
 
 /**
- * Format date (full): "Montag, 22. Januar 2026"
+ * Format date (full): locale-aware long date
  */
 function formatFullDate(date) {
-  const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
-  const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-
-  const dayName = days[date.getDay()];
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  const year = date.getFullYear();
-
-  return `${dayName}, ${day}. ${month} ${year}`;
+  if (typeof formatDateLongText === 'function') return formatDateLongText(date, true);
+  return date.toLocaleDateString();
 }
 
 // ========================================
@@ -278,7 +269,7 @@ function renderEditExercise(exercise, exIndex) {
   const exerciseData = Array.isArray(allExercises)
     ? allExercises.find(e => e.id === exercise.exerciseId)
     : null;
-  const exerciseName = exerciseData?.name || exercise.exerciseId || `Übung ${exIndex + 1}`;
+  const exerciseName = exerciseData?.name || exercise.exerciseId || `${t('workoutModal.exercise')} ${exIndex + 1}`;
   const sets = exercise.sets || [];
 
   const setsHtml = sets.map((set, setIndex) => `
@@ -293,8 +284,8 @@ function renderEditExercise(exercise, exIndex) {
                  value="${set.reps || ''}"
                  min="0"
                  max="999"
-                 placeholder="Wdh" />
-          <span class="edit-set-label">Wdh</span>
+                 placeholder="${t('workoutModal.reps')}" />
+          <span class="edit-set-label">${t('workoutModal.reps')}</span>
         </div>
         <div class="edit-set-input-group">
           <input type="number"
@@ -309,7 +300,7 @@ function renderEditExercise(exercise, exIndex) {
           <span class="edit-set-label">${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}</span>
         </div>
       </div>
-      <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${setIndex})" aria-label="Satz entfernen">
+      <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${setIndex})" aria-label="${t('workoutModal.removeSet')}">
         <span class="material-symbols-rounded">close</span>
       </button>
     </div>
@@ -321,11 +312,11 @@ function renderEditExercise(exercise, exIndex) {
         <span class="edit-exercise-name">${exerciseName}</span>
       </div>
       <div class="edit-exercise-sets" id="edit-sets-${exIndex}">
-        ${setsHtml || '<p class="edit-no-sets">Keine Sätze</p>'}
+        ${setsHtml || `<p class="edit-no-sets">${t('workoutModal.noSets')}</p>`}
       </div>
       <button type="button" class="edit-add-set-btn" onclick="addEditSet(${exIndex})">
         <span class="material-symbols-rounded">add</span>
-        <span>Satz hinzufügen</span>
+        <span>${t('workoutModal.addSet')}</span>
       </button>
     </div>
   `;
@@ -357,8 +348,8 @@ function addEditSet(exIndex) {
                  value=""
                  min="0"
                  max="999"
-                 placeholder="Wdh" />
-          <span class="edit-set-label">Wdh</span>
+                 placeholder="${t('workoutModal.reps')}" />
+          <span class="edit-set-label">${t('workoutModal.reps')}</span>
         </div>
         <div class="edit-set-input-group">
           <input type="number"
@@ -373,7 +364,7 @@ function addEditSet(exIndex) {
           <span class="edit-set-label">${typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg'}</span>
         </div>
       </div>
-      <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${newSetIndex})" aria-label="Satz entfernen">
+      <button type="button" class="edit-set-remove" onclick="removeEditSet(${exIndex}, ${newSetIndex})" aria-label="${t('workoutModal.removeSet')}">
         <span class="material-symbols-rounded">close</span>
       </button>
     </div>
@@ -404,7 +395,7 @@ function removeEditSet(exIndex, setIndex) {
 
     // Show "no sets" if empty
     if (remainingSets.length === 0) {
-      setsContainer.innerHTML = '<p class="edit-no-sets">Keine Sätze</p>';
+      setsContainer.innerHTML = `<p class="edit-no-sets">${t('workoutModal.noSets')}</p>`;
     }
   }
 }
@@ -421,7 +412,7 @@ async function saveStrengthSessionEdit(event, sessionId) {
   const session = allSessions.find(s => s.id === sessionId);
   if (!session) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Session nicht gefunden.');
+      showEdgeFeedback('error', t('workoutModal.sessionNotFound'));
     }
     return;
   }
@@ -434,7 +425,7 @@ async function saveStrengthSessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
+      showEdgeFeedback('error', t('workoutModal.invalidDuration'));
     }
     return;
   }
@@ -505,7 +496,7 @@ async function saveStrengthSessionEdit(event, sessionId) {
   } catch (error) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern: ' + error.message);
+      showEdgeFeedback('error', t('workoutModal.saveError') + ': ' + error.message);
     }
   }
 }
@@ -570,7 +561,7 @@ async function saveCardioSessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
+      showEdgeFeedback('error', t('workoutModal.invalidDuration'));
     }
     return;
   }
@@ -611,7 +602,7 @@ async function saveCardioSessionEdit(event, sessionId) {
   } catch (error) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern: ' + error.message);
+      showEdgeFeedback('error', t('workoutModal.saveError') + ': ' + error.message);
     }
   }
 }
@@ -669,7 +660,7 @@ async function saveRecoverySessionEdit(event, sessionId) {
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib eine gültige Dauer ein.');
+      showEdgeFeedback('error', t('workoutModal.invalidDuration'));
     }
     return;
   }
@@ -704,7 +695,7 @@ async function saveRecoverySessionEdit(event, sessionId) {
   } catch (error) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern: ' + error.message);
+      showEdgeFeedback('error', t('workoutModal.saveError') + ': ' + error.message);
     }
   }
 }

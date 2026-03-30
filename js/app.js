@@ -159,9 +159,13 @@ let bottomNavObservedEl = null;
 
 function updateBottomNavLabels() {
   if (typeof t !== 'function') return;
-  document.querySelectorAll('.bottom-nav-label[data-i18n]').forEach(label => {
-    const key = label.dataset.i18n;
-    if (key) label.textContent = t(key);
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (key) el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (key) el.placeholder = t(key);
   });
 }
 
@@ -366,6 +370,12 @@ async function initApp() {
       await loadUserProfileFromFirestore();
     } else if (typeof loadUserProfileFromCache === 'function') {
       loadUserProfileFromCache();
+    }
+
+    // Apply saved language setting immediately
+    if (typeof setLocale === 'function' && typeof getUserProfile === 'function') {
+      const lang = getUserProfile().language;
+      if (lang) setLocale(lang);
     }
 
     // 1. Initialize default exercises if needed

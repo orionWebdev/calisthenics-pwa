@@ -2904,6 +2904,135 @@ function getACWR(sessions, referenceDate) {
 }
 
 /**
+ * Computes a Training Form score based on long-term chronic load (Fitness EMA).
+ * Uses a slow EMA (~33 day effective window) to represent accumulated fitness,
+ * normalized against a decaying personal peak.
+ * @param {Array} sessions
+ * @param {Date} referenceDate
+ * @returns {{ formScore: number|null, zone: string|null, fitnessLoad: number, peakLoad: number, trend: string, daysSinceLastSession: number|null }}
+ */
+function computeFormScore(sessions, referenceDate) {
+  if (!sessions || !sessions.length) {
+    return { formScore: null, zone: null, fitnessLoad: 0, peakLoad: 0, trend: 'none', daysSinceLastSession: null };
+  }
+
+  const FITNESS_ALPHA = 0.03; // Slow EMA: ~33 day effective window
+  const PEAK_DECAY = 0.995;   // Peak reference decays ~0.5%/day (~14%/month)
+
+  function toLocalDateKey(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+  }
+
+  const end = new Date(referenceDate);
+  end.setHours(23, 59, 59, 999);
+
+  // Build daily load map (same as ACWR)
+  const dailyLoads = new Map();
+  for (const s of sessions) {
+    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (isNaN(sessionDate.getTime())) continue;
+    if (sessionDate > end) continue;
+    const { rawLoad } = calculateSessionLoadValue(s);
+    const key = toLocalDateKey(sessionDate);
+    dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
+  }
+
+  if (dailyLoads.size === 0) {
+    return { formScore: null, zone: null, fitnessLoad: 0, peakLoad: 0, trend: 'none', daysSinceLastSession: null };
+  }
+
+  const sortedKeys = [...dailyLoads.keys()].sort();
+  const refDay = new Date(referenceDate);
+  refDay.setHours(0, 0, 0, 0);
+  const earliestDate = new Date(sortedKeys[0] + 'T00:00:00');
+  const daySpan = Math.floor((refDay.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Need at least 14 days of history
+  if (daySpan < 14) {
+    return { formScore: null, zone: null, fitnessLoad: 0, peakLoad: 0, trend: 'none', daysSinceLastSession: null };
+  }
+
+  // daysSinceLastSession
+  const lastSessionKey = sortedKeys[sortedKeys.length - 1];
+  const lastSessionDate = new Date(lastSessionKey + 'T00:00:00');
+  const daysSinceLastSession = Math.floor((refDay.getTime() - lastSessionDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Compute Fitness EMA over full history (up to 120 days back)
+  const loopStart = new Date(Math.max(
+    earliestDate.getTime(),
+    refDay.getTime() - 120 * 24 * 60 * 60 * 1000
+  ));
+
+  let fitnessEMA = 0;
+  let peakFitness = 0;
+  let daysSincePeak = 0;
+  let fitnessAt14DaysAgo = 0;
+  const cursor = new Date(loopStart);
+
+  while (cursor <= refDay) {
+    const dateKey = toLocalDateKey(cursor);
+    const dailyLoad = dailyLoads.get(dateKey) || 0;
+
+    fitnessEMA = FITNESS_ALPHA * dailyLoad + (1 - FITNESS_ALPHA) * fitnessEMA;
+
+    // Track decaying peak
+    const effectivePeak = peakFitness * Math.pow(PEAK_DECAY, daysSincePeak);
+    if (fitnessEMA >= effectivePeak) {
+      peakFitness = fitnessEMA;
+      daysSincePeak = 0;
+    } else {
+      daysSincePeak++;
+    }
+
+    // Capture fitness level 14 days ago for trend calculation
+    const daysToRef = Math.floor((refDay.getTime() - cursor.getTime()) / (1000 * 60 * 60 * 24));
+    if (daysToRef === 14) {
+      fitnessAt14DaysAgo = fitnessEMA;
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  // Effective peak (with decay applied)
+  const effectivePeak = peakFitness * Math.pow(PEAK_DECAY, daysSincePeak);
+  const finalPeak = Math.max(effectivePeak, fitnessEMA);
+
+  // Form score: current fitness as percentage of effective peak
+  let formScore = finalPeak > 0 ? Math.round((fitnessEMA / finalPeak) * 100) : 0;
+  formScore = Math.max(0, Math.min(100, formScore));
+
+  // Trend: compare current fitness to 14 days ago
+  let trend = 'stable';
+  if (fitnessAt14DaysAgo > 0) {
+    const trendRatio = fitnessEMA / fitnessAt14DaysAgo;
+    if (trendRatio > 1.05) trend = 'rising';
+    else if (trendRatio < 0.95) trend = 'falling';
+  } else if (fitnessEMA > 0) {
+    trend = 'rising';
+  }
+
+  // Map to form zone
+  const zone = mapFormZone(formScore);
+
+  return { formScore, zone, fitnessLoad: fitnessEMA, peakLoad: finalPeak, trend, daysSinceLastSession };
+}
+
+/**
+ * Maps form score to a training form zone.
+ */
+function mapFormZone(score) {
+  if (score <= 20) return 'detrained';
+  if (score <= 40) return 'base';
+  if (score <= 60) return 'developing';
+  if (score <= 80) return 'trained';
+  return 'peak_form';
+}
+
+/**
  * Compares today's ACWR with yesterday's to explain why the readiness score changed.
  * @param {Array} sessions
  * @param {Date} referenceDate

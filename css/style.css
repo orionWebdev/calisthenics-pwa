@@ -241,6 +241,34 @@
 [data-theme="light"] ::-webkit-scrollbar-track { background: #E5E5EA; }
 [data-theme="light"] ::-webkit-scrollbar-thumb { background: #C7C7CC; }
 
+/* Light mode: remove harsh shadow from progress sticky bar */
+[data-theme="light"] .pv3-sticky-bar {
+  box-shadow: none;
+}
+
+/* Light mode: preserve white text on pink gradient workout card */
+[data-theme="light"] .dashboard-log-workout-title,
+[data-theme="light"] .dashboard-log-workout-subtitle,
+[data-theme="light"] .dashboard-log-workout-loading {
+  color: #fff;
+}
+[data-theme="light"] .dashboard-log-workout-icon {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Light mode: bottom sheet white background */
+[data-theme="light"] #bottom-sheet-overlay .bottom-sheet {
+  background: #fff;
+}
+
+/* Light mode: exercise & plan modal titles stay white */
+[data-theme="light"] #modal-title,
+[data-theme="light"] #plan-modal-title {
+  color: white;
+}
+
 html {
   font-size: 92%;
 }
@@ -1361,8 +1389,9 @@ body.modal-open {
 
 .exercise-filters-bar {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
@@ -7424,6 +7453,67 @@ input[type="range"]::-moz-range-progress {
   border-radius: 50%;
   flex-shrink: 0;
   display: inline-block;
+}
+
+/* ==================== READINESS COMPACT WIDGET ==================== */
+
+.readiness-compact {
+  padding: var(--ui-card-padding, 1.25rem);
+  transition: background 0.3s ease;
+}
+
+.readiness-compact-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.readiness-compact-body {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 1rem);
+}
+
+.readiness-compact-left {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm, 0.5rem);
+  flex-shrink: 0;
+}
+
+.readiness-compact-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.readiness-compact-score {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+.readiness-compact-bar-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-surface-active);
+  overflow: hidden;
+}
+
+.readiness-compact-details {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.readiness-compact-insight {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
 /* ==================== WEEKLY SCORE CHART ==================== */
@@ -15400,7 +15490,7 @@ input[type="range"]::-moz-range-progress {
   position: sticky;
   top: 0;
   z-index: 15;
-  background: var(--bg-body, #000);
+  background: var(--bg-primary);
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
