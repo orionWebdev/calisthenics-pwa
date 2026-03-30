@@ -428,7 +428,7 @@ function updatePlanMuscleFilterUI() {
   const muscles = ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'calf'];
   muscles.forEach(m => {
     const label = document.getElementById(`plan-filter-${m}-label`);
-    if (label) label.textContent = muscleNames[m] || m;
+    if (label) label.textContent = getMuscleNames()[m] || m;
   });
 
   const equipmentContainer = document.getElementById('plan-equipment-filters');
@@ -537,11 +537,13 @@ function applyPlanI18n() {
   setText('exercise-picker-title', t('plan.exercisePicker.title'));
   setPlaceholder('exercise-picker-search', t('plan.exercisePicker.searchPlaceholder'));
 
-  const muscleLabelMap = typeof muscleNames === 'object' && muscleNames !== null ? muscleNames : {};
+  const muscleLabelMap = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
   setText('exercise-picker-filter-all-label', t('plan.filters.all'));
   ['chest', 'back', 'shoulders', 'arms', 'biceps', 'triceps', 'core', 'legs', 'calf'].forEach(m => {
     setText(`exercise-picker-filter-${m}-label`, muscleLabelMap[m] || '');
   });
+
+  setText('quick-exercise-muscles-label', t('exercise.muscleFilter.required'));
 
   setText('exercise-config-title', t('plan.exerciseConfig.title'));
   setText('exercise-config-sets-label', t('plan.exerciseConfig.setsLabel'));
@@ -1006,9 +1008,8 @@ function renderExercisePicker() {
       filterText.push(t('plan.exercisePicker.filterSearch', { term: exercisePickerSearchTerm }));
     }
     if (exercisePickerMuscleFilter !== 'all') {
-      const muscleLabel = muscleNames && muscleNames[exercisePickerMuscleFilter]
-        ? muscleNames[exercisePickerMuscleFilter]
-        : exercisePickerMuscleFilter;
+      const mnMap = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
+      const muscleLabel = mnMap[exercisePickerMuscleFilter] || exercisePickerMuscleFilter;
       filterText.push(t('plan.exercisePicker.filterMuscle', { muscle: muscleLabel }));
     }
     filterInfo.textContent = t('plan.exercisePicker.filterInfo', {
@@ -1033,9 +1034,10 @@ function renderExercisePicker() {
     return;
   }
 
+  const mnNames = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
   const exerciseRows = filteredExercises.map(exercise => {
     const muscleLabel = (exercise.muscleGroups || [])
-      .map(m => muscleNames[m]).filter(Boolean).slice(0, 2).join(', ');
+      .map(m => mnNames[m]).filter(Boolean).slice(0, 2).join(', ');
     const metaText = muscleLabel || t('exercise.type.' + (exercise.type || 'strength')) || '';
 
     if (exercisePickerMode === 'multi') {
@@ -1121,16 +1123,17 @@ function closeQuickExerciseModal() {
 let quickExerciseMuscleGroups = [];
 
 function openQuickExerciseMuscleSheet() {
+  const mn = getMuscleNames();
   const muscleOptions = [
-    { value: 'chest', label: muscleNames.chest, description: 'Brustmuskulatur' },
-    { value: 'back', label: muscleNames.back, description: 'Rückenmuskulatur' },
-    { value: 'shoulders', label: muscleNames.shoulders, description: 'Schultermuskulatur' },
-    { value: 'arms', label: muscleNames.arms, description: 'Bizeps, Trizeps, Unterarme' },
-    { value: 'biceps', label: muscleNames.biceps, description: 'Bizepsmuskulatur' },
-    { value: 'triceps', label: muscleNames.triceps, description: 'Trizepsmuskulatur' },
-    { value: 'core', label: muscleNames.core, description: 'Bauch- und Rumpfmuskulatur' },
-    { value: 'legs', label: muscleNames.legs, description: 'Beinmuskulatur' },
-    { value: 'calf', label: muscleNames.calf, description: 'Wadenmuskulatur' }
+    { value: 'chest', label: mn.chest, description: t('exercise.muscleDescriptions.chest') },
+    { value: 'back', label: mn.back, description: t('exercise.muscleDescriptions.back') },
+    { value: 'shoulders', label: mn.shoulders, description: t('exercise.muscleDescriptions.shoulders') },
+    { value: 'arms', label: mn.arms, description: t('exercise.muscleDescriptions.arms') },
+    { value: 'biceps', label: mn.biceps, description: t('exercise.muscleDescriptions.biceps') },
+    { value: 'triceps', label: mn.triceps, description: t('exercise.muscleDescriptions.triceps') },
+    { value: 'core', label: mn.core, description: t('exercise.muscleDescriptions.core') },
+    { value: 'legs', label: mn.legs, description: t('exercise.muscleDescriptions.legs') },
+    { value: 'calf', label: mn.calf, description: t('exercise.muscleDescriptions.calf') }
   ];
 
   openBottomSheet({
@@ -1151,7 +1154,7 @@ function renderQuickExerciseMuscleInput() {
     icon: 'fitness_center',
     placeholder: t('exercise.muscleGroups') + '...',
     selectedValues: quickExerciseMuscleGroups,
-    valueLabels: muscleNames
+    valueLabels: getMuscleNames()
   });
 }
 
@@ -1278,7 +1281,10 @@ function openPlanPickerBottomSheet(config) {
   // Reset type filter
   planPickerTypeFilter = 'all';
   const filterBtns = document.querySelectorAll('.plan-picker-filter-btn');
-  filterBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.type === 'all'));
+  filterBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === 'all');
+    if (btn.dataset.i18n) btn.textContent = t(btn.dataset.i18n);
+  });
 
   // Render options
   renderPlanPickerOptions(config.options, '', 'all');

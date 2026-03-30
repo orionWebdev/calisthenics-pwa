@@ -34,6 +34,10 @@ const activityTypeNames = {
   other: 'Sonstiges'
 };
 
+function getActivityTypeName(key) {
+  return typeof t === 'function' ? t('plan.cardio.activityOptions.' + key) : activityTypeNames[key] || key;
+}
+
 // Activity type icons mapping
 const activityTypeIcons = {
   run: 'directions_run',
@@ -53,6 +57,10 @@ const focusAreaNames = {
   shoulders: 'Schultern'
 };
 
+function getFocusAreaName(key) {
+  return typeof t === 'function' ? t('template.recoveryTemplate.focusAreas.' + key) : focusAreaNames[key] || key;
+}
+
 // Difficulty level mapping
 const difficultyLevels = {
   beginner: { label: 'Anfänger', value: 1, color: '#22c55e' },
@@ -60,6 +68,10 @@ const difficultyLevels = {
   advanced: { label: 'Fortgeschritten', value: 3, color: '#f97316' },
   elite: { label: 'Elite', value: 4, color: '#ef4444' }
 };
+
+function getDifficultyLabel(key) {
+  return typeof t === 'function' ? t('difficulty.' + key) : (difficultyLevels[key]?.label || key);
+}
 
 // ========================================
 // FIRESTORE COLLECTION
@@ -195,7 +207,7 @@ async function saveSessionTemplate() {
   // Validation
   if (!name) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Bitte gib einen Namen ein');
+      showEdgeFeedback('error', t('templateFeedback.nameRequired'));
     }
     return;
   }
@@ -239,18 +251,18 @@ async function saveSessionTemplate() {
     await loadSessionTemplates();
 
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Vorlage gespeichert');
+      showEdgeFeedback('success', t('templateFeedback.saved'));
     }
   } catch (error) {
     console.error('❌ Error saving session template:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern');
+      showEdgeFeedback('error', t('templateFeedback.saveError'));
     }
   }
 }
 
 async function deleteSessionTemplate(id) {
-  if (!confirm('Diese Vorlage wirklich löschen?')) {
+  if (!confirm(t('templateFeedback.deleteConfirm'))) {
     return;
   }
 
@@ -260,12 +272,12 @@ async function deleteSessionTemplate(id) {
     await loadSessionTemplates();
 
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Vorlage gelöscht');
+      showEdgeFeedback('success', t('templateFeedback.deleted'));
     }
   } catch (error) {
     console.error('❌ Error deleting session template:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Löschen');
+      showEdgeFeedback('error', t('templateFeedback.deleteError'));
     }
   }
 }
@@ -282,7 +294,7 @@ function startSessionFromTemplate(templateId, scheduledDate = null) {
   const template = allSessionTemplates.find(t => t.id === templateId);
   if (!template) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Vorlage nicht gefunden');
+      showEdgeFeedback('error', t('templateFeedback.notFound'));
     }
     return;
   }
@@ -348,7 +360,7 @@ function openAddRecoveryModalFromTemplate(template, dateStr) {
 
     const notes = document.getElementById('recovery-notes');
     if (notes && template.focusArea) {
-      notes.value = `Fokus: ${focusAreaNames[template.focusArea] || template.focusArea}`;
+      notes.value = `${t('template.recoveryTemplate.focusArea')}: ${getFocusAreaName(template.focusArea)}`;
     }
   }, 100);
 }
@@ -373,11 +385,11 @@ function renderSessionTemplatesList(containerId = 'session-templates-list') {
 
   // Training type label mapping
   const trainingTypeLabels = {
-    liss: 'LISS',
-    zone2: 'Zone 2',
-    hiit: 'HIIT',
-    tempo: 'Tempo',
-    intervals: 'Intervalle'
+    liss: t('template.cardioTemplate.trainingTypes.liss'),
+    zone2: t('template.cardioTemplate.trainingTypes.zone2'),
+    hiit: t('template.cardioTemplate.trainingTypes.hiit'),
+    tempo: t('template.cardioTemplate.trainingTypes.tempo'),
+    intervals: t('template.cardioTemplate.trainingTypes.intervals')
   };
 
   container.innerHTML = allSessionTemplates.map(template => {
@@ -387,8 +399,8 @@ function renderSessionTemplatesList(containerId = 'session-templates-list') {
       : 'self_improvement';
     const typeColor = isCardio ? 'var(--color-category-cardio)' : 'var(--color-category-recovery)';
     const typeName = isCardio
-      ? (activityTypeNames[template.activityType] || 'Cardio')
-      : 'Recovery';
+      ? getActivityTypeName(template.activityType)
+      : t('common.recovery');
     const difficultyInfo = difficultyLevels[template.difficulty] || difficultyLevels.intermediate;
     const trainingType = isCardio && template.trainingType ? trainingTypeLabels[template.trainingType] : null;
 
@@ -443,7 +455,7 @@ async function scheduleSessionTemplate(templateId, dateStr) {
   const template = allSessionTemplates.find(t => t.id === templateId);
   if (!template) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Vorlage nicht gefunden');
+      showEdgeFeedback('error', t('templateFeedback.notFound'));
     }
     return null;
   }
@@ -463,14 +475,14 @@ async function scheduleSessionTemplate(templateId, dateStr) {
     console.log('✅ Session template scheduled:', scheduleId);
 
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('success', 'Vorlage geplant');
+      showEdgeFeedback('success', t('templateFeedback.planned'));
     }
 
     return scheduleId;
   } catch (error) {
     console.error('❌ Error scheduling session template:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Planen');
+      showEdgeFeedback('error', t('templateFeedback.planError'));
     }
     return null;
   }

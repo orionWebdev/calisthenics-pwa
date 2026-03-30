@@ -47,7 +47,9 @@ const translations = {
       progress: 'Progress',
       calendar: 'Kalender',
       training: 'Training',
-      profile: 'Profil'
+      profile: 'Profil',
+      plans: 'Pläne',
+      exercises: 'Übungen'
     },
     difficulty: {
       beginner: 'Anfänger',
@@ -281,6 +283,46 @@ const translations = {
       name: 'Übungsname',
       namePlaceholder: 'z.B. Klimmzüge',
       muscleGroups: 'Muskelgruppen',
+      muscles: {
+        chest: 'Brust',
+        back: 'Rücken',
+        shoulders: 'Schultern',
+        biceps: 'Bizeps',
+        triceps: 'Trizeps',
+        core: 'Core',
+        legs: 'Beine',
+        fullBody: 'Ganzkörper',
+        arms: 'Arme',
+        calf: 'Waden',
+        cardio: 'Cardio',
+        mobility: 'Mobility'
+      },
+      muscleDescriptions: {
+        all: 'Alle Übungen anzeigen',
+        chest: 'Brustmuskulatur',
+        back: 'Rückenmuskulatur',
+        biceps: 'Bizepsmuskulatur',
+        triceps: 'Trizepsmuskulatur',
+        shoulders: 'Schultermuskulatur',
+        core: 'Bauch- und Rumpfmuskulatur',
+        legs: 'Beinmuskulatur',
+        fullBody: 'Ganzkörpertraining',
+        arms: 'Bizeps, Trizeps, Unterarme',
+        calf: 'Wadenmuskulatur'
+      },
+      muscleFilter: {
+        title: 'Muskelgruppe filtern',
+        selectTitle: 'Muskelgruppen auswählen',
+        searchPlaceholder: 'Muskelgruppe suchen...',
+        selectPlaceholder: 'Muskelgruppen auswählen...',
+        required: 'Muskelgruppen *'
+      },
+      difficultyFilter: {
+        title: 'Schwierigkeit filtern'
+      },
+      equipmentFilter: {
+        title: 'Equipment filtern'
+      },
       filters: {
         allMuscles: 'Alle Muskelgruppen',
         allDifficulties: 'Alle Schwierigkeiten'
@@ -380,6 +422,13 @@ const translations = {
         stepDetails: 'Details',
         stepOptional: 'optional'
       },
+      editTitle: 'Übung bearbeiten',
+      loading: 'Lade Übungen...',
+      feedback: {
+        saveError: 'Fehler beim Speichern der Übung!',
+        deleted: 'Eintrag gelöscht',
+        deleteError: 'Fehler beim Löschen'
+      },
       detail: {
         useInPlan: 'In Plan verwenden'
       },
@@ -444,7 +493,21 @@ const translations = {
         timerSub: '-10s',
         timerDone: 'Pause vorbei!',
         discardConfirmTitle: 'Workout verwerfen?',
-        endWorkoutAction: 'Beenden'
+        endWorkoutAction: 'Beenden',
+        logWorkout: 'Workout erfassen',
+        emptyHint: 'Füge Übungen hinzu, um dein Workout zu starten',
+        addExercise: 'Übung hinzufügen',
+        searchExercise: 'Übung suchen...',
+        noExercisesFound: 'Keine Übungen gefunden',
+        freeWorkout: 'Freies Workout',
+        menu: 'Menü'
+      },
+      banner: {
+        active: 'Aktives Workout: {name}',
+        resume: 'Fortsetzen',
+        cancel: 'Abbrechen',
+        cancelConfirm: 'Aktives Workout wirklich abbrechen? Alle Fortschritte gehen verloren.',
+        cancelWorkoutConfirm: 'Workout wirklich abbrechen? Alle Fortschritte gehen verloren.'
       },
       targetHold: 'Ziel: {seconds} halten',
       holdDurationLabel: 'Haltedauer (Sek.)',
@@ -505,7 +568,61 @@ const translations = {
       recovery: {
         duration: 'Dauer (Min.)',
         log: 'Recovery loggen'
+      },
+      postWorkout: {
+        title: 'Workout abgeschlossen!',
+        fallbackName: 'Training',
+        minutes: 'Minuten',
+        sets: 'Sets',
+        exercises: 'Übungen',
+        toProgress: 'Zum Fortschritt',
+        comparisonTitle: 'Vergleich zum letzten Mal',
+        time: 'Zeit',
+        volume: 'Volumen'
+      },
+      feedback: {
+        saved: 'Workout gespeichert!',
+        saveError: 'Fehler beim Speichern des Workouts',
+        restartError: 'Fehler beim Neustarten des Workouts',
+        exerciseComplete: 'Übung abgeschlossen!',
+        enterDuration: 'Bitte Dauer eingeben'
+      },
+      editDate: {
+        prompt: 'Neues Datum (YYYY-MM-DD):',
+        error: 'Ungültiges Datumsformat. Bitte verwende YYYY-MM-DD'
       }
+    },
+    workoutModal: {
+      exercises: 'Übungen',
+      sets: 'Sätze',
+      noExercises: 'Keine Übungen',
+      exercise: 'Übung',
+      noSets: 'Keine Sätze',
+      addSet: 'Satz hinzufügen',
+      removeSet: 'Satz entfernen',
+      reps: 'Wdh',
+      deleteConfirm: 'Dieses Workout wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+      deleteError: 'Fehler beim Löschen',
+      sessionNotFound: 'Session nicht gefunden.',
+      invalidDuration: 'Bitte gib eine gültige Dauer ein.',
+      saveError: 'Fehler beim Speichern'
+    },
+    bottomSheet: {
+      title: 'Auswählen',
+      searchPlaceholder: 'Suchen...',
+      noOptions: 'Keine Optionen gefunden',
+      selected: 'ausgewählt'
+    },
+    templateFeedback: {
+      saved: 'Vorlage gespeichert',
+      saveError: 'Fehler beim Speichern',
+      deleted: 'Vorlage gelöscht',
+      deleteError: 'Fehler beim Löschen',
+      deleteConfirm: 'Diese Vorlage wirklich löschen?',
+      notFound: 'Vorlage nicht gefunden',
+      planned: 'Vorlage geplant',
+      planError: 'Fehler beim Planen',
+      nameRequired: 'Bitte gib einen Namen ein'
     },
     numberPicker: {
       repsTitle: 'Wiederholungen',
@@ -669,6 +786,19 @@ const translations = {
         bodyweight: 'Bodyweight',
         cardio: 'Cardio',
         recovery: 'Recovery'
+      },
+      calendar: {
+        tabActivity: 'Aktivität',
+        tabPlan: 'Planen',
+        addTraining: 'Training hinzufügen',
+        prevMonth: 'Vorheriger Monat',
+        nextMonth: 'Nächster Monat'
+      },
+      startWorkout: {
+        selectPlan: 'Plan auswählen',
+        selectPlanDesc: 'Starte ein Training aus deinen Plänen',
+        newWorkout: 'Neues Training',
+        newWorkoutDesc: 'Starte ein leeres Workout und füge Übungen hinzu'
       }
     },
     progress: {
@@ -739,51 +869,71 @@ const translations = {
           baseline: 'Baseline'
         }
       },
+      form: {
+        title: 'Trainingsform',
+        buildingBaseline: 'Baseline wird aufgebaut',
+        zoneDetrained: 'Formverlust',
+        zoneBase: 'Grundlagen',
+        zoneDeveloping: 'Formaufbau',
+        zoneTrained: 'Gute Form',
+        zonePeakForm: 'Topform',
+        trendRising: 'Trend steigend',
+        trendStable: 'Trend stabil',
+        trendFalling: 'Trend fallend',
+        hintDetrained: 'Starte wieder mit regelmäßigem Training, um deine Form aufzubauen.',
+        hintBase: 'Du baust eine solide Grundlage auf. Bleib dran und trainiere regelmäßig.',
+        hintDeveloping: 'Deine Form entwickelt sich gut. Halte die Trainingsfrequenz aufrecht.',
+        hintTrained: 'Du bist in guter Form. Dein Training zeigt nachhaltige Wirkung.',
+        hintPeakForm: 'Du bist in Topform! Dein Training ist auf höchstem Niveau.',
+        phasesTitle: 'Was bedeuten die Phasen?',
+        infoTitle: 'Was bedeutet Trainingsform?',
+        infoBody: 'Deine Trainingsform basiert auf deinem langfristigen Trainingsvolumen. Je konsistenter du trainierst, desto höher steigt deine Form. Bei Trainingspausen sinkt sie langsam ab.'
+      },
       readiness: {
-        title: 'Trainingsphase',
+        title: 'Erholungsstatus',
         lowLoad: 'Niedrige Belastung',
         balanced: 'Ausgewogen',
         highLoad: 'Hohe Belastung',
         descLow: 'Deine Trainingsbelastung liegt unter deinem Durchschnitt.',
         descBalanced: 'Deine Trainingsbelastung ist im optimalen Bereich.',
         descHigh: 'Deine Trainingsbelastung ist hoch. Achte auf Erholung.',
-        zoneOverreaching: 'Überbelastung',
+        zoneOverreaching: 'Überbelastet',
         zoneFatigued: 'Ermüdet',
-        zoneMaintaining: 'Formerhalt',
-        zoneBuilding: 'Formaufbau',
-        zonePeak: 'Höchstform',
+        zoneMaintaining: 'Belastet',
+        zoneBuilding: 'Bereit',
+        zonePeak: 'Erholt',
         zoneFormLoss: 'Formverlust',
         buildingBaseline: 'Baseline wird aufgebaut',
-        infoTitle: 'Was bedeutet Trainingsphase?',
-        infoBody: 'Deine Trainingsphase wird anhand deines Trainingsvolumens der letzten Wochen berechnet. Sie zeigt dir, in welcher Phase du dich gerade befindest.',
+        infoTitle: 'Was bedeutet Erholungsstatus?',
+        infoBody: 'Dein Erholungsstatus zeigt das Verhältnis zwischen deiner kurzfristigen und langfristigen Trainingsbelastung. Er sinkt nach dem Training und steigt mit Erholung.',
         infoZoneOverreaching: 'Dein aktuelles Trainingsvolumen ist deutlich höher als gewohnt. Achte auf Erholung.',
         infoZoneFatigued: 'Du trainierst etwas über deinem Durchschnitt. Trainiere klug und höre auf deinen Körper.',
-        infoZoneMaintaining: 'Dein Training hält dein aktuelles Leistungsniveau stabil.',
-        infoZoneBuilding: 'Du steigerst dein Trainingsvolumen kontrolliert und baust Form auf.',
-        infoZonePeak: 'Du bist in Bestform mit einer optimalen Balance aus Belastung und Erholung.',
+        infoZoneMaintaining: 'Dein Körper verarbeitet die aktuelle Trainingsbelastung.',
+        infoZoneBuilding: 'Du bist gut erholt und bereit für das nächste Training.',
+        infoZonePeak: 'Du bist vollständig erholt. Idealer Zeitpunkt für intensive Einheiten.',
         infoZoneFormLoss: 'Eine längere Trainingspause wurde erkannt. Dein Fitnesslevel kann abnehmen.',
         subtitle: 'Basierend auf deinem Trainingsvolumen der letzten Wochen',
         subtitleFormLoss: 'Längere Trainingspause erkannt',
         noData: 'Noch nicht genug Trainingsdaten',
         windowLabel: '7/28 Tage',
         insightNoData: 'Starte mit dem Loggen deines Trainings, um eine Baseline aufzubauen.',
-        insightNoRecent: 'Du hast seit einigen Tagen nicht trainiert. Deine kurzfristige Belastung sinkt, was dich in Richtung Erholung verschiebt.',
-        insightLowAcwr: 'Deine aktuelle Trainingsbelastung liegt unter deinem gewohnten Niveau. Das bringt dich in eine Erholungs- oder Detrainingsphase.',
-        insightBalanced: 'Deine kurzfristige und langfristige Belastung sind gut ausbalanciert. Das ist eine stabile Trainingszone.',
-        insightHighLoad: 'Deine aktuelle Belastung steigt schneller als deine Baseline. Du baust Fitness auf, aber Ermüdung nimmt zu.',
-        insightOverreaching: 'Deine kurzfristige Belastung liegt deutlich über deiner Baseline. Das kann zu Ermüdung oder Übertraining führen.',
-        hintLow: 'Erhöhe deine Trainingsbelastung, um einen ausgeglichenen Zustand zu erreichen.',
-        hintMaintaining: 'Du bist nah am optimalen Gleichgewicht. Bleib konsequent.',
-        hintBuilding: 'Du befindest dich in einer produktiven Trainingsphase. Steigere behutsam.',
-        hintPeak: 'Du bist in Höchstform. Ideal für intensive Trainingseinheiten.',
-        phasesTitle: 'Was bedeuten die Phasen?',
-        changeNoData: 'Starte mit dem Training, um zu sehen, wie sich deine Trainingsphase entwickelt.',
-        changeNone: 'Deine Trainingsbalance hat sich nicht verändert.',
-        changeUpTraining: 'Dein letztes Training hat die kurzfristige Belastung erhöht und deine Trainingsphase verbessert.',
-        changeUpRecovery: 'Erholung hat die Ermüdung reduziert und deine Trainingsbereitschaft verbessert.',
-        changeDownTraining: 'Dein letztes Training hat die Ermüdung erhöht und deine Trainingsbereitschaft gesenkt.',
-        changeDownRecovery: 'Reduziertes Training hat deine kurzfristige Belastung gesenkt und dich von deiner Baseline entfernt.',
-        changeBaseline: 'Deine langfristige Trainingsbaseline hat sich deutlich verschoben.',
+        insightNoRecent: 'Du hast seit einigen Tagen nicht trainiert. Deine kurzfristige Belastung sinkt.',
+        insightLowAcwr: 'Deine aktuelle Trainingsbelastung liegt unter deinem gewohnten Niveau. Du bist gut erholt.',
+        insightBalanced: 'Deine kurzfristige und langfristige Belastung sind gut ausbalanciert.',
+        insightHighLoad: 'Deine aktuelle Belastung steigt schneller als deine Baseline. Ermüdung nimmt zu.',
+        insightOverreaching: 'Deine kurzfristige Belastung liegt deutlich über deiner Baseline. Achte auf Erholung.',
+        hintLow: 'Du bist gut erholt. Idealer Zeitpunkt für ein intensives Training.',
+        hintMaintaining: 'Moderate Belastung. Du kannst normal weitertrainieren.',
+        hintBuilding: 'Du bist bereit für dein nächstes Training.',
+        hintPeak: 'Vollständig erholt. Ideal für intensive Trainingseinheiten.',
+        phasesTitle: 'Was bedeuten die Stufen?',
+        changeNoData: 'Starte mit dem Training, um zu sehen, wie sich dein Erholungsstatus entwickelt.',
+        changeNone: 'Dein Erholungsstatus hat sich nicht verändert.',
+        changeUpTraining: 'Dein letztes Training hat die kurzfristige Belastung erhöht.',
+        changeUpRecovery: 'Erholung hat die Ermüdung reduziert.',
+        changeDownTraining: 'Dein letztes Training hat die Ermüdung erhöht.',
+        changeDownRecovery: 'Reduziertes Training hat deine kurzfristige Belastung gesenkt.',
+        changeBaseline: 'Deine langfristige Trainingsbaseline hat sich verschoben.',
         changeSubLoad: '+{load} Belastung durch dein letztes Training',
         changeSubRest: '\u2212{load} Belastung durch {days} Ruhetage',
         changeDriver: 'Haupttreiber: {name} ({duration} min)'
@@ -1207,7 +1357,9 @@ const translations = {
       progress: 'Progress',
       calendar: 'Calendar',
       training: 'Training',
-      profile: 'Profile'
+      profile: 'Profile',
+      plans: 'Plans',
+      exercises: 'Exercises'
     },
     difficulty: {
       beginner: 'Beginner',
@@ -1441,6 +1593,46 @@ const translations = {
       name: 'Exercise name',
       namePlaceholder: 'e.g. Pull-ups',
       muscleGroups: 'Muscle groups',
+      muscles: {
+        chest: 'Chest',
+        back: 'Back',
+        shoulders: 'Shoulders',
+        biceps: 'Biceps',
+        triceps: 'Triceps',
+        core: 'Core',
+        legs: 'Legs',
+        fullBody: 'Full body',
+        arms: 'Arms',
+        calf: 'Calves',
+        cardio: 'Cardio',
+        mobility: 'Mobility'
+      },
+      muscleDescriptions: {
+        all: 'Show all exercises',
+        chest: 'Chest muscles',
+        back: 'Back muscles',
+        biceps: 'Biceps muscles',
+        triceps: 'Triceps muscles',
+        shoulders: 'Shoulder muscles',
+        core: 'Abdominal and core muscles',
+        legs: 'Leg muscles',
+        fullBody: 'Full body training',
+        arms: 'Biceps, triceps, forearms',
+        calf: 'Calf muscles'
+      },
+      muscleFilter: {
+        title: 'Filter by muscle group',
+        selectTitle: 'Select muscle groups',
+        searchPlaceholder: 'Search muscle group...',
+        selectPlaceholder: 'Select muscle groups...',
+        required: 'Muscle groups *'
+      },
+      difficultyFilter: {
+        title: 'Filter by difficulty'
+      },
+      equipmentFilter: {
+        title: 'Filter by equipment'
+      },
       filters: {
         allMuscles: 'All muscle groups',
         allDifficulties: 'All difficulties'
@@ -1540,6 +1732,13 @@ const translations = {
         stepDetails: 'Details',
         stepOptional: 'optional'
       },
+      editTitle: 'Edit exercise',
+      loading: 'Loading exercises...',
+      feedback: {
+        saveError: 'Error saving exercise!',
+        deleted: 'Entry deleted',
+        deleteError: 'Error deleting'
+      },
       detail: {
         useInPlan: 'Use in plan'
       },
@@ -1604,7 +1803,21 @@ const translations = {
         timerSub: '-10s',
         timerDone: 'Rest done!',
         discardConfirmTitle: 'Discard workout?',
-        endWorkoutAction: 'End'
+        endWorkoutAction: 'End',
+        logWorkout: 'Log workout',
+        emptyHint: 'Add exercises to start your workout',
+        addExercise: 'Add exercise',
+        searchExercise: 'Search exercise...',
+        noExercisesFound: 'No exercises found',
+        freeWorkout: 'Free workout',
+        menu: 'Menu'
+      },
+      banner: {
+        active: 'Active workout: {name}',
+        resume: 'Resume',
+        cancel: 'Cancel',
+        cancelConfirm: 'Really cancel active workout? All progress will be lost.',
+        cancelWorkoutConfirm: 'Really cancel workout? All progress will be lost.'
       },
       targetHold: 'Goal: hold {seconds}',
       holdDurationLabel: 'Hold duration (sec)',
@@ -1665,7 +1878,61 @@ const translations = {
       recovery: {
         duration: 'Duration (min)',
         log: 'Log recovery'
+      },
+      postWorkout: {
+        title: 'Workout completed!',
+        fallbackName: 'Training',
+        minutes: 'Minutes',
+        sets: 'Sets',
+        exercises: 'Exercises',
+        toProgress: 'View progress',
+        comparisonTitle: 'Comparison to last time',
+        time: 'Time',
+        volume: 'Volume'
+      },
+      feedback: {
+        saved: 'Workout saved!',
+        saveError: 'Error saving workout',
+        restartError: 'Error restarting workout',
+        exerciseComplete: 'Exercise completed!',
+        enterDuration: 'Please enter duration'
+      },
+      editDate: {
+        prompt: 'New date (YYYY-MM-DD):',
+        error: 'Invalid date format. Please use YYYY-MM-DD'
       }
+    },
+    workoutModal: {
+      exercises: 'Exercises',
+      sets: 'Sets',
+      noExercises: 'No exercises',
+      exercise: 'Exercise',
+      noSets: 'No sets',
+      addSet: 'Add set',
+      removeSet: 'Remove set',
+      reps: 'Reps',
+      deleteConfirm: 'Really delete this workout? This action cannot be undone.',
+      deleteError: 'Error deleting',
+      sessionNotFound: 'Session not found.',
+      invalidDuration: 'Please enter a valid duration.',
+      saveError: 'Error saving'
+    },
+    bottomSheet: {
+      title: 'Select',
+      searchPlaceholder: 'Search...',
+      noOptions: 'No options found',
+      selected: 'selected'
+    },
+    templateFeedback: {
+      saved: 'Template saved',
+      saveError: 'Error saving',
+      deleted: 'Template deleted',
+      deleteError: 'Error deleting',
+      deleteConfirm: 'Really delete this template?',
+      notFound: 'Template not found',
+      planned: 'Template scheduled',
+      planError: 'Error scheduling',
+      nameRequired: 'Please enter a name'
     },
     numberPicker: {
       repsTitle: 'Reps',
@@ -1829,6 +2096,19 @@ const translations = {
         bodyweight: 'Bodyweight',
         cardio: 'Cardio',
         recovery: 'Recovery'
+      },
+      calendar: {
+        tabActivity: 'Activity',
+        tabPlan: 'Plan',
+        addTraining: 'Add workout',
+        prevMonth: 'Previous month',
+        nextMonth: 'Next month'
+      },
+      startWorkout: {
+        selectPlan: 'Select plan',
+        selectPlanDesc: 'Start a training from your plans',
+        newWorkout: 'New workout',
+        newWorkoutDesc: 'Start an empty workout and add exercises'
       }
     },
     progress: {
@@ -1899,51 +2179,71 @@ const translations = {
           baseline: 'Baseline'
         }
       },
+      form: {
+        title: 'Training Form',
+        buildingBaseline: 'Building baseline',
+        zoneDetrained: 'Detrained',
+        zoneBase: 'Base Building',
+        zoneDeveloping: 'Developing',
+        zoneTrained: 'Good Form',
+        zonePeakForm: 'Peak Form',
+        trendRising: 'Trend rising',
+        trendStable: 'Trend stable',
+        trendFalling: 'Trend falling',
+        hintDetrained: 'Start training regularly to rebuild your form.',
+        hintBase: 'You are building a solid foundation. Keep training consistently.',
+        hintDeveloping: 'Your form is developing well. Maintain your training frequency.',
+        hintTrained: 'You are in good form. Your training shows lasting results.',
+        hintPeakForm: 'You are in peak form! Your training is at the highest level.',
+        phasesTitle: 'What do the phases mean?',
+        infoTitle: 'What does Training Form mean?',
+        infoBody: 'Your training form is based on your long-term training volume. The more consistently you train, the higher your form rises. It slowly decreases during training breaks.'
+      },
       readiness: {
-        title: 'Training Phase',
+        title: 'Recovery Status',
         lowLoad: 'Low Load',
         balanced: 'Balanced',
         highLoad: 'High Load',
         descLow: 'Your current training load is below your average.',
         descBalanced: 'Your training load is in the optimal range.',
         descHigh: 'Your training load is high. Make sure to recover.',
-        zoneOverreaching: 'Overreaching',
+        zoneOverreaching: 'Overreached',
         zoneFatigued: 'Fatigued',
-        zoneMaintaining: 'Maintaining',
-        zoneBuilding: 'Building',
-        zonePeak: 'Peak Form',
+        zoneMaintaining: 'Loaded',
+        zoneBuilding: 'Ready',
+        zonePeak: 'Fresh',
         zoneFormLoss: 'Form Loss',
         buildingBaseline: 'Building baseline',
-        infoTitle: 'What does Training Phase mean?',
-        infoBody: 'Your training phase is determined by your training volume over the past weeks. It shows which phase you are currently in.',
+        infoTitle: 'What does Recovery Status mean?',
+        infoBody: 'Your recovery status shows the ratio between your short-term and long-term training load. It drops after training and rises with recovery.',
         infoZoneOverreaching: 'Your current training volume is significantly higher than usual. Prioritize recovery.',
         infoZoneFatigued: 'You are training slightly above your average. Train smart and listen to your body.',
-        infoZoneMaintaining: 'Your training is keeping your current fitness level stable.',
-        infoZoneBuilding: 'You are progressively increasing your training volume and building fitness.',
-        infoZonePeak: 'You are in peak form with an optimal balance of stress and recovery.',
+        infoZoneMaintaining: 'Your body is processing the current training load.',
+        infoZoneBuilding: 'You are well recovered and ready for your next workout.',
+        infoZonePeak: 'You are fully recovered. Ideal time for intense sessions.',
         infoZoneFormLoss: 'An extended training break has been detected. Your fitness level may decline.',
         subtitle: 'Based on your training volume over the past weeks',
         subtitleFormLoss: 'Extended training break detected',
         noData: 'Not enough training data yet',
         windowLabel: '7/28 days',
         insightNoData: 'Start logging training to build your baseline.',
-        insightNoRecent: "You haven't trained for a few days. Your short-term load is dropping, which shifts you toward recovery.",
-        insightLowAcwr: 'Your recent training load is lower than your usual level. This puts you in a recovery or detraining phase.',
-        insightBalanced: 'Your short-term and long-term load are well balanced. This is a stable training zone.',
-        insightHighLoad: "Your recent training load is increasing faster than your baseline. You're building fitness, but fatigue is rising.",
-        insightOverreaching: 'Your short-term load is much higher than your baseline. This may lead to fatigue or overtraining.',
-        hintLow: 'Increase training load to move toward a balanced state.',
-        hintMaintaining: 'You are close to optimal balance. Maintain consistency.',
-        hintBuilding: 'You are in a productive training phase. Progress carefully.',
-        hintPeak: 'You are at peak readiness. Ideal for high performance efforts.',
-        phasesTitle: 'What do the phases mean?',
-        changeNoData: 'Start training to see how your readiness evolves.',
-        changeNone: "Your training balance hasn't changed.",
-        changeUpTraining: 'Your recent training increased your short-term load, improving your training phase.',
-        changeUpRecovery: 'Recovery reduced fatigue, improving your readiness.',
-        changeDownTraining: 'Your recent training increased fatigue, lowering your readiness.',
-        changeDownRecovery: 'Reduced training lowered your short-term load, moving you away from your baseline.',
-        changeBaseline: 'Your long-term training baseline has shifted significantly.',
+        insightNoRecent: "You haven't trained for a few days. Your short-term load is dropping.",
+        insightLowAcwr: 'Your recent training load is lower than usual. You are well recovered.',
+        insightBalanced: 'Your short-term and long-term load are well balanced.',
+        insightHighLoad: "Your recent load is increasing faster than your baseline. Fatigue is rising.",
+        insightOverreaching: 'Your short-term load is much higher than your baseline. Prioritize recovery.',
+        hintLow: 'You are well recovered. Ideal time for an intense workout.',
+        hintMaintaining: 'Moderate load. You can continue training normally.',
+        hintBuilding: 'You are ready for your next workout.',
+        hintPeak: 'Fully recovered. Ideal for intense training sessions.',
+        phasesTitle: 'What do the levels mean?',
+        changeNoData: 'Start training to see how your recovery status evolves.',
+        changeNone: "Your recovery status hasn't changed.",
+        changeUpTraining: 'Your recent training increased short-term load.',
+        changeUpRecovery: 'Recovery reduced fatigue.',
+        changeDownTraining: 'Your recent training increased fatigue.',
+        changeDownRecovery: 'Reduced training lowered your short-term load.',
+        changeBaseline: 'Your long-term training baseline has shifted.',
         changeSubLoad: '+{load} load from your last workout',
         changeSubRest: '\u2212{load} load due to {days} rest days',
         changeDriver: 'Main driver: {name} ({duration} min)'
@@ -2392,9 +2692,13 @@ function formatDateShortText(date) {
   }).format(date);
 }
 
+function getIntlLocale() {
+  return currentLocale === 'en' ? 'en-US' : 'de-DE';
+}
+
 function formatDateLongText(date, includeYear = true) {
   if (!date) return '';
-  return new Intl.DateTimeFormat('de-DE', {
+  return new Intl.DateTimeFormat(getIntlLocale(), {
     timeZone: 'Europe/Berlin',
     weekday: 'long',
     day: 'numeric',
@@ -2405,7 +2709,7 @@ function formatDateLongText(date, includeYear = true) {
 
 function formatMonthYearText(date) {
   if (!date) return '';
-  return new Intl.DateTimeFormat('de-DE', {
+  return new Intl.DateTimeFormat(getIntlLocale(), {
     timeZone: 'Europe/Berlin',
     month: 'long',
     year: 'numeric'

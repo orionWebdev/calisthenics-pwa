@@ -432,14 +432,11 @@ function handleSegmentedChange(field, value) {
     applyTheme(value);
   }
 
-  if (field === 'unitSystem') {
-    renderProfileView();
-  }
-
   if (field === 'defaultProgressPeriod') {
     localStorage.setItem('progressPeriodKey', value);
   }
 
+  renderProfileView();
   showEdgeFeedback('success', t('settings.saved'));
 }
 
