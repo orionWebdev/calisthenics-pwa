@@ -375,10 +375,10 @@ function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, day
   if (acwr < 0.7) {
     return trV3('progress.readiness.insightLowAcwr');
   }
-  if (acwr <= 1.2) {
+  if (acwr <= 1.1) {
     return trV3('progress.readiness.insightBalanced');
   }
-  if (acwr <= 1.5) {
+  if (acwr <= 1.4) {
     return trV3('progress.readiness.insightHighLoad');
   }
   return trV3('progress.readiness.insightOverreaching');
@@ -490,9 +490,9 @@ function getFormPhaseLabel(zone) {
 
 function getFormHint(score) {
   if (score <= 20) return trV3('progress.form.hintDetrained');
-  if (score <= 40) return trV3('progress.form.hintBase');
-  if (score <= 60) return trV3('progress.form.hintDeveloping');
-  if (score <= 80) return trV3('progress.form.hintTrained');
+  if (score <= 38) return trV3('progress.form.hintBase');
+  if (score <= 55) return trV3('progress.form.hintDeveloping');
+  if (score <= 75) return trV3('progress.form.hintTrained');
   return trV3('progress.form.hintPeakForm');
 }
 
@@ -562,15 +562,24 @@ function renderFormWidget() {
   const trendLabel = getFormTrendLabel(data.trend);
   const trendIcon = getFormTrendIcon(data.trend);
 
+  // Delta vs yesterday
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const prevData = computeFormScore(allSessions, yesterday);
+  const formDelta = prevData.formScore !== null ? data.formScore - prevData.formScore : null;
+  const deltaHTML = formDelta !== null && formDelta !== 0
+    ? `<span class="score-delta" style="color: ${formDelta > 0 ? 'var(--zone-fresh)' : 'var(--zone-fatigued)'};">${formDelta > 0 ? '+' : ''}${formDelta}</span>`
+    : '';
+
   const phasesHTML = `
     <details class="training-phases-info">
       <summary>${trV3('progress.form.phasesTitle')}</summary>
       <div class="training-phases-list">
         <div><span class="phase-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} &nbsp;0–20</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} &nbsp;21–40</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} &nbsp;41–60</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} &nbsp;61–80</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} &nbsp;81–100</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} &nbsp;21–38</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} &nbsp;39–55</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} &nbsp;56–75</div>
+        <div><span class="phase-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} &nbsp;76–100</div>
       </div>
     </details>`;
 
@@ -584,7 +593,7 @@ function renderFormWidget() {
       </div>
       <div class="acwr-score-section">
         <div class="acwr-zone-label" style="color: ${zoneColor};">${phaseLabel}</div>
-        <div class="acwr-score-display">${data.formScore}</div>
+        <div class="acwr-score-display">${data.formScore} ${deltaHTML}</div>
       </div>
       <div class="acwr-bar-track">
         <div class="acwr-bar-fill" style="width: ${data.formScore}%; background: ${zoneColor};"></div>
@@ -608,10 +617,10 @@ function openFormInfoModal() {
     `<div class="acwr-info-content">
       <p>${trV3('progress.form.infoBody')}</p>
       <div class="acwr-info-zones">
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (81–100)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} (61–80)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} (41–60)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} (21–40)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (76–100)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} (56–75)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} (39–55)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} (21–38)</div>
         <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} (0–20)</div>
       </div>
     </div>`
@@ -647,6 +656,13 @@ function renderReadinessWidget() {
   const chronicRounded = Math.round(data.chronicLoad);
   const ratioDisplay = data.acwr !== null ? data.acwr.toFixed(2) : '–';
 
+  // Delta vs yesterday
+  const changeData = typeof getScoreChange === 'function' ? getScoreChange(allSessions, new Date()) : null;
+  const readinessDelta = changeData ? changeData.scoreDelta : 0;
+  const rDeltaHTML = readinessDelta !== 0
+    ? `<span class="score-delta" style="color: ${readinessDelta > 0 ? 'var(--zone-fresh)' : 'var(--zone-fatigued)'};">${readinessDelta > 0 ? '+' : ''}${readinessDelta}</span>`
+    : '';
+
   return `
     <div class="pv3-card readiness-compact" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
       <div class="readiness-compact-header">
@@ -658,7 +674,7 @@ function renderReadinessWidget() {
       <div class="readiness-compact-body">
         <div class="readiness-compact-left">
           <span class="readiness-compact-label" style="color: ${zoneColor};">${phase.label}</span>
-          <span class="readiness-compact-score">${data.readinessScore}</span>
+          <span class="readiness-compact-score">${data.readinessScore} ${rDeltaHTML}</span>
         </div>
         <div class="readiness-compact-bar-track">
           <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${zoneColor};"></div>

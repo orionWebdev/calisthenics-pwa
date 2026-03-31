@@ -2,7 +2,7 @@
 // SERVICE WORKER für CALISTHENICS PRO
 // ========================================
 
-const CACHE_NAME = 'calisthenics-pro-v1';
+const CACHE_NAME = 'calisthenics-pro-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

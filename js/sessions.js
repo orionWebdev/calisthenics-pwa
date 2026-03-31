@@ -2614,7 +2614,7 @@ function calculateSessionLoadValue(session) {
   const type = session?.type;
   if (!type || type === 'recovery') return { rawLoad: 0, type: type || 'recovery' };
 
-  if (type === 'strength') {
+  if (type === 'strength' || type === 'bodyweight') {
     const bodyWeight = (typeof userProfile !== 'undefined' && userProfile?.bodyWeight) || 0;
     const rpe = session.rpe ?? 3;
     const rpeFactor = getLoadRpeFactor(rpe);
@@ -2696,17 +2696,17 @@ function computeWeeklyRawLoad(referenceDate) {
   let cardioLoad = 0;
   let sessionCount = 0;
 
-  console.log('WeeklyRawLoad sessions:', allSessions.filter(s => s.type === 'strength' || s.type === 'cardio').length, 'strength+cardio of', allSessions.length, 'total');
+  console.log('WeeklyRawLoad sessions:', allSessions.filter(s => s.type === 'strength' || s.type === 'bodyweight' || s.type === 'cardio').length, 'strength+bodyweight+cardio of', allSessions.length, 'total');
 
   for (const s of allSessions) {
-    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+    if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') continue;
 
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (isNaN(sessionDate.getTime())) continue;
     if (sessionDate < startDate || sessionDate > endDate) continue;
 
     const result = calculateSessionLoadValue(s);
-    if (result.type === 'strength') {
+    if (result.type === 'strength' || result.type === 'bodyweight') {
       strengthLoad += result.rawLoad;
     } else if (result.type === 'cardio') {
       cardioLoad += result.rawLoad;
@@ -2763,21 +2763,25 @@ function computeWeeklyScore(referenceDate) {
  * and drops symmetrically for under- and over-training.
  */
 function mapReadiness(acwr) {
+  // Steeper curve with more differentiation in the normal 0.8-1.2 range.
+  // Peak is narrower (only ACWR ≈ 0.95-1.05 scores above 85).
   const curve = [
-    [0.0,  15],  // deep under-training
-    [0.3,  28],
-    [0.5,  45],
-    [0.65, 58],
-    [0.8,  72],
-    [0.9,  83],
-    [1.0,  92],  // optimal balance
-    [1.1,  89],
-    [1.2,  78],
-    [1.3,  66],
-    [1.5,  46],
-    [1.7,  30],
-    [2.0,  16],
-    [2.5,  8],   // deep over-training
+    [0.0,  10],  // deep under-training
+    [0.3,  22],
+    [0.5,  38],
+    [0.65, 50],
+    [0.75, 60],
+    [0.85, 72],
+    [0.95, 85],
+    [1.0,  90],  // optimal balance — narrow peak
+    [1.05, 85],
+    [1.15, 72],
+    [1.25, 60],
+    [1.35, 50],
+    [1.5,  38],
+    [1.7,  25],
+    [2.0,  14],
+    [2.5,  6],   // deep over-training
   ];
 
   const clamped = Math.max(0, Math.min(acwr, 2.5));
@@ -2802,11 +2806,11 @@ function mapReadiness(acwr) {
  * Uses ACWR to distinguish under-training (form_loss) from over-training (overreaching).
  */
 function mapZone(score, acwr) {
-  if (acwr !== undefined && acwr < 0.8 && score <= 50) return 'form_loss';
-  if (score <= 35) return 'overreaching';
-  if (score <= 55) return 'fatigued';
-  if (score <= 70) return 'maintaining';
-  if (score <= 85) return 'building';
+  if (acwr !== undefined && acwr < 0.8 && score <= 55) return 'form_loss';
+  if (score <= 30) return 'overreaching';
+  if (score <= 50) return 'fatigued';
+  if (score <= 68) return 'maintaining';
+  if (score <= 82) return 'building';
   return 'peak';
 }
 
@@ -2839,13 +2843,14 @@ function getACWR(sessions, referenceDate) {
   const dailyLoads = new Map();
 
   for (const s of sessions) {
-    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+    if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') continue;
 
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (isNaN(sessionDate.getTime())) continue;
     if (sessionDate > end) continue;
 
     const { rawLoad } = calculateSessionLoadValue(s);
+    if (rawLoad <= 0) continue; // Skip zero-load sessions to avoid phantom data
     const key = toLocalDateKey(sessionDate);
     dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
@@ -2888,18 +2893,19 @@ function getACWR(sessions, referenceDate) {
     acuteEMA = ACUTE_ALPHA * dailyLoad + (1 - ACUTE_ALPHA) * acuteEMA;
     chronicEMA = CHRONIC_ALPHA * dailyLoad + (1 - CHRONIC_ALPHA) * chronicEMA;
 
-    console.log("ACWR DAILY STEP:", { date: dateKey, dailyLoad, acuteEMA, chronicEMA });
     cursor.setDate(cursor.getDate() + 1);
   }
 
-  const acwr = chronicEMA === 0
-    ? 1
-    : Math.round((acuteEMA / chronicEMA) * 100) / 100;
+  // When chronic load is negligible, there's no meaningful baseline for a ratio
+  if (chronicEMA < 0.01) {
+    return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr: null, readinessScore: null, zone: null, daysSinceLastSession };
+  }
+
+  const acwr = Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
   const readinessScore = Math.round(mapReadiness(acwr));
   const zone = mapZone(readinessScore, acwr);
 
-  console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession });
   return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };
 }
 
@@ -2913,11 +2919,8 @@ function getACWR(sessions, referenceDate) {
  */
 function computeFormScore(sessions, referenceDate) {
   if (!sessions || !sessions.length) {
-    return { formScore: null, zone: null, fitnessLoad: 0, peakLoad: 0, trend: 'none', daysSinceLastSession: null };
+    return { formScore: null, zone: null, consistency: 0, loadLevel: 0, recency: 0, trend: 'none', daysSinceLastSession: null };
   }
-
-  const FITNESS_ALPHA = 0.03; // Slow EMA: ~33 day effective window
-  const PEAK_DECAY = 0.995;   // Peak reference decays ~0.5%/day (~14%/month)
 
   function toLocalDateKey(d) {
     const y = d.getFullYear();
@@ -2926,70 +2929,79 @@ function computeFormScore(sessions, referenceDate) {
     return `${y}-${m}-${dd}`;
   }
 
+  const refDay = new Date(referenceDate);
+  refDay.setHours(0, 0, 0, 0);
   const end = new Date(referenceDate);
   end.setHours(23, 59, 59, 999);
 
-  // Build daily load map (same as ACWR)
+  // Build daily load map + collect training day keys
   const dailyLoads = new Map();
   for (const s of sessions) {
-    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+    if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') continue;
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (isNaN(sessionDate.getTime())) continue;
     if (sessionDate > end) continue;
     const { rawLoad } = calculateSessionLoadValue(s);
+    if (rawLoad <= 0) continue; // Skip zero-load sessions
     const key = toLocalDateKey(sessionDate);
     dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
 
   if (dailyLoads.size === 0) {
-    return { formScore: null, zone: null, fitnessLoad: 0, peakLoad: 0, trend: 'none', daysSinceLastSession: null };
+    return { formScore: null, zone: null, consistency: 0, loadLevel: 0, recency: 0, trend: 'none', daysSinceLastSession: null };
   }
 
   const sortedKeys = [...dailyLoads.keys()].sort();
-  const refDay = new Date(referenceDate);
-  refDay.setHours(0, 0, 0, 0);
   const earliestDate = new Date(sortedKeys[0] + 'T00:00:00');
   const daySpan = Math.floor((refDay.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
 
   // Need at least 14 days of history
   if (daySpan < 14) {
-    return { formScore: null, zone: null, fitnessLoad: 0, peakLoad: 0, trend: 'none', daysSinceLastSession: null };
+    return { formScore: null, zone: null, consistency: 0, loadLevel: 0, recency: 0, trend: 'none', daysSinceLastSession: null };
   }
 
-  // daysSinceLastSession
-  const lastSessionKey = sortedKeys[sortedKeys.length - 1];
-  const lastSessionDate = new Date(lastSessionKey + 'T00:00:00');
-  const daysSinceLastSession = Math.floor((refDay.getTime() - lastSessionDate.getTime()) / (1000 * 60 * 60 * 24));
+  // ── Component 1: Training Consistency (0-35) ──
+  // Count training days in last 28 days
+  const last28Start = new Date(refDay);
+  last28Start.setDate(last28Start.getDate() - 27);
+  let trainingDays28 = 0;
+  for (const key of dailyLoads.keys()) {
+    const d = new Date(key + 'T00:00:00');
+    if (d >= last28Start && d <= refDay) trainingDays28++;
+  }
+  // 16+ days in 28 (≥4x/week) = full 35 points
+  const consistency = Math.min(35, Math.round((trainingDays28 / 16) * 35));
 
-  // Compute Fitness EMA over full history (up to 120 days back)
+  // ── Component 2: Load Progression (0-35) ──
+  // Compare recent 14-day load trend against prior 14-day period.
+  // This measures whether training load is progressing, stable, or declining.
+  const FITNESS_ALPHA = 0.03;
   const loopStart = new Date(Math.max(
     earliestDate.getTime(),
     refDay.getTime() - 120 * 24 * 60 * 60 * 1000
   ));
 
   let fitnessEMA = 0;
-  let peakFitness = 0;
-  let daysSincePeak = 0;
   let fitnessAt14DaysAgo = 0;
-  const cursor = new Date(loopStart);
+  let peakFitness = 0;
 
+  // Collect recent-14d and prior-14d raw loads for direct comparison
+  let recent14Load = 0;
+  let prior14Load = 0;
+
+  const cursor = new Date(loopStart);
   while (cursor <= refDay) {
     const dateKey = toLocalDateKey(cursor);
     const dailyLoad = dailyLoads.get(dateKey) || 0;
-
     fitnessEMA = FITNESS_ALPHA * dailyLoad + (1 - FITNESS_ALPHA) * fitnessEMA;
+    if (fitnessEMA > peakFitness) peakFitness = fitnessEMA;
 
-    // Track decaying peak
-    const effectivePeak = peakFitness * Math.pow(PEAK_DECAY, daysSincePeak);
-    if (fitnessEMA >= effectivePeak) {
-      peakFitness = fitnessEMA;
-      daysSincePeak = 0;
-    } else {
-      daysSincePeak++;
-    }
-
-    // Capture fitness level 14 days ago for trend calculation
     const daysToRef = Math.floor((refDay.getTime() - cursor.getTime()) / (1000 * 60 * 60 * 24));
+    if (daysToRef < 14) {
+      recent14Load += dailyLoad;
+    } else if (daysToRef < 28) {
+      prior14Load += dailyLoad;
+    }
     if (daysToRef === 14) {
       fitnessAt14DaysAgo = fitnessEMA;
     }
@@ -2997,15 +3009,50 @@ function computeFormScore(sessions, referenceDate) {
     cursor.setDate(cursor.getDate() + 1);
   }
 
-  // Effective peak (with decay applied)
-  const effectivePeak = peakFitness * Math.pow(PEAK_DECAY, daysSincePeak);
-  const finalPeak = Math.max(effectivePeak, fitnessEMA);
+  // Load progression: compare recent vs prior 14-day window
+  // Ratio > 1 = progressing, < 1 = declining, ≈ 1 = maintaining
+  let loadLevel = 0;
+  if (prior14Load > 0) {
+    const progressionRatio = recent14Load / prior14Load;
+    // 0.0 → 0pts, 0.5 → 10pts, 0.8 → 18pts, 1.0 → 22pts, 1.2 → 28pts, 1.4+ → 35pts
+    if (progressionRatio <= 0.3) {
+      loadLevel = 0;
+    } else if (progressionRatio <= 1.0) {
+      // Linear scale 0.3→5 to 1.0→22
+      loadLevel = Math.round(5 + (progressionRatio - 0.3) / 0.7 * 17);
+    } else {
+      // Above baseline: 1.0→22 to 1.4→35
+      loadLevel = Math.round(22 + Math.min(progressionRatio - 1.0, 0.4) / 0.4 * 13);
+    }
+  } else if (recent14Load > 0) {
+    loadLevel = 18; // bootstrapping: training started recently
+  }
 
-  // Form score: current fitness as percentage of effective peak
-  let formScore = finalPeak > 0 ? Math.round((fitnessEMA / finalPeak) * 100) : 0;
-  formScore = Math.max(0, Math.min(100, formScore));
+  // ── Component 3: Training Recency (0-15) ──
+  const lastSessionKey = sortedKeys[sortedKeys.length - 1];
+  const lastSessionDate = new Date(lastSessionKey + 'T00:00:00');
+  const daysSinceLastSession = Math.floor((refDay.getTime() - lastSessionDate.getTime()) / (1000 * 60 * 60 * 24));
 
-  // Trend: compare current fitness to 14 days ago
+  let recency = 0;
+  if (daysSinceLastSession <= 1) recency = 15;
+  else if (daysSinceLastSession <= 2) recency = 12;
+  else if (daysSinceLastSession <= 3) recency = 8;
+  else if (daysSinceLastSession <= 5) recency = 4;
+  else if (daysSinceLastSession <= 7) recency = 1;
+
+  // ── Component 4: Fitness vs Peak (0-15) ──
+  // How close is current fitness EMA to all-time peak within the window?
+  // This rewards sustained high load over time, not just showing up.
+  let fitnessVsPeak = 0;
+  if (peakFitness > 0) {
+    const peakRatio = fitnessEMA / peakFitness;
+    fitnessVsPeak = Math.round(Math.min(15, peakRatio * 15));
+  }
+
+  // ── Combined Form Score (0-100) ──
+  let formScore = Math.max(0, Math.min(100, consistency + loadLevel + recency + fitnessVsPeak));
+
+  // ── Trend ──
   let trend = 'stable';
   if (fitnessAt14DaysAgo > 0) {
     const trendRatio = fitnessEMA / fitnessAt14DaysAgo;
@@ -3015,10 +3062,9 @@ function computeFormScore(sessions, referenceDate) {
     trend = 'rising';
   }
 
-  // Map to form zone
   const zone = mapFormZone(formScore);
 
-  return { formScore, zone, fitnessLoad: fitnessEMA, peakLoad: finalPeak, trend, daysSinceLastSession };
+  return { formScore, zone, consistency, loadLevel, recency, trend, daysSinceLastSession };
 }
 
 /**
@@ -3026,9 +3072,9 @@ function computeFormScore(sessions, referenceDate) {
  */
 function mapFormZone(score) {
   if (score <= 20) return 'detrained';
-  if (score <= 40) return 'base';
-  if (score <= 60) return 'developing';
-  if (score <= 80) return 'trained';
+  if (score <= 38) return 'base';
+  if (score <= 55) return 'developing';
+  if (score <= 75) return 'trained';
   return 'peak_form';
 }
 
@@ -3077,7 +3123,7 @@ function getScoreChange(sessions, referenceDate) {
   let biggestLoad = 0;
 
   for (const s of (sessions || [])) {
-    if (s.type !== 'strength' && s.type !== 'cardio') continue;
+    if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') continue;
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (isNaN(sessionDate.getTime())) continue;
     if (sessionDate < refStart || sessionDate > refEnd) continue;
@@ -3245,6 +3291,10 @@ window.getTrainingStatus = getTrainingStatus;
 // ACWR
 window.getACWR = getACWR;
 window.getScoreChange = getScoreChange;
+
+// Training Form
+window.computeFormScore = computeFormScore;
+window.mapFormZone = mapFormZone;
 
 // Run analytics
 window.aggregateRunByPeriod = aggregateRunByPeriod;
