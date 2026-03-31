@@ -7280,6 +7280,13 @@ input[type="range"]::-moz-range-progress {
   margin-top: var(--spacing-xs, 0.25rem);
 }
 
+.score-delta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 .acwr-zone-label {
   font-size: 1.75rem;
   font-weight: 700;

@@ -604,6 +604,11 @@ async function completeWorkout() {
     // Reload sessions
     await loadSessions();
 
+    // Re-render progress widgets so Form/Readiness scores are up-to-date
+    if (typeof renderProgressV4 === 'function') {
+      renderProgressV4();
+    }
+
     // Vorherige Session + letzte 5 Sessions für Sparklines
     const prevSession = getPreviousSessionForPlan(planId, savedSessionId);
     const planSessions = typeof getSessionsForPlan === 'function'
