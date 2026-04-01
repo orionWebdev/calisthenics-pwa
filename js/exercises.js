@@ -13,7 +13,6 @@ let exerciseEquipmentFilter = '';
 // V3 State
 let exerciseType = 'strength';
 let exerciseVariants = [];
-let exerciseNotes = '';
 let exerciseStep2Expanded = false;
 let exerciseCreateCallback = null;
 
@@ -859,15 +858,12 @@ function openAddExerciseModal() {
   // V3 fields
   setExerciseType('strength');
   exerciseVariants = [];
-  exerciseNotes = '';
   renderVariants();
 
   // Collapse step 2
   exerciseStep2Expanded = false;
-  const section = document.getElementById('exercise-step2-section');
   const content = document.getElementById('exercise-step2-content');
   const toggle = document.getElementById('exercise-step2-toggle');
-  if (section) section.classList.remove('open');
   if (content) content.classList.add('collapsed');
   if (toggle) toggle.style.transform = '';
 
@@ -902,12 +898,7 @@ function editExercise(id) {
   // V3 fields
   setExerciseType(exercise.type || 'strength');
   exerciseVariants = exercise.variants ? exercise.variants.map(v => ({...v})) : [];
-  exerciseNotes = exercise.notes || '';
   renderVariants();
-
-  // Notes textarea
-  const notesInput = document.getElementById('exercise-notes');
-  if (notesInput) notesInput.value = exerciseNotes;
 
   // Instructions - normalize legacy data into new fields
   const normalized = normalizeExerciseInstructions(exercise);
@@ -930,18 +921,15 @@ function editExercise(id) {
 
   // Expand step 2 if exercise has detail content
   const hasStep2Content = exerciseInstructionSteps.length > 0 ||
-    exerciseVariants.length > 0 || exerciseNotes ||
+    exerciseVariants.length > 0 ||
     hasAdvancedContent;
   exerciseStep2Expanded = hasStep2Content;
-  const section = document.getElementById('exercise-step2-section');
   const contentEl = document.getElementById('exercise-step2-content');
   const toggle = document.getElementById('exercise-step2-toggle');
   if (hasStep2Content) {
-    if (section) section.classList.add('open');
     if (contentEl) contentEl.classList.remove('collapsed');
     if (toggle) toggle.style.transform = 'rotate(180deg)';
   } else {
-    if (section) section.classList.remove('open');
     if (contentEl) contentEl.classList.add('collapsed');
     if (toggle) toggle.style.transform = '';
   }
@@ -992,9 +980,6 @@ function clearExerciseForm() {
   // V3 fields
   exerciseType = 'strength';
   exerciseVariants = [];
-  exerciseNotes = '';
-  const notesInput = document.getElementById('exercise-notes');
-  if (notesInput) notesInput.value = '';
 
   editingExerciseId = null;
 }
@@ -1066,15 +1051,12 @@ function setExerciseType(type) {
 
 function toggleExerciseStep2() {
   exerciseStep2Expanded = !exerciseStep2Expanded;
-  const section = document.getElementById('exercise-step2-section');
   const content = document.getElementById('exercise-step2-content');
   const toggle = document.getElementById('exercise-step2-toggle');
   if (exerciseStep2Expanded) {
-    if (section) section.classList.add('open');
     if (content) content.classList.remove('collapsed');
     if (toggle) toggle.style.transform = 'rotate(180deg)';
   } else {
-    if (section) section.classList.remove('open');
     if (content) content.classList.add('collapsed');
     if (toggle) toggle.style.transform = '';
   }
@@ -1508,8 +1490,6 @@ async function saveExercise() {
   const progressions = getCleanInstructionList('progressions');
   const setupNotesInput = document.getElementById('exercise-setup-notes');
   const setupNotes = setupNotesInput ? setupNotesInput.value.trim() : '';
-  const notesEl = document.getElementById('exercise-notes');
-  const notes = notesEl ? notesEl.value.trim() : '';
   const variants = getCleanVariants();
 
   // Get selected muscle groups and equipment from state
@@ -1529,7 +1509,7 @@ async function saveExercise() {
     name, type, difficulty, icon,
     instructions: instructionsSteps,
     muscleGroups, equipment,
-    variants, notes,
+    variants,
     setupNotes, cues, commonMistakes, progressions
   };
 

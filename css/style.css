@@ -4753,20 +4753,54 @@ input::placeholder {
   font-size: var(--font-size-xl);
 }
 
+/* Plan Modal Sections */
+.plan-modal-section + .plan-modal-section {
+  border-top: 1px solid rgba(75, 85, 99, 0.2);
+  padding-top: 1rem;
+}
+
+.plan-modal-section-title {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  color: white;
+  margin-bottom: 0.75rem;
+}
+
+/* Exercise Collapsible Section */
+.exercise-collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.exercise-collapsible-header:hover {
+  opacity: 0.8;
+}
+
+.exercise-collapsible-content {
+  padding-top: 0.75rem;
+}
+
+.exercise-collapsible-content.collapsed {
+  display: none;
+}
+
 /* Plan Exercise Items */
 .plan-exercise-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.875rem;
+  padding: 0.75rem;
   background: rgba(31, 41, 55, 0.5);
   border: 1px solid rgba(75, 85, 99, 0.3);
   border-radius: 8px;
   transition: all 0.2s ease;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  touch-action: pan-y;
 }
 
 .plan-exercise-item:hover {
@@ -4774,33 +4808,45 @@ input::placeholder {
   border-color: rgba(107, 114, 128, 0.5);
 }
 
-.plan-exercise-item.dragging {
-  opacity: 0.5;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  transform: scale(1.02);
-  z-index: 10;
-  border-color: var(--border-accent);
-}
-
-.plan-exercise-item.drag-over {
-  border-color: var(--color-primary);
-  background: rgba(240, 34, 119, 0.06);
-}
-
-.plan-exercise-drag-handle {
-  cursor: grab;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-}
-
-.plan-exercise-drag-handle:active {
-  cursor: grabbing;
-}
-
 .plan-exercise-info {
   flex: 1;
   min-width: 0;
+}
+
+/* Plan Exercise Reorder Arrows */
+.plan-exercise-reorder {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.plan-exercise-reorder-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.plan-exercise-reorder-btn:hover {
+  background: rgba(75, 85, 99, 0.4);
+  color: #9ca3af;
+}
+
+.plan-exercise-reorder-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.plan-exercise-reorder-btn .material-symbols-rounded {
+  font-size: 18px;
 }
 
 .plan-exercise-number {

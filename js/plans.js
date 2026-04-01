@@ -525,10 +525,6 @@ function applyPlanI18n() {
   setText('plan-recovery-duration-label', t('plan.recovery.durationLabel'));
   setText('plan-recovery-target-hint', t('plan.recovery.targetHint'));
 
-  setText('plan-section-notes-title', t('plan.notes'));
-  setText('plan-section-notes-badge', t('common.optional'));
-  setText('plan-notes-label', t('plan.notes'));
-  setPlaceholder('plan-notes', t('plan.notesPlaceholder'));
 
   setText('plan-save-btn-label', t('plan.actions.save'));
   setText('plan-delete-btn-label', t('common.delete'));
@@ -638,9 +634,6 @@ function resetPlanModalPosition() {
 function clearPlanForm() {
   document.getElementById('plan-name').value = '';
   document.getElementById('plan-type').value = 'strength';
-  const notesEl = document.getElementById('plan-notes');
-  if (notesEl) notesEl.value = '';
-
   planIconSelection = null;
   planIconSelectionIsManual = false;
   setPlanIcon(planTypeIconFallbacks.strength);
@@ -667,8 +660,6 @@ function clearPlanForm() {
 function populatePlanForm(plan) {
   document.getElementById('plan-name').value = plan.name || '';
   document.getElementById('plan-type').value = plan.type || 'strength';
-  const notesEl = document.getElementById('plan-notes');
-  if (notesEl) notesEl.value = plan.notes || '';
 
   // Type-specific fields
   if (plan.type === 'cardio') {
@@ -749,7 +740,6 @@ function onPlanTypeChange(type) {
   const exercisesSection = document.getElementById('plan-exercises-section');
   const cardioSection = document.getElementById('plan-cardio-section');
   const recoverySection = document.getElementById('plan-recovery-section');
-  const notesSection = document.getElementById('plan-notes-section');
 
   // Helper to show/hide elements
   const show = (el) => { if (el) el.style.display = ''; };
@@ -759,7 +749,6 @@ function onPlanTypeChange(type) {
   hide(exercisesSection);
   hide(cardioSection);
   hide(recoverySection);
-  show(notesSection);
 
   // Apply type-specific visibility and defaults
   const applyDefaultIcon = (icon) => {
@@ -863,10 +852,15 @@ function renderPlanExercises() {
     const setsLabel = t('plan.exerciseConfig.setsShort');
 
     return `
-      <div class="plan-exercise-item" draggable="true" data-index="${index}">
-        <!-- Drag Handle -->
-        <div class="plan-exercise-drag-handle">
-          <span class="material-symbols-rounded">drag_indicator</span>
+      <div class="plan-exercise-item" data-index="${index}">
+        <!-- Reorder Arrows -->
+        <div class="plan-exercise-reorder">
+          <button onclick="event.stopPropagation(); movePlanExercise(${index}, -1)" class="plan-exercise-reorder-btn" ${index === 0 ? 'disabled' : ''} aria-label="Move up">
+            <span class="material-symbols-rounded">arrow_upward</span>
+          </button>
+          <button onclick="event.stopPropagation(); movePlanExercise(${index}, 1)" class="plan-exercise-reorder-btn" ${index === items.length - 1 ? 'disabled' : ''} aria-label="Move down">
+            <span class="material-symbols-rounded">arrow_downward</span>
+          </button>
         </div>
 
         <!-- Exercise Info -->
@@ -887,9 +881,6 @@ function renderPlanExercises() {
       </div>
     `;
   }).join('');
-
-  // Setup drag and drop
-  setupDragAndDrop();
 }
 
 // Exercise Picker Filter State
@@ -1647,112 +1638,14 @@ function updateRangeProgress(slider) {
 }
 
 // ========================================
-// DRAG AND DROP
+// EXERCISE REORDER
 // ========================================
 
-let draggedIndex = null;
-let touchDragItem = null;
-let touchDragStartY = 0;
-
-function setupDragAndDrop() {
-  const items = document.querySelectorAll('.plan-exercise-item');
-
-  items.forEach((item, index) => {
-    // --- Desktop: HTML5 Drag API ---
-    item.addEventListener('dragstart', (e) => {
-      draggedIndex = index;
-      item.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-
-    item.addEventListener('dragend', (e) => {
-      item.classList.remove('dragging');
-      document.querySelectorAll('.plan-exercise-item').forEach(el => el.classList.remove('drag-over'));
-      draggedIndex = null;
-    });
-
-    item.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      document.querySelectorAll('.plan-exercise-item').forEach(el => el.classList.remove('drag-over'));
-      if (!item.classList.contains('dragging')) {
-        item.classList.add('drag-over');
-      }
-    });
-
-    item.addEventListener('dragleave', () => {
-      item.classList.remove('drag-over');
-    });
-
-    item.addEventListener('drop', (e) => {
-      e.preventDefault();
-      item.classList.remove('drag-over');
-      if (draggedIndex !== null && draggedIndex !== index) {
-        reorderPlanExercises(draggedIndex, index);
-      }
-    });
-
-    // --- Mobile: Touch Events ---
-    const handle = item.querySelector('.plan-exercise-drag-handle');
-    const touchTarget = handle || item;
-
-    touchTarget.addEventListener('touchstart', (e) => {
-      touchDragItem = item;
-      touchDragStartY = e.touches[0].clientY;
-      draggedIndex = index;
-      setTimeout(() => {
-        if (touchDragItem === item) item.classList.add('dragging');
-      }, 80);
-    }, { passive: true });
-
-    touchTarget.addEventListener('touchmove', (e) => {
-      if (!touchDragItem || touchDragItem !== item) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const el = document.elementFromPoint(touch.clientX, touch.clientY);
-      const targetItem = el ? el.closest('.plan-exercise-item') : null;
-
-      document.querySelectorAll('.plan-exercise-item').forEach(i => i.classList.remove('drag-over'));
-      if (targetItem && targetItem !== item) {
-        targetItem.classList.add('drag-over');
-      }
-    }, { passive: false });
-
-    touchTarget.addEventListener('touchend', (e) => {
-      if (!touchDragItem || touchDragItem !== item) return;
-      item.classList.remove('dragging');
-      document.querySelectorAll('.plan-exercise-item').forEach(i => i.classList.remove('drag-over'));
-
-      const touch = e.changedTouches[0];
-      const el = document.elementFromPoint(touch.clientX, touch.clientY);
-      const targetItem = el ? el.closest('.plan-exercise-item') : null;
-
-      if (targetItem && targetItem !== item) {
-        const targetIndex = parseInt(targetItem.dataset.index);
-        if (!isNaN(targetIndex) && draggedIndex !== targetIndex) {
-          reorderPlanExercises(draggedIndex, targetIndex);
-        }
-      }
-
-      touchDragItem = null;
-      draggedIndex = null;
-    });
-  });
-}
-
-function getDragAfterElement(container, y) {
-  const draggableElements = [...container.querySelectorAll('.plan-exercise-item:not(.dragging)')];
-
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-
-    if (offset < 0 && offset > closest.offset) {
-      return { offset: offset, element: child };
-    } else {
-      return closest;
-    }
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
+function movePlanExercise(index, direction) {
+  const newIndex = index + direction;
+  if (!currentPlan || !Array.isArray(currentPlan.items)) return;
+  if (newIndex < 0 || newIndex >= currentPlan.items.length) return;
+  reorderPlanExercises(index, newIndex);
 }
 
 function reorderPlanExercises(fromIndex, toIndex) {
@@ -1770,7 +1663,6 @@ function reorderPlanExercises(fromIndex, toIndex) {
 async function savePlan() {
   const name = document.getElementById('plan-name').value.trim();
   const type = document.getElementById('plan-type').value;
-  const notes = document.getElementById('plan-notes')?.value.trim() || '';
   const iconSelection = planIconSelection || document.getElementById('plan-icon')?.value;
 
   // Validation - Name ist immer erforderlich
@@ -1794,10 +1686,6 @@ async function savePlan() {
     planData.icon = currentPlan.icon;
   } else {
     planData.icon = planTypeIconFallbacks[type] || planTypeIconFallbacks.strength;
-  }
-
-  if (notes) {
-    planData.notes = notes;
   }
 
   if (typeof firebase !== 'undefined' && firebase.firestore) {
