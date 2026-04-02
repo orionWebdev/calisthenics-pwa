@@ -17,6 +17,12 @@ export interface ACWRResult {
   readinessScore: number | null;
   zone: ACWRZone | null;
   daysSinceLastSession: number | null;
+  todayLoad: number;
+  fatiguePenalty: number;
+}
+
+export interface ACWROptions {
+  applyFatigue?: boolean;
 }
 
 // ---------- Helpers ----------
@@ -28,6 +34,8 @@ const ZERO_RESULT: ACWRResult = {
   readinessScore: null,
   zone: null,
   daysSinceLastSession: null,
+  todayLoad: 0,
+  fatiguePenalty: 0,
 };
 
 function parseSessionDate(date: unknown): Date | null {
@@ -107,7 +115,9 @@ export function getACWR(
   sessions: SessionWithDate[] | null | undefined,
   userProfile: UserProfile | null | undefined,
   referenceDate: Date,
+  options?: ACWROptions,
 ): ACWRResult {
+  const applyFatigue = options?.applyFatigue ?? false;
   if (!sessions?.length) return { ...ZERO_RESULT };
 
   const end = new Date(referenceDate);
@@ -129,6 +139,7 @@ export function getACWR(
 
   if (dailyLoads.size === 0) return { ...ZERO_RESULT };
 
+
   // Sort keys to find earliest session and compute day span
   const sortedKeys = [...dailyLoads.keys()].sort();
   const refDay = new Date(referenceDate);
@@ -138,7 +149,7 @@ export function getACWR(
 
   // Need at least 14 days of history
   if (daySpan < 14) {
-    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
+    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null, todayLoad: 0, fatiguePenalty: 0 };
   }
 
   // daysSinceLastSession (for UI/insights only, not score manipulation)
@@ -171,9 +182,26 @@ export function getACWR(
     ? 1
     : Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
-  const readinessScore = Math.round(mapReadiness(acwr));
+  const rawReadinessScore = Math.round(mapReadiness(acwr));
+
+  // Acute fatigue modifier: reduce readiness on days with training load.
+  // Uses sqrt curve for diminishing returns so that:
+  //   1 moderate session (~1x chronic) → ~10pt penalty
+  //   1 hard session   (~2x chronic)  → ~14pt penalty
+  //   2 sessions       (~3x chronic)  → ~17pt penalty
+  //   extreme day      (~6x chronic)  → ~24pt penalty
+  const todayKey = toLocalDateKey(refDay);
+  const todayLoad = dailyLoads.get(todayKey) || 0;
+  let fatiguePenalty = 0;
+
+  if (applyFatigue && todayLoad > 0 && chronicEMA > 0.01) {
+    const loadRatio = todayLoad / chronicEMA;
+    fatiguePenalty = Math.min(35, Math.round(10 * Math.sqrt(loadRatio)));
+  }
+
+  const readinessScore = Math.max(5, rawReadinessScore - fatiguePenalty);
   const zone: ACWRZone = mapZone(readinessScore, acwr);
 
-  console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession });
-  return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };
+  console.log('ACWR RESULT:', { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession, todayLoad, fatiguePenalty });
+  return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession, todayLoad, fatiguePenalty };
 }

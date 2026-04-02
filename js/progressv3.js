@@ -365,9 +365,13 @@ function getPhaseFromZone(zone) {
   };
 }
 
-function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, daysSinceLastSession }) {
+function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, daysSinceLastSession, todayLoad, fatiguePenalty }) {
   if (acwr === null || readinessScore === null) {
     return trV3('progress.readiness.insightNoData');
+  }
+  // Prioritize "just trained" feedback when fatigue modifier is active
+  if (todayLoad > 0 && fatiguePenalty > 0) {
+    return trV3('progress.readiness.insightJustTrained');
   }
   if (daysSinceLastSession !== null && daysSinceLastSession >= 5) {
     return trV3('progress.readiness.insightNoRecent');
@@ -632,7 +636,7 @@ function openFormInfoModal() {
 function renderReadinessWidget() {
   if (typeof getACWR !== 'function') return '';
 
-  const data = getACWR(allSessions, new Date());
+  const data = getACWR(allSessions, new Date(), { applyFatigue: true });
 
   if (data.readinessScore === null || data.zone === null) {
     return `
@@ -656,9 +660,11 @@ function renderReadinessWidget() {
   const chronicRounded = Math.round(data.chronicLoad);
   const ratioDisplay = data.acwr !== null ? data.acwr.toFixed(2) : '–';
 
-  // Delta vs yesterday
-  const changeData = typeof getScoreChange === 'function' ? getScoreChange(allSessions, new Date()) : null;
-  const readinessDelta = changeData ? changeData.scoreDelta : 0;
+  // Delta: fatigue-adjusted today vs raw yesterday
+  const yesterdayData = getACWR(allSessions, (() => { const d = new Date(); d.setDate(d.getDate() - 1); return d; })());
+  const readinessDelta = yesterdayData.readinessScore !== null
+    ? data.readinessScore - yesterdayData.readinessScore
+    : 0;
   const rDeltaHTML = readinessDelta !== 0
     ? `<span class="score-delta" style="color: ${readinessDelta > 0 ? 'var(--zone-fresh)' : 'var(--zone-fatigued)'};">${readinessDelta > 0 ? '+' : ''}${readinessDelta}</span>`
     : '';
