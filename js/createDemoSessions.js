@@ -73,7 +73,7 @@ async function createDemoSessions() {
 
       } else {
         // Cardio Session
-        const activities = ['run', 'bike', 'swim', 'row'];
+        const activities = ['run', 'bike', 'swim', 'row', 'hike'];
         const activityType = activities[Math.floor(Math.random() * activities.length)];
 
         let duration, distanceKm, pace;
@@ -89,6 +89,10 @@ async function createDemoSessions() {
         } else if (activityType === 'swim') {
           duration = 20 + Math.floor(Math.random() * 31); // 20-50 min
           distanceKm = Math.round((duration / 30) * 10) / 10; // ca. 2 km/h
+          pace = duration / distanceKm;
+        } else if (activityType === 'hike') {
+          duration = 60 + Math.floor(Math.random() * 181); // 60-240 min
+          distanceKm = Math.round((duration / 12) * 10) / 10; // ca. 5 km/h
           pace = duration / distanceKm;
         } else {
           duration = 20 + Math.floor(Math.random() * 31); // 20-50 min

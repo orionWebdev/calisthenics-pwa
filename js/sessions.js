@@ -74,6 +74,7 @@ const ACTIVITY_TYPES = {
   run: { name: 'Laufen', icon: 'directions_run', color: '#3b82f6' },
   bike: { name: 'Radfahren', icon: 'directions_bike', color: '#10b981' },
   swim: { name: 'Schwimmen', icon: 'pool', color: '#06b6d4' },
+  hike: { name: 'Wandern', icon: 'hiking', color: '#a3e635' },
   row: { name: 'Rudern', icon: 'rowing', color: '#8b5cf6' },
   other: { name: 'Sonstiges', icon: 'fitness_center', color: '#f59e0b' }
 };
@@ -698,6 +699,7 @@ const ACTIVITY_ALIASES = {
   running: 'run', laufen: 'run',
   cycling: 'bike', radfahren: 'bike',
   swimming: 'swim', schwimmen: 'swim',
+  hiking: 'hike', wandern: 'hike',
   rowing: 'row', rudern: 'row'
 };
 function normalizeActivityType(raw) {
@@ -2605,6 +2607,27 @@ function getLoadRpeFactor(rpe) {
   return LOAD_RPE_FACTORS[rpe] ?? 1.0;
 }
 
+// Cardio sport factors (mirrors calculateSessionLoad.ts)
+const CARDIO_SPORT_FACTORS = {
+  run: 1.0, bike: 0.85, swim: 0.9, hike: 0.4, row: 0.95, other: 1.0
+};
+const DEFAULT_SPORT_FACTOR = 1.0;
+
+function getLoadSportFactor(activityType) {
+  if (!activityType) return DEFAULT_SPORT_FACTOR;
+  return CARDIO_SPORT_FACTORS[activityType.toLowerCase()] ?? DEFAULT_SPORT_FACTOR;
+}
+
+// Duration dampening for long sessions (mirrors calculateSessionLoad.ts)
+const DAMPENING_THRESHOLD = 120;
+const DAMPENING_EXPONENT = 0.8;
+
+function getEffectiveDuration(duration) {
+  if (duration <= DAMPENING_THRESHOLD) return duration;
+  const excess = duration - DAMPENING_THRESHOLD;
+  return DAMPENING_THRESHOLD + Math.pow(excess, DAMPENING_EXPONENT);
+}
+
 /**
  * Calculates raw load for a session (ports calculateSessionLoad.ts)
  * @param {Object} session
@@ -2671,8 +2694,9 @@ function calculateSessionLoadValue(session) {
     const duration = session.duration || 0;
     if (duration <= 0) return { rawLoad: 0, type };
     const rpe = session.rpe ?? 3;
-    const rawLoad = duration * getLoadRpeFactor(rpe) * 4;
-    console.log(session.type, rawLoad);
+    const effectiveDuration = getEffectiveDuration(duration);
+    const sportFactor = getLoadSportFactor(session.activityType);
+    const rawLoad = Math.round(effectiveDuration * getLoadRpeFactor(rpe) * 4 * sportFactor * 100) / 100;
     return { rawLoad, type };
   }
 

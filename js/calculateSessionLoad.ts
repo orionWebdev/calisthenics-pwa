@@ -19,6 +19,7 @@ export interface SessionExercise {
 export interface Session {
   type: 'strength' | 'cardio' | 'recovery';
   discipline?: 'bodyweight' | 'weights' | string;
+  activityType?: string;
   exercises?: SessionExercise[];
   rpe?: number | null;
   duration?: number | null;
@@ -46,6 +47,35 @@ const RPE_FACTORS: Record<number, number> = {
 function getRpeFactor(rpe?: number | null): number {
   if (rpe == null) return 1.0;
   return RPE_FACTORS[rpe] ?? 1.0;
+}
+
+// ---------- Cardio Sport Factors ----------
+
+const CARDIO_SPORT_FACTORS: Record<string, number> = {
+  run:   1.0,
+  bike:  0.85,
+  swim:  0.9,
+  hike:  0.4,
+  row:   0.95,
+  other: 1.0,
+};
+
+const DEFAULT_SPORT_FACTOR = 1.0;
+
+function getSportFactor(activityType?: string): number {
+  if (!activityType) return DEFAULT_SPORT_FACTOR;
+  return CARDIO_SPORT_FACTORS[activityType.toLowerCase()] ?? DEFAULT_SPORT_FACTOR;
+}
+
+// ---------- Duration Dampening ----------
+
+const DAMPENING_THRESHOLD = 120; // minutes
+const DAMPENING_EXPONENT = 0.8;
+
+function getEffectiveDuration(duration: number): number {
+  if (duration <= DAMPENING_THRESHOLD) return duration;
+  const excess = duration - DAMPENING_THRESHOLD;
+  return DAMPENING_THRESHOLD + Math.pow(excess, DAMPENING_EXPONENT);
 }
 
 // ---------- Strength ----------
@@ -96,7 +126,9 @@ function calculateCardioLoad(session: Session): number {
   const duration = session.duration ?? 0;
   if (duration <= 0) return 0;
   const rpe = session.rpe ?? 3;
-  return duration * getRpeFactor(rpe) * 4;
+  const effectiveDuration = getEffectiveDuration(duration);
+  const sportFactor = getSportFactor(session.activityType);
+  return effectiveDuration * getRpeFactor(rpe) * 4 * sportFactor;
 }
 
 // ---------- Main ----------

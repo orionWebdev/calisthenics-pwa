@@ -155,6 +155,7 @@ const translations = {
           run: 'Laufen',
           bike: 'Radfahren',
           swim: 'Schwimmen',
+          hike: 'Wandern',
           row: 'Rudern',
           other: 'Sonstiges'
         }
@@ -1180,6 +1181,7 @@ const translations = {
           sportRun: 'Laufen',
           sportBike: 'Radfahren',
           sportSwim: 'Schwimmen',
+          sportHike: 'Wandern',
           sessions: 'Sessions',
           avgSpeed: 'Geschwindigkeit',
           speedTrend: 'Speed-Verlauf',
@@ -1466,6 +1468,7 @@ const translations = {
           run: 'Running',
           bike: 'Cycling',
           swim: 'Swimming',
+          hike: 'Hiking',
           row: 'Rowing',
           other: 'Other'
         }
@@ -2491,6 +2494,7 @@ const translations = {
           sportRun: 'Run',
           sportBike: 'Bike',
           sportSwim: 'Swim',
+          sportHike: 'Hike',
           sessions: 'Sessions',
           avgSpeed: 'Speed',
           speedTrend: 'Speed Trend',

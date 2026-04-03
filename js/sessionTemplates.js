@@ -30,6 +30,7 @@ const activityTypeNames = {
   run: 'Laufen',
   bike: 'Radfahren',
   swim: 'Schwimmen',
+  hike: 'Wandern',
   row: 'Rudern',
   other: 'Sonstiges'
 };
@@ -43,6 +44,7 @@ const activityTypeIcons = {
   run: 'directions_run',
   bike: 'directions_bike',
   swim: 'pool',
+  hike: 'hiking',
   row: 'rowing',
   other: 'fitness_center'
 };
