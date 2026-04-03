@@ -80,6 +80,8 @@ function getEffectiveDuration(duration: number): number {
 
 // ---------- Strength ----------
 
+const STRENGTH_VOLUME_DIVISOR = 50;
+
 function calculateStrengthLoad(session: Session, userProfile: UserProfile): number {
   const rpe = session.rpe ?? 3;
   const rpeFactor = getRpeFactor(rpe);
@@ -117,7 +119,7 @@ function calculateStrengthLoad(session: Session, userProfile: UserProfile): numb
     return (session.duration ?? 0) * rpeFactor * multiplier;
   }
 
-  return (sessionVolume / 100) * rpeFactor;
+  return (sessionVolume / STRENGTH_VOLUME_DIVISOR) * rpeFactor;
 }
 
 // ---------- Cardio ----------
