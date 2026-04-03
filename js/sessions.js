@@ -2612,6 +2612,7 @@ const CARDIO_SPORT_FACTORS = {
   run: 1.0, bike: 0.85, swim: 0.9, hike: 0.4, row: 0.95, other: 1.0
 };
 const DEFAULT_SPORT_FACTOR = 1.0;
+const STRENGTH_VOLUME_DIVISOR = 50;
 
 function getLoadSportFactor(activityType) {
   if (!activityType) return DEFAULT_SPORT_FACTOR;
@@ -2685,7 +2686,7 @@ function calculateSessionLoadValue(session) {
       return { rawLoad, type };
     }
 
-    const rawLoad = Math.round((totalVolume / 100) * rpeFactor * 100) / 100;
+    const rawLoad = Math.round((totalVolume / STRENGTH_VOLUME_DIVISOR) * rpeFactor * 100) / 100;
     console.log('TEST LOAD:', { type, rawLoad, duration: session.duration, exercises: session.exercises?.length });
     return { rawLoad, type };
   }
