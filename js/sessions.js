@@ -3179,7 +3179,8 @@ function mapFormZone(score) {
   if (score <= 38) return 'base';
   if (score <= 55) return 'developing';
   if (score <= 75) return 'trained';
-  return 'peak_form';
+  if (score <= 90) return 'peak_form';
+  return 'overload';
 }
 
 /**

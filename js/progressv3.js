@@ -465,7 +465,8 @@ function getFormZoneColor(zone) {
     base: 'var(--zone-fatigued)',
     developing: 'var(--zone-loaded)',
     trained: 'var(--zone-ready)',
-    peak_form: 'var(--zone-fresh)'
+    peak_form: 'var(--zone-peak-form)',
+    overload: 'var(--zone-exhausted)'
   };
   return map[zone] || map.developing;
 }
@@ -476,7 +477,8 @@ function getFormZoneBg(zone) {
     base: 'var(--zone-fatigued-bg)',
     developing: 'var(--zone-loaded-bg)',
     trained: 'var(--zone-ready-bg)',
-    peak_form: 'var(--zone-fresh-bg)'
+    peak_form: 'var(--zone-peak-form-bg)',
+    overload: 'var(--zone-exhausted-bg)'
   };
   return map[zone] || map.developing;
 }
@@ -487,7 +489,8 @@ function getFormPhaseLabel(zone) {
     base: trV3('progress.form.zoneBase'),
     developing: trV3('progress.form.zoneDeveloping'),
     trained: trV3('progress.form.zoneTrained'),
-    peak_form: trV3('progress.form.zonePeakForm')
+    peak_form: trV3('progress.form.zonePeakForm'),
+    overload: trV3('progress.form.zoneOverload')
   };
   return map[zone] || map.developing;
 }
@@ -497,7 +500,8 @@ function getFormHint(score) {
   if (score <= 38) return trV3('progress.form.hintBase');
   if (score <= 55) return trV3('progress.form.hintDeveloping');
   if (score <= 75) return trV3('progress.form.hintTrained');
-  return trV3('progress.form.hintPeakForm');
+  if (score <= 90) return trV3('progress.form.hintPeakForm');
+  return trV3('progress.form.hintOverload');
 }
 
 function getFormTrendLabel(trend) {
@@ -515,28 +519,34 @@ function getFormTrendIcon(trend) {
   return 'trending_flat';
 }
 
-function renderFormTimeline(days = 7) {
-  if (typeof computeFormScore !== 'function' || !allSessions?.length) return '';
+function renderFormScale(score) {
+  const phases = [
+    { zone: 'detrained', max: 20 },
+    { zone: 'base', max: 38 },
+    { zone: 'developing', max: 55 },
+    { zone: 'trained', max: 75 },
+    { zone: 'peak_form', max: 90 },
+    { zone: 'overload', max: 100 }
+  ];
 
-  const segments = [];
-  const today = new Date();
-  today.setHours(23, 59, 59, 999);
+  const segments = phases.map((p, i) => {
+    const start = i === 0 ? 0 : phases[i - 1].max;
+    const width = p.max - start;
+    const color = getFormZoneColor(p.zone);
+    const label = getFormPhaseLabel(p.zone);
+    return `<div class="form-scale-segment" style="width: ${width}%; background: ${color};" title="${label} (${start}–${p.max})"></div>`;
+  });
 
-  for (let i = 0; i < days; i++) {
-    const dayDate = new Date(today);
-    dayDate.setDate(dayDate.getDate() - (days - 1 - i));
-
-    const data = computeFormScore(allSessions, dayDate);
-    const hasZone = data.zone !== null;
-    const color = hasZone ? getFormZoneColor(data.zone) : 'var(--bg-surface-active)';
-    const opacity = 0.5 + 0.5 * (i / (days - 1));
-
-    segments.push(`<div class="acwr-timeline-segment" style="background: ${color}; opacity: ${opacity.toFixed(2)};"></div>`);
-  }
+  const clampedScore = Math.max(0, Math.min(100, score));
 
   return `
-    <div class="acwr-timeline">
-      <div class="acwr-timeline-track">${segments.join('')}</div>
+    <div class="form-scale">
+      <div class="form-scale-track">${segments.join('')}</div>
+      <div class="form-scale-dot" style="left: ${clampedScore}%;"></div>
+      <div class="form-scale-labels">
+        <span>0</span>
+        <span>100</span>
+      </div>
     </div>`;
 }
 
@@ -561,7 +571,7 @@ function renderFormWidget() {
   const zoneColor = getFormZoneColor(data.zone);
   const zoneBg = getFormZoneBg(data.zone);
   const phaseLabel = getFormPhaseLabel(data.zone);
-  const timeline = renderFormTimeline(7);
+  const scaleHTML = renderFormScale(data.formScore);
   const hint = getFormHint(data.formScore);
   const trendLabel = getFormTrendLabel(data.trend);
   const trendIcon = getFormTrendIcon(data.trend);
@@ -575,18 +585,6 @@ function renderFormWidget() {
     ? `<span class="score-delta" style="color: ${formDelta > 0 ? 'var(--zone-fresh)' : 'var(--zone-fatigued)'};">${formDelta > 0 ? '+' : ''}${formDelta}</span>`
     : '';
 
-  const phasesHTML = `
-    <details class="training-phases-info">
-      <summary>${trV3('progress.form.phasesTitle')}</summary>
-      <div class="training-phases-list">
-        <div><span class="phase-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} &nbsp;0–20</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} &nbsp;21–38</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} &nbsp;39–55</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} &nbsp;56–75</div>
-        <div><span class="phase-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} &nbsp;76–100</div>
-      </div>
-    </details>`;
-
   return `
     <div class="pv3-card acwr-widget" style="background: linear-gradient(${zoneBg}, ${zoneBg}), var(--bg-card);">
       <div class="acwr-widget-header">
@@ -599,10 +597,7 @@ function renderFormWidget() {
         <div class="acwr-zone-label" style="color: ${zoneColor};">${phaseLabel}</div>
         <div class="acwr-score-display">${data.formScore} ${deltaHTML}</div>
       </div>
-      <div class="acwr-bar-track">
-        <div class="acwr-bar-fill" style="width: ${data.formScore}%; background: ${zoneColor};"></div>
-      </div>
-      ${timeline}
+      ${scaleHTML}
       <div class="training-insight">
         <div class="insight-text">
           <span class="material-symbols-rounded" style="font-size: 16px; vertical-align: middle; margin-right: 4px; color: ${zoneColor};">${trendIcon}</span>
@@ -610,7 +605,6 @@ function renderFormWidget() {
         </div>
       </div>
       <div class="training-phase-hint">${hint}</div>
-      ${phasesHTML}
     </div>`;
 }
 
@@ -621,7 +615,8 @@ function openFormInfoModal() {
     `<div class="acwr-info-content">
       <p>${trV3('progress.form.infoBody')}</p>
       <div class="acwr-info-zones">
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (76–100)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('overload')};"></span>${trV3('progress.form.zoneOverload')} (91–100)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (76–90)</div>
         <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} (56–75)</div>
         <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} (39–55)</div>
         <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} (21–38)</div>
@@ -701,8 +696,7 @@ function openACWRInfoModal() {
     { label: 'zoneFatigued', info: 'infoZoneFatigued', color: getZoneColor('fatigued') },
     { label: 'zoneMaintaining', info: 'infoZoneMaintaining', color: getZoneColor('maintaining') },
     { label: 'zoneBuilding', info: 'infoZoneBuilding', color: getZoneColor('building') },
-    { label: 'zonePeak', info: 'infoZonePeak', color: getZoneColor('peak') },
-    { label: 'zoneFormLoss', info: 'infoZoneFormLoss', color: getZoneColor('form_loss') }
+    { label: 'zonePeak', info: 'infoZonePeak', color: getZoneColor('peak') }
   ];
 
   const zonesHTML = zones.map(z => `
