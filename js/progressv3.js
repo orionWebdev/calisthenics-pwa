@@ -296,8 +296,9 @@ function renderV4Overview() {
     </div>
   `).join('');
 
-  // Training Form (prominent) + Readiness (compact)
+  // Training Form (prominent) + Recommendation + Readiness (compact)
   const formHTML = renderFormWidget();
+  const recommendationHTML = renderRecommendationWidget();
   const readinessHTML = renderReadinessWidget();
   const weeklyScoreChartHTML = renderV4WeeklyScoreChartHTML();
 
@@ -313,6 +314,7 @@ function renderV4Overview() {
   return `
     ${renderV4PeriodSelector()}
     ${formHTML}
+    ${recommendationHTML}
     ${readinessHTML}
     <div class="pv4-summary-grid">${cardsHTML}</div>
     ${weeklyScoreChartHTML}
@@ -620,6 +622,66 @@ function openFormInfoModal() {
       </div>
     </div>`
   );
+}
+
+// ─── RECOMMENDATION WIDGET ─────────────────────────────────────
+
+function getIntensityMeta(intensity) {
+  const map = {
+    rest:     { label: trV3('progress.recommendation.intensityRest'),     color: 'var(--zone-exhausted)',  dots: 0 },
+    low:      { label: trV3('progress.recommendation.intensityLow'),      color: 'var(--zone-fatigued)',   dots: 1 },
+    moderate: { label: trV3('progress.recommendation.intensityModerate'), color: 'var(--zone-loaded)',     dots: 2 },
+    high:     { label: trV3('progress.recommendation.intensityHigh'),     color: 'var(--zone-ready)',      dots: 3 }
+  };
+  return map[intensity] || map.moderate;
+}
+
+function renderRecommendationWidget() {
+  if (typeof getTrainingRecommendation !== 'function') return '';
+  if (typeof computeFormScore !== 'function' || typeof getACWR !== 'function') return '';
+
+  const formData = computeFormScore(allSessions, new Date());
+  const readinessData = getACWR(allSessions, new Date());
+
+  // Need both systems to have data
+  if (formData.formScore === null || formData.zone === null ||
+      readinessData.readinessScore === null || readinessData.zone === null) {
+    return `
+      <div class="pv3-card recommendation-widget">
+        <div class="recommendation-header">
+          <span class="material-symbols-rounded recommendation-icon">tips_and_updates</span>
+          <h3 class="pv3-card-title">${trV3('progress.recommendation.title')}</h3>
+        </div>
+        <div class="recommendation-body">
+          <p class="recommendation-text" style="color: var(--text-tertiary);">${trV3('progress.recommendation.noData')}</p>
+        </div>
+      </div>`;
+  }
+
+  const rec = getTrainingRecommendation(formData.zone, readinessData.zone);
+  const meta = getIntensityMeta(rec.intensity);
+  const text = trV3('progress.recommendation.' + rec.key);
+
+  const dotsHTML = [1, 2, 3].map(i =>
+    `<span class="recommendation-dot${i <= meta.dots ? ' active' : ''}" style="${i <= meta.dots ? 'background:' + meta.color : ''}"></span>`
+  ).join('');
+
+  return `
+    <div class="pv3-card recommendation-widget">
+      <div class="recommendation-header">
+        <span class="material-symbols-rounded recommendation-icon" style="color: ${meta.color};">tips_and_updates</span>
+        <h3 class="pv3-card-title">${trV3('progress.recommendation.title')}</h3>
+      </div>
+      <div class="recommendation-body">
+        <p class="recommendation-text">${text}</p>
+      </div>
+      <div class="recommendation-footer">
+        <div class="recommendation-intensity">
+          <div class="recommendation-dots">${dotsHTML}</div>
+          <span class="recommendation-intensity-label" style="color: ${meta.color};">${meta.label}</span>
+        </div>
+      </div>
+    </div>`;
 }
 
 // ─── READINESS WIDGET (compact) ────────────────────────────────

@@ -3105,6 +3105,59 @@ function mapFormZone(score) {
 }
 
 /**
+ * Combines training form zone (long-term) and readiness zone (short-term)
+ * into a concrete training recommendation.
+ * Readiness (acute) takes priority; form phase steers the direction.
+ *
+ * @param {string} formZone   – one of: detrained, base, developing, trained, peak_form, overload
+ * @param {string} readinessZone – one of: overreaching, fatigued, maintaining, building, peak, form_loss
+ * @returns {{ key: string, intensity: string }}
+ */
+function getTrainingRecommendation(formZone, readinessZone) {
+  // --- Overreaching: always rest, regardless of phase ---
+  if (readinessZone === 'overreaching') {
+    return { key: 'overreaching', intensity: 'rest' };
+  }
+
+  // --- Form loss (long inactivity): special case ---
+  if (readinessZone === 'form_loss') {
+    return { key: 'formLoss', intensity: 'moderate' };
+  }
+
+  // --- Fatigued: low intensity, phase adjusts nuance ---
+  if (readinessZone === 'fatigued') {
+    if (formZone === 'overload') return { key: 'fatiguedOverload', intensity: 'low' };
+    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'fatiguedGoodForm', intensity: 'low' };
+    return { key: 'fatiguedDefault', intensity: 'low' };
+  }
+
+  // --- Maintaining: moderate, phase adjusts ---
+  if (readinessZone === 'maintaining') {
+    if (formZone === 'overload') return { key: 'maintainingOverload', intensity: 'low' };
+    if (formZone === 'peak_form') return { key: 'maintainingPeak', intensity: 'moderate' };
+    return { key: 'maintainingDefault', intensity: 'moderate' };
+  }
+
+  // --- Building: ready for normal to high training ---
+  if (readinessZone === 'building') {
+    if (formZone === 'overload') return { key: 'buildingOverload', intensity: 'moderate' };
+    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'buildingGoodForm', intensity: 'high' };
+    return { key: 'buildingDefault', intensity: 'moderate' };
+  }
+
+  // --- Peak: fully recovered, can push ---
+  if (readinessZone === 'peak') {
+    if (formZone === 'overload') return { key: 'peakOverload', intensity: 'moderate' };
+    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'peakGoodForm', intensity: 'high' };
+    if (formZone === 'detrained') return { key: 'peakDetrained', intensity: 'moderate' };
+    return { key: 'peakDefault', intensity: 'high' };
+  }
+
+  // Fallback
+  return { key: 'maintainingDefault', intensity: 'moderate' };
+}
+
+/**
  * Compares today's ACWR with yesterday's to explain why the readiness score changed.
  * @param {Array} sessions
  * @param {Date} referenceDate
