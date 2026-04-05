@@ -1441,6 +1441,76 @@ function renderDashboardTrainingTypesList(sessions, year, month) {
   `;
 }
 
+// ========================================
+// RECOMMENDATION WIDGET (moved from Progress)
+// ========================================
+
+function getIntensityMeta(intensity) {
+  const map = {
+    rest:     { label: tr('progress.recommendation.intensityRest'),     color: 'var(--zone-exhausted)',  dots: 0 },
+    low:      { label: tr('progress.recommendation.intensityLow'),      color: 'var(--zone-fatigued)',   dots: 1 },
+    moderate: { label: tr('progress.recommendation.intensityModerate'), color: 'var(--zone-loaded)',     dots: 2 },
+    high:     { label: tr('progress.recommendation.intensityHigh'),     color: 'var(--zone-ready)',      dots: 3 }
+  };
+  return map[intensity] || map.moderate;
+}
+
+function renderDashboardRecommendation() {
+  const container = document.getElementById('dashboard-recommendation');
+  if (!container) return;
+
+  if (typeof getTrainingRecommendation !== 'function' ||
+      typeof computeFormScore !== 'function' ||
+      typeof getACWR !== 'function' ||
+      !sessionsLoaded) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const formData = computeFormScore(allSessions, new Date());
+  const readinessData = getACWR(allSessions, new Date());
+
+  if (formData.formScore === null || formData.zone === null ||
+      readinessData.readinessScore === null || readinessData.zone === null) {
+    container.innerHTML = `
+      <div class="dashboard-card recommendation-widget">
+        <div class="recommendation-header">
+          <span class="material-symbols-rounded recommendation-icon">tips_and_updates</span>
+          <h3 class="pv3-card-title">${tr('progress.recommendation.title')}</h3>
+        </div>
+        <div class="recommendation-body">
+          <p class="recommendation-text" style="color: var(--text-tertiary);">${tr('progress.recommendation.noData')}</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const rec = getTrainingRecommendation(formData.zone, readinessData.zone);
+  const meta = getIntensityMeta(rec.intensity);
+  const text = tr('progress.recommendation.' + rec.key);
+
+  const dotsHTML = [1, 2, 3].map(i =>
+    `<span class="recommendation-dot${i <= meta.dots ? ' active' : ''}" style="${i <= meta.dots ? 'background:' + meta.color : ''}"></span>`
+  ).join('');
+
+  container.innerHTML = `
+    <div class="dashboard-card recommendation-widget">
+      <div class="recommendation-header">
+        <span class="material-symbols-rounded recommendation-icon" style="color: ${meta.color};">tips_and_updates</span>
+        <h3 class="pv3-card-title">${tr('progress.recommendation.title')}</h3>
+      </div>
+      <div class="recommendation-body">
+        <p class="recommendation-text">${text}</p>
+      </div>
+      <div class="recommendation-footer">
+        <div class="recommendation-intensity">
+          <div class="recommendation-dots">${dotsHTML}</div>
+          <span class="recommendation-intensity-label" style="color: ${meta.color};">${meta.label}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
 async function refreshDashboard() {
   if (dashboardIsLoading) return;
   dashboardIsLoading = true;
@@ -1448,6 +1518,7 @@ async function refreshDashboard() {
   const data = await useDashboardData();
   renderScheduledWorkoutsCard(data);
   renderLogWorkoutCard(data);
+  renderDashboardRecommendation();
   renderQuickStatsWidget(data);
   renderDashboardActivityCalendar(data);
   // Recent sessions removed - now in Progress > Overview

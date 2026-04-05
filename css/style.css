@@ -7663,12 +7663,6 @@ input[type="range"]::-moz-range-progress {
   overflow: hidden;
 }
 
-.readiness-compact-details {
-  margin-top: 8px;
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-}
-
 .readiness-compact-insight {
   margin-top: 4px;
   font-size: 0.8rem;
