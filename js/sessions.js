@@ -1970,12 +1970,12 @@ async function saveCardioSession() {
       createdAt: firebase.firestore.Timestamp.now()
     };
 
-    const savedDoc = await addDoc(sessionsCollection, cardioSession);
+    const savedSessionId = await addDoc(sessionsCollection, cardioSession);
 
     console.log('✅ Cardio session saved');
 
     // Mark pending scheduled entry as completed (Quick Entry support)
-    await markPendingScheduledEntryCompleted(savedDoc.id);
+    await markPendingScheduledEntryCompleted(savedSessionId);
 
     // Close modal FIRST (before feedback/reload)
     closeAddCardioModal();
@@ -1984,7 +1984,7 @@ async function saveCardioSession() {
     if (typeof showRpeFeedbackModal === 'function') {
       const feedbackData = await showRpeFeedbackModal();
       if (feedbackData) {
-        await updateDoc(sessionsCollection, savedDoc.id, feedbackData);
+        await updateDoc(sessionsCollection, savedSessionId, feedbackData);
       }
     }
 
@@ -2436,10 +2436,10 @@ async function saveStrengthSession() {
       createdAt: firebase.firestore.Timestamp.now()
     };
 
-    const savedDoc = await addDoc(sessionsCollection, strengthSession);
+    const savedSessionId = await addDoc(sessionsCollection, strengthSession);
 
     // Mark pending scheduled entry as completed (Quick Entry support)
-    await markPendingScheduledEntryCompleted(savedDoc.id);
+    await markPendingScheduledEntryCompleted(savedSessionId);
 
     closeAddStrengthModal();
 
@@ -2447,7 +2447,7 @@ async function saveStrengthSession() {
     if (typeof showRpeFeedbackModal === 'function') {
       const feedbackData = await showRpeFeedbackModal();
       if (feedbackData) {
-        await updateDoc(sessionsCollection, savedDoc.id, feedbackData);
+        await updateDoc(sessionsCollection, savedSessionId, feedbackData);
       }
     }
     await loadSessions();
@@ -2561,12 +2561,12 @@ async function saveRecoverySession() {
       createdAt: firebase.firestore.Timestamp.now()
     };
 
-    const savedDoc = await addDoc(sessionsCollection, recoverySession);
+    const savedSessionId = await addDoc(sessionsCollection, recoverySession);
 
     console.log('✅ Recovery session saved');
 
     // Mark pending scheduled entry as completed (Quick Entry support)
-    await markPendingScheduledEntryCompleted(savedDoc.id);
+    await markPendingScheduledEntryCompleted(savedSessionId);
 
     closeAddRecoveryModal();
 
@@ -2574,7 +2574,7 @@ async function saveRecoverySession() {
     if (typeof showRpeFeedbackModal === 'function') {
       const feedbackData = await showRpeFeedbackModal();
       if (feedbackData) {
-        await updateDoc(sessionsCollection, savedDoc.id, feedbackData);
+        await updateDoc(sessionsCollection, savedSessionId, feedbackData);
       }
     }
 
@@ -2889,11 +2889,13 @@ function mapZone(score, acwr) {
  * Computes Acute:Chronic Workload Ratio (ports getACWR.ts)
  * @param {Array} sessions
  * @param {Date} referenceDate
- * @returns {{ acuteLoad: number, chronicLoad: number, acwr: number|null, readinessScore: number|null, zone: string|null, daysSinceLastSession: number|null }}
+ * @param {{ applyFatigue?: boolean }} [options]
+ * @returns {{ acuteLoad: number, chronicLoad: number, acwr: number|null, readinessScore: number|null, zone: string|null, daysSinceLastSession: number|null, todayLoad: number, fatiguePenalty: number }}
  */
-function getACWR(sessions, referenceDate) {
+function getACWR(sessions, referenceDate, options) {
+  const applyFatigue = options?.applyFatigue ?? false;
   if (!sessions || !sessions.length) {
-    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
+    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null, todayLoad: 0, fatiguePenalty: 0 };
   }
 
   const ACUTE_ALPHA = 0.35;
@@ -2933,7 +2935,7 @@ function getACWR(sessions, referenceDate) {
   }
 
   if (dailyLoads.size === 0) {
-    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
+    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null, todayLoad: 0, fatiguePenalty: 0 };
   }
 
   // Sort keys to find earliest session and compute day span
@@ -2943,9 +2945,16 @@ function getACWR(sessions, referenceDate) {
   const earliestDate = new Date(sortedKeys[0] + 'T00:00:00');
   const daySpan = Math.floor((refDay.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
 
+  // Debug: log today's sessions
+  const todayDbgKey = toLocalDateKey(refDay);
+  const todayDbgLoad = dailyLoads.get(todayDbgKey);
+  if (todayDbgLoad) {
+    console.log('[READINESS DEBUG] today total load:', { todayKey: todayDbgKey, todayLoad: Math.round(todayDbgLoad * 100) / 100, totalDays: dailyLoads.size });
+  }
+
   // Need at least 14 days of history
   if (daySpan < 14) {
-    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null };
+    return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null, todayLoad: 0, fatiguePenalty: 0 };
   }
 
   // daysSinceLastSession (for UI/insights only, not score manipulation)
@@ -2980,15 +2989,53 @@ function getACWR(sessions, referenceDate) {
 
   // When chronic load is negligible, there's no meaningful baseline for a ratio
   if (chronicEMA < 0.01) {
-    return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr: null, readinessScore: null, zone: null, daysSinceLastSession };
+    return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr: null, readinessScore: null, zone: null, daysSinceLastSession, todayLoad: 0, fatiguePenalty: 0 };
   }
 
   const acwr = Math.round((acuteEMA / chronicEMA) * 100) / 100;
 
-  const readinessScore = Math.round(mapReadiness(acwr));
+  const rawReadinessScore = Math.round(mapReadiness(acwr));
+
+  // Acute fatigue modifier: reduce readiness on days with training load.
+  // Uses sqrt curve for diminishing returns so that:
+  //   1 moderate session (~1x chronic) → ~10pt penalty
+  //   1 hard session   (~2x chronic)  → ~14pt penalty
+  //   2 sessions       (~3x chronic)  → ~17pt penalty
+  //   extreme day      (~6x chronic)  → ~24pt penalty
+  const todayKey = toLocalDateKey(refDay);
+  const todayLoad = dailyLoads.get(todayKey) || 0;
+  let fatiguePenalty = 0;
+
+  if (applyFatigue && todayLoad > 0 && chronicEMA > 0.01) {
+    const loadRatio = todayLoad / chronicEMA;
+    fatiguePenalty = Math.min(35, Math.round(10 * Math.sqrt(loadRatio)));
+    console.log('[READINESS DEBUG] fatigue calc:', {
+      todayLoad: Math.round(todayLoad * 100) / 100,
+      chronicEMA: Math.round(chronicEMA * 100) / 100,
+      loadRatio: Math.round(loadRatio * 100) / 100,
+      sqrtLoadRatio: Math.round(Math.sqrt(loadRatio) * 100) / 100,
+      rawPenalty: Math.round(10 * Math.sqrt(loadRatio)),
+      fatiguePenalty,
+    });
+  }
+
+  const readinessScore = Math.max(5, rawReadinessScore - fatiguePenalty);
   const zone = mapZone(readinessScore, acwr);
 
-  return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession };
+  console.log('[READINESS DEBUG] final:', {
+    acuteEMA: Math.round(acuteEMA * 100) / 100,
+    chronicEMA: Math.round(chronicEMA * 100) / 100,
+    acwr,
+    rawReadinessScore,
+    fatiguePenalty,
+    readinessScore,
+    zone,
+    todayLoad: Math.round(todayLoad * 100) / 100,
+    todayKey,
+    applyFatigue,
+  });
+
+  return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession, todayLoad, fatiguePenalty };
 }
 
 /**
@@ -3131,8 +3178,40 @@ function computeFormScore(sessions, referenceDate) {
     fitnessVsPeak = Math.round(Math.min(15, peakRatio * 15));
   }
 
+  // ── Component 5: Session Impact Bonus (0-8) ──
+  // Immediate boost when training was logged today. Uses sqrt curve so
+  // multiple sessions or longer workouts keep increasing the bonus:
+  //   1 moderate session (~1x avg) → ~4pt bonus
+  //   1 hard session   (~2x avg)  → ~6pt bonus
+  //   2 sessions       (~3x avg)  → ~7pt bonus
+  //   extreme day      (~5x avg)  → ~8pt bonus (cap)
+  const todayKey = toLocalDateKey(refDay);
+  const todayLoad = dailyLoads.get(todayKey) || 0;
+  let sessionBonus = 0;
+  if (todayLoad > 0 && recent14Load > 0) {
+    const avgDailyLoad = recent14Load / 14;
+    sessionBonus = avgDailyLoad > 0
+      ? Math.min(8, Math.round(4 * Math.sqrt(todayLoad / avgDailyLoad)))
+      : 3;
+  }
+
   // ── Combined Form Score (0-100) ──
-  let formScore = Math.max(0, Math.min(100, consistency + loadLevel + recency + fitnessVsPeak));
+  let formScore = Math.max(0, Math.min(100, consistency + loadLevel + recency + fitnessVsPeak + sessionBonus));
+
+  console.log('[FORM DEBUG]', {
+    consistency, loadLevel, recency, fitnessVsPeak, sessionBonus,
+    formScore,
+    todayLoad: Math.round(todayLoad * 100) / 100,
+    avgDailyLoad: recent14Load > 0 ? Math.round((recent14Load / 14) * 100) / 100 : 0,
+    loadRatio: recent14Load > 0 && (recent14Load / 14) > 0 ? Math.round((todayLoad / (recent14Load / 14)) * 100) / 100 : 'N/A',
+    recent14Load: Math.round(recent14Load * 100) / 100,
+    prior14Load: Math.round(prior14Load * 100) / 100,
+    progressionRatio: prior14Load > 0 ? Math.round((recent14Load / prior14Load) * 100) / 100 : 'N/A',
+    trainingDays28,
+    daysSinceLastSession,
+    fitnessEMA: Math.round(fitnessEMA * 100) / 100,
+    peakFitness: Math.round(peakFitness * 100) / 100,
+  });
 
   // ── Trend ──
   let trend = 'stable';
