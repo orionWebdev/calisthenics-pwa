@@ -365,27 +365,17 @@ function getPhaseFromZone(zone) {
   };
 }
 
-function getReadinessInsight({ acwr, readinessScore, acuteLoad, chronicLoad, daysSinceLastSession, todayLoad, fatiguePenalty }) {
-  if (acwr === null || readinessScore === null) {
-    return trV3('progress.readiness.insightNoData');
-  }
-  // Prioritize "just trained" feedback when fatigue modifier is active
-  if (todayLoad > 0 && fatiguePenalty > 0) {
-    return trV3('progress.readiness.insightJustTrained');
-  }
-  if (daysSinceLastSession !== null && daysSinceLastSession >= 5) {
-    return trV3('progress.readiness.insightNoRecent');
-  }
-  if (acwr < 0.7) {
-    return trV3('progress.readiness.insightLowAcwr');
-  }
-  if (acwr <= 1.1) {
-    return trV3('progress.readiness.insightBalanced');
-  }
-  if (acwr <= 1.4) {
-    return trV3('progress.readiness.insightHighLoad');
-  }
-  return trV3('progress.readiness.insightOverreaching');
+function getReadinessInsight(zone) {
+  if (!zone) return trV3('progress.readiness.insightNoData');
+  const map = {
+    overreaching: 'insightZoneOverreaching',
+    fatigued:     'insightZoneFatigued',
+    maintaining:  'insightZoneMaintaining',
+    building:     'insightZoneBuilding',
+    peak:         'insightZonePeak',
+    form_loss:    'insightZoneFormLoss'
+  };
+  return trV3('progress.readiness.' + (map[zone] || map.maintaining));
 }
 
 function getScoreChangeInsight(changeData) {
@@ -649,11 +639,7 @@ function renderReadinessWidget() {
   const phase = getPhaseFromZone(data.zone);
   const zoneColor = getZoneColor(data.zone);
   const zoneBg = getZoneBg(data.zone);
-  const insight = getReadinessInsight(data);
-
-  const acuteRounded = Math.round(data.acuteLoad);
-  const chronicRounded = Math.round(data.chronicLoad);
-  const ratioDisplay = data.acwr !== null ? data.acwr.toFixed(2) : '–';
+  const insight = getReadinessInsight(data.zone);
 
   // Delta: fatigue-adjusted today vs raw yesterday
   const yesterdayData = getACWR(allSessions, (() => { const d = new Date(); d.setDate(d.getDate() - 1); return d; })());
@@ -680,9 +666,6 @@ function renderReadinessWidget() {
         <div class="readiness-compact-bar-track">
           <div class="acwr-bar-fill" style="width: ${data.readinessScore}%; background: ${zoneColor};"></div>
         </div>
-      </div>
-      <div class="readiness-compact-details">
-        <span>Acute ${acuteRounded} · Chronic ${chronicRounded} · Ratio ${ratioDisplay}</span>
       </div>
       <div class="readiness-compact-insight">${insight}</div>
     </div>`;

@@ -3,7 +3,7 @@
 // Pure utility – no Firestore access
 // ========================================
 
-import { calculateSessionLoad, UserProfile } from './calculateSessionLoad';
+import { calculateSessionLoad, UserProfile, isRecoverySession } from './calculateSessionLoad';
 import { SessionWithDate } from './getWeeklyRawLoad';
 
 // ---------- Types ----------
@@ -99,6 +99,7 @@ function mapZone(score: number, acwr?: number): ACWRZone {
 
 const ACUTE_ALPHA = 0.35;
 const CHRONIC_ALPHA = 0.10;
+const RECOVERY_BOOST_FACTOR = 0.05;
 
 // ---------- Helpers ----------
 
@@ -125,12 +126,17 @@ export function getACWR(
 
   // Build daily load map (aggregate same-day sessions, skip recovery)
   const dailyLoads = new Map<string, number>();
+  const recoveryDays = new Set<string>();
 
   for (const s of sessions) {
-    if (s.type !== 'strength' && s.type !== 'cardio') continue;
-
     const sessionDate = parseSessionDate(s.date);
     if (!sessionDate || sessionDate > end) continue;
+
+    if (isRecoverySession(s)) {
+      recoveryDays.add(toLocalDateKey(sessionDate));
+    }
+
+    if (s.type !== 'strength' && s.type !== 'cardio') continue;
 
     const { rawLoad } = calculateSessionLoad(s, userProfile);
     const key = toLocalDateKey(sessionDate);
@@ -173,6 +179,11 @@ export function getACWR(
 
     acuteEMA = ACUTE_ALPHA * dailyLoad + (1 - ACUTE_ALPHA) * acuteEMA;
     chronicEMA = CHRONIC_ALPHA * dailyLoad + (1 - CHRONIC_ALPHA) * chronicEMA;
+
+    // Recovery Boost: aktive Erholung beschleunigt Acute-Abbau
+    if (recoveryDays.has(dateKey)) {
+      acuteEMA *= (1 - RECOVERY_BOOST_FACTOR);
+    }
 
     console.log("ACWR DAILY STEP:", { date: dateKey, dailyLoad, acuteEMA, chronicEMA });
     cursor.setDate(cursor.getDate() + 1);

@@ -502,6 +502,33 @@ async function saveStrengthSessionEdit(event, sessionId) {
 }
 
 /**
+ * Build RPE button row HTML for edit modals
+ */
+function buildRpeEditRow(fieldId, label, currentValue) {
+  const buttons = [1,2,3,4,5].map(n =>
+    `<button type="button" class="difficulty-btn${currentValue === n ? ' active' : ''}" data-value="${n}" onclick="selectEditRpeValue('${fieldId}', ${n})">${n}</button>`
+  ).join('');
+  return `
+    <div class="session-edit-field">
+      <label>${label}</label>
+      <div class="rpe-btn-row" id="${fieldId}-row">${buttons}</div>
+      <input type="hidden" id="${fieldId}" value="${currentValue || ''}" />
+    </div>
+  `;
+}
+
+window.selectEditRpeValue = function(fieldId, value) {
+  const input = document.getElementById(fieldId);
+  if (input) input.value = value;
+  const row = document.getElementById(fieldId + '-row');
+  if (row) {
+    row.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.value) === value);
+    });
+  }
+};
+
+/**
  * Open edit modal for cardio session
  */
 function openEditCardioSessionModal(sessionId) {
@@ -514,10 +541,15 @@ function openEditCardioSessionModal(sessionId) {
   const durationMinutes = session.duration || Math.round((session.durationSec || session.durationSeconds || 0) / 60);
   const distanceKm = session.distanceKm || '';
   const notes = session.notes || '';
+  const sessionName = session.name || '';
 
   const content = `
     <div class="session-edit-modal">
       <form id="edit-cardio-form" onsubmit="saveCardioSessionEdit(event, '${sessionId}')">
+        <div class="session-edit-field">
+          <label for="edit-cardio-name">Name (${trEdit('common.optional')})</label>
+          <input type="text" id="edit-cardio-name" value="${sessionName}" placeholder="z.B. Morgenlauf" />
+        </div>
         <div class="session-edit-field">
           <label for="edit-cardio-duration">${trEdit('common.duration')} (${trEdit('format.duration.minutes', { minutes: '' }).replace('min', 'Min')})</label>
           <input type="number" id="edit-cardio-duration" value="${durationMinutes}" min="1" max="600" required />
@@ -530,6 +562,9 @@ function openEditCardioSessionModal(sessionId) {
           <label for="edit-cardio-notes">${trEdit('common.notes')} (${trEdit('common.optional')})</label>
           <textarea id="edit-cardio-notes" rows="3" placeholder="${trEdit('common.notes')}">${notes}</textarea>
         </div>
+        ${buildRpeEditRow('edit-cardio-energy', 'Energie vorher (1-5)', session.preWorkoutEnergy)}
+        ${buildRpeEditRow('edit-cardio-feeling', 'Gefühl danach (1-5)', session.postWorkoutFeeling)}
+        ${buildRpeEditRow('edit-cardio-rpe', 'RPE - Belastung (1-5)', session.rpe)}
         <div class="session-edit-actions">
           <button type="submit" class="btn-primary">
             <span class="material-symbols-rounded">save</span>
@@ -551,13 +586,21 @@ function openEditCardioSessionModal(sessionId) {
 async function saveCardioSessionEdit(event, sessionId) {
   event.preventDefault();
 
+  const nameInput = document.getElementById('edit-cardio-name');
   const durationInput = document.getElementById('edit-cardio-duration');
   const distanceInput = document.getElementById('edit-cardio-distance');
   const notesInput = document.getElementById('edit-cardio-notes');
+  const energyInput = document.getElementById('edit-cardio-energy');
+  const feelingInput = document.getElementById('edit-cardio-feeling');
+  const rpeInput = document.getElementById('edit-cardio-rpe');
 
+  const sessionName = nameInput?.value?.trim() || '';
   const duration = parseInt(durationInput?.value || '0', 10);
   const distanceKm = parseFloat(distanceInput?.value || '0') || null;
   const notes = notesInput?.value?.trim() || '';
+  const preWorkoutEnergy = parseInt(energyInput?.value) || null;
+  const postWorkoutFeeling = parseInt(feelingInput?.value) || null;
+  const rpe = parseInt(rpeInput?.value) || null;
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
@@ -570,7 +613,11 @@ async function saveCardioSessionEdit(event, sessionId) {
     const updateData = {
       duration: duration,
       durationSec: duration * 60,
-      notes: notes
+      name: sessionName || null,
+      notes: notes,
+      preWorkoutEnergy: preWorkoutEnergy,
+      postWorkoutFeeling: postWorkoutFeeling,
+      rpe: rpe
     };
 
     if (distanceKm !== null && distanceKm > 0) {
@@ -619,10 +666,24 @@ function openEditRecoverySessionModal(sessionId) {
 
   const durationMinutes = session.duration || Math.round((session.durationSec || session.durationSeconds || 0) / 60);
   const notes = session.notes || '';
+  const sessionName = session.name || '';
+  const currentActivityType = session.activityType || 'yoga';
+
+  const recoveryOptions = Object.entries(RECOVERY_TYPES || {}).map(([key, val]) =>
+    `<option value="${key}"${key === currentActivityType ? ' selected' : ''}>${val.name}</option>`
+  ).join('');
 
   const content = `
     <div class="session-edit-modal">
       <form id="edit-recovery-form" onsubmit="saveRecoverySessionEdit(event, '${sessionId}')">
+        <div class="session-edit-field">
+          <label for="edit-recovery-activity">Aktivität</label>
+          <select id="edit-recovery-activity">${recoveryOptions}</select>
+        </div>
+        <div class="session-edit-field">
+          <label for="edit-recovery-name">Name (${trEdit('common.optional')})</label>
+          <input type="text" id="edit-recovery-name" value="${sessionName}" placeholder="z.B. Morgen-Yoga" />
+        </div>
         <div class="session-edit-field">
           <label for="edit-recovery-duration">${trEdit('common.duration')} (${trEdit('format.duration.minutes', { minutes: '' }).replace('min', 'Min')})</label>
           <input type="number" id="edit-recovery-duration" value="${durationMinutes}" min="1" max="600" required />
@@ -631,6 +692,9 @@ function openEditRecoverySessionModal(sessionId) {
           <label for="edit-recovery-notes">${trEdit('common.notes')} (${trEdit('common.optional')})</label>
           <textarea id="edit-recovery-notes" rows="3" placeholder="${trEdit('common.notes')}">${notes}</textarea>
         </div>
+        ${buildRpeEditRow('edit-recovery-energy', 'Energie vorher (1-5)', session.preWorkoutEnergy)}
+        ${buildRpeEditRow('edit-recovery-feeling', 'Gefühl danach (1-5)', session.postWorkoutFeeling)}
+        ${buildRpeEditRow('edit-recovery-rpe', 'RPE - Belastung (1-5)', session.rpe)}
         <div class="session-edit-actions">
           <button type="submit" class="btn-primary">
             <span class="material-symbols-rounded">save</span>
@@ -652,11 +716,21 @@ function openEditRecoverySessionModal(sessionId) {
 async function saveRecoverySessionEdit(event, sessionId) {
   event.preventDefault();
 
+  const activityInput = document.getElementById('edit-recovery-activity');
+  const nameInput = document.getElementById('edit-recovery-name');
   const durationInput = document.getElementById('edit-recovery-duration');
   const notesInput = document.getElementById('edit-recovery-notes');
+  const energyInput = document.getElementById('edit-recovery-energy');
+  const feelingInput = document.getElementById('edit-recovery-feeling');
+  const rpeInput = document.getElementById('edit-recovery-rpe');
 
+  const activityType = activityInput?.value || 'yoga';
+  const sessionName = nameInput?.value?.trim() || '';
   const duration = parseInt(durationInput?.value || '0', 10);
   const notes = notesInput?.value?.trim() || '';
+  const preWorkoutEnergy = parseInt(energyInput?.value) || null;
+  const postWorkoutFeeling = parseInt(feelingInput?.value) || null;
+  const rpe = parseInt(rpeInput?.value) || null;
 
   if (!duration || duration < 1) {
     if (typeof showEdgeFeedback === 'function') {
@@ -669,7 +743,12 @@ async function saveRecoverySessionEdit(event, sessionId) {
     const updateData = {
       duration: duration,
       durationSec: duration * 60,
-      notes: notes
+      activityType: activityType,
+      name: sessionName || null,
+      notes: notes,
+      preWorkoutEnergy: preWorkoutEnergy,
+      postWorkoutFeeling: postWorkoutFeeling,
+      rpe: rpe
     };
 
     await updateDoc(sessionsCollection, sessionId, updateData);

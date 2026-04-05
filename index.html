@@ -223,6 +223,11 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
+      <!-- Today's Recommendation -->
+      <div id="dashboard-recommendation" class="mb-4">
+        <!-- Wird von JavaScript gefüllt -->
+      </div>
+
       <!-- Activity Calendar Widget (Expanded with Month Navigation) -->
       <div id="dashboard-activity-calendar" class="dashboard-card mb-4">
         <!-- Wird von JavaScript gefüllt -->
@@ -1196,6 +1201,17 @@
           </select>
         </div>
 
+        <!-- Session Name (optional) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Name <span class="text-gray-400">(optional)</span></label>
+          <input
+            type="text"
+            id="cardio-name"
+            placeholder="z.B. Morgenlauf, Intervalltraining"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
         <!-- Duration -->
         <div>
           <label class="block text-sm font-medium mb-2">Dauer (Minuten) *</label>
@@ -1465,6 +1481,31 @@
           <input
             type="date"
             id="recovery-date"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
+
+        <!-- Activity Type -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Aktivität *</label>
+          <select id="recovery-activity-type" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+            <option value="yoga">🧘 Yoga</option>
+            <option value="stretching">🤸 Stretching</option>
+            <option value="foam_roll">💆 Foam Rolling</option>
+            <option value="sauna">♨️ Sauna</option>
+            <option value="walk">🚶 Spaziergang</option>
+            <option value="meditation">🧠 Meditation</option>
+            <option value="other">💪 Sonstiges</option>
+          </select>
+        </div>
+
+        <!-- Session Name (optional) -->
+        <div>
+          <label class="block text-sm font-medium mb-2">Name <span class="text-gray-400">(optional)</span></label>
+          <input
+            type="text"
+            id="recovery-name"
+            placeholder="z.B. Morgen-Yoga, Dehnroutine"
             class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>

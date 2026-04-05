@@ -79,6 +79,17 @@ const ACTIVITY_TYPES = {
   other: { name: 'Sonstiges', icon: 'fitness_center', color: '#f59e0b' }
 };
 
+// Recovery Types Config
+const RECOVERY_TYPES = {
+  yoga: { name: 'Yoga', icon: 'self_improvement', color: '#22c55e' },
+  stretching: { name: 'Stretching', icon: 'accessibility_new', color: '#22c55e' },
+  foam_roll: { name: 'Foam Rolling', icon: 'sports_gymnastics', color: '#22c55e' },
+  sauna: { name: 'Sauna', icon: 'hot_tub', color: '#22c55e' },
+  walk: { name: 'Spaziergang', icon: 'directions_walk', color: '#22c55e' },
+  meditation: { name: 'Meditation', icon: 'mindfulness', color: '#22c55e' },
+  other: { name: 'Sonstiges', icon: 'self_improvement', color: '#22c55e' }
+};
+
 function getSessionDurationMinutesSafe(session) {
   const sec = Number(session?.durationSec || session?.durationSeconds || 0);
   if (Number.isFinite(sec) && sec > 0) return Math.round(sec / 60);
@@ -1826,6 +1837,7 @@ function openAddCardioModal() {
   const today = new Date().toISOString().split('T')[0];
   const dateInput = document.getElementById('cardio-date');
   const activityInput = document.getElementById('cardio-activity-type');
+  const nameInput = document.getElementById('cardio-name');
   const durationInput = document.getElementById('cardio-duration');
   const distanceInput = document.getElementById('cardio-distance');
   const paceDisplay = document.getElementById('cardio-computed-pace');
@@ -1833,6 +1845,7 @@ function openAddCardioModal() {
 
   if (dateInput) dateInput.value = today;
   if (activityInput) activityInput.value = 'run';
+  if (nameInput) nameInput.value = '';
   if (durationInput) durationInput.value = '';
   if (distanceInput) distanceInput.value = '';
   if (paceDisplay) {
@@ -1869,6 +1882,7 @@ function closeAddCardioModal() {
   setTimeout(() => {
     const dateInput = document.getElementById('cardio-date');
     const activityInput = document.getElementById('cardio-activity-type');
+    const nameInput = document.getElementById('cardio-name');
     const durationInput = document.getElementById('cardio-duration');
     const distanceInput = document.getElementById('cardio-distance');
     const paceDisplay = document.getElementById('cardio-computed-pace');
@@ -1876,6 +1890,7 @@ function closeAddCardioModal() {
 
     if (dateInput) dateInput.value = '';
     if (activityInput) activityInput.value = 'run';
+    if (nameInput) nameInput.value = '';
     if (durationInput) durationInput.value = '';
     if (distanceInput) distanceInput.value = '';
     if (paceDisplay) {
@@ -1915,6 +1930,7 @@ async function saveCardioSession() {
   const dateInput = document.getElementById('cardio-date').value;
   const validDate = getValidDateStringForCardio(dateInput);
   const activityType = document.getElementById('cardio-activity-type').value;
+  const sessionName = document.getElementById('cardio-name').value.trim();
   const duration = parseFloat(document.getElementById('cardio-duration').value);
   const distance = parseFloat(document.getElementById('cardio-distance').value);
   const notes = document.getElementById('cardio-notes').value.trim();
@@ -1946,6 +1962,7 @@ async function saveCardioSession() {
       type: 'cardio',
       date: firebase.firestore.Timestamp.fromDate(selectedDate),
       activityType,
+      name: sessionName || null,
       duration,
       distanceKm: distance || null,
       pace: pace,
@@ -2464,12 +2481,16 @@ function openAddRecoveryModal(dateStr = null) {
 
   const today = new Date().toISOString().split('T')[0];
   const dateInput = document.getElementById('recovery-date');
+  const activityInput = document.getElementById('recovery-activity-type');
+  const nameInput = document.getElementById('recovery-name');
   const durationInput = document.getElementById('recovery-duration');
   const notesInput = document.getElementById('recovery-notes');
 
   if (dateInput) {
     dateInput.value = dateStr || today;
   }
+  if (activityInput) activityInput.value = 'yoga';
+  if (nameInput) nameInput.value = '';
   if (durationInput) durationInput.value = '';
   if (notesInput) notesInput.value = '';
 
@@ -2490,10 +2511,14 @@ function closeAddRecoveryModal() {
 
   setTimeout(() => {
     const dateInput = document.getElementById('recovery-date');
+    const activityInput = document.getElementById('recovery-activity-type');
+    const nameInput = document.getElementById('recovery-name');
     const durationInput = document.getElementById('recovery-duration');
     const notesInput = document.getElementById('recovery-notes');
 
     if (dateInput) dateInput.value = '';
+    if (activityInput) activityInput.value = 'yoga';
+    if (nameInput) nameInput.value = '';
     if (durationInput) durationInput.value = '';
     if (notesInput) notesInput.value = '';
   }, 300);
@@ -2502,6 +2527,8 @@ function closeAddRecoveryModal() {
 async function saveRecoverySession() {
   const dateInput = document.getElementById('recovery-date').value;
   const validDate = getValidDateStringForCardio(dateInput);
+  const activityType = document.getElementById('recovery-activity-type').value;
+  const sessionName = document.getElementById('recovery-name').value.trim();
   const duration = parseFloat(document.getElementById('recovery-duration').value);
   const notes = document.getElementById('recovery-notes').value.trim();
 
@@ -2527,6 +2554,8 @@ async function saveRecoverySession() {
     const recoverySession = {
       type: 'recovery',
       date: firebase.firestore.Timestamp.fromDate(selectedDate),
+      activityType,
+      name: sessionName || null,
       duration,
       notes: notes || null,
       createdAt: firebase.firestore.Timestamp.now()
@@ -2704,6 +2733,23 @@ function calculateSessionLoadValue(session) {
   return { rawLoad: 0, type };
 }
 
+// ---------- Recovery Detection ----------
+
+const RECOVERY_MAX_RPE = 2;
+const RECOVERY_MAX_DURATION = 60; // minutes
+
+function isRecoverySession(session) {
+  const rpe = session.rpe ?? 3;
+  const duration = session.duration ?? 0;
+
+  if (rpe > RECOVERY_MAX_RPE) return false;
+  if (duration <= 0 || duration > RECOVERY_MAX_DURATION) return false;
+
+  return session.type === 'cardio'
+      || session.type === 'recovery'
+      || session.type === 'strength';
+}
+
 /**
  * Computes weekly raw load for a 7-day window ending at referenceDate
  * @param {Date} referenceDate
@@ -2854,6 +2900,7 @@ function getACWR(sessions, referenceDate, options) {
 
   const ACUTE_ALPHA = 0.35;
   const CHRONIC_ALPHA = 0.10;
+  const RECOVERY_BOOST_FACTOR = 0.05;
 
   // Use local date keys (YYYY-MM-DD) to avoid UTC/local timezone mismatch
   function toLocalDateKey(d) {
@@ -2868,16 +2915,21 @@ function getACWR(sessions, referenceDate, options) {
 
   // Build daily load map (aggregate same-day sessions, skip recovery)
   const dailyLoads = new Map();
+  const recoveryDays = new Set();
 
   for (const s of sessions) {
-    if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') continue;
-
     const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
     if (isNaN(sessionDate.getTime())) continue;
     if (sessionDate > end) continue;
 
+    if (isRecoverySession(s)) {
+      recoveryDays.add(toLocalDateKey(sessionDate));
+    }
+
+    if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') continue;
+
     const { rawLoad } = calculateSessionLoadValue(s);
-    if (rawLoad <= 0) continue; // Skip zero-load sessions to avoid phantom data
+    if (rawLoad <= 0) continue;
     const key = toLocalDateKey(sessionDate);
     dailyLoads.set(key, (dailyLoads.get(key) ?? 0) + rawLoad);
   }
@@ -2926,6 +2978,11 @@ function getACWR(sessions, referenceDate, options) {
 
     acuteEMA = ACUTE_ALPHA * dailyLoad + (1 - ACUTE_ALPHA) * acuteEMA;
     chronicEMA = CHRONIC_ALPHA * dailyLoad + (1 - CHRONIC_ALPHA) * chronicEMA;
+
+    // Recovery Boost: aktive Erholung beschleunigt Acute-Abbau
+    if (recoveryDays.has(dateKey)) {
+      acuteEMA *= (1 - RECOVERY_BOOST_FACTOR);
+    }
 
     cursor.setDate(cursor.getDate() + 1);
   }
@@ -3184,6 +3241,59 @@ function mapFormZone(score) {
 }
 
 /**
+ * Combines training form zone (long-term) and readiness zone (short-term)
+ * into a concrete training recommendation.
+ * Readiness (acute) takes priority; form phase steers the direction.
+ *
+ * @param {string} formZone   – one of: detrained, base, developing, trained, peak_form, overload
+ * @param {string} readinessZone – one of: overreaching, fatigued, maintaining, building, peak, form_loss
+ * @returns {{ key: string, intensity: string }}
+ */
+function getTrainingRecommendation(formZone, readinessZone) {
+  // --- Overreaching: always rest, regardless of phase ---
+  if (readinessZone === 'overreaching') {
+    return { key: 'overreaching', intensity: 'rest' };
+  }
+
+  // --- Form loss (long inactivity): special case ---
+  if (readinessZone === 'form_loss') {
+    return { key: 'formLoss', intensity: 'moderate' };
+  }
+
+  // --- Fatigued: low intensity, phase adjusts nuance ---
+  if (readinessZone === 'fatigued') {
+    if (formZone === 'overload') return { key: 'fatiguedOverload', intensity: 'low' };
+    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'fatiguedGoodForm', intensity: 'low' };
+    return { key: 'fatiguedDefault', intensity: 'low' };
+  }
+
+  // --- Maintaining: moderate, phase adjusts ---
+  if (readinessZone === 'maintaining') {
+    if (formZone === 'overload') return { key: 'maintainingOverload', intensity: 'low' };
+    if (formZone === 'peak_form') return { key: 'maintainingPeak', intensity: 'moderate' };
+    return { key: 'maintainingDefault', intensity: 'moderate' };
+  }
+
+  // --- Building: ready for normal to high training ---
+  if (readinessZone === 'building') {
+    if (formZone === 'overload') return { key: 'buildingOverload', intensity: 'moderate' };
+    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'buildingGoodForm', intensity: 'high' };
+    return { key: 'buildingDefault', intensity: 'moderate' };
+  }
+
+  // --- Peak: fully recovered, can push ---
+  if (readinessZone === 'peak') {
+    if (formZone === 'overload') return { key: 'peakOverload', intensity: 'moderate' };
+    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'peakGoodForm', intensity: 'high' };
+    if (formZone === 'detrained') return { key: 'peakDetrained', intensity: 'moderate' };
+    return { key: 'peakDefault', intensity: 'high' };
+  }
+
+  // Fallback
+  return { key: 'maintainingDefault', intensity: 'moderate' };
+}
+
+/**
  * Compares today's ACWR with yesterday's to explain why the readiness score changed.
  * @param {Array} sessions
  * @param {Date} referenceDate
@@ -3357,6 +3467,7 @@ window.formatDateToYYYYMMDD = formatDateToYYYYMMDD;
 // New period-based aggregation functions
 window.PERIOD_CONFIG = PERIOD_CONFIG;
 window.ACTIVITY_TYPES = ACTIVITY_TYPES;
+window.RECOVERY_TYPES = RECOVERY_TYPES;
 window.aggregateCardioByPeriod = aggregateCardioByPeriod;
 window.getAvailableEnduranceSports = getAvailableEnduranceSports;
 window.aggregateStrengthByPeriod = aggregateStrengthByPeriod;

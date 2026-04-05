@@ -7552,6 +7552,69 @@ input[type="range"]::-moz-range-progress {
   display: inline-block;
 }
 
+/* ==================== RECOMMENDATION WIDGET ==================== */
+
+.recommendation-widget {
+  padding: var(--ui-card-padding, 1.25rem);
+}
+
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.recommendation-icon {
+  font-size: 20px;
+}
+
+.recommendation-body {
+  margin-bottom: 12px;
+}
+
+.recommendation-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.recommendation-footer {
+  display: flex;
+  align-items: center;
+}
+
+.recommendation-intensity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recommendation-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.recommendation-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-surface-active, rgba(255,255,255,0.08));
+  transition: background 0.2s ease;
+}
+
+.recommendation-dot.active {
+  box-shadow: 0 0 4px rgba(255,255,255,0.1);
+}
+
+.recommendation-intensity-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* ==================== READINESS COMPACT WIDGET ==================== */
 
 .readiness-compact {
@@ -7598,12 +7661,6 @@ input[type="range"]::-moz-range-progress {
   border-radius: 3px;
   background: var(--bg-surface-active);
   overflow: hidden;
-}
-
-.readiness-compact-details {
-  margin-top: 8px;
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
 }
 
 .readiness-compact-insight {

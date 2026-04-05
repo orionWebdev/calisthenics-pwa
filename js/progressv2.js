@@ -481,10 +481,10 @@ function getCategoryColorValue(type) {
 
 function getSessionTitle(session) {
   if (session.type === 'cardio') {
-    return ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio');
+    return session.name || ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio');
   }
   if (session.type === 'recovery') {
-    return trProgress('common.recovery');
+    return session.name || RECOVERY_TYPES?.[session.activityType]?.name || trProgress('common.recovery');
   }
   return session.planName || trProgress('common.strength');
 }
@@ -494,7 +494,7 @@ function getSessionIcon(session) {
     return ACTIVITY_TYPES[session.activityType]?.icon || 'directions_run';
   }
   if (session.type === 'recovery') {
-    return 'self_improvement';
+    return RECOVERY_TYPES?.[session.activityType]?.icon || 'self_improvement';
   }
   return 'fitness_center';
 }
@@ -683,12 +683,52 @@ function viewWorkoutDetailsFromSession(sessionId) {
   }
 }
 
+function renderRpeFeedbackSection(session) {
+  const hasRpe = session.rpe || session.preWorkoutEnergy || session.postWorkoutFeeling;
+  if (!hasRpe) return '';
+
+  const rpeLabels = { 1: 'Sehr leicht', 2: 'Leicht', 3: 'Mittel', 4: 'Schwer', 5: 'Sehr schwer' };
+  const energyLabels = { 1: 'Sehr niedrig', 2: 'Niedrig', 3: 'Mittel', 4: 'Hoch', 5: 'Sehr hoch' };
+  const feelingLabels = { 1: 'Sehr schlecht', 2: 'Schlecht', 3: 'OK', 4: 'Gut', 5: 'Sehr gut' };
+
+  let html = '<div class="workout-exercises"><h4 class="workout-section-title">Feedback</h4><div class="workout-stats-grid">';
+
+  if (session.preWorkoutEnergy) {
+    html += `
+      <div class="workout-stat">
+        <span class="material-symbols-rounded">bolt</span>
+        <div class="workout-stat-value">${session.preWorkoutEnergy}/5</div>
+        <div class="workout-stat-label">Energie vorher</div>
+      </div>`;
+  }
+  if (session.postWorkoutFeeling) {
+    html += `
+      <div class="workout-stat">
+        <span class="material-symbols-rounded">mood</span>
+        <div class="workout-stat-value">${session.postWorkoutFeeling}/5</div>
+        <div class="workout-stat-label">Gefühl danach</div>
+      </div>`;
+  }
+  if (session.rpe) {
+    html += `
+      <div class="workout-stat">
+        <span class="material-symbols-rounded">local_fire_department</span>
+        <div class="workout-stat-value">${session.rpe}/5</div>
+        <div class="workout-stat-label">RPE (${rpeLabels[session.rpe] || ''})</div>
+      </div>`;
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
 function openCardioDetailModal(session) {
   const date = getSessionDate(session);
   const duration = formatSessionDurationText(session);
   const distance = session.distanceKm ? trProgress('format.distanceKm', { distance: session.distanceKm }) : trProgress('format.pace.na');
   const pace = session.pace ? formatPaceValueText(session.pace) : trProgress('format.pace.na');
   const activity = ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio');
+  const titleName = session.name || activity;
 
   const content = `
     <div class="workout-detail-modal">
@@ -719,6 +759,7 @@ function openCardioDetailModal(session) {
         <h4 class="workout-section-title">${trProgress('progress.cardio.activityLabel')}</h4>
         <p class="text-sm text-gray-300">${activity}</p>
       </div>
+      ${renderRpeFeedbackSection(session)}
       ${session.notes ? `
         <div class="workout-exercises">
           <h4 class="workout-section-title">${trProgress('common.notes')}</h4>
@@ -739,7 +780,7 @@ function openCardioDetailModal(session) {
   `;
 
   if (typeof openGenericModal === 'function') {
-    openGenericModal(activity, content);
+    openGenericModal(titleName, content);
   } else {
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('error', trProgress('progress.modals.modalUnavailable'));
@@ -750,7 +791,8 @@ function openCardioDetailModal(session) {
 function openRecoveryDetailModal(session) {
   const date = getSessionDate(session);
   const duration = formatSessionDurationText(session);
-  const notes = session.notes ? session.notes : trProgress('common.notAvailable');
+  const activity = RECOVERY_TYPES?.[session.activityType]?.name || trProgress('common.recovery');
+  const titleName = session.name || activity;
 
   const content = `
     <div class="workout-detail-modal">
@@ -767,11 +809,18 @@ function openRecoveryDetailModal(session) {
           <div class="workout-stat-label">${trProgress('progress.overview.stats.totalTime')}</div>
         </div>
         <div class="workout-stat">
-          <span class="material-symbols-rounded">notes</span>
-          <div class="workout-stat-value">${notes}</div>
-          <div class="workout-stat-label">${trProgress('common.notes')}</div>
+          <span class="material-symbols-rounded">${getSessionIcon(session)}</span>
+          <div class="workout-stat-value">${activity}</div>
+          <div class="workout-stat-label">Aktivität</div>
         </div>
       </div>
+      ${renderRpeFeedbackSection(session)}
+      ${session.notes ? `
+        <div class="workout-exercises">
+          <h4 class="workout-section-title">${trProgress('common.notes')}</h4>
+          <p class="text-sm text-gray-300">${session.notes}</p>
+        </div>
+      ` : ''}
       <div class="workout-modal-actions">
         <button onclick="openEditRecoverySessionModal('${session.id}')" class="btn-edit">
           <span class="material-symbols-rounded">settings</span>
@@ -786,7 +835,7 @@ function openRecoveryDetailModal(session) {
   `;
 
   if (typeof openGenericModal === 'function') {
-    openGenericModal(trProgress('common.recovery'), content);
+    openGenericModal(titleName, content);
   } else {
     showErrorMessage(trProgress('progress.modals.modalUnavailable'));
   }
@@ -802,11 +851,13 @@ function prefillCardioFromSession(session) {
 
   setTimeout(() => {
     const activityInput = document.getElementById('cardio-activity-type');
+    const nameInput = document.getElementById('cardio-name');
     const durationInput = document.getElementById('cardio-duration');
     const distanceInput = document.getElementById('cardio-distance');
     const notesInput = document.getElementById('cardio-notes');
 
     if (activityInput) activityInput.value = session.activityType || 'run';
+    if (nameInput) nameInput.value = session.name || '';
     if (durationInput) durationInput.value = session.duration || '';
     if (distanceInput) distanceInput.value = session.distanceKm || '';
     if (notesInput) notesInput.value = session.notes || '';
@@ -2302,9 +2353,13 @@ function prefillRecoveryFromSession(session) {
   openAddRecoveryModal(dateKey);
 
   setTimeout(() => {
+    const activityInput = document.getElementById('recovery-activity-type');
+    const nameInput = document.getElementById('recovery-name');
     const durationInput = document.getElementById('recovery-duration');
     const notesInput = document.getElementById('recovery-notes');
 
+    if (activityInput) activityInput.value = session.activityType || 'yoga';
+    if (nameInput) nameInput.value = session.name || '';
     if (durationInput) durationInput.value = session.duration || '';
     if (notesInput) notesInput.value = session.notes || '';
   }, 0);
