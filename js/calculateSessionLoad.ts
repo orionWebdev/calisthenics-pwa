@@ -62,6 +62,23 @@ const CARDIO_SPORT_FACTORS: Record<string, number> = {
 
 const DEFAULT_SPORT_FACTOR = 1.0;
 
+// ---------- Recovery Detection ----------
+
+const RECOVERY_MAX_RPE = 2;
+const RECOVERY_MAX_DURATION = 60; // minutes
+
+export function isRecoverySession(session: Session): boolean {
+  const rpe = session.rpe ?? 3;
+  const duration = session.duration ?? 0;
+
+  if (rpe > RECOVERY_MAX_RPE) return false;
+  if (duration <= 0 || duration > RECOVERY_MAX_DURATION) return false;
+
+  return session.type === 'cardio'
+      || session.type === 'recovery'
+      || session.type === 'strength';
+}
+
 function getSportFactor(activityType?: string): number {
   if (!activityType) return DEFAULT_SPORT_FACTOR;
   return CARDIO_SPORT_FACTORS[activityType.toLowerCase()] ?? DEFAULT_SPORT_FACTOR;

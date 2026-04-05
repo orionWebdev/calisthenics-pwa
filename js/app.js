@@ -522,6 +522,29 @@ if ('serviceWorker' in navigator && !isLocalhost) {
 }
 
 // ========================================
+// VISIBILITY-BASED RECALCULATION
+// ========================================
+
+let lastVisibleDateKey = new Date().toISOString().slice(0, 10);
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+
+  const today = new Date().toISOString().slice(0, 10);
+  if (today === lastVisibleDateKey) return;
+
+  lastVisibleDateKey = today;
+  console.log('📅 Day changed since last visit, refreshing dashboard...');
+
+  if (typeof refreshDashboard === 'function') {
+    refreshDashboard();
+  }
+  if (typeof renderProgressV3 === 'function') {
+    renderProgressV3();
+  }
+});
+
+// ========================================
 // VERSION CHECK (PWA Update Detection)
 // ========================================
 
