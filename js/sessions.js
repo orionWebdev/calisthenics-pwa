@@ -2898,8 +2898,8 @@ function getACWR(sessions, referenceDate, options) {
     return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null, todayLoad: 0, fatiguePenalty: 0 };
   }
 
-  const ACUTE_ALPHA = 0.35;
-  const CHRONIC_ALPHA = 0.10;
+  const ACUTE_ALPHA = 0.22;   // ~5-day effective window (was 0.35 ~3d, too reactive)
+  const CHRONIC_ALPHA = 0.07;  // ~14-day effective window (was 0.10 ~10d)
   const RECOVERY_BOOST_FACTOR = 0.05;
 
   // Use local date keys (YYYY-MM-DD) to avoid UTC/local timezone mismatch
@@ -3140,21 +3140,22 @@ function computeFormScore(sessions, referenceDate) {
 
   // Load progression: compare recent vs prior 14-day window
   // Ratio > 1 = progressing, < 1 = declining, ≈ 1 = maintaining
+  // Cap ratio at 2.0 to prevent extreme spikes from low baselines
   let loadLevel = 0;
   if (prior14Load > 0) {
-    const progressionRatio = recent14Load / prior14Load;
-    // 0.0 → 0pts, 0.5 → 10pts, 0.8 → 18pts, 1.0 → 22pts, 1.2 → 28pts, 1.4+ → 35pts
+    const progressionRatio = Math.min(recent14Load / prior14Load, 2.0);
+    // 0.0 → 0pts, 0.5 → 8pts, 0.8 → 15pts, 1.0 → 20pts, 1.5 → 25pts, 2.0 → 30pts
     if (progressionRatio <= 0.3) {
       loadLevel = 0;
     } else if (progressionRatio <= 1.0) {
-      // Linear scale 0.3→5 to 1.0→22
-      loadLevel = Math.round(5 + (progressionRatio - 0.3) / 0.7 * 17);
+      // Linear scale 0.3→5 to 1.0→20
+      loadLevel = Math.round(5 + (progressionRatio - 0.3) / 0.7 * 15);
     } else {
-      // Above baseline: 1.0→22 to 1.4→35
-      loadLevel = Math.round(22 + Math.min(progressionRatio - 1.0, 0.4) / 0.4 * 13);
+      // Above baseline: 1.0→20 to 2.0→30 (gentler curve, capped at 30)
+      loadLevel = Math.round(20 + Math.min(progressionRatio - 1.0, 1.0) * 10);
     }
   } else if (recent14Load > 0) {
-    loadLevel = 18; // bootstrapping: training started recently
+    loadLevel = 12; // bootstrapping: training started recently
   }
 
   // ── Component 3: Training Recency (0-15) ──
@@ -3213,6 +3214,16 @@ function computeFormScore(sessions, referenceDate) {
     peakFitness: Math.round(peakFitness * 100) / 100,
   });
 
+  // ── Inactivity Decay (starts slow, accelerates) ──
+  // After 3 days without training, form score decays progressively.
+  // This ensures the phase drops when not training:
+  //   4d off → -1, 7d → -8, 10d → -18, 14d → -35, 21d → -68
+  if (daysSinceLastSession > 3) {
+    const restDays = daysSinceLastSession - 3;
+    const inactivityPenalty = Math.min(70, Math.round(1.2 * Math.pow(restDays, 1.4)));
+    formScore = Math.max(0, formScore - inactivityPenalty);
+  }
+
   // ── Trend ──
   let trend = 'stable';
   if (fitnessAt14DaysAgo > 0) {
@@ -3257,6 +3268,9 @@ function getTrainingRecommendation(formZone, readinessZone) {
 
   // --- Form loss (long inactivity): special case ---
   if (readinessZone === 'form_loss') {
+    if (formZone === 'detrained' || formZone === 'base') {
+      return { key: 'formLossDetrained', intensity: 'low' };
+    }
     return { key: 'formLoss', intensity: 'moderate' };
   }
 
