@@ -1470,8 +1470,9 @@ function renderDashboardRecommendation() {
   const formData = computeFormScore(allSessions, new Date());
   const readinessData = getACWR(allSessions, new Date());
 
-  if (formData.formScore === null || formData.zone === null ||
-      readinessData.readinessScore === null || readinessData.zone === null) {
+  // Both null: show "no data"
+  if ((formData.formScore === null || formData.zone === null) &&
+      (readinessData.readinessScore === null || readinessData.zone === null)) {
     container.innerHTML = `
       <div class="dashboard-card recommendation-widget">
         <div class="recommendation-header">
@@ -1485,7 +1486,20 @@ function renderDashboardRecommendation() {
     return;
   }
 
-  const rec = getTrainingRecommendation(formData.zone, readinessData.zone);
+  // If readiness is null but form exists, infer a readiness zone from form state
+  const effectiveFormZone = formData.zone || 'developing';
+  let effectiveReadinessZone = readinessData.zone;
+  if (!effectiveReadinessZone) {
+    // No readiness data means no recent acute/chronic baseline.
+    // Use form-based fallback: detrained → form_loss, else maintaining
+    if (effectiveFormZone === 'detrained' || effectiveFormZone === 'base') {
+      effectiveReadinessZone = 'form_loss';
+    } else {
+      effectiveReadinessZone = 'maintaining';
+    }
+  }
+
+  const rec = getTrainingRecommendation(effectiveFormZone, effectiveReadinessZone);
   const meta = getIntensityMeta(rec.intensity);
   const text = tr('progress.recommendation.' + rec.key);
 
