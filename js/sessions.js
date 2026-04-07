@@ -3214,13 +3214,18 @@ function computeFormScore(sessions, referenceDate) {
     peakFitness: Math.round(peakFitness * 100) / 100,
   });
 
-  // ── Inactivity Decay (starts slow, accelerates) ──
-  // After 3 days without training, form score decays progressively.
-  // This ensures the phase drops when not training:
-  //   4d off → -1, 7d → -8, 10d → -18, 14d → -35, 21d → -68
-  if (daysSinceLastSession > 3) {
-    const restDays = daysSinceLastSession - 3;
-    const inactivityPenalty = Math.min(70, Math.round(1.2 * Math.pow(restDays, 1.4)));
+  // ── Inactivity Decay (Garmin-like: fast and accelerating) ──
+  // 2d rest: 0 (recovery phase), 3-4d: -3/day, 5-7d: -5/day, 8+d: -7/day
+  //   3d → -3, 5d → -11, 7d → -21, 10d → -42, 14d → -70
+  if (daysSinceLastSession > 2) {
+    let inactivityPenalty = 0;
+    if (daysSinceLastSession <= 4) {
+      inactivityPenalty = (daysSinceLastSession - 2) * 3;
+    } else if (daysSinceLastSession <= 7) {
+      inactivityPenalty = 6 + (daysSinceLastSession - 4) * 5;
+    } else {
+      inactivityPenalty = 21 + (daysSinceLastSession - 7) * 7;
+    }
     formScore = Math.max(0, formScore - inactivityPenalty);
   }
 
@@ -3234,21 +3239,28 @@ function computeFormScore(sessions, referenceDate) {
     trend = 'rising';
   }
 
-  const zone = mapFormZone(formScore);
+  const zone = mapFormZone(formScore, daysSinceLastSession);
 
   return { formScore, zone, consistency, loadLevel, recency, trend, daysSinceLastSession };
 }
 
 /**
- * Maps form score to a training form zone.
+ * Maps form score to a training form zone (Garmin-inspired).
+ * Zones: detrained, declining, recovery, maintaining, building, productive, peak_form
+ * No "overload" zone – overreaching belongs to readiness (ACWR).
+ * Peak form (93-100) is rare and special – like Garmin's "Peaking".
  */
-function mapFormZone(score) {
+function mapFormZone(score, daysSinceLastSession) {
+  // Recovery override: 2-5 days rest while form is still above detrained
+  if (daysSinceLastSession >= 2 && daysSinceLastSession <= 5 && score > 20) {
+    return 'recovery';
+  }
   if (score <= 20) return 'detrained';
-  if (score <= 38) return 'base';
-  if (score <= 55) return 'developing';
-  if (score <= 75) return 'trained';
-  if (score <= 90) return 'peak_form';
-  return 'overload';
+  if (score <= 38) return 'declining';
+  if (score <= 60) return 'maintaining';
+  if (score <= 82) return 'building';
+  if (score <= 92) return 'productive';
+  return 'peak_form';
 }
 
 /**
@@ -3256,7 +3268,7 @@ function mapFormZone(score) {
  * into a concrete training recommendation.
  * Readiness (acute) takes priority; form phase steers the direction.
  *
- * @param {string} formZone   – one of: detrained, base, developing, trained, peak_form, overload
+ * @param {string} formZone   – one of: detrained, declining, recovery, maintaining, building, productive, peak_form
  * @param {string} readinessZone – one of: overreaching, fatigued, maintaining, building, peak, form_loss
  * @returns {{ key: string, intensity: string }}
  */
@@ -3268,37 +3280,41 @@ function getTrainingRecommendation(formZone, readinessZone) {
 
   // --- Form loss (long inactivity): special case ---
   if (readinessZone === 'form_loss') {
-    if (formZone === 'detrained' || formZone === 'base') {
+    if (formZone === 'detrained' || formZone === 'declining') {
       return { key: 'formLossDetrained', intensity: 'low' };
     }
     return { key: 'formLoss', intensity: 'moderate' };
   }
 
+  // --- Recovery form phase: body is resting, be gentle ---
+  if (formZone === 'recovery') {
+    if (readinessZone === 'peak' || readinessZone === 'building') {
+      return { key: 'recoveryReady', intensity: 'moderate' };
+    }
+    return { key: 'recoveryResting', intensity: 'low' };
+  }
+
   // --- Fatigued: low intensity, phase adjusts nuance ---
   if (readinessZone === 'fatigued') {
-    if (formZone === 'overload') return { key: 'fatiguedOverload', intensity: 'low' };
-    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'fatiguedGoodForm', intensity: 'low' };
+    if (formZone === 'peak_form' || formZone === 'productive' || formZone === 'building') return { key: 'fatiguedGoodForm', intensity: 'low' };
     return { key: 'fatiguedDefault', intensity: 'low' };
   }
 
   // --- Maintaining: moderate, phase adjusts ---
   if (readinessZone === 'maintaining') {
-    if (formZone === 'overload') return { key: 'maintainingOverload', intensity: 'low' };
-    if (formZone === 'peak_form') return { key: 'maintainingPeak', intensity: 'moderate' };
+    if (formZone === 'peak_form' || formZone === 'productive') return { key: 'maintainingPeak', intensity: 'moderate' };
     return { key: 'maintainingDefault', intensity: 'moderate' };
   }
 
   // --- Building: ready for normal to high training ---
   if (readinessZone === 'building') {
-    if (formZone === 'overload') return { key: 'buildingOverload', intensity: 'moderate' };
-    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'buildingGoodForm', intensity: 'high' };
+    if (formZone === 'peak_form' || formZone === 'productive' || formZone === 'building') return { key: 'buildingGoodForm', intensity: 'high' };
     return { key: 'buildingDefault', intensity: 'moderate' };
   }
 
   // --- Peak: fully recovered, can push ---
   if (readinessZone === 'peak') {
-    if (formZone === 'overload') return { key: 'peakOverload', intensity: 'moderate' };
-    if (formZone === 'peak_form' || formZone === 'trained') return { key: 'peakGoodForm', intensity: 'high' };
+    if (formZone === 'peak_form' || formZone === 'productive' || formZone === 'building') return { key: 'peakGoodForm', intensity: 'high' };
     if (formZone === 'detrained') return { key: 'peakDetrained', intensity: 'moderate' };
     return { key: 'peakDefault', intensity: 'high' };
   }

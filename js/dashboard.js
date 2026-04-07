@@ -1487,12 +1487,12 @@ function renderDashboardRecommendation() {
   }
 
   // If readiness is null but form exists, infer a readiness zone from form state
-  const effectiveFormZone = formData.zone || 'developing';
+  const effectiveFormZone = formData.zone || 'maintaining';
   let effectiveReadinessZone = readinessData.zone;
   if (!effectiveReadinessZone) {
     // No readiness data means no recent acute/chronic baseline.
-    // Use form-based fallback: detrained → form_loss, else maintaining
-    if (effectiveFormZone === 'detrained' || effectiveFormZone === 'base') {
+    // Use form-based fallback: detrained/declining → form_loss, else maintaining
+    if (effectiveFormZone === 'detrained' || effectiveFormZone === 'declining') {
       effectiveReadinessZone = 'form_loss';
     } else {
       effectiveReadinessZone = 'maintaining';

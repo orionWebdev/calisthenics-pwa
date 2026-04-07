@@ -452,46 +452,50 @@ function renderTrainingPhaseTimeline(days = 7) {
 function getFormZoneColor(zone) {
   const map = {
     detrained: 'var(--zone-form-loss)',
-    base: 'var(--zone-fatigued)',
-    developing: 'var(--zone-loaded)',
-    trained: 'var(--zone-ready)',
-    peak_form: 'var(--zone-peak-form)',
-    overload: 'var(--zone-exhausted)'
+    declining: 'var(--zone-fatigued)',
+    recovery: 'var(--zone-fresh)',
+    maintaining: 'var(--zone-loaded)',
+    building: 'var(--zone-ready-light)',
+    productive: 'var(--zone-ready-dark)',
+    peak_form: 'var(--zone-peak-form)'
   };
-  return map[zone] || map.developing;
+  return map[zone] || map.maintaining;
 }
 
 function getFormZoneBg(zone) {
   const map = {
     detrained: 'var(--zone-form-loss-bg)',
-    base: 'var(--zone-fatigued-bg)',
-    developing: 'var(--zone-loaded-bg)',
-    trained: 'var(--zone-ready-bg)',
-    peak_form: 'var(--zone-peak-form-bg)',
-    overload: 'var(--zone-exhausted-bg)'
+    declining: 'var(--zone-fatigued-bg)',
+    recovery: 'var(--zone-fresh-bg)',
+    maintaining: 'var(--zone-loaded-bg)',
+    building: 'var(--zone-ready-light-bg)',
+    productive: 'var(--zone-ready-dark-bg)',
+    peak_form: 'var(--zone-peak-form-bg)'
   };
-  return map[zone] || map.developing;
+  return map[zone] || map.maintaining;
 }
 
 function getFormPhaseLabel(zone) {
   const map = {
     detrained: trV3('progress.form.zoneDetrained'),
-    base: trV3('progress.form.zoneBase'),
-    developing: trV3('progress.form.zoneDeveloping'),
-    trained: trV3('progress.form.zoneTrained'),
-    peak_form: trV3('progress.form.zonePeakForm'),
-    overload: trV3('progress.form.zoneOverload')
+    declining: trV3('progress.form.zoneDeclining'),
+    recovery: trV3('progress.form.zoneRecovery'),
+    maintaining: trV3('progress.form.zoneMaintaining'),
+    building: trV3('progress.form.zoneBuilding'),
+    productive: trV3('progress.form.zoneProductive'),
+    peak_form: trV3('progress.form.zonePeakForm')
   };
-  return map[zone] || map.developing;
+  return map[zone] || map.maintaining;
 }
 
-function getFormHint(score) {
+function getFormHint(score, zone) {
+  if (zone === 'recovery') return trV3('progress.form.hintRecovery');
   if (score <= 20) return trV3('progress.form.hintDetrained');
-  if (score <= 38) return trV3('progress.form.hintBase');
-  if (score <= 55) return trV3('progress.form.hintDeveloping');
-  if (score <= 75) return trV3('progress.form.hintTrained');
-  if (score <= 90) return trV3('progress.form.hintPeakForm');
-  return trV3('progress.form.hintOverload');
+  if (score <= 38) return trV3('progress.form.hintDeclining');
+  if (score <= 60) return trV3('progress.form.hintMaintaining');
+  if (score <= 82) return trV3('progress.form.hintBuilding');
+  if (score <= 92) return trV3('progress.form.hintProductive');
+  return trV3('progress.form.hintPeakForm');
 }
 
 function getFormTrendLabel(trend) {
@@ -512,11 +516,11 @@ function getFormTrendIcon(trend) {
 function renderFormScale(score) {
   const phases = [
     { zone: 'detrained', max: 20 },
-    { zone: 'base', max: 38 },
-    { zone: 'developing', max: 55 },
-    { zone: 'trained', max: 75 },
-    { zone: 'peak_form', max: 90 },
-    { zone: 'overload', max: 100 }
+    { zone: 'declining', max: 38 },
+    { zone: 'maintaining', max: 60 },
+    { zone: 'building', max: 82 },
+    { zone: 'productive', max: 92 },
+    { zone: 'peak_form', max: 100 }
   ];
 
   const segments = phases.map((p, i) => {
@@ -562,7 +566,7 @@ function renderFormWidget() {
   const zoneBg = getFormZoneBg(data.zone);
   const phaseLabel = getFormPhaseLabel(data.zone);
   const scaleHTML = renderFormScale(data.formScore);
-  const hint = getFormHint(data.formScore);
+  const hint = getFormHint(data.formScore, data.zone);
   const trendLabel = getFormTrendLabel(data.trend);
   const trendIcon = getFormTrendIcon(data.trend);
 
@@ -605,11 +609,12 @@ function openFormInfoModal() {
     `<div class="acwr-info-content">
       <p>${trV3('progress.form.infoBody')}</p>
       <div class="acwr-info-zones">
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('overload')};"></span>${trV3('progress.form.zoneOverload')} (91–100)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (76–90)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('trained')};"></span>${trV3('progress.form.zoneTrained')} (56–75)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('developing')};"></span>${trV3('progress.form.zoneDeveloping')} (39–55)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('base')};"></span>${trV3('progress.form.zoneBase')} (21–38)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (93–100)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('productive')};"></span>${trV3('progress.form.zoneProductive')} (83–92)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('building')};"></span>${trV3('progress.form.zoneBuilding')} (61–82)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('maintaining')};"></span>${trV3('progress.form.zoneMaintaining')} (39–60)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('recovery')};"></span>${trV3('progress.form.zoneRecovery')} (${trV3('progress.form.infoRecoveryCondition')})</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('declining')};"></span>${trV3('progress.form.zoneDeclining')} (21–38)</div>
         <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} (0–20)</div>
       </div>
     </div>`
