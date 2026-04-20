@@ -1341,6 +1341,69 @@ const translations = {
         4: 'Hart',
         5: 'Maximal'
       }
+    },
+    block: {
+      typeSheet: {
+        title: 'Block hinzufügen',
+        normal: 'Einzelübung',
+        normalDesc: 'Klassisch satz-basiert',
+        superset: 'Superset',
+        supersetDesc: '2–3 Übungen im Wechsel',
+        emom: 'EMOM',
+        emomDesc: 'Every Minute On the Minute'
+      },
+      emomConfig: {
+        title: 'EMOM konfigurieren',
+        duration: 'Dauer (min)',
+        interval: 'Intervall (s)',
+        repsLabel: 'Ziel pro Übung',
+        reps: 'Reps',
+        save: 'Block hinzufügen',
+        update: 'Block aktualisieren'
+      },
+      supersetConfig: {
+        title: 'Superset konfigurieren',
+        sets: 'Sets',
+        reps: 'Reps',
+        restBetween: 'Pause zwischen Supersätzen',
+        save: 'Block hinzufügen',
+        update: 'Block aktualisieren'
+      },
+      planRender: {
+        emomLabel: 'EMOM · {minutes} min',
+        emomSub: 'Alle {interval}s · {count} Übungen',
+        supersetLabel: 'Superset',
+        supersetSub: '{count} Übungen im Wechsel',
+        editBlock: 'Bearbeiten',
+        deleteBlock: 'Löschen',
+        deleteConfirm: 'Block wirklich löschen?'
+      },
+      workout: {
+        emom: {
+          prescreenTitle: 'EMOM',
+          prescreenDuration: '{minutes} Minuten',
+          prescreenEveryMinute: 'Jede Minute:',
+          start: 'Start',
+          skip: 'Block überspringen',
+          minute: 'Minute {current} / {total}',
+          remainingInMinute: 'Verbleibend in Minute',
+          totalRemaining: '{time} verbleibend',
+          next: 'Nächste: {name} ×{reps}',
+          done: 'Geschafft',
+          missed: 'Nicht geschafft',
+          blockComplete: 'EMOM abgeschlossen'
+        },
+        superset: {
+          label: 'Superset',
+          current: 'Aktuell: {label} {name}',
+          restBetween: 'Pause: {seconds}s zwischen Supersätzen',
+          roundComplete: 'Runde {round} abgeschlossen'
+        },
+        blockPill: {
+          emom: 'EMOM {minutes}min',
+          superset: 'Superset'
+        }
+      }
     }
   },
   en: {
@@ -2680,6 +2743,69 @@ const translations = {
         3: 'Moderate',
         4: 'Hard',
         5: 'Maximum'
+      }
+    },
+    block: {
+      typeSheet: {
+        title: 'Add Block',
+        normal: 'Single Exercise',
+        normalDesc: 'Classic set-based',
+        superset: 'Superset',
+        supersetDesc: '2–3 exercises alternating',
+        emom: 'EMOM',
+        emomDesc: 'Every Minute On the Minute'
+      },
+      emomConfig: {
+        title: 'Configure EMOM',
+        duration: 'Duration (min)',
+        interval: 'Interval (s)',
+        repsLabel: 'Target per exercise',
+        reps: 'Reps',
+        save: 'Add Block',
+        update: 'Update Block'
+      },
+      supersetConfig: {
+        title: 'Configure Superset',
+        sets: 'Sets',
+        reps: 'Reps',
+        restBetween: 'Rest between supersets',
+        save: 'Add Block',
+        update: 'Update Block'
+      },
+      planRender: {
+        emomLabel: 'EMOM · {minutes} min',
+        emomSub: 'Every {interval}s · {count} exercises',
+        supersetLabel: 'Superset',
+        supersetSub: '{count} exercises alternating',
+        editBlock: 'Edit',
+        deleteBlock: 'Delete',
+        deleteConfirm: 'Really delete this block?'
+      },
+      workout: {
+        emom: {
+          prescreenTitle: 'EMOM',
+          prescreenDuration: '{minutes} Minutes',
+          prescreenEveryMinute: 'Every minute:',
+          start: 'Start',
+          skip: 'Skip Block',
+          minute: 'Minute {current} / {total}',
+          remainingInMinute: 'Remaining in minute',
+          totalRemaining: '{time} remaining',
+          next: 'Next: {name} ×{reps}',
+          done: 'Done',
+          missed: 'Missed',
+          blockComplete: 'EMOM completed'
+        },
+        superset: {
+          label: 'Superset',
+          current: 'Current: {label} {name}',
+          restBetween: 'Rest: {seconds}s between supersets',
+          roundComplete: 'Round {round} completed'
+        },
+        blockPill: {
+          emom: 'EMOM {minutes}min',
+          superset: 'Superset'
+        }
       }
     }
   }

@@ -489,13 +489,16 @@ function getFormPhaseLabel(zone) {
 }
 
 function getFormHint(score, zone) {
-  if (zone === 'recovery') return trV3('progress.form.hintRecovery');
-  if (score <= 20) return trV3('progress.form.hintDetrained');
-  if (score <= 38) return trV3('progress.form.hintDeclining');
-  if (score <= 60) return trV3('progress.form.hintMaintaining');
-  if (score <= 82) return trV3('progress.form.hintBuilding');
-  if (score <= 92) return trV3('progress.form.hintProductive');
-  return trV3('progress.form.hintPeakForm');
+  const hintMap = {
+    recovery: 'progress.form.hintRecovery',
+    detrained: 'progress.form.hintDetrained',
+    declining: 'progress.form.hintDeclining',
+    maintaining: 'progress.form.hintMaintaining',
+    building: 'progress.form.hintBuilding',
+    productive: 'progress.form.hintProductive',
+    peak_form: 'progress.form.hintPeakForm'
+  };
+  return trV3(hintMap[zone] || 'progress.form.hintMaintaining');
 }
 
 function getFormTrendLabel(trend) {
@@ -514,12 +517,15 @@ function getFormTrendIcon(trend) {
 }
 
 function renderFormScale(score) {
+  // Raw-score boundaries that correspond to the transformed phase thresholds
+  // in mapFormZone (sessions.js). Dot is positioned by raw score, so segments
+  // must use raw-score edges to match the visible phase label.
   const phases = [
-    { zone: 'detrained', max: 20 },
-    { zone: 'declining', max: 38 },
-    { zone: 'maintaining', max: 60 },
-    { zone: 'building', max: 82 },
-    { zone: 'productive', max: 92 },
+    { zone: 'detrained', max: 22 },
+    { zone: 'declining', max: 42 },
+    { zone: 'maintaining', max: 66 },
+    { zone: 'building', max: 83 },
+    { zone: 'productive', max: 95 },
     { zone: 'peak_form', max: 100 }
   ];
 
@@ -609,13 +615,13 @@ function openFormInfoModal() {
     `<div class="acwr-info-content">
       <p>${trV3('progress.form.infoBody')}</p>
       <div class="acwr-info-zones">
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (93–100)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('productive')};"></span>${trV3('progress.form.zoneProductive')} (83–92)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('building')};"></span>${trV3('progress.form.zoneBuilding')} (61–82)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('maintaining')};"></span>${trV3('progress.form.zoneMaintaining')} (39–60)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('peak_form')};"></span>${trV3('progress.form.zonePeakForm')} (96–100)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('productive')};"></span>${trV3('progress.form.zoneProductive')} (84–95)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('building')};"></span>${trV3('progress.form.zoneBuilding')} (67–83)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('maintaining')};"></span>${trV3('progress.form.zoneMaintaining')} (43–66)</div>
         <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('recovery')};"></span>${trV3('progress.form.zoneRecovery')} (${trV3('progress.form.infoRecoveryCondition')})</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('declining')};"></span>${trV3('progress.form.zoneDeclining')} (21–38)</div>
-        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} (0–20)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('declining')};"></span>${trV3('progress.form.zoneDeclining')} (23–42)</div>
+        <div class="acwr-info-zone"><span class="acwr-info-dot" style="background:${getFormZoneColor('detrained')};"></span>${trV3('progress.form.zoneDetrained')} (0–22)</div>
       </div>
     </div>`
   );
