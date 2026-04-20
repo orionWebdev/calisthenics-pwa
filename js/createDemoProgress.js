@@ -11,7 +11,7 @@ async function createDemoProgressData() {
 
   try {
     // Hole alle Übungen
-    const exercises = await getAllDocs(exercisesCollection);
+    const exercises = await getAllDocsForUser(exercisesCollection);
 
     if (exercises.length === 0) {
       console.error('❌ Keine Übungen gefunden! Erstelle zuerst Übungen.');
@@ -114,7 +114,7 @@ async function deleteAllProgressData() {
   console.log('🗑️ Lösche alle Progress-Daten...');
 
   try {
-    const allProgress = await getAllDocs(progressCollection);
+    const allProgress = await getAllDocsForUser(progressCollection);
     console.log(`📊 Gefunden: ${allProgress.length} Einträge`);
 
     let deleted = 0;

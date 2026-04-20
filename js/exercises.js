@@ -314,7 +314,7 @@ async function loadExercises() {
     // Load curated (read-only) and user exercises in parallel
     const [curatedRaw, userRaw] = await Promise.all([
       getAllDocs(exercisesCuratedCollection),
-      getAllDocs(exercisesCollection)
+      getAllDocsForUser(exercisesCollection)
     ]);
 
     // Curated first, then user exercises override by ID
@@ -2022,7 +2022,7 @@ function setupExercisesListener() {
     mergeAndUpdate();
   });
 
-  onCollectionChange(exercisesCollection, (exercises) => {
+  onUserCollectionChange(exercisesCollection, (exercises) => {
     userExercises = exercises.map(mapExerciseToV3);
     mergeAndUpdate();
   });

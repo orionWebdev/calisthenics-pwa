@@ -7,8 +7,6 @@ let currentDate = new Date();
 let scheduleData = []; // Alle geplanten Trainings
 let selectedDate = formatDate(new Date()); // Aktuell ausgewaehlter Tag
 
-// Demo User ID (spaeter wird das durch Firebase Auth ersetzt)
-const CURRENT_USER_ID = 'demo-user-123';
 
 // ========================================
 // CALENDAR EVENT VIEWMODEL (Sync-Ready)
@@ -87,7 +85,7 @@ function getCalendarEventsForDate(dateStr) {
 async function loadSchedule() {
   try {
     if (typeof scheduleCollection !== 'undefined') {
-      scheduleData = await getAllDocs(scheduleCollection);
+      scheduleData = await getAllDocsForUser(scheduleCollection);
     } else {
       console.warn('scheduleCollection not defined, using empty array');
       scheduleData = [];
@@ -591,7 +589,6 @@ async function saveQuickAddEntry() {
   }
 
   const entry = {
-    userId: CURRENT_USER_ID,
     planId: null,
     planName: name,
     planType: quickAddSelectedType,
@@ -655,7 +652,6 @@ async function addPlanToDateById(planId) {
   }
 
   const scheduleEntry = {
-    userId: CURRENT_USER_ID,
     planId: planId,
     planName: plan.name,
     planType: plan.type,
@@ -815,10 +811,7 @@ function getPlanTypeColor(type) {
 }
 
 function getPlansForDate(dateStr) {
-  return scheduleData.filter(item =>
-    item.date === dateStr &&
-    item.userId === CURRENT_USER_ID
-  );
+  return scheduleData.filter(item => item.date === dateStr);
 }
 
 // ========================================
@@ -826,8 +819,8 @@ function getPlansForDate(dateStr) {
 // ========================================
 
 function setupScheduleListener() {
-  if (typeof onCollectionChange === 'function' && typeof scheduleCollection !== 'undefined') {
-    onCollectionChange(scheduleCollection, (schedule) => {
+  if (typeof onUserCollectionChange === 'function' && typeof scheduleCollection !== 'undefined') {
+    onUserCollectionChange(scheduleCollection, (schedule) => {
       scheduleData = schedule;
       renderCalendar();
       if (typeof refreshDashboard === 'function') {

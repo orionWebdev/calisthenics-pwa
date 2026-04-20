@@ -26,7 +26,7 @@ let currentSelectedExerciseId = null;
 async function loadProgressData() {
   try {
     console.log('📊 Loading progress data...');
-    progressData = await getAllDocs(progressCollection);
+    progressData = await getAllDocsForUser(progressCollection);
     console.log(`✅ Loaded ${progressData.length} progress entries`);
     return progressData;
   } catch (error) {
@@ -40,7 +40,14 @@ async function loadProgressData() {
  */
 async function loadExercisesForProgress() {
   try {
-    exercisesData = await getAllDocs(exercisesCollection);
+    const [curated, userEx] = await Promise.all([
+      getAllDocs(exercisesCuratedCollection),
+      getAllDocsForUser(exercisesCollection)
+    ]);
+    const exerciseMap = new Map();
+    curated.forEach(ex => exerciseMap.set(ex.id, ex));
+    userEx.forEach(ex => exerciseMap.set(ex.id, ex));
+    exercisesData = Array.from(exerciseMap.values());
     console.log(`✅ Loaded ${exercisesData.length} exercises for progress`);
     return exercisesData;
   } catch (error) {
@@ -585,7 +592,7 @@ async function generateDemoProgressData() {
   console.log('🎲 Generating demo progress data...');
 
   // Hole erste 3 Übungen
-  const exercises = await getAllDocs(exercisesCollection);
+  const exercises = await getAllDocsForUser(exercisesCollection);
   if (exercises.length === 0) {
     console.log('⚠️ No exercises found. Create exercises first.');
     return;

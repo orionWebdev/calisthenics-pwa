@@ -32,6 +32,14 @@ const userProfilesCollection = db.collection('userProfiles');
 // FIRESTORE HELPER FUNCTIONS
 // ========================================
 
+function getActiveUserId() {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    throw new Error('No authenticated user — Firestore operation blocked');
+  }
+  return user.uid;
+}
+
 function isPlainObject(value) {
   if (!value || typeof value !== 'object') return false;
   return Object.getPrototypeOf(value) === Object.prototype;
@@ -65,7 +73,7 @@ function sanitizeFirestorePayload(payload) {
   return stripUndefinedDeep(payload);
 }
 
-// Alle Dokumente aus einer Collection laden
+// Alle Dokumente aus einer Collection laden (global, z.B. für exercises_curated)
 async function getAllDocs(collection) {
   try {
     const snapshot = await collection.get();
@@ -79,13 +87,32 @@ async function getAllDocs(collection) {
   }
 }
 
-// Ein Dokument hinzufügen
-async function addDoc(collection, data) {
+// User-scoped Load: nur Dokumente des aktuell angemeldeten Nutzers
+async function getAllDocsForUser(collection) {
   try {
-    const sanitized = sanitizeFirestorePayload({
+    const uid = getActiveUserId();
+    const snapshot = await collection.where('userId', '==', uid).get();
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error loading user-scoped documents:', error);
+    return [];
+  }
+}
+
+// Ein Dokument hinzufügen. scoped=true (Default) injiziert userId automatisch.
+async function addDoc(collection, data, options = { scoped: true }) {
+  try {
+    const payload = {
       ...data,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    };
+    if (options.scoped !== false) {
+      payload.userId = getActiveUserId();
+    }
+    const sanitized = sanitizeFirestorePayload(payload);
     const docRef = await collection.add(sanitized);
     return docRef.id;
   } catch (error) {
@@ -120,7 +147,7 @@ async function deleteDoc(collection, id) {
   }
 }
 
-// Real-time Listener für eine Collection
+// Real-time Listener für eine Collection (global, z.B. für exercises_curated)
 function onCollectionChange(collection, callback) {
   return collection.onSnapshot(snapshot => {
     const docs = snapshot.docs.map(doc => ({
@@ -131,6 +158,22 @@ function onCollectionChange(collection, callback) {
   }, error => {
     console.error('Error in real-time listener:', error);
   });
+}
+
+// User-scoped Real-time Listener: nur Dokumente des aktuellen Nutzers
+function onUserCollectionChange(collection, callback) {
+  const uid = getActiveUserId();
+  return collection
+    .where('userId', '==', uid)
+    .onSnapshot(snapshot => {
+      const docs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      callback(docs);
+    }, error => {
+      console.error('Error in user-scoped listener:', error);
+    });
 }
 
 console.log('🔥 Firebase initialized successfully!');

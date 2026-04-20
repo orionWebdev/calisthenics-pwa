@@ -87,7 +87,7 @@ const sessionTemplatesCollection = db.collection('sessionTemplates');
 
 async function loadSessionTemplates() {
   try {
-    allSessionTemplates = await getAllDocs(sessionTemplatesCollection);
+    allSessionTemplates = await getAllDocsForUser(sessionTemplatesCollection);
     console.log('✅ Session templates loaded:', allSessionTemplates.length);
     return allSessionTemplates;
   } catch (error) {
@@ -97,7 +97,7 @@ async function loadSessionTemplates() {
 }
 
 function setupSessionTemplatesListener() {
-  onCollectionChange(sessionTemplatesCollection, (templates) => {
+  onUserCollectionChange(sessionTemplatesCollection, (templates) => {
     allSessionTemplates = templates;
     // Trigger re-render if needed
     if (typeof renderSessionTemplatesList === 'function') {
