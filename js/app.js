@@ -365,7 +365,12 @@ async function initApp() {
   }
 
   try {
-    // 0. Load user profile (needed for session load calculations)
+    // 0a. One-time migration: backfill userId on existing docs
+    if (typeof runUserIdBackfillIfNeeded === 'function') {
+      await runUserIdBackfillIfNeeded();
+    }
+
+    // 0b. Load user profile (needed for session load calculations)
     if (typeof loadUserProfileFromFirestore === 'function') {
       await loadUserProfileFromFirestore();
     } else if (typeof loadUserProfileFromCache === 'function') {

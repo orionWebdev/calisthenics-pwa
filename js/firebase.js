@@ -176,4 +176,51 @@ function onUserCollectionChange(collection, callback) {
     });
 }
 
+// ========================================
+// ONE-TIME MIGRATION: backfill userId
+// ========================================
+
+const MIGRATION_KEY = 'userId_backfill_done';
+const COLLECTIONS_TO_BACKFILL = [
+  sessionsCollection,
+  plansCollection,
+  progressCollection,
+  scheduleCollection,
+  exercisesCollection,
+  db.collection('sessionTemplates')
+];
+
+async function runUserIdBackfillIfNeeded() {
+  if (localStorage.getItem(MIGRATION_KEY)) return;
+
+  const uid = getActiveUserId();
+  console.log(`🔄 Running one-time userId backfill for ${uid}...`);
+
+  let totalUpdated = 0;
+
+  for (const coll of COLLECTIONS_TO_BACKFILL) {
+    const snap = await coll.get();
+    const docsWithout = snap.docs.filter(doc => !doc.data().userId);
+    if (docsWithout.length === 0) continue;
+
+    const BATCH_SIZE = 500;
+    for (let i = 0; i < docsWithout.length; i += BATCH_SIZE) {
+      const chunk = docsWithout.slice(i, i + BATCH_SIZE);
+      const batch = db.batch();
+      chunk.forEach(doc => batch.update(doc.ref, { userId: uid }));
+      await batch.commit();
+    }
+
+    totalUpdated += docsWithout.length;
+    console.log(`  ✅ ${coll.id}: ${docsWithout.length} docs backfilled`);
+  }
+
+  localStorage.setItem(MIGRATION_KEY, Date.now().toString());
+  if (totalUpdated > 0) {
+    console.log(`🎉 Backfill complete: ${totalUpdated} docs updated`);
+  } else {
+    console.log('✅ No backfill needed — all docs already have userId');
+  }
+}
+
 console.log('🔥 Firebase initialized successfully!');
