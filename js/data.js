@@ -384,15 +384,15 @@ const defaultExercises = [
 // Wird beim ersten Laden aufgerufen
 async function initializeDefaultExercises() {
   try {
-    // Check ob schon Übungen existieren
-    const existing = await getAllDocs(exercisesCollection);
+    // Check ob schon curated Übungen existieren
+    const existing = await getAllDocs(exercisesCuratedCollection);
 
     if (existing.length === 0) {
       console.log('Initializing default exercises...');
 
-      // Alle default Übungen hinzufügen
+      // Alle default Übungen in die curated Collection hinzufügen (global, kein userId)
       for (const exercise of defaultExercises) {
-        await addDoc(exercisesCollection, exercise);
+        await addDoc(exercisesCuratedCollection, exercise, { scoped: false });
       }
 
       console.log('Default exercises added: ' + defaultExercises.length);

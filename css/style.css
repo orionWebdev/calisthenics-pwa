@@ -17666,3 +17666,668 @@ input[type="range"]::-moz-range-progress {
   font-size: var(--font-size-xs);
   color: var(--text-tertiary);
 }
+
+/* ========================================
+   BLOCK TRAINING — Plan Editor
+   ======================================== */
+
+/* Block Type Sheet */
+.block-type-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.block-type-sheet.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.block-type-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.block-type-sheet-content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  background: var(--bg-secondary, #1f2937);
+  border-radius: 16px 16px 0 0;
+  padding: 1rem 1rem 2rem;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.block-type-sheet.active .block-type-sheet-content {
+  transform: translateY(0);
+}
+.block-type-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin: 0 auto 1rem;
+}
+.block-type-sheet-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.block-type-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  background: rgba(31, 41, 55, 0.5);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  color: inherit;
+}
+.block-type-option:hover {
+  background: rgba(31, 41, 55, 0.8);
+  border-color: rgba(107, 114, 128, 0.5);
+}
+.block-type-option-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.block-type-option-icon--normal {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+.block-type-option-icon--superset {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+.block-type-option-icon--emom {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.block-type-option-text h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+.block-type-option-text p {
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #9ca3af);
+  margin: 0;
+}
+
+/* Plan Block Container (grouped exercises in plan list) */
+.plan-block {
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: rgba(31, 41, 55, 0.25);
+  transition: all 0.2s ease;
+}
+.plan-block--emom {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.04);
+}
+.plan-block--superset {
+  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(139, 92, 246, 0.04);
+}
+.plan-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.plan-block-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.plan-block-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.plan-block-badge--emom {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.plan-block-badge--superset {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+.plan-block-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #9ca3af);
+}
+.plan-block-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.plan-block-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+.plan-block-actions button:hover {
+  background: rgba(75, 85, 99, 0.4);
+  color: #9ca3af;
+}
+.plan-block-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.plan-block-exercise {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+.plan-block-exercise-name {
+  flex: 1;
+  font-weight: 500;
+}
+.plan-block-exercise-target {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #9ca3af);
+}
+
+/* EMOM / Superset Config Modal */
+.block-config-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.block-config-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.block-config-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.block-config-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--bg-secondary, #1f2937);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+}
+.block-config-modal.active .block-config-modal-content {
+  transform: scale(1);
+}
+.block-config-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.block-config-modal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.block-config-close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(75, 85, 99, 0.3);
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+}
+.block-config-exercises {
+  margin-bottom: 1.25rem;
+}
+.block-config-exercises h4 {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+.block-config-exercise-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.2);
+}
+.block-config-exercise-row:last-child {
+  border-bottom: none;
+}
+.block-config-exercise-name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.block-config-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.block-config-field label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 0.375rem;
+}
+.block-config-field input {
+  width: 100%;
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+.block-config-field input:focus {
+  outline: none;
+  border-color: var(--color-primary, #F02277);
+}
+.block-config-reps-section h4 {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+.block-config-rep-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+.block-config-rep-row label {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.block-config-rep-row input {
+  width: 80px;
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: center;
+}
+.block-config-rep-row input:focus {
+  outline: none;
+  border-color: var(--color-primary, #F02277);
+}
+.block-config-save-btn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(to right, #db2777, #be185d);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: opacity 0.15s ease;
+}
+.block-config-save-btn:hover {
+  opacity: 0.9;
+}
+
+/* Rest slider in superset config */
+.block-config-rest-slider {
+  margin-bottom: 1.25rem;
+}
+.block-config-rest-slider label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 0.5rem;
+}
+.block-config-rest-slider input[type="range"] {
+  width: 100%;
+  accent-color: var(--color-primary, #F02277);
+}
+.block-config-rest-value {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* ========================================
+   BLOCK TRAINING — Workout Player
+   ======================================== */
+
+/* Block Pill variants */
+.st-pill--emom.st-pill--active {
+  background: #d97706;
+}
+.st-pill--emom.st-pill--completed {
+  background: rgba(217, 119, 6, 0.12);
+  color: #fbbf24;
+}
+.st-pill--superset.st-pill--active {
+  background: #7c3aed;
+}
+.st-pill--superset.st-pill--completed {
+  background: rgba(124, 58, 237, 0.12);
+  color: #a78bfa;
+}
+
+/* EMOM Pre-Screen */
+.emom-prescreen {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+.emom-prescreen-icon {
+  font-size: 3rem;
+  color: #fbbf24;
+  margin-bottom: 0.5rem;
+}
+.emom-prescreen-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.emom-prescreen-duration {
+  font-size: 1.125rem;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 1.5rem;
+}
+.emom-prescreen-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+}
+.emom-prescreen-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.emom-prescreen-exercise {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(31, 41, 55, 0.5);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 10px;
+}
+.emom-prescreen-exercise-name {
+  font-weight: 600;
+}
+.emom-prescreen-exercise-reps {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #9ca3af);
+}
+.emom-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(to right, #d97706, #b45309);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  margin-bottom: 1rem;
+}
+.emom-start-btn:hover {
+  opacity: 0.9;
+}
+.emom-skip-btn {
+  display: block;
+  margin: 0 auto;
+  background: none;
+  border: none;
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+/* EMOM Active Timer */
+.emom-active {
+  padding: 1rem;
+}
+.emom-minute-label {
+  text-align: center;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 0.5rem;
+}
+.emom-timer-display {
+  text-align: center;
+  font-size: 3.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+.emom-timer-sub {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 1.25rem;
+}
+.emom-current-exercise {
+  background: rgba(31, 41, 55, 0.5);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+.emom-current-exercise-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.emom-current-exercise-target {
+  font-size: 1rem;
+  color: var(--text-secondary, #9ca3af);
+}
+.emom-next-hint {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 1rem;
+}
+.emom-total-remaining {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-tertiary, #6b7280);
+  margin-bottom: 1.25rem;
+}
+.emom-log-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.emom-log-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.emom-log-btn--done {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+.emom-log-btn--done:hover {
+  background: rgba(34, 197, 94, 0.25);
+}
+.emom-log-btn--missed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+.emom-log-btn--missed:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* EMOM Completed Overlay */
+.emom-complete {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+.emom-complete-icon {
+  font-size: 3rem;
+  color: #4ade80;
+  margin-bottom: 0.5rem;
+}
+.emom-complete-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.emom-complete-btn {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(to right, #db2777, #be185d);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ========================================
+   Superset Runner
+   ======================================== */
+
+.superset-overview {
+  padding: 0 1rem 1rem;
+}
+.superset-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(31, 41, 55, 0.3);
+  border: 1px solid rgba(75, 85, 99, 0.2);
+  border-radius: 12px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.superset-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+.superset-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #a78bfa;
+  min-width: 24px;
+}
+.superset-exercise-name {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.superset-set-dots {
+  display: flex;
+  gap: 4px;
+}
+.superset-set-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: rgba(75, 85, 99, 0.3);
+  color: var(--text-secondary, #9ca3af);
+}
+.superset-set-dot--done {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+.superset-set-dot--active {
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+.superset-current-label {
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  padding: 0.5rem 0;
+  border-top: 1px solid rgba(75, 85, 99, 0.2);
+  margin-top: 0.25rem;
+}

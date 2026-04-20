@@ -69,44 +69,81 @@ service cloud.firestore {
 
     /**
      * exercises collection (user-created exercises)
-     * - Allowed users can read, create, update, delete exercises
-     * - All exercises are shared across all allowed users
+     * - Each user can only access their own exercises
+     * - userId is required and must match the authenticated user
      */
     match /exercises/{exerciseId} {
-      allow read: if isAllowed();
+      allow read: if isAllowed() && isOwner(resource.data.userId);
       allow create: if isAllowed() &&
-        request.resource.data.keys().hasAll(['name', 'muscleGroups', 'difficulty']) &&
+        isOwner(request.resource.data.userId) &&
+        request.resource.data.keys().hasAll(['name', 'muscleGroups', 'difficulty', 'userId']) &&
         request.resource.data.name is string &&
         request.resource.data.muscleGroups is list &&
         request.resource.data.difficulty is number;
       allow update: if isAllowed() &&
-        request.resource.data.keys().hasAll(['name', 'muscleGroups', 'difficulty']);
-      allow delete: if isAllowed();
+        isOwner(resource.data.userId) &&
+        isOwner(request.resource.data.userId);
+      allow delete: if isAllowed() && isOwner(resource.data.userId);
     }
 
     // ==================== PLANS COLLECTION ====================
 
     /**
      * plans collection
-     * - Allowed users can read, create, update, delete plans
-     * - All plans are shared across all allowed users
+     * - Each user can only access their own plans
+     * - userId is required and must match the authenticated user
      */
     match /plans/{planId} {
-      allow read: if isAllowed();
+      allow read: if isAllowed() && isOwner(resource.data.userId);
       allow create: if isAllowed() &&
-        request.resource.data.keys().hasAll(['name', 'exercises']) &&
-        request.resource.data.name is string &&
-        request.resource.data.exercises is list;
-      allow update: if isAllowed();
-      allow delete: if isAllowed();
+        isOwner(request.resource.data.userId) &&
+        request.resource.data.keys().hasAll(['name', 'userId']);
+      allow update: if isAllowed() &&
+        isOwner(resource.data.userId) &&
+        isOwner(request.resource.data.userId);
+      allow delete: if isAllowed() && isOwner(resource.data.userId);
+    }
+
+    // ==================== SESSIONS COLLECTION ====================
+
+    /**
+     * sessions collection
+     * - Each user can only access their own sessions
+     * - userId is required and must match the authenticated user
+     */
+    match /sessions/{sessionId} {
+      allow read: if isAllowed() && isOwner(resource.data.userId);
+      allow create: if isAllowed() &&
+        isOwner(request.resource.data.userId) &&
+        request.resource.data.keys().hasAll(['type', 'userId']);
+      allow update: if isAllowed() &&
+        isOwner(resource.data.userId) &&
+        isOwner(request.resource.data.userId);
+      allow delete: if isAllowed() && isOwner(resource.data.userId);
+    }
+
+    // ==================== PROGRESS COLLECTION ====================
+
+    /**
+     * progress collection
+     * - Each user can only access their own progress entries
+     * - userId is required and must match the authenticated user
+     */
+    match /progress/{progressId} {
+      allow read: if isAllowed() && isOwner(resource.data.userId);
+      allow create: if isAllowed() &&
+        isOwner(request.resource.data.userId) &&
+        request.resource.data.keys().hasAll(['exerciseId', 'userId']);
+      allow update: if isAllowed() &&
+        isOwner(resource.data.userId) &&
+        isOwner(request.resource.data.userId);
+      allow delete: if isAllowed() && isOwner(resource.data.userId);
     }
 
     // ==================== WORKOUTS COLLECTION ====================
 
     /**
-     * workouts collection
-     * - Allowed users can read, create, update, delete workouts
-     * - All workouts are shared across all allowed users
+     * workouts collection (currently unused, kept for future use)
      */
     match /workouts/{workoutId} {
       allow read: if isAllowed();
@@ -123,17 +160,35 @@ service cloud.firestore {
 
     /**
      * schedule collection
-     * - Allowed users can read, create, update, delete schedule entries
-     * - All schedule entries are shared across all allowed users
+     * - Each user can only access their own schedule entries
+     * - userId is required and must match the authenticated user
      */
     match /schedule/{scheduleId} {
-      allow read: if isAllowed();
+      allow read: if isAllowed() && isOwner(resource.data.userId);
       allow create: if isAllowed() &&
-        request.resource.data.keys().hasAll(['date', 'planId']) &&
-        request.resource.data.date is string &&
-        request.resource.data.planId is string;
-      allow update: if isAllowed();
-      allow delete: if isAllowed();
+        isOwner(request.resource.data.userId) &&
+        request.resource.data.keys().hasAll(['date', 'userId']);
+      allow update: if isAllowed() &&
+        isOwner(resource.data.userId) &&
+        isOwner(request.resource.data.userId);
+      allow delete: if isAllowed() && isOwner(resource.data.userId);
+    }
+
+    // ==================== SESSION TEMPLATES COLLECTION ====================
+
+    /**
+     * sessionTemplates collection
+     * - Each user can only access their own session templates
+     * - userId is required and must match the authenticated user
+     */
+    match /sessionTemplates/{templateId} {
+      allow read: if isAllowed() && isOwner(resource.data.userId);
+      allow create: if isAllowed() &&
+        isOwner(request.resource.data.userId);
+      allow update: if isAllowed() &&
+        isOwner(resource.data.userId) &&
+        isOwner(request.resource.data.userId);
+      allow delete: if isAllowed() && isOwner(resource.data.userId);
     }
 
     // ==================== USER PROFILES COLLECTION ====================

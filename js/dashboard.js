@@ -1542,16 +1542,16 @@ async function refreshDashboard() {
 
 async function initDashboard() {
   console.log('Initializing Dashboard...');
-  if (typeof onCollectionChange === 'function' && typeof sessionsCollection !== 'undefined') {
-    onCollectionChange(sessionsCollection, (sessions) => {
+  if (typeof onUserCollectionChange === 'function' && typeof sessionsCollection !== 'undefined') {
+    onUserCollectionChange(sessionsCollection, (sessions) => {
       allSessions = sessions;
       sessionsLoaded = true;
       refreshDashboard();
     });
   }
   // Listen to schedule changes for scheduled workouts display
-  if (typeof onCollectionChange === 'function' && typeof scheduleCollection !== 'undefined') {
-    onCollectionChange(scheduleCollection, () => {
+  if (typeof onUserCollectionChange === 'function' && typeof scheduleCollection !== 'undefined') {
+    onUserCollectionChange(scheduleCollection, () => {
       refreshDashboard();
     });
   }

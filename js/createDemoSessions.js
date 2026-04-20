@@ -10,7 +10,7 @@ async function createDemoSessions() {
 
   try {
     // Hole Übungen
-    const exercises = await getAllDocs(exercisesCollection);
+    const exercises = await getAllDocsForUser(exercisesCollection);
 
     if (exercises.length === 0) {
   if (typeof showEdgeFeedback === 'function') {
@@ -151,7 +151,7 @@ async function deleteAllSessions() {
   console.log('🗑️ Lösche alle Sessions...');
 
   try {
-    const allSessions = await getAllDocs(sessionsCollection);
+    const allSessions = await getAllDocsForUser(sessionsCollection);
     console.log(`📊 Gefunden: ${allSessions.length} Sessions`);
 
     let deleted = 0;

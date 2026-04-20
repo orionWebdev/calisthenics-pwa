@@ -32,6 +32,14 @@ const userProfilesCollection = db.collection('userProfiles');
 // FIRESTORE HELPER FUNCTIONS
 // ========================================
 
+function getActiveUserId() {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    throw new Error('No authenticated user — Firestore operation blocked');
+  }
+  return user.uid;
+}
+
 function isPlainObject(value) {
   if (!value || typeof value !== 'object') return false;
   return Object.getPrototypeOf(value) === Object.prototype;
@@ -65,7 +73,7 @@ function sanitizeFirestorePayload(payload) {
   return stripUndefinedDeep(payload);
 }
 
-// Alle Dokumente aus einer Collection laden
+// Alle Dokumente aus einer Collection laden (global, z.B. für exercises_curated)
 async function getAllDocs(collection) {
   try {
     const snapshot = await collection.get();
@@ -79,13 +87,32 @@ async function getAllDocs(collection) {
   }
 }
 
-// Ein Dokument hinzufügen
-async function addDoc(collection, data) {
+// User-scoped Load: nur Dokumente des aktuell angemeldeten Nutzers
+async function getAllDocsForUser(collection) {
   try {
-    const sanitized = sanitizeFirestorePayload({
+    const uid = getActiveUserId();
+    const snapshot = await collection.where('userId', '==', uid).get();
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error loading user-scoped documents:', error);
+    return [];
+  }
+}
+
+// Ein Dokument hinzufügen. scoped=true (Default) injiziert userId automatisch.
+async function addDoc(collection, data, options = { scoped: true }) {
+  try {
+    const payload = {
       ...data,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    };
+    if (options.scoped !== false) {
+      payload.userId = getActiveUserId();
+    }
+    const sanitized = sanitizeFirestorePayload(payload);
     const docRef = await collection.add(sanitized);
     return docRef.id;
   } catch (error) {
@@ -120,7 +147,7 @@ async function deleteDoc(collection, id) {
   }
 }
 
-// Real-time Listener für eine Collection
+// Real-time Listener für eine Collection (global, z.B. für exercises_curated)
 function onCollectionChange(collection, callback) {
   return collection.onSnapshot(snapshot => {
     const docs = snapshot.docs.map(doc => ({
@@ -131,6 +158,69 @@ function onCollectionChange(collection, callback) {
   }, error => {
     console.error('Error in real-time listener:', error);
   });
+}
+
+// User-scoped Real-time Listener: nur Dokumente des aktuellen Nutzers
+function onUserCollectionChange(collection, callback) {
+  const uid = getActiveUserId();
+  return collection
+    .where('userId', '==', uid)
+    .onSnapshot(snapshot => {
+      const docs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      callback(docs);
+    }, error => {
+      console.error('Error in user-scoped listener:', error);
+    });
+}
+
+// ========================================
+// ONE-TIME MIGRATION: backfill userId
+// ========================================
+
+const MIGRATION_KEY = 'userId_backfill_done';
+const COLLECTIONS_TO_BACKFILL = [
+  sessionsCollection,
+  plansCollection,
+  progressCollection,
+  scheduleCollection,
+  exercisesCollection,
+  db.collection('sessionTemplates')
+];
+
+async function runUserIdBackfillIfNeeded() {
+  if (localStorage.getItem(MIGRATION_KEY)) return;
+
+  const uid = getActiveUserId();
+  console.log(`🔄 Running one-time userId backfill for ${uid}...`);
+
+  let totalUpdated = 0;
+
+  for (const coll of COLLECTIONS_TO_BACKFILL) {
+    const snap = await coll.get();
+    const docsWithout = snap.docs.filter(doc => !doc.data().userId);
+    if (docsWithout.length === 0) continue;
+
+    const BATCH_SIZE = 500;
+    for (let i = 0; i < docsWithout.length; i += BATCH_SIZE) {
+      const chunk = docsWithout.slice(i, i + BATCH_SIZE);
+      const batch = db.batch();
+      chunk.forEach(doc => batch.update(doc.ref, { userId: uid }));
+      await batch.commit();
+    }
+
+    totalUpdated += docsWithout.length;
+    console.log(`  ✅ ${coll.id}: ${docsWithout.length} docs backfilled`);
+  }
+
+  localStorage.setItem(MIGRATION_KEY, Date.now().toString());
+  if (totalUpdated > 0) {
+    console.log(`🎉 Backfill complete: ${totalUpdated} docs updated`);
+  } else {
+    console.log('✅ No backfill needed — all docs already have userId');
+  }
 }
 
 console.log('🔥 Firebase initialized successfully!');

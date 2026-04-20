@@ -107,7 +107,7 @@ async function loadSessions() {
   try {
     console.log('Loading sessions...');
     sessionsLoaded = false;
-    allSessions = await getAllDocs(sessionsCollection);
+    allSessions = await getAllDocsForUser(sessionsCollection);
     sessionsLoaded = true;
     console.log(`Loaded ${allSessions.length} sessions`);
     return allSessions;
@@ -3246,20 +3246,25 @@ function computeFormScore(sessions, referenceDate) {
 
 /**
  * Maps form score to a training form zone (Garmin-inspired).
+ * Applies a mild non-linear compression (exp 1.3) to reduce clustering
+ * in the upper range, so "peak_form" becomes a rarer, special state.
+ *
  * Zones: detrained, declining, recovery, maintaining, building, productive, peak_form
  * No "overload" zone – overreaching belongs to readiness (ACWR).
- * Peak form (93-100) is rare and special – like Garmin's "Peaking".
  */
 function mapFormZone(score, daysSinceLastSession) {
+  // Non-linear compression: pushes high scores down so peak_form is rare.
+  const adjusted = Math.pow(Math.max(0, score) / 100, 1.3) * 100;
+
   // Recovery override: 2-5 days rest while form is still above detrained
-  if (daysSinceLastSession >= 2 && daysSinceLastSession <= 5 && score > 20) {
+  if (daysSinceLastSession >= 2 && daysSinceLastSession <= 5 && adjusted > 13) {
     return 'recovery';
   }
-  if (score <= 20) return 'detrained';
-  if (score <= 38) return 'declining';
-  if (score <= 60) return 'maintaining';
-  if (score <= 82) return 'building';
-  if (score <= 92) return 'productive';
+  if (adjusted <= 13) return 'detrained';
+  if (adjusted <= 32) return 'declining';
+  if (adjusted <= 58) return 'maintaining';
+  if (adjusted <= 78) return 'building';
+  if (adjusted <= 94) return 'productive';
   return 'peak_form';
 }
 

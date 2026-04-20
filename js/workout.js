@@ -127,8 +127,68 @@ function mapPlanItemToWorkoutExercise(item) {
     targetRest: isCardioOrRecovery ? 0 : (item.restSec || 90),
     completedSets: [],
     status: 'not-started',
-    notes: ''
+    notes: '',
+    executionType: item.executionType || 'normal',
+    groupId: item.groupId || null,
+    durationSec: item.durationSec || null,
+    intervalSec: item.intervalSec || null
   };
+}
+
+// ========================================
+// BLOCK HELPERS (derived at render time)
+// ========================================
+
+function getWorkoutBlocks() {
+  if (!activeWorkout || !activeWorkout.exercises) return [];
+  const exercises = activeWorkout.exercises;
+  const blocks = [];
+  const groupMap = new Map();
+
+  exercises.forEach((ex, idx) => {
+    if (ex.groupId) {
+      let block = groupMap.get(ex.groupId);
+      if (!block) {
+        block = {
+          type: ex.executionType || 'normal',
+          groupId: ex.groupId,
+          exerciseIndices: [],
+          exercises: [],
+          durationSec: ex.durationSec,
+          intervalSec: ex.intervalSec
+        };
+        groupMap.set(ex.groupId, block);
+        blocks.push(block);
+      }
+      block.exerciseIndices.push(idx);
+      block.exercises.push(ex);
+    } else {
+      blocks.push({
+        type: ex.executionType || 'normal',
+        groupId: null,
+        exerciseIndices: [idx],
+        exercises: [ex],
+        durationSec: null,
+        intervalSec: null
+      });
+    }
+  });
+  return blocks;
+}
+
+function getCurrentBlock() {
+  const blocks = getWorkoutBlocks();
+  const idx = activeWorkout.currentExerciseIndex;
+  return blocks.find(b => b.exerciseIndices.includes(idx)) || blocks[0] || null;
+}
+
+function getBlockIndex(block) {
+  const blocks = getWorkoutBlocks();
+  return blocks.indexOf(block);
+}
+
+function isBlockCompleted(block) {
+  return block.exercises.every(ex => ex.status === 'completed');
 }
 
 /**
@@ -142,8 +202,6 @@ function getWorkoutExerciseType(exercise) {
     : null;
   return ex?.type || 'strength';
 }
-
-const WORKOUT_USER_ID = typeof CURRENT_USER_ID !== 'undefined' ? CURRENT_USER_ID : 'demo-user-123';
 
 // ==================== LIFECYCLE ====================
 
@@ -519,7 +577,6 @@ async function completeWorkout() {
 
     // Create session document
     const sessionData = {
-      userId: WORKOUT_USER_ID,
       type: 'strength',
       date: firebase.firestore.Timestamp.fromDate(workoutDate),
       planId: activeWorkout.planId,
@@ -643,7 +700,7 @@ async function completeWorkout() {
  */
 function getPreviousSessionForPlan(planId, excludeId) {
   if (!planId) return null;
-  const userId = typeof WORKOUT_USER_ID !== 'undefined' ? WORKOUT_USER_ID : null;
+  const userId = typeof getActiveUserId === 'function' ? getActiveUserId() : null;
   const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
   const relevant = sessions.filter(s =>
     s.planId === planId &&
@@ -1060,18 +1117,34 @@ function renderWorkoutScreen() {
       </button>
     </div>`;
 
+  const currentBlock = hasExercises ? getCurrentBlock() : null;
+  const blockType = currentBlock ? currentBlock.type : 'normal';
+  const isGroupBlock = blockType === 'emom' || blockType === 'superset';
+
+  let mainContent = '';
+  if (!hasExercises) {
+    mainContent = emptyWorkoutContent;
+  } else if (blockType === 'emom') {
+    mainContent = renderEmomBlockContent(currentBlock);
+  } else if (blockType === 'superset') {
+    mainContent = renderSupersetBlockContent(currentBlock, currentExercise);
+  } else {
+    mainContent = `
+      ${renderSTDetail(currentExercise)}
+      ${renderSTTargetAndLastPerf(currentExercise)}
+      ${renderSTSetList(currentExercise)}
+    `;
+  }
+
   container.innerHTML = `
     <div class="st-screen">
       ${renderSTHeader(progress)}
-      ${hasExercises ? renderSTSwitcher() : ''}
-      ${hasExercises ? renderSTDetail(currentExercise) : emptyWorkoutContent}
-      ${hasExercises ? renderSTTargetAndLastPerf(currentExercise) : ''}
-      ${hasExercises ? renderSTSetList(currentExercise) : ''}
+      ${hasExercises ? renderBlockSwitcher() : ''}
+      ${mainContent}
       ${hasExercises ? renderWorkoutBottomActions() : ''}
     </div>
   `;
 
-  // Scroll active Pill in Switcher in Sichtbereich
   const activePill = container.querySelector('.st-pill--active');
   if (activePill) {
     setTimeout(() => {
@@ -1079,15 +1152,12 @@ function renderWorkoutScreen() {
     }, 50);
   }
 
-  // Scroll to top on mount
   window.scrollTo(0, 0);
 
-  // Re-render timer widget if timer is active (survives re-renders)
   if (isRestTimerActive()) {
     renderTimerWidget();
   }
 
-  // Start elapsed workout timer
   startWorkoutTimer();
 }
 
@@ -1173,6 +1243,388 @@ function renderSTSwitcher() {
         `;
       }).join('')}
     </div>
+  `;
+}
+
+/**
+ * Block Switcher — shows pills per block (grouped exercises = 1 pill)
+ */
+function renderBlockSwitcher() {
+  const blocks = getWorkoutBlocks();
+  const currentBlock = getCurrentBlock();
+
+  const pills = blocks.map(function(block) {
+    const isActive = block === currentBlock;
+    const completed = isBlockCompleted(block);
+    const hasProgress = block.exercises.some(function(ex) { return ex.completedSets.length > 0; });
+
+    var label = '';
+    var typeClass = '';
+    if (block.type === 'emom') {
+      var mins = Math.round((block.durationSec || 600) / 60);
+      label = t('block.workout.blockPill.emom', { minutes: mins });
+      typeClass = 'st-pill--emom';
+    } else if (block.type === 'superset') {
+      label = t('block.workout.blockPill.superset');
+      typeClass = 'st-pill--superset';
+    } else {
+      label = (block.exercises[0] && block.exercises[0].exerciseName) || '';
+    }
+
+    var firstIdx = block.exerciseIndices[0];
+    var classes = 'st-pill ' + typeClass;
+    if (isActive) classes += ' st-pill--active';
+    if (completed) classes += ' st-pill--completed';
+    if (hasProgress && !completed) classes += ' st-pill--progress';
+
+    var checkIcon = completed ? '<span class="material-symbols-rounded st-pill-check">check</span>' : '';
+
+    return '<button type="button" class="' + classes + '" onclick="switchToBlock(' + firstIdx + ')" role="tab" aria-selected="' + isActive + '">'
+      + checkIcon
+      + '<span class="st-pill-label">' + label + '</span>'
+      + '</button>';
+  });
+
+  return '<div class="st-switcher" role="tablist">' + pills.join('') + '</div>';
+}
+
+function switchToBlock(firstExerciseIndex) {
+  if (!activeWorkout) return;
+  activeWorkout.currentExerciseIndex = firstExerciseIndex;
+  saveActiveWorkout();
+  renderWorkoutScreen();
+}
+
+// ========================================
+// EMOM RUNNER
+// ========================================
+
+let emomTimerState = null;
+
+function renderEmomBlockContent(block) {
+  if (!block) return '';
+
+  if (isBlockCompleted(block)) {
+    return renderEmomComplete(block);
+  }
+
+  if (!emomTimerState || emomTimerState.blockGroupId !== block.groupId) {
+    return renderEmomPrescreen(block);
+  }
+
+  return renderEmomActive(block);
+}
+
+function renderEmomPrescreen(block) {
+  const durationMin = Math.round((block.durationSec || 600) / 60);
+
+  const exerciseRows = block.exercises.map(ex => {
+    const reps = ex.targetReps || '-';
+    return `
+      <div class="emom-prescreen-exercise">
+        <span class="emom-prescreen-exercise-name">${ex.exerciseName}</span>
+        <span class="emom-prescreen-exercise-reps">×${reps}</span>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="emom-prescreen">
+      <div class="emom-prescreen-icon">
+        <span class="material-symbols-rounded" style="font-size:3rem;">timer</span>
+      </div>
+      <div class="emom-prescreen-title">${t('block.workout.emom.prescreenTitle')}</div>
+      <div class="emom-prescreen-duration">${t('block.workout.emom.prescreenDuration', { minutes: durationMin })}</div>
+      <div class="emom-prescreen-label">${t('block.workout.emom.prescreenEveryMinute')}</div>
+      <div class="emom-prescreen-exercises">
+        ${exerciseRows}
+      </div>
+      <button type="button" class="emom-start-btn" onclick="startEmomTimer()">
+        <span class="material-symbols-rounded">play_arrow</span>
+        ${t('block.workout.emom.start')}
+      </button>
+      <button type="button" class="emom-skip-btn" onclick="skipEmomBlock()">
+        ${t('block.workout.emom.skip')}
+      </button>
+    </div>
+  `;
+}
+
+function startEmomTimer() {
+  const block = getCurrentBlock();
+  if (!block || block.type !== 'emom') return;
+
+  emomTimerState = {
+    blockGroupId: block.groupId,
+    startedAt: Date.now(),
+    durationSec: block.durationSec || 600,
+    intervalSec: block.intervalSec || 60,
+    tickId: null,
+    lastMinute: -1
+  };
+
+  block.exercises.forEach(ex => { ex.status = 'in-progress'; });
+  saveActiveWorkout();
+
+  renderWorkoutScreen();
+  startEmomTick();
+}
+
+function startEmomTick() {
+  if (emomTimerState && emomTimerState.tickId) {
+    clearInterval(emomTimerState.tickId);
+  }
+  if (!emomTimerState) return;
+
+  emomTimerState.tickId = setInterval(() => {
+    if (!emomTimerState) return;
+    const elapsed = (Date.now() - emomTimerState.startedAt) / 1000;
+
+    if (elapsed >= emomTimerState.durationSec) {
+      completeEmomBlock();
+      return;
+    }
+
+    const currentMinute = Math.floor(elapsed / emomTimerState.intervalSec);
+    if (currentMinute !== emomTimerState.lastMinute) {
+      emomTimerState.lastMinute = currentMinute;
+      if (typeof triggerHapticFeedback === 'function') {
+        triggerHapticFeedback('medium');
+      }
+    }
+
+    updateEmomTimerUI(elapsed);
+  }, 250);
+}
+
+function updateEmomTimerUI(elapsedSec) {
+  if (!emomTimerState) return;
+
+  const { durationSec, intervalSec } = emomTimerState;
+  const totalMinutes = Math.ceil(durationSec / intervalSec);
+  const currentMinute = Math.floor(elapsedSec / intervalSec) + 1;
+  const timeInMinute = elapsedSec % intervalSec;
+  const remainingInMinute = intervalSec - timeInMinute;
+  const totalRemaining = durationSec - elapsedSec;
+
+  const block = getCurrentBlock();
+  if (!block) return;
+  const exCount = block.exercises.length;
+  const currentExIdx = (currentMinute - 1) % exCount;
+  const nextExIdx = currentMinute % exCount;
+  const currentEx = block.exercises[currentExIdx];
+  const nextEx = block.exercises[nextExIdx];
+
+  const timerEl = document.getElementById('emom-timer-value');
+  const minuteEl = document.getElementById('emom-minute-label');
+  const currentNameEl = document.getElementById('emom-current-name');
+  const currentTargetEl = document.getElementById('emom-current-target');
+  const nextHintEl = document.getElementById('emom-next-hint');
+  const totalEl = document.getElementById('emom-total-remaining');
+
+  if (timerEl) timerEl.textContent = formatEmomTime(remainingInMinute);
+  if (minuteEl) minuteEl.textContent = t('block.workout.emom.minute', { current: Math.min(currentMinute, totalMinutes), total: totalMinutes });
+  if (currentNameEl) currentNameEl.textContent = currentEx?.exerciseName || '';
+  if (currentTargetEl) currentTargetEl.textContent = '×' + (currentEx?.targetReps || '-');
+  if (nextHintEl) nextHintEl.textContent = t('block.workout.emom.next', { name: nextEx?.exerciseName || '', reps: nextEx?.targetReps || '-' });
+  if (totalEl) totalEl.textContent = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
+}
+
+function formatEmomTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function renderEmomActive(block) {
+  const elapsed = (Date.now() - emomTimerState.startedAt) / 1000;
+  const { durationSec, intervalSec } = emomTimerState;
+  const totalMinutes = Math.ceil(durationSec / intervalSec);
+  const currentMinute = Math.min(Math.floor(elapsed / intervalSec) + 1, totalMinutes);
+  const timeInMinute = elapsed % intervalSec;
+  const remainingInMinute = intervalSec - timeInMinute;
+  const totalRemaining = durationSec - elapsed;
+
+  const exCount = block.exercises.length;
+  const currentExIdx = (currentMinute - 1) % exCount;
+  const nextExIdx = currentMinute % exCount;
+  const currentEx = block.exercises[currentExIdx];
+  const nextEx = block.exercises[nextExIdx];
+
+  return `
+    <div class="emom-active">
+      <div class="emom-minute-label" id="emom-minute-label">
+        ${t('block.workout.emom.minute', { current: currentMinute, total: totalMinutes })}
+      </div>
+      <div class="emom-timer-display" id="emom-timer-value">
+        ${formatEmomTime(remainingInMinute)}
+      </div>
+      <div class="emom-timer-sub">${t('block.workout.emom.remainingInMinute')}</div>
+
+      <div class="emom-current-exercise">
+        <div class="emom-current-exercise-name" id="emom-current-name">${currentEx?.exerciseName || ''}</div>
+        <div class="emom-current-exercise-target" id="emom-current-target">×${currentEx?.targetReps || '-'}</div>
+      </div>
+
+      <div class="emom-next-hint" id="emom-next-hint">
+        ${t('block.workout.emom.next', { name: nextEx?.exerciseName || '', reps: nextEx?.targetReps || '-' })}
+      </div>
+      <div class="emom-total-remaining" id="emom-total-remaining">
+        ${t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) })}
+      </div>
+
+      <div class="emom-log-buttons">
+        <button type="button" class="emom-log-btn emom-log-btn--done" onclick="logEmomRound(true)">
+          <span class="material-symbols-rounded">check</span>
+          ${t('block.workout.emom.done')}
+        </button>
+        <button type="button" class="emom-log-btn emom-log-btn--missed" onclick="logEmomRound(false)">
+          <span class="material-symbols-rounded">close</span>
+          ${t('block.workout.emom.missed')}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function logEmomRound(completed) {
+  if (!emomTimerState || !activeWorkout) return;
+  const block = getCurrentBlock();
+  if (!block) return;
+
+  const elapsed = (Date.now() - emomTimerState.startedAt) / 1000;
+  const currentMinute = Math.floor(elapsed / emomTimerState.intervalSec);
+  const exCount = block.exercises.length;
+  const currentExIdx = currentMinute % exCount;
+  const exercise = block.exercises[currentExIdx];
+
+  if (exercise) {
+    const reps = completed ? parseInt(exercise.targetReps, 10) || 0 : 0;
+    exercise.completedSets.push({
+      reps,
+      weight: null,
+      completedAt: firebase.firestore.Timestamp.now(),
+      emomMinute: currentMinute + 1
+    });
+    saveActiveWorkout();
+  }
+
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback(completed ? 'success' : 'light');
+  }
+}
+
+function completeEmomBlock() {
+  if (emomTimerState && emomTimerState.tickId) {
+    clearInterval(emomTimerState.tickId);
+  }
+
+  const block = getCurrentBlock();
+  if (block) {
+    block.exercises.forEach(ex => { ex.status = 'completed'; });
+  }
+
+  emomTimerState = null;
+  saveActiveWorkout();
+
+  if (typeof triggerHapticFeedback === 'function') {
+    triggerHapticFeedback('success');
+  }
+
+  renderWorkoutScreen();
+  autoAdvanceToNextBlock();
+}
+
+function skipEmomBlock() {
+  const block = getCurrentBlock();
+  if (block) {
+    block.exercises.forEach(ex => { ex.status = 'completed'; });
+  }
+  emomTimerState = null;
+  saveActiveWorkout();
+  renderWorkoutScreen();
+  autoAdvanceToNextBlock();
+}
+
+function renderEmomComplete(block) {
+  return `
+    <div class="emom-complete">
+      <div class="emom-complete-icon">
+        <span class="material-symbols-rounded">check_circle</span>
+      </div>
+      <div class="emom-complete-title">${t('block.workout.emom.blockComplete')}</div>
+      <button type="button" class="emom-complete-btn" onclick="autoAdvanceToNextBlock()">
+        <span class="material-symbols-rounded">arrow_forward</span>
+      </button>
+    </div>
+  `;
+}
+
+function autoAdvanceToNextBlock() {
+  const blocks = getWorkoutBlocks();
+  const currentBlock = getCurrentBlock();
+  const currentIdx = blocks.indexOf(currentBlock);
+  const nextBlock = blocks.find((b, i) => i > currentIdx && !isBlockCompleted(b));
+
+  if (nextBlock) {
+    activeWorkout.currentExerciseIndex = nextBlock.exerciseIndices[0];
+    saveActiveWorkout();
+    renderWorkoutScreen();
+  } else {
+    const allDone = blocks.every(b => isBlockCompleted(b));
+    if (allDone && typeof confirmEndWorkout === 'function') {
+      confirmEndWorkout();
+    }
+  }
+}
+
+// ========================================
+// SUPERSET RUNNER
+// ========================================
+
+function renderSupersetBlockContent(block, currentExercise) {
+  if (!block) return '';
+
+  if (isBlockCompleted(block)) {
+    return renderEmomComplete(block);
+  }
+
+  const labels = ['A1', 'A2', 'A3', 'A4'];
+  const activeExIdx = block.exercises.indexOf(currentExercise);
+  const activeInBlock = activeExIdx >= 0 ? activeExIdx : 0;
+  const activeEx = block.exercises[activeInBlock];
+  const activeLabel = labels[activeInBlock] || 'A' + (activeInBlock + 1);
+
+  const overviewRows = block.exercises.map((ex, i) => {
+    const label = labels[i] || 'A' + (i + 1);
+    const targetSets = ex.targetSets || 3;
+    const dots = [];
+    for (let s = 0; s < targetSets; s++) {
+      const done = s < ex.completedSets.length;
+      const isNext = !done && s === ex.completedSets.length && i === activeInBlock;
+      dots.push(`<div class="superset-set-dot ${done ? 'superset-set-dot--done' : ''} ${isNext ? 'superset-set-dot--active' : ''}">${s + 1}</div>`);
+    }
+    return `
+      <div class="superset-exercise-row">
+        <span class="superset-label">${label}</span>
+        <span class="superset-exercise-name">${ex.exerciseName}</span>
+        <div class="superset-set-dots">${dots.join('')}</div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="superset-overview">
+      <div class="superset-pair">
+        ${overviewRows}
+      </div>
+      <div class="superset-current-label">
+        ${t('block.workout.superset.current', { label: activeLabel, name: activeEx?.exerciseName || '' })}
+      </div>
+    </div>
+    ${renderSTDetail(activeEx)}
+    ${renderSTTargetAndLastPerf(activeEx)}
+    ${renderSTSetList(activeEx)}
   `;
 }
 
@@ -2083,7 +2535,7 @@ function initActiveSetValues(exercise) {
  */
 function getLastPlanPerformance(planId, exerciseId, setIndex = null) {
   if (!planId || !exerciseId) return null;
-  const userId = typeof WORKOUT_USER_ID !== 'undefined' ? WORKOUT_USER_ID : null;
+  const userId = typeof getActiveUserId === 'function' ? getActiveUserId() : null;
   const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
   const relevant = sessions.filter(s =>
     s.planId === planId &&
@@ -2114,7 +2566,7 @@ function getLastPlanPerformance(planId, exerciseId, setIndex = null) {
  */
 function getGlobalLastPerformance(exerciseId) {
   if (!exerciseId) return null;
-  const userId = typeof WORKOUT_USER_ID !== 'undefined' ? WORKOUT_USER_ID : null;
+  const userId = typeof getActiveUserId === 'function' ? getActiveUserId() : null;
   const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
 
   // Find sessions that contain this exercise, sorted by date desc
@@ -3473,23 +3925,63 @@ function logSet(reps, weight = null, holdSec = null) {
 
   console.log('✅ Set logged:', holdSec ? `${holdSec}s hold` : `${reps} reps`, weight ? `@ ${weight}kg` : '');
 
-  // Auto-advance to next exercise after short delay so user sees completion
+  // Superset: after logging a set, switch to next exercise in group
+  const currentBlock = getCurrentBlock();
+  if (currentBlock && currentBlock.type === 'superset' && !exerciseJustCompleted) {
+    const exIdxInBlock = currentBlock.exerciseIndices.indexOf(activeWorkout.currentExerciseIndex);
+    if (exIdxInBlock >= 0) {
+      const nextInBlock = (exIdxInBlock + 1) % currentBlock.exerciseIndices.length;
+      const nextGlobalIdx = currentBlock.exerciseIndices[nextInBlock];
+      if (nextGlobalIdx !== activeWorkout.currentExerciseIndex) {
+        setTimeout(() => {
+          activeWorkout.currentExerciseIndex = nextGlobalIdx;
+          saveActiveWorkout();
+          renderWorkoutScreen();
+        }, 400);
+        return;
+      }
+    }
+  }
+
+  // Auto-advance to next exercise/block after completion
   if (exerciseJustCompleted) {
-    const nextIndex = activeWorkout.exercises.findIndex(
-      (ex, i) => i > activeWorkout.currentExerciseIndex && ex.status !== 'completed'
-    );
-    if (nextIndex !== -1) {
-      setTimeout(() => {
-        goToExercise(nextIndex);
-        if (typeof showEdgeFeedback === 'function') {
-          showEdgeFeedback('success', t('workout.feedback.exerciseComplete'));
+    if (currentBlock && (currentBlock.type === 'superset' || currentBlock.type === 'emom')) {
+      if (isBlockCompleted(currentBlock)) {
+        setTimeout(() => {
+          autoAdvanceToNextBlock();
+          if (typeof showEdgeFeedback === 'function') {
+            showEdgeFeedback('success', t('workout.feedback.exerciseComplete'));
+          }
+        }, 800);
+      } else {
+        const nextInBlock = currentBlock.exerciseIndices.find(idx => {
+          const ex = activeWorkout.exercises[idx];
+          return ex && ex.status !== 'completed';
+        });
+        if (nextInBlock !== undefined) {
+          setTimeout(() => {
+            activeWorkout.currentExerciseIndex = nextInBlock;
+            saveActiveWorkout();
+            renderWorkoutScreen();
+          }, 400);
         }
-      }, 800);
-    } else if (activeWorkout.exercises.every(ex => ex.status === 'completed')) {
-      // All exercises completed - trigger finish flow
-      setTimeout(() => {
-        confirmEndWorkout();
-      }, 800);
+      }
+    } else {
+      const nextIndex = activeWorkout.exercises.findIndex(
+        (ex, i) => i > activeWorkout.currentExerciseIndex && ex.status !== 'completed'
+      );
+      if (nextIndex !== -1) {
+        setTimeout(() => {
+          goToExercise(nextIndex);
+          if (typeof showEdgeFeedback === 'function') {
+            showEdgeFeedback('success', t('workout.feedback.exerciseComplete'));
+          }
+        }, 800);
+      } else if (activeWorkout.exercises.every(ex => ex.status === 'completed')) {
+        setTimeout(() => {
+          confirmEndWorkout();
+        }, 800);
+      }
     }
   }
 }

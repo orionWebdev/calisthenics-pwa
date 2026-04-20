@@ -193,6 +193,9 @@ async function signOut() {
       triggerHapticFeedback('light');
     }
 
+    // Reload to clear all in-memory data from previous user
+    window.location.reload();
+
     return { success: true };
   } catch (error) {
     console.error('❌ Sign-out error:', error);

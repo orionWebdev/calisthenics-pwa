@@ -47,7 +47,14 @@ async function initProgressV2() {
  */
 async function loadExercisesForProgressV2() {
   try {
-    exercisesData = await getAllDocs(exercisesCollection);
+    const [curated, userEx] = await Promise.all([
+      getAllDocs(exercisesCuratedCollection),
+      getAllDocsForUser(exercisesCollection)
+    ]);
+    const exerciseMap = new Map();
+    curated.forEach(ex => exerciseMap.set(ex.id, ex));
+    userEx.forEach(ex => exerciseMap.set(ex.id, ex));
+    exercisesData = Array.from(exerciseMap.values());
     exercisesLoaded = true;
     console.log(`✅ Loaded ${exercisesData.length} exercises`);
     return exercisesData;
