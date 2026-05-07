@@ -560,7 +560,7 @@ function showProgressEmpty() {
         <span class="material-symbols-rounded progress-empty-icon">insights</span>
         <h3>Noch keine Progress-Daten</h3>
         <p>Starte dein erstes Training, um deinen Fortschritt zu tracken</p>
-        <button onclick="showView('dashboard'); setTimeout(() => switchCalendarWidgetTab('planen'), 300);" class="progress-empty-btn">
+        <button onclick="showView('dashboard');" class="progress-empty-btn">
           <span class="material-symbols-rounded">calendar_month</span>
           <span>Zum Kalender</span>
         </button>

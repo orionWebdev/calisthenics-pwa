@@ -15,6 +15,9 @@ let pv4PlanDetailId = null;
 let pv4EnduranceSport = localStorage.getItem('enduranceSportKey') || 'run';
 let progressV3Initialized = false;
 
+// Activity calendar state (month-based, separate from period filter)
+let pv4ActivityMonth = new Date();
+
 // Exercise filter state
 let pv4ExerciseSearchTerm = '';
 let pv4ExerciseMuscleFilter = '';
@@ -336,6 +339,105 @@ let endurancePaceChartInstance = null;
 let enduranceDurationChartInstance = null;
 let enduranceSessionsChartInstance = null;
 
+// ==================== ACTIVITY CALENDAR (moved from Dashboard) ====================
+
+function renderV4ActivityCalendar() {
+  return `<div id="pv4-activity-calendar-card" class="pv3-card pv4-activity-calendar-card">
+    <h3 class="dashboard-calendar-widget-title">${trV3('progress.overview.activityCalendarTitle')}</h3>
+    ${renderV4ActivityCalendarInner()}
+  </div>`;
+}
+
+function renderV4ActivityCalendarInner() {
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  const year = pv4ActivityMonth.getFullYear();
+  const month = pv4ActivityMonth.getMonth();
+
+  const sessionsByDate = (typeof getDashboardSessionsByDate === 'function')
+    ? getDashboardSessionsByDate(sessions, year, month)
+    : {};
+
+  const monthKeys = ['january', 'february', 'march', 'april', 'may', 'june',
+                     'july', 'august', 'september', 'october', 'november', 'december'];
+  const monthDisplay = `${trV3('calendar.monthNames.' + monthKeys[month])} ${year}`;
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  let startDay = firstDay.getDay();
+  startDay = startDay === 0 ? 6 : startDay - 1;
+  const daysInMonth = lastDay.getDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  const dayLabels = dayKeys.map(k => trV3('calendar.dayNamesShort.' + k));
+
+  let calendarHTML = `<div class="dashboard-mini-calendar-expanded">`;
+  calendarHTML += `<div class="mini-cal-header-expanded">`;
+  calendarHTML += dayLabels.map(d => `<span class="mini-cal-day-label-expanded">${d}</span>`).join('');
+  calendarHTML += `</div>`;
+  calendarHTML += `<div class="mini-cal-grid-expanded">`;
+
+  for (let i = 0; i < startDay; i++) {
+    calendarHTML += `<div class="mini-cal-cell-expanded empty"></div>`;
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dateKey = (typeof getBerlinDateKey === 'function') ? getBerlinDateKey(date) : date.toISOString().slice(0, 10);
+    const isToday = date.toDateString() === today.toDateString();
+    const daySessions = sessionsByDate[dateKey] || [];
+
+    const aggregatedDots = (typeof aggregateDayByType === 'function') ? aggregateDayByType(daySessions) : [];
+    const dotHTML = (typeof renderNestedDots === 'function') ? renderNestedDots(aggregatedDots) : '';
+
+    const todayClass = isToday ? 'today' : '';
+    const hasSessionsClass = daySessions.length > 0 ? 'has-sessions' : '';
+
+    calendarHTML += `
+      <div class="mini-cal-cell-expanded ${todayClass} ${hasSessionsClass}"
+           onclick="openV4ActivityDaySheet('${dateKey}')"
+           role="button"
+           tabindex="0">
+        <span class="mini-cal-day-number">${day}</span>
+        ${dotHTML}
+      </div>
+    `;
+  }
+
+  calendarHTML += `</div></div>`;
+
+  return `
+    <div class="dashboard-activity-month-nav">
+      <button class="activity-nav-btn" onclick="navigateV4ActivityMonth('prev')" aria-label="${trV3('dashboard.calendar.prevMonth')}">
+        <span class="material-symbols-rounded">chevron_left</span>
+      </button>
+      <span class="activity-month-title">${monthDisplay}</span>
+      <button class="activity-nav-btn" onclick="navigateV4ActivityMonth('next')" aria-label="${trV3('dashboard.calendar.nextMonth')}">
+        <span class="material-symbols-rounded">chevron_right</span>
+      </button>
+    </div>
+    ${calendarHTML}
+  `;
+}
+
+function navigateV4ActivityMonth(direction) {
+  pv4ActivityMonth.setMonth(pv4ActivityMonth.getMonth() + (direction === 'next' ? 1 : -1));
+  const card = document.getElementById('pv4-activity-calendar-card');
+  if (card) card.innerHTML = renderV4ActivityCalendarInner();
+}
+
+function openV4ActivityDaySheet(dateKey) {
+  if (typeof openActivityDaySheet === 'function') {
+    openActivityDaySheet(dateKey);
+  }
+}
+
+window.navigateV4ActivityMonth = navigateV4ActivityMonth;
+window.openV4ActivityDaySheet = openV4ActivityDaySheet;
+
+// ==================== OVERVIEW ====================
+
 function renderV4Overview() {
   const days = v3PeriodDays(pv4Period);
   const sessions = v3SessionsInRange(days);
@@ -376,8 +478,12 @@ function renderV4Overview() {
   // Session history (collapsible)
   const historyHTML = renderV4SessionHistory(sessions);
 
+  // Activity calendar (rückwärtsgerichtet — was war)
+  const activityCalendarHTML = renderV4ActivityCalendar();
+
   return `
     ${renderV4PeriodSelector()}
+    ${activityCalendarHTML}
     ${formHTML}
     ${readinessHTML}
     <div class="pv4-summary-grid">${cardsHTML}</div>

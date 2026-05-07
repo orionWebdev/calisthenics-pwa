@@ -795,6 +795,9 @@ const translations = {
         prevMonth: 'Vorheriger Monat',
         nextMonth: 'Nächster Monat'
       },
+      planCalendar: {
+        title: 'Planungskalender'
+      },
       startWorkout: {
         selectPlan: 'Plan auswählen',
         selectPlanDesc: 'Starte ein Training aus deinen Plänen',
@@ -2203,6 +2206,9 @@ const translations = {
         addTraining: 'Add workout',
         prevMonth: 'Previous month',
         nextMonth: 'Next month'
+      },
+      planCalendar: {
+        title: 'Plan calendar'
       },
       startWorkout: {
         selectPlan: 'Select plan',

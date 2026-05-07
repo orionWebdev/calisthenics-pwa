@@ -2701,11 +2701,12 @@ body.modal-open {
   border-radius: var(--ui-card-radius-lg);
 }
 
-.dashboard-activity-calendar-title {
+.dashboard-calendar-widget-title {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+  margin: 0 0 0.625rem;
+  letter-spacing: -0.01em;
 }
 
 /* Calendar Widget Segmented Control (iOS-style, copied from pv3) */
