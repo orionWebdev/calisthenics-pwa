@@ -2701,11 +2701,12 @@ body.modal-open {
   border-radius: var(--ui-card-radius-lg);
 }
 
-.dashboard-activity-calendar-title {
+.dashboard-calendar-widget-title {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+  margin: 0 0 0.625rem;
+  letter-spacing: -0.01em;
 }
 
 /* Calendar Widget Segmented Control (iOS-style, copied from pv3) */
@@ -7672,6 +7673,35 @@ input[type="range"]::-moz-range-progress {
   font-size: 0.8rem;
   color: var(--text-secondary);
   line-height: 1.4;
+}
+
+/* ==================== BASELINE PROGRESS ==================== */
+
+.baseline-progress-container {
+  margin-top: var(--spacing-md, 1rem);
+  padding-top: var(--spacing-md, 1rem);
+  border-top: 1px solid var(--border-color-subtle);
+}
+
+.baseline-progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-surface-active);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.baseline-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--zone-productive), var(--zone-building));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.baseline-progress-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-align: center;
 }
 
 /* ==================== WEEKLY SCORE CHART ==================== */
@@ -16886,16 +16916,20 @@ input[type="range"]::-moz-range-progress {
 /* Sticky Bar (Period Selector klebt unter Header) */
 .pv3-sticky-bar {
   position: sticky;
-  top: 0;
+  /* Desktop: floating nav sits at top:1rem with ~64px height → pin below it */
+  top: 5.25rem;
   z-index: 30;
-  padding: 0.5rem 0 0.625rem;
+  padding: 0.625rem 0 0.625rem;
   background: var(--color-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 768px) {
   .pv3-sticky-bar {
-    top: calc(var(--mobile-header-height) + -2px);
+    /* Mobile: pin below fixed mobile header, accounting for iOS safe-area notch */
+    top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px) - 2px);
   }
 }
 
@@ -18330,4 +18364,40 @@ input[type="range"]::-moz-range-progress {
   padding: 0.5rem 0;
   border-top: 1px solid rgba(75, 85, 99, 0.2);
   margin-top: 0.25rem;
+}
+
+/* ========================================
+   KEYBOARD AVOIDANCE (mobile virtual keyboard)
+   See js/keyboardInset.js — sets --keyboard-inset and toggles body.keyboard-open
+   ======================================== */
+
+/* Pattern A — Bottom-anchored sheet (#bottom-sheet inside #bottom-sheet-overlay):
+   the sheet itself is `position: fixed; bottom: 0`. Lift its bottom above the keyboard. */
+#bottom-sheet-overlay .bottom-sheet {
+  bottom: var(--keyboard-inset, 0);
+  max-height: min(90vh, calc(100vh - var(--keyboard-inset, 0px) - 1rem));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), bottom 0.2s ease, max-height 0.2s ease;
+}
+
+/* Pattern B — Flex-end overlay containers: full-viewport flex with `align-items: flex-end`.
+   Padding the container lifts its child sheet above the keyboard. */
+#exercise-picker-sheet,
+#activity-picker-sheet,
+#plan-picker-overlay {
+  padding-bottom: var(--keyboard-inset, 0);
+  transition: padding-bottom 0.2s ease;
+}
+
+/* Pattern C — Centered modals (.modal): pad container so flex centering keeps the
+   modal within the un-keyboard area. */
+.modal {
+  padding-bottom: var(--keyboard-inset, 0);
+  transition: padding-bottom 0.2s ease;
+}
+
+/* Clamp picker-sheet content height so nothing pushes above the viewport when keyboard is up */
+body.keyboard-open #exercise-picker-sheet .sheet-content,
+body.keyboard-open #activity-picker-sheet .sheet-content,
+body.keyboard-open #plan-picker-overlay .bottom-sheet {
+  max-height: min(90vh, calc(100vh - var(--keyboard-inset, 0px) - 1rem));
 }

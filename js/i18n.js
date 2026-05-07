@@ -795,6 +795,9 @@ const translations = {
         prevMonth: 'Vorheriger Monat',
         nextMonth: 'Nächster Monat'
       },
+      planCalendar: {
+        title: 'Planungskalender'
+      },
       startWorkout: {
         selectPlan: 'Plan auswählen',
         selectPlanDesc: 'Starte ein Training aus deinen Plänen',
@@ -944,6 +947,12 @@ const translations = {
         changeSubLoad: '+{load} Belastung durch dein letztes Training',
         changeSubRest: '\u2212{load} Belastung durch {days} Ruhetage',
         changeDriver: 'Haupttreiber: {name} ({duration} min)'
+      },
+      baseline: {
+        days: 'Tage',
+        noData: 'Logge dein erstes Training, um die Baseline aufzubauen',
+        building: 'Baseline wird aufgebaut – noch {days} Tage nötig',
+        complete: 'Baseline aufgebaut'
       },
       recommendation: {
         title: 'Heutige Empfehlung',
@@ -2198,6 +2207,9 @@ const translations = {
         prevMonth: 'Previous month',
         nextMonth: 'Next month'
       },
+      planCalendar: {
+        title: 'Plan calendar'
+      },
       startWorkout: {
         selectPlan: 'Select plan',
         selectPlanDesc: 'Start a training from your plans',
@@ -2347,6 +2359,12 @@ const translations = {
         changeSubLoad: '+{load} load from your last workout',
         changeSubRest: '\u2212{load} load due to {days} rest days',
         changeDriver: 'Main driver: {name} ({duration} min)'
+      },
+      baseline: {
+        days: 'days',
+        noData: 'Log your first workout to start building your baseline',
+        building: 'Building baseline – {days} more days needed',
+        complete: 'Baseline built'
       },
       recommendation: {
         title: "Today's Recommendation",

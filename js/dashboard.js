@@ -7,8 +7,9 @@ const DASHBOARD_RECENT_LIMIT = 3;
 const DASHBOARD_BALANCE_DAYS = 7;
 let dashboardIsLoading = false;
 // Dashboard Activity Calendar state
-let dashboardActivityMonth = new Date();
-let dashboardCalendarTab = 'activity';
+// Plan calendar is now the only calendar on dashboard (activity calendar moved to Progress).
+// The activity-calendar helpers below (aggregateDayByType, renderNestedDots, getDashboardSessionsByDate)
+// remain exported so progressv3.js can reuse them.
 
 const tr = (key, params) => (typeof t === 'function' ? t(key, params) : key);
 
@@ -404,9 +405,9 @@ function openPlanWorkoutSheet() {
   if (typeof closeSheet === 'function') {
     closeSheet();
   }
-  // Switch to plan calendar tab on dashboard
-  if (typeof switchCalendarWidgetTab === 'function') {
-    switchCalendarWidgetTab('planen');
+  // Open the plan-quick-add sheet directly (plan calendar is the only calendar on dashboard now)
+  if (typeof openQuickAddSheet === 'function') {
+    setTimeout(() => openQuickAddSheet(), 220);
   }
 }
 
@@ -543,7 +544,7 @@ function renderScheduledWorkoutsCard(state) {
 
   container.innerHTML = `
     <div class="dashboard-scheduled-widget">
-      <div class="dashboard-scheduled-header" onclick="if(typeof switchCalendarWidgetTab==='function') switchCalendarWidgetTab('planen')" style="cursor: pointer;">
+      <div class="dashboard-scheduled-header" onclick="document.getElementById('dashboard-plan-calendar')?.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor: pointer;">
         <span class="material-symbols-rounded">event</span>
         <span>${tr('dashboard.scheduled.title')}</span>
         <span class="material-symbols-rounded" style="margin-left: auto; font-size: 18px; opacity: 0.5;">chevron_right</span>
@@ -1153,60 +1154,8 @@ function renderActivityCalendarGrid(options) {
   return html;
 }
 
-function navigateDashboardActivityMonth(direction) {
-  dashboardActivityMonth.setMonth(dashboardActivityMonth.getMonth() + (direction === 'next' ? 1 : -1));
-  renderDashboardActivityCalendar({ loading: false });
-}
-
-function openDashboardActivityDaySheet(dateKey) {
-  // Use existing openActivityDaySheet from progressv2.js if available
-  if (typeof openActivityDaySheet === 'function') {
-    openActivityDaySheet(dateKey);
-    return;
-  }
-
-  // Fallback: get sessions and show basic info
-  const sessions = typeof getSessionsForDate === 'function' ? getSessionsForDate(dateKey) : [];
-  const date = new Date(dateKey + 'T12:00:00');
-  const monthNamesFull = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
-                          'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
-
-  if (typeof openSheet === 'function') {
-    openSheet({
-      title: `Sessions am ${date.getDate()}. ${monthNamesFull[date.getMonth()]}`,
-      render: (sheetContainer) => {
-        if (sessions.length === 0) {
-          const emptyText = tr('dashboard.activityCalendar.emptyState') || 'Keine Sessions an diesem Tag';
-          sheetContainer.innerHTML = `
-            <div class="activity-day-empty">
-              <span class="material-symbols-rounded">event_busy</span>
-              <p>${emptyText}</p>
-            </div>
-          `;
-          return;
-        }
-
-        sheetContainer.innerHTML = sessions.map(session => {
-          const typeLabel = session.type === 'cardio' ? 'Cardio' : session.type === 'recovery' ? 'Recovery' : 'Kraft';
-          const durationSec = getSessionDurationSeconds(session);
-          const duration = Math.round(durationSec / 60);
-
-          return `
-            <div class="activity-session-item">
-              <div class="session-item-content">
-                <span class="session-type-badge ${session.type}">${typeLabel}</span>
-                <span class="session-duration">${duration} min</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-    });
-  }
-}
-
-function renderDashboardActivityCalendar(state) {
-  const container = document.getElementById('dashboard-activity-calendar');
+function renderDashboardPlanCalendar(state) {
+  const container = document.getElementById('dashboard-plan-calendar');
   if (!container) return;
 
   if (state.loading) {
@@ -1218,139 +1167,34 @@ function renderDashboardActivityCalendar(state) {
     return;
   }
 
-  const activeIdx = dashboardCalendarTab === 'activity' ? 0 : 1;
-
-  // Build segmented control
-  const segmentedControl = `
-    <div class="cal-widget-segmented-control" style="--seg-count:2;--active-idx:${activeIdx}">
-      <div class="cal-widget-seg-indicator"></div>
-      <button class="cal-widget-seg-btn${dashboardCalendarTab === 'activity' ? ' active' : ''}" data-tab="activity" onclick="switchCalendarWidgetTab('activity')">${tr('dashboard.calendar.tabActivity')}</button>
-      <button class="cal-widget-seg-btn${dashboardCalendarTab === 'planen' ? ' active' : ''}" data-tab="planen" onclick="switchCalendarWidgetTab('planen')">${tr('dashboard.calendar.tabPlan')}</button>
-    </div>
-  `;
-
   container.innerHTML = `
     <div class="dashboard-activity-widget-expanded">
-      ${segmentedControl}
-      <div id="cal-widget-content"></div>
-    </div>
-  `;
-
-  // Render the active tab content
-  if (dashboardCalendarTab === 'activity') {
-    renderActivityCalendarContent();
-  } else {
-    renderPlanCalendarInWidget();
-  }
-}
-
-function renderActivityCalendarContent() {
-  const contentEl = document.getElementById('cal-widget-content');
-  if (!contentEl) return;
-
-  const sessions = Array.isArray(allSessions) ? allSessions : [];
-  const year = dashboardActivityMonth.getFullYear();
-  const month = dashboardActivityMonth.getMonth();
-
-  const sessionsByDate = getDashboardSessionsByDate(sessions, year, month);
-
-  const monthKeys = ['january', 'february', 'march', 'april', 'may', 'june',
-                     'july', 'august', 'september', 'october', 'november', 'december'];
-  const monthDisplay = `${tr('calendar.monthNames.' + monthKeys[month])} ${year}`;
-
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  let startDay = firstDay.getDay();
-  startDay = startDay === 0 ? 6 : startDay - 1;
-  const daysInMonth = lastDay.getDate();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-  const dayLabels = dayKeys.map(k => tr('calendar.dayNamesShort.' + k));
-
-  let calendarHTML = `<div class="dashboard-mini-calendar-expanded">`;
-  calendarHTML += `<div class="mini-cal-header-expanded">`;
-  calendarHTML += dayLabels.map(d => `<span class="mini-cal-day-label-expanded">${d}</span>`).join('');
-  calendarHTML += `</div>`;
-  calendarHTML += `<div class="mini-cal-grid-expanded">`;
-
-  for (let i = 0; i < startDay; i++) {
-    calendarHTML += `<div class="mini-cal-cell-expanded empty"></div>`;
-  }
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
-    const dateKey = getBerlinDateKey(date);
-    const isToday = date.toDateString() === today.toDateString();
-    const daySessions = sessionsByDate[dateKey] || [];
-
-    const aggregatedDots = aggregateDayByType(daySessions);
-    const dotHTML = renderNestedDots(aggregatedDots);
-
-    const todayClass = isToday ? 'today' : '';
-    const hasSessionsClass = daySessions.length > 0 ? 'has-sessions' : '';
-
-    calendarHTML += `
-      <div class="mini-cal-cell-expanded ${todayClass} ${hasSessionsClass}"
-           onclick="openDashboardActivityDaySheet('${dateKey}')"
-           role="button"
-           tabindex="0">
-        <span class="mini-cal-day-number">${day}</span>
-        ${dotHTML}
-      </div>
-    `;
-  }
-
-  calendarHTML += `</div></div>`;
-
-  contentEl.innerHTML = `
-    <div class="dashboard-activity-month-nav">
-      <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('prev')" aria-label="${tr('dashboard.calendar.prevMonth')}">
-        <span class="material-symbols-rounded">chevron_left</span>
-      </button>
-      <span class="activity-month-title">${monthDisplay}</span>
-      <button class="activity-nav-btn" onclick="event.stopPropagation(); navigateDashboardActivityMonth('next')" aria-label="${tr('dashboard.calendar.nextMonth')}">
-        <span class="material-symbols-rounded">chevron_right</span>
-      </button>
-      <button class="activity-calendar-more-link" onclick="event.stopPropagation(); if(typeof showView==='function') showView('progress')">
-        ${tr('dashboard.activityCalendar.more')}
-        <span class="material-symbols-rounded">chevron_right</span>
-      </button>
-    </div>
-    ${calendarHTML}
-  `;
-}
-
-function renderPlanCalendarInWidget() {
-  const contentEl = document.getElementById('cal-widget-content');
-  if (!contentEl) return;
-
-  contentEl.innerHTML = `
-    <div class="plan-calendar-widget-wrapper">
-      <div class="calendar-month-section">
-        <div class="dashboard-activity-month-nav">
-          <button class="activity-nav-btn" onclick="navigateCalendar('prev')" aria-label="${tr('dashboard.calendar.prevMonth')}">
-            <span class="material-symbols-rounded">chevron_left</span>
-          </button>
-          <span class="activity-month-title" id="calendar-title"></span>
-          <button class="activity-nav-btn" onclick="navigateCalendar('next')" aria-label="${tr('dashboard.calendar.nextMonth')}">
-            <span class="material-symbols-rounded">chevron_right</span>
-          </button>
+      <h3 class="dashboard-calendar-widget-title">${tr('dashboard.planCalendar.title')}</h3>
+      <div class="plan-calendar-widget-wrapper">
+        <div class="calendar-month-section">
+          <div class="dashboard-activity-month-nav">
+            <button class="activity-nav-btn" onclick="navigateCalendar('prev')" aria-label="${tr('dashboard.calendar.prevMonth')}">
+              <span class="material-symbols-rounded">chevron_left</span>
+            </button>
+            <span class="activity-month-title" id="calendar-title"></span>
+            <button class="activity-nav-btn" onclick="navigateCalendar('next')" aria-label="${tr('dashboard.calendar.nextMonth')}">
+              <span class="material-symbols-rounded">chevron_right</span>
+            </button>
+          </div>
+          <div class="plan-calendar-weekdays">
+            ${['mon','tue','wed','thu','fri','sat','sun'].map(k => `<span>${tr('calendar.dayNamesShort.' + k)}</span>`).join('')}
+          </div>
+          <div id="calendar-grid" class="plan-calendar-grid"></div>
         </div>
-        <div class="plan-calendar-weekdays">
-          ${['mon','tue','wed','thu','fri','sat','sun'].map(k => `<span>${tr('calendar.dayNamesShort.' + k)}</span>`).join('')}
+        <div class="calendar-agenda-container">
+          <div class="calendar-agenda-list-header">
+            <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
+            <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="${tr('dashboard.calendar.addTraining')}">
+              <span class="material-symbols-rounded">add</span>
+            </button>
+          </div>
+          <div id="calendar-agenda-list" class="calendar-agenda-list"></div>
         </div>
-        <div id="calendar-grid" class="plan-calendar-grid"></div>
-      </div>
-      <div class="calendar-agenda-container">
-        <div class="calendar-agenda-list-header">
-          <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
-          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="${tr('dashboard.calendar.addTraining')}">
-            <span class="material-symbols-rounded">add</span>
-          </button>
-        </div>
-        <div id="calendar-agenda-list" class="calendar-agenda-list"></div>
       </div>
     </div>
   `;
@@ -1363,30 +1207,6 @@ function renderPlanCalendarInWidget() {
   } else {
     if (typeof renderCalendar === 'function') renderCalendar();
   }
-}
-
-function switchCalendarWidgetTab(tab) {
-  if (tab === dashboardCalendarTab) return;
-  dashboardCalendarTab = tab;
-
-  // Update segmented control indicator
-  const control = document.querySelector('.cal-widget-segmented-control');
-  if (control) {
-    const idx = tab === 'activity' ? 0 : 1;
-    control.style.setProperty('--active-idx', idx);
-    control.querySelectorAll('.cal-widget-seg-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.tab === tab);
-    });
-  }
-
-  // Re-render content after animation
-  setTimeout(() => {
-    if (tab === 'activity') {
-      renderActivityCalendarContent();
-    } else {
-      renderPlanCalendarInWidget();
-    }
-  }, 220);
 }
 
 function renderDashboardTrainingTypesList(sessions, year, month) {
@@ -1534,8 +1354,9 @@ async function refreshDashboard() {
   renderLogWorkoutCard(data);
   renderDashboardRecommendation();
   renderQuickStatsWidget(data);
-  renderDashboardActivityCalendar(data);
+  renderDashboardPlanCalendar(data);
   // Recent sessions removed - now in Progress > Overview
+  // Activity calendar moved to Progress > Overview
 
   dashboardIsLoading = false;
 }
@@ -1574,10 +1395,6 @@ window.openLogWorkoutTypeSheet = openLogWorkoutTypeSheet;
 window.openPlanWorkoutSheet = openPlanWorkoutSheet;
 window.openStartWorkoutFromPlanSheet = openStartWorkoutFromPlanSheet;
 window.navigateToAllSessions = navigateToAllSessions;
-window.navigateDashboardActivityMonth = navigateDashboardActivityMonth;
-window.openDashboardActivityDaySheet = openDashboardActivityDaySheet;
-window.switchCalendarWidgetTab = switchCalendarWidgetTab;
-window.renderPlanCalendarInWidget = renderPlanCalendarInWidget;
 
 // Shared Activity Calendar functions (used by calendar.js)
 window.aggregateDayByType = aggregateDayByType;
