@@ -18365,3 +18365,39 @@ input[type="range"]::-moz-range-progress {
   border-top: 1px solid rgba(75, 85, 99, 0.2);
   margin-top: 0.25rem;
 }
+
+/* ========================================
+   KEYBOARD AVOIDANCE (mobile virtual keyboard)
+   See js/keyboardInset.js — sets --keyboard-inset and toggles body.keyboard-open
+   ======================================== */
+
+/* Pattern A — Bottom-anchored sheet (#bottom-sheet inside #bottom-sheet-overlay):
+   the sheet itself is `position: fixed; bottom: 0`. Lift its bottom above the keyboard. */
+#bottom-sheet-overlay .bottom-sheet {
+  bottom: var(--keyboard-inset, 0);
+  max-height: min(90vh, calc(100vh - var(--keyboard-inset, 0px) - 1rem));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), bottom 0.2s ease, max-height 0.2s ease;
+}
+
+/* Pattern B — Flex-end overlay containers: full-viewport flex with `align-items: flex-end`.
+   Padding the container lifts its child sheet above the keyboard. */
+#exercise-picker-sheet,
+#activity-picker-sheet,
+#plan-picker-overlay {
+  padding-bottom: var(--keyboard-inset, 0);
+  transition: padding-bottom 0.2s ease;
+}
+
+/* Pattern C — Centered modals (.modal): pad container so flex centering keeps the
+   modal within the un-keyboard area. */
+.modal {
+  padding-bottom: var(--keyboard-inset, 0);
+  transition: padding-bottom 0.2s ease;
+}
+
+/* Clamp picker-sheet content height so nothing pushes above the viewport when keyboard is up */
+body.keyboard-open #exercise-picker-sheet .sheet-content,
+body.keyboard-open #activity-picker-sheet .sheet-content,
+body.keyboard-open #plan-picker-overlay .bottom-sheet {
+  max-height: min(90vh, calc(100vh - var(--keyboard-inset, 0px) - 1rem));
+}
