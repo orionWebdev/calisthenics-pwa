@@ -79,6 +79,72 @@ function v3SessionsInRange(daysBack, fromDate) {
   });
 }
 
+/**
+ * Calculates baseline building status
+ * @returns {{ status: string, daysElapsed: number, daysRemaining: number, percentage: number, message: string }}
+ */
+function getBaselineStatus() {
+  if (!allSessions || !allSessions.length) {
+    return {
+      status: 'no_data',
+      daysElapsed: 0,
+      daysRemaining: 14,
+      percentage: 0,
+      message: trV3('progress.baseline.noData')
+    };
+  }
+
+  const trainingSessions = allSessions.filter(s => {
+    if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') return false;
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (isNaN(sessionDate.getTime())) return false;
+    return true;
+  });
+
+  if (!trainingSessions.length) {
+    return {
+      status: 'no_data',
+      daysElapsed: 0,
+      daysRemaining: 14,
+      percentage: 0,
+      message: trV3('progress.baseline.noData')
+    };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let earliestDate = new Date();
+  for (const s of trainingSessions) {
+    const sessionDate = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (sessionDate < earliestDate) {
+      earliestDate = sessionDate;
+    }
+  }
+
+  const daysElapsed = Math.floor((today.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
+  const daysRemaining = Math.max(0, 14 - daysElapsed);
+  const percentage = Math.min(100, Math.round((daysElapsed / 14) * 100));
+
+  if (daysRemaining === 0) {
+    return {
+      status: 'complete',
+      daysElapsed,
+      daysRemaining: 0,
+      percentage: 100,
+      message: trV3('progress.baseline.complete')
+    };
+  }
+
+  return {
+    status: 'building',
+    daysElapsed,
+    daysRemaining,
+    percentage,
+    message: trV3('progress.baseline.building', { days: daysRemaining })
+  };
+}
+
 function v3FormatDate(date) {
   const d = date instanceof Date ? date : new Date(date);
   return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'Europe/Berlin' });
@@ -556,6 +622,16 @@ function renderFormWidget() {
   const data = computeFormScore(allSessions, new Date());
 
   if (data.formScore === null || data.zone === null) {
+    const baselineStatus = getBaselineStatus();
+    const progressBar = baselineStatus.status !== 'no_data' ? `
+      <div class="baseline-progress-container">
+        <div class="baseline-progress-bar">
+          <div class="baseline-progress-fill" style="width: ${baselineStatus.percentage}%"></div>
+        </div>
+        <div class="baseline-progress-label">${baselineStatus.daysElapsed} / 14 ${trV3('progress.baseline.days')}</div>
+      </div>
+    ` : '';
+
     return `
       <div class="pv3-card acwr-widget">
         <div class="acwr-widget-header">
@@ -563,8 +639,9 @@ function renderFormWidget() {
         </div>
         <div class="acwr-score-section">
           <div class="acwr-zone-label" style="color: var(--text-tertiary);">--</div>
-          <div class="acwr-score-display" style="color: var(--text-tertiary);">${trV3('progress.form.buildingBaseline')}</div>
+          <div class="acwr-score-display" style="color: var(--text-tertiary);">${baselineStatus.message}</div>
         </div>
+        ${progressBar}
       </div>`;
   }
 
@@ -635,6 +712,16 @@ function renderReadinessWidget() {
   const data = getACWR(allSessions, new Date(), { applyFatigue: true });
 
   if (data.readinessScore === null || data.zone === null) {
+    const baselineStatus = getBaselineStatus();
+    const progressBar = baselineStatus.status !== 'no_data' ? `
+      <div class="baseline-progress-container">
+        <div class="baseline-progress-bar">
+          <div class="baseline-progress-fill" style="width: ${baselineStatus.percentage}%"></div>
+        </div>
+        <div class="baseline-progress-label">${baselineStatus.daysElapsed} / 14 ${trV3('progress.baseline.days')}</div>
+      </div>
+    ` : '';
+
     return `
       <div class="pv3-card readiness-compact">
         <div class="readiness-compact-header">
@@ -642,8 +729,9 @@ function renderReadinessWidget() {
         </div>
         <div class="readiness-compact-body">
           <span class="readiness-compact-label" style="color: var(--text-tertiary);">--</span>
-          <span class="readiness-compact-score" style="color: var(--text-tertiary);">${trV3('progress.readiness.buildingBaseline')}</span>
+          <span class="readiness-compact-score" style="color: var(--text-tertiary);">${baselineStatus.message}</span>
         </div>
+        ${progressBar}
       </div>`;
   }
 

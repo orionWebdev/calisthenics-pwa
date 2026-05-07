@@ -7674,6 +7674,35 @@ input[type="range"]::-moz-range-progress {
   line-height: 1.4;
 }
 
+/* ==================== BASELINE PROGRESS ==================== */
+
+.baseline-progress-container {
+  margin-top: var(--spacing-md, 1rem);
+  padding-top: var(--spacing-md, 1rem);
+  border-top: 1px solid var(--border-color-subtle);
+}
+
+.baseline-progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-surface-active);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.baseline-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--zone-productive), var(--zone-building));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.baseline-progress-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
 /* ==================== WEEKLY SCORE CHART ==================== */
 
 .weekly-score-chart-card {
@@ -16886,16 +16915,20 @@ input[type="range"]::-moz-range-progress {
 /* Sticky Bar (Period Selector klebt unter Header) */
 .pv3-sticky-bar {
   position: sticky;
-  top: 0;
+  /* Desktop: floating nav sits at top:1rem with ~64px height → pin below it */
+  top: 5.25rem;
   z-index: 30;
-  padding: 0.5rem 0 0.625rem;
+  padding: 0.625rem 0 0.625rem;
   background: var(--color-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 768px) {
   .pv3-sticky-bar {
-    top: calc(var(--mobile-header-height) + -2px);
+    /* Mobile: pin below fixed mobile header, accounting for iOS safe-area notch */
+    top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0px) - 2px);
   }
 }
 
