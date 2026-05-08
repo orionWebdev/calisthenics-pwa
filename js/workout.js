@@ -1332,19 +1332,38 @@ function renderBlockBanner(type, label, meta) {
 
 function renderEmomPrescreen(block) {
   const durationMin = Math.round((block.durationSec || 600) / 60);
+  const intervalSec = block.intervalSec || 60;
+  const totalMinutes = Math.ceil((block.durationSec || 600) / intervalSec);
+  const exCount = block.exercises.length;
+  const isMulti = exCount > 1;
+  const rounds = isMulti ? Math.ceil(totalMinutes / exCount) : null;
 
-  const exerciseRows = block.exercises.map(ex => {
+  const exerciseRows = block.exercises.map((ex, i) => {
     const reps = ex.targetReps || '-';
+    const indexLabel = isMulti ? `<span class="emom-prescreen-exercise-num">${i + 1}</span>` : '';
     return `
       <div class="emom-prescreen-exercise">
+        ${indexLabel}
         <span class="emom-prescreen-exercise-name">${ex.exerciseName}</span>
         <span class="emom-prescreen-exercise-reps">×${reps}</span>
       </div>
     `;
   }).join('');
 
+  const rotationCaption = isMulti
+    ? `<div class="emom-prescreen-rotation">
+         <span class="material-symbols-rounded">sync</span>
+         ${t('block.workout.emom.rotation', { rounds })}
+       </div>`
+    : `<div class="emom-prescreen-rotation emom-prescreen-rotation--single">
+         <span class="material-symbols-rounded">repeat</span>
+         ${t('block.workout.emom.prescreenEveryMinute')}
+       </div>`;
+
   const bannerLabel = `EMOM · ${t('block.workout.emom.prescreenDuration', { minutes: durationMin })}`;
-  const bannerMeta = t('block.workout.emom.prescreenEveryMinute');
+  const bannerMeta = isMulti
+    ? t('block.workout.emom.bannerMetaMulti', { exercises: exCount, rounds })
+    : t('block.workout.emom.prescreenEveryMinute');
 
   return `
     <div class="block-content block-content--emom">
@@ -1354,6 +1373,7 @@ function renderEmomPrescreen(block) {
           <span class="material-symbols-rounded" style="font-size:3rem;">timer</span>
         </div>
         <div class="emom-prescreen-title">${t('block.workout.emom.prescreenTitle')}</div>
+        ${rotationCaption}
         <div class="emom-prescreen-exercises">
           ${exerciseRows}
         </div>
@@ -1469,6 +1489,10 @@ function updateEmomTimerUI(elapsedSec) {
   const bannerMetaEl = document.querySelector('.block-content--emom .block-banner-meta');
   const bannerLabelEl = document.querySelector('.block-content--emom .block-banner-label');
 
+  const isMulti = exCount > 1;
+  const totalRounds = isMulti ? Math.ceil(totalMinutes / exCount) : null;
+  const currentRound = isMulti ? Math.ceil(Math.min(currentMinute, totalMinutes) / exCount) : null;
+
   if (timerEl) timerEl.textContent = formatEmomTime(remainingInMinute);
   if (minuteEl) minuteEl.textContent = t('block.workout.emom.minute', { current: Math.min(currentMinute, totalMinutes), total: totalMinutes });
   if (currentNameEl) currentNameEl.textContent = currentEx?.exerciseName || '';
@@ -1477,7 +1501,11 @@ function updateEmomTimerUI(elapsedSec) {
   if (totalEl) totalEl.textContent = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
   if (progressFillEl) progressFillEl.style.width = `${minuteProgressPct}%`;
   if (bannerLabelEl) bannerLabelEl.textContent = `EMOM · ${t('block.workout.emom.minute', { current: Math.min(currentMinute, totalMinutes), total: totalMinutes })}`;
-  if (bannerMetaEl) bannerMetaEl.textContent = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
+  if (bannerMetaEl) {
+    bannerMetaEl.textContent = isMulti
+      ? `${t('block.workout.emom.round', { current: currentRound, total: totalRounds })} · ${t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) })}`
+      : t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
+  }
 }
 
 function formatEmomTime(seconds) {
@@ -1497,13 +1525,20 @@ function renderEmomActive(block) {
   const minuteProgressPct = Math.min(100, Math.max(0, (timeInMinute / intervalSec) * 100));
 
   const exCount = block.exercises.length;
+  const isMulti = exCount > 1;
   const currentExIdx = (currentMinute - 1) % exCount;
   const nextExIdx = currentMinute % exCount;
   const currentEx = block.exercises[currentExIdx];
   const nextEx = block.exercises[nextExIdx];
 
+  // For round-robin EMOMs: round number = ceil(currentMinute / exCount)
+  const totalRounds = isMulti ? Math.ceil(totalMinutes / exCount) : null;
+  const currentRound = isMulti ? Math.ceil(currentMinute / exCount) : null;
+
   const bannerLabel = `EMOM · ${t('block.workout.emom.minute', { current: currentMinute, total: totalMinutes })}`;
-  const bannerMeta = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
+  const bannerMeta = isMulti
+    ? `${t('block.workout.emom.round', { current: currentRound, total: totalRounds })} · ${t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) })}`
+    : t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
 
   return `
     <div class="block-content block-content--emom">
@@ -3524,6 +3559,15 @@ function renderWorkoutActions() {
 }
 
 function renderWorkoutBottomActions() {
+  // EMOM and Superset blocks are tightly defined: rotation, round count and
+  // set dots all depend on a fixed exercise list. Mutating the list mid-block
+  // would corrupt that state, so the add/replace/delete actions are hidden
+  // for grouped blocks. Users can leave the block, edit the plan, and restart.
+  const currentBlock = getCurrentBlock();
+  if (currentBlock && (currentBlock.type === 'emom' || currentBlock.type === 'superset')) {
+    return '';
+  }
+
   return `
     <div class="workout-bottom-actions">
       <button onclick="replacingExerciseIndex=null;openAddExerciseToWorkout()" class="btn-primary" style="width:100%;">
