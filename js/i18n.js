@@ -1397,6 +1397,9 @@ const translations = {
           skippedTitle: 'Übersprungen',
           tapToUndo: 'Tippen zum Rückgängigmachen',
           undoLog: 'Eintrag rückgängig machen',
+          rotation: 'Round-Robin · {rounds} Runden',
+          round: 'Runde {current}/{total}',
+          bannerMetaMulti: '{exercises} Übungen · {rounds} Runden',
           blockComplete: 'EMOM abgeschlossen'
         },
         superset: {
@@ -2806,6 +2809,9 @@ const translations = {
           skippedTitle: 'Skipped',
           tapToUndo: 'Tap to undo',
           undoLog: 'Undo entry',
+          rotation: 'Round-Robin · {rounds} rounds',
+          round: 'Round {current}/{total}',
+          bannerMetaMulti: '{exercises} exercises · {rounds} rounds',
           blockComplete: 'EMOM completed'
         },
         superset: {

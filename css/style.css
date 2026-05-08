@@ -18421,19 +18421,61 @@ input[type="range"]::-moz-range-progress {
 .emom-prescreen-exercise {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.625rem;
   padding: 0.75rem 1rem;
   background: var(--block-bg-soft);
   border: 1px solid var(--block-border);
   border-radius: 10px;
 }
+.emom-prescreen-exercise-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--block-bg-medium);
+  color: var(--block-color-bright);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
 .emom-prescreen-exercise-name {
+  flex: 1;
   font-weight: 600;
+  text-align: left;
 }
 .emom-prescreen-exercise-reps {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--block-color-bright);
+}
+
+/* Rotation badge — appears between title and exercise list */
+.emom-prescreen-rotation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  padding: 0.375rem 0.75rem;
+  margin: 0 auto 1rem;
+  background: var(--block-bg-medium);
+  border: 1px solid var(--block-border);
+  border-radius: 999px;
+  color: var(--block-color-bright);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.emom-prescreen-rotation--single {
+  background: var(--block-bg-soft);
+  color: var(--text-secondary, #9ca3af);
+}
+
+.emom-prescreen-rotation .material-symbols-rounded {
+  font-size: 16px;
 }
 .emom-start-btn {
   display: inline-flex;
