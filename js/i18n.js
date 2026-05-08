@@ -532,7 +532,10 @@ const translations = {
         enterHold: 'Bitte gib die Haltedauer ein',
         atLeastOneSet: 'Bitte logge mindestens einen Satz bevor du weitergehst',
         deleteSet: 'Satz löschen',
-        deleteSetConfirm: 'Diesen Satz wirklich löschen?'
+        deleteSetConfirm: 'Diesen Satz wirklich löschen?',
+        decreaseWeight: 'Gewicht verringern',
+        increaseWeight: 'Gewicht erhöhen',
+        stepModeChanged: 'Schrittweite: {step} {unit}'
       },
       exercise: {
         current: 'Aktuelle Übung',
@@ -1944,7 +1947,10 @@ const translations = {
         enterHold: 'Please enter the hold duration',
         atLeastOneSet: 'Please log at least one set before continuing',
         deleteSet: 'Delete set',
-        deleteSetConfirm: 'Really delete this set?'
+        deleteSetConfirm: 'Really delete this set?',
+        decreaseWeight: 'Decrease weight',
+        increaseWeight: 'Increase weight',
+        stepModeChanged: 'Step size: {step} {unit}'
       },
       exercise: {
         current: 'Current exercise',

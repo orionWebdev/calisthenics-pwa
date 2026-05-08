@@ -13,6 +13,61 @@ const numberPickerConfig = {
   onCancel: null
 };
 
+// ---- Weight step mode (2.5 / 1.0 / 0.5 kg, persisted) ----------------------
+// Three step modes for weight increment: cycles via double-tap on the weight
+// value in the active set, or via the tab strip inside the number-picker sheet.
+// Imperial mirrors with 5 / 2.5 / 1 lbs. Index is persisted; the actual step
+// value is derived from the unit system at read time.
+
+const WEIGHT_STEP_MODES_METRIC   = [2.5, 1.0, 0.5];
+const WEIGHT_STEP_MODES_IMPERIAL = [5,   2.5, 1];
+const WEIGHT_STEP_STORAGE_KEY = 'workout.weightStepModeIdx';
+
+let _weightStepModeIdx = (() => {
+  const raw = parseInt(localStorage.getItem(WEIGHT_STEP_STORAGE_KEY), 10);
+  return (isNaN(raw) || raw < 0 || raw > 2) ? 0 : raw;
+})();
+
+function isImperialUnit() {
+  return typeof userProfile !== 'undefined' && userProfile && userProfile.unitSystem === 'imperial';
+}
+
+function getWeightStepModes() {
+  return isImperialUnit() ? WEIGHT_STEP_MODES_IMPERIAL : WEIGHT_STEP_MODES_METRIC;
+}
+
+function getWeightStepModeIdx() {
+  return _weightStepModeIdx;
+}
+
+function getWeightStep() {
+  const modes = getWeightStepModes();
+  return modes[_weightStepModeIdx] ?? modes[0];
+}
+
+function setWeightStepModeIdx(idx) {
+  if (idx < 0 || idx > 2) return;
+  _weightStepModeIdx = idx;
+  try { localStorage.setItem(WEIGHT_STEP_STORAGE_KEY, String(idx)); } catch (e) { /* ignore */ }
+}
+
+function cycleWeightStepMode() {
+  setWeightStepModeIdx((_weightStepModeIdx + 1) % 3);
+  return _weightStepModeIdx;
+}
+
+/** Format a step value for tab labels: `2,5` not `2.5`, drop trailing `.0`. */
+function formatStepLabel(step) {
+  if (step % 1 === 0) return String(Math.round(step));
+  return String(step).replace('.', ',');
+}
+
+window.getWeightStep = getWeightStep;
+window.getWeightStepModeIdx = getWeightStepModeIdx;
+window.setWeightStepModeIdx = setWeightStepModeIdx;
+window.cycleWeightStepMode = cycleWeightStepMode;
+window.getWeightStepModes = getWeightStepModes;
+
 /**
  * Picker type configurations
  */
@@ -26,33 +81,21 @@ const PICKER_CONFIGS = {
     generateValues: () => Array.from({ length: 101 }, (_, i) => i)
   },
   get weight() {
-    const isImperial = typeof userProfile !== 'undefined' && userProfile.unitSystem === 'imperial';
-    if (isImperial) {
-      return {
-        min: 0,
-        max: 550,
-        step: 5,
-        suffix: 'lbs',
-        titleKey: 'numberPicker.weightTitle',
-        generateValues: () => {
-          const values = [];
-          for (let i = 0; i <= 550; i += 5) {
-            values.push(i);
-          }
-          return values;
-        }
-      };
-    }
+    const isImperial = isImperialUnit();
+    const max = isImperial ? 550 : 250;
+    const step = getWeightStep();
+    const count = Math.floor(max / step) + 1;
     return {
       min: 0,
-      max: 250,
-      step: 2.5,
-      suffix: 'kg',
+      max,
+      step,
+      suffix: isImperial ? 'lbs' : 'kg',
       titleKey: 'numberPicker.weightTitle',
       generateValues: () => {
         const values = [];
-        for (let i = 0; i <= 250; i += 2.5) {
-          values.push(i);
+        for (let i = 0; i < count; i++) {
+          // Round to 1 decimal to dodge float-accumulation noise
+          values.push(Math.round(i * step * 10) / 10);
         }
         return values;
       }
@@ -182,6 +225,10 @@ function renderNumberPickerSheet() {
     ? (typeof t === 'function' ? t(typeConfig.suffixKey, { n: '' }) : '')
     : (typeConfig.suffix || '');
 
+  // For weight type only: render a step-mode tab strip (2,5 / 1 / 0,5)
+  const showStepTabs = numberPickerConfig.type === 'weight';
+  const stepTabsHTML = showStepTabs ? renderStepModeTabs() : '';
+
   const overlay = document.createElement('div');
   overlay.id = 'number-picker-overlay';
   overlay.className = 'number-picker-overlay';
@@ -198,6 +245,8 @@ function renderNumberPickerSheet() {
       <div class="number-picker-header">
         <h3 id="number-picker-title" class="number-picker-title">${title}</h3>
       </div>
+
+      ${stepTabsHTML}
 
       <!-- Wheel Content -->
       <div class="number-picker-content">
@@ -338,6 +387,109 @@ function setupNumberPickerEvents(overlay) {
   });
 
   // Initial scroll to current value (after animation frame)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      scrollToValue(wheel, numberPickerConfig.currentValue, false);
+    });
+  });
+
+  // Step-mode tabs (only present for type === 'weight')
+  setupStepModeTabs(overlay);
+}
+
+/** HTML for the step-mode tab strip — three buttons (2,5 / 1 / 0,5 kg). */
+function renderStepModeTabs() {
+  const modes = getWeightStepModes();
+  const activeIdx = getWeightStepModeIdx();
+  const unit = isImperialUnit() ? 'lbs' : 'kg';
+  return `
+    <div class="number-picker-mode-tabs" role="tablist" aria-label="Schritt">
+      ${modes.map((step, idx) => `
+        <button
+          type="button"
+          class="np-mode-tab${idx === activeIdx ? ' active' : ''}"
+          data-step-idx="${idx}"
+          role="tab"
+          aria-selected="${idx === activeIdx}"
+        >
+          ${formatStepLabel(step)} ${unit}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+/** Wire up the step-mode tab strip — re-renders the wheel on mode change. */
+function setupStepModeTabs(overlay) {
+  const tabs = overlay.querySelectorAll('.np-mode-tab');
+  if (!tabs.length) return;
+
+  tabs.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.stepIdx, 10);
+      if (isNaN(idx) || idx === getWeightStepModeIdx()) return;
+      setWeightStepModeIdx(idx);
+      // Update tab visuals
+      tabs.forEach((b, i) => {
+        const isActive = i === idx;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      // Rebuild the wheel for the new step size
+      rebuildPickerWheel();
+      if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('selection');
+    });
+  });
+}
+
+/** Rebuild the wheel items in-place after the step size changed. */
+function rebuildPickerWheel() {
+  const wheel = document.getElementById('number-picker-wheel');
+  if (!wheel) return;
+
+  const typeConfig = PICKER_CONFIGS[numberPickerConfig.type];
+  const values = typeConfig.generateValues();
+
+  // Snap currentValue to the nearest available value in the new step grid
+  let nearest = values[0];
+  let bestDelta = Math.abs(numberPickerConfig.currentValue - nearest);
+  for (const v of values) {
+    const delta = Math.abs(numberPickerConfig.currentValue - v);
+    if (delta < bestDelta) {
+      bestDelta = delta;
+      nearest = v;
+    }
+  }
+  numberPickerConfig.currentValue = nearest;
+
+  const suffix = typeConfig.suffix || '';
+  wheel.innerHTML = values.map(value => {
+    const displayValue = numberPickerConfig.type === 'weight' && value % 1 !== 0
+      ? value.toFixed(1).replace('.', ',')
+      : value;
+    return `
+      <div
+        class="number-picker-item ${value === numberPickerConfig.currentValue ? 'selected' : ''}"
+        data-value="${value}"
+        role="option"
+        aria-selected="${value === numberPickerConfig.currentValue}"
+      >
+        <span class="number-picker-value">${displayValue}</span>
+        <span class="number-picker-suffix">${suffix}</span>
+      </div>
+    `;
+  }).join('');
+
+  // Reattach click listeners on the new items
+  wheel.querySelectorAll('.number-picker-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const value = parseFloat(item.dataset.value);
+      selectPickerValue(value);
+      scrollToValue(wheel, value, true);
+      if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('light');
+    });
+  });
+
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       scrollToValue(wheel, numberPickerConfig.currentValue, false);

@@ -2017,7 +2017,7 @@ function renderSTSetList(exercise) {
             </button>
           </div>
           <button type="button" class="st-set-check st-set-check--done" onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})" aria-label="${t('workout.setLogger.deleteSet')}">
-            <span class="material-symbols-rounded">check</span>
+            <span class="material-symbols-rounded">close</span>
           </button>
         </div>
       `;
@@ -2041,7 +2041,7 @@ function renderSTSetList(exercise) {
             </button>
           </div>
           <button type="button" class="st-set-check st-set-check--done" onclick="deleteSet(${activeWorkout.currentExerciseIndex}, ${setIndex})" aria-label="${t('workout.setLogger.deleteSet')}">
-            <span class="material-symbols-rounded">check</span>
+            <span class="material-symbols-rounded">close</span>
           </button>
         </div>
       `;
@@ -2092,14 +2092,14 @@ function renderSTSetList(exercise) {
             </button>
           </div>
           <div class="st-set-stepper-group">
-            <button type="button" class="st-stepper-btn" onclick="adjustActiveSetValue('weight', -2.5)" aria-label="-2.5">
+            <button type="button" class="st-stepper-btn" onclick="adjustWeightByCurrentStep(-1)" aria-label="${t('workout.setLogger.decreaseWeight')}">
               <span class="material-symbols-rounded">remove</span>
             </button>
-            <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('weight')" id="active-weight-btn" data-value="${activeSetValues.weight}">
+            <button type="button" class="st-set-val st-set-val--editable" onclick="handleWeightValueTap()" id="active-weight-btn" data-value="${activeSetValues.weight}">
               <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
               <span class="st-set-val-unit">${getWeightUnit()}</span>
             </button>
-            <button type="button" class="st-stepper-btn" onclick="adjustActiveSetValue('weight', 2.5)" aria-label="+2.5">
+            <button type="button" class="st-stepper-btn" onclick="adjustWeightByCurrentStep(1)" aria-label="${t('workout.setLogger.increaseWeight')}">
               <span class="material-symbols-rounded">add</span>
             </button>
           </div>
@@ -2670,7 +2670,7 @@ function renderSetRows(exercise, exerciseIndex, isBodyweight) {
                 onclick="deleteSet(${exerciseIndex}, ${setIndex})"
                 aria-label="${t('workout.setLogger.deleteSet')}"
               >
-                <span class="material-symbols-rounded">check</span>
+                <span class="material-symbols-rounded">close</span>
               </button>
             </div>
           `;
@@ -2714,7 +2714,7 @@ function renderSetRows(exercise, exerciseIndex, isBodyweight) {
               onclick="deleteSet(${exerciseIndex}, ${setIndex})"
               aria-label="${t('workout.setLogger.deleteSet')}"
             >
-              <span class="material-symbols-rounded">check</span>
+              <span class="material-symbols-rounded">close</span>
             </button>
           </div>
         `;
@@ -2787,7 +2787,7 @@ function renderActiveSetRow(exercise, exerciseIndex, isBodyweight) {
           <button
             type="button"
             class="set-row-value-btn set-row-value-btn--editable"
-            onclick="openNumberPickerForNewSet('weight')"
+            onclick="handleWeightValueTap()"
             id="active-weight-btn"
             data-value="${activeSetValues.weight}"
             aria-label="${t('workout.setLogger.weight')}: ${weightDisplay}"
@@ -2943,6 +2943,51 @@ function adjustActiveSetValue(type, delta) {
     updateActiveRowDisplay('hold', activeSetValues.holdSec);
   }
   if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('light');
+}
+
+/**
+ * Adjust the weight value by the user's current step mode (2.5 / 1.0 / 0.5 kg).
+ * `sign` is -1 for the minus button, +1 for the plus button.
+ */
+function adjustWeightByCurrentStep(sign) {
+  const step = (typeof getWeightStep === 'function') ? getWeightStep() : 2.5;
+  adjustActiveSetValue('weight', sign * step);
+}
+
+/**
+ * Tap handler on the active weight value button.
+ * - Single tap → open number-picker (existing behavior)
+ * - Double tap → cycle weight step mode (2,5 → 1,0 → 0,5 → 2,5 …)
+ *
+ * The first tap is delayed ~220 ms; if a second tap arrives in that window it's
+ * treated as a double-tap and the picker open is cancelled.
+ */
+let _weightTapTimer = null;
+function handleWeightValueTap() {
+  if (_weightTapTimer) {
+    clearTimeout(_weightTapTimer);
+    _weightTapTimer = null;
+    onWeightValueDoubleTap();
+    return;
+  }
+  _weightTapTimer = setTimeout(() => {
+    _weightTapTimer = null;
+    if (typeof openNumberPickerForNewSet === 'function') {
+      openNumberPickerForNewSet('weight');
+    }
+  }, 220);
+}
+
+function onWeightValueDoubleTap() {
+  if (typeof cycleWeightStepMode !== 'function') return;
+  cycleWeightStepMode();
+  const step = (typeof getWeightStep === 'function') ? getWeightStep() : 2.5;
+  const stepLabel = step % 1 === 0 ? String(step) : String(step).replace('.', ',');
+  const unit = (typeof getWeightUnit === 'function') ? getWeightUnit() : 'kg';
+  if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('info', t('workout.setLogger.stepModeChanged', { step: stepLabel, unit }));
+  }
+  if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('selection');
 }
 
 /**
@@ -4789,6 +4834,8 @@ window.toggleTimerPause = toggleTimerPause;
 window.openTimerModal = openTimerModal;
 window.closeTimerModal = closeTimerModal;
 window.adjustActiveSetValue = adjustActiveSetValue;
+window.adjustWeightByCurrentStep = adjustWeightByCurrentStep;
+window.handleWeightValueTap = handleWeightValueTap;
 window.duplicateLastSetST = duplicateLastSetST;
 window.selectCardioRPE = selectCardioRPE;
 window.adjustCardioField = adjustCardioField;
