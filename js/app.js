@@ -512,15 +512,48 @@ const isLocalhost = window.location.hostname === 'localhost' ||
                     window.location.hostname === '';
 
 if ('serviceWorker' in navigator && !isLocalhost) {
+  let _hasReloadedForUpdate = false;
+  let _initialControllerSet = !!navigator.serviceWorker.controller;
+
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw.js')
       .then((registration) => {
-        console.log('✅ Service Worker registered successfully:', registration.scope);
+        console.log('✅ Service Worker registered:', registration.scope);
+
+        // Detect a new SW becoming available (after a code deploy)
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // A previous SW exists AND a new one is now installed → tell it to take over
+              console.log('🔄 New Service Worker installed, activating…');
+              newWorker.postMessage('SKIP_WAITING');
+            }
+          });
+        });
+
+        // Periodically poll for updates while the app is open (every 30 minutes)
+        setInterval(() => registration.update().catch(() => {}), 30 * 60 * 1000);
       })
       .catch((error) => {
         console.error('❌ Service Worker registration failed:', error);
       });
+
+    // When the new SW takes control, reload once to pick up the fresh assets
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (_hasReloadedForUpdate) return;
+      // Skip the initial controllerchange that fires the very first time the SW
+      // takes control of an uncontrolled page (no reload needed there).
+      if (!_initialControllerSet) {
+        _initialControllerSet = true;
+        return;
+      }
+      _hasReloadedForUpdate = true;
+      console.log('🚀 New Service Worker activated — reloading with fresh assets');
+      window.location.reload();
+    });
   });
 } else if (isLocalhost) {
   console.log('🔧 Development mode: Service Worker registration skipped');

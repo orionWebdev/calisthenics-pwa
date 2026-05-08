@@ -67,17 +67,15 @@ function getBerlinDateKey(date) {
 // QUICK STATS HELPERS
 // ========================================
 
-
 /**
- * Berechnet die ISO-Wochennummer für ein Datum (Europe/Berlin)
- * @returns {Object} { year, week } - ISO Jahr und Wochennummer
+ * ISO week number for a date in Europe/Berlin timezone
+ * @returns {{year: number, week: number}}
  */
 function getISOWeekBerlin(date) {
-  // Konvertiere zu Berlin-Zeit
   const berlinDate = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
   berlinDate.setHours(0, 0, 0, 0);
 
-  // ISO-Woche: Woche beginnt am Montag, erste Woche enthält den 4. Januar
+  // ISO week: Monday-based, week 1 is the one containing 4 January
   const thursday = new Date(berlinDate);
   thursday.setDate(berlinDate.getDate() - ((berlinDate.getDay() + 6) % 7) + 3);
 
@@ -85,19 +83,12 @@ function getISOWeekBerlin(date) {
   firstThursday.setDate(firstThursday.getDate() - ((firstThursday.getDay() + 6) % 7) + 3);
 
   const weekNumber = Math.round((thursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
-
   return { year: thursday.getFullYear(), week: weekNumber };
 }
 
-/**
- * Zählt Sessions in der aktuellen Kalenderwoche (ISO, Europe/Berlin)
- */
 function getSessionsThisWeekCount(sessions) {
   if (!Array.isArray(sessions) || sessions.length === 0) return 0;
-
-  const now = new Date();
-  const currentWeek = getISOWeekBerlin(now);
-
+  const currentWeek = getISOWeekBerlin(new Date());
   return sessions.filter(session => {
     const date = getSessionDate(session);
     if (!date) return false;
@@ -106,15 +97,9 @@ function getSessionsThisWeekCount(sessions) {
   }).length;
 }
 
-/**
- * Berechnet die Gesamtbewegungsminuten der aktuellen ISO-Woche (Europe/Berlin)
- */
 function getMovementMinutesThisWeek(sessions) {
   if (!Array.isArray(sessions) || sessions.length === 0) return 0;
-
-  const now = new Date();
-  const currentWeek = getISOWeekBerlin(now);
-
+  const currentWeek = getISOWeekBerlin(new Date());
   const totalSeconds = sessions.reduce((sum, session) => {
     const date = getSessionDate(session);
     if (!date) return sum;
@@ -122,9 +107,9 @@ function getMovementMinutesThisWeek(sessions) {
     if (sessionWeek.year !== currentWeek.year || sessionWeek.week !== currentWeek.week) return sum;
     return sum + getSessionDurationSeconds(session);
   }, 0);
-
   return Math.round(totalSeconds / 60);
 }
+
 
 function getBalanceContextLabelKey(strengthSec, cardioSec) {
   const totalSec = strengthSec + cardioSec;
@@ -217,7 +202,6 @@ async function useDashboardData() {
     },
     recentSessions: [],
     scheduledWorkouts: [],
-    // Quick Stats
     sessionsThisWeekCount: 0,
     movementMinutesThisWeek: 0
   };
@@ -233,8 +217,6 @@ async function useDashboardData() {
     state.balance = buildBalanceData(sessions, DASHBOARD_BALANCE_DAYS);
     state.recentSessions = getRecentSessions(sessions, DASHBOARD_RECENT_LIMIT);
     state.scheduledWorkouts = getTodaysScheduledWorkouts();
-
-    // Quick Stats berechnen
     state.sessionsThisWeekCount = getSessionsThisWeekCount(sessions);
     state.movementMinutesThisWeek = getMovementMinutesThisWeek(sessions);
   } catch (error) {
@@ -600,12 +582,8 @@ function renderQuickStatsWidget(state) {
   if (state.loading) {
     container.innerHTML = `
       <div class="quick-stats-grid">
-        <div class="quick-stats-card">
-          <div class="quick-stats-skeleton"></div>
-        </div>
-        <div class="quick-stats-card">
-          <div class="quick-stats-skeleton"></div>
-        </div>
+        <div class="quick-stats-card"><div class="quick-stats-skeleton"></div></div>
+        <div class="quick-stats-card"><div class="quick-stats-skeleton"></div></div>
       </div>
     `;
     return;
@@ -616,7 +594,7 @@ function renderQuickStatsWidget(state) {
 
   container.innerHTML = `
     <div class="quick-stats-grid">
-      <div class="quick-stats-card">
+      <div class="quick-stats-card" style="--qs-delay:0ms">
         <div class="quick-stats-header">
           <span class="quick-stats-label">${tr('dashboard.quickStats.thisWeek')}</span>
           <span class="quick-stats-icon">
@@ -626,7 +604,7 @@ function renderQuickStatsWidget(state) {
         <div class="quick-stats-value">${sessionsCount}</div>
         <div class="quick-stats-subtext">${tr('dashboard.quickStats.sessions')}</div>
       </div>
-      <div class="quick-stats-card">
+      <div class="quick-stats-card" style="--qs-delay:80ms">
         <div class="quick-stats-header">
           <span class="quick-stats-label">${tr('dashboard.quickStats.movementMinutes')}</span>
           <span class="quick-stats-icon">
@@ -684,8 +662,8 @@ function renderHybridBalanceCard(state) {
       </div>
       <p class="dashboard-balance-description">${tr('dashboard.hybridBalance.description')}</p>
       <div class="dashboard-balance-bar" role="img" aria-label="${tr('dashboard.hybridBalance.aria', { strength: strengthPct, cardio: cardioPct })}">
-        <div class="dashboard-balance-segment strength" style="width: ${strengthPct}%;"></div>
-        <div class="dashboard-balance-segment cardio" style="width: ${cardioPct}%;"></div>
+        <div class="dashboard-balance-segment strength" style="width: ${strengthPct}%; --bar-delay:0ms;"></div>
+        <div class="dashboard-balance-segment cardio" style="width: ${cardioPct}%; --bar-delay:120ms;"></div>
       </div>
       <div class="dashboard-balance-meta">
         <span>${tr('common.strength')} ${formatDurationShortText(balance.strengthSec)}</span>
@@ -1233,13 +1211,13 @@ function renderDashboardTrainingTypesList(sessions, year, month) {
     }
   };
 
-  const items = typeData.map(item => {
+  const items = typeData.map((item, idx) => {
     const config = typeConfig[item.type] || { label: item.type, icon: 'fitness_center' };
     const durationText = formatDurationMinutesText(item.minutes);
     const percentage = Math.round((item.minutes / maxMinutes) * 100);
 
     return `
-      <div class="dashboard-training-type-item">
+      <div class="dashboard-training-type-item" style="--bar-delay:${idx * 80}ms">
         <div class="dashboard-training-type-header">
           <span class="dashboard-training-type-icon" style="color: ${item.color};">
             <span class="material-symbols-rounded">${config.icon}</span>
@@ -1350,10 +1328,10 @@ async function refreshDashboard() {
   dashboardIsLoading = true;
 
   const data = await useDashboardData();
-  renderScheduledWorkoutsCard(data);
-  renderLogWorkoutCard(data);
-  renderDashboardRecommendation();
   renderQuickStatsWidget(data);
+  renderLogWorkoutCard(data);
+  renderScheduledWorkoutsCard(data);
+  renderDashboardRecommendation();
   renderDashboardPlanCalendar(data);
   // Recent sessions removed - now in Progress > Overview
   // Activity calendar moved to Progress > Overview

@@ -532,7 +532,10 @@ const translations = {
         enterHold: 'Bitte gib die Haltedauer ein',
         atLeastOneSet: 'Bitte logge mindestens einen Satz bevor du weitergehst',
         deleteSet: 'Satz löschen',
-        deleteSetConfirm: 'Diesen Satz wirklich löschen?'
+        deleteSetConfirm: 'Diesen Satz wirklich löschen?',
+        decreaseWeight: 'Gewicht verringern',
+        increaseWeight: 'Gewicht erhöhen',
+        stepModeChanged: 'Schrittweite: {step} {unit}'
       },
       exercise: {
         current: 'Aktuelle Übung',
@@ -857,21 +860,6 @@ const translations = {
         cardioFocused: 'Fokus auf Cardio.',
         restDay: 'Heute Ruhetag.',
         sessionsThisWeek: '{count} Trainingstage in diesem Zeitraum.'
-      },
-      weeklyScore: {
-        chartTitle: 'Wochenleistung',
-        noData: 'Noch keine Daten für den Wochenscore',
-        legend: {
-          score: 'Wochenscore',
-          baseline: 'Baseline'
-        },
-        tooltip: {
-          week: 'Woche',
-          score: 'Score',
-          strength: 'Kraft',
-          cardio: 'Cardio',
-          baseline: 'Baseline'
-        }
       },
       form: {
         title: 'Trainingsphase',
@@ -1944,7 +1932,10 @@ const translations = {
         enterHold: 'Please enter the hold duration',
         atLeastOneSet: 'Please log at least one set before continuing',
         deleteSet: 'Delete set',
-        deleteSetConfirm: 'Really delete this set?'
+        deleteSetConfirm: 'Really delete this set?',
+        decreaseWeight: 'Decrease weight',
+        increaseWeight: 'Increase weight',
+        stepModeChanged: 'Step size: {step} {unit}'
       },
       exercise: {
         current: 'Current exercise',
@@ -2269,21 +2260,6 @@ const translations = {
         cardioFocused: 'Focus on cardio.',
         restDay: 'Rest day today.',
         sessionsThisWeek: '{count} training days in this period.'
-      },
-      weeklyScore: {
-        chartTitle: 'Weekly Score',
-        noData: 'No weekly score data yet',
-        legend: {
-          score: 'Weekly Score',
-          baseline: 'Baseline'
-        },
-        tooltip: {
-          week: 'Week',
-          score: 'Score',
-          strength: 'Strength Load',
-          cardio: 'Cardio Load',
-          baseline: 'Baseline'
-        }
       },
       form: {
         title: 'Training Phase',
