@@ -443,6 +443,11 @@ async function initApp() {
     if (typeof hideLoading === 'function') {
       setTimeout(() => hideLoading(), 200);
     }
+
+    // Show onboarding for first-time / never-seen users
+    if (typeof tryShowOnboardingAfterInit === 'function') {
+      tryShowOnboardingAfterInit();
+    }
   } catch (error) {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
