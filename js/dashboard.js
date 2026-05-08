@@ -68,64 +68,6 @@ function getBerlinDateKey(date) {
 // ========================================
 
 
-/**
- * Berechnet die ISO-Wochennummer für ein Datum (Europe/Berlin)
- * @returns {Object} { year, week } - ISO Jahr und Wochennummer
- */
-function getISOWeekBerlin(date) {
-  // Konvertiere zu Berlin-Zeit
-  const berlinDate = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
-  berlinDate.setHours(0, 0, 0, 0);
-
-  // ISO-Woche: Woche beginnt am Montag, erste Woche enthält den 4. Januar
-  const thursday = new Date(berlinDate);
-  thursday.setDate(berlinDate.getDate() - ((berlinDate.getDay() + 6) % 7) + 3);
-
-  const firstThursday = new Date(thursday.getFullYear(), 0, 4);
-  firstThursday.setDate(firstThursday.getDate() - ((firstThursday.getDay() + 6) % 7) + 3);
-
-  const weekNumber = Math.round((thursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
-
-  return { year: thursday.getFullYear(), week: weekNumber };
-}
-
-/**
- * Zählt Sessions in der aktuellen Kalenderwoche (ISO, Europe/Berlin)
- */
-function getSessionsThisWeekCount(sessions) {
-  if (!Array.isArray(sessions) || sessions.length === 0) return 0;
-
-  const now = new Date();
-  const currentWeek = getISOWeekBerlin(now);
-
-  return sessions.filter(session => {
-    const date = getSessionDate(session);
-    if (!date) return false;
-    const sessionWeek = getISOWeekBerlin(date);
-    return sessionWeek.year === currentWeek.year && sessionWeek.week === currentWeek.week;
-  }).length;
-}
-
-/**
- * Berechnet die Gesamtbewegungsminuten der aktuellen ISO-Woche (Europe/Berlin)
- */
-function getMovementMinutesThisWeek(sessions) {
-  if (!Array.isArray(sessions) || sessions.length === 0) return 0;
-
-  const now = new Date();
-  const currentWeek = getISOWeekBerlin(now);
-
-  const totalSeconds = sessions.reduce((sum, session) => {
-    const date = getSessionDate(session);
-    if (!date) return sum;
-    const sessionWeek = getISOWeekBerlin(date);
-    if (sessionWeek.year !== currentWeek.year || sessionWeek.week !== currentWeek.week) return sum;
-    return sum + getSessionDurationSeconds(session);
-  }, 0);
-
-  return Math.round(totalSeconds / 60);
-}
-
 function getBalanceContextLabelKey(strengthSec, cardioSec) {
   const totalSec = strengthSec + cardioSec;
   if (totalSec < 3600) {
@@ -216,10 +158,7 @@ async function useDashboardData() {
       contextLabelKey: 'balance.context.lowData'
     },
     recentSessions: [],
-    scheduledWorkouts: [],
-    // Quick Stats
-    sessionsThisWeekCount: 0,
-    movementMinutesThisWeek: 0
+    scheduledWorkouts: []
   };
 
   try {
@@ -233,10 +172,6 @@ async function useDashboardData() {
     state.balance = buildBalanceData(sessions, DASHBOARD_BALANCE_DAYS);
     state.recentSessions = getRecentSessions(sessions, DASHBOARD_RECENT_LIMIT);
     state.scheduledWorkouts = getTodaysScheduledWorkouts();
-
-    // Quick Stats berechnen
-    state.sessionsThisWeekCount = getSessionsThisWeekCount(sessions);
-    state.movementMinutesThisWeek = getMovementMinutesThisWeek(sessions);
   } catch (error) {
     console.error('Error loading dashboard data:', error);
     state.error = error;
@@ -586,57 +521,6 @@ function renderLogWorkoutCard(state) {
       </div>
       <span class="material-symbols-rounded dashboard-log-workout-icon">add</span>
     </button>
-  `;
-}
-
-// ========================================
-// QUICK STATS WIDGET
-// ========================================
-
-function renderQuickStatsWidget(state) {
-  const container = document.getElementById('dashboard-quick-stats');
-  if (!container) return;
-
-  if (state.loading) {
-    container.innerHTML = `
-      <div class="quick-stats-grid">
-        <div class="quick-stats-card">
-          <div class="quick-stats-skeleton"></div>
-        </div>
-        <div class="quick-stats-card">
-          <div class="quick-stats-skeleton"></div>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  const sessionsCount = state.sessionsThisWeekCount || 0;
-  const movementMinutes = state.movementMinutesThisWeek || 0;
-
-  container.innerHTML = `
-    <div class="quick-stats-grid">
-      <div class="quick-stats-card">
-        <div class="quick-stats-header">
-          <span class="quick-stats-label">${tr('dashboard.quickStats.thisWeek')}</span>
-          <span class="quick-stats-icon">
-            <span class="material-symbols-rounded">fitness_center</span>
-          </span>
-        </div>
-        <div class="quick-stats-value">${sessionsCount}</div>
-        <div class="quick-stats-subtext">${tr('dashboard.quickStats.sessions')}</div>
-      </div>
-      <div class="quick-stats-card">
-        <div class="quick-stats-header">
-          <span class="quick-stats-label">${tr('dashboard.quickStats.movementMinutes')}</span>
-          <span class="quick-stats-icon">
-            <span class="material-symbols-rounded">timer</span>
-          </span>
-        </div>
-        <div class="quick-stats-value">${movementMinutes}</div>
-        <div class="quick-stats-subtext">${tr('dashboard.quickStats.thisWeek')}</div>
-      </div>
-    </div>
   `;
 }
 
@@ -1353,10 +1237,10 @@ async function refreshDashboard() {
   renderScheduledWorkoutsCard(data);
   renderLogWorkoutCard(data);
   renderDashboardRecommendation();
-  renderQuickStatsWidget(data);
   renderDashboardPlanCalendar(data);
   // Recent sessions removed - now in Progress > Overview
   // Activity calendar moved to Progress > Overview
+  // Quick Stats removed - covered by Trainingsrhythmus widget on Progress page
 
   dashboardIsLoading = false;
 }

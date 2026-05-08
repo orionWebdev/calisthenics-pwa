@@ -731,11 +731,6 @@ const translations = {
     },
     dashboard: {
       today: 'Heute',
-      quickStats: {
-        thisWeek: 'Diese Woche',
-        sessions: 'Sessions',
-        movementMinutes: 'Bewegungsmin.'
-      },
       primary: {
         title: 'Workout',
         subtitleActive: 'Ein Workout ist aktiv.',
@@ -2146,11 +2141,6 @@ const translations = {
     },
     dashboard: {
       today: 'Today',
-      quickStats: {
-        thisWeek: 'This week',
-        sessions: 'Sessions',
-        movementMinutes: 'Movement min.'
-      },
       primary: {
         title: 'Workout',
         subtitleActive: 'A workout is active.',

@@ -1828,6 +1828,21 @@ function v4BuildRhythmBuckets(periodKey) {
   return buckets;
 }
 
+function getRhythmSubtitleKey(periodKey) {
+  if (periodKey === '7D') return 'progress.v3.rhythm.subtitleDays';
+  if (periodKey === '30D') return 'progress.v3.rhythm.subtitleWeeks';
+  if (periodKey === '6M') return 'progress.v3.rhythm.subtitle6m';
+  return 'progress.v3.rhythm.subtitle';
+}
+
+function formatTotalMinutes(mins) {
+  if (mins <= 0) return '0 min';
+  if (mins < 60) return `${mins} min`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m === 0 ? `${h}h` : `${h}h ${m}min`;
+}
+
 function renderV4Rhythm(sessions) {
   const buckets = v4BuildRhythmBuckets(pv4Period);
   const cutoff = buckets[0].start;
@@ -1843,13 +1858,22 @@ function renderV4Rhythm(sessions) {
     }
   });
 
-  const maxMin = Math.max(1, ...buckets.map(b => V3_KNOWN_TYPES.reduce((sum, t) => sum + b.data[t], 0)));
-  const hasData = buckets.some(b => V3_KNOWN_TYPES.some(t => b.data[t] > 0));
+  const totalsPerBucket = buckets.map(b => V3_KNOWN_TYPES.reduce((sum, t) => sum + b.data[t], 0));
+  const maxMin = Math.max(1, ...totalsPerBucket);
+  const grandTotal = totalsPerBucket.reduce((a, b) => a + b, 0);
+  const hasData = grandTotal > 0;
+
+  const subtitle = trV3(getRhythmSubtitleKey(pv4Period));
 
   if (!hasData) {
     return `
-      <div class="pv3-card">
-        <div class="pv3-card-header"><h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3></div>
+      <div class="pv3-card pv3-rhythm-card">
+        <div class="pv3-card-header pv3-rhythm-header">
+          <div class="pv3-rhythm-header-text">
+            <h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3>
+            <span class="pv3-card-subtitle">${subtitle}</span>
+          </div>
+        </div>
         <div class="pv3-empty-state">
           <span class="material-symbols-rounded">info</span>
           ${trV3('progress.v3.rhythm.noData')}
@@ -1857,16 +1881,22 @@ function renderV4Rhythm(sessions) {
       </div>`;
   }
 
-  const barsHtml = buckets.map(b => {
-    const total = V3_KNOWN_TYPES.reduce((sum, t) => sum + b.data[t], 0);
+  const barsHtml = buckets.map((b, idx) => {
+    const total = totalsPerBucket[idx];
     const heightPct = Math.max(0, (total / maxMin) * 100);
     const segments = V3_KNOWN_TYPES
       .filter(t => b.data[t] > 0)
       .map(t => `<div class="pv3-rhythm-seg" style="height:${(b.data[t] / total) * 100}%;background:${V3_TYPE_COLORS[t]}" title="${Math.round(b.data[t])} min"></div>`)
       .join('');
+    const isEmpty = total === 0;
+    const colClasses = ['pv3-rhythm-col'];
+    if (b.isCurrent) colClasses.push('current');
+    if (isEmpty) colClasses.push('empty');
     return `
-      <div class="pv3-rhythm-col${b.isCurrent ? ' current' : ''}">
-        <div class="pv3-rhythm-bar" style="height:${heightPct}%">${segments}</div>
+      <div class="${colClasses.join(' ')}" style="--bar-delay:${idx * 30}ms">
+        <div class="pv3-rhythm-bar-wrap" aria-hidden="true">
+          ${isEmpty ? '<div class="pv3-rhythm-bar-empty"></div>' : `<div class="pv3-rhythm-bar" style="height:${heightPct}%">${segments}</div>`}
+        </div>
         <span class="pv3-rhythm-label">${b.label}</span>
       </div>`;
   }).join('');
@@ -1883,16 +1913,34 @@ function renderV4Rhythm(sessions) {
       const timeStr = mins >= 60
         ? `${Math.floor(mins / 60)}h ${mins % 60}min`
         : `${mins} min`;
-      return `<span class="pv3-legend-item"><span class="pv3-legend-dot" style="background:${V3_TYPE_COLORS[t]}"></span>${trV3('progress.v3.types.' + t)}<span class="pv3-legend-time">${timeStr}</span></span>`;
+      return `
+        <span class="pv3-legend-item">
+          <span class="pv3-legend-dot" style="background:${V3_TYPE_COLORS[t]}"></span>
+          <span class="pv3-legend-text">${trV3('progress.v3.types.' + t)}</span>
+          <span class="pv3-legend-time">${timeStr}</span>
+        </span>`;
     })
     .join('');
 
   return `
     <div class="pv3-card pv3-rhythm-card">
-      <div class="pv3-card-header">
-        <h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3>
+      <div class="pv3-card-header pv3-rhythm-header">
+        <div class="pv3-rhythm-header-text">
+          <h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3>
+          <span class="pv3-card-subtitle">${subtitle}</span>
+        </div>
+        <div class="pv3-rhythm-total" aria-label="Gesamt">
+          <span class="pv3-rhythm-total-value">${formatTotalMinutes(grandTotal)}</span>
+        </div>
       </div>
-      <div class="pv3-rhythm-chart">${barsHtml}</div>
+      <div class="pv3-rhythm-chart" role="img" aria-label="${trV3('progress.v3.rhythm.title')}">
+        <div class="pv3-rhythm-grid" aria-hidden="true">
+          <span class="pv3-rhythm-gridline"></span>
+          <span class="pv3-rhythm-gridline"></span>
+          <span class="pv3-rhythm-gridline"></span>
+        </div>
+        ${barsHtml}
+      </div>
       <div class="pv3-legend">${legendHtml}</div>
     </div>`;
 }
