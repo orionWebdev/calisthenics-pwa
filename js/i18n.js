@@ -731,6 +731,11 @@ const translations = {
     },
     dashboard: {
       today: 'Heute',
+      quickStats: {
+        thisWeek: 'Diese Woche',
+        sessions: 'Sessions',
+        movementMinutes: 'Bewegungsmin.'
+      },
       primary: {
         title: 'Workout',
         subtitleActive: 'Ein Workout ist aktiv.',
@@ -855,21 +860,6 @@ const translations = {
         cardioFocused: 'Fokus auf Cardio.',
         restDay: 'Heute Ruhetag.',
         sessionsThisWeek: '{count} Trainingstage in diesem Zeitraum.'
-      },
-      weeklyScore: {
-        chartTitle: 'Wochenleistung',
-        noData: 'Noch keine Daten für den Wochenscore',
-        legend: {
-          score: 'Wochenscore',
-          baseline: 'Baseline'
-        },
-        tooltip: {
-          week: 'Woche',
-          score: 'Score',
-          strength: 'Kraft',
-          cardio: 'Cardio',
-          baseline: 'Baseline'
-        }
       },
       form: {
         title: 'Trainingsphase',
@@ -2141,6 +2131,11 @@ const translations = {
     },
     dashboard: {
       today: 'Today',
+      quickStats: {
+        thisWeek: 'This week',
+        sessions: 'Sessions',
+        movementMinutes: 'Movement min.'
+      },
       primary: {
         title: 'Workout',
         subtitleActive: 'A workout is active.',
@@ -2265,21 +2260,6 @@ const translations = {
         cardioFocused: 'Focus on cardio.',
         restDay: 'Rest day today.',
         sessionsThisWeek: '{count} training days in this period.'
-      },
-      weeklyScore: {
-        chartTitle: 'Weekly Score',
-        noData: 'No weekly score data yet',
-        legend: {
-          score: 'Weekly Score',
-          baseline: 'Baseline'
-        },
-        tooltip: {
-          week: 'Week',
-          score: 'Score',
-          strength: 'Strength Load',
-          cardio: 'Cardio Load',
-          baseline: 'Baseline'
-        }
       },
       form: {
         title: 'Training Phase',
