@@ -15,6 +15,7 @@ const DEFAULT_PROFILE = {
   hapticsEnabled: true,
   defaultProgressPeriod: '30D',
   theme: 'dark',
+  onboardingCompleted: false,
   integrations: {
     garmin: { connected: false },
     appleHealth: { connected: false },
@@ -219,6 +220,8 @@ function renderProfileView() {
 
     ${renderSection(t('settings.integrations'), renderIntegrationsSettings())}
 
+    ${renderSection(t('settings.legal'), renderLegalSettings())}
+
     ${renderSection(t('settings.account'), renderAccountSettings(user))}
 
     <div class="settings-app-info">
@@ -403,6 +406,310 @@ function renderAccountSettings(user) {
     </div>
   `;
 }
+
+// ========================================
+// LEGAL & PRIVACY
+// ========================================
+
+function renderLegalSettings() {
+  return `
+    <div class="settings-row" onclick="openPrivacyPolicy()">
+      <span class="material-symbols-rounded settings-row-icon">shield</span>
+      <span class="settings-row-label">${t('settings.privacy')}</span>
+      <span class="settings-row-value"><span class="material-symbols-rounded">chevron_right</span></span>
+    </div>
+    <div class="settings-row" onclick="openTermsOfUse()">
+      <span class="material-symbols-rounded settings-row-icon">gavel</span>
+      <span class="settings-row-label">${t('settings.terms')}</span>
+      <span class="settings-row-value"><span class="material-symbols-rounded">chevron_right</span></span>
+    </div>
+    <div class="settings-row" onclick="openImprint()">
+      <span class="material-symbols-rounded settings-row-icon">info</span>
+      <span class="settings-row-label">${t('settings.imprint')}</span>
+      <span class="settings-row-value"><span class="material-symbols-rounded">chevron_right</span></span>
+    </div>
+    <div class="settings-row" onclick="openAcknowledgments()">
+      <span class="material-symbols-rounded settings-row-icon">favorite</span>
+      <span class="settings-row-label">${t('settings.acknowledgments')}</span>
+      <span class="settings-row-value"><span class="material-symbols-rounded">chevron_right</span></span>
+    </div>
+    <div class="settings-row" onclick="restartOnboarding()">
+      <span class="material-symbols-rounded settings-row-icon">play_circle</span>
+      <span class="settings-row-label">${t('settings.replayOnboarding')}</span>
+      <span class="settings-row-value"><span class="material-symbols-rounded">chevron_right</span></span>
+    </div>
+  `;
+}
+
+const LEGAL_LAST_UPDATED = '2026-05-08';
+
+function legalMeta() {
+  return `<p class="legal-modal-meta">${t('settings.lastUpdated', { date: LEGAL_LAST_UPDATED })}</p>`;
+}
+
+function legalCloseBtn() {
+  const label = (typeof t === 'function' && t('common.close')) || 'Schließen';
+  return `<button type="button" class="legal-modal-close-btn" onclick="closeGenericModal()">${label}</button>`;
+}
+
+function _legalWrap(bodyHTML, includeMeta) {
+  return `<div class="legal-modal-body">${bodyHTML}${includeMeta ? legalMeta() : ''}${legalCloseBtn()}</div>`;
+}
+
+function openPrivacyPolicy() {
+  if (typeof openGenericModal !== 'function') return;
+  const isDe = (userProfile.language || 'de') !== 'en';
+  const html = isDe ? privacyPolicyHtmlDe() : privacyPolicyHtmlEn();
+  openGenericModal(t('settings.privacy'), _legalWrap(html, true));
+}
+
+function openTermsOfUse() {
+  if (typeof openGenericModal !== 'function') return;
+  const isDe = (userProfile.language || 'de') !== 'en';
+  const html = isDe ? termsHtmlDe() : termsHtmlEn();
+  openGenericModal(t('settings.terms'), _legalWrap(html, true));
+}
+
+function openImprint() {
+  if (typeof openGenericModal !== 'function') return;
+  const isDe = (userProfile.language || 'de') !== 'en';
+  const html = isDe ? imprintHtmlDe() : imprintHtmlEn();
+  openGenericModal(t('settings.imprint'), _legalWrap(html, false));
+}
+
+function openAcknowledgments() {
+  if (typeof openGenericModal !== 'function') return;
+  openGenericModal(t('settings.acknowledgments'), _legalWrap(acknowledgmentsHtml(), false));
+}
+
+// ----- Texte (Templates — bitte vor Veröffentlichung rechtlich prüfen lassen) -----
+
+function privacyPolicyHtmlDe() {
+  return `
+    <p><strong>Diese Datenschutzerklärung ist ein Template und sollte vor der Veröffentlichung rechtlich geprüft werden (z. B. mit einem Generator wie e-recht24 oder durch einen Anwalt).</strong></p>
+
+    <h4>1. Verantwortlicher</h4>
+    <p>[Vor- und Nachname]<br>
+    [Straße + Hausnummer]<br>
+    [PLZ Ort]<br>
+    [Land]<br>
+    E-Mail: [deine-mail@beispiel.de]</p>
+
+    <h4>2. Welche Daten werden erhoben?</h4>
+    <ul>
+      <li><strong>Konto-Daten:</strong> E-Mail-Adresse, optional Name und Profilbild — werden über Google Sign-In bzw. E-Mail-Anmeldung an Firebase Authentication übermittelt.</li>
+      <li><strong>Trainings-Daten:</strong> selbst erstellte Pläne, Übungen, Workouts, Sätze, Kalender-Einträge, Körpergewicht und ggf. Größe — werden in Cloud Firestore gespeichert.</li>
+      <li><strong>Technische Daten:</strong> Geräteinformationen und Fehlerprotokolle, die der Browser oder die App-Hülle automatisch an Firebase übermittelt.</li>
+    </ul>
+
+    <h4>3. Zweck der Verarbeitung</h4>
+    <p>Die Daten werden ausschließlich verarbeitet, um die Funktionalität der App bereitzustellen — insbesondere die Synchronisation deiner Trainings-Daten zwischen mehreren Geräten und das Speichern deiner Sessions.</p>
+
+    <h4>4. Rechtsgrundlage</h4>
+    <p>Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung — Bereitstellung des angefragten Dienstes) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an stabilem Betrieb der App).</p>
+
+    <h4>5. Drittanbieter</h4>
+    <p>Wir nutzen folgende Dienste der Google Ireland Limited / Google LLC:</p>
+    <ul>
+      <li><strong>Firebase Authentication</strong> — Konto-Verwaltung</li>
+      <li><strong>Cloud Firestore</strong> — Speicherung deiner Trainings-Daten</li>
+      <li><strong>Firebase Hosting</strong> — Auslieferung der Web-App (sofern verwendet)</li>
+    </ul>
+    <p>Bei der Verarbeitung können Daten in die USA übertragen werden. Google ist nach dem EU-US Data Privacy Framework zertifiziert.</p>
+
+    <h4>6. Speicherdauer</h4>
+    <p>Deine Daten werden gespeichert, solange dein Account aktiv ist. Bei Account-Löschung werden alle persönlichen Daten und Trainings-Daten gelöscht. Backup-Kopien können bis zu 30 Tage erhalten bleiben, bevor sie endgültig entfernt werden.</p>
+
+    <h4>7. Deine Rechte</h4>
+    <p>Du hast jederzeit das Recht auf:</p>
+    <ul>
+      <li>Auskunft (Art. 15 DSGVO)</li>
+      <li>Berichtigung (Art. 16 DSGVO)</li>
+      <li>Löschung (Art. 17 DSGVO) — direkt in der App über „Account löschen"</li>
+      <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+      <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+      <li>Widerspruch (Art. 21 DSGVO)</li>
+      <li>Beschwerde bei einer Aufsichtsbehörde (Art. 77 DSGVO)</li>
+    </ul>
+    <p>Für Anfragen kontaktiere uns unter [deine-mail@beispiel.de].</p>
+
+    <h4>8. Cookies / Lokale Speicherung</h4>
+    <p>Die App speichert Einstellungen und Cache-Daten ausschließlich lokal auf deinem Gerät (localStorage, IndexedDB, Service Worker Cache). Es werden keine Tracking- oder Werbe-Cookies eingesetzt.</p>
+
+    <h4>9. Änderungen</h4>
+    <p>Diese Datenschutzerklärung kann angepasst werden. Wesentliche Änderungen werden in der App angekündigt.</p>
+  `;
+}
+
+function privacyPolicyHtmlEn() {
+  return `
+    <p><strong>This privacy policy is a template and should be legally reviewed before publishing.</strong></p>
+
+    <h4>1. Controller</h4>
+    <p>[Full name]<br>
+    [Street + No.]<br>
+    [Postal code, City]<br>
+    [Country]<br>
+    Email: [your-email@example.com]</p>
+
+    <h4>2. What data is collected?</h4>
+    <ul>
+      <li><strong>Account data:</strong> email address, optionally name and profile picture, transmitted via Google Sign-In or email sign-up to Firebase Authentication.</li>
+      <li><strong>Training data:</strong> your own plans, exercises, workouts, sets, calendar entries, body weight and optionally height — stored in Cloud Firestore.</li>
+      <li><strong>Technical data:</strong> device information and error logs that the browser or app shell sends automatically to Firebase.</li>
+    </ul>
+
+    <h4>3. Purpose</h4>
+    <p>Data is processed solely to provide the functionality of the app — in particular cross-device synchronization of your training data and saving of your sessions.</p>
+
+    <h4>4. Legal basis</h4>
+    <p>Art. 6(1)(b) GDPR (contract performance — providing the service requested) and Art. 6(1)(f) GDPR (legitimate interest in stable operation of the app).</p>
+
+    <h4>5. Third-party services</h4>
+    <p>We use the following Google Ireland Limited / Google LLC services:</p>
+    <ul>
+      <li><strong>Firebase Authentication</strong> — account management</li>
+      <li><strong>Cloud Firestore</strong> — storage of your training data</li>
+      <li><strong>Firebase Hosting</strong> — web-app delivery (if applicable)</li>
+    </ul>
+    <p>Data may be transferred to the US. Google is certified under the EU-US Data Privacy Framework.</p>
+
+    <h4>6. Retention</h4>
+    <p>Your data is kept as long as your account is active. On account deletion, all personal and training data is removed. Backups may persist up to 30 days before final deletion.</p>
+
+    <h4>7. Your rights</h4>
+    <p>You have the right to:</p>
+    <ul>
+      <li>access (Art. 15 GDPR)</li>
+      <li>rectification (Art. 16 GDPR)</li>
+      <li>erasure (Art. 17 GDPR) — directly via "Delete account"</li>
+      <li>restriction (Art. 18 GDPR)</li>
+      <li>data portability (Art. 20 GDPR)</li>
+      <li>objection (Art. 21 GDPR)</li>
+      <li>complaint with a supervisory authority (Art. 77 GDPR)</li>
+    </ul>
+    <p>For requests contact us at [your-email@example.com].</p>
+
+    <h4>8. Local storage</h4>
+    <p>The app stores settings and cache data exclusively on your device (localStorage, IndexedDB, Service Worker Cache). No tracking or advertising cookies are used.</p>
+
+    <h4>9. Changes</h4>
+    <p>This policy may be updated. Material changes will be announced in the app.</p>
+  `;
+}
+
+function termsHtmlDe() {
+  return `
+    <p><strong>Hinweis: Diese Nutzungsbedingungen sind ein Template. Vor Veröffentlichung rechtlich prüfen lassen.</strong></p>
+
+    <h4>1. Geltungsbereich</h4>
+    <p>Diese Bedingungen regeln die Nutzung der App „Calisthenics Pro" (nachfolgend „die App").</p>
+
+    <h4>2. Account</h4>
+    <p>Für die Nutzung wird ein Account benötigt. Du bist verpflichtet, deine Zugangsdaten geheim zu halten und korrekte Angaben zu machen.</p>
+
+    <h4>3. Kein medizinischer Rat</h4>
+    <p>Die App stellt Trainings- und Fitness-Tools bereit. Sie ersetzt keine medizinische Beratung. Bei gesundheitlichen Bedenken konsultiere bitte einen Arzt oder qualifizierten Trainer. Die Ausführung von Übungen erfolgt auf eigene Verantwortung.</p>
+
+    <h4>4. Verfügbarkeit</h4>
+    <p>Wir bemühen uns um stabilen Betrieb, garantieren aber keine ununterbrochene Verfügbarkeit.</p>
+
+    <h4>5. Haftung</h4>
+    <p>Eine Haftung für leichte Fahrlässigkeit ist ausgeschlossen, soweit nicht zwingende gesetzliche Vorschriften (insbesondere für Leben, Körper und Gesundheit) entgegenstehen.</p>
+
+    <h4>6. Datenschutz</h4>
+    <p>Es gelten die Bestimmungen unserer Datenschutzerklärung.</p>
+
+    <h4>7. Änderungen</h4>
+    <p>Wir behalten uns vor, diese Bedingungen anzupassen. Wesentliche Änderungen werden in der App angekündigt.</p>
+  `;
+}
+
+function termsHtmlEn() {
+  return `
+    <p><strong>Note: These terms are a template. Have them legally reviewed before publishing.</strong></p>
+
+    <h4>1. Scope</h4>
+    <p>These terms govern the use of the "Calisthenics Pro" app ("the App").</p>
+
+    <h4>2. Account</h4>
+    <p>An account is required to use the App. You are responsible for keeping your credentials secret and providing accurate information.</p>
+
+    <h4>3. No medical advice</h4>
+    <p>The App provides training and fitness tools. It does not replace medical advice. Consult a doctor or qualified trainer if you have health concerns. You perform exercises at your own risk.</p>
+
+    <h4>4. Availability</h4>
+    <p>We strive for stable operation but do not guarantee uninterrupted availability.</p>
+
+    <h4>5. Liability</h4>
+    <p>Liability for light negligence is excluded as far as legally permitted (in particular for life, body and health).</p>
+
+    <h4>6. Privacy</h4>
+    <p>Our Privacy Policy applies.</p>
+
+    <h4>7. Changes</h4>
+    <p>We reserve the right to amend these terms. Material changes will be announced in the app.</p>
+  `;
+}
+
+function imprintHtmlDe() {
+  return `
+    <p>Angaben gemäß § 5 TMG / § 18 MStV:</p>
+    <p>
+      [Vor- und Nachname]<br>
+      [Straße + Hausnummer]<br>
+      [PLZ Ort]<br>
+      [Land]
+    </p>
+    <p><strong>Kontakt:</strong><br>
+      E-Mail: [deine-mail@beispiel.de]
+    </p>
+    <p><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:</strong><br>
+      [Vor- und Nachname], [Adresse]
+    </p>
+    <h4>Haftungsausschluss</h4>
+    <p>Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.</p>
+  `;
+}
+
+function imprintHtmlEn() {
+  return `
+    <p>Information according to § 5 TMG / § 18 MStV (German law):</p>
+    <p>
+      [Full name]<br>
+      [Street + No.]<br>
+      [Postal code, City]<br>
+      [Country]
+    </p>
+    <p><strong>Contact:</strong><br>
+      Email: [your-email@example.com]
+    </p>
+    <p><strong>Responsible for content per § 18 (2) MStV:</strong><br>
+      [Full name], [Address]
+    </p>
+    <h4>Disclaimer</h4>
+    <p>Despite careful content checks, we do not assume liability for the content of external links. The operators of linked pages are solely responsible for their content.</p>
+  `;
+}
+
+function acknowledgmentsHtml() {
+  return `
+    <p>Calisthenics Pro nutzt folgende Open-Source-Software und Ressourcen:</p>
+    <ul class="legal-list">
+      <li><strong>Material Symbols</strong> — Apache License 2.0 (Google)</li>
+      <li><strong>Tailwind CSS</strong> — MIT License (Tailwind Labs)</li>
+      <li><strong>Chart.js</strong> + <strong>chartjs-plugin-annotation</strong> — MIT License</li>
+      <li><strong>Firebase JS SDK</strong> — Apache License 2.0 (Google)</li>
+      <li><strong>Zalando Sans Expanded</strong> — SIL Open Font License 1.1 (Zalando)</li>
+    </ul>
+    <p>Alle Lizenztexte sind über die jeweiligen Projekt-Repositorien verfügbar. Vielen Dank an die Maintainer dieser Projekte.</p>
+  `;
+}
+
+window.openPrivacyPolicy = openPrivacyPolicy;
+window.openTermsOfUse = openTermsOfUse;
+window.openImprint = openImprint;
+window.openAcknowledgments = openAcknowledgments;
 
 // ========================================
 // REUSABLE CONTROLS

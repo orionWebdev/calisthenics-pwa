@@ -1293,7 +1293,42 @@ const translations = {
       themeDark: 'Dunkel',
       themeLight: 'Hell',
       version: 'Version',
-      build: 'Build'
+      build: 'Build',
+      legal: 'Rechtliches & Datenschutz',
+      privacy: 'Datenschutzerklärung',
+      terms: 'Nutzungsbedingungen',
+      imprint: 'Impressum',
+      acknowledgments: 'Open-Source-Lizenzen',
+      privacyShortHint: 'Zusammenfassung & vollständige Erklärung',
+      lastUpdated: 'Stand: {date}',
+      replayOnboarding: 'App-Tour neu starten'
+    },
+    onboarding: {
+      skip: 'Überspringen',
+      next: 'Weiter',
+      start: 'Los geht\'s',
+      cards: {
+        welcome: {
+          title: 'Willkommen bei Calisthenics Pro',
+          accent: 'Hybrid-Fitness mit Tiefe',
+          body: 'Kraft, Bodyweight, Cardio und Recovery — alles in einer App. Wir nehmen dich kurz an die Hand.'
+        },
+        plan: {
+          title: 'Plane dein Training',
+          accent: 'Pläne · Kalender · Empfehlung',
+          body: 'Erstelle Trainingspläne, ziehe sie auf den Kalender und sieh sofort, was heute ansteht.'
+        },
+        track: {
+          title: 'Smartes Workout-Tracking',
+          accent: 'Sätze in Sekunden geloggt',
+          body: 'Stepper-Modi für 2,5 / 1 / 0,5 kg, EMOM und Superset mit Live-Timer, freie Zahleneingabe per Tipp.'
+        },
+        progress: {
+          title: 'Sieh deinen Fortschritt',
+          accent: 'Trainingsrhythmus · Form · Aktivität',
+          body: 'Wissenschaftlich fundierte Auswertungen — von der ACWR-Form bis zum Aktivitätskalender. Du brauchst rund 14 Tage Trainingsdaten für volle Aussagekraft.'
+        }
+      }
     },
     errors: {
       startUnavailable: 'Start-Auswahl ist nicht verfügbar.',
@@ -2705,7 +2740,42 @@ const translations = {
       themeDark: 'Dark',
       themeLight: 'Light',
       version: 'Version',
-      build: 'Build'
+      build: 'Build',
+      legal: 'Legal & Privacy',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Use',
+      imprint: 'Imprint',
+      acknowledgments: 'Open-Source Licenses',
+      privacyShortHint: 'Summary & full text',
+      lastUpdated: 'Last updated: {date}',
+      replayOnboarding: 'Replay app tour'
+    },
+    onboarding: {
+      skip: 'Skip',
+      next: 'Next',
+      start: 'Get started',
+      cards: {
+        welcome: {
+          title: 'Welcome to Calisthenics Pro',
+          accent: 'Hybrid fitness, done right',
+          body: 'Strength, bodyweight, cardio and recovery — all in one app. Let us take you through it briefly.'
+        },
+        plan: {
+          title: 'Plan your training',
+          accent: 'Plans · Calendar · Recommendation',
+          body: 'Build training plans, drop them on the calendar, and see at a glance what\'s on for today.'
+        },
+        track: {
+          title: 'Smart workout tracking',
+          accent: 'Sets logged in seconds',
+          body: 'Stepper modes for 2.5 / 1 / 0.5 kg, EMOM and supersets with live timer, type any number on tap.'
+        },
+        progress: {
+          title: 'See your progress',
+          accent: 'Rhythm · Form · Activity',
+          body: 'Science-backed insights from ACWR-based form to activity calendar. Around 14 days of training data give you the full picture.'
+        }
+      }
     },
     errors: {
       startUnavailable: 'Start selection is not available.',

@@ -1,28 +1,45 @@
 {
   "name": "Calisthenics Pro",
   "short_name": "CaliPro",
-  "description": "Deine Calisthenics Training App - Übungen, Pläne und Kalender für dein perfektes Workout",
+  "id": "/?source=pwa",
+  "description": "Calisthenics & Hybrid-Training: Übungsdatenbank, Pläne, Kalender und smartes Workout-Tracking mit Trainings-Rhythmus, Wochenrunden und EMOM-/Superset-Unterstützung.",
+  "lang": "de",
+  "dir": "ltr",
   "start_url": "/",
-  "display": "standalone",
-  "background_color": "#060A30",
-  "theme_color": "#F02277",
-  "orientation": "portrait",
   "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#060A30",
+  "theme_color": "#060A30",
+  "categories": ["health", "fitness", "sports", "lifestyle"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "categories": ["health", "fitness", "sports"],
   "screenshots": [],
   "shortcuts": [
     {
@@ -33,7 +50,8 @@
       "icons": [
         {
           "src": "icon-192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -45,7 +63,21 @@
       "icons": [
         {
           "src": "icon-192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Workout starten",
+      "short_name": "Workout",
+      "description": "Direkt ein neues Workout loggen",
+      "url": "/?action=startWorkout",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }
