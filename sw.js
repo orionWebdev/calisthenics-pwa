@@ -1,111 +1,97 @@
 // ========================================
 // SERVICE WORKER für CALISTHENICS PRO
 // ========================================
+//
+// Strategy:
+//   - Source code (HTML/CSS/JS, navigation requests):  network-first, cache fallback.
+//     -> Code updates reach users on next reload, no manual cache busting needed.
+//   - Static assets (images, fonts, icons):           cache-first, network fallback.
+//     -> Stays fast and works offline.
+//   - Firebase / version.json:                         always network, never cached.
 
-const CACHE_NAME = 'calisthenics-pro-v4';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'calisthenics-pro-v5';
+
+// Pre-cached on install for offline shell. Anything else is cached on first fetch.
+const PRECACHE_ASSETS = [
   '/',
   '/index.html',
-  '/css/style.css',
-  '/css/components.css',
-  '/js/app.js',
-  '/js/firebase.js',
-  '/js/exercises.js',
-  '/js/calendar.js',
-  '/js/plans.js',
-  '/js/data.js',
-  '/logo.svg',
+  '/manifest.json',
   '/icon-192.png',
-  '/icon-512.png',
-  '/manifest.json'
+  '/icon-512.png'
 ];
 
-// Install Event - Cache Assets
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing...');
-
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Caching files');
-        return cache.addAll(ASSETS_TO_CACHE);
-      })
-      .then(() => {
-        console.log('Service Worker: Installation complete');
-        return self.skipWaiting();
-      })
-      .catch((error) => {
-        console.error('Service Worker: Installation failed', error);
-      })
+      .then((cache) => cache.addAll(PRECACHE_ASSETS))
+      .then(() => self.skipWaiting())
+      .catch((err) => console.error('SW install failed:', err))
   );
 });
 
-// Activate Event - Clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating...');
-
   event.waitUntil(
     caches.keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cache) => {
-            if (cache !== CACHE_NAME) {
-              console.log('Service Worker: Deleting old cache:', cache);
-              return caches.delete(cache);
-            }
-          })
-        );
-      })
-      .then(() => {
-        console.log('Service Worker: Activation complete');
-        return self.clients.claim();
-      })
+      .then((names) => Promise.all(
+        names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))
+      ))
+      .then(() => self.clients.claim())
   );
 });
 
-// Fetch Event - Serve from cache, fallback to network
+function isSourceRequest(request) {
+  if (request.mode === 'navigate') return true;
+  const url = request.url;
+  // Match .html / .css / .js (with optional query string) hosted from our origin
+  return /\.(html|css|js)(\?[^/]*)?$/.test(url);
+}
+
+function shouldBypass(request) {
+  const url = request.url;
+  return url.includes('firestore.googleapis.com')
+      || url.includes('firebase')
+      || url.includes('googleapis.com')
+      || url.includes('version.json');
+}
+
 self.addEventListener('fetch', (event) => {
-  // Skip Firebase requests and version.json (always fetch from network)
-  if (event.request.url.includes('firestore.googleapis.com') ||
-      event.request.url.includes('firebase') ||
-      event.request.url.includes('version.json')) {
+  if (event.request.method !== 'GET') return;
+  if (shouldBypass(event.request)) return;
+
+  // --- Source code: network-first ---
+  if (isSourceRequest(event.request)) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => {});
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/index.html')))
+    );
     return;
   }
 
+  // --- Static assets: cache-first ---
   event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        // Return cached response if found
-        if (cachedResponse) {
-          console.log('Service Worker: Serving from cache:', event.request.url);
-          return cachedResponse;
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        if (response && response.ok && response.type !== 'opaque') {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => {});
         }
-
-        // Otherwise fetch from network
-        console.log('Service Worker: Fetching from network:', event.request.url);
-        return fetch(event.request)
-          .then((response) => {
-            // Don't cache non-successful responses
-            if (!response || response.status !== 200 || response.type === 'opaque') {
-              return response;
-            }
-
-            // Clone the response (can only be consumed once)
-            const responseToCache = response.clone();
-
-            // Cache the new response
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          })
-          .catch((error) => {
-            console.error('Service Worker: Fetch failed', error);
-            // You could return a custom offline page here
-            throw error;
-          });
-      })
+        return response;
+      });
+    })
   );
+});
+
+// Allow the page to ask the SW to take over immediately after a new install
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

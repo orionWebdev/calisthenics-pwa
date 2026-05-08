@@ -1315,6 +1315,21 @@ function renderEmomBlockContent(block) {
   return renderEmomActive(block);
 }
 
+function renderBlockBanner(type, label, meta) {
+  const iconKey = type === 'emom' ? 'timer' : 'swap_horiz';
+  return `
+    <div class="block-banner block-banner--${type}">
+      <span class="block-banner-icon">
+        <span class="material-symbols-rounded">${iconKey}</span>
+      </span>
+      <div class="block-banner-text">
+        <div class="block-banner-label">${label}</div>
+        ${meta ? `<div class="block-banner-meta">${meta}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
 function renderEmomPrescreen(block) {
   const durationMin = Math.round((block.durationSec || 600) / 60);
 
@@ -1328,24 +1343,28 @@ function renderEmomPrescreen(block) {
     `;
   }).join('');
 
+  const bannerLabel = `EMOM · ${t('block.workout.emom.prescreenDuration', { minutes: durationMin })}`;
+  const bannerMeta = t('block.workout.emom.prescreenEveryMinute');
+
   return `
-    <div class="emom-prescreen">
-      <div class="emom-prescreen-icon">
-        <span class="material-symbols-rounded" style="font-size:3rem;">timer</span>
+    <div class="block-content block-content--emom">
+      ${renderBlockBanner('emom', bannerLabel, bannerMeta)}
+      <div class="emom-prescreen">
+        <div class="emom-prescreen-icon">
+          <span class="material-symbols-rounded" style="font-size:3rem;">timer</span>
+        </div>
+        <div class="emom-prescreen-title">${t('block.workout.emom.prescreenTitle')}</div>
+        <div class="emom-prescreen-exercises">
+          ${exerciseRows}
+        </div>
+        <button type="button" class="emom-start-btn" onclick="startEmomTimer()">
+          <span class="material-symbols-rounded">play_arrow</span>
+          ${t('block.workout.emom.start')}
+        </button>
+        <button type="button" class="emom-skip-btn" onclick="skipEmomBlock()">
+          ${t('block.workout.emom.skip')}
+        </button>
       </div>
-      <div class="emom-prescreen-title">${t('block.workout.emom.prescreenTitle')}</div>
-      <div class="emom-prescreen-duration">${t('block.workout.emom.prescreenDuration', { minutes: durationMin })}</div>
-      <div class="emom-prescreen-label">${t('block.workout.emom.prescreenEveryMinute')}</div>
-      <div class="emom-prescreen-exercises">
-        ${exerciseRows}
-      </div>
-      <button type="button" class="emom-start-btn" onclick="startEmomTimer()">
-        <span class="material-symbols-rounded">play_arrow</span>
-        ${t('block.workout.emom.start')}
-      </button>
-      <button type="button" class="emom-skip-btn" onclick="skipEmomBlock()">
-        ${t('block.workout.emom.skip')}
-      </button>
     </div>
   `;
 }
@@ -1406,6 +1425,7 @@ function updateEmomTimerUI(elapsedSec) {
   const timeInMinute = elapsedSec % intervalSec;
   const remainingInMinute = intervalSec - timeInMinute;
   const totalRemaining = durationSec - elapsedSec;
+  const minuteProgressPct = Math.min(100, Math.max(0, (timeInMinute / intervalSec) * 100));
 
   const block = getCurrentBlock();
   if (!block) return;
@@ -1421,6 +1441,9 @@ function updateEmomTimerUI(elapsedSec) {
   const currentTargetEl = document.getElementById('emom-current-target');
   const nextHintEl = document.getElementById('emom-next-hint');
   const totalEl = document.getElementById('emom-total-remaining');
+  const progressFillEl = document.getElementById('emom-minute-progress-fill');
+  const bannerMetaEl = document.querySelector('.block-content--emom .block-banner-meta');
+  const bannerLabelEl = document.querySelector('.block-content--emom .block-banner-label');
 
   if (timerEl) timerEl.textContent = formatEmomTime(remainingInMinute);
   if (minuteEl) minuteEl.textContent = t('block.workout.emom.minute', { current: Math.min(currentMinute, totalMinutes), total: totalMinutes });
@@ -1428,6 +1451,9 @@ function updateEmomTimerUI(elapsedSec) {
   if (currentTargetEl) currentTargetEl.textContent = '×' + (currentEx?.targetReps || '-');
   if (nextHintEl) nextHintEl.textContent = t('block.workout.emom.next', { name: nextEx?.exerciseName || '', reps: nextEx?.targetReps || '-' });
   if (totalEl) totalEl.textContent = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
+  if (progressFillEl) progressFillEl.style.width = `${minuteProgressPct}%`;
+  if (bannerLabelEl) bannerLabelEl.textContent = `EMOM · ${t('block.workout.emom.minute', { current: Math.min(currentMinute, totalMinutes), total: totalMinutes })}`;
+  if (bannerMetaEl) bannerMetaEl.textContent = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
 }
 
 function formatEmomTime(seconds) {
@@ -1444,6 +1470,7 @@ function renderEmomActive(block) {
   const timeInMinute = elapsed % intervalSec;
   const remainingInMinute = intervalSec - timeInMinute;
   const totalRemaining = durationSec - elapsed;
+  const minuteProgressPct = Math.min(100, Math.max(0, (timeInMinute / intervalSec) * 100));
 
   const exCount = block.exercises.length;
   const currentExIdx = (currentMinute - 1) % exCount;
@@ -1451,37 +1478,48 @@ function renderEmomActive(block) {
   const currentEx = block.exercises[currentExIdx];
   const nextEx = block.exercises[nextExIdx];
 
+  const bannerLabel = `EMOM · ${t('block.workout.emom.minute', { current: currentMinute, total: totalMinutes })}`;
+  const bannerMeta = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
+
   return `
-    <div class="emom-active">
-      <div class="emom-minute-label" id="emom-minute-label">
-        ${t('block.workout.emom.minute', { current: currentMinute, total: totalMinutes })}
+    <div class="block-content block-content--emom">
+      <div id="emom-banner-wrap">
+        ${renderBlockBanner('emom', bannerLabel, bannerMeta)}
       </div>
-      <div class="emom-timer-display" id="emom-timer-value">
-        ${formatEmomTime(remainingInMinute)}
+      <div class="emom-minute-progress" aria-hidden="true">
+        <div class="emom-minute-progress-fill" id="emom-minute-progress-fill" style="width: ${minuteProgressPct}%"></div>
       </div>
-      <div class="emom-timer-sub">${t('block.workout.emom.remainingInMinute')}</div>
+      <div class="emom-active">
+        <div class="emom-minute-label" id="emom-minute-label">
+          ${t('block.workout.emom.minute', { current: currentMinute, total: totalMinutes })}
+        </div>
+        <div class="emom-timer-display" id="emom-timer-value">
+          ${formatEmomTime(remainingInMinute)}
+        </div>
+        <div class="emom-timer-sub">${t('block.workout.emom.remainingInMinute')}</div>
 
-      <div class="emom-current-exercise">
-        <div class="emom-current-exercise-name" id="emom-current-name">${currentEx?.exerciseName || ''}</div>
-        <div class="emom-current-exercise-target" id="emom-current-target">×${currentEx?.targetReps || '-'}</div>
-      </div>
+        <div class="emom-current-exercise">
+          <div class="emom-current-exercise-name" id="emom-current-name">${currentEx?.exerciseName || ''}</div>
+          <div class="emom-current-exercise-target" id="emom-current-target">×${currentEx?.targetReps || '-'}</div>
+        </div>
 
-      <div class="emom-next-hint" id="emom-next-hint">
-        ${t('block.workout.emom.next', { name: nextEx?.exerciseName || '', reps: nextEx?.targetReps || '-' })}
-      </div>
-      <div class="emom-total-remaining" id="emom-total-remaining">
-        ${t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) })}
-      </div>
+        <div class="emom-next-hint" id="emom-next-hint">
+          ${t('block.workout.emom.next', { name: nextEx?.exerciseName || '', reps: nextEx?.targetReps || '-' })}
+        </div>
+        <div class="emom-total-remaining" id="emom-total-remaining">
+          ${t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) })}
+        </div>
 
-      <div class="emom-log-buttons">
-        <button type="button" class="emom-log-btn emom-log-btn--done" onclick="logEmomRound(true)">
-          <span class="material-symbols-rounded">check</span>
-          ${t('block.workout.emom.done')}
-        </button>
-        <button type="button" class="emom-log-btn emom-log-btn--missed" onclick="logEmomRound(false)">
-          <span class="material-symbols-rounded">close</span>
-          ${t('block.workout.emom.missed')}
-        </button>
+        <div class="emom-log-buttons">
+          <button type="button" class="emom-log-btn emom-log-btn--done" onclick="logEmomRound(true)">
+            <span class="material-symbols-rounded">check</span>
+            ${t('block.workout.emom.done')}
+          </button>
+          <button type="button" class="emom-log-btn emom-log-btn--missed" onclick="logEmomRound(false)">
+            <span class="material-symbols-rounded">close</span>
+            ${t('block.workout.emom.missed')}
+          </button>
+        </div>
       </div>
     </div>
   `;
@@ -1547,15 +1585,20 @@ function skipEmomBlock() {
 }
 
 function renderEmomComplete(block) {
+  const blockType = block && block.type === 'superset' ? 'superset' : 'emom';
+  const bannerLabel = blockType === 'superset' ? 'Superset' : 'EMOM';
   return `
-    <div class="emom-complete">
-      <div class="emom-complete-icon">
-        <span class="material-symbols-rounded">check_circle</span>
+    <div class="block-content block-content--${blockType} block-content--done">
+      ${renderBlockBanner(blockType, bannerLabel, t('block.workout.emom.blockComplete'))}
+      <div class="emom-complete">
+        <div class="emom-complete-icon">
+          <span class="material-symbols-rounded">check_circle</span>
+        </div>
+        <div class="emom-complete-title">${t('block.workout.emom.blockComplete')}</div>
+        <button type="button" class="emom-complete-btn" onclick="autoAdvanceToNextBlock()">
+          <span class="material-symbols-rounded">arrow_forward</span>
+        </button>
       </div>
-      <div class="emom-complete-title">${t('block.workout.emom.blockComplete')}</div>
-      <button type="button" class="emom-complete-btn" onclick="autoAdvanceToNextBlock()">
-        <span class="material-symbols-rounded">arrow_forward</span>
-      </button>
     </div>
   `;
 }
@@ -1595,9 +1638,15 @@ function renderSupersetBlockContent(block, currentExercise) {
   const activeEx = block.exercises[activeInBlock];
   const activeLabel = labels[activeInBlock] || 'A' + (activeInBlock + 1);
 
+  // Compute current round = (min completed sets across exercises) + 1
+  const minCompleted = Math.min(...block.exercises.map(ex => ex.completedSets.length || 0));
+  const totalRounds = Math.max(...block.exercises.map(ex => ex.targetSets || 3));
+  const currentRound = Math.min(totalRounds, minCompleted + 1);
+
   const overviewRows = block.exercises.map((ex, i) => {
     const label = labels[i] || 'A' + (i + 1);
     const targetSets = ex.targetSets || 3;
+    const isActive = i === activeInBlock;
     const dots = [];
     for (let s = 0; s < targetSets; s++) {
       const done = s < ex.completedSets.length;
@@ -1605,7 +1654,7 @@ function renderSupersetBlockContent(block, currentExercise) {
       dots.push(`<div class="superset-set-dot ${done ? 'superset-set-dot--done' : ''} ${isNext ? 'superset-set-dot--active' : ''}">${s + 1}</div>`);
     }
     return `
-      <div class="superset-exercise-row">
+      <div class="superset-exercise-row${isActive ? ' superset-exercise-row--active' : ''}">
         <span class="superset-label">${label}</span>
         <span class="superset-exercise-name">${ex.exerciseName}</span>
         <div class="superset-set-dots">${dots.join('')}</div>
@@ -1613,18 +1662,24 @@ function renderSupersetBlockContent(block, currentExercise) {
     `;
   }).join('');
 
+  const bannerLabel = `Superset · ${block.exercises.length} ${block.exercises.length === 1 ? 'Übung' : 'Übungen'}`;
+  const bannerMeta = `Runde ${currentRound} / ${totalRounds}`;
+
   return `
-    <div class="superset-overview">
-      <div class="superset-pair">
-        ${overviewRows}
+    <div class="block-content block-content--superset">
+      ${renderBlockBanner('superset', bannerLabel, bannerMeta)}
+      <div class="superset-overview">
+        <div class="superset-pair">
+          ${overviewRows}
+        </div>
+        <div class="superset-current-label">
+          ${t('block.workout.superset.current', { label: activeLabel, name: activeEx?.exerciseName || '' })}
+        </div>
       </div>
-      <div class="superset-current-label">
-        ${t('block.workout.superset.current', { label: activeLabel, name: activeEx?.exerciseName || '' })}
-      </div>
+      ${renderSTDetail(activeEx)}
+      ${renderSTTargetAndLastPerf(activeEx)}
+      ${renderSTSetList(activeEx)}
     </div>
-    ${renderSTDetail(activeEx)}
-    ${renderSTTargetAndLastPerf(activeEx)}
-    ${renderSTSetList(activeEx)}
   `;
 }
 
