@@ -1373,13 +1373,20 @@ function startEmomTimer() {
   const block = getCurrentBlock();
   if (!block || block.type !== 'emom') return;
 
+  const firstEx = block.exercises[0];
   emomTimerState = {
     blockGroupId: block.groupId,
     startedAt: Date.now(),
     durationSec: block.durationSec || 600,
     intervalSec: block.intervalSec || 60,
     tickId: null,
-    lastMinute: -1
+    lastMinute: -1,
+    // Reps the user is about to log for the current round. Defaults to target,
+    // gets reset to the next exercise's target whenever the minute rolls over.
+    currentRoundReps: parseInt(firstEx?.targetReps, 10) || 0,
+    // Status of the most recent log within the current minute. Cleared on
+    // minute advance. Used to render the success/skipped panel + undo it.
+    lastLogged: null
   };
 
   block.exercises.forEach(ex => { ex.status = 'in-progress'; });
@@ -1406,7 +1413,24 @@ function startEmomTick() {
 
     const currentMinute = Math.floor(elapsed / emomTimerState.intervalSec);
     if (currentMinute !== emomTimerState.lastMinute) {
+      const isFirstTick = emomTimerState.lastMinute === -1;
       emomTimerState.lastMinute = currentMinute;
+      // Reset the reps counter to the new minute's exercise target
+      const block = getCurrentBlock();
+      if (block && block.exercises.length) {
+        const exIdx = currentMinute % block.exercises.length;
+        const exTarget = parseInt(block.exercises[exIdx]?.targetReps, 10);
+        emomTimerState.currentRoundReps = Number.isFinite(exTarget) ? exTarget : 0;
+      }
+      // Clear last-log status so the stepper reappears for the new round.
+      // On first tick we don't need to re-render (initial render already drew the stepper).
+      if (!isFirstTick && emomTimerState.lastLogged) {
+        emomTimerState.lastLogged = null;
+        renderWorkoutScreen();
+      } else {
+        const repsValueEl = document.getElementById('emom-reps-value');
+        if (repsValueEl) repsValueEl.textContent = emomTimerState.currentRoundReps;
+      }
       if (typeof triggerHapticFeedback === 'function') {
         triggerHapticFeedback('medium');
       }
@@ -1448,7 +1472,7 @@ function updateEmomTimerUI(elapsedSec) {
   if (timerEl) timerEl.textContent = formatEmomTime(remainingInMinute);
   if (minuteEl) minuteEl.textContent = t('block.workout.emom.minute', { current: Math.min(currentMinute, totalMinutes), total: totalMinutes });
   if (currentNameEl) currentNameEl.textContent = currentEx?.exerciseName || '';
-  if (currentTargetEl) currentTargetEl.textContent = '×' + (currentEx?.targetReps || '-');
+  if (currentTargetEl) currentTargetEl.textContent = t('block.workout.emom.targetReps', { reps: currentEx?.targetReps || '-' });
   if (nextHintEl) nextHintEl.textContent = t('block.workout.emom.next', { name: nextEx?.exerciseName || '', reps: nextEx?.targetReps || '-' });
   if (totalEl) totalEl.textContent = t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) });
   if (progressFillEl) progressFillEl.style.width = `${minuteProgressPct}%`;
@@ -1500,8 +1524,10 @@ function renderEmomActive(block) {
 
         <div class="emom-current-exercise">
           <div class="emom-current-exercise-name" id="emom-current-name">${currentEx?.exerciseName || ''}</div>
-          <div class="emom-current-exercise-target" id="emom-current-target">×${currentEx?.targetReps || '-'}</div>
+          <div class="emom-current-exercise-target" id="emom-current-target">${t('block.workout.emom.targetReps', { reps: currentEx?.targetReps || '-' })}</div>
         </div>
+
+        ${renderEmomLoggingArea()}
 
         <div class="emom-next-hint" id="emom-next-hint">
           ${t('block.workout.emom.next', { name: nextEx?.exerciseName || '', reps: nextEx?.targetReps || '-' })}
@@ -1509,47 +1535,165 @@ function renderEmomActive(block) {
         <div class="emom-total-remaining" id="emom-total-remaining">
           ${t('block.workout.emom.totalRemaining', { time: formatEmomTime(totalRemaining) })}
         </div>
-
-        <div class="emom-log-buttons">
-          <button type="button" class="emom-log-btn emom-log-btn--done" onclick="logEmomRound(true)">
-            <span class="material-symbols-rounded">check</span>
-            ${t('block.workout.emom.done')}
-          </button>
-          <button type="button" class="emom-log-btn emom-log-btn--missed" onclick="logEmomRound(false)">
-            <span class="material-symbols-rounded">close</span>
-            ${t('block.workout.emom.missed')}
-          </button>
-        </div>
       </div>
     </div>
   `;
 }
 
-function logEmomRound(completed) {
-  if (!emomTimerState || !activeWorkout) return;
+/**
+ * Render either the rep-stepper + log buttons (default) or the status panel
+ * (after the user logged or skipped this round).
+ */
+function renderEmomLoggingArea() {
+  const logged = emomTimerState && emomTimerState.lastLogged;
+  if (logged) {
+    const isSkip = logged.kind === 'skip';
+    const variant = isSkip ? 'skipped' : 'success';
+    const titleText = isSkip
+      ? t('block.workout.emom.skippedTitle')
+      : t('block.workout.emom.loggedTitle', { reps: logged.reps });
+    const iconKey = isSkip ? 'close' : 'check';
+    return `
+      <button type="button"
+              class="emom-log-status emom-log-status--${variant}"
+              onclick="undoEmomRound()"
+              aria-label="${t('block.workout.emom.undoLog')}">
+        <span class="emom-log-status-icon">
+          <span class="material-symbols-rounded">${iconKey}</span>
+        </span>
+        <span class="emom-log-status-text">
+          <span class="emom-log-status-title">${titleText}</span>
+          <span class="emom-log-status-hint">${t('block.workout.emom.tapToUndo')}</span>
+        </span>
+        <span class="material-symbols-rounded emom-log-status-undo">undo</span>
+      </button>
+    `;
+  }
+
+  return `
+    <div class="emom-reps-stepper" role="group" aria-label="${t('block.workout.emom.actualReps')}">
+      <button type="button" class="emom-reps-btn" onclick="adjustEmomReps(-1)" aria-label="-1">
+        <span class="material-symbols-rounded">remove</span>
+      </button>
+      <button type="button" class="emom-reps-value" id="emom-reps-value-btn" onclick="openEmomRepsPicker()">
+        <span id="emom-reps-value">${emomTimerState.currentRoundReps}</span>
+        <span class="emom-reps-unit">${t('workout.setLogger.reps')}</span>
+      </button>
+      <button type="button" class="emom-reps-btn" onclick="adjustEmomReps(1)" aria-label="+1">
+        <span class="material-symbols-rounded">add</span>
+      </button>
+    </div>
+
+    <div class="emom-log-buttons">
+      <button type="button" class="emom-log-btn emom-log-btn--done" onclick="logEmomRoundReps()">
+        <span class="material-symbols-rounded">check</span>
+        ${t('block.workout.emom.logReps')}
+      </button>
+      <button type="button" class="emom-log-btn emom-log-btn--missed" onclick="logEmomRoundSkip()">
+        <span class="material-symbols-rounded">close</span>
+        ${t('block.workout.emom.skipRound')}
+      </button>
+    </div>
+  `;
+}
+
+/**
+ * Adjust the reps counter for the current EMOM round (+1 / -1).
+ */
+function adjustEmomReps(delta) {
+  if (!emomTimerState) return;
+  const next = Math.max(0, (emomTimerState.currentRoundReps || 0) + delta);
+  emomTimerState.currentRoundReps = next;
+  const valueEl = document.getElementById('emom-reps-value');
+  if (valueEl) valueEl.textContent = next;
+  if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('light');
+}
+
+/**
+ * Open the number picker so the user can type the actual reps directly.
+ */
+function openEmomRepsPicker() {
+  if (!emomTimerState) return;
+  if (typeof openNumberPicker !== 'function') return;
+  openNumberPicker({
+    type: 'reps',
+    initialValue: emomTimerState.currentRoundReps || 0,
+    onConfirm: (newValue) => {
+      emomTimerState.currentRoundReps = Math.max(0, parseInt(newValue, 10) || 0);
+      const valueEl = document.getElementById('emom-reps-value');
+      if (valueEl) valueEl.textContent = emomTimerState.currentRoundReps;
+    }
+  });
+}
+
+/**
+ * Internal: write a completed round to the active exercise.
+ * Returns metadata so the caller can store it for the undo flow.
+ */
+function _commitEmomRound(reps) {
+  if (!emomTimerState || !activeWorkout) return null;
   const block = getCurrentBlock();
-  if (!block) return;
+  if (!block) return null;
 
   const elapsed = (Date.now() - emomTimerState.startedAt) / 1000;
   const currentMinute = Math.floor(elapsed / emomTimerState.intervalSec);
   const exCount = block.exercises.length;
   const currentExIdx = currentMinute % exCount;
   const exercise = block.exercises[currentExIdx];
+  const cleanReps = Math.max(0, parseInt(reps, 10) || 0);
 
-  if (exercise) {
-    const reps = completed ? parseInt(exercise.targetReps, 10) || 0 : 0;
-    exercise.completedSets.push({
-      reps,
-      weight: null,
-      completedAt: firebase.firestore.Timestamp.now(),
-      emomMinute: currentMinute + 1
-    });
+  if (!exercise) return null;
+
+  exercise.completedSets.push({
+    reps: cleanReps,
+    weight: null,
+    completedAt: firebase.firestore.Timestamp.now(),
+    emomMinute: currentMinute + 1
+  });
+  saveActiveWorkout();
+
+  return {
+    reps: cleanReps,
+    exerciseIdx: currentExIdx,
+    minute: currentMinute + 1
+  };
+}
+
+/** Log the current round with the value the user dialled in. */
+function logEmomRoundReps() {
+  if (!emomTimerState) return;
+  const meta = _commitEmomRound(emomTimerState.currentRoundReps);
+  if (!meta) return;
+  emomTimerState.lastLogged = { ...meta, kind: 'log' };
+  if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('success');
+  renderWorkoutScreen();
+}
+
+/** Skip the round entirely (logs 0 reps). */
+function logEmomRoundSkip() {
+  const meta = _commitEmomRound(0);
+  if (!meta) return;
+  emomTimerState.lastLogged = { ...meta, kind: 'skip' };
+  if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('light');
+  renderWorkoutScreen();
+}
+
+/** Undo the most recent EMOM round (triggered by tapping the status panel). */
+function undoEmomRound() {
+  if (!emomTimerState || !emomTimerState.lastLogged || !activeWorkout) return;
+  const block = getCurrentBlock();
+  if (!block) return;
+
+  const { exerciseIdx } = emomTimerState.lastLogged;
+  const exercise = block.exercises[exerciseIdx];
+  if (exercise && exercise.completedSets.length) {
+    exercise.completedSets.pop();
     saveActiveWorkout();
   }
 
-  if (typeof triggerHapticFeedback === 'function') {
-    triggerHapticFeedback(completed ? 'success' : 'light');
-  }
+  emomTimerState.lastLogged = null;
+  if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('light');
+  renderWorkoutScreen();
 }
 
 function completeEmomBlock() {
@@ -4891,6 +5035,11 @@ window.closeTimerModal = closeTimerModal;
 window.adjustActiveSetValue = adjustActiveSetValue;
 window.adjustWeightByCurrentStep = adjustWeightByCurrentStep;
 window.handleWeightValueTap = handleWeightValueTap;
+window.adjustEmomReps = adjustEmomReps;
+window.openEmomRepsPicker = openEmomRepsPicker;
+window.logEmomRoundReps = logEmomRoundReps;
+window.logEmomRoundSkip = logEmomRoundSkip;
+window.undoEmomRound = undoEmomRound;
 window.duplicateLastSetST = duplicateLastSetST;
 window.selectCardioRPE = selectCardioRPE;
 window.adjustCardioField = adjustCardioField;
