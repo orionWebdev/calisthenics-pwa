@@ -18529,6 +18529,200 @@ input[type="range"]::-moz-range-progress {
   font-variant-numeric: tabular-nums;
   position: relative;
 }
+/* EMOM round-reps stepper — pre-filled with target, user dials actual count */
+.emom-reps-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  margin: 0 auto 1rem;
+  max-width: 320px;
+}
+
+.emom-reps-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid var(--block-border);
+  background: var(--block-bg-soft);
+  color: var(--block-color-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.emom-reps-btn:hover {
+  background: var(--block-bg-medium);
+}
+
+.emom-reps-btn:active {
+  transform: scale(0.94);
+}
+
+.emom-reps-btn .material-symbols-rounded {
+  font-size: 22px;
+}
+
+.emom-reps-value {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  height: 60px;
+  border: 1px solid var(--block-border);
+  background: var(--block-bg-medium);
+  color: var(--block-color-bright);
+  border-radius: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.emom-reps-value:hover {
+  background: var(--block-bg-soft);
+}
+
+.emom-reps-value #emom-reps-value {
+  font-size: 1.625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.emom-reps-unit {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #9ca3af);
+}
+
+/* EMOM log status panel — replaces stepper + buttons after a round is logged.
+   Tap to undo. Auto-clears on minute advance. */
+.emom-log-status {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 16px;
+  border: 1px solid;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  animation: emom-log-status-rise 0.4s cubic-bezier(0.34, 1.2, 0.4, 1) backwards;
+}
+
+.emom-log-status:active {
+  transform: scale(0.98);
+}
+
+@keyframes emom-log-status-rise {
+  0%   { transform: translateY(10px) scale(0.96); opacity: 0; }
+  100% { transform: translateY(0)   scale(1);    opacity: 1; }
+}
+
+.emom-log-status--success {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.15);
+}
+
+.emom-log-status--success:hover {
+  background: rgba(34, 197, 94, 0.18);
+}
+
+.emom-log-status--skipped {
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.12);
+}
+
+.emom-log-status--skipped:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.emom-log-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: currentColor;
+  color: #0f0f10;
+  flex-shrink: 0;
+  animation: emom-log-icon-pop 0.45s cubic-bezier(0.34, 1.6, 0.4, 1) 0.05s backwards;
+}
+
+[data-theme="light"] .emom-log-status-icon {
+  color: #ffffff;
+}
+
+@keyframes emom-log-icon-pop {
+  0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+  60%  { transform: scale(1.18) rotate(0); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.emom-log-status-icon .material-symbols-rounded {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.emom-log-status-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.emom-log-status-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: currentColor;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.emom-log-status-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #9ca3af);
+  font-weight: 500;
+}
+
+.emom-log-status-undo {
+  font-size: 22px !important;
+  color: var(--text-tertiary, #6b7280);
+  flex-shrink: 0;
+  opacity: 0.6;
+  animation: emom-log-undo-pulse 1.8s ease-in-out infinite 0.5s;
+}
+
+@keyframes emom-log-undo-pulse {
+  0%, 100% { opacity: 0.4; transform: translateX(0); }
+  50%      { opacity: 0.85; transform: translateX(-2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emom-log-status,
+  .emom-log-status-icon,
+  .emom-log-status-undo {
+    animation: none !important;
+  }
+}
+
 .emom-next-hint {
   text-align: center;
   font-size: 0.875rem;

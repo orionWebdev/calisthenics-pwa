@@ -1388,6 +1388,15 @@ const translations = {
           next: 'Nächste: {name} ×{reps}',
           done: 'Geschafft',
           missed: 'Nicht geschafft',
+          targetReps: 'Ziel: ×{reps}',
+          actualReps: 'Tatsächliche Wiederholungen',
+          logReps: 'Loggen',
+          skipRound: 'Skip',
+          loggedReps: '{reps} Wdh. geloggt',
+          loggedTitle: '{reps} Wdh. geloggt',
+          skippedTitle: 'Übersprungen',
+          tapToUndo: 'Tippen zum Rückgängigmachen',
+          undoLog: 'Eintrag rückgängig machen',
           blockComplete: 'EMOM abgeschlossen'
         },
         superset: {
@@ -2788,6 +2797,15 @@ const translations = {
           next: 'Next: {name} ×{reps}',
           done: 'Done',
           missed: 'Missed',
+          targetReps: 'Target: ×{reps}',
+          actualReps: 'Actual reps',
+          logReps: 'Log',
+          skipRound: 'Skip',
+          loggedReps: '{reps} reps logged',
+          loggedTitle: '{reps} reps logged',
+          skippedTitle: 'Skipped',
+          tapToUndo: 'Tap to undo',
+          undoLog: 'Undo entry',
           blockComplete: 'EMOM completed'
         },
         superset: {

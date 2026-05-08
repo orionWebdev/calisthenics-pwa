@@ -271,6 +271,25 @@ function normalizePlanItems(rawItems) {
     if (Number.isFinite(restSec)) {
       normalized.restSec = restSec;
     }
+
+    // Preserve block-grouping fields (EMOM / Superset). Without these the
+    // workout tracker can't reconstruct the block and falls back to 'normal',
+    // making the EMOM/Superset UI silently disappear.
+    if (item.executionType && item.executionType !== 'normal') {
+      normalized.executionType = item.executionType;
+    }
+    if (item.groupId) {
+      normalized.groupId = item.groupId;
+    }
+    if (item.durationSec !== undefined && item.durationSec !== null) {
+      const dur = Number(item.durationSec);
+      if (Number.isFinite(dur)) normalized.durationSec = dur;
+    }
+    if (item.intervalSec !== undefined && item.intervalSec !== null) {
+      const iv = Number(item.intervalSec);
+      if (Number.isFinite(iv)) normalized.intervalSec = iv;
+    }
+
     return normalized;
   }).filter(Boolean);
 }
