@@ -1301,7 +1301,58 @@ const translations = {
       acknowledgments: 'Open-Source-Lizenzen',
       privacyShortHint: 'Zusammenfassung & vollständige Erklärung',
       lastUpdated: 'Stand: {date}',
-      replayOnboarding: 'App-Tour neu starten'
+      replayOnboarding: 'App-Tour neu starten',
+      reauthRequired: 'Bitte melde dich erneut an, um den Account zu löschen.',
+      reauthGoogleHint: 'Aus Sicherheitsgründen musst du dich erneut über Google anmelden.',
+      reauthPasswordHint: 'Bitte gib dein aktuelles Passwort ein, um fortzufahren.',
+      reauthConfirm: 'Bestätigen',
+      currentPassword: 'Aktuelles Passwort'
+    },
+    auth: {
+      appSubtitle: 'Strength · Cardio · Recovery',
+      signInTitle: 'Willkommen zurück',
+      signInSubtitle: 'Melde dich an, um fortzufahren',
+      signUpTitle: 'Konto erstellen',
+      signUpSubtitle: 'Registriere dich mit E-Mail und Passwort',
+      resetTitle: 'Passwort zurücksetzen',
+      resetSubtitle: 'Wir senden dir einen Link per E-Mail',
+      resetHint: 'Wir senden dir einen Link zum Zurücksetzen deines Passworts.',
+      resetSent: 'E-Mail zum Zurücksetzen gesendet.',
+      nameLabel: 'Name (optional)',
+      namePlaceholder: 'Dein Name',
+      emailLabel: 'E-Mail',
+      emailPlaceholder: 'dein@beispiel.de',
+      passwordLabel: 'Passwort',
+      passwordPlaceholder: '••••••••',
+      forgotPassword: 'Passwort vergessen?',
+      signInButton: 'Anmelden',
+      signUpButton: 'Registrieren',
+      resetButton: 'Link senden',
+      signIn: 'Anmelden',
+      signUp: 'Registrieren',
+      noAccountYet: 'Noch kein Konto?',
+      alreadyHaveAccount: 'Bereits ein Konto?',
+      backToSignIn: 'Zurück zur Anmeldung',
+      or: 'oder',
+      continueWithGoogle: 'Mit Google anmelden',
+      allowlistInfo: 'Nur autorisierte Benutzer können sich anmelden',
+      footerText: 'Sichere Anmeldung über Firebase',
+      errors: {
+        generic: 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
+        popupClosed: 'Anmeldung wurde abgebrochen.',
+        popupBlocked: 'Popup wurde blockiert. Bitte erlaube Popups für diese Seite.',
+        network: 'Netzwerkfehler. Bitte überprüfe deine Internetverbindung.',
+        invalidEmail: 'Bitte gib eine gültige E-Mail-Adresse ein.',
+        userDisabled: 'Dieses Konto wurde deaktiviert.',
+        userNotFound: 'Es existiert kein Konto mit dieser E-Mail.',
+        wrongPassword: 'Falsches Passwort.',
+        invalidCredential: 'E-Mail oder Passwort ist falsch.',
+        emailInUse: 'Diese E-Mail wird bereits verwendet.',
+        weakPassword: 'Das Passwort muss mindestens 6 Zeichen lang sein.',
+        tooManyRequests: 'Zu viele Versuche. Bitte versuche es später erneut.',
+        requiresRecentLogin: 'Bitte melde dich erneut an, um diese Aktion auszuführen.',
+        missingPassword: 'Bitte gib dein Passwort ein.'
+      }
     },
     onboarding: {
       skip: 'Überspringen',
@@ -1309,9 +1360,9 @@ const translations = {
       start: 'Los geht\'s',
       cards: {
         welcome: {
-          title: 'Willkommen bei Calisthenics Pro',
-          accent: 'Hybrid-Fitness mit Tiefe',
-          body: 'Kraft, Bodyweight, Cardio und Recovery — alles in einer App. Wir nehmen dich kurz an die Hand.'
+          title: 'Willkommen bei ATEM Hybrid',
+          accent: 'Strength · Cardio · Recovery',
+          body: 'Fortschritt entsteht nicht nur durch Training. ATEM Hybrid hilft dir, Belastung und Erholung im Gleichgewicht zu halten — ganz ohne Wearable.'
         },
         plan: {
           title: 'Plane dein Training',
@@ -1322,6 +1373,11 @@ const translations = {
           title: 'Smartes Workout-Tracking',
           accent: 'Sätze in Sekunden geloggt',
           body: 'Stepper-Modi für 2,5 / 1 / 0,5 kg, EMOM und Superset mit Live-Timer, freie Zahleneingabe per Tipp.'
+        },
+        noWearable: {
+          title: 'Trainiere smarter — ohne Wearable',
+          accent: 'Insights statt Sensor-Zwang',
+          body: 'Erhalte Trainingsphasen, Belastungsanalysen und Empfehlungen direkt aus deinen Workouts — ganz ohne Uhr oder Tracker.'
         },
         progress: {
           title: 'Sieh deinen Fortschritt',
@@ -2748,7 +2804,58 @@ const translations = {
       acknowledgments: 'Open-Source Licenses',
       privacyShortHint: 'Summary & full text',
       lastUpdated: 'Last updated: {date}',
-      replayOnboarding: 'Replay app tour'
+      replayOnboarding: 'Replay app tour',
+      reauthRequired: 'Please sign in again to delete your account.',
+      reauthGoogleHint: 'For security reasons you need to sign in again with Google.',
+      reauthPasswordHint: 'Please enter your current password to continue.',
+      reauthConfirm: 'Confirm',
+      currentPassword: 'Current password'
+    },
+    auth: {
+      appSubtitle: 'Strength · Cardio · Recovery',
+      signInTitle: 'Welcome back',
+      signInSubtitle: 'Sign in to continue',
+      signUpTitle: 'Create account',
+      signUpSubtitle: 'Sign up with email and password',
+      resetTitle: 'Reset password',
+      resetSubtitle: 'We\'ll send you a link by email',
+      resetHint: 'We\'ll send you a link to reset your password.',
+      resetSent: 'Password reset email sent.',
+      nameLabel: 'Name (optional)',
+      namePlaceholder: 'Your name',
+      emailLabel: 'Email',
+      emailPlaceholder: 'you@example.com',
+      passwordLabel: 'Password',
+      passwordPlaceholder: '••••••••',
+      forgotPassword: 'Forgot password?',
+      signInButton: 'Sign in',
+      signUpButton: 'Sign up',
+      resetButton: 'Send link',
+      signIn: 'Sign in',
+      signUp: 'Sign up',
+      noAccountYet: 'No account yet?',
+      alreadyHaveAccount: 'Already have an account?',
+      backToSignIn: 'Back to sign in',
+      or: 'or',
+      continueWithGoogle: 'Continue with Google',
+      allowlistInfo: 'Only authorized users can sign in',
+      footerText: 'Secure sign-in via Firebase',
+      errors: {
+        generic: 'Something went wrong. Please try again.',
+        popupClosed: 'Sign-in was cancelled.',
+        popupBlocked: 'Popup was blocked. Please allow popups for this site.',
+        network: 'Network error. Please check your connection.',
+        invalidEmail: 'Please enter a valid email address.',
+        userDisabled: 'This account has been disabled.',
+        userNotFound: 'No account exists with this email.',
+        wrongPassword: 'Wrong password.',
+        invalidCredential: 'Email or password is incorrect.',
+        emailInUse: 'This email is already in use.',
+        weakPassword: 'Password must be at least 6 characters.',
+        tooManyRequests: 'Too many attempts. Please try again later.',
+        requiresRecentLogin: 'Please sign in again to perform this action.',
+        missingPassword: 'Please enter your password.'
+      }
     },
     onboarding: {
       skip: 'Skip',
@@ -2756,9 +2863,9 @@ const translations = {
       start: 'Get started',
       cards: {
         welcome: {
-          title: 'Welcome to Calisthenics Pro',
-          accent: 'Hybrid fitness, done right',
-          body: 'Strength, bodyweight, cardio and recovery — all in one app. Let us take you through it briefly.'
+          title: 'Welcome to ATEM Hybrid',
+          accent: 'Strength · Cardio · Recovery',
+          body: 'Progress is not just about training. ATEM Hybrid helps you balance load and recovery — no wearable required.'
         },
         plan: {
           title: 'Plan your training',
@@ -2769,6 +2876,11 @@ const translations = {
           title: 'Smart workout tracking',
           accent: 'Sets logged in seconds',
           body: 'Stepper modes for 2.5 / 1 / 0.5 kg, EMOM and supersets with live timer, type any number on tap.'
+        },
+        noWearable: {
+          title: 'Train smarter — no wearable needed',
+          accent: 'Insights, not sensor lock-in',
+          body: 'Get training phases, load analysis and recommendations directly from your workouts — no watch, no tracker required.'
         },
         progress: {
           title: 'See your progress',

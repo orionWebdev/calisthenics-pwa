@@ -1,5 +1,5 @@
 // ========================================
-// SERVICE WORKER für CALISTHENICS PRO
+// SERVICE WORKER für ATEM HYBRID
 // ========================================
 //
 // Strategy:
@@ -9,7 +9,7 @@
 //     -> Stays fast and works offline.
 //   - Firebase / version.json:                         always network, never cached.
 
-const CACHE_NAME = 'calisthenics-pro-v5';
+const CACHE_NAME = 'atem-hybrid-v1';
 
 // Pre-cached on install for offline shell. Anything else is cached on first fetch.
 const PRECACHE_ASSETS = [

@@ -6,10 +6,11 @@
 // or manually from Settings → "App-Tour neu starten".
 
 const ONBOARDING_CARDS = [
-  { key: 'welcome',  icon: 'fitness_center', tone: 'pink'   },
-  { key: 'plan',     icon: 'calendar_month', tone: 'pink'   },
-  { key: 'track',    icon: 'timer',          tone: 'orange' },
-  { key: 'progress', icon: 'trending_up',    tone: 'green'  }
+  { key: 'welcome',    icon: 'fitness_center', tone: 'pink'   },
+  { key: 'plan',       icon: 'calendar_month', tone: 'pink'   },
+  { key: 'track',      icon: 'timer',          tone: 'orange' },
+  { key: 'noWearable', icon: 'watch_off',      tone: 'violet' },
+  { key: 'progress',   icon: 'trending_up',    tone: 'green'  }
 ];
 
 let _onboardingCardIdx = 0;

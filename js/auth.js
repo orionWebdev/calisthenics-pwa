@@ -3,6 +3,7 @@
 /**
  * Authentication State Management
  * - Google Sign-In via Firebase Auth
+ * - Email/Password Sign-In and Sign-Up via Firebase Auth
  * - Allowlist check against Firestore "allowedUsers" collection
  * - Auth guards for app access
  * - Persistent session handling
@@ -158,22 +159,204 @@ async function signInWithGoogle() {
     console.error('❌ Sign-in error:', error);
     hideLoadingState();
 
-    let errorMessage = 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.';
-
-    if (error.code === 'auth/popup-closed-by-user') {
-      errorMessage = 'Anmeldung wurde abgebrochen.';
-    } else if (error.code === 'auth/popup-blocked') {
-      errorMessage = 'Popup wurde blockiert. Bitte erlaube Popups für diese Seite.';
-    } else if (error.code === 'auth/network-request-failed') {
-      errorMessage = 'Netzwerkfehler. Bitte überprüfe deine Internetverbindung.';
-    }
-
     setAuthState(AUTH_STATES.ERROR);
 
     return {
       success: false,
       error: error.code,
-      message: errorMessage
+      message: getAuthErrorMessage(error.code)
+    };
+  }
+}
+
+/**
+ * Map Firebase auth errors to user-friendly i18n messages
+ */
+function getAuthErrorMessage(errorCode) {
+  const tt = (typeof t === 'function') ? t : (key) => key;
+  const map = {
+    'auth/popup-closed-by-user': tt('auth.errors.popupClosed'),
+    'auth/popup-blocked': tt('auth.errors.popupBlocked'),
+    'auth/network-request-failed': tt('auth.errors.network'),
+    'auth/invalid-email': tt('auth.errors.invalidEmail'),
+    'auth/user-disabled': tt('auth.errors.userDisabled'),
+    'auth/user-not-found': tt('auth.errors.userNotFound'),
+    'auth/wrong-password': tt('auth.errors.wrongPassword'),
+    'auth/invalid-credential': tt('auth.errors.invalidCredential'),
+    'auth/email-already-in-use': tt('auth.errors.emailInUse'),
+    'auth/weak-password': tt('auth.errors.weakPassword'),
+    'auth/too-many-requests': tt('auth.errors.tooManyRequests'),
+    'auth/requires-recent-login': tt('auth.errors.requiresRecentLogin'),
+    'auth/missing-password': tt('auth.errors.missingPassword')
+  };
+  return map[errorCode] || tt('auth.errors.generic');
+}
+
+/**
+ * Validate email format (simple RFC-ish check)
+ */
+function isValidEmail(email) {
+  if (!email || typeof email !== 'string') return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
+/**
+ * Sign in with Email & Password
+ */
+async function signInWithEmail(email, password) {
+  try {
+    showLoadingState('Anmeldung läuft...');
+
+    const result = await auth.signInWithEmailAndPassword(email.trim(), password);
+    const user = result.user;
+
+    showLoadingState('Zugriff wird überprüft...');
+    const isAllowed = await checkAllowlist(user.uid, user.email);
+
+    if (!isAllowed) {
+      await auth.signOut();
+      setAuthState(AUTH_STATES.ACCESS_DENIED);
+      hideLoadingState();
+      return {
+        success: false,
+        error: 'access_denied',
+        message: 'Dein Account hat keinen Zugriff auf diese App.'
+      };
+    }
+
+    setAuthState(AUTH_STATES.LOGGED_IN, user);
+    hideLoadingState();
+
+    if (typeof triggerHapticFeedback === 'function') {
+      triggerHapticFeedback('success');
+    }
+
+    return { success: true, user };
+  } catch (error) {
+    console.error('❌ Email sign-in error:', error);
+    hideLoadingState();
+    setAuthState(AUTH_STATES.ERROR);
+    return {
+      success: false,
+      error: error.code,
+      message: getAuthErrorMessage(error.code)
+    };
+  }
+}
+
+/**
+ * Register a new user with Email & Password
+ */
+async function signUpWithEmail(email, password, displayName) {
+  try {
+    showLoadingState('Konto wird erstellt...');
+
+    const result = await auth.createUserWithEmailAndPassword(email.trim(), password);
+    const user = result.user;
+
+    if (displayName && typeof displayName === 'string' && displayName.trim()) {
+      try {
+        await user.updateProfile({ displayName: displayName.trim() });
+      } catch (e) {
+        console.warn('Could not set displayName:', e);
+      }
+    }
+
+    try {
+      await user.sendEmailVerification();
+    } catch (e) {
+      console.warn('Could not send verification email:', e);
+    }
+
+    showLoadingState('Zugriff wird überprüft...');
+    const isAllowed = await checkAllowlist(user.uid, user.email);
+
+    if (!isAllowed) {
+      await auth.signOut();
+      setAuthState(AUTH_STATES.ACCESS_DENIED);
+      hideLoadingState();
+      return {
+        success: false,
+        error: 'access_denied',
+        message: 'Dein Account hat keinen Zugriff auf diese App.'
+      };
+    }
+
+    setAuthState(AUTH_STATES.LOGGED_IN, user);
+    hideLoadingState();
+
+    if (typeof triggerHapticFeedback === 'function') {
+      triggerHapticFeedback('success');
+    }
+
+    return { success: true, user };
+  } catch (error) {
+    console.error('❌ Email sign-up error:', error);
+    hideLoadingState();
+    setAuthState(AUTH_STATES.ERROR);
+    return {
+      success: false,
+      error: error.code,
+      message: getAuthErrorMessage(error.code)
+    };
+  }
+}
+
+/**
+ * Send password reset email
+ */
+async function sendPasswordResetEmail(email) {
+  try {
+    await auth.sendPasswordResetEmail(email.trim());
+    return { success: true };
+  } catch (error) {
+    console.error('❌ Password reset error:', error);
+    return {
+      success: false,
+      error: error.code,
+      message: getAuthErrorMessage(error.code)
+    };
+  }
+}
+
+/**
+ * Re-authenticate the current user. Required by Firebase before sensitive
+ * operations like account deletion when the last login is older than ~5 min.
+ *
+ * For Google users: re-runs the Google popup.
+ * For email/password users: requires the current password.
+ *
+ * @param {string} [password] - Required when the user signed in with email/password.
+ * @returns {Promise<{success: boolean, error?: string, message?: string}>}
+ */
+async function reauthenticateCurrentUser(password) {
+  const user = auth.currentUser;
+  if (!user) {
+    return { success: false, error: 'no_user', message: 'Keine aktive Sitzung.' };
+  }
+
+  const providerId = (user.providerData[0] && user.providerData[0].providerId) || '';
+
+  try {
+    if (providerId === 'google.com') {
+      await user.reauthenticateWithPopup(googleProvider);
+      return { success: true };
+    }
+    if (providerId === 'password') {
+      if (!password) {
+        return { success: false, error: 'auth/missing-password', message: getAuthErrorMessage('auth/missing-password') };
+      }
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+      await user.reauthenticateWithCredential(credential);
+      return { success: true };
+    }
+    return { success: false, error: 'unsupported_provider', message: 'Nicht unterstützte Anmeldemethode.' };
+  } catch (error) {
+    console.error('❌ Re-authentication error:', error);
+    return {
+      success: false,
+      error: error.code,
+      message: getAuthErrorMessage(error.code)
     };
   }
 }
@@ -359,6 +542,25 @@ function showLoginScreen() {
     mainApp.style.display = 'none';
   }
 
+  // Apply i18n if i18n is loaded
+  if (typeof t === 'function' && loginScreen) {
+    loginScreen.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (key) el.textContent = t(key);
+    });
+    loginScreen.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.dataset.i18nPlaceholder;
+      if (key) el.placeholder = t(key);
+    });
+  }
+
+  // Reset email auth form to sign-in mode whenever login screen is shown
+  if (typeof setLoginFormMode === 'function') {
+    try { setLoginFormMode('signin'); } catch (e) { /* i18n not ready yet */ }
+  }
+  const passwordInput = document.getElementById('password-input');
+  if (passwordInput) passwordInput.value = '';
+
   hideAuthError();
   hideLoadingState();
 }
@@ -475,6 +677,149 @@ async function handleGoogleSignIn() {
 }
 
 /**
+ * Toggle login form mode (sign-in / sign-up / reset)
+ */
+function setLoginFormMode(mode) {
+  const root = document.getElementById('login-screen');
+  if (!root) return;
+  root.dataset.mode = mode;
+
+  const titleEl = document.getElementById('login-card-title');
+  const subtitleEl = document.getElementById('login-card-subtitle');
+  const submitBtnText = document.getElementById('email-submit-btn-text');
+  const switchModeText = document.getElementById('login-switch-mode-text');
+  const switchModeBtn = document.getElementById('login-switch-mode-btn');
+  const nameField = document.getElementById('email-name-field');
+  const passwordField = document.getElementById('email-password-field');
+  const forgotBtn = document.getElementById('login-forgot-btn');
+  const dividerEl = document.getElementById('login-divider');
+  const googleBtn = document.getElementById('google-signin-btn');
+  const resetHintEl = document.getElementById('login-reset-hint');
+
+  if (typeof t !== 'function') return;
+
+  hideAuthError();
+
+  if (mode === 'signup') {
+    if (titleEl) titleEl.textContent = t('auth.signUpTitle');
+    if (subtitleEl) subtitleEl.textContent = t('auth.signUpSubtitle');
+    if (submitBtnText) submitBtnText.textContent = t('auth.signUpButton');
+    if (switchModeText) switchModeText.textContent = t('auth.alreadyHaveAccount');
+    if (switchModeBtn) switchModeBtn.textContent = t('auth.signIn');
+    if (nameField) nameField.style.display = '';
+    if (passwordField) passwordField.style.display = '';
+    if (forgotBtn) forgotBtn.style.display = 'none';
+    if (dividerEl) dividerEl.style.display = '';
+    if (googleBtn) googleBtn.style.display = '';
+    if (resetHintEl) resetHintEl.style.display = 'none';
+  } else if (mode === 'reset') {
+    if (titleEl) titleEl.textContent = t('auth.resetTitle');
+    if (subtitleEl) subtitleEl.textContent = t('auth.resetSubtitle');
+    if (submitBtnText) submitBtnText.textContent = t('auth.resetButton');
+    if (switchModeText) switchModeText.textContent = t('auth.backToSignIn');
+    if (switchModeBtn) switchModeBtn.textContent = t('auth.signIn');
+    if (nameField) nameField.style.display = 'none';
+    if (passwordField) passwordField.style.display = 'none';
+    if (forgotBtn) forgotBtn.style.display = 'none';
+    if (dividerEl) dividerEl.style.display = 'none';
+    if (googleBtn) googleBtn.style.display = 'none';
+    if (resetHintEl) resetHintEl.style.display = '';
+  } else {
+    // signin (default)
+    if (titleEl) titleEl.textContent = t('auth.signInTitle');
+    if (subtitleEl) subtitleEl.textContent = t('auth.signInSubtitle');
+    if (submitBtnText) submitBtnText.textContent = t('auth.signInButton');
+    if (switchModeText) switchModeText.textContent = t('auth.noAccountYet');
+    if (switchModeBtn) switchModeBtn.textContent = t('auth.signUp');
+    if (nameField) nameField.style.display = 'none';
+    if (passwordField) passwordField.style.display = '';
+    if (forgotBtn) forgotBtn.style.display = '';
+    if (dividerEl) dividerEl.style.display = '';
+    if (googleBtn) googleBtn.style.display = '';
+    if (resetHintEl) resetHintEl.style.display = 'none';
+  }
+}
+
+function toggleLoginMode() {
+  const root = document.getElementById('login-screen');
+  const current = (root && root.dataset.mode) || 'signin';
+  setLoginFormMode(current === 'signin' ? 'signup' : 'signin');
+}
+
+function showForgotPassword() {
+  setLoginFormMode('reset');
+}
+
+/**
+ * Submit handler for the email auth form (sign-in / sign-up / reset)
+ */
+async function handleEmailAuthSubmit(event) {
+  if (event && typeof event.preventDefault === 'function') {
+    event.preventDefault();
+  }
+
+  const root = document.getElementById('login-screen');
+  const mode = (root && root.dataset.mode) || 'signin';
+
+  const emailInput = document.getElementById('email-input');
+  const passwordInput = document.getElementById('password-input');
+  const nameInput = document.getElementById('name-input');
+  const submitBtn = document.getElementById('email-submit-btn');
+  const submitBtnText = document.getElementById('email-submit-btn-text');
+  const submitBtnSpinner = document.getElementById('email-submit-btn-spinner');
+
+  const email = (emailInput && emailInput.value || '').trim();
+  const password = (passwordInput && passwordInput.value) || '';
+  const name = (nameInput && nameInput.value || '').trim();
+
+  if (!isValidEmail(email)) {
+    showAuthError(t('auth.errors.invalidEmail'));
+    return;
+  }
+
+  if (mode !== 'reset' && (!password || password.length < 6)) {
+    showAuthError(t('auth.errors.weakPassword'));
+    return;
+  }
+
+  if (submitBtn) submitBtn.disabled = true;
+  if (submitBtnText) submitBtnText.style.display = 'none';
+  if (submitBtnSpinner) submitBtnSpinner.style.display = 'flex';
+
+  try {
+    let result;
+    if (mode === 'signup') {
+      result = await signUpWithEmail(email, password, name);
+    } else if (mode === 'reset') {
+      result = await sendPasswordResetEmail(email);
+      if (result.success) {
+        if (typeof showEdgeFeedback === 'function') {
+          showEdgeFeedback('success', t('auth.resetSent'));
+        }
+        setLoginFormMode('signin');
+      } else {
+        showAuthError(result.message);
+      }
+      return;
+    } else {
+      result = await signInWithEmail(email, password);
+    }
+
+    if (result.success) {
+      showMainApp();
+    } else if (result.error === 'access_denied') {
+      showAuthError(result.message);
+    } else {
+      showAuthError(result.message);
+    }
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+    if (submitBtnText) submitBtnText.style.display = '';
+    if (submitBtnSpinner) submitBtnSpinner.style.display = 'none';
+  }
+}
+
+/**
  * Handle Sign Out button click
  */
 async function handleSignOut() {
@@ -499,10 +844,18 @@ window.authModule = {
   getCurrentUser,
   getAuthState,
   signInWithGoogle,
+  signInWithEmail,
+  signUpWithEmail,
+  sendPasswordResetEmail,
+  reauthenticateCurrentUser,
   signOut,
   onAuthStateChange,
   handleGoogleSignIn,
+  handleEmailAuthSubmit,
   handleSignOut,
+  setLoginFormMode,
+  toggleLoginMode,
+  showForgotPassword,
   showLoadingState,
   hideLoadingState,
   setLoadingProgress,

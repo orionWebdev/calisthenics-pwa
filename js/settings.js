@@ -498,15 +498,18 @@ function privacyPolicyHtmlDe() {
     <h4>2. Welche Daten werden erhoben?</h4>
     <ul>
       <li><strong>Konto-Daten:</strong> E-Mail-Adresse, optional Name und Profilbild — werden über Google Sign-In bzw. E-Mail-Anmeldung an Firebase Authentication übermittelt.</li>
-      <li><strong>Trainings-Daten:</strong> selbst erstellte Pläne, Übungen, Workouts, Sätze, Kalender-Einträge, Körpergewicht und ggf. Größe — werden in Cloud Firestore gespeichert.</li>
+      <li><strong>Trainings-Daten:</strong> selbst erstellte Pläne, Übungen, Workouts, Sätze und Kalender-Einträge — werden in Cloud Firestore gespeichert.</li>
+      <li><strong>Gesundheits-/Körperdaten (optional, besonders sensibel):</strong> Körpergewicht und Körpergröße, sofern du sie selbst einträgst. Diese Daten sind nach Art. 9 DSGVO besonders schützenswert und werden ausschließlich in deinem privaten Firestore-Bereich gespeichert. Du kannst sie jederzeit ändern, leer lassen oder über „Account löschen" vollständig entfernen.</li>
       <li><strong>Technische Daten:</strong> Geräteinformationen und Fehlerprotokolle, die der Browser oder die App-Hülle automatisch an Firebase übermittelt.</li>
     </ul>
 
     <h4>3. Zweck der Verarbeitung</h4>
-    <p>Die Daten werden ausschließlich verarbeitet, um die Funktionalität der App bereitzustellen — insbesondere die Synchronisation deiner Trainings-Daten zwischen mehreren Geräten und das Speichern deiner Sessions.</p>
+    <p>Die Daten werden <strong>ausschließlich zur Bereitstellung der Trainingsfunktionen</strong> verwendet — insbesondere zur Synchronisation deiner Trainings-Daten zwischen mehreren Geräten, zum Speichern deiner Sessions und zur Berechnung deiner persönlichen Auswertungen (Trainingsrhythmus, Form-Index, Aktivitätskalender).</p>
+    <p><strong>Keine Weitergabe an Dritte:</strong> Wir geben deine Daten <em>nicht</em> an Dritte weiter — abgesehen von den unter Punkt 5 genannten technischen Dienstleistern, die zwingend zur Bereitstellung der App notwendig sind.</p>
+    <p><strong>Kein Werbetracking:</strong> ATEM Hybrid setzt keine Tracking- oder Werbe-Cookies ein, betreibt kein verhaltensbasiertes Tracking und ist in keine Werbe-Netzwerke eingebunden. Es findet keinerlei Profilbildung zu Werbezwecken statt.</p>
 
     <h4>4. Rechtsgrundlage</h4>
-    <p>Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung — Bereitstellung des angefragten Dienstes) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an stabilem Betrieb der App).</p>
+    <p>Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung — Bereitstellung des angefragten Dienstes) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an stabilem Betrieb der App). Für freiwillig angegebene Gesundheitsdaten (Körpergewicht/Größe) zusätzlich Art. 9 Abs. 2 lit. a DSGVO (ausdrückliche Einwilligung durch aktive Eingabe in der App).</p>
 
     <h4>5. Drittanbieter</h4>
     <p>Wir nutzen folgende Dienste der Google Ireland Limited / Google LLC:</p>
@@ -555,15 +558,18 @@ function privacyPolicyHtmlEn() {
     <h4>2. What data is collected?</h4>
     <ul>
       <li><strong>Account data:</strong> email address, optionally name and profile picture, transmitted via Google Sign-In or email sign-up to Firebase Authentication.</li>
-      <li><strong>Training data:</strong> your own plans, exercises, workouts, sets, calendar entries, body weight and optionally height — stored in Cloud Firestore.</li>
+      <li><strong>Training data:</strong> your own plans, exercises, workouts, sets and calendar entries — stored in Cloud Firestore.</li>
+      <li><strong>Health / body data (optional, particularly sensitive):</strong> body weight and height, only if you enter them yourself. These data are subject to special protection under Art. 9 GDPR and are stored exclusively in your private Firestore area. You can edit, leave them blank, or fully delete them at any time via "Delete account".</li>
       <li><strong>Technical data:</strong> device information and error logs that the browser or app shell sends automatically to Firebase.</li>
     </ul>
 
     <h4>3. Purpose</h4>
-    <p>Data is processed solely to provide the functionality of the app — in particular cross-device synchronization of your training data and saving of your sessions.</p>
+    <p>Data is processed <strong>exclusively to provide the training functionality</strong> — in particular cross-device synchronization, saving your sessions, and computing your personal insights (training rhythm, form index, activity calendar).</p>
+    <p><strong>No sharing with third parties:</strong> We do <em>not</em> share your data with third parties — apart from the technical service providers listed under section 5, which are strictly necessary to operate the app.</p>
+    <p><strong>No ad tracking:</strong> ATEM Hybrid does not use any tracking or advertising cookies, no behavioral tracking, and is not connected to any advertising networks. There is no profiling for advertising purposes whatsoever.</p>
 
     <h4>4. Legal basis</h4>
-    <p>Art. 6(1)(b) GDPR (contract performance — providing the service requested) and Art. 6(1)(f) GDPR (legitimate interest in stable operation of the app).</p>
+    <p>Art. 6(1)(b) GDPR (contract performance — providing the service requested) and Art. 6(1)(f) GDPR (legitimate interest in stable operation of the app). For voluntarily provided health data (body weight/height) additionally Art. 9(2)(a) GDPR (explicit consent through active input in the app).</p>
 
     <h4>5. Third-party services</h4>
     <p>We use the following Google Ireland Limited / Google LLC services:</p>
@@ -603,7 +609,7 @@ function termsHtmlDe() {
     <p><strong>Hinweis: Diese Nutzungsbedingungen sind ein Template. Vor Veröffentlichung rechtlich prüfen lassen.</strong></p>
 
     <h4>1. Geltungsbereich</h4>
-    <p>Diese Bedingungen regeln die Nutzung der App „Calisthenics Pro" (nachfolgend „die App").</p>
+    <p>Diese Bedingungen regeln die Nutzung der App „ATEM Hybrid" (nachfolgend „die App").</p>
 
     <h4>2. Account</h4>
     <p>Für die Nutzung wird ein Account benötigt. Du bist verpflichtet, deine Zugangsdaten geheim zu halten und korrekte Angaben zu machen.</p>
@@ -630,7 +636,7 @@ function termsHtmlEn() {
     <p><strong>Note: These terms are a template. Have them legally reviewed before publishing.</strong></p>
 
     <h4>1. Scope</h4>
-    <p>These terms govern the use of the "Calisthenics Pro" app ("the App").</p>
+    <p>These terms govern the use of the "ATEM Hybrid" app ("the App").</p>
 
     <h4>2. Account</h4>
     <p>An account is required to use the App. You are responsible for keeping your credentials secret and providing accurate information.</p>
@@ -694,7 +700,7 @@ function imprintHtmlEn() {
 
 function acknowledgmentsHtml() {
   return `
-    <p>Calisthenics Pro nutzt folgende Open-Source-Software und Ressourcen:</p>
+    <p>ATEM Hybrid nutzt folgende Open-Source-Software und Ressourcen:</p>
     <ul class="legal-list">
       <li><strong>Material Symbols</strong> — Apache License 2.0 (Google)</li>
       <li><strong>Tailwind CSS</strong> — MIT License (Tailwind Labs)</li>
@@ -870,32 +876,166 @@ function confirmDeleteAccount() {
     <div class="settings-delete-modal">
       <h3>${t('settings.deleteAccountConfirm')}</h3>
       <p>${t('settings.deleteAccountConfirmText')}</p>
-      <button class="btn-danger" onclick="executeDeleteAccount()">${t('settings.deleteAccountButton')}</button>
+      <button class="btn-danger" id="settings-delete-confirm-btn" onclick="executeDeleteAccount()">${t('settings.deleteAccountButton')}</button>
     </div>
   `;
   openGenericModal(t('settings.deleteAccount'), bodyHTML);
 }
 
-async function executeDeleteAccount() {
-  const user = getCurrentUser();
-  if (!user) return;
+/**
+ * Delete all user-scoped Firestore data. Must run while the user is still
+ * authenticated, since security rules reject reads/writes without auth.
+ */
+async function deleteAllUserFirestoreData(uid) {
+  if (!uid) return;
+  const userScopedCollections = [
+    sessionsCollection,
+    plansCollection,
+    progressCollection,
+    scheduleCollection,
+    exercisesCollection,
+    workoutsCollection,
+    db.collection('sessionTemplates')
+  ];
+
+  for (const coll of userScopedCollections) {
+    try {
+      const snap = await coll.where('userId', '==', uid).get();
+      if (snap.empty) continue;
+      const docs = snap.docs;
+      for (let i = 0; i < docs.length; i += 500) {
+        const batch = db.batch();
+        docs.slice(i, i + 500).forEach(d => batch.delete(d.ref));
+        await batch.commit();
+      }
+      console.log(`🗑️  Deleted ${docs.length} docs from ${coll.id}`);
+    } catch (e) {
+      console.warn(`Could not clean ${coll.id}:`, e);
+    }
+  }
 
   try {
-    // Delete Firestore profile
-    await userProfilesCollection.doc(user.uid).delete();
+    await userProfilesCollection.doc(uid).delete();
+  } catch (e) {
+    console.warn('Could not delete user profile:', e);
+  }
+}
 
-    // Clear local cache
-    localStorage.removeItem('userProfile');
-    localStorage.removeItem('userProfileSyncedAt');
+function clearLocalUserCache() {
+  const keys = [
+    'userProfile',
+    'userProfileSyncedAt',
+    'userId_backfill_done',
+    'onboarding_completed',
+    'onboarding_seen',
+    'theme',
+    'dailyMetrics',
+    'lastWorkout'
+  ];
+  keys.forEach(k => {
+    try { localStorage.removeItem(k); } catch (e) { /* ignore */ }
+  });
+}
 
-    // Delete Firebase Auth account
+async function executeDeleteAccount(passwordOverride) {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    showEdgeFeedback('error', t('errors.deleteFailed'));
+    return;
+  }
+
+  const confirmBtn = document.getElementById('settings-delete-confirm-btn');
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = t('common.loading');
+  }
+
+  const uid = user.uid;
+
+  try {
+    // 1. Delete all Firestore data (while auth is still valid)
+    await deleteAllUserFirestoreData(uid);
+
+    // 2. Clear local cache
+    clearLocalUserCache();
+
+    // 3. Delete the Firebase Auth account
     await user.delete();
 
+    // 4. Reload to a clean state
+    closeGenericModal();
     if (typeof showLoginScreen === 'function') showLoginScreen();
+    setTimeout(() => window.location.reload(), 250);
   } catch (e) {
     console.error('Failed to delete account:', e);
-    showEdgeFeedback('error', t('errors.deleteFailed'));
+
+    if (e && e.code === 'auth/requires-recent-login') {
+      // Show re-auth UI
+      promptReauthForDelete();
+      return;
+    }
+
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = t('settings.deleteAccountButton');
+    }
+    showEdgeFeedback('error', (typeof getAuthErrorMessage === 'function' && e && e.code) ? getAuthErrorMessage(e.code) : t('errors.deleteFailed'));
   }
+}
+
+/**
+ * Show re-auth UI inside the delete-account modal. After successful re-auth
+ * we automatically retry the delete flow.
+ */
+function promptReauthForDelete() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const providerId = (user.providerData[0] && user.providerData[0].providerId) || '';
+  const isGoogle = providerId === 'google.com';
+
+  const bodyHTML = `
+    <div class="settings-delete-modal">
+      <h3>${t('settings.deleteAccountConfirm')}</h3>
+      <p>${t('settings.reauthRequired')}</p>
+      ${isGoogle ? `
+        <p class="reauth-hint">${t('settings.reauthGoogleHint')}</p>
+        <button class="btn-danger" id="reauth-confirm-btn" onclick="handleReauthAndDelete()">${t('settings.reauthConfirm')}</button>
+      ` : `
+        <p class="reauth-hint">${t('settings.reauthPasswordHint')}</p>
+        <div class="reauth-field">
+          <label class="email-form-label" for="reauth-password-input">${t('settings.currentPassword')}</label>
+          <input id="reauth-password-input" type="password" class="email-form-input" autocomplete="current-password" />
+        </div>
+        <button class="btn-danger" id="reauth-confirm-btn" onclick="handleReauthAndDelete()">${t('settings.deleteAccountButton')}</button>
+      `}
+    </div>
+  `;
+  openGenericModal(t('settings.deleteAccount'), bodyHTML);
+}
+
+async function handleReauthAndDelete() {
+  const passwordInput = document.getElementById('reauth-password-input');
+  const password = passwordInput ? passwordInput.value : undefined;
+  const confirmBtn = document.getElementById('reauth-confirm-btn');
+
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = t('common.loading');
+  }
+
+  const result = await reauthenticateCurrentUser(password);
+  if (!result.success) {
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = t('settings.deleteAccountButton');
+    }
+    showEdgeFeedback('error', result.message || t('errors.deleteFailed'));
+    return;
+  }
+
+  // Re-auth succeeded — retry deletion
+  await executeDeleteAccount();
 }
 
 // ========================================
