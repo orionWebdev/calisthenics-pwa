@@ -1,8 +1,8 @@
 {
-  "name": "Calisthenics Pro",
-  "short_name": "CaliPro",
+  "name": "ATEM Hybrid",
+  "short_name": "ATEM",
   "id": "/?source=pwa",
-  "description": "Calisthenics & Hybrid-Training: Übungsdatenbank, Pläne, Kalender und smartes Workout-Tracking mit Trainings-Rhythmus, Wochenrunden und EMOM-/Superset-Unterstützung.",
+  "description": "ATEM Hybrid — Strength, Cardio & Recovery. Intelligentes Hybrid-Training: Pläne, Kalender, smartes Workout-Tracking und Belastungsanalyse — ganz ohne Wearable.",
   "lang": "de",
   "dir": "ltr",
   "start_url": "/",

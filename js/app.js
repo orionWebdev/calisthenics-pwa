@@ -357,7 +357,7 @@ function updateProfileInfo(user) {
 // ========================================
 
 async function initApp() {
-  console.log('🚀 Initializing Calisthenics Pro...');
+  console.log('🚀 Initializing ATEM Hybrid...');
   const setProgress = window.authModule?.setLoadingProgress;
   const hideLoading = window.authModule?.hideLoadingState;
   if (typeof setProgress === 'function') {

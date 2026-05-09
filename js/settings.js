@@ -506,7 +506,7 @@ function privacyPolicyHtmlDe() {
     <h4>3. Zweck der Verarbeitung</h4>
     <p>Die Daten werden <strong>ausschließlich zur Bereitstellung der Trainingsfunktionen</strong> verwendet — insbesondere zur Synchronisation deiner Trainings-Daten zwischen mehreren Geräten, zum Speichern deiner Sessions und zur Berechnung deiner persönlichen Auswertungen (Trainingsrhythmus, Form-Index, Aktivitätskalender).</p>
     <p><strong>Keine Weitergabe an Dritte:</strong> Wir geben deine Daten <em>nicht</em> an Dritte weiter — abgesehen von den unter Punkt 5 genannten technischen Dienstleistern, die zwingend zur Bereitstellung der App notwendig sind.</p>
-    <p><strong>Kein Werbetracking:</strong> Calisthenics Pro setzt keine Tracking- oder Werbe-Cookies ein, betreibt kein verhaltensbasiertes Tracking und ist in keine Werbe-Netzwerke eingebunden. Es findet keinerlei Profilbildung zu Werbezwecken statt.</p>
+    <p><strong>Kein Werbetracking:</strong> ATEM Hybrid setzt keine Tracking- oder Werbe-Cookies ein, betreibt kein verhaltensbasiertes Tracking und ist in keine Werbe-Netzwerke eingebunden. Es findet keinerlei Profilbildung zu Werbezwecken statt.</p>
 
     <h4>4. Rechtsgrundlage</h4>
     <p>Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung — Bereitstellung des angefragten Dienstes) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an stabilem Betrieb der App). Für freiwillig angegebene Gesundheitsdaten (Körpergewicht/Größe) zusätzlich Art. 9 Abs. 2 lit. a DSGVO (ausdrückliche Einwilligung durch aktive Eingabe in der App).</p>
@@ -566,7 +566,7 @@ function privacyPolicyHtmlEn() {
     <h4>3. Purpose</h4>
     <p>Data is processed <strong>exclusively to provide the training functionality</strong> — in particular cross-device synchronization, saving your sessions, and computing your personal insights (training rhythm, form index, activity calendar).</p>
     <p><strong>No sharing with third parties:</strong> We do <em>not</em> share your data with third parties — apart from the technical service providers listed under section 5, which are strictly necessary to operate the app.</p>
-    <p><strong>No ad tracking:</strong> Calisthenics Pro does not use any tracking or advertising cookies, no behavioral tracking, and is not connected to any advertising networks. There is no profiling for advertising purposes whatsoever.</p>
+    <p><strong>No ad tracking:</strong> ATEM Hybrid does not use any tracking or advertising cookies, no behavioral tracking, and is not connected to any advertising networks. There is no profiling for advertising purposes whatsoever.</p>
 
     <h4>4. Legal basis</h4>
     <p>Art. 6(1)(b) GDPR (contract performance — providing the service requested) and Art. 6(1)(f) GDPR (legitimate interest in stable operation of the app). For voluntarily provided health data (body weight/height) additionally Art. 9(2)(a) GDPR (explicit consent through active input in the app).</p>
@@ -609,7 +609,7 @@ function termsHtmlDe() {
     <p><strong>Hinweis: Diese Nutzungsbedingungen sind ein Template. Vor Veröffentlichung rechtlich prüfen lassen.</strong></p>
 
     <h4>1. Geltungsbereich</h4>
-    <p>Diese Bedingungen regeln die Nutzung der App „Calisthenics Pro" (nachfolgend „die App").</p>
+    <p>Diese Bedingungen regeln die Nutzung der App „ATEM Hybrid" (nachfolgend „die App").</p>
 
     <h4>2. Account</h4>
     <p>Für die Nutzung wird ein Account benötigt. Du bist verpflichtet, deine Zugangsdaten geheim zu halten und korrekte Angaben zu machen.</p>
@@ -636,7 +636,7 @@ function termsHtmlEn() {
     <p><strong>Note: These terms are a template. Have them legally reviewed before publishing.</strong></p>
 
     <h4>1. Scope</h4>
-    <p>These terms govern the use of the "Calisthenics Pro" app ("the App").</p>
+    <p>These terms govern the use of the "ATEM Hybrid" app ("the App").</p>
 
     <h4>2. Account</h4>
     <p>An account is required to use the App. You are responsible for keeping your credentials secret and providing accurate information.</p>
@@ -700,7 +700,7 @@ function imprintHtmlEn() {
 
 function acknowledgmentsHtml() {
   return `
-    <p>Calisthenics Pro nutzt folgende Open-Source-Software und Ressourcen:</p>
+    <p>ATEM Hybrid nutzt folgende Open-Source-Software und Ressourcen:</p>
     <ul class="legal-list">
       <li><strong>Material Symbols</strong> — Apache License 2.0 (Google)</li>
       <li><strong>Tailwind CSS</strong> — MIT License (Tailwind Labs)</li>

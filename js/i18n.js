@@ -1309,7 +1309,7 @@ const translations = {
       currentPassword: 'Aktuelles Passwort'
     },
     auth: {
-      appSubtitle: 'Dein persönlicher Workout-Planer',
+      appSubtitle: 'Strength · Cardio · Recovery',
       signInTitle: 'Willkommen zurück',
       signInSubtitle: 'Melde dich an, um fortzufahren',
       signUpTitle: 'Konto erstellen',
@@ -1360,9 +1360,9 @@ const translations = {
       start: 'Los geht\'s',
       cards: {
         welcome: {
-          title: 'Willkommen bei Calisthenics Pro',
-          accent: 'Hybrid-Fitness mit Tiefe',
-          body: 'Kraft, Bodyweight, Cardio und Recovery — alles in einer App. Wir nehmen dich kurz an die Hand.'
+          title: 'Willkommen bei ATEM Hybrid',
+          accent: 'Strength · Cardio · Recovery',
+          body: 'Fortschritt entsteht nicht nur durch Training. ATEM Hybrid hilft dir, Belastung und Erholung im Gleichgewicht zu halten — ganz ohne Wearable.'
         },
         plan: {
           title: 'Plane dein Training',
@@ -2812,7 +2812,7 @@ const translations = {
       currentPassword: 'Current password'
     },
     auth: {
-      appSubtitle: 'Your personal workout planner',
+      appSubtitle: 'Strength · Cardio · Recovery',
       signInTitle: 'Welcome back',
       signInSubtitle: 'Sign in to continue',
       signUpTitle: 'Create account',
@@ -2863,9 +2863,9 @@ const translations = {
       start: 'Get started',
       cards: {
         welcome: {
-          title: 'Welcome to Calisthenics Pro',
-          accent: 'Hybrid fitness, done right',
-          body: 'Strength, bodyweight, cardio and recovery — all in one app. Let us take you through it briefly.'
+          title: 'Welcome to ATEM Hybrid',
+          accent: 'Strength · Cardio · Recovery',
+          body: 'Progress is not just about training. ATEM Hybrid helps you balance load and recovery — no wearable required.'
         },
         plan: {
           title: 'Plan your training',
