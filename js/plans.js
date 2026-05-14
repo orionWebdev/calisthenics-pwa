@@ -397,28 +397,39 @@ function renderPlans() {
         ? getPlanCardioMetaParts(plan)
         : getPlanRecoveryMetaParts(plan);
 
+    const chips = metaParts
+      .filter(Boolean)
+      .map(m => `<span class="plan-grid-card-chip">${m}</span>`)
+      .join('');
+    const iconMarkup = renderPlanIconMarkup(plan, planType);
+
     return `
-      <div class="plan-row-card" onclick="viewPlanDetails('${plan.id}')">
-        <div class="plan-row-content">
-          <div class="plan-row-title">${plan.name}</div>
-          <div class="plan-row-meta">${typeLabel} · ${metaParts.join(' · ')}</div>
-        </div>
-        <div class="plan-row-actions">
+      <div class="plan-grid-card plan-grid-card--${planType}" onclick="viewPlanDetails('${plan.id}')">
+        <div class="plan-grid-card-accent">
+          <span class="plan-grid-card-icon">${iconMarkup}</span>
+          <span class="plan-grid-card-type">${typeLabel}</span>
           <button
-            onclick="event.stopPropagation(); startWorkoutFromPlan('${plan.id}')"
-            class="plan-row-start-btn"
-            title="${t('plan.actions.start')}"
-          >
-            <span class="material-symbols-rounded">play_arrow</span>
-          </button>
-          <button
+            type="button"
             onclick="event.stopPropagation(); editPlan('${plan.id}')"
-            class="plan-row-action-btn"
+            class="plan-grid-card-edit"
             title="${t('plan.actions.edit')}"
+            aria-label="${t('plan.actions.edit')}"
           >
             <span class="material-symbols-rounded">edit</span>
           </button>
         </div>
+        <div class="plan-grid-card-body">
+          <div class="plan-grid-card-title">${plan.name}</div>
+          <div class="plan-grid-card-meta">${chips}</div>
+        </div>
+        <button
+          type="button"
+          onclick="event.stopPropagation(); startWorkoutFromPlan('${plan.id}')"
+          class="plan-grid-card-start"
+        >
+          <span class="material-symbols-rounded">play_arrow</span>
+          <span>${t('plan.actions.start')}</span>
+        </button>
       </div>
     `;
   }).join('');
@@ -988,10 +999,8 @@ function renderExercisePicker() {
       (exercise.name && exercise.name.toLowerCase().includes(exercisePickerSearchTerm)) ||
       (exercise.description && exercise.description.toLowerCase().includes(exercisePickerSearchTerm));
 
-    // Muscle group filter
-    const muscleGroups = Array.isArray(exercise.muscleGroups) ? exercise.muscleGroups : [];
-    const matchesMuscle = exercisePickerMuscleFilter === 'all' ||
-      muscleGroups.includes(exercisePickerMuscleFilter);
+    // Muscle group filter — matches the exercise's PRIMARY muscle only
+    const matchesMuscle = exercisePrimaryMatchesMuscle(exercise, exercisePickerMuscleFilter);
 
     return matchesSearch && matchesMuscle;
   });

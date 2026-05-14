@@ -2140,9 +2140,9 @@ function renderV4ExerciseTrends() {
     filtered = filtered.filter(ex => ex.name.toLocaleLowerCase('de-DE').includes(searchLower));
   }
 
-  // Apply muscle group filter
+  // Apply muscle group filter — matches the exercise's PRIMARY muscle only
   if (pv4ExerciseMuscleFilter) {
-    filtered = filtered.filter(ex => ex.muscleGroups.includes(pv4ExerciseMuscleFilter));
+    filtered = filtered.filter(ex => exercisePrimaryMatchesMuscle(ex, pv4ExerciseMuscleFilter));
   }
 
   // Sort by session count, limit to top 20

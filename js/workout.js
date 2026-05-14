@@ -639,6 +639,7 @@ async function completeWorkout() {
 
     // Save session to Firestore
     const savedSessionId = await addDoc(sessionsCollection, sessionData);
+    sessionData.id = savedSessionId;
     console.log('✅ Session saved:', savedSessionId);
 
     // If this workout was from a schedule, mark it as completed
@@ -1041,10 +1042,13 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
     </div>
 
     <div class="pws-stats-row">
-      <div class="pws-quick-stat">
-        <div class="pws-quick-stat-value">${durationMinutes}</div>
+      <button type="button" class="pws-quick-stat pws-quick-stat--editable"
+        onclick="editPostWorkoutDuration('${savedSession.id || ''}', ${durationMinutes})"
+        aria-label="${t('workout.postWorkout.editDuration')}">
+        <div class="pws-quick-stat-value" id="pws-duration-value">${durationMinutes}</div>
         <div class="pws-quick-stat-label">${t('workout.postWorkout.minutes')}</div>
-      </div>
+        <span class="material-symbols-rounded pws-quick-stat-edit">edit</span>
+      </button>
       <div class="pws-quick-stat">
         <div class="pws-quick-stat-value">${currentSets}</div>
         <div class="pws-quick-stat-label">${t('workout.postWorkout.sets')}</div>
@@ -1078,6 +1082,37 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
     });
   });
 }
+
+/**
+ * Lets the user correct the auto-tracked training time straight from the
+ * post-workout summary — opens the number picker and patches the session.
+ */
+function editPostWorkoutDuration(sessionId, currentMinutes) {
+  if (typeof openNumberPicker !== 'function') return;
+  openNumberPicker({
+    type: 'workoutDuration',
+    initialValue: currentMinutes,
+    onConfirm: async (newValue) => {
+      const valEl = document.getElementById('pws-duration-value');
+      if (valEl) valEl.textContent = newValue;
+      if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('light');
+      if (!sessionId) return;
+      try {
+        if (typeof updateDoc === 'function' && typeof sessionsCollection !== 'undefined') {
+          await updateDoc(sessionsCollection, sessionId, {
+            duration: newValue,
+            durationSec: newValue * 60,
+          });
+          if (typeof loadSessions === 'function') await loadSessions();
+          if (typeof renderProgressV4 === 'function') renderProgressV4();
+        }
+      } catch (error) {
+        console.error('❌ Error updating workout duration:', error);
+      }
+    }
+  });
+}
+window.editPostWorkoutDuration = editPostWorkoutDuration;
 
 /**
  * Schließt den Summary Screen und navigiert zum Fortschritt.
@@ -3618,20 +3653,18 @@ function renderWorkoutBottomActions() {
 
   return `
     <div class="workout-bottom-actions">
-      <button onclick="replacingExerciseIndex=null;openAddExerciseToWorkout()" class="btn-primary" style="width:100%;">
-        <span class="material-symbols-rounded" style="font-size:18px;">add</span>
-        <span>Übung hinzufügen</span>
+      <button type="button" onclick="replacingExerciseIndex=null;openAddExerciseToWorkout()" class="workout-ex-action">
+        <span class="material-symbols-rounded">add</span>
+        <span>Hinzufügen</span>
       </button>
-      <div style="display:flex;gap:0.5rem;width:100%;">
-        <button onclick="replaceCurrentExerciseInWorkout()" class="workout-action-btn-outline" style="flex:1;">
-          <span class="material-symbols-rounded" style="font-size:16px;">swap_horiz</span>
-          <span>Übung ersetzen</span>
-        </button>
-        <button onclick="removeCurrentExerciseFromWorkout()" class="workout-action-btn-outline workout-action-btn-outline--danger" style="flex:1;">
-          <span class="material-symbols-rounded" style="font-size:16px;">delete</span>
-          <span>Übung löschen</span>
-        </button>
-      </div>
+      <button type="button" onclick="replaceCurrentExerciseInWorkout()" class="workout-ex-action">
+        <span class="material-symbols-rounded">swap_horiz</span>
+        <span>Ersetzen</span>
+      </button>
+      <button type="button" onclick="removeCurrentExerciseFromWorkout()" class="workout-ex-action workout-ex-action--danger">
+        <span class="material-symbols-rounded">delete</span>
+        <span>Löschen</span>
+      </button>
     </div>
   `;
 }
@@ -3827,7 +3860,7 @@ function showWorkoutEndConfirmModal() {
         </button>
         <button
           type="button"
-          onclick="closeWorkoutEndConfirmModal(); completeWorkout();"
+          onclick="finishWorkoutFromConfirm()"
           class="workout-confirm-btn workout-confirm-btn--primary"
         >
           ${t('workout.screen.finishWorkout')}
@@ -3869,6 +3902,15 @@ function closeWorkoutEndConfirmModal() {
     setTimeout(() => modal.remove(), 200);
   }
 }
+
+// Proceeding to finish: drop the confirm modal instantly (no close animation)
+// so it never overlaps the post-workout summary that completeWorkout() opens.
+function finishWorkoutFromConfirm() {
+  const modal = document.getElementById('workout-end-confirm-modal');
+  if (modal) modal.remove();
+  completeWorkout();
+}
+window.finishWorkoutFromConfirm = finishWorkoutFromConfirm;
 
 // ==================== RPE FEEDBACK MODAL ====================
 
@@ -5002,7 +5044,7 @@ function renderWorkoutExercisePickerList(exercises, filter) {
   const muscle = workoutPickerMuscleFilter;
 
   const filtered = exercises.filter(ex => {
-    if (muscle !== 'all' && !(ex.muscleGroups || []).includes(muscle)) return false;
+    if (muscle !== 'all' && !exercisePrimaryMatchesMuscle(ex, muscle)) return false;
     if (search) {
       const name = getExerciseName(ex).toLowerCase();
       const nameEn = (ex.name || '').toLowerCase();

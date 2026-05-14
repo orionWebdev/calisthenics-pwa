@@ -4498,51 +4498,16 @@ input::placeholder {
   box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.3);
 }
 
-/* Compact Plan Row Cards */
-.plan-row-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
-  min-height: 64px;
-  background: var(--ui-card-bg);
-  border: 1px solid var(--ui-card-border);
-  border-radius: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
+/* Plans — 2-column card grid */
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
 }
 
-.plan-row-card:hover {
-  border-color: var(--ui-card-border-hover);
-  box-shadow: var(--ui-card-shadow-hover);
-  transform: translateY(-1px);
-}
-
-.plan-row-card:active {
-  transform: scale(0.985);
-  background: rgba(240, 34, 119, 0.08);
-  border-color: rgba(240, 34, 119, 0.4);
-}
-
-.plan-row-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 0.85rem;
-  background: var(--ui-icon-bg);
-  border: 1px solid var(--ui-icon-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.plan-row-icon .material-symbols-rounded {
-  font-size: var(--font-size-xl);
-  color: var(--color-primary);
+.plans-grid .empty-state,
+.plans-grid .col-span-full {
+  grid-column: 1 / -1;
 }
 
 .plan-icon-img {
@@ -4553,108 +4518,172 @@ input::placeholder {
   display: block;
 }
 
-.plan-row-icon .plan-icon-img,
 .plan-picker-option-icon .plan-icon-img {
   width: 26px;
   height: 26px;
 }
 
-.plan-row-content {
-  flex: 1;
-  min-width: 0;
+.plan-grid-card {
+  --plan-accent: var(--color-primary);
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.plan-row-title {
-  font-size: var(--font-size-base);
+.plan-grid-card--strength   { --plan-accent: var(--color-category-strength); }
+.plan-grid-card--bodyweight { --plan-accent: var(--color-category-bodyweight); }
+.plan-grid-card--cardio     { --plan-accent: var(--color-category-cardio); }
+.plan-grid-card--recovery   { --plan-accent: var(--color-category-recovery); }
+
+.plan-grid-card:hover {
+  border-color: color-mix(in srgb, var(--plan-accent) 45%, transparent);
+  box-shadow: var(--ui-card-shadow-hover);
+}
+
+.plan-grid-card:active {
+  transform: scale(0.98);
+}
+
+.plan-grid-card-accent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.75rem;
+  background: color-mix(in srgb, var(--plan-accent) 13%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--plan-accent) 24%, transparent);
+}
+
+.plan-grid-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--plan-accent) 22%, transparent);
+  color: var(--plan-accent);
+}
+
+.plan-grid-card-icon .material-symbols-rounded {
+  font-size: 22px;
+}
+
+.plan-grid-card-icon .plan-icon-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+}
+
+.plan-grid-card-type {
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--plan-accent);
+}
+
+.plan-grid-card-edit {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text-secondary, #cbd5f5);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.plan-grid-card-edit .material-symbols-rounded {
+  font-size: 17px;
+}
+
+.plan-grid-card-edit:hover {
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--text-primary, #fff);
+}
+
+.plan-grid-card-edit:active {
+  transform: scale(0.9);
+}
+
+.plan-grid-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.plan-grid-card-title {
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  white-space: nowrap;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.plan-row-meta {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.plan-row-tags {
+.plan-grid-card-meta {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
   flex-wrap: wrap;
-}
-
-.plan-row-tag {
-  display: inline-flex;
-  align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 999px;
-  font-size: var(--font-size-xs);
-  background: rgba(31, 41, 55, 0.6);
-  border: 1px solid rgba(75, 85, 99, 0.4);
-  color: #d1d5db;
+  margin-top: auto;
 }
 
-.plan-row-tag .material-symbols-rounded {
-  font-size: var(--font-size-sm);
+.plan-grid-card-chip {
+  font-size: 0.625rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary, #9ca3af);
+  white-space: nowrap;
 }
 
-.plan-row-actions {
+.plan-grid-card-start {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.plan-row-start-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 0.75rem;
+  justify-content: center;
+  gap: 0.25rem;
+  margin: 0 0.75rem 0.75rem;
+  padding: 0.5rem;
   border: none;
-  border: 2px solid #059669;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border-radius: 0.6rem;
+  background: var(--plan-accent);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
-.plan-row-start-btn:hover {
-  background: #059669;
-  transform: translateY(-1px);
+.plan-grid-card-start .material-symbols-rounded {
+  font-size: 18px;
 }
 
-.plan-row-start-btn .material-symbols-rounded {
-  font-size: var(--font-size-lg);
+.plan-grid-card-start:hover {
+  opacity: 0.92;
 }
 
-.plan-row-action-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 0.65rem;
-  border: 1px solid rgba(75, 85, 99, 0.5);
-  background: rgba(31, 41, 55, 0.6);
-  color: #cbd5f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.plan-row-action-btn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+.plan-grid-card-start:active {
+  transform: scale(0.96);
 }
 
 
@@ -8882,12 +8911,54 @@ input[type="range"]::-moz-range-progress {
 
 /* Workout Bottom Actions (Cancel über Primary) */
 .workout-bottom-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-primary);
+}
+
+/* Compact, equal-weight exercise actions (add / replace / delete) */
+.workout-ex-action {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(75, 85, 99, 0.3);
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.625rem 0.375rem;
+  background: var(--bg-surface, #1c1c1e);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.75rem;
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.workout-ex-action .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.workout-ex-action:hover {
+  color: var(--text-primary, #fff);
+  border-color: var(--ui-card-border-hover, rgba(255, 255, 255, 0.18));
+}
+
+.workout-ex-action:active {
+  transform: scale(0.96);
+}
+
+.workout-ex-action--danger {
+  color: #ef4444;
+}
+
+.workout-ex-action--danger:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .workout-bottom-actions .btn-primary,
@@ -11521,16 +11592,29 @@ input[type="range"]::-moz-range-progress {
 .workout-confirm-modal {
   width: 100%;
   max-width: 360px;
-  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
-  border: 1px solid rgba(75, 85, 99, 0.3);
+  background: var(--bg-card-elevated, #1c1c1e);
+  border: 1px solid var(--border-primary);
   border-radius: 1.5rem;
   padding: 1.5rem;
   text-align: center;
-  animation: slideUpFade 0.3s ease;
+  /* Dedicated keyframe — the modal is flex-centered, so it must NOT use a
+     translateX(-50%) animation (that shifted it off-centre / "versetzt"). */
+  animation: workoutConfirmIn 0.26s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform, opacity;
 }
 
 .workout-confirm-modal-overlay.closing .workout-confirm-modal {
-  animation: slideDownFade 0.2s ease forwards;
+  animation: workoutConfirmOut 0.18s ease forwards;
+}
+
+@keyframes workoutConfirmIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes workoutConfirmOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(12px) scale(0.97); }
 }
 
 .workout-confirm-modal-icon {
@@ -15652,6 +15736,33 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid var(--border-primary);
   border-radius: var(--ui-card-radius);
   min-width: 72px;
+}
+
+/* Tappable duration stat — lets the user correct the auto-tracked time */
+.pws-quick-stat--editable {
+  position: relative;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+
+.pws-quick-stat--editable:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+
+.pws-quick-stat--editable:active {
+  transform: scale(0.96);
+}
+
+.pws-quick-stat-edit {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 13px;
+  color: var(--color-primary);
+  opacity: 0.85;
 }
 
 .pws-quick-stat-value {
