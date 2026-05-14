@@ -157,6 +157,14 @@ const PICKER_CONFIGS = {
       for (let i = 10; i <= 300; i += 5) values.push(i);
       return values;
     }
+  },
+  workoutDuration: {
+    min: 1,
+    max: 360,
+    step: 1,
+    suffix: 'min',
+    titleKey: 'workout.postWorkout.editDuration',
+    generateValues: () => Array.from({ length: 360 }, (_, i) => i + 1)
   }
 };
 

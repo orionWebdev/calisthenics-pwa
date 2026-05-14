@@ -35,6 +35,43 @@ function getMuscleNames() {
   }
 };
 
+// ---- Primary-muscle filtering -------------------------------------------
+// Exercise data has no explicit primary/secondary split — by convention the
+// FIRST entry of `muscleGroups` is the primary mover. These helpers also
+// reconcile the differing muscle keys between the curated JSON
+// (quads/hamstrings/glutes/calves/full_body) and the filter chips
+// (legs/calf/full-body).
+const MUSCLE_GROUP_ALIASES = {
+  quads: 'legs', quadriceps: 'legs', hamstrings: 'legs', glutes: 'legs', legs: 'legs',
+  calves: 'calf', calf: 'calf',
+  full_body: 'full-body', 'full-body': 'full-body', fullbody: 'full-body',
+  chest: 'chest', back: 'back', shoulders: 'shoulders',
+  biceps: 'biceps', triceps: 'triceps', arms: 'arms',
+  core: 'core', cardio: 'cardio', mobility: 'mobility'
+};
+
+function canonicalMuscle(key) {
+  if (!key) return '';
+  const k = String(key).toLowerCase();
+  return MUSCLE_GROUP_ALIASES[k] || k;
+}
+
+function getPrimaryMuscle(exercise) {
+  const mg = Array.isArray(exercise?.muscleGroups) ? exercise.muscleGroups : [];
+  return mg.length ? canonicalMuscle(mg[0]) : '';
+}
+
+// True when the exercise's PRIMARY muscle matches the given filter key.
+function exercisePrimaryMatchesMuscle(exercise, filterKey) {
+  if (!filterKey || filterKey === 'all') return true;
+  const primary = getPrimaryMuscle(exercise);
+  const target = canonicalMuscle(filterKey);
+  if (primary === target) return true;
+  // The generic "arms" filter is satisfied by a biceps/triceps primary.
+  if (target === 'arms' && (primary === 'biceps' || primary === 'triceps')) return true;
+  return false;
+}
+
 // Equipment Namen Mapping
 const equipmentNames = {
   'bodyweight': 'Bodyweight',

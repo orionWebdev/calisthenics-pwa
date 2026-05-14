@@ -582,7 +582,8 @@ const translations = {
         toProgress: 'Zum Fortschritt',
         comparisonTitle: 'Vergleich zum letzten Mal',
         time: 'Zeit',
-        volume: 'Volumen'
+        volume: 'Volumen',
+        editDuration: 'Trainingszeit anpassen'
       },
       feedback: {
         saved: 'Workout gespeichert!',
@@ -2089,7 +2090,8 @@ const translations = {
         toProgress: 'View progress',
         comparisonTitle: 'Comparison to last time',
         time: 'Time',
-        volume: 'Volume'
+        volume: 'Volume',
+        editDuration: 'Adjust training time'
       },
       feedback: {
         saved: 'Workout saved!',
