@@ -632,7 +632,9 @@ const translations = {
       repsTitle: 'Wiederholungen',
       setsTitle: 'Sätze',
       weightTitle: 'Gewicht',
-      holdTitle: 'Haltedauer'
+      holdTitle: 'Haltedauer',
+      modeReps: 'Wdh.',
+      modeHold: 'Halten'
     },
     template: {
       sessionTemplate: 'Session-Vorlage',
@@ -1186,6 +1188,8 @@ const translations = {
           totalVolume: 'Gesamtvolumen',
           activeDays: 'Aktive Tage',
           sessionHistory: 'Trainingshistorie',
+          lastSession: 'Letzte Session',
+          showAll: 'Alle anzeigen',
           noSessions: 'Keine Sessions im Zeitraum',
           minutes: 'min',
           showMore: '{count} weitere anzeigen',
@@ -2135,7 +2139,9 @@ const translations = {
       repsTitle: 'Reps',
       setsTitle: 'Sets',
       weightTitle: 'Weight',
-      holdTitle: 'Hold duration'
+      holdTitle: 'Hold duration',
+      modeReps: 'Reps',
+      modeHold: 'Hold'
     },
     template: {
       sessionTemplate: 'Session template',
@@ -2689,6 +2695,8 @@ const translations = {
           totalVolume: 'Total Volume',
           activeDays: 'Active Days',
           sessionHistory: 'Session History',
+          lastSession: 'Last Session',
+          showAll: 'Show all',
           noSessions: 'No sessions in this period',
           minutes: 'min',
           showMore: 'Show {count} more',
