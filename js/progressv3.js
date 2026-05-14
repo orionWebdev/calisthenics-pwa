@@ -18,6 +18,12 @@ let progressV3Initialized = false;
 // Activity calendar state (month-based, separate from period filter)
 let pv4ActivityMonth = new Date();
 
+// Full training-history sub-page state
+// pv4HistoryView: false | 'enter' (animate in) | true (open, no re-animation)
+let pv4HistoryView = false;
+let pv4HistoryTypeFilter = 'all';
+let pv4HistoryPeriodFilter = 'all';
+
 // Exercise filter state
 let pv4ExerciseSearchTerm = '';
 let pv4ExerciseMuscleFilter = '';
@@ -217,6 +223,13 @@ function renderProgressV4() {
     container.innerHTML = renderPlanDetail(pv4PlanDetailId);
     return;
   }
+  if (pv4HistoryView) {
+    const animateEnter = pv4HistoryView === 'enter';
+    container.innerHTML = renderV4FullHistory(animateEnter);
+    pv4HistoryView = true;
+    attachV4FullHistoryListeners();
+    return;
+  }
 
   container.innerHTML = `
     ${renderV4TabBar()}
@@ -342,8 +355,36 @@ let enduranceSessionsChartInstance = null;
 function renderV4ActivityCalendar() {
   return `<div id="pv4-activity-calendar-card" class="pv3-card pv4-activity-calendar-card">
     <h3 class="dashboard-calendar-widget-title">${trV3('progress.overview.activityCalendarTitle')}</h3>
-    ${renderV4ActivityCalendarInner()}
+    <div id="pv4-activity-calendar-inner">${renderV4ActivityCalendarInner()}</div>
+    ${renderV4CalendarLastSession()}
   </div>`;
+}
+
+// Most-recent session embedded in the activity-calendar card, with a link
+// through to the full training-history sub-page.
+function renderV4CalendarLastSession() {
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  if (!sessions.length) return '';
+
+  const last = [...sessions].sort((a, b) => {
+    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return db - da;
+  })[0];
+  if (!last) return '';
+
+  return `
+    <div class="pv4-calendar-history">
+      <div class="pv4-calendar-history-head">
+        <span class="pv4-calendar-history-label">${trV3('progress.v4.overview.lastSession')}</span>
+        <button class="pv4-history-link-btn" type="button" onclick="openFullHistory()">
+          <span>${trV3('progress.v4.overview.showAll')}</span>
+          <span class="material-symbols-rounded">arrow_forward</span>
+        </button>
+      </div>
+      ${renderV4SessionRow(last)}
+    </div>
+  `;
 }
 
 function renderV4ActivityCalendarInner() {
@@ -421,8 +462,8 @@ function renderV4ActivityCalendarInner() {
 
 function navigateV4ActivityMonth(direction) {
   pv4ActivityMonth.setMonth(pv4ActivityMonth.getMonth() + (direction === 'next' ? 1 : -1));
-  const card = document.getElementById('pv4-activity-calendar-card');
-  if (card) card.innerHTML = renderV4ActivityCalendarInner();
+  const inner = document.getElementById('pv4-activity-calendar-inner');
+  if (inner) inner.innerHTML = renderV4ActivityCalendarInner();
 }
 
 function openV4ActivityDaySheet(dateKey) {
@@ -433,6 +474,161 @@ function openV4ActivityDaySheet(dateKey) {
 
 window.navigateV4ActivityMonth = navigateV4ActivityMonth;
 window.openV4ActivityDaySheet = openV4ActivityDaySheet;
+
+// ==================== FULL TRAINING-HISTORY SUB-PAGE ====================
+
+// Shared session-row markup (used by the calendar card + full history page).
+function renderV4SessionRow(s) {
+  const type = mapSessionType(s) || 'strength';
+  const icon = V3_TYPE_ICONS[type] || 'fitness_center';
+  const d = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+  const dur = v3GetDurationMin(s);
+  const name = s.planName || s.name || trV3('progress.v3.types.' + type);
+  const sessionId = s.id || '';
+  return `
+    <button class="pv4-session-row pv4-session-clickable" type="button" data-session-id="${sessionId}">
+      <span class="material-symbols-rounded pv4-session-icon" style="color:${V3_TYPE_COLORS[type]}">${icon}</span>
+      <div class="pv4-session-info">
+        <div class="pv4-session-name">${name}</div>
+        <div class="pv4-session-meta">${v3FormatDate(d)}${dur > 0 ? ` · ${dur} min` : ''}</div>
+      </div>
+      <span class="material-symbols-rounded pv4-session-chevron">chevron_right</span>
+    </button>`;
+}
+
+function getFilteredHistorySessions() {
+  let sessions = Array.isArray(allSessions) ? [...allSessions] : [];
+  if (pv4HistoryTypeFilter !== 'all') {
+    sessions = sessions.filter(s => (mapSessionType(s) || 'strength') === pv4HistoryTypeFilter);
+  }
+  if (pv4HistoryPeriodFilter !== 'all') {
+    const days = v3PeriodDays(pv4HistoryPeriodFilter);
+    const cutoff = new Date();
+    cutoff.setHours(0, 0, 0, 0);
+    cutoff.setDate(cutoff.getDate() - days + 1);
+    sessions = sessions.filter(s => v3ToLocalDate(s) >= cutoff);
+  }
+  return sessions;
+}
+
+// Renders the session list grouped into months with a divider per month.
+function renderV4HistoryGrouped(sessions) {
+  const sorted = [...sessions].sort((a, b) => {
+    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return db - da;
+  });
+
+  const monthKeys = ['january', 'february', 'march', 'april', 'may', 'june',
+                     'july', 'august', 'september', 'october', 'november', 'december'];
+
+  let html = '';
+  let currentKey = null;
+  sorted.forEach(s => {
+    const d = v3ToLocalDate(s);
+    const key = `${d.getFullYear()}-${d.getMonth()}`;
+    if (key !== currentKey) {
+      currentKey = key;
+      const label = `${trV3('calendar.monthNames.' + monthKeys[d.getMonth()])} ${d.getFullYear()}`;
+      html += `<div class="pv4-history-month-divider">${label}</div>`;
+    }
+    html += renderV4SessionRow(s);
+  });
+  return html;
+}
+
+function renderV4FullHistory(animateEnter) {
+  const typeFilters = [
+    { key: 'all', label: trV3('plan.filters.all') },
+    { key: 'strength', label: trV3('plan.filters.strength') },
+    { key: 'bodyweight', label: trV3('plan.filters.bodyweight') },
+    { key: 'cardio', label: trV3('plan.filters.cardio') },
+    { key: 'recovery', label: trV3('plan.filters.recovery') },
+  ];
+  const periods = [
+    { key: 'all', label: trV3('plan.filters.all') },
+    { key: '30D', label: trV3('progress.period.30d') },
+    { key: '6M', label: trV3('progress.period.6m') },
+    { key: '1Y', label: trV3('progress.period.1y') },
+  ];
+
+  const typeChips = typeFilters.map(f =>
+    `<button class="pv4-hist-chip${f.key === pv4HistoryTypeFilter ? ' active' : ''}" type="button" data-hist-type="${f.key}">${f.label}</button>`
+  ).join('');
+
+  const periodActiveIdx = Math.max(0, periods.findIndex(p => p.key === pv4HistoryPeriodFilter));
+  const periodSeg = `
+    <div class="pv3-segmented-control pv4-hist-period" style="--seg-count:${periods.length};--active-idx:${periodActiveIdx}">
+      <div class="pv3-seg-indicator"></div>
+      ${periods.map(p =>
+        `<button class="pv3-seg-btn${p.key === pv4HistoryPeriodFilter ? ' active' : ''}" type="button" data-hist-period="${p.key}">${p.label}</button>`
+      ).join('')}
+    </div>`;
+
+  const sessions = getFilteredHistorySessions();
+  const listHTML = sessions.length
+    ? renderV4HistoryGrouped(sessions)
+    : `<div class="pv3-empty-state"><span class="material-symbols-rounded">info</span>${trV3('progress.v4.overview.noSessions')}</div>`;
+
+  return `
+    <div class="pv4-history-page${animateEnter ? ' pv4-history-page--enter' : ''}">
+      <div class="pv4-history-page-header">
+        <button class="pv4-history-back-btn" type="button" id="pv4-history-back" aria-label="${trV3('common.back')}">
+          <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <h2 class="pv4-history-page-title">${trV3('progress.v4.overview.sessionHistory')}</h2>
+      </div>
+      <div class="pv4-history-filters">
+        <div class="pv4-hist-chips">${typeChips}</div>
+        ${periodSeg}
+      </div>
+      <div class="pv4-history-grouped">${listHTML}</div>
+    </div>
+  `;
+}
+
+function attachV4FullHistoryListeners() {
+  const back = document.getElementById('pv4-history-back');
+  if (back) back.addEventListener('click', closeFullHistory);
+
+  document.querySelectorAll('[data-hist-type]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.histType === pv4HistoryTypeFilter) return;
+      pv4HistoryTypeFilter = btn.dataset.histType;
+      renderProgressV4();
+    });
+  });
+
+  document.querySelectorAll('[data-hist-period]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.histPeriod === pv4HistoryPeriodFilter) return;
+      pv4HistoryPeriodFilter = btn.dataset.histPeriod;
+      renderProgressV4();
+    });
+  });
+
+  document.querySelectorAll('.pv4-history-page .pv4-session-clickable').forEach(row => {
+    row.addEventListener('click', () => {
+      const sid = row.dataset.sessionId;
+      if (sid && typeof openSessionDetail === 'function') openSessionDetail(sid);
+    });
+  });
+}
+
+function openFullHistory() {
+  pv4HistoryView = 'enter';
+  renderProgressV4();
+  const scrollView = document.getElementById('progress-tab-content');
+  if (scrollView) scrollView.scrollTop = 0;
+}
+
+function closeFullHistory() {
+  pv4HistoryView = false;
+  renderProgressV4();
+}
+
+window.openFullHistory = openFullHistory;
+window.closeFullHistory = closeFullHistory;
 
 // ==================== OVERVIEW ====================
 
@@ -472,10 +668,9 @@ function renderV4Overview() {
   // Endurance Trends card (distance, pace, summary)
   const runningHTML = renderEnduranceCard(sessions);
 
-  // Session history (collapsible)
-  const historyHTML = renderV4SessionHistory(sessions);
-
-  // Activity calendar (rückwärtsgerichtet — was war)
+  // Activity calendar (rückwärtsgerichtet — was war).
+  // The training history now lives inside this card (last session + link to
+  // the full history sub-page), so there is no separate history section here.
   const activityCalendarHTML = renderV4ActivityCalendar();
 
   return `
@@ -486,7 +681,6 @@ function renderV4Overview() {
     <div class="pv4-summary-grid">${cardsHTML}</div>
     ${rhythmHTML}
     ${runningHTML}
-    ${historyHTML}
   `;
 }
 
@@ -1018,8 +1212,16 @@ function renderEnduranceCard(sessions) {
     ).join('');
 
     contentHTML = `
-      <div class="endurance-stat-slider" style="--endurance-sport-color:${sportColor}">
-        <div class="endurance-stat-track">${slidesHTML}</div>
+      <div class="endurance-slider-wrap">
+        <button type="button" class="endurance-stat-arrow endurance-stat-arrow--prev" aria-label="Zurück" disabled>
+          <span class="material-symbols-rounded">chevron_left</span>
+        </button>
+        <div class="endurance-stat-slider" style="--endurance-sport-color:${sportColor}">
+          <div class="endurance-stat-track">${slidesHTML}</div>
+        </div>
+        <button type="button" class="endurance-stat-arrow endurance-stat-arrow--next" aria-label="Weiter">
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
       </div>
       <div class="endurance-stat-dots">${dotsHTML}</div>`;
   } else {
@@ -1165,12 +1367,14 @@ function initEnduranceDistanceChart(data) {
         data: data.map(d => d.value),
         backgroundColor: sportColor,
         borderRadius: 4,
-        maxBarThickness: 24,
+        maxBarThickness: 40,
+        minBarLength: 4,
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       layout: {
         padding: { left: 6, right: 6, top: 6, bottom: 0 },
       },
@@ -1301,6 +1505,7 @@ function initEndurancePaceChart(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       layout: {
         padding: { left: 6, right: 6, top: 6, bottom: 0 },
       },
@@ -1385,6 +1590,7 @@ function initEnduranceDurationChart(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       layout: {
         padding: { left: 6, right: 6, top: 6, bottom: 0 },
       },
@@ -1467,6 +1673,7 @@ function initEnduranceSessionsChart(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       layout: {
         padding: { left: 6, right: 6, top: 6, bottom: 0 },
       },
@@ -1567,10 +1774,12 @@ function attachEnduranceSportListeners() {
     });
   });
 
-  // Transform-based slider with swipe support and clickable dots
+  // Transform-based slider with swipe support, clickable dots and arrows
   const slider = document.querySelector('.endurance-stat-slider');
   const track = slider?.querySelector('.endurance-stat-track');
   const dots = document.querySelectorAll('.endurance-stat-dot');
+  const prevArrow = document.querySelector('.endurance-stat-arrow--prev');
+  const nextArrow = document.querySelector('.endurance-stat-arrow--next');
   const slideCount = track?.children.length || 0;
 
   if (slider && track && slideCount > 0) {
@@ -1578,31 +1787,68 @@ function attachEnduranceSportListeners() {
 
     const goToSlide = (idx) => {
       currentSlide = Math.max(0, Math.min(idx, slideCount - 1));
+      track.style.transition = 'transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)';
       track.style.transform = `translateX(-${currentSlide * 100}%)`;
       dots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+      if (prevArrow) prevArrow.disabled = currentSlide === 0;
+      if (nextArrow) nextArrow.disabled = currentSlide === slideCount - 1;
     };
 
-    // Clickable dots
+    goToSlide(0);
+
+    // Clickable dots + arrows
     dots.forEach((dot, i) => {
       dot.addEventListener('click', () => goToSlide(i));
     });
+    prevArrow?.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextArrow?.addEventListener('click', () => goToSlide(currentSlide + 1));
 
-    // Swipe detection
+    // Swipe with live drag-follow
     let touchStartX = 0;
     let touchStartY = 0;
+    let dragging = false;
+    let axisLocked = false;
 
     slider.addEventListener('touchstart', (e) => {
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
+      dragging = true;
+      axisLocked = false;
+      track.style.transition = 'none';
+    }, { passive: true });
+
+    slider.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+      if (!axisLocked) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        axisLocked = true;
+        // Vertical scroll wins — abort the drag
+        if (Math.abs(dy) > Math.abs(dx)) {
+          dragging = false;
+          goToSlide(currentSlide);
+          return;
+        }
+      }
+      const base = -currentSlide * slider.offsetWidth;
+      // Rubber-band at the edges
+      let offset = dx;
+      if ((currentSlide === 0 && dx > 0) ||
+          (currentSlide === slideCount - 1 && dx < 0)) {
+        offset = dx * 0.3;
+      }
+      track.style.transform = `translateX(${base + offset}px)`;
     }, { passive: true });
 
     slider.addEventListener('touchend', (e) => {
+      if (!dragging) return;
+      dragging = false;
       const dx = e.changedTouches[0].clientX - touchStartX;
-      const dy = e.changedTouches[0].clientY - touchStartY;
-      // Only swipe if horizontal movement > 40px and dominant over vertical
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-        if (dx < 0) goToSlide(currentSlide + 1);
-        else goToSlide(currentSlide - 1);
+      if (Math.abs(dx) > slider.offsetWidth * 0.18) {
+        goToSlide(currentSlide + (dx < 0 ? 1 : -1));
+      } else {
+        goToSlide(currentSlide);
       }
     }, { passive: true });
   }
@@ -1764,58 +2010,6 @@ function renderV4Rhythm(sessions) {
 }
 
 // ==================== SESSION HISTORY (COLLAPSIBLE) ====================
-
-const PV4_HISTORY_COLLAPSED_LIMIT = 5;
-
-function renderV4SessionHistory(sessions) {
-  if (sessions.length === 0) {
-    return `<div class="pv3-empty-state"><span class="material-symbols-rounded">info</span>${trV3('progress.v4.overview.noSessions')}</div>`;
-  }
-
-  const sorted = [...sessions].sort((a, b) => {
-    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
-    const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
-    return db - da;
-  });
-
-  const needsCollapse = sorted.length > PV4_HISTORY_COLLAPSED_LIMIT;
-
-  const renderRow = (s) => {
-    const type = mapSessionType(s) || 'strength';
-    const icon = V3_TYPE_ICONS[type] || 'fitness_center';
-    const d = s.date?.toDate ? s.date.toDate() : new Date(s.date);
-    const dur = v3GetDurationMin(s);
-    const name = s.planName || trV3('progress.v3.types.' + type);
-    const sessionId = s.id || '';
-    return `
-      <button class="pv4-session-row pv4-session-clickable" type="button" data-session-id="${sessionId}">
-        <span class="material-symbols-rounded pv4-session-icon" style="color:${V3_TYPE_COLORS[type]}">${icon}</span>
-        <div class="pv4-session-info">
-          <div class="pv4-session-name">${name}</div>
-          <div class="pv4-session-meta">${v3FormatDate(d)}${dur > 0 ? ` \u00B7 ${dur} min` : ''}</div>
-        </div>
-        <span class="material-symbols-rounded pv4-session-chevron">chevron_right</span>
-      </button>`;
-  };
-
-  const visibleRows = sorted.slice(0, PV4_HISTORY_COLLAPSED_LIMIT).map(renderRow).join('');
-  const hiddenRows = needsCollapse ? sorted.slice(PV4_HISTORY_COLLAPSED_LIMIT).map(renderRow).join('') : '';
-  const remaining = sorted.length - PV4_HISTORY_COLLAPSED_LIMIT;
-
-  const expandBtn = needsCollapse ? `
-    <button class="pv4-history-expand-btn" id="pv4-history-toggle" type="button">
-      <span class="material-symbols-rounded pv4-expand-icon">expand_more</span>
-      <span class="pv4-expand-label">${trV3('progress.v4.overview.showMore', { count: remaining })}</span>
-    </button>` : '';
-
-  return `
-    <div class="pv4-section-title">${trV3('progress.v4.overview.sessionHistory')}</div>
-    <div class="pv4-session-list">
-      ${visibleRows}
-      ${needsCollapse ? `<div class="pv4-history-hidden" id="pv4-history-hidden" style="display:none">${hiddenRows}</div>` : ''}
-      ${expandBtn}
-    </div>`;
-}
 
 // ==================== TAB 2: EXERCISE TRENDS ====================
 
@@ -2107,7 +2301,8 @@ function drawAllV4Sparklines() {
     });
   });
 
-  // Attach click listeners for session rows (open detail/edit)
+  // Attach click listeners for session rows (open detail/edit).
+  // Covers the last-session row inside the activity-calendar card.
   document.querySelectorAll('.pv4-session-clickable').forEach(row => {
     row.addEventListener('click', () => {
       const sid = row.dataset.sessionId;
@@ -2116,20 +2311,6 @@ function drawAllV4Sparklines() {
       }
     });
   });
-
-  // Attach accordion toggle for session history
-  const toggleBtn = document.getElementById('pv4-history-toggle');
-  const hiddenBlock = document.getElementById('pv4-history-hidden');
-  if (toggleBtn && hiddenBlock) {
-    toggleBtn.addEventListener('click', () => {
-      const isHidden = hiddenBlock.style.display === 'none';
-      hiddenBlock.style.display = isHidden ? 'block' : 'none';
-      toggleBtn.querySelector('.pv4-expand-icon').textContent = isHidden ? 'expand_less' : 'expand_more';
-      toggleBtn.querySelector('.pv4-expand-label').textContent = isHidden
-        ? trV3('progress.v4.overview.showLess')
-        : trV3('progress.v4.overview.showMore', { count: hiddenBlock.children.length });
-    });
-  }
 }
 
 // ==================== EXERCISE DETAIL ====================

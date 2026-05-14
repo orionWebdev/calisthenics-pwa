@@ -4924,6 +4924,50 @@ input::placeholder {
   flex-shrink: 0;
 }
 
+/* Plan exercise edit/delete actions — large, clearly separated tap targets */
+.plan-exercise-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.plan-item-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(75, 85, 99, 0.22);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.plan-item-action .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.plan-item-action:active {
+  transform: scale(0.92);
+}
+
+.plan-item-action--edit:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
+  color: var(--color-primary);
+}
+
+.plan-item-action--delete:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.42);
+  color: #ef4444;
+}
+
 /* Exercise Picker Items */
 .exercise-picker-item {
   padding: 0.875rem;
@@ -11206,13 +11250,93 @@ input[type="range"]::-moz-range-progress {
 .exercises-sheet {
   width: 100%;
   max-height: 90vh;
-  background: linear-gradient(180deg, #111827 0%, #0a0f1a 100%);
+  background: linear-gradient(180deg, #1c1c1e 0%, #121214 100%);
+  border: 1px solid var(--border-primary);
+  border-bottom: none;
   border-radius: 1.5rem 1.5rem 0 0;
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* In-workout exercise picker — search + muscle filter chips */
+.workout-picker-controls {
+  flex-shrink: 0;
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.workout-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.875rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.75rem;
+  height: 42px;
+  transition: border-color 0.2s ease;
+}
+
+.workout-picker-search:focus-within {
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+
+.workout-picker-search .material-symbols-rounded {
+  font-size: 20px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.workout-picker-search input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.workout-picker-search input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.workout-picker-chips {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.625rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.125rem;
+}
+
+.workout-picker-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.workout-picker-chip {
+  flex-shrink: 0;
+  padding: 0.4rem 0.875rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary);
+  border-radius: 1.5rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.workout-picker-chip.active {
+  background: rgba(240, 34, 119, 0.16);
+  border-color: rgba(240, 34, 119, 0.35);
+  color: var(--color-primary);
 }
 
 .exercises-sheet-overlay.active .exercises-sheet {
@@ -12695,56 +12819,101 @@ input[type="range"]::-moz-range-progress {
   }
 }
 
+/* Resume-workout mini-bar — sits just above the bottom nav, non-intrusive */
 .active-workout-banner {
   position: fixed;
-  top: 10%;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-card-elevated);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-accent);
-  border-radius: var(--ui-card-radius-xl);
-  padding: var(--spacing-md) var(--spacing-lg);
-  box-shadow: 0 8px 32px rgba(240, 34, 119, 0.25);
-  z-index: 1000;
-  max-width: 500px;
-  width: 90%;
-  animation: slideDown 0.3s ease;
+  bottom: calc(var(--bottom-nav-height, 72px) + env(safe-area-inset-bottom, 0px) + 0.5rem);
+  width: calc(100% - 1.5rem);
+  max-width: 480px;
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  z-index: 999;
+  animation: slideUpFade 0.3s ease;
 }
 
-.banner-content {
+.awb-main {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-  color: var(--text-primary);
-  font-weight: var(--font-weight-semibold);
-}
-
-.banner-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.banner-btn {
-  flex: 1;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.75rem;
-  font-weight: var(--font-weight-semibold);
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--bg-card-elevated);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-accent);
+  border-radius: 0.875rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   cursor: pointer;
-  transition: all 0.2s ease;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s ease;
 }
 
-.banner-btn.primary {
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
-  color: white;
+.awb-main:active {
+  transform: scale(0.985);
 }
 
-.banner-btn.secondary {
-  background: rgba(55, 65, 81, 0.6);
-  color: white;
-  border: 1px solid rgba(75, 85, 99, 0.5);
+.awb-icon {
+  font-size: 28px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.awb-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.awb-title {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.awb-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.awb-cta {
+  font-size: 22px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.awb-dismiss {
+  flex-shrink: 0;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card-elevated);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s ease;
+}
+
+.awb-dismiss .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.awb-dismiss:active {
+  transform: scale(0.92);
 }
 
 .workout-detail-modal {
@@ -12755,13 +12924,18 @@ input[type="range"]::-moz-range-progress {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.workout-date {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
 }
 
 .workout-type-badge {
   display: inline-block;
-  padding: 0.375rem 0.75rem;
-  border-radius: 8px;
+  padding: 0.3rem 0.625rem;
+  border-radius: 7px;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
@@ -12786,79 +12960,126 @@ input[type="range"]::-moz-range-progress {
   border: 1px solid color-mix(in srgb, var(--color-category-recovery) 35%, transparent);
 }
 
-.workout-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+/* Compact inline stat row — replaces the bulky 3-card grid */
+.workout-stats-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .workout-stat {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px solid rgba(75, 85, 99, 0.3);
+  gap: 0.125rem;
+  padding: 0.625rem 0.5rem;
+  background: var(--bg-surface, #1c1c1e);
+  border: 1px solid var(--border-primary);
   border-radius: 0.75rem;
   text-align: center;
 }
 
 .workout-stat .material-symbols-rounded {
   color: var(--color-primary);
-  font-size: var(--font-size-xl);
+  font-size: 1.125rem;
+  margin-bottom: 0.125rem;
 }
 
 .workout-stat-value {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
-  color: white;
+  color: var(--text-primary);
+  line-height: 1.1;
 }
 
 .workout-stat-label {
-  font-size: var(--font-size-xs);
-  color: #9ca3af;
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
 }
 
 .workout-exercises {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .workout-section-title {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  color: white;
-  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  margin-bottom: 0.625rem;
 }
 
 .workout-exercise-item {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(17, 24, 39, 0.4);
-  border: 1px solid rgba(75, 85, 99, 0.3);
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-surface, #1c1c1e);
+  border: 1px solid var(--border-primary);
   border-radius: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem;
 }
 
 .workout-exercise-item:last-child {
   margin-bottom: 0;
 }
 
+.workout-exercise-item .exercise-number {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.workout-exercise-item .exercise-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.workout-exercise-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
 .exercise-sets {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: 0.3125rem;
+  margin-top: 0.375rem;
 }
 
 .set-badge {
-  padding: 0.25rem 0.5rem;
-  background: rgba(75, 85, 99, 0.3);
-  border-radius: 0.5rem;
-  font-size: var(--font-size-xs);
-  color: #d1d5db;
+  padding: 0.2rem 0.45rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.4rem;
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+.workout-notes {
+  margin-bottom: 1.25rem;
+}
+
+.workout-notes-text {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.workout-no-exercises {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }
 
 .workout-modal-actions {
@@ -12958,10 +13179,6 @@ input[type="range"]::-moz-range-progress {
 
 @media (max-width: 768px) {
   .set-input-row {
-    grid-template-columns: 1fr;
-  }
-
-  .workout-stats-grid {
     grid-template-columns: 1fr;
   }
 
@@ -16342,30 +16559,77 @@ input[type="range"]::-moz-range-progress {
 }
 
 /* -- Stat Slider -- */
+.endurance-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
 .endurance-stat-slider {
   overflow: hidden;
   position: relative;
+  flex: 1;
+  min-width: 0;
 }
 
 .endurance-stat-track {
   display: flex;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform;
 }
 
 .endurance-stat-slide {
   min-width: 100%;
   flex: 0 0 100%;
   text-align: center;
-  padding: 1rem 0;
+  padding: 1.25rem 0.25rem;
+  box-sizing: border-box;
 }
 
 .endurance-chart-slide {
   text-align: left;
-  padding: 0.5rem 0;
+  padding: 0.75rem 0.25rem;
 }
 
 .endurance-chart-slide .run-chart-wrapper {
-  height: 200px;
+  height: 210px;
+}
+
+/* -- Slider arrows -- */
+.endurance-stat-arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+}
+
+.endurance-stat-arrow .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.endurance-stat-arrow:not(:disabled):hover {
+  color: var(--endurance-sport-color, var(--sport-run));
+  background: var(--bg-card-elevated, var(--bg-card));
+}
+
+.endurance-stat-arrow:not(:disabled):active {
+  transform: scale(0.9);
+}
+
+.endurance-stat-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
 }
 
 .endurance-stat-value {
@@ -16473,30 +16737,164 @@ input[type="range"]::-moz-range-progress {
   opacity: 0.5;
 }
 
-/* ==================== SESSION HISTORY ACCORDION ==================== */
+/* ==================== ACTIVITY-CALENDAR LAST SESSION ==================== */
 
-.pv4-history-expand-btn {
+.pv4-calendar-history {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-primary);
+}
+
+.pv4-calendar-history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.pv4-calendar-history-label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pv4-history-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.25rem 0.375rem;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pv4-history-link-btn .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.pv4-history-link-btn:active {
+  opacity: 0.6;
+}
+
+/* ==================== FULL TRAINING-HISTORY SUB-PAGE ==================== */
+
+.pv4-history-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+}
+
+.pv4-history-page--enter {
+  animation: pv4HistorySlideIn 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes pv4HistorySlideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.pv4-history-page-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.pv4-history-back-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.375rem;
-  width: 100%;
-  padding: 0.625rem;
-  background: transparent;
-  border: 1px solid var(--border-primary, rgba(255,255,255,0.06));
-  border-radius: 0.875rem;
-  color: var(--color-text-muted, #9ca3af);
-  font-size: 0.75rem;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-card);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
-.pv4-history-expand-btn:active {
-  background: var(--bg-surface-active, rgba(255,255,255,0.08));
+.pv4-history-back-btn .material-symbols-rounded {
+  font-size: 22px;
 }
 
-.pv4-expand-icon {
-  font-size: 18px;
+.pv4-history-back-btn:active {
+  transform: scale(0.92);
+  background: var(--bg-card-elevated, var(--bg-card));
+}
+
+.pv4-history-page-title {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.pv4-history-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.pv4-hist-chips {
+  display: flex;
+  gap: 0.375rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.125rem;
+}
+
+.pv4-hist-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.pv4-hist-chip {
+  flex-shrink: 0;
+  padding: 0.4rem 0.875rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary);
+  border-radius: 1.5rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.pv4-hist-chip.active {
+  background: rgba(240, 34, 119, 0.16);
+  border-color: rgba(240, 34, 119, 0.35);
+  color: var(--color-primary);
+}
+
+.pv4-history-grouped {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.pv4-history-month-divider {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 0.25rem 0.25rem;
+}
+
+.pv4-history-month-divider:first-child {
+  padding-top: 0;
 }
 
 /* Responsive Adjustments for very small screens */
@@ -17134,7 +17532,8 @@ input[type="range"]::-moz-range-progress {
   position: sticky;
   /* Desktop: floating nav sits at top:1rem with ~64px height → pin below it */
   top: 5.25rem;
-  z-index: 30;
+  /* Must sit above the activity-calendar mini-dots (z-index up to 50) */
+  z-index: 100;
   padding: 0.625rem 0 0.625rem;
   background: var(--color-bg);
   backdrop-filter: blur(12px);
@@ -18217,25 +18616,58 @@ input[type="range"]::-moz-range-progress {
 .plan-block-actions {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.375rem;
 }
 .plan-block-actions button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: #6b7280;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
   padding: 0;
+}
+.plan-block-actions button .material-symbols-rounded {
+  font-size: 19px;
+}
+.plan-block-actions button:active {
+  transform: scale(0.92);
 }
 .plan-block-actions button:hover {
   background: rgba(75, 85, 99, 0.4);
   color: #9ca3af;
+}
+.plan-block-actions button:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.plan-block-actions-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(75, 85, 99, 0.45);
+  margin: 0 0.125rem;
+  flex-shrink: 0;
+}
+.plan-block-actions .plan-block-action--edit,
+.plan-block-actions .plan-block-action--delete {
+  background: rgba(75, 85, 99, 0.22);
+  border-color: rgba(75, 85, 99, 0.3);
+  color: #9ca3af;
+}
+.plan-block-actions .plan-block-action--edit:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
+  color: var(--color-primary);
+}
+.plan-block-actions .plan-block-action--delete:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.42);
+  color: #ef4444;
 }
 .plan-block-exercises {
   display: flex;

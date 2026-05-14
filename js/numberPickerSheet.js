@@ -10,7 +10,8 @@ const numberPickerConfig = {
   type: null,           // 'reps' | 'weight' | 'hold'
   currentValue: 0,
   onConfirm: null,
-  onCancel: null
+  onCancel: null,
+  modeToggle: null      // { reps: <number>, hold: <number> } — enables the Wdh/Halten tab strip
 };
 
 // ---- Weight step mode (2.5 / 1.0 / 0.5 kg, persisted) ----------------------
@@ -187,6 +188,7 @@ function openNumberPicker(config) {
   numberPickerConfig.currentValue = initialValue;
   numberPickerConfig.onConfirm = config.onConfirm;
   numberPickerConfig.onCancel = config.onCancel;
+  numberPickerConfig.modeToggle = config.modeToggle || null;
 
   renderNumberPickerSheet();
   showNumberPickerSheet();
@@ -225,9 +227,13 @@ function renderNumberPickerSheet() {
     ? (typeof t === 'function' ? t(typeConfig.suffixKey, { n: '' }) : '')
     : (typeConfig.suffix || '');
 
-  // For weight type only: render a step-mode tab strip (2,5 / 1 / 0,5)
+  // Top tab strip: weight → step-mode tabs (2,5 / 1 / 0,5);
+  // reps/hold with a modeToggle → set-type tabs (Wdh / Halten)
   const showStepTabs = numberPickerConfig.type === 'weight';
-  const stepTabsHTML = showStepTabs ? renderStepModeTabs() : '';
+  const showModeTabs = !showStepTabs && !!numberPickerConfig.modeToggle;
+  const stepTabsHTML = showStepTabs
+    ? renderStepModeTabs()
+    : (showModeTabs ? renderSetModeTabs() : '');
 
   const overlay = document.createElement('div');
   overlay.id = 'number-picker-overlay';
@@ -395,6 +401,73 @@ function setupNumberPickerEvents(overlay) {
 
   // Step-mode tabs (only present for type === 'weight')
   setupStepModeTabs(overlay);
+  // Set-type tabs (Wdh / Halten — only present when a modeToggle was passed)
+  setupSetModeTabs(overlay);
+}
+
+/** HTML for the set-type tab strip — toggles the picker between Wdh and Halten. */
+function renderSetModeTabs() {
+  const current = numberPickerConfig.type; // 'reps' | 'hold'
+  const repsLabel = (typeof t === 'function' && t('numberPicker.modeReps')) || 'Wdh.';
+  const holdLabel = (typeof t === 'function' && t('numberPicker.modeHold')) || 'Halten';
+  const modes = [
+    { key: 'reps', label: repsLabel },
+    { key: 'hold', label: holdLabel },
+  ];
+  return `
+    <div class="number-picker-mode-tabs" role="tablist" aria-label="Satz-Typ">
+      ${modes.map(m => `
+        <button
+          type="button"
+          class="np-mode-tab${m.key === current ? ' active' : ''}"
+          data-set-mode="${m.key}"
+          role="tab"
+          aria-selected="${m.key === current}"
+        >${m.label}</button>
+      `).join('')}
+    </div>
+  `;
+}
+
+/** Wire up the set-type tab strip — switches the picker between reps and hold. */
+function setupSetModeTabs(overlay) {
+  const tabs = overlay.querySelectorAll('[data-set-mode]');
+  if (!tabs.length) return;
+
+  tabs.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.setMode; // 'reps' | 'hold'
+      if (mode === numberPickerConfig.type) return;
+      switchPickerMode(mode);
+      tabs.forEach((b) => {
+        const isActive = b.dataset.setMode === mode;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('selection');
+    });
+  });
+}
+
+/** Switch the picker between reps and hold in-place (rebuilds the wheel + title). */
+function switchPickerMode(mode) {
+  const typeConfig = PICKER_CONFIGS[mode];
+  if (!typeConfig) return;
+
+  numberPickerConfig.type = mode;
+
+  // Seed the new mode's value from the modeToggle config
+  const mt = numberPickerConfig.modeToggle || {};
+  let initial = mode === 'hold' ? (mt.hold || 0) : (mt.reps || 0);
+  initial = Math.max(typeConfig.min, Math.min(typeConfig.max, initial));
+  numberPickerConfig.currentValue = initial;
+
+  const titleEl = document.getElementById('number-picker-title');
+  if (titleEl) {
+    titleEl.textContent = typeof t === 'function' ? t(typeConfig.titleKey) : typeConfig.titleKey;
+  }
+
+  rebuildPickerWheel();
 }
 
 /** HTML for the step-mode tab strip — three buttons (2,5 / 1 / 0,5 kg). */
@@ -462,7 +535,9 @@ function rebuildPickerWheel() {
   }
   numberPickerConfig.currentValue = nearest;
 
-  const suffix = typeConfig.suffix || '';
+  const suffix = typeConfig.suffixKey
+    ? (typeof t === 'function' ? t(typeConfig.suffixKey, { n: '' }) : '')
+    : (typeConfig.suffix || '');
   wheel.innerHTML = values.map(value => {
     const displayValue = numberPickerConfig.type === 'weight' && value % 1 !== 0
       ? value.toFixed(1).replace('.', ',')

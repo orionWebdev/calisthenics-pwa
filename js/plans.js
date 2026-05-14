@@ -1969,12 +1969,12 @@ function renderSingleExerciseItem(item, index, totalItems) {
         <h4 class="font-semibold">${getExerciseName(exercise)}</h4>
         <p class="text-xs text-gray-400">${sets} ${setsLabel} × ${targetValue}</p>
       </div>
-      <div class="flex items-center gap-2">
-        <button onclick="event.stopPropagation(); editPlanExercise(${index})" class="text-gray-400 hover:text-primary transition-colors">
-          <span class="material-symbols-rounded" style="font-size: 20px;">edit</span>
+      <div class="plan-exercise-actions">
+        <button onclick="event.stopPropagation(); editPlanExercise(${index})" class="plan-item-action plan-item-action--edit" aria-label="${t('common.edit') || 'Bearbeiten'}">
+          <span class="material-symbols-rounded">edit</span>
         </button>
-        <button onclick="event.stopPropagation(); removePlanExercise(${index})" class="text-gray-400 hover:text-red-500 transition-colors">
-          <span class="material-symbols-rounded" style="font-size: 20px;">delete</span>
+        <button onclick="event.stopPropagation(); removePlanExercise(${index})" class="plan-item-action plan-item-action--delete" aria-label="${t('common.delete') || 'Löschen'}">
+          <span class="material-symbols-rounded">delete</span>
         </button>
       </div>
     </div>
@@ -2034,16 +2034,17 @@ function renderGroupBlock(block, blockIdx, totalBlocks) {
         </div>
         <div class="plan-block-actions">
           <button onclick="event.stopPropagation(); movePlanBlock(${firstFlatIndex}, -1)" ${blockIdx === 0 ? 'disabled' : ''} aria-label="Move up">
-            <span class="material-symbols-rounded" style="font-size:18px;">arrow_upward</span>
+            <span class="material-symbols-rounded">arrow_upward</span>
           </button>
           <button onclick="event.stopPropagation(); movePlanBlock(${firstFlatIndex}, 1)" ${blockIdx === totalBlocks - 1 ? 'disabled' : ''} aria-label="Move down">
-            <span class="material-symbols-rounded" style="font-size:18px;">arrow_downward</span>
+            <span class="material-symbols-rounded">arrow_downward</span>
           </button>
-          <button onclick="event.stopPropagation(); editGroupBlock('${groupId}')" class="text-gray-400 hover:text-primary transition-colors">
-            <span class="material-symbols-rounded" style="font-size:18px;">edit</span>
+          <span class="plan-block-actions-divider"></span>
+          <button onclick="event.stopPropagation(); editGroupBlock('${groupId}')" class="plan-block-action--edit" aria-label="${t('common.edit') || 'Bearbeiten'}">
+            <span class="material-symbols-rounded">edit</span>
           </button>
-          <button onclick="event.stopPropagation(); removeGroupBlock('${groupId}')" class="text-gray-400 hover:text-red-500 transition-colors">
-            <span class="material-symbols-rounded" style="font-size:18px;">delete</span>
+          <button onclick="event.stopPropagation(); removeGroupBlock('${groupId}')" class="plan-block-action--delete" aria-label="${t('common.delete') || 'Löschen'}">
+            <span class="material-symbols-rounded">delete</span>
           </button>
         </div>
       </div>

@@ -21,27 +21,25 @@ function openWorkoutDetailModal(sessionId) {
       <!-- Header -->
       <div class="workout-detail-header">
         <div class="workout-type-badge type-strength">${t('common.strength')}</div>
-        <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
-          ${formatFullDate(date)}
-        </div>
+        <div class="workout-date">${formatFullDate(date)}</div>
       </div>
 
-      <!-- Stats Grid -->
-      <div class="workout-stats-grid">
+      <!-- Stats (compact inline row) -->
+      <div class="workout-stats-row">
         <div class="workout-stat">
           <span class="material-symbols-rounded">schedule</span>
-          <div class="workout-stat-value">${session.duration || '-'}</div>
-          <div class="workout-stat-label">${t('common.minutes')}</div>
+          <span class="workout-stat-value">${session.duration || '-'}</span>
+          <span class="workout-stat-label">${t('common.minutes')}</span>
         </div>
         <div class="workout-stat">
           <span class="material-symbols-rounded">fitness_center</span>
-          <div class="workout-stat-value">${session.exercises?.length || 0}</div>
-          <div class="workout-stat-label">${t('workoutModal.exercises')}</div>
+          <span class="workout-stat-value">${session.exercises?.length || 0}</span>
+          <span class="workout-stat-label">${t('workoutModal.exercises')}</span>
         </div>
         <div class="workout-stat">
           <span class="material-symbols-rounded">repeat</span>
-          <div class="workout-stat-value">${totalSets}</div>
-          <div class="workout-stat-label">${t('workoutModal.sets')}</div>
+          <span class="workout-stat-value">${totalSets}</span>
+          <span class="workout-stat-label">${t('workoutModal.sets')}</span>
         </div>
       </div>
 
@@ -53,9 +51,9 @@ function openWorkoutDetailModal(sessionId) {
 
       <!-- Notes -->
       ${session.notes ? `
-        <div class="workout-notes" style="margin-bottom: 1.5rem;">
+        <div class="workout-notes">
           <h4 class="workout-section-title">${t('common.notes')}</h4>
-          <p style="color: #d1d5db; font-size: 0.875rem;">${session.notes}</p>
+          <p class="workout-notes-text">${session.notes}</p>
         </div>
       ` : ''}
 
@@ -81,7 +79,7 @@ function openWorkoutDetailModal(sessionId) {
  */
 function renderWorkoutExercises(session) {
   if (!session.exercises || session.exercises.length === 0) {
-    return `<p style="color: #9ca3af;">${t('workoutModal.noExercises')}</p>`;
+    return `<p class="workout-no-exercises">${t('workoutModal.noExercises')}</p>`;
   }
 
   return session.exercises.map((ex, index) => {
@@ -91,10 +89,8 @@ function renderWorkoutExercises(session) {
     return `
       <div class="workout-exercise-item">
         <div class="exercise-number">${index + 1}</div>
-        <div class="exercise-info" style="flex: 1;">
-          <h5 style="font-size: 1rem; font-weight: 600; color: white; margin-bottom: 0.5rem;">
-            ${exerciseName}
-          </h5>
+        <div class="exercise-info">
+          <div class="workout-exercise-name">${exerciseName}</div>
           <div class="exercise-sets">
             ${ex.sets && ex.sets.length > 0 ? ex.sets.map((set, i) => {
               let label = '';

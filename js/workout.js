@@ -39,6 +39,25 @@ let restTimerTickId = null;        // requestAnimationFrame / setInterval ID for
 // State for active set row (iOS-style set logger)
 let activeSetValues = { reps: 10, weight: 0, holdSec: 0 };
 
+// Runtime set-type overrides within a session (exerciseId -> 'hold' | 'reps').
+// Lets the user switch an exercise between Wdh and Halten on the fly via the
+// number-picker tab strip, regardless of the exercise's configured target mode.
+let activeSetModeOverrides = {};
+
+function getActiveSetMode(exercise) {
+  if (!exercise) return 'reps';
+  const id = exercise.exerciseId || exercise.id;
+  if (id && activeSetModeOverrides[id]) return activeSetModeOverrides[id];
+  return isHoldTarget(exercise) ? 'hold' : 'reps';
+}
+
+function setActiveSetMode(exercise, mode) {
+  if (!exercise) return;
+  const id = exercise.exerciseId || exercise.id;
+  if (!id || (mode !== 'hold' && mode !== 'reps')) return;
+  activeSetModeOverrides[id] = mode;
+}
+
 function getWeightUnit() {
   if (typeof userProfile !== 'undefined' && userProfile.unitSystem === 'imperial') return 'lbs';
   return 'kg';
@@ -489,14 +508,17 @@ function showActiveWorkoutBanner() {
   banner.id = 'active-workout-banner';
   banner.className = 'active-workout-banner';
   banner.innerHTML = `
-    <div class="banner-content">
-      <span class="material-symbols-rounded">play_circle</span>
-      <span>${t('workout.banner.active', { name: activeWorkout.planName })}</span>
-    </div>
-    <div class="banner-actions">
-      <button onclick="resumeWorkout()" class="banner-btn primary">${t('workout.banner.resume')}</button>
-      <button onclick="cancelActiveWorkoutFromBanner()" class="banner-btn secondary">${t('workout.banner.cancel')}</button>
-    </div>
+    <button type="button" class="awb-main" onclick="resumeWorkout()">
+      <span class="awb-icon material-symbols-rounded">play_circle</span>
+      <span class="awb-text">
+        <span class="awb-title">${t('workout.banner.resume')}</span>
+        <span class="awb-sub">${activeWorkout.planName || ''}</span>
+      </span>
+      <span class="awb-cta material-symbols-rounded">chevron_right</span>
+    </button>
+    <button type="button" class="awb-dismiss" onclick="cancelActiveWorkoutFromBanner()" aria-label="${t('workout.banner.cancel')}">
+      <span class="material-symbols-rounded">close</span>
+    </button>
   `;
 
   document.body.appendChild(banner);
@@ -2229,7 +2251,7 @@ function renderSTSetList(exercise) {
   if (exType === 'cardio') return renderSTCardioInput(exercise);
   if (exType === 'recovery') return renderSTRecoveryInput(exercise);
 
-  const holdMode = isHoldTarget(exercise);
+  const holdMode = getActiveSetMode(exercise) === 'hold';
   const targetSets = exercise.targetSets || 3;
   const completedCount = exercise.completedSets.length;
   const valueUnit = holdMode ? t('workout.holdDurationLabel') : t('workout.logging.totalReps');
@@ -2734,7 +2756,7 @@ function getDefaultSetValues(exercise) {
     ? exercise.completedSets[exercise.completedSets.length - 1]
     : null;
 
-  if (isHoldTarget(exercise)) {
+  if (getActiveSetMode(exercise) === 'hold') {
     return {
       holdSec: lastSet ? (lastSet.holdSec || getTargetHoldSeconds(exercise)) : getTargetHoldSeconds(exercise),
       reps: 0,
@@ -2874,7 +2896,7 @@ function formatLastPerformanceHint(lastSet) {
 function renderSetRows(exercise, exerciseIndex, isBodyweight) {
   if (exercise.completedSets.length === 0) return '';
 
-  const holdMode = isHoldTarget(exercise);
+  const holdMode = getActiveSetMode(exercise) === 'hold';
 
   return `
     <div class="set-rows-list">
@@ -2962,7 +2984,7 @@ function renderSetRows(exercise, exerciseIndex, isBodyweight) {
  */
 function renderActiveSetRow(exercise, exerciseIndex, isBodyweight) {
   const setNumber = exercise.completedSets.length + 1;
-  const holdMode = isHoldTarget(exercise);
+  const holdMode = getActiveSetMode(exercise) === 'hold';
 
   if (holdMode) {
     return `
@@ -3096,23 +3118,49 @@ function openNumberPickerForNewSet(type) {
     initialValue = activeSetValues.weight;
   }
 
-  openNumberPicker({
+  const currentExercise = activeWorkout?.exercises[activeWorkout.currentExerciseIndex];
+  // Reps/hold support the Wdh ↔ Halten tab strip inside the picker
+  const supportsModeToggle = (type === 'reps' || type === 'hold') && !!currentExercise;
+
+  const applyValue = (confirmedType, newValue) => {
+    if (confirmedType === 'hold') activeSetValues.holdSec = newValue;
+    else if (confirmedType === 'reps') activeSetValues.reps = newValue;
+    else activeSetValues.weight = newValue;
+  };
+
+  const pickerConfig = {
     type: type,
     initialValue: initialValue,
     onConfirm: (newValue) => {
-      if (type === 'hold') {
-        activeSetValues.holdSec = newValue;
-        updateActiveRowDisplay('hold', newValue);
-      } else if (type === 'reps') {
-        activeSetValues.reps = newValue;
-        updateActiveRowDisplay('reps', newValue);
+      // numberPickerConfig.type reflects the mode the user confirmed in —
+      // it may differ from `type` if they used the Wdh/Halten tab strip.
+      const confirmedType = (typeof numberPickerConfig !== 'undefined' && numberPickerConfig.type)
+        ? numberPickerConfig.type
+        : type;
+
+      if (supportsModeToggle && confirmedType !== type) {
+        // Set-type changed: persist the override, re-render the row in the new
+        // layout, then re-apply the picked value on top of the fresh row.
+        setActiveSetMode(currentExercise, confirmedType);
+        renderWorkoutScreen();
+        applyValue(confirmedType, newValue);
+        updateActiveRowDisplay(confirmedType, newValue);
       } else {
-        activeSetValues.weight = newValue;
-        updateActiveRowDisplay('weight', newValue);
+        applyValue(confirmedType, newValue);
+        updateActiveRowDisplay(confirmedType, newValue);
       }
       triggerHapticFeedback('light');
     }
-  });
+  };
+
+  if (supportsModeToggle) {
+    pickerConfig.modeToggle = {
+      reps: activeSetValues.reps,
+      hold: activeSetValues.holdSec,
+    };
+  }
+
+  openNumberPicker(pickerConfig);
 }
 
 /**
@@ -3140,7 +3188,7 @@ function logSetFromActiveRow() {
   const currentExercise = activeWorkout?.exercises[activeWorkout.currentExerciseIndex];
 
   // Hold mode: log holdSec instead of reps
-  if (isHoldTarget(currentExercise)) {
+  if (getActiveSetMode(currentExercise) === 'hold') {
     const holdSec = activeSetValues.holdSec;
     if (!holdSec || holdSec <= 0) {
       showEdgeFeedback('error', t('workout.setLogger.enterHold'));
@@ -4895,12 +4943,22 @@ function openPlanModalWithExercises(workoutExercises) {
 // ADD/REMOVE EXERCISES DURING WORKOUT
 // ========================================
 
+let workoutPickerMuscleFilter = 'all';
+
 function openAddExerciseToWorkout() {
   // Use existing exercise picker bottom sheet pattern
   const existing = document.getElementById('workout-exercise-picker-sheet');
   if (existing) existing.remove();
 
+  workoutPickerMuscleFilter = 'all';
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+
+  const muscleFilters = ['all', 'chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'calf'];
+  const muscleNames = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
+  const chipsHTML = muscleFilters.map(key => {
+    const label = key === 'all' ? t('plan.filters.all') : (muscleNames[key] || key);
+    return `<button type="button" class="workout-picker-chip${key === 'all' ? ' active' : ''}" data-muscle="${key}" onclick="setWorkoutPickerMuscleFilter('${key}')">${label}</button>`;
+  }).join('');
 
   const sheet = document.createElement('div');
   sheet.id = 'workout-exercise-picker-sheet';
@@ -4914,10 +4972,15 @@ function openAddExerciseToWorkout() {
           <span class="material-symbols-rounded">close</span>
         </button>
       </div>
-      <div class="exercises-sheet-content" style="padding:0.5rem 1rem;">
-        <input type="text" id="workout-exercise-search" placeholder="${t('workout.screen.searchExercise')}"
-          class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-          oninput="filterWorkoutExercisePicker(this.value)" />
+      <div class="workout-picker-controls">
+        <div class="workout-picker-search">
+          <span class="material-symbols-rounded">search</span>
+          <input type="text" id="workout-exercise-search" placeholder="${t('workout.screen.searchExercise')}"
+            oninput="filterWorkoutExercisePicker(this.value)" />
+        </div>
+        <div class="workout-picker-chips">${chipsHTML}</div>
+      </div>
+      <div class="exercises-sheet-content">
         <div id="workout-exercise-picker-list" class="exercises-sheet-list">
           ${renderWorkoutExercisePickerList(exercises, '')}
         </div>
@@ -4935,12 +4998,21 @@ function openAddExerciseToWorkout() {
 }
 
 function renderWorkoutExercisePickerList(exercises, filter) {
-  const filtered = filter
-    ? exercises.filter(ex => ex.name.toLowerCase().includes(filter.toLowerCase()))
-    : exercises;
+  const search = (filter || '').toLowerCase().trim();
+  const muscle = workoutPickerMuscleFilter;
+
+  const filtered = exercises.filter(ex => {
+    if (muscle !== 'all' && !(ex.muscleGroups || []).includes(muscle)) return false;
+    if (search) {
+      const name = getExerciseName(ex).toLowerCase();
+      const nameEn = (ex.name || '').toLowerCase();
+      if (!name.includes(search) && !nameEn.includes(search)) return false;
+    }
+    return true;
+  });
 
   if (filtered.length === 0) {
-    return `<p style="text-align:center;color:var(--text-tertiary);padding:1rem;">${t('workout.screen.noExercisesFound')}</p>`;
+    return `<p style="text-align:center;color:var(--text-tertiary);padding:1.5rem 1rem;">${t('workout.screen.noExercisesFound')}</p>`;
   }
 
   return filtered.map(ex => `
@@ -4949,7 +5021,7 @@ function renderWorkoutExercisePickerList(exercises, filter) {
         <span class="material-symbols-rounded" style="font-size:18px;">add</span>
       </div>
       <div class="exercises-sheet-item-info">
-        <div class="exercises-sheet-item-name">${ex.name}</div>
+        <div class="exercises-sheet-item-name">${getExerciseName(ex)}</div>
         <div class="exercises-sheet-item-target" style="font-size:0.75rem;color:var(--text-tertiary);">
           ${(ex.muscleGroups || []).map(m => typeof getMuscleNames === 'function' ? (getMuscleNames()[m] || m) : m).join(', ')}
         </div>
@@ -4962,6 +5034,18 @@ function filterWorkoutExercisePicker(value) {
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
   const list = document.getElementById('workout-exercise-picker-list');
   if (list) list.innerHTML = renderWorkoutExercisePickerList(exercises, value);
+}
+
+function setWorkoutPickerMuscleFilter(key) {
+  workoutPickerMuscleFilter = key;
+  const sheet = document.getElementById('workout-exercise-picker-sheet');
+  if (sheet) {
+    sheet.querySelectorAll('.workout-picker-chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.muscle === key);
+    });
+  }
+  const searchInput = document.getElementById('workout-exercise-search');
+  filterWorkoutExercisePicker(searchInput ? searchInput.value : '');
 }
 
 function addExerciseToWorkout(exerciseId) {
