@@ -309,7 +309,7 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     activeWorkout = {
       id: generateTempId(),
       status: 'in-progress',
-      type: 'strength',
+      type: plan.type || 'strength',
       planId: plan.id,
       planName: plan.name,
       scheduleId: scheduleId,
@@ -389,7 +389,7 @@ async function startWorkoutFromSession(sessionId) {
     activeWorkout = {
       id: generateTempId(),
       status: 'in-progress',
-      type: 'strength',
+      type: plan.type || 'strength',
       planId: session.planId,
       planName: session.planName,
       scheduleId: null, // No schedule link for manual workouts
@@ -599,7 +599,7 @@ async function completeWorkout() {
 
     // Create session document
     const sessionData = {
-      type: 'strength',
+      type: activeWorkout.type || 'strength',
       date: firebase.firestore.Timestamp.fromDate(workoutDate),
       planId: activeWorkout.planId,
       planName: activeWorkout.planName,

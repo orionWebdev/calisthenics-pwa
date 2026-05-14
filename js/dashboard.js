@@ -946,7 +946,10 @@ function aggregateDayByType(daySessions) {
   // Summiere Minuten pro Typ
   const typeMinutes = {};
   daySessions.forEach(session => {
-    const type = session.type === 'cardio' ? 'cardio' : session.type === 'recovery' ? 'recovery' : 'strength';
+    const sType = session.type;
+    const type = (sType === 'cardio' || sType === 'recovery' || sType === 'bodyweight')
+      ? sType
+      : 'strength';
     const durationSec = getSessionDurationSeconds(session);
     const minutes = Math.round(durationSec / 60);
     typeMinutes[type] = (typeMinutes[type] || 0) + minutes;

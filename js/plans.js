@@ -8,6 +8,7 @@ let editingPlanId = null;
 let currentPlan = null; // Currently selected plan for editing
 let planMuscleFilter = 'all';
 let planEquipmentFilter = 'all';
+let planTypeFilter = 'all';
 
 let planIconSelection = null;
 let planIconSelectionIsManual = false;
@@ -428,7 +429,7 @@ function renderPlans() {
           class="plan-grid-card-start"
         >
           <span class="material-symbols-rounded">play_arrow</span>
-          <span>${t('plan.actions.start')}</span>
+          <span>${t('plan.actions.startShort')}</span>
         </button>
       </div>
     `;
@@ -442,12 +443,17 @@ function applyPlanFilters() {
       const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
       const items = getPlanItems(plan);
 
+      if (planTypeFilter !== 'all' && (plan.type || 'strength') !== planTypeFilter) {
+        return false;
+      }
+
       if (planMuscleFilter !== 'all') {
         const hasMuscle = items.some(item => {
           const exercise = exercises.find(e => e.id === item.exerciseId);
           if (!exercise) return false;
-          const groups = Array.isArray(exercise.muscleGroups) ? exercise.muscleGroups : [];
-          return groups.includes(planMuscleFilter);
+          // A plan matches a muscle if it contains an exercise whose
+          // PRIMARY muscle is that group.
+          return exercisePrimaryMatchesMuscle(exercise, planMuscleFilter);
         });
         if (!hasMuscle) return false;
       }
@@ -486,31 +492,113 @@ function setPlanEquipmentFilter(equipment) {
   applyPlanFilters();
 }
 
+function setPlanTypeFilter(type) {
+  planTypeFilter = type || 'all';
+  applyPlanFilters();
+}
+
+// Sync the filter-chip trigger buttons with the current filter state.
 function updatePlanMuscleFilterUI() {
-  const container = document.getElementById('plan-muscle-filters');
-  if (!container) return;
-  container.querySelectorAll('.filter-chip').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.muscle === planMuscleFilter);
-  });
-
-  const allLabel = document.getElementById('plan-filter-all-label');
-  if (allLabel) allLabel.textContent = t('plan.filters.all');
-
-  const muscles = ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'calf'];
-  muscles.forEach(m => {
-    const label = document.getElementById(`plan-filter-${m}-label`);
-    if (label) label.textContent = getMuscleNames()[m] || m;
-  });
-
-  const equipmentContainer = document.getElementById('plan-equipment-filters');
-  if (equipmentContainer) {
-    equipmentContainer.querySelectorAll('.filter-chip').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.equipment === planEquipmentFilter);
-    });
+  const typeLabel = document.getElementById('plan-type-filter-label');
+  const typeBtn = document.getElementById('plan-type-filter-btn');
+  const typeActive = planTypeFilter && planTypeFilter !== 'all';
+  if (typeLabel) {
+    typeLabel.textContent = typeActive
+      ? t('plan.filters.' + planTypeFilter)
+      : t('plan.filters.allTypes');
   }
+  if (typeBtn) typeBtn.classList.toggle('active', !!typeActive);
 
-  const equipmentAllLabel = document.getElementById('plan-filter-equipment-all-label');
-  if (equipmentAllLabel) equipmentAllLabel.textContent = t('plan.filters.all');
+  const muscleLabel = document.getElementById('plan-muscle-filter-label');
+  const muscleBtn = document.getElementById('plan-muscle-filter-btn');
+  const muscleActive = planMuscleFilter && planMuscleFilter !== 'all';
+  if (muscleLabel) {
+    muscleLabel.textContent = muscleActive
+      ? (getMuscleNames()[planMuscleFilter] || planMuscleFilter)
+      : t('exercise.filters.allMuscles');
+  }
+  if (muscleBtn) muscleBtn.classList.toggle('active', !!muscleActive);
+
+  const equipLabel = document.getElementById('plan-equipment-filter-label');
+  const equipBtn = document.getElementById('plan-equipment-filter-btn');
+  const equipActive = planEquipmentFilter && planEquipmentFilter !== 'all';
+  if (equipLabel) {
+    equipLabel.textContent = equipActive
+      ? (equipmentNames[planEquipmentFilter] || planEquipmentFilter)
+      : t('exercise.filters.allEquipment');
+  }
+  if (equipBtn) equipBtn.classList.toggle('active', !!equipActive);
+}
+
+// Plan filters open the shared multi-select bottom sheet (single-select use).
+function openPlanTypeFilterSheet() {
+  const filterOptions = [
+    { value: '', label: t('plan.filters.allTypes'), description: '' },
+    { value: 'strength', label: t('plan.filters.strength'), description: '' },
+    { value: 'bodyweight', label: t('plan.filters.bodyweight'), description: '' },
+    { value: 'cardio', label: t('plan.filters.cardio'), description: '' },
+    { value: 'recovery', label: t('plan.filters.recovery'), description: '' }
+  ];
+
+  openBottomSheet({
+    title: t('plan.type'),
+    options: filterOptions,
+    selectedValues: (planTypeFilter && planTypeFilter !== 'all') ? [planTypeFilter] : [''],
+    enableSearch: false,
+    fieldId: 'plan-type-filter-btn',
+    onConfirm: (selectedValues) => {
+      const selected = selectedValues.length > 0 ? selectedValues[selectedValues.length - 1] : '';
+      setPlanTypeFilter(selected);
+    }
+  });
+}
+
+function openPlanMuscleFilterSheet() {
+  const mn = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
+  const iconOf = (key) => (typeof getMuscleIconPath === 'function' ? getMuscleIconPath(key) : undefined);
+  const filterOptions = [
+    { value: '', label: t('exercise.filters.allMuscles'), description: '' },
+    { value: 'chest', label: mn.chest, icon: iconOf('chest') },
+    { value: 'back', label: mn.back, icon: iconOf('back') },
+    { value: 'biceps', label: mn.biceps, icon: iconOf('biceps') },
+    { value: 'triceps', label: mn.triceps, icon: iconOf('triceps') },
+    { value: 'shoulders', label: mn.shoulders, icon: iconOf('shoulders') },
+    { value: 'core', label: mn.core, icon: iconOf('core') },
+    { value: 'legs', label: mn.legs, icon: iconOf('legs') },
+    { value: 'full-body', label: mn['full-body'], icon: iconOf('full-body') }
+  ];
+
+  openBottomSheet({
+    title: t('exercise.muscleFilter.title'),
+    options: filterOptions,
+    selectedValues: (planMuscleFilter && planMuscleFilter !== 'all') ? [planMuscleFilter] : [''],
+    enableSearch: false,
+    fieldId: 'plan-muscle-filter-btn',
+    onConfirm: (selectedValues) => {
+      const selected = selectedValues.length > 0 ? selectedValues[selectedValues.length - 1] : '';
+      setPlanMuscleFilter(selected);
+    }
+  });
+}
+
+function openPlanEquipmentFilterSheet() {
+  const mainEquipment = ['bodyweight', 'pull-up-bar', 'parallettes', 'rings', 'dumbbell', 'barbell', 'resistance-bands', 'gym-machine', 'bench'];
+  const filterOptions = [{ value: '', label: t('exercise.filters.allEquipment'), description: '' }];
+  mainEquipment.forEach(eq => {
+    filterOptions.push({ value: eq, label: equipmentNames[eq] || eq, description: '' });
+  });
+
+  openBottomSheet({
+    title: t('exercise.equipmentFilter.title'),
+    options: filterOptions,
+    selectedValues: (planEquipmentFilter && planEquipmentFilter !== 'all') ? [planEquipmentFilter] : [''],
+    enableSearch: false,
+    fieldId: 'plan-equipment-filter-btn',
+    onConfirm: (selectedValues) => {
+      const selected = selectedValues.length > 0 ? selectedValues[selectedValues.length - 1] : '';
+      setPlanEquipmentFilter(selected);
+    }
+  });
 }
 
 function applyPlanI18n() {
@@ -651,6 +739,9 @@ function applyPlanI18n() {
 
   const currentGoal = document.getElementById('plan-cardio-goal-type')?.value || 'liss';
   updatePlanCardioGoalInfo(currentGoal);
+
+  // Refresh the plan filter-chip trigger labels for the active locale
+  updatePlanMuscleFilterUI();
 }
 
 

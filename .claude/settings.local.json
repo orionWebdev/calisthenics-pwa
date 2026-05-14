@@ -8,7 +8,8 @@
       "Bash(node --check:*)",
       "Bash(python3:*)",
       "PowerShell(Get-ChildItem -Path \"d:\\\\Dokumente\\\\Web_Projekte\\\\calisthenics-pwa\" -Recurse -Depth 3 | Where-Object { $_.PSIsContainer } | Select-Object -ExpandProperty FullName | head -50)",
-      "Bash(PowerShell -Command \"Get-Content 'd:\\\\Dokumente\\\\Web_Projekte\\\\calisthenics-pwa\\\\css\\\\style.css' | Measure-Object -Line | Select-Object -ExpandProperty Lines\")"
+      "Bash(PowerShell -Command \"Get-Content 'd:\\\\Dokumente\\\\Web_Projekte\\\\calisthenics-pwa\\\\css\\\\style.css' | Measure-Object -Line | Select-Object -ExpandProperty Lines\")",
+      "Bash(python -c 'src=open\\('\\\\''__TRACKED_VAR__'\\\\'',encoding='\\\\''utf-8'\\\\''\\).read\\(\\); print\\('\\\\''__TRACKED_VAR__'\\\\'','\\\\''braces'\\\\'',src.count\\('\\\\''{'\\\\''\\)-src.count\\('\\\\''}'\\\\''\\),'\\\\''parens'\\\\'',src.count\\('\\\\''\\('\\\\''\\)-src.count\\('\\\\''\\)'\\\\''\\),'\\\\''brackets'\\\\'',src.count\\('\\\\''['\\\\''\\)-src.count\\('\\\\'']'\\\\''\\)\\)')"
     ]
   }
 }
