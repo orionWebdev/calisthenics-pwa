@@ -81,8 +81,8 @@
   --zone-peak-form-bg: rgba(139, 92, 246, 0.08);
 
   /* Category Colors */
-  --color-category-strength: #f59e0b;
-  --color-category-bodyweight: #f59e0b;
+  --color-category-strength: #e35745;   /* reddish — distinct from bodyweight */
+  --color-category-bodyweight: #f59e0b; /* amber */
   --color-category-cardio: #3b82f6;
   --color-category-recovery: #22c55e;
 
@@ -1386,31 +1386,32 @@ body.modal-open {
   width: 100%;
 }
 
-.plan-filters-bar {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
+/* Filter bars — single horizontal row, scrolls when chips overflow width */
+.plan-filters-bar,
 .exercise-filters-bar {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  padding-bottom: 0.25rem;
 }
 
-@media (min-width: 768px) {
-  .plan-filters-bar {
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-  }
+.plan-filters-bar::-webkit-scrollbar,
+.exercise-filters-bar::-webkit-scrollbar {
+  display: none;
+}
 
-  .plan-type-filters {
-    max-width: 50%;
-  }
+.plan-filters-bar .filter-chip,
+.exercise-filters-bar .filter-chip {
+  flex: 0 0 auto;
 }
 
 .plan-add-exercise-plus {
@@ -2655,6 +2656,10 @@ body.modal-open {
 
 .mini-dot.strength {
   background: var(--color-category-strength);
+}
+
+.mini-dot.bodyweight {
+  background: var(--color-category-bodyweight);
 }
 
 .mini-dot.cardio {
@@ -4498,6 +4503,36 @@ input::placeholder {
   box-shadow: 0 10px 30px -10px rgba(219, 39, 119, 0.3);
 }
 
+/* Compact, low-key "add" button for tab headers (Neuer Plan / Neue Übung) */
+.tab-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  border-radius: 0.7rem;
+  color: var(--text-secondary, #9ca3af);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.tab-add-btn .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.tab-add-btn:hover {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+
+.tab-add-btn:active {
+  transform: scale(0.97);
+}
+
 /* Plans — 2-column card grid */
 .plans-grid {
   display: grid;
@@ -4556,8 +4591,8 @@ input::placeholder {
   flex-direction: column;
   gap: 0.375rem;
   padding: 0.75rem;
-  background: color-mix(in srgb, var(--plan-accent) 13%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--plan-accent) 24%, transparent);
+  background: color-mix(in srgb, var(--plan-accent) 7%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--plan-accent) 14%, transparent);
 }
 
 .plan-grid-card-icon {
@@ -4567,7 +4602,7 @@ input::placeholder {
   width: 38px;
   height: 38px;
   border-radius: 0.65rem;
-  background: color-mix(in srgb, var(--plan-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--plan-accent) 13%, transparent);
   color: var(--plan-accent);
 }
 
@@ -4663,15 +4698,15 @@ input::placeholder {
   gap: 0.25rem;
   margin: 0 0.75rem 0.75rem;
   padding: 0.5rem;
-  border: none;
+  border: 1px solid color-mix(in srgb, var(--plan-accent) 45%, transparent);
   border-radius: 0.6rem;
-  background: var(--plan-accent);
-  color: #fff;
+  background: transparent;
+  color: var(--plan-accent);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 
 .plan-grid-card-start .material-symbols-rounded {
@@ -4679,7 +4714,8 @@ input::placeholder {
 }
 
 .plan-grid-card-start:hover {
-  opacity: 0.92;
+  background: color-mix(in srgb, var(--plan-accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--plan-accent) 65%, transparent);
 }
 
 .plan-grid-card-start:active {

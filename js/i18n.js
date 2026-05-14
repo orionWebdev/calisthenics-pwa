@@ -80,6 +80,7 @@ const translations = {
       },
       filters: {
         all: 'Alle',
+        allTypes: 'Trainingsart',
         strength: 'Kraft',
         bodyweight: 'Bodyweight',
         cardio: 'Cardio',
@@ -111,6 +112,7 @@ const translations = {
         newPlan: 'Neuer Plan',
         create: 'Plan erstellen',
         start: 'Workout starten',
+        startShort: 'Starten',
         edit: 'Bearbeiten',
         save: 'Speichern',
         cancel: 'Abbrechen',
@@ -326,7 +328,8 @@ const translations = {
       },
       filters: {
         allMuscles: 'Alle Muskelgruppen',
-        allDifficulties: 'Alle Schwierigkeiten'
+        allDifficulties: 'Alle Schwierigkeiten',
+        allEquipment: 'Equipment'
       },
       equipment: 'Equipment',
       discipline: 'Disziplin',
@@ -1588,6 +1591,7 @@ const translations = {
       },
       filters: {
         all: 'All',
+        allTypes: 'Training type',
         strength: 'Strength',
         bodyweight: 'Bodyweight',
         cardio: 'Cardio',
@@ -1619,6 +1623,7 @@ const translations = {
         newPlan: 'New plan',
         create: 'Create plan',
         start: 'Start workout',
+        startShort: 'Start',
         edit: 'Edit',
         save: 'Save',
         cancel: 'Cancel',
@@ -1834,7 +1839,8 @@ const translations = {
       },
       filters: {
         allMuscles: 'All muscle groups',
-        allDifficulties: 'All difficulties'
+        allDifficulties: 'All difficulties',
+        allEquipment: 'Equipment'
       },
       equipment: 'Equipment',
       discipline: 'Discipline',

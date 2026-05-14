@@ -607,8 +607,8 @@ function filterExercises() {
       }
     }
 
-    // Muscle filter
-    const matchesMuscle = !muscleFilter || exercise.muscleGroups.includes(muscleFilter);
+    // Muscle filter — matches the exercise's PRIMARY muscle only
+    const matchesMuscle = exercisePrimaryMatchesMuscle(exercise, muscleFilter);
 
     // Difficulty filter
     let matchesDifficulty = true;
@@ -764,7 +764,7 @@ function updateExerciseFiltersUI() {
   if (equipmentFilterLabel) {
     equipmentFilterLabel.textContent = exerciseEquipmentFilter
       ? (equipmentNames[exerciseEquipmentFilter] || exerciseEquipmentFilter)
-      : t('plan.filters.all');
+      : t('exercise.filters.allEquipment');
   }
   if (equipmentFilterBtn) {
     equipmentFilterBtn.classList.toggle('active', !!exerciseEquipmentFilter);

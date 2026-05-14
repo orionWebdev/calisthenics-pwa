@@ -347,95 +347,29 @@
       <div id="training-tab-plans" class="training-tab active">
         <!-- Header mit Add Button -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <button onclick="openAddPlanModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
-            <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+          <button onclick="openAddPlanModal()" class="tab-add-btn">
+            <span class="material-symbols-rounded">add</span>
             <span id="plan-add-btn-label"></span>
           </button>
         </div>
 
-        <!-- Plan Muscle Group Filter -->
+        <!-- Plan Filters -->
         <div class="plan-filters-bar">
-          <div class="plan-type-filters flex gap-2" id="plan-muscle-filters">
-          <button class="filter-chip active" data-muscle="all" onclick="setPlanMuscleFilter('all')">
+          <button class="filter-chip" id="plan-type-filter-btn" onclick="openPlanTypeFilterSheet()">
+            <span class="material-symbols-rounded">category</span>
+            <span id="plan-type-filter-label"></span>
+            <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
+          </button>
+          <button class="filter-chip" id="plan-muscle-filter-btn" onclick="openPlanMuscleFilterSheet()">
+            <span class="material-symbols-rounded">body_system</span>
+            <span id="plan-muscle-filter-label"></span>
+            <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
+          </button>
+          <button class="filter-chip" id="plan-equipment-filter-btn" onclick="openPlanEquipmentFilterSheet()">
             <span class="material-symbols-rounded">apps</span>
-            <span id="plan-filter-all-label"></span>
+            <span id="plan-equipment-filter-label"></span>
+            <span class="material-symbols-rounded" style="font-size:16px">expand_more</span>
           </button>
-          <button class="filter-chip" data-muscle="chest" onclick="setPlanMuscleFilter('chest')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/chest.png" alt="chest"></span>
-            <span id="plan-filter-chest-label"></span>
-          </button>
-          <button class="filter-chip" data-muscle="back" onclick="setPlanMuscleFilter('back')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/back.png" alt="back"></span>
-            <span id="plan-filter-back-label"></span>
-          </button>
-          <button class="filter-chip" data-muscle="shoulders" onclick="setPlanMuscleFilter('shoulders')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/shoulder.png" alt="shoulders"></span>
-            <span id="plan-filter-shoulders-label"></span>
-          </button>
-          <button class="filter-chip" data-muscle="biceps" onclick="setPlanMuscleFilter('biceps')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/biceps.png" alt="biceps"></span>
-            <span id="plan-filter-biceps-label"></span>
-          </button>
-          <button class="filter-chip" data-muscle="triceps" onclick="setPlanMuscleFilter('triceps')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/triceps.png" alt="triceps"></span>
-            <span id="plan-filter-triceps-label"></span>
-          </button>
-          <button class="filter-chip" data-muscle="core" onclick="setPlanMuscleFilter('core')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/core.png" alt="core"></span>
-            <span id="plan-filter-core-label"></span>
-          </button>
-          <button class="filter-chip" data-muscle="legs" onclick="setPlanMuscleFilter('legs')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/legs.png" alt="legs"></span>
-            <span id="plan-filter-legs-label"></span>
-          </button>
-          <button class="filter-chip" data-muscle="calf" onclick="setPlanMuscleFilter('calf')">
-            <span class="muscle-icon muscle-icon--filter"><img src="assets/icons/dark/calf.png" alt="calf"></span>
-            <span id="plan-filter-calf-label"></span>
-          </button>
-          </div>
-
-          <div class="plan-type-filters flex gap-2" id="plan-equipment-filters">
-            <button class="filter-chip active" data-equipment="all" onclick="setPlanEquipmentFilter('all')">
-              <span class="material-symbols-rounded">apps</span>
-              <span id="plan-filter-equipment-all-label"></span>
-            </button>
-            <button class="filter-chip" data-equipment="bodyweight" onclick="setPlanEquipmentFilter('bodyweight')">
-              <span class="material-symbols-rounded">accessibility_new</span>
-              <span>Bodyweight</span>
-            </button>
-            <button class="filter-chip" data-equipment="pull-up-bar" onclick="setPlanEquipmentFilter('pull-up-bar')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Klimmzugstange</span>
-            </button>
-            <button class="filter-chip" data-equipment="parallettes" onclick="setPlanEquipmentFilter('parallettes')">
-              <span class="material-symbols-rounded">straighten</span>
-              <span>Paralettes</span>
-            </button>
-            <button class="filter-chip" data-equipment="rings" onclick="setPlanEquipmentFilter('rings')">
-              <span class="material-symbols-rounded">sports_gymnastics</span>
-              <span>Ringe</span>
-            </button>
-            <button class="filter-chip" data-equipment="dumbbell" onclick="setPlanEquipmentFilter('dumbbell')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Kurzhantel</span>
-            </button>
-            <button class="filter-chip" data-equipment="barbell" onclick="setPlanEquipmentFilter('barbell')">
-              <span class="material-symbols-rounded">fitness_center</span>
-              <span>Langhantel</span>
-            </button>
-            <button class="filter-chip" data-equipment="resistance-bands" onclick="setPlanEquipmentFilter('resistance-bands')">
-              <span class="material-symbols-rounded">cable</span>
-              <span>Bänder</span>
-            </button>
-            <button class="filter-chip" data-equipment="gym-machine" onclick="setPlanEquipmentFilter('gym-machine')">
-              <span class="material-symbols-rounded">precision_manufacturing</span>
-              <span>Maschine</span>
-            </button>
-            <button class="filter-chip" data-equipment="bench" onclick="setPlanEquipmentFilter('bench')">
-              <span class="material-symbols-rounded">airline_seat_flat</span>
-              <span>Bank</span>
-            </button>
-          </div>
         </div>
 
         <!-- Plans Grid -->
@@ -451,8 +385,8 @@
       <div id="training-tab-exercises" class="training-tab">
         <!-- Header mit Add Button -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <button onclick="openAddExerciseModal()" class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-500 hover:to-pink-600 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2">
-            <span class="material-symbols-rounded" style="font-size: 20px;">add_circle</span>
+          <button onclick="openAddExerciseModal()" class="tab-add-btn">
+            <span class="material-symbols-rounded">add</span>
             <span data-i18n="exercise.create.title">Neue Übung</span>
           </button>
         </div>
