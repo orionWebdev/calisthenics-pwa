@@ -8,11 +8,17 @@ ATEM Hybrid ist eine dunkel-minimalistische, mobile-first PWA für hybrides Trai
 
 ## Preview
 
+### Dashboard
 <img width="348" height="1000" alt="Screenshot 2026-06-01 165237" src="https://github.com/user-attachments/assets/61fcd2aa-a16d-456a-baa7-4dd899a9295b" />
 
+### Progress-Site
 <img width="352" height="996" alt="Screenshot 2026-06-01 165335" src="https://github.com/user-attachments/assets/a2385c64-7118-415c-b912-7eac45a1be6d" />
 
-<img width="345" height="897" alt="Screenshot 2026-06-01 165402" src="https://github.com/user-attachments/assets/03b52113-d7fa-40f4-bbf1-f348ee17d2de" />
+### Exercise-Site
+<img width="353" height="1009" alt="Screenshot 2026-06-01 165648" src="https://github.com/user-attachments/assets/643de37c-3466-4a12-83c3-af2281d680e4" />
+
+### Workout-Tracker
+<img width="335" height="1109" alt="Screenshot 2026-06-01 165732" src="https://github.com/user-attachments/assets/76f17e47-6395-47fc-acd1-8c8434117b03" />
 
 ---
 
