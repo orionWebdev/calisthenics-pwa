@@ -6,7 +6,8 @@ ATEM Hybrid ist eine dunkel-minimalistische, mobile-first PWA für hybrides Trai
 
 **Status:** 🚧 In aktiver Entwicklung (MVP-Phase) — geplante Auslieferung als Play-Store-App via Capacitor.
 
-##Preview
+## Preview
+
 <img width="348" height="1000" alt="Screenshot 2026-06-01 165237" src="https://github.com/user-attachments/assets/61fcd2aa-a16d-456a-baa7-4dd899a9295b" />
 
 <img width="352" height="996" alt="Screenshot 2026-06-01 165335" src="https://github.com/user-attachments/assets/a2385c64-7118-415c-b912-7eac45a1be6d" />
