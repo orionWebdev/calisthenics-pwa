@@ -1,7 +1,3 @@
-<img width="348" height="1000" alt="Screenshot 2026-06-01 165237" src="https://github.com/user-attachments/assets/61fcd2aa-a16d-456a-baa7-4dd899a9295b" />
-
-<img width="352" height="996" alt="Screenshot 2026-06-01 165335" src="https://github.com/user-attachments/assets/a2385c64-7118-415c-b912-7eac45a1be6d" />
-
 # ATEM Hybrid
 
 > **Strength · Cardio · Recovery** — Hybrid Fitness & Recovery System als Progressive Web App.
@@ -9,6 +5,13 @@
 ATEM Hybrid ist eine dunkel-minimalistische, mobile-first PWA für hybrides Training (Calisthenics, Cardio, Mobility). Statt eines klassischen Workout-Trackers entsteht hier ein intelligentes Performance-System mit Plänen, Kalender, Live-Workout-Tracking und Belastungsanalyse — inspiriert von Premium-Brands wie WHOOP und Oura, aber ganz ohne Wearable.
 
 **Status:** 🚧 In aktiver Entwicklung (MVP-Phase) — geplante Auslieferung als Play-Store-App via Capacitor.
+
+##Preview
+<img width="348" height="1000" alt="Screenshot 2026-06-01 165237" src="https://github.com/user-attachments/assets/61fcd2aa-a16d-456a-baa7-4dd899a9295b" />
+
+<img width="352" height="996" alt="Screenshot 2026-06-01 165335" src="https://github.com/user-attachments/assets/a2385c64-7118-415c-b912-7eac45a1be6d" />
+
+<img width="345" height="897" alt="Screenshot 2026-06-01 165402" src="https://github.com/user-attachments/assets/03b52113-d7fa-40f4-bbf1-f348ee17d2de" />
 
 ---
 
