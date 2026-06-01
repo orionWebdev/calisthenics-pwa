@@ -2,8 +2,6 @@
 
 <img width="352" height="996" alt="Screenshot 2026-06-01 165335" src="https://github.com/user-attachments/assets/a2385c64-7118-415c-b912-7eac45a1be6d" />
 
-<img width="345" height="897" alt="Screenshot 2026-06-01 165402" src="https://github.com/user-attachments/assets/85284127-f259-4396-923a-0b9b674942e0" />
-
 # ATEM Hybrid
 
 > **Strength · Cardio · Recovery** — Hybrid Fitness & Recovery System als Progressive Web App.
