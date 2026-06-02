@@ -1,0 +1,112 @@
+/* ========================================
+   QUICK ENTRY TYPE SELECTOR
+   ======================================== */
+
+.type-selector-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.type-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.875rem 0.5rem;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.type-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.type-btn.active {
+  background: linear-gradient(135deg, rgba(240, 34, 119, 0.15), rgba(139, 92, 246, 0.15));
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.type-btn .material-symbols-rounded {
+  font-size: var(--font-size-xl);
+}
+
+.type-btn.active .material-symbols-rounded {
+  color: var(--color-primary);
+}
+
+.type-btn span:last-child {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ========================================
+   DIFFICULTY PILLS ROW
+   ======================================== */
+
+.difficulty-pills-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
+
+.difficulty-pills-row::-webkit-scrollbar {
+  display: none;
+}
+
+.difficulty-pills-row .difficulty-pill {
+  flex: 0 0 auto;
+  min-width: unset;
+  padding: 0.625rem 1rem;
+  font-size: var(--font-size-sm);
+  text-align: center;
+  background: rgba(55, 65, 81, 0.3);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 2rem;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.difficulty-pills-row .difficulty-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.difficulty-pills-row .difficulty-pill.active {
+  color: #fff;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="beginner"].active {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: #22c55e;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="intermediate"].active {
+  background: rgba(245, 158, 11, 0.3);
+  border-color: #f59e0b;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="advanced"].active {
+  background: rgba(249, 115, 22, 0.3);
+  border-color: #f97316;
+}
+
+.difficulty-pills-row .difficulty-pill[data-difficulty="elite"].active {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #ef4444;
+}
+

@@ -66,8 +66,12 @@ calisthenics-pwa/
 ├── index.html              # Single-Page-App Entry
 ├── manifest.json           # PWA-Manifest
 ├── css/
-│   ├── style.css           # Globale Styles
-│   └── components.css      # Wiederverwendbare Components
+│   ├── main.css            # Entry: buendelt alle Partials via @import
+│   ├── base/               # Tokens, Typografie
+│   ├── components/         # Wiederverwendbare UI-Bausteine (Modals, Sheets, Filter ...)
+│   ├── layout/             # Navigation, FAB, Bottom-Nav
+│   ├── views/              # Seiten-Styles (Dashboard, Workout, Progress ...)
+│   └── utilities/          # Responsive, Animationen, Overrides
 ├── js/
 │   ├── app.js              # Haupt-App-Logik & Router
 │   ├── firebase.js         # Firebase-Config & Helpers

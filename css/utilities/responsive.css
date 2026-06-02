@@ -1,0 +1,312 @@
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+/* Mobile Navigation */
+.mobile-nav-header {
+  display: none; /* Hidden on desktop */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: var(--color-bg);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  /* PWA Safe Area: Padding oben für Status Bar, aber Hintergrund füllt gesamten Bereich */
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Voller Hintergrund bis zur Status Bar für Mobile Header */
+.mobile-nav-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0);
+  background-color: var(--color-bg);
+  transform: translateY(-100%);
+  z-index: -1;
+}
+
+.desktop-nav {
+  display: block;
+}
+
+/* Floating Action Button - Hidden on Desktop */
+.fab-container {
+  display: none;
+}
+
+/* Fix for Select Dropdowns */
+select {
+  background: var(--color-secondary-light);
+  color: white;
+}
+
+select option {
+  background: var(--color-secondary-dark);
+  color: white;
+}
+
+input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Desktop: Standard Bottom-Padding für Content */
+#main-content {
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  /* Hide desktop nav, show mobile header */
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-nav-header {
+    display: flex !important;
+  }
+
+  /* Add top padding to content to account for fixed header + safe area + extra spacing */
+  .max-w-6xl {
+    padding-top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0) + 0.5rem) !important;
+  }
+
+  /* Show Bottom Nav on mobile */
+  .bottom-nav {
+    display: flex;
+  }
+
+  /* Dynamisches Bottom-Padding für Content: Navigation-Höhe + Safe Area + Extra-Abstand */
+  #main-content {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 1rem) !important;
+  }
+
+  /* Hide FAB on mobile when Bottom Nav is visible */
+  .fab-container {
+    display: none !important;
+  }
+
+  /* Week View Vertical Scroll on Mobile */
+  #week-grid {
+    display: flex !important;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    scroll-behavior: smooth;
+  }
+
+  .week-day-card {
+    width: 100%;
+    padding: 1.25rem;
+    scroll-margin-top: 1rem;
+  }
+
+  .week-day-card.today {
+    scroll-snap-align: start;
+  }
+
+  /* Add Plan Panel Responsive */
+  #add-plan-panel {
+    flex-direction: column;
+  }
+
+  #add-plan-panel .flex {
+    flex-direction: column;
+  }
+
+  #add-plan-panel select,
+  #add-plan-panel button {
+    width: 100%;
+  }
+
+  /* Touch Target Optimization - Minimum 44px */
+  .nav-btn {
+    font-size: var(--font-size-xs);
+    padding: 0.75rem;
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .filter-input,
+  .filter-select {
+    min-height: 48px;
+    font-size: var(--font-size-base); /* Prevents zoom on iOS */
+  }
+
+  .muscle-tag {
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-sm);
+  }
+
+  .filter-pill {
+    min-height: 36px;
+    padding: 0.5rem 0.875rem;
+  }
+
+  .exercise-card-edit-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Modal als Bottom Sheet auf Mobile */
+  .modal {
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 1.5rem 1.5rem 0 0;
+    padding: 0;
+    animation: slideUpFromBottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Drag Handle für Mobile Modale */
+  .modal-content::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 2px;
+    margin: 0.75rem auto 0;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  /* Modal Header/Body Container */
+  .modal-content > * {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .modal-content > *:first-child {
+    padding-top: 1rem;
+  }
+
+  .modal-content > *:last-child {
+    padding-bottom: 1.5rem;
+  }
+
+  /* Modal body scrollable on mobile */
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-header {
+    flex-shrink: 0;
+  }
+
+  .modal-footer {
+    flex-shrink: 0;
+  }
+
+  /* Fix input field sizing on mobile */
+  .modal input[type="text"],
+  .modal input[type="number"],
+  .modal input[type="date"],
+  .modal select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .modal .space-y-4 > div {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .modal .discipline-selector {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .modal .difficulty-pills {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  /* Mobile-specific adjustments */
+  .exercise-card-compact {
+    padding: 0;
+  }
+
+  .exercise-card-content {
+    padding: 1rem;
+  }
+
+  .calendar-day {
+    min-height: 80px;
+    padding: 0.5rem;
+  }
+
+  .calendar-day-number {
+    font-size: var(--font-size-xs);
+  }
+
+  .calendar-plan {
+    font-size: var(--font-size-xs);
+    padding: 0.25rem 0.375rem;
+  }
+
+  /* Week view mobile */
+  .week-day-card {
+    padding: 1rem;
+  }
+
+  /* Exercise grid - 1 column on mobile */
+  #exercises-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* FAB Touch Target */
+  .fab-main {
+    min-width: 64px;
+    min-height: 64px;
+  }
+
+  .radial-menu-item {
+    min-width: 56px;
+    min-height: 56px;
+  }
+
+  /* Filter Container Mobile */
+  .filter-container {
+    padding: 1rem;
+  }
+
+  /* Empty State Mobile */
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+
+  .empty-state-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .empty-state-icon .material-symbols-rounded {
+    font-size: var(--font-size-3xl);
+  }
+}
+

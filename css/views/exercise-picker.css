@@ -1,0 +1,59 @@
+/* ========================================
+   EXERCISE PICKER - Create New Button
+   ======================================== */
+
+.exercise-picker-create-new {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  background: linear-gradient(135deg, rgba(240, 34, 119, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px dashed rgba(240, 34, 119, 0.4);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exercise-picker-create-new:hover {
+  background: linear-gradient(135deg, rgba(240, 34, 119, 0.15), rgba(139, 92, 246, 0.15));
+  border-color: rgba(240, 34, 119, 0.6);
+}
+
+.exercise-picker-create-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  border-radius: 0.625rem;
+  flex-shrink: 0;
+}
+
+.exercise-picker-create-icon .material-symbols-rounded {
+  font-size: var(--font-size-xl);
+  color: #fff;
+}
+
+.exercise-picker-create-content {
+  flex: 1;
+}
+
+.exercise-picker-create-title {
+  font-weight: var(--font-weight-semibold);
+  color: #fff;
+  font-size: var(--font-size-base);
+}
+
+.exercise-picker-create-hint {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.125rem;
+}
+
+.exercise-picker-create-chevron {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: var(--font-size-lg);
+}
+

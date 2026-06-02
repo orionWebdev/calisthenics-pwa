@@ -1,0 +1,270 @@
+/* ========================================
+   POST-WORKOUT SUMMARY SCREEN
+   ======================================== */
+
+.post-workout-summary-content {
+  max-width: 480px;
+  text-align: center;
+}
+
+.pws-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.pws-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 50%;
+  margin: 0 auto var(--spacing-md);
+}
+
+.pws-success-icon .material-symbols-rounded {
+  font-size: 36px;
+  color: #22c55e;
+}
+
+.pws-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 0.25rem;
+}
+
+.pws-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.pws-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.pws-quick-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius);
+  min-width: 72px;
+}
+
+/* Tappable duration stat — lets the user correct the auto-tracked time */
+.pws-quick-stat--editable {
+  position: relative;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+
+.pws-quick-stat--editable:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+
+.pws-quick-stat--editable:active {
+  transform: scale(0.96);
+}
+
+.pws-quick-stat-edit {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 13px;
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+
+.pws-quick-stat-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.pws-quick-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.pws-section-title {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-sm);
+  text-align: left;
+}
+
+.pws-comparison-grid {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.pws-stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: var(--spacing-md) var(--spacing-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius);
+}
+
+.pws-stat-icon {
+  font-size: 18px;
+  color: var(--color-text-muted);
+}
+
+.pws-stat-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pws-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.pws-stat-delta {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.4rem;
+}
+
+.pws-stat-delta.positive {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.pws-stat-delta.negative {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.pws-dismiss-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  border: none;
+  border-radius: var(--ui-card-radius);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  margin-top: var(--spacing-sm);
+}
+
+.pws-dismiss-btn:hover {
+  opacity: 0.9;
+}
+
+/* ==================== POST-WORKOUT EXERCISE COMPARISON ==================== */
+
+.pws-exercises-section {
+  margin-top: 1rem;
+}
+
+.pws-exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.pws-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  background: var(--bg-surface, #1e1e20);
+  border: 1px solid var(--border-primary, rgba(255,255,255,0.06));
+  border-radius: 0.75rem;
+}
+
+.pws-exercise-row.removed {
+  opacity: 0.5;
+}
+
+.pws-exercise-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.pws-exercise-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.pws-exercise-sets {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-top: 0.125rem;
+}
+
+.pws-exercise-vs {
+  opacity: 0.5;
+}
+
+.pws-exercise-badge {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.pws-exercise-badge.new {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.pws-exercise-badge.removed {
+  color: var(--color-text-muted, #9ca3af);
+  background: rgba(156, 163, 175, 0.1);
+}
+
+.pws-exercise-sparkline {
+  width: 60px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.pws-exercise-trend {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.pws-exercise-trend.up { color: #22c55e; }
+.pws-exercise-trend.down { color: #ef4444; }
+.pws-exercise-trend.same { color: var(--color-text-muted, #9ca3af); }
+

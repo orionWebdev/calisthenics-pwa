@@ -1,0 +1,19 @@
+/* ========================================
+   KEYBOARD AVOIDANCE (mobile virtual keyboard)
+   See js/keyboardInset.js — sets --keyboard-inset and toggles body.keyboard-open.
+
+   On modern Chromium browsers the viewport meta `interactive-widget=resizes-content`
+   shrinks the layout viewport when the keyboard appears, so `position:fixed; bottom:0`
+   already sits above the keyboard. --keyboard-inset stays 0 and these rules are no-ops.
+
+   On iOS Safari and older browsers the layout viewport stays full-size; the JS helper
+   detects the keyboard via visualViewport and we lift the one element that genuinely
+   needs help: the bottom-anchored shared bottom-sheet (search picker etc.).
+   ======================================== */
+
+body.keyboard-open #bottom-sheet-overlay .bottom-sheet,
+body.keyboard-open .number-picker-sheet {
+  bottom: var(--keyboard-inset, 0);
+  max-height: calc(100vh - var(--keyboard-inset, 0px) - 1rem);
+}
+

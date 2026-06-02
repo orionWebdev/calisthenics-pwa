@@ -1,0 +1,201 @@
+/* ========================================
+   PLAN PICKER BOTTOM SHEET
+   ======================================== */
+
+/* Overlay background - matching modal overlay */
+#plan-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+#plan-picker-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Bottom sheet panel - matching modal-content colors */
+#plan-picker-overlay .bottom-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  background: var(--bg-card);
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+  border-bottom: none;
+  align-items: center;
+}
+
+#plan-picker-overlay.active .bottom-sheet {
+  transform: translateY(0);
+}
+
+/* Header alignment fix */
+#plan-picker-overlay .bottom-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  padding-top: 1.5rem;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  position: relative;
+  width: 100%;
+}
+
+/* Spacer to balance close button for centered title */
+#plan-picker-overlay .bottom-sheet-header::before {
+  content: '';
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+
+.plan-picker-filter {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  width: 95%;
+}
+
+.plan-picker-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.plan-picker-filter-btn {
+  flex-shrink: 0;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-primary);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.plan-picker-filter-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.plan-picker-filter-btn:not(.active):hover {
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
+}
+
+.plan-picker-list {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
+  -webkit-overflow-scrolling: touch;
+}
+
+.plan-picker-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.plan-picker-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--ui-card-border-hover);
+}
+
+.plan-picker-option:active {
+  transform: scale(0.98);
+}
+
+.plan-picker-option-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ui-icon-bg);
+  border: 1px solid var(--ui-icon-border);
+  border-radius: 0.75rem;
+  flex-shrink: 0;
+}
+
+.plan-picker-option-icon .material-symbols-rounded {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+}
+
+.plan-picker-option-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.plan-picker-option-label {
+  font-weight: var(--font-weight-semibold);
+  color: #fff;
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-picker-option-desc {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.25rem;
+}
+
+.plan-picker-option-chevron {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.plan-picker-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.plan-picker-empty-hint {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 0.5rem;
+}
+
+.plan-picker-empty .material-symbols-rounded {
+  font-size: var(--font-size-4xl);
+  display: block;
+  margin-bottom: 1rem;
+}
+
