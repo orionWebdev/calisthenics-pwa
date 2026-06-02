@@ -636,3 +636,33 @@ checkAppVersion();
 // ========================================
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ========================================
+// DEV TOOLS (optional, nicht in Produktion geladen)
+// ========================================
+// Demo-Seeder & Debug-Helfer liegen unter js/dev/ und werden NUR geladen,
+// wenn die App mit ?dev=1 aufgerufen wird oder localStorage.atemDevTools === '1'.
+// Aktivieren:   ?dev=1  (wird gemerkt)   |   Deaktivieren:  ?dev=0
+// Verfuegbare Konsolen-Helfer danach: createDemoSessions(), createDemoProgressData(),
+// deleteAllSessions(), deleteAllProgressData(), checkMyAllowlistStatus('mail@x.de')
+(function loadDevTools() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('dev')) {
+    if (params.get('dev') === '0') localStorage.removeItem('atemDevTools');
+    else localStorage.setItem('atemDevTools', '1');
+  }
+  if (localStorage.getItem('atemDevTools') !== '1') return;
+
+  const devScripts = [
+    'js/dev/checkAllowlist.js',
+    'js/dev/createDemoProgress.js',
+    'js/dev/createDemoSessions.js',
+  ];
+  devScripts.forEach((src) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.defer = true;
+    document.head.appendChild(s);
+  });
+  console.log('🛠️ ATEM Dev-Tools geladen (deaktivieren mit ?dev=0).');
+})();
