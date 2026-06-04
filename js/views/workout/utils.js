@@ -55,6 +55,8 @@ function generateTempId() {
  */
 function triggerHapticFeedback(type = 'light') {
   if (!('vibrate' in navigator)) return;
+  // Skip before first user gesture — avoids Chrome's vibrate intervention warning.
+  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
   if (typeof getSettingValue === 'function' && !getSettingValue('hapticsEnabled')) return;
 
   const patterns = {

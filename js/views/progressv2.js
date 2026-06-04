@@ -2762,7 +2762,6 @@ window.switchProgressTab = switchProgressTab;
 window.switchStrengthPeriod = switchStrengthPeriod;
 window.switchCardioPeriod = switchCardioPeriod;
 window.switchCardioMetric = switchCardioMetric;
-window.switchStrengthVolumeMetric = switchStrengthVolumeMetric;
 window.switchOverviewPeriod = switchOverviewPeriod;
 window.switchProgressPeriod = switchProgressPeriod;
 window.openExercisePickerSheet = openExercisePickerSheet;

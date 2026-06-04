@@ -270,8 +270,8 @@ function openRadialMenu() {
     fabIcon.textContent = 'add';
   }
 
-  // Haptic feedback (if available)
-  if ('vibrate' in navigator) {
+  // Haptic feedback (only after a user gesture — avoids Chrome intervention warning)
+  if ('vibrate' in navigator && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) {
     navigator.vibrate(10);
   }
 }
@@ -288,8 +288,8 @@ function closeRadialMenu() {
   // Restore FAB icon to current view icon
   updateFabIcon(currentView);
 
-  // Haptic feedback (if available)
-  if ('vibrate' in navigator) {
+  // Haptic feedback (only after a user gesture — avoids Chrome intervention warning)
+  if ('vibrate' in navigator && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) {
     navigator.vibrate(10);
   }
 }

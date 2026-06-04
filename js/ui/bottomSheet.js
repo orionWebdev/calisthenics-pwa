@@ -266,8 +266,9 @@ document.addEventListener('keydown', (e) => {
  * @param {string} type - Type of haptic feedback: 'light', 'medium', 'heavy', 'selection', 'success', 'warning', 'error'
  */
 function triggerHapticFeedback(type = 'selection') {
-  // Vibration API (Android & some iOS versions)
-  if ('vibrate' in navigator) {
+  // Vibration API (Android & some iOS versions) — gate on user activation to
+  // avoid Chrome's "Blocked call to navigator.vibrate" intervention warning.
+  if ('vibrate' in navigator && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) {
     const patterns = {
       light: 10,
       selection: 10,
@@ -308,7 +309,7 @@ function triggerHapticFeedback(type = 'selection') {
       }
     } catch (e) {
       // Fallback to vibration
-      if ('vibrate' in navigator) {
+      if ('vibrate' in navigator && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) {
         navigator.vibrate(10);
       }
     }
