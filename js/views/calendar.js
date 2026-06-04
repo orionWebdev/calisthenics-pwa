@@ -871,4 +871,3 @@ window.renderCalendar = renderCalendar;
 window.loadSchedule = loadSchedule;
 window.setupScheduleListener = setupScheduleListener;
 
-console.log('Calendar module loaded!');

@@ -200,7 +200,6 @@ function initSwipeGesture(config) {
   };
   swipeHandlers.set(containerId, handler);
 
-  console.log(`[SwipeGesture] Initialized for #${containerId} with tabs:`, tabs);
   return handler;
 }
 
@@ -223,7 +222,6 @@ function destroySwipeGesture(containerId) {
   container.style.transition = '';
 
   swipeHandlers.delete(containerId);
-  console.log(`[SwipeGesture] Destroyed for #${containerId}`);
 }
 
 /**
@@ -336,4 +334,3 @@ window.initTrainingSwipe = initTrainingSwipe;
 window.initCalendarSwipe = initCalendarSwipe;
 window.initAllSwipeGestures = initAllSwipeGestures;
 
-console.log('👆 SwipeGesture module loaded');

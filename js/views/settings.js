@@ -908,7 +908,6 @@ async function deleteAllUserFirestoreData(uid) {
         docs.slice(i, i + 500).forEach(d => batch.delete(d.ref));
         await batch.commit();
       }
-      console.log(`🗑️  Deleted ${docs.length} docs from ${coll.id}`);
     } catch (e) {
       console.warn(`Could not clean ${coll.id}:`, e);
     }
@@ -1066,4 +1065,3 @@ function escapeHTML(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-console.log('Settings module loaded');

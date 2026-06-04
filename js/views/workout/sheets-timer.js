@@ -263,7 +263,6 @@ function logSet(reps, weight = null, holdSec = null) {
     startRestTimer(restSeconds);
   }
 
-  console.log('✅ Set logged:', holdSec ? `${holdSec}s hold` : `${reps} reps`, weight ? `@ ${weight}kg` : '');
 
   // Superset: after logging a set, switch to next exercise in group
   const currentBlock = getCurrentBlock();

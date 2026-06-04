@@ -167,7 +167,6 @@ function v3FormatDateShort(date) {
 // ==================== INIT ====================
 
 async function initProgressV3() {
-  console.log('Initializing Progress V4...');
   const container = document.getElementById('progress-tab-content');
   if (!container) return;
 

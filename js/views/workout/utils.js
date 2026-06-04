@@ -323,7 +323,6 @@ function addExerciseToWorkoutOrReplace(exerciseId) {
   }
 }
 
-console.log('✅ Workout engine loaded');
 
 // Global exports
 window.checkActiveWorkout = checkActiveWorkout;

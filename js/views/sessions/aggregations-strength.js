@@ -5,11 +5,9 @@
  */
 async function loadSessions() {
   try {
-    console.log('Loading sessions...');
     sessionsLoaded = false;
     allSessions = await getAllDocsForUser(sessionsCollection);
     sessionsLoaded = true;
-    console.log(`Loaded ${allSessions.length} sessions`);
     return allSessions;
   } catch (error) {
     console.error('Error loading sessions:', error);

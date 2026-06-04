@@ -442,7 +442,6 @@ async function refreshDashboard() {
 }
 
 async function initDashboard() {
-  console.log('Initializing Dashboard...');
   if (typeof onUserCollectionChange === 'function' && typeof sessionsCollection !== 'undefined') {
     onUserCollectionChange(sessionsCollection, (sessions) => {
       allSessions = sessions;
@@ -461,7 +460,6 @@ async function initDashboard() {
     loadSchedule();
   }
   await refreshDashboard();
-  console.log('Dashboard initialized!');
 }
 
 // Expose functions

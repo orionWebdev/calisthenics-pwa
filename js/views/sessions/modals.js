@@ -7,7 +7,6 @@ function openAddCardioModal() {
   const modal = document.getElementById('add-cardio-modal');
   if (!modal) return;
 
-  console.log('🔓 Opening cardio modal...');
 
   // Reset inline styles
   modal.style.display = '';
@@ -37,7 +36,6 @@ function openAddCardioModal() {
   modal.classList.add('active');
   triggerHapticFeedback('light');
 
-  console.log('✅ Modal opened');
 }
 
 /**
@@ -47,7 +45,6 @@ function closeAddCardioModal() {
   const modal = document.getElementById('add-cardio-modal');
   if (!modal) return;
 
-  console.log('🔒 Closing cardio modal...');
 
   // Remove active class immediately
   modal.classList.remove('active');
@@ -78,7 +75,6 @@ function closeAddCardioModal() {
     }
     if (notesInput) notesInput.value = '';
 
-    console.log('✅ Modal closed and form reset');
   }, 300);
 }
 
@@ -151,7 +147,6 @@ async function saveCardioSession() {
 
     const savedSessionId = await addDoc(sessionsCollection, cardioSession);
 
-    console.log('✅ Cardio session saved');
 
     // Mark pending scheduled entry as completed (Quick Entry support)
     await markPendingScheduledEntryCompleted(savedSessionId);
@@ -654,7 +649,6 @@ function openAddRecoveryModal(dateStr = null) {
   const modal = document.getElementById('add-recovery-modal');
   if (!modal) return;
 
-  console.log('🔓 Opening recovery modal...');
 
   modal.style.display = '';
 
@@ -681,7 +675,6 @@ function closeAddRecoveryModal() {
   const modal = document.getElementById('add-recovery-modal');
   if (!modal) return;
 
-  console.log('🔒 Closing recovery modal...');
 
   modal.classList.remove('active');
   setTimeout(() => {
@@ -742,7 +735,6 @@ async function saveRecoverySession() {
 
     const savedSessionId = await addDoc(sessionsCollection, recoverySession);
 
-    console.log('✅ Recovery session saved');
 
     // Mark pending scheduled entry as completed (Quick Entry support)
     await markPendingScheduledEntryCompleted(savedSessionId);
@@ -797,7 +789,6 @@ async function markPendingScheduledEntryCompleted(sessionId) {
     };
 
     await updateDoc(scheduleCollection, pendingEntry.id, scheduleUpdate);
-    console.log('✅ Scheduled entry marked as completed:', pendingEntry.id);
   } catch (error) {
     console.error('❌ Error marking scheduled entry as completed:', error);
   } finally {

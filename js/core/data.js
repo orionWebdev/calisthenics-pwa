@@ -388,16 +388,13 @@ async function initializeDefaultExercises() {
     const existing = await getAllDocs(exercisesCuratedCollection);
 
     if (existing.length === 0) {
-      console.log('Initializing default exercises...');
 
       // Alle default Übungen in die curated Collection hinzufügen (global, kein userId)
       for (const exercise of defaultExercises) {
         await addDoc(exercisesCuratedCollection, exercise, { scoped: false });
       }
 
-      console.log('Default exercises added: ' + defaultExercises.length);
     } else {
-      console.log(existing.length + ' exercises already in database');
     }
   } catch (error) {
     console.error('Error initializing exercises:', error);

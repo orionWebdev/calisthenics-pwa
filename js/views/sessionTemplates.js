@@ -88,7 +88,6 @@ const sessionTemplatesCollection = db.collection('sessionTemplates');
 async function loadSessionTemplates() {
   try {
     allSessionTemplates = await getAllDocsForUser(sessionTemplatesCollection);
-    console.log('✅ Session templates loaded:', allSessionTemplates.length);
     return allSessionTemplates;
   } catch (error) {
     console.error('❌ Error loading session templates:', error);
@@ -243,10 +242,8 @@ async function saveSessionTemplate() {
   try {
     if (editingSessionTemplateId) {
       await updateDoc(sessionTemplatesCollection, editingSessionTemplateId, templateData);
-      console.log('✅ Session template updated');
     } else {
       await addDoc(sessionTemplatesCollection, templateData);
-      console.log('✅ Session template created');
     }
 
     closeSessionTemplateModal();
@@ -270,7 +267,6 @@ async function deleteSessionTemplate(id) {
 
   try {
     await deleteDoc(sessionTemplatesCollection, id);
-    console.log('✅ Session template deleted');
     await loadSessionTemplates();
 
     if (typeof showEdgeFeedback === 'function') {
@@ -474,7 +470,6 @@ async function scheduleSessionTemplate(templateId, dateStr) {
     };
 
     const scheduleId = await addDoc(scheduleCollection, scheduleData);
-    console.log('✅ Session template scheduled:', scheduleId);
 
     if (typeof showEdgeFeedback === 'function') {
       showEdgeFeedback('success', t('templateFeedback.planned'));
@@ -614,4 +609,3 @@ window.setCardioTrainingType = setCardioTrainingType;
 window.updateTrainingTypeInfo = updateTrainingTypeInfo;
 window.toggleTrainingTypeInfo = toggleTrainingTypeInfo;
 
-console.log('✅ Session Templates module loaded');

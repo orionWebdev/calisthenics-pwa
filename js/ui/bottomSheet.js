@@ -458,5 +458,4 @@ function renderMultiSelectInput(containerId, config) {
 function removeMultiSelectChip(containerId, value) {
   // This function should be implemented by the calling context
   // as it needs to update the specific form state
-  console.log('Remove chip:', containerId, value);
 }

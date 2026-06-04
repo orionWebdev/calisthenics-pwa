@@ -166,7 +166,6 @@ async function confirmDeleteWorkout(sessionId) {
     }
 
     triggerSuccessGlow();
-    console.log('✅ Workout deleted');
   } catch (error) {
     console.error('❌ Error deleting workout:', error);
   if (typeof showEdgeFeedback === 'function') {
@@ -488,7 +487,6 @@ async function saveStrengthSessionEdit(event, sessionId) {
       triggerSuccessGlow();
     }
 
-    console.log('✅ Strength session updated');
   } catch (error) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
@@ -641,7 +639,6 @@ async function saveCardioSessionEdit(event, sessionId) {
       triggerSuccessGlow();
     }
 
-    console.log('✅ Cardio session updated');
   } catch (error) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
@@ -766,7 +763,6 @@ async function saveRecoverySessionEdit(event, sessionId) {
       triggerSuccessGlow();
     }
 
-    console.log('✅ Recovery session updated');
   } catch (error) {
     console.error('❌ Error updating session:', error);
     if (typeof showEdgeFeedback === 'function') {
@@ -783,4 +779,3 @@ window.saveCardioSessionEdit = saveCardioSessionEdit;
 window.openEditRecoverySessionModal = openEditRecoverySessionModal;
 window.saveRecoverySessionEdit = saveRecoverySessionEdit;
 
-console.log('✅ Workout modal loaded');

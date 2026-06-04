@@ -80,10 +80,8 @@ async function savePlan() {
   try {
     if (editingPlanId) {
       await updateDoc(plansCollection, editingPlanId, planData);
-      console.log('✅ Plan updated!');
     } else {
       await addDoc(plansCollection, planData);
-      console.log('✅ Plan added!');
     }
 
     closePlanModal();

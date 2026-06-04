@@ -107,7 +107,6 @@ async function startWorkoutFromPlan(planId, scheduledDate = null, scheduleId = n
     }
     renderWorkoutScreen();
 
-    console.log('✅ Workout started:', activeWorkout.planName);
   } catch (error) {
     console.error('❌ Error starting workout:', error);
     if (typeof showEdgeFeedback === 'function') {
@@ -185,7 +184,6 @@ async function startWorkoutFromSession(sessionId) {
     showView('workout');
     renderWorkoutScreen();
 
-    console.log('✅ Workout restarted from session');
   } catch (error) {
     console.error('❌ Error restarting workout:', error);
     if (typeof showEdgeFeedback === 'function') {
@@ -232,7 +230,6 @@ function loadActiveWorkout() {
     if (stored) {
       activeWorkout = JSON.parse(stored);
       localStorage.setItem('activeWorkoutId', activeWorkout.id);
-      console.log('✅ Active workout loaded from localStorage');
       return true;
     }
     return false;
@@ -303,7 +300,6 @@ function showActiveWorkoutBanner() {
   setTimeout(() => {
     if (document.getElementById('active-workout-banner')) {
       // User hasn't clicked anything, show hint
-      console.log('💡 Active workout waiting...');
     }
   }, 3000);
 }
@@ -345,7 +341,6 @@ function cancelWorkout(askConfirmation = true) {
   cancelRestTimer();
 
   showView('dashboard');
-  console.log('❌ Workout cancelled');
 }
 
 /**
@@ -416,7 +411,6 @@ async function completeWorkout() {
     // Save session to Firestore
     const savedSessionId = await addDoc(sessionsCollection, sessionData);
     sessionData.id = savedSessionId;
-    console.log('✅ Session saved:', savedSessionId);
 
     // If this workout was from a schedule, mark it as completed
     if (activeWorkout.scheduleId) {
@@ -428,7 +422,6 @@ async function completeWorkout() {
 
       try {
         await updateDoc(scheduleCollection, activeWorkout.scheduleId, scheduleUpdate);
-        console.log('✅ Schedule marked as completed');
       } catch (error) {
         console.error('❌ Error updating schedule entry:', error);
       }

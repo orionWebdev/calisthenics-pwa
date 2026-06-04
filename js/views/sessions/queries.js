@@ -62,4 +62,3 @@ window.calculateExerciseWeightedVolume = calculateExerciseWeightedVolume;
 window.getExerciseSparklineData = getExerciseSparklineData;
 window.getExerciseGlobalSparkline = getExerciseGlobalSparkline;
 
-console.log('📊 Sessions module loaded');

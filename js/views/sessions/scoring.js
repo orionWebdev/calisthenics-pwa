@@ -49,7 +49,6 @@ function calculateSessionLoadValue(session) {
       if (duration <= 0) return { rawLoad: 0, type };
       const multiplier = session.discipline === 'bodyweight' ? 4.5 : 6;
       const rawLoad = Math.round(duration * rpeFactor * multiplier * 100) / 100;
-      console.log('TEST LOAD:', { type, rawLoad, duration, exercises: 0, discipline: session.discipline });
       return { rawLoad, type };
     }
 
@@ -82,12 +81,10 @@ function calculateSessionLoadValue(session) {
     if (totalVolume === 0 && session.duration > 0) {
       const multiplier = session.discipline === 'bodyweight' ? 4.5 : 6;
       const rawLoad = Math.round(session.duration * rpeFactor * multiplier * 100) / 100;
-      console.log('TEST LOAD (bw fallback):', { type, rawLoad, duration: session.duration, discipline: session.discipline });
       return { rawLoad, type };
     }
 
     const rawLoad = Math.round((totalVolume / STRENGTH_VOLUME_DIVISOR) * rpeFactor * 100) / 100;
-    console.log('TEST LOAD:', { type, rawLoad, duration: session.duration, exercises: session.exercises?.length });
     return { rawLoad, type };
   }
 
@@ -137,8 +134,6 @@ function computeWeeklyRawLoad(referenceDate) {
   let strengthLoad = 0;
   let cardioLoad = 0;
   let sessionCount = 0;
-
-  console.log('WeeklyRawLoad sessions:', allSessions.filter(s => s.type === 'strength' || s.type === 'bodyweight' || s.type === 'cardio').length, 'strength+bodyweight+cardio of', allSessions.length, 'total');
 
   for (const s of allSessions) {
     if (s.type !== 'strength' && s.type !== 'bodyweight' && s.type !== 'cardio') continue;
@@ -316,13 +311,6 @@ function getACWR(sessions, referenceDate, options) {
   const earliestDate = new Date(sortedKeys[0] + 'T00:00:00');
   const daySpan = Math.floor((refDay.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24));
 
-  // Debug: log today's sessions
-  const todayDbgKey = toLocalDateKey(refDay);
-  const todayDbgLoad = dailyLoads.get(todayDbgKey);
-  if (todayDbgLoad) {
-    console.log('[READINESS DEBUG] today total load:', { todayKey: todayDbgKey, todayLoad: Math.round(todayDbgLoad * 100) / 100, totalDays: dailyLoads.size });
-  }
-
   // Need at least 14 days of history
   if (daySpan < 14) {
     return { acuteLoad: 0, chronicLoad: 0, acwr: null, readinessScore: null, zone: null, daysSinceLastSession: null, todayLoad: 0, fatiguePenalty: 0 };
@@ -380,31 +368,10 @@ function getACWR(sessions, referenceDate, options) {
   if (applyFatigue && todayLoad > 0 && chronicEMA > 0.01) {
     const loadRatio = todayLoad / chronicEMA;
     fatiguePenalty = Math.min(35, Math.round(10 * Math.sqrt(loadRatio)));
-    console.log('[READINESS DEBUG] fatigue calc:', {
-      todayLoad: Math.round(todayLoad * 100) / 100,
-      chronicEMA: Math.round(chronicEMA * 100) / 100,
-      loadRatio: Math.round(loadRatio * 100) / 100,
-      sqrtLoadRatio: Math.round(Math.sqrt(loadRatio) * 100) / 100,
-      rawPenalty: Math.round(10 * Math.sqrt(loadRatio)),
-      fatiguePenalty,
-    });
   }
 
   const readinessScore = Math.max(5, rawReadinessScore - fatiguePenalty);
   const zone = mapZone(readinessScore, acwr);
-
-  console.log('[READINESS DEBUG] final:', {
-    acuteEMA: Math.round(acuteEMA * 100) / 100,
-    chronicEMA: Math.round(chronicEMA * 100) / 100,
-    acwr,
-    rawReadinessScore,
-    fatiguePenalty,
-    readinessScore,
-    zone,
-    todayLoad: Math.round(todayLoad * 100) / 100,
-    todayKey,
-    applyFatigue,
-  });
 
   return { acuteLoad: acuteEMA, chronicLoad: chronicEMA, acwr, readinessScore, zone, daysSinceLastSession, todayLoad, fatiguePenalty };
 }
@@ -569,21 +536,6 @@ function computeFormScore(sessions, referenceDate) {
 
   // ── Combined Form Score (0-100) ──
   let formScore = Math.max(0, Math.min(100, consistency + loadLevel + recency + fitnessVsPeak + sessionBonus));
-
-  console.log('[FORM DEBUG]', {
-    consistency, loadLevel, recency, fitnessVsPeak, sessionBonus,
-    formScore,
-    todayLoad: Math.round(todayLoad * 100) / 100,
-    avgDailyLoad: recent14Load > 0 ? Math.round((recent14Load / 14) * 100) / 100 : 0,
-    loadRatio: recent14Load > 0 && (recent14Load / 14) > 0 ? Math.round((todayLoad / (recent14Load / 14)) * 100) / 100 : 'N/A',
-    recent14Load: Math.round(recent14Load * 100) / 100,
-    prior14Load: Math.round(prior14Load * 100) / 100,
-    progressionRatio: prior14Load > 0 ? Math.round((recent14Load / prior14Load) * 100) / 100 : 'N/A',
-    trainingDays28,
-    daysSinceLastSession,
-    fitnessEMA: Math.round(fitnessEMA * 100) / 100,
-    peakFitness: Math.round(peakFitness * 100) / 100,
-  });
 
   // ── Inactivity Decay (Garmin-like: fast and accelerating) ──
   // 2d rest: 0 (recovery phase), 3-4d: -3/day, 5-7d: -5/day, 8+d: -7/day

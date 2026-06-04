@@ -357,7 +357,6 @@ function updateProfileInfo(user) {
 // ========================================
 
 async function initApp() {
-  console.log('🚀 Initializing ATEM Hybrid...');
   const setProgress = window.authModule?.setLoadingProgress;
   const hideLoading = window.authModule?.hideLoadingState;
   if (typeof setProgress === 'function') {
@@ -384,17 +383,14 @@ async function initApp() {
     }
 
     // 1. Initialize default exercises if needed
-    console.log('📦 Initializing default exercises...');
     await initializeDefaultExercises();
     if (typeof setProgress === 'function') setProgress(30);
 
     // 2. Load exercises
-    console.log('💪 Loading exercises...');
     await loadExercises();
     if (typeof setProgress === 'function') setProgress(45);
 
     // 3. Load plans
-    console.log('📋 Loading plans...');
     if (typeof loadPlans === 'function') {
       await loadPlans();
     } else {
@@ -403,7 +399,6 @@ async function initApp() {
     if (typeof setProgress === 'function') setProgress(60);
 
     // 4. Load calendar schedule
-    console.log('📅 Loading schedule...');
     if (typeof loadSchedule === 'function') {
       await loadSchedule();
     } else {
@@ -412,14 +407,12 @@ async function initApp() {
     if (typeof setProgress === 'function') setProgress(70);
 
     // 5. Load session templates
-    console.log('📝 Loading session templates...');
     if (typeof loadSessionTemplates === 'function') {
       await loadSessionTemplates();
     }
     if (typeof setProgress === 'function') setProgress(80);
 
     // 6. Setup real-time listeners
-    console.log('🔄 Setting up real-time listeners...');
     if (typeof setupExercisesListener === 'function') {
       setupExercisesListener();
     }
@@ -438,7 +431,6 @@ async function initApp() {
       checkActiveWorkout();
     }
 
-    console.log('✅ App initialized successfully!');
     if (typeof setProgress === 'function') setProgress(100);
     if (typeof hideLoading === 'function') {
       setTimeout(() => hideLoading(), 200);

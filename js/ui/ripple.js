@@ -297,4 +297,3 @@ window.createRipple = createRipple;
 window.makePressable = makePressable;
 window.refreshRippleEffects = refreshRippleEffects;
 
-console.log('Ripple effects module loaded');

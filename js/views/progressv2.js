@@ -20,7 +20,6 @@ const trProgress = (key, params) => (typeof t === 'function' ? t(key, params) : 
  * Initialisiert die neue Progress-Seite
  */
 async function initProgressV2() {
-  console.log('📊 Initializing Progress V2...');
 
   showProgressLoading();
 
@@ -56,7 +55,6 @@ async function loadExercisesForProgressV2() {
     userEx.forEach(ex => exerciseMap.set(ex.id, ex));
     exercisesData = Array.from(exerciseMap.values());
     exercisesLoaded = true;
-    console.log(`✅ Loaded ${exercisesData.length} exercises`);
     return exercisesData;
   } catch (error) {
     console.error('❌ Error loading exercises:', error);
@@ -116,7 +114,6 @@ function renderSegmentedControl(activeTab = 'overview') {
  * Wechselt zwischen Progress Tabs
  */
 function switchProgressTab(tab) {
-  console.log('📊 Switching to tab:', tab);
 
   // Update active state
   document.querySelectorAll('#progress-segmented-control .segmented-btn').forEach(btn => {
@@ -2787,6 +2784,5 @@ window.navigateActivityCalendar = navigateActivityCalendar;
 window.openActivityDaySheet = openActivityDaySheet;
 window.deleteSessionFromCalendar = deleteSessionFromCalendar;
 
-console.log('📊 Progress V2 module loaded');
 
 
