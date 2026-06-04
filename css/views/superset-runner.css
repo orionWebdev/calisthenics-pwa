@@ -1,0 +1,82 @@
+/* ========================================
+   Superset Runner
+   ======================================== */
+
+.superset-overview {
+  padding: 0 1rem 1rem;
+}
+.superset-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: var(--block-bg-soft);
+  border: 1px solid var(--block-border);
+  border-radius: 14px;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.superset-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.625rem;
+  border-radius: 10px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.superset-exercise-row--active {
+  background: var(--block-bg-medium);
+  box-shadow: inset 0 0 0 1px var(--block-border);
+}
+.superset-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--block-color-bright);
+  min-width: 24px;
+}
+.superset-exercise-name {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.superset-exercise-row--active .superset-exercise-name {
+  font-weight: 700;
+}
+.superset-set-dots {
+  display: flex;
+  gap: 4px;
+}
+.superset-set-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: rgba(75, 85, 99, 0.3);
+  color: var(--text-secondary, #9ca3af);
+  transition: transform 0.15s ease;
+}
+.superset-set-dot--done {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+.superset-set-dot--active {
+  background: var(--block-bg-medium);
+  color: var(--block-color-bright);
+  border: 1px solid var(--block-border);
+  transform: scale(1.08);
+}
+.superset-current-label {
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--block-border);
+  margin-top: 0.25rem;
+}
+

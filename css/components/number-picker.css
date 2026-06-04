@@ -1,0 +1,233 @@
+/* ===================================
+   NUMBER PICKER SHEET - iOS Style
+   =================================== */
+
+.number-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.number-picker-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.number-picker-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ui-card-bg);
+  border-radius: 1.5rem 1.5rem 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.number-picker-overlay.active .number-picker-sheet {
+  transform: translateY(0);
+}
+
+/* Drag Handle */
+.number-picker-drag-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  margin: 0.75rem auto 0.5rem;
+  cursor: grab;
+}
+
+.number-picker-drag-handle:active {
+  cursor: grabbing;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Header */
+.number-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem 0.75rem;
+}
+
+.number-picker-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  text-align: center;
+  margin: 0;
+}
+
+/* Step-mode tab strip — only shown for the weight picker (2,5 / 1 / 0,5 kg) */
+.number-picker-mode-tabs {
+  display: flex;
+  gap: 0.375rem;
+  padding: 0.25rem 1.25rem 0.625rem;
+  margin: 0;
+}
+
+.np-mode-tab {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.625rem;
+  padding: 0.5rem 0.25rem;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  font-variant-numeric: tabular-nums;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.np-mode-tab:active {
+  transform: scale(0.97);
+}
+
+.np-mode-tab.active {
+  background: rgba(240, 34, 119, 0.15);
+  border-color: rgba(240, 34, 119, 0.5);
+  color: var(--color-text);
+  font-weight: var(--font-weight-bold);
+}
+
+[data-theme="light"] .np-mode-tab {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .np-mode-tab.active {
+  background: rgba(240, 34, 119, 0.12);
+  border-color: rgba(240, 34, 119, 0.45);
+  color: var(--text-primary);
+}
+
+/* Wheel Content */
+.number-picker-content {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+
+.number-picker-highlight {
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  top: 50%;
+  height: 56px;
+  transform: translateY(-50%);
+  background: rgba(240, 34, 119, 0.12);
+  border: 1px solid rgba(240, 34, 119, 0.3);
+  border-radius: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.number-picker-wheel {
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 112px 1.25rem; /* (280 - 56) / 2 = 112 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.number-picker-wheel::-webkit-scrollbar {
+  display: none;
+}
+
+.number-picker-item {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  scroll-snap-align: center;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  opacity: 0.35;
+}
+
+.number-picker-item.selected {
+  opacity: 1;
+}
+
+.number-picker-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  min-width: 3ch;
+  text-align: right;
+}
+
+.number-picker-suffix {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+/* Footer */
+.number-picker-footer {
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.number-picker-confirm {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-category-bodyweight);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+.number-picker-confirm:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.4);
+}
+
+.number-picker-confirm:active {
+  transform: scale(0.95);
+}
+
+.number-picker-confirm .material-symbols-rounded {
+  font-size: 32px;
+  color: white;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .number-picker-sheet {
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    max-width: 400px;
+    border-radius: 1.5rem;
+    bottom: 2rem;
+  }
+
+  .number-picker-overlay.active .number-picker-sheet {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+

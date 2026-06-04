@@ -1,0 +1,327 @@
+/* ===================================
+   WORKOUT END CONFIRM MODAL
+   =================================== */
+
+.workout-confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1002;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.workout-confirm-modal-overlay.closing {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+.workout-confirm-modal {
+  width: 100%;
+  max-width: 360px;
+  background: var(--bg-card-elevated, #1c1c1e);
+  border: 1px solid var(--border-primary);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  /* Dedicated keyframe — the modal is flex-centered, so it must NOT use a
+     translateX(-50%) animation (that shifted it off-centre / "versetzt"). */
+  animation: workoutConfirmIn 0.26s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform, opacity;
+}
+
+.workout-confirm-modal-overlay.closing .workout-confirm-modal {
+  animation: workoutConfirmOut 0.18s ease forwards;
+}
+
+@keyframes workoutConfirmIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes workoutConfirmOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(12px) scale(0.97); }
+}
+
+.workout-confirm-modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  background: rgba(34, 197, 94, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workout-confirm-modal-icon .material-symbols-rounded {
+  font-size: var(--font-size-3xl);
+  color: #22c55e;
+}
+
+.workout-confirm-modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.workout-confirm-modal-text {
+  font-size: var(--font-size-sm);
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+.workout-confirm-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.workout-confirm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.workout-confirm-btn--secondary {
+  background: rgba(55, 65, 81, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  color: #9ca3af;
+}
+
+.workout-confirm-btn--secondary:hover {
+  background: rgba(55, 65, 81, 0.8);
+  color: white;
+}
+
+.workout-confirm-btn--primary {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.workout-confirm-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+/* RPE FEEDBACK MODAL */
+#rpe-feedback-modal {
+  perspective: 800px;
+  animation: rpeFadeIn 0.4s ease forwards;
+}
+
+#rpe-feedback-modal.closing {
+  animation: rpeFadeOut 0.25s ease forwards;
+}
+
+.rpe-feedback-modal {
+  max-width: 400px;
+  text-align: left;
+  padding: 2rem 1.5rem;
+  animation: rpeZoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#rpe-feedback-modal.closing .rpe-feedback-modal {
+  animation: rpeZoomOut 0.25s ease forwards;
+}
+
+@keyframes rpeFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rpeFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes rpeZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateZ(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+}
+
+@keyframes rpeZoomOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85) translateZ(-40px);
+  }
+}
+
+.rpe-feedback-section {
+  margin-bottom: 1.25rem;
+}
+
+.rpe-feedback-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.rpe-feedback-label-hint {
+  font-size: var(--font-size-xs);
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+  min-height: 1.125rem;
+  transition: color 0.2s ease;
+}
+
+.rpe-btn-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.rpe-btn-row .difficulty-btn {
+  min-width: 0;
+  padding: 0.625rem 0;
+  font-size: var(--font-size-base);
+}
+
+.rpe-feedback-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.rpe-feedback-actions .workout-confirm-btn--primary {
+  width: 100%;
+}
+
+.rpe-feedback-actions .workout-confirm-btn--primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.rpe-skip-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  padding: 0.5rem;
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.rpe-skip-btn:hover {
+  color: var(--text-primary);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Mobile adjustments for sticky bar */
+@media (max-width: 480px) {
+  .workout-sticky-btn {
+    padding: 0.625rem 0.75rem;
+    font-size: var(--font-size-sm);
+  }
+
+  .workout-sticky-btn--primary {
+    padding: 0.875rem 1rem;
+    font-size: var(--font-size-base);
+  }
+
+  .workout-exercises-btn {
+    padding: 0.375rem 0.5rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Adjust rest timer position when sticky bar is present */
+.rest-timer--with-sticky {
+  bottom: calc(var(--bottom-nav-height) + 150px) !important;
+}
+
+.rest-timer {
+  position: fixed;
+  bottom: calc(var(--bottom-nav-height) + 1rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card-elevated);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-accent);
+  border-radius: 2rem;
+  padding: 1rem 2rem;
+  box-shadow: 0 8px 32px rgba(240, 34, 119, 0.25);
+  z-index: 999;
+  animation: slideUpFade 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rest-timer-countdown {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--accent-primary);
+  min-width: 80px;
+  text-align: center;
+}
+
+.rest-timer-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.skip-rest-btn {
+  background: rgba(240, 34, 119, 0.2);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.skip-rest-btn:hover {
+  background: rgba(240, 34, 119, 0.3);
+}
+

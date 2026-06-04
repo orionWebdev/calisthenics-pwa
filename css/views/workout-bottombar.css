@@ -1,0 +1,373 @@
+/* ===================================
+   STICKY BOTTOM BAR
+   =================================== */
+
+.workout-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.95) 80%, transparent 100%);
+  padding: 1rem 1rem calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 0.5rem);
+  pointer-events: none;
+}
+
+.workout-sticky-bar-inner {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: auto;
+}
+
+.workout-sticky-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.workout-sticky-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  touch-action: manipulation;
+}
+
+.workout-sticky-btn--cancel {
+  background: rgba(55, 65, 81, 0.6);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  color: #9ca3af;
+}
+
+.workout-sticky-btn--cancel:hover {
+  background: rgba(55, 65, 81, 0.8);
+  color: white;
+}
+
+.workout-sticky-btn--end {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.workout-sticky-btn--end:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.workout-sticky-btn--primary {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  color: white;
+  font-size: var(--font-size-base);
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+}
+
+.workout-sticky-btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(240, 34, 119, 0.4);
+}
+
+.workout-sticky-btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.workout-sticky-btn--finish {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.workout-sticky-btn--finish:hover {
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+.workout-sticky-btn .material-symbols-rounded {
+  font-size: var(--font-size-lg);
+}
+
+/* ===================================
+   EXERCISES OVERVIEW BOTTOM SHEET
+   =================================== */
+
+.exercises-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+}
+
+.exercises-sheet-overlay.active {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.exercises-sheet-overlay.closing {
+  background: rgba(0, 0, 0, 0);
+}
+
+.exercises-sheet {
+  width: 100%;
+  max-height: 90vh;
+  background: linear-gradient(180deg, #1c1c1e 0%, #121214 100%);
+  border: 1px solid var(--border-primary);
+  border-bottom: none;
+  border-radius: 1.5rem 1.5rem 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* In-workout exercise picker — search + muscle filter chips */
+.workout-picker-controls {
+  flex-shrink: 0;
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.workout-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.875rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.75rem;
+  height: 42px;
+  transition: border-color 0.2s ease;
+}
+
+.workout-picker-search:focus-within {
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+
+.workout-picker-search .material-symbols-rounded {
+  font-size: 20px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.workout-picker-search input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.workout-picker-search input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.workout-picker-chips {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.625rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.125rem;
+}
+
+.workout-picker-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.workout-picker-chip {
+  flex-shrink: 0;
+  padding: 0.4rem 0.875rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary);
+  border-radius: 1.5rem;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.workout-picker-chip.active {
+  background: rgba(240, 34, 119, 0.16);
+  border-color: rgba(240, 34, 119, 0.35);
+  color: var(--color-primary);
+}
+
+.exercises-sheet-overlay.active .exercises-sheet {
+  transform: translateY(0);
+}
+
+.exercises-sheet-overlay.closing .exercises-sheet {
+  transform: translateY(100%);
+}
+
+.exercises-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.exercises-sheet-drag-handle {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  background: rgba(75, 85, 99, 0.5);
+  border-radius: 2px;
+}
+
+.exercises-sheet-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  margin: 0;
+}
+
+.exercises-sheet-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(55, 65, 81, 0.5);
+  border: none;
+  border-radius: 50%;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exercises-sheet-close:hover {
+  background: rgba(55, 65, 81, 0.8);
+  color: white;
+}
+
+.exercises-sheet-content {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+.exercises-sheet-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.exercises-sheet-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.exercises-sheet-item:hover {
+  background: rgba(55, 65, 81, 0.3);
+}
+
+.exercises-sheet-item.active {
+  background: rgba(240, 34, 119, 0.1);
+  border: 1px solid rgba(240, 34, 119, 0.3);
+}
+
+.exercises-sheet-item.completed {
+  opacity: 0.7;
+}
+
+.exercises-sheet-item-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(75, 85, 99, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  color: white;
+  flex-shrink: 0;
+}
+
+.exercises-sheet-item-number.completed {
+  background: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+.exercises-sheet-item-number .material-symbols-rounded {
+  font-size: var(--font-size-md);
+}
+
+.exercises-sheet-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.exercises-sheet-item-name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+  margin-bottom: 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exercises-sheet-item-target {
+  font-size: var(--font-size-xs);
+  color: #9ca3af;
+}
+
+.exercises-sheet-item-status {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.exercises-sheet-item-progress {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+
+.exercises-sheet-item-active-icon {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+

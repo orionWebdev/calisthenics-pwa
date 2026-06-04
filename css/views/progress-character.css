@@ -1,0 +1,704 @@
+/* ========================================
+   TRAINING CHARACTER PROGRESS
+   ======================================== */
+
+/* Segmented Control with 4 tabs */
+.segmented-control-4 {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.segmented-control-4 .segmented-btn {
+  flex: 1;
+  padding: 0.5rem 0.25rem;
+  font-size: var(--font-size-xs);
+}
+
+.segmented-control-4 .segmented-btn span:first-child {
+  font-size: var(--font-size-md);
+}
+
+@media (min-width: 400px) {
+  .segmented-control-4 .segmented-btn {
+    padding: 0.625rem 0.5rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Progress Card (generic) */
+.progress-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius-lg);
+  padding: var(--ui-card-padding);
+  margin-bottom: var(--spacing-md);
+}
+
+.progress-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.progress-card .card-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.progress-card .card-hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+/* Consistency Card */
+.consistency-card {
+  background: var(--bg-card);
+}
+
+.consistency-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.consistency-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.consistency-value {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: white;
+}
+
+.consistency-label {
+  font-size: var(--font-size-xs);
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+/* Calm Insight Card */
+.calm-insight-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.calm-insight-card .insight-icon {
+  font-size: var(--font-size-lg);
+  color: #60a5fa;
+  flex-shrink: 0;
+}
+
+.calm-insight-card .insight-text {
+  font-size: var(--font-size-sm);
+  color: #d1d5db;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ==================== TRAINING PHASE WIDGET ==================== */
+
+.acwr-widget {
+  padding: var(--ui-card-padding, 1.25rem);
+  transition: background 0.3s ease;
+}
+
+.acwr-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md, 1rem);
+}
+
+.acwr-info-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+}
+
+.acwr-info-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+}
+
+.acwr-info-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.acwr-score-section {
+  text-align: center;
+  margin-bottom: var(--spacing-md, 1rem);
+}
+
+.acwr-score-display {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1;
+  margin-top: var(--spacing-xs, 0.25rem);
+}
+
+.score-delta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.acwr-zone-label {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: var(--spacing-xs, 0.25rem);
+}
+
+.acwr-bar-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  margin: var(--spacing-md, 1rem) 0;
+  background: var(--bg-surface-active);
+  overflow: hidden;
+}
+
+.acwr-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.acwr-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.acwr-no-data {
+  text-align: center;
+  padding: var(--spacing-lg, 1.5rem) 0;
+}
+
+.acwr-no-data-icon {
+  font-size: 2rem;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.acwr-no-data p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.acwr-info-content p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 var(--spacing-sm, 0.5rem) 0;
+}
+
+.acwr-info-goal {
+  font-style: italic;
+  margin-top: var(--spacing-sm, 0.5rem);
+  margin-bottom: var(--spacing-md, 1rem);
+}
+
+.acwr-info-zones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+.acwr-info-zone {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+.acwr-info-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ==================== TRAINING PHASE TIMELINE ==================== */
+
+.acwr-timeline {
+  margin-top: 12px;
+}
+
+.acwr-timeline-track {
+  display: flex;
+  gap: 3px;
+}
+
+.acwr-timeline-segment {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-surface-active);
+  transition: background 0.2s ease;
+}
+
+/* ==================== FORM PHASE SCALE ==================== */
+
+.form-scale {
+  position: relative;
+  margin-top: 16px;
+  padding-bottom: 20px;
+}
+
+.form-scale-track {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.form-scale-segment {
+  height: 100%;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.form-scale-dot {
+  position: absolute;
+  top: -3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  transform: translateX(-50%);
+  transition: left 0.3s ease;
+  z-index: 1;
+}
+
+.form-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+/* ==================== TRAINING PHASE INSIGHTS ==================== */
+
+.training-insight {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.training-breakdown {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.training-phase-hint {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.score-change {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bg-surface-active);
+}
+
+.score-change-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.score-change-sub {
+  margin-top: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.training-phases-info {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.training-phases-info > summary {
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.training-phases-info > summary::-webkit-details-marker {
+  display: none;
+}
+
+.training-phases-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.training-phases-list > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.phase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+/* ==================== RECOMMENDATION WIDGET ==================== */
+
+.recommendation-widget {
+  padding: var(--ui-card-padding, 1.25rem);
+}
+
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.recommendation-icon {
+  font-size: 20px;
+}
+
+.recommendation-body {
+  margin-bottom: 12px;
+}
+
+.recommendation-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.recommendation-footer {
+  display: flex;
+  align-items: center;
+}
+
+.recommendation-intensity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recommendation-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.recommendation-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-surface-active, rgba(255,255,255,0.08));
+  transition: background 0.2s ease;
+}
+
+.recommendation-dot.active {
+  box-shadow: 0 0 4px rgba(255,255,255,0.1);
+}
+
+.recommendation-intensity-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== READINESS COMPACT WIDGET ==================== */
+
+.readiness-compact {
+  padding: var(--ui-card-padding, 1.25rem);
+  transition: background 0.3s ease;
+}
+
+.readiness-compact-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.readiness-compact-body {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 1rem);
+}
+
+.readiness-compact-left {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm, 0.5rem);
+  flex-shrink: 0;
+}
+
+.readiness-compact-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.readiness-compact-score {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+.readiness-compact-bar-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-surface-active);
+  overflow: hidden;
+}
+
+.readiness-compact-insight {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ==================== BASELINE PROGRESS ==================== */
+
+.baseline-progress-container {
+  margin-top: var(--spacing-md, 1rem);
+  padding-top: var(--spacing-md, 1rem);
+  border-top: 1px solid var(--border-color-subtle);
+}
+
+.baseline-progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-surface-active);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.baseline-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--zone-productive), var(--zone-building));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.baseline-progress-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* Variance Card */
+.variance-card {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+.variance-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.variance-bar-container {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.variance-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.variance-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+/* Load Index Card */
+.load-index-card {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+/* Bodyweight Section */
+.bodyweight-section .metric-btn.active {
+  background: var(--color-category-bodyweight, #10b981);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);
+}
+
+/* Intensity Card */
+.intensity-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+.intensity-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.intensity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.intensity-row .intensity-label {
+  width: 60px;
+  font-size: var(--font-size-sm);
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.intensity-row .intensity-bar-container {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.intensity-row .intensity-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.intensity-row .intensity-bar.high {
+  background: #ef4444;
+}
+
+.intensity-row .intensity-bar.medium {
+  background: #f59e0b;
+}
+
+.intensity-row .intensity-bar.low {
+  background: #22c55e;
+}
+
+.intensity-row .intensity-count {
+  width: 24px;
+  text-align: right;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+}
+
+/* Effort Card */
+.effort-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(31, 41, 55, 1) 100%);
+}
+
+/* No Data Hint */
+.no-data-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(75, 85, 99, 0.2);
+  border-radius: 0.5rem;
+}
+
+.no-data-hint .material-symbols-rounded {
+  font-size: var(--font-size-lg);
+  color: #6b7280;
+}
+
+.no-data-hint p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: #9ca3af;
+}
+
+/* Stat Unit */
+.progress-stat-card .stat-unit {
+  font-size: var(--font-size-xs);
+  color: #6b7280;
+  margin-top: 0.125rem;
+}
+
+/* Chart Empty State */
+.chart-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: var(--font-size-sm);
+}
+
+/* Chart Header */
+.chart-header {
+  margin-bottom: 0.75rem;
+}
+
+.chart-header .chart-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: #d1d5db;
+  margin: 0;
+}
+
+/* Bottom Sheet */
+.bottom-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.bottom-sheet.active {
+  display: flex;
+}
+

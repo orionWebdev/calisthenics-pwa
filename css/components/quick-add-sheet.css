@@ -1,0 +1,167 @@
+/* ========================================
+   QUICK ADD SHEET STYLES
+   ======================================== */
+
+.quick-add-form {
+  padding: var(--spacing-md);
+}
+
+.quick-add-field {
+  margin-bottom: var(--spacing-md);
+}
+
+.quick-add-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.quick-add-optional {
+  font-weight: var(--font-weight-normal);
+  color: var(--text-tertiary);
+}
+
+.quick-add-input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  transition: border-color 0.15s ease;
+}
+
+.quick-add-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.quick-add-input::placeholder {
+  color: var(--text-quaternary);
+}
+
+.quick-add-type-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.type-select-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.type-select-btn:hover {
+  background: var(--bg-surface-hover);
+}
+
+.type-select-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.type-select-btn .material-symbols-rounded {
+  font-size: 24px;
+}
+
+.type-select-btn span:last-child {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.quick-add-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.quick-add-divider::before,
+.quick-add-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-secondary);
+}
+
+.quick-add-plan-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-bottom: var(--spacing-lg);
+}
+
+.quick-add-plan-btn:hover {
+  background: var(--bg-surface-hover);
+}
+
+.quick-add-plan-btn .material-symbols-rounded:first-child {
+  color: var(--accent-primary);
+}
+
+.quick-add-plan-btn .material-symbols-rounded:last-child {
+  margin-left: auto;
+  color: var(--text-tertiary);
+}
+
+.quick-add-submit {
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .plan-calendar-day {
+    min-height: 48px;
+    padding: 4px;
+  }
+
+  .plan-calendar-day-number {
+    font-size: var(--font-size-xs);
+  }
+
+  .plan-calendar-dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .plan-calendar-day {
+    min-height: 42px;
+    padding: 2px;
+  }
+
+  .plan-calendar-dots {
+    gap: 2px;
+  }
+
+  .plan-calendar-dot {
+    width: 4px;
+    height: 4px;
+  }
+}
+

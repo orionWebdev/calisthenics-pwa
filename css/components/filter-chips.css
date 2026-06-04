@@ -1,0 +1,40 @@
+/* ==================== Filter Chips (Exercise Picker) ==================== */
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: 1.5rem;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-chip:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--ui-card-border-hover);
+}
+
+.filter-chip.active {
+  background: rgba(240, 34, 119, 0.16);
+  border-color: rgba(240, 34, 119, 0.35);
+  color: var(--color-primary);
+}
+
+.filter-chip .material-symbols-rounded {
+  font-size: var(--font-size-md);
+}
+
+.filter-chip .muscle-tag {
+  font-size: var(--font-size-sm);
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+}
+

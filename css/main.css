@@ -1,0 +1,78 @@
+/* ============================================================
+   ATEM HYBRID — Stylesheet Entry Point
+   ------------------------------------------------------------
+   Diese Datei buendelt alle CSS-Partials via @import.
+   WICHTIG: Die Reihenfolge der Imports == Kaskaden-Reihenfolge.
+   Sie entspricht 1:1 der frueheren monolithischen style.css,
+   damit bewusste spaete Overrides (z.B. utilities/ui-overrides.css)
+   weiterhin korrekt greifen. Reihenfolge nicht aendern.
+   ============================================================ */
+
+/* --- Base: Tokens & Typografie --- */
+@import "base/tokens.css";
+@import "base/typography.css";
+
+/* --- Komponenten & Layout (Quell-Reihenfolge) --- */
+@import "components/ui-components.css";
+@import "components/utilities.css";
+@import "components/ripple.css";
+@import "layout/navigation.css";
+@import "components/filters.css";
+@import "components/muscle-tags.css";
+@import "components/modal.css";
+@import "views/exercise-cards.css";
+@import "views/dashboard.css";
+@import "views/activity-calendar.css";
+@import "layout/bottom-nav.css";
+@import "utilities/responsive.css";
+@import "layout/fab.css";
+@import "views/calendar.css";
+@import "views/plans.css";
+@import "components/multi-select-sheet.css";
+@import "components/filter-chips.css";
+@import "components/range-slider.css";
+@import "views/auth.css";
+@import "views/progress.css";
+@import "components/period-selector.css";
+@import "views/progress-character.css";
+@import "components/picker-sheet-portal.css";
+@import "views/workout.css";
+@import "views/session-templates.css";
+@import "components/difficulty-badge.css";
+@import "views/exercise-instructions.css";
+@import "views/wizard-template.css";
+@import "views/workout-modes.css";
+@import "views/workout-bottombar.css";
+@import "components/workout-end-modal.css";
+@import "views/session-tracker.css";
+@import "utilities/ui-overrides.css";
+@import "views/exercises-list.css";
+@import "views/exercises-form.css";
+@import "views/exercise-picker.css";
+@import "components/plan-picker-sheet.css";
+@import "views/add-plan-panel.css";
+@import "components/quick-entry-selector.css";
+@import "components/modal-compact.css";
+@import "views/strength-logging.css";
+@import "views/strength-volume-toggle.css";
+@import "views/sessions-list.css";
+@import "views/dashboard-recent.css";
+@import "utilities/view-transitions.css";
+@import "views/strength-session-edit.css";
+@import "components/number-picker.css";
+@import "views/set-logger.css";
+@import "views/post-workout-summary.css";
+@import "views/progress-v4.css";
+@import "views/endurance.css";
+@import "views/session-rows.css";
+@import "views/training-history.css";
+@import "views/plan-calendar.css";
+@import "components/quick-add-sheet.css";
+@import "views/progress-v3.css";
+@import "views/settings.css";
+@import "views/block-training-editor.css";
+@import "views/block-training-player.css";
+@import "views/superset-runner.css";
+@import "utilities/keyboard-avoidance.css";
+@import "components/legal-modal.css";
+@import "views/onboarding.css";

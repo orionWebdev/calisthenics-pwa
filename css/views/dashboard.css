@@ -1,0 +1,975 @@
+/* ========================================
+   DASHBOARD STYLES
+   ======================================== */
+
+/* Dashboard Card Base */
+.dashboard-card {
+  background: var(--bg-card);
+  border-radius: var(--ui-card-radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--ui-card-shadow);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Primary Action Card */
+.dashboard-primary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--ui-card-shadow);
+}
+
+.dashboard-primary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.dashboard-primary-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  margin: 0 0 0.25rem 0;
+}
+
+.dashboard-primary-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.dashboard-primary-helper {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0.35rem 0 0;
+}
+
+.dashboard-primary-icon {
+  font-size: var(--font-size-3xl);
+  color: rgba(240, 34, 119, 0.6);
+}
+
+.dashboard-primary-btn {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 0.875rem;
+  border: none;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-primary-btn:active {
+  transform: scale(0.98);
+}
+
+/* Dashboard Scheduled Workouts Widget */
+.dashboard-scheduled-widget {
+  padding: var(--spacing-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius-xl);
+  box-shadow: var(--ui-card-shadow);
+}
+
+.dashboard-scheduled-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-scheduled-header .material-symbols-rounded {
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+}
+
+.dashboard-scheduled-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dashboard-scheduled-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border-radius: var(--ui-card-radius);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dashboard-scheduled-item:hover {
+  background: var(--bg-surface-hover);
+}
+
+.dashboard-scheduled-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.dashboard-scheduled-type {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.35rem;
+  white-space: nowrap;
+}
+
+.dashboard-scheduled-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-scheduled-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-scheduled-duration {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.dashboard-scheduled-play {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+}
+
+/* Dashboard Log Workout Widget - Primary CTA */
+#dashboard-log-workout-card.dashboard-card {
+  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary-dark));
+  border: none;
+  box-shadow: 0 8px 32px rgba(240, 34, 119, 0.3);
+  padding: 0;
+  overflow: hidden;
+}
+
+.dashboard-today-header {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-today-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: #fff;
+}
+
+.dashboard-today-date {
+  margin: 0.15rem 0 0;
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.dashboard-log-workout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.dashboard-log-workout-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-log-workout-btn:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dashboard-log-workout-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dashboard-log-workout-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: #fff;
+  margin: 0;
+}
+
+.dashboard-log-workout-subtitle {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.dashboard-log-workout-icon {
+  font-size: var(--font-size-2xl);
+  color: #fff;
+  padding: 0.625rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-log-workout-loading {
+  padding: 1.25rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========================================
+   QUICK STATS WIDGET
+   ======================================== */
+
+.quick-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.quick-stats-card {
+  background: var(--bg-card);
+  border-radius: var(--ui-card-radius-xl);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.quick-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.quick-stats-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.quick-stats-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+}
+
+.quick-stats-icon .material-symbols-rounded {
+  font-size: 1.25rem;
+}
+
+.quick-stats-value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.quick-stats-subtext {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Quick Stats Skeleton Loading */
+.quick-stats-skeleton {
+  height: 4.5rem;
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface) 0%,
+    var(--bg-surface-hover) 50%,
+    var(--bg-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: quick-stats-shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes quick-stats-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ========================================
+   GLOBAL DATA-BAR ANIMATIONS
+   Reusable entry animations for any horizontal data bar in the app:
+   apply via the .data-bar-grow class (or by extending the selector list below).
+   ======================================== */
+
+@keyframes data-bar-grow-x {
+  0%   { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes pv3-card-rise {
+  0%   { transform: translateY(8px) scale(0.98); opacity: 0; }
+  100% { transform: translateY(0) scale(1);     opacity: 1; }
+}
+
+/* Card-rise — for tile/stat cards */
+.data-card-rise {
+  transform-origin: bottom;
+  animation: pv3-card-rise 0.5s cubic-bezier(0.34, 1.2, 0.4, 1) backwards;
+  animation-delay: var(--qs-delay, var(--bar-delay, 0ms));
+}
+
+/* Horizontal bars — width-based progress visualisations.
+   Bars that re-animate gracefully on full re-render. We deliberately exclude
+   live-updating bars like .workout-progress-fill (would flash on every set). */
+.dashboard-balance-segment,
+.dashboard-training-type-bar,
+.baseline-progress-fill,
+.hybrid-balance-segment,
+.variance-bar,
+.intensity-bar,
+.form-scale-segment,
+.acwr-bar-fill,
+.data-bar-grow {
+  transform-origin: left center;
+  animation: data-bar-grow-x 0.65s cubic-bezier(0.34, 1.05, 0.4, 1) backwards;
+  animation-delay: var(--bar-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .data-card-rise,
+  .dashboard-balance-segment,
+  .dashboard-training-type-bar,
+  .baseline-progress-fill,
+  .hybrid-balance-segment,
+  .variance-bar,
+  .intensity-bar,
+  .form-scale-segment,
+  .acwr-bar-fill,
+  .data-bar-grow,
+  .pv3-rhythm-bar {
+    animation: none !important;
+  }
+}
+
+/* Hybrid Balance Card */
+.dashboard-balance-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dashboard-balance-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dashboard-balance-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  margin: 0;
+}
+
+.dashboard-balance-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0.2rem 0 0 0;
+}
+
+.dashboard-balance-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.dashboard-balance-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dashboard-toggle-btn {
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+}
+
+.dashboard-toggle-btn.active {
+  color: white;
+  border-color: rgba(240, 34, 119, 0.6);
+  background: rgba(240, 34, 119, 0.15);
+}
+
+.dashboard-balance-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+
+.dashboard-balance-segment.strength {
+  background: var(--color-category-strength);
+}
+
+.dashboard-balance-segment.cardio {
+  background: var(--color-category-cardio);
+}
+
+.dashboard-balance-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.dashboard-balance-context {
+  font-size: var(--font-size-sm);
+  color: white;
+}
+
+/* Dashboard Activity Calendar Widget (Suunto Style) */
+.dashboard-activity-widget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  background: var(--bg-card);
+  border-radius: var(--ui-card-radius-lg);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-activity-widget:hover {
+  border-color: var(--accent-primary);
+  box-shadow: var(--ui-card-shadow);
+}
+
+.dashboard-activity-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 80px;
+}
+
+.dashboard-activity-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-activity-duration {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  color: white;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-activity-unit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+.dashboard-activity-right {
+  flex: 1;
+  max-width: 240px;
+}
+
+.dashboard-activity-loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* Mini Calendar Grid */
+.dashboard-mini-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mini-cal-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.mini-cal-day-label {
+  font-size: 8px;
+  color: var(--color-text-muted);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.mini-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  min-width: 24px;
+  min-height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mini-cal-cell.empty {
+  background: transparent;
+}
+
+.mini-cal-cell.today {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dot Stack Container for nested dots */
+.mini-dot-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mini Calendar Dots - Nested/Stacked */
+.mini-dot {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.mini-dot.strength {
+  background: var(--color-category-strength);
+}
+
+.mini-dot.bodyweight {
+  background: var(--color-category-bodyweight);
+}
+
+.mini-dot.cardio {
+  background: var(--color-category-cardio);
+}
+
+.mini-dot.recovery {
+  background: var(--color-category-recovery);
+}
+
+/* Dot Sizes: S=8px, M=12px, L=16px, XL=20px, XXL=24px */
+.mini-dot.size-s {
+  width: 8px;
+  height: 8px;
+  z-index: 50;
+}
+
+.mini-dot.size-m {
+  width: 12px;
+  height: 12px;
+  z-index: 40;
+}
+
+.mini-dot.size-l {
+  width: 16px;
+  height: 16px;
+  z-index: 30;
+}
+
+.mini-dot.size-xl {
+  width: 20px;
+  height: 20px;
+  z-index: 20;
+}
+
+.mini-dot.size-xxl {
+  width: 24px;
+  height: 24px;
+  z-index: 10;
+}
+
+/* Micro-offset for same-size dots (+2px) */
+.mini-dot.size-s.offset { width: 10px; height: 10px; z-index: 49; }
+.mini-dot.size-m.offset { width: 14px; height: 14px; z-index: 39; }
+.mini-dot.size-l.offset { width: 18px; height: 18px; z-index: 29; }
+.mini-dot.size-xl.offset { width: 22px; height: 22px; z-index: 19; }
+.mini-dot.size-xxl.offset { width: 26px; height: 26px; z-index: 9; }
+
+@media (max-width: 480px) {
+  .dashboard-activity-widget {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .dashboard-activity-left {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .dashboard-activity-duration {
+    font-size: 2rem;
+  }
+
+  .dashboard-activity-right {
+    max-width: 100%;
+  }
+
+  /* Mobile: kleinere Dots, Cells bleiben proportional */
+  .mini-cal-cell {
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  .mini-dot.size-s { width: 6px; height: 6px; }
+  .mini-dot.size-m { width: 9px; height: 9px; }
+  .mini-dot.size-l { width: 12px; height: 12px; }
+  .mini-dot.size-xl { width: 15px; height: 15px; }
+  .mini-dot.size-xxl { width: 18px; height: 18px; }
+
+  .mini-dot.size-s.offset { width: 8px; height: 8px; }
+  .mini-dot.size-m.offset { width: 11px; height: 11px; }
+  .mini-dot.size-l.offset { width: 14px; height: 14px; }
+  .mini-dot.size-xl.offset { width: 17px; height: 17px; }
+  .mini-dot.size-xxl.offset { width: 20px; height: 20px; }
+}
+
+/* ========================================
+   EXPANDED DASHBOARD ACTIVITY WIDGET
+   ======================================== */
+
+.dashboard-activity-widget-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  border-radius: var(--ui-card-radius-lg);
+}
+
+.dashboard-calendar-widget-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 0.625rem;
+  letter-spacing: -0.01em;
+}
+
+/* Calendar Widget Segmented Control (iOS-style, copied from pv3) */
+.cal-widget-segmented-control {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  height: 36px;
+  padding: 3px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 999px;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
+
+.cal-widget-seg-indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  width: calc((100% - 6px) / var(--seg-count));
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 1px 4px rgba(240, 34, 119, 0.3);
+  transform: translateX(calc(var(--active-idx) * 100%));
+  transition: transform 0.28s cubic-bezier(0.4, 0.0, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cal-widget-seg-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cal-widget-seg-btn.active {
+  color: #fff;
+}
+
+.cal-widget-seg-btn:not(.active):hover {
+  color: #d1d5db;
+}
+
+/* Plan Calendar Widget Wrapper (embedded in dashboard card) */
+.plan-calendar-widget-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-calendar-widget-wrapper .calendar-month-section {
+  flex: none;
+}
+
+.plan-calendar-widget-wrapper .plan-calendar-grid {
+  grid-template-rows: none;
+  grid-auto-rows: minmax(40px, auto);
+}
+
+.plan-calendar-widget-wrapper .calendar-agenda-container {
+  max-height: 280px;
+  overflow-y: auto;
+  border-top: 1px solid var(--border-secondary);
+}
+
+/* Month Navigation Header */
+.dashboard-activity-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  background: var(--color-surface);
+  border-radius: var(--ui-card-radius-md);
+}
+
+.activity-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.activity-nav-btn:hover {
+  color: white;
+}
+
+.activity-nav-btn .material-symbols-rounded {
+  font-size: 20px;
+}
+
+/* "Mehr" Link im Kalender-Header */
+.activity-calendar-more-link {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.2s ease;
+}
+
+.activity-calendar-more-link:hover {
+  color: white;
+}
+
+.activity-calendar-more-link .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.activity-month-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+}
+
+/* Expanded Mini Calendar */
+.dashboard-mini-calendar-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mini-cal-header-expanded {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.mini-cal-day-label-expanded {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+}
+
+.mini-cal-grid-expanded {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.mini-cal-cell-expanded {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  min-width: 36px;
+  min-height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mini-cal-cell-expanded:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.mini-cal-cell-expanded.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.mini-cal-cell-expanded.empty:hover {
+  background: transparent;
+}
+
+.mini-cal-cell-expanded.today {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mini-cal-cell-expanded.has-sessions {
+  cursor: pointer;
+}
+
+.mini-cal-day-number {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+}
+
+.mini-cal-cell-expanded.today .mini-cal-day-number {
+  color: white;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Dashboard Training Types List */
+.dashboard-training-types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.dashboard-training-type-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dashboard-training-type-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-training-type-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dashboard-training-type-icon .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.dashboard-training-type-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: white;
+  flex: 1;
+}
+
+.dashboard-training-type-duration {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-training-type-bar-bg {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dashboard-training-type-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+@media (max-width: 480px) {
+
+  .mini-cal-day-number {
+    font-size: 9px;
+  }
+
+  .activity-month-title {
+    font-size: var(--font-size-base);
+  }
+}
+

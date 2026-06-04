@@ -9,7 +9,16 @@
       "Bash(python3:*)",
       "PowerShell(Get-ChildItem -Path \"d:\\\\Dokumente\\\\Web_Projekte\\\\calisthenics-pwa\" -Recurse -Depth 3 | Where-Object { $_.PSIsContainer } | Select-Object -ExpandProperty FullName | head -50)",
       "Bash(PowerShell -Command \"Get-Content 'd:\\\\Dokumente\\\\Web_Projekte\\\\calisthenics-pwa\\\\css\\\\style.css' | Measure-Object -Line | Select-Object -ExpandProperty Lines\")",
-      "Bash(python -c 'src=open\\('\\\\''__TRACKED_VAR__'\\\\'',encoding='\\\\''utf-8'\\\\''\\).read\\(\\); print\\('\\\\''__TRACKED_VAR__'\\\\'','\\\\''braces'\\\\'',src.count\\('\\\\''{'\\\\''\\)-src.count\\('\\\\''}'\\\\''\\),'\\\\''parens'\\\\'',src.count\\('\\\\''\\('\\\\''\\)-src.count\\('\\\\''\\)'\\\\''\\),'\\\\''brackets'\\\\'',src.count\\('\\\\''['\\\\''\\)-src.count\\('\\\\'']'\\\\''\\)\\)')"
+      "Bash(python -c 'src=open\\('\\\\''__TRACKED_VAR__'\\\\'',encoding='\\\\''utf-8'\\\\''\\).read\\(\\); print\\('\\\\''__TRACKED_VAR__'\\\\'','\\\\''braces'\\\\'',src.count\\('\\\\''{'\\\\''\\)-src.count\\('\\\\''}'\\\\''\\),'\\\\''parens'\\\\'',src.count\\('\\\\''\\('\\\\''\\)-src.count\\('\\\\''\\)'\\\\''\\),'\\\\''brackets'\\\\'',src.count\\('\\\\''['\\\\''\\)-src.count\\('\\\\'']'\\\\''\\)\\)')",
+      "Bash(echo \"=== count of \\\\\\\\n bytes ===\")",
+      "Bash(echo \"=== count of \\\\\\\\r bytes ===\")",
+      "Bash(exit 1)",
+      "Bash(git commit *)",
+      "PowerShell($n = Get-Command node -ErrorAction SilentlyContinue; if \\($n\\) { \"node: $\\($n.Source\\)\"; node --version } else { \"node NOT in PATH\" }; $np = Get-Command npx -ErrorAction SilentlyContinue; if \\($np\\) { \"npx: $\\($np.Source\\)\" }; $d = Get-Command deno -ErrorAction SilentlyContinue; if \\($d\\) { \"deno: $\\($d.Source\\)\" })",
+      "PowerShell(foreach \\($c in @\\('python','python3','py'\\)\\) { $g = Get-Command $c -ErrorAction SilentlyContinue; if \\($g\\) { \"$c -> $\\($g.Source\\)\"; & $c --version } })",
+      "PowerShell(py _jsplit.py outline js/dashboard.js)",
+      "PowerShell(py _jsplit.py debug js/dashboard.js)",
+      "PowerShell(py _jsplit.py outline js/workout.js)"
     ]
   }
 }

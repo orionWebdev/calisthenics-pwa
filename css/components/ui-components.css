@@ -1,0 +1,363 @@
+/* ========================================
+   UI COMPONENTS - Design System
+   ======================================== */
+
+/* Card Component */
+.ui-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius-lg);
+  padding: var(--ui-card-padding);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ui-card-xl {
+  border-radius: var(--ui-card-radius-xl);
+  padding: var(--spacing-lg);
+}
+
+.ui-card:hover {
+  border-color: var(--ui-card-border-hover);
+}
+
+.ui-card-interactive {
+  cursor: pointer;
+}
+
+.ui-card-interactive:hover {
+  box-shadow: var(--ui-card-shadow);
+}
+
+.ui-card-elevated {
+  background: var(--bg-card-elevated);
+  box-shadow: var(--ui-card-shadow);
+}
+
+/* Primary Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary-dark));
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  border: none;
+  border-radius: var(--ui-card-radius-lg);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 4px 16px rgba(240, 34, 119, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 24px rgba(240, 34, 119, 0.4);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 0.875rem 1.5rem;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--ui-card-radius-lg);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--ui-card-border-hover);
+}
+
+.btn-secondary:active {
+  background: var(--bg-surface-active);
+}
+
+/* Ghost Button (Text Only) */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  color: var(--accent-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-ghost:hover {
+  opacity: 0.8;
+}
+
+/* Badge / Pill */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 0.25rem 0.625rem;
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.badge-neutral {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+}
+
+.badge-strength {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-category-strength);
+}
+
+.badge-cardio {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--color-category-cardio);
+}
+
+.badge-recovery {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-category-recovery);
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.section-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0.125rem 0 0 0;
+}
+
+.section-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--accent-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.section-action:hover {
+  opacity: 0.8;
+}
+
+.section-action .material-symbols-rounded {
+  font-size: 18px;
+}
+
+/* Text Utility Classes */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+
+.text-accent {
+  color: var(--accent-primary);
+}
+
+/* Spacing Utilities */
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-4 { margin-bottom: var(--spacing-md); }
+.mb-6 { margin-bottom: var(--spacing-lg); }
+.mb-8 { margin-bottom: var(--spacing-xl); }
+
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-4 { margin-top: var(--spacing-md); }
+.mt-6 { margin-top: var(--spacing-lg); }
+
+.p-4 { padding: var(--spacing-md); }
+.p-6 { padding: var(--spacing-lg); }
+
+.gap-2 { gap: var(--spacing-sm); }
+.gap-4 { gap: var(--spacing-md); }
+
+/* Icon Container */
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--accent-soft-2);
+  border: 1px solid var(--border-accent);
+  border-radius: 0.75rem;
+}
+
+.icon-container .material-symbols-rounded {
+  font-size: 20px;
+  color: var(--accent-primary);
+}
+
+/* Global Click Animation for All Interactive Elements - Mobile First */
+button,
+[data-pressable="true"],
+.clickable,
+[role="button"],
+[onclick],
+.dashboard-scheduled-item,
+.dashboard-log-workout-btn,
+.dashboard-session-item,
+.plan-row-card,
+.exercise-card,
+.pv4-exercise-card,
+.picker-item,
+.bottom-nav-item,
+.calendar-day:not(.other-month),
+.week-day-card {
+  /* Longer transition for mobile - animation stays visible after quick tap */
+  transition: box-shadow 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+  cursor: pointer;
+  /* Optimize for touch devices */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -ms-touch-action: manipulation;
+  /* Prevent text selection on tap */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Active State - Scale Down on Click/Tap */
+button:active,
+[data-pressable="true"]:active,
+.clickable:active,
+[role="button"]:active,
+[onclick]:active,
+.dashboard-scheduled-item:active,
+.dashboard-log-workout-btn:active,
+.dashboard-session-item:active,
+.plan-row-card:active,
+.exercise-card:active,
+.pv4-exercise-card:active,
+.picker-item:active,
+.bottom-nav-item:active,
+.calendar-day:not(.other-month):active,
+.week-day-card:active {
+  transform: scale(0.96);
+  /* Fast response on tap, slow bounce back */
+  transition: transform 0.05s ease-out;
+}
+
+/* Focus Visible State - For Accessibility */
+button:focus-visible,
+[data-pressable="true"]:focus-visible,
+.clickable:focus-visible,
+[role="button"]:focus-visible,
+.dashboard-scheduled-item:focus-visible,
+.dashboard-log-workout-btn:focus-visible,
+.dashboard-session-item:focus-visible,
+.plan-row-card:focus-visible,
+.exercise-card:focus-visible,
+.pv4-exercise-card:focus-visible,
+.picker-item:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(240, 34, 119, 0.2);
+}
+
+/* Disabled State */
+button:disabled,
+[data-pressable="true"]:disabled,
+.clickable:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ========================================
+   UI COMPONENT TOKENS
+   ======================================== */
+
+.ui-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-card-radius);
+  padding: var(--ui-card-padding);
+  box-shadow: var(--ui-card-shadow);
+}
+
+.ui-card:hover {
+  border-color: var(--ui-card-border-hover);
+  box-shadow: var(--ui-card-shadow-hover);
+}
+
+.ui-stat-tile {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-card-radius);
+  padding: 1rem;
+  display: flex;
+  gap: 0.875rem;
+  align-items: center;
+}
+
+.ui-icon-pill {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ui-icon-bg);
+  border: 1px solid var(--ui-icon-border);
+  flex-shrink: 0;
+}
+
+.ui-icon-pill .material-symbols-rounded {
+  color: var(--color-primary);
+}
+
+
+/* Touch-friendly inputs */
+input, textarea, select, button {
+  user-select: auto;
+  -webkit-user-select: auto;
+}
+

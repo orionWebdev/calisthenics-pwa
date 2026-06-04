@@ -80,22 +80,25 @@ calisthenics-pwa/
 ├── index.html              # Single-Page-App Entry
 ├── manifest.json           # PWA-Manifest
 ├── css/
-│   ├── style.css           # Globale Styles
-│   └── components.css      # Wiederverwendbare Components
+│   ├── main.css            # Entry: buendelt alle Partials via @import
+│   ├── base/               # Tokens, Typografie
+│   ├── components/         # Wiederverwendbare UI-Bausteine (Modals, Sheets, Filter ...)
+│   ├── layout/             # Navigation, FAB, Bottom-Nav
+│   ├── views/              # Seiten-Styles (Dashboard, Workout, Progress ...)
+│   └── utilities/          # Responsive, Animationen, Overrides
 ├── js/
-│   ├── app.js              # Haupt-App-Logik & Router
-│   ├── firebase.js         # Firebase-Config & Helpers
-│   ├── auth.js             # Authentifizierung
-│   ├── exercises.js        # Übungs-Datenbank
-│   ├── plans.js            # Trainingspläne
-│   ├── calendar.js         # Kalender-Logik
-│   ├── workout.js          # Workout-Execution
-│   ├── progress.js         # Progress-Tracking
-│   ├── dashboard.js        # Home-Dashboard
-│   ├── settings.js         # Einstellungen
-│   ├── onboarding.js       # Onboarding-Flow
-│   ├── i18n.js             # Mehrsprachigkeit
-│   └── ...                 # Gesten, Bottom Sheets, Ripple etc.
+│   ├── core/               # Bootstrap & Infrastruktur (app, firebase, auth, i18n, data)
+│   ├── ui/                 # UI-Primitive (Bottom Sheets, Gesten, Ripple, Icons)
+│   ├── views/              # Feature-Module, große Views in Unterordnern:
+│   │   ├── dashboard/      #   Home-Dashboard
+│   │   ├── exercises/      #   Übungs-Datenbank
+│   │   ├── plans/          #   Trainingsplan-Builder
+│   │   ├── workout/        #   Workout-Execution
+│   │   ├── sessions/       #   Session-/Progress-Berechnungen
+│   │   ├── calendar.js     #   Kalender
+│   │   ├── progressv2/v3   #   Progress-Ansichten
+│   │   └── settings.js, onboarding.js, ...
+│   └── dev/                # Demo-Seeder & Debug-Tools (nur via ?dev=1)
 ├── assets/
 │   └── img/                # Logos, Icons
 └── configuration/          # Setup- und Kontext-Docs

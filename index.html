@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@300;400;500;600;700&display=swap" />
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Custom CSS (modular: css/main.css buendelt alle Partials via @import) -->
+  <link rel="stylesheet" href="css/main.css">
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -1792,36 +1792,69 @@
   <div id="screen-edge-glow" class="edge-feedback"></div>
   <div id="edge-feedback-announcer" class="sr-only" aria-live="polite"></div>
 
-  <!-- App Scripts -->
-  <script src="js/types.js"></script>
-  <script src="js/keyboardInset.js"></script>
-  <script src="js/firebase.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/checkAllowlist.js"></script>
-  <script src="js/edgeFeedback.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/bottomSheet.js"></script>
-  <script src="js/numberPickerSheet.js"></script>
-  <script src="js/modalSwipe.js"></script>
-  <script src="js/swipeGesture.js"></script>
-  <script src="js/dashboard.js"></script>
-  <script src="js/muscleIcons.js"></script>
-  <script src="js/exercises.js"></script>
-  <script src="js/workoutModal.js"></script>
-  <script src="js/plans.js"></script>
-  <script src="js/sessionTemplates.js"></script>
-  <script src="js/calendar.js"></script>
-  <script src="js/sessions.js"></script>
-  <script src="js/progressv2.js"></script>
-  <script src="js/progressv3.js"></script>
-  <script src="js/createDemoProgress.js"></script>
-  <script src="js/createDemoSessions.js"></script>
-  <script src="js/workout.js"></script>
-  <script src="js/settings.js"></script>
-  <script src="js/onboarding.js"></script>
-  <script src="js/ripple.js"></script>
-  <script src="js/app.js"></script>
+  <!-- App Scripts (modular: js/{core,ui,views}/ — Ladereihenfolge ist bewusst gewaehlt) -->
+  <!-- Core -->
+  <script src="js/core/types.js"></script>
+  <script src="js/ui/keyboardInset.js"></script>
+  <script src="js/core/firebase.js"></script>
+  <script src="js/core/auth.js"></script>
+  <script src="js/ui/edgeFeedback.js"></script>
+  <script src="js/core/i18n.js"></script>
+  <script src="js/core/data.js"></script>
+  <!-- UI primitives -->
+  <script src="js/ui/bottomSheet.js"></script>
+  <script src="js/ui/numberPickerSheet.js"></script>
+  <script src="js/ui/modalSwipe.js"></script>
+  <script src="js/ui/swipeGesture.js"></script>
+  <!-- View: Dashboard -->
+  <script src="js/views/dashboard/helpers.js"></script>
+  <script src="js/views/dashboard/dashboard.js"></script>
+  <script src="js/views/dashboard/widgets.js"></script>
+  <script src="js/views/dashboard/activity.js"></script>
+  <script src="js/ui/muscleIcons.js"></script>
+  <!-- View: Exercises -->
+  <script src="js/views/exercises/state-helpers.js"></script>
+  <script src="js/views/exercises/model.js"></script>
+  <script src="js/views/exercises/list.js"></script>
+  <script src="js/views/exercises/form.js"></script>
+  <script src="js/views/exercises/crud-detail.js"></script>
+  <script src="js/views/workoutModal.js"></script>
+  <!-- View: Plans -->
+  <script src="js/views/plans/state-helpers.js"></script>
+  <script src="js/views/plans/list.js"></script>
+  <script src="js/views/plans/editor.js"></script>
+  <script src="js/views/plans/exercise-picker.js"></script>
+  <script src="js/views/plans/block-editor.js"></script>
+  <script src="js/views/plans/crud.js"></script>
+  <script src="js/views/sessionTemplates.js"></script>
+  <script src="js/views/calendar.js"></script>
+  <!-- View: Sessions / Progress data -->
+  <script src="js/views/sessions/state.js"></script>
+  <script src="js/views/sessions/aggregations-strength.js"></script>
+  <script src="js/views/sessions/aggregations-cardio.js"></script>
+  <script src="js/views/sessions/stats.js"></script>
+  <script src="js/views/sessions/training-character.js"></script>
+  <script src="js/views/sessions/modals.js"></script>
+  <script src="js/views/sessions/scoring.js"></script>
+  <script src="js/views/sessions/queries.js"></script>
+  <script src="js/views/progressv2.js"></script>
+  <script src="js/views/progressv3.js"></script>
+  <!-- View: Workout -->
+  <script src="js/views/workout/state.js"></script>
+  <script src="js/views/workout/lifecycle.js"></script>
+  <script src="js/views/workout/summary.js"></script>
+  <script src="js/views/workout/render-emom.js"></script>
+  <script src="js/views/workout/inputs.js"></script>
+  <script src="js/views/workout/set-logging.js"></script>
+  <script src="js/views/workout/render-logger.js"></script>
+  <script src="js/views/workout/sheets-timer.js"></script>
+  <script src="js/views/workout/utils.js"></script>
+  <!-- View: Settings / Onboarding -->
+  <script src="js/views/settings.js"></script>
+  <script src="js/views/onboarding.js"></script>
+  <!-- Effects + App bootstrap -->
+  <script src="js/ui/ripple.js"></script>
+  <script src="js/core/app.js"></script>
 
   <!-- POST-WORKOUT SUMMARY MODAL -->
   <div id="post-workout-summary-modal" class="modal modal--elevated">

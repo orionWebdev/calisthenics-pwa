@@ -1,0 +1,229 @@
+/* ==================== RUNNING STATS WIDGET ==================== */
+
+/* ==================== ENDURANCE TRENDS CARD ==================== */
+
+.endurance-card {
+  padding-bottom: 0.75rem;
+}
+
+/* -- Sport Segmented Toggle -- */
+.endurance-sport-toggle {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 36px;
+  padding: 3px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 999px;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+.endurance-seg-indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  width: calc((100% - 6px) / 3);
+  border-radius: 999px;
+  background: var(--endurance-sport-color, var(--sport-run));
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  transform: translateX(calc(var(--active-idx) * 100%));
+  transition: transform 0.28s cubic-bezier(0.4, 0.0, 0.2, 1),
+              background 0.28s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.endurance-seg-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.endurance-seg-btn .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.endurance-seg-btn.active {
+  color: #fff;
+}
+
+.endurance-seg-btn:not(.active):hover {
+  color: #d1d5db;
+}
+
+/* -- Stat Slider -- */
+.endurance-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.endurance-stat-slider {
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.endurance-stat-track {
+  display: flex;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform;
+}
+
+.endurance-stat-slide {
+  min-width: 100%;
+  flex: 0 0 100%;
+  text-align: center;
+  padding: 1.25rem 0.25rem;
+  box-sizing: border-box;
+}
+
+.endurance-chart-slide {
+  text-align: left;
+  padding: 0.75rem 0.25rem;
+}
+
+.endurance-chart-slide .run-chart-wrapper {
+  height: 210px;
+}
+
+/* -- Slider arrows -- */
+.endurance-stat-arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+}
+
+.endurance-stat-arrow .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.endurance-stat-arrow:not(:disabled):hover {
+  color: var(--endurance-sport-color, var(--sport-run));
+  background: var(--bg-card-elevated, var(--bg-card));
+}
+
+.endurance-stat-arrow:not(:disabled):active {
+  transform: scale(0.9);
+}
+
+.endurance-stat-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.endurance-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text, #fff);
+  line-height: 1;
+}
+
+.endurance-stat-label {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* -- Stat Dots -- */
+.endurance-stat-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.endurance-stat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.endurance-stat-dot.active {
+  background: var(--endurance-sport-color, var(--sport-run));
+}
+
+/* -- Empty State -- */
+.endurance-skeleton {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.75rem;
+  padding: 2rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+}
+
+.endurance-skeleton-hint {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+.run-chart-section {
+  margin-top: 1rem;
+}
+
+.run-chart-section:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.run-chart-subtitle {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.run-chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+}
+
+.run-chart-wrapper canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+

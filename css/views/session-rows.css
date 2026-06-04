@@ -1,0 +1,68 @@
+/* ==================== CLICKABLE SESSION ROWS ==================== */
+
+.pv4-session-clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+.pv4-session-clickable:active {
+  background: var(--bg-surface-active, rgba(255,255,255,0.08));
+}
+
+.pv4-session-chevron {
+  font-size: 18px;
+  color: var(--color-text-muted, #9ca3af);
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* ==================== ACTIVITY-CALENDAR LAST SESSION ==================== */
+
+.pv4-calendar-history {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-primary);
+}
+
+.pv4-calendar-history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.pv4-calendar-history-label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pv4-history-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.25rem 0.375rem;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pv4-history-link-btn .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.pv4-history-link-btn:active {
+  opacity: 0.6;
+}
+

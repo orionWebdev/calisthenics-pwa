@@ -1,0 +1,78 @@
+/* ==================== Native Mobile Range Slider ==================== */
+
+/* Custom range slider styling for iOS/Android feel */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--accent-primary) 0%,
+    var(--accent-primary) var(--range-progress, 0%),
+    var(--bg-surface) var(--range-progress, 0%),
+    var(--bg-surface) 100%
+  );
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.4);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.4);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.6);
+}
+
+input[type="range"]:active::-moz-range-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.6);
+}
+
+/* Track fill effect */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--accent-primary) 0%,
+    var(--accent-primary) var(--range-progress, 0%),
+    var(--bg-surface) var(--range-progress, 0%),
+    var(--bg-surface) 100%
+  );
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-surface);
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-primary);
+}
+

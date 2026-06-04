@@ -1,0 +1,153 @@
+/* ========================================
+   FLOATING ACTION BUTTON (FAB)
+   ======================================== */
+
+.fab-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.fab-main {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  border: none;
+  box-shadow: 0 8px 24px rgba(240, 34, 119, 0.5);
+  cursor: pointer;
+  z-index: 1002;
+  pointer-events: auto;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab-main:active {
+  transform: translateX(-50%) scale(0.9);
+}
+
+.fab-main.active {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  transform: translateX(-50%) rotate(135deg) scale(1.1);
+  box-shadow: 0 12px 32px rgba(239, 68, 68, 0.6);
+}
+
+.fab-icon {
+  font-size: var(--font-size-2xl);
+  color: white;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 28;
+}
+
+.fab-main.active .fab-icon {
+  transform: rotate(-135deg);
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 28;
+}
+
+/* ========================================
+   RADIAL MENU
+   ======================================== */
+
+.radial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+  backdrop-filter: blur(8px);
+}
+
+.radial-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.radial-menu {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0));
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 1001;
+}
+
+.radial-menu-item {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-secondary-light), var(--color-secondary-dark));
+  border: 2px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0) rotate(-90deg);
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+}
+
+.radial-menu.active .radial-menu-item {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1) rotate(0deg);
+}
+
+/* Radial positioning - flower pattern */
+.radial-menu.active .radial-menu-item[style*="--item-index: 0"] {
+  left: calc(50% - 100px);
+  bottom: 90px;
+  transition-delay: 0.05s;
+}
+
+.radial-menu.active .radial-menu-item[style*="--item-index: 1"] {
+  left: calc(50% - 70px);
+  bottom: 140px;
+  transition-delay: 0.1s;
+}
+
+.radial-menu.active .radial-menu-item[style*="--item-index: 2"] {
+  left: calc(50% + 70px);
+  bottom: 140px;
+  transition-delay: 0.15s;
+}
+
+.radial-menu.active .radial-menu-item[style*="--item-index: 3"] {
+  left: calc(50% + 100px);
+  bottom: 90px;
+  transition-delay: 0.2s;
+}
+
+.radial-menu-item:active {
+  transform: translate(-50%, -50%) scale(0.85) rotate(0deg);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 6px 20px rgba(240, 34, 119, 0.7);
+}
+
+.radial-icon {
+  font-size: var(--font-size-2xl);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 28;
+}
+
+.radial-menu-item:active .radial-icon {
+  transform: scale(1.2);
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 28;
+}
+

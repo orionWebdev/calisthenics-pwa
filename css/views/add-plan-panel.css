@@ -1,0 +1,125 @@
+/* ========================================
+   ADD PLAN PANEL (Day Detail Modal)
+   ======================================== */
+
+.add-plan-panel {
+  background: linear-gradient(135deg, rgba(240, 34, 119, 0.08), rgba(139, 92, 246, 0.08));
+  border: 1px solid rgba(240, 34, 119, 0.2);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.add-plan-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.add-plan-panel-title {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  color: #fff;
+}
+
+.modal-close-btn-sm {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.modal-close-btn-sm:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.modal-close-btn-sm .material-symbols-rounded {
+  font-size: var(--font-size-base);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.add-plan-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.add-plan-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.add-plan-option-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--ui-card-border-hover);
+}
+
+.add-plan-option-btn:active {
+  transform: scale(0.98);
+}
+
+.add-plan-option-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ui-icon-bg);
+  border: 1px solid var(--ui-icon-border);
+  border-radius: 0.625rem;
+  flex-shrink: 0;
+}
+
+.add-plan-option-icon .material-symbols-rounded {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+
+.add-plan-option-icon.quick-entry {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.add-plan-option-icon.quick-entry .material-symbols-rounded {
+  color: #fbbf24;
+}
+
+.add-plan-option-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.add-plan-option-title {
+  font-weight: var(--font-weight-semibold);
+  color: #fff;
+  font-size: var(--font-size-base);
+}
+
+.add-plan-option-desc {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.125rem;
+}
+
+.add-plan-option-chevron {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+

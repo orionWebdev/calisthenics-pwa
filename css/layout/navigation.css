@@ -1,0 +1,154 @@
+/* ========================================
+   NAVIGATION
+   ======================================== */
+
+.mobile-nav-header {
+  background-color: var(--color-bg);
+}
+
+/* Settings Icon Button */
+.settings-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.settings-icon-btn .material-symbols-rounded {
+  font-size: 28px;
+  color: #ffffff;
+  transition: color 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-icon-btn.active .material-symbols-rounded {
+  color: #ec4899;
+  transform: rotate(90deg);
+}
+
+/* Desktop Navigation - Floating */
+.desktop-nav {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75%;
+  max-width: 1200px;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  --desktop-nav-shadow-base: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --desktop-nav-feedback-shadow: 0 8px 32px rgba(240, 34, 119, 0.3);
+  box-shadow: var(--desktop-nav-shadow-base);
+  z-index: 1000;
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 220ms ease;
+}
+
+.desktop-nav.nav-hidden {
+  transform: translateX(-50%) translateY(-120%);
+  opacity: 0;
+}
+
+.desktop-nav.edge-feedback-active {
+  box-shadow: var(--desktop-nav-shadow-base), var(--desktop-nav-feedback-shadow);
+}
+
+.desktop-nav.edge-success {
+  --desktop-nav-feedback-shadow: 0 10px 36px rgba(34, 197, 94, 0.55);
+}
+
+.desktop-nav.edge-error {
+  --desktop-nav-feedback-shadow: 0 10px 36px rgba(239, 68, 68, 0.55);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-btn .material-symbols-rounded {
+  font-size: var(--font-size-xl);
+  transition: transform 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(240, 34, 119, 0.15);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.2);
+}
+
+.nav-btn:hover .material-symbols-rounded {
+  transform: scale(1.1);
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.nav-btn.active {
+  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  color: white;
+  box-shadow: 0 6px 20px rgba(240, 34, 119, 0.4);
+}
+
+.nav-btn.active .material-symbols-rounded {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.nav-btn:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   VIEWS
+   ======================================== */
+
+.view {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.view.active {
+  display: block;
+}
+
+/* Fullscreen workout mode: hide all chrome */
+body.workout-fullscreen .mobile-nav-header,
+body.workout-fullscreen .bottom-nav,
+body.workout-fullscreen .fab-container,
+body.workout-fullscreen .desktop-nav {
+  display: none !important;
+}
+
+body.workout-fullscreen #main-content {
+  padding-top: 0 !important;
+}
+
+body.workout-fullscreen .st-screen {
+  padding-bottom: 2rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

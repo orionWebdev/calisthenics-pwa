@@ -1,0 +1,647 @@
+/* ==================== PROGRESS V4 TAB BAR ==================== */
+
+.pv4-tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.875rem;
+  padding: 0.375rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.pv4-tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.5rem 0.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.625rem;
+  color: var(--color-text-muted, #9ca3af);
+  font-size: 0.6875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pv4-tab-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.3);
+}
+
+.pv4-tab-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text, #fff);
+}
+
+.pv4-tab-btn:active {
+  transform: scale(0.96);
+}
+
+.pv4-tab-icon {
+  font-size: 20px;
+}
+
+.pv4-tab-label {
+  font-weight: 500;
+}
+
+/* ==================== EXERCISE DETAIL TABS ==================== */
+
+/* Full-height modal variant */
+.modal-content--full-height {
+  height: 75vh;
+  max-height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content--full-height #generic-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.exercise-detail-tab-panel {
+  display: none;
+}
+
+.exercise-detail-tab-panel.active {
+  display: block;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Sticky action buttons at modal bottom */
+.exercise-detail-actions--sticky {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-card);
+  padding: 0.75rem 0 0;
+  margin-top: auto;
+  border-top: 1px solid var(--border-primary);
+  z-index: 2;
+}
+
+/* Quick stats vertical variant for exercise detail */
+.quick-stats-grid--3col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.quick-stats-grid--3col .quick-stats-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
+
+.quick-stats-grid--3col .quick-stats-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.quick-stats-grid--3col .quick-stats-value {
+  font-size: var(--font-size-xl, 1.25rem);
+  margin: 0;
+}
+
+.quick-stats-grid--3col .quick-stats-subtext {
+  display: none;
+}
+
+/* Exercise history */
+.exercise-history-date-group {
+  margin-bottom: 1rem;
+}
+
+.exercise-history-date-header {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.exercise-history-entry {
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid var(--border-primary, rgba(75, 85, 99, 0.3));
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exercise-history-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary, #fff);
+}
+
+.exercise-history-delete {
+  background: none;
+  border: none;
+  color: var(--text-tertiary, #6b7280);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  transition: color 0.2s;
+}
+
+.exercise-history-delete:hover {
+  color: #ef4444;
+}
+
+.exercise-history-empty {
+  text-align: center;
+  color: var(--text-tertiary, #6b7280);
+  padding: 2rem;
+  font-size: var(--font-size-sm);
+}
+
+/* ==================== PROGRESS V4 OVERVIEW ==================== */
+
+.pv4-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.pv4-summary-card {
+  background: var(--bg-card, #161618);
+  border-radius: 0.875rem;
+  padding: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+.pv4-summary-icon {
+  font-size: 18px;
+  color: var(--color-primary, #F02277);
+  margin-bottom: 0.2rem;
+}
+
+.pv4-summary-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text, #fff);
+}
+
+.pv4-summary-label {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted, #9ca3af);
+}
+
+.pv4-section-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #9ca3af);
+  margin-bottom: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+/* ==================== PROGRESS V4 SESSION LIST ==================== */
+
+.pv4-session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.pv4-session-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary, rgba(255,255,255,0.06));
+  border-radius: 0.875rem;
+}
+
+.pv4-session-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.pv4-session-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pv4-session-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv4-session-meta {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-top: 0.1rem;
+}
+
+/* ==================== PROGRESS V4 EXERCISE TRENDS ==================== */
+
+/* ==================== EXERCISE FILTER BAR ==================== */
+
+.pv4-exercise-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background: var(--bg-primary);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.pv4-muscle-filter-chips {
+  display: flex;
+  gap: 0.375rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.pv4-muscle-filter-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.pv4-muscle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 1rem;
+  border: 1px solid var(--ui-card-border, rgba(255,255,255,0.08));
+  background: var(--bg-card, #161618);
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex: 0 0 auto;
+}
+
+.pv4-muscle-chip.active {
+  background: rgba(240, 34, 119, 0.16);
+  border-color: rgba(240, 34, 119, 0.35);
+  color: var(--color-primary, #f02277);
+}
+
+.pv4-muscle-chip .muscle-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.pv4-muscle-chip .muscle-icon img {
+  width: 14px;
+  height: 14px;
+}
+
+/* ==================== EXERCISE CARD GRID ==================== */
+
+.pv4-exercise-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .pv4-exercise-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+/* New exercise trend card */
+.pv4-exercise-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary, rgba(255,255,255,0.1));
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pv4-exercise-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.pv4-exercise-card:active {
+  background: var(--bg-surface-active, rgba(255,255,255,0.08));
+}
+
+/* Card header */
+.exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exercise-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.exercise-trend-badge.up {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.exercise-trend-badge.down {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.exercise-trend-badge.same {
+  color: var(--color-text-muted, #9ca3af);
+  background: rgba(156, 163, 175, 0.12);
+}
+
+/* Stats row */
+.exercise-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.exercise-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.exercise-stat-label {
+  font-size: 0.625rem;
+  color: var(--text-tertiary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.exercise-stat-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sparkline chart */
+.exercise-chart canvas {
+  width: 100%;
+  height: 36px;
+  display: block;
+}
+
+/* Load contribution meta */
+.exercise-meta-load {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* Empty state per card */
+.exercise-empty-state {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary, #6b7280);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.5rem;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ==================== PROGRESS V4 PLAN PROGRESS ==================== */
+
+.pv4-plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.pv4-plan-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary, rgba(255,255,255,0.06));
+  border-radius: 0.875rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.pv4-plan-row:active {
+  background: var(--bg-surface-active, rgba(255,255,255,0.08));
+}
+
+.pv4-plan-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pv4-plan-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv4-plan-meta {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-top: 0.1rem;
+}
+
+.pv4-plan-chevron {
+  font-size: 20px;
+  color: var(--color-text-muted, #9ca3af);
+  flex-shrink: 0;
+}
+
+/* ==================== PROGRESS V4 DETAIL VIEWS ==================== */
+
+.pv4-detail-view {
+  padding-bottom: 2rem;
+}
+
+.pv4-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.pv4-back-btn {
+  background: none;
+  border: none;
+  color: var(--color-text, #fff);
+  padding: 0.375rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pv4-back-btn:active {
+  background: var(--bg-surface-active, rgba(255,255,255,0.08));
+}
+
+.pv4-detail-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.pv4-detail-chart-wrapper {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 1rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary, rgba(255,255,255,0.06));
+  border-radius: 0.875rem;
+  padding: 0.75rem;
+  box-sizing: border-box;
+}
+
+.pv4-detail-chart-wrapper canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.pv4-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ==================== PROGRESS V4 PLAN TIMELINE ==================== */
+
+.pv4-plan-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pv4-timeline-entry {
+  padding: 0.875rem;
+  background: var(--bg-card, #161618);
+  border: 1px solid var(--border-primary, rgba(255,255,255,0.06));
+  border-radius: 0.875rem;
+}
+
+.pv4-timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+
+.pv4-timeline-session {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.pv4-timeline-date {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted, #9ca3af);
+}
+
+.pv4-timeline-vs {
+  font-size: 0.625rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.pv4-timeline-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pv4-timeline-ex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+}
+
+.pv4-timeline-ex.removed {
+  opacity: 0.45;
+}
+
+.pv4-timeline-ex-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pv4-timeline-ex-delta {
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.pv4-timeline-ex-delta.up { color: #22c55e; }
+.pv4-timeline-ex-delta.down { color: #ef4444; }
+.pv4-timeline-ex-delta.same { color: var(--color-text-muted, #9ca3af); }
+

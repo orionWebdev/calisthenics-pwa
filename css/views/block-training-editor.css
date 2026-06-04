@@ -1,0 +1,413 @@
+/* ========================================
+   BLOCK TRAINING — Plan Editor
+   ======================================== */
+
+/* Block Type Sheet */
+.block-type-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.block-type-sheet.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.block-type-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.block-type-sheet-content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  background: var(--bg-secondary, #1f2937);
+  border-radius: 16px 16px 0 0;
+  padding: 1rem 1rem 2rem;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.block-type-sheet.active .block-type-sheet-content {
+  transform: translateY(0);
+}
+.block-type-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin: 0 auto 1rem;
+}
+.block-type-sheet-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.block-type-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  background: rgba(31, 41, 55, 0.5);
+  border: 1px solid rgba(75, 85, 99, 0.3);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  color: inherit;
+}
+.block-type-option:hover {
+  background: rgba(31, 41, 55, 0.8);
+  border-color: rgba(107, 114, 128, 0.5);
+}
+.block-type-option-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.block-type-option-icon--normal {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+.block-type-option-icon--superset {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+.block-type-option-icon--emom {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.block-type-option-text h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+.block-type-option-text p {
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #9ca3af);
+  margin: 0;
+}
+
+/* Plan Block Container (grouped exercises in plan list) */
+.plan-block {
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: rgba(31, 41, 55, 0.25);
+  transition: all 0.2s ease;
+}
+.plan-block--emom {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.04);
+}
+.plan-block--superset {
+  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(139, 92, 246, 0.04);
+}
+.plan-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.plan-block-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.plan-block-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.plan-block-badge--emom {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+.plan-block-badge--superset {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+.plan-block-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #9ca3af);
+}
+.plan-block-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.plan-block-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  padding: 0;
+}
+.plan-block-actions button .material-symbols-rounded {
+  font-size: 19px;
+}
+.plan-block-actions button:active {
+  transform: scale(0.92);
+}
+.plan-block-actions button:hover {
+  background: rgba(75, 85, 99, 0.4);
+  color: #9ca3af;
+}
+.plan-block-actions button:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.plan-block-actions-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(75, 85, 99, 0.45);
+  margin: 0 0.125rem;
+  flex-shrink: 0;
+}
+.plan-block-actions .plan-block-action--edit,
+.plan-block-actions .plan-block-action--delete {
+  background: rgba(75, 85, 99, 0.22);
+  border-color: rgba(75, 85, 99, 0.3);
+  color: #9ca3af;
+}
+.plan-block-actions .plan-block-action--edit:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
+  color: var(--color-primary);
+}
+.plan-block-actions .plan-block-action--delete:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.42);
+  color: #ef4444;
+}
+.plan-block-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.plan-block-exercise {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+.plan-block-exercise-name {
+  flex: 1;
+  font-weight: 500;
+}
+.plan-block-exercise-target {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #9ca3af);
+}
+
+/* EMOM / Superset Config Modal */
+.block-config-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.block-config-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.block-config-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.block-config-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--bg-secondary, #1f2937);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+}
+.block-config-modal.active .block-config-modal-content {
+  transform: scale(1);
+}
+.block-config-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.block-config-modal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.block-config-close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(75, 85, 99, 0.3);
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+}
+.block-config-exercises {
+  margin-bottom: 1.25rem;
+}
+.block-config-exercises h4 {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+.block-config-exercise-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.2);
+}
+.block-config-exercise-row:last-child {
+  border-bottom: none;
+}
+.block-config-exercise-name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.block-config-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.block-config-field label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 0.375rem;
+}
+.block-config-field input {
+  width: 100%;
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+.block-config-field input:focus {
+  outline: none;
+  border-color: var(--color-primary, #F02277);
+}
+.block-config-reps-section h4 {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+.block-config-rep-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+.block-config-rep-row label {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.block-config-rep-row input {
+  width: 80px;
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: center;
+}
+.block-config-rep-row input:focus {
+  outline: none;
+  border-color: var(--color-primary, #F02277);
+}
+.block-config-save-btn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(to right, #db2777, #be185d);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: opacity 0.15s ease;
+}
+.block-config-save-btn:hover {
+  opacity: 0.9;
+}
+
+/* Rest slider in superset config */
+.block-config-rest-slider {
+  margin-bottom: 1.25rem;
+}
+.block-config-rest-slider label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 0.5rem;
+}
+.block-config-rest-slider input[type="range"] {
+  width: 100%;
+  accent-color: var(--color-primary, #F02277);
+}
+.block-config-rest-value {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
