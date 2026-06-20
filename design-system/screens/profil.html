@@ -1,0 +1,156 @@
+<!-- @dsCard group="Screens" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATEM Hybrid — Screen: Profil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=block" rel="stylesheet" />
+<style>
+  :root {
+    --bg-primary:#000; --text-primary:#fff; --text-secondary:#9ca3af; --text-tertiary:#6b7280;
+    --color-primary:#C01963; --color-primary-light:#F02277;
+    --gradient-cta:linear-gradient(135deg,#C01963,#F02277);
+    --danger:#ef4444;
+    --card-grad:linear-gradient(157deg,#1c1c20 0%,#141417 52%,#0f0f11 100%);
+    --card-border:rgba(255,255,255,.07);
+    --card-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Zalando Sans Expanded',-apple-system,sans-serif;
+    background:radial-gradient(120% 60% at 50% -4%, rgba(192,25,99,.08), transparent 55%), var(--bg-primary);
+    color:var(--text-primary); min-height:1420px; }
+  .phone { max-width:412px; margin:0 auto; padding:0 16px 96px; position:relative; }
+  .material-symbols-rounded { line-height:1; }
+  .card { position:relative; background:var(--card-grad); border:1px solid var(--card-border); border-radius:20px; box-shadow:var(--card-shadow); }
+
+  .app-header { padding:18px 2px 14px; }
+  .app-header .h-title { font-size:26px; font-weight:700; letter-spacing:-.02em; }
+
+  /* Profile head */
+  .profile { padding:22px 20px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .avatar { width:84px; height:84px; border-radius:50%; background:var(--gradient-cta); display:flex; align-items:center; justify-content:center;
+            font-size:30px; font-weight:700; color:#fff; box-shadow:0 8px 24px rgba(192,25,99,.4); border:3px solid rgba(255,255,255,.1); }
+  .p-name { font-size:20px; font-weight:700; margin-top:14px; }
+  .p-mail { font-size:13px; color:var(--text-secondary); margin-top:3px; }
+  .p-stats { display:flex; gap:0; margin-top:18px; width:100%; }
+  .p-stat { flex:1; }
+  .p-stat .v { font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .p-stat .l { font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-tertiary); margin-top:3px; }
+  .p-stat + .p-stat { border-left:1px solid var(--card-border); }
+
+  /* Pro card */
+  .pro { margin-top:14px; background:var(--gradient-cta); border:none; border-radius:20px; padding:18px 20px; display:flex; align-items:center; gap:14px; box-shadow:0 10px 30px rgba(192,25,99,.4); }
+  .pro-ic { width:44px; height:44px; border-radius:13px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; color:#fff; }
+  .pro-t { font-size:16px; font-weight:700; }
+  .pro-s { font-size:12px; opacity:.9; margin-top:2px; }
+  .pro-btn { margin-left:auto; background:#fff; color:var(--color-primary); font-family:inherit; font-weight:700; font-size:13px; border:none; border-radius:10px; padding:9px 14px; }
+
+  /* Groups */
+  .group-title { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--text-tertiary); margin:22px 4px 8px; }
+  .group { padding:2px 16px; }
+  .row { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--card-border); }
+  .row:last-child { border-bottom:none; }
+  .row-ic { width:34px; height:34px; border-radius:10px; background:rgba(255,255,255,.05); border:1px solid var(--card-border); display:flex; align-items:center; justify-content:center; color:var(--text-secondary); flex-shrink:0; }
+  .row-ic .material-symbols-rounded { font-size:19px; }
+  .row-label { flex:1; font-size:15px; font-weight:500; }
+  .row-value { font-size:14px; color:var(--text-secondary); }
+  .row .chev { color:var(--text-tertiary); }
+  .row .chev .material-symbols-rounded { font-size:20px; }
+  .row.danger .row-label, .row.danger .row-ic { color:var(--danger); }
+  .row.danger .row-ic { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.25); }
+
+  /* Toggle */
+  .sw { width:46px; height:27px; border-radius:999px; background:rgba(255,255,255,.13); position:relative; flex-shrink:0; }
+  .sw.on { background:var(--gradient-cta); }
+  .sw::after { content:''; position:absolute; top:3px; left:3px; width:21px; height:21px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.4); }
+  .sw.on::after { left:auto; right:3px; }
+
+  .reveal { opacity:0; transform:translateY(22px); will-change:transform,opacity; transition:opacity .6s cubic-bezier(.22,.7,.2,1), transform .6s cubic-bezier(.22,.7,.2,1); }
+  .reveal.in { opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce){ .reveal{opacity:1;transform:none;transition:none;} }
+
+  .bottom-nav { position:fixed; left:50%; transform:translateX(-50%); bottom:14px; width:380px; max-width:calc(100% - 24px); height:66px; background:linear-gradient(180deg,rgba(28,28,32,.92),rgba(16,16,18,.92)); border:1px solid var(--card-border); border-radius:22px; display:flex; align-items:center; justify-content:space-around; backdrop-filter:blur(20px); box-shadow:0 8px 32px rgba(0,0,0,.55); }
+  .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-tertiary); flex:1; }
+  .nav-item .material-symbols-rounded { font-size:23px; }
+  .nav-item .lbl { font-size:9px; font-weight:600; }
+  .nav-item.active { color:var(--color-primary-light); }
+  .fab { position:fixed; left:50%; transform:translateX(-50%); bottom:64px; width:60px; height:60px; border-radius:50%; background:var(--gradient-cta); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 8px 26px rgba(192,25,99,.5); border:3px solid #000; }
+  .fab .material-symbols-rounded { font-size:28px; }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <header class="app-header reveal"><div class="h-title">Profil</div></header>
+
+    <section class="card profile reveal">
+      <div class="avatar">CM</div>
+      <div class="p-name">Christian Müller</div>
+      <div class="p-mail">christian.mueller2311@gmail.com</div>
+      <div class="p-stats">
+        <div class="p-stat"><div class="v">128</div><div class="l">Workouts</div></div>
+        <div class="p-stat"><div class="v">12</div><div class="l">Streak</div></div>
+        <div class="p-stat"><div class="v">96 h</div><div class="l">Gesamt</div></div>
+      </div>
+    </section>
+
+    <section class="pro reveal">
+      <div class="pro-ic"><span class="material-symbols-rounded">workspace_premium</span></div>
+      <div><div class="pro-t">ATEM Pro</div><div class="pro-s">Erweiterte Analyse &amp; Recovery</div></div>
+      <button class="pro-btn">Upgraden</button>
+    </section>
+
+    <div class="group-title reveal">Präferenzen</div>
+    <section class="card group reveal">
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">dark_mode</span></span><span class="row-label">Dark Mode</span><span class="sw on"></span></div>
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">translate</span></span><span class="row-label">Sprache</span><span class="row-value">Deutsch</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">straighten</span></span><span class="row-label">Einheiten</span><span class="row-value">kg · km</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">notifications</span></span><span class="row-label">Benachrichtigungen</span><span class="sw on"></span></div>
+    </section>
+
+    <div class="group-title reveal">Account</div>
+    <section class="card group reveal">
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">mail</span></span><span class="row-label">E-Mail</span><span class="row-value">verifiziert</span></div>
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">lock</span></span><span class="row-label">Passwort ändern</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">logout</span></span><span class="row-label">Abmelden</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+    </section>
+
+    <div class="group-title reveal">Daten &amp; Rechtliches</div>
+    <section class="card group reveal">
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">download</span></span><span class="row-label">Daten exportieren</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">shield</span></span><span class="row-label">Datenschutz</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+      <div class="row"><span class="row-ic"><span class="material-symbols-rounded">info</span></span><span class="row-label">Version</span><span class="row-value">1.0.0</span></div>
+    </section>
+
+    <div class="group-title reveal">Gefahrenzone</div>
+    <section class="card group reveal">
+      <div class="row danger"><span class="row-ic"><span class="material-symbols-rounded">delete_forever</span></span><span class="row-label">Alle Daten löschen</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+      <div class="row danger"><span class="row-ic"><span class="material-symbols-rounded">person_remove</span></span><span class="row-label">Account löschen</span><span class="chev"><span class="material-symbols-rounded">chevron_right</span></span></div>
+    </section>
+  </div>
+
+  <div class="fab"><span class="material-symbols-rounded">add</span></div>
+  <nav class="bottom-nav">
+    <div class="nav-item"><span class="material-symbols-rounded">home</span><span class="lbl">Heute</span></div>
+    <div class="nav-item"><span class="material-symbols-rounded">fitness_center</span><span class="lbl">Training</span></div>
+    <div class="nav-item" style="visibility:hidden;"><span class="material-symbols-rounded">add</span></div>
+    <div class="nav-item"><span class="material-symbols-rounded">insights</span><span class="lbl">Fortschritt</span></div>
+    <div class="nav-item active"><span class="material-symbols-rounded">account_circle</span><span class="lbl">Profil</span></div>
+  </nav>
+
+  <script>
+    (function () {
+      var els = [].slice.call(document.querySelectorAll('.reveal'));
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var still = location.search.indexOf('still') !== -1;
+      if (reduce || still) { els.forEach(function (el) { el.classList.add('in'); }); return; }
+      els.forEach(function (el, i) { el.style.transitionDelay = (i * 55) + 'ms'; });
+      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+      els.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+</html>
