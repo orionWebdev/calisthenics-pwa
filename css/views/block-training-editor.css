@@ -336,7 +336,7 @@
 }
 .block-config-field input:focus {
   outline: none;
-  border-color: var(--color-primary, #F02277);
+  border-color: var(--color-primary, #C01963);
 }
 .block-config-reps-section h4 {
   font-size: 0.8125rem;
@@ -369,13 +369,13 @@
 }
 .block-config-rep-row input:focus {
   outline: none;
-  border-color: var(--color-primary, #F02277);
+  border-color: var(--color-primary, #C01963);
 }
 .block-config-save-btn {
   display: block;
   width: 100%;
   padding: 0.875rem;
-  background: linear-gradient(to right, #db2777, #be185d);
+  background: linear-gradient(to right, #db2777, var(--color-primary-light));
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -402,7 +402,7 @@
 }
 .block-config-rest-slider input[type="range"] {
   width: 100%;
-  accent-color: var(--color-primary, #F02277);
+  accent-color: var(--color-primary, #C01963);
 }
 .block-config-rest-value {
   text-align: center;

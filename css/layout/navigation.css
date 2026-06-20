@@ -41,7 +41,7 @@
   background: var(--bg-card);
   backdrop-filter: blur(12px);
   --desktop-nav-shadow-base: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --desktop-nav-feedback-shadow: 0 8px 32px rgba(240, 34, 119, 0.3);
+  --desktop-nav-feedback-shadow: 0 8px 32px rgba(192, 25, 99, 0.3);
   box-shadow: var(--desktop-nav-shadow-base);
   z-index: 1000;
   transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 220ms ease;
@@ -87,10 +87,10 @@
 }
 
 .nav-btn:hover {
-  background: rgba(240, 34, 119, 0.15);
+  background: rgba(192, 25, 99, 0.15);
   color: var(--color-primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.2);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.2);
 }
 
 .nav-btn:hover .material-symbols-rounded {
@@ -99,9 +99,9 @@
 }
 
 .nav-btn.active {
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   color: white;
-  box-shadow: 0 6px 20px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 6px 20px rgba(192, 25, 99, 0.4);
 }
 
 .nav-btn.active .material-symbols-rounded {

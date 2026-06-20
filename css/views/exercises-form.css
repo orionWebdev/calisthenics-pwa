@@ -48,7 +48,7 @@
 .exercise-search-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(240, 34, 119, 0.12);
+  box-shadow: 0 0 0 3px rgba(192, 25, 99, 0.12);
   background: rgba(255, 255, 255, 0.08);
 }
 

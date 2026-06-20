@@ -1,0 +1,81 @@
+<!-- @dsCard group="Foundations" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATEM Hybrid — Typography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-primary: #000000;
+    --bg-card: #161618;
+    --text-primary: #FFFFFF;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    --border-primary: rgba(255,255,255,0.10);
+    --color-primary-light: #F02277;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Zalando Sans Expanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 32px;
+  }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .sub { color: var(--text-secondary); font-size: 14px; margin-top: 4px; margin-bottom: 28px; }
+  .row {
+    display: flex; align-items: baseline; gap: 20px;
+    padding: 16px 0; border-bottom: 1px solid var(--border-primary);
+  }
+  .row .spec {
+    flex: 0 0 130px; color: var(--text-tertiary); font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .row .spec b { color: var(--color-primary-light); font-weight: 600; }
+  .sample { line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .s4xl { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; }
+  .s3xl { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+  .s2xl { font-size: 28px; font-weight: 700; }
+  .sxl  { font-size: 24px; font-weight: 700; }
+  .slg  { font-size: 20px; font-weight: 600; }
+  .smd  { font-size: 18px; font-weight: 600; }
+  .sbase{ font-size: 16px; font-weight: 400; }
+  .ssm  { font-size: 14px; font-weight: 400; color: var(--text-secondary); }
+  .sxs  { font-size: 12px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin: 32px 0 8px; }
+  .weights { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+  .w-chip {
+    background: var(--bg-card); border: 1px solid var(--border-primary);
+    border-radius: 12px; padding: 14px 18px; text-align: center; min-width: 120px;
+  }
+  .w-chip .demo { font-size: 26px; }
+  .w-chip .lbl { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
+</style>
+</head>
+<body>
+  <h1>Typography</h1>
+  <p class="sub">Zalando Sans Expanded — eine sportlich-breite Display-Schrift. Tabular-Ziffern für Stats.</p>
+
+  <div class="row"><div class="spec"><b>4xl</b> · 40 / 700</div><div class="sample s4xl">Topform erreicht</div></div>
+  <div class="row"><div class="spec"><b>3xl</b> · 32 / 700</div><div class="sample s3xl">Topform erreicht</div></div>
+  <div class="row"><div class="spec"><b>2xl</b> · 28 / 700 · H1</div><div class="sample s2xl">Topform erreicht</div></div>
+  <div class="row"><div class="spec"><b>xl</b> · 24 / 700 · H2</div><div class="sample sxl">Topform erreicht</div></div>
+  <div class="row"><div class="spec"><b>lg</b> · 20 / 600 · H3</div><div class="sample slg">Topform erreicht</div></div>
+  <div class="row"><div class="spec"><b>md</b> · 18 / 600 · H4</div><div class="sample smd">Topform erreicht</div></div>
+  <div class="row"><div class="spec"><b>base</b> · 16 / 400 · Body</div><div class="sample sbase">Hybrides Training für Kraft, Cardio und Recovery.</div></div>
+  <div class="row"><div class="spec"><b>sm</b> · 14 / 400 · Caption</div><div class="sample ssm">Letzte 7 Tage · 4 Sessions</div></div>
+  <div class="row"><div class="spec"><b>xs</b> · 12 / 500 · Label</div><div class="sample sxs">Diese Woche</div></div>
+
+  <h2>Font Weights</h2>
+  <div class="weights">
+    <div class="w-chip"><div class="demo" style="font-weight:400">Aa</div><div class="lbl">400 Regular</div></div>
+    <div class="w-chip"><div class="demo" style="font-weight:500">Aa</div><div class="lbl">500 Medium</div></div>
+    <div class="w-chip"><div class="demo" style="font-weight:600">Aa</div><div class="lbl">600 Semibold</div></div>
+    <div class="w-chip"><div class="demo" style="font-weight:700">Aa</div><div class="lbl">700 Bold</div></div>
+  </div>
+</body>
+</html>

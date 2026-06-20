@@ -27,7 +27,7 @@
 }
 
 .type-btn.active {
-  background: linear-gradient(135deg, rgba(240, 34, 119, 0.15), rgba(139, 92, 246, 0.15));
+  background: linear-gradient(135deg, rgba(192, 25, 99, 0.15), rgba(139, 92, 246, 0.15));
   border-color: var(--color-primary);
   color: #fff;
 }

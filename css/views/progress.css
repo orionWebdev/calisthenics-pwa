@@ -72,7 +72,7 @@
 
 .progress-search-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(240, 34, 119, 0.1);
+  box-shadow: 0 0 0 3px rgba(192, 25, 99, 0.1);
 }
 
 .progress-exercise-list {
@@ -102,7 +102,7 @@
 }
 
 .progress-exercise-item:hover {
-  background: rgba(240, 34, 119, 0.05);
+  background: rgba(192, 25, 99, 0.05);
 }
 
 .progress-exercise-item:active {
@@ -110,7 +110,7 @@
 }
 
 .progress-exercise-item.active {
-  background: rgba(240, 34, 119, 0.1);
+  background: rgba(192, 25, 99, 0.1);
   border-left: 3px solid var(--color-primary);
 }
 
@@ -166,7 +166,7 @@
 
 .progress-stat-card.active {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(240, 34, 119, 0.2);
+  box-shadow: 0 0 0 2px rgba(192, 25, 99, 0.2);
 }
 
 .progress-stat-icon {
@@ -328,7 +328,7 @@
 .progress-empty-btn:hover {
   background: #FF3399;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.4);
 }
 
 .progress-empty-btn:active {
@@ -450,7 +450,7 @@
 .segmented-btn.active {
   background: var(--color-primary);
   color: white;
-  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 2px 8px rgba(192, 25, 99, 0.3);
 }
 
 .segmented-btn.active[data-tab="strength"] {
@@ -661,7 +661,7 @@
 }
 
 .cal-nav-btn:hover {
-  background: rgba(240, 34, 119, 0.1);
+  background: rgba(192, 25, 99, 0.1);
   color: var(--color-primary);
 }
 

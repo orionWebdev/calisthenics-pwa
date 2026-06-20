@@ -448,7 +448,7 @@
 .modal-save-btn:hover:not(:disabled) {
   background: #FF3399;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.4);
 }
 
 .modal-save-btn:disabled {
@@ -622,7 +622,7 @@
 
 .progress-cta-btn.primary:hover {
   background: #FF3399;
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.4);
 }
 
 .progress-empty-state.cardio .progress-cta-btn.primary {

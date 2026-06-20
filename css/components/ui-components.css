@@ -40,7 +40,7 @@
   justify-content: center;
   gap: var(--spacing-sm);
   padding: 0.875rem 1.5rem;
-  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary-dark));
+  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary-light));
   color: white;
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-base);
@@ -48,11 +48,11 @@
   border-radius: var(--ui-card-radius-lg);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-  box-shadow: 0 4px 16px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 4px 16px rgba(192, 25, 99, 0.3);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 24px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 6px 24px rgba(192, 25, 99, 0.4);
 }
 
 .btn-primary:active {
@@ -299,7 +299,7 @@ button:focus-visible,
 .pv4-exercise-card:focus-visible,
 .picker-item:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(240, 34, 119, 0.2);
+  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(192, 25, 99, 0.2);
 }
 
 /* Disabled State */

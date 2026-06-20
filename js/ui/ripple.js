@@ -117,7 +117,7 @@ function initBottomNavRipple() {
       top: ${y - size / 2}px;
       width: ${size}px;
       height: ${size}px;
-      background: radial-gradient(circle, rgba(240, 34, 119, 0.18) 0%, rgba(240, 34, 119, 0.06) 70%, transparent 100%);
+      background: radial-gradient(circle, rgba(192, 25, 99, 0.18) 0%, rgba(192, 25, 99, 0.06) 70%, transparent 100%);
       border-radius: 50%;
       transform: scale(0);
       opacity: 1;
@@ -141,7 +141,7 @@ function initRippleEffects() {
 
   // Desktop navigation buttons
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    makePressable(btn, { color: 'rgba(240, 34, 119, 0.2)' });
+    makePressable(btn, { color: 'rgba(192, 25, 99, 0.2)' });
   });
 
   // Segmented control buttons (all types)

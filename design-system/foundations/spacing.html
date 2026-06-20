@@ -1,0 +1,66 @@
+<!-- @dsCard group="Foundations" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATEM Hybrid — Spacing &amp; Radius</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-primary: #000000;
+    --bg-card: #161618;
+    --text-primary: #FFFFFF;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    --border-primary: rgba(255,255,255,0.10);
+    --color-primary: #C01963;
+    --color-primary-light: #F02277;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Zalando Sans Expanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 32px;
+  }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .sub { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+  h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); margin: 32px 0 14px; }
+  .space-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .space-row .lbl { flex: 0 0 120px; font-size: 12px; color: var(--text-tertiary); }
+  .space-row .lbl b { color: var(--color-primary-light); font-weight: 600; }
+  .bar { height: 16px; background: linear-gradient(135deg,#C01963,#F02277); border-radius: 4px; }
+  .radius-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+  .radius-box {
+    width: 110px; height: 110px; background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    display: flex; align-items: flex-end; justify-content: center; padding: 10px;
+    font-size: 11px; color: var(--text-tertiary); text-align: center;
+  }
+</style>
+</head>
+<body>
+  <h1>Spacing &amp; Radius</h1>
+  <p class="sub">8-px-Basisraster. Großzügige Radien für den weichen, premium Card-Look.</p>
+
+  <h2>Spacing Scale</h2>
+  <div class="space-row"><div class="lbl"><b>xs</b> · 4px</div><div class="bar" style="width:4px"></div></div>
+  <div class="space-row"><div class="lbl"><b>sm</b> · 8px</div><div class="bar" style="width:8px"></div></div>
+  <div class="space-row"><div class="lbl"><b>md</b> · 16px</div><div class="bar" style="width:16px"></div></div>
+  <div class="space-row"><div class="lbl"><b>lg</b> · 24px</div><div class="bar" style="width:24px"></div></div>
+  <div class="space-row"><div class="lbl"><b>xl</b> · 32px</div><div class="bar" style="width:32px"></div></div>
+  <div class="space-row"><div class="lbl"><b>2xl</b> · 48px</div><div class="bar" style="width:48px"></div></div>
+
+  <h2>Border Radius</h2>
+  <div class="radius-grid">
+    <div class="radius-box" style="border-radius:12px">12px · sm</div>
+    <div class="radius-box" style="border-radius:16px">16px · base</div>
+    <div class="radius-box" style="border-radius:20px">20px · lg</div>
+    <div class="radius-box" style="border-radius:24px">24px · xl</div>
+    <div class="radius-box" style="border-radius:9999px">Pill · full</div>
+  </div>
+</body>
+</html>

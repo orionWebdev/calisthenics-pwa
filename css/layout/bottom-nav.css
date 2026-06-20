@@ -20,7 +20,7 @@
   padding: 0 0.35rem;
   z-index: 1000;
   --bottom-nav-shadow-base: 0 4px 30px rgba(0, 0, 0, 0.15), inset 0 0.5px 0 rgba(255, 255, 255, 0.1);
-  --bottom-nav-feedback-shadow: 0 8px 32px rgba(240, 34, 119, 0.3);
+  --bottom-nav-feedback-shadow: 0 8px 32px rgba(192, 25, 99, 0.3);
   box-shadow: var(--bottom-nav-shadow-base);
   transition: box-shadow 220ms ease;
   align-items: center;

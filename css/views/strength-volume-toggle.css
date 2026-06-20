@@ -39,7 +39,7 @@
 .strength-metric-toggle .metric-btn.active {
   background: var(--color-category-strength);
   color: white;
-  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 2px 8px rgba(192, 25, 99, 0.3);
 }
 
 .strength-metric-toggle .metric-btn:not(.active):hover {
@@ -72,7 +72,7 @@
 
 .strength-volume-type.weighted {
   color: var(--color-primary);
-  background: rgba(240, 34, 119, 0.1);
+  background: rgba(192, 25, 99, 0.1);
 }
 
 .strength-volume-type.bodyweight {

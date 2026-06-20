@@ -30,7 +30,7 @@
 .pv4-tab-btn.active {
   background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 2px 8px rgba(192, 25, 99, 0.3);
 }
 
 .pv4-tab-btn:hover:not(.active) {
@@ -194,7 +194,7 @@
 
 .pv4-summary-icon {
   font-size: 18px;
-  color: var(--color-primary, #F02277);
+  color: var(--color-primary, #C01963);
   margin-bottom: 0.2rem;
 }
 
@@ -306,9 +306,9 @@
 }
 
 .pv4-muscle-chip.active {
-  background: rgba(240, 34, 119, 0.16);
-  border-color: rgba(240, 34, 119, 0.35);
-  color: var(--color-primary, #f02277);
+  background: rgba(192, 25, 99, 0.16);
+  border-color: rgba(192, 25, 99, 0.35);
+  color: var(--color-primary, #C01963);
 }
 
 .pv4-muscle-chip .muscle-icon {

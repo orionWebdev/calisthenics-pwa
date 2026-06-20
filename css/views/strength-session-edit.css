@@ -163,7 +163,7 @@
 .edit-add-set-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-  background: rgba(240, 34, 119, 0.05);
+  background: rgba(192, 25, 99, 0.05);
 }
 
 .edit-add-set-btn .material-symbols-rounded {

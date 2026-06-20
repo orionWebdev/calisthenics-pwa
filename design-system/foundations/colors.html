@@ -1,0 +1,118 @@
+<!-- @dsCard group="Foundations" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATEM Hybrid — Colors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Brand */
+    --color-primary: #C01963;
+    --color-primary-light: #F02277;
+    --gradient-cta: linear-gradient(135deg, #C01963 0%, #F02277 100%);
+    /* Background */
+    --bg-primary: #000000;
+    --bg-card: #161618;
+    --bg-card-elevated: #1c1c1e;
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    --text-quaternary: #4b5563;
+    /* Border */
+    --border-primary: rgba(255,255,255,0.10);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Zalando Sans Expanded', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 32px;
+    line-height: 1.5;
+  }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .sub { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+  h2 {
+    font-size: 13px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-secondary);
+    margin: 32px 0 14px;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .swatch {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .chip { height: 72px; }
+  .swatch .meta { padding: 10px 12px; }
+  .swatch .name { font-size: 13px; font-weight: 600; }
+  .swatch .hex { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .cta-card {
+    background: var(--gradient-cta);
+    border-radius: 16px; padding: 22px; font-weight: 700; font-size: 16px;
+    box-shadow: 0 8px 32px rgba(192,25,99,0.35);
+  }
+  .cta-card .hex { font-weight: 400; opacity: 0.85; font-size: 12px; margin-top: 4px; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; vertical-align:middle; }
+  .zone-row, .cat-row { display:flex; flex-direction:column; gap:8px; }
+  .zone {
+    display:flex; align-items:center; padding:12px 14px; border-radius:12px;
+    border:1px solid var(--border-primary); font-size:13px; font-weight:500;
+  }
+  .zone .hex { margin-left:auto; color: var(--text-tertiary); font-size:11px; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <h1>Colors</h1>
+  <p class="sub">ATEM Hybrid — dark premium. Ein Magenta-Akzent, sonst Schwarz &amp; Graustufen.</p>
+
+  <h2>Brand</h2>
+  <div class="cta-card">
+    Primary CTA — Gradient
+    <div class="hex">#C01963 → #F02277</div>
+  </div>
+  <div class="grid" style="margin-top:12px">
+    <div class="swatch"><div class="chip" style="background:#C01963"></div><div class="meta"><div class="name">Primary</div><div class="hex">#C01963</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#F02277"></div><div class="meta"><div class="name">Primary Light</div><div class="hex">#F02277</div></div></div>
+  </div>
+
+  <h2>Background &amp; Surface</h2>
+  <div class="grid">
+    <div class="swatch"><div class="chip" style="background:#000000"></div><div class="meta"><div class="name">Background</div><div class="hex">#000000</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#161618"></div><div class="meta"><div class="name">Card</div><div class="hex">#161618</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#1c1c1e"></div><div class="meta"><div class="name">Card Elevated</div><div class="hex">#1c1c1e</div></div></div>
+  </div>
+
+  <h2>Text</h2>
+  <div class="grid">
+    <div class="swatch"><div class="chip" style="background:#FFFFFF"></div><div class="meta"><div class="name">Primary</div><div class="hex">#FFFFFF</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#9ca3af"></div><div class="meta"><div class="name">Secondary</div><div class="hex">#9ca3af</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#6b7280"></div><div class="meta"><div class="name">Tertiary</div><div class="hex">#6b7280</div></div></div>
+    <div class="swatch"><div class="chip" style="background:#4b5563"></div><div class="meta"><div class="name">Quaternary</div><div class="hex">#4b5563</div></div></div>
+  </div>
+
+  <h2>Form-Zonen (Trainings-Status)</h2>
+  <div class="zone-row">
+    <div class="zone" style="background:rgba(239,68,68,0.08)"><span class="dot" style="background:#ef4444"></span>Exhausted<span class="hex">#ef4444</span></div>
+    <div class="zone" style="background:rgba(249,115,22,0.08)"><span class="dot" style="background:#f97316"></span>Fatigued<span class="hex">#f97316</span></div>
+    <div class="zone" style="background:rgba(234,179,8,0.08)"><span class="dot" style="background:#eab308"></span>Loaded<span class="hex">#eab308</span></div>
+    <div class="zone" style="background:rgba(34,197,94,0.08)"><span class="dot" style="background:#22c55e"></span>Ready<span class="hex">#22c55e</span></div>
+    <div class="zone" style="background:rgba(59,130,246,0.08)"><span class="dot" style="background:#3b82f6"></span>Fresh<span class="hex">#3b82f6</span></div>
+    <div class="zone" style="background:rgba(139,92,246,0.08)"><span class="dot" style="background:#8b5cf6"></span>Peak Form<span class="hex">#8b5cf6</span></div>
+    <div class="zone" style="background:rgba(142,142,147,0.08)"><span class="dot" style="background:#8e8e93"></span>Form Loss<span class="hex">#8e8e93</span></div>
+  </div>
+
+  <h2>Kategorie-Farben</h2>
+  <div class="cat-row">
+    <div class="zone"><span class="dot" style="background:#e35745"></span>Strength<span class="hex">#e35745</span></div>
+    <div class="zone"><span class="dot" style="background:#f59e0b"></span>Bodyweight<span class="hex">#f59e0b</span></div>
+    <div class="zone"><span class="dot" style="background:#3b82f6"></span>Cardio<span class="hex">#3b82f6</span></div>
+    <div class="zone"><span class="dot" style="background:#22c55e"></span>Recovery<span class="hex">#22c55e</span></div>
+  </div>
+</body>
+</html>

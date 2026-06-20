@@ -76,3 +76,5 @@
 @import "utilities/keyboard-avoidance.css";
 @import "components/legal-modal.css";
 @import "views/onboarding.css";
+@import "utilities/reveal.css";
+@import "utilities/segmented-tabs.css";

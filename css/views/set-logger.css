@@ -32,8 +32,8 @@
 }
 
 .set-row--active {
-  border-color: rgba(240, 34, 119, 0.35);
-  background: rgba(240, 34, 119, 0.06);
+  border-color: rgba(192, 25, 99, 0.35);
+  background: rgba(192, 25, 99, 0.06);
 }
 
 /* Set Number Pill */
@@ -52,7 +52,7 @@
 }
 
 .set-row-pill--active {
-  background: rgba(240, 34, 119, 0.15);
+  background: rgba(192, 25, 99, 0.15);
   color: var(--color-primary);
 }
 
@@ -92,13 +92,13 @@
 }
 
 .set-row-value-btn--editable {
-  border-color: rgba(240, 34, 119, 0.25);
-  background: rgba(240, 34, 119, 0.06);
+  border-color: rgba(192, 25, 99, 0.25);
+  background: rgba(192, 25, 99, 0.06);
 }
 
 .set-row-value-btn--editable:hover {
-  border-color: rgba(240, 34, 119, 0.4);
-  background: rgba(240, 34, 119, 0.1);
+  border-color: rgba(192, 25, 99, 0.4);
+  background: rgba(192, 25, 99, 0.1);
 }
 
 .set-row-value {

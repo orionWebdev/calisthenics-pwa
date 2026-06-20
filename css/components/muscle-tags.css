@@ -101,8 +101,8 @@
   transition: border-color 0.15s, background 0.15s;
 }
 .exercise-row-card.is-picker.is-selected {
-  border-color: var(--color-primary, #F02277);
-  background: rgba(240, 34, 119, 0.05);
+  border-color: var(--color-primary, #C01963);
+  background: rgba(192, 25, 99, 0.05);
 }
 .exercise-picker-checkbox {
   color: var(--text-tertiary, #6b7280);
@@ -111,7 +111,7 @@
   align-items: center;
 }
 .exercise-picker-checkbox.checked {
-  color: var(--color-primary, #F02277);
+  color: var(--color-primary, #C01963);
 }
 
 /* Body scroll lock when modal is open */
@@ -156,14 +156,14 @@ body.modal-open {
 
 /* Hauptmuskel-Highlight (Pink) */
 .muscle-primary {
-  background: rgba(240, 34, 119, 0.2);
-  border-color: rgba(240, 34, 119, 0.4);
+  background: rgba(192, 25, 99, 0.2);
+  border-color: rgba(192, 25, 99, 0.4);
   color: var(--color-primary);
   font-weight: var(--font-weight-bold);
 }
 
 .muscle-primary:hover {
-  background: rgba(240, 34, 119, 0.25);
-  border-color: rgba(240, 34, 119, 0.6);
+  background: rgba(192, 25, 99, 0.25);
+  border-color: rgba(192, 25, 99, 0.6);
 }
 

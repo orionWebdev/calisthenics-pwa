@@ -1,0 +1,65 @@
+<!-- @dsCard group="Patterns" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATEM Hybrid — Exercise Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet" />
+<style>
+  :root {
+    --bg-primary:#000; --bg-card:#161618;
+    --text-primary:#fff; --text-secondary:#9ca3af; --text-tertiary:#6b7280;
+    --border-primary:rgba(255,255,255,.10);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Zalando Sans Expanded',-apple-system,sans-serif; background:var(--bg-primary); color:var(--text-primary); padding:32px; }
+  h1 { font-size:28px; font-weight:700; letter-spacing:-.02em; }
+  .sub { color:var(--text-secondary); font-size:14px; margin-top:4px; margin-bottom:24px; }
+  .material-symbols-rounded { line-height:1; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; max-width:760px; }
+
+  .ex { background:var(--bg-card); border:1px solid var(--border-primary); border-radius:20px; overflow:hidden; }
+  .ex-thumb { height:96px; background:linear-gradient(135deg,#1f1f22,#161618); display:flex; align-items:center; justify-content:center; position:relative; }
+  .ex-thumb .material-symbols-rounded { font-size:40px; color:#3a3a3c; }
+  .ex-cat { position:absolute; top:10px; left:10px; font-size:10px; font-weight:600; padding:3px 8px; border-radius:999px; }
+  .ex-body { padding:14px 16px 16px; }
+  .ex-name { font-size:16px; font-weight:600; }
+  .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .tag { font-size:11px; padding:3px 9px; border-radius:999px; background:rgba(255,255,255,.06); color:var(--text-secondary); }
+  .tag.primary { background:rgba(192,25,99,.15); color:#F02277; font-weight:600; }
+  .ex-foot { display:flex; align-items:center; justify-content:space-between; margin-top:12px; }
+  .diff { display:inline-flex; gap:3px; align-items:center; }
+  .diff .bar { width:5px; height:12px; border-radius:2px; background:#3a3a3c; }
+  .diff .bar.on { background:linear-gradient(180deg,#F02277,#C01963); }
+  .ex-add { width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid var(--border-primary); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .ex-add .material-symbols-rounded { font-size:20px; }
+</style>
+</head>
+<body>
+  <h1>Exercise Card</h1>
+  <p class="sub">Übungs-DB &amp; Picker. Kategorie-Tint oben, Hauptmuskel hervorgehoben, Difficulty als Balken.</p>
+
+  <div class="grid">
+    <div class="ex">
+      <div class="ex-thumb"><span class="ex-cat" style="background:rgba(245,158,11,.18);color:#f59e0b">Bodyweight</span><span class="material-symbols-rounded">exercise</span></div>
+      <div class="ex-body">
+        <div class="ex-name">Pull Up</div>
+        <div class="tags"><span class="tag primary">Rücken</span><span class="tag">Bizeps</span><span class="tag">+1</span></div>
+        <div class="ex-foot"><span class="diff"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar"></span><span class="bar"></span></span><button class="ex-add"><span class="material-symbols-rounded">add</span></button></div>
+      </div>
+    </div>
+    <div class="ex">
+      <div class="ex-thumb"><span class="ex-cat" style="background:rgba(227,87,69,.18);color:#e35745">Strength</span><span class="material-symbols-rounded">fitness_center</span></div>
+      <div class="ex-body">
+        <div class="ex-name">Bench Press</div>
+        <div class="tags"><span class="tag primary">Brust</span><span class="tag">Trizeps</span><span class="tag">Schultern</span></div>
+        <div class="ex-foot"><span class="diff"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar"></span></span><button class="ex-add"><span class="material-symbols-rounded">add</span></button></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

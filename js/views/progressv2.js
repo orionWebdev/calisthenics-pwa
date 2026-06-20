@@ -1298,7 +1298,7 @@ function renderStrengthStats() {
 
     <div class="progress-stats-grid">
       <div class="progress-stat-card">
-        <div class="progress-stat-icon" style="background: rgba(240, 34, 119, 0.1);">
+        <div class="progress-stat-icon" style="background: rgba(192, 25, 99, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">trending_up</span>
         </div>
         <div class="progress-stat-content">
@@ -1491,7 +1491,7 @@ function drawWeeklyChart(data, colorType = 'strength') {
     pointBgColor = 'rgba(34, 197, 94, 0.2)';
   } else {
     lineColor = getCategoryColorValue('strength');
-    pointBgColor = 'rgba(240, 34, 119, 0.2)';
+    pointBgColor = 'rgba(192, 25, 99, 0.2)';
   }
 
   // Grid
@@ -2085,7 +2085,7 @@ function renderCardioStats() {
       </div>
 
       <div class="progress-stat-card">
-        <div class="progress-stat-icon" style="background: rgba(240, 34, 119, 0.1);">
+        <div class="progress-stat-icon" style="background: rgba(192, 25, 99, 0.1);">
           <span class="material-symbols-rounded" style="color: var(--color-primary);">calendar_month</span>
         </div>
         <div class="progress-stat-content">

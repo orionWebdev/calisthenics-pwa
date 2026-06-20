@@ -89,7 +89,7 @@
 .period-btn.active {
   background: var(--color-primary);
   color: white;
-  box-shadow: 0 2px 6px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 2px 6px rgba(192, 25, 99, 0.3);
 }
 
 .period-btn:not(.active):hover {
@@ -178,7 +178,7 @@
 
 .overview-stat-card.active {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(240, 34, 119, 0.2);
+  box-shadow: 0 0 0 2px rgba(192, 25, 99, 0.2);
 }
 
 .stat-icon {
@@ -235,8 +235,8 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, rgba(240, 34, 119, 0.1) 0%, rgba(240, 34, 119, 0.05) 100%);
-  border: 1px solid rgba(240, 34, 119, 0.3);
+  background: linear-gradient(135deg, rgba(192, 25, 99, 0.1) 0%, rgba(192, 25, 99, 0.05) 100%);
+  border: 1px solid rgba(192, 25, 99, 0.3);
   border-radius: 0.875rem;
   color: white;
   font-size: var(--font-size-base);
@@ -246,8 +246,8 @@
 }
 
 .quick-action-btn:hover {
-  background: linear-gradient(135deg, rgba(240, 34, 119, 0.2) 0%, rgba(240, 34, 119, 0.1) 100%);
-  border-color: rgba(240, 34, 119, 0.5);
+  background: linear-gradient(135deg, rgba(192, 25, 99, 0.2) 0%, rgba(192, 25, 99, 0.1) 100%);
+  border-color: rgba(192, 25, 99, 0.5);
   transform: translateY(-2px);
 }
 
@@ -324,7 +324,7 @@
 .metric-btn.active {
   background: var(--color-primary);
   color: white;
-  box-shadow: 0 2px 6px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 2px 6px rgba(192, 25, 99, 0.3);
 }
 
 .training-tab {

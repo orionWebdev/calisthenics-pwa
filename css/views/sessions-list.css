@@ -110,7 +110,7 @@
 }
 
 .all-sessions-item:hover {
-  background: color-mix(in srgb, var(--ui-card-bg) 90%, white);
+  background: color-mix(in srgb, var(--bg-card) 90%, white);
   border-color: var(--ui-card-border-hover);
 }
 

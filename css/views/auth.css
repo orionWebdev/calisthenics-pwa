@@ -29,25 +29,25 @@
   width: 80px;
   height: 80px;
   border-radius: 1.5rem;
-  box-shadow: 0 8px 24px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 8px 24px rgba(192, 25, 99, 0.3);
   animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 8px 24px rgba(240, 34, 119, 0.3);
+    box-shadow: 0 8px 24px rgba(192, 25, 99, 0.3);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 12px 32px rgba(240, 34, 119, 0.5);
+    box-shadow: 0 12px 32px rgba(192, 25, 99, 0.5);
   }
 }
 
 .splash-title {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -60,7 +60,7 @@
 .spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid rgba(240, 34, 119, 0.2);
+  border: 4px solid rgba(192, 25, 99, 0.2);
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -93,7 +93,7 @@
 .splash-progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--color-primary), #C01963);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
   border-radius: 999px;
   transition: width 0.35s ease;
 }
@@ -146,14 +146,14 @@
   width: 80px;
   height: 80px;
   border-radius: 1.5rem;
-  box-shadow: 0 8px 24px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 8px 24px rgba(192, 25, 99, 0.3);
   animation: fadeIn 0.5s ease;
 }
 
 .login-title {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -308,7 +308,7 @@
 .email-form-input:focus {
   border-color: var(--color-primary);
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(240, 34, 119, 0.18);
+  box-shadow: 0 0 0 3px rgba(192, 25, 99, 0.18);
 }
 
 .email-form-input:autofill,
@@ -346,7 +346,7 @@
 .email-submit-btn {
   width: 100%;
   min-height: 52px;
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   border: none;
   border-radius: 0.75rem;
   display: flex;
@@ -359,18 +359,18 @@
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 6px 20px rgba(240, 34, 119, 0.35);
+  box-shadow: 0 6px 20px rgba(192, 25, 99, 0.35);
   margin-top: 0.25rem;
 }
 
 .email-submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(240, 34, 119, 0.45);
+  box-shadow: 0 8px 24px rgba(192, 25, 99, 0.45);
 }
 
 .email-submit-btn:active {
   transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.3);
 }
 
 .email-submit-btn:disabled {

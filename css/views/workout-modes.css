@@ -62,8 +62,8 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.5rem 0.75rem;
-  background: rgba(240, 34, 119, 0.15);
-  border: 1px solid rgba(240, 34, 119, 0.3);
+  background: rgba(192, 25, 99, 0.15);
+  border: 1px solid rgba(192, 25, 99, 0.3);
   border-radius: 0.75rem;
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
@@ -74,8 +74,8 @@
 }
 
 .workout-exercises-btn:hover {
-  background: rgba(240, 34, 119, 0.25);
-  border-color: rgba(240, 34, 119, 0.5);
+  background: rgba(192, 25, 99, 0.25);
+  border-color: rgba(192, 25, 99, 0.5);
 }
 
 .workout-exercises-btn:active {
@@ -112,7 +112,7 @@
 /* Active Exercise Card */
 .active-exercise-card {
   background: rgba(17, 24, 39, 0.8);
-  border: 2px solid rgba(240, 34, 119, 0.3);
+  border: 2px solid rgba(192, 25, 99, 0.3);
   border-radius: 1rem;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -123,7 +123,7 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.25rem 0.625rem;
-  background: rgba(240, 34, 119, 0.15);
+  background: rgba(192, 25, 99, 0.15);
   border-radius: 0.5rem;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
@@ -189,8 +189,8 @@
 }
 
 .exercise-accordion-item.active {
-  border-color: rgba(240, 34, 119, 0.4);
-  background: rgba(240, 34, 119, 0.05);
+  border-color: rgba(192, 25, 99, 0.4);
+  background: rgba(192, 25, 99, 0.05);
 }
 
 .exercise-accordion-item.completed {
@@ -383,7 +383,7 @@
 
 /* Set Logger inside Accordion */
 .accordion-set-logger {
-  border: 1px solid rgba(240, 34, 119, 0.3);
+  border: 1px solid rgba(192, 25, 99, 0.3);
   border-radius: 0.75rem;
   padding: 0.75rem;
 }
@@ -451,8 +451,8 @@
 }
 
 .accordion-goto-btn:hover {
-  background: rgba(240, 34, 119, 0.15);
-  border-color: rgba(240, 34, 119, 0.3);
+  background: rgba(192, 25, 99, 0.15);
+  border-color: rgba(192, 25, 99, 0.3);
   color: var(--color-primary);
 }
 

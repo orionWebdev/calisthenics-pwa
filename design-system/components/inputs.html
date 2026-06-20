@@ -1,0 +1,93 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATEM Hybrid — Inputs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=block" rel="stylesheet" />
+<style>
+  :root {
+    --bg-primary:#000; --bg-card:#161618; --bg-card-elevated:#1c1c1e;
+    --text-primary:#fff; --text-secondary:#9ca3af; --text-tertiary:#6b7280;
+    --border-primary:rgba(255,255,255,.10);
+    --color-primary:#C01963; --color-primary-light:#F02277;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Zalando Sans Expanded',-apple-system,sans-serif; background:var(--bg-primary); color:var(--text-primary); padding:32px; }
+  h1 { font-size:28px; font-weight:700; letter-spacing:-.02em; }
+  .sub { color:var(--text-secondary); font-size:14px; margin-top:4px; }
+  h2 { font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--text-secondary); margin:32px 0 14px; }
+  .material-symbols-rounded { font-size:20px; line-height:1; }
+  .stack { max-width:360px; display:flex; flex-direction:column; gap:8px; }
+  label.lbl { font-size:12px; color:var(--text-secondary); font-weight:500; }
+
+  .field { height:50px; background:var(--bg-card); border:1.5px solid var(--border-primary); border-radius:14px;
+           padding:0 16px; color:#fff; font-family:inherit; font-size:15px; width:100%; }
+  .field::placeholder { color:var(--text-tertiary); }
+  .field.is-focus { border-color:var(--color-primary-light); box-shadow:0 0 0 4px rgba(240,34,119,.12); }
+
+  .search { display:flex; align-items:center; gap:10px; height:50px; background:var(--bg-card); border:1.5px solid var(--border-primary); border-radius:14px; padding:0 16px; color:var(--text-tertiary); max-width:360px; }
+  .search input { background:none; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; flex:1; }
+
+  /* Number picker */
+  .num { display:inline-flex; align-items:center; background:var(--bg-card); border:1.5px solid var(--border-primary); border-radius:14px; overflow:hidden; }
+  .num button { width:48px; height:48px; background:none; border:none; color:#fff; font-size:22px; cursor:pointer; }
+  .num button:hover { background:rgba(255,255,255,.06); }
+  .num .val { min-width:64px; text-align:center; font-size:18px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .num .unit { font-size:12px; color:var(--text-tertiary); font-weight:500; }
+
+  /* Range slider */
+  .range-wrap { max-width:360px; }
+  .range-head { display:flex; justify-content:space-between; font-size:13px; margin-bottom:10px; }
+  .range-val { color:var(--color-primary-light); font-weight:600; font-variant-numeric:tabular-nums; }
+  .track { height:6px; border-radius:999px; background:var(--bg-card-elevated); position:relative; }
+  .fill { position:absolute; left:0; top:0; height:6px; width:55%; border-radius:999px; background:linear-gradient(90deg,#C01963,#F02277); }
+  .thumb { position:absolute; left:55%; top:50%; transform:translate(-50%,-50%); width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.5); }
+
+  /* Filter chips */
+  .chips { display:flex; gap:10px; flex-wrap:wrap; }
+  .chip { font-size:13px; font-weight:500; padding:9px 16px; border-radius:999px; background:var(--bg-card); border:1.5px solid var(--border-primary); color:var(--text-secondary); cursor:pointer; }
+  .chip.active { background:rgba(192,25,99,.15); border-color:var(--color-primary); color:#fff; }
+</style>
+</head>
+<body>
+  <h1>Inputs</h1>
+  <p class="sub">Große Touch-Targets (≥48px), klarer Fokus-Ring im Brand-Pink, tabular Ziffern für Werte.</p>
+
+  <h2>Text-Feld</h2>
+  <div class="stack">
+    <label class="lbl">Plan-Name</label>
+    <input class="field" placeholder="z. B. Push Day A" />
+    <input class="field is-focus" value="Pull Day B" style="margin-top:8px" />
+  </div>
+
+  <h2>Suche</h2>
+  <div class="search"><span class="material-symbols-rounded">search</span><input placeholder="Übung suchen…" /><span class="material-symbols-rounded">close</span></div>
+
+  <h2>Number-Picker</h2>
+  <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:flex-end">
+    <div><div class="lbl" style="margin-bottom:8px">Sets</div><div class="num"><button>−</button><span class="val">3</span><button>+</button></div></div>
+    <div><div class="lbl" style="margin-bottom:8px">Reps</div><div class="num"><button>−</button><span class="val">10</span><button>+</button></div></div>
+    <div><div class="lbl" style="margin-bottom:8px">Gewicht</div><div class="num"><button>−</button><span class="val">60<span class="unit"> kg</span></span><button>+</button></div></div>
+  </div>
+
+  <h2>Range-Slider (Rest)</h2>
+  <div class="range-wrap">
+    <div class="range-head"><span style="color:var(--text-secondary)">Pause zwischen Sätzen</span><span class="range-val">90 s</span></div>
+    <div class="track"><div class="fill"></div><div class="thumb"></div></div>
+  </div>
+
+  <h2>Filter-Chips</h2>
+  <div class="chips">
+    <span class="chip active">Alle</span>
+    <span class="chip">Brust</span>
+    <span class="chip">Rücken</span>
+    <span class="chip">Beine</span>
+    <span class="chip">Core</span>
+  </div>
+</body>
+</html>

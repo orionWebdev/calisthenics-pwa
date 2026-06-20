@@ -14,14 +14,14 @@
 
 .exercise-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 10px 30px rgba(192, 25, 99, 0.3);
   border-color: var(--color-primary);
   border-width: 2px;
 }
 
 .exercise-card.today {
   border-color: var(--color-primary);
-  background: rgba(240, 34, 119, 0.05);
+  background: rgba(192, 25, 99, 0.05);
 }
 
 .exercise-card.other-month {
@@ -86,8 +86,8 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg,
-    rgba(240, 34, 119, 0) 0%,
-    rgba(240, 34, 119, 0.1) 100%);
+    rgba(192, 25, 99, 0) 0%,
+    rgba(192, 25, 99, 0.1) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
@@ -169,9 +169,9 @@
 }
 
 .exercise-card-edit-btn:hover {
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   color: white;
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.4);
   transform: translateY(-4px) scale(1.05);
 }
 
@@ -337,8 +337,8 @@
 }
 
 .exercise-row-card.is-picker .exercise-row-action {
-  background: rgba(240, 34, 119, 0.15);
-  border: 1px solid rgba(240, 34, 119, 0.25);
+  background: rgba(192, 25, 99, 0.15);
+  border: 1px solid rgba(192, 25, 99, 0.25);
 }
 
 /* Exercise Detail Layout */

@@ -1,0 +1,84 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATEM Hybrid — Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet" />
+<style>
+  :root {
+    --bg-primary:#000; --bg-card:#161618; --bg-card-elevated:#1c1c1e;
+    --text-primary:#fff; --text-secondary:#9ca3af; --text-tertiary:#6b7280;
+    --border-primary:rgba(255,255,255,.10);
+    --color-primary:#C01963; --color-primary-light:#F02277;
+    --gradient-cta:linear-gradient(135deg,#C01963,#F02277);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Zalando Sans Expanded',-apple-system,sans-serif; background:var(--bg-primary); color:var(--text-primary); padding:32px; }
+  h1 { font-size:28px; font-weight:700; letter-spacing:-.02em; }
+  .sub { color:var(--text-secondary); font-size:14px; margin-top:4px; }
+  h2 { font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--text-secondary); margin:32px 0 14px; }
+  .material-symbols-rounded { font-size:22px; line-height:1; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:18px; }
+
+  .card { background:var(--bg-card); border:1px solid var(--border-primary); border-radius:20px; padding:20px; box-shadow:0 4px 24px rgba(0,0,0,.3); }
+  .card-elevated { background:var(--bg-card-elevated); box-shadow:0 8px 32px rgba(0,0,0,.4); }
+  .card-title { font-size:16px; font-weight:600; }
+  .card-meta { font-size:13px; color:var(--text-secondary); margin-top:4px; }
+
+  .cta-card { background:var(--gradient-cta); border:none; border-radius:20px; padding:22px; box-shadow:0 8px 32px rgba(192,25,99,.35);
+              display:flex; align-items:center; gap:16px; }
+  .cta-icon { width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3);
+              display:flex; align-items:center; justify-content:center; }
+  .cta-title { font-size:17px; font-weight:700; }
+  .cta-sub { font-size:13px; opacity:.9; margin-top:2px; }
+
+  .stat-card { background:var(--bg-card); border:1px solid var(--border-primary); border-radius:20px; padding:18px; }
+  .stat-label { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-tertiary); }
+  .stat-value { font-size:32px; font-weight:700; margin-top:6px; font-variant-numeric:tabular-nums; }
+  .stat-unit { font-size:14px; color:var(--text-secondary); font-weight:500; }
+  .stat-delta { font-size:12px; color:#22c55e; margin-top:6px; display:flex; align-items:center; gap:3px; }
+  .stat-delta .material-symbols-rounded { font-size:15px; }
+
+  .ex-card { background:var(--bg-card); border:1px solid var(--border-primary); border-radius:20px; overflow:hidden; }
+  .ex-thumb { height:88px; background:linear-gradient(135deg,#1c1c1e,#161618); display:flex; align-items:center; justify-content:center; color:var(--text-quaternary,#4b5563); }
+  .ex-thumb .material-symbols-rounded { font-size:36px; color:#3a3a3c; }
+  .ex-body { padding:14px; }
+  .ex-name { font-size:15px; font-weight:600; }
+  .ex-muscle { font-size:12px; color:var(--text-secondary); margin-top:3px; }
+  .pill { display:inline-block; font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px; margin-top:8px;
+          background:rgba(245,158,11,.12); color:#f59e0b; }
+</style>
+</head>
+<body>
+  <h1>Cards</h1>
+  <p class="sub">Weiche Radien, subtile Border, sanfte Schatten. Inhalt führt, Chrome tritt zurück.</p>
+
+  <h2>Standard &amp; Elevated</h2>
+  <div class="grid">
+    <div class="card"><div class="card-title">Push Day A</div><div class="card-meta">6 Übungen · ~45 min</div></div>
+    <div class="card card-elevated"><div class="card-title">Elevated</div><div class="card-meta">Sheets &amp; Overlays</div></div>
+  </div>
+
+  <h2>CTA-Card (Gradient)</h2>
+  <div class="cta-card">
+    <div class="cta-icon"><span class="material-symbols-rounded">add</span></div>
+    <div><div class="cta-title">Workout loggen</div><div class="cta-sub">Strength · Cardio · Recovery</div></div>
+  </div>
+
+  <h2>Stat-Cards</h2>
+  <div class="grid">
+    <div class="stat-card"><div class="stat-label">Diese Woche</div><div class="stat-value">4 <span class="stat-unit">Sessions</span></div><div class="stat-delta"><span class="material-symbols-rounded">trending_up</span>+1 vs. Vorwoche</div></div>
+    <div class="stat-card"><div class="stat-label">Bewegungsmin.</div><div class="stat-value">213 <span class="stat-unit">min</span></div><div class="stat-delta"><span class="material-symbols-rounded">trending_up</span>+18%</div></div>
+  </div>
+
+  <h2>Exercise-Card</h2>
+  <div class="grid">
+    <div class="ex-card"><div class="ex-thumb"><span class="material-symbols-rounded">exercise</span></div><div class="ex-body"><div class="ex-name">Pull Up</div><div class="ex-muscle">Rücken · Bizeps</div><span class="pill">Bodyweight</span></div></div>
+  </div>
+</body>
+</html>

@@ -565,7 +565,7 @@
 }
 .emom-complete-btn {
   padding: 0.75rem 2rem;
-  background: linear-gradient(to right, #db2777, #be185d);
+  background: linear-gradient(to right, #db2777, var(--color-primary-light));
   color: #fff;
   border: none;
   border-radius: 12px;

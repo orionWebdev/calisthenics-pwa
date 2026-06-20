@@ -24,9 +24,9 @@ input[type="range"]::-webkit-slider-thumb {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 2px 8px rgba(192, 25, 99, 0.4);
   transition: all 0.2s ease;
 }
 
@@ -34,21 +34,21 @@ input[type="range"]::-moz-range-thumb {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 8px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 2px 8px rgba(192, 25, 99, 0.4);
   transition: all 0.2s ease;
 }
 
 input[type="range"]:active::-webkit-slider-thumb {
   transform: scale(1.2);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.6);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.6);
 }
 
 input[type="range"]:active::-moz-range-thumb {
   transform: scale(1.2);
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.6);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.6);
 }
 
 /* Track fill effect */

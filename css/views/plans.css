@@ -21,7 +21,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), #ec4899);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -508,7 +508,7 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--color-primary), #ec4899);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   color: white;
   display: flex;
   align-items: center;

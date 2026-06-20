@@ -1,0 +1,100 @@
+/* ========================================
+   SEGMENTED CONTROLS → elegant underline tabs (Redesign)
+   Replaces the old "filled pill" look (Training & Fortschritt) with slim
+   underline tabs. The Fortschritt control keeps its existing sliding indicator
+   (--active-idx translateX), restyled as a thin underline bar that slides.
+   Isolated override file — imported last so it wins; easy to revert.
+   ======================================== */
+
+/* --- Training & generic .segmented-control --- */
+.segmented-control {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  gap: 6px !important;
+  overflow: visible !important;
+}
+
+.segmented-btn,
+.segmented-btn.active,
+.segmented-btn.active[data-tab] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 9px 0 13px !important;
+}
+
+.segmented-btn {
+  position: relative;
+  color: var(--text-tertiary);
+  transition: color 0.25s ease;
+}
+
+.segmented-btn:hover {
+  background: transparent !important;
+  color: var(--text-secondary);
+}
+
+.segmented-btn.active {
+  color: #fff !important;
+}
+
+.segmented-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 2.5px;
+  border-radius: 999px;
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
+  box-shadow: 0 0 12px rgba(240, 34, 119, 0.45);
+}
+
+.segmented-btn:active {
+  transform: none !important;
+}
+
+/* --- Fortschritt / progress periods (.pv3-segmented-control) — slim sliding underline --- */
+.pv3-segmented-control {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  height: 42px !important;
+  overflow: visible !important;
+}
+
+.pv3-seg-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.pv3-seg-btn.active {
+  color: #fff !important;
+}
+
+.pv3-seg-indicator {
+  left: 0 !important;
+  top: auto !important;
+  bottom: 0 !important;
+  height: 2.5px !important;
+  width: calc(100% / var(--seg-count)) !important;
+  border-radius: 0 !important;
+  /* Centered 36px underline bar drawn inside the full-segment-width indicator,
+     so it stays centered while sliding via the existing translateX. */
+  background: linear-gradient(
+    90deg,
+    transparent calc(50% - 18px),
+    #C01963 calc(50% - 18px),
+    #F02277 calc(50% + 18px),
+    transparent calc(50% + 18px)
+  ) !important;
+  box-shadow: none !important;
+}
