@@ -22,8 +22,8 @@
 }
 
 .filter-chip.active {
-  background: rgba(240, 34, 119, 0.16);
-  border-color: rgba(240, 34, 119, 0.35);
+  background: rgba(192, 25, 99, 0.16);
+  border-color: rgba(192, 25, 99, 0.35);
   color: var(--color-primary);
 }
 

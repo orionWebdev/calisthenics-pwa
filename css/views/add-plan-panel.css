@@ -3,8 +3,8 @@
    ======================================== */
 
 .add-plan-panel {
-  background: linear-gradient(135deg, rgba(240, 34, 119, 0.08), rgba(139, 92, 246, 0.08));
-  border: 1px solid rgba(240, 34, 119, 0.2);
+  background: linear-gradient(135deg, rgba(192, 25, 99, 0.08), rgba(139, 92, 246, 0.08));
+  border: 1px solid rgba(192, 25, 99, 0.2);
   border-radius: 1rem;
   padding: 1rem;
   margin-bottom: 1.5rem;

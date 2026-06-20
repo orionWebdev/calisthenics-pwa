@@ -200,17 +200,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary-dark));
+  background: linear-gradient(135deg, var(--accent-primary), var(--color-primary-light));
   border: none;
   border-radius: 50%;
   color: white;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(240, 34, 119, 0.3);
+  box-shadow: 0 4px 12px rgba(192, 25, 99, 0.3);
   transition: all 0.15s ease;
 }
 
 .agenda-add-btn:hover {
-  box-shadow: 0 6px 16px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 6px 16px rgba(192, 25, 99, 0.4);
   transform: scale(1.05);
 }
 

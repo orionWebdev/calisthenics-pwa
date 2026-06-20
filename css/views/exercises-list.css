@@ -28,7 +28,7 @@
 .exercise-section-letter {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-primary, #F02277);
+  color: var(--color-primary, #C01963);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -155,7 +155,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: rgba(240, 34, 119, 0.55);
+  color: rgba(192, 25, 99, 0.55);
 }
 .muscle-icon img {
   width: 1em;
@@ -222,7 +222,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem 0 0.5rem;
-  color: rgba(240, 34, 119, 0.45);
+  color: rgba(192, 25, 99, 0.45);
 }
 
 .exercise-chip--diff {

@@ -164,11 +164,11 @@
 }
 
 .difficulty-btn.active {
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   border-color: var(--color-primary);
   color: white;
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 6px 20px rgba(192, 25, 99, 0.4);
 }
 
 .difficulty-btn::after {
@@ -178,7 +178,7 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   border-radius: 0.75rem;
   opacity: 0;
   z-index: -1;

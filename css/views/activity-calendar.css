@@ -269,7 +269,7 @@
   border: 1px solid var(--border-accent);
   border-radius: var(--ui-card-radius-xl);
   padding: var(--spacing-lg);
-  box-shadow: 0 4px 24px rgba(240, 34, 119, 0.15);
+  box-shadow: 0 4px 24px rgba(192, 25, 99, 0.15);
 }
 
 .dashboard-today-empty {
@@ -294,7 +294,7 @@
   gap: 0.5rem;
   padding: 1rem;
   margin-top: 1rem;
-  background: linear-gradient(135deg, var(--color-primary), #C01963);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   border: none;
   border-radius: 0.75rem;
   color: white;
@@ -302,12 +302,12 @@
   font-size: var(--font-size-base);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(240, 34, 119, 0.4);
+  box-shadow: 0 4px 16px rgba(192, 25, 99, 0.4);
 }
 
 .dashboard-start-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(240, 34, 119, 0.5);
+  box-shadow: 0 8px 24px rgba(192, 25, 99, 0.5);
 }
 
 .dashboard-start-btn:active {
@@ -407,7 +407,7 @@
 
 .dashboard-stat-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), #ec4899);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
   border-radius: 3px;
   transition: width 0.5s ease;
 }
@@ -444,7 +444,7 @@
 
 .dashboard-exercise-item:hover {
   background: rgba(31, 41, 55, 0.8);
-  border-color: rgba(240, 34, 119, 0.5);
+  border-color: rgba(192, 25, 99, 0.5);
   transform: translateX(4px);
 }
 
@@ -454,7 +454,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--color-primary), #ec4899);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   border-radius: 8px;
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-sm);

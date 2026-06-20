@@ -29,7 +29,7 @@
 }
 
 .dashboard-today-card {
-  border-color: rgba(240, 34, 119, 0.35);
+  border-color: rgba(192, 25, 99, 0.35);
 }
 
 .progress-stat-card,
@@ -62,7 +62,7 @@
 
 .segmented-btn.active {
   background: var(--color-primary);
-  box-shadow: 0 6px 16px rgba(240, 34, 119, 0.35);
+  box-shadow: 0 6px 16px rgba(192, 25, 99, 0.35);
 }
 
 .calendar-segmented {

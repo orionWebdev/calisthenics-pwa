@@ -15,13 +15,15 @@
      DESIGN TOKENS - Calm Hybrid Training
      ======================================== */
 
-  /* Primary Accent Color */
-  --color-primary: #F02277;
-  --color-primary-dark: #C01963;
-  --accent-primary: #F02277;
-  --accent-soft: rgba(240, 34, 119, 0.2);
-  --accent-soft-2: rgba(240, 34, 119, 0.1);
-  --accent-soft-3: rgba(240, 34, 119, 0.06);
+  /* Primary Accent Color — kanonische Marke #C01963 (siehe configuration/REDESIGN_CONCEPT.md §2) */
+  --color-primary: #C01963;
+  --color-primary-light: #F02277;     /* hellerer Stop für Verläufe/Hover */
+  --color-primary-dark: #9D1450;      /* dunklerer Stop für Tiefe */
+  --gradient-primary: linear-gradient(135deg, #C01963, #F02277);
+  --accent-primary: #C01963;
+  --accent-soft: rgba(192, 25, 99, 0.2);
+  --accent-soft-2: rgba(192, 25, 99, 0.1);
+  --accent-soft-3: rgba(192, 25, 99, 0.06);
 
   /* Sport Colors */
   --sport-run: #1e3a8a;
@@ -56,7 +58,7 @@
   /* Border Colors */
   --border-primary: rgba(255, 255, 255, 0.1);
   --border-secondary: rgba(255, 255, 255, 0.06);
-  --border-accent: rgba(240, 34, 119, 0.3);
+  --border-accent: rgba(192, 25, 99, 0.3);
 
   /* Zone Colors – Training Phase */
   --zone-exhausted: #ef4444;      /* rot — overreaching */
@@ -104,15 +106,17 @@
   --font-weight-bold: 700;
 
   /* UI Components */
-  --ui-card-bg: var(--bg-card);
+  /* Elegant card surface: directional dark gradient + faint top sheen (Redesign) */
+  --card-grad: linear-gradient(157deg, #1c1c20 0%, #141417 52%, #0f0f11 100%);
+  --ui-card-bg: var(--card-grad);
   --ui-card-border: var(--border-primary);
   --ui-card-border-hover: rgba(255, 255, 255, 0.15);
   --ui-card-radius: 1rem;
   --ui-card-radius-lg: 1.25rem;
   --ui-card-radius-xl: 1.5rem;
   --ui-card-padding: 1.25rem;
-  --ui-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --ui-card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --ui-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --ui-card-shadow-hover: 0 14px 38px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   --ui-icon-bg: var(--accent-soft-2);
   --ui-icon-border: var(--border-accent);
 
@@ -155,12 +159,15 @@
   /* Borders */
   --border-primary: rgba(0, 0, 0, 0.1);
   --border-secondary: rgba(0, 0, 0, 0.06);
-  --border-accent: rgba(240, 34, 119, 0.25);
+  --border-accent: rgba(192, 25, 99, 0.25);
 
   /* Accent soft colors */
-  --accent-soft: rgba(240, 34, 119, 0.12);
-  --accent-soft-2: rgba(240, 34, 119, 0.08);
-  --accent-soft-3: rgba(240, 34, 119, 0.04);
+  --accent-soft: rgba(192, 25, 99, 0.12);
+  --accent-soft-2: rgba(192, 25, 99, 0.08);
+  --accent-soft-3: rgba(192, 25, 99, 0.04);
+
+  /* Card surface (light): subtle light gradient instead of the dark one */
+  --card-grad: linear-gradient(157deg, #ffffff 0%, #f4f4f7 100%);
 
   /* Shadows */
   --ui-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);

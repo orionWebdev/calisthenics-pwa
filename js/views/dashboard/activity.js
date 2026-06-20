@@ -425,6 +425,88 @@ function renderDashboardRecommendation() {
     </div>`;
 }
 
+// ========================================
+// FORM-STATUS HERO (Dashboard "Heute")
+// Visueller Form-Score-Ring (WHOOP/Oura-Stil), angedockt an computeFormScore().
+// Additiv — bestehende Widgets bleiben unberührt.
+// ========================================
+
+function getFormZoneLabel(zone) {
+  const map = {
+    detrained: 'progress.form.zoneDetrained',
+    declining: 'progress.form.zoneDeclining',
+    recovery: 'progress.form.zoneRecovery',
+    maintaining: 'progress.form.zoneMaintaining',
+    building: 'progress.form.zoneBuilding',
+    productive: 'progress.form.zoneProductive',
+    peak_form: 'progress.form.zonePeakForm'
+  };
+  const key = map[zone] || map.maintaining;
+  const label = tr(key);
+  // Fallback, falls i18n-Key fehlt (tr gibt dann den Key zurück)
+  return (label && label !== key) ? label : (zone || 'maintaining');
+}
+
+function renderDashboardFormHero() {
+  const container = document.getElementById('dashboard-form-hero');
+  if (!container) return;
+
+  // Kein Form-Score verfügbar oder noch keine Daten → Hero ausblenden
+  if (typeof computeFormScore !== 'function' || !sessionsLoaded) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  const data = computeFormScore(allSessions, new Date());
+  if (!data || data.formScore === null || data.zone === null) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  container.style.display = 'block';
+
+  const score = Math.round(data.formScore);
+  const zone = data.zone;
+  const color = (typeof getFormZoneColor === 'function')
+    ? getFormZoneColor(zone)
+    : 'var(--zone-loaded)';
+  const label = getFormZoneLabel(zone);
+  const hint = (typeof getFormHint === 'function') ? getFormHint(data.formScore, zone) : '';
+  const trendIcon = (typeof getFormTrendIcon === 'function') ? getFormTrendIcon(data.trend) : 'trending_flat';
+
+  // Ring-Geometrie (viewBox 160×160, r=66)
+  const r = 66;
+  const circ = 2 * Math.PI * r;
+  const clamped = Math.max(0, Math.min(100, score));
+  const offset = circ * (1 - clamped / 100);
+
+  const titleRaw = tr('progress.form.title');
+  const heroTitle = (titleRaw && titleRaw.indexOf('.') === -1) ? titleRaw : 'Form';
+
+  container.innerHTML = `
+    <div class="dashboard-card dashboard-form-hero-card" role="button" tabindex="0" onclick="openProgressOverview()">
+      <span class="form-hero-label">${heroTitle}</span>
+      <div class="form-hero-ring-wrap">
+        <svg class="form-hero-ring" viewBox="0 0 160 160" width="160" height="160" aria-hidden="true">
+          <circle cx="80" cy="80" r="${r}" fill="none" stroke="var(--bg-card-elevated)" stroke-width="12" />
+          <circle class="form-hero-ring-fill" cx="80" cy="80" r="${r}" fill="none" stroke="${color}" stroke-width="12"
+                  stroke-linecap="round" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"
+                  transform="rotate(-90 80 80)" />
+        </svg>
+        <div class="form-hero-center">
+          <div class="form-hero-score">${score}</div>
+          <div class="form-hero-zone" style="color:${color};">
+            <span class="material-symbols-rounded">${trendIcon}</span>${label}
+          </div>
+        </div>
+      </div>
+      ${hint ? `<p class="form-hero-hint">${hint}</p>` : ''}
+    </div>
+  `;
+}
+
 async function refreshDashboard() {
   if (dashboardIsLoading) return;
   dashboardIsLoading = true;
@@ -432,6 +514,7 @@ async function refreshDashboard() {
   const data = await useDashboardData();
   renderQuickStatsWidget(data);
   renderLogWorkoutCard(data);
+  renderDashboardFormHero();
   renderScheduledWorkoutsCard(data);
   renderDashboardRecommendation();
   renderDashboardPlanCalendar(data);

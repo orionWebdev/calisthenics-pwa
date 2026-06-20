@@ -163,7 +163,7 @@
   gap: 0.5rem;
   width: 100%;
   padding: 0.875rem;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   color: white;
   border: none;
   border-radius: var(--ui-card-radius);
