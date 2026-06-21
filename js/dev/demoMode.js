@@ -93,12 +93,30 @@
   }
   if (!fakeAuth()) document.addEventListener('DOMContentLoaded', fakeAuth);
 
-  // Optional: eine View direkt öffnen für Previews/Screenshots (?demo=1&view=progress)
+  // Force-Render der daten-getriebenen Views (Demo injiziert Daten, triggert aber
+  // nicht jede View). Mehrfach gestaffelt, damit die DOM-Container bereit sind.
+  document.addEventListener('DOMContentLoaded', function () {
+    [400, 1000, 1600].forEach(function (delay) {
+      setTimeout(function () {
+        ['renderExercises', 'refreshDashboard', 'renderPlans'].forEach(function (fn) {
+          if (typeof window[fn] === 'function') { try { window[fn](); } catch (e) {} }
+        });
+      }, delay);
+    });
+  });
+
+  // Optional: View/Tab direkt öffnen für Previews/Screenshots
+  // (?demo=1&view=training&tab=exercises)
   try {
-    var vw = new URLSearchParams(location.search).get('view');
+    var sp = new URLSearchParams(location.search);
+    var vw = sp.get('view');
+    var tb = sp.get('tab');
     if (vw) {
       document.addEventListener('DOMContentLoaded', function () {
-        setTimeout(function () { if (typeof showView === 'function') { try { showView(vw); } catch (e) {} } }, 900);
+        setTimeout(function () {
+          if (typeof showView === 'function') { try { showView(vw); } catch (e) {} }
+          if (tb && typeof showTrainingTab === 'function') { setTimeout(function () { try { showTrainingTab(tb); } catch (e) {} }, 250); }
+        }, 900);
       });
     }
   } catch (e) {}
