@@ -672,14 +672,31 @@ function renderV4Overview() {
   // the full history sub-page), so there is no separate history section here.
   const activityCalendarHTML = renderV4ActivityCalendar();
 
+  // Konsistenz-Lead (Redesign v3): Konsistenz ist der Held — Ø Sessions/Woche
+  // statt Tagesform. Streak nur sekundär (Tages-Streak bricht an Ruhetagen).
+  const streak = typeof calculateStreak === 'function' ? calculateStreak() : 0;
+  const perWeek = days > 0 ? totalSessions / (days / 7) : 0;
+  const perWeekStr = perWeek.toFixed(1).replace('.', ',');
+  const streakSuffix = streak > 1 ? ` · aktuelle Serie <b>${streak} Tage</b>` : '';
+  const konsistenzHTML = `
+    <div class="pv3-card">
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:8px;">
+        <span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">local_fire_department</span>Konsistenz
+      </div>
+      <p style="font-size:15px;line-height:1.5;margin:0;color:var(--text-primary);">Du trainierst im Schnitt <b>${perWeekStr}×/Woche</b>${streakSuffix}. Dranbleiben ist dein größter Hebel.</p>
+    </div>
+  `;
+
+  // Concept v3 order: Konsistenz → Form & Bereitschaft → Volumen/Stats → Ausdauer → Rhythmus → Kalender
   return `
     ${renderV4PeriodSelector()}
-    ${activityCalendarHTML}
+    ${konsistenzHTML}
     ${formHTML}
     ${readinessHTML}
     <div class="pv4-summary-grid">${cardsHTML}</div>
-    ${rhythmHTML}
     ${runningHTML}
+    ${rhythmHTML}
+    ${activityCalendarHTML}
   `;
 }
 
