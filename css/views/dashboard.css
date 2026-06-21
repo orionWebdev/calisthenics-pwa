@@ -318,6 +318,29 @@
   max-width: 42ch;
 }
 
+/* Daily readiness row under the form ring */
+.form-hero-readiness {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-card-border);
+}
+
+.form-hero-readiness .fhr-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.form-hero-readiness .fhr-value {
+  margin-left: auto;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .form-hero-ring-fill {
     transition: none;

@@ -447,6 +447,15 @@ function getFormZoneLabel(zone) {
   return (label && label !== key) ? label : (zone || 'maintaining');
 }
 
+// Tägliche Bereitschaft (ACWR-Zone) — kurze deutsche Labels.
+function readinessZoneLabel(zone) {
+  const m = {
+    overreaching: 'Überlastet', fatigued: 'Ermüdet', maintaining: 'Bereit',
+    building: 'Aufbauend', peak: 'Topform', form_loss: 'Formverlust', fresh: 'Erholt'
+  };
+  return m[zone] || 'Bereit';
+}
+
 function renderDashboardFormHero() {
   const container = document.getElementById('dashboard-form-hero');
   if (!container) return;
@@ -476,6 +485,25 @@ function renderDashboardFormHero() {
   const hint = (typeof getFormHint === 'function') ? getFormHint(data.formScore, zone) : '';
   const trendIcon = (typeof getFormTrendIcon === 'function') ? getFormTrendIcon(data.trend) : 'trending_flat';
 
+  // Tägliche Bereitschaft (ACWR) — kompakt unter dem Ring. Defensiv: '' bei keinen Daten.
+  let readinessHTML = '';
+  try {
+    if (typeof getACWR === 'function') {
+      const rd = getACWR(allSessions, new Date());
+      if (rd && rd.readinessScore !== null && rd.zone) {
+        const rscore = Math.round(rd.readinessScore);
+        const rcolor = (typeof getZoneColor === 'function') ? getZoneColor(rd.zone) : 'var(--text-secondary)';
+        const rlabel = readinessZoneLabel(rd.zone);
+        readinessHTML = `
+          <div class="form-hero-readiness">
+            <span class="material-symbols-rounded" style="color:${rcolor};font-size:18px;">bolt</span>
+            <span class="fhr-label">Bereitschaft heute</span>
+            <span class="fhr-value" style="color:${rcolor};">${rlabel} · ${rscore}</span>
+          </div>`;
+      }
+    }
+  } catch (e) {}
+
   // Ring-Geometrie (viewBox 160×160, r=66)
   const r = 66;
   const circ = 2 * Math.PI * r;
@@ -503,6 +531,7 @@ function renderDashboardFormHero() {
         </div>
       </div>
       ${hint ? `<p class="form-hero-hint">${hint}</p>` : ''}
+      ${readinessHTML}
     </div>
   `;
 }
