@@ -143,12 +143,10 @@ function renderExerciseRow(exercise, isLast = false) {
     .map(m => names[m]).filter(Boolean).slice(0, 3).join(', ');
   const metaText = muscleLabel || t('exercise.type.' + exercise.type) || '';
 
-  // Difficulty stripe color
+  // Difficulty stripe color — handles both string and numeric (1–5) difficulty
   const diffColor = {
-    beginner: '#4CAF50',
-    intermediate: '#FF9800',
-    advanced: '#F44336',
-    elite: '#9C27B0'
+    beginner: '#22c55e', intermediate: '#eab308', advanced: '#f97316', elite: '#ef4444',
+    1: '#22c55e', 2: '#84cc16', 3: '#eab308', 4: '#f97316', 5: '#ef4444'
   }[exercise.difficulty] || 'transparent';
 
   return `

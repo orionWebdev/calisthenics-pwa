@@ -61,11 +61,20 @@
     }
   }
 
+  // ---- Mock-Pläne ----
+  var demoPlans = [
+    { id: 'p1', name: 'Push Day A', type: 'strength', items: [{ exerciseId: 'bench_press' }, { exerciseId: 'dip' }, { exerciseId: 'push_up' }], exercises: [{ exerciseId: 'bench_press' }, { exerciseId: 'dip' }, { exerciseId: 'push_up' }] },
+    { id: 'p2', name: 'Pull Day B', type: 'strength', items: [{ exerciseId: 'pull_up' }, { exerciseId: 'plank' }], exercises: [{ exerciseId: 'pull_up' }, { exerciseId: 'plank' }] },
+    { id: 'p3', name: 'Easy Run', type: 'cardio', distanceKm: 5, duration: 30, durationSec: 1800 },
+    { id: 'p4', name: 'Mobility Flow', type: 'recovery', duration: 20, durationSec: 1200 }
+  ];
+
   // ---- In-Memory-Globals injizieren (in anderen classic scripts deklariert) ----
   try { allExercises = demoExercises; } catch (e) {}
   try { filteredExercises = demoExercises.slice(); } catch (e) {}
   try { allSessions = sessions; sessionsLoaded = true; } catch (e) {}
   try { scheduleData = []; } catch (e) {}
+  try { allPlans = demoPlans; filteredPlans = demoPlans.slice(); } catch (e) {}
 
   // ---- Loader / Realtime-Listener stubben (kein Firestore) ----
   window.loadSessions = function () { try { allSessions = sessions; sessionsLoaded = true; } catch (e) {} return Promise.resolve(sessions); };
@@ -75,7 +84,11 @@
     return Promise.resolve(demoExercises);
   };
   window.loadSchedule = function () { try { scheduleData = []; } catch (e) {} return Promise.resolve([]); };
-  window.loadPlans = function () { return Promise.resolve([]); };
+  window.loadPlans = function () {
+    try { allPlans = demoPlans; filteredPlans = demoPlans.slice(); } catch (e) {}
+    if (typeof renderPlans === 'function') { try { renderPlans(); } catch (e) {} }
+    return Promise.resolve(demoPlans);
+  };
   window.onUserCollectionChange = function (col, cb) { try { cb(sessions); } catch (e) {} return function () {}; };
 
   // ---- Eingeloggten User faken, damit der Bootstrap die App zeigt ----
