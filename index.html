@@ -330,7 +330,7 @@
         <!-- TRAINING VIEW -->
     <div id="view-training" class="view hidden">
 
-      <div id="training-segmented-control" class="progress-section">
+      <div id="training-segmented-control" class="progress-section reveal">
         <div class="segmented-control">
           <button
             class="segmented-btn active"
@@ -359,7 +359,7 @@
         </div>
 
         <!-- Plan Filters -->
-        <div class="plan-filters-bar">
+        <div class="plan-filters-bar reveal">
           <button class="filter-chip" id="plan-type-filter-btn" onclick="openPlanTypeFilterSheet()">
             <span class="material-symbols-rounded">category</span>
             <span id="plan-type-filter-label"></span>
@@ -378,7 +378,7 @@
         </div>
 
         <!-- Plans Grid -->
-        <div id="plans-grid" class="plans-grid">
+        <div id="plans-grid" class="plans-grid reveal">
           <!-- Wird von JavaScript gefüllt -->
           <div class="col-span-full text-center py-12 text-gray-400">
             <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">assignment</span>
@@ -397,7 +397,7 @@
         </div>
 
         <!-- Sticky Search Bar -->
-        <div class="exercise-search-sticky" id="exercise-search-sticky">
+        <div class="exercise-search-sticky reveal" id="exercise-search-sticky">
           <div class="exercise-search-bar">
             <span class="material-symbols-rounded exercise-search-icon">search</span>
             <input
@@ -421,7 +421,7 @@
         </div>
 
         <!-- Filter Chips -->
-        <div class="exercise-filters-bar">
+        <div class="exercise-filters-bar reveal">
           <button class="filter-chip active" id="exercise-muscle-filter-btn" onclick="openMuscleGroupFilterSheet()">
             <span class="material-symbols-rounded">body_system</span>
             <span id="exercise-muscle-filter-label"></span>
@@ -443,7 +443,7 @@
         <div id="active-filters" class="active-filters" style="display: none;"></div>
 
         <!-- Exercises Grid -->
-        <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 reveal">
           <!-- Wird von JavaScript gefüllt -->
           <div class="col-span-full text-center py-12 text-gray-400">
             <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">fitness_center</span>
@@ -470,13 +470,13 @@
 
     <!-- WORKOUT VIEW -->
     <div id="view-workout" class="view hidden">
-      <div id="workout-screen-container">
+      <div id="workout-screen-container" class="reveal">
         <!-- Wird von JS gefuellt -->
       </div>
     </div>
     <!-- PROFILE & SETTINGS VIEW -->
     <div id="view-profile" class="view hidden">
-      <div id="settings-container" class="space-y-6">
+      <div id="settings-container" class="space-y-6 reveal">
         <!-- Wird von js/settings.js gerendert -->
       </div>
     </div>
