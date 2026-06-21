@@ -69,6 +69,18 @@
     { id: 'p4', name: 'Mobility Flow', type: 'recovery', duration: 20, durationSec: 1200 }
   ];
 
+  // ---- Mock aktiver Workout (nur für view=workout aktiviert) ----
+  var demoWorkout = {
+    id: 'demowk1', status: 'in-progress', type: 'strength', planId: 'p1', planName: 'Push Day A',
+    scheduleId: null, scheduledDate: '2026-06-21', notes: '', currentExerciseIndex: 0, isFreeWorkout: false,
+    startedAt: { toDate: function () { return new Date(Date.now() - 12 * 60000); }, seconds: Math.floor((Date.now() - 12 * 60000) / 1000) },
+    exercises: [
+      { exerciseId: 'bench_press', exerciseName: 'Bankdrücken', exerciseType: 'strength', targetSets: 4, targetMode: 'reps', targetReps: '8', targetRest: 90, completedSets: [{ reps: 8, weight: 60 }, { reps: 8, weight: 60 }], status: 'in-progress', notes: '', executionType: 'normal', groupId: null, durationSec: null, intervalSec: null },
+      { exerciseId: 'dip', exerciseName: 'Dips', exerciseType: 'bodyweight', targetSets: 3, targetMode: 'reps', targetReps: '10', targetRest: 90, completedSets: [], status: 'not-started', notes: '', executionType: 'normal', groupId: null, durationSec: null, intervalSec: null }
+    ]
+  };
+  window.__demoWorkout = demoWorkout;
+
   // ---- In-Memory-Globals injizieren (in anderen classic scripts deklariert) ----
   try { allExercises = demoExercises; } catch (e) {}
   try { filteredExercises = demoExercises.slice(); } catch (e) {}
@@ -90,6 +102,10 @@
     return Promise.resolve(demoPlans);
   };
   window.onUserCollectionChange = function (col, cb) { try { cb(sessions); } catch (e) {} return function () {}; };
+  // Verhindert "No authenticated user"-Throws in Code, der die User-ID braucht.
+  window.getActiveUserId = function () { return 'demo-user'; };
+  // Onboarding im Demo unterdrücken (kein Profil -> würde sonst triggern).
+  window.shouldShowOnboarding = function () { return false; };
 
   // ---- Eingeloggten User faken, damit der Bootstrap die App zeigt ----
   function fakeAuth() {
@@ -124,11 +140,18 @@
     var sp = new URLSearchParams(location.search);
     var vw = sp.get('view');
     var tb = sp.get('tab');
+    if (vw === 'workout') {
+      // Aktiven Workout-Mock bereitstellen, ohne andere Views zu beeinflussen
+      try { activeWorkout = demoWorkout; } catch (e) {}
+      window.loadActiveWorkout = function () { try { activeWorkout = demoWorkout; } catch (e) {} return true; };
+      window.getActiveWorkout = function () { return demoWorkout; };
+    }
     if (vw) {
       document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
           if (typeof showView === 'function') { try { showView(vw); } catch (e) {} }
           if (tb && typeof showTrainingTab === 'function') { setTimeout(function () { try { showTrainingTab(tb); } catch (e) {} }, 250); }
+          if (vw === 'workout' && typeof renderWorkoutScreen === 'function') { setTimeout(function () { try { renderWorkoutScreen(); } catch (e) {} }, 300); }
         }, 900);
       });
     }
