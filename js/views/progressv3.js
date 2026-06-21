@@ -737,14 +737,48 @@ function pv4Sparkline(series, color) {
   return '<svg width="80" height="28" viewBox="0 0 80 28"><polyline fill="none" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="' + pts + '"/></svg>';
 }
 
+// Per-exercise progression series. Weighted exercises -> e1RM (Epley:
+// weight*(1+reps/30)); bodyweight -> max reps. Returns { series, weighted }.
+function pv4ExerciseProgressionSeries(exerciseId, weeks) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - (weeks || 8) * 7);
+  let weighted = false;
+  (typeof allSessions !== 'undefined' ? allSessions : []).forEach(function (s) {
+    if (!s || s.type !== 'strength' || !Array.isArray(s.exercises)) return;
+    const ex = s.exercises.find(function (e) { return e && e.exerciseId === exerciseId; });
+    if (!ex || !Array.isArray(ex.sets)) return;
+    ex.sets.forEach(function (set) { if ((Number(set.weight) || 0) > 0) weighted = true; });
+  });
+  const series = [];
+  (typeof allSessions !== 'undefined' ? allSessions : []).forEach(function (s) {
+    if (!s || s.type !== 'strength' || !Array.isArray(s.exercises)) return;
+    const d = (s.date && s.date.toDate) ? s.date.toDate() : new Date(s.date);
+    if (!(d >= cutoff)) return;
+    const ex = s.exercises.find(function (e) { return e && e.exerciseId === exerciseId; });
+    if (!ex || !Array.isArray(ex.sets) || !ex.sets.length) return;
+    let best = 0;
+    ex.sets.forEach(function (set) {
+      const reps = Number(set.reps) || 0;
+      const w = Number(set.weight) || 0;
+      const v = (weighted && w > 0) ? (w * (1 + reps / 30)) : reps;
+      if (v > best) best = v;
+    });
+    series.push({ date: d, value: Math.round(best) });
+  });
+  series.sort(function (a, b) { return a.date - b.date; });
+  return { series: series, weighted: weighted };
+}
+
 function renderV4ExerciseProgression(sessions, days) {
   try {
     const weeks = Math.max(4, Math.round((days || 30) / 7));
     const top = pv4TopExercises(sessions, 3);
     if (!top.length) return '';
     const rows = top.map(ex => {
-      let series = [];
-      try { series = (typeof aggregateStrengthData === 'function') ? aggregateStrengthData(ex.id, 'bestSet', weeks) : []; } catch (_) { series = []; }
+      let data = { series: [], weighted: false };
+      try { data = pv4ExerciseProgressionSeries(ex.id, weeks); } catch (_) { data = { series: [], weighted: false }; }
+      const series = data.series;
+      const weighted = data.weighted;
       const vals = series.map(p => p.value).filter(v => typeof v === 'number');
       const pr = vals.length ? Math.max.apply(null, vals) : 0;
       const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
@@ -754,14 +788,16 @@ function renderV4ExerciseProgression(sessions, days) {
       const trendIcon = up ? 'trending_up' : 'trending_flat';
       const trendColor = up ? 'var(--color-primary-light)' : 'var(--text-secondary)';
       const trendText = up ? 'steigt' : 'gehalten';
+      const avgStr = weighted ? ('e1RM Ø ' + avg + ' kg') : ('Ø ' + avg + ' Wdh.');
+      const prStr = weighted ? ('PR ' + pr + ' kg') : ('PR ' + pr);
       const spark = pv4Sparkline(series, up ? '#F02277' : '#9ca3af');
       return '<div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--ui-card-border);">'
         + '<div style="min-width:0;flex:1;">'
         + '<div style="font-size:15px;font-weight:600;">' + ex.name + '</div>'
         + '<div style="font-size:12px;margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
-        + '<span style="color:var(--text-secondary);">Ø ' + avg + ' Wdh.</span>'
+        + '<span style="color:var(--text-secondary);">' + avgStr + '</span>'
         + '<span style="display:inline-flex;align-items:center;gap:2px;color:' + trendColor + ';font-weight:600;"><span class="material-symbols-rounded" style="font-size:15px;">' + trendIcon + '</span>' + trendText + '</span>'
-        + '<span style="display:inline-flex;align-items:center;gap:3px;color:#f5c451;font-weight:600;"><span class="material-symbols-rounded" style="font-size:14px;">emoji_events</span>PR ' + pr + '</span>'
+        + '<span style="display:inline-flex;align-items:center;gap:3px;color:#f5c451;font-weight:600;"><span class="material-symbols-rounded" style="font-size:14px;">emoji_events</span>' + prStr + '</span>'
         + '</div></div>' + spark + '</div>';
     }).join('');
     return '<div class="pv3-card">'
