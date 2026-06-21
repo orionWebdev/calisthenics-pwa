@@ -631,6 +631,71 @@ window.closeFullHistory = closeFullHistory;
 
 // ==================== OVERVIEW ====================
 
+// ==================== WOCHENVOLUMEN PRO MUSKELGRUPPE (Redesign v3, Chunk 2) ====================
+// Sätze/Woche je primärer Muskelgruppe — der wissenschaftliche Standard (~10–20/Woche).
+// Defensiv: alles in try/catch; bei Fehler/keinen Daten -> '' (bricht die Overview nie).
+const PV4_MUSCLE_LABELS = {
+  chest: 'Brust', back: 'Rücken', legs: 'Beine', quads: 'Beine', hamstrings: 'Beine',
+  glutes: 'Gesäß', shoulders: 'Schultern', arms: 'Arme', biceps: 'Bizeps', triceps: 'Trizeps',
+  core: 'Core', abs: 'Core', fullbody: 'Ganzkörper', cardio: 'Cardio'
+};
+
+function pv4MuscleWeeklySets(sessions, days) {
+  const weeks = Math.max(1, (days || 7) / 7);
+  const exById = {};
+  if (typeof allExercises !== 'undefined' && Array.isArray(allExercises)) {
+    allExercises.forEach(e => { if (e && e.id) exById[e.id] = e; });
+  }
+  const byMuscle = {};
+  (sessions || []).forEach(s => {
+    if (!s || s.type !== 'strength' || !Array.isArray(s.exercises)) return;
+    s.exercises.forEach(ex => {
+      const setCount = Array.isArray(ex.sets) ? ex.sets.length : 0;
+      if (!setCount) return;
+      const meta = exById[ex.exerciseId];
+      const groups = (meta && Array.isArray(meta.muscleGroups) && meta.muscleGroups.length)
+        ? meta.muscleGroups
+        : (Array.isArray(ex.muscleGroups) ? ex.muscleGroups : []);
+      const primary = groups[0];
+      if (!primary) return;
+      byMuscle[primary] = (byMuscle[primary] || 0) + setCount;
+    });
+  });
+  return Object.keys(byMuscle)
+    .map(key => ({ key, perWeek: byMuscle[key] / weeks }))
+    .sort((a, b) => b.perWeek - a.perWeek);
+}
+
+function renderV4MuscleVolume(sessions, days) {
+  try {
+    const data = pv4MuscleWeeklySets(sessions, days);
+    if (!data.length) return '';
+    const rows = data.map(d => {
+      const name = PV4_MUSCLE_LABELS[d.key] || (d.key.charAt(0).toUpperCase() + d.key.slice(1));
+      const val = Math.round(d.perWeek);
+      const pct = Math.max(6, Math.min(100, (d.perWeek / 20) * 100));
+      return `
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+          <span style="width:84px;font-size:13px;color:var(--text-secondary);flex-shrink:0;">${name}</span>
+          <span style="flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;">
+            <span style="display:block;height:100%;border-radius:999px;width:${pct}%;background:linear-gradient(90deg,#C01963,#F02277);"></span>
+          </span>
+          <span style="width:42px;text-align:right;font-size:12px;color:var(--text-tertiary);font-variant-numeric:tabular-nums;">${val}</span>
+        </div>`;
+    }).join('');
+    return `
+      <div class="pv3-card">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:6px;">
+          <span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">exercise</span>Wochenvolumen · pro Muskel
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin:0;">Sätze/Woche je Muskelgruppe — Zielkorridor ~10–20.</p>
+        ${rows}
+      </div>`;
+  } catch (e) {
+    return '';
+  }
+}
+
 function renderV4Overview() {
   const days = v3PeriodDays(pv4Period);
   const sessions = v3SessionsInRange(days);
@@ -687,13 +752,17 @@ function renderV4Overview() {
     </div>
   `;
 
-  // Concept v3 order: Konsistenz → Form & Bereitschaft → Volumen/Stats → Ausdauer → Rhythmus → Kalender
+  // Wochenvolumen pro Muskelgruppe (Chunk 2) — defensiv, '' wenn keine Daten
+  const muscleVolumeHTML = renderV4MuscleVolume(sessions, days);
+
+  // Concept v3 order: Konsistenz → Form & Bereitschaft → Volumen/Stats → Muskel-Volumen → Ausdauer → Rhythmus → Kalender
   return `
     ${renderV4PeriodSelector()}
     ${konsistenzHTML}
     ${formHTML}
     ${readinessHTML}
     <div class="pv4-summary-grid">${cardsHTML}</div>
+    ${muscleVolumeHTML}
     ${runningHTML}
     ${rhythmHTML}
     ${activityCalendarHTML}
