@@ -98,3 +98,55 @@
   ) !important;
   box-shadow: none !important;
 }
+
+/* --- Fortschritt main tabs (.pv4-tab-bar: Übersicht / Übungen / Pläne) --- */
+.pv4-tab-bar {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  gap: 6px !important;
+  overflow: visible !important;
+}
+
+.pv4-tab-btn,
+.pv4-tab-btn.active {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 7px 4px 12px !important;
+}
+
+.pv4-tab-btn {
+  position: relative;
+  color: var(--text-tertiary);
+  transition: color 0.25s ease;
+}
+
+.pv4-tab-btn:hover:not(.active) {
+  background: transparent !important;
+  color: var(--text-secondary);
+}
+
+.pv4-tab-btn.active {
+  color: #fff !important;
+}
+
+.pv4-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 2.5px;
+  border-radius: 999px;
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
+  box-shadow: 0 0 12px rgba(240, 34, 119, 0.45);
+}
+
+.pv4-tab-btn:active {
+  transform: none !important;
+}
