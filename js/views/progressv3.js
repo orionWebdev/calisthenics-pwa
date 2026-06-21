@@ -257,22 +257,25 @@ function renderProgressV3() { renderProgressV4(); }
 
 // ==================== TAB BAR ====================
 
+// Redesign v3 (Chunk 4): no more Übersicht/Übungen/Pläne tabs — the overview is a
+// single scroll page. Sub-views (exercise trends via "Alle anzeigen") get a back button.
 function renderV4TabBar() {
-  const tabs = [
-    { key: 'overview', label: trV3('progress.v4.tabs.overview'), icon: 'dashboard' },
-    { key: 'exercises', label: trV3('progress.v4.tabs.exercises'), icon: 'fitness_center' },
-    { key: 'plans', label: trV3('progress.v4.tabs.plans'), icon: 'assignment' }
-  ];
+  if (pv4Tab === 'overview') return '';
   return `
-    <div class="pv4-tab-bar">
-      ${tabs.map(tab => `
-        <button class="pv4-tab-btn${tab.key === pv4Tab ? ' active' : ''}" data-tab="${tab.key}">
-          <span class="material-symbols-rounded pv4-tab-icon">${tab.icon}</span>
-          <span class="pv4-tab-label">${tab.label}</span>
-        </button>
-      `).join('')}
-    </div>`;
+    <button class="pv4-back-btn" type="button" onclick="pv4BackToOverview()"
+      style="display:inline-flex;align-items:center;gap:4px;background:none;border:none;color:var(--color-primary-light);font-family:inherit;font-size:14px;font-weight:600;padding:6px 2px 14px;cursor:pointer;">
+      <span class="material-symbols-rounded" style="font-size:20px;">arrow_back</span>Übersicht
+    </button>`;
 }
+
+window.pv4BackToOverview = function () {
+  try {
+    pv4Tab = 'overview';
+    pv4ExerciseDetailId = null;
+    pv4PlanDetailId = null;
+    renderProgressV4();
+  } catch (e) {}
+};
 
 function attachV4TabListeners() {
   document.querySelectorAll('.pv4-tab-btn').forEach(btn => {
@@ -287,8 +290,8 @@ function attachV4TabListeners() {
 // ==================== TAB CONTENT ROUTER ====================
 
 function renderV4TabContent() {
+  // Plans are no longer a Progress sub-view (they live in Training).
   if (pv4Tab === 'exercises') return renderV4ExerciseTrends();
-  if (pv4Tab === 'plans') return renderV4PlanProgress();
   return renderV4Overview();
 }
 
