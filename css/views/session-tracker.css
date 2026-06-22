@@ -197,6 +197,20 @@
   color: var(--color-text-muted, #9ca3af);
 }
 
+/* Muscle badge (workout.png) */
+.st-detail-muscle {
+  flex-shrink: 0;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  color: var(--color-primary-light, #F02277);
+  background: rgba(192, 25, 99, 0.16);
+}
+
 .st-detail-add {
   display: flex;
   align-items: center;
@@ -322,13 +336,13 @@
   color: #C01963;
 }
 
-/* Set Values */
+/* Set Values — kompakte Tabelle (WDH | KG nebeneinander), wie workout.png */
 .st-set-values {
   flex: 1;
   display: flex;
   gap: 0.5rem;
   min-width: 0;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .st-set-val {
@@ -373,7 +387,7 @@
 }
 
 .st-set-val-num {
-  font-size: var(--font-size-lg, 1.25rem);
+  font-size: 1.05rem;
   font-weight: var(--font-weight-bold, 700);
   color: var(--color-text, #fff);
   line-height: 1.1;
@@ -1408,6 +1422,17 @@
 
 
 /* ===== Redesign: header progress bar + primary "Nächste Übung" CTA ===== */
+.st-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 16px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+
 .st-progress-track {
   height: 4px;
   background: rgba(255, 255, 255, 0.08);

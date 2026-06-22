@@ -75,12 +75,20 @@ function renderSTDetail(exercise) {
   };
   const typeLabel = typeLabelMap[exType] || t('workout.screen.weighted');
 
+  // Muskel-Badge (workout.png: z.B. "Brust" oben rechts)
+  const exMeta = (typeof allExercises !== 'undefined' && Array.isArray(allExercises))
+    ? allExercises.find(e => e && e.id === exercise.exerciseId) : null;
+  const primaryMuscle = (exMeta && Array.isArray(exMeta.muscleGroups)) ? exMeta.muscleGroups[0] : null;
+  const muscleMap = { chest: 'Brust', back: 'Rücken', legs: 'Beine', quads: 'Beine', hamstrings: 'Beine', glutes: 'Gesäß', shoulders: 'Schultern', arms: 'Arme', biceps: 'Bizeps', triceps: 'Trizeps', core: 'Core', abs: 'Core', fullbody: 'Ganzkörper', cardio: 'Cardio' };
+  const muscleBadge = primaryMuscle ? `<span class="st-detail-muscle">${muscleMap[primaryMuscle] || primaryMuscle}</span>` : '';
+
   return `
     <div class="st-detail">
       <div class="st-detail-info">
         <h3 class="st-detail-name">${exercise.exerciseName}</h3>
         <span class="st-detail-type">${typeLabel}</span>
       </div>
+      ${muscleBadge}
     </div>
   `;
 }

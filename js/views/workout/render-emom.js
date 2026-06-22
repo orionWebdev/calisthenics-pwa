@@ -128,23 +128,27 @@ function stopWorkoutTimer() {
  */
 function renderSTHeader(progress) {
   const pct = (progress && progress.total) ? Math.round((progress.completed / progress.total) * 100) : 0;
+  const total = (activeWorkout && Array.isArray(activeWorkout.exercises)) ? activeWorkout.exercises.length : (progress.total || 0);
+  const current = (activeWorkout ? (activeWorkout.currentExerciseIndex || 0) : 0) + 1;
   return `
     <div class="st-header">
       <button type="button" class="st-header-back" onclick="showView('dashboard')" aria-label="${t('common.back')}">
-        <span class="material-symbols-rounded">arrow_back</span>
+        <span class="material-symbols-rounded">close</span>
       </button>
       <div class="st-header-center">
         <h2 class="st-header-title">${activeWorkout.planName || t('workout.screen.freeWorkout')}</h2>
         <div class="st-header-sub">
           <span class="material-symbols-rounded" style="font-size:14px;">timer</span>
           <span id="workout-elapsed-timer">${getWorkoutElapsedStr()}</span>
-          <span class="st-header-dot">&middot;</span>
-          <span>${t('workout.screen.exerciseProgress', { completed: progress.completed, total: progress.total })}</span>
         </div>
       </div>
       <button type="button" class="st-header-menu" onclick="showWorkoutMenu()" aria-label="${t('workout.screen.menu')}">
         <span class="material-symbols-rounded">more_horiz</span>
       </button>
+    </div>
+    <div class="st-progress-meta">
+      <span>Übung ${current} von ${total}</span>
+      <span>${pct}%</span>
     </div>
     <div class="st-progress-track" aria-hidden="true"><div class="st-progress-fill" style="width:${pct}%"></div></div>
   `;
