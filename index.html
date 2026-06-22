@@ -209,15 +209,15 @@
         <div class="flex gap-2">
           <button onclick="showView('dashboard')" class="nav-btn active" data-view="dashboard">
             <span class="material-symbols-rounded">home</span>
-            <span>Dashboard</span>
+            <span>Heute</span>
           </button>
           <button onclick="showView('training')" class="nav-btn" data-view="training">
             <span class="material-symbols-rounded">fitness_center</span>
             <span>Training</span>
           </button>
           <button onclick="showView('progress')" class="nav-btn" data-view="progress">
-            <span class="material-symbols-rounded">trending_up</span>
-            <span>Progress</span>
+            <span class="material-symbols-rounded">insights</span>
+            <span>Fortschritt</span>
           </button>
           <button onclick="showView('profile')" class="nav-btn" data-view="profile">
             <span class="material-symbols-rounded">account_circle</span>
@@ -240,39 +240,12 @@
     </div>
   </div>
 
-  <!-- Floating Action Button (Mobile) -->
-  <div class="fab-container">
-    <button id="fab-main" class="fab-main" onclick="toggleRadialMenu()">
-      <span id="fab-icon" class="material-symbols-rounded fab-icon">fitness_center</span>
-    </button>
-
-    <!-- Radial Menu Items -->
-    <div id="radial-menu" class="radial-menu">
-      <button class="radial-menu-item" data-view="progress" onclick="showViewFromRadial('progress')" style="--item-index: 0">
-        <span class="material-symbols-rounded radial-icon">trending_up</span>
-      </button>
-      <button class="radial-menu-item" data-view="training" onclick="showViewFromRadial('training')" style="--item-index: 1">
-        <span class="material-symbols-rounded radial-icon">fitness_center</span>
-      </button>
-    </div>
-    
-    <!-- Overlay -->
-    <div id="radial-overlay" class="radial-overlay" onclick="closeRadialMenu()"></div>
-  </div>
-
-  <!-- BOTTOM NAVIGATION (Mobile) -->
+  <!-- BOTTOM NAVIGATION (Mobile) — Heute / Training / [+] / Fortschritt / Profil (Mockup) -->
   <nav class="bottom-nav">
-    <span class="bottom-nav-indicator" aria-hidden="true"></span>
     <button class="bottom-nav-item active" data-view="dashboard" onclick="showView('dashboard')">
       <span class="bottom-nav-item-content">
         <span class="material-symbols-rounded">home</span>
-        <span class="bottom-nav-label" data-i18n="nav.dashboard">Home</span>
-      </span>
-    </button>
-    <button class="bottom-nav-item" data-view="progress" onclick="showView('progress')">
-      <span class="bottom-nav-item-content">
-        <span class="material-symbols-rounded">trending_up</span>
-        <span class="bottom-nav-label" data-i18n="nav.progress">Progress</span>
+        <span class="bottom-nav-label" data-i18n="nav.dashboard">Heute</span>
       </span>
     </button>
     <button class="bottom-nav-item" data-view="training" onclick="showView('training')">
@@ -281,7 +254,25 @@
         <span class="bottom-nav-label" data-i18n="nav.training">Training</span>
       </span>
     </button>
+    <span class="bottom-nav-fab-slot" aria-hidden="true"></span>
+    <button class="bottom-nav-item" data-view="progress" onclick="showView('progress')">
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">insights</span>
+        <span class="bottom-nav-label" data-i18n="nav.progress">Fortschritt</span>
+      </span>
+    </button>
+    <button class="bottom-nav-item" data-view="profile" onclick="showView('profile')">
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">account_circle</span>
+        <span class="bottom-nav-label" data-i18n="nav.profile">Profil</span>
+      </span>
+    </button>
   </nav>
+
+  <!-- Center workout FAB — sibling of the nav so the nav's backdrop-filter can't clip it -->
+  <button class="bottom-nav-fab" onclick="openAddWorkoutSheet()" aria-label="Workout loggen">
+    <span class="material-symbols-rounded">add</span>
+  </button>
 
   <div class="max-w-6xl mx-auto p-4 md:pt-24 pt-4" id="main-content">
 
@@ -313,13 +304,8 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Scheduled Workouts Today (sits directly above plan calendar) -->
+      <!-- Scheduled Workouts Today (the full unified calendar lives in Training → Kalender) -->
       <div id="dashboard-scheduled-card" class="mb-4">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
-      <!-- Plan Calendar Widget (forward-looking — activity calendar moved to Progress page) -->
-      <div id="dashboard-plan-calendar" class="dashboard-card mb-4 reveal">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
@@ -330,20 +316,16 @@
         <!-- TRAINING VIEW -->
     <div id="view-training" class="view hidden">
 
-      <div id="training-segmented-control" class="progress-section">
-        <div class="segmented-control">
-          <button
-            class="segmented-btn active"
-            onclick="switchTrainingTab('plans')"
-            data-tab="plans"
-          >
+      <div id="training-segmented-control" class="progress-section reveal">
+        <div class="pv3-segmented-control" style="--seg-count:3;--active-idx:0">
+          <div class="pv3-seg-indicator"></div>
+          <button class="pv3-seg-btn active" onclick="switchTrainingTab('plans')" data-tab="plans">
             <span data-i18n="nav.plans">Pläne</span>
           </button>
-          <button
-            class="segmented-btn"
-            onclick="switchTrainingTab('exercises')"
-            data-tab="exercises"
-          >
+          <button class="pv3-seg-btn" onclick="switchTrainingTab('calendar')" data-tab="calendar">
+            <span data-i18n="nav.calendar">Kalender</span>
+          </button>
+          <button class="pv3-seg-btn" onclick="switchTrainingTab('exercises')" data-tab="exercises">
             <span data-i18n="nav.exercises">Übungen</span>
           </button>
         </div>
@@ -359,7 +341,7 @@
         </div>
 
         <!-- Plan Filters -->
-        <div class="plan-filters-bar">
+        <div class="plan-filters-bar reveal">
           <button class="filter-chip" id="plan-type-filter-btn" onclick="openPlanTypeFilterSheet()">
             <span class="material-symbols-rounded">category</span>
             <span id="plan-type-filter-label"></span>
@@ -378,13 +360,18 @@
         </div>
 
         <!-- Plans Grid -->
-        <div id="plans-grid" class="plans-grid">
+        <div id="plans-grid" class="plans-grid reveal">
           <!-- Wird von JavaScript gefüllt -->
           <div class="col-span-full text-center py-12 text-gray-400">
             <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">assignment</span>
             <p id="plans-loading-text"></p>
           </div>
         </div>
+      </div>
+
+      <div id="training-tab-calendar" class="training-tab">
+        <!-- Unified calendar: past = done, future = planned. Mounted by renderTrainingCalendar(). -->
+        <div id="training-calendar-mount" class="reveal"></div>
       </div>
 
       <div id="training-tab-exercises" class="training-tab">
@@ -397,7 +384,7 @@
         </div>
 
         <!-- Sticky Search Bar -->
-        <div class="exercise-search-sticky" id="exercise-search-sticky">
+        <div class="exercise-search-sticky reveal" id="exercise-search-sticky">
           <div class="exercise-search-bar">
             <span class="material-symbols-rounded exercise-search-icon">search</span>
             <input
@@ -421,7 +408,7 @@
         </div>
 
         <!-- Filter Chips -->
-        <div class="exercise-filters-bar">
+        <div class="exercise-filters-bar reveal">
           <button class="filter-chip active" id="exercise-muscle-filter-btn" onclick="openMuscleGroupFilterSheet()">
             <span class="material-symbols-rounded">body_system</span>
             <span id="exercise-muscle-filter-label"></span>
@@ -443,7 +430,7 @@
         <div id="active-filters" class="active-filters" style="display: none;"></div>
 
         <!-- Exercises Grid -->
-        <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div id="exercises-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 reveal">
           <!-- Wird von JavaScript gefüllt -->
           <div class="col-span-full text-center py-12 text-gray-400">
             <span class="material-symbols-rounded" style="font-size: 64px; display: block; margin: 0 auto 1rem;">fitness_center</span>
@@ -470,13 +457,13 @@
 
     <!-- WORKOUT VIEW -->
     <div id="view-workout" class="view hidden">
-      <div id="workout-screen-container">
+      <div id="workout-screen-container" class="reveal">
         <!-- Wird von JS gefuellt -->
       </div>
     </div>
     <!-- PROFILE & SETTINGS VIEW -->
     <div id="view-profile" class="view hidden">
-      <div id="settings-container" class="space-y-6">
+      <div id="settings-container" class="space-y-6 reveal">
         <!-- Wird von js/settings.js gerendert -->
       </div>
     </div>
@@ -1860,6 +1847,8 @@
   <!-- Effects + App bootstrap -->
   <script src="js/ui/ripple.js"></script>
   <script src="js/ui/reveal.js"></script>
+  <!-- Demo mode (?demo=1): mock-data preview without login; inert otherwise -->
+  <script src="js/dev/demoMode.js"></script>
   <script src="js/core/app.js"></script>
 
   <!-- POST-WORKOUT SUMMARY MODAL -->

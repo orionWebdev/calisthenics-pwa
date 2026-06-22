@@ -128,8 +128,10 @@
 /* Fullscreen workout mode: hide all chrome */
 body.workout-fullscreen .mobile-nav-header,
 body.workout-fullscreen .bottom-nav,
+body.workout-fullscreen .bottom-nav-fab,
 body.workout-fullscreen .fab-container,
-body.workout-fullscreen .desktop-nav {
+body.workout-fullscreen .desktop-nav,
+body.workout-fullscreen .active-workout-banner {
   display: none !important;
 }
 

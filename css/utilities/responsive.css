@@ -79,6 +79,10 @@ input::placeholder {
     display: flex;
   }
 
+  .bottom-nav-fab {
+    display: flex;
+  }
+
   /* Dynamisches Bottom-Padding für Content: Navigation-Höhe + Safe Area + Extra-Abstand */
   #main-content {
     padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0) + 1rem) !important;

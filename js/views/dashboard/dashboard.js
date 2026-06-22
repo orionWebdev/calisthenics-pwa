@@ -327,18 +327,19 @@ function renderScheduledWorkoutsCard(state) {
         <span class="dashboard-scheduled-name">${workout.planName}</span>
       </div>
       <div class="dashboard-scheduled-meta">
-        <span class="dashboard-scheduled-duration">${workout.planDuration || 45} Min</span>
-        <span class="material-symbols-rounded dashboard-scheduled-play">play_arrow</span>
+        <span class="dashboard-scheduled-duration">${workout.planDuration || 45} min</span>
+        <span class="dashboard-scheduled-play"><span class="material-symbols-rounded">play_arrow</span></span>
       </div>
     </div>
   `).join('');
 
   container.innerHTML = `
     <div class="dashboard-scheduled-widget">
-      <div class="dashboard-scheduled-header" onclick="document.getElementById('dashboard-plan-calendar')?.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor: pointer;">
-        <span class="material-symbols-rounded">event</span>
-        <span>${tr('dashboard.scheduled.title')}</span>
-        <span class="material-symbols-rounded" style="margin-left: auto; font-size: 18px; opacity: 0.5;">chevron_right</span>
+      <div class="dashboard-scheduled-header">
+        <span class="dashboard-scheduled-title">${tr('dashboard.scheduled.title')}</span>
+        <button class="dashboard-scheduled-cal-link" type="button" onclick="if(typeof showTrainingTab==='function')showTrainingTab('calendar')">
+          ${tr('nav.calendar')}<span class="material-symbols-rounded">chevron_right</span>
+        </button>
       </div>
       <div class="dashboard-scheduled-list">
         ${items}

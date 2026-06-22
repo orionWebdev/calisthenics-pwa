@@ -15,9 +15,10 @@
 
 /* Settings card */
 .settings-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-primary);
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
   border-radius: var(--ui-card-radius-xl);
+  box-shadow: var(--ui-card-shadow);
   overflow: hidden;
 }
 
@@ -42,11 +43,17 @@
 }
 
 .settings-row-icon {
-  font-size: 20px;
+  font-size: 19px;
   color: var(--text-secondary);
   flex-shrink: 0;
-  width: 24px;
-  text-align: center;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 10px;
 }
 
 .settings-row-label {
@@ -76,6 +83,8 @@
 
 .settings-row-danger .settings-row-icon {
   color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
 }
 
 /* Toggle switch */

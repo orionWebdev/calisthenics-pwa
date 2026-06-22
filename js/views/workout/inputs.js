@@ -75,12 +75,20 @@ function renderSTDetail(exercise) {
   };
   const typeLabel = typeLabelMap[exType] || t('workout.screen.weighted');
 
+  // Muskel-Badge (workout.png: z.B. "Brust" oben rechts)
+  const exMeta = (typeof allExercises !== 'undefined' && Array.isArray(allExercises))
+    ? allExercises.find(e => e && e.id === exercise.exerciseId) : null;
+  const primaryMuscle = (exMeta && Array.isArray(exMeta.muscleGroups)) ? exMeta.muscleGroups[0] : null;
+  const muscleMap = { chest: 'Brust', back: 'Rücken', legs: 'Beine', quads: 'Beine', hamstrings: 'Beine', glutes: 'Gesäß', shoulders: 'Schultern', arms: 'Arme', biceps: 'Bizeps', triceps: 'Trizeps', core: 'Core', abs: 'Core', fullbody: 'Ganzkörper', cardio: 'Cardio' };
+  const muscleBadge = primaryMuscle ? `<span class="st-detail-muscle">${muscleMap[primaryMuscle] || primaryMuscle}</span>` : '';
+
   return `
     <div class="st-detail">
       <div class="st-detail-info">
         <h3 class="st-detail-name">${exercise.exerciseName}</h3>
         <span class="st-detail-type">${typeLabel}</span>
       </div>
+      ${muscleBadge}
     </div>
   `;
 }
@@ -428,7 +436,7 @@ function renderSTSetList(exercise) {
   if (exType === 'recovery') return renderSTRecoveryInput(exercise);
 
   const holdMode = getActiveSetMode(exercise) === 'hold';
-  const targetSets = exercise.targetSets || 3;
+  const targetSets = getTargetSetCount(exercise);
   const completedCount = exercise.completedSets.length;
   const valueUnit = holdMode ? t('workout.holdDurationLabel') : t('workout.logging.totalReps');
 
@@ -511,36 +519,18 @@ function renderSTSetList(exercise) {
       <div class="st-set-row st-set-row--active" data-set-index="active">
         <div class="st-set-num st-set-num--active">${activeSetNum}</div>
         <div class="st-set-values">
-          <div class="st-set-stepper-group">
-            <button type="button" class="st-stepper-btn" onclick="adjustActiveSetValue('reps', -1)" aria-label="-1">
-              <span class="material-symbols-rounded">remove</span>
-            </button>
-            <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('reps')" id="active-reps-btn" data-value="${activeSetValues.reps}">
-              <span class="st-set-val-num" id="active-reps-value">${activeSetValues.reps}</span>
-              <span class="st-set-val-unit">${valueUnit}</span>
-            </button>
-            <button type="button" class="st-stepper-btn" onclick="adjustActiveSetValue('reps', 1)" aria-label="+1">
-              <span class="material-symbols-rounded">add</span>
-            </button>
-          </div>
-          <div class="st-set-stepper-group">
-            <button type="button" class="st-stepper-btn" onclick="adjustWeightByCurrentStep(-1)" aria-label="${t('workout.setLogger.decreaseWeight')}">
-              <span class="material-symbols-rounded">remove</span>
-            </button>
-            <button type="button" class="st-set-val st-set-val--editable" onclick="handleWeightValueTap()" id="active-weight-btn" data-value="${activeSetValues.weight}">
-              <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
-              <span class="st-set-val-unit">${getWeightUnit()}</span>
-            </button>
-            <button type="button" class="st-stepper-btn" onclick="adjustWeightByCurrentStep(1)" aria-label="${t('workout.setLogger.increaseWeight')}">
-              <span class="material-symbols-rounded">add</span>
-            </button>
-          </div>
-        </div>
-        <div class="st-set-actions">
-          <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
-            <span class="material-symbols-rounded">check</span>
+          <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('reps')" id="active-reps-btn" data-value="${activeSetValues.reps}">
+            <span class="st-set-val-num" id="active-reps-value">${activeSetValues.reps}</span>
+            <span class="st-set-val-unit">${valueUnit}</span>
+          </button>
+          <button type="button" class="st-set-val st-set-val--editable" onclick="handleWeightValueTap()" id="active-weight-btn" data-value="${activeSetValues.weight}">
+            <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
+            <span class="st-set-val-unit">${getWeightUnit()}</span>
           </button>
         </div>
+        <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
+          <span class="material-symbols-rounded">check</span>
+        </button>
       </div>
     `;
   }
@@ -572,6 +562,9 @@ function renderSTSetList(exercise) {
   return `
     <div class="st-sets">
       ${rows}
+      <button type="button" class="st-set-add-btn" onclick="addEmptySet()">
+        <span class="material-symbols-rounded">add</span>${t('workout.setLogger.addSet') || 'Satz hinzufügen'}
+      </button>
     </div>
   `;
 }

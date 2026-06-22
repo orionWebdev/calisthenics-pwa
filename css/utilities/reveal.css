@@ -19,10 +19,32 @@
   transform: none;
 }
 
+/* ========================================
+   SAFETY NET — content can never get stuck invisible.
+   IntersectionObserver does not reliably fire when a .reveal lives inside a
+   container that toggles display:none -> block (view/tab switches). So any
+   .reveal inside an ACTIVE view is guaranteed to animate in via pure CSS,
+   independent of JS. IO still handles the scroll-stagger when it does fire;
+   once it adds .in, :not(.in) stops matching and this rule yields to it.
+   ======================================== */
+@keyframes reveal-fallback-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.js-reveal .view.active .reveal:not(.in) {
+  animation: reveal-fallback-in 0.55s cubic-bezier(0.22, 0.7, 0.2, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .js-reveal .reveal {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .js-reveal .view.active .reveal:not(.in) {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

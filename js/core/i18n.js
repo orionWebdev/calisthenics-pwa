@@ -43,8 +43,8 @@ const translations = {
       secondsShort: '{n}s'
     },
     nav: {
-      dashboard: 'Home',
-      progress: 'Progress',
+      dashboard: 'Heute',
+      progress: 'Fortschritt',
       calendar: 'Kalender',
       training: 'Training',
       profile: 'Profil',

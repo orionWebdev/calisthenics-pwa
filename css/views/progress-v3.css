@@ -87,9 +87,16 @@
 
 /* Card base */
 .pv3-card {
-  background: var(--bg-card);
-  border-radius: 1rem;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 20px;
+  box-shadow: var(--ui-card-shadow);
   padding: 1.25rem;
+}
+
+/* Konsistenz-Hero: subtiler pinker Tint über dem Karten-Gradient (Mockup) */
+.pv3-card.pv4-konsistenz-hero {
+  background: linear-gradient(157deg, #211520 0%, #141014 60%, #0f0f11 100%);
 }
 
 .pv3-card-header {
@@ -638,4 +645,314 @@
     font-size: var(--font-size-xs);
   }
 }
+
+/* ========================================================================
+   REDESIGN v3 — Fortschritt-Karten im Mockup-Stil (fortschritt.html)
+   ======================================================================== */
+
+.pv4-sec-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+.pv4-sec-title .material-symbols-rounded {
+  font-size: 18px;
+  color: var(--color-primary-light);
+}
+
+.pv4-lead {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--text-primary);
+}
+.pv4-lead b { font-weight: 700; }
+.pv4-muted { color: var(--text-secondary); }
+
+.pv4-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.pv4-sec-action {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary-light);
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.pv4-sec-action .material-symbols-rounded { font-size: 16px; }
+
+/* --- Konsistenz-Hero --- */
+.pv4-stat3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+.pv4-mini { text-align: center; }
+.pv4-mini .v {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.pv4-mini .v small { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.pv4-mini .l {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-top: 3px;
+}
+.pv4-weeks {
+  display: flex;
+  gap: 4px;
+  margin-top: 16px;
+  align-items: flex-end;
+  height: 38px;
+}
+.pv4-weeks i {
+  flex: 1;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  height: 100%;
+}
+.pv4-weeks i.on { background: linear-gradient(180deg, #F02277, #C01963); }
+
+/* --- Form & Bereitschaft --- */
+.pv4-form-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.pv4-form-score {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.pv4-form-zone {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+.pv4-form-chart {
+  width: 100%;
+  height: 84px;
+  display: block;
+}
+.pv4-readiness {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ui-card-border);
+}
+.pv4-ready-pill {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 12px;
+  padding: 11px 13px;
+}
+.pv4-ready-pill .l {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+.pv4-ready-pill .v {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pv4-ready-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* --- Übungs-/Ausdauer-Zeilen (shared) --- */
+.pv4-ex-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--ui-card-border);
+}
+.pv4-ex-row:last-child { border-bottom: none; padding-bottom: 0; }
+.pv4-ex-info { min-width: 0; flex: 1; }
+.pv4-ex-n {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+.pv4-ex-sub {
+  font-size: 12px;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pv4-ex-avg { color: var(--text-secondary); }
+.pv4-ex-trend { display: inline-flex; align-items: center; gap: 2px; font-weight: 600; }
+.pv4-ex-trend .material-symbols-rounded { font-size: 15px; }
+.pv4-pr { display: inline-flex; align-items: center; gap: 3px; color: var(--gold, #f5c451); font-weight: 600; }
+.pv4-pr .material-symbols-rounded { font-size: 14px; }
+
+/* Übungsliste ("Alle anzeigen") — Zeilen als Buttons */
+.pv4-ex-list { padding-top: 4px; padding-bottom: 4px; }
+.pv4-ex-row-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--ui-card-border);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+.pv4-ex-row-btn:last-child { border-bottom: none; }
+.pv4-ex-chevron { color: var(--text-tertiary); font-size: 20px; }
+
+/* --- Hybrid-Balance --- */
+.pv4-bal-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 4px 0 12px;
+}
+.pv4-bal-bar i { display: block; height: 100%; }
+.pv4-bal-legend { display: flex; flex-direction: column; gap: 7px; }
+.pv4-bal-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.pv4-bal-dot { width: 9px; height: 9px; border-radius: 50%; }
+.pv4-bal-item .pct { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+.pv4-ausdauer-footer {
+  font-size: 13px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ui-card-border);
+}
+
+/* --- Form & Belastung (fortschritt.png) --- */
+.pv4-form-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pv4-form-head .pv4-form-zone {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 4px;
+}
+.pv4-form-head .pv4-form-zone .material-symbols-rounded { font-size: 16px; }
+.pv4-form-delta {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pv4-form-delta span {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+.pv4-form-chart-wrap {
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--form-zone-color, #F02277) 12%, transparent), transparent 70%),
+    rgba(255, 255, 255, 0.02);
+}
+.pv4-form-load {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 14px;
+}
+
+/* --- Konsistenz & Volumen: Wochenvolumen-Balken --- */
+.pv4-volbars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 72px;
+  margin-top: 16px;
+}
+.pv4-volbar {
+  flex: 1;
+  min-height: 6px;
+  border-radius: 4px 4px 2px 2px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: height 0.4s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.pv4-volbar.current {
+  background: linear-gradient(180deg, #F02277, #C01963);
+  box-shadow: 0 0 14px rgba(240, 34, 119, 0.4);
+}
+.pv4-vol-caption {
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+/* --- Ausdauer (Strava-inspiriert) --- */
+.pv4-endurance-total {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary-light);
+  font-variant-numeric: tabular-nums;
+}
+.pv4-endurance-stats {
+  margin-top: 14px;
+}
+.pv4-endurance-bars {
+  height: 60px;
+  margin-top: 14px;
+}
+.pv4-endurance-sports {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ui-card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pv4-endurance-sport {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.pv4-endurance-sport .material-symbols-rounded { font-size: 18px; }
+.pv4-endurance-sport-name { color: var(--text-primary); font-weight: 600; }
+.pv4-endurance-sport-val { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 

@@ -197,6 +197,20 @@
   color: var(--color-text-muted, #9ca3af);
 }
 
+/* Muscle badge (workout.png) */
+.st-detail-muscle {
+  flex-shrink: 0;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  color: var(--color-primary-light, #F02277);
+  background: rgba(192, 25, 99, 0.16);
+}
+
 .st-detail-add {
   display: flex;
   align-items: center;
@@ -322,13 +336,13 @@
   color: #C01963;
 }
 
-/* Set Values */
+/* Set Values — kompakte Tabelle (WDH | KG nebeneinander), wie workout.png */
 .st-set-values {
   flex: 1;
   display: flex;
   gap: 0.5rem;
   min-width: 0;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .st-set-val {
@@ -373,7 +387,7 @@
 }
 
 .st-set-val-num {
-  font-size: var(--font-size-lg, 1.25rem);
+  font-size: 1.05rem;
   font-weight: var(--font-weight-bold, 700);
   color: var(--color-text, #fff);
   line-height: 1.1;
@@ -391,6 +405,31 @@
 .st-set-row--empty .st-set-val-num {
   color: rgba(255, 255, 255, 0.25);
 }
+
+/* "+ Satz hinzufügen" innerhalb der Set-Karte (workout.png) */
+.st-set-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--color-text-muted, #9ca3af);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.st-set-add-btn:hover {
+  border-color: rgba(192, 25, 99, 0.4);
+  color: var(--color-primary-light, #F02277);
+}
+.st-set-add-btn .material-symbols-rounded { font-size: 18px; }
 
 /* Check Button */
 .st-set-check {
@@ -1406,3 +1445,90 @@
   }
 }
 
+
+/* ===== Redesign: header progress bar + primary "Nächste Übung" CTA ===== */
+.st-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 16px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+
+.st-progress-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  margin: 2px 16px 10px;
+  overflow: hidden;
+}
+.st-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
+  transition: width 0.4s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+.workout-next-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 32px);
+  margin: 10px 16px 6px;
+  height: 52px;
+  border: none;
+  border-radius: 16px;
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 8px 24px rgba(192, 25, 99, 0.4);
+  cursor: pointer;
+}
+.workout-next-cta .material-symbols-rounded { font-size: 22px; }
+
+/* "Als Nächstes"-Karte (workout.png) */
+.workout-next-up {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% - 32px);
+  margin: 10px 16px 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--ui-card-border, rgba(255, 255, 255, 0.07));
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.workout-next-up-icon {
+  font-size: 20px;
+  color: var(--color-primary-light, #F02277);
+  flex-shrink: 0;
+}
+.workout-next-up-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.workout-next-up-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary, #6b7280);
+}
+.workout-next-up-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

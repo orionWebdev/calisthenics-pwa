@@ -88,7 +88,7 @@ function addEmptySet() {
   const exercise = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
   if (!exercise) return;
 
-  exercise.targetSets = (exercise.targetSets || 3) + 1;
+  exercise.targetSets = getTargetSetCount(exercise) + 1;
   saveActiveWorkout();
   renderWorkoutScreen();
   triggerHapticFeedback('light');

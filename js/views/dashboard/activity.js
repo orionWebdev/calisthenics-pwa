@@ -447,6 +447,15 @@ function getFormZoneLabel(zone) {
   return (label && label !== key) ? label : (zone || 'maintaining');
 }
 
+// Tägliche Bereitschaft (ACWR-Zone) — kurze deutsche Labels.
+function readinessZoneLabel(zone) {
+  const m = {
+    overreaching: 'Überlastet', fatigued: 'Ermüdet', maintaining: 'Bereit',
+    building: 'Aufbauend', peak: 'Topform', form_loss: 'Formverlust', fresh: 'Erholt'
+  };
+  return m[zone] || 'Bereit';
+}
+
 function renderDashboardFormHero() {
   const container = document.getElementById('dashboard-form-hero');
   if (!container) return;
@@ -476,14 +485,17 @@ function renderDashboardFormHero() {
   const hint = (typeof getFormHint === 'function') ? getFormHint(data.formScore, zone) : '';
   const trendIcon = (typeof getFormTrendIcon === 'function') ? getFormTrendIcon(data.trend) : 'trending_flat';
 
+  // Mockup (heute): nur Ring + Form-Erklärtext. Die Tages-Bereitschaft wurde
+  // bewusst aus dem Trainingsform-Widget entfernt.
+
   // Ring-Geometrie (viewBox 160×160, r=66)
   const r = 66;
   const circ = 2 * Math.PI * r;
   const clamped = Math.max(0, Math.min(100, score));
   const offset = circ * (1 - clamped / 100);
 
-  const titleRaw = tr('progress.form.title');
-  const heroTitle = (titleRaw && titleRaw.indexOf('.') === -1) ? titleRaw : 'Form';
+  // Mockup (heute): das Widget heißt "Trainingsform".
+  const heroTitle = 'Trainingsform';
 
   container.innerHTML = `
     <div class="dashboard-card dashboard-form-hero-card" role="button" tabindex="0" onclick="openProgressOverview()">

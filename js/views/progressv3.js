@@ -241,11 +241,6 @@ function renderProgressV4() {
 
   if (pv4Tab === 'overview') {
     attachV4PeriodListeners();
-    // Initialize charts after DOM is ready
-    setTimeout(() => {
-      initEnduranceCharts();
-      attachEnduranceSportListeners();
-    }, 50);
   }
 
   // Draw sparklines
@@ -257,22 +252,25 @@ function renderProgressV3() { renderProgressV4(); }
 
 // ==================== TAB BAR ====================
 
+// Redesign v3 (Chunk 4): no more Übersicht/Übungen/Pläne tabs — the overview is a
+// single scroll page. Sub-views (exercise trends via "Alle anzeigen") get a back button.
 function renderV4TabBar() {
-  const tabs = [
-    { key: 'overview', label: trV3('progress.v4.tabs.overview'), icon: 'dashboard' },
-    { key: 'exercises', label: trV3('progress.v4.tabs.exercises'), icon: 'fitness_center' },
-    { key: 'plans', label: trV3('progress.v4.tabs.plans'), icon: 'assignment' }
-  ];
+  if (pv4Tab === 'overview') return '';
   return `
-    <div class="pv4-tab-bar">
-      ${tabs.map(tab => `
-        <button class="pv4-tab-btn${tab.key === pv4Tab ? ' active' : ''}" data-tab="${tab.key}">
-          <span class="material-symbols-rounded pv4-tab-icon">${tab.icon}</span>
-          <span class="pv4-tab-label">${tab.label}</span>
-        </button>
-      `).join('')}
-    </div>`;
+    <button class="pv4-back-btn" type="button" onclick="pv4BackToOverview()"
+      style="display:inline-flex;align-items:center;gap:4px;background:none;border:none;color:var(--color-primary-light);font-family:inherit;font-size:14px;font-weight:600;padding:6px 2px 14px;cursor:pointer;">
+      <span class="material-symbols-rounded" style="font-size:20px;">arrow_back</span>Übersicht
+    </button>`;
 }
+
+window.pv4BackToOverview = function () {
+  try {
+    pv4Tab = 'overview';
+    pv4ExerciseDetailId = null;
+    pv4PlanDetailId = null;
+    renderProgressV4();
+  } catch (e) {}
+};
 
 function attachV4TabListeners() {
   document.querySelectorAll('.pv4-tab-btn').forEach(btn => {
@@ -287,8 +285,8 @@ function attachV4TabListeners() {
 // ==================== TAB CONTENT ROUTER ====================
 
 function renderV4TabContent() {
+  // Plans are no longer a Progress sub-view (they live in Training).
   if (pv4Tab === 'exercises') return renderV4ExerciseTrends();
-  if (pv4Tab === 'plans') return renderV4PlanProgress();
   return renderV4Overview();
 }
 
@@ -631,55 +629,414 @@ window.closeFullHistory = closeFullHistory;
 
 // ==================== OVERVIEW ====================
 
+// ==================== WOCHENVOLUMEN PRO MUSKELGRUPPE (Redesign v3, Chunk 2) ====================
+// Sätze/Woche je primärer Muskelgruppe — der wissenschaftliche Standard (~10–20/Woche).
+// Defensiv: alles in try/catch; bei Fehler/keinen Daten -> '' (bricht die Overview nie).
+const PV4_MUSCLE_LABELS = {
+  chest: 'Brust', back: 'Rücken', legs: 'Beine', quads: 'Beine', hamstrings: 'Beine',
+  glutes: 'Gesäß', shoulders: 'Schultern', arms: 'Arme', biceps: 'Bizeps', triceps: 'Trizeps',
+  core: 'Core', abs: 'Core', fullbody: 'Ganzkörper', cardio: 'Cardio'
+};
+
+function pv4MuscleWeeklySets(sessions, days) {
+  const weeks = Math.max(1, (days || 7) / 7);
+  const exById = {};
+  if (typeof allExercises !== 'undefined' && Array.isArray(allExercises)) {
+    allExercises.forEach(e => { if (e && e.id) exById[e.id] = e; });
+  }
+  const byMuscle = {};
+  (sessions || []).forEach(s => {
+    if (!s || s.type !== 'strength' || !Array.isArray(s.exercises)) return;
+    s.exercises.forEach(ex => {
+      const setCount = Array.isArray(ex.sets) ? ex.sets.length : 0;
+      if (!setCount) return;
+      const meta = exById[ex.exerciseId];
+      const groups = (meta && Array.isArray(meta.muscleGroups) && meta.muscleGroups.length)
+        ? meta.muscleGroups
+        : (Array.isArray(ex.muscleGroups) ? ex.muscleGroups : []);
+      const primary = groups[0];
+      if (!primary) return;
+      byMuscle[primary] = (byMuscle[primary] || 0) + setCount;
+    });
+  });
+  return Object.keys(byMuscle)
+    .map(key => ({ key, perWeek: byMuscle[key] / weeks }))
+    .sort((a, b) => b.perWeek - a.perWeek);
+}
+
+function renderV4MuscleVolume(sessions, days) {
+  try {
+    const data = pv4MuscleWeeklySets(sessions, days);
+    if (!data.length) return '';
+    const rows = data.map(d => {
+      const name = PV4_MUSCLE_LABELS[d.key] || (d.key.charAt(0).toUpperCase() + d.key.slice(1));
+      const val = Math.round(d.perWeek);
+      const pct = Math.max(6, Math.min(100, (d.perWeek / 20) * 100));
+      return `
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+          <span style="width:84px;font-size:13px;color:var(--text-secondary);flex-shrink:0;">${name}</span>
+          <span style="flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden;">
+            <span style="display:block;height:100%;border-radius:999px;width:${pct}%;background:linear-gradient(90deg,#C01963,#F02277);"></span>
+          </span>
+          <span style="width:42px;text-align:right;font-size:12px;color:var(--text-tertiary);font-variant-numeric:tabular-nums;">${val}</span>
+        </div>`;
+    }).join('');
+    return `
+      <div class="pv3-card">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:6px;">
+          <span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">exercise</span>Wochenvolumen · pro Muskel
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin:0;">Sätze/Woche je Muskelgruppe — Zielkorridor ~10–20.</p>
+        ${rows}
+      </div>`;
+  } catch (e) {
+    return '';
+  }
+}
+
+// ==================== ÜBUNGS-PROGRESSION (Redesign v3, Chunk 3) ====================
+// Kompakt: die aktivsten Übungen mit gegl. Trend + PR (Bestwert) + Sparkline.
+// "Alle anzeigen" -> bestehender Übungen-Tab. Trend nie rot (Philosophie).
+// Favoriten-Pinning & e1RM sind spätere Refinements. Alles defensiv geguarded.
+
+function pv4TopExercises(sessions, limit) {
+  const exById = {};
+  if (typeof allExercises !== 'undefined' && Array.isArray(allExercises)) {
+    allExercises.forEach(e => { if (e && e.id) exById[e.id] = e; });
+  }
+  const agg = {};
+  (sessions || []).forEach(s => {
+    if (!s || s.type !== 'strength' || !Array.isArray(s.exercises)) return;
+    s.exercises.forEach(ex => {
+      if (!ex || !ex.exerciseId || !Array.isArray(ex.sets) || !ex.sets.length) return;
+      const id = ex.exerciseId;
+      if (!agg[id]) {
+        const meta = exById[id];
+        const name = (meta && (meta.name_de || meta.name)) || ex.name || id;
+        agg[id] = { id, name, sessions: 0 };
+      }
+      agg[id].sessions += 1;
+    });
+  });
+  return Object.keys(agg).map(k => agg[k]).sort((a, b) => b.sessions - a.sessions).slice(0, limit || 3);
+}
+
+function pv4Sparkline(series, color) {
+  const vals = (series || []).map(p => p.value).filter(v => typeof v === 'number');
+  if (vals.length < 2) return '';
+  const max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
+  const range = (max - min) || 1;
+  const W = 92, H = 34, n = vals.length;
+  const pts = vals.map((v, i) => {
+    const x = (i / (n - 1)) * (W - 4) + 2;
+    const y = H - 3 - ((v - min) / range) * (H - 8);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ');
+  return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '"><polyline fill="none" stroke="' + color + '" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" points="' + pts + '"/></svg>';
+}
+
+// Per-exercise progression series. Weighted exercises -> e1RM (Epley:
+// weight*(1+reps/30)); bodyweight -> max reps. Returns { series, weighted }.
+function pv4ExerciseProgressionSeries(exerciseId, weeks) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - (weeks || 8) * 7);
+  let weighted = false;
+  (typeof allSessions !== 'undefined' ? allSessions : []).forEach(function (s) {
+    if (!s || s.type !== 'strength' || !Array.isArray(s.exercises)) return;
+    const ex = s.exercises.find(function (e) { return e && e.exerciseId === exerciseId; });
+    if (!ex || !Array.isArray(ex.sets)) return;
+    ex.sets.forEach(function (set) { if ((Number(set.weight) || 0) > 0) weighted = true; });
+  });
+  const series = [];
+  (typeof allSessions !== 'undefined' ? allSessions : []).forEach(function (s) {
+    if (!s || s.type !== 'strength' || !Array.isArray(s.exercises)) return;
+    const d = (s.date && s.date.toDate) ? s.date.toDate() : new Date(s.date);
+    if (!(d >= cutoff)) return;
+    const ex = s.exercises.find(function (e) { return e && e.exerciseId === exerciseId; });
+    if (!ex || !Array.isArray(ex.sets) || !ex.sets.length) return;
+    let best = 0;
+    ex.sets.forEach(function (set) {
+      const reps = Number(set.reps) || 0;
+      const w = Number(set.weight) || 0;
+      const v = (weighted && w > 0) ? (w * (1 + reps / 30)) : reps;
+      if (v > best) best = v;
+    });
+    series.push({ date: d, value: Math.round(best) });
+  });
+  series.sort(function (a, b) { return a.date - b.date; });
+  return { series: series, weighted: weighted };
+}
+
+function renderV4ExerciseProgression(sessions, days) {
+  try {
+    const weeks = Math.max(4, Math.round((days || 30) / 7));
+    const top = pv4TopExercises(sessions, 3);
+    if (!top.length) return '';
+    const rows = top.map(ex => {
+      let data = { series: [], weighted: false };
+      try { data = pv4ExerciseProgressionSeries(ex.id, weeks); } catch (_) { data = { series: [], weighted: false }; }
+      const series = data.series;
+      const weighted = data.weighted;
+      const vals = series.map(p => p.value).filter(v => typeof v === 'number');
+      const first = vals.length ? vals[0] : 0;
+      const last = vals.length ? vals[vals.length - 1] : 0;
+      const delta = Math.round(last - first);
+      const up = delta > 0;
+      const unit = weighted ? 'kg' : 'Wdh.';
+      const sinceMonth = series.length ? series[0].date.toLocaleDateString('de-DE', { month: 'short' }) : '';
+      // Steigt → grün (Mockup); gehalten → neutral. Nie rot.
+      const GREEN = '#22c55e';
+      const lineColor = up ? GREEN : '#9ca3af';
+      const deltaHTML = up
+        ? '<span style="display:inline-flex;align-items:center;gap:2px;color:' + GREEN + ';font-weight:700;"><span class="material-symbols-rounded" style="font-size:14px;">arrow_upward</span>+' + delta + '</span>'
+          + (sinceMonth ? '<span style="color:var(--text-tertiary);">· seit ' + sinceMonth + '</span>' : '')
+        : '<span style="color:var(--text-secondary);font-weight:600;">gehalten</span>';
+      const spark = pv4Sparkline(series, lineColor);
+      return '<div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--ui-card-border);">'
+        + '<div style="min-width:0;flex:1;">'
+        + '<div style="font-size:15px;font-weight:600;">' + ex.name + '</div>'
+        + '<div style="font-size:12px;margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'
+        + '<span style="color:var(--text-secondary);font-weight:600;">' + last + ' ' + unit + '</span>'
+        + deltaHTML
+        + '</div></div>' + spark + '</div>';
+    }).join('');
+    return '<div class="pv3-card">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);">'
+      + '<span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">trending_up</span>Übungs-Progression</div>'
+      + '<button onclick="pv4ShowAllExercises()" style="background:none;border:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--color-primary-light);display:inline-flex;align-items:center;gap:1px;cursor:pointer;">Alle anzeigen<span class="material-symbols-rounded" style="font-size:16px;">chevron_right</span></button>'
+      + '</div>' + rows + '</div>';
+  } catch (e) {
+    return '';
+  }
+}
+
+window.pv4ShowAllExercises = function () {
+  try { pv4Tab = 'exercises'; renderProgressV4(); } catch (e) {}
+};
+
+// ==================== KONSISTENZ-HERO (Redesign v3 — Mockup-aligned) ====================
+// Hero ist der Held: Streak · Ø Sessions/Woche · Ø Stunden/Woche + 12-Wochen-Balken.
+
+// Wöchentliches Trainingsvolumen (Last/Volumen, sonst Minuten) der letzten N Wochen.
+function pv4WeeklyVolume(weeks) {
+  weeks = weeks || 8;
+  const vols = new Array(weeks).fill(0);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  (Array.isArray(allSessions) ? allSessions : []).forEach(s => {
+    const d = v3ToLocalDate(s);
+    const daysAgo = Math.floor((today - d) / 86400000);
+    if (daysAgo < 0) return;
+    const wi = Math.floor(daysAgo / 7); // 0 = this week
+    if (wi >= 0 && wi < weeks) {
+      const vol = (typeof calcSessionVolume === 'function') ? calcSessionVolume(s) : 0;
+      vols[wi] += vol > 0 ? vol : (v3GetDurationMin(s) || 0);
+    }
+  });
+  return vols.reverse(); // oldest -> newest (left -> right)
+}
+
+function renderV4ConsistencyHero(sessions, days) {
+  try {
+    const totalSessions = sessions.length;
+    const totalMinutes = sessions.reduce((s, x) => s + v3GetDurationMin(x), 0);
+    const weeksSpan = Math.max(1, days / 7);
+    const perWeek = totalSessions / weeksSpan;
+    const streak = typeof calculateStreak === 'function' ? calculateStreak() : 0;
+    const perWeekStr = perWeek.toFixed(1).replace('.', ',');
+
+    const vols = pv4WeeklyVolume(8);
+    const maxVol = Math.max.apply(null, vols.concat(1));
+    const currentHighest = vols.length > 1 && vols[vols.length - 1] >= maxVol && maxVol > 0;
+    const volBars = vols.map((v, i) => {
+      const h = Math.max(6, Math.round((v / maxVol) * 100));
+      const isCurrent = i === vols.length - 1;
+      return `<span class="pv4-volbar${isCurrent ? ' current' : ''}" style="height:${h}%"></span>`;
+    }).join('');
+    const caption = `Wöchentliches Volumen · letzte 8 Wochen${currentHighest ? ' · <b>diese Woche am höchsten</b>' : ''}`;
+
+    return `
+      <section class="pv3-card pv4-konsistenz-hero">
+        <div class="pv4-sec-title"><span class="material-symbols-rounded">local_fire_department</span>Konsistenz &amp; Volumen</div>
+        <div class="pv4-stat3">
+          <div class="pv4-mini"><div class="v">${streak} <small>Tg</small></div><div class="l">Streak</div></div>
+          <div class="pv4-mini"><div class="v">${perWeekStr}</div><div class="l">Sess./Woche</div></div>
+          <div class="pv4-mini"><div class="v">${totalMinutes} <small>min</small></div><div class="l">Bewegung</div></div>
+        </div>
+        <div class="pv4-volbars">${volBars}</div>
+        <p class="pv4-lead pv4-muted pv4-vol-caption">${caption}</p>
+      </section>`;
+  } catch (e) { return ''; }
+}
+
+// ==================== FORM & BEREITSCHAFT (Redesign v3 — eine Mockup-Karte) ====================
+// Geglätteter Form-Score + Zone + Trend-Linie + Bereitschafts-Pills (Belastung/Erholung · ACWR).
+
+function pv4FormTrendPoints(n) {
+  n = n || 8;
+  if (typeof computeFormScore !== 'function') return [];
+  const pts = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i * 7);
+    let v = null;
+    try { v = computeFormScore(allSessions, d).formScore; } catch (e) {}
+    if (typeof v === 'number') pts.push(v);
+  }
+  return pts;
+}
+
+function pv4SmoothLineSVG(values, w, h) {
+  if (!values || values.length < 2) return '';
+  const max = Math.max.apply(null, values), min = Math.min.apply(null, values);
+  const range = (max - min) || 1;
+  const pad = 8, n = values.length;
+  const coords = values.map((v, i) => {
+    const x = (i / (n - 1)) * (w - pad * 2) + pad;
+    const y = h - pad - ((v - min) / range) * (h - pad * 2);
+    return [x, y];
+  });
+  const linePts = coords.map(c => c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
+  const areaPath = 'M' + coords[0][0].toFixed(1) + ',' + coords[0][1].toFixed(1) + ' '
+    + coords.slice(1).map(c => 'L' + c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ')
+    + ' L' + coords[n - 1][0].toFixed(1) + ',' + h.toFixed(1)
+    + ' L' + coords[0][0].toFixed(1) + ',' + h.toFixed(1) + ' Z';
+  const last = coords[n - 1];
+  return `<svg class="pv4-form-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="pv4formline" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C01963"/><stop offset="1" stop-color="#F02277"/></linearGradient>
+      <linearGradient id="pv4formarea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F02277" stop-opacity="0.35"/><stop offset="1" stop-color="#F02277" stop-opacity="0"/></linearGradient>
+    </defs>
+    <path d="${areaPath}" fill="url(#pv4formarea)" stroke="none"/>
+    <polyline fill="none" stroke="url(#pv4formline)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${linePts}"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="4.5" fill="#fff"/>
+  </svg>`;
+}
+
+function renderV4FormReadiness() {
+  if (typeof computeFormScore !== 'function') return '';
+  const form = computeFormScore(allSessions, new Date());
+
+  if (form.formScore === null || form.zone === null) {
+    const b = getBaselineStatus();
+    const bar = b.status !== 'no_data'
+      ? `<div class="baseline-progress-container"><div class="baseline-progress-bar"><div class="baseline-progress-fill" style="width:${b.percentage}%"></div></div><div class="baseline-progress-label">${b.daysElapsed} / 14 ${trV3('progress.baseline.days')}</div></div>`
+      : '';
+    return `
+      <section class="pv3-card">
+        <div class="pv4-sec-title"><span class="material-symbols-rounded">monitoring</span>${trV3('progress.form.title')}</div>
+        <p class="pv4-lead pv4-muted">${b.message}</p>${bar}
+      </section>`;
+  }
+
+  const zoneColor = getFormZoneColor(form.zone);
+  const phaseLabel = getFormPhaseLabel(form.zone);
+  const trendIcon = (typeof getFormTrendIcon === 'function') ? getFormTrendIcon(form.trend) : 'trending_up';
+  const series = pv4FormTrendPoints(8);
+  const chart = pv4SmoothLineSVG(series, 320, 84);
+
+  // Delta seit Periodenbeginn (oben rechts), grün bei positiv — kein Rot.
+  let deltaHTML = '';
+  if (series.length >= 2) {
+    const delta = Math.round(series[series.length - 1] - series[0]);
+    if (delta !== 0) {
+      const dc = delta > 0 ? 'var(--zone-fresh, #22c55e)' : 'var(--text-secondary)';
+      deltaHTML = `<div class="pv4-form-delta" style="color:${dc}">${delta > 0 ? '+' : ''}${delta}<span>vs. Start</span></div>`;
+    }
+  }
+
+  // Belastung / Erholung als Inline-Text (keine Kacheln) — wie im Mockup.
+  let loadHTML = '';
+  if (typeof getACWR === 'function') {
+    const r = getACWR(allSessions, new Date(), { applyFatigue: true });
+    if (r.zone) {
+      const rPhase = getPhaseFromZone(r.zone);
+      const acwrStr = (r.acwr != null) ? r.acwr.toFixed(1).replace('.', ',') : '–';
+      loadHTML = `<div class="pv4-form-load"><span class="pv4-ready-dot" style="background:${getZoneColor(r.zone)}"></span>Belastung / Erholung: <b style="color:${getZoneColor(r.zone)}">${rPhase.label}</b> · ACWR ${acwrStr}</div>`;
+    }
+  }
+
+  return `
+    <section class="pv3-card">
+      <div class="pv4-form-head">
+        <div>
+          <div class="pv4-sec-title" style="margin-bottom:8px;"><span class="material-symbols-rounded">monitoring</span>Form &amp; Belastung</div>
+          <div class="pv4-form-score">${form.formScore}</div>
+          <div class="pv4-form-zone" style="color:${zoneColor}"><span class="material-symbols-rounded">${trendIcon}</span>${phaseLabel}</div>
+        </div>
+        ${deltaHTML}
+      </div>
+      <div class="pv4-form-chart-wrap" style="--form-zone-color:${zoneColor}">${chart}</div>
+      ${loadHTML}
+    </section>`;
+}
+
+// ==================== HYBRID-BALANCE (Strength / Cardio / Recovery) ====================
+
+function renderV4HybridBalance(sessions) {
+  try {
+    const buckets = { strength: 0, cardio: 0, recovery: 0 };
+    (sessions || []).forEach(s => {
+      const t = mapSessionType(s);
+      const w = (v3GetDurationMin(s) || 0) > 0 ? v3GetDurationMin(s) : 1;
+      if (t === 'strength' || t === 'bodyweight') buckets.strength += w;
+      else if (t === 'cardio') buckets.cardio += w;
+      else if (t === 'recovery') buckets.recovery += w;
+    });
+    const total = buckets.strength + buckets.cardio + buckets.recovery;
+    if (total <= 0) return '';
+    const segs = [
+      { k: 'strength', label: 'Strength', color: 'var(--color-category-strength)' },
+      { k: 'cardio', label: 'Cardio', color: 'var(--color-category-cardio)' },
+      { k: 'recovery', label: 'Recovery', color: 'var(--color-category-recovery)' }
+    ];
+    const bar = segs.map(s => buckets[s.k] > 0 ? `<i style="width:${(buckets[s.k] / total) * 100}%;background:${s.color}"></i>` : '').join('');
+    const legend = segs.map(s => `<div class="pv4-bal-item"><span class="pv4-bal-dot" style="background:${s.color}"></span>${s.label}<span class="pct">${Math.round((buckets[s.k] / total) * 100)} %</span></div>`).join('');
+    return `
+      <section class="pv3-card">
+        <div class="pv4-sec-title"><span class="material-symbols-rounded">balance</span>Hybrid-Balance</div>
+        <div class="pv4-bal-bar">${bar}</div>
+        <div class="pv4-bal-legend">${legend}</div>
+      </section>`;
+  } catch (e) { return ''; }
+}
+
+// ==================== VERLAUF-LINK (schlank — Browsing lebt im Training-Kalender) ====================
+
+function renderV4HistoryCard() {
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  if (!sessions.length) return '';
+  const last = [...sessions].sort((a, b) => {
+    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return db - da;
+  })[0];
+  if (!last) return '';
+  return `
+    <section class="pv3-card">
+      <div class="pv4-sec-head">
+        <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">history</span>${trV3('progress.v4.overview.lastSession')}</div>
+        <button class="pv4-sec-action" type="button" onclick="openFullHistory()">${trV3('progress.v4.overview.showAll')}<span class="material-symbols-rounded">chevron_right</span></button>
+      </div>
+      ${renderV4SessionRow(last)}
+    </section>`;
+}
+
 function renderV4Overview() {
   const days = v3PeriodDays(pv4Period);
   const sessions = v3SessionsInRange(days);
 
-  const totalSessions = sessions.length;
-  const totalMinutes = sessions.reduce((s, sess) => s + v3GetDurationMin(sess), 0);
-  const totalVolume = sessions.reduce((s, sess) => {
-    return s + (typeof calcSessionVolume === 'function' ? calcSessionVolume(sess) : 0);
-  }, 0);
-  const activeDays = new Set(sessions.map(s => v3ToLocalDate(s).toISOString().slice(0, 10))).size;
-
-  const cards = [
-    { icon: 'exercise', value: totalSessions, label: trV3('progress.v4.overview.workouts') },
-    { icon: 'schedule', value: `${totalMinutes} ${trV3('progress.v4.overview.minutes')}`, label: trV3('progress.v4.overview.trainingTime') },
-    { icon: 'fitness_center', value: totalVolume > 0 ? totalVolume.toLocaleString('de-DE') : '0', label: trV3('progress.v4.overview.totalVolume') },
-    { icon: 'calendar_month', value: activeDays, label: trV3('progress.v4.overview.activeDays') }
-  ];
-
-  const cardsHTML = cards.map(c => `
-    <div class="pv4-summary-card">
-      <span class="material-symbols-rounded pv4-summary-icon">${c.icon}</span>
-      <div class="pv4-summary-value">${c.value}</div>
-      <div class="pv4-summary-label">${c.label}</div>
-    </div>
-  `).join('');
-
-  // Training Form (prominent) + Readiness (compact)
-  const formHTML = renderFormWidget();
-  const readinessHTML = renderReadinessWidget();
-
-  // Training Rhythm widget
-  const rhythmHTML = renderV4Rhythm(sessions);
-
-  // Endurance Trends card (distance, pace, summary)
-  const runningHTML = renderEnduranceCard(sessions);
-
-  // Activity calendar (rückwärtsgerichtet — was war).
-  // The training history now lives inside this card (last session + link to
-  // the full history sub-page), so there is no separate history section here.
-  const activityCalendarHTML = renderV4ActivityCalendar();
-
+  // Mockup-Reihenfolge: Konsistenz → Form & Bereitschaft → Wochenvolumen →
+  // Übungs-Progression → Ausdauer → Hybrid-Balance → Verlauf.
+  // (4er-Summary-Grid, Rhythmus-Widget und Aktivitätskalender entfallen —
+  //  Browsing zieht in den vereinten Training-Kalender, Zahlen leben im Hero.)
   return `
     ${renderV4PeriodSelector()}
-    ${activityCalendarHTML}
-    ${formHTML}
-    ${readinessHTML}
-    <div class="pv4-summary-grid">${cardsHTML}</div>
-    ${rhythmHTML}
-    ${runningHTML}
+    ${renderV4ConsistencyHero(sessions, days)}
+    ${renderV4FormReadiness()}
+    ${renderV4ExerciseProgression(sessions, days)}
+    ${renderEnduranceCard(sessions)}
+    ${renderV4HybridBalance(sessions)}
+    ${renderV4HistoryCard()}
   `;
 }
 
@@ -1141,111 +1498,74 @@ function getSportColor(sport) {
   return getCssVarValue(SPORT_COLOR_VARS[sport] || SPORT_COLOR_VARS.run) || '#1e3a8a';
 }
 
+// Ausdauer (Strava-inspiriert): großes Distanz-Total + Stat-Grid (Ø/Woche · Ø-Pace ·
+// Einheiten) + Wochendistanz-Balkenchart + Pro-Sport-Zeilen. Bewusst präsenter und
+// optisch distinkt von den dünnen Progressions-Zeilen.
 function renderEnduranceCard(sessions) {
-  if (typeof getAvailableEnduranceSports !== 'function') return '';
+  try {
+    const normalize = t => ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim' })[t] || t;
+    const cardio = (sessions || []).filter(s => mapSessionType(s) === 'cardio');
+    if (!cardio.length) return '';
 
-  const allSports = ['run', 'bike', 'swim'];
-  const availableSports = getAvailableEnduranceSports(pv4Period);
+    const days = v3PeriodDays(pv4Period);
+    const weeksSpan = Math.max(1, days / 7);
+    const totalDist = cardio.reduce((a, s) => a + (Number(s.distanceKm) || 0), 0);
+    const totalTime = cardio.reduce((a, s) => a + v3GetDurationMin(s), 0);
+    const weeklyDist = totalDist / weeksSpan;
 
-  // Keep selected sport even if it has no data (skeleton will show)
-  if (!allSports.includes(pv4EnduranceSport)) {
-    pv4EnduranceSport = 'run';
-  }
+    // Ø-Pace über alle Lauf-Einheiten (min/km)
+    const runs = cardio.filter(s => normalize((s.activityType || '').toLowerCase()) === 'run');
+    const runDist = runs.reduce((a, s) => a + (Number(s.distanceKm) || 0), 0);
+    const runTime = runs.reduce((a, s) => a + v3GetDurationMin(s), 0);
+    let paceStr = '–';
+    if (runDist > 0) {
+      const p = runTime / runDist; let m = Math.floor(p); let sec = Math.round((p - m) * 60);
+      if (sec >= 60) { m += 1; sec = 0; }
+      paceStr = m + ':' + String(sec).padStart(2, '0');
+    }
 
-  const sportCfg = ENDURANCE_SPORT_CONFIG[pv4EnduranceSport] || ENDURANCE_SPORT_CONFIG.run;
-  const sportColor = getSportColor(pv4EnduranceSport);
-  const activeIdx = allSports.indexOf(pv4EnduranceSport);
-  const hasData = availableSports.includes(pv4EnduranceSport);
-
-  // --- Sport segmented toggle ---
-  const toggleHTML = `
-    <div class="endurance-sport-toggle" style="--active-idx:${activeIdx};--endurance-sport-color:${sportColor}">
-      <div class="endurance-seg-indicator"></div>
-      ${allSports.map(sport => {
-        const cfg = ENDURANCE_SPORT_CONFIG[sport];
-        const active = sport === pv4EnduranceSport ? ' active' : '';
-        return `<button class="endurance-seg-btn${active}" data-sport="${sport}">
-          <span class="material-symbols-rounded">${cfg.iconKey}</span>
-          ${trV3(cfg.labelKey)}
-        </button>`;
-      }).join('')}
-    </div>`;
-
-  // --- Content: slides (charts + stats) OR skeleton ---
-  let contentHTML;
-
-  if (hasData) {
-    const sportSessions = sessions.filter(s => {
-      const type = (s.activityType || '').toLowerCase();
-      const norm = ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim' })[type] || type;
-      return norm === pv4EnduranceSport;
+    // Wochendistanz der letzten 8 Wochen
+    const W = 8;
+    const wk = new Array(W).fill(0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    cardio.forEach(s => {
+      const d = v3ToLocalDate(s);
+      const wi = Math.floor((today - d) / 86400000 / 7);
+      if (wi >= 0 && wi < W) wk[wi] += (Number(s.distanceKm) || 0);
     });
+    wk.reverse();
+    const maxW = Math.max.apply(null, wk.concat(0.1));
+    const bars = wk.map((v, i) => `<span class="pv4-volbar${i === W - 1 ? ' current' : ''}" style="height:${Math.max(6, Math.round((v / maxW) * 100))}%"></span>`).join('');
 
-    const totalTime = sportSessions.reduce((sum, s) => sum + v3GetDurationMin(s), 0);
-    const totalDist = sportSessions.reduce((sum, s) => sum + (Number(s.distanceKm) || 0), 0);
-    const sessionCount = sportSessions.length;
+    const fmtKm = v => v.toFixed(v >= 10 ? 0 : 1).replace('.', ',');
 
-    // Compute sport-specific stat values
-    const statValues = computeEnduranceStats(pv4EnduranceSport, totalDist, totalTime, sessionCount);
-
-    // Build slides — charts and stats all inside the slider
-    const slidesHTML = sportCfg.slides.map(slide => {
-      if (slide.type === 'chart') {
-        return `<div class="endurance-stat-slide endurance-chart-slide">
-          <h4 class="run-chart-subtitle">${trV3(slide.labelKey)}</h4>
-          <div class="run-chart-wrapper">
-            <canvas id="${slide.canvasId}"></canvas>
-          </div>
-        </div>`;
-      }
-      const val = statValues[slide.key];
-      const displayVal = val !== null && val !== undefined ? val : '-';
-      return `<div class="endurance-stat-slide">
-        <div class="endurance-stat-value">${displayVal}</div>
-        <div class="endurance-stat-label">${trV3(slide.labelKey)}${slide.unit ? ' (' + slide.unit + ')' : ''}</div>
-      </div>`;
+    // Pro-Sport-Kurzzeile (Distanz · Einheiten)
+    const sportMeta = { run: { label: 'Laufen', icon: 'directions_run' }, bike: { label: 'Rad', icon: 'directions_bike' }, swim: { label: 'Schwimmen', icon: 'pool' } };
+    const bySport = {};
+    cardio.forEach(s => { const sp = normalize((s.activityType || '').toLowerCase()); if (!sportMeta[sp]) return; (bySport[sp] = bySport[sp] || { dist: 0, n: 0 }); bySport[sp].dist += (Number(s.distanceKm) || 0); bySport[sp].n += 1; });
+    const sportRows = Object.keys(bySport).map(sp => {
+      const c = getSportColor(sp);
+      return `<div class="pv4-endurance-sport"><span class="material-symbols-rounded" style="color:${c}">${sportMeta[sp].icon}</span><span class="pv4-endurance-sport-name">${sportMeta[sp].label}</span><span class="pv4-endurance-sport-val">${fmtKm(bySport[sp].dist)} km · ${bySport[sp].n}×</span></div>`;
     }).join('');
 
-    const dotsHTML = sportCfg.slides.map((_, i) =>
-      `<div class="endurance-stat-dot${i === 0 ? ' active' : ''}"></div>`
-    ).join('');
-
-    contentHTML = `
-      <div class="endurance-slider-wrap">
-        <button type="button" class="endurance-stat-arrow endurance-stat-arrow--prev" aria-label="Zurück" disabled>
-          <span class="material-symbols-rounded">chevron_left</span>
-        </button>
-        <div class="endurance-stat-slider" style="--endurance-sport-color:${sportColor}">
-          <div class="endurance-stat-track">${slidesHTML}</div>
+    return `
+      <section class="pv3-card pv4-endurance-card">
+        <div class="pv4-sec-head">
+          <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">directions_run</span>Ausdauer</div>
+          <span class="pv4-endurance-total">${fmtKm(totalDist)} km</span>
         </div>
-        <button type="button" class="endurance-stat-arrow endurance-stat-arrow--next" aria-label="Weiter">
-          <span class="material-symbols-rounded">chevron_right</span>
-        </button>
-      </div>
-      <div class="endurance-stat-dots">${dotsHTML}</div>`;
-  } else {
-    // Skeleton state for sports with no data
-    const sportLabel = trV3(sportCfg.labelKey);
-    contentHTML = `
-      <div class="endurance-skeleton">
-        <p class="endurance-skeleton-hint">
-          <span class="material-symbols-rounded" style="font-size:20px;display:block;margin-bottom:0.5rem">info</span>
-          ${trV3('progress.v4.overview.noDataHint', { sport: sportLabel })}
-        </p>
-      </div>`;
+        <div class="pv4-stat3 pv4-endurance-stats">
+          <div class="pv4-mini"><div class="v">${fmtKm(weeklyDist)} <small>km</small></div><div class="l">Ø /Woche</div></div>
+          <div class="pv4-mini"><div class="v">${paceStr}</div><div class="l">Ø Pace /km</div></div>
+          <div class="pv4-mini"><div class="v">${cardio.length}</div><div class="l">Einheiten</div></div>
+        </div>
+        <div class="pv4-volbars pv4-endurance-bars">${bars}</div>
+        <p class="pv4-lead pv4-muted pv4-vol-caption">Wöchentliche Distanz · letzte 8 Wochen</p>
+        ${sportRows ? `<div class="pv4-endurance-sports">${sportRows}</div>` : ''}
+      </section>`;
+  } catch (e) {
+    return '';
   }
-
-  return `
-    <div class="pv3-card endurance-card" style="--endurance-sport-color:${sportColor}">
-      <div class="pv3-card-header">
-        <h3 class="pv3-card-title">
-          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;margin-right:4px;color:${sportColor}">${sportCfg.iconKey}</span>
-          ${trV3('progress.v4.overview.enduranceTrends')}
-        </h3>
-      </div>
-      ${toggleHTML}
-      ${contentHTML}
-    </div>`;
 }
 
 function computeEnduranceStats(sport, totalDist, totalTime, sessionCount) {
@@ -2082,126 +2402,81 @@ function _computeLoadContributionMap() {
   return result;
 }
 
+// "Alle anzeigen" — Übungsliste im Mockup-Zeilenstil (konsistent mit der Overview-
+// Progression): Name · Ø/e1RM · gegl. Trend (nie rot) · PR · Sparkline. Klick → Detail.
 function renderV4ExerciseTrends() {
-  const exerciseMap = {};
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
-  const loadContributionMap = _computeLoadContributionMap();
+  const exById = {};
+  exercises.forEach(e => { if (e && e.id) exById[e.id] = e; });
 
-  allSessions.forEach(session => {
-    if (!session.exercises) return;
-    const sessionDate = session.date?.toDate ? session.date.toDate() : new Date(session.date);
-    session.exercises.forEach(ex => {
-      if (!exerciseMap[ex.exerciseId]) {
-        const data = exercises.find(e => e.id === ex.exerciseId);
-        exerciseMap[ex.exerciseId] = {
+  const agg = {};
+  (Array.isArray(allSessions) ? allSessions : []).forEach(s => {
+    if (!s || !Array.isArray(s.exercises)) return;
+    s.exercises.forEach(ex => {
+      if (!ex || !ex.exerciseId) return;
+      if (!agg[ex.exerciseId]) {
+        const meta = exById[ex.exerciseId];
+        agg[ex.exerciseId] = {
           exerciseId: ex.exerciseId,
-          name: data?.name || ex.exerciseId,
-          muscleGroups: data?.muscleGroups || [],
-          sessionCount: 0,
-          sparklineData: [],
-          trend: null,
-          lastSessionSets: [],
-          lastSessionDate: null,
-          bestSet: 0,
-          loadPct: loadContributionMap[ex.exerciseId] || null
+          name: (meta && (meta.name_de || meta.name)) || ex.name || ex.exerciseId,
+          muscleGroups: (meta && meta.muscleGroups) || ex.muscleGroups || [],
+          sessionCount: 0
         };
       }
-      const entry = exerciseMap[ex.exerciseId];
-      entry.sessionCount++;
-
-      // Track most recent session's sets
-      if (!entry.lastSessionDate || sessionDate > entry.lastSessionDate) {
-        entry.lastSessionDate = sessionDate;
-        entry.lastSessionSets = (ex.sets || []).map(s => s.reps || 0);
-      }
-
-      // Track best single-set reps
-      const exBest = typeof calculateBestSet === 'function' ? calculateBestSet(ex) : 0;
-      if (exBest > entry.bestSet) entry.bestSet = exBest;
+      agg[ex.exerciseId].sessionCount++;
     });
   });
 
-  Object.values(exerciseMap).forEach(entry => {
-    entry.sparklineData = typeof getExerciseGlobalSparkline === 'function'
-      ? getExerciseGlobalSparkline(entry.exerciseId, 12) : [];
-    if (entry.sparklineData.length >= 2) {
-      const last = entry.sparklineData[entry.sparklineData.length - 1];
-      const prev = entry.sparklineData[entry.sparklineData.length - 2];
-      entry.trend = last > prev ? 'up' : last < prev ? 'down' : 'same';
-    }
-  });
+  let filtered = Object.values(agg);
 
-  let filtered = Object.values(exerciseMap);
-
-  // Apply search filter
   if (pv4ExerciseSearchTerm) {
-    const searchLower = pv4ExerciseSearchTerm.toLocaleLowerCase('de-DE');
-    filtered = filtered.filter(ex => ex.name.toLocaleLowerCase('de-DE').includes(searchLower));
+    const q = pv4ExerciseSearchTerm.toLocaleLowerCase('de-DE');
+    filtered = filtered.filter(ex => ex.name.toLocaleLowerCase('de-DE').includes(q));
   }
-
-  // Apply muscle group filter — matches the exercise's PRIMARY muscle only
   if (pv4ExerciseMuscleFilter) {
     filtered = filtered.filter(ex => exercisePrimaryMatchesMuscle(ex, pv4ExerciseMuscleFilter));
   }
-
-  // Sort by session count, limit to top 20
   filtered.sort((a, b) => b.sessionCount - a.sessionCount);
-  filtered = filtered.slice(0, 20);
 
   const filterBar = renderV4ExerciseFilterBar();
 
-  if (Object.keys(exerciseMap).length === 0) {
+  if (Object.keys(agg).length === 0) {
     return `${filterBar}<div class="pv3-empty-state"><span class="material-symbols-rounded">info</span>${trV3('progress.v4.exercises.noExercises')}</div>`;
   }
-
   if (filtered.length === 0) {
     return `${filterBar}<div class="pv3-empty-state"><span class="material-symbols-rounded">search_off</span>${trV3('progress.v4.exercises.noFilterResults') || 'Keine Übungen gefunden'}</div>`;
   }
 
-  const cards = filtered.map(ex => {
-    const trendClass = ex.trend || 'same';
-    const trendArrow = ex.trend === 'up' ? '↑' : ex.trend === 'down' ? '↓' : '→';
-    const _t = (k, fb) => { const v = trV3(k); return v !== k ? v : fb; };
-    const trendLabel = ex.trend === 'up' ? _t('progress.v4.exercises.trendUp', 'Improving')
-      : ex.trend === 'down' ? _t('progress.v4.exercises.trendDown', 'Declining')
-      : _t('progress.v4.exercises.trendSame', 'Stable');
-    const hasSparkline = ex.sparklineData.length >= 2;
-    const sparkId = `pv4-spark-${ex.exerciseId.replace(/[^a-zA-Z0-9]/g, '_')}`;
-
-    const lastPerf = ex.lastSessionSets.length > 0 ? ex.lastSessionSets.join(' / ') : '-';
-    const bestPerf = ex.bestSet > 0 ? `${ex.bestSet} reps` : '-';
-    const loadMeta = ex.loadPct != null && ex.loadPct > 0
-      ? `<div class="exercise-meta-load">~${ex.loadPct}% ${_t('progress.v4.exercises.loadContribution', 'deiner Wochenlast')}</div>`
-      : '';
-
+  const rows = filtered.map(ex => {
+    let data = { series: [], weighted: false };
+    try { data = pv4ExerciseProgressionSeries(ex.exerciseId, 12); } catch (_) {}
+    const vals = data.series.map(p => p.value).filter(v => typeof v === 'number');
+    const pr = vals.length ? Math.max.apply(null, vals) : 0;
+    const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+    const first = vals.length ? vals[0] : 0;
+    const last = vals.length ? vals[vals.length - 1] : 0;
+    const up = last > first + 0.5;
+    const trendIcon = up ? 'trending_up' : 'trending_flat';
+    const trendColor = up ? 'var(--color-primary-light)' : 'var(--text-secondary)';
+    const trendText = up ? 'steigt' : 'gehalten';
+    const avgStr = vals.length ? (data.weighted ? ('e1RM Ø ' + avg + ' kg') : ('Ø ' + avg + ' Wdh.')) : `${ex.sessionCount}× trainiert`;
+    const prStr = pr > 0 ? (data.weighted ? ('PR ' + pr + ' kg') : ('PR ' + pr)) : '';
+    const spark = pv4Sparkline(data.series, up ? '#F02277' : '#9ca3af');
     return `
-      <button class="pv4-exercise-card" data-exercise-id="${ex.exerciseId}">
-        <div class="exercise-header">
-          <span class="exercise-title">${ex.name}</span>
-          <span class="exercise-trend-badge ${trendClass}">${trendArrow} ${trendLabel}</span>
-        </div>
-        <div class="exercise-stats">
-          <div class="exercise-stat">
-            <span class="exercise-stat-label">${_t('progress.v4.exercises.lastPerf', 'Letztes')}</span>
-            <span class="exercise-stat-value">${lastPerf}</span>
-          </div>
-          <div class="exercise-stat">
-            <span class="exercise-stat-label">${_t('progress.v4.exercises.bestPerf', 'Best')}</span>
-            <span class="exercise-stat-value">${bestPerf}</span>
-          </div>
-          <div class="exercise-stat">
-            <span class="exercise-stat-label">Sessions</span>
-            <span class="exercise-stat-value">${ex.sessionCount}</span>
+      <button class="pv4-ex-row pv4-ex-row-btn" type="button" data-exercise-id="${ex.exerciseId}">
+        <div class="pv4-ex-info">
+          <div class="pv4-ex-n">${ex.name}</div>
+          <div class="pv4-ex-sub">
+            <span class="pv4-ex-avg">${avgStr}</span>
+            ${vals.length ? `<span class="pv4-ex-trend" style="color:${trendColor}"><span class="material-symbols-rounded">${trendIcon}</span>${trendText}</span>` : ''}
+            ${prStr ? `<span class="pv4-pr"><span class="material-symbols-rounded">emoji_events</span>${prStr}</span>` : ''}
           </div>
         </div>
-        ${hasSparkline
-          ? `<div class="exercise-chart"><canvas id="${sparkId}"></canvas></div>`
-          : `<div class="exercise-empty-state">${_t('progress.v4.exercises.emptyState', 'Starte mit dem Loggen, um Trends zu sehen.')}</div>`}
-        ${loadMeta}
+        ${spark || '<span class="material-symbols-rounded pv4-ex-chevron">chevron_right</span>'}
       </button>`;
   }).join('');
 
-  return `${filterBar}<div class="pv4-exercise-grid">${cards}</div>`;
+  return `${filterBar}<div class="pv3-card pv4-ex-list">${rows}</div>`;
 }
 
 // Exercise filter & favorites event handlers
@@ -2284,8 +2559,8 @@ function drawAllV4Sparklines() {
     canvases.forEach(canvas => _drawSparklineForCanvas(canvas));
   }
 
-  // Attach click listeners for exercise cards
-  document.querySelectorAll('.pv4-exercise-card').forEach(row => {
+  // Attach click listeners for exercise cards / rows
+  document.querySelectorAll('.pv4-exercise-card, .pv4-ex-row-btn[data-exercise-id]').forEach(row => {
     row.addEventListener('click', () => {
       pv4ExerciseDetailId = row.dataset.exerciseId;
       renderProgressV4();

@@ -101,11 +101,20 @@ function getExerciseTargetLine(exercise, options = {}) {
     }
     return `${formatted} ${t('workout.hold')}`;
   }
-  const sets = exercise?.targetSets ?? 0;
+  const sets = getTargetSetCount(exercise);
   const reps = exercise?.targetReps ?? '-';
   return includeLabel
     ? `${t('workout.setLogger.target')}: ${sets} × ${reps}`
     : `${sets} × ${reps}`;
+}
+
+// Normalize targetSets to a positive integer. Real plan data may carry it as an
+// array of set definitions (or a corrupted string); always derive a clean count.
+function getTargetSetCount(exercise) {
+  const ts = exercise && exercise.targetSets;
+  if (Array.isArray(ts)) return ts.length || 3;
+  const n = parseInt(ts, 10);
+  return (Number.isFinite(n) && n > 0) ? n : 3;
 }
 
 function getExerciseTargetDetailLine(exercise) {
@@ -118,7 +127,7 @@ function getExerciseTargetDetailLine(exercise) {
       : `${t('workout.setLogger.target')}: ${t('workout.hold')}`;
     return restText ? `${base} · ${restText}` : base;
   }
-  const sets = exercise.targetSets ?? 0;
+  const sets = getTargetSetCount(exercise);
   const reps = exercise.targetReps ?? '-';
   const base = `${t('workout.setLogger.target')}: ${t('workout.setLogger.targetSets', { sets })} × ${t('workout.setLogger.targetReps', { reps })}`;
   return restText ? `${base} · ${restText}` : base;
@@ -139,7 +148,7 @@ function mapPlanItemToWorkoutExercise(item) {
     exerciseId: item.exerciseId,
     exerciseName: (typeof getExerciseName === 'function' ? getExerciseName(exercise) : exercise?.name) || item.exerciseId || t('exercise.title'),
     exerciseType: exType,
-    targetSets: isCardioOrRecovery ? 1 : (target.sets || 3),
+    targetSets: isCardioOrRecovery ? 1 : (Array.isArray(target.sets) ? (target.sets.length || 3) : (parseInt(target.sets, 10) || 3)),
     targetMode,
     targetHoldSec: hasHold ? holdSec : undefined,
     targetReps,

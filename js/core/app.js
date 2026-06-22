@@ -37,18 +37,29 @@ function saveTrainingTab(tab) {
 }
 
 function switchTrainingTab(tab) {
-  const nextTab = tab === 'exercises' ? 'exercises' : 'plans';
+  const order = ['plans', 'calendar', 'exercises'];
+  const nextTab = order.includes(tab) ? tab : 'plans';
   currentTrainingTab = nextTab;
   saveTrainingTab(nextTab);
 
-  document.querySelectorAll('#training-segmented-control .segmented-btn').forEach(btn => {
+  // Slide-Underline wie auf der Fortschritt-Seite (kein clunky Hintergrund).
+  const control = document.querySelector('#training-segmented-control .pv3-segmented-control');
+  if (control) control.style.setProperty('--active-idx', order.indexOf(nextTab));
+  document.querySelectorAll('#training-segmented-control .pv3-seg-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === nextTab);
   });
 
   const plansTab = document.getElementById('training-tab-plans');
   const exercisesTab = document.getElementById('training-tab-exercises');
+  const calendarTab = document.getElementById('training-tab-calendar');
   if (plansTab) plansTab.classList.toggle('active', nextTab === 'plans');
   if (exercisesTab) exercisesTab.classList.toggle('active', nextTab === 'exercises');
+  if (calendarTab) calendarTab.classList.toggle('active', nextTab === 'calendar');
+
+  // Mount/refresh the unified calendar when its tab becomes active.
+  if (nextTab === 'calendar' && typeof renderTrainingCalendar === 'function') {
+    renderTrainingCalendar();
+  }
 }
 
 function showTrainingTab(tab) {
@@ -259,6 +270,7 @@ function openRadialMenu() {
   radialMenuOpen = true;
   const fabMain = document.getElementById('fab-main');
   const fabIcon = document.getElementById('fab-icon');
+  if (!fabMain) return; // Radial-FAB durch Bottom-Nav-FAB ersetzt
 
   fabMain.classList.add('active');
   document.getElementById('radial-menu').classList.add('active');
@@ -279,6 +291,7 @@ function openRadialMenu() {
 function closeRadialMenu() {
   radialMenuOpen = false;
   const fabMain = document.getElementById('fab-main');
+  if (!fabMain) return; // Radial-FAB durch Bottom-Nav-FAB ersetzt
 
   fabMain.classList.remove('active');
   document.getElementById('radial-menu').classList.remove('active');
