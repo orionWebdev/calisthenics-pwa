@@ -266,6 +266,7 @@ function openRadialMenu() {
   radialMenuOpen = true;
   const fabMain = document.getElementById('fab-main');
   const fabIcon = document.getElementById('fab-icon');
+  if (!fabMain) return; // Radial-FAB durch Bottom-Nav-FAB ersetzt
 
   fabMain.classList.add('active');
   document.getElementById('radial-menu').classList.add('active');
@@ -286,6 +287,7 @@ function openRadialMenu() {
 function closeRadialMenu() {
   radialMenuOpen = false;
   const fabMain = document.getElementById('fab-main');
+  if (!fabMain) return; // Radial-FAB durch Bottom-Nav-FAB ersetzt
 
   fabMain.classList.remove('active');
   document.getElementById('radial-menu').classList.remove('active');

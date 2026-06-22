@@ -209,15 +209,15 @@
         <div class="flex gap-2">
           <button onclick="showView('dashboard')" class="nav-btn active" data-view="dashboard">
             <span class="material-symbols-rounded">home</span>
-            <span>Dashboard</span>
+            <span>Heute</span>
           </button>
           <button onclick="showView('training')" class="nav-btn" data-view="training">
             <span class="material-symbols-rounded">fitness_center</span>
             <span>Training</span>
           </button>
           <button onclick="showView('progress')" class="nav-btn" data-view="progress">
-            <span class="material-symbols-rounded">trending_up</span>
-            <span>Progress</span>
+            <span class="material-symbols-rounded">insights</span>
+            <span>Fortschritt</span>
           </button>
           <button onclick="showView('profile')" class="nav-btn" data-view="profile">
             <span class="material-symbols-rounded">account_circle</span>
@@ -240,39 +240,12 @@
     </div>
   </div>
 
-  <!-- Floating Action Button (Mobile) -->
-  <div class="fab-container">
-    <button id="fab-main" class="fab-main" onclick="toggleRadialMenu()">
-      <span id="fab-icon" class="material-symbols-rounded fab-icon">fitness_center</span>
-    </button>
-
-    <!-- Radial Menu Items -->
-    <div id="radial-menu" class="radial-menu">
-      <button class="radial-menu-item" data-view="progress" onclick="showViewFromRadial('progress')" style="--item-index: 0">
-        <span class="material-symbols-rounded radial-icon">trending_up</span>
-      </button>
-      <button class="radial-menu-item" data-view="training" onclick="showViewFromRadial('training')" style="--item-index: 1">
-        <span class="material-symbols-rounded radial-icon">fitness_center</span>
-      </button>
-    </div>
-    
-    <!-- Overlay -->
-    <div id="radial-overlay" class="radial-overlay" onclick="closeRadialMenu()"></div>
-  </div>
-
-  <!-- BOTTOM NAVIGATION (Mobile) -->
+  <!-- BOTTOM NAVIGATION (Mobile) — Heute / Training / [+] / Fortschritt / Profil (Mockup) -->
   <nav class="bottom-nav">
-    <span class="bottom-nav-indicator" aria-hidden="true"></span>
     <button class="bottom-nav-item active" data-view="dashboard" onclick="showView('dashboard')">
       <span class="bottom-nav-item-content">
         <span class="material-symbols-rounded">home</span>
-        <span class="bottom-nav-label" data-i18n="nav.dashboard">Home</span>
-      </span>
-    </button>
-    <button class="bottom-nav-item" data-view="progress" onclick="showView('progress')">
-      <span class="bottom-nav-item-content">
-        <span class="material-symbols-rounded">trending_up</span>
-        <span class="bottom-nav-label" data-i18n="nav.progress">Progress</span>
+        <span class="bottom-nav-label" data-i18n="nav.dashboard">Heute</span>
       </span>
     </button>
     <button class="bottom-nav-item" data-view="training" onclick="showView('training')">
@@ -280,6 +253,22 @@
         <span class="material-symbols-rounded">fitness_center</span>
         <span class="bottom-nav-label" data-i18n="nav.training">Training</span>
       </span>
+    </button>
+    <span class="bottom-nav-fab-slot" aria-hidden="true"></span>
+    <button class="bottom-nav-item" data-view="progress" onclick="showView('progress')">
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">insights</span>
+        <span class="bottom-nav-label" data-i18n="nav.progress">Fortschritt</span>
+      </span>
+    </button>
+    <button class="bottom-nav-item" data-view="profile" onclick="showView('profile')">
+      <span class="bottom-nav-item-content">
+        <span class="material-symbols-rounded">account_circle</span>
+        <span class="bottom-nav-label" data-i18n="nav.profile">Profil</span>
+      </span>
+    </button>
+    <button class="bottom-nav-fab" onclick="openAddWorkoutSheet()" aria-label="Workout loggen">
+      <span class="material-symbols-rounded">add</span>
     </button>
   </nav>
 

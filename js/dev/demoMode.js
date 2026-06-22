@@ -75,6 +75,7 @@
   };
   var _future = function (n) { var d = new Date(); d.setDate(d.getDate() + n); return _ymd(d); };
   var demoSchedule = [
+    { id: 'sch0', planId: 'p1', planName: 'Push Day A', planType: 'strength', date: _future(0), planDuration: 45, completed: false },
     { id: 'sch1', planId: 'p1', planName: 'Push Day A', planType: 'strength', date: _future(1), planDuration: 50, completed: false },
     { id: 'sch2', planId: 'p2', planName: 'Pull Day B', planType: 'strength', date: _future(3), planDuration: 45, completed: false },
     { id: 'sch3', planId: 'p3', planName: 'Easy Run', planType: 'cardio', date: _future(5), planDuration: 30, completed: false, isQuickEntry: true },

@@ -485,24 +485,8 @@ function renderDashboardFormHero() {
   const hint = (typeof getFormHint === 'function') ? getFormHint(data.formScore, zone) : '';
   const trendIcon = (typeof getFormTrendIcon === 'function') ? getFormTrendIcon(data.trend) : 'trending_flat';
 
-  // Tägliche Bereitschaft (ACWR) — kompakt unter dem Ring. Defensiv: '' bei keinen Daten.
-  let readinessHTML = '';
-  try {
-    if (typeof getACWR === 'function') {
-      const rd = getACWR(allSessions, new Date());
-      if (rd && rd.readinessScore !== null && rd.zone) {
-        const rscore = Math.round(rd.readinessScore);
-        const rcolor = (typeof getZoneColor === 'function') ? getZoneColor(rd.zone) : 'var(--text-secondary)';
-        const rlabel = readinessZoneLabel(rd.zone);
-        readinessHTML = `
-          <div class="form-hero-readiness">
-            <span class="material-symbols-rounded" style="color:${rcolor};font-size:18px;">bolt</span>
-            <span class="fhr-label">Bereitschaft heute</span>
-            <span class="fhr-value" style="color:${rcolor};">${rlabel} · ${rscore}</span>
-          </div>`;
-      }
-    }
-  } catch (e) {}
+  // Mockup (heute): nur Ring + Form-Erklärtext. Die Tages-Bereitschaft wurde
+  // bewusst aus dem Trainingsform-Widget entfernt.
 
   // Ring-Geometrie (viewBox 160×160, r=66)
   const r = 66;
@@ -510,8 +494,8 @@ function renderDashboardFormHero() {
   const clamped = Math.max(0, Math.min(100, score));
   const offset = circ * (1 - clamped / 100);
 
-  const titleRaw = tr('progress.form.title');
-  const heroTitle = (titleRaw && titleRaw.indexOf('.') === -1) ? titleRaw : 'Form';
+  // Mockup (heute): das Widget heißt "Trainingsform".
+  const heroTitle = 'Trainingsform';
 
   container.innerHTML = `
     <div class="dashboard-card dashboard-form-hero-card" role="button" tabindex="0" onclick="openProgressOverview()">
@@ -531,7 +515,6 @@ function renderDashboardFormHero() {
         </div>
       </div>
       ${hint ? `<p class="form-hero-hint">${hint}</p>` : ''}
-      ${readinessHTML}
     </div>
   `;
 }
