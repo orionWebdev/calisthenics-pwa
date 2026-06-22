@@ -158,9 +158,12 @@
 }
 
 .bottom-nav-fab {
-  position: absolute;
+  /* Sibling of .bottom-nav (not a child) so the nav's backdrop-filter can't clip it.
+     Centered over the nav's top edge. Hidden on desktop; shown in the mobile query. */
+  display: none;
+  position: fixed;
   left: 50%;
-  top: -18px;
+  bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px) + 28px);
   transform: translateX(-50%);
   width: 56px;
   height: 56px;
@@ -168,12 +171,11 @@
   background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
   border: 3px solid var(--color-bg, #000);
   color: #fff;
-  display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 24px rgba(192, 25, 99, 0.5);
   cursor: pointer;
-  z-index: 2;
+  z-index: 1001;
   transition: transform 160ms ease, box-shadow 200ms ease;
 }
 

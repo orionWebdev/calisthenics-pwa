@@ -1466,3 +1466,44 @@
   cursor: pointer;
 }
 .workout-next-cta .material-symbols-rounded { font-size: 22px; }
+
+/* "Als Nächstes"-Karte (workout.png) */
+.workout-next-up {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% - 32px);
+  margin: 10px 16px 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--ui-card-border, rgba(255, 255, 255, 0.07));
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.workout-next-up-icon {
+  font-size: 20px;
+  color: var(--color-primary-light, #F02277);
+  flex-shrink: 0;
+}
+.workout-next-up-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.workout-next-up-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary, #6b7280);
+}
+.workout-next-up-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

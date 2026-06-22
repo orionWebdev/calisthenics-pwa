@@ -300,6 +300,17 @@ function renderWorkoutBottomActions() {
   const ctaLabel = isLast ? t('workout.screen.finishWorkout') : 'Nächste Übung';
   const ctaAction = isLast ? 'finishWorkoutFromConfirm()' : ('goToExercise(' + (idx + 1) + ')');
 
+  // "Als Nächstes" — kommende Übung + Ziel (workout.png)
+  const nextEx = !isLast ? activeWorkout.exercises[idx + 1] : null;
+  const nextUpHTML = nextEx ? `
+    <button type="button" class="workout-next-up" onclick="goToExercise(${idx + 1})">
+      <span class="material-symbols-rounded workout-next-up-icon">skip_next</span>
+      <span class="workout-next-up-text">
+        <span class="workout-next-up-label">Als Nächstes</span>
+        <span class="workout-next-up-name">${nextEx.exerciseName} · ${nextEx.targetSets} × ${nextEx.targetReps}</span>
+      </span>
+    </button>` : '';
+
   return `
     <div class="workout-bottom-actions">
       <button type="button" onclick="replacingExerciseIndex=null;openAddExerciseToWorkout()" class="workout-ex-action">
@@ -315,6 +326,7 @@ function renderWorkoutBottomActions() {
         <span>Löschen</span>
       </button>
     </div>
+    ${nextUpHTML}
     <button type="button" class="workout-next-cta" onclick="${ctaAction}">
       <span class="material-symbols-rounded">${ctaIcon}</span>
       <span>${ctaLabel}</span>
