@@ -37,11 +37,15 @@ function saveTrainingTab(tab) {
 }
 
 function switchTrainingTab(tab) {
-  const nextTab = (tab === 'exercises' || tab === 'calendar') ? tab : 'plans';
+  const order = ['plans', 'calendar', 'exercises'];
+  const nextTab = order.includes(tab) ? tab : 'plans';
   currentTrainingTab = nextTab;
   saveTrainingTab(nextTab);
 
-  document.querySelectorAll('#training-segmented-control .segmented-btn').forEach(btn => {
+  // Slide-Underline wie auf der Fortschritt-Seite (kein clunky Hintergrund).
+  const control = document.querySelector('#training-segmented-control .pv3-segmented-control');
+  if (control) control.style.setProperty('--active-idx', order.indexOf(nextTab));
+  document.querySelectorAll('#training-segmented-control .pv3-seg-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === nextTab);
   });
 

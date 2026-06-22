@@ -315,26 +315,15 @@
     <div id="view-training" class="view hidden">
 
       <div id="training-segmented-control" class="progress-section reveal">
-        <div class="segmented-control">
-          <button
-            class="segmented-btn active"
-            onclick="switchTrainingTab('plans')"
-            data-tab="plans"
-          >
+        <div class="pv3-segmented-control" style="--seg-count:3;--active-idx:0">
+          <div class="pv3-seg-indicator"></div>
+          <button class="pv3-seg-btn active" onclick="switchTrainingTab('plans')" data-tab="plans">
             <span data-i18n="nav.plans">Pläne</span>
           </button>
-          <button
-            class="segmented-btn"
-            onclick="switchTrainingTab('calendar')"
-            data-tab="calendar"
-          >
+          <button class="pv3-seg-btn" onclick="switchTrainingTab('calendar')" data-tab="calendar">
             <span data-i18n="nav.calendar">Kalender</span>
           </button>
-          <button
-            class="segmented-btn"
-            onclick="switchTrainingTab('exercises')"
-            data-tab="exercises"
-          >
+          <button class="pv3-seg-btn" onclick="switchTrainingTab('exercises')" data-tab="exercises">
             <span data-i18n="nav.exercises">Übungen</span>
           </button>
         </div>
