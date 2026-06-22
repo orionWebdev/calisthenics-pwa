@@ -335,7 +335,7 @@ function renderScheduledWorkoutsCard(state) {
 
   container.innerHTML = `
     <div class="dashboard-scheduled-widget">
-      <div class="dashboard-scheduled-header" onclick="document.getElementById('dashboard-plan-calendar')?.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor: pointer;">
+      <div class="dashboard-scheduled-header" onclick="if(typeof showTrainingTab==='function')showTrainingTab('calendar')" style="cursor: pointer;">
         <span class="material-symbols-rounded">event</span>
         <span>${tr('dashboard.scheduled.title')}</span>
         <span class="material-symbols-rounded" style="margin-left: auto; font-size: 18px; opacity: 0.5;">chevron_right</span>

@@ -69,6 +69,18 @@
     { id: 'p4', name: 'Mobility Flow', type: 'recovery', duration: 20, durationSec: 1200 }
   ];
 
+  // ---- Mock geplante Trainings (Zukunft) für den vereinten Kalender ----
+  var _ymd = function (d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  };
+  var _future = function (n) { var d = new Date(); d.setDate(d.getDate() + n); return _ymd(d); };
+  var demoSchedule = [
+    { id: 'sch1', planId: 'p1', planName: 'Push Day A', planType: 'strength', date: _future(1), planDuration: 50, completed: false },
+    { id: 'sch2', planId: 'p2', planName: 'Pull Day B', planType: 'strength', date: _future(3), planDuration: 45, completed: false },
+    { id: 'sch3', planId: 'p3', planName: 'Easy Run', planType: 'cardio', date: _future(5), planDuration: 30, completed: false, isQuickEntry: true },
+    { id: 'sch4', planId: 'p4', planName: 'Mobility Flow', planType: 'recovery', date: _future(8), planDuration: 20, completed: false }
+  ];
+
   // ---- Mock aktiver Workout (nur für view=workout aktiviert) ----
   var demoWorkout = {
     id: 'demowk1', status: 'in-progress', type: 'strength', planId: 'p1', planName: 'Push Day A',
@@ -85,7 +97,7 @@
   try { allExercises = demoExercises; } catch (e) {}
   try { filteredExercises = demoExercises.slice(); } catch (e) {}
   try { allSessions = sessions; sessionsLoaded = true; } catch (e) {}
-  try { scheduleData = []; } catch (e) {}
+  try { scheduleData = demoSchedule; } catch (e) {}
   try { allPlans = demoPlans; filteredPlans = demoPlans.slice(); } catch (e) {}
 
   // ---- Loader / Realtime-Listener stubben (kein Firestore) ----
@@ -95,7 +107,7 @@
     if (typeof renderExercises === 'function') { try { renderExercises(); } catch (e) {} }
     return Promise.resolve(demoExercises);
   };
-  window.loadSchedule = function () { try { scheduleData = []; } catch (e) {} return Promise.resolve([]); };
+  window.loadSchedule = function () { try { scheduleData = demoSchedule; } catch (e) {} return Promise.resolve(demoSchedule); };
   window.loadPlans = function () {
     try { allPlans = demoPlans; filteredPlans = demoPlans.slice(); } catch (e) {}
     if (typeof renderPlans === 'function') { try { renderPlans(); } catch (e) {} }

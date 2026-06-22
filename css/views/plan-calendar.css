@@ -173,6 +173,41 @@
   background: var(--color-category-bodyweight);
 }
 
+/* Planned (future) = ghost ring; completed (past) keeps the filled dot above. */
+.plan-calendar-dot.is-planned {
+  background: transparent !important;
+  opacity: 0.9;
+}
+.plan-calendar-dot-strength.is-planned { box-shadow: inset 0 0 0 1.6px var(--color-category-strength); }
+.plan-calendar-dot-cardio.is-planned { box-shadow: inset 0 0 0 1.6px var(--color-category-cardio); }
+.plan-calendar-dot-recovery.is-planned { box-shadow: inset 0 0 0 1.6px var(--color-category-recovery); }
+.plan-calendar-dot-bodyweight.is-planned { box-shadow: inset 0 0 0 1.6px var(--color-category-bodyweight); }
+
+/* Unified-calendar legend (Erledigt / Geplant) */
+.plan-calendar-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.cal-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+.cal-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.cal-legend-dot.completed { background: var(--color-primary, #C01963); }
+.cal-legend-dot.planned {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.6px var(--text-secondary);
+}
+
 /* ========================================
    CALENDAR MONTH AGENDA LIST
    (exercise-section style)

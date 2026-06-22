@@ -68,13 +68,63 @@ function mapScheduleToCalendarEvent(entry) {
 }
 
 /**
- * Gets CalendarEvents for a specific date
+ * Maps a completed session to a CalendarEvent. Unified calendar: past days
+ * show what was actually done.
+ * @param {Object} session
+ * @returns {CalendarEvent}
+ */
+function mapSessionToCalendarEvent(session) {
+  const d = session?.date?.toDate ? session.date.toDate() : new Date(session?.date);
+  const dateStr = formatDate(d);
+  const raw = (session.type || '').toLowerCase().trim();
+  let type = 'strength';
+  if (raw === 'cardio' || session.activityType) type = 'cardio';
+  else if (raw === 'recovery') type = 'recovery';
+  else if (raw === 'bodyweight') type = 'bodyweight';
+  const dur = (typeof getSessionDurationMinutesSafe === 'function')
+    ? getSessionDurationMinutesSafe(session)
+    : (session.durationMin || null);
+  return {
+    id: 'session-' + (session.id || dateStr),
+    source: 'session',
+    title: session.planName || session.name || (t('plan.types.' + type) || 'Training'),
+    type: type,
+    startDate: dateStr,
+    startTime: null,
+    durationMin: dur || null,
+    planId: session.planId || null,
+    completed: true,
+    sessionId: session.id || null,
+    _original: session
+  };
+}
+
+/**
+ * Completed sessions on a given date.
+ * @param {string} dateStr - YYYY-MM-DD format
+ * @returns {Object[]}
+ */
+function getSessionsForDate(dateStr) {
+  const sessions = Array.isArray(allSessions) ? allSessions : [];
+  return sessions.filter(s => {
+    const d = s?.date?.toDate ? s.date.toDate() : new Date(s?.date);
+    return d && !isNaN(d.getTime()) && formatDate(d) === dateStr;
+  });
+}
+
+/**
+ * Unified events for a date: completed sessions (past/today) + planned schedule
+ * entries (future). Planned entries already marked completed are dropped — the
+ * session row represents that completion, so we don't show both.
  * @param {string} dateStr - YYYY-MM-DD format
  * @returns {CalendarEvent[]}
  */
 function getCalendarEventsForDate(dateStr) {
-  const plans = getPlansForDate(dateStr);
-  return plans.map(mapScheduleToCalendarEvent);
+  const completed = getSessionsForDate(dateStr).map(mapSessionToCalendarEvent);
+  const planned = getPlansForDate(dateStr)
+    .map(mapScheduleToCalendarEvent)
+    .filter(e => !e.completed);
+  return [...completed, ...planned];
 }
 
 
@@ -241,15 +291,20 @@ function createDayCell(date, options = {}) {
   dayNum.textContent = date.getDate();
   cell.appendChild(dayNum);
 
-  // Event dots (max 3 unique types)
+  // Event dots (max 3 unique types). Completed = filled, planned = ghost outline.
   if (events.length > 0) {
     const dotsContainer = document.createElement('div');
     dotsContainer.className = 'plan-calendar-dots';
 
-    const uniqueTypes = [...new Set(events.map(e => e.type))].slice(0, 3);
-    uniqueTypes.forEach(type => {
+    const byType = {};
+    events.forEach(e => {
+      if (!byType[e.type]) byType[e.type] = { type: e.type, completed: false };
+      if (e.completed) byType[e.type].completed = true;
+    });
+    Object.keys(byType).slice(0, 3).forEach(key => {
+      const { type, completed } = byType[key];
       const dot = document.createElement('span');
-      dot.className = `plan-calendar-dot plan-calendar-dot-${type}`;
+      dot.className = `plan-calendar-dot plan-calendar-dot-${type}` + (completed ? '' : ' is-planned');
       dotsContainer.appendChild(dot);
     });
 
@@ -438,6 +493,13 @@ function isLocalEvent(event) {
 }
 
 function handleEventTap(eventId) {
+  // Completed session row → open the session detail (unified calendar: past).
+  if (typeof eventId === 'string' && eventId.indexOf('session-') === 0) {
+    const sid = eventId.slice('session-'.length);
+    if (sid && typeof openSessionDetail === 'function') openSessionDetail(sid);
+    return;
+  }
+
   const entry = scheduleData.find(s => s.id === eventId);
   if (!entry) return;
 
@@ -855,9 +917,63 @@ function getCalendarSessionsByDateLocal(year, month) {
 }
 
 // ========================================
+// UNIFIED CALENDAR (Training tab)
+// ========================================
+// Mounts the calendar shell into the Training "Kalender" tab. One calendar:
+// past = done (filled dots), future = planned (ghost dots), today = pivot.
+
+function renderTrainingCalendar() {
+  const mount = document.getElementById('training-calendar-mount');
+  if (!mount) return;
+
+  const dayShort = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+    .map(k => `<span>${t('calendar.dayNamesShort.' + k)}</span>`).join('');
+
+  mount.innerHTML = `
+    <div class="plan-calendar-widget-wrapper">
+      <div class="calendar-month-section">
+        <div class="dashboard-activity-month-nav">
+          <button class="activity-nav-btn" onclick="navigateCalendar('prev')" aria-label="${t('dashboard.calendar.prevMonth')}">
+            <span class="material-symbols-rounded">chevron_left</span>
+          </button>
+          <span class="activity-month-title" id="calendar-title"></span>
+          <button class="activity-nav-btn" onclick="goToToday()" aria-label="Heute">
+            <span class="material-symbols-rounded">today</span>
+          </button>
+          <button class="activity-nav-btn" onclick="navigateCalendar('next')" aria-label="${t('dashboard.calendar.nextMonth')}">
+            <span class="material-symbols-rounded">chevron_right</span>
+          </button>
+        </div>
+        <div class="plan-calendar-legend">
+          <span class="cal-legend-item"><span class="cal-legend-dot completed"></span>Erledigt</span>
+          <span class="cal-legend-item"><span class="cal-legend-dot planned"></span>Geplant</span>
+        </div>
+        <div class="plan-calendar-weekdays">${dayShort}</div>
+        <div id="calendar-grid" class="plan-calendar-grid"></div>
+      </div>
+      <div class="calendar-agenda-container">
+        <div class="calendar-agenda-list-header">
+          <h3 class="calendar-agenda-list-title" id="agenda-list-title"></h3>
+          <button class="agenda-add-btn" onclick="openQuickAddSheet()" aria-label="${t('dashboard.calendar.addTraining')}">
+            <span class="material-symbols-rounded">add</span>
+          </button>
+        </div>
+        <div id="calendar-agenda-list" class="calendar-agenda-list"></div>
+      </div>
+    </div>`;
+
+  if (typeof loadSchedule === 'function' && (!Array.isArray(scheduleData) || scheduleData.length === 0)) {
+    loadSchedule().then(() => { if (typeof renderCalendar === 'function') renderCalendar(); });
+  } else if (typeof renderCalendar === 'function') {
+    renderCalendar();
+  }
+}
+
+// ========================================
 // EXPOSE FUNCTIONS GLOBALLY
 // ========================================
 
+window.renderTrainingCalendar = renderTrainingCalendar;
 window.startScheduledWorkout = startScheduledWorkout;
 window.goToToday = goToToday;
 window.navigateCalendar = navigateCalendar;

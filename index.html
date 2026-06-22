@@ -313,13 +313,8 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Scheduled Workouts Today (sits directly above plan calendar) -->
+      <!-- Scheduled Workouts Today (the full unified calendar lives in Training → Kalender) -->
       <div id="dashboard-scheduled-card" class="mb-4">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
-      <!-- Plan Calendar Widget (forward-looking — activity calendar moved to Progress page) -->
-      <div id="dashboard-plan-calendar" class="dashboard-card mb-4 reveal">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
@@ -338,6 +333,13 @@
             data-tab="plans"
           >
             <span data-i18n="nav.plans">Pläne</span>
+          </button>
+          <button
+            class="segmented-btn"
+            onclick="switchTrainingTab('calendar')"
+            data-tab="calendar"
+          >
+            <span data-i18n="nav.calendar">Kalender</span>
           </button>
           <button
             class="segmented-btn"
@@ -385,6 +387,11 @@
             <p id="plans-loading-text"></p>
           </div>
         </div>
+      </div>
+
+      <div id="training-tab-calendar" class="training-tab">
+        <!-- Unified calendar: past = done, future = planned. Mounted by renderTrainingCalendar(). -->
+        <div id="training-calendar-mount" class="reveal"></div>
       </div>
 
       <div id="training-tab-exercises" class="training-tab">
