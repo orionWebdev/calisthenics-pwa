@@ -1406,3 +1406,38 @@
   }
 }
 
+
+/* ===== Redesign: header progress bar + primary "Nächste Übung" CTA ===== */
+.st-progress-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  margin: 2px 16px 10px;
+  overflow: hidden;
+}
+.st-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
+  transition: width 0.4s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+.workout-next-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 32px);
+  margin: 10px 16px 6px;
+  height: 52px;
+  border: none;
+  border-radius: 16px;
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 8px 24px rgba(192, 25, 99, 0.4);
+  cursor: pointer;
+}
+.workout-next-cta .material-symbols-rounded { font-size: 22px; }

@@ -294,6 +294,12 @@ function renderWorkoutBottomActions() {
     return '';
   }
 
+  const idx = activeWorkout.currentExerciseIndex;
+  const isLast = idx >= activeWorkout.exercises.length - 1;
+  const ctaIcon = isLast ? 'check_circle' : 'arrow_forward';
+  const ctaLabel = isLast ? t('workout.screen.finishWorkout') : 'Nächste Übung';
+  const ctaAction = isLast ? 'finishWorkoutFromConfirm()' : ('goToExercise(' + (idx + 1) + ')');
+
   return `
     <div class="workout-bottom-actions">
       <button type="button" onclick="replacingExerciseIndex=null;openAddExerciseToWorkout()" class="workout-ex-action">
@@ -309,6 +315,10 @@ function renderWorkoutBottomActions() {
         <span>Löschen</span>
       </button>
     </div>
+    <button type="button" class="workout-next-cta" onclick="${ctaAction}">
+      <span class="material-symbols-rounded">${ctaIcon}</span>
+      <span>${ctaLabel}</span>
+    </button>
   `;
 }
 

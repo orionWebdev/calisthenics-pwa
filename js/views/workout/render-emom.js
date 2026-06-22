@@ -127,6 +127,7 @@ function stopWorkoutTimer() {
  * Session Tracker Header
  */
 function renderSTHeader(progress) {
+  const pct = (progress && progress.total) ? Math.round((progress.completed / progress.total) * 100) : 0;
   return `
     <div class="st-header">
       <button type="button" class="st-header-back" onclick="showView('dashboard')" aria-label="${t('common.back')}">
@@ -145,6 +146,7 @@ function renderSTHeader(progress) {
         <span class="material-symbols-rounded">more_horiz</span>
       </button>
     </div>
+    <div class="st-progress-track" aria-hidden="true"><div class="st-progress-fill" style="width:${pct}%"></div></div>
   `;
 }
 
