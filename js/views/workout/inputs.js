@@ -511,36 +511,18 @@ function renderSTSetList(exercise) {
       <div class="st-set-row st-set-row--active" data-set-index="active">
         <div class="st-set-num st-set-num--active">${activeSetNum}</div>
         <div class="st-set-values">
-          <div class="st-set-stepper-group">
-            <button type="button" class="st-stepper-btn" onclick="adjustActiveSetValue('reps', -1)" aria-label="-1">
-              <span class="material-symbols-rounded">remove</span>
-            </button>
-            <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('reps')" id="active-reps-btn" data-value="${activeSetValues.reps}">
-              <span class="st-set-val-num" id="active-reps-value">${activeSetValues.reps}</span>
-              <span class="st-set-val-unit">${valueUnit}</span>
-            </button>
-            <button type="button" class="st-stepper-btn" onclick="adjustActiveSetValue('reps', 1)" aria-label="+1">
-              <span class="material-symbols-rounded">add</span>
-            </button>
-          </div>
-          <div class="st-set-stepper-group">
-            <button type="button" class="st-stepper-btn" onclick="adjustWeightByCurrentStep(-1)" aria-label="${t('workout.setLogger.decreaseWeight')}">
-              <span class="material-symbols-rounded">remove</span>
-            </button>
-            <button type="button" class="st-set-val st-set-val--editable" onclick="handleWeightValueTap()" id="active-weight-btn" data-value="${activeSetValues.weight}">
-              <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
-              <span class="st-set-val-unit">${getWeightUnit()}</span>
-            </button>
-            <button type="button" class="st-stepper-btn" onclick="adjustWeightByCurrentStep(1)" aria-label="${t('workout.setLogger.increaseWeight')}">
-              <span class="material-symbols-rounded">add</span>
-            </button>
-          </div>
-        </div>
-        <div class="st-set-actions">
-          <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
-            <span class="material-symbols-rounded">check</span>
+          <button type="button" class="st-set-val st-set-val--editable" onclick="openNumberPickerForNewSet('reps')" id="active-reps-btn" data-value="${activeSetValues.reps}">
+            <span class="st-set-val-num" id="active-reps-value">${activeSetValues.reps}</span>
+            <span class="st-set-val-unit">${valueUnit}</span>
+          </button>
+          <button type="button" class="st-set-val st-set-val--editable" onclick="handleWeightValueTap()" id="active-weight-btn" data-value="${activeSetValues.weight}">
+            <span class="st-set-val-num" id="active-weight-value">${activeWeightDisplay || '0'}</span>
+            <span class="st-set-val-unit">${getWeightUnit()}</span>
           </button>
         </div>
+        <button type="button" class="st-set-check st-set-check--log" onclick="logSetFromActiveRow()" aria-label="${t('workout.setLogger.logSet')}">
+          <span class="material-symbols-rounded">check</span>
+        </button>
       </div>
     `;
   }
