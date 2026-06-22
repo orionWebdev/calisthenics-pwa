@@ -147,10 +147,30 @@
       window.getActiveWorkout = function () { return demoWorkout; };
     }
     if (vw) {
+      // Splash robust schließen — unter Auth-Event-Timing / headless bleibt er
+      // sonst hängen. Mehrfach, da der App-Init ihn evtl. neu setzt.
+      var killSplash = function () {
+        try { if (typeof hideLoadingState === 'function') hideLoadingState(); } catch (e) {}
+        try {
+          var sp = document.getElementById('auth-splash');
+          if (sp) sp.classList.remove('active');
+          document.body.style.overflow = '';
+        } catch (e) {}
+      };
       document.addEventListener('DOMContentLoaded', function () {
+        [600, 900, 1400, 2000].forEach(function (d) { setTimeout(killSplash, d); });
         setTimeout(function () {
           if (typeof showView === 'function') { try { showView(vw); } catch (e) {} }
-          if (tb && typeof showTrainingTab === 'function') { setTimeout(function () { try { showTrainingTab(tb); } catch (e) {} }, 250); }
+          // progress-View wird nicht im Force-Render-Block erfasst → hier anstoßen
+          if (vw === 'progress') {
+            if (typeof initProgressV3 === 'function') { try { initProgressV3(); } catch (e) {} }
+            else if (typeof renderProgressV4 === 'function') { try { renderProgressV4(); } catch (e) {} }
+          }
+          if (tb && vw === 'progress' && tb === 'exercises' && typeof window.pv4ShowAllExercises === 'function') {
+            setTimeout(function () { try { window.pv4ShowAllExercises(); } catch (e) {} }, 1700);
+          } else if (tb && typeof showTrainingTab === 'function') {
+            setTimeout(function () { try { showTrainingTab(tb); } catch (e) {} }, 250);
+          }
           if (vw === 'workout' && typeof renderWorkoutScreen === 'function') { setTimeout(function () { try { renderWorkoutScreen(); } catch (e) {} }, 300); }
         }, 900);
       });
