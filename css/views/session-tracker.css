@@ -406,6 +406,31 @@
   color: rgba(255, 255, 255, 0.25);
 }
 
+/* "+ Satz hinzufügen" innerhalb der Set-Karte (workout.png) */
+.st-set-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--color-text-muted, #9ca3af);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.st-set-add-btn:hover {
+  border-color: rgba(192, 25, 99, 0.4);
+  color: var(--color-primary-light, #F02277);
+}
+.st-set-add-btn .material-symbols-rounded { font-size: 18px; }
+
 /* Check Button */
 .st-set-check {
   width: 44px;

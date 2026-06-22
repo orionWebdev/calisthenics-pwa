@@ -1033,7 +1033,6 @@ function renderV4Overview() {
     ${renderV4PeriodSelector()}
     ${renderV4ConsistencyHero(sessions, days)}
     ${renderV4FormReadiness()}
-    ${renderV4MuscleVolume(sessions, days)}
     ${renderV4ExerciseProgression(sessions, days)}
     ${renderEnduranceCard(sessions)}
     ${renderV4HybridBalance(sessions)}

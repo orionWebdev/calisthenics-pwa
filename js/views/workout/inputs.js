@@ -562,6 +562,9 @@ function renderSTSetList(exercise) {
   return `
     <div class="st-sets">
       ${rows}
+      <button type="button" class="st-set-add-btn" onclick="addEmptySet()">
+        <span class="material-symbols-rounded">add</span>${t('workout.setLogger.addSet') || 'Satz hinzufügen'}
+      </button>
     </div>
   `;
 }
