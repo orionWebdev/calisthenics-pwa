@@ -853,3 +853,106 @@
   border-top: 1px solid var(--ui-card-border);
 }
 
+/* --- Form & Belastung (fortschritt.png) --- */
+.pv4-form-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pv4-form-head .pv4-form-zone {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 4px;
+}
+.pv4-form-head .pv4-form-zone .material-symbols-rounded { font-size: 16px; }
+.pv4-form-delta {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pv4-form-delta span {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+.pv4-form-chart-wrap {
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 120% at 50% 0%, color-mix(in srgb, var(--form-zone-color, #F02277) 12%, transparent), transparent 70%),
+    rgba(255, 255, 255, 0.02);
+}
+.pv4-form-load {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 14px;
+}
+
+/* --- Konsistenz & Volumen: Wochenvolumen-Balken --- */
+.pv4-volbars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 72px;
+  margin-top: 16px;
+}
+.pv4-volbar {
+  flex: 1;
+  min-height: 6px;
+  border-radius: 4px 4px 2px 2px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: height 0.4s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.pv4-volbar.current {
+  background: linear-gradient(180deg, #F02277, #C01963);
+  box-shadow: 0 0 14px rgba(240, 34, 119, 0.4);
+}
+.pv4-vol-caption {
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+/* --- Ausdauer (Strava-inspiriert) --- */
+.pv4-endurance-total {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary-light);
+  font-variant-numeric: tabular-nums;
+}
+.pv4-endurance-stats {
+  margin-top: 14px;
+}
+.pv4-endurance-bars {
+  height: 60px;
+  margin-top: 14px;
+}
+.pv4-endurance-sports {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ui-card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pv4-endurance-sport {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.pv4-endurance-sport .material-symbols-rounded { font-size: 18px; }
+.pv4-endurance-sport-name { color: var(--text-primary); font-weight: 600; }
+.pv4-endurance-sport-val { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+

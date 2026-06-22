@@ -726,13 +726,13 @@ function pv4Sparkline(series, color) {
   if (vals.length < 2) return '';
   const max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
   const range = (max - min) || 1;
-  const W = 80, H = 28, n = vals.length;
+  const W = 92, H = 34, n = vals.length;
   const pts = vals.map((v, i) => {
     const x = (i / (n - 1)) * (W - 4) + 2;
-    const y = H - 2 - ((v - min) / range) * (H - 6);
+    const y = H - 3 - ((v - min) / range) * (H - 8);
     return x.toFixed(1) + ',' + y.toFixed(1);
   }).join(' ');
-  return '<svg width="80" height="28" viewBox="0 0 80 28"><polyline fill="none" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="' + pts + '"/></svg>';
+  return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '"><polyline fill="none" stroke="' + color + '" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" points="' + pts + '"/></svg>';
 }
 
 // Per-exercise progression series. Weighted exercises -> e1RM (Epley:
@@ -778,24 +778,26 @@ function renderV4ExerciseProgression(sessions, days) {
       const series = data.series;
       const weighted = data.weighted;
       const vals = series.map(p => p.value).filter(v => typeof v === 'number');
-      const pr = vals.length ? Math.max.apply(null, vals) : 0;
-      const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
       const first = vals.length ? vals[0] : 0;
       const last = vals.length ? vals[vals.length - 1] : 0;
-      const up = last > first + 0.5;
-      const trendIcon = up ? 'trending_up' : 'trending_flat';
-      const trendColor = up ? 'var(--color-primary-light)' : 'var(--text-secondary)';
-      const trendText = up ? 'steigt' : 'gehalten';
-      const avgStr = weighted ? ('e1RM Ø ' + avg + ' kg') : ('Ø ' + avg + ' Wdh.');
-      const prStr = weighted ? ('PR ' + pr + ' kg') : ('PR ' + pr);
-      const spark = pv4Sparkline(series, up ? '#F02277' : '#9ca3af');
+      const delta = Math.round(last - first);
+      const up = delta > 0;
+      const unit = weighted ? 'kg' : 'Wdh.';
+      const sinceMonth = series.length ? series[0].date.toLocaleDateString('de-DE', { month: 'short' }) : '';
+      // Steigt → grün (Mockup); gehalten → neutral. Nie rot.
+      const GREEN = '#22c55e';
+      const lineColor = up ? GREEN : '#9ca3af';
+      const deltaHTML = up
+        ? '<span style="display:inline-flex;align-items:center;gap:2px;color:' + GREEN + ';font-weight:700;"><span class="material-symbols-rounded" style="font-size:14px;">arrow_upward</span>+' + delta + '</span>'
+          + (sinceMonth ? '<span style="color:var(--text-tertiary);">· seit ' + sinceMonth + '</span>' : '')
+        : '<span style="color:var(--text-secondary);font-weight:600;">gehalten</span>';
+      const spark = pv4Sparkline(series, lineColor);
       return '<div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--ui-card-border);">'
         + '<div style="min-width:0;flex:1;">'
         + '<div style="font-size:15px;font-weight:600;">' + ex.name + '</div>'
-        + '<div style="font-size:12px;margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
-        + '<span style="color:var(--text-secondary);">' + avgStr + '</span>'
-        + '<span style="display:inline-flex;align-items:center;gap:2px;color:' + trendColor + ';font-weight:600;"><span class="material-symbols-rounded" style="font-size:15px;">' + trendIcon + '</span>' + trendText + '</span>'
-        + '<span style="display:inline-flex;align-items:center;gap:3px;color:#f5c451;font-weight:600;"><span class="material-symbols-rounded" style="font-size:14px;">emoji_events</span>' + prStr + '</span>'
+        + '<div style="font-size:12px;margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'
+        + '<span style="color:var(--text-secondary);font-weight:600;">' + last + ' ' + unit + '</span>'
+        + deltaHTML
         + '</div></div>' + spark + '</div>';
     }).join('');
     return '<div class="pv3-card">'
@@ -816,18 +818,22 @@ window.pv4ShowAllExercises = function () {
 // ==================== KONSISTENZ-HERO (Redesign v3 — Mockup-aligned) ====================
 // Hero ist der Held: Streak · Ø Sessions/Woche · Ø Stunden/Woche + 12-Wochen-Balken.
 
-function pv4ConsistencyWeeks(weeks) {
-  weeks = weeks || 12;
-  const counts = new Array(weeks).fill(0);
+// Wöchentliches Trainingsvolumen (Last/Volumen, sonst Minuten) der letzten N Wochen.
+function pv4WeeklyVolume(weeks) {
+  weeks = weeks || 8;
+  const vols = new Array(weeks).fill(0);
   const today = new Date(); today.setHours(0, 0, 0, 0);
   (Array.isArray(allSessions) ? allSessions : []).forEach(s => {
     const d = v3ToLocalDate(s);
     const daysAgo = Math.floor((today - d) / 86400000);
     if (daysAgo < 0) return;
     const wi = Math.floor(daysAgo / 7); // 0 = this week
-    if (wi >= 0 && wi < weeks) counts[wi] += 1;
+    if (wi >= 0 && wi < weeks) {
+      const vol = (typeof calcSessionVolume === 'function') ? calcSessionVolume(s) : 0;
+      vols[wi] += vol > 0 ? vol : (v3GetDurationMin(s) || 0);
+    }
   });
-  return counts.reverse(); // oldest -> newest (left -> right)
+  return vols.reverse(); // oldest -> newest (left -> right)
 }
 
 function renderV4ConsistencyHero(sessions, days) {
@@ -836,23 +842,29 @@ function renderV4ConsistencyHero(sessions, days) {
     const totalMinutes = sessions.reduce((s, x) => s + v3GetDurationMin(x), 0);
     const weeksSpan = Math.max(1, days / 7);
     const perWeek = totalSessions / weeksSpan;
-    const hoursPerWeek = (totalMinutes / 60) / weeksSpan;
     const streak = typeof calculateStreak === 'function' ? calculateStreak() : 0;
     const perWeekStr = perWeek.toFixed(1).replace('.', ',');
-    const hoursStr = hoursPerWeek.toFixed(1).replace('.', ',');
-    const weekCounts = pv4ConsistencyWeeks(12);
-    const bars = weekCounts.map(c => `<i class="${c > 0 ? 'on' : ''}"></i>`).join('');
-    const lead = `Du trainierst im Schnitt <b>${perWeekStr}×/Woche</b>. Dranbleiben ist dein größter Hebel.`;
+
+    const vols = pv4WeeklyVolume(8);
+    const maxVol = Math.max.apply(null, vols.concat(1));
+    const currentHighest = vols.length > 1 && vols[vols.length - 1] >= maxVol && maxVol > 0;
+    const volBars = vols.map((v, i) => {
+      const h = Math.max(6, Math.round((v / maxVol) * 100));
+      const isCurrent = i === vols.length - 1;
+      return `<span class="pv4-volbar${isCurrent ? ' current' : ''}" style="height:${h}%"></span>`;
+    }).join('');
+    const caption = `Wöchentliches Volumen · letzte 8 Wochen${currentHighest ? ' · <b>diese Woche am höchsten</b>' : ''}`;
+
     return `
       <section class="pv3-card pv4-konsistenz-hero">
-        <div class="pv4-sec-title"><span class="material-symbols-rounded">local_fire_department</span>Konsistenz</div>
-        <p class="pv4-lead">${lead}</p>
+        <div class="pv4-sec-title"><span class="material-symbols-rounded">local_fire_department</span>Konsistenz &amp; Volumen</div>
         <div class="pv4-stat3">
           <div class="pv4-mini"><div class="v">${streak} <small>Tg</small></div><div class="l">Streak</div></div>
-          <div class="pv4-mini"><div class="v">${perWeekStr}</div><div class="l">Ø Sess./Wo.</div></div>
-          <div class="pv4-mini"><div class="v">${hoursStr} <small>h</small></div><div class="l">Ø /Woche</div></div>
+          <div class="pv4-mini"><div class="v">${perWeekStr}</div><div class="l">Sess./Woche</div></div>
+          <div class="pv4-mini"><div class="v">${totalMinutes} <small>min</small></div><div class="l">Bewegung</div></div>
         </div>
-        <div class="pv4-weeks" title="letzte 12 Wochen">${bars}</div>
+        <div class="pv4-volbars">${volBars}</div>
+        <p class="pv4-lead pv4-muted pv4-vol-caption">${caption}</p>
       </section>`;
   } catch (e) { return ''; }
 }
@@ -878,16 +890,25 @@ function pv4SmoothLineSVG(values, w, h) {
   const max = Math.max.apply(null, values), min = Math.min.apply(null, values);
   const range = (max - min) || 1;
   const pad = 8, n = values.length;
-  const pts = values.map((v, i) => {
+  const coords = values.map((v, i) => {
     const x = (i / (n - 1)) * (w - pad * 2) + pad;
     const y = h - pad - ((v - min) / range) * (h - pad * 2);
-    return x.toFixed(1) + ',' + y.toFixed(1);
+    return [x, y];
   });
-  const last = pts[pts.length - 1].split(',');
+  const linePts = coords.map(c => c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
+  const areaPath = 'M' + coords[0][0].toFixed(1) + ',' + coords[0][1].toFixed(1) + ' '
+    + coords.slice(1).map(c => 'L' + c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ')
+    + ' L' + coords[n - 1][0].toFixed(1) + ',' + h.toFixed(1)
+    + ' L' + coords[0][0].toFixed(1) + ',' + h.toFixed(1) + ' Z';
+  const last = coords[n - 1];
   return `<svg class="pv4-form-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-    <polyline fill="none" stroke="url(#pv4formg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${pts.join(' ')}"/>
-    <circle cx="${last[0]}" cy="${last[1]}" r="4.5" fill="#fff"/>
-    <defs><linearGradient id="pv4formg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C01963"/><stop offset="1" stop-color="#F02277"/></linearGradient></defs>
+    <defs>
+      <linearGradient id="pv4formline" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C01963"/><stop offset="1" stop-color="#F02277"/></linearGradient>
+      <linearGradient id="pv4formarea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F02277" stop-opacity="0.35"/><stop offset="1" stop-color="#F02277" stop-opacity="0"/></linearGradient>
+    </defs>
+    <path d="${areaPath}" fill="url(#pv4formarea)" stroke="none"/>
+    <polyline fill="none" stroke="url(#pv4formline)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${linePts}"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="4.5" fill="#fff"/>
   </svg>`;
 }
 
@@ -909,35 +930,43 @@ function renderV4FormReadiness() {
 
   const zoneColor = getFormZoneColor(form.zone);
   const phaseLabel = getFormPhaseLabel(form.zone);
-  const hint = getFormHint(form.formScore, form.zone);
-  const chart = pv4SmoothLineSVG(pv4FormTrendPoints(8), 320, 84);
+  const trendIcon = (typeof getFormTrendIcon === 'function') ? getFormTrendIcon(form.trend) : 'trending_up';
+  const series = pv4FormTrendPoints(8);
+  const chart = pv4SmoothLineSVG(series, 320, 84);
 
-  let pillsHTML = '';
+  // Delta seit Periodenbeginn (oben rechts), grün bei positiv — kein Rot.
+  let deltaHTML = '';
+  if (series.length >= 2) {
+    const delta = Math.round(series[series.length - 1] - series[0]);
+    if (delta !== 0) {
+      const dc = delta > 0 ? 'var(--zone-fresh, #22c55e)' : 'var(--text-secondary)';
+      deltaHTML = `<div class="pv4-form-delta" style="color:${dc}">${delta > 0 ? '+' : ''}${delta}<span>vs. Start</span></div>`;
+    }
+  }
+
+  // Belastung / Erholung als Inline-Text (keine Kacheln) — wie im Mockup.
+  let loadHTML = '';
   if (typeof getACWR === 'function') {
     const r = getACWR(allSessions, new Date(), { applyFatigue: true });
     if (r.zone) {
       const rPhase = getPhaseFromZone(r.zone);
       const acwrStr = (r.acwr != null) ? r.acwr.toFixed(1).replace('.', ',') : '–';
-      pillsHTML = `
-        <div class="pv4-readiness">
-          <div class="pv4-ready-pill"><div class="l">Belastung / Erholung</div><div class="v"><span class="pv4-ready-dot" style="background:${getZoneColor(r.zone)}"></span>${rPhase.label}</div></div>
-          <div class="pv4-ready-pill"><div class="l">ACWR</div><div class="v">${acwrStr}</div></div>
-        </div>`;
+      loadHTML = `<div class="pv4-form-load"><span class="pv4-ready-dot" style="background:${getZoneColor(r.zone)}"></span>Belastung / Erholung: <b style="color:${getZoneColor(r.zone)}">${rPhase.label}</b> · ACWR ${acwrStr}</div>`;
     }
   }
 
   return `
     <section class="pv3-card">
-      <div class="pv4-sec-head">
-        <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">monitoring</span>Form &amp; Bereitschaft</div>
-        <button class="pv4-sec-action" type="button" onclick="openFormInfoModal()" aria-label="Info"><span class="material-symbols-rounded">info</span></button>
+      <div class="pv4-form-head">
+        <div>
+          <div class="pv4-sec-title" style="margin-bottom:8px;"><span class="material-symbols-rounded">monitoring</span>Form &amp; Belastung</div>
+          <div class="pv4-form-score">${form.formScore}</div>
+          <div class="pv4-form-zone" style="color:${zoneColor}"><span class="material-symbols-rounded">${trendIcon}</span>${phaseLabel}</div>
+        </div>
+        ${deltaHTML}
       </div>
-      <div class="pv4-form-row">
-        <div><div class="pv4-form-score">${form.formScore}</div><div class="pv4-form-zone" style="color:${zoneColor}">${phaseLabel}</div></div>
-        <p class="pv4-lead pv4-muted" style="flex:1">${hint}</p>
-      </div>
-      ${chart}
-      ${pillsHTML}
+      <div class="pv4-form-chart-wrap" style="--form-zone-color:${zoneColor}">${chart}</div>
+      ${loadHTML}
     </section>`;
 }
 
@@ -1470,89 +1499,70 @@ function getSportColor(sport) {
   return getCssVarValue(SPORT_COLOR_VARS[sport] || SPORT_COLOR_VARS.run) || '#1e3a8a';
 }
 
-// Ausdauer (Redesign v3 — Mockup): pro Sport eine kompakte Zeile mit Ø-Pace/Speed,
-// gegl. Trend (nie rot) + Bestwert + Mini-Sparkline. Ersetzt die Chart.js-Slider —
-// mobil schmal & schwer tippbar war das Hauptproblem.
+// Ausdauer (Strava-inspiriert): großes Distanz-Total + Stat-Grid (Ø/Woche · Ø-Pace ·
+// Einheiten) + Wochendistanz-Balkenchart + Pro-Sport-Zeilen. Bewusst präsenter und
+// optisch distinkt von den dünnen Progressions-Zeilen.
 function renderEnduranceCard(sessions) {
   try {
-    const sports = ['run', 'bike', 'swim'];
-    const sportMeta = {
-      run:  { label: 'Laufen', icon: 'directions_run' },
-      bike: { label: 'Rad', icon: 'directions_bike' },
-      swim: { label: 'Schwimmen', icon: 'pool' }
-    };
     const normalize = t => ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim' })[t] || t;
-
-    const rows = [];
-    let totalDistAll = 0;
-
-    sports.forEach(sport => {
-      const ss = (sessions || []).filter(s => normalize((s.activityType || '').toLowerCase()) === sport);
-      if (!ss.length) return;
-
-      const sorted = ss.slice().sort((a, b) => {
-        const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
-        const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
-        return da - db;
-      });
-      const totalTime = ss.reduce((s, x) => s + v3GetDurationMin(x), 0);
-      const totalDist = ss.reduce((s, x) => s + (Number(x.distanceKm) || 0), 0);
-      totalDistAll += totalDist;
-      const stats = computeEnduranceStats(sport, totalDist, totalTime, ss.length);
-
-      // Leistungs-Serie = Geschwindigkeit (km/h) → höher = schneller/besser
-      const series = sorted.map(s => {
-        const dur = v3GetDurationMin(s), dist = Number(s.distanceKm) || 0;
-        return (dur > 0 && dist > 0) ? (dist / (dur / 60)) : null;
-      }).filter(v => typeof v === 'number' && isFinite(v) && v > 0).map(v => ({ value: v }));
-
-      let up = false;
-      if (series.length >= 2) {
-        const half = Math.floor(series.length / 2);
-        const firstAvg = series.slice(0, half).reduce((s, p) => s + p.value, 0) / Math.max(1, half);
-        const lastAvg = series.slice(half).reduce((s, p) => s + p.value, 0) / Math.max(1, series.length - half);
-        up = lastAvg > firstAvg * 1.01;
-      }
-
-      const prDist = Math.max.apply(null, ss.map(s => Number(s.distanceKm) || 0).concat(0));
-      const sportColor = getSportColor(sport);
-      let subMain = sport === 'bike' ? `Ø ${stats.speed} km/h`
-        : sport === 'swim' ? `Ø-Pace ${stats.pace}/100m`
-        : `Ø-Pace ${stats.pace}/km`;
-      const trendText = up ? 'schneller' : 'gehalten';
-      const trendIcon = up ? 'trending_up' : 'trending_flat';
-      const trendColor = up ? 'var(--color-primary-light)' : 'var(--text-secondary)';
-      const prStr = prDist > 0 ? `${prDist.toFixed(prDist >= 10 ? 0 : 1).replace('.', ',')} km` : '';
-      const spark = pv4Sparkline(series, up ? '#F02277' : '#9ca3af');
-
-      rows.push(`
-        <div class="pv4-ex-row">
-          <div class="pv4-ex-info">
-            <div class="pv4-ex-n"><span class="material-symbols-rounded" style="font-size:16px;color:${sportColor};vertical-align:-2px;margin-right:4px;">${sportMeta[sport].icon}</span>${sportMeta[sport].label}</div>
-            <div class="pv4-ex-sub">
-              <span class="pv4-ex-avg">${subMain}</span>
-              <span class="pv4-ex-trend" style="color:${trendColor}"><span class="material-symbols-rounded">${trendIcon}</span>${trendText}</span>
-              ${prStr ? `<span class="pv4-pr"><span class="material-symbols-rounded">emoji_events</span>${prStr}</span>` : ''}
-            </div>
-          </div>
-          ${spark}
-        </div>`);
-    });
-
-    if (!rows.length) return '';
+    const cardio = (sessions || []).filter(s => mapSessionType(s) === 'cardio');
+    if (!cardio.length) return '';
 
     const days = v3PeriodDays(pv4Period);
-    const weeks = Math.max(1, days / 7);
-    const weeklyDist = totalDistAll / weeks;
-    const footer = totalDistAll > 0
-      ? `<p class="pv4-lead pv4-muted pv4-ausdauer-footer">Wochendistanz <b>${weeklyDist.toFixed(weeklyDist >= 10 ? 0 : 1).replace('.', ',')} km</b> · Ø-Pace verbessert sich stetig.</p>`
-      : '';
+    const weeksSpan = Math.max(1, days / 7);
+    const totalDist = cardio.reduce((a, s) => a + (Number(s.distanceKm) || 0), 0);
+    const totalTime = cardio.reduce((a, s) => a + v3GetDurationMin(s), 0);
+    const weeklyDist = totalDist / weeksSpan;
+
+    // Ø-Pace über alle Lauf-Einheiten (min/km)
+    const runs = cardio.filter(s => normalize((s.activityType || '').toLowerCase()) === 'run');
+    const runDist = runs.reduce((a, s) => a + (Number(s.distanceKm) || 0), 0);
+    const runTime = runs.reduce((a, s) => a + v3GetDurationMin(s), 0);
+    let paceStr = '–';
+    if (runDist > 0) {
+      const p = runTime / runDist; let m = Math.floor(p); let sec = Math.round((p - m) * 60);
+      if (sec >= 60) { m += 1; sec = 0; }
+      paceStr = m + ':' + String(sec).padStart(2, '0');
+    }
+
+    // Wochendistanz der letzten 8 Wochen
+    const W = 8;
+    const wk = new Array(W).fill(0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    cardio.forEach(s => {
+      const d = v3ToLocalDate(s);
+      const wi = Math.floor((today - d) / 86400000 / 7);
+      if (wi >= 0 && wi < W) wk[wi] += (Number(s.distanceKm) || 0);
+    });
+    wk.reverse();
+    const maxW = Math.max.apply(null, wk.concat(0.1));
+    const bars = wk.map((v, i) => `<span class="pv4-volbar${i === W - 1 ? ' current' : ''}" style="height:${Math.max(6, Math.round((v / maxW) * 100))}%"></span>`).join('');
+
+    const fmtKm = v => v.toFixed(v >= 10 ? 0 : 1).replace('.', ',');
+
+    // Pro-Sport-Kurzzeile (Distanz · Einheiten)
+    const sportMeta = { run: { label: 'Laufen', icon: 'directions_run' }, bike: { label: 'Rad', icon: 'directions_bike' }, swim: { label: 'Schwimmen', icon: 'pool' } };
+    const bySport = {};
+    cardio.forEach(s => { const sp = normalize((s.activityType || '').toLowerCase()); if (!sportMeta[sp]) return; (bySport[sp] = bySport[sp] || { dist: 0, n: 0 }); bySport[sp].dist += (Number(s.distanceKm) || 0); bySport[sp].n += 1; });
+    const sportRows = Object.keys(bySport).map(sp => {
+      const c = getSportColor(sp);
+      return `<div class="pv4-endurance-sport"><span class="material-symbols-rounded" style="color:${c}">${sportMeta[sp].icon}</span><span class="pv4-endurance-sport-name">${sportMeta[sp].label}</span><span class="pv4-endurance-sport-val">${fmtKm(bySport[sp].dist)} km · ${bySport[sp].n}×</span></div>`;
+    }).join('');
 
     return `
-      <section class="pv3-card">
-        <div class="pv4-sec-title"><span class="material-symbols-rounded">directions_run</span>Ausdauer</div>
-        ${rows.join('')}
-        ${footer}
+      <section class="pv3-card pv4-endurance-card">
+        <div class="pv4-sec-head">
+          <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">directions_run</span>Ausdauer</div>
+          <span class="pv4-endurance-total">${fmtKm(totalDist)} km</span>
+        </div>
+        <div class="pv4-stat3 pv4-endurance-stats">
+          <div class="pv4-mini"><div class="v">${fmtKm(weeklyDist)} <small>km</small></div><div class="l">Ø /Woche</div></div>
+          <div class="pv4-mini"><div class="v">${paceStr}</div><div class="l">Ø Pace /km</div></div>
+          <div class="pv4-mini"><div class="v">${cardio.length}</div><div class="l">Einheiten</div></div>
+        </div>
+        <div class="pv4-volbars pv4-endurance-bars">${bars}</div>
+        <p class="pv4-lead pv4-muted pv4-vol-caption">Wöchentliche Distanz · letzte 8 Wochen</p>
+        ${sportRows ? `<div class="pv4-endurance-sports">${sportRows}</div>` : ''}
       </section>`;
   } catch (e) {
     return '';

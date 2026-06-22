@@ -35,15 +35,19 @@
   var sid = 1;
   var plans = [['pull_up', 'bench_press', 'dip'], ['squat', 'push_up', 'plank']];
 
+  // Pro Übung eine eigene Steigungsrate + leichtes Wobble → distinkte Progressionskurven.
+  var exFactor = { pull_up: 0.9, bench_press: 1.9, dip: 0.55, squat: 2.2, push_up: 1.2, plank: 0.4 };
   for (var week = 9; week >= 0; week--) {
     var prog = 9 - week; // 0..9
     [1, 4].forEach(function (dow, idx) {
       var exIds = plans[idx % 2];
       var exercises = exIds.map(function (exId) {
         var meta = exById[exId];
+        var f = exFactor[exId] || 1.0;
+        var wobble = ((week * 5 + exId.length) % 3) - 1; // -1,0,1
         var baseReps = meta.type === 'strength' ? 8 : (exId === 'push_up' ? 22 : (exId === 'plank' ? 1 : 9));
-        var reps = baseReps + Math.round(prog * 0.6);
-        var weight = meta.type === 'strength' ? Math.round(60 + prog * 1.6) : 0;
+        var reps = Math.max(1, baseReps + Math.round(prog * 0.6 * f) + wobble);
+        var weight = meta.type === 'strength' ? Math.round(60 + prog * 1.6 * f + wobble) : 0;
         var nSets = 3 + (week % 3 === 0 ? 1 : 0);
         var sets = [];
         for (var s = 0; s < nSets; s++) sets.push({ reps: Math.max(1, reps - s), weight: weight });
