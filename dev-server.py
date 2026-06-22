@@ -49,7 +49,10 @@ def main():
     Handler = NoCacheHTTPRequestHandler
 
     try:
-        with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        # ThreadingHTTPServer: handle each request in its own thread so a hung
+        # or keep-alive connection (e.g. from a headless browser) can't block the
+        # accept loop and make the server "listen but refuse" new connections.
+        with http.server.ThreadingHTTPServer(("", PORT), Handler) as httpd:
             print("=" * 60)
             print("🚀 Calisthenics Pro - Development Server")
             print("=" * 60)
