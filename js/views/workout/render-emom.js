@@ -68,7 +68,7 @@ function renderWorkoutScreen() {
   container.innerHTML = `
     <div class="st-screen">
       ${renderSTHeader(progress)}
-      ${hasExercises && getWorkoutBlocks().some(b => b.type === 'emom' || b.type === 'superset') ? renderBlockSwitcher() : ''}
+      ${hasExercises ? renderBlockSwitcher() : ''}
       ${mainContent}
       ${hasExercises ? renderWorkoutBottomActions() : ''}
     </div>

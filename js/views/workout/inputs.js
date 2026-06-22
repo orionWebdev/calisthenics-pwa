@@ -436,7 +436,7 @@ function renderSTSetList(exercise) {
   if (exType === 'recovery') return renderSTRecoveryInput(exercise);
 
   const holdMode = getActiveSetMode(exercise) === 'hold';
-  const targetSets = exercise.targetSets || 3;
+  const targetSets = getTargetSetCount(exercise);
   const completedCount = exercise.completedSets.length;
   const valueUnit = holdMode ? t('workout.holdDurationLabel') : t('workout.logging.totalReps');
 

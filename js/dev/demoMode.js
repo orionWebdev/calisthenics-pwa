@@ -92,7 +92,7 @@
     scheduleId: null, scheduledDate: '2026-06-21', notes: '', currentExerciseIndex: 0, isFreeWorkout: false,
     startedAt: { toDate: function () { return new Date(Date.now() - 12 * 60000); }, seconds: Math.floor((Date.now() - 12 * 60000) / 1000) },
     exercises: [
-      { exerciseId: 'bench_press', exerciseName: 'Bankdrücken', exerciseType: 'strength', targetSets: 4, targetMode: 'reps', targetReps: '8', targetRest: 90, completedSets: [{ reps: 8, weight: 60 }, { reps: 8, weight: 60 }], status: 'in-progress', notes: '', executionType: 'normal', groupId: null, durationSec: null, intervalSec: null },
+      { exerciseId: 'bench_press', exerciseName: 'Bankdrücken', exerciseType: 'strength', targetSets: [{ reps: 8 }, { reps: 8 }, { reps: 8 }, { reps: 8 }], targetMode: 'reps', targetReps: '8', targetRest: 90, completedSets: [{ reps: 8, weight: 60 }, { reps: 8, weight: 60 }], status: 'in-progress', notes: '', executionType: 'normal', groupId: null, durationSec: null, intervalSec: null },
       { exerciseId: 'dip', exerciseName: 'Dips', exerciseType: 'bodyweight', targetSets: 3, targetMode: 'reps', targetReps: '10', targetRest: 90, completedSets: [], status: 'not-started', notes: '', executionType: 'normal', groupId: null, durationSec: null, intervalSec: null }
     ]
   };
