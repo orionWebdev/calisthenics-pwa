@@ -2720,10 +2720,8 @@ function drawExerciseDetailChart(exerciseId) {
     ctx.fillText(String(val), padL - 6, y + 3);
   }
 
-  // Data line
-  const last = values[values.length - 1];
-  const prev = values[values.length - 2];
-  const lineColor = last >= prev ? '#22c55e' : '#ef4444';
+  // Data line — immer grün (Fortschritt = Trend, kein Rot bei Tagesschwankung)
+  const lineColor = '#22c55e';
 
   const points = values.map((v, i) => ({
     x: padL + (i / (values.length - 1)) * chartW,

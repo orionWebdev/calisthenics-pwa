@@ -185,7 +185,12 @@
             if (typeof initProgressV3 === 'function') { try { initProgressV3(); } catch (e) {} }
             else if (typeof renderProgressV4 === 'function') { try { renderProgressV4(); } catch (e) {} }
           }
-          if (tb && vw === 'progress' && tb === 'exercises' && typeof window.pv4ShowAllExercises === 'function') {
+          var dt = sp.get('detail');
+          if (vw === 'progress' && dt) {
+            setTimeout(function () {
+              try { pv4ExerciseDetailId = dt; renderProgressV4(); } catch (e) {}
+            }, 1700);
+          } else if (tb && vw === 'progress' && tb === 'exercises' && typeof window.pv4ShowAllExercises === 'function') {
             setTimeout(function () { try { window.pv4ShowAllExercises(); } catch (e) {} }, 1700);
           } else if (tb && typeof showTrainingTab === 'function') {
             setTimeout(function () { try { showTrainingTab(tb); } catch (e) {} }, 250);
