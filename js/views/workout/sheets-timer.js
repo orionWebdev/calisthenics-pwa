@@ -601,9 +601,13 @@ function renderTimerWidget() {
       </div>
       <div class="timer-widget-content">
         <span class="material-symbols-rounded timer-widget-icon">timer</span>
-        <span class="timer-widget-label">${t('workout.screen.restTimer')}</span>
-        <span class="timer-widget-time" id="tw-time">0:00</span>
-        <span class="material-symbols-rounded timer-widget-chevron">expand_less</span>
+        <div class="timer-widget-textgroup">
+          <span class="timer-widget-label">Pause läuft</span>
+          <span class="timer-widget-time" id="tw-time">0:00</span>
+        </div>
+        <button type="button" class="timer-widget-skip" onclick="event.stopPropagation(); cancelRestTimer()">
+          ${t('workout.screen.skip') || 'Überspringen'}
+        </button>
       </div>
     </div>
   `;

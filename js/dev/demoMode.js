@@ -101,6 +101,8 @@
   // ---- In-Memory-Globals injizieren (in anderen classic scripts deklariert) ----
   try { allExercises = demoExercises; } catch (e) {}
   try { filteredExercises = demoExercises.slice(); } catch (e) {}
+  // Demo-Sessions gehören dem Demo-User (sonst überspringt sie getGlobalLastPerformance etc.)
+  try { sessions.forEach(function (s) { s.userId = 'demo-user'; }); } catch (e) {}
   try { allSessions = sessions; sessionsLoaded = true; } catch (e) {}
   try { scheduleData = demoSchedule; } catch (e) {}
   try { allPlans = demoPlans; filteredPlans = demoPlans.slice(); } catch (e) {}

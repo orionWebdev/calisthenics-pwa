@@ -102,42 +102,24 @@ function renderSTTargetAndLastPerf(exercise) {
 
   const targetLine = getExerciseTargetLine(exercise);
 
-  // Global last performance across all plans
+  // Global last performance across all plans — shown as a compact button that
+  // opens the full history sheet (the inline set dump looked cluttered).
   const globalPerf = getGlobalLastPerformance(exercise.exerciseId);
+  const hasHistory = !!(globalPerf && globalPerf.sets && globalPerf.sets.length > 0);
+  const histLabel = hasHistory
+    ? `${t('workout.lastPerformance') || 'Letztes Mal'} · ${formatRelativeTime(globalPerf.date)}`
+    : (t('workout.noPreviousData') || 'Keine vorherigen Daten');
 
-  let lastPerfHtml = '';
-  if (globalPerf && globalPerf.sets && globalPerf.sets.length > 0) {
-    const relTime = formatRelativeTime(globalPerf.date);
-    const setsHtml = globalPerf.sets.map((set, i) => {
-      const parts = [];
-      if (set.holdSec != null && set.holdSec > 0) {
-        parts.push(`${set.holdSec}${t('common.secondsShort', { n: '' }).trim() || 's'}`);
-      } else {
-        if (set.reps != null) parts.push(`${set.reps} ${t('workout.setLogger.reps') || 'Wdh.'}`);
-        if (set.weight != null && set.weight > 0) parts.push(`${set.weight} ${getWeightUnit()}`);
-      }
-      if (set.duration != null) parts.push(`${set.duration} min`);
-      if (set.distance != null) parts.push(`${set.distance} km`);
-      return `<div class="st-last-perf-set">Set ${i + 1}: ${parts.join(' / ')}</div>`;
-    }).join('');
-
-    lastPerfHtml = `
-      <div class="st-last-perf-info">
-        <div class="st-last-perf-header">
-          <span class="material-symbols-rounded">history</span>
-          <span>${t('workout.lastPerformance') || 'Letztes Mal'} — ${relTime}</span>
-        </div>
-        <div class="st-last-perf-sets">${setsHtml}</div>
-      </div>
-    `;
-  } else {
-    lastPerfHtml = `
-      <div class="st-last-perf-info st-last-perf-info--empty">
+  const lastPerfHtml = hasHistory
+    ? `<button type="button" class="st-history-btn" onclick="openExerciseHistorySheet('${exercise.exerciseId}')">
         <span class="material-symbols-rounded">history</span>
-        <span>${t('workout.noPreviousData') || 'Keine vorherigen Daten'}</span>
-      </div>
-    `;
-  }
+        <span class="st-history-btn-text">${histLabel}</span>
+        <span class="material-symbols-rounded st-history-btn-chevron">chevron_right</span>
+      </button>`
+    : `<div class="st-history-btn st-history-btn--empty">
+        <span class="material-symbols-rounded">history</span>
+        <span class="st-history-btn-text">${histLabel}</span>
+      </div>`;
 
   return `
     <div class="st-target-section">

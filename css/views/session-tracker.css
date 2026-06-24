@@ -271,6 +271,66 @@
   border-radius: 0.5rem;
 }
 
+/* "Letztes Mal" als schlanker Button → öffnet das Verlaufs-Sheet */
+.st-history-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.75rem;
+  background: var(--ui-card-bg);
+  color: var(--color-text-muted, #9ca3af);
+  font-family: inherit;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+.st-history-btn .material-symbols-rounded { font-size: 18px; color: var(--color-primary-light, #F02277); }
+.st-history-btn-text { flex: 1; min-width: 0; }
+.st-history-btn-chevron { color: var(--text-tertiary, #6b7280) !important; }
+.st-history-btn--empty { cursor: default; opacity: 0.7; }
+
+/* Verlaufs-Sheet */
+.st-history-empty {
+  text-align: center;
+  color: var(--text-secondary, #9ca3af);
+  padding: 2rem 1rem;
+}
+.st-history-entry {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--ui-card-border);
+}
+.st-history-entry:last-child { border-bottom: none; }
+.st-history-entry-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.st-history-date { font-size: 0.95rem; font-weight: 700; color: var(--text-primary, #fff); }
+.st-history-plan { font-size: 0.8rem; color: var(--text-tertiary, #6b7280); margin-left: auto; }
+.st-history-sets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.st-history-set {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #cbd5e1);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.55rem;
+  font-variant-numeric: tabular-nums;
+}
+.st-history-set-n {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-primary-light, #F02277);
+}
+
 /* --- Set List --- */
 .st-sets {
   display: flex;
@@ -354,8 +414,8 @@
   gap: 0.125rem;
   padding: 0.5rem;
   min-height: 48px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -363,11 +423,21 @@
 }
 
 .st-set-val:hover {
-  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--ui-card-border-hover);
 }
 
 .st-set-val:active {
   transform: scale(0.97);
+}
+
+/* Status-Gradient auf den Zellen: erledigt = grün, aktiver Satz = pink */
+.st-set-row--done .st-set-val {
+  background: linear-gradient(157deg, rgba(34, 197, 94, 0.14) 0%, rgba(34, 197, 94, 0.04) 60%), var(--ui-card-bg);
+  border-color: rgba(34, 197, 94, 0.22);
+}
+.st-set-row--active .st-set-val--editable {
+  background: linear-gradient(157deg, rgba(240, 34, 119, 0.16) 0%, rgba(192, 25, 99, 0.05) 60%), var(--ui-card-bg);
+  border-color: rgba(240, 34, 119, 0.32);
 }
 
 .st-set-val--editable {
@@ -711,11 +781,11 @@
 }
 
 .timer-widget-inner {
-  background: var(--bg-card-elevated);
-  border: 1px solid rgba(192, 25, 99, 0.2);
+  background: var(--ui-card-bg);
+  border: 1px solid rgba(192, 25, 99, 0.25);
   border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.4), var(--ui-card-shadow);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -746,24 +816,44 @@
   color: #C01963;
 }
 
+.timer-widget-textgroup {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
 .timer-widget-label {
-  font-size: var(--font-size-sm, 0.875rem);
-  font-weight: var(--font-weight-medium, 500);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--color-text-muted, #9ca3af);
 }
 
 .timer-widget-time {
   font-size: var(--font-size-lg, 1.25rem);
   font-weight: var(--font-weight-bold, 700);
-  color: #C01963;
+  color: #F02277;
   font-variant-numeric: tabular-nums;
-  margin-left: auto;
+  margin-top: 2px;
 }
 
-.timer-widget-chevron {
-  font-size: 20px;
-  color: var(--color-text-muted, #9ca3af);
+.timer-widget-skip {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--ui-card-border, rgba(255, 255, 255, 0.12));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text, #fff);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
+
+.timer-widget-skip:active { transform: scale(0.95); }
 
 .timer-widget--paused .timer-widget-time {
   animation: timerBlink 1s ease-in-out infinite;
@@ -1477,8 +1567,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: calc(100% - 32px);
-  margin: 10px 16px 6px;
+  width: 100%;
+  margin: 12px 0 6px;
   height: 52px;
   border: none;
   border-radius: 16px;
@@ -1497,12 +1587,13 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  width: calc(100% - 32px);
-  margin: 10px 16px 0;
+  width: 100%;
+  margin: 12px 0 0;
   padding: 0.7rem 0.85rem;
   border: 1px solid var(--ui-card-border, rgba(255, 255, 255, 0.07));
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--ui-card-bg);
+  box-shadow: var(--ui-card-shadow);
   font-family: inherit;
   text-align: left;
   cursor: pointer;
