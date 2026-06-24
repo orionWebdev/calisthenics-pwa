@@ -606,7 +606,7 @@ function renderTimerWidget() {
           <span class="timer-widget-time" id="tw-time">0:00</span>
         </div>
         <button type="button" class="timer-widget-skip" onclick="event.stopPropagation(); cancelRestTimer()">
-          ${t('workout.screen.skip') || 'Überspringen'}
+          Pause überspringen
         </button>
       </div>
     </div>

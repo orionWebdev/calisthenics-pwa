@@ -228,15 +228,11 @@
     </div>
   </nav>
 
-  <!-- Mobile Navigation Header -->
+  <!-- Mobile Navigation Header — schlanke Brand-Leiste (Profil sitzt jetzt in der Bottom-Nav) -->
   <div class="mobile-nav-header">
-    <div class="px-4 py-3 flex items-center justify-between w-full">
-      <div class="flex items-center gap-3">
-        <h1 id="mobile-view-title" class="text-xl font-bold">Dashboard</h1>
-      </div>
-      <button id="settings-btn" onclick="showView('profile')" class="settings-icon-btn">
-        <span class="material-symbols-rounded">more_horiz</span>
-      </button>
+    <div class="mobile-nav-header-inner">
+      <img src="assets/img/logo_.png" alt="ATEM Hybrid" class="mobile-nav-logo" />
+      <span class="mobile-nav-brand">ATEM<span class="mobile-nav-brand-accent"> Hybrid</span></span>
     </div>
   </div>
 
@@ -293,19 +289,19 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Log Workout CTA -->
-      <div id="dashboard-log-workout-card" class="dashboard-card mb-6 reveal">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
       <!-- Today's Recommendation -->
       <div id="dashboard-recommendation" class="mb-4 reveal">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Scheduled Workouts Today (the full unified calendar lives in Training → Kalender) -->
+      <!-- Scheduled Workouts Today -->
       <div id="dashboard-scheduled-card" class="mb-4">
         <!-- Wird von JavaScript gefüllt -->
+      </div>
+
+      <!-- Kompakter Wochen-Kalender (von der Trainingsseite hierher verlagert) -->
+      <div id="dashboard-calendar" class="mb-4 reveal">
+        <!-- Wird von renderDashboardCalendar() gefüllt -->
       </div>
 
 

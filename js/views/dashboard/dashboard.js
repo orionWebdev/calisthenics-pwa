@@ -348,10 +348,9 @@ function renderScheduledWorkoutsCard(state) {
   `;
 }
 
+// The "Workout erfassen" CTA was removed from Home (logging lives in the bottom-nav
+// FAB). This now only keeps the "Heute"-header title/date in sync.
 function renderLogWorkoutCard(state) {
-  const container = document.getElementById('dashboard-log-workout-card');
-  if (!container) return;
-
   const todayTitle = tr('dashboard.today') || 'Heute';
   const todayDate = typeof formatDateLongText === 'function'
     ? formatDateLongText(new Date(), false)
@@ -361,23 +360,7 @@ function renderLogWorkoutCard(state) {
   if (todayTitleEl) todayTitleEl.textContent = todayTitle;
   if (todayDateEl) todayDateEl.textContent = todayDate;
 
-  if (state.loading) {
-    container.innerHTML = `
-      <div class="dashboard-log-workout-loading">
-        <p>${tr('common.loading')}</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = `
-    <button class="dashboard-log-workout-btn" type="button" onclick="openAddWorkoutSheet()">
-      <div class="dashboard-log-workout-content">
-        <h3 class="dashboard-log-workout-title">${tr('dashboard.logWorkout.title')}</h3>
-        <p class="dashboard-log-workout-subtitle">${tr('dashboard.logWorkout.subtitle')}</p>
-      </div>
-      <span class="material-symbols-rounded dashboard-log-workout-icon">add</span>
-    </button>
-  `;
+  const container = document.getElementById('dashboard-log-workout-card');
+  if (container) container.remove();
 }
 

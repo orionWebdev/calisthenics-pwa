@@ -2,32 +2,37 @@
    NAVIGATION
    ======================================== */
 
+/* Schlanke Brand-Leiste — transparent + Blur, damit der Pink-Gradient durchscheint */
 .mobile-nav-header {
-  background-color: var(--color-bg);
+  background: transparent;
+  box-shadow: none;
 }
 
-/* Settings Icon Button */
-.settings-icon-btn {
+.mobile-nav-header-inner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+  gap: 8px;
+  height: var(--mobile-header-height, 50px);
+  padding: 0 16px;
 }
 
-.settings-icon-btn .material-symbols-rounded {
-  font-size: 28px;
-  color: #ffffff;
-  transition: color 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.mobile-nav-logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  flex-shrink: 0;
 }
 
-.settings-icon-btn.active .material-symbols-rounded {
-  color: #ec4899;
-  transform: rotate(90deg);
+.mobile-nav-brand {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text, #fff);
+}
+
+.mobile-nav-brand-accent {
+  color: var(--color-primary-light, #F02277);
+  font-weight: 600;
 }
 
 /* Desktop Navigation - Floating */
