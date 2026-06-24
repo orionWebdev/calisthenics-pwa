@@ -15,10 +15,10 @@ const DEFAULT_PROFILE = {
   hapticsEnabled: true,
   defaultProgressPeriod: '30D',
   theme: 'dark',
+  aiTranslation: false,
   onboardingCompleted: false,
   integrations: {
     garmin: { connected: false },
-    appleHealth: { connected: false },
     googleFit: { connected: false }
   }
 };
@@ -214,6 +214,8 @@ function renderProfileView() {
 
     ${renderSection(t('settings.general'), renderGeneralSettings())}
 
+    ${renderSection(t('settings.language') || 'Sprache', renderLanguageSettings())}
+
     ${renderSection(t('settings.workout'), renderWorkoutSettings())}
 
     ${renderSection(t('settings.progress'), renderProgressSettings())}
@@ -302,28 +304,41 @@ function renderGeneralSettings() {
     <div class="settings-row">
       <span class="material-symbols-rounded settings-row-icon">dark_mode</span>
       <span class="settings-row-label">${t('settings.theme')}</span>
-      ${renderSegmented('theme', [
+      ${renderValueToggle('theme',
+        userProfile.theme || 'dark',
         { value: 'dark', label: t('settings.themeDark') },
-        { value: 'light', label: t('settings.themeLight') }
-      ], userProfile.theme || 'dark')}
-    </div>
-    <div class="settings-row">
-      <span class="material-symbols-rounded settings-row-icon">translate</span>
-      <span class="settings-row-label">${t('settings.language')}</span>
-      ${renderSegmented('language', [
-        { value: 'de', label: t('settings.langDe') },
-        { value: 'en', label: t('settings.langEn') }
-      ], userProfile.language)}
+        { value: 'light', label: t('settings.themeLight') })}
     </div>
     <div class="settings-row">
       <span class="material-symbols-rounded settings-row-icon">straighten</span>
       <span class="settings-row-label">${t('settings.unitSystem')}</span>
-      ${renderSegmented('unitSystem', [
+      ${renderValueToggle('unitSystem',
+        userProfile.unitSystem || 'metric',
         { value: 'metric', label: t('settings.metric') },
-        { value: 'imperial', label: t('settings.imperial') }
-      ], userProfile.unitSystem)}
+        { value: 'imperial', label: t('settings.imperial') })}
     </div>
   `;
+}
+
+// ========================================
+// LANGUAGE SETTINGS
+// ========================================
+
+function renderLanguageSettings() {
+  return `
+    <div class="settings-row">
+      <span class="material-symbols-rounded settings-row-icon">translate</span>
+      <span class="settings-row-label">${t('settings.language')}</span>
+      ${renderValueToggle('language',
+        userProfile.language || 'de',
+        { value: 'de', label: t('settings.langDe') },
+        { value: 'en', label: t('settings.langEn') })}
+    </div>
+    <div class="settings-row">
+      <span class="material-symbols-rounded settings-row-icon">auto_awesome</span>
+      <span class="settings-row-label">Automatische KI-Übersetzung</span>
+      ${renderToggle('aiTranslation', userProfile.aiTranslation)}
+    </div>`;
 }
 
 // ========================================
@@ -372,7 +387,6 @@ function renderProgressSettings() {
 function renderIntegrationsSettings() {
   const integrations = [
     { key: 'garmin', icon: 'watch', label: 'Garmin Connect' },
-    { key: 'appleHealth', icon: 'favorite', label: 'Apple Health' },
     { key: 'googleFit', icon: 'monitoring', label: 'Google Fit' }
   ];
   return integrations.map(item => `
@@ -730,8 +744,19 @@ function renderSegmented(field, options, currentValue) {
 }
 
 function renderToggle(field, isActive) {
-  const active = isActive !== false ? ' active' : '';
+  const active = isActive === true ? ' active' : '';
   return `<button class="settings-toggle${active}" onclick="handleToggleChange('${field}', this)"></button>`;
+}
+
+// Einheitlicher Toggler für binäre Werte (Theme, Einheiten, Sprache) — gleicher
+// Switch-Look wie der Haptik-Toggle, mit aktivem Wert-Label daneben.
+function renderValueToggle(field, currentValue, offOpt, onOpt) {
+  const isOn = currentValue === onOpt.value;
+  const label = isOn ? onOpt.label : offOpt.label;
+  return `<span class="settings-toggle-wrap">
+    <span class="settings-toggle-val">${label}</span>
+    <button class="settings-toggle${isOn ? ' active' : ''}" onclick="handleValueToggle('${field}', '${onOpt.value}', '${offOpt.value}')"></button>
+  </span>`;
 }
 
 // ========================================
@@ -759,6 +784,15 @@ function handleToggleChange(field, el) {
   el.classList.toggle('active', newValue);
   showEdgeFeedback('success', t('settings.saved'));
 }
+
+function handleValueToggle(field, onValue, offValue) {
+  const newValue = (userProfile[field] === onValue) ? offValue : onValue;
+  updateProfileField(field, newValue);
+  if (field === 'theme') applyTheme(newValue);
+  renderProfileView();
+  showEdgeFeedback('success', t('settings.saved'));
+}
+window.handleValueToggle = handleValueToggle;
 
 // ========================================
 // NAME EDITING
