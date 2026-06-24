@@ -973,6 +973,62 @@ function renderTrainingCalendar() {
 // EXPOSE FUNCTIONS GLOBALLY
 // ========================================
 
+// ========================================
+// COMPACT DASHBOARD CALENDAR (Home)
+// ========================================
+// Kompakter, dynamischer Wochen-Strip + Tages-Agenda (statt klobigem Monatsblock).
+// Wiederverwendet getCalendarEventsForDate (Sessions + Planung) und renderEventRow.
+
+let dashCalSelected = formatDate(new Date());
+
+function renderDashboardCalendar() {
+  const container = document.getElementById('dashboard-calendar');
+  if (!container) return;
+
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const todayKey = formatDate(today);
+
+  // 7-Tage-Strip: gestern … +5 Tage (heute als zweites Feld, gut tippbar)
+  const start = new Date(today); start.setDate(start.getDate() - 1);
+  const dow = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  let strip = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const ds = formatDate(d);
+    const events = getCalendarEventsForDate(ds);
+    const byType = {};
+    events.forEach(e => { if (!byType[e.type]) byType[e.type] = { type: e.type, completed: false }; if (e.completed) byType[e.type].completed = true; });
+    const dots = Object.keys(byType).slice(0, 3).map(k =>
+      `<span class="dash-cal-dot plan-calendar-dot-${byType[k].type}${byType[k].completed ? '' : ' is-planned'}"></span>`
+    ).join('');
+    strip += `<button type="button" class="dash-cal-day${ds === todayKey ? ' is-today' : ''}${ds === dashCalSelected ? ' is-selected' : ''}" onclick="dashCalSelect('${ds}')">
+      <span class="dash-cal-dow">${dow[d.getDay()]}</span>
+      <span class="dash-cal-num">${d.getDate()}</span>
+      <span class="dash-cal-dots">${dots}</span>
+    </button>`;
+  }
+
+  const selEvents = getCalendarEventsForDate(dashCalSelected);
+  const isPast = dashCalSelected < todayKey;
+  const agenda = selEvents.length
+    ? selEvents.map(e => renderEventRow(e, isPast)).join('')
+    : `<div class="dash-cal-empty"><span class="material-symbols-rounded">event_available</span>${t('calendar.noPlannedWorkouts') || 'Nichts geplant'}</div>`;
+
+  container.innerHTML = `
+    <div class="dash-cal-card">
+      <div class="dash-cal-head">
+        <span class="dash-cal-title"><span class="material-symbols-rounded">calendar_month</span>${t('nav.calendar') || 'Kalender'}</span>
+        <button type="button" class="dash-cal-add" onclick="openQuickAddSheet()" aria-label="${t('dashboard.calendar.addTraining') || 'Training planen'}"><span class="material-symbols-rounded">add</span></button>
+      </div>
+      <div class="dash-cal-strip">${strip}</div>
+      <div class="dash-cal-agenda">${agenda}</div>
+    </div>`;
+}
+
+function dashCalSelect(ds) { dashCalSelected = ds; renderDashboardCalendar(); }
+
+window.renderDashboardCalendar = renderDashboardCalendar;
+window.dashCalSelect = dashCalSelect;
 window.renderTrainingCalendar = renderTrainingCalendar;
 window.startScheduledWorkout = startScheduledWorkout;
 window.goToToday = goToToday;

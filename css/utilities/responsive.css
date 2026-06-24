@@ -10,9 +10,9 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background-color: var(--color-bg);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: transparent;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   /* PWA Safe Area: Padding oben für Status Bar, aber Hintergrund füllt gesamten Bereich */
   padding-top: env(safe-area-inset-top, 0);
 }
@@ -74,12 +74,8 @@ input::placeholder {
     padding-top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0) + 0.5rem) !important;
   }
 
-  /* Show Bottom Nav on mobile */
+  /* Show Bottom Nav on mobile (the center FAB is a child and follows it) */
   .bottom-nav {
-    display: flex;
-  }
-
-  .bottom-nav-fab {
     display: flex;
   }
 

@@ -87,6 +87,21 @@
   border-color: rgba(239, 68, 68, 0.25);
 }
 
+/* Value toggle: aktiver Wert-Label + Switch (Theme / Einheiten / Sprache) */
+.settings-toggle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: auto;
+}
+.settings-toggle-val {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-primary-light, #F02277);
+  min-width: 3.2em;
+  text-align: right;
+}
+
 /* Toggle switch */
 .settings-toggle {
   position: relative;

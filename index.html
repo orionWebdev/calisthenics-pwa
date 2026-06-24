@@ -228,15 +228,11 @@
     </div>
   </nav>
 
-  <!-- Mobile Navigation Header -->
+  <!-- Mobile Navigation Header — schlanke Brand-Leiste (Profil sitzt jetzt in der Bottom-Nav) -->
   <div class="mobile-nav-header">
-    <div class="px-4 py-3 flex items-center justify-between w-full">
-      <div class="flex items-center gap-3">
-        <h1 id="mobile-view-title" class="text-xl font-bold">Dashboard</h1>
-      </div>
-      <button id="settings-btn" onclick="showView('profile')" class="settings-icon-btn">
-        <span class="material-symbols-rounded">more_horiz</span>
-      </button>
+    <div class="mobile-nav-header-inner">
+      <img src="assets/img/logo_.png" alt="ATEM Hybrid" class="mobile-nav-logo" />
+      <span class="mobile-nav-brand">ATEM<span class="mobile-nav-brand-accent"> Hybrid</span></span>
     </div>
   </div>
 
@@ -267,12 +263,11 @@
         <span class="bottom-nav-label" data-i18n="nav.profile">Profil</span>
       </span>
     </button>
+    <!-- Center workout FAB — child of the nav so it shares the nav's visibility -->
+    <button class="bottom-nav-fab" onclick="openAddWorkoutSheet()" aria-label="Workout loggen">
+      <span class="material-symbols-rounded">add</span>
+    </button>
   </nav>
-
-  <!-- Center workout FAB — sibling of the nav so the nav's backdrop-filter can't clip it -->
-  <button class="bottom-nav-fab" onclick="openAddWorkoutSheet()" aria-label="Workout loggen">
-    <span class="material-symbols-rounded">add</span>
-  </button>
 
   <div class="max-w-6xl mx-auto p-4 md:pt-24 pt-4" id="main-content">
 
@@ -294,19 +289,19 @@
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Log Workout CTA -->
-      <div id="dashboard-log-workout-card" class="dashboard-card mb-6 reveal">
-        <!-- Wird von JavaScript gefüllt -->
-      </div>
-
       <!-- Today's Recommendation -->
       <div id="dashboard-recommendation" class="mb-4 reveal">
         <!-- Wird von JavaScript gefüllt -->
       </div>
 
-      <!-- Scheduled Workouts Today (the full unified calendar lives in Training → Kalender) -->
+      <!-- Scheduled Workouts Today -->
       <div id="dashboard-scheduled-card" class="mb-4">
         <!-- Wird von JavaScript gefüllt -->
+      </div>
+
+      <!-- Kompakter Wochen-Kalender (von der Trainingsseite hierher verlagert) -->
+      <div id="dashboard-calendar" class="mb-4 reveal">
+        <!-- Wird von renderDashboardCalendar() gefüllt -->
       </div>
 
 
@@ -317,13 +312,10 @@
     <div id="view-training" class="view hidden">
 
       <div id="training-segmented-control" class="progress-section reveal">
-        <div class="pv3-segmented-control" style="--seg-count:3;--active-idx:0">
+        <div class="pv3-segmented-control" style="--seg-count:2;--active-idx:0">
           <div class="pv3-seg-indicator"></div>
           <button class="pv3-seg-btn active" onclick="switchTrainingTab('plans')" data-tab="plans">
             <span data-i18n="nav.plans">Pläne</span>
-          </button>
-          <button class="pv3-seg-btn" onclick="switchTrainingTab('calendar')" data-tab="calendar">
-            <span data-i18n="nav.calendar">Kalender</span>
           </button>
           <button class="pv3-seg-btn" onclick="switchTrainingTab('exercises')" data-tab="exercises">
             <span data-i18n="nav.exercises">Übungen</span>
@@ -332,8 +324,8 @@
       </div>
 
       <div id="training-tab-plans" class="training-tab active">
-        <!-- Header mit Add Button -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <!-- Schlanker, rechtsbündiger Add-Button (platzsparend) -->
+        <div class="flex justify-end mb-3">
           <button onclick="openAddPlanModal()" class="tab-add-btn">
             <span class="material-symbols-rounded">add</span>
             <span id="plan-add-btn-label"></span>
@@ -369,14 +361,9 @@
         </div>
       </div>
 
-      <div id="training-tab-calendar" class="training-tab">
-        <!-- Unified calendar: past = done, future = planned. Mounted by renderTrainingCalendar(). -->
-        <div id="training-calendar-mount" class="reveal"></div>
-      </div>
-
       <div id="training-tab-exercises" class="training-tab">
-        <!-- Header mit Add Button -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <!-- Schlanker, rechtsbündiger Add-Button (platzsparend) -->
+        <div class="flex justify-end mb-3">
           <button onclick="openAddExerciseModal()" class="tab-add-btn">
             <span class="material-symbols-rounded">add</span>
             <span data-i18n="exercise.create.title">Neue Übung</span>
@@ -1841,6 +1828,8 @@
   <script src="js/views/workout/render-logger.js"></script>
   <script src="js/views/workout/sheets-timer.js"></script>
   <script src="js/views/workout/utils.js"></script>
+  <!-- Services -->
+  <script src="js/services/garminService.js"></script>
   <!-- View: Settings / Onboarding -->
   <script src="js/views/settings.js"></script>
   <script src="js/views/onboarding.js"></script>

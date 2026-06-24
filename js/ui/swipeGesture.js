@@ -246,20 +246,8 @@ function initProgressSwipe() {
  * Initialize swipe for Training tabs (Plans/Exercises)
  */
 function initTrainingSwipe() {
-  initSwipeGesture({
-    containerId: 'view-training',
-    tabs: ['plans', 'exercises'],
-    getCurrentTab: () => {
-      // Determine current tab from DOM state
-      const plansTab = document.querySelector('#training-segmented-control .segmented-btn[data-tab="plans"]');
-      return plansTab && plansTab.classList.contains('active') ? 'plans' : 'exercises';
-    },
-    onSwipe: (newTab) => {
-      if (typeof switchTrainingTab === 'function') {
-        switchTrainingTab(newTab);
-      }
-    }
-  });
+  // Swipe tab-switching is intentionally disabled on the Training page: it
+  // conflicted with the horizontal filter chips. Tabs change via click only.
 }
 
 /**

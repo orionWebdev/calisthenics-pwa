@@ -37,7 +37,7 @@ function saveTrainingTab(tab) {
 }
 
 function switchTrainingTab(tab) {
-  const order = ['plans', 'calendar', 'exercises'];
+  const order = ['plans', 'exercises'];
   const nextTab = order.includes(tab) ? tab : 'plans';
   currentTrainingTab = nextTab;
   saveTrainingTab(nextTab);
@@ -51,15 +51,8 @@ function switchTrainingTab(tab) {
 
   const plansTab = document.getElementById('training-tab-plans');
   const exercisesTab = document.getElementById('training-tab-exercises');
-  const calendarTab = document.getElementById('training-tab-calendar');
   if (plansTab) plansTab.classList.toggle('active', nextTab === 'plans');
   if (exercisesTab) exercisesTab.classList.toggle('active', nextTab === 'exercises');
-  if (calendarTab) calendarTab.classList.toggle('active', nextTab === 'calendar');
-
-  // Mount/refresh the unified calendar when its tab becomes active.
-  if (nextTab === 'calendar' && typeof renderTrainingCalendar === 'function') {
-    renderTrainingCalendar();
-  }
 }
 
 function showTrainingTab(tab) {
@@ -105,15 +98,7 @@ function showView(viewName) {
     }
   }
 
-  // Update mobile header title and icon
-  const mobileTitle = document.getElementById('mobile-view-title');
-  const mobileIcon = document.getElementById('mobile-view-icon');
-  if (mobileTitle) {
-    mobileTitle.textContent = viewTitles[viewName] || viewName;
-  }
-  if (mobileIcon) {
-    mobileIcon.textContent = viewIcons[viewName] || 'fitness_center';
-  }
+  // (Mobile header is now a static brand bar — no per-view title/icon to update.)
 
   // Update FAB icon based on current view
   updateFabIcon(viewName);

@@ -451,6 +451,71 @@ function getGlobalLastPerformance(exerciseId) {
 }
 
 /**
+ * Opens a clean bottom-sheet listing ALL past recordings of an exercise.
+ * Replaces the cluttered inline "Letztes Mal" dump in the tracker.
+ */
+function openExerciseHistorySheet(exerciseId) {
+  if (!exerciseId || typeof openSheet !== 'function') return;
+
+  const userId = typeof getActiveUserId === 'function' ? getActiveUserId() : null;
+  const sessions = typeof allSessions !== 'undefined' ? allSessions : [];
+  const wkEx = (activeWorkout && activeWorkout.exercises || []).find(e => e.exerciseId === exerciseId);
+  const exName = (wkEx && wkEx.exerciseName)
+    || (typeof allExercises !== 'undefined' && (allExercises.find(e => e.id === exerciseId)?.name))
+    || t('exercise.title');
+
+  const entries = [];
+  sessions.forEach(s => {
+    if (userId && s.userId && s.userId !== userId) return;
+    if (!s.exercises || !s.exercises.length) return;
+    const ex = s.exercises.find(e => e.exerciseId === exerciseId);
+    if (!ex || !ex.sets || !ex.sets.length) return;
+    const d = s.date?.toDate ? s.date.toDate() : new Date(s.date);
+    if (!d || isNaN(d.getTime())) return;
+    entries.push({ date: d, sets: ex.sets, planName: s.planName || null });
+  });
+  entries.sort((a, b) => b.date - a.date);
+
+  const unit = typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg';
+  const fmtSet = (set) => {
+    const parts = [];
+    if (set.holdSec != null && set.holdSec > 0) parts.push(`${set.holdSec}s`);
+    else {
+      if (set.reps != null) parts.push(`${set.reps} ${t('workout.setLogger.reps') || 'Wdh.'}`);
+      if (set.weight != null && set.weight > 0) parts.push(`${set.weight} ${unit}`);
+    }
+    if (set.distance != null) parts.push(`${set.distance} km`);
+    if (set.duration != null) parts.push(`${set.duration} min`);
+    return parts.join(' · ') || '–';
+  };
+
+  openSheet({
+    title: `${exName} · ${t('workout.lastPerformance') || 'Verlauf'}`,
+    render: (el) => {
+      if (!entries.length) {
+        el.innerHTML = `<div class="st-history-empty">${t('workout.noPreviousData') || 'Keine vorherigen Aufzeichnungen'}</div>`;
+        return;
+      }
+      el.innerHTML = entries.map(en => {
+        const dateStr = en.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' });
+        const setsTxt = en.sets.map((set, i) =>
+          `<div class="st-history-set"><span class="st-history-set-n">${i + 1}</span>${fmtSet(set)}</div>`
+        ).join('');
+        return `
+          <div class="st-history-entry">
+            <div class="st-history-entry-head">
+              <span class="st-history-date">${dateStr}</span>
+              ${en.planName ? `<span class="st-history-plan">${en.planName}</span>` : ''}
+            </div>
+            <div class="st-history-sets">${setsTxt}</div>
+          </div>`;
+      }).join('');
+    }
+  });
+}
+window.openExerciseHistorySheet = openExerciseHistorySheet;
+
+/**
  * Format a date as relative time string (e.g. "heute", "gestern", "vor 3 Tagen")
  */
 function formatRelativeTime(date) {
