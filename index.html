@@ -267,12 +267,11 @@
         <span class="bottom-nav-label" data-i18n="nav.profile">Profil</span>
       </span>
     </button>
+    <!-- Center workout FAB — child of the nav so it shares the nav's visibility -->
+    <button class="bottom-nav-fab" onclick="openAddWorkoutSheet()" aria-label="Workout loggen">
+      <span class="material-symbols-rounded">add</span>
+    </button>
   </nav>
-
-  <!-- Center workout FAB — sibling of the nav so the nav's backdrop-filter can't clip it -->
-  <button class="bottom-nav-fab" onclick="openAddWorkoutSheet()" aria-label="Workout loggen">
-    <span class="material-symbols-rounded">add</span>
-  </button>
 
   <div class="max-w-6xl mx-auto p-4 md:pt-24 pt-4" id="main-content">
 

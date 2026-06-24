@@ -74,12 +74,8 @@ input::placeholder {
     padding-top: calc(var(--mobile-header-height) + env(safe-area-inset-top, 0) + 0.5rem) !important;
   }
 
-  /* Show Bottom Nav on mobile */
+  /* Show Bottom Nav on mobile (the center FAB is a child and follows it) */
   .bottom-nav {
-    display: flex;
-  }
-
-  .bottom-nav-fab {
     display: flex;
   }
 
