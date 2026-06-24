@@ -209,6 +209,90 @@
 }
 
 /* ========================================
+   COMPACT DASHBOARD CALENDAR (Home week strip)
+   ======================================== */
+.dash-cal-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 20px;
+  box-shadow: var(--ui-card-shadow);
+  padding: 1rem;
+}
+.dash-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+.dash-cal-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+.dash-cal-title .material-symbols-rounded { font-size: 18px; color: var(--color-primary-light); }
+.dash-cal-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--ui-card-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-primary-light);
+  cursor: pointer;
+}
+.dash-cal-add .material-symbols-rounded { font-size: 18px; }
+
+.dash-cal-strip {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+}
+.dash-cal-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0 6px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.dash-cal-day .dash-cal-dow { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); }
+.dash-cal-day .dash-cal-num { font-size: 15px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.dash-cal-day.is-today .dash-cal-num { color: var(--color-primary-light); }
+.dash-cal-day.is-selected {
+  background: linear-gradient(157deg, rgba(240, 34, 119, 0.16), rgba(192, 25, 99, 0.05));
+  border-color: rgba(240, 34, 119, 0.35);
+}
+.dash-cal-dots { display: flex; gap: 3px; min-height: 6px; }
+.dash-cal-dot { width: 5px; height: 5px; border-radius: 50%; }
+.dash-cal-dot.is-planned { opacity: 0.45; }
+
+.dash-cal-agenda { margin-top: 0.85rem; }
+.dash-cal-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding: 0.9rem;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+.dash-cal-empty .material-symbols-rounded { font-size: 18px; }
+
+/* ========================================
    CALENDAR MONTH AGENDA LIST
    (exercise-section style)
    ======================================== */

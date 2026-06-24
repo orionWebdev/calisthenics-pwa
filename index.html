@@ -312,13 +312,10 @@
     <div id="view-training" class="view hidden">
 
       <div id="training-segmented-control" class="progress-section reveal">
-        <div class="pv3-segmented-control" style="--seg-count:3;--active-idx:0">
+        <div class="pv3-segmented-control" style="--seg-count:2;--active-idx:0">
           <div class="pv3-seg-indicator"></div>
           <button class="pv3-seg-btn active" onclick="switchTrainingTab('plans')" data-tab="plans">
             <span data-i18n="nav.plans">Pläne</span>
-          </button>
-          <button class="pv3-seg-btn" onclick="switchTrainingTab('calendar')" data-tab="calendar">
-            <span data-i18n="nav.calendar">Kalender</span>
           </button>
           <button class="pv3-seg-btn" onclick="switchTrainingTab('exercises')" data-tab="exercises">
             <span data-i18n="nav.exercises">Übungen</span>
@@ -327,8 +324,8 @@
       </div>
 
       <div id="training-tab-plans" class="training-tab active">
-        <!-- Header mit Add Button -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <!-- Schlanker, rechtsbündiger Add-Button (platzsparend) -->
+        <div class="flex justify-end mb-3">
           <button onclick="openAddPlanModal()" class="tab-add-btn">
             <span class="material-symbols-rounded">add</span>
             <span id="plan-add-btn-label"></span>
@@ -364,14 +361,9 @@
         </div>
       </div>
 
-      <div id="training-tab-calendar" class="training-tab">
-        <!-- Unified calendar: past = done, future = planned. Mounted by renderTrainingCalendar(). -->
-        <div id="training-calendar-mount" class="reveal"></div>
-      </div>
-
       <div id="training-tab-exercises" class="training-tab">
-        <!-- Header mit Add Button -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <!-- Schlanker, rechtsbündiger Add-Button (platzsparend) -->
+        <div class="flex justify-end mb-3">
           <button onclick="openAddExerciseModal()" class="tab-add-btn">
             <span class="material-symbols-rounded">add</span>
             <span data-i18n="exercise.create.title">Neue Übung</span>

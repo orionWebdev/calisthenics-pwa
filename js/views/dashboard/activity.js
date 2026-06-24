@@ -529,7 +529,7 @@ async function refreshDashboard() {
   renderDashboardFormHero();
   renderScheduledWorkoutsCard(data);
   renderDashboardRecommendation();
-  renderDashboardPlanCalendar(data);
+  if (typeof renderDashboardCalendar === 'function') renderDashboardCalendar();
   // Recent sessions removed - now in Progress > Overview
   // Activity calendar moved to Progress > Overview
 
