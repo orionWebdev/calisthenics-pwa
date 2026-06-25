@@ -2594,12 +2594,18 @@ function drawAllV4Sparklines() {
 
 // ==================== EXERCISE DETAIL ====================
 
-function renderExerciseDetail(exerciseId) {
-  const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
-  const exData = exercises.find(e => e.id === exerciseId);
-  const name = exData?.name || exerciseId;
+// Epley estimated 1RM \u2014 only meaningful when a set carries weight.
+function pv4Est1RM(weight, reps) {
+  if (!weight || weight <= 0) return 0;
+  return weight * (1 + (reps || 0) / 30);
+}
 
-  const relevantSessions = allSessions
+// Shared per-session series for the exercise detail. Chart, summary cards and the
+// history table all read from this, so they can never disagree. Primary metric is
+// the estimated 1RM (best set, Epley) for weighted exercises, falling back to
+// weighted volume for bodyweight exercises (where 1RM is meaningless).
+function getExerciseDetailSeries(exerciseId) {
+  const sessions = (typeof allSessions !== 'undefined' ? allSessions : [])
     .filter(s => s.exercises?.some(ex => ex.exerciseId === exerciseId))
     .sort((a, b) => {
       const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
@@ -2607,38 +2613,70 @@ function renderExerciseDetail(exerciseId) {
       return da - db;
     });
 
-  const chartData = relevantSessions.map(s => {
+  let hasWeight = false;
+  const rows = sessions.map(s => {
     const ex = s.exercises.find(e => e.exerciseId === exerciseId);
+    const sets = Array.isArray(ex.sets) ? ex.sets : [];
     const vol = typeof calculateExerciseWeightedVolume === 'function'
-      ? calculateExerciseWeightedVolume(ex) : (ex.sets || []).reduce((sum, set) => sum + (set.reps || 0), 0);
-    const bestSet = typeof calculateBestSet === 'function' ? calculateBestSet(ex) : 0;
+      ? calculateExerciseWeightedVolume(ex)
+      : sets.reduce((sum, set) => sum + (set.reps || 0), 0);
+
+    let best1RM = 0, topSet = null, bestReps = 0;
+    sets.forEach(set => {
+      const w = set.weight || 0;
+      const reps = set.reps || 0;
+      if (w > 0) hasWeight = true;
+      if (reps > bestReps) bestReps = reps;
+      const e = pv4Est1RM(w, reps);
+      if (e > best1RM) { best1RM = e; topSet = { weight: w, reps: reps }; }
+    });
+
     return {
       date: s.date?.toDate ? s.date.toDate() : new Date(s.date),
+      sets: sets.length,
+      setReps: sets.map(x => x.reps || 0),
       volume: vol,
-      bestSet,
-      sets: ex.sets?.length || 0,
-      setReps: (ex.sets || []).map(s => s.reps || 0),
+      best1RM: Math.round(best1RM),
+      topSet, bestReps,
       planName: s.planName || ''
     };
   });
 
-  // Stats
-  const volumes = chartData.map(d => d.volume);
-  const pr = volumes.length > 0 ? Math.max(...volumes) : 0;
-  const avg = volumes.length > 0 ? Math.round(volumes.reduce((a, b) => a + b, 0) / volumes.length) : 0;
-  const lastEntry = chartData.length > 0 ? chartData[chartData.length - 1] : null;
+  rows.forEach(r => { r.value = hasWeight ? r.best1RM : r.volume; });
+  return { rows, hasWeight, unit: hasWeight ? 'kg' : '' };
+}
 
-  // History (newest first)
-  const historyRows = [...chartData].reverse().slice(0, 20).map(d => {
-    const repsStr = d.setReps.length > 0 ? d.setReps.join(' / ') : '';
+function renderExerciseDetail(exerciseId) {
+  const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+  const exData = exercises.find(e => e.id === exerciseId);
+  const name = exData?.name || exerciseId;
+
+  const { rows, hasWeight, unit } = getExerciseDetailSeries(exerciseId);
+
+  const values = rows.map(r => r.value);
+  const pr = values.length ? Math.max(...values) : 0;
+  const avg = values.length ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : 0;
+  const last = values.length ? values[values.length - 1] : 0;
+  const prIdx = values.length ? values.indexOf(pr) : -1;
+  const u = unit ? `<span class="pv4-summary-unit">${unit}</span>` : '';
+
+  // History table, newest first; the PR session is flagged.
+  const histRows = rows.map((r, i) => ({ r, i })).reverse().slice(0, 30).map(({ r, i }) => {
+    const dd = `${String(r.date.getDate()).padStart(2, '0')}.${String(r.date.getMonth() + 1).padStart(2, '0')}.`;
+    const best = hasWeight
+      ? (r.topSet ? `${r.topSet.weight}\u00D7${r.topSet.reps}` : '\u2013')
+      : (r.bestReps ? `${r.bestReps}` : '\u2013');
+    const isPR = i === prIdx && pr > 0;
     return `
-    <div class="pv4-session-row">
-      <div class="pv4-session-info">
-        <div class="pv4-session-name">${d.sets} ${trV3('progress.v4.exercises.detail.sets')} \u00B7 ${repsStr}${repsStr ? ` \u00B7 ` : ''}${trV3('progress.v4.exercises.detail.volume')}: ${d.volume}</div>
-        <div class="pv4-session-meta">${v3FormatDate(d.date)}${d.planName ? ` \u00B7 ${d.planName}` : ''}</div>
-      </div>
-    </div>`;
+      <div class="pv4-hist-row${isPR ? ' is-pr' : ''}">
+        <span class="pv4-hist-date">${dd}${isPR ? '<span class="pv4-hist-pr">PR</span>' : ''}</span>
+        <span class="pv4-hist-sets">${r.sets}</span>
+        <span class="pv4-hist-best">${best}</span>
+        <span class="pv4-hist-vol">${r.volume}</span>
+      </div>`;
   }).join('');
+
+  const bestHead = hasWeight ? 'Bestes Set' : 'Wdh.';
 
   return `
     <div class="pv4-detail-view">
@@ -2653,20 +2691,25 @@ function renderExerciseDetail(exerciseId) {
       </div>
       <div class="pv4-detail-stats">
         <div class="pv4-summary-card">
-          <div class="pv4-summary-value">${pr}</div>
+          <div class="pv4-summary-value">${pr}${u}</div>
           <div class="pv4-summary-label">${trV3('progress.v4.exercises.detail.pr')}</div>
         </div>
         <div class="pv4-summary-card">
-          <div class="pv4-summary-value">${avg}</div>
+          <div class="pv4-summary-value">${avg}${u}</div>
           <div class="pv4-summary-label">${trV3('progress.v4.exercises.detail.average')}</div>
         </div>
         <div class="pv4-summary-card">
-          <div class="pv4-summary-value">${lastEntry ? lastEntry.volume : '-'}</div>
+          <div class="pv4-summary-value">${last || '-'}${last ? u : ''}</div>
           <div class="pv4-summary-label">${trV3('progress.v4.exercises.detail.lastSession')}</div>
         </div>
       </div>
       <div class="pv4-section-title">${trV3('progress.v4.exercises.detail.history')}</div>
-      <div class="pv4-session-list">${historyRows}</div>
+      <div class="pv4-hist-table">
+        <div class="pv4-hist-head">
+          <span>Datum</span><span class="pv4-hist-sets">S\u00E4tze</span><span>${bestHead}</span><span class="pv4-hist-vol">Vol.</span>
+        </div>
+        ${histRows}
+      </div>
     </div>
   `;
 }
@@ -2675,19 +2718,8 @@ function drawExerciseDetailChart(exerciseId) {
   const canvas = document.getElementById('pv4-exercise-chart');
   if (!canvas) return;
 
-  const relevantSessions = allSessions
-    .filter(s => s.exercises?.some(ex => ex.exerciseId === exerciseId))
-    .sort((a, b) => {
-      const da = a.date?.toDate ? a.date.toDate() : new Date(a.date);
-      const db = b.date?.toDate ? b.date.toDate() : new Date(b.date);
-      return da - db;
-    });
-
-  const values = relevantSessions.map(s => {
-    const ex = s.exercises.find(e => e.exerciseId === exerciseId);
-    return typeof calculateExerciseWeightedVolume === 'function'
-      ? calculateExerciseWeightedVolume(ex) : (ex.sets || []).reduce((sum, set) => sum + (set.reps || 0), 0);
-  });
+  // Same series as the cards/table (estimated 1RM, or volume for bodyweight).
+  const values = getExerciseDetailSeries(exerciseId).rows.map(r => r.value);
 
   if (values.length < 2) return;
 

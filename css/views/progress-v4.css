@@ -209,6 +209,67 @@
   color: var(--color-text-muted, #9ca3af);
 }
 
+.pv4-summary-unit {
+  font-size: 0.5em;
+  font-weight: 600;
+  color: var(--color-text-muted, #9ca3af);
+  margin-left: 2px;
+}
+
+/* Compact history table (Datum · Sätze · Bestes Set · Volumen), PR row flagged */
+.pv4-hist-table {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pv4-hist-head,
+.pv4-hist-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) 34px minmax(0, 1fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 6px;
+}
+.pv4-hist-head {
+  padding: 0 12px 4px;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #9ca3af);
+}
+.pv4-hist-row {
+  padding: 10px;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+.pv4-hist-sets { text-align: center; }
+.pv4-hist-vol { text-align: right; }
+.pv4-hist-best, .pv4-hist-vol, .pv4-hist-date { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pv4-hist-date {
+  color: var(--color-text, #fff);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.pv4-hist-best { color: var(--color-text, #fff); font-weight: 600; }
+.pv4-hist-row.is-pr {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: linear-gradient(157deg, rgba(34, 197, 94, 0.10), rgba(34, 197, 94, 0.02));
+}
+.pv4-hist-pr {
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: #22c55e;
+  border-radius: 100px;
+  padding: 1px 5px;
+}
+
 .pv4-section-title {
   font-size: 0.8125rem;
   font-weight: 600;
