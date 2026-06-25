@@ -6,9 +6,8 @@
 #plan-picker-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  /* Plain dim (no backdrop blur) — cheaper to animate in the WebView */
+  background: rgba(0, 0, 0, 0.78);
   z-index: 2000;
   opacity: 0;
   visibility: hidden;
@@ -74,6 +73,7 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   width: 95%;
+  flex-shrink: 0;
 }
 
 .plan-picker-filter::-webkit-scrollbar {

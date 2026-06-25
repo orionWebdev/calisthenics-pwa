@@ -33,6 +33,9 @@
   scrollbar-width: none;
   touch-action: pan-x;
   overscroll-behavior-x: contain;
+  /* Never let the soft keyboard (which shrinks the column) squash the filter
+     row — the scrollable list below absorbs the height change instead. */
+  flex-shrink: 0;
 }
 
 .exercise-picker-filters::-webkit-scrollbar,

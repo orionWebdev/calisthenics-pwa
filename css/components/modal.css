@@ -9,12 +9,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  /* Plain dim instead of backdrop-filter blur: animating a full-screen blur in
+     is very expensive in the Android WebView and was the main cause of the
+     "hakelig" modal-open feel. The dark overlay reads almost identically. */
+  background: rgba(0, 0, 0, 0.72);
   z-index: 1000;
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.2s ease;
-  backdrop-filter: blur(8px);
   overscroll-behavior: contain;
   touch-action: none;
 }
