@@ -13,13 +13,13 @@
   position: sticky;
   /* Desktop: floating nav sits at top:1rem with ~64px height → pin below it */
   top: 5.25rem;
-  /* Must sit above the activity-calendar mini-dots (z-index up to 50) */
-  z-index: 100;
+  /* Above the transparent blur header (z1000) so taps reach the segmented control */
+  z-index: 1001;
   padding: 0.625rem 0 0.625rem;
-  background: var(--color-bg);
+  /* Transparent: only the blur, no opaque block / shadow — merges with the glass header */
+  background: transparent;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 @media (max-width: 768px) {

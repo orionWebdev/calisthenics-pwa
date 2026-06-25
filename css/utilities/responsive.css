@@ -13,6 +13,9 @@
   background: transparent;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  /* Brand bar only — no interactive controls — so it must not intercept taps
+     on sticky elements (e.g. progress period selector) pinned just beneath it */
+  pointer-events: none;
   /* PWA Safe Area: Padding oben für Status Bar, aber Hintergrund füllt gesamten Bereich */
   padding-top: env(safe-area-inset-top, 0);
 }
