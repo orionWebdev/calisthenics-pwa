@@ -142,6 +142,26 @@
   border-bottom: 1px solid var(--border-primary);
 }
 
+.workout-picker-create {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.625rem;
+  padding: 0.6rem 1rem;
+  background: var(--accent-soft-2, rgba(192, 25, 99, 0.1));
+  border: 1px solid var(--accent-soft, rgba(192, 25, 99, 0.2));
+  border-radius: 0.75rem;
+  color: var(--color-primary-light, #F02277);
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-sm, 0.875rem);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.workout-picker-create:active { background: var(--accent-soft, rgba(192, 25, 99, 0.2)); }
+.workout-picker-create .material-symbols-rounded { font-size: 18px; }
+
 .workout-picker-search {
   display: flex;
   align-items: center;

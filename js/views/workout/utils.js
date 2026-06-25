@@ -170,6 +170,10 @@ function openAddExerciseToWorkout() {
             oninput="filterWorkoutExercisePicker(this.value)" />
         </div>
         <div class="workout-picker-chips">${chipsHTML}</div>
+        <button type="button" class="workout-picker-create" onclick="createExerciseForWorkout()">
+          <span class="material-symbols-rounded">add_circle</span>
+          Neue Übung erstellen
+        </button>
       </div>
       <div class="exercises-sheet-content">
         <div id="workout-exercise-picker-list" class="exercises-sheet-list">
@@ -241,6 +245,18 @@ function setWorkoutPickerMuscleFilter(key) {
 
 function addExerciseToWorkout(exerciseId) {
   addExerciseToWorkoutOrReplace(exerciseId);
+}
+
+// Create a brand-new exercise and drop it straight into the active workout
+// (or replace, if a replace is in progress). The inline-create hook fires its
+// onCreated callback after the library reloads, so newId resolves in allExercises.
+function createExerciseForWorkout() {
+  closeWorkoutExercisePicker();
+  if (typeof openExerciseCreateSheet === 'function') {
+    openExerciseCreateSheet({ onCreated: (newId) => addExerciseToWorkoutOrReplace(newId) });
+  } else if (typeof openAddExerciseModal === 'function') {
+    openAddExerciseModal();
+  }
 }
 
 function closeWorkoutExercisePicker() {
@@ -328,6 +344,7 @@ function addExerciseToWorkoutOrReplace(exerciseId) {
 
 // Global exports
 window.checkActiveWorkout = checkActiveWorkout;
+window.createExerciseForWorkout = createExerciseForWorkout;
 window.ensureActiveWorkoutBanner = ensureActiveWorkoutBanner;
 window.openExercisesSheet = openExercisesSheet;
 window.closeExercisesSheet = closeExercisesSheet;

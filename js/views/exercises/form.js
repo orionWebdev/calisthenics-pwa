@@ -98,6 +98,9 @@ function editExercise(id) {
 }
 
 function closeExerciseModal() {
+  // Drop any pending inline-create callback so cancelling doesn't leave a stale
+  // hook that fires on the next (unrelated) exercise creation.
+  exerciseCreateCallback = null;
   const exerciseModal = document.getElementById('exercise-modal');
   if (exerciseModal) {
     exerciseModal.classList.remove('active');

@@ -44,7 +44,7 @@ function renderWorkoutScreen() {
         <span class="material-symbols-rounded">add</span>
         ${t('workout.screen.addExercise')}
       </button>
-      <button onclick="openAddExerciseModal()" class="empty-state-btn" style="margin:0.6rem auto 0;">
+      <button onclick="createExerciseForWorkout()" class="empty-state-btn" style="margin:0.6rem auto 0;">
         <span class="material-symbols-rounded">add_circle</span>
         Neue Übung erstellen
       </button>
