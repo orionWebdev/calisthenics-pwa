@@ -435,7 +435,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
-  background: var(--color-primary);
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
   border: none;
   border-radius: 0.75rem;
   color: white;
