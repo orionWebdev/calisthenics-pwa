@@ -115,6 +115,35 @@ async function checkAllowlist(uid, email) {
 // ==================== SIGN IN / SIGN OUT ====================
 
 /**
+ * Resolve a signed-in Firebase user via Google, choosing the right flow per
+ * platform: native (Capacitor WebView) → @capacitor-firebase/authentication does
+ * the OS-level Google sign-in and returns a credential we hand to the JS Firebase
+ * SDK (skipNativeAuth keeps firebase.auth() as the single source of truth);
+ * web/browser → the classic signInWithPopup. Returns a firebase.User.
+ */
+async function googleSignInUser() {
+  const cap = window.Capacitor;
+  const isNative = cap && typeof cap.isNativePlatform === 'function' && cap.isNativePlatform();
+
+  if (isNative) {
+    const FirebaseAuthentication = cap.Plugins && cap.Plugins.FirebaseAuthentication;
+    if (!FirebaseAuthentication) {
+      throw new Error('FirebaseAuthentication plugin unavailable (run `npm run sync`?)');
+    }
+    const res = await FirebaseAuthentication.signInWithGoogle();
+    const idToken = res && res.credential && res.credential.idToken;
+    const accessToken = res && res.credential && res.credential.accessToken;
+    if (!idToken) throw new Error('Google sign-in returned no idToken');
+    const credential = firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
+    const userCred = await auth.signInWithCredential(credential);
+    return userCred.user;
+  }
+
+  const result = await auth.signInWithPopup(googleProvider);
+  return result.user;
+}
+
+/**
  * Sign in with Google
  * @returns {Promise<Object>} - User object or error
  */
@@ -122,8 +151,7 @@ async function signInWithGoogle() {
   try {
     showLoadingState('Anmeldung läuft...');
 
-    const result = await auth.signInWithPopup(googleProvider);
-    const user = result.user;
+    const user = await googleSignInUser();
 
     // Check allowlist
     showLoadingState('Zugriff wird überprüft...');

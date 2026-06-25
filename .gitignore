@@ -9,7 +9,9 @@ www/
 android/app/build/
 android/build/
 android/.gradle/
+android/.idea/
 android/local.properties
 android/app/release/
+android/capacitor-cordova-android-plugins/build/
 *.keystore
 *.jks

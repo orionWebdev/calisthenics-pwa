@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "53503392138",
+    "project_id": "calisthenics-pro-57d6d",
+    "storage_bucket": "calisthenics-pro-57d6d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53503392138:android:03e1f4e7818c30d262b073",
+        "android_client_info": {
+          "package_name": "com.atemhybrid.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "53503392138-9l70vgrb4rmc53itesvm04qo2crj0sr0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7WekL9ibGuOOVYEE0eAxCxr5HkFhuPgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53503392138-9l70vgrb4rmc53itesvm04qo2crj0sr0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
