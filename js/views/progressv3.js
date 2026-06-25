@@ -312,7 +312,12 @@ function renderV4PeriodSelector() {
 }
 
 function attachV4PeriodListeners() {
-  const control = document.querySelector('.pv3-segmented-control');
+  // Scope to the period selector's sticky bar — the Training view reuses the
+  // .pv3-segmented-control class and sits earlier in the DOM, so a bare
+  // querySelector('.pv3-segmented-control') would bind these handlers to that
+  // hidden control instead, leaving the period buttons dead.
+  const control = document.querySelector('#progress-tab-content .pv3-sticky-bar .pv3-segmented-control')
+    || document.querySelector('#progress-tab-content .pv3-segmented-control');
   if (!control) return;
   control.querySelectorAll('.pv3-seg-btn').forEach((btn, idx) => {
     btn.addEventListener('click', () => {
