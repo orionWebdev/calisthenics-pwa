@@ -292,6 +292,105 @@
 }
 .dash-cal-empty .material-symbols-rounded { font-size: 18px; }
 
+/* Head actions (add + expand toggle) */
+.dash-cal-head-actions { display: inline-flex; align-items: center; gap: 6px; }
+.dash-cal-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--ui-card-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: transform 0.25s ease, color 0.15s ease;
+}
+.dash-cal-toggle .material-symbols-rounded { font-size: 20px; }
+.dash-cal-toggle.is-expanded { transform: rotate(180deg); color: var(--color-primary-light); }
+
+/* Period navigation row */
+.dash-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 0.7rem;
+}
+.dash-cal-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.dash-cal-nav-btn:active { background: rgba(255, 255, 255, 0.06); }
+.dash-cal-nav-btn .material-symbols-rounded { font-size: 20px; }
+.dash-cal-period {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accordion body: animates height between week strip and month grid */
+.dash-cal-body {
+  overflow: hidden;
+  max-height: 84px;
+  transition: max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.dash-cal-body.is-expanded { max-height: 460px; }
+
+/* Month grid */
+.dash-cal-month { display: flex; flex-direction: column; gap: 4px; }
+.dash-cal-mheadrow,
+.dash-cal-mgrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.dash-cal-mhead {
+  text-align: center;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+}
+.dash-cal-mday {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 42px;
+  padding: 4px 0;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.dash-cal-mday .dash-cal-num { font-size: 13px; font-weight: 600; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.dash-cal-mday.is-other { opacity: 0.32; }
+.dash-cal-mday.is-today .dash-cal-num { color: var(--color-primary-light); }
+.dash-cal-mday.is-selected {
+  background: linear-gradient(157deg, rgba(240, 34, 119, 0.16), rgba(192, 25, 99, 0.05));
+  border-color: rgba(240, 34, 119, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-cal-body, .dash-cal-toggle { transition: none; }
+}
+
 /* ========================================
    CALENDAR MONTH AGENDA LIST
    (exercise-section style)

@@ -6,6 +6,9 @@ const DASHBOARD_RECENT_LIMIT = 3;
 // Dashboard Hybrid Balance fixed to 7 days - no toggle
 const DASHBOARD_BALANCE_DAYS = 7;
 let dashboardIsLoading = false;
+// Coalescing flag: a refresh requested while one is in-flight is remembered and
+// re-run once afterwards, so data arriving during the load window still repaints.
+let dashboardRefreshQueued = false;
 // Dashboard Activity Calendar state
 // Plan calendar is now the only calendar on dashboard (activity calendar moved to Progress).
 // The activity-calendar helpers below (aggregateDayByType, renderNestedDots, getDashboardSessionsByDate)

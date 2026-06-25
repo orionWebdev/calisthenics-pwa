@@ -520,20 +520,28 @@ function renderDashboardFormHero() {
 }
 
 async function refreshDashboard() {
-  if (dashboardIsLoading) return;
+  // Coalesce: if a refresh is already running, remember the request and re-run
+  // once when it finishes — otherwise data arriving mid-load is never repainted.
+  if (dashboardIsLoading) { dashboardRefreshQueued = true; return; }
   dashboardIsLoading = true;
 
-  const data = await useDashboardData();
-  renderQuickStatsWidget(data);
-  renderLogWorkoutCard(data);
-  renderDashboardFormHero();
-  renderScheduledWorkoutsCard(data);
-  renderDashboardRecommendation();
-  if (typeof renderDashboardCalendar === 'function') renderDashboardCalendar();
-  // Recent sessions removed - now in Progress > Overview
-  // Activity calendar moved to Progress > Overview
-
-  dashboardIsLoading = false;
+  try {
+    const data = await useDashboardData();
+    renderQuickStatsWidget(data);
+    renderLogWorkoutCard(data);
+    renderDashboardFormHero();
+    renderScheduledWorkoutsCard(data);
+    renderDashboardRecommendation();
+    if (typeof renderDashboardCalendar === 'function') renderDashboardCalendar();
+    // Recent sessions removed - now in Progress > Overview
+    // Activity calendar moved to Progress > Overview
+  } finally {
+    dashboardIsLoading = false;
+    if (dashboardRefreshQueued) {
+      dashboardRefreshQueued = false;
+      refreshDashboard();
+    }
+  }
 }
 
 async function initDashboard() {
@@ -544,12 +552,8 @@ async function initDashboard() {
       refreshDashboard();
     });
   }
-  // Listen to schedule changes for scheduled workouts display
-  if (typeof onUserCollectionChange === 'function' && typeof scheduleCollection !== 'undefined') {
-    onUserCollectionChange(scheduleCollection, () => {
-      refreshDashboard();
-    });
-  }
+  // Schedule changes are handled by setupScheduleListener() (calendar.js), which
+  // updates scheduleData *and* calls refreshDashboard — so no duplicate listener here.
   // Pre-load schedule data for plan calendar tab
   if (typeof loadSchedule === 'function') {
     loadSchedule();

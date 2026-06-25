@@ -976,37 +976,104 @@ function renderTrainingCalendar() {
 // ========================================
 // COMPACT DASHBOARD CALENDAR (Home)
 // ========================================
-// Kompakter, dynamischer Wochen-Strip + Tages-Agenda (statt klobigem Monatsblock).
-// Wiederverwendet getCalendarEventsForDate (Sessions + Planung) und renderEventRow.
+// Wochen-Strip mit Akkordeon-Ausklappung zum Monatsgrid + Wochen-/Monats-
+// Navigation (Pfeile + Swipe). Wiederverwendet getCalendarEventsForDate
+// (Sessions + Planung) und renderEventRow.
 
+const DASH_CAL_DOW = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 let dashCalSelected = formatDate(new Date());
+let dashCalExpanded = false;
+let dashCalWeekStart = dashCalStartOfWeek(new Date());
+let dashCalMonth = dashCalFirstOfMonth(new Date());
+
+function dashCalStartOfWeek(date) {
+  const d = new Date(date); d.setHours(0, 0, 0, 0);
+  const wd = (d.getDay() + 6) % 7; // 0 = Monday
+  d.setDate(d.getDate() - wd);
+  return d;
+}
+
+function dashCalFirstOfMonth(date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function dashCalDateFromKey(ds) {
+  return new Date(`${ds}T12:00:00`);
+}
+
+// Dots for a date: up to 3 unique types, filled = completed, ghost = planned.
+function dashCalDotsHTML(ds) {
+  const byType = {};
+  getCalendarEventsForDate(ds).forEach(e => {
+    if (!byType[e.type]) byType[e.type] = { type: e.type, completed: false };
+    if (e.completed) byType[e.type].completed = true;
+  });
+  return Object.keys(byType).slice(0, 3).map(k =>
+    `<span class="dash-cal-dot plan-calendar-dot-${byType[k].type}${byType[k].completed ? '' : ' is-planned'}"></span>`
+  ).join('');
+}
+
+function dashCalBuildWeek(todayKey) {
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(dashCalWeekStart); d.setDate(d.getDate() + i);
+    const ds = formatDate(d);
+    html += `<button type="button" class="dash-cal-day${ds === todayKey ? ' is-today' : ''}${ds === dashCalSelected ? ' is-selected' : ''}" onclick="dashCalSelect('${ds}')">
+      <span class="dash-cal-dow">${DASH_CAL_DOW[i]}</span>
+      <span class="dash-cal-num">${d.getDate()}</span>
+      <span class="dash-cal-dots">${dashCalDotsHTML(ds)}</span>
+    </button>`;
+  }
+  return `<div class="dash-cal-strip">${html}</div>`;
+}
+
+function dashCalMonthCell(d, ds, todayKey, other) {
+  return `<button type="button" class="dash-cal-mday${other ? ' is-other' : ''}${ds === todayKey ? ' is-today' : ''}${ds === dashCalSelected ? ' is-selected' : ''}" onclick="dashCalSelect('${ds}')">
+    <span class="dash-cal-num">${d.getDate()}</span>
+    <span class="dash-cal-dots">${dashCalDotsHTML(ds)}</span>
+  </button>`;
+}
+
+function dashCalBuildMonth(todayKey) {
+  const year = dashCalMonth.getFullYear();
+  const month = dashCalMonth.getMonth();
+  const lead = (new Date(year, month, 1).getDay() + 6) % 7; // Monday-based leading blanks
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+
+  const head = DASH_CAL_DOW.map(x => `<span class="dash-cal-mhead">${x}</span>`).join('');
+  let cells = '';
+  for (let i = lead - 1; i >= 0; i--) {
+    const d = new Date(year, month - 1, prevDays - i);
+    cells += dashCalMonthCell(d, formatDate(d), todayKey, true);
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(year, month, day);
+    cells += dashCalMonthCell(d, formatDate(d), todayKey, false);
+  }
+  const trail = (7 - ((lead + daysInMonth) % 7)) % 7;
+  for (let i = 1; i <= trail; i++) {
+    const d = new Date(year, month + 1, i);
+    cells += dashCalMonthCell(d, formatDate(d), todayKey, true);
+  }
+  return `<div class="dash-cal-month"><div class="dash-cal-mheadrow">${head}</div><div class="dash-cal-mgrid">${cells}</div></div>`;
+}
+
+function dashCalPeriodLabel() {
+  if (dashCalExpanded) {
+    const name = t(`calendar.monthNames.${getMonthKey(dashCalMonth.getMonth())}`) || '';
+    return `${name} ${dashCalMonth.getFullYear()}`.trim();
+  }
+  const e = new Date(dashCalWeekStart); e.setDate(e.getDate() + 6);
+  return `${dashCalWeekStart.getDate()}.${dashCalWeekStart.getMonth() + 1}. – ${e.getDate()}.${e.getMonth() + 1}.`;
+}
 
 function renderDashboardCalendar() {
   const container = document.getElementById('dashboard-calendar');
   if (!container) return;
 
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const todayKey = formatDate(today);
-
-  // 7-Tage-Strip: gestern … +5 Tage (heute als zweites Feld, gut tippbar)
-  const start = new Date(today); start.setDate(start.getDate() - 1);
-  const dow = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-  let strip = '';
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(start); d.setDate(start.getDate() + i);
-    const ds = formatDate(d);
-    const events = getCalendarEventsForDate(ds);
-    const byType = {};
-    events.forEach(e => { if (!byType[e.type]) byType[e.type] = { type: e.type, completed: false }; if (e.completed) byType[e.type].completed = true; });
-    const dots = Object.keys(byType).slice(0, 3).map(k =>
-      `<span class="dash-cal-dot plan-calendar-dot-${byType[k].type}${byType[k].completed ? '' : ' is-planned'}"></span>`
-    ).join('');
-    strip += `<button type="button" class="dash-cal-day${ds === todayKey ? ' is-today' : ''}${ds === dashCalSelected ? ' is-selected' : ''}" onclick="dashCalSelect('${ds}')">
-      <span class="dash-cal-dow">${dow[d.getDay()]}</span>
-      <span class="dash-cal-num">${d.getDate()}</span>
-      <span class="dash-cal-dots">${dots}</span>
-    </button>`;
-  }
+  const todayKey = formatDate(new Date());
+  const grid = dashCalExpanded ? dashCalBuildMonth(todayKey) : dashCalBuildWeek(todayKey);
 
   const selEvents = getCalendarEventsForDate(dashCalSelected);
   const isPast = dashCalSelected < todayKey;
@@ -1018,17 +1085,87 @@ function renderDashboardCalendar() {
     <div class="dash-cal-card">
       <div class="dash-cal-head">
         <span class="dash-cal-title"><span class="material-symbols-rounded">calendar_month</span>${t('nav.calendar') || 'Kalender'}</span>
-        <button type="button" class="dash-cal-add" onclick="openQuickAddSheet()" aria-label="${t('dashboard.calendar.addTraining') || 'Training planen'}"><span class="material-symbols-rounded">add</span></button>
+        <div class="dash-cal-head-actions">
+          <button type="button" class="dash-cal-add" onclick="openQuickAddSheet()" aria-label="${t('dashboard.calendar.addTraining') || 'Training planen'}"><span class="material-symbols-rounded">add</span></button>
+          <button type="button" class="dash-cal-toggle${dashCalExpanded ? ' is-expanded' : ''}" onclick="dashCalToggleExpand()" aria-label="${dashCalExpanded ? 'Monat einklappen' : 'Monat ausklappen'}"><span class="material-symbols-rounded">expand_more</span></button>
+        </div>
       </div>
-      <div class="dash-cal-strip">${strip}</div>
+      <div class="dash-cal-nav">
+        <button type="button" class="dash-cal-nav-btn" onclick="dashCalShift(-1)" aria-label="Zurück"><span class="material-symbols-rounded">chevron_left</span></button>
+        <span class="dash-cal-period">${dashCalPeriodLabel()}</span>
+        <button type="button" class="dash-cal-nav-btn" onclick="dashCalShift(1)" aria-label="Weiter"><span class="material-symbols-rounded">chevron_right</span></button>
+      </div>
+      <div class="dash-cal-body${dashCalExpanded ? ' is-expanded' : ''}" id="dash-cal-body">${grid}</div>
       <div class="dash-cal-agenda">${agenda}</div>
     </div>`;
+
+  dashCalBindSwipe();
 }
 
-function dashCalSelect(ds) { dashCalSelected = ds; renderDashboardCalendar(); }
+function dashCalSelect(ds) {
+  dashCalSelected = ds;
+  // Keep the visible week & month anchored on the picked day
+  const sd = dashCalDateFromKey(ds);
+  dashCalWeekStart = dashCalStartOfWeek(sd);
+  dashCalMonth = dashCalFirstOfMonth(sd);
+  renderDashboardCalendar();
+}
+
+// Prev/next: shifts the month when expanded, otherwise the week.
+function dashCalShift(dir) {
+  if (dashCalExpanded) {
+    dashCalMonth = new Date(dashCalMonth.getFullYear(), dashCalMonth.getMonth() + dir, 1);
+  } else {
+    const ws = new Date(dashCalWeekStart);
+    ws.setDate(ws.getDate() + dir * 7);
+    dashCalWeekStart = ws;
+  }
+  renderDashboardCalendar();
+}
+
+// Accordion toggle with a height animation. On collapse we keep the month
+// content during the height transition, then swap to the week strip.
+function dashCalToggleExpand() {
+  dashCalExpanded = !dashCalExpanded;
+  const todayKey = formatDate(new Date());
+  const sd = dashCalDateFromKey(dashCalSelected);
+  if (dashCalExpanded) dashCalMonth = dashCalFirstOfMonth(sd);
+  else dashCalWeekStart = dashCalStartOfWeek(sd);
+
+  const body = document.getElementById('dash-cal-body');
+  const period = document.querySelector('#dashboard-calendar .dash-cal-period');
+  const toggle = document.querySelector('#dashboard-calendar .dash-cal-toggle');
+  if (!body) { renderDashboardCalendar(); return; }
+  if (period) period.textContent = dashCalPeriodLabel();
+  if (toggle) toggle.classList.toggle('is-expanded', dashCalExpanded);
+
+  if (dashCalExpanded) {
+    body.innerHTML = dashCalBuildMonth(todayKey);
+    body.classList.add('is-expanded');
+    dashCalBindSwipe();
+  } else {
+    body.classList.remove('is-expanded'); // animate height down with month still inside
+    setTimeout(() => {
+      body.innerHTML = dashCalBuildWeek(todayKey);
+      dashCalBindSwipe();
+    }, 300);
+  }
+}
+
+function dashCalBindSwipe() {
+  if (typeof initSwipeGesture !== 'function') return;
+  initSwipeGesture({
+    containerId: 'dash-cal-body',
+    tabs: ['prev', 'current', 'next'],
+    getCurrentTab: () => 'current',
+    onSwipe: (tab) => { if (tab === 'next') dashCalShift(1); else if (tab === 'prev') dashCalShift(-1); }
+  });
+}
 
 window.renderDashboardCalendar = renderDashboardCalendar;
 window.dashCalSelect = dashCalSelect;
+window.dashCalShift = dashCalShift;
+window.dashCalToggleExpand = dashCalToggleExpand;
 window.renderTrainingCalendar = renderTrainingCalendar;
 window.startScheduledWorkout = startScheduledWorkout;
 window.goToToday = goToToday;
