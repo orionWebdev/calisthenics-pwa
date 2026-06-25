@@ -121,6 +121,48 @@
     return Promise.resolve(demoPlans);
   };
   window.onUserCollectionChange = function (col, cb) { try { cb(sessions); } catch (e) {} return function () {}; };
+
+  // ---- Firestore-Schreiboperationen stubben (kein echtes Firestore in Demo) ----
+  // Ohne diese Stubs schlägt z. B. "Neue Übung erstellen" im Workout fehl, weil
+  // addDoc gegen echtes Firestore mit Fake-Auth läuft. Für Übungen arbeiten wir
+  // in-memory, damit der Create-&-Add-Flow im Demo funktioniert.
+  function isExerciseCollection(col) {
+    try { if (typeof exercisesCollection !== 'undefined' && col === exercisesCollection) return true; } catch (e) {}
+    return false;
+  }
+  function looksLikeExercise(data) {
+    return !!(data && typeof data.name === 'string' && (data.muscleGroups || data.type || data.difficulty));
+  }
+  window.addDoc = function (col, data) {
+    var id = 'demo-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    try {
+      if ((isExerciseCollection(col) || looksLikeExercise(data)) && Array.isArray(demoExercises)) {
+        demoExercises.push(Object.assign({ id: id }, data));
+        allExercises = demoExercises;
+        filteredExercises = demoExercises.slice();
+      }
+    } catch (e) {}
+    return Promise.resolve(id);
+  };
+  window.updateDoc = function (col, id, data) {
+    try {
+      if (Array.isArray(demoExercises)) {
+        var ix = demoExercises.findIndex(function (e) { return e && e.id === id; });
+        if (ix !== -1) demoExercises[ix] = Object.assign({}, demoExercises[ix], data);
+      }
+    } catch (e) {}
+    return Promise.resolve(true);
+  };
+  window.deleteDoc = function (col, id) {
+    try {
+      if (Array.isArray(demoExercises)) {
+        var ix = demoExercises.findIndex(function (e) { return e && e.id === id; });
+        if (ix !== -1) { demoExercises.splice(ix, 1); allExercises = demoExercises; filteredExercises = demoExercises.slice(); }
+      }
+    } catch (e) {}
+    return Promise.resolve(true);
+  };
+
   // Verhindert "No authenticated user"-Throws in Code, der die User-ID braucht.
   window.getActiveUserId = function () { return 'demo-user'; };
   // Onboarding im Demo unterdrücken (kein Profil -> würde sonst triggern).
