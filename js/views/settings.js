@@ -387,13 +387,14 @@ function renderProgressSettings() {
 function renderIntegrationsSettings() {
   const integrations = [
     { key: 'garmin', icon: 'watch', label: 'Garmin Connect' },
-    { key: 'googleFit', icon: 'monitoring', label: 'Google Fit' }
+    { key: 'googleFit', icon: 'monitoring', label: 'Google Fit' },
+    { key: 'googleCalendar', icon: 'calendar_month', label: 'Google Kalender', premium: true }
   ];
   return integrations.map(item => `
     <div class="settings-row">
       <span class="material-symbols-rounded settings-row-icon">${item.icon}</span>
       <span class="settings-row-label">${item.label}</span>
-      <span class="settings-badge-soon">${t('settings.comingSoon')}</span>
+      <span class="${item.premium ? 'settings-badge-premium' : 'settings-badge-soon'}">${item.premium ? 'Premium' : t('settings.comingSoon')}</span>
     </div>
   `).join('');
 }
@@ -749,13 +750,18 @@ function renderToggle(field, isActive) {
 }
 
 // Einheitlicher Toggler für binäre Werte (Theme, Einheiten, Sprache) — gleicher
-// Switch-Look wie der Haptik-Toggle, mit aktivem Wert-Label daneben.
+// Switch-Look wie der Haptik-Toggle, mit aktivem Wert-Label daneben. Werte/Labels
+// liegen als data-Attribute am Button, damit der Klick-Handler in place (ohne
+// Re-Render) aktualisieren kann → die Switch-Animation läuft wie beim Haptik-Toggle.
 function renderValueToggle(field, currentValue, offOpt, onOpt) {
   const isOn = currentValue === onOpt.value;
   const label = isOn ? onOpt.label : offOpt.label;
   return `<span class="settings-toggle-wrap">
     <span class="settings-toggle-val">${label}</span>
-    <button class="settings-toggle${isOn ? ' active' : ''}" onclick="handleValueToggle('${field}', '${onOpt.value}', '${offOpt.value}')"></button>
+    <button class="settings-toggle${isOn ? ' active' : ''}"
+      data-field="${field}" data-on="${escapeHTML(onOpt.value)}" data-off="${escapeHTML(offOpt.value)}"
+      data-on-label="${escapeHTML(onOpt.label)}" data-off-label="${escapeHTML(offOpt.label)}"
+      onclick="handleValueToggle(this)"></button>
   </span>`;
 }
 
@@ -782,14 +788,34 @@ function handleToggleChange(field, el) {
   const newValue = !userProfile[field];
   updateProfileField(field, newValue);
   el.classList.toggle('active', newValue);
+  if (field === 'aiTranslation' && window.aiTranslationService) {
+    window.aiTranslationService.setEnabled(newValue);
+  }
   showEdgeFeedback('success', t('settings.saved'));
 }
 
-function handleValueToggle(field, onValue, offValue) {
+function handleValueToggle(el) {
+  const field = el.dataset.field;
+  const onValue = el.dataset.on;
+  const offValue = el.dataset.off;
   const newValue = (userProfile[field] === onValue) ? offValue : onValue;
+  const isOn = newValue === onValue;
+
+  // Language switch re-translates every label → updateProfileField re-renders the
+  // whole view itself for that field, so we just persist and bail out here.
   updateProfileField(field, newValue);
+  if (field === 'language') {
+    showEdgeFeedback('success', t('settings.saved'));
+    return;
+  }
+
+  // Theme / units: update in place (no re-render) so the switch animates smoothly.
+  el.classList.toggle('active', isOn);
+  const wrap = el.closest('.settings-toggle-wrap');
+  const valEl = wrap && wrap.querySelector('.settings-toggle-val');
+  if (valEl) valEl.textContent = isOn ? el.dataset.onLabel : el.dataset.offLabel;
   if (field === 'theme') applyTheme(newValue);
-  renderProfileView();
+
   showEdgeFeedback('success', t('settings.saved'));
 }
 window.handleValueToggle = handleValueToggle;

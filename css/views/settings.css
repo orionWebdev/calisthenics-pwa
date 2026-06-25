@@ -250,6 +250,17 @@
   padding: 0.125rem 0.5rem;
 }
 
+.settings-badge-premium {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--gradient-primary, linear-gradient(135deg, #C01963, #F02277));
+  border-radius: 100px;
+  padding: 0.125rem 0.55rem;
+}
+
 /* Delete confirmation modal */
 .settings-delete-modal {
   text-align: center;
