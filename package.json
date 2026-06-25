@@ -1,0 +1,17 @@
+{
+  "name": "atem-hybrid",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ATEM Hybrid — Capacitor native wrapper around the existing vanilla-JS PWA",
+  "scripts": {
+    "build:www": "node scripts/build-www.js",
+    "sync": "npm run build:www && cap sync",
+    "open:android": "cap open android",
+    "run:android": "npm run sync && cap run android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1"
+  }
+}
