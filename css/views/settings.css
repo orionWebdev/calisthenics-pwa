@@ -199,6 +199,7 @@
 .profile-avatar {
   width: 64px;
   height: 64px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   display: flex;
@@ -225,6 +226,9 @@
   color: var(--text-primary);
   cursor: pointer;
   transition: color 0.15s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .profile-name:hover {
@@ -235,6 +239,9 @@
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   margin-top: 0.125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .profile-name-input {

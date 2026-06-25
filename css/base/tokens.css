@@ -99,11 +99,11 @@
   --font-size-3xl: 2rem;       /* 32px - Display */
   --font-size-4xl: 2.5rem;     /* 40px - Hero */
 
-  /* Font Weights - Semantisch */
+  /* Font Weights - Semantisch (eine Stufe leichter — war global zu fett) */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  --font-weight-bold: 600;
 
   /* UI Components */
   /* Elegant card surface: directional dark gradient + faint top sheen (Redesign) */
@@ -283,7 +283,9 @@
 }
 
 html {
-  font-size: 92%;
+  /* Global type scale. Lowered from 92% — text/UI read a touch lighter & smaller.
+     Everything is rem-based, so this nudges the whole app down uniformly. */
+  font-size: 87%;
 }
 
 * {
