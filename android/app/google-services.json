@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "53503392138-t33ct9g0f5qj2jpvfolr5sjlmopgo2mj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.atemhybrid.app",
+            "certificate_hash": "aeb29220b5e2c1ae62994402808a42db725396e3"
+          }
+        },
+        {
           "client_id": "53503392138-9l70vgrb4rmc53itesvm04qo2crj0sr0.apps.googleusercontent.com",
           "client_type": 3
         }
