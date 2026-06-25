@@ -32,6 +32,9 @@
   cursor: pointer;
   transition: background 0.15s ease;
   -webkit-tap-highlight-color: transparent;
+  /* Safety net: a long value (e.g. e-mail) must never push the page wider than
+     the viewport (was causing horizontal scroll on the profile page). */
+  overflow: hidden;
 }
 
 .settings-row:active {
@@ -58,8 +61,12 @@
 
 .settings-row-label {
   flex: 1;
+  min-width: 0;
   font-size: var(--font-size-base);
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .settings-row-value {
@@ -68,6 +75,11 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  /* Truncate long values (e-mail) instead of overflowing the row */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .settings-row-value .material-symbols-rounded {

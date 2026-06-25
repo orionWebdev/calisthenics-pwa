@@ -195,37 +195,40 @@
 }
 
 /* ========================================
-   LEGACY MODAL INPUTS → BRAND SYSTEM
-   The "Neue Übung" (#exercise-modal) and "Neuer Plan" (#plan-modal) modals still
-   carry raw gray Tailwind inputs (bg-gray-700/border-gray-600). Bring them onto
-   the same minimalist look as the rest: subtle fill, card border, 12px radius,
-   pink focus ring. Scoped to these two modals so the newer modals are untouched.
+   MODAL INPUTS → BRAND SYSTEM (all modals)
+   Replace raw gray Tailwind inputs (bg-gray-700/border-gray-600) with the
+   minimalist brand look across EVERY modal: subtle fill, card border, 12px
+   radius, pink focus ring. border-box keeps w-full inputs from overflowing.
    ======================================== */
-#exercise-modal input[type="text"],
-#exercise-modal input[type="number"],
-#exercise-modal textarea,
-#exercise-modal select,
-#plan-modal input[type="text"],
-#plan-modal input[type="number"],
-#plan-modal textarea,
-#plan-modal select {
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content input[type="date"],
+.modal-content input[type="time"],
+.modal-content input[type="email"],
+.modal-content input[type="password"],
+.modal-content textarea,
+.modal-content select {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--ui-card-border);
   border-radius: 12px;
   color: var(--text-primary);
+  box-sizing: border-box;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-#exercise-modal input[type="text"]:focus,
-#exercise-modal input[type="number"]:focus,
-#exercise-modal textarea:focus,
-#exercise-modal select:focus,
-#plan-modal input[type="text"]:focus,
-#plan-modal input[type="number"]:focus,
-#plan-modal textarea:focus,
-#plan-modal select:focus {
+.modal-content input:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--accent-soft-2);
+}
+
+/* Footer action buttons must shrink with the viewport. With flex:1 +
+   min-width:auto they can't shrink below their content, so on narrow phones the
+   Save button got pushed off the right edge. min-width:0 makes them width-safe. */
+.modal-footer > button {
+  min-width: 0;
+  white-space: nowrap;
 }
 
