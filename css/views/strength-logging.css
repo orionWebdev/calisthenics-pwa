@@ -129,7 +129,10 @@
    SWIPE GESTURE TRANSITIONS
    =================================== */
 
-#progress-tab-content,
+/* NB: #progress-tab-content intentionally excluded — Progress V3 has no swipe
+   (initProgressSwipe bails when initProgressV3 exists), so will-change:transform
+   here only created a stacking context that trapped the sticky period bar's
+   z-index beneath the fixed header, breaking taps on it. */
 #view-training,
 #view-calendar {
   will-change: transform;
