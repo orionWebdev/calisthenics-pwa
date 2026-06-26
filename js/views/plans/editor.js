@@ -51,15 +51,8 @@ function resetPlanModalPosition() {
     addBtn.setAttribute('aria-label', t('plan.addExercise'));
   }
 
-  const firstField = document.getElementById('plan-name');
-  if (!firstField) return;
-  requestAnimationFrame(() => {
-    try {
-      firstField.focus({ preventScroll: true });
-    } catch (error) {
-      firstField.focus();
-    }
-  });
+  // Intentionally NOT auto-focusing the name field — opening the editor should
+  // not pop the keyboard (user taps the field when ready).
 }
 
 function clearPlanForm() {

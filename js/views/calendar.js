@@ -618,11 +618,7 @@ function openQuickAddSheet() {
 
       // Reset type
       quickAddSelectedType = 'strength';
-
-      // Focus name input after render
-      setTimeout(() => {
-        document.getElementById('quick-add-name')?.focus();
-      }, 300);
+      // No auto-focus — opening quick-add shouldn't pop the keyboard.
     }
   });
 }

@@ -53,9 +53,14 @@ function renderPlans() {
 
     return `
       <div class="plan-grid-card plan-grid-card--${planType}" onclick="viewPlanDetails('${plan.id}')">
-        <div class="plan-grid-card-accent">
-          ${iconMarkup}
+        ${iconMarkup}
+        <div class="plan-grid-card-body">
           <span class="plan-grid-card-type">${typeLabel}</span>
+          <div class="plan-grid-card-title">${plan.name}</div>
+          <div class="plan-grid-card-meta">${chips}</div>
+          ${muscleDots}
+        </div>
+        <div class="plan-grid-card-actions">
           <button
             type="button"
             onclick="event.stopPropagation(); editPlan('${plan.id}')"
@@ -65,20 +70,15 @@ function renderPlans() {
           >
             <span class="material-symbols-rounded">edit</span>
           </button>
+          <button
+            type="button"
+            onclick="event.stopPropagation(); startWorkoutFromPlan('${plan.id}')"
+            class="plan-grid-card-start"
+            aria-label="${t('plan.actions.startShort')}"
+          >
+            <span class="material-symbols-rounded">play_arrow</span>
+          </button>
         </div>
-        <div class="plan-grid-card-body">
-          <div class="plan-grid-card-title">${plan.name}</div>
-          <div class="plan-grid-card-meta">${chips}</div>
-          ${muscleDots}
-        </div>
-        <button
-          type="button"
-          onclick="event.stopPropagation(); startWorkoutFromPlan('${plan.id}')"
-          class="plan-grid-card-start"
-        >
-          <span class="material-symbols-rounded">play_arrow</span>
-          <span>${t('plan.actions.startShort')}</span>
-        </button>
       </div>
     `;
   }).join('');

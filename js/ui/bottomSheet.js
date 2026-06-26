@@ -72,13 +72,8 @@ function openBottomSheet(config) {
 
   // Prevent body scroll
   document.body.style.overflow = 'hidden';
-
-  // Focus search if enabled
-  setTimeout(() => {
-    if (bottomSheetConfig.enableSearch) {
-      searchInput.focus();
-    }
-  }, 300);
+  // Do NOT auto-focus the search on open — opening a sheet shouldn't pop the
+  // keyboard. The user taps the search field when they want to type.
 }
 
 /**

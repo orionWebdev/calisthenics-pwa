@@ -406,8 +406,7 @@ function openPlanPickerBottomSheet(config) {
   // Show
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
-
-  setTimeout(() => searchInput.focus(), 100);
+  // No auto-focus on open — don't pop the keyboard; user taps search to type.
 }
 
 function renderPlanPickerOptions(options, searchTerm, typeFilter) {
