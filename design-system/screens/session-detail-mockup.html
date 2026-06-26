@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="../../css/main.css" />
+  <style>
+    body{ margin:0; padding:16px; max-width:460px; }
+    .card{ background:var(--ui-card-bg); border:1px solid var(--ui-card-border); border-radius:18px; box-shadow:var(--ui-card-shadow); padding:16px; margin-bottom:12px; }
+    .hd{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+    .hd .back{ width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid var(--ui-card-border);display:flex;align-items:center;justify-content:center;color:var(--text-secondary); }
+    .hd h1{ font-size:18px; font-weight:700; margin:0; color:var(--text-primary); }
+    /* hero */
+    .hero{ background:linear-gradient(157deg, rgba(225,29,72,.16), rgba(192,25,99,.04)); }
+    .hero-top{ display:flex; align-items:center; gap:12px; }
+    .hero-ic{ width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#E11D48,#FB7185);display:flex;align-items:center;justify-content:center;color:#fff; }
+    .hero-ic .material-symbols-rounded{ font-size:26px; }
+    .hero-meta .n{ font-size:16px;font-weight:700;color:var(--text-primary); }
+    .hero-meta .d{ font-size:12px;color:var(--text-tertiary); margin-top:2px; }
+    .hero-big{ margin-top:14px; font-size:40px; font-weight:800; color:var(--text-primary); line-height:1; font-variant-numeric:tabular-nums; }
+    .hero-big small{ font-size:17px; font-weight:600; color:var(--text-secondary); margin-left:4px; }
+    /* stat grid */
+    .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .tile{ background:rgba(255,255,255,.03); border:1px solid var(--ui-card-border); border-radius:12px; padding:10px 12px; }
+    .tile .v{ font-size:17px; font-weight:700; color:var(--text-primary); font-variant-numeric:tabular-nums; }
+    .tile .v small{ font-size:11px; font-weight:600; color:var(--text-tertiary); }
+    .tile .l{ font-size:10.5px; color:var(--text-tertiary); margin-top:2px; text-transform:uppercase; letter-spacing:.04em; }
+    .tile .l .material-symbols-rounded{ font-size:12px; vertical-align:-1px; }
+    .sec-t{ font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:7px;margin-bottom:12px; }
+    .sec-t .material-symbols-rounded{ font-size:16px;color:var(--color-primary-light); }
+    /* hr zones */
+    .zones{ display:flex; align-items:flex-end; justify-content:space-between; gap:8px; }
+    .z{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .z .min{ font-size:12px;font-weight:700;color:var(--text-primary); }
+    .z .lab{ font-size:10px;color:var(--text-tertiary); }
+    /* map placeholder */
+    .map{ height:120px;border-radius:14px;border:1px dashed var(--ui-card-border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text-tertiary);
+      background:radial-gradient(120% 80% at 50% 0%, rgba(192,25,99,.08), transparent 60%); }
+    .map .material-symbols-rounded{ font-size:26px; }
+    .map span{ font-size:12px; }
+    /* splits */
+    .split{ display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:7px; }
+    .split .k{ width:34px;color:var(--text-tertiary);font-variant-numeric:tabular-nums; }
+    .split .bar{ flex:1;height:7px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden; }
+    .split .bar i{ display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#E11D48,#FB7185); }
+    .split .p{ width:52px;text-align:right;color:var(--text-secondary);font-variant-numeric:tabular-nums; }
+    .pill{ font-size:11px;font-weight:700;color:#fff;background:var(--gradient-primary);border-radius:100px;padding:2px 8px; }
+  </style>
+</head>
+<body>
+  <div class="hd"><span class="back"><span class="material-symbols-rounded">arrow_back</span></span><h1>Einheit</h1></div>
+
+  <div class="card hero">
+    <div class="hero-top">
+      <div class="hero-ic"><span class="material-symbols-rounded">directions_run</span></div>
+      <div class="hero-meta"><div class="n">Morgenlauf</div><div class="d">Di · 24. Juni · 07:14</div></div>
+    </div>
+    <div class="hero-big">8,2<small>km</small></div>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <div class="tile"><div class="v">42:30</div><div class="l">Dauer</div></div>
+      <div class="tile"><div class="v">5:11 <small>/km</small></div><div class="l">Ø Pace</div></div>
+      <div class="tile"><div class="v">612 <small>kcal</small></div><div class="l">Energie</div></div>
+      <div class="tile"><div class="v">152 <small>bpm</small></div><div class="l"><span class="material-symbols-rounded">favorite</span> Ø HF</div></div>
+      <div class="tile"><div class="v">178 <small>bpm</small></div><div class="l"><span class="material-symbols-rounded">cardiology</span> Max HF</div></div>
+      <div class="tile"><div class="v">126 <small>m</small></div><div class="l">Anstieg</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-t"><span class="material-symbols-rounded">cardiology</span>HF-Zonen · Zeit in Zone</div>
+    <div class="zones">
+      <div class="z"><span class="muscle-dust hz-1" style="width:26px;height:26px"></span><span class="min">4′</span><span class="lab">Z1</span></div>
+      <div class="z"><span class="muscle-dust hz-2" style="width:34px;height:34px"></span><span class="min">11′</span><span class="lab">Z2</span></div>
+      <div class="z"><span class="muscle-dust hz-3" style="width:48px;height:48px"></span><span class="min">19′</span><span class="lab">Z3</span></div>
+      <div class="z"><span class="muscle-dust hz-4" style="width:30px;height:30px"></span><span class="min">7′</span><span class="lab">Z4</span></div>
+      <div class="z"><span class="muscle-dust hz-5" style="width:20px;height:20px"></span><span class="min">2′</span><span class="lab">Z5</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-t"><span class="material-symbols-rounded">map</span>Route <span class="pill" style="margin-left:auto">Garmin</span></div>
+    <div class="map"><span class="material-symbols-rounded">route</span><span>Route &amp; GPS folgen mit Garmin-Sync</span></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-t"><span class="material-symbols-rounded">timeline</span>Splits · pro km</div>
+    <div class="split"><span class="k">1</span><span class="bar"><i style="width:88%"></i></span><span class="p">5:02</span></div>
+    <div class="split"><span class="k">2</span><span class="bar"><i style="width:82%"></i></span><span class="p">5:14</span></div>
+    <div class="split"><span class="k">3</span><span class="bar"><i style="width:90%"></i></span><span class="p">4:58</span></div>
+    <div class="split"><span class="k">4</span><span class="bar"><i style="width:78%"></i></span><span class="p">5:22</span></div>
+    <div class="split"><span class="k">5</span><span class="bar"><i style="width:85%"></i></span><span class="p">5:08</span></div>
+  </div>
+</body>
+</html>
