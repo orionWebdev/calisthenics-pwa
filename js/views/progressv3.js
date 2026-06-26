@@ -241,6 +241,7 @@ function renderProgressV4() {
 
   if (pv4Tab === 'overview') {
     attachV4PeriodListeners();
+    attachEnduranceSportToggle();
   }
 
   // Draw sparklines
@@ -1040,6 +1041,7 @@ function renderV4Overview() {
     ${renderV4FormReadiness()}
     ${renderV4ExerciseProgression(sessions, days)}
     ${renderEnduranceCard(sessions)}
+    ${renderHeartRateCard(sessions)}
     ${renderV4HybridBalance(sessions)}
     ${renderV4HistoryCard()}
   `;
@@ -1506,113 +1508,119 @@ function getSportColor(sport) {
 // Ausdauer (Strava-inspiriert): großes Distanz-Total + Stat-Grid (Ø/Woche · Ø-Pace ·
 // Einheiten) + Wochendistanz-Balkenchart + Pro-Sport-Zeilen. Bewusst präsenter und
 // optisch distinkt von den dünnen Progressions-Zeilen.
+function pv4NormalizeSport(t) {
+  return ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim', rowing: 'row', rudern: 'row', hiking: 'hike', walking: 'hike', wandern: 'hike' })[t] || t;
+}
+function pv4SportMeta(sp) {
+  const M = {
+    run:  { label: 'Laufen', icon: 'directions_run', metric: 'pace' },
+    bike: { label: 'Rad', icon: 'directions_bike', metric: 'speed' },
+    swim: { label: 'Schwimmen', icon: 'pool', metric: 'swim' },
+    hike: { label: 'Wandern', icon: 'hiking', metric: 'pace' },
+    row:  { label: 'Rudern', icon: 'rowing', metric: 'speed' },
+    other:{ label: 'Sonstiges', icon: 'exercise', metric: 'none' }
+  };
+  return M[sp] || { label: sp ? (sp.charAt(0).toUpperCase() + sp.slice(1)) : 'Cardio', icon: 'fitness_center', metric: 'none' };
+}
+
+// Ausdauer — PRO SPORTART (Toggle), da Pace/km von Laufen ≠ Rad ≠ Schwimmen.
 function renderEnduranceCard(sessions) {
   try {
-    const normalize = t => ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim', rowing: 'row', rudern: 'row', hiking: 'hike', walking: 'hike', wandern: 'hike' })[t] || t;
     const cardio = (sessions || []).filter(s => mapSessionType(s) === 'cardio');
     if (!cardio.length) return '';
 
+    // Welche Sportarten kommen vor? (nach Häufigkeit)
+    const counts = {};
+    cardio.forEach(s => { const sp = pv4NormalizeSport((s.activityType || 'other').toLowerCase()) || 'other'; counts[sp] = (counts[sp] || 0) + 1; });
+    const sports = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    let sel = pv4EnduranceSport;
+    if (!sports.includes(sel)) { sel = sports[0]; pv4EnduranceSport = sel; }
+
+    const meta = pv4SportMeta(sel);
+    const isDistanceSport = meta.metric !== 'none';
+    const list = cardio.filter(s => (pv4NormalizeSport((s.activityType || 'other').toLowerCase()) || 'other') === sel);
+
     const days = v3PeriodDays(pv4Period);
     const weeksSpan = Math.max(1, days / 7);
-    const totalDist = cardio.reduce((a, s) => a + (Number(s.distanceKm) || 0), 0);
-    const totalTime = cardio.reduce((a, s) => a + v3GetDurationMin(s), 0);
-    const weeklyDist = totalDist / weeksSpan;
+    const totalDist = list.reduce((a, s) => a + (Number(s.distanceKm) || 0), 0);
+    const totalTime = list.reduce((a, s) => a + v3GetDurationMin(s), 0);
+    const n = list.length;
 
-    // Ø-Pace über alle Lauf-Einheiten (min/km)
-    const runs = cardio.filter(s => normalize((s.activityType || '').toLowerCase()) === 'run');
-    const runDist = runs.reduce((a, s) => a + (Number(s.distanceKm) || 0), 0);
-    const runTime = runs.reduce((a, s) => a + v3GetDurationMin(s), 0);
-    let paceStr = '–';
-    if (runDist > 0) {
-      const p = runTime / runDist; let m = Math.floor(p); let sec = Math.round((p - m) * 60);
-      if (sec >= 60) { m += 1; sec = 0; }
-      paceStr = m + ':' + String(sec).padStart(2, '0');
-    }
+    const fmtKm = v => v.toFixed(v >= 10 ? 0 : 1).replace('.', ',');
+    const fmtPace = p => { let m = Math.floor(p); let s = Math.round((p - m) * 60); if (s >= 60) { m += 1; s = 0; } return m + ':' + String(s).padStart(2, '0'); };
 
-    // Wochendistanz der letzten 8 Wochen
+    // Sport-passende Kernmetrik
+    let metricVal, metricLabel;
+    if (meta.metric === 'pace') { metricVal = totalDist > 0 ? fmtPace(totalTime / totalDist) : '–'; metricLabel = 'Ø Pace /km'; }
+    else if (meta.metric === 'speed') { metricVal = totalTime > 0 ? (totalDist / (totalTime / 60)).toFixed(1).replace('.', ',') : '–'; metricLabel = 'Ø km/h'; }
+    else if (meta.metric === 'swim') { metricVal = totalDist > 0 ? fmtPace(totalTime / (totalDist * 10)) : '–'; metricLabel = 'Ø /100m'; }
+    else { metricVal = n ? Math.round(totalTime / n) : '–'; metricLabel = 'Ø min'; }
+
+    const weeklyVal = isDistanceSport ? fmtKm(totalDist / weeksSpan) : Math.round(totalTime / weeksSpan);
+    const totalDisplay = isDistanceSport ? `${fmtKm(totalDist)} km` : `${Math.round(totalTime)} min`;
+
+    // 8-Wochen-Balken (Distanz, bzw. Zeit bei sport ohne Distanz) — nur die Sportart
     const W = 8;
     const wk = new Array(W).fill(0);
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    cardio.forEach(s => {
+    list.forEach(s => {
       const d = v3ToLocalDate(s);
       const wi = Math.floor((today - d) / 86400000 / 7);
-      if (wi >= 0 && wi < W) wk[wi] += (Number(s.distanceKm) || 0);
+      if (wi >= 0 && wi < W) wk[wi] += isDistanceSport ? (Number(s.distanceKm) || 0) : v3GetDurationMin(s);
     });
     wk.reverse();
     const maxW = Math.max.apply(null, wk.concat(0.1));
     const bars = wk.map((v, i) => `<span class="pv4-volbar${i === W - 1 ? ' current' : ''}" style="height:${Math.max(6, Math.round((v / maxW) * 100))}%"></span>`).join('');
 
-    const fmtKm = v => v.toFixed(v >= 10 ? 0 : 1).replace('.', ',');
-    const fmtPace = p => { let m = Math.floor(p); let s = Math.round((p - m) * 60); if (s >= 60) { m += 1; s = 0; } return m + ':' + String(s).padStart(2, '0'); };
-
-    // Dynamische Pro-Sport-Aggregation — ALLE Sportarten (nicht nur run/bike/swim)
-    const sportMeta = {
-      run:  { label: 'Laufen', icon: 'directions_run', metric: 'pace' },
-      bike: { label: 'Rad', icon: 'directions_bike', metric: 'speed' },
-      swim: { label: 'Schwimmen', icon: 'pool', metric: 'swim' },
-      hike: { label: 'Wandern', icon: 'hiking', metric: 'pace' },
-      row:  { label: 'Rudern', icon: 'rowing', metric: 'speed' },
-      other:{ label: 'Sonstiges', icon: 'exercise', metric: 'none' }
-    };
-    const metaFor = sp => sportMeta[sp] || { label: sp ? (sp.charAt(0).toUpperCase() + sp.slice(1)) : 'Cardio', icon: 'fitness_center', metric: 'none' };
-    const bySport = {};
-    cardio.forEach(s => {
-      const sp = normalize((s.activityType || 'other').toLowerCase()) || 'other';
-      const b = bySport[sp] || (bySport[sp] = { dist: 0, time: 0, n: 0, hrSum: 0, hrN: 0 });
-      b.dist += Number(s.distanceKm) || 0; b.time += v3GetDurationMin(s); b.n += 1;
-      if (s.avgHr) { b.hrSum += Number(s.avgHr); b.hrN += 1; }
-    });
-    const sportRows = Object.keys(bySport)
-      .sort((a, b) => (bySport[b].dist - bySport[a].dist) || (bySport[b].n - bySport[a].n))
-      .map(sp => {
-        const m = metaFor(sp); const b = bySport[sp]; const c = getSportColor(sp);
-        let metric;
-        if (m.metric === 'pace' && b.dist > 0) metric = fmtPace(b.time / b.dist) + ' /km';
-        else if (m.metric === 'speed' && b.time > 0) metric = (b.dist / (b.time / 60)).toFixed(1).replace('.', ',') + ' km/h';
-        else if (m.metric === 'swim' && b.dist > 0) metric = fmtPace(b.time / (b.dist * 10)) + ' /100m';
-        else metric = Math.round(b.time) + ' min';
-        const distPart = b.dist > 0 ? `${fmtKm(b.dist)} km` : `${Math.round(b.time)} min`;
-        const hr = b.hrN ? `<span class="pv4-endurance-hr"><span class="material-symbols-rounded">favorite</span>${Math.round(b.hrSum / b.hrN)}</span>` : '';
-        return `<div class="pv4-endurance-sport">
-          <span class="material-symbols-rounded" style="color:${c}">${m.icon}</span>
-          <span class="pv4-endurance-sport-name">${m.label}</span>
-          <span class="pv4-endurance-sport-val">${distPart} · ${b.n}× · ${metric}${hr}</span>
-        </div>`;
-      }).join('');
-
-    // HF-Zusammenfassung + Zonen-Dust-Reihe (Verteilung füllt sich später mit Garmin-Samples)
-    const hrSessions = cardio.filter(s => s.avgHr);
-    let hrBlock = '';
-    if (hrSessions.length) {
-      const avgHr = Math.round(hrSessions.reduce((a, s) => a + Number(s.avgHr), 0) / hrSessions.length);
-      const maxHr = cardio.reduce((a, s) => Math.max(a, Number(s.maxHr) || 0), 0);
-      const zoneDots = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5'].map((z, i) =>
-        `<span class="pv4-hrz"><span class="muscle-dust muscle-icon--sm hz-${i + 1}"></span><span class="pv4-hrz-l">${z}</span></span>`
-      ).join('');
-      hrBlock = `
-        <div class="pv4-endurance-hrsum">
-          <span class="pv4-hrsum-item"><span class="material-symbols-rounded">favorite</span>Ø ${avgHr} bpm</span>
-          ${maxHr ? `<span class="pv4-hrsum-item"><span class="material-symbols-rounded">cardiology</span>Max ${maxHr} bpm</span>` : ''}
-        </div>
-        <div class="pv4-hrzones">${zoneDots}</div>
-        <p class="pv4-lead pv4-muted pv4-vol-caption">HF-Zonen · Zeit-Verteilung folgt mit Garmin</p>`;
-    }
+    // Sport-Toggle (nur wenn >1 Sportart)
+    const idx = sports.indexOf(sel);
+    const toggle = sports.length > 1
+      ? `<div class="pv3-segmented-control endurance-sport-toggle" style="--seg-count:${sports.length};--active-idx:${idx}">
+          <div class="pv3-seg-indicator"></div>
+          ${sports.map(sp => `<button class="pv3-seg-btn${sp === sel ? ' active' : ''}" data-sport="${sp}">${pv4SportMeta(sp).label}</button>`).join('')}
+        </div>`
+      : '';
 
     return `
       <section class="pv3-card pv4-endurance-card">
         <div class="pv4-sec-head">
-          <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">directions_run</span>Ausdauer</div>
-          <span class="pv4-endurance-total">${fmtKm(totalDist)} km</span>
+          <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">${meta.icon}</span>${meta.label}</div>
+          <span class="pv4-endurance-total">${totalDisplay}</span>
         </div>
+        ${toggle}
         <div class="pv4-stat3 pv4-endurance-stats">
-          <div class="pv4-mini"><div class="v">${fmtKm(weeklyDist)} <small>km</small></div><div class="l">Ø /Woche</div></div>
-          <div class="pv4-mini"><div class="v">${paceStr}</div><div class="l">Ø Pace /km</div></div>
-          <div class="pv4-mini"><div class="v">${cardio.length}</div><div class="l">Einheiten</div></div>
+          <div class="pv4-mini"><div class="v">${weeklyVal} <small>${isDistanceSport ? 'km' : 'min'}</small></div><div class="l">Ø /Woche</div></div>
+          <div class="pv4-mini"><div class="v">${metricVal}</div><div class="l">${metricLabel}</div></div>
+          <div class="pv4-mini"><div class="v">${n}</div><div class="l">Einheiten</div></div>
         </div>
         <div class="pv4-volbars pv4-endurance-bars">${bars}</div>
-        <p class="pv4-lead pv4-muted pv4-vol-caption">Wöchentliche Distanz · letzte 8 Wochen</p>
-        ${sportRows ? `<div class="pv4-endurance-sports">${sportRows}</div>` : ''}
-        ${hrBlock}
+        <p class="pv4-lead pv4-muted pv4-vol-caption">${isDistanceSport ? 'Distanz' : 'Dauer'} · letzte 8 Wochen</p>
+      </section>`;
+  } catch (e) {
+    return '';
+  }
+}
+
+// Eigenständige HF-Karte: Ø/Max + Zonen-Dust (Verteilung folgt mit Garmin-Samples).
+function renderHeartRateCard(sessions) {
+  try {
+    const cardio = (sessions || []).filter(s => mapSessionType(s) === 'cardio');
+    const hr = cardio.filter(s => s.avgHr);
+    if (!hr.length) return '';
+    const avgHr = Math.round(hr.reduce((a, s) => a + Number(s.avgHr), 0) / hr.length);
+    const maxHr = cardio.reduce((a, s) => Math.max(a, Number(s.maxHr) || 0), 0);
+    const zoneDots = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5'].map((z, i) =>
+      `<span class="pv4-hrz"><span class="muscle-dust muscle-icon--sm hz-${i + 1}"></span><span class="pv4-hrz-l">${z}</span></span>`
+    ).join('');
+    return `
+      <section class="pv3-card pv4-hr-card">
+        <div class="pv4-sec-title" style="margin-bottom:0.7rem;"><span class="material-symbols-rounded">cardiology</span>Herzfrequenz</div>
+        <div class="pv4-hr-sum">
+          <span class="pv4-hrsum-item"><span class="material-symbols-rounded">favorite</span>Ø ${avgHr} bpm</span>
+          ${maxHr ? `<span class="pv4-hrsum-item"><span class="material-symbols-rounded">cardiology</span>Max ${maxHr} bpm</span>` : ''}
+        </div>
+        <div class="pv4-hrzones">${zoneDots}</div>
+        <p class="pv4-lead pv4-muted pv4-vol-caption">HF-Zonen · Zeit-Verteilung folgt mit Garmin</p>
       </section>`;
   } catch (e) {
     return '';
@@ -2098,23 +2106,36 @@ function initEnduranceSessionsChart(data) {
 }
 
 function rerenderEnduranceCard() {
-  const oldCard = document.querySelector('.endurance-card');
+  const oldCard = document.querySelector('.pv4-endurance-card');
   if (!oldCard) return;
 
   const days = v3PeriodDays(pv4Period);
   const sessions = v3SessionsInRange(days);
-  const newHTML = renderEnduranceCard(sessions);
-
   const tmp = document.createElement('div');
-  tmp.innerHTML = newHTML.trim();
+  tmp.innerHTML = renderEnduranceCard(sessions).trim();
   const newCard = tmp.firstElementChild;
   if (!newCard) return;
 
   oldCard.replaceWith(newCard);
+  attachEnduranceSportToggle();
+}
 
-  // Re-attach listeners + re-init Chart.js charts on the fresh DOM
-  attachEnduranceSportListeners();
-  initEnduranceCharts();
+// Per-sport toggle for the endurance card (run/bike/swim/…); swaps only that card.
+function attachEnduranceSportToggle() {
+  const toggle = document.querySelector('.endurance-sport-toggle');
+  if (!toggle) return;
+  toggle.querySelectorAll('.pv3-seg-btn').forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      const sport = btn.dataset.sport;
+      if (sport === pv4EnduranceSport) return;
+      pv4EnduranceSport = sport;
+      try { localStorage.setItem('enduranceSportKey', sport); } catch (e) {}
+      toggle.style.setProperty('--active-idx', idx);
+      toggle.querySelectorAll('.pv3-seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setTimeout(() => rerenderEnduranceCard(), 200);
+    });
+  });
 }
 
 function attachEnduranceSportListeners() {

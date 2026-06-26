@@ -980,3 +980,9 @@
 .pv4-hrz { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .pv4-hrz-l { font-size: 10px; font-weight: 600; color: var(--text-tertiary); }
 
+/* Endurance per-sport toggle */
+.endurance-sport-toggle { margin-bottom: 0.9rem; }
+
+/* Standalone heart-rate card summary */
+.pv4-hr-sum { display: flex; gap: 18px; }
+
