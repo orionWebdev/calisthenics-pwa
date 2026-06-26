@@ -565,14 +565,14 @@ let exerciseEquipment = [];
 function openMuscleGroupsBottomSheet() {
   const mn = getMuscleNames();
   const muscleOptions = [
-    { value: 'chest', label: mn.chest, description: t('exercise.muscleDescriptions.chest'), icon: getMuscleIconPath('chest') },
-    { value: 'back', label: mn.back, description: t('exercise.muscleDescriptions.back'), icon: getMuscleIconPath('back') },
-    { value: 'biceps', label: mn.biceps, description: t('exercise.muscleDescriptions.biceps'), icon: getMuscleIconPath('biceps') },
-    { value: 'triceps', label: mn.triceps, description: t('exercise.muscleDescriptions.triceps'), icon: getMuscleIconPath('triceps') },
-    { value: 'shoulders', label: mn.shoulders, description: t('exercise.muscleDescriptions.shoulders'), icon: getMuscleIconPath('shoulders') },
-    { value: 'core', label: mn.core, description: t('exercise.muscleDescriptions.core'), icon: getMuscleIconPath('core') },
-    { value: 'legs', label: mn.legs, description: t('exercise.muscleDescriptions.legs'), icon: getMuscleIconPath('legs') },
-    { value: 'full-body', label: mn['full-body'], description: t('exercise.muscleDescriptions.fullBody'), icon: getMuscleIconPath('full-body') }
+    { value: 'chest', label: mn.chest, description: t('exercise.muscleDescriptions.chest'), iconHtml: getMuscleIcon('chest', 'muscle-icon--lg') },
+    { value: 'back', label: mn.back, description: t('exercise.muscleDescriptions.back'), iconHtml: getMuscleIcon('back', 'muscle-icon--lg') },
+    { value: 'biceps', label: mn.biceps, description: t('exercise.muscleDescriptions.biceps'), iconHtml: getMuscleIcon('biceps', 'muscle-icon--lg') },
+    { value: 'triceps', label: mn.triceps, description: t('exercise.muscleDescriptions.triceps'), iconHtml: getMuscleIcon('triceps', 'muscle-icon--lg') },
+    { value: 'shoulders', label: mn.shoulders, description: t('exercise.muscleDescriptions.shoulders'), iconHtml: getMuscleIcon('shoulders', 'muscle-icon--lg') },
+    { value: 'core', label: mn.core, description: t('exercise.muscleDescriptions.core'), iconHtml: getMuscleIcon('core', 'muscle-icon--lg') },
+    { value: 'legs', label: mn.legs, description: t('exercise.muscleDescriptions.legs'), iconHtml: getMuscleIcon('legs', 'muscle-icon--lg') },
+    { value: 'full-body', label: mn['full-body'], description: t('exercise.muscleDescriptions.fullBody'), iconHtml: getMuscleIcon('full-body', 'muscle-icon--lg') }
   ];
 
   openBottomSheet({

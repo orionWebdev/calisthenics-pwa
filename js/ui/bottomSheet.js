@@ -178,9 +178,11 @@ function renderBottomSheetOptions(optionsToRender = null) {
     const isSelected = bottomSheetConfig.selectedValues.includes(option.value);
     const selectedText = typeof t === 'function' ? t('bottomSheet.selected') : 'selected';
     const ariaLabel = `${option.label}${option.description ? ', ' + option.description : ''}${isSelected ? ', ' + selectedText : ''}`;
-    const iconHtml = option.icon
-      ? `<span class="bottom-sheet-option-icon"><img src="${option.icon}" alt="" /></span>`
-      : '';
+    const iconHtml = option.iconHtml
+      ? `<span class="bottom-sheet-option-icon">${option.iconHtml}</span>`
+      : (option.icon
+        ? `<span class="bottom-sheet-option-icon"><img src="${option.icon}" alt="" /></span>`
+        : '');
     return `
       <button
         type="button"

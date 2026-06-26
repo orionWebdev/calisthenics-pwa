@@ -19,6 +19,7 @@
 @import "layout/navigation.css";
 @import "components/filters.css";
 @import "components/muscle-tags.css";
+@import "components/muscle-dust.css";
 @import "components/modal.css";
 @import "views/exercise-cards.css";
 @import "views/dashboard.css";

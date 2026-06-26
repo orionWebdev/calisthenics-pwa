@@ -33,38 +33,47 @@ function getMuscleIconPath(muscleKey) {
   return MUSCLE_ICON_PATHS[muscleKey] || MUSCLE_ICON_FALLBACK;
 }
 
-/**
- * Returns an <img> tag for the given muscle group key.
- * @param {string} muscleKey - One of: chest, back, shoulders, biceps, triceps, core, legs, calf, arms, full-body, cardio, mobility
- * @param {string} sizeClass - Optional size class: muscle-icon--sm, muscle-icon--md, muscle-icon--lg, muscle-icon--xl
- */
-function getMuscleIcon(muscleKey, sizeClass = '') {
-  const src = getMuscleIconPath(muscleKey);
-  return `<span class="muscle-icon ${sizeClass}"><img src="${src}" alt="${muscleKey}"></span>`;
+// Normalize a muscle key to its dust palette class suffix (handles aliases).
+function muscleDustKey(muscleKey) {
+  if (!muscleKey) return 'full-body';
+  return muscleKey === 'arms' ? 'biceps' : muscleKey;
 }
 
 /**
- * Returns the muscle icon for the first (primary) muscle group of an exercise.
- * Falls back to full-body if no muscle groups are set.
+ * Returns a "gradient dust" orb for a single muscle group (replaces the old PNG).
+ * Keeps the legacy `muscle-icon` class for layout compatibility.
+ * @param {string} muscleKey - chest, back, shoulders, biceps, triceps, core, legs, calf, arms, full-body, cardio, mobility
+ * @param {string} sizeClass - Optional size class: muscle-icon--sm/md/lg/xl/filter/xs
+ */
+function getMuscleIcon(muscleKey, sizeClass = '') {
+  const key = muscleDustKey(muscleKey);
+  return `<span class="muscle-icon muscle-dust ${sizeClass} m-${key}"></span>`;
+}
+
+/**
+ * Dust orb for an exercise — blends its primary muscle (+ optional secondary)
+ * colour into one foggy blob. Falls back to full-body if none are set.
  * @param {string[]} muscleGroups - Array of muscle group keys
  * @param {string} sizeClass - Optional size class
  */
 function getPrimaryMuscleIcon(muscleGroups, sizeClass = '') {
-  if (!muscleGroups || muscleGroups.length === 0) return getMuscleIcon('full-body', sizeClass);
-
-  // Map legacy 'arms' to 'biceps'
-  const primary = muscleGroups[0] === 'arms' ? 'biceps' : muscleGroups[0];
-  return getMuscleIcon(primary, sizeClass);
+  const groups = Array.isArray(muscleGroups) ? muscleGroups.filter(Boolean) : [];
+  if (groups.length === 0) {
+    return `<span class="muscle-icon muscle-dust ${sizeClass} m-full-body"></span>`;
+  }
+  const primary = muscleDustKey(groups[0]);
+  const secRaw = groups.find((g, i) => i > 0 && muscleDustKey(g) !== primary);
+  const secCls = secRaw ? ` s-${muscleDustKey(secRaw)}` : '';
+  return `<span class="muscle-icon muscle-dust ${sizeClass} m-${primary}${secCls}"></span>`;
 }
 
 /**
- * Returns all muscle icons for given muscle groups as a combined HTML string.
- * @param {string[]} muscleGroups - Array of muscle group keys
- * @param {string} sizeClass - Optional size class
+ * Row of small dust orbs for given muscle groups.
+ * @param {string[]} muscleGroups
+ * @param {string} sizeClass
  */
 function getMuscleIconsRow(muscleGroups, sizeClass = 'muscle-icon--sm') {
-  if (!muscleGroups || muscleGroups.length === 0) return getMuscleIcon('full-body', sizeClass);
-  return muscleGroups
-    .map(m => getMuscleIcon(m === 'arms' ? 'biceps' : m, sizeClass))
-    .join('');
+  const groups = Array.isArray(muscleGroups) ? muscleGroups.filter(Boolean) : [];
+  if (groups.length === 0) return getMuscleIcon('full-body', sizeClass);
+  return groups.map(m => getMuscleIcon(m, sizeClass)).join('');
 }

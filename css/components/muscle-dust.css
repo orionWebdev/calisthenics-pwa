@@ -1,0 +1,68 @@
+/* ========================================
+   MUSCLE-GROUP "GRADIENT DUST"
+   Soft, grainy nebula orbs that replace the old PNG muscle icons. Each group has
+   a signature 2-stop gradient; the orb blends primary (+ optional secondary)
+   colour into one foggy blob with an feTurbulence grain overlay. Asset-free.
+   The span keeps the legacy `.muscle-icon` class for layout compatibility.
+   ======================================== */
+.muscle-dust {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  border-radius: 50%;
+  --blur: 3px;
+}
+
+/* Colour mesh — primary (--c1/--c2) blended with optional secondary (--s1) */
+.muscle-dust::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 30%, var(--c2, #9aa3ad), transparent 52%),
+    radial-gradient(circle at 70% 68%, var(--s1, var(--c1, #5b626b)), transparent 56%),
+    radial-gradient(circle at 52% 50%, var(--c1, #5b626b), transparent 66%);
+  filter: blur(var(--blur));
+  -webkit-mask: radial-gradient(circle at 50% 50%, #000 30%, transparent 70%);
+          mask: radial-gradient(circle at 50% 50%, #000 30%, transparent 70%);
+}
+
+/* Film-grain / dust */
+.muscle-dust::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+  -webkit-mask: radial-gradient(circle at 50% 50%, #000 28%, transparent 66%);
+          mask: radial-gradient(circle at 50% 50%, #000 28%, transparent 66%);
+}
+
+/* Sizes — mapped onto the modifier classes already used across the app */
+.muscle-dust.muscle-icon--md { width: 52px; height: 52px; --blur: 3px; }
+.muscle-dust.muscle-icon--xl { width: 50px; height: 50px; --blur: 3px; }
+.muscle-dust.muscle-icon--lg { width: 34px; height: 34px; --blur: 2px; }
+.muscle-dust.muscle-icon--sm { width: 20px; height: 20px; --blur: 1.4px; }
+.muscle-dust.muscle-icon--filter { width: 16px; height: 16px; --blur: 1.2px; }
+.muscle-dust.muscle-icon--xs { width: 14px; height: 14px; --blur: 1px; }
+
+/* Palette: .m-<group> = primary gradient, .s-<group> = that group's colour as the
+   blended secondary (--s1). */
+.m-chest     { --c1: #E23744; --c2: #FF6B7A; }  .s-chest     { --s1: #E23744; }
+.m-back      { --c1: #2563EB; --c2: #67E8F9; }  .s-back      { --s1: #2563EB; }
+.m-shoulders { --c1: #D97706; --c2: #FBBF24; }  .s-shoulders { --s1: #D97706; }
+.m-legs      { --c1: #F97316; --c2: #FACC15; }  .s-legs      { --s1: #F97316; }
+.m-core      { --c1: #059669; --c2: #5EEAD4; }  .s-core      { --s1: #059669; }
+.m-biceps    { --c1: #7C3AED; --c2: #C4B5FD; }  .s-biceps    { --s1: #7C3AED; }
+.m-arms      { --c1: #7C3AED; --c2: #C4B5FD; }  .s-arms      { --s1: #7C3AED; }
+.m-triceps   { --c1: #C026D3; --c2: #F0ABFC; }  .s-triceps   { --s1: #C026D3; }
+.m-calf      { --c1: #0D9488; --c2: #5EEAD4; }  .s-calf      { --s1: #0D9488; }
+.m-cardio    { --c1: #E11D48; --c2: #FB7185; }  .s-cardio    { --s1: #E11D48; }
+.m-mobility  { --c1: #0891B2; --c2: #22D3EE; }  .s-mobility  { --s1: #0891B2; }
+.m-full-body { --c1: #C01963; --c2: #F02277; }  .s-full-body { --s1: #C01963; }
