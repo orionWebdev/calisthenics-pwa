@@ -1264,6 +1264,12 @@
       </div>
 
       <div class="modal-body space-y-4">
+        <!-- Import from file (.TCX/.GPX) — no Garmin API needed -->
+        <button type="button" onclick="triggerActivityImport()" class="workout-picker-create" style="margin-top:0;">
+          <span class="material-symbols-rounded">upload_file</span>
+          Aus Datei importieren (.TCX / .GPX)
+        </button>
+
         <!-- Date Picker -->
         <div>
           <label class="block text-sm font-medium mb-2">Datum *</label>
@@ -1828,6 +1834,7 @@
   <script src="js/views/sessions/stats.js"></script>
   <script src="js/views/sessions/training-character.js"></script>
   <script src="js/views/sessions/modals.js"></script>
+  <script src="js/views/sessions/import.js"></script>
   <script src="js/views/sessions/scoring.js"></script>
   <script src="js/views/sessions/queries.js"></script>
   <script src="js/views/progressv2.js"></script>

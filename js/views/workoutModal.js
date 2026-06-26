@@ -544,6 +544,8 @@ function openEditCardioSessionModal(sessionId) {
   const distanceKm = session.distanceKm || '';
   const notes = session.notes || '';
   const sessionName = session.name || '';
+  const avgHr = session.avgHr || '';
+  const maxHr = session.maxHr || '';
 
   const content = `
     <div class="session-edit-modal">
@@ -559,6 +561,14 @@ function openEditCardioSessionModal(sessionId) {
         <div class="session-edit-field">
           <label for="edit-cardio-distance">${trEdit('common.distance')} (km)</label>
           <input type="number" id="edit-cardio-distance" value="${distanceKm}" min="0" max="500" step="0.1" />
+        </div>
+        <div class="session-edit-field">
+          <label for="edit-cardio-avg-hr">Ø-Herzfrequenz (bpm, ${trEdit('common.optional')})</label>
+          <input type="number" id="edit-cardio-avg-hr" value="${avgHr}" min="0" max="250" step="1" inputmode="numeric" placeholder="bpm" />
+        </div>
+        <div class="session-edit-field">
+          <label for="edit-cardio-max-hr">Max-Herzfrequenz (bpm, ${trEdit('common.optional')})</label>
+          <input type="number" id="edit-cardio-max-hr" value="${maxHr}" min="0" max="250" step="1" inputmode="numeric" placeholder="bpm" />
         </div>
         <div class="session-edit-field">
           <label for="edit-cardio-notes">${trEdit('common.notes')} (${trEdit('common.optional')})</label>
@@ -596,9 +606,16 @@ async function saveCardioSessionEdit(event, sessionId) {
   const feelingInput = document.getElementById('edit-cardio-feeling');
   const rpeInput = document.getElementById('edit-cardio-rpe');
 
+  const avgHrInput = document.getElementById('edit-cardio-avg-hr');
+  const maxHrInput = document.getElementById('edit-cardio-max-hr');
+
   const sessionName = nameInput?.value?.trim() || '';
   const duration = parseInt(durationInput?.value || '0', 10);
   const distanceKm = parseFloat(distanceInput?.value || '0') || null;
+  const avgHrRaw = parseInt(avgHrInput?.value, 10);
+  const maxHrRaw = parseInt(maxHrInput?.value, 10);
+  const avgHr = Number.isFinite(avgHrRaw) && avgHrRaw > 0 ? avgHrRaw : null;
+  const maxHr = Number.isFinite(maxHrRaw) && maxHrRaw > 0 ? maxHrRaw : null;
   const notes = notesInput?.value?.trim() || '';
   const preWorkoutEnergy = parseInt(energyInput?.value) || null;
   const postWorkoutFeeling = parseInt(feelingInput?.value) || null;
@@ -617,6 +634,8 @@ async function saveCardioSessionEdit(event, sessionId) {
       durationSec: duration * 60,
       name: sessionName || null,
       notes: notes,
+      avgHr: avgHr,
+      maxHr: maxHr,
       preWorkoutEnergy: preWorkoutEnergy,
       postWorkoutFeeling: postWorkoutFeeling,
       rpe: rpe
