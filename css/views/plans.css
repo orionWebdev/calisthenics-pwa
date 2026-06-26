@@ -145,6 +145,21 @@
   border-radius: 5px;
 }
 
+/* Gradient-dust orb (replaces the plan icon) + muscle distribution dots */
+.plan-grid-card-dust {
+  width: 38px;
+  height: 38px;
+}
+.plan-grid-card-dots {
+  display: flex;
+  gap: 4px;
+  margin-top: 0.4rem;
+}
+.plan-grid-card-dots .muscle-dust {
+  width: 12px;
+  height: 12px;
+}
+
 .plan-grid-card-type {
   font-size: 0.6875rem;
   font-weight: var(--font-weight-bold);

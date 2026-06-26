@@ -73,3 +73,7 @@
 .hz-3 { --c1: #059669; --c2: #34D399; }
 .hz-4 { --c1: #EA580C; --c2: #FB923C; }
 .hz-5 { --c1: #DC2626; --c2: #F87171; }
+
+/* Plan type colours (for the plan-card dust orb): cardio = blue, recovery = teal */
+.pt-cardio   { --c1: #2563EB; --c2: #60A5FA; }
+.pt-recovery { --c1: #0D9488; --c2: #2DD4BF; }

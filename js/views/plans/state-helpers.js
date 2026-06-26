@@ -212,6 +212,44 @@ function renderPlanIconMarkup(plan, fallbackType, extraClass = '') {
   return `<span class="material-symbols-rounded${className}">${icon.value}</span>`;
 }
 
+// Muscle groups a plan targets, ordered by frequency (primary muscles weighted).
+function getPlanMuscleFocus(plan) {
+  const items = typeof getPlanItems === 'function' ? getPlanItems(plan) : (plan.items || plan.exercises || []);
+  const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
+  const counts = {};
+  items.forEach(it => {
+    const id = it && (it.exerciseId || it.id) || it;
+    const ex = exercises.find(e => e.id === id);
+    ((ex && ex.muscleGroups) || []).forEach((m, idx) => {
+      const k = m === 'arms' ? 'biceps' : m;
+      counts[k] = (counts[k] || 0) + (idx === 0 ? 2 : 1);
+    });
+  });
+  return Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+}
+
+// Plan-card dust orb: muscle blend for strength, type colour for cardio/recovery.
+function renderPlanDustMarkup(plan, planType) {
+  let cls;
+  if (planType === 'cardio') cls = 'pt-cardio';
+  else if (planType === 'recovery' || planType === 'mobility') cls = 'pt-recovery';
+  else {
+    const focus = getPlanMuscleFocus(plan);
+    const primary = focus[0] || 'full-body';
+    const sec = (focus[1] && focus[1] !== focus[0]) ? ' s-' + focus[1] : '';
+    cls = 'm-' + primary + sec;
+  }
+  return `<span class="plan-grid-card-dust muscle-dust ${cls}"></span>`;
+}
+
+// Small distribution dots under the title (strength plans only).
+function renderPlanMuscleDots(plan, planType) {
+  if (planType !== 'strength' && planType !== 'bodyweight') return '';
+  const focus = getPlanMuscleFocus(plan).slice(0, 3);
+  if (!focus.length) return '';
+  return `<div class="plan-grid-card-dots">${focus.map(m => `<span class="muscle-dust m-${m}"></span>`).join('')}</div>`;
+}
+
 function getPlanCardioGoalType(plan) {
   const raw = (plan.cardioGoalType || plan.cardioGoal || plan.goal || '').toString().toLowerCase().trim();
   if (!raw) return '';

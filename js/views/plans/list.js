@@ -48,12 +48,13 @@ function renderPlans() {
       .filter(Boolean)
       .map(m => `<span class="plan-grid-card-chip">${m}</span>`)
       .join('');
-    const iconMarkup = renderPlanIconMarkup(plan, planType);
+    const iconMarkup = renderPlanDustMarkup(plan, planType);
+    const muscleDots = renderPlanMuscleDots(plan, planType);
 
     return `
       <div class="plan-grid-card plan-grid-card--${planType}" onclick="viewPlanDetails('${plan.id}')">
         <div class="plan-grid-card-accent">
-          <span class="plan-grid-card-icon">${iconMarkup}</span>
+          ${iconMarkup}
           <span class="plan-grid-card-type">${typeLabel}</span>
           <button
             type="button"
@@ -68,6 +69,7 @@ function renderPlans() {
         <div class="plan-grid-card-body">
           <div class="plan-grid-card-title">${plan.name}</div>
           <div class="plan-grid-card-meta">${chips}</div>
+          ${muscleDots}
         </div>
         <button
           type="button"
