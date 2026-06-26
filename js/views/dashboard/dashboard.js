@@ -337,9 +337,6 @@ function renderScheduledWorkoutsCard(state) {
     <div class="dashboard-scheduled-widget">
       <div class="dashboard-scheduled-header">
         <span class="dashboard-scheduled-title">${tr('dashboard.scheduled.title')}</span>
-        <button class="dashboard-scheduled-cal-link" type="button" onclick="document.getElementById('dashboard-calendar')?.scrollIntoView({behavior:'smooth',block:'center'})">
-          ${tr('nav.calendar')}<span class="material-symbols-rounded">chevron_right</span>
-        </button>
       </div>
       <div class="dashboard-scheduled-list">
         ${items}

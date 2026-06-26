@@ -316,16 +316,17 @@
 
 .form-hero-center {
   position: absolute;
-  inset: 0;
+  /* Inset the centre so the score/zone don't butt up against the ring */
+  inset: 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 
 .form-hero-score {
-  font-size: 2.75rem;
+  font-size: 2.5rem;
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
   line-height: 1;

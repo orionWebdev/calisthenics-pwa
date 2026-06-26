@@ -1104,6 +1104,10 @@ function renderDashboardCalendar() {
 
 function dashCalSelect(ds) {
   dashCalSelected = ds;
+  // Quick-Add (openQuickAddSheet/saveQuickAddEntry) writes to the shared
+  // `selectedDate`. Sync it so a training planned from the dashboard lands on the
+  // day the user actually tapped, not always today.
+  selectedDate = ds;
   // Keep the visible week & month anchored on the picked day
   const sd = dashCalDateFromKey(ds);
   dashCalWeekStart = dashCalStartOfWeek(sd);
