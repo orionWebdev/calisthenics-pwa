@@ -107,6 +107,12 @@ async function checkAllowlist(uid, email) {
 
     return !emailQuery.empty;
   } catch (error) {
+    // Offline-first: don't lock out a previously-signed-in user when the allowlist
+    // can't be verified offline — trust the cached session (it was verified before).
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      console.warn('⚠️ Allowlist check skipped (offline) — trusting cached session');
+      return true;
+    }
     console.error('❌ Allowlist check failed:', error);
     throw error;
   }

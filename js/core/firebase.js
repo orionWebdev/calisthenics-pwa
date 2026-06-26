@@ -18,6 +18,17 @@ firebase.initializeApp(firebaseConfig);
 // Firestore Datenbank Referenz
 const db = firebase.firestore();
 
+// Offline-first: cache reads/writes locally and auto-sync on reconnect. Single
+// Capacitor WebView → synchronizeTabs harmless. Failures (multi-tab / unsupported
+// browser) degrade gracefully to online-only.
+try {
+  db.enablePersistence({ synchronizeTabs: true }).catch(function (err) {
+    console.warn('Firestore offline persistence not enabled:', err && err.code);
+  });
+} catch (e) {
+  console.warn('Firestore offline persistence threw:', e);
+}
+
 // Collections (unsere "Tabellen")
 const exercisesCuratedCollection = db.collection('exercises_curated');
 const exercisesCollection = db.collection('exercises');

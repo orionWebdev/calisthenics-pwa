@@ -51,11 +51,13 @@ the shared plan/context (local `~/.claude` memory does NOT travel to the cloud).
   implement + deploy the Cloud Function (`garmin`) per **GARMIN.md** (OAuth 1.0a +
   webhook + activities), set `GARMIN_BACKEND`. Blaze approved.
 
-### #3 Offline-first (NEXT)
-- App currently won't boot offline (Firebase SDK from CDN). Plan: bundle Firebase
-  SDK locally so the shell boots offline + enable Firestore offline persistence so
-  workouts/exercises record locally and sync on reconnect. Decisions pending
-  (auth offline behaviour, how far persistence goes).
+### #3 Offline-first — DONE
+- Firebase SDK bundled locally (`assets/vendor/firebase/*-compat.js`, was CDN) so
+  the app boots offline. Firestore offline persistence enabled
+  (`db.enablePersistence`, firebase.js) → reads/writes work offline + auto-sync on
+  reconnect. checkAllowlist (auth.js) tolerates offline (won't sign out a cached
+  user). Test: log in once online, then airplane mode → boots, can record, syncs
+  back online.
 
 ### Backlog
 - Extend gradient-dust to **plan cards**. Premium-gate `googleCalendarService`.
