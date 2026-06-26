@@ -41,6 +41,16 @@ the shared plan/context (local `~/.claude` memory does NOT travel to the cloud).
   muscle dust orb + set badges; recovery (`openRecoveryDetailModal`) matches.
   Mockup ref: `design-system/screens/session-detail-mockup.png`.
 
+### Garmin integration (IN PROGRESS — see GARMIN.md)
+- DONE (ungated): `computeHrZones(hrSamples, maxHr)` → the cardio detail's zone-dust
+  orbs fill from `session.hrSamples` (demo run seeded with samples). Client contract
+  refined in `js/services/garminService.js` (connect/sync/fetchActivities +
+  `mapActivityToSession` + pre-computed hrZones), premium-gated, talks to a backend
+  base URL `window.GARMIN_BACKEND`.
+- GATED (Christian): apply for Garmin Developer access (Consumer Key/Secret), then
+  implement + deploy the Cloud Function (`garmin`) per **GARMIN.md** (OAuth 1.0a +
+  webhook + activities), set `GARMIN_BACKEND`. Blaze approved.
+
 ### #3 Offline-first (NEXT)
 - App currently won't boot offline (Firebase SDK from CDN). Plan: bundle Firebase
   SDK locally so the shell boots offline + enable Firestore offline persistence so
