@@ -1508,7 +1508,7 @@ function getSportColor(sport) {
 // optisch distinkt von den dünnen Progressions-Zeilen.
 function renderEnduranceCard(sessions) {
   try {
-    const normalize = t => ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim' })[t] || t;
+    const normalize = t => ({ running: 'run', laufen: 'run', cycling: 'bike', radfahren: 'bike', swimming: 'swim', schwimmen: 'swim', rowing: 'row', rudern: 'row', hiking: 'hike', walking: 'hike', wandern: 'hike' })[t] || t;
     const cardio = (sessions || []).filter(s => mapSessionType(s) === 'cardio');
     if (!cardio.length) return '';
 
@@ -1543,15 +1543,60 @@ function renderEnduranceCard(sessions) {
     const bars = wk.map((v, i) => `<span class="pv4-volbar${i === W - 1 ? ' current' : ''}" style="height:${Math.max(6, Math.round((v / maxW) * 100))}%"></span>`).join('');
 
     const fmtKm = v => v.toFixed(v >= 10 ? 0 : 1).replace('.', ',');
+    const fmtPace = p => { let m = Math.floor(p); let s = Math.round((p - m) * 60); if (s >= 60) { m += 1; s = 0; } return m + ':' + String(s).padStart(2, '0'); };
 
-    // Pro-Sport-Kurzzeile (Distanz · Einheiten)
-    const sportMeta = { run: { label: 'Laufen', icon: 'directions_run' }, bike: { label: 'Rad', icon: 'directions_bike' }, swim: { label: 'Schwimmen', icon: 'pool' } };
+    // Dynamische Pro-Sport-Aggregation — ALLE Sportarten (nicht nur run/bike/swim)
+    const sportMeta = {
+      run:  { label: 'Laufen', icon: 'directions_run', metric: 'pace' },
+      bike: { label: 'Rad', icon: 'directions_bike', metric: 'speed' },
+      swim: { label: 'Schwimmen', icon: 'pool', metric: 'swim' },
+      hike: { label: 'Wandern', icon: 'hiking', metric: 'pace' },
+      row:  { label: 'Rudern', icon: 'rowing', metric: 'speed' },
+      other:{ label: 'Sonstiges', icon: 'exercise', metric: 'none' }
+    };
+    const metaFor = sp => sportMeta[sp] || { label: sp ? (sp.charAt(0).toUpperCase() + sp.slice(1)) : 'Cardio', icon: 'fitness_center', metric: 'none' };
     const bySport = {};
-    cardio.forEach(s => { const sp = normalize((s.activityType || '').toLowerCase()); if (!sportMeta[sp]) return; (bySport[sp] = bySport[sp] || { dist: 0, n: 0 }); bySport[sp].dist += (Number(s.distanceKm) || 0); bySport[sp].n += 1; });
-    const sportRows = Object.keys(bySport).map(sp => {
-      const c = getSportColor(sp);
-      return `<div class="pv4-endurance-sport"><span class="material-symbols-rounded" style="color:${c}">${sportMeta[sp].icon}</span><span class="pv4-endurance-sport-name">${sportMeta[sp].label}</span><span class="pv4-endurance-sport-val">${fmtKm(bySport[sp].dist)} km · ${bySport[sp].n}×</span></div>`;
-    }).join('');
+    cardio.forEach(s => {
+      const sp = normalize((s.activityType || 'other').toLowerCase()) || 'other';
+      const b = bySport[sp] || (bySport[sp] = { dist: 0, time: 0, n: 0, hrSum: 0, hrN: 0 });
+      b.dist += Number(s.distanceKm) || 0; b.time += v3GetDurationMin(s); b.n += 1;
+      if (s.avgHr) { b.hrSum += Number(s.avgHr); b.hrN += 1; }
+    });
+    const sportRows = Object.keys(bySport)
+      .sort((a, b) => (bySport[b].dist - bySport[a].dist) || (bySport[b].n - bySport[a].n))
+      .map(sp => {
+        const m = metaFor(sp); const b = bySport[sp]; const c = getSportColor(sp);
+        let metric;
+        if (m.metric === 'pace' && b.dist > 0) metric = fmtPace(b.time / b.dist) + ' /km';
+        else if (m.metric === 'speed' && b.time > 0) metric = (b.dist / (b.time / 60)).toFixed(1).replace('.', ',') + ' km/h';
+        else if (m.metric === 'swim' && b.dist > 0) metric = fmtPace(b.time / (b.dist * 10)) + ' /100m';
+        else metric = Math.round(b.time) + ' min';
+        const distPart = b.dist > 0 ? `${fmtKm(b.dist)} km` : `${Math.round(b.time)} min`;
+        const hr = b.hrN ? `<span class="pv4-endurance-hr"><span class="material-symbols-rounded">favorite</span>${Math.round(b.hrSum / b.hrN)}</span>` : '';
+        return `<div class="pv4-endurance-sport">
+          <span class="material-symbols-rounded" style="color:${c}">${m.icon}</span>
+          <span class="pv4-endurance-sport-name">${m.label}</span>
+          <span class="pv4-endurance-sport-val">${distPart} · ${b.n}× · ${metric}${hr}</span>
+        </div>`;
+      }).join('');
+
+    // HF-Zusammenfassung + Zonen-Dust-Reihe (Verteilung füllt sich später mit Garmin-Samples)
+    const hrSessions = cardio.filter(s => s.avgHr);
+    let hrBlock = '';
+    if (hrSessions.length) {
+      const avgHr = Math.round(hrSessions.reduce((a, s) => a + Number(s.avgHr), 0) / hrSessions.length);
+      const maxHr = cardio.reduce((a, s) => Math.max(a, Number(s.maxHr) || 0), 0);
+      const zoneDots = ['Z1', 'Z2', 'Z3', 'Z4', 'Z5'].map((z, i) =>
+        `<span class="pv4-hrz"><span class="muscle-dust muscle-icon--sm hz-${i + 1}"></span><span class="pv4-hrz-l">${z}</span></span>`
+      ).join('');
+      hrBlock = `
+        <div class="pv4-endurance-hrsum">
+          <span class="pv4-hrsum-item"><span class="material-symbols-rounded">favorite</span>Ø ${avgHr} bpm</span>
+          ${maxHr ? `<span class="pv4-hrsum-item"><span class="material-symbols-rounded">cardiology</span>Max ${maxHr} bpm</span>` : ''}
+        </div>
+        <div class="pv4-hrzones">${zoneDots}</div>
+        <p class="pv4-lead pv4-muted pv4-vol-caption">HF-Zonen · Zeit-Verteilung folgt mit Garmin</p>`;
+    }
 
     return `
       <section class="pv3-card pv4-endurance-card">
@@ -1567,6 +1612,7 @@ function renderEnduranceCard(sessions) {
         <div class="pv4-volbars pv4-endurance-bars">${bars}</div>
         <p class="pv4-lead pv4-muted pv4-vol-caption">Wöchentliche Distanz · letzte 8 Wochen</p>
         ${sportRows ? `<div class="pv4-endurance-sports">${sportRows}</div>` : ''}
+        ${hrBlock}
       </section>`;
   } catch (e) {
     return '';

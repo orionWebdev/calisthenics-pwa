@@ -66,3 +66,10 @@
 .m-cardio    { --c1: #E11D48; --c2: #FB7185; }  .s-cardio    { --s1: #E11D48; }
 .m-mobility  { --c1: #0891B2; --c2: #22D3EE; }  .s-mobility  { --s1: #0891B2; }
 .m-full-body { --c1: #C01963; --c2: #F02277; }  .s-full-body { --s1: #C01963; }
+
+/* HR zones (reuse the dust orb): Z1 recovery → Z5 max */
+.hz-1 { --c1: #64748B; --c2: #94A3B8; }
+.hz-2 { --c1: #2563EB; --c2: #60A5FA; }
+.hz-3 { --c1: #059669; --c2: #34D399; }
+.hz-4 { --c1: #EA580C; --c2: #FB923C; }
+.hz-5 { --c1: #DC2626; --c2: #F87171; }

@@ -954,5 +954,29 @@
 }
 .pv4-endurance-sport .material-symbols-rounded { font-size: 18px; }
 .pv4-endurance-sport-name { color: var(--text-primary); font-weight: 600; }
-.pv4-endurance-sport-val { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.pv4-endurance-sport-val { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pv4-endurance-hr { display: inline-flex; align-items: center; gap: 2px; margin-left: 6px; color: #fb7185; }
+.pv4-endurance-hr .material-symbols-rounded { font-size: 13px; color: #fb7185; }
+
+/* HR summary + zone dust row */
+.pv4-endurance-hrsum {
+  display: flex;
+  gap: 16px;
+  margin-top: 0.9rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--ui-card-border);
+}
+.pv4-hrsum-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.pv4-hrsum-item .material-symbols-rounded { font-size: 16px; color: #fb7185; }
+.pv4-hrzones { display: flex; justify-content: space-between; gap: 6px; margin-top: 0.7rem; }
+.pv4-hrz { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.pv4-hrz-l { font-size: 10px; font-weight: 600; color: var(--text-tertiary); }
 

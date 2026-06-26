@@ -108,6 +108,10 @@ async function saveCardioSession() {
   const sessionName = document.getElementById('cardio-name').value.trim();
   const duration = parseFloat(document.getElementById('cardio-duration').value);
   const distance = parseFloat(document.getElementById('cardio-distance').value);
+  const avgHrRaw = parseInt(document.getElementById('cardio-avg-hr')?.value, 10);
+  const maxHrRaw = parseInt(document.getElementById('cardio-max-hr')?.value, 10);
+  const avgHr = Number.isFinite(avgHrRaw) && avgHrRaw > 0 ? avgHrRaw : null;
+  const maxHr = Number.isFinite(maxHrRaw) && maxHrRaw > 0 ? maxHrRaw : null;
   const notes = document.getElementById('cardio-notes').value.trim();
 
   // Validation
@@ -141,6 +145,8 @@ async function saveCardioSession() {
       duration,
       distanceKm: distance || null,
       pace: pace,
+      avgHr,
+      maxHr,
       notes: notes || null,
       createdAt: firebase.firestore.Timestamp.now()
     };

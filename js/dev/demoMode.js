@@ -58,7 +58,15 @@
     });
     var cdt = daysAgo(week * 7 + 6);
     var dist = Math.round((5 + prog * 0.25) * 10) / 10;
-    sessions.push({ id: 'demo' + (sid++), type: 'cardio', activityType: 'running', date: iso(cdt), createdAt: iso(cdt), distanceKm: dist, durationSec: Math.round(dist * (5.6 - prog * 0.03) * 60) });
+    sessions.push({ id: 'demo' + (sid++), type: 'cardio', activityType: 'running', date: iso(cdt), createdAt: iso(cdt), distanceKm: dist, durationSec: Math.round(dist * (5.6 - prog * 0.03) * 60), avgHr: 148 + (week % 4) * 3, maxHr: 172 + (week % 3) * 4 });
+    if (week % 2 === 1) {
+      var bdt = daysAgo(week * 7 + 3);
+      sessions.push({ id: 'demo' + (sid++), type: 'cardio', activityType: 'cycling', date: iso(bdt), createdAt: iso(bdt), distanceKm: 22 + (week % 3) * 4, durationSec: (55 + (week % 2) * 10) * 60, avgHr: 132 + (week % 3) * 4 });
+    }
+    if (week === 1) {
+      var wdt = daysAgo(week * 7 + 4);
+      sessions.push({ id: 'demo' + (sid++), type: 'cardio', activityType: 'rowing', date: iso(wdt), createdAt: iso(wdt), distanceKm: 8, durationSec: 35 * 60, avgHr: 150 });
+    }
     if (week % 2 === 0) {
       var rdt = daysAgo(week * 7 + 2);
       sessions.push({ id: 'demo' + (sid++), type: 'recovery', activityType: 'mobility', date: iso(rdt), createdAt: iso(rdt), durationSec: 20 * 60 });
