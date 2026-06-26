@@ -825,33 +825,22 @@ function openRecoveryDetailModal(session) {
   const activity = RECOVERY_TYPES?.[session.activityType]?.name || trProgress('common.recovery');
   const titleName = session.name || activity;
 
+  const durMin = Number(session.duration) || (Number(session.durationSec) ? Number(session.durationSec) / 60 : 0);
   const content = `
-    <div class="workout-detail-modal">
-      <div class="workout-detail-header">
-        <div class="workout-type-badge type-recovery">${trProgress('common.recovery')}</div>
-        <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
-          ${formatDateLongText(date)}
+    <div class="sd" style="--sd-accent:#0D948833;--sd-grad:linear-gradient(135deg,#0D9488,#2DD4BF)">
+      <div class="sd-hero">
+        <div class="sd-hero-top">
+          <div class="sd-hero-ic"><span class="material-symbols-rounded">${getSessionIcon(session)}</span></div>
+          <div class="sd-hero-meta"><div class="n">${activity}</div><div class="d">${formatDateLongText(date)}</div></div>
         </div>
+        <div class="sd-hero-big">${Math.round(durMin)}<small>min</small></div>
       </div>
-      <div class="workout-stats-grid">
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">schedule</span>
-          <div class="workout-stat-value">${duration}</div>
-          <div class="workout-stat-label">${trProgress('progress.overview.stats.totalTime')}</div>
-        </div>
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">${getSessionIcon(session)}</span>
-          <div class="workout-stat-value">${activity}</div>
-          <div class="workout-stat-label">Aktivität</div>
-        </div>
+      <div class="sd-grid">
+        <div class="sd-tile"><div class="v">${duration}</div><div class="l"><span class="material-symbols-rounded">schedule</span>Dauer</div></div>
+        <div class="sd-tile"><div class="v">${activity}</div><div class="l"><span class="material-symbols-rounded">self_improvement</span>Aktivität</div></div>
       </div>
       ${renderRpeFeedbackSection(session)}
-      ${session.notes ? `
-        <div class="workout-exercises">
-          <h4 class="workout-section-title">${trProgress('common.notes')}</h4>
-          <p class="text-sm text-gray-300">${session.notes}</p>
-        </div>
-      ` : ''}
+      ${session.notes ? `<div class="sd-card"><div class="sd-sec-t"><span class="material-symbols-rounded">notes</span>${trProgress('common.notes')}</div><p class="sd-note">${session.notes}</p></div>` : ''}
       <div class="workout-modal-actions">
         <button onclick="openEditRecoverySessionModal('${session.id}')" class="btn-edit">
           <span class="material-symbols-rounded">settings</span>

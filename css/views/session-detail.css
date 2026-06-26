@@ -76,3 +76,17 @@
 .sd-map span { font-size: 12px; }
 
 .sd-note { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+/* Strength: exercise list with a muscle dust orb per exercise */
+.sd-ex { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
+.sd-ex + .sd-ex { border-top: 1px solid var(--ui-card-border); }
+.sd-ex-info { flex: 1; min-width: 0; }
+.sd-ex-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.sd-ex-sets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+.sd-set {
+  font-size: 11px; color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 8px; padding: 2px 7px;
+  font-variant-numeric: tabular-nums;
+}

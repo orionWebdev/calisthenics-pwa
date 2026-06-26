@@ -15,49 +15,34 @@ function openWorkoutDetailModal(sessionId) {
   const date = session.date?.toDate ? session.date.toDate() : new Date(session.date);
   const totalSets = calculateTotalSets(session);
   const totalVolume = calculateTotalVolume(session);
+  const exCount = session.exercises?.length || 0;
+  const durMin = Number(session.duration) || (Number(session.durationSec) ? Number(session.durationSec) / 60 : 0);
+  const titleName = session.planName || 'Workout';
+  const durBig = durMin >= 60
+    ? `${Math.floor(durMin / 60)}:${String(Math.round(durMin % 60)).padStart(2, '0')}<small>h</small>`
+    : `${Math.round(durMin)}<small>min</small>`;
+  const volTxt = totalVolume >= 1000 ? `${(totalVolume / 1000).toFixed(1).replace('.', ',')}<small>k</small>` : `${totalVolume}`;
+
+  const tile = (v, l, ic) => `<div class="sd-tile"><div class="v">${v}</div><div class="l">${ic ? `<span class="material-symbols-rounded">${ic}</span>` : ''}${l}</div></div>`;
+  let tiles = tile(exCount, t('workoutModal.exercises'), 'fitness_center') + tile(totalSets, t('workoutModal.sets'), 'repeat');
+  if (totalVolume) tiles += tile(volTxt, 'Volumen', 'monitoring');
 
   const modalContent = `
-    <div class="workout-detail-modal">
-      <!-- Header -->
-      <div class="workout-detail-header">
-        <div class="workout-type-badge type-strength">${t('common.strength')}</div>
-        <div class="workout-date">${formatFullDate(date)}</div>
+    <div class="sd" style="--sd-accent:#C0196333;--sd-grad:linear-gradient(135deg,#C01963,#F02277)">
+      <div class="sd-hero">
+        <div class="sd-hero-top">
+          <div class="sd-hero-ic"><span class="material-symbols-rounded">exercise</span></div>
+          <div class="sd-hero-meta"><div class="n">${titleName}</div><div class="d">${formatFullDate(date)}</div></div>
+        </div>
+        <div class="sd-hero-big">${durBig}</div>
       </div>
-
-      <!-- Stats (compact inline row) -->
-      <div class="workout-stats-row">
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">schedule</span>
-          <span class="workout-stat-value">${session.duration || '-'}</span>
-          <span class="workout-stat-label">${t('common.minutes')}</span>
-        </div>
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">fitness_center</span>
-          <span class="workout-stat-value">${session.exercises?.length || 0}</span>
-          <span class="workout-stat-label">${t('workoutModal.exercises')}</span>
-        </div>
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">repeat</span>
-          <span class="workout-stat-value">${totalSets}</span>
-          <span class="workout-stat-label">${t('workoutModal.sets')}</span>
-        </div>
+      <div class="sd-grid">${tiles}</div>
+      <div class="sd-card">
+        <div class="sd-sec-t"><span class="material-symbols-rounded">list</span>${t('workoutModal.exercises')}</div>
+        ${renderSdWorkoutExercises(session)}
       </div>
-
-      <!-- Exercises List -->
-      <div class="workout-exercises">
-        <h4 class="workout-section-title">${t('workoutModal.exercises')}</h4>
-        ${renderWorkoutExercises(session)}
-      </div>
-
-      <!-- Notes -->
-      ${session.notes ? `
-        <div class="workout-notes">
-          <h4 class="workout-section-title">${t('common.notes')}</h4>
-          <p class="workout-notes-text">${session.notes}</p>
-        </div>
-      ` : ''}
-
-      <!-- Actions -->
+      ${typeof renderRpeFeedbackSection === 'function' ? renderRpeFeedbackSection(session) : ''}
+      ${session.notes ? `<div class="sd-card"><div class="sd-sec-t"><span class="material-symbols-rounded">notes</span>${t('common.notes')}</div><p class="sd-note">${session.notes}</p></div>` : ''}
       <div class="workout-modal-actions">
         <button onclick="openEditStrengthSessionModal('${session.id}')" class="btn-edit">
           <span class="material-symbols-rounded">settings</span>
@@ -71,7 +56,30 @@ function openWorkoutDetailModal(sessionId) {
     </div>
   `;
 
-  openGenericModal(session.planName || 'Workout Details', modalContent);
+  openGenericModal(titleName, modalContent);
+}
+
+// Exercise list for the strength detail — a muscle dust orb per exercise + sets.
+function renderSdWorkoutExercises(session) {
+  if (!session.exercises || session.exercises.length === 0) {
+    return `<p class="sd-note">${t('workoutModal.noExercises')}</p>`;
+  }
+  const unit = typeof getWeightUnit === 'function' ? getWeightUnit() : 'kg';
+  return session.exercises.map(ex => {
+    const exercise = (typeof allExercises !== 'undefined' ? allExercises : []).find(e => e.id === ex.exerciseId);
+    const name = (typeof getExerciseName === 'function' && exercise ? getExerciseName(exercise) : exercise?.name) || ex.exerciseName || ex.exerciseId || t('workoutModal.exercise');
+    const orb = typeof getPrimaryMuscleIcon === 'function' ? getPrimaryMuscleIcon(exercise?.muscleGroups || [], 'muscle-icon--lg') : '';
+    const sets = (ex.sets && ex.sets.length)
+      ? ex.sets.map(set => {
+          let label;
+          if (set.type === 'cardio') label = `${set.duration || 0} min${set.distance ? ` · ${set.distance} km` : ''}`;
+          else if (set.holdSec) label = `${set.holdSec}s`;
+          else label = `${set.reps || 0}×${set.weight ? ` ${set.weight} ${unit}` : ''}`;
+          return `<span class="sd-set">${label}</span>`;
+        }).join('')
+      : `<span class="sd-set">${t('workoutModal.noSets')}</span>`;
+    return `<div class="sd-ex">${orb}<div class="sd-ex-info"><div class="sd-ex-name">${name}</div><div class="sd-ex-sets">${sets}</div></div></div>`;
+  }).join('');
 }
 
 /**
