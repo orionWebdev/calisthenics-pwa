@@ -58,7 +58,19 @@
     });
     var cdt = daysAgo(week * 7 + 6);
     var dist = Math.round((5 + prog * 0.25) * 10) / 10;
-    sessions.push({ id: 'demo' + (sid++), type: 'cardio', activityType: 'running', date: iso(cdt), createdAt: iso(cdt), distanceKm: dist, durationSec: Math.round(dist * (5.6 - prog * 0.03) * 60), avgHr: 148 + (week % 4) * 3, maxHr: 172 + (week % 3) * 4 });
+    var runDurSec = Math.round(dist * (5.6 - prog * 0.03) * 60);
+    // Most recent run gets real HR samples so the zone-dust orbs fill (Garmin-style).
+    var runHrSamples = week === 0 ? (function (d) {
+      var s = [], n = Math.max(4, Math.round(d / 30));
+      for (var i = 0; i <= n; i++) {
+        var t = Math.round(i / n * d), f = i / n;
+        var b = 118 + f * 46 + Math.sin(f * Math.PI * 2) * 8 + (i % 2 ? 2 : -2);
+        if (f > 0.55 && f < 0.7) b += 12; // surge into Z5
+        s.push({ t: t, bpm: Math.round(Math.max(95, Math.min(186, b))) });
+      }
+      return s;
+    })(runDurSec) : undefined;
+    sessions.push({ id: 'demo' + (sid++), type: 'cardio', activityType: 'running', date: iso(cdt), createdAt: iso(cdt), distanceKm: dist, durationSec: runDurSec, avgHr: 148 + (week % 4) * 3, maxHr: 184, hrSamples: runHrSamples });
     if (week % 2 === 1) {
       var bdt = daysAgo(week * 7 + 3);
       sessions.push({ id: 'demo' + (sid++), type: 'cardio', activityType: 'cycling', date: iso(bdt), createdAt: iso(bdt), distanceKm: 22 + (week % 3) * 4, durationSec: (55 + (week % 2) * 10) * 60, avgHr: 132 + (week % 3) * 4 });

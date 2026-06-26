@@ -711,10 +711,43 @@ const SD_SPORT_GRAD = {
   hike: ['#059669', '#34D399'], row:  ['#7C3AED', '#A78BFA'], other:['#C01963', '#F02277']
 };
 
+// Bucket HR samples [{t: seconds, bpm}] into time-in-zone (minutes), 5 zones by
+// % of a reference max HR (Z1 <60% … Z5 ≥90%). Works for any HR source; Garmin
+// will also deliver zones directly (then this is a fallback for raw samples).
+function computeHrZones(hrSamples, maxHr) {
+  if (!Array.isArray(hrSamples) || hrSamples.length === 0) return [];
+  const ref = (maxHr && maxHr > 0) ? maxHr : 190;
+  const zoneOf = bpm => {
+    const pct = bpm / ref;
+    if (pct < 0.60) return 1;
+    if (pct < 0.70) return 2;
+    if (pct < 0.80) return 3;
+    if (pct < 0.90) return 4;
+    return 5;
+  };
+  const s = hrSamples.slice().sort((a, b) => (a.t || 0) - (b.t || 0));
+  const secs = [0, 0, 0, 0, 0];
+  for (let i = 0; i < s.length; i++) {
+    const bpm = Number(s[i].bpm) || 0;
+    if (bpm <= 0) continue;
+    let dur;
+    if (i < s.length - 1) dur = Math.max(0, (Number(s[i + 1].t) || 0) - (Number(s[i].t) || 0));
+    else dur = s.length > 1 ? Math.max(0, (Number(s[i].t) || 0) - (Number(s[i - 1].t) || 0)) : 0;
+    secs[zoneOf(bpm) - 1] += dur;
+  }
+  return secs.map((sec, i) => ({ zone: i + 1, minutes: Math.round(sec / 60) }));
+}
+if (typeof window !== 'undefined') window.computeHrZones = computeHrZones;
+
 function sdHrZonesCard(session) {
-  // Always shown for a cardio detail so the HR-zone feature is discoverable;
-  // fills with real distribution once a session carries hrZones (Garmin).
-  const zones = (session.hrZones && session.hrZones.length) ? session.hrZones : null;
+  // Always shown for a cardio detail so the HR-zone feature is discoverable.
+  // Prefer explicit hrZones; else derive a real distribution from hrSamples.
+  let zones = (session.hrZones && session.hrZones.length) ? session.hrZones : null;
+  if (!zones && session.hrSamples && session.hrSamples.length) {
+    const ref = (typeof window !== 'undefined' && window.userProfile && window.userProfile.hrMax) || session.maxHr || 190;
+    const z = computeHrZones(session.hrSamples, ref);
+    if (z.some(x => x.minutes > 0)) zones = z;
+  }
   const maxMin = zones ? Math.max.apply(null, zones.map(z => z.minutes || 0).concat(1)) : 1;
   const orbs = [1, 2, 3, 4, 5].map(z => {
     const mins = zones ? ((zones.find(x => x.zone === z) || {}).minutes || 0) : 0;
