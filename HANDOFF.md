@@ -33,18 +33,15 @@ the shared plan/context (local `~/.claude` memory does NOT travel to the cloud).
   Z1–Z5 dust orbs (time-in-zone fills with Garmin).
 
 ## NEXT — open tasks
-### #5 Session detail redesign (IN PROGRESS)
-- Approved mockup: **`design-system/screens/session-detail-mockup.png`** (+ `.html`).
-  Hero + compact stat tiles (not fat bars), HR zones as time-in-zone dust orbs,
-  route/GPS placeholder (Garmin), per-km splits, notes/RPE.
-- **Build for ALL session types / sports**: cardio variant per sport
-  (run/bike/swim/hike/row/other — pace vs km/h vs /100m vs duration), plus a
-  **strength** variant (exercises + sets + volume instead of pace/splits).
-- Current session-detail renderer to replace: search `openSessionDetail` /
-  session detail in `js/views/sessions/`. Garmin will later fill avgHr/maxHr/
-  hrSamples/route — leave hooks/placeholders.
+### #5 Session detail redesign — DONE
+- New `.sd` layout (`css/views/session-detail.css`): hero + compact stat tiles,
+  HR-zone dust orbs (size = time-in-zone once Garmin gives `hrZones`), route/GPS
+  placeholder. Cardio is sport-aware (`openCardioDetailModal`, progressv2.js);
+  strength (`openWorkoutDetailModal`, workoutModal.js) lists exercises with a
+  muscle dust orb + set badges; recovery (`openRecoveryDetailModal`) matches.
+  Mockup ref: `design-system/screens/session-detail-mockup.png`.
 
-### #3 Offline-first
+### #3 Offline-first (NEXT)
 - App currently won't boot offline (Firebase SDK from CDN). Plan: bundle Firebase
   SDK locally so the shell boots offline + enable Firestore offline persistence so
   workouts/exercises record locally and sync on reconnect. Decisions pending
