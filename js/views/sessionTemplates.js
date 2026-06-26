@@ -399,7 +399,8 @@ function renderSessionTemplatesList(containerId = 'session-templates-list') {
     const typeName = isCardio
       ? getActivityTypeName(template.activityType)
       : t('common.recovery');
-    const difficultyInfo = difficultyLevels[template.difficulty] || difficultyLevels.intermediate;
+    const difficultyKey = difficultyLevels[template.difficulty] ? template.difficulty : 'intermediate';
+    const difficultyInfo = difficultyLevels[difficultyKey];
     const trainingType = isCardio && template.trainingType ? trainingTypeLabels[template.trainingType] : null;
 
     return `
@@ -419,7 +420,7 @@ function renderSessionTemplatesList(containerId = 'session-templates-list') {
           </div>
         </div>
         <div class="session-template-difficulty" style="color: ${difficultyInfo.color};">
-          ${difficultyInfo.label}
+          ${getDifficultyName(difficultyKey)}
         </div>
         <div class="session-template-actions">
           <button

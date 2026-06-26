@@ -34,8 +34,8 @@ function renderCurrentExercise(exercise) {
         ${exercise.exerciseName}
       </h3>
       <p style="font-size: 0.875rem; color: #9ca3af;">
-        Ziel: ${exercise.targetSets} Sätze × ${exercise.targetReps} Wiederholungen
-        ${exercise.targetRest ? ` · ${exercise.targetRest}s Pause` : ''}
+        ${t('recent.workout.targetLine', { sets: exercise.targetSets, reps: exercise.targetReps })}
+        ${exercise.targetRest ? t('recent.workout.targetRest', { seconds: exercise.targetRest }) : ''}
       </p>
     </div>
   `;
@@ -297,7 +297,7 @@ function renderWorkoutBottomActions() {
   const idx = activeWorkout.currentExerciseIndex;
   const isLast = idx >= activeWorkout.exercises.length - 1;
   const ctaIcon = isLast ? 'check_circle' : 'arrow_forward';
-  const ctaLabel = isLast ? t('workout.screen.finishWorkout') : 'Nächste Übung';
+  const ctaLabel = isLast ? t('workout.screen.finishWorkout') : t('workout.screen.nextExercise');
   const ctaAction = isLast ? 'finishWorkoutFromConfirm()' : ('goToExercise(' + (idx + 1) + ')');
 
   // "Als Nächstes" — kommende Übung + Ziel (workout.png)

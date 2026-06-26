@@ -77,7 +77,7 @@ const PICKER_CONFIGS = {
     min: 0,
     max: 100,
     step: 1,
-    suffix: 'Wdh',
+    suffixKey: 'recent.numberPicker.repsSuffix',
     titleKey: 'numberPicker.repsTitle',
     generateValues: () => Array.from({ length: 101 }, (_, i) => i)
   },
@@ -423,7 +423,7 @@ function renderSetModeTabs() {
     { key: 'hold', label: holdLabel },
   ];
   return `
-    <div class="number-picker-mode-tabs" role="tablist" aria-label="Satz-Typ">
+    <div class="number-picker-mode-tabs" role="tablist" aria-label="${(typeof t === 'function' && t('recent.numberPicker.setTypeAria')) || 'Satz-Typ'}">
       ${modes.map(m => `
         <button
           type="button"

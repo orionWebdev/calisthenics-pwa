@@ -495,7 +495,7 @@ function renderDashboardFormHero() {
   const offset = circ * (1 - clamped / 100);
 
   // Mockup (heute): das Widget heißt "Trainingsform".
-  const heroTitle = 'Trainingsform';
+  const heroTitle = tr('recent.dashboard.formHeroTitle');
 
   container.innerHTML = `
     <div class="dashboard-card dashboard-form-hero-card" role="button" tabindex="0" onclick="openProgressOverview()">

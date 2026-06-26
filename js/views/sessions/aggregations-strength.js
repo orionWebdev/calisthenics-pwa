@@ -464,8 +464,8 @@ function getWeekStart(date) {
  * Formatiert Wochenlabel als "KW 3" oder "6. Jan"
  */
 function formatWeekLabel(weekStart) {
-  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-  return `${weekStart.getDate()}. ${months[weekStart.getMonth()]}`;
+  const month = (typeof monthShortLabel === 'function') ? monthShortLabel(weekStart.getMonth()) : ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'][weekStart.getMonth()];
+  return `${weekStart.getDate()}. ${month}`;
 }
 
 /**

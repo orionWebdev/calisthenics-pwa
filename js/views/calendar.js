@@ -937,7 +937,7 @@ function renderTrainingCalendar() {
             <span class="material-symbols-rounded">chevron_left</span>
           </button>
           <span class="activity-month-title" id="calendar-title"></span>
-          <button class="activity-nav-btn" onclick="goToToday()" aria-label="Heute">
+          <button class="activity-nav-btn" onclick="goToToday()" aria-label="${t('calendar.today')}">
             <span class="material-symbols-rounded">today</span>
           </button>
           <button class="activity-nav-btn" onclick="navigateCalendar('next')" aria-label="${t('dashboard.calendar.nextMonth')}">

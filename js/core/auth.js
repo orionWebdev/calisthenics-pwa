@@ -1,5 +1,8 @@
 // ==================== AUTHENTICATION & AUTHORIZATION ====================
 
+// Safe translation accessor — i18n.js may load after auth.js, so guard `t`.
+const tAuth = (key) => (typeof t === 'function' ? t(key) : key);
+
 /**
  * Authentication State Management
  * - Google Sign-In via Firebase Auth
@@ -120,13 +123,13 @@ async function checkAllowlist(uid, email) {
  */
 async function signInWithGoogle() {
   try {
-    showLoadingState('Anmeldung läuft...');
+    showLoadingState(tAuth('recent.auth.signingIn'));
 
     const result = await auth.signInWithPopup(googleProvider);
     const user = result.user;
 
     // Check allowlist
-    showLoadingState('Zugriff wird überprüft...');
+    showLoadingState(tAuth('recent.auth.checkingAccess'));
     const isAllowed = await checkAllowlist(user.uid, user.email);
 
     if (!isAllowed) {
@@ -137,7 +140,7 @@ async function signInWithGoogle() {
       return {
         success: false,
         error: 'access_denied',
-        message: 'Dein Account hat keinen Zugriff auf diese App.'
+        message: tAuth('recent.auth.noAccess')
       };
     }
 
@@ -205,12 +208,12 @@ function isValidEmail(email) {
  */
 async function signInWithEmail(email, password) {
   try {
-    showLoadingState('Anmeldung läuft...');
+    showLoadingState(tAuth('recent.auth.signingIn'));
 
     const result = await auth.signInWithEmailAndPassword(email.trim(), password);
     const user = result.user;
 
-    showLoadingState('Zugriff wird überprüft...');
+    showLoadingState(tAuth('recent.auth.checkingAccess'));
     const isAllowed = await checkAllowlist(user.uid, user.email);
 
     if (!isAllowed) {
@@ -220,7 +223,7 @@ async function signInWithEmail(email, password) {
       return {
         success: false,
         error: 'access_denied',
-        message: 'Dein Account hat keinen Zugriff auf diese App.'
+        message: tAuth('recent.auth.noAccess')
       };
     }
 
@@ -249,7 +252,7 @@ async function signInWithEmail(email, password) {
  */
 async function signUpWithEmail(email, password, displayName) {
   try {
-    showLoadingState('Konto wird erstellt...');
+    showLoadingState(tAuth('recent.auth.creatingAccount'));
 
     const result = await auth.createUserWithEmailAndPassword(email.trim(), password);
     const user = result.user;
@@ -268,7 +271,7 @@ async function signUpWithEmail(email, password, displayName) {
       console.warn('Could not send verification email:', e);
     }
 
-    showLoadingState('Zugriff wird überprüft...');
+    showLoadingState(tAuth('recent.auth.checkingAccess'));
     const isAllowed = await checkAllowlist(user.uid, user.email);
 
     if (!isAllowed) {
@@ -278,7 +281,7 @@ async function signUpWithEmail(email, password, displayName) {
       return {
         success: false,
         error: 'access_denied',
-        message: 'Dein Account hat keinen Zugriff auf diese App.'
+        message: tAuth('recent.auth.noAccess')
       };
     }
 
@@ -350,7 +353,7 @@ async function reauthenticateCurrentUser(password) {
       await user.reauthenticateWithCredential(credential);
       return { success: true };
     }
-    return { success: false, error: 'unsupported_provider', message: 'Nicht unterstützte Anmeldemethode.' };
+    return { success: false, error: 'unsupported_provider', message: tAuth('recent.auth.unsupportedProvider') };
   } catch (error) {
     console.error('❌ Re-authentication error:', error);
     return {
@@ -385,7 +388,7 @@ async function signOut() {
     return {
       success: false,
       error: error.code,
-      message: 'Fehler beim Abmelden.'
+      message: tAuth('recent.auth.signOutError')
     };
   }
 }
@@ -402,7 +405,7 @@ function initAuth() {
       if (user && !isAllowlistChecked) {
         // User is signed in - check allowlist
         try {
-          showLoadingState('Zugriff wird überprüft...');
+          showLoadingState(tAuth('recent.auth.checkingAccess'));
           const isAllowed = await checkAllowlist(user.uid, user.email);
           isAllowlistChecked = true;
 
@@ -484,7 +487,8 @@ function getAuthState() {
 /**
  * Show loading state with message
  */
-function showLoadingState(message = 'Lädt...') {
+function showLoadingState(message) {
+  if (!message) message = tAuth('recent.auth.loading');
   const splash = document.getElementById('auth-splash');
   setLoadingProgress(10);
 
