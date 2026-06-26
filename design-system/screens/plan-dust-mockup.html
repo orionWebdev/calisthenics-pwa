@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zalando+Sans+Expanded:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="../../css/main.css" />
+  <style>
+    body{ margin:0; padding:18px; max-width:460px; }
+    h2{ font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-secondary); margin:0 0 .9rem; }
+    /* type colours for cardio/recovery plan orbs (reuse hz/sport hues) */
+    .m-cardio{ --c1:#E11D48; --c2:#FB7185; } .s-cardio{ --s1:#E11D48; }
+    .m-recovery{ --c1:#0D9488; --c2:#2DD4BF; } .s-recovery{ --s1:#0D9488; }
+
+    .plan{ display:flex; align-items:center; gap:14px; padding:14px; margin-bottom:10px;
+      background:var(--ui-card-bg); border:1px solid var(--ui-card-border); border-radius:16px; box-shadow:var(--ui-card-shadow); }
+    .plan .muscle-dust.big{ width:46px; height:46px; }
+    .plan-info{ flex:1; min-width:0; }
+    .plan-name{ font-size:15px; font-weight:600; color:var(--text-primary); }
+    .plan-meta{ font-size:12px; color:var(--text-tertiary); margin-top:3px; display:flex; align-items:center; gap:6px; }
+    .ptype{ font-size:10px; font-weight:700; padding:1px 7px; border-radius:100px; color:#fff; }
+    .ptype.kraft{ background:var(--gradient-primary); }
+    .ptype.cardio{ background:linear-gradient(135deg,#E11D48,#FB7185); }
+    .ptype.recovery{ background:linear-gradient(135deg,#0D9488,#2DD4BF); }
+    .plan-dots{ display:flex; gap:5px; margin-top:8px; align-items:center; }
+    .plan-dots .muscle-dust{ width:14px; height:14px; }
+    .plan-dots .lbl{ font-size:10px; color:var(--text-tertiary); margin-left:2px; }
+    .chev{ color:var(--text-tertiary); flex-shrink:0; }
+  </style>
+</head>
+<body>
+  <h2>Pläne mit Gradient-Dust</h2>
+
+  <!-- Push Day A: chest primary, triceps secondary; dots chest/triceps/shoulders -->
+  <div class="plan">
+    <span class="muscle-dust big m-chest s-triceps"></span>
+    <div class="plan-info">
+      <div class="plan-name">Push Day A</div>
+      <div class="plan-meta"><span class="ptype kraft">Kraft</span> 3 Übungen</div>
+      <div class="plan-dots">
+        <span class="muscle-dust m-chest"></span>
+        <span class="muscle-dust m-triceps"></span>
+        <span class="muscle-dust m-shoulders"></span>
+        <span class="lbl">Brust · Trizeps · Schultern</span>
+      </div>
+    </div>
+    <span class="material-symbols-rounded chev">chevron_right</span>
+  </div>
+
+  <!-- Pull Day B: back + biceps -->
+  <div class="plan">
+    <span class="muscle-dust big m-back s-biceps"></span>
+    <div class="plan-info">
+      <div class="plan-name">Pull Day B</div>
+      <div class="plan-meta"><span class="ptype kraft">Kraft</span> 4 Übungen</div>
+      <div class="plan-dots">
+        <span class="muscle-dust m-back"></span>
+        <span class="muscle-dust m-biceps"></span>
+        <span class="muscle-dust m-core"></span>
+        <span class="lbl">Rücken · Bizeps · Core</span>
+      </div>
+    </div>
+    <span class="material-symbols-rounded chev">chevron_right</span>
+  </div>
+
+  <!-- Leg Day -->
+  <div class="plan">
+    <span class="muscle-dust big m-legs s-core"></span>
+    <div class="plan-info">
+      <div class="plan-name">Leg Day</div>
+      <div class="plan-meta"><span class="ptype kraft">Kraft</span> 5 Übungen</div>
+      <div class="plan-dots">
+        <span class="muscle-dust m-legs"></span>
+        <span class="muscle-dust m-core"></span>
+        <span class="muscle-dust m-calf"></span>
+        <span class="lbl">Beine · Core · Waden</span>
+      </div>
+    </div>
+    <span class="material-symbols-rounded chev">chevron_right</span>
+  </div>
+
+  <!-- Easy Run: cardio plan → sport-coloured orb, no muscle dots -->
+  <div class="plan">
+    <span class="muscle-dust big m-cardio"></span>
+    <div class="plan-info">
+      <div class="plan-name">Easy Run</div>
+      <div class="plan-meta"><span class="ptype cardio">Cardio</span> 30 min · Laufen</div>
+    </div>
+    <span class="material-symbols-rounded chev">chevron_right</span>
+  </div>
+
+  <!-- Mobility Flow: recovery -->
+  <div class="plan">
+    <span class="muscle-dust big m-recovery"></span>
+    <div class="plan-info">
+      <div class="plan-name">Mobility Flow</div>
+      <div class="plan-meta"><span class="ptype recovery">Recovery</span> 20 min</div>
+    </div>
+    <span class="material-symbols-rounded chev">chevron_right</span>
+  </div>
+</body>
+</html>
