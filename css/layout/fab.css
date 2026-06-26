@@ -67,7 +67,9 @@
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 999;
-  backdrop-filter: blur(8px);
+  /* Plain dim (was backdrop-filter blur): animating opacity over a blurred
+     backdrop re-blurs every frame in the WebView — the FAB "+" menu was janky. */
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .radial-overlay.active {

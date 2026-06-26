@@ -91,8 +91,8 @@
   /* Typography Scale - Konsistentes System */
   --font-size-xs: 0.75rem;     /* 12px - Labels, Hints */
   --font-size-sm: 0.875rem;    /* 14px - Small text, Captions */
-  --font-size-base: 1.15rem;      /* 16px - Body text */
-  --font-size-md: 1.175rem;    /* 18px - Large body */
+  --font-size-base: 0.9rem;    /* Body text — lowered 0.25rem on request */
+  --font-size-md: 0.95rem;     /* Large body */
   --font-size-lg: 1.25rem;     /* 20px - H3, Subheadings */
   --font-size-xl: 1.5rem;      /* 24px - H2 */
   --font-size-2xl: 1.75rem;    /* 28px - H1 */

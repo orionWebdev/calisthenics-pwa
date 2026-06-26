@@ -12,13 +12,14 @@
   /* Plain dim instead of backdrop-filter blur: animating a full-screen blur in
      is very expensive in the Android WebView and was the main cause of the
      "hakelig" modal-open feel. The dark overlay reads almost identically. */
-  background: rgba(0, 0, 0, 0.72);
+  /* Near-opaque instant dim: the content fades in from opacity:0, so a translucent
+     dim would let the page (e.g. the plans list) flash through during that first
+     frame. A darker dim hides it. No fade on the overlay itself — only the
+     content animates (slideUp). */
+  background: rgba(0, 0, 0, 0.9);
   z-index: 1000;
   align-items: center;
   justify-content: center;
-  /* Dim appears instantly (no fade of the whole overlay) so the background isn't
-     visible through a fading-in dim — only the content animates (slideUp). This
-     kills the "background flashes" on open and is cheaper. */
   overscroll-behavior: contain;
   touch-action: none;
 }
@@ -61,7 +62,8 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  animation: slideUp 0.3s ease;
+  animation: slideUp 0.22s ease-out;
+  will-change: transform, opacity;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 1; /* immer über dem Backdrop */
