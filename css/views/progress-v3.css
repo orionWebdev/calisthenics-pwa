@@ -13,8 +13,9 @@
   position: sticky;
   /* Desktop: floating nav sits at top:1rem with ~64px height → pin below it */
   top: 5.25rem;
-  /* Above the transparent blur header (z1000) so taps reach the segmented control */
-  z-index: 1001;
+  /* Above page content/mini-dots but BELOW modals (z1000) — taps work via the
+     scoped listener + the header being pointer-events:none, not via z-index. */
+  z-index: 100;
   padding: 0.625rem 0 0.625rem;
   /* Transparent: only the blur, no opaque block / shadow — merges with the glass header */
   background: transparent;

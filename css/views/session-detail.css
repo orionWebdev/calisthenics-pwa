@@ -39,11 +39,22 @@
   border: 1px solid var(--ui-card-border);
   border-radius: 12px;
   padding: 10px 12px;
+  min-width: 0;          /* allow the tile to shrink in the grid track */
+  overflow: hidden;
 }
-.sd-tile .v { font-size: 16px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.sd-tile .v {
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .sd-tile .v small { font-size: 11px; font-weight: 600; color: var(--text-tertiary); }
-.sd-tile .l { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 3px; }
-.sd-tile .l .material-symbols-rounded { font-size: 12px; }
+.sd-tile .l {
+  font-size: 10px; color: var(--text-tertiary); margin-top: 2px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  display: flex; align-items: center; gap: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sd-tile .l .material-symbols-rounded { font-size: 12px; flex-shrink: 0; }
 
 .sd-card {
   background: var(--ui-card-bg);

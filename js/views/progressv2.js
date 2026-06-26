@@ -691,39 +691,18 @@ function renderRpeFeedbackSection(session) {
   const hasRpe = session.rpe || session.preWorkoutEnergy || session.postWorkoutFeeling;
   if (!hasRpe) return '';
 
-  const rpeLabels = { 1: 'Sehr leicht', 2: 'Leicht', 3: 'Mittel', 4: 'Schwer', 5: 'Sehr schwer' };
-  const energyLabels = { 1: 'Sehr niedrig', 2: 'Niedrig', 3: 'Mittel', 4: 'Hoch', 5: 'Sehr hoch' };
-  const feelingLabels = { 1: 'Sehr schlecht', 2: 'Schlecht', 3: 'OK', 4: 'Gut', 5: 'Sehr gut' };
-
-  let html = '<div class="workout-exercises"><h4 class="workout-section-title">Feedback</h4><div class="workout-stats-grid">';
-
+  let tiles = '';
   if (session.preWorkoutEnergy) {
-    html += `
-      <div class="workout-stat">
-        <span class="material-symbols-rounded">bolt</span>
-        <div class="workout-stat-value">${session.preWorkoutEnergy}/5</div>
-        <div class="workout-stat-label">Energie vorher</div>
-      </div>`;
+    tiles += `<div class="sd-tile"><div class="v">${session.preWorkoutEnergy}/5</div><div class="l"><span class="material-symbols-rounded">bolt</span>Energie vorher</div></div>`;
   }
   if (session.postWorkoutFeeling) {
-    html += `
-      <div class="workout-stat">
-        <span class="material-symbols-rounded">mood</span>
-        <div class="workout-stat-value">${session.postWorkoutFeeling}/5</div>
-        <div class="workout-stat-label">Gefühl danach</div>
-      </div>`;
+    tiles += `<div class="sd-tile"><div class="v">${session.postWorkoutFeeling}/5</div><div class="l"><span class="material-symbols-rounded">mood</span>Gefühl danach</div></div>`;
   }
   if (session.rpe) {
-    html += `
-      <div class="workout-stat">
-        <span class="material-symbols-rounded">local_fire_department</span>
-        <div class="workout-stat-value">${session.rpe}/5</div>
-        <div class="workout-stat-label">RPE (${rpeLabels[session.rpe] || ''})</div>
-      </div>`;
+    tiles += `<div class="sd-tile"><div class="v">${session.rpe}/5</div><div class="l"><span class="material-symbols-rounded">local_fire_department</span>RPE</div></div>`;
   }
 
-  html += '</div></div>';
-  return html;
+  return `<div class="sd-card"><div class="sd-sec-t"><span class="material-symbols-rounded">insights</span>Feedback</div><div class="sd-grid">${tiles}</div></div>`;
 }
 
 // Per-sport gradient for the detail hero
@@ -733,7 +712,8 @@ const SD_SPORT_GRAD = {
 };
 
 function sdHrZonesCard(session) {
-  if (!session.avgHr && !(session.hrZones && session.hrZones.length)) return '';
+  // Always shown for a cardio detail so the HR-zone feature is discoverable;
+  // fills with real distribution once a session carries hrZones (Garmin).
   const zones = (session.hrZones && session.hrZones.length) ? session.hrZones : null;
   const maxMin = zones ? Math.max.apply(null, zones.map(z => z.minutes || 0).concat(1)) : 1;
   const orbs = [1, 2, 3, 4, 5].map(z => {

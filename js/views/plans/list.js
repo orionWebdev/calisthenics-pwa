@@ -201,17 +201,17 @@ function openPlanTypeFilterSheet() {
 
 function openPlanMuscleFilterSheet() {
   const mn = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
-  const iconOf = (key) => (typeof getMuscleIconPath === 'function' ? getMuscleIconPath(key) : undefined);
+  const dot = (key) => (typeof getMuscleIcon === 'function' ? getMuscleIcon(key, 'muscle-icon--lg') : undefined);
   const filterOptions = [
     { value: '', label: t('exercise.filters.allMuscles'), description: '' },
-    { value: 'chest', label: mn.chest, icon: iconOf('chest') },
-    { value: 'back', label: mn.back, icon: iconOf('back') },
-    { value: 'biceps', label: mn.biceps, icon: iconOf('biceps') },
-    { value: 'triceps', label: mn.triceps, icon: iconOf('triceps') },
-    { value: 'shoulders', label: mn.shoulders, icon: iconOf('shoulders') },
-    { value: 'core', label: mn.core, icon: iconOf('core') },
-    { value: 'legs', label: mn.legs, icon: iconOf('legs') },
-    { value: 'full-body', label: mn['full-body'], icon: iconOf('full-body') }
+    { value: 'chest', label: mn.chest, iconHtml: dot('chest') },
+    { value: 'back', label: mn.back, iconHtml: dot('back') },
+    { value: 'biceps', label: mn.biceps, iconHtml: dot('biceps') },
+    { value: 'triceps', label: mn.triceps, iconHtml: dot('triceps') },
+    { value: 'shoulders', label: mn.shoulders, iconHtml: dot('shoulders') },
+    { value: 'core', label: mn.core, iconHtml: dot('core') },
+    { value: 'legs', label: mn.legs, iconHtml: dot('legs') },
+    { value: 'full-body', label: mn['full-body'], iconHtml: dot('full-body') }
   ];
 
   openBottomSheet({
