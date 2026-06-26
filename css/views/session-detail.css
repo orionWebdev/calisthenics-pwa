@@ -1,0 +1,78 @@
+/* ========================================
+   SESSION DETAIL (redesigned)
+   Hero + compact stat tiles (instead of fat stacked bars) + HR-zone dust orbs +
+   route/Garmin placeholder. Shared by cardio / strength / recovery details.
+   ======================================== */
+.sd { display: flex; flex-direction: column; gap: 12px; }
+
+.sd-hero {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 16px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.sd-hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 80% at 0% 0%, var(--sd-accent, rgba(192,25,99,.18)), transparent 60%);
+}
+.sd-hero-top { position: relative; display: flex; align-items: center; gap: 12px; }
+.sd-hero-ic {
+  width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  background: var(--sd-grad, linear-gradient(135deg, #C01963, #F02277));
+}
+.sd-hero-ic .material-symbols-rounded { font-size: 26px; }
+.sd-hero-meta .n { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.sd-hero-meta .d { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+.sd-hero-big {
+  position: relative; margin-top: 14px;
+  font-size: 38px; font-weight: 800; line-height: 1; color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.sd-hero-big small { font-size: 16px; font-weight: 600; color: var(--text-secondary); margin-left: 4px; }
+
+.sd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.sd-tile {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.sd-tile .v { font-size: 16px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.sd-tile .v small { font-size: 11px; font-weight: 600; color: var(--text-tertiary); }
+.sd-tile .l { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 3px; }
+.sd-tile .l .material-symbols-rounded { font-size: 12px; }
+
+.sd-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.sd-sec-t {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-secondary); font-weight: 600;
+  display: flex; align-items: center; gap: 7px; margin-bottom: 12px;
+}
+.sd-sec-t .material-symbols-rounded { font-size: 16px; color: var(--color-primary-light); }
+.sd-sec-t .pill { margin-left: auto; font-size: 11px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 100px; padding: 2px 8px; }
+
+/* HR zones (dust orbs; size = time in zone once Garmin provides it) */
+.sd-zones { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.sd-z { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sd-z .min { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.sd-z .lab { font-size: 10px; color: var(--text-tertiary); }
+
+/* Route / GPS placeholder */
+.sd-map {
+  height: 116px; border-radius: 14px; border: 1px dashed var(--ui-card-border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  color: var(--text-tertiary);
+  background: radial-gradient(120% 80% at 50% 0%, rgba(192, 25, 99, 0.08), transparent 60%);
+}
+.sd-map .material-symbols-rounded { font-size: 26px; }
+.sd-map span { font-size: 12px; }
+
+.sd-note { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }

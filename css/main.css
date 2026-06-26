@@ -22,6 +22,7 @@
 @import "components/muscle-dust.css";
 @import "components/modal.css";
 @import "views/exercise-cards.css";
+@import "views/session-detail.css";
 @import "views/dashboard.css";
 @import "views/activity-calendar.css";
 @import "layout/bottom-nav.css";

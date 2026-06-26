@@ -726,50 +726,79 @@ function renderRpeFeedbackSection(session) {
   return html;
 }
 
+// Per-sport gradient for the detail hero
+const SD_SPORT_GRAD = {
+  run:  ['#E11D48', '#FB7185'], bike: ['#2563EB', '#60A5FA'], swim: ['#0891B2', '#22D3EE'],
+  hike: ['#059669', '#34D399'], row:  ['#7C3AED', '#A78BFA'], other:['#C01963', '#F02277']
+};
+
+function sdHrZonesCard(session) {
+  if (!session.avgHr && !(session.hrZones && session.hrZones.length)) return '';
+  const zones = (session.hrZones && session.hrZones.length) ? session.hrZones : null;
+  const maxMin = zones ? Math.max.apply(null, zones.map(z => z.minutes || 0).concat(1)) : 1;
+  const orbs = [1, 2, 3, 4, 5].map(z => {
+    const mins = zones ? ((zones.find(x => x.zone === z) || {}).minutes || 0) : 0;
+    const size = zones ? Math.round(18 + (mins / maxMin) * 30) : 30;
+    const minLbl = zones ? (mins ? `${mins}′` : '–') : '';
+    return `<span class="sd-z"><span class="muscle-dust hz-${z}" style="width:${size}px;height:${size}px"></span>${minLbl ? `<span class="min">${minLbl}</span>` : ''}<span class="lab">Z${z}</span></span>`;
+  }).join('');
+  return `<div class="sd-card">
+    <div class="sd-sec-t"><span class="material-symbols-rounded">cardiology</span>HF-Zonen${zones ? ' · Zeit in Zone' : ''}</div>
+    <div class="sd-zones">${orbs}</div>
+    ${zones ? '' : `<p class="pv4-lead pv4-muted pv4-vol-caption" style="margin-top:10px">Zeit-Verteilung folgt mit Garmin</p>`}
+  </div>`;
+}
+
 function openCardioDetailModal(session) {
   const date = getSessionDate(session);
-  const duration = formatSessionDurationText(session);
-  const distance = session.distanceKm ? trProgress('format.distanceKm', { distance: session.distanceKm }) : trProgress('format.pace.na');
-  const pace = session.pace ? formatPaceValueText(session.pace) : trProgress('format.pace.na');
-  const activity = ACTIVITY_TYPES[session.activityType]?.name || trProgress('common.cardio');
-  const titleName = session.name || activity;
+  const sp = (typeof pv4NormalizeSport === 'function' ? pv4NormalizeSport((session.activityType || 'other').toLowerCase()) : (session.activityType || 'other')) || 'other';
+  const meta = (typeof pv4SportMeta === 'function') ? pv4SportMeta(sp) : { label: trProgress('common.cardio'), icon: 'directions_run', metric: 'pace' };
+  const grad = SD_SPORT_GRAD[sp] || SD_SPORT_GRAD.other;
+  const titleName = session.name || meta.label;
+
+  const durMin = Number(session.duration) || (Number(session.durationSec) ? Number(session.durationSec) / 60 : 0);
+  const dist = Number(session.distanceKm) || 0;
+  const isDist = meta.metric !== 'none';
+  const fmtPace = p => { let m = Math.floor(p); let s = Math.round((p - m) * 60); if (s >= 60) { m += 1; s = 0; } return m + ':' + String(s).padStart(2, '0'); };
+  const fmtKm = v => v.toFixed(v >= 10 ? 0 : 1).replace('.', ',');
+  const durTxt = (typeof formatSessionDurationText === 'function') ? formatSessionDurationText(session) : (Math.round(durMin) + ' min');
+
+  const heroBig = (isDist && dist > 0) ? `${fmtKm(dist)}<small>km</small>` : `${Math.round(durMin)}<small>min</small>`;
+
+  let metricV = '–', metricL = 'Tempo';
+  if (meta.metric === 'pace' && dist > 0) { metricV = `${fmtPace(durMin / dist)} <small>/km</small>`; metricL = 'Ø Pace'; }
+  else if (meta.metric === 'speed' && durMin > 0) { metricV = `${(dist / (durMin / 60)).toFixed(1).replace('.', ',')} <small>km/h</small>`; metricL = 'Ø Tempo'; }
+  else if (meta.metric === 'swim' && dist > 0) { metricV = `${fmtPace(durMin / (dist * 10))} <small>/100m</small>`; metricL = 'Ø Pace'; }
+  else { metricV = `${Math.round(durMin)} <small>min</small>`; metricL = 'Dauer'; }
+
+  const tile = (v, l, ic) => `<div class="sd-tile"><div class="v">${v}</div><div class="l">${ic ? `<span class="material-symbols-rounded">${ic}</span>` : ''}${l}</div></div>`;
+  let tiles = tile(durTxt, 'Dauer', 'schedule');
+  if (isDist && dist > 0) tiles += tile(`${fmtKm(dist)} <small>km</small>`, 'Distanz', 'straighten');
+  tiles += tile(metricV, metricL, 'speed');
+  if (session.avgHr) tiles += tile(`${session.avgHr} <small>bpm</small>`, 'Ø HF', 'favorite');
+  if (session.maxHr) tiles += tile(`${session.maxHr} <small>bpm</small>`, 'Max HF', 'cardiology');
+  if (session.calories) tiles += tile(`${session.calories} <small>kcal</small>`, 'Energie', 'local_fire_department');
+
+  const routeCard = isDist ? `<div class="sd-card">
+    <div class="sd-sec-t"><span class="material-symbols-rounded">map</span>Route<span class="pill">Garmin</span></div>
+    <div class="sd-map"><span class="material-symbols-rounded">route</span><span>Route &amp; GPS folgen mit Garmin-Sync</span></div>
+  </div>` : '';
+  const notesCard = session.notes ? `<div class="sd-card"><div class="sd-sec-t"><span class="material-symbols-rounded">notes</span>${trProgress('common.notes')}</div><p class="sd-note">${session.notes}</p></div>` : '';
 
   const content = `
-    <div class="workout-detail-modal">
-      <div class="workout-detail-header">
-        <div class="workout-type-badge type-cardio">${trProgress('common.cardio')}</div>
-        <div class="workout-date" style="font-size: 0.875rem; color: #9ca3af;">
-          ${formatDateLongText(date)}
+    <div class="sd" style="--sd-accent:${grad[0]}33;--sd-grad:linear-gradient(135deg,${grad[0]},${grad[1]})">
+      <div class="sd-hero">
+        <div class="sd-hero-top">
+          <div class="sd-hero-ic"><span class="material-symbols-rounded">${meta.icon}</span></div>
+          <div class="sd-hero-meta"><div class="n">${titleName}</div><div class="d">${formatDateLongText(date)}</div></div>
         </div>
+        <div class="sd-hero-big">${heroBig}</div>
       </div>
-      <div class="workout-stats-grid">
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">schedule</span>
-          <div class="workout-stat-value">${duration}</div>
-          <div class="workout-stat-label">${trProgress('progress.overview.stats.totalTime')}</div>
-        </div>
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">straighten</span>
-          <div class="workout-stat-value">${distance}</div>
-          <div class="workout-stat-label">${trProgress('progress.cardio.metricDistance')}</div>
-        </div>
-        <div class="workout-stat">
-          <span class="material-symbols-rounded">speed</span>
-          <div class="workout-stat-value">${pace}</div>
-          <div class="workout-stat-label">${trProgress('progress.cardio.metricPace')}</div>
-        </div>
-      </div>
-      <div class="workout-exercises">
-        <h4 class="workout-section-title">${trProgress('progress.cardio.activityLabel')}</h4>
-        <p class="text-sm text-gray-300">${activity}</p>
-      </div>
+      <div class="sd-grid">${tiles}</div>
+      ${sdHrZonesCard(session)}
+      ${routeCard}
       ${renderRpeFeedbackSection(session)}
-      ${session.notes ? `
-        <div class="workout-exercises">
-          <h4 class="workout-section-title">${trProgress('common.notes')}</h4>
-          <p class="text-sm text-gray-300">${session.notes}</p>
-        </div>
-      ` : ''}
+      ${notesCard}
       <div class="workout-modal-actions">
         <button onclick="openEditCardioSessionModal('${session.id}')" class="btn-edit">
           <span class="material-symbols-rounded">settings</span>
@@ -785,10 +814,8 @@ function openCardioDetailModal(session) {
 
   if (typeof openGenericModal === 'function') {
     openGenericModal(titleName, content);
-  } else {
-    if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', trProgress('progress.modals.modalUnavailable'));
-    }
+  } else if (typeof showEdgeFeedback === 'function') {
+    showEdgeFeedback('error', trProgress('progress.modals.modalUnavailable'));
   }
 }
 
