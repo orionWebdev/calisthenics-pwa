@@ -270,14 +270,15 @@
 
 /* ===== Single-column horizontal row layout (mockup) =====
    Override the old 2-column vertical-card styles. */
-.plans-grid { grid-template-columns: 1fr; }
+.plans-grid { grid-template-columns: minmax(0, 1fr); }
 
 .plan-grid-card {
   flex-direction: row;
   align-items: center;
   gap: 14px;
   padding: 14px;
-  overflow: visible;
+  max-width: 100%;
+  overflow: hidden;
 }
 .plan-grid-card-dust { width: 46px; height: 46px; }
 .plan-grid-card-body {

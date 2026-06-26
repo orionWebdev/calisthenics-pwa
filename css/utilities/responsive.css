@@ -10,9 +10,10 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: transparent;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* Gradient fade instead of backdrop-filter blur: a persistent full-width blur
+     is a major WebView perf cost. The opaque-to-transparent fade hides the
+     content scrolling underneath without any blur compositing. */
+  background: linear-gradient(to bottom, var(--color-bg) 58%, transparent);
   /* Brand bar only — no interactive controls — so it must not intercept taps
      on sticky elements (e.g. progress period selector) pinned just beneath it */
   pointer-events: none;

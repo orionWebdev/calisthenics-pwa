@@ -6,7 +6,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  backdrop-filter: blur(8px);
+  /* Plain dim (was backdrop-filter blur): animating opacity on a blurred backdrop
+     re-blurs every frame and made the sheet open/close janky. */
+  background: rgba(0, 0, 0, 0.6);
   z-index: 2000;
   opacity: 0;
   visibility: hidden;

@@ -10,8 +10,8 @@
 #sheet-root .sheet__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  /* Plain dim (was backdrop-filter blur) for smooth open/close in the WebView. */
+  background: rgba(0, 0, 0, 0.65);
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: 9998;

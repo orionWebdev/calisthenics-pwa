@@ -5,9 +5,8 @@
 .number-picker-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  /* Plain dim (was backdrop-filter blur) for smooth open/close in the WebView. */
+  background: rgba(0, 0, 0, 0.65);
   z-index: 9999;
   opacity: 0;
   visibility: hidden;
