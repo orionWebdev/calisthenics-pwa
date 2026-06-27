@@ -442,7 +442,7 @@ async function initApp() {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
   if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+    showEdgeFeedback('error', (typeof t === 'function' ? t('recent.app.loadError') : 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ') + error.message);
   }
     if (typeof setProgress === 'function') setProgress(100);
     if (typeof hideLoading === 'function') {

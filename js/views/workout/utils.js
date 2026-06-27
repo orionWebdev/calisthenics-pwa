@@ -104,7 +104,7 @@ function ensureValidDateString(dateStr) {
 // ========================================
 
 function askSaveWorkoutAsPlan(workoutExercises) {
-  if (!confirm('Workout als Plan speichern?')) return;
+  if (!confirm(t('recent.workout.saveAsPlanConfirm'))) return;
   openPlanModalWithExercises(workoutExercises);
 }
 
@@ -257,7 +257,7 @@ function closeWorkoutExercisePicker() {
 function removeCurrentExerciseFromWorkout() {
   if (!activeWorkout || activeWorkout.exercises.length === 0) return;
   const currentEx = activeWorkout.exercises[activeWorkout.currentExerciseIndex];
-  if (!confirm(`"${currentEx.exerciseName}" aus dem Workout entfernen?`)) return;
+  if (!confirm(t('recent.workout.removeExerciseConfirm', { name: currentEx.exerciseName }))) return;
 
   activeWorkout.exercises.splice(activeWorkout.currentExerciseIndex, 1);
 
@@ -321,7 +321,7 @@ function addExerciseToWorkoutOrReplace(exerciseId) {
   renderWorkoutScreen();
 
   if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('success', `${getExerciseName(exercise)} hinzugefügt`);
+    showEdgeFeedback('success', t('recent.workout.exerciseAdded', { name: getExerciseName(exercise) }));
   }
 }
 

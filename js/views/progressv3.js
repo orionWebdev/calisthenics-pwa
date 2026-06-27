@@ -156,12 +156,14 @@ function getBaselineStatus() {
 
 function v3FormatDate(date) {
   const d = date instanceof Date ? date : new Date(date);
-  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'Europe/Berlin' });
+  const loc = (typeof getIntlLocale === 'function') ? getIntlLocale() : 'de-DE';
+  return d.toLocaleDateString(loc, { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'Europe/Berlin' });
 }
 
 function v3FormatDateShort(date) {
   const d = date instanceof Date ? date : new Date(date);
-  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', timeZone: 'Europe/Berlin' });
+  const loc = (typeof getIntlLocale === 'function') ? getIntlLocale() : 'de-DE';
+  return d.toLocaleDateString(loc, { day: '2-digit', month: '2-digit', timeZone: 'Europe/Berlin' });
 }
 
 // ==================== INIT ====================
@@ -632,12 +634,6 @@ window.closeFullHistory = closeFullHistory;
 // ==================== WOCHENVOLUMEN PRO MUSKELGRUPPE (Redesign v3, Chunk 2) ====================
 // Sätze/Woche je primärer Muskelgruppe — der wissenschaftliche Standard (~10–20/Woche).
 // Defensiv: alles in try/catch; bei Fehler/keinen Daten -> '' (bricht die Overview nie).
-const PV4_MUSCLE_LABELS = {
-  chest: 'Brust', back: 'Rücken', legs: 'Beine', quads: 'Beine', hamstrings: 'Beine',
-  glutes: 'Gesäß', shoulders: 'Schultern', arms: 'Arme', biceps: 'Bizeps', triceps: 'Trizeps',
-  core: 'Core', abs: 'Core', fullbody: 'Ganzkörper', cardio: 'Cardio'
-};
-
 function pv4MuscleWeeklySets(sessions, days) {
   const weeks = Math.max(1, (days || 7) / 7);
   const exById = {};
@@ -669,7 +665,7 @@ function renderV4MuscleVolume(sessions, days) {
     const data = pv4MuscleWeeklySets(sessions, days);
     if (!data.length) return '';
     const rows = data.map(d => {
-      const name = PV4_MUSCLE_LABELS[d.key] || (d.key.charAt(0).toUpperCase() + d.key.slice(1));
+      const name = (typeof getMuscleLabel === 'function') ? getMuscleLabel(d.key) : (d.key.charAt(0).toUpperCase() + d.key.slice(1));
       const val = Math.round(d.perWeek);
       const pct = Math.max(6, Math.min(100, (d.perWeek / 20) * 100));
       return `
@@ -684,9 +680,9 @@ function renderV4MuscleVolume(sessions, days) {
     return `
       <div class="pv3-card">
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:6px;">
-          <span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">exercise</span>Wochenvolumen · pro Muskel
+          <span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">exercise</span>${trV3('recent.progress.muscleVolumeTitle')}
         </div>
-        <p style="font-size:13px;color:var(--text-secondary);margin:0;">Sätze/Woche je Muskelgruppe — Zielkorridor ~10–20.</p>
+        <p style="font-size:13px;color:var(--text-secondary);margin:0;">${trV3('recent.progress.muscleVolumeSubtitle')}</p>
         ${rows}
       </div>`;
   } catch (e) {
@@ -782,15 +778,15 @@ function renderV4ExerciseProgression(sessions, days) {
       const last = vals.length ? vals[vals.length - 1] : 0;
       const delta = Math.round(last - first);
       const up = delta > 0;
-      const unit = weighted ? 'kg' : 'Wdh.';
-      const sinceMonth = series.length ? series[0].date.toLocaleDateString('de-DE', { month: 'short' }) : '';
+      const unit = weighted ? 'kg' : trV3('recent.progress.repsShort');
+      const sinceMonth = series.length ? series[0].date.toLocaleDateString((typeof getIntlLocale === 'function' ? getIntlLocale() : 'de-DE'), { month: 'short' }) : '';
       // Steigt → grün (Mockup); gehalten → neutral. Nie rot.
       const GREEN = '#22c55e';
       const lineColor = up ? GREEN : '#9ca3af';
       const deltaHTML = up
         ? '<span style="display:inline-flex;align-items:center;gap:2px;color:' + GREEN + ';font-weight:700;"><span class="material-symbols-rounded" style="font-size:14px;">arrow_upward</span>+' + delta + '</span>'
-          + (sinceMonth ? '<span style="color:var(--text-tertiary);">· seit ' + sinceMonth + '</span>' : '')
-        : '<span style="color:var(--text-secondary);font-weight:600;">gehalten</span>';
+          + (sinceMonth ? '<span style="color:var(--text-tertiary);">· ' + trV3('recent.progress.since', { month: sinceMonth }) + '</span>' : '')
+        : '<span style="color:var(--text-secondary);font-weight:600;">' + trV3('recent.progress.held') + '</span>';
       const spark = pv4Sparkline(series, lineColor);
       return '<div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--ui-card-border);">'
         + '<div style="min-width:0;flex:1;">'
@@ -803,8 +799,8 @@ function renderV4ExerciseProgression(sessions, days) {
     return '<div class="pv3-card">'
       + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
       + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);">'
-      + '<span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">trending_up</span>Übungs-Progression</div>'
-      + '<button onclick="pv4ShowAllExercises()" style="background:none;border:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--color-primary-light);display:inline-flex;align-items:center;gap:1px;cursor:pointer;">Alle anzeigen<span class="material-symbols-rounded" style="font-size:16px;">chevron_right</span></button>'
+      + '<span class="material-symbols-rounded" style="font-size:18px;color:var(--color-primary-light);">trending_up</span>' + trV3('recent.progress.progressionTitle') + '</div>'
+      + '<button onclick="pv4ShowAllExercises()" style="background:none;border:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--color-primary-light);display:inline-flex;align-items:center;gap:1px;cursor:pointer;">' + trV3('recent.progress.showAll') + '<span class="material-symbols-rounded" style="font-size:16px;">chevron_right</span></button>'
       + '</div>' + rows + '</div>';
   } catch (e) {
     return '';
@@ -853,15 +849,15 @@ function renderV4ConsistencyHero(sessions, days) {
       const isCurrent = i === vols.length - 1;
       return `<span class="pv4-volbar${isCurrent ? ' current' : ''}" style="height:${h}%"></span>`;
     }).join('');
-    const caption = `Wöchentliches Volumen · letzte 8 Wochen${currentHighest ? ' · <b>diese Woche am höchsten</b>' : ''}`;
+    const caption = `${trV3('recent.progress.weeklyVolumeCaption')}${currentHighest ? ' · <b>' + trV3('recent.progress.highestThisWeek') + '</b>' : ''}`;
 
     return `
       <section class="pv3-card pv4-konsistenz-hero">
-        <div class="pv4-sec-title"><span class="material-symbols-rounded">local_fire_department</span>Konsistenz &amp; Volumen</div>
+        <div class="pv4-sec-title"><span class="material-symbols-rounded">local_fire_department</span>${trV3('recent.progress.consistencyVolume')}</div>
         <div class="pv4-stat3">
-          <div class="pv4-mini"><div class="v">${streak} <small>Tg</small></div><div class="l">Streak</div></div>
-          <div class="pv4-mini"><div class="v">${perWeekStr}</div><div class="l">Sess./Woche</div></div>
-          <div class="pv4-mini"><div class="v">${totalMinutes} <small>min</small></div><div class="l">Bewegung</div></div>
+          <div class="pv4-mini"><div class="v">${streak} <small>${trV3('recent.progress.daysShort')}</small></div><div class="l">${trV3('recent.progress.streak')}</div></div>
+          <div class="pv4-mini"><div class="v">${perWeekStr}</div><div class="l">${trV3('recent.progress.sessionsPerWeekShort')}</div></div>
+          <div class="pv4-mini"><div class="v">${totalMinutes} <small>min</small></div><div class="l">${trV3('recent.progress.movement')}</div></div>
         </div>
         <div class="pv4-volbars">${volBars}</div>
         <p class="pv4-lead pv4-muted pv4-vol-caption">${caption}</p>
@@ -951,7 +947,7 @@ function renderV4FormReadiness() {
     if (r.zone) {
       const rPhase = getPhaseFromZone(r.zone);
       const acwrStr = (r.acwr != null) ? r.acwr.toFixed(1).replace('.', ',') : '–';
-      loadHTML = `<div class="pv4-form-load"><span class="pv4-ready-dot" style="background:${getZoneColor(r.zone)}"></span>Belastung / Erholung: <b style="color:${getZoneColor(r.zone)}">${rPhase.label}</b> · ACWR ${acwrStr}</div>`;
+      loadHTML = `<div class="pv4-form-load"><span class="pv4-ready-dot" style="background:${getZoneColor(r.zone)}"></span>${trV3('recent.progress.loadRecovery')}: <b style="color:${getZoneColor(r.zone)}">${rPhase.label}</b> · ACWR ${acwrStr}</div>`;
     }
   }
 
@@ -959,7 +955,7 @@ function renderV4FormReadiness() {
     <section class="pv3-card">
       <div class="pv4-form-head">
         <div>
-          <div class="pv4-sec-title" style="margin-bottom:8px;"><span class="material-symbols-rounded">monitoring</span>Form &amp; Belastung</div>
+          <div class="pv4-sec-title" style="margin-bottom:8px;"><span class="material-symbols-rounded">monitoring</span>${trV3('recent.progress.formAndLoad')}</div>
           <div class="pv4-form-score">${form.formScore}</div>
           <div class="pv4-form-zone" style="color:${zoneColor}"><span class="material-symbols-rounded">${trendIcon}</span>${phaseLabel}</div>
         </div>
@@ -1540,7 +1536,7 @@ function renderEnduranceCard(sessions) {
     const fmtKm = v => v.toFixed(v >= 10 ? 0 : 1).replace('.', ',');
 
     // Pro-Sport-Kurzzeile (Distanz · Einheiten)
-    const sportMeta = { run: { label: 'Laufen', icon: 'directions_run' }, bike: { label: 'Rad', icon: 'directions_bike' }, swim: { label: 'Schwimmen', icon: 'pool' } };
+    const sportMeta = { run: { label: trV3('recent.progress.sportRun'), icon: 'directions_run' }, bike: { label: trV3('recent.progress.sportBike'), icon: 'directions_bike' }, swim: { label: trV3('recent.progress.sportSwim'), icon: 'pool' } };
     const bySport = {};
     cardio.forEach(s => { const sp = normalize((s.activityType || '').toLowerCase()); if (!sportMeta[sp]) return; (bySport[sp] = bySport[sp] || { dist: 0, n: 0 }); bySport[sp].dist += (Number(s.distanceKm) || 0); bySport[sp].n += 1; });
     const sportRows = Object.keys(bySport).map(sp => {
@@ -1551,16 +1547,16 @@ function renderEnduranceCard(sessions) {
     return `
       <section class="pv3-card pv4-endurance-card">
         <div class="pv4-sec-head">
-          <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">directions_run</span>Ausdauer</div>
+          <div class="pv4-sec-title" style="margin-bottom:0;"><span class="material-symbols-rounded">directions_run</span>${trV3('recent.progress.endurance')}</div>
           <span class="pv4-endurance-total">${fmtKm(totalDist)} km</span>
         </div>
         <div class="pv4-stat3 pv4-endurance-stats">
-          <div class="pv4-mini"><div class="v">${fmtKm(weeklyDist)} <small>km</small></div><div class="l">Ø /Woche</div></div>
-          <div class="pv4-mini"><div class="v">${paceStr}</div><div class="l">Ø Pace /km</div></div>
-          <div class="pv4-mini"><div class="v">${cardio.length}</div><div class="l">Einheiten</div></div>
+          <div class="pv4-mini"><div class="v">${fmtKm(weeklyDist)} <small>km</small></div><div class="l">${trV3('recent.progress.perWeekShort')}</div></div>
+          <div class="pv4-mini"><div class="v">${paceStr}</div><div class="l">${trV3('recent.progress.avgPacePerKm')}</div></div>
+          <div class="pv4-mini"><div class="v">${cardio.length}</div><div class="l">${trV3('recent.progress.unitsShort')}</div></div>
         </div>
         <div class="pv4-volbars pv4-endurance-bars">${bars}</div>
-        <p class="pv4-lead pv4-muted pv4-vol-caption">Wöchentliche Distanz · letzte 8 Wochen</p>
+        <p class="pv4-lead pv4-muted pv4-vol-caption">${trV3('recent.progress.weeklyDistanceCaption')}</p>
         ${sportRows ? `<div class="pv4-endurance-sports">${sportRows}</div>` : ''}
       </section>`;
   } catch (e) {
@@ -1637,7 +1633,7 @@ function initEnduranceCharts() {
 }
 
 function aggregateToMonthlyBuckets(buckets) {
-  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  const monthLabel = (typeof monthShortLabel === 'function') ? monthShortLabel : (i) => ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'][i];
   const map = new Map();
 
   buckets.forEach(b => {
@@ -1646,7 +1642,7 @@ function aggregateToMonthlyBuckets(buckets) {
     const key = `${d.getFullYear()}-${d.getMonth()}`;
     if (!map.has(key)) {
       map.set(key, {
-        label: `${months[d.getMonth()]} ${d.getFullYear()}`,
+        label: `${monthLabel(d.getMonth())} ${d.getFullYear()}`,
         date: new Date(d.getFullYear(), d.getMonth(), 1),
         totalDuration: 0,
         totalDistance: 0,
@@ -2312,7 +2308,7 @@ function renderV4Rhythm(sessions) {
           <h3 class="pv3-card-title">${trV3('progress.v3.rhythm.title')}</h3>
           <span class="pv3-card-subtitle">${subtitle}</span>
         </div>
-        <div class="pv3-rhythm-total" aria-label="Gesamt">
+        <div class="pv3-rhythm-total" aria-label="${trV3('recent.progress.total')}">
           <span class="pv3-rhythm-total-value">${formatTotalMinutes(grandTotal)}</span>
         </div>
       </div>
@@ -2458,8 +2454,8 @@ function renderV4ExerciseTrends() {
     const up = last > first + 0.5;
     const trendIcon = up ? 'trending_up' : 'trending_flat';
     const trendColor = up ? 'var(--color-primary-light)' : 'var(--text-secondary)';
-    const trendText = up ? 'steigt' : 'gehalten';
-    const avgStr = vals.length ? (data.weighted ? ('e1RM Ø ' + avg + ' kg') : ('Ø ' + avg + ' Wdh.')) : `${ex.sessionCount}× trainiert`;
+    const trendText = up ? trV3('recent.progress.rising') : trV3('recent.progress.held');
+    const avgStr = vals.length ? (data.weighted ? ('e1RM Ø ' + avg + ' kg') : ('Ø ' + avg + ' ' + trV3('recent.progress.repsShort'))) : trV3('recent.progress.trainedTimes', { count: ex.sessionCount });
     const prStr = pr > 0 ? (data.weighted ? ('PR ' + pr + ' kg') : ('PR ' + pr)) : '';
     const spark = pv4Sparkline(data.series, up ? '#F02277' : '#9ca3af');
     return `

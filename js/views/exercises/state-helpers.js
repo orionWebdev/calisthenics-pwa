@@ -72,25 +72,37 @@ function exercisePrimaryMatchesMuscle(exercise, filterKey) {
   return false;
 }
 
-// Equipment Namen Mapping
-const equipmentNames = {
-  'bodyweight': 'Bodyweight',
-  'pull-up-bar': 'Klimmzugstange',
-  'barbell': 'Langhantel',
-  'dumbbell': 'Kurzhantel',
-  'resistance-bands': 'Widerstandsbänder',
-  'gym-machine': 'Maschine',
-  'parallettes': 'Paralettes',
-  'rings': 'Ringe',
-  'bench': 'Bank',
+// Equipment name mapping → i18n keys (resolved at access time so the labels
+// follow the active locale). Accessed as equipmentNames[key] across views.
+const EQUIPMENT_LABEL_KEYS = {
+  'bodyweight': 'recent.equipment.bodyweight',
+  'pull-up-bar': 'recent.equipment.pullUpBar',
+  'barbell': 'recent.equipment.barbell',
+  'dumbbell': 'recent.equipment.dumbbell',
+  'resistance-bands': 'recent.equipment.resistanceBands',
+  'gym-machine': 'recent.equipment.machine',
+  'parallettes': 'recent.equipment.parallettes',
+  'rings': 'recent.equipment.rings',
+  'bench': 'recent.equipment.bench',
   // Legacy keys kept for backward compat display
-  'none': 'Kein Equipment',
-  'dip-bars': 'Dip-Barren',
-  'box': 'Box/Bank',
-  'wall': 'Wand',
-  'mat': 'Matte',
-  'weights': 'Gewichte'
+  'none': 'recent.equipment.none',
+  'dip-bars': 'recent.equipment.dipBars',
+  'box': 'recent.equipment.box',
+  'wall': 'recent.equipment.wall',
+  'mat': 'recent.equipment.mat',
+  'weights': 'recent.equipment.weights'
 };
+const equipmentNames = new Proxy({}, {
+  get(_t, prop) {
+    const key = EQUIPMENT_LABEL_KEYS[prop];
+    if (!key) return undefined;
+    const label = (typeof t === 'function') ? t(key) : key;
+    return (label && label !== key) ? label : undefined;
+  },
+  has(_t, prop) { return prop in EQUIPMENT_LABEL_KEYS; },
+  ownKeys() { return Object.keys(EQUIPMENT_LABEL_KEYS); },
+  getOwnPropertyDescriptor() { return { enumerable: true, configurable: true }; }
+});
 
 // Equipment Icons Mapping
 const equipmentIcons = {

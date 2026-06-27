@@ -321,7 +321,7 @@ async function saveQuickExercise() {
   } catch (error) {
     console.error('Error saving quick exercise:', error);
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', 'Fehler beim Speichern');
+      showEdgeFeedback('error', t('workoutModal.saveError'));
     }
   }
 }

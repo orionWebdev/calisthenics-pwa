@@ -199,7 +199,7 @@ function logSetFromInput() {
 
   if (!reps || reps <= 0) {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Bitte gib die Anzahl der Wiederholungen ein');
+    showEdgeFeedback('error', t('workout.setLogger.enterReps'));
   }
     repsInput.focus();
     return;
@@ -329,7 +329,7 @@ function logSet(reps, weight = null, holdSec = null) {
  * Delete a set
  */
 function deleteSet(exerciseIndex, setIndex) {
-  if (!confirm('Diesen Satz wirklich löschen?')) return;
+  if (!confirm(t('workout.setLogger.deleteSetConfirm'))) return;
 
   const exercise = activeWorkout.exercises[exerciseIndex];
   if (!exercise) return;
@@ -807,7 +807,7 @@ function toggleTimerPause() {
 
 function confirmReplaceActiveWorkout() {
   if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Du hast bereits ein aktives Workout. Bitte fortsetzen oder abbrechen.');
+    showEdgeFeedback('error', t('recent.workout.alreadyActive'));
   }
   ensureActiveWorkoutBanner();
   if (typeof showView === 'function') {

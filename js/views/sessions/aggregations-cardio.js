@@ -234,8 +234,8 @@ function aggregateRunByPeriod(periodKey) {
  * Formats a day label for chart display
  */
 function formatDayLabel(date) {
-  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-  return `${date.getDate()}. ${months[date.getMonth()]}`;
+  const month = (typeof monthShortLabel === 'function') ? monthShortLabel(date.getMonth()) : ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'][date.getMonth()];
+  return `${date.getDate()}. ${month}`;
 }
 
 /**

@@ -556,9 +556,9 @@ function openEditCardioSessionModal(sessionId) {
           <label for="edit-cardio-notes">${trEdit('common.notes')} (${trEdit('common.optional')})</label>
           <textarea id="edit-cardio-notes" rows="3" placeholder="${trEdit('common.notes')}">${notes}</textarea>
         </div>
-        ${buildRpeEditRow('edit-cardio-energy', 'Energie vorher (1-5)', session.preWorkoutEnergy)}
-        ${buildRpeEditRow('edit-cardio-feeling', 'Gefühl danach (1-5)', session.postWorkoutFeeling)}
-        ${buildRpeEditRow('edit-cardio-rpe', 'RPE - Belastung (1-5)', session.rpe)}
+        ${buildRpeEditRow('edit-cardio-energy', trEdit('recent.sessionEdit.energyBefore'), session.preWorkoutEnergy)}
+        ${buildRpeEditRow('edit-cardio-feeling', trEdit('recent.sessionEdit.feelingAfter'), session.postWorkoutFeeling)}
+        ${buildRpeEditRow('edit-cardio-rpe', trEdit('recent.sessionEdit.rpeLoad'), session.rpe)}
         <div class="session-edit-actions">
           <button type="submit" class="btn-primary">
             <span class="material-symbols-rounded">save</span>
@@ -685,9 +685,9 @@ function openEditRecoverySessionModal(sessionId) {
           <label for="edit-recovery-notes">${trEdit('common.notes')} (${trEdit('common.optional')})</label>
           <textarea id="edit-recovery-notes" rows="3" placeholder="${trEdit('common.notes')}">${notes}</textarea>
         </div>
-        ${buildRpeEditRow('edit-recovery-energy', 'Energie vorher (1-5)', session.preWorkoutEnergy)}
-        ${buildRpeEditRow('edit-recovery-feeling', 'Gefühl danach (1-5)', session.postWorkoutFeeling)}
-        ${buildRpeEditRow('edit-recovery-rpe', 'RPE - Belastung (1-5)', session.rpe)}
+        ${buildRpeEditRow('edit-recovery-energy', trEdit('recent.sessionEdit.energyBefore'), session.preWorkoutEnergy)}
+        ${buildRpeEditRow('edit-recovery-feeling', trEdit('recent.sessionEdit.feelingAfter'), session.postWorkoutFeeling)}
+        ${buildRpeEditRow('edit-recovery-rpe', trEdit('recent.sessionEdit.rpeLoad'), session.rpe)}
         <div class="session-edit-actions">
           <button type="submit" class="btn-primary">
             <span class="material-symbols-rounded">save</span>

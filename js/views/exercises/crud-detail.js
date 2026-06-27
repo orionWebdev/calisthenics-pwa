@@ -150,7 +150,7 @@ function renderExerciseHistoryTab(exerciseId) {
   const exerciseEntries = getExerciseSetsFromSessions(exerciseId);
 
   if (exerciseEntries.length === 0) {
-    return '<div class="exercise-history-empty"><span class="material-symbols-rounded" style="font-size:40px;display:block;margin-bottom:0.5rem;">history</span>Noch keine Historie vorhanden</div>';
+    return '<div class="exercise-history-empty"><span class="material-symbols-rounded" style="font-size:40px;display:block;margin-bottom:0.5rem;">history</span>' + t('recent.exercise.historyEmpty') + '</div>';
   }
 
   // Sort descending by date
@@ -167,18 +167,18 @@ function renderExerciseHistoryTab(exerciseId) {
   let html = '';
   Object.keys(groups).sort().reverse().forEach(key => {
     const g = groups[key];
-    const dateStr = g.date.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    const dateStr = g.date.toLocaleDateString((typeof getIntlLocale === 'function' ? getIntlLocale() : 'de-DE'), { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
     html += `<div class="exercise-history-date-group">
       <div class="exercise-history-date-header">${dateStr}</div>`;
 
     g.entries.forEach(entry => {
       const setsStr = entry.sets.map((s, i) =>
-        `Satz ${i + 1}: ${s.reps || 0} Wdh${s.weight ? ' × ' + s.weight + ' kg' : ''}`
+        `${t('workout.setLogger.set')} ${i + 1}: ${s.reps || 0} ${t('recent.progress.repsShort')}${s.weight ? ' × ' + s.weight + ' kg' : ''}`
       ).join('<br>');
 
       html += `<div class="exercise-history-entry">
         <div class="exercise-history-sets">${setsStr}</div>
-        <button class="exercise-history-delete" onclick="deleteExerciseFromSession('${entry.sessionId}', '${exerciseId}')" title="Eintrag löschen">
+        <button class="exercise-history-delete" onclick="deleteExerciseFromSession('${entry.sessionId}', '${exerciseId}')" title="${t('recent.exercise.deleteEntryTitle')}">
           <span class="material-symbols-rounded" style="font-size:20px;">delete</span>
         </button>
       </div>`;
@@ -191,7 +191,7 @@ function renderExerciseHistoryTab(exerciseId) {
 }
 
 async function deleteExerciseFromSession(sessionId, exerciseId) {
-  if (!confirm('Diese Übung aus der Session löschen?')) return;
+  if (!confirm(t('recent.exercise.deleteFromSessionConfirm'))) return;
 
   try {
     const session = allSessions.find(s => s.id === sessionId);
@@ -594,23 +594,23 @@ function openMuscleGroupsBottomSheet() {
  */
 function openEquipmentBottomSheet() {
   const equipmentOptions = [
-    { value: 'bodyweight', label: 'Bodyweight', description: 'Kein Equipment nötig' },
-    { value: 'pull-up-bar', label: 'Klimmzugstange', description: 'Für Klimmzüge und Hanging-Übungen' },
-    { value: 'barbell', label: 'Langhantel', description: 'Langhantel-Training' },
-    { value: 'dumbbell', label: 'Kurzhantel', description: 'Kurzhantel-Training' },
-    { value: 'resistance-bands', label: 'Widerstandsbänder', description: 'Für Assistance oder zusätzlichen Widerstand' },
-    { value: 'gym-machine', label: 'Maschine', description: 'Geräte im Fitnessstudio' },
-    { value: 'parallettes', label: 'Paralettes', description: 'Für L-Sits, Handstands und Push-Ups' },
-    { value: 'rings', label: 'Ringe', description: 'Gymnastikringe für instabiles Training' },
-    { value: 'bench', label: 'Bank', description: 'Flach-/Schrägbank' }
+    { value: 'bodyweight', label: t('recent.equipment.bodyweight'), description: t('recent.equipment.bodyweightDesc') },
+    { value: 'pull-up-bar', label: t('recent.equipment.pullUpBar'), description: t('recent.equipment.pullUpBarDesc') },
+    { value: 'barbell', label: t('recent.equipment.barbell'), description: t('recent.equipment.barbellDesc') },
+    { value: 'dumbbell', label: t('recent.equipment.dumbbell'), description: t('recent.equipment.dumbbellDesc') },
+    { value: 'resistance-bands', label: t('recent.equipment.resistanceBands'), description: t('recent.equipment.resistanceBandsDesc') },
+    { value: 'gym-machine', label: t('recent.equipment.machine'), description: t('recent.equipment.machineDesc') },
+    { value: 'parallettes', label: t('recent.equipment.parallettes'), description: t('recent.equipment.parallettesDesc') },
+    { value: 'rings', label: t('recent.equipment.rings'), description: t('recent.equipment.ringsDesc') },
+    { value: 'bench', label: t('recent.equipment.bench'), description: t('recent.equipment.benchDesc') }
   ];
 
   openBottomSheet({
-    title: 'Equipment auswählen',
+    title: t('recent.equipment.title'),
     options: equipmentOptions,
     selectedValues: exerciseEquipment,
     enableSearch: true,
-    searchPlaceholder: 'Equipment suchen...',
+    searchPlaceholder: t('recent.equipment.searchPlaceholder'),
     fieldId: 'exercise-equipment-wrapper',
     onConfirm: (selectedValues) => {
       exerciseEquipment = selectedValues;
@@ -637,7 +637,7 @@ function renderExerciseMuscleGroupsInput() {
 function renderExerciseEquipmentInput() {
   renderMultiSelectInput('exercise-equipment-wrapper', {
     icon: 'build',
-    placeholder: 'Equipment auswählen...',
+    placeholder: t('recent.equipment.placeholder'),
     selectedValues: exerciseEquipment,
     valueLabels: equipmentNames
   });

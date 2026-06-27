@@ -112,12 +112,12 @@ async function saveCardioSession() {
 
   // Validation
   if (!validDate) {
-    showErrorMessage('Bitte wähle ein Datum');
+    showErrorMessage(t('workout.quick.dateRequired'));
     return;
   }
 
   if (!duration || duration <= 0) {
-    showErrorMessage('Bitte gib eine gültige Dauer ein');
+    showErrorMessage(t('workout.quick.durationRequired'));
     return;
   }
 
@@ -175,7 +175,7 @@ async function saveCardioSession() {
 
   } catch (error) {
     console.error('❌ Error saving cardio session:', error);
-    showErrorMessage('Fehler beim Speichern: ' + error.message);
+    showErrorMessage(t('workoutModal.saveError') + ': ' + error.message);
   } finally {
     const saveBtn = document.querySelector('#add-cardio-modal .modal-save-btn');
     if (saveBtn) {
@@ -210,9 +210,8 @@ function showErrorMessage(message) {
  * Formatiert Datum als kurze Version
  */
 function formatShortDate(date) {
-  const months = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
   const day = date.getDate();
-  const month = months[date.getMonth()];
+  const month = (typeof monthShortLabel === 'function') ? monthShortLabel(date.getMonth()) : ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'][date.getMonth()];
   return `${day}. ${month}`;
 }
 
@@ -544,8 +543,8 @@ function renderStrengthExercisesList() {
         <div class="exercise-info">
           <div class="exercise-name">${exercise.exerciseName}</div>
           <div class="exercise-sets-info">
-            <span class="sets-badge">${setsCount} ${setsCount === 1 ? 'Satz' : 'Sätze'}</span>
-            <span>${totalReps} Wdh.</span>
+            <span class="sets-badge">${setsCount} ${setsCount === 1 ? t('workout.setLogger.set') : t('workoutModal.sets')}</span>
+            <span>${totalReps} ${t('workout.logging.totalReps')}</span>
           </div>
         </div>
         <div class="exercise-actions">
@@ -705,12 +704,12 @@ async function saveRecoverySession() {
   const notes = document.getElementById('recovery-notes').value.trim();
 
   if (!validDate) {
-    showErrorMessage('Bitte wähle ein Datum');
+    showErrorMessage(t('workout.quick.dateRequired'));
     return;
   }
 
   if (!duration || duration <= 0) {
-    showErrorMessage('Bitte gib eine gültige Dauer ein');
+    showErrorMessage(t('workout.quick.durationRequired'));
     return;
   }
 
@@ -759,7 +758,7 @@ async function saveRecoverySession() {
     triggerSuccessGlow();
   } catch (error) {
     console.error('❌ Error saving recovery session:', error);
-    showErrorMessage('Fehler beim Speichern: ' + error.message);
+    showErrorMessage(t('workoutModal.saveError') + ': ' + error.message);
   } finally {
     const saveBtn = document.querySelector('#add-recovery-modal .modal-save-btn');
     if (saveBtn) {

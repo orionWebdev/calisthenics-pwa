@@ -39,8 +39,8 @@ function renderSupersetBlockContent(block, currentExercise) {
     `;
   }).join('');
 
-  const bannerLabel = `Superset · ${block.exercises.length} ${block.exercises.length === 1 ? 'Übung' : 'Übungen'}`;
-  const bannerMeta = `Runde ${currentRound} / ${totalRounds}`;
+  const bannerLabel = t(block.exercises.length === 1 ? 'recent.workout.supersetBannerOne' : 'recent.workout.supersetBannerOther', { count: block.exercises.length });
+  const bannerMeta = t('recent.workout.round', { current: currentRound, total: totalRounds });
 
   return `
     <div class="block-content block-content--superset">
@@ -79,8 +79,8 @@ function renderSTDetail(exercise) {
   const exMeta = (typeof allExercises !== 'undefined' && Array.isArray(allExercises))
     ? allExercises.find(e => e && e.id === exercise.exerciseId) : null;
   const primaryMuscle = (exMeta && Array.isArray(exMeta.muscleGroups)) ? exMeta.muscleGroups[0] : null;
-  const muscleMap = { chest: 'Brust', back: 'Rücken', legs: 'Beine', quads: 'Beine', hamstrings: 'Beine', glutes: 'Gesäß', shoulders: 'Schultern', arms: 'Arme', biceps: 'Bizeps', triceps: 'Trizeps', core: 'Core', abs: 'Core', fullbody: 'Ganzkörper', cardio: 'Cardio' };
-  const muscleBadge = primaryMuscle ? `<span class="st-detail-muscle">${muscleMap[primaryMuscle] || primaryMuscle}</span>` : '';
+  const muscleLabel = primaryMuscle ? ((typeof getMuscleLabel === 'function') ? getMuscleLabel(primaryMuscle) : primaryMuscle) : '';
+  const muscleBadge = primaryMuscle ? `<span class="st-detail-muscle">${muscleLabel}</span>` : '';
 
   return `
     <div class="st-detail">

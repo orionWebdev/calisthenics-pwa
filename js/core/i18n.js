@@ -294,6 +294,7 @@ const translations = {
         triceps: 'Trizeps',
         core: 'Core',
         legs: 'Beine',
+        glutes: 'Gesäß',
         fullBody: 'Ganzkörper',
         arms: 'Arme',
         calf: 'Waden',
@@ -1512,6 +1513,99 @@ const translations = {
           superset: 'Superset'
         }
       }
+    },
+    recent: {
+      progress: {
+        muscleVolumeTitle: 'Wochenvolumen · pro Muskel',
+        muscleVolumeSubtitle: 'Sätze/Woche je Muskelgruppe — Zielkorridor ~10–20.',
+        progressionTitle: 'Übungs-Progression',
+        showAll: 'Alle anzeigen',
+        held: 'gehalten',
+        since: 'seit {month}',
+        repsShort: 'Wdh.',
+        trainedTimes: '{count}× trainiert',
+        consistencyVolume: 'Konsistenz & Volumen',
+        movement: 'Bewegung',
+        endurance: 'Ausdauer',
+        unitsShort: 'Einheiten',
+        rising: 'steigt',
+        daysShort: 'Tg',
+        streak: 'Streak',
+        sessionsPerWeekShort: 'Sess./Woche',
+        weeklyVolumeCaption: 'Wöchentliches Volumen · letzte 8 Wochen',
+        highestThisWeek: 'diese Woche am höchsten',
+        loadRecovery: 'Belastung / Erholung',
+        formAndLoad: 'Form & Belastung',
+        weeklyDistanceCaption: 'Wöchentliche Distanz · letzte 8 Wochen',
+        perWeekShort: 'Ø /Woche',
+        avgPacePerKm: 'Ø Pace /km',
+        total: 'Gesamt',
+        sportRun: 'Laufen',
+        sportBike: 'Rad',
+        sportSwim: 'Schwimmen'
+      },
+      workout: {
+        targetLine: 'Ziel: {sets} Sätze × {reps} Wiederholungen',
+        targetRest: ' · {seconds}s Pause',
+        supersetBannerOne: 'Superset · {count} Übung',
+        supersetBannerOther: 'Superset · {count} Übungen',
+        round: 'Runde {current} / {total}',
+        saveAsPlanConfirm: 'Workout als Plan speichern?',
+        removeExerciseConfirm: '"{name}" aus dem Workout entfernen?',
+        exerciseAdded: '{name} hinzugefügt',
+        alreadyActive: 'Du hast bereits ein aktives Workout. Bitte fortsetzen oder abbrechen.'
+      },
+      dashboard: { formHeroTitle: 'Trainingsform' },
+      app: { loadError: 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' },
+      auth: {
+        signingIn: 'Anmeldung läuft...',
+        checkingAccess: 'Zugriff wird überprüft...',
+        creatingAccount: 'Konto wird erstellt...',
+        noAccess: 'Dein Account hat keinen Zugriff auf diese App.',
+        unsupportedProvider: 'Nicht unterstützte Anmeldemethode.',
+        signOutError: 'Fehler beim Abmelden.',
+        loading: 'Lädt...'
+      },
+      exercise: {
+        historyEmpty: 'Noch keine Historie vorhanden',
+        deleteEntryTitle: 'Eintrag löschen',
+        deleteFromSessionConfirm: 'Diese Übung aus der Session löschen?'
+      },
+      numberPicker: { repsSuffix: 'Wdh', setTypeAria: 'Satz-Typ' },
+      sessionEdit: {
+        energyBefore: 'Energie vorher (1-5)',
+        feelingAfter: 'Gefühl danach (1-5)',
+        rpeLoad: 'RPE - Belastung (1-5)'
+      },
+      equipment: {
+        title: 'Equipment auswählen',
+        searchPlaceholder: 'Equipment suchen...',
+        placeholder: 'Equipment auswählen...',
+        bodyweight: 'Bodyweight',
+        bodyweightDesc: 'Kein Equipment nötig',
+        pullUpBar: 'Klimmzugstange',
+        pullUpBarDesc: 'Für Klimmzüge und Hanging-Übungen',
+        barbell: 'Langhantel',
+        barbellDesc: 'Langhantel-Training',
+        dumbbell: 'Kurzhantel',
+        dumbbellDesc: 'Kurzhantel-Training',
+        resistanceBands: 'Widerstandsbänder',
+        resistanceBandsDesc: 'Für Assistance oder zusätzlichen Widerstand',
+        machine: 'Maschine',
+        machineDesc: 'Geräte im Fitnessstudio',
+        parallettes: 'Paralettes',
+        parallettesDesc: 'Für L-Sits, Handstands und Push-Ups',
+        rings: 'Ringe',
+        ringsDesc: 'Gymnastikringe für instabiles Training',
+        bench: 'Bank',
+        benchDesc: 'Flach-/Schrägbank',
+        none: 'Kein Equipment',
+        dipBars: 'Dip-Barren',
+        box: 'Box/Bank',
+        wall: 'Wand',
+        mat: 'Matte',
+        weights: 'Gewichte'
+      }
     }
   },
   en: {
@@ -1805,6 +1899,7 @@ const translations = {
         triceps: 'Triceps',
         core: 'Core',
         legs: 'Legs',
+        glutes: 'Glutes',
         fullBody: 'Full body',
         arms: 'Arms',
         calf: 'Calves',
@@ -3023,6 +3118,99 @@ const translations = {
           superset: 'Superset'
         }
       }
+    },
+    recent: {
+      progress: {
+        muscleVolumeTitle: 'Weekly Volume · per Muscle',
+        muscleVolumeSubtitle: 'Sets/week per muscle group — target range ~10–20.',
+        progressionTitle: 'Exercise Progression',
+        showAll: 'Show all',
+        held: 'maintained',
+        since: 'since {month}',
+        repsShort: 'reps',
+        trainedTimes: 'trained {count}×',
+        consistencyVolume: 'Consistency & Volume',
+        movement: 'Movement',
+        endurance: 'Endurance',
+        unitsShort: 'Sessions',
+        rising: 'rising',
+        daysShort: 'd',
+        streak: 'Streak',
+        sessionsPerWeekShort: 'Sess./week',
+        weeklyVolumeCaption: 'Weekly volume · last 8 weeks',
+        highestThisWeek: 'highest this week',
+        loadRecovery: 'Load / Recovery',
+        formAndLoad: 'Form & Load',
+        weeklyDistanceCaption: 'Weekly distance · last 8 weeks',
+        perWeekShort: 'Ø /week',
+        avgPacePerKm: 'Ø pace /km',
+        total: 'Total',
+        sportRun: 'Run',
+        sportBike: 'Bike',
+        sportSwim: 'Swim'
+      },
+      workout: {
+        targetLine: 'Goal: {sets} sets × {reps} reps',
+        targetRest: ' · {seconds}s rest',
+        supersetBannerOne: 'Superset · {count} exercise',
+        supersetBannerOther: 'Superset · {count} exercises',
+        round: 'Round {current} / {total}',
+        saveAsPlanConfirm: 'Save workout as plan?',
+        removeExerciseConfirm: 'Remove "{name}" from the workout?',
+        exerciseAdded: '{name} added',
+        alreadyActive: 'You already have an active workout. Please resume or cancel it.'
+      },
+      dashboard: { formHeroTitle: 'Training Form' },
+      app: { loadError: 'Failed to load the app. Please reload the page.\n\nDetails: ' },
+      auth: {
+        signingIn: 'Signing in...',
+        checkingAccess: 'Checking access...',
+        creatingAccount: 'Creating account...',
+        noAccess: 'Your account does not have access to this app.',
+        unsupportedProvider: 'Unsupported sign-in method.',
+        signOutError: 'Sign-out failed.',
+        loading: 'Loading...'
+      },
+      exercise: {
+        historyEmpty: 'No history yet',
+        deleteEntryTitle: 'Delete entry',
+        deleteFromSessionConfirm: 'Remove this exercise from the session?'
+      },
+      numberPicker: { repsSuffix: 'reps', setTypeAria: 'Set type' },
+      sessionEdit: {
+        energyBefore: 'Energy before (1-5)',
+        feelingAfter: 'Feeling after (1-5)',
+        rpeLoad: 'RPE - Exertion (1-5)'
+      },
+      equipment: {
+        title: 'Select equipment',
+        searchPlaceholder: 'Search equipment...',
+        placeholder: 'Select equipment...',
+        bodyweight: 'Bodyweight',
+        bodyweightDesc: 'No equipment needed',
+        pullUpBar: 'Pull-up bar',
+        pullUpBarDesc: 'For pull-ups and hanging exercises',
+        barbell: 'Barbell',
+        barbellDesc: 'Barbell training',
+        dumbbell: 'Dumbbell',
+        dumbbellDesc: 'Dumbbell training',
+        resistanceBands: 'Resistance bands',
+        resistanceBandsDesc: 'For assistance or added resistance',
+        machine: 'Machine',
+        machineDesc: 'Gym machines',
+        parallettes: 'Parallettes',
+        parallettesDesc: 'For L-sits, handstands and push-ups',
+        rings: 'Rings',
+        ringsDesc: 'Gymnastic rings for unstable training',
+        bench: 'Bench',
+        benchDesc: 'Flat / incline bench',
+        none: 'No equipment',
+        dipBars: 'Dip bars',
+        box: 'Box / bench',
+        wall: 'Wall',
+        mat: 'Mat',
+        weights: 'Weights'
+      }
     }
   }
 };
@@ -3140,7 +3328,29 @@ function formatPaceValueText(paceMinPerKm) {
   return t('format.pace.value', { min: minutes, sec: String(seconds).padStart(2, '0') });
 }
 
+// Resolve a localized muscle-group label at render time (locale may change
+// after module load). Maps common aliases onto the canonical muscle keys.
+function getMuscleLabel(key) {
+  if (!key) return '';
+  const aliases = { quads: 'legs', hamstrings: 'legs', abs: 'core', fullbody: 'fullBody', glute: 'glutes' };
+  const mapped = aliases[key] || key;
+  const path = 'exercise.muscles.' + mapped;
+  const label = t(path);
+  if (label && label !== path) return label;
+  return key.charAt(0).toUpperCase() + key.slice(1);
+}
+
+// Localized short month label (e.g. "Mär" / "Mar") for chart axes.
+function monthShortLabel(monthIndex) {
+  const idx = ((Number(monthIndex) % 12) + 12) % 12;
+  const date = new Date(2000, idx, 1);
+  return new Intl.DateTimeFormat(getIntlLocale(), { month: 'short', timeZone: 'Europe/Berlin' }).format(date);
+}
+
 window.t = t;
+window.getMuscleLabel = getMuscleLabel;
+window.monthShortLabel = monthShortLabel;
+window.getIntlLocale = getIntlLocale;
 window.setLocale = setLocale;
 window.formatDurationText = formatDurationText;
 window.formatDurationShortText = formatDurationShortText;
