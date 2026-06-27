@@ -87,7 +87,7 @@ function mapSessionToCalendarEvent(session) {
   return {
     id: 'session-' + (session.id || dateStr),
     source: 'session',
-    title: session.planName || session.name || (t('plan.types.' + type) || 'Training'),
+    title: session.planName || session.name || t('plan.types.' + type),
     type: type,
     startDate: dateStr,
     startTime: null,
@@ -1075,15 +1075,15 @@ function renderDashboardCalendar() {
   const isPast = dashCalSelected < todayKey;
   const agenda = selEvents.length
     ? selEvents.map(e => renderEventRow(e, isPast)).join('')
-    : `<div class="dash-cal-empty"><span class="material-symbols-rounded">event_available</span>${t('calendar.noPlannedWorkouts') || 'Nichts geplant'}</div>`;
+    : `<div class="dash-cal-empty"><span class="material-symbols-rounded">event_available</span>${t('calendar.noPlannedWorkouts')}</div>`;
 
   container.innerHTML = `
     <div class="dash-cal-card">
       <div class="dash-cal-head">
-        <span class="dash-cal-title"><span class="material-symbols-rounded">calendar_month</span>${t('nav.calendar') || 'Kalender'}</span>
+        <span class="dash-cal-title"><span class="material-symbols-rounded">calendar_month</span>${t('nav.calendar')}</span>
         <div class="dash-cal-head-actions">
-          <button type="button" class="dash-cal-add" onclick="openQuickAddSheet()" aria-label="${t('dashboard.calendar.addTraining') || 'Training planen'}"><span class="material-symbols-rounded">add</span></button>
-          <button type="button" class="dash-cal-toggle${dashCalExpanded ? ' is-expanded' : ''}" onclick="dashCalToggleExpand()" aria-label="${dashCalExpanded ? 'Monat einklappen' : 'Monat ausklappen'}"><span class="material-symbols-rounded">expand_more</span></button>
+          <button type="button" class="dash-cal-add" onclick="openQuickAddSheet()" aria-label="${t('dashboard.calendar.addTraining')}"><span class="material-symbols-rounded">add</span></button>
+          <button type="button" class="dash-cal-toggle${dashCalExpanded ? ' is-expanded' : ''}" onclick="dashCalToggleExpand()" aria-label="${dashCalExpanded ? t('calendar.collapseMonth') : t('calendar.expandMonth')}"><span class="material-symbols-rounded">expand_more</span></button>
         </div>
       </div>
       <div class="dash-cal-nav">

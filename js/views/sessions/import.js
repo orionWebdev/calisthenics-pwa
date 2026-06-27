@@ -123,7 +123,7 @@
 
   function saveImportedSession(parsed, fileName) {
     if (!parsed) {
-      if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', 'Datei konnte nicht gelesen werden (.TCX/.GPX erwartet)');
+      if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', t('import.fileReadError'));
       return;
     }
     var session = Object.assign({}, parsed, {
@@ -137,7 +137,7 @@
       if (z.some(function (x) { return x.minutes > 0; })) session.hrZones = z;
     }
     if (typeof addDoc !== 'function' || typeof sessionsCollection === 'undefined') {
-      if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', 'Import nicht verfügbar');
+      if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', t('import.notAvailable'));
       return;
     }
     Promise.resolve(addDoc(sessionsCollection, session))
@@ -147,10 +147,10 @@
         if (typeof refreshDashboard === 'function') { try { refreshDashboard(); } catch (e) {} }
         if (typeof renderProgressV4 === 'function') { try { renderProgressV4(); } catch (e) {} }
         if (typeof triggerSuccessGlow === 'function') { try { triggerSuccessGlow(); } catch (e) {} }
-        if (typeof showEdgeFeedback === 'function') showEdgeFeedback('success', 'Einheit importiert' + (session.hrSamples ? ' · HF-Zonen erkannt' : ''));
+        if (typeof showEdgeFeedback === 'function') showEdgeFeedback('success', t('import.success') + (session.hrSamples ? t('import.hrZonesDetected') : ''));
       })
       .catch(function (err) {
-        if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', 'Import fehlgeschlagen');
+        if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', t('import.failed'));
         console.error('Import failed', err);
       });
   }
@@ -166,7 +166,7 @@
       if (!file) return;
       var reader = new FileReader();
       reader.onload = function () { saveImportedSession(parseActivityFile(String(reader.result || '')), file.name); input.remove(); };
-      reader.onerror = function () { if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', 'Datei konnte nicht gelesen werden'); input.remove(); };
+      reader.onerror = function () { if (typeof showEdgeFeedback === 'function') showEdgeFeedback('error', t('import.fileReadErrorShort')); input.remove(); };
       reader.readAsText(file);
     });
     document.body.appendChild(input);

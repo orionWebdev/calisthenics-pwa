@@ -281,9 +281,9 @@ function showPostWorkoutSummary(savedSession, prevSession, durationMinutes, plan
   const exComparison = buildExerciseComparison(savedSession, prevSession, planSessions || []);
   let exercisesHTML = '';
   if (exComparison.length > 0) {
-    const exTitle = tr('progress.v4.postWorkout.exercisesTitle') || 'Übungen im Detail';
-    const badgeNew = tr('progress.v4.postWorkout.badgeNew') || 'Neu';
-    const badgeRemoved = tr('progress.v4.postWorkout.badgeRemoved') || 'Letztes Mal';
+    const exTitle = tr('progress.v4.postWorkout.exercisesTitle');
+    const badgeNew = tr('progress.v4.postWorkout.badgeNew');
+    const badgeRemoved = tr('progress.v4.postWorkout.badgeRemoved');
     exercisesHTML = `
       <div class="pws-exercises-section">
         <div class="pws-section-title">${exTitle}</div>

@@ -1,6 +1,8 @@
 {
   "permissions": {
     "allow": [
+      "Bash",
+      "PowerShell",
       "Bash(wc:*)",
       "Bash(node -c:*)",
       "Bash(grep:*)",
@@ -18,7 +20,12 @@
       "PowerShell(foreach \\($c in @\\('python','python3','py'\\)\\) { $g = Get-Command $c -ErrorAction SilentlyContinue; if \\($g\\) { \"$c -> $\\($g.Source\\)\"; & $c --version } })",
       "PowerShell(py _jsplit.py outline js/dashboard.js)",
       "PowerShell(py _jsplit.py debug js/dashboard.js)",
-      "PowerShell(py _jsplit.py outline js/workout.js)"
+      "PowerShell(py _jsplit.py outline js/workout.js)",
+      "Bash(python dev-server.py)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:8080/index.html\" -UseBasicParsing -TimeoutSec 5; Write-Output \"HTTP $\\($r.StatusCode\\) — index.html length $\\($r.RawContentLength\\)\" } catch { Write-Output \"NOT UP YET: $\\($_.Exception.Message\\)\" })",
+      "Bash(python -X utf8 dev-server.py)",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
     ]
   }
 }

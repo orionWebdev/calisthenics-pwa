@@ -419,7 +419,7 @@ async function signOut() {
     return {
       success: false,
       error: error.code,
-      message: 'Fehler beim Abmelden.'
+      message: t('auth.signOutError')
     };
   }
 }

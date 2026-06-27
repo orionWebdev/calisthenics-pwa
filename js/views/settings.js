@@ -108,6 +108,9 @@ function updateProfileField(field, value) {
     setLocale(value);
     renderProfileView();
     if (typeof updateBottomNavLabels === 'function') updateBottomNavLabels();
+    // Re-localize the Training view (static labels + plan-card type chips).
+    if (typeof applyPlanI18n === 'function') applyPlanI18n();
+    if (typeof applyPlanFilters === 'function') applyPlanFilters();
   }
 
   debouncedSaveToFirestore();
@@ -214,7 +217,7 @@ function renderProfileView() {
 
     ${renderSection(t('settings.general'), renderGeneralSettings())}
 
-    ${renderSection(t('settings.language') || 'Sprache', renderLanguageSettings())}
+    ${renderSection(t('settings.language'), renderLanguageSettings())}
 
     ${renderSection(t('settings.workout'), renderWorkoutSettings())}
 
@@ -246,7 +249,7 @@ function renderSection(title, content) {
 // ========================================
 
 function renderProfileCard(user, isMetric) {
-  const name = userProfile.displayName || user?.displayName || 'Benutzer';
+  const name = userProfile.displayName || user?.displayName || t('profile.defaultName');
   const email = userProfile.email || user?.email || '';
   const photoURL = userProfile.photoURL || user?.photoURL || '';
 
@@ -463,7 +466,7 @@ function legalMeta() {
 }
 
 function legalCloseBtn() {
-  const label = (typeof t === 'function' && t('common.close')) || 'Schließen';
+  const label = typeof t === 'function' ? t('common.close') : 'Schließen';
   return `<button type="button" class="legal-modal-close-btn" onclick="closeGenericModal()">${label}</button>`;
 }
 

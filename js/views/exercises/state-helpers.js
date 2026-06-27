@@ -19,31 +19,37 @@ let exerciseCreateCallback = null;
 // Muscle Group Namen Mapping (i18n-aware)
 function getMuscleNames() {
   return {
-    chest: t('exercise.muscles.chest') || 'Chest',
-    back: t('exercise.muscles.back') || 'Back',
-    shoulders: t('exercise.muscles.shoulders') || 'Shoulders',
-    biceps: t('exercise.muscles.biceps') || 'Biceps',
-    triceps: t('exercise.muscles.triceps') || 'Triceps',
-    core: t('exercise.muscles.core') || 'Core',
-    legs: t('exercise.muscles.legs') || 'Legs',
-    'full-body': t('exercise.muscles.fullBody') || 'Full body',
+    chest: t('exercise.muscles.chest'),
+    back: t('exercise.muscles.back'),
+    shoulders: t('exercise.muscles.shoulders'),
+    biceps: t('exercise.muscles.biceps'),
+    triceps: t('exercise.muscles.triceps'),
+    core: t('exercise.muscles.core'),
+    quads: t('exercise.muscles.quads'),
+    hamstrings: t('exercise.muscles.hamstrings'),
+    glutes: t('exercise.muscles.glutes'),
+    calves: t('exercise.muscles.calves'),
     // Legacy keys kept for backward compat display
-    arms: t('exercise.muscles.arms') || 'Arms',
-    calf: t('exercise.muscles.calf') || 'Calves',
-    cardio: t('exercise.muscles.cardio') || 'Cardio',
-    mobility: t('exercise.muscles.mobility') || 'Mobility'
+    legs: t('exercise.muscles.legs'),
+    'full-body': t('exercise.muscles.fullBody'),
+    arms: t('exercise.muscles.arms'),
+    calf: t('exercise.muscles.calf'),
+    cardio: t('exercise.muscles.cardio'),
+    mobility: t('exercise.muscles.mobility')
   }
 };
 
 // ---- Primary-muscle filtering -------------------------------------------
-// Exercise data has no explicit primary/secondary split — by convention the
-// FIRST entry of `muscleGroups` is the primary mover. These helpers also
-// reconcile the differing muscle keys between the curated JSON
-// (quads/hamstrings/glutes/calves/full_body) and the filter chips
-// (legs/calf/full-body).
+// Exercises have an explicit primaryMuscles array; for legacy/user data the
+// FIRST entry of `muscleGroups` is the primary mover. The leg muscles
+// (quads/hamstrings/glutes/calves) are now first-class canonical groups.
+// Legacy generic keys (legs/calf/arms/full_body) are normalised for display.
 const MUSCLE_GROUP_ALIASES = {
-  quads: 'legs', quadriceps: 'legs', hamstrings: 'legs', glutes: 'legs', legs: 'legs',
-  calves: 'calf', calf: 'calf',
+  quads: 'quads', quadriceps: 'quads',
+  hamstrings: 'hamstrings',
+  glutes: 'glutes',
+  calves: 'calves', calf: 'calves',
+  legs: 'legs', // legacy generic — kept as-is for old data
   full_body: 'full-body', 'full-body': 'full-body', fullbody: 'full-body',
   chest: 'chest', back: 'back', shoulders: 'shoulders',
   biceps: 'biceps', triceps: 'triceps', arms: 'arms',
@@ -57,6 +63,8 @@ function canonicalMuscle(key) {
 }
 
 function getPrimaryMuscle(exercise) {
+  const prim = Array.isArray(exercise?.primaryMuscles) ? exercise.primaryMuscles : [];
+  if (prim.length) return canonicalMuscle(prim[0]);
   const mg = Array.isArray(exercise?.muscleGroups) ? exercise.muscleGroups : [];
   return mg.length ? canonicalMuscle(mg[0]) : '';
 }
@@ -72,43 +80,48 @@ function exercisePrimaryMatchesMuscle(exercise, filterKey) {
   return false;
 }
 
-// Equipment Namen Mapping
-const equipmentNames = {
-  'bodyweight': 'Bodyweight',
-  'pull-up-bar': 'Klimmzugstange',
-  'barbell': 'Langhantel',
-  'dumbbell': 'Kurzhantel',
-  'resistance-bands': 'Widerstandsbänder',
-  'gym-machine': 'Maschine',
-  'parallettes': 'Paralettes',
-  'rings': 'Ringe',
-  'bench': 'Bank',
+// Equipment Namen Mapping — resolved via t() at call time so it follows the
+// active locale (a frozen const would stay in the default language).
+const EQUIPMENT_KEYS = [
+  'bodyweight', 'pull-up-bar', 'dip-bars', 'parallettes', 'rings',
+  'box', 'bench', 'wall', 'mat',
+  'barbell', 'dumbbell', 'kettlebell', 'machine', 'resistance-bands',
   // Legacy keys kept for backward compat display
-  'none': 'Kein Equipment',
-  'dip-bars': 'Dip-Barren',
-  'box': 'Box/Bank',
-  'wall': 'Wand',
-  'mat': 'Matte',
-  'weights': 'Gewichte'
-};
+  'none', 'gym-machine', 'weights'
+];
+
+function getEquipmentNames() {
+  const map = {};
+  EQUIPMENT_KEYS.forEach(k => { map[k] = t('exercise.equipmentNames.' + k); });
+  return map;
+}
+
+function getEquipmentName(key) {
+  if (!key) return key;
+  const label = t('exercise.equipmentNames.' + key);
+  // t() returns the key path on a miss — fall back to the raw key in that case.
+  return label === 'exercise.equipmentNames.' + key ? key : label;
+}
 
 // Equipment Icons Mapping
 const equipmentIcons = {
   'bodyweight': 'accessibility_new',
   'pull-up-bar': 'fitness_center',
-  'barbell': 'fitness_center',
-  'dumbbell': 'fitness_center',
-  'resistance-bands': 'cable',
-  'gym-machine': 'precision_manufacturing',
+  'dip-bars': 'sports_gymnastics',
   'parallettes': 'straighten',
   'rings': 'sports_gymnastics',
-  'bench': 'airline_seat_flat',
-  // Legacy
-  'none': 'accessibility',
-  'dip-bars': 'sports_gymnastics',
   'box': 'square',
+  'bench': 'airline_seat_flat',
   'wall': 'wall',
   'mat': 'airline_seat_flat',
+  'barbell': 'fitness_center',
+  'dumbbell': 'fitness_center',
+  'kettlebell': 'fitness_center',
+  'machine': 'precision_manufacturing',
+  'resistance-bands': 'cable',
+  // Legacy
+  'none': 'accessibility',
+  'gym-machine': 'precision_manufacturing',
   'weights': 'fitness_center'
 };
 

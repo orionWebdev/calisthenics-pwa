@@ -132,6 +132,24 @@ async function addDoc(collection, data, options = { scoped: true }) {
   }
 }
 
+// Curated-Übung mit STABILER id schreiben (Upsert, global/ungescoped).
+// Wird vom Seeding genutzt, damit Übungs-ids deterministisch & lesbar sind.
+async function setCuratedExercise(id, data) {
+  try {
+    // id steckt im Dokumentpfad — nicht zusätzlich im Body speichern.
+    const { id: _drop, ...rest } = data;
+    const sanitized = sanitizeFirestorePayload({
+      ...rest,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await exercisesCuratedCollection.doc(id).set(sanitized);
+    return id;
+  } catch (error) {
+    console.error('Error writing curated exercise:', error);
+    throw error;
+  }
+}
+
 // Ein Dokument updaten
 async function updateDoc(collection, id, data) {
   try {

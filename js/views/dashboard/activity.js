@@ -300,15 +300,15 @@ function renderDashboardTrainingTypesList(sessions, year, month) {
 
   const typeConfig = {
     strength: {
-      label: tr('dashboard.trainingTypes.strength') || 'Krafttraining',
+      label: tr('dashboard.trainingTypes.strength'),
       icon: 'fitness_center'
     },
     cardio: {
-      label: tr('dashboard.trainingTypes.cardio') || 'Cardio',
+      label: tr('dashboard.trainingTypes.cardio'),
       icon: 'directions_run'
     },
     recovery: {
-      label: tr('dashboard.trainingTypes.recovery') || 'Recovery',
+      label: tr('dashboard.trainingTypes.recovery'),
       icon: 'self_improvement'
     }
   };
@@ -450,10 +450,15 @@ function getFormZoneLabel(zone) {
 // Tägliche Bereitschaft (ACWR-Zone) — kurze deutsche Labels.
 function readinessZoneLabel(zone) {
   const m = {
-    overreaching: 'Überlastet', fatigued: 'Ermüdet', maintaining: 'Bereit',
-    building: 'Aufbauend', peak: 'Topform', form_loss: 'Formverlust', fresh: 'Erholt'
+    overreaching: t('progress.readiness.zoneOverreaching'),
+    fatigued: t('progress.readiness.zoneFatigued'),
+    maintaining: t('progress.readiness.zoneMaintaining'),
+    building: t('progress.readiness.zoneBuilding'),
+    peak: t('progress.readiness.zonePeak'),
+    form_loss: t('progress.readiness.zoneFormLoss'),
+    fresh: t('progress.readiness.zonePeak')
   };
-  return m[zone] || 'Bereit';
+  return m[zone] || t('progress.readiness.zoneBuilding');
 }
 
 function renderDashboardFormHero() {

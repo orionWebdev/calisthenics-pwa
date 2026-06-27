@@ -11,6 +11,11 @@ const MUSCLE_ICON_PATHS = {
   biceps:    'assets/icons/dark/biceps.png',
   triceps:   'assets/icons/dark/triceps.png',
   core:      'assets/icons/dark/core.png',
+  quads:      'assets/icons/dark/legs.png',
+  hamstrings: 'assets/icons/dark/legs.png',
+  glutes:     'assets/icons/dark/legs.png',
+  calves:     'assets/icons/dark/calf.png',
+  // Legacy
   legs:      'assets/icons/dark/legs.png',
   calf:      'assets/icons/dark/calf.png',
   arms:      'assets/icons/dark/biceps.png',

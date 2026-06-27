@@ -22,7 +22,7 @@ async function saveExercise() {
   // Validation - only name required in v3
   if (!name) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('error', t('errors.exerciseNameRequired') || 'Bitte gib einen Namen für die Übung ein!');
+      showEdgeFeedback('error', t('errors.exerciseNameRequired'));
     }
     return;
   }
@@ -239,21 +239,21 @@ function renderExerciseQuickStatsHTML(stats) {
       <div class="quick-stats-card">
         <div class="quick-stats-header">
           <span class="quick-stats-icon"><span class="material-symbols-rounded">repeat</span></span>
-          <span class="quick-stats-label">Beste Wiederholungen</span>
+          <span class="quick-stats-label">${t('exercise.bestReps')}</span>
         </div>
         <div class="quick-stats-value">${stats.bestReps || '–'}</div>
       </div>
       <div class="quick-stats-card">
         <div class="quick-stats-header">
           <span class="quick-stats-icon"><span class="material-symbols-rounded">fitness_center</span></span>
-          <span class="quick-stats-label">Meistes Gewicht</span>
+          <span class="quick-stats-label">${t('exercise.heaviestWeight')}</span>
         </div>
         <div class="quick-stats-value">${stats.heaviestWeight ? stats.heaviestWeight + ' kg' : '–'}</div>
       </div>
       <div class="quick-stats-card">
         <div class="quick-stats-header">
           <span class="quick-stats-icon"><span class="material-symbols-rounded">speed</span></span>
-          <span class="quick-stats-label">Bestes Satzvolumen</span>
+          <span class="quick-stats-label">${t('exercise.bestSetVolume')}</span>
         </div>
         <div class="quick-stats-value">${stats.bestSetVolume || '–'}</div>
       </div>
@@ -313,7 +313,7 @@ function viewExerciseDetails(id) {
 
   // Equipment label
   const equipmentLabel = (exercise.equipment || []).filter(eq => eq && eq !== 'none')
-    .map(eq => equipmentNames[eq]).filter(Boolean).join(', ');
+    .map(eq => getEquipmentName(eq)).filter(Boolean).join(', ');
 
   const metaFooterHTML = (muscleChipLabel || equipmentLabel) ? `
     <div class="exercise-detail-meta-footer">
@@ -637,9 +637,9 @@ function renderExerciseMuscleGroupsInput() {
 function renderExerciseEquipmentInput() {
   renderMultiSelectInput('exercise-equipment-wrapper', {
     icon: 'build',
-    placeholder: 'Equipment auswählen...',
+    placeholder: t('exercise.equipmentPlaceholder'),
     selectedValues: exerciseEquipment,
-    valueLabels: equipmentNames
+    valueLabels: getEquipmentNames()
   });
 }
 

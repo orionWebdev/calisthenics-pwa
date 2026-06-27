@@ -199,7 +199,7 @@ function logSetFromInput() {
 
   if (!reps || reps <= 0) {
     if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Bitte gib die Anzahl der Wiederholungen ein');
+    showEdgeFeedback('error', t('workout.setLogger.enterReps'));
   }
     repsInput.focus();
     return;
@@ -602,11 +602,11 @@ function renderTimerWidget() {
       <div class="timer-widget-content">
         <span class="material-symbols-rounded timer-widget-icon">timer</span>
         <div class="timer-widget-textgroup">
-          <span class="timer-widget-label">Pause läuft</span>
+          <span class="timer-widget-label">${t('workout.screen.restRunning')}</span>
           <span class="timer-widget-time" id="tw-time">0:00</span>
         </div>
         <button type="button" class="timer-widget-skip" onclick="event.stopPropagation(); cancelRestTimer()">
-          Pause überspringen
+          ${t('workout.screen.skipRest')}
         </button>
       </div>
     </div>
@@ -807,7 +807,7 @@ function toggleTimerPause() {
 
 function confirmReplaceActiveWorkout() {
   if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Du hast bereits ein aktives Workout. Bitte fortsetzen oder abbrechen.');
+    showEdgeFeedback('error', t('errors.activeWorkoutExists'));
   }
   ensureActiveWorkoutBanner();
   if (typeof showView === 'function') {

@@ -310,8 +310,8 @@ function renderAccordionSetLogger(exercise, exerciseIndex) {
         if (!activeWorkout?.planId || !exercise?.exerciseId) return '';
         const lastSet = getLastPlanPerformance(activeWorkout.planId, exercise.exerciseId);
         const hint = formatLastPerformanceHint(lastSet);
-        const label = typeof t === 'function' ? (t('workout.lastPerformance') || 'Letztes Mal') : 'Letztes Mal';
-        const fallback = typeof t === 'function' ? (t('workout.noLastPerformance') || 'Kein vorheriger Wert') : 'Kein vorheriger Wert';
+        const label = typeof t === 'function' ? t('workout.lastPerformance') : 'Letztes Mal';
+        const fallback = typeof t === 'function' ? t('workout.noPreviousData') : 'Keine vorherigen Daten';
         return `
           <div class="last-performance-hint">
             <span class="material-symbols-rounded">history</span>
@@ -481,7 +481,7 @@ function openExerciseHistorySheet(exerciseId) {
     const parts = [];
     if (set.holdSec != null && set.holdSec > 0) parts.push(`${set.holdSec}s`);
     else {
-      if (set.reps != null) parts.push(`${set.reps} ${t('workout.setLogger.reps') || 'Wdh.'}`);
+      if (set.reps != null) parts.push(`${set.reps} ${t('workout.setLogger.reps')}`);
       if (set.weight != null && set.weight > 0) parts.push(`${set.weight} ${unit}`);
     }
     if (set.distance != null) parts.push(`${set.distance} km`);
@@ -490,14 +490,14 @@ function openExerciseHistorySheet(exerciseId) {
   };
 
   openSheet({
-    title: `${exName} · ${t('workout.lastPerformance') || 'Verlauf'}`,
+    title: `${exName} · ${t('workout.lastPerformance')}`,
     render: (el) => {
       if (!entries.length) {
-        el.innerHTML = `<div class="st-history-empty">${t('workout.noPreviousData') || 'Keine vorherigen Aufzeichnungen'}</div>`;
+        el.innerHTML = `<div class="st-history-empty">${t('workout.noPreviousData')}</div>`;
         return;
       }
       el.innerHTML = entries.map(en => {
-        const dateStr = en.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' });
+        const dateStr = en.date.toLocaleDateString(getIntlLocale(), { day: '2-digit', month: 'short', year: 'numeric' });
         const setsTxt = en.sets.map((set, i) =>
           `<div class="st-history-set"><span class="st-history-set-n">${i + 1}</span>${fmtSet(set)}</div>`
         ).join('');
@@ -524,12 +524,12 @@ function formatRelativeTime(date) {
   const diffMs = now - date;
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return t('workout.relativeTime.today') || 'heute';
-  if (diffDays === 1) return t('workout.relativeTime.yesterday') || 'gestern';
-  if (diffDays < 7) return (t('workout.relativeTime.daysAgo') || 'vor {n} Tagen').replace('{n}', diffDays);
+  if (diffDays === 0) return t('workout.relativeTime.today');
+  if (diffDays === 1) return t('workout.relativeTime.yesterday');
+  if (diffDays < 7) return t('workout.relativeTime.daysAgo', { n: diffDays });
   const diffWeeks = Math.floor(diffDays / 7);
-  if (diffWeeks === 1) return t('workout.relativeTime.oneWeekAgo') || 'vor 1 Woche';
-  return (t('workout.relativeTime.weeksAgo') || 'vor {n} Wochen').replace('{n}', diffWeeks);
+  if (diffWeeks === 1) return t('workout.relativeTime.oneWeekAgo');
+  return t('workout.relativeTime.weeksAgo', { n: diffWeeks });
 }
 
 /**
@@ -542,7 +542,7 @@ function formatLastPerformanceHint(lastSet) {
     parts.push(`${lastSet.holdSec}${t ? t('common.secondsShort', { n: '' }).trim() || 's' : 's'}`);
   } else {
     if (lastSet.reps != null && lastSet.reps > 0) {
-      parts.push(`${lastSet.reps} ${t ? t('workout.setLogger.reps') || 'Wdh.' : 'Wdh.'}`);
+      parts.push(`${lastSet.reps} ${t ? t('workout.setLogger.reps') : 'Wdh.'}`);
     }
     if (lastSet.weight != null && lastSet.weight > 0) {
       parts.push(`${lastSet.weight} ${t ? getWeightUnit() : 'kg'}`);

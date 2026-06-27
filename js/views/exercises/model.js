@@ -171,6 +171,17 @@ function mapExerciseToV3(exercise) {
   // Notes
   const notes = exercise.notes || '';
 
+  // Muscle model: prefer explicit primary/secondary (curated dataset). Derive the
+  // flat `muscleGroups` (primary first) for all legacy consumers when missing.
+  const primaryMuscles = Array.isArray(exercise.primaryMuscles) ? exercise.primaryMuscles.filter(Boolean) : [];
+  const secondaryMuscles = Array.isArray(exercise.secondaryMuscles) ? exercise.secondaryMuscles.filter(Boolean) : [];
+  let muscleGroups;
+  if (primaryMuscles.length || secondaryMuscles.length) {
+    muscleGroups = [...new Set([...primaryMuscles, ...secondaryMuscles])];
+  } else {
+    muscleGroups = Array.isArray(exercise.muscleGroups) ? exercise.muscleGroups : [];
+  }
+
   return {
     ...exercise,
     type,
@@ -185,7 +196,9 @@ function mapExerciseToV3(exercise) {
     cues: normalized.cues,
     commonMistakes: normalized.commonMistakes,
     progressions: normalized.progressions,
-    muscleGroups: exercise.muscleGroups || [],
+    primaryMuscles,
+    secondaryMuscles,
+    muscleGroups,
     equipment: exercise.equipment || ['none'],
     icon: exercise.icon || 'fitness_center',
     // Bodyweight flag for load calculation

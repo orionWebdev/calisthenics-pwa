@@ -177,7 +177,13 @@ function normalizePlan(plan) {
 }
 
 function getPlanTypeLabel(plan) {
-  return plan.typeLabel || workoutTypeNames[plan.displayType] || workoutTypeNames[plan.type] || workoutTypeNames.strength;
+  // Resolve via t() at call time so the label follows the active locale.
+  // (plan.typeLabel / workoutTypeNames are frozen at module load and would
+  // otherwise stay in the default language after a language switch.)
+  const key = plan.displayType === 'unknown'
+    ? 'unknown'
+    : (plan.displayType || plan.type || 'strength');
+  return t('plan.types.' + key);
 }
 
 function normalizeIconValue(icon) {

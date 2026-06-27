@@ -447,10 +447,10 @@ function renderSingleExerciseItem(item, index, totalItems) {
         <p class="text-xs text-gray-400">${sets} ${setsLabel} × ${targetValue}</p>
       </div>
       <div class="plan-exercise-actions">
-        <button onclick="event.stopPropagation(); editPlanExercise(${index})" class="plan-item-action plan-item-action--edit" aria-label="${t('common.edit') || 'Bearbeiten'}">
+        <button onclick="event.stopPropagation(); editPlanExercise(${index})" class="plan-item-action plan-item-action--edit" aria-label="${t('common.edit')}">
           <span class="material-symbols-rounded">edit</span>
         </button>
-        <button onclick="event.stopPropagation(); removePlanExercise(${index})" class="plan-item-action plan-item-action--delete" aria-label="${t('common.delete') || 'Löschen'}">
+        <button onclick="event.stopPropagation(); removePlanExercise(${index})" class="plan-item-action plan-item-action--delete" aria-label="${t('common.delete')}">
           <span class="material-symbols-rounded">delete</span>
         </button>
       </div>
@@ -517,10 +517,10 @@ function renderGroupBlock(block, blockIdx, totalBlocks) {
             <span class="material-symbols-rounded">arrow_downward</span>
           </button>
           <span class="plan-block-actions-divider"></span>
-          <button onclick="event.stopPropagation(); editGroupBlock('${groupId}')" class="plan-block-action--edit" aria-label="${t('common.edit') || 'Bearbeiten'}">
+          <button onclick="event.stopPropagation(); editGroupBlock('${groupId}')" class="plan-block-action--edit" aria-label="${t('common.edit')}">
             <span class="material-symbols-rounded">edit</span>
           </button>
-          <button onclick="event.stopPropagation(); removeGroupBlock('${groupId}')" class="plan-block-action--delete" aria-label="${t('common.delete') || 'Löschen'}">
+          <button onclick="event.stopPropagation(); removeGroupBlock('${groupId}')" class="plan-block-action--delete" aria-label="${t('common.delete')}">
             <span class="material-symbols-rounded">delete</span>
           </button>
         </div>

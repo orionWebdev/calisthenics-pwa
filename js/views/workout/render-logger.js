@@ -34,8 +34,8 @@ function renderCurrentExercise(exercise) {
         ${exercise.exerciseName}
       </h3>
       <p style="font-size: 0.875rem; color: #9ca3af;">
-        Ziel: ${exercise.targetSets} Sätze × ${exercise.targetReps} Wiederholungen
-        ${exercise.targetRest ? ` · ${exercise.targetRest}s Pause` : ''}
+        ${t('workout.screen.goal')}: ${exercise.targetSets} × ${exercise.targetReps}
+        ${exercise.targetRest ? ` · ${exercise.targetRest}s ${t('workout.screen.rest')}` : ''}
       </p>
     </div>
   `;
@@ -72,7 +72,7 @@ function renderSetLogger(exercise) {
               type="button"
               class="stepper-btn stepper-minus"
               onclick="adjustInputValue('reps-input', -1)"
-              aria-label="Verringern"
+              aria-label="${t('workout.setLogger.decreaseReps')}"
             >
               <span class="material-symbols-rounded">remove</span>
             </button>
@@ -91,7 +91,7 @@ function renderSetLogger(exercise) {
               type="button"
               class="stepper-btn stepper-plus"
               onclick="adjustInputValue('reps-input', 1)"
-              aria-label="Erhoehen"
+              aria-label="${t('workout.setLogger.increaseReps')}"
             >
               <span class="material-symbols-rounded">add</span>
             </button>
@@ -106,7 +106,7 @@ function renderSetLogger(exercise) {
               type="button"
               class="stepper-btn stepper-minus"
               onclick="adjustInputValue('weight-input', -2.5)"
-              aria-label="Verringern"
+              aria-label="${t('workout.setLogger.decreaseWeight')}"
             >
               <span class="material-symbols-rounded">remove</span>
             </button>
@@ -126,7 +126,7 @@ function renderSetLogger(exercise) {
               type="button"
               class="stepper-btn stepper-plus"
               onclick="adjustInputValue('weight-input', 2.5)"
-              aria-label="Erhoehen"
+              aria-label="${t('workout.setLogger.increaseWeight')}"
             >
               <span class="material-symbols-rounded">add</span>
             </button>
@@ -258,7 +258,7 @@ function renderWorkoutActions() {
         class="btn-secondary workout-cancel-btn"
       >
         <span class="material-symbols-rounded" style="font-size: 18px;">close</span>
-        <span>${t('common.cancel') || 'Abbrechen'}</span>
+        <span>${t('common.cancel')}</span>
       </button>
 
       <!-- Primary Action -->
@@ -268,7 +268,7 @@ function renderWorkoutActions() {
           class="btn-primary"
           ${!hasSets ? 'disabled' : ''}
         >
-          <span>${t('workout.exercise.next') || 'Nächste Übung'}</span>
+          <span>${t('workout.exercise.next')}</span>
           <span class="material-symbols-rounded">arrow_forward</span>
         </button>
       ` : `
@@ -277,7 +277,7 @@ function renderWorkoutActions() {
           class="btn-primary"
         >
           <span class="material-symbols-rounded">check_circle</span>
-          <span>${t('workout.exercise.finish') || 'Workout beenden'}</span>
+          <span>${t('workout.exercise.finish')}</span>
         </button>
       `}
     </div>
@@ -297,7 +297,7 @@ function renderWorkoutBottomActions() {
   const idx = activeWorkout.currentExerciseIndex;
   const isLast = idx >= activeWorkout.exercises.length - 1;
   const ctaIcon = isLast ? 'check_circle' : 'arrow_forward';
-  const ctaLabel = isLast ? t('workout.screen.finishWorkout') : 'Nächste Übung';
+  const ctaLabel = isLast ? t('workout.screen.finishWorkout') : t('workout.screen.nextExercise');
   const ctaAction = isLast ? 'finishWorkoutFromConfirm()' : ('goToExercise(' + (idx + 1) + ')');
 
   // "Als Nächstes" — kommende Übung + Ziel (workout.png)
@@ -306,7 +306,7 @@ function renderWorkoutBottomActions() {
     <button type="button" class="workout-next-up" onclick="goToExercise(${idx + 1})">
       <span class="material-symbols-rounded workout-next-up-icon">skip_next</span>
       <span class="workout-next-up-text">
-        <span class="workout-next-up-label">Als Nächstes</span>
+        <span class="workout-next-up-label">${t('workout.screen.upNext')}</span>
         <span class="workout-next-up-name">${nextEx.exerciseName} · ${nextEx.targetSets} × ${nextEx.targetReps}</span>
       </span>
     </button>` : '';
@@ -315,15 +315,15 @@ function renderWorkoutBottomActions() {
     <div class="workout-bottom-actions">
       <button type="button" onclick="replacingExerciseIndex=null;openAddExerciseToWorkout()" class="workout-ex-action">
         <span class="material-symbols-rounded">add</span>
-        <span>Hinzufügen</span>
+        <span>${t('common.add')}</span>
       </button>
       <button type="button" onclick="replaceCurrentExerciseInWorkout()" class="workout-ex-action">
         <span class="material-symbols-rounded">swap_horiz</span>
-        <span>Ersetzen</span>
+        <span>${t('workout.screen.replaceExercise')}</span>
       </button>
       <button type="button" onclick="removeCurrentExerciseFromWorkout()" class="workout-ex-action workout-ex-action--danger">
         <span class="material-symbols-rounded">delete</span>
-        <span>Löschen</span>
+        <span>${t('common.delete')}</span>
       </button>
     </div>
     ${nextUpHTML}

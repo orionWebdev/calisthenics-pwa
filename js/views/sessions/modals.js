@@ -116,12 +116,12 @@ async function saveCardioSession() {
 
   // Validation
   if (!validDate) {
-    showErrorMessage('Bitte wähle ein Datum');
+    showErrorMessage(t('workout.quick.dateRequired'));
     return;
   }
 
   if (!duration || duration <= 0) {
-    showErrorMessage('Bitte gib eine gültige Dauer ein');
+    showErrorMessage(t('workout.quick.durationRequired'));
     return;
   }
 
@@ -181,7 +181,7 @@ async function saveCardioSession() {
 
   } catch (error) {
     console.error('❌ Error saving cardio session:', error);
-    showErrorMessage('Fehler beim Speichern: ' + error.message);
+    showErrorMessage(t('workoutModal.saveError') + ': ' + error.message);
   } finally {
     const saveBtn = document.querySelector('#add-cardio-modal .modal-save-btn');
     if (saveBtn) {
@@ -305,7 +305,7 @@ function openAddStrengthModal(dateStr = null) {
   const title = document.getElementById('strength-modal-title');
   if (title) title.textContent = t('workout.quick.title');
   const dateLabel = document.getElementById('strength-date-label');
-  if (dateLabel) dateLabel.textContent = t('workout.quick.date') || 'Datum *';
+  if (dateLabel) dateLabel.textContent = t('workout.quick.date');
   const nameLabel = document.getElementById('strength-name-label');
   if (nameLabel) nameLabel.textContent = t('workout.quick.name');
   const durationLabel = document.getElementById('strength-duration-label');
@@ -329,9 +329,9 @@ function openAddStrengthModal(dateStr = null) {
 
   // Exercise logging labels
   const exercisesLabel = document.getElementById('strength-exercises-label');
-  if (exercisesLabel) exercisesLabel.textContent = t('workout.logging.exercisesOptional') || 'Übungen (optional)';
+  if (exercisesLabel) exercisesLabel.textContent = t('workout.logging.exercisesOptional');
   const addExerciseLabel = document.getElementById('strength-add-exercise-label');
-  if (addExerciseLabel) addExerciseLabel.textContent = t('workout.logging.addExercise') || 'Übung hinzufügen';
+  if (addExerciseLabel) addExerciseLabel.textContent = t('workout.logging.addExercise');
 
   // Reset form fields
   const today = new Date().toISOString().split('T')[0];
@@ -427,7 +427,7 @@ function addExerciseToStrengthLogging(exerciseId) {
   // Check if exercise already exists
   if (strengthLoggingExercises.find(e => e.exerciseId === exerciseId)) {
     if (typeof showEdgeFeedback === 'function') {
-      showEdgeFeedback('info', t('workout.logging.exerciseAlreadyAdded') || 'Übung bereits hinzugefügt');
+      showEdgeFeedback('info', t('workout.logging.exerciseAlreadyAdded'));
     }
     return;
   }
@@ -479,18 +479,18 @@ function editExerciseSets(index) {
         container.innerHTML = `
           <div class="space-y-4 p-2">
             <div>
-              <label class="block text-sm font-medium mb-2">${t('workout.logging.sets') || 'Sätze'}</label>
+              <label class="block text-sm font-medium mb-2">${t('workout.logging.sets')}</label>
               <input type="number" id="edit-sets-count" value="${currentSets}" min="1" max="20"
                 class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500">
             </div>
             <div>
-              <label class="block text-sm font-medium mb-2">${t('workout.logging.reps') || 'Wiederholungen pro Satz'}</label>
+              <label class="block text-sm font-medium mb-2">${t('workout.logging.reps')}</label>
               <input type="number" id="edit-reps-count" value="${currentReps}" min="1" max="100"
                 class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500">
             </div>
             <button onclick="saveExerciseSets(${index})" class="w-full btn-primary mt-4">
               <span class="material-symbols-rounded">check</span>
-              <span>${t('common.save') || 'Speichern'}</span>
+              <span>${t('common.save')}</span>
             </button>
           </div>
         `;
@@ -575,7 +575,7 @@ async function saveStrengthSession() {
   const difficulty = document.getElementById('strength-difficulty')?.value || 'intermediate';
 
   if (!selectedDate) {
-    showErrorMessage(t('workout.quick.dateRequired') || 'Bitte wähle ein Datum');
+    showErrorMessage(t('workout.quick.dateRequired'));
     return;
   }
 
@@ -711,12 +711,12 @@ async function saveRecoverySession() {
   const notes = document.getElementById('recovery-notes').value.trim();
 
   if (!validDate) {
-    showErrorMessage('Bitte wähle ein Datum');
+    showErrorMessage(t('workout.quick.dateRequired'));
     return;
   }
 
   if (!duration || duration <= 0) {
-    showErrorMessage('Bitte gib eine gültige Dauer ein');
+    showErrorMessage(t('workout.quick.durationRequired'));
     return;
   }
 
@@ -765,7 +765,7 @@ async function saveRecoverySession() {
     triggerSuccessGlow();
   } catch (error) {
     console.error('❌ Error saving recovery session:', error);
-    showErrorMessage('Fehler beim Speichern: ' + error.message);
+    showErrorMessage(t('workoutModal.saveError') + ': ' + error.message);
   } finally {
     const saveBtn = document.querySelector('#add-recovery-modal .modal-save-btn');
     if (saveBtn) {

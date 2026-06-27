@@ -172,7 +172,7 @@ function updatePlanMuscleFilterUI() {
   const equipActive = planEquipmentFilter && planEquipmentFilter !== 'all';
   if (equipLabel) {
     equipLabel.textContent = equipActive
-      ? (equipmentNames[planEquipmentFilter] || planEquipmentFilter)
+      ? getEquipmentName(planEquipmentFilter)
       : t('exercise.filters.allEquipment');
   }
   if (equipBtn) equipBtn.classList.toggle('active', !!equipActive);
@@ -233,7 +233,7 @@ function openPlanEquipmentFilterSheet() {
   const mainEquipment = ['bodyweight', 'pull-up-bar', 'parallettes', 'rings', 'dumbbell', 'barbell', 'resistance-bands', 'gym-machine', 'bench'];
   const filterOptions = [{ value: '', label: t('exercise.filters.allEquipment'), description: '' }];
   mainEquipment.forEach(eq => {
-    filterOptions.push({ value: eq, label: equipmentNames[eq] || eq, description: '' });
+    filterOptions.push({ value: eq, label: getEquipmentName(eq), description: '' });
   });
 
   openBottomSheet({

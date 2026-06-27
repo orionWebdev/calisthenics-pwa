@@ -378,6 +378,9 @@ async function initApp() {
     if (typeof setLocale === 'function' && typeof getUserProfile === 'function') {
       const lang = getUserProfile().language;
       if (lang) setLocale(lang);
+      // Re-localize the statically-rendered plan UI (e.g. the "New plan" button):
+      // applyPlanI18n() ran once at module load with the default locale.
+      if (typeof applyPlanI18n === 'function') applyPlanI18n();
     }
 
     // 1. Initialize default exercises if needed
@@ -442,7 +445,7 @@ async function initApp() {
     console.error('❌ Error initializing app:', error);
     console.error('Error details:', error.message, error.stack);
   if (typeof showEdgeFeedback === 'function') {
-    showEdgeFeedback('error', 'Fehler beim Laden der App. Bitte Seite neu laden.\n\nDetails: ' + error.message);
+    showEdgeFeedback('error', t('errors.appLoadFailed') + '\n\nDetails: ' + error.message);
   }
     if (typeof setProgress === 'function') setProgress(100);
     if (typeof hideLoading === 'function') {

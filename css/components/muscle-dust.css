@@ -54,15 +54,26 @@
 
 /* Palette: .m-<group> = primary gradient, .s-<group> = that group's colour as the
    blended secondary (--s1). */
+/* Colour families: related muscle groups share a hue band (only lightness/
+   saturation varies) so they read as a group while staying distinguishable.
+   Push = red, Pull/back = blue, Shoulders = amber, Core = green/teal,
+   Arms (biceps/triceps) = violet→magenta, Legs (quads/hams/glutes/calves) =
+   warm orange→gold band. */
 .m-chest     { --c1: #E23744; --c2: #FF6B7A; }  .s-chest     { --s1: #E23744; }
 .m-back      { --c1: #2563EB; --c2: #67E8F9; }  .s-back      { --s1: #2563EB; }
 .m-shoulders { --c1: #D97706; --c2: #FBBF24; }  .s-shoulders { --s1: #D97706; }
-.m-legs      { --c1: #F97316; --c2: #FACC15; }  .s-legs      { --s1: #F97316; }
 .m-core      { --c1: #059669; --c2: #5EEAD4; }  .s-core      { --s1: #059669; }
 .m-biceps    { --c1: #7C3AED; --c2: #C4B5FD; }  .s-biceps    { --s1: #7C3AED; }
 .m-arms      { --c1: #7C3AED; --c2: #C4B5FD; }  .s-arms      { --s1: #7C3AED; }
 .m-triceps   { --c1: #C026D3; --c2: #F0ABFC; }  .s-triceps   { --s1: #C026D3; }
-.m-calf      { --c1: #0D9488; --c2: #5EEAD4; }  .s-calf      { --s1: #0D9488; }
+/* Legs family — warm orange→gold (quads darkest, calves lightest) */
+.m-quads      { --c1: #F97316; --c2: #FDBA74; }  .s-quads      { --s1: #F97316; }
+.m-hamstrings { --c1: #EA580C; --c2: #FB923C; }  .s-hamstrings { --s1: #EA580C; }
+.m-glutes     { --c1: #F59E0B; --c2: #FCD34D; }  .s-glutes     { --s1: #F59E0B; }
+.m-calves     { --c1: #FBBF24; --c2: #FDE68A; }  .s-calves     { --s1: #FBBF24; }
+/* Legacy generic leg keys (old user data) */
+.m-legs      { --c1: #F97316; --c2: #FACC15; }  .s-legs      { --s1: #F97316; }
+.m-calf      { --c1: #FBBF24; --c2: #FDE68A; }  .s-calf      { --s1: #FBBF24; }
 .m-cardio    { --c1: #E11D48; --c2: #FB7185; }  .s-cardio    { --s1: #E11D48; }
 .m-mobility  { --c1: #0891B2; --c2: #22D3EE; }  .s-mobility  { --s1: #0891B2; }
 .m-full-body { --c1: #C01963; --c2: #F02277; }  .s-full-body { --s1: #C01963; }

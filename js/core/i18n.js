@@ -232,6 +232,8 @@ const translations = {
       },
       addPlan: 'Plan hinzufügen',
       quickAdd: 'Schnell-Eintrag',
+      collapseMonth: 'Monat einklappen',
+      expandMonth: 'Monat ausklappen',
       orQuickEntry: 'Oder Schnell-Eintrag erstellen',
       orSelectPlan: 'oder Plan auswählen',
       today: 'Heute',
@@ -293,6 +295,11 @@ const translations = {
         biceps: 'Bizeps',
         triceps: 'Trizeps',
         core: 'Core',
+        quads: 'Quadrizeps',
+        hamstrings: 'Beinbeuger',
+        glutes: 'Gesäß',
+        calves: 'Waden',
+        // Legacy
         legs: 'Beine',
         fullBody: 'Ganzkörper',
         arms: 'Arme',
@@ -308,6 +315,10 @@ const translations = {
         triceps: 'Trizepsmuskulatur',
         shoulders: 'Schultermuskulatur',
         core: 'Bauch- und Rumpfmuskulatur',
+        quads: 'Vordere Oberschenkelmuskulatur',
+        hamstrings: 'Hintere Oberschenkelmuskulatur',
+        glutes: 'Gesäßmuskulatur',
+        calves: 'Wadenmuskulatur',
         legs: 'Beinmuskulatur',
         fullBody: 'Ganzkörpertraining',
         arms: 'Bizeps, Trizeps, Unterarme',
@@ -332,6 +343,26 @@ const translations = {
         allEquipment: 'Equipment'
       },
       equipment: 'Equipment',
+      equipmentNames: {
+        bodyweight: 'Bodyweight',
+        'pull-up-bar': 'Klimmzugstange',
+        'dip-bars': 'Dip-Barren',
+        parallettes: 'Paralettes',
+        rings: 'Ringe',
+        box: 'Box',
+        bench: 'Bank',
+        wall: 'Wand',
+        mat: 'Matte',
+        barbell: 'Langhantel',
+        dumbbell: 'Kurzhantel',
+        kettlebell: 'Kettlebell',
+        machine: 'Maschine',
+        'resistance-bands': 'Widerstandsbänder',
+        none: 'Kein Equipment',
+        'gym-machine': 'Maschine',
+        weights: 'Gewichte'
+      },
+      equipmentPlaceholder: 'Equipment auswählen...',
       discipline: 'Disziplin',
       visual: 'Übungs-Icon',
       selectIcon: 'Icon auswählen',
@@ -436,6 +467,9 @@ const translations = {
       detail: {
         useInPlan: 'In Plan verwenden'
       },
+      bestReps: 'Beste Wiederholungen',
+      heaviestWeight: 'Meistes Gewicht',
+      bestSetVolume: 'Bestes Satzvolumen',
       searchPlaceholder: 'Übungen suchen...',
       noResultsTitle: 'Keine Treffer',
       noResultsHint: 'Versuch einen anderen Begriff oder erstelle eine neue Übung.',
@@ -504,7 +538,11 @@ const translations = {
         searchExercise: 'Übung suchen...',
         noExercisesFound: 'Keine Übungen gefunden',
         freeWorkout: 'Freies Workout',
-        menu: 'Menü'
+        menu: 'Menü',
+        replaceExercise: 'Ersetzen',
+        upNext: 'Als Nächstes',
+        restRunning: 'Pause läuft',
+        skipRest: 'Pause überspringen'
       },
       banner: {
         active: 'Aktives Workout: {name}',
@@ -538,6 +576,8 @@ const translations = {
         deleteSetConfirm: 'Diesen Satz wirklich löschen?',
         decreaseWeight: 'Gewicht verringern',
         increaseWeight: 'Gewicht erhöhen',
+        decreaseReps: 'Wiederholungen verringern',
+        increaseReps: 'Wiederholungen erhöhen',
         stepModeChanged: 'Schrittweite: {step} {unit}'
       },
       exercise: {
@@ -1140,6 +1180,8 @@ const translations = {
           minutesPerWeek: 'min',
           noData: 'Noch keine Trainingsdaten vorhanden'
         },
+        weekVolumeTitle: 'Wochenvolumen · pro Muskel',
+        weekVolumeHint: 'Sätze/Woche je Muskelgruppe — Zielkorridor ~10–20.',
         blockComparison: {
           title: 'Blockvergleich',
           last4w: 'Letzte 4 Wochen',
@@ -1179,6 +1221,44 @@ const translations = {
           cardio: 'Cardio',
           recovery: 'Recovery'
         }
+      },
+      widgets: {
+        overview: 'Übersicht',
+        consistencyTitle: 'Konsistenz & Volumen',
+        streak: 'Streak',
+        daysShort: 'Tg',
+        sessionsPerWeek: 'Sess./Woche',
+        movement: 'Bewegung',
+        weeklyVolumeCaption: 'Wöchentliches Volumen · letzte 8 Wochen',
+        highestThisWeek: 'diese Woche am höchsten',
+        exerciseProgression: 'Übungs-Progression',
+        showAll: 'Alle anzeigen',
+        held: 'gehalten',
+        rising: 'steigt',
+        trained: '{count}× trainiert',
+        since: 'seit {month}',
+        repsShort: 'Wdh.',
+        formLoadTitle: 'Form & Belastung',
+        vsStart: 'vs. Start',
+        loadRecovery: 'Belastung / Erholung',
+        hybridBalance: 'Hybrid-Balance',
+        perWeek: 'Ø /Woche',
+        sessionsUnit: 'Einheiten',
+        avgPaceKm: 'Ø Pace /km',
+        avgSpeedKmh: 'Ø km/h',
+        avgPace100m: 'Ø /100m',
+        avgMin: 'Ø min',
+        last8Weeks: 'letzte 8 Wochen',
+        distance: 'Distanz',
+        durationWord: 'Dauer',
+        heartRate: 'Herzfrequenz',
+        hrZonesCaption: 'HF-Zonen · Zeit-Verteilung folgt mit Garmin',
+        sportRun: 'Laufen',
+        sportBike: 'Rad',
+        sportSwim: 'Schwimmen',
+        sportHike: 'Wandern',
+        sportRow: 'Rudern',
+        sportOther: 'Sonstiges'
       },
       v4: {
         tabs: {
@@ -1268,7 +1348,8 @@ const translations = {
       hybrid: 'Hybrid',
       editName: 'Name bearbeiten',
       nameUpdated: 'Name aktualisiert',
-      profileUpdated: 'Profil aktualisiert'
+      profileUpdated: 'Profil aktualisiert',
+      defaultName: 'Benutzer'
     },
     settings: {
       general: 'Allgemein',
@@ -1345,6 +1426,7 @@ const translations = {
       continueWithGoogle: 'Mit Google anmelden',
       allowlistInfo: 'Nur autorisierte Benutzer können sich anmelden',
       footerText: 'Sichere Anmeldung über Firebase',
+      signOutError: 'Fehler beim Abmelden.',
       errors: {
         generic: 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
         popupClosed: 'Anmeldung wurde abgebrochen.',
@@ -1406,7 +1488,17 @@ const translations = {
       planNameRequired: 'Bitte gib einen Namen für den Plan ein!',
       planExercisesRequired: 'Bitte füge mindestens eine Übung hinzu!',
       exerciseNameRequired: 'Bitte gib einen Namen für die Übung ein!',
-      muscleGroupsRequired: 'Bitte wähle mindestens eine Muskelgruppe!'
+      muscleGroupsRequired: 'Bitte wähle mindestens eine Muskelgruppe!',
+      appLoadFailed: 'Fehler beim Laden der App. Bitte Seite neu laden.',
+      activeWorkoutExists: 'Du hast bereits ein aktives Workout. Bitte fortsetzen oder abbrechen.'
+    },
+    import: {
+      fileReadError: 'Datei konnte nicht gelesen werden (.TCX/.GPX erwartet)',
+      fileReadErrorShort: 'Datei konnte nicht gelesen werden',
+      notAvailable: 'Import nicht verfügbar',
+      success: 'Einheit importiert',
+      hrZonesDetected: ' · HF-Zonen erkannt',
+      failed: 'Import fehlgeschlagen'
     },
     feedback: {
       title: 'Wie war dein Training?',
@@ -1743,6 +1835,8 @@ const translations = {
       },
       addPlan: 'Add plan',
       quickAdd: 'Quick entry',
+      collapseMonth: 'Collapse month',
+      expandMonth: 'Expand month',
       orQuickEntry: 'Or create quick entry',
       orSelectPlan: 'or select plan',
       today: 'Today',
@@ -1804,6 +1898,11 @@ const translations = {
         biceps: 'Biceps',
         triceps: 'Triceps',
         core: 'Core',
+        quads: 'Quads',
+        hamstrings: 'Hamstrings',
+        glutes: 'Glutes',
+        calves: 'Calves',
+        // Legacy
         legs: 'Legs',
         fullBody: 'Full body',
         arms: 'Arms',
@@ -1819,6 +1918,10 @@ const translations = {
         triceps: 'Triceps muscles',
         shoulders: 'Shoulder muscles',
         core: 'Abdominal and core muscles',
+        quads: 'Front thigh muscles',
+        hamstrings: 'Rear thigh muscles',
+        glutes: 'Glute muscles',
+        calves: 'Calf muscles',
         legs: 'Leg muscles',
         fullBody: 'Full body training',
         arms: 'Biceps, triceps, forearms',
@@ -1843,6 +1946,26 @@ const translations = {
         allEquipment: 'Equipment'
       },
       equipment: 'Equipment',
+      equipmentNames: {
+        bodyweight: 'Bodyweight',
+        'pull-up-bar': 'Pull-up bar',
+        'dip-bars': 'Dip bars',
+        parallettes: 'Parallettes',
+        rings: 'Rings',
+        box: 'Box',
+        bench: 'Bench',
+        wall: 'Wall',
+        mat: 'Mat',
+        barbell: 'Barbell',
+        dumbbell: 'Dumbbell',
+        kettlebell: 'Kettlebell',
+        machine: 'Machine',
+        'resistance-bands': 'Resistance bands',
+        none: 'No equipment',
+        'gym-machine': 'Machine',
+        weights: 'Weights'
+      },
+      equipmentPlaceholder: 'Select equipment...',
       discipline: 'Discipline',
       visual: 'Exercise icon',
       selectIcon: 'Select icon',
@@ -1947,6 +2070,9 @@ const translations = {
       detail: {
         useInPlan: 'Use in plan'
       },
+      bestReps: 'Best reps',
+      heaviestWeight: 'Heaviest weight',
+      bestSetVolume: 'Best set volume',
       searchPlaceholder: 'Search exercises...',
       noResultsTitle: 'No results',
       noResultsHint: 'Try a different term or create a new exercise.',
@@ -2015,7 +2141,11 @@ const translations = {
         searchExercise: 'Search exercise...',
         noExercisesFound: 'No exercises found',
         freeWorkout: 'Free workout',
-        menu: 'Menu'
+        menu: 'Menu',
+        replaceExercise: 'Replace',
+        upNext: 'Up next',
+        restRunning: 'Rest running',
+        skipRest: 'Skip rest'
       },
       banner: {
         active: 'Active workout: {name}',
@@ -2049,6 +2179,8 @@ const translations = {
         deleteSetConfirm: 'Really delete this set?',
         decreaseWeight: 'Decrease weight',
         increaseWeight: 'Increase weight',
+        decreaseReps: 'Decrease reps',
+        increaseReps: 'Increase reps',
         stepModeChanged: 'Step size: {step} {unit}'
       },
       exercise: {
@@ -2651,6 +2783,8 @@ const translations = {
           minutesPerWeek: 'min',
           noData: 'No training data yet'
         },
+        weekVolumeTitle: 'Weekly volume · per muscle',
+        weekVolumeHint: 'Sets/week per muscle group — target range ~10–20.',
         blockComparison: {
           title: 'Block comparison',
           last4w: 'Last 4 weeks',
@@ -2690,6 +2824,44 @@ const translations = {
           cardio: 'Cardio',
           recovery: 'Recovery'
         }
+      },
+      widgets: {
+        overview: 'Overview',
+        consistencyTitle: 'Consistency & Volume',
+        streak: 'Streak',
+        daysShort: 'd',
+        sessionsPerWeek: 'Sess./week',
+        movement: 'Movement',
+        weeklyVolumeCaption: 'Weekly volume · last 8 weeks',
+        highestThisWeek: 'highest this week',
+        exerciseProgression: 'Exercise progression',
+        showAll: 'Show all',
+        held: 'maintained',
+        rising: 'rising',
+        trained: '{count}× trained',
+        since: 'since {month}',
+        repsShort: 'reps',
+        formLoadTitle: 'Form & Load',
+        vsStart: 'vs. start',
+        loadRecovery: 'Load / Recovery',
+        hybridBalance: 'Hybrid Balance',
+        perWeek: 'Ø /week',
+        sessionsUnit: 'Sessions',
+        avgPaceKm: 'Ø pace /km',
+        avgSpeedKmh: 'Ø km/h',
+        avgPace100m: 'Ø /100m',
+        avgMin: 'Ø min',
+        last8Weeks: 'last 8 weeks',
+        distance: 'Distance',
+        durationWord: 'Duration',
+        heartRate: 'Heart rate',
+        hrZonesCaption: 'HR zones · time distribution coming with Garmin',
+        sportRun: 'Running',
+        sportBike: 'Bike',
+        sportSwim: 'Swimming',
+        sportHike: 'Hiking',
+        sportRow: 'Rowing',
+        sportOther: 'Other'
       },
       v4: {
         tabs: {
@@ -2779,7 +2951,8 @@ const translations = {
       hybrid: 'Hybrid',
       editName: 'Edit name',
       nameUpdated: 'Name updated',
-      profileUpdated: 'Profile updated'
+      profileUpdated: 'Profile updated',
+      defaultName: 'User'
     },
     settings: {
       general: 'General',
@@ -2856,6 +3029,7 @@ const translations = {
       continueWithGoogle: 'Continue with Google',
       allowlistInfo: 'Only authorized users can sign in',
       footerText: 'Secure sign-in via Firebase',
+      signOutError: 'Error signing out.',
       errors: {
         generic: 'Something went wrong. Please try again.',
         popupClosed: 'Sign-in was cancelled.',
@@ -2917,7 +3091,17 @@ const translations = {
       planNameRequired: 'Please enter a name for the plan!',
       planExercisesRequired: 'Please add at least one exercise!',
       exerciseNameRequired: 'Please enter a name for the exercise!',
-      muscleGroupsRequired: 'Please select at least one muscle group!'
+      muscleGroupsRequired: 'Please select at least one muscle group!',
+      appLoadFailed: 'Error loading app. Please reload the page.',
+      activeWorkoutExists: 'You already have an active workout. Please resume or cancel it.'
+    },
+    import: {
+      fileReadError: 'File could not be read (.TCX/.GPX expected)',
+      fileReadErrorShort: 'File could not be read',
+      notAvailable: 'Import not available',
+      success: 'Unit imported',
+      hrZonesDetected: ' · HR zones detected',
+      failed: 'Import failed'
     },
     feedback: {
       title: 'How was your workout?',
@@ -3075,7 +3259,7 @@ function formatDurationShortText(totalSeconds) {
 
 function formatDateTimeText(date) {
   if (!date) return '';
-  return new Intl.DateTimeFormat('de-DE', {
+  return new Intl.DateTimeFormat(getIntlLocale(), {
     timeZone: 'Europe/Berlin',
     day: '2-digit',
     month: '2-digit',
@@ -3087,7 +3271,7 @@ function formatDateTimeText(date) {
 
 function formatDateShortText(date) {
   if (!date) return '';
-  return new Intl.DateTimeFormat('de-DE', {
+  return new Intl.DateTimeFormat(getIntlLocale(), {
     timeZone: 'Europe/Berlin',
     day: '2-digit',
     month: '2-digit'

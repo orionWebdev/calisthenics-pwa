@@ -70,8 +70,8 @@ function renderSTDetail(exercise) {
   const typeLabelMap = {
     'bodyweight': t('workout.screen.bodyweight'),
     'strength': t('workout.screen.weighted'),
-    'cardio': t('workout.screen.cardio') || 'Cardio',
-    'recovery': t('workout.screen.recovery') || 'Recovery'
+    'cardio': t('workout.screen.cardio'),
+    'recovery': t('workout.screen.recovery')
   };
   const typeLabel = typeLabelMap[exType] || t('workout.screen.weighted');
 
@@ -79,7 +79,22 @@ function renderSTDetail(exercise) {
   const exMeta = (typeof allExercises !== 'undefined' && Array.isArray(allExercises))
     ? allExercises.find(e => e && e.id === exercise.exerciseId) : null;
   const primaryMuscle = (exMeta && Array.isArray(exMeta.muscleGroups)) ? exMeta.muscleGroups[0] : null;
-  const muscleMap = { chest: 'Brust', back: 'Rücken', legs: 'Beine', quads: 'Beine', hamstrings: 'Beine', glutes: 'Gesäß', shoulders: 'Schultern', arms: 'Arme', biceps: 'Bizeps', triceps: 'Trizeps', core: 'Core', abs: 'Core', fullbody: 'Ganzkörper', cardio: 'Cardio' };
+  const muscleMap = {
+    chest: t('exercise.muscles.chest'),
+    back: t('exercise.muscles.back'),
+    legs: t('exercise.muscles.legs'),
+    quads: t('exercise.muscles.legs'),
+    hamstrings: t('exercise.muscles.legs'),
+    glutes: t('exercise.muscles.legs'),
+    shoulders: t('exercise.muscles.shoulders'),
+    arms: t('exercise.muscles.arms'),
+    biceps: t('exercise.muscles.biceps'),
+    triceps: t('exercise.muscles.triceps'),
+    core: t('exercise.muscles.core'),
+    abs: t('exercise.muscles.core'),
+    fullbody: t('exercise.muscles.fullBody'),
+    cardio: t('exercise.muscles.cardio')
+  };
   const muscleBadge = primaryMuscle ? `<span class="st-detail-muscle">${muscleMap[primaryMuscle] || primaryMuscle}</span>` : '';
 
   return `
@@ -107,8 +122,8 @@ function renderSTTargetAndLastPerf(exercise) {
   const globalPerf = getGlobalLastPerformance(exercise.exerciseId);
   const hasHistory = !!(globalPerf && globalPerf.sets && globalPerf.sets.length > 0);
   const histLabel = hasHistory
-    ? `${t('workout.lastPerformance') || 'Letztes Mal'} · ${formatRelativeTime(globalPerf.date)}`
-    : (t('workout.noPreviousData') || 'Keine vorherigen Daten');
+    ? `${t('workout.lastPerformance')} · ${formatRelativeTime(globalPerf.date)}`
+    : t('workout.noPreviousData');
 
   const lastPerfHtml = hasHistory
     ? `<button type="button" class="st-history-btn" onclick="openExerciseHistorySheet('${exercise.exerciseId}')">
@@ -175,7 +190,7 @@ function renderSTCardioInput(exercise) {
     <div class="st-set-list">
       <div class="st-cardio-input">
         <div class="st-cardio-field">
-          <label>${t('workout.cardio.duration') || 'Dauer (Min.)'}</label>
+          <label>${t('workout.cardio.duration')}</label>
           <div class="st-cardio-field-row">
             <button type="button" class="st-stepper-btn" onclick="adjustCardioField('cardio-duration', -1)">
               <span class="material-symbols-rounded">remove</span>
@@ -187,7 +202,7 @@ function renderSTCardioInput(exercise) {
           </div>
         </div>
         <div class="st-cardio-field">
-          <label>${t('workout.cardio.distance') || 'Distanz (km)'}</label>
+          <label>${t('workout.cardio.distance')}</label>
           <div class="st-cardio-field-row">
             <button type="button" class="st-stepper-btn" onclick="adjustCardioField('cardio-distance', -0.5)">
               <span class="material-symbols-rounded">remove</span>
@@ -200,13 +215,13 @@ function renderSTCardioInput(exercise) {
           <div class="st-pace-display" id="cardio-pace-display"></div>
         </div>
         <div class="st-cardio-field">
-          <label>${t('workout.cardio.rpe') || 'Belastung (1–5)'}</label>
+          <label>${t('workout.cardio.rpe')}</label>
           <div class="st-rpe-selector" id="cardio-rpe-selector">
             ${rpeButtons}
           </div>
         </div>
         <button type="button" class="st-cardio-log-btn" onclick="logCardioSetFromInput()">
-          ${t('workout.cardio.log') || 'Cardio loggen'}
+          ${t('workout.cardio.log')}
         </button>
       </div>
     </div>
@@ -239,7 +254,7 @@ function renderSTRecoveryInput(exercise) {
     <div class="st-set-list">
       <div class="st-recovery-input">
         <div class="st-cardio-field">
-          <label>${t('workout.recovery.duration') || 'Dauer (Min.)'}</label>
+          <label>${t('workout.recovery.duration')}</label>
           <div class="st-cardio-field-row">
             <button type="button" class="st-stepper-btn" onclick="adjustCardioField('recovery-duration', -1)">
               <span class="material-symbols-rounded">remove</span>
@@ -251,7 +266,7 @@ function renderSTRecoveryInput(exercise) {
           </div>
         </div>
         <button type="button" class="st-cardio-log-btn" onclick="logRecoverySetFromInput()">
-          ${t('workout.recovery.log') || 'Recovery loggen'}
+          ${t('workout.recovery.log')}
         </button>
       </div>
     </div>
@@ -299,7 +314,7 @@ function updateCardioPace() {
   const distance = parseFloat(distanceEl?.value) || 0;
   if (duration > 0 && distance > 0) {
     const pace = (duration / distance).toFixed(2).replace('.', ',');
-    paceEl.textContent = `${t('workout.cardio.pace') || 'Pace'}: ${pace} min/km`;
+    paceEl.textContent = `${t('workout.cardio.pace')}: ${pace} min/km`;
   } else {
     paceEl.textContent = '';
   }
@@ -545,7 +560,7 @@ function renderSTSetList(exercise) {
     <div class="st-sets">
       ${rows}
       <button type="button" class="st-set-add-btn" onclick="addEmptySet()">
-        <span class="material-symbols-rounded">add</span>${t('workout.setLogger.addSet') || 'Satz hinzufügen'}
+        <span class="material-symbols-rounded">add</span>${t('workout.setLogger.addSet')}
       </button>
     </div>
   `;

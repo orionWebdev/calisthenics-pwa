@@ -416,8 +416,8 @@ function setupNumberPickerEvents(overlay) {
 /** HTML for the set-type tab strip — toggles the picker between Wdh and Halten. */
 function renderSetModeTabs() {
   const current = numberPickerConfig.type; // 'reps' | 'hold'
-  const repsLabel = (typeof t === 'function' && t('numberPicker.modeReps')) || 'Wdh.';
-  const holdLabel = (typeof t === 'function' && t('numberPicker.modeHold')) || 'Halten';
+  const repsLabel = typeof t === 'function' ? t('numberPicker.modeReps') : 'Wdh.';
+  const holdLabel = typeof t === 'function' ? t('numberPicker.modeHold') : 'Halten';
   const modes = [
     { key: 'reps', label: repsLabel },
     { key: 'hold', label: holdLabel },

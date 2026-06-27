@@ -348,7 +348,7 @@ function renderScheduledWorkoutsCard(state) {
 // The "Workout erfassen" CTA was removed from Home (logging lives in the bottom-nav
 // FAB). This now only keeps the "Heute"-header title/date in sync.
 function renderLogWorkoutCard(state) {
-  const todayTitle = tr('dashboard.today') || 'Heute';
+  const todayTitle = tr('dashboard.today');
   const todayDate = typeof formatDateLongText === 'function'
     ? formatDateLongText(new Date(), false)
     : new Date().toLocaleDateString();
