@@ -1,7 +1,7 @@
 // ========================================
 // PREDEFINED EXERCISES DATA (CURATED CORE)
 // ========================================
-// 80 curated essential strength & calisthenics exercises.
+// 84 curated essential strength & calisthenics exercises.
 // Single source of truth — generated/maintained dataset (no external API).
 // source: 'curated' marks these as read-only default exercises.
 //
@@ -13,7 +13,7 @@
 // Bump CURATED_SEED_VERSION whenever this dataset changes so existing installs
 // re-seed the global exercises_curated collection (clean slate, stable ids).
 
-const CURATED_SEED_VERSION = 2;
+const CURATED_SEED_VERSION = 3;
 const CURATED_SEED_KEY = 'curated_seed_version';
 
 const defaultExercises = [
@@ -140,14 +140,16 @@ const defaultExercises = [
     "name_de": "Diamant-Liegestütze",
     "type": "bodyweight",
     "primaryMuscles": [
-      "chest"
+      "triceps"
     ],
     "secondaryMuscles": [
-      "triceps"
+      "chest",
+      "shoulders"
     ],
     "muscleGroups": [
+      "triceps",
       "chest",
-      "triceps"
+      "shoulders"
     ],
     "equipment": [
       "bodyweight"
@@ -546,11 +548,10 @@ const defaultExercises = [
     "name_de": "Klimmzug im Untergriff",
     "type": "bodyweight",
     "primaryMuscles": [
-      "back"
-    ],
-    "secondaryMuscles": [
+      "back",
       "biceps"
     ],
+    "secondaryMuscles": [],
     "muscleGroups": [
       "back",
       "biceps"
@@ -1909,12 +1910,14 @@ const defaultExercises = [
     ],
     "secondaryMuscles": [
       "shoulders",
+      "chest",
       "core",
       "biceps"
     ],
     "muscleGroups": [
       "back",
       "shoulders",
+      "chest",
       "core",
       "biceps"
     ],
@@ -1968,11 +1971,13 @@ const defaultExercises = [
       "shoulders"
     ],
     "secondaryMuscles": [
+      "back",
       "chest",
       "core"
     ],
     "muscleGroups": [
       "shoulders",
+      "back",
       "chest",
       "core"
     ],
@@ -4420,6 +4425,238 @@ const defaultExercises = [
         "commonMistakes": [
           "Unten federn",
           "Knie beugen"
+        ]
+      }
+    }
+  },
+  {
+    "id": "scapula_pull_up",
+    "name": "Scapula Pull-up",
+    "name_de": "Skapula-Klimmzug",
+    "type": "bodyweight",
+    "primaryMuscles": [
+      "back"
+    ],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "equipment": [
+      "pull-up-bar"
+    ],
+    "difficulty": 1,
+    "source": "curated",
+    "instructionsSteps": [
+      "Hang from a pull-up bar with straight arms and a shoulder-width overhand grip.",
+      "Without bending your elbows, pull your shoulder blades down and together to raise your body a few centimetres.",
+      "Hold briefly at the top, feeling your lats and lower traps engage.",
+      "Slowly let your shoulder blades elevate again to return to a full dead hang."
+    ],
+    "cues": [
+      "Keep your arms completely straight throughout the movement.",
+      "Think about pulling your shoulders away from your ears.",
+      "Move slowly and controlled — the range of motion is small."
+    ],
+    "commonMistakes": [
+      "Bending the elbows and turning it into a partial pull-up.",
+      "Shrugging the shoulders up instead of depressing them.",
+      "Using momentum or swinging the body."
+    ],
+    "i18n": {
+      "de": {
+        "instructionsSteps": [
+          "Hänge mit gestreckten Armen und schulterbreitem Obergriff an der Klimmzugstange.",
+          "Ziehe die Schulterblätter nach unten und zusammen, ohne die Ellbogen zu beugen, sodass sich dein Körper einige Zentimeter hebt.",
+          "Halte kurz oben und spüre, wie Latissimus und untere Trapezmuskeln arbeiten.",
+          "Lasse die Schulterblätter langsam wieder nach oben gleiten zurück in den vollen Aushang."
+        ],
+        "cues": [
+          "Halte die Arme während der gesamten Bewegung vollständig gestreckt.",
+          "Stelle dir vor, die Schultern von den Ohren weg zu ziehen.",
+          "Bewege dich langsam und kontrolliert — der Bewegungsumfang ist klein."
+        ],
+        "commonMistakes": [
+          "Die Ellbogen beugen und es zu einem halben Klimmzug machen.",
+          "Die Schultern hochziehen, statt sie nach unten zu drücken.",
+          "Schwung nutzen oder mit dem Körper schwingen."
+        ]
+      }
+    }
+  },
+  {
+    "id": "scapula_push_up",
+    "name": "Scapula Push-up",
+    "name_de": "Skapula-Liegestütze",
+    "type": "bodyweight",
+    "primaryMuscles": [
+      "shoulders"
+    ],
+    "secondaryMuscles": [
+      "chest",
+      "core"
+    ],
+    "muscleGroups": [
+      "shoulders",
+      "chest",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": 1,
+    "source": "curated",
+    "instructionsSteps": [
+      "Start in a high plank position with arms straight and hands under your shoulders.",
+      "Keeping your elbows locked, let your chest sink slightly as your shoulder blades squeeze together.",
+      "Push the floor away to spread your shoulder blades apart, rounding your upper back.",
+      "Repeat the protraction and retraction with control."
+    ],
+    "cues": [
+      "Keep your elbows completely straight the entire time.",
+      "Move only through the shoulder blades, not the arms.",
+      "Maintain a tight core so the hips do not sag."
+    ],
+    "commonMistakes": [
+      "Bending the elbows like a normal push-up.",
+      "Letting the hips drop or pike.",
+      "Rushing instead of feeling the scapular movement."
+    ],
+    "i18n": {
+      "de": {
+        "instructionsSteps": [
+          "Beginne im hohen Stütz mit gestreckten Armen und Händen unter den Schultern.",
+          "Halte die Ellbogen gestreckt und lasse die Brust leicht absinken, während die Schulterblätter zusammenkommen.",
+          "Drücke den Boden weg, sodass sich die Schulterblätter auseinanderschieben und der obere Rücken rundet.",
+          "Wiederhole Protraktion und Retraktion kontrolliert."
+        ],
+        "cues": [
+          "Halte die Ellbogen die ganze Zeit vollständig gestreckt.",
+          "Bewege dich nur über die Schulterblätter, nicht über die Arme.",
+          "Halte den Rumpf fest, damit die Hüfte nicht durchhängt."
+        ],
+        "commonMistakes": [
+          "Die Ellbogen wie bei einem normalen Liegestütz beugen.",
+          "Die Hüfte absinken oder nach oben knicken lassen.",
+          "Hetzen, statt die Schulterblattbewegung zu spüren."
+        ]
+      }
+    }
+  },
+  {
+    "id": "reverse_hyperextension",
+    "name": "Reverse Hyperextension",
+    "name_de": "Reverse Hyperextension",
+    "type": "bodyweight",
+    "primaryMuscles": [
+      "glutes"
+    ],
+    "secondaryMuscles": [
+      "hamstrings",
+      "back"
+    ],
+    "muscleGroups": [
+      "glutes",
+      "hamstrings",
+      "back"
+    ],
+    "equipment": [
+      "bench"
+    ],
+    "difficulty": 1,
+    "source": "curated",
+    "instructionsSteps": [
+      "Lie face down on a bench with your hips at the edge and legs hanging toward the floor.",
+      "Grip the bench firmly for stability.",
+      "Raise your straight legs by squeezing your glutes until they are in line with your torso.",
+      "Lower your legs under control without letting them swing."
+    ],
+    "cues": [
+      "Initiate the movement from the glutes, not the lower back.",
+      "Keep your legs relatively straight and together.",
+      "Avoid hyperextending the lower back at the top."
+    ],
+    "commonMistakes": [
+      "Using momentum to swing the legs up.",
+      "Overarching and straining the lower back.",
+      "Bending the knees to cheat the range of motion."
+    ],
+    "i18n": {
+      "de": {
+        "instructionsSteps": [
+          "Lege dich bäuchlings auf eine Bank, sodass die Hüfte an der Kante liegt und die Beine zum Boden hängen.",
+          "Greife die Bank fest für Stabilität.",
+          "Hebe die gestreckten Beine durch Anspannen des Gesäßes, bis sie in einer Linie mit dem Oberkörper sind.",
+          "Senke die Beine kontrolliert ab, ohne sie schwingen zu lassen."
+        ],
+        "cues": [
+          "Leite die Bewegung aus dem Gesäß ein, nicht aus dem unteren Rücken.",
+          "Halte die Beine relativ gerade und zusammen.",
+          "Vermeide ein Überstrecken des unteren Rückens am höchsten Punkt."
+        ],
+        "commonMistakes": [
+          "Schwung nutzen, um die Beine hochzuschwingen.",
+          "Den unteren Rücken überstrecken und belasten.",
+          "Die Knie beugen, um den Bewegungsumfang zu erschummeln."
+        ]
+      }
+    }
+  },
+  {
+    "id": "external_rotation",
+    "name": "External Rotation",
+    "name_de": "Außenrotation",
+    "type": "strength",
+    "primaryMuscles": [
+      "shoulders"
+    ],
+    "secondaryMuscles": [
+      "back"
+    ],
+    "muscleGroups": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": 1,
+    "source": "curated",
+    "instructionsSteps": [
+      "Stand or kneel holding a light dumbbell, elbow bent 90 degrees and tucked against your side.",
+      "Keeping the elbow pinned to your ribs, rotate your forearm outward away from your body.",
+      "Pause briefly at the end range without flaring the elbow.",
+      "Rotate back to the start under control."
+    ],
+    "cues": [
+      "Keep the elbow glued to your side throughout (a towel between elbow and ribs helps).",
+      "Use light weight — this targets the small rotator-cuff muscles.",
+      "Move only the forearm; the upper arm stays still."
+    ],
+    "commonMistakes": [
+      "Letting the elbow drift away from the body.",
+      "Using too much weight and recruiting the larger shoulder muscles.",
+      "Rotating the wrist instead of the shoulder."
+    ],
+    "i18n": {
+      "de": {
+        "instructionsSteps": [
+          "Stehe oder knie mit einer leichten Kurzhantel, Ellbogen 90 Grad gebeugt und an die Seite angelegt.",
+          "Halte den Ellbogen an den Rippen und rotiere den Unterarm nach außen vom Körper weg.",
+          "Halte kurz am Endpunkt, ohne den Ellbogen abzuspreizen.",
+          "Rotiere kontrolliert zurück zur Ausgangsposition."
+        ],
+        "cues": [
+          "Halte den Ellbogen durchgehend an der Seite (ein Handtuch zwischen Ellbogen und Rippen hilft).",
+          "Nutze wenig Gewicht — es trainiert die kleine Rotatorenmanschette.",
+          "Bewege nur den Unterarm; der Oberarm bleibt ruhig."
+        ],
+        "commonMistakes": [
+          "Den Ellbogen vom Körper wegdriften lassen.",
+          "Zu viel Gewicht nutzen und die großen Schultermuskeln einsetzen.",
+          "Das Handgelenk statt der Schulter rotieren."
         ]
       }
     }

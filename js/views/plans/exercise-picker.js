@@ -236,12 +236,13 @@ function openQuickExerciseMuscleSheet() {
     { value: 'chest', label: mn.chest, description: t('exercise.muscleDescriptions.chest') },
     { value: 'back', label: mn.back, description: t('exercise.muscleDescriptions.back') },
     { value: 'shoulders', label: mn.shoulders, description: t('exercise.muscleDescriptions.shoulders') },
-    { value: 'arms', label: mn.arms, description: t('exercise.muscleDescriptions.arms') },
     { value: 'biceps', label: mn.biceps, description: t('exercise.muscleDescriptions.biceps') },
     { value: 'triceps', label: mn.triceps, description: t('exercise.muscleDescriptions.triceps') },
     { value: 'core', label: mn.core, description: t('exercise.muscleDescriptions.core') },
-    { value: 'legs', label: mn.legs, description: t('exercise.muscleDescriptions.legs') },
-    { value: 'calf', label: mn.calf, description: t('exercise.muscleDescriptions.calf') }
+    { value: 'quads', label: mn.quads, description: t('exercise.muscleDescriptions.quads') },
+    { value: 'hamstrings', label: mn.hamstrings, description: t('exercise.muscleDescriptions.hamstrings') },
+    { value: 'glutes', label: mn.glutes, description: t('exercise.muscleDescriptions.glutes') },
+    { value: 'calves', label: mn.calves, description: t('exercise.muscleDescriptions.calves') }
   ];
 
   openBottomSheet({

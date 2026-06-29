@@ -571,8 +571,10 @@ function openMuscleGroupsBottomSheet() {
     { value: 'triceps', label: mn.triceps, description: t('exercise.muscleDescriptions.triceps'), iconHtml: getMuscleIcon('triceps', 'muscle-icon--lg') },
     { value: 'shoulders', label: mn.shoulders, description: t('exercise.muscleDescriptions.shoulders'), iconHtml: getMuscleIcon('shoulders', 'muscle-icon--lg') },
     { value: 'core', label: mn.core, description: t('exercise.muscleDescriptions.core'), iconHtml: getMuscleIcon('core', 'muscle-icon--lg') },
-    { value: 'legs', label: mn.legs, description: t('exercise.muscleDescriptions.legs'), iconHtml: getMuscleIcon('legs', 'muscle-icon--lg') },
-    { value: 'full-body', label: mn['full-body'], description: t('exercise.muscleDescriptions.fullBody'), iconHtml: getMuscleIcon('full-body', 'muscle-icon--lg') }
+    { value: 'quads', label: mn.quads, description: t('exercise.muscleDescriptions.quads'), iconHtml: getMuscleIcon('quads', 'muscle-icon--lg') },
+    { value: 'hamstrings', label: mn.hamstrings, description: t('exercise.muscleDescriptions.hamstrings'), iconHtml: getMuscleIcon('hamstrings', 'muscle-icon--lg') },
+    { value: 'glutes', label: mn.glutes, description: t('exercise.muscleDescriptions.glutes'), iconHtml: getMuscleIcon('glutes', 'muscle-icon--lg') },
+    { value: 'calves', label: mn.calves, description: t('exercise.muscleDescriptions.calves'), iconHtml: getMuscleIcon('calves', 'muscle-icon--lg') }
   ];
 
   openBottomSheet({

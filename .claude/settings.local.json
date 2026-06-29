@@ -25,7 +25,10 @@
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:8080/index.html\" -UseBasicParsing -TimeoutSec 5; Write-Output \"HTTP $\\($r.StatusCode\\) — index.html length $\\($r.RawContentLength\\)\" } catch { Write-Output \"NOT UP YET: $\\($_.Exception.Message\\)\" })",
       "Bash(python -X utf8 dev-server.py)",
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Bash(node --check js/dev/demoMode.js)",
+      "Bash(node scripts/validate-exercises.js)",
+      "Bash(node -e ' *)"
     ]
   }
 }

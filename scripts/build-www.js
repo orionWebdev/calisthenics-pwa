@@ -24,7 +24,7 @@ const FILES = [
   'icon-192.png',
   'icon-512.png',
 ];
-const DIRS = ['css', 'js', 'assets', 'components', 'data'];
+const DIRS = ['css', 'js', 'assets', 'components'];
 
 // Clean previous output for a deterministic payload.
 fs.rmSync(out, { recursive: true, force: true });

@@ -144,7 +144,7 @@ function openAddExerciseToWorkout() {
   workoutPickerMuscleFilter = 'all';
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
 
-  const muscleFilters = ['all', 'chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'calf'];
+  const muscleFilters = ['all', 'chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'quads', 'hamstrings', 'glutes', 'calves'];
   const muscleNames = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
   const chipsHTML = muscleFilters.map(key => {
     const label = key === 'all' ? t('plan.filters.all') : (muscleNames[key] || key);

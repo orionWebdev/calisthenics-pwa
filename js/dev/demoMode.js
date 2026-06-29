@@ -17,12 +17,12 @@
 
   // ---- Mock-Übungs-DB (muscleGroups passend zu den Sessions) ----
   var demoExercises = [
-    { id: 'push_up', name: 'Liegestütze', name_de: 'Liegestütze', type: 'bodyweight', muscleGroups: ['chest','triceps','shoulders'], equipment: ['bodyweight'], difficulty: 1, source: 'curated' },
-    { id: 'pull_up', name: 'Klimmzug', name_de: 'Klimmzug', type: 'bodyweight', muscleGroups: ['back','biceps'], equipment: ['bodyweight'], difficulty: 3, source: 'curated' },
-    { id: 'squat', name: 'Kniebeuge', name_de: 'Kniebeuge', type: 'bodyweight', muscleGroups: ['legs','glutes'], equipment: ['bodyweight'], difficulty: 2, source: 'curated' },
-    { id: 'bench_press', name: 'Bankdrücken', name_de: 'Bankdrücken', type: 'strength', muscleGroups: ['chest','triceps','shoulders'], equipment: ['barbell'], difficulty: 4, source: 'curated' },
-    { id: 'plank', name: 'Unterarmstütz', name_de: 'Unterarmstütz', type: 'bodyweight', muscleGroups: ['core'], equipment: ['bodyweight'], difficulty: 1, source: 'curated' },
-    { id: 'dip', name: 'Dips', name_de: 'Dips', type: 'bodyweight', muscleGroups: ['triceps','chest'], equipment: ['bodyweight'], difficulty: 3, source: 'curated' }
+    { id: 'push_up', name: 'Liegestütze', name_de: 'Liegestütze', type: 'bodyweight', primaryMuscles: ['chest'], secondaryMuscles: ['triceps','shoulders'], muscleGroups: ['chest','triceps','shoulders'], equipment: ['bodyweight'], difficulty: 1, source: 'curated' },
+    { id: 'pull_up', name: 'Klimmzug', name_de: 'Klimmzug', type: 'bodyweight', primaryMuscles: ['back'], secondaryMuscles: ['biceps'], muscleGroups: ['back','biceps'], equipment: ['bodyweight'], difficulty: 3, source: 'curated' },
+    { id: 'squat', name: 'Kniebeuge', name_de: 'Kniebeuge', type: 'bodyweight', primaryMuscles: ['quads'], secondaryMuscles: ['glutes'], muscleGroups: ['quads','glutes'], equipment: ['bodyweight'], difficulty: 2, source: 'curated' },
+    { id: 'bench_press', name: 'Bankdrücken', name_de: 'Bankdrücken', type: 'strength', primaryMuscles: ['chest'], secondaryMuscles: ['triceps','shoulders'], muscleGroups: ['chest','triceps','shoulders'], equipment: ['barbell'], difficulty: 4, source: 'curated' },
+    { id: 'plank', name: 'Unterarmstütz', name_de: 'Unterarmstütz', type: 'bodyweight', primaryMuscles: ['core'], secondaryMuscles: [], muscleGroups: ['core'], equipment: ['bodyweight'], difficulty: 1, source: 'curated' },
+    { id: 'dip', name: 'Dips', name_de: 'Dips', type: 'bodyweight', primaryMuscles: ['chest'], secondaryMuscles: ['triceps'], muscleGroups: ['chest','triceps'], equipment: ['bodyweight'], difficulty: 3, source: 'curated' }
   ];
   var exById = {};
   demoExercises.forEach(function (e) { exById[e.id] = e; });

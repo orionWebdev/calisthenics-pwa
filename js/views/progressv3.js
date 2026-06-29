@@ -998,7 +998,12 @@ function renderV4HybridBalance(sessions) {
       { k: 'recovery', label: trV3('progress.v3.types.recovery'), color: 'var(--color-category-recovery)' }
     ];
     const bar = segs.map(s => buckets[s.k] > 0 ? `<i style="width:${(buckets[s.k] / total) * 100}%;background:${s.color}"></i>` : '').join('');
-    const legend = segs.map(s => `<div class="pv4-bal-item"><span class="pv4-bal-dot" style="background:${s.color}"></span>${s.label}<span class="pct">${Math.round((buckets[s.k] / total) * 100)} %</span></div>`).join('');
+    const legend = segs.map(s => {
+      const minutes = buckets[s.k];
+      const hours = Math.round((minutes / 60) * 10) / 10; // Eine Dezimalstelle
+      const percent = Math.round((buckets[s.k] / total) * 100);
+      return `<div class="pv4-bal-item"><span class="pv4-bal-dot" style="background:${s.color}"></span>${s.label}<div class="pv4-bal-stats"><span class="pv4-bal-time">${hours}h</span><span class="pct">${percent} %</span></div></div>`;
+    }).join('');
     return `
       <section class="pv3-card">
         <div class="pv4-sec-title"><span class="material-symbols-rounded">balance</span>${trV3('progress.widgets.hybridBalance')}</div>
@@ -2408,7 +2413,7 @@ function renderV4Rhythm(sessions) {
 
 function renderV4ExerciseFilterBar() {
   const exercises = typeof allExercises !== 'undefined' ? allExercises : [];
-  const muscleKeys = ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'legs', 'full-body'];
+  const muscleKeys = ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'quads', 'hamstrings', 'glutes', 'calves'];
   const names = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
 
   const chips = muscleKeys.map(key => {

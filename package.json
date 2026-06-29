@@ -4,6 +4,7 @@
   "private": true,
   "description": "ATEM Hybrid — Capacitor native wrapper around the existing vanilla-JS PWA",
   "scripts": {
+    "validate:exercises": "node scripts/validate-exercises.js",
     "build:www": "node scripts/build-www.js",
     "sync": "npm run build:www && cap sync",
     "open:android": "cap open android",

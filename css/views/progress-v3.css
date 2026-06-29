@@ -845,7 +845,9 @@
 .pv4-bal-legend { display: flex; flex-direction: column; gap: 7px; }
 .pv4-bal-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .pv4-bal-dot { width: 9px; height: 9px; border-radius: 50%; }
-.pv4-bal-item .pct { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.pv4-bal-stats { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+.pv4-bal-time { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.pv4-bal-item .pct { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 
 .pv4-ausdauer-footer {
   font-size: 13px;

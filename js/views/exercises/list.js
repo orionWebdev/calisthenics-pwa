@@ -331,7 +331,7 @@ function openDifficultyFilterSheet() {
  * Opens equipment filter as a bottom sheet (single-select)
  */
 function openEquipmentFilterSheet() {
-  const mainEquipment = ['bodyweight', 'pull-up-bar', 'parallettes', 'rings', 'dumbbell', 'barbell', 'resistance-bands', 'gym-machine', 'bench'];
+  const mainEquipment = ['bodyweight', 'pull-up-bar', 'dip-bars', 'parallettes', 'rings', 'box', 'bench', 'barbell', 'dumbbell', 'kettlebell', 'machine'];
 
   const filterOptions = [
     { value: '', label: t('plan.filters.all'), description: '' }

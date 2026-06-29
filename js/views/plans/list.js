@@ -212,8 +212,10 @@ function openPlanMuscleFilterSheet() {
     { value: 'triceps', label: mn.triceps, iconHtml: dot('triceps') },
     { value: 'shoulders', label: mn.shoulders, iconHtml: dot('shoulders') },
     { value: 'core', label: mn.core, iconHtml: dot('core') },
-    { value: 'legs', label: mn.legs, iconHtml: dot('legs') },
-    { value: 'full-body', label: mn['full-body'], iconHtml: dot('full-body') }
+    { value: 'quads', label: mn.quads, iconHtml: dot('quads') },
+    { value: 'hamstrings', label: mn.hamstrings, iconHtml: dot('hamstrings') },
+    { value: 'glutes', label: mn.glutes, iconHtml: dot('glutes') },
+    { value: 'calves', label: mn.calves, iconHtml: dot('calves') }
   ];
 
   openBottomSheet({
@@ -230,7 +232,7 @@ function openPlanMuscleFilterSheet() {
 }
 
 function openPlanEquipmentFilterSheet() {
-  const mainEquipment = ['bodyweight', 'pull-up-bar', 'parallettes', 'rings', 'dumbbell', 'barbell', 'resistance-bands', 'gym-machine', 'bench'];
+  const mainEquipment = ['bodyweight', 'pull-up-bar', 'dip-bars', 'parallettes', 'rings', 'box', 'bench', 'barbell', 'dumbbell', 'kettlebell', 'machine'];
   const filterOptions = [{ value: '', label: t('exercise.filters.allEquipment'), description: '' }];
   mainEquipment.forEach(eq => {
     filterOptions.push({ value: eq, label: getEquipmentName(eq), description: '' });
@@ -342,7 +344,7 @@ function applyPlanI18n() {
 
   const muscleLabelMap = typeof getMuscleNames === 'function' ? getMuscleNames() : {};
   setText('exercise-picker-filter-all-label', t('plan.filters.all'));
-  ['chest', 'back', 'shoulders', 'arms', 'biceps', 'triceps', 'core', 'legs', 'calf'].forEach(m => {
+  ['chest', 'back', 'shoulders', 'biceps', 'triceps', 'core', 'quads', 'hamstrings', 'glutes', 'calves'].forEach(m => {
     setText(`exercise-picker-filter-${m}-label`, muscleLabelMap[m] || '');
   });
 
