@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/theme.dart';
+import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/workout_providers.dart';
 import '../../domain/workout_session.dart';
+import '../set_type_ui.dart';
 
 /// ATEM — Workout Runner.
 ///
@@ -425,6 +427,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
     final notifier =
         ref.read(workoutSessionProvider(widget.sessionId).notifier);
     final tc = s.type.color;
+    final labelColor = s.type.labelColor;
     final isNeutral = s.type == SetType.normal;
 
     return AnimatedContainer(
@@ -465,11 +468,11 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
               ),
               alignment: Alignment.center,
               child: Text(
-                s.type.label,
+                s.type.shortLabel(AppL10n.of(context)),
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: s.done ? AtemColors.textSecondary : tc,
+                  color: s.done ? AtemColors.textSecondary : labelColor,
                 ),
               ),
             ),

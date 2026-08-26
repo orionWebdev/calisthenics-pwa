@@ -53,7 +53,9 @@ final rules = <Rule>[
     description:
         'fontSize unter 12 — informationstragender Text muss lesbar sein',
     active: false,
-    activateAt: 'Stufe 3',
+    // Die Typenskala wird im Design-Gespräch 01 festgelegt; scharf,
+    // sobald sie in den Primitiven umgesetzt ist.
+    activateAt: 'Stufe 4',
     // Keine Ausnahme für core/theme: Die Token-Definitionen SIND die Schuld,
     // die in Stufe 3 auf die Dreier-Skala kollabiert.
     match: RegExp(r'fontSize:\s*(?:[0-9]|1[01])(?:\.[0-9]+)?\b'),
@@ -82,7 +84,10 @@ final rules = <Rule>[
     description:
         'Textliteral im Widget — jeder sichtbare Text kommt aus dem ARB',
     active: false,
-    activateAt: 'Stufe 3',
+    // Nicht Stufe 3: Die Literale sitzen in den zwei Screens, die in
+    // Stufe 5 ohnehin neu gebaut werden. Sie jetzt zu migrieren wäre
+    // Arbeit für den Papierkorb.
+    activateAt: 'Stufe 5',
     match: RegExp(
         r"""(?:Text\(\s*|TextSpan\(\s*text:\s*|semanticLabel:\s*)'[^']"""),
   ),
@@ -91,8 +96,8 @@ final rules = <Rule>[
     contract: '03-architecture',
     description:
         'package:flutter in domain/ — Präsentation gehört nicht in die Domäne',
-    active: false,
-    activateAt: 'Stufe 3',
+    active: true,
+    activateAt: 'Stufe 3 — erledigt',
     match: RegExp(r"import 'package:flutter/"),
     skipPath: (p) => !p.contains('/domain/'),
     wholeFile: true,

@@ -8,8 +8,11 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../workout/application/workout_providers.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
+import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/dashboard_providers.dart';
 import '../../domain/dashboard_data.dart';
+import '../../domain/readiness_level.dart';
+import '../readiness_level_ui.dart';
 
 /// ATEM Performance Dashboard.
 ///
@@ -411,7 +414,7 @@ class _ReadinessHero extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  level.label,
+                                  level.label(AppL10n.of(context)),
                                   style: text.labelMedium?.copyWith(
                                     color: level.color,
                                     shadows: AtemGlow.text(level.color),
@@ -432,7 +435,7 @@ class _ReadinessHero extends StatelessWidget {
                           border: Border.all(color: AtemColors.border),
                         ),
                         child: Text(
-                          level.tag,
+                          level.tag(AppL10n.of(context)),
                           textAlign: TextAlign.center,
                           style: text.bodyLarge?.copyWith(
                               fontSize: 10, color: AtemColors.textTertiary),

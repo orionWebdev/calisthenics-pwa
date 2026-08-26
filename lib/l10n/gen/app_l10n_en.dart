@@ -1,0 +1,839 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_l10n.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppL10nEn extends AppL10n {
+  AppL10nEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get commonActivity => 'Activity';
+
+  @override
+  String get commonAdd => 'Add';
+
+  @override
+  String get commonAddSession => 'Add session';
+
+  @override
+  String get commonBack => 'Back';
+
+  @override
+  String get commonBodyweight => 'Bodyweight';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonCardio => 'Cardio';
+
+  @override
+  String get commonClose => 'Close';
+
+  @override
+  String get commonDays => 'Days';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
+  String get commonDistance => 'Distance';
+
+  @override
+  String get commonDone => 'Done';
+
+  @override
+  String get commonDuration => 'Duration';
+
+  @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get commonEditSession => 'Edit session';
+
+  @override
+  String get commonLoading => 'Loading...';
+
+  @override
+  String get commonMinutes => 'Minutes';
+
+  @override
+  String get commonNext => 'Next';
+
+  @override
+  String get commonNotAvailable => '-';
+
+  @override
+  String get commonNotes => 'Notes';
+
+  @override
+  String get commonOptional => 'optional';
+
+  @override
+  String get commonPace => 'Pace';
+
+  @override
+  String get commonRecovery => 'Recovery';
+
+  @override
+  String get commonSave => 'Save';
+
+  @override
+  String commonSecondsShort(int n) {
+    return '${n}s';
+  }
+
+  @override
+  String get commonSelect => 'Select';
+
+  @override
+  String get commonSession => 'Session';
+
+  @override
+  String get commonSessions => 'Sessions';
+
+  @override
+  String get commonStart => 'Start';
+
+  @override
+  String get commonStartAgain => 'Start again';
+
+  @override
+  String get commonStrength => 'Strength';
+
+  @override
+  String get commonTime => 'Time';
+
+  @override
+  String get commonView => 'View';
+
+  @override
+  String get commonViewDetails => 'View details';
+
+  @override
+  String get commonWeeks => 'Weeks';
+
+  @override
+  String get commonWorkout => 'Workout';
+
+  @override
+  String get dashboardActivityCalendarDurationUnit => 'Movement hours';
+
+  @override
+  String get dashboardActivityCalendarEmptyState =>
+      'No sessions in this period yet';
+
+  @override
+  String get dashboardActivityCalendarMore => 'More';
+
+  @override
+  String get dashboardActivityCalendarThisMonth => 'This month';
+
+  @override
+  String get dashboardAddWorkoutTitle => 'Add workout';
+
+  @override
+  String get dashboardAllSessionsEarlier => 'Earlier';
+
+  @override
+  String get dashboardAllSessionsEmpty => 'No sessions yet';
+
+  @override
+  String get dashboardAllSessionsTitle => 'All sessions';
+
+  @override
+  String get dashboardAllSessionsToday => 'Today';
+
+  @override
+  String get dashboardAllSessionsYesterday => 'Yesterday';
+
+  @override
+  String get dashboardCalendarAddTraining => 'Add workout';
+
+  @override
+  String get dashboardCalendarNextMonth => 'Next month';
+
+  @override
+  String get dashboardCalendarPrevMonth => 'Previous month';
+
+  @override
+  String get dashboardCalendarTabActivity => 'Activity';
+
+  @override
+  String get dashboardCalendarTabPlan => 'Plan';
+
+  @override
+  String dashboardHybridBalanceAria(String strength, String cardio) {
+    return 'Strength $strength percent, Cardio $cardio percent';
+  }
+
+  @override
+  String get dashboardHybridBalanceDescription =>
+      'Shows time distribution between strength and cardio.';
+
+  @override
+  String dashboardHybridBalanceSubtitle(int days) {
+    return 'Last $days days';
+  }
+
+  @override
+  String get dashboardHybridBalanceTitle => 'Hybrid Balance';
+
+  @override
+  String get dashboardLogWorkoutLog => 'Log workout';
+
+  @override
+  String get dashboardLogWorkoutLogDesc => 'Record a completed training';
+
+  @override
+  String get dashboardLogWorkoutPlan => 'Plan workout';
+
+  @override
+  String get dashboardLogWorkoutPlanDesc => 'Plan a training in the calendar';
+
+  @override
+  String get dashboardLogWorkoutStart => 'Start workout';
+
+  @override
+  String get dashboardLogWorkoutStartDesc => 'Start a training from your plans';
+
+  @override
+  String get dashboardLogWorkoutSubtitle => 'Log, start or plan a workout';
+
+  @override
+  String get dashboardLogWorkoutTitle => 'Log workout';
+
+  @override
+  String get dashboardPlanCalendarTitle => 'Plan calendar';
+
+  @override
+  String get dashboardPrimaryHelper =>
+      'Start or continue your current training.';
+
+  @override
+  String get dashboardPrimaryResume => 'Resume workout';
+
+  @override
+  String get dashboardPrimaryStart => 'Start workout';
+
+  @override
+  String get dashboardPrimarySubtitleActive => 'A workout is active.';
+
+  @override
+  String get dashboardPrimarySubtitleInactive =>
+      'Choose strength, cardio or recovery.';
+
+  @override
+  String get dashboardPrimaryTitle => 'Workout';
+
+  @override
+  String get dashboardQuickStatsMovementMinutes => 'Movement min.';
+
+  @override
+  String get dashboardQuickStatsSessions => 'Sessions';
+
+  @override
+  String get dashboardQuickStatsThisWeek => 'This week';
+
+  @override
+  String get dashboardReadinessLevelModerate => 'MODERATE LOAD';
+
+  @override
+  String get dashboardReadinessLevelPeak => 'PEAK READINESS';
+
+  @override
+  String get dashboardReadinessLevelRecovery => 'FOCUS: RECOVERY';
+
+  @override
+  String get dashboardReadinessLevelSolid => 'SOLID FORM';
+
+  @override
+  String get dashboardReadinessTagModerate =>
+      'Recovery: Moderate • Reduce volume slightly';
+
+  @override
+  String get dashboardReadinessTagPeak =>
+      'Recovery: Optimal • Ready for Hyrox / max load';
+
+  @override
+  String get dashboardReadinessTagRecovery =>
+      'Recovery: Low • Take an active rest day';
+
+  @override
+  String get dashboardReadinessTagSolid =>
+      'Recovery: Good • Maintain your normal training load';
+
+  @override
+  String get dashboardRecentDescription =>
+      'Last sessions in chronological order.';
+
+  @override
+  String get dashboardRecentEmpty => 'No sessions yet';
+
+  @override
+  String get dashboardRecentTitle => 'Recent sessions';
+
+  @override
+  String get dashboardRecentViewAll => 'View all';
+
+  @override
+  String get dashboardScheduledTitle => 'Planned for today';
+
+  @override
+  String get dashboardStartWorkoutNewWorkout => 'New workout';
+
+  @override
+  String get dashboardStartWorkoutNewWorkoutDesc =>
+      'Start an empty workout and add exercises';
+
+  @override
+  String get dashboardStartWorkoutSelectPlan => 'Select plan';
+
+  @override
+  String get dashboardStartWorkoutSelectPlanDesc =>
+      'Start a training from your plans';
+
+  @override
+  String get dashboardToday => 'Today';
+
+  @override
+  String get dashboardTrainingTypesBodyweight => 'Bodyweight';
+
+  @override
+  String get dashboardTrainingTypesCardio => 'Cardio';
+
+  @override
+  String get dashboardTrainingTypesRecovery => 'Recovery';
+
+  @override
+  String get dashboardTrainingTypesStrength => 'Strength training';
+
+  @override
+  String get errorsDeleteFailed => 'Error deleting';
+
+  @override
+  String get errorsExerciseNameRequired =>
+      'Please enter a name for the exercise!';
+
+  @override
+  String get errorsExercisesLoading =>
+      'Exercises are still loading. Please try again shortly.';
+
+  @override
+  String get errorsMuscleGroupsRequired =>
+      'Please select at least one muscle group!';
+
+  @override
+  String get errorsPlanExercisesRequired => 'Please add at least one exercise!';
+
+  @override
+  String get errorsPlanNameRequired => 'Please enter a name for the plan!';
+
+  @override
+  String get errorsPlanNotFound => 'Plan not found';
+
+  @override
+  String get errorsSaveFailed => 'Error saving.';
+
+  @override
+  String get errorsSessionNotFound => 'Session not found';
+
+  @override
+  String get errorsStartUnavailable => 'Start selection is not available.';
+
+  @override
+  String get errorsWorkoutNotFound => 'Workout not found';
+
+  @override
+  String get errorsWorkoutStartFailed => 'Error starting workout';
+
+  @override
+  String formatDistanceKm(num distance) {
+    final intl.NumberFormat distanceNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String distanceString = distanceNumberFormat.format(distance);
+
+    return '$distanceString km';
+  }
+
+  @override
+  String formatDurationHours(int hours) {
+    return '${hours}h';
+  }
+
+  @override
+  String formatDurationHoursMinutes(int hours, int minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String formatDurationMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get formatDurationZero => '0 min';
+
+  @override
+  String get formatPaceNa => '-';
+
+  @override
+  String formatPaceValue(int min, int sec) {
+    return '$min:$sec min/km';
+  }
+
+  @override
+  String get navCalendar => 'Calendar';
+
+  @override
+  String get navDashboard => 'Home';
+
+  @override
+  String get navExercises => 'Exercises';
+
+  @override
+  String get navPlans => 'Plans';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get navProgress => 'Progress';
+
+  @override
+  String get navTraining => 'Training';
+
+  @override
+  String workoutBannerActive(String name) {
+    return 'Active workout: $name';
+  }
+
+  @override
+  String get workoutBannerCancel => 'Cancel';
+
+  @override
+  String get workoutBannerCancelConfirm =>
+      'Really cancel active workout? All progress will be lost.';
+
+  @override
+  String get workoutBannerCancelWorkoutConfirm =>
+      'Really cancel workout? All progress will be lost.';
+
+  @override
+  String get workoutBannerResume => 'Resume';
+
+  @override
+  String get workoutCardioDistance => 'Distance (km)';
+
+  @override
+  String get workoutCardioDuration => 'Duration (min)';
+
+  @override
+  String get workoutCardioLog => 'Log cardio';
+
+  @override
+  String get workoutCardioPace => 'Pace';
+
+  @override
+  String get workoutCardioRpe => 'Effort (1–5)';
+
+  @override
+  String get workoutCopyLastSet => 'Copy last set';
+
+  @override
+  String get workoutEditDateError =>
+      'Invalid date format. Please use YYYY-MM-DD';
+
+  @override
+  String get workoutEditDatePrompt => 'New date (YYYY-MM-DD):';
+
+  @override
+  String get workoutExerciseCurrent => 'Current exercise';
+
+  @override
+  String get workoutExerciseFinish => 'End workout';
+
+  @override
+  String get workoutExerciseNext => 'Next exercise';
+
+  @override
+  String workoutExerciseProgress(String completed, int total) {
+    return '$completed / $total exercises';
+  }
+
+  @override
+  String get workoutFeedbackEnterDuration => 'Please enter duration';
+
+  @override
+  String get workoutFeedbackExerciseComplete => 'Exercise completed!';
+
+  @override
+  String get workoutFeedbackRestartError => 'Error restarting workout';
+
+  @override
+  String get workoutFeedbackSaveError => 'Error saving workout';
+
+  @override
+  String get workoutFeedbackSaved => 'Workout saved!';
+
+  @override
+  String get workoutHold => 'Hold';
+
+  @override
+  String get workoutHoldDurationLabel => 'Hold duration (sec)';
+
+  @override
+  String get workoutLastPerformance => 'Last time';
+
+  @override
+  String get workoutLoggingAddExercise => 'Add exercise';
+
+  @override
+  String get workoutLoggingExerciseAlreadyAdded => 'Exercise already added';
+
+  @override
+  String get workoutLoggingExercisesOptional => 'Exercises (optional)';
+
+  @override
+  String get workoutLoggingReps => 'Reps per set';
+
+  @override
+  String get workoutLoggingSet => 'Set';
+
+  @override
+  String get workoutLoggingSets => 'Sets';
+
+  @override
+  String get workoutLoggingTotalReps => 'Reps';
+
+  @override
+  String get workoutNoPreviousData => 'No previous data';
+
+  @override
+  String get workoutPostWorkoutComparisonTitle => 'Comparison to last time';
+
+  @override
+  String get workoutPostWorkoutEditDuration => 'Adjust training time';
+
+  @override
+  String get workoutPostWorkoutExercises => 'Exercises';
+
+  @override
+  String get workoutPostWorkoutFallbackName => 'Training';
+
+  @override
+  String get workoutPostWorkoutMinutes => 'Minutes';
+
+  @override
+  String get workoutPostWorkoutSets => 'Sets';
+
+  @override
+  String get workoutPostWorkoutTime => 'Time';
+
+  @override
+  String get workoutPostWorkoutTitle => 'Workout completed!';
+
+  @override
+  String get workoutPostWorkoutToProgress => 'View progress';
+
+  @override
+  String get workoutPostWorkoutVolume => 'Volume';
+
+  @override
+  String get workoutQuickBodyweight => 'Bodyweight';
+
+  @override
+  String get workoutQuickBodyweightDesc => 'Bodyweight training';
+
+  @override
+  String get workoutQuickDate => 'Date *';
+
+  @override
+  String get workoutQuickDateRequired => 'Please select a date';
+
+  @override
+  String get workoutQuickDifficulty => 'Difficulty';
+
+  @override
+  String get workoutQuickDuration => 'Duration (minutes)';
+
+  @override
+  String get workoutQuickDurationRequired => 'Please enter a valid duration';
+
+  @override
+  String get workoutQuickName => 'Workout name';
+
+  @override
+  String get workoutQuickNameRequired => 'Please enter a workout name';
+
+  @override
+  String get workoutQuickSaveError => 'Error saving workout';
+
+  @override
+  String get workoutQuickTitle => 'Quick workout entry';
+
+  @override
+  String get workoutQuickType => 'Type';
+
+  @override
+  String get workoutQuickWeights => 'Weights';
+
+  @override
+  String get workoutQuickWeightsDesc => 'Gym / Dumbbells';
+
+  @override
+  String get workoutRecoveryDuration => 'Duration (min)';
+
+  @override
+  String get workoutRecoveryLog => 'Log recovery';
+
+  @override
+  String workoutRelativeTimeDaysAgo(int n) {
+    return '$n days ago';
+  }
+
+  @override
+  String get workoutRelativeTimeOneWeekAgo => '1 week ago';
+
+  @override
+  String get workoutRelativeTimeToday => 'today';
+
+  @override
+  String workoutRelativeTimeWeeksAgo(int n) {
+    return '$n weeks ago';
+  }
+
+  @override
+  String get workoutRelativeTimeYesterday => 'yesterday';
+
+  @override
+  String get workoutScreenAddExercise => 'Add exercise';
+
+  @override
+  String get workoutScreenAddSet => 'Add set';
+
+  @override
+  String get workoutScreenBodyweight => 'Bodyweight';
+
+  @override
+  String get workoutScreenCancelWorkout => 'Cancel';
+
+  @override
+  String get workoutScreenCardio => 'Cardio';
+
+  @override
+  String get workoutScreenCurrentExercise => 'Current exercise';
+
+  @override
+  String get workoutScreenDiscardConfirm =>
+      'Really discard workout? All progress will be lost.';
+
+  @override
+  String get workoutScreenDiscardConfirmTitle => 'Discard workout?';
+
+  @override
+  String get workoutScreenDiscardWorkout => 'Discard workout';
+
+  @override
+  String get workoutScreenEmptyHint => 'Add exercises to start your workout';
+
+  @override
+  String get workoutScreenEndWorkout => 'End workout';
+
+  @override
+  String get workoutScreenEndWorkoutAction => 'End';
+
+  @override
+  String get workoutScreenEndWorkoutConfirm => 'Really end workout?';
+
+  @override
+  String get workoutScreenEndWorkoutConfirmText =>
+      'All sets so far will be saved.';
+
+  @override
+  String workoutScreenExerciseOf(int current, int total) {
+    return 'Exercise $current of $total';
+  }
+
+  @override
+  String workoutScreenExerciseProgress(String completed, int total) {
+    return '$completed / $total exercises';
+  }
+
+  @override
+  String workoutScreenExercisesButton(String completed, int total) {
+    return 'Exercises ($completed/$total)';
+  }
+
+  @override
+  String get workoutScreenExercisesSheetTitle => 'Exercises';
+
+  @override
+  String get workoutScreenFinishWorkout => 'Finish workout';
+
+  @override
+  String get workoutScreenFreeWorkout => 'Free workout';
+
+  @override
+  String get workoutScreenGoal => 'Goal';
+
+  @override
+  String get workoutScreenLogWorkout => 'Log workout';
+
+  @override
+  String get workoutScreenMenu => 'Menu';
+
+  @override
+  String get workoutScreenNextExercise => 'Next exercise';
+
+  @override
+  String get workoutScreenNoActiveWorkout => 'No active workout';
+
+  @override
+  String get workoutScreenNoActiveWorkoutText =>
+      'Start a training from the calendar or a plan.';
+
+  @override
+  String get workoutScreenNoExercisesFound => 'No exercises found';
+
+  @override
+  String get workoutScreenRecovery => 'Recovery';
+
+  @override
+  String get workoutScreenRest => 'Rest';
+
+  @override
+  String get workoutScreenRestTimer => 'Rest';
+
+  @override
+  String get workoutScreenSaveWorkout => 'Save workout';
+
+  @override
+  String get workoutScreenSearchExercise => 'Search exercise...';
+
+  @override
+  String get workoutScreenSwitchToExercise => 'Switch to this exercise';
+
+  @override
+  String get workoutScreenTimerAdd => '+10s';
+
+  @override
+  String get workoutScreenTimerDone => 'Rest done!';
+
+  @override
+  String get workoutScreenTimerPause => 'Pause';
+
+  @override
+  String get workoutScreenTimerResume => 'Resume';
+
+  @override
+  String get workoutScreenTimerSkip => 'Skip';
+
+  @override
+  String get workoutScreenTimerStart => 'Start timer';
+
+  @override
+  String get workoutScreenTimerSub => '-10s';
+
+  @override
+  String get workoutScreenToPlans => 'Go to plans';
+
+  @override
+  String get workoutScreenWeighted => 'Weighted';
+
+  @override
+  String get workoutSetLoggerAddSet => 'Add set';
+
+  @override
+  String get workoutSetLoggerAtLeastOneSet =>
+      'Please log at least one set before continuing';
+
+  @override
+  String get workoutSetLoggerCompletedSets => 'Completed sets';
+
+  @override
+  String get workoutSetLoggerDecreaseWeight => 'Decrease weight';
+
+  @override
+  String get workoutSetLoggerDeleteSet => 'Delete set';
+
+  @override
+  String get workoutSetLoggerDeleteSetConfirm => 'Really delete this set?';
+
+  @override
+  String get workoutSetLoggerDuplicateLast => 'Copy last set';
+
+  @override
+  String get workoutSetLoggerEnterHold => 'Please enter the hold duration';
+
+  @override
+  String get workoutSetLoggerEnterReps => 'Please enter the number of reps';
+
+  @override
+  String get workoutSetLoggerIncreaseWeight => 'Increase weight';
+
+  @override
+  String get workoutSetLoggerLogSet => 'Log set';
+
+  @override
+  String get workoutSetLoggerNoSets => 'No sets logged yet';
+
+  @override
+  String get workoutSetLoggerReps => 'Reps';
+
+  @override
+  String workoutSetLoggerRest(int seconds) {
+    return '${seconds}s rest';
+  }
+
+  @override
+  String get workoutSetLoggerSet => 'Set';
+
+  @override
+  String workoutSetLoggerStepModeChanged(int step, String unit) {
+    return 'Step size: $step $unit';
+  }
+
+  @override
+  String get workoutSetLoggerTarget => 'Goal';
+
+  @override
+  String workoutSetLoggerTargetReps(int reps) {
+    return '$reps reps';
+  }
+
+  @override
+  String workoutSetLoggerTargetSets(int sets) {
+    return '$sets sets';
+  }
+
+  @override
+  String workoutSetLoggerTitle(int number) {
+    return 'Log set $number';
+  }
+
+  @override
+  String get workoutSetLoggerWeight => 'Weight';
+
+  @override
+  String get workoutSetLoggerWeightUnit => 'kg';
+
+  @override
+  String get workoutSetTypeShortDropset => 'D';
+
+  @override
+  String get workoutSetTypeShortFailure => 'F';
+
+  @override
+  String get workoutSetTypeShortNormal => 'N';
+
+  @override
+  String get workoutSetTypeShortWarmup => 'W';
+
+  @override
+  String workoutTargetHold(int seconds) {
+    return 'Goal: hold $seconds';
+  }
+}

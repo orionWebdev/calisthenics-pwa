@@ -1,0 +1,1655 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_l10n_de.dart';
+import 'app_l10n_en.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppL10n
+/// returned by `AppL10n.of(context)`.
+///
+/// Applications need to include `AppL10n.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'gen/app_l10n.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppL10n.localizationsDelegates,
+///   supportedLocales: AppL10n.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppL10n.supportedLocales
+/// property.
+abstract class AppL10n {
+  AppL10n(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppL10n of(BuildContext context) {
+    return Localizations.of<AppL10n>(context, AppL10n)!;
+  }
+
+  static const LocalizationsDelegate<AppL10n> delegate = _AppL10nDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en')
+  ];
+
+  /// aus common.activity
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivität'**
+  String get commonActivity;
+
+  /// aus common.add
+  ///
+  /// In de, this message translates to:
+  /// **'Hinzufügen'**
+  String get commonAdd;
+
+  /// aus common.addSession
+  ///
+  /// In de, this message translates to:
+  /// **'Session hinzufügen'**
+  String get commonAddSession;
+
+  /// aus common.back
+  ///
+  /// In de, this message translates to:
+  /// **'Zurück'**
+  String get commonBack;
+
+  /// aus common.bodyweight
+  ///
+  /// In de, this message translates to:
+  /// **'Bodyweight'**
+  String get commonBodyweight;
+
+  /// aus common.cancel
+  ///
+  /// In de, this message translates to:
+  /// **'Abbrechen'**
+  String get commonCancel;
+
+  /// aus common.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get commonCardio;
+
+  /// aus common.close
+  ///
+  /// In de, this message translates to:
+  /// **'Schließen'**
+  String get commonClose;
+
+  /// aus common.days
+  ///
+  /// In de, this message translates to:
+  /// **'Tage'**
+  String get commonDays;
+
+  /// aus common.delete
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get commonDelete;
+
+  /// aus common.distance
+  ///
+  /// In de, this message translates to:
+  /// **'Distanz'**
+  String get commonDistance;
+
+  /// aus common.done
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get commonDone;
+
+  /// aus common.duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer'**
+  String get commonDuration;
+
+  /// aus common.edit
+  ///
+  /// In de, this message translates to:
+  /// **'Bearbeiten'**
+  String get commonEdit;
+
+  /// aus common.editSession
+  ///
+  /// In de, this message translates to:
+  /// **'Session bearbeiten'**
+  String get commonEditSession;
+
+  /// aus common.loading
+  ///
+  /// In de, this message translates to:
+  /// **'Lade Daten...'**
+  String get commonLoading;
+
+  /// aus common.minutes
+  ///
+  /// In de, this message translates to:
+  /// **'Minuten'**
+  String get commonMinutes;
+
+  /// aus common.next
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter'**
+  String get commonNext;
+
+  /// aus common.notAvailable
+  ///
+  /// In de, this message translates to:
+  /// **'-'**
+  String get commonNotAvailable;
+
+  /// aus common.notes
+  ///
+  /// In de, this message translates to:
+  /// **'Notizen'**
+  String get commonNotes;
+
+  /// aus common.optional
+  ///
+  /// In de, this message translates to:
+  /// **'optional'**
+  String get commonOptional;
+
+  /// aus common.pace
+  ///
+  /// In de, this message translates to:
+  /// **'Pace'**
+  String get commonPace;
+
+  /// aus common.recovery
+  ///
+  /// In de, this message translates to:
+  /// **'Recovery'**
+  String get commonRecovery;
+
+  /// aus common.save
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern'**
+  String get commonSave;
+
+  /// aus common.secondsShort
+  ///
+  /// In de, this message translates to:
+  /// **'{n}s'**
+  String commonSecondsShort(int n);
+
+  /// aus common.select
+  ///
+  /// In de, this message translates to:
+  /// **'Auswahl'**
+  String get commonSelect;
+
+  /// aus common.session
+  ///
+  /// In de, this message translates to:
+  /// **'Session'**
+  String get commonSession;
+
+  /// aus common.sessions
+  ///
+  /// In de, this message translates to:
+  /// **'Sessions'**
+  String get commonSessions;
+
+  /// aus common.start
+  ///
+  /// In de, this message translates to:
+  /// **'Starten'**
+  String get commonStart;
+
+  /// aus common.startAgain
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut starten'**
+  String get commonStartAgain;
+
+  /// aus common.strength
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft'**
+  String get commonStrength;
+
+  /// aus common.time
+  ///
+  /// In de, this message translates to:
+  /// **'Zeit'**
+  String get commonTime;
+
+  /// aus common.view
+  ///
+  /// In de, this message translates to:
+  /// **'Ansehen'**
+  String get commonView;
+
+  /// aus common.viewDetails
+  ///
+  /// In de, this message translates to:
+  /// **'Details ansehen'**
+  String get commonViewDetails;
+
+  /// aus common.weeks
+  ///
+  /// In de, this message translates to:
+  /// **'Wochen'**
+  String get commonWeeks;
+
+  /// aus common.workout
+  ///
+  /// In de, this message translates to:
+  /// **'Workout'**
+  String get commonWorkout;
+
+  /// aus dashboard.activityCalendar.durationUnit
+  ///
+  /// In de, this message translates to:
+  /// **'Bewegungsstunden'**
+  String get dashboardActivityCalendarDurationUnit;
+
+  /// aus dashboard.activityCalendar.emptyState
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Sessions in diesem Zeitraum'**
+  String get dashboardActivityCalendarEmptyState;
+
+  /// aus dashboard.activityCalendar.more
+  ///
+  /// In de, this message translates to:
+  /// **'Mehr'**
+  String get dashboardActivityCalendarMore;
+
+  /// aus dashboard.activityCalendar.thisMonth
+  ///
+  /// In de, this message translates to:
+  /// **'Diesen Monat'**
+  String get dashboardActivityCalendarThisMonth;
+
+  /// aus dashboard.addWorkout.title
+  ///
+  /// In de, this message translates to:
+  /// **'Workout hinzufügen'**
+  String get dashboardAddWorkoutTitle;
+
+  /// aus dashboard.allSessions.earlier
+  ///
+  /// In de, this message translates to:
+  /// **'Früher'**
+  String get dashboardAllSessionsEarlier;
+
+  /// aus dashboard.allSessions.empty
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Sessions vorhanden'**
+  String get dashboardAllSessionsEmpty;
+
+  /// aus dashboard.allSessions.title
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Sessions'**
+  String get dashboardAllSessionsTitle;
+
+  /// aus dashboard.allSessions.today
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get dashboardAllSessionsToday;
+
+  /// aus dashboard.allSessions.yesterday
+  ///
+  /// In de, this message translates to:
+  /// **'Gestern'**
+  String get dashboardAllSessionsYesterday;
+
+  /// aus dashboard.calendar.addTraining
+  ///
+  /// In de, this message translates to:
+  /// **'Training hinzufügen'**
+  String get dashboardCalendarAddTraining;
+
+  /// aus dashboard.calendar.nextMonth
+  ///
+  /// In de, this message translates to:
+  /// **'Nächster Monat'**
+  String get dashboardCalendarNextMonth;
+
+  /// aus dashboard.calendar.prevMonth
+  ///
+  /// In de, this message translates to:
+  /// **'Vorheriger Monat'**
+  String get dashboardCalendarPrevMonth;
+
+  /// aus dashboard.calendar.tabActivity
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivität'**
+  String get dashboardCalendarTabActivity;
+
+  /// aus dashboard.calendar.tabPlan
+  ///
+  /// In de, this message translates to:
+  /// **'Planen'**
+  String get dashboardCalendarTabPlan;
+
+  /// aus dashboard.hybridBalance.aria
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft {strength} Prozent, Cardio {cardio} Prozent'**
+  String dashboardHybridBalanceAria(String strength, String cardio);
+
+  /// aus dashboard.hybridBalance.description
+  ///
+  /// In de, this message translates to:
+  /// **'Zeigt die Zeitverteilung zwischen Kraft und Cardio.'**
+  String get dashboardHybridBalanceDescription;
+
+  /// aus dashboard.hybridBalance.subtitle
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte {days} Tage'**
+  String dashboardHybridBalanceSubtitle(int days);
+
+  /// aus dashboard.hybridBalance.title
+  ///
+  /// In de, this message translates to:
+  /// **'Hybrid Balance'**
+  String get dashboardHybridBalanceTitle;
+
+  /// aus dashboard.logWorkout.log
+  ///
+  /// In de, this message translates to:
+  /// **'Workout loggen'**
+  String get dashboardLogWorkoutLog;
+
+  /// aus dashboard.logWorkout.logDesc
+  ///
+  /// In de, this message translates to:
+  /// **'Erfasse ein abgeschlossenes Training'**
+  String get dashboardLogWorkoutLogDesc;
+
+  /// aus dashboard.logWorkout.plan
+  ///
+  /// In de, this message translates to:
+  /// **'Workout planen'**
+  String get dashboardLogWorkoutPlan;
+
+  /// aus dashboard.logWorkout.planDesc
+  ///
+  /// In de, this message translates to:
+  /// **'Plane ein Training im Kalender'**
+  String get dashboardLogWorkoutPlanDesc;
+
+  /// aus dashboard.logWorkout.start
+  ///
+  /// In de, this message translates to:
+  /// **'Workout starten'**
+  String get dashboardLogWorkoutStart;
+
+  /// aus dashboard.logWorkout.startDesc
+  ///
+  /// In de, this message translates to:
+  /// **'Starte ein Training aus deinen Plänen'**
+  String get dashboardLogWorkoutStartDesc;
+
+  /// aus dashboard.logWorkout.subtitle
+  ///
+  /// In de, this message translates to:
+  /// **'Logge, starte oder plane ein Workout'**
+  String get dashboardLogWorkoutSubtitle;
+
+  /// aus dashboard.logWorkout.title
+  ///
+  /// In de, this message translates to:
+  /// **'Workout erfassen'**
+  String get dashboardLogWorkoutTitle;
+
+  /// aus dashboard.planCalendar.title
+  ///
+  /// In de, this message translates to:
+  /// **'Planungskalender'**
+  String get dashboardPlanCalendarTitle;
+
+  /// aus dashboard.primary.helper
+  ///
+  /// In de, this message translates to:
+  /// **'Starte oder setze dein aktuelles Training fort.'**
+  String get dashboardPrimaryHelper;
+
+  /// aus dashboard.primary.resume
+  ///
+  /// In de, this message translates to:
+  /// **'Workout fortsetzen'**
+  String get dashboardPrimaryResume;
+
+  /// aus dashboard.primary.start
+  ///
+  /// In de, this message translates to:
+  /// **'Workout starten'**
+  String get dashboardPrimaryStart;
+
+  /// aus dashboard.primary.subtitleActive
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Workout ist aktiv.'**
+  String get dashboardPrimarySubtitleActive;
+
+  /// aus dashboard.primary.subtitleInactive
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle Kraft, Cardio oder Recovery.'**
+  String get dashboardPrimarySubtitleInactive;
+
+  /// aus dashboard.primary.title
+  ///
+  /// In de, this message translates to:
+  /// **'Workout'**
+  String get dashboardPrimaryTitle;
+
+  /// aus dashboard.quickStats.movementMinutes
+  ///
+  /// In de, this message translates to:
+  /// **'Bewegungsmin.'**
+  String get dashboardQuickStatsMovementMinutes;
+
+  /// aus dashboard.quickStats.sessions
+  ///
+  /// In de, this message translates to:
+  /// **'Sessions'**
+  String get dashboardQuickStatsSessions;
+
+  /// aus dashboard.quickStats.thisWeek
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche'**
+  String get dashboardQuickStatsThisWeek;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'MODERATE LAST'**
+  String get dashboardReadinessLevelModerate;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'PEAK READINESS'**
+  String get dashboardReadinessLevelPeak;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'FOKUS: REGENERATION'**
+  String get dashboardReadinessLevelRecovery;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'SOLIDE FORM'**
+  String get dashboardReadinessLevelSolid;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration: Mittel • Volumen leicht reduzieren'**
+  String get dashboardReadinessTagModerate;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration: Optimal • Bereit für Hyrox / Max Load'**
+  String get dashboardReadinessTagPeak;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration: Niedrig • Heute aktiv erholen'**
+  String get dashboardReadinessTagRecovery;
+
+  /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration: Gut • Normale Trainingslast fahren'**
+  String get dashboardReadinessTagSolid;
+
+  /// aus dashboard.recent.description
+  ///
+  /// In de, this message translates to:
+  /// **'Die letzten Sessions in chronologischer Reihenfolge.'**
+  String get dashboardRecentDescription;
+
+  /// aus dashboard.recent.empty
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Sessions'**
+  String get dashboardRecentEmpty;
+
+  /// aus dashboard.recent.title
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Sessions'**
+  String get dashboardRecentTitle;
+
+  /// aus dashboard.recent.viewAll
+  ///
+  /// In de, this message translates to:
+  /// **'Alle anzeigen'**
+  String get dashboardRecentViewAll;
+
+  /// aus dashboard.scheduled.title
+  ///
+  /// In de, this message translates to:
+  /// **'Geplant für heute'**
+  String get dashboardScheduledTitle;
+
+  /// aus dashboard.startWorkout.newWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Training'**
+  String get dashboardStartWorkoutNewWorkout;
+
+  /// aus dashboard.startWorkout.newWorkoutDesc
+  ///
+  /// In de, this message translates to:
+  /// **'Starte ein leeres Workout und füge Übungen hinzu'**
+  String get dashboardStartWorkoutNewWorkoutDesc;
+
+  /// aus dashboard.startWorkout.selectPlan
+  ///
+  /// In de, this message translates to:
+  /// **'Plan auswählen'**
+  String get dashboardStartWorkoutSelectPlan;
+
+  /// aus dashboard.startWorkout.selectPlanDesc
+  ///
+  /// In de, this message translates to:
+  /// **'Starte ein Training aus deinen Plänen'**
+  String get dashboardStartWorkoutSelectPlanDesc;
+
+  /// aus dashboard.today
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get dashboardToday;
+
+  /// aus dashboard.trainingTypes.bodyweight
+  ///
+  /// In de, this message translates to:
+  /// **'Bodyweight'**
+  String get dashboardTrainingTypesBodyweight;
+
+  /// aus dashboard.trainingTypes.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get dashboardTrainingTypesCardio;
+
+  /// aus dashboard.trainingTypes.recovery
+  ///
+  /// In de, this message translates to:
+  /// **'Recovery'**
+  String get dashboardTrainingTypesRecovery;
+
+  /// aus dashboard.trainingTypes.strength
+  ///
+  /// In de, this message translates to:
+  /// **'Krafttraining'**
+  String get dashboardTrainingTypesStrength;
+
+  /// aus errors.deleteFailed
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Löschen'**
+  String get errorsDeleteFailed;
+
+  /// aus errors.exerciseNameRequired
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib einen Namen für die Übung ein!'**
+  String get errorsExerciseNameRequired;
+
+  /// aus errors.exercisesLoading
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen werden noch geladen. Bitte versuche es gleich erneut.'**
+  String get errorsExercisesLoading;
+
+  /// aus errors.muscleGroupsRequired
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte wähle mindestens eine Muskelgruppe!'**
+  String get errorsMuscleGroupsRequired;
+
+  /// aus errors.planExercisesRequired
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte füge mindestens eine Übung hinzu!'**
+  String get errorsPlanExercisesRequired;
+
+  /// aus errors.planNameRequired
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib einen Namen für den Plan ein!'**
+  String get errorsPlanNameRequired;
+
+  /// aus errors.planNotFound
+  ///
+  /// In de, this message translates to:
+  /// **'Plan nicht gefunden'**
+  String get errorsPlanNotFound;
+
+  /// aus errors.saveFailed
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Speichern.'**
+  String get errorsSaveFailed;
+
+  /// aus errors.sessionNotFound
+  ///
+  /// In de, this message translates to:
+  /// **'Session nicht gefunden'**
+  String get errorsSessionNotFound;
+
+  /// aus errors.startUnavailable
+  ///
+  /// In de, this message translates to:
+  /// **'Start-Auswahl ist nicht verfügbar.'**
+  String get errorsStartUnavailable;
+
+  /// aus errors.workoutNotFound
+  ///
+  /// In de, this message translates to:
+  /// **'Workout nicht gefunden'**
+  String get errorsWorkoutNotFound;
+
+  /// aus errors.workoutStartFailed
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Starten des Workouts'**
+  String get errorsWorkoutStartFailed;
+
+  /// aus format.distanceKm
+  ///
+  /// In de, this message translates to:
+  /// **'{distance} km'**
+  String formatDistanceKm(num distance);
+
+  /// aus format.duration.hours
+  ///
+  /// In de, this message translates to:
+  /// **'{hours}h'**
+  String formatDurationHours(int hours);
+
+  /// aus format.duration.hoursMinutes
+  ///
+  /// In de, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String formatDurationHoursMinutes(int hours, int minutes);
+
+  /// aus format.duration.minutes
+  ///
+  /// In de, this message translates to:
+  /// **'{minutes} min'**
+  String formatDurationMinutes(int minutes);
+
+  /// aus format.duration.zero
+  ///
+  /// In de, this message translates to:
+  /// **'0 min'**
+  String get formatDurationZero;
+
+  /// aus format.pace.na
+  ///
+  /// In de, this message translates to:
+  /// **'-'**
+  String get formatPaceNa;
+
+  /// aus format.pace.value
+  ///
+  /// In de, this message translates to:
+  /// **'{min}:{sec} min/km'**
+  String formatPaceValue(int min, int sec);
+
+  /// aus nav.calendar
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender'**
+  String get navCalendar;
+
+  /// aus nav.dashboard
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get navDashboard;
+
+  /// aus nav.exercises
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get navExercises;
+
+  /// aus nav.plans
+  ///
+  /// In de, this message translates to:
+  /// **'Pläne'**
+  String get navPlans;
+
+  /// aus nav.profile
+  ///
+  /// In de, this message translates to:
+  /// **'Profil'**
+  String get navProfile;
+
+  /// aus nav.progress
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt'**
+  String get navProgress;
+
+  /// aus nav.training
+  ///
+  /// In de, this message translates to:
+  /// **'Training'**
+  String get navTraining;
+
+  /// aus workout.banner.active
+  ///
+  /// In de, this message translates to:
+  /// **'Aktives Workout: {name}'**
+  String workoutBannerActive(String name);
+
+  /// aus workout.banner.cancel
+  ///
+  /// In de, this message translates to:
+  /// **'Abbrechen'**
+  String get workoutBannerCancel;
+
+  /// aus workout.banner.cancelConfirm
+  ///
+  /// In de, this message translates to:
+  /// **'Aktives Workout wirklich abbrechen? Alle Fortschritte gehen verloren.'**
+  String get workoutBannerCancelConfirm;
+
+  /// aus workout.banner.cancelWorkoutConfirm
+  ///
+  /// In de, this message translates to:
+  /// **'Workout wirklich abbrechen? Alle Fortschritte gehen verloren.'**
+  String get workoutBannerCancelWorkoutConfirm;
+
+  /// aus workout.banner.resume
+  ///
+  /// In de, this message translates to:
+  /// **'Fortsetzen'**
+  String get workoutBannerResume;
+
+  /// aus workout.cardio.distance
+  ///
+  /// In de, this message translates to:
+  /// **'Distanz (km)'**
+  String get workoutCardioDistance;
+
+  /// aus workout.cardio.duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer (Min.)'**
+  String get workoutCardioDuration;
+
+  /// aus workout.cardio.log
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio loggen'**
+  String get workoutCardioLog;
+
+  /// aus workout.cardio.pace
+  ///
+  /// In de, this message translates to:
+  /// **'Pace'**
+  String get workoutCardioPace;
+
+  /// aus workout.cardio.rpe
+  ///
+  /// In de, this message translates to:
+  /// **'Belastung (1–5)'**
+  String get workoutCardioRpe;
+
+  /// aus workout.copyLastSet
+  ///
+  /// In de, this message translates to:
+  /// **'Letzten Satz kopieren'**
+  String get workoutCopyLastSet;
+
+  /// aus workout.editDate.error
+  ///
+  /// In de, this message translates to:
+  /// **'Ungültiges Datumsformat. Bitte verwende YYYY-MM-DD'**
+  String get workoutEditDateError;
+
+  /// aus workout.editDate.prompt
+  ///
+  /// In de, this message translates to:
+  /// **'Neues Datum (YYYY-MM-DD):'**
+  String get workoutEditDatePrompt;
+
+  /// aus workout.exercise.current
+  ///
+  /// In de, this message translates to:
+  /// **'Aktuelle Übung'**
+  String get workoutExerciseCurrent;
+
+  /// aus workout.exercise.finish
+  ///
+  /// In de, this message translates to:
+  /// **'Workout beenden'**
+  String get workoutExerciseFinish;
+
+  /// aus workout.exercise.next
+  ///
+  /// In de, this message translates to:
+  /// **'Nächste Übung'**
+  String get workoutExerciseNext;
+
+  /// aus workout.exercise.progress
+  ///
+  /// In de, this message translates to:
+  /// **'{completed} / {total} Übungen'**
+  String workoutExerciseProgress(String completed, int total);
+
+  /// aus workout.feedback.enterDuration
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte Dauer eingeben'**
+  String get workoutFeedbackEnterDuration;
+
+  /// aus workout.feedback.exerciseComplete
+  ///
+  /// In de, this message translates to:
+  /// **'Übung abgeschlossen!'**
+  String get workoutFeedbackExerciseComplete;
+
+  /// aus workout.feedback.restartError
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Neustarten des Workouts'**
+  String get workoutFeedbackRestartError;
+
+  /// aus workout.feedback.saveError
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Speichern des Workouts'**
+  String get workoutFeedbackSaveError;
+
+  /// aus workout.feedback.saved
+  ///
+  /// In de, this message translates to:
+  /// **'Workout gespeichert!'**
+  String get workoutFeedbackSaved;
+
+  /// aus workout.hold
+  ///
+  /// In de, this message translates to:
+  /// **'Halten'**
+  String get workoutHold;
+
+  /// aus workout.holdDurationLabel
+  ///
+  /// In de, this message translates to:
+  /// **'Haltedauer (Sek.)'**
+  String get workoutHoldDurationLabel;
+
+  /// aus workout.lastPerformance
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Mal'**
+  String get workoutLastPerformance;
+
+  /// aus workout.logging.addExercise
+  ///
+  /// In de, this message translates to:
+  /// **'Übung hinzufügen'**
+  String get workoutLoggingAddExercise;
+
+  /// aus workout.logging.exerciseAlreadyAdded
+  ///
+  /// In de, this message translates to:
+  /// **'Übung bereits hinzugefügt'**
+  String get workoutLoggingExerciseAlreadyAdded;
+
+  /// aus workout.logging.exercisesOptional
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen (optional)'**
+  String get workoutLoggingExercisesOptional;
+
+  /// aus workout.logging.reps
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederholungen pro Satz'**
+  String get workoutLoggingReps;
+
+  /// aus workout.logging.set
+  ///
+  /// In de, this message translates to:
+  /// **'Satz'**
+  String get workoutLoggingSet;
+
+  /// aus workout.logging.sets
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze'**
+  String get workoutLoggingSets;
+
+  /// aus workout.logging.totalReps
+  ///
+  /// In de, this message translates to:
+  /// **'Wdh.'**
+  String get workoutLoggingTotalReps;
+
+  /// aus workout.noPreviousData
+  ///
+  /// In de, this message translates to:
+  /// **'Keine vorherigen Daten'**
+  String get workoutNoPreviousData;
+
+  /// aus workout.postWorkout.comparisonTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Vergleich zum letzten Mal'**
+  String get workoutPostWorkoutComparisonTitle;
+
+  /// aus workout.postWorkout.editDuration
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingszeit anpassen'**
+  String get workoutPostWorkoutEditDuration;
+
+  /// aus workout.postWorkout.exercises
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get workoutPostWorkoutExercises;
+
+  /// aus workout.postWorkout.fallbackName
+  ///
+  /// In de, this message translates to:
+  /// **'Training'**
+  String get workoutPostWorkoutFallbackName;
+
+  /// aus workout.postWorkout.minutes
+  ///
+  /// In de, this message translates to:
+  /// **'Minuten'**
+  String get workoutPostWorkoutMinutes;
+
+  /// aus workout.postWorkout.sets
+  ///
+  /// In de, this message translates to:
+  /// **'Sets'**
+  String get workoutPostWorkoutSets;
+
+  /// aus workout.postWorkout.time
+  ///
+  /// In de, this message translates to:
+  /// **'Zeit'**
+  String get workoutPostWorkoutTime;
+
+  /// aus workout.postWorkout.title
+  ///
+  /// In de, this message translates to:
+  /// **'Workout abgeschlossen!'**
+  String get workoutPostWorkoutTitle;
+
+  /// aus workout.postWorkout.toProgress
+  ///
+  /// In de, this message translates to:
+  /// **'Zum Fortschritt'**
+  String get workoutPostWorkoutToProgress;
+
+  /// aus workout.postWorkout.volume
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen'**
+  String get workoutPostWorkoutVolume;
+
+  /// aus workout.quick.bodyweight
+  ///
+  /// In de, this message translates to:
+  /// **'Bodyweight'**
+  String get workoutQuickBodyweight;
+
+  /// aus workout.quick.bodyweightDesc
+  ///
+  /// In de, this message translates to:
+  /// **'Training mit Eigengewicht'**
+  String get workoutQuickBodyweightDesc;
+
+  /// aus workout.quick.date
+  ///
+  /// In de, this message translates to:
+  /// **'Datum *'**
+  String get workoutQuickDate;
+
+  /// aus workout.quick.dateRequired
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte wähle ein Datum'**
+  String get workoutQuickDateRequired;
+
+  /// aus workout.quick.difficulty
+  ///
+  /// In de, this message translates to:
+  /// **'Schwierigkeit'**
+  String get workoutQuickDifficulty;
+
+  /// aus workout.quick.duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer (Minuten)'**
+  String get workoutQuickDuration;
+
+  /// aus workout.quick.durationRequired
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib eine gültige Dauer ein'**
+  String get workoutQuickDurationRequired;
+
+  /// aus workout.quick.name
+  ///
+  /// In de, this message translates to:
+  /// **'Workout Name'**
+  String get workoutQuickName;
+
+  /// aus workout.quick.nameRequired
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib einen Workout Namen ein'**
+  String get workoutQuickNameRequired;
+
+  /// aus workout.quick.saveError
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Speichern des Workouts'**
+  String get workoutQuickSaveError;
+
+  /// aus workout.quick.title
+  ///
+  /// In de, this message translates to:
+  /// **'Workout Schnell-Eintrag'**
+  String get workoutQuickTitle;
+
+  /// aus workout.quick.type
+  ///
+  /// In de, this message translates to:
+  /// **'Typ'**
+  String get workoutQuickType;
+
+  /// aus workout.quick.weights
+  ///
+  /// In de, this message translates to:
+  /// **'Gewichte'**
+  String get workoutQuickWeights;
+
+  /// aus workout.quick.weightsDesc
+  ///
+  /// In de, this message translates to:
+  /// **'Gym / Hanteln'**
+  String get workoutQuickWeightsDesc;
+
+  /// aus workout.recovery.duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer (Min.)'**
+  String get workoutRecoveryDuration;
+
+  /// aus workout.recovery.log
+  ///
+  /// In de, this message translates to:
+  /// **'Recovery loggen'**
+  String get workoutRecoveryLog;
+
+  /// aus workout.relativeTime.daysAgo
+  ///
+  /// In de, this message translates to:
+  /// **'vor {n} Tagen'**
+  String workoutRelativeTimeDaysAgo(int n);
+
+  /// aus workout.relativeTime.oneWeekAgo
+  ///
+  /// In de, this message translates to:
+  /// **'vor 1 Woche'**
+  String get workoutRelativeTimeOneWeekAgo;
+
+  /// aus workout.relativeTime.today
+  ///
+  /// In de, this message translates to:
+  /// **'heute'**
+  String get workoutRelativeTimeToday;
+
+  /// aus workout.relativeTime.weeksAgo
+  ///
+  /// In de, this message translates to:
+  /// **'vor {n} Wochen'**
+  String workoutRelativeTimeWeeksAgo(int n);
+
+  /// aus workout.relativeTime.yesterday
+  ///
+  /// In de, this message translates to:
+  /// **'gestern'**
+  String get workoutRelativeTimeYesterday;
+
+  /// aus workout.screen.addExercise
+  ///
+  /// In de, this message translates to:
+  /// **'Übung hinzufügen'**
+  String get workoutScreenAddExercise;
+
+  /// aus workout.screen.addSet
+  ///
+  /// In de, this message translates to:
+  /// **'Satz hinzufügen'**
+  String get workoutScreenAddSet;
+
+  /// aus workout.screen.bodyweight
+  ///
+  /// In de, this message translates to:
+  /// **'Bodyweight'**
+  String get workoutScreenBodyweight;
+
+  /// aus workout.screen.cancelWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Abbrechen'**
+  String get workoutScreenCancelWorkout;
+
+  /// aus workout.screen.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get workoutScreenCardio;
+
+  /// aus workout.screen.currentExercise
+  ///
+  /// In de, this message translates to:
+  /// **'Aktuelle Übung'**
+  String get workoutScreenCurrentExercise;
+
+  /// aus workout.screen.discardConfirm
+  ///
+  /// In de, this message translates to:
+  /// **'Workout wirklich verwerfen? Alle Fortschritte gehen verloren.'**
+  String get workoutScreenDiscardConfirm;
+
+  /// aus workout.screen.discardConfirmTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Workout verwerfen?'**
+  String get workoutScreenDiscardConfirmTitle;
+
+  /// aus workout.screen.discardWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Workout verwerfen'**
+  String get workoutScreenDiscardWorkout;
+
+  /// aus workout.screen.emptyHint
+  ///
+  /// In de, this message translates to:
+  /// **'Füge Übungen hinzu, um dein Workout zu starten'**
+  String get workoutScreenEmptyHint;
+
+  /// aus workout.screen.endWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Workout beenden'**
+  String get workoutScreenEndWorkout;
+
+  /// aus workout.screen.endWorkoutAction
+  ///
+  /// In de, this message translates to:
+  /// **'Beenden'**
+  String get workoutScreenEndWorkoutAction;
+
+  /// aus workout.screen.endWorkoutConfirm
+  ///
+  /// In de, this message translates to:
+  /// **'Workout wirklich beenden?'**
+  String get workoutScreenEndWorkoutConfirm;
+
+  /// aus workout.screen.endWorkoutConfirmText
+  ///
+  /// In de, this message translates to:
+  /// **'Alle bisherigen Sätze werden gespeichert.'**
+  String get workoutScreenEndWorkoutConfirmText;
+
+  /// aus workout.screen.exerciseOf
+  ///
+  /// In de, this message translates to:
+  /// **'Übung {current} von {total}'**
+  String workoutScreenExerciseOf(int current, int total);
+
+  /// aus workout.screen.exerciseProgress
+  ///
+  /// In de, this message translates to:
+  /// **'{completed} / {total} Übungen'**
+  String workoutScreenExerciseProgress(String completed, int total);
+
+  /// aus workout.screen.exercisesButton
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen ({completed}/{total})'**
+  String workoutScreenExercisesButton(String completed, int total);
+
+  /// aus workout.screen.exercisesSheetTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get workoutScreenExercisesSheetTitle;
+
+  /// aus workout.screen.finishWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Workout abschließen'**
+  String get workoutScreenFinishWorkout;
+
+  /// aus workout.screen.freeWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Freies Workout'**
+  String get workoutScreenFreeWorkout;
+
+  /// aus workout.screen.goal
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel'**
+  String get workoutScreenGoal;
+
+  /// aus workout.screen.logWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Workout erfassen'**
+  String get workoutScreenLogWorkout;
+
+  /// aus workout.screen.menu
+  ///
+  /// In de, this message translates to:
+  /// **'Menü'**
+  String get workoutScreenMenu;
+
+  /// aus workout.screen.nextExercise
+  ///
+  /// In de, this message translates to:
+  /// **'Nächste Übung'**
+  String get workoutScreenNextExercise;
+
+  /// aus workout.screen.noActiveWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Kein aktives Workout'**
+  String get workoutScreenNoActiveWorkout;
+
+  /// aus workout.screen.noActiveWorkoutText
+  ///
+  /// In de, this message translates to:
+  /// **'Starte ein Training aus dem Kalender oder einem Plan.'**
+  String get workoutScreenNoActiveWorkoutText;
+
+  /// aus workout.screen.noExercisesFound
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Übungen gefunden'**
+  String get workoutScreenNoExercisesFound;
+
+  /// aus workout.screen.recovery
+  ///
+  /// In de, this message translates to:
+  /// **'Recovery'**
+  String get workoutScreenRecovery;
+
+  /// aus workout.screen.rest
+  ///
+  /// In de, this message translates to:
+  /// **'Pause'**
+  String get workoutScreenRest;
+
+  /// aus workout.screen.restTimer
+  ///
+  /// In de, this message translates to:
+  /// **'Pause'**
+  String get workoutScreenRestTimer;
+
+  /// aus workout.screen.saveWorkout
+  ///
+  /// In de, this message translates to:
+  /// **'Workout speichern'**
+  String get workoutScreenSaveWorkout;
+
+  /// aus workout.screen.searchExercise
+  ///
+  /// In de, this message translates to:
+  /// **'Übung suchen...'**
+  String get workoutScreenSearchExercise;
+
+  /// aus workout.screen.switchToExercise
+  ///
+  /// In de, this message translates to:
+  /// **'Zu dieser Übung wechseln'**
+  String get workoutScreenSwitchToExercise;
+
+  /// aus workout.screen.timerAdd
+  ///
+  /// In de, this message translates to:
+  /// **'+10s'**
+  String get workoutScreenTimerAdd;
+
+  /// aus workout.screen.timerDone
+  ///
+  /// In de, this message translates to:
+  /// **'Pause vorbei!'**
+  String get workoutScreenTimerDone;
+
+  /// aus workout.screen.timerPause
+  ///
+  /// In de, this message translates to:
+  /// **'Pausieren'**
+  String get workoutScreenTimerPause;
+
+  /// aus workout.screen.timerResume
+  ///
+  /// In de, this message translates to:
+  /// **'Fortsetzen'**
+  String get workoutScreenTimerResume;
+
+  /// aus workout.screen.timerSkip
+  ///
+  /// In de, this message translates to:
+  /// **'Ueberspringen'**
+  String get workoutScreenTimerSkip;
+
+  /// aus workout.screen.timerStart
+  ///
+  /// In de, this message translates to:
+  /// **'Timer starten'**
+  String get workoutScreenTimerStart;
+
+  /// aus workout.screen.timerSub
+  ///
+  /// In de, this message translates to:
+  /// **'-10s'**
+  String get workoutScreenTimerSub;
+
+  /// aus workout.screen.toPlans
+  ///
+  /// In de, this message translates to:
+  /// **'Zu den Plänen'**
+  String get workoutScreenToPlans;
+
+  /// aus workout.screen.weighted
+  ///
+  /// In de, this message translates to:
+  /// **'Gewichte'**
+  String get workoutScreenWeighted;
+
+  /// aus workout.setLogger.addSet
+  ///
+  /// In de, this message translates to:
+  /// **'Satz hinzufügen'**
+  String get workoutSetLoggerAddSet;
+
+  /// aus workout.setLogger.atLeastOneSet
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte logge mindestens einen Satz bevor du weitergehst'**
+  String get workoutSetLoggerAtLeastOneSet;
+
+  /// aus workout.setLogger.completedSets
+  ///
+  /// In de, this message translates to:
+  /// **'Abgeschlossene Sätze'**
+  String get workoutSetLoggerCompletedSets;
+
+  /// aus workout.setLogger.decreaseWeight
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht verringern'**
+  String get workoutSetLoggerDecreaseWeight;
+
+  /// aus workout.setLogger.deleteSet
+  ///
+  /// In de, this message translates to:
+  /// **'Satz löschen'**
+  String get workoutSetLoggerDeleteSet;
+
+  /// aus workout.setLogger.deleteSetConfirm
+  ///
+  /// In de, this message translates to:
+  /// **'Diesen Satz wirklich löschen?'**
+  String get workoutSetLoggerDeleteSetConfirm;
+
+  /// aus workout.setLogger.duplicateLast
+  ///
+  /// In de, this message translates to:
+  /// **'Letzten Satz kopieren'**
+  String get workoutSetLoggerDuplicateLast;
+
+  /// aus workout.setLogger.enterHold
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib die Haltedauer ein'**
+  String get workoutSetLoggerEnterHold;
+
+  /// aus workout.setLogger.enterReps
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib die Anzahl der Wiederholungen ein'**
+  String get workoutSetLoggerEnterReps;
+
+  /// aus workout.setLogger.increaseWeight
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht erhöhen'**
+  String get workoutSetLoggerIncreaseWeight;
+
+  /// aus workout.setLogger.logSet
+  ///
+  /// In de, this message translates to:
+  /// **'Satz loggen'**
+  String get workoutSetLoggerLogSet;
+
+  /// aus workout.setLogger.noSets
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Sätze geloggt'**
+  String get workoutSetLoggerNoSets;
+
+  /// aus workout.setLogger.reps
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederholungen'**
+  String get workoutSetLoggerReps;
+
+  /// aus workout.setLogger.rest
+  ///
+  /// In de, this message translates to:
+  /// **'{seconds}s Pause'**
+  String workoutSetLoggerRest(int seconds);
+
+  /// aus workout.setLogger.set
+  ///
+  /// In de, this message translates to:
+  /// **'Satz'**
+  String get workoutSetLoggerSet;
+
+  /// aus workout.setLogger.stepModeChanged
+  ///
+  /// In de, this message translates to:
+  /// **'Schrittweite: {step} {unit}'**
+  String workoutSetLoggerStepModeChanged(int step, String unit);
+
+  /// aus workout.setLogger.target
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel'**
+  String get workoutSetLoggerTarget;
+
+  /// aus workout.setLogger.targetReps
+  ///
+  /// In de, this message translates to:
+  /// **'{reps} Wdh'**
+  String workoutSetLoggerTargetReps(int reps);
+
+  /// aus workout.setLogger.targetSets
+  ///
+  /// In de, this message translates to:
+  /// **'{sets} Sätze'**
+  String workoutSetLoggerTargetSets(int sets);
+
+  /// aus workout.setLogger.title
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {number} loggen'**
+  String workoutSetLoggerTitle(int number);
+
+  /// aus workout.setLogger.weight
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht'**
+  String get workoutSetLoggerWeight;
+
+  /// aus workout.setLogger.weightUnit
+  ///
+  /// In de, this message translates to:
+  /// **'kg'**
+  String get workoutSetLoggerWeightUnit;
+
+  /// Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure.
+  ///
+  /// In de, this message translates to:
+  /// **'D'**
+  String get workoutSetTypeShortDropset;
+
+  /// Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure.
+  ///
+  /// In de, this message translates to:
+  /// **'F'**
+  String get workoutSetTypeShortFailure;
+
+  /// Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure.
+  ///
+  /// In de, this message translates to:
+  /// **'N'**
+  String get workoutSetTypeShortNormal;
+
+  /// Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure.
+  ///
+  /// In de, this message translates to:
+  /// **'W'**
+  String get workoutSetTypeShortWarmup;
+
+  /// aus workout.targetHold
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel: {seconds} halten'**
+  String workoutTargetHold(int seconds);
+}
+
+class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
+  const _AppL10nDelegate();
+
+  @override
+  Future<AppL10n> load(Locale locale) {
+    return SynchronousFuture<AppL10n>(lookupAppL10n(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['de', 'en'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppL10nDelegate old) => false;
+}
+
+AppL10n lookupAppL10n(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'de':
+      return AppL10nDe();
+    case 'en':
+      return AppL10nEn();
+  }
+
+  throw FlutterError(
+      'AppL10n.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
+}

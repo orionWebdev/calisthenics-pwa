@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'l10n/gen/app_l10n.dart';
+
 import 'core/theme/theme.dart';
 import 'features/dashboard/application/dashboard_providers.dart';
 import 'features/dashboard/data/preview_dashboard_repository.dart';
@@ -30,8 +32,11 @@ class AtemApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Markenname, bewusst nicht lokalisiert.
       title: 'ATEM Hybrid',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppL10n.localizationsDelegates,
+      supportedLocales: AppL10n.supportedLocales,
       theme: AtemTheme.dark,
       themeMode: ThemeMode.dark,
       home: const DashboardScreen(),

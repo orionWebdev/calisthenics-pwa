@@ -5,6 +5,7 @@ import 'package:atem/features/workout/application/workout_providers.dart';
 import 'package:atem/features/workout/data/preview_workout_repository.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/main.dart';
+import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -31,6 +32,8 @@ Future<void> _pumpStill(WidgetTester tester, Widget home) async {
     ProviderScope(
       overrides: _overrides,
       child: MaterialApp(
+        localizationsDelegates: AppL10n.localizationsDelegates,
+        supportedLocales: AppL10n.supportedLocales,
         home: home,
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(disableAnimations: true),

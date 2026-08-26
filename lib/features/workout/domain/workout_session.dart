@@ -1,18 +1,16 @@
-import 'package:flutter/widgets.dart';
-
-import '../../../core/theme/theme.dart';
+import 'package:meta/meta.dart';
 
 /// Satz-Typ. Tap auf den Chip zykliert W → N → D → F.
+///
+/// Reine Daten: Farbe und Beschriftung leben in
+/// `presentation/set_type_ui.dart`. Das Kürzel ist NICHT sprachneutral —
+/// „W" für Warmup funktioniert im Deutschen nur zufällig, „Aufwärmsatz" wäre
+/// „A". Deshalb kommt es aus dem ARB, nicht aus dem Enum.
 enum SetType {
-  warmup('W', AtemColors.cyan),
-  normal('N', AtemColors.textPrimary),
-  dropset('D', AtemColors.violet),
-  failure('F', AtemColors.magenta);
-
-  const SetType(this.label, this.color);
-
-  final String label;
-  final Color color;
+  warmup,
+  normal,
+  dropset,
+  failure;
 
   SetType get next => switch (this) {
         SetType.warmup => SetType.normal,

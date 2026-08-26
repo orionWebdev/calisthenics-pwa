@@ -1,0 +1,1149 @@
+{
+  "@@locale": "en",
+  "commonActivity": "Activity",
+  "@commonActivity": {
+    "description": "aus common.activity"
+  },
+  "commonAdd": "Add",
+  "@commonAdd": {
+    "description": "aus common.add"
+  },
+  "commonAddSession": "Add session",
+  "@commonAddSession": {
+    "description": "aus common.addSession"
+  },
+  "commonBack": "Back",
+  "@commonBack": {
+    "description": "aus common.back"
+  },
+  "commonBodyweight": "Bodyweight",
+  "@commonBodyweight": {
+    "description": "aus common.bodyweight"
+  },
+  "commonCancel": "Cancel",
+  "@commonCancel": {
+    "description": "aus common.cancel"
+  },
+  "commonCardio": "Cardio",
+  "@commonCardio": {
+    "description": "aus common.cardio"
+  },
+  "commonClose": "Close",
+  "@commonClose": {
+    "description": "aus common.close"
+  },
+  "commonDays": "Days",
+  "@commonDays": {
+    "description": "aus common.days"
+  },
+  "commonDelete": "Delete",
+  "@commonDelete": {
+    "description": "aus common.delete"
+  },
+  "commonDistance": "Distance",
+  "@commonDistance": {
+    "description": "aus common.distance"
+  },
+  "commonDone": "Done",
+  "@commonDone": {
+    "description": "aus common.done"
+  },
+  "commonDuration": "Duration",
+  "@commonDuration": {
+    "description": "aus common.duration"
+  },
+  "commonEdit": "Edit",
+  "@commonEdit": {
+    "description": "aus common.edit"
+  },
+  "commonEditSession": "Edit session",
+  "@commonEditSession": {
+    "description": "aus common.editSession"
+  },
+  "commonLoading": "Loading...",
+  "@commonLoading": {
+    "description": "aus common.loading"
+  },
+  "commonMinutes": "Minutes",
+  "@commonMinutes": {
+    "description": "aus common.minutes"
+  },
+  "commonNext": "Next",
+  "@commonNext": {
+    "description": "aus common.next"
+  },
+  "commonNotAvailable": "-",
+  "@commonNotAvailable": {
+    "description": "aus common.notAvailable"
+  },
+  "commonNotes": "Notes",
+  "@commonNotes": {
+    "description": "aus common.notes"
+  },
+  "commonOptional": "optional",
+  "@commonOptional": {
+    "description": "aus common.optional"
+  },
+  "commonPace": "Pace",
+  "@commonPace": {
+    "description": "aus common.pace"
+  },
+  "commonRecovery": "Recovery",
+  "@commonRecovery": {
+    "description": "aus common.recovery"
+  },
+  "commonSave": "Save",
+  "@commonSave": {
+    "description": "aus common.save"
+  },
+  "commonSecondsShort": "{n}s",
+  "@commonSecondsShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    },
+    "description": "aus common.secondsShort"
+  },
+  "commonSelect": "Select",
+  "@commonSelect": {
+    "description": "aus common.select"
+  },
+  "commonSession": "Session",
+  "@commonSession": {
+    "description": "aus common.session"
+  },
+  "commonSessions": "Sessions",
+  "@commonSessions": {
+    "description": "aus common.sessions"
+  },
+  "commonStart": "Start",
+  "@commonStart": {
+    "description": "aus common.start"
+  },
+  "commonStartAgain": "Start again",
+  "@commonStartAgain": {
+    "description": "aus common.startAgain"
+  },
+  "commonStrength": "Strength",
+  "@commonStrength": {
+    "description": "aus common.strength"
+  },
+  "commonTime": "Time",
+  "@commonTime": {
+    "description": "aus common.time"
+  },
+  "commonView": "View",
+  "@commonView": {
+    "description": "aus common.view"
+  },
+  "commonViewDetails": "View details",
+  "@commonViewDetails": {
+    "description": "aus common.viewDetails"
+  },
+  "commonWeeks": "Weeks",
+  "@commonWeeks": {
+    "description": "aus common.weeks"
+  },
+  "commonWorkout": "Workout",
+  "@commonWorkout": {
+    "description": "aus common.workout"
+  },
+  "dashboardActivityCalendarDurationUnit": "Movement hours",
+  "@dashboardActivityCalendarDurationUnit": {
+    "description": "aus dashboard.activityCalendar.durationUnit"
+  },
+  "dashboardActivityCalendarEmptyState": "No sessions in this period yet",
+  "@dashboardActivityCalendarEmptyState": {
+    "description": "aus dashboard.activityCalendar.emptyState"
+  },
+  "dashboardActivityCalendarMore": "More",
+  "@dashboardActivityCalendarMore": {
+    "description": "aus dashboard.activityCalendar.more"
+  },
+  "dashboardActivityCalendarThisMonth": "This month",
+  "@dashboardActivityCalendarThisMonth": {
+    "description": "aus dashboard.activityCalendar.thisMonth"
+  },
+  "dashboardAddWorkoutTitle": "Add workout",
+  "@dashboardAddWorkoutTitle": {
+    "description": "aus dashboard.addWorkout.title"
+  },
+  "dashboardAllSessionsEarlier": "Earlier",
+  "@dashboardAllSessionsEarlier": {
+    "description": "aus dashboard.allSessions.earlier"
+  },
+  "dashboardAllSessionsEmpty": "No sessions yet",
+  "@dashboardAllSessionsEmpty": {
+    "description": "aus dashboard.allSessions.empty"
+  },
+  "dashboardAllSessionsTitle": "All sessions",
+  "@dashboardAllSessionsTitle": {
+    "description": "aus dashboard.allSessions.title"
+  },
+  "dashboardAllSessionsToday": "Today",
+  "@dashboardAllSessionsToday": {
+    "description": "aus dashboard.allSessions.today"
+  },
+  "dashboardAllSessionsYesterday": "Yesterday",
+  "@dashboardAllSessionsYesterday": {
+    "description": "aus dashboard.allSessions.yesterday"
+  },
+  "dashboardCalendarAddTraining": "Add workout",
+  "@dashboardCalendarAddTraining": {
+    "description": "aus dashboard.calendar.addTraining"
+  },
+  "dashboardCalendarNextMonth": "Next month",
+  "@dashboardCalendarNextMonth": {
+    "description": "aus dashboard.calendar.nextMonth"
+  },
+  "dashboardCalendarPrevMonth": "Previous month",
+  "@dashboardCalendarPrevMonth": {
+    "description": "aus dashboard.calendar.prevMonth"
+  },
+  "dashboardCalendarTabActivity": "Activity",
+  "@dashboardCalendarTabActivity": {
+    "description": "aus dashboard.calendar.tabActivity"
+  },
+  "dashboardCalendarTabPlan": "Plan",
+  "@dashboardCalendarTabPlan": {
+    "description": "aus dashboard.calendar.tabPlan"
+  },
+  "dashboardHybridBalanceAria": "Strength {strength} percent, Cardio {cardio} percent",
+  "@dashboardHybridBalanceAria": {
+    "placeholders": {
+      "strength": {
+        "type": "String"
+      },
+      "cardio": {
+        "type": "String"
+      }
+    },
+    "description": "aus dashboard.hybridBalance.aria"
+  },
+  "dashboardHybridBalanceDescription": "Shows time distribution between strength and cardio.",
+  "@dashboardHybridBalanceDescription": {
+    "description": "aus dashboard.hybridBalance.description"
+  },
+  "dashboardHybridBalanceSubtitle": "Last {days} days",
+  "@dashboardHybridBalanceSubtitle": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    },
+    "description": "aus dashboard.hybridBalance.subtitle"
+  },
+  "dashboardHybridBalanceTitle": "Hybrid Balance",
+  "@dashboardHybridBalanceTitle": {
+    "description": "aus dashboard.hybridBalance.title"
+  },
+  "dashboardLogWorkoutLog": "Log workout",
+  "@dashboardLogWorkoutLog": {
+    "description": "aus dashboard.logWorkout.log"
+  },
+  "dashboardLogWorkoutLogDesc": "Record a completed training",
+  "@dashboardLogWorkoutLogDesc": {
+    "description": "aus dashboard.logWorkout.logDesc"
+  },
+  "dashboardLogWorkoutPlan": "Plan workout",
+  "@dashboardLogWorkoutPlan": {
+    "description": "aus dashboard.logWorkout.plan"
+  },
+  "dashboardLogWorkoutPlanDesc": "Plan a training in the calendar",
+  "@dashboardLogWorkoutPlanDesc": {
+    "description": "aus dashboard.logWorkout.planDesc"
+  },
+  "dashboardLogWorkoutStart": "Start workout",
+  "@dashboardLogWorkoutStart": {
+    "description": "aus dashboard.logWorkout.start"
+  },
+  "dashboardLogWorkoutStartDesc": "Start a training from your plans",
+  "@dashboardLogWorkoutStartDesc": {
+    "description": "aus dashboard.logWorkout.startDesc"
+  },
+  "dashboardLogWorkoutSubtitle": "Log, start or plan a workout",
+  "@dashboardLogWorkoutSubtitle": {
+    "description": "aus dashboard.logWorkout.subtitle"
+  },
+  "dashboardLogWorkoutTitle": "Log workout",
+  "@dashboardLogWorkoutTitle": {
+    "description": "aus dashboard.logWorkout.title"
+  },
+  "dashboardPlanCalendarTitle": "Plan calendar",
+  "@dashboardPlanCalendarTitle": {
+    "description": "aus dashboard.planCalendar.title"
+  },
+  "dashboardPrimaryHelper": "Start or continue your current training.",
+  "@dashboardPrimaryHelper": {
+    "description": "aus dashboard.primary.helper"
+  },
+  "dashboardPrimaryResume": "Resume workout",
+  "@dashboardPrimaryResume": {
+    "description": "aus dashboard.primary.resume"
+  },
+  "dashboardPrimaryStart": "Start workout",
+  "@dashboardPrimaryStart": {
+    "description": "aus dashboard.primary.start"
+  },
+  "dashboardPrimarySubtitleActive": "A workout is active.",
+  "@dashboardPrimarySubtitleActive": {
+    "description": "aus dashboard.primary.subtitleActive"
+  },
+  "dashboardPrimarySubtitleInactive": "Choose strength, cardio or recovery.",
+  "@dashboardPrimarySubtitleInactive": {
+    "description": "aus dashboard.primary.subtitleInactive"
+  },
+  "dashboardPrimaryTitle": "Workout",
+  "@dashboardPrimaryTitle": {
+    "description": "aus dashboard.primary.title"
+  },
+  "dashboardQuickStatsMovementMinutes": "Movement min.",
+  "@dashboardQuickStatsMovementMinutes": {
+    "description": "aus dashboard.quickStats.movementMinutes"
+  },
+  "dashboardQuickStatsSessions": "Sessions",
+  "@dashboardQuickStatsSessions": {
+    "description": "aus dashboard.quickStats.sessions"
+  },
+  "dashboardQuickStatsThisWeek": "This week",
+  "@dashboardQuickStatsThisWeek": {
+    "description": "aus dashboard.quickStats.thisWeek"
+  },
+  "dashboardReadinessLevelModerate": "MODERATE LOAD",
+  "@dashboardReadinessLevelModerate": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessLevelPeak": "PEAK READINESS",
+  "@dashboardReadinessLevelPeak": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessLevelRecovery": "FOCUS: RECOVERY",
+  "@dashboardReadinessLevelRecovery": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessLevelSolid": "SOLID FORM",
+  "@dashboardReadinessLevelSolid": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessTagModerate": "Recovery: Moderate • Reduce volume slightly",
+  "@dashboardReadinessTagModerate": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessTagPeak": "Recovery: Optimal • Ready for Hyrox / max load",
+  "@dashboardReadinessTagPeak": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessTagRecovery": "Recovery: Low • Take an active rest day",
+  "@dashboardReadinessTagRecovery": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessTagSolid": "Recovery: Good • Maintain your normal training load",
+  "@dashboardReadinessTagSolid": {
+    "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardRecentDescription": "Last sessions in chronological order.",
+  "@dashboardRecentDescription": {
+    "description": "aus dashboard.recent.description"
+  },
+  "dashboardRecentEmpty": "No sessions yet",
+  "@dashboardRecentEmpty": {
+    "description": "aus dashboard.recent.empty"
+  },
+  "dashboardRecentTitle": "Recent sessions",
+  "@dashboardRecentTitle": {
+    "description": "aus dashboard.recent.title"
+  },
+  "dashboardRecentViewAll": "View all",
+  "@dashboardRecentViewAll": {
+    "description": "aus dashboard.recent.viewAll"
+  },
+  "dashboardScheduledTitle": "Planned for today",
+  "@dashboardScheduledTitle": {
+    "description": "aus dashboard.scheduled.title"
+  },
+  "dashboardStartWorkoutNewWorkout": "New workout",
+  "@dashboardStartWorkoutNewWorkout": {
+    "description": "aus dashboard.startWorkout.newWorkout"
+  },
+  "dashboardStartWorkoutNewWorkoutDesc": "Start an empty workout and add exercises",
+  "@dashboardStartWorkoutNewWorkoutDesc": {
+    "description": "aus dashboard.startWorkout.newWorkoutDesc"
+  },
+  "dashboardStartWorkoutSelectPlan": "Select plan",
+  "@dashboardStartWorkoutSelectPlan": {
+    "description": "aus dashboard.startWorkout.selectPlan"
+  },
+  "dashboardStartWorkoutSelectPlanDesc": "Start a training from your plans",
+  "@dashboardStartWorkoutSelectPlanDesc": {
+    "description": "aus dashboard.startWorkout.selectPlanDesc"
+  },
+  "dashboardToday": "Today",
+  "@dashboardToday": {
+    "description": "aus dashboard.today"
+  },
+  "dashboardTrainingTypesBodyweight": "Bodyweight",
+  "@dashboardTrainingTypesBodyweight": {
+    "description": "aus dashboard.trainingTypes.bodyweight"
+  },
+  "dashboardTrainingTypesCardio": "Cardio",
+  "@dashboardTrainingTypesCardio": {
+    "description": "aus dashboard.trainingTypes.cardio"
+  },
+  "dashboardTrainingTypesRecovery": "Recovery",
+  "@dashboardTrainingTypesRecovery": {
+    "description": "aus dashboard.trainingTypes.recovery"
+  },
+  "dashboardTrainingTypesStrength": "Strength training",
+  "@dashboardTrainingTypesStrength": {
+    "description": "aus dashboard.trainingTypes.strength"
+  },
+  "errorsDeleteFailed": "Error deleting",
+  "@errorsDeleteFailed": {
+    "description": "aus errors.deleteFailed"
+  },
+  "errorsExerciseNameRequired": "Please enter a name for the exercise!",
+  "@errorsExerciseNameRequired": {
+    "description": "aus errors.exerciseNameRequired"
+  },
+  "errorsExercisesLoading": "Exercises are still loading. Please try again shortly.",
+  "@errorsExercisesLoading": {
+    "description": "aus errors.exercisesLoading"
+  },
+  "errorsMuscleGroupsRequired": "Please select at least one muscle group!",
+  "@errorsMuscleGroupsRequired": {
+    "description": "aus errors.muscleGroupsRequired"
+  },
+  "errorsPlanExercisesRequired": "Please add at least one exercise!",
+  "@errorsPlanExercisesRequired": {
+    "description": "aus errors.planExercisesRequired"
+  },
+  "errorsPlanNameRequired": "Please enter a name for the plan!",
+  "@errorsPlanNameRequired": {
+    "description": "aus errors.planNameRequired"
+  },
+  "errorsPlanNotFound": "Plan not found",
+  "@errorsPlanNotFound": {
+    "description": "aus errors.planNotFound"
+  },
+  "errorsSaveFailed": "Error saving.",
+  "@errorsSaveFailed": {
+    "description": "aus errors.saveFailed"
+  },
+  "errorsSessionNotFound": "Session not found",
+  "@errorsSessionNotFound": {
+    "description": "aus errors.sessionNotFound"
+  },
+  "errorsStartUnavailable": "Start selection is not available.",
+  "@errorsStartUnavailable": {
+    "description": "aus errors.startUnavailable"
+  },
+  "errorsWorkoutNotFound": "Workout not found",
+  "@errorsWorkoutNotFound": {
+    "description": "aus errors.workoutNotFound"
+  },
+  "errorsWorkoutStartFailed": "Error starting workout",
+  "@errorsWorkoutStartFailed": {
+    "description": "aus errors.workoutStartFailed"
+  },
+  "formatDistanceKm": "{distance} km",
+  "@formatDistanceKm": {
+    "placeholders": {
+      "distance": {
+        "type": "num",
+        "format": "decimalPattern"
+      }
+    },
+    "description": "aus format.distanceKm"
+  },
+  "formatDurationHours": "{hours}h",
+  "@formatDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    },
+    "description": "aus format.duration.hours"
+  },
+  "formatDurationHoursMinutes": "{hours}h {minutes}m",
+  "@formatDurationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    },
+    "description": "aus format.duration.hoursMinutes"
+  },
+  "formatDurationMinutes": "{minutes} min",
+  "@formatDurationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    },
+    "description": "aus format.duration.minutes"
+  },
+  "formatDurationZero": "0 min",
+  "@formatDurationZero": {
+    "description": "aus format.duration.zero"
+  },
+  "formatPaceNa": "-",
+  "@formatPaceNa": {
+    "description": "aus format.pace.na"
+  },
+  "formatPaceValue": "{min}:{sec} min/km",
+  "@formatPaceValue": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "sec": {
+        "type": "int"
+      }
+    },
+    "description": "aus format.pace.value"
+  },
+  "navCalendar": "Calendar",
+  "@navCalendar": {
+    "description": "aus nav.calendar"
+  },
+  "navDashboard": "Home",
+  "@navDashboard": {
+    "description": "aus nav.dashboard"
+  },
+  "navExercises": "Exercises",
+  "@navExercises": {
+    "description": "aus nav.exercises"
+  },
+  "navPlans": "Plans",
+  "@navPlans": {
+    "description": "aus nav.plans"
+  },
+  "navProfile": "Profile",
+  "@navProfile": {
+    "description": "aus nav.profile"
+  },
+  "navProgress": "Progress",
+  "@navProgress": {
+    "description": "aus nav.progress"
+  },
+  "navTraining": "Training",
+  "@navTraining": {
+    "description": "aus nav.training"
+  },
+  "workoutBannerActive": "Active workout: {name}",
+  "@workoutBannerActive": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    },
+    "description": "aus workout.banner.active"
+  },
+  "workoutBannerCancel": "Cancel",
+  "@workoutBannerCancel": {
+    "description": "aus workout.banner.cancel"
+  },
+  "workoutBannerCancelConfirm": "Really cancel active workout? All progress will be lost.",
+  "@workoutBannerCancelConfirm": {
+    "description": "aus workout.banner.cancelConfirm"
+  },
+  "workoutBannerCancelWorkoutConfirm": "Really cancel workout? All progress will be lost.",
+  "@workoutBannerCancelWorkoutConfirm": {
+    "description": "aus workout.banner.cancelWorkoutConfirm"
+  },
+  "workoutBannerResume": "Resume",
+  "@workoutBannerResume": {
+    "description": "aus workout.banner.resume"
+  },
+  "workoutCardioDistance": "Distance (km)",
+  "@workoutCardioDistance": {
+    "description": "aus workout.cardio.distance"
+  },
+  "workoutCardioDuration": "Duration (min)",
+  "@workoutCardioDuration": {
+    "description": "aus workout.cardio.duration"
+  },
+  "workoutCardioLog": "Log cardio",
+  "@workoutCardioLog": {
+    "description": "aus workout.cardio.log"
+  },
+  "workoutCardioPace": "Pace",
+  "@workoutCardioPace": {
+    "description": "aus workout.cardio.pace"
+  },
+  "workoutCardioRpe": "Effort (1–5)",
+  "@workoutCardioRpe": {
+    "description": "aus workout.cardio.rpe"
+  },
+  "workoutCopyLastSet": "Copy last set",
+  "@workoutCopyLastSet": {
+    "description": "aus workout.copyLastSet"
+  },
+  "workoutEditDateError": "Invalid date format. Please use YYYY-MM-DD",
+  "@workoutEditDateError": {
+    "description": "aus workout.editDate.error"
+  },
+  "workoutEditDatePrompt": "New date (YYYY-MM-DD):",
+  "@workoutEditDatePrompt": {
+    "description": "aus workout.editDate.prompt"
+  },
+  "workoutExerciseCurrent": "Current exercise",
+  "@workoutExerciseCurrent": {
+    "description": "aus workout.exercise.current"
+  },
+  "workoutExerciseFinish": "End workout",
+  "@workoutExerciseFinish": {
+    "description": "aus workout.exercise.finish"
+  },
+  "workoutExerciseNext": "Next exercise",
+  "@workoutExerciseNext": {
+    "description": "aus workout.exercise.next"
+  },
+  "workoutExerciseProgress": "{completed} / {total} exercises",
+  "@workoutExerciseProgress": {
+    "placeholders": {
+      "completed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.exercise.progress"
+  },
+  "workoutFeedbackEnterDuration": "Please enter duration",
+  "@workoutFeedbackEnterDuration": {
+    "description": "aus workout.feedback.enterDuration"
+  },
+  "workoutFeedbackExerciseComplete": "Exercise completed!",
+  "@workoutFeedbackExerciseComplete": {
+    "description": "aus workout.feedback.exerciseComplete"
+  },
+  "workoutFeedbackRestartError": "Error restarting workout",
+  "@workoutFeedbackRestartError": {
+    "description": "aus workout.feedback.restartError"
+  },
+  "workoutFeedbackSaveError": "Error saving workout",
+  "@workoutFeedbackSaveError": {
+    "description": "aus workout.feedback.saveError"
+  },
+  "workoutFeedbackSaved": "Workout saved!",
+  "@workoutFeedbackSaved": {
+    "description": "aus workout.feedback.saved"
+  },
+  "workoutHold": "Hold",
+  "@workoutHold": {
+    "description": "aus workout.hold"
+  },
+  "workoutHoldDurationLabel": "Hold duration (sec)",
+  "@workoutHoldDurationLabel": {
+    "description": "aus workout.holdDurationLabel"
+  },
+  "workoutLastPerformance": "Last time",
+  "@workoutLastPerformance": {
+    "description": "aus workout.lastPerformance"
+  },
+  "workoutLoggingAddExercise": "Add exercise",
+  "@workoutLoggingAddExercise": {
+    "description": "aus workout.logging.addExercise"
+  },
+  "workoutLoggingExerciseAlreadyAdded": "Exercise already added",
+  "@workoutLoggingExerciseAlreadyAdded": {
+    "description": "aus workout.logging.exerciseAlreadyAdded"
+  },
+  "workoutLoggingExercisesOptional": "Exercises (optional)",
+  "@workoutLoggingExercisesOptional": {
+    "description": "aus workout.logging.exercisesOptional"
+  },
+  "workoutLoggingReps": "Reps per set",
+  "@workoutLoggingReps": {
+    "description": "aus workout.logging.reps"
+  },
+  "workoutLoggingSet": "Set",
+  "@workoutLoggingSet": {
+    "description": "aus workout.logging.set"
+  },
+  "workoutLoggingSets": "Sets",
+  "@workoutLoggingSets": {
+    "description": "aus workout.logging.sets"
+  },
+  "workoutLoggingTotalReps": "Reps",
+  "@workoutLoggingTotalReps": {
+    "description": "aus workout.logging.totalReps"
+  },
+  "workoutNoPreviousData": "No previous data",
+  "@workoutNoPreviousData": {
+    "description": "aus workout.noPreviousData"
+  },
+  "workoutPostWorkoutComparisonTitle": "Comparison to last time",
+  "@workoutPostWorkoutComparisonTitle": {
+    "description": "aus workout.postWorkout.comparisonTitle"
+  },
+  "workoutPostWorkoutEditDuration": "Adjust training time",
+  "@workoutPostWorkoutEditDuration": {
+    "description": "aus workout.postWorkout.editDuration"
+  },
+  "workoutPostWorkoutExercises": "Exercises",
+  "@workoutPostWorkoutExercises": {
+    "description": "aus workout.postWorkout.exercises"
+  },
+  "workoutPostWorkoutFallbackName": "Training",
+  "@workoutPostWorkoutFallbackName": {
+    "description": "aus workout.postWorkout.fallbackName"
+  },
+  "workoutPostWorkoutMinutes": "Minutes",
+  "@workoutPostWorkoutMinutes": {
+    "description": "aus workout.postWorkout.minutes"
+  },
+  "workoutPostWorkoutSets": "Sets",
+  "@workoutPostWorkoutSets": {
+    "description": "aus workout.postWorkout.sets"
+  },
+  "workoutPostWorkoutTime": "Time",
+  "@workoutPostWorkoutTime": {
+    "description": "aus workout.postWorkout.time"
+  },
+  "workoutPostWorkoutTitle": "Workout completed!",
+  "@workoutPostWorkoutTitle": {
+    "description": "aus workout.postWorkout.title"
+  },
+  "workoutPostWorkoutToProgress": "View progress",
+  "@workoutPostWorkoutToProgress": {
+    "description": "aus workout.postWorkout.toProgress"
+  },
+  "workoutPostWorkoutVolume": "Volume",
+  "@workoutPostWorkoutVolume": {
+    "description": "aus workout.postWorkout.volume"
+  },
+  "workoutQuickBodyweight": "Bodyweight",
+  "@workoutQuickBodyweight": {
+    "description": "aus workout.quick.bodyweight"
+  },
+  "workoutQuickBodyweightDesc": "Bodyweight training",
+  "@workoutQuickBodyweightDesc": {
+    "description": "aus workout.quick.bodyweightDesc"
+  },
+  "workoutQuickDate": "Date *",
+  "@workoutQuickDate": {
+    "description": "aus workout.quick.date"
+  },
+  "workoutQuickDateRequired": "Please select a date",
+  "@workoutQuickDateRequired": {
+    "description": "aus workout.quick.dateRequired"
+  },
+  "workoutQuickDifficulty": "Difficulty",
+  "@workoutQuickDifficulty": {
+    "description": "aus workout.quick.difficulty"
+  },
+  "workoutQuickDuration": "Duration (minutes)",
+  "@workoutQuickDuration": {
+    "description": "aus workout.quick.duration"
+  },
+  "workoutQuickDurationRequired": "Please enter a valid duration",
+  "@workoutQuickDurationRequired": {
+    "description": "aus workout.quick.durationRequired"
+  },
+  "workoutQuickName": "Workout name",
+  "@workoutQuickName": {
+    "description": "aus workout.quick.name"
+  },
+  "workoutQuickNameRequired": "Please enter a workout name",
+  "@workoutQuickNameRequired": {
+    "description": "aus workout.quick.nameRequired"
+  },
+  "workoutQuickSaveError": "Error saving workout",
+  "@workoutQuickSaveError": {
+    "description": "aus workout.quick.saveError"
+  },
+  "workoutQuickTitle": "Quick workout entry",
+  "@workoutQuickTitle": {
+    "description": "aus workout.quick.title"
+  },
+  "workoutQuickType": "Type",
+  "@workoutQuickType": {
+    "description": "aus workout.quick.type"
+  },
+  "workoutQuickWeights": "Weights",
+  "@workoutQuickWeights": {
+    "description": "aus workout.quick.weights"
+  },
+  "workoutQuickWeightsDesc": "Gym / Dumbbells",
+  "@workoutQuickWeightsDesc": {
+    "description": "aus workout.quick.weightsDesc"
+  },
+  "workoutRecoveryDuration": "Duration (min)",
+  "@workoutRecoveryDuration": {
+    "description": "aus workout.recovery.duration"
+  },
+  "workoutRecoveryLog": "Log recovery",
+  "@workoutRecoveryLog": {
+    "description": "aus workout.recovery.log"
+  },
+  "workoutRelativeTimeDaysAgo": "{n} days ago",
+  "@workoutRelativeTimeDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.relativeTime.daysAgo"
+  },
+  "workoutRelativeTimeOneWeekAgo": "1 week ago",
+  "@workoutRelativeTimeOneWeekAgo": {
+    "description": "aus workout.relativeTime.oneWeekAgo"
+  },
+  "workoutRelativeTimeToday": "today",
+  "@workoutRelativeTimeToday": {
+    "description": "aus workout.relativeTime.today"
+  },
+  "workoutRelativeTimeWeeksAgo": "{n} weeks ago",
+  "@workoutRelativeTimeWeeksAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.relativeTime.weeksAgo"
+  },
+  "workoutRelativeTimeYesterday": "yesterday",
+  "@workoutRelativeTimeYesterday": {
+    "description": "aus workout.relativeTime.yesterday"
+  },
+  "workoutScreenAddExercise": "Add exercise",
+  "@workoutScreenAddExercise": {
+    "description": "aus workout.screen.addExercise"
+  },
+  "workoutScreenAddSet": "Add set",
+  "@workoutScreenAddSet": {
+    "description": "aus workout.screen.addSet"
+  },
+  "workoutScreenBodyweight": "Bodyweight",
+  "@workoutScreenBodyweight": {
+    "description": "aus workout.screen.bodyweight"
+  },
+  "workoutScreenCancelWorkout": "Cancel",
+  "@workoutScreenCancelWorkout": {
+    "description": "aus workout.screen.cancelWorkout"
+  },
+  "workoutScreenCardio": "Cardio",
+  "@workoutScreenCardio": {
+    "description": "aus workout.screen.cardio"
+  },
+  "workoutScreenCurrentExercise": "Current exercise",
+  "@workoutScreenCurrentExercise": {
+    "description": "aus workout.screen.currentExercise"
+  },
+  "workoutScreenDiscardConfirm": "Really discard workout? All progress will be lost.",
+  "@workoutScreenDiscardConfirm": {
+    "description": "aus workout.screen.discardConfirm"
+  },
+  "workoutScreenDiscardConfirmTitle": "Discard workout?",
+  "@workoutScreenDiscardConfirmTitle": {
+    "description": "aus workout.screen.discardConfirmTitle"
+  },
+  "workoutScreenDiscardWorkout": "Discard workout",
+  "@workoutScreenDiscardWorkout": {
+    "description": "aus workout.screen.discardWorkout"
+  },
+  "workoutScreenEmptyHint": "Add exercises to start your workout",
+  "@workoutScreenEmptyHint": {
+    "description": "aus workout.screen.emptyHint"
+  },
+  "workoutScreenEndWorkout": "End workout",
+  "@workoutScreenEndWorkout": {
+    "description": "aus workout.screen.endWorkout"
+  },
+  "workoutScreenEndWorkoutAction": "End",
+  "@workoutScreenEndWorkoutAction": {
+    "description": "aus workout.screen.endWorkoutAction"
+  },
+  "workoutScreenEndWorkoutConfirm": "Really end workout?",
+  "@workoutScreenEndWorkoutConfirm": {
+    "description": "aus workout.screen.endWorkoutConfirm"
+  },
+  "workoutScreenEndWorkoutConfirmText": "All sets so far will be saved.",
+  "@workoutScreenEndWorkoutConfirmText": {
+    "description": "aus workout.screen.endWorkoutConfirmText"
+  },
+  "workoutScreenExerciseOf": "Exercise {current} of {total}",
+  "@workoutScreenExerciseOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.screen.exerciseOf"
+  },
+  "workoutScreenExerciseProgress": "{completed} / {total} exercises",
+  "@workoutScreenExerciseProgress": {
+    "placeholders": {
+      "completed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.screen.exerciseProgress"
+  },
+  "workoutScreenExercisesButton": "Exercises ({completed}/{total})",
+  "@workoutScreenExercisesButton": {
+    "placeholders": {
+      "completed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.screen.exercisesButton"
+  },
+  "workoutScreenExercisesSheetTitle": "Exercises",
+  "@workoutScreenExercisesSheetTitle": {
+    "description": "aus workout.screen.exercisesSheetTitle"
+  },
+  "workoutScreenFinishWorkout": "Finish workout",
+  "@workoutScreenFinishWorkout": {
+    "description": "aus workout.screen.finishWorkout"
+  },
+  "workoutScreenFreeWorkout": "Free workout",
+  "@workoutScreenFreeWorkout": {
+    "description": "aus workout.screen.freeWorkout"
+  },
+  "workoutScreenGoal": "Goal",
+  "@workoutScreenGoal": {
+    "description": "aus workout.screen.goal"
+  },
+  "workoutScreenLogWorkout": "Log workout",
+  "@workoutScreenLogWorkout": {
+    "description": "aus workout.screen.logWorkout"
+  },
+  "workoutScreenMenu": "Menu",
+  "@workoutScreenMenu": {
+    "description": "aus workout.screen.menu"
+  },
+  "workoutScreenNextExercise": "Next exercise",
+  "@workoutScreenNextExercise": {
+    "description": "aus workout.screen.nextExercise"
+  },
+  "workoutScreenNoActiveWorkout": "No active workout",
+  "@workoutScreenNoActiveWorkout": {
+    "description": "aus workout.screen.noActiveWorkout"
+  },
+  "workoutScreenNoActiveWorkoutText": "Start a training from the calendar or a plan.",
+  "@workoutScreenNoActiveWorkoutText": {
+    "description": "aus workout.screen.noActiveWorkoutText"
+  },
+  "workoutScreenNoExercisesFound": "No exercises found",
+  "@workoutScreenNoExercisesFound": {
+    "description": "aus workout.screen.noExercisesFound"
+  },
+  "workoutScreenRecovery": "Recovery",
+  "@workoutScreenRecovery": {
+    "description": "aus workout.screen.recovery"
+  },
+  "workoutScreenRest": "Rest",
+  "@workoutScreenRest": {
+    "description": "aus workout.screen.rest"
+  },
+  "workoutScreenRestTimer": "Rest",
+  "@workoutScreenRestTimer": {
+    "description": "aus workout.screen.restTimer"
+  },
+  "workoutScreenSaveWorkout": "Save workout",
+  "@workoutScreenSaveWorkout": {
+    "description": "aus workout.screen.saveWorkout"
+  },
+  "workoutScreenSearchExercise": "Search exercise...",
+  "@workoutScreenSearchExercise": {
+    "description": "aus workout.screen.searchExercise"
+  },
+  "workoutScreenSwitchToExercise": "Switch to this exercise",
+  "@workoutScreenSwitchToExercise": {
+    "description": "aus workout.screen.switchToExercise"
+  },
+  "workoutScreenTimerAdd": "+10s",
+  "@workoutScreenTimerAdd": {
+    "description": "aus workout.screen.timerAdd"
+  },
+  "workoutScreenTimerDone": "Rest done!",
+  "@workoutScreenTimerDone": {
+    "description": "aus workout.screen.timerDone"
+  },
+  "workoutScreenTimerPause": "Pause",
+  "@workoutScreenTimerPause": {
+    "description": "aus workout.screen.timerPause"
+  },
+  "workoutScreenTimerResume": "Resume",
+  "@workoutScreenTimerResume": {
+    "description": "aus workout.screen.timerResume"
+  },
+  "workoutScreenTimerSkip": "Skip",
+  "@workoutScreenTimerSkip": {
+    "description": "aus workout.screen.timerSkip"
+  },
+  "workoutScreenTimerStart": "Start timer",
+  "@workoutScreenTimerStart": {
+    "description": "aus workout.screen.timerStart"
+  },
+  "workoutScreenTimerSub": "-10s",
+  "@workoutScreenTimerSub": {
+    "description": "aus workout.screen.timerSub"
+  },
+  "workoutScreenToPlans": "Go to plans",
+  "@workoutScreenToPlans": {
+    "description": "aus workout.screen.toPlans"
+  },
+  "workoutScreenWeighted": "Weighted",
+  "@workoutScreenWeighted": {
+    "description": "aus workout.screen.weighted"
+  },
+  "workoutSetLoggerAddSet": "Add set",
+  "@workoutSetLoggerAddSet": {
+    "description": "aus workout.setLogger.addSet"
+  },
+  "workoutSetLoggerAtLeastOneSet": "Please log at least one set before continuing",
+  "@workoutSetLoggerAtLeastOneSet": {
+    "description": "aus workout.setLogger.atLeastOneSet"
+  },
+  "workoutSetLoggerCompletedSets": "Completed sets",
+  "@workoutSetLoggerCompletedSets": {
+    "description": "aus workout.setLogger.completedSets"
+  },
+  "workoutSetLoggerDecreaseWeight": "Decrease weight",
+  "@workoutSetLoggerDecreaseWeight": {
+    "description": "aus workout.setLogger.decreaseWeight"
+  },
+  "workoutSetLoggerDeleteSet": "Delete set",
+  "@workoutSetLoggerDeleteSet": {
+    "description": "aus workout.setLogger.deleteSet"
+  },
+  "workoutSetLoggerDeleteSetConfirm": "Really delete this set?",
+  "@workoutSetLoggerDeleteSetConfirm": {
+    "description": "aus workout.setLogger.deleteSetConfirm"
+  },
+  "workoutSetLoggerDuplicateLast": "Copy last set",
+  "@workoutSetLoggerDuplicateLast": {
+    "description": "aus workout.setLogger.duplicateLast"
+  },
+  "workoutSetLoggerEnterHold": "Please enter the hold duration",
+  "@workoutSetLoggerEnterHold": {
+    "description": "aus workout.setLogger.enterHold"
+  },
+  "workoutSetLoggerEnterReps": "Please enter the number of reps",
+  "@workoutSetLoggerEnterReps": {
+    "description": "aus workout.setLogger.enterReps"
+  },
+  "workoutSetLoggerIncreaseWeight": "Increase weight",
+  "@workoutSetLoggerIncreaseWeight": {
+    "description": "aus workout.setLogger.increaseWeight"
+  },
+  "workoutSetLoggerLogSet": "Log set",
+  "@workoutSetLoggerLogSet": {
+    "description": "aus workout.setLogger.logSet"
+  },
+  "workoutSetLoggerNoSets": "No sets logged yet",
+  "@workoutSetLoggerNoSets": {
+    "description": "aus workout.setLogger.noSets"
+  },
+  "workoutSetLoggerReps": "Reps",
+  "@workoutSetLoggerReps": {
+    "description": "aus workout.setLogger.reps"
+  },
+  "workoutSetLoggerRest": "{seconds}s rest",
+  "@workoutSetLoggerRest": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.setLogger.rest"
+  },
+  "workoutSetLoggerSet": "Set",
+  "@workoutSetLoggerSet": {
+    "description": "aus workout.setLogger.set"
+  },
+  "workoutSetLoggerStepModeChanged": "Step size: {step} {unit}",
+  "@workoutSetLoggerStepModeChanged": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    },
+    "description": "aus workout.setLogger.stepModeChanged"
+  },
+  "workoutSetLoggerTarget": "Goal",
+  "@workoutSetLoggerTarget": {
+    "description": "aus workout.setLogger.target"
+  },
+  "workoutSetLoggerTargetReps": "{reps} reps",
+  "@workoutSetLoggerTargetReps": {
+    "placeholders": {
+      "reps": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.setLogger.targetReps"
+  },
+  "workoutSetLoggerTargetSets": "{sets} sets",
+  "@workoutSetLoggerTargetSets": {
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.setLogger.targetSets"
+  },
+  "workoutSetLoggerTitle": "Log set {number}",
+  "@workoutSetLoggerTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.setLogger.title"
+  },
+  "workoutSetLoggerWeight": "Weight",
+  "@workoutSetLoggerWeight": {
+    "description": "aus workout.setLogger.weight"
+  },
+  "workoutSetLoggerWeightUnit": "kg",
+  "@workoutSetLoggerWeightUnit": {
+    "description": "aus workout.setLogger.weightUnit"
+  },
+  "workoutSetTypeShortDropset": "D",
+  "@workoutSetTypeShortDropset": {
+    "description": "Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure."
+  },
+  "workoutSetTypeShortFailure": "F",
+  "@workoutSetTypeShortFailure": {
+    "description": "Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure."
+  },
+  "workoutSetTypeShortNormal": "N",
+  "@workoutSetTypeShortNormal": {
+    "description": "Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure."
+  },
+  "workoutSetTypeShortWarmup": "W",
+  "@workoutSetTypeShortWarmup": {
+    "description": "Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure."
+  },
+  "workoutTargetHold": "Goal: hold {seconds}",
+  "@workoutTargetHold": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    },
+    "description": "aus workout.targetHold"
+  }
+}

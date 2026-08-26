@@ -1,33 +1,6 @@
-import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
-import '../../../core/theme/theme.dart';
-
-/// Readiness-Stufen. Schwellen 1:1 aus der Design-Referenz
-/// (ATEM Dashboard.dc.html, `renderVals()`).
-enum ReadinessLevel {
-  peak(AtemColors.green, 'PEAK READINESS',
-      'Regeneration: Optimal • Bereit für Hyrox / Max Load'),
-  solid(AtemColors.cyan, 'SOLIDE FORM',
-      'Regeneration: Gut • Normale Trainingslast fahren'),
-  moderate(AtemColors.violetLight, 'MODERATE LAST',
-      'Regeneration: Mittel • Volumen leicht reduzieren'),
-  focusRecovery(AtemColors.magenta, 'FOKUS: REGENERATION',
-      'Regeneration: Niedrig • Heute aktiv erholen');
-
-  const ReadinessLevel(this.color, this.label, this.tag);
-
-  final Color color;
-  final String label;
-  final String tag;
-
-  static ReadinessLevel fromScore(double score) {
-    final s = score.round();
-    if (s >= 85) return ReadinessLevel.peak;
-    if (s >= 70) return ReadinessLevel.solid;
-    if (s >= 55) return ReadinessLevel.moderate;
-    return ReadinessLevel.focusRecovery;
-  }
-}
+import 'readiness_level.dart';
 
 @immutable
 class UserSummary {

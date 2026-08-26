@@ -17,6 +17,9 @@ plugins:
 analyzer:
   exclude:
     - build/**
+    # Generiert von flutter gen-l10n. Wird eingecheckt (CI prüft per git diff),
+    # aber nicht analysiert.
+    - lib/l10n/gen/**
     - android/**
     - ios/**
     - web/**
