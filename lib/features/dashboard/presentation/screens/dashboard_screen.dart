@@ -360,10 +360,9 @@ class _ReadinessHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
 
-    return GlassCard(
+    return AtemCard.glass(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
       glow: AtemColors.cyan,
-      glowOpacity: 0.28,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -690,7 +689,7 @@ class _PerformanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
 
-    return GlassCard(
+    return AtemCard.glass(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1035,10 +1034,7 @@ class _SessionCard extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final running = elapsed != null;
 
-    return GradientBorderGlassCard(
-      radius: 20.5,
-      borderWidth: 1.5,
-      glow: AtemColors.violet,
+    return AtemCard.gradientBorder(
       padding: const EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1251,7 +1247,7 @@ class _NoSessionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
-    return GlassCard(
+    return AtemCard.glass(
       padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1392,7 +1388,7 @@ class _QuickActionState extends State<_QuickAction> {
           duration: AtemMotion.normal,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: AtemColors.card.withValues(alpha: AtemGlass.tintAlpha),
+            color: AtemColors.card.withValues(alpha: AtemColors.cardTintAlpha),
             borderRadius: AtemRadii.cardR,
             border: Border.all(
               color: _pressed
@@ -1578,8 +1574,7 @@ class _FloatingNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassBar(
-      blur: 22,
+    return AtemBar(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
