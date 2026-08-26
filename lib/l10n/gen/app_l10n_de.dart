@@ -9,6 +9,43 @@ class AppL10nDe extends AppL10n {
   AppL10nDe([String locale = 'de']) : super(locale);
 
   @override
+  String get authFailedBody =>
+      'Der Versuch ist nicht durchgekommen. Bitte noch einmal.';
+
+  @override
+  String get authFailedTitle => 'Anmeldung fehlgeschlagen';
+
+  @override
+  String get authGoogle => 'Mit Google anmelden';
+
+  @override
+  String get authIntro =>
+      'ATEM ist derzeit geschlossen. Melde dich mit dem Google-Konto an, das für den Zugang freigeschaltet wurde.';
+
+  @override
+  String get authNetworkBody =>
+      'ATEM erreicht Google gerade nicht. Prüfe deine Verbindung.';
+
+  @override
+  String get authNetworkTitle => 'Keine Verbindung';
+
+  @override
+  String get authNotAllowedBody =>
+      'Dieses Konto steht nicht auf der Zugangsliste. ATEM ist derzeit eine geschlossene Beta.';
+
+  @override
+  String get authNotAllowedTitle => 'Zugang nicht freigeschaltet';
+
+  @override
+  String get authSignOut => 'Abmelden';
+
+  @override
+  String get authSigningIn => 'Anmeldung läuft …';
+
+  @override
+  String get authWelcome => 'Willkommen bei ATEM';
+
+  @override
   String get commonActivity => 'Aktivität';
 
   @override

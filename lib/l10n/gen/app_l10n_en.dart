@@ -9,6 +9,43 @@ class AppL10nEn extends AppL10n {
   AppL10nEn([String locale = 'en']) : super(locale);
 
   @override
+  String get authFailedBody =>
+      'That attempt did not go through. Please try again.';
+
+  @override
+  String get authFailedTitle => 'Sign-in failed';
+
+  @override
+  String get authGoogle => 'Sign in with Google';
+
+  @override
+  String get authIntro =>
+      'ATEM is currently closed. Sign in with the Google account that has been granted access.';
+
+  @override
+  String get authNetworkBody =>
+      'ATEM cannot reach Google right now. Check your connection.';
+
+  @override
+  String get authNetworkTitle => 'No connection';
+
+  @override
+  String get authNotAllowedBody =>
+      'This account is not on the access list. ATEM is currently a closed beta.';
+
+  @override
+  String get authNotAllowedTitle => 'Access not granted';
+
+  @override
+  String get authSignOut => 'Sign out';
+
+  @override
+  String get authSigningIn => 'Signing in …';
+
+  @override
+  String get authWelcome => 'Welcome to ATEM';
+
+  @override
   String get commonActivity => 'Activity';
 
   @override

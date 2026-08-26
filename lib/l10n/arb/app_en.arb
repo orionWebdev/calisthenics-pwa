@@ -1,5 +1,15 @@
 {
-  "@@locale": "en",
+  "authFailedBody": "That attempt did not go through. Please try again.",
+  "authFailedTitle": "Sign-in failed",
+  "authGoogle": "Sign in with Google",
+  "authIntro": "ATEM is currently closed. Sign in with the Google account that has been granted access.",
+  "authNetworkBody": "ATEM cannot reach Google right now. Check your connection.",
+  "authNetworkTitle": "No connection",
+  "authNotAllowedBody": "This account is not on the access list. ATEM is currently a closed beta.",
+  "authNotAllowedTitle": "Access not granted",
+  "authSignOut": "Sign out",
+  "authSigningIn": "Signing in …",
+  "authWelcome": "Welcome to ATEM",
   "commonActivity": "Activity",
   "@commonActivity": {
     "description": "aus common.activity"
@@ -851,6 +861,7 @@
     },
     "description": "aus format.pace.value"
   },
+  "@@locale": "en",
   "navCalendar": "Calendar",
   "@navCalendar": {
     "description": "aus nav.calendar"

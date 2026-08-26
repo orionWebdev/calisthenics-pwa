@@ -1,5 +1,48 @@
 {
-  "@@locale": "de",
+  "authFailedBody": "Der Versuch ist nicht durchgekommen. Bitte noch einmal.",
+  "@authFailedBody": {
+    "description": "Fehlertext, allgemein"
+  },
+  "authFailedTitle": "Anmeldung fehlgeschlagen",
+  "@authFailedTitle": {
+    "description": "Fehlertitel, allgemein"
+  },
+  "authGoogle": "Mit Google anmelden",
+  "@authGoogle": {
+    "description": "Beschriftung des Anmeldeknopfes"
+  },
+  "authIntro": "ATEM ist derzeit geschlossen. Melde dich mit dem Google-Konto an, das für den Zugang freigeschaltet wurde.",
+  "@authIntro": {
+    "description": "Erklärt die geschlossene Beta"
+  },
+  "authNetworkBody": "ATEM erreicht Google gerade nicht. Prüfe deine Verbindung.",
+  "@authNetworkBody": {
+    "description": "Fehlertext ohne Netz"
+  },
+  "authNetworkTitle": "Keine Verbindung",
+  "@authNetworkTitle": {
+    "description": "Fehlertitel ohne Netz"
+  },
+  "authNotAllowedBody": "Dieses Konto steht nicht auf der Zugangsliste. ATEM ist derzeit eine geschlossene Beta.",
+  "@authNotAllowedBody": {
+    "description": "Text, wenn das Konto nicht auf der Allowlist steht"
+  },
+  "authNotAllowedTitle": "Zugang nicht freigeschaltet",
+  "@authNotAllowedTitle": {
+    "description": "Titel, wenn das Konto nicht auf der Allowlist steht"
+  },
+  "authSignOut": "Abmelden",
+  "@authSignOut": {
+    "description": "Abmelden"
+  },
+  "authSigningIn": "Anmeldung läuft …",
+  "@authSigningIn": {
+    "description": "Zustand während der Anmeldung"
+  },
+  "authWelcome": "Willkommen bei ATEM",
+  "@authWelcome": {
+    "description": "Überschrift des Anmeldebildschirms"
+  },
   "commonActivity": "Aktivität",
   "@commonActivity": {
     "description": "aus common.activity"
@@ -851,6 +894,7 @@
     },
     "description": "aus format.pace.value"
   },
+  "@@locale": "de",
   "navCalendar": "Kalender",
   "@navCalendar": {
     "description": "aus nav.calendar"

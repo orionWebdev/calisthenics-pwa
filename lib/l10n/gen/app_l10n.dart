@@ -97,6 +97,72 @@ abstract class AppL10n {
     Locale('en')
   ];
 
+  /// Fehlertext, allgemein
+  ///
+  /// In de, this message translates to:
+  /// **'Der Versuch ist nicht durchgekommen. Bitte noch einmal.'**
+  String get authFailedBody;
+
+  /// Fehlertitel, allgemein
+  ///
+  /// In de, this message translates to:
+  /// **'Anmeldung fehlgeschlagen'**
+  String get authFailedTitle;
+
+  /// Beschriftung des Anmeldeknopfes
+  ///
+  /// In de, this message translates to:
+  /// **'Mit Google anmelden'**
+  String get authGoogle;
+
+  /// Erklärt die geschlossene Beta
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM ist derzeit geschlossen. Melde dich mit dem Google-Konto an, das für den Zugang freigeschaltet wurde.'**
+  String get authIntro;
+
+  /// Fehlertext ohne Netz
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM erreicht Google gerade nicht. Prüfe deine Verbindung.'**
+  String get authNetworkBody;
+
+  /// Fehlertitel ohne Netz
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Verbindung'**
+  String get authNetworkTitle;
+
+  /// Text, wenn das Konto nicht auf der Allowlist steht
+  ///
+  /// In de, this message translates to:
+  /// **'Dieses Konto steht nicht auf der Zugangsliste. ATEM ist derzeit eine geschlossene Beta.'**
+  String get authNotAllowedBody;
+
+  /// Titel, wenn das Konto nicht auf der Allowlist steht
+  ///
+  /// In de, this message translates to:
+  /// **'Zugang nicht freigeschaltet'**
+  String get authNotAllowedTitle;
+
+  /// Abmelden
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden'**
+  String get authSignOut;
+
+  /// Zustand während der Anmeldung
+  ///
+  /// In de, this message translates to:
+  /// **'Anmeldung läuft …'**
+  String get authSigningIn;
+
+  /// Überschrift des Anmeldebildschirms
+  ///
+  /// In de, this message translates to:
+  /// **'Willkommen bei ATEM'**
+  String get authWelcome;
+
   /// aus common.activity
   ///
   /// In de, this message translates to:

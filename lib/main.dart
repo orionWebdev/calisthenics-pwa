@@ -8,6 +8,7 @@ import 'l10n/gen/app_l10n.dart';
 import 'core/theme/theme.dart';
 import 'features/dashboard/application/dashboard_providers.dart';
 import 'features/dashboard/data/preview_dashboard_repository.dart';
+import 'features/auth/presentation/auth_gate.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/workout/application/workout_providers.dart';
 import 'features/workout/data/preview_workout_repository.dart';
@@ -57,7 +58,9 @@ class AtemApp extends StatelessWidget {
       supportedLocales: AppL10n.supportedLocales,
       theme: AtemTheme.dark,
       themeMode: ThemeMode.dark,
-      home: const DashboardScreen(),
+      // Das Tor entscheidet: ohne Anmeldung kommt niemand an Daten, weil die
+      // Firestore-Regeln sie ohnehin verweigern würden.
+      home: const AuthGate(child: DashboardScreen()),
       onGenerateRoute: (settings) {
         if (settings.name == WorkoutRunnerScreen.routeName) {
           final sessionId = settings.arguments as String? ?? '';

@@ -1,4 +1,5 @@
 import 'package:atem/core/theme/theme.dart';
+import 'package:atem/features/auth/application/auth_providers.dart';
 import 'package:atem/features/dashboard/application/dashboard_providers.dart';
 import 'package:atem/features/dashboard/data/preview_dashboard_repository.dart';
 import 'package:atem/features/workout/application/workout_providers.dart';
@@ -8,12 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'fake_auth.dart';
+
 /// Fixture-Datenquellen für alle Tests.
 ///
 /// Ohne Typannotation: `Override` wird von flutter_riverpod nicht exportiert,
 /// der Typ wird aus dem Literal abgeleitet. Die Preview-Repositories sind
 /// zustandslos, geteilte Instanzen sind also unbedenklich.
 final fixtureOverrides = [
+  authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
   dashboardRepositoryProvider.overrideWithValue(PreviewDashboardRepository()),
   workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
 ];

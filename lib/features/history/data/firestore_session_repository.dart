@@ -67,7 +67,12 @@ class FirestoreSessionRepository implements SessionRepository {
       return byDate != 0 ? byDate : b.createdAt.compareTo(a.createdAt);
     });
 
-    _lastReport = SessionReadReport(read: sessions.length, skipped: skipped);
+    final report = SessionReadReport(read: sessions.length, skipped: skipped);
+    _lastReport = report;
+    // Eine Zeile je Momentaufnahme. Bei einer Collection, die als Ganzes
+    // gelesen wird, ist das die einzige Stelle, an der sich ohne Debugger
+    // erkennen lässt, ob die Regeln greifen und wie viel tatsächlich ankommt.
+    developer.log('sessions gelesen — $report', name: 'atem.history');
     return sessions;
   }
 }
