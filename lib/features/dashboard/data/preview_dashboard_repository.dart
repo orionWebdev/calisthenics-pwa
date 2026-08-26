@@ -8,7 +8,6 @@ import '../domain/dashboard_repository.dart';
 /// `FirestoreDashboardRepository` ersetzen — diese Klasse gehört nicht in einen
 /// Release-Build.
 class PreviewDashboardRepository implements DashboardRepository {
-
   /// Kurven aus dem Design, aus den SVG-y-Koordinaten zurückgerechnet
   /// (y = 22 → 100, y = 120 → 0).
   static const _load = [46.0, 63.0, 33.0, 76.0, 92.0, 57.0, 69.0];

@@ -199,8 +199,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('SESSION',
-                style: text.labelSmall?.copyWith(letterSpacing: 2)),
+            Text('SESSION', style: text.labelSmall?.copyWith(letterSpacing: 2)),
             const SizedBox(height: 2),
             Row(
               children: [
@@ -209,7 +208,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                   height: 6,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _paused ? AtemColors.textSecondary : AtemColors.green,
+                    color:
+                        _paused ? AtemColors.textSecondary : AtemColors.green,
                     boxShadow: _paused ? null : AtemGlow.dot(AtemColors.green),
                   ),
                 ),
@@ -333,9 +333,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
               for (final m in ex.muscles) _chip(m, AtemColors.violet),
               _chip(ex.recordLabel, AtemColors.green),
               _chip('FORM GUIDE', AtemColors.cyan,
-                  filled: true,
-                  icon: Icons.play_arrow_rounded,
-                  onTap: () {}),
+                  filled: true, icon: Icons.play_arrow_rounded, onTap: () {}),
             ],
           ),
         ],
@@ -424,7 +422,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   }
 
   Widget _setRow(ActiveWorkout w, WorkoutSet s) {
-    final notifier = ref.read(workoutSessionProvider(widget.sessionId).notifier);
+    final notifier =
+        ref.read(workoutSessionProvider(widget.sessionId).notifier);
     final tc = s.type.color;
     final isNeutral = s.type == SetType.normal;
 
@@ -603,8 +602,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   Widget _restBar() {
     return AnimatedContainer(
       duration: AtemMotion.normal,
-      padding: EdgeInsets.symmetric(
-          horizontal: 16, vertical: _restCompact ? 8 : 14),
+      padding:
+          EdgeInsets.symmetric(horizontal: 16, vertical: _restCompact ? 8 : 14),
       decoration: BoxDecoration(
         color: AtemColors.surfaceSolid.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(24),
@@ -653,8 +652,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                     value: _restTotal == 0 ? 0 : _restLeft / _restTotal,
                     minHeight: 5,
                     backgroundColor: AtemColors.track,
-                    valueColor:
-                        const AlwaysStoppedAnimation(AtemColors.cyan),
+                    valueColor: const AlwaysStoppedAnimation(AtemColors.cyan),
                   ),
                 ),
               ),
@@ -767,8 +765,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
               controller: _notesCtrl,
               maxLines: 4,
               autofocus: true,
-              style: const TextStyle(
-                  fontSize: 13, color: AtemColors.textPrimary),
+              style:
+                  const TextStyle(fontSize: 13, color: AtemColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Wie fühlt sich die Session an?',
                 filled: true,
@@ -837,10 +835,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                 '${w.completedSets} von ${w.totalSets} Sätzen abgeschlossen · '
                 '${_fmt(_elapsed)}\nDein Fortschritt wird gespeichert.',
                 textAlign: TextAlign.center,
-                style: Theme.of(ctx)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(fontSize: 11),
+                style:
+                    Theme.of(ctx).textTheme.bodySmall?.copyWith(fontSize: 11),
               ),
               const SizedBox(height: 16),
               _Tappable(
@@ -851,8 +847,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                   decoration: BoxDecoration(
                     borderRadius: AtemRadii.pillR,
                     gradient: AtemGradients.brandCta,
-                    boxShadow:
-                        AtemGlow.soft(AtemColors.magenta, opacity: 0.7),
+                    boxShadow: AtemGlow.soft(AtemColors.magenta, opacity: 0.7),
                   ),
                   alignment: Alignment.center,
                   child: Text('BEENDEN & SPEICHERN',
@@ -920,8 +915,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
         decoration: BoxDecoration(
           color: AtemColors.card,
           borderRadius: BorderRadius.circular(24),
-          border:
-              Border.all(color: AtemColors.green.withValues(alpha: 0.35)),
+          border: Border.all(color: AtemColors.green.withValues(alpha: 0.35)),
           boxShadow: AtemGlow.soft(AtemColors.green, opacity: 0.45),
         ),
         child: Column(
@@ -933,8 +927,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AtemColors.green.withValues(alpha: 0.12),
-                border: Border.all(
-                    color: AtemColors.green.withValues(alpha: 0.5)),
+                border:
+                    Border.all(color: AtemColors.green.withValues(alpha: 0.5)),
                 boxShadow: AtemGlow.soft(AtemColors.green, opacity: 0.6),
               ),
               child: const Icon(Icons.check_rounded,

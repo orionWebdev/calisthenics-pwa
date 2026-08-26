@@ -135,8 +135,8 @@ class GlassCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: AtemColors.card.withValues(alpha: AtemGlass.tintAlpha),
               borderRadius: borderRadius,
-              border: Border.all(
-                  color: borderColor ?? AtemColors.border, width: 1),
+              border:
+                  Border.all(color: borderColor ?? AtemColors.border, width: 1),
             ),
             // Sheen als eigene Schicht: in einer BoxDecoration würde ein
             // gradient die color verdrängen und die Füllung verschwinden.

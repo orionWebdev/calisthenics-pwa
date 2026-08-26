@@ -73,8 +73,8 @@ abstract final class AtemTheme {
           fontWeight: FontWeight.w600,
           color: AtemColors.textPrimary),
 
-      bodyLarge: poppins.bodyLarge?.copyWith(
-          fontSize: 14, height: 1.5, color: AtemColors.textPrimary),
+      bodyLarge: poppins.bodyLarge
+          ?.copyWith(fontSize: 14, height: 1.5, color: AtemColors.textPrimary),
       bodyMedium: poppins.bodyMedium?.copyWith(
           fontSize: 12, height: 1.5, color: AtemColors.textSecondary),
       bodySmall: poppins.bodySmall?.copyWith(
@@ -88,9 +88,7 @@ abstract final class AtemTheme {
           color: AtemColors.textPrimary),
       // Status-Label "PEAK READINESS" — Farbe pro Kontext überschreiben.
       labelMedium: mono(
-          size: 10.5,
-          weight: FontWeight.w700,
-          color: AtemColors.textPrimary),
+          size: 10.5, weight: FontWeight.w700, color: AtemColors.textPrimary),
       // HUD-Section-Label "ATEM READINESS", "PERFORMANCE · 7 TAGE".
       labelSmall: mono(size: 9),
     );
@@ -308,7 +306,8 @@ abstract final class AtemTheme {
 
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AtemColors.surfaceRaised,
-        contentTextStyle: text.bodyMedium?.copyWith(color: AtemColors.textPrimary),
+        contentTextStyle:
+            text.bodyMedium?.copyWith(color: AtemColors.textPrimary),
         actionTextColor: AtemColors.cyan,
         behavior: SnackBarBehavior.floating,
         elevation: 0,
@@ -322,8 +321,8 @@ abstract final class AtemTheme {
         labelColor: AtemColors.cyan,
         unselectedLabelColor: AtemColors.textSecondary,
         labelStyle: text.labelMedium?.copyWith(color: AtemColors.cyan),
-        unselectedLabelStyle: text.labelMedium
-            ?.copyWith(color: AtemColors.textSecondary, fontWeight: FontWeight.w500),
+        unselectedLabelStyle: text.labelMedium?.copyWith(
+            color: AtemColors.textSecondary, fontWeight: FontWeight.w500),
         indicatorSize: TabBarIndicatorSize.label,
         indicatorColor: AtemColors.cyan,
         dividerColor: Colors.transparent,
@@ -352,8 +351,7 @@ abstract final class AtemTheme {
             s.contains(WidgetState.selected)
                 ? AtemColors.cyan
                 : AtemColors.track),
-        trackOutlineColor:
-            const WidgetStatePropertyAll(AtemColors.border),
+        trackOutlineColor: const WidgetStatePropertyAll(AtemColors.border),
       ),
 
       listTileTheme: ListTileThemeData(

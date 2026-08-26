@@ -42,11 +42,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   @override
   void initState() {
     super.initState();
-    _scoreCtrl =
-        AnimationController(vsync: this, duration: AtemMotion.countUp);
+    _scoreCtrl = AnimationController(vsync: this, duration: AtemMotion.countUp);
     _scoreAnim = const AlwaysStoppedAnimation(0);
-    _flickerCtrl = AnimationController(
-        vsync: this, duration: AtemMotion.brandDotFlicker);
+    _flickerCtrl =
+        AnimationController(vsync: this, duration: AtemMotion.brandDotFlicker);
     _liveCtrl =
         AnimationController(vsync: this, duration: AtemMotion.livePulse);
     _pulseCtrl =
@@ -400,8 +399,7 @@ class _ReadinessHero extends StatelessWidget {
                                     Text(
                                       '${value.round()}',
                                       style: text.displayLarge?.copyWith(
-                                        shadows:
-                                            AtemGlow.text(AtemColors.cyan),
+                                        shadows: AtemGlow.text(AtemColors.cyan),
                                       ),
                                     ),
                                     Text('%',
@@ -528,8 +526,7 @@ class _LivePill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: AtemRadii.pillR,
-        border:
-            Border.all(color: AtemColors.green.withValues(alpha: 0.35)),
+        border: Border.all(color: AtemColors.green.withValues(alpha: 0.35)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -727,8 +724,8 @@ class _PerformanceCard extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   color: AtemColors.textPrimary,
                 ),
-                tooltipStyle: text.labelSmall!.copyWith(
-                    fontSize: 8.5, color: AtemColors.textTertiary),
+                tooltipStyle: text.labelSmall!
+                    .copyWith(fontSize: 8.5, color: AtemColors.textTertiary),
                 tooltipValueStyle: text.labelSmall!.copyWith(
                   fontSize: 8.5,
                   fontWeight: FontWeight.w700,
@@ -839,8 +836,7 @@ class _PerformancePainter extends CustomPainter {
       ..color = AtemColors.gridLine
       ..strokeWidth = 1;
     for (final y in const [35.0, 70.0, 105.0]) {
-      canvas.drawLine(
-          Offset(_padX, y), Offset(size.width - _padX, y), grid);
+      canvas.drawLine(Offset(_padX, y), Offset(size.width - _padX, y), grid);
     }
 
     List<Offset> pts(double Function(DailyMetrics) sel) => [
@@ -880,7 +876,8 @@ class _PerformancePainter extends CustomPainter {
 
     // Load-Kurve: Glow + Linie.
     final lineShader = AtemGradients.neonWave.createShader(rect);
-    canvas.saveLayer(rect, Paint()..color = Colors.white.withValues(alpha: 0.35));
+    canvas.saveLayer(
+        rect, Paint()..color = Colors.white.withValues(alpha: 0.35));
     canvas.drawPath(
       loadPath,
       Paint()
@@ -904,7 +901,8 @@ class _PerformancePainter extends CustomPainter {
       if (i == performance.todayIndex) continue;
       final t = i / (loadPts.length - 1);
       final c = Color.lerp(
-        Color.lerp(AtemColors.cyan, AtemColors.violetLight, (t / 0.55).clamp(0.0, 1.0))!,
+        Color.lerp(AtemColors.cyan, AtemColors.violetLight,
+            (t / 0.55).clamp(0.0, 1.0))!,
         AtemColors.magenta,
         ((t - 0.55) / 0.45).clamp(0.0, 1.0),
       )!;
@@ -949,8 +947,8 @@ class _PerformancePainter extends CustomPainter {
           ).createShader(Rect.fromLTWH(p.dx - 1, 16, 2, _plotBottom - 16)),
       );
 
-      canvas.drawCircle(p, 7,
-          Paint()..color = AtemColors.magenta.withValues(alpha: 0.25));
+      canvas.drawCircle(
+          p, 7, Paint()..color = AtemColors.magenta.withValues(alpha: 0.25));
       canvas.drawCircle(p, 4, Paint()..color = AtemColors.textPrimary);
       canvas.drawCircle(
         p,
@@ -1007,8 +1005,7 @@ class _PerformancePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_PerformancePainter old) =>
-      old.performance != performance;
+  bool shouldRepaint(_PerformancePainter old) => old.performance != performance;
 }
 
 // ===========================================================================
@@ -1045,8 +1042,8 @@ class _SessionCard extends StatelessWidget {
         children: [
           Text(
             'HEUTIGE SESSION',
-            style: text.labelSmall?.copyWith(
-                fontSize: 8.5, color: AtemColors.cyan),
+            style: text.labelSmall
+                ?.copyWith(fontSize: 8.5, color: AtemColors.cyan),
           ),
           const SizedBox(height: 7),
           Text(session.title, style: text.titleMedium),
@@ -1153,13 +1150,14 @@ class _StartButtonState extends State<_StartButton> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomPaint(
-                    size: const Size(11, 13),
-                    painter: _PlayTrianglePainter()),
+                    size: const Size(11, 13), painter: _PlayTrianglePainter()),
                 const SizedBox(width: 9),
                 Text(
                   'SESSION STARTEN',
-                  style:
-                      Theme.of(context).textTheme.labelLarge?.copyWith(shadows: [
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(shadows: [
                     const Shadow(color: Colors.black26, blurRadius: 4),
                   ]),
                 ),
@@ -1432,7 +1430,8 @@ class _QuickActionState extends State<_QuickAction> {
               ),
               const SizedBox(height: 10),
               Text(widget.title,
-                  style: text.titleSmall, maxLines: 1,
+                  style: text.titleSmall,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis),
               const SizedBox(height: 3),
               Expanded(
@@ -1617,8 +1616,7 @@ class _NavItemState extends State<_NavItem> {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        widget.active ? AtemColors.cyan : AtemColors.textSecondary;
+    final color = widget.active ? AtemColors.cyan : AtemColors.textSecondary;
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
@@ -1860,8 +1858,7 @@ class _DashboardError extends StatelessWidget {
             Text('DATEN NICHT VERFÜGBAR',
                 style: text.labelMedium?.copyWith(color: AtemColors.magenta)),
             const SizedBox(height: 10),
-            Text(message,
-                textAlign: TextAlign.center, style: text.bodySmall),
+            Text(message, textAlign: TextAlign.center, style: text.bodySmall),
             const SizedBox(height: 20),
             OutlinedButton(
                 onPressed: onRetry, child: const Text('ERNEUT VERSUCHEN')),

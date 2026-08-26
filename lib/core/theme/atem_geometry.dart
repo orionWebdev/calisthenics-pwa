@@ -14,8 +14,7 @@ abstract final class AtemRadii {
   static const cardR = BorderRadius.all(Radius.circular(card));
   static const statBoxR = BorderRadius.all(Radius.circular(statBox));
   static const pillR = BorderRadius.all(Radius.circular(pill));
-  static const sheetR =
-      BorderRadius.vertical(top: Radius.circular(sheet));
+  static const sheetR = BorderRadius.vertical(top: Radius.circular(sheet));
 }
 
 abstract final class AtemSpacing {

@@ -17,8 +17,7 @@ void main() {
         // Datenanbindung steht.
         dashboardRepositoryProvider
             .overrideWithValue(PreviewDashboardRepository()),
-        workoutRepositoryProvider
-            .overrideWithValue(PreviewWorkoutRepository()),
+        workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
       ],
       child: const AtemApp(),
     ),

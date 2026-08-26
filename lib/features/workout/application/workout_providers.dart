@@ -51,7 +51,8 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
   bool toggleSet(int exerciseIndex, String setId) {
     final w = _workout;
     if (w == null) return false;
-    final set = w.exercises[exerciseIndex].sets.firstWhere((s) => s.id == setId);
+    final set =
+        w.exercises[exerciseIndex].sets.firstWhere((s) => s.id == setId);
     final nowDone = !set.done;
     _mutateSet(exerciseIndex, setId, (s) => s.copyWith(done: nowDone));
     return nowDone;

@@ -1,0 +1,16 @@
+# Beschreibungen der Test-Tags.
+#
+# ACHTUNG: `flutter test` liest den Schlüssel `exclude-tags` aus dieser Datei
+# NICHT — verifiziert am 26.08.2026. Nur das Flag wirkt. Deshalb steht der
+# Ausschluss im CI-Skript und nicht hier.
+#
+#   flutter test --exclude-tags a11y   Standardlauf, muss grün sein
+#   flutter test --tags a11y           das Tor — heute rot, ab Stufe 5 grün
+#   flutter test --tags debt           Schuldenbericht mit Zahlen
+tags:
+  a11y:
+    description: Prüft den A11y-Vertrag über die 3x3-Matrix
+  debt:
+    description: Misst technische Schuld, schlägt nie fehl
+  golden:
+    description: Pixelvergleiche der Primitive

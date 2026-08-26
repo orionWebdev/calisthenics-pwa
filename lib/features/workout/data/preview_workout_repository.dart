@@ -26,7 +26,8 @@ class PreviewWorkoutRepository implements WorkoutRepository {
           muscles: const ['QUADS', 'GLUTES'],
           recordLabel: 'PR 140 KG',
           sets: [
-            set('squat-1', SetType.warmup, '60 kg × 12', '60', '12', done: true),
+            set('squat-1', SetType.warmup, '60 kg × 12', '60', '12',
+                done: true),
             set('squat-2', SetType.normal, '100 kg × 8', '100', '8'),
             set('squat-3', SetType.normal, '105 kg × 6', '105', '6'),
             set('squat-4', SetType.dropset, '80 kg × 12', '80', '12'),
