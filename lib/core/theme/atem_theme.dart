@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'atem_colors.dart';
+import 'atem_type.dart';
 import 'atem_geometry.dart';
 
 // ---------------------------------------------------------------------------
@@ -11,92 +11,9 @@ import 'atem_geometry.dart';
 // ---------------------------------------------------------------------------
 
 abstract final class AtemTheme {
-  /// Poppins = UI-Font. JetBrains Mono = HUD-Labels und Messwerte.
-  static TextTheme textTheme([TextTheme? base]) {
-    final poppins = GoogleFonts.poppinsTextTheme(base ?? const TextTheme());
-    TextStyle mono(
-            {double size = 10,
-            FontWeight weight = FontWeight.w500,
-            double spacing = 2.5,
-            Color color = AtemColors.textSecondary}) =>
-        GoogleFonts.jetBrainsMono(
-          fontSize: size,
-          fontWeight: weight,
-          letterSpacing: spacing,
-          color: color,
-        );
-
-    return poppins.copyWith(
-      // Große Messwerte: Readiness-Score, Strain, Session-Timer.
-      displayLarge: poppins.displayLarge?.copyWith(
-          fontSize: 47,
-          fontWeight: FontWeight.w700,
-          height: 1.0,
-          letterSpacing: -1.5,
-          color: AtemColors.textPrimary),
-      displayMedium: poppins.displayMedium?.copyWith(
-          fontSize: 36,
-          fontWeight: FontWeight.w700,
-          height: 1.05,
-          letterSpacing: -1.0,
-          color: AtemColors.textPrimary),
-      displaySmall: poppins.displaySmall?.copyWith(
-          fontSize: 28,
-          fontWeight: FontWeight.w600,
-          height: 1.1,
-          color: AtemColors.textPrimary),
-
-      // Screen-Überschriften.
-      headlineMedium: poppins.headlineMedium?.copyWith(
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-          color: AtemColors.textPrimary),
-      headlineSmall: poppins.headlineSmall?.copyWith(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: AtemColors.textPrimary),
-
-      // Greeting "Guten Morgen, Alex".
-      titleLarge: poppins.titleLarge?.copyWith(
-          fontSize: 19,
-          fontWeight: FontWeight.w600,
-          color: AtemColors.textPrimary),
-      // Card-Titel.
-      titleMedium: poppins.titleMedium?.copyWith(
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          height: 1.35,
-          color: AtemColors.textPrimary),
-      // Quick-Card-Titel.
-      titleSmall: poppins.titleSmall?.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: AtemColors.textPrimary),
-
-      bodyLarge: poppins.bodyLarge
-          ?.copyWith(fontSize: 14, height: 1.5, color: AtemColors.textPrimary),
-      bodyMedium: poppins.bodyMedium?.copyWith(
-          fontSize: 12, height: 1.5, color: AtemColors.textSecondary),
-      bodySmall: poppins.bodySmall?.copyWith(
-          fontSize: 10.5, height: 1.5, color: AtemColors.textSecondary),
-
-      // Button-Label "SESSION STARTEN".
-      labelLarge: poppins.labelLarge?.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 2.5,
-          color: AtemColors.textPrimary),
-      // Status-Label "PEAK READINESS" — Farbe pro Kontext überschreiben.
-      labelMedium: mono(
-          size: 10.5, weight: FontWeight.w700, color: AtemColors.textPrimary),
-      // HUD-Section-Label "ATEM READINESS", "PERFORMANCE · 7 TAGE".
-      labelSmall: mono(size: 9),
-    );
-  }
-
   static ThemeData get dark {
     final base = ThemeData(brightness: Brightness.dark, useMaterial3: true);
-    final text = textTheme(base.textTheme);
+    final text = AtemType.textTheme;
 
     const scheme = ColorScheme.dark(
       primary: AtemColors.magenta,
@@ -175,10 +92,7 @@ abstract final class AtemTheme {
         selectedColor: AtemColors.cyan.withValues(alpha: 0.14),
         side: const BorderSide(color: AtemColors.border),
         shape: const StadiumBorder(),
-        labelStyle: text.bodySmall?.copyWith(
-            fontSize: 9.5,
-            fontWeight: FontWeight.w500,
-            color: AtemColors.textTertiary),
+        labelStyle: AtemType.labelSmall.base,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         showCheckmark: false,
       ),
@@ -265,8 +179,7 @@ abstract final class AtemTheme {
         elevation: 0,
         height: 64,
         labelTextStyle: WidgetStateProperty.resolveWith(
-          (states) => text.labelSmall?.copyWith(
-            fontSize: 8.5,
+          (states) => AtemType.labelMicro.base.copyWith(
             color: states.contains(WidgetState.selected)
                 ? AtemColors.cyan
                 : AtemColors.textSecondary,
