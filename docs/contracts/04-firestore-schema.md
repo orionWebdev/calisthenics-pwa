@@ -155,3 +155,47 @@ nicht allein aus dem Systemgebietsschema ableiten, wenn hier eine Wahl hinterleg
 
 Zwei Felder: `email`, `enabled`. Das ist die Zugangsliste der geschlossenen Beta aus Stufe 7.
 Zwei Einträge — beide Konten des Entwicklers.
+
+---
+
+## Zugriffsregeln — und warum die Datei im Repo nichts beweist
+
+Am 26.08.2026 fiel beim Vergleich auf: **Die aktiven Rules waren nicht die aus dem
+Repository.** `firestore.rules` enthielt eine sorgfältige Fassung mit Allowlist,
+Eigentümerprüfung und Standard-Verbot. Ausgerollt war seit dem 10.01.2026 dies:
+
+```
+match /{document=**} { allow read, write: if true; }  // Nur für Development!
+```
+
+Ohne Anmeldung, lesend und schreibend, auf den gesamten Bestand — bei einem
+**öffentlichen** Repository, das Projekt-ID und API-Schlüssel im Klartext enthält
+(`js/core/firebase.js`).
+
+**Regel daraus: Die Datei im Repo ist eine Absicht, kein Zustand.** Vor jeder Arbeit am
+Datenzugriff wird das aktive Ruleset abgerufen und verglichen, und die Wirkung wird mit
+einer Leseanfrage ohne Anmeldung gegengeprüft. Erwartet wird `403`.
+
+```
+firebase deploy --only firestore:rules
+```
+
+Stand 26.08.2026: Ruleset `c716099d`, 217 Zeilen, deckungsgleich mit `firestore.rules`,
+nicht angemeldeter Lesezugriff auf `sessions` antwortet mit `403`.
+
+### Die Allowlist wird über die Dokument-ID geprüft, nicht über das Feld
+
+`isAllowed()` schlägt `allowedUsers/{uid}` nach, ersatzweise `allowedUsers/{email}`. Das
+Feld `email` **im Dokument** wird nie gelesen — Rules können nachschlagen, nicht suchen.
+
+Das war beim Zusperren fast ein Eigentor: Der Eintrag für
+`christian.mueller2311@gmail.com` lag unter der automatisch vergebenen ID
+`6nwbVW2uIDfxkAx2c24P` (20 Zeichen, also `.add()` statt `.doc(uid).set()`). Weder UID noch
+E-Mail trafen zu, und das Konto mit **64 der 136 Sessions** wäre ausgesperrt gewesen.
+Behoben durch ein zusätzliches Dokument unter der echten UID; der verwaiste Eintrag bleibt
+liegen.
+
+**Für jeden neuen Zugang gilt: Dokument-ID = UID, nicht `.add()`.**
+
+Die 26 Sessions von `demo-user-123` sind seit dem Zusperren unzugänglich. Das ist richtig
+so — es sind keine echten Daten.
