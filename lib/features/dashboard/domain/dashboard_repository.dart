@@ -1,0 +1,20 @@
+import 'dashboard_data.dart';
+
+/// Datenquelle des Dashboards.
+///
+/// Die Implementierung gehört in `data/` und liest aus denselben Quellen wie
+/// die bestehende PWA (Firestore: `sessions`, `schedule`, `userProfiles`)
+/// bzw. später aus der Wearable-Anbindung.
+///
+/// Bewusst als Stream: Firestore liefert Echtzeit-Updates, und das Dashboard
+/// soll sich aktualisieren, während eine Session läuft.
+abstract interface class DashboardRepository {
+  /// Aggregierter Dashboard-Zustand des aktuellen Nutzers.
+  Stream<DashboardData> watchDashboard();
+
+  /// Startet die heutige Session und liefert deren Startzeitpunkt.
+  Future<DateTime> startSession(String sessionId);
+
+  /// Beendet die laufende Session.
+  Future<void> stopSession(String sessionId);
+}

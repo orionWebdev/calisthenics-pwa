@@ -1,4 +1,57 @@
+# --- Secrets ---
 firebase-service-account.json
 config/firebase-service-account.json
+
+# --- OS / Editor ---
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+*.iml
+*.ipr
+*.iws
+
+# --- Node (PWA-Skripte) ---
 node_modules
+
+# --- Sonstiges ---
 .screenshots/
+
+# ============================================================
+# Flutter / Dart
+# ============================================================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.lock.bak
+doc/api/
+
+# Generierte Lokalisierung wird bewusst eingecheckt (CI prüft per git diff),
+# daher hier KEIN Ausschluss von lib/l10n/gen/.
+
+# --- Android ---
+android/.gradle/
+android/local.properties
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
+android/**/gradle-wrapper.jar
+android/.idea/
+android/captures/
+
+# --- iOS ---
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/Runner/GeneratedPluginRegistrant.*
+**/*.mobileprovision
+**/*.p12
+
+# --- Web ---
+web/main.dart.js
