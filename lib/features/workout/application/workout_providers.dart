@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/workout_repository.dart';
@@ -10,24 +12,22 @@ final workoutRepositoryProvider = Provider<WorkoutRepository>((ref) {
   );
 });
 
-/// Hält die laufende Einheit. Die Timer selbst leben im Screen — sie hängen am
-/// Widget-Lebenszyklus. Hier liegt nur, was am Ende gespeichert wird.
-class WorkoutSessionController extends StateNotifier<AsyncValue<ActiveWorkout>> {
-  WorkoutSessionController(this._ref, this._sessionId)
-      : super(const AsyncValue.loading()) {
-    _load();
+/// Hält die laufende Einheit.
+///
+/// [build] übernimmt Laden, Fehlerbehandlung und Wiederholung — deshalb gibt es
+/// hier kein eigenes `AsyncValue.guard` mehr. Ein Fehler beim Laden landet im
+/// Provider, nicht in einem Zustand, den noch niemand beobachtet.
+class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
+  WorkoutSessionController(this.sessionId);
+
+  final String sessionId;
+
+  @override
+  Future<ActiveWorkout> build() {
+    return ref.watch(workoutRepositoryProvider).loadWorkout(sessionId);
   }
 
-  final Ref _ref;
-  final String _sessionId;
-
-  Future<void> _load() async {
-    state = await AsyncValue.guard(
-      () => _ref.read(workoutRepositoryProvider).loadWorkout(_sessionId),
-    );
-  }
-
-  ActiveWorkout? get _workout => state.valueOrNull;
+  ActiveWorkout? get _workout => state.value;
 
   void _mutateSet(
     int exerciseIndex,
@@ -43,7 +43,7 @@ class WorkoutSessionController extends StateNotifier<AsyncValue<ActiveWorkout>> 
         for (final s in ex.sets) s.id == setId ? transform(s) : s,
       ],
     );
-    state = AsyncValue.data(w.copyWith(exercises: exercises));
+    state = AsyncData(w.copyWith(exercises: exercises));
   }
 
   /// Hakt ab oder entsperrt wieder — bewusst reversibel (Fehlertoleranz).
@@ -78,7 +78,7 @@ class WorkoutSessionController extends StateNotifier<AsyncValue<ActiveWorkout>> 
       sets: [
         ...ex.sets,
         WorkoutSet(
-          id: '${ex.id}-${DateTime.now().microsecondsSinceEpoch}',
+          id: '${ex.id}-${ex.sets.length}-${last.id}',
           type: last.type,
           previousLabel: '—',
           weight: last.weight,
@@ -86,25 +86,80 @@ class WorkoutSessionController extends StateNotifier<AsyncValue<ActiveWorkout>> 
         ),
       ],
     );
-    state = AsyncValue.data(w.copyWith(exercises: exercises));
+    state = AsyncData(w.copyWith(exercises: exercises));
   }
 
   void setNotes(String notes) {
     final w = _workout;
     if (w == null) return;
-    state = AsyncValue.data(w.copyWith(notes: notes));
+    state = AsyncData(w.copyWith(notes: notes));
   }
 
   Future<void> finish(Duration duration) async {
     final w = _workout;
     if (w == null) return;
-    await _ref
+    await ref
         .read(workoutRepositoryProvider)
         .saveWorkout(w, duration: duration);
   }
 }
 
-final workoutSessionProvider = StateNotifierProvider.autoDispose
-    .family<WorkoutSessionController, AsyncValue<ActiveWorkout>, String>(
+final workoutSessionProvider = AsyncNotifierProvider.autoDispose
+    .family<WorkoutSessionController, ActiveWorkout, String>(
   WorkoutSessionController.new,
+);
+
+/// Zustand der laufenden Session. Der Timer liegt im Notifier, nicht im Screen —
+/// damit gehört ihm sein eigener Lebenszyklus und er ist ohne Widget testbar.
+class SessionTimerState {
+  const SessionTimerState({this.startedAt, this.elapsed});
+
+  final DateTime? startedAt;
+  final Duration? elapsed;
+
+  bool get isRunning => startedAt != null;
+}
+
+class SessionTimerController extends Notifier<SessionTimerState> {
+  Timer? _ticker;
+
+  @override
+  SessionTimerState build() {
+    ref.onDispose(() => _ticker?.cancel());
+    return const SessionTimerState();
+  }
+
+  Future<void> start(String sessionId) async {
+    if (state.isRunning) return;
+    final startedAt =
+        await ref.read(workoutRepositoryProvider).startSession(sessionId);
+    _ticker?.cancel();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    state = SessionTimerState(startedAt: startedAt, elapsed: Duration.zero);
+  }
+
+  Future<void> stop(String sessionId) async {
+    if (!state.isRunning) return;
+    _ticker?.cancel();
+    _ticker = null;
+    await ref.read(workoutRepositoryProvider).stopSession(sessionId);
+    state = const SessionTimerState();
+  }
+
+  Future<void> toggle(String sessionId) =>
+      state.isRunning ? stop(sessionId) : start(sessionId);
+
+  void _tick() {
+    final startedAt = state.startedAt;
+    if (startedAt == null) return;
+    state = SessionTimerState(
+      startedAt: startedAt,
+      elapsed: DateTime.now().difference(startedAt),
+    );
+  }
+}
+
+final sessionTimerProvider =
+    NotifierProvider<SessionTimerController, SessionTimerState>(
+  SessionTimerController.new,
 );

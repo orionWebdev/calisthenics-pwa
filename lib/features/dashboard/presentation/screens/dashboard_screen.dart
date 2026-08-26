@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../theme/app_theme.dart';
+import '../../../workout/application/workout_providers.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import '../../application/dashboard_providers.dart';
 import '../../domain/dashboard_data.dart';
@@ -34,7 +34,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   late final AnimationController _pulseCtrl; // Button-Glow  2.2 s
   late final AnimationController _sessionDotCtrl; // Session-Dot 1.2 s
 
-  Timer? _ticker;
+  /// Bis go_router kommt (Stufe 6) ist der aktive Tab lokaler Zustand —
+  /// ein Provider dafür wäre schon heute die falsche Schicht.
+  int _activeNav = 0;
 
   @override
   void initState() {
@@ -58,7 +60,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
   @override
   void dispose() {
-    _ticker?.cancel();
     _scoreCtrl.dispose();
     _flickerCtrl.dispose();
     _liveCtrl.dispose();
@@ -77,24 +78,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   }
 
   Future<void> _onToggleSession(String sessionId) async {
-    final controller = ref.read(sessionTimerProvider.notifier);
-    final wasRunning = controller.isRunning;
-    await controller.toggle(sessionId);
+    final wasRunning = ref.read(sessionTimerProvider).isRunning;
+    await ref.read(sessionTimerProvider.notifier).toggle(sessionId);
 
-    // Beim Start direkt in den Runner — dort wird trainiert. Der
-    // Dashboard-Timer läuft weiter und zeigt nach der Rückkehr „SESSION LÄUFT".
-    if (!wasRunning && controller.isRunning && mounted) {
+    // Beim Start direkt in den Runner — dort wird trainiert. Der Timer läuft im
+    // Notifier weiter und zeigt nach der Rückkehr „SESSION LÄUFT".
+    if (!wasRunning && ref.read(sessionTimerProvider).isRunning && mounted) {
       await Navigator.of(context).pushNamed(
         WorkoutRunnerScreen.routeName,
         arguments: sessionId,
-      );
-    }
-    _ticker?.cancel();
-    _ticker = null;
-    if (controller.isRunning) {
-      _ticker = Timer.periodic(
-        const Duration(seconds: 1),
-        (_) => ref.read(sessionTimerProvider.notifier).tick(),
       );
     }
   }
@@ -104,7 +96,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     final async = ref.watch(dashboardDataProvider);
 
     ref.listen<AsyncValue<DashboardData>>(dashboardDataProvider, (_, next) {
-      final score = next.valueOrNull?.readiness.score;
+      final score = next.value?.readiness.score;
       if (score != null) _animateScoreTo(score);
     });
 
@@ -152,7 +144,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
                   session: data.session!,
                   glowPulse: _pulseCtrl,
                   dotPulse: _sessionDotCtrl,
-                  elapsed: ref.watch(sessionTimerProvider),
+                  elapsed: ref.watch(sessionTimerProvider).elapsed,
                   onToggle: () => _onToggleSession(data.session!.id),
                 )
               else
@@ -167,9 +159,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
           right: AtemSpacing.screenPadding,
           bottom: AtemSpacing.screenPadding,
           child: _FloatingNav(
-            activeIndex: ref.watch(activeNavIndexProvider),
-            onSelect: (i) =>
-                ref.read(activeNavIndexProvider.notifier).state = i,
+            activeIndex: _activeNav,
+            onSelect: (i) => setState(() => _activeNav = i),
           ),
         ),
       ],

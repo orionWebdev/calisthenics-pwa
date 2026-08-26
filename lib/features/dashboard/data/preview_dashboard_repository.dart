@@ -66,10 +66,4 @@ class PreviewDashboardRepository implements DashboardRepository {
       ),
     );
   }
-
-  @override
-  Future<DateTime> startSession(String sessionId) async => DateTime.now();
-
-  @override
-  Future<void> stopSession(String sessionId) async {}
 }

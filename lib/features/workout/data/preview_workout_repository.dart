@@ -59,6 +59,12 @@ class PreviewWorkoutRepository implements WorkoutRepository {
   }
 
   @override
+  Future<DateTime> startSession(String sessionId) async => DateTime.now();
+
+  @override
+  Future<void> stopSession(String sessionId) async {}
+
+  @override
   Future<void> saveWorkout(ActiveWorkout workout,
       {required Duration duration}) async {}
 }
