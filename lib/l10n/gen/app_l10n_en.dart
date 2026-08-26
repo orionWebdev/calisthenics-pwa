@@ -78,6 +78,9 @@ class AppL10nEn extends AppL10n {
   String get commonRecovery => 'Recovery';
 
   @override
+  String get commonRetry => 'Try again';
+
+  @override
   String get commonSave => 'Save';
 
   @override
@@ -322,6 +325,9 @@ class AppL10nEn extends AppL10n {
       'Exercises are still loading. Please try again shortly.';
 
   @override
+  String get errorsLoadFailed => 'Loading failed. Please try again.';
+
+  @override
   String get errorsMuscleGroupsRequired =>
       'Please select at least one muscle group!';
 
@@ -404,6 +410,71 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get navTraining => 'Training';
+
+  @override
+  String get workoutA11yEnd => 'End workout';
+
+  @override
+  String workoutA11yFormGuide(String exercise) {
+    return 'Open form video for $exercise';
+  }
+
+  @override
+  String get workoutA11yLoading => 'Loading workout';
+
+  @override
+  String get workoutA11yNextExercise => 'Next exercise';
+
+  @override
+  String get workoutA11yNotes => 'Open session notes';
+
+  @override
+  String get workoutA11yPause => 'Pause training';
+
+  @override
+  String get workoutA11yPrevExercise => 'Previous exercise';
+
+  @override
+  String workoutA11yRepsField(int n) {
+    return 'Repetitions, set $n';
+  }
+
+  @override
+  String get workoutA11yRestExtend => 'Extend rest by 30 seconds';
+
+  @override
+  String workoutA11yRestRemaining(String time) {
+    return 'Rest: $time remaining';
+  }
+
+  @override
+  String get workoutA11yRestShorten => 'Shorten rest by 15 seconds';
+
+  @override
+  String get workoutA11yRestSkip => 'Skip rest';
+
+  @override
+  String get workoutA11yResume => 'Resume training';
+
+  @override
+  String workoutA11ySetComplete(int n) {
+    return 'Complete set $n';
+  }
+
+  @override
+  String workoutA11ySetType(String type) {
+    return 'Set type: $type. Tap to change';
+  }
+
+  @override
+  String workoutA11ySetUnlock(int n) {
+    return 'Unlock set $n';
+  }
+
+  @override
+  String workoutA11yWeightField(int n) {
+    return 'Weight in kilograms, set $n';
+  }
 
   @override
   String workoutBannerActive(String name) {
@@ -607,6 +678,81 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get workoutRelativeTimeYesterday => 'yesterday';
+
+  @override
+  String get workoutRunnerAddSet => '+ ADD SET';
+
+  @override
+  String get workoutRunnerBack => 'Back';
+
+  @override
+  String get workoutRunnerFormGuide => 'FORM GUIDE';
+
+  @override
+  String get workoutRunnerNotAvailable => 'Workout unavailable';
+
+  @override
+  String get workoutRunnerNotesDone => 'DONE';
+
+  @override
+  String get workoutRunnerNotesHint => 'How does the session feel?';
+
+  @override
+  String get workoutRunnerNotesTitle => 'SESSION NOTES';
+
+  @override
+  String get workoutRunnerRestLabel => 'REST';
+
+  @override
+  String get workoutRunnerRestMinus => '−15s';
+
+  @override
+  String get workoutRunnerRestPlus => '+30s';
+
+  @override
+  String get workoutRunnerRestSkip => 'SKIP →';
+
+  @override
+  String workoutRunnerRunning(String time) {
+    return 'SESSION RUNNING · $time';
+  }
+
+  @override
+  String get workoutRunnerSaved => 'Session saved';
+
+  @override
+  String get workoutRunnerSavedDone => 'DONE';
+
+  @override
+  String get workoutRunnerSavedFailed => 'Saving failed';
+
+  @override
+  String get workoutRunnerSessionLabel => 'SESSION';
+
+  @override
+  String workoutRunnerSetsCompleted(int done, int total) {
+    return '$done OF $total SETS COMPLETED';
+  }
+
+  @override
+  String workoutRunnerSummary(int sets, String time, String volume) {
+    return '$sets sets · $time · $volume kg volume';
+  }
+
+  @override
+  String get workoutRunnerTableDone => 'OK';
+
+  @override
+  String get workoutRunnerTableLast => 'LAST TIME';
+
+  @override
+  String get workoutRunnerTableReps => 'REPS';
+
+  @override
+  String get workoutRunnerTableSet => 'SET';
+
+  @override
+  String get workoutRunnerTableWeight => 'KG';
 
   @override
   String get workoutScreenAddExercise => 'Add exercise';
@@ -821,6 +967,15 @@ class AppL10nEn extends AppL10n {
   String get workoutSetLoggerWeightUnit => 'kg';
 
   @override
+  String get workoutSetTypeDropset => 'Drop set';
+
+  @override
+  String get workoutSetTypeFailure => 'Set to failure';
+
+  @override
+  String get workoutSetTypeNormal => 'Normal set';
+
+  @override
   String get workoutSetTypeShortDropset => 'D';
 
   @override
@@ -831,6 +986,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get workoutSetTypeShortWarmup => 'W';
+
+  @override
+  String get workoutSetTypeWarmup => 'Warm-up set';
 
   @override
   String workoutTargetHold(int seconds) {

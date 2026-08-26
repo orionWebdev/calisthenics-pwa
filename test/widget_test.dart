@@ -32,6 +32,9 @@ Future<void> _pumpStill(WidgetTester tester, Widget home) async {
     ProviderScope(
       overrides: _overrides,
       child: MaterialApp(
+        // Sprache festnageln: Die Testumgebung meldet en_US, und ohne diese
+        // Zeile prüfen deutsche Erwartungen gegen englische Texte.
+        locale: const Locale('de'),
         localizationsDelegates: AppL10n.localizationsDelegates,
         supportedLocales: AppL10n.supportedLocales,
         home: home,
@@ -70,16 +73,20 @@ void main() {
     await tester.pump(); // Future des Repositories auflösen
 
     expect(find.text('Back Squat'), findsOneWidget);
-    expect(find.text('ÜBUNG 1 / 3'), findsOneWidget);
+    expect(find.text('Übung 1 von 3'), findsOneWidget);
     expect(find.text('1 VON 10 SÄTZEN ABGESCHLOSSEN'), findsOneWidget);
     expect(find.text('PAUSE'), findsNothing);
 
-    await tester.tap(find.byIcon(Icons.check_rounded).at(1));
+    // Der zweite Satz ist noch offen — über sein Semantics-Label finden,
+    // nicht über ein Icon: das Häkchen erscheint erst im abgehakten Zustand.
+    final handle = tester.ensureSemantics();
+    await tester.tap(find.bySemanticsLabel('Satz 2 abschließen'));
     await tester.pump();
 
     expect(find.text('2 VON 10 SÄTZEN ABGESCHLOSSEN'), findsOneWidget);
     expect(find.text('PAUSE'), findsOneWidget);
     expect(find.text('01:30'), findsOneWidget);
+    handle.dispose();
   });
 
   testWidgets('AtemApp startet ohne Fehler', (tester) async {

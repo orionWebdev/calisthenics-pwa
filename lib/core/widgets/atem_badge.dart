@@ -105,6 +105,16 @@ class AtemBadge extends StatelessWidget {
   static const _height = 24.0;
   static const _counterHeight = 20.0;
 
+  /// Violett erreicht auf keiner Fläche AA (2,8:1, violetLight 3,98:1).
+  /// Als Rand und Fläche ist es zulässig, als Beschriftung nie — dann tritt
+  /// der neutrale Ton an seine Stelle.
+  ///
+  /// Vertrag `docs/contracts/01-accessibility.md`, R4.
+  static Color _safeTextColor(Color accent) =>
+      accent == AtemColors.violet || accent == AtemColors.violetLight
+          ? AtemColors.textTertiary
+          : accent;
+
   @override
   Widget build(BuildContext context) {
     final tint = accent ?? AtemColors.border;
@@ -113,7 +123,7 @@ class AtemBadge extends StatelessWidget {
 
     final textColor = switch (fill) {
       AtemBadgeFill.solid => AtemColors.textPrimary,
-      _ when isAccented => tint,
+      _ when isAccented => _safeTextColor(tint),
       _ => AtemColors.textTertiary,
     };
 
@@ -152,7 +162,9 @@ class AtemBadge extends StatelessWidget {
         horizontal: _isCounter ? 6 : 12,
         vertical: _isCounter ? 0 : 5,
       ),
-      alignment: Alignment.center,
+      // KEIN alignment: Ein Container mit alignment dehnt sich auf den
+      // verfügbaren Raum aus — in einem Wrap wird daraus eine Pille über die
+      // volle Breite. Die Zeile darin zentriert bereits.
       decoration: BoxDecoration(
         borderRadius: AtemRadii.pillR,
         color: switch (fill) {

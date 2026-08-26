@@ -235,6 +235,12 @@ abstract class AppL10n {
   /// **'Recovery'**
   String get commonRecovery;
 
+  /// Runner, Modul 2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut versuchen'**
+  String get commonRetry;
+
   /// aus common.save
   ///
   /// In de, this message translates to:
@@ -685,6 +691,12 @@ abstract class AppL10n {
   /// **'Übungen werden noch geladen. Bitte versuche es gleich erneut.'**
   String get errorsExercisesLoading;
 
+  /// Runner, Modul 2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Laden fehlgeschlagen. Bitte erneut versuchen.'**
+  String get errorsLoadFailed;
+
   /// aus errors.muscleGroupsRequired
   ///
   /// In de, this message translates to:
@@ -822,6 +834,108 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Training'**
   String get navTraining;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Workout beenden'**
+  String get workoutA11yEnd;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Form-Video zu {exercise} öffnen'**
+  String workoutA11yFormGuide(String exercise);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Workout wird geladen'**
+  String get workoutA11yLoading;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Nächste Übung'**
+  String get workoutA11yNextExercise;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Session-Notizen öffnen'**
+  String get workoutA11yNotes;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Training pausieren'**
+  String get workoutA11yPause;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Vorherige Übung'**
+  String get workoutA11yPrevExercise;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederholungen, Satz {n}'**
+  String workoutA11yRepsField(int n);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Pause um 30 Sekunden verlängern'**
+  String get workoutA11yRestExtend;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Pause: {time} verbleibend'**
+  String workoutA11yRestRemaining(String time);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Pause um 15 Sekunden verkürzen'**
+  String get workoutA11yRestShorten;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Pause überspringen'**
+  String get workoutA11yRestSkip;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Training fortsetzen'**
+  String get workoutA11yResume;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n} abschließen'**
+  String workoutA11ySetComplete(int n);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Satztyp: {type}. Tippen zum Ändern'**
+  String workoutA11ySetType(String type);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n} entsperren'**
+  String workoutA11ySetUnlock(int n);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht in Kilogramm, Satz {n}'**
+  String workoutA11yWeightField(int n);
 
   /// aus workout.banner.active
   ///
@@ -1207,6 +1321,144 @@ abstract class AppL10n {
   /// **'gestern'**
   String get workoutRelativeTimeYesterday;
 
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'+ SATZ HINZUFÜGEN'**
+  String get workoutRunnerAddSet;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Zurück'**
+  String get workoutRunnerBack;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'FORM GUIDE'**
+  String get workoutRunnerFormGuide;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Workout nicht verfügbar'**
+  String get workoutRunnerNotAvailable;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'FERTIG'**
+  String get workoutRunnerNotesDone;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Wie fühlt sich die Session an?'**
+  String get workoutRunnerNotesHint;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SESSION-NOTIZEN'**
+  String get workoutRunnerNotesTitle;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'PAUSE'**
+  String get workoutRunnerRestLabel;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'−15s'**
+  String get workoutRunnerRestMinus;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'+30s'**
+  String get workoutRunnerRestPlus;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SKIP →'**
+  String get workoutRunnerRestSkip;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SESSION LÄUFT · {time}'**
+  String workoutRunnerRunning(String time);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Session gespeichert'**
+  String get workoutRunnerSaved;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'FERTIG'**
+  String get workoutRunnerSavedDone;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern fehlgeschlagen'**
+  String get workoutRunnerSavedFailed;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SESSION'**
+  String get workoutRunnerSessionLabel;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{done} VON {total} SÄTZEN ABGESCHLOSSEN'**
+  String workoutRunnerSetsCompleted(int done, int total);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{sets} Sätze · {time} · {volume} kg Volumen'**
+  String workoutRunnerSummary(int sets, String time, String volume);
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'OK'**
+  String get workoutRunnerTableDone;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'LETZTES MAL'**
+  String get workoutRunnerTableLast;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'WDH'**
+  String get workoutRunnerTableReps;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SATZ'**
+  String get workoutRunnerTableSet;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'KG'**
+  String get workoutRunnerTableWeight;
+
   /// aus workout.screen.addExercise
   ///
   /// In de, this message translates to:
@@ -1591,6 +1843,24 @@ abstract class AppL10n {
   /// **'kg'**
   String get workoutSetLoggerWeightUnit;
 
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Dropsatz'**
+  String get workoutSetTypeDropset;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Satz bis zum Muskelversagen'**
+  String get workoutSetTypeFailure;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Normaler Satz'**
+  String get workoutSetTypeNormal;
+
   /// Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure.
   ///
   /// In de, this message translates to:
@@ -1614,6 +1884,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'W'**
   String get workoutSetTypeShortWarmup;
+
+  /// Runner, Modul 1/2 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Aufwärmsatz'**
+  String get workoutSetTypeWarmup;
 
   /// aus workout.targetHold
   ///

@@ -92,6 +92,10 @@
   "@commonRecovery": {
     "description": "aus common.recovery"
   },
+  "commonRetry": "Try again",
+  "@commonRetry": {
+    "description": "Runner, Modul 2 Spezifikation"
+  },
   "commonSave": "Save",
   "@commonSave": {
     "description": "aus common.save"
@@ -410,6 +414,10 @@
   "@errorsExercisesLoading": {
     "description": "aus errors.exercisesLoading"
   },
+  "errorsLoadFailed": "Loading failed. Please try again.",
+  "@errorsLoadFailed": {
+    "description": "Runner, Modul 2 Spezifikation"
+  },
   "errorsMuscleGroupsRequired": "Please select at least one muscle group!",
   "@errorsMuscleGroupsRequired": {
     "description": "aus errors.muscleGroupsRequired"
@@ -533,6 +541,109 @@
   "navTraining": "Training",
   "@navTraining": {
     "description": "aus nav.training"
+  },
+  "workoutA11yEnd": "End workout",
+  "@workoutA11yEnd": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yFormGuide": "Open form video for {exercise}",
+  "@workoutA11yFormGuide": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutA11yLoading": "Loading workout",
+  "@workoutA11yLoading": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yNextExercise": "Next exercise",
+  "@workoutA11yNextExercise": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yNotes": "Open session notes",
+  "@workoutA11yNotes": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yPause": "Pause training",
+  "@workoutA11yPause": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yPrevExercise": "Previous exercise",
+  "@workoutA11yPrevExercise": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yRepsField": "Repetitions, set {n}",
+  "@workoutA11yRepsField": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutA11yRestExtend": "Extend rest by 30 seconds",
+  "@workoutA11yRestExtend": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yRestRemaining": "Rest: {time} remaining",
+  "@workoutA11yRestRemaining": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutA11yRestShorten": "Shorten rest by 15 seconds",
+  "@workoutA11yRestShorten": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yRestSkip": "Skip rest",
+  "@workoutA11yRestSkip": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11yResume": "Resume training",
+  "@workoutA11yResume": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutA11ySetComplete": "Complete set {n}",
+  "@workoutA11ySetComplete": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutA11ySetType": "Set type: {type}. Tap to change",
+  "@workoutA11ySetType": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutA11ySetUnlock": "Unlock set {n}",
+  "@workoutA11ySetUnlock": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutA11yWeightField": "Weight in kilograms, set {n}",
+  "@workoutA11yWeightField": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "workoutBannerActive": "Active workout: {name}",
   "@workoutBannerActive": {
@@ -812,6 +923,122 @@
   "workoutRelativeTimeYesterday": "yesterday",
   "@workoutRelativeTimeYesterday": {
     "description": "aus workout.relativeTime.yesterday"
+  },
+  "workoutRunnerAddSet": "+ ADD SET",
+  "@workoutRunnerAddSet": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerBack": "Back",
+  "@workoutRunnerBack": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerFormGuide": "FORM GUIDE",
+  "@workoutRunnerFormGuide": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerNotAvailable": "Workout unavailable",
+  "@workoutRunnerNotAvailable": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerNotesDone": "DONE",
+  "@workoutRunnerNotesDone": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerNotesHint": "How does the session feel?",
+  "@workoutRunnerNotesHint": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerNotesTitle": "SESSION NOTES",
+  "@workoutRunnerNotesTitle": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerRestLabel": "REST",
+  "@workoutRunnerRestLabel": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerRestMinus": "−15s",
+  "@workoutRunnerRestMinus": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerRestPlus": "+30s",
+  "@workoutRunnerRestPlus": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerRestSkip": "SKIP →",
+  "@workoutRunnerRestSkip": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerRunning": "SESSION RUNNING · {time}",
+  "@workoutRunnerRunning": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutRunnerSaved": "Session saved",
+  "@workoutRunnerSaved": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerSavedDone": "DONE",
+  "@workoutRunnerSavedDone": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerSavedFailed": "Saving failed",
+  "@workoutRunnerSavedFailed": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerSessionLabel": "SESSION",
+  "@workoutRunnerSessionLabel": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerSetsCompleted": "{done} OF {total} SETS COMPLETED",
+  "@workoutRunnerSetsCompleted": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRunnerSummary": "{sets} sets · {time} · {volume} kg volume",
+  "@workoutRunnerSummary": {
+    "description": "Runner, Modul 1/2 Spezifikation",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      },
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutRunnerTableDone": "OK",
+  "@workoutRunnerTableDone": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerTableLast": "LAST TIME",
+  "@workoutRunnerTableLast": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerTableReps": "REPS",
+  "@workoutRunnerTableReps": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerTableSet": "SET",
+  "@workoutRunnerTableSet": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerTableWeight": "KG",
+  "@workoutRunnerTableWeight": {
+    "description": "Runner, Modul 1/2 Spezifikation"
   },
   "workoutScreenAddExercise": "Add exercise",
   "@workoutScreenAddExercise": {
@@ -1121,6 +1348,18 @@
   "@workoutSetLoggerWeightUnit": {
     "description": "aus workout.setLogger.weightUnit"
   },
+  "workoutSetTypeDropset": "Drop set",
+  "@workoutSetTypeDropset": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutSetTypeFailure": "Set to failure",
+  "@workoutSetTypeFailure": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutSetTypeNormal": "Normal set",
+  "@workoutSetTypeNormal": {
+    "description": "Runner, Modul 1/2 Spezifikation"
+  },
   "workoutSetTypeShortDropset": "D",
   "@workoutSetTypeShortDropset": {
     "description": "Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure."
@@ -1136,6 +1375,10 @@
   "workoutSetTypeShortWarmup": "W",
   "@workoutSetTypeShortWarmup": {
     "description": "Einbuchstabiges Kürzel im Satz-Chip. Sprachabhängig: DE Aufwärmsatz/Normal/Dropsatz/Failure."
+  },
+  "workoutSetTypeWarmup": "Warm-up set",
+  "@workoutSetTypeWarmup": {
+    "description": "Runner, Modul 1/2 Spezifikation"
   },
   "workoutTargetHold": "Goal: hold {seconds}",
   "@workoutTargetHold": {

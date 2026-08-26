@@ -78,6 +78,9 @@ class AppL10nDe extends AppL10n {
   String get commonRecovery => 'Recovery';
 
   @override
+  String get commonRetry => 'Erneut versuchen';
+
+  @override
   String get commonSave => 'Speichern';
 
   @override
@@ -325,6 +328,10 @@ class AppL10nDe extends AppL10n {
       'Übungen werden noch geladen. Bitte versuche es gleich erneut.';
 
   @override
+  String get errorsLoadFailed =>
+      'Laden fehlgeschlagen. Bitte erneut versuchen.';
+
+  @override
   String get errorsMuscleGroupsRequired =>
       'Bitte wähle mindestens eine Muskelgruppe!';
 
@@ -409,6 +416,71 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get navTraining => 'Training';
+
+  @override
+  String get workoutA11yEnd => 'Workout beenden';
+
+  @override
+  String workoutA11yFormGuide(String exercise) {
+    return 'Form-Video zu $exercise öffnen';
+  }
+
+  @override
+  String get workoutA11yLoading => 'Workout wird geladen';
+
+  @override
+  String get workoutA11yNextExercise => 'Nächste Übung';
+
+  @override
+  String get workoutA11yNotes => 'Session-Notizen öffnen';
+
+  @override
+  String get workoutA11yPause => 'Training pausieren';
+
+  @override
+  String get workoutA11yPrevExercise => 'Vorherige Übung';
+
+  @override
+  String workoutA11yRepsField(int n) {
+    return 'Wiederholungen, Satz $n';
+  }
+
+  @override
+  String get workoutA11yRestExtend => 'Pause um 30 Sekunden verlängern';
+
+  @override
+  String workoutA11yRestRemaining(String time) {
+    return 'Pause: $time verbleibend';
+  }
+
+  @override
+  String get workoutA11yRestShorten => 'Pause um 15 Sekunden verkürzen';
+
+  @override
+  String get workoutA11yRestSkip => 'Pause überspringen';
+
+  @override
+  String get workoutA11yResume => 'Training fortsetzen';
+
+  @override
+  String workoutA11ySetComplete(int n) {
+    return 'Satz $n abschließen';
+  }
+
+  @override
+  String workoutA11ySetType(String type) {
+    return 'Satztyp: $type. Tippen zum Ändern';
+  }
+
+  @override
+  String workoutA11ySetUnlock(int n) {
+    return 'Satz $n entsperren';
+  }
+
+  @override
+  String workoutA11yWeightField(int n) {
+    return 'Gewicht in Kilogramm, Satz $n';
+  }
 
   @override
   String workoutBannerActive(String name) {
@@ -613,6 +685,81 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get workoutRelativeTimeYesterday => 'gestern';
+
+  @override
+  String get workoutRunnerAddSet => '+ SATZ HINZUFÜGEN';
+
+  @override
+  String get workoutRunnerBack => 'Zurück';
+
+  @override
+  String get workoutRunnerFormGuide => 'FORM GUIDE';
+
+  @override
+  String get workoutRunnerNotAvailable => 'Workout nicht verfügbar';
+
+  @override
+  String get workoutRunnerNotesDone => 'FERTIG';
+
+  @override
+  String get workoutRunnerNotesHint => 'Wie fühlt sich die Session an?';
+
+  @override
+  String get workoutRunnerNotesTitle => 'SESSION-NOTIZEN';
+
+  @override
+  String get workoutRunnerRestLabel => 'PAUSE';
+
+  @override
+  String get workoutRunnerRestMinus => '−15s';
+
+  @override
+  String get workoutRunnerRestPlus => '+30s';
+
+  @override
+  String get workoutRunnerRestSkip => 'SKIP →';
+
+  @override
+  String workoutRunnerRunning(String time) {
+    return 'SESSION LÄUFT · $time';
+  }
+
+  @override
+  String get workoutRunnerSaved => 'Session gespeichert';
+
+  @override
+  String get workoutRunnerSavedDone => 'FERTIG';
+
+  @override
+  String get workoutRunnerSavedFailed => 'Speichern fehlgeschlagen';
+
+  @override
+  String get workoutRunnerSessionLabel => 'SESSION';
+
+  @override
+  String workoutRunnerSetsCompleted(int done, int total) {
+    return '$done VON $total SÄTZEN ABGESCHLOSSEN';
+  }
+
+  @override
+  String workoutRunnerSummary(int sets, String time, String volume) {
+    return '$sets Sätze · $time · $volume kg Volumen';
+  }
+
+  @override
+  String get workoutRunnerTableDone => 'OK';
+
+  @override
+  String get workoutRunnerTableLast => 'LETZTES MAL';
+
+  @override
+  String get workoutRunnerTableReps => 'WDH';
+
+  @override
+  String get workoutRunnerTableSet => 'SATZ';
+
+  @override
+  String get workoutRunnerTableWeight => 'KG';
 
   @override
   String get workoutScreenAddExercise => 'Übung hinzufügen';
@@ -830,6 +977,15 @@ class AppL10nDe extends AppL10n {
   String get workoutSetLoggerWeightUnit => 'kg';
 
   @override
+  String get workoutSetTypeDropset => 'Dropsatz';
+
+  @override
+  String get workoutSetTypeFailure => 'Satz bis zum Muskelversagen';
+
+  @override
+  String get workoutSetTypeNormal => 'Normaler Satz';
+
+  @override
   String get workoutSetTypeShortDropset => 'D';
 
   @override
@@ -840,6 +996,9 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get workoutSetTypeShortWarmup => 'W';
+
+  @override
+  String get workoutSetTypeWarmup => 'Aufwärmsatz';
 
   @override
   String workoutTargetHold(int seconds) {

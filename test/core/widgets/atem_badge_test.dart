@@ -103,6 +103,18 @@ void main() {
       expect(tester.getSize(find.byType(AtemBadge)).height, greaterThan(24.0));
     });
 
+    testWidgets('violetter Akzent färbt den Text NICHT violett',
+        (tester) async {
+      // Violett erreicht auf keiner Fläche AA. Als Rand zulässig, als Text nie.
+      await _pump(
+        tester,
+        const AtemBadge(label: 'QUADS', accent: AtemColors.violet),
+      );
+      final text = tester.widget<Text>(find.text('QUADS'));
+      expect(text.style?.color, isNot(AtemColors.violet));
+      expect(text.style?.color, isNot(AtemColors.violetLight));
+    });
+
     testWidgets('Zähler ist die einzige volle Pille', (tester) async {
       final handle = tester.ensureSemantics();
       await _pump(

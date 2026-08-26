@@ -22,6 +22,14 @@ extension SetTypeUi on SetType {
   Color get labelColor =>
       this == SetType.dropset ? AtemColors.violetLight : color;
 
+  /// Ausgeschrieben — das Kürzel allein sagt einem Screenreader nichts.
+  String longLabel(AppL10n l) => switch (this) {
+        SetType.warmup => l.workoutSetTypeWarmup,
+        SetType.normal => l.workoutSetTypeNormal,
+        SetType.dropset => l.workoutSetTypeDropset,
+        SetType.failure => l.workoutSetTypeFailure,
+      };
+
   String shortLabel(AppL10n l) => switch (this) {
         SetType.warmup => l.workoutSetTypeShortWarmup,
         SetType.normal => l.workoutSetTypeShortNormal,

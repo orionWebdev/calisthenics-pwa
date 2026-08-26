@@ -71,6 +71,7 @@ Future<List<A11yFinding>> collectA11yFindings(
           overrides: fixtureOverrides,
           child: MaterialApp(
             theme: AtemTheme.dark,
+            locale: const Locale('de'),
             localizationsDelegates: AppL10n.localizationsDelegates,
             supportedLocales: AppL10n.supportedLocales,
             home: home,
