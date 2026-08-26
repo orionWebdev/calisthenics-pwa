@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../theme/app_theme.dart';
+import '../../../core/theme/theme.dart';
 
 /// Satz-Typ. Tap auf den Chip zykliert W → N → D → F.
 enum SetType {

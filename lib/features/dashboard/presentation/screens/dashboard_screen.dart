@@ -4,7 +4,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../theme/app_theme.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../workout/application/workout_providers.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import '../../application/dashboard_providers.dart';
@@ -41,21 +42,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   @override
   void initState() {
     super.initState();
-    _scoreCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1400));
+    _scoreCtrl =
+        AnimationController(vsync: this, duration: AtemMotion.countUp);
     _scoreAnim = const AlwaysStoppedAnimation(0);
     _flickerCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 2600))
-      ..repeat();
-    _liveCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1800))
-      ..repeat(reverse: true);
-    _pulseCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 2200))
-      ..repeat(reverse: true);
-    _sessionDotCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1200))
-      ..repeat(reverse: true);
+        vsync: this, duration: AtemMotion.brandDotFlicker);
+    _liveCtrl =
+        AnimationController(vsync: this, duration: AtemMotion.livePulse);
+    _pulseCtrl =
+        AnimationController(vsync: this, duration: AtemMotion.buttonGlowPulse);
+    _sessionDotCtrl =
+        AnimationController(vsync: this, duration: AtemMotion.sessionDotPulse);
+    // Die Schleifen werden nicht hier gestartet, sondern in
+    // didChangeDependencies — dort ist die MediaQuery verfügbar.
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Vertrag 01-accessibility R8: dekorative Dauerschleifen respektieren
+    // „Animationen reduzieren". Ohne das terminiert pumpAndSettle() nie.
+    AtemMotion.syncLoop(context, _flickerCtrl);
+    AtemMotion.syncLoop(context, _liveCtrl, reverse: true);
+    AtemMotion.syncLoop(context, _pulseCtrl, reverse: true);
+    AtemMotion.syncLoop(context, _sessionDotCtrl, reverse: true);
   }
 
   @override
@@ -71,9 +81,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   void _animateScoreTo(double target) {
     if ((target - _lastScore).abs() < 0.01 && _scoreCtrl.isCompleted) return;
     _scoreAnim = Tween<double>(begin: 0, end: target).animate(
-      CurvedAnimation(parent: _scoreCtrl, curve: Curves.easeOutCubic),
+      CurvedAnimation(parent: _scoreCtrl, curve: AtemMotion.curve),
     );
     _lastScore = target;
+    _scoreCtrl.duration = AtemMotion.duration(context, AtemMotion.countUp);
     _scoreCtrl.forward(from: 0);
   }
 

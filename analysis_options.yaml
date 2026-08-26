@@ -9,6 +9,11 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+# Analyzer-Plugins. Läuft über analysis_server_plugin (Dart 3.13+),
+# NICHT über custom_lint — siehe docs/contracts/03-architecture.md.
+plugins:
+  riverpod_lint: ^3.1.8
+
 analyzer:
   exclude:
     - build/**

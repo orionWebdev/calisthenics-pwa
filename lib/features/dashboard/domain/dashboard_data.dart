@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../theme/app_theme.dart';
+import '../../../core/theme/theme.dart';
 
 /// Readiness-Stufen. Schwellen 1:1 aus der Design-Referenz
 /// (ATEM Dashboard.dc.html, `renderVals()`).

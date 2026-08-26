@@ -140,6 +140,21 @@ plugins:
 Regeln mit Altlast starten auf `false` und werden je Stufe auf `true` geflippt. Der `git diff`
 dieses Blocks ist damit der maschinenlesbare Nachweis jeder Fertig-Definition.
 
+### `dart analyze`, nicht `flutter analyze`
+
+**Verifiziert am 26.08.2026:** `flutter analyze` führt Analyzer-Plugins **nicht** aus.
+`dart analyze` tut es. Ein absichtlich eingebauter Verstoß gegen
+`avoid_public_notifier_properties` wurde von `dart analyze` gemeldet und von
+`flutter analyze` stillschweigend übersehen.
+
+Für die CI und jede lokale Prüfung gilt deshalb `dart analyze`. `flutter analyze` bleibt
+nützlich für flutter-spezifische Meldungen, ist aber **kein** vollständiges Tor.
+
+Nebenbefund: Etwa die Hälfte der `riverpod_lint`-Regeln ist als „riverpod_generator only"
+markiert und greift ohne Codegen nicht. Wirksam bleiben unter anderem
+`avoid_public_notifier_properties`, `missing_provider_scope`,
+`avoid_ref_inside_state_dispose`, `provider_parameters` und `async_value_nullable_pattern`.
+
 **Risiko:** `analysis_server_plugin` steht bei 0.3.x, die offizielle Dokumentation zeigt noch
 `^0.2.2`. **Zeitbox: ein Tag.** Fällt es durch, greift ein rund 60-zeiliges
 `dart run tool/check_conventions.dart` mit Regex über `lib/`, in die CI verdrahtet. Es fängt
@@ -151,7 +166,8 @@ nicht vertretbar.
 Billige Tore zuerst:
 
 1. `dart format --output=none --set-exit-if-changed .`
-2. `flutter analyze --fatal-infos --fatal-warnings`
+2. `dart analyze --fatal-infos --fatal-warnings` — **`dart`, nicht `flutter`**, sonst laufen
+   die Plugins nicht (siehe oben)
 3. `flutter gen-l10n && git diff --exit-code lib/l10n/gen`
 4. `l10n/untranslated.json` muss leer sein
 5. `flutter test`

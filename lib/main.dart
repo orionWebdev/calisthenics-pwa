@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/theme/theme.dart';
 import 'features/dashboard/application/dashboard_providers.dart';
 import 'features/dashboard/data/preview_dashboard_repository.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/workout/application/workout_providers.dart';
 import 'features/workout/data/preview_workout_repository.dart';
 import 'features/workout/presentation/screens/workout_runner_screen.dart';
-import 'theme/app_theme.dart';
 
 void main() {
   runApp(
