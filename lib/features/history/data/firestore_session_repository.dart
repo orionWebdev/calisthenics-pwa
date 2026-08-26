@@ -69,9 +69,12 @@ class FirestoreSessionRepository implements SessionRepository {
 
     final report = SessionReadReport(read: sessions.length, skipped: skipped);
     _lastReport = report;
-    // Eine Zeile je Momentaufnahme. Bei einer Collection, die als Ganzes
-    // gelesen wird, ist das die einzige Stelle, an der sich ohne Debugger
-    // erkennen lässt, ob die Regeln greifen und wie viel tatsächlich ankommt.
+    // Eine Zeile je Momentaufnahme: die einzige Stelle, an der sich erkennen
+    // lässt, ob die Regeln greifen und wie viel ankommt.
+    //
+    // Sichtbar in DevTools und unter `flutter run`, **nicht im Logcat** —
+    // `developer.log` schreibt in den Dart-VM-Dienst, nicht in das
+    // Android-Protokoll. Wer über `adb logcat` mitliest, sieht hier nichts.
     developer.log('sessions gelesen — $report', name: 'atem.history');
     return sessions;
   }

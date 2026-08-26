@@ -199,3 +199,23 @@ liegen.
 
 Die 26 Sessions von `demo-user-123` sind seit dem Zusperren unzugänglich. Das ist richtig
 so — es sind keine echten Daten.
+
+---
+
+## Der Lesepfad ist am echten Bestand geprüft
+
+27.08.2026, Honor VKJ-NX9, Debug-Build `com.atemhybrid.app`:
+
+```
+PROBE 46 Einheiten
+```
+
+46 ist die Anzahl der Sessions von `mueller.webdev@gmail.com` — genau die des
+angemeldeten Kontos, nicht die Gesamtzahl 136. Damit ist der Weg vollständig belegt:
+Google-Anmeldung, Firebase Auth, Allowlist-Prüfung, Eigentümerfilter der Regeln, Abfrage,
+Mapper, Domänenobjekte. Kein übersprungenes Dokument.
+
+**Nebenbefund, der Zeit gekostet hat:** `developer.log` aus `dart:developer` schreibt in den
+Dart-VM-Dienst und erscheint in DevTools und unter `flutter run` — **nicht im Logcat**. Wer
+mit `adb logcat` mitliest, sieht nichts, obwohl die App protokolliert. Für die Diagnose vom
+Gerät ist `debugPrint` das richtige Mittel.
