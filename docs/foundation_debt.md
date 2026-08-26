@@ -1,17 +1,49 @@
 # Schuldenverzeichnis des Fundaments
 
 **Erhoben:** 26.08.2026, Commit `986767f`
+**Getilgt:** 26.08.2026, Ende Stufe 5
 **Zweck:** Der Nachweis, dass die Prüfungen aus Stufe 2 greifen — und die
-Messlatte, an der Stufe 5 überprüft wird.
+Messlatte, an der Stufe 5 überprüft wurde.
 
-Jede Zahl hier muss am Ende von Stufe 5 **null** sein.
+Jede Zahl hier musste am Ende von Stufe 5 **null** sein. Sie ist es.
+
+---
+
+## Stand nach Stufe 5
+
+| Messung | Erhebung | Heute |
+|---|---|---|
+| Dashboard — Layout / Tap-Ziel / Label | –, 5, 0 | **0 / 0 / 0** |
+| Workout Runner — Layout / Tap-Ziel / Label | –, 19, 14 | **0 / 0 / 0** |
+| `fontSize` < 12 | 41 | **0** |
+| Rohe `GestureDetector` / `InkWell` | 5 | **0** |
+| `FittedBox` um Text | 1 | **0** |
+| Textliterale in `Text(...)` | 17 | **0** |
+| `package:flutter/*` in `domain/` | 2 | **0** |
+
+Alle fünf Konventionsregeln in `tool/check_conventions.dart` stehen seit Stufe 5 auf
+`active: true`, und `flutter test` schließt das A11y-Tor ohne Ausschluss ein.
+
+### Was die Erhebung selbst falsch gemessen hat
+
+Der Schuldenbericht lief ursprünglich gegen **eine einzige Zelle** von 390x1400 dp bei
+Skalierung 1,0 — einen Bildschirm, der höher ist als jedes reale Gerät. Dort läuft nichts
+über, und nichts wird an einem `ClipRRect` beschnitten. Er meldete deshalb für das neu
+gebaute Dashboard `tap-target: 0`, während das Tor über dieselben Screens vier Verstöße
+fand: zwei Überläufe und zwei Tap-Ziele von 31 bzw. 34 dp.
+
+Die beiden zu kleinen Ziele waren gar keine zu kleinen Ziele. Die Navigationszeile lief
+über, und ein Überlauf beschneidet die Semantics-Rechtecke am `ClipRRect` der Leiste — der
+Layoutfehler erschien als Größenfehler. Ein Messgerät, das lockerer misst als die Prüfung,
+ist schlimmer als keines: Es meldet Entwarnung. Bericht und Tor teilen sich jetzt
+`collectA11yFindings` als einzige Quelle und laufen über dieselbe 3x3-Matrix.
 
 ---
 
 ## Barrierefreiheit — gemessen am gerenderten Semantics-Baum
 
-Erhoben mit `test/a11y/debt_report_test.dart` bei 390 dp Breite, Skalierung 1.0.
-Gezählt wird der **sichtbare Ausschnitt** — gescrollter Inhalt kommt hinzu.
+Erhoben mit `test/a11y/debt_report_test.dart`. Die Zahlen unten stammen aus der
+ursprünglichen Einzelzelle bei 390 dp — siehe „Was die Erhebung selbst falsch gemessen hat".
 
 | Screen | Tap-Ziel < 48 dp | Ohne Label |
 |---|---|---|
@@ -106,4 +138,8 @@ Aus dem Audit, noch nicht als Testbefund reproduziert:
   liegt die Leiste unter der Systemleiste. Im Test nicht sichtbar, weil dort kein
   Systeminset existiert.
 
-Beide brauchen einen gezielten Test, keinen allgemeinen.
+Beide sind in Stufe 5 behoben: Der Chart-Painter rechnet in Bruchteilen der übergebenen
+`Size`, und die Navigation addiert `MediaQuery.viewPaddingOf(context).bottom`. Beide bleiben
+hier stehen, weil sie zeigen, was die Matrix **nicht** fängt: ein Painter, der ins Leere
+malt, und ein Inset, das im Test nicht existiert. Dafür braucht es weiterhin den Blick auf
+das Gerät.

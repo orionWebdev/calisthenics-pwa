@@ -75,6 +75,9 @@ class AppL10nEn extends AppL10n {
   String get commonPace => 'Pace';
 
   @override
+  String get commonPercentSign => '%';
+
+  @override
   String get commonRecovery => 'Recovery';
 
   @override
@@ -153,6 +156,27 @@ class AppL10nEn extends AppL10n {
   String get dashboardAllSessionsYesterday => 'Yesterday';
 
   @override
+  String dashboardAvatarA11y(String name) {
+    return 'Profile of $name';
+  }
+
+  @override
+  String dashboardBlocks(int n) {
+    return '$n blocks';
+  }
+
+  @override
+  String get dashboardBrand => 'ATEM HYBRID';
+
+  @override
+  String get dashboardBrandA11y => 'System active';
+
+  @override
+  String dashboardBreathwork(int n) {
+    return '$n min breathwork';
+  }
+
+  @override
   String get dashboardCalendarAddTraining => 'Add workout';
 
   @override
@@ -166,6 +190,38 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get dashboardCalendarTabPlan => 'Plan';
+
+  @override
+  String get dashboardChartA11y =>
+      'Weekly trend: load, strain, recovery, Monday to Sunday';
+
+  @override
+  String get dashboardChartSection => 'PERFORMANCE · 7 DAYS';
+
+  @override
+  String dashboardChartToday(String day, int load) {
+    return '$day · LOAD $load';
+  }
+
+  @override
+  String dashboardDurationMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String dashboardGreetingDay(String name) {
+    return 'Hello, $name';
+  }
+
+  @override
+  String dashboardGreetingEvening(String name) {
+    return 'Good evening, $name';
+  }
+
+  @override
+  String dashboardGreetingMorning(String name) {
+    return 'Good morning, $name';
+  }
 
   @override
   String dashboardHybridBalanceAria(String strength, String cardio) {
@@ -183,6 +239,17 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get dashboardHybridBalanceTitle => 'Hybrid Balance';
+
+  @override
+  String get dashboardLive => 'LIVE';
+
+  @override
+  String dashboardLiveHrv(int hrv, int n) {
+    return 'Live HRV $hrv ms · $n min breathwork';
+  }
+
+  @override
+  String get dashboardLoadingA11y => 'Loading dashboard';
 
   @override
   String get dashboardLogWorkoutLog => 'Log workout';
@@ -209,6 +276,44 @@ class AppL10nEn extends AppL10n {
   String get dashboardLogWorkoutTitle => 'Log workout';
 
   @override
+  String dashboardNavA11y(String name, int n, int total) {
+    return '$name, tab $n of $total';
+  }
+
+  @override
+  String get dashboardNavAnalytics => 'ANALYSIS';
+
+  @override
+  String get dashboardNavHome => 'HOME';
+
+  @override
+  String get dashboardNavProfile => 'PROFILE';
+
+  @override
+  String get dashboardNavRecovery => 'RECOVERY';
+
+  @override
+  String get dashboardNavWorkouts => 'WORKOUTS';
+
+  @override
+  String get dashboardNotAvailable => 'Data unavailable';
+
+  @override
+  String dashboardNotificationsA11y(int n) {
+    return '$n unread notifications';
+  }
+
+  @override
+  String dashboardPhaseA11y(int week, int total, String phase) {
+    return 'Week $week of $total, $phase phase';
+  }
+
+  @override
+  String dashboardPhaseWeek(int week, int total, String phase) {
+    return 'Week $week of $total · $phase';
+  }
+
+  @override
   String get dashboardPlanCalendarTitle => 'Plan calendar';
 
   @override
@@ -232,6 +337,35 @@ class AppL10nEn extends AppL10n {
   String get dashboardPrimaryTitle => 'Workout';
 
   @override
+  String dashboardProteinA11y(int value, int goal) {
+    return 'Nutrition, protein $value of $goal grams';
+  }
+
+  @override
+  String dashboardProteinGoal(int goal) {
+    return ' / ${goal}g goal';
+  }
+
+  @override
+  String dashboardProteinOf(int value) {
+    return 'Protein ${value}g';
+  }
+
+  @override
+  String get dashboardQuickNutrition => 'Nutrition & fuel';
+
+  @override
+  String get dashboardQuickPeriod => 'Periodisation';
+
+  @override
+  String get dashboardQuickRecovery => 'Recovery scan';
+
+  @override
+  String dashboardQuickSets(String headline, int sets) {
+    return '$headline · $sets sets';
+  }
+
+  @override
   String get dashboardQuickStatsMovementMinutes => 'Movement min.';
 
   @override
@@ -239,6 +373,14 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get dashboardQuickStatsThisWeek => 'This week';
+
+  @override
+  String get dashboardQuickWorkout => 'Workout log';
+
+  @override
+  String dashboardReadinessA11y(int percent, String status) {
+    return 'Readiness $percent percent, $status';
+  }
 
   @override
   String get dashboardReadinessLevelModerate => 'MODERATE LOAD';
@@ -251,6 +393,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get dashboardReadinessLevelSolid => 'SOLID FORM';
+
+  @override
+  String get dashboardReadinessSection => 'ATEM READINESS';
 
   @override
   String get dashboardReadinessTagModerate =>
@@ -285,6 +430,41 @@ class AppL10nEn extends AppL10n {
   String get dashboardScheduledTitle => 'Planned for today';
 
   @override
+  String get dashboardSeriesLoad => 'LOAD';
+
+  @override
+  String get dashboardSeriesRecovery => 'RECOVERY';
+
+  @override
+  String get dashboardSeriesStrain => 'STRAIN';
+
+  @override
+  String get dashboardSessionNone => 'Nothing planned for today';
+
+  @override
+  String get dashboardSessionNoneHint =>
+      'Schedule a session or log a free workout.';
+
+  @override
+  String dashboardSessionRunning(String time) {
+    return 'SESSION RUNNING · $time';
+  }
+
+  @override
+  String dashboardSessionRunningA11y(String time) {
+    return 'Session running, $time, tap to stop';
+  }
+
+  @override
+  String get dashboardSessionSection => 'TODAY\'S SESSION';
+
+  @override
+  String get dashboardSessionStart => 'START SESSION';
+
+  @override
+  String get dashboardSessionStartA11y => 'Start session';
+
+  @override
   String get dashboardStartWorkoutNewWorkout => 'New workout';
 
   @override
@@ -297,6 +477,18 @@ class AppL10nEn extends AppL10n {
   @override
   String get dashboardStartWorkoutSelectPlanDesc =>
       'Start a training from your plans';
+
+  @override
+  String get dashboardStatHrv => 'HRV';
+
+  @override
+  String get dashboardStatRhr => 'RESTING HR';
+
+  @override
+  String get dashboardStatSleep => 'SLEEP';
+
+  @override
+  String get dashboardSubtitle => 'Optimal system level reached';
 
   @override
   String get dashboardToday => 'Today';
@@ -312,6 +504,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get dashboardTrainingTypesStrength => 'Strength training';
+
+  @override
+  String get dashboardWeekdays => 'MO,TU,WE,TH,FR,SA,SU';
 
   @override
   String get errorsDeleteFailed => 'Error deleting';

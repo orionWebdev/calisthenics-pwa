@@ -170,16 +170,16 @@ Billige Tore zuerst:
    die Plugins nicht (siehe oben)
 3. `flutter gen-l10n && git diff --exit-code lib/l10n/gen`
 4. `l10n/untranslated.json` muss leer sein
-5. `flutter test --exclude-tags a11y` — muss grün sein
-6. `flutter test --tags a11y` — das Tor. **Bis Stufe 5 erwartet rot**, danach
-   blockierend. Der Ausschluss oben verschwindet dann.
-7. `flutter test --tags golden`
+5. `flutter test` — **inklusive A11y-Tor**, muss grün sein
+6. `flutter test --tags golden`
+7. `dart run tool/check_conventions.dart` — alle Konventionsregeln, seit Stufe 5 scharf
+8. `flutter build appbundle --release` (nur auf Tags)
 
-**`flutter test` liest `exclude-tags` aus `dart_test.yaml` nicht** (verifiziert 26.08.2026).
-Der Ausschluss muss als Flag übergeben werden, sonst läuft das Tor still mit und färbt die
-CI rot.
-8. `dart run tool/check_conventions.dart` — die gestaffelten Konventionsregeln
-9. `flutter build appbundle --release` (nur auf Tags)
+Bis Stufe 5 lief das A11y-Tor unter `--exclude-tags a11y` neben der CI her, weil es
+absichtlich rot war. Seit dem Neubau beider Screens ist es grün und läuft im Standardlauf
+mit; der Ausschluss ist entfallen. Falls er je wieder gebraucht wird: **`flutter test` liest
+`exclude-tags` aus `dart_test.yaml` nicht** (verifiziert 26.08.2026), das Flag muss auf der
+Kommandozeile stehen.
 
 ## Goldens
 

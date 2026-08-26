@@ -25,6 +25,7 @@ class Rule {
     required this.match,
     this.skipPath,
     this.wholeFile = false,
+    this.confirm,
   });
 
   final String id;
@@ -44,6 +45,10 @@ class Rule {
 
   /// Über die ganze Datei prüfen statt zeilenweise.
   final bool wholeFile;
+
+  /// Zweite Instanz nach dem Treffer. Manche Muster sind mit einem Regex
+  /// allein nicht sauber zu fassen — dann entscheidet hier Code.
+  final bool Function(String line)? confirm;
 }
 
 final rules = <Rule>[
@@ -52,10 +57,10 @@ final rules = <Rule>[
     contract: '01-accessibility R1',
     description:
         'fontSize unter 12 — informationstragender Text muss lesbar sein',
-    active: false,
+    active: true,
     // Die Typenskala wird im Design-Gespräch 01 festgelegt; scharf,
     // sobald sie in den Primitiven umgesetzt ist.
-    activateAt: 'Stufe 4',
+    activateAt: 'erledigt in Stufe 5',
     // Keine Ausnahme für core/theme: Die Token-Definitionen SIND die Schuld,
     // die in Stufe 3 auf die Dreier-Skala kollabiert.
     match: RegExp(r'fontSize:\s*(?:[0-9]|1[01])(?:\.[0-9]+)?\b'),
@@ -65,10 +70,10 @@ final rules = <Rule>[
     contract: '01-accessibility R3',
     description:
         'Rohes GestureDetector/InkWell — nur AtemTappable macht antippbar',
-    active: false,
+    active: true,
     // AtemTappable existiert seit Stufe 4, aber die Screens nutzen ihn
     // erst nach ihrem Neuaufbau.
-    activateAt: 'Stufe 5',
+    activateAt: 'erledigt in Stufe 5',
     match: RegExp(r'\b(GestureDetector|InkWell)\s*\('),
     skipPath: (p) => p.contains('/core/widgets/'),
   ),
@@ -76,8 +81,8 @@ final rules = <Rule>[
     id: 'no_fitted_box_around_text',
     contract: '01-accessibility R5',
     description: 'FittedBox macht die Schriftskalierung des Nutzers zunichte',
-    active: false,
-    activateAt: 'Stufe 5',
+    active: true,
+    activateAt: 'erledigt in Stufe 5',
     match: RegExp(r'\bFittedBox\s*\('),
   ),
   Rule(
@@ -85,13 +90,18 @@ final rules = <Rule>[
     contract: '02-i18n',
     description:
         'Textliteral im Widget — jeder sichtbare Text kommt aus dem ARB',
-    active: false,
+    active: true,
     // Nicht Stufe 3: Die Literale sitzen in den zwei Screens, die in
     // Stufe 5 ohnehin neu gebaut werden. Sie jetzt zu migrieren wäre
     // Arbeit für den Papierkorb.
-    activateAt: 'Stufe 5',
+    activateAt: 'erledigt in Stufe 5',
     match: RegExp(
         r"""(?:Text\(\s*|TextSpan\(\s*text:\s*|semanticLabel:\s*)'[^']"""),
+    // Ein Literal, das nach Entfernen aller Platzhalter keine zwei
+    // zusammenhängenden Buchstaben mehr enthält, trägt nichts Übersetzbares.
+    // Die Verkettung zweier ARB-Texte ist Komposition, kein Verstoß — und mit
+    // einem Regex allein nicht sauber zu fassen.
+    confirm: _literalHasWords,
   ),
   Rule(
     id: 'no_flutter_in_domain',
@@ -99,12 +109,24 @@ final rules = <Rule>[
     description:
         'package:flutter in domain/ — Präsentation gehört nicht in die Domäne',
     active: true,
-    activateAt: 'Stufe 3 — erledigt',
+    activateAt: 'erledigt in Stufe 5',
     match: RegExp(r"import 'package:flutter/"),
     skipPath: (p) => !p.contains('/domain/'),
     wholeFile: true,
   ),
 ];
+
+/// Enthält das Literal in dieser Zeile echten Text?
+bool _literalHasWords(String line) {
+  for (final m in RegExp(r"'((?:[^'\\\\]|\\\\.)*)'").allMatches(line)) {
+    final withoutPlaceholders = m
+        .group(1)!
+        .replaceAll(RegExp(r'\$\{[^}]*\}'), '')
+        .replaceAll(RegExp(r'\$\w+'), '');
+    if (RegExp('[A-Za-zÄÖÜäöüß]{2}').hasMatch(withoutPlaceholders)) return true;
+  }
+  return false;
+}
 
 class Finding {
   Finding(this.rule, this.path, this.line, this.text);
@@ -143,9 +165,9 @@ void main(List<String> args) {
       }
 
       for (var i = 0; i < lines.length; i++) {
-        if (rule.match.hasMatch(lines[i])) {
-          findings.add(Finding(rule, path, i + 1, lines[i].trim()));
-        }
+        if (!rule.match.hasMatch(lines[i])) continue;
+        if (!(rule.confirm?.call(lines[i]) ?? true)) continue;
+        findings.add(Finding(rule, path, i + 1, lines[i].trim()));
       }
     }
   }

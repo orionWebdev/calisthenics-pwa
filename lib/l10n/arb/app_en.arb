@@ -88,6 +88,10 @@
   "@commonPace": {
     "description": "aus common.pace"
   },
+  "commonPercentSign": "%",
+  "@commonPercentSign": {
+    "description": "Prozentzeichen, allein stehend"
+  },
   "commonRecovery": "Recovery",
   "@commonRecovery": {
     "description": "aus common.recovery"
@@ -193,6 +197,41 @@
   "@dashboardAllSessionsYesterday": {
     "description": "aus dashboard.allSessions.yesterday"
   },
+  "dashboardAvatarA11y": "Profile of {name}",
+  "@dashboardAvatarA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardBlocks": "{n} blocks",
+  "@dashboardBlocks": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardBrand": "ATEM HYBRID",
+  "@dashboardBrand": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardBrandA11y": "System active",
+  "@dashboardBrandA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardBreathwork": "{n} min breathwork",
+  "@dashboardBreathwork": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "dashboardCalendarAddTraining": "Add workout",
   "@dashboardCalendarAddTraining": {
     "description": "aus dashboard.calendar.addTraining"
@@ -212,6 +251,62 @@
   "dashboardCalendarTabPlan": "Plan",
   "@dashboardCalendarTabPlan": {
     "description": "aus dashboard.calendar.tabPlan"
+  },
+  "dashboardChartA11y": "Weekly trend: load, strain, recovery, Monday to Sunday",
+  "@dashboardChartA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardChartSection": "PERFORMANCE · 7 DAYS",
+  "@dashboardChartSection": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardChartToday": "{day} · LOAD {load}",
+  "@dashboardChartToday": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "load": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardDurationMinutes": "{n} min",
+  "@dashboardDurationMinutes": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardGreetingDay": "Hello, {name}",
+  "@dashboardGreetingDay": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardGreetingEvening": "Good evening, {name}",
+  "@dashboardGreetingEvening": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardGreetingMorning": "Good morning, {name}",
+  "@dashboardGreetingMorning": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "dashboardHybridBalanceAria": "Strength {strength} percent, Cardio {cardio} percent",
   "@dashboardHybridBalanceAria": {
@@ -241,6 +336,26 @@
   "dashboardHybridBalanceTitle": "Hybrid Balance",
   "@dashboardHybridBalanceTitle": {
     "description": "aus dashboard.hybridBalance.title"
+  },
+  "dashboardLive": "LIVE",
+  "@dashboardLive": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardLiveHrv": "Live HRV {hrv} ms · {n} min breathwork",
+  "@dashboardLiveHrv": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "hrv": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardLoadingA11y": "Loading dashboard",
+  "@dashboardLoadingA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation"
   },
   "dashboardLogWorkoutLog": "Log workout",
   "@dashboardLogWorkoutLog": {
@@ -274,6 +389,84 @@
   "@dashboardLogWorkoutTitle": {
     "description": "aus dashboard.logWorkout.title"
   },
+  "dashboardNavA11y": "{name}, tab {n} of {total}",
+  "@dashboardNavA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardNavAnalytics": "ANALYSIS",
+  "@dashboardNavAnalytics": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardNavHome": "HOME",
+  "@dashboardNavHome": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardNavProfile": "PROFILE",
+  "@dashboardNavProfile": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardNavRecovery": "RECOVERY",
+  "@dashboardNavRecovery": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardNavWorkouts": "WORKOUTS",
+  "@dashboardNavWorkouts": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardNotAvailable": "Data unavailable",
+  "@dashboardNotAvailable": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardNotificationsA11y": "{n} unread notifications",
+  "@dashboardNotificationsA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardPhaseA11y": "Week {week} of {total}, {phase} phase",
+  "@dashboardPhaseA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "phase": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardPhaseWeek": "Week {week} of {total} · {phase}",
+  "@dashboardPhaseWeek": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "phase": {
+        "type": "String"
+      }
+    }
+  },
   "dashboardPlanCalendarTitle": "Plan calendar",
   "@dashboardPlanCalendarTitle": {
     "description": "aus dashboard.planCalendar.title"
@@ -302,6 +495,60 @@
   "@dashboardPrimaryTitle": {
     "description": "aus dashboard.primary.title"
   },
+  "dashboardProteinA11y": "Nutrition, protein {value} of {goal} grams",
+  "@dashboardProteinA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardProteinGoal": " / {goal}g goal",
+  "@dashboardProteinGoal": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardProteinOf": "Protein {value}g",
+  "@dashboardProteinOf": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardQuickNutrition": "Nutrition & fuel",
+  "@dashboardQuickNutrition": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardQuickPeriod": "Periodisation",
+  "@dashboardQuickPeriod": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardQuickRecovery": "Recovery scan",
+  "@dashboardQuickRecovery": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardQuickSets": "{headline} · {sets} sets",
+  "@dashboardQuickSets": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "headline": {
+        "type": "String"
+      },
+      "sets": {
+        "type": "int"
+      }
+    }
+  },
   "dashboardQuickStatsMovementMinutes": "Movement min.",
   "@dashboardQuickStatsMovementMinutes": {
     "description": "aus dashboard.quickStats.movementMinutes"
@@ -313,6 +560,22 @@
   "dashboardQuickStatsThisWeek": "This week",
   "@dashboardQuickStatsThisWeek": {
     "description": "aus dashboard.quickStats.thisWeek"
+  },
+  "dashboardQuickWorkout": "Workout log",
+  "@dashboardQuickWorkout": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardReadinessA11y": "Readiness {percent} percent, {status}",
+  "@dashboardReadinessA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
   },
   "dashboardReadinessLevelModerate": "MODERATE LOAD",
   "@dashboardReadinessLevelModerate": {
@@ -329,6 +592,10 @@
   "dashboardReadinessLevelSolid": "SOLID FORM",
   "@dashboardReadinessLevelSolid": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessSection": "ATEM READINESS",
+  "@dashboardReadinessSection": {
+    "description": "Dashboard, Modul 1 Spezifikation"
   },
   "dashboardReadinessTagModerate": "Recovery: Moderate • Reduce volume slightly",
   "@dashboardReadinessTagModerate": {
@@ -366,6 +633,56 @@
   "@dashboardScheduledTitle": {
     "description": "aus dashboard.scheduled.title"
   },
+  "dashboardSeriesLoad": "LOAD",
+  "@dashboardSeriesLoad": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSeriesRecovery": "RECOVERY",
+  "@dashboardSeriesRecovery": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSeriesStrain": "STRAIN",
+  "@dashboardSeriesStrain": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSessionNone": "Nothing planned for today",
+  "@dashboardSessionNone": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSessionNoneHint": "Schedule a session or log a free workout.",
+  "@dashboardSessionNoneHint": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSessionRunning": "SESSION RUNNING · {time}",
+  "@dashboardSessionRunning": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardSessionRunningA11y": "Session running, {time}, tap to stop",
+  "@dashboardSessionRunningA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardSessionSection": "TODAY''S SESSION",
+  "@dashboardSessionSection": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSessionStart": "START SESSION",
+  "@dashboardSessionStart": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSessionStartA11y": "Start session",
+  "@dashboardSessionStartA11y": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
   "dashboardStartWorkoutNewWorkout": "New workout",
   "@dashboardStartWorkoutNewWorkout": {
     "description": "aus dashboard.startWorkout.newWorkout"
@@ -381,6 +698,22 @@
   "dashboardStartWorkoutSelectPlanDesc": "Start a training from your plans",
   "@dashboardStartWorkoutSelectPlanDesc": {
     "description": "aus dashboard.startWorkout.selectPlanDesc"
+  },
+  "dashboardStatHrv": "HRV",
+  "@dashboardStatHrv": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardStatRhr": "RESTING HR",
+  "@dashboardStatRhr": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardStatSleep": "SLEEP",
+  "@dashboardStatSleep": {
+    "description": "Dashboard, Modul 1 Spezifikation"
+  },
+  "dashboardSubtitle": "Optimal system level reached",
+  "@dashboardSubtitle": {
+    "description": "Dashboard, Modul 1 Spezifikation"
   },
   "dashboardToday": "Today",
   "@dashboardToday": {
@@ -401,6 +734,10 @@
   "dashboardTrainingTypesStrength": "Strength training",
   "@dashboardTrainingTypesStrength": {
     "description": "aus dashboard.trainingTypes.strength"
+  },
+  "dashboardWeekdays": "MO,TU,WE,TH,FR,SA,SU",
+  "@dashboardWeekdays": {
+    "description": "Dashboard, Modul 1 Spezifikation"
   },
   "errorsDeleteFailed": "Error deleting",
   "@errorsDeleteFailed": {

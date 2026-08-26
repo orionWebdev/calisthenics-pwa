@@ -143,6 +143,10 @@ abstract final class AtemType {
     _poppins(14, FontWeight.w400, color: AtemColors.textSecondary, height: 1.5),
   );
 
+  /// Kartentitel in einer Kachel — etwas kleiner als [titleMedium].
+  static TextStyle titleSmallOrDefault(BuildContext c) =>
+      titleMedium.of(c).copyWith(fontSize: 14);
+
   /// Übersetzung in Flutters Material-Slots — für `ThemeData`.
   ///
   /// Die Laufweite ist hier auf Skalierung 1.0 eingefroren. Wo eine gesperrte

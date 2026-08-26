@@ -229,6 +229,12 @@ abstract class AppL10n {
   /// **'Pace'**
   String get commonPace;
 
+  /// Prozentzeichen, allein stehend
+  ///
+  /// In de, this message translates to:
+  /// **'%'**
+  String get commonPercentSign;
+
   /// aus common.recovery
   ///
   /// In de, this message translates to:
@@ -379,6 +385,36 @@ abstract class AppL10n {
   /// **'Gestern'**
   String get dashboardAllSessionsYesterday;
 
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Profil von {name}'**
+  String dashboardAvatarA11y(String name);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Blocks'**
+  String dashboardBlocks(int n);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM HYBRID'**
+  String get dashboardBrand;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'System aktiv'**
+  String get dashboardBrandA11y;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Min Breathwork'**
+  String dashboardBreathwork(int n);
+
   /// aus dashboard.calendar.addTraining
   ///
   /// In de, this message translates to:
@@ -409,6 +445,48 @@ abstract class AppL10n {
   /// **'Planen'**
   String get dashboardCalendarTabPlan;
 
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenverlauf: Load, Strain, Recovery, Montag bis Sonntag'**
+  String get dashboardChartA11y;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'PERFORMANCE · 7 TAGE'**
+  String get dashboardChartSection;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{day} · LOAD {load}'**
+  String dashboardChartToday(String day, int load);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Min'**
+  String dashboardDurationMinutes(int n);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Guten Tag, {name}'**
+  String dashboardGreetingDay(String name);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Guten Abend, {name}'**
+  String dashboardGreetingEvening(String name);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Guten Morgen, {name}'**
+  String dashboardGreetingMorning(String name);
+
   /// aus dashboard.hybridBalance.aria
   ///
   /// In de, this message translates to:
@@ -432,6 +510,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Hybrid Balance'**
   String get dashboardHybridBalanceTitle;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'LIVE'**
+  String get dashboardLive;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Live HRV {hrv} ms · {n} Min Breathwork'**
+  String dashboardLiveHrv(int hrv, int n);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Dashboard wird geladen'**
+  String get dashboardLoadingA11y;
 
   /// aus dashboard.logWorkout.log
   ///
@@ -481,6 +577,66 @@ abstract class AppL10n {
   /// **'Workout erfassen'**
   String get dashboardLogWorkoutTitle;
 
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, Tab {n} von {total}'**
+  String dashboardNavA11y(String name, int n, int total);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'ANALYSE'**
+  String get dashboardNavAnalytics;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'HOME'**
+  String get dashboardNavHome;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'PROFIL'**
+  String get dashboardNavProfile;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'RECOVERY'**
+  String get dashboardNavRecovery;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'WORKOUTS'**
+  String get dashboardNavWorkouts;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Daten nicht verfügbar'**
+  String get dashboardNotAvailable;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{n} ungelesene Benachrichtigungen'**
+  String dashboardNotificationsA11y(int n);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Woche {week} von {total}, Phase {phase}'**
+  String dashboardPhaseA11y(int week, int total, String phase);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Woche {week} von {total} · {phase}'**
+  String dashboardPhaseWeek(int week, int total, String phase);
+
   /// aus dashboard.planCalendar.title
   ///
   /// In de, this message translates to:
@@ -523,6 +679,48 @@ abstract class AppL10n {
   /// **'Workout'**
   String get dashboardPrimaryTitle;
 
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Ernährung, Protein {value} von {goal} Gramm'**
+  String dashboardProteinA11y(int value, int goal);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **' / {goal}g Ziel'**
+  String dashboardProteinGoal(int goal);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Protein {value}g'**
+  String dashboardProteinOf(int value);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Nutrition & Fuel'**
+  String get dashboardQuickNutrition;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Periodisierung'**
+  String get dashboardQuickPeriod;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Recovery Scan'**
+  String get dashboardQuickRecovery;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'{headline} · {sets} Sets'**
+  String dashboardQuickSets(String headline, int sets);
+
   /// aus dashboard.quickStats.movementMinutes
   ///
   /// In de, this message translates to:
@@ -540,6 +738,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Diese Woche'**
   String get dashboardQuickStatsThisWeek;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Workout Log'**
+  String get dashboardQuickWorkout;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Readiness {percent} Prozent, {status}'**
+  String dashboardReadinessA11y(int percent, String status);
 
   /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
   ///
@@ -564,6 +774,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'SOLIDE FORM'**
   String get dashboardReadinessLevelSolid;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM READINESS'**
+  String get dashboardReadinessSection;
 
   /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
   ///
@@ -619,6 +835,66 @@ abstract class AppL10n {
   /// **'Geplant für heute'**
   String get dashboardScheduledTitle;
 
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'LOAD'**
+  String get dashboardSeriesLoad;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'RECOVERY'**
+  String get dashboardSeriesRecovery;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'STRAIN'**
+  String get dashboardSeriesStrain;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Für heute ist nichts geplant'**
+  String get dashboardSessionNone;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Plane eine Einheit oder logge ein freies Workout.'**
+  String get dashboardSessionNoneHint;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SESSION LÄUFT · {time}'**
+  String dashboardSessionRunning(String time);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Session läuft, {time}, tippen zum Stoppen'**
+  String dashboardSessionRunningA11y(String time);
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'HEUTIGE SESSION'**
+  String get dashboardSessionSection;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SESSION STARTEN'**
+  String get dashboardSessionStart;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Session starten'**
+  String get dashboardSessionStartA11y;
+
   /// aus dashboard.startWorkout.newWorkout
   ///
   /// In de, this message translates to:
@@ -642,6 +918,30 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Starte ein Training aus deinen Plänen'**
   String get dashboardStartWorkoutSelectPlanDesc;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'HRV'**
+  String get dashboardStatHrv;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'RUHE-HF'**
+  String get dashboardStatRhr;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'SCHLAF'**
+  String get dashboardStatSleep;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'Optimales System-Level erreicht'**
+  String get dashboardSubtitle;
 
   /// aus dashboard.today
   ///
@@ -672,6 +972,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Krafttraining'**
   String get dashboardTrainingTypesStrength;
+
+  /// Dashboard, Modul 1 Spezifikation
+  ///
+  /// In de, this message translates to:
+  /// **'MO,DI,MI,DO,FR,SA,SO'**
+  String get dashboardWeekdays;
 
   /// aus errors.deleteFailed
   ///

@@ -253,33 +253,41 @@ class _AtemSkeletonState extends State<AtemSkeleton>
       liveRegion: true,
       label: widget.semanticLabel,
       child: ExcludeSemantics(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (var i = 0; i < widget.blocks.length; i++) ...[
-              if (i > 0) SizedBox(height: widget.spacing),
-              AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  // Versatz je Block, damit die Fläche nicht im Gleichtakt
-                  // atmet — das wirkte wie ein einziger großer Block.
-                  final phase = (_controller.value + i * 0.12) % 1.0;
-                  return Opacity(
-                    opacity: 0.55 + 0.45 * (1 - (phase - 0.5).abs() * 2),
-                    child: child,
-                  );
-                },
-                child: Container(
-                  height: widget.blocks[i].height,
-                  decoration: BoxDecoration(
-                    color: AtemColors.track,
-                    borderRadius:
-                        BorderRadius.circular(widget.blocks[i].radius),
+        // Die Blockhöhen sind fest — auf einem 320x640-Gerät ist der
+        // Platzhalter höher als der Bildschirm. Ein nicht scrollbarer
+        // Scroll-Container gibt ihm unbegrenzte Höhe und schneidet den Rest
+        // ab, statt einen Überlauf zu werfen. Scrollen wäre hier sinnlos:
+        // Es gibt nichts zu lesen.
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < widget.blocks.length; i++) ...[
+                if (i > 0) SizedBox(height: widget.spacing),
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    // Versatz je Block, damit die Fläche nicht im Gleichtakt
+                    // atmet — das wirkte wie ein einziger großer Block.
+                    final phase = (_controller.value + i * 0.12) % 1.0;
+                    return Opacity(
+                      opacity: 0.55 + 0.45 * (1 - (phase - 0.5).abs() * 2),
+                      child: child,
+                    );
+                  },
+                  child: Container(
+                    height: widget.blocks[i].height,
+                    decoration: BoxDecoration(
+                      color: AtemColors.track,
+                      borderRadius:
+                          BorderRadius.circular(widget.blocks[i].radius),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

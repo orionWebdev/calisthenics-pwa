@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import '../theme/atem_colors.dart';
+import '../theme/atem_gradients.dart';
 import '../theme/atem_motion.dart';
 import '../theme/atem_type.dart';
 
@@ -269,6 +270,137 @@ class _RingPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RingPainter old) =>
       old.value != value || old.accent != accent;
+}
+
+/// Der große Bogen — Readiness und andere Leitwerte.
+///
+/// 260°, Lücke unten zentriert. Die Zahl in der Mitte darf bei 1,3× begrenzt
+/// werden, weil Stufenlabel und Empfehlung darunter voll mitskalieren und
+/// Semantics den exakten Wert meldet. **Fällt eine der beiden Redundanzen weg,
+/// muss die Zahl mitwachsen und der Bogen weichen.**
+class AtemArcGauge extends StatelessWidget {
+  const AtemArcGauge({
+    super.key,
+    required this.value,
+    required this.semanticLabel,
+    required this.center,
+    this.gradient = AtemGradients.neonWave,
+    this.size = 224,
+  });
+
+  /// 0..1, oder `null` für unbestimmt.
+  final double? value;
+  final String semanticLabel;
+
+  /// Was in der Mitte steht. Dekorativ — der Wert steckt in [semanticLabel].
+  final Widget center;
+
+  final Gradient gradient;
+  final double size;
+
+  /// Über diesem Faktor wird die Zahl im Bogen nicht weiter vergrößert.
+  static const numberScaleCap = 1.3;
+
+  @override
+  Widget build(BuildContext context) {
+    return _ProgressSemantics(
+      label: semanticLabel,
+      value: value,
+      child: SizedBox(
+        width: size,
+        height: size * 0.857,
+        child: CustomPaint(
+          painter: _ArcPainter(value: value ?? 0, gradient: gradient),
+          child: Center(
+            child: MediaQuery.withClampedTextScaling(
+              // Der Bogen ist Geometrie, kein Text. Die Zahl darin darf
+              // begrenzt werden — die Statuszeile darunter skaliert voll.
+              maxScaleFactor: numberScaleCap,
+              child: ExcludeSemantics(child: center),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ArcPainter extends CustomPainter {
+  _ArcPainter({required this.value, required this.gradient});
+
+  final double value;
+  final Gradient gradient;
+
+  /// 140° Start, 260° Sweep — die Lücke liegt damit mittig unten.
+  static const _start = 140 * math.pi / 180;
+  static const _sweep = 260 * math.pi / 180;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.width <= 0 || size.height <= 0) return;
+
+    // Radius und Strichstärke aus der Fläche ableiten, nicht absolut setzen.
+    final stroke = size.width * 0.058;
+    final radius = size.width / 2 - stroke / 2 - 2;
+    final center = Offset(size.width / 2, size.height / 2 + size.height * 0.03);
+    final rect = Rect.fromCircle(center: center, radius: radius);
+
+    canvas.drawArc(
+      rect,
+      _start,
+      _sweep,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = StrokeCap.round
+        ..color = AtemColors.track,
+    );
+
+    if (value <= 0) return;
+    final complete = AtemProgressRules.isComplete(value);
+    final sweep = _sweep * value.clamp(0.0, 1.0);
+    final shader = gradient.createShader(rect);
+
+    // Genau eine Glow-Kopie, unter dem Wertstrich.
+    canvas.saveLayer(
+      rect.inflate(stroke * 2),
+      Paint()
+        ..color = const Color(0xFFFFFFFF)
+            .withValues(alpha: AtemProgressRules.glowAlpha),
+    );
+    canvas.drawArc(
+      rect,
+      _start,
+      sweep,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = AtemProgressRules.capFor(value)
+        ..shader = complete ? null : shader
+        ..color = complete ? AtemColors.green : const Color(0xFFFFFFFF)
+        ..maskFilter =
+            const MaskFilter.blur(BlurStyle.normal, AtemProgressRules.glowBlur),
+    );
+    canvas.restore();
+
+    canvas.drawArc(
+      rect,
+      _start,
+      sweep,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = AtemProgressRules.capFor(value)
+        ..shader = complete ? null : shader
+        ..color = complete ? AtemColors.green : const Color(0xFFFFFFFF),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ArcPainter old) => old.value != value;
 }
 
 /// Ein grau wanderndes Segment für „Wert wird ermittelt".

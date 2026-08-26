@@ -389,8 +389,14 @@ class _EndStats extends StatelessWidget {
           child: AtemStatBox(
             child: Column(
               children: [
-                FittedBox(
-                  child: Text(value, style: AtemType.valueMedium.of(context)),
+                Text(
+                  value,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  // Kein FittedBox: der machte die Schriftskalierung des
+                  // Nutzers stillschweigend rückgängig.
+                  overflow: TextOverflow.ellipsis,
+                  style: AtemType.valueMedium.of(context),
                 ),
                 const SizedBox(height: 3),
                 Text(label,
