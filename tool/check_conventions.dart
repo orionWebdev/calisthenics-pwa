@@ -66,7 +66,9 @@ final rules = <Rule>[
     description:
         'Rohes GestureDetector/InkWell — nur AtemTappable macht antippbar',
     active: false,
-    activateAt: 'Stufe 4',
+    // AtemTappable existiert seit Stufe 4, aber die Screens nutzen ihn
+    // erst nach ihrem Neuaufbau.
+    activateAt: 'Stufe 5',
     match: RegExp(r'\b(GestureDetector|InkWell)\s*\('),
     skipPath: (p) => p.contains('/core/widgets/'),
   ),
