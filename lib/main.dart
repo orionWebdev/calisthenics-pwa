@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +13,23 @@ import 'features/workout/application/workout_providers.dart';
 import 'features/workout/data/preview_workout_repository.dart';
 import 'features/workout/presentation/screens/workout_runner_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Ohne Optionen: Auf Android liest firebase_core die
+  // android/app/google-services.json, die das Gradle-Plugin einbettet. Eine
+  // generierte firebase_options.dart bringt erst etwas, wenn eine zweite
+  // Plattform dazukommt — bis dahin wäre sie eine zweite Wahrheit.
+  await Firebase.initializeApp();
+
+  // Offline-Persistenz ersetzt die lokale Datenbank, die im Gemini-Entwurf
+  // stand (Vertrag 3, „Getroffene Entscheidungen"). Sie muss vor der ersten
+  // Abfrage gesetzt werden, sonst greift sie nicht.
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
+
   runApp(
     ProviderScope(
       overrides: [

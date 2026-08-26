@@ -1,0 +1,2328 @@
+[
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "notes": "x",
+  "type": "recovery",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "notes": null,
+  "type": "recovery",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "beginner",
+  "discipline": "bodyweight",
+  "duration": 7,
+  "planName": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "intermediate",
+  "discipline": "bodyweight",
+  "duration": 7,
+  "planName": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "activityType": "other",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": null,
+  "duration": 7,
+  "notes": null,
+  "pace": null,
+  "type": "cardio",
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 1.5,
+  "notes": null,
+  "pace": 1.5,
+  "type": "cardio",
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 1.5,
+  "notes": null,
+  "pace": 1.5,
+  "type": "cardio",
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 7,
+  "notes": null,
+  "pace": 1.5,
+  "type": "cardio",
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 7,
+  "notes": null,
+  "pace": 7,
+  "type": "cardio",
+  "userId": "x"
+ },
+ {
+  "activityType": "other",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 7,
+  "notes": "x",
+  "pace": 1.5,
+  "type": "cardio",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {}
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {}
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": []
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": []
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": []
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "scheduleId": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "scheduleId": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {}
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "scheduleId": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": null
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {}
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": []
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "scheduleId": "x",
+  "type": "strength",
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "notes": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "recovery",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "type": "bodyweight",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "stretching",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "recovery",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "sauna",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "name": null,
+  "notes": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "recovery",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "walk",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "name": null,
+  "notes": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "recovery",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "stretching",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "name": null,
+  "notes": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "recovery",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "yoga",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "recovery",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "intermediate",
+  "discipline": "bodyweight",
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [],
+  "notes": "x",
+  "planName": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": []
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "hike",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 7,
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "other",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": null,
+  "duration": 7,
+  "notes": null,
+  "pace": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "beginner",
+  "discipline": "bodyweight",
+  "duration": 7,
+  "exercises": [],
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "intermediate",
+  "discipline": "bodyweight",
+  "duration": 7,
+  "exercises": [],
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "intermediate",
+  "discipline": "bodyweight",
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "intermediate",
+  "discipline": "weights",
+  "duration": 7,
+  "exercises": [],
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "beginner",
+  "discipline": "weights",
+  "duration": 7,
+  "exercises": [],
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "difficulty": "intermediate",
+  "discipline": "weights",
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "holdSec": 7,
+      "type": "hold"
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": null,
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "bodyweight",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     },
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "bodyweight",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "holdSec": 7,
+      "type": "hold"
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "bodyweight",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": null,
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     },
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": null,
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     },
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": null,
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "holdSec": 7,
+      "type": "hold"
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "holdSec": 7,
+      "type": "hold"
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "bodyweight",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "hike",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "bike",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": null,
+  "duration": 7,
+  "name": null,
+  "notes": null,
+  "pace": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 1.5,
+  "name": "x",
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 1.5,
+  "name": null,
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "hike",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "pace": 7,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 7,
+  "name": null,
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "other",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": null,
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "pace": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "bike",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "hike",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 7,
+  "name": null,
+  "notes": null,
+  "pace": 7,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "bike",
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": null,
+  "duration": 7,
+  "name": "x",
+  "notes": null,
+  "pace": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": []
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     },
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     },
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "scheduleId": "x",
+  "type": "bodyweight",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "holdSec": 7,
+      "type": "hold"
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ],
+    "usesBodyweight": true
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "duration": 7,
+  "durationSec": 7,
+  "exercises": [
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 1.5
+     },
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   },
+   {
+    "exerciseId": "x",
+    "sets": [
+     {
+      "reps": 7,
+      "weight": 7
+     }
+    ]
+   }
+  ],
+  "notes": "x",
+  "planId": "x",
+  "planName": "x",
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "scheduleId": "x",
+  "type": "strength",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "bike",
+  "avgHr": 7,
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": null,
+  "duration": 7,
+  "maxHr": 7,
+  "name": "x",
+  "notes": null,
+  "pace": null,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "avgHr": 7,
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 1.5,
+  "duration": 1.5,
+  "maxHr": 7,
+  "name": "x",
+  "notes": null,
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "run",
+  "avgHr": 7,
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 7,
+  "durationSec": 7,
+  "maxHr": null,
+  "name": null,
+  "notes": "x",
+  "pace": 7,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ },
+ {
+  "activityType": "bike",
+  "avgHr": null,
+  "createdAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "date": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "distanceKm": 7,
+  "duration": 7,
+  "durationSec": 7,
+  "maxHr": null,
+  "name": "x",
+  "notes": "x",
+  "pace": 1.5,
+  "postWorkoutFeeling": 7,
+  "preWorkoutEnergy": 7,
+  "rpe": 7,
+  "type": "cardio",
+  "updatedAt": {
+   "__ts__": "2026-01-15T09:00:00Z"
+  },
+  "userId": "x"
+ }
+]
