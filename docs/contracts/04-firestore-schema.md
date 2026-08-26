@@ -32,7 +32,7 @@ Stichtagssicherung vom 26.08.2026: `~/atem-firestore-sicherung-2026-08-26/` — 
 | `exercises_curated` | 84 | Kuratierter Übungskatalog, global |
 | `schedule` | 77 | Geplante Einheiten |
 | `exercises` | 70 | Nutzereigene Übungen |
-| `progress` | 66 | Sätze je Übung und Datum |
+| `progress` | 66 | **Demo-Ausschuss** — siehe unten, wird nicht portiert |
 | `plans` | 10 | Trainingspläne |
 | `userProfiles` | 2 | Profil und Einstellungen |
 | `allowedUsers` | 2 | Zugangsliste für die geschlossene Beta |
@@ -61,8 +61,14 @@ Nur **vier Felder existieren in allen 136 Dokumenten**:
 
 Je nach Art trägt das Dokument völlig verschiedene Felder:
 
-**Kraft und Körpergewicht** — `exercises: array`, Einträge `{exerciseId: string, sets: array}`
-(68 Dokumente), dazu `planId`, `planName`, `rpe`, `preWorkoutEnergy`, `postWorkoutFeeling`.
+**Kraft und Körpergewicht** — `exercises: array`, Einträge `{exerciseId: string, sets: array}`,
+dazu `planId`, `planName`, `rpe`, `preWorkoutEnergy`, `postWorkoutFeeling`.
+
+**Achtung: `exercises` fehlt auch bei Kraft.** Von 63 `strength`-Sessions tragen nur 47
+Übungen, 16 nicht; alle 10 `bodyweight`-Sessions tragen welche. Eine Kraft-Session ohne
+Übungen ist also gültiger Bestand — vermutlich nachträglich ohne Details eingetragen. Das
+Dart-Modell darf daraus keinen Fehlerfall machen, und die Auswertung muss diese Sessions
+mitzählen, aber ohne Satzdaten.
 
 **Cardio** — `activityType` (`run` 37 · `bike` 5 · `hike` 4 · `walk` 2 · `stretching` 5 ·
 `yoga` 1 · `sauna` 1 · `other` 5), dazu `distanceKm`, `pace`, `avgHr`, `maxHr`, `durationSec`.
@@ -102,12 +108,37 @@ nicht unterscheiden.
 Alle 66 Dokumente tragen dieselben fünf Felder: `userId`, `createdAt`, `date`,
 `exerciseId`, `sets: array` mit Einträgen `{reps: integer, weight: integer}`.
 
-### Offene Frage
+### Geklärt: `progress` ist Demo-Ausschuss, keine Trainingsdaten
 
-Sätze stehen an **zwei Stellen**: in `sessions.exercises[].sets` (68 Dokumente) und in
-`progress.sets` (66 Dokumente). Ob das eine Spiegelung, eine Teilmenge oder zwei getrennte
-Wahrheiten sind, ist noch nicht geklärt. **Vor dem ersten Schreibpfad muss feststehen, welche
-Quelle führend ist** — sonst schreibt die App in die eine und die PWA liest aus der anderen.
+Die Frage war, ob `sessions.exercises[].sets` oder `progress.sets` die führende Quelle ist.
+Vier unabhängige Belege sagen dasselbe:
+
+**Null Überschneidung.** 292 Paare aus (Übung, Tag) in `sessions`, 62 in `progress` — die
+Schnittmenge ist leer, in beide Richtungen.
+
+**Zwei getrennte ID-Namensräume.** `sessions` referenziert Übungen als Slug (`push_up`,
+`pull_up`, `archer_push_up`), `progress` über automatisch vergebene Dokument-IDs
+(`CvL4ItSDPRpzErtMme8R`). Die Schnittmenge der 83 beziehungsweise 5 verwendeten IDs ist
+ebenfalls leer.
+
+**Sie folgen zeitlich aufeinander, sie laufen nicht parallel.** `progress` reicht vom
+28.11.2025 bis 22.01.2026. Die erste Session mit `exercises` datiert auf den 02.02.2026. Im
+gesamten `progress`-Zeitraum existiert **keine einzige** Session mit Übungen.
+
+**Und der entscheidende Beleg steht im Code:** Die einzige Stelle in der gesamten PWA, die
+nach `progress` schreibt, ist `js/dev/createDemoProgress.js` — ein Demo-Datengenerator, im
+Kopfkommentar als „Kann später einfach gelöscht werden" bezeichnet. `js/views/settings.js`
+fasst die Collection nur beim Löschen des Kontos an. Kein Produktivpfad schreibt sie, keiner
+liest sie aus.
+
+**Folge:** `sessions.exercises[].sets` ist die einzige Wahrheit. `progress` wird **nicht
+portiert** und nicht gelesen. Die 66 Dokumente bleiben unangetastet im Bestand liegen — sie
+zu löschen ist eine Aufräumentscheidung des Nutzers, keine der Migration.
+
+### `sets` — Feldtypen
+
+Einträge sind `{reps, weight}`. Beide können `null` sein und ganz fehlen, und einzelne
+Einträge sind leere Maps ohne jedes Feld. R1 und R2 gelten hier unverändert.
 
 ---
 
