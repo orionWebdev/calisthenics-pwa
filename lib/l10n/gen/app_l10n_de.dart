@@ -595,6 +595,11 @@ class AppL10nDe extends AppL10n {
   String get dashboardWeekdays => 'MO,DI,MI,DO,FR,SA,SO';
 
   @override
+  String durationApproxMinutes(int n) {
+    return '~$n min';
+  }
+
+  @override
   String get errorsDeleteFailed => 'Fehler beim Löschen';
 
   @override
@@ -638,6 +643,70 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get errorsWorkoutStartFailed => 'Fehler beim Starten des Workouts';
+
+  @override
+  String exerciseCountShort(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Übungen',
+      one: '1 Übung',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exerciseCues => 'Cues';
+
+  @override
+  String exerciseDifficultyA11y(int n) {
+    return 'Schwierigkeit $n von 5';
+  }
+
+  @override
+  String get exerciseInstructions => 'Anleitung';
+
+  @override
+  String get exerciseMistakes => 'Häufige Fehler';
+
+  @override
+  String get exerciseSparseBody => 'Diese Übung hast du selbst angelegt.';
+
+  @override
+  String get exerciseSparseTitle => 'Keine Anleitung hinterlegt';
+
+  @override
+  String exercisesCount(int n, int k, int e) {
+    return '$n Übungen · $k kuratiert · $e eigene';
+  }
+
+  @override
+  String exercisesEmptyBody(String q) {
+    return 'Keine Übung passt zu „$q“ — auch nicht auf Englisch.';
+  }
+
+  @override
+  String get exercisesEmptyTitle => 'Nichts gefunden';
+
+  @override
+  String get exercisesFilterAll => 'Alle';
+
+  @override
+  String get exercisesFilterReset => 'Zurücksetzen';
+
+  @override
+  String exercisesFilterResult(int n, String filter) {
+    return '$n Übungen · $filter';
+  }
+
+  @override
+  String get exercisesOwnTag => 'Eigen';
+
+  @override
+  String get exercisesSearchHint => 'Übung suchen …';
+
+  @override
+  String get exercisesTitle => 'Übungen';
 
   @override
   String formatDistanceKm(num distance) {
@@ -714,6 +783,48 @@ class AppL10nDe extends AppL10n {
   String get gateTitle => 'Du stehst auf der Liste';
 
   @override
+  String get listErrorBody => 'Deine Workouts konnten nicht geladen werden.';
+
+  @override
+  String get listErrorTitle => 'Laden fehlgeschlagen';
+
+  @override
+  String get muscleArms => 'Arme';
+
+  @override
+  String get muscleBack => 'Rücken';
+
+  @override
+  String get muscleBiceps => 'Bizeps';
+
+  @override
+  String get muscleCalves => 'Waden';
+
+  @override
+  String get muscleChest => 'Brust';
+
+  @override
+  String get muscleCore => 'Core';
+
+  @override
+  String get muscleGlutes => 'Gesäß';
+
+  @override
+  String get muscleHamstrings => 'Beinbeuger';
+
+  @override
+  String get muscleLegs => 'Beine';
+
+  @override
+  String get muscleQuads => 'Quadrizeps';
+
+  @override
+  String get muscleShoulders => 'Schultern';
+
+  @override
+  String get muscleTriceps => 'Trizeps';
+
+  @override
   String get navCalendar => 'Kalender';
 
   @override
@@ -730,6 +841,12 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get navProgress => 'Fortschritt';
+
+  @override
+  String get navSoonBody => 'Dieser Bereich ist noch nicht gebaut.';
+
+  @override
+  String get navSoonTitle => 'Kommt noch';
 
   @override
   String get navTraining => 'Training';
@@ -785,7 +902,82 @@ class AppL10nDe extends AppL10n {
       'ATEM rechnet jede Übung in Trainingslast um — auch die ohne Gewichte. Dafür braucht es genau eine Zahl.';
 
   @override
+  String planCount(int n) {
+    return '$n Pläne';
+  }
+
+  @override
+  String get planItemMissing => 'Nicht mehr vorhanden';
+
+  @override
+  String planMeta(int n, String type) {
+    return '$n Übungen · $type';
+  }
+
+  @override
+  String get planMissingBody =>
+      'Sie wurden gelöscht. Der Plan startet ohne sie.';
+
+  @override
+  String planMissingTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Übungen fehlen',
+      one: 'Eine Übung fehlt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get regionArms => 'Arme';
+
+  @override
+  String get regionBack => 'Rücken';
+
+  @override
+  String get regionChest => 'Brust';
+
+  @override
+  String get regionCore => 'Core';
+
+  @override
+  String get regionLegs => 'Beine';
+
+  @override
+  String get regionShoulders => 'Schultern';
+
+  @override
+  String restSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sheetFreeBody =>
+      'Ohne Plan starten — Übungen fügst du im Training hinzu.';
+
+  @override
+  String get sheetRestLabel => 'Standard-Pause';
+
+  @override
+  String get sheetStart => 'Starten';
+
+  @override
+  String sheetStartTitle(String plan) {
+    return '$plan starten?';
+  }
+
+  @override
   String get splashStarting => 'ATEM startet …';
+
+  @override
+  String get typeBodyweight => 'Körpergewicht';
+
+  @override
+  String get typeHybrid => 'Hybrid';
+
+  @override
+  String get typeStrength => 'Kraft';
 
   @override
   String get workoutA11yEnd => 'Workout beenden';
@@ -1374,4 +1566,41 @@ class AppL10nDe extends AppL10n {
   String workoutTargetHold(int seconds) {
     return 'Ziel: $seconds halten';
   }
+
+  @override
+  String get workoutsFree => 'Freies Training';
+
+  @override
+  String get workoutsFreeStart => 'Freies Training starten';
+
+  @override
+  String get workoutsPlanPick => 'Plan wählen';
+
+  @override
+  String workoutsPlansAll(int n) {
+    return 'Alle $n';
+  }
+
+  @override
+  String get workoutsPlansLabel => 'Pläne';
+
+  @override
+  String workoutsSearchEntry(int n) {
+    return '$n Übungen durchsuchen';
+  }
+
+  @override
+  String get workoutsStart => 'Training starten';
+
+  @override
+  String get workoutsTitle => 'Workouts';
+
+  @override
+  String get workoutsTodayEmptyBody => 'Starte frei oder wähle einen Plan.';
+
+  @override
+  String get workoutsTodayEmptyTitle => 'Kein Training geplant';
+
+  @override
+  String get workoutsTodayLabel => 'Heute';
 }

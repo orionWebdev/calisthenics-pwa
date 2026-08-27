@@ -9,7 +9,6 @@ import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import '../../application/dashboard_providers.dart';
 import '../../domain/dashboard_data.dart';
 import '../widgets/cyber_header.dart';
-import '../widgets/floating_nav.dart';
 import '../widgets/quick_actions.dart';
 import '../widgets/readiness_hero.dart';
 import '../widgets/session_card.dart';
@@ -19,7 +18,11 @@ import '../widgets/session_card.dart';
 /// Der Screen orchestriert: Score-Animation, Navigation, Bausteine. Alles
 /// Sichtbare liegt in `presentation/widgets/`.
 class DashboardScreen extends ConsumerStatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({super.key, required this.onSelectTab});
+
+  /// Wechselt den Tab. Der Bildschirm besitzt die Navigation **nicht** — sie
+  /// liegt im Rahmen darüber, sonst gehörte sie einem ihrer eigenen Ziele.
+  final ValueChanged<int> onSelectTab;
 
   @override
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
@@ -33,9 +36,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   );
   Animation<double> _score = const AlwaysStoppedAnimation(0);
   double _lastScore = 0;
-
-  /// Bis go_router kommt (Stufe 6) ist der aktive Tab lokaler Zustand.
-  int _activeNav = 0;
 
   @override
   void dispose() {
@@ -113,91 +113,75 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
   Widget _buildContent(DashboardData data) {
     final l10n = AppL10n.of(context);
 
-    return Stack(
-      children: [
-        RefreshIndicator(
-          color: AtemColors.cyan,
-          backgroundColor: AtemColors.surfaceRaised,
-          onRefresh: () async => ref.invalidate(dashboardDataProvider),
-          child: ListView(
-            padding: EdgeInsets.only(
-              left: AtemSpacing.screenPadding,
-              right: AtemSpacing.screenPadding,
-              top: MediaQuery.paddingOf(context).top + 8,
-              // Freiraum für die schwebende Navigation, inklusive Systemleiste.
-              bottom: 130 + MediaQuery.viewPaddingOf(context).bottom,
-            ),
-            children: [
-              CyberHeader(user: data.user, onProfile: () => _select(4)),
-              const SizedBox(height: AtemSpacing.cardGap),
-              ReadinessHero(
-                readiness: data.readiness,
-                scoreAnimation: _score,
-              ),
-              const SizedBox(height: AtemSpacing.cardGap),
-              AtemCard.glass(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-                child: AtemChartCard(
-                  title: l10n.dashboardChartSection,
-                  semanticSummary: l10n.dashboardChartA11y,
-                  axisLabels: l10n.dashboardWeekdays.split(','),
-                  highlightIndex: data.performance.todayIndex,
-                  tooltip: _tooltip(l10n, data),
-                  series: [
-                    AtemChartSeries(
-                      label: l10n.dashboardSeriesLoad,
-                      values: [for (final d in data.performance.days) d.load],
-                      color: AtemColors.cyan,
-                      style: AtemSeriesStyle.primary,
-                    ),
-                    AtemChartSeries(
-                      label: l10n.dashboardSeriesStrain,
-                      values: [for (final d in data.performance.days) d.strain],
-                      color: AtemColors.magenta,
-                      style: AtemSeriesStyle.dashed,
-                    ),
-                    AtemChartSeries(
-                      label: l10n.dashboardSeriesRecovery,
-                      values: [
-                        for (final d in data.performance.days) d.recovery
-                      ],
-                      color: AtemColors.green,
-                      style: AtemSeriesStyle.angled,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AtemSpacing.cardGap),
-              if (data.session != null)
-                SessionCard(
-                  session: data.session!,
-                  elapsed: ref.watch(sessionTimerProvider).elapsed,
-                  onToggle: () => _onToggleSession(data.session!.id),
-                )
-              else
-                AtemCard.glass(
-                  padding: const EdgeInsets.all(18),
-                  child: AtemEmptyState(
-                    title: l10n.dashboardSessionNone,
-                    body: l10n.dashboardSessionNoneHint,
-                  ),
-                ),
-              const SizedBox(height: AtemSpacing.cardGap),
-              QuickActions(data: data, onSelect: _select),
-            ],
-          ),
-        ),
-        Positioned(
+    return RefreshIndicator(
+      color: AtemColors.cyan,
+      backgroundColor: AtemColors.surfaceRaised,
+      onRefresh: () async => ref.invalidate(dashboardDataProvider),
+      child: ListView(
+        padding: EdgeInsets.only(
           left: AtemSpacing.screenPadding,
           right: AtemSpacing.screenPadding,
-          // Safe Area beachten: sonst liegt die Leiste auf Geräten mit
-          // Drei-Tasten-Navigation unter der Systemleiste.
-          bottom: AtemSpacing.screenPadding +
-              MediaQuery.viewPaddingOf(context).bottom,
-          child: FloatingNav(activeIndex: _activeNav, onSelect: _select),
+          top: MediaQuery.paddingOf(context).top + 8,
+          // Freiraum für die schwebende Navigation, inklusive Systemleiste.
+          bottom: 130 + MediaQuery.viewPaddingOf(context).bottom,
         ),
-      ],
+        children: [
+          CyberHeader(user: data.user, onProfile: () => _select(4)),
+          const SizedBox(height: AtemSpacing.cardGap),
+          ReadinessHero(
+            readiness: data.readiness,
+            scoreAnimation: _score,
+          ),
+          const SizedBox(height: AtemSpacing.cardGap),
+          AtemCard.glass(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+            child: AtemChartCard(
+              title: l10n.dashboardChartSection,
+              semanticSummary: l10n.dashboardChartA11y,
+              axisLabels: l10n.dashboardWeekdays.split(','),
+              highlightIndex: data.performance.todayIndex,
+              tooltip: _tooltip(l10n, data),
+              series: [
+                AtemChartSeries(
+                  label: l10n.dashboardSeriesLoad,
+                  values: [for (final d in data.performance.days) d.load],
+                  color: AtemColors.cyan,
+                  style: AtemSeriesStyle.primary,
+                ),
+                AtemChartSeries(
+                  label: l10n.dashboardSeriesStrain,
+                  values: [for (final d in data.performance.days) d.strain],
+                  color: AtemColors.magenta,
+                  style: AtemSeriesStyle.dashed,
+                ),
+                AtemChartSeries(
+                  label: l10n.dashboardSeriesRecovery,
+                  values: [for (final d in data.performance.days) d.recovery],
+                  color: AtemColors.green,
+                  style: AtemSeriesStyle.angled,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AtemSpacing.cardGap),
+          if (data.session != null)
+            SessionCard(
+              session: data.session!,
+              elapsed: ref.watch(sessionTimerProvider).elapsed,
+              onToggle: () => _onToggleSession(data.session!.id),
+            )
+          else
+            AtemCard.glass(
+              padding: const EdgeInsets.all(18),
+              child: AtemEmptyState(
+                title: l10n.dashboardSessionNone,
+                body: l10n.dashboardSessionNoneHint,
+              ),
+            ),
+          const SizedBox(height: AtemSpacing.cardGap),
+          QuickActions(data: data, onSelect: _select),
+        ],
+      ),
     );
   }
 
@@ -210,5 +194,5 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     return l10n.dashboardChartToday(labels[i], today.load.round());
   }
 
-  void _select(int index) => setState(() => _activeNav = index);
+  void _select(int index) => widget.onSelectTab(index);
 }

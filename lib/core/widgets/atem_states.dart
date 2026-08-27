@@ -29,41 +29,48 @@ class _StateScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: iconTint.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(AtemRadii.iconBox),
+    // Scrollbar, weil das Gerüst sonst überläuft: Symbol, Titel, zwei Zeilen
+    // Text und eine Aktion brauchen bei 200 % Schrift auf einem 320x640-Gerät
+    // mehr Platz, als in einer halben Bildschirmhöhe steckt. Die Prüfmatrix hat
+    // das an der Übungsliste aufgedeckt — der Fehler lag aber hier, im
+    // Baustein, und damit in jedem Leer- und Fehlerzustand der App.
+    return SingleChildScrollView(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: iconTint.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AtemRadii.iconBox),
+                ),
+                child: ExcludeSemantics(child: icon),
               ),
-              child: ExcludeSemantics(child: icon),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AtemType.titleMedium.of(context),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              body,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: AtemType.labelSmall.of(context),
-            ),
-            if (action != null) ...[
-              const SizedBox(height: 18),
-              action!,
+              const SizedBox(height: 14),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AtemType.titleMedium.of(context),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                body,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AtemType.labelSmall.of(context),
+              ),
+              if (action != null) ...[
+                const SizedBox(height: 18),
+                action!,
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

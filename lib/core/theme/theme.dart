@@ -4,6 +4,7 @@
 /// `lib/core/widgets/` — siehe `docs/contracts/03-architecture.md`.
 library;
 
+export 'atem_categories.dart';
 export 'atem_colors.dart';
 export 'atem_geometry.dart';
 export 'atem_glow.dart';

@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/gen/app_l10n.dart';
 
 import 'core/theme/theme.dart';
+import 'app/app_shell.dart';
 import 'features/auth/presentation/auth_gate.dart';
-import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/workout/application/workout_providers.dart';
 import 'features/workout/data/preview_workout_repository.dart';
 import 'features/workout/presentation/screens/workout_runner_screen.dart';
@@ -55,8 +55,9 @@ class AtemApp extends StatelessWidget {
       theme: AtemTheme.dark,
       themeMode: ThemeMode.dark,
       // Das Tor entscheidet: ohne Anmeldung kommt niemand an Daten, weil die
-      // Firestore-Regeln sie ohnehin verweigern würden.
-      home: const AuthGate(child: DashboardScreen()),
+      // Firestore-Regeln sie ohnehin verweigern würden. Dahinter trägt der
+      // Rahmen die Tabs.
+      home: const AuthGate(child: AppShell()),
       onGenerateRoute: (settings) {
         if (settings.name == WorkoutRunnerScreen.routeName) {
           final sessionId = settings.arguments as String? ?? '';

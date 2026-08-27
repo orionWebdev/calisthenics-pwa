@@ -836,6 +836,15 @@
   "@dashboardWeekdays": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "durationApproxMinutes": "~{n} min",
+  "@durationApproxMinutes": {
+    "description": "Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "errorsDeleteFailed": "Fehler beim Löschen",
   "@errorsDeleteFailed": {
     "description": "aus errors.deleteFailed"
@@ -887,6 +896,104 @@
   "errorsWorkoutStartFailed": "Fehler beim Starten des Workouts",
   "@errorsWorkoutStartFailed": {
     "description": "aus errors.workoutStartFailed"
+  },
+  "exerciseCountShort": "{n, plural, one{1 Übung} other{{n} Übungen}}",
+  "@exerciseCountShort": {
+    "description": "Anzahl Übungen, kurz",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseCues": "Cues",
+  "@exerciseCues": {
+    "description": "Abschnitt im Detail"
+  },
+  "exerciseDifficultyA11y": "Schwierigkeit {n} von 5",
+  "@exerciseDifficultyA11y": {
+    "description": "Vorlesefassung der Segmentanzeige",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseInstructions": "Anleitung",
+  "@exerciseInstructions": {
+    "description": "Abschnitt im Detail"
+  },
+  "exerciseMistakes": "Häufige Fehler",
+  "@exerciseMistakes": {
+    "description": "Abschnitt im Detail"
+  },
+  "exerciseSparseBody": "Diese Übung hast du selbst angelegt.",
+  "@exerciseSparseBody": {
+    "description": "Nur bei eigenen Übungen ohne Inhalt"
+  },
+  "exerciseSparseTitle": "Keine Anleitung hinterlegt",
+  "@exerciseSparseTitle": {
+    "description": "Nur bei eigenen Übungen ohne Inhalt"
+  },
+  "exercisesCount": "{n} Übungen · {k} kuratiert · {e} eigene",
+  "@exercisesCount": {
+    "description": "Zählzeile über der Liste",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "k": {
+        "type": "int"
+      },
+      "e": {
+        "type": "int"
+      }
+    }
+  },
+  "exercisesEmptyBody": "Keine Übung passt zu „{q}“ — auch nicht auf Englisch.",
+  "@exercisesEmptyBody": {
+    "description": "Suche ohne Treffer, Text",
+    "placeholders": {
+      "q": {
+        "type": "String"
+      }
+    }
+  },
+  "exercisesEmptyTitle": "Nichts gefunden",
+  "@exercisesEmptyTitle": {
+    "description": "Suche ohne Treffer"
+  },
+  "exercisesFilterAll": "Alle",
+  "@exercisesFilterAll": {
+    "description": "Erster Filter-Chip, steht fest an Position 1"
+  },
+  "exercisesFilterReset": "Zurücksetzen",
+  "@exercisesFilterReset": {
+    "description": "Hebt den Filter auf"
+  },
+  "exercisesFilterResult": "{n} Übungen · {filter}",
+  "@exercisesFilterResult": {
+    "description": "Zählzeile bei aktivem Filter",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "filter": {
+        "type": "String"
+      }
+    }
+  },
+  "exercisesOwnTag": "Eigen",
+  "@exercisesOwnTag": {
+    "description": "Kennzeichnet selbst angelegte Übungen"
+  },
+  "exercisesSearchHint": "Übung suchen …",
+  "@exercisesSearchHint": {
+    "description": "Platzhalter im Suchfeld"
+  },
+  "exercisesTitle": "Übungen",
+  "@exercisesTitle": {
+    "description": "Titel der Übungsliste"
   },
   "formatDistanceKm": "{distance} km",
   "@formatDistanceKm": {
@@ -1001,7 +1108,63 @@
   "@gateTitle": {
     "description": "Überschrift des Warteraums"
   },
+  "listErrorBody": "Deine Workouts konnten nicht geladen werden.",
+  "@listErrorBody": {
+    "description": "Fehlerzustand der Listen"
+  },
+  "listErrorTitle": "Laden fehlgeschlagen",
+  "@listErrorTitle": {
+    "description": "Fehlerzustand der Listen"
+  },
   "@@locale": "de",
+  "muscleArms": "Arme",
+  "@muscleArms": {
+    "description": "Muskelgruppe"
+  },
+  "muscleBack": "Rücken",
+  "@muscleBack": {
+    "description": "Muskelgruppe"
+  },
+  "muscleBiceps": "Bizeps",
+  "@muscleBiceps": {
+    "description": "Muskelgruppe"
+  },
+  "muscleCalves": "Waden",
+  "@muscleCalves": {
+    "description": "Muskelgruppe"
+  },
+  "muscleChest": "Brust",
+  "@muscleChest": {
+    "description": "Muskelgruppe"
+  },
+  "muscleCore": "Core",
+  "@muscleCore": {
+    "description": "Muskelgruppe"
+  },
+  "muscleGlutes": "Gesäß",
+  "@muscleGlutes": {
+    "description": "Muskelgruppe"
+  },
+  "muscleHamstrings": "Beinbeuger",
+  "@muscleHamstrings": {
+    "description": "Muskelgruppe"
+  },
+  "muscleLegs": "Beine",
+  "@muscleLegs": {
+    "description": "Muskelgruppe"
+  },
+  "muscleQuads": "Quadrizeps",
+  "@muscleQuads": {
+    "description": "Muskelgruppe"
+  },
+  "muscleShoulders": "Schultern",
+  "@muscleShoulders": {
+    "description": "Muskelgruppe"
+  },
+  "muscleTriceps": "Trizeps",
+  "@muscleTriceps": {
+    "description": "Muskelgruppe"
+  },
   "navCalendar": "Kalender",
   "@navCalendar": {
     "description": "aus nav.calendar"
@@ -1025,6 +1188,14 @@
   "navProgress": "Fortschritt",
   "@navProgress": {
     "description": "aus nav.progress"
+  },
+  "navSoonBody": "Dieser Bereich ist noch nicht gebaut.",
+  "@navSoonBody": {
+    "description": "Platzhalter für einen noch nicht gebauten Bereich"
+  },
+  "navSoonTitle": "Kommt noch",
+  "@navSoonTitle": {
+    "description": "Platzhalter für einen noch nicht gebauten Bereich"
   },
   "navTraining": "Training",
   "@navTraining": {
@@ -1106,9 +1277,113 @@
   "@onbWhy": {
     "description": "Begründung, warum diese eine Angabe nötig ist"
   },
+  "planCount": "{n} Pläne",
+  "@planCount": {
+    "description": "Zählzeile der Planliste",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "planItemMissing": "Nicht mehr vorhanden",
+  "@planItemMissing": {
+    "description": "Steht statt des Namens, wenn die Übung gelöscht wurde"
+  },
+  "planMeta": "{n} Übungen · {type}",
+  "@planMeta": {
+    "description": "Zweite Zeile einer Planzeile",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "planMissingBody": "Sie wurden gelöscht. Der Plan startet ohne sie.",
+  "@planMissingBody": {
+    "description": "Hinweis über einem Plan mit gelöschten Übungen"
+  },
+  "planMissingTitle": "{n, plural, one{Eine Übung fehlt} other{{n} Übungen fehlen}}",
+  "@planMissingTitle": {
+    "description": "Hinweis über einem Plan mit gelöschten Übungen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "regionArms": "Arme",
+  "@regionArms": {
+    "description": "Körperregion, Filter"
+  },
+  "regionBack": "Rücken",
+  "@regionBack": {
+    "description": "Körperregion, Filter"
+  },
+  "regionChest": "Brust",
+  "@regionChest": {
+    "description": "Körperregion, Filter"
+  },
+  "regionCore": "Core",
+  "@regionCore": {
+    "description": "Körperregion, Filter"
+  },
+  "regionLegs": "Beine",
+  "@regionLegs": {
+    "description": "Körperregion, Filter"
+  },
+  "regionShoulders": "Schultern",
+  "@regionShoulders": {
+    "description": "Körperregion, Filter"
+  },
+  "restSeconds": "{n} s",
+  "@restSeconds": {
+    "description": "Pausenlänge in Sekunden",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetFreeBody": "Ohne Plan starten — Übungen fügst du im Training hinzu.",
+  "@sheetFreeBody": {
+    "description": "Text im Start-Sheet beim freien Training"
+  },
+  "sheetRestLabel": "Standard-Pause",
+  "@sheetRestLabel": {
+    "description": "Zeile im Start-Sheet"
+  },
+  "sheetStart": "Starten",
+  "@sheetStart": {
+    "description": "Bestätigung im Start-Sheet"
+  },
+  "sheetStartTitle": "{plan} starten?",
+  "@sheetStartTitle": {
+    "description": "Titel des Start-Sheets",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
   "splashStarting": "ATEM startet …",
   "@splashStarting": {
     "description": "Ansage während des unentschiedenen ersten Moments"
+  },
+  "typeBodyweight": "Körpergewicht",
+  "@typeBodyweight": {
+    "description": "Trainingsart eines Plans"
+  },
+  "typeHybrid": "Hybrid",
+  "@typeHybrid": {
+    "description": "Trainingsart eines Plans"
+  },
+  "typeStrength": "Kraft",
+  "@typeStrength": {
+    "description": "Trainingsart eines Plans"
   },
   "workoutA11yEnd": "Workout beenden",
   "@workoutA11yEnd": {
@@ -1956,5 +2231,59 @@
       }
     },
     "description": "aus workout.targetHold"
+  },
+  "workoutsFree": "Freies Training",
+  "@workoutsFree": {
+    "description": "Name des Trainings ohne Plan"
+  },
+  "workoutsFreeStart": "Freies Training starten",
+  "@workoutsFreeStart": {
+    "description": "Aktion für Training ohne Plan"
+  },
+  "workoutsPlanPick": "Plan wählen",
+  "@workoutsPlanPick": {
+    "description": "Aktion im Leerzustand"
+  },
+  "workoutsPlansAll": "Alle {n}",
+  "@workoutsPlansAll": {
+    "description": "Öffnet die vollständige Planliste",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutsPlansLabel": "Pläne",
+  "@workoutsPlansLabel": {
+    "description": "Abschnittslabel Pläne"
+  },
+  "workoutsSearchEntry": "{n} Übungen durchsuchen",
+  "@workoutsSearchEntry": {
+    "description": "Einstieg in die Übungsliste",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutsStart": "Training starten",
+  "@workoutsStart": {
+    "description": "Aktion auf der Session-Karte"
+  },
+  "workoutsTitle": "Workouts",
+  "@workoutsTitle": {
+    "description": "Titel des Tabs"
+  },
+  "workoutsTodayEmptyBody": "Starte frei oder wähle einen Plan.",
+  "@workoutsTodayEmptyBody": {
+    "description": "Leerzustand, Text"
+  },
+  "workoutsTodayEmptyTitle": "Kein Training geplant",
+  "@workoutsTodayEmptyTitle": {
+    "description": "Leerzustand für heute"
+  },
+  "workoutsTodayLabel": "Heute",
+  "@workoutsTodayLabel": {
+    "description": "Abschnittslabel über der Session-Karte"
   }
 }

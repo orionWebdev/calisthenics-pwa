@@ -1,7 +1,15 @@
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/auth/application/auth_providers.dart';
+import 'package:atem/features/auth/domain/auth_user.dart';
 import 'package:atem/features/dashboard/application/dashboard_providers.dart';
 import 'package:atem/features/dashboard/data/preview_dashboard_repository.dart';
+import 'package:atem/features/exercises/application/exercise_providers.dart';
+import 'package:atem/features/exercises/domain/exercise.dart';
+import 'package:atem/features/exercises/domain/exercise_repository.dart';
+import 'package:atem/features/exercises/domain/muscle.dart';
+import 'package:atem/features/plans/application/plan_providers.dart';
+import 'package:atem/features/plans/domain/plan.dart';
+import 'package:atem/features/plans/domain/plan_repository.dart';
 import 'package:atem/features/workout/application/workout_providers.dart';
 import 'package:atem/features/workout/data/preview_workout_repository.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
@@ -17,13 +25,70 @@ import 'fake_auth.dart';
 /// der Typ wird aus dem Literal abgeleitet. Die Preview-Repositories sind
 /// zustandslos, geteilte Instanzen sind also unbedenklich.
 final fixtureOverrides = [
-  authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
+  // Mit angemeldetem Nutzer: Sonst liefern alle Provider leere Listen und die
+  // Matrix prüfte überall nur den Leerzustand.
+  authRepositoryProvider.overrideWithValue(
+    FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c')),
+  ),
   allowlistRepositoryProvider.overrideWithValue(FakeAllowlistRepository()),
   profileRepositoryProvider
       .overrideWithValue(FakeProfileRepository(weightKg: 78)),
   dashboardRepositoryProvider.overrideWithValue(PreviewDashboardRepository()),
   workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
+  exerciseRepositoryProvider.overrideWithValue(FakeExerciseRepository()),
+  planRepositoryProvider.overrideWithValue(FakePlanRepository()),
 ];
+
+/// Übungen für die Prüfmatrix — bewusst mit langen Namen und vielen Muskeln,
+/// weil genau daran Layouts bei 200 % Schrift zerbrechen.
+final fixtureExercises = <Exercise>[
+  const Exercise(
+    id: 'archer_push_up',
+    name: 'Archer Push-up mit sehr langem Namen',
+    source: ExerciseSource.curated,
+    primaryMuscles: [MuscleGroup.chest],
+    secondaryMuscles: [MuscleGroup.triceps, MuscleGroup.shoulders],
+    muscleGroups: [MuscleGroup.core, MuscleGroup.back],
+    equipment: ['bodyweight'],
+    difficulty: 4,
+    instructions: ['Schritt eins', 'Schritt zwei'],
+    cues: ['Brust raus'],
+    commonMistakes: ['Hohlkreuz'],
+  ),
+  // Der Normalfall: nur ein Name.
+  const Exercise(id: 'x1', name: 'Eigene Übung', source: ExerciseSource.own),
+];
+
+final fixturePlans = <Plan>[
+  const Plan(
+    id: 'p1',
+    name: 'Upper Body Power',
+    type: 'strength',
+    items: [
+      PlanItem(exerciseId: 'archer_push_up', sets: 4, restSeconds: 90),
+      // Zeigt auf eine Übung, die es nicht gibt — der kaputte Plan.
+      PlanItem(exerciseId: 'geloescht', sets: 3, reps: '8-12'),
+    ],
+  ),
+];
+
+class FakeExerciseRepository implements ExerciseRepository {
+  @override
+  Stream<List<Exercise>> watchExercises(String userId) =>
+      Stream.value(fixtureExercises);
+
+  @override
+  Future<List<Exercise>> fetchExercises(String userId) async =>
+      fixtureExercises;
+}
+
+class FakePlanRepository implements PlanRepository {
+  @override
+  Stream<List<Plan>> watchPlans(String userId) => Stream.value(fixturePlans);
+
+  @override
+  Future<List<Plan>> fetchPlans(String userId) async => fixturePlans;
+}
 
 /// Die Prüfmatrix aus `docs/contracts/01-accessibility.md`.
 ///

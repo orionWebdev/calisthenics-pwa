@@ -50,7 +50,7 @@ Future<void> _pumpStill(WidgetTester tester, Widget home) async {
 void main() {
   testWidgets('Dashboard rendert Readiness-Score und Session', (tester) async {
     _useTallSurface(tester);
-    await _pumpStill(tester, const DashboardScreen());
+    await _pumpStill(tester, DashboardScreen(onSelectTab: (_) {}));
 
     // Der eigentliche Beweis: mit abgeschalteten Animationen kommt der Baum
     // zur Ruhe. Vor der Einführung von AtemMotion.syncLoop hing das hier.

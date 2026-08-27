@@ -1099,6 +1099,12 @@ abstract class AppL10n {
   /// **'MO,DI,MI,DO,FR,SA,SO'**
   String get dashboardWeekdays;
 
+  /// Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.
+  ///
+  /// In de, this message translates to:
+  /// **'~{n} min'**
+  String durationApproxMinutes(int n);
+
   /// aus errors.deleteFailed
   ///
   /// In de, this message translates to:
@@ -1176,6 +1182,102 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Fehler beim Starten des Workouts'**
   String get errorsWorkoutStartFailed;
+
+  /// Anzahl Übungen, kurz
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Übung} other{{n} Übungen}}'**
+  String exerciseCountShort(int n);
+
+  /// Abschnitt im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Cues'**
+  String get exerciseCues;
+
+  /// Vorlesefassung der Segmentanzeige
+  ///
+  /// In de, this message translates to:
+  /// **'Schwierigkeit {n} von 5'**
+  String exerciseDifficultyA11y(int n);
+
+  /// Abschnitt im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Anleitung'**
+  String get exerciseInstructions;
+
+  /// Abschnitt im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Häufige Fehler'**
+  String get exerciseMistakes;
+
+  /// Nur bei eigenen Übungen ohne Inhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Übung hast du selbst angelegt.'**
+  String get exerciseSparseBody;
+
+  /// Nur bei eigenen Übungen ohne Inhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Anleitung hinterlegt'**
+  String get exerciseSparseTitle;
+
+  /// Zählzeile über der Liste
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Übungen · {k} kuratiert · {e} eigene'**
+  String exercisesCount(int n, int k, int e);
+
+  /// Suche ohne Treffer, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Übung passt zu „{q}“ — auch nicht auf Englisch.'**
+  String exercisesEmptyBody(String q);
+
+  /// Suche ohne Treffer
+  ///
+  /// In de, this message translates to:
+  /// **'Nichts gefunden'**
+  String get exercisesEmptyTitle;
+
+  /// Erster Filter-Chip, steht fest an Position 1
+  ///
+  /// In de, this message translates to:
+  /// **'Alle'**
+  String get exercisesFilterAll;
+
+  /// Hebt den Filter auf
+  ///
+  /// In de, this message translates to:
+  /// **'Zurücksetzen'**
+  String get exercisesFilterReset;
+
+  /// Zählzeile bei aktivem Filter
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Übungen · {filter}'**
+  String exercisesFilterResult(int n, String filter);
+
+  /// Kennzeichnet selbst angelegte Übungen
+  ///
+  /// In de, this message translates to:
+  /// **'Eigen'**
+  String get exercisesOwnTag;
+
+  /// Platzhalter im Suchfeld
+  ///
+  /// In de, this message translates to:
+  /// **'Übung suchen …'**
+  String get exercisesSearchHint;
+
+  /// Titel der Übungsliste
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get exercisesTitle;
 
   /// aus format.distanceKm
   ///
@@ -1291,6 +1393,90 @@ abstract class AppL10n {
   /// **'Du stehst auf der Liste'**
   String get gateTitle;
 
+  /// Fehlerzustand der Listen
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Workouts konnten nicht geladen werden.'**
+  String get listErrorBody;
+
+  /// Fehlerzustand der Listen
+  ///
+  /// In de, this message translates to:
+  /// **'Laden fehlgeschlagen'**
+  String get listErrorTitle;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Arme'**
+  String get muscleArms;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Rücken'**
+  String get muscleBack;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Bizeps'**
+  String get muscleBiceps;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Waden'**
+  String get muscleCalves;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Brust'**
+  String get muscleChest;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Core'**
+  String get muscleCore;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Gesäß'**
+  String get muscleGlutes;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Beinbeuger'**
+  String get muscleHamstrings;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Beine'**
+  String get muscleLegs;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Quadrizeps'**
+  String get muscleQuads;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Schultern'**
+  String get muscleShoulders;
+
+  /// Muskelgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Trizeps'**
+  String get muscleTriceps;
+
   /// aus nav.calendar
   ///
   /// In de, this message translates to:
@@ -1326,6 +1512,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Fortschritt'**
   String get navProgress;
+
+  /// Platzhalter für einen noch nicht gebauten Bereich
+  ///
+  /// In de, this message translates to:
+  /// **'Dieser Bereich ist noch nicht gebaut.'**
+  String get navSoonBody;
+
+  /// Platzhalter für einen noch nicht gebauten Bereich
+  ///
+  /// In de, this message translates to:
+  /// **'Kommt noch'**
+  String get navSoonTitle;
 
   /// aus nav.training
   ///
@@ -1423,11 +1621,125 @@ abstract class AppL10n {
   /// **'ATEM rechnet jede Übung in Trainingslast um — auch die ohne Gewichte. Dafür braucht es genau eine Zahl.'**
   String get onbWhy;
 
+  /// Zählzeile der Planliste
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Pläne'**
+  String planCount(int n);
+
+  /// Steht statt des Namens, wenn die Übung gelöscht wurde
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht mehr vorhanden'**
+  String get planItemMissing;
+
+  /// Zweite Zeile einer Planzeile
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Übungen · {type}'**
+  String planMeta(int n, String type);
+
+  /// Hinweis über einem Plan mit gelöschten Übungen
+  ///
+  /// In de, this message translates to:
+  /// **'Sie wurden gelöscht. Der Plan startet ohne sie.'**
+  String get planMissingBody;
+
+  /// Hinweis über einem Plan mit gelöschten Übungen
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Eine Übung fehlt} other{{n} Übungen fehlen}}'**
+  String planMissingTitle(int n);
+
+  /// Körperregion, Filter
+  ///
+  /// In de, this message translates to:
+  /// **'Arme'**
+  String get regionArms;
+
+  /// Körperregion, Filter
+  ///
+  /// In de, this message translates to:
+  /// **'Rücken'**
+  String get regionBack;
+
+  /// Körperregion, Filter
+  ///
+  /// In de, this message translates to:
+  /// **'Brust'**
+  String get regionChest;
+
+  /// Körperregion, Filter
+  ///
+  /// In de, this message translates to:
+  /// **'Core'**
+  String get regionCore;
+
+  /// Körperregion, Filter
+  ///
+  /// In de, this message translates to:
+  /// **'Beine'**
+  String get regionLegs;
+
+  /// Körperregion, Filter
+  ///
+  /// In de, this message translates to:
+  /// **'Schultern'**
+  String get regionShoulders;
+
+  /// Pausenlänge in Sekunden
+  ///
+  /// In de, this message translates to:
+  /// **'{n} s'**
+  String restSeconds(int n);
+
+  /// Text im Start-Sheet beim freien Training
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Plan starten — Übungen fügst du im Training hinzu.'**
+  String get sheetFreeBody;
+
+  /// Zeile im Start-Sheet
+  ///
+  /// In de, this message translates to:
+  /// **'Standard-Pause'**
+  String get sheetRestLabel;
+
+  /// Bestätigung im Start-Sheet
+  ///
+  /// In de, this message translates to:
+  /// **'Starten'**
+  String get sheetStart;
+
+  /// Titel des Start-Sheets
+  ///
+  /// In de, this message translates to:
+  /// **'{plan} starten?'**
+  String sheetStartTitle(String plan);
+
   /// Ansage während des unentschiedenen ersten Moments
   ///
   /// In de, this message translates to:
   /// **'ATEM startet …'**
   String get splashStarting;
+
+  /// Trainingsart eines Plans
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht'**
+  String get typeBodyweight;
+
+  /// Trainingsart eines Plans
+  ///
+  /// In de, this message translates to:
+  /// **'Hybrid'**
+  String get typeHybrid;
+
+  /// Trainingsart eines Plans
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft'**
+  String get typeStrength;
 
   /// Runner, Modul 1/2 Spezifikation
   ///
@@ -2490,6 +2802,72 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Ziel: {seconds} halten'**
   String workoutTargetHold(int seconds);
+
+  /// Name des Trainings ohne Plan
+  ///
+  /// In de, this message translates to:
+  /// **'Freies Training'**
+  String get workoutsFree;
+
+  /// Aktion für Training ohne Plan
+  ///
+  /// In de, this message translates to:
+  /// **'Freies Training starten'**
+  String get workoutsFreeStart;
+
+  /// Aktion im Leerzustand
+  ///
+  /// In de, this message translates to:
+  /// **'Plan wählen'**
+  String get workoutsPlanPick;
+
+  /// Öffnet die vollständige Planliste
+  ///
+  /// In de, this message translates to:
+  /// **'Alle {n}'**
+  String workoutsPlansAll(int n);
+
+  /// Abschnittslabel Pläne
+  ///
+  /// In de, this message translates to:
+  /// **'Pläne'**
+  String get workoutsPlansLabel;
+
+  /// Einstieg in die Übungsliste
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Übungen durchsuchen'**
+  String workoutsSearchEntry(int n);
+
+  /// Aktion auf der Session-Karte
+  ///
+  /// In de, this message translates to:
+  /// **'Training starten'**
+  String get workoutsStart;
+
+  /// Titel des Tabs
+  ///
+  /// In de, this message translates to:
+  /// **'Workouts'**
+  String get workoutsTitle;
+
+  /// Leerzustand, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Starte frei oder wähle einen Plan.'**
+  String get workoutsTodayEmptyBody;
+
+  /// Leerzustand für heute
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Training geplant'**
+  String get workoutsTodayEmptyTitle;
+
+  /// Abschnittslabel über der Session-Karte
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get workoutsTodayLabel;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

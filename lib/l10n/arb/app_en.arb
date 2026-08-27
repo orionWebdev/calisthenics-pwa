@@ -758,6 +758,7 @@
   "@dashboardWeekdays": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "durationApproxMinutes": "~{n} min",
   "errorsDeleteFailed": "Error deleting",
   "@errorsDeleteFailed": {
     "description": "aus errors.deleteFailed"
@@ -810,6 +811,22 @@
   "@errorsWorkoutStartFailed": {
     "description": "aus errors.workoutStartFailed"
   },
+  "exerciseCountShort": "{n, plural, one{1 exercise} other{{n} exercises}}",
+  "exerciseCues": "Cues",
+  "exerciseDifficultyA11y": "Difficulty {n} of 5",
+  "exerciseInstructions": "Instructions",
+  "exerciseMistakes": "Common mistakes",
+  "exerciseSparseBody": "You created this exercise yourself.",
+  "exerciseSparseTitle": "No instructions yet",
+  "exercisesCount": "{n} exercises · {k} curated · {e} custom",
+  "exercisesEmptyBody": "No exercise matches “{q}” — in either language.",
+  "exercisesEmptyTitle": "Nothing found",
+  "exercisesFilterAll": "All",
+  "exercisesFilterReset": "Reset",
+  "exercisesFilterResult": "{n} exercises · {filter}",
+  "exercisesOwnTag": "Custom",
+  "exercisesSearchHint": "Search exercises …",
+  "exercisesTitle": "Exercises",
   "formatDistanceKm": "{distance} km",
   "@formatDistanceKm": {
     "placeholders": {
@@ -882,7 +899,21 @@
   "gateSwitchAccount": "Use another account",
   "gateSwitchAccountA11y": "Sign out and sign in with another account",
   "gateTitle": "You’re on the list",
+  "listErrorBody": "Your workouts could not be loaded.",
+  "listErrorTitle": "Loading failed",
   "@@locale": "en",
+  "muscleArms": "Arms",
+  "muscleBack": "Back",
+  "muscleBiceps": "Biceps",
+  "muscleCalves": "Calves",
+  "muscleChest": "Chest",
+  "muscleCore": "Core",
+  "muscleGlutes": "Glutes",
+  "muscleHamstrings": "Hamstrings",
+  "muscleLegs": "Legs",
+  "muscleQuads": "Quads",
+  "muscleShoulders": "Shoulders",
+  "muscleTriceps": "Triceps",
   "navCalendar": "Calendar",
   "@navCalendar": {
     "description": "aus nav.calendar"
@@ -907,6 +938,8 @@
   "@navProgress": {
     "description": "aus nav.progress"
   },
+  "navSoonBody": "This area hasn’t been built yet.",
+  "navSoonTitle": "Coming soon",
   "navTraining": "Training",
   "@navTraining": {
     "description": "aus nav.training"
@@ -926,7 +959,26 @@
   "onbUnitLbs": "lbs",
   "onbUnitLbsA11y": "Unit: pounds",
   "onbWhy": "ATEM converts every exercise into training load — including bodyweight moves. That takes exactly one number.",
+  "planCount": "{n} plans",
+  "planItemMissing": "No longer available",
+  "planMeta": "{n} exercises · {type}",
+  "planMissingBody": "They were deleted. The plan starts without them.",
+  "planMissingTitle": "{n, plural, one{One exercise is missing} other{{n} exercises are missing}}",
+  "regionArms": "Arms",
+  "regionBack": "Back",
+  "regionChest": "Chest",
+  "regionCore": "Core",
+  "regionLegs": "Legs",
+  "regionShoulders": "Shoulders",
+  "restSeconds": "{n} s",
+  "sheetFreeBody": "Start without a plan — add exercises during the workout.",
+  "sheetRestLabel": "Default rest",
+  "sheetStart": "Start",
+  "sheetStartTitle": "Start {plan}?",
   "splashStarting": "ATEM is starting …",
+  "typeBodyweight": "Bodyweight",
+  "typeHybrid": "Hybrid",
+  "typeStrength": "Strength",
   "workoutA11yEnd": "End workout",
   "@workoutA11yEnd": {
     "description": "Runner, Modul 1/2 Spezifikation"
@@ -1773,5 +1825,16 @@
       }
     },
     "description": "aus workout.targetHold"
-  }
+  },
+  "workoutsFree": "Free workout",
+  "workoutsFreeStart": "Start free workout",
+  "workoutsPlanPick": "Pick a plan",
+  "workoutsPlansAll": "All {n}",
+  "workoutsPlansLabel": "Plans",
+  "workoutsSearchEntry": "Search {n} exercises",
+  "workoutsStart": "Start workout",
+  "workoutsTitle": "Workouts",
+  "workoutsTodayEmptyBody": "Start freely or pick a plan.",
+  "workoutsTodayEmptyTitle": "No workout scheduled",
+  "workoutsTodayLabel": "Today"
 }
