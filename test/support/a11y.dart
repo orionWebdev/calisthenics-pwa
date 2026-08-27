@@ -9,6 +9,10 @@ import 'package:atem/features/exercises/domain/exercise_repository.dart';
 import 'package:atem/features/exercises/domain/muscle.dart';
 import 'package:atem/features/plans/application/plan_providers.dart';
 import 'package:atem/features/plans/domain/plan.dart';
+import 'package:atem/features/history/application/history_providers.dart';
+import 'package:atem/features/history/domain/session_draft.dart';
+import 'package:atem/features/history/domain/session_repository.dart';
+import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/plans/domain/plan_repository.dart';
 import 'package:atem/features/workout/application/workout_providers.dart';
 import 'package:atem/features/workout/data/preview_workout_repository.dart';
@@ -37,7 +41,43 @@ final fixtureOverrides = [
   workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
   exerciseRepositoryProvider.overrideWithValue(FakeExerciseRepository()),
   planRepositoryProvider.overrideWithValue(FakePlanRepository()),
+  sessionRepositoryProvider.overrideWithValue(FakeSessionRepository()),
+  // Fester Stichtag: Sonst hinge die Aussage-Karte am Kalender des Rechners
+  // und zeigte mal „Pause", mal „Untätig".
+  historyReferenceProvider.overrideWithValue(fixtureToday),
 ];
+
+/// Der 27.08.2026 — derselbe Stichtag wie im Bestand des Nutzers.
+final fixtureToday = DateTime(2026, 8, 27);
+
+/// Einheiten über ein halbes Jahr, mit einer langen Lücke am Ende: genau die
+/// Lage, in der sich der einzige echte Nutzer befindet.
+final fixtureSessions = <TrainingSession>[
+  for (var i = 0; i < 40; i++)
+    StrengthSession(
+      id: 's$i',
+      userId: 'u',
+      date: DateTime(2026, 3, 1 + i * 3),
+      createdAt: DateTime(2026, 3, 1 + i * 3),
+      bodyweight: false,
+      duration: const Duration(minutes: 45),
+      rpe: 3,
+      planName: 'Upper Body Power',
+    ),
+];
+
+class FakeSessionRepository implements SessionRepository {
+  @override
+  Stream<List<TrainingSession>> watchSessions(String userId) =>
+      Stream.value(fixtureSessions);
+
+  @override
+  Future<List<TrainingSession>> fetchSessions(String userId) async =>
+      fixtureSessions;
+
+  @override
+  Future<String> saveSession(SessionDraft draft) async => 'neu';
+}
 
 /// Übungen für die Prüfmatrix — bewusst mit langen Namen und vielen Muskeln,
 /// weil genau daran Layouts bei 200 % Schrift zerbrechen.

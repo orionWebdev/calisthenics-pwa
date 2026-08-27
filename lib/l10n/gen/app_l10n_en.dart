@@ -9,6 +9,79 @@ class AppL10nEn extends AppL10n {
   AppL10nEn([String locale = 'en']) : super(locale);
 
   @override
+  String get analysisChartLabel => 'Form 0–100';
+
+  @override
+  String get analysisCompConsistency => 'Consistency';
+
+  @override
+  String get analysisCompFitness => 'Fitness vs. peak';
+
+  @override
+  String get analysisCompLoad => 'Load progression';
+
+  @override
+  String get analysisCompPenalty => 'Inactivity penalty';
+
+  @override
+  String get analysisCompRecency => 'Recency';
+
+  @override
+  String get analysisCompToday => 'Today bonus';
+
+  @override
+  String analysisCompValue(int v, int max) {
+    return '$v / $max';
+  }
+
+  @override
+  String analysisErrorBody(int n) {
+    return 'All $n workouts are there — only the analysis is missing.';
+  }
+
+  @override
+  String get analysisErrorRetry => 'Recalculate';
+
+  @override
+  String get analysisErrorTitle => 'Form cannot be calculated';
+
+  @override
+  String get analysisErrorToList => 'Go to list';
+
+  @override
+  String analysisHintRecency(int n) {
+    return 'What is missing is recency — one workout today adds $n points right away.';
+  }
+
+  @override
+  String get analysisLegendWith => 'with training';
+
+  @override
+  String get analysisLegendWithout => 'without training';
+
+  @override
+  String analysisThinBody(int n, int d) {
+    return 'A trend needs $n workouts and $d days of history.';
+  }
+
+  @override
+  String get analysisThinHave => 'What you already have';
+
+  @override
+  String analysisThinProgress(int cur, int req) {
+    return '$cur / $req';
+  }
+
+  @override
+  String get analysisThinTitle => 'Not enough for a trend yet';
+
+  @override
+  String get analysisTitle => 'Analysis';
+
+  @override
+  String get analysisToday => 'Form today';
+
+  @override
   String get authBetaBadge => 'CLOSED BETA';
 
   @override
@@ -592,8 +665,49 @@ class AppL10nEn extends AppL10n {
   String get dashboardWeekdays => 'MO,TU,WE,TH,FR,SA,SU';
 
   @override
+  String get detailAcwrLabel => 'Load on this day';
+
+  @override
+  String detailAcwrZone(String v, String zone) {
+    return 'ACWR $v · $zone';
+  }
+
+  @override
+  String get detailLoad => 'Load';
+
+  @override
+  String get detailPace => 'Pace /km';
+
+  @override
+  String get detailRecoveryBody =>
+      'Recovery keeps the streak but does not drive load progression.';
+
+  @override
+  String get detailRecoveryTitle => 'Counts towards consistency';
+
+  @override
+  String detailSetsCount(int e, int s) {
+    return '$e exercises · $s sets';
+  }
+
+  @override
+  String get detailSetsMissingBody =>
+      'This workout was recorded as duration only. Load and consistency still count, volume stays empty.';
+
+  @override
+  String get detailSetsMissingTitle => 'No sets recorded';
+
+  @override
+  String get detailVolume => 'Volume';
+
+  @override
   String durationApproxMinutes(int n) {
     return '~$n min';
+  }
+
+  @override
+  String durationMinutes(int n) {
+    return '$n min';
   }
 
   @override
@@ -778,10 +892,135 @@ class AppL10nEn extends AppL10n {
   String get gateTitle => 'You’re on the list';
 
   @override
+  String historyAll(int n) {
+    return 'All $n';
+  }
+
+  @override
+  String get historyAnalysisOpen => 'Open analysis';
+
+  @override
+  String get historyEmptyBody =>
+      'Your first workout appears here once you finish it.';
+
+  @override
+  String get historyEmptyTitle => 'Nothing recorded yet';
+
+  @override
+  String get historyErrorBody => 'Your workouts could not be loaded.';
+
+  @override
+  String get historyErrorTitle => 'History unavailable';
+
+  @override
+  String get historyFormLabel => 'Form';
+
+  @override
+  String historyFormOf(int v) {
+    return '$v/100';
+  }
+
+  @override
+  String historyLeadFrequency(int n, int d) {
+    return '$n workouts in $d days';
+  }
+
+  @override
+  String historyLeadGap(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# days',
+      one: '# day',
+    );
+    return '$_temp0 without training';
+  }
+
+  @override
+  String historyLeadLast(String weekday, String date, String name) {
+    return 'Last $weekday $date · $name';
+  }
+
+  @override
+  String get historyMonthsLabel => 'Workouts per month';
+
+  @override
+  String historyMonthsMedian(int n, int max) {
+    return 'Median $n days apart · longest break $max';
+  }
+
+  @override
+  String get historyRecentLabel => 'Recent workouts';
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String get historyTrendFalling => 'falling';
+
+  @override
+  String get historyTrendRising => 'rising';
+
+  @override
+  String get historyTrendStable => 'stable';
+
+  @override
+  String get historyZoneInactive => 'Inactive';
+
+  @override
+  String get historyZonePause => 'Paused';
+
+  @override
+  String get historyZoneRecent => 'Keeping up';
+
+  @override
+  String get historyZoneRhythm => 'In rhythm';
+
+  @override
+  String listEndBody(String date, int n) {
+    return 'First workout on $date · $n days ago.';
+  }
+
+  @override
+  String get listEndTitle => 'End of history';
+
+  @override
   String get listErrorBody => 'Your workouts could not be loaded.';
 
   @override
   String get listErrorTitle => 'Loading failed';
+
+  @override
+  String listGap(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# days',
+      one: '# day',
+    );
+    return '$_temp0 without training';
+  }
+
+  @override
+  String get listGapLongest => 'longest break on record';
+
+  @override
+  String listGapRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String listMonthSummary(String n, int load) {
+    return '$n · load $load';
+  }
+
+  @override
+  String listSecond(int n) {
+    return 'workout $n';
+  }
+
+  @override
+  String get listTitle => 'Workouts';
 
   @override
   String get muscleArms => 'Arms';
@@ -970,7 +1209,13 @@ class AppL10nEn extends AppL10n {
   String get typeBodyweight => 'Bodyweight';
 
   @override
+  String get typeCardio => 'Cardio';
+
+  @override
   String get typeHybrid => 'Hybrid';
+
+  @override
+  String get typeRecovery => 'Recovery';
 
   @override
   String get typeStrength => 'Strength';

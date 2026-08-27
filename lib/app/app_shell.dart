@@ -5,6 +5,7 @@ import '../core/theme/theme.dart';
 import '../core/widgets/widgets.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
+import '../features/history/presentation/screens/history_screen.dart';
 import '../features/plans/presentation/start_sheet.dart';
 import '../features/workout/presentation/screens/workout_runner_screen.dart';
 import '../features/workout/presentation/screens/workouts_screen.dart';
@@ -104,7 +105,7 @@ class _AppShellState extends ConsumerState<AppShell>
                 children: [
                   DashboardScreen(onSelectTab: _select),
                   WorkoutsScreen(onStart: _start),
-                  _Soon(l10n: l10n),
+                  const HistoryScreen(),
                   _Soon(l10n: l10n),
                   _Soon(l10n: l10n),
                 ],

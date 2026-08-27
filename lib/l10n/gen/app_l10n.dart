@@ -97,6 +97,132 @@ abstract class AppL10n {
     Locale('en')
   ];
 
+  /// Achsenbeschriftung
+  ///
+  /// In de, this message translates to:
+  /// **'Form 0–100'**
+  String get analysisChartLabel;
+
+  /// Komponente des Form-Werts
+  ///
+  /// In de, this message translates to:
+  /// **'Konstanz'**
+  String get analysisCompConsistency;
+
+  /// Komponente des Form-Werts
+  ///
+  /// In de, this message translates to:
+  /// **'Fitness ggü. Höchststand'**
+  String get analysisCompFitness;
+
+  /// Komponente des Form-Werts
+  ///
+  /// In de, this message translates to:
+  /// **'Lastentwicklung'**
+  String get analysisCompLoad;
+
+  /// Wird getrennt ausgewiesen, nicht verrechnet
+  ///
+  /// In de, this message translates to:
+  /// **'Abzug Untätigkeit'**
+  String get analysisCompPenalty;
+
+  /// Komponente des Form-Werts
+  ///
+  /// In de, this message translates to:
+  /// **'Aktualität'**
+  String get analysisCompRecency;
+
+  /// Komponente des Form-Werts
+  ///
+  /// In de, this message translates to:
+  /// **'Tageszuschlag'**
+  String get analysisCompToday;
+
+  /// Wert einer Komponente
+  ///
+  /// In de, this message translates to:
+  /// **'{v} / {max}'**
+  String analysisCompValue(int v, int max);
+
+  /// Erfasstes und Abgeleitetes fallen getrennt aus
+  ///
+  /// In de, this message translates to:
+  /// **'Deine {n} Einheiten sind vollständig da — nur die Auswertung fehlt.'**
+  String analysisErrorBody(int n);
+
+  /// Aktion im Fehlerzustand
+  ///
+  /// In de, this message translates to:
+  /// **'Neu berechnen'**
+  String get analysisErrorRetry;
+
+  /// Erfasstes und Abgeleitetes fallen getrennt aus
+  ///
+  /// In de, this message translates to:
+  /// **'Form nicht berechenbar'**
+  String get analysisErrorTitle;
+
+  /// Ausweg im Fehlerzustand
+  ///
+  /// In de, this message translates to:
+  /// **'Zur Liste'**
+  String get analysisErrorToList;
+
+  /// Begründung unter der Zerlegung
+  ///
+  /// In de, this message translates to:
+  /// **'Was fehlt, ist Aktualität — eine Einheit heute bringt sofort {n} Punkte.'**
+  String analysisHintRecency(int n);
+
+  /// Legende der Kurve
+  ///
+  /// In de, this message translates to:
+  /// **'mit Training'**
+  String get analysisLegendWith;
+
+  /// Legende der Kurve — die Lücke
+  ///
+  /// In de, this message translates to:
+  /// **'ohne Training'**
+  String get analysisLegendWithout;
+
+  /// Nennt die Schwellen aus DataSufficiency
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Trend braucht {n} Einheiten und {d} Tage Historie.'**
+  String analysisThinBody(int n, int d);
+
+  /// Überschrift über dem Vorhandenen
+  ///
+  /// In de, this message translates to:
+  /// **'Was es schon gibt'**
+  String get analysisThinHave;
+
+  /// Fortschritt zur Schwelle
+  ///
+  /// In de, this message translates to:
+  /// **'{cur} / {req}'**
+  String analysisThinProgress(int cur, int req);
+
+  /// Zustand bei zu dünner Datenlage
+  ///
+  /// In de, this message translates to:
+  /// **'Noch zu wenig für einen Trend'**
+  String get analysisThinTitle;
+
+  /// Titel der Formkurve
+  ///
+  /// In de, this message translates to:
+  /// **'Auswertung'**
+  String get analysisTitle;
+
+  /// Überschrift der Zerlegung
+  ///
+  /// In de, this message translates to:
+  /// **'Form heute'**
+  String get analysisToday;
+
   /// Pille über dem Anmeldeknopf
   ///
   /// In de, this message translates to:
@@ -1099,11 +1225,77 @@ abstract class AppL10n {
   /// **'MO,DI,MI,DO,FR,SA,SO'**
   String get dashboardWeekdays;
 
+  /// Überschrift im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Belastung an diesem Tag'**
+  String get detailAcwrLabel;
+
+  /// Belastungsverhältnis mit Zone
+  ///
+  /// In de, this message translates to:
+  /// **'ACWR {v} · {zone}'**
+  String detailAcwrZone(String v, String zone);
+
+  /// Kennzahl im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Last'**
+  String get detailLoad;
+
+  /// Kennzahl im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Pace /km'**
+  String get detailPace;
+
+  /// Hinweis bei Regeneration
+  ///
+  /// In de, this message translates to:
+  /// **'Recovery hält die Kette, treibt aber die Lastentwicklung nicht.'**
+  String get detailRecoveryBody;
+
+  /// Hinweis bei Regeneration
+  ///
+  /// In de, this message translates to:
+  /// **'Zählt für die Konstanz'**
+  String get detailRecoveryTitle;
+
+  /// Umfang der Einheit
+  ///
+  /// In de, this message translates to:
+  /// **'{e} Übungen · {s} Sätze'**
+  String detailSetsCount(int e, int s);
+
+  /// Erklärt, warum eine Einheit ohne Sätze trotzdem zählt
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Einheit wurde als Dauer erfasst. Last und Konstanz zählen trotzdem, Volumen bleibt leer.'**
+  String get detailSetsMissingBody;
+
+  /// 16 der 63 Krafteinheiten im Bestand tragen keine Übungen
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Sätze aufgezeichnet'**
+  String get detailSetsMissingTitle;
+
+  /// Kennzahl im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen'**
+  String get detailVolume;
+
   /// Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.
   ///
   /// In de, this message translates to:
   /// **'~{n} min'**
   String durationApproxMinutes(int n);
+
+  /// Dauer in Minuten, ohne Tilde — hier ist der Wert gemessen
+  ///
+  /// In de, this message translates to:
+  /// **'{n} min'**
+  String durationMinutes(int n);
 
   /// aus errors.deleteFailed
   ///
@@ -1393,6 +1585,150 @@ abstract class AppL10n {
   /// **'Du stehst auf der Liste'**
   String get gateTitle;
 
+  /// Öffnet die vollständige Liste
+  ///
+  /// In de, this message translates to:
+  /// **'Alle {n}'**
+  String historyAll(int n);
+
+  /// Führt zur Formkurve
+  ///
+  /// In de, this message translates to:
+  /// **'Auswertung öffnen'**
+  String get historyAnalysisOpen;
+
+  /// Leerzustand des Verlaufs
+  ///
+  /// In de, this message translates to:
+  /// **'Deine erste Einheit steht hier, sobald du sie beendet hast.'**
+  String get historyEmptyBody;
+
+  /// Leerzustand des Verlaufs
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nichts aufgezeichnet'**
+  String get historyEmptyTitle;
+
+  /// Fehlerzustand
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Einheiten konnten nicht geladen werden.'**
+  String get historyErrorBody;
+
+  /// Fehlerzustand
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf nicht verfügbar'**
+  String get historyErrorTitle;
+
+  /// Beschriftung des Form-Werts
+  ///
+  /// In de, this message translates to:
+  /// **'Form'**
+  String get historyFormLabel;
+
+  /// Form-Wert mit Maximum
+  ///
+  /// In de, this message translates to:
+  /// **'{v}/100'**
+  String historyFormOf(int v);
+
+  /// Der Satz der Aussage-Karte im Rhythmus
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Einheiten in {d} Tagen'**
+  String historyLeadFrequency(int n, int d);
+
+  /// Der Satz der Aussage-Karte bei Pause und Untätigkeit
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one {# Tag} other {# Tage}} ohne Training'**
+  String historyLeadGap(int n);
+
+  /// Zweite Zeile der Aussage-Karte
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt {weekday} {date} · {name}'**
+  String historyLeadLast(String weekday, String date, String name);
+
+  /// Überschrift des Monatsstreifens
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten je Monat'**
+  String get historyMonthsLabel;
+
+  /// Verteilung statt Durchschnitt — der Durchschnitt lügt bei diesem Bestand
+  ///
+  /// In de, this message translates to:
+  /// **'Median {n} Tage Abstand · längste Pause {max}'**
+  String historyMonthsMedian(int n, int max);
+
+  /// Überschrift der Kurzliste
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Einheiten'**
+  String get historyRecentLabel;
+
+  /// Titel des Tabs
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf'**
+  String get historyTitle;
+
+  /// Richtung der Formkurve
+  ///
+  /// In de, this message translates to:
+  /// **'fallend'**
+  String get historyTrendFalling;
+
+  /// Richtung der Formkurve
+  ///
+  /// In de, this message translates to:
+  /// **'steigend'**
+  String get historyTrendRising;
+
+  /// Richtung der Formkurve
+  ///
+  /// In de, this message translates to:
+  /// **'stabil'**
+  String get historyTrendStable;
+
+  /// Zustandszone: ab 28 Tagen
+  ///
+  /// In de, this message translates to:
+  /// **'Untätig'**
+  String get historyZoneInactive;
+
+  /// Zustandszone: 7 bis 27 Tage
+  ///
+  /// In de, this message translates to:
+  /// **'Pause'**
+  String get historyZonePause;
+
+  /// Zustandszone: 4 bis 6 Tage
+  ///
+  /// In de, this message translates to:
+  /// **'Dran geblieben'**
+  String get historyZoneRecent;
+
+  /// Zustandszone: bis 3 Tage Abstand
+  ///
+  /// In de, this message translates to:
+  /// **'Im Rhythmus'**
+  String get historyZoneRhythm;
+
+  /// Abschluss der Liste
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Einheit am {date} · {n} Tage her.'**
+  String listEndBody(String date, int n);
+
+  /// Abschluss der Liste
+  ///
+  /// In de, this message translates to:
+  /// **'Ende des Verlaufs'**
+  String get listEndTitle;
+
   /// Fehlerzustand der Listen
   ///
   /// In de, this message translates to:
@@ -1404,6 +1740,42 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Laden fehlgeschlagen'**
   String get listErrorTitle;
+
+  /// Lückenstreifen zwischen zwei Einheiten
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one {# Tag} other {# Tage}} ohne Training'**
+  String listGap(int n);
+
+  /// Zusatz am längsten Lückenstreifen
+  ///
+  /// In de, this message translates to:
+  /// **'längste Pause im Verlauf'**
+  String get listGapLongest;
+
+  /// Zeitraum der Lücke
+  ///
+  /// In de, this message translates to:
+  /// **'{from} – {to}'**
+  String listGapRange(String from, String to);
+
+  /// Kopfzeile eines Monats in der Liste
+  ///
+  /// In de, this message translates to:
+  /// **'{n} · Last {load}'**
+  String listMonthSummary(String n, int load);
+
+  /// Kennzeichnet die zweite Einheit an einem Tag
+  ///
+  /// In de, this message translates to:
+  /// **'{n}. Einheit'**
+  String listSecond(int n);
+
+  /// Titel der vollständigen Liste
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten'**
+  String get listTitle;
 
   /// Muskelgruppe
   ///
@@ -1729,11 +2101,23 @@ abstract class AppL10n {
   /// **'Körpergewicht'**
   String get typeBodyweight;
 
+  /// Trainingsart
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get typeCardio;
+
   /// Trainingsart eines Plans
   ///
   /// In de, this message translates to:
   /// **'Hybrid'**
   String get typeHybrid;
+
+  /// Trainingsart
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration'**
+  String get typeRecovery;
 
   /// Trainingsart eines Plans
   ///

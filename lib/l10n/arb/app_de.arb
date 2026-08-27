@@ -1,4 +1,122 @@
 {
+  "analysisChartLabel": "Form 0–100",
+  "@analysisChartLabel": {
+    "description": "Achsenbeschriftung"
+  },
+  "analysisCompConsistency": "Konstanz",
+  "@analysisCompConsistency": {
+    "description": "Komponente des Form-Werts"
+  },
+  "analysisCompFitness": "Fitness ggü. Höchststand",
+  "@analysisCompFitness": {
+    "description": "Komponente des Form-Werts"
+  },
+  "analysisCompLoad": "Lastentwicklung",
+  "@analysisCompLoad": {
+    "description": "Komponente des Form-Werts"
+  },
+  "analysisCompPenalty": "Abzug Untätigkeit",
+  "@analysisCompPenalty": {
+    "description": "Wird getrennt ausgewiesen, nicht verrechnet"
+  },
+  "analysisCompRecency": "Aktualität",
+  "@analysisCompRecency": {
+    "description": "Komponente des Form-Werts"
+  },
+  "analysisCompToday": "Tageszuschlag",
+  "@analysisCompToday": {
+    "description": "Komponente des Form-Werts"
+  },
+  "analysisCompValue": "{v} / {max}",
+  "@analysisCompValue": {
+    "description": "Wert einer Komponente",
+    "placeholders": {
+      "v": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisErrorBody": "Deine {n} Einheiten sind vollständig da — nur die Auswertung fehlt.",
+  "@analysisErrorBody": {
+    "description": "Erfasstes und Abgeleitetes fallen getrennt aus",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisErrorRetry": "Neu berechnen",
+  "@analysisErrorRetry": {
+    "description": "Aktion im Fehlerzustand"
+  },
+  "analysisErrorTitle": "Form nicht berechenbar",
+  "@analysisErrorTitle": {
+    "description": "Erfasstes und Abgeleitetes fallen getrennt aus"
+  },
+  "analysisErrorToList": "Zur Liste",
+  "@analysisErrorToList": {
+    "description": "Ausweg im Fehlerzustand"
+  },
+  "analysisHintRecency": "Was fehlt, ist Aktualität — eine Einheit heute bringt sofort {n} Punkte.",
+  "@analysisHintRecency": {
+    "description": "Begründung unter der Zerlegung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisLegendWith": "mit Training",
+  "@analysisLegendWith": {
+    "description": "Legende der Kurve"
+  },
+  "analysisLegendWithout": "ohne Training",
+  "@analysisLegendWithout": {
+    "description": "Legende der Kurve — die Lücke"
+  },
+  "analysisThinBody": "Ein Trend braucht {n} Einheiten und {d} Tage Historie.",
+  "@analysisThinBody": {
+    "description": "Nennt die Schwellen aus DataSufficiency",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "d": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisThinHave": "Was es schon gibt",
+  "@analysisThinHave": {
+    "description": "Überschrift über dem Vorhandenen"
+  },
+  "analysisThinProgress": "{cur} / {req}",
+  "@analysisThinProgress": {
+    "description": "Fortschritt zur Schwelle",
+    "placeholders": {
+      "cur": {
+        "type": "int"
+      },
+      "req": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisThinTitle": "Noch zu wenig für einen Trend",
+  "@analysisThinTitle": {
+    "description": "Zustand bei zu dünner Datenlage"
+  },
+  "analysisTitle": "Auswertung",
+  "@analysisTitle": {
+    "description": "Titel der Formkurve"
+  },
+  "analysisToday": "Form heute",
+  "@analysisToday": {
+    "description": "Überschrift der Zerlegung"
+  },
   "authBetaBadge": "GESCHLOSSENE BETA",
   "@authBetaBadge": {
     "description": "Pille über dem Anmeldeknopf"
@@ -836,9 +954,74 @@
   "@dashboardWeekdays": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "detailAcwrLabel": "Belastung an diesem Tag",
+  "@detailAcwrLabel": {
+    "description": "Überschrift im Detail"
+  },
+  "detailAcwrZone": "ACWR {v} · {zone}",
+  "@detailAcwrZone": {
+    "description": "Belastungsverhältnis mit Zone",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      },
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "detailLoad": "Last",
+  "@detailLoad": {
+    "description": "Kennzahl im Detail"
+  },
+  "detailPace": "Pace /km",
+  "@detailPace": {
+    "description": "Kennzahl im Detail"
+  },
+  "detailRecoveryBody": "Recovery hält die Kette, treibt aber die Lastentwicklung nicht.",
+  "@detailRecoveryBody": {
+    "description": "Hinweis bei Regeneration"
+  },
+  "detailRecoveryTitle": "Zählt für die Konstanz",
+  "@detailRecoveryTitle": {
+    "description": "Hinweis bei Regeneration"
+  },
+  "detailSetsCount": "{e} Übungen · {s} Sätze",
+  "@detailSetsCount": {
+    "description": "Umfang der Einheit",
+    "placeholders": {
+      "e": {
+        "type": "int"
+      },
+      "s": {
+        "type": "int"
+      }
+    }
+  },
+  "detailSetsMissingBody": "Diese Einheit wurde als Dauer erfasst. Last und Konstanz zählen trotzdem, Volumen bleibt leer.",
+  "@detailSetsMissingBody": {
+    "description": "Erklärt, warum eine Einheit ohne Sätze trotzdem zählt"
+  },
+  "detailSetsMissingTitle": "Keine Sätze aufgezeichnet",
+  "@detailSetsMissingTitle": {
+    "description": "16 der 63 Krafteinheiten im Bestand tragen keine Übungen"
+  },
+  "detailVolume": "Volumen",
+  "@detailVolume": {
+    "description": "Kennzahl im Detail"
+  },
   "durationApproxMinutes": "~{n} min",
   "@durationApproxMinutes": {
     "description": "Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durationMinutes": "{n} min",
+  "@durationMinutes": {
+    "description": "Dauer in Minuten, ohne Tilde — hier ist der Wert gemessen",
     "placeholders": {
       "n": {
         "type": "int"
@@ -1108,6 +1291,152 @@
   "@gateTitle": {
     "description": "Überschrift des Warteraums"
   },
+  "historyAll": "Alle {n}",
+  "@historyAll": {
+    "description": "Öffnet die vollständige Liste",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyAnalysisOpen": "Auswertung öffnen",
+  "@historyAnalysisOpen": {
+    "description": "Führt zur Formkurve"
+  },
+  "historyEmptyBody": "Deine erste Einheit steht hier, sobald du sie beendet hast.",
+  "@historyEmptyBody": {
+    "description": "Leerzustand des Verlaufs"
+  },
+  "historyEmptyTitle": "Noch nichts aufgezeichnet",
+  "@historyEmptyTitle": {
+    "description": "Leerzustand des Verlaufs"
+  },
+  "historyErrorBody": "Deine Einheiten konnten nicht geladen werden.",
+  "@historyErrorBody": {
+    "description": "Fehlerzustand"
+  },
+  "historyErrorTitle": "Verlauf nicht verfügbar",
+  "@historyErrorTitle": {
+    "description": "Fehlerzustand"
+  },
+  "historyFormLabel": "Form",
+  "@historyFormLabel": {
+    "description": "Beschriftung des Form-Werts"
+  },
+  "historyFormOf": "{v}/100",
+  "@historyFormOf": {
+    "description": "Form-Wert mit Maximum",
+    "placeholders": {
+      "v": {
+        "type": "int"
+      }
+    }
+  },
+  "historyLeadFrequency": "{n} Einheiten in {d} Tagen",
+  "@historyLeadFrequency": {
+    "description": "Der Satz der Aussage-Karte im Rhythmus",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "d": {
+        "type": "int"
+      }
+    }
+  },
+  "historyLeadGap": "{n, plural, one {# Tag} other {# Tage}} ohne Training",
+  "@historyLeadGap": {
+    "description": "Der Satz der Aussage-Karte bei Pause und Untätigkeit",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyLeadLast": "Zuletzt {weekday} {date} · {name}",
+  "@historyLeadLast": {
+    "description": "Zweite Zeile der Aussage-Karte",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyMonthsLabel": "Einheiten je Monat",
+  "@historyMonthsLabel": {
+    "description": "Überschrift des Monatsstreifens"
+  },
+  "historyMonthsMedian": "Median {n} Tage Abstand · längste Pause {max}",
+  "@historyMonthsMedian": {
+    "description": "Verteilung statt Durchschnitt — der Durchschnitt lügt bei diesem Bestand",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "historyRecentLabel": "Letzte Einheiten",
+  "@historyRecentLabel": {
+    "description": "Überschrift der Kurzliste"
+  },
+  "historyTitle": "Verlauf",
+  "@historyTitle": {
+    "description": "Titel des Tabs"
+  },
+  "historyTrendFalling": "fallend",
+  "@historyTrendFalling": {
+    "description": "Richtung der Formkurve"
+  },
+  "historyTrendRising": "steigend",
+  "@historyTrendRising": {
+    "description": "Richtung der Formkurve"
+  },
+  "historyTrendStable": "stabil",
+  "@historyTrendStable": {
+    "description": "Richtung der Formkurve"
+  },
+  "historyZoneInactive": "Untätig",
+  "@historyZoneInactive": {
+    "description": "Zustandszone: ab 28 Tagen"
+  },
+  "historyZonePause": "Pause",
+  "@historyZonePause": {
+    "description": "Zustandszone: 7 bis 27 Tage"
+  },
+  "historyZoneRecent": "Dran geblieben",
+  "@historyZoneRecent": {
+    "description": "Zustandszone: 4 bis 6 Tage"
+  },
+  "historyZoneRhythm": "Im Rhythmus",
+  "@historyZoneRhythm": {
+    "description": "Zustandszone: bis 3 Tage Abstand"
+  },
+  "listEndBody": "Erste Einheit am {date} · {n} Tage her.",
+  "@listEndBody": {
+    "description": "Abschluss der Liste",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "listEndTitle": "Ende des Verlaufs",
+  "@listEndTitle": {
+    "description": "Abschluss der Liste"
+  },
   "listErrorBody": "Deine Workouts konnten nicht geladen werden.",
   "@listErrorBody": {
     "description": "Fehlerzustand der Listen"
@@ -1115,6 +1444,56 @@
   "listErrorTitle": "Laden fehlgeschlagen",
   "@listErrorTitle": {
     "description": "Fehlerzustand der Listen"
+  },
+  "listGap": "{n, plural, one {# Tag} other {# Tage}} ohne Training",
+  "@listGap": {
+    "description": "Lückenstreifen zwischen zwei Einheiten",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "listGapLongest": "längste Pause im Verlauf",
+  "@listGapLongest": {
+    "description": "Zusatz am längsten Lückenstreifen"
+  },
+  "listGapRange": "{from} – {to}",
+  "@listGapRange": {
+    "description": "Zeitraum der Lücke",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "listMonthSummary": "{n} · Last {load}",
+  "@listMonthSummary": {
+    "description": "Kopfzeile eines Monats in der Liste",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "load": {
+        "type": "int"
+      }
+    }
+  },
+  "listSecond": "{n}. Einheit",
+  "@listSecond": {
+    "description": "Kennzeichnet die zweite Einheit an einem Tag",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "listTitle": "Einheiten",
+  "@listTitle": {
+    "description": "Titel der vollständigen Liste"
   },
   "@@locale": "de",
   "muscleArms": "Arme",
@@ -1377,9 +1756,17 @@
   "@typeBodyweight": {
     "description": "Trainingsart eines Plans"
   },
+  "typeCardio": "Cardio",
+  "@typeCardio": {
+    "description": "Trainingsart"
+  },
   "typeHybrid": "Hybrid",
   "@typeHybrid": {
     "description": "Trainingsart eines Plans"
+  },
+  "typeRecovery": "Regeneration",
+  "@typeRecovery": {
+    "description": "Trainingsart"
   },
   "typeStrength": "Kraft",
   "@typeStrength": {

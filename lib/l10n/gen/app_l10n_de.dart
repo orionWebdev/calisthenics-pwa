@@ -9,6 +9,79 @@ class AppL10nDe extends AppL10n {
   AppL10nDe([String locale = 'de']) : super(locale);
 
   @override
+  String get analysisChartLabel => 'Form 0–100';
+
+  @override
+  String get analysisCompConsistency => 'Konstanz';
+
+  @override
+  String get analysisCompFitness => 'Fitness ggü. Höchststand';
+
+  @override
+  String get analysisCompLoad => 'Lastentwicklung';
+
+  @override
+  String get analysisCompPenalty => 'Abzug Untätigkeit';
+
+  @override
+  String get analysisCompRecency => 'Aktualität';
+
+  @override
+  String get analysisCompToday => 'Tageszuschlag';
+
+  @override
+  String analysisCompValue(int v, int max) {
+    return '$v / $max';
+  }
+
+  @override
+  String analysisErrorBody(int n) {
+    return 'Deine $n Einheiten sind vollständig da — nur die Auswertung fehlt.';
+  }
+
+  @override
+  String get analysisErrorRetry => 'Neu berechnen';
+
+  @override
+  String get analysisErrorTitle => 'Form nicht berechenbar';
+
+  @override
+  String get analysisErrorToList => 'Zur Liste';
+
+  @override
+  String analysisHintRecency(int n) {
+    return 'Was fehlt, ist Aktualität — eine Einheit heute bringt sofort $n Punkte.';
+  }
+
+  @override
+  String get analysisLegendWith => 'mit Training';
+
+  @override
+  String get analysisLegendWithout => 'ohne Training';
+
+  @override
+  String analysisThinBody(int n, int d) {
+    return 'Ein Trend braucht $n Einheiten und $d Tage Historie.';
+  }
+
+  @override
+  String get analysisThinHave => 'Was es schon gibt';
+
+  @override
+  String analysisThinProgress(int cur, int req) {
+    return '$cur / $req';
+  }
+
+  @override
+  String get analysisThinTitle => 'Noch zu wenig für einen Trend';
+
+  @override
+  String get analysisTitle => 'Auswertung';
+
+  @override
+  String get analysisToday => 'Form heute';
+
+  @override
   String get authBetaBadge => 'GESCHLOSSENE BETA';
 
   @override
@@ -595,8 +668,49 @@ class AppL10nDe extends AppL10n {
   String get dashboardWeekdays => 'MO,DI,MI,DO,FR,SA,SO';
 
   @override
+  String get detailAcwrLabel => 'Belastung an diesem Tag';
+
+  @override
+  String detailAcwrZone(String v, String zone) {
+    return 'ACWR $v · $zone';
+  }
+
+  @override
+  String get detailLoad => 'Last';
+
+  @override
+  String get detailPace => 'Pace /km';
+
+  @override
+  String get detailRecoveryBody =>
+      'Recovery hält die Kette, treibt aber die Lastentwicklung nicht.';
+
+  @override
+  String get detailRecoveryTitle => 'Zählt für die Konstanz';
+
+  @override
+  String detailSetsCount(int e, int s) {
+    return '$e Übungen · $s Sätze';
+  }
+
+  @override
+  String get detailSetsMissingBody =>
+      'Diese Einheit wurde als Dauer erfasst. Last und Konstanz zählen trotzdem, Volumen bleibt leer.';
+
+  @override
+  String get detailSetsMissingTitle => 'Keine Sätze aufgezeichnet';
+
+  @override
+  String get detailVolume => 'Volumen';
+
+  @override
   String durationApproxMinutes(int n) {
     return '~$n min';
+  }
+
+  @override
+  String durationMinutes(int n) {
+    return '$n min';
   }
 
   @override
@@ -783,10 +897,136 @@ class AppL10nDe extends AppL10n {
   String get gateTitle => 'Du stehst auf der Liste';
 
   @override
+  String historyAll(int n) {
+    return 'Alle $n';
+  }
+
+  @override
+  String get historyAnalysisOpen => 'Auswertung öffnen';
+
+  @override
+  String get historyEmptyBody =>
+      'Deine erste Einheit steht hier, sobald du sie beendet hast.';
+
+  @override
+  String get historyEmptyTitle => 'Noch nichts aufgezeichnet';
+
+  @override
+  String get historyErrorBody =>
+      'Deine Einheiten konnten nicht geladen werden.';
+
+  @override
+  String get historyErrorTitle => 'Verlauf nicht verfügbar';
+
+  @override
+  String get historyFormLabel => 'Form';
+
+  @override
+  String historyFormOf(int v) {
+    return '$v/100';
+  }
+
+  @override
+  String historyLeadFrequency(int n, int d) {
+    return '$n Einheiten in $d Tagen';
+  }
+
+  @override
+  String historyLeadGap(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Tage',
+      one: '# Tag',
+    );
+    return '$_temp0 ohne Training';
+  }
+
+  @override
+  String historyLeadLast(String weekday, String date, String name) {
+    return 'Zuletzt $weekday $date · $name';
+  }
+
+  @override
+  String get historyMonthsLabel => 'Einheiten je Monat';
+
+  @override
+  String historyMonthsMedian(int n, int max) {
+    return 'Median $n Tage Abstand · längste Pause $max';
+  }
+
+  @override
+  String get historyRecentLabel => 'Letzte Einheiten';
+
+  @override
+  String get historyTitle => 'Verlauf';
+
+  @override
+  String get historyTrendFalling => 'fallend';
+
+  @override
+  String get historyTrendRising => 'steigend';
+
+  @override
+  String get historyTrendStable => 'stabil';
+
+  @override
+  String get historyZoneInactive => 'Untätig';
+
+  @override
+  String get historyZonePause => 'Pause';
+
+  @override
+  String get historyZoneRecent => 'Dran geblieben';
+
+  @override
+  String get historyZoneRhythm => 'Im Rhythmus';
+
+  @override
+  String listEndBody(String date, int n) {
+    return 'Erste Einheit am $date · $n Tage her.';
+  }
+
+  @override
+  String get listEndTitle => 'Ende des Verlaufs';
+
+  @override
   String get listErrorBody => 'Deine Workouts konnten nicht geladen werden.';
 
   @override
   String get listErrorTitle => 'Laden fehlgeschlagen';
+
+  @override
+  String listGap(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Tage',
+      one: '# Tag',
+    );
+    return '$_temp0 ohne Training';
+  }
+
+  @override
+  String get listGapLongest => 'längste Pause im Verlauf';
+
+  @override
+  String listGapRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String listMonthSummary(String n, int load) {
+    return '$n · Last $load';
+  }
+
+  @override
+  String listSecond(int n) {
+    return '$n. Einheit';
+  }
+
+  @override
+  String get listTitle => 'Einheiten';
 
   @override
   String get muscleArms => 'Arme';
@@ -974,7 +1214,13 @@ class AppL10nDe extends AppL10n {
   String get typeBodyweight => 'Körpergewicht';
 
   @override
+  String get typeCardio => 'Cardio';
+
+  @override
   String get typeHybrid => 'Hybrid';
+
+  @override
+  String get typeRecovery => 'Regeneration';
 
   @override
   String get typeStrength => 'Kraft';

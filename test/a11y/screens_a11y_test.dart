@@ -8,6 +8,7 @@ import 'package:atem/features/auth/presentation/screens/splash_screen.dart';
 import 'package:atem/features/auth/presentation/screens/waiting_room_screen.dart';
 import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_detail_screen.dart';
+import 'package:atem/features/history/presentation/screens/history_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_list_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_detail_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
@@ -71,6 +72,10 @@ void main() {
 
   testWidgets('Plandetail mit Lücke erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, PlanDetailScreen(plan: fixturePlans.first));
+  });
+
+  testWidgets('Verlauf erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const HistoryScreen());
   });
 
   testWidgets('Workout Runner erfüllt den A11y-Vertrag', (tester) async {
