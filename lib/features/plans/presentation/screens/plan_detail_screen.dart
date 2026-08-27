@@ -7,6 +7,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../exercises/domain/exercise.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
+import '../../../settings/application/settings_providers.dart';
 import '../../application/plan_providers.dart';
 import '../../domain/plan.dart';
 import '../start_sheet.dart';
@@ -107,7 +108,11 @@ class PlanDetailScreen extends ConsumerWidget {
                   label: l10n.workoutsStart,
                   semanticLabel: l10n.sheetStartTitle(plan.name),
                   onPressed: () async {
-                    final request = await StartSheet.show(context, plan: plan);
+                    final request = await StartSheet.show(
+                      context,
+                      plan: plan,
+                      restSeconds: ref.read(defaultRestSecondsProvider),
+                    );
                     if (request != null) onStart!(request);
                   },
                 ),

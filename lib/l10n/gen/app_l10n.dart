@@ -2749,6 +2749,480 @@ abstract class AppL10n {
   /// **'Einheit bearbeiten'**
   String get sessionEditTitle;
 
+  /// Zeile im Abschnitt ueber die App
+  ///
+  /// In de, this message translates to:
+  /// **'Privates Projekt, keine kommerzielle Nutzung.'**
+  String get settingsAboutPrivate;
+
+  /// Die Tatsache an der Stelle, an der sonst ein Schalter stuende
+  ///
+  /// In de, this message translates to:
+  /// **'Nur dunkel — ATEM ist für dunkle Umgebungen gebaut.'**
+  String get settingsAboutTheme;
+
+  /// Zeile im Abschnitt ueber die App
+  ///
+  /// In de, this message translates to:
+  /// **'Version {version}'**
+  String settingsAboutVersion(String version);
+
+  /// Feldbeschriftung
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht'**
+  String get settingsBodyWeight;
+
+  /// Fehler am Gewichtsfeld
+  ///
+  /// In de, this message translates to:
+  /// **'Zwischen {min} und {max} kg.'**
+  String settingsBodyWeightFault(int min, int max);
+
+  /// Hilfetext unter dem Gewichtsfeld
+  ///
+  /// In de, this message translates to:
+  /// **'Rechnet jede Körpergewichtsübung neu — auch die von früher.'**
+  String get settingsBodyWeightHint;
+
+  /// Zustand ohne Körpergewicht
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nicht hinterlegt'**
+  String get settingsBodyWeightNone;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen'**
+  String get settingsDelete;
+
+  /// Vorlesetext des Dialogschleiers
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen'**
+  String get settingsDeleteBarrier;
+
+  /// Hilfetext am Bestätigungsfeld
+  ///
+  /// In de, this message translates to:
+  /// **'Genau so, in Großbuchstaben.'**
+  String get settingsDeleteConfirmHint;
+
+  /// Das Wort, das getippt werden muss, in Grossbuchstaben
+  ///
+  /// In de, this message translates to:
+  /// **'LÖSCHEN'**
+  String get settingsDeleteConfirmWord;
+
+  /// Was konkret verschwindet
+  ///
+  /// In de, this message translates to:
+  /// **'{sessions} Einheiten · {plans} Pläne · {exercises} eigene Übungen'**
+  String settingsDeleteCounts(int sessions, int plans, int exercises);
+
+  /// Zweiter Ausgang der ersten Stufe
+  ///
+  /// In de, this message translates to:
+  /// **'Daten vorher sichern'**
+  String get settingsDeleteExport;
+
+  /// Fehlermeldung
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen nicht abgeschlossen'**
+  String get settingsDeleteFailed;
+
+  /// Fehlermeldung, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Teil deiner Daten ist noch da. Versuche es erneut, solange du angemeldet bist.'**
+  String get settingsDeleteFailedBody;
+
+  /// Gesperrt ohne Netz, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen greift über mehrere Sammlungen. Ohne Verbindung bliebe die Hälfte stehen.'**
+  String get settingsDeleteOfflineBody;
+
+  /// Gesperrt ohne Netz
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Verbindung nicht möglich'**
+  String get settingsDeleteOfflineTitle;
+
+  /// Ladezustand
+  ///
+  /// In de, this message translates to:
+  /// **'Wird gelöscht …'**
+  String get settingsDeleteRunning;
+
+  /// Erste Stufe, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten, Pläne, eigene Übungen, Termine und dein Profil werden entfernt. Es gibt kein Zurück und kein Zeitfenster.'**
+  String get settingsDeleteStep1Body;
+
+  /// Erste Stufe
+  ///
+  /// In de, this message translates to:
+  /// **'Konto und alle Daten löschen?'**
+  String get settingsDeleteStep1Title;
+
+  /// Zweite Stufe, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Tippe {word}, um zu bestätigen.'**
+  String settingsDeleteStep2Body(String word);
+
+  /// Zweite Stufe
+  ///
+  /// In de, this message translates to:
+  /// **'Wirklich endgültig löschen?'**
+  String get settingsDeleteStep2Title;
+
+  /// Erklärung
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM ist geschlossen; die Freischaltung steht in einer Liste, die zum Programm gehört und nicht zum Konto. Meldest du dich erneut an, bist du wieder dabei — mit leerem Bestand.'**
+  String get settingsDeletedAccessBody;
+
+  /// Der erklärungsbedürftige Teil
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Zugang bleibt bestehen'**
+  String get settingsDeletedAccessTitle;
+
+  /// Abschlussbildschirm, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Trainingsdaten sind entfernt.'**
+  String get settingsDeletedBody;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Schließen'**
+  String get settingsDeletedClose;
+
+  /// Abschlussbildschirm
+  ///
+  /// In de, this message translates to:
+  /// **'Konto gelöscht'**
+  String get settingsDeletedTitle;
+
+  /// Erklärung der beiden Formate
+  ///
+  /// In de, this message translates to:
+  /// **'JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.'**
+  String get settingsExportBody;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten als CSV'**
+  String get settingsExportCsv;
+
+  /// Rückmeldung
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Dokumente gesichert'**
+  String settingsExportDone(int n);
+
+  /// Fehlermeldung
+  ///
+  /// In de, this message translates to:
+  /// **'Sichern fehlgeschlagen'**
+  String get settingsExportFailed;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Alles als JSON'**
+  String get settingsExportJson;
+
+  /// Ladezustand
+  ///
+  /// In de, this message translates to:
+  /// **'Wird gesammelt …'**
+  String get settingsExportRunning;
+
+  /// Titel
+  ///
+  /// In de, this message translates to:
+  /// **'Daten sichern'**
+  String get settingsExportTitle;
+
+  /// Erklaerung am Profilkopf statt eines defekt wirkenden Formulars
+  ///
+  /// In de, this message translates to:
+  /// **'Name und Bild kommen von deinem Google-Konto.'**
+  String get settingsFromGoogle;
+
+  /// Schalterbeschriftung
+  ///
+  /// In de, this message translates to:
+  /// **'Vibration'**
+  String get settingsHaptics;
+
+  /// Hilfetext
+  ///
+  /// In de, this message translates to:
+  /// **'Kurze Rückmeldung beim Antippen und am Pausenende.'**
+  String get settingsHapticsHint;
+
+  /// Vorlesetext, Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Vibration aus'**
+  String get settingsHapticsOff;
+
+  /// Vorlesetext, Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Vibration an'**
+  String get settingsHapticsOn;
+
+  /// Rechtlicher Weg
+  ///
+  /// In de, this message translates to:
+  /// **'Impressum'**
+  String get settingsImprint;
+
+  /// Feldbeschriftung
+  ///
+  /// In de, this message translates to:
+  /// **'Sprache'**
+  String get settingsLanguage;
+
+  /// Sprache
+  ///
+  /// In de, this message translates to:
+  /// **'Englisch'**
+  String get settingsLanguageEnglish;
+
+  /// Sprache
+  ///
+  /// In de, this message translates to:
+  /// **'Deutsch'**
+  String get settingsLanguageGerman;
+
+  /// Hilfetext unter der Sprachwahl
+  ///
+  /// In de, this message translates to:
+  /// **'Wirkt sofort.'**
+  String get settingsLanguageHint;
+
+  /// Fehlermeldung
+  ///
+  /// In de, this message translates to:
+  /// **'Seite lässt sich nicht öffnen'**
+  String get settingsLinkFailed;
+
+  /// Vorlesetext des Profilbilds im Dashboard-Kopf
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen und Profil öffnen'**
+  String get settingsOpenA11y;
+
+  /// Hilfetext an den rechtlichen Wegen
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnet im Browser'**
+  String get settingsOpensBrowser;
+
+  /// Ladezustand der Vorschau
+  ///
+  /// In de, this message translates to:
+  /// **'Wird gerechnet …'**
+  String get settingsPreviewComputing;
+
+  /// Zeile der Vorschau
+  ///
+  /// In de, this message translates to:
+  /// **'Fitness ggü. Höchststand'**
+  String get settingsPreviewFitness;
+
+  /// Zeile der Vorschau
+  ///
+  /// In de, this message translates to:
+  /// **'Last der letzten Einheit'**
+  String get settingsPreviewLoad;
+
+  /// Vorschau ohne Änderung
+  ///
+  /// In de, this message translates to:
+  /// **'An deinen Auswertungen ändert das nichts.'**
+  String get settingsPreviewNone;
+
+  /// Überschrift der Vorschau
+  ///
+  /// In de, this message translates to:
+  /// **'Was sich dadurch ändert'**
+  String get settingsPreviewTitle;
+
+  /// Rechtlicher Weg
+  ///
+  /// In de, this message translates to:
+  /// **'Datenschutzerklärung'**
+  String get settingsPrivacy;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Onboarding wiederholen'**
+  String get settingsReplayOnboarding;
+
+  /// Hilfetext
+  ///
+  /// In de, this message translates to:
+  /// **'Fragt das Körpergewicht erneut ab.'**
+  String get settingsReplayOnboardingHint;
+
+  /// Feldbeschriftung
+  ///
+  /// In de, this message translates to:
+  /// **'Pausenzeit'**
+  String get settingsRest;
+
+  /// Fehler an der Pausenzeit
+  ///
+  /// In de, this message translates to:
+  /// **'Zwischen {min} und {max} Sekunden.'**
+  String settingsRestFault(int min, int max);
+
+  /// Hilfetext unter der Pausenzeit
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschlag beim Start einer Einheit. Im Training änderbar.'**
+  String get settingsRestHint;
+
+  /// Abschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'Über die App'**
+  String get settingsSectionAbout;
+
+  /// Abschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'Konto'**
+  String get settingsSectionAccount;
+
+  /// Abschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'App'**
+  String get settingsSectionApp;
+
+  /// Abschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'Rechtliches'**
+  String get settingsSectionLegal;
+
+  /// Abschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'Profil'**
+  String get settingsSectionProfile;
+
+  /// Abschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'Training'**
+  String get settingsSectionTraining;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden'**
+  String get settingsSignOut;
+
+  /// Vorlesetext des Dialogschleiers
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden'**
+  String get settingsSignOutBarrier;
+
+  /// Bestätigung, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Daten bleiben. Du kannst dich jederzeit wieder anmelden.'**
+  String get settingsSignOutBody;
+
+  /// Bestätigung
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden?'**
+  String get settingsSignOutTitle;
+
+  /// Beschriftung am Konto
+  ///
+  /// In de, this message translates to:
+  /// **'Angemeldet als'**
+  String get settingsSignedInAs;
+
+  /// Rechtlicher Weg
+  ///
+  /// In de, this message translates to:
+  /// **'Nutzungsbedingungen'**
+  String get settingsTerms;
+
+  /// Titel des Bildschirms
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen'**
+  String get settingsTitle;
+
+  /// Feldbeschriftung
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten'**
+  String get settingsUnits;
+
+  /// Hilfetext unter der Einheitenwahl
+  ///
+  /// In de, this message translates to:
+  /// **'Gespeichert wird immer in Kilogramm.'**
+  String get settingsUnitsHint;
+
+  /// Einheitensystem
+  ///
+  /// In de, this message translates to:
+  /// **'Imperial'**
+  String get settingsUnitsImperial;
+
+  /// Vorlesetext
+  ///
+  /// In de, this message translates to:
+  /// **'Imperial, Pfund'**
+  String get settingsUnitsImperialA11y;
+
+  /// Einheitensystem
+  ///
+  /// In de, this message translates to:
+  /// **'Metrisch'**
+  String get settingsUnitsMetric;
+
+  /// Vorlesetext
+  ///
+  /// In de, this message translates to:
+  /// **'Metrisch, Kilogramm'**
+  String get settingsUnitsMetricA11y;
+
+  /// Widerrufshinweis
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht auf {weight} kg geändert'**
+  String settingsWeightChanged(String weight);
+
+  /// Widerrufshinweis, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Du kannst das {n} Sekunden lang zurücknehmen.'**
+  String settingsWeightChangedBody(int n);
+
   /// Text im Start-Sheet beim freien Training
   ///
   /// In de, this message translates to:
@@ -2820,6 +3294,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{v} km'**
   String unitKilometers(String v);
+
+  /// Einheit hinter einem Zahlenfeld
+  ///
+  /// In de, this message translates to:
+  /// **'kg'**
+  String get unitSuffixKilograms;
+
+  /// Einheit hinter einem Zahlenfeld
+  ///
+  /// In de, this message translates to:
+  /// **'lb'**
+  String get unitSuffixPounds;
+
+  /// Einheit hinter einem Zahlenfeld
+  ///
+  /// In de, this message translates to:
+  /// **'s'**
+  String get unitSuffixSeconds;
 
   /// Runner, Modul 1/2 Spezifikation
   ///

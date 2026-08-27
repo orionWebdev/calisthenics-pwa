@@ -1558,6 +1558,374 @@
   "@sessionEditTitle": {
     "description": "Titel des Formulars"
   },
+  "settingsAboutPrivate": "Private project, not for commercial use.",
+  "@settingsAboutPrivate": {
+    "description": "Zeile im Abschnitt ueber die App"
+  },
+  "settingsAboutTheme": "Dark only — ATEM is built for dark surroundings.",
+  "@settingsAboutTheme": {
+    "description": "Die Tatsache an der Stelle, an der sonst ein Schalter stuende"
+  },
+  "settingsAboutVersion": "Version {version}",
+  "@settingsAboutVersion": {
+    "description": "Zeile im Abschnitt ueber die App",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBodyWeight": "Body weight",
+  "@settingsBodyWeight": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsBodyWeightFault": "Between {min} and {max} kg.",
+  "@settingsBodyWeightFault": {
+    "description": "Fehler am Gewichtsfeld",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsBodyWeightHint": "Recalculates every bodyweight exercise, including past ones.",
+  "@settingsBodyWeightHint": {
+    "description": "Hilfetext unter dem Gewichtsfeld"
+  },
+  "settingsBodyWeightNone": "Not set yet",
+  "@settingsBodyWeightNone": {
+    "description": "Zustand ohne Körpergewicht"
+  },
+  "settingsDelete": "Delete account",
+  "@settingsDelete": {
+    "description": "Aktion"
+  },
+  "settingsDeleteBarrier": "Delete account",
+  "@settingsDeleteBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "settingsDeleteConfirmHint": "Exactly like that, in capitals.",
+  "@settingsDeleteConfirmHint": {
+    "description": "Hilfetext am Bestätigungsfeld"
+  },
+  "settingsDeleteConfirmWord": "DELETE",
+  "@settingsDeleteConfirmWord": {
+    "description": "Das Wort, das getippt werden muss, in Grossbuchstaben"
+  },
+  "settingsDeleteCounts": "{sessions} sessions · {plans} plans · {exercises} own exercises",
+  "@settingsDeleteCounts": {
+    "description": "Was konkret verschwindet",
+    "placeholders": {
+      "sessions": {
+        "type": "int"
+      },
+      "plans": {
+        "type": "int"
+      },
+      "exercises": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDeleteExport": "Export data first",
+  "@settingsDeleteExport": {
+    "description": "Zweiter Ausgang der ersten Stufe"
+  },
+  "settingsDeleteFailed": "Deletion incomplete",
+  "@settingsDeleteFailed": {
+    "description": "Fehlermeldung"
+  },
+  "settingsDeleteFailedBody": "Some of your data is still there. Try again while you are signed in.",
+  "@settingsDeleteFailedBody": {
+    "description": "Fehlermeldung, Text"
+  },
+  "settingsDeleteOfflineBody": "Deletion spans several collections. Without a connection half of it would remain.",
+  "@settingsDeleteOfflineBody": {
+    "description": "Gesperrt ohne Netz, Text"
+  },
+  "settingsDeleteOfflineTitle": "Not possible while offline",
+  "@settingsDeleteOfflineTitle": {
+    "description": "Gesperrt ohne Netz"
+  },
+  "settingsDeleteRunning": "Deleting …",
+  "@settingsDeleteRunning": {
+    "description": "Ladezustand"
+  },
+  "settingsDeleteStep1Body": "Sessions, plans, your own exercises, appointments and your profile will be removed. There is no undo and no time window.",
+  "@settingsDeleteStep1Body": {
+    "description": "Erste Stufe, Text"
+  },
+  "settingsDeleteStep1Title": "Delete account and all data?",
+  "@settingsDeleteStep1Title": {
+    "description": "Erste Stufe"
+  },
+  "settingsDeleteStep2Body": "Type {word} to confirm.",
+  "@settingsDeleteStep2Body": {
+    "description": "Zweite Stufe, Text",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsDeleteStep2Title": "Really delete permanently?",
+  "@settingsDeleteStep2Title": {
+    "description": "Zweite Stufe"
+  },
+  "settingsDeletedAccessBody": "ATEM is invite-only; your access is held in a list that belongs to the programme, not to your account. If you sign in again you are back — with no data.",
+  "@settingsDeletedAccessBody": {
+    "description": "Erklärung"
+  },
+  "settingsDeletedAccessTitle": "Your access remains",
+  "@settingsDeletedAccessTitle": {
+    "description": "Der erklärungsbedürftige Teil"
+  },
+  "settingsDeletedBody": "Your training data has been removed.",
+  "@settingsDeletedBody": {
+    "description": "Abschlussbildschirm, Text"
+  },
+  "settingsDeletedClose": "Close",
+  "@settingsDeletedClose": {
+    "description": "Aktion"
+  },
+  "settingsDeletedTitle": "Account deleted",
+  "@settingsDeletedTitle": {
+    "description": "Abschlussbildschirm"
+  },
+  "settingsExportBody": "JSON contains everything. CSV contains your sessions as a table, one row per set.",
+  "@settingsExportBody": {
+    "description": "Erklärung der beiden Formate"
+  },
+  "settingsExportCsv": "Sessions as CSV",
+  "@settingsExportCsv": {
+    "description": "Aktion"
+  },
+  "settingsExportDone": "{n} documents exported",
+  "@settingsExportDone": {
+    "description": "Rückmeldung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsExportFailed": "Export failed",
+  "@settingsExportFailed": {
+    "description": "Fehlermeldung"
+  },
+  "settingsExportJson": "Everything as JSON",
+  "@settingsExportJson": {
+    "description": "Aktion"
+  },
+  "settingsExportRunning": "Collecting …",
+  "@settingsExportRunning": {
+    "description": "Ladezustand"
+  },
+  "settingsExportTitle": "Export data",
+  "@settingsExportTitle": {
+    "description": "Titel"
+  },
+  "settingsFromGoogle": "Name and picture come from your Google account.",
+  "@settingsFromGoogle": {
+    "description": "Erklaerung am Profilkopf statt eines defekt wirkenden Formulars"
+  },
+  "settingsHaptics": "Haptics",
+  "@settingsHaptics": {
+    "description": "Schalterbeschriftung"
+  },
+  "settingsHapticsHint": "Short feedback on tap and when a rest ends.",
+  "@settingsHapticsHint": {
+    "description": "Hilfetext"
+  },
+  "settingsHapticsOff": "Haptics off",
+  "@settingsHapticsOff": {
+    "description": "Vorlesetext, Zustand"
+  },
+  "settingsHapticsOn": "Haptics on",
+  "@settingsHapticsOn": {
+    "description": "Vorlesetext, Zustand"
+  },
+  "settingsImprint": "Imprint",
+  "@settingsImprint": {
+    "description": "Rechtlicher Weg"
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsLanguageEnglish": "English",
+  "@settingsLanguageEnglish": {
+    "description": "Sprache"
+  },
+  "settingsLanguageGerman": "German",
+  "@settingsLanguageGerman": {
+    "description": "Sprache"
+  },
+  "settingsLanguageHint": "Applies immediately.",
+  "@settingsLanguageHint": {
+    "description": "Hilfetext unter der Sprachwahl"
+  },
+  "settingsLinkFailed": "Cannot open page",
+  "@settingsLinkFailed": {
+    "description": "Fehlermeldung"
+  },
+  "settingsOpenA11y": "Open settings and profile",
+  "@settingsOpenA11y": {
+    "description": "Vorlesetext des Profilbilds im Dashboard-Kopf"
+  },
+  "settingsOpensBrowser": "Opens in your browser",
+  "@settingsOpensBrowser": {
+    "description": "Hilfetext an den rechtlichen Wegen"
+  },
+  "settingsPreviewComputing": "Calculating …",
+  "@settingsPreviewComputing": {
+    "description": "Ladezustand der Vorschau"
+  },
+  "settingsPreviewFitness": "Fitness vs. peak",
+  "@settingsPreviewFitness": {
+    "description": "Zeile der Vorschau"
+  },
+  "settingsPreviewLoad": "Load of last session",
+  "@settingsPreviewLoad": {
+    "description": "Zeile der Vorschau"
+  },
+  "settingsPreviewNone": "This changes nothing in your evaluations.",
+  "@settingsPreviewNone": {
+    "description": "Vorschau ohne Änderung"
+  },
+  "settingsPreviewTitle": "What this changes",
+  "@settingsPreviewTitle": {
+    "description": "Überschrift der Vorschau"
+  },
+  "settingsPrivacy": "Privacy policy",
+  "@settingsPrivacy": {
+    "description": "Rechtlicher Weg"
+  },
+  "settingsReplayOnboarding": "Replay onboarding",
+  "@settingsReplayOnboarding": {
+    "description": "Aktion"
+  },
+  "settingsReplayOnboardingHint": "Asks for your body weight again.",
+  "@settingsReplayOnboardingHint": {
+    "description": "Hilfetext"
+  },
+  "settingsRest": "Rest time",
+  "@settingsRest": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsRestFault": "Between {min} and {max} seconds.",
+  "@settingsRestFault": {
+    "description": "Fehler an der Pausenzeit",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRestHint": "Suggested when starting a session. Adjustable during training.",
+  "@settingsRestHint": {
+    "description": "Hilfetext unter der Pausenzeit"
+  },
+  "settingsSectionAbout": "About",
+  "@settingsSectionAbout": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionAccount": "Account",
+  "@settingsSectionAccount": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionApp": "App",
+  "@settingsSectionApp": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionLegal": "Legal",
+  "@settingsSectionLegal": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionProfile": "Profile",
+  "@settingsSectionProfile": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionTraining": "Training",
+  "@settingsSectionTraining": {
+    "description": "Abschnitt"
+  },
+  "settingsSignOut": "Sign out",
+  "@settingsSignOut": {
+    "description": "Aktion"
+  },
+  "settingsSignOutBarrier": "Sign out",
+  "@settingsSignOutBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "settingsSignOutBody": "Your data stays. You can sign in again at any time.",
+  "@settingsSignOutBody": {
+    "description": "Bestätigung, Text"
+  },
+  "settingsSignOutTitle": "Sign out?",
+  "@settingsSignOutTitle": {
+    "description": "Bestätigung"
+  },
+  "settingsSignedInAs": "Signed in as",
+  "@settingsSignedInAs": {
+    "description": "Beschriftung am Konto"
+  },
+  "settingsTerms": "Terms of use",
+  "@settingsTerms": {
+    "description": "Rechtlicher Weg"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Titel des Bildschirms"
+  },
+  "settingsUnits": "Units",
+  "@settingsUnits": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsUnitsHint": "Always stored in kilograms.",
+  "@settingsUnitsHint": {
+    "description": "Hilfetext unter der Einheitenwahl"
+  },
+  "settingsUnitsImperial": "Imperial",
+  "@settingsUnitsImperial": {
+    "description": "Einheitensystem"
+  },
+  "settingsUnitsImperialA11y": "Imperial, pounds",
+  "@settingsUnitsImperialA11y": {
+    "description": "Vorlesetext"
+  },
+  "settingsUnitsMetric": "Metric",
+  "@settingsUnitsMetric": {
+    "description": "Einheitensystem"
+  },
+  "settingsUnitsMetricA11y": "Metric, kilograms",
+  "@settingsUnitsMetricA11y": {
+    "description": "Vorlesetext"
+  },
+  "settingsWeightChanged": "Body weight changed to {weight} kg",
+  "@settingsWeightChanged": {
+    "description": "Widerrufshinweis",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsWeightChangedBody": "You can undo this for {n} seconds.",
+  "@settingsWeightChangedBody": {
+    "description": "Widerrufshinweis, Text",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "sheetFreeBody": "Start without a plan — add exercises during the workout.",
   "sheetRestLabel": "Default rest",
   "sheetStart": "Start",
@@ -1570,6 +1938,18 @@
   "typeStrength": "Strength",
   "unitKilograms": "{v} kg",
   "unitKilometers": "{v} km",
+  "unitSuffixKilograms": "kg",
+  "@unitSuffixKilograms": {
+    "description": "Einheit hinter einem Zahlenfeld"
+  },
+  "unitSuffixPounds": "lb",
+  "@unitSuffixPounds": {
+    "description": "Einheit hinter einem Zahlenfeld"
+  },
+  "unitSuffixSeconds": "s",
+  "@unitSuffixSeconds": {
+    "description": "Einheit hinter einem Zahlenfeld"
+  },
   "workoutA11yEnd": "End workout",
   "@workoutA11yEnd": {
     "description": "Runner, Modul 1/2 Spezifikation"

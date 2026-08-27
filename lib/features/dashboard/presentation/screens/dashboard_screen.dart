@@ -9,6 +9,7 @@ import '../../../workout/domain/workout_start.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import '../../application/dashboard_providers.dart';
 import '../../domain/dashboard_data.dart';
+import '../../../settings/presentation/screens/settings_screen.dart';
 import '../widgets/cyber_header.dart';
 import '../widgets/quick_actions.dart';
 import '../widgets/readiness_hero.dart';
@@ -133,7 +134,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
           bottom: 130 + MediaQuery.viewPaddingOf(context).bottom,
         ),
         children: [
-          CyberHeader(user: data.user, onProfile: () => _select(4)),
+          CyberHeader(
+            user: data.user,
+            // Kein Platz in der Leiste: Einstellungen tut man selten, und
+            // jeder der fünf Plätze ist eine Behauptung darüber, was man oft
+            // tut. Das Profilbild ist die Stelle, an der man sie sucht.
+            onProfile: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const SettingsScreen(),
+              ),
+            ),
+          ),
           const SizedBox(height: AtemSpacing.cardGap),
           ReadinessHero(
             readiness: data.readiness,

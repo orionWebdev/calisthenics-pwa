@@ -1,0 +1,63 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../domain/settings_repository.dart';
+import '../domain/user_settings.dart';
+
+/// Einstellungen aus `userProfiles/{uid}`.
+///
+/// Die Feldnamen folgen der Vorgänger-App, damit beide Anwendungen dasselbe
+/// Profil lesen: `bodyWeight`, `unitSystem`, `language`, `defaultRestTimer`,
+/// `hapticsEnabled`.
+class FirestoreSettingsRepository implements SettingsRepository {
+  FirestoreSettingsRepository(this._db);
+
+  final FirebaseFirestore _db;
+
+  static const collection = 'userProfiles';
+
+  DocumentReference<Map<String, dynamic>> _doc(String userId) =>
+      _db.collection(collection).doc(userId);
+
+  @override
+  Stream<UserSettings> watch(String userId) =>
+      _doc(userId).snapshots().map((doc) => _from(doc.data()));
+
+  @override
+  Future<UserSettings> fetch(String userId) async =>
+      _from((await _doc(userId).get()).data());
+
+  @override
+  Future<void> save(String userId, UserSettings settings) async {
+    await _doc(userId).set({
+      if (settings.bodyWeightKg != null) 'bodyWeight': settings.bodyWeightKg,
+      'unitSystem': settings.unitSystem.wire,
+      if (settings.language != null) 'language': settings.language!.code,
+      'defaultRestTimer': settings.restSeconds,
+      'hapticsEnabled': settings.hapticsEnabled,
+      'updatedAt': Timestamp.now(),
+      // `merge`: Im Profil stehen zwanzig Felder, die diese App nicht kennt.
+      // Ohne merge wären sie nach dem ersten Speichern weg.
+    }, SetOptions(merge: true));
+  }
+
+  static UserSettings _from(Map<String, dynamic>? data) {
+    if (data == null) return const UserSettings();
+
+    // R1 aus Vertrag 4: Im Bestand steht das Gewicht einmal als 70 und einmal
+    // als 68.5. Ein `as int` oder `as double` fällt über je einen der beiden.
+    final weight = (data['bodyWeight'] as num?)?.toDouble();
+    final rest = (data['defaultRestTimer'] as num?)?.round();
+
+    return UserSettings(
+      bodyWeightKg: weight != null && weight > 0 ? weight : null,
+      unitSystem: UnitSystem.fromWire(data['unitSystem']),
+      language: AppLanguage.fromCode(data['language']),
+      restSeconds: rest == null
+          ? UserSettings.defaultRestSeconds
+          : rest.clamp(UserSettings.minRestSeconds, UserSettings.maxRestSeconds),
+      // Fehlt das Feld, ist Haptik an. Ein stiller Schalter, den niemand
+      // gesetzt hat, sollte im aktiveren Zustand stehen.
+      hapticsEnabled: data['hapticsEnabled'] != false,
+    );
+  }
+}

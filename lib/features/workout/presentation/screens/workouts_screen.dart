@@ -13,6 +13,7 @@ import '../../../plans/presentation/plan_bits.dart';
 import '../../../plans/presentation/screens/plan_detail_screen.dart';
 import '../../../plans/presentation/screens/plan_list_screen.dart';
 import '../../../plans/presentation/start_sheet.dart';
+import '../../../settings/application/settings_providers.dart';
 import '../../../exercises/domain/exercise.dart';
 import '../../../exercises/presentation/screens/exercise_detail_screen.dart';
 import '../../../exercises/presentation/screens/exercise_form_screen.dart';
@@ -202,7 +203,10 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   }
 
   Future<void> _startFree(BuildContext context) async {
-    final request = await StartSheet.show(context);
+    final request = await StartSheet.show(
+      context,
+      restSeconds: ref.read(defaultRestSecondsProvider),
+    );
     if (request != null) onStart(request);
   }
 
@@ -223,6 +227,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
       context,
       plan: plan,
       scheduleId: session.id,
+      restSeconds: ref.read(defaultRestSecondsProvider),
     );
     if (request != null) onStart(request);
   }

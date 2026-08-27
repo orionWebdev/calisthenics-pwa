@@ -26,13 +26,30 @@ enum AtemHaptic {
   medium,
   heavy;
 
-  Future<void> fire() => switch (this) {
-        AtemHaptic.none => Future<void>.value(),
-        AtemHaptic.selection => HapticFeedback.selectionClick(),
-        AtemHaptic.light => HapticFeedback.lightImpact(),
-        AtemHaptic.medium => HapticFeedback.mediumImpact(),
-        AtemHaptic.heavy => HapticFeedback.heavyImpact(),
-      };
+  /// Der Hauptschalter aus den Einstellungen.
+  ///
+  /// ## Warum eine statische Variable und kein Provider
+  ///
+  /// Haptik wird an der untersten Stelle ausgelöst, in [AtemTappable] — dem
+  /// Baustein, den jedes antippbare Element benutzt. Ihm eine `ref`
+  /// mitzugeben, hiesse jeden Knopf, jede Zeile und jeden Chip der App zu
+  /// einem `ConsumerWidget` zu machen, damit eine einzige Ja-Nein-Frage
+  /// beantwortet werden kann.
+  ///
+  /// Das hier ist dieselbe Art von Zustand wie die Schriftskalierung: eine
+  /// Eigenschaft des Geräts, prozessweit, ohne Aufbau. Der Abgleich mit den
+  /// Einstellungen geschieht an genau einer Stelle in `AtemApp`.
+  static bool enabled = true;
+
+  Future<void> fire() => !enabled
+      ? Future<void>.value()
+      : switch (this) {
+          AtemHaptic.none => Future<void>.value(),
+          AtemHaptic.selection => HapticFeedback.selectionClick(),
+          AtemHaptic.light => HapticFeedback.lightImpact(),
+          AtemHaptic.medium => HapticFeedback.mediumImpact(),
+          AtemHaptic.heavy => HapticFeedback.heavyImpact(),
+        };
 }
 
 /// Der einzige Weg, etwas antippbar zu machen.

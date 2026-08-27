@@ -1606,6 +1606,270 @@ class AppL10nEn extends AppL10n {
   String get sessionEditTitle => 'Edit session';
 
   @override
+  String get settingsAboutPrivate => 'Private project, not for commercial use.';
+
+  @override
+  String get settingsAboutTheme =>
+      'Dark only — ATEM is built for dark surroundings.';
+
+  @override
+  String settingsAboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get settingsBodyWeight => 'Body weight';
+
+  @override
+  String settingsBodyWeightFault(int min, int max) {
+    return 'Between $min and $max kg.';
+  }
+
+  @override
+  String get settingsBodyWeightHint =>
+      'Recalculates every bodyweight exercise, including past ones.';
+
+  @override
+  String get settingsBodyWeightNone => 'Not set yet';
+
+  @override
+  String get settingsDelete => 'Delete account';
+
+  @override
+  String get settingsDeleteBarrier => 'Delete account';
+
+  @override
+  String get settingsDeleteConfirmHint => 'Exactly like that, in capitals.';
+
+  @override
+  String get settingsDeleteConfirmWord => 'DELETE';
+
+  @override
+  String settingsDeleteCounts(int sessions, int plans, int exercises) {
+    return '$sessions sessions · $plans plans · $exercises own exercises';
+  }
+
+  @override
+  String get settingsDeleteExport => 'Export data first';
+
+  @override
+  String get settingsDeleteFailed => 'Deletion incomplete';
+
+  @override
+  String get settingsDeleteFailedBody =>
+      'Some of your data is still there. Try again while you are signed in.';
+
+  @override
+  String get settingsDeleteOfflineBody =>
+      'Deletion spans several collections. Without a connection half of it would remain.';
+
+  @override
+  String get settingsDeleteOfflineTitle => 'Not possible while offline';
+
+  @override
+  String get settingsDeleteRunning => 'Deleting …';
+
+  @override
+  String get settingsDeleteStep1Body =>
+      'Sessions, plans, your own exercises, appointments and your profile will be removed. There is no undo and no time window.';
+
+  @override
+  String get settingsDeleteStep1Title => 'Delete account and all data?';
+
+  @override
+  String settingsDeleteStep2Body(String word) {
+    return 'Type $word to confirm.';
+  }
+
+  @override
+  String get settingsDeleteStep2Title => 'Really delete permanently?';
+
+  @override
+  String get settingsDeletedAccessBody =>
+      'ATEM is invite-only; your access is held in a list that belongs to the programme, not to your account. If you sign in again you are back — with no data.';
+
+  @override
+  String get settingsDeletedAccessTitle => 'Your access remains';
+
+  @override
+  String get settingsDeletedBody => 'Your training data has been removed.';
+
+  @override
+  String get settingsDeletedClose => 'Close';
+
+  @override
+  String get settingsDeletedTitle => 'Account deleted';
+
+  @override
+  String get settingsExportBody =>
+      'JSON contains everything. CSV contains your sessions as a table, one row per set.';
+
+  @override
+  String get settingsExportCsv => 'Sessions as CSV';
+
+  @override
+  String settingsExportDone(int n) {
+    return '$n documents exported';
+  }
+
+  @override
+  String get settingsExportFailed => 'Export failed';
+
+  @override
+  String get settingsExportJson => 'Everything as JSON';
+
+  @override
+  String get settingsExportRunning => 'Collecting …';
+
+  @override
+  String get settingsExportTitle => 'Export data';
+
+  @override
+  String get settingsFromGoogle =>
+      'Name and picture come from your Google account.';
+
+  @override
+  String get settingsHaptics => 'Haptics';
+
+  @override
+  String get settingsHapticsHint =>
+      'Short feedback on tap and when a rest ends.';
+
+  @override
+  String get settingsHapticsOff => 'Haptics off';
+
+  @override
+  String get settingsHapticsOn => 'Haptics on';
+
+  @override
+  String get settingsImprint => 'Imprint';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageGerman => 'German';
+
+  @override
+  String get settingsLanguageHint => 'Applies immediately.';
+
+  @override
+  String get settingsLinkFailed => 'Cannot open page';
+
+  @override
+  String get settingsOpenA11y => 'Open settings and profile';
+
+  @override
+  String get settingsOpensBrowser => 'Opens in your browser';
+
+  @override
+  String get settingsPreviewComputing => 'Calculating …';
+
+  @override
+  String get settingsPreviewFitness => 'Fitness vs. peak';
+
+  @override
+  String get settingsPreviewLoad => 'Load of last session';
+
+  @override
+  String get settingsPreviewNone => 'This changes nothing in your evaluations.';
+
+  @override
+  String get settingsPreviewTitle => 'What this changes';
+
+  @override
+  String get settingsPrivacy => 'Privacy policy';
+
+  @override
+  String get settingsReplayOnboarding => 'Replay onboarding';
+
+  @override
+  String get settingsReplayOnboardingHint => 'Asks for your body weight again.';
+
+  @override
+  String get settingsRest => 'Rest time';
+
+  @override
+  String settingsRestFault(int min, int max) {
+    return 'Between $min and $max seconds.';
+  }
+
+  @override
+  String get settingsRestHint =>
+      'Suggested when starting a session. Adjustable during training.';
+
+  @override
+  String get settingsSectionAbout => 'About';
+
+  @override
+  String get settingsSectionAccount => 'Account';
+
+  @override
+  String get settingsSectionApp => 'App';
+
+  @override
+  String get settingsSectionLegal => 'Legal';
+
+  @override
+  String get settingsSectionProfile => 'Profile';
+
+  @override
+  String get settingsSectionTraining => 'Training';
+
+  @override
+  String get settingsSignOut => 'Sign out';
+
+  @override
+  String get settingsSignOutBarrier => 'Sign out';
+
+  @override
+  String get settingsSignOutBody =>
+      'Your data stays. You can sign in again at any time.';
+
+  @override
+  String get settingsSignOutTitle => 'Sign out?';
+
+  @override
+  String get settingsSignedInAs => 'Signed in as';
+
+  @override
+  String get settingsTerms => 'Terms of use';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsUnits => 'Units';
+
+  @override
+  String get settingsUnitsHint => 'Always stored in kilograms.';
+
+  @override
+  String get settingsUnitsImperial => 'Imperial';
+
+  @override
+  String get settingsUnitsImperialA11y => 'Imperial, pounds';
+
+  @override
+  String get settingsUnitsMetric => 'Metric';
+
+  @override
+  String get settingsUnitsMetricA11y => 'Metric, kilograms';
+
+  @override
+  String settingsWeightChanged(String weight) {
+    return 'Body weight changed to $weight kg';
+  }
+
+  @override
+  String settingsWeightChangedBody(int n) {
+    return 'You can undo this for $n seconds.';
+  }
+
+  @override
   String get sheetFreeBody =>
       'Start without a plan — add exercises during the workout.';
 
@@ -1647,6 +1911,15 @@ class AppL10nEn extends AppL10n {
   String unitKilometers(String v) {
     return '$v km';
   }
+
+  @override
+  String get unitSuffixKilograms => 'kg';
+
+  @override
+  String get unitSuffixPounds => 'lb';
+
+  @override
+  String get unitSuffixSeconds => 's';
 
   @override
   String get workoutA11yEnd => 'End workout';

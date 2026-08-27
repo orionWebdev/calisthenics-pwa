@@ -17,6 +17,9 @@ import 'package:atem/features/history/domain/session_repository.dart';
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/plans/domain/plan_draft.dart';
 import 'package:atem/features/plans/domain/plan_repository.dart';
+import 'package:atem/features/settings/application/settings_providers.dart';
+import 'package:atem/features/settings/domain/settings_repository.dart';
+import 'package:atem/features/settings/domain/user_settings.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,6 +45,8 @@ final fixtureOverrides = [
   exerciseRepositoryProvider.overrideWithValue(FakeExerciseRepository()),
   planRepositoryProvider.overrideWithValue(FakePlanRepository()),
   sessionRepositoryProvider.overrideWithValue(FakeSessionRepository()),
+  settingsRepositoryProvider.overrideWithValue(FakeSettingsRepository()),
+  accountRepositoryProvider.overrideWithValue(FakeAccountRepository()),
   // Fester Stichtag: Sonst hinge die Aussage-Karte am Kalender des Rechners
   // und zeigte mal „Pause", mal „Untätig".
   historyReferenceProvider.overrideWithValue(fixtureToday),
@@ -280,4 +285,41 @@ Future<void> expectA11y(
     reason: 'Verstöße gegen docs/contracts/01-accessibility.md:\n'
         '${findings.map((f) => '  $f').join('\n')}',
   );
+}
+
+/// Einstellungen mit hinterlegtem Gewicht — sonst prüfte die Matrix nur den
+/// Zustand „noch nichts eingetragen".
+class FakeSettingsRepository implements SettingsRepository {
+  final saved = <UserSettings>[];
+
+  static const fixture = UserSettings(
+    bodyWeightKg: 78,
+    language: AppLanguage.german,
+    restSeconds: 90,
+  );
+
+  @override
+  Stream<UserSettings> watch(String userId) => Stream.value(fixture);
+
+  @override
+  Future<UserSettings> fetch(String userId) async => fixture;
+
+  @override
+  Future<void> save(String userId, UserSettings settings) async =>
+      saved.add(settings);
+}
+
+class FakeAccountRepository implements AccountRepository {
+  final deletedData = <String>[];
+  var accountDeleted = false;
+
+  @override
+  Future<void> deleteData(String userId) async => deletedData.add(userId);
+
+  @override
+  Future<void> deleteAccount() async => accountDeleted = true;
+
+  @override
+  Future<AccountExport> export(String userId) async =>
+      const AccountExport(collections: {});
 }

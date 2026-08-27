@@ -2306,6 +2306,374 @@
   "@sessionEditTitle": {
     "description": "Titel des Formulars"
   },
+  "settingsAboutPrivate": "Privates Projekt, keine kommerzielle Nutzung.",
+  "@settingsAboutPrivate": {
+    "description": "Zeile im Abschnitt ueber die App"
+  },
+  "settingsAboutTheme": "Nur dunkel — ATEM ist für dunkle Umgebungen gebaut.",
+  "@settingsAboutTheme": {
+    "description": "Die Tatsache an der Stelle, an der sonst ein Schalter stuende"
+  },
+  "settingsAboutVersion": "Version {version}",
+  "@settingsAboutVersion": {
+    "description": "Zeile im Abschnitt ueber die App",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBodyWeight": "Körpergewicht",
+  "@settingsBodyWeight": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsBodyWeightFault": "Zwischen {min} und {max} kg.",
+  "@settingsBodyWeightFault": {
+    "description": "Fehler am Gewichtsfeld",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsBodyWeightHint": "Rechnet jede Körpergewichtsübung neu — auch die von früher.",
+  "@settingsBodyWeightHint": {
+    "description": "Hilfetext unter dem Gewichtsfeld"
+  },
+  "settingsBodyWeightNone": "Noch nicht hinterlegt",
+  "@settingsBodyWeightNone": {
+    "description": "Zustand ohne Körpergewicht"
+  },
+  "settingsDelete": "Konto löschen",
+  "@settingsDelete": {
+    "description": "Aktion"
+  },
+  "settingsDeleteBarrier": "Konto löschen",
+  "@settingsDeleteBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "settingsDeleteConfirmHint": "Genau so, in Großbuchstaben.",
+  "@settingsDeleteConfirmHint": {
+    "description": "Hilfetext am Bestätigungsfeld"
+  },
+  "settingsDeleteConfirmWord": "LÖSCHEN",
+  "@settingsDeleteConfirmWord": {
+    "description": "Das Wort, das getippt werden muss, in Grossbuchstaben"
+  },
+  "settingsDeleteCounts": "{sessions} Einheiten · {plans} Pläne · {exercises} eigene Übungen",
+  "@settingsDeleteCounts": {
+    "description": "Was konkret verschwindet",
+    "placeholders": {
+      "sessions": {
+        "type": "int"
+      },
+      "plans": {
+        "type": "int"
+      },
+      "exercises": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDeleteExport": "Daten vorher sichern",
+  "@settingsDeleteExport": {
+    "description": "Zweiter Ausgang der ersten Stufe"
+  },
+  "settingsDeleteFailed": "Löschen nicht abgeschlossen",
+  "@settingsDeleteFailed": {
+    "description": "Fehlermeldung"
+  },
+  "settingsDeleteFailedBody": "Ein Teil deiner Daten ist noch da. Versuche es erneut, solange du angemeldet bist.",
+  "@settingsDeleteFailedBody": {
+    "description": "Fehlermeldung, Text"
+  },
+  "settingsDeleteOfflineBody": "Löschen greift über mehrere Sammlungen. Ohne Verbindung bliebe die Hälfte stehen.",
+  "@settingsDeleteOfflineBody": {
+    "description": "Gesperrt ohne Netz, Text"
+  },
+  "settingsDeleteOfflineTitle": "Ohne Verbindung nicht möglich",
+  "@settingsDeleteOfflineTitle": {
+    "description": "Gesperrt ohne Netz"
+  },
+  "settingsDeleteRunning": "Wird gelöscht …",
+  "@settingsDeleteRunning": {
+    "description": "Ladezustand"
+  },
+  "settingsDeleteStep1Body": "Einheiten, Pläne, eigene Übungen, Termine und dein Profil werden entfernt. Es gibt kein Zurück und kein Zeitfenster.",
+  "@settingsDeleteStep1Body": {
+    "description": "Erste Stufe, Text"
+  },
+  "settingsDeleteStep1Title": "Konto und alle Daten löschen?",
+  "@settingsDeleteStep1Title": {
+    "description": "Erste Stufe"
+  },
+  "settingsDeleteStep2Body": "Tippe {word}, um zu bestätigen.",
+  "@settingsDeleteStep2Body": {
+    "description": "Zweite Stufe, Text",
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsDeleteStep2Title": "Wirklich endgültig löschen?",
+  "@settingsDeleteStep2Title": {
+    "description": "Zweite Stufe"
+  },
+  "settingsDeletedAccessBody": "ATEM ist geschlossen; die Freischaltung steht in einer Liste, die zum Programm gehört und nicht zum Konto. Meldest du dich erneut an, bist du wieder dabei — mit leerem Bestand.",
+  "@settingsDeletedAccessBody": {
+    "description": "Erklärung"
+  },
+  "settingsDeletedAccessTitle": "Dein Zugang bleibt bestehen",
+  "@settingsDeletedAccessTitle": {
+    "description": "Der erklärungsbedürftige Teil"
+  },
+  "settingsDeletedBody": "Deine Trainingsdaten sind entfernt.",
+  "@settingsDeletedBody": {
+    "description": "Abschlussbildschirm, Text"
+  },
+  "settingsDeletedClose": "Schließen",
+  "@settingsDeletedClose": {
+    "description": "Aktion"
+  },
+  "settingsDeletedTitle": "Konto gelöscht",
+  "@settingsDeletedTitle": {
+    "description": "Abschlussbildschirm"
+  },
+  "settingsExportBody": "JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.",
+  "@settingsExportBody": {
+    "description": "Erklärung der beiden Formate"
+  },
+  "settingsExportCsv": "Einheiten als CSV",
+  "@settingsExportCsv": {
+    "description": "Aktion"
+  },
+  "settingsExportDone": "{n} Dokumente gesichert",
+  "@settingsExportDone": {
+    "description": "Rückmeldung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsExportFailed": "Sichern fehlgeschlagen",
+  "@settingsExportFailed": {
+    "description": "Fehlermeldung"
+  },
+  "settingsExportJson": "Alles als JSON",
+  "@settingsExportJson": {
+    "description": "Aktion"
+  },
+  "settingsExportRunning": "Wird gesammelt …",
+  "@settingsExportRunning": {
+    "description": "Ladezustand"
+  },
+  "settingsExportTitle": "Daten sichern",
+  "@settingsExportTitle": {
+    "description": "Titel"
+  },
+  "settingsFromGoogle": "Name und Bild kommen von deinem Google-Konto.",
+  "@settingsFromGoogle": {
+    "description": "Erklaerung am Profilkopf statt eines defekt wirkenden Formulars"
+  },
+  "settingsHaptics": "Vibration",
+  "@settingsHaptics": {
+    "description": "Schalterbeschriftung"
+  },
+  "settingsHapticsHint": "Kurze Rückmeldung beim Antippen und am Pausenende.",
+  "@settingsHapticsHint": {
+    "description": "Hilfetext"
+  },
+  "settingsHapticsOff": "Vibration aus",
+  "@settingsHapticsOff": {
+    "description": "Vorlesetext, Zustand"
+  },
+  "settingsHapticsOn": "Vibration an",
+  "@settingsHapticsOn": {
+    "description": "Vorlesetext, Zustand"
+  },
+  "settingsImprint": "Impressum",
+  "@settingsImprint": {
+    "description": "Rechtlicher Weg"
+  },
+  "settingsLanguage": "Sprache",
+  "@settingsLanguage": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsLanguageEnglish": "Englisch",
+  "@settingsLanguageEnglish": {
+    "description": "Sprache"
+  },
+  "settingsLanguageGerman": "Deutsch",
+  "@settingsLanguageGerman": {
+    "description": "Sprache"
+  },
+  "settingsLanguageHint": "Wirkt sofort.",
+  "@settingsLanguageHint": {
+    "description": "Hilfetext unter der Sprachwahl"
+  },
+  "settingsLinkFailed": "Seite lässt sich nicht öffnen",
+  "@settingsLinkFailed": {
+    "description": "Fehlermeldung"
+  },
+  "settingsOpenA11y": "Einstellungen und Profil öffnen",
+  "@settingsOpenA11y": {
+    "description": "Vorlesetext des Profilbilds im Dashboard-Kopf"
+  },
+  "settingsOpensBrowser": "Öffnet im Browser",
+  "@settingsOpensBrowser": {
+    "description": "Hilfetext an den rechtlichen Wegen"
+  },
+  "settingsPreviewComputing": "Wird gerechnet …",
+  "@settingsPreviewComputing": {
+    "description": "Ladezustand der Vorschau"
+  },
+  "settingsPreviewFitness": "Fitness ggü. Höchststand",
+  "@settingsPreviewFitness": {
+    "description": "Zeile der Vorschau"
+  },
+  "settingsPreviewLoad": "Last der letzten Einheit",
+  "@settingsPreviewLoad": {
+    "description": "Zeile der Vorschau"
+  },
+  "settingsPreviewNone": "An deinen Auswertungen ändert das nichts.",
+  "@settingsPreviewNone": {
+    "description": "Vorschau ohne Änderung"
+  },
+  "settingsPreviewTitle": "Was sich dadurch ändert",
+  "@settingsPreviewTitle": {
+    "description": "Überschrift der Vorschau"
+  },
+  "settingsPrivacy": "Datenschutzerklärung",
+  "@settingsPrivacy": {
+    "description": "Rechtlicher Weg"
+  },
+  "settingsReplayOnboarding": "Onboarding wiederholen",
+  "@settingsReplayOnboarding": {
+    "description": "Aktion"
+  },
+  "settingsReplayOnboardingHint": "Fragt das Körpergewicht erneut ab.",
+  "@settingsReplayOnboardingHint": {
+    "description": "Hilfetext"
+  },
+  "settingsRest": "Pausenzeit",
+  "@settingsRest": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsRestFault": "Zwischen {min} und {max} Sekunden.",
+  "@settingsRestFault": {
+    "description": "Fehler an der Pausenzeit",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRestHint": "Vorschlag beim Start einer Einheit. Im Training änderbar.",
+  "@settingsRestHint": {
+    "description": "Hilfetext unter der Pausenzeit"
+  },
+  "settingsSectionAbout": "Über die App",
+  "@settingsSectionAbout": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionAccount": "Konto",
+  "@settingsSectionAccount": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionApp": "App",
+  "@settingsSectionApp": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionLegal": "Rechtliches",
+  "@settingsSectionLegal": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionProfile": "Profil",
+  "@settingsSectionProfile": {
+    "description": "Abschnitt"
+  },
+  "settingsSectionTraining": "Training",
+  "@settingsSectionTraining": {
+    "description": "Abschnitt"
+  },
+  "settingsSignOut": "Abmelden",
+  "@settingsSignOut": {
+    "description": "Aktion"
+  },
+  "settingsSignOutBarrier": "Abmelden",
+  "@settingsSignOutBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "settingsSignOutBody": "Deine Daten bleiben. Du kannst dich jederzeit wieder anmelden.",
+  "@settingsSignOutBody": {
+    "description": "Bestätigung, Text"
+  },
+  "settingsSignOutTitle": "Abmelden?",
+  "@settingsSignOutTitle": {
+    "description": "Bestätigung"
+  },
+  "settingsSignedInAs": "Angemeldet als",
+  "@settingsSignedInAs": {
+    "description": "Beschriftung am Konto"
+  },
+  "settingsTerms": "Nutzungsbedingungen",
+  "@settingsTerms": {
+    "description": "Rechtlicher Weg"
+  },
+  "settingsTitle": "Einstellungen",
+  "@settingsTitle": {
+    "description": "Titel des Bildschirms"
+  },
+  "settingsUnits": "Einheiten",
+  "@settingsUnits": {
+    "description": "Feldbeschriftung"
+  },
+  "settingsUnitsHint": "Gespeichert wird immer in Kilogramm.",
+  "@settingsUnitsHint": {
+    "description": "Hilfetext unter der Einheitenwahl"
+  },
+  "settingsUnitsImperial": "Imperial",
+  "@settingsUnitsImperial": {
+    "description": "Einheitensystem"
+  },
+  "settingsUnitsImperialA11y": "Imperial, Pfund",
+  "@settingsUnitsImperialA11y": {
+    "description": "Vorlesetext"
+  },
+  "settingsUnitsMetric": "Metrisch",
+  "@settingsUnitsMetric": {
+    "description": "Einheitensystem"
+  },
+  "settingsUnitsMetricA11y": "Metrisch, Kilogramm",
+  "@settingsUnitsMetricA11y": {
+    "description": "Vorlesetext"
+  },
+  "settingsWeightChanged": "Körpergewicht auf {weight} kg geändert",
+  "@settingsWeightChanged": {
+    "description": "Widerrufshinweis",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsWeightChangedBody": "Du kannst das {n} Sekunden lang zurücknehmen.",
+  "@settingsWeightChangedBody": {
+    "description": "Widerrufshinweis, Text",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "sheetFreeBody": "Ohne Plan starten — Übungen fügst du im Training hinzu.",
   "@sheetFreeBody": {
     "description": "Text im Start-Sheet beim freien Training"
@@ -2368,6 +2736,18 @@
         "type": "String"
       }
     }
+  },
+  "unitSuffixKilograms": "kg",
+  "@unitSuffixKilograms": {
+    "description": "Einheit hinter einem Zahlenfeld"
+  },
+  "unitSuffixPounds": "lb",
+  "@unitSuffixPounds": {
+    "description": "Einheit hinter einem Zahlenfeld"
+  },
+  "unitSuffixSeconds": "s",
+  "@unitSuffixSeconds": {
+    "description": "Einheit hinter einem Zahlenfeld"
   },
   "workoutA11yEnd": "Workout beenden",
   "@workoutA11yEnd": {
