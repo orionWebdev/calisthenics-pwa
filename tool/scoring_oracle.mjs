@@ -124,10 +124,19 @@ const api = vm.runInNewContext(src + EXPORTS, sandbox);
  * Zeitumstellung. Diese zweite Auswertung ist ihr Massstab.
  */
 const corrected = vm.runInNewContext(
-  src.replace(
-    /refDay\.getTime\(\) - (\d+) \* 24 \* 60 \* 60 \* 1000/g,
-    'new Date(refDay.getFullYear(), refDay.getMonth(), refDay.getDate() - $1).getTime()',
-  ) + EXPORTS,
+  src
+    // Fenstergrenze kalendarisch statt in Millisekunden.
+    .replace(
+      /refDay\.getTime\(\) - (\d+) \* 24 \* 60 \* 60 \* 1000/g,
+      'new Date(refDay.getFullYear(), refDay.getMonth(), refDay.getDate() - $1).getTime()',
+    )
+    // Tagesabstände runden statt abschneiden. Zwischen zwei lokalen
+    // Mitternachten liegen bei einer Zeitumstellung 23 oder 25 Stunden;
+    // `Math.floor` macht daraus einen Tag zu wenig.
+    .replace(
+      /Math\.floor\(\(refDay\.getTime\(\) - ([A-Za-z]+)\.getTime\(\)\) \/ \(1000 \* 60 \* 60 \* 24\)\)/g,
+      'Math.round((refDay.getTime() - $1.getTime()) / (1000 * 60 * 60 * 24))',
+    ) + EXPORTS,
   { ...sandbox },
 );
 
@@ -147,15 +156,34 @@ for (let x = 0; x <= 260; x += 3) {
   curve.push({ acwr, score, zone: api.mapZone(score, acwr) });
 }
 
+// Früheste Einheit mit Last — der tatsächliche Anfang beider Schleifen.
+const earliest = sessions
+  .map((s) => new Date(s.date))
+  .reduce((a, b) => (a < b ? a : b));
+
 const cases = [];
+const forms = [];
 for (const day of [13, 14, 20, 35, 50, 70, 99]) {
   const ref = new Date(BASE);
   ref.setDate(ref.getDate() + day);
   ref.setHours(12, 0, 0, 0);
 
-  // Fällt eine Zeitumstellung ins Fenster? Dann weichen beide Fassungen ab.
-  const windowStart = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate() - 56);
-  const dstInWindow = windowStart.getTimezoneOffset() !== ref.getTimezoneOffset();
+  // Fällt eine Zeitumstellung ins Fenster? Nur dann können beide Fassungen
+  // abweichen.
+  //
+  // Entscheidend ist der **tatsächliche** Anfang: Beide Schleifen beginnen bei
+  // `max(erste Einheit, refDay - N)`. Wird auf die erste Einheit geklemmt, hat
+  // der Startpunkt echte Mitternacht, und der Fehler der PWA tritt gar nicht
+  // auf. Eine Markierung nach `refDay - N` wäre zu pessimistisch und liesse den
+  // Abgleich gegen die PWA fast nie laufen.
+  const effectiveStart = (n) => {
+    const nominal = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate() - n);
+    return nominal > earliest ? nominal : earliest;
+  };
+  const dstInWindow =
+    effectiveStart(56).getTimezoneOffset() !== ref.getTimezoneOffset();
+  const dstInFormWindow =
+    effectiveStart(120).getTimezoneOffset() !== ref.getTimezoneOffset();
 
   for (const applyFatigue of [false, true]) {
     const shape = (a) => ({
@@ -178,25 +206,34 @@ for (const day of [13, 14, 20, 35, 50, 70, 99]) {
     });
   }
 
-  const f = corrected.computeFormScore(sessions, ref);
-  cases[cases.length - 1].form = {
+  const shapeForm = (f) => ({
     formScore: f.formScore,
     zone: f.zone,
     consistency: f.consistency,
     loadLevel: f.loadLevel,
     recency: f.recency,
     trend: f.trend,
-  };
+    daysSinceLastSession: f.daysSinceLastSession,
+  });
+  forms.push({
+    day,
+    referenceDate: ref.toISOString(),
+    dstInWindow: dstInFormWindow,
+    ...shapeForm(corrected.computeFormScore(sessions, ref)),
+    pwa: shapeForm(api.computeFormScore(sessions, ref)),
+  });
 }
 
 const target = process.argv[2] ?? 'test/fixtures/scoring_oracle.json';
 writeFileSync(
   target,
-  JSON.stringify({ bodyWeightKg: 78, sessions, loads, curve, cases }, null, 1),
+  JSON.stringify({ bodyWeightKg: 78, sessions, loads, curve, cases, forms }, null, 1),
 );
 
 const abweichend = cases.filter((c) => c.acwr !== c.pwa.acwr).length;
+const formAbweichend = forms.filter((f) => f.formScore !== f.pwa.formScore).length;
 console.log(
-  `${sessions.length} Einheiten, ${curve.length} Kurvenpunkte, ${cases.length} Fälle ` +
-    `(${abweichend} mit Zeitumstellungs-Abweichung) -> ${target}`,
+  `${sessions.length} Einheiten, ${curve.length} Kurvenpunkte, ` +
+    `${cases.length} ACWR-Fälle (${abweichend} abweichend), ` +
+    `${forms.length} Form-Fälle (${formAbweichend} abweichend) -> ${target}`,
 );

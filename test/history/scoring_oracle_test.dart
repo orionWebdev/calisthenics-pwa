@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:atem/features/history/data/session_mapper.dart';
 import 'package:atem/features/history/domain/readiness.dart';
+import 'package:atem/features/history/domain/training_form.dart';
 import 'package:atem/features/history/domain/training_load.dart';
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -123,16 +124,44 @@ void main() {
             closeTo((entry['chronicLoad'] as num).toDouble(), 1e-9),
             reason: 'chronische Last');
 
-        // Die Abweichung von der PWA ist gewollt und wird hier festgehalten,
-        // damit sie nicht unbemerkt verschwindet oder unbemerkt wächst.
-        final pwa = entry['pwa'] as Map<String, dynamic>;
-        if (dst) {
-          expect(result.acwr, isNot(pwa['acwr']),
-              reason: 'Bei Zeitumstellung im Fenster MUSS die Dart-Fassung '
-                  'abweichen — sonst hat sie den Fehler der PWA übernommen');
-        } else {
+        // Ohne Zeitumstellung im Fenster darf die Korrektur nichts ändern —
+        // sonst wäre sie keine Korrektur, sondern eine zweite Rechnung.
+        if (!dst) {
+          final pwa = entry['pwa'] as Map<String, dynamic>;
           expect(result.acwr, pwa['acwr'],
-              reason: 'Ohne Zeitumstellung im Fenster müssen beide Fassungen '
+              reason: 'Ohne Zeitumstellung müssen beide Fassungen '
+                  'übereinstimmen');
+        }
+      });
+    }
+  });
+
+  group('Form-Trend über den ganzen Zeitraum', () {
+    for (final entry
+        in (oracle['forms'] as List).cast<Map<String, dynamic>>()) {
+      final day = entry['day'];
+      final dst = entry['dstInWindow'] as bool;
+
+      test('Tag $day${dst ? ' (Zeitumstellung im Fenster)' : ''}', () {
+        final result = TrainingForm.compute(
+          sessions,
+          DateTime.parse(entry['referenceDate'] as String),
+          context: context,
+        );
+
+        expect(result.score, entry['formScore'], reason: 'Formwert');
+        expect(result.zone?.wire, entry['zone'], reason: 'Zone');
+        expect(result.consistency, entry['consistency'], reason: 'Konstanz');
+        expect(result.loadLevel, entry['loadLevel'], reason: 'Lastentwicklung');
+        expect(result.recency, entry['recency'], reason: 'Aktualität');
+        expect(result.trend.wire, entry['trend'], reason: 'Richtung');
+        expect(result.daysSinceLastSession, entry['daysSinceLastSession'],
+            reason: 'Tage seit der letzten Einheit');
+
+        if (!dst) {
+          final pwa = entry['pwa'] as Map<String, dynamic>;
+          expect(result.score, pwa['formScore'],
+              reason: 'Ohne Zeitumstellung müssen beide Fassungen '
                   'übereinstimmen');
         }
       });
