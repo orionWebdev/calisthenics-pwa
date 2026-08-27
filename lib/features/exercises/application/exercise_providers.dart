@@ -17,23 +17,31 @@ final exercisesProvider = StreamProvider<List<Exercise>>((ref) {
   return ref.watch(exerciseRepositoryProvider).watchExercises(userId);
 });
 
-/// Der aktive Regionsfilter, `null` heißt „Alle".
+/// Der aktive Muskelfilter, `null` heißt „Alle".
+///
+/// **Neun Muskeln, nicht sechs Regionen.** Der Filter folgt der Farbe, und die
+/// hängt seit der Korrektur an Modul 5 am Muskel. Eine Filterzeile, die
+/// „Arme" anbietet, während die Liste daneben Bizeps und Trizeps in zwei
+/// Farben zeigt, wäre zwei Ordnungen nebeneinander.
+///
+/// Welche neun das sind und warum die Beinfamilie zusammenfällt, steht an
+/// [MuscleGroup.filters].
 ///
 /// `Notifier` statt `StateProvider`: Letzterer liegt in Riverpod 3 in
 /// `legacy.dart`. Für neuen Code lohnt der Altbestand nicht.
-class ExerciseFilter extends Notifier<MuscleRegion?> {
+class ExerciseFilter extends Notifier<MuscleGroup?> {
   @override
-  MuscleRegion? build() => null;
+  MuscleGroup? build() => null;
 
-  /// Nochmal auf dieselbe Region tippen hebt den Filter auf — sonst müsste man
+  /// Nochmal auf denselben Muskel tippen hebt den Filter auf — sonst müsste man
   /// den „Alle"-Chip suchen, der weit links steht.
-  void toggle(MuscleRegion region) => state = state == region ? null : region;
+  void toggle(MuscleGroup muscle) => state = state == muscle ? null : muscle;
 
   void clear() => state = null;
 }
 
 final exerciseFilterProvider =
-    NotifierProvider<ExerciseFilter, MuscleRegion?>(ExerciseFilter.new);
+    NotifierProvider<ExerciseFilter, MuscleGroup?>(ExerciseFilter.new);
 
 /// Die Suchanfrage.
 class ExerciseQuery extends Notifier<String> {
@@ -59,12 +67,14 @@ final exerciseQueryProvider =
 /// die fehlende Übersetzung reißt.
 final filteredExercisesProvider = Provider<List<Exercise>>((ref) {
   final all = ref.watch(exercisesProvider).value ?? const <Exercise>[];
-  final region = ref.watch(exerciseFilterProvider);
+  final muscle = ref.watch(exerciseFilterProvider);
   final query = ref.watch(exerciseQueryProvider).trim().toLowerCase();
 
   return all.where((exercise) {
-    if (region != null &&
-        !exercise.displayMuscles.any((m) => m.region == region)) {
+    // Über `filter` verglichen, nicht direkt: Eine Übung mit `quads` muss
+    // unter „Beine" erscheinen, sonst wäre sie über keinen Filter erreichbar.
+    if (muscle != null &&
+        !exercise.displayMuscles.any((m) => m.filter == muscle)) {
       return false;
     }
     if (query.isEmpty) return true;

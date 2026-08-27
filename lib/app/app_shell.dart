@@ -5,6 +5,7 @@ import '../core/theme/theme.dart';
 import '../core/widgets/widgets.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
+import '../features/history/application/pending_deletion.dart';
 import '../features/history/presentation/screens/history_screen.dart';
 import '../features/plans/presentation/start_sheet.dart';
 import '../features/workout/presentation/screens/workout_runner_screen.dart';
@@ -121,11 +122,53 @@ class _AppShellState extends ConsumerState<AppShell>
             // Ohne diese Grenze zieht ihr Blur den scrollenden Inhalt in
             // dieselbe Ebene und lässt ihn bei jedem Frame mitzeichnen.
             child: RepaintBoundary(
-              child: FloatingNav(activeIndex: _tab, onSelect: _select),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // **Der Widerruf gehört in die Hülle, nicht auf einen
+                  // Bildschirm.** Wer eine Einheit im Detail löscht, landet
+                  // danach in der Liste; wer sie in der Liste löscht, bleibt
+                  // dort. Ein Hinweis, der am Bildschirm hinge, verschwände
+                  // beim ersten dieser beiden Wege — genau dann, wenn er
+                  // gebraucht wird.
+                  const _UndoSlot(),
+                  FloatingNav(activeIndex: _tab, onSelect: _select),
+                ],
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Der Widerrufshinweis über der Navigation.
+///
+/// Null Pixel hoch, solange nichts schwebt — dieselbe Regel wie bei jedem
+/// [AtemNoticeSlot]. Ein reservierter Leerraum sähe aus wie eine Meldung, die
+/// noch kommt.
+class _UndoSlot extends ConsumerWidget {
+  const _UndoSlot();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final pending = ref.watch(pendingDeletionProvider);
+
+    return AtemNoticeSlot(
+      notice: pending == null
+          ? null
+          : AtemNotice(
+              title: l10n.sessionDeletedTitle(pending.label),
+              body: l10n.sessionDeletedBody(
+                  PendingDeletionController.window.inSeconds),
+              semanticLabel: '${l10n.sessionDeletedTitle(pending.label)}. '
+                  '${l10n.sessionDeletedBody(PendingDeletionController.window.inSeconds)}',
+              actionLabel: l10n.sessionDeletedUndo,
+              onAction: () =>
+                  ref.read(pendingDeletionProvider.notifier).undo(),
+            ),
     );
   }
 }

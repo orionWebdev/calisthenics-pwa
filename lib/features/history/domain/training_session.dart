@@ -107,6 +107,16 @@ sealed class TrainingSession {
   /// Auch bei Kraft nicht selbstverständlich: 16 der 63 Krafteinheiten im
   /// Bestand haben gar keine Übungen. Das ist gültiger Bestand, kein Fehler.
   bool get hasExerciseData => false;
+
+  /// Eine Kopie mit anderem Datum oder anderer Dauer.
+  ///
+  /// **Bewusst nur diese beiden Felder.** Sie sind die einzigen, die in die
+  /// Bewertung eingehen — das Datum über die Tagesschlüssel der EMA, die Dauer
+  /// über die Ersatzrechnung der Last. Ein vollständiges `copyWith` mit
+  /// zwanzig Parametern wäre eine Einladung, die Einheit an beliebiger Stelle
+  /// umzubauen; gebraucht wird es an genau einer: um auszurechnen, was eine
+  /// Änderung anrichtet, **bevor** sie geschrieben wird.
+  TrainingSession copyWith({DateTime? date, Duration? duration});
 }
 
 /// Kraft und Körpergewicht — beide tragen Übungen und dieselben Felder.
@@ -146,6 +156,25 @@ final class StrengthSession extends TrainingSession {
 
   @override
   bool get hasExerciseData => exercises.isNotEmpty;
+
+  @override
+  StrengthSession copyWith({DateTime? date, Duration? duration}) =>
+      StrengthSession(
+        id: id,
+        userId: userId,
+        date: date ?? this.date,
+        createdAt: createdAt,
+        bodyweight: bodyweight,
+        exercises: exercises,
+        duration: duration ?? this.duration,
+        notes: notes,
+        rpe: rpe,
+        preWorkoutEnergy: preWorkoutEnergy,
+        postWorkoutFeeling: postWorkoutFeeling,
+        planId: planId,
+        planName: planName,
+        discipline: discipline,
+      );
 }
 
 /// Laufen, Rad, Wandern, Dehnen, Sauna — alles ohne Satzprotokoll.
@@ -186,6 +215,26 @@ final class CardioSession extends TrainingSession {
 
   @override
   SessionKind get kind => SessionKind.cardio;
+
+  @override
+  CardioSession copyWith({DateTime? date, Duration? duration}) => CardioSession(
+        id: id,
+        userId: userId,
+        date: date ?? this.date,
+        createdAt: createdAt,
+        activity: activity,
+        rawActivity: rawActivity,
+        duration: duration ?? this.duration,
+        notes: notes,
+        rpe: rpe,
+        preWorkoutEnergy: preWorkoutEnergy,
+        postWorkoutFeeling: postWorkoutFeeling,
+        distanceKm: distanceKm,
+        pace: pace,
+        avgHr: avgHr,
+        maxHr: maxHr,
+        name: name,
+      );
 }
 
 /// Regeneration — im Bestand ohne jede Kennzahl außer Dauer.
@@ -207,6 +256,21 @@ final class RecoverySession extends TrainingSession {
 
   @override
   SessionKind get kind => SessionKind.recovery;
+
+  @override
+  RecoverySession copyWith({DateTime? date, Duration? duration}) =>
+      RecoverySession(
+        id: id,
+        userId: userId,
+        date: date ?? this.date,
+        createdAt: createdAt,
+        duration: duration ?? this.duration,
+        notes: notes,
+        rpe: rpe,
+        preWorkoutEnergy: preWorkoutEnergy,
+        postWorkoutFeeling: postWorkoutFeeling,
+        name: name,
+      );
 }
 
 /// Eine Einheit mit unbekanntem `type`.
@@ -232,6 +296,21 @@ final class UnknownSession extends TrainingSession {
 
   @override
   SessionKind? get kind => null;
+
+  @override
+  UnknownSession copyWith({DateTime? date, Duration? duration}) =>
+      UnknownSession(
+        id: id,
+        userId: userId,
+        date: date ?? this.date,
+        createdAt: createdAt,
+        rawType: rawType,
+        duration: duration ?? this.duration,
+        notes: notes,
+        rpe: rpe,
+        preWorkoutEnergy: preWorkoutEnergy,
+        postWorkoutFeeling: postWorkoutFeeling,
+      );
 }
 
 /// Eine Übung innerhalb einer Krafteinheit.

@@ -7,8 +7,10 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../exercises/domain/exercise.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
+import '../../application/plan_providers.dart';
 import '../../domain/plan.dart';
 import '../start_sheet.dart';
+import 'plan_form_screen.dart';
 
 /// Plandetail mit der Übungsfolge.
 ///
@@ -77,6 +79,23 @@ class PlanDetailScreen extends ConsumerWidget {
                       exercise: byId[plan.items[i].exerciseId],
                     ),
                   ],
+                  const SizedBox(height: 32),
+                  AtemButton.outline(
+                    label: l10n.commonEdit,
+                    semanticLabel: '${l10n.commonEdit}: ${plan.name}',
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => PlanFormScreen(original: plan),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  AtemButton.ghost(
+                    label: l10n.commonDelete,
+                    semanticLabel: '${l10n.commonDelete}: ${plan.name}',
+                    accent: AtemColors.magenta,
+                    onPressed: () => _delete(context, ref, plan),
+                  ),
                 ],
               ),
             ),
@@ -98,6 +117,31 @@ class PlanDetailScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Plan löschen — **einmal fragen, kein Widerruf nötig**.
+///
+/// Ein Plan wird von nichts referenziert: Absolvierte Einheiten tragen
+/// `planName` in sich selbst und bleiben vollständig lesbar. Es geht also nur
+/// die Zusammenstellung verloren, nicht die Geschichte. Eine zweite
+/// Bestätigung wäre hier Zeremonie ohne Anlass.
+Future<void> _delete(BuildContext context, WidgetRef ref, Plan plan) async {
+  final l10n = AppL10n.of(context);
+
+  final confirmed = await AtemDialog.show<bool>(
+    context,
+    kind: AtemDialogKind.destructive,
+    title: l10n.planDeleteTitle,
+    message: l10n.planDeleteBody,
+    confirmLabel: l10n.commonDelete,
+    dismissLabel: l10n.commonCancel,
+    barrierLabel: l10n.planDeleteBarrier,
+    onConfirm: () => Navigator.of(context).pop(true),
+  );
+  if (confirmed != true) return;
+
+  await ref.read(planRepositoryProvider).deletePlan(plan.id);
+  if (context.mounted) Navigator.of(context).pop();
 }
 
 class _ItemRow extends StatelessWidget {

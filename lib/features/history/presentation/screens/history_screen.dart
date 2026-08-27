@@ -52,7 +52,7 @@ class HistoryScreen extends ConsumerWidget {
               title: l10n.historyErrorTitle,
               body: l10n.historyErrorBody,
               retryLabel: l10n.commonRetry,
-              onRetry: () => ref.invalidate(sessionsProvider),
+              onRetry: () => ref.invalidate(sessionStreamProvider),
             ),
           ),
           data: (sessions) => _content(context, ref, l10n, sessions),

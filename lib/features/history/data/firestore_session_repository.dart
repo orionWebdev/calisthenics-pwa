@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../domain/session_draft.dart';
+import '../domain/session_patch.dart';
 import '../domain/session_repository.dart';
 import '../domain/training_session.dart';
 import 'session_mapper.dart';
@@ -74,15 +75,78 @@ class FirestoreSessionRepository implements SessionRepository {
     return reference.id;
   }
 
-  /// Baut das Firestore-Dokument.
-  ///
-  /// Die Feldnamen folgen der PWA (`js/views/workout/lifecycle.js`), damit
-  /// beide Anwendungen dieselben Einheiten lesen. Felder ohne Wert werden
-  /// **weggelassen** statt auf `null` gesetzt: Der Bestand kennt zwar beides,
-  /// aber ein fehlendes Feld ist die sauberere Aussage.
-  Map<String, dynamic> _toDocument(SessionDraft draft) {
+  @override
+  Future<void> updateSession(String id, SessionPatch patch) async {
+    final data = <String, Object?>{
+      'date': Timestamp.fromDate(
+        DateTime(patch.date.year, patch.date.month, patch.date.day),
+      ),
+      // `FieldValue.delete()` statt `null`: Ein Feld, das auf `null` steht,
+      // und ein fehlendes Feld sind laut Vertrag `04-firestore-schema.md` R2
+      // derselbe Fall — dann soll auch nur eine Schreibweise davon entstehen.
+      'duration': patch.duration == null
+          ? FieldValue.delete()
+          : (patch.duration!.inSeconds / 60).round(),
+      'notes': (patch.notes?.trim().isNotEmpty ?? false)
+          ? patch.notes!.trim()
+          : FieldValue.delete(),
+      // `createdAt` bleibt unangetastet: Es sagt, wann der Eintrag entstand,
+      // nicht wann zuletzt daran gerührt wurde. Beim nachträglichen Verschieben
+      // eines Datums ist gerade der Unterschied die Information.
+      if (patch.exercises case final exercises?)
+        'exercises': _exercisesField(exercises),
+    };
+
+    await _db.collection(collection).doc(id).update(data);
+  }
+
+  @override
+  Future<void> deleteSession(String id) async {
+    final document = _db.collection(collection).doc(id);
+
+    // Vor dem Löschen lesen: `scheduleId` steht nur im Dokument, der Mapper
+    // liest es nicht. Ohne diesen Blick bliebe ein Termin als „absolviert"
+    // stehen und zeigte auf eine Einheit, die es nicht mehr gibt.
+    String? scheduleId;
+    try {
+      scheduleId = (await document.get()).data()?['scheduleId'] as String?;
+    } catch (error, stack) {
+      developer.log(
+        'Einheit $id vor dem Löschen nicht lesbar — Termin bleibt unberührt',
+        name: 'atem.history',
+        error: error,
+        stackTrace: stack,
+      );
+    }
+
+    await document.delete();
+
+    if (scheduleId == null) return;
+    try {
+      await _db.collection('schedule').doc(scheduleId).update({
+        'status': 'planned',
+        'completed': false,
+        'sessionId': FieldValue.delete(),
+        'completedAt': FieldValue.delete(),
+      });
+    } catch (error, stack) {
+      // Wie beim Speichern bewusst geschluckt: Die Einheit ist bereits weg.
+      // Ein offener Termin, der als erledigt gilt, ist der harmlosere Fehler.
+      developer.log(
+        'Termin $scheduleId liess sich nicht wieder öffnen',
+        name: 'atem.history',
+        error: error,
+        stackTrace: stack,
+      );
+    }
+  }
+
+  /// Die Übungsliste als Firestore-Feld — geteilt von Anlegen und Ändern.
+  static List<Map<String, dynamic>> _exercisesField(
+    List<LoggedExercise> source,
+  ) {
     final exercises = <Map<String, dynamic>>[];
-    for (final exercise in draft.exercises) {
+    for (final exercise in source) {
       if (exercise.sets.isEmpty) continue;
       exercises.add({
         'exerciseId': exercise.exerciseId,
@@ -98,6 +162,17 @@ class FirestoreSessionRepository implements SessionRepository {
         ],
       });
     }
+    return exercises;
+  }
+
+  /// Baut das Firestore-Dokument.
+  ///
+  /// Die Feldnamen folgen der PWA (`js/views/workout/lifecycle.js`), damit
+  /// beide Anwendungen dieselben Einheiten lesen. Felder ohne Wert werden
+  /// **weggelassen** statt auf `null` gesetzt: Der Bestand kennt zwar beides,
+  /// aber ein fehlendes Feld ist die sauberere Aussage.
+  Map<String, dynamic> _toDocument(SessionDraft draft) {
+    final exercises = _exercisesField(draft.exercises);
 
     return {
       // Die Rules verlangen genau diese beiden Felder beim Anlegen.

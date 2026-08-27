@@ -25,7 +25,7 @@ class AtemSegment<T> {
 
 /// Auswahl zwischen wenigen, gleichrangigen Möglichkeiten.
 ///
-/// Für zwei bis vier Einträge. Ab fünf ist es eine Liste, kein Segment.
+/// Für zwei bis fünf Einträge. Ab sechs ist es eine Liste, kein Segment.
 ///
 /// **Der aktive Eintrag trägt einen Haken, nicht nur eine Farbe** — Vertrag R6:
 /// Farbe ist nie der einzige Statusträger. Getönte Fläche und Rand sind
@@ -59,18 +59,24 @@ class AtemSegmented<T> extends StatelessWidget {
       label: groupSemanticLabel,
       child: Opacity(
         opacity: enabled ? 1 : 0.5,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+        // **`Wrap`, nicht `Row`.** Fünf Segmente mit Wörtern darin passen bei
+        // 200 % Schrift auf 320 dp nicht nebeneinander — eine Reihe liefe über
+        // und schnitte das letzte Segment ab, samt seiner Trefferfläche.
+        //
+        // Solange Platz ist, verhält sich ein `Wrap` wie eine `Row`; erst wenn
+        // keiner mehr da ist, unterscheiden sie sich. Genau dann soll es
+        // umbrechen statt zu reißen.
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: [
-            for (var i = 0; i < segments.length; i++) ...[
-              if (i > 0) const SizedBox(width: 8),
+            for (final segment in segments)
               _Segment<T>(
-                segment: segments[i],
-                selected: segments[i].value == value,
+                segment: segment,
+                selected: segment.value == value,
                 enabled: enabled,
-                onTap: () => onChanged(segments[i].value),
+                onTap: () => onChanged(segment.value),
               ),
-            ],
           ],
         ),
       ),

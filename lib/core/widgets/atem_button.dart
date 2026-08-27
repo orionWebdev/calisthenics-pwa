@@ -4,6 +4,7 @@ import '../theme/atem_colors.dart';
 import '../theme/atem_geometry.dart';
 import '../theme/atem_glow.dart';
 import '../theme/atem_gradients.dart';
+import '../theme/atem_motion.dart';
 import '../theme/atem_type.dart';
 import 'atem_tappable.dart';
 
@@ -41,6 +42,7 @@ class AtemButton extends StatelessWidget {
     this.size = AtemButtonSize.regular,
     this.expand = true,
     this.glow,
+    this.busy = false,
     this.haptic = AtemHaptic.medium,
   })  : _variant = _Variant.gradient,
         accent = null;
@@ -57,6 +59,7 @@ class AtemButton extends StatelessWidget {
     this.size = AtemButtonSize.compact,
     this.expand = true,
     this.glow,
+    this.busy = false,
     this.haptic = AtemHaptic.selection,
   })  : _variant = _Variant.outline,
         gradient = null;
@@ -72,6 +75,7 @@ class AtemButton extends StatelessWidget {
     this.leading,
     this.size = AtemButtonSize.compact,
     this.expand = false,
+    this.busy = false,
     this.haptic = AtemHaptic.selection,
   })  : _variant = _Variant.ghost,
         gradient = null,
@@ -110,7 +114,17 @@ class AtemButton extends StatelessWidget {
 
   final AtemHaptic haptic;
 
-  bool get _enabled => onPressed != null;
+  /// Die Aktion läuft.
+  ///
+  /// **Nicht dasselbe wie deaktiviert.** Deaktiviert heißt „geht hier nicht",
+  /// beschäftigt heißt „geht gerade" — und wer den Unterschied nicht sieht,
+  /// tippt ein zweites Mal. Deshalb tritt ein Ring an die Stelle des
+  /// führenden Symbols, die Beschriftung bleibt lesbar, und Semantics meldet
+  /// den Ladezustand, statt den Knopf verschwinden zu lassen.
+  final bool busy;
+
+  /// Beschäftigt heißt nicht antippbar — aber anders dargestellt als gesperrt.
+  bool get _enabled => onPressed != null && !busy;
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +138,25 @@ class AtemButton extends StatelessWidget {
       mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (leading != null) ...[leading!, const SizedBox(width: 9)],
+        if (busy) ...[
+          SizedBox(
+            width: 16,
+            height: 16,
+            child: _Spinner(color: labelColor),
+          ),
+          const SizedBox(width: 9),
+        ] else if (leading != null) ...[
+          leading!,
+          const SizedBox(width: 9)
+        ],
         Flexible(
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: AtemType.labelMedium.of(context).copyWith(
-                  color: _enabled ? labelColor : AtemColors.textDisabled,
+                  color: _enabled || busy
+                      ? labelColor
+                      : AtemColors.textDisabled,
                 ),
           ),
         ),
@@ -144,9 +170,12 @@ class AtemButton extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: AtemRadii.pillR,
-        gradient: _enabled && _variant == _Variant.gradient ? gradient : null,
+        gradient: (_enabled || busy) && _variant == _Variant.gradient
+            ? gradient
+            : null,
         color: switch (_variant) {
-          _Variant.gradient when !_enabled => AtemColors.surfaceRaised,
+          _Variant.gradient when !_enabled && !busy =>
+            AtemColors.surfaceRaised,
           _Variant.outline => AtemColors.surfaceSolid,
           _ => null,
         },
@@ -164,7 +193,7 @@ class AtemButton extends StatelessWidget {
     );
 
     return AtemTappable(
-      onTap: onPressed,
+      onTap: busy ? null : onPressed,
       semanticLabel: semanticLabel,
       semanticHint: semanticHint,
       haptic: haptic,
@@ -178,3 +207,69 @@ class AtemButton extends StatelessWidget {
 }
 
 enum _Variant { gradient, outline, ghost }
+
+/// Der Ring im laufenden Knopf.
+///
+/// Läuft über [AtemMotion.decorative]: Bei „Animationen reduzieren" steht er
+/// still, statt ewig zu kreisen — und in Tests terminiert `pumpAndSettle`.
+class _Spinner extends StatefulWidget {
+  const _Spinner({required this.color});
+
+  final Color color;
+
+  @override
+  State<_Spinner> createState() => _SpinnerState();
+}
+
+class _SpinnerState extends State<_Spinner>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Bei „Animationen reduzieren" steht der Ring still, statt ewig zu
+    // kreisen — und `pumpAndSettle` terminiert in Tests.
+    AtemMotion.syncLoop(context, _controller, restingValue: 0);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => RotationTransition(
+        turns: _controller,
+        child: CustomPaint(painter: _ArcPainter(widget.color)),
+      );
+}
+
+class _ArcPainter extends CustomPainter {
+  const _ArcPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..color = color;
+    canvas.drawArc(
+      Offset.zero & size,
+      0,
+      3.6,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ArcPainter old) => old.color != color;
+}

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +9,9 @@ import '../../domain/exercise.dart';
 import '../../domain/muscle.dart';
 import '../muscle_ui.dart';
 import '../widgets/exercise_bits.dart';
+import '../widgets/exercise_search.dart';
 import 'exercise_detail_screen.dart';
+import 'exercise_form_screen.dart';
 
 /// Die Übungsliste: Suche, Regionsfilter, gemischte Sprachen.
 class ExerciseListScreen extends ConsumerStatefulWidget {
@@ -37,7 +37,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
     final l10n = AppL10n.of(context);
     final async = ref.watch(exercisesProvider);
     final filtered = ref.watch(filteredExercisesProvider);
-    final region = ref.watch(exerciseFilterProvider);
+    final muscle = ref.watch(exerciseFilterProvider);
     final query = ref.watch(exerciseQueryProvider);
     final all = async.value ?? const <Exercise>[];
 
@@ -47,6 +47,22 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
         backgroundColor: AtemColors.base,
         title:
             Text(l10n.exercisesTitle, style: AtemType.titleMedium.of(context)),
+        actions: [
+          // Im Kopf und nicht am Fuß: Die Liste ist lang, und ein Knopf unter
+          // ihr wäre nur nach einer Reise durch 154 Zeilen erreichbar.
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: AtemTappable(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const ExerciseFormScreen(),
+                ),
+              ),
+              semanticLabel: l10n.exercisesNew,
+              child: const Icon(Icons.add, size: 22, color: AtemColors.cyan),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         top: false,
@@ -56,20 +72,23 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(
                   AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 12),
-              child: _SearchField(
+              child: ExerciseSearchField(
                 controller: _search,
-                onChanged: (v) =>
-                    ref.read(exerciseQueryProvider.notifier).set(v),
+                onChanged: (v) {
+                  ref.read(exerciseQueryProvider.notifier).set(v);
+                  setState(() {});
+                },
                 onClear: () {
                   _search.clear();
                   ref.read(exerciseQueryProvider.notifier).clear();
+                  setState(() {});
                 },
               ),
             ),
-            _FilterRow(
-              selected: region,
-              onSelect: (r) =>
-                  ref.read(exerciseFilterProvider.notifier).toggle(r),
+            ExerciseFilterRow(
+              selected: muscle,
+              onSelect: (m) =>
+                  ref.read(exerciseFilterProvider.notifier).toggle(m),
               onAll: () => ref.read(exerciseFilterProvider.notifier).clear(),
             ),
             const SizedBox(height: 12),
@@ -77,7 +96,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
               padding: const EdgeInsets.symmetric(
                   horizontal: AtemSpacing.screenPadding),
               child: Text(
-                _countLine(l10n, all, filtered, region),
+                _countLine(l10n, all, filtered, muscle),
                 style: AtemType.labelMicro.of(context),
               ),
             ),
@@ -119,7 +138,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                           // Die Handlung erscheint nur, wenn sie etwas
                           // bewirkt: Ohne Filter und ohne Suche gibt es
                           // nichts zurückzusetzen.
-                          action: region == null && query.isEmpty
+                          action: muscle == null && query.isEmpty
                               ? null
                               : AtemButton.outline(
                                   label: l10n.exercisesFilterReset,
@@ -172,184 +191,15 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
     AppL10n l10n,
     List<Exercise> all,
     List<Exercise> filtered,
-    MuscleRegion? region,
+    MuscleGroup? muscle,
   ) {
-    if (region != null) {
-      return l10n.exercisesFilterResult(filtered.length, region.label(l10n));
+    if (muscle != null) {
+      return l10n.exercisesFilterResult(filtered.length, muscle.label(l10n));
     }
     if (filtered.length != all.length) {
       return l10n.exerciseCountShort(filtered.length);
     }
     final own = all.where((e) => e.isOwn).length;
     return l10n.exercisesCount(all.length, all.length - own, own);
-  }
-}
-
-class _SearchField extends StatelessWidget {
-  const _SearchField({
-    required this.controller,
-    required this.onChanged,
-    required this.onClear,
-  });
-
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-
-    return TextField(
-      controller: controller,
-      onChanged: onChanged,
-      style: AtemType.body.of(context),
-      textInputAction: TextInputAction.search,
-      decoration: InputDecoration(
-        hintText: l10n.exercisesSearchHint,
-        hintStyle: AtemType.body.of(context).copyWith(
-              color: AtemColors.textSecondary,
-            ),
-        filled: true,
-        fillColor: AtemColors.card,
-        isDense: true,
-        // **48 dp, nicht 44.** Die Spezifikationstabelle nennt 44 dp für das
-        // Suchfeld — das widerspricht ihrer eigenen Randbedingung „Tap ≥ 48 dp"
-        // und dem A11y-Vertrag R3. Der Vertrag gewinnt; die Prüfmatrix hat den
-        // Widerspruch bei 320 und 360 dp aufgedeckt.
-        constraints: const BoxConstraints(minHeight: 48),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        enabledBorder: _border(AtemColors.border),
-        focusedBorder: _border(AtemColors.cyan, width: 1.5),
-        // Erst ab dem ersten Zeichen — ein Löschknopf an einem leeren Feld ist
-        // eine Aktion ohne Wirkung.
-        suffixIcon: controller.text.isEmpty
-            ? null
-            : AtemTappable(
-                onTap: onClear,
-                semanticLabel: l10n.exercisesFilterReset,
-                child: const Icon(Icons.close,
-                    size: 18, color: AtemColors.textSecondary),
-              ),
-      ),
-    );
-  }
-
-  static OutlineInputBorder _border(Color color, {double width = 1}) =>
-      OutlineInputBorder(
-        borderRadius: AtemRadii.statBoxR,
-        borderSide: BorderSide(color: color, width: width),
-      );
-}
-
-/// Die Filterzeile. „Alle" steht fest an Position 1, der Rest scrollt.
-class _FilterRow extends StatelessWidget {
-  const _FilterRow({
-    required this.selected,
-    required this.onSelect,
-    required this.onAll,
-  });
-
-  final MuscleRegion? selected;
-  final ValueChanged<MuscleRegion> onSelect;
-  final VoidCallback onAll;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-
-    // Eine waagerechte Liste braucht eine feste Höhe — die darf aber nicht
-    // fest bleiben: Bei 200 % Schrift wachsen die Chips, und 48 dp liefen um
-    // 25 px über. Die Höhe folgt deshalb der Schriftskalierung.
-    final height = math.max(
-      48.0,
-      MediaQuery.textScalerOf(context).scale(20) + 28,
-    );
-
-    return SizedBox(
-      height: height,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding:
-            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
-        children: [
-          _Chip(
-            label: l10n.exercisesFilterAll,
-            selected: selected == null,
-            onTap: onAll,
-          ),
-          for (final region in MuscleRegion.values) ...[
-            const SizedBox(width: 8),
-            _Chip(
-              label: region.label(l10n),
-              color: region.color,
-              selected: selected == region,
-              onTap: () => onSelect(region),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  const _Chip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-    this.color,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final tint = color ?? AtemColors.cyan;
-
-    return AtemTappable(
-      onTap: onTap,
-      semanticLabel: label,
-      selected: selected,
-      inMutuallyExclusiveGroup: true,
-      child: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        constraints: const BoxConstraints(minHeight: 36),
-        decoration: BoxDecoration(
-          color: selected ? AtemCategories.surface(tint) : AtemColors.card,
-          borderRadius: BorderRadius.circular(AtemRadii.pill),
-          border: Border.all(
-            color: selected ? AtemCategories.border(tint) : AtemColors.border,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Der Punkt zeigt die Farbe auch im nicht gewählten Zustand — so
-            // ist die Zuordnung Region/Farbe lernbar, bevor man tippt.
-            if (color != null && !selected) ...[
-              ExcludeSemantics(child: AtemStatusDot(color: tint)),
-              const SizedBox(width: 8),
-            ],
-            if (selected) ...[
-              Icon(Icons.check, size: 14, color: tint),
-              const SizedBox(width: 6),
-            ],
-            Text(
-              label,
-              style: AtemType.labelSmall.of(context).copyWith(
-                    color: selected ? tint : AtemColors.textPrimary,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                  ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

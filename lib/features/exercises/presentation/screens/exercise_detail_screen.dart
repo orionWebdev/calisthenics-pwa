@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../plans/application/plan_providers.dart';
+import '../../application/exercise_providers.dart';
 import '../../domain/exercise.dart';
+import '../difficulty_ui.dart';
 import '../muscle_ui.dart';
 import '../widgets/exercise_bits.dart';
+import 'exercise_form_screen.dart';
 
 /// Übungsdetail — **reich und spärlich sind dasselbe Layout**.
 ///
@@ -21,13 +26,26 @@ import '../widgets/exercise_bits.dart';
 /// Der ist keine Leerstelle, sondern eine Handlungsmöglichkeit: Nur dort kann
 /// jemand etwas nachtragen. Bei einer kuratierten Übung wäre derselbe Hinweis
 /// eine Aufforderung an jemanden, der nichts ändern kann.
-class ExerciseDetailScreen extends StatelessWidget {
+///
+/// ## Kuratiert bekommt keinen ausgegrauten Knopf
+///
+/// Die Regeln verbieten Schreiben auf `exercises_curated`. Ein deaktiviertes
+/// „Bearbeiten" wäre die naheliegende Darstellung und die falsche: Es sieht aus
+/// wie ein Fehler, den man beheben könnte, und lädt zum Antippen ein, das nie
+/// etwas tut.
+///
+/// Stattdessen steht an derselben Stelle ein **Schloss-Chip** mit einem Satz
+/// dazu — und darunter der Weg, der tatsächlich offensteht: „Eigene Fassung
+/// anlegen". Die kuratierte Übung bleibt dabei bestehen und die eigene stellt
+/// sich daneben. Sie zu ersetzen hieße, rückwirkend jede absolvierte Einheit
+/// umzuschreiben, die auf die kuratierte zeigt.
+class ExerciseDetailScreen extends ConsumerWidget {
   const ExerciseDetailScreen({super.key, required this.exercise});
 
   final Exercise exercise;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final color =
         exercise.displayMuscles.firstOrNull?.color ?? AtemCategories.grey;
@@ -66,9 +84,27 @@ class ExerciseDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             MuscleChipRow(muscles: exercise.displayMuscles, maxVisible: 6),
-            if (exercise.difficulty != null) ...[
+            if (exercise.difficulty case final level?) ...[
               const SizedBox(height: 16),
-              DifficultyMeter(level: exercise.difficulty!),
+              Row(
+                children: [
+                  DifficultyMeter(level: level),
+                  const SizedBox(width: 10),
+                  // Das Wort neben den Balken: Dieselbe Stufe, die im Formular
+                  // gewählt wird, damit „Fortgeschritten" hier und dort
+                  // dasselbe meint.
+                  Flexible(
+                    child: ExcludeSemantics(
+                      child: Text(
+                        difficultyLabel(l10n, level),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AtemType.labelMicro.of(context),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
             if (exercise.equipment.isNotEmpty) ...[
               const SizedBox(height: 12),
@@ -101,6 +137,128 @@ class ExerciseDetailScreen extends StatelessWidget {
                     '${l10n.exerciseSparseTitle}. ${l10n.exerciseSparseBody}',
               ),
             ],
+
+            const SizedBox(height: 32),
+            if (exercise.isOwn) ...[
+              AtemButton.outline(
+                label: l10n.commonEdit,
+                semanticLabel: '${l10n.commonEdit}: ${exercise.name}',
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => ExerciseFormScreen(original: exercise),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              AtemButton.ghost(
+                label: l10n.commonDelete,
+                semanticLabel: '${l10n.commonDelete}: ${exercise.name}',
+                accent: AtemColors.magenta,
+                onPressed: () => _delete(context, ref),
+              ),
+            ] else ...[
+              const _CuratedLock(),
+              const SizedBox(height: 14),
+              AtemButton.outline(
+                label: l10n.exerciseCopyAction,
+                semanticLabel: l10n.exerciseCopyAction,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => ExerciseFormScreen(copyOf: exercise),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Zweimal fragen, dann endgültig.
+  ///
+  /// Anders als beim Löschen einer Einheit gibt es hier **keinen Widerruf**:
+  /// Die Übung hängt in Plänen und in absolvierten Einheiten, und diese Kette
+  /// lässt sich nicht verlässlich zurückdrehen — zwischen Löschen und Widerruf
+  /// kann ein Plan bearbeitet worden sein. Ein Rückgängig, das manchmal nicht
+  /// vollständig zurückdreht, verspricht Sicherheit und liefert sie nicht.
+  ///
+  /// Deshalb tritt an seine Stelle die zweite Frage, und die **erste** sagt
+  /// bereits, in wie vielen Plänen die Übung steckt.
+  Future<void> _delete(BuildContext context, WidgetRef ref) async {
+    final l10n = AppL10n.of(context);
+
+    final plans = ref.read(plansProvider).value ?? const [];
+    final affected = plans
+        .where((p) => p.items.any((i) => i.exerciseId == exercise.id))
+        .length;
+
+    final first = await AtemDialog.show<bool>(
+      context,
+      kind: AtemDialogKind.destructive,
+      title: l10n.exerciseDeleteTitle,
+      message: affected == 0
+          ? l10n.exerciseDeleteBody
+          : '${l10n.exerciseDeleteInPlans(affected)} ${l10n.exerciseDeleteBody}',
+      confirmLabel: l10n.commonDelete,
+      dismissLabel: l10n.commonCancel,
+      barrierLabel: l10n.exerciseDeleteBarrier,
+      onConfirm: () => Navigator.of(context).pop(true),
+    );
+    if (first != true || !context.mounted) return;
+
+    final second = await AtemDialog.show<bool>(
+      context,
+      kind: AtemDialogKind.destructive,
+      title: l10n.exerciseDeleteSecondTitle,
+      message: l10n.exerciseDeleteSecondBody,
+      confirmLabel: l10n.commonDelete,
+      dismissLabel: l10n.commonCancel,
+      barrierLabel: l10n.exerciseDeleteBarrier,
+      onConfirm: () => Navigator.of(context).pop(true),
+    );
+    if (second != true) return;
+
+    await ref.read(exerciseRepositoryProvider).deleteExercise(exercise.id);
+    if (context.mounted) Navigator.of(context).pop();
+  }
+}
+
+/// Der Schloss-Chip an der Stelle, an der bei eigenen Übungen „Bearbeiten"
+/// steht. Symbol **und** Wort — ein Schloss allein ist eine Vermutung.
+class _CuratedLock extends StatelessWidget {
+  const _CuratedLock();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return Semantics(
+      label: '${l10n.exerciseCuratedA11y}. ${l10n.exerciseCuratedBody}',
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AtemRadii.pill),
+                border: Border.all(color: AtemColors.border),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.lock_outline,
+                      size: 15, color: AtemColors.textSecondary),
+                  const SizedBox(width: 7),
+                  Text(l10n.exerciseCuratedChip,
+                      style: AtemType.labelSmall.of(context)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(l10n.exerciseCuratedBody,
+                style: AtemType.labelMicro.of(context)),
           ],
         ),
       ),

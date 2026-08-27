@@ -10,7 +10,9 @@ import '../../application/history_providers.dart';
 import '../../domain/readiness.dart';
 import '../../domain/training_load.dart';
 import '../../domain/training_session.dart';
+import '../session_actions.dart';
 import '../session_ui.dart';
+import 'session_edit_screen.dart';
 
 /// Detail einer Einheit — **vier Datenlagen, ein Layout**.
 ///
@@ -81,6 +83,34 @@ class SessionDetailScreen extends ConsumerWidget {
               const SizedBox(height: 24),
               Text(notes, style: AtemType.body.of(context)),
             ],
+
+            // Die beiden Wege, die Einheit zu verändern — ganz unten, hinter
+            // allem, was sie aussagt. Wer den Bildschirm öffnet, will in aller
+            // Regel nachsehen, nicht ändern.
+            const SizedBox(height: 32),
+            AtemButton.outline(
+              label: l10n.commonEdit,
+              semanticLabel: '${l10n.commonEdit}: ${sessionName(l10n, session)}',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => SessionEditScreen(session: session),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            AtemButton.ghost(
+              label: l10n.commonDelete,
+              semanticLabel:
+                  '${l10n.commonDelete}: ${sessionName(l10n, session)}',
+              accent: AtemColors.magenta,
+              onPressed: () async {
+                final deleted =
+                    await confirmDeleteSession(context, ref, session);
+                // Zurück zur Liste: Ein Detail zu einer Einheit, die gerade
+                // verschwunden ist, wäre ein Bildschirm über nichts.
+                if (deleted && context.mounted) Navigator.of(context).pop();
+              },
+            ),
           ],
         ),
       ),

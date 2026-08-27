@@ -377,6 +377,70 @@
   "@commonWorkout": {
     "description": "aus common.workout"
   },
+  "consequenceDays": "{n, plural, one{1 Tag} other{{n} Tage}}",
+  "@consequenceDays": {
+    "description": "Tage in der Folgentabelle",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "consequenceForm": "Form",
+  "@consequenceForm": {
+    "description": "Zeile der Folgentabelle"
+  },
+  "consequenceGone": "entfällt",
+  "@consequenceGone": {
+    "description": "ACWR verschwindet"
+  },
+  "consequenceLoad": "Belastung",
+  "@consequenceLoad": {
+    "description": "Zeile der Folgentabelle: ACWR"
+  },
+  "consequenceNew": "erscheint",
+  "@consequenceNew": {
+    "description": "ACWR erscheint"
+  },
+  "consequenceNone": "An deiner Auswertung ändert das nichts.",
+  "@consequenceNone": {
+    "description": "Folgentabelle ohne Änderung"
+  },
+  "consequencePause": "Pause",
+  "@consequencePause": {
+    "description": "Zeile der Folgentabelle: Tage seit der letzten Einheit"
+  },
+  "consequenceStep": "{from} → {to}",
+  "@consequenceStep": {
+    "description": "Vorher-Nachher in der Folgentabelle",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "consequenceStepA11y": "{label}: von {from} auf {to}",
+  "@consequenceStepA11y": {
+    "description": "Vorlesetext einer Folgenzeile",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "consequenceTitle": "Was sich ändert",
+  "@consequenceTitle": {
+    "description": "Überschrift der Folgentabelle"
+  },
   "dashboardActivityCalendarDurationUnit": "Bewegungsstunden",
   "@dashboardActivityCalendarDurationUnit": {
     "description": "aus dashboard.activityCalendar.durationUnit"
@@ -1076,6 +1140,38 @@
   "@detailVolume": {
     "description": "Kennzahl im Detail"
   },
+  "difficultyLevel1": "Anfänger",
+  "@difficultyLevel1": {
+    "description": "Schwierigkeitsstufe 1"
+  },
+  "difficultyLevel2": "Geübt",
+  "@difficultyLevel2": {
+    "description": "Schwierigkeitsstufe 2"
+  },
+  "difficultyLevel3": "Fortgeschritten",
+  "@difficultyLevel3": {
+    "description": "Schwierigkeitsstufe 3"
+  },
+  "difficultyLevel4": "Elite",
+  "@difficultyLevel4": {
+    "description": "Schwierigkeitsstufe 4"
+  },
+  "difficultyLevel5": "Extrem",
+  "@difficultyLevel5": {
+    "description": "Schwierigkeitsstufe 5"
+  },
+  "difficultyPick": "{level} — Stufe {n} von 5",
+  "@difficultyPick": {
+    "description": "Vorlesetext eines Schwierigkeitssegments",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "durationApproxMinutes": "~{n} min",
   "@durationApproxMinutes": {
     "description": "Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.",
@@ -1146,6 +1242,23 @@
   "@errorsWorkoutStartFailed": {
     "description": "aus errors.workoutStartFailed"
   },
+  "exerciseCopyAction": "Eigene Fassung anlegen",
+  "@exerciseCopyAction": {
+    "description": "Weg aus einer kuratierten Übung heraus"
+  },
+  "exerciseCopyName": "{name} (eigene)",
+  "@exerciseCopyName": {
+    "description": "Vorgeschlagener Name der eigenen Fassung",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseCopyNotice": "Die kuratierte Übung bleibt bestehen. Deine Fassung steht daneben.",
+  "@exerciseCopyNotice": {
+    "description": "Hinweis im Formular der eigenen Fassung"
+  },
   "exerciseCountShort": "{n, plural, one{1 Übung} other{{n} Übungen}}",
   "@exerciseCountShort": {
     "description": "Anzahl Übungen, kurz",
@@ -1159,6 +1272,47 @@
   "@exerciseCues": {
     "description": "Abschnitt im Detail"
   },
+  "exerciseCuratedA11y": "Kuratiert, nicht änderbar",
+  "@exerciseCuratedA11y": {
+    "description": "Vorlesetext des Schloss-Chips"
+  },
+  "exerciseCuratedBody": "Kuratierte Übungen sind für alle gleich.",
+  "@exerciseCuratedBody": {
+    "description": "Erklärung am Schloss-Chip"
+  },
+  "exerciseCuratedChip": "Kuratiert",
+  "@exerciseCuratedChip": {
+    "description": "Schloss-Chip am Übungsdetail"
+  },
+  "exerciseDeleteBarrier": "Übung löschen",
+  "@exerciseDeleteBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "exerciseDeleteBody": "Absolvierte Einheiten behalten ihre Sätze, zeigen aber nur noch die Kennung.",
+  "@exerciseDeleteBody": {
+    "description": "Erste Bestätigung, Text"
+  },
+  "exerciseDeleteInPlans": "{n, plural, one{Sie steckt in einem Plan. Dort bleibt eine Lücke mit den Zielwerten.} other{Sie steckt in {n} Plänen. Dort bleibt jeweils eine Lücke mit den Zielwerten.}}",
+  "@exerciseDeleteInPlans": {
+    "description": "Zusatz zur ersten Bestätigung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseDeleteSecondBody": "Das lässt sich nicht rückgängig machen.",
+  "@exerciseDeleteSecondBody": {
+    "description": "Zweite Bestätigung, Text"
+  },
+  "exerciseDeleteSecondTitle": "Endgültig löschen?",
+  "@exerciseDeleteSecondTitle": {
+    "description": "Zweite Bestätigung"
+  },
+  "exerciseDeleteTitle": "Übung löschen?",
+  "@exerciseDeleteTitle": {
+    "description": "Erste Bestätigung"
+  },
   "exerciseDifficultyA11y": "Schwierigkeit {n} von 5",
   "@exerciseDifficultyA11y": {
     "description": "Vorlesefassung der Segmentanzeige",
@@ -1167,6 +1321,100 @@
         "type": "int"
       }
     }
+  },
+  "exerciseFormDescription": "Beschreibung",
+  "@exerciseFormDescription": {
+    "description": "Feldbeschriftung"
+  },
+  "exerciseFormDifficulty": "Schwierigkeit",
+  "@exerciseFormDifficulty": {
+    "description": "Feldbeschriftung"
+  },
+  "exerciseFormDifficultyFault": "Wähle eine Stufe.",
+  "@exerciseFormDifficultyFault": {
+    "description": "Fehler an der Schwierigkeit"
+  },
+  "exerciseFormDifficultyHint": "Gespeichert wird die Stufe als Zahl.",
+  "@exerciseFormDifficultyHint": {
+    "description": "Hilfetext unter der Schwierigkeit"
+  },
+  "exerciseFormEditTitle": "Übung bearbeiten",
+  "@exerciseFormEditTitle": {
+    "description": "Titel des Formulars beim Ändern"
+  },
+  "exerciseFormEquipment": "Gerät",
+  "@exerciseFormEquipment": {
+    "description": "Feldbeschriftung"
+  },
+  "exerciseFormEquipmentHint": "z. B. Hantel, Klimmzugstange",
+  "@exerciseFormEquipmentHint": {
+    "description": "Platzhalter im Gerätefeld"
+  },
+  "exerciseFormMuscleChosen": "{muscle}, gewählt",
+  "@exerciseFormMuscleChosen": {
+    "description": "Vorlesetext eines gewählten Muskelschalters",
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseFormMuscleToggle": "{muscle} auswählen",
+  "@exerciseFormMuscleToggle": {
+    "description": "Vorlesetext eines Muskelschalters",
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseFormMuscles": "Muskeln",
+  "@exerciseFormMuscles": {
+    "description": "Feldbeschriftung"
+  },
+  "exerciseFormMusclesFault": "Wähle mindestens einen Muskel.",
+  "@exerciseFormMusclesFault": {
+    "description": "Fehler an der Muskelauswahl"
+  },
+  "exerciseFormMusclesHint": "Mindestens einer. Er gibt der Übung ihre Farbe.",
+  "@exerciseFormMusclesHint": {
+    "description": "Hilfetext unter der Muskelauswahl"
+  },
+  "exerciseFormName": "Name",
+  "@exerciseFormName": {
+    "description": "Feldbeschriftung"
+  },
+  "exerciseFormNameFault": "Ohne Namen findest du die Übung nicht wieder.",
+  "@exerciseFormNameFault": {
+    "description": "Fehler am Namensfeld"
+  },
+  "exerciseFormNameHint": "z. B. Klimmzug breit",
+  "@exerciseFormNameHint": {
+    "description": "Platzhalter im Namensfeld"
+  },
+  "exerciseFormNewTitle": "Neue Übung",
+  "@exerciseFormNewTitle": {
+    "description": "Titel des Formulars beim Anlegen"
+  },
+  "exerciseFormOptionalSection": "Kann warten",
+  "@exerciseFormOptionalSection": {
+    "description": "Abschnittslabel der freiwilligen Felder"
+  },
+  "exerciseFormRequiredSection": "Pflicht",
+  "@exerciseFormRequiredSection": {
+    "description": "Abschnittslabel der drei Pflichtfelder"
+  },
+  "exerciseFormSaveError": "Übung nicht gespeichert",
+  "@exerciseFormSaveError": {
+    "description": "Fehlermeldung beim Speichern"
+  },
+  "exerciseFormSaveErrorBody": "Prüfe die Verbindung und versuche es erneut.",
+  "@exerciseFormSaveErrorBody": {
+    "description": "Fehlermeldung, Text"
+  },
+  "exerciseFormSaved": "Übung gespeichert",
+  "@exerciseFormSaved": {
+    "description": "Rückmeldung nach dem Speichern"
   },
   "exerciseInstructions": "Anleitung",
   "@exerciseInstructions": {
@@ -1183,6 +1431,15 @@
   "exerciseSparseTitle": "Keine Anleitung hinterlegt",
   "@exerciseSparseTitle": {
     "description": "Nur bei eigenen Übungen ohne Inhalt"
+  },
+  "exercisesBlockAll": "Alle {n} ansehen",
+  "@exercisesBlockAll": {
+    "description": "Weg in die vollständige Übungsliste",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "exercisesCount": "{n} Übungen · {k} kuratiert · {e} eigene",
   "@exercisesCount": {
@@ -1212,9 +1469,27 @@
   "@exercisesEmptyTitle": {
     "description": "Suche ohne Treffer"
   },
+  "exercisesFilterActive": "{muscle}, Filter aktiv",
+  "@exercisesFilterActive": {
+    "description": "Vorlesetext eines gewählten Muskelfilters",
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
   "exercisesFilterAll": "Alle",
   "@exercisesFilterAll": {
     "description": "Erster Filter-Chip, steht fest an Position 1"
+  },
+  "exercisesFilterMuscle": "Nach {muscle} filtern",
+  "@exercisesFilterMuscle": {
+    "description": "Vorlesetext eines Muskelfilters",
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
   },
   "exercisesFilterReset": "Zurücksetzen",
   "@exercisesFilterReset": {
@@ -1232,6 +1507,18 @@
       }
     }
   },
+  "exercisesNew": "Übung anlegen",
+  "@exercisesNew": {
+    "description": "Aktion im Übungsblock"
+  },
+  "exercisesNoMatchBody": "Ändere den Suchbegriff oder den Muskel.",
+  "@exercisesNoMatchBody": {
+    "description": "Leerzustand der Suche, Text"
+  },
+  "exercisesNoMatchTitle": "Keine Treffer",
+  "@exercisesNoMatchTitle": {
+    "description": "Leerzustand der Suche"
+  },
   "exercisesOwnTag": "Eigen",
   "@exercisesOwnTag": {
     "description": "Kennzeichnet selbst angelegte Übungen"
@@ -1243,6 +1530,26 @@
   "exercisesTitle": "Übungen",
   "@exercisesTitle": {
     "description": "Titel der Übungsliste"
+  },
+  "formDiscardBarrier": "Änderungen verwerfen",
+  "@formDiscardBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "formDiscardBody": "Was du eingegeben hast, geht verloren.",
+  "@formDiscardBody": {
+    "description": "Dialogtext"
+  },
+  "formDiscardConfirm": "Verwerfen",
+  "@formDiscardConfirm": {
+    "description": "Dialogaktion"
+  },
+  "formDiscardKeep": "Weiter bearbeiten",
+  "@formDiscardKeep": {
+    "description": "Dialogaktion, Abbruch"
+  },
+  "formDiscardTitle": "Änderungen verwerfen?",
+  "@formDiscardTitle": {
+    "description": "Dialog beim Verlassen mit ungespeicherten Änderungen"
   },
   "formatDistanceKm": "{distance} km",
   "@formatDistanceKm": {
@@ -1561,7 +1868,6 @@
   "@listTitle": {
     "description": "Titel der vollständigen Liste"
   },
-  "@@locale": "de",
   "muscleArms": "Arme",
   "@muscleArms": {
     "description": "Muskelgruppe"
@@ -1731,6 +2037,142 @@
       }
     }
   },
+  "planDeleteBarrier": "Plan löschen",
+  "@planDeleteBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "planDeleteBody": "Deine absolvierten Einheiten bleiben unverändert — sie tragen den Plannamen bei sich.",
+  "@planDeleteBody": {
+    "description": "Bestätigung, Text"
+  },
+  "planDeleteTitle": "Plan löschen?",
+  "@planDeleteTitle": {
+    "description": "Bestätigung"
+  },
+  "planFormAdd": "Übung hinzufügen",
+  "@planFormAdd": {
+    "description": "Aktion unter der Übungsliste"
+  },
+  "planFormEditTitle": "Plan bearbeiten",
+  "@planFormEditTitle": {
+    "description": "Titel beim Ändern"
+  },
+  "planFormGapA11y": "Lücke an Platz {n}: gelöschte Übung, {scheme}",
+  "@planFormGapA11y": {
+    "description": "Vorlesetext einer Lücke",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "scheme": {
+        "type": "String"
+      }
+    }
+  },
+  "planFormGapBody": "Die Zielwerte bleiben stehen. Ersetze sie durch eine andere Übung.",
+  "@planFormGapBody": {
+    "description": "Text einer Lücke im Plan"
+  },
+  "planFormGapTitle": "Übung gelöscht",
+  "@planFormGapTitle": {
+    "description": "Titel einer Lücke im Plan"
+  },
+  "planFormHold": "Halten",
+  "@planFormHold": {
+    "description": "Zielwert in Sekunden"
+  },
+  "planFormItems": "Übungen",
+  "@planFormItems": {
+    "description": "Abschnittslabel"
+  },
+  "planFormItemsFault": "Ein Plan braucht mindestens eine Übung.",
+  "@planFormItemsFault": {
+    "description": "Fehler an der Übungsliste"
+  },
+  "planFormMoveA11y": "{name}, Platz {n} von {total}",
+  "@planFormMoveA11y": {
+    "description": "Vorlesetext eines Planeintrags",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "planFormMoveDown": "Nach unten",
+  "@planFormMoveDown": {
+    "description": "Aktion an einem Planeintrag"
+  },
+  "planFormMoveUp": "Nach oben",
+  "@planFormMoveUp": {
+    "description": "Aktion an einem Planeintrag"
+  },
+  "planFormName": "Name",
+  "@planFormName": {
+    "description": "Feldbeschriftung"
+  },
+  "planFormNameFault": "Ein Plan braucht einen Namen.",
+  "@planFormNameFault": {
+    "description": "Fehler am Namensfeld"
+  },
+  "planFormNameHint": "z. B. Oberkörper A",
+  "@planFormNameHint": {
+    "description": "Platzhalter im Namensfeld"
+  },
+  "planFormNewTitle": "Neuer Plan",
+  "@planFormNewTitle": {
+    "description": "Titel beim Anlegen"
+  },
+  "planFormPickTitle": "Übung wählen",
+  "@planFormPickTitle": {
+    "description": "Titel des Auswahlblatts"
+  },
+  "planFormRemove": "Entfernen",
+  "@planFormRemove": {
+    "description": "Aktion an einem Planeintrag"
+  },
+  "planFormRemoveA11y": "{name} aus dem Plan entfernen",
+  "@planFormRemoveA11y": {
+    "description": "Vorlesetext der Entfernen-Aktion",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "planFormReplace": "Ersetzen",
+  "@planFormReplace": {
+    "description": "Erste Aktion an einer Lücke"
+  },
+  "planFormReps": "Wdh.",
+  "@planFormReps": {
+    "description": "Zielwert"
+  },
+  "planFormRepsHint": "8-12",
+  "@planFormRepsHint": {
+    "description": "Platzhalter im Wiederholungsfeld — Bereiche sind erlaubt"
+  },
+  "planFormRest": "Pause",
+  "@planFormRest": {
+    "description": "Zielwert in Sekunden"
+  },
+  "planFormSaveError": "Plan nicht gespeichert",
+  "@planFormSaveError": {
+    "description": "Fehlermeldung"
+  },
+  "planFormSaved": "Plan gespeichert",
+  "@planFormSaved": {
+    "description": "Rückmeldung nach dem Speichern"
+  },
+  "planFormSets": "Sätze",
+  "@planFormSets": {
+    "description": "Zielwert"
+  },
   "planItemMissing": "Nicht mehr vorhanden",
   "@planItemMissing": {
     "description": "Steht statt des Namens, wenn die Übung gelöscht wurde"
@@ -1792,6 +2234,77 @@
         "type": "int"
       }
     }
+  },
+  "sessionDeleteBarrier": "Einheit löschen",
+  "@sessionDeleteBarrier": {
+    "description": "Vorlesetext des Dialogschleiers"
+  },
+  "sessionDeleteBody": "Sie zählt danach in keiner Auswertung mehr mit.",
+  "@sessionDeleteBody": {
+    "description": "Bestätigung, Text"
+  },
+  "sessionDeleteTitle": "Einheit löschen?",
+  "@sessionDeleteTitle": {
+    "description": "Bestätigung"
+  },
+  "sessionDeletedBody": "Du kannst das {n} Sekunden lang zurücknehmen.",
+  "@sessionDeletedBody": {
+    "description": "Widerrufshinweis, Text",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionDeletedTitle": "{name} gelöscht",
+  "@sessionDeletedTitle": {
+    "description": "Widerrufshinweis nach dem Löschen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionDeletedUndo": "Rückgängig",
+  "@sessionDeletedUndo": {
+    "description": "Aktion im Widerrufshinweis"
+  },
+  "sessionEditDate": "Datum",
+  "@sessionEditDate": {
+    "description": "Feldbeschriftung"
+  },
+  "sessionEditDateA11y": "Datum ändern, aktuell {date}",
+  "@sessionEditDateA11y": {
+    "description": "Vorlesetext des Datumsfelds",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionEditDuration": "Dauer in Minuten",
+  "@sessionEditDuration": {
+    "description": "Feldbeschriftung"
+  },
+  "sessionEditNoChange": "Nichts geändert",
+  "@sessionEditNoChange": {
+    "description": "Zustand des Speichern-Knopfs ohne Änderung"
+  },
+  "sessionEditSaveError": "Einheit nicht gespeichert",
+  "@sessionEditSaveError": {
+    "description": "Fehlermeldung"
+  },
+  "sessionEditSaved": "Einheit gespeichert",
+  "@sessionEditSaved": {
+    "description": "Rückmeldung"
+  },
+  "sessionEditSets": "Sätze",
+  "@sessionEditSets": {
+    "description": "Abschnittslabel über den Sätzen"
+  },
+  "sessionEditTitle": "Einheit bearbeiten",
+  "@sessionEditTitle": {
+    "description": "Titel des Formulars"
   },
   "sheetFreeBody": "Ohne Plan starten — Übungen fügst du im Training hinzu.",
   "@sheetFreeBody": {

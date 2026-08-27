@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../domain/plan.dart';
+import '../domain/plan_draft.dart';
 import '../domain/plan_repository.dart';
 
 class FirestorePlanRepository implements PlanRepository {
@@ -20,6 +21,56 @@ class FirestorePlanRepository implements PlanRepository {
   @override
   Future<List<Plan>> fetchPlans(String userId) async =>
       _convert(await _query(userId).get());
+
+  @override
+  Future<String> savePlan(PlanDraft draft) async {
+    final data = _toDocument(draft);
+    final id = draft.id;
+
+    if (id == null) {
+      final reference = await _db.collection(collection).add(data);
+      return reference.id;
+    }
+    await _db.collection(collection).doc(id).update(data);
+    return id;
+  }
+
+  @override
+  Future<void> deletePlan(String id) =>
+      _db.collection(collection).doc(id).delete();
+
+  /// Baut das Dokument für `plans`.
+  ///
+  /// Der verschachtelte `target`-Aufbau ist der der Vorgänger-App. Er wird
+  /// nicht begradigt: Beide Anwendungen lesen dieselben Pläne, und ein flaches
+  /// Schema hier machte jeden neuen Plan für die PWA unlesbar.
+  ///
+  /// **`reps` bleibt eine Zeichenkette.** Im Bestand stehen Werte wie `25`,
+  /// aber das Feld trägt auch Bereiche wie `8-12`. Es beim Schreiben in eine
+  /// Zahl zu verwandeln, verlöre genau die.
+  ///
+  /// Zielwerte ohne Angabe werden **weggelassen**, nicht auf `null` gesetzt —
+  /// Vertrag `04-firestore-schema.md`, R2.
+  Map<String, dynamic> _toDocument(PlanDraft draft) => {
+        'name': draft.name.trim(),
+        'userId': draft.userId,
+        'items': [
+          for (final item in draft.items)
+            {
+              'exerciseId': item.exerciseId,
+              'target': {
+                if (item.sets != null) 'sets': item.sets,
+                if (item.reps case final r? when r.trim().isNotEmpty)
+                  'reps': r.trim(),
+                if (item.holdSeconds != null) 'holdSec': item.holdSeconds,
+              },
+              if (item.restSeconds != null) 'restSec': item.restSeconds,
+            },
+        ],
+        if (draft.icon != null) 'icon': draft.icon,
+        if (draft.type != null) 'type': draft.type,
+        if (draft.isNew) 'createdAt': Timestamp.now(),
+      };
 
   List<Plan> _convert(QuerySnapshot<Map<String, dynamic>> snapshot) {
     final plans = <Plan>[];

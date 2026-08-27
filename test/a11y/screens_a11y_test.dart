@@ -8,12 +8,15 @@ import 'package:atem/features/auth/presentation/screens/splash_screen.dart';
 import 'package:atem/features/auth/presentation/screens/waiting_room_screen.dart';
 import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_detail_screen.dart';
+import 'package:atem/features/exercises/presentation/screens/exercise_form_screen.dart';
 import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
 import 'package:atem/features/history/presentation/screens/history_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_detail_screen.dart';
+import 'package:atem/features/history/presentation/screens/session_edit_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_list_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_list_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_detail_screen.dart';
+import 'package:atem/features/plans/presentation/screens/plan_form_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
@@ -99,5 +102,42 @@ void main() {
       tester,
       const WorkoutRunnerScreen(sessionId: 'test-session'),
     );
+  });
+
+  // ------------------------------------------------------------- Modul 7
+  //
+  // Formulare sind der härteste Fall der Matrix: Neun Muskelschalter und fünf
+  // Schwierigkeitssegmente stehen bei 200 % Schrift auf 320 dp nebeneinander,
+  // und Eingabefelder werden von `androidTapTargetGuideline` nicht verschont.
+
+  testWidgets('Übung anlegen erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const ExerciseFormScreen());
+  });
+
+  testWidgets('Übung bearbeiten erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(
+        tester, ExerciseFormScreen(original: fixtureExercises.last));
+  });
+
+  testWidgets('Eigene Fassung anlegen erfüllt den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(
+        tester, ExerciseFormScreen(copyOf: fixtureExercises.first));
+  });
+
+  testWidgets('Plan anlegen erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const PlanFormScreen());
+  });
+
+  testWidgets('Plan bearbeiten mit Lücke erfüllt den A11y-Vertrag',
+      (tester) async {
+    // Der Plan aus den Vorlagen trägt bewusst einen Eintrag auf eine gelöschte
+    // Übung — die gestrichelte Lücke gehört damit in jede Zelle der Matrix.
+    await expectA11y(tester, PlanFormScreen(original: fixturePlans.first));
+  });
+
+  testWidgets('Einheit bearbeiten erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(
+        tester, SessionEditScreen(session: fixtureSessions.first));
   });
 }

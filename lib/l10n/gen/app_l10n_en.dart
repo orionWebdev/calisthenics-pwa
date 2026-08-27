@@ -280,6 +280,48 @@ class AppL10nEn extends AppL10n {
   String get commonWorkout => 'Workout';
 
   @override
+  String consequenceDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get consequenceForm => 'Form';
+
+  @override
+  String get consequenceGone => 'not shown';
+
+  @override
+  String get consequenceLoad => 'Load';
+
+  @override
+  String get consequenceNew => 'appears';
+
+  @override
+  String get consequenceNone => 'This changes nothing in your evaluation.';
+
+  @override
+  String get consequencePause => 'Break';
+
+  @override
+  String consequenceStep(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String consequenceStepA11y(String label, String from, String to) {
+    return '$label: from $from to $to';
+  }
+
+  @override
+  String get consequenceTitle => 'What changes';
+
+  @override
   String get dashboardActivityCalendarDurationUnit => 'Movement hours';
 
   @override
@@ -756,6 +798,26 @@ class AppL10nEn extends AppL10n {
   String get detailVolume => 'Volume';
 
   @override
+  String get difficultyLevel1 => 'Beginner';
+
+  @override
+  String get difficultyLevel2 => 'Intermediate';
+
+  @override
+  String get difficultyLevel3 => 'Advanced';
+
+  @override
+  String get difficultyLevel4 => 'Elite';
+
+  @override
+  String get difficultyLevel5 => 'Extreme';
+
+  @override
+  String difficultyPick(String level, int n) {
+    return '$level — level $n of 5';
+  }
+
+  @override
   String durationApproxMinutes(int n) {
     return '~$n min';
   }
@@ -808,6 +870,18 @@ class AppL10nEn extends AppL10n {
   String get errorsWorkoutStartFailed => 'Error starting workout';
 
   @override
+  String get exerciseCopyAction => 'Create your own version';
+
+  @override
+  String exerciseCopyName(String name) {
+    return '$name (mine)';
+  }
+
+  @override
+  String get exerciseCopyNotice =>
+      'The curated exercise remains. Your version sits alongside it.';
+
+  @override
   String exerciseCountShort(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
@@ -822,9 +896,118 @@ class AppL10nEn extends AppL10n {
   String get exerciseCues => 'Cues';
 
   @override
+  String get exerciseCuratedA11y => 'Curated, not editable';
+
+  @override
+  String get exerciseCuratedBody =>
+      'Curated exercises are the same for everyone.';
+
+  @override
+  String get exerciseCuratedChip => 'Curated';
+
+  @override
+  String get exerciseDeleteBarrier => 'Delete exercise';
+
+  @override
+  String get exerciseDeleteBody =>
+      'Completed sessions keep their sets but will only show the identifier.';
+
+  @override
+  String exerciseDeleteInPlans(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          'It is used in $n plans. A gap with the target values will remain in each.',
+      one:
+          'It is used in one plan. A gap with the target values will remain there.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exerciseDeleteSecondBody => 'This cannot be undone.';
+
+  @override
+  String get exerciseDeleteSecondTitle => 'Delete permanently?';
+
+  @override
+  String get exerciseDeleteTitle => 'Delete exercise?';
+
+  @override
   String exerciseDifficultyA11y(int n) {
     return 'Difficulty $n of 5';
   }
+
+  @override
+  String get exerciseFormDescription => 'Description';
+
+  @override
+  String get exerciseFormDifficulty => 'Difficulty';
+
+  @override
+  String get exerciseFormDifficultyFault => 'Choose a level.';
+
+  @override
+  String get exerciseFormDifficultyHint => 'The level is stored as a number.';
+
+  @override
+  String get exerciseFormEditTitle => 'Edit exercise';
+
+  @override
+  String get exerciseFormEquipment => 'Equipment';
+
+  @override
+  String get exerciseFormEquipmentHint => 'e.g. dumbbell, pull-up bar';
+
+  @override
+  String exerciseFormMuscleChosen(String muscle) {
+    return '$muscle, selected';
+  }
+
+  @override
+  String exerciseFormMuscleToggle(String muscle) {
+    return 'Select $muscle';
+  }
+
+  @override
+  String get exerciseFormMuscles => 'Muscles';
+
+  @override
+  String get exerciseFormMusclesFault => 'Choose at least one muscle.';
+
+  @override
+  String get exerciseFormMusclesHint =>
+      'At least one. It gives the exercise its colour.';
+
+  @override
+  String get exerciseFormName => 'Name';
+
+  @override
+  String get exerciseFormNameFault =>
+      'Without a name you will not find it again.';
+
+  @override
+  String get exerciseFormNameHint => 'e.g. Wide pull-up';
+
+  @override
+  String get exerciseFormNewTitle => 'New exercise';
+
+  @override
+  String get exerciseFormOptionalSection => 'Can wait';
+
+  @override
+  String get exerciseFormRequiredSection => 'Required';
+
+  @override
+  String get exerciseFormSaveError => 'Exercise not saved';
+
+  @override
+  String get exerciseFormSaveErrorBody =>
+      'Check your connection and try again.';
+
+  @override
+  String get exerciseFormSaved => 'Exercise saved';
 
   @override
   String get exerciseInstructions => 'Instructions';
@@ -837,6 +1020,11 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get exerciseSparseTitle => 'No instructions yet';
+
+  @override
+  String exercisesBlockAll(int n) {
+    return 'View all $n';
+  }
 
   @override
   String exercisesCount(int n, int k, int e) {
@@ -852,7 +1040,17 @@ class AppL10nEn extends AppL10n {
   String get exercisesEmptyTitle => 'Nothing found';
 
   @override
+  String exercisesFilterActive(String muscle) {
+    return '$muscle, filter active';
+  }
+
+  @override
   String get exercisesFilterAll => 'All';
+
+  @override
+  String exercisesFilterMuscle(String muscle) {
+    return 'Filter by $muscle';
+  }
 
   @override
   String get exercisesFilterReset => 'Reset';
@@ -863,6 +1061,15 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get exercisesNew => 'New exercise';
+
+  @override
+  String get exercisesNoMatchBody => 'Change the search term or the muscle.';
+
+  @override
+  String get exercisesNoMatchTitle => 'No matches';
+
+  @override
   String get exercisesOwnTag => 'Custom';
 
   @override
@@ -870,6 +1077,21 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get exercisesTitle => 'Exercises';
+
+  @override
+  String get formDiscardBarrier => 'Discard changes';
+
+  @override
+  String get formDiscardBody => 'What you entered will be lost.';
+
+  @override
+  String get formDiscardConfirm => 'Discard';
+
+  @override
+  String get formDiscardKeep => 'Keep editing';
+
+  @override
+  String get formDiscardTitle => 'Discard changes?';
 
   @override
   String formatDistanceKm(num distance) {
@@ -1197,6 +1419,98 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get planDeleteBarrier => 'Delete plan';
+
+  @override
+  String get planDeleteBody =>
+      'Your completed sessions stay unchanged — they carry the plan name themselves.';
+
+  @override
+  String get planDeleteTitle => 'Delete plan?';
+
+  @override
+  String get planFormAdd => 'Add exercise';
+
+  @override
+  String get planFormEditTitle => 'Edit plan';
+
+  @override
+  String planFormGapA11y(int n, String scheme) {
+    return 'Gap at position $n: deleted exercise, $scheme';
+  }
+
+  @override
+  String get planFormGapBody =>
+      'The target values remain. Replace it with another exercise.';
+
+  @override
+  String get planFormGapTitle => 'Exercise deleted';
+
+  @override
+  String get planFormHold => 'Hold';
+
+  @override
+  String get planFormItems => 'Exercises';
+
+  @override
+  String get planFormItemsFault => 'A plan needs at least one exercise.';
+
+  @override
+  String planFormMoveA11y(String name, int n, int total) {
+    return '$name, position $n of $total';
+  }
+
+  @override
+  String get planFormMoveDown => 'Move down';
+
+  @override
+  String get planFormMoveUp => 'Move up';
+
+  @override
+  String get planFormName => 'Name';
+
+  @override
+  String get planFormNameFault => 'A plan needs a name.';
+
+  @override
+  String get planFormNameHint => 'e.g. Upper body A';
+
+  @override
+  String get planFormNewTitle => 'New plan';
+
+  @override
+  String get planFormPickTitle => 'Choose exercise';
+
+  @override
+  String get planFormRemove => 'Remove';
+
+  @override
+  String planFormRemoveA11y(String name) {
+    return 'Remove $name from the plan';
+  }
+
+  @override
+  String get planFormReplace => 'Replace';
+
+  @override
+  String get planFormReps => 'Reps';
+
+  @override
+  String get planFormRepsHint => '8-12';
+
+  @override
+  String get planFormRest => 'Rest';
+
+  @override
+  String get planFormSaveError => 'Plan not saved';
+
+  @override
+  String get planFormSaved => 'Plan saved';
+
+  @override
+  String get planFormSets => 'Sets';
+
+  @override
   String get planItemMissing => 'No longer available';
 
   @override
@@ -1241,6 +1555,55 @@ class AppL10nEn extends AppL10n {
   String restSeconds(int n) {
     return '$n s';
   }
+
+  @override
+  String get sessionDeleteBarrier => 'Delete session';
+
+  @override
+  String get sessionDeleteBody =>
+      'It will no longer count towards any evaluation.';
+
+  @override
+  String get sessionDeleteTitle => 'Delete session?';
+
+  @override
+  String sessionDeletedBody(int n) {
+    return 'You can undo this for $n seconds.';
+  }
+
+  @override
+  String sessionDeletedTitle(String name) {
+    return '$name deleted';
+  }
+
+  @override
+  String get sessionDeletedUndo => 'Undo';
+
+  @override
+  String get sessionEditDate => 'Date';
+
+  @override
+  String sessionEditDateA11y(String date) {
+    return 'Change date, currently $date';
+  }
+
+  @override
+  String get sessionEditDuration => 'Duration in minutes';
+
+  @override
+  String get sessionEditNoChange => 'Nothing changed';
+
+  @override
+  String get sessionEditSaveError => 'Session not saved';
+
+  @override
+  String get sessionEditSaved => 'Session saved';
+
+  @override
+  String get sessionEditSets => 'Sets';
+
+  @override
+  String get sessionEditTitle => 'Edit session';
 
   @override
   String get sheetFreeBody =>

@@ -5,14 +5,17 @@ import 'package:atem/features/dashboard/application/dashboard_providers.dart';
 import 'package:atem/features/dashboard/data/preview_dashboard_repository.dart';
 import 'package:atem/features/exercises/application/exercise_providers.dart';
 import 'package:atem/features/exercises/domain/exercise.dart';
+import 'package:atem/features/exercises/domain/exercise_draft.dart';
 import 'package:atem/features/exercises/domain/exercise_repository.dart';
 import 'package:atem/features/exercises/domain/muscle.dart';
 import 'package:atem/features/plans/application/plan_providers.dart';
 import 'package:atem/features/plans/domain/plan.dart';
 import 'package:atem/features/history/application/history_providers.dart';
 import 'package:atem/features/history/domain/session_draft.dart';
+import 'package:atem/features/history/domain/session_patch.dart';
 import 'package:atem/features/history/domain/session_repository.dart';
 import 'package:atem/features/history/domain/training_session.dart';
+import 'package:atem/features/plans/domain/plan_draft.dart';
 import 'package:atem/features/plans/domain/plan_repository.dart';
 import 'package:atem/features/workout/application/workout_providers.dart';
 import 'package:atem/features/workout/data/preview_workout_repository.dart';
@@ -77,6 +80,19 @@ class FakeSessionRepository implements SessionRepository {
 
   @override
   Future<String> saveSession(SessionDraft draft) async => 'neu';
+
+  /// Was geschrieben wurde — die Attrappen protokollieren, statt zu schweigen.
+  /// Ein Test, der nur prüft, dass nichts abstürzt, prüft zu wenig.
+  final patched = <String, SessionPatch>{};
+  final deleted = <String>[];
+
+  @override
+  Future<void> updateSession(String id, SessionPatch patch) async {
+    patched[id] = patch;
+  }
+
+  @override
+  Future<void> deleteSession(String id) async => deleted.add(id);
 }
 
 /// Übungen für die Prüfmatrix — bewusst mit langen Namen und vielen Muskeln,
@@ -120,6 +136,18 @@ class FakeExerciseRepository implements ExerciseRepository {
   @override
   Future<List<Exercise>> fetchExercises(String userId) async =>
       fixtureExercises;
+
+  final saved = <ExerciseDraft>[];
+  final deleted = <String>[];
+
+  @override
+  Future<String> saveExercise(ExerciseDraft draft) async {
+    saved.add(draft);
+    return draft.id ?? 'neu';
+  }
+
+  @override
+  Future<void> deleteExercise(String id) async => deleted.add(id);
 }
 
 class FakePlanRepository implements PlanRepository {
@@ -128,6 +156,18 @@ class FakePlanRepository implements PlanRepository {
 
   @override
   Future<List<Plan>> fetchPlans(String userId) async => fixturePlans;
+
+  final saved = <PlanDraft>[];
+  final deleted = <String>[];
+
+  @override
+  Future<String> savePlan(PlanDraft draft) async {
+    saved.add(draft);
+    return draft.id ?? 'neu';
+  }
+
+  @override
+  Future<void> deletePlan(String id) async => deleted.add(id);
 }
 
 /// Die Prüfmatrix aus `docs/contracts/01-accessibility.md`.

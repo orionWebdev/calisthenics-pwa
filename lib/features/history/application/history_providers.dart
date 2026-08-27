@@ -10,6 +10,7 @@ import '../domain/readiness.dart';
 import '../domain/training_load.dart';
 import '../domain/session_repository.dart';
 import '../domain/training_session.dart';
+import 'pending_deletion.dart';
 
 final sessionRepositoryProvider = Provider<SessionRepository>((ref) {
   return FirestoreSessionRepository(FirebaseFirestore.instance);
@@ -21,7 +22,31 @@ final sessionRepositoryProvider = Provider<SessionRepository>((ref) {
 /// ohnehin mit `403` antworten, und „niemand angemeldet" ist kein Defekt. Ob
 /// die App überhaupt etwas anzeigen darf, entscheidet der Anmeldezustand
 /// weiter oben — nicht dieser Provider.
-final sessionsProvider = StreamProvider<List<TrainingSession>>((ref) {
+/// **Kein `StreamProvider`, sondern eine Ableitung darüber.** Ein zweiter
+/// Strom müsste die Firestore-Abfrage erneut aufsetzen, sobald sich der
+/// Löschzustand ändert — ein Widerruf löste dann eine Neuabfrage aus und die
+/// Liste flackerte durch den Ladezustand. Als reine Ableitung passiert
+/// stattdessen genau das Richtige: Das Filtern läuft neu, die Abfrage nicht.
+///
+/// Die Aufrufstellen merken davon nichts: Ein `AsyncValue` verhält sich an
+/// `when`, `value` und `hasError` gleich, gleich woher es kommt.
+final sessionsProvider = Provider<AsyncValue<List<TrainingSession>>>((ref) {
+  final pending = ref.watch(pendingDeletionProvider)?.sessionId;
+  return ref.watch(sessionStreamProvider).whenData((sessions) {
+    if (pending == null) return sessions;
+    return [
+      for (final session in sessions)
+        if (session.id != pending) session,
+    ];
+  });
+});
+
+/// Der rohe Strom aus Firestore, ohne den Löschfilter.
+///
+/// Getrennt, damit [sessionsProvider] die schwebende Löschung ausblenden kann,
+/// **ohne** dass ein Widerruf eine neue Abfrage auslöst. Die Trennung ist der
+/// Grund, warum das Zurückspringen sofort geschieht und nichts nachlädt.
+final sessionStreamProvider = StreamProvider<List<TrainingSession>>((ref) {
   final userId = ref.watch(currentUserIdProvider);
   if (userId == null) return Stream.value(const []);
   return ref.watch(sessionRepositoryProvider).watchSessions(userId);

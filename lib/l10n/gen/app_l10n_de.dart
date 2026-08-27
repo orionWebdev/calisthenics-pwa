@@ -280,6 +280,48 @@ class AppL10nDe extends AppL10n {
   String get commonWorkout => 'Workout';
 
   @override
+  String consequenceDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Tage',
+      one: '1 Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get consequenceForm => 'Form';
+
+  @override
+  String get consequenceGone => 'entfällt';
+
+  @override
+  String get consequenceLoad => 'Belastung';
+
+  @override
+  String get consequenceNew => 'erscheint';
+
+  @override
+  String get consequenceNone => 'An deiner Auswertung ändert das nichts.';
+
+  @override
+  String get consequencePause => 'Pause';
+
+  @override
+  String consequenceStep(String from, String to) {
+    return '$from → $to';
+  }
+
+  @override
+  String consequenceStepA11y(String label, String from, String to) {
+    return '$label: von $from auf $to';
+  }
+
+  @override
+  String get consequenceTitle => 'Was sich ändert';
+
+  @override
   String get dashboardActivityCalendarDurationUnit => 'Bewegungsstunden';
 
   @override
@@ -759,6 +801,26 @@ class AppL10nDe extends AppL10n {
   String get detailVolume => 'Volumen';
 
   @override
+  String get difficultyLevel1 => 'Anfänger';
+
+  @override
+  String get difficultyLevel2 => 'Geübt';
+
+  @override
+  String get difficultyLevel3 => 'Fortgeschritten';
+
+  @override
+  String get difficultyLevel4 => 'Elite';
+
+  @override
+  String get difficultyLevel5 => 'Extrem';
+
+  @override
+  String difficultyPick(String level, int n) {
+    return '$level — Stufe $n von 5';
+  }
+
+  @override
   String durationApproxMinutes(int n) {
     return '~$n min';
   }
@@ -814,6 +876,18 @@ class AppL10nDe extends AppL10n {
   String get errorsWorkoutStartFailed => 'Fehler beim Starten des Workouts';
 
   @override
+  String get exerciseCopyAction => 'Eigene Fassung anlegen';
+
+  @override
+  String exerciseCopyName(String name) {
+    return '$name (eigene)';
+  }
+
+  @override
+  String get exerciseCopyNotice =>
+      'Die kuratierte Übung bleibt bestehen. Deine Fassung steht daneben.';
+
+  @override
   String exerciseCountShort(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
@@ -828,9 +902,119 @@ class AppL10nDe extends AppL10n {
   String get exerciseCues => 'Cues';
 
   @override
+  String get exerciseCuratedA11y => 'Kuratiert, nicht änderbar';
+
+  @override
+  String get exerciseCuratedBody => 'Kuratierte Übungen sind für alle gleich.';
+
+  @override
+  String get exerciseCuratedChip => 'Kuratiert';
+
+  @override
+  String get exerciseDeleteBarrier => 'Übung löschen';
+
+  @override
+  String get exerciseDeleteBody =>
+      'Absolvierte Einheiten behalten ihre Sätze, zeigen aber nur noch die Kennung.';
+
+  @override
+  String exerciseDeleteInPlans(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other:
+          'Sie steckt in $n Plänen. Dort bleibt jeweils eine Lücke mit den Zielwerten.',
+      one:
+          'Sie steckt in einem Plan. Dort bleibt eine Lücke mit den Zielwerten.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exerciseDeleteSecondBody =>
+      'Das lässt sich nicht rückgängig machen.';
+
+  @override
+  String get exerciseDeleteSecondTitle => 'Endgültig löschen?';
+
+  @override
+  String get exerciseDeleteTitle => 'Übung löschen?';
+
+  @override
   String exerciseDifficultyA11y(int n) {
     return 'Schwierigkeit $n von 5';
   }
+
+  @override
+  String get exerciseFormDescription => 'Beschreibung';
+
+  @override
+  String get exerciseFormDifficulty => 'Schwierigkeit';
+
+  @override
+  String get exerciseFormDifficultyFault => 'Wähle eine Stufe.';
+
+  @override
+  String get exerciseFormDifficultyHint =>
+      'Gespeichert wird die Stufe als Zahl.';
+
+  @override
+  String get exerciseFormEditTitle => 'Übung bearbeiten';
+
+  @override
+  String get exerciseFormEquipment => 'Gerät';
+
+  @override
+  String get exerciseFormEquipmentHint => 'z. B. Hantel, Klimmzugstange';
+
+  @override
+  String exerciseFormMuscleChosen(String muscle) {
+    return '$muscle, gewählt';
+  }
+
+  @override
+  String exerciseFormMuscleToggle(String muscle) {
+    return '$muscle auswählen';
+  }
+
+  @override
+  String get exerciseFormMuscles => 'Muskeln';
+
+  @override
+  String get exerciseFormMusclesFault => 'Wähle mindestens einen Muskel.';
+
+  @override
+  String get exerciseFormMusclesHint =>
+      'Mindestens einer. Er gibt der Übung ihre Farbe.';
+
+  @override
+  String get exerciseFormName => 'Name';
+
+  @override
+  String get exerciseFormNameFault =>
+      'Ohne Namen findest du die Übung nicht wieder.';
+
+  @override
+  String get exerciseFormNameHint => 'z. B. Klimmzug breit';
+
+  @override
+  String get exerciseFormNewTitle => 'Neue Übung';
+
+  @override
+  String get exerciseFormOptionalSection => 'Kann warten';
+
+  @override
+  String get exerciseFormRequiredSection => 'Pflicht';
+
+  @override
+  String get exerciseFormSaveError => 'Übung nicht gespeichert';
+
+  @override
+  String get exerciseFormSaveErrorBody =>
+      'Prüfe die Verbindung und versuche es erneut.';
+
+  @override
+  String get exerciseFormSaved => 'Übung gespeichert';
 
   @override
   String get exerciseInstructions => 'Anleitung';
@@ -843,6 +1027,11 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get exerciseSparseTitle => 'Keine Anleitung hinterlegt';
+
+  @override
+  String exercisesBlockAll(int n) {
+    return 'Alle $n ansehen';
+  }
 
   @override
   String exercisesCount(int n, int k, int e) {
@@ -858,7 +1047,17 @@ class AppL10nDe extends AppL10n {
   String get exercisesEmptyTitle => 'Nichts gefunden';
 
   @override
+  String exercisesFilterActive(String muscle) {
+    return '$muscle, Filter aktiv';
+  }
+
+  @override
   String get exercisesFilterAll => 'Alle';
+
+  @override
+  String exercisesFilterMuscle(String muscle) {
+    return 'Nach $muscle filtern';
+  }
 
   @override
   String get exercisesFilterReset => 'Zurücksetzen';
@@ -869,6 +1068,15 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
+  String get exercisesNew => 'Übung anlegen';
+
+  @override
+  String get exercisesNoMatchBody => 'Ändere den Suchbegriff oder den Muskel.';
+
+  @override
+  String get exercisesNoMatchTitle => 'Keine Treffer';
+
+  @override
   String get exercisesOwnTag => 'Eigen';
 
   @override
@@ -876,6 +1084,21 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get exercisesTitle => 'Übungen';
+
+  @override
+  String get formDiscardBarrier => 'Änderungen verwerfen';
+
+  @override
+  String get formDiscardBody => 'Was du eingegeben hast, geht verloren.';
+
+  @override
+  String get formDiscardConfirm => 'Verwerfen';
+
+  @override
+  String get formDiscardKeep => 'Weiter bearbeiten';
+
+  @override
+  String get formDiscardTitle => 'Änderungen verwerfen?';
 
   @override
   String formatDistanceKm(num distance) {
@@ -1202,6 +1425,98 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
+  String get planDeleteBarrier => 'Plan löschen';
+
+  @override
+  String get planDeleteBody =>
+      'Deine absolvierten Einheiten bleiben unverändert — sie tragen den Plannamen bei sich.';
+
+  @override
+  String get planDeleteTitle => 'Plan löschen?';
+
+  @override
+  String get planFormAdd => 'Übung hinzufügen';
+
+  @override
+  String get planFormEditTitle => 'Plan bearbeiten';
+
+  @override
+  String planFormGapA11y(int n, String scheme) {
+    return 'Lücke an Platz $n: gelöschte Übung, $scheme';
+  }
+
+  @override
+  String get planFormGapBody =>
+      'Die Zielwerte bleiben stehen. Ersetze sie durch eine andere Übung.';
+
+  @override
+  String get planFormGapTitle => 'Übung gelöscht';
+
+  @override
+  String get planFormHold => 'Halten';
+
+  @override
+  String get planFormItems => 'Übungen';
+
+  @override
+  String get planFormItemsFault => 'Ein Plan braucht mindestens eine Übung.';
+
+  @override
+  String planFormMoveA11y(String name, int n, int total) {
+    return '$name, Platz $n von $total';
+  }
+
+  @override
+  String get planFormMoveDown => 'Nach unten';
+
+  @override
+  String get planFormMoveUp => 'Nach oben';
+
+  @override
+  String get planFormName => 'Name';
+
+  @override
+  String get planFormNameFault => 'Ein Plan braucht einen Namen.';
+
+  @override
+  String get planFormNameHint => 'z. B. Oberkörper A';
+
+  @override
+  String get planFormNewTitle => 'Neuer Plan';
+
+  @override
+  String get planFormPickTitle => 'Übung wählen';
+
+  @override
+  String get planFormRemove => 'Entfernen';
+
+  @override
+  String planFormRemoveA11y(String name) {
+    return '$name aus dem Plan entfernen';
+  }
+
+  @override
+  String get planFormReplace => 'Ersetzen';
+
+  @override
+  String get planFormReps => 'Wdh.';
+
+  @override
+  String get planFormRepsHint => '8-12';
+
+  @override
+  String get planFormRest => 'Pause';
+
+  @override
+  String get planFormSaveError => 'Plan nicht gespeichert';
+
+  @override
+  String get planFormSaved => 'Plan gespeichert';
+
+  @override
+  String get planFormSets => 'Sätze';
+
+  @override
   String get planItemMissing => 'Nicht mehr vorhanden';
 
   @override
@@ -1246,6 +1561,55 @@ class AppL10nDe extends AppL10n {
   String restSeconds(int n) {
     return '$n s';
   }
+
+  @override
+  String get sessionDeleteBarrier => 'Einheit löschen';
+
+  @override
+  String get sessionDeleteBody =>
+      'Sie zählt danach in keiner Auswertung mehr mit.';
+
+  @override
+  String get sessionDeleteTitle => 'Einheit löschen?';
+
+  @override
+  String sessionDeletedBody(int n) {
+    return 'Du kannst das $n Sekunden lang zurücknehmen.';
+  }
+
+  @override
+  String sessionDeletedTitle(String name) {
+    return '$name gelöscht';
+  }
+
+  @override
+  String get sessionDeletedUndo => 'Rückgängig';
+
+  @override
+  String get sessionEditDate => 'Datum';
+
+  @override
+  String sessionEditDateA11y(String date) {
+    return 'Datum ändern, aktuell $date';
+  }
+
+  @override
+  String get sessionEditDuration => 'Dauer in Minuten';
+
+  @override
+  String get sessionEditNoChange => 'Nichts geändert';
+
+  @override
+  String get sessionEditSaveError => 'Einheit nicht gespeichert';
+
+  @override
+  String get sessionEditSaved => 'Einheit gespeichert';
+
+  @override
+  String get sessionEditSets => 'Sätze';
+
+  @override
+  String get sessionEditTitle => 'Einheit bearbeiten';
 
   @override
   String get sheetFreeBody =>

@@ -5,9 +5,11 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/plan_providers.dart';
+import '../../domain/plan.dart';
 import '../plan_bits.dart';
 import '../start_sheet.dart';
 import 'plan_detail_screen.dart';
+import 'plan_form_screen.dart';
 
 /// Alle Pläne.
 class PlanListScreen extends ConsumerWidget {
@@ -29,7 +31,41 @@ class PlanListScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         top: false,
-        child: async.when(
+        child: Column(
+          children: [
+            Expanded(child: _list(context, ref, l10n, async)),
+            // Der Weg zum neuen Plan steht unten und fest, nicht als
+            // schwebender Knopf über der Liste: Er würde sonst die letzte
+            // Planzeile verdecken, und die schwebende Navigation ist an dieser
+            // Stelle des Bildschirms schon vergeben.
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 12),
+              child: AtemButton.outline(
+                label: l10n.planFormNewTitle,
+                semanticLabel: l10n.planFormNewTitle,
+                leading:
+                    const Icon(Icons.add, size: 18, color: AtemColors.cyan),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const PlanFormScreen(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _list(
+    BuildContext context,
+    WidgetRef ref,
+    AppL10n l10n,
+    AsyncValue<List<Plan>> async,
+  ) =>
+      async.when(
           loading: () => Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: AtemSpacing.screenPadding),
@@ -87,8 +123,5 @@ class PlanListScreen extends ConsumerWidget {
                     );
                   },
                 ),
-        ),
-      ),
-    );
-  }
+      );
 }

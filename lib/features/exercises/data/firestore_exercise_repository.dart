@@ -4,7 +4,9 @@ import 'dart:developer' as developer;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../domain/exercise.dart';
+import '../domain/exercise_draft.dart';
 import '../domain/exercise_repository.dart';
+import '../domain/muscle.dart';
 import 'exercise_mapper.dart';
 
 /// Liest beide Übungssammlungen und führt sie zusammen.
@@ -42,6 +44,55 @@ class FirestoreExerciseRepository implements ExerciseRepository {
     ]);
     return _merge(results[0], results[1]);
   }
+
+  @override
+  Future<String> saveExercise(ExerciseDraft draft) async {
+    final data = _toDocument(draft);
+    final id = draft.id;
+
+    if (id == null) {
+      final reference = await _db.collection(ownCollection).add(data);
+      return reference.id;
+    }
+
+    // `update`, nicht `set`: Ein `set` ohne `merge` löschte jedes Feld, das
+    // das Formular nicht kennt — etwa `cues` oder `createdAt` aus der PWA.
+    await _db.collection(ownCollection).doc(id).update(data);
+    return id;
+  }
+
+  @override
+  Future<void> deleteExercise(String id) =>
+      _db.collection(ownCollection).doc(id).delete();
+
+  /// Baut das Dokument für `exercises`.
+  ///
+  /// **`difficulty` geht als Zahl raus, ausnahmslos.** Die Regel lautet
+  /// `difficulty is number`; ein Wort wird beim Anlegen abgewiesen. Im Bestand
+  /// stehen zwar 55 von 70 eigenen Übungen mit Wörtern, aber die sind vor
+  /// dieser Regel entstanden und bleiben nur deshalb liegen. Wird eine von
+  /// ihnen bearbeitet, ersetzt diese Zeile das Wort durch die Zahl, auf die
+  /// [Difficulty.parse] es ohnehin schon abgebildet hat.
+  ///
+  /// `userId` steht auch beim Ändern im Dokument: Die Regeln prüfen `isOwner`
+  /// auf **beiden** Seiten — auf dem alten Stand und auf dem neuen. Ein
+  /// `update`, das `userId` wegließe, ist zwar erlaubt, aber ein `update`, das
+  /// es fälschlich änderte, nicht. Es unverändert mitzuschreiben ist die
+  /// einfachste Art, das nicht zu verwechseln.
+  Map<String, dynamic> _toDocument(ExerciseDraft draft) => {
+        'name': draft.name.trim(),
+        'muscleGroups': [for (final m in draft.muscleGroups) m.wire],
+        'difficulty': draft.difficulty,
+        'userId': draft.userId,
+        if (draft.equipment.isNotEmpty) 'equipment': draft.equipment,
+        if (draft.type != null) 'type': draft.type,
+        if (draft.description case final text?
+            when text.trim().isNotEmpty)
+          'description': text.trim(),
+        if (draft.instructions.isNotEmpty)
+          'instructionsSteps': draft.instructions,
+        if (draft.isNew) 'createdAt': Timestamp.now(),
+      };
 
   List<Exercise> _merge(
     QuerySnapshot<Map<String, dynamic>> curated,

@@ -58,7 +58,7 @@ class AnalysisScreen extends ConsumerWidget {
               title: l10n.analysisErrorTitle,
               body: l10n.analysisErrorBody(summary.sessions),
               retryLabel: l10n.analysisErrorRetry,
-              onRetry: () => ref.invalidate(sessionsProvider),
+              onRetry: () => ref.invalidate(sessionStreamProvider),
             ),
           ),
           data: (_) {

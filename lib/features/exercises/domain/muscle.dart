@@ -5,11 +5,15 @@
 ///
 /// ## Warum es zwei Ebenen gibt
 ///
-/// Die Kategoriepalette trägt nur **sechs** fließtextsichere Töne, der Bestand
-/// kennt aber **zehn** Muskelgruppen. Statt Farben willkürlich zu doppeln,
-/// kodiert die Farbe die **Region** und der Text den **Muskel**. Farbe ist
-/// damit Vorsortierung, nie Information allein — was ohnehin Vertrag R6
-/// verlangt.
+/// Die **Region** fasst zusammen, der **Muskel** benennt. Beide werden
+/// gebraucht: Die Region ordnet den Bestand grob, der Muskel steht im Text und
+/// trägt seine eigene Farbe.
+///
+/// Dass die Farbe an der Region hinge, war einmal so — es beruhte auf der
+/// Annahme, nur sechs Töne seien fließtextsicher. Die tatsächlichen
+/// Muskelfarben der Vorgänger-App halten den Kontrastvertrag alle neun, der
+/// schlechteste mit 6,33:1. Farbe hängt seither am Muskel; die Region bleibt
+/// als Ordnungsebene bestehen.
 library;
 
 /// Die farbtragende Ebene. Sechs Regionen, sechs Töne.
@@ -57,6 +61,43 @@ enum MuscleGroup {
     }
     return null;
   }
+
+  /// Die neun Muskeln, nach denen gefiltert und ausgewählt wird.
+  ///
+  /// Es sind genau die neun mit eigener Farbe. Die fehlenden drei — Gesäß,
+  /// Quadrizeps, Beinbeuger — sind keine Auslassung: Die Vorgänger-App
+  /// unterscheidet sie farblich nicht, und ein Filter für „Quadrizeps" neben
+  /// einem für „Beine" träfe auf denselben Bestand.
+  ///
+  /// Die Reihenfolge ist von oben nach unten gedacht, nicht alphabetisch:
+  /// Schultern, Brust, Rücken, dann die Arme, dann Rumpf und Beine. Wer nach
+  /// einer Übung sucht, denkt am Körper entlang.
+  static const filters = <MuscleGroup>[
+    MuscleGroup.shoulders,
+    MuscleGroup.chest,
+    MuscleGroup.back,
+    MuscleGroup.arms,
+    MuscleGroup.biceps,
+    MuscleGroup.triceps,
+    MuscleGroup.core,
+    MuscleGroup.legs,
+    MuscleGroup.calves,
+  ];
+
+  /// Auf welchen Filter dieser Muskel fällt.
+  ///
+  /// Nur die Beinfamilie wird zusammengezogen: Eine Übung, die `quads` trägt,
+  /// muss unter „Beine" erscheinen, sonst wäre sie über keinen Filter
+  /// erreichbar. Bizeps und Trizeps bleiben dagegen eigenständig — sie haben
+  /// eigene Farben, eigene Filter, und wer sie sucht, meint sie.
+  MuscleGroup get filter => switch (this) {
+        MuscleGroup.glutes ||
+        MuscleGroup.quads ||
+        MuscleGroup.hamstrings ||
+        MuscleGroup.legs =>
+          MuscleGroup.legs,
+        _ => this,
+      };
 }
 
 /// Schwierigkeit auf einer Skala von 1 bis 5.
