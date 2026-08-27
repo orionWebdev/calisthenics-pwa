@@ -8,6 +8,7 @@ import '../features/dashboard/presentation/widgets/floating_nav.dart';
 import '../features/history/application/pending_deletion.dart';
 import '../features/history/presentation/screens/history_screen.dart';
 import '../features/plans/presentation/start_sheet.dart';
+import '../features/workout/domain/workout_start.dart';
 import '../features/workout/presentation/screens/workout_runner_screen.dart';
 import '../features/workout/presentation/screens/workouts_screen.dart';
 import '../l10n/gen/app_l10n.dart';
@@ -62,11 +63,15 @@ class _AppShellState extends ConsumerState<AppShell>
   }
 
   Future<void> _start(StartRequest request) async {
-    // Der Runner bekommt die Termin-Kennung, wenn es eine gibt. Beim freien
-    // Training bleibt sie leer.
+    // Plan **und** Pausenzeit wandern mit. Vorher ging beim Sprung in den
+    // Runner beides verloren: Er bekam eine Zeichenkette, die niemand las,
+    // und lud stattdessen immer dieselben drei Übungen aus einer Attrappe.
     await Navigator.of(context).pushNamed(
       WorkoutRunnerScreen.routeName,
-      arguments: request.plan?.id ?? '',
+      arguments: WorkoutStart(
+        planId: request.plan?.id,
+        restSeconds: request.restSeconds,
+      ),
     );
   }
 

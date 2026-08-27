@@ -6,13 +6,31 @@ import '../../auth/application/auth_providers.dart';
 import '../../history/application/history_providers.dart';
 import '../../history/domain/session_draft.dart';
 import '../../history/domain/training_session.dart' as history;
+import '../../exercises/application/exercise_providers.dart';
+import '../../exercises/domain/exercise.dart';
+import '../../plans/application/plan_providers.dart';
+import '../data/plan_workout_repository.dart';
 import '../domain/workout_repository.dart';
 import '../domain/workout_session.dart';
+import '../domain/workout_start.dart';
 
-/// Wie [dashboardRepositoryProvider] im ProviderScope überschreiben.
+/// Setzt die Einheit aus Plan, Übungsbestand und Historie zusammen.
+///
+/// **Keine Überschreibung mehr im ProviderScope.** Bis hierher lag dort eine
+/// Attrappe, die für jede Einheit dieselben drei Übungen lieferte — und der
+/// echte Schreibpfad daneben schrieb sie in den Bestand. Ein Plan zu starten
+/// hiess damit: eine erfundene Einheit speichern.
+///
+/// Ohne Anmeldung wirft es beim Laden. Das ist richtig so: Der Runner ist
+/// hinter dem Anmeldetor erreichbar, und ein leeres Ergebnis sähe aus wie ein
+/// Plan ohne Übungen.
 final workoutRepositoryProvider = Provider<WorkoutRepository>((ref) {
-  throw UnimplementedError(
-    'workoutRepositoryProvider muss im ProviderScope überschrieben werden.',
+  final userId = ref.watch(currentUserIdProvider);
+  return PlanWorkoutRepository(
+    userId: userId ?? '',
+    plans: ref.watch(planRepositoryProvider),
+    exercises: ref.watch(exerciseRepositoryProvider),
+    sessions: ref.watch(sessionRepositoryProvider),
   );
 });
 
@@ -22,13 +40,13 @@ final workoutRepositoryProvider = Provider<WorkoutRepository>((ref) {
 /// hier kein eigenes `AsyncValue.guard` mehr. Ein Fehler beim Laden landet im
 /// Provider, nicht in einem Zustand, den noch niemand beobachtet.
 class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
-  WorkoutSessionController(this.sessionId);
+  WorkoutSessionController(this.start);
 
-  final String sessionId;
+  final WorkoutStart start;
 
   @override
   Future<ActiveWorkout> build() {
-    return ref.watch(workoutRepositoryProvider).loadWorkout(sessionId);
+    return ref.watch(workoutRepositoryProvider).loadWorkout(start);
   }
 
   ActiveWorkout? get _workout => state.value;
@@ -85,13 +103,56 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
         WorkoutSet(
           id: '${ex.id}-${ex.sets.length}-${last.id}',
           type: last.type,
-          previousLabel: '—',
+
           weight: last.weight,
           reps: last.reps,
         ),
       ],
     );
     state = AsyncData(w.copyWith(exercises: exercises));
+  }
+
+  /// Nimmt eine Übung in die laufende Einheit auf.
+  ///
+  /// **Der Runner ist die einzige Stelle, an der freies Training entsteht.**
+  /// Ein Assistent vorweg („wähle erst Übungen") widerspräche seinem Zweck,
+  /// nämlich sofort anzufangen — deshalb beginnt er leer und wächst.
+  ///
+  /// Der erste Satz ist leer und **nicht abgehakt**: Ein vorbelegter Satz wäre
+  /// eine Leistungsangabe, die niemand gemacht hat.
+  void addExercise(Exercise exercise) {
+    final w = _workout;
+    if (w == null) return;
+    // Zweimal dieselbe Übung ist kein Fehler — ein Rundlauf macht genau das.
+    // Die Kennung des Satzes trägt deshalb die Position, nicht nur die Übung.
+    final position = w.exercises.length;
+    state = AsyncData(w.copyWith(exercises: [
+      ...w.exercises,
+      WorkoutExercise(
+        id: exercise.id,
+        name: exercise.name,
+        muscles: [for (final m in exercise.displayMuscles) m.wire],
+        sets: [
+          WorkoutSet(
+            id: '${exercise.id}-$position-0',
+            type: SetType.normal,
+            weight: '',
+            reps: '',
+          ),
+        ],
+      ),
+    ]));
+  }
+
+  /// Nimmt eine Übung wieder heraus — samt ihrer Sätze.
+  void removeExercise(int index) {
+    final w = _workout;
+    if (w == null) return;
+    if (index < 0 || index >= w.exercises.length) return;
+    state = AsyncData(w.copyWith(exercises: [
+      for (var i = 0; i < w.exercises.length; i++)
+        if (i != index) w.exercises[i],
+    ]));
   }
 
   void setNotes(String notes) {
@@ -169,15 +230,18 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
       duration: duration,
       exercises: exercises,
       notes: workout.notes,
-      // Der Runner bekommt heute eine Termin-ID als sessionId. Bis der
-      // Planbuilder da ist, ist das die einzige Verbindung zum Kalender.
+      // Der Plan wandert in die Einheit — `planName` steht dabei **im
+      // Dokument**, nicht als Verweis: So bleibt die Einheit vollständig
+      // lesbar, auch wenn der Plan später gelöscht wird.
+      planId: workout.planId,
+      planName: workout.title,
       scheduleId: workout.sessionId.isEmpty ? null : workout.sessionId,
     );
   }
 }
 
 final workoutSessionProvider = AsyncNotifierProvider.autoDispose
-    .family<WorkoutSessionController, ActiveWorkout, String>(
+    .family<WorkoutSessionController, ActiveWorkout, WorkoutStart>(
   WorkoutSessionController.new,
 );
 
@@ -201,25 +265,27 @@ class SessionTimerController extends Notifier<SessionTimerState> {
     return const SessionTimerState();
   }
 
-  Future<void> start(String sessionId) async {
+  /// Die Uhr gehört dem Notifier, nicht dem Repository.
+  ///
+  /// Vorher fragte er `startSession()` nach einem Startzeitpunkt — und bekam
+  /// von der einzigen Implementierung `DateTime.now()` zurück. Ein Netzweg für
+  /// einen Wert, der lokal entsteht: `stopSession()` war folgerichtig ein
+  /// leerer Rumpf. Beide sind mit dem Anschluss an echte Daten entfallen.
+  void start() {
     if (state.isRunning) return;
-    final startedAt =
-        await ref.read(workoutRepositoryProvider).startSession(sessionId);
     _ticker?.cancel();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
-    state = SessionTimerState(startedAt: startedAt, elapsed: Duration.zero);
+    state = SessionTimerState(startedAt: DateTime.now(), elapsed: Duration.zero);
   }
 
-  Future<void> stop(String sessionId) async {
+  void stop() {
     if (!state.isRunning) return;
     _ticker?.cancel();
     _ticker = null;
-    await ref.read(workoutRepositoryProvider).stopSession(sessionId);
     state = const SessionTimerState();
   }
 
-  Future<void> toggle(String sessionId) =>
-      state.isRunning ? stop(sessionId) : start(sessionId);
+  void toggle() => state.isRunning ? stop() : start();
 
   void _tick() {
     final startedAt = state.startedAt;

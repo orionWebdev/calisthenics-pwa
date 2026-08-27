@@ -1,19 +1,18 @@
 import 'workout_session.dart';
+import 'workout_start.dart';
 
 /// Datenquelle und Lebenszyklus einer Trainingseinheit.
 ///
-/// Die Implementierung gehört in `data/` und liest denselben Firestore-Bestand
-/// wie die bestehende PWA (`plans`, `sessions`, `workouts`). [loadWorkout]
-/// füllt dabei auch `previousLabel` und `recordLabel` aus der Historie.
+/// Die Implementierung gehört in `data/` und setzt auf den Repositories der
+/// anderen Bereiche auf — Pläne, Übungen, Historie. [loadWorkout] füllt dabei
+/// auch die Referenzen aus der Historie: was beim letzten Mal stand und was
+/// das schwerste je protokollierte Gewicht ist.
 abstract interface class WorkoutRepository {
-  /// Lädt die geplante Einheit inklusive Zielwerten und Historien-Referenzen.
-  Future<ActiveWorkout> loadWorkout(String sessionId);
-
-  /// Startet die Einheit und liefert deren Startzeitpunkt.
-  Future<DateTime> startSession(String sessionId);
-
-  /// Bricht eine laufende Einheit ab, ohne sie zu speichern.
-  Future<void> stopSession(String sessionId);
+  /// Baut die Einheit aus dem Plan, mit Zielwerten und Historien-Referenzen.
+  ///
+  /// Beim freien Training ([WorkoutStart.isFree]) kommt eine **leere** Einheit
+  /// zurück, keine erfundene. Übungen kommen im Runner dazu.
+  Future<ActiveWorkout> loadWorkout(WorkoutStart start);
 }
 
 /// **Das Speichern liegt bewusst nicht hier.**

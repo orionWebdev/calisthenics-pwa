@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../workout_ui.dart';
 import '../../domain/workout_session.dart';
 import '../set_type_ui.dart';
 
@@ -157,7 +158,7 @@ class SetRow extends StatelessWidget {
   }
 
   Widget _history(BuildContext context) => Text(
-        set.previousLabel,
+        previousSetLabel(context, AppL10n.of(context), set.previous),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: AtemType.labelSmall.of(context),

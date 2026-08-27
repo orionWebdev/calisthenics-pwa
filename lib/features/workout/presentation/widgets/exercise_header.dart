@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../workout_ui.dart';
 import '../../domain/workout_session.dart';
 
 /// Übungskopf mit Navigation und Chips.
@@ -83,11 +84,15 @@ class ExerciseHeader extends StatelessWidget {
               // Muskel-Chips als schlichte Statusträger — und violetter Text
               // erreicht ohnehin kein AA.
               for (final m in exercise.muscles) AtemBadge(label: m),
-              AtemBadge(
-                label: exercise.recordLabel,
-                accent: AtemColors.green,
-                leadingDot: true,
-              ),
+              // Kein Chip ohne Bestwert: „PR —" wäre eine Behauptung über
+              // eine Übung, die noch nie protokolliert wurde.
+              if (recordLabel(context, l10n, exercise.recordWeightKg)
+                  case final record?)
+                AtemBadge(
+                  label: record,
+                  accent: AtemColors.green,
+                  leadingDot: true,
+                ),
               AtemBadge.chip(
                 label: l10n.workoutRunnerFormGuide,
                 semanticLabel: l10n.workoutA11yFormGuide(exercise.name),

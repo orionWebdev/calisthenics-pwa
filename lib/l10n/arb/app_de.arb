@@ -2573,6 +2573,10 @@
   "@workoutFeedbackSaved": {
     "description": "aus workout.feedback.saved"
   },
+  "workoutFreeTitle": "Freies Training",
+  "@workoutFreeTitle": {
+    "description": "Titel des Runners ohne Plan"
+  },
   "workoutHold": "Halten",
   "@workoutHold": {
     "description": "aus workout.hold"
@@ -2657,6 +2661,36 @@
   "@workoutPostWorkoutVolume": {
     "description": "aus workout.postWorkout.volume"
   },
+  "workoutPreviousReps": "{reps} Wdh.",
+  "@workoutPreviousReps": {
+    "description": "Letztes Mal, ohne Gewicht — Körpergewichtsübung",
+    "placeholders": {
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutPreviousSet": "{weight} kg × {reps}",
+  "@workoutPreviousSet": {
+    "description": "Was beim letzten Mal an dieser Stelle stand",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutPreviousWeight": "{weight} kg",
+  "@workoutPreviousWeight": {
+    "description": "Letztes Mal, ohne Wiederholungszahl",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
   "workoutQuickBodyweight": "Bodyweight",
   "@workoutQuickBodyweight": {
     "description": "aus workout.quick.bodyweight"
@@ -2713,6 +2747,15 @@
   "@workoutQuickWeightsDesc": {
     "description": "aus workout.quick.weightsDesc"
   },
+  "workoutRecordKg": "PR {weight} kg",
+  "@workoutRecordKg": {
+    "description": "Schwerstes je protokolliertes Gewicht dieser Übung",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
   "workoutRecoveryDuration": "Dauer (Min.)",
   "@workoutRecoveryDuration": {
     "description": "aus workout.recovery.duration"
@@ -2759,6 +2802,14 @@
   "@workoutRunnerBack": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
+  "workoutRunnerEmptyBody": "Füge hinzu, was du machst. Die Einheit wächst mit.",
+  "@workoutRunnerEmptyBody": {
+    "description": "Leerer Runner, Text"
+  },
+  "workoutRunnerEmptyTitle": "Noch keine Übung",
+  "@workoutRunnerEmptyTitle": {
+    "description": "Leerer Runner beim freien Training"
+  },
   "workoutRunnerFormGuide": "FORM GUIDE",
   "@workoutRunnerFormGuide": {
     "description": "Runner, Modul 1/2 Spezifikation"
@@ -2778,6 +2829,19 @@
   "workoutRunnerNotesTitle": "SESSION-NOTIZEN",
   "@workoutRunnerNotesTitle": {
     "description": "Runner, Modul 1/2 Spezifikation"
+  },
+  "workoutRunnerRemoveExercise": "Übung entfernen",
+  "@workoutRunnerRemoveExercise": {
+    "description": "Aktion am Übungskopf im Runner"
+  },
+  "workoutRunnerRemoveExerciseA11y": "{name} aus der Einheit entfernen",
+  "@workoutRunnerRemoveExerciseA11y": {
+    "description": "Vorlesetext der Entfernen-Aktion",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "workoutRunnerRestLabel": "PAUSE",
   "@workoutRunnerRestLabel": {
@@ -3215,6 +3279,27 @@
       }
     },
     "description": "aus workout.targetHold"
+  },
+  "workoutTargetRef": "Ziel {sets}×{reps}",
+  "@workoutTargetRef": {
+    "description": "Zielvorgabe aus dem Plan, als Referenz neben dem Feld",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutTargetSets": "Ziel {sets} Sätze",
+  "@workoutTargetSets": {
+    "description": "Zielvorgabe ohne Wiederholungsangabe",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      }
+    }
   },
   "workoutsFree": "Freies Training",
   "@workoutsFree": {

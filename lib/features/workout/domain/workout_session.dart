@@ -26,12 +26,29 @@ enum SetType {
       };
 }
 
+/// Was beim letzten Mal an dieser Stelle stand.
+///
+/// **Zahlen, kein fertiger Satz.** Vorher hielt der Satz ein `previousLabel`
+/// wie „80 kg × 10" — also übersetzten Text mitten in der Domäne, was Vertrag 3
+/// verbietet und jede Lokalisierung unmöglich macht. Solange die Attrappe die
+/// einzige Quelle war, fiel es nicht auf; sobald die Werte aus dem echten
+/// Bestand kommen, müsste die Datenschicht deutsch schreiben.
+@immutable
+class SetReference {
+  const SetReference({this.weightKg, this.reps});
+
+  final double? weightKg;
+  final int? reps;
+
+  bool get isEmpty => weightKg == null && reps == null;
+}
+
 @immutable
 class WorkoutSet {
   const WorkoutSet({
     required this.id,
     required this.type,
-    required this.previousLabel,
+    this.previous,
     required this.weight,
     required this.reps,
     this.done = false,
@@ -40,8 +57,8 @@ class WorkoutSet {
   final String id;
   final SetType type;
 
-  /// Referenz aus der Historie, z. B. „80 kg × 10". „—" wenn keine vorliegt.
-  final String previousLabel;
+  /// Referenz aus der Historie. `null`, wenn es keine gibt.
+  final SetReference? previous;
 
   /// Als Text gehalten: das Feld ist die Wahrheit, solange getippt wird.
   final String weight;
@@ -57,7 +74,7 @@ class WorkoutSet {
     return WorkoutSet(
       id: id,
       type: type ?? this.type,
-      previousLabel: previousLabel,
+      previous: previous,
       weight: weight ?? this.weight,
       reps: reps ?? this.reps,
       done: done ?? this.done,
@@ -75,18 +92,19 @@ class WorkoutExercise {
     required this.id,
     required this.name,
     required this.muscles,
-    required this.recordLabel,
+    this.recordWeightKg,
     required this.sets,
   });
 
   final String id;
   final String name;
 
-  /// Muskelgruppen als Chips, z. B. ['QUADS', 'GLUTES'].
+  /// Muskelgruppen, roh — die Übersetzung steht in der Oberfläche.
   final List<String> muscles;
 
-  /// PR-/1RM-Referenz, z. B. „PR 140 KG".
-  final String recordLabel;
+  /// Das schwerste je protokollierte Gewicht dieser Übung, in Kilogramm.
+  /// `null`, wenn es keins gibt — dann erscheint kein Chip statt „PR —".
+  final double? recordWeightKg;
 
   final List<WorkoutSet> sets;
 
@@ -94,7 +112,7 @@ class WorkoutExercise {
         id: id,
         name: name,
         muscles: muscles,
-        recordLabel: recordLabel,
+        recordWeightKg: recordWeightKg,
         sets: sets ?? this.sets,
       );
 }
@@ -104,14 +122,21 @@ class WorkoutExercise {
 class ActiveWorkout {
   const ActiveWorkout({
     required this.sessionId,
-    required this.title,
+    this.planId,
+    this.title,
     required this.exercises,
     this.notes = '',
     this.defaultRestSeconds = 90,
   });
 
   final String sessionId;
-  final String title;
+
+  /// Der Plan, aus dem die Einheit stammt. `null` beim freien Training.
+  final String? planId;
+
+  /// Der Planname. `null` beim freien Training — dann setzt die Oberfläche
+  /// ihren eigenen Titel, statt einen erfundenen zu tragen.
+  final String? title;
   final List<WorkoutExercise> exercises;
   final String notes;
   final int defaultRestSeconds;
@@ -136,6 +161,7 @@ class ActiveWorkout {
   }) {
     return ActiveWorkout(
       sessionId: sessionId,
+      planId: planId,
       title: title,
       exercises: exercises ?? this.exercises,
       notes: notes ?? this.notes,

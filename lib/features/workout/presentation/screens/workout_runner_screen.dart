@@ -9,6 +9,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/workout_providers.dart';
 import '../../domain/workout_session.dart';
+import '../../domain/workout_start.dart';
+import '../../../exercises/presentation/exercise_picker.dart';
 import '../widgets/exercise_header.dart';
 import '../widgets/rest_bar.dart';
 import '../widgets/session_top_bar.dart';
@@ -19,11 +21,12 @@ import '../widgets/set_row.dart';
 /// Der Screen orchestriert nur: Timer, Navigation, Bausteine. Alles Sichtbare
 /// liegt in `presentation/widgets/`.
 class WorkoutRunnerScreen extends ConsumerStatefulWidget {
-  const WorkoutRunnerScreen({super.key, required this.sessionId});
+  const WorkoutRunnerScreen({super.key, required this.start});
 
   static const routeName = '/runner';
 
-  final String sessionId;
+  /// Plan und Pausenzeit. Freies Training trägt keinen Plan.
+  final WorkoutStart start;
 
   @override
   ConsumerState<WorkoutRunnerScreen> createState() =>
@@ -113,7 +116,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
       pool.putIfAbsent(id, () => TextEditingController(text: initial));
 
   WorkoutSessionController get _notifier =>
-      ref.read(workoutSessionProvider(widget.sessionId).notifier);
+      ref.read(workoutSessionProvider(widget.start).notifier);
 
   void _toggleSet(ActiveWorkout w, WorkoutSet set) {
     FocusScope.of(context).unfocus();
@@ -141,7 +144,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final async = ref.watch(workoutSessionProvider(widget.sessionId));
+    final async = ref.watch(workoutSessionProvider(widget.start));
 
     return Scaffold(
       backgroundColor: AtemColors.base,
@@ -166,19 +169,64 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
           body: l10n.errorsLoadFailed,
           retryLabel: l10n.commonRetry,
           onRetry: () =>
-              ref.invalidate(workoutSessionProvider(widget.sessionId)),
+              ref.invalidate(workoutSessionProvider(widget.start)),
         ),
         data: _buildRunner,
       ),
     );
   }
 
+  /// Nimmt eine Übung in die laufende Einheit auf.
+  ///
+  /// Der einzige Weg, ein freies Training zu füllen — und zugleich der Weg,
+  /// einen Plan zu ergänzen, wenn unterwegs etwas dazukommt.
+  Future<void> _addExercise() async {
+    final exercise = await ExercisePicker.show(context);
+    if (exercise == null) return;
+    _notifier.addExercise(exercise);
+    // Direkt zur neuen Übung springen: Wer sie hinzufügt, will sie eintragen.
+    final count = ref.read(workoutSessionProvider(widget.start)).value
+            ?.exercises.length ??
+        1;
+    setState(() => _exIndex = count - 1);
+  }
+
   Widget _buildRunner(ActiveWorkout w) {
     final l10n = AppL10n.of(context);
     if (w.exercises.isEmpty) {
-      return AtemEmptyState(
-        title: l10n.workoutScreenNoExercisesFound,
-        body: l10n.workoutScreenEmptyHint,
+      // **Kein Fehlerbild.** Ein leerer Runner ist beim freien Training der
+      // normale Anfang, nicht ein Plan, der nicht geladen hat.
+      return SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+              child: SessionTopBar(
+                elapsed: _clock,
+                paused: _paused,
+                onTogglePause: () => setState(() => _paused = !_paused),
+                onOpenNotes: () => _openNotes(w),
+                onEnd: () => _confirmEnd(w),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: AtemEmptyState(
+                  title: l10n.workoutRunnerEmptyTitle,
+                  body: l10n.workoutRunnerEmptyBody,
+                  action: AtemButton.gradient(
+                    label: l10n.workoutLoggingAddExercise,
+                    semanticLabel: l10n.workoutLoggingAddExercise,
+                    expand: false,
+                    size: AtemButtonSize.compact,
+                    onPressed: _addExercise,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
 
@@ -239,6 +287,23 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                     semanticLabel: l10n.workoutScreenAddSet,
                     accent: AtemColors.textSecondary,
                     onPressed: () => _notifier.addSet(index),
+                  ),
+                  const SizedBox(height: 10),
+                  AtemButton.outline(
+                    label: l10n.workoutLoggingAddExercise,
+                    semanticLabel: l10n.workoutLoggingAddExercise,
+                    onPressed: _addExercise,
+                  ),
+                  const SizedBox(height: 10),
+                  AtemButton.ghost(
+                    label: l10n.workoutRunnerRemoveExercise,
+                    semanticLabel:
+                        l10n.workoutRunnerRemoveExerciseA11y(exercise.name),
+                    accent: AtemColors.magenta,
+                    onPressed: () {
+                      _notifier.removeExercise(index);
+                      setState(() => _exIndex = 0);
+                    },
                   ),
                   const SizedBox(height: 14),
                   Center(

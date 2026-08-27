@@ -3055,6 +3055,12 @@ abstract class AppL10n {
   /// **'Workout gespeichert!'**
   String get workoutFeedbackSaved;
 
+  /// Titel des Runners ohne Plan
+  ///
+  /// In de, this message translates to:
+  /// **'Freies Training'**
+  String get workoutFreeTitle;
+
   /// aus workout.hold
   ///
   /// In de, this message translates to:
@@ -3181,6 +3187,24 @@ abstract class AppL10n {
   /// **'Volumen'**
   String get workoutPostWorkoutVolume;
 
+  /// Letztes Mal, ohne Gewicht — Körpergewichtsübung
+  ///
+  /// In de, this message translates to:
+  /// **'{reps} Wdh.'**
+  String workoutPreviousReps(int reps);
+
+  /// Was beim letzten Mal an dieser Stelle stand
+  ///
+  /// In de, this message translates to:
+  /// **'{weight} kg × {reps}'**
+  String workoutPreviousSet(String weight, int reps);
+
+  /// Letztes Mal, ohne Wiederholungszahl
+  ///
+  /// In de, this message translates to:
+  /// **'{weight} kg'**
+  String workoutPreviousWeight(String weight);
+
   /// aus workout.quick.bodyweight
   ///
   /// In de, this message translates to:
@@ -3265,6 +3289,12 @@ abstract class AppL10n {
   /// **'Gym / Hanteln'**
   String get workoutQuickWeightsDesc;
 
+  /// Schwerstes je protokolliertes Gewicht dieser Übung
+  ///
+  /// In de, this message translates to:
+  /// **'PR {weight} kg'**
+  String workoutRecordKg(String weight);
+
   /// aus workout.recovery.duration
   ///
   /// In de, this message translates to:
@@ -3319,6 +3349,18 @@ abstract class AppL10n {
   /// **'Zurück'**
   String get workoutRunnerBack;
 
+  /// Leerer Runner, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Füge hinzu, was du machst. Die Einheit wächst mit.'**
+  String get workoutRunnerEmptyBody;
+
+  /// Leerer Runner beim freien Training
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Übung'**
+  String get workoutRunnerEmptyTitle;
+
   /// Runner, Modul 1/2 Spezifikation
   ///
   /// In de, this message translates to:
@@ -3348,6 +3390,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'SESSION-NOTIZEN'**
   String get workoutRunnerNotesTitle;
+
+  /// Aktion am Übungskopf im Runner
+  ///
+  /// In de, this message translates to:
+  /// **'Übung entfernen'**
+  String get workoutRunnerRemoveExercise;
+
+  /// Vorlesetext der Entfernen-Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'{name} aus der Einheit entfernen'**
+  String workoutRunnerRemoveExerciseA11y(String name);
 
   /// Runner, Modul 1/2 Spezifikation
   ///
@@ -3882,6 +3936,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Ziel: {seconds} halten'**
   String workoutTargetHold(int seconds);
+
+  /// Zielvorgabe aus dem Plan, als Referenz neben dem Feld
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel {sets}×{reps}'**
+  String workoutTargetRef(int sets, String reps);
+
+  /// Zielvorgabe ohne Wiederholungsangabe
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel {sets} Sätze'**
+  String workoutTargetSets(int sets);
 
   /// Name des Trainings ohne Plan
   ///

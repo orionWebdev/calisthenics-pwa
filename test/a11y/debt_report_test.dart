@@ -2,6 +2,7 @@
 library;
 
 import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,6 +45,6 @@ void main() {
 
   testWidgets('Schuldenbericht Workout Runner', (tester) async {
     await _report(tester, 'Workout Runner',
-        const WorkoutRunnerScreen(sessionId: 'test-session'));
+        const WorkoutRunnerScreen(start: WorkoutStart(planId: 'p1')));
   });
 }

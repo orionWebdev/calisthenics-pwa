@@ -16,7 +16,6 @@ WorkoutSet _set({
     WorkoutSet(
       id: '$weight-$reps-$done-${type.name}',
       type: type,
-      previousLabel: '—',
       weight: weight,
       reps: reps,
       done: done,
@@ -32,7 +31,6 @@ ActiveWorkout _workout(List<WorkoutSet> sets, {String sessionId = 'plan-1'}) =>
           id: 'bench_press',
           name: 'Bankdrücken',
           muscles: const ['CHEST'],
-          recordLabel: 'PR 100 KG',
           sets: sets,
         ),
       ],

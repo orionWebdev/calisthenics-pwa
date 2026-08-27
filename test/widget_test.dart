@@ -1,8 +1,5 @@
-import 'package:atem/features/dashboard/application/dashboard_providers.dart';
-import 'package:atem/features/dashboard/data/preview_dashboard_repository.dart';
 import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:atem/features/workout/application/workout_providers.dart';
-import 'package:atem/features/workout/data/preview_workout_repository.dart';
+import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/main.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
@@ -10,10 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-final _overrides = [
-  dashboardRepositoryProvider.overrideWithValue(PreviewDashboardRepository()),
-  workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
-];
+import 'support/a11y.dart';
+
+/// Dieselben Attrappen wie in der Prüfmatrix.
+///
+/// Vorher stand hier eine eigene, kürzere Liste — sie reichte, solange der
+/// Runner seine Übungen aus einer Attrappe bezog. Jetzt setzt er sie aus Plan,
+/// Übungsbestand und Historie zusammen und braucht alle drei.
+final _overrides = fixtureOverrides;
 
 /// Hohe Testfläche: die ListView baut lazy, sonst liegt die Session-Card
 /// unterhalb der Kante und existiert nicht im Baum.
@@ -63,30 +64,73 @@ void main() {
     expect(find.text('89'), findsOneWidget);
   });
 
-  testWidgets('Workout Runner rendert Sätze und startet den Pausen-Timer',
-      (tester) async {
+  testWidgets('Workout Runner baut die Einheit aus dem Plan', (tester) async {
     _useTallSurface(tester);
     await _pumpStill(
       tester,
-      const WorkoutRunnerScreen(sessionId: 'test-session'),
+      const WorkoutRunnerScreen(start: WorkoutStart(planId: 'p1')),
     );
-    await tester.pump(); // Future des Repositories auflösen
+    // Drei Abfragen nacheinander — Plan, Übungen, Historie. Ein einzelnes
+    // `pump` löst nur die erste auf.
+    await tester.pumpAndSettle();
 
-    expect(find.text('Back Squat'), findsOneWidget);
-    expect(find.text('Übung 1 von 3'), findsOneWidget);
-    expect(find.text('1 VON 10 SÄTZEN ABGESCHLOSSEN'), findsOneWidget);
+    // Der Plan aus den Vorlagen: zwei Einträge, vier plus drei Sätze.
+    expect(find.text('Archer Push-up mit sehr langem Namen'), findsOneWidget);
+    expect(find.text('0 VON 7 SÄTZEN ABGESCHLOSSEN'), findsOneWidget);
     expect(find.text('PAUSE'), findsNothing);
 
-    // Der zweite Satz ist noch offen — über sein Semantics-Label finden,
-    // nicht über ein Icon: das Häkchen erscheint erst im abgehakten Zustand.
+    // Der erste Satz ist offen — über sein Semantics-Label finden, nicht über
+    // ein Icon: das Häkchen erscheint erst im abgehakten Zustand.
     final handle = tester.ensureSemantics();
-    await tester.tap(find.bySemanticsLabel('Satz 2 abschließen'));
+    await tester.tap(find.bySemanticsLabel('Satz 1 abschließen'));
     await tester.pump();
 
-    expect(find.text('2 VON 10 SÄTZEN ABGESCHLOSSEN'), findsOneWidget);
+    expect(find.text('1 VON 7 SÄTZEN ABGESCHLOSSEN'), findsOneWidget);
     expect(find.text('PAUSE'), findsOneWidget);
-    expect(find.text('01:30'), findsOneWidget);
     handle.dispose();
+  });
+
+  testWidgets('Der Runner belegt keine Felder vor', (tester) async {
+    // Ein Feld, in dem schon „8" steht, ist nach dem Abhaken eine
+    // Leistungsangabe — und zwar eine, die niemand gemacht hat.
+    _useTallSurface(tester);
+    await _pumpStill(
+      tester,
+      const WorkoutRunnerScreen(start: WorkoutStart(planId: 'p1')),
+    );
+    await tester.pump();
+
+    for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
+      expect(field.controller?.text, isEmpty);
+    }
+  });
+
+  testWidgets('Freies Training beginnt leer, nicht erfunden', (tester) async {
+    _useTallSurface(tester);
+    await _pumpStill(
+      tester,
+      const WorkoutRunnerScreen(start: WorkoutStart.free()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Noch keine Übung'), findsOneWidget);
+    expect(find.text('Übung hinzufügen'), findsOneWidget);
+    // Der entscheidende Punkt: keine Übung aus einer Attrappe.
+    expect(find.text('Back Squat'), findsNothing);
+  });
+
+  testWidgets('Eine gelöschte Übung im Plan blockiert nicht', (tester) async {
+    _useTallSurface(tester);
+    await _pumpStill(
+      tester,
+      const WorkoutRunnerScreen(start: WorkoutStart(planId: 'p1')),
+    );
+    await tester.pumpAndSettle();
+
+    // Der zweite Eintrag zeigt auf eine Übung, die es nicht gibt. Die Einheit
+    // ist trotzdem startbar; die Kennung tritt an die Stelle des Namens.
+    expect(tester.takeException(), isNull);
+    expect(find.text('0 VON 7 SÄTZEN ABGESCHLOSSEN'), findsOneWidget);
   });
 
   testWidgets('AtemApp startet ohne Fehler', (tester) async {

@@ -17,8 +17,6 @@ import 'package:atem/features/history/domain/session_repository.dart';
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/plans/domain/plan_draft.dart';
 import 'package:atem/features/plans/domain/plan_repository.dart';
-import 'package:atem/features/workout/application/workout_providers.dart';
-import 'package:atem/features/workout/data/preview_workout_repository.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,7 +39,6 @@ final fixtureOverrides = [
   profileRepositoryProvider
       .overrideWithValue(FakeProfileRepository(weightKg: 78)),
   dashboardRepositoryProvider.overrideWithValue(PreviewDashboardRepository()),
-  workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
   exerciseRepositoryProvider.overrideWithValue(FakeExerciseRepository()),
   planRepositoryProvider.overrideWithValue(FakePlanRepository()),
   sessionRepositoryProvider.overrideWithValue(FakeSessionRepository()),

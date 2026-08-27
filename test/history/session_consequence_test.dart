@@ -168,7 +168,7 @@ void main() {
       final moved = original.copyWith(
         date: DateTime(2026, 6, 6),
         duration: const Duration(minutes: 90),
-      ) as StrengthSession;
+      );
 
       expect(moved.date, DateTime(2026, 6, 6));
       expect(moved.duration, const Duration(minutes: 90));
@@ -219,7 +219,7 @@ void main() {
         avgHr: 140,
       ).copyWith(date: DateTime(2026, 2, 2));
 
-      expect((moved as CardioSession).distanceKm, 5);
+      expect(moved.distanceKm, 5);
       expect(moved.pace, 5.5);
       expect(moved.avgHr, 140);
     });

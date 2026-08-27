@@ -19,6 +19,7 @@ import 'package:atem/features/plans/presentation/screens/plan_detail_screen.dart
 import 'package:atem/features/plans/presentation/screens/plan_form_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
+import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -97,10 +98,21 @@ void main() {
     await expectA11y(tester, const AnalysisScreen());
   });
 
-  testWidgets('Workout Runner erfüllt den A11y-Vertrag', (tester) async {
+  testWidgets('Workout Runner aus einem Plan erfüllt den A11y-Vertrag',
+      (tester) async {
+    // Der Plan aus den Vorlagen trägt einen Eintrag auf eine gelöschte
+    // Übung — der Runner muss ihn zeigen können, statt zu blockieren.
     await expectA11y(
       tester,
-      const WorkoutRunnerScreen(sessionId: 'test-session'),
+      const WorkoutRunnerScreen(start: WorkoutStart(planId: 'p1')),
+    );
+  });
+
+  testWidgets('Workout Runner, freies Training, erfüllt den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(
+      tester,
+      const WorkoutRunnerScreen(start: WorkoutStart.free()),
     );
   });
 

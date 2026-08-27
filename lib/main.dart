@@ -8,8 +8,7 @@ import 'l10n/gen/app_l10n.dart';
 import 'core/theme/theme.dart';
 import 'app/app_shell.dart';
 import 'features/auth/presentation/auth_gate.dart';
-import 'features/workout/application/workout_providers.dart';
-import 'features/workout/data/preview_workout_repository.dart';
+import 'features/workout/domain/workout_start.dart';
 import 'features/workout/presentation/screens/workout_runner_screen.dart';
 
 Future<void> main() async {
@@ -29,16 +28,8 @@ Future<void> main() async {
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
 
-  runApp(
-    ProviderScope(
-      overrides: [
-        // Das Dashboard liest seit Stufe 6 aus Firestore. Der Runner noch
-        // nicht — sein Schreibpfad ist der nächste Schritt.
-        workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
-      ],
-      child: const AtemApp(),
-    ),
-  );
+  // Keine Überschreibungen mehr: Jeder Bereich baut sein Repository selbst.
+  runApp(const ProviderScope(child: AtemApp()));
 }
 
 class AtemApp extends StatelessWidget {
@@ -60,9 +51,12 @@ class AtemApp extends StatelessWidget {
       home: const AuthGate(child: AppShell()),
       onGenerateRoute: (settings) {
         if (settings.name == WorkoutRunnerScreen.routeName) {
-          final sessionId = settings.arguments as String? ?? '';
+          // Ohne Argument: freies Training. Vorher stand hier eine
+          // Zeichenkette, die mal Plan-Kennung und mal leer bedeutete.
+          final start =
+              settings.arguments as WorkoutStart? ?? const WorkoutStart.free();
           return MaterialPageRoute<void>(
-            builder: (_) => WorkoutRunnerScreen(sessionId: sessionId),
+            builder: (_) => WorkoutRunnerScreen(start: start),
             settings: settings,
           );
         }

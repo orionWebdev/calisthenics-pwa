@@ -1794,6 +1794,9 @@ class AppL10nDe extends AppL10n {
   String get workoutFeedbackSaved => 'Workout gespeichert!';
 
   @override
+  String get workoutFreeTitle => 'Freies Training';
+
+  @override
   String get workoutHold => 'Halten';
 
   @override
@@ -1857,6 +1860,21 @@ class AppL10nDe extends AppL10n {
   String get workoutPostWorkoutVolume => 'Volumen';
 
   @override
+  String workoutPreviousReps(int reps) {
+    return '$reps Wdh.';
+  }
+
+  @override
+  String workoutPreviousSet(String weight, int reps) {
+    return '$weight kg × $reps';
+  }
+
+  @override
+  String workoutPreviousWeight(String weight) {
+    return '$weight kg';
+  }
+
+  @override
   String get workoutQuickBodyweight => 'Bodyweight';
 
   @override
@@ -1899,6 +1917,11 @@ class AppL10nDe extends AppL10n {
   String get workoutQuickWeightsDesc => 'Gym / Hanteln';
 
   @override
+  String workoutRecordKg(String weight) {
+    return 'PR $weight kg';
+  }
+
+  @override
   String get workoutRecoveryDuration => 'Dauer (Min.)';
 
   @override
@@ -1930,6 +1953,13 @@ class AppL10nDe extends AppL10n {
   String get workoutRunnerBack => 'Zurück';
 
   @override
+  String get workoutRunnerEmptyBody =>
+      'Füge hinzu, was du machst. Die Einheit wächst mit.';
+
+  @override
+  String get workoutRunnerEmptyTitle => 'Noch keine Übung';
+
+  @override
   String get workoutRunnerFormGuide => 'FORM GUIDE';
 
   @override
@@ -1943,6 +1973,14 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get workoutRunnerNotesTitle => 'SESSION-NOTIZEN';
+
+  @override
+  String get workoutRunnerRemoveExercise => 'Übung entfernen';
+
+  @override
+  String workoutRunnerRemoveExerciseA11y(String name) {
+    return '$name aus der Einheit entfernen';
+  }
 
   @override
   String get workoutRunnerRestLabel => 'PAUSE';
@@ -2240,6 +2278,16 @@ class AppL10nDe extends AppL10n {
   @override
   String workoutTargetHold(int seconds) {
     return 'Ziel: $seconds halten';
+  }
+
+  @override
+  String workoutTargetRef(int sets, String reps) {
+    return 'Ziel $sets×$reps';
+  }
+
+  @override
+  String workoutTargetSets(int sets) {
+    return 'Ziel $sets Sätze';
   }
 
   @override

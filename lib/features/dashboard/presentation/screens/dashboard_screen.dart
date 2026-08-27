@@ -5,6 +5,7 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../workout/application/workout_providers.dart';
+import '../../../workout/domain/workout_start.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import '../../application/dashboard_providers.dart';
 import '../../domain/dashboard_data.dart';
@@ -56,16 +57,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     _scoreController.forward(from: 0);
   }
 
-  Future<void> _onToggleSession(String sessionId) async {
+  Future<void> _onToggleSession() async {
     final wasRunning = ref.read(sessionTimerProvider).isRunning;
-    await ref.read(sessionTimerProvider.notifier).toggle(sessionId);
+    ref.read(sessionTimerProvider.notifier).toggle();
 
     // Beim Start direkt in den Runner — dort wird trainiert. Der Timer läuft
     // im Notifier weiter und zeigt nach der Rückkehr „SESSION LÄUFT".
+    //
+    // **Als freies Training**, denn der Kalendertermin weiß nicht, welcher
+    // Plan hinter ihm steht — `schedule` trägt keinen Verweis. Bis er einen
+    // trägt, ist ein leerer Runner ehrlicher als ein geratener Plan.
     if (!wasRunning && ref.read(sessionTimerProvider).isRunning && mounted) {
       await Navigator.of(context).pushNamed(
         WorkoutRunnerScreen.routeName,
-        arguments: sessionId,
+        arguments: const WorkoutStart.free(),
       );
     }
   }
@@ -174,7 +179,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             SessionCard(
               session: data.session!,
               elapsed: ref.watch(sessionTimerProvider).elapsed,
-              onToggle: () => _onToggleSession(data.session!.id),
+              onToggle: _onToggleSession,
             )
           else
             AtemCard.list(
