@@ -24,7 +24,10 @@ class QuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    final log = data.workoutLog;
     final n = data.nutrition;
+    final rec = data.recovery;
+    final period = data.periodization;
 
     return Column(
       children: [
@@ -37,8 +40,14 @@ class QuickActions extends StatelessWidget {
                   accent: AtemColors.cyan,
                   glyph: _Glyph.bars,
                   title: l10n.dashboardQuickWorkout,
-                  body: l10n.dashboardQuickSets(
-                      data.workoutLog.headline, data.workoutLog.totalSets),
+                  // Der Satz wird hier gebaut, nicht in der Domäne — sonst
+                  // liesse er sich nicht übersetzen.
+                  body: switch (log) {
+                    null => l10n.dashboardNoDataYet,
+                    WorkoutLogSummary(planName: final plan?) =>
+                      l10n.dashboardQuickSetsPlan(plan, log.totalSets),
+                    _ => l10n.dashboardQuickSetsPlain(log.totalSets),
+                  },
                   onTap: () => onSelect(1),
                 ),
               ),
@@ -48,16 +57,24 @@ class QuickActions extends StatelessWidget {
                   accent: AtemColors.magenta,
                   glyph: _Glyph.bolt,
                   title: l10n.dashboardQuickNutrition,
-                  body: l10n.dashboardProteinOf(n.proteinGrams) +
-                      l10n.dashboardProteinGoal(n.proteinTargetGrams),
-                  semanticBody: l10n.dashboardProteinA11y(
-                      n.proteinGrams, n.proteinTargetGrams),
-                  trailing: AtemProgressRing(
-                    value: n.progress,
-                    label: '${n.progressPercent}%',
-                    semanticLabel: l10n.dashboardProteinA11y(
-                        n.proteinGrams, n.proteinTargetGrams),
-                  ),
+                  body: n == null
+                      ? l10n.dashboardNoDataYet
+                      : l10n.dashboardProteinOf(n.proteinGrams) +
+                          l10n.dashboardProteinGoal(n.proteinTargetGrams),
+                  semanticBody: n == null
+                      ? null
+                      : l10n.dashboardProteinA11y(
+                          n.proteinGrams, n.proteinTargetGrams),
+                  // Kein Ring ohne Zahl: Ein Ring bei null Prozent sähe aus wie
+                  // ein Messwert und wäre keiner.
+                  trailing: n == null
+                      ? null
+                      : AtemProgressRing(
+                          value: n.progress,
+                          label: '${n.progressPercent}%',
+                          semanticLabel: l10n.dashboardProteinA11y(
+                              n.proteinGrams, n.proteinTargetGrams),
+                        ),
                   onTap: () => onSelect(2),
                 ),
               ),
@@ -74,11 +91,12 @@ class QuickActions extends StatelessWidget {
                   accent: AtemColors.green,
                   glyph: _Glyph.wave,
                   title: l10n.dashboardQuickRecovery,
-                  body: data.recovery.liveHrvMs == null
-                      ? l10n
-                          .dashboardBreathwork(data.recovery.breathworkMinutes)
-                      : l10n.dashboardLiveHrv(data.recovery.liveHrvMs!,
-                          data.recovery.breathworkMinutes),
+                  body: switch (rec) {
+                    null => l10n.dashboardNoDataYet,
+                    RecoverySummary(liveHrvMs: final hrv?) =>
+                      l10n.dashboardLiveHrv(hrv, rec.breathworkMinutes),
+                    _ => l10n.dashboardBreathwork(rec.breathworkMinutes),
+                  },
                   onTap: () => onSelect(3),
                 ),
               ),
@@ -88,20 +106,21 @@ class QuickActions extends StatelessWidget {
                   accent: AtemColors.violet,
                   glyph: _Glyph.calendar,
                   title: l10n.dashboardQuickPeriod,
-                  body: l10n.dashboardPhaseWeek(
-                    data.periodization.currentWeek,
-                    data.periodization.totalWeeks,
-                    data.periodization.phaseName,
-                  ),
-                  footer: AtemProgressBar.share(
-                    value: data.periodization.progress,
-                    semanticLabel: l10n.dashboardPhaseA11y(
-                      data.periodization.currentWeek,
-                      data.periodization.totalWeeks,
-                      data.periodization.phaseName,
-                    ),
-                    gradient: AtemGradients.accent(AtemColors.violet),
-                  ),
+                  body: period == null
+                      ? l10n.dashboardNoDataYet
+                      : l10n.dashboardPhaseWeek(period.currentWeek,
+                          period.totalWeeks, period.phaseName),
+                  footer: period == null
+                      ? null
+                      : AtemProgressBar.share(
+                          value: period.progress,
+                          semanticLabel: l10n.dashboardPhaseA11y(
+                            period.currentWeek,
+                            period.totalWeeks,
+                            period.phaseName,
+                          ),
+                          gradient: AtemGradients.accent(AtemColors.violet),
+                        ),
                   onTap: () => onSelect(2),
                 ),
               ),

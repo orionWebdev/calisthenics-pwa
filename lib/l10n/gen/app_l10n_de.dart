@@ -336,6 +336,9 @@ class AppL10nDe extends AppL10n {
   String get dashboardNavWorkouts => 'WORKOUTS';
 
   @override
+  String get dashboardNoDataYet => 'Noch keine Daten';
+
+  @override
   String get dashboardNotAvailable => 'Daten nicht verfügbar';
 
   @override
@@ -403,6 +406,29 @@ class AppL10nDe extends AppL10n {
   @override
   String dashboardQuickSets(String headline, int sets) {
     return '$headline · $sets Sets';
+  }
+
+  @override
+  String dashboardQuickSetsPlain(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Sätze zuletzt',
+      one: '1 Satz zuletzt',
+      zero: 'Keine Sätze erfasst',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dashboardQuickSetsPlan(String plan, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Sätze',
+      one: '1 Satz',
+    );
+    return '$plan · $_temp0';
   }
 
   @override

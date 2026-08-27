@@ -434,6 +434,7 @@
   "@dashboardNavWorkouts": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "dashboardNoDataYet": "No data yet",
   "dashboardNotAvailable": "Data unavailable",
   "@dashboardNotAvailable": {
     "description": "Dashboard, Modul 1 Spezifikation"
@@ -559,6 +560,8 @@
       }
     }
   },
+  "dashboardQuickSetsPlain": "{count, plural, =0{No sets logged} one{1 set last time} other{{count} sets last time}}",
+  "dashboardQuickSetsPlan": "{plan} · {count, plural, one{1 set} other{{count} sets}}",
   "dashboardQuickStatsMovementMinutes": "Movement min.",
   "@dashboardQuickStatsMovementMinutes": {
     "description": "aus dashboard.quickStats.movementMinutes"

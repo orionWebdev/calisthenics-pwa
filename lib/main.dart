@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/gen/app_l10n.dart';
 
 import 'core/theme/theme.dart';
-import 'features/dashboard/application/dashboard_providers.dart';
-import 'features/dashboard/data/preview_dashboard_repository.dart';
 import 'features/auth/presentation/auth_gate.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/workout/application/workout_providers.dart';
@@ -34,10 +32,8 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
-        // TODO: Gegen die Firestore-Implementierungen tauschen, sobald die
-        // Datenanbindung steht.
-        dashboardRepositoryProvider
-            .overrideWithValue(PreviewDashboardRepository()),
+        // Das Dashboard liest seit Stufe 6 aus Firestore. Der Runner noch
+        // nicht — sein Schreibpfad ist der nächste Schritt.
         workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
       ],
       child: const AtemApp(),

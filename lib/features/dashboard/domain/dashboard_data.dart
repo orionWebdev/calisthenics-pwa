@@ -103,11 +103,17 @@ class TodaySession {
 
 @immutable
 class WorkoutLogSummary {
-  const WorkoutLogSummary({required this.headline, required this.totalSets});
+  const WorkoutLogSummary({required this.totalSets, this.planName});
 
-  /// Verdichtete Zeile, z. B. „Bench 92,5 kg PR · 5×5 Squat".
-  final String headline;
   final int totalSets;
+
+  /// Name des Plans der letzten Einheit, falls einer hinterlegt war.
+  ///
+  /// **Kein fertiger Satz mehr.** Vorher stand hier eine verdichtete Zeile wie
+  /// „Bench 92,5 kg PR · 5×5 Squat" — also Anzeigetext in der Domäne, was
+  /// Vertrag 3 verbietet und jede Übersetzung blockiert hätte. Die Formulierung
+  /// gehört ins Widget.
+  final String? planName;
 }
 
 @immutable
@@ -174,8 +180,15 @@ class DashboardData {
   /// `null`, wenn für heute nichts geplant ist.
   final TodaySession? session;
 
-  final WorkoutLogSummary workoutLog;
-  final NutritionSummary nutrition;
-  final RecoverySummary recovery;
-  final PeriodizationSummary periodization;
+  /// Die folgenden vier sind `null`, solange es **keine Datenquelle** gibt.
+  ///
+  /// Ernährung, Regenerationsminuten und Periodisierung werden nirgends
+  /// erfasst — weder in der PWA noch in dieser App, und Health Connect steht
+  /// ausdrücklich nicht in V1. Ein Platzhalterwert wäre eine Erfindung, die auf
+  /// dem Bildschirm wie eine Messung aussieht. Die Oberfläche zeigt stattdessen
+  /// offen, dass nichts vorliegt.
+  final WorkoutLogSummary? workoutLog;
+  final NutritionSummary? nutrition;
+  final RecoverySummary? recovery;
+  final PeriodizationSummary? periodization;
 }

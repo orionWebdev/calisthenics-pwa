@@ -1,23 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../auth/application/auth_providers.dart';
+import '../../history/application/history_providers.dart';
+import '../data/firestore_dashboard_repository.dart';
 import '../domain/dashboard_data.dart';
 import '../domain/dashboard_repository.dart';
 
-/// Konkrete Implementierung in `main.dart` überschreiben:
+/// Baut das Repository für den angemeldeten Nutzer.
 ///
-/// ```dart
-/// ProviderScope(
-///   overrides: [
-///     dashboardRepositoryProvider.overrideWithValue(
-///       FirestoreDashboardRepository(FirebaseFirestore.instance, uid),
-///     ),
-///   ],
-///   child: const AtemApp(),
-/// )
-/// ```
+/// Wirft, solange niemand angemeldet ist. Das ist kein Versehen: Das
+/// Anmeldetor lässt den Dashboard-Screen gar nicht erst entstehen, und ein
+/// stiller Leerzustand hier würde einen Fehler in der Reihenfolge verdecken.
+///
+/// In Tests über `overrideWithValue(PreviewDashboardRepository())` ersetzen.
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
-  throw UnimplementedError(
-    'dashboardRepositoryProvider muss im ProviderScope überschrieben werden.',
+  final user = ref.watch(authStateProvider).value;
+  if (user == null) {
+    throw StateError(
+      'dashboardRepositoryProvider ohne angemeldeten Nutzer gelesen — '
+      'der Dashboard-Screen darf nur hinter dem Anmeldetor stehen.',
+    );
+  }
+
+  return FirestoreDashboardRepository(
+    firestore: FirebaseFirestore.instance,
+    sessions: ref.watch(sessionRepositoryProvider),
+    userId: user.uid,
+    fallbackDisplayName: user.displayName,
   );
 });
 

@@ -50,7 +50,7 @@ class PreviewDashboardRepository implements DashboardRepository {
         isHighIntensity: true,
       ),
       workoutLog: const WorkoutLogSummary(
-        headline: 'Bench 92,5 kg PR · 5×5 Squat',
+        planName: 'Upper Body Power',
         totalSets: 24,
       ),
       nutrition: const NutritionSummary(

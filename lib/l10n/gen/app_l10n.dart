@@ -679,6 +679,12 @@ abstract class AppL10n {
   /// **'WORKOUTS'**
   String get dashboardNavWorkouts;
 
+  /// Steht in einer Kachel, für die es noch keine Datenquelle gibt
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Daten'**
+  String get dashboardNoDataYet;
+
   /// Dashboard, Modul 1 Spezifikation
   ///
   /// In de, this message translates to:
@@ -786,6 +792,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{headline} · {sets} Sets'**
   String dashboardQuickSets(String headline, int sets);
+
+  /// Sätze der letzten Einheit, ohne Planname
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Keine Sätze erfasst} one{1 Satz zuletzt} other{{count} Sätze zuletzt}}'**
+  String dashboardQuickSetsPlain(int count);
+
+  /// Planname und Sätze der letzten Einheit
+  ///
+  /// In de, this message translates to:
+  /// **'{plan} · {count, plural, one{1 Satz} other{{count} Sätze}}'**
+  String dashboardQuickSetsPlan(String plan, int count);
 
   /// aus dashboard.quickStats.movementMinutes
   ///

@@ -467,6 +467,10 @@
   "@dashboardNavWorkouts": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "dashboardNoDataYet": "Noch keine Daten",
+  "@dashboardNoDataYet": {
+    "description": "Steht in einer Kachel, für die es noch keine Datenquelle gibt"
+  },
   "dashboardNotAvailable": "Daten nicht verfügbar",
   "@dashboardNotAvailable": {
     "description": "Dashboard, Modul 1 Spezifikation"
@@ -588,6 +592,27 @@
         "type": "String"
       },
       "sets": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardQuickSetsPlain": "{count, plural, =0{Keine Sätze erfasst} one{1 Satz zuletzt} other{{count} Sätze zuletzt}}",
+  "@dashboardQuickSetsPlain": {
+    "description": "Sätze der letzten Einheit, ohne Planname",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardQuickSetsPlan": "{plan} · {count, plural, one{1 Satz} other{{count} Sätze}}",
+  "@dashboardQuickSetsPlan": {
+    "description": "Planname und Sätze der letzten Einheit",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      },
+      "count": {
         "type": "int"
       }
     }
