@@ -256,13 +256,27 @@ class LoggedExercise {
   final bool? usesBodyweight;
 }
 
-/// Ein Satz. Beide Werte können fehlen — im Bestand kommen sowohl `null` als
+/// Ein Satz. Alle Werte können fehlen — im Bestand kommen sowohl `null` als
 /// auch vollständig leere Einträge vor.
 class LoggedSet {
-  const LoggedSet({this.reps, this.weight});
+  const LoggedSet({this.reps, this.weight, this.holdSeconds, this.rawType});
 
   final int? reps;
   final double? weight;
 
-  bool get isEmpty => reps == null && weight == null;
+  /// Haltezeit in Sekunden — für statische Übungen. Im Bestand bei 21 Sätzen,
+  /// immer zusammen mit [rawType] `hold`.
+  final int? holdSeconds;
+
+  /// Der rohe Wert des Feldes `type` am Satz.
+  ///
+  /// Bewusst als Zeichenkette und nicht als Aufzählung: Im Bestand kommt
+  /// ausschließlich `hold` vor, der Runner kennt daneben Aufwärm-, Drop- und
+  /// Failure-Sätze. Beide Vokabulare teilen sich dasselbe Feld, ohne dass eine
+  /// Seite die andere kennt. Eine Aufzählung würde behaupten, die Menge sei
+  /// bekannt.
+  final String? rawType;
+
+  bool get isEmpty =>
+      reps == null && weight == null && holdSeconds == null && rawType == null;
 }

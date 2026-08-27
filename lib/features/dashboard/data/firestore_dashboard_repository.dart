@@ -189,7 +189,12 @@ class FirestoreDashboardRepository implements DashboardRepository {
         _ => null,
       };
       if (dayKey != key) continue;
-      if (data['completed'] == true) continue;
+
+      // **Beides prüfen.** Im Produktivbestand steht `completed` in allen 77
+      // Dokumenten auf `false` — die PWA setzt es nie. Abgeschlossen wird über
+      // `status: 'completed'` festgehalten. Ein Filter allein auf `completed`
+      // griffe nie und zeigte erledigte Einheiten weiter als offen an.
+      if (data['completed'] == true || data['status'] == 'completed') continue;
 
       final minutes = (data['planDuration'] as num?)?.round() ?? 0;
       final planType = _nonEmpty(data['planType']);

@@ -1,3 +1,4 @@
+import 'session_draft.dart';
 import 'training_session.dart';
 
 /// Zugriff auf absolvierte Trainingseinheiten.
@@ -26,6 +27,16 @@ abstract interface class SessionRepository {
   /// Momentaufnahme statt Strom — für Berechnungen, die keinen Abgleich
   /// brauchen.
   Future<List<TrainingSession>> fetchSessions(String userId);
+
+  /// Schreibt eine abgeschlossene Einheit und liefert ihre Dokument-ID.
+  ///
+  /// Trägt der Entwurf eine [SessionDraft.scheduleId], wird der zugehörige
+  /// Termin im selben Zug als erledigt markiert. **Nicht in einer Transaktion:**
+  /// Die PWA macht es ebenso in zwei Schritten, und ein fehlgeschlagener
+  /// zweiter Schritt darf die gespeicherte Einheit nicht mitreißen. Ein Termin,
+  /// der offen aussieht, obwohl er absolviert ist, ist der weit harmlosere
+  /// Fehler als eine verlorene Trainingseinheit.
+  Future<String> saveSession(SessionDraft draft);
 }
 
 /// Was beim Lesen übersprungen wurde.

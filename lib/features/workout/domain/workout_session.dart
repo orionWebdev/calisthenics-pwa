@@ -7,10 +7,16 @@ import 'package:meta/meta.dart';
 /// „W" für Warmup funktioniert im Deutschen nur zufällig, „Aufwärmsatz" wäre
 /// „A". Deshalb kommt es aus dem ARB, nicht aus dem Enum.
 enum SetType {
-  warmup,
-  normal,
-  dropset,
-  failure;
+  warmup('warmup'),
+  normal('normal'),
+  dropset('dropset'),
+  failure('failure');
+
+  const SetType(this.wire);
+
+  /// Der Wert, unter dem der Satztyp gespeichert wird. Nie anzeigen — dafür
+  /// gibt es das ARB.
+  final String wire;
 
   SetType get next => switch (this) {
         SetType.warmup => SetType.normal,

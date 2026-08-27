@@ -179,6 +179,8 @@ abstract final class SessionMapper {
       out.add(LoggedSet(
         reps: _int(entry['reps']),
         weight: _double(entry['weight']),
+        holdSeconds: _int(entry['holdSec']),
+        rawType: _string(entry['type']),
       ));
     }
     return out;

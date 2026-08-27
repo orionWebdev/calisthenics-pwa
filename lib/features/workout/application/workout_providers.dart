@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../auth/application/auth_providers.dart';
+import '../../history/application/history_providers.dart';
+import '../../history/domain/session_draft.dart';
+import '../../history/domain/training_session.dart' as history;
 import '../domain/workout_repository.dart';
 import '../domain/workout_session.dart';
 
@@ -96,12 +100,79 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
     state = AsyncData(w.copyWith(notes: notes));
   }
 
-  Future<void> finish(Duration duration) async {
+  /// Schliesst die Einheit ab und schreibt sie in die Historie.
+  ///
+  /// Liefert die Dokument-ID der gespeicherten Einheit, oder `null`, wenn es
+  /// nichts zu speichern gab. Fehler werden **weitergereicht** — eine verlorene
+  /// Trainingseinheit darf nicht stillschweigend verschwinden, und der Screen
+  /// muss sie melden können.
+  Future<String?> finish(Duration duration, {DateTime? at}) async {
     final w = _workout;
-    if (w == null) return;
-    await ref
-        .read(workoutRepositoryProvider)
-        .saveWorkout(w, duration: duration);
+    if (w == null) return null;
+
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null) {
+      throw StateError('Kein angemeldeter Nutzer — Einheit nicht speicherbar');
+    }
+
+    final draft = toDraft(w, userId: userId, duration: duration, at: at);
+    // Nichts abgehakt heisst: nichts passiert. Ein leeres Dokument im Bestand
+    // verfälschte jede Auswertung.
+    if (draft == null) return null;
+
+    return ref.read(sessionRepositoryProvider).saveSession(draft);
+  }
+
+  /// Übersetzt die laufende Einheit in einen Entwurf für die Historie.
+  ///
+  /// Öffentlich und ohne `ref`, damit die Abbildung ohne Provider prüfbar ist —
+  /// sie ist die Stelle, an der Daten verlorengehen können.
+  ///
+  /// **Nur abgehakte Sätze** werden übernommen: Ein angelegter, aber nie
+  /// ausgeführter Satz ist keine Leistung. Übungen ohne abgehakten Satz fallen
+  /// ganz weg, genau wie in der PWA.
+  static SessionDraft? toDraft(
+    ActiveWorkout workout, {
+    required String userId,
+    required Duration duration,
+    DateTime? at,
+  }) {
+    final exercises = <history.LoggedExercise>[];
+
+    for (final exercise in workout.exercises) {
+      final sets = <history.LoggedSet>[];
+      for (final set in exercise.sets) {
+        if (!set.done) continue;
+        sets.add(history.LoggedSet(
+          reps: set.repsValue,
+          weight: set.weightValue,
+          // Der Standardtyp wird nicht geschrieben. Das Feld `type` am Satz
+          // trägt im Bestand ausschliesslich `hold`; jeder weitere Wert ist
+          // eine Erweiterung, die die PWA nicht kennt. Sie nur dann zu
+          // schreiben, wenn der Nutzer sie ausdrücklich gesetzt hat, hält den
+          // Bestand sauber, ohne seine Eingabe zu verlieren.
+          rawType: set.type == SetType.normal ? null : set.type.wire,
+        ));
+      }
+      if (sets.isEmpty) continue;
+      exercises
+          .add(history.LoggedExercise(exerciseId: exercise.id, sets: sets));
+    }
+
+    if (exercises.isEmpty) return null;
+
+    final now = at ?? DateTime.now();
+    return SessionDraft(
+      userId: userId,
+      kind: history.SessionKind.strength,
+      date: DateTime(now.year, now.month, now.day),
+      duration: duration,
+      exercises: exercises,
+      notes: workout.notes,
+      // Der Runner bekommt heute eine Termin-ID als sessionId. Bis der
+      // Planbuilder da ist, ist das die einzige Verbindung zum Kalender.
+      scheduleId: workout.sessionId.isEmpty ? null : workout.sessionId,
+    );
   }
 }
 
