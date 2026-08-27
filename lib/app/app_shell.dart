@@ -29,10 +29,35 @@ class AppShell extends ConsumerStatefulWidget {
   ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends ConsumerState<AppShell> {
+class _AppShellState extends ConsumerState<AppShell>
+    with SingleTickerProviderStateMixin {
   int _tab = 0;
 
-  void _select(int index) => setState(() => _tab = index);
+  late final AnimationController _fadeController = AnimationController(
+    vsync: this,
+    duration: AtemMotion.normal,
+    value: 1,
+  );
+
+  late final Animation<double> _fade = CurvedAnimation(
+    parent: _fadeController,
+    curve: AtemMotion.curve,
+  );
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
+  }
+
+  void _select(int index) {
+    if (index == _tab) return;
+    setState(() => _tab = index);
+    // Bei „Bewegung reduzieren" liefert `duration` null — dann springt der
+    // Wechsel, wie er soll.
+    _fadeController.duration = AtemMotion.duration(context, AtemMotion.normal);
+    _fadeController.forward(from: 0);
+  }
 
   Future<void> _start(StartRequest request) async {
     // Der Runner bekommt die Termin-Kennung, wenn es eine gibt. Beim freien
@@ -53,22 +78,50 @@ class _AppShellState extends ConsumerState<AppShell> {
         children: [
           // IndexedStack, nicht Austausch: Der Zustand eines Tabs — Scrollstand,
           // Suchtext, laufende Animation — überlebt den Wechsel.
-          IndexedStack(
-            index: _tab,
-            children: [
-              DashboardScreen(onSelectTab: _select),
-              WorkoutsScreen(onStart: _start),
-              _Soon(l10n: l10n),
-              _Soon(l10n: l10n),
-              _Soon(l10n: l10n),
-            ],
+          //
+          // Der Übergang blendet **nur den neuen Tab ein**, statt zwei
+          // Bildschirme gegeneinander zu überblenden. Ein `AnimatedSwitcher`
+          // mit wechselndem Schlüssel wäre die naheliegende Lösung und die
+          // falsche: Er baut den ganzen Stapel neu, wirft damit genau den
+          // Zustand weg, für den der IndexedStack da ist, und lässt bei jedem
+          // Wechsel fünf Bildschirme neu entstehen.
+          //
+          // Kein Schieben nach links: Die Tabs liegen übereinander, nicht
+          // nebeneinander. Eine Seitwärtsbewegung behauptete eine Reihenfolge,
+          // die es nicht gibt.
+          FadeTransition(
+            opacity: _fade,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 0.012),
+                end: Offset.zero,
+              ).animate(CurvedAnimation(
+                parent: _fade,
+                curve: AtemMotion.curve,
+              )),
+              child: IndexedStack(
+                index: _tab,
+                children: [
+                  DashboardScreen(onSelectTab: _select),
+                  WorkoutsScreen(onStart: _start),
+                  _Soon(l10n: l10n),
+                  _Soon(l10n: l10n),
+                  _Soon(l10n: l10n),
+                ],
+              ),
+            ),
           ),
           Positioned(
             left: AtemSpacing.screenPadding,
             right: AtemSpacing.screenPadding,
             bottom: AtemSpacing.screenPadding +
                 MediaQuery.viewPaddingOf(context).bottom,
-            child: FloatingNav(activeIndex: _tab, onSelect: _select),
+            // Eigene Malschicht: Die Leiste ändert sich beim Scrollen nicht.
+            // Ohne diese Grenze zieht ihr Blur den scrollenden Inhalt in
+            // dieselbe Ebene und lässt ihn bei jedem Frame mitzeichnen.
+            child: RepaintBoundary(
+              child: FloatingNav(activeIndex: _tab, onSelect: _select),
+            ),
           ),
         ],
       ),

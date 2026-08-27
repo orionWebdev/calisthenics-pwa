@@ -235,6 +235,8 @@ class AtemDialog extends StatelessWidget {
     required this.onConfirm,
     this.dismissLabel,
     this.detail,
+    this.alternativeLabel,
+    this.onAlternative,
   });
 
   final AtemDialogKind kind;
@@ -247,6 +249,18 @@ class AtemDialog extends StatelessWidget {
   /// Zusatz, etwa ein StatBox-Raster mit höchstens vier Werten.
   final Widget? detail;
 
+  /// Ein **zweiter Ausgang**, nicht bloß eine zweite Aktion.
+  ///
+  /// Nur für den Fall „zwei Ergebnisse plus Abbrechen": Ein Workout kann
+  /// gespeichert **oder** verworfen werden, und beides zu unterdrücken wäre
+  /// eine Sackgasse. Er wird als zerstörend dargestellt und steht nie an
+  /// erster Stelle.
+  ///
+  /// **Drei Aktionen sind das Maximum.** Ein Dialog mit vier Wegen ist eine
+  /// Liste, die sich als Frage verkleidet.
+  final String? alternativeLabel;
+  final VoidCallback? onAlternative;
+
   static Future<T?> show<T>(
     BuildContext context, {
     required AtemDialogKind kind,
@@ -257,7 +271,13 @@ class AtemDialog extends StatelessWidget {
     required String barrierLabel,
     String? dismissLabel,
     Widget? detail,
+    String? alternativeLabel,
+    VoidCallback? onAlternative,
   }) {
+    assert(
+      (alternativeLabel == null) == (onAlternative == null),
+      'Ein zweiter Ausgang braucht Beschriftung und Rückruf.',
+    );
     return showDialog<T>(
       context: context,
       // Kein Tap-to-close: Der Dialog verlangt eine Entscheidung.
@@ -272,6 +292,8 @@ class AtemDialog extends StatelessWidget {
         onConfirm: onConfirm,
         dismissLabel: dismissLabel,
         detail: detail,
+        alternativeLabel: alternativeLabel,
+        onAlternative: onAlternative,
       ),
     );
   }
@@ -303,72 +325,94 @@ class AtemDialog extends StatelessWidget {
         ),
     };
 
-    return Semantics(
-      scopesRoute: true,
-      namesRoute: true,
-      label: title,
-      explicitChildNodes: true,
-      child: Center(
-        child: Container(
-          width: width,
-          decoration: BoxDecoration(
-            // Vollton, kein Blur — der Dialog liegt über allem.
-            color: AtemColors.card,
-            borderRadius: AtemRadii.cardR,
-            border: Border.all(color: AtemColors.border),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x99000000),
-                blurRadius: 60,
-                offset: Offset(0, 24),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Titel und Botschaft als ein Block — ein Screenreader soll die
-              // Frage am Stück hören, nicht in zwei Anläufen.
-              Semantics(
-                label: '$title. $message',
-                child: ExcludeSemantics(
-                  child: Column(
-                    children: [
-                      Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: AtemType.titleMedium.of(context),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: AtemType.labelSmall.of(context),
-                      ),
-                    ],
+    // **Material ist Pflicht, auch wenn wir keins sehen wollen.**
+    // `showDialog` legt anders als `showModalBottomSheet` keines an. Ohne
+    // Material fällt jeder `Text` auf Flutters Notdarstellung zurück: gelbe
+    // Schrift, doppelt unterstrichen. Am Gerät sofort sichtbar, im Widget-Test
+    // nicht — dort prüft niemand die Textfarbe.
+    //
+    // `transparency` heißt: Nur der Textstil kommt, keine Fläche und kein
+    // Schatten. Beides bringt der Container darunter selbst mit.
+    return Material(
+      type: MaterialType.transparency,
+      child: Semantics(
+        scopesRoute: true,
+        namesRoute: true,
+        label: title,
+        explicitChildNodes: true,
+        child: Center(
+          child: Container(
+            width: width,
+            decoration: BoxDecoration(
+              // Vollton, kein Blur — der Dialog liegt über allem.
+              color: AtemColors.card,
+              borderRadius: AtemRadii.cardR,
+              border: Border.all(color: AtemColors.border),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x99000000),
+                  blurRadius: 60,
+                  offset: Offset(0, 24),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Titel und Botschaft als ein Block — ein Screenreader soll die
+                // Frage am Stück hören, nicht in zwei Anläufen.
+                Semantics(
+                  label: '$title. $message',
+                  child: ExcludeSemantics(
+                    child: Column(
+                      children: [
+                        Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: AtemType.titleMedium.of(context),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: AtemType.labelSmall.of(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              if (detail != null) ...[
+                if (detail != null) ...[
+                  const SizedBox(height: 16),
+                  detail!,
+                ],
                 const SizedBox(height: 16),
-                detail!,
+                confirm,
+                if (alternativeLabel != null) ...[
+                  const SizedBox(height: 9),
+                  AtemButton.outline(
+                    label: alternativeLabel!,
+                    semanticLabel: alternativeLabel!,
+                    expand: true,
+                    accent: AtemColors.magenta,
+                    leading: const _WarningTriangle(),
+                    onPressed: onAlternative,
+                  ),
+                ],
+                if (dismissLabel != null) ...[
+                  const SizedBox(height: 9),
+                  // Der Fokus liegt auf der sichersten Aktion, nie auf der
+                  // zerstörenden.
+                  AtemButton.ghost(
+                    label: dismissLabel!,
+                    semanticLabel: dismissLabel!,
+                    expand: true,
+                    accent: AtemColors.textPrimary,
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
+                ],
               ],
-              const SizedBox(height: 16),
-              confirm,
-              if (dismissLabel != null) ...[
-                const SizedBox(height: 9),
-                // Der Fokus liegt auf der sichersten Aktion, nie auf der
-                // zerstörenden.
-                AtemButton.ghost(
-                  label: dismissLabel!,
-                  semanticLabel: dismissLabel!,
-                  expand: true,
-                  accent: AtemColors.textPrimary,
-                  onPressed: () => Navigator.of(context).maybePop(),
-                ),
-              ],
-            ],
+            ),
           ),
         ),
       ),

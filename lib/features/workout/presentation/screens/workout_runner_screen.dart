@@ -320,8 +320,44 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.workoutScreenEndWorkout,
       onConfirm: _finish,
+      // Der zweite Ausgang. Ohne ihn gäbe es nur „speichern" oder „weiter
+      // trainieren" — wer sich vertan hat oder nur ausprobiert, säße fest und
+      // müsste eine falsche Einheit in seinen Verlauf schreiben.
+      alternativeLabel: l10n.workoutScreenDiscardWorkout,
+      onAlternative: _confirmDiscard,
       detail: _EndStats(workout: w, elapsed: _clock),
     );
+  }
+
+  /// Verwerfen wird **ein zweites Mal** bestätigt.
+  ///
+  /// Es ist die einzige Handlung im Runner, die Arbeit vernichtet, und sie ist
+  /// nicht rückgängig zu machen. Ein Dialog, der direkt aus einem anderen
+  /// Dialog verwirft, wäre zu leicht auszulösen.
+  void _confirmDiscard() {
+    final l10n = AppL10n.of(context);
+    Navigator.of(context).maybePop();
+
+    AtemDialog.show<void>(
+      context,
+      kind: AtemDialogKind.destructive,
+      title: l10n.workoutScreenDiscardConfirmTitle,
+      message: l10n.workoutScreenDiscardConfirm,
+      confirmLabel: l10n.workoutScreenDiscardWorkout,
+      dismissLabel: l10n.commonCancel,
+      barrierLabel: l10n.workoutScreenDiscardWorkout,
+      onConfirm: _discard,
+    );
+  }
+
+  /// Beendet ohne zu speichern.
+  Future<void> _discard() async {
+    Navigator.of(context).maybePop();
+    await HapticFeedback.mediumImpact();
+    if (!mounted) return;
+    // Der Bildschirm verschwindet; nichts wird geschrieben. Der Timer stirbt
+    // mit dem Notifier.
+    Navigator.of(context).maybePop();
   }
 
   Future<void> _finish() async {

@@ -133,7 +133,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             scoreAnimation: _score,
           ),
           const SizedBox(height: AtemSpacing.cardGap),
-          AtemCard.glass(
+          // **Deckend, nicht Glas.** Hinter dieser Karte liegt der blanke
+          // Canvas — es scheint nichts durch, was ein Blur zeigen könnte. Ein
+          // BackdropFilter in einer scrollenden Liste ist dagegen der teuerste
+          // Fall überhaupt: Der Hintergrund wird bei jedem Frame neu
+          // abgetastet und weichgezeichnet. Vertrag Modul 2: „In Listen gehört
+          // AtemCard.list hin."
+          AtemCard.list(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
             child: AtemChartCard(
               title: l10n.dashboardChartSection,
@@ -171,7 +177,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               onToggle: () => _onToggleSession(data.session!.id),
             )
           else
-            AtemCard.glass(
+            AtemCard.list(
               padding: const EdgeInsets.all(18),
               child: AtemEmptyState(
                 title: l10n.dashboardSessionNone,
