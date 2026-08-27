@@ -29,7 +29,7 @@ class AtemNumberField extends StatelessWidget {
     this.hasError = false,
     this.suffix,
     this.textInputAction = TextInputAction.next,
-  });
+  }) : _large = false;
 
   /// Breite laut Spezifikation: 72 dp für Gewicht, 60 dp für Wiederholungen.
   const AtemNumberField.weight({
@@ -42,7 +42,28 @@ class AtemNumberField extends StatelessWidget {
     this.suffix,
     this.textInputAction = TextInputAction.next,
   })  : width = 72,
-        decimal = true;
+        decimal = true,
+        _large = false;
+
+  /// **Das grosse Feld.** Ein einzelner Wert, der den Bildschirm trägt —
+  /// Körpergewicht im Onboarding, später Kennzahlen im Profil.
+  ///
+  /// Anders als [AtemNumberField.weight] aus der Satzzeile: volle Breite,
+  /// Mono 28 sp, mindestens 56 dp hoch. Das schmale 72-dp-Feld daneben wird
+  /// übersehen, wenn es allein auf einem Bildschirm steht — es ist für eine
+  /// Tabelle gebaut, nicht für die eine Frage.
+  const AtemNumberField.large({
+    super.key,
+    required this.controller,
+    required this.semanticLabel,
+    this.onChanged,
+    this.locked = false,
+    this.hasError = false,
+    this.suffix,
+    this.textInputAction = TextInputAction.done,
+  })  : width = null,
+        decimal = true,
+        _large = true;
 
   const AtemNumberField.reps({
     super.key,
@@ -54,14 +75,16 @@ class AtemNumberField extends StatelessWidget {
     this.suffix,
     this.textInputAction = TextInputAction.next,
   })  : width = 60,
-        decimal = false;
+        decimal = false,
+        _large = false;
 
   final TextEditingController controller;
 
   /// Aus dem ARB, mit Satznummer: „Gewicht in Kilogramm, Satz 2".
   final String semanticLabel;
 
-  final double width;
+  /// `null` heisst: volle verfügbare Breite.
+  final double? width;
   final ValueChanged<String>? onChanged;
   final bool decimal;
 
@@ -78,7 +101,11 @@ class AtemNumberField extends StatelessWidget {
 
   final TextInputAction textInputAction;
 
+  /// Grosse Einzelfeld-Variante: Mono 28 sp, mindestens 56 dp, zentriert.
+  final bool _large;
+
   static const _minHeight = 48.0;
+  static const _largeMinHeight = 56.0;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +120,8 @@ class AtemNumberField extends StatelessWidget {
           width: width,
           child: ConstrainedBox(
             // Untergrenze, keine feste Höhe: bei großer Schrift wächst das Feld.
-            constraints: const BoxConstraints(minHeight: _minHeight),
+            constraints: BoxConstraints(
+                minHeight: _large ? _largeMinHeight : _minHeight),
             child: TextField(
               controller: controller,
               enabled: !locked,
@@ -108,13 +136,19 @@ class AtemNumberField extends StatelessWidget {
                   decimal ? RegExp(r'[0-9.,]') : RegExp(r'[0-9]'),
                 ),
               ],
-              style: AtemType.valueMedium.base,
+              style: _large
+                  ? AtemType.valueLarge.base
+                      .copyWith(fontSize: 28, fontWeight: FontWeight.w600)
+                  : AtemType.valueMedium.base,
               decoration: InputDecoration(
                 isDense: true,
                 filled: true,
-                fillColor:
-                    locked ? const Color(0x00000000) : AtemColors.surfaceSolid,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 6),
+                fillColor: locked
+                    ? const Color(0x00000000)
+                    : (_large ? AtemColors.card : AtemColors.surfaceSolid),
+                contentPadding: _large
+                    ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+                    : const EdgeInsets.symmetric(horizontal: 6),
                 suffixText: suffix,
                 suffixStyle: AtemType.labelSmall.base,
                 enabledBorder:

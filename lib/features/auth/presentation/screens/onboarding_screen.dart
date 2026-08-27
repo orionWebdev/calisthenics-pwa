@@ -167,7 +167,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         onFocusChange: (has) {
                           if (!has) _validate();
                         },
-                        child: AtemNumberField.weight(
+                        child: AtemNumberField.large(
                           controller: _controller,
                           semanticLabel: l10n.onbFieldA11y(_unitLabel(l10n)),
                           suffix: _unitLabel(l10n),
