@@ -95,6 +95,7 @@ class FirestoreDashboardRepository implements DashboardRepository {
         // Rechnung bewusst nichts. 0 ist dann kein Messwert, sondern die
         // ehrlichste Anzeige: ein leerer Bogen.
         score: (acwr.score ?? 0).toDouble(),
+        zone: acwr.zone,
         // Kein Wearable angebunden.
         isLive: false,
       ),

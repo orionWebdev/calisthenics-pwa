@@ -646,9 +646,25 @@
       }
     }
   },
+  "dashboardReadinessLevelBuilding": "AUFBAU",
+  "@dashboardReadinessLevelBuilding": {
+    "description": "Zonenname: produktiver Aufbau"
+  },
+  "dashboardReadinessLevelFatigued": "ERMÜDET",
+  "@dashboardReadinessLevelFatigued": {
+    "description": "Zonenname: erhöhte Belastung"
+  },
+  "dashboardReadinessLevelFormLoss": "FORMVERLUST",
+  "@dashboardReadinessLevelFormLoss": {
+    "description": "Zonenname: zu wenig Training, nicht zu viel"
+  },
   "dashboardReadinessLevelModerate": "MODERATE LAST",
   "@dashboardReadinessLevelModerate": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
+  },
+  "dashboardReadinessLevelOverreaching": "ÜBERREIZT",
+  "@dashboardReadinessLevelOverreaching": {
+    "description": "Zonenname: deutlich zu viel"
   },
   "dashboardReadinessLevelPeak": "PEAK READINESS",
   "@dashboardReadinessLevelPeak": {
@@ -666,11 +682,23 @@
   "@dashboardReadinessSection": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "dashboardReadinessTagFatigued": "Regeneration: Niedrig • Volumen deutlich reduzieren",
+  "@dashboardReadinessTagFatigued": {
+    "description": "Empfehlung bei Ermüdung"
+  },
+  "dashboardReadinessTagFormLoss": "Regeneration: Ausgeruht • Wieder Volumen aufbauen",
+  "@dashboardReadinessTagFormLoss": {
+    "description": "Empfehlung bei Formverlust — ausgeruht, aber zu wenig Reiz"
+  },
   "dashboardReadinessTagModerate": "Regeneration: Mittel • Volumen leicht reduzieren",
   "@dashboardReadinessTagModerate": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
   },
-  "dashboardReadinessTagPeak": "Regeneration: Optimal • Bereit für Hyrox / Max Load",
+  "dashboardReadinessTagOverreaching": "Regeneration: Kritisch • Heute nicht trainieren",
+  "@dashboardReadinessTagOverreaching": {
+    "description": "Empfehlung bei Überreizung"
+  },
+  "dashboardReadinessTagPeak": "Regeneration: Optimal • Bereit für maximale Last",
   "@dashboardReadinessTagPeak": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
   },

@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../../history/domain/readiness.dart';
 import 'readiness_level.dart';
 
 @immutable
@@ -27,9 +28,17 @@ class ReadinessSnapshot {
     this.restingHeartRate,
     this.sleepDuration,
     this.isLive = false,
+    this.zone,
   });
 
   final double score;
+
+  /// Die Zone aus der ACWR-Rechnung, `null` bei Quellen ohne Historie.
+  ///
+  /// Sie sagt mehr als [level]: Derselbe Punktwert kann Untertraining oder
+  /// Übertraining bedeuten, und die Empfehlung ist dann die jeweils
+  /// gegenteilige. Nur der ACWR kennt die Richtung.
+  final ReadinessZone? zone;
 
   /// Herzfrequenzvariabilität. `null`, solange keine Wearable-Quelle verbunden ist.
   final int? hrvMs;

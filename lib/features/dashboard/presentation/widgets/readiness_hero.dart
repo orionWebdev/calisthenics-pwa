@@ -5,6 +5,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../domain/dashboard_data.dart';
 import '../../domain/readiness_level.dart';
+import '../readiness_zone_ui.dart';
 import '../readiness_level_ui.dart';
 
 /// Die Readiness-Karte mit Bogen, Empfehlung und drei Messwerten.
@@ -50,13 +51,20 @@ class ReadinessHero extends StatelessWidget {
             animation: scoreAnimation,
             builder: (context, _) {
               final value = scoreAnimation.value;
+              // Die Zone hat Vorrang: Sie kennt die Richtung, der Punktwert
+              // allein nicht. Ohne Zone — etwa in der Design-Vorschau — bleibt
+              // die Ableitung aus dem Wert.
+              final zone = readiness.zone;
               final level = ReadinessLevel.fromScore(value);
+              final color = zone?.color ?? level.color;
+              final labelText = zone?.label(l10n) ?? level.label(l10n);
+              final tagText = zone?.tag(l10n) ?? level.tag(l10n);
               return Column(
                 children: [
                   AtemArcGauge(
                     value: value / 100,
-                    semanticLabel: l10n.dashboardReadinessA11y(
-                        value.round(), level.label(l10n)),
+                    semanticLabel:
+                        l10n.dashboardReadinessA11y(value.round(), labelText),
                     center: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -79,12 +87,12 @@ class ReadinessHero extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          level.label(l10n),
+                          labelText,
                           textAlign: TextAlign.center,
                           style: AtemType.labelMicro.of(context).copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: level.color,
-                                shadows: AtemGlow.text(level.color),
+                                color: color,
+                                shadows: AtemGlow.text(color),
                               ),
                         ),
                       ],
@@ -94,7 +102,7 @@ class ReadinessHero extends StatelessWidget {
                   // Skaliert voll mit — die Bedingung dafür, dass die Zahl im
                   // Bogen begrenzt werden darf.
                   AtemBadge(
-                    label: level.tag(l10n),
+                    label: tagText,
                     fill: AtemBadgeFill.tinted,
                     style: AtemType.labelSmall,
                   ),

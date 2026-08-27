@@ -589,10 +589,14 @@
       }
     }
   },
+  "dashboardReadinessLevelBuilding": "BUILDING",
+  "dashboardReadinessLevelFatigued": "FATIGUED",
+  "dashboardReadinessLevelFormLoss": "FORM LOSS",
   "dashboardReadinessLevelModerate": "MODERATE LOAD",
   "@dashboardReadinessLevelModerate": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
   },
+  "dashboardReadinessLevelOverreaching": "OVERREACHING",
   "dashboardReadinessLevelPeak": "PEAK READINESS",
   "@dashboardReadinessLevelPeak": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
@@ -609,11 +613,14 @@
   "@dashboardReadinessSection": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "dashboardReadinessTagFatigued": "Recovery: Low • Cut volume noticeably",
+  "dashboardReadinessTagFormLoss": "Recovery: Rested • Start building volume again",
   "dashboardReadinessTagModerate": "Recovery: Moderate • Reduce volume slightly",
   "@dashboardReadinessTagModerate": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
   },
-  "dashboardReadinessTagPeak": "Recovery: Optimal • Ready for Hyrox / max load",
+  "dashboardReadinessTagOverreaching": "Recovery: Critical • Do not train today",
+  "dashboardReadinessTagPeak": "Recovery: Optimal • Ready for maximum load",
   "@dashboardReadinessTagPeak": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
   },

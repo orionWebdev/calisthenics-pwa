@@ -442,7 +442,19 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get dashboardReadinessLevelBuilding => 'BUILDING';
+
+  @override
+  String get dashboardReadinessLevelFatigued => 'FATIGUED';
+
+  @override
+  String get dashboardReadinessLevelFormLoss => 'FORM LOSS';
+
+  @override
   String get dashboardReadinessLevelModerate => 'MODERATE LOAD';
+
+  @override
+  String get dashboardReadinessLevelOverreaching => 'OVERREACHING';
 
   @override
   String get dashboardReadinessLevelPeak => 'PEAK READINESS';
@@ -457,12 +469,24 @@ class AppL10nEn extends AppL10n {
   String get dashboardReadinessSection => 'ATEM READINESS';
 
   @override
+  String get dashboardReadinessTagFatigued =>
+      'Recovery: Low • Cut volume noticeably';
+
+  @override
+  String get dashboardReadinessTagFormLoss =>
+      'Recovery: Rested • Start building volume again';
+
+  @override
   String get dashboardReadinessTagModerate =>
       'Recovery: Moderate • Reduce volume slightly';
 
   @override
+  String get dashboardReadinessTagOverreaching =>
+      'Recovery: Critical • Do not train today';
+
+  @override
   String get dashboardReadinessTagPeak =>
-      'Recovery: Optimal • Ready for Hyrox / max load';
+      'Recovery: Optimal • Ready for maximum load';
 
   @override
   String get dashboardReadinessTagRecovery =>

@@ -829,11 +829,35 @@ abstract class AppL10n {
   /// **'Readiness {percent} Prozent, {status}'**
   String dashboardReadinessA11y(int percent, String status);
 
+  /// Zonenname: produktiver Aufbau
+  ///
+  /// In de, this message translates to:
+  /// **'AUFBAU'**
+  String get dashboardReadinessLevelBuilding;
+
+  /// Zonenname: erhöhte Belastung
+  ///
+  /// In de, this message translates to:
+  /// **'ERMÜDET'**
+  String get dashboardReadinessLevelFatigued;
+
+  /// Zonenname: zu wenig Training, nicht zu viel
+  ///
+  /// In de, this message translates to:
+  /// **'FORMVERLUST'**
+  String get dashboardReadinessLevelFormLoss;
+
   /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
   ///
   /// In de, this message translates to:
   /// **'MODERATE LAST'**
   String get dashboardReadinessLevelModerate;
+
+  /// Zonenname: deutlich zu viel
+  ///
+  /// In de, this message translates to:
+  /// **'ÜBERREIZT'**
+  String get dashboardReadinessLevelOverreaching;
 
   /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
   ///
@@ -859,16 +883,34 @@ abstract class AppL10n {
   /// **'ATEM READINESS'**
   String get dashboardReadinessSection;
 
+  /// Empfehlung bei Ermüdung
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration: Niedrig • Volumen deutlich reduzieren'**
+  String get dashboardReadinessTagFatigued;
+
+  /// Empfehlung bei Formverlust — ausgeruht, aber zu wenig Reiz
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration: Ausgeruht • Wieder Volumen aufbauen'**
+  String get dashboardReadinessTagFormLoss;
+
   /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
   ///
   /// In de, this message translates to:
   /// **'Regeneration: Mittel • Volumen leicht reduzieren'**
   String get dashboardReadinessTagModerate;
 
+  /// Empfehlung bei Überreizung
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration: Kritisch • Heute nicht trainieren'**
+  String get dashboardReadinessTagOverreaching;
+
   /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA
   ///
   /// In de, this message translates to:
-  /// **'Regeneration: Optimal • Bereit für Hyrox / Max Load'**
+  /// **'Regeneration: Optimal • Bereit für maximale Last'**
   String get dashboardReadinessTagPeak;
 
   /// Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA

@@ -445,7 +445,19 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
+  String get dashboardReadinessLevelBuilding => 'AUFBAU';
+
+  @override
+  String get dashboardReadinessLevelFatigued => 'ERMÜDET';
+
+  @override
+  String get dashboardReadinessLevelFormLoss => 'FORMVERLUST';
+
+  @override
   String get dashboardReadinessLevelModerate => 'MODERATE LAST';
+
+  @override
+  String get dashboardReadinessLevelOverreaching => 'ÜBERREIZT';
 
   @override
   String get dashboardReadinessLevelPeak => 'PEAK READINESS';
@@ -460,12 +472,24 @@ class AppL10nDe extends AppL10n {
   String get dashboardReadinessSection => 'ATEM READINESS';
 
   @override
+  String get dashboardReadinessTagFatigued =>
+      'Regeneration: Niedrig • Volumen deutlich reduzieren';
+
+  @override
+  String get dashboardReadinessTagFormLoss =>
+      'Regeneration: Ausgeruht • Wieder Volumen aufbauen';
+
+  @override
   String get dashboardReadinessTagModerate =>
       'Regeneration: Mittel • Volumen leicht reduzieren';
 
   @override
+  String get dashboardReadinessTagOverreaching =>
+      'Regeneration: Kritisch • Heute nicht trainieren';
+
+  @override
   String get dashboardReadinessTagPeak =>
-      'Regeneration: Optimal • Bereit für Hyrox / Max Load';
+      'Regeneration: Optimal • Bereit für maximale Last';
 
   @override
   String get dashboardReadinessTagRecovery =>
