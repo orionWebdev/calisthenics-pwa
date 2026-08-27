@@ -36,6 +36,11 @@ abstract final class SessionMapper {
     final notes = _string(data['notes']);
     final rawType = _string(data['type']);
 
+    // In allen vier Arten vorhanden, in genau denselben Dokumenten.
+    final rpe = _int(data['rpe']);
+    final energy = _int(data['preWorkoutEnergy']);
+    final feeling = _int(data['postWorkoutFeeling']);
+
     return switch (SessionKind.fromWire(rawType)) {
       SessionKind.strength || SessionKind.bodyweight => StrengthSession(
           id: id,
@@ -48,9 +53,10 @@ abstract final class SessionMapper {
           exercises: _exercises(data['exercises']),
           planId: _string(data['planId']),
           planName: _string(data['planName']),
-          rpe: _int(data['rpe']),
-          preWorkoutEnergy: _int(data['preWorkoutEnergy']),
-          postWorkoutFeeling: _int(data['postWorkoutFeeling']),
+          rpe: rpe,
+          preWorkoutEnergy: energy,
+          postWorkoutFeeling: feeling,
+          discipline: _string(data['discipline']),
         ),
       SessionKind.cardio => () {
           final raw = _string(data['activityType']);
@@ -62,6 +68,9 @@ abstract final class SessionMapper {
             createdAt: createdAt,
             duration: duration,
             notes: notes,
+            rpe: rpe,
+            preWorkoutEnergy: energy,
+            postWorkoutFeeling: feeling,
             activity: activity,
             rawActivity: activity == null ? raw : null,
             distanceKm: _double(data['distanceKm']),
@@ -78,6 +87,9 @@ abstract final class SessionMapper {
           createdAt: createdAt,
           duration: duration,
           notes: notes,
+          rpe: rpe,
+          preWorkoutEnergy: energy,
+          postWorkoutFeeling: feeling,
           name: _string(data['name']),
         ),
       null => UnknownSession(
@@ -87,6 +99,9 @@ abstract final class SessionMapper {
           createdAt: createdAt,
           duration: duration,
           notes: notes,
+          rpe: rpe,
+          preWorkoutEnergy: energy,
+          postWorkoutFeeling: feeling,
           rawType: rawType,
         ),
     };
@@ -143,7 +158,13 @@ abstract final class SessionMapper {
       if (entry is! Map) continue;
       final id = _string(entry['exerciseId']);
       if (id == null) continue;
-      out.add(LoggedExercise(exerciseId: id, sets: _sets(entry['sets'])));
+      out.add(LoggedExercise(
+        exerciseId: id,
+        sets: _sets(entry['sets']),
+        usesBodyweight: entry['usesBodyweight'] is bool
+            ? entry['usesBodyweight'] as bool
+            : null,
+      ));
     }
     return out;
   }

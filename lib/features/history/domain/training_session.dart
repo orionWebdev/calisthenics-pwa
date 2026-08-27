@@ -69,6 +69,9 @@ sealed class TrainingSession {
     required this.createdAt,
     this.duration,
     this.notes,
+    this.rpe,
+    this.preWorkoutEnergy,
+    this.postWorkoutFeeling,
   });
 
   final String id;
@@ -84,6 +87,18 @@ sealed class TrainingSession {
   final Duration? duration;
 
   final String? notes;
+
+  /// Anstrengung auf einer Skala von **1 bis 5** — nicht die übliche
+  /// RPE-Skala von 1 bis 10. Im Bestand kommen 1 bis 4 vor.
+  ///
+  /// Steht auf der Basisklasse, weil das Feld in allen vier Arten vorkommt,
+  /// jeweils in etwa zwei Dritteln der Dokumente. Die Lastberechnung liest es
+  /// auch bei Cardio.
+  final int? rpe;
+
+  /// Ebenfalls in allen Arten, in genau denselben Dokumenten wie [rpe].
+  final int? preWorkoutEnergy;
+  final int? postWorkoutFeeling;
 
   SessionKind? get kind;
 
@@ -105,11 +120,12 @@ final class StrengthSession extends TrainingSession {
     this.exercises = const [],
     super.duration,
     super.notes,
+    super.rpe,
+    super.preWorkoutEnergy,
+    super.postWorkoutFeeling,
     this.planId,
     this.planName,
-    this.rpe,
-    this.preWorkoutEnergy,
-    this.postWorkoutFeeling,
+    this.discipline,
   });
 
   /// `true` für `type: bodyweight`, `false` für `type: strength`. Die Daten
@@ -120,12 +136,9 @@ final class StrengthSession extends TrainingSession {
   final String? planId;
   final String? planName;
 
-  /// Im Bestand 1 bis 4 — **nicht** die übliche RPE-Skala von 1 bis 10.
-  /// Vor jeder Anzeige oder Verrechnung ist zu klären, was die PWA hier meint.
-  final int? rpe;
-
-  final int? preWorkoutEnergy;
-  final int? postWorkoutFeeling;
+  /// `bodyweight` oder `weights` — im Bestand 14 beziehungsweise 3 Dokumente.
+  /// Steuert im Scoring den Multiplikator der Ersatzrechnung nach Dauer.
+  final String? discipline;
 
   @override
   SessionKind get kind =>
@@ -146,6 +159,9 @@ final class CardioSession extends TrainingSession {
     this.rawActivity,
     super.duration,
     super.notes,
+    super.rpe,
+    super.preWorkoutEnergy,
+    super.postWorkoutFeeling,
     this.distanceKm,
     this.pace,
     this.avgHr,
@@ -181,6 +197,9 @@ final class RecoverySession extends TrainingSession {
     required super.createdAt,
     super.duration,
     super.notes,
+    super.rpe,
+    super.preWorkoutEnergy,
+    super.postWorkoutFeeling,
     this.name,
   });
 
@@ -204,6 +223,9 @@ final class UnknownSession extends TrainingSession {
     required this.rawType,
     super.duration,
     super.notes,
+    super.rpe,
+    super.preWorkoutEnergy,
+    super.postWorkoutFeeling,
   });
 
   final String? rawType;
@@ -214,13 +236,24 @@ final class UnknownSession extends TrainingSession {
 
 /// Eine Übung innerhalb einer Krafteinheit.
 class LoggedExercise {
-  const LoggedExercise({required this.exerciseId, this.sets = const []});
+  const LoggedExercise({
+    required this.exerciseId,
+    this.sets = const [],
+    this.usesBodyweight,
+  });
 
   /// Slug wie `push_up`, `pull_up` — zeigt auf `exercises_curated` oder
   /// `exercises`. **Nicht** die Dokument-ID aus `progress`, siehe Vertrag 4.
   final String exerciseId;
 
   final List<LoggedSet> sets;
+
+  /// Zählt beim Volumen das Körpergewicht statt der Hantellast?
+  ///
+  /// Im Bestand bei 77 von 292 Einträgen gesetzt. Die PWA schlägt sonst in der
+  /// Übungsdatenbank nach — **dort trägt aber kein einziges der 154 Dokumente
+  /// dieses Feld**, der Rückfallpfad greift also nie. Siehe Vertrag 4.
+  final bool? usesBodyweight;
 }
 
 /// Ein Satz. Beide Werte können fehlen — im Bestand kommen sowohl `null` als

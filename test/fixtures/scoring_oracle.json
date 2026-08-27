@@ -1,0 +1,2643 @@
+{
+ "bodyWeightKg": 78,
+ "sessions": [
+  {
+   "type": "strength",
+   "date": "2026-01-02T13:35:00.000Z",
+   "rpe": 2,
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 1,
+       "weight": 47
+      },
+      {
+       "reps": 7,
+       "weight": 114
+      },
+      {
+       "reps": 5,
+       "weight": 66
+      },
+      {
+       "reps": 14,
+       "weight": 44
+      },
+      {
+       "reps": 2,
+       "weight": 75
+      }
+     ]
+    },
+    {
+     "exerciseId": "deadlift",
+     "usesBodyweight": true,
+     "sets": [
+      {
+       "reps": 15,
+       "weight": 17
+      },
+      {
+       "reps": 8,
+       "weight": 4
+      },
+      {
+       "reps": 4
+      },
+      {
+       "reps": 1,
+       "weight": 88
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-01-03T18:36:00.000Z",
+   "rpe": 1,
+   "duration": 184.9,
+   "exercises": [
+    {
+     "exerciseId": "deadlift",
+     "sets": [
+      {
+       "reps": 0,
+       "weight": 56
+      }
+     ]
+    },
+    {
+     "exerciseId": "squat",
+     "usesBodyweight": true,
+     "sets": [
+      {},
+      {
+       "reps": 12,
+       "weight": 42
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "cardio",
+   "date": "2026-01-06T18:49:00.000Z",
+   "rpe": 4,
+   "activityType": "stretching"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-01-07T13:36:00.000Z",
+   "activityType": "padel"
+  },
+  {
+   "type": "recovery",
+   "date": "2026-01-08T16:36:00.000Z",
+   "rpe": 1
+  },
+  {
+   "type": "cardio",
+   "date": "2026-01-10T14:31:00.000Z",
+   "activityType": "hike"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-01-11T17:54:00.000Z",
+   "rpe": 4,
+   "activityType": "other"
+  },
+  {
+   "type": "strength",
+   "date": "2026-01-15T17:34:00.000Z",
+   "rpe": 5,
+   "exercises": [
+    {
+     "exerciseId": "push_up",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 6,
+       "weight": 63
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 7,
+       "weight": 5
+      },
+      {},
+      {
+       "reps": 10
+      },
+      {
+       "reps": 9,
+       "weight": 111
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "strength",
+   "date": "2026-01-16T16:18:00.000Z",
+   "rpe": 5,
+   "exercises": [
+    {
+     "exerciseId": "deadlift",
+     "usesBodyweight": true,
+     "sets": [
+      {
+       "reps": 6,
+       "weight": 72
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 0,
+       "weight": 108
+      },
+      {
+       "reps": 5,
+       "weight": 16
+      },
+      {
+       "reps": 0,
+       "weight": 44
+      },
+      {
+       "reps": 14,
+       "weight": 3
+      },
+      {}
+     ]
+    },
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 11,
+       "weight": 106
+      },
+      {
+       "reps": 5,
+       "weight": 26
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 0,
+       "weight": 75
+      },
+      {
+       "reps": 7,
+       "weight": 56
+      },
+      {
+       "reps": 1,
+       "weight": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "recovery",
+   "date": "2026-01-17T08:36:00.000Z",
+   "rpe": 5
+  },
+  {
+   "type": "strength",
+   "date": "2026-01-18T16:28:00.000Z",
+   "rpe": 5,
+   "discipline": "weights"
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-01-19T20:47:00.000Z",
+   "duration": 163.8,
+   "exercises": [
+    {
+     "exerciseId": "dip",
+     "usesBodyweight": true,
+     "sets": [
+      {
+       "reps": 15,
+       "weight": 0
+      },
+      {
+       "reps": 12,
+       "weight": 36
+      },
+      {
+       "reps": 0,
+       "weight": 37
+      },
+      {
+       "reps": 5,
+       "weight": 35
+      }
+     ]
+    },
+    {
+     "exerciseId": "deadlift",
+     "sets": [
+      {
+       "reps": 7,
+       "weight": 94
+      },
+      {
+       "reps": 12,
+       "weight": 45
+      }
+     ]
+    },
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 12
+      },
+      {
+       "reps": 14,
+       "weight": 67
+      },
+      {
+       "reps": 0,
+       "weight": 81
+      },
+      {
+       "reps": 4,
+       "weight": 104
+      },
+      {
+       "reps": 12,
+       "weight": 99
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 8,
+       "weight": 17
+      },
+      {
+       "reps": 15
+      },
+      {
+       "reps": 13,
+       "weight": 98
+      },
+      {
+       "reps": 6,
+       "weight": 109
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-01-20T14:19:00.000Z",
+   "duration": 182,
+   "exercises": [
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 15,
+       "weight": 98
+      },
+      {
+       "reps": 5,
+       "weight": 102
+      },
+      {
+       "reps": 1,
+       "weight": 8
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 8
+      },
+      {
+       "reps": 4,
+       "weight": 90
+      },
+      {
+       "reps": 15,
+       "weight": 12
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 4,
+       "weight": 7
+      },
+      {
+       "reps": 7,
+       "weight": 68
+      },
+      {
+       "reps": 5,
+       "weight": 44
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 12,
+       "weight": 34
+      },
+      {
+       "reps": 0,
+       "weight": 67
+      }
+     ]
+    }
+   ],
+   "discipline": "weights"
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-01-21T18:36:00.000Z",
+   "rpe": 1,
+   "exercises": [
+    {
+     "exerciseId": "pull_up",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 6,
+       "weight": 107
+      },
+      {
+       "reps": 10,
+       "weight": 90
+      },
+      {
+       "reps": 10
+      }
+     ]
+    },
+    {
+     "exerciseId": "deadlift",
+     "sets": [
+      {
+       "reps": 7,
+       "weight": 34
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "recovery",
+   "date": "2026-01-22T14:09:00.000Z",
+   "rpe": 1
+  },
+  {
+   "type": "strength",
+   "date": "2026-01-24T19:39:00.000Z",
+   "exercises": [
+    {
+     "exerciseId": "deadlift",
+     "sets": [
+      {
+       "reps": 13,
+       "weight": 5
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 4
+      },
+      {
+       "reps": 6
+      },
+      {
+       "reps": 12,
+       "weight": 43
+      },
+      {
+       "reps": 15,
+       "weight": 1
+      },
+      {
+       "reps": 1,
+       "weight": 35
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 11,
+       "weight": 103
+      },
+      {
+       "reps": 14,
+       "weight": 83
+      },
+      {
+       "reps": 9,
+       "weight": 111
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 6,
+       "weight": 26
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-01-25T14:33:00.000Z",
+   "rpe": 4,
+   "duration": 199.3,
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 4,
+       "weight": 98
+      }
+     ]
+    },
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 2,
+       "weight": 88
+      },
+      {
+       "reps": 7
+      }
+     ]
+    },
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 13,
+       "weight": 38
+      },
+      {
+       "reps": 5,
+       "weight": 25
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "cardio",
+   "date": "2026-01-26T11:12:00.000Z",
+   "rpe": 1,
+   "activityType": "stretching"
+  },
+  {
+   "type": "recovery",
+   "date": "2026-01-27T08:05:00.000Z",
+   "rpe": 5
+  },
+  {
+   "type": "recovery",
+   "date": "2026-01-28T18:21:00.000Z",
+   "rpe": 5,
+   "duration": 88.4
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-01-30T18:36:00.000Z",
+   "rpe": 5,
+   "duration": 195.4
+  },
+  {
+   "type": "recovery",
+   "date": "2026-01-31T05:33:00.000Z",
+   "duration": 32.9
+  },
+  {
+   "type": "strength",
+   "date": "2026-02-01T10:59:00.000Z",
+   "exercises": [
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 0,
+       "weight": 10
+      },
+      {
+       "reps": 13,
+       "weight": 11
+      },
+      {
+       "reps": 15,
+       "weight": 67
+      }
+     ]
+    }
+   ],
+   "discipline": "weights"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-02-01T13:46:00.000Z",
+   "rpe": 5,
+   "activityType": "other"
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-02-02T16:29:00.000Z",
+   "rpe": 1,
+   "duration": 163.4
+  },
+  {
+   "type": "strength",
+   "date": "2026-02-03T17:48:00.000Z",
+   "duration": 176.1,
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 0,
+       "weight": 52
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "recovery",
+   "date": "2026-02-04T05:33:00.000Z",
+   "rpe": 5,
+   "duration": 89.6
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-02-07T19:02:00.000Z",
+   "duration": 65.6,
+   "exercises": [
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 11,
+       "weight": 109
+      },
+      {
+       "reps": 3,
+       "weight": 72
+      },
+      {
+       "reps": 9,
+       "weight": 29
+      },
+      {
+       "reps": 14,
+       "weight": 32
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "usesBodyweight": true,
+     "sets": [
+      {
+       "reps": 3,
+       "weight": 38
+      },
+      {
+       "reps": 2,
+       "weight": 116
+      },
+      {
+       "reps": 6,
+       "weight": 36
+      },
+      {
+       "reps": 3,
+       "weight": 33
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 13,
+       "weight": 79
+      },
+      {
+       "reps": 11,
+       "weight": 64
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "recovery",
+   "date": "2026-02-08T10:25:00.000Z",
+   "rpe": 3
+  },
+  {
+   "type": "cardio",
+   "date": "2026-02-09T10:08:00.000Z",
+   "rpe": 1,
+   "duration": 5.1,
+   "activityType": "yoga"
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-02-10T15:07:00.000Z",
+   "rpe": 1,
+   "duration": 107.8,
+   "exercises": [
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 6
+      },
+      {
+       "reps": 3
+      },
+      {
+       "reps": 13,
+       "weight": 101
+      },
+      {
+       "reps": 0,
+       "weight": 18
+      },
+      {
+       "reps": 5,
+       "weight": 37
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 7,
+       "weight": 101
+      },
+      {
+       "reps": 11,
+       "weight": 48
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-02-13T09:27:00.000Z",
+   "duration": 44.5,
+   "discipline": "weights"
+  },
+  {
+   "type": "strength",
+   "date": "2026-02-14T12:23:00.000Z",
+   "rpe": 4
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-02-17T10:30:00.000Z",
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 3,
+       "weight": 34
+      },
+      {
+       "reps": 12,
+       "weight": 0
+      },
+      {
+       "reps": 15,
+       "weight": 69
+      },
+      {
+       "reps": 11,
+       "weight": 31
+      },
+      {
+       "reps": 6,
+       "weight": 61
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "usesBodyweight": true,
+     "sets": [
+      {
+       "reps": 14,
+       "weight": 40
+      },
+      {
+       "reps": 14,
+       "weight": 29
+      },
+      {
+       "reps": 0
+      },
+      {
+       "reps": 4,
+       "weight": 34
+      },
+      {
+       "reps": 10,
+       "weight": 110
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "recovery",
+   "date": "2026-02-18T10:18:00.000Z",
+   "rpe": 1,
+   "duration": 74.3
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-02-18T14:28:00.000Z",
+   "rpe": 5,
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 1,
+       "weight": 57
+      },
+      {
+       "reps": 12,
+       "weight": 108
+      },
+      {
+       "reps": 0,
+       "weight": 7
+      },
+      {
+       "reps": 9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "strength",
+   "date": "2026-02-19T08:09:00.000Z",
+   "rpe": 3,
+   "exercises": [
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 2,
+       "weight": 52
+      },
+      {
+       "reps": 0
+      },
+      {},
+      {
+       "reps": 1,
+       "weight": 37
+      },
+      {
+       "reps": 5,
+       "weight": 62
+      }
+     ]
+    }
+   ],
+   "discipline": "weights"
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-02-20T17:45:00.000Z",
+   "rpe": 1,
+   "duration": 150
+  },
+  {
+   "type": "recovery",
+   "date": "2026-02-24T13:51:00.000Z",
+   "rpe": 1,
+   "duration": 105
+  },
+  {
+   "type": "recovery",
+   "date": "2026-02-25T14:41:00.000Z",
+   "rpe": 2,
+   "duration": 102.3
+  },
+  {
+   "type": "recovery",
+   "date": "2026-02-26T18:32:00.000Z",
+   "duration": 21.2
+  },
+  {
+   "type": "recovery",
+   "date": "2026-02-27T05:50:00.000Z",
+   "rpe": 1
+  },
+  {
+   "type": "strength",
+   "date": "2026-02-27T13:03:00.000Z",
+   "rpe": 2,
+   "exercises": [
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 2,
+       "weight": 63
+      },
+      {
+       "reps": 1,
+       "weight": 38
+      },
+      {
+       "reps": 15,
+       "weight": 70
+      },
+      {
+       "reps": 14,
+       "weight": 89
+      },
+      {
+       "reps": 8,
+       "weight": 78
+      }
+     ]
+    },
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 12,
+       "weight": 4
+      },
+      {
+       "reps": 11,
+       "weight": 74
+      },
+      {
+       "reps": 1,
+       "weight": 113
+      },
+      {
+       "reps": 6,
+       "weight": 106
+      }
+     ]
+    },
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 8,
+       "weight": 29
+      }
+     ]
+    },
+    {
+     "exerciseId": "deadlift",
+     "usesBodyweight": true,
+     "sets": [
+      {
+       "reps": 13,
+       "weight": 66
+      },
+      {
+       "reps": 2,
+       "weight": 120
+      },
+      {
+       "reps": 10
+      },
+      {
+       "reps": 15,
+       "weight": 24
+      }
+     ]
+    }
+   ],
+   "discipline": "weights"
+  },
+  {
+   "type": "strength",
+   "date": "2026-03-01T10:41:00.000Z",
+   "rpe": 1,
+   "duration": 123.1,
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 3
+      }
+     ]
+    }
+   ],
+   "discipline": "weights"
+  },
+  {
+   "type": "recovery",
+   "date": "2026-03-01T19:56:00.000Z",
+   "duration": 42.3
+  },
+  {
+   "type": "cardio",
+   "date": "2026-03-02T06:05:00.000Z",
+   "rpe": 1,
+   "duration": 133.3,
+   "activityType": "sauna"
+  },
+  {
+   "type": "strength",
+   "date": "2026-03-04T07:38:00.000Z",
+   "duration": 172,
+   "exercises": [
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 0
+      }
+     ]
+    },
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {},
+      {
+       "reps": 6
+      },
+      {
+       "reps": 1,
+       "weight": 100
+      }
+     ]
+    },
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 12,
+       "weight": 100
+      },
+      {
+       "reps": 6,
+       "weight": 17
+      },
+      {
+       "reps": 14,
+       "weight": 19
+      },
+      {
+       "reps": 11,
+       "weight": 81
+      },
+      {
+       "reps": 14,
+       "weight": 57
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-03-05T07:16:00.000Z",
+   "rpe": 5,
+   "duration": 131.2,
+   "exercises": [
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {},
+      {
+       "reps": 6,
+       "weight": 114
+      },
+      {
+       "reps": 0,
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 3,
+       "weight": 20
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "cardio",
+   "date": "2026-03-06T10:36:00.000Z",
+   "rpe": 4,
+   "duration": 146.7,
+   "activityType": "run"
+  },
+  {
+   "type": "recovery",
+   "date": "2026-03-09T09:54:00.000Z",
+   "rpe": 2,
+   "duration": 42
+  },
+  {
+   "type": "cardio",
+   "date": "2026-03-11T14:31:00.000Z",
+   "rpe": 2,
+   "activityType": "padel"
+  },
+  {
+   "type": "strength",
+   "date": "2026-03-13T19:43:00.000Z",
+   "rpe": 3,
+   "exercises": [
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 14,
+       "weight": 19
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 6,
+       "weight": 4
+      },
+      {
+       "reps": 6
+      },
+      {
+       "reps": 3,
+       "weight": 60
+      },
+      {
+       "reps": 6,
+       "weight": 88
+      }
+     ]
+    }
+   ],
+   "discipline": "weights"
+  },
+  {
+   "type": "recovery",
+   "date": "2026-03-14T06:09:00.000Z",
+   "rpe": 3,
+   "duration": 6.6
+  },
+  {
+   "type": "recovery",
+   "date": "2026-03-16T14:48:00.000Z",
+   "duration": 70.1
+  },
+  {
+   "type": "cardio",
+   "date": "2026-03-17T19:22:00.000Z",
+   "rpe": 3,
+   "activityType": "bike"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-03-19T09:55:00.000Z",
+   "rpe": 5,
+   "activityType": "walk"
+  },
+  {
+   "type": "strength",
+   "date": "2026-03-20T17:25:00.000Z",
+   "duration": 62.9
+  },
+  {
+   "type": "strength",
+   "date": "2026-03-22T06:29:00.000Z",
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 12,
+       "weight": 66
+      },
+      {
+       "reps": 10,
+       "weight": 4
+      }
+     ]
+    },
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 12,
+       "weight": 45
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "strength",
+   "date": "2026-03-23T08:03:00.000Z",
+   "duration": 98.7,
+   "exercises": [
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 6,
+       "weight": 57
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "usesBodyweight": false,
+     "sets": [
+      {},
+      {},
+      {
+       "reps": 9,
+       "weight": 48
+      }
+     ]
+    },
+    {
+     "exerciseId": "deadlift",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 9,
+       "weight": 68
+      },
+      {
+       "reps": 6,
+       "weight": 73
+      },
+      {
+       "reps": 10
+      },
+      {
+       "reps": 0,
+       "weight": 104
+      },
+      {
+       "reps": 14,
+       "weight": 45
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "cardio",
+   "date": "2026-03-25T19:55:00.000Z",
+   "rpe": 3,
+   "duration": 45.3,
+   "activityType": "padel"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-03-27T18:44:00.000Z",
+   "activityType": "other"
+  },
+  {
+   "type": "recovery",
+   "date": "2026-03-28T15:08:00.000Z",
+   "duration": 94.1
+  },
+  {
+   "type": "strength",
+   "date": "2026-03-30T16:42:00.000Z",
+   "exercises": [
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 11,
+       "weight": 46
+      }
+     ]
+    },
+    {
+     "exerciseId": "deadlift",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 0
+      },
+      {
+       "reps": 0,
+       "weight": 109
+      },
+      {
+       "reps": 6,
+       "weight": 107
+      },
+      {
+       "reps": 0,
+       "weight": 91
+      }
+     ]
+    },
+    {
+     "exerciseId": "squat",
+     "sets": [
+      {
+       "reps": 13,
+       "weight": 109
+      },
+      {
+       "reps": 12,
+       "weight": 3
+      }
+     ]
+    },
+    {
+     "exerciseId": "dip",
+     "usesBodyweight": true,
+     "sets": [
+      {
+       "reps": 13,
+       "weight": 29
+      },
+      {},
+      {
+       "reps": 14,
+       "weight": 15
+      }
+     ]
+    }
+   ],
+   "discipline": "bodyweight"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-04-01T08:25:00.000Z",
+   "rpe": 1,
+   "activityType": "sauna"
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-04-02T04:22:00.000Z",
+   "exercises": [
+    {
+     "exerciseId": "dip",
+     "sets": [
+      {
+       "reps": 13,
+       "weight": 37
+      },
+      {
+       "reps": 14
+      },
+      {
+       "reps": 15,
+       "weight": 84
+      },
+      {
+       "reps": 10,
+       "weight": 23
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "strength",
+   "date": "2026-04-02T15:35:00.000Z",
+   "rpe": 3
+  },
+  {
+   "type": "strength",
+   "date": "2026-04-03T16:44:00.000Z",
+   "rpe": 5,
+   "duration": 167.1,
+   "exercises": [
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 4,
+       "weight": 64
+      },
+      {
+       "reps": 8,
+       "weight": 120
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "usesBodyweight": false,
+     "sets": [
+      {
+       "reps": 7,
+       "weight": 25
+      },
+      {
+       "reps": 4,
+       "weight": 101
+      },
+      {
+       "reps": 5,
+       "weight": 74
+      },
+      {
+       "reps": 0,
+       "weight": 54
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "bodyweight",
+   "date": "2026-04-04T17:25:00.000Z",
+   "rpe": 1,
+   "exercises": [
+    {
+     "exerciseId": "deadlift",
+     "sets": [
+      {
+       "reps": 14
+      }
+     ]
+    },
+    {
+     "exerciseId": "deadlift",
+     "sets": [
+      {
+       "reps": 7,
+       "weight": 89
+      },
+      {
+       "reps": 8,
+       "weight": 34
+      }
+     ]
+    },
+    {
+     "exerciseId": "pull_up",
+     "sets": [
+      {
+       "reps": 7
+      },
+      {
+       "reps": 3,
+       "weight": 69
+      },
+      {},
+      {}
+     ]
+    },
+    {
+     "exerciseId": "push_up",
+     "sets": [
+      {
+       "reps": 1,
+       "weight": 4
+      },
+      {
+       "reps": 11,
+       "weight": 69
+      },
+      {
+       "reps": 8,
+       "weight": 119
+      },
+      {
+       "reps": 11,
+       "weight": 96
+      },
+      {
+       "reps": 12,
+       "weight": 93
+      }
+     ]
+    }
+   ],
+   "discipline": "bodyweight"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-04-05T18:32:00.000Z",
+   "rpe": 1,
+   "activityType": "run"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-04-06T18:40:00.000Z",
+   "duration": 70.3,
+   "activityType": "other"
+  },
+  {
+   "type": "cardio",
+   "date": "2026-04-07T08:48:00.000Z",
+   "rpe": 4,
+   "activityType": "yoga"
+  },
+  {
+   "type": "recovery",
+   "date": "2026-04-08T08:59:00.000Z",
+   "rpe": 1,
+   "duration": 50.1
+  },
+  {
+   "type": "strength",
+   "date": "2026-04-08T10:58:00.000Z",
+   "rpe": 5,
+   "duration": 47.6,
+   "discipline": "bodyweight"
+  }
+ ],
+ "loads": [
+  {
+   "rawLoad": 66,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 11.23,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 39.54,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 64.01,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 166,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 73.2,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 21.36,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 81.62,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 28.49,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 1641.36,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 22.96,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 588.24,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 1056.6,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 98.94,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 12.24,
+   "isRecovery": true
+  },
+  {
+   "rawLoad": 32.8,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 267,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 102.4,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 37.88,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 9.02,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 540,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 128.75,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 443.16,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 307.02,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 67.14,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 20.83,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 642.44,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": true
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 19.96,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 377.4,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 27.44,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 49.08,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 181.2,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 94.14,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 39.42,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 60.62,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 59.87,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 281.2,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": false
+  },
+  {
+   "rawLoad": 0,
+   "isRecovery": true
+  },
+  {
+   "rawLoad": 299.88,
+   "isRecovery": false
+  }
+ ],
+ "curve": [
+  {
+   "acwr": 0,
+   "score": 10,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.03,
+   "score": 11,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.06,
+   "score": 12,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.09,
+   "score": 14,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.12,
+   "score": 15,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.15,
+   "score": 16,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.18,
+   "score": 17,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.21,
+   "score": 18,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.24,
+   "score": 20,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.27,
+   "score": 21,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.3,
+   "score": 22,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.33,
+   "score": 24,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.36,
+   "score": 27,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.39,
+   "score": 29,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.42,
+   "score": 32,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.45,
+   "score": 34,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.48,
+   "score": 36,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.51,
+   "score": 39,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.54,
+   "score": 41,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.57,
+   "score": 44,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.6,
+   "score": 46,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.63,
+   "score": 48,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.66,
+   "score": 51,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.69,
+   "score": 54,
+   "zone": "form_loss"
+  },
+  {
+   "acwr": 0.72,
+   "score": 57,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 0.75,
+   "score": 60,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 0.78,
+   "score": 64,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 0.81,
+   "score": 67,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 0.84,
+   "score": 71,
+   "zone": "building"
+  },
+  {
+   "acwr": 0.87,
+   "score": 75,
+   "zone": "building"
+  },
+  {
+   "acwr": 0.9,
+   "score": 79,
+   "zone": "building"
+  },
+  {
+   "acwr": 0.93,
+   "score": 82,
+   "zone": "building"
+  },
+  {
+   "acwr": 0.96,
+   "score": 86,
+   "zone": "peak"
+  },
+  {
+   "acwr": 0.99,
+   "score": 89,
+   "zone": "peak"
+  },
+  {
+   "acwr": 1.02,
+   "score": 88,
+   "zone": "peak"
+  },
+  {
+   "acwr": 1.05,
+   "score": 85,
+   "zone": "peak"
+  },
+  {
+   "acwr": 1.08,
+   "score": 81,
+   "zone": "building"
+  },
+  {
+   "acwr": 1.11,
+   "score": 77,
+   "zone": "building"
+  },
+  {
+   "acwr": 1.14,
+   "score": 73,
+   "zone": "building"
+  },
+  {
+   "acwr": 1.17,
+   "score": 70,
+   "zone": "building"
+  },
+  {
+   "acwr": 1.2,
+   "score": 66,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 1.23,
+   "score": 62,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 1.26,
+   "score": 59,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 1.29,
+   "score": 56,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 1.32,
+   "score": 53,
+   "zone": "maintaining"
+  },
+  {
+   "acwr": 1.35,
+   "score": 50,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.38,
+   "score": 48,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.41,
+   "score": 45,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.44,
+   "score": 43,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.47,
+   "score": 40,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.5,
+   "score": 38,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.53,
+   "score": 36,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.56,
+   "score": 34,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.59,
+   "score": 32,
+   "zone": "fatigued"
+  },
+  {
+   "acwr": 1.62,
+   "score": 30,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.65,
+   "score": 28,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.68,
+   "score": 26,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.71,
+   "score": 25,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.74,
+   "score": 24,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.77,
+   "score": 22,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.8,
+   "score": 21,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.83,
+   "score": 20,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.86,
+   "score": 19,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.89,
+   "score": 18,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.92,
+   "score": 17,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.95,
+   "score": 16,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 1.98,
+   "score": 15,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.01,
+   "score": 14,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.04,
+   "score": 13,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.07,
+   "score": 13,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.1,
+   "score": 12,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.13,
+   "score": 12,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.16,
+   "score": 11,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.19,
+   "score": 11,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.22,
+   "score": 10,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.25,
+   "score": 10,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.28,
+   "score": 10,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.31,
+   "score": 9,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.34,
+   "score": 9,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.37,
+   "score": 8,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.4,
+   "score": 8,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.43,
+   "score": 7,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.46,
+   "score": 7,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.49,
+   "score": 6,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.52,
+   "score": 6,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.55,
+   "score": 6,
+   "zone": "overreaching"
+  },
+  {
+   "acwr": 2.58,
+   "score": 6,
+   "zone": "overreaching"
+  }
+ ],
+ "cases": [
+  {
+   "day": 13,
+   "applyFatigue": false,
+   "dstInWindow": false,
+   "referenceDate": "2026-01-14T11:00:00.000Z",
+   "acuteLoad": 0,
+   "chronicLoad": 0,
+   "acwr": null,
+   "readinessScore": null,
+   "zone": null,
+   "daysSinceLastSession": null,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   }
+  },
+  {
+   "day": 13,
+   "applyFatigue": true,
+   "dstInWindow": false,
+   "referenceDate": "2026-01-14T11:00:00.000Z",
+   "acuteLoad": 0,
+   "chronicLoad": 0,
+   "acwr": null,
+   "readinessScore": null,
+   "zone": null,
+   "daysSinceLastSession": null,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "form": {
+    "formScore": null,
+    "zone": null,
+    "consistency": 0,
+    "loadLevel": 0,
+    "recency": 0,
+    "trend": "none"
+   }
+  },
+  {
+   "day": 14,
+   "applyFatigue": false,
+   "dstInWindow": false,
+   "referenceDate": "2026-01-15T11:00:00.000Z",
+   "acuteLoad": 0,
+   "chronicLoad": 0,
+   "acwr": null,
+   "readinessScore": null,
+   "zone": null,
+   "daysSinceLastSession": null,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   }
+  },
+  {
+   "day": 14,
+   "applyFatigue": true,
+   "dstInWindow": false,
+   "referenceDate": "2026-01-15T11:00:00.000Z",
+   "acuteLoad": 0,
+   "chronicLoad": 0,
+   "acwr": null,
+   "readinessScore": null,
+   "zone": null,
+   "daysSinceLastSession": null,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "form": {
+    "formScore": null,
+    "zone": null,
+    "consistency": 0,
+    "loadLevel": 0,
+    "recency": 0,
+    "trend": "none"
+   }
+  },
+  {
+   "day": 20,
+   "applyFatigue": false,
+   "dstInWindow": false,
+   "referenceDate": "2026-01-21T11:00:00.000Z",
+   "acuteLoad": 45.661396909786085,
+   "chronicLoad": 22.59510423295998,
+   "acwr": 2.02,
+   "readinessScore": 14,
+   "zone": "overreaching",
+   "daysSinceLastSession": 0,
+   "todayLoad": 21.36,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 45.661396909786085,
+    "chronicLoad": 22.59510423295998,
+    "acwr": 2.02,
+    "readinessScore": 14,
+    "zone": "overreaching",
+    "daysSinceLastSession": 0,
+    "todayLoad": 21.36,
+    "fatiguePenalty": 0
+   }
+  },
+  {
+   "day": 20,
+   "applyFatigue": true,
+   "dstInWindow": false,
+   "referenceDate": "2026-01-21T11:00:00.000Z",
+   "acuteLoad": 45.661396909786085,
+   "chronicLoad": 22.59510423295998,
+   "acwr": 2.02,
+   "readinessScore": 5,
+   "zone": "overreaching",
+   "daysSinceLastSession": 0,
+   "todayLoad": 21.36,
+   "fatiguePenalty": 10,
+   "pwa": {
+    "acuteLoad": 45.661396909786085,
+    "chronicLoad": 22.59510423295998,
+    "acwr": 2.02,
+    "readinessScore": 5,
+    "zone": "overreaching",
+    "daysSinceLastSession": 0,
+    "todayLoad": 21.36,
+    "fatiguePenalty": 10
+   },
+   "form": {
+    "formScore": 79,
+    "zone": "building",
+    "consistency": 15,
+    "loadLevel": 30,
+    "recency": 15,
+    "trend": "rising"
+   }
+  },
+  {
+   "day": 35,
+   "applyFatigue": false,
+   "dstInWindow": false,
+   "referenceDate": "2026-02-05T11:00:00.000Z",
+   "acuteLoad": 288.44310821139425,
+   "chronicLoad": 183.52595749402695,
+   "acwr": 1.57,
+   "readinessScore": 33,
+   "zone": "fatigued",
+   "daysSinceLastSession": 2,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 288.44310821139425,
+    "chronicLoad": 183.52595749402695,
+    "acwr": 1.57,
+    "readinessScore": 33,
+    "zone": "fatigued",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   }
+  },
+  {
+   "day": 35,
+   "applyFatigue": true,
+   "dstInWindow": false,
+   "referenceDate": "2026-02-05T11:00:00.000Z",
+   "acuteLoad": 288.44310821139425,
+   "chronicLoad": 183.52595749402695,
+   "acwr": 1.57,
+   "readinessScore": 33,
+   "zone": "fatigued",
+   "daysSinceLastSession": 2,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 288.44310821139425,
+    "chronicLoad": 183.52595749402695,
+    "acwr": 1.57,
+    "readinessScore": 33,
+    "zone": "fatigued",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "form": {
+    "formScore": 80,
+    "zone": "recovery",
+    "consistency": 24,
+    "loadLevel": 30,
+    "recency": 12,
+    "trend": "rising"
+   }
+  },
+  {
+   "day": 50,
+   "applyFatigue": false,
+   "dstInWindow": false,
+   "referenceDate": "2026-02-20T11:00:00.000Z",
+   "acuteLoad": 154.6073635903117,
+   "chronicLoad": 123.67838752044852,
+   "acwr": 1.25,
+   "readinessScore": 60,
+   "zone": "maintaining",
+   "daysSinceLastSession": 0,
+   "todayLoad": 540,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 154.6073635903117,
+    "chronicLoad": 123.67838752044852,
+    "acwr": 1.25,
+    "readinessScore": 60,
+    "zone": "maintaining",
+    "daysSinceLastSession": 0,
+    "todayLoad": 540,
+    "fatiguePenalty": 0
+   }
+  },
+  {
+   "day": 50,
+   "applyFatigue": true,
+   "dstInWindow": false,
+   "referenceDate": "2026-02-20T11:00:00.000Z",
+   "acuteLoad": 154.6073635903117,
+   "chronicLoad": 123.67838752044852,
+   "acwr": 1.25,
+   "readinessScore": 39,
+   "zone": "fatigued",
+   "daysSinceLastSession": 0,
+   "todayLoad": 540,
+   "fatiguePenalty": 21,
+   "pwa": {
+    "acuteLoad": 154.6073635903117,
+    "chronicLoad": 123.67838752044852,
+    "acwr": 1.25,
+    "readinessScore": 39,
+    "zone": "fatigued",
+    "daysSinceLastSession": 0,
+    "todayLoad": 540,
+    "fatiguePenalty": 21
+   },
+   "form": {
+    "formScore": 72,
+    "zone": "building",
+    "consistency": 31,
+    "loadLevel": 5,
+    "recency": 15,
+    "trend": "stable"
+   }
+  },
+  {
+   "day": 70,
+   "applyFatigue": false,
+   "dstInWindow": false,
+   "referenceDate": "2026-03-12T11:00:00.000Z",
+   "acuteLoad": 46.380780581804935,
+   "chronicLoad": 89.40938761309052,
+   "acwr": 0.52,
+   "readinessScore": 40,
+   "zone": "form_loss",
+   "daysSinceLastSession": 6,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 46.380780581804935,
+    "chronicLoad": 89.40938761309052,
+    "acwr": 0.52,
+    "readinessScore": 40,
+    "zone": "form_loss",
+    "daysSinceLastSession": 6,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   }
+  },
+  {
+   "day": 70,
+   "applyFatigue": true,
+   "dstInWindow": false,
+   "referenceDate": "2026-03-12T11:00:00.000Z",
+   "acuteLoad": 46.380780581804935,
+   "chronicLoad": 89.40938761309052,
+   "acwr": 0.52,
+   "readinessScore": 40,
+   "zone": "form_loss",
+   "daysSinceLastSession": 6,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 46.380780581804935,
+    "chronicLoad": 89.40938761309052,
+    "acwr": 0.52,
+    "readinessScore": 40,
+    "zone": "form_loss",
+    "daysSinceLastSession": 6,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "form": {
+    "formScore": 48,
+    "zone": "maintaining",
+    "consistency": 24,
+    "loadLevel": 27,
+    "recency": 1,
+    "trend": "rising"
+   }
+  },
+  {
+   "day": 99,
+   "applyFatigue": false,
+   "dstInWindow": true,
+   "referenceDate": "2026-04-10T10:00:00.000Z",
+   "acuteLoad": 68.68021720259874,
+   "chronicLoad": 62.99866628620067,
+   "acwr": 1.09,
+   "readinessScore": 80,
+   "zone": "building",
+   "daysSinceLastSession": 2,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 88.05156051615224,
+    "chronicLoad": 67.74050138301148,
+    "acwr": 1.3,
+    "readinessScore": 55,
+    "zone": "maintaining",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   }
+  },
+  {
+   "day": 99,
+   "applyFatigue": true,
+   "dstInWindow": true,
+   "referenceDate": "2026-04-10T10:00:00.000Z",
+   "acuteLoad": 68.68021720259874,
+   "chronicLoad": 62.99866628620067,
+   "acwr": 1.09,
+   "readinessScore": 80,
+   "zone": "building",
+   "daysSinceLastSession": 2,
+   "todayLoad": 0,
+   "fatiguePenalty": 0,
+   "pwa": {
+    "acuteLoad": 88.05156051615224,
+    "chronicLoad": 67.74050138301148,
+    "acwr": 1.3,
+    "readinessScore": 55,
+    "zone": "maintaining",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "form": {
+    "formScore": 67,
+    "zone": "recovery",
+    "consistency": 22,
+    "loadLevel": 23,
+    "recency": 12,
+    "trend": "falling"
+   }
+  }
+ ]
+}

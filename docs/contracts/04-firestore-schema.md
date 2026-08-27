@@ -219,3 +219,47 @@ Mapper, Domänenobjekte. Kein übersprungenes Dokument.
 Dart-VM-Dienst und erscheint in DevTools und unter `flutter run` — **nicht im Logcat**. Wer
 mit `adb logcat` mitliest, sieht nichts, obwohl die App protokolliert. Für die Diagnose vom
 Gerät ist `debugPrint` das richtige Mittel.
+
+---
+
+## Eine bewusste Abweichung vom Scoring der PWA
+
+Die Portierung von `js/views/sessions/scoring.js` wird mit einem Orakel geprüft:
+`tool/scoring_oracle.mjs` führt das **echte JavaScript** über deterministisch erzeugte
+Einheiten aus und schreibt Eingaben und Ergebnisse nach
+`test/fixtures/scoring_oracle.json`. `test/history/scoring_oracle_test.dart` schickt
+dieselben Eingaben durch die Dart-Fassung und vergleicht Zahl für Zahl — Rohlast je
+Einheit, Erholungserkennung, jede Stützstelle der Bewertungskurve, ACWR über sieben
+Referenztage mit und ohne Ermüdungsabzug.
+
+Dabei kam ein Fehler in der PWA zum Vorschein.
+
+`getACWR` bildet die Fenstergrenze als `refDay.getTime() - 56 * 24 * 60 * 60 * 1000`.
+Liegt eine Zeitumstellung im Fenster, ergibt das **23:00 des Vortags** statt Mitternacht:
+
+```
+refDay    : Fri Apr 10 2026 00:00:00 GMT+0200
+loopStart : Thu Feb 12 2026 23:00:00 GMT+0100
+letzter   : Thu Apr 09 2026 23:00:00 GMT+0200
+```
+
+Die Schleife läuft `while (cursor <= refDay)` und schleppt die Uhrzeit mit. Sie endet
+damit einen Tag zu früh — **der Referenztag fällt aus dem gleitenden Mittel heraus**.
+Zweimal im Jahr, jeweils für die folgenden acht Wochen. Dieselbe Rechnung steht in
+`computeFormScore` mit einem 120-Tage-Fenster.
+
+**Die Dart-Fassung rechnet kalendarisch** (`DateTime(y, m, d - 56)`) und ist damit
+unabhängig von der Zeitumstellung. Das ist eine bewusste Abweichung, kein Versehen:
+
+- Ohne Zeitumstellung im Fenster stimmen beide Fassungen **exakt** überein.
+- Mit Zeitumstellung im Fenster **muss** die Dart-Fassung abweichen — der Test
+  verlangt das ausdrücklich, damit der Fehler nicht unbemerkt übernommen wird.
+
+Das Orakel liefert beide Auswertungen: `pwa` für den Ist-Zustand, die Felder daneben für
+die korrigierte Rechnung. Solange App und PWA nebeneinander laufen, können ihre
+Readiness-Werte im Frühjahr und Herbst deshalb um wenige Punkte auseinandergehen.
+
+**Nicht übernommen wurde dagegen** eine zweite Auffälligkeit: `isRecoverySession` prüft
+`type` gegen `cardio`, `recovery` und `strength` — **`bodyweight` fehlt in der Liste**. Ob
+Absicht oder Versehen, ist nicht zu erkennen. Die Portierung bildet es ab, statt es
+stillschweigend zu ändern: Eine Korrektur verschöbe jeden historischen Wert.
