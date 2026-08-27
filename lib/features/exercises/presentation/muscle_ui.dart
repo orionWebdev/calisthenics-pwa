@@ -11,13 +11,15 @@ import '../domain/muscle.dart';
 /// Deshalb steht der Muskelname immer daneben; Farbe allein wäre für
 /// Farbenblinde keine Information (Vertrag R6).
 extension MuscleRegionUi on MuscleRegion {
+  /// Die Farbe der Region ist die ihres bekanntesten Muskels — sie erscheint
+  /// nur noch am Filter-Chip, wo eine ganze Region gemeint ist.
   Color get color => switch (this) {
-        MuscleRegion.shoulders => AtemCategories.amber,
-        MuscleRegion.back => AtemCategories.blue,
-        MuscleRegion.chest => AtemCategories.red,
-        MuscleRegion.core => AtemCategories.orange,
-        MuscleRegion.arms => AtemCategories.teal,
-        MuscleRegion.legs => AtemCategories.green,
+        MuscleRegion.shoulders => AtemCategories.shoulders,
+        MuscleRegion.back => AtemCategories.back,
+        MuscleRegion.chest => AtemCategories.chest,
+        MuscleRegion.core => AtemCategories.core,
+        MuscleRegion.arms => AtemCategories.arms,
+        MuscleRegion.legs => AtemCategories.legs,
       };
 
   String label(AppL10n l) => switch (this) {
@@ -31,7 +33,32 @@ extension MuscleRegionUi on MuscleRegion {
 }
 
 extension MuscleGroupUi on MuscleGroup {
-  Color get color => region.color;
+  /// **Jeder Muskel trägt seine eigene Farbe**, nicht die seiner Region.
+  ///
+  /// Die Zusammenlegung auf sechs Regionstöne entstand aus einer falschen
+  /// Annahme: Der Auftrag an das Design nannte die Zonen- und
+  /// Schwierigkeitsfarben der Vorgänger-App und nicht ihre tatsächlichen
+  /// Muskelfarben. Die sind heller — und alle neun halten den Kontrastvertrag
+  /// mit Abstand. Der Grund für den Kompromiss existierte also nie.
+  ///
+  /// Was die Vorgänger-App **nicht** unterscheidet, wird auch hier nicht
+  /// unterschieden: Gesäß, Quadrizeps und Beinbeuger teilen sich den Beinton.
+  /// Der Name daneben benennt den Muskel weiterhin genau.
+  Color get color => switch (this) {
+        MuscleGroup.shoulders => AtemCategories.shoulders,
+        MuscleGroup.back => AtemCategories.back,
+        MuscleGroup.chest => AtemCategories.chest,
+        MuscleGroup.core => AtemCategories.core,
+        MuscleGroup.biceps => AtemCategories.biceps,
+        MuscleGroup.triceps => AtemCategories.triceps,
+        MuscleGroup.arms => AtemCategories.arms,
+        MuscleGroup.calves => AtemCategories.calves,
+        MuscleGroup.glutes ||
+        MuscleGroup.quads ||
+        MuscleGroup.hamstrings ||
+        MuscleGroup.legs =>
+          AtemCategories.legs,
+      };
 
   String label(AppL10n l) => switch (this) {
         MuscleGroup.shoulders => l.muscleShoulders,

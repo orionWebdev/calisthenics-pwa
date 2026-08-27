@@ -31,23 +31,43 @@ import 'package:flutter/widgets.dart';
 /// 4,5:1. „Nur für große Schrift" wäre eine Sonderregel mit Fußnote, und Chips
 /// sind 11 sp. Lieber ein Ton weniger.
 abstract final class AtemCategories {
-  /// Bernstein. Kontrast 8,52:1 auf Card.
-  static const amber = Color(0xFFF59E0B);
+  // ---------------------------------------------------------------- Muskeln
+  //
+  // Die tatsächlichen Muskelfarben der Vorgänger-App, aus
+  // `css/views/exercise-cards.css`. Hellere Töne als die Zonen- und
+  // Schwierigkeitsfarben, die anderswo in derselben Datei stehen — und darauf
+  // kommt es an: **Alle neun halten den Kontrastvertrag auf jeder Fläche.**
+  // Der schlechteste Wert liegt bei 6,33:1 auf Raised.
+  //
+  // Deshalb braucht es hier keine Zusammenlegung zu Regionen: Jeder Muskel,
+  // den die Vorgänger-App unterscheidet, bekommt seine eigene Farbe.
 
-  /// Blau. 4,98:1.
-  static const blue = Color(0xFF3B82F6);
+  /// Brust. 6,91:1 auf Card.
+  static const chest = Color(0xFFF472B6);
 
-  /// Rot. 4,86:1.
-  static const red = Color(0xFFEF4444);
+  /// Rücken. 7,20:1.
+  static const back = Color(0xFF60A5FA);
 
-  /// Orange. 6,53:1.
-  static const orange = Color(0xFFF97316);
+  /// Schultern. 6,72:1.
+  static const shoulders = Color(0xFFA78BFA);
 
-  /// Türkis. 7,35:1.
-  static const teal = Color(0xFF14B8A6);
+  /// Arme, allgemein. 8,52:1.
+  static const arms = Color(0xFFF59E0B);
 
-  /// Grün. 8,03:1.
-  static const green = Color(0xFF22C55E);
+  /// Bizeps. 10,96:1.
+  static const biceps = Color(0xFFFBBF24);
+
+  /// Trizeps. 7,44:1.
+  static const triceps = Color(0xFFE879F9);
+
+  /// Core. 9,52:1.
+  static const core = Color(0xFF34D399);
+
+  /// Beine. 8,09:1.
+  static const legs = Color(0xFFFB923C);
+
+  /// Waden. 9,83:1.
+  static const calves = Color(0xFF2DD4BF);
 
   /// Neutralgrau — für „eigen" und anderes ohne Kategorie. 5,61:1.
   static const grey = Color(0xFF8E8E93);

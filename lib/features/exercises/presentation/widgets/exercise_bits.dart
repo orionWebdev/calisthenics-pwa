@@ -7,69 +7,57 @@ import '../../domain/exercise.dart';
 import '../../domain/muscle.dart';
 import '../muscle_ui.dart';
 
-/// Die Initialen einer Übung in einer getönten Box.
+/// Die Muskelkugel — der Farbträger einer Übungszeile.
 ///
-/// Ersetzt ein Bild, das es für 139 von 154 Übungen nicht gibt. Die Farbe
-/// stammt aus der Region, nicht aus dem Namen — zwei Rückenübungen sehen
-/// deshalb verwandt aus, was beim Überfliegen hilft.
-class ExerciseInitials extends StatelessWidget {
-  const ExerciseInitials({
-    super.key,
-    required this.name,
-    required this.color,
-    this.size = 36,
-  });
+/// ## Warum keine Initialen mehr
+///
+/// Vorher standen hier die Anfangsbuchstaben des Namens. Bei „3 Second Pause
+/// Squat" wurde daraus „3S", bei „90 Degree Row" ein „9D" — Kürzel, die
+/// niemand einer Übung zuordnen kann. Und selbst wenn sie lesbar waren, sagten
+/// sie nichts, was der Name daneben nicht schon sagte.
+///
+/// Die Kugel sagt etwas anderes: **welcher Muskel**. Das ist beim Überfliegen
+/// einer Liste von 154 Übungen die nützlichere Information, und sie wiederholt
+/// den Namen nicht.
+///
+/// Voller Kern in der Muskelfarbe, getönter Hof drumherum — dasselbe Rezept
+/// wie überall: Fläche 20 Prozent, Farbe voll. Ohne Muskel bleibt sie grau.
+class MuscleOrb extends StatelessWidget {
+  const MuscleOrb({super.key, required this.color, this.size = 36});
 
-  final String name;
   final Color color;
   final double size;
 
-  /// Kürzel aus dem Namen.
-  ///
-  /// **Wörter, die mit einer Ziffer beginnen, werden übersprungen.** Vorher
-  /// wurde aus „3 Second Pause Squat" ein „3S" und aus „90 Degree Row" ein
-  /// „9D" — Kürzel, die niemand einer Übung zuordnen kann. Zahlen im Namen
-  /// beschreiben die Ausführung, nicht die Übung.
-  ///
-  /// Bleibt nach dem Aussortieren nichts übrig, tritt der rohe Anfang wieder
-  /// ein: Ein Kürzel ist besser als ein Fragezeichen.
-  static String initialsOf(String name) {
-    final words = name
-        .trim()
-        .split(RegExp(r'[\s\-_]+'))
-        .where((w) => w.isNotEmpty)
-        .toList();
-    if (words.isEmpty) return '?';
-
-    final letters = words
-        .where((w) => RegExp(r'^\p{L}', unicode: true).hasMatch(w))
-        .toList();
-    final source = letters.isEmpty ? words : letters;
-
-    if (source.length == 1) {
-      return source.first.characters.take(2).toString().toUpperCase();
-    }
-    return (source[0].characters.first + source[1].characters.first)
-        .toUpperCase();
-  }
-
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
-        child: Container(
+        child: SizedBox(
           width: size,
           height: size,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AtemCategories.surface(color),
-            borderRadius: BorderRadius.circular(AtemRadii.iconBox),
-          ),
-          child: Text(
-            initialsOf(name),
-            style: AtemType.labelMicro.of(context).copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
+          child: Center(
+            child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AtemCategories.surface(color),
+              ),
+              child: Center(
+                child: Container(
+                  width: size * 0.42,
+                  height: size * 0.42,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color,
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.45),
+                        blurRadius: size * 0.22,
+                      ),
+                    ],
+                  ),
                 ),
+              ),
+            ),
           ),
         ),
       );
@@ -209,8 +197,9 @@ class ExerciseRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final color = exercise.region?.color ?? AtemCategories.grey;
     final muscle = exercise.displayMuscles.firstOrNull;
+    // Die Farbe des Muskels, nicht die der Region.
+    final color = muscle?.color ?? AtemCategories.grey;
 
     final sub = <String>[
       if (muscle != null) muscle.label(l10n),
@@ -230,7 +219,7 @@ class ExerciseRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
-            ExerciseInitials(name: exercise.name, color: color),
+            MuscleOrb(color: color),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

@@ -29,7 +29,8 @@ class ExerciseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final color = exercise.region?.color ?? AtemCategories.grey;
+    final color =
+        exercise.displayMuscles.firstOrNull?.color ?? AtemCategories.grey;
 
     return Scaffold(
       backgroundColor: AtemColors.base,
@@ -43,7 +44,7 @@ class ExerciseDetailScreen extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ExerciseInitials(name: exercise.name, color: color, size: 56),
+                MuscleOrb(color: color, size: 56),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
@@ -152,4 +153,8 @@ class _Block extends StatelessWidget {
       ],
     );
   }
+}
+
+extension _FirstOrNull<T> on List<T> {
+  T? get firstOrNull => isEmpty ? null : first;
 }

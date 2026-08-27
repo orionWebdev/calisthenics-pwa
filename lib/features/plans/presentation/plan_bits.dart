@@ -32,8 +32,8 @@ class PlanRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
-            // Neutral, nicht eingefärbt: Ein Plan hat keine Region.
-            ExerciseInitials(name: plan.name, color: AtemCategories.grey),
+            // Neutral: Ein Plan hat keinen Muskel.
+            const MuscleOrb(color: AtemCategories.grey),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
