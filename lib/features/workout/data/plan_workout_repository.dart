@@ -56,7 +56,9 @@ class PlanWorkoutRepository implements WorkoutRepository {
     // verfälscht hat.
     if (planId == null) {
       return ActiveWorkout(
-        sessionId: '',
+        // Auch ein freies Training kann aus einem Termin stammen — die
+        // Vorgänger-App legt Schnelleinträge ohne Plan an.
+        sessionId: start.scheduleId ?? '',
         exercises: const [],
         defaultRestSeconds: start.restSeconds,
       );
@@ -75,7 +77,9 @@ class PlanWorkoutRepository implements WorkoutRepository {
     final history = _History.from(sessions);
 
     return ActiveWorkout(
-      sessionId: '',
+      // Die Verbindung zum Kalender. Ohne sie bliebe der Termin nach dem
+      // Speichern offen — `saveSession` hakt ihn über genau dieses Feld ab.
+      sessionId: start.scheduleId ?? '',
       planId: plan.id,
       title: plan.name,
       defaultRestSeconds: plan.items

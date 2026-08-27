@@ -57,20 +57,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     _scoreController.forward(from: 0);
   }
 
-  Future<void> _onToggleSession() async {
+  Future<void> _onToggleSession(TodaySession session) async {
     final wasRunning = ref.read(sessionTimerProvider).isRunning;
     ref.read(sessionTimerProvider.notifier).toggle();
 
     // Beim Start direkt in den Runner — dort wird trainiert. Der Timer läuft
     // im Notifier weiter und zeigt nach der Rückkehr „SESSION LÄUFT".
     //
-    // **Als freies Training**, denn der Kalendertermin weiß nicht, welcher
-    // Plan hinter ihm steht — `schedule` trägt keinen Verweis. Bis er einen
-    // trägt, ist ein leerer Runner ehrlicher als ein geratener Plan.
+    // Plan **und** Termin wandern mit: der Plan, damit die Übungen ankommen;
+    // der Termin, damit er nach dem Speichern als erledigt gilt.
     if (!wasRunning && ref.read(sessionTimerProvider).isRunning && mounted) {
       await Navigator.of(context).pushNamed(
         WorkoutRunnerScreen.routeName,
-        arguments: const WorkoutStart.free(),
+        arguments: WorkoutStart(
+          planId: session.planId,
+          scheduleId: session.id,
+        ),
       );
     }
   }
@@ -179,7 +181,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             SessionCard(
               session: data.session!,
               elapsed: ref.watch(sessionTimerProvider).elapsed,
-              onToggle: _onToggleSession,
+              onToggle: () => _onToggleSession(data.session!),
             )
           else
             AtemCard.list(

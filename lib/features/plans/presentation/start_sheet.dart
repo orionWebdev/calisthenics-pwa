@@ -7,10 +7,15 @@ import '../domain/plan.dart';
 
 /// Was gestartet werden soll.
 class StartRequest {
-  const StartRequest({this.plan, required this.restSeconds});
+  const StartRequest({this.plan, this.scheduleId, required this.restSeconds});
 
   /// `null` heißt freies Training.
   final Plan? plan;
+
+  /// Der Kalendertermin, falls die Einheit aus einem stammt. Er wird beim
+  /// Speichern als erledigt markiert.
+  final String? scheduleId;
+
   final int restSeconds;
 
   bool get isFree => plan == null;
@@ -35,6 +40,7 @@ abstract final class StartSheet {
   static Future<StartRequest?> show(
     BuildContext context, {
     Plan? plan,
+    String? scheduleId,
     int restSeconds = defaultRestSeconds,
   }) {
     final l10n = AppL10n.of(context);
@@ -50,7 +56,11 @@ abstract final class StartSheet {
         label: l10n.sheetStart,
         semanticLabel: title,
         onPressed: () => Navigator.of(context).pop(
-          StartRequest(plan: plan, restSeconds: restSeconds),
+          StartRequest(
+            plan: plan,
+            scheduleId: scheduleId,
+            restSeconds: restSeconds,
+          ),
         ),
       ),
     );

@@ -70,6 +70,7 @@ class _AppShellState extends ConsumerState<AppShell>
       WorkoutRunnerScreen.routeName,
       arguments: WorkoutStart(
         planId: request.plan?.id,
+        scheduleId: request.scheduleId,
         restSeconds: request.restSeconds,
       ),
     );

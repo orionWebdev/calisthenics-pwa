@@ -214,6 +214,10 @@ class FirestoreDashboardRepository implements DashboardRepository {
 
       return TodaySession(
         id: doc.id,
+        // Die Vorgänger-App schreibt ihn beim Anlegen des Termins
+        // (`js/views/calendar.js`, `addPlanToDateById`). Nur Schnelleinträge
+        // haben keinen.
+        planId: _nonEmpty(data['planId']),
         title: _nonEmpty(data['planName']) ?? '',
         duration: Duration(minutes: minutes),
         // Kein Anzeigetext aus der Datenschicht: Das ist der rohe Typ aus

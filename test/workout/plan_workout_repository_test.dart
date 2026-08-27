@@ -252,6 +252,29 @@ void main() {
     });
   });
 
+  group('Der Kalendertermin', () {
+    test('wandert in die Einheit — sonst bleibt er für immer offen', () async {
+      final w = await _repo(plans: [_plan], exercises: _exercises).loadWorkout(
+        const WorkoutStart(planId: 'p1', scheduleId: 't1'),
+      );
+      expect(w.sessionId, 't1',
+          reason: '`saveSession` hakt den Termin über genau dieses Feld ab');
+    });
+
+    test('gilt auch ohne Plan — Schnelleinträge haben keinen', () async {
+      final w = await _repo()
+          .loadWorkout(const WorkoutStart(scheduleId: 't1'));
+      expect(w.sessionId, 't1');
+      expect(w.exercises, isEmpty);
+    });
+
+    test('ohne Termin bleibt das Feld leer', () async {
+      final w = await _repo(plans: [_plan], exercises: _exercises)
+          .loadWorkout(const WorkoutStart(planId: 'p1'));
+      expect(w.sessionId, isEmpty);
+    });
+  });
+
   group('WorkoutStart', () {
     test('gleiche Werte sind gleich — sonst legte Riverpod zwei Einheiten an',
         () {
@@ -264,6 +287,12 @@ void main() {
     test('freies Training unterscheidet sich von einem Plan', () {
       expect(const WorkoutStart.free(), isNot(const WorkoutStart(planId: '')));
       expect(const WorkoutStart.free().isFree, isTrue);
+    });
+
+    test('der Termin gehört zur Gleichheit', () {
+      // Sonst zeigte Riverpod für zwei verschiedene Termine dieselbe Einheit.
+      expect(const WorkoutStart(planId: 'p', scheduleId: 'a'),
+          isNot(const WorkoutStart(planId: 'p', scheduleId: 'b')));
     });
   });
 }

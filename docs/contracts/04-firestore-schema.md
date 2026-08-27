@@ -31,6 +31,21 @@ Stichtagssicherung vom 26.08.2026: `~/atem-firestore-sicherung-2026-08-26/` — 
 | `sessions` | 136 | Absolvierte Einheiten — die Collection, die zählt |
 | `exercises_curated` | 84 | Kuratierter Übungskatalog, global |
 | `schedule` | 77 | Geplante Einheiten |
+
+### `schedule` trägt eine `planId`
+
+Belegt, nicht vermutet: `js/views/calendar.js`, `addPlanToDateById()` schreibt
+`planId`, `planName`, `planType`, `planDuration`, `date`, `completed`,
+`createdAt`. Beim Starten liest die Vorgänger-App sie wieder
+(`startWorkoutFromPlan(scheduleEntry.planId, …)`).
+
+Ausnahme sind **Schnelleinträge**: Sie tragen `isQuickEntry` und keine
+`planId`. Ein Termin ohne Plan ist also gültiger Bestand, kein Defekt — er
+startet als freies Training, behält aber seinen Termin.
+
+Ich hatte das Gegenteil behauptet und den Kalendertermin deshalb als freies
+Training gestartet. Der Eintrag steht hier, damit die Frage nicht ein
+zweites Mal geraten wird.
 | `exercises` | 70 | Nutzereigene Übungen |
 | `progress` | 66 | **Demo-Ausschuss** — siehe unten, wird nicht portiert |
 | `plans` | 10 | Trainingspläne |

@@ -99,10 +99,19 @@ class TodaySession {
     required this.duration,
     required this.intensityLabel,
     required this.blockCount,
+    this.planId,
     this.isHighIntensity = false,
   });
 
+  /// Die Kennung des **Termins**, nicht des Plans.
   final String id;
+
+  /// Der Plan hinter dem Termin.
+  ///
+  /// `null` bei einem Schnelleintrag — die Vorgänger-App legt solche Termine
+  /// ohne Plan an (`isQuickEntry`). Dann gibt es nichts zu laden, und der
+  /// Runner beginnt leer.
+  final String? planId;
   final String title;
   final Duration duration;
   final String intensityLabel;

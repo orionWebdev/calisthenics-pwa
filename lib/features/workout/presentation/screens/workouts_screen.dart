@@ -102,7 +102,10 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                 onRetry: () => ref.invalidate(dashboardDataProvider),
               )
             else if (session != null)
-              _TodayCard(session: session, onStart: () => _startToday(context))
+              _TodayCard(
+                session: session,
+                onStart: () => _startToday(context, session),
+              )
             else
               _EmptyToday(onFree: () => _startFree(context)),
             const SizedBox(height: 28),
@@ -203,11 +206,24 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     if (request != null) onStart(request);
   }
 
-  Future<void> _startToday(BuildContext context) async {
-    // Die geplante Einheit von heute kommt aus `schedule`; welcher Plan
-    // dahintersteht, weiß der Termin noch nicht. Bis der Planbuilder das
-    // verbindet, startet sie wie ein freies Training.
-    final request = await StartSheet.show(context);
+  /// Startet die geplante Einheit von heute — **mit ihrem Plan**.
+  ///
+  /// Der Termin trägt eine `planId`; die Vorgänger-App schreibt sie beim
+  /// Anlegen (`js/views/calendar.js`, `addPlanToDateById`). Nur
+  /// Schnelleinträge haben keine.
+  ///
+  /// Findet sich der Plan nicht — gelöscht, oder ein Schnelleintrag —, wird
+  /// daraus ein freies Training **mit erhaltenem Termin**: Die Einheit soll
+  /// den Kalendereintrag trotzdem abhaken.
+  Future<void> _startToday(BuildContext context, TodaySession session) async {
+    final plans = ref.read(plansProvider).value ?? const <Plan>[];
+    final plan = plans.where((p) => p.id == session.planId).firstOrNull;
+
+    final request = await StartSheet.show(
+      context,
+      plan: plan,
+      scheduleId: session.id,
+    );
     if (request != null) onStart(request);
   }
 
@@ -376,4 +392,8 @@ class _SectionHeader extends StatelessWidget {
       ],
     );
   }
+}
+
+extension _FirstOrNull<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
 }

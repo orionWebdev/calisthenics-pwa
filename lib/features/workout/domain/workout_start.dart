@@ -14,12 +14,23 @@ import 'package:meta/meta.dart';
 /// jedem Neubau eine zweite Einheit an.
 @immutable
 class WorkoutStart {
-  const WorkoutStart({this.planId, this.restSeconds = 90});
+  const WorkoutStart({this.planId, this.scheduleId, this.restSeconds = 90});
 
   /// Freies Training: kein Plan, leerer Runner, Übungen kommen dort dazu.
-  const WorkoutStart.free({this.restSeconds = 90}) : planId = null;
+  const WorkoutStart.free({this.restSeconds = 90})
+      : planId = null,
+        scheduleId = null;
 
   final String? planId;
+
+  /// Der Kalendertermin, aus dem die Einheit entsteht.
+  ///
+  /// **Muss mitwandern.** Er ist die einzige Verbindung zum Kalender: Beim
+  /// Speichern wird der Termin darüber als erledigt markiert, beim Löschen
+  /// wieder geöffnet. Ohne ihn bliebe jede aus dem Kalender gestartete
+  /// Einheit dort für immer offen.
+  final String? scheduleId;
+
   final int restSeconds;
 
   bool get isFree => planId == null;
@@ -28,11 +39,13 @@ class WorkoutStart {
   bool operator ==(Object other) =>
       other is WorkoutStart &&
       other.planId == planId &&
+      other.scheduleId == scheduleId &&
       other.restSeconds == restSeconds;
 
   @override
-  int get hashCode => Object.hash(planId, restSeconds);
+  int get hashCode => Object.hash(planId, scheduleId, restSeconds);
 
   @override
-  String toString() => 'WorkoutStart(plan: $planId, rest: ${restSeconds}s)';
+  String toString() =>
+      'WorkoutStart(plan: $planId, termin: $scheduleId, rest: ${restSeconds}s)';
 }
