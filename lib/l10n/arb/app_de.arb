@@ -1,35 +1,40 @@
 {
-  "authFailedBody": "Der Versuch ist nicht durchgekommen. Bitte noch einmal.",
-  "@authFailedBody": {
-    "description": "Fehlertext, allgemein"
+  "authBetaBadge": "GESCHLOSSENE BETA",
+  "@authBetaBadge": {
+    "description": "Pille über dem Anmeldeknopf"
   },
-  "authFailedTitle": "Anmeldung fehlgeschlagen",
+  "authErrorCode": "CODE {code}",
+  "@authErrorCode": {
+    "description": "Fehlercode in der Notice — gehört ins Semantics-Label, damit er am Telefon vorlesbar ist",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "authFailedBody": "Versuch es gleich noch einmal.",
+  "@authFailedBody": {
+    "description": "Notice-Text bei unbekanntem Fehler"
+  },
+  "authFailedTitle": "Das hat nicht geklappt",
   "@authFailedTitle": {
-    "description": "Fehlertitel, allgemein"
+    "description": "Notice-Titel bei unbekanntem Fehler"
   },
   "authGoogle": "Mit Google anmelden",
   "@authGoogle": {
     "description": "Beschriftung des Anmeldeknopfes"
   },
-  "authIntro": "ATEM ist derzeit geschlossen. Melde dich mit dem Google-Konto an, das für den Zugang freigeschaltet wurde.",
-  "@authIntro": {
-    "description": "Erklärt die geschlossene Beta"
+  "authLegal": "Mit der Anmeldung akzeptierst du Nutzungsbedingungen und Datenschutzerklärung.",
+  "@authLegal": {
+    "description": "Rechtlicher Hinweis unter dem Anmeldeknopf"
   },
-  "authNetworkBody": "ATEM erreicht Google gerade nicht. Prüfe deine Verbindung.",
+  "authNetworkBody": "Anmeldung braucht Internet.",
   "@authNetworkBody": {
-    "description": "Fehlertext ohne Netz"
+    "description": "Notice-Text ohne Netz"
   },
   "authNetworkTitle": "Keine Verbindung",
   "@authNetworkTitle": {
-    "description": "Fehlertitel ohne Netz"
-  },
-  "authNotAllowedBody": "Dieses Konto steht nicht auf der Zugangsliste. ATEM ist derzeit eine geschlossene Beta.",
-  "@authNotAllowedBody": {
-    "description": "Text, wenn das Konto nicht auf der Allowlist steht"
-  },
-  "authNotAllowedTitle": "Zugang nicht freigeschaltet",
-  "@authNotAllowedTitle": {
-    "description": "Titel, wenn das Konto nicht auf der Allowlist steht"
+    "description": "Notice-Titel ohne Netz"
   },
   "authSignOut": "Abmelden",
   "@authSignOut": {
@@ -38,10 +43,6 @@
   "authSigningIn": "Anmeldung läuft …",
   "@authSigningIn": {
     "description": "Zustand während der Anmeldung"
-  },
-  "authWelcome": "Willkommen bei ATEM",
-  "@authWelcome": {
-    "description": "Überschrift des Anmeldebildschirms"
   },
   "commonActivity": "Aktivität",
   "@commonActivity": {
@@ -919,6 +920,59 @@
     },
     "description": "aus format.pace.value"
   },
+  "gateBody": "Die Beta ist geschlossen, wir schalten laufend Plätze frei. Du bekommst eine E-Mail, sobald du dran bist.",
+  "@gateBody": {
+    "description": "Erklärtext im Warteraum"
+  },
+  "gateRecheck": "Status erneut prüfen",
+  "@gateRecheck": {
+    "description": "Knopf im Warteraum"
+  },
+  "gateRecheckA11y": "Beta-Status erneut prüfen",
+  "@gateRecheckA11y": {
+    "description": "Semantics-Label des Prüfknopfes"
+  },
+  "gateRecheckNegative": "Geprüft — noch kein Platz frei.",
+  "@gateRecheckNegative": {
+    "description": "Ergebniszeile nach der Prüfung"
+  },
+  "gateRecheckOffline": "Prüfung nicht möglich — kein Netz.",
+  "@gateRecheckOffline": {
+    "description": "Ergebniszeile ohne Netz"
+  },
+  "gateRechecking": "Wird geprüft …",
+  "@gateRechecking": {
+    "description": "Zustand während der Prüfung"
+  },
+  "gateSignedInAs": "Angemeldet als {email}",
+  "@gateSignedInAs": {
+    "description": "Kontozeile im Warteraum",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "gateStatus": "WARTELISTE",
+  "@gateStatus": {
+    "description": "Statuspille im Warteraum"
+  },
+  "gateStatusA11y": "Status: Warteliste",
+  "@gateStatusA11y": {
+    "description": "Vorlesefassung der Statuspille — „WARTELISTE\" in Grossbuchstaben buchstabiert ein Screenreader womöglich"
+  },
+  "gateSwitchAccount": "Anderes Konto verwenden",
+  "@gateSwitchAccount": {
+    "description": "Knopf im Warteraum"
+  },
+  "gateSwitchAccountA11y": "Abmelden und mit anderem Konto anmelden",
+  "@gateSwitchAccountA11y": {
+    "description": "Semantics-Label — die Kurzform verschweigt das Abmelden nicht"
+  },
+  "gateTitle": "Du stehst auf der Liste",
+  "@gateTitle": {
+    "description": "Überschrift des Warteraums"
+  },
   "@@locale": "de",
   "navCalendar": "Kalender",
   "@navCalendar": {
@@ -947,6 +1001,86 @@
   "navTraining": "Training",
   "@navTraining": {
     "description": "aus nav.training"
+  },
+  "onbCta": "Los geht’s",
+  "@onbCta": {
+    "description": "Abschlussknopf des Onboardings"
+  },
+  "onbCtaLocked": "Gib dein Gewicht ein, um zu starten.",
+  "@onbCtaLocked": {
+    "description": "Hinweis am gesperrten Knopf"
+  },
+  "onbCtaLockedA11y": "Körpergewicht fehlt",
+  "@onbCtaLockedA11y": {
+    "description": "Semantics-Hinweis am gesperrten Knopf"
+  },
+  "onbErrorRange": "Bitte gib einen Wert zwischen {min} und {max} {unit} ein.",
+  "@onbErrorRange": {
+    "description": "Validierungsfehler ausserhalb des Bereichs",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "onbFieldA11y": "Körpergewicht in {unit}",
+  "@onbFieldA11y": {
+    "description": "Semantics-Label des Eingabefelds",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "onbHintSettings": "Später änderbar unter Profil → Körperdaten.",
+  "@onbHintSettings": {
+    "description": "Hinweis unter dem Feld"
+  },
+  "onbKicker": "FAST GESCHAFFT",
+  "@onbKicker": {
+    "description": "Kicker über dem Onboarding-Titel"
+  },
+  "onbSaving": "Wird gespeichert …",
+  "@onbSaving": {
+    "description": "Zustand während des Speicherns"
+  },
+  "onbTitle": "Dein Körpergewicht",
+  "@onbTitle": {
+    "description": "Überschrift des Onboardings"
+  },
+  "onbUnitGroupA11y": "Gewichtseinheit wählen",
+  "@onbUnitGroupA11y": {
+    "description": "Semantics-Label der Segmentgruppe"
+  },
+  "onbUnitKg": "kg",
+  "@onbUnitKg": {
+    "description": "Einheit Kilogramm"
+  },
+  "onbUnitKgA11y": "Einheit: Kilogramm",
+  "@onbUnitKgA11y": {
+    "description": "Semantics-Label des kg-Segments"
+  },
+  "onbUnitLbs": "lbs",
+  "@onbUnitLbs": {
+    "description": "Einheit Pfund"
+  },
+  "onbUnitLbsA11y": "Einheit: Pfund",
+  "@onbUnitLbsA11y": {
+    "description": "Semantics-Label des lbs-Segments"
+  },
+  "onbWhy": "ATEM rechnet jede Übung in Trainingslast um — auch die ohne Gewichte. Dafür braucht es genau eine Zahl.",
+  "@onbWhy": {
+    "description": "Begründung, warum diese eine Angabe nötig ist"
+  },
+  "splashStarting": "ATEM startet …",
+  "@splashStarting": {
+    "description": "Ansage während des unentschiedenen ersten Moments"
   },
   "workoutA11yEnd": "Workout beenden",
   "@workoutA11yEnd": {

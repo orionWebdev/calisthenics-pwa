@@ -9,41 +9,37 @@ class AppL10nDe extends AppL10n {
   AppL10nDe([String locale = 'de']) : super(locale);
 
   @override
-  String get authFailedBody =>
-      'Der Versuch ist nicht durchgekommen. Bitte noch einmal.';
+  String get authBetaBadge => 'GESCHLOSSENE BETA';
 
   @override
-  String get authFailedTitle => 'Anmeldung fehlgeschlagen';
+  String authErrorCode(String code) {
+    return 'CODE $code';
+  }
+
+  @override
+  String get authFailedBody => 'Versuch es gleich noch einmal.';
+
+  @override
+  String get authFailedTitle => 'Das hat nicht geklappt';
 
   @override
   String get authGoogle => 'Mit Google anmelden';
 
   @override
-  String get authIntro =>
-      'ATEM ist derzeit geschlossen. Melde dich mit dem Google-Konto an, das für den Zugang freigeschaltet wurde.';
+  String get authLegal =>
+      'Mit der Anmeldung akzeptierst du Nutzungsbedingungen und Datenschutzerklärung.';
 
   @override
-  String get authNetworkBody =>
-      'ATEM erreicht Google gerade nicht. Prüfe deine Verbindung.';
+  String get authNetworkBody => 'Anmeldung braucht Internet.';
 
   @override
   String get authNetworkTitle => 'Keine Verbindung';
-
-  @override
-  String get authNotAllowedBody =>
-      'Dieses Konto steht nicht auf der Zugangsliste. ATEM ist derzeit eine geschlossene Beta.';
-
-  @override
-  String get authNotAllowedTitle => 'Zugang nicht freigeschaltet';
 
   @override
   String get authSignOut => 'Abmelden';
 
   @override
   String get authSigningIn => 'Anmeldung läuft …';
-
-  @override
-  String get authWelcome => 'Willkommen bei ATEM';
 
   @override
   String get commonActivity => 'Aktivität';
@@ -655,6 +651,45 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
+  String get gateBody =>
+      'Die Beta ist geschlossen, wir schalten laufend Plätze frei. Du bekommst eine E-Mail, sobald du dran bist.';
+
+  @override
+  String get gateRecheck => 'Status erneut prüfen';
+
+  @override
+  String get gateRecheckA11y => 'Beta-Status erneut prüfen';
+
+  @override
+  String get gateRecheckNegative => 'Geprüft — noch kein Platz frei.';
+
+  @override
+  String get gateRecheckOffline => 'Prüfung nicht möglich — kein Netz.';
+
+  @override
+  String get gateRechecking => 'Wird geprüft …';
+
+  @override
+  String gateSignedInAs(String email) {
+    return 'Angemeldet als $email';
+  }
+
+  @override
+  String get gateStatus => 'WARTELISTE';
+
+  @override
+  String get gateStatusA11y => 'Status: Warteliste';
+
+  @override
+  String get gateSwitchAccount => 'Anderes Konto verwenden';
+
+  @override
+  String get gateSwitchAccountA11y => 'Abmelden und mit anderem Konto anmelden';
+
+  @override
+  String get gateTitle => 'Du stehst auf der Liste';
+
+  @override
   String get navCalendar => 'Kalender';
 
   @override
@@ -674,6 +709,59 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get navTraining => 'Training';
+
+  @override
+  String get onbCta => 'Los geht’s';
+
+  @override
+  String get onbCtaLocked => 'Gib dein Gewicht ein, um zu starten.';
+
+  @override
+  String get onbCtaLockedA11y => 'Körpergewicht fehlt';
+
+  @override
+  String onbErrorRange(String min, String max, String unit) {
+    return 'Bitte gib einen Wert zwischen $min und $max $unit ein.';
+  }
+
+  @override
+  String onbFieldA11y(String unit) {
+    return 'Körpergewicht in $unit';
+  }
+
+  @override
+  String get onbHintSettings => 'Später änderbar unter Profil → Körperdaten.';
+
+  @override
+  String get onbKicker => 'FAST GESCHAFFT';
+
+  @override
+  String get onbSaving => 'Wird gespeichert …';
+
+  @override
+  String get onbTitle => 'Dein Körpergewicht';
+
+  @override
+  String get onbUnitGroupA11y => 'Gewichtseinheit wählen';
+
+  @override
+  String get onbUnitKg => 'kg';
+
+  @override
+  String get onbUnitKgA11y => 'Einheit: Kilogramm';
+
+  @override
+  String get onbUnitLbs => 'lbs';
+
+  @override
+  String get onbUnitLbsA11y => 'Einheit: Pfund';
+
+  @override
+  String get onbWhy =>
+      'ATEM rechnet jede Übung in Trainingslast um — auch die ohne Gewichte. Dafür braucht es genau eine Zahl.';
+
+  @override
+  String get splashStarting => 'ATEM startet …';
 
   @override
   String get workoutA11yEnd => 'Workout beenden';

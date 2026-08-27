@@ -9,41 +9,37 @@ class AppL10nEn extends AppL10n {
   AppL10nEn([String locale = 'en']) : super(locale);
 
   @override
-  String get authFailedBody =>
-      'That attempt did not go through. Please try again.';
+  String get authBetaBadge => 'CLOSED BETA';
 
   @override
-  String get authFailedTitle => 'Sign-in failed';
+  String authErrorCode(String code) {
+    return 'CODE $code';
+  }
+
+  @override
+  String get authFailedBody => 'Please try again in a moment.';
+
+  @override
+  String get authFailedTitle => 'That didn’t work';
 
   @override
   String get authGoogle => 'Sign in with Google';
 
   @override
-  String get authIntro =>
-      'ATEM is currently closed. Sign in with the Google account that has been granted access.';
+  String get authLegal =>
+      'By signing in you accept the Terms of Use and Privacy Policy.';
 
   @override
-  String get authNetworkBody =>
-      'ATEM cannot reach Google right now. Check your connection.';
+  String get authNetworkBody => 'Signing in needs an internet connection.';
 
   @override
   String get authNetworkTitle => 'No connection';
-
-  @override
-  String get authNotAllowedBody =>
-      'This account is not on the access list. ATEM is currently a closed beta.';
-
-  @override
-  String get authNotAllowedTitle => 'Access not granted';
 
   @override
   String get authSignOut => 'Sign out';
 
   @override
   String get authSigningIn => 'Signing in …';
-
-  @override
-  String get authWelcome => 'Welcome to ATEM';
 
   @override
   String get commonActivity => 'Activity';
@@ -649,6 +645,46 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get gateBody =>
+      'The beta is closed and we’re opening spots continuously. You’ll get an email as soon as it’s your turn.';
+
+  @override
+  String get gateRecheck => 'Check status again';
+
+  @override
+  String get gateRecheckA11y => 'Check beta status again';
+
+  @override
+  String get gateRecheckNegative => 'Checked — no spot yet.';
+
+  @override
+  String get gateRecheckOffline => 'Can’t check — no connection.';
+
+  @override
+  String get gateRechecking => 'Checking …';
+
+  @override
+  String gateSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get gateStatus => 'WAITLIST';
+
+  @override
+  String get gateStatusA11y => 'Status: waitlist';
+
+  @override
+  String get gateSwitchAccount => 'Use another account';
+
+  @override
+  String get gateSwitchAccountA11y =>
+      'Sign out and sign in with another account';
+
+  @override
+  String get gateTitle => 'You’re on the list';
+
+  @override
   String get navCalendar => 'Calendar';
 
   @override
@@ -668,6 +704,60 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get navTraining => 'Training';
+
+  @override
+  String get onbCta => 'Let’s go';
+
+  @override
+  String get onbCtaLocked => 'Enter your weight to get started.';
+
+  @override
+  String get onbCtaLockedA11y => 'Body weight missing';
+
+  @override
+  String onbErrorRange(String min, String max, String unit) {
+    return 'Please enter a value between $min and $max $unit.';
+  }
+
+  @override
+  String onbFieldA11y(String unit) {
+    return 'Body weight in $unit';
+  }
+
+  @override
+  String get onbHintSettings =>
+      'You can change this later in Profile → Body data.';
+
+  @override
+  String get onbKicker => 'ALMOST THERE';
+
+  @override
+  String get onbSaving => 'Saving …';
+
+  @override
+  String get onbTitle => 'Your body weight';
+
+  @override
+  String get onbUnitGroupA11y => 'Choose weight unit';
+
+  @override
+  String get onbUnitKg => 'kg';
+
+  @override
+  String get onbUnitKgA11y => 'Unit: kilograms';
+
+  @override
+  String get onbUnitLbs => 'lbs';
+
+  @override
+  String get onbUnitLbsA11y => 'Unit: pounds';
+
+  @override
+  String get onbWhy =>
+      'ATEM converts every exercise into training load — including bodyweight moves. That takes exactly one number.';
+
+  @override
+  String get splashStarting => 'ATEM is starting …';
 
   @override
   String get workoutA11yEnd => 'End workout';

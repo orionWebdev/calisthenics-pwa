@@ -26,6 +26,7 @@ class AtemNumberField extends StatelessWidget {
     this.onChanged,
     this.decimal = false,
     this.locked = false,
+    this.hasError = false,
     this.suffix,
     this.textInputAction = TextInputAction.next,
   });
@@ -37,6 +38,7 @@ class AtemNumberField extends StatelessWidget {
     required this.semanticLabel,
     this.onChanged,
     this.locked = false,
+    this.hasError = false,
     this.suffix,
     this.textInputAction = TextInputAction.next,
   })  : width = 72,
@@ -48,6 +50,7 @@ class AtemNumberField extends StatelessWidget {
     required this.semanticLabel,
     this.onChanged,
     this.locked = false,
+    this.hasError = false,
     this.suffix,
     this.textInputAction = TextInputAction.next,
   })  : width = 60,
@@ -65,6 +68,10 @@ class AtemNumberField extends StatelessWidget {
   /// Gesperrt, weil der Satz abgehakt ist. Nicht dasselbe wie deaktiviert —
   /// der Wert bleibt lesbar, nur nicht änderbar.
   final bool locked;
+
+  /// Färbt den Rand magenta. **Nur zusammen mit einem Klartext daneben** —
+  /// Farbe ist nie der einzige Statusträger (Vertrag R6).
+  final bool hasError;
 
   /// Einheit hinter der Zahl, etwa „kg" oder „×".
   final String? suffix;
@@ -110,9 +117,13 @@ class AtemNumberField extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 6),
                 suffixText: suffix,
                 suffixStyle: AtemType.labelSmall.base,
-                enabledBorder: _border(AtemColors.border),
-                disabledBorder: _border(AtemColors.border),
-                focusedBorder: _border(AtemColors.cyan, width: 1.5),
+                enabledBorder:
+                    _border(hasError ? AtemColors.magenta : AtemColors.border),
+                disabledBorder:
+                    _border(hasError ? AtemColors.magenta : AtemColors.border),
+                focusedBorder: _border(
+                    hasError ? AtemColors.magenta : AtemColors.cyan,
+                    width: 1.5),
               ),
             ),
           ),

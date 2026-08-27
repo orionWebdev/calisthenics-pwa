@@ -1,7 +1,11 @@
 @Tags(['a11y'])
 library;
 
+import 'package:atem/features/auth/domain/auth_user.dart';
+import 'package:atem/features/auth/presentation/screens/onboarding_screen.dart';
 import 'package:atem/features/auth/presentation/screens/sign_in_screen.dart';
+import 'package:atem/features/auth/presentation/screens/splash_screen.dart';
+import 'package:atem/features/auth/presentation/screens/waiting_room_screen.dart';
 import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,8 +17,28 @@ void main() {
     await expectA11y(tester, const DashboardScreen());
   });
 
+  testWidgets('Splash erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const SplashScreen());
+  });
+
   testWidgets('Anmeldung erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const SignInScreen());
+  });
+
+  testWidgets('Warteraum erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(
+      tester,
+      const WaitingRoomScreen(
+        user: AuthUser(uid: 'u', email: 'sehr.lange.adresse@beispiel.de'),
+      ),
+    );
+  });
+
+  testWidgets('Onboarding erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(
+      tester,
+      const OnboardingScreen(user: AuthUser(uid: 'u', email: 'a@b.c')),
+    );
   });
 
   testWidgets('Workout Runner erfüllt den A11y-Vertrag', (tester) async {

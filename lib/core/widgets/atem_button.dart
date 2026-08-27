@@ -35,6 +35,7 @@ class AtemButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     required this.semanticLabel,
+    this.semanticHint,
     this.gradient = AtemGradients.neonWave,
     this.leading,
     this.size = AtemButtonSize.regular,
@@ -50,6 +51,7 @@ class AtemButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     required this.semanticLabel,
+    this.semanticHint,
     this.accent,
     this.leading,
     this.size = AtemButtonSize.compact,
@@ -65,6 +67,7 @@ class AtemButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     required this.semanticLabel,
+    this.semanticHint,
     this.accent,
     this.leading,
     this.size = AtemButtonSize.compact,
@@ -85,6 +88,11 @@ class AtemButton extends StatelessWidget {
   /// „SESSION LÄUFT · 04:12" liest sich besser als
   /// „Session läuft, 4 Minuten 12 Sekunden, tippen zum Stoppen".
   final String semanticLabel;
+
+  /// Ergänzt das Label um das Warum — vor allem bei gesperrten Knöpfen.
+  /// „Körpergewicht fehlt" beantwortet die Frage, die ein toter Knopf sonst
+  /// offenlässt.
+  final String? semanticHint;
 
   final Gradient? gradient;
 
@@ -158,6 +166,7 @@ class AtemButton extends StatelessWidget {
     return AtemTappable(
       onTap: onPressed,
       semanticLabel: semanticLabel,
+      semanticHint: semanticHint,
       haptic: haptic,
       minTapSize: Size(0, size.height),
       alignment: Alignment.center,

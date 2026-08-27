@@ -1,15 +1,14 @@
 {
-  "authFailedBody": "That attempt did not go through. Please try again.",
-  "authFailedTitle": "Sign-in failed",
+  "authBetaBadge": "CLOSED BETA",
+  "authErrorCode": "CODE {code}",
+  "authFailedBody": "Please try again in a moment.",
+  "authFailedTitle": "That didn’t work",
   "authGoogle": "Sign in with Google",
-  "authIntro": "ATEM is currently closed. Sign in with the Google account that has been granted access.",
-  "authNetworkBody": "ATEM cannot reach Google right now. Check your connection.",
+  "authLegal": "By signing in you accept the Terms of Use and Privacy Policy.",
+  "authNetworkBody": "Signing in needs an internet connection.",
   "authNetworkTitle": "No connection",
-  "authNotAllowedBody": "This account is not on the access list. ATEM is currently a closed beta.",
-  "authNotAllowedTitle": "Access not granted",
   "authSignOut": "Sign out",
   "authSigningIn": "Signing in …",
-  "authWelcome": "Welcome to ATEM",
   "commonActivity": "Activity",
   "@commonActivity": {
     "description": "aus common.activity"
@@ -864,6 +863,18 @@
     },
     "description": "aus format.pace.value"
   },
+  "gateBody": "The beta is closed and we’re opening spots continuously. You’ll get an email as soon as it’s your turn.",
+  "gateRecheck": "Check status again",
+  "gateRecheckA11y": "Check beta status again",
+  "gateRecheckNegative": "Checked — no spot yet.",
+  "gateRecheckOffline": "Can’t check — no connection.",
+  "gateRechecking": "Checking …",
+  "gateSignedInAs": "Signed in as {email}",
+  "gateStatus": "WAITLIST",
+  "gateStatusA11y": "Status: waitlist",
+  "gateSwitchAccount": "Use another account",
+  "gateSwitchAccountA11y": "Sign out and sign in with another account",
+  "gateTitle": "You’re on the list",
   "@@locale": "en",
   "navCalendar": "Calendar",
   "@navCalendar": {
@@ -893,6 +904,22 @@
   "@navTraining": {
     "description": "aus nav.training"
   },
+  "onbCta": "Let’s go",
+  "onbCtaLocked": "Enter your weight to get started.",
+  "onbCtaLockedA11y": "Body weight missing",
+  "onbErrorRange": "Please enter a value between {min} and {max} {unit}.",
+  "onbFieldA11y": "Body weight in {unit}",
+  "onbHintSettings": "You can change this later in Profile → Body data.",
+  "onbKicker": "ALMOST THERE",
+  "onbSaving": "Saving …",
+  "onbTitle": "Your body weight",
+  "onbUnitGroupA11y": "Choose weight unit",
+  "onbUnitKg": "kg",
+  "onbUnitKgA11y": "Unit: kilograms",
+  "onbUnitLbs": "lbs",
+  "onbUnitLbsA11y": "Unit: pounds",
+  "onbWhy": "ATEM converts every exercise into training load — including bodyweight moves. That takes exactly one number.",
+  "splashStarting": "ATEM is starting …",
   "workoutA11yEnd": "End workout",
   "@workoutA11yEnd": {
     "description": "Runner, Modul 1/2 Spezifikation"

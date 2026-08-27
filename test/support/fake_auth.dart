@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:atem/features/auth/domain/access.dart';
 import 'package:atem/features/auth/domain/auth_user.dart';
 
 /// Anmeldung ohne Firebase.
@@ -37,5 +38,45 @@ class FakeAuthRepository implements AuthRepository {
   Future<void> signOut() async {
     _user = null;
     _controller.add(null);
+  }
+}
+
+/// Zugangsliste ohne Firestore.
+class FakeAllowlistRepository implements AllowlistRepository {
+  FakeAllowlistRepository({this.allowed = true, this.throws = false});
+
+  bool allowed;
+
+  /// Simuliert „Prüfung nicht möglich" — etwa ohne Netz.
+  bool throws;
+
+  int calls = 0;
+
+  @override
+  Future<bool> isAllowed(AuthUser user) async {
+    calls++;
+    if (throws) throw StateError('keine Verbindung');
+    return allowed;
+  }
+}
+
+/// Profil ohne Firestore.
+class FakeProfileRepository implements ProfileRepository {
+  FakeProfileRepository({this.weightKg});
+
+  double? weightKg;
+  String? savedUnitSystem;
+
+  @override
+  Future<double?> bodyWeightKg(String userId) async => weightKg;
+
+  @override
+  Future<void> saveBodyWeight(
+    String userId, {
+    required double kilograms,
+    required String unitSystem,
+  }) async {
+    weightKg = kilograms;
+    savedUnitSystem = unitSystem;
   }
 }

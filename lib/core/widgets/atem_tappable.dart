@@ -65,6 +65,7 @@ class AtemTappable extends StatefulWidget {
     required this.semanticLabel,
     this.semanticHint,
     this.selected,
+    this.inMutuallyExclusiveGroup = false,
     this.pressScale = AtemPressScale.normal,
     this.minTapSize = const Size.square(48),
     this.alignment = Alignment.center,
@@ -88,6 +89,10 @@ class AtemTappable extends StatefulWidget {
 
   /// Für Elemente in einer Auswahl — Tabs, Filter, Navigationseinträge.
   final bool? selected;
+
+  /// Einer von mehreren, von denen genau einer gilt — Segmente, Optionsfelder.
+  /// Ein Screenreader sagt dann „ausgewählt, 1 von 2" statt nur „ausgewählt".
+  final bool inMutuallyExclusiveGroup;
 
   final AtemPressScale pressScale;
   final Size minTapSize;
@@ -141,6 +146,7 @@ class _AtemTappableState extends State<AtemTappable> {
       button: true,
       enabled: _enabled,
       selected: widget.selected,
+      inMutuallyExclusiveGroup: widget.inMutuallyExclusiveGroup ? true : null,
       label: widget.semanticLabel,
       hint: widget.semanticHint,
       onTap: widget.onTap,

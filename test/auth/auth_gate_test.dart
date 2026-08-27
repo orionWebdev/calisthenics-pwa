@@ -1,8 +1,12 @@
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/auth/application/auth_providers.dart';
+import 'package:atem/features/auth/domain/access.dart';
 import 'package:atem/features/auth/domain/auth_user.dart';
 import 'package:atem/features/auth/presentation/auth_gate.dart';
+import 'package:atem/features/auth/presentation/screens/onboarding_screen.dart';
 import 'package:atem/features/auth/presentation/screens/sign_in_screen.dart';
+import 'package:atem/features/auth/presentation/screens/splash_screen.dart';
+import 'package:atem/features/auth/presentation/screens/waiting_room_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,8 +14,22 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../support/fake_auth.dart';
 
-Widget _app(AuthRepository auth) => ProviderScope(
-      overrides: [authRepositoryProvider.overrideWithValue(auth)],
+const _user = AuthUser(uid: 'u', email: 'a@b.c');
+
+Widget _app({
+  AuthRepository? auth,
+  AllowlistRepository? allowlist,
+  ProfileRepository? profile,
+}) =>
+    ProviderScope(
+      overrides: [
+        authRepositoryProvider
+            .overrideWithValue(auth ?? FakeAuthRepository(user: _user)),
+        allowlistRepositoryProvider
+            .overrideWithValue(allowlist ?? FakeAllowlistRepository()),
+        profileRepositoryProvider
+            .overrideWithValue(profile ?? FakeProfileRepository(weightKg: 78)),
+      ],
       child: MaterialApp(
         theme: AtemTheme.dark,
         locale: const Locale('de'),
@@ -22,31 +40,73 @@ Widget _app(AuthRepository auth) => ProviderScope(
             body: Text('geschützt', textDirection: TextDirection.ltr),
           ),
         ),
+        // Ohne das laufen die dekorativen Dauerschleifen endlos und
+        // `pumpAndSettle` läuft in den Timeout — Vertrag R8.
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
       ),
     );
 
 void main() {
+  testWidgets('der erste Frame ist der Splash, nicht die Anmeldung',
+      (tester) async {
+    await tester.pumpWidget(_app());
+    // Bewusst kein pumpAndSettle: Es geht um genau den Moment, in dem noch
+    // nichts entschieden ist. Stünde hier die Anmeldung, blitzte sie bei
+    // jedem Start auf.
+    await tester.pump();
+
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.byType(SignInScreen), findsNothing);
+  });
+
   testWidgets('ohne Anmeldung führt das Tor auf die Anmeldung', (tester) async {
-    await tester.pumpWidget(_app(FakeAuthRepository()));
+    await tester.pumpWidget(_app(auth: FakeAuthRepository()));
     await tester.pumpAndSettle();
 
     expect(find.byType(SignInScreen), findsOneWidget);
     expect(find.text('geschützt'), findsNothing);
   });
 
-  testWidgets('mit Anmeldung führt das Tor auf den Inhalt', (tester) async {
+  testWidgets(
+      'nicht freigeschaltet führt in den Warteraum, nicht in den Fehler',
+      (tester) async {
     await tester.pumpWidget(
-      _app(FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c'))),
+      _app(allowlist: FakeAllowlistRepository(allowed: false)),
     );
     await tester.pumpAndSettle();
 
+    expect(find.byType(WaitingRoomScreen), findsOneWidget);
+    expect(find.text('geschützt'), findsNothing);
+
+    // Die Anmeldung WAR erfolgreich — der Zustand darf nicht als Fehler
+    // erscheinen.
+    final l10n = AppL10n.of(tester.element(find.byType(WaitingRoomScreen)));
+    expect(find.text(l10n.gateTitle), findsOneWidget);
+    expect(find.text(l10n.authFailedTitle), findsNothing);
+  });
+
+  testWidgets('freigeschaltet ohne Körpergewicht führt ins Onboarding',
+      (tester) async {
+    await tester.pumpWidget(_app(profile: FakeProfileRepository()));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(OnboardingScreen), findsOneWidget);
+    expect(find.text('geschützt'), findsNothing);
+  });
+
+  testWidgets('mit allem führt das Tor auf den Inhalt', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+
     expect(find.text('geschützt'), findsOneWidget);
-    expect(find.byType(SignInScreen), findsNothing);
   });
 
   testWidgets('Abmelden führt zurück auf die Anmeldung', (tester) async {
-    final auth = FakeAuthRepository(user: const AuthUser(uid: 'u'));
-    await tester.pumpWidget(_app(auth));
+    final auth = FakeAuthRepository(user: _user);
+    await tester.pumpWidget(_app(auth: auth));
     await tester.pumpAndSettle();
     expect(find.text('geschützt'), findsOneWidget);
 
@@ -56,32 +116,14 @@ void main() {
     expect(find.byType(SignInScreen), findsOneWidget);
   });
 
-  testWidgets('ein Fehler beim Anmelden sperrt niemanden aus', (tester) async {
-    // Der Bildschirm muss den Fehler zeigen und bedienbar bleiben — sonst
-    // sitzt der Nutzer in einer App fest, aus der kein Weg herausführt.
-    final auth = FakeAuthRepository(failure: AuthFailure.netzwerk);
-    await tester.pumpWidget(_app(auth));
-    await tester.pumpAndSettle();
-
-    final l10n = AppL10n.of(tester.element(find.byType(SignInScreen)));
-    await tester.tap(find.text(l10n.authGoogle));
-    await tester.pumpAndSettle();
-
-    expect(find.text(l10n.authNetworkTitle), findsOneWidget);
-    expect(find.text(l10n.authGoogle), findsOneWidget);
-  });
-
-  testWidgets('ein Abbruch durch den Nutzer erzeugt keine Meldung',
+  testWidgets('eine gescheiterte Zugangsprüfung sperrt niemanden aus',
       (tester) async {
-    final auth = FakeAuthRepository(failure: AuthFailure.abgebrochen);
-    await tester.pumpWidget(_app(auth));
+    // Ohne Netz ist die Antwort unbekannt. Es muss trotzdem einen Weg geben.
+    await tester.pumpWidget(
+      _app(allowlist: FakeAllowlistRepository(throws: true)),
+    );
     await tester.pumpAndSettle();
 
-    final l10n = AppL10n.of(tester.element(find.byType(SignInScreen)));
-    await tester.tap(find.text(l10n.authGoogle));
-    await tester.pumpAndSettle();
-
-    expect(find.text(l10n.authFailedTitle), findsNothing);
-    expect(find.text(l10n.authNetworkTitle), findsNothing);
+    expect(find.byType(SignInScreen), findsOneWidget);
   });
 }

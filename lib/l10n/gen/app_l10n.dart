@@ -97,16 +97,28 @@ abstract class AppL10n {
     Locale('en')
   ];
 
-  /// Fehlertext, allgemein
+  /// Pille über dem Anmeldeknopf
   ///
   /// In de, this message translates to:
-  /// **'Der Versuch ist nicht durchgekommen. Bitte noch einmal.'**
+  /// **'GESCHLOSSENE BETA'**
+  String get authBetaBadge;
+
+  /// Fehlercode in der Notice — gehört ins Semantics-Label, damit er am Telefon vorlesbar ist
+  ///
+  /// In de, this message translates to:
+  /// **'CODE {code}'**
+  String authErrorCode(String code);
+
+  /// Notice-Text bei unbekanntem Fehler
+  ///
+  /// In de, this message translates to:
+  /// **'Versuch es gleich noch einmal.'**
   String get authFailedBody;
 
-  /// Fehlertitel, allgemein
+  /// Notice-Titel bei unbekanntem Fehler
   ///
   /// In de, this message translates to:
-  /// **'Anmeldung fehlgeschlagen'**
+  /// **'Das hat nicht geklappt'**
   String get authFailedTitle;
 
   /// Beschriftung des Anmeldeknopfes
@@ -115,35 +127,23 @@ abstract class AppL10n {
   /// **'Mit Google anmelden'**
   String get authGoogle;
 
-  /// Erklärt die geschlossene Beta
+  /// Rechtlicher Hinweis unter dem Anmeldeknopf
   ///
   /// In de, this message translates to:
-  /// **'ATEM ist derzeit geschlossen. Melde dich mit dem Google-Konto an, das für den Zugang freigeschaltet wurde.'**
-  String get authIntro;
+  /// **'Mit der Anmeldung akzeptierst du Nutzungsbedingungen und Datenschutzerklärung.'**
+  String get authLegal;
 
-  /// Fehlertext ohne Netz
+  /// Notice-Text ohne Netz
   ///
   /// In de, this message translates to:
-  /// **'ATEM erreicht Google gerade nicht. Prüfe deine Verbindung.'**
+  /// **'Anmeldung braucht Internet.'**
   String get authNetworkBody;
 
-  /// Fehlertitel ohne Netz
+  /// Notice-Titel ohne Netz
   ///
   /// In de, this message translates to:
   /// **'Keine Verbindung'**
   String get authNetworkTitle;
-
-  /// Text, wenn das Konto nicht auf der Allowlist steht
-  ///
-  /// In de, this message translates to:
-  /// **'Dieses Konto steht nicht auf der Zugangsliste. ATEM ist derzeit eine geschlossene Beta.'**
-  String get authNotAllowedBody;
-
-  /// Titel, wenn das Konto nicht auf der Allowlist steht
-  ///
-  /// In de, this message translates to:
-  /// **'Zugang nicht freigeschaltet'**
-  String get authNotAllowedTitle;
 
   /// Abmelden
   ///
@@ -156,12 +156,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Anmeldung läuft …'**
   String get authSigningIn;
-
-  /// Überschrift des Anmeldebildschirms
-  ///
-  /// In de, this message translates to:
-  /// **'Willkommen bei ATEM'**
-  String get authWelcome;
 
   /// aus common.activity
   ///
@@ -1183,6 +1177,78 @@ abstract class AppL10n {
   /// **'{min}:{sec} min/km'**
   String formatPaceValue(int min, int sec);
 
+  /// Erklärtext im Warteraum
+  ///
+  /// In de, this message translates to:
+  /// **'Die Beta ist geschlossen, wir schalten laufend Plätze frei. Du bekommst eine E-Mail, sobald du dran bist.'**
+  String get gateBody;
+
+  /// Knopf im Warteraum
+  ///
+  /// In de, this message translates to:
+  /// **'Status erneut prüfen'**
+  String get gateRecheck;
+
+  /// Semantics-Label des Prüfknopfes
+  ///
+  /// In de, this message translates to:
+  /// **'Beta-Status erneut prüfen'**
+  String get gateRecheckA11y;
+
+  /// Ergebniszeile nach der Prüfung
+  ///
+  /// In de, this message translates to:
+  /// **'Geprüft — noch kein Platz frei.'**
+  String get gateRecheckNegative;
+
+  /// Ergebniszeile ohne Netz
+  ///
+  /// In de, this message translates to:
+  /// **'Prüfung nicht möglich — kein Netz.'**
+  String get gateRecheckOffline;
+
+  /// Zustand während der Prüfung
+  ///
+  /// In de, this message translates to:
+  /// **'Wird geprüft …'**
+  String get gateRechecking;
+
+  /// Kontozeile im Warteraum
+  ///
+  /// In de, this message translates to:
+  /// **'Angemeldet als {email}'**
+  String gateSignedInAs(String email);
+
+  /// Statuspille im Warteraum
+  ///
+  /// In de, this message translates to:
+  /// **'WARTELISTE'**
+  String get gateStatus;
+
+  /// Vorlesefassung der Statuspille — „WARTELISTE" in Grossbuchstaben buchstabiert ein Screenreader womöglich
+  ///
+  /// In de, this message translates to:
+  /// **'Status: Warteliste'**
+  String get gateStatusA11y;
+
+  /// Knopf im Warteraum
+  ///
+  /// In de, this message translates to:
+  /// **'Anderes Konto verwenden'**
+  String get gateSwitchAccount;
+
+  /// Semantics-Label — die Kurzform verschweigt das Abmelden nicht
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden und mit anderem Konto anmelden'**
+  String get gateSwitchAccountA11y;
+
+  /// Überschrift des Warteraums
+  ///
+  /// In de, this message translates to:
+  /// **'Du stehst auf der Liste'**
+  String get gateTitle;
+
   /// aus nav.calendar
   ///
   /// In de, this message translates to:
@@ -1224,6 +1290,102 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Training'**
   String get navTraining;
+
+  /// Abschlussknopf des Onboardings
+  ///
+  /// In de, this message translates to:
+  /// **'Los geht’s'**
+  String get onbCta;
+
+  /// Hinweis am gesperrten Knopf
+  ///
+  /// In de, this message translates to:
+  /// **'Gib dein Gewicht ein, um zu starten.'**
+  String get onbCtaLocked;
+
+  /// Semantics-Hinweis am gesperrten Knopf
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht fehlt'**
+  String get onbCtaLockedA11y;
+
+  /// Validierungsfehler ausserhalb des Bereichs
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib einen Wert zwischen {min} und {max} {unit} ein.'**
+  String onbErrorRange(String min, String max, String unit);
+
+  /// Semantics-Label des Eingabefelds
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht in {unit}'**
+  String onbFieldA11y(String unit);
+
+  /// Hinweis unter dem Feld
+  ///
+  /// In de, this message translates to:
+  /// **'Später änderbar unter Profil → Körperdaten.'**
+  String get onbHintSettings;
+
+  /// Kicker über dem Onboarding-Titel
+  ///
+  /// In de, this message translates to:
+  /// **'FAST GESCHAFFT'**
+  String get onbKicker;
+
+  /// Zustand während des Speicherns
+  ///
+  /// In de, this message translates to:
+  /// **'Wird gespeichert …'**
+  String get onbSaving;
+
+  /// Überschrift des Onboardings
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Körpergewicht'**
+  String get onbTitle;
+
+  /// Semantics-Label der Segmentgruppe
+  ///
+  /// In de, this message translates to:
+  /// **'Gewichtseinheit wählen'**
+  String get onbUnitGroupA11y;
+
+  /// Einheit Kilogramm
+  ///
+  /// In de, this message translates to:
+  /// **'kg'**
+  String get onbUnitKg;
+
+  /// Semantics-Label des kg-Segments
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit: Kilogramm'**
+  String get onbUnitKgA11y;
+
+  /// Einheit Pfund
+  ///
+  /// In de, this message translates to:
+  /// **'lbs'**
+  String get onbUnitLbs;
+
+  /// Semantics-Label des lbs-Segments
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit: Pfund'**
+  String get onbUnitLbsA11y;
+
+  /// Begründung, warum diese eine Angabe nötig ist
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM rechnet jede Übung in Trainingslast um — auch die ohne Gewichte. Dafür braucht es genau eine Zahl.'**
+  String get onbWhy;
+
+  /// Ansage während des unentschiedenen ersten Moments
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM startet …'**
+  String get splashStarting;
 
   /// Runner, Modul 1/2 Spezifikation
   ///

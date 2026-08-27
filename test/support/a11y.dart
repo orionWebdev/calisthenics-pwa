@@ -18,6 +18,9 @@ import 'fake_auth.dart';
 /// zustandslos, geteilte Instanzen sind also unbedenklich.
 final fixtureOverrides = [
   authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
+  allowlistRepositoryProvider.overrideWithValue(FakeAllowlistRepository()),
+  profileRepositoryProvider
+      .overrideWithValue(FakeProfileRepository(weightKg: 78)),
   dashboardRepositoryProvider.overrideWithValue(PreviewDashboardRepository()),
   workoutRepositoryProvider.overrideWithValue(PreviewWorkoutRepository()),
 ];
