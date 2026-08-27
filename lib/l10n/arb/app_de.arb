@@ -970,6 +970,14 @@
       }
     }
   },
+  "detailDistance": "Strecke",
+  "@detailDistance": {
+    "description": "Kennzahl im Detail"
+  },
+  "detailDuration": "Dauer",
+  "@detailDuration": {
+    "description": "Kennzahl im Detail"
+  },
   "detailLoad": "Last",
   "@detailLoad": {
     "description": "Kennzahl im Detail"
@@ -1771,6 +1779,24 @@
   "typeStrength": "Kraft",
   "@typeStrength": {
     "description": "Trainingsart eines Plans"
+  },
+  "unitKilograms": "{v} kg",
+  "@unitKilograms": {
+    "description": "Gewicht mit Einheit",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "unitKilometers": "{v} km",
+  "@unitKilometers": {
+    "description": "Strecke mit Einheit",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
   },
   "workoutA11yEnd": "Workout beenden",
   "@workoutA11yEnd": {

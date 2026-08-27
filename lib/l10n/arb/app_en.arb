@@ -781,6 +781,8 @@
   },
   "detailAcwrLabel": "Load on this day",
   "detailAcwrZone": "ACWR {v} · {zone}",
+  "detailDistance": "Distance",
+  "detailDuration": "Duration",
   "detailLoad": "Load",
   "detailPace": "Pace /km",
   "detailRecoveryBody": "Recovery keeps the streak but does not drive load progression.",
@@ -1043,6 +1045,8 @@
   "typeHybrid": "Hybrid",
   "typeRecovery": "Recovery",
   "typeStrength": "Strength",
+  "unitKilograms": "{v} kg",
+  "unitKilometers": "{v} km",
   "workoutA11yEnd": "End workout",
   "@workoutA11yEnd": {
     "description": "Runner, Modul 1/2 Spezifikation"

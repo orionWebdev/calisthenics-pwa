@@ -673,6 +673,12 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get detailDistance => 'Distance';
+
+  @override
+  String get detailDuration => 'Duration';
+
+  @override
   String get detailLoad => 'Load';
 
   @override
@@ -1219,6 +1225,16 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get typeStrength => 'Strength';
+
+  @override
+  String unitKilograms(String v) {
+    return '$v kg';
+  }
+
+  @override
+  String unitKilometers(String v) {
+    return '$v km';
+  }
 
   @override
   String get workoutA11yEnd => 'End workout';

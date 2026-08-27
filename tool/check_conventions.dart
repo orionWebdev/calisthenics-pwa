@@ -26,6 +26,7 @@ class Rule {
     this.skipPath,
     this.wholeFile = false,
     this.confirm,
+    this.allowMarker,
   });
 
   final String id;
@@ -49,6 +50,14 @@ class Rule {
   /// Zweite Instanz nach dem Treffer. Manche Muster sind mit einem Regex
   /// allein nicht sauber zu fassen — dann entscheidet hier Code.
   final bool Function(String line)? confirm;
+
+  /// Ein Kommentar, der eine einzelne Fundstelle entschuldigt.
+  ///
+  /// Muss **in der Zeile unmittelbar davor** stehen, damit er beim Lesen des
+  /// Codes gesehen wird. Ein Marker irgendwo in der Datei wäre eine
+  /// Generalvollmacht; dieser hier gilt genau einmal und zwingt dazu, die
+  /// Begründung danebenzuschreiben.
+  final String? allowMarker;
 }
 
 final rules = <Rule>[
@@ -76,6 +85,13 @@ final rules = <Rule>[
     activateAt: 'erledigt in Stufe 5',
     match: RegExp(r'\b(GestureDetector|InkWell)\s*\('),
     skipPath: (p) => p.contains('/core/widgets/'),
+    // Ausnahme mit Begründungspflicht. Nicht jede Geste ist ein Tap: Ein
+    // Schieber über einem Diagramm hat kein Ziel, das man antippt, und
+    // AtemTappable wäre dort das falsche Werkzeug.
+    //
+    // Der Marker muss in der Zeile davor stehen und wird beim Lesen gesehen —
+    // anders als ein Kommentar irgendwo in der Datei.
+    allowMarker: '// atem:geste-erlaubt',
   ),
   Rule(
     id: 'no_fitted_box_around_text',
@@ -167,6 +183,10 @@ void main(List<String> args) {
       for (var i = 0; i < lines.length; i++) {
         if (!rule.match.hasMatch(lines[i])) continue;
         if (!(rule.confirm?.call(lines[i]) ?? true)) continue;
+
+        // Entschuldigt durch die Zeile davor?
+        final marker = rule.allowMarker;
+        if (marker != null && i > 0 && lines[i - 1].contains(marker)) continue;
         findings.add(Finding(rule, path, i + 1, lines[i].trim()));
       }
     }

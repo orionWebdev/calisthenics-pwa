@@ -7,8 +7,11 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/history_providers.dart';
 import '../../domain/training_session.dart';
+import '../session_ui.dart';
 import '../widgets/month_strip.dart';
 import '../widgets/statement_card.dart';
+import 'analysis_screen.dart';
+import 'session_list_screen.dart';
 
 /// Der Verlaufs-Tab.
 ///
@@ -16,10 +19,7 @@ import '../widgets/statement_card.dart';
 /// Balkenwald deuten, sondern wissen, was gerade gilt. Erst danach kommen
 /// Verteilung und Einzelheiten.
 class HistoryScreen extends ConsumerWidget {
-  const HistoryScreen({super.key, this.onOpenAll, this.onOpenAnalysis});
-
-  final VoidCallback? onOpenAll;
-  final VoidCallback? onOpenAnalysis;
+  const HistoryScreen({super.key});
 
   static const _recentCount = 4;
 
@@ -91,9 +91,9 @@ class HistoryScreen extends ConsumerWidget {
           const SizedBox(height: 10),
           Text(
             l10n.historyLeadLast(
-              DateFormat.E(_tag(context)).format(last.date),
-              DateFormat.yMd(_tag(context)).format(last.date),
-              _sessionName(l10n, last),
+              DateFormat.E(languageTag(context)).format(last.date),
+              DateFormat.yMd(languageTag(context)).format(last.date),
+              sessionName(l10n, last),
             ),
             style: AtemType.labelMicro.of(context),
           ),
@@ -112,25 +112,27 @@ class HistoryScreen extends ConsumerWidget {
                 style: AtemType.labelMedium.of(context),
               ),
             ),
-            if (onOpenAll != null) ...[
-              const SizedBox(width: 12),
-              Flexible(
-                child: AtemTappable(
-                  onTap: onOpenAll,
-                  semanticLabel: l10n.historyAll(summary.sessions),
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    l10n.historyAll(summary.sessions),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                    style: AtemType.labelSmall
-                        .of(context)
-                        .copyWith(color: AtemColors.cyan),
+            const SizedBox(width: 12),
+            Flexible(
+              child: AtemTappable(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const SessionListScreen(),
                   ),
                 ),
+                semanticLabel: l10n.historyAll(summary.sessions),
+                alignment: Alignment.centerRight,
+                child: Text(
+                  l10n.historyAll(summary.sessions),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: AtemType.labelSmall
+                      .of(context)
+                      .copyWith(color: AtemColors.cyan),
+                ),
               ),
-            ],
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -147,36 +149,17 @@ class HistoryScreen extends ConsumerWidget {
             ],
           ),
         ),
-        if (onOpenAnalysis != null) ...[
-          const SizedBox(height: 24),
-          AtemButton.outline(
-            label: l10n.historyAnalysisOpen,
-            semanticLabel: l10n.historyAnalysisOpen,
-            onPressed: onOpenAnalysis,
+        const SizedBox(height: 24),
+        AtemButton.outline(
+          label: l10n.historyAnalysisOpen,
+          semanticLabel: l10n.historyAnalysisOpen,
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const AnalysisScreen()),
           ),
-        ],
+        ),
       ],
     );
   }
-
-  static String _tag(BuildContext context) =>
-      Localizations.localeOf(context).toLanguageTag();
-
-  static String _sessionName(AppL10n l10n, TrainingSession session) =>
-      switch (session) {
-        StrengthSession(planName: final name?) => name,
-        CardioSession(name: final name?) => name,
-        RecoverySession(name: final name?) => name,
-        // Ohne eigenen Namen tritt die Art an seine Stelle. Ein leeres Feld
-        // wäre in einer Liste schlimmer als eine grobe Bezeichnung.
-        _ => switch (session.kind) {
-            SessionKind.strength => l10n.typeStrength,
-            SessionKind.bodyweight => l10n.typeBodyweight,
-            SessionKind.cardio => l10n.typeCardio,
-            SessionKind.recovery => l10n.typeRecovery,
-            null => l10n.historyTitle,
-          },
-      };
 }
 
 class _SessionRow extends StatelessWidget {
@@ -187,9 +170,8 @@ class _SessionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final date =
-        DateFormat.yMd(HistoryScreen._tag(context)).format(session.date);
-    final name = HistoryScreen._sessionName(l10n, session);
+    final date = DateFormat.yMd(languageTag(context)).format(session.date);
+    final name = sessionName(l10n, session);
     final minutes = session.duration?.inMinutes;
 
     return Semantics(

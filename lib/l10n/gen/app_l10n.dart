@@ -1240,6 +1240,18 @@ abstract class AppL10n {
   /// Kennzahl im Detail
   ///
   /// In de, this message translates to:
+  /// **'Strecke'**
+  String get detailDistance;
+
+  /// Kennzahl im Detail
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer'**
+  String get detailDuration;
+
+  /// Kennzahl im Detail
+  ///
+  /// In de, this message translates to:
   /// **'Last'**
   String get detailLoad;
 
@@ -2124,6 +2136,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Kraft'**
   String get typeStrength;
+
+  /// Gewicht mit Einheit
+  ///
+  /// In de, this message translates to:
+  /// **'{v} kg'**
+  String unitKilograms(String v);
+
+  /// Strecke mit Einheit
+  ///
+  /// In de, this message translates to:
+  /// **'{v} km'**
+  String unitKilometers(String v);
 
   /// Runner, Modul 1/2 Spezifikation
   ///

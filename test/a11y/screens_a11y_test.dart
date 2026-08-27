@@ -8,7 +8,10 @@ import 'package:atem/features/auth/presentation/screens/splash_screen.dart';
 import 'package:atem/features/auth/presentation/screens/waiting_room_screen.dart';
 import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_detail_screen.dart';
+import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
 import 'package:atem/features/history/presentation/screens/history_screen.dart';
+import 'package:atem/features/history/presentation/screens/session_detail_screen.dart';
+import 'package:atem/features/history/presentation/screens/session_list_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_list_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_detail_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
@@ -76,6 +79,19 @@ void main() {
 
   testWidgets('Verlauf erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const HistoryScreen());
+  });
+
+  testWidgets('Einheitenliste erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const SessionListScreen());
+  });
+
+  testWidgets('Einheitendetail erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(
+        tester, SessionDetailScreen(session: fixtureSessions.first));
+  });
+
+  testWidgets('Auswertung erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const AnalysisScreen());
   });
 
   testWidgets('Workout Runner erfüllt den A11y-Vertrag', (tester) async {
