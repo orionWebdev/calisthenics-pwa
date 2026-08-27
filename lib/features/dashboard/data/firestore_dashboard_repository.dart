@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../history/domain/data_sufficiency.dart';
 import '../../history/domain/readiness.dart';
 import '../../history/domain/session_repository.dart';
 import '../../history/domain/training_load.dart';
@@ -84,6 +85,17 @@ class FirestoreDashboardRepository implements DashboardRepository {
       applyFatigue: true,
     );
 
+    // **Die Zone nur zeigen, wenn sie etwas taugt.**
+    //
+    // Am echten Bestand aufgefallen: Ein halbes Jahr Training, dann fünfzig
+    // Tage Pause, dann eine einzige Einheit — und der Bogen meldete
+    // „Überreizt". Das Gegenteil der Wahrheit, auf dem Hauptbildschirm.
+    //
+    // Die chronische Last war über die Pause auf fast null gefallen; die eine
+    // Einheit trieb das Verhältnis auf 2,95. Ohne genug Einheiten im akuten
+    // Fenster ist der ACWR keine Aussage, sondern eine Division.
+    final zone = DataSufficiency.hasAcwr(sessions, today) ? acwr.zone : null;
+
     return DashboardData(
       user: UserSummary(
         displayName: name,
@@ -95,7 +107,7 @@ class FirestoreDashboardRepository implements DashboardRepository {
         // Rechnung bewusst nichts. 0 ist dann kein Messwert, sondern die
         // ehrlichste Anzeige: ein leerer Bogen.
         score: (acwr.score ?? 0).toDouble(),
-        zone: acwr.zone,
+        zone: zone,
         // Kein Wearable angebunden.
         isLive: false,
       ),

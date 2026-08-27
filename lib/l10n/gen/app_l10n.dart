@@ -169,6 +169,18 @@ abstract class AppL10n {
   /// **'Zur Liste'**
   String get analysisErrorToList;
 
+  /// Erklärt die Rechnung — ohne sie ist die Zerlegung eine Zahlenreihe
+  ///
+  /// In de, this message translates to:
+  /// **'Fünf Bestandteile ergeben zusammen bis zu 103 Punkte, gedeckelt auf 100. Wer lange nicht trainiert, verliert zusätzlich — und zwar beschleunigt: drei Tage kosten 3 Punkte, sieben Tage 21, vierzehn Tage 70.'**
+  String get analysisExplainBody;
+
+  /// Überschrift der Erklärung
+  ///
+  /// In de, this message translates to:
+  /// **'Wie sich die Form zusammensetzt'**
+  String get analysisExplainTitle;
+
   /// Begründung unter der Zerlegung
   ///
   /// In de, this message translates to:
@@ -222,6 +234,54 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Form heute'**
   String get analysisToday;
+
+  /// Begründung unter der Konstanz — zeigt, woraus die Punktzahl entsteht
+  ///
+  /// In de, this message translates to:
+  /// **'{days} Trainingstage in {span}'**
+  String analysisWhyConsistency(int days, int span);
+
+  /// Begründung der Fitness gegenüber dem Höchststand
+  ///
+  /// In de, this message translates to:
+  /// **'Anteil am eigenen Höchststand'**
+  String get analysisWhyFitness;
+
+  /// Begründung, wenn die Lastentwicklung bei null steht
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Last in den letzten 28 Tagen'**
+  String get analysisWhyLoadNone;
+
+  /// Begründung der Lastentwicklung
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte 14 Tage gegen die 14 davor'**
+  String get analysisWhyLoadRatio;
+
+  /// Begründung des Abzugs
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, other{# Tage ohne Training}}'**
+  String analysisWhyPenalty(int n);
+
+  /// Begründung der Aktualität
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor # Tagen}}'**
+  String analysisWhyRecency(int n);
+
+  /// Begründung des Tageszuschlags
+  ///
+  /// In de, this message translates to:
+  /// **'Heute trainiert'**
+  String get analysisWhyToday;
+
+  /// Begründung, wenn der Tageszuschlag entfällt
+  ///
+  /// In de, this message translates to:
+  /// **'Heute keine Einheit'**
+  String get analysisWhyTodayNone;
 
   /// Pille über dem Anmeldeknopf
   ///

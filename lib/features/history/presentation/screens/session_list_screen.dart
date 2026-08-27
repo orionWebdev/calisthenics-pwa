@@ -134,56 +134,64 @@ class _Row extends StatelessWidget {
     final name = sessionName(l10n, session);
     final minutes = session.duration?.inMinutes;
 
+    // Die Art steht vorn: Ohne sie sieht man einer Zeile mit Plannamen nicht
+    // an, ob dahinter Kraft, Cardio oder Regeneration steckt.
     final meta = <String>[
+      sessionKindLabel(l10n, session),
       if (ordinal != null) l10n.listSecond(ordinal!),
       if (minutes != null) l10n.durationMinutes(minutes),
     ].join(' · ');
 
-    return AtemCard.list(
-      padding: EdgeInsets.zero,
-      child: AtemTappable(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => SessionDetailScreen(session: session),
+    return Padding(
+      // Die Karten standen ohne Abstand aufeinander und wirkten wie eine
+      // durchgehende Fläche.
+      padding: const EdgeInsets.only(bottom: 8),
+      child: AtemCard.list(
+        padding: EdgeInsets.zero,
+        child: AtemTappable(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => SessionDetailScreen(session: session),
+            ),
           ),
-        ),
-        semanticLabel: [date, name, if (meta.isNotEmpty) meta].join(', '),
-        minTapSize: const Size(0, 64),
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 64,
-                child: Text(date,
-                    style: AtemType.labelMicro
-                        .of(context)
-                        .copyWith(letterSpacing: 0)),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AtemType.titleSmallOrDefault(context)
-                            .copyWith(fontWeight: FontWeight.w600)),
-                    if (meta.isNotEmpty) ...[
-                      const SizedBox(height: 2),
-                      Text(meta,
+          semanticLabel: [date, name, if (meta.isNotEmpty) meta].join(', '),
+          minTapSize: const Size(0, 64),
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 64,
+                  child: Text(date,
+                      style: AtemType.labelMicro
+                          .of(context)
+                          .copyWith(letterSpacing: 0)),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AtemType.labelMicro
-                              .of(context)
-                              .copyWith(letterSpacing: 0)),
+                          style: AtemType.titleSmallOrDefault(context)
+                              .copyWith(fontWeight: FontWeight.w600)),
+                      if (meta.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(meta,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AtemType.labelMicro
+                                .of(context)
+                                .copyWith(letterSpacing: 0)),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

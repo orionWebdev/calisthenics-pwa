@@ -35,7 +35,28 @@ abstract final class DataSufficiency {
   /// Strenger als der Trend: Der ACWR reagiert auf dünne Daten mit extremen
   /// Werten, der Form-Wert bleibt im Rahmen.
   static const acwrMinimumDays = 28;
+
+  /// Einheiten **innerhalb des chronischen Fensters**, nicht insgesamt.
+  ///
+  /// Der Unterschied ist der ganze Punkt. Am echten Bestand gemessen — ein
+  /// halbes Jahr Training, dann fünfzig Tage Pause, dann eine einzige Einheit:
+  ///
+  /// ```
+  /// nur die Pause                 ACWR 0,00  ->  form_loss     richtig
+  /// plus EINE Einheit heute       ACWR 2,95  ->  overreaching  falsch
+  /// plus zwei in einer Woche      ACWR 2,37  ->  overreaching  falsch
+  /// plus vier in vier Wochen      ACWR 1,70  ->  overreaching  falsch
+  /// plus acht in vier Wochen      ACWR 1,37  ->  fatigued      plausibel
+  /// ```
+  ///
+  /// Wer nach zwei Monaten Pause einmal trainiert, bekäme „massiv
+  /// übertrainiert" — das Gegenteil der Wahrheit. Eine Schwelle auf die
+  /// Gesamthistorie fängt das **nicht**: 46 Einheiten über 245 Tage sind
+  /// reichlich, und trotzdem ist das akute Fenster praktisch leer.
   static const acwrMinimumSessions = 8;
+
+  /// Das Fenster, in dem gezählt wird — dasselbe wie die chronische Last.
+  static const acwrWindowDays = 28;
 
   /// Trägt der Bestand eine Trendaussage?
   static bool hasTrend(List<TrainingSession> sessions, DateTime reference) =>
@@ -43,15 +64,34 @@ abstract final class DataSufficiency {
       _counted(sessions) >= trendMinimumSessions;
 
   /// Trägt der Bestand ein Belastungsverhältnis?
+  ///
+  /// Zwei Bedingungen: genug Historie **und** genug Training darin. Die zweite
+  /// zählt nur das letzte Fenster.
   static bool hasAcwr(List<TrainingSession> sessions, DateTime reference) =>
       _spanDays(sessions, reference) >= acwrMinimumDays &&
-      _counted(sessions) >= acwrMinimumSessions;
+      _countedWithin(sessions, reference, acwrWindowDays) >=
+          acwrMinimumSessions;
 
   /// Nur Einheiten, die Last tragen. Regeneration zählt für die Belastung
   /// nicht mit — sonst hübschte ein Saunagang die Datenlage auf.
   static int _counted(List<TrainingSession> sessions) => sessions
       .where((s) => s.kind != null && s.kind != SessionKind.recovery)
       .length;
+
+  /// Wie [_counted], aber nur innerhalb der letzten [days] Tage.
+  static int _countedWithin(
+    List<TrainingSession> sessions,
+    DateTime reference,
+    int days,
+  ) {
+    final from =
+        DateTime(reference.year, reference.month, reference.day - (days - 1));
+    return _counted(sessions.where((s) => !s.date.isBefore(from)).toList());
+  }
+
+  /// Tage von der ersten Einheit bis zum Stichtag.
+  static int spanDays(List<TrainingSession> sessions, DateTime reference) =>
+      _spanDays(sessions, reference);
 
   static int _spanDays(List<TrainingSession> sessions, DateTime reference) {
     if (sessions.isEmpty) return 0;

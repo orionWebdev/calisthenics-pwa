@@ -24,6 +24,15 @@ class ExerciseInitials extends StatelessWidget {
   final Color color;
   final double size;
 
+  /// Kürzel aus dem Namen.
+  ///
+  /// **Wörter, die mit einer Ziffer beginnen, werden übersprungen.** Vorher
+  /// wurde aus „3 Second Pause Squat" ein „3S" und aus „90 Degree Row" ein
+  /// „9D" — Kürzel, die niemand einer Übung zuordnen kann. Zahlen im Namen
+  /// beschreiben die Ausführung, nicht die Übung.
+  ///
+  /// Bleibt nach dem Aussortieren nichts übrig, tritt der rohe Anfang wieder
+  /// ein: Ein Kürzel ist besser als ein Fragezeichen.
   static String initialsOf(String name) {
     final words = name
         .trim()
@@ -31,10 +40,16 @@ class ExerciseInitials extends StatelessWidget {
         .where((w) => w.isNotEmpty)
         .toList();
     if (words.isEmpty) return '?';
-    if (words.length == 1) {
-      return words.first.characters.take(2).toString().toUpperCase();
+
+    final letters = words
+        .where((w) => RegExp(r'^\p{L}', unicode: true).hasMatch(w))
+        .toList();
+    final source = letters.isEmpty ? words : letters;
+
+    if (source.length == 1) {
+      return source.first.characters.take(2).toString().toUpperCase();
     }
-    return (words[0].characters.first + words[1].characters.first)
+    return (source[0].characters.first + source[1].characters.first)
         .toUpperCase();
   }
 

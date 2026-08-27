@@ -60,6 +60,14 @@
   "@analysisErrorToList": {
     "description": "Ausweg im Fehlerzustand"
   },
+  "analysisExplainBody": "Fünf Bestandteile ergeben zusammen bis zu 103 Punkte, gedeckelt auf 100. Wer lange nicht trainiert, verliert zusätzlich — und zwar beschleunigt: drei Tage kosten 3 Punkte, sieben Tage 21, vierzehn Tage 70.",
+  "@analysisExplainBody": {
+    "description": "Erklärt die Rechnung — ohne sie ist die Zerlegung eine Zahlenreihe"
+  },
+  "analysisExplainTitle": "Wie sich die Form zusammensetzt",
+  "@analysisExplainTitle": {
+    "description": "Überschrift der Erklärung"
+  },
   "analysisHintRecency": "Was fehlt, ist Aktualität — eine Einheit heute bringt sofort {n} Punkte.",
   "@analysisHintRecency": {
     "description": "Begründung unter der Zerlegung",
@@ -116,6 +124,56 @@
   "analysisToday": "Form heute",
   "@analysisToday": {
     "description": "Überschrift der Zerlegung"
+  },
+  "analysisWhyConsistency": "{days} Trainingstage in {span}",
+  "@analysisWhyConsistency": {
+    "description": "Begründung unter der Konstanz — zeigt, woraus die Punktzahl entsteht",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "span": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisWhyFitness": "Anteil am eigenen Höchststand",
+  "@analysisWhyFitness": {
+    "description": "Begründung der Fitness gegenüber dem Höchststand"
+  },
+  "analysisWhyLoadNone": "Keine Last in den letzten 28 Tagen",
+  "@analysisWhyLoadNone": {
+    "description": "Begründung, wenn die Lastentwicklung bei null steht"
+  },
+  "analysisWhyLoadRatio": "Letzte 14 Tage gegen die 14 davor",
+  "@analysisWhyLoadRatio": {
+    "description": "Begründung der Lastentwicklung"
+  },
+  "analysisWhyPenalty": "{n, plural, other{# Tage ohne Training}}",
+  "@analysisWhyPenalty": {
+    "description": "Begründung des Abzugs",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisWhyRecency": "{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor # Tagen}}",
+  "@analysisWhyRecency": {
+    "description": "Begründung der Aktualität",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisWhyToday": "Heute trainiert",
+  "@analysisWhyToday": {
+    "description": "Begründung des Tageszuschlags"
+  },
+  "analysisWhyTodayNone": "Heute keine Einheit",
+  "@analysisWhyTodayNone": {
+    "description": "Begründung, wenn der Tageszuschlag entfällt"
   },
   "authBetaBadge": "GESCHLOSSENE BETA",
   "@authBetaBadge": {

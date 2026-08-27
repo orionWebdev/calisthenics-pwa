@@ -65,6 +65,8 @@ class HistorySummary {
     required this.daysSinceLast,
     required this.months,
     required this.form,
+    this.trainingDays = 0,
+    this.spanDays = 0,
     this.lastSession,
     this.sessionsInWindow,
     this.windowDays,
@@ -102,6 +104,12 @@ class HistorySummary {
   /// der leeren**. Ein Streifen, der nur Monate mit Training zeigt, verschweigt
   /// die Pausen und behauptet damit Gleichmaß.
   final List<MonthCount> months;
+
+  /// Tage mit mindestens einer Einheit — die Grundlage der Konstanz.
+  final int trainingDays;
+
+  /// Tage von der ersten Einheit bis heute.
+  final int spanDays;
 
   final FormResult form;
 
@@ -147,6 +155,8 @@ class HistorySummary {
       medianGapDays: DataSufficiency.medianGapDays(sessions),
       longestGapDays: DataSufficiency.longestGapDays(sessions),
       months: _months(sessions),
+      trainingDays: {for (final s in sessions) Readiness.dayKey(s.date)}.length,
+      spanDays: DataSufficiency.spanDays(sessions, reference),
       form: TrainingForm.compute(sessions, reference, context: context),
       acwr: acwrResult,
     );

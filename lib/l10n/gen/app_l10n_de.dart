@@ -49,6 +49,13 @@ class AppL10nDe extends AppL10n {
   String get analysisErrorToList => 'Zur Liste';
 
   @override
+  String get analysisExplainBody =>
+      'Fünf Bestandteile ergeben zusammen bis zu 103 Punkte, gedeckelt auf 100. Wer lange nicht trainiert, verliert zusätzlich — und zwar beschleunigt: drei Tage kosten 3 Punkte, sieben Tage 21, vierzehn Tage 70.';
+
+  @override
+  String get analysisExplainTitle => 'Wie sich die Form zusammensetzt';
+
+  @override
   String analysisHintRecency(int n) {
     return 'Was fehlt, ist Aktualität — eine Einheit heute bringt sofort $n Punkte.';
   }
@@ -80,6 +87,48 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get analysisToday => 'Form heute';
+
+  @override
+  String analysisWhyConsistency(int days, int span) {
+    return '$days Trainingstage in $span';
+  }
+
+  @override
+  String get analysisWhyFitness => 'Anteil am eigenen Höchststand';
+
+  @override
+  String get analysisWhyLoadNone => 'Keine Last in den letzten 28 Tagen';
+
+  @override
+  String get analysisWhyLoadRatio => 'Letzte 14 Tage gegen die 14 davor';
+
+  @override
+  String analysisWhyPenalty(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Tage ohne Training',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analysisWhyRecency(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Letzte Einheit vor # Tagen',
+      one: 'Letzte Einheit gestern',
+      zero: 'Heute trainiert',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analysisWhyToday => 'Heute trainiert';
+
+  @override
+  String get analysisWhyTodayNone => 'Heute keine Einheit';
 
   @override
   String get authBetaBadge => 'GESCHLOSSENE BETA';

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../core/theme/theme.dart';
 import '../../../l10n/gen/app_l10n.dart';
 import '../domain/training_session.dart';
 
@@ -23,4 +24,30 @@ String sessionName(AppL10n l10n, TrainingSession session) => switch (session) {
           SessionKind.recovery => l10n.typeRecovery,
           null => l10n.historyTitle,
         },
+    };
+
+/// Die Trainingsart als Wort.
+String sessionKindLabel(AppL10n l10n, TrainingSession session) =>
+    switch (session.kind) {
+      SessionKind.strength => l10n.typeStrength,
+      SessionKind.bodyweight => l10n.typeBodyweight,
+      SessionKind.cardio => l10n.typeCardio,
+      SessionKind.recovery => l10n.typeRecovery,
+      null => l10n.historyTitle,
+    };
+
+/// Ein Punkt, der die Art auf einen Blick zeigt.
+///
+/// **Farbe allein reicht nicht** (Vertrag R6) — der Punkt steht deshalb immer
+/// neben dem Wort. Er beschleunigt das Überfliegen, er ersetzt es nicht.
+///
+/// Bewusst keine Kategoriepalette: Der Entscheid aus Modul 5 gilt, dass die
+/// Trainingsart keine eigene Farbfamilie bekommt. Hier trägt sie nur eine
+/// Abstufung derselben Systemfarben.
+Color sessionKindColor(TrainingSession session) => switch (session.kind) {
+      SessionKind.strength => AtemColors.magenta,
+      SessionKind.bodyweight => AtemColors.violetLight,
+      SessionKind.cardio => AtemColors.cyan,
+      SessionKind.recovery => AtemColors.green,
+      null => AtemColors.textSecondary,
     };

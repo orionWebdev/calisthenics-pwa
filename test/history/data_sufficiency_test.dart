@@ -14,6 +14,16 @@ final _ref = DateTime(2026, 6, 1);
 DateTime _daysBefore(DateTime from, int days) =>
     DateTime(from.year, from.month, from.day - days);
 
+TrainingSession _historyOne(int daysAgo) => StrengthSession(
+      id: 'd$daysAgo',
+      userId: 'u',
+      date: _daysBefore(_ref, daysAgo),
+      createdAt: _daysBefore(_ref, daysAgo),
+      bodyweight: false,
+      duration: const Duration(minutes: 45),
+      rpe: 3,
+    );
+
 List<TrainingSession> _history({required int spanDays, required int every}) {
   final sessions = <TrainingSession>[];
   for (var d = spanDays; d >= 0; d -= every) {
@@ -75,6 +85,35 @@ void main() {
     test('zu wenige Einheiten genügen nicht, auch bei langer Spanne', () {
       final s = _history(spanDays: 56, every: 28);
       expect(DataSufficiency.hasAcwr(s, _ref), isFalse);
+    });
+
+    test('viel Historie schützt nicht vor einem leeren akuten Fenster', () {
+      // Der Fall des echten Nutzers: ein halbes Jahr Training, dann fünfzig
+      // Tage Pause, dann eine einzige Einheit. 46 Einheiten über 245 Tage sind
+      // reichlich — und trotzdem sagt der ACWR "massiv übertrainiert".
+      final lange = [
+        for (var d = 230; d >= 50; d -= 3) _history(spanDays: d, every: 999)
+      ].expand((e) => e).toList();
+      final mitRueckkehr = [...lange, _historyOne(0)];
+
+      expect(mitRueckkehr.length, greaterThan(40));
+      // Die Formel liefert einen Wert …
+      expect(Readiness.compute(mitRueckkehr, _ref).zone,
+          ReadinessZone.overreaching);
+      // … die Schwelle lässt ihn nicht durch.
+      expect(DataSufficiency.hasAcwr(mitRueckkehr, _ref), isFalse);
+    });
+
+    test('nach acht Einheiten im Fenster ist er wieder belastbar', () {
+      final s = [
+        for (var d = 230; d >= 50; d -= 3) _historyOne(d),
+        // Acht Einheiten INNERHALB der letzten 28 Tage. Der Tag 28 selbst
+        // liegt schon außerhalb — das Fenster reicht von heute bis heute-27.
+        for (var d = 0; d <= 21; d += 3) _historyOne(d),
+      ];
+      expect(s.where((x) => x.date.isAfter(_daysBefore(_ref, 28))).length,
+          greaterThanOrEqualTo(DataSufficiency.acwrMinimumSessions));
+      expect(DataSufficiency.hasAcwr(s, _ref), isTrue);
     });
 
     test('beides zusammen reicht', () {

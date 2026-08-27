@@ -19,7 +19,18 @@ class QuickActions extends StatelessWidget {
   final DashboardData data;
 
   /// Zielbereich der Navigation.
+  ///
+  /// Die Zahlen sind die Tab-Indizes des Rahmens: 0 Dashboard · 1 Workouts ·
+  /// 2 Verlauf · 3 und 4 noch leer. Sie standen hier fest verdrahtet aus einer
+  /// Zeit, in der es nur einen Bildschirm gab — Ernährung zeigte auf 2 und
+  /// landete nach dem Umbau im Verlauf. Kacheln ohne eigenes Ziel führen jetzt
+  /// dorthin, wo ihre Zahlen herkommen.
   final ValueChanged<int> onSelect;
+
+  /// Der Verlauf. Dort stehen die Einheiten, aus denen die Kachel ihre Zahlen
+  /// zieht.
+  static const _historyTab = 2;
+  static const _workoutsTab = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +59,9 @@ class QuickActions extends StatelessWidget {
                       l10n.dashboardQuickSetsPlan(plan, log.totalSets),
                     _ => l10n.dashboardQuickSetsPlain(log.totalSets),
                   },
-                  onTap: () => onSelect(1),
+                  // Die Workout-Kachel zeigt Sätze der letzten Einheit — sie
+                  // gehört in den Verlauf, nicht in die Planung.
+                  onTap: () => onSelect(_historyTab),
                 ),
               ),
               const SizedBox(width: AtemSpacing.gridGap),
@@ -75,7 +88,9 @@ class QuickActions extends StatelessWidget {
                           semanticLabel: l10n.dashboardProteinA11y(
                               n.proteinGrams, n.proteinTargetGrams),
                         ),
-                  onTap: () => onSelect(2),
+                  // Ernährung hat noch keinen Bereich. Bis dahin führt die
+                  // Kachel dorthin, wo überhaupt etwas steht.
+                  onTap: () => onSelect(_historyTab),
                 ),
               ),
             ],
@@ -97,7 +112,7 @@ class QuickActions extends StatelessWidget {
                       l10n.dashboardLiveHrv(hrv, rec.breathworkMinutes),
                     _ => l10n.dashboardBreathwork(rec.breathworkMinutes),
                   },
-                  onTap: () => onSelect(3),
+                  onTap: () => onSelect(_historyTab),
                 ),
               ),
               const SizedBox(width: AtemSpacing.gridGap),
@@ -121,7 +136,7 @@ class QuickActions extends StatelessWidget {
                           ),
                           gradient: AtemGradients.accent(AtemColors.violet),
                         ),
-                  onTap: () => onSelect(2),
+                  onTap: () => onSelect(_workoutsTab),
                 ),
               ),
             ],

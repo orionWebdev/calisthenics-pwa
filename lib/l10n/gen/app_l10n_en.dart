@@ -49,6 +49,13 @@ class AppL10nEn extends AppL10n {
   String get analysisErrorToList => 'Go to list';
 
   @override
+  String get analysisExplainBody =>
+      'Five parts add up to at most 103 points, capped at 100. Long breaks cost extra, and the cost accelerates: three days cost 3 points, seven days 21, fourteen days 70.';
+
+  @override
+  String get analysisExplainTitle => 'How the form score is built';
+
+  @override
   String analysisHintRecency(int n) {
     return 'What is missing is recency — one workout today adds $n points right away.';
   }
@@ -80,6 +87,48 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get analysisToday => 'Form today';
+
+  @override
+  String analysisWhyConsistency(int days, int span) {
+    return '$days training days in $span';
+  }
+
+  @override
+  String get analysisWhyFitness => 'Share of your own peak';
+
+  @override
+  String get analysisWhyLoadNone => 'No load in the last 28 days';
+
+  @override
+  String get analysisWhyLoadRatio => 'Last 14 days against the 14 before';
+
+  @override
+  String analysisWhyPenalty(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# days without training',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String analysisWhyRecency(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Last workout # days ago',
+      one: 'Last workout yesterday',
+      zero: 'Trained today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analysisWhyToday => 'Trained today';
+
+  @override
+  String get analysisWhyTodayNone => 'No workout today';
 
   @override
   String get authBetaBadge => 'CLOSED BETA';

@@ -282,6 +282,35 @@ void main() {
     }
   });
 
+  test('nach langer Pause meldet der Bogen keine Überlastung', () async {
+    // Der Fall, der auf dem Gerät auffiel: ein halbes Jahr Training, fünfzig
+    // Tage Pause, dann eine einzige Einheit. Die Formel liefert dafür ACWR 2,95
+    // und damit „überreizt" — das Gegenteil der Wahrheit.
+    final db = _db();
+    for (var d = 230; d >= 50; d -= 3) {
+      await _addSession(db,
+          date: _today.subtract(Duration(days: d)), duration: 45, rpe: 3);
+    }
+    await _addSession(db, date: _today, duration: 45, rpe: 3);
+
+    final data = await _repo(db).watchDashboard().first;
+
+    expect(data.readiness.zone, isNull,
+        reason: 'Ohne genug Einheiten im akuten Fenster ist der ACWR keine '
+            'Aussage, sondern eine Division.');
+  });
+
+  test('mit dichtem Training kommt die Zone zurück', () async {
+    final db = _db();
+    for (var d = 60; d >= 0; d -= 3) {
+      await _addSession(db,
+          date: _today.subtract(Duration(days: d)), duration: 45, rpe: 3);
+    }
+
+    final data = await _repo(db).watchDashboard().first;
+    expect(data.readiness.zone, isNotNull);
+  });
+
   test('der Strom meldet, wenn eine Einheit dazukommt', () async {
     final db = _db();
     await _seedHistory(db);

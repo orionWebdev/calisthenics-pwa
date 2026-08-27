@@ -6,6 +6,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/history_providers.dart';
 import '../../domain/data_sufficiency.dart';
+import '../../domain/history_summary.dart';
 import '../../domain/training_form.dart';
 import '../history_zone_ui.dart';
 import '../widgets/form_chart.dart';
@@ -85,7 +86,7 @@ class AnalysisScreen extends ConsumerWidget {
                   child: FormChart(series: ref.watch(formSeriesProvider)),
                 ),
                 const SizedBox(height: 28),
-                _Breakdown(form: summary.form),
+                _Breakdown(form: summary.form, summary: summary),
               ],
             );
           },
@@ -177,20 +178,54 @@ class _Thin extends StatelessWidget {
 }
 
 class _Breakdown extends StatelessWidget {
-  const _Breakdown({required this.form});
+  const _Breakdown({required this.form, required this.summary});
 
   final FormResult form;
+  final HistorySummary summary;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
 
-    final rows = <(String, int, int)>[
-      (l10n.analysisCompConsistency, form.consistency, 35),
-      (l10n.analysisCompLoad, form.loadLevel, 30),
-      (l10n.analysisCompRecency, form.recency, 15),
-      (l10n.analysisCompFitness, form.fitnessVsPeak, 15),
-      (l10n.analysisCompToday, form.sessionBonus, 8),
+    final days = summary.daysSinceLast ?? 0;
+
+    // **Jede Komponente mit ihrer Begründung.** Eine Zahlenreihe erklärt
+    // nichts; „Aktualität 0 von 15 — letzte Einheit vor 50 Tagen" schon.
+    final rows = <(String, int, int, String)>[
+      (
+        l10n.analysisCompConsistency,
+        form.consistency,
+        35,
+        l10n.analysisWhyConsistency(summary.trainingDays, summary.spanDays),
+      ),
+      (
+        l10n.analysisCompLoad,
+        form.loadLevel,
+        30,
+        form.loadLevel == 0
+            ? l10n.analysisWhyLoadNone
+            : l10n.analysisWhyLoadRatio,
+      ),
+      (
+        l10n.analysisCompRecency,
+        form.recency,
+        15,
+        l10n.analysisWhyRecency(days)
+      ),
+      (
+        l10n.analysisCompFitness,
+        form.fitnessVsPeak,
+        15,
+        l10n.analysisWhyFitness
+      ),
+      (
+        l10n.analysisCompToday,
+        form.sessionBonus,
+        8,
+        form.sessionBonus == 0
+            ? l10n.analysisWhyTodayNone
+            : l10n.analysisWhyToday,
+      ),
     ];
 
     return Column(
@@ -224,8 +259,8 @@ class _Breakdown extends StatelessWidget {
           Text(trend, style: AtemType.labelSmall.of(context)),
         ],
         const SizedBox(height: 16),
-        for (final (label, value, max) in rows) ...[
-          _Row(label: label, value: value, max: max),
+        for (final (label, value, max, why) in rows) ...[
+          _Row(label: label, value: value, max: max, why: why),
           const SizedBox(height: 14),
         ],
         if (form.inactivityPenalty > 0)
@@ -235,6 +270,7 @@ class _Breakdown extends StatelessWidget {
             label: l10n.analysisCompPenalty,
             value: -form.inactivityPenalty,
             max: 0,
+            why: l10n.analysisWhyPenalty(days),
             negative: true,
           ),
         if (form.recency < 15) ...[
@@ -244,6 +280,22 @@ class _Breakdown extends StatelessWidget {
             style: AtemType.labelSmall.of(context),
           ),
         ],
+        const SizedBox(height: 24),
+        // Die Rechnung selbst, einmal in Worten. Ohne sie bleibt die Zerlegung
+        // eine Zahlenreihe, deren Summe nicht aufgeht.
+        AtemCard.list(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.analysisExplainTitle,
+                  style: AtemType.labelMedium.of(context)),
+              const SizedBox(height: 8),
+              Text(l10n.analysisExplainBody,
+                  style: AtemType.labelSmall.of(context)),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -254,12 +306,16 @@ class _Row extends StatelessWidget {
     required this.label,
     required this.value,
     required this.max,
+    required this.why,
     this.negative = false,
   });
 
   final String label;
   final int value;
   final int max;
+
+  /// Woraus die Zahl entsteht. Ohne diese Zeile ist der Balken nur ein Balken.
+  final String why;
   final bool negative;
 
   @override
@@ -275,7 +331,7 @@ class _Row extends StatelessWidget {
         negative ? value.toString() : l10n.analysisCompValue(value, max);
 
     return Semantics(
-      label: '$label: $text',
+      label: '$label: $text. $why',
       child: ExcludeSemantics(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,6 +360,8 @@ class _Row extends StatelessWidget {
                 accent: color,
               ),
             ],
+            const SizedBox(height: 5),
+            Text(why, style: AtemType.labelMicro.of(context)),
           ],
         ),
       ),
