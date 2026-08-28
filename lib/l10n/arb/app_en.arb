@@ -2331,6 +2331,77 @@
   "@profileLockedWhy": {
     "description": "profile.locked.why"
   },
+  "quickForm": "Form",
+  "@quickForm": {
+    "description": "Kachelüberschrift"
+  },
+  "quickFormFalling": "falling",
+  "@quickFormFalling": {
+    "description": "Richtung des Formtrends"
+  },
+  "quickFormFlat": "steady",
+  "@quickFormFlat": {
+    "description": "Richtung des Formtrends"
+  },
+  "quickFormRising": "rising",
+  "@quickFormRising": {
+    "description": "Richtung des Formtrends"
+  },
+  "quickFormValue": "{v} of 100",
+  "@quickFormValue": {
+    "description": "Formwert in der Kachel",
+    "placeholders": {
+      "v": {
+        "type": "int"
+      }
+    }
+  },
+  "quickLast": "Last workout",
+  "@quickLast": {
+    "description": "Kachelüberschrift"
+  },
+  "quickLastDays": "{n, plural, one {1 day} other {{n} days}} ago",
+  "@quickLastDays": {
+    "description": "Abstand zur letzten Einheit",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "quickLastToday": "today",
+  "@quickLastToday": {
+    "description": "Die letzte Einheit war heute"
+  },
+  "quickNext": "Next appointment",
+  "@quickNext": {
+    "description": "Kachelüberschrift"
+  },
+  "quickNextDays": "in {n} days",
+  "@quickNextDays": {
+    "description": "Terminabstand",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "quickNextNone": "Nothing planned",
+  "@quickNextNone": {
+    "description": "Kein Termin in Sicht"
+  },
+  "quickNextToday": "today",
+  "@quickNextToday": {
+    "description": "Terminabstand"
+  },
+  "quickNextTomorrow": "tomorrow",
+  "@quickNextTomorrow": {
+    "description": "Terminabstand"
+  },
+  "quickNoSessions": "No workout yet",
+  "@quickNoSessions": {
+    "description": "Leerer Bestand"
+  },
   "regionArms": "Arms",
   "regionBack": "Back",
   "regionChest": "Chest",

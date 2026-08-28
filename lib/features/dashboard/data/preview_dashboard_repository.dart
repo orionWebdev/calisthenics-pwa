@@ -53,15 +53,25 @@ class PreviewDashboardRepository implements DashboardRepository {
         planName: 'Upper Body Power',
         totalSets: 24,
       ),
-      nutrition: const NutritionSummary(
-        proteinGrams: 165,
-        proteinTargetGrams: 190,
+      form: const FormSummary(
+        score: 68,
+        rising: true,
+        changed: true,
+        zoneDays: 2,
       ),
-      recovery: const RecoverySummary(liveHrvMs: 82, breathworkMinutes: 3),
-      periodization: const PeriodizationSummary(
-        currentWeek: 6,
-        totalWeeks: 12,
-        phaseName: 'Hypertrophie',
+      lastSession: const LastSessionSummary(
+        id: 's1',
+        name: 'Upper Body Power',
+        daysAgo: 2,
+        load: 412,
+        loadBefore: 380,
+      ),
+      nextSession: NextSession(
+        id: 't1',
+        title: 'Lower Body',
+        date: DateTime(2026, 8, 30),
+        daysAhead: 2,
+        planId: 'p2',
       ),
     );
   }

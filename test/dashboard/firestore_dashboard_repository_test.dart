@@ -85,16 +85,53 @@ void main() {
     expect(data.readiness.isLive, isFalse);
   });
 
-  test('was keine Quelle hat, bleibt leer statt erfunden', () async {
+  test('was keine Quelle hat, erscheint gar nicht mehr', () async {
+    // Ernährung, HRV und Periodisierung standen als Kacheln da und sagten
+    // dauerhaft „Noch keine Daten" — drei leere Felder auf der halben
+    // Dashboard-Fläche. Sie sind entfallen, samt ihren Modellen.
     final db = _db();
     await _seedHistory(db);
 
     final data = await _repo(db).watchDashboard().first;
-
-    expect(data.nutrition, isNull);
-    expect(data.recovery, isNull);
-    expect(data.periodization, isNull);
     expect(data.user.unreadNotifications, 0);
+  });
+
+  group('Die Kacheln zeigen, was die App weiss', () {
+    test('Formwert und Richtung', () async {
+      final db = _db();
+      await _seedHistory(db);
+
+      final data = await _repo(db).watchDashboard().first;
+      expect(data.form, isNotNull);
+      expect(data.form!.score, inInclusiveRange(0, 100));
+    });
+
+    test('die letzte Einheit mit ihrer Last', () async {
+      final db = _db();
+      await _seedHistory(db);
+
+      final data = await _repo(db).watchDashboard().first;
+      expect(data.lastSession, isNotNull);
+      expect(data.lastSession!.load, greaterThan(0));
+      expect(data.lastSession!.daysAgo, greaterThanOrEqualTo(0));
+    });
+
+    test('ohne Einheiten bleiben beide leer, statt null zu behaupten',
+        () async {
+      final db = _db();
+      final data = await _repo(db).watchDashboard().first;
+      expect(data.form, isNull);
+      expect(data.lastSession, isNull,
+          reason: '„Form 0" wäre eine Aussage über jemanden, der nie '
+              'trainiert hat');
+    });
+
+    test('ohne Termin in der Zukunft bleibt die Kachel leer', () async {
+      final db = _db();
+      await _seedHistory(db);
+      final data = await _repo(db).watchDashboard().first;
+      expect(data.nextSession, isNull);
+    });
   });
 
   group('Wochenkurve', () {

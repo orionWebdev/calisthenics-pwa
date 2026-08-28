@@ -3559,6 +3559,90 @@ abstract class AppL10n {
   /// **'Name und E-Mail kommen aus deinem Google-Konto und werden hier nur angezeigt.'**
   String get profileLockedWhy;
 
+  /// Kachelüberschrift
+  ///
+  /// In de, this message translates to:
+  /// **'Form'**
+  String get quickForm;
+
+  /// Richtung des Formtrends
+  ///
+  /// In de, this message translates to:
+  /// **'fallend'**
+  String get quickFormFalling;
+
+  /// Richtung des Formtrends
+  ///
+  /// In de, this message translates to:
+  /// **'gleichbleibend'**
+  String get quickFormFlat;
+
+  /// Richtung des Formtrends
+  ///
+  /// In de, this message translates to:
+  /// **'steigend'**
+  String get quickFormRising;
+
+  /// Formwert in der Kachel
+  ///
+  /// In de, this message translates to:
+  /// **'{v} von 100'**
+  String quickFormValue(int v);
+
+  /// Kachelüberschrift
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Einheit'**
+  String get quickLast;
+
+  /// Abstand zur letzten Einheit
+  ///
+  /// In de, this message translates to:
+  /// **'vor {n, plural, one {einem Tag} other {{n} Tagen}}'**
+  String quickLastDays(int n);
+
+  /// Die letzte Einheit war heute
+  ///
+  /// In de, this message translates to:
+  /// **'heute'**
+  String get quickLastToday;
+
+  /// Kachelüberschrift
+  ///
+  /// In de, this message translates to:
+  /// **'Nächster Termin'**
+  String get quickNext;
+
+  /// Terminabstand
+  ///
+  /// In de, this message translates to:
+  /// **'in {n} Tagen'**
+  String quickNextDays(int n);
+
+  /// Kein Termin in Sicht
+  ///
+  /// In de, this message translates to:
+  /// **'Nichts geplant'**
+  String get quickNextNone;
+
+  /// Terminabstand
+  ///
+  /// In de, this message translates to:
+  /// **'heute'**
+  String get quickNextToday;
+
+  /// Terminabstand
+  ///
+  /// In de, this message translates to:
+  /// **'morgen'**
+  String get quickNextTomorrow;
+
+  /// Leerer Bestand
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Einheit'**
+  String get quickNoSessions;
+
   /// Körperregion, Filter
   ///
   /// In de, this message translates to:

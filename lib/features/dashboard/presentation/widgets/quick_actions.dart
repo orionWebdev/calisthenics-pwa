@@ -9,6 +9,19 @@ import '../../domain/dashboard_data.dart';
 ///
 /// Sie waren im Vorgänger **nicht antippbar** — `onTapDown` war verdrahtet,
 /// `onTap` fehlte. Sie federten beim Antippen ein und taten nichts.
+///
+/// ## Drei von ihnen zeigten dauerhaft „Noch keine Daten"
+///
+/// Das Board zeichnet Ernährung, Recovery mit HRV und Periodisierung. Für
+/// alle drei gibt es in V1 keine Datenquelle — Health Connect steht
+/// ausdrücklich nicht darin, Ernährung wird nirgends erfasst, und eine
+/// Periodisierung gibt es weder in dieser App noch in der Vorgängerin. Die
+/// Felder waren im Repository fest auf `null`.
+///
+/// Drei leere Kacheln nehmen die halbe Fläche des Dashboards ein und sagen
+/// nie etwas. Sie zeigen jetzt, was die App tatsächlich weiss: den Formwert,
+/// die letzte Einheit mit ihrem Vergleich und den nächsten Termin. Die
+/// gezeichneten Kacheln kommen zurück, wenn ihre Daten kommen — nicht vorher.
 class QuickActions extends StatelessWidget {
   const QuickActions({
     super.key,
@@ -35,10 +48,6 @@ class QuickActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final log = data.workoutLog;
-    final n = data.nutrition;
-    final rec = data.recovery;
-    final period = data.periodization;
 
     return Column(
       children: [
@@ -46,53 +55,9 @@ class QuickActions extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: _Tile(
-                  accent: AtemColors.cyan,
-                  glyph: _Glyph.bars,
-                  title: l10n.dashboardQuickWorkout,
-                  // Der Satz wird hier gebaut, nicht in der Domäne — sonst
-                  // liesse er sich nicht übersetzen.
-                  body: switch (log) {
-                    null => l10n.dashboardNoDataYet,
-                    WorkoutLogSummary(planName: final plan?) =>
-                      l10n.dashboardQuickSetsPlan(plan, log.totalSets),
-                    _ => l10n.dashboardQuickSetsPlain(log.totalSets),
-                  },
-                  // Die Workout-Kachel zeigt Sätze der letzten Einheit — sie
-                  // gehört in den Verlauf, nicht in die Planung.
-                  onTap: () => onSelect(_historyTab),
-                ),
-              ),
+              Expanded(child: _workout(l10n)),
               const SizedBox(width: AtemSpacing.gridGap),
-              Expanded(
-                child: _Tile(
-                  accent: AtemColors.magenta,
-                  glyph: _Glyph.bolt,
-                  title: l10n.dashboardQuickNutrition,
-                  body: n == null
-                      ? l10n.dashboardNoDataYet
-                      : l10n.dashboardProteinOf(n.proteinGrams) +
-                          l10n.dashboardProteinGoal(n.proteinTargetGrams),
-                  semanticBody: n == null
-                      ? null
-                      : l10n.dashboardProteinA11y(
-                          n.proteinGrams, n.proteinTargetGrams),
-                  // Kein Ring ohne Zahl: Ein Ring bei null Prozent sähe aus wie
-                  // ein Messwert und wäre keiner.
-                  trailing: n == null
-                      ? null
-                      : AtemProgressRing(
-                          value: n.progress,
-                          label: '${n.progressPercent}%',
-                          semanticLabel: l10n.dashboardProteinA11y(
-                              n.proteinGrams, n.proteinTargetGrams),
-                        ),
-                  // Ernährung hat noch keinen Bereich. Bis dahin führt die
-                  // Kachel dorthin, wo überhaupt etwas steht.
-                  onTap: () => onSelect(_historyTab),
-                ),
-              ),
+              Expanded(child: _form(l10n)),
             ],
           ),
         ),
@@ -101,48 +66,107 @@ class QuickActions extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: _Tile(
-                  accent: AtemColors.green,
-                  glyph: _Glyph.wave,
-                  title: l10n.dashboardQuickRecovery,
-                  body: switch (rec) {
-                    null => l10n.dashboardNoDataYet,
-                    RecoverySummary(liveHrvMs: final hrv?) =>
-                      l10n.dashboardLiveHrv(hrv, rec.breathworkMinutes),
-                    _ => l10n.dashboardBreathwork(rec.breathworkMinutes),
-                  },
-                  onTap: () => onSelect(_historyTab),
-                ),
-              ),
+              Expanded(child: _last(l10n)),
               const SizedBox(width: AtemSpacing.gridGap),
-              Expanded(
-                child: _Tile(
-                  accent: AtemColors.violet,
-                  glyph: _Glyph.calendar,
-                  title: l10n.dashboardQuickPeriod,
-                  body: period == null
-                      ? l10n.dashboardNoDataYet
-                      : l10n.dashboardPhaseWeek(period.currentWeek,
-                          period.totalWeeks, period.phaseName),
-                  footer: period == null
-                      ? null
-                      : AtemProgressBar.share(
-                          value: period.progress,
-                          semanticLabel: l10n.dashboardPhaseA11y(
-                            period.currentWeek,
-                            period.totalWeeks,
-                            period.phaseName,
-                          ),
-                          gradient: AtemGradients.accent(AtemColors.violet),
-                        ),
-                  onTap: () => onSelect(_workoutsTab),
-                ),
-              ),
+              Expanded(child: _next(l10n)),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  /// Sätze der letzten Einheit — unverändert aus dem Board.
+  Widget _workout(AppL10n l10n) {
+    final log = data.workoutLog;
+    return _Tile(
+      accent: AtemColors.cyan,
+      glyph: _Glyph.bars,
+      title: l10n.dashboardQuickWorkout,
+      // Der Satz wird hier gebaut, nicht in der Domäne — sonst liesse er sich
+      // nicht übersetzen.
+      body: switch (log) {
+        null => l10n.quickNoSessions,
+        WorkoutLogSummary(planName: final plan?) =>
+          l10n.dashboardQuickSetsPlan(plan, log.totalSets),
+        _ => l10n.dashboardQuickSetsPlain(log.totalSets),
+      },
+      onTap: () => onSelect(_historyTab),
+    );
+  }
+
+  /// Der Formwert. **Die Richtung steht als Wort daneben**, nicht als Farbe —
+  /// ob steigend gut ist, hängt davon ab, was jemand vorhat.
+  Widget _form(AppL10n l10n) {
+    final form = data.form;
+    return _Tile(
+      accent: AtemColors.magenta,
+      glyph: _Glyph.bolt,
+      title: l10n.quickForm,
+      body: form == null
+          ? l10n.quickNoSessions
+          : '${l10n.quickFormValue(form.score)} · '
+              '${!form.changed ? l10n.quickFormFlat : (form.rising ? l10n.quickFormRising : l10n.quickFormFalling)}',
+      trailing: form == null
+          ? null
+          : AtemProgressRing(
+              value: (form.score / 100).clamp(0.0, 1.0),
+              label: '${form.score}',
+              semanticLabel: l10n.quickFormValue(form.score),
+            ),
+      onTap: () => onSelect(_historyTab),
+    );
+  }
+
+  /// Die letzte Einheit mit dem Abstand und, wenn es einen Bezug gibt, der
+  /// Veränderung der Last.
+  Widget _last(AppL10n l10n) {
+    final last = data.lastSession;
+    if (last == null) {
+      return _Tile(
+        accent: AtemColors.green,
+        glyph: _Glyph.wave,
+        title: l10n.quickLast,
+        body: l10n.quickNoSessions,
+        onTap: () => onSelect(_historyTab),
+      );
+    }
+
+    final when = last.daysAgo == 0
+        ? l10n.quickLastToday
+        : l10n.quickLastDays(last.daysAgo);
+    final before = last.loadBefore;
+    final delta = before == null || before == 0
+        ? null
+        : (last.load - before).round();
+
+    return _Tile(
+      accent: AtemColors.green,
+      glyph: _Glyph.wave,
+      title: l10n.quickLast,
+      body: delta == null || delta == 0
+          ? '${last.name} · $when'
+          : '${last.name} · ${l10n.detailLoad} '
+              '${delta > 0 ? '+' : '−'}${delta.abs()}',
+      onTap: () => onSelect(_historyTab),
+    );
+  }
+
+  /// Der nächste Termin. Führt in die Workouts, wo er gestartet wird.
+  Widget _next(AppL10n l10n) {
+    final next = data.nextSession;
+    return _Tile(
+      accent: AtemColors.violet,
+      glyph: _Glyph.calendar,
+      title: l10n.quickNext,
+      body: next == null
+          ? l10n.quickNextNone
+          : '${next.title} · ${switch (next.daysAhead) {
+              0 => l10n.quickNextToday,
+              1 => l10n.quickNextTomorrow,
+              _ => l10n.quickNextDays(next.daysAhead),
+            }}',
+      onTap: () => onSelect(_workoutsTab),
     );
   }
 }
@@ -156,9 +180,7 @@ class _Tile extends StatelessWidget {
     required this.title,
     required this.body,
     required this.onTap,
-    this.semanticBody,
     this.trailing,
-    this.footer,
   });
 
   final Color accent;
@@ -166,17 +188,14 @@ class _Tile extends StatelessWidget {
   final String title;
   final String body;
 
-  /// Falls der sichtbare Text vorgelesen schlecht klingt.
-  final String? semanticBody;
 
   final Widget? trailing;
-  final Widget? footer;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) => AtemCard.list(
         onTap: onTap,
-        semanticLabel: '$title. ${semanticBody ?? body}',
+        semanticLabel: '$title. $body',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -209,7 +228,6 @@ class _Tile extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: AtemType.labelSmall.of(context)),
-            if (footer != null) ...[const SizedBox(height: 8), footer!],
           ],
         ),
       );

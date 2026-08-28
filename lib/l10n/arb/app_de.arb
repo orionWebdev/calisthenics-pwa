@@ -3044,6 +3044,77 @@
   "@profileLockedWhy": {
     "description": "profile.locked.why"
   },
+  "quickForm": "Form",
+  "@quickForm": {
+    "description": "Kachelüberschrift"
+  },
+  "quickFormFalling": "fallend",
+  "@quickFormFalling": {
+    "description": "Richtung des Formtrends"
+  },
+  "quickFormFlat": "gleichbleibend",
+  "@quickFormFlat": {
+    "description": "Richtung des Formtrends"
+  },
+  "quickFormRising": "steigend",
+  "@quickFormRising": {
+    "description": "Richtung des Formtrends"
+  },
+  "quickFormValue": "{v} von 100",
+  "@quickFormValue": {
+    "description": "Formwert in der Kachel",
+    "placeholders": {
+      "v": {
+        "type": "int"
+      }
+    }
+  },
+  "quickLast": "Letzte Einheit",
+  "@quickLast": {
+    "description": "Kachelüberschrift"
+  },
+  "quickLastDays": "vor {n, plural, one {einem Tag} other {{n} Tagen}}",
+  "@quickLastDays": {
+    "description": "Abstand zur letzten Einheit",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "quickLastToday": "heute",
+  "@quickLastToday": {
+    "description": "Die letzte Einheit war heute"
+  },
+  "quickNext": "Nächster Termin",
+  "@quickNext": {
+    "description": "Kachelüberschrift"
+  },
+  "quickNextDays": "in {n} Tagen",
+  "@quickNextDays": {
+    "description": "Terminabstand",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "quickNextNone": "Nichts geplant",
+  "@quickNextNone": {
+    "description": "Kein Termin in Sicht"
+  },
+  "quickNextToday": "heute",
+  "@quickNextToday": {
+    "description": "Terminabstand"
+  },
+  "quickNextTomorrow": "morgen",
+  "@quickNextTomorrow": {
+    "description": "Terminabstand"
+  },
+  "quickNoSessions": "Noch keine Einheit",
+  "@quickNoSessions": {
+    "description": "Leerer Bestand"
+  },
   "regionArms": "Arme",
   "@regionArms": {
     "description": "Körperregion, Filter"

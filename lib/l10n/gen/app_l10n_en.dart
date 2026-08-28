@@ -2090,6 +2090,60 @@ class AppL10nEn extends AppL10n {
       'Your name and email come from your Google account and are only shown here.';
 
   @override
+  String get quickForm => 'Form';
+
+  @override
+  String get quickFormFalling => 'falling';
+
+  @override
+  String get quickFormFlat => 'steady';
+
+  @override
+  String get quickFormRising => 'rising';
+
+  @override
+  String quickFormValue(int v) {
+    return '$v of 100';
+  }
+
+  @override
+  String get quickLast => 'Last workout';
+
+  @override
+  String quickLastDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days',
+      one: '1 day',
+    );
+    return '$_temp0 ago';
+  }
+
+  @override
+  String get quickLastToday => 'today';
+
+  @override
+  String get quickNext => 'Next appointment';
+
+  @override
+  String quickNextDays(int n) {
+    return 'in $n days';
+  }
+
+  @override
+  String get quickNextNone => 'Nothing planned';
+
+  @override
+  String get quickNextToday => 'today';
+
+  @override
+  String get quickNextTomorrow => 'tomorrow';
+
+  @override
+  String get quickNoSessions => 'No workout yet';
+
+  @override
   String get regionArms => 'Arms';
 
   @override

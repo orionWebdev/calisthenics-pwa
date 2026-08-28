@@ -2096,6 +2096,60 @@ class AppL10nDe extends AppL10n {
       'Name und E-Mail kommen aus deinem Google-Konto und werden hier nur angezeigt.';
 
   @override
+  String get quickForm => 'Form';
+
+  @override
+  String get quickFormFalling => 'fallend';
+
+  @override
+  String get quickFormFlat => 'gleichbleibend';
+
+  @override
+  String get quickFormRising => 'steigend';
+
+  @override
+  String quickFormValue(int v) {
+    return '$v von 100';
+  }
+
+  @override
+  String get quickLast => 'Letzte Einheit';
+
+  @override
+  String quickLastDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Tagen',
+      one: 'einem Tag',
+    );
+    return 'vor $_temp0';
+  }
+
+  @override
+  String get quickLastToday => 'heute';
+
+  @override
+  String get quickNext => 'Nächster Termin';
+
+  @override
+  String quickNextDays(int n) {
+    return 'in $n Tagen';
+  }
+
+  @override
+  String get quickNextNone => 'Nichts geplant';
+
+  @override
+  String get quickNextToday => 'heute';
+
+  @override
+  String get quickNextTomorrow => 'morgen';
+
+  @override
+  String get quickNoSessions => 'Noch keine Einheit';
+
+  @override
   String get regionArms => 'Arme';
 
   @override

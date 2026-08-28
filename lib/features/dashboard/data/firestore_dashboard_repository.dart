@@ -6,6 +6,9 @@ import '../../history/domain/data_sufficiency.dart';
 import '../../history/domain/readiness.dart';
 import '../../history/domain/session_repository.dart';
 import '../../history/domain/training_load.dart';
+import '../../history/domain/history_summary.dart';
+import '../../history/domain/session_comparison.dart';
+import '../../history/domain/training_form.dart';
 import '../../history/domain/training_session.dart';
 import '../domain/dashboard_data.dart';
 import '../domain/dashboard_repository.dart';
@@ -114,9 +117,101 @@ class FirestoreDashboardRepository implements DashboardRepository {
       performance: _weeklyPerformance(sessions, today, context),
       session: _todaySession(schedule, today),
       workoutLog: _lastWorkout(sessions),
-      nutrition: null,
-      recovery: null,
-      periodization: null,
+      form: _form(sessions, today, context),
+      lastSession: _lastSession(sessions, today, context),
+      nextSession: _nextSession(schedule, today),
+    );
+  }
+
+  /// Formwert und Richtung.
+  ///
+  /// Die Richtung kommt aus dem Trend der Formrechnung, nicht aus einem
+  /// eigenen Vergleich — sonst gäbe es zwei Antworten auf dieselbe Frage.
+  FormSummary? _form(
+    List<TrainingSession> sessions,
+    DateTime today,
+    LoadContext context,
+  ) {
+    if (sessions.isEmpty) return null;
+    final summary = HistorySummary.from(sessions, today, context: context);
+    final score = summary.form.score;
+    if (score == null) return null;
+
+    return FormSummary(
+      score: score,
+      rising: summary.form.trend == FormTrend.rising,
+      changed: summary.form.trend != FormTrend.none &&
+          summary.form.trend != FormTrend.stable,
+      zoneDays: summary.daysSinceLast,
+    );
+  }
+
+  /// Die letzte Einheit mit der Last ihres Bezugs.
+  LastSessionSummary? _lastSession(
+    List<TrainingSession> sessions,
+    DateTime today,
+    LoadContext context,
+  ) {
+    if (sessions.isEmpty) return null;
+    final last = sessions.reduce((a, b) => a.date.isAfter(b.date) ? a : b);
+    final comparison =
+        SessionComparison.forSession(last, sessions, context: context);
+
+    return LastSessionSummary(
+      id: last.id,
+      // Der Name kommt aus der Oberfläche — die Datenschicht kennt die
+      // Sprache nicht. Hier steht der Planname, wenn es einen gibt.
+      name: last is StrengthSession && last.planName != null
+          ? last.planName!
+          : '',
+      daysAgo: DateTime(today.year, today.month, today.day)
+          .difference(DateTime(last.date.year, last.date.month, last.date.day))
+          .inDays,
+      load: comparison.current.load,
+      loadBefore: comparison.previous?.load,
+    );
+  }
+
+  /// Der nächste Termin **nach heute**.
+  ///
+  /// Der heutige steht schon in der Session-Card darüber; ihn hier zu
+  /// wiederholen wäre dieselbe Auskunft zweimal.
+  NextSession? _nextSession(
+    QuerySnapshot<Map<String, dynamic>> schedule,
+    DateTime today,
+  ) {
+    final from = DateTime(today.year, today.month, today.day);
+    DateTime? bestDate;
+    Map<String, dynamic>? best;
+    String? bestId;
+
+    for (final doc in schedule.docs) {
+      final data = doc.data();
+      if (data['completed'] == true || data['status'] == 'completed') continue;
+
+      final raw = data['date'];
+      final date = switch (raw) {
+        String() when raw.length >= 10 => DateTime.tryParse(raw.substring(0, 10)),
+        Timestamp(:final toDate) => toDate(),
+        _ => null,
+      };
+      if (date == null) continue;
+      final day = DateTime(date.year, date.month, date.day);
+      if (day.isBefore(from) || day == from) continue;
+      if (bestDate == null || day.isBefore(bestDate)) {
+        bestDate = day;
+        best = data;
+        bestId = doc.id;
+      }
+    }
+
+    if (bestDate == null || best == null) return null;
+    return NextSession(
+      id: bestId!,
+      title: _nonEmpty(best['planName']) ?? '',
+      date: bestDate,
+      daysAhead: bestDate.difference(from).inDays,
+      planId: _nonEmpty(best['planId']),
     );
   }
 

@@ -134,47 +134,8 @@ class WorkoutLogSummary {
   final String? planName;
 }
 
-@immutable
-class NutritionSummary {
-  const NutritionSummary({
-    required this.proteinGrams,
-    required this.proteinTargetGrams,
-  });
 
-  final int proteinGrams;
-  final int proteinTargetGrams;
 
-  /// 0.0–1.0, für den Mini-Ring.
-  double get progress => proteinTargetGrams <= 0
-      ? 0
-      : (proteinGrams / proteinTargetGrams).clamp(0.0, 1.0);
-
-  int get progressPercent => (progress * 100).round();
-}
-
-@immutable
-class RecoverySummary {
-  const RecoverySummary({this.liveHrvMs, required this.breathworkMinutes});
-
-  final int? liveHrvMs;
-  final int breathworkMinutes;
-}
-
-@immutable
-class PeriodizationSummary {
-  const PeriodizationSummary({
-    required this.currentWeek,
-    required this.totalWeeks,
-    required this.phaseName,
-  });
-
-  final int currentWeek;
-  final int totalWeeks;
-  final String phaseName;
-
-  double get progress =>
-      totalWeeks <= 0 ? 0 : (currentWeek / totalWeeks).clamp(0.0, 1.0);
-}
 
 /// Vollständiger Zustand des Dashboards. Wird vom Repository geliefert —
 /// der Screen enthält keine eigenen Werte.
@@ -186,9 +147,9 @@ class DashboardData {
     required this.performance,
     required this.session,
     required this.workoutLog,
-    required this.nutrition,
-    required this.recovery,
-    required this.periodization,
+    this.form,
+    this.lastSession,
+    this.nextSession,
   });
 
   final UserSummary user;
@@ -198,15 +159,74 @@ class DashboardData {
   /// `null`, wenn für heute nichts geplant ist.
   final TodaySession? session;
 
-  /// Die folgenden vier sind `null`, solange es **keine Datenquelle** gibt.
-  ///
-  /// Ernährung, Regenerationsminuten und Periodisierung werden nirgends
-  /// erfasst — weder in der PWA noch in dieser App, und Health Connect steht
-  /// ausdrücklich nicht in V1. Ein Platzhalterwert wäre eine Erfindung, die auf
-  /// dem Bildschirm wie eine Messung aussieht. Die Oberfläche zeigt stattdessen
-  /// offen, dass nichts vorliegt.
+  /// Sätze der letzten Einheit. `null`, wenn keine welche trägt.
   final WorkoutLogSummary? workoutLog;
-  final NutritionSummary? nutrition;
-  final RecoverySummary? recovery;
-  final PeriodizationSummary? periodization;
+
+  /// Formwert und Richtung.
+  final FormSummary? form;
+
+  /// Die letzte Einheit, mit dem Vergleich zu ihrem Bezug.
+  final LastSessionSummary? lastSession;
+
+  /// Der nächste Termin nach heute.
+  final NextSession? nextSession;
+}
+
+/// Der Formwert für die Kachel.
+@immutable
+class FormSummary {
+  const FormSummary({
+    required this.score,
+    required this.rising,
+    required this.changed,
+    required this.zoneDays,
+  });
+
+  final int score;
+  final bool rising;
+  final bool changed;
+
+  /// Tage seit der letzten Einheit — die Zahl, aus der die Zone folgt.
+  final int? zoneDays;
+}
+
+/// Die letzte Einheit mit ihrem Vergleich.
+@immutable
+class LastSessionSummary {
+  const LastSessionSummary({
+    required this.id,
+    required this.name,
+    required this.daysAgo,
+    required this.load,
+    this.loadBefore,
+  });
+
+  final String id;
+  final String name;
+  final int daysAgo;
+  final double load;
+
+  /// Die Last der Bezugseinheit. `null`, wenn es keine gibt.
+  final double? loadBefore;
+}
+
+/// Der nächste geplante Termin.
+@immutable
+class NextSession {
+  const NextSession({
+    required this.id,
+    required this.title,
+    required this.date,
+    required this.daysAhead,
+    this.planId,
+  });
+
+  final String id;
+  final String title;
+  final DateTime date;
+
+  /// 0 heißt heute, 1 morgen.
+  final int daysAhead;
+
+  final String? planId;
 }
