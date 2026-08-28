@@ -78,8 +78,6 @@ class _AppShellState extends ConsumerState<AppShell>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-
     return Scaffold(
       backgroundColor: AtemColors.base,
       body: Stack(
@@ -113,8 +111,6 @@ class _AppShellState extends ConsumerState<AppShell>
                   DashboardScreen(onSelectTab: _select),
                   WorkoutsScreen(onStart: _start),
                   const HistoryScreen(),
-                  _Soon(l10n: l10n),
-                  _Soon(l10n: l10n),
                 ],
               ),
             ),
@@ -177,21 +173,4 @@ class _UndoSlot extends ConsumerWidget {
             ),
     );
   }
-}
-
-class _Soon extends StatelessWidget {
-  const _Soon({required this.l10n});
-
-  final AppL10n l10n;
-
-  @override
-  Widget build(BuildContext context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AtemSpacing.screenPadding),
-          child: AtemEmptyState(
-            title: l10n.navSoonTitle,
-            body: l10n.navSoonBody,
-          ),
-        ),
-      );
 }

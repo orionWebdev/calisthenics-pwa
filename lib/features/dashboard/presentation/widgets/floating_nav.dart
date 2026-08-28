@@ -8,8 +8,21 @@ import '../../../../l10n/gen/app_l10n.dart';
 ///
 /// **Labels sind nicht dekorativ** — sie benennen Ziele. Sie wachsen deshalb
 /// auf 12 sp, und der Platzkonflikt auf schmalen Geräten wird kompositorisch
-/// gelöst: Passen nicht alle fünf Labels nebeneinander, trägt nur der aktive
+/// gelöst: Passen nicht alle Labels nebeneinander, trägt nur der aktive
 /// Eintrag seines, die übrigen liefern ihren Namen über Semantics.
+///
+/// ## Drei Plätze, nicht fünf
+///
+/// Es waren fünf, und zwei davon führten auf „Kommt noch". Das ist kein
+/// Ausblick, sondern eine Lücke: 40 Prozent der Hauptnavigation zeigten einen
+/// Platzhalter, und die App wirkte dadurch leerer, als sie ist.
+///
+/// **PROFIL ist ersatzlos entfallen** — die Einstellungen liegen seit Modul 8
+/// am Profilbild im Kopf, wo man sie sucht. **RECOVERY** ist noch nicht
+/// gebaut; ein Platz, der darauf wartet, ist ein Versprechen, das die Leiste
+/// bei jedem Blick wiederholt.
+///
+/// Ein Platz kommt zurück, wenn ein Bildschirm dahinter steht. Nicht vorher.
 ///
 /// Ob sie passen, wird **gemessen statt geschätzt**. Eine Breitenschwelle war
 /// hier falsch: Bei 360 dp lag sie auf der sicheren Seite, die Zeile lief
@@ -62,8 +75,6 @@ class FloatingNav extends StatelessWidget {
       l10n.dashboardNavHome,
       l10n.dashboardNavWorkouts,
       l10n.dashboardNavAnalytics,
-      l10n.dashboardNavRecovery,
-      l10n.dashboardNavProfile,
     ];
 
     return AtemBar(
@@ -106,7 +117,7 @@ class FloatingNav extends StatelessWidget {
       );
 }
 
-enum _NavGlyph { home, workouts, analytics, recovery, profile }
+enum _NavGlyph { home, workouts, analytics }
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
@@ -218,17 +229,6 @@ class _NavPainter extends CustomPainter {
           ..lineTo(12, 6.5)
           ..moveTo(19, 19.5)
           ..lineTo(19, 10);
-      case _NavGlyph.recovery:
-        p
-          ..moveTo(3, 12)
-          ..cubicTo(6, 5.5, 9, 5.5, 12, 12)
-          ..cubicTo(15, 18.5, 18, 18.5, 21, 12);
-      case _NavGlyph.profile:
-        p
-          ..addOval(Rect.fromCircle(center: const Offset(12, 8), radius: 3.5))
-          ..moveTo(4.5, 19.5)
-          ..cubicTo(6.1, 15.7, 8.7, 14.2, 12, 14.2)
-          ..cubicTo(15.3, 14.2, 17.9, 15.7, 19.5, 19.5);
     }
     return p;
   }

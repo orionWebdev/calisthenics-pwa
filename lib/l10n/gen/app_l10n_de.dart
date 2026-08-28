@@ -487,9 +487,6 @@ class AppL10nDe extends AppL10n {
   String get dashboardNavHome => 'HOME';
 
   @override
-  String get dashboardNavProfile => 'PROFIL';
-
-  @override
   String get dashboardNavRecovery => 'RECOVERY';
 
   @override
@@ -1359,12 +1356,6 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get navProgress => 'Fortschritt';
-
-  @override
-  String get navSoonBody => 'Dieser Bereich ist noch nicht gebaut.';
-
-  @override
-  String get navSoonTitle => 'Kommt noch';
 
   @override
   String get navTraining => 'Training';

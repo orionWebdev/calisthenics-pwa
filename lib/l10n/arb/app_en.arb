@@ -516,10 +516,6 @@
   "@dashboardNavHome": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
-  "dashboardNavProfile": "PROFILE",
-  "@dashboardNavProfile": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
   "dashboardNavRecovery": "RECOVERY",
   "@dashboardNavRecovery": {
     "description": "Dashboard, Modul 1 Spezifikation"
@@ -1318,8 +1314,6 @@
   "@navProgress": {
     "description": "aus nav.progress"
   },
-  "navSoonBody": "This area hasn’t been built yet.",
-  "navSoonTitle": "Coming soon",
   "navTraining": "Training",
   "@navTraining": {
     "description": "aus nav.training"

@@ -904,12 +904,6 @@ abstract class AppL10n {
   /// Dashboard, Modul 1 Spezifikation
   ///
   /// In de, this message translates to:
-  /// **'PROFIL'**
-  String get dashboardNavProfile;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
   /// **'RECOVERY'**
   String get dashboardNavRecovery;
 
@@ -2316,18 +2310,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Fortschritt'**
   String get navProgress;
-
-  /// Platzhalter für einen noch nicht gebauten Bereich
-  ///
-  /// In de, this message translates to:
-  /// **'Dieser Bereich ist noch nicht gebaut.'**
-  String get navSoonBody;
-
-  /// Platzhalter für einen noch nicht gebauten Bereich
-  ///
-  /// In de, this message translates to:
-  /// **'Kommt noch'**
-  String get navSoonTitle;
 
   /// aus nav.training
   ///

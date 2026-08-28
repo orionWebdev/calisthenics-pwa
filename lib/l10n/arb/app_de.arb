@@ -696,10 +696,6 @@
   "@dashboardNavHome": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
-  "dashboardNavProfile": "PROFIL",
-  "@dashboardNavProfile": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
   "dashboardNavRecovery": "RECOVERY",
   "@dashboardNavRecovery": {
     "description": "Dashboard, Modul 1 Spezifikation"
@@ -1939,14 +1935,6 @@
   "navProgress": "Fortschritt",
   "@navProgress": {
     "description": "aus nav.progress"
-  },
-  "navSoonBody": "Dieser Bereich ist noch nicht gebaut.",
-  "@navSoonBody": {
-    "description": "Platzhalter für einen noch nicht gebauten Bereich"
-  },
-  "navSoonTitle": "Kommt noch",
-  "@navSoonTitle": {
-    "description": "Platzhalter für einen noch nicht gebauten Bereich"
   },
   "navTraining": "Training",
   "@navTraining": {

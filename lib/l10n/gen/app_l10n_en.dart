@@ -484,9 +484,6 @@ class AppL10nEn extends AppL10n {
   String get dashboardNavHome => 'HOME';
 
   @override
-  String get dashboardNavProfile => 'PROFILE';
-
-  @override
   String get dashboardNavRecovery => 'RECOVERY';
 
   @override
@@ -1352,12 +1349,6 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get navProgress => 'Progress';
-
-  @override
-  String get navSoonBody => 'This area hasn’t been built yet.';
-
-  @override
-  String get navSoonTitle => 'Coming soon';
 
   @override
   String get navTraining => 'Training';
