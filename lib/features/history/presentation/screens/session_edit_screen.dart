@@ -10,6 +10,8 @@ import '../../domain/session_consequence.dart';
 import '../../domain/session_patch.dart';
 import '../../domain/training_load.dart';
 import '../../domain/training_session.dart';
+import '../../../workout/domain/workout_start.dart';
+import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import '../session_ui.dart';
 import '../widgets/consequence_table.dart';
 
@@ -17,10 +19,14 @@ import '../widgets/consequence_table.dart';
 ///
 /// ## Was änderbar ist
 ///
-/// Datum, Dauer und Notiz. **Nicht** die Art der Einheit und nicht die Sätze:
-/// Die Art zu ändern machte aus einem Lauf eine Krafteinheit mit Feldern, die
-/// nicht zusammenpassen, und für einen Satzeditor liegt kein Entwurf vor. Er
-/// gehört in ein eigenes Modul, nicht nebenbei hierher.
+/// Datum, Dauer, Notiz — und **Sätze nachtragen**. Nicht änderbar ist die Art
+/// der Einheit: Aus einem Lauf eine Krafteinheit zu machen hiesse, Felder
+/// zusammenzubringen, die nicht zusammenpassen.
+///
+/// Das Nachtragen betrifft einen echten Teil des Bestands: 16 der 63
+/// Krafteinheiten tragen keine Übungen — vermutlich nachträglich ohne Details
+/// eingetragen. Für sie gibt es einen Weg hinein; für Einheiten, die schon
+/// Sätze haben, führt er in dieselbe Ansicht.
 ///
 /// ## Das Datum darf sich ändern
 ///
@@ -77,6 +83,21 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
     setState(() => _dirty = true);
   }
 
+  /// Öffnet den Runner auf dieser Einheit, damit Sätze nachgetragen werden
+  /// können.
+  ///
+  /// **Kein zweiter Satzeditor.** Der Runner kann bereits alles, was dafür
+  /// nötig ist: Übungen hinzufügen, Sätze anlegen, Werte eintragen, abhaken.
+  /// Eine zweite Oberfläche für dieselbe Aufgabe wäre eine zweite Stelle, an
+  /// der sich Fehler einnisten — und zwei Wahrheiten darüber, was ein Satz
+  /// ist.
+  Future<void> _openSets(BuildContext context) async {
+    await Navigator.of(context).pushNamed(
+      WorkoutRunnerScreen.routeName,
+      arguments: WorkoutStart.session(widget.session.id),
+    );
+  }
+
   Future<void> _pickDate() async {
     final now = ref.read(historyReferenceProvider);
     final picked = await showDatePicker(
@@ -104,6 +125,30 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
     if (picked == null) return;
     _touch();
     setState(() => _date = DateTime(picked.year, picked.month, picked.day));
+  }
+
+  /// Wie viele der drei Felder überschrieben wurden.
+  int get _changedCount {
+    var count = 0;
+    if (_date != widget.session.date) count++;
+    if (widget.session.duration != null &&
+        _durationValue != widget.session.duration) {
+      count++;
+    }
+    final before = (widget.session.notes ?? '').trim();
+    if (before.isNotEmpty && before != _notes.text.trim()) count++;
+    return count;
+  }
+
+  /// Wie viele dazugekommen sind — Felder, die vorher leer waren.
+  int get _addedCount {
+    var count = 0;
+    if (widget.session.duration == null && _durationValue != null) count++;
+    if ((widget.session.notes ?? '').trim().isEmpty &&
+        _notes.text.trim().isNotEmpty) {
+      count++;
+    }
+    return count;
   }
 
   bool get _changed =>
@@ -137,21 +182,36 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
     }
   }
 
+  /// Der Verlassen-Dialog mit drei Wegen.
+  ///
+  /// Gibt `true` zurück, wenn der Bildschirm geschlossen werden darf. Beim
+  /// Sichern wird zuerst geschrieben — schlägt das fehl, bleibt das Formular
+  /// stehen und die Meldung erklärt, warum.
   Future<bool> _confirmDiscard() async {
     if (!_dirty) return true;
     final l10n = AppL10n.of(context);
 
-    final discard = await AtemDialog.show<bool>(
+    final choice = await AtemUnsavedDialog.show(
       context,
-      kind: AtemDialogKind.destructive,
-      title: l10n.formDiscardTitle,
-      message: l10n.formDiscardBody,
-      confirmLabel: l10n.formDiscardConfirm,
-      dismissLabel: l10n.formDiscardKeep,
-      barrierLabel: l10n.formDiscardBarrier,
-      onConfirm: () => Navigator.of(context).pop(true),
+      title: l10n.unsavedTitle,
+      message: l10n.unsavedBody(_changedCount, _addedCount),
+      saveLabel: l10n.unsavedSave,
+      discardLabel: l10n.unsavedDiscard,
+      keepLabel: l10n.unsavedContinue,
     );
-    return discard ?? false;
+
+    switch (choice) {
+      case AtemUnsavedChoice.save:
+        await _save();
+        // `_save` schliesst selbst, wenn es geklappt hat. Ist der Bildschirm
+        // noch da, ist etwas schiefgegangen — dann bleibt er.
+        return false;
+      case AtemUnsavedChoice.discard:
+        return true;
+      case AtemUnsavedChoice.keepEditing:
+      case null:
+        return false;
+    }
   }
 
   @override
@@ -201,7 +261,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                         style: AtemType.titleMedium.of(context)),
                     const SizedBox(height: 24),
 
-                    AtemFieldLabel(label: l10n.sessionEditDate),
+                    AtemFieldLabel(label: l10n.sessionFieldDatetime),
                     _DateField(
                       date: _date,
                       languageTag: tag,
@@ -231,10 +291,34 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                       onChanged: (_) => _touch(),
                     ),
 
+                    const SizedBox(height: 24),
+                    // Der Weg zu den Sätzen. Er steht **unter** den drei
+                    // Feldern, weil das Nachtragen die seltenere Absicht ist
+                    // — und über der Vorschau, weil er sie verändert.
+                    if (widget.session is StrengthSession)
+                      AtemButton.outline(
+                        label: l10n.setsAdd,
+                        semanticLabel: l10n.setsAdd,
+                        leading: const Icon(Icons.add,
+                            size: 18, color: AtemColors.cyan),
+                        onPressed: () => _openSets(context),
+                      ),
+
                     const SizedBox(height: 28),
                     AtemCard.list(
                       padding: const EdgeInsets.all(16),
-                      child: ConsequenceTable(consequence: consequence),
+                      child: ConsequenceTable(
+                        // „Vorschau, noch nicht gespeichert." — der Satz
+                        // unterscheidet die Rechnung von einer Tatsache.
+                        note: l10n.sessionImpactPreview,
+                        rows: ConsequenceTable.forEditing(
+                          l10n,
+                          consequence,
+                          DateFormat.MMMM(tag).format(_date),
+                          _date.year,
+                          _date.month,
+                        ),
+                      ),
                     ),
                   ],
                 ),

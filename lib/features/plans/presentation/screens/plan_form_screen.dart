@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../app/application/snackbar_providers.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../auth/application/auth_providers.dart';
 import '../../../exercises/application/exercise_providers.dart';
@@ -61,8 +62,36 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     super.dispose();
   }
 
+  /// Einträge, die es vorher schon gab und die jetzt anders aussehen.
+  int get _changedCount {
+    final before = widget.original?.items ?? const <PlanItem>[];
+    var count = 0;
+    for (var i = 0; i < _items.length && i < before.length; i++) {
+      final a = before[i];
+      final b = _items[i];
+      if (a.exerciseId != b.exerciseId ||
+          a.sets != b.sets ||
+          a.reps != b.reps ||
+          a.holdSeconds != b.holdSeconds ||
+          a.restSeconds != b.restSeconds) {
+        count++;
+      }
+    }
+    if (_name.text.trim() != (widget.original?.name ?? '').trim() &&
+        (widget.original?.name ?? '').isNotEmpty) {
+      count++;
+    }
+    return count;
+  }
+
+  /// Einträge, die dazugekommen sind.
+  int get _addedCount {
+    final before = widget.original?.items.length ?? 0;
+    return _items.length > before ? _items.length - before : 0;
+  }
+
   Set<PlanDraftFault> get _faults =>
-      PlanDraft.faultsIn(name: _name.text, items: _items);
+      PlanDraft.faultsIn(name: _name.text);
 
   void _touch() {
     if (_dirty) return;
@@ -108,9 +137,32 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     });
   }
 
+  /// Entfernt einen Eintrag — **mit Widerruf**.
+  ///
+  /// Schreibmatrix des Boards: keine Bestätigung, aber dreissig Sekunden
+  /// zurück. Eine Zeile ist sofort wiederherstellbar; ein Dialog je Zeile
+  /// wäre Lärm, ein endgültiges Entfernen ohne Weg zurück eine Falle.
   void _remove(int index) {
+    final removed = _items[index];
+    final name = _nameOf(removed.exerciseId);
     _touch();
     setState(() => _items.removeAt(index));
+
+    ref.read(snackbarProvider.notifier).show(
+          AtemSnack(
+            message: AppL10n.of(context).planFormRemoveA11y(name),
+            semanticLabel: AppL10n.of(context).planFormRemoveA11y(name),
+            actionLabel: AppL10n.of(context).commonUndo,
+            onAction: () => setState(() => _items.insert(index, removed)),
+          ),
+        );
+  }
+
+  String _nameOf(String exerciseId) {
+    for (final exercise in ref.read(exercisesProvider).value ?? const []) {
+      if (exercise.id == exerciseId) return exercise.name;
+    }
+    return AppL10n.of(context).planBrokenEntry;
   }
 
   void _updateItem(int index, PlanItem item) {
@@ -154,21 +206,36 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     }
   }
 
+  /// Der Verlassen-Dialog mit drei Wegen.
+  ///
+  /// Gibt `true` zurück, wenn der Bildschirm geschlossen werden darf. Beim
+  /// Sichern wird zuerst geschrieben — schlägt das fehl, bleibt das Formular
+  /// stehen und die Meldung erklärt, warum.
   Future<bool> _confirmDiscard() async {
     if (!_dirty) return true;
     final l10n = AppL10n.of(context);
 
-    final discard = await AtemDialog.show<bool>(
+    final choice = await AtemUnsavedDialog.show(
       context,
-      kind: AtemDialogKind.destructive,
-      title: l10n.formDiscardTitle,
-      message: l10n.formDiscardBody,
-      confirmLabel: l10n.formDiscardConfirm,
-      dismissLabel: l10n.formDiscardKeep,
-      barrierLabel: l10n.formDiscardBarrier,
-      onConfirm: () => Navigator.of(context).pop(true),
+      title: l10n.unsavedTitle,
+      message: l10n.unsavedBody(_changedCount, _addedCount),
+      saveLabel: l10n.unsavedSave,
+      discardLabel: l10n.unsavedDiscard,
+      keepLabel: l10n.unsavedContinue,
     );
-    return discard ?? false;
+
+    switch (choice) {
+      case AtemUnsavedChoice.save:
+        await _save();
+        // `_save` schliesst selbst, wenn es geklappt hat. Ist der Bildschirm
+        // noch da, ist etwas schiefgegangen — dann bleibt er.
+        return false;
+      case AtemUnsavedChoice.discard:
+        return true;
+      case AtemUnsavedChoice.keepEditing:
+      case null:
+        return false;
+    }
   }
 
   @override
@@ -191,7 +258,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
         appBar: AppBar(
           backgroundColor: AtemColors.base,
           title: Text(
-            _isEdit ? l10n.planFormEditTitle : l10n.planFormNewTitle,
+            _isEdit ? l10n.planFormEditTitle : l10n.planNewTitle,
             style: AtemType.titleMedium.of(context),
           ),
         ),
@@ -216,7 +283,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
                         if (_showFaults) setState(() {});
                       },
                       errorText: faults.contains(PlanDraftFault.name)
-                          ? l10n.planFormNameFault
+                          ? l10n.planFormName
                           : null,
                     ),
                     const SizedBox(height: 28),
@@ -224,13 +291,11 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
                         style: AtemType.labelMedium.of(context)),
                     const SizedBox(height: 10),
                     if (resolved.isEmpty)
-                      AtemCard.list(
-                        padding: const EdgeInsets.all(18),
-                        child: AtemEmptyState(
-                          title: l10n.planFormItems,
-                          body: l10n.planFormItemsFault,
-                        ),
-                      )
+                      // Kein Fehler, sondern eine Feststellung: Der Plan darf
+                      // leer gespeichert werden, nur starten lässt er sich so
+                      // nicht.
+                      Text(l10n.planEmptyAllowed,
+                          style: AtemType.labelSmall.of(context))
                     else
                       for (var i = 0; i < resolved.length; i++) ...[
                         if (i > 0) const SizedBox(height: 10),
@@ -246,18 +311,10 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
                               i == resolved.length - 1 ? null : () => _move(i, 1),
                         ),
                       ],
-                    if (faults.contains(PlanDraftFault.items)) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        l10n.planFormItemsFault,
-                        style: AtemType.labelMicro.of(context).copyWith(
-                            color: AtemColors.magenta, letterSpacing: 0),
-                      ),
-                    ],
                     const SizedBox(height: 16),
                     AtemButton.outline(
-                      label: l10n.planFormAdd,
-                      semanticLabel: l10n.planFormAdd,
+                      label: l10n.planEntryAdd,
+                      semanticLabel: l10n.planEntryAdd,
                       leading: const Icon(Icons.add,
                           size: 18, color: AtemColors.cyan),
                       onPressed: _add,
@@ -417,8 +474,13 @@ class _ItemCardState extends State<_ItemCard> {
                         ),
                         if (dangling) ...[
                           const SizedBox(height: 4),
-                          Text(l10n.planFormGapBody,
-                              style: AtemType.labelMicro.of(context)),
+                          // Was von der Übung übrig ist: die Zielwerte. Genau
+                          // sie sind der Grund, die Zeile stehenzulassen.
+                          Text(
+                            l10n.planBrokenKeepTarget(_scheme(l10n)),
+                            style: AtemType.labelMicro.of(context).copyWith(
+                                color: AtemColors.cyan, letterSpacing: 0),
+                          ),
                         ] else if (muscle != null) ...[
                           const SizedBox(height: 2),
                           Text(
@@ -442,14 +504,14 @@ class _ItemCardState extends State<_ItemCard> {
             runSpacing: 10,
             children: [
               _Target(
-                label: l10n.planFormSets,
+                label: l10n.planEntrySets,
                 controller: _sets,
                 onChanged: _emit,
               ),
               _Target(
-                label: l10n.planFormReps,
+                label: l10n.planEntryReps,
                 controller: _reps,
-                hint: l10n.planFormRepsHint,
+                hint: l10n.planEntryRepsHint,
                 // **Kein Zahlenfeld.** Bereiche wie „8-12" gehören zum Bestand.
                 text: true,
                 onChanged: _emit,
@@ -460,7 +522,7 @@ class _ItemCardState extends State<_ItemCard> {
                 onChanged: _emit,
               ),
               _Target(
-                label: l10n.planFormRest,
+                label: l10n.planEntryRest,
                 controller: _rest,
                 onChanged: _emit,
               ),
@@ -476,8 +538,8 @@ class _ItemCardState extends State<_ItemCard> {
               if (dangling)
                 _Action(
                   icon: Icons.swap_horiz,
-                  label: l10n.planFormReplace,
-                  semanticLabel: l10n.planFormReplace,
+                  label: l10n.planBrokenReplace,
+                  semanticLabel: l10n.planBrokenReplace,
                   accent: AtemColors.cyan,
                   onTap: widget.onReplace,
                 ),
@@ -498,13 +560,13 @@ class _ItemCardState extends State<_ItemCard> {
               if (!dangling)
                 _Action(
                   icon: Icons.swap_horiz,
-                  label: l10n.planFormReplace,
+                  label: l10n.planBrokenReplace,
                   semanticLabel: '${l10n.planFormReplace}: $name',
                   onTap: widget.onReplace,
                 ),
               _Action(
                 icon: Icons.close,
-                label: l10n.planFormRemove,
+                label: l10n.planBrokenRemove,
                 semanticLabel: l10n.planFormRemoveA11y(name),
                 accent: AtemColors.magenta,
                 onTap: widget.onRemove,

@@ -35,6 +35,11 @@ class _Repo implements SessionRepository {
   Future<void> updateSession(String id, SessionPatch patch) async {}
 
   @override
+  @override
+  Future<void> updateSessionExercises(
+      String id, List<LoggedExercise> exercises) async {}
+
+  @override
   Future<void> deleteSession(String id) async {
     deleted.add(id);
     _sessions = [

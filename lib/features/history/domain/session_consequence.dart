@@ -42,6 +42,27 @@ class SessionConsequence {
   int get sessionsBefore => before.sessions;
   int get sessionsAfter => after.sessions;
 
+  /// Die längste Pause im ganzen Verlauf.
+  ///
+  /// Steht auch dann in der Vorschau, wenn sie sich **nicht** ändert — das
+  /// Board zeigt sie als neutrale Zeile. Die Auskunft „daran rührt es nicht"
+  /// ist bei einer Änderung, die Lücken verschiebt, selbst eine Auskunft.
+  int? get longestBefore => before.longestGapDays;
+  int? get longestAfter => after.longestGapDays;
+
+  /// Einheiten in einem bestimmten Monat, vorher und nachher.
+  (int, int) monthCount(int year, int month) => (
+        _count(before, year, month),
+        _count(after, year, month),
+      );
+
+  static int _count(HistorySummary summary, int year, int month) {
+    for (final entry in summary.months) {
+      if (entry.year == year && entry.month == month) return entry.count;
+    }
+    return 0;
+  }
+
   bool get pauseChanges => pauseBefore != pauseAfter;
   bool get formChanges => formBefore != formAfter;
 

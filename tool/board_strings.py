@@ -29,7 +29,8 @@ DE = 'lib/l10n/arb/app_de.arb'
 EN = 'lib/l10n/arb/app_en.arb'
 
 # Platzhalter, die eine Zahl tragen. Alles andere ist Text.
-NUMERIC = {'n', 'c', 'a', 'p', 's', 'min', 'rest', 'total', 'sets', 'count'}
+NUMERIC = {'n', 'c', 'a', 'b', 'p', 's', 'd', 'y', 'm', 'e',
+           'min', 'rest', 'total', 'sets', 'count'}
 
 
 def camel(key: str) -> str:

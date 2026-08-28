@@ -94,6 +94,11 @@ class FakeSessionRepository implements SessionRepository {
   }
 
   @override
+  @override
+  Future<void> updateSessionExercises(
+      String id, List<LoggedExercise> exercises) async {}
+
+  @override
   Future<void> deleteSession(String id) async => deleted.add(id);
 }
 
@@ -314,7 +319,13 @@ class FakeAccountRepository implements AccountRepository {
   var accountDeleted = false;
 
   @override
-  Future<void> deleteData(String userId) async => deletedData.add(userId);
+  Future<void> deleteData(
+    String userId, {
+    void Function(int done, int total, String collection)? onProgress,
+  }) async {
+    deletedData.add(userId);
+    onProgress?.call(1, 1, 'sessions');
+  }
 
   @override
   Future<void> deleteAccount() async => accountDeleted = true;

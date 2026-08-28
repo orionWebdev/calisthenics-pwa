@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../app/application/snackbar_providers.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../exercises/domain/exercise.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
 import '../../../settings/application/settings_providers.dart';
-import '../../application/plan_providers.dart';
+import '../../application/pending_plan_deletion.dart';
 import '../../domain/plan.dart';
 import '../start_sheet.dart';
 import 'plan_form_screen.dart';
@@ -124,29 +125,61 @@ class PlanDetailScreen extends ConsumerWidget {
   }
 }
 
-/// Plan löschen — **einmal fragen, kein Widerruf nötig**.
+/// Plan löschen — **zwei Stufen, dann dreissig Sekunden Widerruf**.
 ///
-/// Ein Plan wird von nichts referenziert: Absolvierte Einheiten tragen
-/// `planName` in sich selbst und bleiben vollständig lesbar. Es geht also nur
-/// die Zusammenstellung verloren, nicht die Geschichte. Eine zweite
-/// Bestätigung wäre hier Zeremonie ohne Anlass.
+/// ## Warum beides, obwohl nichts daran hängt
+///
+/// Absolvierte Einheiten tragen `planName` in sich selbst und bleiben
+/// vollständig lesbar; es geht nur die Zusammenstellung verloren. Genau die
+/// ist aber Arbeit — bis zu sechs Einträge mit Zielwerten und Reihenfolge.
+///
+/// Deshalb sagt die Schreibmatrix des Boards: zweistufig **und** Widerruf.
+/// Der Widerruf ist hier möglich, weil nichts anderes an dem Plan hängt —
+/// anders als beim Löschen einer Übung, wo Planeinträge umgeschrieben werden.
 Future<void> _delete(BuildContext context, WidgetRef ref, Plan plan) async {
   final l10n = AppL10n.of(context);
 
-  final confirmed = await AtemDialog.show<bool>(
+  final first = await AtemDialog.show<bool>(
     context,
     kind: AtemDialogKind.destructive,
     title: l10n.planDeleteTitle,
     message: l10n.planDeleteBody,
-    confirmLabel: l10n.commonDelete,
+    confirmLabel: l10n.deleteStep1Continue,
     dismissLabel: l10n.commonCancel,
-    barrierLabel: l10n.planDeleteBarrier,
+    barrierLabel: l10n.planDeleteTitle,
+    detail: Text(
+      l10n.exerciseCountShort(plan.exerciseCount),
+      style: AtemType.labelSmall.of(context),
+    ),
     onConfirm: () => Navigator.of(context).pop(true),
   );
-  if (confirmed != true) return;
+  if (first != true || !context.mounted) return;
 
-  await ref.read(planRepositoryProvider).deletePlan(plan.id);
-  if (context.mounted) Navigator.of(context).pop();
+  final second = await AtemDialog.show<bool>(
+    context,
+    kind: AtemDialogKind.destructive,
+    title: l10n.deleteStep2Title,
+    message: l10n.sessionDeleteWindow,
+    confirmLabel: l10n.deleteConfirm,
+    dismissLabel: l10n.deleteKeep,
+    barrierLabel: l10n.planDeleteTitle,
+    onConfirm: () => Navigator.of(context).pop(true),
+  );
+  if (second != true) return;
+
+  await ref.read(pendingPlanDeletionProvider.notifier).start(plan);
+  if (!context.mounted) return;
+
+  ref.read(snackbarProvider.notifier).show(
+        AtemSnack(
+          message: l10n.planDeleteTitle,
+          semanticLabel: '${l10n.planDeleteTitle} ${plan.name}',
+          actionLabel: l10n.commonUndo,
+          onAction: () =>
+              ref.read(pendingPlanDeletionProvider.notifier).undo(),
+        ),
+      );
+  Navigator.of(context).pop();
 }
 
 class _ItemRow extends StatelessWidget {

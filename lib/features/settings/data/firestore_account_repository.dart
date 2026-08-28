@@ -33,15 +33,31 @@ class FirestoreAccountRepository implements AccountRepository {
   /// Firestore nimmt höchstens 500 Schreibvorgänge je Stapel.
   static const _batchLimit = 450;
 
+  /// Alle Sammlungen in der Reihenfolge, in der gelöscht wird.
+  ///
+  /// **Das Profil zuletzt.** Es trägt die Freischaltungsspur und das
+  /// Körpergewicht; solange es steht, lässt sich ein abgebrochener Lauf
+  /// fortsetzen. Wäre es das erste, stünde nach einem Abbruch ein Bestand
+  /// ohne Maßstab da.
+  static const deletionOrder = [...ownedCollections, ...keyedCollections];
+
   @override
-  Future<void> deleteData(String userId) async {
-    for (final name in ownedCollections) {
-      final snapshot =
-          await _db.collection(name).where('userId', isEqualTo: userId).get();
-      await _deleteAll(snapshot.docs.map((d) => d.reference));
-    }
-    for (final name in keyedCollections) {
-      await _db.collection(name).doc(userId).delete();
+  Future<void> deleteData(
+    String userId, {
+    void Function(int done, int total, String collection)? onProgress,
+  }) async {
+    final total = deletionOrder.length;
+    var done = 0;
+
+    for (final name in deletionOrder) {
+      if (keyedCollections.contains(name)) {
+        await _db.collection(name).doc(userId).delete();
+      } else {
+        final snapshot =
+            await _db.collection(name).where('userId', isEqualTo: userId).get();
+        await _deleteAll(snapshot.docs.map((d) => d.reference));
+      }
+      onProgress?.call(++done, total, name);
     }
   }
 

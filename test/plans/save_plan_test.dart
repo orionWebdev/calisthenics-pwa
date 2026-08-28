@@ -103,18 +103,32 @@ void main() {
 
   group('Prüfung des Entwurfs', () {
     test('ein Plan ohne Namen geht nicht', () {
+      expect(PlanDraft.faultsIn(name: '  '), contains(PlanDraftFault.name));
+    });
+
+    test('ein leerer Plan ist gültig', () {
+      // Board 07: „Der Plan existiert, sobald er einen Namen hat." Das war
+      // vorher als Fehler gebaut — eine Verwechslung von „darf existieren"
+      // mit „ist startbar".
+      expect(PlanDraft.faultsIn(name: 'Oberkörper A'), isEmpty);
+    });
+
+    test('startbar ist er erst mit Einträgen', () {
+      expect(PlanDraft.isStartable(const []), isFalse);
       expect(
-        PlanDraft.faultsIn(
-            name: '  ', items: const [PlanItem(exerciseId: 'x')]),
-        contains(PlanDraftFault.name),
+        PlanDraft.isStartable(const [PlanItem(exerciseId: 'x')]),
+        isTrue,
       );
     });
 
-    test('ein leerer Plan geht nicht — obwohl die Regeln ihn zuließen', () {
-      expect(
-        PlanDraft.faultsIn(name: 'P', items: const []),
-        contains(PlanDraftFault.items),
+    test('ein leerer Plan lässt sich speichern und wieder lesen', () async {
+      final id = await repo.savePlan(
+        const PlanDraft(userId: 'u1', name: 'Noch leer', items: []),
       );
+      final plans = await repo.fetchPlans('u1');
+      final plan = plans.firstWhere((p) => p.id == id);
+      expect(plan.name, 'Noch leer');
+      expect(plan.items, isEmpty);
     });
   });
 

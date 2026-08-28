@@ -122,6 +122,7 @@ class WorkoutExercise {
 class ActiveWorkout {
   const ActiveWorkout({
     required this.sessionId,
+    this.amendsSessionId,
     this.planId,
     this.title,
     required this.exercises,
@@ -130,6 +131,12 @@ class ActiveWorkout {
   });
 
   final String sessionId;
+
+  /// Die bestehende Einheit, die ergänzt wird.
+  ///
+  /// Ist sie gesetzt, wird beim Beenden **geändert statt angelegt** — sonst
+  /// entstünde aus einem Nachtragen eine zweite Einheit am selben Tag.
+  final String? amendsSessionId;
 
   /// Der Plan, aus dem die Einheit stammt. `null` beim freien Training.
   final String? planId;
@@ -161,6 +168,7 @@ class ActiveWorkout {
   }) {
     return ActiveWorkout(
       sessionId: sessionId,
+      amendsSessionId: amendsSessionId,
       planId: planId,
       title: title,
       exercises: exercises ?? this.exercises,

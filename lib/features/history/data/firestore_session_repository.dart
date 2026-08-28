@@ -101,6 +101,16 @@ class FirestoreSessionRepository implements SessionRepository {
   }
 
   @override
+  Future<void> updateSessionExercises(
+    String id,
+    List<LoggedExercise> exercises,
+  ) async {
+    await _db.collection(collection).doc(id).update({
+      'exercises': _exercisesField(exercises),
+    });
+  }
+
+  @override
   Future<void> deleteSession(String id) async {
     final document = _db.collection(collection).doc(id);
 

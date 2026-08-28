@@ -36,6 +36,74 @@ class BodyWeightPreview {
   int get fitnessBefore => before.form.fitnessVsPeak;
   int get fitnessAfter => after.form.fitnessVsPeak;
 
+  /// Die Trainingslast der letzten sieben Tage, unter beiden Maßstäben.
+  ///
+  /// Das Board zeigt sie als erste Zeile. Sie ist die unmittelbarste Zahl:
+  /// Sie bewegt sich sofort, während Form und ACWR über Wochen glätten.
+  static (double, double) weekLoad(
+    List<TrainingSession> sessions,
+    DateTime reference, {
+    required double currentKg,
+    required double candidateKg,
+  }) {
+    final from = DateTime(
+      reference.year,
+      reference.month,
+      reference.day - 6,
+    );
+    var a = 0.0;
+    var b = 0.0;
+    for (final session in sessions) {
+      if (session.date.isBefore(from)) continue;
+      if (session.date.isAfter(reference)) continue;
+      a += TrainingLoad.of(session, LoadContext(bodyWeightKg: currentKg));
+      b += TrainingLoad.of(session, LoadContext(bodyWeightKg: candidateKg));
+    }
+    return (a, b);
+  }
+
+  /// Worüber die Vorschau überhaupt rechnet: Zeitraum und Anzahl der
+  /// Einheiten mit Körpergewichtsübungen.
+  ///
+  /// **Der Nenner gehört an die Oberfläche.** Ändert sich nichts, liegt das
+  /// fast immer daran, dass keine Einheit eine Körpergewichtsübung trägt —
+  /// und nicht daran, dass die Rechnung nichts hergibt.
+  static (int, int) scope(List<TrainingSession> sessions, DateTime reference) {
+    var counted = 0;
+    for (final session in sessions) {
+      if (session is! StrengthSession) continue;
+      final hasBodyweight = session.exercises
+          .any((exercise) => exercise.usesBodyweight == true);
+      if (hasBodyweight) counted++;
+    }
+    final days = sessions.isEmpty
+        ? 0
+        : reference
+            .difference(sessions
+                .reduce((a, b) => a.date.isBefore(b.date) ? a : b)
+                .date)
+            .inDays;
+    return (days, counted);
+  }
+
+  /// Die häufigste Körpergewichtsübung — ihr „Bestwert" **ist** das
+  /// Körpergewicht, und genau daran wird die Änderung greifbar.
+  ///
+  /// `null`, wenn es keine gibt. Dann fehlt die Zeile, statt eine Übung zu
+  /// nennen, die nie mit dem Körpergewicht gerechnet wurde.
+  static String? bodyweightExercise(List<TrainingSession> sessions) {
+    final counts = <String, int>{};
+    for (final session in sessions) {
+      if (session is! StrengthSession) continue;
+      for (final exercise in session.exercises) {
+        if (exercise.usesBodyweight != true) continue;
+        counts[exercise.exerciseId] = (counts[exercise.exerciseId] ?? 0) + 1;
+      }
+    }
+    if (counts.isEmpty) return null;
+    return counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
+  }
+
   bool get formChanges => formBefore != formAfter;
   bool get fitnessChanges => fitnessBefore != fitnessAfter;
   bool get acwrChanges =>

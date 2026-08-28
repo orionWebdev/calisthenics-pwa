@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../app/application/snackbar_providers.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../auth/application/auth_providers.dart';
 import '../../application/exercise_providers.dart';
@@ -122,6 +123,46 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
         _cues.text,
       ].where((t) => t.trim().isNotEmpty).length;
 
+  /// Wie viele Angaben gegenüber dem Ausgangszustand **geändert** wurden.
+  ///
+  /// Der Verlassen-Dialog zählt beides getrennt, weil sich beides anders
+  /// anfühlt: Etwas zu überschreiben ist ein Eingriff, etwas zu ergänzen
+  /// nicht. Bei einer neuen Übung ist alles Ergänzung.
+  int get _changedCount {
+    final source = _source;
+    if (source == null) return 0;
+    var count = 0;
+    void compare(String before, String now) {
+      if (before.trim().isNotEmpty && before.trim() != now.trim()) count++;
+    }
+
+    compare(source.name, _name.text);
+    compare(source.equipment.join(', '), _equipment.text);
+    compare(source.description ?? '', _description.text);
+    compare(source.cues.join('\n'), _cues.text);
+    if (source.difficulty != null && source.difficulty != _difficulty) count++;
+    return count;
+  }
+
+  /// Wie viele Angaben **dazugekommen** sind.
+  int get _addedCount {
+    final source = _source;
+    var count = 0;
+    void added(String before, String now) {
+      if (before.trim().isEmpty && now.trim().isNotEmpty) count++;
+    }
+
+    added(source?.name ?? '', _name.text);
+    added(source?.equipment.join(', ') ?? '', _equipment.text);
+    added(source?.description ?? '', _description.text);
+    added(source?.cues.join('\n') ?? '', _cues.text);
+    if (source?.difficulty == null && _difficulty != null) count++;
+    if ((source?.displayMuscles.isEmpty ?? true) && _muscles.isNotEmpty) {
+      count++;
+    }
+    return count;
+  }
+
   /// Warum gerade nicht gespeichert werden kann — oder `null`.
   ///
   /// Erscheint **erst nach dem ersten Versuch**. Ein Knopf, der beim Öffnen
@@ -189,8 +230,10 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
       _duplicate = null;
     });
 
+    final before = widget.original;
+
     try {
-      await ref.read(exerciseRepositoryProvider).saveExercise(
+      final id = await ref.read(exerciseRepositoryProvider).saveExercise(
             ExerciseDraft(
               // Beim Abschreiben bleibt die Kennung leer: Es entsteht eine
               // neue Übung, die kuratierte bleibt unberührt.
@@ -206,14 +249,73 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
               cues: _splitLines(_cues.text),
             ),
           );
-      if (mounted) Navigator.of(context).pop(true);
+      if (!mounted) return;
+      Navigator.of(context).pop(true);
+      _announce(l10n, id: id, before: before);
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _saving = false;
-        _saveError = l10n.exerciseFormSaveErrorBody;
+        // **Zurück ins Formular, nicht in einen Toast.** Board, Schreibregeln:
+        // Was abgewiesen wurde, muss dort landen, wo man es korrigieren kann.
+        _saveError = l10n.commonRetrySave;
       });
     }
+  }
+
+  /// Was nach dem Speichern über der Leiste steht.
+  ///
+  /// Beim **Anlegen** ein Weg vorwärts („Öffnen") — es gibt nichts
+  /// zurückzunehmen, wohl aber etwas anzusehen. Beim **Bearbeiten** ein Weg
+  /// zurück: Der Vorzustand ist ein einzelner Datensatz und vollständig
+  /// zurückschreibbar (Schreibmatrix, 30 s).
+  void _announce(AppL10n l10n, {required String id, Exercise? before}) {
+    final notifier = ref.read(snackbarProvider.notifier);
+
+    if (before == null) {
+      notifier.show(AtemSnack(
+        message: l10n.commonCreated,
+        semanticLabel: l10n.commonCreated,
+        tone: AtemSnackTone.success,
+        actionLabel: l10n.commonOpen,
+        onAction: () {
+          // Der Strom kann die neue Übung noch nicht führen — dann führt der
+          // Weg nirgendwohin, und das ist besser als auf eine erfundene.
+          final created = (ref.read(exercisesProvider).value ?? const [])
+              .where((e) => e.id == id)
+              .firstOrNull;
+          if (created == null) return;
+          Navigator.of(context).push(MaterialPageRoute<void>(
+            builder: (_) => ExerciseDetailScreen(exercise: created),
+          ));
+        },
+      ));
+      return;
+    }
+
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null) return;
+
+    notifier.show(AtemSnack(
+      message: l10n.commonSaved,
+      semanticLabel: l10n.commonSaved,
+      tone: AtemSnackTone.success,
+      actionLabel: l10n.commonUndo,
+      onAction: () => ref.read(exerciseRepositoryProvider).saveExercise(
+            ExerciseDraft(
+              id: before.id,
+              userId: userId,
+              name: before.name,
+              muscleGroups: before.displayMuscles,
+              difficulty: before.difficulty ?? Difficulty.min,
+              equipment: before.equipment,
+              type: before.type,
+              description: before.description,
+              instructions: before.instructions,
+              cues: before.cues,
+            ),
+          ),
+    ));
   }
 
   /// „Hantel, Klimmzugstange" wird zu zwei Einträgen. Leere fallen weg.
@@ -229,21 +331,36 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
           if (line.trim().isNotEmpty) line.trim(),
       ];
 
+  /// Der Verlassen-Dialog mit drei Wegen.
+  ///
+  /// Gibt `true` zurück, wenn der Bildschirm geschlossen werden darf. Beim
+  /// Sichern wird zuerst geschrieben — schlägt das fehl, bleibt das Formular
+  /// stehen und die Meldung erklärt, warum.
   Future<bool> _confirmDiscard() async {
     if (!_dirty) return true;
     final l10n = AppL10n.of(context);
 
-    final discard = await AtemDialog.show<bool>(
+    final choice = await AtemUnsavedDialog.show(
       context,
-      kind: AtemDialogKind.destructive,
-      title: l10n.formDiscardTitle,
-      message: l10n.formDiscardBody,
-      confirmLabel: l10n.formDiscardConfirm,
-      dismissLabel: l10n.formDiscardKeep,
-      barrierLabel: l10n.formDiscardBarrier,
-      onConfirm: () => Navigator.of(context).pop(true),
+      title: l10n.unsavedTitle,
+      message: l10n.unsavedBody(_changedCount, _addedCount),
+      saveLabel: l10n.unsavedSave,
+      discardLabel: l10n.unsavedDiscard,
+      keepLabel: l10n.unsavedContinue,
     );
-    return discard ?? false;
+
+    switch (choice) {
+      case AtemUnsavedChoice.save:
+        await _save();
+        // `_save` schliesst selbst, wenn es geklappt hat. Ist der Bildschirm
+        // noch da, ist etwas schiefgegangen — dann bleibt er.
+        return false;
+      case AtemUnsavedChoice.discard:
+        return true;
+      case AtemUnsavedChoice.keepEditing:
+      case null:
+        return false;
+    }
   }
 
   @override
@@ -617,4 +734,8 @@ class _MoreSection extends StatelessWidget {
       ),
     );
   }
+}
+
+extension _FirstOrNull<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
 }

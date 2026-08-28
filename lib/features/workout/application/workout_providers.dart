@@ -181,6 +181,20 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
     // verfälschte jede Auswertung.
     if (draft == null) return null;
 
+    // **Ergänzen statt anlegen**, wenn die Einheit schon existiert. Sonst
+    // entstünde aus einem Nachtragen eine zweite Einheit am selben Tag —
+    // und die Auswertung zählte sie doppelt.
+    final amends = w.amendsSessionId;
+    if (amends != null) {
+      // **Nur die Sätze.** Datum und Dauer der bestehenden Einheit bleiben —
+      // der Runner kennt nur den heutigen Tag und die Zeit seit dem Öffnen,
+      // und beides gehört nicht zu einer Einheit von vorletzter Woche.
+      await ref
+          .read(sessionRepositoryProvider)
+          .updateSessionExercises(amends, draft.exercises);
+      return amends;
+    }
+
     return ref.read(sessionRepositoryProvider).saveSession(draft);
   }
 

@@ -5,6 +5,8 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../auth/application/auth_providers.dart';
+import '../../../history/application/history_providers.dart';
+import '../../../exercises/application/exercise_providers.dart';
 import '../../application/settings_providers.dart';
 
 /// Stufe 2 des Löschens: **das getippte Wort**.
@@ -38,6 +40,31 @@ class _AccountDeletionScreenState
   var _running = false;
   String? _error;
 
+  /// Wie viele Sammlungen fertig sind. `null`, solange nicht gelöscht wird.
+  int? _done;
+  int _total = 0;
+
+  /// Wie lange der Bestand zurückreicht und wie gross er ist.
+  ///
+  /// Die zweite Stufe nennt es noch einmal — nicht als neue Information,
+  /// sondern damit beim Tippen des Wortes dasteht, worauf es sich bezieht.
+  int get _years => _span ~/ 365;
+  int get _months => (_span % 365) ~/ 30;
+
+  int get _span {
+    final sessions = ref.read(sessionsProvider).value ?? const [];
+    if (sessions.isEmpty) return 0;
+    final first =
+        sessions.reduce((a, b) => a.date.isBefore(b.date) ? a : b).date;
+    return ref.read(historyReferenceProvider).difference(first).inDays;
+  }
+
+  int get _sessions => (ref.read(sessionsProvider).value ?? const []).length;
+
+  int get _ownExercises => (ref.read(exercisesProvider).value ?? const [])
+      .where((e) => e.isOwn)
+      .length;
+
   @override
   void dispose() {
     _confirm.dispose();
@@ -45,7 +72,7 @@ class _AccountDeletionScreenState
   }
 
   bool _matches(AppL10n l10n) =>
-      _confirm.text.trim() == l10n.settingsDeleteConfirmWord;
+      _confirm.text.trim() == l10n.accountDelete2TypeWord;
 
   Future<void> _delete() async {
     final l10n = AppL10n.of(context);
@@ -60,7 +87,16 @@ class _AccountDeletionScreenState
     try {
       // Erst die Daten, dann das Konto. Umgekehrt verweigerten die Regeln
       // jeden Zugriff, und der Bestand bliebe unerreichbar liegen.
-      await ref.read(accountRepositoryProvider).deleteData(userId);
+      await ref.read(accountRepositoryProvider).deleteData(
+            userId,
+            onProgress: (done, total, _) {
+              if (!mounted) return;
+              setState(() {
+                _done = done;
+                _total = total;
+              });
+            },
+          );
       await ref.read(accountRepositoryProvider).deleteAccount();
 
       if (!mounted) return;
@@ -74,7 +110,8 @@ class _AccountDeletionScreenState
       if (!mounted) return;
       setState(() {
         _running = false;
-        _error = l10n.settingsDeleteFailedBody;
+        // Wie weit es gekommen ist — nicht „ein Teil ist noch da".
+        _error = l10n.accountPartialBody(_done ?? 0, _total);
       });
     }
   }
@@ -82,13 +119,13 @@ class _AccountDeletionScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final word = l10n.settingsDeleteConfirmWord;
+    final word = l10n.accountDelete2TypeWord;
 
     return Scaffold(
       backgroundColor: AtemColors.base,
       appBar: AppBar(
         backgroundColor: AtemColors.base,
-        title: Text(l10n.settingsDelete,
+        title: Text(l10n.accountDelete,
             style: AtemType.titleMedium.of(context)),
       ),
       body: SafeArea(
@@ -100,19 +137,53 @@ class _AccountDeletionScreenState
                 padding: const EdgeInsets.fromLTRB(AtemSpacing.screenPadding,
                     0, AtemSpacing.screenPadding, 24),
                 children: [
-                  Text(l10n.settingsDeleteStep2Title,
+                  Text(l10n.accountDelete2Title,
                       style: AtemType.titleLarge.of(context)),
                   const SizedBox(height: 12),
-                  Text(l10n.settingsDeleteStep1Body,
-                      style: AtemType.body.of(context)),
+                  // Jahre, Monate, Einheiten und eigene Übungen — die
+                  // zweite Stufe wiederholt in Zahlen, was verschwindet.
+                  Text(
+                    l10n.accountDelete2Body(_years, _months, _sessions,
+                        _ownExercises),
+                    style: AtemType.body.of(context),
+                  ),
                   const SizedBox(height: 28),
                   AtemFieldLabel(
-                    label: l10n.settingsDeleteStep2Body(word),
-                    hint: l10n.settingsDeleteConfirmHint,
+                    label: l10n.accountDelete2TypeLabel,
+                    hint: l10n.accountDelete2TypeLabel,
                   ),
+                  if (_running) ...[
+                    const SizedBox(height: 20),
+                    // Nicht abbrechbar — also muss sie sagen, wo sie steht.
+                    Semantics(
+                      liveRegion: true,
+                      label: '${l10n.accountDeleting}. '
+                          '${l10n.accountPartialBody(_done ?? 0, _total)}',
+                      child: ExcludeSemantics(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.accountDeleting,
+                                style: AtemType.labelMedium.of(context)),
+                            const SizedBox(height: 8),
+                            AtemProgressBar.share(
+                              value: _total == 0
+                                  ? 0
+                                  : (_done ?? 0) / _total,
+                              semanticLabel: '',
+                              accent: AtemColors.magenta,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(l10n.accountDeletingWait,
+                                style: AtemType.labelMicro.of(context)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                   AtemTextField(
                     controller: _confirm,
-                    semanticLabel: l10n.settingsDeleteStep2Body(word),
+                    semanticLabel: l10n.accountDelete2TypeLabel,
                     hint: word,
                     enabled: !_running,
                     // Keine automatische Großschreibung des ersten Buchstabens:
@@ -136,19 +207,21 @@ class _AccountDeletionScreenState
                         ? null
                         : AtemNotice(
                             tone: AtemNoticeTone.error,
-                            title: l10n.settingsDeleteFailed,
+                            title: l10n.accountPartialTitle,
                             body: _error!,
                             semanticLabel:
-                                '${l10n.settingsDeleteFailed}. $_error',
+                                '${l10n.accountPartialTitle}. $_error',
+                            actionLabel: l10n.accountPartialResume,
+                            onAction: _delete,
                           ),
                   ),
                   AtemButton.outline(
                     label: _running
-                        ? l10n.settingsDeleteRunning
-                        : l10n.settingsDelete,
+                        ? l10n.accountDeleting
+                        : l10n.accountDelete,
                     semanticLabel: _running
-                        ? l10n.settingsDeleteRunning
-                        : l10n.settingsDelete,
+                        ? l10n.accountDeleting
+                        : l10n.accountDelete,
                     accent: AtemColors.magenta,
                     size: AtemButtonSize.regular,
                     busy: _running,
@@ -194,17 +267,17 @@ class AccountDeletedScreen extends ConsumerWidget {
                 child: ListView(
                   children: [
                     const SizedBox(height: 40),
-                    Text(l10n.settingsDeletedTitle,
+                    Text(l10n.accountDoneTitle,
                         style: AtemType.titleLarge.of(context)),
                     const SizedBox(height: 10),
-                    Text(l10n.settingsDeletedBody,
+                    Text(l10n.accountDoneBody,
                         style: AtemType.body.of(context)),
                     const SizedBox(height: 28),
                     AtemNotice(
-                      title: l10n.settingsDeletedAccessTitle,
-                      body: l10n.settingsDeletedAccessBody,
-                      semanticLabel: '${l10n.settingsDeletedAccessTitle}. '
-                          '${l10n.settingsDeletedAccessBody}',
+                      title: l10n.accountDoneAccessTitle,
+                      body: l10n.accountDoneAccessBody,
+                      semanticLabel: '${l10n.accountDoneAccessTitle}. '
+                          '${l10n.accountDoneAccessBody}',
                     ),
                   ],
                 ),
@@ -212,8 +285,8 @@ class AccountDeletedScreen extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: AtemButton.gradient(
-                  label: l10n.settingsDeletedClose,
-                  semanticLabel: l10n.settingsDeletedClose,
+                  label: l10n.accountDoneToLogin,
+                  semanticLabel: l10n.accountDoneToLogin,
                   onPressed: () async {
                     // Abmelden bringt die App an den Anfang zurück. Das Konto
                     // ist bereits weg; das hier räumt nur den lokalen Rest.

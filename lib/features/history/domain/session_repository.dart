@@ -46,6 +46,17 @@ abstract interface class SessionRepository {
   /// Einheit zu etwas anderem machen, nicht zu einer korrigierten Fassung.
   Future<void> updateSession(String id, SessionPatch patch);
 
+  /// Trägt Sätze zu einer bestehenden Einheit nach.
+  ///
+  /// **Bewusst eng.** Der naheliegende Weg wäre [updateSession] gewesen — der
+  /// verlangt aber ein Datum, und der Runner kennt nur das von heute. Eine
+  /// nachgetragene Einheit wäre damit auf den Tag des Nachtragens gerutscht,
+  /// und mit ihr jede Lücke und jede Kurve.
+  ///
+  /// Diese Methode rührt ausschliesslich `exercises` an. Datum, Dauer und
+  /// Notiz bleiben, wie sie waren.
+  Future<void> updateSessionExercises(String id, List<LoggedExercise> exercises);
+
   /// Löscht eine Einheit.
   ///
   /// Stammte sie aus einem Kalendertermin, wird der Termin wieder geöffnet:

@@ -12,6 +12,9 @@ class AppL10nEn extends AppL10n {
   String get aboutAccess => 'Access';
 
   @override
+  String get aboutAccessLabel => 'Access';
+
+  @override
   String get aboutAccessValue => 'Approved address';
 
   @override
@@ -21,16 +24,31 @@ class AppL10nEn extends AppL10n {
   String get aboutAppearanceValue => 'Dark · no light version';
 
   @override
+  String get aboutDisplayLabel => 'Appearance';
+
+  @override
+  String get aboutDisplayValue => 'Dark · no light version';
+
+  @override
   String get aboutLanguages => 'Languages';
+
+  @override
+  String get aboutLanguagesLabel => 'Languages';
+
+  @override
+  String get aboutLanguagesValue => 'Deutsch · English';
 
   @override
   String get aboutVersion => 'Version';
 
   @override
+  String get aboutVersionLabel => 'Version';
+
+  @override
   String get accountDelete => 'Delete account';
 
   @override
-  String accountDelete2Body(String y, String m, int n, String e) {
+  String accountDelete2Body(int y, int m, int n, int e) {
     return '$y years $m months, $n workouts and $e exercises of your own. There is no undo and no grace period.';
   }
 
@@ -103,7 +121,7 @@ class AppL10nEn extends AppL10n {
   String get accountDoneToLogin => 'To sign-in';
 
   @override
-  String accountPartialBody(int a, String b) {
+  String accountPartialBody(int a, int b) {
     return '$a of $b collections are gone, the sign-in account still exists.';
   }
 
@@ -1039,6 +1057,21 @@ class AppL10nEn extends AppL10n {
   String get detailVolume => 'Volume';
 
   @override
+  String get directionBetter => 'better';
+
+  @override
+  String get directionLonger => 'longer';
+
+  @override
+  String get directionSame => 'unchanged';
+
+  @override
+  String get directionShorter => 'shorter';
+
+  @override
+  String get directionWorse => 'worse';
+
+  @override
   String durationApproxMinutes(int n) {
     return '~$n min';
   }
@@ -1356,7 +1389,7 @@ class AppL10nEn extends AppL10n {
   String get exportOffline => 'Not possible offline';
 
   @override
-  String exportProgress(int a, String b, int c, String d, String e, String f) {
+  String exportProgress(int a, String b, int c, int d, int e, String f) {
     return 'Workouts $a/$b · plans $c/$d · exercises $e/$f';
   }
 
@@ -2113,6 +2146,19 @@ class AppL10nEn extends AppL10n {
   String get sessionImpactForm => 'Form today';
 
   @override
+  String get sessionImpactLongest => 'Longest break';
+
+  @override
+  String sessionImpactMonth(String month) {
+    return 'Workouts in $month';
+  }
+
+  @override
+  String sessionImpactOfKind(String kind) {
+    return '$kind workouts';
+  }
+
+  @override
   String get sessionImpactPause => 'Current break';
 
   @override
@@ -2541,7 +2587,15 @@ class AppL10nEn extends AppL10n {
       'Preview — not saved yet. Your sets, weights and reps stay unchanged — only how they are scored.';
 
   @override
-  String weightImpactScope(String d, int n) {
+  String weightImpactRecord(String exercise) {
+    return 'Best $exercise';
+  }
+
+  @override
+  String get weightImpactRescored => 'rescored';
+
+  @override
+  String weightImpactScope(int d, int n) {
     return '$d days · $n workouts with bodyweight exercises';
   }
 

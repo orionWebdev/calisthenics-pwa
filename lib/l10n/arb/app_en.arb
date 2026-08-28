@@ -3,6 +3,10 @@
   "@aboutAccess": {
     "description": "about.access"
   },
+  "aboutAccessLabel": "Access",
+  "@aboutAccessLabel": {
+    "description": "Board 08, ueber"
+  },
   "aboutAccessValue": "Approved address",
   "@aboutAccessValue": {
     "description": "about.access.value"
@@ -15,13 +19,33 @@
   "@aboutAppearanceValue": {
     "description": "about.appearance.value"
   },
+  "aboutDisplayLabel": "Appearance",
+  "@aboutDisplayLabel": {
+    "description": "Board 08, ueber"
+  },
+  "aboutDisplayValue": "Dark · no light version",
+  "@aboutDisplayValue": {
+    "description": "Board 08, ueber — steht dort, wo sonst ein Schalter wäre"
+  },
   "aboutLanguages": "Languages",
   "@aboutLanguages": {
     "description": "about.languages"
   },
+  "aboutLanguagesLabel": "Languages",
+  "@aboutLanguagesLabel": {
+    "description": "Board 08, ueber"
+  },
+  "aboutLanguagesValue": "Deutsch · English",
+  "@aboutLanguagesValue": {
+    "description": "Board 08, ueber"
+  },
   "aboutVersion": "Version",
   "@aboutVersion": {
     "description": "about.version"
+  },
+  "aboutVersionLabel": "Version",
+  "@aboutVersionLabel": {
+    "description": "Board 08, ueber"
   },
   "accountDelete": "Delete account",
   "@accountDelete": {
@@ -32,16 +56,16 @@
     "description": "account.delete2.body",
     "placeholders": {
       "y": {
-        "type": "String"
+        "type": "int"
       },
       "m": {
-        "type": "String"
+        "type": "int"
       },
       "n": {
         "type": "int"
       },
       "e": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -146,7 +170,7 @@
         "type": "int"
       },
       "b": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1245,6 +1269,26 @@
   "detailSetsMissingBody": "This workout was recorded as duration only. Load and consistency still count, volume stays empty.",
   "detailSetsMissingTitle": "No sets recorded",
   "detailVolume": "Volume",
+  "directionBetter": "better",
+  "@directionBetter": {
+    "description": "Richtungswort im Vorlesetext — die Farbe trägt sie nie allein"
+  },
+  "directionLonger": "longer",
+  "@directionLonger": {
+    "description": "Richtungswort bei Zeitspannen"
+  },
+  "directionSame": "unchanged",
+  "@directionSame": {
+    "description": "Richtungswort ohne Änderung"
+  },
+  "directionShorter": "shorter",
+  "@directionShorter": {
+    "description": "Richtungswort bei Zeitspannen"
+  },
+  "directionWorse": "worse",
+  "@directionWorse": {
+    "description": "Richtungswort im Vorlesetext"
+  },
   "durationApproxMinutes": "~{n} min",
   "durationMinutes": "{n} min",
   "errorsDeleteFailed": "Error deleting",
@@ -1603,10 +1647,10 @@
         "type": "int"
       },
       "d": {
-        "type": "String"
+        "type": "int"
       },
       "e": {
-        "type": "String"
+        "type": "int"
       },
       "f": {
         "type": "String"
@@ -2336,6 +2380,28 @@
   "@sessionImpactForm": {
     "description": "session.impact.form"
   },
+  "sessionImpactLongest": "Longest break",
+  "@sessionImpactLongest": {
+    "description": "Board 07, folgen"
+  },
+  "sessionImpactMonth": "Workouts in {month}",
+  "@sessionImpactMonth": {
+    "description": "Board 07, folgen",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionImpactOfKind": "{kind} workouts",
+  "@sessionImpactOfKind": {
+    "description": "Board 07, loeschFolgen",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "sessionImpactPause": "Current break",
   "@sessionImpactPause": {
     "description": "session.impact.pause"
@@ -2880,12 +2946,25 @@
   "@weightImpactNote": {
     "description": "weight.impact.note"
   },
+  "weightImpactRecord": "Best {exercise}",
+  "@weightImpactRecord": {
+    "description": "Board 08, bwFolgen",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "weightImpactRescored": "rescored",
+  "@weightImpactRescored": {
+    "description": "Board 08, bwFolgen — der Bestwert ändert sich nicht, seine Bewertung schon"
+  },
   "weightImpactScope": "{d} days · {n} workouts with bodyweight exercises",
   "@weightImpactScope": {
     "description": "weight.impact.scope",
     "placeholders": {
       "d": {
-        "type": "String"
+        "type": "int"
       },
       "n": {
         "type": "int"

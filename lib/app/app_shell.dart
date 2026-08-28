@@ -5,13 +5,12 @@ import '../core/theme/theme.dart';
 import '../core/widgets/widgets.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
-import '../features/history/application/pending_deletion.dart';
+import 'application/snackbar_providers.dart';
 import '../features/history/presentation/screens/history_screen.dart';
 import '../features/plans/presentation/start_sheet.dart';
 import '../features/workout/domain/workout_start.dart';
 import '../features/workout/presentation/screens/workout_runner_screen.dart';
 import '../features/workout/presentation/screens/workouts_screen.dart';
-import '../l10n/gen/app_l10n.dart';
 
 /// Der Rahmen um die Tabs.
 ///
@@ -127,13 +126,12 @@ class _AppShellState extends ConsumerState<AppShell>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // **Der Widerruf gehört in die Hülle, nicht auf einen
-                  // Bildschirm.** Wer eine Einheit im Detail löscht, landet
-                  // danach in der Liste; wer sie in der Liste löscht, bleibt
-                  // dort. Ein Hinweis, der am Bildschirm hinge, verschwände
-                  // beim ersten dieser beiden Wege — genau dann, wenn er
+                  // Die Meldung gehört in die Hülle, nicht auf einen
+                  // Bildschirm: Wer eine Einheit im Detail löscht, landet
+                  // danach in der Liste. Ein Hinweis, der am Bildschirm
+                  // hinge, verschwände genau dann, wenn der Widerruf
                   // gebraucht wird.
-                  const _UndoSlot(),
+                  const _SnackSlot(),
                   FloatingNav(activeIndex: _tab, onSelect: _select),
                 ],
               ),
@@ -145,32 +143,32 @@ class _AppShellState extends ConsumerState<AppShell>
   }
 }
 
-/// Der Widerrufshinweis über der Navigation.
+/// Die Meldung über der Navigation.
 ///
-/// Null Pixel hoch, solange nichts schwebt — dieselbe Regel wie bei jedem
-/// [AtemNoticeSlot]. Ein reservierter Leerraum sähe aus wie eine Meldung, die
-/// noch kommt.
-class _UndoSlot extends ConsumerWidget {
-  const _UndoSlot();
+/// Null Pixel hoch, solange keine steht — ein reservierter Leerraum sähe aus
+/// wie eine Meldung, die noch kommt.
+class _SnackSlot extends ConsumerWidget {
+  const _SnackSlot();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppL10n.of(context);
-    final pending = ref.watch(pendingDeletionProvider);
+    final snack = ref.watch(snackbarProvider);
+    if (snack == null) return const SizedBox.shrink();
 
-    return AtemNoticeSlot(
-      notice: pending == null
-          ? null
-          : AtemNotice(
-              title: l10n.sessionDeletedTitle(pending.label),
-              body: l10n.sessionDeletedBody(
-                  PendingDeletionController.window.inSeconds),
-              semanticLabel: '${l10n.sessionDeletedTitle(pending.label)}. '
-                  '${l10n.sessionDeletedBody(PendingDeletionController.window.inSeconds)}',
-              actionLabel: l10n.sessionDeletedUndo,
-              onAction: () =>
-                  ref.read(pendingDeletionProvider.notifier).undo(),
-            ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: AtemSnackbar(
+        message: snack.message,
+        semanticLabel: snack.semanticLabel,
+        tone: snack.tone,
+        actionLabel: snack.actionLabel,
+        onAction: snack.onAction == null
+            ? null
+            : () {
+                ref.read(snackbarProvider.notifier).dismiss();
+                snack.onAction!();
+              },
+      ),
     );
   }
 }

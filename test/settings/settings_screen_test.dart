@@ -1,5 +1,4 @@
 import 'package:atem/core/widgets/widgets.dart';
-import 'package:atem/features/settings/domain/user_settings.dart';
 import 'package:atem/features/settings/presentation/screens/account_deletion_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
@@ -37,9 +36,9 @@ void main() {
       (tester) async {
     await _pump(tester, const SettingsScreen());
 
-    expect(find.text('Profil'), findsOneWidget);
     expect(find.text('Training'), findsOneWidget);
-    expect(find.text('Konto'), findsOneWidget);
+    expect(find.text('App'), findsOneWidget);
+    expect(find.text('Deine Daten'), findsOneWidget);
     expect(find.text('Rechtliches'), findsOneWidget);
     expect(find.text('Über die App'), findsOneWidget);
 
@@ -51,26 +50,25 @@ void main() {
   testWidgets('kein Themenschalter, aber die Tatsache dazu', (tester) async {
     await _pump(tester, const SettingsScreen());
 
-    expect(find.textContaining('Nur dunkel'), findsOneWidget);
+    expect(find.textContaining('keine helle Fassung'), findsOneWidget);
     // Es darf keine Zeile geben, die ein helles Thema anböte.
-    expect(find.textContaining('Hell'), findsNothing);
+    expect(find.text('Hell'), findsNothing);
   });
 
   testWidgets('die Vorschau erscheint erst bei einer Änderung',
       (tester) async {
     await _pump(tester, const SettingsScreen());
-    expect(find.text('Was sich dadurch ändert'), findsNothing);
+    expect(find.text('Was sich rückwirkend ändert'), findsNothing);
 
     await tester.enterText(find.byType(TextField).first, '95');
     await tester.pumpAndSettle();
 
     // Der Bestand aus den Vorlagen trägt keine Körpergewichtsübungen —
     // dann sagt die Vorschau genau das, statt eine Zahl zu erfinden.
-    final hasTable = find.text('Was sich dadurch ändert').evaluate().isNotEmpty;
-    final saysNothing =
-        find.textContaining('ändert das nichts').evaluate().isNotEmpty;
-    expect(hasTable || saysNothing, isTrue,
-        reason: 'entweder Zahlen oder die Auskunft, dass es keine gibt');
+    expect(find.text('Was sich rückwirkend ändert'), findsOneWidget,
+        reason: 'die Vorschau erscheint, sobald ein gültiger Wert dasteht');
+    expect(find.textContaining('nur ihre Bewertung'), findsOneWidget,
+        reason: 'der Satz, der die Sätze selbst unangetastet erklärt');
   });
 
   testWidgets('ein unsinniges Gewicht wird am Feld gemeldet', (tester) async {
@@ -79,11 +77,7 @@ void main() {
     await tester.enterText(find.byType(TextField).first, '780');
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('Zwischen ${UserSettings.minBodyWeightKg.round()} und '
-          '${UserSettings.maxBodyWeightKg.round()} kg.'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('Zwischen 30 und 250 kg'), findsOneWidget);
   });
 
   testWidgets('Löschen bleibt gesperrt, bis das Wort getippt ist',
@@ -111,7 +105,7 @@ void main() {
     await _pump(tester, const AccountDeletedScreen());
 
     expect(find.text('Konto gelöscht'), findsOneWidget);
-    expect(find.text('Dein Zugang bleibt bestehen'), findsOneWidget);
-    expect(find.textContaining('wieder dabei'), findsOneWidget);
+    expect(find.text('Eine Sache bleibt'), findsOneWidget);
+    expect(find.textContaining('wieder drin'), findsOneWidget);
   });
 }

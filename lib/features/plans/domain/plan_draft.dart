@@ -2,16 +2,22 @@ import '../../exercises/domain/exercise.dart';
 import 'plan.dart';
 
 /// Was an einem Planentwurf noch fehlt.
+///
+/// **Nur der Name.** Ein Plan ohne Einträge ist gültig — Board 07: „Der Plan
+/// existiert, sobald er einen Namen hat."
+///
+/// Das war anders gedacht und ist eine Korrektur: Ein leerer Plan sei eine
+/// Sackgasse, also solle er nicht speicherbar sein. Das verwechselt zwei
+/// Fragen. Ob ein Plan **existieren** darf, entscheidet die Datenbank — sie
+/// verlangt einen Namen. Ob er **startbar** ist, entscheidet die Oberfläche,
+/// und die kann das sagen, ohne das Anlegen zu verbieten.
+///
+/// Der Unterschied ist praktisch: Wer einen Plan anlegt, tippt den Namen und
+/// füllt ihn danach. Ihn beim ersten Schritt abzuweisen zwingt dazu, alles in
+/// einem Zug zu tun.
 enum PlanDraftFault {
   /// Leerer Name. Die Regeln verlangen `name is string`.
   name,
-
-  /// Kein einziger Eintrag.
-  ///
-  /// Die Regeln lassen einen leeren Plan durch — `hasAll(['name','userId'])`
-  /// prüft `items` nicht. Wir lassen ihn trotzdem nicht zu: Ein Plan ohne
-  /// Übungen kann nicht gestartet werden und stünde als Sackgasse in der Liste.
-  items,
 }
 
 /// Ein Plan, wie er geschrieben werden soll.
@@ -36,14 +42,13 @@ class PlanDraft {
 
   bool get isNew => id == null;
 
-  static Set<PlanDraftFault> faultsIn({
-    required String name,
-    required List<PlanItem> items,
-  }) =>
-      {
+  static Set<PlanDraftFault> faultsIn({required String name}) => {
         if (name.trim().isEmpty) PlanDraftFault.name,
-        if (items.isEmpty) PlanDraftFault.items,
       };
+
+  /// Startbar ist er erst mit Einträgen — eine Anzeigefrage, keine des
+  /// Speicherns.
+  static bool isStartable(List<PlanItem> items) => items.isNotEmpty;
 }
 
 /// Ein Planeintrag zusammen mit der Übung, auf die er zeigt.

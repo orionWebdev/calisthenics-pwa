@@ -7,6 +7,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../dashboard/application/dashboard_providers.dart';
 import '../../../dashboard/domain/dashboard_data.dart';
 import '../../../exercises/application/exercise_providers.dart';
+import '../../../plans/application/pending_plan_deletion.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../../plans/domain/plan.dart';
 import '../../../plans/presentation/plan_bits.dart';
@@ -76,7 +77,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final dashboard = ref.watch(dashboardDataProvider);
-    final plans = ref.watch(plansProvider).value ?? const <Plan>[];
+    final plans = ref.watch(visiblePlansProvider).value ?? const <Plan>[];
     final exerciseCount = ref.watch(exercisesProvider).value?.length ?? 0;
     final matches = ref.watch(filteredExercisesProvider);
     final muscle = ref.watch(exerciseFilterProvider);

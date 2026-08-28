@@ -103,6 +103,12 @@ abstract class AppL10n {
   /// **'Zugang'**
   String get aboutAccess;
 
+  /// Board 08, ueber
+  ///
+  /// In de, this message translates to:
+  /// **'Zugang'**
+  String get aboutAccessLabel;
+
   /// about.access.value
   ///
   /// In de, this message translates to:
@@ -121,17 +127,47 @@ abstract class AppL10n {
   /// **'Dunkel · keine helle Fassung'**
   String get aboutAppearanceValue;
 
+  /// Board 08, ueber
+  ///
+  /// In de, this message translates to:
+  /// **'Darstellung'**
+  String get aboutDisplayLabel;
+
+  /// Board 08, ueber — steht dort, wo sonst ein Schalter wäre
+  ///
+  /// In de, this message translates to:
+  /// **'Dunkel · keine helle Fassung'**
+  String get aboutDisplayValue;
+
   /// about.languages
   ///
   /// In de, this message translates to:
   /// **'Sprachen'**
   String get aboutLanguages;
 
+  /// Board 08, ueber
+  ///
+  /// In de, this message translates to:
+  /// **'Sprachen'**
+  String get aboutLanguagesLabel;
+
+  /// Board 08, ueber
+  ///
+  /// In de, this message translates to:
+  /// **'Deutsch · English'**
+  String get aboutLanguagesValue;
+
   /// about.version
   ///
   /// In de, this message translates to:
   /// **'Version'**
   String get aboutVersion;
+
+  /// Board 08, ueber
+  ///
+  /// In de, this message translates to:
+  /// **'Version'**
+  String get aboutVersionLabel;
 
   /// account.delete
   ///
@@ -143,7 +179,7 @@ abstract class AppL10n {
   ///
   /// In de, this message translates to:
   /// **'{y} Jahre {m} Monate, {n} Einheiten und {e} eigene Übungen. Es gibt kein Rückgängig und kein Zeitfenster.'**
-  String accountDelete2Body(String y, String m, int n, String e);
+  String accountDelete2Body(int y, int m, int n, int e);
 
   /// account.delete2.confirm
   ///
@@ -269,7 +305,7 @@ abstract class AppL10n {
   ///
   /// In de, this message translates to:
   /// **'{a} von {b} Sammlungen sind weg, das Anmeldekonto besteht noch.'**
-  String accountPartialBody(int a, String b);
+  String accountPartialBody(int a, int b);
 
   /// account.partial.resume
   ///
@@ -1825,6 +1861,36 @@ abstract class AppL10n {
   /// **'Volumen'**
   String get detailVolume;
 
+  /// Richtungswort im Vorlesetext — die Farbe trägt sie nie allein
+  ///
+  /// In de, this message translates to:
+  /// **'besser'**
+  String get directionBetter;
+
+  /// Richtungswort bei Zeitspannen
+  ///
+  /// In de, this message translates to:
+  /// **'länger'**
+  String get directionLonger;
+
+  /// Richtungswort ohne Änderung
+  ///
+  /// In de, this message translates to:
+  /// **'unverändert'**
+  String get directionSame;
+
+  /// Richtungswort bei Zeitspannen
+  ///
+  /// In de, this message translates to:
+  /// **'kürzer'**
+  String get directionShorter;
+
+  /// Richtungswort im Vorlesetext
+  ///
+  /// In de, this message translates to:
+  /// **'schlechter'**
+  String get directionWorse;
+
   /// Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.
   ///
   /// In de, this message translates to:
@@ -2339,7 +2405,7 @@ abstract class AppL10n {
   ///
   /// In de, this message translates to:
   /// **'Einheiten {a}/{b} · Pläne {c}/{d} · Übungen {e}/{f}'**
-  String exportProgress(int a, String b, int c, String d, String e, String f);
+  String exportProgress(int a, String b, int c, int d, int e, String f);
 
   /// export.size
   ///
@@ -3595,6 +3661,24 @@ abstract class AppL10n {
   /// **'Form heute'**
   String get sessionImpactForm;
 
+  /// Board 07, folgen
+  ///
+  /// In de, this message translates to:
+  /// **'Längste Pause'**
+  String get sessionImpactLongest;
+
+  /// Board 07, folgen
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten {month}'**
+  String sessionImpactMonth(String month);
+
+  /// Board 07, loeschFolgen
+  ///
+  /// In de, this message translates to:
+  /// **'{kind}-Einheiten'**
+  String sessionImpactOfKind(String kind);
+
   /// session.impact.pause
   ///
   /// In de, this message translates to:
@@ -4351,11 +4435,23 @@ abstract class AppL10n {
   /// **'Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.'**
   String get weightImpactNote;
 
+  /// Board 08, bwFolgen
+  ///
+  /// In de, this message translates to:
+  /// **'Bestwert {exercise}'**
+  String weightImpactRecord(String exercise);
+
+  /// Board 08, bwFolgen — der Bestwert ändert sich nicht, seine Bewertung schon
+  ///
+  /// In de, this message translates to:
+  /// **'neu bewertet'**
+  String get weightImpactRescored;
+
   /// weight.impact.scope
   ///
   /// In de, this message translates to:
   /// **'{d} Tage · {n} Einheiten mit Körpergewichtsübungen'**
-  String weightImpactScope(String d, int n);
+  String weightImpactScope(int d, int n);
 
   /// weight.impact.title
   ///

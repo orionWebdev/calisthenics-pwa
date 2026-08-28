@@ -52,6 +52,11 @@ class _Sessions implements SessionRepository {
   @override
   Future<void> updateSession(String id, SessionPatch p) async {}
   @override
+  @override
+  Future<void> updateSessionExercises(
+      String id, List<LoggedExercise> exercises) async {}
+
+  @override
   Future<void> deleteSession(String id) async {}
 }
 
@@ -272,6 +277,67 @@ void main() {
       final w = await _repo(plans: [_plan], exercises: _exercises)
           .loadWorkout(const WorkoutStart(planId: 'p1'));
       expect(w.sessionId, isEmpty);
+    });
+  });
+
+  group('Sätze nachtragen', () {
+    final session = StrengthSession(
+      id: 'alt',
+      userId: 'u',
+      date: DateTime(2026, 7, 3),
+      createdAt: DateTime(2026, 7, 3),
+      bodyweight: false,
+      exercises: const [
+        LoggedExercise(exerciseId: 'bench', sets: [
+          LoggedSet(reps: 8, weight: 80),
+          LoggedSet(),
+        ]),
+      ],
+    );
+
+    test('bringt die vorhandenen Sätze abgehakt herein', () async {
+      final w = await _repo(exercises: _exercises, sessions: [session])
+          .loadWorkout(const WorkoutStart.session('alt'));
+
+      expect(w.amendsSessionId, 'alt');
+      expect(w.exercises, hasLength(1));
+      expect(w.exercises.first.name, 'Bankdrücken');
+      // Der leere Satz fällt weg, der gefüllte kommt erledigt herein.
+      expect(w.exercises.first.sets, hasLength(1));
+      expect(w.exercises.first.sets.first.done, isTrue,
+          reason: 'unabgehakt bliebe beim Beenden nichts davon übrig');
+      expect(w.exercises.first.sets.first.weight, '80.0');
+      expect(w.exercises.first.sets.first.reps, '8');
+    });
+
+    test('eine Einheit ohne Übungen beginnt leer, aber ergänzend', () async {
+      // 16 der 63 Krafteinheiten im Bestand sind so.
+      final leer = StrengthSession(
+        id: 'leer',
+        userId: 'u',
+        date: DateTime(2026, 7, 3),
+        createdAt: DateTime(2026, 7, 3),
+        bodyweight: false,
+      );
+      final w = await _repo(sessions: [leer])
+          .loadWorkout(const WorkoutStart.session('leer'));
+
+      expect(w.exercises, isEmpty);
+      expect(w.amendsSessionId, 'leer',
+          reason: 'sonst entstünde beim Speichern eine zweite Einheit');
+    });
+
+    test('eine unbekannte Einheit ist ein Fehler', () {
+      expect(
+        () => _repo().loadWorkout(const WorkoutStart.session('gibtsnicht')),
+        throwsStateError,
+      );
+    });
+
+    test('ergänzen ist kein freies Training', () {
+      expect(const WorkoutStart.session('x').isFree, isFalse);
+      expect(const WorkoutStart.session('x').amends, isTrue);
+      expect(const WorkoutStart.free().amends, isFalse);
     });
   });
 

@@ -2,6 +2,7 @@ import '../../exercises/domain/exercise.dart';
 import '../../exercises/domain/exercise_repository.dart';
 import '../../history/domain/exercise_history.dart';
 import '../../history/domain/session_repository.dart';
+import '../../history/domain/training_session.dart';
 import '../../plans/domain/plan.dart';
 import '../../plans/domain/plan_repository.dart';
 import '../domain/workout_repository.dart';
@@ -49,6 +50,8 @@ class PlanWorkoutRepository implements WorkoutRepository {
 
   @override
   Future<ActiveWorkout> loadWorkout(WorkoutStart start) async {
+    if (start.sessionId case final id?) return _amend(id, start);
+
     final planId = start.planId;
 
     // Freies Training beginnt leer. Eine erfundene Übungsfolge wäre genau das,
@@ -90,6 +93,68 @@ class PlanWorkoutRepository implements WorkoutRepository {
       exercises: [
         for (var i = 0; i < plan.items.length; i++)
           _exercise(plan.items[i], i, byId[plan.items[i].exerciseId], history),
+      ],
+    );
+  }
+
+  /// Eine bestehende Einheit zum Ergänzen — **mit ihren Sätzen, abgehakt**.
+  ///
+  /// Was schon protokolliert ist, kommt als erledigt herein. Es unabgehakt zu
+  /// zeigen hiesse, die geleistete Arbeit zur Absicht zu erklären; und beim
+  /// Beenden würden nur die neuen Sätze übrig bleiben, weil der Entwurf nur
+  /// Abgehaktes übernimmt.
+  Future<ActiveWorkout> _amend(String sessionId, WorkoutStart start) async {
+    final sessions = await _sessions.fetchSessions(userId);
+    final session = sessions.where((s) => s.id == sessionId).firstOrNull;
+    if (session == null) {
+      throw StateError('Einheit $sessionId nicht gefunden');
+    }
+
+    final exercises = await _exercises.fetchExercises(userId);
+    final byId = {for (final e in exercises) e.id: e};
+    final history = ExerciseHistory.index(sessions);
+
+    final logged = session is StrengthSession
+        ? session.exercises
+        : const <LoggedExercise>[];
+
+    return ActiveWorkout(
+      sessionId: '',
+      amendsSessionId: sessionId,
+      defaultRestSeconds: start.restSeconds,
+      exercises: [
+        for (var i = 0; i < logged.length; i++)
+          _fromLogged(logged[i], i, byId[logged[i].exerciseId], history),
+      ],
+    );
+  }
+
+  WorkoutExercise _fromLogged(
+    LoggedExercise logged,
+    int position,
+    Exercise? exercise,
+    Map<String, ExerciseHistory> history,
+  ) {
+    final entry = history[logged.exerciseId] ?? ExerciseHistory.empty;
+    final filled = [
+      for (final set in logged.sets)
+        if (!set.isEmpty) set,
+    ];
+
+    return WorkoutExercise(
+      id: logged.exerciseId,
+      name: exercise?.name ?? logged.exerciseId,
+      muscles: [for (final m in exercise?.displayMuscles ?? const []) m.wire],
+      recordWeightKg: entry.recordWeightKg,
+      sets: [
+        for (var i = 0; i < filled.length; i++)
+          WorkoutSet(
+            id: '${logged.exerciseId}-$position-$i',
+            type: SetType.normal,
+            weight: filled[i].weight == null ? '' : '${filled[i].weight}',
+            reps: filled[i].reps == null ? '' : '${filled[i].reps}',
+            done: true,
+          ),
       ],
     );
   }

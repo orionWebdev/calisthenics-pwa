@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../application/pending_plan_deletion.dart';
 import '../../application/plan_providers.dart';
 import '../../domain/plan.dart';
 import '../plan_bits.dart';
@@ -20,7 +21,7 @@ class PlanListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
-    final async = ref.watch(plansProvider);
+    final async = ref.watch(visiblePlansProvider);
 
     return Scaffold(
       backgroundColor: AtemColors.base,

@@ -13,7 +13,11 @@ enum AtemDotSize {
   medium(6, 8),
 
   /// 4 dp — neben labelDeco (10 sp).
-  small(4, 6);
+  small(4, 6),
+
+  /// 8 dp — in der Snackbar, wo der Punkt allein die Tonlage trägt und
+  /// deshalb aus einem Meter Entfernung sichtbar sein muss (Modul 7, Spec).
+  large(8, 10);
 
   const AtemDotSize(this.diameter, this.blur);
   final double diameter;

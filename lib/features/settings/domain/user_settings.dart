@@ -93,7 +93,11 @@ class UserSettings {
   /// Plausible Grenzen, keine medizinischen. Sie fangen den Vertipper ab,
   /// bei dem aus 78 die 780 wird — und der jede Rechnung über Jahre verzerrte.
   static const minBodyWeightKg = 30.0;
-  static const maxBodyWeightKg = 300.0;
+
+  /// 250, nicht 300 — so steht es im Board („30–250 kg"). Die Grenze fängt
+  /// den Vertipper, bei dem aus 78 die 780 wird, und muss dafür nicht bis an
+  /// den Rand des Menschenmöglichen reichen.
+  static const maxBodyWeightKg = 250.0;
 
   /// Immer in Kilogramm. `null`, solange nichts hinterlegt ist.
   final double? bodyWeightKg;

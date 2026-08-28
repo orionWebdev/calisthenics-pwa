@@ -38,7 +38,15 @@ abstract interface class AccountRepository {
   ///
   /// **Vor** der Abmeldung auszuführen: Ohne Anmeldung verweigern die Regeln
   /// jeden Zugriff, und die Daten blieben unerreichbar liegen.
-  Future<void> deleteData(String userId);
+  ///
+  /// [onProgress] meldet nach jeder Sammlung, wie viele fertig sind. Das
+  /// Löschen dauert bei 245 Tagen Bestand mehrere Sekunden; ein Ring ohne
+  /// Angabe liesse offen, ob überhaupt etwas passiert — und die Aktion ist
+  /// nicht abbrechbar, also muss sie erklären, wo sie steht.
+  Future<void> deleteData(
+    String userId, {
+    void Function(int done, int total, String collection)? onProgress,
+  });
 
   /// Löscht das Anmeldekonto selbst.
   Future<void> deleteAccount();

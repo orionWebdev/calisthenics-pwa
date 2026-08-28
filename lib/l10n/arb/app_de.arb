@@ -3,6 +3,10 @@
   "@aboutAccess": {
     "description": "about.access"
   },
+  "aboutAccessLabel": "Zugang",
+  "@aboutAccessLabel": {
+    "description": "Board 08, ueber"
+  },
   "aboutAccessValue": "Freigeschaltete Adresse",
   "@aboutAccessValue": {
     "description": "about.access.value"
@@ -15,13 +19,33 @@
   "@aboutAppearanceValue": {
     "description": "about.appearance.value"
   },
+  "aboutDisplayLabel": "Darstellung",
+  "@aboutDisplayLabel": {
+    "description": "Board 08, ueber"
+  },
+  "aboutDisplayValue": "Dunkel · keine helle Fassung",
+  "@aboutDisplayValue": {
+    "description": "Board 08, ueber — steht dort, wo sonst ein Schalter wäre"
+  },
   "aboutLanguages": "Sprachen",
   "@aboutLanguages": {
     "description": "about.languages"
   },
+  "aboutLanguagesLabel": "Sprachen",
+  "@aboutLanguagesLabel": {
+    "description": "Board 08, ueber"
+  },
+  "aboutLanguagesValue": "Deutsch · English",
+  "@aboutLanguagesValue": {
+    "description": "Board 08, ueber"
+  },
   "aboutVersion": "Version",
   "@aboutVersion": {
     "description": "about.version"
+  },
+  "aboutVersionLabel": "Version",
+  "@aboutVersionLabel": {
+    "description": "Board 08, ueber"
   },
   "accountDelete": "Konto löschen",
   "@accountDelete": {
@@ -32,16 +56,16 @@
     "description": "account.delete2.body",
     "placeholders": {
       "y": {
-        "type": "String"
+        "type": "int"
       },
       "m": {
-        "type": "String"
+        "type": "int"
       },
       "n": {
         "type": "int"
       },
       "e": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -146,7 +170,7 @@
         "type": "int"
       },
       "b": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1520,6 +1544,26 @@
   "@detailVolume": {
     "description": "Kennzahl im Detail"
   },
+  "directionBetter": "besser",
+  "@directionBetter": {
+    "description": "Richtungswort im Vorlesetext — die Farbe trägt sie nie allein"
+  },
+  "directionLonger": "länger",
+  "@directionLonger": {
+    "description": "Richtungswort bei Zeitspannen"
+  },
+  "directionSame": "unverändert",
+  "@directionSame": {
+    "description": "Richtungswort ohne Änderung"
+  },
+  "directionShorter": "kürzer",
+  "@directionShorter": {
+    "description": "Richtungswort bei Zeitspannen"
+  },
+  "directionWorse": "schlechter",
+  "@directionWorse": {
+    "description": "Richtungswort im Vorlesetext"
+  },
   "durationApproxMinutes": "~{n} min",
   "@durationApproxMinutes": {
     "description": "Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.",
@@ -1976,10 +2020,10 @@
         "type": "int"
       },
       "d": {
-        "type": "String"
+        "type": "int"
       },
       "e": {
-        "type": "String"
+        "type": "int"
       },
       "f": {
         "type": "String"
@@ -3075,6 +3119,28 @@
   "@sessionImpactForm": {
     "description": "session.impact.form"
   },
+  "sessionImpactLongest": "Längste Pause",
+  "@sessionImpactLongest": {
+    "description": "Board 07, folgen"
+  },
+  "sessionImpactMonth": "Einheiten {month}",
+  "@sessionImpactMonth": {
+    "description": "Board 07, folgen",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionImpactOfKind": "{kind}-Einheiten",
+  "@sessionImpactOfKind": {
+    "description": "Board 07, loeschFolgen",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "sessionImpactPause": "Aktuelle Pause",
   "@sessionImpactPause": {
     "description": "session.impact.pause"
@@ -3670,12 +3736,25 @@
   "@weightImpactNote": {
     "description": "weight.impact.note"
   },
+  "weightImpactRecord": "Bestwert {exercise}",
+  "@weightImpactRecord": {
+    "description": "Board 08, bwFolgen",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "weightImpactRescored": "neu bewertet",
+  "@weightImpactRescored": {
+    "description": "Board 08, bwFolgen — der Bestwert ändert sich nicht, seine Bewertung schon"
+  },
   "weightImpactScope": "{d} Tage · {n} Einheiten mit Körpergewichtsübungen",
   "@weightImpactScope": {
     "description": "weight.impact.scope",
     "placeholders": {
       "d": {
-        "type": "String"
+        "type": "int"
       },
       "n": {
         "type": "int"
