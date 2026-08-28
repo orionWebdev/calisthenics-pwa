@@ -1,4 +1,163 @@
 {
+  "aboutAccess": "Access",
+  "@aboutAccess": {
+    "description": "about.access"
+  },
+  "aboutAccessValue": "Approved address",
+  "@aboutAccessValue": {
+    "description": "about.access.value"
+  },
+  "aboutAppearance": "Appearance",
+  "@aboutAppearance": {
+    "description": "about.appearance"
+  },
+  "aboutAppearanceValue": "Dark · no light version",
+  "@aboutAppearanceValue": {
+    "description": "about.appearance.value"
+  },
+  "aboutLanguages": "Languages",
+  "@aboutLanguages": {
+    "description": "about.languages"
+  },
+  "aboutVersion": "Version",
+  "@aboutVersion": {
+    "description": "about.version"
+  },
+  "accountDelete": "Delete account",
+  "@accountDelete": {
+    "description": "account.delete"
+  },
+  "accountDelete2Body": "{y} years {m} months, {n} workouts and {e} exercises of your own. There is no undo and no grace period.",
+  "@accountDelete2Body": {
+    "description": "account.delete2.body",
+    "placeholders": {
+      "y": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDelete2Confirm": "Delete account",
+  "@accountDelete2Confirm": {
+    "description": "account.delete2.confirm"
+  },
+  "accountDelete2Keep": "Keep",
+  "@accountDelete2Keep": {
+    "description": "account.delete2.keep"
+  },
+  "accountDelete2Title": "Delete permanently",
+  "@accountDelete2Title": {
+    "description": "account.delete2.title"
+  },
+  "accountDelete2TypeCount": "{a} / {b} characters",
+  "@accountDelete2TypeCount": {
+    "description": "account.delete2.typeCount",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDelete2TypeLabel": "Type “DELETE” to confirm",
+  "@accountDelete2TypeLabel": {
+    "description": "account.delete2.typeLabel"
+  },
+  "accountDelete2TypeWord": "DELETE",
+  "@accountDelete2TypeWord": {
+    "description": "account.delete2.typeWord"
+  },
+  "accountDeleteAccess": "Your access remains. You can sign in again afterwards — the app then starts empty, at onboarding.",
+  "@accountDeleteAccess": {
+    "description": "account.delete.access"
+  },
+  "accountDeleteBody": "This deletes everything you have. Today’s numbers:",
+  "@accountDeleteBody": {
+    "description": "account.delete.body"
+  },
+  "accountDeleteContinue": "Continue to delete",
+  "@accountDeleteContinue": {
+    "description": "account.delete.continue"
+  },
+  "accountDeleteExport": "Export data first",
+  "@accountDeleteExport": {
+    "description": "account.delete.export"
+  },
+  "accountDeleteRange": "Time span",
+  "@accountDeleteRange": {
+    "description": "account.delete.range"
+  },
+  "accountDeleteSub": "Six collections · no undo",
+  "@accountDeleteSub": {
+    "description": "account.delete.sub"
+  },
+  "accountDeleting": "Deleting your account",
+  "@accountDeleting": {
+    "description": "account.deleting"
+  },
+  "accountDeletingStep": "{name}",
+  "@accountDeletingStep": {
+    "description": "account.deleting.step",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDeletingWait": "Cannot be cancelled. This takes a moment.",
+  "@accountDeletingWait": {
+    "description": "account.deleting.wait"
+  },
+  "accountDoneAccessBody": "Your ATEM access still applies. Sign in with the same address and you are back in — with nothing stored, at onboarding.",
+  "@accountDoneAccessBody": {
+    "description": "account.done.access.body"
+  },
+  "accountDoneAccessTitle": "One thing remains",
+  "@accountDoneAccessTitle": {
+    "description": "account.done.access.title"
+  },
+  "accountDoneBody": "Your workouts, plans, exercises, appointments and progress are deleted. The sign-in account is removed.",
+  "@accountDoneBody": {
+    "description": "account.done.body"
+  },
+  "accountDoneTitle": "Account deleted",
+  "@accountDoneTitle": {
+    "description": "account.done.title"
+  },
+  "accountDoneToLogin": "To sign-in",
+  "@accountDoneToLogin": {
+    "description": "account.done.toLogin"
+  },
+  "accountPartialBody": "{a} of {b} collections are gone, the sign-in account still exists.",
+  "@accountPartialBody": {
+    "description": "account.partial.body",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "accountPartialResume": "Resume deletion",
+  "@accountPartialResume": {
+    "description": "account.partial.resume"
+  },
+  "accountPartialTitle": "Not fully deleted",
+  "@accountPartialTitle": {
+    "description": "account.partial.title"
+  },
   "analysisChartLabel": "Form 0–100",
   "analysisCompConsistency": "Consistency",
   "analysisCompFitness": "Fitness vs. peak",
@@ -40,6 +199,94 @@
   "authNetworkTitle": "No connection",
   "authSignOut": "Sign out",
   "authSigningIn": "Signing in …",
+  "balanceBasis": "{sets} sets · {n} of {total} strength sessions",
+  "@balanceBasis": {
+    "description": "balance.basis",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceColLast": "last",
+  "@balanceColLast": {
+    "description": "balance.col.last"
+  },
+  "balanceColSets": "Sets",
+  "@balanceColSets": {
+    "description": "balance.col.sets"
+  },
+  "balanceColShare": "Share",
+  "@balanceColShare": {
+    "description": "balance.col.share"
+  },
+  "balanceGapsNote": "Time since the last set on this muscle. No target — the app does not know how often it should be trained.",
+  "@balanceGapsNote": {
+    "description": "balance.gaps.note"
+  },
+  "balanceGapsTitle": "Longest gaps",
+  "@balanceGapsTitle": {
+    "description": "balance.gaps.title"
+  },
+  "balanceLastDays": "{n}d",
+  "@balanceLastDays": {
+    "description": "balance.last.days",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceLastDaysLong": "last {n}d",
+  "@balanceLastDaysLong": {
+    "description": "balance.last.days.long",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceThin": "Not enough basis yet: {n} of {min} strength sessions with exercises in the last 8 weeks.",
+  "@balanceThin": {
+    "description": "balance.thin",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceThinProgress": "{n} / {min} · {rest} sessions to go",
+  "@balanceThinProgress": {
+    "description": "balance.thin.progress",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "rest": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceTitle": "Muscle balance",
+  "@balanceTitle": {
+    "description": "balance.title"
+  },
+  "balanceWindow": "8 weeks",
+  "@balanceWindow": {
+    "description": "balance.window"
+  },
   "commonActivity": "Activity",
   "@commonActivity": {
     "description": "aus common.activity"
@@ -62,7 +309,7 @@
   },
   "commonCancel": "Cancel",
   "@commonCancel": {
-    "description": "aus common.cancel"
+    "description": "common.cancel"
   },
   "commonCardio": "Cardio",
   "@commonCardio": {
@@ -71,6 +318,10 @@
   "commonClose": "Close",
   "@commonClose": {
     "description": "aus common.close"
+  },
+  "commonCreated": "Exercise created",
+  "@commonCreated": {
+    "description": "common.created"
   },
   "commonDays": "Days",
   "@commonDays": {
@@ -120,6 +371,22 @@
   "@commonNotes": {
     "description": "aus common.notes"
   },
+  "commonOf": "of",
+  "@commonOf": {
+    "description": "Verbindungswort in Vorlesetexten: 4 von 5"
+  },
+  "commonOffline": "Saved locally · syncing",
+  "@commonOffline": {
+    "description": "common.offline"
+  },
+  "commonOfflineSync": "Saved locally · syncing",
+  "@commonOfflineSync": {
+    "description": "common.offline.sync"
+  },
+  "commonOpen": "Open",
+  "@commonOpen": {
+    "description": "common.open"
+  },
   "commonOptional": "optional",
   "@commonOptional": {
     "description": "aus common.optional"
@@ -140,9 +407,21 @@
   "@commonRetry": {
     "description": "Runner, Modul 2 Spezifikation"
   },
+  "commonRetrySave": "Save again",
+  "@commonRetrySave": {
+    "description": "common.retry.save"
+  },
   "commonSave": "Save",
   "@commonSave": {
     "description": "aus common.save"
+  },
+  "commonSaved": "Change saved",
+  "@commonSaved": {
+    "description": "common.saved"
+  },
+  "commonSaving": "Saving",
+  "@commonSaving": {
+    "description": "common.saving"
   },
   "commonSecondsShort": "{n}s",
   "@commonSecondsShort": {
@@ -181,6 +460,10 @@
   "@commonTime": {
     "description": "aus common.time"
   },
+  "commonUndo": "Undo",
+  "@commonUndo": {
+    "description": "common.undo"
+  },
   "commonView": "View",
   "@commonView": {
     "description": "aus common.view"
@@ -196,6 +479,87 @@
   "commonWorkout": "Workout",
   "@commonWorkout": {
     "description": "aus common.workout"
+  },
+  "compareBasisDate": "{date} · {n} days ago",
+  "@compareBasisDate": {
+    "description": "compare.basis.date",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "compareBasisExercises": "Same exercises",
+  "@compareBasisExercises": {
+    "description": "compare.basis.exercises"
+  },
+  "compareBasisMedian": "Median · {n} sessions",
+  "@compareBasisMedian": {
+    "description": "compare.basis.median",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "compareBasisPlan": "Same plan",
+  "@compareBasisPlan": {
+    "description": "compare.basis.plan"
+  },
+  "compareEmptyPlan": "First session of plan “{plan}”. From the next one on, the comparison appears here.",
+  "@compareEmptyPlan": {
+    "description": "compare.empty.plan",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "compareEmptyType": "First session of this kind. From the next one on, the comparison appears here.",
+  "@compareEmptyType": {
+    "description": "compare.empty.type"
+  },
+  "compareLoading": "Loading comparison",
+  "@compareLoading": {
+    "description": "compare.loading"
+  },
+  "compareMedian": "median {value}",
+  "@compareMedian": {
+    "description": "compare.median",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "compareNoneValue": "no basis",
+  "@compareNoneValue": {
+    "description": "compare.none.value"
+  },
+  "compareNoteMedian": "No plan ID, no exercise overlap. Only what is independent of the exercises is compared: duration and load.",
+  "@compareNoteMedian": {
+    "description": "compare.note.median"
+  },
+  "compareNotePlan": "Both sessions follow plan “{plan}”. All four values are comparable.",
+  "@compareNotePlan": {
+    "description": "compare.note.plan",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "comparePrev": "before {value}",
+  "@comparePrev": {
+    "description": "compare.prev",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   },
   "consequenceDays": "{n, plural, one{1 day} other{{n} days}}",
   "@consequenceDays": {
@@ -849,6 +1213,26 @@
   "@dashboardWeekdays": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "deleteConfirm": "Delete",
+  "@deleteConfirm": {
+    "description": "delete.confirm"
+  },
+  "deleteKeep": "Keep",
+  "@deleteKeep": {
+    "description": "delete.keep"
+  },
+  "deleteStep1Continue": "Continue to delete",
+  "@deleteStep1Continue": {
+    "description": "delete.step1.continue"
+  },
+  "deleteStep2NoUndo": "There is no undo — only creating it again.",
+  "@deleteStep2NoUndo": {
+    "description": "delete.step2.noUndo"
+  },
+  "deleteStep2Title": "Delete permanently",
+  "@deleteStep2Title": {
+    "description": "delete.step2.title"
+  },
   "detailAcwrLabel": "Load on this day",
   "detailAcwrZone": "ACWR {v} · {zone}",
   "detailDistance": "Distance",
@@ -861,38 +1245,6 @@
   "detailSetsMissingBody": "This workout was recorded as duration only. Load and consistency still count, volume stays empty.",
   "detailSetsMissingTitle": "No sets recorded",
   "detailVolume": "Volume",
-  "difficultyLevel1": "Beginner",
-  "@difficultyLevel1": {
-    "description": "Schwierigkeitsstufe 1"
-  },
-  "difficultyLevel2": "Intermediate",
-  "@difficultyLevel2": {
-    "description": "Schwierigkeitsstufe 2"
-  },
-  "difficultyLevel3": "Advanced",
-  "@difficultyLevel3": {
-    "description": "Schwierigkeitsstufe 3"
-  },
-  "difficultyLevel4": "Elite",
-  "@difficultyLevel4": {
-    "description": "Schwierigkeitsstufe 4"
-  },
-  "difficultyLevel5": "Extreme",
-  "@difficultyLevel5": {
-    "description": "Schwierigkeitsstufe 5"
-  },
-  "difficultyPick": "{level} — level {n} of 5",
-  "@difficultyPick": {
-    "description": "Vorlesetext eines Schwierigkeitssegments",
-    "placeholders": {
-      "level": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "durationApproxMinutes": "~{n} min",
   "durationMinutes": "{n} min",
   "errorsDeleteFailed": "Error deleting",
@@ -947,148 +1299,145 @@
   "@errorsWorkoutStartFailed": {
     "description": "aus errors.workoutStartFailed"
   },
-  "exerciseCopyAction": "Create your own version",
-  "@exerciseCopyAction": {
-    "description": "Weg aus einer kuratierten Übung heraus"
-  },
-  "exerciseCopyName": "{name} (mine)",
-  "@exerciseCopyName": {
-    "description": "Vorgeschlagener Name der eigenen Fassung",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "exerciseCopyNotice": "The curated exercise remains. Your version sits alongside it.",
   "@exerciseCopyNotice": {
     "description": "Hinweis im Formular der eigenen Fassung"
   },
   "exerciseCountShort": "{n, plural, one{1 exercise} other{{n} exercises}}",
   "exerciseCues": "Cues",
-  "exerciseCuratedA11y": "Curated, not editable",
-  "@exerciseCuratedA11y": {
-    "description": "Vorlesetext des Schloss-Chips"
+  "exerciseCuratedBadge": "Curated",
+  "@exerciseCuratedBadge": {
+    "description": "exercise.curated.badge"
   },
-  "exerciseCuratedBody": "Curated exercises are the same for everyone.",
+  "exerciseCuratedBody": "This exercise is the same for everyone and stays unchanged. Want it different? Create your own version.",
   "@exerciseCuratedBody": {
-    "description": "Erklärung am Schloss-Chip"
+    "description": "exercise.curated.body"
   },
-  "exerciseCuratedChip": "Curated",
-  "@exerciseCuratedChip": {
-    "description": "Schloss-Chip am Übungsdetail"
+  "exerciseCuratedCopy": "Create my own version",
+  "@exerciseCuratedCopy": {
+    "description": "exercise.curated.copy"
   },
-  "exerciseDeleteBarrier": "Delete exercise",
-  "@exerciseDeleteBarrier": {
-    "description": "Vorlesetext des Dialogschleiers"
+  "exerciseCuratedTitle": "Part of the library",
+  "@exerciseCuratedTitle": {
+    "description": "exercise.curated.title"
   },
-  "exerciseDeleteBody": "Completed sessions keep their sets but will only show the identifier.",
-  "@exerciseDeleteBody": {
-    "description": "Erste Bestätigung, Text"
+  "exerciseDelete": "Delete exercise",
+  "@exerciseDelete": {
+    "description": "exercise.delete"
   },
-  "exerciseDeleteInPlans": "{n, plural, one{It is used in one plan. A gap with the target values will remain there.} other{It is used in {n} plans. A gap with the target values will remain in each.}}",
-  "@exerciseDeleteInPlans": {
-    "description": "Zusatz zur ersten Bestätigung",
+  "exerciseDeleteKeepUnits": "Your {n} workouts stay complete — sets, weights and load.",
+  "@exerciseDeleteKeepUnits": {
+    "description": "exercise.delete.keepUnits",
     "placeholders": {
       "n": {
         "type": "int"
       }
     }
   },
-  "exerciseDeleteSecondBody": "This cannot be undone.",
-  "@exerciseDeleteSecondBody": {
-    "description": "Zweite Bestätigung, Text"
+  "exerciseDeletePlansGap": "A gap stays in those {n} plans, which you can replace there.",
+  "@exerciseDeletePlansGap": {
+    "description": "exercise.delete.plansGap",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
-  "exerciseDeleteSecondTitle": "Delete permanently?",
-  "@exerciseDeleteSecondTitle": {
-    "description": "Zweite Bestätigung"
+  "exerciseDeleteQ": "Delete “{name}”?",
+  "@exerciseDeleteQ": {
+    "description": "exercise.delete.q",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
-  "exerciseDeleteTitle": "Delete exercise?",
-  "@exerciseDeleteTitle": {
-    "description": "Erste Bestätigung"
+  "exerciseDeleteUsage": "This exercise is used in {p, plural, one {# plan} other {# plans}} and {s, plural, one {# workout} other {# workouts}}.",
+  "@exerciseDeleteUsage": {
+    "description": "exercise.delete.usage",
+    "placeholders": {
+      "p": {
+        "type": "int"
+      },
+      "s": {
+        "type": "int"
+      }
+    }
   },
   "exerciseDifficultyA11y": "Difficulty {n} of 5",
-  "exerciseFormDescription": "Description",
-  "@exerciseFormDescription": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormDifficulty": "Difficulty",
-  "@exerciseFormDifficulty": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormDifficultyFault": "Choose a level.",
-  "@exerciseFormDifficultyFault": {
-    "description": "Fehler an der Schwierigkeit"
-  },
-  "exerciseFormDifficultyHint": "The level is stored as a number.",
-  "@exerciseFormDifficultyHint": {
-    "description": "Hilfetext unter der Schwierigkeit"
-  },
-  "exerciseFormEditTitle": "Edit exercise",
-  "@exerciseFormEditTitle": {
-    "description": "Titel des Formulars beim Ändern"
-  },
-  "exerciseFormEquipment": "Equipment",
-  "@exerciseFormEquipment": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormEquipmentHint": "e.g. dumbbell, pull-up bar",
-  "@exerciseFormEquipmentHint": {
-    "description": "Platzhalter im Gerätefeld"
-  },
-  "exerciseFormMuscleChosen": "{muscle}, selected",
-  "@exerciseFormMuscleChosen": {
-    "description": "Vorlesetext eines gewählten Muskelschalters",
+  "exerciseDuplicateBody": "You already have an exercise called “{name}”. Your input is still here.",
+  "@exerciseDuplicateBody": {
+    "description": "exercise.duplicate.body",
     "placeholders": {
-      "muscle": {
+      "name": {
         "type": "String"
       }
     }
   },
-  "exerciseFormMuscleToggle": "Select {muscle}",
-  "@exerciseFormMuscleToggle": {
-    "description": "Vorlesetext eines Muskelschalters",
+  "exerciseDuplicateOpen": "Open existing",
+  "@exerciseDuplicateOpen": {
+    "description": "exercise.duplicate.open"
+  },
+  "exerciseDuplicateSuggest": "Use suggestion",
+  "@exerciseDuplicateSuggest": {
+    "description": "exercise.duplicate.suggest"
+  },
+  "exerciseDuplicateTitle": "Not saved",
+  "@exerciseDuplicateTitle": {
+    "description": "exercise.duplicate.title"
+  },
+  "exerciseEditTitle": "Edit exercise",
+  "@exerciseEditTitle": {
+    "description": "exercise.edit.title"
+  },
+  "exerciseFieldCues": "Cues",
+  "@exerciseFieldCues": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldCuesHint": "Short reminders, one per line",
+  "@exerciseFieldCuesHint": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldEquipment": "Equipment",
+  "@exerciseFieldEquipment": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldEquipmentHint": "Free text, no fixed list",
+  "@exerciseFieldEquipmentHint": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldInstructions": "Instructions",
+  "@exerciseFieldInstructions": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldInstructionsHint": "Free text, up to 500 characters",
+  "@exerciseFieldInstructionsHint": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldLevel": "Level",
+  "@exerciseFieldLevel": {
+    "description": "exercise.field.level"
+  },
+  "exerciseFieldMuscles": "Muscles",
+  "@exerciseFieldMuscles": {
+    "description": "exercise.field.muscles"
+  },
+  "exerciseFieldMusclesCount": "{n} selected",
+  "@exerciseFieldMusclesCount": {
+    "description": "exercise.field.muscles.count",
     "placeholders": {
-      "muscle": {
-        "type": "String"
+      "n": {
+        "type": "int"
       }
     }
   },
-  "exerciseFormMuscles": "Muscles",
-  "@exerciseFormMuscles": {
-    "description": "Feldbeschriftung"
+  "exerciseFieldName": "Name",
+  "@exerciseFieldName": {
+    "description": "exercise.field.name"
   },
-  "exerciseFormMusclesFault": "Choose at least one muscle.",
-  "@exerciseFormMusclesFault": {
-    "description": "Fehler an der Muskelauswahl"
-  },
-  "exerciseFormMusclesHint": "At least one. It gives the exercise its colour.",
-  "@exerciseFormMusclesHint": {
-    "description": "Hilfetext unter der Muskelauswahl"
-  },
-  "exerciseFormName": "Name",
-  "@exerciseFormName": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormNameFault": "Without a name you will not find it again.",
-  "@exerciseFormNameFault": {
-    "description": "Fehler am Namensfeld"
-  },
-  "exerciseFormNameHint": "e.g. Wide pull-up",
-  "@exerciseFormNameHint": {
-    "description": "Platzhalter im Namensfeld"
-  },
-  "exerciseFormNewTitle": "New exercise",
-  "@exerciseFormNewTitle": {
-    "description": "Titel des Formulars beim Anlegen"
-  },
-  "exerciseFormOptionalSection": "Can wait",
-  "@exerciseFormOptionalSection": {
-    "description": "Abschnittslabel der freiwilligen Felder"
-  },
-  "exerciseFormRequiredSection": "Required",
-  "@exerciseFormRequiredSection": {
-    "description": "Abschnittslabel der drei Pflichtfelder"
+  "exerciseFieldNameHint": "e.g. Bulgarian split squat",
+  "@exerciseFieldNameHint": {
+    "description": "exercise.field.name.hint"
   },
   "exerciseFormSaveError": "Exercise not saved",
   "@exerciseFormSaveError": {
@@ -1098,17 +1447,75 @@
   "@exerciseFormSaveErrorBody": {
     "description": "Fehlermeldung, Text"
   },
-  "exerciseFormSaved": "Exercise saved",
-  "@exerciseFormSaved": {
-    "description": "Rückmeldung nach dem Speichern"
-  },
   "exerciseInstructions": "Instructions",
+  "exerciseLevel1": "Entry",
+  "@exerciseLevel1": {
+    "description": "exercise.level.1"
+  },
+  "exerciseLevel2": "Easy",
+  "@exerciseLevel2": {
+    "description": "exercise.level.2"
+  },
+  "exerciseLevel3": "Medium",
+  "@exerciseLevel3": {
+    "description": "exercise.level.3"
+  },
+  "exerciseLevel4": "Advanced",
+  "@exerciseLevel4": {
+    "description": "exercise.level.4"
+  },
+  "exerciseLevel5": "Expert",
+  "@exerciseLevel5": {
+    "description": "exercise.level.5"
+  },
+  "exerciseLevelHint": "Saved as a number, 1–5.",
+  "@exerciseLevelHint": {
+    "description": "exercise.level.hint"
+  },
   "exerciseMistakes": "Common mistakes",
+  "exerciseMore": "More details",
+  "@exerciseMore": {
+    "description": "exercise.more"
+  },
+  "exerciseMoreCount": "{n} optional",
+  "@exerciseMoreCount": {
+    "description": "exercise.more.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseNewTitle": "New exercise",
+  "@exerciseNewTitle": {
+    "description": "exercise.new.title"
+  },
+  "exerciseSaveBlocked": "{n} more details needed",
+  "@exerciseSaveBlocked": {
+    "description": "exercise.save.blocked",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "exerciseSparseBody": "You created this exercise yourself.",
   "exerciseSparseTitle": "No instructions yet",
-  "exercisesBlockAll": "View all {n}",
+  "exercisesBlockAll": "See all",
   "@exercisesBlockAll": {
-    "description": "Weg in die vollständige Übungsliste",
+    "description": "exercises.block.all"
+  },
+  "exercisesBlockByMuscle": "By muscle",
+  "@exercisesBlockByMuscle": {
+    "description": "exercises.block.byMuscle"
+  },
+  "exercisesBlockSearch": "Name or muscle",
+  "@exercisesBlockSearch": {
+    "description": "exercises.block.search"
+  },
+  "exercisesBlockTitle": "Exercises · {n}",
+  "@exercisesBlockTitle": {
+    "description": "exercises.block.title",
     "placeholders": {
       "n": {
         "type": "int"
@@ -1116,7 +1523,19 @@
     }
   },
   "exercisesCount": "{n} exercises · {k} curated · {e} custom",
+  "exercisesCreate": "Create your own exercise",
+  "@exercisesCreate": {
+    "description": "exercises.create"
+  },
   "exercisesEmptyBody": "No exercise matches “{q}” — in either language.",
+  "exercisesEmptyOwnBody": "Name, muscles and a level are enough — the rest is optional.",
+  "@exercisesEmptyOwnBody": {
+    "description": "exercises.empty.own.body"
+  },
+  "exercisesEmptyOwnTitle": "No exercise of your own yet",
+  "@exercisesEmptyOwnTitle": {
+    "description": "exercises.empty.own.title"
+  },
   "exercisesEmptyTitle": "Nothing found",
   "exercisesFilterActive": "{muscle}, filter active",
   "@exercisesFilterActive": {
@@ -1139,10 +1558,6 @@
   },
   "exercisesFilterReset": "Reset",
   "exercisesFilterResult": "{n} exercises · {filter}",
-  "exercisesNew": "New exercise",
-  "@exercisesNew": {
-    "description": "Aktion im Übungsblock"
-  },
   "exercisesNoMatchBody": "Change the search term or the muscle.",
   "@exercisesNoMatchBody": {
     "description": "Leerzustand der Suche, Text"
@@ -1154,6 +1569,67 @@
   "exercisesOwnTag": "Custom",
   "exercisesSearchHint": "Search exercises …",
   "exercisesTitle": "Exercises",
+  "exportBody": "You choose where it goes afterwards.",
+  "@exportBody": {
+    "description": "export.body"
+  },
+  "exportCreate": "Create file",
+  "@exportCreate": {
+    "description": "export.create"
+  },
+  "exportDoneNote": "The file is in your downloads folder. The app sends nothing itself.",
+  "@exportDoneNote": {
+    "description": "export.done.note"
+  },
+  "exportDoneShare": "Share",
+  "@exportDoneShare": {
+    "description": "export.done.share"
+  },
+  "exportOffline": "Not possible offline",
+  "@exportOffline": {
+    "description": "export.offline"
+  },
+  "exportProgress": "Workouts {a}/{b} · plans {c}/{d} · exercises {e}/{f}",
+  "@exportProgress": {
+    "description": "export.progress",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "int"
+      },
+      "d": {
+        "type": "String"
+      },
+      "e": {
+        "type": "String"
+      },
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "exportSize": "approx. {mb} MB · no images, no videos",
+  "@exportSize": {
+    "description": "export.size",
+    "placeholders": {
+      "mb": {
+        "type": "String"
+      }
+    }
+  },
+  "exportSub": "One file with everything that is yours",
+  "@exportSub": {
+    "description": "export.sub"
+  },
+  "exportTitle": "Export data",
+  "@exportTitle": {
+    "description": "export.title"
+  },
   "formDiscardBarrier": "Discard changes",
   "@formDiscardBarrier": {
     "description": "Vorlesetext des Dialogschleiers"
@@ -1246,28 +1722,166 @@
   "gateSwitchAccount": "Use another account",
   "gateSwitchAccountA11y": "Sign out and sign in with another account",
   "gateTitle": "You’re on the list",
+  "hapticsSub": "A short tap on sets and rest",
+  "@hapticsSub": {
+    "description": "haptics.sub"
+  },
+  "hapticsTitle": "Haptics",
+  "@hapticsTitle": {
+    "description": "haptics.title"
+  },
+  "hapticsUnavailable": "Your device has no vibration motor.",
+  "@hapticsUnavailable": {
+    "description": "haptics.unavailable"
+  },
   "historyAll": "All {n}",
   "historyAnalysisOpen": "Open analysis",
+  "historyBest": "Best",
+  "@historyBest": {
+    "description": "history.best"
+  },
+  "historyCount": "{n}×",
+  "@historyCount": {
+    "description": "history.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyCurveA11y": "Best set weight across {n} sessions, from {from} to {to}",
+  "@historyCurveA11y": {
+    "description": "history.curve.a11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "historyCurveLabel": "Best set weight",
+  "@historyCurveLabel": {
+    "description": "history.curve.label"
+  },
+  "historyCurveLegend": "Ring marks the best value",
+  "@historyCurveLegend": {
+    "description": "history.curve.legend"
+  },
   "historyEmptyBody": "Your first workout appears here once you finish it.",
   "historyEmptyTitle": "Nothing recorded yet",
   "historyErrorBody": "Your workouts could not be loaded.",
   "historyErrorTitle": "History unavailable",
   "historyFormLabel": "Form",
   "historyFormOf": "{v}/100",
+  "historyFreq": "Frequency",
+  "@historyFreq": {
+    "description": "history.freq"
+  },
+  "historyFreqValue": "{n} / wk",
+  "@historyFreqValue": {
+    "description": "history.freq.value",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyLast": "Last",
+  "@historyLast": {
+    "description": "history.last"
+  },
   "historyLeadFrequency": "{n} workouts in {d} days",
   "historyLeadGap": "{n, plural, one {# day} other {# days}} without training",
   "historyLeadLast": "Last {weekday} {date} · {name}",
   "historyMonthsLabel": "Workouts per month",
   "historyMonthsMedian": "Median {n} days apart · longest break {max}",
+  "historyOnce": "performed · {date}",
+  "@historyOnce": {
+    "description": "history.once",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "historyOnceLabel": "That time",
+  "@historyOnceLabel": {
+    "description": "history.once.label"
+  },
+  "historyOnceNote": "No best, no curve, no frequency — one performance yields none of these.",
+  "@historyOnceNote": {
+    "description": "history.once.note"
+  },
   "historyRecentLabel": "Recent workouts",
-  "historyTitle": "History",
+  "historyTitle": "You with this exercise",
+  "@historyTitle": {
+    "description": "history.title"
+  },
   "historyTrendFalling": "falling",
   "historyTrendRising": "rising",
   "historyTrendStable": "stable",
+  "historyVolume": "Volume",
+  "@historyVolume": {
+    "description": "history.volume"
+  },
   "historyZoneInactive": "Inactive",
   "historyZonePause": "Paused",
   "historyZoneRecent": "Keeping up",
   "historyZoneRhythm": "In rhythm",
+  "languageDe": "German",
+  "@languageDe": {
+    "description": "language.de"
+  },
+  "languageEn": "English",
+  "@languageEn": {
+    "description": "language.en"
+  },
+  "languageTitle": "Language",
+  "@languageTitle": {
+    "description": "language.title"
+  },
+  "legalError": "Text not loaded",
+  "@legalError": {
+    "description": "legal.error"
+  },
+  "legalExternal": "Open externally",
+  "@legalExternal": {
+    "description": "legal.external"
+  },
+  "legalImprint": "Legal notice",
+  "@legalImprint": {
+    "description": "legal.imprint"
+  },
+  "legalImprintBody": "Private project of a private individual. Details pursuant to § 5 TMG: {betreiber}",
+  "@legalImprintBody": {
+    "description": "legal.imprint.body",
+    "placeholders": {
+      "betreiber": {
+        "type": "String"
+      }
+    }
+  },
+  "legalInapp": "In the app",
+  "@legalInapp": {
+    "description": "legal.inapp"
+  },
+  "legalPrivacy": "Privacy",
+  "@legalPrivacy": {
+    "description": "legal.privacy"
+  },
+  "legalRetry": "Try again",
+  "@legalRetry": {
+    "description": "legal.retry"
+  },
+  "legalTerms": "Terms of use",
+  "@legalTerms": {
+    "description": "legal.terms"
+  },
   "listEndBody": "First workout on {date} · {n} days ago.",
   "listEndTitle": "End of history",
   "listErrorBody": "Your workouts could not be loaded.",
@@ -1333,6 +1947,48 @@
   "onbUnitLbs": "lbs",
   "onbUnitLbsA11y": "Unit: pounds",
   "onbWhy": "ATEM converts every exercise into training load — including bodyweight moves. That takes exactly one number.",
+  "onboardingRepeat": "Repeat onboarding",
+  "@onboardingRepeat": {
+    "description": "onboarding.repeat"
+  },
+  "onboardingRepeatAction": "View",
+  "@onboardingRepeatAction": {
+    "description": "onboarding.repeat.action"
+  },
+  "onboardingRepeatSub": "The four intro pages again",
+  "@onboardingRepeatSub": {
+    "description": "onboarding.repeat.sub"
+  },
+  "planBrokenEntry": "Exercise deleted",
+  "@planBrokenEntry": {
+    "description": "plan.broken.entry"
+  },
+  "planBrokenKeepTarget": "Target kept · {ziel}",
+  "@planBrokenKeepTarget": {
+    "description": "plan.broken.keepTarget",
+    "placeholders": {
+      "ziel": {
+        "type": "String"
+      }
+    }
+  },
+  "planBrokenNotice": "{n, plural, one {# entry points} other {# entries point}} to nothing.",
+  "@planBrokenNotice": {
+    "description": "plan.broken.notice",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "planBrokenRemove": "Remove",
+  "@planBrokenRemove": {
+    "description": "plan.broken.remove"
+  },
+  "planBrokenReplace": "Replace",
+  "@planBrokenReplace": {
+    "description": "plan.broken.replace"
+  },
   "planCount": "{n} plans",
   "planDeleteBarrier": "Delete plan",
   "@planDeleteBarrier": {
@@ -1345,6 +2001,30 @@
   "planDeleteTitle": "Delete plan?",
   "@planDeleteTitle": {
     "description": "Bestätigung"
+  },
+  "planEmptyAllowed": "The plan exists as soon as it has a name.",
+  "@planEmptyAllowed": {
+    "description": "plan.empty.allowed"
+  },
+  "planEntryAdd": "Add exercise",
+  "@planEntryAdd": {
+    "description": "plan.entry.add"
+  },
+  "planEntryReps": "Reps",
+  "@planEntryReps": {
+    "description": "plan.entry.reps"
+  },
+  "planEntryRepsHint": "“12”, “8-12” and “max” are all allowed.",
+  "@planEntryRepsHint": {
+    "description": "plan.entry.reps.hint"
+  },
+  "planEntryRest": "Rest",
+  "@planEntryRest": {
+    "description": "plan.entry.rest"
+  },
+  "planEntrySets": "Sets",
+  "@planEntrySets": {
+    "description": "plan.entry.sets"
   },
   "planFormAdd": "Add exercise",
   "@planFormAdd": {
@@ -1474,24 +2154,104 @@
   "planMeta": "{n} exercises · {type}",
   "planMissingBody": "They were deleted. The plan starts without them.",
   "planMissingTitle": "{n, plural, one{One exercise is missing} other{{n} exercises are missing}}",
+  "planNewTitle": "New plan",
+  "@planNewTitle": {
+    "description": "plan.new.title"
+  },
+  "profileLocked": "Via Google · fixed",
+  "@profileLocked": {
+    "description": "profile.locked"
+  },
+  "profileLockedWhy": "Your name and email come from your Google account and are only shown here.",
+  "@profileLockedWhy": {
+    "description": "profile.locked.why"
+  },
   "regionArms": "Arms",
   "regionBack": "Back",
   "regionChest": "Chest",
   "regionCore": "Core",
   "regionLegs": "Legs",
   "regionShoulders": "Shoulders",
+  "restBody": "Applies to sets without their own rest in the plan. Takes effect from your next workout.",
+  "@restBody": {
+    "description": "rest.body"
+  },
+  "restCustom": "Custom value",
+  "@restCustom": {
+    "description": "rest.custom"
+  },
+  "restRunning": "A running workout keeps its rest time.",
+  "@restRunning": {
+    "description": "rest.running"
+  },
   "restSeconds": "{n} s",
+  "restSub": "Default when a workout starts",
+  "@restSub": {
+    "description": "rest.sub"
+  },
+  "restTitle": "Rest time",
+  "@restTitle": {
+    "description": "rest.title"
+  },
+  "sectionAbout": "About",
+  "@sectionAbout": {
+    "description": "section.about"
+  },
+  "sectionApp": "App",
+  "@sectionApp": {
+    "description": "section.app"
+  },
+  "sectionData": "Your data",
+  "@sectionData": {
+    "description": "section.data"
+  },
+  "sectionLegal": "Legal",
+  "@sectionLegal": {
+    "description": "section.legal"
+  },
+  "sectionTraining": "Training",
+  "@sectionTraining": {
+    "description": "section.training"
+  },
+  "sessionDateAllowedBody": "Moving the day moves your gaps and form curve with it.",
+  "@sessionDateAllowedBody": {
+    "description": "session.date.allowed.body"
+  },
+  "sessionDateAllowedTitle": "Changing the date is allowed",
+  "@sessionDateAllowedTitle": {
+    "description": "session.date.allowed.title"
+  },
+  "sessionDatePrevious": "Was {date} · {n, plural, one {+# day} other {+# days}}",
+  "@sessionDatePrevious": {
+    "description": "session.date.previous",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "sessionDeleteBarrier": "Delete session",
   "@sessionDeleteBarrier": {
     "description": "Vorlesetext des Dialogschleiers"
   },
-  "sessionDeleteBody": "It will no longer count towards any evaluation.",
+  "sessionDeleteBody": "It counts towards every analysis. Afterwards it reads:",
   "@sessionDeleteBody": {
-    "description": "Bestätigung, Text"
+    "description": "session.delete.body"
+  },
+  "sessionDeleteQ": "Delete this workout?",
+  "@sessionDeleteQ": {
+    "description": "session.delete.q"
   },
   "sessionDeleteTitle": "Delete session?",
   "@sessionDeleteTitle": {
     "description": "Bestätigung"
+  },
+  "sessionDeleteWindow": "You can undo this for 30 seconds.",
+  "@sessionDeleteWindow": {
+    "description": "session.delete.window"
   },
   "sessionDeletedBody": "You can undo this for {n} seconds.",
   "@sessionDeletedBody": {
@@ -1499,6 +2259,18 @@
     "placeholders": {
       "n": {
         "type": "int"
+      }
+    }
+  },
+  "sessionDeletedSnack": "Workout deleted · form {alt} → {neu}",
+  "@sessionDeletedSnack": {
+    "description": "session.deleted.snack",
+    "placeholders": {
+      "alt": {
+        "type": "String"
+      },
+      "neu": {
+        "type": "String"
       }
     }
   },
@@ -1548,9 +2320,37 @@
   "@sessionEditSets": {
     "description": "Abschnittslabel über den Sätzen"
   },
-  "sessionEditTitle": "Edit session",
+  "sessionEditTitle": "Edit workout",
   "@sessionEditTitle": {
-    "description": "Titel des Formulars"
+    "description": "session.edit.title"
+  },
+  "sessionFieldDatetime": "Date and time",
+  "@sessionFieldDatetime": {
+    "description": "session.field.datetime"
+  },
+  "sessionImpactCount": "Workouts total",
+  "@sessionImpactCount": {
+    "description": "session.impact.count"
+  },
+  "sessionImpactForm": "Form today",
+  "@sessionImpactForm": {
+    "description": "session.impact.form"
+  },
+  "sessionImpactPause": "Current break",
+  "@sessionImpactPause": {
+    "description": "session.impact.pause"
+  },
+  "sessionImpactPreview": "Preview — not saved yet.",
+  "@sessionImpactPreview": {
+    "description": "session.impact.preview"
+  },
+  "sessionImpactTitle": "What this changes",
+  "@sessionImpactTitle": {
+    "description": "session.impact.title"
+  },
+  "setsAdd": "Add sets",
+  "@setsAdd": {
+    "description": "sets.add"
   },
   "settingsAboutPrivate": "Private project, not for commercial use.",
   "@settingsAboutPrivate": {
@@ -1688,6 +2488,10 @@
   "settingsDeletedTitle": "Account deleted",
   "@settingsDeletedTitle": {
     "description": "Abschlussbildschirm"
+  },
+  "settingsEntryA11y": "Profile and settings",
+  "@settingsEntryA11y": {
+    "description": "settings.entry.a11y"
   },
   "settingsExportBody": "JSON contains everything. CSV contains your sessions as a table, one row per set.",
   "@settingsExportBody": {
@@ -1876,7 +2680,7 @@
   },
   "settingsTitle": "Settings",
   "@settingsTitle": {
-    "description": "Titel des Bildschirms"
+    "description": "settings.title"
   },
   "settingsUnits": "Units",
   "@settingsUnits": {
@@ -1924,7 +2728,23 @@
   "sheetRestLabel": "Default rest",
   "sheetStart": "Start",
   "sheetStartTitle": "Start {plan}?",
+  "signout": "Sign out",
+  "@signout": {
+    "description": "signout"
+  },
+  "signoutKeep": "Data stays",
+  "@signoutKeep": {
+    "description": "signout.keep"
+  },
   "splashStarting": "ATEM is starting …",
+  "switchOff": "OFF",
+  "@switchOff": {
+    "description": "switch.off"
+  },
+  "switchOn": "ON",
+  "@switchOn": {
+    "description": "switch.on"
+  },
   "typeBodyweight": "Bodyweight",
   "typeCardio": "Cardio",
   "typeHybrid": "Hybrid",
@@ -1943,6 +2763,182 @@
   "unitSuffixSeconds": "s",
   "@unitSuffixSeconds": {
     "description": "Einheit hinter einem Zahlenfeld"
+  },
+  "unitsExample": "How it will look",
+  "@unitsExample": {
+    "description": "units.example"
+  },
+  "unitsImperial": "Imperial",
+  "@unitsImperial": {
+    "description": "units.imperial"
+  },
+  "unitsMetric": "Metric",
+  "@unitsMetric": {
+    "description": "units.metric"
+  },
+  "unitsNote": "Storage stays metric. Only the display is converted.",
+  "@unitsNote": {
+    "description": "units.note"
+  },
+  "unitsTitle": "Unit system",
+  "@unitsTitle": {
+    "description": "units.title"
+  },
+  "unsavedBody": "You changed {c, plural, one {# entry} other {# entries}} and added {a}.",
+  "@unsavedBody": {
+    "description": "unsaved.body",
+    "placeholders": {
+      "c": {
+        "type": "int"
+      },
+      "a": {
+        "type": "int"
+      }
+    }
+  },
+  "unsavedContinue": "Keep editing",
+  "@unsavedContinue": {
+    "description": "unsaved.continue"
+  },
+  "unsavedDiscard": "Discard",
+  "@unsavedDiscard": {
+    "description": "unsaved.discard"
+  },
+  "unsavedSave": "Save and close",
+  "@unsavedSave": {
+    "description": "unsaved.save"
+  },
+  "unsavedTitle": "Keep changes?",
+  "@unsavedTitle": {
+    "description": "unsaved.title"
+  },
+  "weightBody": "Scores every bodyweight exercise in your history — today and retroactively.",
+  "@weightBody": {
+    "description": "weight.body"
+  },
+  "weightDelta": "{sign}{kg} kg · {sign}{pct} %",
+  "@weightDelta": {
+    "description": "weight.delta",
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      },
+      "kg": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "weightDirDown": "lower",
+  "@weightDirDown": {
+    "description": "weight.dir.down"
+  },
+  "weightDirRescored": "re-scored",
+  "@weightDirRescored": {
+    "description": "weight.dir.rescored"
+  },
+  "weightDirSame": "unchanged",
+  "@weightDirSame": {
+    "description": "weight.dir.same"
+  },
+  "weightDirUp": "higher",
+  "@weightDirUp": {
+    "description": "weight.dir.up"
+  },
+  "weightErrorRange": "Between 66 and 550 lb. No preview until the value is valid.",
+  "@weightErrorRange": {
+    "description": "weight.error.range"
+  },
+  "weightHint": "One decimal · 66–550 lb",
+  "@weightHint": {
+    "description": "weight.hint"
+  },
+  "weightImpactAcwr": "ACWR",
+  "@weightImpactAcwr": {
+    "description": "weight.impact.acwr"
+  },
+  "weightImpactBest": "Best {exercise}",
+  "@weightImpactBest": {
+    "description": "weight.impact.best",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "weightImpactForm": "Form today",
+  "@weightImpactForm": {
+    "description": "weight.impact.form"
+  },
+  "weightImpactLoad": "Training load 7 d",
+  "@weightImpactLoad": {
+    "description": "weight.impact.load"
+  },
+  "weightImpactNote": "Preview — not saved yet. Your sets, weights and reps stay unchanged — only how they are scored.",
+  "@weightImpactNote": {
+    "description": "weight.impact.note"
+  },
+  "weightImpactScope": "{d} days · {n} workouts with bodyweight exercises",
+  "@weightImpactScope": {
+    "description": "weight.impact.scope",
+    "placeholders": {
+      "d": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weightImpactTitle": "What changes retroactively",
+  "@weightImpactTitle": {
+    "description": "weight.impact.title"
+  },
+  "weightPrevious": "Was {alt} kg",
+  "@weightPrevious": {
+    "description": "weight.previous",
+    "placeholders": {
+      "alt": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSave": "Save and recalculate",
+  "@weightSave": {
+    "description": "weight.save"
+  },
+  "weightSaveBusy": "Recalculating",
+  "@weightSaveBusy": {
+    "description": "weight.save.busy"
+  },
+  "weightSaveNone": "Unchanged · nothing to save",
+  "@weightSaveNone": {
+    "description": "weight.save.none"
+  },
+  "weightSavedSnack": "Weight {kg} kg · form {alt} → {neu}",
+  "@weightSavedSnack": {
+    "description": "weight.saved.snack",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      },
+      "alt": {
+        "type": "String"
+      },
+      "neu": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSub": "Scores your whole history",
+  "@weightSub": {
+    "description": "weight.sub"
+  },
+  "weightTitle": "Body weight",
+  "@weightTitle": {
+    "description": "weight.title"
   },
   "workoutA11yEnd": "End workout",
   "@workoutA11yEnd": {

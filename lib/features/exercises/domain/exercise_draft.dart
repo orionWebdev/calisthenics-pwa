@@ -52,6 +52,7 @@ class ExerciseDraft {
     this.type,
     this.description,
     this.instructions = const [],
+    this.cues = const [],
   });
 
   /// `null` heißt anlegen, gesetzt heißt überschreiben.
@@ -73,6 +74,10 @@ class ExerciseDraft {
 
   final String? description;
   final List<String> instructions;
+
+  /// Kurze Merksätze, einer je Zeile — so liegen sie im Bestand und so
+  /// schreibt es das Board.
+  final List<String> cues;
 
   bool get isNew => id == null;
 

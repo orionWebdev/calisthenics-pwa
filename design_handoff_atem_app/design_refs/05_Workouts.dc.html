@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes btnSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 5 / STUFE 5</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Workouts — Übungen, Pläne und der Weg ins Training</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:800px;line-height:1.7">Der Tab beantwortet zuerst „Was mache ich jetzt?" und erst danach „Was gibt es sonst?". Farbe kodiert die Körperregion, Text den Muskel — die Marke bleibt der Aktion vorbehalten. Und weil 139 von 154 Übungen keine Beschreibung haben, ist der spärliche Detailbildschirm der Normalfall, nicht die Ausnahme.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Nur Muskelgruppe trägt Farbe</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Sparse ist Normalfall</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">K3 für Listen · kein Blur</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · 320 dp · 200 % Schrift</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ · KATEGORIEFARBE · EIN SATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1000px">Genau eine Dimension trägt Farbe — die Muskelgruppe, gedämpft und nach Region gebündelt. Gerät, Typ und Schwierigkeit bleiben monochrom, die Neonfarben bleiben der Marke und den Aktionen vorbehalten.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Vier gleichzeitig eingefärbte Kategorien je Zeile wären ein Flickenteppich; eine Zeile bekommt maximal einen Farbchip. Und weil 7 fliesstextsichere Töne nicht für 10 Muskelgruppen reichen, kodiert Farbe die Region (6 Töne) und der Text den Muskel — Farbe ist Vorsortierung, nie alleiniger Träger.</div>
+</div>
+
+<div data-screen-label="B Farbentscheid" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · DIE GEDÄMPFTE KATEGORIEPALETTE — 10 MUSKELGRUPPEN, 6 REGIONSTÖNE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:12px;color:#94A3B8;line-height:1.7;max-width:820px">Rezept aus der Vorgänger-App, übernommen: Fläche rgba(F, 0.20) · Text volle Farbe · Rand rgba(F, 0.30). Alle zehn Gruppen nebeneinander — so sieht die Filterzeile im Maximalfall aus:</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<sc-for list="{{ muscles }}" as="m" hint-placeholder-count="10">
+<span style="display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:5px 12px;border-radius:30px;background:{{ m.bg }};color:{{ m.c }};border:1px solid {{ m.bd }}">{{ m.n }}<span style="opacity:0.75;font-weight:400">{{ m.cnt }}</span></span>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:20px">
+<sc-for list="{{ regions }}" as="r" hint-placeholder-count="6">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px 14px">
+<div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:3px;background:{{ r.c }}"></span><span style="font-size:12.5px;font-weight:600">{{ r.n }}</span></div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;line-height:1.6">{{ r.sub }}</div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:{{ r.c }}">{{ r.hex }} · {{ r.ratio }}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px;align-items:stretch">
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#F02277">GESTRICHEN</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.7"><span style="font-family:'JetBrains Mono',monospace;color:#94A3B8">#1e3a8a navy · 1,77:1</span> — in der Vorgänger-App die Farbe für „Laufen", auf unseren Flächen unlesbar. Ersatzlos: der Typ trägt gar keine Farbe mehr.<br><span style="font-family:'JetBrains Mono',monospace;color:#94A3B8">#8b5cf6 violett · 4,32:1</span> — unter 4,5:1. „Nur für große Schrift" wäre eine Sonderregel, die im Alltag kippt. Nicht vergeben.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">SCHWIERIGKEIT · FORM + ZAHL, MONOCHROM</div>
+<div style="display:flex;align-items:center;gap:18px;margin-top:12px;flex-wrap:wrap">
+<sc-for list="{{ diffDemo }}" as="d" hint-placeholder-count="5">
+<span style="display:inline-flex;align-items:center;gap:6px"><span style="display:inline-flex;gap:2.5px">{{ d.bars }}</span><sc-if value="{{ zeigeZahl }}" hint-placeholder-val="{{ true }}"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">{{ d.label }}</span></sc-if></span>
+</sc-for>
+</div>
+<div style="margin-top:10px;font-size:11.5px;color:#94A3B8;line-height:1.7">5 Segmente (gefüllt #CDD3EA, leer #232334) + Mono-Zahl „n/5". Semantics-Label: „Schwierigkeit n von 5". Verteilung im Bestand: 1×33 · 2×28 · 3×11 · 4×8 · 5×4 — die Skala ist linkslastig, ein Wort („Elite") würde 4 von 5 Zeilen gleich beschriften.</div>
+</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A1 Workouts-Tab" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A1 · WORKOUTS-TAB — ZUERST „WAS MACHE ICH JETZT?"</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DEFAULT — TRAINING GEPLANT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:500px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Workouts</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE);border-radius:20px;padding:1.5px">
+<div style="background:#14141D;border-radius:19px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#00F2FE">HEUTE</div>
+<div style="margin-top:6px;font-size:16px;font-weight:700">Push Day A</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">8 ÜBUNGEN · ~45 MIN · KRAFT</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:40px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12.5px;font-weight:700">Training starten</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:38px;border-radius:30px;border:1px solid #232334;font-size:11.5px;font-weight:600;color:#CDD3EA">Freies Training</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">PLÄNE</span><span style="font-size:10.5px;font-weight:600;color:#00F2FE">Alle 10</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:4px 12px">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #232334"><span style="width:34px;height:34px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">PA</span><span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">Push Day A</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">8 ÜBUNGEN · KRAFT</span></span><span style="color:#94A3B8;font-size:14px">›</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0"><span style="width:34px;height:34px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">HW</span><span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">Hybrid Woche</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">6 ÜBUNGEN · HYBRID</span></span><span style="color:#94A3B8;font-size:14px">›</span></div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">ÜBUNGEN</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px;display:flex;align-items:center;gap:10px"><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#94A3B8" stroke-width="2"></circle><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></line></svg><span style="flex:1;font-size:11.5px;color:#94A3B8">154 Übungen durchsuchen</span><span style="color:#94A3B8;font-size:14px">›</span></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Session-Card (K2, genau 1 je Screen) beantwortet die erste Frage. Der Runner ist damit von hier erreichbar — nicht mehr nur über den Kalender. „Freies Training" ist gleichwertiger Eingang, kein versteckter Link.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · KEIN TRAINING GEPLANT (EMPTY)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:500px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Workouts</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">FR 28. AUG</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">HEUTE</div>
+<div style="margin-top:6px;font-size:14px;font-weight:600">Kein Training geplant</div>
+<div style="margin-top:3px;font-size:10.5px;color:#94A3B8;line-height:1.5">Starte frei oder wähle einen Plan.</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:40px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12.5px;font-weight:700">Freies Training starten</div>
+<div style="margin-top:8px;display:flex;align-items:center;justify-content:center;height:36px;border-radius:30px;border:1px solid #232334;font-size:11.5px;font-weight:600;color:#CDD3EA">Plan wählen</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">PLÄNE</span><span style="font-size:10.5px;font-weight:600;color:#00F2FE">Alle 10</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:4px 12px">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #232334"><span style="width:34px;height:34px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">PA</span><span style="flex:1"><span style="display:block;font-size:12px;font-weight:600">Push Day A</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">8 ÜBUNGEN · KRAFT</span></span><span style="color:#94A3B8;font-size:14px">›</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0"><span style="width:34px;height:34px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">HW</span><span style="flex:1"><span style="display:block;font-size:12px;font-weight:600">Hybrid Woche</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">6 ÜBUNGEN · HYBRID</span></span><span style="color:#94A3B8;font-size:14px">›</span></div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#00FF87;line-height:1.6">Empty ist kein Fehler: gleiche Kartenposition, kein Warnsymbol. Der Primär-CTA wandert auf „Freies Training" — die erste Frage bekommt trotzdem eine Antwort.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · LOADING — SKELETON IN INHALTSFORM</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:500px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Workouts</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="height:132px;border-radius:20px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+<div style="height:38px;border-radius:30px;background:#14141D;animation:{{ pulseAnim }}"></div>
+<div style="width:70px;height:10px;border-radius:5px;background:#14141D;animation:{{ pulseAnim }}"></div>
+<div style="height:110px;border-radius:20px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+<div style="width:70px;height:10px;border-radius:5px;background:#14141D;animation:{{ pulseAnim }}"></div>
+<div style="height:44px;border-radius:20px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">M2-Regel: Zielgeometrie bekannt → Skeleton in Inhaltsform, Puls statt Schimmer. Kein Spinner. Header steht sofort — nur Daten pulsieren.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">4 · LADEN FEHLGESCHLAGEN (ERROR)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:500px;display:flex;flex-direction:column">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Workouts</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center">
+<span style="width:48px;height:48px;border-radius:10px;background:#1A1A26;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 4v9" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path><circle cx="12" cy="18" r="1.6" fill="#CDD3EA"></circle></svg></span>
+<div style="font-size:15px;font-weight:600">Laden fehlgeschlagen</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6;max-width:190px">Deine Workouts konnten nicht geladen werden.</div>
+<div style="margin-top:4px;display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 22px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Erneut versuchen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">M2-Zustandsanatomie: IconBox 48 / Titel / max. 2 Zeilen / genau 1 Aktion. Neutral, nicht magenta — der Nutzer hat nichts falsch gemacht.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A2 Übungsliste" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A2 · ÜBUNGSLISTE — SUCHE, FILTER, GEMISCHTE SPRACHEN</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DEFAULT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:520px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Übungen</span></div>
+<div style="display:flex;align-items:center;gap:9px;height:40px;border-radius:14px;background:#14141D;border:1px solid #232334;padding:0 12px"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#94A3B8" stroke-width="2"></circle><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></line></svg><span style="font-size:11.5px;color:#94A3B8">Übung suchen …</span></div>
+<div style="display:flex;gap:6px;overflow:hidden">
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:4px 10px;border-radius:30px;background:#14141D;border:1px solid #CDD3EA;color:#FFFFFF">✓ Alle</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA"><span style="width:6px;height:6px;border-radius:50%;background:#f59e0b"></span>Schultern</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA"><span style="width:6px;height:6px;border-radius:50%;background:#3b82f6"></span>Rücken</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA"><span style="width:6px;height:6px;border-radius:50%;background:#ef4444"></span>Brust</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA"><span style="width:6px;height:6px;border-radius:50%;background:#f97316"></span>Core</span>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">154 ÜBUNGEN · 84 KURATIERT · 70 EIGENE</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ exRows }}" as="e" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:{{ e.bb }}">
+<span style="flex:none;width:36px;height:36px;border-radius:10px;background:{{ e.bg }};display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:{{ e.c }}">{{ e.ini }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.name }}</span><span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:2px"><span style="color:{{ e.c }}">{{ e.muscle }}</span><span style="color:#94A3B8">{{ e.meta }}</span><sc-if value="{{ e.own }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:8px;letter-spacing:0.08em;color:#8e8e93;border:1px solid rgba(142,142,147,0.30);border-radius:30px;padding:1px 6px">EIGEN</span></sc-if></span></span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:4px"><span style="display:inline-flex;gap:2px">{{ e.bars }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">{{ e.d }}/5</span></span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Gemischte Sprachen ohne Sonderbehandlung: „Bulgarian Split Squat" steht typografisch identisch neben „Kreuzheben" — keine Flagge, kein Kursiv. Eine Zeile trägt genau einen Farbwert (Muskel); Gerät bleibt grau. Zeile ≥ 64 dp, Name läuft in Ellipsis statt Umbruch.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · FILTER AKTIV</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:520px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Übungen</span></div>
+<div style="display:flex;align-items:center;gap:9px;height:40px;border-radius:14px;background:#14141D;border:1px solid #232334;padding:0 12px"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#94A3B8" stroke-width="2"></circle><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></line></svg><span style="font-size:11.5px;color:#94A3B8">Übung suchen …</span></div>
+<div style="display:flex;gap:6px;overflow:hidden">
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Alle</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:4px 10px;border-radius:30px;background:rgba(59,130,246,0.20);border:1px solid rgba(59,130,246,0.30);color:#3b82f6">✓ Rücken</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA"><span style="width:6px;height:6px;border-radius:50%;background:#ef4444"></span>Brust</span>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">26 ÜBUNGEN · RÜCKEN</span><span style="font-size:10.5px;font-weight:600;color:#00F2FE">Zurücksetzen</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ exRowsBack }}" as="e" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:{{ e.bb }}">
+<span style="flex:none;width:36px;height:36px;border-radius:10px;background:{{ e.bg }};display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:{{ e.c }}">{{ e.ini }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.name }}</span><span style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;margin-top:2px"><span style="color:{{ e.c }}">{{ e.muscle }}</span><span style="color:#94A3B8">{{ e.meta }}</span><sc-if value="{{ e.own }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:8px;letter-spacing:0.08em;color:#8e8e93;border:1px solid rgba(142,142,147,0.30);border-radius:30px;padding:1px 6px">EIGEN</span></sc-if></span></span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:4px"><span style="display:inline-flex;gap:2px">{{ e.bars }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">{{ e.d }}/5</span></span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Aktiver Chip trägt das volle Farbrezept + ✓ (Zustand nie nur über Farbe). Zählzeile bestätigt den Filter als Text; „Zurücksetzen" steht neben dem Ergebnis, nicht im Chip-Band versteckt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · SUCHE OHNE TREFFER (EMPTY)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:520px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Übungen</span></div>
+<div style="display:flex;align-items:center;gap:9px;height:40px;border-radius:14px;background:#14141D;border:1px solid #00F2FE;padding:0 12px"><svg width="13" height="13" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#CDD3EA" stroke-width="2"></circle><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></line></svg><span style="font-size:11.5px;color:#FFFFFF">Zercher</span><span style="margin-left:auto;color:#94A3B8;font-size:12px">✕</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center">
+<span style="width:48px;height:48px;border-radius:10px;background:#1A1A26;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#CDD3EA" stroke-width="1.8"></circle><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="#CDD3EA" stroke-width="1.8" stroke-linecap="round"></line><line x1="7.5" y1="10.5" x2="13.5" y2="10.5" stroke="#CDD3EA" stroke-width="1.8" stroke-linecap="round"></line></svg></span>
+<div style="font-size:15px;font-weight:600">Nichts gefunden</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6;max-width:190px">Keine Übung passt zu „Zercher" — auch nicht auf Englisch.</div>
+<div style="margin-top:4px;display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 22px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Eigene Übung anlegen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Suche läuft über beide Namensfelder (DE + EN) — der Empty-Text sagt das explizit. Die eine Aktion macht aus der Sackgasse einen Pfad: 70 von 154 Übungen sind bereits nutzereigen.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">4 · LOADING</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:520px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Übungen</span></div>
+<div style="height:40px;border-radius:14px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+<div style="display:flex;gap:6px"><span style="width:52px;height:22px;border-radius:30px;background:#14141D;animation:{{ pulseAnim }}"></span><span style="width:74px;height:22px;border-radius:30px;background:#14141D;animation:{{ pulseAnim }}"></span><span style="width:64px;height:22px;border-radius:30px;background:#14141D;animation:{{ pulseAnim }}"></span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ skelRows }}" as="s" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:{{ s.bb }}"><span style="width:36px;height:36px;border-radius:10px;background:#1A1A26;animation:{{ pulseAnim }}"></span><span style="flex:1"><span style="display:block;width:{{ s.w }};height:10px;border-radius:5px;background:#1A1A26;animation:{{ pulseAnim }}"></span><span style="display:block;width:60px;height:7px;border-radius:4px;background:#1A1A26;margin-top:6px;animation:{{ pulseAnim }}"></span></span></div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Suchfeld und Chips pulsieren mit — sie sind erst mit Daten sinnvoll bedienbar. Variierende Balkenbreiten, damit das Skeleton nicht wie ein Muster wirkt.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A3 Übungsdetail" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A3 · ÜBUNGSDETAIL — REICH UND SPÄRLICH SIND DASSELBE LAYOUT</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · KURATIERT, VOLLSTÄNDIG</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:520px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span></div>
+<div style="font-size:19px;font-weight:700;line-height:1.25">Kreuzheben</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px">
+<span style="display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:4px 10px;border-radius:30px;background:rgba(59,130,246,0.20);border:1px solid rgba(59,130,246,0.30);color:#3b82f6">Rücken</span>
+<span style="display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:4px 10px;border-radius:30px;background:rgba(34,197,94,0.20);border:1px solid rgba(34,197,94,0.30);color:#22c55e">Beinbeuger</span>
+</div>
+<div style="display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8"><span style="display:inline-flex;align-items:center;gap:5px"><span style="display:inline-flex;gap:2px"><span style="width:7px;height:4px;border-radius:2px;background:#CDD3EA"></span><span style="width:7px;height:4px;border-radius:2px;background:#CDD3EA"></span><span style="width:7px;height:4px;border-radius:2px;background:#CDD3EA"></span><span style="width:7px;height:4px;border-radius:2px;background:#CDD3EA"></span><span style="width:7px;height:4px;border-radius:2px;background:#232334"></span></span>4/5</span><span>LANGHANTEL</span></div>
+<div style="border-top:1px solid #232334;padding-top:12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">ANLEITUNG</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+<div style="display:grid;grid-template-columns:18px 1fr;gap:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">1</span><span style="font-size:11px;color:#CDD3EA;line-height:1.55">Hüftbreit an die Stange, Griff knapp außerhalb der Beine.</span></div>
+<div style="display:grid;grid-template-columns:18px 1fr;gap:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">2</span><span style="font-size:11px;color:#CDD3EA;line-height:1.55">Rücken neutral, Brust raus, Spannung aufbauen.</span></div>
+<div style="display:grid;grid-template-columns:18px 1fr;gap:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">3</span><span style="font-size:11px;color:#CDD3EA;line-height:1.55">Über den ganzen Fuß drücken, Stange am Körper führen.</span></div>
+</div>
+</div>
+<div style="border-top:1px solid #232334;padding-top:12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">CUES</div>
+<div style="margin-top:8px;font-size:11px;color:#CDD3EA;line-height:1.7">„Brich die Stange" · „Boden wegschieben"</div>
+</div>
+<div style="border-top:1px solid #232334;padding-top:12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">HÄUFIGE FEHLER</div>
+<div style="margin-top:8px;font-size:11px;color:#CDD3EA;line-height:1.7">Runder unterer Rücken · Stange zu weit vorn</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Blöcke in fester Reihenfolge: Anleitung → Cues → Fehler. Trenner sind Hairlines, keine Karten — der Screen bleibt ein Dokument, kein Dashboard.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00FF87">2 · NUTZEREIGEN, SPÄRLICH — DER NORMALFALL</div>
+<div style="margin-top:8px;background:#050507;border:1.5px dashed rgba(0,255,135,0.35);border-radius:24px;padding:18px 14px;min-height:520px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span></div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:19px;font-weight:700;line-height:1.25">Nackenziehen KH</span><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#8e8e93;border:1px solid rgba(142,142,147,0.30);border-radius:30px;padding:2px 7px">EIGEN</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px">
+<span style="display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:4px 10px;border-radius:30px;background:rgba(245,158,11,0.20);border:1px solid rgba(245,158,11,0.30);color:#f59e0b">Schultern</span>
+</div>
+<div style="display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8"><span style="display:inline-flex;align-items:center;gap:5px"><span style="display:inline-flex;gap:2px"><span style="width:7px;height:4px;border-radius:2px;background:#CDD3EA"></span><span style="width:7px;height:4px;border-radius:2px;background:#CDD3EA"></span><span style="width:7px;height:4px;border-radius:2px;background:#232334"></span><span style="width:7px;height:4px;border-radius:2px;background:#232334"></span><span style="width:7px;height:4px;border-radius:2px;background:#232334"></span></span>2/5</span></div>
+<div style="margin-top:6px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:12px;display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start">
+<svg width="18" height="18" viewBox="0 0 24 24" style="margin-top:1px"><path d="M4 20l4-1L20 7l-3-3L5 16z" fill="none" stroke="#CDD3EA" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+<div><div style="font-size:11px;font-weight:600;color:#FFFFFF">Keine Anleitung hinterlegt</div>
+<div style="margin-top:2px;font-size:10.5px;color:#94A3B8;line-height:1.5">Diese Übung hast du selbst angelegt.</div>
+<div style="margin-top:6px;font-size:11px;font-weight:600;color:#00F2FE">Übung bearbeiten</div></div>
+</div>
+<div style="flex:1"></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#00FF87;line-height:1.6">= dieselbe Kopfzone, danach hört der Screen einfach auf. Kein Gerüst aus leeren Abschnitten, keine „—"-Platzhalter: bei 139 von 154 Übungen wäre das der Dauerzustand. Die eine Notice (M4-StatBox-Rezept) ist Angebot, kein Vorwurf.</div>
+</div>
+
+<div style="width:520px;flex:none;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px 24px;align-self:stretch">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">RENDERREGEL JE BLOCK — WAS FEHLT, EXISTIERT NICHT</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ blockRules }}" as="b" hint-placeholder-count="7">
+<div style="display:grid;grid-template-columns:150px 70px 1fr;gap:12px;align-items:baseline;border-bottom:1px solid #16161F;padding-bottom:9px">
+<span style="font-size:12px;font-weight:600">{{ b.block }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:{{ b.cc }}">{{ b.have }}</span>
+<span style="font-size:11px;color:#94A3B8;line-height:1.55">{{ b.rule }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">Einzige Ausnahme: die Bearbeiten-Notice erscheint nur bei nutzereigenen Übungen ohne Anleitung. Kuratierte Übungen ohne deutschen Namen zeigen den englischen — kommentarlos.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A4 Pläne" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A4 · PLANLISTE UND PLANDETAIL</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · PLANLISTE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:480px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Pläne</span></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">10 PLÄNE</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ planRows }}" as="p" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:{{ p.bb }}">
+<span style="flex:none;width:36px;height:36px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">{{ p.ini }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ p.meta }}</span></span>
+<span style="color:#94A3B8;font-size:14px">›</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Pläne sind Vorlagen — die Daten kennen keinen Fortschritt, also zeigt die Liste keinen. Typ steht als grauer Mono-Text, nicht als Farbchip: Farbe gehört dem Muskel.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">2 · PLANDETAIL</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:480px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span></div>
+<div style="font-size:19px;font-weight:700">Push Day A</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">8 ÜBUNGEN · ~45 MIN · KRAFT</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ planItems }}" as="i" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:{{ i.bb }}">
+<span style="flex:none;width:18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ i.n }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ i.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:{{ i.c }};margin-top:2px">{{ i.muscle }}</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">{{ i.sets }}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700;box-shadow:0 0 24px rgba(240,34,119,0.25)">Training starten</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Satz-Schema rechts in Cyan-Mono — das ist ein Messwert, kein Schmuck. Der CTA klebt unten (sticky), damit „starten" nie hinter 8 Zeilen scrollt. Zeile tippen → Übungsdetail.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · PLANDETAIL MIT LÜCKE (ERROR-NAH)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:480px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span></div>
+<div style="font-size:19px;font-weight:700">Pull Day B</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">6 ÜBUNGEN · KRAFT</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #232334"><span style="flex:none;width:18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">1</span><span style="flex:1"><span style="display:block;font-size:12px;font-weight:600">Klimmzug</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#3b82f6;margin-top:2px">RÜCKEN</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">4×6</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0"><span style="flex:none;width:18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">2</span><span style="flex:1"><span style="display:block;font-size:12px;font-weight:600;color:#94A3B8">Gelöschte Übung</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">NICHT MEHR VORHANDEN</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">3×10</span></div>
+</div>
+<div style="background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:12px;display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start">
+<svg width="18" height="18" viewBox="0 0 24 24" style="margin-top:1px"><path d="M12 4v9" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path><circle cx="12" cy="18" r="1.6" fill="#CDD3EA"></circle></svg>
+<div><div style="font-size:11px;font-weight:600;color:#FFFFFF">1 Übung fehlt</div>
+<div style="margin-top:2px;font-size:10.5px;color:#94A3B8;line-height:1.5">Sie wurde gelöscht. Der Plan startet ohne sie.</div></div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Training starten</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Nutzereigene Übungen können gelöscht sein, Pläne referenzieren sie weiter. Die Zeile bleibt sichtbar (ausgegraut + Text), der Start bleibt möglich — der Plan wird nicht als kaputt behandelt.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A5 Übergang Runner" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A5 · ÜBERGANG IN DEN RUNNER — EIN SHEET, ZWEI WEGE</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · START AUS PLAN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;min-height:480px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;position:relative">
+<div style="position:absolute;inset:0;padding:18px 14px;opacity:0.3"><div style="font-size:19px;font-weight:700">Push Day A</div><div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">8 ÜBUNGEN · ~45 MIN · KRAFT</div><div style="margin-top:12px;height:200px;border-radius:20px;background:#14141D;border:1px solid #232334"></div></div>
+<div style="position:absolute;inset:0;background:rgba(5,5,7,0.72)"></div>
+<div style="position:relative;background:#0B0B0E;border-top:1px solid #232334;border-radius:24px 24px 0 0;padding:14px 16px 18px">
+<div style="width:32px;height:4px;border-radius:2px;background:#232334;margin:0 auto"></div>
+<div style="margin-top:14px;font-size:16px;font-weight:700">Push Day A starten?</div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">8 ÜBUNGEN · ~45 MIN</div>
+<div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:10px 12px"><span style="font-size:11px;color:#CDD3EA">Standard-Pause</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">90 s</span></div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700;box-shadow:0 0 24px rgba(240,34,119,0.25)">Starten</div>
+<div style="margin-top:8px;display:flex;align-items:center;justify-content:center;height:40px;font-size:12px;font-weight:600;color:#94A3B8">Abbrechen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">M2-Sheet mit Verdunkler ohne Blur. Das Sheet ist der bestätigte Moment vor der Vollbild-Übernahme durch den Runner — und zeigt die Pausenzeit (M4-Standard: 90 s), bevor sie gilt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">2 · FREIES TRAINING</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;min-height:480px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;position:relative">
+<div style="position:absolute;inset:0;padding:18px 14px;opacity:0.3"><div style="font-size:19px;font-weight:700">Workouts</div><div style="margin-top:12px;height:130px;border-radius:20px;background:#14141D;border:1px solid #232334"></div><div style="margin-top:10px;height:38px;border-radius:30px;border:1px solid #232334"></div></div>
+<div style="position:absolute;inset:0;background:rgba(5,5,7,0.72)"></div>
+<div style="position:relative;background:#0B0B0E;border-top:1px solid #232334;border-radius:24px 24px 0 0;padding:14px 16px 18px">
+<div style="width:32px;height:4px;border-radius:2px;background:#232334;margin:0 auto"></div>
+<div style="margin-top:14px;font-size:16px;font-weight:700">Freies Training</div>
+<div style="margin-top:4px;font-size:11px;color:#94A3B8;line-height:1.6">Ohne Plan starten — Übungen fügst du im Training hinzu.</div>
+<div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:10px 12px"><span style="font-size:11px;color:#CDD3EA">Standard-Pause</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">90 s</span></div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700;box-shadow:0 0 24px rgba(240,34,119,0.25)">Starten</div>
+<div style="margin-top:8px;display:flex;align-items:center;justify-content:center;height:40px;font-size:12px;font-weight:600;color:#94A3B8">Abbrechen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Identische Anatomie wie der Plan-Start — kein eigener Flow. Keine Pflicht, vorher eine Übung zu wählen: der Runner beginnt leer mit „Übung hinzufügen"; die Übungsliste (A2) ist dort dieselbe.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">3 · START LÄUFT (LOADING)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;min-height:480px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;position:relative">
+<div style="position:absolute;inset:0;background:rgba(5,5,7,0.72)"></div>
+<div style="position:relative;background:#0B0B0E;border-top:1px solid #232334;border-radius:24px 24px 0 0;padding:14px 16px 18px">
+<div style="width:32px;height:4px;border-radius:2px;background:#232334;margin:0 auto"></div>
+<div style="margin-top:14px;font-size:16px;font-weight:700">Push Day A starten?</div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">8 ÜBUNGEN · ~45 MIN</div>
+<div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:10px 12px;opacity:0.5"><span style="font-size:11px;color:#CDD3EA">Standard-Pause</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">90 s</span></div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);opacity:0.85"><span style="width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#FFFFFF;animation:{{ spinAnim }}"></span></div>
+<div style="margin-top:8px;display:flex;align-items:center;justify-content:center;height:40px;font-size:12px;font-weight:600;color:#94A3B8;opacity:0.4">Abbrechen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Button-Spinner aus M2: Label ersetzt, Breite eingefroren, Sheet nicht mehr abbrechbar (Session wird angelegt). Schlägt das Anlegen fehl, kehrt das Sheet mit M4-Notice zurück — es springt nicht kommentarlos zu.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="C Interaktionszustände" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · INTERAKTIONSZUSTÄNDE — KEIN RIPPLE, SKALIERUNG + GLOW</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px;display:flex;flex-wrap:wrap;gap:40px">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">FILTER-CHIP</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 12px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA"><span style="width:6px;height:6px;border-radius:50%;background:#3b82f6"></span>Rücken</span>
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 12px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA;transform:scale(0.94);box-shadow:0 0 14px rgba(0,242,254,0.25)"><span style="width:6px;height:6px;border-radius:50%;background:#3b82f6"></span>Rücken</span>
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:5px 12px;border-radius:30px;background:rgba(59,130,246,0.20);border:1px solid rgba(59,130,246,0.30);color:#3b82f6">✓ Rücken</span>
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 12px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA;opacity:0.4"><span style="width:6px;height:6px;border-radius:50%;background:#3b82f6"></span>Rücken</span>
+</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DEFAULT · PRESSED (0.94 + GLOW) · SELECTED (✓) · DISABLED (40 %)</div>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">START-CTA</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+<span style="display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 20px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12px;font-weight:700">Starten</span>
+<span style="display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 20px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12px;font-weight:700;transform:scale(0.96);box-shadow:0 0 20px rgba(240,34,119,0.45)">Starten</span>
+<span style="display:inline-flex;align-items:center;justify-content:center;height:40px;width:84px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);opacity:0.85"><span style="width:15px;height:15px;border-radius:50%;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#FFFFFF;animation:{{ spinAnim }}"></span></span>
+<span style="display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 20px;border-radius:30px;background:#14141D;border:1px solid #232334;font-size:12px;font-weight:700;color:#94A3B8">Starten</span>
+</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DEFAULT · PRESSED (0.96 + GLOW) · LOADING (BREITE FIX) · DISABLED (VOLLTON, KEIN GRADIENT)</div>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">LISTENZEILE</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;width:280px">
+<div style="display:flex;align-items:center;gap:10px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:9px 12px"><span style="width:30px;height:30px;border-radius:10px;background:rgba(59,130,246,0.20);display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#3b82f6">KZ</span><span style="flex:1;font-size:11.5px;font-weight:600">Klimmzug</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">3/5</span></div>
+<div style="display:flex;align-items:center;gap:10px;background:#1A1A26;border:1px solid #232334;border-radius:14px;padding:9px 12px;transform:scale(0.98)"><span style="width:30px;height:30px;border-radius:10px;background:rgba(59,130,246,0.20);display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#3b82f6">KZ</span><span style="flex:1;font-size:11.5px;font-weight:600">Klimmzug</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">3/5</span></div>
+</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DEFAULT · PRESSED (FLÄCHE #1A1A26 + 0.98)</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="D Spezifikation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · SPEZIFIKATIONSTABELLE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ specRows }}" as="row" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:210px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ row.k }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;line-height:1.7">{{ row.v }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="E Strings" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · STRINGTABELLE — KEY · DEUTSCH · ENGLISCH</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<div style="display:grid;grid-template-columns:250px 1fr 1fr;gap:18px;padding:11px 0;border-bottom:1px solid #232334">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">KEY</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">DEUTSCH</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">ENGLISCH</span>
+</div>
+<sc-for list="{{ stringRows }}" as="s" hint-placeholder-count="24">
+<div style="display:grid;grid-template-columns:250px 1fr 1fr;gap:18px;padding:9px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ s.k }}</span>
+<span style="font-size:12px;color:#FFFFFF">{{ s.de }}</span>
+<span style="font-size:12px;color:#CDD3EA">{{ s.en }}</span>
+</div>
+</sc-for>
+<div style="padding:12px 0;font-size:11px;color:#94A3B8;line-height:1.6">Platzhalter in geschweiften Klammern werden zur Laufzeit ersetzt. Muskelgruppen-Namen (10) liegen als eigener Namespace <span style="font-family:'JetBrains Mono',monospace">muscle.*</span> vor — Übungsnamen selbst sind Daten, keine Strings, und werden nicht übersetzt, wenn kein deutscher Name existiert.</div>
+</div>
+</div>
+
+<div data-screen-label="F A11y" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · A11Y — SEMANTICS JE INTERAKTIVEM ELEMENT</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ a11yRows }}" as="a" hint-placeholder-count="11">
+<div style="display:grid;grid-template-columns:210px 130px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ a.el }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ a.note }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="G Wiederverwendung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · WIEDERVERWENDETE BAUSTEINE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ reuseRows }}" as="r" hint-placeholder-count="10">
+<div style="display:grid;grid-template-columns:90px 210px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ r.mod }}</span>
+<span style="font-size:12.5px;font-weight:600">{{ r.part }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="H Entscheidungsprotokoll" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · ENTSCHEIDUNGSPROTOKOLL — VERWORFEN UND WARUM</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="10">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277">{{ d.n }}</span><span style="font-size:13px;font-weight:600;line-height:1.45">{{ d.title }}</span></div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;animationen&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;schwierigkeitStil&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Segmente + Zahl&quot;,&quot;nur Segmente&quot;],&quot;default&quot;:&quot;Segmente + Zahl&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;}}">
+class Component extends DCLogic {
+  bars(d) {
+    const seg = (f) => React.createElement('span', { style: { width: 7, height: 4, borderRadius: 2, background: f ? '#CDD3EA' : '#232334', display: 'inline-block' } });
+    return React.createElement('span', { style: { display: 'inline-flex', gap: 2.5 } }, [1,2,3,4,5].map(i => React.createElement(React.Fragment, { key: i }, seg(i <= d))));
+  }
+  renderVals() {
+    const anim = this.props.animationen ?? true;
+    const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; };
+    const M = (n, cnt, c) => ({ n, cnt, c, bg: rgba(c, 0.20), bd: rgba(c, 0.30) });
+    const AM='#f59e0b', BL='#3b82f6', RD='#ef4444', OR='#f97316', TE='#14b8a6', GR='#22c55e';
+    const ex = (name, muscle, c, meta, d, own, last) => ({ name, muscle, c, meta, d, own: !!own, ini: (name.includes(' ') ? name.split(' ').map(w=>w[0]).join('') : name).slice(0,2).toUpperCase(), bg: rgba(c,0.20), bars: this.bars(d), bb: last ? 'none' : '1px solid #232334' });
+    return {
+      pulseAnim: anim ? 'skelPulse 1.6s ease-in-out infinite' : 'none',
+      spinAnim: anim ? 'btnSpin 0.9s linear infinite' : 'none',
+      zeigeZahl: (this.props.schwierigkeitStil ?? 'Segmente + Zahl') !== 'nur Segmente',
+      muscles: [ M('Schultern',35,AM), M('Rücken',26,BL), M('Brust',22,RD), M('Core',22,OR), M('Gesäß',19,GR), M('Trizeps',18,TE), M('Bizeps',17,TE), M('Quadrizeps',16,GR), M('Beinbeuger',9,GR), M('Waden',5,GR) ],
+      regions: [
+        { n: 'Schultern', c: AM, hex: '#f59e0b', ratio: '8,52:1', sub: 'SHOULDERS · 35' },
+        { n: 'Rücken', c: BL, hex: '#3b82f6', ratio: '4,98:1', sub: 'BACK · 26' },
+        { n: 'Brust', c: RD, hex: '#ef4444', ratio: '4,86:1', sub: 'CHEST · 22' },
+        { n: 'Core', c: OR, hex: '#f97316', ratio: '6,53:1', sub: 'CORE · 22' },
+        { n: 'Arme', c: TE, hex: '#14b8a6', ratio: '7,35:1', sub: 'BIZEPS 17 · TRIZEPS 18' },
+        { n: 'Beine', c: GR, hex: '#22c55e', ratio: '8,03:1', sub: 'GESÄSS 19 · QUADS 16 · BEUGER 9 · WADEN 5' },
+      ],
+      diffDemo: [1,2,3,4,5].map(d => ({ bars: this.bars(d), label: d + '/5' })),
+      exRows: [
+        ex('Bankdrücken','BRUST',RD,' · LANGHANTEL',2),
+        ex('Bulgarian Split Squat','BEINE',GR,' · KURZHANTEL',3),
+        ex('Face Pull','SCHULTERN',AM,' · KABELZUG',2),
+        ex('Kreuzheben','RÜCKEN',BL,' · LANGHANTEL',4),
+        ex('Nackenziehen KH','SCHULTERN',AM,'',2,true),
+        ex('Plank','CORE',OR,' · EIGENGEWICHT',1,false,true),
+      ],
+      exRowsBack: [
+        ex('Klimmzug','RÜCKEN',BL,' · EIGENGEWICHT',3),
+        ex('Kreuzheben','RÜCKEN',BL,' · LANGHANTEL',4),
+        ex('Rudern LH','RÜCKEN',BL,'',2,true,true),
+      ],
+      skelRows: [ {w:'72%'},{w:'55%'},{w:'80%'},{w:'48%'},{w:'66%'},{w:'58%',last:true} ].map((s,i,a)=>({ ...s, bb: i===a.length-1?'none':'1px solid #232334' })),
+      planRows: [
+        { name:'Push Day A', meta:'8 ÜBUNGEN · KRAFT', ini:'PA' },
+        { name:'Pull Day B', meta:'6 ÜBUNGEN · KRAFT', ini:'PB' },
+        { name:'Hybrid Woche', meta:'6 ÜBUNGEN · HYBRID', ini:'HW' },
+        { name:'Leg Day', meta:'7 ÜBUNGEN · KRAFT', ini:'LD' },
+        { name:'Core Express', meta:'5 ÜBUNGEN · HYBRID', ini:'CE', last:true },
+      ].map((p,i,a)=>({ ...p, bb: i===a.length-1?'none':'1px solid #232334' })),
+      planItems: [
+        { n:'1', name:'Bankdrücken', muscle:'BRUST', c:RD, sets:'4×8' },
+        { n:'2', name:'Schulterdrücken', muscle:'SCHULTERN', c:AM, sets:'3×10' },
+        { n:'3', name:'Incline Press KH', muscle:'BRUST', c:RD, sets:'3×12' },
+        { n:'4', name:'Seitheben', muscle:'SCHULTERN', c:AM, sets:'3×15' },
+        { n:'5', name:'Trizepsdrücken', muscle:'ARME', c:TE, sets:'3×12' },
+      ].map((p,i,a)=>({ ...p, bb: i===a.length-1?'none':'1px solid #232334' })),
+      blockRules: [
+        { block:'Name + EIGEN-Tag', have:'154/154', cc:'#00FF87', rule:'Immer. Fehlt der deutsche Name (24 kuratierte), steht der englische — gleiche Typo.' },
+        { block:'Muskelchips', have:'154/154', cc:'#00FF87', rule:'Immer. Primär zuerst, Sekundär danach, max. 3 sichtbar, Rest „+n".' },
+        { block:'Schwierigkeit', have:'154/154', cc:'#00FF87', rule:'Immer. 5 Segmente + n/5.' },
+        { block:'Gerät', have:'143/154', cc:'#f59e0b', rule:'Nur wenn vorhanden. Grauer Mono-Text, kein Chip. Fehlt es, rückt nichts nach — die Zeile ist einfach kürzer.' },
+        { block:'Anleitung', have:'138/154', cc:'#f59e0b', rule:'Nur wenn vorhanden, nummeriert. Kein „Keine Anleitung"-Platzhalter bei kuratierten.' },
+        { block:'Cues + Fehler', have:'84/154', cc:'#F02277', rule:'Nur kuratierte haben sie. Blöcke entfallen ersatzlos.' },
+        { block:'Beschreibung', have:'15/154', cc:'#F02277', rule:'Nur wenn vorhanden — der seltenste Block, deshalb unter der Anleitung, nie als Aufmacher.' },
+      ],
+      specRows: [
+        { k:'Kategorie-Chip (Muskel)', v:'Pill 30 · Fläche rgba(F, 0.20) · Rand 1 dp rgba(F, 0.30) · Text F, Mono 11/600 · Höhe 24 dp sichtbar, 48 dp Treffer · Farbe = Region (6 Töne), Text = Muskel' },
+        { k:'Filter-Chip', v:'Unselektiert: #14141D · Rand #232334 · Text #CDD3EA + 6-dp-Farbpunkt · Selektiert: Chip-Rezept + „✓" · Zeile horizontal scrollbar, „Alle" steht fest an Position 1' },
+        { k:'Übungszeile', v:'K3-Einlage · Höhe ≥ 64 dp · IconBox 36 dp / Radius 10, Fläche rgba(F, 0.20), Initialen Mono 10/700 in F · Name 13/600, Ellipsis · Subzeile Mono 10: Muskel in F, Gerät #94A3B8 · Trenner Hairline #232334' },
+        { k:'EIGEN-Tag', v:'Pill 30 · Rand rgba(142,142,147, 0.30) · Text #8e8e93 Mono 10 (sichtbar 8 im Mock) · steht in der Subzeile hinter Muskel/Gerät — der Name behält die volle Zeilenbreite' },
+        { k:'Schwierigkeit', v:'5 Segmente 7×4 dp / Radius 2 · gefüllt #CDD3EA, leer #232334 · daneben Mono 10 „n/5" · monochrom, bewusst kein Teil der Kategoriepalette' },
+        { k:'Suchfeld', v:'Höhe 44 dp · Radius 14 · #14141D · Rand #232334, Fokus #00F2FE · Placeholder #94A3B8 · Clear-✕ ab 1 Zeichen, Treffer über beide Namensfelder (DE/EN)' },
+        { k:'Session-Card „Heute"', v:'K2 (M2): Gradient-Rand 1,5 dp 135° #F02277→#7A2BDB→#00F2FE · Fläche #14141D · genau 1 je Screen · CTA-Pill 40 dp innen' },
+        { k:'Plan-Zeile', v:'K3-Einlage · IconBox 36 dp #1A1A26, Initialen #CDD3EA · Meta Mono 10 #94A3B8 (Anzahl · Typ) · Chevron #94A3B8' },
+        { k:'Plan-Item-Zeile', v:'Index Mono 10 #94A3B8 · Name 13/600 · Muskel Mono 10 in F · Satz-Schema Mono 11 #00F2FE rechts · gelöschte Referenz: alles #94A3B8 + Text „nicht mehr vorhanden"' },
+        { k:'Start-CTA', v:'Pill 30 · Gradient 135° #F02277→#C01963 · Höhe 48 dp · Text 14/700 · Glow 0 0 24 rgba(240,34,119, 0.25) · Loading: Spinner ersetzt Label, Breite eingefroren' },
+        { k:'Start-Sheet', v:'M2-Sheet: #0B0B0E · Radius 24 oben · Handle 32×4 · Verdunkler rgba(5,5,7, 0.72) ohne Blur · Pausen-Zeile als StatBox 14 · Abbrechen als expliziter Button 40 dp' },
+        { k:'Skeleton / Empty / Error', v:'M2 unverändert: Puls 1,6 s Opacity 0,5↔1 in Inhaltsform · Zustandszone: IconBox 48 / Titel 16 / Text 12 max. 2 Zeilen / 0–1 Aktion' },
+      ],
+      stringRows: [
+        { k:'workouts.title', de:'Workouts', en:'Workouts' },
+        { k:'workouts.today.label', de:'Heute', en:'Today' },
+        { k:'workouts.today.empty.title', de:'Kein Training geplant', en:'No workout scheduled' },
+        { k:'workouts.today.empty.body', de:'Starte frei oder wähle einen Plan.', en:'Start freely or pick a plan.' },
+        { k:'workouts.start', de:'Training starten', en:'Start workout' },
+        { k:'workouts.free', de:'Freies Training', en:'Free workout' },
+        { k:'workouts.free.start', de:'Freies Training starten', en:'Start free workout' },
+        { k:'workouts.plans.label', de:'Pläne', en:'Plans' },
+        { k:'workouts.plans.all', de:'Alle {n}', en:'All {n}' },
+        { k:'workouts.plan.pick', de:'Plan wählen', en:'Pick a plan' },
+        { k:'workouts.search.entry', de:'{n} Übungen durchsuchen', en:'Search {n} exercises' },
+        { k:'exercises.title', de:'Übungen', en:'Exercises' },
+        { k:'exercises.search.hint', de:'Übung suchen …', en:'Search exercises …' },
+        { k:'exercises.count', de:'{n} Übungen · {k} kuratiert · {e} eigene', en:'{n} exercises · {k} curated · {e} custom' },
+        { k:'exercises.filter.all', de:'Alle', en:'All' },
+        { k:'exercises.filter.result', de:'{n} Übungen · {filter}', en:'{n} exercises · {filter}' },
+        { k:'exercises.filter.reset', de:'Zurücksetzen', en:'Reset' },
+        { k:'exercises.empty.title', de:'Nichts gefunden', en:'Nothing found' },
+        { k:'exercises.empty.body', de:'Keine Übung passt zu „{q}" — auch nicht auf Englisch.', en:'No exercise matches “{q}” — in either language.' },
+        { k:'exercises.empty.action', de:'Eigene Übung anlegen', en:'Create your own exercise' },
+        { k:'exercises.own.tag', de:'Eigen', en:'Custom' },
+        { k:'exercise.difficulty.a11y', de:'Schwierigkeit {n} von 5', en:'Difficulty {n} of 5' },
+        { k:'exercise.instructions', de:'Anleitung', en:'Instructions' },
+        { k:'exercise.cues', de:'Cues', en:'Cues' },
+        { k:'exercise.mistakes', de:'Häufige Fehler', en:'Common mistakes' },
+        { k:'exercise.sparse.title', de:'Keine Anleitung hinterlegt', en:'No instructions yet' },
+        { k:'exercise.sparse.body', de:'Diese Übung hast du selbst angelegt.', en:'You created this exercise yourself.' },
+        { k:'exercise.sparse.action', de:'Übung bearbeiten', en:'Edit exercise' },
+        { k:'plan.count', de:'{n} Pläne', en:'{n} plans' },
+        { k:'plan.meta', de:'{n} Übungen · {typ}', en:'{n} exercises · {type}' },
+        { k:'plan.item.missing', de:'Nicht mehr vorhanden', en:'No longer available' },
+        { k:'plan.missing.title', de:'{n} Übung(en) fehlt/fehlen', en:'{n} exercise(s) missing' },
+        { k:'plan.missing.body', de:'Sie wurde(n) gelöscht. Der Plan startet ohne sie.', en:'They were deleted. The plan starts without them.' },
+        { k:'sheet.start.title', de:'{plan} starten?', en:'Start {plan}?' },
+        { k:'sheet.rest.label', de:'Standard-Pause', en:'Default rest' },
+        { k:'sheet.free.body', de:'Ohne Plan starten — Übungen fügst du im Training hinzu.', en:'Start without a plan — add exercises during the workout.' },
+        { k:'sheet.start', de:'Starten', en:'Start' },
+        { k:'sheet.cancel', de:'Abbrechen', en:'Cancel' },
+        { k:'list.error.title', de:'Laden fehlgeschlagen', en:'Loading failed' },
+        { k:'list.error.body', de:'Deine Workouts konnten nicht geladen werden.', en:'Your workouts could not be loaded.' },
+        { k:'list.error.retry', de:'Erneut versuchen', en:'Try again' },
+      ],
+      a11yRows: [
+        { el:'Suchfeld', role:'textField', note:'Label „Übung suchen". Der Placeholder ist nicht die einzige Kennzeichnung. Clear-✕ eigenes Ziel, Label „Suche löschen", 48 dp.' },
+        { el:'Filter-Chip', role:'button + selected', note:'Label „Filter: Rücken", Zustand selected true/false wird angesagt. Chip-Band mit Scroll-Semantik; „Alle" steht fest, damit Zurücksetzen ohne Scrollen erreichbar ist.' },
+        { el:'Übungszeile', role:'button', note:'Zusammengesetztes Label: „Kreuzheben, Rücken und Beinbeuger, Schwierigkeit 4 von 5, Langhantel". Eigene Übungen: Zusatz „eigene Übung".' },
+        { el:'Schwierigkeits-Segmente', role:'—', note:'excludeSemantics — die Balken sind dekorativ, der Wert steht im Zeilen-Label als „Schwierigkeit n von 5".' },
+        { el:'Session-Card CTA', role:'button', note:'Label „Training starten: Push Day A" — der Planname gehört ins Label, nicht nur auf die Karte.' },
+        { el:'Freies Training', role:'button', note:'Label „Freies Training starten". Im Empty-Zustand ist er der Primär-CTA und steht im Fokus-Pfad vor „Plan wählen".' },
+        { el:'Plan-Zeile / Plan-Item', role:'button', note:'Plan: „Push Day A, 8 Übungen, Kraft". Item: „Bankdrücken, 4 Sätze à 8, Brust". Gelöschte Referenz: „Gelöschte Übung, nicht mehr vorhanden" — nicht fokussierbar als Aktion.' },
+        { el:'Start-Sheet', role:'dialog', note:'Fokus initial auf Titel. Scrim-Tap schließt, aber „Abbrechen" existiert als expliziter Button — Schließen ist nie nur Geste. Während Loading: Sheet nicht schließbar, Ansage „Training wird gestartet".' },
+        { el:'Skeleton-Zone', role:'—', note:'liveRegion aus, ein einmaliges „Lädt" auf Zonenebene. Skeleton-Elemente selbst ohne Semantik.' },
+        { el:'Fehler-/Empty-Zone', role:'liveRegion polite', note:'Titel + Text werden einmal angesagt; die Aktion ist ein normaler Button danach im Fokus-Pfad.' },
+        { el:'Zählzeile (Filterergebnis)', role:'liveRegion polite', note:'„26 Übungen, Rücken" wird nach Filterwechsel angesagt — das Ergebnis ist hörbar, nicht nur sichtbar.' },
+      ],
+      reuseRows: [
+        { mod:'M1', part:'Typenrollen Poppins/Mono', use:'Mono ausschließlich für Messwerte, Labels, Meta (Satz-Schema, Zähler, Kontrastwerte); Poppins für alles Sprechende.' },
+        { mod:'M1', part:'Press-Verhalten', use:'Skalierung 0,94–0,98 + Glow statt Ripple — Chip, Zeile, CTA je eigene Werte (Abschnitt C).' },
+        { mod:'M2', part:'K3 Listenkarte', use:'Alle Listen ab 4 Einträgen: Übungen, Pläne, Plan-Items. Kein Blur, kein Halo.' },
+        { mod:'M2', part:'K2 Session-Card', use:'„Heute"-Karte im Tab — die einzige Gradient-Rand-Karte je Screen.' },
+        { mod:'M2', part:'Sheet + Verdunkler ohne Blur', use:'Start-Sheet (Plan + frei). Verdunkler rgba(5,5,7, 0.72), pausiert den Kontext, blurrt ihn nicht.' },
+        { mod:'M2', part:'Zustands-Anatomie + Skeleton-Puls', use:'Empty (Suche), Error (Laden), Loading (Tab + Liste) — unverändert übernommen, nur Texte neu.' },
+        { mod:'M2', part:'Button-Spinner', use:'Start-CTA im Sheet: Label ersetzt, Breite eingefroren, disabled.' },
+        { mod:'M3', part:'Badge/Dot-Rezept', use:'Basis des Kategorie-Chips (Pill 30, Rand 0.30) und des Farbpunkts im unselektierten Filter-Chip.' },
+        { mod:'M4', part:'Notice + Statuszone (StatBox)', use:'„Keine Anleitung hinterlegt" (Detail), „1 Übung fehlt" (Plan), Fehler beim Start im Sheet.' },
+        { mod:'M4', part:'Standard-Pausenzeit 90 s', use:'Wird im Start-Sheet sichtbar gemacht, bevor sie gilt — der M4-Entscheid „Standard statt Onboarding-Frage" bleibt nachvollziehbar.' },
+      ],
+      decisions: [
+        { n:'01', title:'Neon für Kategorien verworfen', body:'Magenta und Cyan sind Aktion und Daten. Zehn Muskelgruppen in Markenfarben würden jede Liste anschreien und den CTA entwerten. Die gedämpfte Palette der Vorgänger-App wird übernommen — als Klassifikationsschicht unterhalb der Marke.' },
+        { n:'02', title:'10 Einzelfarben verworfen → 6 Regionstöne', body:'Nur 7 Töne der Palette sind fliesstextsicher — für 10 Gruppen reicht das nicht ohne Wiederholung. Statt willkürlicher Doppelungen kodiert Farbe die Körperregion (Arme = Bizeps+Trizeps, Beine = Gesäß+Quads+Beuger+Waden); der Text im Chip trägt den Muskel. Farbe ist Vorsortierung, nie Information allein.' },
+        { n:'03', title:'Navy ersatzlos gestrichen, nicht ersetzt', body:'1,77:1 ist unlesbar — aber der eigentliche Fehler der Vorgänger-App war, dem Typ („Laufen") überhaupt eine Farbe zu geben. Typ und Gerät bleiben graue Mono-Texte; damit braucht Navy keinen Nachfolger.' },
+        { n:'04', title:'Violett #8b5cf6 nicht vergeben', body:'4,32:1 liegt unter 4,5:1. „Nur für große Schrift" wäre eine Sonderregel, die beim nächsten Redesign kippt — Chips sind 11 sp. Lieber ein Ton weniger als eine Regel mit Fußnote.' },
+        { n:'05', title:'Schwierigkeit: Wort und Farbe verworfen', body:'Wörter („Fortgeschritten") sprengen bei 320 dp × 200 % die Zeile und müssten übersetzt werden. Eine Ampelfarbe wäre ein zweites Farbsystem neben den Regionen. Es bleibt Form + Zahl: 5 Segmente + „n/5", monochrom — und die Verteilung (33/28/11/8/4) zeigt, dass Differenzierung unten wichtiger ist als ein dramatisches „Elite"-Label oben.' },
+        { n:'06', title:'Festes Detail-Gerüst verworfen', body:'Ein Layout, das Anleitung, Cues und Fehler voraussetzt, wäre bei 139 von 154 Übungen ein Gerüst aus Leerstellen. Stattdessen: Blöcke rendern nur mit Daten, der Screen hört einfach auf. Die einzige aktive Leerstelle ist die Bearbeiten-Notice bei eigenen Übungen.' },
+        { n:'07', title:'Sprachkennzeichnung verworfen', body:'Flagge, Kursiv oder „(EN)" hinter 24 kuratierten und vielen eigenen Namen würde die Liste dauerhaft möblieren, ohne eine Handlung zu ermöglichen. Namen sind Namen. Die Suche gleicht die Sprachgrenze aus, nicht die Typografie.' },
+        { n:'08', title:'Vier Kategorien je Zeile verworfen', body:'Muskel + Gerät + Typ + Schwierigkeit als Chips wäre der Flickenteppich aus dem Auftrag. Eine Zeile trägt genau einen Farbwert (Muskel als IconBox + Subzeile); Gerät grau, Typ nur bei Plänen, Schwierigkeit monochrom rechts.' },
+        { n:'09', title:'Planfortschritt verworfen', body:'Die Daten kennen name, icon, type, items — keinen Fortschritt. Ein Ring oder Balken (M3) würde Präzision behaupten, die nicht existiert. Wenn Verlaufsdaten kommen, ist der M3-Balken der vorgesehene Träger.' },
+        { n:'10', title:'Direkter Runner-Sprung verworfen', body:'Der Runner übernimmt den Vollbildmodus und startet eine Session mit Folgen (Kalendereintrag, Verlauf). Ein Tap ohne Bestätigung wäre der teuerste Fehltap der App. Das Sheet kostet einen Tap und zeigt die Pausenzeit — Abbruch bleibt billig.' },
+        { n:'11', title:'Eigener Freies-Training-Flow verworfen', body:'Ein Wizard („Wähle erst Übungen") vor dem freien Training widerspräche seinem Zweck: sofort anfangen. Das Sheet ist identisch mit dem Plan-Start, der Runner beginnt leer — Übungen kommen dort dazu, über dieselbe Liste A2.' },
+        { n:'12', title:'Kaputte Pläne blockieren nicht', body:'Gelöschte Übungsreferenzen (nutzereigene Übungen sind löschbar) machen den Plan nicht startunfähig. Die Zeile bleibt als Information stehen, eine Notice erklärt, der Start läuft ohne sie. Ein blockierender Fehler würde den Nutzer für Datenpflege bestrafen.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

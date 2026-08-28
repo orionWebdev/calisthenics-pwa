@@ -1,0 +1,141 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter gen-l10n
+
+## exception
+
+ProcessException: ProcessException: `dart format` failed with exit code 65
+
+stdout:
+Formatted no files in 0.02 seconds.
+
+
+stderr:
+Could not format because the source could not be parsed:
+
+line 2122, column 61 of lib/l10n/gen/app_l10n_de.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+2122 │   String sessionDeletedSnack(String alt, String neu, Object new, Object old) {
+     │                                                             ^^^
+     ╵
+line 2604, column 69 of lib/l10n/gen/app_l10n_de.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+2604 │   String weightSavedSnack(String kg, String alt, String neu, Object new, Object old) {
+     │                                                                     ^^^
+     ╵
+Could not format because the source could not be parsed:
+
+line 2122, column 61 of lib/l10n/gen/app_l10n_en.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+2122 │   String sessionDeletedSnack(String alt, String neu, Object new, Object old) {
+     │                                                             ^^^
+     ╵
+line 2123, column 44 of lib/l10n/gen/app_l10n_en.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+2123 │     return 'Workout deleted · form $old → $new';
+     │                                            ^^^
+     ╵
+line 2604, column 69 of lib/l10n/gen/app_l10n_en.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+2604 │   String weightSavedSnack(String kg, String alt, String neu, Object new, Object old) {
+     │                                                                     ^^^
+     ╵
+line 2605, column 42 of lib/l10n/gen/app_l10n_en.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+2605 │     return 'Weight $kg kg · form $old → $new';
+     │                                          ^^^
+     ╵
+Could not format because the source could not be parsed:
+
+line 3690, column 61 of lib/l10n/gen/app_l10n.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+3690 │   String sessionDeletedSnack(String alt, String neu, Object new, Object old);
+     │                                                             ^^^
+     ╵
+line 4566, column 69 of lib/l10n/gen/app_l10n.dart: 'new' can't be used as an identifier because it's a keyword.
+     ╷
+4566 │   String weightSavedSnack(String kg, String alt, String neu, Object new, Object old);
+     │                                                                     ^^^
+     ╵
+
+  Command: /opt/homebrew/share/flutter/bin/cache/dart-sdk/bin/dart /opt/homebrew/share/flutter/bin/cache/dart-sdk/bin/dart format /Users/christianmuller/Documents/__private/calisthenics-pwa/lib/l10n/gen/app_l10n_de.dart /Users/christianmuller/Documents/__private/calisthenics-pwa/lib/l10n/gen/app_l10n_en.dart /Users/christianmuller/Documents/__private/calisthenics-pwa/lib/l10n/gen/app_l10n.dart
+
+```
+#0      generateLocalizations (package:flutter_tools/src/localizations/gen_l10n.dart:96:7)
+<asynchronous suspension>
+#1      GenerateLocalizationsCommand.runCommand (package:flutter_tools/src/commands/generate_localizations.dart:263:5)
+<asynchronous suspension>
+#2      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+<asynchronous suspension>
+#3      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#4      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#5      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+<asynchronous suspension>
+#6      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#7      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+<asynchronous suspension>
+#8      FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+<asynchronous suspension>
+#9      run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+<asynchronous suspension>
+#10     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#11     main (package:flutter_tools/executable.dart:103:3)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.47.1, on macOS 26.5.2 25F84 darwin-arm64, locale de-DE) [144ms]
+    • Flutter version 3.47.1 on channel stable at /opt/homebrew/share/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 6655482ec0 (9 days ago), 2026-08-19 10:07:23 -0700
+    • Engine revision 5d53178869
+    • Dart version 3.13.1
+    • DevTools version 2.60.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, enable-record-use, enable-swift-package-manager, omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration
+
+[!] Android toolchain - develop for Android devices (Android SDK version 36.0.0) [1.044ms]
+    • Android SDK at /Users/christianmuller/Library/Android/sdk
+    • Emulator version 37.1.11.0 (build_id 15917651) (CL:N/A)
+    • Platform android-37.0, build-tools 36.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+      This is the JDK bundled with the latest Android Studio installation on this machine.
+      To manually set the JDK path, use: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 25.0.2+-15348964-b329.117)
+    ✗ Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/to/macos-android-setup for more details.
+
+[!] Xcode - develop for iOS and macOS [98ms]
+    ✗ Xcode installation is incomplete; a full installation is necessary for iOS and macOS development.
+      Download at: https://developer.apple.com/xcode/
+      Or install Xcode via the App Store.
+      Once installed, run:
+        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        sudo xcodebuild -runFirstLaunch
+    ! CocoaPods not installed.
+        CocoaPods is a package manager for iOS or macOS platform code.
+        Without CocoaPods, plugins will not work on iOS or macOS.
+        For more info, see https://flutter.dev/to/platform-plugins
+      For installation instructions, see https://guides.cocoapods.org/using/getting-started.html#installation
+
+[✓] Chrome - develop for the web [37ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Connected device (2 available) [3,3s]
+    • macOS (desktop) • macos  • darwin-arm64   • macOS 26.5.2 25F84 darwin-arm64
+    • Chrome (web)    • chrome • web-javascript • Google Chrome 151.0.7922.175
+
+[✓] Network resources [613ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 2 categories.
+```

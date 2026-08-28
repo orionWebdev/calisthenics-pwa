@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.45}50%{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 9 / STUFE 9 · TIEFE STATT FLÄCHE</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Aussagekraft — Vergleich, Balance, Verlauf</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:920px;line-height:1.7">Drei bestehende Bildschirme bekommen je einen Block, der aus vorhandenen Daten eine Aussage macht. Keine neuen Bereiche, keine neue Farbebene, keine erfundene Genauigkeit. Wo die Grundlage dünn ist, steht sie da — oder der Block steht nicht.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Jede Zahl nennt ihre Grundlage</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Kein Soll, kein Urteil</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Block ohne Daten rendert nicht</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">320 dp · 200 % Schrift · ≥ 48 dp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Datenstand 26.08.2026</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ · MODUL 9 · EIN SATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1060px">Eine Zahl wird zur Aussage, sobald neben ihr steht, womit sie verglichen wird — und der Vergleich muss benannt werden, nicht bloß stattfinden.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Daraus folgen drei Regeln, die für alle drei Blöcke gelten. <strong style="color:#CDD3EA;font-weight:600">Erste:</strong> Der Bezug steht sichtbar über den Zahlen („letzte Einheit dieses Plans, 12. Aug"), nie stillschweigend darunter. <strong style="color:#CDD3EA;font-weight:600">Zweite:</strong> Wird der Bezug gröber, wird der Vergleich kleiner — nicht ungenauer. <strong style="color:#CDD3EA;font-weight:600">Dritte:</strong> „Mehr" ist nicht „besser". Deltas sind Tatsachen in Blaugrau, nicht Erfolge in Lime.</div>
+</div>
+
+<div data-screen-label="B Die drei Bloecke" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · DIE DREI BLÖCKE — GRUNDLAGE, MINDESTDATEN, GRENZE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px 20px">
+<div style="display:grid;grid-template-columns:1fr 1.5fr 1fr 1.6fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>BLOCK · ORT</div><div>GRUNDLAGE IM BESTAND</div><div>MINDESTDATEN</div><div>WAS ER NICHT SAGT</div>
+</div>
+<sc-for list="{{ bloecke }}" as="b" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:1fr 1.5fr 1fr 1.6fr;gap:8px 16px;align-items:baseline;padding:14px 0;border-bottom:{{ b.bb }}">
+<div><span style="display:block;font-size:12.5px;font-weight:600">{{ b.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;margin-top:3px">{{ b.ort }}</span></div>
+<div style="font-size:11.5px;color:#CDD3EA;line-height:1.65">{{ b.grund }}</div>
+<div><span style="display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.06em;padding:4px 9px;border-radius:30px;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.35);color:#00F2FE">{{ b.min }}</span><span style="display:block;font-size:10.5px;color:#94A3B8;margin-top:6px;line-height:1.55">{{ b.sonst }}</span></div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.65">{{ b.nicht }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="A1 Einheitendetail Vergleich" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A1 · EINHEITENDETAIL — DER VERGLEICH, VIER ZUSTÄNDE</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · STUFE A — GLEICHER PLAN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:700">Oberkörper Push</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">MO 24. AUG · 58 MIN · KRAFT</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:30px;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.35)">
+<svg width="9" height="9" viewBox="0 0 24 24"><path d="M4 12h16M12 4v16" fill="none" stroke="#00F2FE" stroke-width="2.5" stroke-linecap="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.06em;color:#00F2FE">GLEICHER PLAN</span>
+</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">12. AUG · 12 TAGE HER</span>
+</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ vergleichA }}" as="v" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:8px;min-height:34px">
+<span style="flex:1;min-width:0"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">{{ v.label }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#FFFFFF;margin-top:2px">{{ v.jetzt }}</span></span>
+<span style="flex:none;text-align:right"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">vorher {{ v.vorher }}</span><span style="display:inline-flex;align-items:center;gap:4px;margin-top:3px;padding:2px 7px;border-radius:30px;background:#0B0B0E;border:1px solid #232334"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">{{ v.glyph }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">{{ v.delta }}</span></span></span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:12px;padding-top:11px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.6">Beide Einheiten folgen <strong style="color:#CDD3EA;font-weight:600">Plan „Push A"</strong>. Alle vier Werte sind vergleichbar.</div>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">ÜBUNGEN · 5</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:0 14px">
+<sc-for list="{{ uebungenListe }}" as="u" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:9px;min-height:48px;padding:8px 0;border-bottom:{{ u.bb }}">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:{{ u.farbe }}"></span>
+<span style="flex:1;min-width:0;font-size:11.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ u.n }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;color:#CDD3EA">{{ u.s }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Folgentabelle „vorher → nachher" aus Modul 6, hier vertikal: Wert groß, Bezug klein, Delta als Kapsel. Vier Zeilen à ≥ 34 dp, bei 200 % Schrift bricht die Kapsel unter den Wert.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · STUFE C — GROBER BEZUG, KLEINERER VERGLEICH</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:700">Freies Training</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">SA 22. AUG · 41 MIN · KRAFT</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:30px;background:#0B0B0E;border:1px solid #232334">
+<svg width="9" height="9" viewBox="0 0 24 24"><path d="M4 16h16M4 8h16" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.06em;color:#CDD3EA">MITTEL · 5 KRAFT-EINHEITEN</span>
+</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">28. JUL – 20. AUG</span>
+</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ vergleichC }}" as="v" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:8px;min-height:34px">
+<span style="flex:1;min-width:0"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">{{ v.label }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ v.wertC }};margin-top:2px">{{ v.jetzt }}</span></span>
+<span style="flex:none;text-align:right"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">{{ v.bezug }}</span><span style="display:inline-flex;align-items:center;gap:4px;margin-top:3px;padding:2px 7px;border-radius:30px;background:{{ v.chipBg }};border:1px solid {{ v.chipBr }}"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ v.chipC }}">{{ v.glyph }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:{{ v.chipC }}">{{ v.delta }}</span></span></span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:12px;padding-top:11px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.6">Keine Plan-ID, keine Übungsüberdeckung. Verglichen wird nur, was von den Übungen unabhängig ist: <strong style="color:#CDD3EA;font-weight:600">Dauer und Last</strong>. Volumen und Sätze stehen ohne Bezug — andere Übungen, andere Zahl.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der gröbere Bezug macht den Vergleich <strong style="color:#CDD3EA;font-weight:600">kürzer</strong>, nicht unschärfer. Zwei Werte mit „—" statt vier Werte mit falschem Anspruch. Das „—" ist mit Semantics „kein Vergleich verfügbar" belegt, nicht stumm.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">3 · KEINE VERGLEICHSDATEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:700">Unterkörper A</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">DI 25. AUG · 52 MIN · KRAFT</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<sc-for list="{{ absolutWerte }}" as="a" hint-placeholder-count="4">
+<span style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:10px 11px"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">{{ a.l }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;margin-top:3px">{{ a.v }}</span></span>
+</sc-for>
+</div>
+<div style="margin-top:12px;display:flex;gap:9px;align-items:flex-start;padding-top:11px;border-top:1px solid #232334">
+<span style="flex:none;width:16px;height:16px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;margin-top:1px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#94A3B8">i</span></span>
+<span style="flex:1;min-width:0;font-size:11px;color:#94A3B8;line-height:1.6">Erste Einheit des Plans <strong style="color:#CDD3EA;font-weight:600">„Unterkörper A"</strong>. Ab der nächsten steht hier der Vergleich.</span>
+</div>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">ÜBUNGEN · 6</div>
+<div style="height:52px;border-radius:20px;background:#14141D;border:1px solid #232334"></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Keine leere Vergleichskarte, kein Platzhalterstrich: <strong style="color:#CDD3EA;font-weight:600">ein Satz im bestehenden Kasten</strong>. Er sagt, warum nichts da ist und wann etwas da sein wird — das unterscheidet ihn von „keine Daten".</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">4 · LADEND · 180 MS SCHWELLE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334"></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:700">Oberkörper Push</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">MO 24. AUG · 58 MIN · KRAFT</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="width:132px;height:20px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:13px">
+<sc-for list="{{ skel }}" as="s" hint-placeholder-count="4">
+<span style="display:flex;align-items:center;gap:10px">
+<span style="flex:1;min-width:0;display:block"><span style="display:block;width:52px;height:7px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span><span style="display:block;margin-top:6px;width:{{ s.w }};height:13px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span></span>
+<span style="flex:none;width:58px;height:18px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span>
+</span>
+</sc-for>
+</div>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.6">Die Absolutwerte stehen sofort — sie liegen in der Einheit. Nur der Bezug wird nachgeladen. Unter 180 ms erscheint kein Skelett.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Semantics während des Ladens: „Vergleich wird geladen" auf dem Kartenknoten, <span style="font-family:'JetBrains Mono',monospace;font-size:10px">liveRegion: polite</span>. Kein Spinner, kein Sprung: das Skelett hat die Höhe des Ergebnisses.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="A2 Vergleichsgrundlage Kaskade" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A2 · WAS „GLEICHARTIG" HEISST — DREI STUFEN, JEDE BENANNT</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+<sc-for list="{{ stufen }}" as="s" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid {{ s.br }};border-radius:20px;padding:18px 20px">
+<div style="display:flex;align-items:center;gap:9px">
+<span style="flex:none;width:24px;height:24px;border-radius:10px;background:{{ s.bg }};border:1px solid {{ s.br }};display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:{{ s.tc }}">{{ s.stufe }}</span>
+<span style="flex:1;min-width:0;font-size:13.5px;font-weight:700">{{ s.name }}</span>
+</div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.06em;color:{{ s.tc }}">{{ s.regel }}</div>
+<div style="margin-top:9px;font-size:11.5px;color:#94A3B8;line-height:1.7">{{ s.text }}</div>
+<div style="margin-top:12px;padding-top:11px;border-top:1px solid #232334;display:flex;flex-direction:column;gap:6px">
+<span style="display:flex;justify-content:space-between;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#94A3B8">TRIFFT</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#CDD3EA">{{ s.trifft }}</span></span>
+<span style="display:flex;justify-content:space-between;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#94A3B8">VERGLICHEN WIRD</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#CDD3EA">{{ s.werte }}</span></span>
+<span style="display:flex;justify-content:space-between;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#94A3B8">CHIP IM DETAIL</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:{{ s.tc }}">{{ s.chip }}</span></span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px">
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#F02277">WARUM KEINE STILLE KASKADE</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Eine Kaskade, die von Plan über Übungen zu Art durchfällt und immer dieselbe Karte zeigt, wäre erfundene Genauigkeit: „+32 Last" bedeutet gegen denselben Plan etwas anderes als gegen den Durchschnitt aller Krafteinheiten. Deshalb trägt <strong style="color:#FFFFFF;font-weight:600">jede Stufe ihren eigenen Chip</strong>, und Stufe C zeigt weniger Werte als A.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">EINZELN ODER MITTEL</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Stufe A und B vergleichen mit <strong style="color:#FFFFFF;font-weight:600">einer</strong> Einheit — sie ist wiedererkennbar und datierbar. Stufe C vergleicht mit dem <strong style="color:#FFFFFF;font-weight:600">Median der letzten fünf</strong>: eine einzelne beliebige Krafteinheit als Bezug wäre Zufall, der wie Absicht aussieht. Median, nicht Mittelwert — ein 3-Stunden-Ausreißer soll den Bezug nicht kippen.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">CARDIO UND REGENERATION</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Cardio vergleicht Dauer und Last, nie Volumen oder Sätze — die gibt es dort nicht. Regeneration bekommt <strong style="color:#FFFFFF;font-weight:600">keinen Vergleichsblock</strong>: acht Einheiten im Bestand, und „12 Minuten Dehnen, vorher 10" ist keine Aussage, sondern Lärm.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A3 Workouts Muskelbalance" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A3 · WORKOUTS-TAB — MUSKELBALANCE, DREI ZUSTÄNDE</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DEFAULT — ANTEIL UND ABSTAND</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;min-width:0;font-size:16px;font-weight:700">Workouts</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">8 WOCHEN</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="font-size:13px;font-weight:700">Muskelbalance</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;line-height:1.6">268 SÄTZE · 14 VON 18 KRAFT-EINHEITEN</div>
+<div style="margin-top:12px;display:flex;gap:2px;height:12px">
+<sc-for list="{{ balance }}" as="m" hint-placeholder-count="9">
+<span style="flex:{{ m.anteil }};background:{{ m.farbe }};border-radius:30px;min-width:3px"></span>
+</sc-for>
+</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:2px">
+<sc-for list="{{ balance }}" as="m" hint-placeholder-count="9">
+<span style="display:flex;align-items:center;gap:8px;min-height:30px;border-bottom:{{ m.bb }}">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:{{ m.farbe }}"></span>
+<span style="flex:1;min-width:0;font-size:11.5px;font-weight:600;color:{{ m.farbe }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.name }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#FFFFFF;width:34px;text-align:right;white-space:nowrap">{{ m.pct }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;width:32px;text-align:right;white-space:nowrap">{{ m.saetze }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:{{ m.tageC }};width:30px;text-align:right;white-space:nowrap">{{ m.tage }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:12px;padding-top:11px;border-top:1px solid #232334;display:flex;flex-wrap:wrap;gap:10px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.06em;color:#94A3B8">
+<span>ANTEIL</span><span>SÄTZE</span><span>ZULETZT VOR</span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;align-items:center;gap:7px">
+<svg width="11" height="11" viewBox="0 0 24 24"><path d="M12 8v5m0 3.5v.01M12 3l9 16H3z" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">LÄNGSTE ABSTÄNDE</span>
+</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ luecken }}" as="l" hint-placeholder-count="3">
+<span style="display:flex;align-items:center;gap:8px;min-height:26px">
+<span style="flex:none;font-size:11px;font-weight:600;color:{{ l.farbe }};width:64px">{{ l.name }}</span>
+<span style="flex:1;min-width:0;height:6px;border-radius:30px;background:#16161F;display:block;position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:{{ l.w }};background:{{ l.farbe }};border-radius:30px"></span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA;width:52px;text-align:right">{{ l.tage }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:11px;font-size:10.5px;color:#94A3B8;line-height:1.6">Abstand seit dem letzten Satz auf diesen Muskel. <strong style="color:#CDD3EA;font-weight:600">Kein Sollwert</strong> — die App weiß nicht, wie oft Waden dran sein sollen.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Zwei Aussagen aus derselben Grundlage: <strong style="color:#CDD3EA;font-weight:600">Anteil</strong> (relativ, ersetzt „Rücken: 46 Sätze") und <strong style="color:#CDD3EA;font-weight:600">Abstand in Tagen</strong> (absolut, aber überprüfbar). Beide sind Tatsachen. Keine trägt ein Urteil.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · ZU WENIG DATEN — UNTER 8 EINHEITEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;min-width:0;font-size:16px;font-weight:700">Workouts</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">8 WOCHEN</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="font-size:13px;font-weight:700">Muskelbalance</div>
+<div style="margin-top:12px;display:flex;gap:2px;height:12px">
+<sc-for list="{{ balanceLeer }}" as="m" hint-placeholder-count="9">
+<span style="flex:1;background:#16161F;border-radius:30px"></span>
+</sc-for>
+</div>
+<div style="margin-top:14px;display:flex;gap:9px;align-items:flex-start">
+<span style="flex:none;width:16px;height:16px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;margin-top:1px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#94A3B8">i</span></span>
+<span style="flex:1;min-width:0;font-size:11.5px;color:#CDD3EA;line-height:1.65">Noch zu wenig Grundlage: <strong style="color:#FFFFFF;font-weight:600">5 von 8</strong> Krafteinheiten mit Übungen in den letzten 8 Wochen.</span>
+</div>
+<div style="margin-top:12px;height:6px;border-radius:30px;background:#16161F;position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:62%;background:#00F2FE;border-radius:30px"></span></div>
+<div style="margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">5 / 8 · NOCH 3 EINHEITEN</div>
+<div style="margin-top:12px;padding-top:11px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.6">Ein Anteil aus fünf Einheiten schwankt um mehr als er aussagt. Die Regel ist dieselbe wie bei der Formkurve unter 8 Einheiten in Modul 5 — nur zeigt dieser Block, <strong style="color:#CDD3EA;font-weight:600">wie weit es noch ist</strong>, weil der Balken zum Tab gehört und nicht wegfallen kann.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Fortschrittsbalken ist die einzige Stelle, an der die App eine Zahl fordert. Sie ist erreichbar und benannt: 8 Einheiten mit Übungen, nicht 8 Einheiten.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · LADEND UND 200 % SCHRIFT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="width:104px;height:16px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></div>
+<div style="margin-top:12px;display:flex;gap:2px;height:12px">
+<sc-for list="{{ balanceLeer }}" as="m" hint-placeholder-count="9">
+<span style="flex:1;background:#16161F;border-radius:30px;animation:skelPulse 1.4s ease-in-out infinite"></span>
+</sc-for>
+</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ skel }}" as="s" hint-placeholder-count="4">
+<span style="display:flex;align-items:center;gap:8px"><span style="flex:none;width:8px;height:8px;border-radius:30px;background:#16161F"></span><span style="flex:1;min-width:0;height:9px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span><span style="flex:none;width:34px;height:9px;border-radius:30px;background:#16161F"></span></span>
+</sc-for>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#00F2FE">200 % SCHRIFT · ZEILE BRICHT</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid #232334;padding-bottom:11px">
+<span style="display:flex;align-items:center;gap:8px"><span style="flex:none;width:9px;height:9px;border-radius:30px;background:#60a5fa"></span><span style="flex:1;min-width:0;font-size:16px;font-weight:600;color:#60a5fa">Rücken</span></span>
+<span style="display:flex;flex-wrap:wrap;gap:10px;padding-left:17px"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">17 %</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#94A3B8">46 Sätze</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#94A3B8">zuletzt 4 T</span></span>
+</div>
+<div style="margin-top:11px;font-size:11px;color:#94A3B8;line-height:1.6">Ab 160 % effektiver Schriftgröße wird die vierspaltige Zeile zweizeilig: Name oben, Werte als umbrechende Reihe darunter. Der Farbpunkt bleibt neben dem Namen, damit die Zuordnung nicht nur über die Textfarbe läuft.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die neun Muskelfarben sind zugleich Textfarben — schlechtester Kontrast 6,33:1. Trotzdem trägt jede Zeile einen Punkt und einen Namen: Farbe ist nie der einzige Träger.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="A4 Uebungsdetail Verlauf" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A4 · ÜBUNGSDETAIL — DEIN VERLAUF, DREI ZUSTÄNDE</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · AB 5 AUSFÜHRUNGEN — MIT KURVE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:700">Bankdrücken</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">LANGHANTEL · MITTEL</span></span>
+</div>
+<div style="display:flex;gap:5px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:30px;background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.4)"><span style="width:6px;height:6px;border-radius:30px;background:#f472b6"></span><span style="font-size:10px;font-weight:600;color:#f472b6">Brust</span></span>
+<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:30px;background:rgba(232,121,249,0.12);border:1px solid rgba(232,121,249,0.4)"><span style="width:6px;height:6px;border-radius:30px;background:#e879f9"></span><span style="font-size:10px;font-weight:600;color:#e879f9">Trizeps</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;min-width:0;font-size:13px;font-weight:700">Du mit dieser Übung</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">14×</span>
+</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:9px">
+<sc-for list="{{ verlaufWerte }}" as="v" hint-placeholder-count="4">
+<span style="background:#0B0B0E;border:1px solid {{ v.br }};border-radius:14px;padding:10px 11px"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:{{ v.lc }}">{{ v.l }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;margin-top:3px;color:{{ v.vc }}">{{ v.v }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;margin-top:2px">{{ v.s }}</span></span>
+</sc-for>
+</div>
+<div style="margin-top:14px;padding-top:12px;border-top:1px solid #232334">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">BESTES SATZGEWICHT</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">6 EINHEITEN</span>
+</div>
+<svg viewBox="0 0 232 62" width="100%" height="62" style="margin-top:9px;display:block" role="img" aria-label="Verlauf des besten Satzgewichts über sechs Einheiten, von 70 auf 82,5 Kilogramm">
+<line x1="0" y1="54" x2="232" y2="54" stroke="#232334" stroke-width="1"></line>
+<line x1="0" y1="10" x2="232" y2="10" stroke="#232334" stroke-width="1" stroke-dasharray="3 4"></line>
+<polyline points="8,44 52,40 96,30 140,32 184,18 224,12" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+<circle cx="8" cy="44" r="3" fill="#00F2FE"></circle>
+<circle cx="52" cy="40" r="3" fill="#00F2FE"></circle>
+<circle cx="96" cy="30" r="3" fill="#00F2FE"></circle>
+<circle cx="140" cy="32" r="3" fill="#00F2FE"></circle>
+<circle cx="184" cy="18" r="3.5" fill="#050507" stroke="#F02277" stroke-width="2.5"></circle>
+<circle cx="224" cy="12" r="3" fill="#00F2FE"></circle>
+</svg>
+<div style="display:flex;justify-content:space-between;gap:8px;margin-top:5px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">12. JUN · 70 KG</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">24. AUG · 82,5 KG</span>
+</div>
+<div style="margin-top:9px;display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:30px;border:2px solid #F02277"></span><span style="font-size:10px;color:#94A3B8">Ring markiert den Bestwert</span></div>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Formkurve aus Modul 5, verkleinert: Grundlinie, gestrichelte Bestwertlinie, sechs Punkte. Nur <strong style="color:#CDD3EA;font-weight:600">Einheiten mit dieser Übung</strong> sind Punkte — keine Interpolation über Wochen ohne Ausführung, sonst entstünde eine Kurve, die Tage behauptet, an denen nichts war.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · EINMAL AUSGEFÜHRT — KEIN BESTWERT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:700">Nordic Curl</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">KÖRPERGEWICHT · SCHWER</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="font-size:13px;font-weight:700">Du mit dieser Übung</div>
+<div style="margin-top:11px;display:flex;align-items:baseline;gap:9px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700">1×</span>
+<span style="flex:1;min-width:0;font-size:11.5px;color:#CDD3EA;line-height:1.6">ausgeführt · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">18. AUG</span></span>
+</div>
+<div style="margin-top:11px;background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:10px 11px">
+<span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">DAMALS</span>
+<span style="display:block;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;margin-top:3px">3 × 5 · KG</span>
+</div>
+<div style="margin-top:11px;padding-top:11px;border-top:1px solid #232334;font-size:11px;color:#94A3B8;line-height:1.65">Kein Bestwert, keine Kurve, keine Häufigkeit — <strong style="color:#CDD3EA;font-weight:600">aus einer Ausführung folgt keins davon</strong>. „Bestwert 3 × 5" aus einem einzigen Satz wäre eine Auszeichnung für Anwesenheit.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Stufen im Verlaufsblock: <span style="font-family:'JetBrains Mono',monospace;font-size:10px">0 → Block fehlt</span> · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">1 → Zeile „damals"</span> · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">2–4 → Werte ohne Kurve</span> · <span style="font-family:'JetBrains Mono',monospace;font-size:10px">≥ 5 → mit Kurve</span>.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">3 · NIE AUSGEFÜHRT — BLOCK FEHLT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:700">Zercher Squat</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">LANGHANTEL · SCHWER</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">AUSFÜHRUNG</div>
+<div style="margin-top:9px;font-size:11.5px;color:#CDD3EA;line-height:1.7">Langhantel in der Ellbogenbeuge, Oberkörper aufrecht, Knie nach außen führen.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:15px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">TYPISCHE FEHLER · 3</div>
+<div style="margin-top:9px;display:flex;flex-direction:column;gap:7px">
+<span style="display:block;height:8px;border-radius:30px;background:#16161F"></span>
+<span style="display:block;height:8px;width:82%;border-radius:30px;background:#16161F"></span>
+<span style="display:block;height:8px;width:64%;border-radius:30px;background:#16161F"></span>
+</div>
+</div>
+<div style="height:1px;background:#232334"></div>
+<div style="display:flex;align-items:center;gap:8px;padding:2px 0 6px">
+<span style="flex:none;width:14px;height:14px;border-radius:30px;border:1px dashed #F02277"></span>
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#F02277;line-height:1.5">HIER STÜNDE DER VERLAUF · BILDSCHIRM ENDET</span>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die gestrichelte Markierung ist <strong style="color:#CDD3EA;font-weight:600">Anmerkung im Entwurf, nicht Teil der App</strong>. Auf dem Gerät hört der Bildschirm nach den typischen Fehlern auf — Regel aus Modul 5. Das betrifft 84 kuratierte Übungen, also die Mehrheit.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="C Datenlage" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · DIE DATENLAGE, AUF DIE DER ENTWURF SICH STÜTZT · 26.08.2026</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+<sc-for list="{{ datenlage }}" as="d" hint-placeholder-count="6">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:16px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:{{ d.c }}">{{ d.zahl }}</div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.1em;color:#94A3B8">{{ d.label }}</div>
+<div style="margin-top:9px;font-size:11.5px;color:#CDD3EA;line-height:1.65">{{ d.folge }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="F Spezifikation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · SPEZIFIKATION — VARIANTEN, MASSE, TOKENS</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:1.15fr 1.25fr 1.15fr 1.45fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>BAUSTEIN</div><div>VARIANTEN</div><div>MASSE</div><div>TOKENS</div>
+</div>
+<sc-for list="{{ specRows }}" as="r" hint-placeholder-count="14">
+<div style="display:grid;grid-template-columns:1.15fr 1.25fr 1.15fr 1.45fr;gap:8px 16px;align-items:baseline;padding:11px 0;border-bottom:{{ r.bb }}">
+<div style="font-size:12px;font-weight:600">{{ r.el }}</div>
+<div style="font-size:11px;color:#CDD3EA;line-height:1.6">{{ r.var }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#CDD3EA;line-height:1.65">{{ r.mass }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;line-height:1.65">{{ r.tok }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="G Strings" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · STRINGTABELLE — KEY · DEUTSCH · ENGLISCH</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:0.95fr 1.5fr 1.5fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>KEY</div><div>DEUTSCH</div><div>ENGLISCH</div>
+</div>
+<sc-for list="{{ stringRows }}" as="s" hint-placeholder-count="26">
+<div style="display:grid;grid-template-columns:0.95fr 1.5fr 1.5fr;gap:8px 16px;align-items:baseline;padding:10px 0;border-bottom:{{ s.bb }}">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE;line-height:1.5">{{ s.k }}</div>
+<div style="font-size:11.5px;color:#FFFFFF;line-height:1.6">{{ s.de }}</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.6">{{ s.en }}</div>
+</div>
+</sc-for>
+<div style="margin-top:14px;font-size:11px;color:#94A3B8;line-height:1.7">Platzhalter in geschweiften Klammern. <span style="font-family:'JetBrains Mono',monospace;font-size:10px">{n}</span> zählt, <span style="font-family:'JetBrains Mono',monospace;font-size:10px">{date}</span> ist lokalisiertes Kurzdatum, <span style="font-family:'JetBrains Mono',monospace;font-size:10px">{plan}</span> ein Nutzername. Alle Zählformen mit Plural-Regel — Englisch braucht bei „{n} Tage" eine Einzahlform, Deutsch auch.</div>
+</div>
+</div>
+
+<div data-screen-label="H A11y" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · A11Y — LABEL, ROLLE, ZUSTAND JE ELEMENT</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px">
+<sc-for list="{{ a11yRows }}" as="a" hint-placeholder-count="9">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 18px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ a.el }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.06em;padding:3px 8px;border-radius:30px;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.3);color:#00F2FE">{{ a.role }}</span>
+</div>
+<div style="margin-top:9px;font-size:11.5px;color:#94A3B8;line-height:1.7">{{ a.note }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I Wiederverwendung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · WIEDERVERWENDETE BAUSTEINE AUS MODUL 1–8</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:1fr 0.6fr 2fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>BAUSTEIN</div><div>HERKUNFT</div><div>ANPASSUNG IN MODUL 9</div>
+</div>
+<sc-for list="{{ reuseRows }}" as="r" hint-placeholder-count="9">
+<div style="display:grid;grid-template-columns:1fr 0.6fr 2fr;gap:8px 16px;align-items:baseline;padding:11px 0;border-bottom:{{ r.bb }}">
+<div style="font-size:12px;font-weight:600">{{ r.n }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">{{ r.m }}</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.65">{{ r.a }}</div>
+</div>
+</sc-for>
+<div style="margin-top:14px;font-size:11px;color:#94A3B8;line-height:1.7">Neu entstanden ist ein einziger Baustein: die <strong style="color:#CDD3EA;font-weight:600">Bezugskapsel</strong> (Chip mit Grundlage und Datum über einer Wertegruppe). Alles andere ist Wiederverwendung — deshalb kostet Modul 9 keine neue Farbebene und keinen neuen Radius.</div>
+</div>
+</div>
+
+<div data-screen-label="J Entscheidungsprotokoll" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · ENTSCHEIDUNGSPROTOKOLL — VERWORFEN UND WARUM</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="12">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">VERWORFEN · {{ d.t }}</div>
+<div style="margin-top:9px;font-size:12px;color:#CDD3EA;line-height:1.75">{{ d.w }}</div>
+<div style="margin-top:10px;padding-top:10px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.06em;color:#00F2FE;margin-top:1px">STATT</span>
+<span style="flex:1;min-width:0;font-size:11.5px;color:#FFFFFF;line-height:1.65">{{ d.s }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="K Offene Fragen" style="margin-top:56px;max-width:1240px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:20px;padding:24px 28px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#F02277">K · OFFEN — ENTSCHEIDUNG VOR UMSETZUNG</div>
+<div style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px">
+<sc-for list="{{ offen }}" as="o" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:16px 18px">
+<div style="font-size:12.5px;font-weight:600">{{ o.f }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.7">{{ o.t }}</div>
+<div style="margin-top:10px;padding-top:10px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#00F2FE;margin-top:1px">ANNAHME</span>
+<span style="flex:1;min-width:0;font-size:11.5px;color:#CDD3EA;line-height:1.6">{{ o.a }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:16px;font-size:11.5px;color:#CDD3EA;line-height:1.7">Alle drei sind mit den Annahmen baubar — keine blockiert die Umsetzung. Sie stehen hier, weil die Annahme eine Entscheidung ist und nicht als Nebenwirkung durchrutschen soll.</div>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:1000}}">
+const bb = (arr) => arr.map((o, i) => ({ ...o, bb: i === arr.length - 1 ? 'none' : '1px solid #232334' }));
+
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      bloecke: bb([
+        { name: 'Vergleich', ort: 'EINHEITENDETAIL', grund: 'Die Einheit selbst plus eine Bezugseinheit oder der Median der letzten fünf gleicher Art. Plan-ID bei 52 von 136, Übungsüberdeckung bei freiem Training selten.', min: 'EINE BEZUGSEINHEIT', sonst: 'sonst: ein Satz im Wertekasten, keine leere Karte', nicht: 'Nicht, ob die Einheit gut war. „+32 Last" ist Richtung und Größe, nicht Bewertung — mehr Last kann Fortschritt oder Übermut sein, das entscheidet der ACWR daneben.' },
+        { name: 'Muskelbalance', ort: 'WORKOUTS-TAB', grund: 'Sätze je Muskelgruppe über 8 Wochen, über Einheit → Übungseintrag → exerciseId → Muskelgruppen. Nur Krafteinheiten mit Übungen; Cardio und Regeneration tragen keine.', min: '8 EINHEITEN MIT ÜBUNGEN', sonst: 'sonst: Fortschrittsbalken bis zur Schwelle', nicht: 'Nicht, ob die Verteilung richtig ist. Es gibt kein hinterlegtes Sollverhältnis, also auch kein „zu wenig". Der Block zeigt Anteil und Abstand — beides überprüfbar.' },
+        { name: 'Übungsverlauf', ort: 'ÜBUNGSDETAIL', grund: 'Alle Einheiten, die diese Übung enthalten, mit Datum und Sätzen. 70 eigene Übungen haben meist Ausführungen, 84 kuratierte meist keine.', min: 'EINE AUSFÜHRUNG', sonst: 'sonst: Block fehlt, Bildschirm endet früher', nicht: 'Nicht, ob du besser wirst. Bis vier Ausführungen keine Kurve; aus einer Ausführung kein Bestwert und keine Häufigkeit.' },
+      ]),
+      vergleichA: [
+        { label: 'DAUER', jetzt: '58 min', vorher: '52 min', glyph: '▲', delta: '+6' },
+        { label: 'LAST', jetzt: '412', vorher: '380', glyph: '▲', delta: '+32' },
+        { label: 'VOLUMEN', jetzt: '8 240 kg', vorher: '7 610 kg', glyph: '▲', delta: '+8 %' },
+        { label: 'SÄTZE', jetzt: '21', vorher: '22', glyph: '▼', delta: '−1' },
+      ],
+      vergleichC: [
+        { label: 'DAUER', jetzt: '41 min', wertC: '#FFFFFF', bezug: 'Mittel 47 min', glyph: '▼', delta: '−6', chipBg: '#0B0B0E', chipBr: '#232334', chipC: '#CDD3EA' },
+        { label: 'LAST', jetzt: '286', wertC: '#FFFFFF', bezug: 'Mittel 340', glyph: '▼', delta: '−54', chipBg: '#0B0B0E', chipBr: '#232334', chipC: '#CDD3EA' },
+        { label: 'VOLUMEN', jetzt: '5 120 kg', wertC: '#CDD3EA', bezug: 'kein Bezug', glyph: '—', delta: '', chipBg: 'transparent', chipBr: 'transparent', chipC: '#94A3B8' },
+        { label: 'SÄTZE', jetzt: '14', wertC: '#CDD3EA', bezug: 'kein Bezug', glyph: '—', delta: '', chipBg: 'transparent', chipBr: 'transparent', chipC: '#94A3B8' },
+      ],
+      absolutWerte: [
+        { l: 'DAUER', v: '52 min' }, { l: 'LAST', v: '365' },
+        { l: 'VOLUMEN', v: '9 100 kg' }, { l: 'SÄTZE', v: '18' },
+      ],
+      uebungenListe: bb([
+        { n: 'Bankdrücken', s: '4 × 8', farbe: '#f472b6' },
+        { n: 'Schulterdrücken', s: '3 × 10', farbe: '#a78bfa' },
+        { n: 'Dips', s: '3 × 12', farbe: '#e879f9' },
+      ]),
+      skel: [{ w: '76%' }, { w: '58%' }, { w: '84%' }, { w: '46%' }],
+      stufen: [
+        { stufe: 'A', name: 'Gleicher Plan', regel: 'planId GLEICH · JÜNGSTE DAVOR', trifft: '52 von 136', werte: 'alle vier', chip: 'GLEICHER PLAN', text: 'Der stärkste Bezug: gleiche Übungen, gleiche Reihenfolge, gleiche Absicht. Verglichen wird mit der jüngsten vorherigen Einheit desselben Plans, nicht mit der ersten — Fortschritt interessiert gegen den letzten Stand.', bg: 'rgba(0,242,254,0.10)', br: 'rgba(0,242,254,0.35)', tc: '#00F2FE' },
+        { stufe: 'B', name: 'Gleiche Übungen', regel: 'ÜBERDECKUNG ≥ 60 % · 90 TAGE', trifft: 'freies Training', werte: 'alle vier', chip: 'GLEICHE ÜBUNGEN', text: 'Ohne Plan-ID: die jüngste Einheit innerhalb von 90 Tagen, deren Übungsmenge sich zu mindestens 60 % mit dieser überdeckt (Jaccard über exerciseId). Unter 60 % wird der Vergleich der Werte irreführend, weil eine getauschte Grundübung Volumen und Sätze verschiebt.', bg: 'rgba(0,242,254,0.10)', br: 'rgba(0,242,254,0.35)', tc: '#00F2FE' },
+        { stufe: 'C', name: 'Gleiche Art', regel: 'TYP GLEICH · MEDIAN DER LETZTEN 5', trifft: 'immer, außer Regeneration', werte: 'Dauer, Last', chip: 'MITTEL · 5 EINHEITEN', text: 'Der Rückfall, der immer trägt — dafür gröber, also kleiner: nur Dauer und Last, weil sie von den Übungen unabhängig sind. Volumen und Sätze bleiben ohne Bezug und tragen ein „—". Regeneration erhält gar keinen Block.', bg: '#14141D', br: '#232334', tc: '#CDD3EA' },
+      ],
+      balance: bb([
+        { name: 'Beine', farbe: '#fb923c', anteil: 18, pct: '18 %', saetze: '48 S', tage: '5 T', tageC: '#94A3B8' },
+        { name: 'Rücken', farbe: '#60a5fa', anteil: 17, pct: '17 %', saetze: '46 S', tage: '4 T', tageC: '#94A3B8' },
+        { name: 'Brust', farbe: '#f472b6', anteil: 15, pct: '15 %', saetze: '40 S', tage: '2 T', tageC: '#94A3B8' },
+        { name: 'Core', farbe: '#34d399', anteil: 12, pct: '12 %', saetze: '32 S', tage: '3 T', tageC: '#94A3B8' },
+        { name: 'Schultern', farbe: '#a78bfa', anteil: 11, pct: '11 %', saetze: '30 S', tage: '6 T', tageC: '#94A3B8' },
+        { name: 'Bizeps', farbe: '#fbbf24', anteil: 8, pct: '8 %', saetze: '21 S', tage: '8 T', tageC: '#94A3B8' },
+        { name: 'Trizeps', farbe: '#e879f9', anteil: 8, pct: '8 %', saetze: '21 S', tage: '8 T', tageC: '#94A3B8' },
+        { name: 'Arme', farbe: '#f59e0b', anteil: 6, pct: '6 %', saetze: '16 S', tage: '12 T', tageC: '#CDD3EA' },
+        { name: 'Waden', farbe: '#2dd4bf', anteil: 5, pct: '5 %', saetze: '14 S', tage: '23 T', tageC: '#CDD3EA' },
+      ]),
+      balanceLeer: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ n })),
+      luecken: [
+        { name: 'Waden', farbe: '#2dd4bf', w: '100%', tage: '23 Tage' },
+        { name: 'Arme', farbe: '#f59e0b', w: '52%', tage: '12 Tage' },
+        { name: 'Bizeps', farbe: '#fbbf24', w: '35%', tage: '8 Tage' },
+      ],
+      verlaufWerte: [
+        { l: 'ZULETZT', v: '4 × 8', s: '82,5 KG · 24. AUG', br: '#232334', lc: '#94A3B8', vc: '#FFFFFF' },
+        { l: 'BESTWERT', v: '82,5 kg', s: '4 × 8 · 24. AUG', br: 'rgba(240,34,119,0.4)', lc: '#F02277', vc: '#FFFFFF' },
+        { l: 'HÄUFIGKEIT', v: '1,8 / Wo', s: '14× IN 8 WOCHEN', br: '#232334', lc: '#94A3B8', vc: '#FFFFFF' },
+        { l: 'VOLUMEN', v: '2 640 kg', s: 'LETZTE EINHEIT', br: '#232334', lc: '#94A3B8', vc: '#FFFFFF' },
+      ],
+      datenlage: [
+        { zahl: '136', label: 'EINHEITEN', c: '#00F2FE', folge: '63 Kraft · 10 Körpergewicht · 55 Cardio · 8 Regeneration. Regeneration ist zu selten für einen Vergleich und bekommt keinen.' },
+        { zahl: '47 / 63', label: 'KRAFT MIT ÜBUNGEN', c: '#00F2FE', folge: 'Die Balance rechnet über diese 47, nicht über 136. Der Nenner steht sichtbar über dem Balken.' },
+        { zahl: '52 / 136', label: 'MIT PLAN-ID', c: '#00F2FE', folge: 'Stufe A trägt bei gut einem Drittel. Deshalb sind B und C keine Ausnahme, sondern der Normalfall.' },
+        { zahl: '84 / 154', label: 'ÜBUNGEN KURATIERT', c: '#F02277', folge: 'Bei der Mehrheit ohne Ausführung. Der Verlaufsblock muss ausfallen können, ohne eine Lücke zu lassen.' },
+        { zahl: '10', label: 'PLÄNE · 60 EINTRÄGE', c: '#00F2FE', folge: 'Sechs Einträge je Plan im Mittel — genug Überdeckung, damit Stufe B bei freiem Training oft greift.' },
+        { zahl: '+250', label: 'EINHEITEN / JAHR', c: '#00F2FE', folge: 'Die Schwellen werden von allein überschritten. Kein Zustand ist dauerhaft, alle sind gestaltet.' },
+      ],
+      specRows: bb([
+        { el: 'Bezugskapsel', var: 'Stufe A · Stufe B · Stufe C', mass: 'H 24 dp · Pad 4/9 · R 30', tok: 'A/B rgba(0,242,254,.08) + Cyan-Rand · C Surface + #232334' },
+        { el: 'Vergleichszeile', var: 'mit Delta · ohne Bezug („—")', mass: 'min-H 34 dp · Wert 15 sp · Label 8,5 sp mono', tok: 'Wert #FFFFFF · Label #94A3B8 · Delta #CDD3EA auf #0B0B0E' },
+        { el: 'Delta-Kapsel', var: '▲ · ▼ · = · —', mass: 'H 18 dp · Pad 2/7 · R 30', tok: 'Card #0B0B0E · Rand #232334 · Text #CDD3EA · nie Lime/Magenta' },
+        { el: 'Vergleichskarte', var: 'gefüllt · leer (Satz) · ladend', mass: 'R 20 · Pad 14 · Skelett = Ergebnishöhe', tok: 'Card #14141D · Rand #232334 · Track #16161F' },
+        { el: 'Balancebalken', var: '9 Segmente · leer (grau)', mass: 'H 12 dp · Gap 2 · min-Segment 3 dp · R 30', tok: 'Neun Muskeltöne · leer #16161F' },
+        { el: 'Balancezeile', var: '1-zeilig · 2-zeilig ab 160 %', mass: 'min-H 30 dp · Zahlspalten 34/32/30 dp nowrap · Name flexibel ≥ 62 dp', tok: 'Name = Muskelton · Anteil #FFFFFF · Rest #94A3B8' },
+        { el: 'Lückenstreifen', var: '3 Einträge · Balken relativ zum Längsten', mass: 'H 6 dp · R 30 · Zeile 26 dp', tok: 'Füllung = Muskelton · Track #16161F' },
+        { el: 'Schwellenbalken', var: 'nur unter 8 Einheiten', mass: 'H 6 dp · R 30 · Label 9 sp mono', tok: 'Füllung Cyan #00F2FE · Track #16161F' },
+        { el: 'Verlaufskurve', var: 'ab 5 Ausführungen · sonst keine', mass: 'H 62 dp · Punkt r 3 · Bestwert r 3,5', tok: 'Linie Cyan #00F2FE · Bestwertring #F02277 · Achsen #232334' },
+        { el: 'Verlaufskachel', var: 'neutral · Bestwert', mass: 'R 14 · Pad 10/11 · Wert 14 sp mono', tok: 'Card #0B0B0E · Bestwert-Rand rgba(240,34,119,.4)' },
+        { el: 'Verlaufsblock', var: '0 fehlt · 1 · 2–4 · ≥ 5', mass: 'R 20 · Pad 15/14', tok: 'Card #14141D · Rand #232334' },
+        { el: 'Hinweiszeile', var: 'kein Vergleich · zu wenig Daten', mass: 'Icon 16 dp · Text 11–11,5 sp', tok: 'Rand #232334 · Text #CDD3EA / #94A3B8 · kein Magenta' },
+        { el: 'Muskelchip', var: 'Übungsdetail · 1–3 je Übung', mass: 'H 24 dp · Punkt 6 dp · R 30', tok: 'Ton bei 12 % Fläche · 40 % Rand · Ton als Text' },
+        { el: 'Übungszeile', var: 'im Einheitendetail', mass: 'min-H 48 dp · Punkt 8 dp', tok: 'Punkt = führender Muskelton · Text #FFFFFF' },
+      ]),
+      stringRows: bb([
+        { k: 'compare.basis.plan', de: 'Gleicher Plan', en: 'Same plan' },
+        { k: 'compare.basis.exercises', de: 'Gleiche Übungen', en: 'Same exercises' },
+        { k: 'compare.basis.median', de: 'Mittel · {n} Einheiten', en: 'Median · {n} sessions' },
+        { k: 'compare.basis.date', de: '{date} · {n} Tage her', en: '{date} · {n} days ago' },
+        { k: 'compare.prev', de: 'vorher {value}', en: 'before {value}' },
+        { k: 'compare.median', de: 'Mittel {value}', en: 'median {value}' },
+        { k: 'compare.none.value', de: 'kein Bezug', en: 'no basis' },
+        { k: 'compare.note.plan', de: 'Beide Einheiten folgen Plan „{plan}". Alle vier Werte sind vergleichbar.', en: 'Both sessions follow plan “{plan}”. All four values are comparable.' },
+        { k: 'compare.note.median', de: 'Keine Plan-ID, keine Übungsüberdeckung. Verglichen wird nur, was von den Übungen unabhängig ist: Dauer und Last.', en: 'No plan ID, no exercise overlap. Only what is independent of the exercises is compared: duration and load.' },
+        { k: 'compare.empty.plan', de: 'Erste Einheit des Plans „{plan}". Ab der nächsten steht hier der Vergleich.', en: 'First session of plan “{plan}”. From the next one on, the comparison appears here.' },
+        { k: 'compare.empty.type', de: 'Erste Einheit dieser Art. Ab der nächsten steht hier der Vergleich.', en: 'First session of this kind. From the next one on, the comparison appears here.' },
+        { k: 'compare.loading', de: 'Vergleich wird geladen', en: 'Loading comparison' },
+        { k: 'balance.title', de: 'Muskelbalance', en: 'Muscle balance' },
+        { k: 'balance.window', de: '8 Wochen', en: '8 weeks' },
+        { k: 'balance.basis', de: '{sets} Sätze · {n} von {total} Kraft-Einheiten', en: '{sets} sets · {n} of {total} strength sessions' },
+        { k: 'balance.col.share', de: 'Anteil', en: 'Share' },
+        { k: 'balance.col.sets', de: 'Sätze', en: 'Sets' },
+        { k: 'balance.col.last', de: 'zuletzt vor', en: 'last' },
+        { k: 'balance.last.days', de: '{n} T', en: '{n}d' },
+        { k: 'balance.last.days.long', de: 'zuletzt {n} T', en: 'last {n}d' },
+        { k: 'balance.gaps.title', de: 'Längste Abstände', en: 'Longest gaps' },
+        { k: 'balance.gaps.note', de: 'Abstand seit dem letzten Satz auf diesen Muskel. Kein Sollwert — die App weiß nicht, wie oft er dran sein sollte.', en: 'Time since the last set on this muscle. No target — the app does not know how often it should be trained.' },
+        { k: 'balance.thin', de: 'Noch zu wenig Grundlage: {n} von {min} Krafteinheiten mit Übungen in den letzten 8 Wochen.', en: 'Not enough basis yet: {n} of {min} strength sessions with exercises in the last 8 weeks.' },
+        { k: 'balance.thin.progress', de: '{n} / {min} · noch {rest} Einheiten', en: '{n} / {min} · {rest} sessions to go' },
+        { k: 'history.title', de: 'Du mit dieser Übung', en: 'You with this exercise' },
+        { k: 'history.count', de: '{n}×', en: '{n}×' },
+        { k: 'history.last', de: 'Zuletzt', en: 'Last' },
+        { k: 'history.best', de: 'Bestwert', en: 'Best' },
+        { k: 'history.freq', de: 'Häufigkeit', en: 'Frequency' },
+        { k: 'history.freq.value', de: '{n} / Wo', en: '{n} / wk' },
+        { k: 'history.volume', de: 'Volumen', en: 'Volume' },
+        { k: 'history.once', de: 'ausgeführt · {date}', en: 'performed · {date}' },
+        { k: 'history.once.label', de: 'Damals', en: 'That time' },
+        { k: 'history.once.note', de: 'Kein Bestwert, keine Kurve, keine Häufigkeit — aus einer Ausführung folgt keins davon.', en: 'No best, no curve, no frequency — one performance yields none of these.' },
+        { k: 'history.curve.label', de: 'Bestes Satzgewicht', en: 'Best set weight' },
+        { k: 'history.curve.legend', de: 'Ring markiert den Bestwert', en: 'Ring marks the best value' },
+        { k: 'history.curve.a11y', de: 'Verlauf des besten Satzgewichts über {n} Einheiten, von {from} auf {to}', en: 'Best set weight across {n} sessions, from {from} to {to}' },
+      ]),
+      a11yRows: [
+        { el: 'Bezugskapsel', role: 'text (kein Knopf)', note: 'Kein Tap-Ziel — sie erklärt, sie navigiert nicht. Gelesen als „Grundlage: gleicher Plan, 12. August, 12 Tage her". Der Punkt nach „Grundlage" erzwingt die Pause, sonst liest TalkBack Chip und Wert in einem Zug.' },
+        { el: 'Vergleichskarte', role: 'group · mergeSemantics je Zeile', note: 'Eine Zeile ist ein Knoten: „Last 412, vorher 380, 32 mehr." Nicht „412, 380, ▲, +32" — vier Knoten ohne Beziehung. Das Wort „mehr"/„weniger" ersetzt das Dreieck, das Zeichen wird nicht vorgelesen.' },
+        { el: 'Wert ohne Bezug („—")', role: 'text', note: 'Semantics „Volumen 5 120 Kilogramm, kein Vergleich verfügbar". Das „—" ist nie stumm; ein übersprungenes Zeichen würde wie ein fehlendes Datum wirken.' },
+        { el: 'Vergleich · ladend', role: 'liveRegion polite', note: 'Während des Skeletts „Vergleich wird geladen", nach Ankunft einmalig die fertige Kartenzusammenfassung. Kein assertive — der Nutzer liest gerade die Absolutwerte darüber.' },
+        { el: 'Balancebalken', role: 'img mit Label', note: 'Ein Knoten, keine neun: „Verteilung der Sätze: Beine 18 Prozent, Rücken 17, Brust 15, Core 12, Schultern 11, Bizeps 8, Trizeps 8, Arme 6, Waden 5." Die Segmente selbst sind excludeSemantics.' },
+        { el: 'Balancezeile', role: 'text · mergeSemantics', note: '„Rücken, 17 Prozent, 46 Sätze, zuletzt vor 4 Tagen." Kein Knopf: es gibt kein Muskeldetail in Modul 9. Der Farbpunkt ist dekorativ und ausgeschlossen.' },
+        { el: 'Lückenstreifen', role: 'group', note: 'Je Eintrag ein Knoten „Waden, zuletzt vor 23 Tagen". Der Balken trägt keine eigene Aussage — er ist Länge zum Vergleich, nicht Wert; excludeSemantics.' },
+        { el: 'Schwellenbalken', role: 'progressbar', note: 'value 5, max 8, Label „5 von 8 Krafteinheiten mit Übungen". Rolle progressbar, weil sich der Wert von allein bewegt — ein Nutzer kann ihn nicht bedienen.' },
+        { el: 'Verlaufskurve', role: 'img mit Label', note: 'Kein interaktives Diagramm, keine Punkt-für-Punkt-Navigation. Label nennt Anzahl, Anfangs- und Endwert; der Bestwert steht ohnehin als Kachel darüber und muss nicht aus der Kurve gelesen werden.' },
+        { el: 'Bestwertkachel', role: 'text', note: '„Bestwert 82,5 Kilogramm, 4 mal 8, am 24. August." Der magentafarbene Rand ist Verstärkung, nicht Träger — das Wort „Bestwert" steht als Label da.' },
+      ],
+      reuseRows: bb([
+        { n: 'Folgentabelle „vorher → nachher"', m: 'MODUL 6', a: 'Von zwei Spalten auf vertikale Zeilen umgestellt: Wert groß links, Bezug und Delta rechts. Bei 320 dp passen zwei Spalten mit vier Zeichenwerten nicht.' },
+        { n: 'Formkurve', m: 'MODUL 5', a: 'Auf 62 dp Höhe verkleinert, Achsenlabels auf zwei Datumsangaben reduziert. Schwelle von 8 Einheiten auf 5 Ausführungen gesenkt — hier ist ein Punkt eine Ausführung, nicht ein Tag.' },
+        { n: 'Lückenstreifen', m: 'MODUL 5', a: 'Unverändert übernommen, nur mit Muskeltönen statt Cyan gefüllt. Balkenlänge relativ zum längsten Abstand, nicht zu einem Sollwert.' },
+        { n: 'Zerlegung', m: 'MODUL 7', a: 'Wird der Balancebalken: gleiche Segmentlogik, gleiches 2-dp-Gap, gleiches 3-dp-Minimum, damit ein 1-Prozent-Muskel sichtbar bleibt.' },
+        { n: 'Muskelchip', m: 'MODUL 7', a: 'Unverändert im Übungsdetail über dem Verlaufsblock, damit die Kurvenfarbe nicht als Muskelfarbe missverstanden wird.' },
+        { n: 'Aussage-Karte', m: 'MODUL 3', a: 'Rahmen für alle drei Blöcke: Titel, Grundlagenzeile, Inhalt, Fußnote. Die Grundlagenzeile war dort optional und ist hier Pflicht.' },
+        { n: 'Notice-Slot', m: 'MODUL 2', a: 'Trägt „keine Vergleichsdaten" und „zu wenig Daten". In Grau statt Magenta — beides ist kein Fehler, sondern ein Datenstand.' },
+        { n: 'Statbox', m: 'MODUL 3', a: 'Verlaufskacheln und Absolutwerte im Einheitendetail. Neu ist nur die Bestwert-Variante mit magentafarbenem Rand.' },
+        { n: 'Knopf mit Ladezustand', m: 'MODUL 4', a: 'Nicht verwendet. Kein Block in Modul 9 wird ausgelöst — alle drei rechnen beim Öffnen.' },
+      ]),
+      decisions: [
+        { t: 'STILLE KASKADE', w: 'Plan → Übungen → Art durchfallen und immer dieselbe Karte zeigen. Bequem in der Umsetzung, aber „+32 Last" bedeutet gegen denselben Plan etwas anderes als gegen den Durchschnitt aller Krafteinheiten.', s: 'Drei benannte Stufen mit eigenem Chip. Stufe C zeigt zwei Werte statt vier.' },
+        { t: 'SOLLVERHÄLTNIS', w: 'Ein hinterlegtes Push-Pull-Bein-Verhältnis, gegen das die Balance gemessen wird — Abweichung in Magenta. Niemand hat dieses Soll hinterlegt, und es hängt von Ziel, Sportart und Woche ab.', s: 'Anteil in Prozent plus Abstand in Tagen. Beides überprüfbar, keins bewertend.' },
+        { t: 'AMPELFARBEN', w: 'Delta nach oben in Lime, nach unten in Magenta. Setzt voraus, dass mehr besser ist — bei Last ist mehr in einer Deload-Woche genau falsch, und der ACWR daneben sagt es auch.', s: 'Deltas in #CDD3EA mit Richtungsglyph. Magenta bleibt dem Bestwert, Lime dem Erfolg im Runner.' },
+        { t: 'BALANCE ÜBER ALLE EINHEITEN', w: '136 Einheiten als Nenner. Cardio und Regeneration tragen nie Übungen, 16 Krafteinheiten auch nicht — die Balance wäre eine Balance über die knappe Hälfte, ohne das zu sagen.', s: 'Nenner sichtbar in der Grundlagenzeile: „268 Sätze · 14 von 18 Kraft-Einheiten".' },
+        { t: '4-WOCHEN-FENSTER', w: 'Kürzeres Fenster, aktuelleres Bild. Bei 250 Einheiten im Jahr sind das rund 19 Einheiten, davon 9 Kraft, davon 7 mit Übungen — unter der eigenen Mindestschwelle.', s: '8 Wochen. Erreicht die Schwelle im Regelbetrieb und überlebt eine Urlaubswoche.' },
+        { t: 'MITTELWERT ALS BEZUG', w: 'Arithmetisches Mittel der letzten fünf Einheiten. Eine 3-Stunden-Wanderung oder eine abgebrochene Einheit verschiebt den Bezug so weit, dass die nächsten fünf Vergleiche daneben liegen.', s: 'Median. Der Chip sagt „Mittel", die Doku sagt Median — „Median" im Chip liest sich wie Statistiksoftware.' },
+        { t: 'BESTWERT AB EINER AUSFÜHRUNG', w: 'Technisch ist das Maximum aus einem Element definiert. Menschlich ist „Bestwert 3 × 5" nach dem ersten Versuch eine Auszeichnung für Anwesenheit und entwertet das Wort für alle anderen Übungen.', s: 'Ab 1 nur „Damals", ab 2 Bestwert, ab 5 Kurve.' },
+        { t: 'LEERER VERLAUFSBLOCK', w: 'Bei den 84 kuratierten Übungen eine Karte „Noch keine Ausführung — leg los". Ein Aufruf, der bei der Mehrheit der Übungen erscheint, ist Möblierung; genau davon fühlte sich die App leer an.', s: 'Block fehlt, Bildschirm endet nach den typischen Fehlern. Regel aus Modul 5.' },
+        { t: 'INTERPOLIERTE KURVE', w: 'Verlauf über Kalenderwochen mit gefüllten Lücken. Sieht ruhiger aus, behauptet aber Werte an Tagen ohne Ausführung — dieselbe erfundene Genauigkeit, nur in Kurvenform.', s: 'Ein Punkt je Ausführung, gleichmäßig verteilt, Datum an beiden Enden.' },
+        { t: 'ANTIPPBARE MUSKELZEILE', w: 'Zeile öffnet ein Muskeldetail mit allen Übungen darauf. Es gibt diesen Bildschirm nicht, und Modul 9 darf keine neuen Bereiche anlegen — ein Tap ins Nichts ist schlimmer als kein Tap.', s: 'Zeilen sind Text. Der Übungsblock darunter beantwortet „womit" bereits.' },
+        { t: 'VERGLEICH FÜR REGENERATION', w: 'Der Vollständigkeit halber auch dort einen Block. Acht Einheiten im Bestand, und „12 Minuten Dehnen, vorher 10" ist Lärm mit Nachkommastelle.', s: 'Kein Block. Regeneration bleibt eine Notiz mit Dauer.' },
+        { t: 'ZWEITER BACKDROPFILTER', w: 'Die Vergleichskarte über den Übungen mit weichem Blur absetzen. Der Workouts-Tab hat seinen einen Filter im Tageskopf schon vergeben.', s: 'Flächen und Ränder aus der Palette. Kein zusätzlicher Filter im scrollenden Bereich.' },
+      ],
+      offen: [
+        { f: 'Überdeckungsschwelle bei Stufe B', t: '60 % Jaccard über exerciseId ist gesetzt, aber nicht am Bestand geprüft — bei zu hoher Schwelle fällt freies Training fast immer auf Stufe C, bei zu niedriger vergleicht die App Rücken- mit Brusttag.', a: 'Bleibt bei 60 %, wird nach einer Woche Produktivbetrieb an der Verteilung nachgezogen. Der Wert steht als Konstante, nicht verstreut.' },
+        { f: 'Muskelzuordnung bei Mehrfachnennung', t: 'Eine Übung nennt bis zu drei Muskelgruppen. Zählt ein Satz Bankdrücken als ein Satz Brust und ein Satz Trizeps, oder als 0,5 und 0,5? Beides ergibt eine andere Balance.', a: 'Volle Zählung je genannter Gruppe. „46 Sätze Rücken" heißt dann „46 Sätze, die den Rücken belasten" — die Grundlagenzeile sagt Sätze, nicht Summen.' },
+        { f: 'Bestwert-Kriterium', t: 'Bestes Satzgewicht, bestes Volumen einer Einheit oder geschätztes 1RM? Der Runner benutzt bereits Satzgewicht und letzte Ausführung — ein zweites Kriterium im Detail wäre ein Widerspruch im selben Datensatz.', a: 'Bestes Satzgewicht, wie im Runner. Bei Körpergewichtsübungen ohne Zusatzlast tritt Wiederholungszahl an seine Stelle, sichtbar im Kachel-Untertitel.' },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

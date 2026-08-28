@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+input{outline:none}
+textarea{outline:none}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+@keyframes restGlow{0%,100%{box-shadow:0 8px 32px rgba(0,0,0,0.65),0 0 26px -8px rgba(0,242,254,0.5)}50%{box-shadow:0 8px 32px rgba(0,0,0,0.65),0 0 40px -6px rgba(0,242,254,0.8)}}
+@keyframes temTick{from{opacity:0.011}to{opacity:0.012}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;justify-content:center;align-items:center;padding:28px;background:radial-gradient(1100px 700px at 50% -10%, #0d0d14 0%, #050507 60%);font-family:'Poppins',sans-serif">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="430px,900px">
+<div style="position:relative;height:100%;background:#050507;color:#FFFFFF;overflow:hidden">
+<div onAnimationIteration="{{ tick }}" style="position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;pointer-events:none;animation:temTick 1s linear infinite"></div>
+<div onScroll="{{ onScroll }}" style="position:absolute;inset:0;overflow-y:auto;padding:60px 16px 150px 16px;scrollbar-width:none">
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 2px 14px">
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:#94A3B8">SESSION</span>
+<div style="display:flex;align-items:center;gap:7px">
+<span style="width:6px;height:6px;border-radius:50%;background:{{ liveColor }};box-shadow:0 0 8px {{ liveColor }};animation:livePulse 1.6s infinite"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;letter-spacing:1px">{{ sessionTime }}</span>
+</div>
+</div>
+<div style="display:flex;gap:8px">
+<button onClick="{{ togglePause }}" style-active="transform:scale(0.9)" style="width:40px;height:40px;border-radius:14px;background:#14141D;border:1px solid #232334;color:{{ pauseColor }};cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s">
+<sc-if value="{{ paused }}" hint-placeholder-val="{{ false }}"><svg width="12" height="14" viewBox="0 0 12 14"><polygon points="0,0 12,7 0,14" fill="#00FF87"></polygon></svg></sc-if>
+<sc-if value="{{ notPaused }}" hint-placeholder-val="{{ true }}"><svg width="11" height="13" viewBox="0 0 11 13"><path d="M2 0v13 M9 0v13" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"></path></svg></sc-if>
+</button>
+<button onClick="{{ toggleNotes }}" style-active="transform:scale(0.9)" style="width:40px;height:40px;border-radius:14px;background:#14141D;border:1px solid #232334;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 4h14v13l-4 4H5Z M15 21v-4h4 M8.5 9h7 M8.5 13h4.5" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<button onClick="{{ askEnd }}" style-active="transform:scale(0.9)" style="width:40px;height:40px;border-radius:14px;background:rgba(240,34,119,0.1);border:1px solid rgba(240,34,119,0.45);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s">
+<svg width="13" height="13" viewBox="0 0 24 24"><path d="M5 5l14 14 M19 5 5 19" stroke="#F02277" stroke-width="2.2" stroke-linecap="round"></path></svg>
+</button>
+</div>
+</div>
+
+<div style="background:rgba(20,20,29,0.8);border:1px solid #232334;border-radius:16px;padding:14px;backdrop-filter:blur(14px)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+<button onClick="{{ prevEx }}" style-active="transform:scale(0.85)" style="width:44px;height:44px;flex:none;border-radius:14px;background:#0B0B0E;border:1px solid #232334;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;opacity:{{ prevOp }}">
+<svg width="10" height="16" viewBox="0 0 10 16"><path d="M8 1 2 8l6 7" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+</button>
+<div style="text-align:center;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:#00F2FE">ÜBUNG {{ exPos }}</div>
+<div style="margin-top:4px;font-size:16.5px;font-weight:600;line-height:1.2">{{ exName }}</div>
+</div>
+<button onClick="{{ nextEx }}" style-active="transform:scale(0.85)" style="width:44px;height:44px;flex:none;border-radius:14px;background:#0B0B0E;border:1px solid #232334;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;opacity:{{ nextOp }}">
+<svg width="10" height="16" viewBox="0 0 10 16"><path d="M2 1l6 7-6 7" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+</button>
+</div>
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:12px">
+<sc-for list="{{ muscles }}" as="m" hint-placeholder-count="2">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#7A2BDB;border:1px solid rgba(122,43,219,0.45);border-radius:30px;padding:4px 9px">{{ m }}</span>
+</sc-for>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#00FF87;border:1px solid rgba(0,255,135,0.4);border-radius:30px;padding:4px 9px">{{ prBadge }}</span>
+<button style-active="transform:scale(0.93)" style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#00F2FE;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.4);border-radius:30px;padding:4px 9px;cursor:pointer;transition:transform 0.15s">
+<svg width="7" height="9" viewBox="0 0 7 9"><polygon points="0,0 7,4.5 0,9" fill="#00F2FE"></polygon></svg>FORM GUIDE
+</button>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:34px 1fr 66px 54px 46px;gap:8px;align-items:center;padding:14px 10px 6px;font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:1.5px;color:#94A3B8">
+<span>SATZ</span><span>LETZTES MAL</span><span style="text-align:center">KG</span><span style="text-align:center">WDH</span><span style="text-align:center">OK</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ sets }}" as="set" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:34px 1fr 66px 54px 46px;gap:8px;align-items:center;padding:8px 10px;border-radius:14px;background:{{ set.rowBg }};border:1px solid {{ set.rowBorder }};transition:all 0.25s">
+<button onClick="{{ set.onType }}" style-active="transform:scale(0.88)" style="width:32px;height:32px;border-radius:10px;background:{{ set.typeBg }};border:1px solid {{ set.typeBorder }};color:{{ set.typeColor }};font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform 0.15s">{{ set.type }}</button>
+<span style="font-size:10.5px;color:#94A3B8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ set.prev }}</span>
+<input value="{{ set.w }}" onChange="{{ set.onW }}" disabled="{{ set.done }}" inputMode="decimal" style-focus="border-color:rgba(0,242,254,0.6)" style="width:100%;height:44px;box-sizing:border-box;background:{{ set.fieldBg }};border:1px solid #232334;border-radius:12px;color:#FFFFFF;font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;text-align:center;transition:border-color 0.15s">
+<input value="{{ set.r }}" onChange="{{ set.onR }}" disabled="{{ set.done }}" inputMode="numeric" style-focus="border-color:rgba(0,242,254,0.6)" style="width:100%;height:44px;box-sizing:border-box;background:{{ set.fieldBg }};border:1px solid #232334;border-radius:12px;color:#FFFFFF;font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;text-align:center;transition:border-color 0.15s">
+<button onClick="{{ set.onToggle }}" style-active="transform:scale(0.85)" style="width:44px;height:44px;border-radius:13px;background:{{ set.checkBg }};border:1px solid {{ set.checkBorder }};cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;box-shadow:{{ set.checkGlow }}">
+<svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M1.5 6.5 6 11 15.5 1.5" stroke="{{ set.checkFg }}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</sc-for>
+</div>
+<button onClick="{{ addSet }}" style-active="transform:scale(0.97)" style="margin-top:10px;width:100%;padding:12px;border-radius:14px;background:none;border:1.5px dashed #232334;color:#94A3B8;font-family:'Poppins',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.15s">+ SATZ HINZUFÜGEN</button>
+<div style="margin-top:14px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#94A3B8">{{ doneCount }} VON {{ totalCount }} SÄTZEN ABGESCHLOSSEN</div>
+
+</div>
+
+<sc-if value="{{ restOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:14px;right:14px;bottom:16px;z-index:5;border-radius:24px;background:rgba(11,11,14,0.85);border:1px solid rgba(0,242,254,0.4);backdrop-filter:blur(22px);padding:{{ restPad }};animation:restGlow 2s infinite;transition:padding 0.25s">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<div style="display:flex;flex-direction:column;gap:2px;flex:none">
+<span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:2px;color:#00F2FE">PAUSE</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:700;color:#FFFFFF;text-shadow:0 0 16px rgba(0,242,254,0.5)">{{ restText }}</span>
+</div>
+<div style="flex:1;height:5px;border-radius:5px;background:#16161F;overflow:hidden"><div style="width:{{ restPct }};height:100%;border-radius:5px;background:linear-gradient(90deg,#00F2FE,#F02277);box-shadow:0 0 10px rgba(0,242,254,0.7);transition:width 1s linear"></div></div>
+</div>
+<sc-if value="{{ restExpanded }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:8px;margin-top:11px">
+<button onClick="{{ minus15 }}" style-active="transform:scale(0.93)" style="flex:1;padding:11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform 0.15s">−15s</button>
+<button onClick="{{ plus30 }}" style-active="transform:scale(0.93)" style="flex:1;padding:11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:transform 0.15s">+30s</button>
+<button onClick="{{ skipRest }}" style-active="transform:scale(0.93)" style="flex:1.2;padding:11px;border-radius:30px;background:linear-gradient(90deg,#00F2FE,#7A2BDB);border:none;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:transform 0.15s">SKIP →</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ notesOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:8;background:rgba(11,11,14,0.97);border-top:1px solid #232334;border-radius:24px 24px 0 0;padding:18px 16px 26px;backdrop-filter:blur(20px)">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:#00F2FE;margin-bottom:10px">SESSION-NOTIZEN</div>
+<textarea value="{{ notes }}" onChange="{{ onNotes }}" placeholder="Wie fühlt sich die Session an?" rows="4" style="width:100%;box-sizing:border-box;background:#14141D;border:1px solid #232334;border-radius:14px;color:#FFFFFF;font-family:'Poppins',sans-serif;font-size:13px;padding:12px;resize:none"></textarea>
+<button onClick="{{ toggleNotes }}" style-active="transform:scale(0.97)" style="margin-top:10px;width:100%;padding:12px;border-radius:30px;background:linear-gradient(90deg,#00F2FE,#7A2BDB,#F02277);border:none;color:#FFFFFF;font-size:11.5px;font-weight:700;letter-spacing:2px;font-family:'Poppins',sans-serif;cursor:pointer;transition:transform 0.15s">FERTIG</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ confirm }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:10;background:rgba(5,5,7,0.75);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px">
+<div style="width:100%;background:#14141D;border:1px solid #232334;border-radius:24px;padding:22px 18px;text-align:center;box-shadow:0 0 50px -12px rgba(240,34,119,0.5)">
+<div style="font-size:16px;font-weight:600">Workout beenden?</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">{{ doneCount }} von {{ totalCount }} Sätzen abgeschlossen · {{ sessionTime }}<br>Dein Fortschritt wird gespeichert.</div>
+<button onClick="{{ doEnd }}" style-active="transform:scale(0.97)" style="margin-top:16px;width:100%;padding:13px;border-radius:30px;background:linear-gradient(90deg,#C01963,#F02277);border:none;color:#FFFFFF;font-size:11.5px;font-weight:700;letter-spacing:2px;font-family:'Poppins',sans-serif;cursor:pointer;box-shadow:0 0 26px -6px rgba(240,34,119,0.7);transition:transform 0.15s">BEENDEN &amp; SPEICHERN</button>
+<button onClick="{{ cancelEnd }}" style-active="transform:scale(0.97)" style="margin-top:9px;width:100%;padding:13px;border-radius:30px;background:none;border:1px solid #232334;color:#FFFFFF;font-size:11.5px;font-weight:600;letter-spacing:1px;font-family:'Poppins',sans-serif;cursor:pointer;transition:transform 0.15s">Weiter trainieren</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ ended }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:10;background:rgba(5,5,7,0.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px">
+<div style="width:100%;background:#14141D;border:1px solid rgba(0,255,135,0.35);border-radius:24px;padding:26px 18px;text-align:center;box-shadow:0 0 50px -12px rgba(0,255,135,0.45)">
+<div style="width:54px;height:54px;margin:0 auto;border-radius:50%;background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.5);display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px -4px rgba(0,255,135,0.6)">
+<svg width="22" height="17" viewBox="0 0 17 13" fill="none"><path d="M1.5 6.5 6 11 15.5 1.5" stroke="#00FF87" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div style="margin-top:14px;font-size:16px;font-weight:600">Session gespeichert</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#94A3B8">{{ doneCount }} SÄTZE · {{ sessionTime }}</div>
+<button onClick="{{ restart }}" style-active="transform:scale(0.97)" style="margin-top:18px;width:100%;padding:13px;border-radius:30px;background:linear-gradient(90deg,#00F2FE,#7A2BDB,#F02277);border:none;color:#FFFFFF;font-size:11.5px;font-weight:700;letter-spacing:2px;font-family:'Poppins',sans-serif;cursor:pointer;transition:transform 0.15s">NEUE SESSION</button>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:500,&quot;height&quot;:980},&quot;restDuration&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:90,&quot;min&quot;:30,&quot;max&quot;:180,&quot;unit&quot;:&quot;s&quot;,&quot;section&quot;:&quot;Pausen-Timer&quot;},&quot;haptics&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;Feedback&quot;}}">
+class Component extends DCLogic {
+  state = {
+    elapsed: 0, paused: false, exIndex: 0,
+    restOn: false, restLeft: 0, restTotal: 90, restExpanded: true,
+    confirm: false, notesOpen: false, notes: '', ended: false,
+    exercises: [
+      { name: 'Back Squat', muscles: ['QUADS', 'GLUTES'], pr: 'PR 140 KG', sets: [
+        { type: 'W', prev: '60 kg × 12', w: '60', r: '12', done: true },
+        { type: 'N', prev: '100 kg × 8', w: '100', r: '8', done: false },
+        { type: 'N', prev: '105 kg × 6', w: '105', r: '6', done: false },
+        { type: 'D', prev: '80 kg × 12', w: '80', r: '12', done: false } ] },
+      { name: 'Romanian Deadlift', muscles: ['HAMSTRINGS', 'GLUTES'], pr: 'PR 120 KG', sets: [
+        { type: 'W', prev: '50 kg × 12', w: '50', r: '12', done: false },
+        { type: 'N', prev: '90 kg × 10', w: '90', r: '10', done: false },
+        { type: 'N', prev: '95 kg × 8', w: '95', r: '8', done: false } ] },
+      { name: 'Walking Lunges', muscles: ['QUADS', 'CORE'], pr: 'MAX 2×24 KG', sets: [
+        { type: 'N', prev: '2×20 kg × 20', w: '20', r: '20', done: false },
+        { type: 'N', prev: '2×20 kg × 20', w: '20', r: '20', done: false },
+        { type: 'F', prev: '2×16 kg × 24', w: '16', r: '24', done: false } ] }
+    ]
+  };
+  _tick() {
+    if (this.state.paused || this.state.ended) return;
+    this.setState(s => {
+      const n = { elapsed: s.elapsed + 1 };
+      if (s.restOn) {
+        const left = s.restLeft - 1;
+        if (left <= 0) { n.restOn = false; n.restLeft = 0; this.chime(); this.vib([80, 60, 80, 60, 80]); }
+        else n.restLeft = left;
+      }
+      return n;
+    });
+  }
+  componentWillUnmount() { clearTimeout(this._st); }
+  vib(p) { if ((this.props.haptics ?? true) && navigator.vibrate) navigator.vibrate(p); }
+  chime() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.18, 0.36].forEach((t, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.value = 880 + i * 110; o.connect(g); g.connect(ctx.destination);
+        g.gain.setValueAtTime(0.001, ctx.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.15);
+        o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.16);
+      });
+    } catch (e) {}
+  }
+  fmt(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+  updSet(i, patch) {
+    this.setState(st => ({ exercises: st.exercises.map((e, k) => k !== st.exIndex ? e : ({ ...e, sets: e.sets.map((s, j) => j === i ? { ...s, ...patch } : s) })) }));
+  }
+  toggleSet(i) {
+    const s = this.state.exercises[this.state.exIndex].sets[i];
+    if (!s.done) {
+      const total = Math.max(15, this.props.restDuration ?? 90);
+      this.updSet(i, { done: true });
+      this.setState({ restOn: true, restLeft: total, restTotal: total, restExpanded: true });
+      this.vib(40);
+    } else {
+      this.updSet(i, { done: false });
+    }
+  }
+  renderVals() {
+    const st = this.state;
+    const ex = st.exercises[st.exIndex];
+    const typeCycle = { W: 'N', N: 'D', D: 'F', F: 'W' };
+    const typeColors = { W: '#00F2FE', N: '#FFFFFF', D: '#7A2BDB', F: '#F02277' };
+    const sets = ex.sets.map((s, i) => {
+      const tc = typeColors[s.type];
+      return {
+        type: s.type, prev: s.prev, w: s.w, r: s.r, done: s.done,
+        typeColor: s.done ? '#94A3B8' : tc,
+        typeBg: s.done ? 'transparent' : (s.type === 'N' ? '#0B0B0E' : tc.replace(')', '') + '14'),
+        typeBorder: s.done ? '#232334' : (s.type === 'N' ? '#232334' : tc + '55'),
+        rowBg: s.done ? 'rgba(0,255,135,0.07)' : 'rgba(20,20,29,0.8)',
+        rowBorder: s.done ? 'rgba(0,255,135,0.35)' : '#232334',
+        fieldBg: s.done ? 'transparent' : '#0B0B0E',
+        checkBg: s.done ? '#00FF87' : '#0B0B0E',
+        checkBorder: s.done ? '#00FF87' : '#3a3a52',
+        checkFg: s.done ? '#050507' : '#94A3B8',
+        checkGlow: s.done ? '0 0 18px -2px rgba(0,255,135,0.7)' : 'none',
+        onType: () => { if (!s.done) this.updSet(i, { type: typeCycle[s.type] }); },
+        onW: (e) => this.updSet(i, { w: e.target.value }),
+        onR: (e) => this.updSet(i, { r: e.target.value }),
+        onToggle: () => this.toggleSet(i)
+      };
+    });
+    const all = st.exercises.flatMap(e => e.sets);
+    const doneCount = all.filter(s => s.done).length;
+    const n = st.exercises.length;
+    return {
+      tick: () => this._tick(),
+      sessionTime: this.fmt(st.elapsed),
+      liveColor: st.paused ? '#94A3B8' : '#00FF87',
+      paused: st.paused, notPaused: !st.paused,
+      pauseColor: st.paused ? '#00FF87' : '#94A3B8',
+      togglePause: () => this.setState(s => ({ paused: !s.paused })),
+      exName: ex.name, exPos: (st.exIndex + 1) + ' / ' + n,
+      muscles: ex.muscles, prBadge: ex.pr,
+      prevOp: st.exIndex === 0 ? 0.35 : 1, nextOp: st.exIndex === n - 1 ? 0.35 : 1,
+      prevEx: () => this.setState(s => ({ exIndex: Math.max(0, s.exIndex - 1) })),
+      nextEx: () => this.setState(s => ({ exIndex: Math.min(n - 1, s.exIndex + 1) })),
+      sets, doneCount, totalCount: all.length,
+      addSet: () => {
+        const last = ex.sets[ex.sets.length - 1];
+        this.setState(s2 => ({ exercises: s2.exercises.map((e, k) => k !== s2.exIndex ? e : ({ ...e, sets: [...e.sets, { type: last.type, prev: '—', w: last.w, r: last.r, done: false }] })) }));
+      },
+      restOn: st.restOn,
+      restText: this.fmt(st.restLeft),
+      restPct: Math.round(100 * st.restLeft / Math.max(1, st.restTotal)) + '%',
+      restPad: st.restExpanded ? '14px 16px 14px' : '8px 16px',
+      restExpanded: st.restExpanded,
+      plus30: () => this.setState(s => ({ restLeft: s.restLeft + 30, restTotal: s.restTotal + 30 })),
+      minus15: () => this.setState(s => ({ restLeft: Math.max(1, s.restLeft - 15) })),
+      skipRest: () => { this.vib(20); this.setState({ restOn: false, restLeft: 0 }); },
+      onScroll: () => {
+        if (this.state.restOn && this.state.restExpanded) this.setState({ restExpanded: false });
+        clearTimeout(this._st);
+        this._st = setTimeout(() => this.setState({ restExpanded: true }), 900);
+      },
+      confirm: st.confirm,
+      askEnd: () => this.setState({ confirm: true }),
+      cancelEnd: () => this.setState({ confirm: false }),
+      doEnd: () => { this.vib(60); this.setState({ confirm: false, ended: true, restOn: false }); },
+      ended: st.ended,
+      restart: () => this.setState({ ended: false, elapsed: 0, paused: false, exIndex: 0, exercises: st.exercises.map(e => ({ ...e, sets: e.sets.map(s => ({ ...s, done: false })) })) }),
+      notesOpen: st.notesOpen,
+      toggleNotes: () => this.setState(s => ({ notesOpen: !s.notesOpen })),
+      notes: st.notes,
+      onNotes: (e) => this.setState({ notes: e.target.value })
+    };
+  }
+}
+</script>
+</body>
+</html>

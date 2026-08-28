@@ -97,6 +97,192 @@ abstract class AppL10n {
     Locale('en')
   ];
 
+  /// about.access
+  ///
+  /// In de, this message translates to:
+  /// **'Zugang'**
+  String get aboutAccess;
+
+  /// about.access.value
+  ///
+  /// In de, this message translates to:
+  /// **'Freigeschaltete Adresse'**
+  String get aboutAccessValue;
+
+  /// about.appearance
+  ///
+  /// In de, this message translates to:
+  /// **'Darstellung'**
+  String get aboutAppearance;
+
+  /// about.appearance.value
+  ///
+  /// In de, this message translates to:
+  /// **'Dunkel · keine helle Fassung'**
+  String get aboutAppearanceValue;
+
+  /// about.languages
+  ///
+  /// In de, this message translates to:
+  /// **'Sprachen'**
+  String get aboutLanguages;
+
+  /// about.version
+  ///
+  /// In de, this message translates to:
+  /// **'Version'**
+  String get aboutVersion;
+
+  /// account.delete
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen'**
+  String get accountDelete;
+
+  /// account.delete2.body
+  ///
+  /// In de, this message translates to:
+  /// **'{y} Jahre {m} Monate, {n} Einheiten und {e} eigene Übungen. Es gibt kein Rückgängig und kein Zeitfenster.'**
+  String accountDelete2Body(String y, String m, int n, String e);
+
+  /// account.delete2.confirm
+  ///
+  /// In de, this message translates to:
+  /// **'Konto löschen'**
+  String get accountDelete2Confirm;
+
+  /// account.delete2.keep
+  ///
+  /// In de, this message translates to:
+  /// **'Behalten'**
+  String get accountDelete2Keep;
+
+  /// account.delete2.title
+  ///
+  /// In de, this message translates to:
+  /// **'Endgültig löschen'**
+  String get accountDelete2Title;
+
+  /// account.delete2.typeCount
+  ///
+  /// In de, this message translates to:
+  /// **'{a} / {b} Zeichen'**
+  String accountDelete2TypeCount(int a, String b);
+
+  /// account.delete2.typeLabel
+  ///
+  /// In de, this message translates to:
+  /// **'Tippe „LÖSCHEN\", um zu bestätigen'**
+  String get accountDelete2TypeLabel;
+
+  /// account.delete2.typeWord
+  ///
+  /// In de, this message translates to:
+  /// **'LÖSCHEN'**
+  String get accountDelete2TypeWord;
+
+  /// account.delete.access
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Zugang bleibt. Du kannst dich danach wieder anmelden — die App startet dann leer und beim Onboarding.'**
+  String get accountDeleteAccess;
+
+  /// account.delete.body
+  ///
+  /// In de, this message translates to:
+  /// **'Das löscht deinen gesamten Bestand. Zahlen von heute:'**
+  String get accountDeleteBody;
+
+  /// account.delete.continue
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter zum Löschen'**
+  String get accountDeleteContinue;
+
+  /// account.delete.export
+  ///
+  /// In de, this message translates to:
+  /// **'Daten vorher ausgeben'**
+  String get accountDeleteExport;
+
+  /// account.delete.range
+  ///
+  /// In de, this message translates to:
+  /// **'Zeitraum'**
+  String get accountDeleteRange;
+
+  /// account.delete.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Sechs Sammlungen · kein Widerruf'**
+  String get accountDeleteSub;
+
+  /// account.deleting
+  ///
+  /// In de, this message translates to:
+  /// **'Konto wird gelöscht'**
+  String get accountDeleting;
+
+  /// account.deleting.step
+  ///
+  /// In de, this message translates to:
+  /// **'{name}'**
+  String accountDeletingStep(String name);
+
+  /// account.deleting.wait
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht abbrechbar. Das dauert einen Moment.'**
+  String get accountDeletingWait;
+
+  /// account.done.access.body
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Freischaltung für ATEM gilt weiter. Meldest du dich mit derselben Adresse neu an, bist du wieder drin — mit leerem Bestand und im Onboarding.'**
+  String get accountDoneAccessBody;
+
+  /// account.done.access.title
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Sache bleibt'**
+  String get accountDoneAccessTitle;
+
+  /// account.done.body
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Einheiten, Pläne, Übungen, Termine und dein Fortschritt sind gelöscht. Das Anmeldekonto ist entfernt.'**
+  String get accountDoneBody;
+
+  /// account.done.title
+  ///
+  /// In de, this message translates to:
+  /// **'Konto gelöscht'**
+  String get accountDoneTitle;
+
+  /// account.done.toLogin
+  ///
+  /// In de, this message translates to:
+  /// **'Zur Anmeldung'**
+  String get accountDoneToLogin;
+
+  /// account.partial.body
+  ///
+  /// In de, this message translates to:
+  /// **'{a} von {b} Sammlungen sind weg, das Anmeldekonto besteht noch.'**
+  String accountPartialBody(int a, String b);
+
+  /// account.partial.resume
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen fortsetzen'**
+  String get accountPartialResume;
+
+  /// account.partial.title
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht vollständig gelöscht'**
+  String get accountPartialTitle;
+
   /// Achsenbeschriftung
   ///
   /// In de, this message translates to:
@@ -343,6 +529,78 @@ abstract class AppL10n {
   /// **'Anmeldung läuft …'**
   String get authSigningIn;
 
+  /// balance.basis
+  ///
+  /// In de, this message translates to:
+  /// **'{sets} Sätze · {n} von {total} Kraft-Einheiten'**
+  String balanceBasis(int sets, int n, int total);
+
+  /// balance.col.last
+  ///
+  /// In de, this message translates to:
+  /// **'zuletzt vor'**
+  String get balanceColLast;
+
+  /// balance.col.sets
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze'**
+  String get balanceColSets;
+
+  /// balance.col.share
+  ///
+  /// In de, this message translates to:
+  /// **'Anteil'**
+  String get balanceColShare;
+
+  /// balance.gaps.note
+  ///
+  /// In de, this message translates to:
+  /// **'Abstand seit dem letzten Satz auf diesen Muskel. Kein Sollwert — die App weiß nicht, wie oft er dran sein sollte.'**
+  String get balanceGapsNote;
+
+  /// balance.gaps.title
+  ///
+  /// In de, this message translates to:
+  /// **'Längste Abstände'**
+  String get balanceGapsTitle;
+
+  /// balance.last.days
+  ///
+  /// In de, this message translates to:
+  /// **'{n} T'**
+  String balanceLastDays(int n);
+
+  /// balance.last.days.long
+  ///
+  /// In de, this message translates to:
+  /// **'zuletzt {n} T'**
+  String balanceLastDaysLong(int n);
+
+  /// balance.thin
+  ///
+  /// In de, this message translates to:
+  /// **'Noch zu wenig Grundlage: {n} von {min} Krafteinheiten mit Übungen in den letzten 8 Wochen.'**
+  String balanceThin(int n, int min);
+
+  /// balance.thin.progress
+  ///
+  /// In de, this message translates to:
+  /// **'{n} / {min} · noch {rest} Einheiten'**
+  String balanceThinProgress(int n, int min, int rest);
+
+  /// balance.title
+  ///
+  /// In de, this message translates to:
+  /// **'Muskelbalance'**
+  String get balanceTitle;
+
+  /// balance.window
+  ///
+  /// In de, this message translates to:
+  /// **'8 Wochen'**
+  String get balanceWindow;
+
   /// aus common.activity
   ///
   /// In de, this message translates to:
@@ -373,7 +631,7 @@ abstract class AppL10n {
   /// **'Bodyweight'**
   String get commonBodyweight;
 
-  /// aus common.cancel
+  /// common.cancel
   ///
   /// In de, this message translates to:
   /// **'Abbrechen'**
@@ -390,6 +648,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Schließen'**
   String get commonClose;
+
+  /// common.created
+  ///
+  /// In de, this message translates to:
+  /// **'Übung angelegt'**
+  String get commonCreated;
 
   /// aus common.days
   ///
@@ -463,6 +727,30 @@ abstract class AppL10n {
   /// **'Notizen'**
   String get commonNotes;
 
+  /// Verbindungswort in Vorlesetexten: 4 von 5
+  ///
+  /// In de, this message translates to:
+  /// **'von'**
+  String get commonOf;
+
+  /// common.offline
+  ///
+  /// In de, this message translates to:
+  /// **'Lokal gesichert · wird synchronisiert'**
+  String get commonOffline;
+
+  /// common.offline.sync
+  ///
+  /// In de, this message translates to:
+  /// **'Lokal gesichert · wird synchronisiert'**
+  String get commonOfflineSync;
+
+  /// common.open
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnen'**
+  String get commonOpen;
+
   /// aus common.optional
   ///
   /// In de, this message translates to:
@@ -493,11 +781,29 @@ abstract class AppL10n {
   /// **'Erneut versuchen'**
   String get commonRetry;
 
+  /// common.retry.save
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut speichern'**
+  String get commonRetrySave;
+
   /// aus common.save
   ///
   /// In de, this message translates to:
   /// **'Speichern'**
   String get commonSave;
+
+  /// common.saved
+  ///
+  /// In de, this message translates to:
+  /// **'Änderung gespeichert'**
+  String get commonSaved;
+
+  /// common.saving
+  ///
+  /// In de, this message translates to:
+  /// **'Wird gespeichert'**
+  String get commonSaving;
 
   /// aus common.secondsShort
   ///
@@ -547,6 +853,12 @@ abstract class AppL10n {
   /// **'Zeit'**
   String get commonTime;
 
+  /// common.undo
+  ///
+  /// In de, this message translates to:
+  /// **'Rückgängig'**
+  String get commonUndo;
+
   /// aus common.view
   ///
   /// In de, this message translates to:
@@ -570,6 +882,78 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Workout'**
   String get commonWorkout;
+
+  /// compare.basis.date
+  ///
+  /// In de, this message translates to:
+  /// **'{date} · {n} Tage her'**
+  String compareBasisDate(String date, int n);
+
+  /// compare.basis.exercises
+  ///
+  /// In de, this message translates to:
+  /// **'Gleiche Übungen'**
+  String get compareBasisExercises;
+
+  /// compare.basis.median
+  ///
+  /// In de, this message translates to:
+  /// **'Mittel · {n} Einheiten'**
+  String compareBasisMedian(int n);
+
+  /// compare.basis.plan
+  ///
+  /// In de, this message translates to:
+  /// **'Gleicher Plan'**
+  String get compareBasisPlan;
+
+  /// compare.empty.plan
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Einheit des Plans „{plan}\". Ab der nächsten steht hier der Vergleich.'**
+  String compareEmptyPlan(String plan);
+
+  /// compare.empty.type
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Einheit dieser Art. Ab der nächsten steht hier der Vergleich.'**
+  String get compareEmptyType;
+
+  /// compare.loading
+  ///
+  /// In de, this message translates to:
+  /// **'Vergleich wird geladen'**
+  String get compareLoading;
+
+  /// compare.median
+  ///
+  /// In de, this message translates to:
+  /// **'Mittel {value}'**
+  String compareMedian(String value);
+
+  /// compare.none.value
+  ///
+  /// In de, this message translates to:
+  /// **'kein Bezug'**
+  String get compareNoneValue;
+
+  /// compare.note.median
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Plan-ID, keine Übungsüberdeckung. Verglichen wird nur, was von den Übungen unabhängig ist: Dauer und Last.'**
+  String get compareNoteMedian;
+
+  /// compare.note.plan
+  ///
+  /// In de, this message translates to:
+  /// **'Beide Einheiten folgen Plan „{plan}\". Alle vier Werte sind vergleichbar.'**
+  String compareNotePlan(String plan);
+
+  /// compare.prev
+  ///
+  /// In de, this message translates to:
+  /// **'vorher {value}'**
+  String comparePrev(String value);
 
   /// Tage in der Folgentabelle
   ///
@@ -1339,6 +1723,36 @@ abstract class AppL10n {
   /// **'MO,DI,MI,DO,FR,SA,SO'**
   String get dashboardWeekdays;
 
+  /// delete.confirm
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get deleteConfirm;
+
+  /// delete.keep
+  ///
+  /// In de, this message translates to:
+  /// **'Behalten'**
+  String get deleteKeep;
+
+  /// delete.step1.continue
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter zum Löschen'**
+  String get deleteStep1Continue;
+
+  /// delete.step2.noUndo
+  ///
+  /// In de, this message translates to:
+  /// **'Es gibt kein Rückgängig — nur neu anlegen.'**
+  String get deleteStep2NoUndo;
+
+  /// delete.step2.title
+  ///
+  /// In de, this message translates to:
+  /// **'Endgültig löschen'**
+  String get deleteStep2Title;
+
   /// Überschrift im Detail
   ///
   /// In de, this message translates to:
@@ -1410,42 +1824,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Volumen'**
   String get detailVolume;
-
-  /// Schwierigkeitsstufe 1
-  ///
-  /// In de, this message translates to:
-  /// **'Anfänger'**
-  String get difficultyLevel1;
-
-  /// Schwierigkeitsstufe 2
-  ///
-  /// In de, this message translates to:
-  /// **'Geübt'**
-  String get difficultyLevel2;
-
-  /// Schwierigkeitsstufe 3
-  ///
-  /// In de, this message translates to:
-  /// **'Fortgeschritten'**
-  String get difficultyLevel3;
-
-  /// Schwierigkeitsstufe 4
-  ///
-  /// In de, this message translates to:
-  /// **'Elite'**
-  String get difficultyLevel4;
-
-  /// Schwierigkeitsstufe 5
-  ///
-  /// In de, this message translates to:
-  /// **'Extrem'**
-  String get difficultyLevel5;
-
-  /// Vorlesetext eines Schwierigkeitssegments
-  ///
-  /// In de, this message translates to:
-  /// **'{level} — Stufe {n} von 5'**
-  String difficultyPick(String level, int n);
 
   /// Geschätzte Dauer. Die Tilde ist wichtig: Die Daten geben keine genaue Zahl her.
   ///
@@ -1537,18 +1915,6 @@ abstract class AppL10n {
   /// **'Fehler beim Starten des Workouts'**
   String get errorsWorkoutStartFailed;
 
-  /// Weg aus einer kuratierten Übung heraus
-  ///
-  /// In de, this message translates to:
-  /// **'Eigene Fassung anlegen'**
-  String get exerciseCopyAction;
-
-  /// Vorgeschlagener Name der eigenen Fassung
-  ///
-  /// In de, this message translates to:
-  /// **'{name} (eigene)'**
-  String exerciseCopyName(String name);
-
   /// Hinweis im Formular der eigenen Fassung
   ///
   /// In de, this message translates to:
@@ -1567,59 +1933,59 @@ abstract class AppL10n {
   /// **'Cues'**
   String get exerciseCues;
 
-  /// Vorlesetext des Schloss-Chips
-  ///
-  /// In de, this message translates to:
-  /// **'Kuratiert, nicht änderbar'**
-  String get exerciseCuratedA11y;
-
-  /// Erklärung am Schloss-Chip
-  ///
-  /// In de, this message translates to:
-  /// **'Kuratierte Übungen sind für alle gleich.'**
-  String get exerciseCuratedBody;
-
-  /// Schloss-Chip am Übungsdetail
+  /// exercise.curated.badge
   ///
   /// In de, this message translates to:
   /// **'Kuratiert'**
-  String get exerciseCuratedChip;
+  String get exerciseCuratedBadge;
 
-  /// Vorlesetext des Dialogschleiers
+  /// exercise.curated.body
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Übung ist für alle gleich und bleibt unverändert. Willst du sie anders, leg dir eine eigene Fassung an.'**
+  String get exerciseCuratedBody;
+
+  /// exercise.curated.copy
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene Fassung anlegen'**
+  String get exerciseCuratedCopy;
+
+  /// exercise.curated.title
+  ///
+  /// In de, this message translates to:
+  /// **'Gehört zur Bibliothek'**
+  String get exerciseCuratedTitle;
+
+  /// exercise.delete
   ///
   /// In de, this message translates to:
   /// **'Übung löschen'**
-  String get exerciseDeleteBarrier;
+  String get exerciseDelete;
 
-  /// Erste Bestätigung, Text
+  /// exercise.delete.keepUnits
   ///
   /// In de, this message translates to:
-  /// **'Absolvierte Einheiten behalten ihre Sätze, zeigen aber nur noch die Kennung.'**
-  String get exerciseDeleteBody;
+  /// **'Deine {n} Einheiten bleiben vollständig — mit Sätzen, Gewichten und Last.'**
+  String exerciseDeleteKeepUnits(int n);
 
-  /// Zusatz zur ersten Bestätigung
+  /// exercise.delete.plansGap
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{Sie steckt in einem Plan. Dort bleibt eine Lücke mit den Zielwerten.} other{Sie steckt in {n} Plänen. Dort bleibt jeweils eine Lücke mit den Zielwerten.}}'**
-  String exerciseDeleteInPlans(int n);
+  /// **'In den {n} Plänen bleibt eine Lücke stehen, die du dort ersetzen kannst.'**
+  String exerciseDeletePlansGap(int n);
 
-  /// Zweite Bestätigung, Text
+  /// exercise.delete.q
   ///
   /// In de, this message translates to:
-  /// **'Das lässt sich nicht rückgängig machen.'**
-  String get exerciseDeleteSecondBody;
+  /// **'„{name}\" löschen?'**
+  String exerciseDeleteQ(String name);
 
-  /// Zweite Bestätigung
+  /// exercise.delete.usage
   ///
   /// In de, this message translates to:
-  /// **'Endgültig löschen?'**
-  String get exerciseDeleteSecondTitle;
-
-  /// Erste Bestätigung
-  ///
-  /// In de, this message translates to:
-  /// **'Übung löschen?'**
-  String get exerciseDeleteTitle;
+  /// **'Die Übung steckt in {p, plural, one {# Plan} other {# Plänen}} und {s, plural, one {# Einheit} other {# Einheiten}}.'**
+  String exerciseDeleteUsage(int p, int s);
 
   /// Vorlesefassung der Segmentanzeige
   ///
@@ -1627,113 +1993,101 @@ abstract class AppL10n {
   /// **'Schwierigkeit {n} von 5'**
   String exerciseDifficultyA11y(int n);
 
-  /// Feldbeschriftung
+  /// exercise.duplicate.body
   ///
   /// In de, this message translates to:
-  /// **'Beschreibung'**
-  String get exerciseFormDescription;
+  /// **'Du hast schon eine Übung „{name}\". Deine Eingaben stehen noch hier.'**
+  String exerciseDuplicateBody(String name);
 
-  /// Feldbeschriftung
+  /// exercise.duplicate.open
   ///
   /// In de, this message translates to:
-  /// **'Schwierigkeit'**
-  String get exerciseFormDifficulty;
+  /// **'Vorhandene öffnen'**
+  String get exerciseDuplicateOpen;
 
-  /// Fehler an der Schwierigkeit
+  /// exercise.duplicate.suggest
   ///
   /// In de, this message translates to:
-  /// **'Wähle eine Stufe.'**
-  String get exerciseFormDifficultyFault;
+  /// **'Vorschlag nehmen'**
+  String get exerciseDuplicateSuggest;
 
-  /// Hilfetext unter der Schwierigkeit
+  /// exercise.duplicate.title
   ///
   /// In de, this message translates to:
-  /// **'Gespeichert wird die Stufe als Zahl.'**
-  String get exerciseFormDifficultyHint;
+  /// **'Nicht gespeichert'**
+  String get exerciseDuplicateTitle;
 
-  /// Titel des Formulars beim Ändern
+  /// exercise.edit.title
   ///
   /// In de, this message translates to:
   /// **'Übung bearbeiten'**
-  String get exerciseFormEditTitle;
+  String get exerciseEditTitle;
 
-  /// Feldbeschriftung
+  /// Board 07, optFelder
+  ///
+  /// In de, this message translates to:
+  /// **'Cues'**
+  String get exerciseFieldCues;
+
+  /// Board 07, optFelder
+  ///
+  /// In de, this message translates to:
+  /// **'Kurze Merksätze, einer je Zeile'**
+  String get exerciseFieldCuesHint;
+
+  /// Board 07, optFelder
   ///
   /// In de, this message translates to:
   /// **'Gerät'**
-  String get exerciseFormEquipment;
+  String get exerciseFieldEquipment;
 
-  /// Platzhalter im Gerätefeld
+  /// Board 07, optFelder
   ///
   /// In de, this message translates to:
-  /// **'z. B. Hantel, Klimmzugstange'**
-  String get exerciseFormEquipmentHint;
+  /// **'Freitext, keine feste Liste'**
+  String get exerciseFieldEquipmentHint;
 
-  /// Vorlesetext eines gewählten Muskelschalters
+  /// Board 07, optFelder
   ///
   /// In de, this message translates to:
-  /// **'{muscle}, gewählt'**
-  String exerciseFormMuscleChosen(String muscle);
+  /// **'Anleitung'**
+  String get exerciseFieldInstructions;
 
-  /// Vorlesetext eines Muskelschalters
+  /// Board 07, optFelder
   ///
   /// In de, this message translates to:
-  /// **'{muscle} auswählen'**
-  String exerciseFormMuscleToggle(String muscle);
+  /// **'Freitext, bis 500 Zeichen'**
+  String get exerciseFieldInstructionsHint;
 
-  /// Feldbeschriftung
+  /// exercise.field.level
+  ///
+  /// In de, this message translates to:
+  /// **'Stufe'**
+  String get exerciseFieldLevel;
+
+  /// exercise.field.muscles
   ///
   /// In de, this message translates to:
   /// **'Muskeln'**
-  String get exerciseFormMuscles;
+  String get exerciseFieldMuscles;
 
-  /// Fehler an der Muskelauswahl
+  /// exercise.field.muscles.count
   ///
   /// In de, this message translates to:
-  /// **'Wähle mindestens einen Muskel.'**
-  String get exerciseFormMusclesFault;
+  /// **'{n} gewählt'**
+  String exerciseFieldMusclesCount(int n);
 
-  /// Hilfetext unter der Muskelauswahl
-  ///
-  /// In de, this message translates to:
-  /// **'Mindestens einer. Er gibt der Übung ihre Farbe.'**
-  String get exerciseFormMusclesHint;
-
-  /// Feldbeschriftung
+  /// exercise.field.name
   ///
   /// In de, this message translates to:
   /// **'Name'**
-  String get exerciseFormName;
+  String get exerciseFieldName;
 
-  /// Fehler am Namensfeld
+  /// exercise.field.name.hint
   ///
   /// In de, this message translates to:
-  /// **'Ohne Namen findest du die Übung nicht wieder.'**
-  String get exerciseFormNameFault;
-
-  /// Platzhalter im Namensfeld
-  ///
-  /// In de, this message translates to:
-  /// **'z. B. Klimmzug breit'**
-  String get exerciseFormNameHint;
-
-  /// Titel des Formulars beim Anlegen
-  ///
-  /// In de, this message translates to:
-  /// **'Neue Übung'**
-  String get exerciseFormNewTitle;
-
-  /// Abschnittslabel der freiwilligen Felder
-  ///
-  /// In de, this message translates to:
-  /// **'Kann warten'**
-  String get exerciseFormOptionalSection;
-
-  /// Abschnittslabel der drei Pflichtfelder
-  ///
-  /// In de, this message translates to:
-  /// **'Pflicht'**
-  String get exerciseFormRequiredSection;
+  /// **'z. B. Bulgarian Split Squat'**
+  String get exerciseFieldNameHint;
 
   /// Fehlermeldung beim Speichern
   ///
@@ -1747,23 +2101,77 @@ abstract class AppL10n {
   /// **'Prüfe die Verbindung und versuche es erneut.'**
   String get exerciseFormSaveErrorBody;
 
-  /// Rückmeldung nach dem Speichern
-  ///
-  /// In de, this message translates to:
-  /// **'Übung gespeichert'**
-  String get exerciseFormSaved;
-
   /// Abschnitt im Detail
   ///
   /// In de, this message translates to:
   /// **'Anleitung'**
   String get exerciseInstructions;
 
+  /// exercise.level.1
+  ///
+  /// In de, this message translates to:
+  /// **'Einstieg'**
+  String get exerciseLevel1;
+
+  /// exercise.level.2
+  ///
+  /// In de, this message translates to:
+  /// **'Leicht'**
+  String get exerciseLevel2;
+
+  /// exercise.level.3
+  ///
+  /// In de, this message translates to:
+  /// **'Mittel'**
+  String get exerciseLevel3;
+
+  /// exercise.level.4
+  ///
+  /// In de, this message translates to:
+  /// **'Fortgeschritten'**
+  String get exerciseLevel4;
+
+  /// exercise.level.5
+  ///
+  /// In de, this message translates to:
+  /// **'Experte'**
+  String get exerciseLevel5;
+
+  /// exercise.level.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Wird als Zahl 1–5 gespeichert.'**
+  String get exerciseLevelHint;
+
   /// Abschnitt im Detail
   ///
   /// In de, this message translates to:
   /// **'Häufige Fehler'**
   String get exerciseMistakes;
+
+  /// exercise.more
+  ///
+  /// In de, this message translates to:
+  /// **'Mehr Angaben'**
+  String get exerciseMore;
+
+  /// exercise.more.count
+  ///
+  /// In de, this message translates to:
+  /// **'{n} optional'**
+  String exerciseMoreCount(int n);
+
+  /// exercise.new.title
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Übung'**
+  String get exerciseNewTitle;
+
+  /// exercise.save.blocked
+  ///
+  /// In de, this message translates to:
+  /// **'Noch {n} Angaben nötig'**
+  String exerciseSaveBlocked(int n);
 
   /// Nur bei eigenen Übungen ohne Inhalt
   ///
@@ -1777,11 +2185,29 @@ abstract class AppL10n {
   /// **'Keine Anleitung hinterlegt'**
   String get exerciseSparseTitle;
 
-  /// Weg in die vollständige Übungsliste
+  /// exercises.block.all
   ///
   /// In de, this message translates to:
-  /// **'Alle {n} ansehen'**
-  String exercisesBlockAll(int n);
+  /// **'Alle ansehen'**
+  String get exercisesBlockAll;
+
+  /// exercises.block.byMuscle
+  ///
+  /// In de, this message translates to:
+  /// **'Nach Muskel'**
+  String get exercisesBlockByMuscle;
+
+  /// exercises.block.search
+  ///
+  /// In de, this message translates to:
+  /// **'Name oder Muskel'**
+  String get exercisesBlockSearch;
+
+  /// exercises.block.title
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen · {n}'**
+  String exercisesBlockTitle(int n);
 
   /// Zählzeile über der Liste
   ///
@@ -1789,11 +2215,29 @@ abstract class AppL10n {
   /// **'{n} Übungen · {k} kuratiert · {e} eigene'**
   String exercisesCount(int n, int k, int e);
 
+  /// exercises.create
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene Übung anlegen'**
+  String get exercisesCreate;
+
   /// Suche ohne Treffer, Text
   ///
   /// In de, this message translates to:
   /// **'Keine Übung passt zu „{q}“ — auch nicht auf Englisch.'**
   String exercisesEmptyBody(String q);
+
+  /// exercises.empty.own.body
+  ///
+  /// In de, this message translates to:
+  /// **'Name, Muskeln und eine Stufe genügen — der Rest ist freiwillig.'**
+  String get exercisesEmptyOwnBody;
+
+  /// exercises.empty.own.title
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine eigene Übung'**
+  String get exercisesEmptyOwnTitle;
 
   /// Suche ohne Treffer
   ///
@@ -1831,12 +2275,6 @@ abstract class AppL10n {
   /// **'{n} Übungen · {filter}'**
   String exercisesFilterResult(int n, String filter);
 
-  /// Aktion im Übungsblock
-  ///
-  /// In de, this message translates to:
-  /// **'Übung anlegen'**
-  String get exercisesNew;
-
   /// Leerzustand der Suche, Text
   ///
   /// In de, this message translates to:
@@ -1866,6 +2304,60 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Übungen'**
   String get exercisesTitle;
+
+  /// export.body
+  ///
+  /// In de, this message translates to:
+  /// **'Du wählst danach, wohin sie geht.'**
+  String get exportBody;
+
+  /// export.create
+  ///
+  /// In de, this message translates to:
+  /// **'Datei erstellen'**
+  String get exportCreate;
+
+  /// export.done.note
+  ///
+  /// In de, this message translates to:
+  /// **'Die Datei liegt im Downloads-Ordner. Die App verschickt nichts selbst.'**
+  String get exportDoneNote;
+
+  /// export.done.share
+  ///
+  /// In de, this message translates to:
+  /// **'Teilen'**
+  String get exportDoneShare;
+
+  /// export.offline
+  ///
+  /// In de, this message translates to:
+  /// **'Offline nicht möglich'**
+  String get exportOffline;
+
+  /// export.progress
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten {a}/{b} · Pläne {c}/{d} · Übungen {e}/{f}'**
+  String exportProgress(int a, String b, int c, String d, String e, String f);
+
+  /// export.size
+  ///
+  /// In de, this message translates to:
+  /// **'ca. {mb} MB · keine Bilder, keine Videos'**
+  String exportSize(String mb);
+
+  /// export.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Datei mit allem, was dir gehört'**
+  String get exportSub;
+
+  /// export.title
+  ///
+  /// In de, this message translates to:
+  /// **'Daten ausgeben'**
+  String get exportTitle;
 
   /// Vorlesetext des Dialogschleiers
   ///
@@ -2011,6 +2503,24 @@ abstract class AppL10n {
   /// **'Du stehst auf der Liste'**
   String get gateTitle;
 
+  /// haptics.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Kurzes Klopfen bei Satz und Pause'**
+  String get hapticsSub;
+
+  /// haptics.title
+  ///
+  /// In de, this message translates to:
+  /// **'Haptik'**
+  String get hapticsTitle;
+
+  /// haptics.unavailable
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Gerät hat keinen Vibrationsmotor.'**
+  String get hapticsUnavailable;
+
   /// Öffnet die vollständige Liste
   ///
   /// In de, this message translates to:
@@ -2022,6 +2532,36 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Auswertung öffnen'**
   String get historyAnalysisOpen;
+
+  /// history.best
+  ///
+  /// In de, this message translates to:
+  /// **'Bestwert'**
+  String get historyBest;
+
+  /// history.count
+  ///
+  /// In de, this message translates to:
+  /// **'{n}×'**
+  String historyCount(int n);
+
+  /// history.curve.a11y
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf des besten Satzgewichts über {n} Einheiten, von {from} auf {to}'**
+  String historyCurveA11y(int n, String from, String to);
+
+  /// history.curve.label
+  ///
+  /// In de, this message translates to:
+  /// **'Bestes Satzgewicht'**
+  String get historyCurveLabel;
+
+  /// history.curve.legend
+  ///
+  /// In de, this message translates to:
+  /// **'Ring markiert den Bestwert'**
+  String get historyCurveLegend;
 
   /// Leerzustand des Verlaufs
   ///
@@ -2059,6 +2599,24 @@ abstract class AppL10n {
   /// **'{v}/100'**
   String historyFormOf(int v);
 
+  /// history.freq
+  ///
+  /// In de, this message translates to:
+  /// **'Häufigkeit'**
+  String get historyFreq;
+
+  /// history.freq.value
+  ///
+  /// In de, this message translates to:
+  /// **'{n} / Wo'**
+  String historyFreqValue(int n);
+
+  /// history.last
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt'**
+  String get historyLast;
+
   /// Der Satz der Aussage-Karte im Rhythmus
   ///
   /// In de, this message translates to:
@@ -2089,16 +2647,34 @@ abstract class AppL10n {
   /// **'Median {n} Tage Abstand · längste Pause {max}'**
   String historyMonthsMedian(int n, int max);
 
+  /// history.once
+  ///
+  /// In de, this message translates to:
+  /// **'ausgeführt · {date}'**
+  String historyOnce(String date);
+
+  /// history.once.label
+  ///
+  /// In de, this message translates to:
+  /// **'Damals'**
+  String get historyOnceLabel;
+
+  /// history.once.note
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Bestwert, keine Kurve, keine Häufigkeit — aus einer Ausführung folgt keins davon.'**
+  String get historyOnceNote;
+
   /// Überschrift der Kurzliste
   ///
   /// In de, this message translates to:
   /// **'Letzte Einheiten'**
   String get historyRecentLabel;
 
-  /// Titel des Tabs
+  /// history.title
   ///
   /// In de, this message translates to:
-  /// **'Verlauf'**
+  /// **'Du mit dieser Übung'**
   String get historyTitle;
 
   /// Richtung der Formkurve
@@ -2118,6 +2694,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'stabil'**
   String get historyTrendStable;
+
+  /// history.volume
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen'**
+  String get historyVolume;
 
   /// Zustandszone: ab 28 Tagen
   ///
@@ -2142,6 +2724,72 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Im Rhythmus'**
   String get historyZoneRhythm;
+
+  /// language.de
+  ///
+  /// In de, this message translates to:
+  /// **'Deutsch'**
+  String get languageDe;
+
+  /// language.en
+  ///
+  /// In de, this message translates to:
+  /// **'English'**
+  String get languageEn;
+
+  /// language.title
+  ///
+  /// In de, this message translates to:
+  /// **'Sprache'**
+  String get languageTitle;
+
+  /// legal.error
+  ///
+  /// In de, this message translates to:
+  /// **'Text nicht geladen'**
+  String get legalError;
+
+  /// legal.external
+  ///
+  /// In de, this message translates to:
+  /// **'Extern öffnen'**
+  String get legalExternal;
+
+  /// legal.imprint
+  ///
+  /// In de, this message translates to:
+  /// **'Impressum'**
+  String get legalImprint;
+
+  /// legal.imprint.body
+  ///
+  /// In de, this message translates to:
+  /// **'Privates Projekt einer natürlichen Person. Angaben nach § 5 TMG: {betreiber}'**
+  String legalImprintBody(String betreiber);
+
+  /// legal.inapp
+  ///
+  /// In de, this message translates to:
+  /// **'In der App'**
+  String get legalInapp;
+
+  /// legal.privacy
+  ///
+  /// In de, this message translates to:
+  /// **'Datenschutz'**
+  String get legalPrivacy;
+
+  /// legal.retry
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut versuchen'**
+  String get legalRetry;
+
+  /// legal.terms
+  ///
+  /// In de, this message translates to:
+  /// **'Nutzungsbedingungen'**
+  String get legalTerms;
 
   /// Abschluss der Liste
   ///
@@ -2407,6 +3055,54 @@ abstract class AppL10n {
   /// **'ATEM rechnet jede Übung in Trainingslast um — auch die ohne Gewichte. Dafür braucht es genau eine Zahl.'**
   String get onbWhy;
 
+  /// onboarding.repeat
+  ///
+  /// In de, this message translates to:
+  /// **'Onboarding wiederholen'**
+  String get onboardingRepeat;
+
+  /// onboarding.repeat.action
+  ///
+  /// In de, this message translates to:
+  /// **'Ansehen'**
+  String get onboardingRepeatAction;
+
+  /// onboarding.repeat.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Die vier Einführungsseiten noch einmal'**
+  String get onboardingRepeatSub;
+
+  /// plan.broken.entry
+  ///
+  /// In de, this message translates to:
+  /// **'Übung gelöscht'**
+  String get planBrokenEntry;
+
+  /// plan.broken.keepTarget
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel bleibt · {ziel}'**
+  String planBrokenKeepTarget(String ziel);
+
+  /// plan.broken.notice
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one {# Eintrag zeigt} other {# Einträge zeigen}} ins Leere.'**
+  String planBrokenNotice(int n);
+
+  /// plan.broken.remove
+  ///
+  /// In de, this message translates to:
+  /// **'Entfernen'**
+  String get planBrokenRemove;
+
+  /// plan.broken.replace
+  ///
+  /// In de, this message translates to:
+  /// **'Ersetzen'**
+  String get planBrokenReplace;
+
   /// Zählzeile der Planliste
   ///
   /// In de, this message translates to:
@@ -2430,6 +3126,42 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Plan löschen?'**
   String get planDeleteTitle;
+
+  /// plan.empty.allowed
+  ///
+  /// In de, this message translates to:
+  /// **'Der Plan existiert, sobald er einen Namen hat.'**
+  String get planEmptyAllowed;
+
+  /// plan.entry.add
+  ///
+  /// In de, this message translates to:
+  /// **'Übung hinzufügen'**
+  String get planEntryAdd;
+
+  /// plan.entry.reps
+  ///
+  /// In de, this message translates to:
+  /// **'Wdh'**
+  String get planEntryReps;
+
+  /// plan.entry.reps.hint
+  ///
+  /// In de, this message translates to:
+  /// **'„12\", „8-12\" und „max\" sind erlaubt.'**
+  String get planEntryRepsHint;
+
+  /// plan.entry.rest
+  ///
+  /// In de, this message translates to:
+  /// **'Pause'**
+  String get planEntryRest;
+
+  /// plan.entry.sets
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze'**
+  String get planEntrySets;
 
   /// Aktion unter der Übungsliste
   ///
@@ -2605,6 +3337,24 @@ abstract class AppL10n {
   /// **'{n, plural, one{Eine Übung fehlt} other{{n} Übungen fehlen}}'**
   String planMissingTitle(int n);
 
+  /// plan.new.title
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Plan'**
+  String get planNewTitle;
+
+  /// profile.locked
+  ///
+  /// In de, this message translates to:
+  /// **'Über Google · fest'**
+  String get profileLocked;
+
+  /// profile.locked.why
+  ///
+  /// In de, this message translates to:
+  /// **'Name und E-Mail kommen aus deinem Google-Konto und werden hier nur angezeigt.'**
+  String get profileLockedWhy;
+
   /// Körperregion, Filter
   ///
   /// In de, this message translates to:
@@ -2641,11 +3391,89 @@ abstract class AppL10n {
   /// **'Schultern'**
   String get regionShoulders;
 
+  /// rest.body
+  ///
+  /// In de, this message translates to:
+  /// **'Gilt für Sätze ohne eigene Pause im Plan. Wirkt ab der nächsten Einheit.'**
+  String get restBody;
+
+  /// rest.custom
+  ///
+  /// In de, this message translates to:
+  /// **'Eigener Wert'**
+  String get restCustom;
+
+  /// rest.running
+  ///
+  /// In de, this message translates to:
+  /// **'Eine laufende Einheit behält ihre Pause.'**
+  String get restRunning;
+
   /// Pausenlänge in Sekunden
   ///
   /// In de, this message translates to:
   /// **'{n} s'**
   String restSeconds(int n);
+
+  /// rest.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Vorgabe beim Start einer Einheit'**
+  String get restSub;
+
+  /// rest.title
+  ///
+  /// In de, this message translates to:
+  /// **'Pausenzeit'**
+  String get restTitle;
+
+  /// section.about
+  ///
+  /// In de, this message translates to:
+  /// **'Über die App'**
+  String get sectionAbout;
+
+  /// section.app
+  ///
+  /// In de, this message translates to:
+  /// **'App'**
+  String get sectionApp;
+
+  /// section.data
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Daten'**
+  String get sectionData;
+
+  /// section.legal
+  ///
+  /// In de, this message translates to:
+  /// **'Rechtliches'**
+  String get sectionLegal;
+
+  /// section.training
+  ///
+  /// In de, this message translates to:
+  /// **'Training'**
+  String get sectionTraining;
+
+  /// session.date.allowed.body
+  ///
+  /// In de, this message translates to:
+  /// **'Verschiebst du den Tag, verschieben sich Lücken und Form-Kurve mit.'**
+  String get sessionDateAllowedBody;
+
+  /// session.date.allowed.title
+  ///
+  /// In de, this message translates to:
+  /// **'Datum ändern ist erlaubt'**
+  String get sessionDateAllowedTitle;
+
+  /// session.date.previous
+  ///
+  /// In de, this message translates to:
+  /// **'Vorher {date} · {n, plural, one {+# Tag} other {+# Tage}}'**
+  String sessionDatePrevious(int n, String date);
 
   /// Vorlesetext des Dialogschleiers
   ///
@@ -2653,11 +3481,17 @@ abstract class AppL10n {
   /// **'Einheit löschen'**
   String get sessionDeleteBarrier;
 
-  /// Bestätigung, Text
+  /// session.delete.body
   ///
   /// In de, this message translates to:
-  /// **'Sie zählt danach in keiner Auswertung mehr mit.'**
+  /// **'Sie zählt in jede Auswertung. Danach steht dort:'**
   String get sessionDeleteBody;
+
+  /// session.delete.q
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Einheit löschen?'**
+  String get sessionDeleteQ;
 
   /// Bestätigung
   ///
@@ -2665,11 +3499,23 @@ abstract class AppL10n {
   /// **'Einheit löschen?'**
   String get sessionDeleteTitle;
 
+  /// session.delete.window
+  ///
+  /// In de, this message translates to:
+  /// **'30 Sekunden lang kannst du das rückgängig machen.'**
+  String get sessionDeleteWindow;
+
   /// Widerrufshinweis, Text
   ///
   /// In de, this message translates to:
   /// **'Du kannst das {n} Sekunden lang zurücknehmen.'**
   String sessionDeletedBody(int n);
+
+  /// session.deleted.snack
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit gelöscht · Form {alt} → {neu}'**
+  String sessionDeletedSnack(String alt, String neu);
 
   /// Widerrufshinweis nach dem Löschen
   ///
@@ -2725,11 +3571,53 @@ abstract class AppL10n {
   /// **'Sätze'**
   String get sessionEditSets;
 
-  /// Titel des Formulars
+  /// session.edit.title
   ///
   /// In de, this message translates to:
   /// **'Einheit bearbeiten'**
   String get sessionEditTitle;
+
+  /// session.field.datetime
+  ///
+  /// In de, this message translates to:
+  /// **'Datum und Zeit'**
+  String get sessionFieldDatetime;
+
+  /// session.impact.count
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten gesamt'**
+  String get sessionImpactCount;
+
+  /// session.impact.form
+  ///
+  /// In de, this message translates to:
+  /// **'Form heute'**
+  String get sessionImpactForm;
+
+  /// session.impact.pause
+  ///
+  /// In de, this message translates to:
+  /// **'Aktuelle Pause'**
+  String get sessionImpactPause;
+
+  /// session.impact.preview
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschau, noch nicht gespeichert.'**
+  String get sessionImpactPreview;
+
+  /// session.impact.title
+  ///
+  /// In de, this message translates to:
+  /// **'Was sich dadurch ändert'**
+  String get sessionImpactTitle;
+
+  /// sets.add
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze nachtragen'**
+  String get setsAdd;
 
   /// Zeile im Abschnitt ueber die App
   ///
@@ -2892,6 +3780,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Konto gelöscht'**
   String get settingsDeletedTitle;
+
+  /// settings.entry.a11y
+  ///
+  /// In de, this message translates to:
+  /// **'Profil und Einstellungen'**
+  String get settingsEntryA11y;
 
   /// Erklärung der beiden Formate
   ///
@@ -3151,7 +4045,7 @@ abstract class AppL10n {
   /// **'Nutzungsbedingungen'**
   String get settingsTerms;
 
-  /// Titel des Bildschirms
+  /// settings.title
   ///
   /// In de, this message translates to:
   /// **'Einstellungen'**
@@ -3229,11 +4123,35 @@ abstract class AppL10n {
   /// **'{plan} starten?'**
   String sheetStartTitle(String plan);
 
+  /// signout
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden'**
+  String get signout;
+
+  /// signout.keep
+  ///
+  /// In de, this message translates to:
+  /// **'Daten bleiben'**
+  String get signoutKeep;
+
   /// Ansage während des unentschiedenen ersten Moments
   ///
   /// In de, this message translates to:
   /// **'ATEM startet …'**
   String get splashStarting;
+
+  /// switch.off
+  ///
+  /// In de, this message translates to:
+  /// **'AUS'**
+  String get switchOff;
+
+  /// switch.on
+  ///
+  /// In de, this message translates to:
+  /// **'AN'**
+  String get switchOn;
 
   /// Trainingsart eines Plans
   ///
@@ -3294,6 +4212,198 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'s'**
   String get unitSuffixSeconds;
+
+  /// units.example
+  ///
+  /// In de, this message translates to:
+  /// **'So sieht es dann aus'**
+  String get unitsExample;
+
+  /// units.imperial
+  ///
+  /// In de, this message translates to:
+  /// **'Imperial'**
+  String get unitsImperial;
+
+  /// units.metric
+  ///
+  /// In de, this message translates to:
+  /// **'Metrisch'**
+  String get unitsMetric;
+
+  /// units.note
+  ///
+  /// In de, this message translates to:
+  /// **'Gespeichert bleibt immer metrisch. Umgerechnet wird nur die Anzeige.'**
+  String get unitsNote;
+
+  /// units.title
+  ///
+  /// In de, this message translates to:
+  /// **'Einheitensystem'**
+  String get unitsTitle;
+
+  /// unsaved.body
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast {c, plural, one {# Eintrag} other {# Einträge}} geändert und {a} hinzugefügt.'**
+  String unsavedBody(int c, int a);
+
+  /// unsaved.continue
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter bearbeiten'**
+  String get unsavedContinue;
+
+  /// unsaved.discard
+  ///
+  /// In de, this message translates to:
+  /// **'Verwerfen'**
+  String get unsavedDiscard;
+
+  /// unsaved.save
+  ///
+  /// In de, this message translates to:
+  /// **'Sichern und schließen'**
+  String get unsavedSave;
+
+  /// unsaved.title
+  ///
+  /// In de, this message translates to:
+  /// **'Änderungen behalten?'**
+  String get unsavedTitle;
+
+  /// weight.body
+  ///
+  /// In de, this message translates to:
+  /// **'Bewertet jede Körpergewichtsübung in deinem Verlauf — heute und rückwirkend.'**
+  String get weightBody;
+
+  /// weight.delta
+  ///
+  /// In de, this message translates to:
+  /// **'{sign}{kg} kg · {sign}{pct} %'**
+  String weightDelta(String sign, String kg, String pct);
+
+  /// weight.dir.down
+  ///
+  /// In de, this message translates to:
+  /// **'niedriger'**
+  String get weightDirDown;
+
+  /// weight.dir.rescored
+  ///
+  /// In de, this message translates to:
+  /// **'neu bewertet'**
+  String get weightDirRescored;
+
+  /// weight.dir.same
+  ///
+  /// In de, this message translates to:
+  /// **'gleich'**
+  String get weightDirSame;
+
+  /// weight.dir.up
+  ///
+  /// In de, this message translates to:
+  /// **'höher'**
+  String get weightDirUp;
+
+  /// weight.error.range
+  ///
+  /// In de, this message translates to:
+  /// **'Zwischen 30 und 250 kg. Vorschau bleibt aus, bis der Wert stimmt.'**
+  String get weightErrorRange;
+
+  /// weight.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Nachkommastelle · 30–250 kg'**
+  String get weightHint;
+
+  /// weight.impact.acwr
+  ///
+  /// In de, this message translates to:
+  /// **'ACWR'**
+  String get weightImpactAcwr;
+
+  /// weight.impact.best
+  ///
+  /// In de, this message translates to:
+  /// **'Bestwert {exercise}'**
+  String weightImpactBest(String exercise);
+
+  /// weight.impact.form
+  ///
+  /// In de, this message translates to:
+  /// **'Formwert heute'**
+  String get weightImpactForm;
+
+  /// weight.impact.load
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingslast 7 T'**
+  String get weightImpactLoad;
+
+  /// weight.impact.note
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.'**
+  String get weightImpactNote;
+
+  /// weight.impact.scope
+  ///
+  /// In de, this message translates to:
+  /// **'{d} Tage · {n} Einheiten mit Körpergewichtsübungen'**
+  String weightImpactScope(String d, int n);
+
+  /// weight.impact.title
+  ///
+  /// In de, this message translates to:
+  /// **'Was sich rückwirkend ändert'**
+  String get weightImpactTitle;
+
+  /// weight.previous
+  ///
+  /// In de, this message translates to:
+  /// **'Vorher {alt} kg'**
+  String weightPrevious(String alt);
+
+  /// weight.save
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern und neu rechnen'**
+  String get weightSave;
+
+  /// weight.save.busy
+  ///
+  /// In de, this message translates to:
+  /// **'Wird gerechnet'**
+  String get weightSaveBusy;
+
+  /// weight.save.none
+  ///
+  /// In de, this message translates to:
+  /// **'Unverändert · nichts zu speichern'**
+  String get weightSaveNone;
+
+  /// weight.saved.snack
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht {kg} kg · Form {alt} → {neu}'**
+  String weightSavedSnack(String kg, String alt, String neu);
+
+  /// weight.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Bewertet deinen ganzen Verlauf'**
+  String get weightSub;
+
+  /// weight.title
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht'**
+  String get weightTitle;
 
   /// Runner, Modul 1/2 Spezifikation
   ///

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#030308}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes flicker{0%,100%{opacity:1}45%{opacity:1}50%{opacity:.25}55%{opacity:1}68%{opacity:.55}74%{opacity:1}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 18px -2px rgba(255,0,122,.55),0 0 34px -6px rgba(0,242,254,.4)}50%{box-shadow:0 0 32px 2px rgba(255,0,122,.85),0 0 50px -2px rgba(0,242,254,.65)}}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;justify-content:center;align-items:center;padding:28px;background:radial-gradient(1100px 700px at 50% -10%, #0a0b18 0%, #030308 60%);font-family:'Poppins',sans-serif">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="430px,900px">
+<div style="position:relative;height:100%;background:#030308;color:#FFFFFF;overflow:hidden">
+<div style="position:absolute;inset:0;overflow-y:auto;padding:64px 16px 130px 16px;scrollbar-width:none">
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 2px 16px">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:4px 10px;border:1px solid #1A1C29;border-radius:30px;background:rgba(9,10,16,0.8)">
+<span style="width:6px;height:6px;border-radius:50%;background:#00FF87;box-shadow:0 0 8px #00FF87;animation:flicker 2.6s infinite"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:2.5px;color:#00FF87">ATEM HYBRID</span>
+</div>
+<div style="font-size:19px;font-weight:600;line-height:1.15">Guten Morgen, Alex 👋</div>
+<div style="font-size:10.5px;color:#7A819B">Optimales System-Level erreicht</div>
+</div>
+<div style="position:relative;flex:none">
+<div style="width:50px;height:50px;border-radius:50%;padding:2px;background:conic-gradient(from 120deg,#00F2FE,#9D4EDD,#FF007A,#00FF87,#00F2FE);box-shadow:0 0 18px -4px rgba(0,242,254,0.6)">
+<div style="width:100%;height:100%;border-radius:50%;background:#10121F;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;border:2px solid #030308">A</div>
+</div>
+<div style="position:absolute;top:-3px;right:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:30px;background:#FF007A;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:600;box-shadow:0 0 10px rgba(255,0,122,0.8);border:1.5px solid #030308">2</div>
+</div>
+</div>
+
+<div style="position:relative;background:rgba(9,10,16,0.8);border:1px solid #1A1C29;border-radius:20px;padding:18px 16px 16px;backdrop-filter:blur(14px);overflow:hidden;box-shadow:0 0 44px -18px rgba(0,242,254,0.35)">
+<sc-if value="{{ showGlow }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:-70px;left:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(0,242,254,0.16),transparent 70%);pointer-events:none"></div>
+<div style="position:absolute;top:-40px;right:-60px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(157,78,221,0.18),transparent 70%);pointer-events:none"></div>
+<div style="position:absolute;bottom:-80px;left:30%;width:240px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,0,122,0.1),transparent 70%);pointer-events:none"></div>
+</sc-if>
+<div style="position:relative;display:flex;align-items:center;justify-content:space-between">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;color:#7A819B">ATEM READINESS</span>
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#00FF87;border:1px solid rgba(0,255,135,0.35);border-radius:30px;padding:3px 8px"><span style="width:5px;height:5px;border-radius:50%;background:#00FF87;box-shadow:0 0 6px #00FF87;animation:livePulse 1.8s infinite"></span>LIVE</span>
+</div>
+<div style="position:relative;width:224px;margin:6px auto 0">
+<svg viewBox="0 0 224 192" width="224" height="192" style="display:block">
+<defs>
+<linearGradient id="arcGrad" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#00F2FE"></stop>
+<stop offset="55%" stop-color="#9D4EDD"></stop>
+<stop offset="100%" stop-color="#FF007A"></stop>
+</linearGradient>
+</defs>
+<circle cx="112" cy="102" r="84" fill="none" stroke="#14161F" stroke-width="13" pathLength="100" stroke-dasharray="72.2 27.8" stroke-linecap="round" transform="rotate(140 112 102)"></circle>
+<circle cx="112" cy="102" r="84" fill="none" stroke="url(#arcGrad)" stroke-width="13" pathLength="100" stroke-dasharray="{{ arcDash }}" stroke-linecap="round" transform="rotate(140 112 102)" opacity="0.35" style="filter:blur(7px)"></circle>
+<circle cx="112" cy="102" r="84" fill="none" stroke="url(#arcGrad)" stroke-width="13" pathLength="100" stroke-dasharray="{{ arcDash }}" stroke-linecap="round" transform="rotate(140 112 102)"></circle>
+</svg>
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:14px;pointer-events:none">
+<div style="display:flex;align-items:baseline;gap:2px"><span style="font-size:47px;font-weight:700;line-height:1;text-shadow:0 0 26px rgba(0,242,254,0.5)">{{ scoreText }}</span><span style="font-size:19px;font-weight:600;color:#7A819B">%</span></div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:2.5px;color:{{ statusColor }};text-shadow:0 0 14px {{ statusColor }}">{{ status }}</div>
+</div>
+</div>
+<div style="position:relative;display:flex;justify-content:center;margin-top:-8px"><span style="font-size:10px;color:#CDD3EA;border:1px solid #1A1C29;background:rgba(26,28,41,0.5);border-radius:30px;padding:6px 13px;text-align:center">{{ statusTag }}</span></div>
+<div style="position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:15px">
+<div style="text-align:center;padding:10px 6px;border-radius:14px;background:#0B0C14;border:1px solid #1A1C29;box-shadow:0 0 20px -8px rgba(0,255,135,0.55)">
+<div style="font-size:14.5px;font-weight:600;color:#00FF87;text-shadow:0 0 12px rgba(0,255,135,0.6)">82 ms</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#7A819B">HRV</div>
+</div>
+<div style="text-align:center;padding:10px 6px;border-radius:14px;background:#0B0C14;border:1px solid #1A1C29;box-shadow:0 0 20px -8px rgba(0,242,254,0.55)">
+<div style="font-size:14.5px;font-weight:600;color:#00F2FE;text-shadow:0 0 12px rgba(0,242,254,0.6)">51 bpm</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#7A819B">RUHE-HF</div>
+</div>
+<div style="text-align:center;padding:10px 6px;border-radius:14px;background:#0B0C14;border:1px solid #1A1C29;box-shadow:0 0 20px -8px rgba(157,78,221,0.6)">
+<div style="font-size:14.5px;font-weight:600;color:#9D4EDD;text-shadow:0 0 12px rgba(157,78,221,0.7)">8h 24m</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#7A819B">SCHLAF</div>
+</div>
+</div>
+</div>
+
+<div style="margin-top:13px;background:rgba(9,10,16,0.8);border:1px solid #1A1C29;border-radius:20px;padding:16px 14px 12px;backdrop-filter:blur(14px)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;color:#7A819B">PERFORMANCE · 7 TAGE</span>
+<div style="display:flex;gap:9px">
+<span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#7A819B"><span style="width:5px;height:5px;border-radius:50%;background:#00F2FE;box-shadow:0 0 5px #00F2FE"></span>LOAD</span>
+<span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#7A819B"><span style="width:5px;height:5px;border-radius:50%;background:#FF007A;box-shadow:0 0 5px #FF007A"></span>STRAIN</span>
+<span style="display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#7A819B"><span style="width:5px;height:5px;border-radius:50%;background:#00FF87;box-shadow:0 0 5px #00FF87"></span>RECOVERY</span>
+</div>
+</div>
+<div style="position:relative">
+<div style="position:absolute;left:64.8%;top:-4px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:1px;pointer-events:none">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;background:#12141F;border:1px solid rgba(255,0,122,0.45);border-radius:8px;padding:4px 8px;color:#FFFFFF;box-shadow:0 0 16px -4px rgba(255,0,122,0.7);white-space:nowrap">FR · LOAD <span style="color:#FF007A;font-weight:700">92</span></span>
+</div>
+<svg viewBox="0 0 358 152" width="100%" style="display:block">
+<defs>
+<linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0%" stop-color="#00F2FE"></stop>
+<stop offset="50%" stop-color="#9D4EDD"></stop>
+<stop offset="100%" stop-color="#FF007A"></stop>
+</linearGradient>
+<linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="rgba(0,242,254,0.22)"></stop>
+<stop offset="60%" stop-color="rgba(123,44,191,0.08)"></stop>
+<stop offset="100%" stop-color="rgba(3,3,8,0)"></stop>
+</linearGradient>
+<linearGradient id="dropGrad" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="#FF007A"></stop>
+<stop offset="100%" stop-color="rgba(0,242,254,0.1)"></stop>
+</linearGradient>
+</defs>
+<line x1="20" y1="35" x2="338" y2="35" stroke="#12141F" stroke-width="1"></line>
+<line x1="20" y1="70" x2="338" y2="70" stroke="#12141F" stroke-width="1"></line>
+<line x1="20" y1="105" x2="338" y2="105" stroke="#12141F" stroke-width="1"></line>
+<path d="M20 75 C38 68 55 58 73 58 C91 58 108 84 126 88 C144 92 161 56 179 46 C197 36 214 30 232 30 C250 30 267 58 285 64 C303 70 320 56 338 52 L338 152 L20 152 Z" fill="url(#areaGrad)"></path>
+<line x1="232" y1="16" x2="232" y2="120" stroke="url(#dropGrad)" stroke-width="1.5" stroke-dasharray="3 4"></line>
+<path d="M20 95 C38 93 55 88 73 88 C91 88 108 74 126 70 C144 66 161 78 179 82 C197 86 214 66 232 60 C250 54 267 86 285 92 C303 98 320 88 338 84" fill="none" stroke="#FF007A" stroke-width="1.5" stroke-dasharray="4 5" opacity="0.7"></path>
+<path d="M20 55 C38 60 55 66 73 66 C91 66 108 54 126 50 C144 46 161 56 179 60 C197 64 214 46 232 42 C250 38 267 44 285 48 C303 52 320 55 338 58" fill="none" stroke="#00FF87" stroke-width="1.5" opacity="0.75"></path>
+<path d="M20 75 C38 68 55 58 73 58 C91 58 108 84 126 88 C144 92 161 56 179 46 C197 36 214 30 232 30 C250 30 267 58 285 64 C303 70 320 56 338 52" fill="none" stroke="url(#lineGrad)" stroke-width="5" opacity="0.35" style="filter:blur(5px)"></path>
+<path d="M20 75 C38 68 55 58 73 58 C91 58 108 84 126 88 C144 92 161 56 179 46 C197 36 214 30 232 30 C250 30 267 58 285 64 C303 70 320 56 338 52" fill="none" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round"></path>
+<circle cx="20" cy="75" r="3" fill="#0A0B12" stroke="#00F2FE" stroke-width="2"></circle>
+<circle cx="73" cy="58" r="3" fill="#0A0B12" stroke="#2BD9F2" stroke-width="2"></circle>
+<circle cx="126" cy="88" r="3" fill="#0A0B12" stroke="#6E9BE0" stroke-width="2"></circle>
+<circle cx="179" cy="46" r="3" fill="#0A0B12" stroke="#9D4EDD" stroke-width="2"></circle>
+<circle cx="232" cy="30" r="7" fill="rgba(255,0,122,0.25)"></circle>
+<circle cx="232" cy="30" r="4" fill="#FFFFFF" stroke="#FF007A" stroke-width="2.5"></circle>
+<circle cx="285" cy="64" r="3" fill="#0A0B12" stroke="#E82BA0" stroke-width="2"></circle>
+<circle cx="338" cy="52" r="3" fill="#0A0B12" stroke="#FF007A" stroke-width="2"></circle>
+<text x="20" y="144" text-anchor="middle" fill="#7A819B" font-size="9" font-family="JetBrains Mono,monospace">MO</text>
+<text x="73" y="144" text-anchor="middle" fill="#7A819B" font-size="9" font-family="JetBrains Mono,monospace">DI</text>
+<text x="126" y="144" text-anchor="middle" fill="#7A819B" font-size="9" font-family="JetBrains Mono,monospace">MI</text>
+<text x="179" y="144" text-anchor="middle" fill="#7A819B" font-size="9" font-family="JetBrains Mono,monospace">DO</text>
+<text x="232" y="144" text-anchor="middle" fill="#FFFFFF" font-size="9" font-weight="700" font-family="JetBrains Mono,monospace">FR</text>
+<text x="285" y="144" text-anchor="middle" fill="#7A819B" font-size="9" font-family="JetBrains Mono,monospace">SA</text>
+<text x="338" y="144" text-anchor="middle" fill="#7A819B" font-size="9" font-family="JetBrains Mono,monospace">SO</text>
+</svg>
+</div>
+</div>
+
+<div style="margin-top:13px;border-radius:22px;padding:1.5px;background:linear-gradient(135deg,#00F2FE,#7B2CBF 55%,#FF007A);box-shadow:0 0 34px -10px rgba(123,44,191,0.7)">
+<div style="border-radius:20.5px;background:rgba(7,8,13,0.96);padding:16px 15px 15px;backdrop-filter:blur(10px)">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:2.5px;color:#00F2FE">HEUTIGE SESSION</div>
+<div style="margin-top:7px;font-size:15px;font-weight:600;line-height:1.35">ATEM Hybrid – Day 4: Upper Body &amp; EMOM Finish</div>
+<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:11px">
+<span style="font-size:9.5px;font-weight:500;color:#CDD3EA;border:1px solid #1A1C29;background:#0B0C14;border-radius:30px;padding:4px 10px">48 Min</span>
+<span style="font-size:9.5px;font-weight:500;color:#FF007A;border:1px solid rgba(255,0,122,0.4);background:#0B0C14;border-radius:30px;padding:4px 10px">High Intensity</span>
+<span style="font-size:9.5px;font-weight:500;color:#CDD3EA;border:1px solid #1A1C29;background:#0B0C14;border-radius:30px;padding:4px 10px">4 Blocks</span>
+</div>
+<sc-if value="{{ notStarted }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ toggleSession }}" style-active="transform:scale(0.97)" style="margin-top:14px;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;border:none;border-radius:30px;cursor:pointer;background:linear-gradient(90deg,#00F2FE,#7B2CBF 55%,#FF007A);color:#FFFFFF;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;letter-spacing:2.5px;animation:pulseGlow 2.2s infinite;transition:transform 0.15s;text-shadow:0 1px 6px rgba(0,0,0,0.45)">
+<svg width="11" height="13" viewBox="0 0 11 13"><polygon points="0,0 11,6.5 0,13" fill="#FFFFFF"></polygon></svg>
+SESSION STARTEN
+</button>
+</sc-if>
+<sc-if value="{{ started }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ toggleSession }}" style-active="transform:scale(0.97)" style="margin-top:14px;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;border:1px solid rgba(0,255,135,0.6);border-radius:30px;cursor:pointer;background:#0B0C14;color:#00FF87;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:2px;box-shadow:0 0 26px -6px rgba(0,255,135,0.6);transition:transform 0.15s">
+<span style="width:7px;height:7px;border-radius:50%;background:#00FF87;box-shadow:0 0 8px #00FF87;animation:livePulse 1.2s infinite"></span>
+SESSION LÄUFT · {{ timer }}
+</button>
+</sc-if>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:13px">
+<div style-hover="border-color:rgba(0,242,254,0.5);box-shadow:0 0 26px -8px rgba(0,242,254,0.5)" style-active="transform:scale(0.97)" style="background:rgba(9,10,16,0.8);border:1px solid #1A1C29;border-radius:20px;padding:14px;cursor:pointer;transition:all 0.2s;backdrop-filter:blur(10px)">
+<div style="width:33px;height:33px;border-radius:10px;background:rgba(0,242,254,0.12);display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 20V10 M9 20V4 M14 20v-7 M19 20V8" stroke="#00F2FE" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
+<div style="margin-top:10px;font-size:12px;font-weight:600">Workout Log</div>
+<div style="margin-top:3px;font-size:9.5px;color:#7A819B;line-height:1.5">Bench 92,5 kg PR · 5×5 Squat · 24 Sets</div>
+</div>
+<div style-hover="border-color:rgba(255,0,122,0.5);box-shadow:0 0 26px -8px rgba(255,0,122,0.5)" style-active="transform:scale(0.97)" style="background:rgba(9,10,16,0.8);border:1px solid #1A1C29;border-radius:20px;padding:14px;cursor:pointer;transition:all 0.2s;backdrop-filter:blur(10px)">
+<div style="display:flex;align-items:flex-start;justify-content:space-between">
+<div style="width:33px;height:33px;border-radius:10px;background:rgba(255,0,122,0.12);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M13 2 5 13h5l-2 9 9-12h-5l1-8Z" stroke="#FF007A" stroke-width="1.6" stroke-linejoin="round"></path></svg></div>
+<div style="position:relative;width:38px;height:38px">
+<svg viewBox="0 0 38 38" width="38" height="38"><circle cx="19" cy="19" r="15.5" fill="none" stroke="#14161F" stroke-width="4"></circle><circle cx="19" cy="19" r="15.5" fill="none" stroke="#FF007A" stroke-width="4" pathLength="100" stroke-dasharray="87 100" stroke-linecap="round" transform="rotate(-90 19 19)" style="filter:drop-shadow(0 0 4px rgba(255,0,122,0.7))"></circle></svg>
+<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:600;font-family:'JetBrains Mono',monospace">87%</span>
+</div>
+</div>
+<div style="margin-top:10px;font-size:12px;font-weight:600">Nutrition &amp; Fuel</div>
+<div style="margin-top:3px;font-size:9.5px;color:#7A819B;line-height:1.5">Protein <span style="color:#FF007A;font-weight:600">165g</span> / 190g Ziel</div>
+</div>
+<div style-hover="border-color:rgba(0,255,135,0.5);box-shadow:0 0 26px -8px rgba(0,255,135,0.5)" style-active="transform:scale(0.97)" style="background:rgba(9,10,16,0.8);border:1px solid #1A1C29;border-radius:20px;padding:14px;cursor:pointer;transition:all 0.2s;backdrop-filter:blur(10px)">
+<div style="width:33px;height:33px;border-radius:10px;background:rgba(0,255,135,0.12);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12c3-6.5 6-6.5 9 0s6 6.5 9 0" stroke="#00FF87" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
+<div style="margin-top:10px;font-size:12px;font-weight:600">Recovery Scan</div>
+<div style="margin-top:3px;font-size:9.5px;color:#7A819B;line-height:1.5">Live HRV 82 ms · 3 Min Breathwork</div>
+</div>
+<div style-hover="border-color:rgba(157,78,221,0.55);box-shadow:0 0 26px -8px rgba(157,78,221,0.55)" style-active="transform:scale(0.97)" style="background:rgba(9,10,16,0.8);border:1px solid #1A1C29;border-radius:20px;padding:14px;cursor:pointer;transition:all 0.2s;backdrop-filter:blur(10px)">
+<div style="width:33px;height:33px;border-radius:10px;background:rgba(157,78,221,0.14);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4.5 6.5h15v13h-15Z M4.5 10.5h15 M8.5 4v4 M15.5 4v4" stroke="#9D4EDD" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="margin-top:10px;font-size:12px;font-weight:600">Periodisierung</div>
+<div style="margin-top:3px;font-size:9.5px;color:#7A819B;line-height:1.5">Woche 6 von 12 · Hypertrophie</div>
+<div style="margin-top:8px;height:3px;border-radius:3px;background:#14161F;overflow:hidden"><div style="width:50%;height:100%;border-radius:3px;background:linear-gradient(90deg,#7B2CBF,#9D4EDD);box-shadow:0 0 8px rgba(157,78,221,0.8)"></div></div>
+</div>
+</div>
+
+</div>
+<div style="position:absolute;left:16px;right:16px;bottom:16px;display:flex;justify-content:space-around;align-items:center;padding:9px 6px;border-radius:30px;background:rgba(9,10,16,0.72);border:1px solid rgba(26,28,41,0.95);backdrop-filter:blur(22px);box-shadow:0 8px 32px rgba(0,0,0,0.65),0 0 30px -14px rgba(0,242,254,0.4)">
+<sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
+<button onClick="{{ item.onTap }}" style-active="transform:scale(0.88)" style="background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:3px 9px;transition:transform 0.15s">
+<svg width="21" height="21" viewBox="0 0 24 24" fill="none" style="filter:{{ item.glowShadow }}"><path d="{{ item.d }}" stroke="{{ item.color }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.5px;color:{{ item.color }}">{{ item.label }}</span>
+<span style="width:4px;height:4px;border-radius:50%;background:#00F2FE;box-shadow:0 0 8px #00F2FE;opacity:{{ item.dotOp }}"></span>
+</button>
+</sc-for>
+</div>
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:500,&quot;height&quot;:980},&quot;readiness&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:89,&quot;min&quot;:40,&quot;max&quot;:100,&quot;unit&quot;:&quot;%&quot;,&quot;section&quot;:&quot;Bio-Daten&quot;},&quot;ambientGlow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;Effekte&quot;}}">
+class Component extends DCLogic {
+  state = { score: 0, activeNav: 0, started: false, elapsed: 0 };
+  componentDidMount() { this.animateTo(this.target()); }
+  componentWillUnmount() { cancelAnimationFrame(this._raf); clearInterval(this._t); }
+  target() { const r = this.props.readiness; return Math.max(0, Math.min(100, typeof r === 'number' ? r : 89)); }
+  componentDidUpdate(pp) {
+    const a = typeof pp.readiness === 'number' ? pp.readiness : 89;
+    if (a !== this.target()) this.animateTo(this.target());
+  }
+  animateTo(t) {
+    cancelAnimationFrame(this._raf);
+    const from = this.state.score, st = performance.now(), dur = 1400;
+    const tick = (n) => {
+      const p = Math.min(1, (n - st) / dur), e = 1 - Math.pow(1 - p, 3);
+      this.setState({ score: from + (t - from) * e });
+      if (p < 1) this._raf = requestAnimationFrame(tick);
+    };
+    this._raf = requestAnimationFrame(tick);
+  }
+  toggleSession() {
+    if (this.state.started) { clearInterval(this._t); this.setState({ started: false, elapsed: 0 }); }
+    else { this.setState({ started: true, elapsed: 0 }); this._t = setInterval(() => this.setState(s => ({ elapsed: s.elapsed + 1 })), 1000); }
+  }
+  renderVals() {
+    const s = this.state.score, sr = Math.round(s);
+    const status = sr >= 85 ? 'PEAK READINESS' : sr >= 70 ? 'SOLIDE FORM' : sr >= 55 ? 'MODERATE LAST' : 'FOKUS: REGENERATION';
+    const statusColor = sr >= 85 ? '#00FF87' : sr >= 70 ? '#00F2FE' : sr >= 55 ? '#9D4EDD' : '#FF007A';
+    const statusTag = sr >= 85 ? 'Regeneration: Optimal • Bereit für Hyrox / Max Load'
+      : sr >= 70 ? 'Regeneration: Gut • Normale Trainingslast fahren'
+      : sr >= 55 ? 'Regeneration: Mittel • Volumen leicht reduzieren'
+      : 'Regeneration: Niedrig • Heute aktiv erholen';
+    const icons = [
+      ['HOME', 'M4 11.5 12 4.5l8 7 M6.5 10.5v9h11v-9'],
+      ['WORKOUTS', 'M2.5 12h3 M18.5 12h3 M6.5 8.5v7 M17.5 8.5v7 M9.5 6v12 M14.5 6v12 M9.5 12h5'],
+      ['ANALYTICS', 'M5 19.5v-7 M12 19.5v-13 M19 19.5V10'],
+      ['RECOVERY', 'M3 12c3-6.5 6-6.5 9 0s6 6.5 9 0'],
+      ['PROFIL', 'M12 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z M4.5 19.5c1.6-3.8 4.2-5.3 7.5-5.3s5.9 1.5 7.5 5.3']
+    ];
+    const navItems = icons.map((it, i) => ({
+      label: it[0], d: it[1],
+      color: i === this.state.activeNav ? '#00F2FE' : '#7A819B',
+      dotOp: i === this.state.activeNav ? 1 : 0,
+      glowShadow: i === this.state.activeNav ? 'drop-shadow(0 0 6px rgba(0,242,254,0.9))' : 'none',
+      onTap: () => this.setState({ activeNav: i })
+    }));
+    const el = this.state.elapsed, mm = String(Math.floor(el / 60)).padStart(2, '0'), ss = String(el % 60).padStart(2, '0');
+    return {
+      scoreText: sr,
+      arcDash: (72.2 * s / 100).toFixed(2) + ' 100',
+      status, statusColor, statusTag,
+      showGlow: this.props.ambientGlow ?? true,
+      navItems,
+      notStarted: !this.state.started,
+      started: this.state.started,
+      toggleSession: () => this.toggleSession(),
+      timer: mm + ':' + ss
+    };
+  }
+}
+</script>
+</body>
+</html>

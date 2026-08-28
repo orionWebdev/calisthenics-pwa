@@ -9,6 +9,111 @@ class AppL10nEn extends AppL10n {
   AppL10nEn([String locale = 'en']) : super(locale);
 
   @override
+  String get aboutAccess => 'Access';
+
+  @override
+  String get aboutAccessValue => 'Approved address';
+
+  @override
+  String get aboutAppearance => 'Appearance';
+
+  @override
+  String get aboutAppearanceValue => 'Dark · no light version';
+
+  @override
+  String get aboutLanguages => 'Languages';
+
+  @override
+  String get aboutVersion => 'Version';
+
+  @override
+  String get accountDelete => 'Delete account';
+
+  @override
+  String accountDelete2Body(String y, String m, int n, String e) {
+    return '$y years $m months, $n workouts and $e exercises of your own. There is no undo and no grace period.';
+  }
+
+  @override
+  String get accountDelete2Confirm => 'Delete account';
+
+  @override
+  String get accountDelete2Keep => 'Keep';
+
+  @override
+  String get accountDelete2Title => 'Delete permanently';
+
+  @override
+  String accountDelete2TypeCount(int a, String b) {
+    return '$a / $b characters';
+  }
+
+  @override
+  String get accountDelete2TypeLabel => 'Type “DELETE” to confirm';
+
+  @override
+  String get accountDelete2TypeWord => 'DELETE';
+
+  @override
+  String get accountDeleteAccess =>
+      'Your access remains. You can sign in again afterwards — the app then starts empty, at onboarding.';
+
+  @override
+  String get accountDeleteBody =>
+      'This deletes everything you have. Today’s numbers:';
+
+  @override
+  String get accountDeleteContinue => 'Continue to delete';
+
+  @override
+  String get accountDeleteExport => 'Export data first';
+
+  @override
+  String get accountDeleteRange => 'Time span';
+
+  @override
+  String get accountDeleteSub => 'Six collections · no undo';
+
+  @override
+  String get accountDeleting => 'Deleting your account';
+
+  @override
+  String accountDeletingStep(String name) {
+    return '$name';
+  }
+
+  @override
+  String get accountDeletingWait => 'Cannot be cancelled. This takes a moment.';
+
+  @override
+  String get accountDoneAccessBody =>
+      'Your ATEM access still applies. Sign in with the same address and you are back in — with nothing stored, at onboarding.';
+
+  @override
+  String get accountDoneAccessTitle => 'One thing remains';
+
+  @override
+  String get accountDoneBody =>
+      'Your workouts, plans, exercises, appointments and progress are deleted. The sign-in account is removed.';
+
+  @override
+  String get accountDoneTitle => 'Account deleted';
+
+  @override
+  String get accountDoneToLogin => 'To sign-in';
+
+  @override
+  String accountPartialBody(int a, String b) {
+    return '$a of $b collections are gone, the sign-in account still exists.';
+  }
+
+  @override
+  String get accountPartialResume => 'Resume deletion';
+
+  @override
+  String get accountPartialTitle => 'Not fully deleted';
+
+  @override
   String get analysisChartLabel => 'Form 0–100';
 
   @override
@@ -164,6 +269,53 @@ class AppL10nEn extends AppL10n {
   String get authSigningIn => 'Signing in …';
 
   @override
+  String balanceBasis(int sets, int n, int total) {
+    return '$sets sets · $n of $total strength sessions';
+  }
+
+  @override
+  String get balanceColLast => 'last';
+
+  @override
+  String get balanceColSets => 'Sets';
+
+  @override
+  String get balanceColShare => 'Share';
+
+  @override
+  String get balanceGapsNote =>
+      'Time since the last set on this muscle. No target — the app does not know how often it should be trained.';
+
+  @override
+  String get balanceGapsTitle => 'Longest gaps';
+
+  @override
+  String balanceLastDays(int n) {
+    return '${n}d';
+  }
+
+  @override
+  String balanceLastDaysLong(int n) {
+    return 'last ${n}d';
+  }
+
+  @override
+  String balanceThin(int n, int min) {
+    return 'Not enough basis yet: $n of $min strength sessions with exercises in the last 8 weeks.';
+  }
+
+  @override
+  String balanceThinProgress(int n, int min, int rest) {
+    return '$n / $min · $rest sessions to go';
+  }
+
+  @override
+  String get balanceTitle => 'Muscle balance';
+
+  @override
+  String get balanceWindow => '8 weeks';
+
+  @override
   String get commonActivity => 'Activity';
 
   @override
@@ -186,6 +338,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get commonClose => 'Close';
+
+  @override
+  String get commonCreated => 'Exercise created';
 
   @override
   String get commonDays => 'Days';
@@ -224,6 +379,18 @@ class AppL10nEn extends AppL10n {
   String get commonNotes => 'Notes';
 
   @override
+  String get commonOf => 'of';
+
+  @override
+  String get commonOffline => 'Saved locally · syncing';
+
+  @override
+  String get commonOfflineSync => 'Saved locally · syncing';
+
+  @override
+  String get commonOpen => 'Open';
+
+  @override
   String get commonOptional => 'optional';
 
   @override
@@ -239,7 +406,16 @@ class AppL10nEn extends AppL10n {
   String get commonRetry => 'Try again';
 
   @override
+  String get commonRetrySave => 'Save again';
+
+  @override
   String get commonSave => 'Save';
+
+  @override
+  String get commonSaved => 'Change saved';
+
+  @override
+  String get commonSaving => 'Saving';
 
   @override
   String commonSecondsShort(int n) {
@@ -268,6 +444,9 @@ class AppL10nEn extends AppL10n {
   String get commonTime => 'Time';
 
   @override
+  String get commonUndo => 'Undo';
+
+  @override
   String get commonView => 'View';
 
   @override
@@ -278,6 +457,56 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get commonWorkout => 'Workout';
+
+  @override
+  String compareBasisDate(String date, int n) {
+    return '$date · $n days ago';
+  }
+
+  @override
+  String get compareBasisExercises => 'Same exercises';
+
+  @override
+  String compareBasisMedian(int n) {
+    return 'Median · $n sessions';
+  }
+
+  @override
+  String get compareBasisPlan => 'Same plan';
+
+  @override
+  String compareEmptyPlan(String plan) {
+    return 'First session of plan “$plan”. From the next one on, the comparison appears here.';
+  }
+
+  @override
+  String get compareEmptyType =>
+      'First session of this kind. From the next one on, the comparison appears here.';
+
+  @override
+  String get compareLoading => 'Loading comparison';
+
+  @override
+  String compareMedian(String value) {
+    return 'median $value';
+  }
+
+  @override
+  String get compareNoneValue => 'no basis';
+
+  @override
+  String get compareNoteMedian =>
+      'No plan ID, no exercise overlap. Only what is independent of the exercises is compared: duration and load.';
+
+  @override
+  String compareNotePlan(String plan) {
+    return 'Both sessions follow plan “$plan”. All four values are comparable.';
+  }
+
+  @override
+  String comparePrev(String value) {
+    return 'before $value';
+  }
 
   @override
   String consequenceDays(int n) {
@@ -753,6 +982,21 @@ class AppL10nEn extends AppL10n {
   String get dashboardWeekdays => 'MO,TU,WE,TH,FR,SA,SU';
 
   @override
+  String get deleteConfirm => 'Delete';
+
+  @override
+  String get deleteKeep => 'Keep';
+
+  @override
+  String get deleteStep1Continue => 'Continue to delete';
+
+  @override
+  String get deleteStep2NoUndo => 'There is no undo — only creating it again.';
+
+  @override
+  String get deleteStep2Title => 'Delete permanently';
+
+  @override
   String get detailAcwrLabel => 'Load on this day';
 
   @override
@@ -793,26 +1037,6 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get detailVolume => 'Volume';
-
-  @override
-  String get difficultyLevel1 => 'Beginner';
-
-  @override
-  String get difficultyLevel2 => 'Intermediate';
-
-  @override
-  String get difficultyLevel3 => 'Advanced';
-
-  @override
-  String get difficultyLevel4 => 'Elite';
-
-  @override
-  String get difficultyLevel5 => 'Extreme';
-
-  @override
-  String difficultyPick(String level, int n) {
-    return '$level — level $n of 5';
-  }
 
   @override
   String durationApproxMinutes(int n) {
@@ -867,14 +1091,6 @@ class AppL10nEn extends AppL10n {
   String get errorsWorkoutStartFailed => 'Error starting workout';
 
   @override
-  String get exerciseCopyAction => 'Create your own version';
-
-  @override
-  String exerciseCopyName(String name) {
-    return '$name (mine)';
-  }
-
-  @override
   String get exerciseCopyNotice =>
       'The curated exercise remains. Your version sits alongside it.';
 
@@ -893,43 +1109,52 @@ class AppL10nEn extends AppL10n {
   String get exerciseCues => 'Cues';
 
   @override
-  String get exerciseCuratedA11y => 'Curated, not editable';
+  String get exerciseCuratedBadge => 'Curated';
 
   @override
   String get exerciseCuratedBody =>
-      'Curated exercises are the same for everyone.';
+      'This exercise is the same for everyone and stays unchanged. Want it different? Create your own version.';
 
   @override
-  String get exerciseCuratedChip => 'Curated';
+  String get exerciseCuratedCopy => 'Create my own version';
 
   @override
-  String get exerciseDeleteBarrier => 'Delete exercise';
+  String get exerciseCuratedTitle => 'Part of the library';
 
   @override
-  String get exerciseDeleteBody =>
-      'Completed sessions keep their sets but will only show the identifier.';
+  String get exerciseDelete => 'Delete exercise';
 
   @override
-  String exerciseDeleteInPlans(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other:
-          'It is used in $n plans. A gap with the target values will remain in each.',
-      one:
-          'It is used in one plan. A gap with the target values will remain there.',
-    );
-    return '$_temp0';
+  String exerciseDeleteKeepUnits(int n) {
+    return 'Your $n workouts stay complete — sets, weights and load.';
   }
 
   @override
-  String get exerciseDeleteSecondBody => 'This cannot be undone.';
+  String exerciseDeletePlansGap(int n) {
+    return 'A gap stays in those $n plans, which you can replace there.';
+  }
 
   @override
-  String get exerciseDeleteSecondTitle => 'Delete permanently?';
+  String exerciseDeleteQ(String name) {
+    return 'Delete “$name”?';
+  }
 
   @override
-  String get exerciseDeleteTitle => 'Delete exercise?';
+  String exerciseDeleteUsage(int p, int s) {
+    String _temp0 = intl.Intl.pluralLogic(
+      p,
+      locale: localeName,
+      other: '# plans',
+      one: '# plan',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      s,
+      locale: localeName,
+      other: '# workouts',
+      one: '# workout',
+    );
+    return 'This exercise is used in $_temp0 and $_temp1.';
+  }
 
   @override
   String exerciseDifficultyA11y(int n) {
@@ -937,64 +1162,56 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get exerciseFormDescription => 'Description';
-
-  @override
-  String get exerciseFormDifficulty => 'Difficulty';
-
-  @override
-  String get exerciseFormDifficultyFault => 'Choose a level.';
-
-  @override
-  String get exerciseFormDifficultyHint => 'The level is stored as a number.';
-
-  @override
-  String get exerciseFormEditTitle => 'Edit exercise';
-
-  @override
-  String get exerciseFormEquipment => 'Equipment';
-
-  @override
-  String get exerciseFormEquipmentHint => 'e.g. dumbbell, pull-up bar';
-
-  @override
-  String exerciseFormMuscleChosen(String muscle) {
-    return '$muscle, selected';
+  String exerciseDuplicateBody(String name) {
+    return 'You already have an exercise called “$name”. Your input is still here.';
   }
 
   @override
-  String exerciseFormMuscleToggle(String muscle) {
-    return 'Select $muscle';
+  String get exerciseDuplicateOpen => 'Open existing';
+
+  @override
+  String get exerciseDuplicateSuggest => 'Use suggestion';
+
+  @override
+  String get exerciseDuplicateTitle => 'Not saved';
+
+  @override
+  String get exerciseEditTitle => 'Edit exercise';
+
+  @override
+  String get exerciseFieldCues => 'Cues';
+
+  @override
+  String get exerciseFieldCuesHint => 'Short reminders, one per line';
+
+  @override
+  String get exerciseFieldEquipment => 'Equipment';
+
+  @override
+  String get exerciseFieldEquipmentHint => 'Free text, no fixed list';
+
+  @override
+  String get exerciseFieldInstructions => 'Instructions';
+
+  @override
+  String get exerciseFieldInstructionsHint => 'Free text, up to 500 characters';
+
+  @override
+  String get exerciseFieldLevel => 'Level';
+
+  @override
+  String get exerciseFieldMuscles => 'Muscles';
+
+  @override
+  String exerciseFieldMusclesCount(int n) {
+    return '$n selected';
   }
 
   @override
-  String get exerciseFormMuscles => 'Muscles';
+  String get exerciseFieldName => 'Name';
 
   @override
-  String get exerciseFormMusclesFault => 'Choose at least one muscle.';
-
-  @override
-  String get exerciseFormMusclesHint =>
-      'At least one. It gives the exercise its colour.';
-
-  @override
-  String get exerciseFormName => 'Name';
-
-  @override
-  String get exerciseFormNameFault =>
-      'Without a name you will not find it again.';
-
-  @override
-  String get exerciseFormNameHint => 'e.g. Wide pull-up';
-
-  @override
-  String get exerciseFormNewTitle => 'New exercise';
-
-  @override
-  String get exerciseFormOptionalSection => 'Can wait';
-
-  @override
-  String get exerciseFormRequiredSection => 'Required';
+  String get exerciseFieldNameHint => 'e.g. Bulgarian split squat';
 
   @override
   String get exerciseFormSaveError => 'Exercise not saved';
@@ -1004,13 +1221,44 @@ class AppL10nEn extends AppL10n {
       'Check your connection and try again.';
 
   @override
-  String get exerciseFormSaved => 'Exercise saved';
-
-  @override
   String get exerciseInstructions => 'Instructions';
 
   @override
+  String get exerciseLevel1 => 'Entry';
+
+  @override
+  String get exerciseLevel2 => 'Easy';
+
+  @override
+  String get exerciseLevel3 => 'Medium';
+
+  @override
+  String get exerciseLevel4 => 'Advanced';
+
+  @override
+  String get exerciseLevel5 => 'Expert';
+
+  @override
+  String get exerciseLevelHint => 'Saved as a number, 1–5.';
+
+  @override
   String get exerciseMistakes => 'Common mistakes';
+
+  @override
+  String get exerciseMore => 'More details';
+
+  @override
+  String exerciseMoreCount(int n) {
+    return '$n optional';
+  }
+
+  @override
+  String get exerciseNewTitle => 'New exercise';
+
+  @override
+  String exerciseSaveBlocked(int n) {
+    return '$n more details needed';
+  }
 
   @override
   String get exerciseSparseBody => 'You created this exercise yourself.';
@@ -1019,8 +1267,17 @@ class AppL10nEn extends AppL10n {
   String get exerciseSparseTitle => 'No instructions yet';
 
   @override
-  String exercisesBlockAll(int n) {
-    return 'View all $n';
+  String get exercisesBlockAll => 'See all';
+
+  @override
+  String get exercisesBlockByMuscle => 'By muscle';
+
+  @override
+  String get exercisesBlockSearch => 'Name or muscle';
+
+  @override
+  String exercisesBlockTitle(int n) {
+    return 'Exercises · $n';
   }
 
   @override
@@ -1029,9 +1286,19 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get exercisesCreate => 'Create your own exercise';
+
+  @override
   String exercisesEmptyBody(String q) {
     return 'No exercise matches “$q” — in either language.';
   }
+
+  @override
+  String get exercisesEmptyOwnBody =>
+      'Name, muscles and a level are enough — the rest is optional.';
+
+  @override
+  String get exercisesEmptyOwnTitle => 'No exercise of your own yet';
 
   @override
   String get exercisesEmptyTitle => 'Nothing found';
@@ -1058,9 +1325,6 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get exercisesNew => 'New exercise';
-
-  @override
   String get exercisesNoMatchBody => 'Change the search term or the muscle.';
 
   @override
@@ -1074,6 +1338,38 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get exercisesTitle => 'Exercises';
+
+  @override
+  String get exportBody => 'You choose where it goes afterwards.';
+
+  @override
+  String get exportCreate => 'Create file';
+
+  @override
+  String get exportDoneNote =>
+      'The file is in your downloads folder. The app sends nothing itself.';
+
+  @override
+  String get exportDoneShare => 'Share';
+
+  @override
+  String get exportOffline => 'Not possible offline';
+
+  @override
+  String exportProgress(int a, String b, int c, String d, String e, String f) {
+    return 'Workouts $a/$b · plans $c/$d · exercises $e/$f';
+  }
+
+  @override
+  String exportSize(String mb) {
+    return 'approx. $mb MB · no images, no videos';
+  }
+
+  @override
+  String get exportSub => 'One file with everything that is yours';
+
+  @override
+  String get exportTitle => 'Export data';
 
   @override
   String get formDiscardBarrier => 'Discard changes';
@@ -1166,12 +1462,40 @@ class AppL10nEn extends AppL10n {
   String get gateTitle => 'You’re on the list';
 
   @override
+  String get hapticsSub => 'A short tap on sets and rest';
+
+  @override
+  String get hapticsTitle => 'Haptics';
+
+  @override
+  String get hapticsUnavailable => 'Your device has no vibration motor.';
+
+  @override
   String historyAll(int n) {
     return 'All $n';
   }
 
   @override
   String get historyAnalysisOpen => 'Open analysis';
+
+  @override
+  String get historyBest => 'Best';
+
+  @override
+  String historyCount(int n) {
+    return '$n×';
+  }
+
+  @override
+  String historyCurveA11y(int n, String from, String to) {
+    return 'Best set weight across $n sessions, from $from to $to';
+  }
+
+  @override
+  String get historyCurveLabel => 'Best set weight';
+
+  @override
+  String get historyCurveLegend => 'Ring marks the best value';
 
   @override
   String get historyEmptyBody =>
@@ -1193,6 +1517,17 @@ class AppL10nEn extends AppL10n {
   String historyFormOf(int v) {
     return '$v/100';
   }
+
+  @override
+  String get historyFreq => 'Frequency';
+
+  @override
+  String historyFreqValue(int n) {
+    return '$n / wk';
+  }
+
+  @override
+  String get historyLast => 'Last';
 
   @override
   String historyLeadFrequency(int n, int d) {
@@ -1224,10 +1559,22 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String historyOnce(String date) {
+    return 'performed · $date';
+  }
+
+  @override
+  String get historyOnceLabel => 'That time';
+
+  @override
+  String get historyOnceNote =>
+      'No best, no curve, no frequency — one performance yields none of these.';
+
+  @override
   String get historyRecentLabel => 'Recent workouts';
 
   @override
-  String get historyTitle => 'History';
+  String get historyTitle => 'You with this exercise';
 
   @override
   String get historyTrendFalling => 'falling';
@@ -1237,6 +1584,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get historyTrendStable => 'stable';
+
+  @override
+  String get historyVolume => 'Volume';
 
   @override
   String get historyZoneInactive => 'Inactive';
@@ -1249,6 +1599,41 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get historyZoneRhythm => 'In rhythm';
+
+  @override
+  String get languageDe => 'German';
+
+  @override
+  String get languageEn => 'English';
+
+  @override
+  String get languageTitle => 'Language';
+
+  @override
+  String get legalError => 'Text not loaded';
+
+  @override
+  String get legalExternal => 'Open externally';
+
+  @override
+  String get legalImprint => 'Legal notice';
+
+  @override
+  String legalImprintBody(String betreiber) {
+    return 'Private project of a private individual. Details pursuant to § 5 TMG: $betreiber';
+  }
+
+  @override
+  String get legalInapp => 'In the app';
+
+  @override
+  String get legalPrivacy => 'Privacy';
+
+  @override
+  String get legalRetry => 'Try again';
+
+  @override
+  String get legalTerms => 'Terms of use';
 
   @override
   String listEndBody(String date, int n) {
@@ -1405,6 +1790,40 @@ class AppL10nEn extends AppL10n {
       'ATEM converts every exercise into training load — including bodyweight moves. That takes exactly one number.';
 
   @override
+  String get onboardingRepeat => 'Repeat onboarding';
+
+  @override
+  String get onboardingRepeatAction => 'View';
+
+  @override
+  String get onboardingRepeatSub => 'The four intro pages again';
+
+  @override
+  String get planBrokenEntry => 'Exercise deleted';
+
+  @override
+  String planBrokenKeepTarget(String ziel) {
+    return 'Target kept · $ziel';
+  }
+
+  @override
+  String planBrokenNotice(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# entries point',
+      one: '# entry points',
+    );
+    return '$_temp0 to nothing.';
+  }
+
+  @override
+  String get planBrokenRemove => 'Remove';
+
+  @override
+  String get planBrokenReplace => 'Replace';
+
+  @override
   String planCount(int n) {
     return '$n plans';
   }
@@ -1418,6 +1837,24 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get planDeleteTitle => 'Delete plan?';
+
+  @override
+  String get planEmptyAllowed => 'The plan exists as soon as it has a name.';
+
+  @override
+  String get planEntryAdd => 'Add exercise';
+
+  @override
+  String get planEntryReps => 'Reps';
+
+  @override
+  String get planEntryRepsHint => '“12”, “8-12” and “max” are all allowed.';
+
+  @override
+  String get planEntryRest => 'Rest';
+
+  @override
+  String get planEntrySets => 'Sets';
 
   @override
   String get planFormAdd => 'Add exercise';
@@ -1525,6 +1962,16 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get planNewTitle => 'New plan';
+
+  @override
+  String get profileLocked => 'Via Google · fixed';
+
+  @override
+  String get profileLockedWhy =>
+      'Your name and email come from your Google account and are only shown here.';
+
+  @override
   String get regionArms => 'Arms';
 
   @override
@@ -1543,8 +1990,57 @@ class AppL10nEn extends AppL10n {
   String get regionShoulders => 'Shoulders';
 
   @override
+  String get restBody =>
+      'Applies to sets without their own rest in the plan. Takes effect from your next workout.';
+
+  @override
+  String get restCustom => 'Custom value';
+
+  @override
+  String get restRunning => 'A running workout keeps its rest time.';
+
+  @override
   String restSeconds(int n) {
     return '$n s';
+  }
+
+  @override
+  String get restSub => 'Default when a workout starts';
+
+  @override
+  String get restTitle => 'Rest time';
+
+  @override
+  String get sectionAbout => 'About';
+
+  @override
+  String get sectionApp => 'App';
+
+  @override
+  String get sectionData => 'Your data';
+
+  @override
+  String get sectionLegal => 'Legal';
+
+  @override
+  String get sectionTraining => 'Training';
+
+  @override
+  String get sessionDateAllowedBody =>
+      'Moving the day moves your gaps and form curve with it.';
+
+  @override
+  String get sessionDateAllowedTitle => 'Changing the date is allowed';
+
+  @override
+  String sessionDatePrevious(int n, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '+# days',
+      one: '+# day',
+    );
+    return 'Was $date · $_temp0';
   }
 
   @override
@@ -1552,14 +2048,25 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get sessionDeleteBody =>
-      'It will no longer count towards any evaluation.';
+      'It counts towards every analysis. Afterwards it reads:';
+
+  @override
+  String get sessionDeleteQ => 'Delete this workout?';
 
   @override
   String get sessionDeleteTitle => 'Delete session?';
 
   @override
+  String get sessionDeleteWindow => 'You can undo this for 30 seconds.';
+
+  @override
   String sessionDeletedBody(int n) {
     return 'You can undo this for $n seconds.';
+  }
+
+  @override
+  String sessionDeletedSnack(String alt, String neu) {
+    return 'Workout deleted · form $alt → $neu';
   }
 
   @override
@@ -1594,7 +2101,28 @@ class AppL10nEn extends AppL10n {
   String get sessionEditSets => 'Sets';
 
   @override
-  String get sessionEditTitle => 'Edit session';
+  String get sessionEditTitle => 'Edit workout';
+
+  @override
+  String get sessionFieldDatetime => 'Date and time';
+
+  @override
+  String get sessionImpactCount => 'Workouts total';
+
+  @override
+  String get sessionImpactForm => 'Form today';
+
+  @override
+  String get sessionImpactPause => 'Current break';
+
+  @override
+  String get sessionImpactPreview => 'Preview — not saved yet.';
+
+  @override
+  String get sessionImpactTitle => 'What this changes';
+
+  @override
+  String get setsAdd => 'Add sets';
 
   @override
   String get settingsAboutPrivate => 'Private project, not for commercial use.';
@@ -1690,6 +2218,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get settingsDeletedTitle => 'Account deleted';
+
+  @override
+  String get settingsEntryA11y => 'Profile and settings';
 
   @override
   String get settingsExportBody =>
@@ -1876,7 +2407,19 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get signout => 'Sign out';
+
+  @override
+  String get signoutKeep => 'Data stays';
+
+  @override
   String get splashStarting => 'ATEM is starting …';
+
+  @override
+  String get switchOff => 'OFF';
+
+  @override
+  String get switchOn => 'ON';
 
   @override
   String get typeBodyweight => 'Bodyweight';
@@ -1911,6 +2454,124 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get unitSuffixSeconds => 's';
+
+  @override
+  String get unitsExample => 'How it will look';
+
+  @override
+  String get unitsImperial => 'Imperial';
+
+  @override
+  String get unitsMetric => 'Metric';
+
+  @override
+  String get unitsNote =>
+      'Storage stays metric. Only the display is converted.';
+
+  @override
+  String get unitsTitle => 'Unit system';
+
+  @override
+  String unsavedBody(int c, int a) {
+    String _temp0 = intl.Intl.pluralLogic(
+      c,
+      locale: localeName,
+      other: '# entries',
+      one: '# entry',
+    );
+    return 'You changed $_temp0 and added $a.';
+  }
+
+  @override
+  String get unsavedContinue => 'Keep editing';
+
+  @override
+  String get unsavedDiscard => 'Discard';
+
+  @override
+  String get unsavedSave => 'Save and close';
+
+  @override
+  String get unsavedTitle => 'Keep changes?';
+
+  @override
+  String get weightBody =>
+      'Scores every bodyweight exercise in your history — today and retroactively.';
+
+  @override
+  String weightDelta(String sign, String kg, String pct) {
+    return '$sign$kg kg · $sign$pct %';
+  }
+
+  @override
+  String get weightDirDown => 'lower';
+
+  @override
+  String get weightDirRescored => 're-scored';
+
+  @override
+  String get weightDirSame => 'unchanged';
+
+  @override
+  String get weightDirUp => 'higher';
+
+  @override
+  String get weightErrorRange =>
+      'Between 66 and 550 lb. No preview until the value is valid.';
+
+  @override
+  String get weightHint => 'One decimal · 66–550 lb';
+
+  @override
+  String get weightImpactAcwr => 'ACWR';
+
+  @override
+  String weightImpactBest(String exercise) {
+    return 'Best $exercise';
+  }
+
+  @override
+  String get weightImpactForm => 'Form today';
+
+  @override
+  String get weightImpactLoad => 'Training load 7 d';
+
+  @override
+  String get weightImpactNote =>
+      'Preview — not saved yet. Your sets, weights and reps stay unchanged — only how they are scored.';
+
+  @override
+  String weightImpactScope(String d, int n) {
+    return '$d days · $n workouts with bodyweight exercises';
+  }
+
+  @override
+  String get weightImpactTitle => 'What changes retroactively';
+
+  @override
+  String weightPrevious(String alt) {
+    return 'Was $alt kg';
+  }
+
+  @override
+  String get weightSave => 'Save and recalculate';
+
+  @override
+  String get weightSaveBusy => 'Recalculating';
+
+  @override
+  String get weightSaveNone => 'Unchanged · nothing to save';
+
+  @override
+  String weightSavedSnack(String kg, String alt, String neu) {
+    return 'Weight $kg kg · form $alt → $neu';
+  }
+
+  @override
+  String get weightSub => 'Scores your whole history';
+
+  @override
+  String get weightTitle => 'Body weight';
 
   @override
   String get workoutA11yEnd => 'End workout';

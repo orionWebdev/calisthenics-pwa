@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 7 / STUFE 7</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Daten ändern — anlegen, bearbeiten, löschen</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:880px;line-height:1.7">Alles, was schreibt, in einem Zug: Übung, Plan, absolvierte Einheit — und die Gewichtung der Übungen im Workouts-Tab. Drei Pflichtfelder erzwingt die Datenbank, eine Falle steckt darin (difficulty ist eine Zahl), und ein Löschvorgang verändert rückwirkend jede Auswertung aus Modul 6.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Schreiben ist immer widerrufbar oder zweifach bestätigt</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Ein Dialog · höchstens drei Wege</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Feld ≥ 48 dp · 320 dp · 200 % Schrift</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Muskeln tragen wieder eigene Farben</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ · MODUL 7 · EIN SATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1040px">Ein Formular fragt so wenig, wie die Datenbank verlangt — und ein Löschen sagt so genau, was es zerstört, wie die Auswertung es spürt. Alles dazwischen ist optional und darf warten.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Zwei Klassen von Schreibvorgängen: <strong style="color:#CDD3EA;font-weight:600">reversibel</strong> (anlegen, bearbeiten — Snackbar mit Rückgängig, kein Dialog) und <strong style="color:#CDD3EA;font-weight:600">vernichtend</strong> (löschen von Arbeit — zweistufig, mit benannter Folge). Die Grenze verläuft nicht am Objekt, sondern an der Frage „entsteht dabei ein Verlust, den niemand rekonstruieren kann?".</div>
+</div>
+
+<div data-screen-label="B Schreibregeln" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · WAS DIE DATENBANK ERZWINGT — UND DIE DIFFICULTY-FALLE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
+<sc-for list="{{ pflicht }}" as="p" hint-placeholder-count="3">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#00F2FE">{{ p.obj }}</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#FFFFFF;line-height:1.7">{{ p.felder }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">{{ p.note }}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px">
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#F02277">DIE FALLE · DIFFICULTY</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Im Bestand stehen <span style="font-family:'JetBrains Mono',monospace">55 von 70</span> eigenen Übungen mit Wörtern („beginner", „intermediate"). Neu geschrieben werden muss <span style="font-family:'JetBrains Mono',monospace">1–5</span>. Der Entwurf löst das an einer Stelle: das Feld <strong style="color:#FFFFFF;font-weight:600">zeigt Wörter und speichert Zahlen</strong>. Beim Öffnen einer Altübung wird das Wort auf die Stufe abgebildet (beginner → 2, intermediate → 3, advanced → 4); gespeichert wird ab dann die Zahl. Migration passiert beiläufig, beim ersten Bearbeiten — nie als Aufräum-Aufgabe an den Nutzer.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">DIE FÜNF STUFEN — WORT UND ZAHL</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ stufen }}" as="s" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#1A1A26;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#CDD3EA">{{ s.n }}</span>
+<span style="flex:1;font-size:12px;font-weight:600">{{ s.wort }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ s.alt }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+<sc-for list="{{ regeln }}" as="r" hint-placeholder-count="4">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:13px 15px">
+<div style="font-size:12.5px;font-weight:600">{{ r.t }}</div>
+<div style="margin-top:5px;font-size:11.5px;color:#94A3B8;line-height:1.65">{{ r.b }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A1 Workouts-Tab Gewichtung" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A1 · WORKOUTS-TAB — ÜBUNGEN BEKOMMEN GEWICHT, OHNE NACH OBEN ZU RÜCKEN</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">1 · HEUTE — EINE SUCHZEILE, ZU LEICHT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:14px;opacity:0.62">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Workouts</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE);border-radius:20px;padding:1.5px">
+<div style="background:#14141D;border-radius:19px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">HEUTE</div>
+<div style="margin-top:6px;font-size:16px;font-weight:700">Push Day A</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:42px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Starten</div>
+</div>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">PLÄNE</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ planZeilenAlt }}" as="p" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:{{ p.bb }}">
+<span style="flex:none;width:32px;height:32px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">{{ p.k }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">{{ p.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ p.m }}</span></span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border-radius:30px;background:#14141D;border:1px solid #232334">
+<svg width="14" height="14" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="#94A3B8" stroke-width="2"></circle><path d="M16 16l4 4" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+<span style="font-size:12px;color:#94A3B8">Übungen suchen</span>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">154 Übungen hinter einem Suchfeld von 44 dp Höhe. Wer nicht weiß, wonach er sucht, findet nichts — die Rückmeldung „zu unpräsent" beschreibt genau das.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">2 · NEU — GLEICHE REIHENFOLGE, MEHR FLÄCHE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Workouts</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE);border-radius:20px;padding:1.5px">
+<div style="background:#14141D;border-radius:19px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">HEUTE · PUSH A</div>
+<div style="margin-top:6px;font-size:16px;font-weight:700">Push Day A</div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">6 ÜBUNGEN · 18 SÄTZE · ~49 MIN</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:42px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Starten</div>
+</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">PLÄNE</span><span style="font-size:10.5px;font-weight:600;color:#00F2FE">Alle 10</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ planZeilenAlt }}" as="p" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:{{ p.bb }}">
+<span style="flex:none;width:32px;height:32px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">{{ p.k }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">{{ p.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ p.m }}</span></span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">ÜBUNGEN · 154</span><span style="font-size:10.5px;font-weight:600;color:#00F2FE">Alle ansehen</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border-radius:30px;background:#0B0B0E;border:1px solid #232334">
+<svg width="14" height="14" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="#94A3B8" stroke-width="2"></circle><path d="M16 16l4 4" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+<span style="font-size:12px;color:#94A3B8">Name oder Muskel</span>
+</div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">NACH MUSKEL</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+<sc-for list="{{ muskeln }}" as="m" hint-placeholder-count="9">
+<span style="display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:30px;background:{{ m.bg }};border:1px solid {{ m.br }}">
+<span style="width:8px;height:8px;border-radius:50%;background:{{ m.c }}"></span>
+<span style="font-size:10.5px;font-weight:600;color:{{ m.c }}">{{ m.n }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">{{ m.z }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px solid rgba(240,34,119,0.45);gap:7px">
+<span style="font-size:15px;font-weight:600;color:#F02277">+</span><span style="font-size:12px;font-weight:700;color:#F02277">Eigene Übung anlegen</span>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#00FF87;line-height:1.6">Die Reihenfolge aus M5 bleibt: heute → Pläne → Übungen. Gewicht entsteht durch Fläche, nicht durch Position: aus 44 dp Suchzeile wird ein Block mit Sucheingang, neun Muskelfiltern und dem Anlegen-Weg — rund 260 dp, mehr als die Pläne.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · ÜBUNGSLISTE — EIGEN UND KURATIERT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Übungen</span></div>
+<div style="display:flex;gap:6px;overflow:hidden">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:6px 11px;border-radius:30px;background:#14141D;border:1px solid #CDD3EA;color:#FFFFFF">✓ Alle 154</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Eigen 70</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Kurat. 84</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ uebungen }}" as="u" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:{{ u.bb }}">
+<span style="flex:none;width:34px;height:34px;border-radius:50%;background:{{ u.bg }};display:inline-flex;align-items:center;justify-content:center">
+<span style="width:12px;height:12px;border-radius:50%;background:{{ u.c }}"></span>
+</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ u.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ u.m }}</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.08em;color:{{ u.tagC }};border:1px solid {{ u.tagB }};border-radius:30px;padding:3px 7px">{{ u.tag }}</span>
+</div>
+</sc-for>
+</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6">Kugel = Muskelfarbe (voller Kern, getönter Hof). Die Herkunft steht als Wort rechts, nicht als Farbe — sie entscheidet, ob es einen Bearbeiten-Weg gibt.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Filter „Eigen / Kuratiert" existiert, weil nur eine der beiden Mengen bearbeitbar ist. Wer aufräumen will, filtert auf 70 statt in 154 zu suchen.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">4 · LEER — GEFILTERT AUF EIGEN, NICHTS DA</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Übungen</span></div>
+<div style="display:flex;gap:6px">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Alle 84</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:6px 11px;border-radius:30px;background:#14141D;border:1px solid #CDD3EA;color:#FFFFFF">✓ Eigen 0</span>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center">
+<span style="width:48px;height:48px;border-radius:10px;background:#1A1A26;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<div style="font-size:15px;font-weight:600">Noch keine eigene Übung</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6;max-width:200px">Name, Muskeln und eine Stufe genügen — der Rest ist freiwillig.</div>
+<div style="margin-top:4px;display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 22px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12.5px;font-weight:700">Übung anlegen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">M2-Zustandszone unverändert. Der Text nennt vorab die drei Pflichtfelder — die häufigste Abbruchursache ist die Angst vor dem, was hinter dem Knopf kommt.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A2 Uebung anlegen" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A2 · ÜBUNG ANLEGEN — DREI PFLICHTFELDER, SICHTBAR IN EINEM BILD</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DEFAULT — LEER, SPEICHERN INAKTIV</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">✕</span><span style="font-size:15px;font-weight:700">Neue Übung</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">1/3</span></div>
+<div style="height:3px;border-radius:2px;background:#16161F;overflow:hidden"><span style="display:block;width:6%;height:100%;background:#232334"></span></div>
+<div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:11.5px;font-weight:600;color:#CDD3EA">Name</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:{{ pflichtFarbe }}">{{ pflichtMark }}</span></div>
+<div style="margin-top:6px;height:52px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 14px"><span style="font-size:13px;color:#94A3B8">z. B. Bulgarian Split Squat</span></div>
+</div>
+<div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:11.5px;font-weight:600;color:#CDD3EA">Muskeln</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:{{ pflichtFarbe }}">{{ pflichtMark }}</span><span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">0 GEWÄHLT</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+<sc-for list="{{ muskeln }}" as="m" hint-placeholder-count="9">
+<span style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 11px;border-radius:30px;background:#14141D;border:1px solid #232334">
+<span style="width:9px;height:9px;border-radius:50%;background:{{ m.c }}"></span>
+<span style="font-size:11px;font-weight:600;color:#CDD3EA">{{ m.n }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+<div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:11.5px;font-weight:600;color:#CDD3EA">Stufe</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:{{ pflichtFarbe }}">{{ pflichtMark }}</span></div>
+<div style="margin-top:8px;display:flex;gap:4px">
+<sc-for list="{{ stufen }}" as="s" hint-placeholder-count="5">
+<span style="flex:1;height:48px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#CDD3EA">{{ s.n }}</span>
+<span style="font-size:7.5px;color:#94A3B8">{{ s.kurz }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:7px;font-size:10.5px;color:#94A3B8;line-height:1.55">Wird als Zahl 1–5 gespeichert.</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 14px;border-radius:14px;background:#14141D;border:1px solid #232334">
+<span style="font-size:12px;color:#CDD3EA">Mehr Angaben</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">7 OPTIONAL ›</span>
+</div>
+<div style="margin-top:auto;display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:#16161F;border:1px solid #232334"><span style="font-size:13px;font-weight:700;color:#94A3B8">Speichern</span></div>
+<div style="text-align:center;font-size:10.5px;color:#94A3B8">Noch 3 Angaben nötig</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Alle drei Pflichtfelder passen ohne Scrollen auf einen 320-dp-Screen. Optionales liegt hinter einer Zeile — sichtbar, dass es existiert, unsichtbar genug, um nicht zu bremsen.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · GEFÜLLT — SPEICHERN AKTIV</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">✕</span><span style="font-size:15px;font-weight:700">Neue Übung</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#00FF87">3/3</span></div>
+<div style="height:3px;border-radius:2px;background:#16161F;overflow:hidden"><span style="display:block;width:100%;height:100%;background:#00FF87"></span></div>
+<div>
+<div style="font-size:11.5px;font-weight:600;color:#CDD3EA">Name</div>
+<div style="margin-top:6px;height:52px;border-radius:14px;background:#14141D;border:1px solid #00F2FE;display:flex;align-items:center;padding:0 14px"><span style="font-size:13px;color:#FFFFFF">Bulgarian Split Squat</span><span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">21/60</span></div>
+</div>
+<div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:11.5px;font-weight:600;color:#CDD3EA">Muskeln</span><span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:#00FF87">2 GEWÄHLT</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+<sc-for list="{{ muskelnGewaehlt }}" as="m" hint-placeholder-count="9">
+<span style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 11px;border-radius:30px;background:{{ m.bg }};border:1px solid {{ m.br }}">
+<span style="width:9px;height:9px;border-radius:50%;background:{{ m.c }}"></span>
+<span style="font-size:11px;font-weight:600;color:{{ m.tc }}">{{ m.n }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+<div>
+<div style="font-size:11.5px;font-weight:600;color:#CDD3EA">Stufe</div>
+<div style="margin-top:8px;display:flex;gap:4px">
+<sc-for list="{{ stufenGewaehlt }}" as="s" hint-placeholder-count="5">
+<span style="flex:1;height:48px;border-radius:14px;background:{{ s.bg }};border:1px solid {{ s.br }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ s.tc }}">{{ s.n }}</span>
+<span style="font-size:7.5px;color:{{ s.lc }}">{{ s.kurz }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:7px;font-size:10.5px;color:#CDD3EA;line-height:1.55">Stufe 4 — Fortgeschritten. Gespeichert als <span style="font-family:'JetBrains Mono',monospace">difficulty: 4</span>.</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 14px;border-radius:14px;background:#14141D;border:1px solid #232334">
+<span style="font-size:12px;color:#CDD3EA">Mehr Angaben</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">2 GEFÜLLT ›</span>
+</div>
+<div style="margin-top:auto;display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963)"><span style="font-size:13px;font-weight:700">Speichern</span></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Zähler „3/3" oben ersetzt die Fehlerprüfung am Ende: man sieht vor dem Tippen auf Speichern, ob es geht. Kein Formular, das erst beim Absenden meckert.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · MEHR ANGABEN — OPTIONAL, MIT REPS ALS TEXT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:15px;font-weight:700">Mehr Angaben</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Fertig</span></div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6">Nichts davon ist nötig. Was leer bleibt, wird nicht geschrieben.</div>
+<sc-for list="{{ optFelder }}" as="o" hint-placeholder-count="5">
+<div>
+<div style="font-size:11.5px;font-weight:600;color:#CDD3EA">{{ o.l }}</div>
+<div style="margin-top:6px;min-height:48px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:10px 14px"><span style="font-size:12.5px;color:{{ o.c }};line-height:1.5">{{ o.v }}</span></div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;line-height:1.5">{{ o.h }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6"><span style="font-family:'JetBrains Mono',monospace">reps</span> ist im Bestand eine Zeichenkette. Das Feld nimmt deshalb Text an und schlägt Bereiche vor — eine Zahleneingabe würde „8-12" unmöglich machen und 60 Planeinträge unlesbar.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">4 · ERROR — NAME DOPPELT, SCHREIBEN ABGEWIESEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">✕</span><span style="font-size:15px;font-weight:700">Neue Übung</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">3/3</span></div>
+<div style="background:rgba(240,34,119,0.08);border:1px solid rgba(240,34,119,0.45);border-radius:14px;padding:12px 14px;display:flex;gap:10px">
+<span style="flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid #F02277;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#F02277">!</span>
+<span style="flex:1"><span style="display:block;font-size:12px;font-weight:600">Nicht gespeichert</span><span style="display:block;margin-top:4px;font-size:11px;color:#CDD3EA;line-height:1.55">Du hast schon eine Übung „Bulgarian Split Squat". Deine Eingaben stehen noch hier.</span></span>
+</div>
+<div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:11.5px;font-weight:600;color:#F02277">Name</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#F02277">DOPPELT</span></div>
+<div style="margin-top:6px;height:52px;border-radius:14px;background:#14141D;border:1.5px solid #F02277;display:flex;align-items:center;padding:0 14px"><span style="font-size:13px;color:#FFFFFF">Bulgarian Split Squat</span></div>
+<div style="margin-top:6px;font-size:11px;color:#CDD3EA;line-height:1.55">Vorschlag: <span style="font-weight:600">Bulgarian Split Squat (Kurzhantel)</span></div>
+</div>
+<div style="display:flex;gap:8px">
+<div style="flex:1;display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px solid #232334;font-size:11.5px;font-weight:600;color:#CDD3EA">Vorhandene öffnen</div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Vorschlag nehmen</div>
+</div>
+<div style="margin-top:6px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">ANDERE ABWEISUNGEN</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ fehler }}" as="f" hint-placeholder-count="4">
+<div><span style="display:block;font-size:11px;font-weight:600;color:#CDD3EA">{{ f.t }}</span><span style="display:block;margin-top:2px;font-size:10.5px;color:#94A3B8;line-height:1.5">{{ f.b }}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:auto;display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963)"><span style="font-size:13px;font-weight:700">Erneut speichern</span></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Ein abgewiesener Schreibvorgang darf nie Eingaben verlieren. Der Entwurf hält das Formular vollständig und bietet zwei Auswege plus Wiederholen — drei Wege, wie die Randbedingung erlaubt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">5 · LOADING & ERFOLG</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#3a3a48;font-size:16px">✕</span><span style="font-size:15px;font-weight:700;color:#94A3B8">Neue Übung</span></div>
+<div style="opacity:0.4;display:flex;flex-direction:column;gap:12px">
+<div style="height:52px;border-radius:14px;background:#14141D;border:1px solid #232334"></div>
+<div style="height:76px;border-radius:14px;background:#14141D;border:1px solid #232334"></div>
+<div style="height:48px;border-radius:14px;background:#14141D;border:1px solid #232334"></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);gap:9px">
+<span style="width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.35);border-top-color:#FFFFFF;animation:{{ spinAnim }}"></span>
+<span style="font-size:13px;font-weight:700">Wird gespeichert</span>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;text-align:center;line-height:1.55">Felder bleiben sichtbar, aber gesperrt. Kein Vollbild-Overlay — der Nutzer soll sehen, was gerade geschrieben wird.</div>
+<div style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">DANACH · SNACKBAR STATT DIALOG</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:8px;height:8px;border-radius:50%;background:#00FF87"></span>
+<span style="flex:1;font-size:11.5px;color:#FFFFFF;line-height:1.5">Übung angelegt</span>
+<span style="flex:none;font-size:11.5px;font-weight:700;color:#00F2FE">Öffnen</span>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.55">4 s, eine Aktion, kein Rückgängig — Anlegen vernichtet nichts, und die neue Übung ist über „Öffnen" sofort erreichbar.</div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">BEIM BEARBEITEN STATTDESSEN</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:8px;height:8px;border-radius:50%;background:#00FF87"></span>
+<span style="flex:1;font-size:11.5px;color:#FFFFFF;line-height:1.5">Änderung gespeichert</span>
+<span style="flex:none;font-size:11.5px;font-weight:700;color:#00F2FE">Rückgängig</span>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Rückgängig gibt es genau dort, wo ein Vorzustand existiert. Beim Anlegen gibt es keinen — dann bietet die Snackbar den Weg vorwärts statt einen falschen Weg zurück.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A3 Uebungsdetail" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A3 · ÜBUNGSDETAIL — EIGEN BEARBEITBAR, KURATIERT NICHT (OHNE FEHLER-ANMUTUNG)</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · EIGENE ÜBUNG</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Bearbeiten</span></div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:48px;height:48px;border-radius:50%;background:rgba(251,146,60,0.20);display:inline-flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;background:#fb923c"></span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:17px;font-weight:700;line-height:1.25">Bulgarian Split Squat</span><span style="display:block;margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">EIGEN · STUFE 4</span></span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px">
+<span style="display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:30px;background:rgba(251,146,60,0.18);border:1px solid rgba(251,146,60,0.45)"><span style="width:8px;height:8px;border-radius:50%;background:#fb923c"></span><span style="font-size:10.5px;font-weight:600;color:#fb923c">Beine</span></span>
+<span style="display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:30px;background:rgba(52,211,153,0.18);border:1px solid rgba(52,211,153,0.45)"><span style="width:8px;height:8px;border-radius:50%;background:#34d399"></span><span style="font-size:10.5px;font-weight:600;color:#34d399">Core</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">ZULETZT GEMACHT</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.6">MI 21.05. · 3×10 · 24 kg<br>In <span style="color:#FFFFFF;font-weight:600">2 Plänen</span> · <span style="color:#FFFFFF;font-weight:600">14 Einheiten</span></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">ANLEITUNG</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.65">Hinterer Fuß erhöht, Oberkörper aufrecht, Knie über Mittelfuß.</div>
+</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Zu Plan hinzufügen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px solid #232334;font-size:12px;font-weight:600;color:#94A3B8">Übung löschen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Löschen sitzt unten, in Grau, mit 8 dp Abstand zur Hauptaktion — erreichbar, aber nie versehentlich getroffen. Magenta bleibt der Marke und dem gewollten Weg vorbehalten.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · KURATIERTE ÜBUNG — KEIN BEARBEITEN, TROTZDEM EIN WEG</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:30px;border:1px solid #232334"><svg width="11" height="11" viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0110 0v3" fill="none" stroke="#94A3B8" stroke-width="2"></path><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="#94A3B8" stroke-width="2"></rect></svg><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">KURATIERT</span></span></div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:48px;height:48px;border-radius:50%;background:rgba(244,114,182,0.20);display:inline-flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;background:#f472b6"></span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:17px;font-weight:700;line-height:1.25">Bankdrücken</span><span style="display:block;margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">ATEM-BIBLIOTHEK · STUFE 3</span></span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px">
+<span style="display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:30px;background:rgba(244,114,182,0.18);border:1px solid rgba(244,114,182,0.45)"><span style="width:8px;height:8px;border-radius:50%;background:#f472b6"></span><span style="font-size:10.5px;font-weight:600;color:#f472b6">Brust</span></span>
+<span style="display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:30px;background:rgba(232,121,249,0.18);border:1px solid rgba(232,121,249,0.45)"><span style="width:8px;height:8px;border-radius:50%;background:#e879f9"></span><span style="font-size:10.5px;font-weight:600;color:#e879f9">Trizeps</span></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">ZULETZT GEMACHT</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.6">SA 05.07. · 4×8 · 60 kg<br>In <span style="color:#FFFFFF;font-weight:600">4 Plänen</span> · <span style="color:#FFFFFF;font-weight:600">38 Einheiten</span></div>
+</div>
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:14px;padding:12px 14px">
+<div style="font-size:11.5px;font-weight:600;color:#FFFFFF">Gehört zur Bibliothek</div>
+<div style="margin-top:4px;font-size:11px;color:#CDD3EA;line-height:1.6">Diese Übung ist für alle gleich und bleibt unverändert. Willst du sie anders, leg dir eine eigene Fassung an — deine Sätze und dein Verlauf bleiben an der Bibliotheksübung.</div>
+</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Zu Plan hinzufügen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:12px;font-weight:600;color:#00F2FE">Eigene Fassung anlegen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#00FF87;line-height:1.6">Kein ausgegrauter Bearbeiten-Knopf. Die Stelle, an der beim eigenen Detail „Bearbeiten" steht, trägt hier das Schloss-Chip — dieselbe Position, andere Aussage. Statt einer Sperre gibt es einen zweiten Weg: Kopie anlegen, Formular vorausgefüllt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">3 · LÖSCHEN 1/2 — WAS ES BETRIFFT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;justify-content:flex-end;position:relative">
+<div style="position:absolute;inset:0;border-radius:24px;background:rgba(5,5,7,0.72)"></div>
+<div style="position:relative;background:#14141D;border:1px solid #232334;border-radius:20px;padding:18px 16px">
+<div style="font-size:15px;font-weight:700;line-height:1.35">„Bulgarian Split Squat" löschen?</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.65">Die Übung steckt in <span style="font-weight:600;color:#FFFFFF">2 Plänen</span> und <span style="font-weight:600;color:#FFFFFF">14 absolvierten Einheiten</span>.</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:8px;align-items:flex-start"><span style="flex:none;margin-top:5px;width:6px;height:6px;border-radius:50%;background:#00FF87"></span><span style="flex:1;font-size:11px;color:#CDD3EA;line-height:1.55">Deine 14 Einheiten bleiben vollständig — mit Sätzen, Gewichten und Last.</span></div>
+<div style="display:flex;gap:8px;align-items:flex-start"><span style="flex:none;margin-top:5px;width:6px;height:6px;border-radius:50%;background:#CDD3EA"></span><span style="flex:1;font-size:11px;color:#CDD3EA;line-height:1.55">In den 2 Plänen bleibt eine Lücke stehen, die du dort ersetzen kannst. Die Pläne bleiben startbar.</span></div>
+</div>
+<div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;border:1px solid rgba(240,34,119,0.5);font-size:12.5px;font-weight:700;color:#F02277">Weiter zum Löschen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:#1A1A26;font-size:12.5px;font-weight:600;color:#CDD3EA">Abbrechen</div>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Stufe 1 informiert, sie fragt noch nicht. Zwei Wege plus Abbrechen wären drei — hier sind es zwei, weil „Weiter" kein Ergebnis ist, sondern eine Bewegung.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">4 · LÖSCHEN 2/2 — BESTÄTIGEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;justify-content:flex-end;position:relative">
+<div style="position:absolute;inset:0;border-radius:24px;background:rgba(5,5,7,0.72)"></div>
+<div style="position:relative;background:#14141D;border:1px solid rgba(240,34,119,0.45);border-radius:20px;padding:18px 16px">
+<div style="display:flex;align-items:center;gap:9px">
+<span style="flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid #F02277;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F02277">!</span>
+<span style="font-size:14px;font-weight:700">Endgültig löschen</span>
+</div>
+<div style="margin-top:10px;font-size:12px;color:#CDD3EA;line-height:1.65">Die Übung ist danach weg. Es gibt kein Rückgängig — nur neu anlegen.</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12.5px;font-weight:700">Löschen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:#1A1A26;font-size:12.5px;font-weight:600;color:#CDD3EA">Behalten</div>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Stufe 2 wiederholt nichts, sie entscheidet. Der Abstand zwischen den Stufen ist die eigentliche Sicherung: zwei bewusste Taps an zwei verschiedenen Bildschirmpositionen.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A4 Plan" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A4 · PLAN ANLEGEN UND BEARBEITEN — EIN PFLICHTFELD, 60 EINTRÄGE IM BESTAND</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · ANLEGEN — NUR DER NAME IST PFLICHT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:620px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">✕</span><span style="font-size:15px;font-weight:700">Neuer Plan</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Sichern</span></div>
+<div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:11.5px;font-weight:600;color:#CDD3EA">Name</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:{{ pflichtFarbe }}">{{ pflichtMark }}</span></div>
+<div style="margin-top:6px;height:52px;border-radius:14px;background:#14141D;border:1px solid #00F2FE;display:flex;align-items:center;padding:0 14px"><span style="font-size:13px;color:#FFFFFF">Pull Day B</span></div>
+</div>
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:14px;padding:12px 14px;font-size:11px;color:#CDD3EA;line-height:1.6">Der Plan existiert, sobald er einen Namen hat. Übungen kannst du jetzt oder später hinzufügen — ein leerer Plan ist erlaubt, nur nicht startbar.</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">ÜBUNGEN · 0</span></div>
+<div style="border:1px dashed #232334;border-radius:20px;padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+<span style="font-size:12px;color:#94A3B8;line-height:1.55">Noch keine Übung im Plan</span>
+<span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 18px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Übung hinzufügen</span>
+</div>
+<div style="margin-top:auto;display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Plan sichern</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Datenbank verlangt nur <span style="font-family:'JetBrains Mono',monospace">name</span>. Ein Formular, das trotzdem drei Übungen fordert, erfindet eine Hürde, die es nicht gibt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · BEARBEITEN — EINTRÄGE MIT ZIELWERTEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:620px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:15px;font-weight:700">Push Day A</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Sichern</span></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">6 ÜBUNGEN · ZIEL 18 SÄTZE</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ planEintraege }}" as="e" hint-placeholder-count="4">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:11px 12px;display:flex;align-items:center;gap:10px">
+<span style="flex:none;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:13px">⋮⋮</span>
+<span style="flex:none;width:30px;height:30px;border-radius:50%;background:{{ e.bg }};display:inline-flex;align-items:center;justify-content:center"><span style="width:11px;height:11px;border-radius:50%;background:{{ e.c }}"></span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA;margin-top:2px">{{ e.ziel }}</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">{{ e.pause }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px dashed #232334;font-size:11.5px;font-weight:600;color:#00F2FE">+ Übung hinzufügen</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">EINTRAG BEARBEITEN · SÄTZE / WDH / PAUSE</div>
+<div style="margin-top:10px;display:flex;gap:8px">
+<span style="flex:1"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">SÄTZE</span><span style="display:flex;align-items:center;justify-content:center;margin-top:4px;height:48px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">4</span></span>
+<span style="flex:1.3"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">WDH</span><span style="display:flex;align-items:center;justify-content:center;margin-top:4px;height:48px;border-radius:14px;background:#0B0B0E;border:1px solid #00F2FE;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">8-12</span></span>
+<span style="flex:1.2"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">PAUSE</span><span style="display:flex;align-items:center;justify-content:center;margin-top:4px;height:48px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">90 s</span></span>
+</div>
+<div style="margin-top:8px;font-size:10.5px;color:#94A3B8;line-height:1.55">Wdh ist ein Textfeld: „12", „8-12" und „max" sind alle erlaubt und werden so gespeichert, wie sie dastehen.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Zielwerte hängen am Eintrag, nicht an der Übung — dieselbe Übung darf in zwei Plänen zwei Ziele haben. Sortieren per Griff links, 48 dp hoch.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">3 · KAPUTTER EINTRAG — GELÖSCHTE ÜBUNG</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:620px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:15px;font-weight:700">Leg Day</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Sichern</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px 14px;font-size:11px;color:#CDD3EA;line-height:1.6"><span style="font-weight:600;color:#FFFFFF">1 Eintrag zeigt ins Leere.</span> Der Plan bleibt startbar — die Lücke wird beim Training einfach übersprungen.</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ planKaputt }}" as="e" hint-placeholder-count="4">
+<div style="background:{{ e.cardBg }};border:1px {{ e.bs }} {{ e.bc }};border-radius:14px;padding:11px 12px;display:flex;align-items:center;gap:10px">
+<span style="flex:none;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:13px">⋮⋮</span>
+<span style="flex:none;width:30px;height:30px;border-radius:50%;background:{{ e.bg }};display:inline-flex;align-items:center;justify-content:center"><span style="width:11px;height:11px;border-radius:50%;background:{{ e.c }}"></span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;color:{{ e.tc }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:2px">{{ e.ziel }}</span></span>
+<span style="flex:none;font-size:10.5px;font-weight:600;color:{{ e.aktionC }}">{{ e.aktion }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">DREI WEGE FÜR DIE LÜCKE</div>
+<div style="margin-top:9px;display:flex;flex-direction:column;gap:7px">
+<span style="font-size:11px;color:#CDD3EA;line-height:1.5">· <span style="font-weight:600;color:#FFFFFF">Ersetzen</span> — öffnet die Übungsliste, Zielwerte bleiben stehen</span>
+<span style="font-size:11px;color:#CDD3EA;line-height:1.5">· <span style="font-weight:600;color:#FFFFFF">Entfernen</span> — Eintrag raus, Plan hat eine Übung weniger</span>
+<span style="font-size:11px;color:#CDD3EA;line-height:1.5">· <span style="font-weight:600;color:#FFFFFF">Nichts tun</span> — bleibt stehen, wird beim Start übersprungen</span>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#00FF87;line-height:1.6">Modul 6 hat entschieden: kaputte Pläne blockieren nicht. Der Eintrag bleibt als sichtbare Lücke mit seinen Zielwerten — sie sind das Wertvollste daran und der Grund, warum „Ersetzen" die erste Option ist.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">4 · VERLASSEN MIT ÄNDERUNGEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:620px;display:flex;flex-direction:column;justify-content:flex-end;position:relative">
+<div style="position:absolute;inset:0;border-radius:24px;background:rgba(5,5,7,0.72)"></div>
+<div style="position:relative;background:#14141D;border:1px solid #232334;border-radius:20px;padding:18px 16px">
+<div style="font-size:14px;font-weight:700;line-height:1.35">Änderungen behalten?</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.65">Du hast <span style="font-weight:600;color:#FFFFFF">2 Einträge geändert</span> und <span style="font-weight:600;color:#FFFFFF">1 hinzugefügt</span>.</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12.5px;font-weight:700">Sichern und schließen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;border:1px solid #232334;font-size:12.5px;font-weight:600;color:#CDD3EA">Verwerfen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:#1A1A26;font-size:12.5px;font-weight:600;color:#CDD3EA">Weiter bearbeiten</div>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Genau drei Wege: zwei Ergebnisse (sichern, verwerfen) plus Abbrechen. Der Text zählt die Änderungen, damit „Verwerfen" eine Menge hat und keine Ahnung. Derselbe Dialog gilt für Übung und Einheit.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A5 Einheit" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A5 · ABSOLVIERTE EINHEIT BEARBEITEN UND LÖSCHEN — RÜCKWIRKEND AUF JEDE AUSWERTUNG</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · BEARBEITEN — DATUM IST ÄNDERBAR</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">✕</span><span style="font-size:15px;font-weight:700">Einheit bearbeiten</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Sichern</span></div>
+<div>
+<div style="font-size:11.5px;font-weight:600;color:#CDD3EA">Datum und Zeit</div>
+<div style="margin-top:6px;display:flex;gap:8px">
+<span style="flex:1.8;height:52px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:12px;white-space:nowrap">DI 08.07.2026</span>
+<span style="flex:1;height:52px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 14px;font-family:'JetBrains Mono',monospace;font-size:13px">18:20</span>
+</div>
+</div>
+<div>
+<div style="font-size:11.5px;font-weight:600;color:#CDD3EA">Art</div>
+<div style="margin-top:6px;display:flex;gap:4px">
+<sc-for list="{{ arten }}" as="a" hint-placeholder-count="4">
+<span style="flex:1;height:48px;border-radius:14px;background:{{ a.bg }};border:1px solid {{ a.br }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:{{ a.tc }}">{{ a.k }}</span>
+</sc-for>
+</div>
+<div style="margin-top:6px;font-size:10.5px;color:#94A3B8">Cardio — die Art bestimmt, welche Werte unten stehen.</div>
+</div>
+<div>
+<div style="font-size:11.5px;font-weight:600;color:#CDD3EA">Werte</div>
+<div style="margin-top:6px;display:flex;gap:8px">
+<span style="flex:1"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">STRECKE KM</span><span style="display:flex;align-items:center;justify-content:center;margin-top:4px;height:48px;border-radius:14px;background:#14141D;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">8,2</span></span>
+<span style="flex:1"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">DAUER MIN</span><span style="display:flex;align-items:center;justify-content:center;margin-top:4px;height:48px;border-radius:14px;background:#14141D;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">47</span></span>
+</div>
+<div style="margin-top:6px;font-size:10.5px;color:#94A3B8;line-height:1.55">Pace 5:42/km wird berechnet und ist nicht eingebbar.</div>
+</div>
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:14px;padding:12px 14px">
+<div style="font-size:11.5px;font-weight:600;color:#FFFFFF">Datum ändern ist erlaubt</div>
+<div style="margin-top:4px;font-size:11px;color:#CDD3EA;line-height:1.6">Nachtragen ist der häufigste Grund zu bearbeiten. Verschiebst du den Tag, verschieben sich Lücken und Form-Kurve mit — die Folge steht vor dem Sichern hier, nicht als Dialog danach.</div>
+</div>
+<div style="margin-top:auto;display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Sichern</div>
+<div style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px solid #232334;font-size:12px;font-weight:600;color:#94A3B8">Einheit löschen</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Datumsänderung wird nicht verboten, sondern erklärt. Ein Verbot würde falsch nachgetragene Einheiten für immer falsch lassen.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · DATUM VERSCHOBEN — FOLGE VORAB</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">✕</span><span style="font-size:15px;font-weight:700">Einheit bearbeiten</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Sichern</span></div>
+<div>
+<div style="font-size:11.5px;font-weight:600;color:#CDD3EA">Datum und Zeit</div>
+<div style="margin-top:6px;display:flex;gap:8px">
+<span style="flex:1.8;height:52px;border-radius:14px;background:#14141D;border:1px solid #00F2FE;display:flex;align-items:center;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:12px;white-space:nowrap">SA 26.07.2026</span>
+<span style="flex:1;height:52px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 14px;font-family:'JetBrains Mono',monospace;font-size:13px">18:20</span>
+</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">VORHER DI 08.07.2026 · +18 TAGE</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">WAS SICH DADURCH ÄNDERT</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ folgen }}" as="f" hint-placeholder-count="3">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;font-size:11.5px;color:#CDD3EA">{{ f.l }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ f.alt }}</span>
+<span style="flex:none;color:#94A3B8;font-size:10px">→</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:{{ f.c }}">{{ f.neu }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:10px;padding-top:10px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.55">Vorschau, noch nicht gespeichert. Erst „Sichern" schreibt.</div>
+</div>
+<div style="margin-top:auto;display:flex;align-items:center;justify-content:center;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Sichern</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#00FF87;line-height:1.6">Statt eines Warndialogs eine Vorschau mit echten Zahlen. „Verschiebt Lücken und Kurven" ist abstrakt; „aktuelle Pause 50 → 32 Tage" ist überprüfbar.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">3 · EINHEIT LÖSCHEN 1/2</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;justify-content:flex-end;position:relative">
+<div style="position:absolute;inset:0;border-radius:24px;background:rgba(5,5,7,0.72)"></div>
+<div style="position:relative;background:#14141D;border:1px solid #232334;border-radius:20px;padding:18px 16px">
+<div style="font-size:15px;font-weight:700;line-height:1.35">Diese Einheit löschen?</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">DI 08.07. · LAUFEN · 8,2 KM · LAST 412</div>
+<div style="margin-top:12px;font-size:12px;color:#CDD3EA;line-height:1.65">Sie zählt in jede Auswertung. Danach steht dort:</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ loeschFolgen }}" as="f" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;font-size:11.5px;color:#CDD3EA">{{ f.l }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ f.alt }}</span>
+<span style="flex:none;color:#94A3B8;font-size:10px">→</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:{{ f.c }}">{{ f.neu }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;border:1px solid rgba(240,34,119,0.5);font-size:12.5px;font-weight:700;color:#F02277">Weiter zum Löschen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:#1A1A26;font-size:12.5px;font-weight:600;color:#CDD3EA">Abbrechen</div>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">„Verändert rückwirkend jede Auswertung" wird nicht behauptet, sondern gerechnet: vier Kennzahlen mit Vorher und Nachher. Das ist die deutlichste Form, die ohne Angstmache auskommt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">4 · LÖSCHEN 2/2 UND DANACH</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="position:relative;background:#14141D;border:1px solid rgba(240,34,119,0.45);border-radius:20px;padding:18px 16px">
+<div style="display:flex;align-items:center;gap:9px">
+<span style="flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid #F02277;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F02277">!</span>
+<span style="font-size:14px;font-weight:700">Endgültig löschen</span>
+</div>
+<div style="margin-top:10px;font-size:12px;color:#CDD3EA;line-height:1.65">Die Einheit und ihre 0 aufgezeichneten Sätze verschwinden. 30 Sekunden lang kannst du das rückgängig machen.</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12.5px;font-weight:700">Löschen</div>
+<div style="display:flex;align-items:center;justify-content:center;height:46px;border-radius:30px;background:#1A1A26;font-size:12.5px;font-weight:600;color:#CDD3EA">Behalten</div>
+</div>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">DANACH · 30 S FENSTER</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:8px;height:8px;border-radius:50%;background:#CDD3EA"></span>
+<span style="flex:1;font-size:11.5px;color:#FFFFFF;line-height:1.5">Einheit gelöscht · Form 16 → 14</span>
+<span style="flex:none;font-size:11.5px;font-weight:700;color:#00F2FE">Rückgängig</span>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.6">Die Snackbar wiederholt die wichtigste Folge. Erst nach Ablauf der 30 s wird tatsächlich aus der Datenbank entfernt — bis dahin ist die Einheit nur ausgeblendet und aus der Berechnung genommen.</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">WARUM HIER RÜCKGÄNGIG, BEI DER ÜBUNG NICHT</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px 14px;font-size:11px;color:#CDD3EA;line-height:1.6">Eine Einheit ist ein einzelner Datensatz — sie lässt sich vollständig zurückschreiben. Eine gelöschte Übung hängt an Planeinträgen, die beim Löschen umgeschrieben werden; ein „Rückgängig" müsste diese Kette mit rückabwickeln und wäre nicht verlässlich. Lieber kein Rückgängig als ein unzuverlässiges.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Zwei Stufen plus 30-s-Fenster klingt nach viel. Es ist die einzige Aktion in der App, die 245 Tage Verlauf verändert — sie darf teuer sein.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">5 · SONDERFALL — KRAFTEINHEIT OHNE ÜBUNGEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:15px;font-weight:700">Krafttraining</span><span style="font-size:11.5px;font-weight:600;color:#00F2FE">Bearbeiten</span></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">MI 02.04. · 52 MIN · LAST 300</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px">
+<div style="font-size:12.5px;font-weight:600">Keine Sätze aufgezeichnet</div>
+<div style="margin-top:5px;font-size:11px;color:#94A3B8;line-height:1.6">Diese Einheit wurde als Dauer erfasst — wie 15 weitere. Last und Konstanz zählen trotzdem, Volumen bleibt leer.</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:44px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Sätze nachtragen</div>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">NACHTRAGEN · SATZ 1 VON 1</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:30px;height:30px;border-radius:50%;background:rgba(244,114,182,0.20);display:inline-flex;align-items:center;justify-content:center"><span style="width:11px;height:11px;border-radius:50%;background:#f472b6"></span></span>
+<span style="flex:1;font-size:12px;font-weight:600">Bankdrücken</span>
+</div>
+<div style="margin-top:10px;display:flex;gap:8px">
+<span style="flex:1"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">WDH</span><span style="display:flex;align-items:center;justify-content:center;margin-top:4px;height:48px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">8</span></span>
+<span style="flex:1"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">KG</span><span style="display:flex;align-items:center;justify-content:center;margin-top:4px;height:48px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">60</span></span>
+<span style="flex:none;width:48px;height:48px;margin-top:16px;border-radius:14px;background:#1A1A26;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:16px;color:#00F2FE">+</span>
+</div>
+</div>
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:14px;padding:12px 14px;font-size:11px;color:#CDD3EA;line-height:1.6">Nachtragen ändert Volumen und Form — dieselbe Vorschau wie beim Datum, sobald der erste Satz steht.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">16 Krafteinheiten ohne Übung sind kein Fehler, sondern eine Erfassungsart. Das Nachtragen ist ein Angebot, keine Aufforderung — nichts blinkt, nichts zählt herunter.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="C Schreibmatrix" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · SCHREIBMATRIX — WELCHE SICHERUNG WANN</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<div style="display:grid;grid-template-columns:200px 140px 150px 1fr;gap:18px;padding:11px 0;border-bottom:1px solid #232334">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">AKTION</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">SICHERUNG</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">RÜCKGÄNGIG</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">BEGRÜNDUNG</span>
+</div>
+<sc-for list="{{ matrix }}" as="m" hint-placeholder-count="9">
+<div style="display:grid;grid-template-columns:200px 140px 150px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ m.a }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:{{ m.sc }}">{{ m.s }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">{{ m.u }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ m.w }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="E Spezifikation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · SPEZIFIKATION — VARIANTEN, MASSE, TOKENS</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ specRows }}" as="row" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:210px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ row.k }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;line-height:1.7">{{ row.v }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="F Strings" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · STRINGTABELLE — KEY · DEUTSCH · ENGLISCH</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<div style="display:grid;grid-template-columns:250px 1fr 1fr;gap:18px;padding:11px 0;border-bottom:1px solid #232334">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">KEY</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">DEUTSCH</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">ENGLISCH</span>
+</div>
+<sc-for list="{{ stringRows }}" as="s" hint-placeholder-count="30">
+<div style="display:grid;grid-template-columns:250px 1fr 1fr;gap:18px;padding:9px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ s.k }}</span>
+<span style="font-size:12px;color:#FFFFFF">{{ s.de }}</span>
+<span style="font-size:12px;color:#CDD3EA">{{ s.en }}</span>
+</div>
+</sc-for>
+<div style="padding:12px 0;font-size:11px;color:#94A3B8;line-height:1.6">Zahlen in Folge-Vorschauen kommen aus dem Locale (16 → 14, 8,2 km / 8.2 km). Die Stufenwörter sind Übersetzungen, nie Datenwerte — gespeichert wird immer 1–5.</div>
+</div>
+</div>
+
+<div data-screen-label="G A11y" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · A11Y — SEMANTICS JE INTERAKTIVEM ELEMENT</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ a11yRows }}" as="a" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:210px 130px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ a.el }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ a.note }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="H Wiederverwendung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · WIEDERVERWENDETE BAUSTEINE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ reuseRows }}" as="r" hint-placeholder-count="11">
+<div style="display:grid;grid-template-columns:90px 210px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ r.mod }}</span>
+<span style="font-size:12.5px;font-weight:600">{{ r.part }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I Entscheidungsprotokoll" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · ENTSCHEIDUNGSPROTOKOLL — VERWORFEN UND WARUM</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="12">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277">{{ d.n }}</span><span style="font-size:13px;font-weight:600;line-height:1.45">{{ d.title }}</span></div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;animationen&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;muskelKugeln&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Darstellung&quot;},&quot;pflichtLabel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Sternchen&quot;,&quot;Wort&quot;],&quot;default&quot;:&quot;Sternchen&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Darstellung&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const anim = this.props.animationen ?? true;
+    const kugel = this.props.muskelKugeln ?? true;
+    const pflichtWort = (this.props.pflichtLabel ?? 'Sternchen') === 'Wort';
+    const rgba = (hex, a) => { const x = parseInt(hex.slice(1), 16); return `rgba(${x>>16},${(x>>8)&255},${x&255},${a})`; };
+    const last = (a) => a.map((r, i) => ({ ...r, bb: i === a.length - 1 ? 'none' : '1px solid #232334' }));
+    const MC = { brust:'#f472b6', ruecken:'#60a5fa', schultern:'#a78bfa', arme:'#f59e0b', bizeps:'#fbbf24', trizeps:'#e879f9', core:'#34d399', beine:'#fb923c', waden:'#2dd4bf' };
+    const mus = (n, c, z) => ({ n, c, z, bg: kugel ? rgba(c, 0.18) : 'transparent', br: kugel ? rgba(c, 0.42) : '#232334' });
+    const stufe = (n, wort, kurz, alt) => ({ n, wort, kurz, alt });
+    const U = (n, m, c, tag) => ({ n, m, c, bg: rgba(c, 0.20), tag, tagC: tag === 'EIGEN' ? '#CDD3EA' : '#94A3B8', tagB: tag === 'EIGEN' ? '#232334' : '#16161F' });
+    const E = (n, c, ziel, pause) => ({ n, c, bg: rgba(c, 0.20), ziel, pause });
+    return {
+      pulseAnim: anim ? 'skelPulse 1.6s ease-in-out infinite' : 'none',
+      spinAnim: anim ? 'spin 0.9s linear infinite' : 'none',
+      pflichtMark: pflichtWort ? 'PFLICHT' : '*',
+      pflichtFarbe: pflichtWort ? '#94A3B8' : '#F02277',
+      pflicht: [
+        { obj: 'ÜBUNG ANLEGEN', felder: 'name · muscleGroups · difficulty · userId', note: 'Drei sichtbare Felder, userId kommt aus der Sitzung. Alles Weitere ist optional und liegt hinter „Mehr Angaben".' },
+        { obj: 'PLAN ANLEGEN', felder: 'name · userId', note: 'Ein sichtbares Feld. Ein Plan ohne Einträge ist gültig, nur nicht startbar — das ist eine Anzeige-, keine Speicherfrage.' },
+        { obj: 'EINHEIT', felder: 'type · userId', note: 'Wird beim Beenden eines Trainings geschrieben, nicht in einem Formular. Bearbeiten füllt nur nach, Datum eingeschlossen.' },
+      ],
+      stufen: [
+        stufe(1, 'Einstieg', 'EINST.', ''),
+        stufe(2, 'Leicht', 'LEICHT', '← beginner'),
+        stufe(3, 'Mittel', 'MITTEL', '← intermediate'),
+        stufe(4, 'Fortgeschritten', 'FORTG.', '← advanced'),
+        stufe(5, 'Experte', 'EXP.', ''),
+      ],
+      stufenGewaehlt: [1,2,3,4,5].map(n => ({
+        n, kurz: ['EINST.','LEICHT','MITTEL','FORTG.','EXP.'][n-1],
+        bg: n === 4 ? 'rgba(0,242,254,0.10)' : '#14141D',
+        br: n === 4 ? '#00F2FE' : '#232334',
+        tc: n === 4 ? '#00F2FE' : '#CDD3EA',
+        lc: n === 4 ? '#00F2FE' : '#94A3B8',
+      })),
+      regeln: [
+        { t: 'reps bleibt Text', b: 'Im Bestand stehen Bereiche („8-12"), Wörter („max") und Zahlen nebeneinander. Das Feld nimmt Text, validiert nur die Länge und speichert unverändert. Eine stille Umwandlung in Zahlen würde 60 Planeinträge beschädigen.' },
+        { t: 'Kuratierte Datensätze sind schreibgeschützt', b: '84 Übungen gehören der Bibliothek. Der Entwurf zeigt keinen gesperrten Bearbeiten-Knopf, sondern an derselben Stelle ein Schloss-Chip und darunter „Eigene Fassung anlegen" — das Nicht-Können wird zu einem Weg.' },
+        { t: 'userId ist nie sichtbar', b: 'Kein Feld, keine Anzeige, keine Fehlermeldung darüber. Fehlt die Sitzung, ist es ein Anmeldefall aus Modul 4, kein Formularfehler.' },
+        { t: 'Optimistisch schreiben, ehrlich zurücknehmen', b: 'Die Liste zeigt den neuen Eintrag sofort. Weist die Datenbank ab, kehrt der Eintrag zurück ins Formular — nicht in einen Toast, aus dem man ihn nicht mehr herausholt.' },
+      ],
+      planZeilenAlt: last([
+        { k: 'PA', n: 'Push Day A', m: '6 ÜBUNGEN · ZULETZT 05.07.' },
+        { k: 'LD', n: 'Leg Day', m: '5 ÜBUNGEN · ZULETZT 17.06.' },
+        { k: 'PB', n: 'Pull Day B', m: '6 ÜBUNGEN · ZULETZT 12.06.' },
+      ]),
+      muskeln: [
+        mus('Brust', MC.brust, '18'), mus('Rücken', MC.ruecken, '21'), mus('Schultern', MC.schultern, '16'),
+        mus('Arme', MC.arme, '9'), mus('Bizeps', MC.bizeps, '12'), mus('Trizeps', MC.trizeps, '11'),
+        mus('Core', MC.core, '24'), mus('Beine', MC.beine, '29'), mus('Waden', MC.waden, '7'),
+      ],
+      muskelnGewaehlt: [
+        { n: 'Beine', c: MC.beine, bg: rgba(MC.beine, 0.18), br: rgba(MC.beine, 0.5), tc: MC.beine },
+        { n: 'Core', c: MC.core, bg: rgba(MC.core, 0.18), br: rgba(MC.core, 0.5), tc: MC.core },
+        { n: 'Gesäß', c: MC.beine, bg: '#14141D', br: '#232334', tc: '#CDD3EA' },
+        { n: 'Waden', c: MC.waden, bg: '#14141D', br: '#232334', tc: '#CDD3EA' },
+        { n: 'Rücken', c: MC.ruecken, bg: '#14141D', br: '#232334', tc: '#CDD3EA' },
+      ],
+      uebungen: last([
+        U('Bankdrücken', 'BRUST · TRIZEPS · STUFE 3', MC.brust, 'KURATIERT'),
+        U('Bulgarian Split Squat', 'BEINE · CORE · STUFE 4', MC.beine, 'EIGEN'),
+        U('Klimmzug', 'RÜCKEN · BIZEPS · STUFE 4', MC.ruecken, 'KURATIERT'),
+        U('Seitheben Kabel', 'SCHULTERN · STUFE 2', MC.schultern, 'EIGEN'),
+        U('Wadenheben stehend', 'WADEN · STUFE 1', MC.waden, 'EIGEN'),
+        U('Hollow Hold', 'CORE · STUFE 3', MC.core, 'KURATIERT'),
+      ]),
+      optFelder: [
+        { l: 'Anleitung', v: 'Hinterer Fuß erhöht, Oberkörper aufrecht …', c: '#FFFFFF', h: 'FREITEXT · 0–500 ZEICHEN' },
+        { l: 'Cues', v: 'Knie über Mittelfuß', c: '#FFFFFF', h: 'KURZE MERKSÄTZE, EINER JE ZEILE' },
+        { l: 'Standard-Sätze und Wdh', v: '3 × 8-12', c: '#CDD3EA', h: 'WDH ALS TEXT — „12", „8-12", „MAX" SIND ERLAUBT' },
+        { l: 'Gerät', v: 'Kurzhantel', c: '#CDD3EA', h: 'FREITEXT · KEINE FESTE LISTE IM BESTAND' },
+        { l: 'Video-Link', v: 'leer', c: '#94A3B8', h: 'URL · WIRD NUR ALS ZEILE IM DETAIL ANGEZEIGT' },
+      ],
+      fehler: [
+        { t: 'Kein Muskel gewählt', b: 'Speichern bleibt inaktiv, das Feld bekommt beim Versuch einen magenta Rand und Fokus — keine Meldung für etwas, das man sofort sieht.' },
+        { t: 'Stufe fehlt', b: 'Gleiche Behandlung. Die Stufe ist nicht vorbelegt: eine stille 3 würde 70 falsche Werte erzeugen.' },
+        { t: 'Offline', b: 'Lokal gesichert, Zeile trägt „wird synchronisiert" bis zur Bestätigung. Kein Dialog.' },
+        { t: 'Serverfehler', b: 'Formular bleibt, Notice oben, Knopf wird „Erneut speichern". Nach drei Versuchen zusätzlich der Hinweis, dass die Eingaben lokal liegen.' },
+      ],
+      planEintraege: [
+        E('Bankdrücken', MC.brust, '4 × 8-12', '90 S'),
+        E('Schulterdrücken', MC.schultern, '3 × 10', '75 S'),
+        E('Incline Press KH', MC.brust, '3 × 12', '60 S'),
+        E('Trizepsdrücken', MC.trizeps, '3 × 12', '60 S'),
+      ],
+      planKaputt: [
+        { n: 'Kniebeuge', c: MC.beine, bg: rgba(MC.beine, 0.20), ziel: '4 × 6-8 · 120 S', tc: '#FFFFFF', cardBg: '#14141D', bs: 'solid', bc: '#232334', aktion: '', aktionC: '#94A3B8' },
+        { n: 'Übung gelöscht', c: '#3a3a48', bg: '#16161F', ziel: 'ZIEL BLEIBT · 3 × 10 · 90 S', tc: '#94A3B8', cardBg: '#0B0B0E', bs: 'dashed', bc: '#232334', aktion: 'Ersetzen', aktionC: '#00F2FE' },
+        { n: 'Beinpresse', c: MC.beine, bg: rgba(MC.beine, 0.20), ziel: '3 × 12 · 90 S', tc: '#FFFFFF', cardBg: '#14141D', bs: 'solid', bc: '#232334', aktion: '', aktionC: '#94A3B8' },
+        { n: 'Wadenheben stehend', c: MC.waden, bg: rgba(MC.waden, 0.20), ziel: '4 × 15 · 45 S', tc: '#FFFFFF', cardBg: '#14141D', bs: 'solid', bc: '#232334', aktion: '', aktionC: '#94A3B8' },
+      ],
+      arten: ['KR', 'CA', 'RE', 'KG'].map(k => ({
+        k,
+        bg: k === 'CA' ? 'rgba(0,242,254,0.10)' : '#14141D',
+        br: k === 'CA' ? '#00F2FE' : '#232334',
+        tc: k === 'CA' ? '#00F2FE' : '#CDD3EA',
+      })),
+      folgen: [
+        { l: 'Aktuelle Pause', alt: '50 T', neu: '32 T', c: '#00FF87' },
+        { l: 'Längste Pause', alt: '74 T', neu: '74 T', c: '#CDD3EA' },
+        { l: 'Form heute', alt: '16', neu: '19', c: '#00FF87' },
+        { l: 'Einheiten Juli', alt: '3', neu: '2', c: '#CDD3EA' },
+      ],
+      loeschFolgen: [
+        { l: 'Einheiten gesamt', alt: '110', neu: '109', c: '#CDD3EA' },
+        { l: 'Aktuelle Pause', alt: '50 T', neu: '53 T', c: '#F02277' },
+        { l: 'Form heute', alt: '16', neu: '14', c: '#F02277' },
+        { l: 'Cardio-Einheiten', alt: '51', neu: '50', c: '#CDD3EA' },
+      ],
+      matrix: [
+        { a: 'Übung anlegen', s: 'KEINE', sc: '#CDD3EA', u: '— (Öffnen)', w: 'Nichts geht verloren. Snackbar führt vorwärts zur neuen Übung.' },
+        { a: 'Übung bearbeiten', s: 'KEINE', sc: '#CDD3EA', u: '30 s', w: 'Vorzustand existiert und ist ein einzelner Datensatz — vollständig zurückschreibbar.' },
+        { a: 'Übung löschen', s: 'ZWEISTUFIG', sc: '#F02277', u: 'NEIN', w: 'Planeinträge werden mit umgeschrieben; ein Rückgängig über diese Kette wäre nicht verlässlich.' },
+        { a: 'Plan anlegen', s: 'KEINE', sc: '#CDD3EA', u: '— (Öffnen)', w: 'Ein Name, kein Verlust.' },
+        { a: 'Plan bearbeiten', s: 'VERLASSEN-DIALOG', sc: '#CDD3EA', u: '30 s', w: 'Reihenfolge und Zielwerte sind Arbeit — beim Verlassen mit Änderungen wird gefragt.' },
+        { a: 'Plan löschen', s: 'ZWEISTUFIG', sc: '#F02277', u: '30 s', w: 'Bis zu 6 Einträge Arbeit. Rückgängig ist hier möglich, weil nichts anderes daran hängt.' },
+        { a: 'Planeintrag entfernen', s: 'KEINE', sc: '#CDD3EA', u: '30 s', w: 'Eine Zeile, sofort wiederherstellbar. Ein Dialog je Zeile wäre Lärm.' },
+        { a: 'Einheit bearbeiten', s: 'FOLGEN-VORSCHAU', sc: '#00F2FE', u: '30 s', w: 'Kein Dialog, aber sichtbare Auswirkung auf Pause, Form und Monatszahl vor dem Sichern.' },
+        { a: 'Einheit löschen', s: 'ZWEISTUFIG + ZAHLEN', sc: '#F02277', u: '30 s', w: 'Die einzige Aktion, die 245 Tage Auswertung verändert. Vorher/Nachher in vier Kennzahlen.' },
+      ],
+      specRows: [
+        { k: 'Eingabefeld', v: 'Höhe 52 dp (einzeilig) / min 48 dp (mehrzeilig) · Radius 14 · #14141D · Rand #232334, fokussiert #00F2FE 1 dp, fehlerhaft #F02277 1,5 dp · Text 13 sp #FFFFFF · Platzhalter 13 sp #94A3B8 · Zähler Mono 9 rechts ab 80 % Länge' },
+        { k: 'Feldlabel + Pflicht', v: 'Label 11,5 sp/600 #CDD3EA · Pflicht als Mono-Marke daneben (Sternchen #F02277 oder Wort „PFLICHT" #94A3B8, umschaltbar) · Fehlerzustand färbt Label mit — Farbe nie allein' },
+        { k: 'Stufen-Segment', v: '5 Felder, flex 1, Höhe 48 dp, gap 4 dp · Radius 14 · aktiv rgba(0,242,254,0.10) + Rand #00F2FE · Zahl Mono 13/700, Wort 7,5 sp darunter · speichert 1–5, zeigt Wort' },
+        { k: 'Muskel-Chip', v: 'Höhe 34 dp (Formular) / 32 dp (Filter) · Radius 30 · Kugel: Kern 9 dp voll, Fläche rgba(farbe,0.18), Rand rgba(farbe,0.42) · Text 11 sp/600 in Muskelfarbe (alle ≥ 6,7:1) · ungewählt #14141D/#232334, Text #CDD3EA' },
+        { k: 'Übungskugel (Liste)', v: 'Hof 34 dp rgba(farbe,0.20), Kern 12 dp voll · im Detail Hof 48 / Kern 18 · bei mehreren Muskeln zählt der erste, die weiteren stehen als Chips darunter' },
+        { k: 'Herkunfts-Tag', v: 'Mono 8,5 letterspacing 0.08em · EIGEN #CDD3EA auf Rand #232334 · KURATIERT #94A3B8 auf Rand #16161F · im Detail als Schloss-Chip 28 dp an der Position des Bearbeiten-Links' },
+        { k: 'Planeintrag', v: 'Karte #14141D Radius 14, Höhe ≥ 52 dp · Griff 24 dp links (Trefferfläche 48) · Kugel 30/11 · Ziel Mono 9,5 #CDD3EA · Pause Mono 9 rechts · kaputt: #0B0B0E, Rand gestrichelt, Name #94A3B8, Aktion „Ersetzen" #00F2FE' },
+        { k: 'Folgen-Vorschau', v: 'Zeile: Label 11,5 sp #CDD3EA · alt Mono 10,5 #94A3B8 · Pfeil · neu Mono 11/700 in Richtungsfarbe (#00FF87 besser / #F02277 schlechter / #CDD3EA neutral) · immer mit Wort im A11y-Label' },
+        { k: 'Löschdialog Stufe 1', v: 'Radius 20 · #14141D · Rand #232334 · Titel 15/700 · Aufzählung mit 6-dp-Dots (#00FF87 bleibt erhalten / #CDD3EA verändert sich) · zwei Knöpfe 46 dp: „Weiter zum Löschen" nur Rand-Magenta, „Abbrechen" #1A1A26' },
+        { k: 'Löschdialog Stufe 2', v: 'Rand rgba(240,34,119,0.45) · Ausrufezeichen-Kreis 20 dp · genau zwei Knöpfe: gefülltes Magenta „Löschen", #1A1A26 „Behalten" · kein dritter Weg — die Wahl ist binär' },
+        { k: 'Verlassen-Dialog', v: 'Drei Knöpfe 46 dp: Sichern (Magenta gefüllt), Verwerfen (Rand #232334), Weiter bearbeiten (#1A1A26) · Text zählt die Änderungen · identisch für Übung, Plan und Einheit' },
+        { k: 'Snackbar', v: 'Höhe 48 dp · #14141D · Rand #232334 · Radius 14 · Dot 8 dp (#00FF87 Erfolg / #CDD3EA neutral) · eine Aktion rechts #00F2FE · 4 s ohne Rückgängig, 30 s mit · über der Navigationsleiste, kein Blur' },
+        { k: 'Speichern-Knopf', v: '48 dp · Radius 30 · aktiv Verlauf #F02277→#C01963 · inaktiv #16161F mit Rand #232334 und Text #94A3B8 · loading: Ring 14 dp 0,9 s + Text „Wird gespeichert", Felder auf 40 % gesperrt' },
+        { k: '200 % Schrift', v: 'Stufen-Segment bricht auf zwei Reihen à 3/2 · Chips umbrechen ohne Kürzung · Dialogknöpfe bleiben untereinander (nie nebeneinander) · Folgen-Vorschau bricht auf zwei Zeilen je Kennzahl' },
+      ],
+      stringRows: [
+        { k: 'exercise.new.title', de: 'Neue Übung', en: 'New exercise' },
+        { k: 'exercise.edit.title', de: 'Übung bearbeiten', en: 'Edit exercise' },
+        { k: 'exercise.field.name', de: 'Name', en: 'Name' },
+        { k: 'exercise.field.name.hint', de: 'z. B. Bulgarian Split Squat', en: 'e.g. Bulgarian split squat' },
+        { k: 'exercise.field.muscles', de: 'Muskeln', en: 'Muscles' },
+        { k: 'exercise.field.muscles.count', de: '{n} gewählt', en: '{n} selected' },
+        { k: 'exercise.field.level', de: 'Stufe', en: 'Level' },
+        { k: 'exercise.level.1', de: 'Einstieg', en: 'Entry' },
+        { k: 'exercise.level.2', de: 'Leicht', en: 'Easy' },
+        { k: 'exercise.level.3', de: 'Mittel', en: 'Medium' },
+        { k: 'exercise.level.4', de: 'Fortgeschritten', en: 'Advanced' },
+        { k: 'exercise.level.5', de: 'Experte', en: 'Expert' },
+        { k: 'exercise.level.hint', de: 'Wird als Zahl 1–5 gespeichert.', en: 'Saved as a number, 1–5.' },
+        { k: 'exercise.more', de: 'Mehr Angaben', en: 'More details' },
+        { k: 'exercise.more.count', de: '{n} optional', en: '{n} optional' },
+        { k: 'exercise.save.blocked', de: 'Noch {n} Angaben nötig', en: '{n} more details needed' },
+        { k: 'exercise.duplicate.title', de: 'Nicht gespeichert', en: 'Not saved' },
+        { k: 'exercise.duplicate.body', de: 'Du hast schon eine Übung „{name}". Deine Eingaben stehen noch hier.', en: 'You already have an exercise called “{name}”. Your input is still here.' },
+        { k: 'exercise.duplicate.open', de: 'Vorhandene öffnen', en: 'Open existing' },
+        { k: 'exercise.duplicate.suggest', de: 'Vorschlag nehmen', en: 'Use suggestion' },
+        { k: 'exercise.curated.badge', de: 'Kuratiert', en: 'Curated' },
+        { k: 'exercise.curated.title', de: 'Gehört zur Bibliothek', en: 'Part of the library' },
+        { k: 'exercise.curated.body', de: 'Diese Übung ist für alle gleich und bleibt unverändert. Willst du sie anders, leg dir eine eigene Fassung an.', en: 'This exercise is the same for everyone and stays unchanged. Want it different? Create your own version.' },
+        { k: 'exercise.curated.copy', de: 'Eigene Fassung anlegen', en: 'Create my own version' },
+        { k: 'exercise.delete', de: 'Übung löschen', en: 'Delete exercise' },
+        { k: 'exercise.delete.q', de: '„{name}" löschen?', en: 'Delete “{name}”?' },
+        { k: 'exercise.delete.usage', de: 'Die Übung steckt in {p, plural, one {# Plan} other {# Plänen}} und {s, plural, one {# Einheit} other {# Einheiten}}.', en: 'This exercise is used in {p, plural, one {# plan} other {# plans}} and {s, plural, one {# workout} other {# workouts}}.' },
+        { k: 'exercise.delete.keepUnits', de: 'Deine {n} Einheiten bleiben vollständig — mit Sätzen, Gewichten und Last.', en: 'Your {n} workouts stay complete — sets, weights and load.' },
+        { k: 'exercise.delete.plansGap', de: 'In den {n} Plänen bleibt eine Lücke stehen, die du dort ersetzen kannst.', en: 'A gap stays in those {n} plans, which you can replace there.' },
+        { k: 'delete.step1.continue', de: 'Weiter zum Löschen', en: 'Continue to delete' },
+        { k: 'delete.step2.title', de: 'Endgültig löschen', en: 'Delete permanently' },
+        { k: 'delete.step2.noUndo', de: 'Es gibt kein Rückgängig — nur neu anlegen.', en: 'There is no undo — only creating it again.' },
+        { k: 'delete.confirm', de: 'Löschen', en: 'Delete' },
+        { k: 'delete.keep', de: 'Behalten', en: 'Keep' },
+        { k: 'plan.new.title', de: 'Neuer Plan', en: 'New plan' },
+        { k: 'plan.empty.allowed', de: 'Der Plan existiert, sobald er einen Namen hat.', en: 'The plan exists as soon as it has a name.' },
+        { k: 'plan.entry.add', de: 'Übung hinzufügen', en: 'Add exercise' },
+        { k: 'plan.entry.sets', de: 'Sätze', en: 'Sets' },
+        { k: 'plan.entry.reps', de: 'Wdh', en: 'Reps' },
+        { k: 'plan.entry.reps.hint', de: '„12", „8-12" und „max" sind erlaubt.', en: '“12”, “8-12” and “max” are all allowed.' },
+        { k: 'plan.entry.rest', de: 'Pause', en: 'Rest' },
+        { k: 'plan.broken.notice', de: '{n, plural, one {# Eintrag zeigt} other {# Einträge zeigen}} ins Leere.', en: '{n, plural, one {# entry points} other {# entries point}} to nothing.' },
+        { k: 'plan.broken.entry', de: 'Übung gelöscht', en: 'Exercise deleted' },
+        { k: 'plan.broken.keepTarget', de: 'Ziel bleibt · {ziel}', en: 'Target kept · {target}' },
+        { k: 'plan.broken.replace', de: 'Ersetzen', en: 'Replace' },
+        { k: 'plan.broken.remove', de: 'Entfernen', en: 'Remove' },
+        { k: 'unsaved.title', de: 'Änderungen behalten?', en: 'Keep changes?' },
+        { k: 'unsaved.body', de: 'Du hast {c, plural, one {# Eintrag} other {# Einträge}} geändert und {a} hinzugefügt.', en: 'You changed {c, plural, one {# entry} other {# entries}} and added {a}.' },
+        { k: 'unsaved.save', de: 'Sichern und schließen', en: 'Save and close' },
+        { k: 'unsaved.discard', de: 'Verwerfen', en: 'Discard' },
+        { k: 'unsaved.continue', de: 'Weiter bearbeiten', en: 'Keep editing' },
+        { k: 'session.edit.title', de: 'Einheit bearbeiten', en: 'Edit workout' },
+        { k: 'session.field.datetime', de: 'Datum und Zeit', en: 'Date and time' },
+        { k: 'session.date.previous', de: 'Vorher {date} · {n, plural, one {+# Tag} other {+# Tage}}', en: 'Was {date} · {n, plural, one {+# day} other {+# days}}' },
+        { k: 'session.date.allowed.title', de: 'Datum ändern ist erlaubt', en: 'Changing the date is allowed' },
+        { k: 'session.date.allowed.body', de: 'Verschiebst du den Tag, verschieben sich Lücken und Form-Kurve mit.', en: 'Moving the day moves your gaps and form curve with it.' },
+        { k: 'session.impact.title', de: 'Was sich dadurch ändert', en: 'What this changes' },
+        { k: 'session.impact.preview', de: 'Vorschau, noch nicht gespeichert.', en: 'Preview — not saved yet.' },
+        { k: 'session.impact.pause', de: 'Aktuelle Pause', en: 'Current break' },
+        { k: 'session.impact.form', de: 'Form heute', en: 'Form today' },
+        { k: 'session.impact.count', de: 'Einheiten gesamt', en: 'Workouts total' },
+        { k: 'session.delete.q', de: 'Diese Einheit löschen?', en: 'Delete this workout?' },
+        { k: 'session.delete.body', de: 'Sie zählt in jede Auswertung. Danach steht dort:', en: 'It counts towards every analysis. Afterwards it reads:' },
+        { k: 'session.delete.window', de: '30 Sekunden lang kannst du das rückgängig machen.', en: 'You can undo this for 30 seconds.' },
+        { k: 'session.deleted.snack', de: 'Einheit gelöscht · Form {alt} → {neu}', en: 'Workout deleted · form {old} → {new}' },
+        { k: 'sets.add', de: 'Sätze nachtragen', en: 'Add sets' },
+        { k: 'common.undo', de: 'Rückgängig', en: 'Undo' },
+        { k: 'common.saving', de: 'Wird gespeichert', en: 'Saving' },
+        { k: 'common.saved', de: 'Änderung gespeichert', en: 'Change saved' },
+        { k: 'common.created', de: 'Übung angelegt', en: 'Exercise created' },
+        { k: 'common.open', de: 'Öffnen', en: 'Open' },
+        { k: 'common.retry.save', de: 'Erneut speichern', en: 'Save again' },
+        { k: 'common.offline', de: 'Lokal gesichert · wird synchronisiert', en: 'Saved locally · syncing' },
+        { k: 'exercises.block.title', de: 'Übungen · {n}', en: 'Exercises · {n}' },
+        { k: 'exercises.block.search', de: 'Name oder Muskel', en: 'Name or muscle' },
+        { k: 'exercises.block.byMuscle', de: 'Nach Muskel', en: 'By muscle' },
+        { k: 'exercises.block.all', de: 'Alle ansehen', en: 'See all' },
+        { k: 'exercises.create', de: 'Eigene Übung anlegen', en: 'Create your own exercise' },
+        { k: 'exercises.empty.own.title', de: 'Noch keine eigene Übung', en: 'No exercise of your own yet' },
+        { k: 'exercises.empty.own.body', de: 'Name, Muskeln und eine Stufe genügen — der Rest ist freiwillig.', en: 'Name, muscles and a level are enough — the rest is optional.' },
+      ],
+      a11yRows: [
+        { el: 'Eingabefeld', role: 'textField', note: 'Label, Wert und Pflichtstatus in einem Knoten: „Name, Pflichtfeld, leer". Der Zeichenzähler ist kein eigener Knoten, sondern Teil des Hinweistexts. Fehlerhafte Felder tragen errorText, damit TalkBack ihn beim Fokus liest.' },
+        { el: 'Stufen-Segment', role: 'radioGroup + selected', note: 'Ein Knoten je Stufe: „Stufe 4, Fortgeschritten, 4 von 5". Die Zahl allein wäre bedeutungslos, das Wort allein nicht auffindbar — beides zusammen im Label.' },
+        { el: 'Muskel-Chip', role: 'checkbox + checked', note: '„Beine, ausgewählt". Die Farbe wird nie vorgelesen; ausgewählt/nicht ausgewählt trägt den Zustand. Nach jeder Änderung meldet eine polite liveRegion „2 gewählt".' },
+        { el: 'Speichern-Knopf', role: 'button + enabled/disabled', note: 'Deaktiviert trägt er den Grund als Label: „Speichern, nicht möglich, noch 3 Angaben nötig". Ein disabled-Knopf ohne Grund ist die häufigste Sackgasse.' },
+        { el: 'Schloss-Chip (kuratiert)', role: 'text', note: '„Kuratiert, nicht bearbeitbar." Kein Button — es gibt nichts zu tippen. Der Weg heißt „Eigene Fassung anlegen" und ist ein eigener Knoten weiter unten.' },
+        { el: 'Löschen Stufe 1', role: 'alertDialog', note: 'Fokus auf den Titel, Ansage von Titel plus vollständiger Folgenliste. „Weiter zum Löschen" ist nicht der erste fokussierbare Knoten — „Abbrechen" steht davor im Lesefluss unter dem Text.' },
+        { el: 'Löschen Stufe 2', role: 'alertDialog', note: '„Endgültig löschen. Die Übung ist danach weg. Es gibt kein Rückgängig." Der Löschen-Knopf trägt den Objektnamen: „Bulgarian Split Squat endgültig löschen".' },
+        { el: 'Folgen-Vorschau', role: 'text (liveRegion polite)', note: 'Je Zeile ein Knoten mit Richtungswort: „Aktuelle Pause, von 50 Tagen auf 32 Tage, kürzer". Ohne das Wort trüge nur die Farbe die Richtung.' },
+        { el: 'Kaputter Planeintrag', role: 'button', note: '„Gelöschte Übung, Ziel 3 mal 10, Pause 90 Sekunden, Ersetzen." Der Eintrag bleibt fokussierbar, weil er eine Aktion trägt — anders als der Lückenstreifen aus Modul 6.' },
+        { el: 'Sortiergriff', role: 'button + customActions', note: 'Statt Drag: zwei benutzerdefinierte Aktionen „nach oben" / „nach unten" mit Ansage der neuen Position („Position 2 von 6"). Drag allein ist mit Screenreader nicht bedienbar.' },
+        { el: 'Snackbar mit Rückgängig', role: 'liveRegion assertive', note: 'Einmalige Ansage, danach ist „Rückgängig" per Fokus erreichbar und bleibt es die vollen 30 s. Der Timer läuft für Screenreader-Nutzer erst ab dem Fokusverlust.' },
+        { el: 'Verlassen-Dialog', role: 'alertDialog', note: 'Die Änderungszahl steht im Text, nicht nur im Titel. Zurück-Geste öffnet denselben Dialog; sie schließt nie direkt mit Datenverlust.' },
+      ],
+      reuseRows: [
+        { mod: 'M1', part: 'Typenrollen Poppins/Mono', use: 'Mono für alle eingegebenen Messwerte, Zielwerte, Datumsanker und Zähler; Poppins für Labels, Sätze und Knöpfe.' },
+        { mod: 'M1', part: 'Press-Verhalten', use: 'Chips, Segmente, Zeilen und Dialogknöpfe: Skalierung + Glow statt Ripple, unveränderte Werte.' },
+        { mod: 'M2', part: 'Dialog-Anatomie', use: 'Beide Löschstufen und der Verlassen-Dialog: Radius 20, #14141D, höchstens drei Wege, Knöpfe untereinander.' },
+        { mod: 'M2', part: 'Sheet', use: '„Mehr Angaben" und „Übung hinzufügen" sind Sheets, keine neuen Screens — das Formular bleibt im Rücken sichtbar.' },
+        { mod: 'M2', part: 'Zustands-Anatomie', use: 'Leere Übungsliste, leerer Plan, Serverfehler — IconBox 48 / Titel / ≤ 2 Zeilen / 1 Aktion.' },
+        { mod: 'M2', part: 'Notice', use: '„Gehört zur Bibliothek", „Datum ändern ist erlaubt", „1 Eintrag zeigt ins Leere" — dieselbe Cyan-Notice, nie als Fehler eingefärbt.' },
+        { mod: 'M3', part: 'Bar / Track', use: 'Fortschrittsleiste „3/3 Pflichtfelder" über dem Formular, Track #16161F.' },
+        { mod: 'M4', part: 'Grosses Eingabefeld', use: '52 dp Höhe, Radius 14, Fokusrand Cyan — unverändert aus Anmeldung übernommen, damit Eingabe sich überall gleich anfühlt.' },
+        { mod: 'M4', part: 'Segment', use: 'Stufen-Segment 1–5 und Art-Segment KR/CA/RE/KG sind dasselbe Bauteil in zwei Breiten.' },
+        { mod: 'M5', part: 'Muskelfarben (korrigiert)', use: 'Neun eigene Töne als Kugel — Filter im Workouts-Tab, Chips im Formular, Kugel in Liste, Detail und Planeintrag.' },
+        { mod: 'M5', part: 'Listenzeile', use: 'Übungsliste und Planeinträge, Höhe ≥ 52 dp, Ellipsis statt Umbruch im Namen.' },
+        { mod: 'M6', part: 'Kennzahlen der Auswertung', use: 'Pause, Form, Einheitenzahl aus M6 werden hier als Vorher/Nachher gezeigt — dieselben Werte, dieselbe Schreibweise.' },
+        { mod: 'M6', part: 'Entscheid „kaputte Pläne blockieren nicht"', use: 'Trägt den gesamten Umgang mit gelöschten Übungen in Planeinträgen.' },
+      ],
+      decisions: [
+        { n: '01', title: 'Übungen nach oben zu schieben verworfen', body: 'Die Rückmeldung „zu unpräsent" verlangt Gewicht, nicht Vorrang. Die M5-Reihenfolge beantwortet zuerst „was mache ich jetzt?" — ein Übungsblock über der heutigen Einheit würde diese Antwort verdrängen. Gewicht entsteht stattdessen aus Fläche: 44 dp Suchzeile werden zu einem 260-dp-Block mit Suche, neun Muskelfiltern und dem Anlegen-Weg.' },
+        { n: '02', title: 'Übungen als eigener Tab verworfen', body: 'Ein fünfter Tab hätte den Block gerettet und die Navigation gekostet. Die App hat vier Tabs mit klaren Fragen; „Übungen" ist keine eigene Frage, sondern das Material für Pläne und Einheiten.' },
+        { n: '03', title: 'difficulty als Wortauswahl verworfen', body: 'Die Datenbank verlangt beim Anlegen eine Zahl. Ein Formular, das „intermediate" speichert, wird abgewiesen — der Nutzer sähe einen Fehler, den er nicht verursacht hat. Das Segment zeigt Wörter und schreibt 1–5; Altbestand wird beim ersten Bearbeiten beiläufig abgebildet.' },
+        { n: '04', title: 'Migrationsaufforderung für 55 Altübungen verworfen', body: 'Eine Liste „55 Übungen brauchen eine Stufe" ist eine Hausaufgabe, die niemand macht. Alte Wörter bleiben lesbar (beginner → Stufe 2), die Zahl wird geschrieben, sobald die Übung ohnehin bearbeitet wird. Wer nie bearbeitet, merkt nichts — und verliert nichts.' },
+        { n: '05', title: 'Vorbelegte Stufe 3 verworfen', body: 'Eine Vorbelegung hätte das Formular auf zwei Pflichtfelder verkürzt. Sie hätte aber auch dutzende falsche 3er erzeugt, die niemand korrigiert. Drei bewusste Angaben sind ehrlicher als zwei plus eine Lüge — dafür passen alle drei ohne Scrollen auf 320 dp.' },
+        { n: '06', title: 'Mehrschritt-Assistent beim Anlegen verworfen', body: 'Drei Pflichtfelder auf drei Seiten zu verteilen macht aus einer 20-Sekunden-Aufgabe eine Prozedur. Ein Screen, drei Felder, ein Zähler „3/3" — und alles Optionale hinter einer einzigen Zeile.' },
+        { n: '07', title: 'Zahlenfeld für Wdh verworfen', body: 'reps ist im Bestand eine Zeichenkette, weil „8-12" ein legitimes Ziel ist. Ein Zahlen-Stepper hätte 60 Planeinträge unbrauchbar gemacht. Das Feld nimmt Text, der Hinweis nennt die drei erlaubten Formen.' },
+        { n: '08', title: 'Kaskadenlöschung von Planeinträgen verworfen', body: 'Wird eine Übung gelöscht, könnte man ihre Planeinträge mitlöschen. Damit verschwänden aber Zielwerte (4 × 6-8, 120 s), die der Nutzer erarbeitet hat. Der Eintrag bleibt als gestrichelte Lücke mit erhaltenem Ziel — „Ersetzen" ist deshalb die erste angebotene Aktion.' },
+        { n: '09', title: 'Rückgängig beim Übungslöschen verworfen', body: 'Beim Löschen werden Planeinträge umgeschrieben. Ein Rückgängig müsste diese Kette exakt zurückdrehen; bei Nebenläufigkeit ist das nicht garantiert. Lieber kein Rückgängig als eines, das gelegentlich lügt — dafür sagt Stufe 2 ausdrücklich, dass es keines gibt.' },
+        { n: '10', title: 'Datumsänderung zu sperren verworfen', body: 'Nachtragen ist der häufigste Grund, eine Einheit zu bearbeiten. Ein Verbot ließe jede falsch erfasste Einheit für immer falsch. Stattdessen wird die Folge vorab gerechnet: „aktuelle Pause 50 → 32 Tage", „Form 16 → 19" — überprüfbar statt abstrakt gewarnt.' },
+        { n: '11', title: 'Warndialog beim Einheiten-Bearbeiten verworfen', body: 'Ein Dialog „Das ändert deine Auswertung" unterbricht, ohne zu informieren, und wird nach dem dritten Mal weggetippt. Die Vorschau steht im Formular, aktualisiert sich beim Tippen und kostet keinen Tap.' },
+        { n: '12', title: 'Ausgegrauter Bearbeiten-Knopf bei kuratierten Übungen verworfen', body: 'Ein deaktivierter Knopf sieht aus wie ein Fehler oder wie eine Bezahlschranke. An seiner Position steht ein Schloss-Chip mit dem Wort „Kuratiert", darunter erklärt eine Notice den Grund und bietet „Eigene Fassung anlegen". Dieselbe Stelle, andere Aussage — kein Verlustgefühl.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

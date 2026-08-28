@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../history/application/history_providers.dart';
+import '../../../history/domain/exercise_history.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../application/exercise_providers.dart';
 import '../../domain/exercise.dart';
@@ -151,8 +153,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 10),
               AtemButton.ghost(
-                label: l10n.commonDelete,
-                semanticLabel: '${l10n.commonDelete}: ${exercise.name}',
+                label: l10n.exerciseDelete,
+                semanticLabel: l10n.exerciseDeleteQ(exercise.name),
                 accent: AtemColors.magenta,
                 onPressed: () => _delete(context, ref),
               ),
@@ -160,8 +162,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
               const _CuratedLock(),
               const SizedBox(height: 14),
               AtemButton.outline(
-                label: l10n.exerciseCopyAction,
-                semanticLabel: l10n.exerciseCopyAction,
+                label: l10n.exerciseCuratedCopy,
+                semanticLabel: l10n.exerciseCuratedCopy,
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (_) => ExerciseFormScreen(copyOf: exercise),
@@ -188,21 +190,43 @@ class ExerciseDetailScreen extends ConsumerWidget {
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final l10n = AppL10n.of(context);
 
+    // **Beides zählen.** Das Board nennt Pläne und Einheiten getrennt, weil
+    // die Folgen verschieden sind: Pläne bekommen eine Lücke, Einheiten
+    // bleiben vollständig. Nur eine der beiden Zahlen zu nennen liesse die
+    // andere Folge unausgesprochen.
     final plans = ref.read(plansProvider).value ?? const [];
-    final affected = plans
+    final inPlans = plans
         .where((p) => p.items.any((i) => i.exerciseId == exercise.id))
         .length;
+    final sessions = ExerciseHistory.of(
+      ref.read(sessionsProvider).value ?? const [],
+      exercise.id,
+    ).sessionCount;
 
     final first = await AtemDialog.show<bool>(
       context,
       kind: AtemDialogKind.destructive,
-      title: l10n.exerciseDeleteTitle,
-      message: affected == 0
-          ? l10n.exerciseDeleteBody
-          : '${l10n.exerciseDeleteInPlans(affected)} ${l10n.exerciseDeleteBody}',
-      confirmLabel: l10n.commonDelete,
+      title: l10n.exerciseDeleteQ(exercise.name),
+      message: l10n.exerciseDeleteUsage(inPlans, sessions),
+      confirmLabel: l10n.deleteStep1Continue,
       dismissLabel: l10n.commonCancel,
-      barrierLabel: l10n.exerciseDeleteBarrier,
+      barrierLabel: l10n.exerciseDelete,
+      // Was bleibt und was sich ändert — die Aufzählung aus dem Board.
+      detail: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (sessions > 0)
+            _DeleteFact(
+              text: l10n.exerciseDeleteKeepUnits(sessions),
+              keeps: true,
+            ),
+          if (inPlans > 0)
+            _DeleteFact(
+              text: l10n.exerciseDeletePlansGap(inPlans),
+              keeps: false,
+            ),
+        ],
+      ),
       onConfirm: () => Navigator.of(context).pop(true),
     );
     if (first != true || !context.mounted) return;
@@ -210,11 +234,11 @@ class ExerciseDetailScreen extends ConsumerWidget {
     final second = await AtemDialog.show<bool>(
       context,
       kind: AtemDialogKind.destructive,
-      title: l10n.exerciseDeleteSecondTitle,
-      message: l10n.exerciseDeleteSecondBody,
-      confirmLabel: l10n.commonDelete,
-      dismissLabel: l10n.commonCancel,
-      barrierLabel: l10n.exerciseDeleteBarrier,
+      title: l10n.deleteStep2Title,
+      message: l10n.deleteStep2NoUndo,
+      confirmLabel: l10n.deleteConfirm,
+      dismissLabel: l10n.deleteKeep,
+      barrierLabel: l10n.exerciseDelete,
       onConfirm: () => Navigator.of(context).pop(true),
     );
     if (second != true) return;
@@ -234,7 +258,8 @@ class _CuratedLock extends StatelessWidget {
     final l10n = AppL10n.of(context);
 
     return Semantics(
-      label: '${l10n.exerciseCuratedA11y}. ${l10n.exerciseCuratedBody}',
+      label: '${l10n.exerciseCuratedBadge}. ${l10n.exerciseCuratedTitle}. '
+          '${l10n.exerciseCuratedBody}',
       child: ExcludeSemantics(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,14 +276,17 @@ class _CuratedLock extends StatelessWidget {
                   const Icon(Icons.lock_outline,
                       size: 15, color: AtemColors.textSecondary),
                   const SizedBox(width: 7),
-                  Text(l10n.exerciseCuratedChip,
+                  Text(l10n.exerciseCuratedBadge,
                       style: AtemType.labelSmall.of(context)),
                 ],
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
+            Text(l10n.exerciseCuratedTitle,
+                style: AtemType.labelMedium.of(context)),
+            const SizedBox(height: 4),
             Text(l10n.exerciseCuratedBody,
-                style: AtemType.labelMicro.of(context)),
+                style: AtemType.labelSmall.of(context)),
           ],
         ),
       ),
@@ -315,4 +343,37 @@ class _Block extends StatelessWidget {
 
 extension _FirstOrNull<T> on List<T> {
   T? get firstOrNull => isEmpty ? null : first;
+}
+
+/// Eine Zeile der Folgenaufzählung im ersten Löschdialog.
+///
+/// Der Punkt trägt die Richtung — lime für „bleibt erhalten", neutral für
+/// „verändert sich". Das Wort steht daneben, die Farbe ist Verstärkung.
+class _DeleteFact extends StatelessWidget {
+  const _DeleteFact({required this.text, required this.keeps});
+
+  final String text;
+  final bool keeps;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: ExcludeSemantics(
+                child: AtemStatusDot(
+                  color: keeps ? AtemColors.green : AtemColors.textSecondary,
+                ),
+              ),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Text(text, style: AtemType.labelSmall.of(context)),
+            ),
+          ],
+        ),
+      );
 }

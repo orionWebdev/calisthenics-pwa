@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes skelPulse{0%,100%{opacity:.5}50%{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 8 / STUFE 8 · LETZTES VOR VERÖFFENTLICHUNG</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Einstellungen und Profil</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:900px;line-height:1.7">Acht Einstellungen, von denen eine rückwirkend rechnet und eine Jahre vernichtet. Der Rest ist Vorliebe und darf langweilig sein. Der Bildschirm bekommt keinen Tab-Platz — er hängt hinter dem Profilbild im Dashboard-Kopf.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Folgen werden gerechnet, nicht gewarnt — auch hier</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Kein Schalter ohne Wirkung</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Zeile ≥ 56 dp · 320 dp · 200 % Schrift</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Privates Projekt · kein Firmenbezug</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ · MODUL 8 · EIN SATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1060px">Eine Einstellung zeigt, was sie bewirkt, bevor sie es bewirkt — und was nichts bewirkt, steht hier nicht als Schalter, sondern als Satz.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Drei Klassen: <strong style="color:#CDD3EA;font-weight:600">Vorliebe</strong> (Sprache, Haptik, Einheiten, Pause — sofort wirksam, jederzeit zurück), <strong style="color:#CDD3EA;font-weight:600">rechnende Angabe</strong> (Körpergewicht — Vorschau beim Tippen, 30 s Rückgängig) und <strong style="color:#CDD3EA;font-weight:600">vernichtend</strong> (Konto löschen — zwei Stufen, getippte Bestätigung, kein Zeitfenster). Nur die dritte Klasse darf unterbrechen.</div>
+</div>
+
+<div data-screen-label="B Klassen und Wirkzeitpunkt" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · WAS EINSTELLBAR IST, WAS ES BEWIRKT UND WANN</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px 20px">
+<div style="display:grid;grid-template-columns:1.1fr 1.5fr 0.85fr 1.7fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>EINSTELLUNG</div><div>WERTEBEREICH</div><div>WIRKT</div><div>WAS SIE ANFASST</div>
+</div>
+<sc-for list="{{ wirkung }}" as="w" hint-placeholder-count="9">
+<div style="display:grid;grid-template-columns:1.1fr 1.5fr 0.85fr 1.7fr;gap:8px 16px;align-items:baseline;padding:12px 0;border-bottom:{{ w.bb }}">
+<div style="font-size:12.5px;font-weight:600">{{ w.name }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA;line-height:1.6">{{ w.wert }}</div>
+<div><span style="display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;padding:3px 8px;border-radius:30px;background:{{ w.bg }};border:1px solid {{ w.br }};color:{{ w.tc }}">{{ w.wirkt }}</span></div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.65">{{ w.folge }}</div>
+</div>
+</sc-for>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px">
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#F02277">GESTRICHEN · HELLES THEMA</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Die Zeile verschwindet ersatzlos aus den Einstellungen. An ihre Stelle tritt kein Ersatzschalter, sondern ein Satz in „Über die App": <span style="font-family:'JetBrains Mono',monospace;font-size:11px">DARSTELLUNG · DUNKEL</span> — dort, wo Tatsachen stehen und niemand einen Griff erwartet. Ein Schalter, der auf ein halbfertiges Thema zeigt, kostet mehr Vertrauen als eine fehlende Zeile.</div>
+</div>
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#F02277">ZWEI WERTE · SPRACHE</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Kein dritter Wert „wie das System". Die App kennt zwei Sprachen; bei einem System auf Französisch zeigte „wie das System" stillschweigend Englisch — ein Wert, der etwas anderes tut als er sagt. Das System wird <strong style="color:#FFFFFF;font-weight:600">einmal</strong> geachtet: beim ersten Start setzt Modul 4 den Wert vor. Danach steht er sichtbar hier.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">PLATZ IN DER APP</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Zwei Leistenplätze bleiben frei. Einstellungen bekommt keinen: die Leiste beantwortet Tagesfragen („was mache ich jetzt", „wie lief es"), und dieser Bildschirm wird viermal im Jahr geöffnet. Zugang ist das Profilbild oben rechts im Dashboard — 44 dp Bild, 48 dp Trefferfläche, Semantics „Profil und Einstellungen".</div>
+</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A1 Einstellungen Übersicht" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A1 · DER BILDSCHIRM — PROFILKOPF ALS TATSACHE, NICHT ALS FORMULAR</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · OBEN — PROFIL UND TRAINING</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="font-size:16px;font-weight:700">Einstellungen</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px 14px;display:flex;gap:12px;align-items:center">
+<span style="flex:none;width:52px;height:52px;border-radius:30px;background:linear-gradient(135deg,#7A2BDB,#C01963);display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700">MK</span>
+<span style="flex:1;min-width:0">
+<span style="display:block;font-size:14px;font-weight:700">Max Keller</span>
+<span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">max.keller@gmail.com</span>
+<span style="display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:3px 8px;border-radius:30px;background:#0B0B0E;border:1px solid #232334">
+<svg width="9" height="9" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="#94A3B8" stroke-width="2"></rect><path d="M8 11V8a4 4 0 018 0v3" fill="none" stroke="#94A3B8" stroke-width="2"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.06em;color:#94A3B8">ÜBER GOOGLE · FEST</span>
+</span>
+</span>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">TRAINING</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:0 14px">
+<sc-for list="{{ zeilenTraining }}" as="z" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 0;border-bottom:{{ z.bb }}">
+<span style="flex:1;min-width:0">
+<span style="display:block;font-size:12.5px;font-weight:600">{{ z.n }}</span>
+<span style="display:block;font-size:10px;color:#94A3B8;margin-top:2px;line-height:1.5">{{ z.s }}</span>
+</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:{{ z.vc }}">{{ z.v }}</span>
+<svg width="12" height="12" viewBox="0 0 24 24" style="flex:none"><path d="M9 5l7 7-7 7" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+</div>
+</sc-for>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">APP</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="font-size:11.5px;font-weight:600">Sprache</div>
+<div style="margin-top:8px;display:flex;gap:4px">
+<span style="flex:1;height:40px;border-radius:14px;background:rgba(0,242,254,0.10);border:1px solid #00F2FE;display:inline-flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:11.5px;font-weight:700;color:#00F2FE">Deutsch</span><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#00F2FE">AKTIV</span></span>
+<span style="flex:1;height:40px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:#CDD3EA">English</span>
+</div>
+<div style="margin-top:14px;display:flex;align-items:center;gap:10px;min-height:48px">
+<span style="flex:1;min-width:0"><span style="display:block;font-size:11.5px;font-weight:600">Haptik</span><span style="display:block;font-size:10px;color:#94A3B8;margin-top:2px">Kurzes Klopfen bei Satz und Pause</span></span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:7px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ haptikWortC }}">{{ haptikWort }}</span>
+<span style="width:44px;height:26px;border-radius:30px;background:{{ haptikTrack }};border:1px solid {{ haptikBorder }};display:inline-flex;align-items:center;justify-content:{{ haptikJustify }};padding:0 3px;box-sizing:border-box">
+<span style="width:20px;height:20px;border-radius:30px;background:{{ haptikKnob }};display:inline-flex;align-items:center;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#050507">{{ haptikGlyph }}</span></span>
+</span>
+</span>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Name und E-Mail sind keine leeren Felder, sondern gesetzter Text mit Schloss-Chip — dieselbe Lösung wie bei kuratierten Übungen aus Modul 7: das Nicht-Können steht als Tatsache da, nicht als deaktiviertes Eingabefeld.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · UNTEN — DATEN, KONTO, RECHTLICHES</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">DEINE DATEN</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:0 14px">
+<sc-for list="{{ zeilenDaten }}" as="z" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 0;border-bottom:{{ z.bb }}">
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12.5px;font-weight:600">{{ z.n }}</span><span style="display:block;font-size:10px;color:#94A3B8;margin-top:2px;line-height:1.5">{{ z.s }}</span></span>
+<svg width="12" height="12" viewBox="0 0 24 24" style="flex:none"><path d="M9 5l7 7-7 7" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+</div>
+</sc-for>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">RECHTLICHES</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:0 14px">
+<sc-for list="{{ zeilenRecht }}" as="z" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 0;border-bottom:{{ z.bb }}">
+<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;font-weight:600">{{ z.n }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">{{ z.tag }}</span>
+<svg width="12" height="12" viewBox="0 0 24 24" style="flex:none"><path d="M9 5l7 7-7 7" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+</div>
+</sc-for>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">ÜBER DIE APP</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ ueber }}" as="u" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">{{ u.k }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#CDD3EA;text-align:right">{{ u.v }}</span>
+</div>
+</sc-for>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:0 14px">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;border-bottom:1px solid #232334">
+<span style="flex:1;font-size:12.5px;font-weight:600">Abmelden</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">DATEN BLEIBEN</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;min-height:56px">
+<span style="flex:1;font-size:12.5px;font-weight:600;color:#F02277">Konto löschen</span>
+<svg width="12" height="12" viewBox="0 0 24 24" style="flex:none"><path d="M9 5l7 7-7 7" fill="none" stroke="#F02277" stroke-width="2" stroke-linecap="round"></path></svg>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Löschen steht unten, allein in seiner Karte, magenta als Wort <em style="color:#CDD3EA;font-style:normal">und</em> als Position — nie zwischen Vorlieben. Abmelden trägt „Daten bleiben", damit die beiden nicht verwechselt werden.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · ZUSTÄNDE DER LISTENZEILE UND DES SCHALTERS</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:24px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ zustaende }}" as="z" hint-placeholder-count="6">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:{{ z.lc }}">{{ z.label }}</div>
+<div style="margin-top:5px;background:{{ z.bg }};border:1px solid {{ z.br }};border-radius:14px;padding:0 12px;min-height:52px;display:flex;align-items:center;gap:10px;opacity:{{ z.op }};transform:{{ z.tf }}">
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;color:{{ z.tc }}">{{ z.n }}</span><span style="display:block;font-size:9.5px;color:{{ z.sc }};margin-top:2px;line-height:1.5">{{ z.s }}</span></span>
+<sc-if value="{{ z.ring }}" hint-placeholder-val="{{ false }}">
+<span style="flex:none;width:16px;height:16px;border-radius:30px;border:2px solid rgba(0,242,254,0.25);border-top-color:#00F2FE;animation:{{ spinAnim }}"></span>
+</sc-if>
+<sc-if value="{{ z.wert }}" hint-placeholder-val="{{ true }}">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:{{ z.wc }}">{{ z.wert }}</span>
+</sc-if>
+</div>
+</div>
+</sc-for>
+<div style="border-top:1px solid #232334;padding-top:10px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">SCHALTER · VIER ZUSTÄNDE, IMMER MIT WORT</div>
+<div style="margin-top:9px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ schalter }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:9px;min-height:34px;opacity:{{ s.op }}">
+<span style="flex:1;font-size:11px;color:#CDD3EA">{{ s.z }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ s.wc }}">{{ s.w }}</span>
+<span style="flex:none;width:44px;height:26px;border-radius:30px;background:{{ s.track }};border:1px solid {{ s.br }};display:inline-flex;align-items:center;justify-content:{{ s.just }};padding:0 3px;box-sizing:border-box;box-shadow:{{ s.glow }}">
+<span style="width:20px;height:20px;border-radius:30px;background:{{ s.knob }};display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ s.gc }}">{{ s.g }}</span>
+</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Schalter trägt neben der Farbe ein Wort (AN/AUS) und im Knopf ein Zeichen (✓/×) — Farbe ist nie der einzige Träger. Bei 200 % Schrift rutscht das Wort unter die Beschriftung, der Schalter bleibt rechts.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="A2 Körpergewicht" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A2 · KÖRPERGEWICHT — DIE EINZIGE EINSTELLUNG, DIE RÜCKWIRKEND RECHNET</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">1 · GEÖFFNET — UNVERÄNDERT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;min-height:430px;display:flex;flex-direction:column;gap:12px">
+<div style="width:36px;height:4px;border-radius:30px;background:#232334;align-self:center"></div>
+<div style="font-size:15px;font-weight:700">Körpergewicht</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6">Bewertet jede Körpergewichtsübung in deinem Verlauf — heute und rückwirkend.</div>
+<div style="display:flex;align-items:center;gap:8px;height:52px;border-radius:14px;background:#14141D;border:1px solid #232334;padding:0 14px">
+<span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700">78,0</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">KG</span>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;letter-spacing:0.06em">EINE NACHKOMMASTELLE · 30–250 KG</div>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+<div style="height:48px;border-radius:30px;background:#16161F;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:#94A3B8">Speichern</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;text-align:center;letter-spacing:0.06em">UNVERÄNDERT · NICHTS ZU SPEICHERN</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Ohne Änderung keine Vorschau und kein aktiver Knopf. Der leere Platz darunter ist Absicht — er füllt sich beim Tippen.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">2 · BEIM TIPPEN — DIE ZAHL RECHNET MIT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;min-height:430px;display:flex;flex-direction:column;gap:12px">
+<div style="width:36px;height:4px;border-radius:30px;background:#232334;align-self:center"></div>
+<div style="font-size:15px;font-weight:700">Körpergewicht</div>
+<div style="display:flex;align-items:center;gap:8px;height:52px;border-radius:14px;background:#14141D;border:1px solid #00F2FE;padding:0 14px">
+<span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#FFFFFF">{{ bwText }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">KG</span>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;letter-spacing:0.06em">VORHER 78,0 KG</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE">{{ bwDelta }}</span>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#00F2FE">WAS SICH RÜCKWIRKEND ÄNDERT</span>
+</div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.06em">{{ retroScope }}</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ bwFolgen }}" as="f" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+<span style="flex:1;min-width:88px;font-size:11px;color:#CDD3EA">{{ f.l }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ f.alt }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">→</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:{{ f.c }}">{{ f.neu }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:{{ f.c }};letter-spacing:0.06em">{{ f.wort }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.6">Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.</div>
+<div style="margin-top:auto;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700">{{ bwSpeichern }}</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Folgentabelle aus Modul 7, unverändert übernommen. Sie steht <em style="color:#CDD3EA;font-style:normal">unter</em> dem Feld und aktualisiert sich pro Tastendruck (150 ms entprellt) — kein Dialog, keine Warnung, kein zusätzlicher Tap.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · GESPEICHERT, FEHLER, GRENZE</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#00FF87">GESPEICHERT · 30 S RÜCKGÄNGIG</div>
+<div style="margin-top:9px;background:#14141D;border:1px solid #232334;border-radius:14px;min-height:48px;display:flex;align-items:center;gap:9px;padding:0 13px">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:#00FF87"></span>
+<span style="flex:1;font-size:11px;line-height:1.45">Gewicht {{ bwText }} kg · Form {{ formAlt }} → {{ formNeu }}</span>
+<span style="flex:none;font-size:11px;font-weight:700;color:#00F2FE">Rückgängig</span>
+</div>
+<div style="margin-top:8px;font-size:10.5px;color:#94A3B8;line-height:1.6">Die Auswertung ist beim Erscheinen der Zeile schon neu. Rückgängig schreibt den alten Wert zurück und rechnet erneut — dieselbe Operation, andere Richtung.</div>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#F02277">FEHLER · AUSSERHALB DER GRENZE</div>
+<div style="margin-top:9px;display:flex;align-items:center;gap:8px;height:52px;border-radius:14px;background:#14141D;border:1.5px solid #F02277;padding:0 14px">
+<span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700">7,8</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277">KG</span>
+</div>
+<div style="margin-top:7px;display:flex;gap:6px;align-items:flex-start">
+<span style="flex:none;width:14px;height:14px;border-radius:30px;border:1.5px solid #F02277;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#F02277;margin-top:1px">!</span>
+<span style="flex:1;font-size:10.5px;color:#F02277;line-height:1.55">Zwischen 30 und 250 kg. Vorschau bleibt aus, bis der Wert stimmt.</span>
+</div>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">SPEICHERN · LADEND</div>
+<div style="margin-top:9px;height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;gap:9px;opacity:0.75">
+<span style="width:14px;height:14px;border-radius:30px;border:2px solid rgba(255,255,255,0.3);border-top-color:#FFFFFF;animation:{{ spinAnim }}"></span>
+<span style="font-size:12.5px;font-weight:700">Wird gerechnet</span>
+</div>
+<div style="margin-top:8px;font-size:10.5px;color:#94A3B8;line-height:1.6">245 Tage neu bewerten dauert messbar. Der Knopf behält seine Beschriftung, das Sheet bleibt offen, das Feld ist gesperrt — Ring statt führendem Symbol, wie in Modul 7 festgelegt.</div>
+</div>
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#00F2FE">OFFLINE</div>
+<div style="margin-top:7px;font-size:10.5px;color:#CDD3EA;line-height:1.6">Lokal gesichert, lokal gerechnet — die Auswertung ist offline vollständig. Die Zeile trägt „wird synchronisiert", das Rückgängig-Fenster läuft trotzdem.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="A3 Pause Einheiten" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A3 · PAUSENZEIT UND EINHEITENSYSTEM — HARMLOS, ABER NICHT WORTLOS</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">1 · PAUSENZEIT · VORGABE BEIM START</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="width:36px;height:4px;border-radius:30px;background:#232334;align-self:center"></div>
+<div style="font-size:15px;font-weight:700">Pausenzeit</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6">Gilt für Sätze ohne eigene Pause im Plan. Wirkt ab der nächsten Einheit.</div>
+<div style="display:flex;flex-wrap:wrap;gap:4px">
+<sc-for list="{{ pausen }}" as="p" hint-placeholder-count="5">
+<span style="flex:1;min-width:46px;height:48px;border-radius:14px;background:{{ p.bg }};border:1px solid {{ p.br }};display:inline-flex;flex-direction:column;align-items:center;justify-content:center">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ p.tc }}">{{ p.v }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:{{ p.lc }}">SEK</span>
+</span>
+</sc-for>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:11px 13px;display:flex;align-items:center;gap:9px;min-height:48px">
+<span style="flex:1;font-size:11.5px;color:#CDD3EA">Eigener Wert</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">15–300 S</span>
+</div>
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:14px;padding:11px 13px;font-size:10.5px;color:#CDD3EA;line-height:1.6">Eine laufende Einheit behält ihre Pause. Ein Wert, der mitten im Training springt, wäre ein Fehler, kein Feature.</div>
+</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · EINHEITENSYSTEM · NUR ANZEIGE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:12px">
+<div style="width:36px;height:4px;border-radius:30px;background:#232334;align-self:center"></div>
+<div style="font-size:15px;font-weight:700">Einheitensystem</div>
+<div style="display:flex;gap:4px">
+<span style="flex:1;height:48px;border-radius:14px;background:rgba(0,242,254,0.10);border:1px solid #00F2FE;display:inline-flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:11.5px;font-weight:700;color:#00F2FE">Metrisch</span><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#00F2FE">KG · KM</span></span>
+<span style="flex:1;height:48px;border-radius:14px;background:#14141D;border:1px solid #232334;display:inline-flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:11.5px;font-weight:600;color:#CDD3EA">Imperial</span><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#94A3B8">LB · MI</span></span>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">SO SIEHT ES DANN AUS</div>
+<div style="margin-top:9px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ umrechnung }}" as="u" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:7px">
+<span style="flex:1;font-size:11px;color:#CDD3EA">{{ u.l }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ u.m }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">→</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#CDD3EA">{{ u.i }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.6">Gespeichert bleibt immer metrisch. Umgerechnet wird nur die Anzeige — deshalb ist dieser Schalter folgenlos und braucht keine Vorschau, sondern ein Beispiel.</div>
+</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · ONBOARDING NOCH EINMAL · RECHTSTEXT</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#050507;border:1px solid #232334;border-radius:20px;padding:14px 13px">
+<div style="font-size:13px;font-weight:700">Onboarding wiederholen</div>
+<div style="margin-top:6px;font-size:10.5px;color:#94A3B8;line-height:1.6">Zeigt die vier Einführungsseiten aus Modul 4 erneut. Ändert keine Daten — deshalb kein Dialog, nur ein Satz unter der Zeile.</div>
+<div style="margin-top:10px;height:44px;border-radius:30px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:#CDD3EA">Ansehen</div>
+</div>
+<div style="background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 13px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:9px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;font-size:13px;font-weight:700">Datenschutz</span>
+<span style="flex:none;padding:4px 9px;border-radius:30px;background:#14141D;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#00F2FE">IM BROWSER</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px">
+<span style="height:7px;width:82%;border-radius:30px;background:#1A1A26"></span>
+<span style="height:7px;width:96%;border-radius:30px;background:#1A1A26"></span>
+<span style="height:7px;width:74%;border-radius:30px;background:#1A1A26"></span>
+<span style="height:7px;width:90%;border-radius:30px;background:#1A1A26"></span>
+<span style="height:7px;width:48%;border-radius:30px;background:#1A1A26"></span>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.6">Rechtstexte öffnen <strong style="color:#CDD3EA;font-weight:600">in der App</strong> (Custom Tab mit ATEM-Kopf und Zurück-Pfeil), nicht im fremden Browser: der Rückweg muss die Zurück-Geste sein. Der Chip nennt das Ziel, ein Langdruck bietet „extern öffnen".</div>
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:11px 12px;font-size:10.5px;color:#CDD3EA;line-height:1.6">Kein Netz: IconBox, „Text nicht geladen", eine Aktion „Erneut versuchen" — Rechtstexte werden nicht lokal mitgeliefert, weil sie sich ändern dürfen, ohne dass die App neu erscheint.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="A4 Konto löschen" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A4 · KONTO LÖSCHEN — SECHS SAMMLUNGEN, ZWEI STUFEN, EIN GETIPPTES WORT</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">1 · STUFE 1 · WAS GENAU WEGGEHT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:11px">
+<div style="width:36px;height:4px;border-radius:30px;background:#232334;align-self:center"></div>
+<div style="font-size:15px;font-weight:700">Konto löschen</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6">Das löscht deinen gesamten Bestand. Zahlen von heute:</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:11px 13px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ sammlungen }}" as="s" hint-placeholder-count="6">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:none;width:6px;height:6px;border-radius:30px;background:#F02277"></span>
+<span style="flex:1;font-size:11px;color:#CDD3EA">{{ s.n }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#FFFFFF">{{ s.z }}</span>
+</div>
+</sc-for>
+<div style="border-top:1px solid #232334;padding-top:8px;display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;font-size:11px;color:#94A3B8">Zeitraum</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#94A3B8">2 J 4 M</span>
+</div>
+</div>
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:14px;padding:11px 12px">
+<div style="font-size:10.5px;color:#CDD3EA;line-height:1.6"><strong style="color:#FFFFFF;font-weight:600">Dein Zugang bleibt.</strong> Du kannst dich danach wieder anmelden — die App startet dann leer und beim Onboarding. Freigeschaltet bleibst du.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="height:46px;border-radius:30px;background:transparent;border:1px solid #F02277;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:#F02277">Weiter zum Löschen</div>
+<div style="height:46px;border-radius:30px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;font-weight:600;color:#CDD3EA">
+<svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg>
+Daten vorher ausgeben
+</div>
+<div style="height:46px;border-radius:30px;background:#1A1A26;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Abbrechen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Drei Wege: zwei Ergebnisse plus Abbrechen. Die Ausgabe steht hier, weil hier die Frage entsteht — und zusätzlich als eigene Zeile unter „Deine Daten", damit sie kein Anhängsel des Löschens ist.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">2 · STUFE 2 · TIPPEN STATT TIPPEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:20px 14px;min-height:430px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#14141D;border:1px solid rgba(240,34,119,0.45);border-radius:20px;padding:18px 16px;display:flex;flex-direction:column;gap:11px">
+<span style="width:26px;height:26px;border-radius:30px;border:1.5px solid #F02277;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#F02277">!</span>
+<div style="font-size:14px;font-weight:700;line-height:1.4">Endgültig löschen</div>
+<div style="font-size:11px;color:#CDD3EA;line-height:1.65">2 Jahre 4 Monate, 110 Einheiten und 70 eigene Übungen. Es gibt kein Rückgängig und kein Zeitfenster.</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">TIPPE „LÖSCHEN", UM ZU BESTÄTIGEN</div>
+<div style="margin-top:7px;height:48px;border-radius:14px;background:#0B0B0E;border:1px solid {{ tippBorder }};display:flex;align-items:center;padding:0 13px;gap:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;letter-spacing:0.08em;color:#FFFFFF">{{ tippWert }}</span>
+<span style="width:1.5px;height:20px;background:#00F2FE"></span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">
+<div style="height:46px;border-radius:30px;background:{{ loeschBg }};border:1px solid {{ loeschBr }};display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:{{ loeschTc }}">Konto löschen</div>
+<div style="height:46px;border-radius:30px;background:#1A1A26;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Behalten</div>
+</div>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.65">Zwei Wege, kein dritter. Der Löschen-Knopf ist gesperrt, bis das Wort vollständig steht — <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#CDD3EA">{{ tippStatus }}</span></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Modul 7 hat für eine Übung zweimal gefragt. Hier reicht das nicht: zwei Taps sind Motorik, das getippte Wort ist eine Handlung. Es ist kein dritter Dialog, sondern eine Hürde <em style="color:#CDD3EA;font-style:normal">innerhalb</em> des zweiten.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · LÄUFT · FEHLER MITTENDRIN</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#050507;border:1px solid #232334;border-radius:20px;padding:16px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">LADEND · NICHT ABBRECHBAR</div>
+<div style="margin-top:11px;display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:20px;height:20px;border-radius:30px;border:2px solid rgba(240,34,119,0.25);border-top-color:#F02277;animation:{{ spinAnim }}"></span>
+<span style="flex:1;font-size:12.5px;font-weight:700">Konto wird gelöscht</span>
+</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ loeschSchritte }}" as="l" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="flex:none;width:14px;height:14px;border-radius:30px;background:{{ l.dotBg }};border:1px solid {{ l.dotBr }};display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:#050507">{{ l.glyph }}</span>
+<span style="flex:1;font-size:10.5px;color:{{ l.tc }}">{{ l.n }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:{{ l.tc }}">{{ l.s }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:10px;height:5px;border-radius:30px;background:#16161F;overflow:hidden"><span style="display:block;height:5px;width:62%;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963)"></span></div>
+<div style="margin-top:8px;font-size:10.5px;color:#94A3B8;line-height:1.6">Kein Abbrechen, sobald die erste Sammlung fällt — ein halb gelöschtes Konto wäre schlimmer als beides.</div>
+</div>
+<div style="background:#050507;border:1px solid rgba(240,34,119,0.35);border-radius:20px;padding:16px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#F02277">FEHLER NACH TEILWEISEM LÖSCHEN</div>
+<div style="margin-top:9px;font-size:12px;font-weight:700">Nicht vollständig gelöscht</div>
+<div style="margin-top:7px;font-size:10.5px;color:#CDD3EA;line-height:1.65">4 von 6 Sammlungen sind weg, das Anmeldekonto besteht noch. Die App setzt fort, sobald Verbindung besteht — sie behauptet nicht, fertig zu sein.</div>
+<div style="margin-top:10px;height:44px;border-radius:30px;background:transparent;border:1px solid #F02277;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#F02277">Löschen fortsetzen</div>
+<div style="margin-top:7px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.06em;text-align:center">STATUS LIEGT LOKAL · ÜBERLEBT NEUSTART</div>
+</div>
+</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">4 · DANACH · DER ZUGANG BLEIBT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:24px 16px;min-height:430px;display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:center">
+<span style="width:48px;height:48px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;align-self:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12l5 5L19 7" fill="none" stroke="#00FF87" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<div style="font-size:16px;font-weight:700">Konto gelöscht</div>
+<div style="font-size:11.5px;color:#CDD3EA;line-height:1.7">Deine Einheiten, Pläne, Übungen, Termine und dein Fortschritt sind gelöscht. Das Anmeldekonto ist entfernt.</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px;text-align:left">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">EINE SACHE BLEIBT</div>
+<div style="margin-top:7px;font-size:10.5px;color:#CDD3EA;line-height:1.65">Deine Freischaltung für ATEM gilt weiter. Meldest du dich mit derselben Adresse neu an, bist du wieder drin — mit leerem Bestand und im Onboarding.</div>
+</div>
+<div style="height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700">Zur Anmeldung</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.06em">KEIN ZURÜCK-WEG · KEIN TAB · KEINE LEISTE</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Ein eigener Bildschirm, keine Snackbar. Er ist die einzige Stelle, an der der bestehende Zugang erklärt wird — vorher wäre es Beruhigung, hinterher ist es Auskunft.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="A5 Datenausgabe" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A5 · DATEN AUSGEBEN — EIN VERSPRECHEN IN DER GRÖSSE, DIE DIE APP HALTEN KANN</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · SHEET</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:16px 13px;display:flex;flex-direction:column;gap:11px">
+<div style="width:36px;height:4px;border-radius:30px;background:#232334;align-self:center"></div>
+<div style="font-size:15px;font-weight:700">Daten ausgeben</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6">Eine Datei mit allem, was dir gehört. Du wählst danach, wohin sie geht.</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ exportInhalt }}" as="e" hint-placeholder-count="6">
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="flex:none;width:6px;height:6px;border-radius:30px;background:#00FF87"></span>
+<span style="flex:1;font-size:11px;color:#CDD3EA">{{ e.n }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ e.z }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;gap:4px">
+<span style="flex:1;height:44px;border-radius:14px;background:rgba(0,242,254,0.10);border:1px solid #00F2FE;display:inline-flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:11px;font-weight:700;color:#00F2FE">JSON</span><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#00F2FE">VOLLSTÄNDIG</span></span>
+<span style="flex:1;height:44px;border-radius:14px;background:#14141D;border:1px solid #232334;display:inline-flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:11px;font-weight:600;color:#CDD3EA">CSV</span><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#94A3B8">EINHEITEN</span></span>
+</div>
+<div style="height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700">Datei erstellen</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.06em;text-align:center">CA. 0,9 MB · KEINE BILDER, KEINE VIDEOS</div>
+</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · LÄUFT UND FERTIG</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#050507;border:1px solid #232334;border-radius:20px;padding:14px 13px">
+<div style="height:48px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;gap:9px;opacity:0.75">
+<span style="width:14px;height:14px;border-radius:30px;border:2px solid rgba(255,255,255,0.3);border-top-color:#FFFFFF;animation:{{ spinAnim }}"></span>
+<span style="font-size:12.5px;font-weight:700">Datei erstellen</span>
+</div>
+<div style="margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;letter-spacing:0.06em">EINHEITEN 110/110 · PLÄNE 10/10 · ÜBUNGEN 42/70</div>
+</div>
+<div style="background:#050507;border:1px solid #232334;border-radius:20px;padding:14px 13px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;min-height:48px;display:flex;align-items:center;gap:9px;padding:0 13px">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:#00FF87"></span>
+<span style="flex:1;font-size:11px;line-height:1.45">atem-daten-2026-08-27.json</span>
+<span style="flex:none;font-size:11px;font-weight:700;color:#00F2FE">Teilen</span>
+</div>
+<div style="margin-top:9px;font-size:10.5px;color:#94A3B8;line-height:1.6">Die Datei liegt danach im Downloads-Ordner des Geräts. Die App verschickt nichts selbst und speichert keine Kopie.</div>
+</div>
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:20px;padding:14px 13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#F02277">WAS NICHT VERSPROCHEN WIRD</div>
+<div style="margin-top:7px;font-size:10.5px;color:#CDD3EA;line-height:1.65">Kein PDF-Bericht, keine Grafiken, kein Wiedereinlesen. Die Datei ist ein Abzug deiner Datensätze, kein zweites Produkt — sonst stünde hier ein Import, den niemand pflegt.</div>
+</div>
+</div>
+</div>
+
+<div style="width:556px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · 200 % SYSTEMSCHRIFT AUF 320 DP · WAS SICH VERSCHIEBT</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ skalierung }}" as="s" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:baseline;padding-bottom:11px;border-bottom:{{ s.bb }}">
+<div style="font-size:12px;font-weight:600">{{ s.el }}</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.65">{{ s.v }}</div>
+</div>
+</sc-for>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:9px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#00F2FE">BEISPIEL · HAPTIK-ZEILE BEI 200 %</div>
+<div style="display:flex;flex-direction:column;gap:8px;min-height:48px;padding:12px 0">
+<span style="font-size:19px;font-weight:600;line-height:1.3">Haptik</span>
+<span style="font-size:16px;color:#94A3B8;line-height:1.4">Kurzes Klopfen bei Satz und Pause</span>
+<span style="display:flex;align-items:center;gap:10px;margin-top:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#00FF87">AN</span>
+<span style="width:56px;height:32px;border-radius:30px;background:rgba(0,255,135,0.16);border:1px solid #00FF87;display:inline-flex;align-items:center;justify-content:flex-end;padding:0 4px;box-sizing:border-box"><span style="width:24px;height:24px;border-radius:30px;background:#00FF87;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#050507">✓</span></span>
+</span>
+</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6">Die Zeile wird zweizeilig, der Schalter wandert unter den Text und wächst mit — nichts wird gekürzt, nichts überlappt, die Trefferfläche bleibt eine.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="F Spezifikation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · SPEZIFIKATION — VARIANTEN, MASSE, TOKENS</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<sc-for list="{{ specRows }}" as="r" hint-placeholder-count="14">
+<div style="display:grid;grid-template-columns:190px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid #232334;align-items:baseline">
+<div style="font-size:12.5px;font-weight:600">{{ r.k }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA;line-height:1.75">{{ r.v }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="G Strings" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · STRINGTABELLE — KEY · DEUTSCH · ENGLISCH</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:260px 1fr 1fr;gap:18px;padding:13px 0;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>KEY</div><div>DEUTSCH</div><div>ENGLISCH</div>
+</div>
+<sc-for list="{{ stringRows }}" as="s" hint-placeholder-count="20">
+<div style="display:grid;grid-template-columns:260px 1fr 1fr;gap:18px;padding:10px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE;word-break:break-all">{{ s.k }}</div>
+<div style="font-size:11.5px;color:#FFFFFF;line-height:1.6">{{ s.de }}</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.6">{{ s.en }}</div>
+</div>
+</sc-for>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">Platzhalter in Klammern werden zur Laufzeit gefüllt; Pluralformen als ICU. <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA">legal.imprint.body</span> enthält ausschließlich die Angaben einer privaten Person und wird vom Betreiber eingesetzt — kein Firmenname, kein Logo, keine Firmenadresse, auch nicht im Copyright.</div>
+</div>
+</div>
+
+<div data-screen-label="H A11y" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · A11Y — LABEL, ROLLE, ZUSTAND JE ELEMENT</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px">
+<sc-for list="{{ a11yRows }}" as="a" hint-placeholder-count="10">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 18px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ a.el }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#00F2FE;border:1px solid #232334;border-radius:30px;padding:3px 9px">{{ a.role }}</span>
+</div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.7">{{ a.note }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I Wiederverwendung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · WIEDERVERWENDETE BAUSTEINE AUS MODUL 1–7</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<sc-for list="{{ reuseRows }}" as="r" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:52px 210px 1fr;gap:16px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#00F2FE">{{ r.mod }}</span>
+<span style="font-size:12.5px;font-weight:600">{{ r.part }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="J Entscheidungsprotokoll" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · ENTSCHEIDUNGSPROTOKOLL — VERWORFEN UND WARUM</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="12">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277">{{ d.n }}</span><span style="font-size:13px;font-weight:600;line-height:1.45">{{ d.title }}</span></div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="K Offene Fragen" style="margin-top:56px;max-width:1240px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:20px;padding:24px 28px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#F02277">K · OFFEN — ENTSCHEIDUNG VOR VERÖFFENTLICHUNG</div>
+<div style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px">
+<sc-for list="{{ offen }}" as="o" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-size:12.5px;font-weight:600;line-height:1.45">{{ o.q }}</div>
+<div style="margin-top:7px;font-size:11.5px;color:#94A3B8;line-height:1.65">{{ o.a }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;koerpergewicht&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:82,&quot;min&quot;:30,&quot;max&quot;:250,&quot;step&quot;:0.5,&quot;unit&quot;:&quot;kg&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Körpergewicht&quot;},&quot;haptik&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Schalter&quot;},&quot;bestaetigung&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Wort getippt&quot;,&quot;Wort unvollständig&quot;],&quot;default&quot;:&quot;Wort getippt&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Konto löschen&quot;},&quot;animationen&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demo&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const anim = this.props.animationen ?? true;
+    const bw = Math.round((this.props.koerpergewicht ?? 82) * 10) / 10;
+    const haptik = this.props.haptik ?? true;
+    const tippVoll = (this.props.bestaetigung ?? 'Wort getippt') === 'Wort getippt';
+    const last = (a) => a.map((r, i) => ({ ...r, bb: i === a.length - 1 ? 'none' : '1px solid #232334' }));
+    const de = (s) => s.replace('.', ',');
+
+    const bw0 = 78.0;
+    const anteil = 0.38;
+    const f = 1 - anteil + anteil * (bw / bw0);
+    const lastAlt = 4820;
+    const lastNeu = Math.round(lastAlt * f);
+    const acwrAlt = 1.12;
+    const acwrNeu = Math.round(acwrAlt * (1 + (f - 1) * 0.7) * 100) / 100;
+    const formAlt = 16;
+    const formNeu = Math.max(0, Math.round(formAlt + (bw - bw0) * 0.55));
+    const dir = (alt, neu, gutIstHoch) => {
+      if (neu === alt) return { c: '#CDD3EA', wort: 'GLEICH' };
+      const besser = gutIstHoch ? neu > alt : neu < alt;
+      return { c: besser ? '#00FF87' : '#F02277', wort: neu > alt ? 'HÖHER' : 'NIEDRIGER' };
+    };
+    const dLast = dir(lastAlt, lastNeu, true);
+    const dAcwr = { c: acwrNeu > 1.3 ? '#F02277' : '#CDD3EA', wort: acwrNeu === acwrAlt ? 'GLEICH' : (acwrNeu > acwrAlt ? 'HÖHER' : 'NIEDRIGER') };
+    const dForm = dir(formAlt, formNeu, true);
+
+    const wirk = (t) => t === 'SOFORT'
+      ? { bg: 'rgba(0,255,135,0.10)', br: 'rgba(0,255,135,0.40)', tc: '#00FF87' }
+      : t === 'RÜCKWIRKEND'
+        ? { bg: 'rgba(240,34,119,0.10)', br: 'rgba(240,34,119,0.40)', tc: '#F02277' }
+        : { bg: '#14141D', br: '#232334', tc: '#CDD3EA' };
+    const W = (name, wert, wirkt, folge) => ({ name, wert, wirkt, folge, ...wirk(wirkt) });
+
+    return {
+      spinAnim: anim ? 'spin 0.9s linear infinite' : 'none',
+      bwText: de(bw.toFixed(1)),
+      bwDelta: (bw >= bw0 ? '+' : '−') + de(Math.abs(bw - bw0).toFixed(1)) + ' KG · ' + (bw >= bw0 ? '+' : '−') + de((Math.abs(bw - bw0) / bw0 * 100).toFixed(1)) + ' %',
+      bwSpeichern: bw === bw0 ? 'Speichern' : 'Speichern und neu rechnen',
+      retroScope: '245 TAGE · 63 EINHEITEN MIT KÖRPERGEWICHTSÜBUNGEN',
+      formAlt, formNeu,
+      bwFolgen: [
+        { l: 'Trainingslast 7 T', alt: lastAlt.toLocaleString('de-DE') + ' kg', neu: lastNeu.toLocaleString('de-DE') + ' kg', c: dLast.c, wort: dLast.wort },
+        { l: 'ACWR', alt: de(acwrAlt.toFixed(2)), neu: de(acwrNeu.toFixed(2)), c: dAcwr.c, wort: dAcwr.wort },
+        { l: 'Formwert heute', alt: String(formAlt), neu: String(formNeu), c: dForm.c, wort: dForm.wort },
+        { l: 'Bestwert Klimmzug', alt: '78,0 kg', neu: de(bw.toFixed(1)) + ' kg', c: '#CDD3EA', wort: 'NEU BEWERTET' },
+      ],
+      haptikWort: haptik ? 'AN' : 'AUS',
+      haptikWortC: haptik ? '#00FF87' : '#94A3B8',
+      haptikTrack: haptik ? 'rgba(0,255,135,0.16)' : '#16161F',
+      haptikBorder: haptik ? '#00FF87' : '#232334',
+      haptikKnob: haptik ? '#00FF87' : '#94A3B8',
+      haptikJustify: haptik ? 'flex-end' : 'flex-start',
+      haptikGlyph: haptik ? '✓' : '×',
+      tippWert: tippVoll ? 'LÖSCHEN' : 'LÖSCH',
+      tippBorder: tippVoll ? '#00F2FE' : '#232334',
+      tippStatus: tippVoll ? '7 / 7 ZEICHEN · FREI' : '5 / 7 ZEICHEN · GESPERRT',
+      loeschBg: tippVoll ? '#F02277' : '#16161F',
+      loeschBr: tippVoll ? '#F02277' : '#232334',
+      loeschTc: tippVoll ? '#FFFFFF' : '#94A3B8',
+
+      wirkung: last([
+        W('Körpergewicht', '30,0–250,0 kg · 1 Dezimale', 'RÜCKWIRKEND', 'Jede Körpergewichtsübung im Verlauf: Trainingslast, ACWR, Formwert, Bestwerte. 245 Tage werden neu bewertet.'),
+        W('Einheitensystem', 'metrisch · imperial', 'SOFORT', 'Nur Anzeige. Gespeichert bleibt kg und km; die Umrechnung passiert beim Zeichnen, nie beim Schreiben.'),
+        W('Sprache', 'Deutsch · English', 'SOFORT', 'Oberfläche, Datumsformate, Zahlformat (Komma / Punkt). Eigene Übungsnamen bleiben, wie sie eingegeben wurden.'),
+        W('Pausenzeit', '15–300 s · Vorgaben 45/60/90/120/180', 'NÄCHSTE EINHEIT', 'Nur Sätze ohne eigene Pause im Plan. Eine laufende Einheit behält ihren Wert bis zum Ende.'),
+        W('Haptik', 'an · aus', 'SOFORT', 'Satz gesichert, Pausenende, Löschbestätigung. Aus heißt: kein Vibrieren, aber alle Töne und Anzeigen bleiben.'),
+        W('Onboarding wiederholen', 'Aktion', 'SOFORT', 'Öffnet die vier Seiten aus Modul 4. Schreibt nichts — der Bestand bleibt unberührt.'),
+        W('Daten ausgeben', 'JSON · CSV', 'SOFORT', 'Erzeugt eine Datei aus sechs Sammlungen und übergibt sie dem System-Teilen. Kein Upload, keine Kopie in der App.'),
+        W('Abmelden', 'Aktion', 'NACH NEUSTART', 'Sitzung endet, lokaler Zwischenspeicher wird geleert. Der Bestand in der Datenbank bleibt vollständig.'),
+        W('Konto löschen', 'Aktion', 'RÜCKWIRKEND', 'Sechs Sammlungen und das Anmeldekonto. Kein Widerruf, kein Zeitfenster — die Freischaltung bleibt bestehen.'),
+      ]),
+      zeilenTraining: last([
+        { n: 'Körpergewicht', s: 'Bewertet deinen ganzen Verlauf', v: de(bw.toFixed(1)) + ' kg', vc: '#00F2FE' },
+        { n: 'Pausenzeit', s: 'Vorgabe beim Start einer Einheit', v: '90 s', vc: '#CDD3EA' },
+        { n: 'Einheitensystem', s: 'Nur Anzeige, nichts wird umgeschrieben', v: 'kg · km', vc: '#CDD3EA' },
+      ]),
+      zeilenDaten: last([
+        { n: 'Daten ausgeben', s: 'Eine Datei mit allem, was dir gehört' },
+        { n: 'Onboarding wiederholen', s: 'Die vier Einführungsseiten noch einmal' },
+      ]),
+      zeilenRecht: last([
+        { n: 'Datenschutz', tag: 'IN DER APP' },
+        { n: 'Nutzungsbedingungen', tag: 'IN DER APP' },
+        { n: 'Impressum', tag: 'IN DER APP' },
+      ]),
+      ueber: [
+        { k: 'VERSION', v: '1.0.0 (118)' },
+        { k: 'DARSTELLUNG', v: 'Dunkel · keine helle Fassung' },
+        { k: 'SPRACHEN', v: 'Deutsch · English' },
+        { k: 'ZUGANG', v: 'Freigeschaltete Adresse' },
+      ],
+      zustaende: [
+        { label: 'DEFAULT', bg: '#14141D', br: '#232334', op: '1', tf: 'none', n: 'Pausenzeit', s: 'Vorgabe beim Start', tc: '#FFFFFF', sc: '#94A3B8', wert: '90 s', wc: '#CDD3EA', lc: '#94A3B8', ring: false },
+        { label: 'PRESSED · SKALIERUNG 0,98 + GLOW', bg: '#1A1A26', br: '#00F2FE', op: '1', tf: 'scale(0.98)', n: 'Pausenzeit', s: 'Vorgabe beim Start', tc: '#FFFFFF', sc: '#CDD3EA', wert: '90 s', wc: '#00F2FE', lc: '#00F2FE', ring: false },
+        { label: 'DISABLED · MIT GRUND', bg: '#0B0B0E', br: '#232334', op: '0.55', tf: 'none', n: 'Daten ausgeben', s: 'Offline nicht möglich', tc: '#94A3B8', sc: '#94A3B8', wert: '', wc: '#94A3B8', lc: '#94A3B8', ring: false },
+        { label: 'LOADING · WERT WIRD GEHOLT', bg: '#14141D', br: '#232334', op: '1', tf: 'none', n: 'Körpergewicht', s: 'Wird geladen', tc: '#FFFFFF', sc: '#94A3B8', wert: '', wc: '#CDD3EA', lc: '#00F2FE', ring: true },
+        { label: 'ERROR · WERT NICHT GESCHRIEBEN', bg: '#14141D', br: '#F02277', op: '1', tf: 'none', n: 'Körpergewicht', s: 'Nicht gespeichert · erneut versuchen', tc: '#FFFFFF', sc: '#F02277', wert: '78,0 kg', wc: '#F02277', lc: '#F02277', ring: false },
+        { label: 'GEFÄHRLICH · EIGENE KARTE, UNTEN', bg: '#14141D', br: '#232334', op: '1', tf: 'none', n: 'Konto löschen', s: 'Sechs Sammlungen · kein Widerruf', tc: '#F02277', sc: '#94A3B8', wert: '', wc: '#F02277', lc: '#F02277', ring: false },
+      ],
+      schalter: [
+        { z: 'default · an', w: 'AN', wc: '#00FF87', track: 'rgba(0,255,135,0.16)', br: '#00FF87', knob: '#00FF87', just: 'flex-end', g: '✓', gc: '#050507', op: '1', glow: 'none' },
+        { z: 'default · aus', w: 'AUS', wc: '#94A3B8', track: '#16161F', br: '#232334', knob: '#94A3B8', just: 'flex-start', g: '×', gc: '#050507', op: '1', glow: 'none' },
+        { z: 'pressed · Glow, Wert noch alt', w: 'AUS', wc: '#94A3B8', track: '#16161F', br: '#00F2FE', knob: '#CDD3EA', just: 'flex-start', g: '×', gc: '#050507', op: '1', glow: '0 0 0 4px rgba(0,242,254,0.14)' },
+        { z: 'disabled · Gerät ohne Motor', w: 'AUS', wc: '#94A3B8', track: '#16161F', br: '#232334', knob: '#3a3a48', just: 'flex-start', g: '×', gc: '#94A3B8', op: '0.5', glow: 'none' },
+      ],
+      pausen: [45, 60, 90, 120, 180].map(v => ({
+        v: String(v),
+        bg: v === 90 ? 'rgba(0,242,254,0.10)' : '#14141D',
+        br: v === 90 ? '#00F2FE' : '#232334',
+        tc: v === 90 ? '#00F2FE' : '#CDD3EA',
+        lc: v === 90 ? '#00F2FE' : '#94A3B8',
+      })),
+      umrechnung: [
+        { l: 'Satzgewicht', m: '82,5 kg', i: '182 lb' },
+        { l: 'Trainingslast', m: '4.820 kg', i: '10.626 lb' },
+        { l: 'Laufstrecke', m: '8,4 km', i: '5,2 mi' },
+      ],
+      sammlungen: [
+        { n: 'Einheiten', z: '110' },
+        { n: 'Pläne', z: '10' },
+        { n: 'Eigene Übungen', z: '70' },
+        { n: 'Termine', z: '24' },
+        { n: 'Fortschritt und Bestwerte', z: '245 T' },
+        { n: 'Profil und Einstellungen', z: '1' },
+      ],
+      exportInhalt: [
+        { n: 'Einheiten mit Sätzen', z: '110' },
+        { n: 'Pläne mit Einträgen', z: '10' },
+        { n: 'Eigene Übungen', z: '70' },
+        { n: 'Termine', z: '24' },
+        { n: 'Bestwerte und Formkurve', z: '245 T' },
+        { n: 'Profilangaben', z: '1' },
+      ],
+      loeschSchritte: [
+        { n: 'Termine', s: 'FERTIG', dotBg: '#00FF87', dotBr: '#00FF87', glyph: '✓', tc: '#94A3B8' },
+        { n: 'Einheiten', s: 'FERTIG', dotBg: '#00FF87', dotBr: '#00FF87', glyph: '✓', tc: '#94A3B8' },
+        { n: 'Pläne', s: 'FERTIG', dotBg: '#00FF87', dotBr: '#00FF87', glyph: '✓', tc: '#94A3B8' },
+        { n: 'Eigene Übungen', s: '42/70', dotBg: 'transparent', dotBr: '#00F2FE', glyph: '', tc: '#FFFFFF' },
+        { n: 'Fortschritt', s: 'WARTET', dotBg: 'transparent', dotBr: '#232334', glyph: '', tc: '#94A3B8' },
+        { n: 'Profil und Anmeldekonto', s: 'ZULETZT', dotBg: 'transparent', dotBr: '#232334', glyph: '', tc: '#94A3B8' },
+      ],
+      skalierung: last([
+        { el: 'Listenzeile', v: 'Wird zweizeilig, Wert rutscht unter die Beschriftung, Chevron bleibt rechts mittig. Höhe wächst von 56 auf bis zu 104 dp — nie gekürzt, nie mit Ellipsis.' },
+        { el: 'Schalter', v: 'Track 44 → 56 dp, Knopf 20 → 24 dp, Wort AN/AUS 9 → 14 sp. Er wandert unter den Text, bleibt aber ein Tap-Ziel mit der Zeile.' },
+        { el: 'Segment (Sprache, Einheiten, Pause)', v: 'Bricht auf zwei Reihen um (3/2 bei fünf Feldern), Zweitzeile „SEK" entfällt statt zu schrumpfen. Feldhöhe 48 → 64 dp.' },
+        { el: 'Folgen-Vorschau', v: 'Jede Kennzahl auf zwei Zeilen: Label oben, „alt → neu · Wort" darunter, linksbündig. Der Pfeil bleibt in der Wertezeile.' },
+        { el: 'Löschdialog', v: 'Wird scrollbar, die drei Knöpfe bleiben untereinander am Boden fixiert. Die Sammlungsliste kürzt nie Zahlen, sondern scrollt.' },
+        { el: 'Profilkopf', v: 'Bild 52 dp bleibt, Name und E-Mail brechen; die E-Mail darf als einzige mit Ellipsis enden — sie ist kein Lesetext, sondern eine Kennung.' },
+      ]),
+      specRows: [
+        { k: 'Listenzeile (Einstellung)', v: 'Höhe ≥ 56 dp · Trefferfläche voll · Beschriftung 12,5 sp/600 #FFFFFF · Unterzeile 10 sp #94A3B8 (max 2 Zeilen) · Wert Mono 11,5/700 #CDD3EA rechts, Cyan wenn vom Standard abweichend · Chevron 12 dp #94A3B8 · Trenner 1 dp #232334, letzter ohne' },
+        { k: 'Sektion', v: 'Titel Mono 9 letterspacing 0.14em #94A3B8, 12 dp über der Karte · Karte #14141D, Rand #232334, Radius 20 · Abstand zwischen Sektionen 12 dp · vier Sektionen: TRAINING, APP, DEINE DATEN, RECHTLICHES + ÜBER DIE APP' },
+        { k: 'Profilkopf', v: 'Karte #14141D Radius 20, Höhe 84 dp · Bild 52 dp Radius 30, Fallback Verlauf #7A2BDB→#C01963 mit Initialen Mono 17/700 · Name 14 sp/700 · E-Mail Mono 9,5 #94A3B8 mit Ellipsis · Schloss-Chip 22 dp #0B0B0E/#232334, Text Mono 8,5 #94A3B8' },
+        { k: 'Schalter', v: 'Track 44 × 26 dp Radius 30 · an: rgba(0,255,135,0.16) + Rand #00FF87 + Knopf #00FF87 mit ✓ · aus: #16161F + Rand #232334 + Knopf #94A3B8 mit × · Wort AN/AUS Mono 9/700 links davor · pressed: Rand #00F2FE + Glow 4 dp rgba(0,242,254,0.14), Wert wechselt erst beim Loslassen' },
+        { k: 'Segment', v: 'Unverändert aus M4/M7 · Höhe 48 dp, gap 4 dp, Radius 14 · aktiv rgba(0,242,254,0.10) + Rand #00F2FE + Text #00F2FE + Mono-Unterzeile · inaktiv #14141D/#232334, Text #CDD3EA · 2 Werte (Sprache, Einheiten) und 5 Werte (Pause)' },
+        { k: 'Gewichtsfeld', v: 'Höhe 52 dp Radius 14 #14141D · Wert Mono 20/700, Einheit Mono 11 rechts (#94A3B8, fokussiert #00F2FE) · Tastatur numerisch mit Dezimaltrenner · Rand fokussiert #00F2FE 1 dp, fehlerhaft #F02277 1,5 dp · Delta-Zeile Mono 9 unter dem Feld' },
+        { k: 'Rückwirkende Vorschau', v: 'Karte #0B0B0E Rand #232334 Radius 14 · Kopf Mono 9 #00F2FE + Reichweitenzeile Mono 8,5 #94A3B8 · vier Zeilen: Label 11 sp #CDD3EA · alt Mono 10 #94A3B8 · Pfeil · neu Mono 11/700 in Richtungsfarbe + Richtungswort Mono 8 · 150 ms entprellt, erscheint erst bei Abweichung' },
+        { k: 'Richtungsfarben', v: '#00FF87 günstiger · #F02277 ungünstiger · #CDD3EA neutral oder nur neu bewertet · ACWR über 1,30 immer #F02277, unabhängig von der Richtung · Farbe nie ohne Richtungswort' },
+        { k: 'Löschdialog Stufe 1', v: 'Sheet, Radius 20 oben, #050507 auf Scrim rgba(5,5,7,0.72) — der eine erlaubte BackdropFilter liegt nicht hier, sondern in der Navigationsleiste · Sammlungsliste in #14141D mit 6-dp-Dots #F02277 · Cyan-Notice „Dein Zugang bleibt" · drei Knöpfe 46 dp untereinander: Rand-Magenta, #14141D mit Cyan-Symbol, #1A1A26' },
+        { k: 'Löschdialog Stufe 2', v: 'Dialog #14141D, Rand rgba(240,34,119,0.45), Radius 20 · Ausrufezeichen-Kreis 26 dp · Bestätigungsfeld 48 dp #0B0B0E, Mono 15/700 letterspacing 0.08em, Rand #232334 → #00F2FE bei Übereinstimmung · genau zwei Knöpfe · „Konto löschen" gesperrt #16161F/#94A3B8, frei #F02277/#FFFFFF' },
+        { k: 'Löschen läuft', v: 'Vollbild, kein Scrim · Ring 20 dp Magenta 0,9 s · sechs Schrittzeilen: erledigt Dot 14 dp #00FF87 mit ✓, laufend Rand #00F2FE mit Zähler, wartend Rand #232334 · Balken 5 dp Track #16161F, Füllung #F02277→#C01963 · Zurück-Geste und Abbrechen sind ab Schritt 1 gesperrt' },
+        { k: 'Abschlussbildschirm', v: 'Vollbild #050507 ohne Leiste und ohne Zurück · IconBox 48 Radius 10 mit Häkchen #00FF87 · Titel 16/700 · Text 11,5 sp #CDD3EA · Karte „Eine Sache bleibt" #14141D · ein Knopf 48 dp Magenta-Verlauf zur Anmeldung' },
+        { k: 'Ausgabe-Sheet', v: 'Inhaltsliste mit 6-dp-Dots #00FF87 · Formatsegment JSON/CSV 44 dp · Knopf 48 dp Magenta-Verlauf, loading mit Ring und unveränderter Beschriftung · Fortschritt als Mono-Zeile 9 statt Balken (Zahlen sind hier die Auskunft) · Ergebnis als Snackbar mit Aktion „Teilen", 8 s' },
+        { k: 'Rechtstext', v: 'In-App-Ansicht: Kopf 56 dp mit Zurück-Pfeil 26 dp und Titel 13 sp/700, Inhalt auf #050507, Links #00F2FE · Chip „IN DER APP" Mono 8,5 #00F2FE · Ladezustand: fünf Skeleton-Balken 7 dp #1A1A26 · Fehler: IconBox 48, „Text nicht geladen", eine Aktion' },
+        { k: 'Snackbar', v: 'Unverändert aus M7: 48 dp, #14141D, Rand #232334, Radius 14, Dot 8 dp, eine Aktion #00F2FE · 30 s bei Gewichtsänderung (mit Rückgängig), 8 s bei Ausgabe, 4 s bei Vorlieben' },
+        { k: 'Kontrast (geprüft)', v: '#FFFFFF auf #14141D 15,8:1 · #CDD3EA auf #14141D 11,2:1 · #94A3B8 auf #14141D 6,1:1 · #00F2FE auf #14141D 11,9:1 · #00FF87 auf #14141D 12,6:1 · #F02277 auf #14141D 4,8:1 (nur ≥ 12,5 sp/600) · Violet nur als Fläche im Profilbild-Verlauf' },
+      ],
+      stringRows: [
+        { k: 'settings.title', de: 'Einstellungen', en: 'Settings' },
+        { k: 'settings.entry.a11y', de: 'Profil und Einstellungen', en: 'Profile and settings' },
+        { k: 'profile.locked', de: 'Über Google · fest', en: 'Via Google · fixed' },
+        { k: 'profile.locked.why', de: 'Name und E-Mail kommen aus deinem Google-Konto und werden hier nur angezeigt.', en: 'Your name and email come from your Google account and are only shown here.' },
+        { k: 'section.training', de: 'Training', en: 'Training' },
+        { k: 'section.app', de: 'App', en: 'App' },
+        { k: 'section.data', de: 'Deine Daten', en: 'Your data' },
+        { k: 'section.legal', de: 'Rechtliches', en: 'Legal' },
+        { k: 'section.about', de: 'Über die App', en: 'About' },
+        { k: 'weight.title', de: 'Körpergewicht', en: 'Body weight' },
+        { k: 'weight.sub', de: 'Bewertet deinen ganzen Verlauf', en: 'Scores your whole history' },
+        { k: 'weight.body', de: 'Bewertet jede Körpergewichtsübung in deinem Verlauf — heute und rückwirkend.', en: 'Scores every bodyweight exercise in your history — today and retroactively.' },
+        { k: 'weight.hint', de: 'Eine Nachkommastelle · 30–250 kg', en: 'One decimal · 66–550 lb' },
+        { k: 'weight.previous', de: 'Vorher {alt} kg', en: 'Was {old} kg' },
+        { k: 'weight.delta', de: '{sign}{kg} kg · {sign}{pct} %', en: '{sign}{kg} kg · {sign}{pct} %' },
+        { k: 'weight.impact.title', de: 'Was sich rückwirkend ändert', en: 'What changes retroactively' },
+        { k: 'weight.impact.scope', de: '{d} Tage · {n} Einheiten mit Körpergewichtsübungen', en: '{d} days · {n} workouts with bodyweight exercises' },
+        { k: 'weight.impact.note', de: 'Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.', en: 'Preview — not saved yet. Your sets, weights and reps stay unchanged — only how they are scored.' },
+        { k: 'weight.impact.load', de: 'Trainingslast 7 T', en: 'Training load 7 d' },
+        { k: 'weight.impact.acwr', de: 'ACWR', en: 'ACWR' },
+        { k: 'weight.impact.form', de: 'Formwert heute', en: 'Form today' },
+        { k: 'weight.impact.best', de: 'Bestwert {exercise}', en: 'Best {exercise}' },
+        { k: 'weight.dir.up', de: 'höher', en: 'higher' },
+        { k: 'weight.dir.down', de: 'niedriger', en: 'lower' },
+        { k: 'weight.dir.same', de: 'gleich', en: 'unchanged' },
+        { k: 'weight.dir.rescored', de: 'neu bewertet', en: 're-scored' },
+        { k: 'weight.save', de: 'Speichern und neu rechnen', en: 'Save and recalculate' },
+        { k: 'weight.save.busy', de: 'Wird gerechnet', en: 'Recalculating' },
+        { k: 'weight.save.none', de: 'Unverändert · nichts zu speichern', en: 'Unchanged · nothing to save' },
+        { k: 'weight.error.range', de: 'Zwischen 30 und 250 kg. Vorschau bleibt aus, bis der Wert stimmt.', en: 'Between 66 and 550 lb. No preview until the value is valid.' },
+        { k: 'weight.saved.snack', de: 'Gewicht {kg} kg · Form {alt} → {neu}', en: 'Weight {kg} kg · form {old} → {new}' },
+        { k: 'rest.title', de: 'Pausenzeit', en: 'Rest time' },
+        { k: 'rest.sub', de: 'Vorgabe beim Start einer Einheit', en: 'Default when a workout starts' },
+        { k: 'rest.body', de: 'Gilt für Sätze ohne eigene Pause im Plan. Wirkt ab der nächsten Einheit.', en: 'Applies to sets without their own rest in the plan. Takes effect from your next workout.' },
+        { k: 'rest.custom', de: 'Eigener Wert', en: 'Custom value' },
+        { k: 'rest.running', de: 'Eine laufende Einheit behält ihre Pause.', en: 'A running workout keeps its rest time.' },
+        { k: 'units.title', de: 'Einheitensystem', en: 'Unit system' },
+        { k: 'units.metric', de: 'Metrisch', en: 'Metric' },
+        { k: 'units.imperial', de: 'Imperial', en: 'Imperial' },
+        { k: 'units.note', de: 'Gespeichert bleibt immer metrisch. Umgerechnet wird nur die Anzeige.', en: 'Storage stays metric. Only the display is converted.' },
+        { k: 'units.example', de: 'So sieht es dann aus', en: 'How it will look' },
+        { k: 'language.title', de: 'Sprache', en: 'Language' },
+        { k: 'language.de', de: 'Deutsch', en: 'German' },
+        { k: 'language.en', de: 'English', en: 'English' },
+        { k: 'haptics.title', de: 'Haptik', en: 'Haptics' },
+        { k: 'haptics.sub', de: 'Kurzes Klopfen bei Satz und Pause', en: 'A short tap on sets and rest' },
+        { k: 'switch.on', de: 'AN', en: 'ON' },
+        { k: 'switch.off', de: 'AUS', en: 'OFF' },
+        { k: 'haptics.unavailable', de: 'Dein Gerät hat keinen Vibrationsmotor.', en: 'Your device has no vibration motor.' },
+        { k: 'onboarding.repeat', de: 'Onboarding wiederholen', en: 'Repeat onboarding' },
+        { k: 'onboarding.repeat.sub', de: 'Die vier Einführungsseiten noch einmal', en: 'The four intro pages again' },
+        { k: 'onboarding.repeat.action', de: 'Ansehen', en: 'View' },
+        { k: 'export.title', de: 'Daten ausgeben', en: 'Export data' },
+        { k: 'export.sub', de: 'Eine Datei mit allem, was dir gehört', en: 'One file with everything that is yours' },
+        { k: 'export.body', de: 'Du wählst danach, wohin sie geht.', en: 'You choose where it goes afterwards.' },
+        { k: 'export.size', de: 'ca. {mb} MB · keine Bilder, keine Videos', en: 'approx. {mb} MB · no images, no videos' },
+        { k: 'export.create', de: 'Datei erstellen', en: 'Create file' },
+        { k: 'export.progress', de: 'Einheiten {a}/{b} · Pläne {c}/{d} · Übungen {e}/{f}', en: 'Workouts {a}/{b} · plans {c}/{d} · exercises {e}/{f}' },
+        { k: 'export.done.share', de: 'Teilen', en: 'Share' },
+        { k: 'export.done.note', de: 'Die Datei liegt im Downloads-Ordner. Die App verschickt nichts selbst.', en: 'The file is in your downloads folder. The app sends nothing itself.' },
+        { k: 'export.offline', de: 'Offline nicht möglich', en: 'Not possible offline' },
+        { k: 'legal.privacy', de: 'Datenschutz', en: 'Privacy' },
+        { k: 'legal.terms', de: 'Nutzungsbedingungen', en: 'Terms of use' },
+        { k: 'legal.imprint', de: 'Impressum', en: 'Legal notice' },
+        { k: 'legal.inapp', de: 'In der App', en: 'In the app' },
+        { k: 'legal.external', de: 'Extern öffnen', en: 'Open externally' },
+        { k: 'legal.error', de: 'Text nicht geladen', en: 'Text not loaded' },
+        { k: 'legal.retry', de: 'Erneut versuchen', en: 'Try again' },
+        { k: 'legal.imprint.body', de: 'Privates Projekt einer natürlichen Person. Angaben nach § 5 TMG: {betreiber}', en: 'Private project of a private individual. Details pursuant to § 5 TMG: {operator}' },
+        { k: 'about.version', de: 'Version', en: 'Version' },
+        { k: 'about.appearance', de: 'Darstellung', en: 'Appearance' },
+        { k: 'about.appearance.value', de: 'Dunkel · keine helle Fassung', en: 'Dark · no light version' },
+        { k: 'about.languages', de: 'Sprachen', en: 'Languages' },
+        { k: 'about.access', de: 'Zugang', en: 'Access' },
+        { k: 'about.access.value', de: 'Freigeschaltete Adresse', en: 'Approved address' },
+        { k: 'signout', de: 'Abmelden', en: 'Sign out' },
+        { k: 'signout.keep', de: 'Daten bleiben', en: 'Data stays' },
+        { k: 'account.delete', de: 'Konto löschen', en: 'Delete account' },
+        { k: 'account.delete.sub', de: 'Sechs Sammlungen · kein Widerruf', en: 'Six collections · no undo' },
+        { k: 'account.delete.body', de: 'Das löscht deinen gesamten Bestand. Zahlen von heute:', en: 'This deletes everything you have. Today’s numbers:' },
+        { k: 'account.delete.range', de: 'Zeitraum', en: 'Time span' },
+        { k: 'account.delete.access', de: 'Dein Zugang bleibt. Du kannst dich danach wieder anmelden — die App startet dann leer und beim Onboarding.', en: 'Your access remains. You can sign in again afterwards — the app then starts empty, at onboarding.' },
+        { k: 'account.delete.continue', de: 'Weiter zum Löschen', en: 'Continue to delete' },
+        { k: 'account.delete.export', de: 'Daten vorher ausgeben', en: 'Export data first' },
+        { k: 'account.delete2.title', de: 'Endgültig löschen', en: 'Delete permanently' },
+        { k: 'account.delete2.body', de: '{y} Jahre {m} Monate, {n} Einheiten und {e} eigene Übungen. Es gibt kein Rückgängig und kein Zeitfenster.', en: '{y} years {m} months, {n} workouts and {e} exercises of your own. There is no undo and no grace period.' },
+        { k: 'account.delete2.typeLabel', de: 'Tippe „LÖSCHEN", um zu bestätigen', en: 'Type “DELETE” to confirm' },
+        { k: 'account.delete2.typeWord', de: 'LÖSCHEN', en: 'DELETE' },
+        { k: 'account.delete2.typeCount', de: '{a} / {b} Zeichen', en: '{a} / {b} characters' },
+        { k: 'account.delete2.confirm', de: 'Konto löschen', en: 'Delete account' },
+        { k: 'account.delete2.keep', de: 'Behalten', en: 'Keep' },
+        { k: 'account.deleting', de: 'Konto wird gelöscht', en: 'Deleting your account' },
+        { k: 'account.deleting.step', de: '{name}', en: '{name}' },
+        { k: 'account.deleting.wait', de: 'Nicht abbrechbar. Das dauert einen Moment.', en: 'Cannot be cancelled. This takes a moment.' },
+        { k: 'account.partial.title', de: 'Nicht vollständig gelöscht', en: 'Not fully deleted' },
+        { k: 'account.partial.body', de: '{a} von {b} Sammlungen sind weg, das Anmeldekonto besteht noch.', en: '{a} of {b} collections are gone, the sign-in account still exists.' },
+        { k: 'account.partial.resume', de: 'Löschen fortsetzen', en: 'Resume deletion' },
+        { k: 'account.done.title', de: 'Konto gelöscht', en: 'Account deleted' },
+        { k: 'account.done.body', de: 'Deine Einheiten, Pläne, Übungen, Termine und dein Fortschritt sind gelöscht. Das Anmeldekonto ist entfernt.', en: 'Your workouts, plans, exercises, appointments and progress are deleted. The sign-in account is removed.' },
+        { k: 'account.done.access.title', de: 'Eine Sache bleibt', en: 'One thing remains' },
+        { k: 'account.done.access.body', de: 'Deine Freischaltung für ATEM gilt weiter. Meldest du dich mit derselben Adresse neu an, bist du wieder drin — mit leerem Bestand und im Onboarding.', en: 'Your ATEM access still applies. Sign in with the same address and you are back in — with nothing stored, at onboarding.' },
+        { k: 'account.done.toLogin', de: 'Zur Anmeldung', en: 'To sign-in' },
+        { k: 'common.cancel', de: 'Abbrechen', en: 'Cancel' },
+        { k: 'common.undo', de: 'Rückgängig', en: 'Undo' },
+        { k: 'common.offline.sync', de: 'Lokal gesichert · wird synchronisiert', en: 'Saved locally · syncing' },
+      ],
+      a11yRows: [
+        { el: 'Einstellungen-Zugang (Profilbild)', role: 'button', note: '„Profil und Einstellungen" — nicht „Avatar". 44 dp Bild in 48 dp Trefferfläche, im Dashboard-Kopf oben rechts. Trägt keinen Badge und keinen Zustand; es ist eine Tür, keine Meldung.' },
+        { el: 'Profilkopf', role: 'text (kein Feld)', note: 'Ein Knoten: „Max Keller, max.keller@gmail.com, über Google, nicht änderbar." Kein textField, kein disabled — ein deaktiviertes Feld liest sich als Defekt. Das Schloss-Zeichen wird nicht vorgelesen, das Wort trägt es.' },
+        { el: 'Listenzeile mit Wert', role: 'button + value', note: '„Pausenzeit, 90 Sekunden, Vorgabe beim Start einer Einheit". Der Wert steht vor der Unterzeile, damit er ohne Abwarten hörbar ist. Öffnet ein Sheet — Rolle button, nicht spinButton.' },
+        { el: 'Schalter', role: 'switch + toggled', note: '„Haptik, an. Kurzes Klopfen bei Satz und Pause." Zustandswechsel wird als polite Ansage bestätigt („Haptik aus"). Fehlt der Vibrationsmotor: disabled plus Grund im Label, nicht nur graue Farbe.' },
+        { el: 'Segment (Sprache, Einheiten, Pause)', role: 'radioGroup + selected', note: 'Je Wert ein Knoten mit Position: „Deutsch, ausgewählt, 1 von 2". Nach dem Sprachwechsel liest TalkBack den Bildschirm in der neuen Sprache neu vor — der Fokus bleibt auf dem gewählten Feld.' },
+        { el: 'Gewichtsfeld', role: 'textField + numeric', note: '„Körpergewicht in Kilogramm, 78,0, Pflichtfeld." Die Einheit steckt im Label, nicht nur als Suffix-Grafik. Bei Fehler trägt das Feld errorText mit dem erlaubten Bereich.' },
+        { el: 'Rückwirkende Vorschau', role: 'liveRegion polite', note: 'Erscheint sie erstmals, wird sie einmal vollständig angesagt; danach nur beim Loslassen der Taste, nicht bei jedem Zeichen. Je Zeile Richtungswort im Label: „Trainingslast 7 Tage, von 4.820 auf 5.010 Kilogramm, höher."' },
+        { el: 'Speichern und neu rechnen', role: 'button + enabled/disabled', note: 'Gesperrt trägt er den Grund: „Speichern, nicht möglich, Wert unverändert". Im Ladezustand „Wird gerechnet, bitte warten" mit busy-Flag; Beschriftung bleibt gleich.' },
+        { el: 'Konto löschen (Zeile)', role: 'button', note: '„Konto löschen, sechs Sammlungen, kein Widerruf." Die Warnung steht im Label, nicht nur in der magenta Farbe. Eigene Karte am Ende — im Lesefluss zuletzt, wie visuell.' },
+        { el: 'Löschen Stufe 1', role: 'alertDialog', note: 'Fokus auf den Titel, Ansage von Titel, Sammlungsliste mit Zahlen und dem Zugangs-Hinweis. „Abbrechen" steht im Lesefluss nicht zuletzt: Reihenfolge ist Text → Abbrechen → Ausgeben → Weiter zum Löschen.' },
+        { el: 'Bestätigungsfeld Stufe 2', role: 'textField + button disabled', note: '„Tippe LÖSCHEN, um zu bestätigen, 0 von 7 Zeichen." Der Löschen-Knopf bleibt fokussierbar und sagt bei Aktivierung den Grund: „nicht möglich, Wort unvollständig" — Autokorrektur und Vorschläge sind für das Feld aus.' },
+        { el: 'Löschen läuft', role: 'liveRegion assertive + busy', note: 'Eine Ansage beim Start, dann nur bei Abschluss oder Fehler — nicht je Sammlung. Zurück-Geste ist blockiert und meldet „Löschen läuft, nicht abbrechbar" statt still zu scheitern.' },
+        { el: 'Abschlussbildschirm', role: 'screen + focus on title', note: 'Fokus auf „Konto gelöscht", danach Karte und Knopf. Keine Zurück-Geste; das System-Zurück ruft dieselbe Aktion wie „Zur Anmeldung".' },
+        { el: 'Rechtstext-Zeile', role: 'link (öffnet in der App)', note: '„Datenschutz, öffnet in der App." Das Ziel steht im Label, damit niemand einen Wechsel erwartet. Langdruck bietet „extern öffnen" als customAction.' },
+      ],
+      reuseRows: [
+        { mod: 'M1', part: 'Typenrollen', use: 'Mono für Werte, Versionen, Zähler und Sektionstitel; Poppins für Beschriftungen, Sätze und Knöpfe. Kein neuer Typenschritt in diesem Modul.' },
+        { mod: 'M1', part: 'Press-Verhalten', use: 'Zeilen, Segmente, Schalter, Dialogknöpfe: Skalierung 0,98 + Glow, kein Ripple. Der Schalter wechselt den Wert erst beim Loslassen.' },
+        { mod: 'M2', part: 'Listenzeile und Sektionskarte', use: 'Trägt den ganzen Bildschirm — Höhe, Trenner, Chevron und Werteposition unverändert übernommen.' },
+        { mod: 'M2', part: 'Sheet', use: 'Gewicht, Pause, Einheiten, Ausgabe und Löschen Stufe 1 sind Sheets. Kein Untermenü-Screen, damit der Rückweg immer dieselbe Geste ist.' },
+        { mod: 'M2', part: 'Dialog-Anatomie', use: 'Löschen Stufe 2: Radius 20, #14141D, höchstens drei Wege, Knöpfe untereinander.' },
+        { mod: 'M2', part: 'Notice (Cyan)', use: '„Dein Zugang bleibt", „Eine laufende Einheit behält ihre Pause" — erklärend, nie als Fehler eingefärbt.' },
+        { mod: 'M2', part: 'Zustands-Anatomie', use: 'Rechtstext nicht geladen, Ausgabe offline, Löschen unvollständig: IconBox 48 / Titel / ≤ 2 Zeilen / 1 Aktion.' },
+        { mod: 'M3', part: 'Bar / Track', use: 'Fortschrittsbalken beim Löschen, Track #16161F, Füllung Magenta-Verlauf.' },
+        { mod: 'M4', part: 'Grosses Eingabefeld', use: 'Gewichtsfeld und Bestätigungsfeld sind dasselbe Bauteil: 52 / 48 dp, Radius 14, Fokusrand Cyan.' },
+        { mod: 'M4', part: 'Segment', use: 'Sprache (2), Einheiten (2), Pause (5) — ein Bauteil in drei Breiten, Umbruch statt Schrumpfen.' },
+        { mod: 'M4', part: 'Onboarding-Seiten', use: '„Onboarding wiederholen" startet sie unverändert; nach dem Löschen ist es der Zielzustand einer neuen Anmeldung.' },
+        { mod: 'M5', part: 'Dashboard-Kopf', use: 'Nimmt das Profilbild oben rechts auf — der einzige Zugang zu diesem Bildschirm, kein Leistenplatz.' },
+        { mod: 'M6', part: 'Kennzahlen (Last, ACWR, Form)', use: 'Dieselben Werte und Schreibweisen in der rückwirkenden Vorschau — dieselbe Rechnung, nur mit neuem Körpergewicht.' },
+        { mod: 'M7', part: 'Folgentabelle vorher → nachher', use: 'Unverändert für die Gewichtsvorschau: Label, alt, Pfeil, neu, Richtungsfarbe plus Richtungswort.' },
+        { mod: 'M7', part: 'Zweistufiges Löschen', use: 'Grundgerüst für Konto löschen — hier verschärft um das getippte Wort und ohne Zeitfenster.' },
+        { mod: 'M7', part: 'Schloss-Chip statt deaktiviertem Knopf', use: 'Aus „kuratierte Übung" übernommen für Name und E-Mail im Profilkopf.' },
+        { mod: 'M7', part: 'Knopf mit Ladezustand', use: '„Wird gerechnet" und „Datei erstellen": Ring statt führendem Symbol, Beschriftung bleibt stehen.' },
+        { mod: 'M7', part: 'Snackbar mit 30 s Rückgängig', use: 'Gewichtsänderung. Für Vorlieben 4 s ohne Aktion, für die Ausgabe 8 s mit „Teilen".' },
+      ],
+      decisions: [
+        { n: '01', title: 'Warndialog beim Körpergewicht verworfen', body: 'Naheliegend wäre „Das verändert deine gesamte Auswertung. Fortfahren?". Er informiert nicht, er hält auf, und beim dritten Mal wird er weggetippt. Stattdessen steht die Rechnung unter dem Feld und bewegt sich beim Tippen mit — die Einstellung wirkt dadurch nicht bedrohlich, sondern zuständig. Bedrohlich wäre eine Zahl, die sich still ändert.' },
+        { n: '02', title: 'Getrennte Gewichtshistorie verworfen', body: 'Technisch schöner wäre ein Gewicht je Datum, sodass alte Einheiten mit dem damaligen Gewicht bewertet bleiben. Der Bestand hat aber nur ein Feld, und Rückerfassung von zwei Jahren Gewichtsverlauf ist eine Zumutung. Ein Wert, rückwirkend, sichtbar gerechnet — und in der Vorschau steht ausdrücklich, dass Sätze und Wiederholungen unverändert bleiben.' },
+        { n: '03', title: 'Themen-Schalter mit „bald verfügbar" verworfen', body: 'Eine Zeile, die nur ankündigt, ist ein Versprechen ohne Termin. Die Zeile verschwindet; die Tatsache steht als Mono-Zeile in „Über die App", wo Version und Sprachen stehen. Dort erwartet niemand einen Griff, und die Frage „gibt es hell?" ist beantwortet, ohne einen Schalter zu bauen, der nichts tut.' },
+        { n: '04', title: '„Wie das System" für die Sprache verworfen', body: 'Bei einem System auf Französisch zeigte dieser Wert Englisch — ein Eintrag, der etwas anderes tut als er sagt, und ein Bildschirm, der sich beim Reisen ohne Zutun ändert. Das System wird einmal geachtet: Modul 4 setzt beim ersten Start vor. Danach zwei Werte, beide sichtbar, beide wahr.' },
+        { n: '05', title: 'Sprachwechsel mit Neustart-Hinweis verworfen', body: '„Bitte App neu starten" ist die Bitte, ein technisches Detail zu erledigen. Die Oberfläche wird neu aufgebaut, der Fokus bleibt auf dem gewählten Feld, TalkBack liest in der neuen Sprache weiter. Nur eingegebene Übungsnamen bleiben, wie sie waren — das steht im Sheet, nicht als Warnung.' },
+        { n: '06', title: 'Dritte Bestätigungsstufe beim Konto löschen verworfen', body: 'Drei Dialoge sind kein dritter Schutz, sie sind Gewöhnung. Zwei Stufen bleiben, die zweite bekommt eine getippte Bestätigung: sieben Zeichen sind eine Handlung, zwei Taps sind Motorik. Es bleibt bei zwei Wegen plus Abbrechen je Dialog.' },
+        { n: '07', title: 'Zeitfenster („in 30 Tagen endgültig") verworfen', body: 'Ein Aufschub verlangt einen Zombie-Zustand: Konto gesperrt, Daten noch da, Anmeldung mit Reaktivierungsangebot, ein Hintergrundjob, den diese App nicht hat. Halb gelöscht ist der schlechteste Zustand. Dafür ist das Löschen ausdrücklich sofort — und der Ausgabe-Weg steht davor.' },
+        { n: '08', title: 'Vollständiger Bericht als Ausgabe verworfen', body: 'Ein PDF mit Grafiken wäre ein zweites Produkt mit eigener Pflege. Die App gibt aus, was sie hat: sechs Sammlungen als JSON, Einheiten zusätzlich als CSV, Übergabe an das System-Teilen. Kein Wiedereinlesen — ein Import, den niemand pflegt, wäre das größere Versprechen. Was nicht enthalten ist, steht im Sheet.' },
+        { n: '09', title: 'Ausgabe nur im Löschdialog verworfen', body: 'Dort ist sie am nötigsten, aber als Anhängsel des Löschens rührt sie niemand ohne Löschabsicht an. Sie steht als eigene Zeile unter „Deine Daten" und zusätzlich als zweiter Weg in Stufe 1 — gleiche Aktion, zwei Türen.' },
+        { n: '10', title: 'Rechtstexte im externen Browser verworfen', body: 'Der externe Browser bringt eine fremde Adressleiste und einen Rückweg, der aus der App führt. Die Texte öffnen in der App mit ATEM-Kopf und Zurück-Pfeil; der Chip nennt das Ziel vorher. „Extern öffnen" bleibt als Langdruck für den, der teilen will. Lokal mitgeliefert werden sie nicht — sie dürfen sich ohne neue Version ändern.' },
+        { n: '11', title: 'Fünfter Leistenplatz für Einstellungen verworfen', body: 'Zwei Plätze sind frei, aber die Leiste beantwortet Tagesfragen. Ein Zahnrad daneben würde viermal im Jahr benutzt und täglich Platz kosten. Zugang ist das Profilbild im Dashboard-Kopf — dort, wo „ich" steht, steht auch „meine Einstellungen".' },
+        { n: '12', title: 'Sektion „Konto" mit Abmelden und Löschen zusammen verworfen', body: 'Abmelden und Löschen sehen als Nachbarn gleich aus und sind es nicht. Abmelden bleibt eine normale Zeile mit dem Zusatz „Daten bleiben", Löschen steht in einer eigenen Karte am Ende, magenta, mit Folgen im Untertitel. Position ist hier ein Statusträger.' },
+      ],
+      offen: [
+        { q: 'Impressumsangaben', a: 'Der Text ist als Platzhalter {betreiber} vorgesehen und wird vom Betreiber als Privatperson eingesetzt. Kein Firmenname, kein Logo, keine Firmenadresse — auch nicht im Copyright.' },
+        { q: 'Löschen bei fehlender Verbindung', a: 'Angenommen: Stufe 2 ist offline gesperrt (Grund im Knopf-Label), weil ein Löschvorgang nicht lokal gepuffert werden darf. Zu bestätigen.' },
+        { q: 'CSV-Umfang', a: 'Angenommen: Einheiten mit Sätzen, eine Zeile je Satz. Pläne und Übungen nur im JSON — sonst braucht die Ausgabe fünf Dateien und eine Erklärung.' },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

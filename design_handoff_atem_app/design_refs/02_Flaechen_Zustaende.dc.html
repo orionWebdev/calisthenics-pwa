@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes btnSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 2 / STUFE 4</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Flächen &amp; Zustände</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:760px;line-height:1.7">Ein Sheet-Bauplan mit zwei Höhenmodi, eine Dialog-Anatomie für drei Fälle, drei Kartenrezepte mit benennbaren Einsatzregeln — und ein Zustandssystem, in dem Leer, Fehler und Laden dieselbe Anatomie teilen: Symbol, eine Zeile Wahrheit, höchstens eine Handlung.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Text ≥ 12 sp · Kontrast ≥ 4,5:1</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">200 % Systemschrift · 320 dp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">barrierLabel Pflicht</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">Farbe nie allein · #7A2BDB nie als Text</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">ABGRENZUNGSREGEL · DIALOG GEGEN SHEET · EIN SATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1000px">Ein Dialog stellt genau eine Frage, die ohne Eingabe und ohne Scrollen mit höchstens zwei Aktionen beantwortbar ist — alles, was Eingabe, Auswahl aus mehr als zwei Optionen oder Scrollen braucht, ist ein Sheet.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Die Regel ist prüfbar, nicht gefühlt: „Workout beenden?" → Dialog (eine Frage, zwei Aktionen). Notiz, Filter, Auswahlliste, Zahlenpicker → Sheet (Eingabe bzw. &gt; 2 Optionen). Ein Dialog, der wächst, ist ein Konstruktionsfehler, kein Sonderfall.</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A1 · BOTTOM SHEET — EIN BAUPLAN, ZWEI HÖHENMODI</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:400px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="font-size:16px;font-weight:600">Anatomie — vier Zonen, feste Reihenfolge</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Radius Sheet 28 (nur oben) · Glas: Fläche Card @ 0,80, Blur 14, 1 px Hairline oben.</div>
+<div style="margin-top:18px;display:flex;flex-direction:column">
+<div style="border:1.5px dashed rgba(0,242,254,0.45);border-radius:14px 14px 0 0;padding:10px 16px;display:flex;justify-content:space-between;align-items:center">
+<div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">① GRIFF</div><div style="margin-top:2px;font-size:11px;color:#94A3B8">Pill 36 × 4 dp, #232334 — Trefferzone volle Breite × 24 dp</div></div>
+<div style="width:36px;height:4px;border-radius:4px;background:#232334;flex:none"></div>
+</div>
+<div style="border:1.5px dashed rgba(0,242,254,0.45);border-top:none;padding:10px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">② TITELZEILE · MIN. 56 DP</div>
+<div style="margin-top:2px;font-size:11px;color:#94A3B8;line-height:1.6">titleLarge links, optional Schließen-X rechts (48 dp Treffer). Wächst mit Systemschrift — nie feste Höhe um den Text.</div>
+</div>
+<div style="border:1.5px dashed rgba(0,242,254,0.45);border-top:none;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">③ INHALT</div>
+<div style="margin-top:2px;font-size:11px;color:#94A3B8;line-height:1.6">Polster 20 dp seitlich. Einziger scrollbarer Bereich — Griff, Titel und Fußzeile scrollen nie mit.</div>
+</div>
+<div style="border:1.5px dashed rgba(240,34,119,0.5);border-radius:0 0 14px 14px;padding:10px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#F02277">④ FUSSZEILE · 12 + 52 + 12 DP + SAFE-AREA</div>
+<div style="margin-top:2px;font-size:11px;color:#94A3B8;line-height:1.6">Genau eine Primäraktion (AtemButton gradient 52), optional eine Ghost-Aktion daneben. Entfällt, wenn Zeilen selbst Aktionen sind (Auswahlliste).</div>
+</div>
+</div>
+<div style="margin-top:16px;font-size:12px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Feste Höhe vs. wachsend:</strong> Ein Sheet mit <strong style="color:#CDD3EA">Werkzeug-Inhalt</strong> (Zahlenpicker) hat die Höhe seines Werkzeugs — sie ändert sich nie mit den Daten. Ein Sheet mit <strong style="color:#CDD3EA">Daten-Inhalt</strong> (Notiz, Filter, Liste) wächst mit dem Inhalt bis zum Rastpunkt 50 %; darüber rastet es bei 90 % ein und der Inhalt scrollt.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Artboard · Tastatur offen</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Das Sheet hebt sich um die Tastaturhöhe; die Fußzeile bleibt über der Tastatur, das fokussierte Feld scrollt frei.</div>
+<div style="margin-top:16px;width:280px;height:520px;border:1px solid #232334;border-radius:24px;background:#050507;position:relative;overflow:hidden;margin-left:auto;margin-right:auto">
+<div style="padding:18px 16px;opacity:0.5"><div style="height:12px;width:120px;border-radius:6px;background:#14141D"></div><div style="margin-top:14px;height:64px;border-radius:14px;background:#14141D"></div><div style="margin-top:10px;height:64px;border-radius:14px;background:#14141D"></div></div>
+<div style="position:absolute;inset:0;background:rgba(5,5,7,0.62)"></div>
+<div style="position:absolute;left:0;right:0;bottom:118px;background:rgba(20,20,29,0.92);border-top:1px solid #232334;border-radius:28px 28px 0 0;padding:0 20px 12px">
+<div style="display:flex;justify-content:center;padding:12px 0 8px"><div style="width:36px;height:4px;border-radius:4px;background:#232334"></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:20px;font-weight:600">Notiz zum Satz</span>
+<svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 6l12 12 M18 6 6 18" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+</div>
+<div style="margin-top:12px;border:1px solid rgba(0,242,254,0.6);border-radius:14px;background:#0B0B0E;padding:12px 14px;min-height:64px">
+<span style="font-size:13px;color:#CDD3EA">Rechtes Knie beobachten|</span>
+</div>
+<div style="margin-top:14px;height:44px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Speichern</div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:118px;background:#0B0B0E;border-top:1px solid #232334;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;color:#94A3B8;text-align:center">TASTATUR · SYSTEM</div>
+<div style="margin-top:8px;display:flex;gap:5px;justify-content:center"><div style="width:200px;height:16px;border-radius:5px;background:#16161F"></div></div>
+<div style="margin-top:6px;display:flex;gap:5px;justify-content:center"><div style="width:170px;height:16px;border-radius:5px;background:#16161F"></div></div>
+<div style="margin-top:6px;display:flex;gap:5px;justify-content:center"><div style="width:120px;height:16px;border-radius:5px;background:#16161F"></div></div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Maximalhöhe wird ab Tastatur-Oberkante gemessen, nicht ab Bildschirmrand — der Inhalt kann nie verdeckt werden. Reicht der Platz nicht, scrollt Zone ③, nie die Fußzeile.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Artboard · Feste Höhe (Werkzeug)</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Zahlenpicker: Höhe = Werkzeughöhe, unabhängig von Daten. Gewählte Zeile trägt Rahmen + Mono-Gewicht, nicht nur Farbe.</div>
+<div style="margin-top:16px;width:280px;height:520px;border:1px solid #232334;border-radius:24px;background:#050507;position:relative;overflow:hidden;margin-left:auto;margin-right:auto">
+<div style="padding:18px 16px;opacity:0.5"><div style="height:12px;width:120px;border-radius:6px;background:#14141D"></div><div style="margin-top:14px;height:64px;border-radius:14px;background:#14141D"></div><div style="margin-top:10px;height:64px;border-radius:14px;background:#14141D"></div><div style="margin-top:10px;height:64px;border-radius:14px;background:#14141D"></div></div>
+<div style="position:absolute;inset:0;background:rgba(5,5,7,0.62)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;background:rgba(20,20,29,0.92);border-top:1px solid #232334;border-radius:28px 28px 0 0;padding:0 20px 16px">
+<div style="display:flex;justify-content:center;padding:12px 0 8px"><div style="width:36px;height:4px;border-radius:4px;background:#232334"></div></div>
+<div style="font-size:20px;font-weight:600">Gewicht</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:2px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:#94A3B8;opacity:0.4;padding:8px">92,5</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:#94A3B8;opacity:0.7;padding:8px">95,0</div>
+<div style="width:180px;border:1px solid rgba(0,242,254,0.5);border-radius:14px;padding:10px;display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;color:#00F2FE">97,5</span><span style="font-size:12px;color:#94A3B8">kg</span></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:#94A3B8;opacity:0.7;padding:8px">100,0</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:#94A3B8;opacity:0.4;padding:8px">102,5</div>
+</div>
+<div style="margin-top:12px;height:44px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Übernehmen</div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Picker-Zeilen sind je 48 dp Trefferfläche; zusätzlich AtemNumberField als Direkteingabe erreichbar (Tippen auf den gewählten Wert).</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Artboard · Über halber Höhe (90 %)</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Ab Rastpunkt 90 %: Titel bekommt eine Hairline (Scroll-Beweis), Inhalt scrollt, oben bleiben ≥ 10 % Canvas sichtbar.</div>
+<div style="margin-top:16px;width:280px;height:520px;border:1px solid #232334;border-radius:24px;background:#050507;position:relative;overflow:hidden;margin-left:auto;margin-right:auto">
+<div style="padding:18px 16px;opacity:0.5"><div style="height:12px;width:120px;border-radius:6px;background:#14141D"></div></div>
+<div style="position:absolute;inset:0;background:rgba(5,5,7,0.62)"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:88%;background:rgba(20,20,29,0.92);border-top:1px solid #232334;border-radius:28px 28px 0 0;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:center;padding:12px 0 8px;flex:none"><div style="width:36px;height:4px;border-radius:4px;background:#232334"></div></div>
+<div style="padding:0 20px 12px;border-bottom:1px solid #232334;flex:none;display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:20px;font-weight:600">Filter</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00F2FE">3 AKTIV</span>
+</div>
+<div style="flex:1;overflow:hidden;position:relative;padding:6px 20px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Langhantel</span><div style="width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.15);border:1px solid #00F2FE;display:flex;align-items:center;justify-content:center"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#00F2FE" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Kurzhantel</span><div style="width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.15);border:1px solid #00F2FE;display:flex;align-items:center;justify-content:center"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#00F2FE" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Kettlebell</span><div style="width:18px;height:18px;border-radius:6px;border:1px solid #232334"></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Eigengewicht</span><div style="width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.15);border:1px solid #00F2FE;display:flex;align-items:center;justify-content:center"><svg width="10" height="8" viewBox="0 0 10 8"><path d="M1 4l3 3 5-6" stroke="#00F2FE" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Maschine</span><div style="width:18px;height:18px;border-radius:6px;border:1px solid #232334"></div></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0"><span style="font-size:13px;color:#CDD3EA">Band</span><div style="width:18px;height:18px;border-radius:6px;border:1px solid #232334"></div></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:36px;background:linear-gradient(180deg,rgba(20,20,29,0),rgba(20,20,29,0.95))"></div>
+</div>
+<div style="flex:none;padding:12px 20px 16px;border-top:1px solid #232334;display:flex;gap:10px">
+<div style="flex:1;height:42px;border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#94A3B8">Zurücksetzen</div>
+<div style="flex:1.4;height:42px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">Anwenden</div>
+</div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Nie 100 %: der Canvas-Streifen + Griff hält die Rückkehr-Geste sichtbar. Wer Vollbild braucht, braucht einen Screen, kein Sheet.</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A2 · DIALOG — EINE ANATOMIE, DREI BELEGUNGEN</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:360px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Bestätigen · „Workout beenden?"</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Beenden speichert Fortschritt → Marken-CTA bleibt berechtigt. Statistik als StatBox-Raster, max. 4 Werte.</div>
+<div style="margin-top:16px;background:rgba(5,5,7,0.85);border-radius:14px;padding:26px 20px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:22px 20px;box-shadow:0 24px 60px rgba(0,0,0,0.6)">
+<div style="font-size:20px;font-weight:600">Workout beenden?</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="background:#1A1A26;border-radius:14px;padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#94A3B8">DAUER</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">48:12</div></div>
+<div style="background:#1A1A26;border-radius:14px;padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#94A3B8">VOLUMEN</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">12,4k kg</div></div>
+<div style="background:#1A1A26;border-radius:14px;padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#94A3B8">SÄTZE</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">24</div></div>
+<div style="background:#1A1A26;border-radius:14px;padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#00FF87">▲ PRS</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:#00FF87;font-variant-numeric:tabular-nums">2</div></div>
+</div>
+<div style="margin-top:16px;height:48px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;box-shadow:0 0 20px rgba(240,34,119,0.35)">Beenden &amp; speichern</div>
+<div style="margin-top:8px;height:44px;border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#94A3B8">Weiter trainieren</div>
+</div>
+</div>
+</div>
+
+<div style="width:360px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Zerstörend bestätigen</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Dreieck + Klartext tragen die Semantik, nicht die Farbe. Zerstörende Aktion nie als Gradient — Outline Magenta.</div>
+<div style="margin-top:16px;background:rgba(5,5,7,0.85);border-radius:14px;padding:26px 20px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:22px 20px;box-shadow:0 24px 60px rgba(0,0,0,0.6)">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:36px;height:36px;border-radius:10px;background:rgba(240,34,119,0.1);border:1px solid rgba(240,34,119,0.4);display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="16" viewBox="0 0 24 21"><path d="M12 2 22 19H2Z" fill="none" stroke="#F02277" stroke-width="2" stroke-linejoin="round"></path><path d="M12 8v5" stroke="#F02277" stroke-width="2" stroke-linecap="round"></path><circle cx="12" cy="16" r="1.2" fill="#F02277"></circle></svg></div>
+<div style="font-size:20px;font-weight:600">Verlauf löschen?</div>
+</div>
+<div style="margin-top:10px;font-size:13px;color:#94A3B8;line-height:1.7">Alle 34 Sessions und Bestwerte werden endgültig entfernt. Das lässt sich nicht rückgängig machen.</div>
+<div style="margin-top:16px;height:48px;border-radius:30px;border:1.5px solid #F02277;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#F02277">Endgültig löschen</div>
+<div style="margin-top:8px;height:44px;border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#94A3B8">Abbrechen</div>
+</div>
+</div>
+</div>
+
+<div style="width:360px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Informieren</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Eine Aktion, keine Entscheidung → kein Gradient. Outline Cyan als quittierende Aktion.</div>
+<div style="margin-top:16px;background:rgba(5,5,7,0.85);border-radius:14px;padding:26px 20px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:22px 20px;box-shadow:0 24px 60px rgba(0,0,0,0.6)">
+<div style="font-size:20px;font-weight:600">Was ist Readiness?</div>
+<div style="margin-top:10px;font-size:13px;color:#94A3B8;line-height:1.7">Der Wert fasst Schlaf, Herzfrequenz-Variabilität und die Belastung der letzten 7 Tage zu einer Bereitschaft von 0–100 zusammen.</div>
+<div style="margin-top:16px;height:48px;border-radius:30px;border:1.5px solid rgba(0,242,254,0.6);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#00F2FE">Verstanden</div>
+</div>
+</div>
+<div style="margin-top:14px;font-size:12px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Verdunkler (beide Flächen):</strong> Canvas #050507 — Dialog @ 0,72, Sheet @ 0,62. <strong style="color:#CDD3EA">Kein Blur:</strong> Das Blur-Budget gehört der Fläche selbst; ein unscharfer Hintergrund signalisiert „weg", der Verdunkler soll „pausiert" sagen. Tipp auf den Verdunkler schließt Sheets immer, Dialoge nie (Entscheidung erzwingen).</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A3 · KARTEN — DREI REZEPTE, KEIN VIERTES</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:15px;font-weight:600">K1 · Glaskarte</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE;border:1px solid rgba(0,242,254,0.4);border-radius:30px;padding:3px 9px">MAX. 3 / VIEWPORT</span></div>
+<div style="margin-top:14px;position:relative;border-radius:14px;overflow:hidden;background:#050507;padding:22px;border:1px solid #16161F">
+<div style="position:absolute;top:-30px;right:-20px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(240,34,119,0.5),transparent 70%);filter:blur(10px)"></div>
+<div style="position:absolute;bottom:-40px;left:-10px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,242,254,0.4),transparent 70%);filter:blur(10px)"></div>
+<div style="position:relative;background:rgba(20,20,29,0.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #232334;border-radius:20px;padding:18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#94A3B8">READINESS</div>
+<div style="margin-top:6px;display:flex;align-items:baseline;gap:4px"><span style="font-size:30px;font-weight:700;font-variant-numeric:tabular-nums">88</span><span style="font-size:13px;color:#94A3B8">/ 100</span></div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Wann:</strong> nur wenn hinter der Karte etwas ist, das durchscheinen kann (Header-Glow, Chart). Blur 14, Fläche Card @ 0,80, Hairline #232334, Halo optional. Über purem Canvas ist Glas unsichtbar → dann K3.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:15px;font-weight:600">K2 · Session-Card</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:3px 9px">GENAU 1 / SCREEN</span></div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:22px">
+<div style="border-radius:20px;padding:1.5px;background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)">
+<div style="border-radius:19px;background:#14141D;padding:18px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#00F2FE;box-shadow:0 0 8px #00F2FE"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">HEUTIGE SESSION</span></div>
+<div style="margin-top:8px;font-size:16px;font-weight:600">Hybrid Push · Woche 4</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8">6 Übungen · 45 Min · High Intensity</div>
+</div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Wann:</strong> das eine Objekt, das der Screen verkaufen will. Gradient-Rand 1,5 dp (magenta→violet→cyan), Fläche Card-Vollton. Zwei davon auf einem Screen heben sich gegenseitig auf — hart begrenzt auf eine.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:15px;font-weight:600">K3 · Listenkarte</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:3px 9px">UNBEGRENZT</span></div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:8px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:600">Bankdrücken</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">4 × 8 · 80 kg</div></div><svg width="7" height="11" viewBox="0 0 7 11"><path d="M1 1l5 4.5L1 10" stroke="#94A3B8" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:600">Schrägbank KH</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">3 × 10 · 28 kg</div></div><svg width="7" height="11" viewBox="0 0 7 11"><path d="M1 1l5 4.5L1 10" stroke="#94A3B8" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Wann:</strong> jede scrollende Liste ab 4 Einträgen. Card-Vollton #14141D, Hairline, kein Blur, kein Halo — Blur in Listen kostet Frames genau dort, wo gescrollt wird. <strong style="color:#FFFFFF">Keine vierte Variante:</strong> die StatBox (#1A1A26, Radius 14) ist eine Einlage IN Karten, keine Karte — sie steht nie direkt auf Canvas.</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B1 · LEER — EINLADUNG ODER FESTSTELLUNG</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Einladung · keine Session geplant</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;align-items:center;text-align:center">
+<div style="width:48px;height:48px;border-radius:10px;background:rgba(240,34,119,0.08);border:1px solid rgba(240,34,119,0.35);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="#F02277" stroke-width="1.8"></rect><path d="M3 10h18 M8 3v4 M16 3v4" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></path><path d="M12 13v4 M10 15h4" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
+<div style="margin-top:14px;font-size:16px;font-weight:600">Heute ist nichts geplant</div>
+<div style="margin-top:6px;font-size:12px;color:#94A3B8;line-height:1.7;max-width:220px">Ruhetag — oder Platz für eine freie Session.</div>
+<div style="margin-top:16px;height:48px;padding:0 24px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;box-shadow:0 0 20px rgba(240,34,119,0.3)">Session planen</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Einladung, weil die Handlung das Fehlen direkt behebt. Ersetzt die Session-Card (K2) an Ort und Stelle — gleiche Position, gleiche Höhe ± Inhalt.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Feststellung + Ausweg · Suche leer</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;align-items:center;text-align:center">
+<div style="width:48px;height:48px;border-radius:10px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="#94A3B8" stroke-width="1.8"></circle><path d="M15.5 15.5 21 21" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
+<div style="margin-top:14px;font-size:16px;font-weight:600">Keine Übung gefunden</div>
+<div style="margin-top:6px;font-size:12px;color:#94A3B8;line-height:1.7;max-width:230px">Für „Kreuzhben" mit 3 aktiven Filtern gibt es keine Treffer.</div>
+<div style="margin-top:16px;height:48px;padding:0 20px;border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#00F2FE">Filter zurücksetzen</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Kein Marken-CTA: die App lädt nicht ein, sie räumt ein Hindernis weg — Ghost-Aktion genügt. Der Suchbegriff wird zitiert, damit Tippfehler auffallen.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Feststellung · noch kein Verlauf</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;align-items:center;text-align:center">
+<div style="width:48px;height:48px;border-radius:10px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19 9 13l4 3 7-9" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4 3v18h17" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path></svg></div>
+<div style="margin-top:14px;font-size:16px;font-weight:600">Noch kein Verlauf</div>
+<div style="margin-top:6px;font-size:12px;color:#94A3B8;line-height:1.7;max-width:230px">Dein Verlauf entsteht mit der ersten abgeschlossenen Session.</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Bewusst ohne Knopf: Der Weg zur ersten Session führt über das Dashboard, das hier einen Tab entfernt ist — ein zweiter CTA würde mit der Session-Card konkurrieren. <strong style="color:#FFFFFF">Anatomie aller drei:</strong> IconBox 48/10 · titleMedium · labelSmall max. 2 Zeilen · 0–1 Aktion.</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B2 · FEHLER — BEHEBBAR, ENDGÜLTIG, TEILWEISE</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Behebbar · Vollbild</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Nur wenn das Primärobjekt des Screens fehlt. Wiederholen steht direkt unter der Botschaft, als Outline.</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:32px 22px;display:flex;flex-direction:column;align-items:center;text-align:center">
+<div style="width:48px;height:48px;border-radius:10px;background:rgba(240,34,119,0.08);border:1px solid rgba(240,34,119,0.35);display:flex;align-items:center;justify-content:center"><svg width="20" height="18" viewBox="0 0 24 21"><path d="M12 2 22 19H2Z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><path d="M12 8v5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></path><circle cx="12" cy="16" r="1.1" fill="#F02277"></circle></svg></div>
+<div style="margin-top:14px;font-size:16px;font-weight:600">Workout nicht ladbar</div>
+<div style="margin-top:6px;font-size:12px;color:#94A3B8;line-height:1.7;max-width:230px">Der Plan konnte nicht abgerufen werden. Deine bisherigen Daten sind sicher.</div>
+<div style="margin-top:16px;height:48px;padding:0 26px;border-radius:30px;border:1.5px solid rgba(0,242,254,0.6);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#00F2FE">Erneut versuchen</div>
+<div style="margin-top:6px;height:44px;padding:0 20px;border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#94A3B8">Zurück zum Dashboard</div>
+</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Teilfehler · nur die Sektion</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Der Rest des Screens bleibt nutzbar; die betroffene Karte wird durch eine Fehlerkarte gleicher Höhe ersetzt.</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#94A3B8">READINESS</div><div style="margin-top:2px;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums">88</div></div>
+<div style="background:rgba(240,34,119,0.05);border:1px dashed rgba(240,34,119,0.4);border-radius:20px;padding:14px;display:flex;align-items:center;gap:12px">
+<svg width="18" height="16" viewBox="0 0 24 21" style="flex:none"><path d="M12 2 22 19H2Z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><path d="M12 8v5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></path><circle cx="12" cy="16" r="1.1" fill="#F02277"></circle></svg>
+<div style="flex:1"><div style="font-size:12.5px;font-weight:600">Wochenverlauf nicht ladbar</div><div style="margin-top:1px;font-size:11px;color:#94A3B8">Alles andere ist aktuell.</div></div>
+<div style="height:36px;padding:0 14px;border-radius:30px;display:flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE;letter-spacing:0.06em;flex:none">NEU LADEN</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#94A3B8">PROTEIN</div><div style="margin-top:2px;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums">165 g</div></div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Gestrichelter Rand = „hier fehlt etwas" (Formmerkmal). Der Text-Button hat 48 dp Trefferfläche (unsichtbar wachsend).</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Endgültig vs. nebenbei</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Endgültig = kein Wiederholen-Knopf, nur Erklärung + Ausweg. Offline = Banner, blockiert nichts.</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:30px;padding:10px 16px;display:flex;align-items:center;gap:10px">
+<svg width="16" height="13" viewBox="0 0 24 19" style="flex:none"><path d="M4 13a5 5 0 0 1 1.5-9.8A7 7 0 0 1 19 6a4.5 4.5 0 0 1 1 8.9" fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path><path d="M3 17 21 2" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path></svg>
+<span style="font-size:12px;color:#CDD3EA">Offline — Änderungen werden lokal gespeichert</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px 16px">
+<div style="display:flex;align-items:center;gap:8px"><svg width="16" height="14" viewBox="0 0 24 21" style="flex:none"><path d="M12 2 22 19H2Z" fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"></path><path d="M12 8v5" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path><circle cx="12" cy="16" r="1.1" fill="#94A3B8"></circle></svg><span style="font-size:12.5px;font-weight:600">Session nicht mehr verfügbar</span></div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Der Coach hat den Plan zurückgezogen. Dein absolvierter Teil bleibt im Verlauf.</div>
+<div style="margin-top:10px;height:40px;border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#00F2FE">Zum Verlauf</div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Unterscheidung:</strong> behebbar = Magenta-Akzent + „Erneut versuchen" · endgültig = neutraler Akzent, keine Wiederholung anbieten, die nichts ändern kann. Speichern-Fehler mit lokaler Kopie sind KEIN Fehlerbild, nur das Offline-Banner.</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B3 · LADEN — INHALTSFORM STATT KREISEL</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Skeleton in Inhaltsform</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Blöcke #16161F in exakter Geometrie des späteren Inhalts — gleiche Radien, gleiche Positionen. Puls statt Schimmer.</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:16px">
+<div style="display:flex;align-items:center;justify-content:space-between;animation:skelPulse 1.6s ease-in-out infinite">
+<div style="height:12px;width:110px;border-radius:6px;background:#16161F"></div>
+<div style="width:36px;height:36px;border-radius:12px;background:#16161F"></div>
+</div>
+<div style="margin-top:14px;display:flex;justify-content:center;animation:skelPulse 1.6s ease-in-out .12s infinite"><div style="width:96px;height:96px;border-radius:50%;background:#16161F"></div></div>
+<div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;animation:skelPulse 1.6s ease-in-out .24s infinite">
+<div style="height:54px;border-radius:14px;background:#16161F"></div>
+<div style="height:54px;border-radius:14px;background:#16161F"></div>
+</div>
+<div style="margin-top:8px;height:64px;border-radius:20px;background:#16161F;animation:skelPulse 1.6s ease-in-out .36s infinite"></div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Puls: Deckkraft 0,55 ↔ 1,0, 1,6 s, Versatz 120 ms je Block von oben. Bei „Bewegung reduzieren": eingefroren bei 0,8.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Wann was — drei Regeln</div>
+<div style="display:flex;flex-direction:column;gap:12px;margin-top:16px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">&lt; 300 MS → NICHTS</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Kein Indikator vor Ablauf von 300 ms. Ein aufblitzendes Skeleton macht schnelle Antworten langsam wirkend.</div>
+</div>
+<div style="background:#14141D;border:1px solid rgba(0,242,254,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">SCREEN / SEKTION → SKELETON</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Immer wenn die Zielgeometrie bekannt ist — Dashboard, Verlauf, Runner-Setup. Der Kreisel des Runners entfällt.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">AKTION IM ELEMENT → SPINNER 16 DP</div>
+<svg width="16" height="16" viewBox="0 0 16 16" style="animation:btnSpin 900ms linear infinite;flex:none"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#232334" stroke-width="2.5"></circle><path d="M8 1.5A6.5 6.5 0 0 1 14.5 8" fill="none" stroke="#00F2FE" stroke-width="2.5" stroke-linecap="round"></path></svg>
+</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Nur im Button, der die Aktion ausgelöst hat (ersetzt dessen Label, Breite bleibt fixiert). Nie als Vollbild — ein Spinner ohne Ort verspricht nichts.</div>
+</div>
+</div>
+</div>
+
+<div style="width:400px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:15px;font-weight:600">Übergang Laden → Inhalt</span>
+<div onClick="{{ replay }}" role="button" aria-label="Übergang abspielen" style="height:36px;padding:0 16px;border-radius:30px;border:1px solid rgba(0,242,254,0.5);display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none" style-hover="background:rgba(0,242,254,0.08)">
+<svg width="8" height="10" viewBox="0 0 8 10"><polygon points="0,0 8,5 0,10" fill="#00F2FE"></polygon></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE;letter-spacing:0.06em">ABSPIELEN</span>
+</div>
+</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Crossfade 250 ms ease-out je Block, Versatz 40 ms von oben, Anhebung 6 dp → 0. Kein Layout-Sprung: Skeleton und Inhalt teilen die Geometrie.</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:16px;position:relative;height:170px">
+<div style="position:absolute;inset:16px;opacity:{{ skelOp }};transition:opacity 250ms ease-out;pointer-events:none">
+<div style="height:14px;width:120px;border-radius:7px;background:#16161F;animation:{{ skelAnim }}"></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="height:56px;border-radius:14px;background:#16161F;animation:{{ skelAnim }}"></div><div style="height:56px;border-radius:14px;background:#16161F;animation:{{ skelAnim }}"></div></div>
+<div style="margin-top:8px;height:52px;border-radius:20px;background:#16161F;animation:{{ skelAnim }}"></div>
+</div>
+<div style="position:absolute;inset:16px;pointer-events:none">
+<div style="opacity:{{ contOp }};transform:translateY({{ rise }}px);transition:{{ t1 }}"><div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#94A3B8;line-height:14px">HEUTE · DI 26. AUG</div></div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;opacity:{{ contOp }};transform:translateY({{ rise }}px);transition:{{ t2 }}">
+<div style="height:56px;border-radius:14px;background:#1A1A26;padding:9px 12px;box-sizing:border-box"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#94A3B8">READINESS</div><div style="margin-top:1px;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums">88</div></div>
+<div style="height:56px;border-radius:14px;background:#1A1A26;padding:9px 12px;box-sizing:border-box"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#94A3B8">STRAIN</div><div style="margin-top:1px;font-size:17px;font-weight:700;color:#00F2FE;font-variant-numeric:tabular-nums">6,4</div></div>
+</div>
+<div style="margin-top:8px;height:52px;border-radius:20px;background:#14141D;border:1px solid #232334;box-sizing:border-box;padding:8px 14px;opacity:{{ contOp }};transform:translateY({{ rise }}px);transition:{{ t3 }}">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:5px;height:5px;border-radius:50%;background:#00F2FE;box-shadow:0 0 6px #00F2FE"></span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#00F2FE">HEUTIGE SESSION</span></div>
+<div style="margin-top:2px;font-size:13px;font-weight:600">Hybrid Push · Woche 4</div>
+</div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Harter Austausch wirkt billig, alles über ~350 ms träge — 250 ms + 2 × 40 ms Versatz enden bei 330 ms Gesamtdauer. Reduzierte Bewegung: nur Crossfade, ohne Anhebung und ohne Versatz (im Tweaks-Panel testbar).</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · SPEZIFIKATIONSTABELLE</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:200px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>MASSE &amp; TOKENS</span>
+</div>
+<sc-for list="{{ spec }}" as="s" hint-placeholder-count="14">
+<div style="display:grid;grid-template-columns:200px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">{{ s.k }}</span>
+<span style="color:#94A3B8;line-height:1.6">{{ s.v }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · BEWEGUNGSTABELLE</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:160px 130px 1fr 90px 140px 130px 180px;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>„BEWEGUNG REDUZIEREN"</span>
+</div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:160px 130px 1fr 90px 140px 130px 180px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:12px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:{{ m.tc }}">{{ m.trigger }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-variant-numeric:tabular-nums">{{ m.dur }}</span><span style="color:#94A3B8">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.reduced }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · STRINGTABELLE</div>
+<div style="margin-top:16px;width:980px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:280px 1fr 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span>
+</div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="18">
+<div style="display:grid;grid-template-columns:280px 1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · A11Y-NOTIZEN</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:190px 1fr 140px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND / LIVE-REGION</span>
+</div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:190px 1fr 140px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:12px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · ENTSCHEIDUNGSPROTOKOLL</div>
+<div style="margin-top:16px;max-width:920px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="7">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start">
+<div style="width:36px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;reducedMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demo Laden → Inhalt&quot;},&quot;loadDelayMs&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1200,&quot;min&quot;:400,&quot;max&quot;:3000,&quot;step&quot;:100,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Demo Laden → Inhalt&quot;}}">
+class Component extends DCLogic {
+  state = { phase: 'content' };
+  replayDemo = () => {
+    clearTimeout(this._t);
+    this.setState({ phase: 'skeleton' });
+    this._t = setTimeout(() => this.setState({ phase: 'content' }), this.props.loadDelayMs ?? 1200);
+  };
+  componentWillUnmount() { clearTimeout(this._t); }
+  renderVals() {
+    const loading = this.state.phase === 'skeleton';
+    const red = this.props.reducedMotion ?? false;
+    const base = 'opacity 250ms ease-out, transform 250ms ease-out';
+    const t = (i) => red ? 'opacity 250ms ease-out' : base + (i ? ' ' + (i * 40) + 'ms' : '');
+    return {
+      replay: this.replayDemo,
+      skelOp: loading ? 1 : 0,
+      contOp: loading ? 0 : 1,
+      rise: loading && !red ? 6 : 0,
+      t1: t(0), t2: t(1), t3: t(2),
+      skelAnim: red ? 'none' : 'skelPulse 1.6s ease-in-out infinite',
+      spec: [
+        { k: 'Sheet Fläche', v: 'Radius 28 nur oben · Glas: Card #14141D @ 0,80 + Blur 14 · Hairline oben 1 px #232334 · Verdunkler #050507 @ 0,62' },
+        { k: 'Sheet Griff', v: 'Pill 36 × 4 dp, #232334, 12 dp oben / 8 dp unten · Trefferzone volle Breite × 24 dp' },
+        { k: 'Sheet Titelzeile', v: 'min. 56 dp, wächst mit Systemschrift · titleLarge 20 · Schließen-X sichtbar 24, Treffer 48 dp' },
+        { k: 'Sheet Fußzeile', v: '12 + 52 + 12 dp + Safe-Area · genau 1 Gradient-Aktion, optional 1 Ghost daneben · scrollt nie' },
+        { k: 'Sheet Rastpunkte', v: 'wachsend bis 50 % · dann 90 % mit scrollendem Inhalt · nie 100 % (≥ 10 % Canvas-Peek) · Werkzeug-Sheets: feste Werkzeughöhe' },
+        { k: 'Sheet + Tastatur', v: 'Hub = Tastaturhöhe · Maximalhöhe ab Tastatur-Oberkante gemessen · Fußzeile bleibt über der Tastatur' },
+        { k: 'Dialog', v: 'Breite min(Bildschirm − 48, 340 dp) · Radius 20 · Fläche Card-Vollton (kein Blur) · Schatten 0/24/60 @ 0,6 · Verdunkler #050507 @ 0,72, kein Blur, kein Tap-to-close' },
+        { k: 'Dialog Aktionen', v: 'max. 2, gestapelt · bestätigen: gradient 52 + ghost 48 · zerstörend: outline magenta 52 + ghost 48 · informieren: outline cyan 52' },
+        { k: 'K1 Glaskarte', v: 'Radius 20 · rgba(20,20,29,0.8) + Blur 14 · Hairline #232334 · Halo optional · max. 3 je Viewport, nur über sichtbarem Hintergrund' },
+        { k: 'K2 Session-Card', v: 'Radius 20 · Gradient-Rand 1,5 dp (135°, #F02277→#7A2BDB→#00F2FE) · Fläche #14141D Vollton · genau 1 je Screen' },
+        { k: 'K3 Listenkarte', v: 'Radius 20 · #14141D Vollton · Hairline #232334 · kein Blur, kein Halo, kein Schatten · Standard für Listen ab 4 Einträgen' },
+        { k: 'StatBox (Einlage)', v: '#1A1A26 · Radius 14 · nur innerhalb von Karten/Dialogen, nie direkt auf Canvas — bewusst keine 4. Kartenvariante' },
+        { k: 'Zustands-Anatomie', v: 'IconBox 48 dp / Radius 10 · Titel titleMedium 16 · Text labelSmall 12, max. 2 Zeilen · 0–1 Aktion · zentriert, vertikal mittig in der Zielfläche' },
+        { k: 'Skeleton', v: 'Blöcke #16161F in Zielgeometrie (gleiche Radien) · Puls 0,55↔1,0 · Versatz 120 ms/Block · erscheint erst nach 300 ms' },
+        { k: 'Button-Spinner', v: '16 dp, Strich 2,5 · Track #232334, Bogen cyan · ersetzt Button-Label, Buttonbreite eingefroren' }
+      ],
+      motion: [
+        { el: 'Sheet öffnen', trigger: 'Aufruf', prop: 'translateY 100 % → 0 + Verdunkler 0 → 0,62', dur: '320 ms', curve: 'ease-out-cubic', rest: 'gedockt', reduced: 'nur Überblendung 200 ms, kein Weg', tc: '#00F2FE' },
+        { el: 'Sheet schließen', trigger: 'Drag / X / Verdunkler', prop: 'translateY 0 → 100 % + Verdunkler → 0', dur: '260 ms', curve: 'ease-in-cubic', rest: 'entfernt', reduced: 'Ausblenden 160 ms', tc: '#00F2FE' },
+        { el: 'Sheet Rastpunkt', trigger: 'Drag-Ende / Inhalt wächst', prop: 'Höhe alt → Rastpunkt', dur: '280 ms', curve: 'ease-out-back (federleicht)', rest: 'am Rastpunkt', reduced: 'ease-out ohne Überschwingen', tc: '#00F2FE' },
+        { el: 'Tastatur-Ausweichen', trigger: 'Fokus / Tastatur', prop: 'translateY des Sheets = Tastaturhöhe', dur: 'koppelt an System', curve: 'System-Kurve', rest: 'über Tastatur', reduced: 'bleibt — funktional', tc: '#00F2FE' },
+        { el: 'Dialog öffnen', trigger: 'Aufruf', prop: 'Scale 0,94 → 1 + Deckkraft 0 → 1 + Verdunkler → 0,72', dur: '220 ms', curve: 'ease-out-cubic', rest: 'zentriert', reduced: 'nur Überblendung', tc: '#F02277' },
+        { el: 'Dialog schließen', trigger: 'Aktion gewählt', prop: 'Scale 1 → 0,97 + Deckkraft → 0', dur: '160 ms', curve: 'ease-in', rest: 'entfernt', reduced: 'Ausblenden', tc: '#F02277' },
+        { el: 'Skeleton-Puls', trigger: 'Dauerschleife', prop: 'Deckkraft 0,55 ↔ 1,0, Versatz 120 ms/Block', dur: '1600 ms', curve: 'ease-in-out', rest: '— (Loop)', reduced: 'eingefroren bei 0,8', tc: '#94A3B8' },
+        { el: 'Laden → Inhalt', trigger: 'Daten da', prop: 'Crossfade Skeleton/Inhalt + translateY 6 → 0, Versatz 40 ms/Block', dur: '250 ms/Block', curve: 'ease-out', rest: 'Inhalt', reduced: 'nur Crossfade, kein Weg, kein Versatz', tc: '#00FF87' },
+        { el: 'Leer erscheint', trigger: 'Ergebnis „leer"', prop: 'wie Laden → Inhalt (ein Block)', dur: '250 ms', curve: 'ease-out', rest: 'sichtbar', reduced: 'Überblendung', tc: '#94A3B8' },
+        { el: 'Fehler erscheint', trigger: 'Fehlschlag', prop: 'Deckkraft 0 → 1, KEIN Shake, kein Weg', dur: '200 ms', curve: 'ease-out', rest: 'sichtbar', reduced: 'identisch (ist schon minimal)', tc: '#F02277' },
+        { el: 'Erneut versuchen', trigger: 'Tap', prop: 'Label → Spinner (Crossfade), Breite fix', dur: '150 ms', curve: 'ease-out', rest: 'Spinner rotiert 900 ms/U', reduced: 'Spinner bleibt (funktional), Crossfade hart', tc: '#F02277' },
+        { el: 'Offline-Banner', trigger: 'Verbindungswechsel', prop: 'Höhe 0 → auto + Deckkraft', dur: '240 ms', curve: 'ease-out', rest: 'sichtbar bis online', reduced: 'nur Überblendung', tc: '#94A3B8' }
+      ],
+      strings: [
+        { key: 'sheet.grabber_hint', de: 'Ziehen zum Schließen', en: 'Drag to close' },
+        { key: 'sheet.close', de: 'Schließen', en: 'Close' },
+        { key: 'sheet.note.title', de: 'Notiz zum Satz', en: 'Set note' },
+        { key: 'sheet.note.save', de: 'Speichern', en: 'Save' },
+        { key: 'sheet.picker.apply', de: 'Übernehmen', en: 'Apply' },
+        { key: 'sheet.filter.title', de: 'Filter', en: 'Filters' },
+        { key: 'sheet.filter.active', de: '{n} aktiv', en: '{n} active' },
+        { key: 'sheet.filter.reset', de: 'Zurücksetzen', en: 'Reset' },
+        { key: 'sheet.filter.apply', de: 'Anwenden', en: 'Apply' },
+        { key: 'barrier.sheet', de: 'Schließt „{titel}"', en: 'Closes “{title}”' },
+        { key: 'barrier.dialog', de: '„{titel}" — bitte eine Option wählen', en: '“{title}” — please choose an option' },
+        { key: 'dialog.end.title', de: 'Workout beenden?', en: 'End workout?' },
+        { key: 'dialog.end.confirm', de: 'Beenden & speichern', en: 'End & save' },
+        { key: 'dialog.end.cancel', de: 'Weiter trainieren', en: 'Keep training' },
+        { key: 'dialog.delete.title', de: 'Verlauf löschen?', en: 'Delete history?' },
+        { key: 'dialog.delete.confirm', de: 'Endgültig löschen', en: 'Delete permanently' },
+        { key: 'common.cancel', de: 'Abbrechen', en: 'Cancel' },
+        { key: 'common.got_it', de: 'Verstanden', en: 'Got it' },
+        { key: 'empty.today.title', de: 'Heute ist nichts geplant', en: 'Nothing planned today' },
+        { key: 'empty.today.body', de: 'Ruhetag — oder Platz für eine freie Session.', en: 'Rest day — or room for a free session.' },
+        { key: 'empty.today.cta', de: 'Session planen', en: 'Plan a session' },
+        { key: 'empty.search.title', de: 'Keine Übung gefunden', en: 'No exercise found' },
+        { key: 'empty.search.body', de: 'Für „{begriff}" mit {n} aktiven Filtern gibt es keine Treffer.', en: 'No results for “{query}” with {n} active filters.' },
+        { key: 'empty.search.cta', de: 'Filter zurücksetzen', en: 'Reset filters' },
+        { key: 'empty.history.title', de: 'Noch kein Verlauf', en: 'No history yet' },
+        { key: 'empty.history.body', de: 'Dein Verlauf entsteht mit der ersten abgeschlossenen Session.', en: 'Your history begins with your first completed session.' },
+        { key: 'error.load.title', de: 'Workout nicht ladbar', en: 'Can’t load workout' },
+        { key: 'error.load.body', de: 'Der Plan konnte nicht abgerufen werden. Deine bisherigen Daten sind sicher.', en: 'The plan couldn’t be fetched. Your existing data is safe.' },
+        { key: 'error.retry', de: 'Erneut versuchen', en: 'Try again' },
+        { key: 'error.back', de: 'Zurück zum Dashboard', en: 'Back to dashboard' },
+        { key: 'error.section.title', de: '{sektion} nicht ladbar', en: 'Can’t load {section}' },
+        { key: 'error.section.body', de: 'Alles andere ist aktuell.', en: 'Everything else is up to date.' },
+        { key: 'error.section.retry', de: 'Neu laden', en: 'Reload' },
+        { key: 'error.offline.banner', de: 'Offline — Änderungen werden lokal gespeichert', en: 'Offline — changes are saved locally' },
+        { key: 'loading.label', de: 'Wird geladen …', en: 'Loading …' },
+        { key: 'loading.done', de: '{sektion} geladen', en: '{section} loaded' }
+      ],
+      a11y: [
+        { el: 'Verdunkler (Sheet)', label: 'barrier.sheet — „Schließt {Titel}"', role: 'button', state: 'Tap schließt; Screenreader erreicht ihn NACH dem Sheet-Inhalt' },
+        { el: 'Verdunkler (Dialog)', label: 'barrier.dialog — kündigt Entscheidungszwang an', role: 'text', state: 'nicht antippbar; Fokus bleibt im Dialog gefangen (scoped)' },
+        { el: 'Sheet', label: 'Titel des Sheets', role: 'dialog', state: 'Fokus beim Öffnen auf Titel; Zurück-Geste/-Taste schließt' },
+        { el: 'Sheet-Griff', label: 'sheet.grabber_hint', role: 'button', state: 'Aktion „Schließen"; visuelle Pill excludeSemantics' },
+        { el: 'Dialog', label: 'Titel + Botschaft als ein Block', role: 'alertDialog', state: 'Fokus auf sicherste Aktion (nie die zerstörende)' },
+        { el: 'Zerstörende Aktion', label: '„{Aktion}. Kann nicht rückgängig gemacht werden"', role: 'button', state: 'Warnung steckt im Label, nicht nur im Fließtext' },
+        { el: 'Leerer Zustand', label: 'Titel + Text als ein Block', role: 'text', state: 'KEINE Live-Region — Leere ist Ergebnis, kein Ereignis; CTA normal fokussierbar' },
+        { el: 'Fehler (Vollbild/Sektion)', label: 'error.*.title + body', role: 'alert', state: 'liveRegion assertive, genau 1 Ansage je Fehlschlag; Retry direkt danach fokussierbar' },
+        { el: 'Offline-Banner', label: 'error.offline.banner', role: 'status', state: 'liveRegion polite bei Erscheinen UND Verschwinden („Wieder online")' },
+        { el: 'Skeleton-Bereich', label: 'loading.label', role: 'progressIndicator', state: 'liveRegion polite; Blöcke excludeSemantics; nach Laden: loading.done polite' },
+        { el: 'Button mit Spinner', label: 'Ursprüngliches Label + „lädt"', role: 'button', state: 'disabled während des Ladens; Spinner excludeSemantics' },
+        { el: 'Fehlerkarte Retry', label: '„{Sektion} neu laden"', role: 'button', state: '48 dp Treffer; Erfolg meldet loading.done polite' }
+      ],
+      decisions: [
+        { n: '1', title: 'Verdunkler ohne Blur — Widerspruch zur naheliegenden Glas-Ästhetik', body: 'Ein geblurrter Hintergrund sagt „der Kontext ist weg"; Sheets und Dialoge pausieren ihn nur. Das Blur-Budget (14/22) gehört den Flächen selbst — zwei Blur-Ebenen übereinander kosten auf Mittelklasse-Geräten sichtbar Frames. Nur Abdunkeln: #050507 @ 0,72 (Dialog) / 0,62 (Sheet).', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '2', title: '„Workout beenden?" bleibt Marken-CTA — aber zerstörende Aktionen nie', body: 'Beenden speichert Fortschritt, es zerstört nichts — der Gradient ist berechtigt. Daraus folgt die harte Regel: Der Gradient steht für „vorwärts mit Gewinn". Zerstörendes ist Outline Magenta + Dreieck + Klartext im Label. Ein zerstörender Gradient-Button wäre eine gelernte Falle.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '3', title: 'Keine vierte Kartenvariante', body: 'Der Kandidat (StatBox als eigenständige Karte) wurde abgelehnt: #1A1A26 auf #050507 hat zu wenig Abstand zur Listenkarte, und jede vierte Variante verwässert die Frage „welche nehme ich?". StatBox bleibt Einlage in Karten — Regel statt Rezept.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '4', title: 'Skeletons pulsieren, sie schimmern nicht', body: 'Der Schimmer-Sweep ist eine gerichtete Dauerschleife: er konkurriert mit den Daten-Glows, sieht eingefroren (reduzierte Bewegung) wie ein Renderfehler aus und suggeriert Fortschritt, den es nicht gibt. Der Deckkraft-Puls ist ruhiger und friert sauber bei 0,8 ein.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '5', title: 'Der Runner-Kreisel wird abgeschafft', body: 'Beide Ist-Zustände (fünf graue Blöcke, Kreisel) waren Zufall. Neu: Zielgeometrie bekannt → Skeleton in Inhaltsform; Spinner existiert nur noch 16 dp im auslösenden Button. Ein Vollbild-Kreisel verspricht nichts und verortet nichts.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '6', title: 'Leere Verlaufsliste bekommt bewusst KEINEN Knopf', body: 'Die Versuchung war, überall „Session starten" anzubieten. Auf dem Verlaufs-Tab konkurriert das mit der Session-Card einen Tab weiter — zwei Marken-CTAs für dieselbe Handlung. Regel: Einladung nur, wenn die Handlung das Fehlen an Ort und Stelle behebt.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '7', title: 'Keine neue Fehlerfarbe, kein Shake', body: 'Der Kasten enthält kein Rot — statt eins zu erfinden, trägt Magenta die Fehlersemantik, unterschieden vom Marken-Magenta durch Form (Dreieck, gestrichelter Rand, Outline statt Gradient). Der übliche Fehler-Shake entfällt: er ist Weg-Animation, die bei reduzierter Bewegung ersatzlos stürbe — die Unterscheidung darf nicht an einer Animation hängen.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

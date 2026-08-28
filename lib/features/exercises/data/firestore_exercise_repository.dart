@@ -91,6 +91,7 @@ class FirestoreExerciseRepository implements ExerciseRepository {
           'description': text.trim(),
         if (draft.instructions.isNotEmpty)
           'instructionsSteps': draft.instructions,
+        if (draft.cues.isNotEmpty) 'cues': draft.cues,
         if (draft.isNew) 'createdAt': Timestamp.now(),
       };
 

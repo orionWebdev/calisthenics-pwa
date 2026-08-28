@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.5}50%{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 6 / STUFE 6</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Verlauf — was passiert ist, und was es bedeutet</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:840px;line-height:1.7">110 Einheiten an 87 Tagen — und dazwischen Lücken bis 74 Tage. Wer diesen Tab heute öffnet, hat seit 50 Tagen nicht trainiert. Der Verlauf ist deshalb kein Balkenwald, sondern zuerst ein Satz: was gerade gilt. Die Lücke wird gestaltet, nicht weggemittelt.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Ein Satz zuerst</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Verteilung statt Durchschnitt</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Kein Blur im Scrollbereich</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · 320 dp · 200 % Schrift</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ · MODUL 6 · EIN SATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1020px">Der Verlauf beantwortet zuerst eine Frage in einem Satz — und die Antwort ist heute „seit 50 Tagen nichts", nicht „Form 16". Zahlen begründen den Satz, sie ersetzen ihn nicht.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Farbe trägt in diesem Modul genau eine Dimension: die Richtung des Zustands (steigend / stabil / fallend / untätig) über die M3-Statusfarben. Trainingsart, Aktivität und Last bleiben monochrom — der M5-Entscheid „der Typ bekommt keine Farbe" gilt weiter, sonst hätte die App zwei konkurrierende Farbsysteme.</div>
+</div>
+
+<div data-screen-label="B Die Luecke" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · DIE LÜCKE IST DER NORMALFALL — VIER LAGEN, EINE KARTE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:12px;color:#94A3B8;line-height:1.7;max-width:900px">Die Aussage-Karte ist die eine K2-Karte je Screen. Ihr Satz wird aus dem Abstand zur letzten Einheit gewählt — nicht aus dem Form-Wert. Vier Schwellen, vier Sätze, dieselbe Geometrie: die Karte springt nie in der Höhe, nur ihr Inhalt wechselt.</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:18px">
+<sc-for list="{{ lagen }}" as="l" hint-placeholder-count="4">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:{{ l.c }}"></span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:{{ l.c }}">{{ l.zone }}</span></div>
+<div style="margin-top:8px;font-size:13px;font-weight:600;line-height:1.45">{{ l.satz }}</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;line-height:1.6">{{ l.regel }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">{{ l.cta }}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px">
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#F02277">IM BESTAND GEMESSEN</div>
+<div style="margin-top:8px;font-size:12px;color:#CDD3EA;line-height:1.75">Längste Pause <span style="font-family:'JetBrains Mono',monospace">74 Tage</span> · aktuelle Pause <span style="font-family:'JetBrains Mono',monospace">50 Tage</span> · zwei Nullmonate (Dez, Aug) · zwei Monate mit ≤ 2 Einheiten. In <span style="font-family:'JetBrains Mono',monospace">158 von 245 Tagen</span> wurde nicht trainiert. Ein Entwurf ohne gestaltete Lücke ist bei diesem Bestand die meiste Zeit kaputt.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">DIE LÜCKE IN DER LISTE</div>
+<div style="margin-top:12px;display:flex;align-items:stretch;gap:12px">
+<div style="width:36px;display:flex;flex-direction:column;align-items:center"><span style="flex:1;width:0;border-left:2px dashed #232334"></span></div>
+<div style="flex:1;background:#0B0B0E;border:1px dashed #232334;border-radius:14px;padding:10px 12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA">50 TAGE OHNE TRAINING</div>
+<div style="margin-top:4px;font-size:11px;color:#94A3B8;line-height:1.55">09.07. – 27.08. · keine Einheit</div>
+</div>
+</div>
+<div style="margin-top:10px;font-size:11.5px;color:#94A3B8;line-height:1.65">Ab 7 Tagen Abstand bekommt die Liste einen Lückenstreifen zwischen zwei Zeilen: gestrichelt, ohne Farbe, ohne Wertung. Er ist kein Eintrag — nicht fokussierbar, nicht tapbar, aber im Screenreader als Text vorhanden.</div>
+</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A1 Verlaufs-Tab" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A1 · VERLAUFS-TAB — DIE EINE AUSSAGE ZUERST</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DEFAULT — ECHTER BESTAND, 50 TAGE LÜCKE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:560px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Verlauf</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE);border-radius:20px;padding:1.5px">
+<div style="background:#14141D;border-radius:19px;padding:14px">
+<div style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#8e8e93"></span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">UNTÄTIG</span></div>
+<div style="margin-top:8px;display:flex;align-items:baseline;gap:7px"><span style="font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;line-height:1">50</span><span style="font-size:15px;font-weight:600;color:#CDD3EA">Tage ohne<br>Training</span></div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;line-height:1.6">ZULETZT DI 08.07. · LAUFEN 8,2 KM</div>
+<div style="margin-top:12px;padding-top:12px;border-top:1px solid #232334;display:flex;align-items:center;gap:10px">
+<span style="flex:1;min-width:0"><span style="display:flex;align-items:baseline;gap:5px"><span style="font-size:12px;font-weight:600">Form</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#CDD3EA">16</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">/100</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#F02277">↓ fallend</span></span>
+<span style="display:block;margin-top:6px;height:5px;border-radius:3px;background:#16161F;overflow:hidden"><span style="display:block;width:16%;height:100%;background:#F02277"></span></span></span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:42px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Training starten</div>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">EINHEITEN JE MONAT</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">110 GESAMT</span></div>
+<div style="display:flex;align-items:flex-end;gap:4px;height:56px;margin-top:10px">
+<sc-for list="{{ monate }}" as="m" hint-placeholder-count="10">
+<span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="width:100%;border-radius:3px 3px 0 0;background:{{ m.c }};height:{{ m.h }}"></span><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#94A3B8">{{ m.k }}</span></span>
+</sc-for>
+</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;line-height:1.6">MEDIAN 2 TAGE ABSTAND · LÄNGSTE PAUSE 74</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">LETZTE EINHEITEN</span><span style="font-size:10.5px;font-weight:600;color:#00F2FE">Alle 110</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ tabRows }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:{{ r.bb }}">
+<span style="flex:none;width:34px;height:34px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">{{ r.k }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ r.meta }}</span></span>
+<span style="flex:none;text-align:right"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">{{ r.last }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">LAST</span></span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:40px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Auswertung öffnen</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Karte sagt zuerst, was gilt. Der Form-Wert steht darunter als Begründung, nicht als Überschrift — 16 ohne Kontext wäre eine Note, „50 Tage" ist ein Sachverhalt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · AKTIV — LETZTE EINHEIT VOR 2 TAGEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:560px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Verlauf</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">FR 23. MAI</span></div>
+<div style="background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE);border-radius:20px;padding:1.5px">
+<div style="background:#14141D;border-radius:19px;padding:14px">
+<div style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#00FF87"></span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#00FF87">IM RHYTHMUS</span></div>
+<div style="margin-top:8px;display:flex;align-items:baseline;gap:7px"><span style="font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;line-height:1">7</span><span style="font-size:15px;font-weight:600;color:#CDD3EA">Einheiten in<br>14 Tagen</span></div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;line-height:1.6">ZULETZT MI 21.05. · LEG DAY</div>
+<div style="margin-top:12px;padding-top:12px;border-top:1px solid #232334">
+<span style="display:flex;align-items:baseline;gap:5px"><span style="font-size:12px;font-weight:600">Form</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#00FF87">80</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">/100</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00FF87">↑ steigend</span></span>
+<span style="display:block;margin-top:6px;height:5px;border-radius:3px;background:#16161F;overflow:hidden"><span style="display:block;width:80%;height:100%;background:#00FF87"></span></span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;height:42px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Training starten</div>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">BELASTUNG · ACWR</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#00FF87">1,12</span></div>
+<div style="margin-top:10px;display:flex;height:6px;border-radius:3px;overflow:hidden;gap:2px">
+<span style="flex:8;background:#232334"></span><span style="flex:5;background:rgba(0,255,135,0.55)"></span><span style="flex:2;background:#232334"></span><span style="flex:5;background:#232334"></span>
+</div>
+<div style="margin-top:6px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8"><span>0,8</span><span>1,3</span><span>1,5</span><span>2,0</span></div>
+<div style="margin-top:8px;font-size:11px;color:#CDD3EA;line-height:1.6">Zone <span style="color:#00FF87;font-weight:600">optimal</span> — akute Last passt zur chronischen.</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">LETZTE EINHEITEN</span><span style="font-size:10.5px;font-weight:600;color:#00F2FE">Alle 68</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ tabRowsAktiv }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:{{ r.bb }}">
+<span style="flex:none;width:34px;height:34px;border-radius:10px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">{{ r.k }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ r.meta }}</span></span>
+<span style="flex:none;text-align:right"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">{{ r.last }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">LAST</span></span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#00FF87;line-height:1.6">Gleiche Geometrie, anderer Satz: die Zahl ist jetzt die Frequenz, nicht die Lücke. ACWR erscheint nur hier — bei 50 Tagen Pause ist der Wert 0,00 und würde eine Aussage vortäuschen.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · LOADING</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:560px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Verlauf</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="height:186px;border-radius:20px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+<div style="height:110px;border-radius:20px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+<div style="width:110px;height:10px;border-radius:5px;background:#14141D;animation:{{ pulseAnim }}"></div>
+<div style="height:150px;border-radius:20px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">M2: Skeleton in Inhaltsform, Puls 1,6 s, kein Spinner. Der Header steht sofort — nur berechnete Werte pulsieren.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">4 · ERROR</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:560px;display:flex;flex-direction:column">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Verlauf</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center">
+<span style="width:48px;height:48px;border-radius:10px;background:#1A1A26;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 4v9" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path><circle cx="12" cy="18" r="1.6" fill="#CDD3EA"></circle></svg></span>
+<div style="font-size:15px;font-weight:600">Verlauf nicht verfügbar</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6;max-width:196px">Deine Einheiten konnten nicht geladen werden.</div>
+<div style="margin-top:4px;display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 22px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Erneut versuchen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Teilfehler getrennt: schlägt nur die Berechnung fehl, bleibt die Liste stehen und die Aussage-Karte zeigt „Form nicht berechenbar" — der Verlauf selbst ist die Wahrheit, die Auswertung nur ihre Deutung.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">5 · LEER — NOCH KEINE EINHEIT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:560px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:19px;font-weight:700">Verlauf</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DO 27. AUG</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center">
+<span style="width:48px;height:48px;border-radius:10px;background:#1A1A26;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 18l5-6 4 3.5L20 7" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<div style="font-size:15px;font-weight:600">Noch nichts aufgezeichnet</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6;max-width:200px">Deine erste Einheit steht hier, sobald du sie beendet hast.</div>
+<div style="margin-top:4px;display:inline-flex;align-items:center;justify-content:center;height:42px;padding:0 24px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:12.5px;font-weight:700">Training starten</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Leer ist nicht „zu wenig Daten": hier gibt es nichts zu zeigen, dort gibt es Einträge, aber keine belastbare Deutung. Zwei Zustände, zwei Texte.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A2 Einheitenliste" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A2 · LISTE DER ABSOLVIERTEN EINHEITEN — MONATE, LÜCKEN, MEHRFACHTAGE</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DEFAULT — GRUPPIERT NACH MONAT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:620px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Einheiten</span></div>
+<div style="display:flex;gap:6px;overflow:hidden">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:5px 11px;border-radius:30px;background:#14141D;border:1px solid #CDD3EA;color:#FFFFFF">✓ Alle 110</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Kraft 63</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Cardio 51</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Reco</span>
+</div>
+<div style="display:flex;align-items:stretch;gap:10px">
+<div style="width:34px;display:flex;justify-content:center"><span style="width:0;border-left:2px dashed #232334"></span></div>
+<div style="flex:1;background:#0B0B0E;border:1px dashed #232334;border-radius:14px;padding:9px 11px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">50 TAGE OHNE TRAINING</div>
+<div style="margin-top:3px;font-size:10.5px;color:#94A3B8">09.07. – heute</div>
+</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:2px 2px 0"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#94A3B8">JULI 2026</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">3 · LAST 1.039</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ juli }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:{{ r.bb }}">
+<span style="flex:none;width:36px;text-align:center"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FFFFFF">{{ r.tag }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">{{ r.wt }}</span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ r.meta }}</span></span>
+<span style="flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">{{ r.last }}</span><span style="display:block;width:34px;height:4px;border-radius:2px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;background:#CDD3EA;width:{{ r.lw }}"></span></span></span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:stretch;gap:10px">
+<div style="width:34px;display:flex;justify-content:center"><span style="width:0;border-left:2px dashed #232334"></span></div>
+<div style="flex:1;background:#0B0B0E;border:1px dashed #232334;border-radius:14px;padding:9px 11px"><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">12 TAGE PAUSE</div></div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:2px 2px 0"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#94A3B8">JUNI 2026</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">23 · LAST 9.870</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ juni }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:{{ r.bb }}">
+<span style="flex:none;width:36px;text-align:center"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ r.tc }}">{{ r.tag }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">{{ r.wt }}</span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ r.meta }}</span></span>
+<span style="flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">{{ r.last }}</span><span style="display:block;width:34px;height:4px;border-radius:2px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;background:#CDD3EA;width:{{ r.lw }}"></span></span></span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Datum links als Anker (Mono), Name mittig, Last rechts mit Mini-Balken relativ zum eigenen Höchstwert. Zwei Einheiten am selben Tag: das Datum steht nur an der ersten, die zweite bekommt einen Einzug statt einer Wiederholung — an 21 von 87 Tagen passiert das.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · GEFILTERT LEER + LOADING-NACHLADEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:620px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Einheiten</span></div>
+<div style="display:flex;gap:6px;overflow:hidden">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Alle 110</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:5px 11px;border-radius:30px;background:#14141D;border:1px solid #CDD3EA;color:#FFFFFF">✓ Sauna 1</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#CDD3EA">Juli</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:40px 0 32px">
+<span style="width:48px;height:48px;border-radius:10px;background:#1A1A26;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#CDD3EA" stroke-width="2"></circle><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></line></svg></span>
+<div style="font-size:14px;font-weight:600">Keine Einheit in dieser Auswahl</div>
+<div style="font-size:11px;color:#94A3B8;line-height:1.6;max-width:196px">Sauna kommt im Juli nicht vor — insgesamt gibt es 1 Sauna-Einheit.</div>
+<div style="margin-top:2px;display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 20px;border-radius:30px;border:1px solid #232334;font-size:11.5px;font-weight:600;color:#CDD3EA">Zeitraum aufheben</div>
+</div>
+<div style="height:1px;background:#232334"></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#94A3B8">NACHLADEN — ÄLTERE MONATE</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ skelRows }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:{{ s.bb }}">
+<span style="flex:none;width:36px;height:26px;border-radius:6px;background:#1A1A26;animation:{{ pulseAnim }}"></span>
+<span style="flex:1"><span style="display:block;height:9px;border-radius:5px;background:#1A1A26;width:{{ s.w }};animation:{{ pulseAnim }}"></span><span style="display:block;margin-top:6px;height:7px;border-radius:4px;background:#1A1A26;width:44%;animation:{{ pulseAnim }}"></span></span>
+<span style="flex:none;width:30px;height:9px;border-radius:5px;background:#1A1A26;animation:{{ pulseAnim }}"></span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der leere Filter nennt die Zahl, die es doch gibt („insgesamt 1") — sonst wirkt die App defekt statt der Auswahl zu leer. Nachladen erzeugt Zeilen-Skeletons, nie einen Spinner am Listenende.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · MEHRFACHTAG + LANGE PAUSE (74)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:620px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Einheiten</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:2px 2px 0"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#94A3B8">MAI 2026</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">30 · LAST 13.410</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ mai }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:{{ r.bb }};padding-left:{{ r.pl }}">
+<span style="flex:none;width:36px;text-align:center"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ r.tc }}">{{ r.tag }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">{{ r.wt }}</span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ r.meta }}</span></span>
+<span style="flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">{{ r.last }}</span><span style="display:block;width:34px;height:4px;border-radius:2px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;background:#CDD3EA;width:{{ r.lw }}"></span></span></span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:stretch;gap:10px;margin-top:2px">
+<div style="width:34px;display:flex;justify-content:center"><span style="width:0;border-left:2px dashed #232334"></span></div>
+<div style="flex:1;background:#0B0B0E;border:1px dashed #232334;border-radius:14px;padding:11px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">74 TAGE PAUSE</div>
+<div style="margin-top:3px;font-size:10.5px;color:#94A3B8;line-height:1.55">18.11. – 31.01. · längste Pause im Verlauf</div>
+</div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:2px 2px 0"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#94A3B8">NOVEMBER 2025</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">1 · LAST 260</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<div style="display:flex;align-items:center;gap:10px;padding:11px 0">
+<span style="flex:none;width:36px;text-align:center"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FFFFFF">17</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">MO</span></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">Laufen</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">CARDIO · 5,0 KM · 6:10/KM</span></span>
+<span style="flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#CDD3EA">260</span><span style="display:block;width:34px;height:4px;border-radius:2px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;background:#CDD3EA;width:28%"></span></span></span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">ENDE DES VERLAUFS</div>
+<div style="margin-top:4px;font-size:11px;color:#CDD3EA;line-height:1.6">Erste Einheit am 17.11.2025 · 245 Tage her.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Mehrfachtag: 21.05. trägt zwei Einheiten — das Datum steht einmal, die zweite Zeile rückt 10 dp ein und ihr Datumsfeld bleibt leer statt es zu wiederholen. Das Listenende ist gestaltet, nicht bloß Scrollstopp.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A3 Detail" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A3 · DETAIL EINER EINHEIT — VIER DATENLAGEN</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · KRAFT MIT SÄTZEN (57 VON 73)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">SA 05.07.2026 · 18:42</span></div>
+<div><div style="font-size:19px;font-weight:700;line-height:1.25">Push Day A</div><div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">KRAFT · 49 MIN</div></div>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ kraftStats }}" as="s" hint-placeholder-count="3">
+<div style="flex:1;background:#14141D;border:1px solid #232334;border-radius:14px;padding:10px 8px;text-align:center">
+<div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ s.c }}">{{ s.v }}</div>
+<div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">{{ s.l }}</div>
+</div>
+</sc-for>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">BELASTUNG AN DIESEM TAG</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#00FF87">1,12</span></div>
+<div style="margin-top:9px;display:flex;height:6px;border-radius:3px;overflow:hidden;gap:2px"><span style="flex:8;background:#232334"></span><span style="flex:5;background:rgba(0,255,135,0.55)"></span><span style="flex:2;background:#232334"></span><span style="flex:5;background:#232334"></span></div>
+<div style="margin-top:7px;font-size:11px;color:#CDD3EA;line-height:1.6">ACWR <span style="font-weight:600;color:#00FF87">optimal</span> · Last 587 gegen Schnitt 524 der Vorwochen.</div>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#94A3B8">6 ÜBUNGEN · 18 SÄTZE</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:2px 12px">
+<sc-for list="{{ saetze }}" as="e" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:{{ e.bb }}">
+<span style="flex:none;width:30px;height:30px;border-radius:10px;background:{{ e.bg }};display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ e.c }}">{{ e.ini }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.name }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:{{ e.c }};margin-top:2px">{{ e.muscle }}</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ e.sets }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:40px;border-radius:30px;border:1px solid #232334;font-size:11.5px;font-weight:600;color:#CDD3EA">Als Plan speichern</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Muskelfarbe kommt aus M5 und gilt nur auf Übungsebene — die Einheit selbst bleibt farblos. Drei StatBoxen, nie mehr: Dauer, Last, Volumen.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · CARDIO — STRECKE UND PACE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">DI 08.07.2026 · 07:12</span></div>
+<div><div style="font-size:19px;font-weight:700;line-height:1.25">Laufen</div><div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">CARDIO · RUN · 46:47</div></div>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ cardioStats }}" as="s" hint-placeholder-count="3">
+<div style="flex:1;background:#14141D;border:1px solid #232334;border-radius:14px;padding:10px 8px;text-align:center">
+<div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ s.c }}">{{ s.v }}</div>
+<div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">{{ s.l }}</div>
+</div>
+</sc-for>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">GEGEN DEINE 37 LÄUFE</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ laufVergleich }}" as="v" hint-placeholder-count="2">
+<div>
+<div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8"><span>{{ v.l }}</span><span style="color:#CDD3EA">{{ v.r }}</span></div>
+<div style="margin-top:4px;height:5px;border-radius:3px;background:#16161F;position:relative"><span style="position:absolute;top:0;bottom:0;left:0;width:{{ v.w }};border-radius:3px;background:#232334"></span><span style="position:absolute;top:-2px;bottom:-2px;left:{{ v.m }};width:2px;border-radius:1px;background:#00F2FE"></span></div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#CDD3EA;line-height:1.6">Diese Einheit liegt bei Strecke im oberen Drittel, bei Pace im Mittel.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">KEINE SÄTZE</div>
+<div style="margin-top:4px;font-size:11px;color:#94A3B8;line-height:1.6">Cardio kennt Strecke und Pace. Der Satz-Block entfällt ersatzlos — kein leeres Gerüst.</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:40px;border-radius:30px;border:1px solid #232334;font-size:11.5px;font-weight:600;color:#CDD3EA">Notiz hinzufügen</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Vergleich läuft gegen die eigene Aktivität, nicht gegen Normwerte: 37 Läufe sind eine belastbare Grundlage, „gut/schlecht" wäre eine Behauptung.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · KRAFT OHNE SÄTZE (16 VON 73)</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">MI 12.03.2026 · 19:05</span></div>
+<div><div style="font-size:19px;font-weight:700;line-height:1.25">Oberkörper</div><div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">KRAFT · 42 MIN</div></div>
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:#14141D;border:1px solid #232334;border-radius:14px;padding:10px 8px;text-align:center"><div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">42</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">MINUTEN</div></div>
+<div style="flex:1;background:#14141D;border:1px solid #232334;border-radius:14px;padding:10px 8px;text-align:center"><div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#00F2FE">300</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">LAST</div></div>
+<div style="flex:1;background:#0B0B0E;border:1px dashed #232334;border-radius:14px;padding:10px 8px;text-align:center"><div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#94A3B8">—</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">VOLUMEN</div></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px 14px">
+<div style="display:flex;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:8px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#CDD3EA">i</span>
+<span style="flex:1"><span style="display:block;font-size:12px;font-weight:600">Keine Sätze aufgezeichnet</span><span style="display:block;margin-top:4px;font-size:11px;color:#94A3B8;line-height:1.6">Diese Einheit wurde als Dauer erfasst. Last und Konstanz zählen trotzdem, Volumen bleibt leer.</span></span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">BEITRAG ZUR FORM</div>
+<div style="margin-top:9px;display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#CDD3EA"><span>Konstanz</span><span style="font-family:'JetBrains Mono',monospace;color:#00FF87">+ zählt</span></div>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#CDD3EA"><span>Lastentwicklung</span><span style="font-family:'JetBrains Mono',monospace;color:#00FF87">+ 300</span></div>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#94A3B8"><span>Volumen-Trend</span><span style="font-family:'JetBrains Mono',monospace">ohne Sätze n. a.</span></div>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:40px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11.5px;font-weight:600;color:#00F2FE">Sätze nachtragen</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Fehlende Sätze sind kein Fehler, sondern ein Erfassungsgrad. Die leere StatBox bleibt sichtbar (gestrichelt, „—"), damit die Dreiergruppe nicht springt — und die Nachtrag-Aktion ist der einzige CTA.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">4 · RECOVERY — DER DÜNNSTE FALL</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:600px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">MI 02.07.2026 · 20:30</span></div>
+<div><div style="font-size:19px;font-weight:700;line-height:1.25">Sauna</div><div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">RECOVERY · 1 VON 110 EINHEITEN</div></div>
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:#14141D;border:1px solid #232334;border-radius:14px;padding:10px 8px;text-align:center"><div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">25</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">MINUTEN</div></div>
+<div style="flex:1;background:#14141D;border:1px solid #232334;border-radius:14px;padding:10px 8px;text-align:center"><div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#00F2FE">40</div><div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">LAST</div></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px 14px">
+<div style="display:flex;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:8px;background:rgba(0,255,135,0.14);display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#00FF87">R</span>
+<span style="flex:1"><span style="display:block;font-size:12px;font-weight:600">Zählt für die Konstanz</span><span style="display:block;margin-top:4px;font-size:11px;color:#94A3B8;line-height:1.6">Recovery hält die Kette, treibt aber die Lastentwicklung nicht. Beides steht hier, damit die Zahl 40 nicht überschätzt wird.</span></span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">EINGEBETTET IM VERLAUF</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:9px"><span style="width:6px;height:6px;border-radius:50%;background:#232334"></span><span style="flex:1;font-size:11px;color:#94A3B8">Sa 05.07. · Push Day A</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">+3 T</span></div>
+<div style="display:flex;align-items:center;gap:9px"><span style="width:8px;height:8px;border-radius:50%;background:#00F2FE"></span><span style="flex:1;font-size:11px;font-weight:600">Mi 02.07. · Sauna</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#00F2FE">HIER</span></div>
+<div style="display:flex;align-items:center;gap:9px"><span style="width:6px;height:6px;border-radius:50%;background:#232334"></span><span style="flex:1;font-size:11px;color:#94A3B8">Do 19.06. · Rudern</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">−13 T</span></div>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:40px;border-radius:30px;border:1px solid #232334;font-size:11.5px;font-weight:600;color:#CDD3EA">Notiz hinzufügen</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Zwei StatBoxen statt drei — die Gruppe schrumpft, statt eine dritte zu erfinden. Der Nachbar-Block gibt dem dünnsten Detail trotzdem Substanz, ohne Daten zu erfinden.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="A4 Auswertung" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A4 · AUSWERTUNG — FORM-TREND ÜBER DIE ZEIT</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DEFAULT — 7 MONATE, MIT LÜCKE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Auswertung</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px 12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 2px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">FORM 0–100</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#F02277">↓ SEIT 7 WOCHEN</span></div>
+<svg viewBox="0 0 232 122" width="100%" style="display:block;margin-top:8px">
+<line x1="26" y1="{{ tr.y100 }}" x2="{{ tr.x1 }}" y2="{{ tr.y100 }}" stroke="#16161F" stroke-width="1"></line>
+<line x1="26" y1="{{ tr.y50 }}" x2="{{ tr.x1 }}" y2="{{ tr.y50 }}" stroke="#16161F" stroke-width="1"></line>
+<line x1="26" y1="{{ tr.y0 }}" x2="{{ tr.x1 }}" y2="{{ tr.y0 }}" stroke="#232334" stroke-width="1"></line>
+<rect x="{{ tr.gapX }}" y="{{ tr.top }}" width="{{ tr.gapW }}" height="{{ tr.gapH }}" fill="rgba(255,255,255,0.03)"></rect>
+<polyline points="{{ tr.solid }}" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<polyline points="{{ tr.dashed }}" fill="none" stroke="#F02277" stroke-width="2" stroke-dasharray="3 3" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<path d="{{ tr.rug }}" stroke="#CDD3EA" stroke-width="2" opacity="0.55"></path>
+<circle cx="{{ tr.dotX }}" cy="{{ tr.dotY }}" r="3.5" fill="#F02277"></circle>
+<text x="4" y="{{ tr.y100t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="8">100</text>
+<text x="10" y="{{ tr.y50t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="8">50</text>
+<text x="14" y="{{ tr.y0t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="8">0</text>
+<text x="{{ tr.xFeb }}" y="120" fill="#94A3B8" font-family="JetBrains Mono" font-size="8" text-anchor="middle">FEB</text>
+<text x="{{ tr.xApr }}" y="120" fill="#94A3B8" font-family="JetBrains Mono" font-size="8" text-anchor="middle">APR</text>
+<text x="{{ tr.xJun }}" y="120" fill="#94A3B8" font-family="JetBrains Mono" font-size="8" text-anchor="middle">JUN</text>
+<text x="{{ tr.xAug }}" y="120" fill="#94A3B8" font-family="JetBrains Mono" font-size="8" text-anchor="middle">AUG</text>
+</svg>
+<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:8px 12px;padding:0 2px">
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8"><span style="width:12px;height:2px;background:#00F2FE"></span>MIT TRAINING</span>
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8"><span style="width:12px;height:2px;background:repeating-linear-gradient(90deg,#F02277 0 3px,transparent 3px 6px)"></span>OHNE TRAINING</span>
+<span style="display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8"><span style="width:2px;height:8px;background:#CDD3EA"></span>EINHEITEN/WOCHE</span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px 14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">FORM HEUTE</span><span><span style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#CDD3EA">16</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">/100</span></span></div>
+<div style="margin-top:11px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ komponenten }}" as="k" hint-placeholder-count="5">
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:11px;color:#CDD3EA">{{ k.n }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:{{ k.c }}">{{ k.v }}</span></div>
+<div style="margin-top:4px;height:5px;border-radius:3px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;background:{{ k.c }};width:{{ k.w }}"></span></div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">{{ k.note }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;display:flex;justify-content:space-between;align-items:baseline">
+<span style="font-size:11px;color:#94A3B8">Abzug Untätigkeit</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277">− 7</span>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#CDD3EA;line-height:1.6">Deine Konstanz aus dem Frühjahr trägt noch. Was fehlt, ist Aktualität — eine Einheit heute bringt sofort 8 Punkte.</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:42px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Training starten</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Zerlegung steht direkt unter der Kurve, weil „16" allein eine Note wäre. Jede Komponente nennt ihren Grund in einer Mono-Zeile — fünf Zeilen, kein Armaturenbrett.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · ZU WENIG DATEN — 3 EINHEITEN, 9 TAGE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Auswertung</span></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px 12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">FORM 0–100</div>
+<svg viewBox="0 0 232 122" width="100%" style="display:block;margin-top:8px">
+<line x1="26" y1="{{ tr.y100 }}" x2="{{ tr.x1 }}" y2="{{ tr.y100 }}" stroke="#16161F" stroke-width="1"></line>
+<line x1="26" y1="{{ tr.y50 }}" x2="{{ tr.x1 }}" y2="{{ tr.y50 }}" stroke="#16161F" stroke-width="1"></line>
+<line x1="26" y1="{{ tr.y0 }}" x2="{{ tr.x1 }}" y2="{{ tr.y0 }}" stroke="#232334" stroke-width="1"></line>
+<path d="{{ trThin.rug }}" stroke="#CDD3EA" stroke-width="2" opacity="0.55"></path>
+<circle cx="{{ trThin.dotX }}" cy="{{ trThin.dotY }}" r="3.5" fill="#CDD3EA"></circle>
+<circle cx="{{ trThin.dot2X }}" cy="{{ trThin.dot2Y }}" r="3.5" fill="#CDD3EA"></circle>
+<circle cx="{{ trThin.dot3X }}" cy="{{ trThin.dot3Y }}" r="3.5" fill="#CDD3EA"></circle>
+<text x="4" y="{{ tr.y100t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="8">100</text>
+<text x="10" y="{{ tr.y50t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="8">50</text>
+<text x="14" y="{{ tr.y0t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="8">0</text>
+<text x="116" y="66" fill="#94A3B8" font-family="Poppins" font-size="10" text-anchor="middle">noch keine Kurve</text>
+</svg>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:8px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#CDD3EA">i</span>
+<span style="flex:1"><span style="display:block;font-size:12.5px;font-weight:600">Noch zu wenig für einen Trend</span><span style="display:block;margin-top:4px;font-size:11px;color:#94A3B8;line-height:1.6">Ein Trend braucht 8 Einheiten und 21 Tage Historie. Die Punkte oben sind deine bisherigen Einheiten.</span></span>
+</div>
+<div style="margin-top:13px;display:flex;flex-direction:column;gap:10px">
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:11px;color:#CDD3EA">Einheiten</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">3 / 8</span></div>
+<div style="margin-top:4px;height:6px;border-radius:3px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;width:37%;background:#00F2FE"></span></div>
+</div>
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:11px;color:#CDD3EA">Historie</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">9 / 21 Tage</span></div>
+<div style="margin-top:4px;height:6px;border-radius:3px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;width:43%;background:#00F2FE"></span></div>
+</div>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">WAS ES SCHON GIBT</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;justify-content:space-between;font-size:11.5px"><span style="color:#CDD3EA">3 Einheiten</span><span style="font-family:'JetBrains Mono',monospace;color:#94A3B8">18.–27.08.</span></div>
+<div style="display:flex;justify-content:space-between;font-size:11.5px"><span style="color:#CDD3EA">Gesamtlast</span><span style="font-family:'JetBrains Mono',monospace;color:#CDD3EA">1.204</span></div>
+<div style="display:flex;justify-content:space-between;font-size:11.5px"><span style="color:#CDD3EA">Längste Kette</span><span style="font-family:'JetBrains Mono',monospace;color:#CDD3EA">2 Tage</span></div>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#94A3B8;line-height:1.6">Zählbares wird gezeigt, Gedeutetes nicht. ACWR erscheint erst ab 28 Tagen Historie.</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;height:42px;border-radius:30px;background:linear-gradient(135deg,#F02277,#C01963);font-size:13px;font-weight:700">Training starten</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Kein Graustufen-Fake-Chart und kein „—". Die Schwelle wird benannt und als Fortschritt gezeigt: 3 von 8, 9 von 21 Tagen. Der Zustand ist eine Wartezeit, kein Defekt.</div>
+</div>
+
+<div style="width:260px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · LOADING + BERECHNUNGSFEHLER</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:18px 14px;min-height:640px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><span style="color:#CDD3EA;font-size:16px">‹</span><span style="font-size:17px;font-weight:700">Auswertung</span></div>
+<div style="height:172px;border-radius:20px;background:#14141D;border:1px solid #232334;animation:{{ pulseAnim }}"></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px 14px;display:flex;flex-direction:column;gap:10px">
+<span style="width:80px;height:9px;border-radius:5px;background:#1A1A26;animation:{{ pulseAnim }}"></span>
+<sc-for list="{{ skelRows }}" as="s" hint-placeholder-count="4">
+<span style="display:block"><span style="display:block;height:8px;border-radius:4px;background:#1A1A26;width:{{ s.w }};animation:{{ pulseAnim }}"></span><span style="display:block;margin-top:5px;height:5px;border-radius:3px;background:#1A1A26;animation:{{ pulseAnim }}"></span></span>
+</sc-for>
+</div>
+<div style="height:1px;background:#232334;margin:4px 0"></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:#F02277">BERECHNUNG FEHLGESCHLAGEN</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:8px;background:#1A1A26;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 5v8" stroke="#CDD3EA" stroke-width="2.4" stroke-linecap="round"></path><circle cx="12" cy="18" r="1.7" fill="#CDD3EA"></circle></svg></span>
+<span style="flex:1"><span style="display:block;font-size:12.5px;font-weight:600">Form nicht berechenbar</span><span style="display:block;margin-top:4px;font-size:11px;color:#94A3B8;line-height:1.6">Deine 110 Einheiten sind vollständig da — nur die Auswertung fehlt.</span></span>
+</div>
+<div style="margin-top:12px;display:flex;gap:8px">
+<span style="flex:1;display:inline-flex;align-items:center;justify-content:center;height:38px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);font-size:11px;font-weight:600;color:#00F2FE">Neu berechnen</span>
+<span style="flex:1;display:inline-flex;align-items:center;justify-content:center;height:38px;border-radius:30px;border:1px solid #232334;font-size:11px;font-weight:600;color:#CDD3EA">Zur Liste</span>
+</div>
+</div>
+<div style="background:#0B0B0E;border:1px dashed #232334;border-radius:20px;padding:12px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">WEITERHIN VERFÜGBAR</div>
+<div style="margin-top:6px;font-size:11px;color:#CDD3EA;line-height:1.6">Einheiten, Datum, Dauer, Strecke, Sätze — alles Erfasste. Nur Abgeleitetes (Form, ACWR) fällt weg.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Erfasstes und Abgeleitetes fallen getrennt aus. Ein globales „Fehler" würde 110 vorhandene Einheiten verstecken, weil eine Formel gestolpert ist.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="C Verteilung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · VERTEILUNG STATT DURCHSCHNITT</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:grid;grid-template-columns:1.35fr 1fr;gap:26px;align-items:start">
+<div>
+<div style="font-size:12.5px;color:#CDD3EA;line-height:1.75;max-width:640px">„Alle 2,2 Tage" beschreibt keinen einzigen realen Monat: 1 Einheit im November, 30 im Mai, zwei Monate mit null. Gezeigt wird deshalb der Monatsstreifen — zehn Balken inklusive der Nullmonate, weil die Nullen die eigentliche Information sind.</div>
+<div style="display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:22px">
+<sc-for list="{{ monateGross }}" as="m" hint-placeholder-count="10">
+<span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:{{ m.tc }}">{{ m.n }}</span>
+<span style="width:100%;border-radius:4px 4px 0 0;background:{{ m.c }};height:{{ m.h }}"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ m.k }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">NOV 2025 – AUG 2026 · 110 EINHEITEN · 2 NULLMONATE</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<sc-for list="{{ kennzahlen }}" as="z" hint-placeholder-count="4">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:13px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:{{ z.c }}">{{ z.v }}</div>
+<div style="margin-top:3px;font-size:11px;color:#CDD3EA;line-height:1.45">{{ z.l }}</div>
+</div>
+</sc-for>
+</div>
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#F02277">NICHT GEZEIGT</div>
+<div style="margin-top:7px;font-size:12px;color:#CDD3EA;line-height:1.7">Kein „Ø 0,45 Einheiten/Tag", keine Wochenserie, keine Streak-Zählung. Eine Streak-Anzeige wäre bei 158 trainingsfreien Tagen dauerhaft rot — sie würde einen Nutzer bestrafen, dessen Verlauf über 245 Tage stabil 110 Einheiten enthält.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">ARTEN — 136 MARKIERUNGEN AUF 110 EINHEITEN</div>
+<div style="margin-top:11px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ arten }}" as="a" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:76px;font-size:11.5px;color:#CDD3EA">{{ a.n }}</span>
+<span style="flex:1;height:8px;border-radius:4px;background:#16161F;overflow:hidden"><span style="display:block;height:100%;width:{{ a.w }};background:#CDD3EA"></span></span>
+<span style="width:26px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ a.v }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.65">Die Summe übersteigt 110: 26 Einheiten tragen mehr als eine Art — hybrid ist im Bestand belegt, nicht behauptet. Deshalb zählt die Liste Markierungen, nicht Prozente.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="D Chart-Spezifikation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · CHART-SPEZIFIKATION — LESBAR AUF 320 DP</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:grid;grid-template-columns:1.5fr 1fr;gap:26px;align-items:start">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:18px">
+<svg viewBox="0 0 640 260" width="100%" style="display:block">
+<line x1="52" y1="{{ trB.y100 }}" x2="{{ trB.x1 }}" y2="{{ trB.y100 }}" stroke="#16161F" stroke-width="1"></line>
+<line x1="52" y1="{{ trB.y50 }}" x2="{{ trB.x1 }}" y2="{{ trB.y50 }}" stroke="#16161F" stroke-width="1"></line>
+<line x1="52" y1="{{ trB.y0 }}" x2="{{ trB.x1 }}" y2="{{ trB.y0 }}" stroke="#232334" stroke-width="1"></line>
+<rect x="{{ trB.gapX }}" y="{{ trB.top }}" width="{{ trB.gapW }}" height="{{ trB.gapH }}" fill="rgba(255,255,255,0.03)"></rect>
+<polyline points="{{ trB.solid }}" fill="none" stroke="#00F2FE" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<polyline points="{{ trB.dashed }}" fill="none" stroke="#F02277" stroke-width="2.5" stroke-dasharray="4 4" stroke-linejoin="round" stroke-linecap="round"></polyline>
+<path d="{{ trB.rug }}" stroke="#CDD3EA" stroke-width="3" opacity="0.55"></path>
+<circle cx="{{ trB.lastX }}" cy="{{ trB.lastY }}" r="4.5" fill="#050507" stroke="#00F2FE" stroke-width="2"></circle>
+<circle cx="{{ trB.dotX }}" cy="{{ trB.dotY }}" r="5" fill="#F02277"></circle>
+<text x="10" y="{{ trB.y100t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="11">100</text>
+<text x="24" y="{{ trB.y50t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="11">50</text>
+<text x="34" y="{{ trB.y0t }}" fill="#94A3B8" font-family="JetBrains Mono" font-size="11">0</text>
+<text x="{{ trB.xFeb }}" y="256" fill="#94A3B8" font-family="JetBrains Mono" font-size="11" text-anchor="middle">FEB</text>
+<text x="{{ trB.xApr }}" y="256" fill="#94A3B8" font-family="JetBrains Mono" font-size="11" text-anchor="middle">APR</text>
+<text x="{{ trB.xJun }}" y="256" fill="#94A3B8" font-family="JetBrains Mono" font-size="11" text-anchor="middle">JUN</text>
+<text x="{{ trB.xAug }}" y="256" fill="#94A3B8" font-family="JetBrains Mono" font-size="11" text-anchor="middle">AUG</text>
+<text x="{{ trB.lastLx }}" y="{{ trB.lastLy }}" fill="#CDD3EA" font-family="JetBrains Mono" font-size="11">letzte Einheit 08.07.</text>
+<text x="{{ trB.gapLx }}" y="30" fill="#94A3B8" font-family="JetBrains Mono" font-size="11" text-anchor="middle">50 TAGE OHNE TRAINING</text>
+</svg>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ chartRegeln }}" as="c" hint-placeholder-count="6">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:13px 15px">
+<div style="font-size:12.5px;font-weight:600">{{ c.t }}</div>
+<div style="margin-top:5px;font-size:11.5px;color:#94A3B8;line-height:1.65">{{ c.b }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="E Spezifikation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · SPEZIFIKATION — VARIANTEN, MASSE, TOKENS</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ specRows }}" as="row" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:210px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ row.k }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;line-height:1.7">{{ row.v }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="F Strings" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · STRINGTABELLE — KEY · DEUTSCH · ENGLISCH</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<div style="display:grid;grid-template-columns:250px 1fr 1fr;gap:18px;padding:11px 0;border-bottom:1px solid #232334">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">KEY</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">DEUTSCH</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">ENGLISCH</span>
+</div>
+<sc-for list="{{ stringRows }}" as="s" hint-placeholder-count="30">
+<div style="display:grid;grid-template-columns:250px 1fr 1fr;gap:18px;padding:9px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">{{ s.k }}</span>
+<span style="font-size:12px;color:#FFFFFF">{{ s.de }}</span>
+<span style="font-size:12px;color:#CDD3EA">{{ s.en }}</span>
+</div>
+</sc-for>
+<div style="padding:12px 0;font-size:11px;color:#94A3B8;line-height:1.6">Plurale über ICU-Regeln, nicht über „(en)": <span style="font-family:'JetBrains Mono',monospace">{n, plural, one {# Tag} other {# Tage}}</span>. Datums- und Zahlenformate kommen aus dem Locale — 8,2 km / 8.2 km, 1.039 / 1,039.</div>
+</div>
+</div>
+
+<div data-screen-label="G A11y" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · A11Y — SEMANTICS JE INTERAKTIVEM ELEMENT</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ a11yRows }}" as="a" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:210px 130px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ a.el }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ a.note }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="H Wiederverwendung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · WIEDERVERWENDETE BAUSTEINE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px">
+<sc-for list="{{ reuseRows }}" as="r" hint-placeholder-count="11">
+<div style="display:grid;grid-template-columns:90px 210px 1fr;gap:18px;padding:12px 0;border-bottom:1px solid #16161F;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ r.mod }}</span>
+<span style="font-size:12.5px;font-weight:600">{{ r.part }}</span>
+<span style="font-size:12px;color:#94A3B8;line-height:1.65">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I Entscheidungsprotokoll" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · ENTSCHEIDUNGSPROTOKOLL — VERWORFEN UND WARUM</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="12">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="display:flex;gap:10px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277">{{ d.n }}</span><span style="font-size:13px;font-weight:600;line-height:1.45">{{ d.title }}</span></div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;animationen&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demo&quot;}}">
+class Component extends DCLogic {
+  trend(w, h, cut, botPad) {
+    const v = this.series, n = v.length;
+    const L = w > 400 ? 52 : 26, R = w - 8, T = 12, B = h - botPad;
+    const X = i => +(L + i * (R - L) / (n - 1)).toFixed(1);
+    const Y = q => +(B - q / 100 * (B - T)).toFixed(1);
+    const pts = v.map((q, i) => X(i) + ',' + Y(q));
+    const rug = this.weekly.map((c, i) => c ? `M${X(i)} ${B + 7}v${2 + c * (w > 400 ? 1.8 : 1)}` : '').join('');
+    return {
+      solid: pts.slice(0, cut + 1).join(' '),
+      dashed: pts.slice(cut).join(' '),
+      rug,
+      x1: R, top: T,
+      y0: B, y50: Y(50), y100: Y(100),
+      y0t: B + 4, y50t: Y(50) + 4, y100t: Y(100) + 4,
+      dotX: X(n - 1), dotY: Y(v[n - 1]),
+      lastX: X(cut), lastY: Y(v[cut]),
+      lastLx: X(cut) - 150, lastLy: Y(v[cut]) - 12,
+      gapX: X(cut), gapW: X(n - 1) - X(cut), gapY: T, gapH: B - T,
+      gapLx: (X(cut) + X(n - 1)) / 2,
+      xFeb: X(0), xApr: X(8), xJun: X(17), xAug: X(25),
+    };
+  }
+  renderVals() {
+    const anim = this.props.animationen ?? true;
+    this.series = [34,38,42,45, 43,40,37,36, 39,46,54,61,66, 71,75,79,80, 78,75,72,69, 67,57,49,42, 36,29,23,16];
+    this.weekly = [4,4,3,4, 3,2,2,1, 4,6,7,6,5, 8,7,8,7, 7,6,6,4, 2,1,0,0, 0,0,0,0];
+    const CUT = 22;
+    const tr = this.trend(232, 122, CUT, 30);
+    const trB = this.trend(640, 260, CUT, 44);
+    const thinY = q => 108 - q / 100 * 96;
+    const rowsL = (a) => a.map((r, i) => ({ ...r, bb: i === a.length - 1 ? 'none' : '1px solid #232334' }));
+    const M = (k, n, max) => ({ k, n, h: n === 0 ? '2px' : Math.round(6 + n / max * 50) + 'px', c: n === 0 ? '#232334' : '#CDD3EA' });
+    const MG = (k, n) => ({ k, n, h: n === 0 ? '3px' : Math.round(10 + n / 30 * 108) + 'px', c: n === 0 ? '#232334' : (n >= 23 ? '#00F2FE' : '#CDD3EA'), tc: n === 0 ? '#F02277' : '#CDD3EA' });
+    const rgba = (hex, a) => { const x = parseInt(hex.slice(1), 16); return `rgba(${x>>16},${(x>>8)&255},${x&255},${a})`; };
+    const RD = '#ef4444', AM = '#f59e0b', TE = '#14b8a6', GR = '#22c55e';
+    const S = (name, muscle, c, sets, ini) => ({ name, muscle, c, sets, ini, bg: rgba(c, 0.20) });
+    return {
+      pulseAnim: anim ? 'skelPulse 1.6s ease-in-out infinite' : 'none',
+      tr, trB,
+      trThin: {
+        rug: 'M52 115v6M96 115v10M140 115v8',
+        dotX: 52, dotY: thinY(22), dot2X: 96, dot2Y: thinY(31), dot3X: 140, dot3Y: thinY(28),
+      },
+      lagen: [
+        { zone: 'IM RHYTHMUS · 0–3 T', c: '#00FF87', satz: '„7 Einheiten in 14 Tagen"', regel: 'ABSTAND ≤ 3 TAGE', cta: 'Zahl = Frequenz. ACWR wird gezeigt.' },
+        { zone: 'DRAN GEBLIEBEN · 4–6 T', c: '#00F2FE', satz: '„Letzte Einheit vor 5 Tagen"', regel: 'ABSTAND 4–6 TAGE', cta: 'Zahl = Abstand, Form daneben. Kein Alarm.' },
+        { zone: 'PAUSE · 7–27 T', c: '#CDD3EA', satz: '„12 Tage ohne Training"', regel: 'ABSTAND 7–27 TAGE', cta: 'Lückenstreifen erscheint auch in der Liste.' },
+        { zone: 'UNTÄTIG · ab 28 T', c: '#8e8e93', satz: '„50 Tage ohne Training"', regel: 'ABSTAND ≥ 28 TAGE', cta: 'ACWR entfällt (kein akutes Fenster). CTA bleibt Start.' },
+      ],
+      monate: [ M('N',1,30), M('D',0,30), M('J',2,30), M('F',15,30), M('M',8,30), M('A',28,30), M('M',30,30), M('J',23,30), M('J',3,30), M('A',0,30) ],
+      monateGross: [ MG('NOV',1), MG('DEZ',0), MG('JAN',2), MG('FEB',15), MG('MÄR',8), MG('APR',28), MG('MAI',30), MG('JUN',23), MG('JUL',3), MG('AUG',0) ],
+      kennzahlen: [
+        { v: '2', l: 'Tage Median-Abstand zwischen Trainingstagen', c: '#CDD3EA' },
+        { v: '74', l: 'Tage längste Pause (18.11. – 31.01.)', c: '#F02277' },
+        { v: '87', l: 'Trainingstage von 245 — an 21 davon zweimal', c: '#00F2FE' },
+        { v: '30', l: 'stärkster Monat (Mai) gegen 0 im Dezember', c: '#00FF87' },
+      ],
+      arten: [
+        { n: 'Kraft', v: '63', w: '100%' },
+        { n: 'Cardio', v: '51', w: '81%' },
+        { n: 'Recovery', v: '12', w: '19%' },
+        { n: 'Körpergewicht', v: '10', w: '16%' },
+      ],
+      tabRows: rowsL([
+        { k: 'CA', name: 'Laufen', meta: 'DI 08.07. · 8,2 KM · 5:42/KM', last: '412' },
+        { k: 'KR', name: 'Push Day A', meta: 'SA 05.07. · 6 ÜB · 18 SÄTZE', last: '587' },
+        { k: 'RE', name: 'Sauna', meta: 'MI 02.07. · 25 MIN', last: '40' },
+      ]),
+      tabRowsAktiv: rowsL([
+        { k: 'KR', name: 'Leg Day', meta: 'MI 21.05. · 5 ÜB · 15 SÄTZE', last: '640' },
+        { k: 'CA', name: 'Laufen', meta: 'MI 21.05. · 6,4 KM · 5:31/KM', last: '355' },
+        { k: 'KG', name: 'Core Express', meta: 'MO 19.05. · 12 MIN', last: '120' },
+      ]),
+      juli: rowsL([
+        { tag: '08', wt: 'DI', name: 'Laufen', meta: 'CARDIO · 8,2 KM · 5:42/KM', last: '412', lw: '64%', tc: '#FFFFFF' },
+        { tag: '05', wt: 'SA', name: 'Push Day A', meta: 'KRAFT · 6 ÜB · 18 SÄTZE', last: '587', lw: '92%', tc: '#FFFFFF' },
+        { tag: '02', wt: 'MI', name: 'Sauna', meta: 'RECOVERY · 25 MIN', last: '40', lw: '8%', tc: '#FFFFFF' },
+      ]),
+      juni: rowsL([
+        { tag: '19', wt: 'DO', name: 'Rudern', meta: 'CARDIO · 6,0 KM · 2:08/500M', last: '320', lw: '50%', tc: '#FFFFFF' },
+        { tag: '17', wt: 'DI', name: 'Leg Day', meta: 'KRAFT · 5 ÜB · 15 SÄTZE', last: '640', lw: '100%', tc: '#FFFFFF' },
+        { tag: '16', wt: 'MO', name: 'Mobility', meta: 'RECOVERY · 30 MIN', last: '60', lw: '12%', tc: '#FFFFFF' },
+        { tag: '14', wt: 'SA', name: 'Wandern', meta: 'CARDIO · 11,4 KM · 2:48 H', last: '380', lw: '59%', tc: '#FFFFFF' },
+      ]),
+      mai: [
+        { tag: '23', wt: 'FR', name: 'Push Day A', meta: 'KRAFT · 6 ÜB · 18 SÄTZE', last: '575', lw: '90%', tc: '#FFFFFF', pl: '0' },
+        { tag: '21', wt: 'MI', name: 'Leg Day', meta: 'KRAFT · 5 ÜB · 15 SÄTZE', last: '640', lw: '100%', tc: '#FFFFFF', pl: '0' },
+        { tag: '', wt: '', name: 'Laufen', meta: 'CARDIO · 6,4 KM · 5:31/KM · 2. EINHEIT', last: '355', lw: '55%', tc: '#94A3B8', pl: '10px' },
+        { tag: '19', wt: 'MO', name: 'Core Express', meta: 'KÖRPERGEWICHT · 12 MIN', last: '120', lw: '19%', tc: '#FFFFFF', pl: '0' },
+      ].map((r, i, a) => ({ ...r, bb: i === a.length - 1 ? 'none' : '1px solid #232334' })),
+      skelRows: [{ w: '72%' }, { w: '54%' }, { w: '80%' }, { w: '48%' }].map((s, i, a) => ({ ...s, bb: i === a.length - 1 ? 'none' : '1px solid #232334' })),
+      kraftStats: [
+        { v: '49', l: 'MINUTEN', c: '#FFFFFF' },
+        { v: '587', l: 'LAST', c: '#00F2FE' },
+        { v: '7,2 t', l: 'VOLUMEN', c: '#FFFFFF' },
+      ],
+      cardioStats: [
+        { v: '8,2', l: 'KILOMETER', c: '#FFFFFF' },
+        { v: '412', l: 'LAST', c: '#00F2FE' },
+        { v: '5:42', l: 'PACE /KM', c: '#FFFFFF' },
+      ],
+      laufVergleich: [
+        { l: 'STRECKE 8,2 KM', r: 'TOP 30 %', w: '100%', m: '72%' },
+        { l: 'PACE 5:42/KM', r: 'MITTELFELD', w: '100%', m: '48%' },
+      ],
+      saetze: rowsL([
+        S('Bankdrücken', 'BRUST', RD, '4×8 · 60 kg', 'BA'),
+        S('Schulterdrücken', 'SCHULTERN', AM, '3×10 · 22 kg', 'SC'),
+        S('Incline Press KH', 'BRUST', RD, '3×12 · 20 kg', 'IP'),
+        S('Seitheben', 'SCHULTERN', AM, '3×15 · 10 kg', 'SE'),
+        S('Trizepsdrücken', 'ARME', TE, '3×12 · 30 kg', 'TR'),
+      ]),
+      komponenten: [
+        { n: 'Konstanz', v: '17 / 35', w: '49%', c: '#CDD3EA', note: '87 TRAININGSTAGE IN 245' },
+        { n: 'Lastentwicklung', v: '0 / 30', w: '2%', c: '#F02277', note: 'KEINE LAST IN 28 TAGEN' },
+        { n: 'Aktualität', v: '0 / 15', w: '2%', c: '#F02277', note: 'LETZTE EINHEIT VOR 50 TAGEN' },
+        { n: 'Fitness ggü. Höchststand', v: '6 / 15', w: '40%', c: '#CDD3EA', note: 'HÖCHSTSTAND 80 AM 21.05.' },
+        { n: 'Tageszuschlag', v: '0 / 8', w: '2%', c: '#F02277', note: 'HEUTE KEINE EINHEIT' },
+      ],
+      chartRegeln: [
+        { t: 'Vier Achsenbeschriftungen, nicht sieben', b: 'Auf 320 dp bleiben bei Mono 10 sp nur vier X-Labels ohne Kollision — FEB, APR, JUN, AUG. Bei 200 % Systemschrift fallen sie auf zwei (FEB, AUG); die Kurve behält ihre Breite, die Beschriftung wird ausgedünnt, nie gedreht.' },
+        { t: 'Drei Y-Werte: 0, 50, 100', b: 'Feste Skala 0–100, kein Autoscaling — sonst sieht ein Absturz von 80 auf 16 aus wie eine Delle. Nur 50 und 100 bekommen eine Hairline #16161F, die Nulllinie ist #232334.' },
+        { t: 'Die Lücke wird nicht interpoliert', b: 'Die Form wird täglich berechnet, auch ohne Training — der Verlauf nach dem 08.07. ist echt, aber trainingsfrei. Deshalb wechselt die Linie dort auf gestrichelt in Magenta und der Bereich bekommt eine 3-%-Weißfläche. Zwei Träger: Strich und Fläche, nicht nur Farbe.' },
+        { t: 'Einheiten als Rug unter der Achse', b: 'Ein zweiter Datensatz ohne zweite Y-Achse: je Woche ein Strich, Höhe = Anzahl (0–8). Man sieht sofort, dass die Kurve im April steigt, weil die Striche dichter werden — Ursache und Wirkung in einem Bild.' },
+        { t: 'Keine Tooltips, ein Scrubber', b: 'Hover gibt es nicht. Wischen über die Kurve setzt einen Cursor, Wert und Datum erscheinen in der Kopfzeile der Karte — dort, wo Platz garantiert ist, statt in einer Blase über dem Finger.' },
+        { t: 'Kein Blur, kein Gradient-Fill', b: 'Die Fläche unter der Kurve bleibt leer. Ein Verlaufs-Fill über 29 Punkte plus BackdropFilter im Scrollbereich ist genau der Frame-Killer, den die Randbedingung ausschließt.' },
+      ],
+      specRows: [
+        { k: 'Aussage-Karte (K2)', v: 'Genau 1 je Screen · Gradient-Rand 1,5 dp 135° #F02277→#7A2BDB→#00F2FE · Fläche #14141D · Radius 20 · Zonen-Dot 7 dp + Mono-Label · Kennzahl Mono 38/700 · Trennlinie #232334 · CTA-Pill 42 dp' },
+        { k: 'Zonen-Indikator', v: 'Dot 7 dp + Mono 10 Label in Zonenfarbe (#00FF87 / #00F2FE / #CDD3EA / #8e8e93) · Farbe nie allein: das Label wiederholt die Zone als Wort' },
+        { k: 'Verlaufszeile', v: 'K3-Einlage · Höhe ≥ 56 dp, Treffer 48 dp · Datumsspalte 36 dp (Mono 13/700 Tag, Mono 8 Wochentag) · Name 12/600 Ellipsis · Meta Mono 9 #94A3B8 · Last Mono 11 rechts + Balken 34×4 relativ zum Monatsmaximum' },
+        { k: 'Mehrfachtag', v: 'Zweite Zeile: padding-left +10 dp, Datumsspalte leer, Meta endet auf „2. Einheit" · kein zweiter Datumsblock, keine Klammerung' },
+        { k: 'Lückenstreifen', v: 'Ab 7 Tagen · #0B0B0E · Rand 1 dp gestrichelt #232334 · Radius 14 · Mono 10,5 #CDD3EA Titel, 10,5 #94A3B8 Zeitraum · linke Rinne 34 dp mit gestrichelter Vertikalen · nicht fokussierbar' },
+        { k: 'Monatskopf', v: 'Mono 9,5 letterspacing 0.14em #94A3B8 · rechts Anzahl + Monatslast · sticky auf #050507 ohne Blur, Hairline #232334 beim Anheften' },
+        { k: 'StatBox-Dreier', v: 'StatBox Radius 14 · #14141D · Rand #232334 · Wert Mono 15/700, Label Mono 8 letterspacing 0.08em · fehlender Wert: Rand gestrichelt, Wert „—" #94A3B8 · Recovery zeigt nur 2 Boxen' },
+        { k: 'ACWR-Skala', v: 'Vier Segmente 8/5/2/5 (0–0,8 / 0,8–1,3 / 1,3–1,5 / >1,5) Höhe 6 dp, gap 2 dp · aktives Segment in Zonenfarbe 55 % · Zahl Mono 11/700 · Zone zusätzlich als Wort im Fließtext · entfällt unter 28 Tagen Historie' },
+        { k: 'Form-Trend-Chart', v: 'viewBox 232×122 (320 dp) · Plot 26…224 × 12…92 · Linie 2 dp #00F2FE, trainingsfreier Teil 2 dp gestrichelt 3/3 #F02277 · Lückenfläche rgba(255,255,255,0.03) · Rug unter der Achse #CDD3EA 55 % · aktueller Punkt r 3,5' },
+        { k: 'Komponentenzeile', v: 'Name 11 #CDD3EA · Wert Mono 10 („17 / 35") · Track 5 dp #16161F, Füllung Zonenfarbe · Begründung Mono 8,5 #94A3B8 · Nullkomponenten behalten 2 % Füllung, damit die Zeile nicht verschwindet' },
+        { k: 'Monatsstreifen', v: 'Balken flex 1, gap 4 dp (mobil) / 10 dp (Spec) · Höhe 6…56 dp linear zu max 30 · Nullmonat: 2 dp Stummel #232334, Zahl in #F02277 · Zahl über dem Balken, Kürzel darunter' },
+        { k: 'Zustände', v: 'M2 unverändert: Skeleton-Puls 1,6 s in Inhaltsform · Zustandszone IconBox 48 / Titel 15 / Text ≤ 2 Zeilen / 0–1 Aktion · „zu wenig Daten" ist eine Notice mit zwei Fortschrittsbalken, kein Fehler-Layout' },
+      ],
+      stringRows: [
+        { k: 'history.title', de: 'Verlauf', en: 'History' },
+        { k: 'history.zone.rhythm', de: 'Im Rhythmus', en: 'In rhythm' },
+        { k: 'history.zone.recent', de: 'Dran geblieben', en: 'Keeping up' },
+        { k: 'history.zone.pause', de: 'Pause', en: 'Paused' },
+        { k: 'history.zone.inactive', de: 'Untätig', en: 'Inactive' },
+        { k: 'history.lead.gap', de: '{n, plural, one {# Tag} other {# Tage}} ohne Training', en: '{n, plural, one {# day} other {# days}} without training' },
+        { k: 'history.lead.frequency', de: '{n} Einheiten in {d} Tagen', en: '{n} workouts in {d} days' },
+        { k: 'history.lead.last', de: 'Zuletzt {weekday} {date} · {name}', en: 'Last {weekday} {date} · {name}' },
+        { k: 'history.form.label', de: 'Form', en: 'Form' },
+        { k: 'history.form.of', de: '{v}/100', en: '{v}/100' },
+        { k: 'history.trend.rising', de: 'steigend', en: 'rising' },
+        { k: 'history.trend.stable', de: 'stabil', en: 'stable' },
+        { k: 'history.trend.falling', de: 'fallend', en: 'falling' },
+        { k: 'history.months.label', de: 'Einheiten je Monat', en: 'Workouts per month' },
+        { k: 'history.months.median', de: 'Median {n} Tage Abstand · längste Pause {max}', en: 'Median {n} days apart · longest break {max}' },
+        { k: 'history.recent.label', de: 'Letzte Einheiten', en: 'Recent workouts' },
+        { k: 'history.all', de: 'Alle {n}', en: 'All {n}' },
+        { k: 'history.analysis.open', de: 'Auswertung öffnen', en: 'Open analysis' },
+        { k: 'history.empty.title', de: 'Noch nichts aufgezeichnet', en: 'Nothing recorded yet' },
+        { k: 'history.empty.body', de: 'Deine erste Einheit steht hier, sobald du sie beendet hast.', en: 'Your first workout appears here once you finish it.' },
+        { k: 'history.error.title', de: 'Verlauf nicht verfügbar', en: 'History unavailable' },
+        { k: 'history.error.body', de: 'Deine Einheiten konnten nicht geladen werden.', en: 'Your workouts could not be loaded.' },
+        { k: 'history.error.retry', de: 'Erneut versuchen', en: 'Try again' },
+        { k: 'list.title', de: 'Einheiten', en: 'Workouts' },
+        { k: 'list.month.summary', de: '{n} · Last {load}', en: '{n} · load {load}' },
+        { k: 'list.gap', de: '{n, plural, one {# Tag} other {# Tage}} ohne Training', en: '{n, plural, one {# day} other {# days}} without training' },
+        { k: 'list.gap.range', de: '{from} – {to}', en: '{from} – {to}' },
+        { k: 'list.gap.longest', de: 'längste Pause im Verlauf', en: 'longest break on record' },
+        { k: 'list.second', de: '{n}. Einheit', en: 'workout {n}' },
+        { k: 'list.end.title', de: 'Ende des Verlaufs', en: 'End of history' },
+        { k: 'list.end.body', de: 'Erste Einheit am {date} · {n} Tage her.', en: 'First workout on {date} · {n} days ago.' },
+        { k: 'list.filter.empty.title', de: 'Keine Einheit in dieser Auswahl', en: 'No workout in this selection' },
+        { k: 'list.filter.empty.body', de: '{typ} kommt im {zeitraum} nicht vor — insgesamt gibt es {n}.', en: 'No {type} in {range} — {n} in total.' },
+        { k: 'list.filter.clear', de: 'Zeitraum aufheben', en: 'Clear period' },
+        { k: 'detail.load', de: 'Last', en: 'Load' },
+        { k: 'detail.volume', de: 'Volumen', en: 'Volume' },
+        { k: 'detail.pace', de: 'Pace /km', en: 'Pace /km' },
+        { k: 'detail.acwr.label', de: 'Belastung an diesem Tag', en: 'Load on this day' },
+        { k: 'detail.acwr.zone', de: 'ACWR {v} · {zone}', en: 'ACWR {v} · {zone}' },
+        { k: 'detail.sets.count', de: '{e} Übungen · {s} Sätze', en: '{e} exercises · {s} sets' },
+        { k: 'detail.sets.missing.title', de: 'Keine Sätze aufgezeichnet', en: 'No sets recorded' },
+        { k: 'detail.sets.missing.body', de: 'Diese Einheit wurde als Dauer erfasst. Last und Konstanz zählen trotzdem, Volumen bleibt leer.', en: 'This workout was recorded as duration only. Load and consistency still count, volume stays empty.' },
+        { k: 'detail.sets.add', de: 'Sätze nachtragen', en: 'Add sets' },
+        { k: 'detail.recovery.title', de: 'Zählt für die Konstanz', en: 'Counts towards consistency' },
+        { k: 'detail.recovery.body', de: 'Recovery hält die Kette, treibt aber die Lastentwicklung nicht.', en: 'Recovery keeps the streak but does not drive load progression.' },
+        { k: 'detail.compare.title', de: 'Gegen deine {n} Läufe', en: 'Against your {n} runs' },
+        { k: 'detail.compare.top', de: 'Top {p} %', en: 'Top {p}%' },
+        { k: 'detail.compare.mid', de: 'Mittelfeld', en: 'Mid-range' },
+        { k: 'detail.saveAsPlan', de: 'Als Plan speichern', en: 'Save as plan' },
+        { k: 'detail.note.add', de: 'Notiz hinzufügen', en: 'Add note' },
+        { k: 'analysis.title', de: 'Auswertung', en: 'Analysis' },
+        { k: 'analysis.chart.label', de: 'Form 0–100', en: 'Form 0–100' },
+        { k: 'analysis.legend.with', de: 'mit Training', en: 'with training' },
+        { k: 'analysis.legend.without', de: 'ohne Training', en: 'without training' },
+        { k: 'analysis.legend.rug', de: 'Einheiten/Woche', en: 'workouts/week' },
+        { k: 'analysis.today', de: 'Form heute', en: 'Form today' },
+        { k: 'analysis.comp.consistency', de: 'Konstanz', en: 'Consistency' },
+        { k: 'analysis.comp.load', de: 'Lastentwicklung', en: 'Load progression' },
+        { k: 'analysis.comp.recency', de: 'Aktualität', en: 'Recency' },
+        { k: 'analysis.comp.fitness', de: 'Fitness ggü. Höchststand', en: 'Fitness vs. peak' },
+        { k: 'analysis.comp.today', de: 'Tageszuschlag', en: 'Today bonus' },
+        { k: 'analysis.comp.penalty', de: 'Abzug Untätigkeit', en: 'Inactivity penalty' },
+        { k: 'analysis.hint.recency', de: 'Was fehlt, ist Aktualität — eine Einheit heute bringt sofort {n} Punkte.', en: 'What is missing is recency — one workout today adds {n} points right away.' },
+        { k: 'analysis.thin.title', de: 'Noch zu wenig für einen Trend', en: 'Not enough for a trend yet' },
+        { k: 'analysis.thin.body', de: 'Ein Trend braucht {n} Einheiten und {d} Tage Historie.', en: 'A trend needs {n} workouts and {d} days of history.' },
+        { k: 'analysis.thin.progress', de: '{cur} / {req}', en: '{cur} / {req}' },
+        { k: 'analysis.thin.have', de: 'Was es schon gibt', en: 'What you already have' },
+        { k: 'analysis.error.title', de: 'Form nicht berechenbar', en: 'Form cannot be calculated' },
+        { k: 'analysis.error.body', de: 'Deine {n} Einheiten sind vollständig da — nur die Auswertung fehlt.', en: 'All {n} workouts are there — only the analysis is missing.' },
+        { k: 'analysis.error.retry', de: 'Neu berechnen', en: 'Recalculate' },
+        { k: 'analysis.error.toList', de: 'Zur Liste', en: 'Go to list' },
+      ],
+      a11yRows: [
+        { el: 'Aussage-Karte', role: 'header + liveRegion polite', note: 'Ein zusammenhängendes Label: „Untätig. 50 Tage ohne Training. Letzte Einheit Dienstag, 8. Juli, Laufen 8,2 Kilometer. Form 16 von 100, fallend." Der Zonenname steht zuerst — Farbe wird nicht vorgelesen. Ändert sich die Zone, wird einmal angesagt.' },
+        { el: 'Start-CTA in der Karte', role: 'button', note: 'Label „Training starten". Immer der erste fokussierbare Knoten nach dem Kartentext, in jedem Zustand — auch in leer, zu wenig Daten und Berechnungsfehler.' },
+        { el: 'Monatsstreifen', role: 'image + label', note: 'Kein Fokus je Balken. Ein Label für die Gruppe: „Einheiten je Monat, November 1, Dezember 0, Januar 2 …, August 0. Median 2 Tage Abstand, längste Pause 74 Tage."' },
+        { el: 'ACWR-Skala', role: 'image + label', note: '„Belastung 1,12, Zone optimal, Bereich 0,8 bis 1,3." Die Zone als Wort, nie nur als Segmentposition. Unter 28 Tagen Historie ist das Element nicht im Baum.' },
+        { el: 'Verlaufszeile', role: 'button', note: '„Dienstag, 8. Juli, Laufen, Cardio, 8,2 Kilometer, Pace 5:42 pro Kilometer, Last 412." Bei Mehrfachtagen ergänzt „zweite Einheit an diesem Tag", weil die visuelle Einrückung nicht hörbar ist.' },
+        { el: 'Lückenstreifen', role: 'text (nicht fokussierbar)', note: 'Im Lesefluss zwischen den Zeilen: „50 Tage ohne Training, 9. Juli bis heute." Kein Button, keine Aktion — der Streifen ist Information, kein Ziel.' },
+        { el: 'Monatskopf (sticky)', role: 'header', note: '„Juli 2026, 3 Einheiten, Last 1039." Bleibt beim Anheften derselbe Knoten, damit der Fokus nicht springt.' },
+        { el: 'Filter-Chip', role: 'button + selected', note: 'Label „Filter: Cardio, 51 Einheiten", Zustand selected wird angesagt. Nach dem Wechsel meldet eine polite liveRegion das Ergebnis: „51 Einheiten, Cardio".' },
+        { el: 'Form-Trend-Chart', role: 'image + label', note: 'Ein Satz statt 29 Punkte: „Form-Verlauf Februar bis August. Anstieg von 34 auf Höchststand 80 am 21. Mai, seither Rückgang auf 16. Ab 8. Juli ohne Training." Scrubber ist optional und über Doppeltipp erreichbar; die Zusammenfassung genügt ohne ihn.' },
+        { el: 'Komponentenzeile', role: 'text', note: '„Konstanz 17 von 35, 87 Trainingstage in 245." Wert und Grund in einem Knoten — getrennte Knoten würden fünf zusammenhanglose Zahlen erzeugen.' },
+        { el: 'Fortschritt „zu wenig Daten"', role: 'progressBar', note: 'value/max gesetzt: „Einheiten 3 von 8", „Historie 9 von 21 Tagen". Der Zustand ist damit hörbar eine Wartezeit, kein Fehler.' },
+        { el: 'StatBox ohne Wert', role: 'text', note: '„Volumen nicht erfasst" statt „Volumen Strich". Das gestrichelte Kästchen ist visuell, das Wort trägt die Bedeutung.' },
+        { el: 'Berechnungsfehler-Zone', role: 'liveRegion polite', note: 'Einmalige Ansage von Titel + Text. Danach im Fokus-Pfad zwei Buttons; „Zur Liste" existiert, damit der Nutzer aus dem Fehler heraus an seine echten Daten kommt.' },
+      ],
+      reuseRows: [
+        { mod: 'M1', part: 'Typenrollen Poppins/Mono', use: 'Mono für alle Messwerte, Datumsanker, Achsen und Labels; Poppins für Sätze. Die Aussage-Karte ist der einzige Ort mit Mono 38 — Kennzahl als Bild.' },
+        { mod: 'M1', part: 'Press-Verhalten', use: 'Verlaufszeile, Filter-Chip, CTA: Skalierung + Glow statt Ripple, unveränderte Werte aus M1.' },
+        { mod: 'M2', part: 'K2 Session-Card', use: 'Wird zur Aussage-Karte — genau 1 Gradient-Rand-Karte je Screen, dieselbe Geometrie in allen vier Zonen.' },
+        { mod: 'M2', part: 'K3 Listenkarte', use: 'Einheitenliste, Satzliste im Detail, Nachbar-Einheiten. Kein Blur im Scrollbereich (Randbedingung).' },
+        { mod: 'M2', part: 'Zustands-Anatomie', use: 'Leer, Error, gefiltert leer — IconBox 48 / Titel / ≤ 2 Zeilen / 1 Aktion, unverändert.' },
+        { mod: 'M2', part: 'Skeleton-Puls 1,6 s', use: 'Tab-Laden, Nachladen älterer Monate, Auswertung. Immer in Inhaltsform, nie Spinner.' },
+        { mod: 'M3', part: 'Bar / Track', use: 'Last-Balken in der Zeile, Komponentenbalken, Fortschritt bei „zu wenig Daten". Track #16161F, Höhe 4–6 dp.' },
+        { mod: 'M3', part: 'Badge + Dot', use: 'Zonen-Indikator in der Aussage-Karte, „HIER"-Markierung im Nachbarblock.' },
+        { mod: 'M3', part: 'Chart-Grundlagen', use: 'Feste Skala, Hairline-Raster #16161F, Cyan als Datenfarbe — hier erweitert um gestrichelt/Magenta für trainingsfreie Abschnitte.' },
+        { mod: 'M4', part: 'Notice + Statuszone', use: '„Keine Sätze aufgezeichnet", „Zählt für die Konstanz", „Noch zu wenig für einen Trend", „Form nicht berechenbar".' },
+        { mod: 'M5', part: 'Muskel-Regionspalette', use: 'Nur in der Satzliste im Kraft-Detail — Übungsebene behält ihre Farbe, die Einheit selbst bleibt farblos.' },
+        { mod: 'M5', part: 'IconBox + Initialen', use: 'Art-Kürzel KR/CA/RE/KG in der Tab-Vorschau, Übungsinitialen in der Satzliste — beide zweistellig, Mono 700.' },
+      ],
+      decisions: [
+        { n: '01', title: 'Form-Wert als Überschrift verworfen', body: 'Eine große 16 über dem Screen ist eine Schulnote ohne Fach. Der Einstieg trägt den Sachverhalt („50 Tage ohne Training"), der Form-Wert steht als Begründung darunter. Bei aktivem Training kippt der Satz auf Frequenz — die Karte antwortet immer, sie bewertet nie.' },
+        { n: '02', title: 'Durchschnitt verworfen', body: '„Alle 2,2 Tage" beschreibt keinen realen Monat dieses Bestands (1 im November, 30 im Mai, zwei Nullmonate). Gezeigt werden Monatsverteilung, Median-Abstand, längste und aktuelle Pause. Vier ehrliche Zahlen statt einer glatten.' },
+        { n: '03', title: 'Streak-Zähler verworfen', body: 'An 158 von 245 Tagen wurde nicht trainiert — eine Streak-Anzeige stünde die meiste Zeit auf 0 oder 1 und würde ein Verhalten bestrafen, das über 245 Tage 110 Einheiten hervorgebracht hat. Die Lücke wird beschrieben, nicht gezählt.' },
+        { n: '04', title: 'Lücke wegrechnen verworfen', body: 'Weder Interpolation noch „letzter bekannter Wert". Die Form fällt real, also fällt die Linie — gestrichelt und magenta, mit hinterlegter Fläche und Beschriftung. Wer 50 Tage pausiert hat, soll das im Diagramm sehen, nicht suchen.' },
+        { n: '05', title: 'Fünf Komponenten als Radar/Donut verworfen', body: 'Ein Radar mit fünf ungleichen Maxima (35/30/15/15/8) verzerrt: die Fläche suggeriert Gleichgewichtigkeit, die es nicht gibt. Fünf Balken mit „x / max" und je einer Begründungszeile sind auf 320 dp lesbar, sortierbar und bei 200 % Schrift umbruchfähig.' },
+        { n: '06', title: 'Komponenten hinter Aufklappen verworfen', body: 'Die Zerlegung ist der eigentliche Wert („Konstanz voll, aber Aktualität 0"). Hinter einem Accordion wäre sie für die meisten unsichtbar. Sie steht offen unter der Kurve — dafür gibt es kein zweites Diagramm auf dem Screen.' },
+        { n: '07', title: 'ACWR im Untätig-Zustand verworfen', body: 'Ohne akute Last ist der Quotient 0,00 oder undefiniert. Eine Skala mit Marker ganz links würde „gefährlich niedrig" behaupten, wo schlicht nichts gemessen wurde. Das Element verschwindet, statt zu lügen — sichtbar erst ab 28 Tagen Historie mit Last.' },
+        { n: '08', title: 'Kalender-Heatmap verworfen', body: '245 Tage als Punktraster wären auf 320 dp Kästchen unter 8 dp — nicht tapbar, nicht lesbar, und bei 200 % Schrift unrettbar. Der Monatsstreifen zeigt dieselbe Verteilung in zehn Balken mit 48-dp-Trefferflächen.' },
+        { n: '09', title: 'Farbe für Trainingsarten verworfen', body: 'M5 hat entschieden, dass der Typ keine Farbe bekommt — das gilt hier weiter. Sonst konkurrieren Regionsfarben (Übungen), Artfarben (Einheiten) und Statusfarben (Zonen) auf einem Screen. Art steht als zweistelliges Kürzel und als Wort in der Meta-Zeile.' },
+        { n: '10', title: 'Globaler Fehlerzustand verworfen', body: 'Erfasstes (110 Einheiten) und Abgeleitetes (Form, ACWR) fallen getrennt aus. Eine gescheiterte Formel darf keine vorhandenen Daten verstecken; deshalb bleibt die Liste stehen und nur die Auswertung meldet „nicht berechenbar" — mit Ausweg „Zur Liste".' },
+        { n: '11', title: 'Graues Platzhalter-Chart bei „zu wenig Daten" verworfen', body: 'Ein ausgegrautes Fake-Diagramm zeigt eine Form, die es nicht gibt, und lehrt den Nutzer, Diagramme zu ignorieren. Stattdessen: die vorhandenen Punkte als Punkte, die Schwelle als Text und zwei echte Fortschrittsbalken (3/8 Einheiten, 9/21 Tage).' },
+        { n: '12', title: 'Blur hinter dem Monatskopf verworfen', body: 'Ein BackdropFilter am sticky Header wird bei jedem Scrollframe über die volle Breite neu gerechnet. Das eine erlaubte Blur wird nirgends im Scrollbereich ausgegeben; der Kopf sitzt auf massivem #050507 mit Hairline. Blur bleibt Sheets und Dialogen vorbehalten.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

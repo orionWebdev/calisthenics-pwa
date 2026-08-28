@@ -146,8 +146,11 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               ),
             const SizedBox(height: 28),
             _SectionHeader(
-              title: l10n.exercisesTitle,
-              actionLabel: l10n.exercisesBlockAll(exerciseCount),
+              // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"
+              // sagt, wie gross der Bestand ist; „Alle ansehen" sagt, wohin
+              // der Weg führt. Beides in einer Zeile wäre eine Zahl zu viel.
+              title: l10n.exercisesBlockTitle(exerciseCount),
+              actionLabel: l10n.exercisesBlockAll,
               onAction: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => const ExerciseListScreen(),
@@ -181,8 +184,8 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             _ExerciseMatches(matches: matches, limit: _exercisePreview),
             const SizedBox(height: 12),
             AtemButton.outline(
-              label: l10n.exercisesNew,
-              semanticLabel: l10n.exercisesNew,
+              label: l10n.exercisesCreate,
+              semanticLabel: l10n.exercisesCreate,
               leading: const Icon(Icons.add, size: 18, color: AtemColors.cyan),
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(

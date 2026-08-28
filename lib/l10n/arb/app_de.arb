@@ -1,4 +1,163 @@
 {
+  "aboutAccess": "Zugang",
+  "@aboutAccess": {
+    "description": "about.access"
+  },
+  "aboutAccessValue": "Freigeschaltete Adresse",
+  "@aboutAccessValue": {
+    "description": "about.access.value"
+  },
+  "aboutAppearance": "Darstellung",
+  "@aboutAppearance": {
+    "description": "about.appearance"
+  },
+  "aboutAppearanceValue": "Dunkel · keine helle Fassung",
+  "@aboutAppearanceValue": {
+    "description": "about.appearance.value"
+  },
+  "aboutLanguages": "Sprachen",
+  "@aboutLanguages": {
+    "description": "about.languages"
+  },
+  "aboutVersion": "Version",
+  "@aboutVersion": {
+    "description": "about.version"
+  },
+  "accountDelete": "Konto löschen",
+  "@accountDelete": {
+    "description": "account.delete"
+  },
+  "accountDelete2Body": "{y} Jahre {m} Monate, {n} Einheiten und {e} eigene Übungen. Es gibt kein Rückgängig und kein Zeitfenster.",
+  "@accountDelete2Body": {
+    "description": "account.delete2.body",
+    "placeholders": {
+      "y": {
+        "type": "String"
+      },
+      "m": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "e": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDelete2Confirm": "Konto löschen",
+  "@accountDelete2Confirm": {
+    "description": "account.delete2.confirm"
+  },
+  "accountDelete2Keep": "Behalten",
+  "@accountDelete2Keep": {
+    "description": "account.delete2.keep"
+  },
+  "accountDelete2Title": "Endgültig löschen",
+  "@accountDelete2Title": {
+    "description": "account.delete2.title"
+  },
+  "accountDelete2TypeCount": "{a} / {b} Zeichen",
+  "@accountDelete2TypeCount": {
+    "description": "account.delete2.typeCount",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDelete2TypeLabel": "Tippe „LÖSCHEN\", um zu bestätigen",
+  "@accountDelete2TypeLabel": {
+    "description": "account.delete2.typeLabel"
+  },
+  "accountDelete2TypeWord": "LÖSCHEN",
+  "@accountDelete2TypeWord": {
+    "description": "account.delete2.typeWord"
+  },
+  "accountDeleteAccess": "Dein Zugang bleibt. Du kannst dich danach wieder anmelden — die App startet dann leer und beim Onboarding.",
+  "@accountDeleteAccess": {
+    "description": "account.delete.access"
+  },
+  "accountDeleteBody": "Das löscht deinen gesamten Bestand. Zahlen von heute:",
+  "@accountDeleteBody": {
+    "description": "account.delete.body"
+  },
+  "accountDeleteContinue": "Weiter zum Löschen",
+  "@accountDeleteContinue": {
+    "description": "account.delete.continue"
+  },
+  "accountDeleteExport": "Daten vorher ausgeben",
+  "@accountDeleteExport": {
+    "description": "account.delete.export"
+  },
+  "accountDeleteRange": "Zeitraum",
+  "@accountDeleteRange": {
+    "description": "account.delete.range"
+  },
+  "accountDeleteSub": "Sechs Sammlungen · kein Widerruf",
+  "@accountDeleteSub": {
+    "description": "account.delete.sub"
+  },
+  "accountDeleting": "Konto wird gelöscht",
+  "@accountDeleting": {
+    "description": "account.deleting"
+  },
+  "accountDeletingStep": "{name}",
+  "@accountDeletingStep": {
+    "description": "account.deleting.step",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDeletingWait": "Nicht abbrechbar. Das dauert einen Moment.",
+  "@accountDeletingWait": {
+    "description": "account.deleting.wait"
+  },
+  "accountDoneAccessBody": "Deine Freischaltung für ATEM gilt weiter. Meldest du dich mit derselben Adresse neu an, bist du wieder drin — mit leerem Bestand und im Onboarding.",
+  "@accountDoneAccessBody": {
+    "description": "account.done.access.body"
+  },
+  "accountDoneAccessTitle": "Eine Sache bleibt",
+  "@accountDoneAccessTitle": {
+    "description": "account.done.access.title"
+  },
+  "accountDoneBody": "Deine Einheiten, Pläne, Übungen, Termine und dein Fortschritt sind gelöscht. Das Anmeldekonto ist entfernt.",
+  "@accountDoneBody": {
+    "description": "account.done.body"
+  },
+  "accountDoneTitle": "Konto gelöscht",
+  "@accountDoneTitle": {
+    "description": "account.done.title"
+  },
+  "accountDoneToLogin": "Zur Anmeldung",
+  "@accountDoneToLogin": {
+    "description": "account.done.toLogin"
+  },
+  "accountPartialBody": "{a} von {b} Sammlungen sind weg, das Anmeldekonto besteht noch.",
+  "@accountPartialBody": {
+    "description": "account.partial.body",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "accountPartialResume": "Löschen fortsetzen",
+  "@accountPartialResume": {
+    "description": "account.partial.resume"
+  },
+  "accountPartialTitle": "Nicht vollständig gelöscht",
+  "@accountPartialTitle": {
+    "description": "account.partial.title"
+  },
   "analysisChartLabel": "Form 0–100",
   "@analysisChartLabel": {
     "description": "Achsenbeschriftung"
@@ -220,6 +379,94 @@
   "@authSigningIn": {
     "description": "Zustand während der Anmeldung"
   },
+  "balanceBasis": "{sets} Sätze · {n} von {total} Kraft-Einheiten",
+  "@balanceBasis": {
+    "description": "balance.basis",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceColLast": "zuletzt vor",
+  "@balanceColLast": {
+    "description": "balance.col.last"
+  },
+  "balanceColSets": "Sätze",
+  "@balanceColSets": {
+    "description": "balance.col.sets"
+  },
+  "balanceColShare": "Anteil",
+  "@balanceColShare": {
+    "description": "balance.col.share"
+  },
+  "balanceGapsNote": "Abstand seit dem letzten Satz auf diesen Muskel. Kein Sollwert — die App weiß nicht, wie oft er dran sein sollte.",
+  "@balanceGapsNote": {
+    "description": "balance.gaps.note"
+  },
+  "balanceGapsTitle": "Längste Abstände",
+  "@balanceGapsTitle": {
+    "description": "balance.gaps.title"
+  },
+  "balanceLastDays": "{n} T",
+  "@balanceLastDays": {
+    "description": "balance.last.days",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceLastDaysLong": "zuletzt {n} T",
+  "@balanceLastDaysLong": {
+    "description": "balance.last.days.long",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceThin": "Noch zu wenig Grundlage: {n} von {min} Krafteinheiten mit Übungen in den letzten 8 Wochen.",
+  "@balanceThin": {
+    "description": "balance.thin",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceThinProgress": "{n} / {min} · noch {rest} Einheiten",
+  "@balanceThinProgress": {
+    "description": "balance.thin.progress",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "rest": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceTitle": "Muskelbalance",
+  "@balanceTitle": {
+    "description": "balance.title"
+  },
+  "balanceWindow": "8 Wochen",
+  "@balanceWindow": {
+    "description": "balance.window"
+  },
   "commonActivity": "Aktivität",
   "@commonActivity": {
     "description": "aus common.activity"
@@ -242,7 +489,7 @@
   },
   "commonCancel": "Abbrechen",
   "@commonCancel": {
-    "description": "aus common.cancel"
+    "description": "common.cancel"
   },
   "commonCardio": "Cardio",
   "@commonCardio": {
@@ -251,6 +498,10 @@
   "commonClose": "Schließen",
   "@commonClose": {
     "description": "aus common.close"
+  },
+  "commonCreated": "Übung angelegt",
+  "@commonCreated": {
+    "description": "common.created"
   },
   "commonDays": "Tage",
   "@commonDays": {
@@ -300,6 +551,22 @@
   "@commonNotes": {
     "description": "aus common.notes"
   },
+  "commonOf": "von",
+  "@commonOf": {
+    "description": "Verbindungswort in Vorlesetexten: 4 von 5"
+  },
+  "commonOffline": "Lokal gesichert · wird synchronisiert",
+  "@commonOffline": {
+    "description": "common.offline"
+  },
+  "commonOfflineSync": "Lokal gesichert · wird synchronisiert",
+  "@commonOfflineSync": {
+    "description": "common.offline.sync"
+  },
+  "commonOpen": "Öffnen",
+  "@commonOpen": {
+    "description": "common.open"
+  },
   "commonOptional": "optional",
   "@commonOptional": {
     "description": "aus common.optional"
@@ -320,9 +587,21 @@
   "@commonRetry": {
     "description": "Runner, Modul 2 Spezifikation"
   },
+  "commonRetrySave": "Erneut speichern",
+  "@commonRetrySave": {
+    "description": "common.retry.save"
+  },
   "commonSave": "Speichern",
   "@commonSave": {
     "description": "aus common.save"
+  },
+  "commonSaved": "Änderung gespeichert",
+  "@commonSaved": {
+    "description": "common.saved"
+  },
+  "commonSaving": "Wird gespeichert",
+  "@commonSaving": {
+    "description": "common.saving"
   },
   "commonSecondsShort": "{n}s",
   "@commonSecondsShort": {
@@ -361,6 +640,10 @@
   "@commonTime": {
     "description": "aus common.time"
   },
+  "commonUndo": "Rückgängig",
+  "@commonUndo": {
+    "description": "common.undo"
+  },
   "commonView": "Ansehen",
   "@commonView": {
     "description": "aus common.view"
@@ -376,6 +659,87 @@
   "commonWorkout": "Workout",
   "@commonWorkout": {
     "description": "aus common.workout"
+  },
+  "compareBasisDate": "{date} · {n} Tage her",
+  "@compareBasisDate": {
+    "description": "compare.basis.date",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "compareBasisExercises": "Gleiche Übungen",
+  "@compareBasisExercises": {
+    "description": "compare.basis.exercises"
+  },
+  "compareBasisMedian": "Mittel · {n} Einheiten",
+  "@compareBasisMedian": {
+    "description": "compare.basis.median",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "compareBasisPlan": "Gleicher Plan",
+  "@compareBasisPlan": {
+    "description": "compare.basis.plan"
+  },
+  "compareEmptyPlan": "Erste Einheit des Plans „{plan}\". Ab der nächsten steht hier der Vergleich.",
+  "@compareEmptyPlan": {
+    "description": "compare.empty.plan",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "compareEmptyType": "Erste Einheit dieser Art. Ab der nächsten steht hier der Vergleich.",
+  "@compareEmptyType": {
+    "description": "compare.empty.type"
+  },
+  "compareLoading": "Vergleich wird geladen",
+  "@compareLoading": {
+    "description": "compare.loading"
+  },
+  "compareMedian": "Mittel {value}",
+  "@compareMedian": {
+    "description": "compare.median",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "compareNoneValue": "kein Bezug",
+  "@compareNoneValue": {
+    "description": "compare.none.value"
+  },
+  "compareNoteMedian": "Keine Plan-ID, keine Übungsüberdeckung. Verglichen wird nur, was von den Übungen unabhängig ist: Dauer und Last.",
+  "@compareNoteMedian": {
+    "description": "compare.note.median"
+  },
+  "compareNotePlan": "Beide Einheiten folgen Plan „{plan}\". Alle vier Werte sind vergleichbar.",
+  "@compareNotePlan": {
+    "description": "compare.note.plan",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "comparePrev": "vorher {value}",
+  "@comparePrev": {
+    "description": "compare.prev",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
   },
   "consequenceDays": "{n, plural, one{1 Tag} other{{n} Tage}}",
   "@consequenceDays": {
@@ -1072,6 +1436,26 @@
   "@dashboardWeekdays": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
+  "deleteConfirm": "Löschen",
+  "@deleteConfirm": {
+    "description": "delete.confirm"
+  },
+  "deleteKeep": "Behalten",
+  "@deleteKeep": {
+    "description": "delete.keep"
+  },
+  "deleteStep1Continue": "Weiter zum Löschen",
+  "@deleteStep1Continue": {
+    "description": "delete.step1.continue"
+  },
+  "deleteStep2NoUndo": "Es gibt kein Rückgängig — nur neu anlegen.",
+  "@deleteStep2NoUndo": {
+    "description": "delete.step2.noUndo"
+  },
+  "deleteStep2Title": "Endgültig löschen",
+  "@deleteStep2Title": {
+    "description": "delete.step2.title"
+  },
   "detailAcwrLabel": "Belastung an diesem Tag",
   "@detailAcwrLabel": {
     "description": "Überschrift im Detail"
@@ -1135,38 +1519,6 @@
   "detailVolume": "Volumen",
   "@detailVolume": {
     "description": "Kennzahl im Detail"
-  },
-  "difficultyLevel1": "Anfänger",
-  "@difficultyLevel1": {
-    "description": "Schwierigkeitsstufe 1"
-  },
-  "difficultyLevel2": "Geübt",
-  "@difficultyLevel2": {
-    "description": "Schwierigkeitsstufe 2"
-  },
-  "difficultyLevel3": "Fortgeschritten",
-  "@difficultyLevel3": {
-    "description": "Schwierigkeitsstufe 3"
-  },
-  "difficultyLevel4": "Elite",
-  "@difficultyLevel4": {
-    "description": "Schwierigkeitsstufe 4"
-  },
-  "difficultyLevel5": "Extrem",
-  "@difficultyLevel5": {
-    "description": "Schwierigkeitsstufe 5"
-  },
-  "difficultyPick": "{level} — Stufe {n} von 5",
-  "@difficultyPick": {
-    "description": "Vorlesetext eines Schwierigkeitssegments",
-    "placeholders": {
-      "level": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
   },
   "durationApproxMinutes": "~{n} min",
   "@durationApproxMinutes": {
@@ -1238,19 +1590,6 @@
   "@errorsWorkoutStartFailed": {
     "description": "aus errors.workoutStartFailed"
   },
-  "exerciseCopyAction": "Eigene Fassung anlegen",
-  "@exerciseCopyAction": {
-    "description": "Weg aus einer kuratierten Übung heraus"
-  },
-  "exerciseCopyName": "{name} (eigene)",
-  "@exerciseCopyName": {
-    "description": "Vorgeschlagener Name der eigenen Fassung",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "exerciseCopyNotice": "Die kuratierte Übung bleibt bestehen. Deine Fassung steht daneben.",
   "@exerciseCopyNotice": {
     "description": "Hinweis im Formular der eigenen Fassung"
@@ -1268,46 +1607,64 @@
   "@exerciseCues": {
     "description": "Abschnitt im Detail"
   },
-  "exerciseCuratedA11y": "Kuratiert, nicht änderbar",
-  "@exerciseCuratedA11y": {
-    "description": "Vorlesetext des Schloss-Chips"
+  "exerciseCuratedBadge": "Kuratiert",
+  "@exerciseCuratedBadge": {
+    "description": "exercise.curated.badge"
   },
-  "exerciseCuratedBody": "Kuratierte Übungen sind für alle gleich.",
+  "exerciseCuratedBody": "Diese Übung ist für alle gleich und bleibt unverändert. Willst du sie anders, leg dir eine eigene Fassung an.",
   "@exerciseCuratedBody": {
-    "description": "Erklärung am Schloss-Chip"
+    "description": "exercise.curated.body"
   },
-  "exerciseCuratedChip": "Kuratiert",
-  "@exerciseCuratedChip": {
-    "description": "Schloss-Chip am Übungsdetail"
+  "exerciseCuratedCopy": "Eigene Fassung anlegen",
+  "@exerciseCuratedCopy": {
+    "description": "exercise.curated.copy"
   },
-  "exerciseDeleteBarrier": "Übung löschen",
-  "@exerciseDeleteBarrier": {
-    "description": "Vorlesetext des Dialogschleiers"
+  "exerciseCuratedTitle": "Gehört zur Bibliothek",
+  "@exerciseCuratedTitle": {
+    "description": "exercise.curated.title"
   },
-  "exerciseDeleteBody": "Absolvierte Einheiten behalten ihre Sätze, zeigen aber nur noch die Kennung.",
-  "@exerciseDeleteBody": {
-    "description": "Erste Bestätigung, Text"
+  "exerciseDelete": "Übung löschen",
+  "@exerciseDelete": {
+    "description": "exercise.delete"
   },
-  "exerciseDeleteInPlans": "{n, plural, one{Sie steckt in einem Plan. Dort bleibt eine Lücke mit den Zielwerten.} other{Sie steckt in {n} Plänen. Dort bleibt jeweils eine Lücke mit den Zielwerten.}}",
-  "@exerciseDeleteInPlans": {
-    "description": "Zusatz zur ersten Bestätigung",
+  "exerciseDeleteKeepUnits": "Deine {n} Einheiten bleiben vollständig — mit Sätzen, Gewichten und Last.",
+  "@exerciseDeleteKeepUnits": {
+    "description": "exercise.delete.keepUnits",
     "placeholders": {
       "n": {
         "type": "int"
       }
     }
   },
-  "exerciseDeleteSecondBody": "Das lässt sich nicht rückgängig machen.",
-  "@exerciseDeleteSecondBody": {
-    "description": "Zweite Bestätigung, Text"
+  "exerciseDeletePlansGap": "In den {n} Plänen bleibt eine Lücke stehen, die du dort ersetzen kannst.",
+  "@exerciseDeletePlansGap": {
+    "description": "exercise.delete.plansGap",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
-  "exerciseDeleteSecondTitle": "Endgültig löschen?",
-  "@exerciseDeleteSecondTitle": {
-    "description": "Zweite Bestätigung"
+  "exerciseDeleteQ": "„{name}\" löschen?",
+  "@exerciseDeleteQ": {
+    "description": "exercise.delete.q",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
-  "exerciseDeleteTitle": "Übung löschen?",
-  "@exerciseDeleteTitle": {
-    "description": "Erste Bestätigung"
+  "exerciseDeleteUsage": "Die Übung steckt in {p, plural, one {# Plan} other {# Plänen}} und {s, plural, one {# Einheit} other {# Einheiten}}.",
+  "@exerciseDeleteUsage": {
+    "description": "exercise.delete.usage",
+    "placeholders": {
+      "p": {
+        "type": "int"
+      },
+      "s": {
+        "type": "int"
+      }
+    }
   },
   "exerciseDifficultyA11y": "Schwierigkeit {n} von 5",
   "@exerciseDifficultyA11y": {
@@ -1318,87 +1675,79 @@
       }
     }
   },
-  "exerciseFormDescription": "Beschreibung",
-  "@exerciseFormDescription": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormDifficulty": "Schwierigkeit",
-  "@exerciseFormDifficulty": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormDifficultyFault": "Wähle eine Stufe.",
-  "@exerciseFormDifficultyFault": {
-    "description": "Fehler an der Schwierigkeit"
-  },
-  "exerciseFormDifficultyHint": "Gespeichert wird die Stufe als Zahl.",
-  "@exerciseFormDifficultyHint": {
-    "description": "Hilfetext unter der Schwierigkeit"
-  },
-  "exerciseFormEditTitle": "Übung bearbeiten",
-  "@exerciseFormEditTitle": {
-    "description": "Titel des Formulars beim Ändern"
-  },
-  "exerciseFormEquipment": "Gerät",
-  "@exerciseFormEquipment": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormEquipmentHint": "z. B. Hantel, Klimmzugstange",
-  "@exerciseFormEquipmentHint": {
-    "description": "Platzhalter im Gerätefeld"
-  },
-  "exerciseFormMuscleChosen": "{muscle}, gewählt",
-  "@exerciseFormMuscleChosen": {
-    "description": "Vorlesetext eines gewählten Muskelschalters",
+  "exerciseDuplicateBody": "Du hast schon eine Übung „{name}\". Deine Eingaben stehen noch hier.",
+  "@exerciseDuplicateBody": {
+    "description": "exercise.duplicate.body",
     "placeholders": {
-      "muscle": {
+      "name": {
         "type": "String"
       }
     }
   },
-  "exerciseFormMuscleToggle": "{muscle} auswählen",
-  "@exerciseFormMuscleToggle": {
-    "description": "Vorlesetext eines Muskelschalters",
+  "exerciseDuplicateOpen": "Vorhandene öffnen",
+  "@exerciseDuplicateOpen": {
+    "description": "exercise.duplicate.open"
+  },
+  "exerciseDuplicateSuggest": "Vorschlag nehmen",
+  "@exerciseDuplicateSuggest": {
+    "description": "exercise.duplicate.suggest"
+  },
+  "exerciseDuplicateTitle": "Nicht gespeichert",
+  "@exerciseDuplicateTitle": {
+    "description": "exercise.duplicate.title"
+  },
+  "exerciseEditTitle": "Übung bearbeiten",
+  "@exerciseEditTitle": {
+    "description": "exercise.edit.title"
+  },
+  "exerciseFieldCues": "Cues",
+  "@exerciseFieldCues": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldCuesHint": "Kurze Merksätze, einer je Zeile",
+  "@exerciseFieldCuesHint": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldEquipment": "Gerät",
+  "@exerciseFieldEquipment": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldEquipmentHint": "Freitext, keine feste Liste",
+  "@exerciseFieldEquipmentHint": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldInstructions": "Anleitung",
+  "@exerciseFieldInstructions": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldInstructionsHint": "Freitext, bis 500 Zeichen",
+  "@exerciseFieldInstructionsHint": {
+    "description": "Board 07, optFelder"
+  },
+  "exerciseFieldLevel": "Stufe",
+  "@exerciseFieldLevel": {
+    "description": "exercise.field.level"
+  },
+  "exerciseFieldMuscles": "Muskeln",
+  "@exerciseFieldMuscles": {
+    "description": "exercise.field.muscles"
+  },
+  "exerciseFieldMusclesCount": "{n} gewählt",
+  "@exerciseFieldMusclesCount": {
+    "description": "exercise.field.muscles.count",
     "placeholders": {
-      "muscle": {
-        "type": "String"
+      "n": {
+        "type": "int"
       }
     }
   },
-  "exerciseFormMuscles": "Muskeln",
-  "@exerciseFormMuscles": {
-    "description": "Feldbeschriftung"
+  "exerciseFieldName": "Name",
+  "@exerciseFieldName": {
+    "description": "exercise.field.name"
   },
-  "exerciseFormMusclesFault": "Wähle mindestens einen Muskel.",
-  "@exerciseFormMusclesFault": {
-    "description": "Fehler an der Muskelauswahl"
-  },
-  "exerciseFormMusclesHint": "Mindestens einer. Er gibt der Übung ihre Farbe.",
-  "@exerciseFormMusclesHint": {
-    "description": "Hilfetext unter der Muskelauswahl"
-  },
-  "exerciseFormName": "Name",
-  "@exerciseFormName": {
-    "description": "Feldbeschriftung"
-  },
-  "exerciseFormNameFault": "Ohne Namen findest du die Übung nicht wieder.",
-  "@exerciseFormNameFault": {
-    "description": "Fehler am Namensfeld"
-  },
-  "exerciseFormNameHint": "z. B. Klimmzug breit",
-  "@exerciseFormNameHint": {
-    "description": "Platzhalter im Namensfeld"
-  },
-  "exerciseFormNewTitle": "Neue Übung",
-  "@exerciseFormNewTitle": {
-    "description": "Titel des Formulars beim Anlegen"
-  },
-  "exerciseFormOptionalSection": "Kann warten",
-  "@exerciseFormOptionalSection": {
-    "description": "Abschnittslabel der freiwilligen Felder"
-  },
-  "exerciseFormRequiredSection": "Pflicht",
-  "@exerciseFormRequiredSection": {
-    "description": "Abschnittslabel der drei Pflichtfelder"
+  "exerciseFieldNameHint": "z. B. Bulgarian Split Squat",
+  "@exerciseFieldNameHint": {
+    "description": "exercise.field.name.hint"
   },
   "exerciseFormSaveError": "Übung nicht gespeichert",
   "@exerciseFormSaveError": {
@@ -1408,17 +1757,63 @@
   "@exerciseFormSaveErrorBody": {
     "description": "Fehlermeldung, Text"
   },
-  "exerciseFormSaved": "Übung gespeichert",
-  "@exerciseFormSaved": {
-    "description": "Rückmeldung nach dem Speichern"
-  },
   "exerciseInstructions": "Anleitung",
   "@exerciseInstructions": {
     "description": "Abschnitt im Detail"
   },
+  "exerciseLevel1": "Einstieg",
+  "@exerciseLevel1": {
+    "description": "exercise.level.1"
+  },
+  "exerciseLevel2": "Leicht",
+  "@exerciseLevel2": {
+    "description": "exercise.level.2"
+  },
+  "exerciseLevel3": "Mittel",
+  "@exerciseLevel3": {
+    "description": "exercise.level.3"
+  },
+  "exerciseLevel4": "Fortgeschritten",
+  "@exerciseLevel4": {
+    "description": "exercise.level.4"
+  },
+  "exerciseLevel5": "Experte",
+  "@exerciseLevel5": {
+    "description": "exercise.level.5"
+  },
+  "exerciseLevelHint": "Wird als Zahl 1–5 gespeichert.",
+  "@exerciseLevelHint": {
+    "description": "exercise.level.hint"
+  },
   "exerciseMistakes": "Häufige Fehler",
   "@exerciseMistakes": {
     "description": "Abschnitt im Detail"
+  },
+  "exerciseMore": "Mehr Angaben",
+  "@exerciseMore": {
+    "description": "exercise.more"
+  },
+  "exerciseMoreCount": "{n} optional",
+  "@exerciseMoreCount": {
+    "description": "exercise.more.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseNewTitle": "Neue Übung",
+  "@exerciseNewTitle": {
+    "description": "exercise.new.title"
+  },
+  "exerciseSaveBlocked": "Noch {n} Angaben nötig",
+  "@exerciseSaveBlocked": {
+    "description": "exercise.save.blocked",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "exerciseSparseBody": "Diese Übung hast du selbst angelegt.",
   "@exerciseSparseBody": {
@@ -1428,9 +1823,21 @@
   "@exerciseSparseTitle": {
     "description": "Nur bei eigenen Übungen ohne Inhalt"
   },
-  "exercisesBlockAll": "Alle {n} ansehen",
+  "exercisesBlockAll": "Alle ansehen",
   "@exercisesBlockAll": {
-    "description": "Weg in die vollständige Übungsliste",
+    "description": "exercises.block.all"
+  },
+  "exercisesBlockByMuscle": "Nach Muskel",
+  "@exercisesBlockByMuscle": {
+    "description": "exercises.block.byMuscle"
+  },
+  "exercisesBlockSearch": "Name oder Muskel",
+  "@exercisesBlockSearch": {
+    "description": "exercises.block.search"
+  },
+  "exercisesBlockTitle": "Übungen · {n}",
+  "@exercisesBlockTitle": {
+    "description": "exercises.block.title",
     "placeholders": {
       "n": {
         "type": "int"
@@ -1452,6 +1859,10 @@
       }
     }
   },
+  "exercisesCreate": "Eigene Übung anlegen",
+  "@exercisesCreate": {
+    "description": "exercises.create"
+  },
   "exercisesEmptyBody": "Keine Übung passt zu „{q}“ — auch nicht auf Englisch.",
   "@exercisesEmptyBody": {
     "description": "Suche ohne Treffer, Text",
@@ -1460,6 +1871,14 @@
         "type": "String"
       }
     }
+  },
+  "exercisesEmptyOwnBody": "Name, Muskeln und eine Stufe genügen — der Rest ist freiwillig.",
+  "@exercisesEmptyOwnBody": {
+    "description": "exercises.empty.own.body"
+  },
+  "exercisesEmptyOwnTitle": "Noch keine eigene Übung",
+  "@exercisesEmptyOwnTitle": {
+    "description": "exercises.empty.own.title"
   },
   "exercisesEmptyTitle": "Nichts gefunden",
   "@exercisesEmptyTitle": {
@@ -1503,10 +1922,6 @@
       }
     }
   },
-  "exercisesNew": "Übung anlegen",
-  "@exercisesNew": {
-    "description": "Aktion im Übungsblock"
-  },
   "exercisesNoMatchBody": "Ändere den Suchbegriff oder den Muskel.",
   "@exercisesNoMatchBody": {
     "description": "Leerzustand der Suche, Text"
@@ -1526,6 +1941,67 @@
   "exercisesTitle": "Übungen",
   "@exercisesTitle": {
     "description": "Titel der Übungsliste"
+  },
+  "exportBody": "Du wählst danach, wohin sie geht.",
+  "@exportBody": {
+    "description": "export.body"
+  },
+  "exportCreate": "Datei erstellen",
+  "@exportCreate": {
+    "description": "export.create"
+  },
+  "exportDoneNote": "Die Datei liegt im Downloads-Ordner. Die App verschickt nichts selbst.",
+  "@exportDoneNote": {
+    "description": "export.done.note"
+  },
+  "exportDoneShare": "Teilen",
+  "@exportDoneShare": {
+    "description": "export.done.share"
+  },
+  "exportOffline": "Offline nicht möglich",
+  "@exportOffline": {
+    "description": "export.offline"
+  },
+  "exportProgress": "Einheiten {a}/{b} · Pläne {c}/{d} · Übungen {e}/{f}",
+  "@exportProgress": {
+    "description": "export.progress",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "int"
+      },
+      "d": {
+        "type": "String"
+      },
+      "e": {
+        "type": "String"
+      },
+      "f": {
+        "type": "String"
+      }
+    }
+  },
+  "exportSize": "ca. {mb} MB · keine Bilder, keine Videos",
+  "@exportSize": {
+    "description": "export.size",
+    "placeholders": {
+      "mb": {
+        "type": "String"
+      }
+    }
+  },
+  "exportSub": "Eine Datei mit allem, was dir gehört",
+  "@exportSub": {
+    "description": "export.sub"
+  },
+  "exportTitle": "Daten ausgeben",
+  "@exportTitle": {
+    "description": "export.title"
   },
   "formDiscardBarrier": "Änderungen verwerfen",
   "@formDiscardBarrier": {
@@ -1660,6 +2136,18 @@
   "@gateTitle": {
     "description": "Überschrift des Warteraums"
   },
+  "hapticsSub": "Kurzes Klopfen bei Satz und Pause",
+  "@hapticsSub": {
+    "description": "haptics.sub"
+  },
+  "hapticsTitle": "Haptik",
+  "@hapticsTitle": {
+    "description": "haptics.title"
+  },
+  "hapticsUnavailable": "Dein Gerät hat keinen Vibrationsmotor.",
+  "@hapticsUnavailable": {
+    "description": "haptics.unavailable"
+  },
   "historyAll": "Alle {n}",
   "@historyAll": {
     "description": "Öffnet die vollständige Liste",
@@ -1672,6 +2160,42 @@
   "historyAnalysisOpen": "Auswertung öffnen",
   "@historyAnalysisOpen": {
     "description": "Führt zur Formkurve"
+  },
+  "historyBest": "Bestwert",
+  "@historyBest": {
+    "description": "history.best"
+  },
+  "historyCount": "{n}×",
+  "@historyCount": {
+    "description": "history.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyCurveA11y": "Verlauf des besten Satzgewichts über {n} Einheiten, von {from} auf {to}",
+  "@historyCurveA11y": {
+    "description": "history.curve.a11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "historyCurveLabel": "Bestes Satzgewicht",
+  "@historyCurveLabel": {
+    "description": "history.curve.label"
+  },
+  "historyCurveLegend": "Ring markiert den Bestwert",
+  "@historyCurveLegend": {
+    "description": "history.curve.legend"
   },
   "historyEmptyBody": "Deine erste Einheit steht hier, sobald du sie beendet hast.",
   "@historyEmptyBody": {
@@ -1701,6 +2225,23 @@
         "type": "int"
       }
     }
+  },
+  "historyFreq": "Häufigkeit",
+  "@historyFreq": {
+    "description": "history.freq"
+  },
+  "historyFreqValue": "{n} / Wo",
+  "@historyFreqValue": {
+    "description": "history.freq.value",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyLast": "Zuletzt",
+  "@historyLast": {
+    "description": "history.last"
   },
   "historyLeadFrequency": "{n} Einheiten in {d} Tagen",
   "@historyLeadFrequency": {
@@ -1754,13 +2295,30 @@
       }
     }
   },
+  "historyOnce": "ausgeführt · {date}",
+  "@historyOnce": {
+    "description": "history.once",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "historyOnceLabel": "Damals",
+  "@historyOnceLabel": {
+    "description": "history.once.label"
+  },
+  "historyOnceNote": "Kein Bestwert, keine Kurve, keine Häufigkeit — aus einer Ausführung folgt keins davon.",
+  "@historyOnceNote": {
+    "description": "history.once.note"
+  },
   "historyRecentLabel": "Letzte Einheiten",
   "@historyRecentLabel": {
     "description": "Überschrift der Kurzliste"
   },
-  "historyTitle": "Verlauf",
+  "historyTitle": "Du mit dieser Übung",
   "@historyTitle": {
-    "description": "Titel des Tabs"
+    "description": "history.title"
   },
   "historyTrendFalling": "fallend",
   "@historyTrendFalling": {
@@ -1773,6 +2331,10 @@
   "historyTrendStable": "stabil",
   "@historyTrendStable": {
     "description": "Richtung der Formkurve"
+  },
+  "historyVolume": "Volumen",
+  "@historyVolume": {
+    "description": "history.volume"
   },
   "historyZoneInactive": "Untätig",
   "@historyZoneInactive": {
@@ -1789,6 +2351,55 @@
   "historyZoneRhythm": "Im Rhythmus",
   "@historyZoneRhythm": {
     "description": "Zustandszone: bis 3 Tage Abstand"
+  },
+  "languageDe": "Deutsch",
+  "@languageDe": {
+    "description": "language.de"
+  },
+  "languageEn": "English",
+  "@languageEn": {
+    "description": "language.en"
+  },
+  "languageTitle": "Sprache",
+  "@languageTitle": {
+    "description": "language.title"
+  },
+  "legalError": "Text nicht geladen",
+  "@legalError": {
+    "description": "legal.error"
+  },
+  "legalExternal": "Extern öffnen",
+  "@legalExternal": {
+    "description": "legal.external"
+  },
+  "legalImprint": "Impressum",
+  "@legalImprint": {
+    "description": "legal.imprint"
+  },
+  "legalImprintBody": "Privates Projekt einer natürlichen Person. Angaben nach § 5 TMG: {betreiber}",
+  "@legalImprintBody": {
+    "description": "legal.imprint.body",
+    "placeholders": {
+      "betreiber": {
+        "type": "String"
+      }
+    }
+  },
+  "legalInapp": "In der App",
+  "@legalInapp": {
+    "description": "legal.inapp"
+  },
+  "legalPrivacy": "Datenschutz",
+  "@legalPrivacy": {
+    "description": "legal.privacy"
+  },
+  "legalRetry": "Erneut versuchen",
+  "@legalRetry": {
+    "description": "legal.retry"
+  },
+  "legalTerms": "Nutzungsbedingungen",
+  "@legalTerms": {
+    "description": "legal.terms"
   },
   "listEndBody": "Erste Einheit am {date} · {n} Tage her.",
   "@listEndBody": {
@@ -2016,6 +2627,48 @@
   "@onbWhy": {
     "description": "Begründung, warum diese eine Angabe nötig ist"
   },
+  "onboardingRepeat": "Onboarding wiederholen",
+  "@onboardingRepeat": {
+    "description": "onboarding.repeat"
+  },
+  "onboardingRepeatAction": "Ansehen",
+  "@onboardingRepeatAction": {
+    "description": "onboarding.repeat.action"
+  },
+  "onboardingRepeatSub": "Die vier Einführungsseiten noch einmal",
+  "@onboardingRepeatSub": {
+    "description": "onboarding.repeat.sub"
+  },
+  "planBrokenEntry": "Übung gelöscht",
+  "@planBrokenEntry": {
+    "description": "plan.broken.entry"
+  },
+  "planBrokenKeepTarget": "Ziel bleibt · {ziel}",
+  "@planBrokenKeepTarget": {
+    "description": "plan.broken.keepTarget",
+    "placeholders": {
+      "ziel": {
+        "type": "String"
+      }
+    }
+  },
+  "planBrokenNotice": "{n, plural, one {# Eintrag zeigt} other {# Einträge zeigen}} ins Leere.",
+  "@planBrokenNotice": {
+    "description": "plan.broken.notice",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "planBrokenRemove": "Entfernen",
+  "@planBrokenRemove": {
+    "description": "plan.broken.remove"
+  },
+  "planBrokenReplace": "Ersetzen",
+  "@planBrokenReplace": {
+    "description": "plan.broken.replace"
+  },
   "planCount": "{n} Pläne",
   "@planCount": {
     "description": "Zählzeile der Planliste",
@@ -2036,6 +2689,30 @@
   "planDeleteTitle": "Plan löschen?",
   "@planDeleteTitle": {
     "description": "Bestätigung"
+  },
+  "planEmptyAllowed": "Der Plan existiert, sobald er einen Namen hat.",
+  "@planEmptyAllowed": {
+    "description": "plan.empty.allowed"
+  },
+  "planEntryAdd": "Übung hinzufügen",
+  "@planEntryAdd": {
+    "description": "plan.entry.add"
+  },
+  "planEntryReps": "Wdh",
+  "@planEntryReps": {
+    "description": "plan.entry.reps"
+  },
+  "planEntryRepsHint": "„12\", „8-12\" und „max\" sind erlaubt.",
+  "@planEntryRepsHint": {
+    "description": "plan.entry.reps.hint"
+  },
+  "planEntryRest": "Pause",
+  "@planEntryRest": {
+    "description": "plan.entry.rest"
+  },
+  "planEntrySets": "Sätze",
+  "@planEntrySets": {
+    "description": "plan.entry.sets"
   },
   "planFormAdd": "Übung hinzufügen",
   "@planFormAdd": {
@@ -2190,6 +2867,18 @@
       }
     }
   },
+  "planNewTitle": "Neuer Plan",
+  "@planNewTitle": {
+    "description": "plan.new.title"
+  },
+  "profileLocked": "Über Google · fest",
+  "@profileLocked": {
+    "description": "profile.locked"
+  },
+  "profileLockedWhy": "Name und E-Mail kommen aus deinem Google-Konto und werden hier nur angezeigt.",
+  "@profileLockedWhy": {
+    "description": "profile.locked.why"
+  },
   "regionArms": "Arme",
   "@regionArms": {
     "description": "Körperregion, Filter"
@@ -2214,6 +2903,18 @@
   "@regionShoulders": {
     "description": "Körperregion, Filter"
   },
+  "restBody": "Gilt für Sätze ohne eigene Pause im Plan. Wirkt ab der nächsten Einheit.",
+  "@restBody": {
+    "description": "rest.body"
+  },
+  "restCustom": "Eigener Wert",
+  "@restCustom": {
+    "description": "rest.custom"
+  },
+  "restRunning": "Eine laufende Einheit behält ihre Pause.",
+  "@restRunning": {
+    "description": "rest.running"
+  },
   "restSeconds": "{n} s",
   "@restSeconds": {
     "description": "Pausenlänge in Sekunden",
@@ -2223,17 +2924,73 @@
       }
     }
   },
+  "restSub": "Vorgabe beim Start einer Einheit",
+  "@restSub": {
+    "description": "rest.sub"
+  },
+  "restTitle": "Pausenzeit",
+  "@restTitle": {
+    "description": "rest.title"
+  },
+  "sectionAbout": "Über die App",
+  "@sectionAbout": {
+    "description": "section.about"
+  },
+  "sectionApp": "App",
+  "@sectionApp": {
+    "description": "section.app"
+  },
+  "sectionData": "Deine Daten",
+  "@sectionData": {
+    "description": "section.data"
+  },
+  "sectionLegal": "Rechtliches",
+  "@sectionLegal": {
+    "description": "section.legal"
+  },
+  "sectionTraining": "Training",
+  "@sectionTraining": {
+    "description": "section.training"
+  },
+  "sessionDateAllowedBody": "Verschiebst du den Tag, verschieben sich Lücken und Form-Kurve mit.",
+  "@sessionDateAllowedBody": {
+    "description": "session.date.allowed.body"
+  },
+  "sessionDateAllowedTitle": "Datum ändern ist erlaubt",
+  "@sessionDateAllowedTitle": {
+    "description": "session.date.allowed.title"
+  },
+  "sessionDatePrevious": "Vorher {date} · {n, plural, one {+# Tag} other {+# Tage}}",
+  "@sessionDatePrevious": {
+    "description": "session.date.previous",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "sessionDeleteBarrier": "Einheit löschen",
   "@sessionDeleteBarrier": {
     "description": "Vorlesetext des Dialogschleiers"
   },
-  "sessionDeleteBody": "Sie zählt danach in keiner Auswertung mehr mit.",
+  "sessionDeleteBody": "Sie zählt in jede Auswertung. Danach steht dort:",
   "@sessionDeleteBody": {
-    "description": "Bestätigung, Text"
+    "description": "session.delete.body"
+  },
+  "sessionDeleteQ": "Diese Einheit löschen?",
+  "@sessionDeleteQ": {
+    "description": "session.delete.q"
   },
   "sessionDeleteTitle": "Einheit löschen?",
   "@sessionDeleteTitle": {
     "description": "Bestätigung"
+  },
+  "sessionDeleteWindow": "30 Sekunden lang kannst du das rückgängig machen.",
+  "@sessionDeleteWindow": {
+    "description": "session.delete.window"
   },
   "sessionDeletedBody": "Du kannst das {n} Sekunden lang zurücknehmen.",
   "@sessionDeletedBody": {
@@ -2241,6 +2998,18 @@
     "placeholders": {
       "n": {
         "type": "int"
+      }
+    }
+  },
+  "sessionDeletedSnack": "Einheit gelöscht · Form {alt} → {neu}",
+  "@sessionDeletedSnack": {
+    "description": "session.deleted.snack",
+    "placeholders": {
+      "alt": {
+        "type": "String"
+      },
+      "neu": {
+        "type": "String"
       }
     }
   },
@@ -2292,7 +3061,35 @@
   },
   "sessionEditTitle": "Einheit bearbeiten",
   "@sessionEditTitle": {
-    "description": "Titel des Formulars"
+    "description": "session.edit.title"
+  },
+  "sessionFieldDatetime": "Datum und Zeit",
+  "@sessionFieldDatetime": {
+    "description": "session.field.datetime"
+  },
+  "sessionImpactCount": "Einheiten gesamt",
+  "@sessionImpactCount": {
+    "description": "session.impact.count"
+  },
+  "sessionImpactForm": "Form heute",
+  "@sessionImpactForm": {
+    "description": "session.impact.form"
+  },
+  "sessionImpactPause": "Aktuelle Pause",
+  "@sessionImpactPause": {
+    "description": "session.impact.pause"
+  },
+  "sessionImpactPreview": "Vorschau, noch nicht gespeichert.",
+  "@sessionImpactPreview": {
+    "description": "session.impact.preview"
+  },
+  "sessionImpactTitle": "Was sich dadurch ändert",
+  "@sessionImpactTitle": {
+    "description": "session.impact.title"
+  },
+  "setsAdd": "Sätze nachtragen",
+  "@setsAdd": {
+    "description": "sets.add"
   },
   "settingsAboutPrivate": "Privates Projekt, keine kommerzielle Nutzung.",
   "@settingsAboutPrivate": {
@@ -2430,6 +3227,10 @@
   "settingsDeletedTitle": "Konto gelöscht",
   "@settingsDeletedTitle": {
     "description": "Abschlussbildschirm"
+  },
+  "settingsEntryA11y": "Profil und Einstellungen",
+  "@settingsEntryA11y": {
+    "description": "settings.entry.a11y"
   },
   "settingsExportBody": "JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.",
   "@settingsExportBody": {
@@ -2618,7 +3419,7 @@
   },
   "settingsTitle": "Einstellungen",
   "@settingsTitle": {
-    "description": "Titel des Bildschirms"
+    "description": "settings.title"
   },
   "settingsUnits": "Einheiten",
   "@settingsUnits": {
@@ -2683,9 +3484,25 @@
       }
     }
   },
+  "signout": "Abmelden",
+  "@signout": {
+    "description": "signout"
+  },
+  "signoutKeep": "Daten bleiben",
+  "@signoutKeep": {
+    "description": "signout.keep"
+  },
   "splashStarting": "ATEM startet …",
   "@splashStarting": {
     "description": "Ansage während des unentschiedenen ersten Moments"
+  },
+  "switchOff": "AUS",
+  "@switchOff": {
+    "description": "switch.off"
+  },
+  "switchOn": "AN",
+  "@switchOn": {
+    "description": "switch.on"
   },
   "typeBodyweight": "Körpergewicht",
   "@typeBodyweight": {
@@ -2736,6 +3553,182 @@
   "unitSuffixSeconds": "s",
   "@unitSuffixSeconds": {
     "description": "Einheit hinter einem Zahlenfeld"
+  },
+  "unitsExample": "So sieht es dann aus",
+  "@unitsExample": {
+    "description": "units.example"
+  },
+  "unitsImperial": "Imperial",
+  "@unitsImperial": {
+    "description": "units.imperial"
+  },
+  "unitsMetric": "Metrisch",
+  "@unitsMetric": {
+    "description": "units.metric"
+  },
+  "unitsNote": "Gespeichert bleibt immer metrisch. Umgerechnet wird nur die Anzeige.",
+  "@unitsNote": {
+    "description": "units.note"
+  },
+  "unitsTitle": "Einheitensystem",
+  "@unitsTitle": {
+    "description": "units.title"
+  },
+  "unsavedBody": "Du hast {c, plural, one {# Eintrag} other {# Einträge}} geändert und {a} hinzugefügt.",
+  "@unsavedBody": {
+    "description": "unsaved.body",
+    "placeholders": {
+      "c": {
+        "type": "int"
+      },
+      "a": {
+        "type": "int"
+      }
+    }
+  },
+  "unsavedContinue": "Weiter bearbeiten",
+  "@unsavedContinue": {
+    "description": "unsaved.continue"
+  },
+  "unsavedDiscard": "Verwerfen",
+  "@unsavedDiscard": {
+    "description": "unsaved.discard"
+  },
+  "unsavedSave": "Sichern und schließen",
+  "@unsavedSave": {
+    "description": "unsaved.save"
+  },
+  "unsavedTitle": "Änderungen behalten?",
+  "@unsavedTitle": {
+    "description": "unsaved.title"
+  },
+  "weightBody": "Bewertet jede Körpergewichtsübung in deinem Verlauf — heute und rückwirkend.",
+  "@weightBody": {
+    "description": "weight.body"
+  },
+  "weightDelta": "{sign}{kg} kg · {sign}{pct} %",
+  "@weightDelta": {
+    "description": "weight.delta",
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      },
+      "kg": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "weightDirDown": "niedriger",
+  "@weightDirDown": {
+    "description": "weight.dir.down"
+  },
+  "weightDirRescored": "neu bewertet",
+  "@weightDirRescored": {
+    "description": "weight.dir.rescored"
+  },
+  "weightDirSame": "gleich",
+  "@weightDirSame": {
+    "description": "weight.dir.same"
+  },
+  "weightDirUp": "höher",
+  "@weightDirUp": {
+    "description": "weight.dir.up"
+  },
+  "weightErrorRange": "Zwischen 30 und 250 kg. Vorschau bleibt aus, bis der Wert stimmt.",
+  "@weightErrorRange": {
+    "description": "weight.error.range"
+  },
+  "weightHint": "Eine Nachkommastelle · 30–250 kg",
+  "@weightHint": {
+    "description": "weight.hint"
+  },
+  "weightImpactAcwr": "ACWR",
+  "@weightImpactAcwr": {
+    "description": "weight.impact.acwr"
+  },
+  "weightImpactBest": "Bestwert {exercise}",
+  "@weightImpactBest": {
+    "description": "weight.impact.best",
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "weightImpactForm": "Formwert heute",
+  "@weightImpactForm": {
+    "description": "weight.impact.form"
+  },
+  "weightImpactLoad": "Trainingslast 7 T",
+  "@weightImpactLoad": {
+    "description": "weight.impact.load"
+  },
+  "weightImpactNote": "Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.",
+  "@weightImpactNote": {
+    "description": "weight.impact.note"
+  },
+  "weightImpactScope": "{d} Tage · {n} Einheiten mit Körpergewichtsübungen",
+  "@weightImpactScope": {
+    "description": "weight.impact.scope",
+    "placeholders": {
+      "d": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weightImpactTitle": "Was sich rückwirkend ändert",
+  "@weightImpactTitle": {
+    "description": "weight.impact.title"
+  },
+  "weightPrevious": "Vorher {alt} kg",
+  "@weightPrevious": {
+    "description": "weight.previous",
+    "placeholders": {
+      "alt": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSave": "Speichern und neu rechnen",
+  "@weightSave": {
+    "description": "weight.save"
+  },
+  "weightSaveBusy": "Wird gerechnet",
+  "@weightSaveBusy": {
+    "description": "weight.save.busy"
+  },
+  "weightSaveNone": "Unverändert · nichts zu speichern",
+  "@weightSaveNone": {
+    "description": "weight.save.none"
+  },
+  "weightSavedSnack": "Gewicht {kg} kg · Form {alt} → {neu}",
+  "@weightSavedSnack": {
+    "description": "weight.saved.snack",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      },
+      "alt": {
+        "type": "String"
+      },
+      "neu": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSub": "Bewertet deinen ganzen Verlauf",
+  "@weightSub": {
+    "description": "weight.sub"
+  },
+  "weightTitle": "Körpergewicht",
+  "@weightTitle": {
+    "description": "weight.title"
   },
   "workoutA11yEnd": "Workout beenden",
   "@workoutA11yEnd": {

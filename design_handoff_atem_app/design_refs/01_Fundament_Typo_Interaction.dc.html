@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · DESIGN-SPEZIFIKATION</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Typenskala, Tap-Ziele &amp; Bewegung</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:720px;line-height:1.7">Zehn Schriftgrößen kollabieren auf acht benannte Rollen, informationstragender Text wächst auf ≥ 12 sp, jede Trefferfläche auf ≥ 48 dp — ohne den Messinstrument-Charakter aufzugeben. Der Träger des HUD-Looks ist nicht die Kleinheit, sondern Versalien, Mono und Sperrung.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Text ≥ 12 sp · Kontrast ≥ 4,5:1</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">200 % Systemschrift</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">320 dp Breite</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">#7A2BDB nie als Text</span>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">01 · TYPENSKALA</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:620px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="font-size:16px;font-weight:600">Musterblatt — 8 Rollen statt 10 Größen</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8">Größen in sp, 1 sp = 1 px dargestellt. Mono-Werte mit Tabellenziffern.</div>
+<div style="display:flex;flex-direction:column;margin-top:18px">
+<sc-for list="{{ scale }}" as="s" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:190px 1fr;gap:18px;align-items:center;padding:13px 0;border-bottom:1px solid #16161F">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:{{ s.nameColor }}">{{ s.name }}</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;line-height:1.6">{{ s.meta }}</div>
+</div>
+<div style="font-family:{{ s.font }};font-size:{{ s.size }};font-weight:{{ s.weight }};letter-spacing:{{ s.ls }};color:{{ s.color }};line-height:1.25;font-variant-numeric:tabular-nums">{{ s.sample }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="width:520px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="font-size:16px;font-weight:600">Verliert labelMicro bei 12 sp den HUD-Charakter?</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8">Direkter Vergleich am Sektionslabel — gleicher Kontext, gleiche Karte.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:18px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#F02277;letter-spacing:0.12em">VORHER · 8,5 SP</div>
+<div style="margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:2.5px;color:#94A3B8">ATEM READINESS</div>
+<div style="margin-top:8px;display:flex;align-items:baseline;gap:3px"><span style="font-size:30px;font-weight:700;font-variant-numeric:tabular-nums">88</span><span style="font-size:14px;color:#94A3B8">%</span></div>
+</div>
+<div style="background:#14141D;border:1px solid rgba(0,255,135,0.35);border-radius:14px;padding:18px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00FF87;letter-spacing:0.12em">NACHHER · 12 SP</div>
+<div style="margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;letter-spacing:0.16em;color:#94A3B8">ATEM READINESS</div>
+<div style="margin-top:8px;display:flex;align-items:baseline;gap:3px"><span style="font-size:30px;font-weight:700;font-variant-numeric:tabular-nums">88</span><span style="font-size:14px;color:#94A3B8">%</span></div>
+</div>
+</div>
+<div style="margin-top:18px;font-size:13px;line-height:1.75;color:#CDD3EA">Der Charakter überlebt, weil vier Dinge kompensieren:</div>
+<ul style="margin:10px 0 0;padding-left:18px;font-size:12.5px;color:#94A3B8;line-height:1.9">
+<li><strong style="color:#FFFFFF">Gewicht 700 → 500.</strong> Bei 8,5 sp brauchte das Label Fett, um zu existieren; bei 12 sp macht Fett es zur Überschrift. Leichter = wieder Beschriftung.</li>
+<li><strong style="color:#FFFFFF">Laufweite relativ: 0,16 em</strong> statt fester 2,5 px — die Sperrung bleibt proportional erhalten und skaliert mit der Systemschrift mit.</li>
+<li><strong style="color:#FFFFFF">Farbe bleibt #94A3B8</strong> (≈ 8:1 auf Canvas, ≈ 7:1 auf Card) — gedämpft, aber konform. Keine Deckkraft-Tricks nötig.</li>
+<li><strong style="color:#FFFFFF">+4 dp Abstand über dem Label.</strong> Das größere Label braucht mehr Luft zur Karte darüber, sonst konkurriert es mit dem Messwert.</li>
+</ul>
+</div>
+
+<div style="width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="font-size:16px;font-weight:600">Spezifikationstabelle</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:130px 60px 70px 90px 130px 1fr 170px;gap:12px;padding:0 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>NAME</span><span>GRÖSSE</span><span>GEWICHT</span><span>LAUFWEITE</span><span>SCHRIFT</span><span>VERWENDUNG</span><span>MINDESTKONTRAST</span>
+</div>
+<sc-for list="{{ specRows }}" as="r" hint-placeholder-count="9">
+<div style="display:grid;grid-template-columns:130px 60px 70px 90px 130px 1fr 170px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:12px;color:#CDD3EA;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:{{ r.c }}">{{ r.name }}</span>
+<span style="font-variant-numeric:tabular-nums">{{ r.size }}</span><span>{{ r.weight }}</span><span>{{ r.ls }}</span><span>{{ r.font }}</span><span style="color:#94A3B8;line-height:1.5">{{ r.use }}</span><span style="color:#94A3B8">{{ r.contrast }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">02 · DEKORATIVE AUSNAHMEN — 5 VON MAX. 6</div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;max-width:1240px">
+<sc-for list="{{ exceptions }}" as="e" hint-placeholder-count="5">
+<div style="width:384px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#00FF87">{{ e.name }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:3px 9px">{{ e.size }}</span>
+</div>
+<div style="margin-top:10px;font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">Info steht außerdem:</strong> {{ e.dup }}</div>
+<div style="margin-top:8px;font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Vorlese-Alternative:</strong> {{ e.a11y }}</div>
+</div>
+</sc-for>
+<div style="width:384px;background:rgba(240,34,119,0.05);border:1px dashed rgba(240,34,119,0.4);border-radius:20px;padding:22px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#F02277">ABGELEHNT: NAV-LABELS</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Die fünf Navigationslabels benennen Ziele — das ist Information, kein Dekor. Sie wachsen auf 12 sp; der Platzkonflikt wird kompositorisch gelöst (siehe <a href="#tap-nav" style="color:#00F2FE">Tap-Fall 3</a>), nicht durch Schrumpfen.</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">03 · TAP-ZIELE — 48 DP TREFFERFLÄCHE</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:400px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Fall 1 · Icon-Buttons der Top-Bar</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Sichtbar bleibt 40 × 40. Die Trefferfläche wächst unsichtbar um 4 dp je Seite auf 48 × 48 — die Flächen stoßen aneinander, überlappen aber nicht. Zentren rücken von 48 auf 56 dp Abstand: der sichtbare 8-dp-Gap bleibt identisch.</div>
+<div style="margin-top:18px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:20px;display:flex;justify-content:center;gap:8px">
+<div style="width:56px;height:56px;border:1.5px dashed rgba(0,242,254,0.45);border-radius:16px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center"><svg width="13" height="15" viewBox="0 0 11 13"><path d="M2 0v13 M9 0v13" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"></path></svg></div></div>
+<div style="width:56px;height:56px;border:1.5px dashed rgba(0,242,254,0.45);border-radius:16px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 4h14v13l-4 4H5Z M15 21v-4h4 M8.5 9h7" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg></div></div>
+<div style="width:56px;height:56px;border:1.5px dashed rgba(0,242,254,0.45);border-radius:16px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:14px;background:rgba(240,34,119,0.1);border:1px solid rgba(240,34,119,0.45);display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M5 5l14 14 M19 5 5 19" stroke="#F02277" stroke-width="2.2" stroke-linecap="round"></path></svg></div></div>
+</div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE;letter-spacing:0.1em">GESTRICHELT = 48-DP-TREFFERFLÄCHE (UNSICHTBAR)</div>
+</div>
+
+<div style="width:520px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Fall 2 · Satz-Typ-Chip in der Tabellenzeile</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Der Chip bleibt sichtbar 34 × 32 — größer würde er mit den Eingabefeldern konkurrieren. Seine Trefferfläche füllt 48 × 48 und nutzt das Zeilen-Padding; die Zeile wächst dafür auf min. 64 dp Höhe (vorher ~60).</div>
+<div style="margin-top:18px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:16px">
+<div style="display:flex;align-items:center;gap:8px;background:rgba(20,20,29,0.8);border:1px solid #232334;border-radius:14px;padding:8px 10px;min-height:48px">
+<div style="width:48px;height:48px;flex:none;border:1.5px dashed rgba(0,242,254,0.45);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:-4px 0"><div style="width:34px;height:32px;border-radius:10px;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.35);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#00F2FE">W</div></div>
+<span style="flex:1;font-size:12px;color:#94A3B8">80 kg × 10</span>
+<div style="width:72px;height:48px;background:#0B0B0E;border:1px solid #232334;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">100</div>
+<div style="width:60px;height:48px;background:#0B0B0E;border:1px solid #232334;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">8</div>
+<div style="width:48px;height:48px;flex:none;border-radius:13px;background:#0B0B0E;border:1px solid #3A3A52;display:flex;align-items:center;justify-content:center"><svg width="17" height="13" viewBox="0 0 17 13" fill="none"><path d="M1.5 6.5 6 11 15.5 1.5" stroke="#94A3B8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+</div>
+</div>
+<div style="margin-top:10px;font-size:12px;color:#94A3B8;line-height:1.6"><strong style="color:#FFFFFF">Fall 4 zugleich sichtbar:</strong> Die Eingabefelder wachsen <em>sichtbar</em> 44 → 48 dp (KG 72, WDH 60 dp breit) — unsichtbares Wachsen scheitert hier, weil Nachbar-Trefferflächen sonst überlappen. Der Häkchen-Button wird echter 48er.</div>
+</div>
+
+<div id="tap-nav" style="width:560px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Fall 3 · Floating Nav — 5 Einträge</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Jeder Eintrag min. 48 × 48. Bei ≥ 360 dp tragen alle Einträge ihr 12-sp-Label. Darunter trägt nur der aktive Eintrag sein Label (animiert eingeblendet); inaktive sind Icon + Punkt, ihre Namen liefert Semantics.</div>
+<div style="margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;letter-spacing:0.1em">390 DP — ALLE LABELS</div>
+<div style="margin-top:8px;width:358px;display:flex;justify-content:space-around;padding:6px;border-radius:30px;background:rgba(11,11,14,0.9);border:1px solid #232334">
+<sc-for list="{{ navWide }}" as="n" hint-placeholder-count="5">
+<div style="min-width:48px;min-height:48px;border:1.5px dashed rgba(0,242,254,0.3);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="{{ n.d }}" stroke="{{ n.c }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;color:{{ n.c }}">{{ n.label }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:6px;font-size:11px;color:#94A3B8">Labels hier maßstäblich verkleinert dargestellt; real 12 sp im 390-dp-Viewport.</div>
+<div style="margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;letter-spacing:0.1em">320 DP — NUR AKTIVES LABEL</div>
+<div style="margin-top:8px;width:288px;display:flex;justify-content:space-around;align-items:center;padding:6px;border-radius:30px;background:rgba(11,11,14,0.9);border:1px solid #232334">
+<div style="min-width:48px;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1.5px dashed rgba(0,242,254,0.3);border-radius:14px;padding:4px 8px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 4.5l8 7 M6.5 10.5v9h11v-9" stroke="#00F2FE" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">HOME</span>
+</div>
+<sc-for list="{{ navNarrow }}" as="n" hint-placeholder-count="4">
+<div style="min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;border:1.5px dashed rgba(0,242,254,0.3);border-radius:14px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="{{ n.d }}" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">04 · VERHALTEN BEI 200 % SYSTEMSCHRIFT</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:460px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Satz-Tabelle → Satz-Karte</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Ab fontScale ≥ 1,3 <em>oder</em> Breite &lt; 360 dp bricht die 5-Spalten-Zeile in eine zweizeilige Karte um. Der Tabellenkopf entfällt; die Spaltennamen wandern als Suffix in die Felder („kg", „×"). Keine feste Höhe — die Karte wächst mit dem Text.</div>
+<div style="margin-top:18px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:14px">
+<div style="background:rgba(20,20,29,0.8);border:1px solid #232334;border-radius:14px;padding:12px">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:48px;height:48px;flex:none;border-radius:12px;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.35);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#00F2FE">W</div>
+<div style="font-size:17px;color:#94A3B8;line-height:1.4">Letztes Mal<br><span style="color:#CDD3EA;font-weight:500">80 kg × 10</span></div>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<div style="flex:1.2;height:52px;background:#0B0B0E;border:1px solid #232334;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:4px"><span style="font-size:19px;font-weight:600">100</span><span style="font-size:13px;color:#94A3B8">kg</span></div>
+<div style="flex:1;height:52px;background:#0B0B0E;border:1px solid #232334;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:4px"><span style="font-size:19px;font-weight:600">8</span><span style="font-size:13px;color:#94A3B8">×</span></div>
+<div style="width:52px;height:52px;flex:none;border-radius:13px;background:#00FF87;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px -2px rgba(0,255,135,0.7)"><svg width="19" height="15" viewBox="0 0 17 13" fill="none"><path d="M1.5 6.5 6 11 15.5 1.5" stroke="#050507" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+</div>
+</div>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#94A3B8">Dargestellt: 320 dp bei 200 % — Text ~2×, Struktur hält.</div>
+</div>
+
+<div style="width:360px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Navigation bei 200 %</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Weder umbrechen noch skalierende Labels: ab fontScale ≥ 1,3 entfallen <em>alle</em> Labels — Icon + Aktiv-Punkt bleiben, die Leiste behält ihre intrinsische Höhe. Namen kommen aus Semantics („Analytics, Tab 3 von 5"). Icons skalieren nicht mit der Schrift.</div>
+<div style="margin-top:18px;display:flex;justify-content:space-around;align-items:center;padding:10px 6px;border-radius:30px;background:rgba(11,11,14,0.9);border:1px solid #232334">
+<sc-for list="{{ navWide }}" as="n" hint-placeholder-count="5">
+<div style="width:48px;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+<svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="{{ n.d }}" stroke="{{ n.c }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="width:4px;height:4px;border-radius:50%;background:#00F2FE;box-shadow:0 0 8px #00F2FE;opacity:{{ n.dot }}"></span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="width:360px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Readiness-Gauge: Zahl begrenzt, Text nicht</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Die Zahl im Bogen ist Teil einer Grafik und cappt bei <strong style="color:#FFFFFF">1,3×</strong> — mehr sprengt den Bogen. Zulässig, weil die Information doppelt lesbar bleibt: Statuszeile und Tag-Pill unter dem Gauge skalieren <em>voll</em> mit, und Semantics meldet „Readiness 88 Prozent, Peak Readiness".</div>
+<div style="margin-top:18px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:18px;text-align:center">
+<div style="display:inline-flex;align-items:baseline;gap:2px"><span style="font-size:61px;font-weight:700;font-variant-numeric:tabular-nums;text-shadow:0 0 26px rgba(0,242,254,0.5)">88</span><span style="font-size:24px;font-weight:600;color:#94A3B8">%</span></div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">61 SP = 47 × 1,3 — CAP</div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;letter-spacing:0.16em;color:#00FF87">PEAK READINESS</div>
+<div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">STATUSZEILE: VOLLE 200 %</div>
+</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">05 · BEWEGUNGSTABELLE</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:180px 150px 1fr 100px 150px 150px 170px;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>„BEWEGUNG REDUZIEREN"</span>
+</div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:180px 150px 1fr 100px 150px 150px 170px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:12px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:{{ m.tc }}">{{ m.trigger }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-variant-numeric:tabular-nums">{{ m.dur }}</span><span style="color:#94A3B8">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.reduced }}</span>
+</div>
+</sc-for>
+<div style="margin-top:14px;font-size:12px;color:#94A3B8;line-height:1.7">Prinzip: Zustandswechsel (funktional) bleiben auch bei „Bewegung reduzieren" erhalten, verlieren aber Overshoot und Wege — nur Fades. Dauerschleifen (dekorativ) frieren in ihrer definierten Ruhelage ein, nie mitten im Zyklus.</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">06 · STRINGTABELLE</div>
+<div style="margin-top:16px;width:920px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:260px 1fr 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span>
+</div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="24">
+<div style="display:grid;grid-template-columns:260px 1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">07 · A11Y-NOTIZEN</div>
+<div style="margin-top:16px;width:1100px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:190px 1fr 130px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND</span>
+</div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:190px 1fr 130px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:12px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">08 · ENTSCHEIDUNGSPROTOKOLL</div>
+<div style="margin-top:16px;max-width:920px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="6">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start">
+<div style="width:36px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const mono = "'JetBrains Mono',monospace", pop = "'Poppins',sans-serif";
+    return {
+      scale: [
+        { name: 'display', meta: '48 sp · 700 · 0 · Poppins', font: pop, size: '48px', weight: 700, ls: '0', color: '#FFFFFF', sample: '88', nameColor: '#00F2FE' },
+        { name: 'valueLarge', meta: '24 sp · 700 · +0.02em · Mono, tabular', font: mono, size: '24px', weight: 700, ls: '0.02em', color: '#FFFFFF', sample: '01:24', nameColor: '#00F2FE' },
+        { name: 'titleLarge', meta: '20 sp · 600 · 0 · Poppins', font: pop, size: '20px', weight: 600, ls: '0', color: '#FFFFFF', sample: 'Guten Morgen, Alex', nameColor: '#FFFFFF' },
+        { name: 'titleMedium', meta: '16 sp · 600 · 0 · Poppins', font: pop, size: '16px', weight: 600, ls: '0', color: '#FFFFFF', sample: 'Back Squat — Day 4', nameColor: '#FFFFFF' },
+        { name: 'valueMedium', meta: '16 sp · 600 · 0 · Mono, tabular', font: mono, size: '16px', weight: 600, ls: '0', color: '#00FF87', sample: '78 ms', nameColor: '#00F2FE' },
+        { name: 'labelMedium', meta: '14 sp · 600 · +0.10em · Poppins', font: pop, size: '14px', weight: 600, ls: '0.10em', color: '#FFFFFF', sample: 'SESSION STARTEN', nameColor: '#F02277' },
+        { name: 'labelSmall', meta: '12 sp · 500 · +0.01em · Poppins', font: pop, size: '12px', weight: 500, ls: '0.01em', color: '#CDD3EA', sample: 'Protein 165 g / 190 g Ziel', nameColor: '#CDD3EA' },
+        { name: 'labelMicro', meta: '12 sp · 500 · +0.16em · Mono, Versalien', font: mono, size: '12px', weight: 500, ls: '0.16em', color: '#94A3B8', sample: 'ATEM READINESS', nameColor: '#94A3B8' },
+        { name: 'labelDeco ⚠', meta: '10 sp · 500 · +0.14em · Mono — nur dekorativ', font: mono, size: '10px', weight: 500, ls: '0.14em', color: '#94A3B8', sample: 'LOAD · STRAIN · RECOVERY', nameColor: '#00FF87' }
+      ],
+      specRows: [
+        { name: 'display', size: '48', weight: '700', ls: '0', font: 'Poppins', use: 'Readiness-Score im Gauge', contrast: 'Weiß ≈ 19:1', c: '#00F2FE' },
+        { name: 'valueLarge', size: '24', weight: '700', ls: '+0.02em', font: 'Mono, tabular', use: 'Session- & Pausen-Timer', contrast: 'Weiß ≈ 19:1', c: '#00F2FE' },
+        { name: 'titleLarge', size: '20', weight: '600', ls: '0', font: 'Poppins', use: 'Begrüßung, Screen-Titel, Dialog-Titel', contrast: 'Weiß ≈ 19:1', c: '#FFFFFF' },
+        { name: 'titleMedium', size: '16', weight: '600', ls: '0', font: 'Poppins', use: 'Karten- & Übungstitel, Quick-Action-Titel', contrast: 'Weiß ≈ 19:1', c: '#FFFFFF' },
+        { name: 'valueMedium', size: '16', weight: '600', ls: '0', font: 'Mono, tabular', use: 'Messwerte: HRV, Ruhe-HF, Schlaf, Eingaben', contrast: 'Akzente ≥ 4,6:1 auf Card', c: '#00F2FE' },
+        { name: 'labelMedium', size: '14', weight: '600', ls: '+0.10em', font: 'Poppins', use: 'Buttons, Dialogaktionen, CTA', contrast: 'Weiß auf Gradient ≥ 4,5:1', c: '#F02277' },
+        { name: 'labelSmall', size: '12', weight: '500', ls: '+0.01em', font: 'Poppins', use: 'Badges, Unterzeilen, Statuszeilen, Historie', contrast: '#CDD3EA ≈ 13:1 · #94A3B8 ≈ 7:1', c: '#CDD3EA' },
+        { name: 'labelMicro', size: '12', weight: '500', ls: '+0.16em', font: 'Mono, Versalien', use: 'Sektionslabels, Nav, Tabellenkopf, Stat-Labels', contrast: '#94A3B8 ≈ 7:1 auf Card', c: '#94A3B8' },
+        { name: 'labelDeco', size: '10', weight: '500', ls: '+0.14em', font: 'Mono, Versalien', use: 'NUR die 5 Ausnahmen (Abschnitt 02)', contrast: 'entfällt — dekorativ + Semantics', c: '#00FF87' }
+      ],
+      exceptions: [
+        { name: 'LEGENDE „LOAD"', size: '10 sp', dup: 'Der Tooltip am Heute-Punkt nennt „FR · LOAD 92" in labelSmall; die Kurve ist zusätzlich durch Verlaufsfarbe + Punktmarker unterscheidbar.', a11y: 'Chart-Semantics: „Wochenverlauf — Load, Strain und Recovery, Montag bis Sonntag."' },
+        { name: 'LEGENDE „STRAIN"', size: '10 sp', dup: 'Kurve zusätzlich durch Strichelung (4/5) unterscheidbar — Farbe ist nie einziger Träger; Detailwerte auf dem Analytics-Screen in voller Größe.', a11y: 'Im selben Chart-Semantics-Label enthalten.' },
+        { name: 'LEGENDE „RECOVERY"', size: '10 sp', dup: 'Recovery-Wert steht als Micro-Stat (valueMedium, 16 sp) direkt über dem Chart und auf der Recovery-Karte.', a11y: 'Im selben Chart-Semantics-Label enthalten.' },
+        { name: 'MINI-RING „87 %"', size: '10 sp', dup: 'Die Kartenunterzeile nennt „Protein 165 g / 190 g Ziel" in labelSmall — der Ring illustriert nur das Verhältnis.', a11y: 'Ring: excludeSemantics; Karte meldet „Ernährung, Protein 165 von 190 Gramm, 87 Prozent".' },
+        { name: 'WORTMARKE „ATEM HYBRID"', size: '8,5 sp', dup: 'Logo, kein Fließtext — der App-Name steht im Launcher, App-Titel und in der Profil-Ansicht.', a11y: 'Badge als Bild mit contentDescription „ATEM Hybrid, System aktiv" (Dot-Status inklusive).' }
+      ],
+      navWide: [
+        { label: 'HOME', d: 'M4 11.5 12 4.5l8 7 M6.5 10.5v9h11v-9', c: '#00F2FE', dot: 1 },
+        { label: 'WORKOUTS', d: 'M2.5 12h3 M18.5 12h3 M6.5 8.5v7 M17.5 8.5v7 M9.5 6v12 M14.5 6v12 M9.5 12h5', c: '#94A3B8', dot: 0 },
+        { label: 'ANALYTICS', d: 'M5 19.5v-7 M12 19.5v-13 M19 19.5V10', c: '#94A3B8', dot: 0 },
+        { label: 'RECOVERY', d: 'M3 12c3-6.5 6-6.5 9 0s6 6.5 9 0', c: '#94A3B8', dot: 0 },
+        { label: 'PROFIL', d: 'M12 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z M4.5 19.5c1.6-3.8 4.2-5.3 7.5-5.3s5.9 1.5 7.5 5.3', c: '#94A3B8', dot: 0 }
+      ],
+      navNarrow: [
+        { d: 'M2.5 12h3 M18.5 12h3 M6.5 8.5v7 M17.5 8.5v7 M9.5 6v12 M14.5 6v12 M9.5 12h5' },
+        { d: 'M5 19.5v-7 M12 19.5v-13 M19 19.5V10' },
+        { d: 'M3 12c3-6.5 6-6.5 9 0s6 6.5 9 0' },
+        { d: 'M12 4.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z M4.5 19.5c1.6-3.8 4.2-5.3 7.5-5.3s5.9 1.5 7.5 5.3' }
+      ],
+      motion: [
+        { el: 'Score Count-up', trigger: 'Erscheinen / Wertänderung', prop: 'Zahl + Arc-Sweep gemeinsam, 0 → Wert', dur: '1400 ms', curve: 'ease-out-cubic', rest: 'Endwert, Arc gefüllt', reduced: 'springt direkt auf Endwert', tc: '#00F2FE' },
+        { el: 'Marken-Dot', trigger: 'Dauerschleife', prop: 'Deckkraft 1 → 0,25 → 1 → 0,55 → 1 (Flackern)', dur: '2600 ms', curve: 'linear, gestuft', rest: 'Deckkraft 1, Glow an', reduced: 'eingefroren: Deckkraft 1', tc: '#94A3B8' },
+        { el: 'LIVE-Puls', trigger: 'Dauerschleife', prop: 'Deckkraft 1 → 0,4 + Scale 1 → 0,75', dur: '1800 ms', curve: 'ease-in-out', rest: 'voll sichtbar, Scale 1', reduced: 'eingefroren: voll sichtbar', tc: '#94A3B8' },
+        { el: 'Primärbutton-Glow', trigger: 'Dauerschleife', prop: 'Schattenradius + Alpha (magenta/cyan)', dur: '2200 ms', curve: 'ease-in-out', rest: 'Low-Zustand (18/34 dp Blur)', reduced: 'eingefroren: Low-Zustand', tc: '#94A3B8' },
+        { el: 'Pausen-Glow (Rest-Bar)', trigger: 'Dauerschleife', prop: 'Cyan-Schattenintensität', dur: '2000 ms', curve: 'ease-in-out', rest: 'Low-Zustand', reduced: 'eingefroren: Low-Zustand', tc: '#94A3B8' },
+        { el: 'Press-Feedback', trigger: 'Antippen', prop: 'Scale 1 → 0,97 (Nav: 0,88)', dur: '150 / 200 ms', curve: 'ease-out / ease-out', rest: 'Scale 1', reduced: 'bleibt — funktional, kurz, klein', tc: '#F02277' },
+        { el: 'Satz abhaken', trigger: 'Tap Häkchen', prop: 'Zeile: bg → Lime 7 %, Border → Lime 35 % · Häkchen Scale 0,6 → 1 · Glow-Fade', dur: '250 ms', curve: 'ease-out-back', rest: 'abgehakter Zustand', reduced: 'Farbwechsel bleibt (Zustand!), ohne Overshoot: ease-out', tc: '#F02277' },
+        { el: 'Satz entsperren', trigger: 'Tap Häkchen (erneut)', prop: 'Rückweg identisch, ohne Overshoot', dur: '200 ms', curve: 'ease-in-out', rest: 'offener Zustand', reduced: 'nur Farb-Fade', tc: '#F02277' },
+        { el: 'Rest-Bar einblenden', trigger: 'Satz abgehakt', prop: 'translateY 24 → 0 + Deckkraft 0 → 1', dur: '300 ms', curve: 'emphasized decelerate', rest: 'sichtbar, expandiert', reduced: 'nur Fade, 150 ms', tc: '#F02277' },
+        { el: 'Rest-Bar schrumpfen', trigger: 'Scroll / 900 ms Idle', prop: 'Padding + Button-Zeile (Höhe)', dur: '250 ms', curve: 'ease-in-out', rest: 'expandiert', reduced: 'bleibt — funktional', tc: '#00F2FE' },
+        { el: 'Satz-Typ-Zyklus', trigger: 'Tap Chip', prop: 'Scale 0,85 → 1 + Akzentfarbwechsel', dur: '150 ms', curve: 'ease-out', rest: 'statischer Chip', reduced: 'Farbwechsel sofort, ohne Scale', tc: '#F02277' },
+        { el: 'Nav-Wechsel', trigger: 'Tap Eintrag', prop: 'Icon-Farbe, Dot Deckkraft + Scale, Label-Einblendung (aktiv)', dur: '200 ms', curve: 'ease-out', rest: 'aktiver Zustand statisch', reduced: 'sofortiger Zustandswechsel', tc: '#F02277' },
+        { el: 'Pausen-Fortschritt', trigger: 'Wertänderung (1-s-Takt)', prop: 'Balkenbreite', dur: '1000 ms', curve: 'linear', rest: 'aktueller Stand', reduced: 'bleibt — informationstragend', tc: '#00F2FE' }
+      ],
+      strings: [
+        { key: 'app.brand', de: 'ATEM HYBRID', en: 'ATEM HYBRID' },
+        { key: 'dash.greeting', de: 'Guten Morgen, Alex', en: 'Good morning, Alex' },
+        { key: 'dash.subtitle', de: 'Optimales System-Level erreicht', en: 'Optimal system level reached' },
+        { key: 'dash.readiness.section', de: 'ATEM READINESS', en: 'ATEM READINESS' },
+        { key: 'dash.readiness.live', de: 'LIVE', en: 'LIVE' },
+        { key: 'dash.status.peak', de: 'PEAK READINESS', en: 'PEAK READINESS' },
+        { key: 'dash.tag.optimal', de: 'Regeneration: Optimal • Bereit für Max Load / EMOM', en: 'Recovery: optimal • Ready for max load / EMOM' },
+        { key: 'stat.hrv', de: 'HRV', en: 'HRV' },
+        { key: 'stat.rhr', de: 'RUHE-HF', en: 'RESTING HR' },
+        { key: 'stat.sleep', de: 'SCHLAF', en: 'SLEEP' },
+        { key: 'chart.section', de: 'PERFORMANCE · 7 TAGE', en: 'PERFORMANCE · 7 DAYS' },
+        { key: 'chart.legend.load', de: 'LOAD', en: 'LOAD' },
+        { key: 'chart.legend.strain', de: 'STRAIN', en: 'STRAIN' },
+        { key: 'chart.legend.recovery', de: 'RECOVERY', en: 'RECOVERY' },
+        { key: 'session.section', de: 'HEUTIGE SESSION', en: "TODAY'S SESSION" },
+        { key: 'session.cta.start', de: 'SESSION STARTEN', en: 'START SESSION' },
+        { key: 'session.cta.running', de: 'SESSION LÄUFT · {time}', en: 'SESSION RUNNING · {time}' },
+        { key: 'runner.session', de: 'SESSION', en: 'SESSION' },
+        { key: 'runner.exercise', de: 'ÜBUNG {n} / {m}', en: 'EXERCISE {n} / {m}' },
+        { key: 'runner.formguide', de: 'FORM GUIDE', en: 'FORM GUIDE' },
+        { key: 'runner.table.set', de: 'SATZ', en: 'SET' },
+        { key: 'runner.table.last', de: 'LETZTES MAL', en: 'LAST TIME' },
+        { key: 'runner.table.kg', de: 'KG', en: 'KG' },
+        { key: 'runner.table.reps', de: 'WDH', en: 'REPS' },
+        { key: 'runner.addset', de: '+ Satz hinzufügen', en: '+ Add set' },
+        { key: 'runner.progress', de: '{done} von {total} Sätzen abgeschlossen', en: '{done} of {total} sets completed' },
+        { key: 'runner.rest', de: 'PAUSE', en: 'REST' },
+        { key: 'runner.rest.skip', de: 'Überspringen', en: 'Skip' },
+        { key: 'runner.end.title', de: 'Workout beenden?', en: 'End workout?' },
+        { key: 'runner.end.confirm', de: 'Beenden & speichern', en: 'End & save' },
+        { key: 'runner.end.continue', de: 'Weiter trainieren', en: 'Keep training' },
+        { key: 'nav.home', de: 'Home', en: 'Home' },
+        { key: 'nav.workouts', de: 'Workouts', en: 'Workouts' },
+        { key: 'nav.analytics', de: 'Analytics', en: 'Analytics' },
+        { key: 'nav.recovery', de: 'Recovery', en: 'Recovery' },
+        { key: 'nav.profile', de: 'Profil', en: 'Profile' }
+      ],
+      a11y: [
+        { el: 'Häkchen-Button', label: '„Satz {n} abschließen" / „Satz {n} entsperren"', role: 'button (toggle)', state: 'checked = abgehakt; Announcement „Satz abgeschlossen, Pause gestartet"' },
+        { el: 'Satz-Typ-Chip', label: '„Satztyp: Warm-up. Tippen zum Ändern"', role: 'button', state: 'value = W/N/D/F ausgeschrieben; disabled wenn Satz abgehakt' },
+        { el: 'Feld KG', label: '„Gewicht in Kilogramm, Satz {n}"', role: 'textField', state: 'value; disabled + „gesperrt" wenn abgehakt' },
+        { el: 'Feld WDH', label: '„Wiederholungen, Satz {n}"', role: 'textField', state: 'value; disabled + „gesperrt" wenn abgehakt' },
+        { el: 'Pause-Toggle (Top-Bar)', label: '„Training pausieren" / „Training fortsetzen"', role: 'button (toggle)', state: 'toggled; Timer-Announcement pausiert' },
+        { el: 'Beenden (X)', label: '„Workout beenden"', role: 'button', state: 'öffnet Bestätigungsdialog (alertDialog)' },
+        { el: 'Rest-Bar ±/Skip', label: '„Pause um 30 s verlängern" / „…um 15 s verkürzen" / „Pause überspringen"', role: 'button', state: 'Restzeit als liveRegion polite, Ansage alle 15 s' },
+        { el: 'Nav-Eintrag', label: '„{Name}, Tab {n} von 5"', role: 'tab', state: 'selected; Label auch ohne sichtbaren Text vorhanden' },
+        { el: 'Readiness-Gauge', label: '„Readiness 88 Prozent, Peak Readiness"', role: 'image', state: 'liveRegion polite bei Wertänderung; Zahl im Bogen excludeSemantics' },
+        { el: 'Wochen-Chart', label: '„Wochenverlauf: Load, Strain, Recovery. Heute Freitag, Load 92"', role: 'image', state: 'Legenden-Labels excludeSemantics (im Label enthalten)' },
+        { el: 'Form-Guide-Chip', label: '„Form-Video zu {Übung} öffnen"', role: 'button', state: '—' },
+        { el: 'Session-CTA', label: '„Session starten" / „Session läuft, {Zeit}, tippen zum Stoppen"', role: 'button', state: 'Zustand im Label; Timer nicht als liveRegion (zu häufig)' }
+      ],
+      decisions: [
+        { n: '1', title: 'Nav-Labels sind nicht dekorativ', body: 'Dein Ausnahme-Budget hätte sie hergegeben, aber sie benennen Ziele — das ist Information. Sie wachsen auf 12 sp; der Platzkonflikt auf 320 dp wird kompositorisch gelöst (nur aktives Label sichtbar), nicht typografisch.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '2', title: 'Fünf Ausnahmen statt sechs', body: 'Deine vier Kandidaten (drei Legenden + Ring-Prozent) bestehen den Redundanz-Test, die Wortmarke als Logo ebenfalls. Ein sechster Kandidat, der die Information wirklich doppelt führt, existiert nicht — das Budget wird nicht ausgereizt, nur weil es da ist.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '3', title: 'labelMicro kompensiert über Gewicht, nicht über Deckkraft', body: 'Geringere Deckkraft wäre die naheliegende HUD-Kompensation, kollidiert aber mit der 4,5:1-Randbedingung, sobald das Label auf getönten Karten liegt. Gewicht 700 → 500 + relative Sperrung 0,16 em erreichen denselben optischen Rückzug kontrastneutral.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '4', title: 'Buttons auf 14 sp, nicht 12', body: 'Dein Raster hätte labelMedium bei 12 sp zugelassen. Auf 13 px Gradient-Buttons mit 0,10 em Sperrung ist 12 sp aber schwächer als die labelSmall-Unterzeilen daneben — die CTA-Hierarchie kippt. 14 sp stellt sie wieder her.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '5', title: 'Laufweite in em statt sp', body: 'Der Bestand nutzt feste Pixel-Sperrungen (2,5 px). Bei 200 % Systemschrift rückt fester Abstand relativ zusammen und die Labels verlieren genau dann ihren Charakter, wenn sie am größten sind. Alle Sperrungen werden relativ definiert.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '6', title: 'Gauge-Zahl cappt bei 1,3× — mit Bedingung', body: 'Begrenzen ist nur zulässig, weil zwei Dinge gleichzeitig gelten: Statuszeile und Tag-Pill unter dem Gauge skalieren voll mit, und Semantics meldet den exakten Wert. Fällt eine der beiden Redundanzen weg, muss die Zahl mitwachsen und der Bogen weichen.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

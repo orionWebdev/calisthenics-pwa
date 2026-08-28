@@ -58,7 +58,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                   builder: (_) => const ExerciseFormScreen(),
                 ),
               ),
-              semanticLabel: l10n.exercisesNew,
+              semanticLabel: l10n.exercisesCreate,
               child: const Icon(Icons.add, size: 22, color: AtemColors.cyan),
             ),
           ),
