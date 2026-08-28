@@ -10,7 +10,9 @@ import '../../application/history_providers.dart';
 import '../../domain/readiness.dart';
 import '../../domain/training_load.dart';
 import '../../domain/training_session.dart';
+import '../../domain/session_comparison.dart';
 import '../session_actions.dart';
+import '../widgets/comparison_card.dart';
 import '../session_ui.dart';
 import 'session_edit_screen.dart';
 
@@ -60,6 +62,19 @@ class SessionDetailScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 22),
             _Stats(session: session, load: load),
+
+            // **Der Vergleich steht direkt unter den Absolutwerten.** „412"
+            // allein sagt niemandem etwas; „412, vorher 380" sagt alles —
+            // und beides nebeneinander zu lesen ist der ganze Zweck.
+            const SizedBox(height: 22),
+            ComparisonCard(
+              comparison: SessionComparison.forSession(
+                session,
+                sessions,
+                context: context_,
+              ),
+              languageTag: tag,
+            ),
             if (acwr.acwr case final value?) ...[
               const SizedBox(height: 24),
               Text(l10n.detailAcwrLabel,

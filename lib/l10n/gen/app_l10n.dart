@@ -2699,7 +2699,7 @@ abstract class AppL10n {
   ///
   /// In de, this message translates to:
   /// **'{n} / Wo'**
-  String historyFreqValue(int n);
+  String historyFreqValue(String n);
 
   /// history.last
   ///

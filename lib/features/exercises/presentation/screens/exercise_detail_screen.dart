@@ -6,6 +6,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/exercise_history.dart';
+import '../../../history/presentation/session_ui.dart';
+import '../../../history/presentation/widgets/exercise_history_block.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../application/exercise_providers.dart';
 import '../../domain/exercise.dart';
@@ -49,6 +51,10 @@ class ExerciseDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
+    final history = ExerciseHistory.of(
+      ref.watch(sessionsProvider).value ?? const [],
+      exercise.id,
+    );
     final color =
         exercise.displayMuscles.firstOrNull?.color ?? AtemCategories.grey;
 
@@ -114,6 +120,19 @@ class ExerciseDetailScreen extends ConsumerWidget {
               // Kategorien nebeneinander wären ein Flickenteppich.
               Text(exercise.equipment.join(' · '),
                   style: AtemType.labelMicro.of(context)),
+            ],
+
+            // **Dein Verlauf steht vor der Anleitung.** Wer eine Übung
+            // öffnet, die er kennt, will wissen, wo er steht; wer eine
+            // öffnet, die er nicht kennt, hat ohnehin keinen Verlauf — dann
+            // fehlt der Block und die Anleitung rückt nach oben.
+            if (!history.isEmpty) ...[
+              const SizedBox(height: 24),
+              ExerciseHistoryBlock(
+                history: history,
+                reference: ref.watch(historyReferenceProvider),
+                languageTag: languageTag(context),
+              ),
             ],
 
             // Ab hier: nur was Daten hat.

@@ -1,3 +1,4 @@
+import 'comparison_basis.dart';
 import 'training_load.dart';
 import 'training_session.dart';
 
@@ -83,12 +84,24 @@ class SessionComparison {
   const SessionComparison({
     required this.session,
     required this.current,
+    this.basis,
     this.reference,
+    this.referenceDate,
     this.previous,
+    this.medianCount = 0,
   });
 
   final TrainingSession session;
   final SessionFigures current;
+
+  /// Auf welcher Stufe der Vergleich beruht. `null` heißt: keiner gefunden.
+  final ComparisonBasis? basis;
+
+  /// Das Datum des Bezugs — bei Stufe C das der jüngsten im Bündel.
+  final DateTime? referenceDate;
+
+  /// Wie viele Einheiten in den Median eingegangen sind. 0 außer bei Stufe C.
+  final int medianCount;
 
   /// Die Einheit, mit der verglichen wird. `null`, wenn es keine gibt — bei
   /// der ersten Einheit eines Plans ist das immer so.
@@ -96,12 +109,15 @@ class SessionComparison {
 
   final SessionFigures? previous;
 
-  bool get hasReference => reference != null && previous != null;
+  bool get hasReference => previous != null;
+
+  /// Trägt der Vergleich auch Volumen und Sätze?
+  bool get comparesVolume => basis?.comparesVolume ?? false;
 
   /// Tage zwischen den beiden Einheiten.
-  int? get daysBetween => reference == null
+  int? get daysBetween => referenceDate == null
       ? null
-      : session.date.difference(reference!.date).inDays.abs();
+      : session.date.difference(referenceDate!).inDays.abs();
 
   /// Relative Veränderung, oder `null`, wenn eine Seite fehlt oder die
   /// Bezugsgrösse null ist. **Kein Ersatzwert:** Eine Steigerung von null auf
@@ -135,6 +151,73 @@ class SessionComparison {
     return best;
   }
 
+  /// Baut den Vergleich nach der Kaskade.
+  ///
+  /// Bei Stufe C ist der Bezug **kein Datensatz, sondern ein Median** über
+  /// die letzten fünf Einheiten derselben Art. Der Median und nicht der
+  /// Mittelwert: Eine einzelne Ausreisser-Einheit — vier Stunden Wandern
+  /// unter fünf Läufen — verschöbe einen Mittelwert so weit, dass der
+  /// Vergleich nichts mehr sagt.
+  static SessionComparison forSession(
+    TrainingSession session,
+    List<TrainingSession> all, {
+    LoadContext context = const LoadContext(),
+  }) {
+    final match = ComparisonResolver.resolve(session, all);
+    final current = SessionFigures.of(session, context);
+
+    if (match == null) {
+      return SessionComparison(session: session, current: current);
+    }
+
+    if (match.reference case final reference?) {
+      return SessionComparison(
+        session: session,
+        current: current,
+        basis: match.basis,
+        reference: reference,
+        referenceDate: reference.date,
+        previous: SessionFigures.of(reference, context),
+      );
+    }
+
+    // Stufe C: Median über Dauer und Last. Volumen und Sätze bleiben leer —
+    // sie hängen an den Übungen, und die sind hier gerade nicht vergleichbar.
+    final durations = <int>[];
+    final loads = <double>[];
+    for (final session in match.median) {
+      final minutes = session.duration?.inMinutes;
+      if (minutes != null) durations.add(minutes);
+      loads.add(TrainingLoad.of(session, context));
+    }
+
+    return SessionComparison(
+      session: session,
+      current: current,
+      basis: match.basis,
+      referenceDate: match.date,
+      medianCount: match.median.length,
+      previous: SessionFigures(
+        duration: durations.isEmpty
+            ? null
+            : Duration(minutes: _median(durations).round()),
+        load: loads.isEmpty ? 0 : _median(loads),
+        volume: null,
+        sets: null,
+        exercises: null,
+        distanceKm: null,
+      ),
+    );
+  }
+
+  /// Der Median einer Liste. Bei gerader Anzahl das Mittel der beiden mittleren.
+  static double _median(List<num> values) {
+    final sorted = [...values]..sort();
+    final middle = sorted.length ~/ 2;
+    if (sorted.length.isOdd) return sorted[middle].toDouble();
+    return (sorted[middle - 1] + sorted[middle]) / 2;
+  }
+
   static SessionComparison build(
     TrainingSession session,
     TrainingSession? reference, {
@@ -144,6 +227,7 @@ class SessionComparison {
         session: session,
         current: SessionFigures.of(session, context),
         reference: reference,
+        referenceDate: reference?.date,
         previous:
             reference == null ? null : SessionFigures.of(reference, context),
       );

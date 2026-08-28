@@ -115,14 +115,14 @@ void main() {
   });
 
   group('Das Zeitfenster', () {
-    test('schneidet ab, was älter ist', () {
+    test('schneidet ab, was älter als acht Wochen ist', () {
       final balance = MuscleBalance.compute(
         [
           _strength('drin', _heute.subtract(const Duration(days: 10)), [
             const LoggedExercise(
                 exerciseId: 'squat', sets: [LoggedSet(reps: 5)]),
           ]),
-          _strength('draussen', _heute.subtract(const Duration(days: 40)), [
+          _strength('draussen', _heute.subtract(const Duration(days: 70)), [
             const LoggedExercise(
                 exerciseId: 'squat', sets: [LoggedSet(reps: 5)]),
           ]),
@@ -146,6 +146,86 @@ void main() {
         _heute,
       );
       expect(balance.sessionsInWindow, 1);
+    });
+  });
+
+  group('Abstände', () {
+    test('zählen die Tage seit dem letzten Satz auf den Muskel', () {
+      final balance = MuscleBalance.compute(
+        [
+          _strength('a', _heute.subtract(const Duration(days: 5)), [
+            const LoggedExercise(
+                exerciseId: 'squat', sets: [LoggedSet(reps: 5)]),
+          ]),
+          _strength('b', _heute.subtract(const Duration(days: 20)), [
+            const LoggedExercise(
+                exerciseId: 'pull_up', sets: [LoggedSet(reps: 8)]),
+          ]),
+        ],
+        _catalogue,
+        _heute,
+      );
+
+      expect(_share(balance, MuscleGroup.legs).lastSetDaysAgo, 5);
+      expect(_share(balance, MuscleGroup.back).lastSetDaysAgo, 20);
+      expect(_share(balance, MuscleGroup.chest).lastSetDaysAgo, isNull,
+          reason: 'ohne Satz im Fenster gibt es keinen Abstand');
+    });
+
+    test('die drei längsten stehen vorn', () {
+      final balance = MuscleBalance.compute(
+        [
+          _strength('neu', _heute.subtract(const Duration(days: 2)), [
+            const LoggedExercise(
+                exerciseId: 'squat', sets: [LoggedSet(reps: 5)]),
+          ]),
+          _strength('alt', _heute.subtract(const Duration(days: 30)), [
+            const LoggedExercise(
+                exerciseId: 'pull_up', sets: [LoggedSet(reps: 8)]),
+          ]),
+        ],
+        _catalogue,
+        _heute,
+      );
+
+      final gaps = balance.longestGaps;
+      expect(gaps.first.muscle, MuscleGroup.back, reason: '30 Tage');
+      expect(gaps.map((g) => g.muscle), isNot(contains(MuscleGroup.chest)),
+          reason: 'ohne Satz kein Abstand — und keine erfundene Null');
+    });
+  });
+
+  group('Die Schwelle', () {
+    test('acht Einheiten mit Übungen', () {
+      expect(MuscleBalance.minimumSessions, 8);
+      final few = MuscleBalance.compute(
+        [
+          for (var i = 0; i < 7; i++)
+            _strength('s$i', _heute.subtract(Duration(days: i * 3)), [
+              const LoggedExercise(
+                  exerciseId: 'squat', sets: [LoggedSet(reps: 5)]),
+            ]),
+        ],
+        _catalogue,
+        _heute,
+      );
+      expect(few.hasEnough, isFalse);
+      expect(few.sessionsCounted, 7);
+    });
+
+    test('ab der achten wird gezeigt', () {
+      final enough = MuscleBalance.compute(
+        [
+          for (var i = 0; i < 8; i++)
+            _strength('s$i', _heute.subtract(Duration(days: i * 3)), [
+              const LoggedExercise(
+                  exerciseId: 'squat', sets: [LoggedSet(reps: 5)]),
+            ]),
+        ],
+        _catalogue,
+        _heute,
+      );
+      expect(enough.hasEnough, isTrue);
     });
   });
 

@@ -38,16 +38,22 @@ def camel(key: str) -> str:
     return parts[0] + ''.join(p[:1].upper() + p[1:] for p in parts[1:])
 
 
-def placeholders(text: str) -> dict:
+# Ausnahmen, bei denen `n` eine Kommazahl trägt und deshalb als Text
+# durchgereicht wird — „1,8 / Wo" wäre als Ganzzahl 2.
+DECIMAL_KEYS = {'history.freq.value'}
+
+
+def placeholders(text: str, key: str = '') -> dict:
     found = {}
     # ICU-Plural: {p, plural, one {…} other {…}} — die Variable ist eine Zahl.
     for name in re.findall(r'\{(\w+),\s*plural', text):
         found[name] = {'type': 'int'}
     # Einfache Platzhalter, aber nicht die `#` innerhalb einer Pluralform.
+    numeric = set() if key in DECIMAL_KEYS else NUMERIC
     for name in re.findall(r'\{(\w+)\}', text):
         if name in found:
             continue
-        found[name] = {'type': 'int'} if name in NUMERIC else {'type': 'String'}
+        found[name] = {'type': 'int'} if name in numeric else {'type': 'String'}
     return found
 
 
@@ -112,7 +118,7 @@ def main() -> None:
     for dotted, german, english in rows:
         key = camel(dotted)
         meta = {'description': dotted}
-        ph = placeholders(german)
+        ph = placeholders(german, dotted)
         if ph:
             meta['placeholders'] = ph
 

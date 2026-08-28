@@ -7,6 +7,9 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../dashboard/application/dashboard_providers.dart';
 import '../../../dashboard/domain/dashboard_data.dart';
 import '../../../exercises/application/exercise_providers.dart';
+import '../../../history/application/history_providers.dart';
+import '../../../history/domain/muscle_balance.dart';
+import '../../../history/presentation/widgets/muscle_balance_card.dart';
 import '../../../plans/application/pending_plan_deletion.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../../plans/domain/plan.dart';
@@ -145,6 +148,18 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   ],
                 ),
               ),
+            const SizedBox(height: 28),
+            // Die Balance steht **zwischen** Plänen und Übungen: Sie
+            // beantwortet weder „was mache ich jetzt" noch „was gibt es
+            // sonst", sondern „was habe ich vernachlässigt" — und das ist
+            // die Frage, die zwischen beiden liegt.
+            MuscleBalanceCard(
+              balance: MuscleBalance.compute(
+                ref.watch(sessionsProvider).value ?? const [],
+                ref.watch(exercisesProvider).value ?? const [],
+                ref.watch(historyReferenceProvider),
+              ),
+            ),
             const SizedBox(height: 28),
             _SectionHeader(
               // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"

@@ -1576,7 +1576,7 @@ class AppL10nDe extends AppL10n {
   String get historyFreq => 'Häufigkeit';
 
   @override
-  String historyFreqValue(int n) {
+  String historyFreqValue(String n) {
     return '$n / Wo';
   }
 

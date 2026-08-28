@@ -2306,7 +2306,7 @@
     "description": "history.freq.value",
     "placeholders": {
       "n": {
-        "type": "int"
+        "type": "String"
       }
     }
   },

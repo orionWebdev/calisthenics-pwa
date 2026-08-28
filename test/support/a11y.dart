@@ -67,7 +67,24 @@ final fixtureSessions = <TrainingSession>[
       bodyweight: false,
       duration: const Duration(minutes: 45),
       rpe: 3,
+      planId: 'p1',
       planName: 'Upper Body Power',
+      // Übungen und Sätze, damit Modul 9 überhaupt etwas zu rechnen hat:
+      // ohne sie blieben Muskelbalance und Übungsverlauf im dünnen Zustand,
+      // und die Matrix prüfte nur Leerzustände.
+      exercises: [
+        LoggedExercise(
+          exerciseId: 'archer_push_up',
+          sets: [
+            LoggedSet(reps: 8, weight: 60 + i.toDouble()),
+            const LoggedSet(reps: 8, weight: 60),
+          ],
+        ),
+        const LoggedExercise(
+          exerciseId: 'pistol_squat',
+          sets: [LoggedSet(reps: 6)],
+        ),
+      ],
     ),
 ];
 

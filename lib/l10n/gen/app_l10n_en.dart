@@ -1569,7 +1569,7 @@ class AppL10nEn extends AppL10n {
   String get historyFreq => 'Frequency';
 
   @override
-  String historyFreqValue(int n) {
+  String historyFreqValue(String n) {
     return '$n / wk';
   }
 

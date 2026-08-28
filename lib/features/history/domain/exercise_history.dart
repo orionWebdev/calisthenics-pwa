@@ -118,6 +118,51 @@ class ExerciseHistory {
   int get totalSets =>
       occurrences.fold(0, (total, o) => total + o.setCount);
 
+  /// Ausführungen je Woche über das Fenster, in dem sie stattfanden.
+  ///
+  /// `null` bei weniger als zwei — aus einer Ausführung folgt keine
+  /// Häufigkeit, und aus zwei am selben Tag auch keine.
+  double? frequencyPerWeek(DateTime reference) {
+    if (occurrences.length < 2) return null;
+    final first = firstDate;
+    if (first == null) return null;
+    final days = reference.difference(first).inDays;
+    if (days < 7) return null;
+    return occurrences.length / (days / 7);
+  }
+
+  /// Wie viele Ausführungen der Verlauf trägt — die Stufe des Blocks.
+  ///
+  /// 0 → der Block fehlt · 1 → nur „Damals" · 2 bis 4 → Werte ohne Kurve ·
+  /// ab 5 → mit Kurve. Die Schwelle liegt bei fünf und nicht bei acht wie
+  /// beim Formtrend: Hier ist ein Punkt eine **Ausführung**, kein Tag.
+  static const curveMinimum = 5;
+
+  bool get hasCurve => occurrences.length >= curveMinimum;
+
+  /// Die Punkte der Kurve, älteste zuerst — bestes Satzgewicht je Ausführung.
+  ///
+  /// Bei Körpergewichtsübungen ohne Zusatzlast tritt die Wiederholungszahl an
+  /// seine Stelle. Das Kriterium ist dasselbe wie im Runner; ein zweites im
+  /// Detail wäre ein Widerspruch im selben Datensatz.
+  List<({DateTime date, double value})> get curve {
+    final points = <({DateTime date, double value})>[];
+    for (final occurrence in occurrences.reversed) {
+      final weight = occurrence.bestWeightKg;
+      final reps = occurrence.totalReps;
+      final value = weight ?? (reps?.toDouble());
+      if (value == null) continue;
+      points.add((date: occurrence.date, value: value));
+    }
+    return points;
+  }
+
+  /// Misst der Verlauf Gewicht oder Wiederholungen?
+  ///
+  /// Steht als Untertitel an der Kachel — sonst wäre „82,5" und „12" dieselbe
+  /// Zahl mit verschiedener Bedeutung.
+  bool get measuresWeight => recordWeightKg != null;
+
   /// Alle Übungen des Bestands auf einmal.
   ///
   /// Einmal über alle Einheiten statt einmal je Übung: Ein Plan mit acht

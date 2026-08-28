@@ -9,6 +9,7 @@ class MuscleShare {
     required this.sets,
     required this.volume,
     required this.exerciseIds,
+    this.lastSetDaysAgo,
   });
 
   final MuscleGroup muscle;
@@ -21,6 +22,10 @@ class MuscleShare {
 
   /// Welche Übungen dazu beigetragen haben.
   final Set<String> exerciseIds;
+
+  /// Tage seit dem letzten Satz auf diesen Muskel. `null`, wenn es im
+  /// Fenster keinen gab.
+  final int? lastSetDaysAgo;
 
   bool get isEmpty => sets == 0;
 }
@@ -59,7 +64,20 @@ class MuscleBalance {
     required this.unresolvedExerciseIds,
   });
 
-  static const defaultWindowDays = 28;
+  /// Acht Wochen — so schreibt es das Board.
+  ///
+  /// Vier wären zu kurz: Wer zweimal die Woche trainiert, hätte darin acht
+  /// Einheiten, und eine einzige ausgefallene Woche kippte die Verteilung.
+  /// Zwölf wären zu lang, um noch etwas über die Gegenwart zu sagen.
+  static const defaultWindowDays = 56;
+
+  /// So viele Krafteinheiten **mit Übungen** braucht es, bevor überhaupt
+  /// etwas gezeigt wird.
+  ///
+  /// Darunter steht ein Fortschrittsbalken bis zur Schwelle statt einer
+  /// Verteilung. Aus drei Einheiten eine Balance zu zeichnen hiesse, drei
+  /// Tage zu einer Aussage über acht Wochen zu machen.
+  static const minimumSessions = 8;
 
   /// Je Filtermuskel ein Eintrag, in der Reihenfolge von
   /// [MuscleGroup.filters] — also am Körper entlang, nicht nach Größe
@@ -97,6 +115,22 @@ class MuscleBalance {
   int get maxSets =>
       shares.fold(0, (best, s) => s.sets > best ? s.sets : best);
 
+  /// Reicht die Grundlage für eine Verteilung?
+  bool get hasEnough => sessionsCounted >= minimumSessions;
+
+  /// Die drei längsten Abstände — für den Lückenstreifen.
+  ///
+  /// **Kein Sollwert dahinter.** Die Balkenlänge ist relativ zum längsten
+  /// Abstand, nicht zu einer Vorgabe: Die App weiß nicht, wie oft ein Muskel
+  /// dran sein sollte, und tut auch nicht so.
+  List<MuscleShare> get longestGaps {
+    final withGap = [
+      for (final share in shares)
+        if (share.lastSetDaysAgo != null) share,
+    ]..sort((a, b) => b.lastSetDaysAgo!.compareTo(a.lastSetDaysAgo!));
+    return withGap.take(3).toList();
+  }
+
   static MuscleBalance compute(
     List<TrainingSession> sessions,
     List<Exercise> exercises,
@@ -114,6 +148,7 @@ class MuscleBalance {
     final sets = <MuscleGroup, int>{};
     final volume = <MuscleGroup, double>{};
     final contributors = <MuscleGroup, Set<String>>{};
+    final lastSeen = <MuscleGroup, DateTime>{};
     final unresolved = <String>{};
 
     var inWindow = 0;
@@ -164,6 +199,10 @@ class MuscleBalance {
           sets[muscle] = (sets[muscle] ?? 0) + filled.length;
           volume[muscle] = (volume[muscle] ?? 0) + moved;
           contributors.putIfAbsent(muscle, () => {}).add(logged.exerciseId);
+          final seen = lastSeen[muscle];
+          if (seen == null || session.date.isAfter(seen)) {
+            lastSeen[muscle] = session.date;
+          }
         }
         contributed = true;
       }
@@ -184,6 +223,9 @@ class MuscleBalance {
             sets: sets[muscle] ?? 0,
             volume: volume[muscle] ?? 0,
             exerciseIds: contributors[muscle] ?? const {},
+            lastSetDaysAgo: lastSeen[muscle] == null
+                ? null
+                : reference.difference(lastSeen[muscle]!).inDays,
           ),
       ],
     );
