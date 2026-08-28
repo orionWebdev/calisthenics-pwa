@@ -210,8 +210,8 @@ class ExerciseRow extends StatelessWidget {
     return AtemTappable(
       onTap: onTap,
       semanticLabel: exercise.difficulty == null
-          ? '${exercise.name}. $sub'
-          : '${exercise.name}. $sub. '
+          ? '${exerciseName(context, exercise)}. $sub'
+          : '${exerciseName(context, exercise)}. $sub. '
               '${l10n.exerciseDifficultyA11y(exercise.difficulty!)}',
       minTapSize: const Size(0, 64),
       alignment: Alignment.centerLeft,
@@ -227,7 +227,7 @@ class ExerciseRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    exercise.name,
+                    exerciseName(context, exercise),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AtemType.titleSmallOrDefault(context)

@@ -17,7 +17,15 @@ class SessionTopBar extends StatelessWidget {
     required this.onTogglePause,
     required this.onOpenNotes,
     required this.onEnd,
+    this.amending = false,
   });
+
+  /// Wird eine bestehende Einheit ergänzt statt trainiert?
+  ///
+  /// Dann läuft keine Uhr. Beim Nachtragen von Sätzen zu einer Einheit von
+  /// vorletzter Woche ist eine mitlaufende Zeit nicht nur bedeutungslos —
+  /// sie behauptet, gerade werde trainiert.
+  final bool amending;
 
   final String elapsed;
   final bool paused;
@@ -35,46 +43,60 @@ class SessionTopBar extends StatelessWidget {
         Expanded(
           child: Semantics(
             // Laufzeit als ein Knoten, nicht "SESSION" und dann "04:12".
-            label: '${l10n.workoutRunnerSessionLabel} $elapsed',
+            label: amending
+                ? l10n.setsAdd
+                : '${l10n.workoutRunnerSessionLabel} $elapsed',
             child: ExcludeSemantics(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(l10n.workoutRunnerSessionLabel,
-                      style: AtemType.labelMicro.of(context)),
+                  Text(
+                    amending
+                        ? l10n.sessionEditTitle
+                        : l10n.workoutRunnerSessionLabel,
+                    style: AtemType.labelMicro.of(context),
+                  ),
                   const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      AtemStatusDot(
-                        color: paused
-                            ? AtemColors.textSecondary
-                            : AtemColors.green,
-                        pulsing: !paused,
-                      ),
-                      const SizedBox(width: 7),
-                      Flexible(
-                        child: Text(
-                          elapsed,
-                          style: AtemType.valueLarge.of(context).copyWith(
-                            fontFeatures: const [FontFeature.tabularFigures()],
+                  if (amending)
+                    Text(l10n.setsAdd,
+                        style: AtemType.titleMedium.of(context))
+                  else
+                    Row(
+                      children: [
+                        AtemStatusDot(
+                          color: paused
+                              ? AtemColors.textSecondary
+                              : AtemColors.green,
+                          pulsing: !paused,
+                        ),
+                        const SizedBox(width: 7),
+                        Flexible(
+                          child: Text(
+                            elapsed,
+                            style: AtemType.valueLarge.of(context).copyWith(
+                              fontFeatures: const [
+                                FontFeature.tabularFigures()
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                 ],
               ),
             ),
           ),
         ),
-        _IconAction(
-          glyph: paused ? _Glyph.play : _Glyph.pause,
-          semanticLabel:
-              paused ? l10n.workoutA11yResume : l10n.workoutA11yPause,
-          tint: paused ? AtemColors.green : AtemColors.textSecondary,
-          onTap: onTogglePause,
-        ),
+        // Pause gibt es nur, wo etwas läuft.
+        if (!amending)
+          _IconAction(
+            glyph: paused ? _Glyph.play : _Glyph.pause,
+            semanticLabel:
+                paused ? l10n.workoutA11yResume : l10n.workoutA11yPause,
+            tint: paused ? AtemColors.green : AtemColors.textSecondary,
+            onTap: onTogglePause,
+          ),
         _IconAction(
           glyph: _Glyph.notes,
           semanticLabel: l10n.workoutA11yNotes,
@@ -83,10 +105,12 @@ class SessionTopBar extends StatelessWidget {
         ),
         _IconAction(
           glyph: _Glyph.close,
-          semanticLabel: l10n.workoutA11yEnd,
-          tint: AtemColors.magenta,
-          background: AtemColors.magenta.withValues(alpha: 0.10),
-          border: AtemColors.magenta.withValues(alpha: 0.45),
+          semanticLabel: amending ? l10n.commonSave : l10n.workoutA11yEnd,
+          tint: amending ? AtemColors.cyan : AtemColors.magenta,
+          background: (amending ? AtemColors.cyan : AtemColors.magenta)
+              .withValues(alpha: 0.10),
+          border: (amending ? AtemColors.cyan : AtemColors.magenta)
+              .withValues(alpha: 0.45),
           onTap: onEnd,
         ),
       ],

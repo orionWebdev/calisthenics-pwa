@@ -21,9 +21,18 @@ abstract final class ExerciseMapper {
     // solchen Fall, aber Raten wäre schlimmer als Auslassen.
     if (name == null) return null;
 
+    // Der deutsche Overlay-Block der kuratierten Übungen. Die Vorgänger-App
+    // liest daraus Name, Anleitung, Cues und typische Fehler.
+    final german = data['i18n'] is Map
+        ? (data['i18n'] as Map)['de'] as Map<Object?, Object?>?
+        : null;
+
     return Exercise(
       id: doc.id,
       name: name,
+      // Zwei Schreibweisen im Bestand: ein flaches `name_de` und ein
+      // verschachteltes `i18n.de.name`. Beide kommen vor.
+      nameDe: _string(data['name_de']) ?? _string(german?['name']),
       source: source,
       muscleGroups: _muscles(data['muscleGroups']),
       primaryMuscles: _muscles(data['primaryMuscles']),
@@ -32,10 +41,13 @@ abstract final class ExerciseMapper {
       // Zahlen und Wörter im selben Feld — siehe [Difficulty].
       difficulty: Difficulty.parse(data['difficulty']),
       type: _string(data['type']),
-      description: _string(data['description']),
-      instructions: _strings(data['instructionsSteps']),
-      cues: _strings(data['cues']),
-      commonMistakes: _strings(data['commonMistakes']),
+      description:
+          _string(german?['description']) ?? _string(data['description']),
+      instructions: _pick(german?['instructionsSteps'],
+          data['instructionsSteps']),
+      cues: _pick(german?['cues'], data['cues']),
+      commonMistakes:
+          _pick(german?['commonMistakes'], data['commonMistakes']),
     );
   }
 
@@ -58,6 +70,15 @@ abstract final class ExerciseMapper {
       for (final entry in value)
         if (_string(entry) case final s?) s,
     ];
+  }
+
+  /// Die deutsche Fassung, wenn sie etwas enthält — sonst die Grundfassung.
+  ///
+  /// Ein leerer Overlay-Eintrag darf die englische Anleitung nicht
+  /// verdrängen: „übersetzt, aber leer" wäre schlechter als „nicht übersetzt".
+  static List<String> _pick(Object? german, Object? base) {
+    final translated = _strings(german);
+    return translated.isEmpty ? _strings(base) : translated;
   }
 
   static List<MuscleGroup> _muscles(Object? value) {

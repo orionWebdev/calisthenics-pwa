@@ -25,6 +25,7 @@ class Exercise {
     required this.id,
     required this.name,
     required this.source,
+    this.nameDe,
     this.muscleGroups = const [],
     this.primaryMuscles = const [],
     this.secondaryMuscles = const [],
@@ -46,6 +47,18 @@ class Exercise {
   /// gemischte Sprachen aushalten; eine Kennzeichnung gibt es bewusst nicht —
   /// Namen sind Namen.
   final String name;
+
+  /// Der deutsche Name, falls hinterlegt.
+  ///
+  /// Die Vorgänger-App liest ihn aus `name_de` und fällt sonst auf [name]
+  /// zurück (`js/views/exercises/model.js`, `getExerciseName`). Genau das war
+  /// hier lange nicht umgesetzt — die App zeigte durchweg die englischen
+  /// Namen, obwohl deutsche im Bestand stehen.
+  ///
+  /// **Zwei Felder statt einem übersetzten**, weil die Datenschicht die
+  /// Sprache nicht kennt und nicht kennen soll (Vertrag 3). Welcher gezeigt
+  /// wird, entscheidet die Oberfläche.
+  final String? nameDe;
 
   final ExerciseSource source;
 

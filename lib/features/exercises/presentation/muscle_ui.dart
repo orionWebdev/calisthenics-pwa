@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../l10n/gen/app_l10n.dart';
+import '../domain/exercise.dart';
 import '../domain/muscle.dart';
 
 /// Farbe und Text zu einer Muskelgruppe.
@@ -87,3 +88,18 @@ String trainingTypeLabel(AppL10n l, String? wire) => switch (wire) {
       'hybrid' => l.typeHybrid,
       _ => wire ?? '',
     };
+
+/// Der anzuzeigende Übungsname.
+///
+/// Deutsch, wenn hinterlegt — sonst der Grundname. Genau wie die
+/// Vorgänger-App es macht (`js/views/exercises/model.js`, `getExerciseName`).
+///
+/// **Keine Kennzeichnung**, wenn nur Englisch da ist. 24 der kuratierten
+/// Übungen haben keinen deutschen Namen, und bei `dips` oder `muscle_up` wäre
+/// ein Hinweis „nur englisch" eine Meldung über etwas, das niemanden stört.
+String exerciseName(BuildContext context, Exercise exercise) {
+  final isGerman = Localizations.localeOf(context).languageCode == 'de';
+  final german = exercise.nameDe;
+  if (isGerman && german != null && german.isNotEmpty) return german;
+  return exercise.name;
+}

@@ -115,6 +115,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   ) =>
       pool.putIfAbsent(id, () => TextEditingController(text: initial));
 
+  bool get _amends => widget.start.amends;
+
   WorkoutSessionController get _notifier =>
       ref.read(workoutSessionProvider(widget.start).notifier);
 
@@ -202,6 +204,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
               child: SessionTopBar(
+                amending: w.amendsSessionId != null,
                 elapsed: _clock,
                 paused: _paused,
                 onTogglePause: () => setState(() => _paused = !_paused),
@@ -245,6 +248,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SessionTopBar(
+                    amending: w.amendsSessionId != null,
                     elapsed: _clock,
                     paused: _paused,
                     onTogglePause: () => setState(() => _paused = !_paused),
@@ -343,7 +347,10 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
               onSkip: () => setState(() => _restOn = false),
             ),
           ),
-        if (_ended) _SummaryOverlay(workout: w, elapsed: _clock),
+        // Die Zusammenfassung gehört zu einem beendeten Training, nicht zu
+        // nachgetragenen Sätzen.
+        if (_ended && w.amendsSessionId == null)
+          _SummaryOverlay(workout: w, elapsed: _clock),
       ],
     );
   }
@@ -373,9 +380,33 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
     );
   }
 
-  void _confirmEnd(ActiveWorkout w) {
+  /// Beenden — **eine Frage, drei mögliche Antworten**.
+  ///
+  /// ## Warum die Dialoge jetzt Werte zurückgeben
+  ///
+  /// Vorher schloss jeder Dialog sich selbst über `maybePop()` und öffnete
+  /// den nächsten gleich danach. `maybePop` ist asynchron — es fragt erst,
+  /// ob geschlossen werden darf. Der zweite Dialog wurde also aufgebaut,
+  /// während der erste noch am Schliessen war, und das Schliessen traf dann
+  /// den falschen.
+  ///
+  /// Sichtbar wurde es beim Verwerfen: Der Runner blieb stehen. Der Weg
+  /// zurück hatte einen Dialog geschlossen, der schon weg war, und der
+  /// Bildschirm überlebte.
+  ///
+  /// Jetzt gibt jeder Dialog sein Ergebnis zurück und der Ablauf steht an
+  /// einer Stelle. Kein Dialog kennt mehr den nächsten.
+  Future<void> _confirmEnd(ActiveWorkout w) async {
     final l10n = AppL10n.of(context);
-    AtemDialog.show<void>(
+
+    // Beim Nachtragen gibt es nichts zu beenden: Die Einheit existiert, es
+    // kommen nur Sätze dazu. Also sichern oder zurück, ohne Zwischenfrage.
+    if (w.amendsSessionId != null) {
+      await _finish();
+      return;
+    }
+
+    final choice = await AtemDialog.show<_EndChoice>(
       context,
       // Beenden speichert — der Gradient ist berechtigt.
       kind: AtemDialogKind.confirm,
@@ -384,26 +415,34 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
       confirmLabel: l10n.workoutScreenEndWorkoutAction,
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.workoutScreenEndWorkout,
-      onConfirm: _finish,
+      onConfirm: () => Navigator.of(context).pop(_EndChoice.save),
       // Der zweite Ausgang. Ohne ihn gäbe es nur „speichern" oder „weiter
       // trainieren" — wer sich vertan hat oder nur ausprobiert, säße fest und
       // müsste eine falsche Einheit in seinen Verlauf schreiben.
       alternativeLabel: l10n.workoutScreenDiscardWorkout,
-      onAlternative: _confirmDiscard,
+      onAlternative: () => Navigator.of(context).pop(_EndChoice.discard),
       detail: _EndStats(workout: w, elapsed: _clock),
     );
+
+    if (!mounted) return;
+    switch (choice) {
+      case _EndChoice.save:
+        await _finish();
+      case _EndChoice.discard:
+        await _confirmDiscard();
+      case null:
+        break;
+    }
   }
 
   /// Verwerfen wird **ein zweites Mal** bestätigt.
   ///
   /// Es ist die einzige Handlung im Runner, die Arbeit vernichtet, und sie ist
-  /// nicht rückgängig zu machen. Ein Dialog, der direkt aus einem anderen
-  /// Dialog verwirft, wäre zu leicht auszulösen.
-  void _confirmDiscard() {
+  /// nicht rückgängig zu machen.
+  Future<void> _confirmDiscard() async {
     final l10n = AppL10n.of(context);
-    Navigator.of(context).maybePop();
 
-    AtemDialog.show<void>(
+    final confirmed = await AtemDialog.show<bool>(
       context,
       kind: AtemDialogKind.destructive,
       title: l10n.workoutScreenDiscardConfirmTitle,
@@ -411,29 +450,28 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
       confirmLabel: l10n.workoutScreenDiscardWorkout,
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.workoutScreenDiscardWorkout,
-      onConfirm: _discard,
+      onConfirm: () => Navigator.of(context).pop(true),
     );
-  }
+    if (confirmed != true || !mounted) return;
 
-  /// Beendet ohne zu speichern.
-  Future<void> _discard() async {
-    Navigator.of(context).maybePop();
     await HapticFeedback.mediumImpact();
     if (!mounted) return;
-    // Der Bildschirm verschwindet; nichts wird geschrieben. Der Timer stirbt
-    // mit dem Notifier.
-    Navigator.of(context).maybePop();
+    // Nichts wird geschrieben, der Timer stirbt mit dem Notifier.
+    Navigator.of(context).pop();
   }
 
   Future<void> _finish() async {
-    Navigator.of(context).maybePop();
     await HapticFeedback.mediumImpact();
+    if (!mounted) return;
     setState(() {
       _ended = true;
       _restOn = false;
     });
     try {
       await _notifier.finish(Duration(seconds: _elapsed));
+      // Beim Nachtragen führt der Weg direkt zurück — es gibt keine
+      // Zusammenfassung, auf die man noch schauen würde.
+      if (mounted && _amends) Navigator.of(context).pop(true);
     } catch (_) {
       if (!mounted) return;
       setState(() => _ended = false);
@@ -570,3 +608,6 @@ class _SummaryOverlay extends StatelessWidget {
     );
   }
 }
+
+/// Wie ein Workout endet.
+enum _EndChoice { save, discard }

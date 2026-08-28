@@ -42,6 +42,21 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
   late final TextEditingController _name;
   late final List<PlanItem> _items;
 
+  /// Ein stabiler Schlüssel je Eintrag.
+  ///
+  /// ## Warum die Position als Schlüssel nicht reicht
+  ///
+  /// Ohne eigenen Schlüssel ordnet Flutter den Zustand einer Karte ihrer
+  /// **Position** zu. Beim Verschieben bleibt der Zustand also stehen und die
+  /// Daten wandern darunter durch — die Eingabefelder der verschobenen Übung
+  /// zeigten danach die Zielwerte ihrer Nachbarin.
+  ///
+  /// Die Übungskennung taugt als Schlüssel nicht: Ein Rundlauf enthält
+  /// dieselbe Übung mehrfach. Deshalb eine eigene, laufende Zahl, die mit dem
+  /// Eintrag wandert.
+  late final List<int> _keys;
+  var _nextKey = 0;
+
   var _showFaults = false;
   var _saving = false;
   var _dirty = false;
@@ -54,6 +69,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     super.initState();
     _name = TextEditingController(text: widget.original?.name ?? '');
     _items = [...?widget.original?.items];
+    _keys = [for (final _ in _items) _nextKey++];
   }
 
   @override
@@ -107,6 +123,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
       // die niemand gemacht hat. Der Plan rechnet ohnehin mit drei, wenn
       // nichts dasteht — aber er behauptet dann nicht, es sei gewählt worden.
       _items.add(PlanItem(exerciseId: exercise.id));
+      _keys.add(_nextKey++);
     });
   }
 
@@ -117,6 +134,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     setState(() {
       final old = _items[index];
       // **Die Zielwerte wandern mit.** Das ist der ganze Sinn des Ersetzens.
+      // Der Schlüssel bleibt: Es ist derselbe Eintrag, nur mit anderer Übung.
       _items[index] = PlanItem(
         exerciseId: exercise.id,
         sets: old.sets,
@@ -132,8 +150,9 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     if (target < 0 || target >= _items.length) return;
     _touch();
     setState(() {
-      final item = _items.removeAt(index);
-      _items.insert(target, item);
+      _items.insert(target, _items.removeAt(index));
+      // Der Schlüssel wandert mit — sonst bliebe der Zustand an der Position.
+      _keys.insert(target, _keys.removeAt(index));
     });
   }
 
@@ -144,16 +163,23 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
   /// wäre Lärm, ein endgültiges Entfernen ohne Weg zurück eine Falle.
   void _remove(int index) {
     final removed = _items[index];
+    final key = _keys[index];
     final name = _nameOf(removed.exerciseId);
     _touch();
-    setState(() => _items.removeAt(index));
+    setState(() {
+      _items.removeAt(index);
+      _keys.removeAt(index);
+    });
 
     ref.read(snackbarProvider.notifier).show(
           AtemSnack(
             message: AppL10n.of(context).planFormRemoveA11y(name),
             semanticLabel: AppL10n.of(context).planFormRemoveA11y(name),
             actionLabel: AppL10n.of(context).commonUndo,
-            onAction: () => setState(() => _items.insert(index, removed)),
+            onAction: () => setState(() {
+              _items.insert(index, removed);
+              _keys.insert(index, key);
+            }),
           ),
         );
   }
@@ -300,6 +326,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
                       for (var i = 0; i < resolved.length; i++) ...[
                         if (i > 0) const SizedBox(height: 10),
                         _ItemCard(
+                          key: ValueKey(_keys[i]),
                           index: i,
                           total: resolved.length,
                           resolved: resolved[i],
@@ -359,6 +386,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
 /// Ein Planeintrag: Übung oben, Zielwerte darunter, Aktionen ganz unten.
 class _ItemCard extends StatefulWidget {
   const _ItemCard({
+    super.key,
     required this.index,
     required this.total,
     required this.resolved,

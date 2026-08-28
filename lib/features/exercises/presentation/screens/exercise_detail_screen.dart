@@ -70,7 +70,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(exercise.name,
+                      Text(exerciseName(context, exercise),
                           style: AtemType.titleLarge.of(context)),
                       if (exercise.isOwn) ...[
                         const SizedBox(height: 8),
