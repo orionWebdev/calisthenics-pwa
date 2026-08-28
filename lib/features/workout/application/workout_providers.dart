@@ -89,6 +89,9 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
   void updateReps(int exerciseIndex, String setId, String value) =>
       _mutateSet(exerciseIndex, setId, (s) => s.copyWith(reps: value));
 
+  void updateHold(int exerciseIndex, String setId, String value) =>
+      _mutateSet(exerciseIndex, setId, (s) => s.copyWith(hold: value));
+
   /// Dupliziert die Werte des letzten Satzes.
   void addSet(int exerciseIndex) {
     final w = _workout;
@@ -154,6 +157,13 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
         if (i != index) w.exercises[i],
     ]));
   }
+
+  /// Übernimmt einen gesicherten Zwischenstand.
+  ///
+  /// **Nur aus dem Zwischenstand-Speicher.** Der Zustand wird sonst
+  /// ausschliesslich aus dem Repository geladen; ein zweiter Weg hinein wäre
+  /// eine zweite Quelle für dasselbe.
+  void restore(ActiveWorkout workout) => state = AsyncData(workout);
 
   void setNotes(String notes) {
     final w = _workout;
@@ -221,6 +231,7 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
         sets.add(history.LoggedSet(
           reps: set.repsValue,
           weight: set.weightValue,
+          holdSeconds: set.holdValue,
           // Der Standardtyp wird nicht geschrieben. Das Feld `type` am Satz
           // trägt im Bestand ausschliesslich `hold`; jeder weitere Wert ist
           // eine Erweiterung, die die PWA nicht kennt. Sie nur dann zu

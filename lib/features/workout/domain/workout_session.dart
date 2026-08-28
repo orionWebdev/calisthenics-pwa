@@ -51,6 +51,7 @@ class WorkoutSet {
     this.previous,
     required this.weight,
     required this.reps,
+    this.hold = '',
     this.done = false,
   });
 
@@ -63,12 +64,17 @@ class WorkoutSet {
   /// Als Text gehalten: das Feld ist die Wahrheit, solange getippt wird.
   final String weight;
   final String reps;
+
+  /// Gehaltene Sekunden. Leer bei Übungen, die Wiederholungen zählen.
+  final String hold;
+
   final bool done;
 
   WorkoutSet copyWith({
     SetType? type,
     String? weight,
     String? reps,
+    String? hold,
     bool? done,
   }) {
     return WorkoutSet(
@@ -77,6 +83,7 @@ class WorkoutSet {
       previous: previous,
       weight: weight ?? this.weight,
       reps: reps ?? this.reps,
+      hold: hold ?? this.hold,
       done: done ?? this.done,
     );
   }
@@ -84,6 +91,7 @@ class WorkoutSet {
   double? get weightValue =>
       double.tryParse(weight.replaceAll(',', '.').trim());
   int? get repsValue => int.tryParse(reps.trim());
+  int? get holdValue => int.tryParse(hold.trim());
 }
 
 @immutable
@@ -93,6 +101,8 @@ class WorkoutExercise {
     required this.name,
     required this.muscles,
     this.recordWeightKg,
+    this.targetReps,
+    this.targetHoldSeconds,
     required this.sets,
   });
 
@@ -106,13 +116,32 @@ class WorkoutExercise {
   /// `null`, wenn es keins gibt — dann erscheint kein Chip statt „PR —".
   final double? recordWeightKg;
 
+  /// Die Zielvorgabe aus dem Plan, als Text — „8-12" ist gültig.
+  ///
+  /// Sie steht **neben** dem Eingabefeld, nicht darin: Ein vorbelegtes Feld
+  /// wäre nach dem Abhaken eine Leistungsangabe, die niemand gemacht hat.
+  final String? targetReps;
+
+  /// Die Haltezeit aus dem Plan, in Sekunden.
+  ///
+  /// Sie fehlte im Runner vollständig — wer im Plan „45 s halten" eintrug,
+  /// bekam beim Training nur Wiederholungen und Gewicht zu sehen. Die
+  /// Vorgabe war damit unsichtbar an genau der Stelle, an der sie gebraucht
+  /// wird.
+  final int? targetHoldSeconds;
+
   final List<WorkoutSet> sets;
+
+  /// Trägt die Übung eine Haltezeit statt Wiederholungen?
+  bool get isHold => targetHoldSeconds != null;
 
   WorkoutExercise copyWith({List<WorkoutSet>? sets}) => WorkoutExercise(
         id: id,
         name: name,
         muscles: muscles,
         recordWeightKg: recordWeightKg,
+        targetReps: targetReps,
+        targetHoldSeconds: targetHoldSeconds,
         sets: sets ?? this.sets,
       );
 }

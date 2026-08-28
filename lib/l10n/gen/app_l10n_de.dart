@@ -2704,6 +2704,11 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
+  String workoutA11yHoldField(int n) {
+    return 'Haltezeit in Sekunden, Satz $n';
+  }
+
+  @override
   String get workoutA11yLoading => 'Workout wird geladen';
 
   @override
@@ -2795,6 +2800,9 @@ class AppL10nDe extends AppL10n {
   String get workoutCardioRpe => 'Belastung (1–5)';
 
   @override
+  String get workoutColHold => 'Halten';
+
+  @override
   String get workoutCopyLastSet => 'Letzten Satz kopieren';
 
   @override
@@ -2845,6 +2853,19 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get workoutLastPerformance => 'Letztes Mal';
+
+  @override
+  String get workoutLeaveBody =>
+      'Dein Stand bleibt gesichert. Du kannst später fortsetzen.';
+
+  @override
+  String get workoutLeaveKeep => 'Verlassen und sichern';
+
+  @override
+  String get workoutLeaveStay => 'Weiter trainieren';
+
+  @override
+  String get workoutLeaveTitle => 'Training verlassen?';
 
   @override
   String get workoutLoggingAddExercise => 'Übung hinzufügen';
@@ -2986,6 +3007,29 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get workoutRelativeTimeYesterday => 'gestern';
+
+  @override
+  String get workoutRemoveExerciseBody =>
+      'Die abgehakten Sätze dieser Übung gehen verloren.';
+
+  @override
+  String workoutRemoveExerciseConfirm(String name) {
+    return '$name entfernen?';
+  }
+
+  @override
+  String workoutResumeBody(String n, int sets, int total) {
+    return 'Du hast vor $n ein Training begonnen. $sets von $total Sätzen sind abgehakt.';
+  }
+
+  @override
+  String get workoutResumeContinue => 'Fortsetzen';
+
+  @override
+  String get workoutResumeDiscard => 'Neu beginnen';
+
+  @override
+  String get workoutResumeTitle => 'Training fortsetzen?';
 
   @override
   String get workoutRunnerAddSet => '+ SATZ HINZUFÜGEN';
@@ -3299,6 +3343,11 @@ class AppL10nDe extends AppL10n {
   String get workoutSetTypeFailure => 'Satz bis zum Muskelversagen';
 
   @override
+  String workoutSetTypeLegend(String w, String n, String d, String f) {
+    return '$w Aufwärmen · $n Normal · $d Dropsatz · $f Failure';
+  }
+
+  @override
   String get workoutSetTypeNormal => 'Normaler Satz';
 
   @override
@@ -3317,13 +3366,18 @@ class AppL10nDe extends AppL10n {
   String get workoutSetTypeWarmup => 'Aufwärmsatz';
 
   @override
-  String workoutTargetHold(int seconds) {
-    return 'Ziel: $seconds halten';
+  String workoutTargetHold(int n) {
+    return 'Ziel $n s halten';
   }
 
   @override
   String workoutTargetRef(int sets, String reps) {
     return 'Ziel $sets×$reps';
+  }
+
+  @override
+  String workoutTargetReps(String reps) {
+    return 'Ziel $reps';
   }
 
   @override

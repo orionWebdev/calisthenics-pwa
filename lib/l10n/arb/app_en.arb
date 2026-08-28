@@ -3116,6 +3116,15 @@
       }
     }
   },
+  "workoutA11yHoldField": "Hold time in seconds, set {n}",
+  "@workoutA11yHoldField": {
+    "description": "Vorlesetext",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "workoutA11yLoading": "Loading workout",
   "@workoutA11yLoading": {
     "description": "Runner, Modul 1/2 Spezifikation"
@@ -3251,6 +3260,10 @@
   "@workoutCardioRpe": {
     "description": "aus workout.cardio.rpe"
   },
+  "workoutColHold": "Hold",
+  "@workoutColHold": {
+    "description": "Spaltenkopf im Satzprotokoll"
+  },
   "workoutCopyLastSet": "Copy last set",
   "@workoutCopyLastSet": {
     "description": "aus workout.copyLastSet"
@@ -3322,6 +3335,22 @@
   "workoutLastPerformance": "Last time",
   "@workoutLastPerformance": {
     "description": "aus workout.lastPerformance"
+  },
+  "workoutLeaveBody": "Your progress is saved. You can resume later.",
+  "@workoutLeaveBody": {
+    "description": "Zurück-Geste, Text"
+  },
+  "workoutLeaveKeep": "Leave and save",
+  "@workoutLeaveKeep": {
+    "description": "Aktion"
+  },
+  "workoutLeaveStay": "Keep training",
+  "@workoutLeaveStay": {
+    "description": "Aktion"
+  },
+  "workoutLeaveTitle": "Leave workout?",
+  "@workoutLeaveTitle": {
+    "description": "Zurück-Geste im Runner"
   },
   "workoutLoggingAddExercise": "Add exercise",
   "@workoutLoggingAddExercise": {
@@ -3527,6 +3556,46 @@
   "workoutRelativeTimeYesterday": "yesterday",
   "@workoutRelativeTimeYesterday": {
     "description": "aus workout.relativeTime.yesterday"
+  },
+  "workoutRemoveExerciseBody": "The completed sets of this exercise will be lost.",
+  "@workoutRemoveExerciseBody": {
+    "description": "Bestätigung, Text"
+  },
+  "workoutRemoveExerciseConfirm": "Remove {name}?",
+  "@workoutRemoveExerciseConfirm": {
+    "description": "Bestätigung beim Entfernen im Training",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutResumeBody": "You started a workout {n} ago. {sets} of {total} sets are done.",
+  "@workoutResumeBody": {
+    "description": "Zwischenstand, Text",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "sets": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutResumeContinue": "Resume",
+  "@workoutResumeContinue": {
+    "description": "Aktion"
+  },
+  "workoutResumeDiscard": "Start over",
+  "@workoutResumeDiscard": {
+    "description": "Aktion"
+  },
+  "workoutResumeTitle": "Resume workout?",
+  "@workoutResumeTitle": {
+    "description": "Zwischenstand gefunden"
   },
   "workoutRunnerAddSet": "+ ADD SET",
   "@workoutRunnerAddSet": {
@@ -3981,6 +4050,24 @@
   "@workoutSetTypeFailure": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
+  "workoutSetTypeLegend": "{w} Warm-up · {n} Normal · {d} Drop set · {f} Failure",
+  "@workoutSetTypeLegend": {
+    "description": "Legende der Satz-Kürzel — sie stehen sonst unerklärt in der Zeile",
+    "placeholders": {
+      "w": {
+        "type": "String"
+      },
+      "n": {
+        "type": "String"
+      },
+      "d": {
+        "type": "String"
+      },
+      "f": {
+        "type": "String"
+      }
+    }
+  },
   "workoutSetTypeNormal": "Normal set",
   "@workoutSetTypeNormal": {
     "description": "Runner, Modul 1/2 Spezifikation"
@@ -4005,14 +4092,14 @@
   "@workoutSetTypeWarmup": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutTargetHold": "Goal: hold {seconds}",
+  "workoutTargetHold": "Target hold {n} s",
   "@workoutTargetHold": {
+    "description": "Haltevorgabe aus dem Plan",
     "placeholders": {
-      "seconds": {
+      "n": {
         "type": "int"
       }
-    },
-    "description": "aus workout.targetHold"
+    }
   },
   "workoutTargetRef": "Target {sets}×{reps}",
   "@workoutTargetRef": {
@@ -4021,6 +4108,15 @@
       "sets": {
         "type": "int"
       },
+      "reps": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutTargetReps": "Target {reps}",
+  "@workoutTargetReps": {
+    "description": "Zielvorgabe aus dem Plan, neben dem Feld",
+    "placeholders": {
       "reps": {
         "type": "String"
       }

@@ -4603,6 +4603,12 @@ abstract class AppL10n {
   /// **'Form-Video zu {exercise} öffnen'**
   String workoutA11yFormGuide(String exercise);
 
+  /// Vorlesetext
+  ///
+  /// In de, this message translates to:
+  /// **'Haltezeit in Sekunden, Satz {n}'**
+  String workoutA11yHoldField(int n);
+
   /// Runner, Modul 1/2 Spezifikation
   ///
   /// In de, this message translates to:
@@ -4753,6 +4759,12 @@ abstract class AppL10n {
   /// **'Belastung (1–5)'**
   String get workoutCardioRpe;
 
+  /// Spaltenkopf im Satzprotokoll
+  ///
+  /// In de, this message translates to:
+  /// **'Halten'**
+  String get workoutColHold;
+
   /// aus workout.copyLastSet
   ///
   /// In de, this message translates to:
@@ -4848,6 +4860,30 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Letztes Mal'**
   String get workoutLastPerformance;
+
+  /// Zurück-Geste, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Stand bleibt gesichert. Du kannst später fortsetzen.'**
+  String get workoutLeaveBody;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Verlassen und sichern'**
+  String get workoutLeaveKeep;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter trainieren'**
+  String get workoutLeaveStay;
+
+  /// Zurück-Geste im Runner
+  ///
+  /// In de, this message translates to:
+  /// **'Training verlassen?'**
+  String get workoutLeaveTitle;
 
   /// aus workout.logging.addExercise
   ///
@@ -5106,6 +5142,42 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'gestern'**
   String get workoutRelativeTimeYesterday;
+
+  /// Bestätigung, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Die abgehakten Sätze dieser Übung gehen verloren.'**
+  String get workoutRemoveExerciseBody;
+
+  /// Bestätigung beim Entfernen im Training
+  ///
+  /// In de, this message translates to:
+  /// **'{name} entfernen?'**
+  String workoutRemoveExerciseConfirm(String name);
+
+  /// Zwischenstand, Text
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast vor {n} ein Training begonnen. {sets} von {total} Sätzen sind abgehakt.'**
+  String workoutResumeBody(String n, int sets, int total);
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Fortsetzen'**
+  String get workoutResumeContinue;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Neu beginnen'**
+  String get workoutResumeDiscard;
+
+  /// Zwischenstand gefunden
+  ///
+  /// In de, this message translates to:
+  /// **'Training fortsetzen?'**
+  String get workoutResumeTitle;
 
   /// Runner, Modul 1/2 Spezifikation
   ///
@@ -5665,6 +5737,12 @@ abstract class AppL10n {
   /// **'Satz bis zum Muskelversagen'**
   String get workoutSetTypeFailure;
 
+  /// Legende der Satz-Kürzel — sie stehen sonst unerklärt in der Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'{w} Aufwärmen · {n} Normal · {d} Dropsatz · {f} Failure'**
+  String workoutSetTypeLegend(String w, String n, String d, String f);
+
   /// Runner, Modul 1/2 Spezifikation
   ///
   /// In de, this message translates to:
@@ -5701,17 +5779,23 @@ abstract class AppL10n {
   /// **'Aufwärmsatz'**
   String get workoutSetTypeWarmup;
 
-  /// aus workout.targetHold
+  /// Haltevorgabe aus dem Plan
   ///
   /// In de, this message translates to:
-  /// **'Ziel: {seconds} halten'**
-  String workoutTargetHold(int seconds);
+  /// **'Ziel {n} s halten'**
+  String workoutTargetHold(int n);
 
   /// Zielvorgabe aus dem Plan, als Referenz neben dem Feld
   ///
   /// In de, this message translates to:
   /// **'Ziel {sets}×{reps}'**
   String workoutTargetRef(int sets, String reps);
+
+  /// Zielvorgabe aus dem Plan, neben dem Feld
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel {reps}'**
+  String workoutTargetReps(String reps);
 
   /// Zielvorgabe ohne Wiederholungsangabe
   ///

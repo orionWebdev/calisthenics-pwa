@@ -27,6 +27,8 @@ class SetRow extends StatelessWidget {
     required this.onCycleType,
     required this.onWeightChanged,
     required this.onRepsChanged,
+    this.holdController,
+    this.onHoldChanged,
   });
 
   final WorkoutSet set;
@@ -40,6 +42,16 @@ class SetRow extends StatelessWidget {
   final VoidCallback onCycleType;
   final ValueChanged<String> onWeightChanged;
   final ValueChanged<String> onRepsChanged;
+
+  /// Nur bei Halteübungen gesetzt.
+  ///
+  /// Die Haltezeit stand bisher im Plan und nirgends sonst: Wer „45 s halten"
+  /// eintrug, bekam im Training nur Gewicht und Wiederholungen zu sehen. Die
+  /// Vorgabe war damit genau dort unsichtbar, wo sie gebraucht wird.
+  final TextEditingController? holdController;
+  final ValueChanged<String>? onHoldChanged;
+
+  bool get isHold => holdController != null;
 
   /// Ab hier trägt die Zeile ihre fünf Spalten nicht mehr.
   static bool isCompact(BuildContext context) =>
@@ -82,7 +94,10 @@ class SetRow extends StatelessWidget {
           const SizedBox(width: 8),
           _weightField(l10n),
           const SizedBox(width: 8),
-          _repsField(l10n),
+          // Bei einer Halteübung tritt die Sekundenspalte an die Stelle der
+          // Wiederholungen — beides nebeneinander wäre eine Spalte zu viel,
+          // und im Bestand tragen Sätze immer nur eins von beiden.
+          if (isHold) _holdField(l10n) else _repsField(l10n),
           const SizedBox(width: 8),
           _doneButton(context, l10n),
         ],
@@ -108,7 +123,12 @@ class SetRow extends StatelessWidget {
                     _weightField(l10n, suffix: l10n.workoutSetLoggerWeightUnit),
               ),
               const SizedBox(width: 8),
-              Expanded(flex: 5, child: _repsField(l10n, suffix: '×')),
+              Expanded(
+                flex: 5,
+                child: isHold
+                    ? _holdField(l10n, suffix: l10n.unitSuffixSeconds)
+                    : _repsField(l10n, suffix: '×'),
+              ),
               const SizedBox(width: 8),
               _doneButton(context, l10n),
             ],
@@ -170,6 +190,14 @@ class SetRow extends StatelessWidget {
         locked: set.done,
         suffix: suffix,
         onChanged: onWeightChanged,
+      );
+
+  Widget _holdField(AppL10n l10n, {String? suffix}) => AtemNumberField.reps(
+        controller: holdController!,
+        semanticLabel: l10n.workoutA11yHoldField(index),
+        locked: set.done,
+        suffix: suffix,
+        onChanged: onHoldChanged,
       );
 
   Widget _repsField(AppL10n l10n, {String? suffix}) => AtemNumberField.reps(

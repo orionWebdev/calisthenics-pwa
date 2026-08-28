@@ -2695,6 +2695,11 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String workoutA11yHoldField(int n) {
+    return 'Hold time in seconds, set $n';
+  }
+
+  @override
   String get workoutA11yLoading => 'Loading workout';
 
   @override
@@ -2786,6 +2791,9 @@ class AppL10nEn extends AppL10n {
   String get workoutCardioRpe => 'Effort (1–5)';
 
   @override
+  String get workoutColHold => 'Hold';
+
+  @override
   String get workoutCopyLastSet => 'Copy last set';
 
   @override
@@ -2835,6 +2843,19 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get workoutLastPerformance => 'Last time';
+
+  @override
+  String get workoutLeaveBody =>
+      'Your progress is saved. You can resume later.';
+
+  @override
+  String get workoutLeaveKeep => 'Leave and save';
+
+  @override
+  String get workoutLeaveStay => 'Keep training';
+
+  @override
+  String get workoutLeaveTitle => 'Leave workout?';
 
   @override
   String get workoutLoggingAddExercise => 'Add exercise';
@@ -2976,6 +2997,29 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get workoutRelativeTimeYesterday => 'yesterday';
+
+  @override
+  String get workoutRemoveExerciseBody =>
+      'The completed sets of this exercise will be lost.';
+
+  @override
+  String workoutRemoveExerciseConfirm(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String workoutResumeBody(String n, int sets, int total) {
+    return 'You started a workout $n ago. $sets of $total sets are done.';
+  }
+
+  @override
+  String get workoutResumeContinue => 'Resume';
+
+  @override
+  String get workoutResumeDiscard => 'Start over';
+
+  @override
+  String get workoutResumeTitle => 'Resume workout?';
 
   @override
   String get workoutRunnerAddSet => '+ ADD SET';
@@ -3286,6 +3330,11 @@ class AppL10nEn extends AppL10n {
   String get workoutSetTypeFailure => 'Set to failure';
 
   @override
+  String workoutSetTypeLegend(String w, String n, String d, String f) {
+    return '$w Warm-up · $n Normal · $d Drop set · $f Failure';
+  }
+
+  @override
   String get workoutSetTypeNormal => 'Normal set';
 
   @override
@@ -3304,13 +3353,18 @@ class AppL10nEn extends AppL10n {
   String get workoutSetTypeWarmup => 'Warm-up set';
 
   @override
-  String workoutTargetHold(int seconds) {
-    return 'Goal: hold $seconds';
+  String workoutTargetHold(int n) {
+    return 'Target hold $n s';
   }
 
   @override
   String workoutTargetRef(int sets, String reps) {
     return 'Target $sets×$reps';
+  }
+
+  @override
+  String workoutTargetReps(String reps) {
+    return 'Target $reps';
   }
 
   @override

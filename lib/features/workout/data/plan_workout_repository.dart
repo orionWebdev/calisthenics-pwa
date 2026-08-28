@@ -177,6 +177,10 @@ class PlanWorkoutRepository implements WorkoutRepository {
       name: exercise?.name ?? item.exerciseId,
       muscles: [for (final m in exercise?.displayMuscles ?? const []) m.wire],
       recordWeightKg: entry.recordWeightKg,
+      // Die Zielvorgaben aus dem Plan. Sie standen bisher nur im Plan und
+      // waren im Training unsichtbar — die Haltezeit vollständig.
+      targetReps: item.reps,
+      targetHoldSeconds: item.holdSeconds,
       sets: [
         for (var i = 0; i < count; i++)
           WorkoutSet(
@@ -196,6 +200,7 @@ class PlanWorkoutRepository implements WorkoutRepository {
             // Referenz, nicht im Eingabefeld.
             weight: '',
             reps: '',
+            hold: '',
           ),
       ],
     );

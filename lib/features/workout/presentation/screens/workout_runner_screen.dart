@@ -9,10 +9,13 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/workout_providers.dart';
 import '../../domain/workout_session.dart';
+import '../../data/workout_draft_store.dart';
+import '../../domain/workout_clock.dart';
 import '../../domain/workout_start.dart';
 import '../../../exercises/presentation/exercise_picker.dart';
 import '../widgets/exercise_header.dart';
 import '../widgets/rest_bar.dart';
+import '../set_type_ui.dart';
 import '../widgets/session_top_bar.dart';
 import '../widgets/set_row.dart';
 
@@ -33,58 +36,137 @@ class WorkoutRunnerScreen extends ConsumerStatefulWidget {
       _WorkoutRunnerScreenState();
 }
 
-class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
+class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
+    with WidgetsBindingObserver {
   Timer? _ticker;
   Timer? _expandTimer;
   Timer? _flashTimer;
 
-  int _elapsed = 0;
-  bool _paused = false;
+  /// **Die Uhr, nicht ein Zähler.** Der Zeitgeber unten löst nur noch das
+  /// Neuzeichnen aus; gemessen wird an zwei Zeitpunkten. Warum, steht am
+  /// [WorkoutClock].
+  late WorkoutClock _clockState;
+
   bool _ended = false;
   int _exIndex = 0;
 
-  Duration _restRemaining = Duration.zero;
-  Duration _restTotal = Duration.zero;
-  bool _restOn = false;
   bool _restCompact = false;
   bool _restFinishing = false;
+
+  /// Ob die Pause schon als beendet gemeldet wurde — sonst löste jeder Tick
+  /// nach Ablauf erneut Vibration und Ton aus.
+  bool _restAnnounced = false;
 
   final _notesController = TextEditingController();
   final _weightControllers = <String, TextEditingController>{};
   final _repsControllers = <String, TextEditingController>{};
+  final _holdControllers = <String, TextEditingController>{};
 
   @override
   void initState() {
     super.initState();
+    _clockState = WorkoutClock.startingAt(DateTime.now());
+    WidgetsBinding.instance.addObserver(this);
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    // Nach dem ersten Aufbau fragen — vorher gibt es keinen Kontext für
+    // einen Dialog.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _offerDraft());
+  }
+
+  /// Bietet einen gefundenen Zwischenstand an.
+  ///
+  /// **Er stellt sich nicht von allein wieder her.** Ein Training, das beim
+  /// Öffnen einfach weiterläuft, überrascht — und eines von heute früh wäre
+  /// eine falsche Auskunft. Also gefragt, mit den Zahlen dazu.
+  Future<void> _offerDraft() async {
+    if (!mounted || _amends) return;
+
+    final draft = await const WorkoutDraftStore().read(DateTime.now());
+    if (draft == null || !mounted) return;
+
+    final done = draft.workout.completedSets;
+    if (done == 0) {
+      // Ein Zwischenstand ohne abgehakten Satz ist nichts wert.
+      await const WorkoutDraftStore().clear();
+      return;
+    }
+
+    final l10n = AppL10n.of(context);
+    final ago = _elapsedLabel(
+      DateTime.now().difference(draft.clock.startedAt),
+    );
+
+    final resume = await AtemDialog.show<bool>(
+      context,
+      kind: AtemDialogKind.confirm,
+      title: l10n.workoutResumeTitle,
+      message: l10n.workoutResumeBody(ago, done, draft.workout.totalSets),
+      confirmLabel: l10n.workoutResumeContinue,
+      dismissLabel: l10n.workoutResumeDiscard,
+      barrierLabel: l10n.workoutResumeTitle,
+      onConfirm: () => Navigator.of(context).pop(true),
+    );
+
+    if (resume != true) {
+      await const WorkoutDraftStore().clear();
+      return;
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _clockState = draft.clock;
+      _exIndex = draft.exerciseIndex;
+      _restAnnounced = !draft.clock.isResting;
+    });
+    _notifier.restore(draft.workout);
+  }
+
+  static String _elapsedLabel(Duration since) {
+    final minutes = since.inMinutes;
+    if (minutes < 60) return '$minutes min';
+    return '${since.inHours} h ${minutes % 60} min';
+  }
+
+  /// Beim Zurückkommen aus dem Hintergrund sofort neu zeichnen.
+  ///
+  /// Die Zahlen stimmen ohnehin — sie kommen aus der Uhr. Ohne diesen Anstoß
+  /// stünde aber bis zum nächsten Tick der alte Stand da, und eine abgelaufene
+  /// Pause bliebe eine Sekunde lang scheinbar offen.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _ticker?.cancel();
     _expandTimer?.cancel();
     _flashTimer?.cancel();
     _notesController.dispose();
     for (final c in [
       ..._weightControllers.values,
-      ..._repsControllers.values
+      ..._repsControllers.values,
+      ..._holdControllers.values,
     ]) {
       c.dispose();
     }
     super.dispose();
   }
 
+  /// Zeichnet neu und meldet eine abgelaufene Pause. **Misst nichts.**
   void _tick() {
-    if (_paused || _ended) return;
-    setState(() {
-      _elapsed++;
-      if (!_restOn) return;
-      _restRemaining -= const Duration(seconds: 1);
-      if (_restRemaining > Duration.zero) return;
-      _restRemaining = Duration.zero;
-      _restOn = false;
+    if (_ended) return;
+    final now = DateTime.now();
+    final restOver = _clockState.restElapsed(now);
+
+    setState(() {});
+
+    if (restOver && !_restAnnounced) {
+      _restAnnounced = true;
+      _clockState = _clockState.stopRest();
       _onRestDone();
-    });
+    }
   }
 
   /// Dreifache Vibration, Systemton — **und ein sichtbarer Blitz.**
@@ -105,8 +187,18 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
     await SystemSound.play(SystemSoundType.alert);
   }
 
-  String get _clock => '${(_elapsed ~/ 60).toString().padLeft(2, '0')}'
-      ':${(_elapsed % 60).toString().padLeft(2, '0')}';
+  Duration get _elapsed => _clockState.elapsed(DateTime.now());
+
+  bool get _paused => _clockState.isPaused;
+  bool get _restOn => _clockState.isResting;
+  Duration get _restRemaining => _clockState.restRemaining(DateTime.now());
+  Duration get _restTotal => _clockState.restTotal;
+
+  String get _clock {
+    final seconds = _elapsed.inSeconds;
+    return '${(seconds ~/ 60).toString().padLeft(2, '0')}'
+        ':${(seconds % 60).toString().padLeft(2, '0')}';
+  }
 
   TextEditingController _controller(
     Map<String, TextEditingController> pool,
@@ -117,6 +209,59 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
 
   bool get _amends => widget.start.amends;
 
+  /// Die Zielvorgabe aus dem Plan, als Satz. `null`, wenn keine hinterlegt
+  /// ist — dann steht dort nichts statt „Ziel —".
+  static String? _target(AppL10n l10n, WorkoutExercise exercise) {
+    if (exercise.targetHoldSeconds case final hold?) {
+      return l10n.workoutTargetHold(hold);
+    }
+    if (exercise.targetReps case final reps? when reps.trim().isNotEmpty) {
+      return l10n.workoutTargetReps(reps);
+    }
+    return null;
+  }
+
+  /// Entfernt eine Übung — **mit Rückfrage**.
+  ///
+  /// Der Knopf sitzt unter „Satz hinzufügen" und „Übung hinzufügen", also
+  /// dort, wo man während des Trainings ohnehin tippt. Ohne Rückfrage war er
+  /// mehrfach aus Versehen getroffen worden, und mit ihm gingen die
+  /// abgehakten Sätze der Übung verloren.
+  ///
+  /// Kein Widerruf danach: Ein Widerrufsfenster mitten im Training wäre eine
+  /// Meldung über der Satzliste, die dort niemand haben will. Die Rückfrage
+  /// kostet einen Tap und verhindert genau den Fehler.
+  Future<void> _confirmRemove(int index, WorkoutExercise exercise) async {
+    final l10n = AppL10n.of(context);
+
+    final confirmed = await AtemDialog.show<bool>(
+      context,
+      kind: AtemDialogKind.destructive,
+      title: l10n.workoutRemoveExerciseConfirm(exercise.name),
+      message: l10n.workoutRemoveExerciseBody,
+      confirmLabel: l10n.workoutRunnerRemoveExercise,
+      dismissLabel: l10n.commonCancel,
+      barrierLabel: l10n.workoutRunnerRemoveExerciseA11y(exercise.name),
+      onConfirm: () => Navigator.of(context).pop(true),
+    );
+    if (confirmed != true || !mounted) return;
+
+    _notifier.removeExercise(index);
+    setState(() => _exIndex = 0);
+    final workout = ref.read(workoutSessionProvider(widget.start)).value;
+    if (workout != null) _persist(workout);
+  }
+
+  /// Pausiert oder setzt fort — beides über die Uhr, nicht über ein Flag.
+  void _togglePause(ActiveWorkout workout) {
+    final now = DateTime.now();
+    setState(() {
+      _clockState =
+          _clockState.isPaused ? _clockState.resume(now) : _clockState.pause(now);
+    });
+    _persist(workout);
+  }
+
   WorkoutSessionController get _notifier =>
       ref.read(workoutSessionProvider(widget.start).notifier);
 
@@ -124,13 +269,44 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
     FocusScope.of(context).unfocus();
     final nowDone = _notifier.toggleSet(_exIndex, set.id);
     if (!nowDone) return;
+
     setState(() {
-      _restTotal = Duration(seconds: w.defaultRestSeconds);
-      _restRemaining = _restTotal;
-      _restOn = true;
+      _clockState = _clockState.startRest(
+        DateTime.now(),
+        Duration(seconds: w.defaultRestSeconds),
+      );
+      _restAnnounced = false;
       _restCompact = false;
       _restFinishing = false;
     });
+    _persist(w);
+
+    // **War das der letzte offene Satz dieser Übung, weiter zur nächsten.**
+    //
+    // Vorher blieb der Bildschirm stehen, und man tippte sich durch den
+    // Pfeil oben — mitten in der Pause, in der man ohnehin nichts anderes
+    // tut. Die Pause läuft dabei weiter: Sie gehört zum Satz, nicht zur
+    // Übung, und sie neu zu starten verschenkte die Hälfte.
+    final exercise = w.exercises[_exIndex];
+    final open = exercise.sets.where((s) => !s.done && s.id != set.id).length;
+    if (open == 0 && _exIndex < w.exercises.length - 1) {
+      setState(() => _exIndex++);
+    }
+  }
+
+  /// Sichert den Zwischenstand.
+  ///
+  /// Nach jeder Änderung, die etwas wert ist — abgehakte Sätze, gewechselte
+  /// Übung, geänderte Notiz. Nicht bei jedem Tastendruck in einem Feld: Das
+  /// wären Dutzende Schreibvorgänge je Satz, und der Wert eines halb
+  /// getippten Gewichts ist gering.
+  void _persist(ActiveWorkout workout) {
+    unawaited(const WorkoutDraftStore().save(WorkoutDraft(
+      start: widget.start,
+      clock: _clockState,
+      workout: workout,
+      exerciseIndex: _exIndex,
+    )));
   }
 
   bool _onScroll(ScrollNotification n) {
@@ -148,10 +324,21 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
     final l10n = AppL10n.of(context);
     final async = ref.watch(workoutSessionProvider(widget.start));
 
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      resizeToAvoidBottomInset: false,
-      body: async.when(
+    return PopScope(
+      // **Die Zurück-Geste beendete das Training vollständig.** Kein
+      // Zwischenstand, keine Rückfrage, die abgehakten Sätze weg. Sie fragt
+      // jetzt — und der Stand liegt ohnehin schon auf der Platte.
+      canPop: _ended,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        if (await _confirmLeave() && mounted && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AtemColors.base,
+        resizeToAvoidBottomInset: false,
+        body: async.when(
         loading: () => Padding(
           padding: EdgeInsets.fromLTRB(
               16, MediaQuery.paddingOf(context).top + 16, 16, 16),
@@ -173,9 +360,38 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
           onRetry: () =>
               ref.invalidate(workoutSessionProvider(widget.start)),
         ),
-        data: _buildRunner,
+          data: _buildRunner,
+        ),
       ),
     );
+  }
+
+  /// Beim Verlassen fragen — **und den Stand behalten**.
+  ///
+  /// Kein „verwerfen" an dieser Stelle: Wer aus Versehen wischt, will nichts
+  /// wegwerfen. Wer wirklich verwerfen will, findet den Weg im Beenden-Dialog,
+  /// wo er zweimal bestätigt wird.
+  Future<bool> _confirmLeave() async {
+    if (_ended) return true;
+    final l10n = AppL10n.of(context);
+
+    final leave = await AtemDialog.show<bool>(
+      context,
+      kind: AtemDialogKind.confirm,
+      title: l10n.workoutLeaveTitle,
+      message: l10n.workoutLeaveBody,
+      confirmLabel: l10n.workoutLeaveKeep,
+      dismissLabel: l10n.workoutLeaveStay,
+      barrierLabel: l10n.workoutLeaveTitle,
+      onConfirm: () => Navigator.of(context).pop(true),
+    );
+    if (leave != true) return false;
+
+    // Ein letztes Mal sichern, damit auch die zuletzt getippten Werte
+    // drinstehen — die schreibt `_persist` sonst erst beim nächsten Abhaken.
+    final workout = ref.read(workoutSessionProvider(widget.start)).value;
+    if (workout != null) _persist(workout);
+    return true;
   }
 
   /// Nimmt eine Übung in die laufende Einheit auf.
@@ -209,7 +425,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                 amending: w.amendsSessionId != null,
                 elapsed: _clock,
                 paused: _paused,
-                onTogglePause: () => setState(() => _paused = !_paused),
+                onTogglePause: () => _togglePause(w),
                 onOpenNotes: () => _openNotes(w),
                 onEnd: () => _confirmEnd(w),
               ),
@@ -253,7 +469,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                     amending: w.amendsSessionId != null,
                     elapsed: _clock,
                     paused: _paused,
-                    onTogglePause: () => setState(() => _paused = !_paused),
+                    onTogglePause: () => _togglePause(w),
                     onOpenNotes: () => _openNotes(w),
                     onEnd: () => _confirmEnd(w),
                   ),
@@ -269,8 +485,18 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                         : null,
                     onFormGuide: () {},
                   ),
+                  // Die Vorgabe aus dem Plan — **neben** den Feldern, nicht
+                  // darin. Sie sagt, was gedacht war; was war, tippt man ein.
+                  if (_target(l10n, exercise) case final target?) ...[
+                    const SizedBox(height: 8),
+                    Text(target,
+                        textAlign: TextAlign.center,
+                        style: AtemType.labelMicro
+                            .of(context)
+                            .copyWith(color: AtemColors.cyan)),
+                  ],
                   const SizedBox(height: 10),
-                  if (!SetRow.isCompact(context)) _TableHead(),
+                  if (!SetRow.isCompact(context)) _TableHead(isHold: exercise.isHold),
                   for (var i = 0; i < exercise.sets.length; i++)
                     SetRow(
                       set: exercise.sets[i],
@@ -286,8 +512,34 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                           _notifier.updateWeight(index, exercise.sets[i].id, v),
                       onRepsChanged: (v) =>
                           _notifier.updateReps(index, exercise.sets[i].id, v),
+                      holdController: exercise.isHold
+                          ? _controller(_holdControllers,
+                              exercise.sets[i].id, exercise.sets[i].hold)
+                          : null,
+                      onHoldChanged: exercise.isHold
+                          ? (v) => _notifier.updateHold(
+                              index, exercise.sets[i].id, v)
+                          : null,
                     ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
+                  // **Die Kürzel erklären sich nicht von selbst.** „D" und
+                  // „N" standen unkommentiert in jeder Zeile; die Frage
+                  // „was bedeutet das?" ist beim Training die falsche.
+                  // Eine Zeile beantwortet sie ein für alle Mal.
+                  ExcludeSemantics(
+                    child: Text(
+                      l10n.workoutSetTypeLegend(
+                        SetType.warmup.shortLabel(l10n),
+                        SetType.normal.shortLabel(l10n),
+                        SetType.dropset.shortLabel(l10n),
+                        SetType.failure.shortLabel(l10n),
+                      ),
+                      style: AtemType.labelMicro
+                          .of(context)
+                          .copyWith(letterSpacing: 0),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   AtemButton.outline(
                     label: l10n.workoutRunnerAddSet,
                     semanticLabel: l10n.workoutScreenAddSet,
@@ -306,10 +558,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
                     semanticLabel:
                         l10n.workoutRunnerRemoveExerciseA11y(exercise.name),
                     accent: AtemColors.magenta,
-                    onPressed: () {
-                      _notifier.removeExercise(index);
-                      setState(() => _exIndex = 0);
-                    },
+                    onPressed: () => _confirmRemove(index, exercise),
                   ),
                   const SizedBox(height: 14),
                   Center(
@@ -338,15 +587,22 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
               compact: _restCompact,
               finishing: _restFinishing,
               onExtend: () => setState(() {
-                _restRemaining += const Duration(seconds: 30);
-                _restTotal += const Duration(seconds: 30);
+                _clockState =
+                    _clockState.shiftRest(const Duration(seconds: 30));
               }),
               onShorten: () => setState(() {
-                _restRemaining = _restRemaining > const Duration(seconds: 15)
-                    ? _restRemaining - const Duration(seconds: 15)
-                    : const Duration(seconds: 1);
+                // Nie unter eine Sekunde: Eine Pause, die im Moment des
+                // Verkürzens endet, löste Vibration und Ton aus.
+                final left = _restRemaining;
+                final by = left > const Duration(seconds: 16)
+                    ? const Duration(seconds: -15)
+                    : -(left - const Duration(seconds: 1));
+                _clockState = _clockState.shiftRest(by);
               }),
-              onSkip: () => setState(() => _restOn = false),
+              onSkip: () => setState(() {
+                _clockState = _clockState.stopRest();
+                _restAnnounced = true;
+              }),
             ),
           ),
         // Die Zusammenfassung gehört zu einem beendeten Training, nicht zu
@@ -465,12 +721,15 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   Future<void> _finish() async {
     await HapticFeedback.mediumImpact();
     if (!mounted) return;
+    final duration = _elapsed;
     setState(() {
       _ended = true;
-      _restOn = false;
+      _clockState = _clockState.stopRest();
     });
+    // Der Zwischenstand hat seinen Zweck erfüllt.
+    await const WorkoutDraftStore().clear();
     try {
-      await _notifier.finish(Duration(seconds: _elapsed));
+      await _notifier.finish(duration);
       // Beim Nachtragen führt der Weg direkt zurück — es gibt keine
       // Zusammenfassung, auf die man noch schauen würde.
       if (mounted && _amends) Navigator.of(context).pop(true);
@@ -485,6 +744,11 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
 }
 
 class _TableHead extends StatelessWidget {
+  const _TableHead({required this.isHold});
+
+  /// Bei Halteübungen heißt die vierte Spalte „Halten" statt „Wdh".
+  final bool isHold;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
@@ -507,7 +771,11 @@ class _TableHead extends StatelessWidget {
             const SizedBox(width: 8),
             cell(l10n.workoutRunnerTableWeight, align: TextAlign.center, w: 72),
             const SizedBox(width: 8),
-            cell(l10n.workoutRunnerTableReps, align: TextAlign.center, w: 60),
+            cell(
+              isHold ? l10n.workoutColHold : l10n.workoutRunnerTableReps,
+              align: TextAlign.center,
+              w: 60,
+            ),
             const SizedBox(width: 8),
             cell(l10n.workoutRunnerTableDone, align: TextAlign.center, w: 48),
           ],
