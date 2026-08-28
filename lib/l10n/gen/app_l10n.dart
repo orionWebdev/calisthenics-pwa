@@ -1903,6 +1903,30 @@ abstract class AppL10n {
   /// **'{n} min'**
   String durationMinutes(int n);
 
+  /// Planeintrag
+  ///
+  /// In de, this message translates to:
+  /// **'Zuklappen'**
+  String get entryCollapse;
+
+  /// Planeintrag
+  ///
+  /// In de, this message translates to:
+  /// **'Aufklappen'**
+  String get entryExpand;
+
+  /// Zugeklappt ohne Zielwerte
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Ziel gesetzt'**
+  String get entryNoTarget;
+
+  /// Zusammenfassung eines zugeklappten Eintrags
+  ///
+  /// In de, this message translates to:
+  /// **'{sets}×{reps} · {rest} s Pause'**
+  String entrySummary(String sets, String reps, String rest);
+
   /// aus errors.deleteFailed
   ///
   /// In de, this message translates to:
@@ -2953,6 +2977,18 @@ abstract class AppL10n {
   /// **'Core'**
   String get muscleCore;
 
+  /// Zusammenfassung im Auswahlfeld
+  ///
+  /// In de, this message translates to:
+  /// **'{n} gewählt · {names}'**
+  String muscleFieldCount(int n, String names);
+
+  /// Zustand des Auswahlfelds
+  ///
+  /// In de, this message translates to:
+  /// **'Keine gewählt'**
+  String get muscleFieldEmpty;
+
   /// Muskelgruppe
   ///
   /// In de, this message translates to:
@@ -2976,6 +3012,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Quadrizeps'**
   String get muscleQuads;
+
+  /// Hilfetext im Auswahlblatt
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere möglich. Der erste gibt die Farbe.'**
+  String get muscleSheetHint;
+
+  /// Abweichung vom Board auf Nutzerwunsch: Auswahl in einem Blatt statt neun Chips im Formular
+  ///
+  /// In de, this message translates to:
+  /// **'Muskeln wählen'**
+  String get muscleSheetTitle;
 
   /// Muskelgruppe
   ///
@@ -3138,6 +3186,30 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Die vier Einführungsseiten noch einmal'**
   String get onboardingRepeatSub;
+
+  /// Aktion im Auswahlblatt
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one {1 Übung hinzufügen} other {{n} Übungen hinzufügen}}'**
+  String pickerAdd(int n);
+
+  /// Weg aus dem Auswahlblatt heraus — vorher eine Sackgasse
+  ///
+  /// In de, this message translates to:
+  /// **'Übung fehlt? Anlegen'**
+  String get pickerCreate;
+
+  /// Gesperrte Aktion mit Grund
+  ///
+  /// In de, this message translates to:
+  /// **'Nichts gewählt'**
+  String get pickerNone;
+
+  /// Mehrfachauswahl auf Nutzerwunsch
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen wählen'**
+  String get pickerTitle;
 
   /// plan.broken.entry
   ///
@@ -3456,6 +3528,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Schultern'**
   String get regionShoulders;
+
+  /// Eingabeart für Wiederholungen
+  ///
+  /// In de, this message translates to:
+  /// **'Tastatur'**
+  String get repsKeyboard;
+
+  /// Eingabeart für Wiederholungen
+  ///
+  /// In de, this message translates to:
+  /// **'Rad'**
+  String get repsWheel;
+
+  /// Warum es zwei Eingabearten gibt
+  ///
+  /// In de, this message translates to:
+  /// **'Das Rad kennt nur Zahlen. Für „8-12\" oder „max\" die Tastatur.'**
+  String get repsWheelHint;
 
   /// rest.body
   ///

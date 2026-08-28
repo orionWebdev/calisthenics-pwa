@@ -1582,6 +1582,33 @@
       }
     }
   },
+  "entryCollapse": "Zuklappen",
+  "@entryCollapse": {
+    "description": "Planeintrag"
+  },
+  "entryExpand": "Aufklappen",
+  "@entryExpand": {
+    "description": "Planeintrag"
+  },
+  "entryNoTarget": "Kein Ziel gesetzt",
+  "@entryNoTarget": {
+    "description": "Zugeklappt ohne Zielwerte"
+  },
+  "entrySummary": "{sets}×{reps} · {rest} s Pause",
+  "@entrySummary": {
+    "description": "Zusammenfassung eines zugeklappten Eintrags",
+    "placeholders": {
+      "sets": {
+        "type": "String"
+      },
+      "reps": {
+        "type": "String"
+      },
+      "rest": {
+        "type": "String"
+      }
+    }
+  },
   "errorsDeleteFailed": "Fehler beim Löschen",
   "@errorsDeleteFailed": {
     "description": "aus errors.deleteFailed"
@@ -2543,6 +2570,22 @@
   "@muscleCore": {
     "description": "Muskelgruppe"
   },
+  "muscleFieldCount": "{n} gewählt · {names}",
+  "@muscleFieldCount": {
+    "description": "Zusammenfassung im Auswahlfeld",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "muscleFieldEmpty": "Keine gewählt",
+  "@muscleFieldEmpty": {
+    "description": "Zustand des Auswahlfelds"
+  },
   "muscleGlutes": "Gesäß",
   "@muscleGlutes": {
     "description": "Muskelgruppe"
@@ -2558,6 +2601,14 @@
   "muscleQuads": "Quadrizeps",
   "@muscleQuads": {
     "description": "Muskelgruppe"
+  },
+  "muscleSheetHint": "Mehrere möglich. Der erste gibt die Farbe.",
+  "@muscleSheetHint": {
+    "description": "Hilfetext im Auswahlblatt"
+  },
+  "muscleSheetTitle": "Muskeln wählen",
+  "@muscleSheetTitle": {
+    "description": "Abweichung vom Board auf Nutzerwunsch: Auswahl in einem Blatt statt neun Chips im Formular"
   },
   "muscleShoulders": "Schultern",
   "@muscleShoulders": {
@@ -2682,6 +2733,27 @@
   "onboardingRepeatSub": "Die vier Einführungsseiten noch einmal",
   "@onboardingRepeatSub": {
     "description": "onboarding.repeat.sub"
+  },
+  "pickerAdd": "{n, plural, one {1 Übung hinzufügen} other {{n} Übungen hinzufügen}}",
+  "@pickerAdd": {
+    "description": "Aktion im Auswahlblatt",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pickerCreate": "Übung fehlt? Anlegen",
+  "@pickerCreate": {
+    "description": "Weg aus dem Auswahlblatt heraus — vorher eine Sackgasse"
+  },
+  "pickerNone": "Nichts gewählt",
+  "@pickerNone": {
+    "description": "Gesperrte Aktion mit Grund"
+  },
+  "pickerTitle": "Übungen wählen",
+  "@pickerTitle": {
+    "description": "Mehrfachauswahl auf Nutzerwunsch"
   },
   "planBrokenEntry": "Übung gelöscht",
   "@planBrokenEntry": {
@@ -2946,6 +3018,18 @@
   "regionShoulders": "Schultern",
   "@regionShoulders": {
     "description": "Körperregion, Filter"
+  },
+  "repsKeyboard": "Tastatur",
+  "@repsKeyboard": {
+    "description": "Eingabeart für Wiederholungen"
+  },
+  "repsWheel": "Rad",
+  "@repsWheel": {
+    "description": "Eingabeart für Wiederholungen"
+  },
+  "repsWheelHint": "Das Rad kennt nur Zahlen. Für „8-12\" oder „max\" die Tastatur.",
+  "@repsWheelHint": {
+    "description": "Warum es zwei Eingabearten gibt"
   },
   "restBody": "Gilt für Sätze ohne eigene Pause im Plan. Wirkt ab der nächsten Einheit.",
   "@restBody": {

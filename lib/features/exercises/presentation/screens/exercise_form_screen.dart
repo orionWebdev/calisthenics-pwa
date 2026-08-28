@@ -11,7 +11,9 @@ import '../../domain/exercise.dart';
 import '../../domain/exercise_draft.dart';
 import '../../domain/muscle.dart';
 import '../difficulty_ui.dart';
+import '../muscle_sheet.dart';
 import '../muscle_ui.dart';
+import '../widgets/exercise_bits.dart';
 import 'exercise_detail_screen.dart';
 
 /// Übung anlegen und bearbeiten.
@@ -428,13 +430,18 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                       label: l10n.exerciseFieldMuscles,
                       hint: l10n.exerciseFieldMusclesCount(_muscles.length),
                     ),
-                    _MuscleChoice(
+                    _MuscleField(
                       selected: _muscles,
                       hasError: faults.contains(ExerciseDraftFault.muscles),
-                      onToggle: (muscle) {
+                      onTap: () async {
+                        final chosen =
+                            await MuscleSheet.show(context, _muscles);
+                        if (chosen == null) return;
                         _touch();
                         setState(() {
-                          if (!_muscles.remove(muscle)) _muscles.add(muscle);
+                          _muscles
+                            ..clear()
+                            ..addAll(chosen);
                         });
                       },
                     ),
@@ -580,109 +587,78 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
   }
 }
 
-/// Neun Schalter, einer je Filtermuskel.
+/// Das Feld, das die Muskelauswahl zusammenfasst und das Blatt öffnet.
 ///
-/// Ein `Wrap`, keine Reihe: Bei 200 % Schrift auf 320 dp braucht „Fortgeschritten"
-/// allein fast die halbe Breite. Und ein Haken neben dem Namen, nicht nur eine
-/// hellere Fläche — Farbe trägt hier ohnehin schon die Muskelkennung, sie kann
-/// nicht zusätzlich den Auswahlzustand tragen.
-class _MuscleChoice extends StatelessWidget {
-  const _MuscleChoice({
-    required this.selected,
-    required this.onToggle,
-    this.hasError = false,
-  });
-
-  final Set<MuscleGroup> selected;
-  final ValueChanged<MuscleGroup> onToggle;
-
-  /// Färbt die Ränder der ungewählten Chips. **Ohne Meldung** — ein fehlender
-  /// Chip ist sofort zu sehen, ein Satz darunter wäre eine Wiederholung.
-  final bool hasError;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        for (final muscle in MuscleGroup.filters)
-          _MuscleToggle(
-            muscle: muscle,
-            selected: selected.contains(muscle),
-            hasError: hasError,
-            label: muscle.label(l10n),
-            chosen: selected.length,
-            onTap: () => onToggle(muscle),
-          ),
-      ],
-    );
-  }
-}
-
-class _MuscleToggle extends StatelessWidget {
-  const _MuscleToggle({
-    required this.muscle,
+/// Es zeigt die gewählten Muskeln als kleine Kugeln plus Namen — die Auswahl
+/// ist damit ablesbar, ohne zu öffnen. Die Begründung für den Umbau steht am
+/// [MuscleSheet].
+class _MuscleField extends StatelessWidget {
+  const _MuscleField({
     required this.selected,
     required this.hasError,
-    required this.label,
-    required this.chosen,
     required this.onTap,
   });
 
-  final MuscleGroup muscle;
-  final bool selected;
+  final Set<MuscleGroup> selected;
   final bool hasError;
-  final String label;
-
-  /// Wie viele insgesamt gewählt sind — geht in die Ansage ein.
-  final int chosen;
-
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final color = muscle.color;
+    final ordered = [
+      for (final muscle in MuscleGroup.filters)
+        if (selected.contains(muscle)) muscle,
+    ];
+    final names = ordered.map((m) => m.label(l10n)).join(', ');
 
     return AtemTappable(
       onTap: onTap,
-      // Rolle Kontrollkästchen, nicht Knopf: Ein Screenreader muss ansagen
-      // können, dass mehrere gewählt sein dürfen — und wie viele es sind.
-      semanticLabel: '$label, ${l10n.exerciseFieldMusclesCount(chosen)}',
-      selected: selected,
-      minTapSize: const Size(0, 48),
+      semanticLabel: ordered.isEmpty
+          ? '${l10n.exerciseFieldMuscles}. ${l10n.muscleFieldEmpty}'
+          : '${l10n.exerciseFieldMuscles}. '
+              '${l10n.muscleFieldCount(ordered.length, names)}',
+      minTapSize: const Size(0, 52),
+      alignment: Alignment.centerLeft,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          // Spezifikation: Fläche 18 %, Rand 42 %, Text in der Muskelfarbe.
-          color: selected
-              ? color.withValues(alpha: 0.18)
-              : AtemColors.card,
-          borderRadius: BorderRadius.circular(AtemRadii.pill),
+          color: AtemColors.surfaceSolid,
+          borderRadius: AtemRadii.statBoxR,
           border: Border.all(
-            color: selected
-                ? color.withValues(alpha: 0.42)
-                : (hasError ? AtemColors.magenta : AtemColors.border),
-            width: selected ? 1.5 : 1,
+            color: hasError ? AtemColors.magenta : AtemColors.border,
+            width: hasError ? 1.5 : 1,
           ),
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            if (selected) ...[
-              Icon(Icons.check, size: 14, color: color),
+            if (ordered.isNotEmpty) ...[
+              // Höchstens drei Kugeln — mehr wäre eine Farbreihe ohne
+              // Aussage, und die Namen stehen ohnehin daneben.
+              for (final muscle in ordered.take(3)) ...[
+                MuscleOrb(color: muscle.color, size: 22),
+                const SizedBox(width: 4),
+              ],
               const SizedBox(width: 6),
             ],
-            Text(
-              label,
-              style: AtemType.labelSmall.of(context).copyWith(
-                    color: selected ? color : AtemColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
+            Expanded(
+              child: Text(
+                ordered.isEmpty
+                    ? l10n.muscleFieldEmpty
+                    : l10n.muscleFieldCount(ordered.length, names),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AtemType.body.of(context).copyWith(
+                      color: ordered.isEmpty
+                          ? AtemColors.textSecondary
+                          : AtemColors.textPrimary,
+                    ),
+              ),
             ),
+            const SizedBox(width: 8),
+            const Icon(Icons.expand_more,
+                size: 20, color: AtemColors.textSecondary),
           ],
         ),
       ),
@@ -729,7 +705,17 @@ class _MoreSection extends StatelessWidget {
                 style: AtemType.body.of(context)),
           ),
           const SizedBox(width: 10),
-          Text(count_, style: AtemType.labelMicro.of(context)),
+          // Nachgiebig: „3 optional" ist bei 200 % Schrift auf 320 dp
+          // breiter als der Rest der Zeile übrig lässt.
+          Flexible(
+            child: Text(
+              count_,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
+              style: AtemType.labelMicro.of(context),
+            ),
+          ),
         ],
       ),
     );

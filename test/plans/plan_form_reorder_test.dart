@@ -33,6 +33,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Die Einträge sind zugeklappt, sobald sie Zielwerte tragen — erst
+    // aufklappen, sonst gibt es keine Eingabefelder zu vergleichen.
+    for (final finder in find.bySemanticsLabel(RegExp('Aufklappen')).evaluate().toList()) {
+      await tester.tap(find.byElementPredicate((e) => e == finder));
+      await tester.pumpAndSettle();
+    }
+
     // Der Vorlagenplan: erster Eintrag 4 Sätze, zweiter 3 Sätze mit „8-12".
     List<String> setsColumn() => tester
         .widgetList<TextField>(find.byType(TextField))

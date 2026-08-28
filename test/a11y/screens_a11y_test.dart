@@ -23,6 +23,9 @@ import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
+import 'package:atem/core/theme/theme.dart';
+import 'package:atem/features/exercises/presentation/exercise_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/a11y.dart';
@@ -157,6 +160,12 @@ void main() {
 
   // ------------------------------------------------------------- Modul 8
 
+  testWidgets('Übungswähler erfüllt den A11y-Vertrag', (tester) async {
+    // Mehrfachauswahl, Filterleiste und der Weg zum Anlegen — alles in
+    // einem Blatt, das bei 200 % Schrift nicht überlaufen darf.
+    await expectA11y(tester, const _Sheet(child: ExercisePicker()));
+  });
+
   testWidgets('Einstellungen erfüllen den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const SettingsScreen());
   });
@@ -168,4 +177,22 @@ void main() {
   testWidgets('Konto gelöscht erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const AccountDeletedScreen());
   });
+}
+
+/// Rahmt ein Blatt, damit die Matrix es wie einen Bildschirm prüfen kann.
+class _Sheet extends StatelessWidget {
+  const _Sheet({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: AtemColors.base,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AtemSpacing.screenPadding),
+            child: SingleChildScrollView(child: child),
+          ),
+        ),
+      );
 }

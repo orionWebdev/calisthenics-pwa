@@ -1086,6 +1086,20 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
+  String get entryCollapse => 'Zuklappen';
+
+  @override
+  String get entryExpand => 'Aufklappen';
+
+  @override
+  String get entryNoTarget => 'Kein Ziel gesetzt';
+
+  @override
+  String entrySummary(String sets, String reps, String rest) {
+    return '$sets×$reps · $rest s Pause';
+  }
+
+  @override
   String get errorsDeleteFailed => 'Fehler beim Löschen';
 
   @override
@@ -1740,6 +1754,14 @@ class AppL10nDe extends AppL10n {
   String get muscleCore => 'Core';
 
   @override
+  String muscleFieldCount(int n, String names) {
+    return '$n gewählt · $names';
+  }
+
+  @override
+  String get muscleFieldEmpty => 'Keine gewählt';
+
+  @override
   String get muscleGlutes => 'Gesäß';
 
   @override
@@ -1750,6 +1772,12 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get muscleQuads => 'Quadrizeps';
+
+  @override
+  String get muscleSheetHint => 'Mehrere möglich. Der erste gibt die Farbe.';
+
+  @override
+  String get muscleSheetTitle => 'Muskeln wählen';
 
   @override
   String get muscleShoulders => 'Schultern';
@@ -1836,6 +1864,26 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get onboardingRepeatSub => 'Die vier Einführungsseiten noch einmal';
+
+  @override
+  String pickerAdd(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Übungen hinzufügen',
+      one: '1 Übung hinzufügen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickerCreate => 'Übung fehlt? Anlegen';
+
+  @override
+  String get pickerNone => 'Nichts gewählt';
+
+  @override
+  String get pickerTitle => 'Übungen wählen';
 
   @override
   String get planBrokenEntry => 'Übung gelöscht';
@@ -2028,6 +2076,16 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get regionShoulders => 'Schultern';
+
+  @override
+  String get repsKeyboard => 'Tastatur';
+
+  @override
+  String get repsWheel => 'Rad';
+
+  @override
+  String get repsWheelHint =>
+      'Das Rad kennt nur Zahlen. Für „8-12\" oder „max\" die Tastatur.';
 
   @override
   String get restBody =>

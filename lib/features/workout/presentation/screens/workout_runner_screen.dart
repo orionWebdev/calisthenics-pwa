@@ -183,9 +183,11 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen> {
   /// Der einzige Weg, ein freies Training zu füllen — und zugleich der Weg,
   /// einen Plan zu ergänzen, wenn unterwegs etwas dazukommt.
   Future<void> _addExercise() async {
-    final exercise = await ExercisePicker.show(context);
-    if (exercise == null) return;
-    _notifier.addExercise(exercise);
+    final chosen = await ExercisePicker.show(context);
+    if (chosen == null || chosen.isEmpty) return;
+    for (final exercise in chosen) {
+      _notifier.addExercise(exercise);
+    }
     // Direkt zur neuen Übung springen: Wer sie hinzufügt, will sie eintragen.
     final count = ref.read(workoutSessionProvider(widget.start)).value
             ?.exercises.length ??

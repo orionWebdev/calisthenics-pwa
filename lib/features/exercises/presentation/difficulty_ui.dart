@@ -55,13 +55,20 @@ String difficultyLabel(AppL10n l, int level) => switch (level) {
 /// Deshalb steht das Wort auf 12 sp. Das Feld wird dadurch höher, was der
 /// Umbruch unten ohnehin abfängt.
 ///
-/// ## Der Umbruch ist Teil der Spezifikation
+/// ## Waagerecht scrollbar statt umbrechend
 ///
-/// Fünf Felder nebeneinander bei 200 % Schrift auf 320 dp gäben 64 dp je Feld
-/// — „Fortgeschritten" braucht dort mehr als das Doppelte. Das Board schreibt
-/// deshalb den Umbruch auf zwei Reihen à 3 und 2 vor. Er wird gemessen, nicht
-/// geschätzt: Eine feste Breitenschwelle lag bei der Navigationsleiste schon
-/// einmal falsch.
+/// Das Board schreibt fünf Felder nebeneinander vor, bei 200 % Schrift
+/// umbrechend auf zwei Reihen à 3 und 2. In der Erprobung war der Einwand:
+/// Es wird genau **eines** gewählt, und eine einzeilige Reihe, die man
+/// schiebt, liest sich als eine Skala — zwei Reihen als zwei Gruppen.
+///
+/// Das trifft zu. Eine Skala ist eine Ordnung, und ein Umbruch in der Mitte
+/// zerschneidet sie: „Mittel" stünde rechts aussen, „Fortgeschritten" links
+/// unten, obwohl sie benachbart sind.
+///
+/// Die Felder behalten deshalb ihre Breite und die Reihe scrollt. Was nicht
+/// mehr passt, ist angeschnitten sichtbar — das ist die übliche Andeutung,
+/// dass es weitergeht, und sie stimmt hier auch inhaltlich.
 class DifficultyChoice extends StatelessWidget {
   const DifficultyChoice({
     super.key,
@@ -82,57 +89,50 @@ class DifficultyChoice extends StatelessWidget {
   final bool hasError;
 
   static const _height = 48.0;
-  static const _gap = 4.0;
+  static const _gap = 6.0;
+
+  /// Auch das kürzeste Wort bekommt eine Fläche, die man trifft.
+  static const _minWidth = 78.0;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final scaler = MediaQuery.textScalerOf(context);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Passt das längste Wort in ein Fünftel der Breite?
-        final widest = _widest(context, l10n, scaler);
-        final perField = (constraints.maxWidth - _gap * 4) / 5;
-        final wraps = widest > perField - 8;
+    // Die Breite folgt dem längsten Wort — sonst wären fünf gleich breite
+    // Felder so breit wie „Fortgeschritten" und die Reihe unnötig lang.
+    final width = math.max(
+      _minWidth,
+      _widest(context, l10n, scaler) + 20,
+    );
 
-        final levels = [
-          for (var level = Difficulty.min; level <= Difficulty.max; level++)
-            level,
-        ];
+    // Eine waagerechte Liste braucht eine feste Höhe; sie folgt der
+    // Schriftskalierung, damit bei 200 % nichts abgeschnitten wird.
+    final height = math.max(_height, scaler.scale(30) + 30);
 
-        if (!wraps) {
-          return _row(context, l10n, levels);
-        }
-
-        // Zwei Reihen à 3 und 2 — so schreibt es das Board.
-        return Column(
-          children: [
-            _row(context, l10n, levels.sublist(0, 3)),
-            const SizedBox(height: _gap),
-            _row(context, l10n, levels.sublist(3)),
-          ],
-        );
-      },
+    return SizedBox(
+      height: height,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.zero,
+        itemCount: Difficulty.max,
+        separatorBuilder: (_, __) => const SizedBox(width: _gap),
+        itemBuilder: (context, i) {
+          final level = Difficulty.min + i;
+          return SizedBox(
+            width: width,
+            child: _Field(
+              level: level,
+              label: difficultyLabel(l10n, level),
+              selected: level == value,
+              hasError: hasError,
+              onTap: () => onChanged(level),
+            ),
+          );
+        },
+      ),
     );
   }
-
-  Widget _row(BuildContext context, AppL10n l10n, List<int> levels) => Row(
-        children: [
-          for (var i = 0; i < levels.length; i++) ...[
-            if (i > 0) const SizedBox(width: _gap),
-            Expanded(
-              child: _Field(
-                level: levels[i],
-                label: difficultyLabel(l10n, levels[i]),
-                selected: levels[i] == value,
-                hasError: hasError,
-                onTap: () => onChanged(levels[i]),
-              ),
-            ),
-          ],
-        ],
-      );
 
   static double _widest(
     BuildContext context,

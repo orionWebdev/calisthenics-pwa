@@ -115,21 +115,26 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
   }
 
   Future<void> _add() async {
-    final exercise = await ExercisePicker.show(context);
-    if (exercise == null) return;
+    final chosen = await ExercisePicker.show(context);
+    if (chosen == null || chosen.isEmpty) return;
     _touch();
     setState(() {
-      // Zielwerte bleiben leer: Drei Sätze zu unterstellen wäre eine Angabe,
-      // die niemand gemacht hat. Der Plan rechnet ohnehin mit drei, wenn
-      // nichts dasteht — aber er behauptet dann nicht, es sei gewählt worden.
-      _items.add(PlanItem(exerciseId: exercise.id));
-      _keys.add(_nextKey++);
+      for (final exercise in chosen) {
+        // Zielwerte bleiben leer: Drei Sätze zu unterstellen wäre eine
+        // Angabe, die niemand gemacht hat. Der Plan rechnet ohnehin mit
+        // drei, wenn nichts dasteht — aber er behauptet dann nicht, es sei
+        // gewählt worden.
+        _items.add(PlanItem(exerciseId: exercise.id));
+        _keys.add(_nextKey++);
+      }
     });
   }
 
   Future<void> _replace(int index) async {
-    final exercise = await ExercisePicker.show(context);
-    if (exercise == null) return;
+    final chosen = await ExercisePicker.show(context);
+    if (chosen == null || chosen.isEmpty) return;
+    // Beim Ersetzen zählt die erste: Ein Eintrag trägt eine Übung.
+    final exercise = chosen.first;
     _touch();
     setState(() {
       final old = _items[index];
@@ -416,6 +421,14 @@ class _ItemCardState extends State<_ItemCard> {
   late final TextEditingController _hold;
   late final TextEditingController _rest;
 
+  /// Zugeklappt ist die Vorgabe.
+  ///
+  /// Ein Plan hat im Mittel sechs Einträge; sechs aufgeklappte Karten mit je
+  /// vier Feldern und fünf Aktionen sind eine Seite, auf der man die
+  /// Reihenfolge nicht mehr sieht — und die Reihenfolge ist der Sinn eines
+  /// Plans. Neue Einträge stehen offen, weil sie noch leer sind.
+  late bool _open;
+
   @override
   void initState() {
     super.initState();
@@ -424,6 +437,10 @@ class _ItemCardState extends State<_ItemCard> {
     _reps = TextEditingController(text: item.reps ?? '');
     _hold = TextEditingController(text: item.holdSeconds?.toString() ?? '');
     _rest = TextEditingController(text: item.restSeconds?.toString() ?? '');
+    _open = item.sets == null &&
+        item.reps == null &&
+        item.holdSeconds == null &&
+        item.restSeconds == null;
   }
 
   @override
@@ -524,85 +541,141 @@ class _ItemCardState extends State<_ItemCard> {
               ),
             ),
           ),
-          const SizedBox(height: 14),
-          // Die Zielwerte bleiben auch an der Lücke änderbar. Sie sind das
-          // Einzige, was von ihr übrig ist — sie zu sperren nähme ihr den Zweck.
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              _Target(
-                label: l10n.planEntrySets,
-                controller: _sets,
-                onChanged: _emit,
-              ),
-              _Target(
-                label: l10n.planEntryReps,
-                controller: _reps,
-                hint: l10n.planEntryRepsHint,
-                // **Kein Zahlenfeld.** Bereiche wie „8-12" gehören zum Bestand.
-                text: true,
-                onChanged: _emit,
-              ),
-              _Target(
-                label: l10n.planFormHold,
-                controller: _hold,
-                onChanged: _emit,
-              ),
-              _Target(
-                label: l10n.planEntryRest,
-                controller: _rest,
-                onChanged: _emit,
-              ),
-            ],
-          ),
+          if (!_open) ...[
+            const SizedBox(height: 8),
+            // Zugeklappt steht da, was eingestellt ist — sonst müsste man
+            // jede Karte öffnen, um zu sehen, ob sie schon gefüllt ist.
+            Text(
+              _summary(l10n),
+              style: AtemType.labelMicro
+                  .of(context)
+                  .copyWith(letterSpacing: 0, color: AtemColors.cyan),
+            ),
+          ],
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          Row(
             children: [
-              // Bei einer Lücke steht „Ersetzen" zuerst — und ist die einzige
-              // hervorgehobene Aktion.
-              if (dangling)
-                _Action(
-                  icon: Icons.swap_horiz,
-                  label: l10n.planBrokenReplace,
-                  semanticLabel: l10n.planBrokenReplace,
-                  accent: AtemColors.cyan,
-                  onTap: widget.onReplace,
+              Expanded(
+                child: _Action(
+                  icon: _open ? Icons.expand_less : Icons.expand_more,
+                  label: _open ? l10n.entryCollapse : l10n.entryExpand,
+                  semanticLabel:
+                      '${_open ? l10n.entryCollapse : l10n.entryExpand}: $name',
+                  onTap: () => setState(() => _open = !_open),
                 ),
+              ),
+              const SizedBox(width: 8),
               if (widget.onMoveUp != null)
                 _Action(
                   icon: Icons.arrow_upward,
-                  label: l10n.planFormMoveUp,
+                  label: '',
                   semanticLabel: '${l10n.planFormMoveUp}: $name',
                   onTap: widget.onMoveUp!,
                 ),
-              if (widget.onMoveDown != null)
+              if (widget.onMoveDown != null) ...[
+                const SizedBox(width: 8),
                 _Action(
                   icon: Icons.arrow_downward,
-                  label: l10n.planFormMoveDown,
+                  label: '',
                   semanticLabel: '${l10n.planFormMoveDown}: $name',
                   onTap: widget.onMoveDown!,
                 ),
-              if (!dangling)
+              ],
+            ],
+          ),
+          if (_open) ...[
+            const SizedBox(height: 14),
+            // **Zwei Paare statt vier ungleicher Felder.** Sätze und
+            // Wiederholungen gehören zusammen („3 × 8-12"), Halten und Pause
+            // sind Sekundenwerte. Vorher standen alle vier nebeneinander, in
+            // unterschiedlichen Breiten und ohne erkennbare Gruppierung.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _Target(
+                    label: l10n.planEntrySets,
+                    controller: _sets,
+                    onChanged: _emit,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 2,
+                  child: _Target(
+                    label: l10n.planEntryReps,
+                    controller: _reps,
+                    hint: l10n.planEntryRepsHint,
+                    // **Kein Zahlenfeld.** Bereiche wie „8-12" und „max"
+                    // gehören zum Bestand.
+                    text: true,
+                    onChanged: _emit,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _Target(
+                    label: l10n.planFormHold,
+                    controller: _hold,
+                    suffix: l10n.unitSuffixSeconds,
+                    onChanged: _emit,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _Target(
+                    label: l10n.planEntryRest,
+                    controller: _rest,
+                    suffix: l10n.unitSuffixSeconds,
+                    onChanged: _emit,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
                 _Action(
                   icon: Icons.swap_horiz,
                   label: l10n.planBrokenReplace,
-                  semanticLabel: '${l10n.planFormReplace}: $name',
+                  semanticLabel: '${l10n.planBrokenReplace}: $name',
+                  accent: dangling ? AtemColors.cyan : null,
                   onTap: widget.onReplace,
                 ),
-              _Action(
-                icon: Icons.close,
-                label: l10n.planBrokenRemove,
-                semanticLabel: l10n.planFormRemoveA11y(name),
-                accent: AtemColors.magenta,
-                onTap: widget.onRemove,
-              ),
-            ],
-          ),
+                _Action(
+                  icon: Icons.close,
+                  label: l10n.planBrokenRemove,
+                  semanticLabel: l10n.planFormRemoveA11y(name),
+                  accent: AtemColors.magenta,
+                  onTap: widget.onRemove,
+                ),
+              ],
+            ),
+          ],
         ],
       ),
+    );
+  }
+
+  /// Was zugeklappt dasteht.
+  String _summary(AppL10n l10n) {
+    final sets = _sets.text.trim();
+    final reps = _reps.text.trim();
+    final rest = _rest.text.trim();
+    if (sets.isEmpty && reps.isEmpty && rest.isEmpty) {
+      return l10n.entryNoTarget;
+    }
+    return l10n.entrySummary(
+      sets.isEmpty ? '—' : sets,
+      reps.isEmpty ? '—' : reps,
+      rest.isEmpty ? '—' : rest,
     );
   }
 
@@ -615,12 +688,21 @@ class _ItemCardState extends State<_ItemCard> {
 }
 
 /// Ein Zielwert mit Beschriftung darüber.
+///
+/// **Volle Breite in seiner Spalte**, nicht 74 dp fest. Vier gleich schmale
+/// Felder nebeneinander waren der Grund, warum die Zielwerte in der Erprobung
+/// „schlecht positioniert" wirkten: Sie standen in einer Reihe, ohne dass
+/// erkennbar war, was zusammengehört.
+///
+/// Jetzt zwei Paare — Sätze mit Wiederholungen, Halten mit Pause — und jedes
+/// Feld nimmt seine Spalte ein.
 class _Target extends StatelessWidget {
   const _Target({
     required this.label,
     required this.controller,
     required this.onChanged,
     this.hint,
+    this.suffix,
     this.text = false,
   });
 
@@ -628,49 +710,158 @@ class _Target extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onChanged;
   final String? hint;
+  final String? suffix;
   final bool text;
 
   @override
   Widget build(BuildContext context) {
-    // **Die Breite folgt der Schrift.** 74 dp reichen für „Sätze" bei
-    // Faktor 1.0 und laufen bei 2.0 um 29 px über — die Prüfmatrix hat es auf
-    // 320 dp gefunden. Nach oben gedeckelt, damit vier Zielwerte nicht zu
-    // vier Zeilen werden.
-    final width =
-        MediaQuery.textScalerOf(context).scale(74).clamp(74.0, 150.0);
-
-    return SizedBox(
-      width: width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ExcludeSemantics(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AtemType.labelMicro.of(context),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ExcludeSemantics(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AtemType.labelMicro.of(context),
           ),
-          const SizedBox(height: 4),
-          if (text)
-            AtemTextField(
-              controller: controller,
-              semanticLabel: label,
-              hint: hint,
-              textCapitalization: TextCapitalization.none,
-              onChanged: (_) => onChanged(),
-            )
-          else
-            AtemNumberField(
-              controller: controller,
-              semanticLabel: label,
-              width: null,
-              onChanged: (_) => onChanged(),
+        ),
+        const SizedBox(height: 5),
+        if (text)
+          _RepsField(
+            controller: controller,
+            label: label,
+            hint: hint,
+            onChanged: onChanged,
+          )
+        else
+          AtemNumberField(
+            controller: controller,
+            semanticLabel: label,
+            width: null,
+            suffix: suffix,
+            onChanged: (_) => onChanged(),
+          ),
+      ],
+    );
+  }
+}
+
+/// Das Wiederholungsfeld — **Rad und Tastatur, umschaltbar**.
+///
+/// ## Warum nicht nur ein Rad
+///
+/// Ein Rad zeigt Zahlen. Im Bestand stehen aber „8-12" und „max" neben „10",
+/// und Modul 7 hält ausdrücklich fest, dass `reps` deshalb Text bleibt: Ein
+/// Zahlen-Stepper hätte 60 Planeinträge unbrauchbar gemacht.
+///
+/// ## Warum trotzdem eins
+///
+/// Der häufigste Fall ist eine einzelne Zahl, und die über eine Tastatur
+/// einzugeben ist für sechs Einträge sechsmal Tastatur auf und zu. Das Rad
+/// bedient diesen Fall schnell; die Tastatur bleibt für alles andere.
+///
+/// Umgeschaltet wird sichtbar, mit einem Satz daneben, der sagt warum. Ein
+/// stilles Rad, das „max" nicht annimmt, wäre eine Falle.
+class _RepsField extends StatefulWidget {
+  const _RepsField({
+    required this.controller,
+    required this.label,
+    required this.onChanged,
+    this.hint,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final VoidCallback onChanged;
+  final String? hint;
+
+  @override
+  State<_RepsField> createState() => _RepsFieldState();
+}
+
+class _RepsFieldState extends State<_RepsField> {
+  /// Das Rad nur, wenn der Wert eine reine Zahl ist — sonst zerstörte das
+  /// Umschalten den Wert beim ersten Dreh.
+  late bool _wheel = int.tryParse(widget.controller.text.trim()) != null;
+
+  static const _min = 1;
+  static const _max = 50;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final numeric = int.tryParse(widget.controller.text.trim());
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_wheel && numeric != null)
+          SizedBox(
+            height: 76,
+            child: ListWheelScrollView.useDelegate(
+              itemExtent: 34,
+              perspective: 0.004,
+              physics: const FixedExtentScrollPhysics(),
+              controller: FixedExtentScrollController(
+                initialItem: (numeric - _min).clamp(0, _max - _min),
+              ),
+              onSelectedItemChanged: (i) {
+                widget.controller.text = '${_min + i}';
+                widget.onChanged();
+              },
+              childDelegate: ListWheelChildBuilderDelegate(
+                childCount: _max - _min + 1,
+                builder: (context, i) => Center(
+                  child: Text(
+                    '${_min + i}',
+                    style: AtemType.valueMedium.of(context),
+                  ),
+                ),
+              ),
             ),
-        ],
-      ),
+          )
+        else
+          AtemTextField(
+            controller: widget.controller,
+            semanticLabel: widget.label,
+            hint: widget.hint,
+            textCapitalization: TextCapitalization.none,
+            onChanged: (_) {
+              setState(() {});
+              widget.onChanged();
+            },
+          ),
+        const SizedBox(height: 6),
+        AtemTappable(
+          onTap: () => setState(() => _wheel = !_wheel),
+          semanticLabel: _wheel ? l10n.repsKeyboard : l10n.repsWheel,
+          minTapSize: const Size(0, 44),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                _wheel ? Icons.keyboard : Icons.filter_list,
+                size: 15,
+                color: AtemColors.cyan,
+              ),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  _wheel ? l10n.repsKeyboard : l10n.repsWheel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AtemType.labelMicro
+                      .of(context)
+                      .copyWith(color: AtemColors.cyan, letterSpacing: 0),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -688,6 +879,11 @@ class _Action extends StatelessWidget {
     required this.onTap,
     this.accent,
   });
+
+  /// Ein leeres [label] macht daraus einen reinen Symbolknopf — für die
+  /// Pfeile, die neben dem breiten Auf-/Zuklappen stehen. Ihr Sinn steht im
+  /// Vorlesetext, und zwei Pfeile nebeneinander sind auch ohne Wort
+  /// eindeutig; die anderen Aktionen tragen ihres weiterhin.
 
   final IconData icon;
   final String label;
@@ -709,7 +905,10 @@ class _Action extends StatelessWidget {
     return AtemTappable(
       onTap: onTap,
       semanticLabel: semanticLabel,
-      minTapSize: const Size(0, 48),
+      // Ohne Wort muss auch die **Breite** 48 dp erreichen — sonst ist der
+      // Knopf so schmal wie sein Symbol. Die Prüfmatrix hat genau das
+      // gefunden, schon bei einfacher Schrift.
+      minTapSize: label.isEmpty ? const Size(48, 48) : const Size(0, 48),
       child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -721,17 +920,19 @@ class _Action extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 15, color: color),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AtemType.labelMicro
-                    .of(context)
-                    .copyWith(color: color, letterSpacing: 0),
+            if (label.isNotEmpty) ...[
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AtemType.labelMicro
+                      .of(context)
+                      .copyWith(color: color, letterSpacing: 0),
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

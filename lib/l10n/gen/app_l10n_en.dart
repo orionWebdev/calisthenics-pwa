@@ -1082,6 +1082,20 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get entryCollapse => 'Collapse';
+
+  @override
+  String get entryExpand => 'Expand';
+
+  @override
+  String get entryNoTarget => 'No target set';
+
+  @override
+  String entrySummary(String sets, String reps, String rest) {
+    return '$sets×$reps · $rest s rest';
+  }
+
+  @override
   String get errorsDeleteFailed => 'Error deleting';
 
   @override
@@ -1733,6 +1747,14 @@ class AppL10nEn extends AppL10n {
   String get muscleCore => 'Core';
 
   @override
+  String muscleFieldCount(int n, String names) {
+    return '$n chosen · $names';
+  }
+
+  @override
+  String get muscleFieldEmpty => 'None chosen';
+
+  @override
   String get muscleGlutes => 'Glutes';
 
   @override
@@ -1743,6 +1765,13 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get muscleQuads => 'Quads';
+
+  @override
+  String get muscleSheetHint =>
+      'Several possible. The first one sets the colour.';
+
+  @override
+  String get muscleSheetTitle => 'Choose muscles';
 
   @override
   String get muscleShoulders => 'Shoulders';
@@ -1830,6 +1859,26 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get onboardingRepeatSub => 'The four intro pages again';
+
+  @override
+  String pickerAdd(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Add $n exercises',
+      one: 'Add 1 exercise',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickerCreate => 'Missing one? Create it';
+
+  @override
+  String get pickerNone => 'Nothing chosen';
+
+  @override
+  String get pickerTitle => 'Choose exercises';
 
   @override
   String get planBrokenEntry => 'Exercise deleted';
@@ -2021,6 +2070,16 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get regionShoulders => 'Shoulders';
+
+  @override
+  String get repsKeyboard => 'Keyboard';
+
+  @override
+  String get repsWheel => 'Wheel';
+
+  @override
+  String get repsWheelHint =>
+      'The wheel only knows numbers. Use the keyboard for “8-12” or “max”.';
 
   @override
   String get restBody =>

@@ -1291,6 +1291,33 @@
   },
   "durationApproxMinutes": "~{n} min",
   "durationMinutes": "{n} min",
+  "entryCollapse": "Collapse",
+  "@entryCollapse": {
+    "description": "Planeintrag"
+  },
+  "entryExpand": "Expand",
+  "@entryExpand": {
+    "description": "Planeintrag"
+  },
+  "entryNoTarget": "No target set",
+  "@entryNoTarget": {
+    "description": "Zugeklappt ohne Zielwerte"
+  },
+  "entrySummary": "{sets}×{reps} · {rest} s rest",
+  "@entrySummary": {
+    "description": "Zusammenfassung eines zugeklappten Eintrags",
+    "placeholders": {
+      "sets": {
+        "type": "String"
+      },
+      "reps": {
+        "type": "String"
+      },
+      "rest": {
+        "type": "String"
+      }
+    }
+  },
   "errorsDeleteFailed": "Error deleting",
   "@errorsDeleteFailed": {
     "description": "aus errors.deleteFailed"
@@ -1942,10 +1969,34 @@
   "muscleCalves": "Calves",
   "muscleChest": "Chest",
   "muscleCore": "Core",
+  "muscleFieldCount": "{n} chosen · {names}",
+  "@muscleFieldCount": {
+    "description": "Zusammenfassung im Auswahlfeld",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "muscleFieldEmpty": "None chosen",
+  "@muscleFieldEmpty": {
+    "description": "Zustand des Auswahlfelds"
+  },
   "muscleGlutes": "Glutes",
   "muscleHamstrings": "Hamstrings",
   "muscleLegs": "Legs",
   "muscleQuads": "Quads",
+  "muscleSheetHint": "Several possible. The first one sets the colour.",
+  "@muscleSheetHint": {
+    "description": "Hilfetext im Auswahlblatt"
+  },
+  "muscleSheetTitle": "Choose muscles",
+  "@muscleSheetTitle": {
+    "description": "Abweichung vom Board auf Nutzerwunsch: Auswahl in einem Blatt statt neun Chips im Formular"
+  },
   "muscleShoulders": "Shoulders",
   "muscleTriceps": "Triceps",
   "navCalendar": "Calendar",
@@ -2002,6 +2053,27 @@
   "onboardingRepeatSub": "The four intro pages again",
   "@onboardingRepeatSub": {
     "description": "onboarding.repeat.sub"
+  },
+  "pickerAdd": "{n, plural, one {Add 1 exercise} other {Add {n} exercises}}",
+  "@pickerAdd": {
+    "description": "Aktion im Auswahlblatt",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pickerCreate": "Missing one? Create it",
+  "@pickerCreate": {
+    "description": "Weg aus dem Auswahlblatt heraus — vorher eine Sackgasse"
+  },
+  "pickerNone": "Nothing chosen",
+  "@pickerNone": {
+    "description": "Gesperrte Aktion mit Grund"
+  },
+  "pickerTitle": "Choose exercises",
+  "@pickerTitle": {
+    "description": "Mehrfachauswahl auf Nutzerwunsch"
   },
   "planBrokenEntry": "Exercise deleted",
   "@planBrokenEntry": {
@@ -2216,6 +2288,18 @@
   "regionCore": "Core",
   "regionLegs": "Legs",
   "regionShoulders": "Shoulders",
+  "repsKeyboard": "Keyboard",
+  "@repsKeyboard": {
+    "description": "Eingabeart für Wiederholungen"
+  },
+  "repsWheel": "Wheel",
+  "@repsWheel": {
+    "description": "Eingabeart für Wiederholungen"
+  },
+  "repsWheelHint": "The wheel only knows numbers. Use the keyboard for “8-12” or “max”.",
+  "@repsWheelHint": {
+    "description": "Warum es zwei Eingabearten gibt"
+  },
   "restBody": "Applies to sets without their own rest in the plan. Takes effect from your next workout.",
   "@restBody": {
     "description": "rest.body"
