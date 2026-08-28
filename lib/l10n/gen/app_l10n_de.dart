@@ -729,7 +729,7 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
-  String get dashboardNavAnalytics => 'ANALYSE';
+  String get dashboardNavAnalytics => 'VERLAUF';
 
   @override
   String get dashboardNavHome => 'HOME';
@@ -1275,6 +1275,9 @@ class AppL10nDe extends AppL10n {
       'Prüfe die Verbindung und versuche es erneut.';
 
   @override
+  String get exerciseHistoryTitle => 'Du mit dieser Übung';
+
+  @override
   String get exerciseInstructions => 'Anleitung';
 
   @override
@@ -1628,7 +1631,7 @@ class AppL10nDe extends AppL10n {
   String get historyRecentLabel => 'Letzte Einheiten';
 
   @override
-  String get historyTitle => 'Du mit dieser Übung';
+  String get historyTitle => 'Verlauf';
 
   @override
   String get historyTrendFalling => 'fallend';

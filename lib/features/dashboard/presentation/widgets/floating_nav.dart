@@ -24,6 +24,17 @@ import '../../../../l10n/gen/app_l10n.dart';
 ///
 /// Ein Platz kommt zurück, wenn ein Bildschirm dahinter steht. Nicht vorher.
 ///
+/// ## Warum der dritte „Verlauf" heißt und nicht „Analyse"
+///
+/// Er hieß Analyse — aus dem alten Handoff übernommen. Dahinter liegt aber
+/// nicht nur die Auswertung, sondern die Liste der absolvierten Einheiten,
+/// der Monatsstreifen und die Lücken. Die Auswertung ist ein Teil davon.
+///
+/// Das war in der Erprobung als „passt nur so halb" aufgefallen, und zwar zu
+/// Recht: Wer „Analyse" liest, erwartet Kurven und findet eine Liste. Die
+/// Einordnung stimmt — was passiert ist, gehört nicht zu „was mache ich
+/// jetzt" —, nur das Wort stimmte nicht.
+///
 /// Ob sie passen, wird **gemessen statt geschätzt**. Eine Breitenschwelle war
 /// hier falsch: Bei 360 dp lag sie auf der sicheren Seite, die Zeile lief
 /// trotzdem über — und ein Überlauf beschneidet die Semantics-Rechtecke am

@@ -125,6 +125,11 @@ def main() -> None:
         if key not in de:
             added += 1
         elif de[key] != german:
+            # Zwei Boards können denselben Punktpfad für Verschiedenes
+            # benutzen — Modul 6 und 9 tun es mit `history.title`. Wer das
+            # stillschweigend überschreibt, benennt einen fremden Bildschirm
+            # um. Die Zeile unten zeigt jede Ersetzung; sie ist zu prüfen,
+            # nicht wegzuklicken.
             updated += 1
             print(f'  ~ {key}\n      alt: {de[key]}\n      neu: {german}')
         else:

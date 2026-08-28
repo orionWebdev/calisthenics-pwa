@@ -1076,9 +1076,9 @@
       }
     }
   },
-  "dashboardNavAnalytics": "ANALYSE",
+  "dashboardNavAnalytics": "VERLAUF",
   "@dashboardNavAnalytics": {
-    "description": "Dashboard, Modul 1 Spezifikation"
+    "description": "Leistenbeschriftung. „Analyse\" versprach nur die Auswertung — der Tab trägt aber den ganzen Verlauf, von dem sie ein Teil ist."
   },
   "dashboardNavHome": "HOME",
   "@dashboardNavHome": {
@@ -1828,6 +1828,10 @@
   "@exerciseFormSaveErrorBody": {
     "description": "Fehlermeldung, Text"
   },
+  "exerciseHistoryTitle": "Du mit dieser Übung",
+  "@exerciseHistoryTitle": {
+    "description": "history.title (Modul 9) — umbenannt: Modul 6 und 9 benutzen denselben Punktpfad für Verschiedenes"
+  },
   "exerciseInstructions": "Anleitung",
   "@exerciseInstructions": {
     "description": "Abschnitt im Detail"
@@ -2387,9 +2391,9 @@
   "@historyRecentLabel": {
     "description": "Überschrift der Kurzliste"
   },
-  "historyTitle": "Du mit dieser Übung",
+  "historyTitle": "Verlauf",
   "@historyTitle": {
-    "description": "history.title"
+    "description": "history.title (Modul 6)"
   },
   "historyTrendFalling": "fallend",
   "@historyTrendFalling": {

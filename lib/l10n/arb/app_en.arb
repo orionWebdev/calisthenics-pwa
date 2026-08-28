@@ -896,9 +896,9 @@
       }
     }
   },
-  "dashboardNavAnalytics": "ANALYSIS",
+  "dashboardNavAnalytics": "HISTORY",
   "@dashboardNavAnalytics": {
-    "description": "Dashboard, Modul 1 Spezifikation"
+    "description": "Leistenbeschriftung. „Analyse\" versprach nur die Auswertung — der Tab trägt aber den ganzen Verlauf, von dem sie ein Teil ist."
   },
   "dashboardNavHome": "HOME",
   "@dashboardNavHome": {
@@ -1518,6 +1518,10 @@
   "@exerciseFormSaveErrorBody": {
     "description": "Fehlermeldung, Text"
   },
+  "exerciseHistoryTitle": "You with this exercise",
+  "@exerciseHistoryTitle": {
+    "description": "history.title (Modul 9) — umbenannt: Modul 6 und 9 benutzen denselben Punktpfad für Verschiedenes"
+  },
   "exerciseInstructions": "Instructions",
   "exerciseLevel1": "Entry",
   "@exerciseLevel1": {
@@ -1889,9 +1893,9 @@
     "description": "history.once.note"
   },
   "historyRecentLabel": "Recent workouts",
-  "historyTitle": "You with this exercise",
+  "historyTitle": "History",
   "@historyTitle": {
-    "description": "history.title"
+    "description": "history.title (Modul 6)"
   },
   "historyTrendFalling": "falling",
   "historyTrendRising": "rising",

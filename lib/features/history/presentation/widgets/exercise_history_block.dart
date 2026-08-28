@@ -57,7 +57,7 @@ class ExerciseHistoryBlock extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(l10n.historyTitle,
+                child: Text(l10n.exerciseHistoryTitle,
                     style: AtemType.labelMedium.of(context)),
               ),
               const SizedBox(width: 10),

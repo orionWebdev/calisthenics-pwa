@@ -725,7 +725,7 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get dashboardNavAnalytics => 'ANALYSIS';
+  String get dashboardNavAnalytics => 'HISTORY';
 
   @override
   String get dashboardNavHome => 'HOME';
@@ -1268,6 +1268,9 @@ class AppL10nEn extends AppL10n {
       'Check your connection and try again.';
 
   @override
+  String get exerciseHistoryTitle => 'You with this exercise';
+
+  @override
   String get exerciseInstructions => 'Instructions';
 
   @override
@@ -1621,7 +1624,7 @@ class AppL10nEn extends AppL10n {
   String get historyRecentLabel => 'Recent workouts';
 
   @override
-  String get historyTitle => 'You with this exercise';
+  String get historyTitle => 'History';
 
   @override
   String get historyTrendFalling => 'falling';

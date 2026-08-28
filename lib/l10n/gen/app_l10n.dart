@@ -1309,10 +1309,10 @@ abstract class AppL10n {
   /// **'{name}, Tab {n} von {total}'**
   String dashboardNavA11y(String name, int n, int total);
 
-  /// Dashboard, Modul 1 Spezifikation
+  /// Leistenbeschriftung. „Analyse" versprach nur die Auswertung — der Tab trägt aber den ganzen Verlauf, von dem sie ein Teil ist.
   ///
   /// In de, this message translates to:
-  /// **'ANALYSE'**
+  /// **'VERLAUF'**
   String get dashboardNavAnalytics;
 
   /// Dashboard, Modul 1 Spezifikation
@@ -2191,6 +2191,12 @@ abstract class AppL10n {
   /// **'Prüfe die Verbindung und versuche es erneut.'**
   String get exerciseFormSaveErrorBody;
 
+  /// history.title (Modul 9) — umbenannt: Modul 6 und 9 benutzen denselben Punktpfad für Verschiedenes
+  ///
+  /// In de, this message translates to:
+  /// **'Du mit dieser Übung'**
+  String get exerciseHistoryTitle;
+
   /// Abschnitt im Detail
   ///
   /// In de, this message translates to:
@@ -2761,10 +2767,10 @@ abstract class AppL10n {
   /// **'Letzte Einheiten'**
   String get historyRecentLabel;
 
-  /// history.title
+  /// history.title (Modul 6)
   ///
   /// In de, this message translates to:
-  /// **'Du mit dieser Übung'**
+  /// **'Verlauf'**
   String get historyTitle;
 
   /// Richtung der Formkurve
