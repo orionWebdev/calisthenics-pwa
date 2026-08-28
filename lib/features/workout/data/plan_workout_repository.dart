@@ -1,7 +1,7 @@
 import '../../exercises/domain/exercise.dart';
 import '../../exercises/domain/exercise_repository.dart';
+import '../../history/domain/exercise_history.dart';
 import '../../history/domain/session_repository.dart';
-import '../../history/domain/training_session.dart';
 import '../../plans/domain/plan.dart';
 import '../../plans/domain/plan_repository.dart';
 import '../domain/workout_repository.dart';
@@ -74,7 +74,7 @@ class PlanWorkoutRepository implements WorkoutRepository {
     final byId = {for (final e in exercises) e.id: e};
 
     final sessions = await _sessions.fetchSessions(userId);
-    final history = _History.from(sessions);
+    final history = ExerciseHistory.index(sessions);
 
     return ActiveWorkout(
       // Die Verbindung zum Kalender. Ohne sie bliebe der Termin nach dem
@@ -98,9 +98,10 @@ class PlanWorkoutRepository implements WorkoutRepository {
     PlanItem item,
     int position,
     Exercise? exercise,
-    _History history,
+    Map<String, ExerciseHistory> history,
   ) {
-    final previous = history.lastSets(item.exerciseId);
+    final entry = history[item.exerciseId] ?? ExerciseHistory.empty;
+    final previous = entry.lastSets;
     final count = item.sets ?? defaultSets;
 
     return WorkoutExercise(
@@ -110,7 +111,7 @@ class PlanWorkoutRepository implements WorkoutRepository {
       // für Datenpflege an anderer Stelle.
       name: exercise?.name ?? item.exerciseId,
       muscles: [for (final m in exercise?.displayMuscles ?? const []) m.wire],
-      recordWeightKg: history.record(item.exerciseId),
+      recordWeightKg: entry.recordWeightKg,
       sets: [
         for (var i = 0; i < count; i++)
           WorkoutSet(
@@ -118,7 +119,12 @@ class PlanWorkoutRepository implements WorkoutRepository {
             type: SetType.normal,
             // Der Satz an derselben Position vom letzten Mal. Gibt es ihn
             // nicht, bleibt die Zeile leer statt einen fremden Satz zu zeigen.
-            previous: i < previous.length ? previous[i] : null,
+            previous: i < previous.length
+                ? SetReference(
+                    weightKg: previous[i].weight,
+                    reps: previous[i].reps,
+                  )
+                : null,
             // **Die Zielvorgabe wird nicht vorbelegt.** Ein Feld, in dem schon
             // „8" steht, ist nach dem Abhaken eine Leistungsangabe — und zwar
             // eine, die niemand gemacht hat. Das Ziel steht daneben als
@@ -128,55 +134,6 @@ class PlanWorkoutRepository implements WorkoutRepository {
           ),
       ],
     );
-  }
-}
-
-/// Was die Historie über einzelne Übungen weiß.
-///
-/// Einmal vorgerechnet: Ein Plan mit acht Übungen liefe sonst achtmal über
-/// alle 137 Einheiten.
-class _History {
-  const _History(this._lastSets, this._records);
-
-  final Map<String, List<SetReference>> _lastSets;
-  final Map<String, double> _records;
-
-  List<SetReference> lastSets(String exerciseId) =>
-      _lastSets[exerciseId] ?? const [];
-
-  double? record(String exerciseId) => _records[exerciseId];
-
-  static _History from(List<TrainingSession> sessions) {
-    final lastSets = <String, List<SetReference>>{};
-    final records = <String, double>{};
-
-    // Neueste zuerst — so gewinnt beim ersten Treffer die jüngste Einheit.
-    final sorted = [...sessions]..sort((a, b) => b.date.compareTo(a.date));
-
-    for (final session in sorted) {
-      if (session is! StrengthSession) continue;
-      for (final exercise in session.exercises) {
-        final sets = [
-          for (final set in exercise.sets)
-            if (!set.isEmpty)
-              SetReference(weightKg: set.weight, reps: set.reps),
-        ];
-        if (sets.isEmpty) continue;
-
-        lastSets.putIfAbsent(exercise.exerciseId, () => sets);
-
-        for (final set in sets) {
-          final weight = set.weightKg;
-          if (weight == null) continue;
-          final best = records[exercise.exerciseId];
-          if (best == null || weight > best) {
-            records[exercise.exerciseId] = weight;
-          }
-        }
-      }
-    }
-
-    return _History(lastSets, records);
   }
 }
 
