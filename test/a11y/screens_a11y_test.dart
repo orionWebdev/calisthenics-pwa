@@ -18,6 +18,7 @@ import 'package:atem/features/exercises/presentation/screens/exercise_list_scree
 import 'package:atem/features/plans/presentation/screens/plan_detail_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_form_screen.dart';
 import 'package:atem/features/settings/presentation/screens/account_deletion_screen.dart';
+import 'package:atem/features/settings/presentation/screens/export_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
@@ -168,6 +169,10 @@ void main() {
 
   testWidgets('Einstellungen erfüllen den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const SettingsScreen());
+  });
+
+  testWidgets('Daten ausgeben erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const ExportScreen());
   });
 
   testWidgets('Konto löschen erfüllt den A11y-Vertrag', (tester) async {

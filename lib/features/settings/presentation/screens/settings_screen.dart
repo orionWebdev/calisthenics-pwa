@@ -11,7 +11,6 @@ import '../../../auth/domain/auth_user.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../plans/application/plan_providers.dart';
-import '../../application/account_export.dart';
 import '../../application/pending_weight_change.dart';
 import '../../application/settings_providers.dart';
 import '../../domain/body_weight_preview.dart';
@@ -20,6 +19,7 @@ import '../../domain/user_settings.dart';
 import '../widgets/settings_bits.dart';
 import '../widgets/weight_preview.dart';
 import 'account_deletion_screen.dart';
+import 'export_screen.dart';
 
 /// Einstellungen und Profil.
 ///
@@ -268,7 +268,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 SettingsRow(
                   label: l10n.exportTitle,
-                  hint: l10n.exportBody,
+                  hint: l10n.exportSub,
                   onTap: _openExport,
                 ),
                 SettingsRow(
@@ -437,14 +437,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Future<void> _openExport() async {
-    final l10n = AppL10n.of(context);
-    final count =
-        await ref.read(accountExportProvider.notifier).run(ExportFormat.json);
-    if (!mounted) return;
-    setState(() => _notice =
-        count == null ? l10n.settingsExportFailed : null);
-  }
+  /// Führt zum Ausgabebildschirm.
+  ///
+  /// **Nicht mehr sofort ausführen.** Vorher lief die Ausgabe los, sobald man
+  /// die Zeile antippte — ohne zu sagen, was in die Datei kommt, und ohne
+  /// Wahl des Formats.
+  Future<void> _openExport() => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const ExportScreen()),
+      );
 }
 
 enum _DeleteChoice { proceed, export }

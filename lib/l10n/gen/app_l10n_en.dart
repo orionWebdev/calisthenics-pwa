@@ -1396,6 +1396,12 @@ class AppL10nEn extends AppL10n {
   String get exportCreate => 'Create file';
 
   @override
+  String get exportCreateCsv => 'Create as CSV';
+
+  @override
+  String get exportCreateJson => 'Create as JSON';
+
+  @override
   String get exportDoneNote =>
       'The file is in your downloads folder. The app sends nothing itself.';
 
@@ -1403,12 +1409,39 @@ class AppL10nEn extends AppL10n {
   String get exportDoneShare => 'Share';
 
   @override
+  String get exportFormatNote =>
+      'JSON contains everything. CSV contains your workouts as a table, one row per set.';
+
+  @override
   String get exportOffline => 'Not possible offline';
 
   @override
-  String exportProgress(int a, String b, int c, int d, int e, String f) {
+  String exportProgress(int a, int b, int c, int d, int e, int f) {
     return 'Workouts $a/$b · plans $c/$d · exercises $e/$f';
   }
+
+  @override
+  String exportRowDays(int n) {
+    return '$n d';
+  }
+
+  @override
+  String get exportRowExercises => 'Your own exercises';
+
+  @override
+  String get exportRowPlans => 'Plans with entries';
+
+  @override
+  String get exportRowProfile => 'Profile details';
+
+  @override
+  String get exportRowSchedule => 'Appointments';
+
+  @override
+  String get exportRowScores => 'Records and form curve';
+
+  @override
+  String get exportRowSessions => 'Workouts with sets';
 
   @override
   String exportSize(String mb) {

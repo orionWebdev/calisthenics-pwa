@@ -1652,6 +1652,14 @@
   "@exportCreate": {
     "description": "export.create"
   },
+  "exportCreateCsv": "Create as CSV",
+  "@exportCreateCsv": {
+    "description": "Aktion"
+  },
+  "exportCreateJson": "Create as JSON",
+  "@exportCreateJson": {
+    "description": "Aktion"
+  },
   "exportDoneNote": "The file is in your downloads folder. The app sends nothing itself.",
   "@exportDoneNote": {
     "description": "export.done.note"
@@ -1659,6 +1667,10 @@
   "exportDoneShare": "Share",
   "@exportDoneShare": {
     "description": "export.done.share"
+  },
+  "exportFormatNote": "JSON contains everything. CSV contains your workouts as a table, one row per set.",
+  "@exportFormatNote": {
+    "description": "Welche Datei wofür — die offene Frage aus Modul 8, Abschnitt K"
   },
   "exportOffline": "Not possible offline",
   "@exportOffline": {
@@ -1672,7 +1684,7 @@
         "type": "int"
       },
       "b": {
-        "type": "String"
+        "type": "int"
       },
       "c": {
         "type": "int"
@@ -1684,9 +1696,42 @@
         "type": "int"
       },
       "f": {
-        "type": "String"
+        "type": "int"
       }
     }
+  },
+  "exportRowDays": "{n} d",
+  "@exportRowDays": {
+    "description": "Zeitraum in der Inhaltsliste",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exportRowExercises": "Your own exercises",
+  "@exportRowExercises": {
+    "description": "Board 08, exportInhalt"
+  },
+  "exportRowPlans": "Plans with entries",
+  "@exportRowPlans": {
+    "description": "Board 08, exportInhalt"
+  },
+  "exportRowProfile": "Profile details",
+  "@exportRowProfile": {
+    "description": "Board 08, exportInhalt"
+  },
+  "exportRowSchedule": "Appointments",
+  "@exportRowSchedule": {
+    "description": "Board 08, exportInhalt"
+  },
+  "exportRowScores": "Records and form curve",
+  "@exportRowScores": {
+    "description": "Board 08, exportInhalt"
+  },
+  "exportRowSessions": "Workouts with sets",
+  "@exportRowSessions": {
+    "description": "Board 08, exportInhalt"
   },
   "exportSize": "approx. {mb} MB · no images, no videos",
   "@exportSize": {

@@ -2413,6 +2413,18 @@ abstract class AppL10n {
   /// **'Datei erstellen'**
   String get exportCreate;
 
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Als CSV erstellen'**
+  String get exportCreateCsv;
+
+  /// Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'Als JSON erstellen'**
+  String get exportCreateJson;
+
   /// export.done.note
   ///
   /// In de, this message translates to:
@@ -2425,6 +2437,12 @@ abstract class AppL10n {
   /// **'Teilen'**
   String get exportDoneShare;
 
+  /// Welche Datei wofür — die offene Frage aus Modul 8, Abschnitt K
+  ///
+  /// In de, this message translates to:
+  /// **'JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.'**
+  String get exportFormatNote;
+
   /// export.offline
   ///
   /// In de, this message translates to:
@@ -2435,7 +2453,49 @@ abstract class AppL10n {
   ///
   /// In de, this message translates to:
   /// **'Einheiten {a}/{b} · Pläne {c}/{d} · Übungen {e}/{f}'**
-  String exportProgress(int a, String b, int c, int d, int e, String f);
+  String exportProgress(int a, int b, int c, int d, int e, int f);
+
+  /// Zeitraum in der Inhaltsliste
+  ///
+  /// In de, this message translates to:
+  /// **'{n} T'**
+  String exportRowDays(int n);
+
+  /// Board 08, exportInhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene Übungen'**
+  String get exportRowExercises;
+
+  /// Board 08, exportInhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Pläne mit Einträgen'**
+  String get exportRowPlans;
+
+  /// Board 08, exportInhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Profilangaben'**
+  String get exportRowProfile;
+
+  /// Board 08, exportInhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Termine'**
+  String get exportRowSchedule;
+
+  /// Board 08, exportInhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Bestwerte und Formkurve'**
+  String get exportRowScores;
+
+  /// Board 08, exportInhalt
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten mit Sätzen'**
+  String get exportRowSessions;
 
   /// export.size
   ///

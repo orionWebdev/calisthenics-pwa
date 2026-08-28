@@ -1403,6 +1403,12 @@ class AppL10nDe extends AppL10n {
   String get exportCreate => 'Datei erstellen';
 
   @override
+  String get exportCreateCsv => 'Als CSV erstellen';
+
+  @override
+  String get exportCreateJson => 'Als JSON erstellen';
+
+  @override
   String get exportDoneNote =>
       'Die Datei liegt im Downloads-Ordner. Die App verschickt nichts selbst.';
 
@@ -1410,12 +1416,39 @@ class AppL10nDe extends AppL10n {
   String get exportDoneShare => 'Teilen';
 
   @override
+  String get exportFormatNote =>
+      'JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.';
+
+  @override
   String get exportOffline => 'Offline nicht möglich';
 
   @override
-  String exportProgress(int a, String b, int c, int d, int e, String f) {
+  String exportProgress(int a, int b, int c, int d, int e, int f) {
     return 'Einheiten $a/$b · Pläne $c/$d · Übungen $e/$f';
   }
+
+  @override
+  String exportRowDays(int n) {
+    return '$n T';
+  }
+
+  @override
+  String get exportRowExercises => 'Eigene Übungen';
+
+  @override
+  String get exportRowPlans => 'Pläne mit Einträgen';
+
+  @override
+  String get exportRowProfile => 'Profilangaben';
+
+  @override
+  String get exportRowSchedule => 'Termine';
+
+  @override
+  String get exportRowScores => 'Bestwerte und Formkurve';
+
+  @override
+  String get exportRowSessions => 'Einheiten mit Sätzen';
 
   @override
   String exportSize(String mb) {
