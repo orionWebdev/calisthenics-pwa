@@ -6309,5 +6309,194 @@
   "intensityTitle": "Intensität",
   "@intensityTitle": {
     "description": "Ergänzung zu Board 11 — Beschriftung im Intensitätskasten (B4)"
+  },
+  "acwrLabel": "Belastung · ACWR {v}",
+  "@acwrLabel": {
+    "description": "Board 06 — ACWR-Skala, Kopfzeile (A1/2)",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "acwrBandLow": "unterfordert",
+  "@acwrBandLow": {
+    "description": "Board 06 — ACWR-Band 0–0,8"
+  },
+  "acwrBandOptimal": "optimal",
+  "@acwrBandOptimal": {
+    "description": "Board 06 — ACWR-Band 0,8–1,3"
+  },
+  "acwrBandHigh": "erhöht",
+  "@acwrBandHigh": {
+    "description": "Board 06 — ACWR-Band 1,3–1,5"
+  },
+  "acwrBandDanger": "kritisch",
+  "@acwrBandDanger": {
+    "description": "Board 06 — ACWR-Band über 1,5"
+  },
+  "acwrBandNoteLow": "Zone unterfordert — akute Last liegt unter der chronischen.",
+  "@acwrBandNoteLow": {
+    "description": "Board 06 — Satz zur Zone"
+  },
+  "acwrBandNoteOptimal": "Zone optimal — akute Last passt zur chronischen.",
+  "@acwrBandNoteOptimal": {
+    "description": "Board 06 — Satz zur Zone (A1/2)"
+  },
+  "acwrBandNoteHigh": "Zone erhöht — akute Last übersteigt die chronische.",
+  "@acwrBandNoteHigh": {
+    "description": "Board 06 — Satz zur Zone"
+  },
+  "acwrBandNoteDanger": "Zone kritisch — akute Last weit über der chronischen.",
+  "@acwrBandNoteDanger": {
+    "description": "Board 06 — Satz zur Zone"
+  },
+  "acwrScaleA11y": "Belastung {v}, Zone {zone}, Bereich {from} bis {to}.",
+  "@acwrScaleA11y": {
+    "description": "Board 06 — Vorlesetext der ACWR-Skala (G)",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      },
+      "zone": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "historyMonthOpenA11y": "{month}, {n, plural, one{1 Einheit} other{# Einheiten}}, öffnet die Liste",
+  "@historyMonthOpenA11y": {
+    "description": "Board 06 — Monatsbalken, 48-dp-Treffer (I/08)",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailStatMinutes": "Minuten",
+  "@detailStatMinutes": {
+    "description": "Board 06 — StatBox-Dreier (A3)"
+  },
+  "detailStatKilometers": "Kilometer",
+  "@detailStatKilometers": {
+    "description": "Board 06 — StatBox-Dreier (A3)"
+  },
+  "detailSubtitle": "{kind} · {n} min",
+  "@detailSubtitle": {
+    "description": "Board 06 — Unterzeile im Einheitendetail (A3)",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailContribTitle": "Beitrag zur Form",
+  "@detailContribTitle": {
+    "description": "Board 06 — Block bei Kraft ohne Sätze (A3/3)"
+  },
+  "detailContribCounts": "zählt",
+  "@detailContribCounts": {
+    "description": "Board 06 — Konstanz: zählt (A3/3)"
+  },
+  "detailContribLoad": "+ {v}",
+  "@detailContribLoad": {
+    "description": "Board 06 — Lastentwicklung (A3/3)",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "detailContribVolumeTrend": "Volumen-Trend ohne Sätze",
+  "@detailContribVolumeTrend": {
+    "description": "Board 06 — A3/3"
+  },
+  "detailContribNa": "n. a.",
+  "@detailContribNa": {
+    "description": "Board 06 — A3/3"
+  },
+  "detailNeighboursTitle": "Eingebettet im Verlauf",
+  "@detailNeighboursTitle": {
+    "description": "Board 06 — Nachbarblock bei Regeneration (A3/4)"
+  },
+  "detailNeighbourHere": "hier",
+  "@detailNeighbourHere": {
+    "description": "Board 06 — Markierung der Einheit selbst (A3/4)"
+  },
+  "detailNeighbourDays": "{sign}{n} T",
+  "@detailNeighbourDays": {
+    "description": "Board 06 — Abstand zur Nachbareinheit (A3/4)",
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisThinUnitsLabel": "Einheiten",
+  "@analysisThinUnitsLabel": {
+    "description": "Board 06 — Fortschritt „zu wenig Daten\" (A4/2)"
+  },
+  "analysisThinHistoryLabel": "Historie",
+  "@analysisThinHistoryLabel": {
+    "description": "Board 06 — Fortschritt „zu wenig Daten\" (A4/2)"
+  },
+  "analysisThinDaysProgress": "{cur} / {req} Tage",
+  "@analysisThinDaysProgress": {
+    "description": "Board 06 — A4/2",
+    "placeholders": {
+      "cur": {
+        "type": "int"
+      },
+      "req": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisThinRange": "{n, plural, one{1 Einheit} other{# Einheiten}} {from}–{to}",
+  "@analysisThinRange": {
+    "description": "Board 06 — Was es schon gibt (A4/2)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisThinLoad": "Gesamtlast {v}",
+  "@analysisThinLoad": {
+    "description": "Board 06 — Was es schon gibt (A4/2)",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisThinChain": "Längste Kette {n, plural, one{1 Tag} other{# Tage}}",
+  "@analysisThinChain": {
+    "description": "Board 06 — Was es schon gibt (A4/2)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

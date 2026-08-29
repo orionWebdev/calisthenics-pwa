@@ -5059,5 +5059,130 @@
   "tempoPerKm": "{value} /km",
   "tempoKmh": "{value} km/h",
   "cardioListCount": "{n, plural, one{1 session} other{# sessions}}",
-  "intensityTitle": "Intensity"
+  "intensityTitle": "Intensity",
+  "acwrLabel": "Load · ACWR {v}",
+  "@acwrLabel": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "acwrBandLow": "undertrained",
+  "acwrBandOptimal": "optimal",
+  "acwrBandHigh": "elevated",
+  "acwrBandDanger": "critical",
+  "acwrBandNoteLow": "Zone undertrained — acute load is below chronic load.",
+  "acwrBandNoteOptimal": "Zone optimal — acute load matches chronic load.",
+  "acwrBandNoteHigh": "Zone elevated — acute load exceeds chronic load.",
+  "acwrBandNoteDanger": "Zone critical — acute load far above chronic load.",
+  "acwrScaleA11y": "Load {v}, zone {zone}, range {from} to {to}.",
+  "@acwrScaleA11y": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      },
+      "zone": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "historyMonthOpenA11y": "{month}, {n, plural, one{1 session} other{# sessions}}, opens the list",
+  "@historyMonthOpenA11y": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailStatMinutes": "Minutes",
+  "detailStatKilometers": "Kilometres",
+  "detailSubtitle": "{kind} · {n} min",
+  "@detailSubtitle": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailContribTitle": "Contribution to form",
+  "detailContribCounts": "counts",
+  "detailContribLoad": "+ {v}",
+  "@detailContribLoad": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "detailContribVolumeTrend": "Volume trend without sets",
+  "detailContribNa": "n/a",
+  "detailNeighboursTitle": "Embedded in history",
+  "detailNeighbourHere": "here",
+  "detailNeighbourDays": "{sign}{n} d",
+  "@detailNeighbourDays": {
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisThinUnitsLabel": "Sessions",
+  "analysisThinHistoryLabel": "History",
+  "analysisThinDaysProgress": "{cur} / {req} days",
+  "@analysisThinDaysProgress": {
+    "placeholders": {
+      "cur": {
+        "type": "int"
+      },
+      "req": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisThinRange": "{n, plural, one{1 session} other{# sessions}} {from}–{to}",
+  "@analysisThinRange": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisThinLoad": "Total load {v}",
+  "@analysisThinLoad": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisThinChain": "Longest chain {n, plural, one{1 day} other{# days}}",
+  "@analysisThinChain": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

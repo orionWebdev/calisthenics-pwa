@@ -99,6 +99,7 @@ final historyTimelineProvider = Provider<List<TimelineEntry>>((ref) {
     sessions,
     ref.watch(historyReferenceProvider),
     loadByDay: loadByDay,
+    loadOf: (s) => TrainingLoad.of(s, context),
   );
 });
 
@@ -169,5 +170,6 @@ final filteredTimelineProvider = Provider<List<TimelineEntry>>((ref) {
     sessions,
     ref.watch(historyReferenceProvider),
     loadByDay: loadByDay,
+    loadOf: (s) => TrainingLoad.of(s, context),
   );
 });

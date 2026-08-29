@@ -114,6 +114,27 @@ abstract final class DataSufficiency {
     return (ref.difference(day).inHours / 24).round();
   }
 
+  /// Die längste Folge aufeinanderfolgender Trainingstage.
+  ///
+  /// Für „Was es schon gibt" unter der Trendschwelle (Board 06, A4/2):
+  /// Zählbares wird gezeigt, Gedeutetes nicht.
+  static int longestChainDays(List<TrainingSession> sessions) {
+    if (sessions.isEmpty) return 0;
+    final days = sessions
+        .map((s) => DateTime(s.date.year, s.date.month, s.date.day))
+        .toSet()
+        .toList()
+      ..sort();
+    var best = 1;
+    var run = 1;
+    for (var i = 1; i < days.length; i++) {
+      final gap = (days[i].difference(days[i - 1]).inHours / 24).round();
+      run = gap == 1 ? run + 1 : 1;
+      if (run > best) best = run;
+    }
+    return best;
+  }
+
   /// Ab hier gilt eine Unterbrechung als Lücke und wird gestaltet.
   static const gapDays = 7;
 

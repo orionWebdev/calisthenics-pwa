@@ -5,11 +5,17 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/history_providers.dart';
+import 'package:intl/intl.dart';
+
 import '../../domain/data_sufficiency.dart';
 import '../../domain/history_summary.dart';
 import '../../domain/training_form.dart';
+import '../../domain/training_load.dart';
+import '../../domain/training_session.dart';
 import '../history_zone_ui.dart';
+import '../session_ui.dart';
 import '../widgets/form_chart.dart';
+import 'session_list_screen.dart';
 
 /// Die Auswertung: Formkurve über die Zeit, darunter die Zerlegung.
 ///
@@ -54,11 +60,26 @@ class AnalysisScreen extends ConsumerWidget {
           error: (_, __) => Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: AtemSpacing.screenPadding),
-            child: AtemErrorState(
-              title: l10n.analysisErrorTitle,
-              body: l10n.analysisErrorBody(summary.sessions),
-              retryLabel: l10n.analysisErrorRetry,
-              onRetry: () => ref.invalidate(sessionStreamProvider),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AtemErrorState(
+                  title: l10n.analysisErrorTitle,
+                  body: l10n.analysisErrorBody(summary.sessions),
+                  retryLabel: l10n.analysisErrorRetry,
+                  onRetry: () => ref.invalidate(sessionStreamProvider),
+                ),
+                // Der Ausweg zu den echten Daten (Board 06, A4/3): „Zur
+                // Liste" existiert, damit niemand im Fehler festsitzt.
+                AtemButton.ghost(
+                  label: l10n.analysisErrorToList,
+                  semanticLabel: l10n.analysisErrorToList,
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                        builder: (_) => const SessionListScreen()),
+                  ),
+                ),
+              ],
             ),
           ),
           data: (_) {
@@ -74,7 +95,7 @@ class AnalysisScreen extends ConsumerWidget {
             }
 
             if (!DataSufficiency.hasTrend(sessions, reference)) {
-              return _Thin(sessions: sessions.length);
+              return _Thin(sessions: sessions, reference: reference);
             }
 
             return ListView(
@@ -115,66 +136,136 @@ class _Loading extends StatelessWidget {
 
 /// Zu wenig für einen Trend — **aber nicht zu wenig für alles**.
 ///
-/// Der Bildschirm sagt, wie viel noch fehlt, und zeigt daneben, was es schon
-/// gibt. Eine reine Absage wäre eine Sackgasse.
-class _Thin extends StatelessWidget {
-  const _Thin({required this.sessions});
+/// Board 06, A4/2: Die Schwelle wird benannt und als Fortschritt gezeigt —
+/// Einheiten 3 von 8, Historie 9 von 21 Tagen. Darunter, was es schon gibt:
+/// Zählbares wird gezeigt, Gedeutetes nicht. Kein Graustufen-Fake-Chart.
+class _Thin extends ConsumerWidget {
+  const _Thin({required this.sessions, required this.reference});
 
-  final int sessions;
+  final List<TrainingSession> sessions;
+  final DateTime reference;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
+    final tag = languageTag(context);
+    final counted = sessions
+        .where((s) => s.kind != null && s.kind != SessionKind.recovery)
+        .length;
+    final days = DataSufficiency.spanDays(sessions, reference);
+    final weight = ref.watch(bodyWeightProvider).value ?? 0;
+    final context_ = LoadContext(bodyWeightKg: weight);
+    final totalLoad = sessions.fold<double>(
+        0, (a, s) => a + TrainingLoad.of(s, context_));
+    final sorted = [...sessions]..sort((a, b) => a.date.compareTo(b.date));
+    final chain = DataSufficiency.longestChainDays(sessions);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
           AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
       children: [
+        AtemNotice(
+          title: l10n.analysisThinTitle,
+          body: l10n.analysisThinBody(
+            DataSufficiency.trendMinimumSessions,
+            DataSufficiency.trendMinimumDays,
+          ),
+          semanticLabel:
+              '${l10n.analysisThinTitle}. ${l10n.analysisThinBody(DataSufficiency.trendMinimumSessions, DataSufficiency.trendMinimumDays)}',
+        ),
+        const SizedBox(height: 16),
         AtemCard.list(
           padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.analysisThinTitle,
-                  style: AtemType.titleMedium.of(context)),
-              const SizedBox(height: 8),
-              Text(
-                l10n.analysisThinBody(
-                  DataSufficiency.trendMinimumSessions,
-                  DataSufficiency.trendMinimumDays,
-                ),
-                style: AtemType.labelSmall.of(context),
+              _ThinBar(
+                label: l10n.analysisThinUnitsLabel,
+                text: l10n.analysisThinProgress(
+                    counted, DataSufficiency.trendMinimumSessions),
+                value: counted / DataSufficiency.trendMinimumSessions,
               ),
-              const SizedBox(height: 16),
-              Semantics(
-                label: l10n.analysisThinProgress(
-                    sessions, DataSufficiency.trendMinimumSessions),
-                child: ExcludeSemantics(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.analysisThinProgress(
-                            sessions, DataSufficiency.trendMinimumSessions),
-                        style: AtemType.valueMedium.of(context),
-                      ),
-                      const SizedBox(height: 8),
-                      AtemProgressBar.share(
-                        value: (sessions / DataSufficiency.trendMinimumSessions)
-                            .clamp(0.0, 1.0),
-                        semanticLabel: '',
-                        accent: AtemColors.cyan,
-                      ),
-                    ],
-                  ),
-                ),
+              const SizedBox(height: 14),
+              _ThinBar(
+                label: l10n.analysisThinHistoryLabel,
+                text: l10n.analysisThinDaysProgress(
+                    days, DataSufficiency.trendMinimumDays),
+                value: days / DataSufficiency.trendMinimumDays,
               ),
             ],
           ),
         ),
+        if (sorted.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          AtemCard.list(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.analysisThinHave.toUpperCase(),
+                    style: AtemType.labelMicro.of(context)),
+                const SizedBox(height: 10),
+                for (final line in [
+                  l10n.analysisThinRange(
+                    sessions.length,
+                    DateFormat.Md(tag).format(sorted.first.date),
+                    DateFormat.Md(tag).format(sorted.last.date),
+                  ),
+                  l10n.analysisThinLoad(totalLoad.round().toString()),
+                  l10n.analysisThinChain(chain),
+                ])
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(line, style: AtemType.labelSmall.of(context)),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
+}
+
+/// Ein Fortschrittsbalken der Wartezeit — Rolle progressBar mit value/max.
+class _ThinBar extends StatelessWidget {
+  const _ThinBar({
+    required this.label,
+    required this.text,
+    required this.value,
+  });
+
+  final String label;
+  final String text;
+  final double value;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: ExcludeSemantics(
+                  child: Text(label, style: AtemType.labelSmall.of(context)),
+                ),
+              ),
+              ExcludeSemantics(
+                child: Text(text,
+                    style: AtemType.valueMedium
+                        .of(context)
+                        .copyWith(fontSize: 13)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          AtemProgressBar.share(
+            value: value.clamp(0.0, 1.0),
+            semanticLabel: '$label $text',
+            accent: AtemColors.cyan,
+          ),
+        ],
+      );
 }
 
 class _Breakdown extends StatelessWidget {

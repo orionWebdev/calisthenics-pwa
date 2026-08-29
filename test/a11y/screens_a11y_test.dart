@@ -125,7 +125,7 @@ void main() {
   });
 
   testWidgets('Verlauf erfüllt den A11y-Vertrag', (tester) async {
-    await expectA11y(tester, const HistoryScreen());
+    await expectA11y(tester, HistoryScreen(onStart: () {}));
   });
 
   testWidgets('Einheitenliste erfüllt den A11y-Vertrag', (tester) async {

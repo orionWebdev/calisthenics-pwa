@@ -10,6 +10,7 @@ import '../../application/history_providers.dart';
 import '../../domain/history_timeline.dart';
 import '../../domain/training_session.dart';
 import '../../domain/session_filter.dart';
+import '../../../cardio/presentation/cardio_ui.dart';
 import '../session_ui.dart';
 import 'session_detail_screen.dart';
 
@@ -91,36 +92,84 @@ class SessionListScreen extends ConsumerWidget {
       );
     }
 
-    return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(AtemSpacing.screenPadding, 0,
-                    AtemSpacing.screenPadding, 32),
-                itemCount: entries.length,
-                itemBuilder: (context, i) => switch (entries[i]) {
-                  MonthHeader(
-                    :final year,
-                    :final month,
-                    :final sessions,
-                    :final load
-                  ) =>
-                    _Month(
-                        year: year,
-                        month: month,
-                        sessions: sessions,
-                        load: load),
-                  TimelineSession(:final session, :final ordinalOnDay) =>
-                    _Row(session: session, ordinal: ordinalOnDay),
-                  TimelineGap(
-                    :final days,
-                    :final from,
-                    :final to,
-                    :final isLongest
-                  ) =>
-                    _Gap(days: days, from: from, to: to, isLongest: isLongest),
-                  TimelineEnd(:final first, :final daysAgo) =>
-                    _End(first: first, daysAgo: daysAgo),
-                },
+    // **Angeheftete Monatsköpfe** (Board 06, Spezifikation): Der Kopf sitzt
+    // beim Anheften auf massivem #050507 mit Hairline — kein Blur, der bei
+    // jedem Scrollframe über die volle Breite neu gerechnet würde
+    // (Entscheidung 12). Dafür ist die Liste in Slivers gruppiert: je Monat
+    // ein Kopf und die Zeilen darunter.
+    final groups = <List<TimelineEntry>>[];
+    for (final entry in entries) {
+      if (entry is MonthHeader || groups.isEmpty) groups.add([]);
+      groups.last.add(entry);
+    }
+
+    return CustomScrollView(
+      slivers: [
+        for (final group in groups)
+          if (group.first case MonthHeader(
+            :final year,
+            :final month,
+            :final sessions,
+            :final load
+          ))
+            SliverMainAxisGroup(
+              slivers: [
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _MonthHeaderDelegate(
+                    year: year,
+                    month: month,
+                    sessions: sessions,
+                    load: load,
+                    height: _monthHeaderHeight(context),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AtemSpacing.screenPadding),
+                  sliver: SliverList.builder(
+                    itemCount: group.length - 1,
+                    itemBuilder: (context, i) => _entry(group[i + 1]),
+                  ),
+                ),
+              ],
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AtemSpacing.screenPadding),
+              sliver: SliverList.builder(
+                itemCount: group.length,
+                itemBuilder: (context, i) => _entry(group[i]),
+              ),
+            ),
+        const SliverToBoxAdapter(child: SizedBox(height: 32)),
+      ],
     );
   }
+
+  static double _monthHeaderHeight(BuildContext context) =>
+      MediaQuery.textScalerOf(context).scale(14) + 30;
+
+  Widget _entry(TimelineEntry entry) => switch (entry) {
+        MonthHeader() => const SizedBox.shrink(),
+        TimelineSession(
+          :final session,
+          :final ordinalOnDay,
+          :final load,
+          :final monthMaxLoad
+        ) =>
+          _Row(
+            session: session,
+            ordinal: ordinalOnDay,
+            load: load,
+            monthMax: monthMaxLoad,
+          ),
+        TimelineGap(:final days, :final from, :final to, :final isLongest) =>
+          _Gap(days: days, from: from, to: to, isLongest: isLongest),
+        TimelineEnd(:final first, :final daysAgo) =>
+          _End(first: first, daysAgo: daysAgo),
+      };
 
   /// Der gewählte Zeitraum in Worten, für den leeren Filterzustand.
   static String _periodLabel(
@@ -240,62 +289,122 @@ class _KindChip extends StatelessWidget {
       );
 }
 
-class _Month extends StatelessWidget {
-  const _Month({
+/// Der Monatskopf — angeheftet, auf massivem Canvas, mit Hairline.
+///
+/// Rolle Kopfzeile; beim Anheften derselbe Knoten, damit der Fokus nicht
+/// springt (G).
+class _MonthHeaderDelegate extends SliverPersistentHeaderDelegate {
+  const _MonthHeaderDelegate({
     required this.year,
     required this.month,
     required this.sessions,
     required this.load,
+    required this.height,
   });
 
   final int year;
   final int month;
   final int sessions;
   final int load;
+  final double height;
 
   @override
-  Widget build(BuildContext context) {
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     final l10n = AppL10n.of(context);
     final name =
         DateFormat.yMMMM(languageTag(context)).format(DateTime(year, month));
+    final summary =
+        l10n.listMonthSummary(l10n.exerciseCountShort(sessions), load);
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 24, 0, 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Text(name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AtemType.labelMedium.of(context)),
+    return Semantics(
+      header: true,
+      label: '$name, $summary',
+      child: ExcludeSemantics(
+        child: Container(
+          height: height,
+          padding: const EdgeInsets.fromLTRB(
+              AtemSpacing.screenPadding, 12, AtemSpacing.screenPadding, 0),
+          decoration: BoxDecoration(
+            color: AtemColors.base,
+            // Die Hairline erscheint nur beim Anheften — als Beweis, dass
+            // darunter etwas weiterscrollt.
+            border: overlapsContent
+                ? const Border(bottom: BorderSide(color: AtemColors.border))
+                : null,
           ),
-          const SizedBox(width: 12),
-          Flexible(
-            child: Text(
-              l10n.listMonthSummary(l10n.exerciseCountShort(sessions), load),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.right,
-              style: AtemType.labelMicro.of(context),
-            ),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Text(name.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.labelMicro.of(context)),
+              ),
+              const SizedBox(width: 12),
+              Flexible(
+                child: Text(
+                  summary.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: AtemType.labelMicro.of(context),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
+
+  @override
+  bool shouldRebuild(_MonthHeaderDelegate old) =>
+      old.year != year ||
+      old.month != month ||
+      old.sessions != sessions ||
+      old.load != load ||
+      old.height != height;
 }
 
+/// Die Verlaufszeile — **Datum als Anker, Name mittig, Last rechts**.
+///
+/// Board 06, Spezifikation: Datumsspalte mit Tag (Mono 13/700) und Wochentag,
+/// Name mit Ellipsis, Meta darunter, rechts die Last in Mono mit einem
+/// 34×4-Balken relativ zum Monatsmaximum. Zwei Einheiten am selben Tag: das
+/// Datum steht nur an der ersten, die zweite rückt 10 dp ein und ihre
+/// Datumsspalte bleibt leer — an 21 von 87 Tagen passiert das.
 class _Row extends StatelessWidget {
-  const _Row({required this.session, required this.ordinal});
+  const _Row({
+    required this.session,
+    required this.ordinal,
+    required this.load,
+    required this.monthMax,
+  });
 
   final TrainingSession session;
   final int? ordinal;
+  final double load;
+  final double monthMax;
+
+  /// Die zweite Einheit des Tages — eingerückt, ohne Datum.
+  bool get _followUp => ordinal != null && ordinal! > 1;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final date = DateFormat.MMMd(languageTag(context)).format(session.date);
+    final tag = languageTag(context);
+    final day = DateFormat.d(tag).format(session.date);
+    final weekday = DateFormat.E(tag).format(session.date).toUpperCase();
+    final spokenDate = DateFormat.yMMMMEEEEd(tag).format(session.date);
     final name = sessionName(l10n, session);
     final minutes = session.duration?.inMinutes;
 
@@ -303,14 +412,19 @@ class _Row extends StatelessWidget {
     // an, ob dahinter Kraft, Cardio oder Regeneration steckt.
     final meta = <String>[
       sessionKindLabel(l10n, session),
-      if (ordinal != null) l10n.listSecond(ordinal!),
+      if (session case CardioSession(distanceKm: final km?))
+        l10n.unitKilometers(km.toStringAsFixed(1)),
+      if (session case CardioSession(tempo: final tempo?))
+        formatTempo(context, tempo),
       if (minutes != null) l10n.durationMinutes(minutes),
+      if (_followUp) l10n.listSecond(ordinal!),
     ].join(' · ');
 
+    final hasLoad = load > 0;
+    final share = monthMax <= 0 ? 0.0 : (load / monthMax).clamp(0.0, 1.0);
+
     return Padding(
-      // Die Karten standen ohne Abstand aufeinander und wirkten wie eine
-      // durchgehende Fläche.
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8, left: _followUp ? 10 : 0),
       child: AtemCard.list(
         padding: EdgeInsets.zero,
         child: AtemTappable(
@@ -319,20 +433,40 @@ class _Row extends StatelessWidget {
               builder: (_) => SessionDetailScreen(session: session),
             ),
           ),
-          semanticLabel: [date, name, if (meta.isNotEmpty) meta].join(', '),
-          minTapSize: const Size(0, 64),
+          // „Dienstag, 8. Juli, Laufen, Cardio, 8,2 Kilometer, Pace 5:42 pro
+          // Kilometer, Last 412." — bei Mehrfachtagen ergänzt „2. Einheit",
+          // weil die Einrückung nicht hörbar ist.
+          semanticLabel: [
+            spokenDate,
+            name,
+            meta,
+            if (hasLoad) '${l10n.detailLoad} ${load.round()}',
+          ].join(', '),
+          minTapSize: const Size(0, 56),
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               children: [
                 SizedBox(
-                  width: 64,
-                  child: Text(date,
-                      style: AtemType.labelMicro
-                          .of(context)
-                          .copyWith(letterSpacing: 0)),
+                  width: 36,
+                  child: _followUp
+                      ? null
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(day,
+                                style: AtemType.valueMedium
+                                    .of(context)
+                                    .copyWith(fontSize: 13)),
+                            Text(weekday,
+                                style: AtemType.labelMicro
+                                    .of(context)
+                                    .copyWith(letterSpacing: 0)),
+                          ],
+                        ),
                 ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -345,7 +479,7 @@ class _Row extends StatelessWidget {
                               .copyWith(fontWeight: FontWeight.w600)),
                       if (meta.isNotEmpty) ...[
                         const SizedBox(height: 2),
-                        Text(meta,
+                        Text(meta.toUpperCase(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AtemType.labelMicro
@@ -355,6 +489,45 @@ class _Row extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (hasLoad) ...[
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('${load.round()}',
+                          style: AtemType.valueMedium
+                              .of(context)
+                              .copyWith(fontSize: 12)),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: 34,
+                        height: 4,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: AtemColors.track,
+                            borderRadius:
+                                BorderRadius.circular(AtemRadii.pill),
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: share.clamp(0.06, 1.0),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: AtemColors.cyan,
+                                  borderRadius:
+                                      BorderRadius.circular(AtemRadii.pill),
+                                ),
+                                child: const SizedBox.expand(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -390,7 +563,7 @@ class _Gap extends StatelessWidget {
       DateFormat.MMMd(tag).format(from),
       DateFormat.MMMd(tag).format(to),
     );
-    final color = isLongest ? AtemColors.magenta : AtemColors.textSecondary;
+    final color = isLongest ? AtemColors.magenta : AtemColors.textTertiary;
 
     return Semantics(
       label: [
@@ -403,30 +576,66 @@ class _Gap extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: CustomPaint(
             painter: _DashedBorder(color: color),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.listGap(days),
-                    style: AtemType.labelSmall
-                        .of(context)
-                        .copyWith(color: color, fontWeight: FontWeight.w600),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Die linke Rinne, 34 dp, mit gestrichelter Vertikalen: Der
+                // Streifen liest sich als Abwesenheit, nicht als Eintrag.
+                SizedBox(
+                  width: 34,
+                  child: CustomPaint(painter: _DashedRail(color: color)),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.listGap(days).toUpperCase(),
+                          style: AtemType.labelSmall.of(context).copyWith(
+                              color: color, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          isLongest ? '$range · ${l10n.listGapLongest}' : range,
+                          style: AtemType.labelMicro.of(context),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    isLongest ? '$range · ${l10n.listGapLongest}' : range,
-                    style: AtemType.labelMicro.of(context),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
   }
+}
+
+/// Die gestrichelte Vertikale in der Rinne des Lückenstreifens.
+class _DashedRail extends CustomPainter {
+  _DashedRail({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..strokeWidth = 1
+      ..color = color.withValues(alpha: 0.5);
+    final x = size.width / 2;
+    var y = 6.0;
+    while (y < size.height - 6) {
+      canvas.drawLine(Offset(x, y), Offset(x, y + 4), paint);
+      y += 8;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedRail old) => old.color != color;
 }
 
 class _DashedBorder extends CustomPainter {

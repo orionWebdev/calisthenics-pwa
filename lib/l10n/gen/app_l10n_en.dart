@@ -4373,4 +4373,130 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get intensityTitle => 'Intensity';
+
+  @override
+  String acwrLabel(String v) {
+    return 'Load · ACWR $v';
+  }
+
+  @override
+  String get acwrBandLow => 'undertrained';
+
+  @override
+  String get acwrBandOptimal => 'optimal';
+
+  @override
+  String get acwrBandHigh => 'elevated';
+
+  @override
+  String get acwrBandDanger => 'critical';
+
+  @override
+  String get acwrBandNoteLow =>
+      'Zone undertrained — acute load is below chronic load.';
+
+  @override
+  String get acwrBandNoteOptimal =>
+      'Zone optimal — acute load matches chronic load.';
+
+  @override
+  String get acwrBandNoteHigh =>
+      'Zone elevated — acute load exceeds chronic load.';
+
+  @override
+  String get acwrBandNoteDanger =>
+      'Zone critical — acute load far above chronic load.';
+
+  @override
+  String acwrScaleA11y(String v, String zone, String from, String to) {
+    return 'Load $v, zone $zone, range $from to $to.';
+  }
+
+  @override
+  String historyMonthOpenA11y(String month, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return '$month, $_temp0, opens the list';
+  }
+
+  @override
+  String get detailStatMinutes => 'Minutes';
+
+  @override
+  String get detailStatKilometers => 'Kilometres';
+
+  @override
+  String detailSubtitle(String kind, int n) {
+    return '$kind · $n min';
+  }
+
+  @override
+  String get detailContribTitle => 'Contribution to form';
+
+  @override
+  String get detailContribCounts => 'counts';
+
+  @override
+  String detailContribLoad(String v) {
+    return '+ $v';
+  }
+
+  @override
+  String get detailContribVolumeTrend => 'Volume trend without sets';
+
+  @override
+  String get detailContribNa => 'n/a';
+
+  @override
+  String get detailNeighboursTitle => 'Embedded in history';
+
+  @override
+  String get detailNeighbourHere => 'here';
+
+  @override
+  String detailNeighbourDays(String sign, int n) {
+    return '$sign$n d';
+  }
+
+  @override
+  String get analysisThinUnitsLabel => 'Sessions';
+
+  @override
+  String get analysisThinHistoryLabel => 'History';
+
+  @override
+  String analysisThinDaysProgress(int cur, int req) {
+    return '$cur / $req days';
+  }
+
+  @override
+  String analysisThinRange(int n, String from, String to) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return '$_temp0 $from–$to';
+  }
+
+  @override
+  String analysisThinLoad(String v) {
+    return 'Total load $v';
+  }
+
+  @override
+  String analysisThinChain(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# days',
+      one: '1 day',
+    );
+    return 'Longest chain $_temp0';
+  }
 }

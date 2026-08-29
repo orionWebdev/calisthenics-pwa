@@ -9,6 +9,7 @@ import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/screens/history_screen.dart';
 import '../../../plans/presentation/start_sheet.dart';
+import '../../../settings/application/settings_providers.dart';
 import '../../../workout/presentation/screens/workouts_screen.dart';
 
 /// Der Kraft-Tab — **Trainieren und Verlauf, ein Tab, zwei Segmente**.
@@ -65,7 +66,10 @@ class StrengthScreen extends ConsumerWidget {
                 index: segment == StrengthSegment.train ? 0 : 1,
                 children: [
                   WorkoutsScreen(onStart: onStart, embedded: true),
-                  const HistoryScreen(embedded: true),
+                  HistoryScreen(
+                    embedded: true,
+                    onStart: () => _startFree(context, ref),
+                  ),
                 ],
               ),
             ),
@@ -73,6 +77,18 @@ class StrengthScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+/// Ein freies Training aus der Aussage-Karte heraus.
+Future<void> _startFree(BuildContext context, WidgetRef ref) async {
+  final request = await StartSheet.show(
+    context,
+    restSeconds: ref.read(defaultRestSecondsProvider),
+  );
+  if (request != null && context.mounted) {
+    final screen = context.findAncestorWidgetOfExactType<StrengthScreen>();
+    screen?.onStart(request);
   }
 }
 

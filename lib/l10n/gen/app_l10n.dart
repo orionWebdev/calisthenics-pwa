@@ -7206,6 +7206,174 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Intensität'**
   String get intensityTitle;
+
+  /// Board 06 — ACWR-Skala, Kopfzeile (A1/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Belastung · ACWR {v}'**
+  String acwrLabel(String v);
+
+  /// Board 06 — ACWR-Band 0–0,8
+  ///
+  /// In de, this message translates to:
+  /// **'unterfordert'**
+  String get acwrBandLow;
+
+  /// Board 06 — ACWR-Band 0,8–1,3
+  ///
+  /// In de, this message translates to:
+  /// **'optimal'**
+  String get acwrBandOptimal;
+
+  /// Board 06 — ACWR-Band 1,3–1,5
+  ///
+  /// In de, this message translates to:
+  /// **'erhöht'**
+  String get acwrBandHigh;
+
+  /// Board 06 — ACWR-Band über 1,5
+  ///
+  /// In de, this message translates to:
+  /// **'kritisch'**
+  String get acwrBandDanger;
+
+  /// Board 06 — Satz zur Zone
+  ///
+  /// In de, this message translates to:
+  /// **'Zone unterfordert — akute Last liegt unter der chronischen.'**
+  String get acwrBandNoteLow;
+
+  /// Board 06 — Satz zur Zone (A1/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Zone optimal — akute Last passt zur chronischen.'**
+  String get acwrBandNoteOptimal;
+
+  /// Board 06 — Satz zur Zone
+  ///
+  /// In de, this message translates to:
+  /// **'Zone erhöht — akute Last übersteigt die chronische.'**
+  String get acwrBandNoteHigh;
+
+  /// Board 06 — Satz zur Zone
+  ///
+  /// In de, this message translates to:
+  /// **'Zone kritisch — akute Last weit über der chronischen.'**
+  String get acwrBandNoteDanger;
+
+  /// Board 06 — Vorlesetext der ACWR-Skala (G)
+  ///
+  /// In de, this message translates to:
+  /// **'Belastung {v}, Zone {zone}, Bereich {from} bis {to}.'**
+  String acwrScaleA11y(String v, String zone, String from, String to);
+
+  /// Board 06 — Monatsbalken, 48-dp-Treffer (I/08)
+  ///
+  /// In de, this message translates to:
+  /// **'{month}, {n, plural, one{1 Einheit} other{# Einheiten}}, öffnet die Liste'**
+  String historyMonthOpenA11y(String month, int n);
+
+  /// Board 06 — StatBox-Dreier (A3)
+  ///
+  /// In de, this message translates to:
+  /// **'Minuten'**
+  String get detailStatMinutes;
+
+  /// Board 06 — StatBox-Dreier (A3)
+  ///
+  /// In de, this message translates to:
+  /// **'Kilometer'**
+  String get detailStatKilometers;
+
+  /// Board 06 — Unterzeile im Einheitendetail (A3)
+  ///
+  /// In de, this message translates to:
+  /// **'{kind} · {n} min'**
+  String detailSubtitle(String kind, int n);
+
+  /// Board 06 — Block bei Kraft ohne Sätze (A3/3)
+  ///
+  /// In de, this message translates to:
+  /// **'Beitrag zur Form'**
+  String get detailContribTitle;
+
+  /// Board 06 — Konstanz: zählt (A3/3)
+  ///
+  /// In de, this message translates to:
+  /// **'zählt'**
+  String get detailContribCounts;
+
+  /// Board 06 — Lastentwicklung (A3/3)
+  ///
+  /// In de, this message translates to:
+  /// **'+ {v}'**
+  String detailContribLoad(String v);
+
+  /// Board 06 — A3/3
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen-Trend ohne Sätze'**
+  String get detailContribVolumeTrend;
+
+  /// Board 06 — A3/3
+  ///
+  /// In de, this message translates to:
+  /// **'n. a.'**
+  String get detailContribNa;
+
+  /// Board 06 — Nachbarblock bei Regeneration (A3/4)
+  ///
+  /// In de, this message translates to:
+  /// **'Eingebettet im Verlauf'**
+  String get detailNeighboursTitle;
+
+  /// Board 06 — Markierung der Einheit selbst (A3/4)
+  ///
+  /// In de, this message translates to:
+  /// **'hier'**
+  String get detailNeighbourHere;
+
+  /// Board 06 — Abstand zur Nachbareinheit (A3/4)
+  ///
+  /// In de, this message translates to:
+  /// **'{sign}{n} T'**
+  String detailNeighbourDays(String sign, int n);
+
+  /// Board 06 — Fortschritt „zu wenig Daten" (A4/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten'**
+  String get analysisThinUnitsLabel;
+
+  /// Board 06 — Fortschritt „zu wenig Daten" (A4/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Historie'**
+  String get analysisThinHistoryLabel;
+
+  /// Board 06 — A4/2
+  ///
+  /// In de, this message translates to:
+  /// **'{cur} / {req} Tage'**
+  String analysisThinDaysProgress(int cur, int req);
+
+  /// Board 06 — Was es schon gibt (A4/2)
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Einheit} other{# Einheiten}} {from}–{to}'**
+  String analysisThinRange(int n, String from, String to);
+
+  /// Board 06 — Was es schon gibt (A4/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamtlast {v}'**
+  String analysisThinLoad(String v);
+
+  /// Board 06 — Was es schon gibt (A4/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Längste Kette {n, plural, one{1 Tag} other{# Tage}}'**
+  String analysisThinChain(int n);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

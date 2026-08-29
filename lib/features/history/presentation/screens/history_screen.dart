@@ -19,11 +19,15 @@ import 'session_list_screen.dart';
 /// Balkenwald deuten, sondern wissen, was gerade gilt. Erst danach kommen
 /// Verteilung und Einzelheiten.
 class HistoryScreen extends ConsumerWidget {
-  const HistoryScreen({super.key, this.embedded = false});
+  const HistoryScreen({super.key, this.embedded = false, this.onStart});
 
   /// Als Segment „Verlauf" im Kraft-Tab (Modul 11): kein eigener Rahmen,
   /// kein eigener Titel — der Verlauf ist ein Segment, kein Tab.
   final bool embedded;
+
+  /// Der Start-Knopf in der Aussage-Karte (Board 06, A1). In jeder Zone
+  /// derselbe Weg: ein freies Training.
+  final VoidCallback? onStart;
 
   static const _recentCount = 4;
 
@@ -93,20 +97,21 @@ class HistoryScreen extends ConsumerWidget {
           Text(l10n.historyTitle, style: AtemType.titleLarge.of(context)),
           const SizedBox(height: 20),
         ],
-        StatementCard(summary: summary),
-        if (summary.lastSession case final last?) ...[
-          const SizedBox(height: 10),
-          Text(
-            l10n.historyLeadLast(
-              DateFormat.E(languageTag(context)).format(last.date),
-              DateFormat.yMd(languageTag(context)).format(last.date),
-              sessionName(l10n, last),
-            ),
-            style: AtemType.labelMicro.of(context),
-          ),
-        ],
+        StatementCard(summary: summary, onStart: onStart),
         const SizedBox(height: 28),
-        MonthStrip(summary: summary),
+        // Ein Monat angetippt: Die Liste öffnet auf genau diesen Monat —
+        // der Zeitraumfilter kommt aus dem Streifen (Board 06, A2/2).
+        MonthStrip(
+          summary: summary,
+          onSelect: (year, month) {
+            ref.read(sessionFilterProvider.notifier).setPeriod(year, month);
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const SessionListScreen(),
+              ),
+            );
+          },
+        ),
         const SizedBox(height: 28),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

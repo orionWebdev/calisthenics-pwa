@@ -21,6 +21,8 @@ import '../../../cardio/presentation/widgets/intensity_box.dart';
 import '../widgets/comparison_card.dart';
 import '../widgets/percentile_card.dart';
 import '../session_ui.dart';
+import '../../../workout/domain/workout_start.dart';
+import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import 'session_edit_screen.dart';
 
 /// Detail einer Einheit — **vier Datenlagen, ein Layout**.
@@ -51,21 +53,46 @@ class SessionDetailScreen extends ConsumerWidget {
     // zeigen, was sie damals bedeutet hat.
     final acwr = Readiness.compute(sessions, session.date, context: context_);
 
+    final minutes = session.duration?.inMinutes;
+
     return Scaffold(
       backgroundColor: AtemColors.base,
-      appBar: AppBar(backgroundColor: AtemColors.base),
+      appBar: AppBar(
+        backgroundColor: AtemColors.base,
+        // Das Datum steht in der Leiste (Board 06, A3): „SA 05.07.2026".
+        title: Text(
+          DateFormat.yMEd(tag).format(session.date).toUpperCase(),
+          style: AtemType.labelMicro.of(context),
+        ),
+      ),
       body: SafeArea(
         top: false,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
               AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
           children: [
-            Text(sessionName(l10n, session),
-                style: AtemType.titleLarge.of(context)),
-            const SizedBox(height: 8),
-            Text(
-              DateFormat.yMMMMEEEEd(tag).format(session.date),
-              style: AtemType.labelSmall.of(context),
+            Semantics(
+              header: true,
+              label:
+                  '${sessionName(l10n, session)}. ${DateFormat.yMMMMEEEEd(tag).format(session.date)}',
+              child: ExcludeSemantics(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(sessionName(l10n, session),
+                        style: AtemType.titleLarge.of(context)),
+                    const SizedBox(height: 6),
+                    Text(
+                      (minutes == null
+                              ? sessionKindLabel(l10n, session)
+                              : l10n.detailSubtitle(
+                                  sessionKindLabel(l10n, session), minutes))
+                          .toUpperCase(),
+                      style: AtemType.labelMicro.of(context),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 22),
             _Stats(session: session, load: load),
@@ -120,7 +147,7 @@ class SessionDetailScreen extends ConsumerWidget {
             ],
 
             ..._exercises(context, l10n),
-            ..._explanations(context, l10n),
+            ..._explanations(context, l10n, sessions),
             const SizedBox(height: 24),
             // **Der Weg zur Notiz steht auch dann da, wenn keine da ist.**
             // Vorher erschien der Text nur, wenn schon eine Notiz existierte
@@ -262,11 +289,17 @@ class SessionDetailScreen extends ConsumerWidget {
   }
 
   /// Die beiden Erklärungen — beide sagen: **deine Einheit zählt trotzdem.**
-  List<Widget> _explanations(BuildContext context, AppL10n l10n) {
+  List<Widget> _explanations(
+    BuildContext context,
+    AppL10n l10n,
+    List<TrainingSession> sessions,
+  ) {
     // 16 der 63 Krafteinheiten im Bestand tragen keine Übungen. Ohne diesen
-    // Hinweis sähe das nach einem Fehler aus.
-    if (session is StrengthSession &&
-        (session as StrengthSession).exercises.isEmpty) {
+    // Hinweis sähe das nach einem Fehler aus — und der Block „Beitrag zur
+    // Form" sagt, was die Einheit trotzdem trägt (Board 06, A3/3).
+    if (session case StrengthSession(exercises: final exercises)
+        when exercises.isEmpty) {
+      final load = TrainingLoad.of(session, const LoadContext());
       return [
         const SizedBox(height: 24),
         AtemNotice(
@@ -274,6 +307,19 @@ class SessionDetailScreen extends ConsumerWidget {
           body: l10n.detailSetsMissingBody,
           semanticLabel:
               '${l10n.detailSetsMissingTitle}. ${l10n.detailSetsMissingBody}',
+        ),
+        const SizedBox(height: 18),
+        _Contribution(load: load),
+        const SizedBox(height: 14),
+        // Die Nachtrag-Aktion ist der einzige CTA dieser Datenlage.
+        AtemButton.outline(
+          label: l10n.setsAdd,
+          semanticLabel: l10n.setsAdd,
+          leading: const Icon(Icons.add, size: 18, color: AtemColors.cyan),
+          onPressed: () => Navigator.of(context, rootNavigator: true).pushNamed(
+            WorkoutRunnerScreen.routeName,
+            arguments: WorkoutStart.session(session.id),
+          ),
         ),
       ];
     }
@@ -287,6 +333,10 @@ class SessionDetailScreen extends ConsumerWidget {
           semanticLabel:
               '${l10n.detailRecoveryTitle}. ${l10n.detailRecoveryBody}',
         ),
+        // Der Nachbarblock gibt dem dünnsten Detail Substanz, ohne Daten zu
+        // erfinden (A3/4).
+        const SizedBox(height: 18),
+        _Neighbours(session: session, sessions: sessions),
       ];
     }
 
@@ -294,6 +344,150 @@ class SessionDetailScreen extends ConsumerWidget {
   }
 }
 
+/// „Beitrag zur Form" — was eine Einheit ohne Sätze trotzdem trägt.
+class _Contribution extends StatelessWidget {
+  const _Contribution({required this.load});
+
+  final double load;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final rows = <(String, String)>[
+      (l10n.analysisCompConsistency, '+ ${l10n.detailContribCounts}'),
+      (l10n.analysisCompLoad, l10n.detailContribLoad('${load.round()}')),
+      (l10n.detailContribVolumeTrend, l10n.detailContribNa),
+    ];
+    return AtemCard.list(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.detailContribTitle.toUpperCase(),
+              style: AtemType.labelMicro.of(context)),
+          const SizedBox(height: 8),
+          for (final (label, value) in rows)
+            Semantics(
+              label: '$label: $value',
+              child: ExcludeSemantics(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(label,
+                            style: AtemType.labelSmall.of(context)),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(value,
+                          style: AtemType.valueMedium
+                              .of(context)
+                              .copyWith(fontSize: 13)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// „Eingebettet im Verlauf" — die Nachbarn der Regenerationseinheit.
+///
+/// Die nächstjüngere und die nächstältere Einheit mit ihrem Abstand in
+/// Tagen; die Einheit selbst trägt „hier" (Badge + Dot aus Modul 3).
+class _Neighbours extends StatelessWidget {
+  const _Neighbours({required this.session, required this.sessions});
+
+  final TrainingSession session;
+  final List<TrainingSession> sessions;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final tag = languageTag(context);
+    final sorted = [...sessions]..sort((a, b) => b.date.compareTo(a.date));
+    final index = sorted.indexWhere((s) => s.id == session.id);
+    if (index < 0) return const SizedBox.shrink();
+    final newer = index > 0 ? sorted[index - 1] : null;
+    final older = index + 1 < sorted.length ? sorted[index + 1] : null;
+    if (newer == null && older == null) return const SizedBox.shrink();
+
+    int days(TrainingSession other) =>
+        (DateTime(other.date.year, other.date.month, other.date.day)
+                    .difference(DateTime(
+                        session.date.year, session.date.month, session.date.day))
+                    .inHours /
+                24)
+            .round();
+
+    Widget row(TrainingSession s, {required bool here}) {
+      final date = DateFormat.MMMEd(tag).format(s.date);
+      final name = sessionName(l10n, s);
+      final d = days(s);
+      final tail = here
+          ? l10n.detailNeighbourHere
+          : l10n.detailNeighbourDays(d >= 0 ? '+' : '−', d.abs());
+      return Semantics(
+        label: '$date, $name, $tail',
+        child: ExcludeSemantics(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text('$date · $name',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AtemType.labelSmall.of(context).copyWith(
+                            color: here
+                                ? AtemColors.textPrimary
+                                : AtemColors.textTertiary,
+                          )),
+                ),
+                const SizedBox(width: 10),
+                here
+                    ? AtemBadge(
+                        label: tail.toUpperCase(),
+                        accent: AtemColors.green,
+                        leadingDot: true,
+                      )
+                    : Text(tail,
+                        style: AtemType.labelMicro
+                            .of(context)
+                            .copyWith(letterSpacing: 0)),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return AtemCard.list(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.detailNeighboursTitle.toUpperCase(),
+              style: AtemType.labelMicro.of(context)),
+          const SizedBox(height: 6),
+          if (newer != null) row(newer, here: false),
+          row(session, here: true),
+          if (older != null) row(older, here: false),
+        ],
+      ),
+    );
+  }
+}
+
+/// Der StatBox-Dreier — **feste Gruppe, fehlender Wert gestrichelt**.
+///
+/// Board 06, A3: Kraft zeigt Minuten, Last, Volumen; Cardio Kilometer, Last,
+/// Pace; Regeneration nur zwei Boxen. Eine leere Box bleibt sichtbar
+/// (gestrichelter Rand, „—"), damit die Dreiergruppe nicht springt — und
+/// vorgelesen wird „nicht erfasst", nie „Strich".
 class _Stats extends StatelessWidget {
   const _Stats({required this.session, required this.load});
 
@@ -303,47 +497,53 @@ class _Stats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    final minutes = session.duration?.inMinutes;
+    final loadText = load > 0 ? load.round().toString() : null;
 
-    final entries = <(String, String)>[
-      if (session.duration case final d?)
-        (l10n.detailDuration, l10n.durationMinutes(d.inMinutes)),
-      if (load > 0) (l10n.detailLoad, load.round().toString()),
-      if (session case CardioSession(distanceKm: final km?))
-        (l10n.detailDistance, l10n.unitKilometers(km.toStringAsFixed(1))),
-      if (session case CardioSession(tempo: final tempo?))
-        (l10n.formPace, formatTempo(context, tempo)),
-      if (session case StrengthSession s when s.hasExerciseData)
-        (l10n.detailVolume, _volume(s).round().toString()),
-    ];
-
-    if (entries.isEmpty) return const SizedBox.shrink();
-
-    return Wrap(
-      spacing: AtemSpacing.gridGap,
-      runSpacing: AtemSpacing.gridGap,
-      children: [
-        for (final (label, value) in entries)
-          Semantics(
-            label: '$label: $value',
-            child: ExcludeSemantics(
-              child: AtemStatBox(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(value, style: AtemType.valueMedium.of(context)),
-                    const SizedBox(height: 2),
-                    Text(label, style: AtemType.labelMicro.of(context)),
-                  ],
-                ),
-              ),
-            ),
+    final entries = switch (session) {
+      StrengthSession s => <(String, String?)>[
+          (l10n.detailStatMinutes, minutes?.toString()),
+          (l10n.detailLoad, loadText),
+          (
+            l10n.detailVolume,
+            s.hasExerciseData ? _volumeText(context, _volume(s)) : null
           ),
-      ],
+        ],
+      CardioSession c => <(String, String?)>[
+          (
+            l10n.detailStatKilometers,
+            c.distanceKm == null ? null : formatKm(context, c.distanceKm!)
+          ),
+          (l10n.detailLoad, loadText),
+          (l10n.formPace, c.tempo == null ? null : formatTempo(context, c.tempo!)),
+        ],
+      _ => <(String, String?)>[
+          (l10n.detailStatMinutes, minutes?.toString()),
+          (l10n.detailLoad, loadText),
+        ],
+    };
+
+    // IntrinsicHeight statt stretch allein: Eine Row mit stretch verlangt
+    // eine begrenzte Höhe, in einer Liste gibt es die nicht. So bekommen die
+    // Boxen trotzdem dieselbe Höhe.
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < entries.length; i++) ...[
+            if (i > 0) const SizedBox(width: AtemSpacing.gridGap),
+            Expanded(
+                child: _StatTile(label: entries[i].$1, value: entries[i].$2)),
+          ],
+        ],
+      ),
     );
   }
+
+  /// „7,2 t" ab einer Tonne, sonst Kilogramm.
+  static String _volumeText(BuildContext context, double kg) => kg >= 1000
+      ? '${AtemNumberField.format(context, kg / 1000)} t'
+      : AppL10n.of(context).unitKilograms(kg.round().toString());
 
   static double _volume(StrengthSession s) {
     var total = 0.0;
@@ -356,6 +556,90 @@ class _Stats extends StatelessWidget {
     }
     return total;
   }
+}
+
+class _StatTile extends StatelessWidget {
+  const _StatTile({required this.label, required this.value});
+
+  final String label;
+
+  /// `null` heisst: nicht erfasst — gestrichelt, „—".
+  final String? value;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final missing = value == null;
+
+    return Semantics(
+      label: missing
+          ? '$label, ${l10n.intensityNoneA11y}'
+          : '$label: $value',
+      child: ExcludeSemantics(
+        child: CustomPaint(
+          foregroundPainter: missing ? _DashedFrame() : null,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: missing ? AtemColors.surfaceSolid : AtemColors.surfaceRaised,
+              borderRadius: AtemRadii.statBoxR,
+              border: missing ? null : Border.all(color: AtemColors.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value ?? l10n.intensityNoneValue,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AtemType.valueMedium.of(context).copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: missing
+                            ? AtemColors.textSecondary
+                            : (label == l10n.detailLoad
+                                ? AtemColors.cyan
+                                : AtemColors.textPrimary),
+                      ),
+                ),
+                const SizedBox(height: 2),
+                Text(label.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.labelMicro.of(context)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Gestrichelter Rand = „hier fehlt etwas" (Formmerkmal, Board 02).
+class _DashedFrame extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = AtemColors.border;
+    final path = Path()
+      ..addRRect(RRect.fromRectAndRadius(
+          Offset.zero & size, const Radius.circular(AtemRadii.statBox)));
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = (distance + 5).clamp(0.0, metric.length);
+        canvas.drawPath(metric.extractPath(distance, next), paint);
+        distance = next + 4;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedFrame old) => false;
 }
 
 class _ExerciseRow extends StatelessWidget {

@@ -30,13 +30,25 @@ final class MonthHeader extends TimelineEntry {
 
 /// Eine absolvierte Einheit.
 final class TimelineSession extends TimelineEntry {
-  const TimelineSession({required this.session, this.ordinalOnDay});
+  const TimelineSession({
+    required this.session,
+    this.ordinalOnDay,
+    this.load = 0,
+    this.monthMaxLoad = 0,
+  });
 
   final TrainingSession session;
 
   /// `null` bei der einzigen Einheit des Tages, sonst 2, 3 … für die
   /// nachfolgenden. Im Bestand kommt das an 21 Tagen vor.
   final int? ordinalOnDay;
+
+  /// Die Rohlast dieser Einheit — rechts in der Zeile, mit Mini-Balken.
+  final double load;
+
+  /// Der höchste Wert im selben Monat: der Balken ist relativ dazu, nicht zu
+  /// einem Sollwert (Board 06, Spezifikation Verlaufszeile).
+  final double monthMaxLoad;
 }
 
 /// Eine Unterbrechung ab sieben Tagen.
@@ -73,11 +85,13 @@ abstract final class HistoryTimeline {
     List<TrainingSession> sessions,
     DateTime reference, {
     Map<String, double> loadByDay = const {},
+    double Function(TrainingSession)? loadOf,
   }) {
     if (sessions.isEmpty) return const [];
 
     final sorted = [...sessions]..sort((a, b) => b.date.compareTo(a.date));
     final longest = DataSufficiency.longestGapDays(sessions);
+    double load(TrainingSession s) => loadOf?.call(s) ?? 0;
 
     // Wie oft trat ein Tag auf? Für die Kennzeichnung der Mehrfachtage.
     final perDay = <String, int>{};
@@ -116,9 +130,16 @@ abstract final class HistoryTimeline {
       // Von neu nach alt gezählt: Die zuletzt erfasste Einheit des Tages ist
       // die höchste Nummer.
       final index = (seenOnDay[key] = (seenOnDay[key] ?? 0) + 1);
+      final monthMax = sorted
+          .where((s) =>
+              s.date.year == currentYear && s.date.month == currentMonth)
+          .map(load)
+          .fold<double>(0, (a, b) => b > a ? b : a);
       entries.add(TimelineSession(
         session: session,
         ordinalOnDay: count > 1 ? count - index + 1 : null,
+        load: load(session),
+        monthMaxLoad: monthMax,
       ));
 
       // Die Lücke zur nächstälteren Einheit.
