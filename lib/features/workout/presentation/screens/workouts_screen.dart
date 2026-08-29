@@ -173,12 +173,24 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             // beantwortet weder „was mache ich jetzt" noch „was gibt es
             // sonst", sondern „was habe ich vernachlässigt" — und das ist
             // die Frage, die zwischen beiden liegt.
-            MuscleBalanceCard(
-              balance: MuscleBalance.compute(
-                ref.watch(sessionsProvider).value ?? const [],
-                ref.watch(exercisesProvider).value ?? const [],
-                ref.watch(historyReferenceProvider),
-              ),
+            Builder(
+              builder: (context) {
+                final balance = MuscleBalance.compute(
+                  ref.watch(sessionsProvider).value ?? const [],
+                  ref.watch(exercisesProvider).value ?? const [],
+                  ref.watch(historyReferenceProvider),
+                );
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    MuscleBalanceCard(balance: balance),
+                    if (balance.longestGaps.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      MuscleGapsCard(balance: balance),
+                    ],
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 28),
             _SectionHeader(
@@ -194,39 +206,57 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            ExerciseSearchField(
-              controller: _search,
-              onChanged: (v) {
-                ref.read(exerciseQueryProvider.notifier).set(v);
-                setState(() {});
-              },
-              onClear: () {
-                _search.clear();
-                ref.read(exerciseQueryProvider.notifier).clear();
-                setState(() {});
-              },
-            ),
-            const SizedBox(height: 10),
-            // Ohne eigenes Seitenpolster: Der Block liegt schon in dem der
-            // Seite, und ein zweites schöbe den ersten Chip in die Mitte.
-            ExerciseFilterRow(
-              selected: muscle,
-              padding: EdgeInsets.zero,
-              onSelect: (m) =>
-                  ref.read(exerciseFilterProvider.notifier).toggle(m),
-              onAll: () => ref.read(exerciseFilterProvider.notifier).clear(),
-            ),
-            const SizedBox(height: 10),
-            _ExerciseMatches(matches: matches, limit: _exercisePreview),
-            const SizedBox(height: 12),
-            AtemButton.outline(
-              label: l10n.exercisesCreate,
-              semanticLabel: l10n.exercisesCreate,
-              leading: const Icon(Icons.add, size: 18, color: AtemColors.cyan),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const ExerciseFormScreen(),
-                ),
+            // **Ein Block, keine losen Zeilen** (Board 07, A1/2): „Gewicht
+            // entsteht durch Fläche, nicht durch Position." Aus einer
+            // 44-dp-Suchzeile wird eine Karte mit Sucheingang, neun
+            // Muskelfiltern und dem Anlegen-Weg.
+            AtemCard.list(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ExerciseSearchField(
+                    controller: _search,
+                    onChanged: (v) {
+                      ref.read(exerciseQueryProvider.notifier).set(v);
+                      setState(() {});
+                    },
+                    onClear: () {
+                      _search.clear();
+                      ref.read(exerciseQueryProvider.notifier).clear();
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  Text(l10n.exercisesBlockByMuscle.toUpperCase(),
+                      style: AtemType.labelMicro.of(context)),
+                  const SizedBox(height: 10),
+                  // Ohne eigenes Seitenpolster: Der Block liegt schon in dem
+                  // der Karte, und ein zweites schöbe den ersten Chip in die
+                  // Mitte.
+                  ExerciseFilterRow(
+                    selected: muscle,
+                    padding: EdgeInsets.zero,
+                    onSelect: (m) =>
+                        ref.read(exerciseFilterProvider.notifier).toggle(m),
+                    onAll: () =>
+                        ref.read(exerciseFilterProvider.notifier).clear(),
+                  ),
+                  const SizedBox(height: 10),
+                  _ExerciseMatches(matches: matches, limit: _exercisePreview),
+                  const SizedBox(height: 14),
+                  AtemButton.outline(
+                    label: l10n.exercisesCreate,
+                    semanticLabel: l10n.exercisesCreate,
+                    leading: const Icon(Icons.add,
+                        size: 18, color: AtemColors.cyan),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ExerciseFormScreen(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

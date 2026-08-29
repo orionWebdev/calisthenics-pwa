@@ -46,10 +46,10 @@ class MuscleBalanceCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(l10n.balanceTitle,
-                    style: AtemType.labelMedium.of(context)),
+                    style: AtemType.titleMedium.of(context)),
               ),
               const SizedBox(width: 10),
-              Text(l10n.balanceWindow,
+              Text(l10n.balanceWindow.toUpperCase(),
                   style: AtemType.labelMicro.of(context)),
             ],
           ),
@@ -68,16 +68,71 @@ class MuscleBalanceCard extends StatelessWidget {
           for (final share in balance.shares)
             if (share.sets > 0)
               _Row(share: share, total: total),
-          if (balance.longestGaps.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(l10n.balanceGapsTitle,
-                style: AtemType.labelMedium.of(context)),
-            const SizedBox(height: 8),
-            _Gaps(gaps: balance.longestGaps),
-            const SizedBox(height: 8),
-            Text(l10n.balanceGapsNote,
-                style: AtemType.labelMicro.of(context)),
-          ],
+          // **Die Spaltenüberschrift steht unten** (Board 09, A3/1). Oben
+          // wäre sie ein Versprechen auf eine Tabelle; unten beantwortet sie
+          // die Frage, die beim Lesen entsteht: was waren die drei Zahlen?
+          const SizedBox(height: 10),
+          const SizedBox(
+              height: 1,
+              child: ColoredBox(color: AtemColors.border)),
+          const SizedBox(height: 8),
+          ExcludeSemantics(
+            child: Text(
+              [
+                l10n.balanceColShare,
+                l10n.balanceColSets,
+                l10n.balanceColLast,
+              ].join('  ').toUpperCase(),
+              style: AtemType.labelMicro.of(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// „Längste Abstände" — **eigene Karte** (Board 09, A3/1).
+///
+/// Zwei Aussagen aus derselben Grundlage: Anteil ist relativ, Abstand ist
+/// absolut. Sie in einer Karte zu stapeln liest sich wie eine Fortsetzung
+/// der Anteilstabelle; es ist aber eine andere Frage.
+class MuscleGapsCard extends StatelessWidget {
+  const MuscleGapsCard({super.key, required this.balance});
+
+  final MuscleBalance balance;
+
+  @override
+  Widget build(BuildContext context) {
+    if (balance.longestGaps.isEmpty) return const SizedBox.shrink();
+    final l10n = AppL10n.of(context);
+
+    return AtemCard.list(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              // Ein Dreieck aus Zeichen statt einem Material-Symbol: Die
+              // Karte importiert sonst nur `widgets`.
+              ExcludeSemantics(
+                child: Text('△',
+                    style: AtemType.labelMicro
+                        .of(context)
+                        .copyWith(color: AtemColors.textSecondary)),
+              ),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(l10n.balanceGapsTitle.toUpperCase(),
+                    style: AtemType.labelMicro.of(context)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _Gaps(gaps: balance.longestGaps),
+          const SizedBox(height: 10),
+          Text(l10n.balanceGapsNote, style: AtemType.labelMicro.of(context)),
         ],
       ),
     );

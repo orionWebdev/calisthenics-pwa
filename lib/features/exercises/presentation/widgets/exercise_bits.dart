@@ -262,7 +262,12 @@ class ExerciseRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
-            MuscleTile(name: exerciseName(context, exercise), color: color),
+            // **Kugel, keine Initialenkachel** (Board 07, A1/3: „Kugel =
+            // Muskelfarbe, voller Kern, getönter Hof"). Die Kachel mit
+            // Initialen gehört ins Einheitendetail, wo sie eine ausgeführte
+            // Übung markiert — hier zählt der Muskel, und den nennt die
+            // Zeile darunter im Wort.
+            MuscleOrb(color: color),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
