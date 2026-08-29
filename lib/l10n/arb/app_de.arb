@@ -260,6 +260,10 @@
       }
     }
   },
+  "analysisLegendRug": "Einheiten/Woche",
+  "@analysisLegendRug": {
+    "description": "analysis.legend.rug (Board 06)"
+  },
   "analysisLegendWith": "mit Training",
   "@analysisLegendWith": {
     "description": "Legende der Kurve"
@@ -491,6 +495,24 @@
   "@balanceWindow": {
     "description": "balance.window"
   },
+  "barrierDialog": "„{titel}\" — bitte eine Option wählen",
+  "@barrierDialog": {
+    "description": "barrier.dialog (Board 02)",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      }
+    }
+  },
+  "barrierSheet": "Schließt „{titel}\"",
+  "@barrierSheet": {
+    "description": "barrier.sheet (Board 02)",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      }
+    }
+  },
   "commonActivity": "Aktivität",
   "@commonActivity": {
     "description": "aus common.activity"
@@ -502,6 +524,10 @@
   "commonAddSession": "Session hinzufügen",
   "@commonAddSession": {
     "description": "aus common.addSession"
+  },
+  "commonAll": "Alle",
+  "@commonAll": {
+    "description": "Filterchip ohne Einschränkung"
   },
   "commonBack": "Zurück",
   "@commonBack": {
@@ -554,6 +580,10 @@
   "commonEditSession": "Session bearbeiten",
   "@commonEditSession": {
     "description": "aus common.editSession"
+  },
+  "commonGotIt": "Verstanden",
+  "@commonGotIt": {
+    "description": "common.got_it (Board 02)"
   },
   "commonLoading": "Lade Daten...",
   "@commonLoading": {
@@ -1496,6 +1526,28 @@
       }
     }
   },
+  "detailCompareMid": "Mittelfeld",
+  "@detailCompareMid": {
+    "description": "detail.compare.mid (Board 06)"
+  },
+  "detailCompareTitle": "Gegen deine {n} Läufe",
+  "@detailCompareTitle": {
+    "description": "detail.compare.title (Board 06)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailCompareTop": "Top {p} %",
+  "@detailCompareTop": {
+    "description": "detail.compare.top (Board 06)",
+    "placeholders": {
+      "p": {
+        "type": "int"
+      }
+    }
+  },
   "detailDistance": "Strecke",
   "@detailDistance": {
     "description": "Kennzahl im Detail"
@@ -1508,6 +1560,10 @@
   "@detailLoad": {
     "description": "Kennzahl im Detail"
   },
+  "detailNoteAdd": "Notiz hinzufügen",
+  "@detailNoteAdd": {
+    "description": "detail.note.add (Board 06)"
+  },
   "detailPace": "Pace /km",
   "@detailPace": {
     "description": "Kennzahl im Detail"
@@ -1519,6 +1575,10 @@
   "detailRecoveryTitle": "Zählt für die Konstanz",
   "@detailRecoveryTitle": {
     "description": "Hinweis bei Regeneration"
+  },
+  "detailSaveAsPlan": "Als Plan speichern",
+  "@detailSaveAsPlan": {
+    "description": "detail.saveAsPlan (Board 06)"
   },
   "detailSetsCount": "{e} Übungen · {s} Sätze",
   "@detailSetsCount": {
@@ -1543,6 +1603,18 @@
   "detailVolume": "Volumen",
   "@detailVolume": {
     "description": "Kennzahl im Detail"
+  },
+  "dialogDeleteTitle": "Verlauf löschen?",
+  "@dialogDeleteTitle": {
+    "description": "dialog.delete.title (Board 02)"
+  },
+  "dialogEndConfirm": "Beenden & speichern",
+  "@dialogEndConfirm": {
+    "description": "dialog.end.confirm (Board 02)"
+  },
+  "dialogEndTitle": "Workout beenden?",
+  "@dialogEndTitle": {
+    "description": "dialog.end.title (Board 02)"
   },
   "directionBetter": "besser",
   "@directionBetter": {
@@ -1582,6 +1654,46 @@
       }
     }
   },
+  "emptyHistoryBody": "Dein Verlauf entsteht mit der ersten abgeschlossenen Session.",
+  "@emptyHistoryBody": {
+    "description": "empty.history.body (Board 02)"
+  },
+  "emptyHistoryTitle": "Noch kein Verlauf",
+  "@emptyHistoryTitle": {
+    "description": "empty.history.title (Board 02)"
+  },
+  "emptySearchBody": "Für „{begriff}\" mit {n} aktiven Filtern gibt es keine Treffer.",
+  "@emptySearchBody": {
+    "description": "empty.search.body (Board 02)",
+    "placeholders": {
+      "begriff": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "emptySearchCta": "Filter zurücksetzen",
+  "@emptySearchCta": {
+    "description": "empty.search.cta (Board 02)"
+  },
+  "emptySearchTitle": "Keine Übung gefunden",
+  "@emptySearchTitle": {
+    "description": "empty.search.title (Board 02)"
+  },
+  "emptyTodayBody": "Ruhetag — oder Platz für eine freie Session.",
+  "@emptyTodayBody": {
+    "description": "empty.today.body (Board 02)"
+  },
+  "emptyTodayCta": "Session planen",
+  "@emptyTodayCta": {
+    "description": "empty.today.cta (Board 02)"
+  },
+  "emptyTodayTitle": "Heute ist nichts geplant",
+  "@emptyTodayTitle": {
+    "description": "empty.today.title (Board 02)"
+  },
   "entryCollapse": "Zuklappen",
   "@entryCollapse": {
     "description": "Planeintrag"
@@ -1605,6 +1717,39 @@
         "type": "String"
       },
       "rest": {
+        "type": "String"
+      }
+    }
+  },
+  "errorBack": "Zurück zum Dashboard",
+  "@errorBack": {
+    "description": "error.back (Board 02)"
+  },
+  "errorLoadBody": "Der Plan konnte nicht abgerufen werden. Deine bisherigen Daten sind sicher.",
+  "@errorLoadBody": {
+    "description": "error.load.body (Board 02)"
+  },
+  "errorLoadTitle": "Workout nicht ladbar",
+  "@errorLoadTitle": {
+    "description": "error.load.title (Board 02)"
+  },
+  "errorOfflineBanner": "Offline — Änderungen werden lokal gespeichert",
+  "@errorOfflineBanner": {
+    "description": "error.offline.banner (Board 02)"
+  },
+  "errorSectionBody": "Alles andere ist aktuell.",
+  "@errorSectionBody": {
+    "description": "error.section.body (Board 02)"
+  },
+  "errorSectionRetry": "Neu laden",
+  "@errorSectionRetry": {
+    "description": "error.section.retry (Board 02)"
+  },
+  "errorSectionTitle": "{sektion} nicht ladbar",
+  "@errorSectionTitle": {
+    "description": "error.section.title (Board 02)",
+    "placeholders": {
+      "sektion": {
         "type": "String"
       }
     }
@@ -2545,6 +2690,29 @@
   "@listErrorTitle": {
     "description": "Fehlerzustand der Listen"
   },
+  "listFilterClear": "Zeitraum aufheben",
+  "@listFilterClear": {
+    "description": "list.filter.clear (Board 06)"
+  },
+  "listFilterEmptyBody": "{typ} kommt im {zeitraum} nicht vor — insgesamt gibt es {n}.",
+  "@listFilterEmptyBody": {
+    "description": "list.filter.empty.body (Board 06)",
+    "placeholders": {
+      "typ": {
+        "type": "String"
+      },
+      "zeitraum": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "listFilterEmptyTitle": "Keine Einheit in dieser Auswahl",
+  "@listFilterEmptyTitle": {
+    "description": "list.filter.empty.title (Board 06)"
+  },
   "listGap": "{n, plural, one {# Tag} other {# Tage}} ohne Training",
   "@listGap": {
     "description": "Lückenstreifen zwischen zwei Einheiten",
@@ -2594,6 +2762,19 @@
   "listTitle": "Einheiten",
   "@listTitle": {
     "description": "Titel der vollständigen Liste"
+  },
+  "loadingDone": "{sektion} geladen",
+  "@loadingDone": {
+    "description": "loading.done (Board 02)",
+    "placeholders": {
+      "sektion": {
+        "type": "String"
+      }
+    }
+  },
+  "loadingLabel": "Wird geladen …",
+  "@loadingLabel": {
+    "description": "loading.label (Board 02)"
   },
   "muscleArms": "Arme",
   "@muscleArms": {
@@ -3733,9 +3914,38 @@
       }
     }
   },
+  "sheetFilterActive": "{n} aktiv",
+  "@sheetFilterActive": {
+    "description": "sheet.filter.active (Board 02)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetFilterApply": "Anwenden",
+  "@sheetFilterApply": {
+    "description": "sheet.filter.apply (Board 02)"
+  },
+  "sheetFilterTitle": "Filter",
+  "@sheetFilterTitle": {
+    "description": "sheet.filter.title (Board 02)"
+  },
   "sheetFreeBody": "Ohne Plan starten — Übungen fügst du im Training hinzu.",
   "@sheetFreeBody": {
     "description": "Text im Start-Sheet beim freien Training"
+  },
+  "sheetGrabberHint": "Ziehen zum Schließen",
+  "@sheetGrabberHint": {
+    "description": "sheet.grabber_hint (Board 02)"
+  },
+  "sheetNoteTitle": "Notiz zum Satz",
+  "@sheetNoteTitle": {
+    "description": "sheet.note.title (Board 02)"
+  },
+  "sheetPickerApply": "Übernehmen",
+  "@sheetPickerApply": {
+    "description": "sheet.picker.apply (Board 02)"
   },
   "sheetRestLabel": "Standard-Pause",
   "@sheetRestLabel": {

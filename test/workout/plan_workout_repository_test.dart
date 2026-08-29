@@ -49,6 +49,9 @@ class _Sessions implements SessionRepository {
   Future<List<TrainingSession>> fetchSessions(String u) async => sessions;
   @override
   Future<String> saveSession(SessionDraft d) async => 'x';
+
+  @override
+  bool get isFromCache => false;
   @override
   Future<void> updateSession(String id, SessionPatch p) async {}
   @override

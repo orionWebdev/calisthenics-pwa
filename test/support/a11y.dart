@@ -100,6 +100,9 @@ class FakeSessionRepository implements SessionRepository {
   @override
   Future<String> saveSession(SessionDraft draft) async => 'neu';
 
+  @override
+  bool get isFromCache => false;
+
   /// Was geschrieben wurde — die Attrappen protokollieren, statt zu schweigen.
   /// Ein Test, der nur prüft, dass nichts abstürzt, prüft zu wenig.
   final patched = <String, SessionPatch>{};

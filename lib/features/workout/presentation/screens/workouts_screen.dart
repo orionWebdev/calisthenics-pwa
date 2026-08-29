@@ -358,8 +358,11 @@ class _EmptyToday extends StatelessWidget {
     return AtemCard.list(
       padding: const EdgeInsets.all(18),
       child: AtemEmptyState(
-        title: l10n.workoutsTodayEmptyTitle,
-        body: l10n.workoutsTodayEmptyBody,
+        // Board 02: Der Leerzustand nennt beide Lesarten — Ruhetag **oder**
+        // Platz für etwas. „Kein Training geplant" allein liest sich wie ein
+        // Versäumnis.
+        title: l10n.emptyTodayTitle,
+        body: l10n.emptyTodayBody,
         action: AtemButton.gradient(
           label: l10n.workoutsFree,
           semanticLabel: l10n.workoutsFreeStart,

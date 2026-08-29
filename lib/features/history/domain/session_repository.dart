@@ -29,6 +29,13 @@ abstract interface class SessionRepository {
   /// brauchen.
   Future<List<TrainingSession>> fetchSessions(String userId);
 
+  /// Stammt der zuletzt gelieferte Stand aus dem lokalen Zwischenspeicher?
+  ///
+  /// Die Oberfläche zeigt daraufhin „Offline — Änderungen werden lokal
+  /// gespeichert". Bewusst kein eigener Netzwerkzustand: Was zählt, ist nicht
+  /// ob ein Netz da ist, sondern ob Geschriebenes ankommt.
+  bool get isFromCache;
+
   /// Schreibt eine abgeschlossene Einheit und liefert ihre Dokument-ID.
   ///
   /// Trägt der Entwurf eine [SessionDraft.scheduleId], wird der zugehörige

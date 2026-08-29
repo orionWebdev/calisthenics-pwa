@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/history_providers.dart';
 import '../../domain/history_timeline.dart';
 import '../../domain/training_session.dart';
+import '../../domain/session_filter.dart';
 import '../session_ui.dart';
 import 'session_detail_screen.dart';
 
@@ -22,7 +24,10 @@ class SessionListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
-    final entries = ref.watch(historyTimelineProvider);
+    final entries = ref.watch(filteredTimelineProvider);
+    final filter = ref.watch(sessionFilterProvider);
+    final counts = SessionFilter.countByKind(
+        ref.watch(sessionsProvider).value ?? const []);
 
     return Scaffold(
       backgroundColor: AtemColors.base,
@@ -32,16 +37,61 @@ class SessionListScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         top: false,
-        child: entries.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AtemSpacing.screenPadding),
-                child: AtemEmptyState(
-                  title: l10n.historyEmptyTitle,
-                  body: l10n.historyEmptyBody,
-                ),
+        child: Column(
+          children: [
+            // Die Artenreihe steht über der Liste, nicht in einem Blatt:
+            // Sie hat vier Einträge mit Zahlen daneben — das ist eine Zeile,
+            // kein Formular.
+            _KindRow(filter: filter, counts: counts),
+            const SizedBox(height: 10),
+            Expanded(child: _body(context, ref, l10n, entries, filter, counts)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _body(
+    BuildContext context,
+    WidgetRef ref,
+    AppL10n l10n,
+    List<TimelineEntry> entries,
+    SessionFilter filter,
+    Map<SessionKind, int> counts,
+  ) {
+    if (entries.isEmpty) {
+      return Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
+        // **Der leere Filter sagt, woran es liegt.** „Noch kein Verlauf"
+        // wäre falsch, wenn 136 Einheiten da sind und nur keine im Mai.
+        child: filter.isEmpty
+            ? AtemEmptyState(
+                title: l10n.emptyHistoryTitle,
+                body: l10n.emptyHistoryBody,
               )
-            : ListView.builder(
+            : AtemEmptyState(
+                title: l10n.listFilterEmptyTitle,
+                body: l10n.listFilterEmptyBody(
+                  filter.kind == null
+                      ? l10n.commonSession
+                      : sessionKindName(l10n, filter.kind!),
+                  _periodLabel(context, filter, l10n),
+                  counts[filter.kind] ?? 0,
+                ),
+                action: AtemButton.outline(
+                  label: l10n.listFilterClear,
+                  semanticLabel: l10n.listFilterClear,
+                  expand: false,
+                  size: AtemButtonSize.compact,
+                  onPressed: () =>
+                      ref.read(sessionFilterProvider.notifier).clear(),
+                ),
+              ),
+      );
+    }
+
+    return ListView.builder(
                 padding: const EdgeInsets.fromLTRB(AtemSpacing.screenPadding, 0,
                     AtemSpacing.screenPadding, 32),
                 itemCount: entries.length,
@@ -69,10 +119,125 @@ class SessionListScreen extends ConsumerWidget {
                   TimelineEnd(:final first, :final daysAgo) =>
                     _End(first: first, daysAgo: daysAgo),
                 },
+    );
+  }
+
+  /// Der gewählte Zeitraum in Worten, für den leeren Filterzustand.
+  static String _periodLabel(
+    BuildContext context,
+    SessionFilter filter,
+    AppL10n l10n,
+  ) {
+    // Ohne Zeitraum steht die Zeitspanne des Bestands — „insgesamt" wäre
+    // hier eine Zeitangabe, die keine ist.
+    if (!filter.hasPeriod) return l10n.listTitle;
+    return DateFormat.yMMMM(languageTag(context))
+        .format(DateTime(filter.year!, filter.month!));
+  }
+}
+
+/// Die Artenreihe: „Alle" plus vier Arten mit ihren Zahlen.
+///
+/// Die Zahlen stehen am Chip, nicht in der Liste — so sieht man vor dem
+/// Antippen, ob sich das Antippen lohnt. Und sie zählen über den **ganzen**
+/// Bestand: Zählten sie über die gefilterte Menge, stünde an „Cardio" eine
+/// Null, sobald „Kraft" gewählt ist.
+class _KindRow extends ConsumerWidget {
+  const _KindRow({required this.filter, required this.counts});
+
+  final SessionFilter filter;
+  final Map<SessionKind, int> counts;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final height = math.max(
+      48.0,
+      MediaQuery.textScalerOf(context).scale(20) + 28,
+    );
+
+    return SizedBox(
+      height: height,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding:
+            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
+        children: [
+          _KindChip(
+            label: l10n.commonAll,
+            selected: filter.kind == null,
+            onTap: () => ref.read(sessionFilterProvider.notifier).toggleKind(
+                  filter.kind ?? SessionKind.strength,
+                ),
+          ),
+          for (final kind in SessionKind.values)
+            if ((counts[kind] ?? 0) > 0) ...[
+              const SizedBox(width: 8),
+              _KindChip(
+                label: '${sessionKindName(l10n, kind)} ${counts[kind]}',
+                selected: filter.kind == kind,
+                onTap: () =>
+                    ref.read(sessionFilterProvider.notifier).toggleKind(kind),
               ),
+            ],
+        ],
       ),
     );
   }
+}
+
+class _KindChip extends StatelessWidget {
+  const _KindChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => AtemTappable(
+        onTap: onTap,
+        semanticLabel: label,
+        selected: selected,
+        inMutuallyExclusiveGroup: true,
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          constraints: const BoxConstraints(minHeight: 36),
+          decoration: BoxDecoration(
+            color: selected
+                ? AtemCategories.surface(AtemColors.cyan)
+                : AtemColors.card,
+            borderRadius: BorderRadius.circular(AtemRadii.pill),
+            border: Border.all(
+              color: selected
+                  ? AtemCategories.border(AtemColors.cyan)
+                  : AtemColors.border,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (selected) ...[
+                const Icon(Icons.check, size: 14, color: AtemColors.cyan),
+                const SizedBox(width: 6),
+              ],
+              Text(
+                label,
+                style: AtemType.labelSmall.of(context).copyWith(
+                      color: selected
+                          ? AtemColors.cyan
+                          : AtemColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class _Month extends StatelessWidget {

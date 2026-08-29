@@ -28,7 +28,14 @@ String sessionName(AppL10n l10n, TrainingSession session) => switch (session) {
 
 /// Die Trainingsart als Wort.
 String sessionKindLabel(AppL10n l10n, TrainingSession session) =>
-    switch (session.kind) {
+    sessionKindName(l10n, session.kind);
+
+/// Der Name einer Art — auch ohne eine Einheit in der Hand.
+///
+/// Der Filter braucht ihn für seine Chips, und dort gibt es keine Einheit,
+/// nur die Art.
+String sessionKindName(AppL10n l10n, SessionKind? kind) =>
+    switch (kind) {
       SessionKind.strength => l10n.typeStrength,
       SessionKind.bodyweight => l10n.typeBodyweight,
       SessionKind.cardio => l10n.typeCardio,

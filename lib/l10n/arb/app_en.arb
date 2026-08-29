@@ -197,6 +197,10 @@
   "analysisExplainBody": "Five parts add up to at most 103 points, capped at 100. Long breaks cost extra, and the cost accelerates: three days cost 3 points, seven days 21, fourteen days 70.",
   "analysisExplainTitle": "How the form score is built",
   "analysisHintRecency": "What is missing is recency — one workout today adds {n} points right away.",
+  "analysisLegendRug": "workouts/week",
+  "@analysisLegendRug": {
+    "description": "analysis.legend.rug (Board 06)"
+  },
   "analysisLegendWith": "with training",
   "analysisLegendWithout": "without training",
   "analysisThinBody": "A trend needs {n} workouts and {d} days of history.",
@@ -311,6 +315,24 @@
   "@balanceWindow": {
     "description": "balance.window"
   },
+  "barrierDialog": "“{titel}” — please choose an option",
+  "@barrierDialog": {
+    "description": "barrier.dialog (Board 02)",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      }
+    }
+  },
+  "barrierSheet": "Closes “{titel}”",
+  "@barrierSheet": {
+    "description": "barrier.sheet (Board 02)",
+    "placeholders": {
+      "titel": {
+        "type": "String"
+      }
+    }
+  },
   "commonActivity": "Activity",
   "@commonActivity": {
     "description": "aus common.activity"
@@ -322,6 +344,10 @@
   "commonAddSession": "Add session",
   "@commonAddSession": {
     "description": "aus common.addSession"
+  },
+  "commonAll": "All",
+  "@commonAll": {
+    "description": "Filterchip ohne Einschränkung"
   },
   "commonBack": "Back",
   "@commonBack": {
@@ -374,6 +400,10 @@
   "commonEditSession": "Edit session",
   "@commonEditSession": {
     "description": "aus common.editSession"
+  },
+  "commonGotIt": "Got it",
+  "@commonGotIt": {
+    "description": "common.got_it (Board 02)"
   },
   "commonLoading": "Loading...",
   "@commonLoading": {
@@ -1259,16 +1289,58 @@
   },
   "detailAcwrLabel": "Load on this day",
   "detailAcwrZone": "ACWR {v} · {zone}",
+  "detailCompareMid": "Mid-range",
+  "@detailCompareMid": {
+    "description": "detail.compare.mid (Board 06)"
+  },
+  "detailCompareTitle": "Against your {n} runs",
+  "@detailCompareTitle": {
+    "description": "detail.compare.title (Board 06)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailCompareTop": "Top {p}%",
+  "@detailCompareTop": {
+    "description": "detail.compare.top (Board 06)",
+    "placeholders": {
+      "p": {
+        "type": "int"
+      }
+    }
+  },
   "detailDistance": "Distance",
   "detailDuration": "Duration",
   "detailLoad": "Load",
+  "detailNoteAdd": "Add note",
+  "@detailNoteAdd": {
+    "description": "detail.note.add (Board 06)"
+  },
   "detailPace": "Pace /km",
   "detailRecoveryBody": "Recovery keeps the streak but does not drive load progression.",
   "detailRecoveryTitle": "Counts towards consistency",
+  "detailSaveAsPlan": "Save as plan",
+  "@detailSaveAsPlan": {
+    "description": "detail.saveAsPlan (Board 06)"
+  },
   "detailSetsCount": "{e} exercises · {s} sets",
   "detailSetsMissingBody": "This workout was recorded as duration only. Load and consistency still count, volume stays empty.",
   "detailSetsMissingTitle": "No sets recorded",
   "detailVolume": "Volume",
+  "dialogDeleteTitle": "Delete history?",
+  "@dialogDeleteTitle": {
+    "description": "dialog.delete.title (Board 02)"
+  },
+  "dialogEndConfirm": "End & save",
+  "@dialogEndConfirm": {
+    "description": "dialog.end.confirm (Board 02)"
+  },
+  "dialogEndTitle": "End workout?",
+  "@dialogEndTitle": {
+    "description": "dialog.end.title (Board 02)"
+  },
   "directionBetter": "better",
   "@directionBetter": {
     "description": "Richtungswort im Vorlesetext — die Farbe trägt sie nie allein"
@@ -1291,6 +1363,46 @@
   },
   "durationApproxMinutes": "~{n} min",
   "durationMinutes": "{n} min",
+  "emptyHistoryBody": "Your history begins with your first completed session.",
+  "@emptyHistoryBody": {
+    "description": "empty.history.body (Board 02)"
+  },
+  "emptyHistoryTitle": "No history yet",
+  "@emptyHistoryTitle": {
+    "description": "empty.history.title (Board 02)"
+  },
+  "emptySearchBody": "No results for “{begriff}” with {n} active filters.",
+  "@emptySearchBody": {
+    "description": "empty.search.body (Board 02)",
+    "placeholders": {
+      "begriff": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "emptySearchCta": "Reset filters",
+  "@emptySearchCta": {
+    "description": "empty.search.cta (Board 02)"
+  },
+  "emptySearchTitle": "No exercise found",
+  "@emptySearchTitle": {
+    "description": "empty.search.title (Board 02)"
+  },
+  "emptyTodayBody": "Rest day — or room for a free session.",
+  "@emptyTodayBody": {
+    "description": "empty.today.body (Board 02)"
+  },
+  "emptyTodayCta": "Plan a session",
+  "@emptyTodayCta": {
+    "description": "empty.today.cta (Board 02)"
+  },
+  "emptyTodayTitle": "Nothing planned today",
+  "@emptyTodayTitle": {
+    "description": "empty.today.title (Board 02)"
+  },
   "entryCollapse": "Collapse",
   "@entryCollapse": {
     "description": "Planeintrag"
@@ -1314,6 +1426,39 @@
         "type": "String"
       },
       "rest": {
+        "type": "String"
+      }
+    }
+  },
+  "errorBack": "Back to dashboard",
+  "@errorBack": {
+    "description": "error.back (Board 02)"
+  },
+  "errorLoadBody": "The plan couldn’t be fetched. Your existing data is safe.",
+  "@errorLoadBody": {
+    "description": "error.load.body (Board 02)"
+  },
+  "errorLoadTitle": "Can’t load workout",
+  "@errorLoadTitle": {
+    "description": "error.load.title (Board 02)"
+  },
+  "errorOfflineBanner": "Offline — changes are saved locally",
+  "@errorOfflineBanner": {
+    "description": "error.offline.banner (Board 02)"
+  },
+  "errorSectionBody": "Everything else is up to date.",
+  "@errorSectionBody": {
+    "description": "error.section.body (Board 02)"
+  },
+  "errorSectionRetry": "Reload",
+  "@errorSectionRetry": {
+    "description": "error.section.retry (Board 02)"
+  },
+  "errorSectionTitle": "Can’t load {sektion}",
+  "@errorSectionTitle": {
+    "description": "error.section.title (Board 02)",
+    "placeholders": {
+      "sektion": {
         "type": "String"
       }
     }
@@ -2006,12 +2151,48 @@
   "listEndTitle": "End of history",
   "listErrorBody": "Your workouts could not be loaded.",
   "listErrorTitle": "Loading failed",
+  "listFilterClear": "Clear period",
+  "@listFilterClear": {
+    "description": "list.filter.clear (Board 06)"
+  },
+  "listFilterEmptyBody": "No {typ} in {zeitraum} — {n} in total.",
+  "@listFilterEmptyBody": {
+    "description": "list.filter.empty.body (Board 06)",
+    "placeholders": {
+      "typ": {
+        "type": "String"
+      },
+      "zeitraum": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "listFilterEmptyTitle": "No workout in this selection",
+  "@listFilterEmptyTitle": {
+    "description": "list.filter.empty.title (Board 06)"
+  },
   "listGap": "{n, plural, one {# day} other {# days}} without training",
   "listGapLongest": "longest break on record",
   "listGapRange": "{from} – {to}",
   "listMonthSummary": "{n} · load {load}",
   "listSecond": "workout {n}",
   "listTitle": "Workouts",
+  "loadingDone": "{sektion} loaded",
+  "@loadingDone": {
+    "description": "loading.done (Board 02)",
+    "placeholders": {
+      "sektion": {
+        "type": "String"
+      }
+    }
+  },
+  "loadingLabel": "Loading …",
+  "@loadingLabel": {
+    "description": "loading.label (Board 02)"
+  },
   "muscleArms": "Arms",
   "muscleBack": "Back",
   "muscleBiceps": "Biceps",
@@ -2994,7 +3175,36 @@
       }
     }
   },
+  "sheetFilterActive": "{n} active",
+  "@sheetFilterActive": {
+    "description": "sheet.filter.active (Board 02)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetFilterApply": "Apply",
+  "@sheetFilterApply": {
+    "description": "sheet.filter.apply (Board 02)"
+  },
+  "sheetFilterTitle": "Filters",
+  "@sheetFilterTitle": {
+    "description": "sheet.filter.title (Board 02)"
+  },
   "sheetFreeBody": "Start without a plan — add exercises during the workout.",
+  "sheetGrabberHint": "Drag to close",
+  "@sheetGrabberHint": {
+    "description": "sheet.grabber_hint (Board 02)"
+  },
+  "sheetNoteTitle": "Set note",
+  "@sheetNoteTitle": {
+    "description": "sheet.note.title (Board 02)"
+  },
+  "sheetPickerApply": "Apply",
+  "@sheetPickerApply": {
+    "description": "sheet.picker.apply (Board 02)"
+  },
   "sheetRestLabel": "Default rest",
   "sheetStart": "Start",
   "sheetStartTitle": "Start {plan}?",

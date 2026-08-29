@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
+import 'atem_status_dot.dart';
+import 'atem_button.dart';
+import '../../l10n/gen/app_l10n.dart';
 
 import '../theme/atem_colors.dart';
 import '../theme/atem_geometry.dart';
@@ -214,7 +219,19 @@ class AtemSkeleton extends StatefulWidget {
     required this.blocks,
     required this.semanticLabel,
     this.spacing = 13,
+    this.delay = defaultDelay,
   });
+
+  /// **Erst nach dieser Zeit erscheinen.**
+  ///
+  /// Firestore antwortet aus dem lokalen Zwischenspeicher in wenigen
+  /// Millisekunden. Ein Skelett, das sofort erscheint, blitzt dann für einen
+  /// Frame auf und verschwindet wieder — das liest sich als Ruckeln, nicht
+  /// als Ladevorgang. Board 02 setzt die Schwelle auf 300 ms: Was schneller
+  /// da ist, braucht keine Ankündigung.
+  static const defaultDelay = Duration(milliseconds: 300);
+
+  final Duration delay;
 
   /// Höhe und Radius je Platzhalter — in der Geometrie des Zielinhalts.
   final List<AtemSkeletonBlock> blocks;
@@ -241,6 +258,21 @@ class _AtemSkeletonState extends State<AtemSkeleton>
     duration: const Duration(milliseconds: 1100),
   );
 
+  Timer? _delay;
+  var _visible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.delay == Duration.zero) {
+      _visible = true;
+      return;
+    }
+    _delay = Timer(widget.delay, () {
+      if (mounted) setState(() => _visible = true);
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -250,12 +282,17 @@ class _AtemSkeletonState extends State<AtemSkeleton>
 
   @override
   void dispose() {
+    _delay?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Solange die Schwelle nicht überschritten ist: nichts. Kein
+    // Platzhalter, keine Ansage, keine Höhe — sonst springt das Layout.
+    if (!_visible) return const SizedBox.shrink();
+
     return Semantics(
       liveRegion: true,
       label: widget.semanticLabel,
@@ -442,4 +479,134 @@ class _GlyphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GlyphPainter old) => old.color != color;
+}
+
+/// Ein Fehler, der **einen Abschnitt** betrifft — nicht den Bildschirm.
+///
+/// ## Warum das ein eigener Zustand ist
+///
+/// Bisher riss jeder Fehlschlag den ganzen Bildschirm mit: Ein Verlauf, dessen
+/// Formkurve nicht rechnet, zeigte statt allem eine Fehlermeldung — auch für
+/// die Einheitenliste daneben, die längst geladen war.
+///
+/// Board 02 trennt das: „{Sektion} nicht ladbar · Alles andere ist aktuell."
+/// Der Satz ist das Wesentliche daran. Er sagt, dass der Rest zu gebrauchen
+/// ist, und nimmt dem Fehler damit seine Reichweite.
+///
+/// Kompakter als [AtemErrorState] — er sitzt in einer Liste zwischen
+/// funktionierenden Karten und darf sie nicht verdrängen.
+class AtemSectionError extends StatelessWidget {
+  const AtemSectionError({
+    super.key,
+    required this.section,
+    required this.onRetry,
+  });
+
+  /// Wie der Abschnitt heißt — er steht im Titel und im Vorlesetext.
+  final String section;
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final title = l10n.errorSectionTitle(section);
+
+    return Semantics(
+      // Genau eine Ansage je Fehlschlag, und der Weg zurück direkt danach.
+      liveRegion: true,
+      label: '$title. ${l10n.errorSectionBody}',
+      child: ExcludeSemantics(
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AtemColors.card,
+            borderRadius: BorderRadius.circular(AtemRadii.card),
+            border: Border.all(color: AtemColors.border),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: _WarningGlyph(),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: AtemType.labelMedium.of(context)),
+                    const SizedBox(height: 3),
+                    Text(l10n.errorSectionBody,
+                        style: AtemType.labelMicro.of(context)),
+                    const SizedBox(height: 10),
+                    AtemButton.outline(
+                      label: l10n.errorSectionRetry,
+                      semanticLabel: '${l10n.errorSectionRetry}: $section',
+                      expand: false,
+                      size: AtemButtonSize.compact,
+                      onPressed: onRetry,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Das Offline-Band.
+///
+/// ## Woher es weiß, dass etwas offline ist
+///
+/// Nicht aus einer Netzwerkabfrage, sondern aus Firestore selbst: Jede
+/// Momentaufnahme sagt, ob sie aus dem lokalen Zwischenspeicher stammt. Das
+/// ist genauer als „hat WLAN" — es beantwortet die Frage, die zählt: **Kommen
+/// meine Änderungen gerade beim Server an?**
+///
+/// Und es kostet kein zusätzliches Paket für eine einzelne Ja-Nein-Frage.
+class AtemOfflineBanner extends StatelessWidget {
+  const AtemOfflineBanner({super.key, required this.offline});
+
+  final bool offline;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!offline) return const SizedBox.shrink();
+    final l10n = AppL10n.of(context);
+
+    return Semantics(
+      // Rolle Status, höflich: Es unterbricht nicht, es steht da.
+      liveRegion: true,
+      label: l10n.errorOfflineBanner,
+      child: ExcludeSemantics(
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+          decoration: BoxDecoration(
+            color: AtemColors.surfaceSolid,
+            borderRadius: BorderRadius.circular(AtemRadii.statBox),
+            border: Border.all(color: AtemColors.border),
+          ),
+          child: Row(
+            children: [
+              const ExcludeSemantics(
+                child: AtemStatusDot(color: AtemColors.textSecondary),
+              ),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Text(l10n.errorOfflineBanner,
+                    style: AtemType.labelMicro.of(context)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

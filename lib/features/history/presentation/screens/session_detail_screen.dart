@@ -11,8 +11,11 @@ import '../../domain/readiness.dart';
 import '../../domain/training_load.dart';
 import '../../domain/training_session.dart';
 import '../../domain/session_comparison.dart';
+import '../../../plans/domain/plan.dart';
+import '../../../plans/presentation/screens/plan_form_screen.dart';
 import '../session_actions.dart';
 import '../widgets/comparison_card.dart';
+import '../widgets/percentile_card.dart';
 import '../session_ui.dart';
 import 'session_edit_screen.dart';
 
@@ -92,11 +95,49 @@ class SessionDetailScreen extends ConsumerWidget {
                 ),
               ),
             ],
+            // Für Cardio: wo diese Einheit im eigenen Bestand steht. Der
+            // Vergleichsblock darüber misst Dauer und Last; hier geht es um
+            // Strecke und Pace, die nur untereinander vergleichbar sind.
+            if (session case final CardioSession cardio) ...[
+              const SizedBox(height: 20),
+              PercentileCard(session: cardio, sessions: sessions),
+            ],
+
             ..._exercises(context, l10n),
             ..._explanations(context, l10n),
-            if (session.notes case final notes?) ...[
-              const SizedBox(height: 24),
-              Text(notes, style: AtemType.body.of(context)),
+            const SizedBox(height: 24),
+            // **Der Weg zur Notiz steht auch dann da, wenn keine da ist.**
+            // Vorher erschien der Text nur, wenn schon eine Notiz existierte
+            // — es gab also keinen Weg, die erste zu schreiben.
+            if (session.notes case final notes? when notes.trim().isNotEmpty)
+              Text(notes, style: AtemType.body.of(context))
+            else
+              AtemButton.ghost(
+                label: l10n.detailNoteAdd,
+                semanticLabel: l10n.detailNoteAdd,
+                leading: const Icon(Icons.edit_note,
+                    size: 18, color: AtemColors.cyan),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => SessionEditScreen(session: session),
+                  ),
+                ),
+              ),
+
+            // **Aus einer Einheit einen Plan machen.** Wer etwas
+            // zusammengestellt hat, das gut war, will es wiederholen — und
+            // hat die Zusammenstellung hier vor sich. Sie noch einmal von
+            // Hand in den Planbuilder zu tippen wäre Abschreiben.
+            //
+            // Nur bei Einheiten mit Übungen: Aus einem Lauf lässt sich kein
+            // Plan bauen, und aus einer Krafteinheit ohne Sätze auch nicht.
+            if (session case StrengthSession(hasExerciseData: true)) ...[
+              const SizedBox(height: 28),
+              AtemButton.outline(
+                label: l10n.detailSaveAsPlan,
+                semanticLabel: l10n.detailSaveAsPlan,
+                onPressed: () => _saveAsPlan(context, ref, l10n),
+              ),
             ],
 
             // Die beiden Wege, die Einheit zu verändern — ganz unten, hinter
@@ -128,6 +169,49 @@ class SessionDetailScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Legt aus dieser Einheit einen Plan an.
+  ///
+  /// Die Zielwerte kommen aus dem, was tatsächlich gemacht wurde: Anzahl der
+  /// Sätze je Übung, und die Wiederholungen des ersten Satzes als Vorgabe.
+  /// **Kein Mittelwert über die Sätze** — ein Plan sagt, was man vorhat, und
+  /// die erste Zahl ist die, die man sich vorgenommen hatte.
+  ///
+  /// Der Plan wird nicht sofort geschrieben, sondern im Planbuilder geöffnet:
+  /// Ein Name fehlt noch, und die Reihenfolge will vielleicht angepasst
+  /// werden. Ein still angelegter Plan namens „Krafttraining" wäre ein
+  /// Eintrag, den niemand bestellt hat.
+  Future<void> _saveAsPlan(
+    BuildContext context,
+    WidgetRef ref,
+    AppL10n l10n,
+  ) async {
+    if (session is! StrengthSession) return;
+    final strength = session as StrengthSession;
+
+    final draft = Plan(
+      id: '',
+      name: strength.planName ?? '',
+      items: [
+        for (final exercise in strength.exercises)
+          if (exercise.sets.any((s) => !s.isEmpty))
+            PlanItem(
+              exerciseId: exercise.exerciseId,
+              sets: exercise.sets.where((s) => !s.isEmpty).length,
+              reps: exercise.sets
+                  .firstWhere((s) => !s.isEmpty)
+                  .reps
+                  ?.toString(),
+            ),
+      ],
+    );
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PlanFormScreen(original: draft, isCopy: true),
       ),
     );
   }

@@ -131,18 +131,22 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: AtemSpacing.screenPadding),
                         child: AtemEmptyState(
-                          title: l10n.exercisesEmptyTitle,
-                          body: query.isEmpty
-                              ? l10n.workoutsTodayEmptyBody
-                              : l10n.exercisesEmptyBody(query),
+                          // Board 02: Der Leerzustand nennt **beides** — den
+                          // Begriff und die Zahl der Filter. „Keine Treffer"
+                          // lässt offen, woran es lag.
+                          title: l10n.emptySearchTitle,
+                          body: l10n.emptySearchBody(
+                            query,
+                            muscle == null ? 0 : 1,
+                          ),
                           // Die Handlung erscheint nur, wenn sie etwas
                           // bewirkt: Ohne Filter und ohne Suche gibt es
                           // nichts zurückzusetzen.
                           action: muscle == null && query.isEmpty
                               ? null
                               : AtemButton.outline(
-                                  label: l10n.exercisesFilterReset,
-                                  semanticLabel: l10n.exercisesFilterReset,
+                                  label: l10n.emptySearchCta,
+                                  semanticLabel: l10n.emptySearchCta,
                                   expand: false,
                                   size: AtemButtonSize.compact,
                                   onPressed: () {

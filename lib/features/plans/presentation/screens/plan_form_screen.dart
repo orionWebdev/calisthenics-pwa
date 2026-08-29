@@ -30,9 +30,17 @@ import '../../domain/plan_draft.dart';
 /// Aussage: Das Übliche ist, dass jemand eine andere Fassung derselben Bewegung
 /// will, nicht dass die Zeile weg soll.
 class PlanFormScreen extends ConsumerStatefulWidget {
-  const PlanFormScreen({super.key, this.original});
+  const PlanFormScreen({super.key, this.original, this.isCopy = false});
 
   final Plan? original;
+
+  /// Die Vorlage ist eine **Kopie**, kein bestehender Plan.
+  ///
+  /// Kommt aus „Als Plan speichern" im Einheitendetail: Die Einträge stehen
+  /// schon da, aber gespeichert wurde noch nichts. Ohne diese Unterscheidung
+  /// hielte der Bildschirm die Kopie für den Plan, den sie abbildet — und
+  /// überschriebe ihn beim Speichern.
+  final bool isCopy;
 
   @override
   ConsumerState<PlanFormScreen> createState() => _PlanFormScreenState();
@@ -62,7 +70,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
   var _dirty = false;
   String? _saveError;
 
-  bool get _isEdit => widget.original != null;
+  bool get _isEdit => widget.original != null && !widget.isCopy;
 
   @override
   void initState() {
@@ -70,6 +78,9 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     _name = TextEditingController(text: widget.original?.name ?? '');
     _items = [...?widget.original?.items];
     _keys = [for (final _ in _items) _nextKey++];
+    // Eine Kopie ist von Anfang an ungespeichert — sonst liesse der
+    // Bildschirm sie ohne Rückfrage verfallen.
+    _dirty = widget.isCopy;
   }
 
   @override
@@ -219,7 +230,7 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
     try {
       await ref.read(planRepositoryProvider).savePlan(
             PlanDraft(
-              id: widget.original?.id,
+              id: _isEdit ? widget.original?.id : null,
               userId: userId,
               name: _name.text.trim(),
               items: _items,

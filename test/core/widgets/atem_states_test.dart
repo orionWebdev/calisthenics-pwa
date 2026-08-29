@@ -123,6 +123,39 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('erscheint erst nach 300 ms', (tester) async {
+      // Firestore antwortet aus dem Zwischenspeicher in Millisekunden. Ein
+      // Skelett, das sofort erscheint, blitzt dann für einen Frame auf und
+      // verschwindet — das liest sich als Ruckeln, nicht als Laden.
+      await _pump(
+        tester,
+        const AtemSkeleton(
+          semanticLabel: 'Lädt',
+          blocks: [AtemSkeletonBlock(height: 64)],
+        ),
+      );
+      expect(find.byType(SizedBox), findsWidgets);
+      expect(tester.getSize(find.byType(AtemSkeleton)).height, 0,
+          reason: 'vor der Schwelle keine Höhe — sonst springt das Layout');
+
+      await tester.pump(const Duration(milliseconds: 350));
+      expect(tester.getSize(find.byType(AtemSkeleton)).height,
+          greaterThan(0));
+    });
+
+    testWidgets('ohne Verzögerung erscheint es sofort', (tester) async {
+      await _pump(
+        tester,
+        const AtemSkeleton(
+          semanticLabel: 'Lädt',
+          delay: Duration.zero,
+          blocks: [AtemSkeletonBlock(height: 64)],
+        ),
+      );
+      expect(tester.getSize(find.byType(AtemSkeleton)).height,
+          greaterThan(0));
+    });
+
     testWidgets('meldet den Ladezustand, die Blöcke selbst nicht',
         (tester) async {
       final handle = tester.ensureSemantics();
@@ -130,6 +163,8 @@ void main() {
         tester,
         const AtemSkeleton(
           semanticLabel: 'Dashboard wird geladen',
+          // Ohne Verzögerung: Der Test prüft die Ansage, nicht die Schwelle.
+          delay: Duration.zero,
           blocks: [AtemSkeletonBlock(height: 64)],
         ),
       );

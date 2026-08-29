@@ -409,6 +409,12 @@ abstract class AppL10n {
   /// **'Was fehlt, ist Aktualität — eine Einheit heute bringt sofort {n} Punkte.'**
   String analysisHintRecency(int n);
 
+  /// analysis.legend.rug (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten/Woche'**
+  String get analysisLegendRug;
+
   /// Legende der Kurve
   ///
   /// In de, this message translates to:
@@ -637,6 +643,18 @@ abstract class AppL10n {
   /// **'8 Wochen'**
   String get balanceWindow;
 
+  /// barrier.dialog (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'„{titel}\" — bitte eine Option wählen'**
+  String barrierDialog(String titel);
+
+  /// barrier.sheet (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Schließt „{titel}\"'**
+  String barrierSheet(String titel);
+
   /// aus common.activity
   ///
   /// In de, this message translates to:
@@ -654,6 +672,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Session hinzufügen'**
   String get commonAddSession;
+
+  /// Filterchip ohne Einschränkung
+  ///
+  /// In de, this message translates to:
+  /// **'Alle'**
+  String get commonAll;
 
   /// aus common.back
   ///
@@ -732,6 +756,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Session bearbeiten'**
   String get commonEditSession;
+
+  /// common.got_it (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Verstanden'**
+  String get commonGotIt;
 
   /// aus common.loading
   ///
@@ -1801,6 +1831,24 @@ abstract class AppL10n {
   /// **'ACWR {v} · {zone}'**
   String detailAcwrZone(String v, String zone);
 
+  /// detail.compare.mid (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Mittelfeld'**
+  String get detailCompareMid;
+
+  /// detail.compare.title (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Gegen deine {n} Läufe'**
+  String detailCompareTitle(int n);
+
+  /// detail.compare.top (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Top {p} %'**
+  String detailCompareTop(int p);
+
   /// Kennzahl im Detail
   ///
   /// In de, this message translates to:
@@ -1819,6 +1867,12 @@ abstract class AppL10n {
   /// **'Last'**
   String get detailLoad;
 
+  /// detail.note.add (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz hinzufügen'**
+  String get detailNoteAdd;
+
   /// Kennzahl im Detail
   ///
   /// In de, this message translates to:
@@ -1836,6 +1890,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Zählt für die Konstanz'**
   String get detailRecoveryTitle;
+
+  /// detail.saveAsPlan (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Als Plan speichern'**
+  String get detailSaveAsPlan;
 
   /// Umfang der Einheit
   ///
@@ -1860,6 +1920,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Volumen'**
   String get detailVolume;
+
+  /// dialog.delete.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf löschen?'**
+  String get dialogDeleteTitle;
+
+  /// dialog.end.confirm (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Beenden & speichern'**
+  String get dialogEndConfirm;
+
+  /// dialog.end.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Workout beenden?'**
+  String get dialogEndTitle;
 
   /// Richtungswort im Vorlesetext — die Farbe trägt sie nie allein
   ///
@@ -1903,6 +1981,54 @@ abstract class AppL10n {
   /// **'{n} min'**
   String durationMinutes(int n);
 
+  /// empty.history.body (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Verlauf entsteht mit der ersten abgeschlossenen Session.'**
+  String get emptyHistoryBody;
+
+  /// empty.history.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Verlauf'**
+  String get emptyHistoryTitle;
+
+  /// empty.search.body (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Für „{begriff}\" mit {n} aktiven Filtern gibt es keine Treffer.'**
+  String emptySearchBody(String begriff, int n);
+
+  /// empty.search.cta (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Filter zurücksetzen'**
+  String get emptySearchCta;
+
+  /// empty.search.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Übung gefunden'**
+  String get emptySearchTitle;
+
+  /// empty.today.body (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Ruhetag — oder Platz für eine freie Session.'**
+  String get emptyTodayBody;
+
+  /// empty.today.cta (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Session planen'**
+  String get emptyTodayCta;
+
+  /// empty.today.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Heute ist nichts geplant'**
+  String get emptyTodayTitle;
+
   /// Planeintrag
   ///
   /// In de, this message translates to:
@@ -1926,6 +2052,48 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{sets}×{reps} · {rest} s Pause'**
   String entrySummary(String sets, String reps, String rest);
+
+  /// error.back (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Zurück zum Dashboard'**
+  String get errorBack;
+
+  /// error.load.body (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Der Plan konnte nicht abgerufen werden. Deine bisherigen Daten sind sicher.'**
+  String get errorLoadBody;
+
+  /// error.load.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Workout nicht ladbar'**
+  String get errorLoadTitle;
+
+  /// error.offline.banner (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Offline — Änderungen werden lokal gespeichert'**
+  String get errorOfflineBanner;
+
+  /// error.section.body (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Alles andere ist aktuell.'**
+  String get errorSectionBody;
+
+  /// error.section.retry (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Neu laden'**
+  String get errorSectionRetry;
+
+  /// error.section.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'{sektion} nicht ladbar'**
+  String errorSectionTitle(String sektion);
 
   /// aus errors.deleteFailed
   ///
@@ -2971,6 +3139,24 @@ abstract class AppL10n {
   /// **'Laden fehlgeschlagen'**
   String get listErrorTitle;
 
+  /// list.filter.clear (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Zeitraum aufheben'**
+  String get listFilterClear;
+
+  /// list.filter.empty.body (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'{typ} kommt im {zeitraum} nicht vor — insgesamt gibt es {n}.'**
+  String listFilterEmptyBody(String typ, String zeitraum, int n);
+
+  /// list.filter.empty.title (Board 06)
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Einheit in dieser Auswahl'**
+  String get listFilterEmptyTitle;
+
   /// Lückenstreifen zwischen zwei Einheiten
   ///
   /// In de, this message translates to:
@@ -3006,6 +3192,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Einheiten'**
   String get listTitle;
+
+  /// loading.done (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'{sektion} geladen'**
+  String loadingDone(String sektion);
+
+  /// loading.label (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Wird geladen …'**
+  String get loadingLabel;
 
   /// Muskelgruppe
   ///
@@ -4423,11 +4621,47 @@ abstract class AppL10n {
   /// **'Du kannst das {n} Sekunden lang zurücknehmen.'**
   String settingsWeightChangedBody(int n);
 
+  /// sheet.filter.active (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'{n} aktiv'**
+  String sheetFilterActive(int n);
+
+  /// sheet.filter.apply (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Anwenden'**
+  String get sheetFilterApply;
+
+  /// sheet.filter.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Filter'**
+  String get sheetFilterTitle;
+
   /// Text im Start-Sheet beim freien Training
   ///
   /// In de, this message translates to:
   /// **'Ohne Plan starten — Übungen fügst du im Training hinzu.'**
   String get sheetFreeBody;
+
+  /// sheet.grabber_hint (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Ziehen zum Schließen'**
+  String get sheetGrabberHint;
+
+  /// sheet.note.title (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz zum Satz'**
+  String get sheetNoteTitle;
+
+  /// sheet.picker.apply (Board 02)
+  ///
+  /// In de, this message translates to:
+  /// **'Übernehmen'**
+  String get sheetPickerApply;
 
   /// Zeile im Start-Sheet
   ///

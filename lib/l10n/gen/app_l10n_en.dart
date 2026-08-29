@@ -184,6 +184,9 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get analysisLegendRug => 'workouts/week';
+
+  @override
   String get analysisLegendWith => 'with training';
 
   @override
@@ -334,6 +337,16 @@ class AppL10nEn extends AppL10n {
   String get balanceWindow => '8 weeks';
 
   @override
+  String barrierDialog(String titel) {
+    return '“$titel” — please choose an option';
+  }
+
+  @override
+  String barrierSheet(String titel) {
+    return 'Closes “$titel”';
+  }
+
+  @override
   String get commonActivity => 'Activity';
 
   @override
@@ -341,6 +354,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get commonAddSession => 'Add session';
+
+  @override
+  String get commonAll => 'All';
 
   @override
   String get commonBack => 'Back';
@@ -380,6 +396,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get commonEditSession => 'Edit session';
+
+  @override
+  String get commonGotIt => 'Got it';
 
   @override
   String get commonLoading => 'Loading...';
@@ -1023,6 +1042,19 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get detailCompareMid => 'Mid-range';
+
+  @override
+  String detailCompareTitle(int n) {
+    return 'Against your $n runs';
+  }
+
+  @override
+  String detailCompareTop(int p) {
+    return 'Top $p%';
+  }
+
+  @override
   String get detailDistance => 'Distance';
 
   @override
@@ -1030,6 +1062,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get detailLoad => 'Load';
+
+  @override
+  String get detailNoteAdd => 'Add note';
 
   @override
   String get detailPace => 'Pace /km';
@@ -1040,6 +1075,9 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get detailRecoveryTitle => 'Counts towards consistency';
+
+  @override
+  String get detailSaveAsPlan => 'Save as plan';
 
   @override
   String detailSetsCount(int e, int s) {
@@ -1055,6 +1093,15 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get detailVolume => 'Volume';
+
+  @override
+  String get dialogDeleteTitle => 'Delete history?';
+
+  @override
+  String get dialogEndConfirm => 'End & save';
+
+  @override
+  String get dialogEndTitle => 'End workout?';
 
   @override
   String get directionBetter => 'better';
@@ -1082,6 +1129,33 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get emptyHistoryBody =>
+      'Your history begins with your first completed session.';
+
+  @override
+  String get emptyHistoryTitle => 'No history yet';
+
+  @override
+  String emptySearchBody(String begriff, int n) {
+    return 'No results for “$begriff” with $n active filters.';
+  }
+
+  @override
+  String get emptySearchCta => 'Reset filters';
+
+  @override
+  String get emptySearchTitle => 'No exercise found';
+
+  @override
+  String get emptyTodayBody => 'Rest day — or room for a free session.';
+
+  @override
+  String get emptyTodayCta => 'Plan a session';
+
+  @override
+  String get emptyTodayTitle => 'Nothing planned today';
+
+  @override
   String get entryCollapse => 'Collapse';
 
   @override
@@ -1093,6 +1167,30 @@ class AppL10nEn extends AppL10n {
   @override
   String entrySummary(String sets, String reps, String rest) {
     return '$sets×$reps · $rest s rest';
+  }
+
+  @override
+  String get errorBack => 'Back to dashboard';
+
+  @override
+  String get errorLoadBody =>
+      'The plan couldn’t be fetched. Your existing data is safe.';
+
+  @override
+  String get errorLoadTitle => 'Can’t load workout';
+
+  @override
+  String get errorOfflineBanner => 'Offline — changes are saved locally';
+
+  @override
+  String get errorSectionBody => 'Everything else is up to date.';
+
+  @override
+  String get errorSectionRetry => 'Reload';
+
+  @override
+  String errorSectionTitle(String sektion) {
+    return 'Can’t load $sektion';
   }
 
   @override
@@ -1733,6 +1831,17 @@ class AppL10nEn extends AppL10n {
   String get listErrorTitle => 'Loading failed';
 
   @override
+  String get listFilterClear => 'Clear period';
+
+  @override
+  String listFilterEmptyBody(String typ, String zeitraum, int n) {
+    return 'No $typ in $zeitraum — $n in total.';
+  }
+
+  @override
+  String get listFilterEmptyTitle => 'No workout in this selection';
+
+  @override
   String listGap(int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
@@ -1763,6 +1872,14 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get listTitle => 'Workouts';
+
+  @override
+  String loadingDone(String sektion) {
+    return '$sektion loaded';
+  }
+
+  @override
+  String get loadingLabel => 'Loading …';
 
   @override
   String get muscleArms => 'Arms';
@@ -2587,8 +2704,28 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String sheetFilterActive(int n) {
+    return '$n active';
+  }
+
+  @override
+  String get sheetFilterApply => 'Apply';
+
+  @override
+  String get sheetFilterTitle => 'Filters';
+
+  @override
   String get sheetFreeBody =>
       'Start without a plan — add exercises during the workout.';
+
+  @override
+  String get sheetGrabberHint => 'Drag to close';
+
+  @override
+  String get sheetNoteTitle => 'Set note';
+
+  @override
+  String get sheetPickerApply => 'Apply';
 
   @override
   String get sheetRestLabel => 'Default rest';

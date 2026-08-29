@@ -85,11 +85,17 @@ def align(german: str, english: str) -> str:
 
 def board(number: str) -> list[tuple[str, str, str]]:
     out = subprocess.run(
+        # Beide Namen: Die Fundament-Boards nennen die Liste `strings`, die
+        # späteren `stringRows`. Wer nur einen kennt, übersieht 118 Strings —
+        # und hält seine Abdeckungsmessung trotzdem für vollständig.
         ['python3', 'tool/read_board.py', number, '--list', 'string'],
         capture_output=True, text=True, check=True).stdout
     rows = []
     for line in out.splitlines():
-        m = re.match(r'^  k=([\w.]+) \| de=(.*?) \| en=(.*)$', line)
+        # `k=` in den Boards 5–9, `key=` in den Fundament-Boards 1–4. Wer nur
+        # die eine Schreibweise kennt, misst eine Abdeckung von 100 Prozent
+        # über eine Teilmenge — genau das ist passiert.
+        m = re.match(r'^  ke?y?=([\w.]+) \| de=(.*?) \| en=(.*)$', line)
         if m:
             rows.append(m.groups())
     return rows

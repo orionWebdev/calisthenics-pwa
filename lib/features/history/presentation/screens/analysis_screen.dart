@@ -67,8 +67,8 @@ class AnalysisScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: AtemSpacing.screenPadding),
                 child: AtemEmptyState(
-                  title: l10n.historyEmptyTitle,
-                  body: l10n.historyEmptyBody,
+                  title: l10n.emptyHistoryTitle,
+                  body: l10n.emptyHistoryBody,
                 ),
               );
             }

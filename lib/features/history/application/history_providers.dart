@@ -8,6 +8,7 @@ import '../domain/form_series.dart';
 import '../domain/history_timeline.dart';
 import '../domain/readiness.dart';
 import '../domain/training_load.dart';
+import '../domain/session_filter.dart';
 import '../domain/session_repository.dart';
 import '../domain/training_session.dart';
 import 'pending_deletion.dart';
@@ -110,5 +111,63 @@ final formSeriesProvider = Provider.autoDispose<FormSeries>((ref) {
     sessions,
     ref.watch(historyReferenceProvider),
     context: LoadContext(bodyWeightKg: weight),
+  );
+});
+
+/// Ob der zuletzt gelieferte Stand aus dem lokalen Zwischenspeicher stammt.
+///
+/// Hängt am Strom, nicht an einer eigenen Abfrage: Der Wert ändert sich nur,
+/// wenn Firestore etwas liefert — und genau dann ist er auch aktuell.
+final offlineProvider = Provider<bool>((ref) {
+  ref.watch(sessionStreamProvider);
+  return ref.watch(sessionRepositoryProvider).isFromCache;
+});
+
+/// Der Filter der Einheitenliste.
+class SessionFilterController extends Notifier<SessionFilter> {
+  @override
+  SessionFilter build() => SessionFilter.none;
+
+  /// Nochmal auf dieselbe Art tippen hebt sie auf — sonst müsste man den
+  /// „Alle"-Chip suchen.
+  void toggleKind(SessionKind kind) =>
+      state = state.withKind(state.kind == kind ? null : kind);
+
+  void setPeriod(int year, int month) => state = state.withPeriod(year, month);
+
+  void clearPeriod() => state = state.withPeriod(null, null);
+
+  void clear() => state = SessionFilter.none;
+}
+
+final sessionFilterProvider =
+    NotifierProvider<SessionFilterController, SessionFilter>(
+  SessionFilterController.new,
+);
+
+/// Die gefilterte Verlaufsliste.
+///
+/// Der Filter greift **vor** dem Bauen der Zeitachse, nicht danach: Monatsköpfe
+/// und Lückenstreifen sollen die gefilterte Menge beschreiben, nicht die volle.
+/// Eine Lücke „74 Tage" zwischen zwei Krafteinheiten ist etwas anderes als
+/// eine zwischen zwei Einheiten überhaupt.
+final filteredTimelineProvider = Provider<List<TimelineEntry>>((ref) {
+  final filter = ref.watch(sessionFilterProvider);
+  if (filter.isEmpty) return ref.watch(historyTimelineProvider);
+
+  final sessions = filter.apply(ref.watch(sessionsProvider).value ?? const []);
+  final weight = ref.watch(bodyWeightProvider).value ?? 0;
+  final context = LoadContext(bodyWeightKg: weight);
+
+  final loadByDay = <String, double>{};
+  for (final session in sessions) {
+    final key = Readiness.dayKey(session.date);
+    loadByDay[key] = (loadByDay[key] ?? 0) + TrainingLoad.of(session, context);
+  }
+
+  return HistoryTimeline.build(
+    sessions,
+    ref.watch(historyReferenceProvider),
+    loadByDay: loadByDay,
   );
 });

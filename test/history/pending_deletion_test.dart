@@ -32,6 +32,9 @@ class _Repo implements SessionRepository {
   Future<String> saveSession(SessionDraft draft) async => 'neu';
 
   @override
+  bool get isFromCache => false;
+
+  @override
   Future<void> updateSession(String id, SessionPatch patch) async {}
 
   @override

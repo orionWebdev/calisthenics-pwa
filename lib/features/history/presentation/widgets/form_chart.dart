@@ -129,7 +129,7 @@ class _FormChartState extends State<FormChart> {
               },
             ),
             const SizedBox(height: 10),
-            _Legend(l10n: l10n),
+            _Legend(l10n: l10n, series: widget.series),
           ],
         ),
       ),
@@ -158,9 +158,10 @@ class _FormChartState extends State<FormChart> {
 }
 
 class _Legend extends StatelessWidget {
-  const _Legend({required this.l10n});
+  const _Legend({required this.l10n, required this.series});
 
   final AppL10n l10n;
+  final FormSeries series;
 
   @override
   Widget build(BuildContext context) => Wrap(
@@ -173,16 +174,36 @@ class _Legend extends StatelessWidget {
             label: l10n.analysisLegendWithout,
             dashed: true,
           ),
+          // Die Striche am unteren Rand standen bisher unbenannt da. Eine
+          // Grafik, die etwas zeigt und nicht sagt was, ist ein Rätsel — und
+          // die Balken sind genau die Erklärung dafür, warum die Kurve fällt.
+          //
+          // Der Eintrag erscheint nur, wenn auch Striche gezeichnet werden;
+          // eine Legende zu einer leeren Fläche wäre eine Zeile über nichts.
+          if (series.weeks.any((w) => w.count > 0))
+            _Item(
+              color: AtemColors.cyan.withValues(alpha: 0.55),
+              label: l10n.analysisLegendRug,
+              bars: true,
+            ),
         ],
       );
 }
 
 class _Item extends StatelessWidget {
-  const _Item({required this.color, required this.label, this.dashed = false});
+  const _Item({
+    required this.color,
+    required this.label,
+    this.dashed = false,
+    this.bars = false,
+  });
 
   final Color color;
   final String label;
   final bool dashed;
+
+  /// Statt einer Linie drei stehende Striche — die Form des Rug-Plots.
+  final bool bars;
 
   @override
   Widget build(BuildContext context) => ConstrainedBox(
@@ -195,8 +216,10 @@ class _Item extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomPaint(
-              size: const Size(16, 2),
-              painter: _LineSample(color: color, dashed: dashed),
+              size: bars ? const Size(16, 10) : const Size(16, 2),
+              painter: bars
+                  ? _BarSample(color: color)
+                  : _LineSample(color: color, dashed: dashed),
             ),
             const SizedBox(width: 6),
             Flexible(
@@ -210,6 +233,33 @@ class _Item extends StatelessWidget {
           ],
         ),
       );
+}
+
+/// Drei stehende Striche in wechselnder Höhe — dieselbe Form wie im Chart.
+class _BarSample extends CustomPainter {
+  _BarSample({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    const fractions = [0.5, 1.0, 0.7];
+    for (var i = 0; i < fractions.length; i++) {
+      final x = 1 + i * (size.width - 2) / (fractions.length - 1);
+      canvas.drawLine(
+        Offset(x, size.height),
+        Offset(x, size.height * (1 - fractions[i])),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BarSample old) => old.color != color;
 }
 
 class _LineSample extends CustomPainter {

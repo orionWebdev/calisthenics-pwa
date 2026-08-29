@@ -36,7 +36,22 @@ class FirestoreSessionRepository implements SessionRepository {
 
   @override
   Stream<List<TrainingSession>> watchSessions(String userId) =>
-      _query(userId).snapshots().map(_convert);
+      _query(userId).snapshots().map((snapshot) {
+        // **Das Offline-Signal kommt aus Firestore selbst.**
+        //
+        // `isFromCache` sagt, ob die Momentaufnahme aus dem lokalen
+        // Zwischenspeicher stammt. Das ist genauer als „hat WLAN": Es
+        // beantwortet die Frage, die zählt — kommen meine Änderungen gerade
+        // beim Server an? Und es kostet kein zusätzliches Paket für eine
+        // einzelne Ja-Nein-Frage.
+        _fromCache = snapshot.metadata.isFromCache;
+        return _convert(snapshot);
+      });
+
+  /// Kam die letzte Momentaufnahme aus dem Zwischenspeicher?
+  @override
+  bool get isFromCache => _fromCache;
+  bool _fromCache = false;
 
   @override
   Future<List<TrainingSession>> fetchSessions(String userId) async =>

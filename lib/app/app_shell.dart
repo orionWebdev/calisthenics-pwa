@@ -5,6 +5,7 @@ import '../core/theme/theme.dart';
 import '../core/widgets/widgets.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
+import '../features/history/application/history_providers.dart';
 import 'application/snackbar_providers.dart';
 import '../features/history/presentation/screens/history_screen.dart';
 import '../features/plans/presentation/start_sheet.dart';
@@ -131,6 +132,10 @@ class _AppShellState extends ConsumerState<AppShell>
                   // danach in der Liste. Ein Hinweis, der am Bildschirm
                   // hinge, verschwände genau dann, wenn der Widerruf
                   // gebraucht wird.
+                  // Das Band steht über der Meldung: Es beschreibt einen
+                  // Zustand, sie ein Ereignis — und Zustände gehören weiter
+                  // weg vom Daumen als Dinge, die man wegtippt.
+                  const _OfflineSlot(),
                   const _SnackSlot(),
                   FloatingNav(activeIndex: _tab, onSelect: _select),
                 ],
@@ -141,6 +146,15 @@ class _AppShellState extends ConsumerState<AppShell>
       ),
     );
   }
+}
+
+/// Das Offline-Band über der Navigation.
+class _OfflineSlot extends ConsumerWidget {
+  const _OfflineSlot();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) =>
+      AtemOfflineBanner(offline: ref.watch(offlineProvider));
 }
 
 /// Die Meldung über der Navigation.
