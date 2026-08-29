@@ -14,6 +14,10 @@ import '../../domain/session_comparison.dart';
 import '../../../plans/domain/plan.dart';
 import '../../../plans/presentation/screens/plan_form_screen.dart';
 import '../session_actions.dart';
+import '../../../cardio/application/cardio_providers.dart';
+import '../../../cardio/domain/cardio_intensity.dart';
+import '../../../cardio/presentation/cardio_ui.dart';
+import '../../../cardio/presentation/widgets/intensity_box.dart';
 import '../widgets/comparison_card.dart';
 import '../widgets/percentile_card.dart';
 import '../session_ui.dart';
@@ -99,6 +103,18 @@ class SessionDetailScreen extends ConsumerWidget {
             // Vergleichsblock darüber misst Dauer und Last; hier geht es um
             // Strecke und Pace, die nur untereinander vergleichbar sind.
             if (session case final CardioSession cardio) ...[
+              // Der Intensitätskasten steht an der Stelle der Übungsliste
+              // (Board 11, Entscheidung „Cardio-Detail als eigener
+              // Bildschirm-Typ": dasselbe Detail, andere Wertezeilen).
+              if (CardioIntensity.of(cardio, sessions,
+                      profileMaxHr: ref.watch(profileMaxHrProvider))
+                  case final intensity?) ...[
+                const SizedBox(height: 20),
+                IntensityBox(
+                  intensity: intensity,
+                  isRun: cardio.activity == CardioActivity.run,
+                ),
+              ],
               const SizedBox(height: 20),
               PercentileCard(session: cardio, sessions: sessions),
             ],
@@ -294,8 +310,8 @@ class _Stats extends StatelessWidget {
       if (load > 0) (l10n.detailLoad, load.round().toString()),
       if (session case CardioSession(distanceKm: final km?))
         (l10n.detailDistance, l10n.unitKilometers(km.toStringAsFixed(1))),
-      if (session case CardioSession(pace: final pace?))
-        (l10n.detailPace, pace.toStringAsFixed(2)),
+      if (session case CardioSession(tempo: final tempo?))
+        (l10n.formPace, formatTempo(context, tempo)),
       if (session case StrengthSession s when s.hasExerciseData)
         (l10n.detailVolume, _volume(s).round().toString()),
     ];

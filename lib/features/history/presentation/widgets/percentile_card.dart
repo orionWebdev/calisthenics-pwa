@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../cardio/presentation/cardio_ui.dart';
 import '../../domain/session_percentile.dart';
 import '../../domain/training_session.dart';
 
@@ -68,8 +69,8 @@ class PercentileCard extends StatelessWidget {
           if (pace != null) ...[
             if (distance != null) const SizedBox(height: 12),
             _Row(
-              label: l10n.detailPace,
-              value: session.pace!.toStringAsFixed(2),
+              label: l10n.formPace,
+              value: formatTempo(context, session.tempo!),
               percentile: pace,
             ),
           ],
