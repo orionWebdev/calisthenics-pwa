@@ -1,10 +1,9 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/gen/app_l10n.dart';
 import '../../exercises/presentation/muscle_ui.dart';
-import '../../exercises/presentation/widgets/exercise_bits.dart';
 import '../domain/plan.dart';
 
 /// Eine Zeile der Planliste.
@@ -32,8 +31,9 @@ class PlanRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
-            // Neutral: Ein Plan hat keinen Muskel.
-            const MuscleOrb(color: AtemCategories.grey),
+            // IconBox 36 dp mit Initialen (Board 05): Ein Plan hat keinen
+            // Muskel, also keine Farbe — die Initialen stehen in #CDD3EA.
+            _Initials(name: plan.name),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -48,7 +48,7 @@ class PlanRow extends StatelessWidget {
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 2),
-                  Text(meta,
+                  Text(meta.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AtemType.labelMicro
@@ -57,9 +57,46 @@ class PlanRow extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right,
+                size: 18, color: AtemColors.textSecondary),
           ],
         ),
       ),
     );
   }
+}
+
+/// Die Initialen eines Plans — zweistellig, Mono 700, wie in Modul 5/6.
+class _Initials extends StatelessWidget {
+  const _Initials({required this.name});
+
+  final String name;
+
+  static String _of(String name) {
+    final words = name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+    final letters = words.map((w) => w[0]).take(2).join();
+    return (letters.isEmpty ? '·' : letters).toUpperCase();
+  }
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+        child: Container(
+          width: 36,
+          height: 36,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AtemColors.surfaceRaised,
+            borderRadius: BorderRadius.circular(AtemRadii.iconBox),
+          ),
+          child: Text(
+            _of(name),
+            style: AtemType.labelDeco.of(context).copyWith(
+                  color: AtemColors.textTertiary,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
+                ),
+          ),
+        ),
+      );
 }

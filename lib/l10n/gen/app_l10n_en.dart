@@ -4499,4 +4499,35 @@ class AppL10nEn extends AppL10n {
     );
     return 'Longest chain $_temp0';
   }
+
+  @override
+  String get exerciseAddToPlan => 'Add to plan';
+
+  @override
+  String exerciseAddedToPlan(String plan) {
+    return 'Added to “$plan”';
+  }
+
+  @override
+  String exerciseRequiredA11y(int n) {
+    return '$n of 3 required fields filled';
+  }
+
+  @override
+  String exerciseMoreFilled(int n) {
+    return '$n filled';
+  }
+
+  @override
+  String get sessionFieldKind => 'Type';
+
+  @override
+  String get sessionKindNote =>
+      'The type determines which values appear below.';
+
+  @override
+  String get sessionPaceNote => 'Pace is calculated and cannot be entered.';
+
+  @override
+  String get exercisesFilterOrigin => 'Origin';
 }

@@ -63,6 +63,15 @@ abstract final class StartSheet {
           ),
         ),
       ),
+      // Schliessen ist nie nur Geste: „Abbrechen" als expliziter Knopf
+      // (Board 05, A5 und F).
+      secondaryAction: AtemButton.ghost(
+        label: l10n.commonCancel,
+        semanticLabel: l10n.commonCancel,
+        expand: true,
+        accent: AtemColors.textTertiary,
+        onPressed: () => Navigator.of(context, rootNavigator: true).maybePop(),
+      ),
     );
   }
 }

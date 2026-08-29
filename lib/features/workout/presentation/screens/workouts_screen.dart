@@ -19,6 +19,7 @@ import '../../../plans/presentation/screens/plan_list_screen.dart';
 import '../../../plans/presentation/start_sheet.dart';
 import '../../../settings/application/settings_providers.dart';
 import '../../../exercises/domain/exercise.dart';
+import '../../../exercises/presentation/muscle_ui.dart';
 import '../../../exercises/presentation/screens/exercise_detail_screen.dart';
 import '../../../exercises/presentation/screens/exercise_form_screen.dart';
 import '../../../exercises/presentation/screens/exercise_list_screen.dart';
@@ -112,10 +113,26 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             else if (session != null)
               _TodayCard(
                 session: session,
+                plan: ref
+                    .watch(plansProvider)
+                    .value
+                    ?.where((p) => p.id == session.planId)
+                    .firstOrNull,
                 onStart: () => _startToday(context, session),
               )
             else
               _EmptyToday(onFree: () => _startFree(context)),
+            // „Freies Training" ist gleichwertiger Eingang, kein versteckter
+            // Link — direkt unter der Heute-Karte (Board 05, A1/1).
+            if (session != null) ...[
+              const SizedBox(height: 8),
+              AtemButton.ghost(
+                label: l10n.workoutsFree,
+                semanticLabel: l10n.workoutsFreeStart,
+                expand: true,
+                onPressed: () => _startFree(context),
+              ),
+            ],
             const SizedBox(height: 28),
             _SectionHeader(
               title: l10n.workoutsPlansLabel,
@@ -211,12 +228,6 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   builder: (_) => const ExerciseFormScreen(),
                 ),
               ),
-            ),
-            const SizedBox(height: 28),
-            AtemButton.outline(
-              label: l10n.workoutsFree,
-              semanticLabel: l10n.workoutsFreeStart,
-              onPressed: () => _startFree(context),
             ),
           ],
         );
@@ -321,14 +332,29 @@ class _ExerciseMatches extends StatelessWidget {
 
 /// Die einzige hervorgehobene Karte des Bildschirms.
 class _TodayCard extends StatelessWidget {
-  const _TodayCard({required this.session, required this.onStart});
+  const _TodayCard({
+    required this.session,
+    required this.onStart,
+    this.plan,
+  });
 
   final TodaySession session;
   final VoidCallback onStart;
 
+  /// Der Plan hinter dem Termin — für „8 ÜBUNGEN · ~45 MIN · KRAFT".
+  final Plan? plan;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    final minutes = plan?.estimatedDuration.inMinutes ?? session.duration.inMinutes;
+    final meta = <String>[
+      if (plan != null) l10n.exerciseCountShort(plan!.exerciseCount),
+      l10n.durationApproxMinutes(minutes),
+      if (trainingTypeLabel(l10n, plan?.type ?? session.intensityLabel)
+          .isNotEmpty)
+        trainingTypeLabel(l10n, plan?.type ?? session.intensityLabel),
+    ].join(' · ');
 
     return AtemCard.gradientBorder(
       child: Column(
@@ -337,13 +363,14 @@ class _TodayCard extends StatelessWidget {
           Text(session.title, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 8),
           Text(
-            l10n.durationApproxMinutes(session.duration.inMinutes),
-            style: AtemType.labelSmall.of(context),
+            meta.toUpperCase(),
+            style: AtemType.labelMicro.of(context),
           ),
           const SizedBox(height: 16),
           AtemButton.gradient(
             label: l10n.workoutsStart,
-            semanticLabel: l10n.workoutsStart,
+            // Der Planname gehört ins Label (Board 05, F).
+            semanticLabel: '${l10n.workoutsStart}: ${session.title}',
             size: AtemButtonSize.compact,
             onPressed: onStart,
           ),

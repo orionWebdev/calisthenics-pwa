@@ -386,6 +386,28 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
             _isEdit ? l10n.exerciseEditTitle : l10n.exerciseNewTitle,
             style: AtemType.titleMedium.of(context),
           ),
+          // „3/3" im Kopf ersetzt die Fehlerprüfung am Ende (Board 07, A2/2):
+          // man sieht vor dem Tippen auf Speichern, ob es geht.
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Semantics(
+                label: l10n.exerciseRequiredA11y(3 - _faults.length),
+                liveRegion: true,
+                child: ExcludeSemantics(
+                  child: Text(
+                    '${3 - _faults.length}/3',
+                    style: AtemType.valueMedium.of(context).copyWith(
+                          fontSize: 13,
+                          color: _faults.isEmpty
+                              ? AtemColors.cyan
+                              : AtemColors.textSecondary,
+                        ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         body: SafeArea(
           top: false,
@@ -396,6 +418,15 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                   padding: const EdgeInsets.fromLTRB(
                       AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 24),
                   children: [
+                    // Die Fortschrittsleiste aus Modul 3 über dem Formular.
+                    ExcludeSemantics(
+                      child: AtemProgressBar.share(
+                        value: (3 - _faults.length) / 3,
+                        semanticLabel: '',
+                        accent: AtemColors.cyan,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     if (_isCopy) ...[
                       AtemNotice(
                         title: l10n.exerciseCuratedCopy,
@@ -544,7 +575,11 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                               semanticLabel: l10n.exerciseDuplicateSuggest,
                               accent: AtemColors.cyan,
                               onPressed: () => setState(() {
-                                _name.text = '${existing.name} 2';
+                                // Vorschlag mit dem Gerät, wie im Board:
+                                // „Bulgarian Split Squat (Kurzhantel)".
+                                _name.text = _equipment.text.trim().isNotEmpty
+                                    ? '${existing.name} (${_splitList(_equipment.text).first})'
+                                    : '${existing.name} 2';
                                 _duplicate = null;
                               }),
                             ),
@@ -678,6 +713,9 @@ class _MoreSection extends StatelessWidget {
     required this.onToggle,
   });
 
+  /// Gerät, Anleitung, Cues.
+  static const optionalFields = 3;
+
   final bool open;
   final int count;
   final VoidCallback onToggle;
@@ -685,7 +723,11 @@ class _MoreSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final count_ = l10n.exerciseMoreCount(count);
+    // „3 optional" solange nichts drin steht, „2 gefüllt" danach — der
+    // Zähler sagt, ob sich das Aufklappen lohnt (Board 07, A2/1–2).
+    final count_ = count == 0
+        ? l10n.exerciseMoreCount(_MoreSection.optionalFields)
+        : l10n.exerciseMoreFilled(count);
 
     return AtemTappable(
       onTap: onToggle,

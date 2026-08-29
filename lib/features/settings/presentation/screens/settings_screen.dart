@@ -8,6 +8,7 @@ import '../../../../app/application/snackbar_providers.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../auth/application/auth_providers.dart';
 import '../../../auth/domain/auth_user.dart';
+import '../../../auth/presentation/screens/onboarding_screen.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../plans/application/plan_providers.dart';
@@ -21,22 +22,19 @@ import '../widgets/weight_preview.dart';
 import 'account_deletion_screen.dart';
 import 'export_screen.dart';
 
-/// Einstellungen und Profil.
+/// Einstellungen und Profil — Board 08.
 ///
-/// ## Warum kein Platz in der Leiste
+/// ## Der Aufbau
 ///
-/// Die schwebende Leiste hat fünf Plätze, und jeder davon ist eine Behauptung
-/// darüber, was man oft tut. Einstellungen tut man selten — sie neben Dashboard
-/// und Verlauf zu stellen, hiesse ihnen dasselbe Gewicht zu geben wie dem
-/// Training.
+/// Profilkopf als Tatsache, dann vier Sektionen — Training, App, Deine
+/// Daten, Rechtliches — und „Über die App". Ganz unten, allein in seiner
+/// Karte: Konto löschen. Position ist hier ein Statusträger.
 ///
-/// Der Weg führt deshalb über das Profilbild im Dashboard-Kopf. Das ist die
-/// Stelle, an der man es sucht, und sie kostet keinen Platz.
-///
-/// ## Die Reihenfolge
-///
-/// Profil, Training, App, Konto, Rechtliches, Über die App — von dem, was man
-/// am ehesten ändert, zu dem, was man einmal liest.
+/// Die rechnenden und wertetragenden Einstellungen (Körpergewicht,
+/// Pausenzeit, Einheiten) sind **Zeilen mit Wert**, die ein Sheet öffnen —
+/// kein Untermenü-Screen, damit der Rückweg immer dieselbe Geste ist.
+/// Vorlieben (Sprache, Haptik) stehen als Segment und Schalter direkt in der
+/// Karte: sofort wirksam, jederzeit zurück.
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -45,336 +43,21 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  final _weight = TextEditingController();
-  final _rest = TextEditingController();
-
-  /// Der Kandidat für die Vorschau. `null`, solange nichts Gültiges dasteht.
-  double? _candidateKg;
-
-  var _seeded = false;
   String? _notice;
-
-  @override
-  void dispose() {
-    _weight.dispose();
-    _rest.dispose();
-    super.dispose();
-  }
-
-  /// Die Felder einmal aus dem Bestand füllen.
-  ///
-  /// **Genau einmal, und erst wenn Daten da sind.** Zwei Fallen liegen hier
-  /// dicht beieinander:
-  ///
-  /// Wer bei jedem Strom-Ereignis neu setzt, überschreibt die Eingabe mitten
-  /// im Tippen. Wer beim ersten Aufbau setzt, füllt die Felder mit den
-  /// Vorgabewerten — denn beim ersten Aufbau lädt der Strom noch — und sperrt
-  /// sich danach selbst aus. Das Gewichtsfeld bliebe dauerhaft leer, obwohl
-  /// eins hinterlegt ist.
-  void _seed(UserSettings settings, {required bool hasData}) {
-    if (_seeded || !hasData) return;
-    _seeded = true;
-    final kg = settings.bodyWeightKg;
-    if (kg != null) {
-      _weight.text = AtemNumberField.format(
-        context,
-        settings.unitSystem.fromKilograms(kg),
-      );
-    }
-    _rest.text = settings.restSeconds.toString();
-  }
-
-  double? _parsedWeightKg(UserSettings settings) {
-    final raw = AtemNumberField.parse(_weight.text);
-    if (raw == null) return null;
-    final kg = settings.unitSystem.toKilograms(raw);
-    return UserSettings.isPlausibleWeight(kg) ? kg : null;
-  }
-
-  Future<void> _saveWeight(UserSettings settings) async {
-    final kg = _parsedWeightKg(settings);
-    if (kg == null || kg == settings.bodyWeightKg) return;
-
-    final l10n = AppL10n.of(context);
-    final sessions = ref.read(sessionsProvider).value ?? const [];
-    final preview = BodyWeightPreview.compute(
-      sessions,
-      ref.read(historyReferenceProvider),
-      currentKg: settings.bodyWeightKg ?? 0,
-      candidateKg: kg,
-    );
-
-    ref
-        .read(pendingWeightProvider.notifier)
-        .begin(previousKg: settings.bodyWeightKg, newKg: kg);
-
-    await ref
-        .read(settingsControllerProvider.notifier)
-        .update(settings.copyWith(bodyWeightKg: kg));
-
-    if (!mounted) return;
-    // Die Vorschau ist damit erfüllt: Was sie angekündigt hat, steht jetzt in
-    // der App. Sie verschwindet, die Meldung tritt an ihre Stelle — und nennt
-    // die Folge, nicht nur die Tat.
-    setState(() => _candidateKg = null);
-
-    final message = l10n.weightSavedSnack(
-      AtemNumberField.format(context, kg),
-      preview.formBefore?.toString() ?? l10n.commonNotAvailable,
-      preview.formAfter?.toString() ?? l10n.commonNotAvailable,
-    );
-    ref.read(snackbarProvider.notifier).show(
-          AtemSnack(
-            message: message,
-            semanticLabel: message,
-            tone: AtemSnackTone.success,
-            actionLabel: l10n.commonUndo,
-            onAction: () =>
-                ref.read(pendingWeightProvider.notifier).undo(),
-          ),
-        );
-  }
-
-  Future<void> _open(Uri url) async {
-    final l10n = AppL10n.of(context);
-    final opened =
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-    if (!opened && mounted) setState(() => _notice = l10n.legalError);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final async = ref.watch(settingsProvider);
-    final settings = async.value ?? const UserSettings();
-    final user = ref.watch(authStateProvider).value;
-
-    _seed(settings, hasData: async.hasValue);
-
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      appBar: AppBar(
-        backgroundColor: AtemColors.base,
-        title:
-            Text(l10n.settingsTitle, style: AtemType.titleMedium.of(context)),
-      ),
-      body: SafeArea(
-        top: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-              AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
-          children: [
-            // Zwei Meldungen, ein Platz: Der Widerruf hat Vorrang, weil er
-            // ausläuft — ein Linkfehler wartet.
-            AtemNoticeSlot(notice: _slotNotice(l10n)),
-            _ProfileHeader(user: user),
-            const SizedBox(height: 22),
-            _WeightSection(
-              controller: _weight,
-              settings: settings,
-              candidateKg: _candidateKg,
-              onChanged: (_) =>
-                  setState(() => _candidateKg = _parsedWeightKg(settings)),
-              onSubmit: () => _saveWeight(settings),
-            ),
-            const SizedBox(height: 26),
-            SettingsSection(
-              title: l10n.sectionApp,
-              children: [
-                // Pausenzeit und Einheitensystem stehen im Board auf einem
-                // Artboard — beide wirken auf die Anzeige, keines auf die
-                // Bewertung.
-                AtemFieldLabel(label: l10n.restTitle, hint: l10n.restBody),
-                AtemNumberField(
-                  controller: _rest,
-                  semanticLabel: l10n.restTitle,
-                  width: null,
-                  suffix: l10n.unitSuffixSeconds,
-                  onChanged: (_) => setState(() {}),
-                  textInputAction: TextInputAction.done,
-                ),
-                const SizedBox(height: 8),
-                Text(l10n.restRunning,
-                    style: AtemType.labelMicro.of(context)),
-                const SizedBox(height: 10),
-                AtemButton.outline(
-                  label: l10n.commonSave,
-                  semanticLabel: '${l10n.commonSave}: ${l10n.restTitle}',
-                  onPressed: () => _saveRest(settings),
-                ),
-                const SizedBox(height: 22),
-                AtemFieldLabel(
-                  label: l10n.unitsTitle,
-                  hint: l10n.unitsNote,
-                ),
-                AtemSegmented<UnitSystem>(
-                  value: settings.unitSystem,
-                  groupSemanticLabel: l10n.unitsTitle,
-                  onChanged: (value) => _saveUnits(settings, value),
-                  segments: [
-                    AtemSegment(
-                      value: UnitSystem.metric,
-                      label: l10n.unitsMetric,
-                      semanticLabel: l10n.unitsMetric,
-                    ),
-                    AtemSegment(
-                      value: UnitSystem.imperial,
-                      label: l10n.unitsImperial,
-                      semanticLabel: l10n.unitsImperial,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 22),
-                AtemFieldLabel(label: l10n.languageTitle),
-                AtemSegmented<AppLanguage>(
-                  // Ist noch nichts gewählt, gilt die Systemsprache — und der
-                  // Haken steht da, wo die App gerade steht.
-                  value: settings.language ??
-                      AppLanguage.forSystem(
-                          Localizations.localeOf(context).languageCode),
-                  groupSemanticLabel: l10n.languageTitle,
-                  onChanged: (value) => ref
-                      .read(settingsControllerProvider.notifier)
-                      .update(settings.copyWith(language: value)),
-                  segments: [
-                    AtemSegment(
-                      value: AppLanguage.german,
-                      label: l10n.languageDe,
-                      semanticLabel: l10n.languageDe,
-                    ),
-                    AtemSegment(
-                      value: AppLanguage.english,
-                      label: l10n.languageEn,
-                      semanticLabel: l10n.languageEn,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                SettingsSwitch(
-                  label: l10n.hapticsTitle,
-                  hint: l10n.hapticsSub,
-                  value: settings.hapticsEnabled,
-                  semanticLabel: '${l10n.hapticsTitle}, '
-                      '${settings.hapticsEnabled ? l10n.switchOn : l10n.switchOff}',
-                  onChanged: (value) => ref
-                      .read(settingsControllerProvider.notifier)
-                      .update(settings.copyWith(hapticsEnabled: value)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 26),
-            SettingsSection(
-              title: l10n.sectionData,
-              children: [
-                SettingsRow(
-                  label: l10n.exportTitle,
-                  hint: l10n.exportSub,
-                  onTap: _openExport,
-                ),
-                SettingsRow(
-                  label: l10n.settingsSignOut,
-                  onTap: _confirmSignOut,
-                ),
-              ],
-            ),
-            const SizedBox(height: 26),
-            // **Eigene Karte, unten.** Board 08, Zustand „gefährlich": Der
-            // einzige Weg, der Jahre vernichtet, steht nicht zwischen
-            // Abmelden und Datenausgabe, sondern für sich.
-            _DangerCard(onTap: _confirmDelete),
-            const SizedBox(height: 26),
-            SettingsSection(
-              title: l10n.sectionLegal,
-              children: [
-                SettingsRow(
-                  label: l10n.legalPrivacy,
-                  hint: l10n.legalExternal,
-                  onTap: () => _open(LegalLinks.privacy(
-                      Localizations.localeOf(context).languageCode)),
-                ),
-                SettingsRow(
-                  label: l10n.legalTerms,
-                  hint: l10n.legalExternal,
-                  onTap: () => _open(LegalLinks.terms(
-                      Localizations.localeOf(context).languageCode)),
-                ),
-                SettingsRow(
-                  label: l10n.legalImprint,
-                  hint: l10n.legalExternal,
-                  onTap: () => _open(LegalLinks.imprint),
-                ),
-              ],
-            ),
-            const SizedBox(height: 26),
-            SettingsSection(
-              title: l10n.sectionAbout,
-              children: [
-                _AboutRow(label: l10n.aboutVersionLabel, value: _version),
-                // Die Zeile steht dort, wo in der Vorgänger-App ein
-                // Themenschalter war. Für ATEM existiert keine helle Palette;
-                // ein Schalter, der nichts tut, wäre schlimmer als keiner —
-                // eine Auskunft dagegen beantwortet die Frage.
-                _AboutRow(
-                  label: l10n.aboutDisplayLabel,
-                  value: l10n.aboutDisplayValue,
-                ),
-                _AboutRow(
-                  label: l10n.aboutLanguagesLabel,
-                  value: l10n.aboutLanguagesValue,
-                ),
-                _AboutRow(
-                  label: l10n.aboutAccessLabel,
-                  value: l10n.aboutAccessValue,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   static const _version = '1.0.0';
 
-  /// Nur noch Fehlermeldungen — der Widerruf liegt seit Modul 7 in der
-  /// Hülle, wo er den Bildschirmwechsel überlebt.
-  AtemNotice? _slotNotice(AppL10n l10n) {
-    if (_notice case final text?) {
-      return AtemNotice(
-        tone: AtemNoticeTone.error,
-        title: text,
-        body: l10n.legalExternal,
-        semanticLabel: '$text. ${l10n.legalExternal}',
-      );
-    }
-    return null;
-  }
-
-
-
-  Future<void> _saveRest(UserSettings settings) async {
-    final value = int.tryParse(_rest.text.trim());
-    if (value == null) return;
-    await ref.read(settingsControllerProvider.notifier).update(
-          settings.copyWith(
-            restSeconds: value.clamp(
-              UserSettings.minRestSeconds,
-              UserSettings.maxRestSeconds,
-            ),
-          ),
-        );
-  }
-
-  /// Das Einheitensystem wechselt **nur die Anzeige** — das Feld wird
-  /// umgerechnet, der gespeicherte Wert bleibt in Kilogramm.
-  Future<void> _saveUnits(UserSettings settings, UnitSystem value) async {
-    final kg = settings.bodyWeightKg;
-    if (kg != null) {
-      _weight.text = AtemNumberField.format(context, value.fromKilograms(kg));
-    }
-    await ref
-        .read(settingsControllerProvider.notifier)
-        .update(settings.copyWith(unitSystem: value));
+  /// Rechtstexte öffnen **in der App** (Board 08, A3/3): Custom Tab mit
+  /// Zurück-Weg, keine fremde Adressleiste. Langdruck öffnet extern.
+  Future<void> _openLegal(Uri url, {bool external = false}) async {
+    final l10n = AppL10n.of(context);
+    final opened = await launchUrl(
+      url,
+      mode: external
+          ? LaunchMode.externalApplication
+          : LaunchMode.inAppBrowserView,
+    );
+    if (!opened && mounted) setState(() => _notice = l10n.legalError);
   }
 
   Future<void> _confirmSignOut() async {
@@ -412,7 +95,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.settingsDeleteBarrier,
       // Der zweite Ausgang ist kein zweites Löschen, sondern die Alternative
-      // dazu: erst sichern. Er steht deshalb hier und nicht daneben.
+      // dazu: erst sichern.
       alternativeLabel: l10n.settingsDeleteExport,
       onAlternative: () => Navigator.of(context).pop(_DeleteChoice.export),
       detail: Text(
@@ -437,62 +120,347 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  /// Führt zum Ausgabebildschirm.
-  ///
-  /// **Nicht mehr sofort ausführen.** Vorher lief die Ausgabe los, sobald man
-  /// die Zeile antippte — ohne zu sagen, was in die Datei kommt, und ohne
-  /// Wahl des Formats.
   Future<void> _openExport() => Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const ExportScreen()),
       );
+
+  /// „Onboarding wiederholen": dieselbe Seite wie beim ersten Start, gepusht.
+  Future<void> _repeatOnboarding(AuthUser user) => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => OnboardingScreen(
+            user: user,
+            onDone: () => Navigator.of(context).maybePop(),
+          ),
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final async = ref.watch(settingsProvider);
+    final settings = async.value ?? const UserSettings();
+    final user = ref.watch(authStateProvider).value;
+    final language = Localizations.localeOf(context).languageCode;
+
+    final kg = settings.bodyWeightKg;
+    final weightValue = kg == null
+        ? l10n.commonNotAvailable
+        : '${AtemNumberField.format(context, settings.unitSystem.fromKilograms(kg))} '
+            '${settings.unitSystem == UnitSystem.metric ? l10n.unitSuffixKilograms : l10n.unitSuffixPounds}';
+
+    return Scaffold(
+      backgroundColor: AtemColors.base,
+      appBar: AppBar(
+        backgroundColor: AtemColors.base,
+        title:
+            Text(l10n.settingsTitle, style: AtemType.titleMedium.of(context)),
+      ),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+              AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
+          children: [
+            AtemNoticeSlot(
+              notice: _notice == null
+                  ? null
+                  : AtemNotice(
+                      tone: AtemNoticeTone.error,
+                      title: _notice!,
+                      body: l10n.legalRetry,
+                      semanticLabel: '$_notice. ${l10n.legalRetry}',
+                    ),
+            ),
+            _ProfileHeader(user: user),
+            const SizedBox(height: 22),
+
+            // ---- TRAINING: drei Zeilen mit Wert, je ein Sheet.
+            SettingsSection(
+              title: l10n.sectionTraining,
+              children: [
+                SettingsRow(
+                  label: l10n.weightTitle,
+                  hint: l10n.weightSub,
+                  value: async.isLoading ? l10n.commonLoading : weightValue,
+                  onTap: () => _WeightSheet.show(context, settings),
+                ),
+                const _Rule(),
+                SettingsRow(
+                  label: l10n.restTitle,
+                  hint: l10n.restSub,
+                  value: l10n.restSeconds(settings.restSeconds),
+                  valueAccent:
+                      settings.restSeconds != UserSettings.defaultRestSeconds,
+                  onTap: () => _RestSheet.show(context, settings),
+                ),
+                const _Rule(),
+                SettingsRow(
+                  label: l10n.unitsTitle,
+                  value: settings.unitSystem == UnitSystem.metric
+                      ? l10n.unitsMetric
+                      : l10n.unitsImperial,
+                  valueAccent: settings.unitSystem != UnitSystem.metric,
+                  onTap: () => _UnitsSheet.show(context, settings),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // ---- APP: Vorlieben, sofort wirksam.
+            SettingsSection(
+              title: l10n.sectionApp,
+              children: [
+                AtemFieldLabel(label: l10n.languageTitle),
+                AtemSegmented<AppLanguage>(
+                  // Ist noch nichts gewählt, gilt die Systemsprache — und der
+                  // Haken steht da, wo die App gerade steht.
+                  value: settings.language ?? AppLanguage.forSystem(language),
+                  groupSemanticLabel: l10n.languageTitle,
+                  onChanged: (value) => ref
+                      .read(settingsControllerProvider.notifier)
+                      .update(settings.copyWith(language: value)),
+                  segments: [
+                    AtemSegment(
+                      value: AppLanguage.german,
+                      label: l10n.languageDe,
+                      semanticLabel: l10n.languageDe,
+                    ),
+                    AtemSegment(
+                      value: AppLanguage.english,
+                      label: l10n.languageEn,
+                      semanticLabel: l10n.languageEn,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                const _Rule(),
+                SettingsSwitch(
+                  label: l10n.hapticsTitle,
+                  hint: l10n.hapticsSub,
+                  value: settings.hapticsEnabled,
+                  semanticLabel: '${l10n.hapticsTitle}, '
+                      '${settings.hapticsEnabled ? l10n.switchOn : l10n.switchOff}. ${l10n.hapticsSub}',
+                  onChanged: (value) => ref
+                      .read(settingsControllerProvider.notifier)
+                      .update(settings.copyWith(hapticsEnabled: value)),
+                ),
+                const _Rule(),
+                SettingsRow(
+                  label: l10n.onboardingRepeat,
+                  hint: l10n.onboardingRepeatSub,
+                  value: l10n.onboardingRepeatAction,
+                  onTap: user == null ? () {} : () => _repeatOnboarding(user),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // ---- DEINE DATEN.
+            SettingsSection(
+              title: l10n.sectionData,
+              children: [
+                SettingsRow(
+                  label: l10n.exportTitle,
+                  hint: l10n.exportSub,
+                  onTap: _openExport,
+                ),
+                const _Rule(),
+                // „Daten bleiben", damit Abmelden und Löschen nie
+                // verwechselt werden (Board 08, A1/2).
+                SettingsRow(
+                  label: l10n.settingsSignOut,
+                  hint: l10n.signoutKeep,
+                  onTap: _confirmSignOut,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // ---- RECHTLICHES: in der App, Langdruck extern.
+            SettingsSection(
+              title: l10n.sectionLegal,
+              children: [
+                for (final (i, (label, url)) in [
+                  (l10n.legalPrivacy, LegalLinks.privacy(language)),
+                  (l10n.legalTerms, LegalLinks.terms(language)),
+                  (l10n.legalImprint, LegalLinks.imprint),
+                ].indexed) ...[
+                  if (i > 0) const _Rule(),
+                  SettingsRow(
+                    label: label,
+                    value: l10n.legalInapp,
+                    semanticLabel: '$label, ${l10n.legalInapp}',
+                    onTap: () => _openLegal(url),
+                    onLongPress: () => _openLegal(url, external: true),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // ---- ÜBER DIE APP: Tatsachen, keine Griffe.
+            SettingsSection(
+              title: l10n.sectionAbout,
+              children: [
+                _AboutRow(label: l10n.aboutVersionLabel, value: _version),
+                // Die Zeile steht dort, wo in der Vorgänger-App ein
+                // Themenschalter war. Für ATEM existiert keine helle Palette;
+                // eine Auskunft beantwortet die Frage, ein toter Schalter nicht.
+                _AboutRow(
+                  label: l10n.aboutDisplayLabel,
+                  value: l10n.aboutDisplayValue,
+                ),
+                _AboutRow(
+                  label: l10n.aboutLanguagesLabel,
+                  value: l10n.aboutLanguagesValue,
+                ),
+                _AboutRow(
+                  label: l10n.aboutAccessLabel,
+                  value: l10n.aboutAccessValue,
+                ),
+              ],
+            ),
+            const SizedBox(height: 26),
+
+            // **Eigene Karte, ganz unten.** Der einzige Weg, der Jahre
+            // vernichtet, steht nicht zwischen Vorlieben.
+            _DangerCard(onTap: _confirmDelete),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 enum _DeleteChoice { proceed, export }
 
-/// Körpergewicht mit Vorschau.
-class _WeightSection extends ConsumerWidget {
-  const _WeightSection({
-    required this.controller,
-    required this.settings,
-    required this.candidateKg,
-    required this.onChanged,
-    required this.onSubmit,
-  });
-
-  final TextEditingController controller;
-  final UserSettings settings;
-  final double? candidateKg;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onSubmit;
+/// Der Trenner zwischen Zeilen einer Sektion, 1 dp #232334.
+class _Rule extends StatelessWidget {
+  const _Rule();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) =>
+      const Divider(height: 1, thickness: 1, color: AtemColors.border);
+}
+
+/// Körpergewicht — **die einzige Einstellung, die rückwirkend rechnet**.
+///
+/// Sheet mit Feld, Hinweis, Vorschau beim Tippen und „Speichern und neu
+/// rechnen" (Board 08, A2). Ohne Änderung keine Vorschau und kein aktiver
+/// Knopf.
+class _WeightSheet extends ConsumerStatefulWidget {
+  const _WeightSheet({required this.settings});
+
+  final UserSettings settings;
+
+  static Future<void> show(BuildContext context, UserSettings settings) =>
+      AtemSheet.show<void>(
+        context,
+        title: AppL10n.of(context).weightTitle,
+        closeLabel: AppL10n.of(context).commonClose,
+        child: _WeightSheet(settings: settings),
+      );
+
+  @override
+  ConsumerState<_WeightSheet> createState() => _WeightSheetState();
+}
+
+class _WeightSheetState extends ConsumerState<_WeightSheet> {
+  final _weight = TextEditingController();
+  double? _candidateKg;
+  var _seeded = false;
+
+  UserSettings get settings => widget.settings;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Einmal füllen — und erst hier, weil die Zahlformatierung das
+    // Gebietsschema braucht, das in initState noch nicht erreichbar ist.
+    if (_seeded) return;
+    _seeded = true;
+    final kg = settings.bodyWeightKg;
+    if (kg != null) {
+      _weight.text =
+          AtemNumberField.format(context, settings.unitSystem.fromKilograms(kg));
+    }
+  }
+
+  @override
+  void dispose() {
+    _weight.dispose();
+    super.dispose();
+  }
+
+  double? _parsedKg() {
+    final raw = AtemNumberField.parse(_weight.text);
+    if (raw == null) return null;
+    final kg = settings.unitSystem.toKilograms(raw);
+    return UserSettings.isPlausibleWeight(kg) ? kg : null;
+  }
+
+  Future<void> _save() async {
+    final kg = _candidateKg;
+    if (kg == null || kg == settings.bodyWeightKg) return;
+
+    final l10n = AppL10n.of(context);
+    final sessions = ref.read(sessionsProvider).value ?? const [];
+    final preview = BodyWeightPreview.compute(
+      sessions,
+      ref.read(historyReferenceProvider),
+      currentKg: settings.bodyWeightKg ?? 0,
+      candidateKg: kg,
+    );
+
+    ref
+        .read(pendingWeightProvider.notifier)
+        .begin(previousKg: settings.bodyWeightKg, newKg: kg);
+    await ref
+        .read(settingsControllerProvider.notifier)
+        .update(settings.copyWith(bodyWeightKg: kg));
+    if (!mounted) return;
+
+    final message = l10n.weightSavedSnack(
+      AtemNumberField.format(context, kg),
+      preview.formBefore?.toString() ?? l10n.commonNotAvailable,
+      preview.formAfter?.toString() ?? l10n.commonNotAvailable,
+    );
+    ref.read(snackbarProvider.notifier).show(AtemSnack(
+          message: message,
+          semanticLabel: message,
+          tone: AtemSnackTone.success,
+          actionLabel: l10n.commonUndo,
+          onAction: () => ref.read(pendingWeightProvider.notifier).undo(),
+        ));
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final async = ref.watch(sessionsProvider);
-    final sessions = async.value ?? const [];
     final current = settings.bodyWeightKg;
-
-    final raw = AtemNumberField.parse(controller.text);
+    final raw = AtemNumberField.parse(_weight.text);
     final typedKg = raw == null ? null : settings.unitSystem.toKilograms(raw);
     final fault = typedKg != null && !UserSettings.isPlausibleWeight(typedKg);
+    final changed = _candidateKg != null && _candidateKg != current;
+    final busy = ref.watch(settingsControllerProvider).isLoading;
 
-    final changed = candidateKg != null && candidateKg != current;
-
-    return SettingsSection(
-      title: l10n.sectionTraining,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        AtemFieldLabel(label: l10n.weightTitle, hint: l10n.weightBody),
-        AtemNumberField(
-          controller: controller,
+        Text(l10n.weightBody, style: AtemType.labelSmall.of(context)),
+        const SizedBox(height: 16),
+        AtemNumberField.large(
+          controller: _weight,
           semanticLabel: l10n.weightTitle,
-          width: null,
-          decimal: true,
           hasError: fault,
+          locked: busy,
           suffix: settings.unitSystem == UnitSystem.metric
               ? l10n.unitSuffixKilograms
               : l10n.unitSuffixPounds,
-          onChanged: onChanged,
-          textInputAction: TextInputAction.done,
+          onChanged: (_) => setState(() => _candidateKg = _parsedKg()),
         ),
         const SizedBox(height: 6),
         Text(
@@ -504,46 +472,250 @@ class _WeightSection extends ConsumerWidget {
         ),
         if (current != null && changed) ...[
           const SizedBox(height: 6),
-          Text(
-            l10n.weightPrevious(AtemNumberField.format(context, current)),
-            style: AtemType.labelMicro.of(context),
-          ),
+          Text(l10n.weightPrevious(AtemNumberField.format(context, current)),
+              style: AtemType.labelMicro.of(context)),
         ],
+        // Die Vorschau erscheint erst bei Abweichung — der leere Platz
+        // darunter ist Absicht, er füllt sich beim Tippen.
         if (changed && !fault) ...[
           const SizedBox(height: 18),
           if (async.isLoading)
-            Text(l10n.weightSaveBusy,
-                style: AtemType.labelSmall.of(context))
+            Text(l10n.weightSaveBusy, style: AtemType.labelSmall.of(context))
           else
             WeightPreview(
-              sessions: sessions,
+              sessions: async.value ?? const [],
               reference: ref.watch(historyReferenceProvider),
               currentKg: current ?? 0,
-              candidateKg: candidateKg!,
+              candidateKg: _candidateKg!,
             ),
         ],
-        const SizedBox(height: 14),
+        const SizedBox(height: 18),
         AtemButton.gradient(
           label: changed
-              ? (ref.watch(settingsControllerProvider).isLoading
-                  ? l10n.weightSaveBusy
-                  : l10n.weightSave)
+              ? (busy ? l10n.weightSaveBusy : l10n.weightSave)
               : l10n.weightSaveNone,
           semanticLabel: changed ? l10n.weightSave : l10n.weightSaveNone,
-          size: AtemButtonSize.compact,
-          busy: ref.watch(settingsControllerProvider).isLoading,
-          onPressed: fault || !changed ? null : onSubmit,
+          busy: busy,
+          onPressed: fault || !changed || busy ? null : _save,
         ),
       ],
     );
   }
 }
 
-/// Der Profilkopf — **eine Tatsache, kein Formular**.
+/// Pausenzeit — fünf Werte im Segment, der fünfte ist eigen (Board 08, A3/1).
+class _RestSheet extends ConsumerStatefulWidget {
+  const _RestSheet({required this.settings});
+
+  final UserSettings settings;
+
+  static const presets = [60, 90, 120, 180];
+
+  static Future<void> show(BuildContext context, UserSettings settings) =>
+      AtemSheet.show<void>(
+        context,
+        title: AppL10n.of(context).restTitle,
+        closeLabel: AppL10n.of(context).commonClose,
+        child: _RestSheet(settings: settings),
+      );
+
+  @override
+  ConsumerState<_RestSheet> createState() => _RestSheetState();
+}
+
+class _RestSheetState extends ConsumerState<_RestSheet> {
+  late final TextEditingController _custom;
+  late int _value;
+  late bool _customMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.settings.restSeconds;
+    _customMode = !_RestSheet.presets.contains(_value);
+    _custom = TextEditingController(text: _customMode ? '$_value' : '');
+  }
+
+  @override
+  void dispose() {
+    _custom.dispose();
+    super.dispose();
+  }
+
+  Future<void> _apply(int seconds) async {
+    final clamped = seconds.clamp(
+        UserSettings.minRestSeconds, UserSettings.maxRestSeconds);
+    setState(() => _value = clamped);
+    await ref
+        .read(settingsControllerProvider.notifier)
+        .update(widget.settings.copyWith(restSeconds: clamped));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(l10n.restBody, style: AtemType.labelSmall.of(context)),
+        const SizedBox(height: 16),
+        AtemSegmented<int>(
+          value: _customMode ? -1 : _value,
+          groupSemanticLabel: l10n.restTitle,
+          onChanged: (v) {
+            if (v == -1) {
+              setState(() => _customMode = true);
+              return;
+            }
+            setState(() => _customMode = false);
+            _apply(v);
+          },
+          segments: [
+            for (final p in _RestSheet.presets)
+              AtemSegment(
+                value: p,
+                label: l10n.restSeconds(p),
+                semanticLabel: '${l10n.restTitle} ${l10n.restSeconds(p)}',
+              ),
+            AtemSegment(
+              value: -1,
+              label: l10n.restCustom,
+              semanticLabel: l10n.restCustom,
+            ),
+          ],
+        ),
+        if (_customMode) ...[
+          const SizedBox(height: 14),
+          AtemNumberField(
+            controller: _custom,
+            semanticLabel: l10n.restCustom,
+            width: null,
+            suffix: l10n.unitSuffixSeconds,
+            textInputAction: TextInputAction.done,
+            onChanged: (t) {
+              final v = int.tryParse(t.trim());
+              if (v != null) _apply(v);
+            },
+          ),
+          const SizedBox(height: 6),
+          Text(
+            '${UserSettings.minRestSeconds}–${UserSettings.maxRestSeconds} ${l10n.unitSuffixSeconds}'
+                .toUpperCase(),
+            style: AtemType.labelMicro.of(context),
+          ),
+        ],
+        const SizedBox(height: 14),
+        AtemNotice(
+          title: l10n.restRunning,
+          body: l10n.restSub,
+          semanticLabel: '${l10n.restRunning} ${l10n.restSub}',
+        ),
+      ],
+    );
+  }
+}
+
+/// Einheitensystem — nur Anzeige, deshalb ein Beispiel statt einer
+/// Vorschau (Board 08, A3/2).
+class _UnitsSheet extends ConsumerWidget {
+  const _UnitsSheet({required this.settings});
+
+  final UserSettings settings;
+
+  static Future<void> show(BuildContext context, UserSettings settings) =>
+      AtemSheet.show<void>(
+        context,
+        title: AppL10n.of(context).unitsTitle,
+        closeLabel: AppL10n.of(context).commonClose,
+        child: _UnitsSheet(settings: settings),
+      );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final live = ref.watch(settingsProvider).value ?? settings;
+    final imperial = live.unitSystem == UnitSystem.imperial;
+
+    String kg(double v) => l10n.unitKilograms(
+        AtemNumberField.format(context, v).replaceAll('.0', ''));
+    String lb(double v) =>
+        '${AtemNumberField.format(context, (v * 2.20462 * 10).round() / 10)} ${l10n.unitSuffixPounds}';
+
+    final rows = <(String, String)>[
+      (l10n.workoutLoggingSets, imperial ? lb(82.5) : kg(82.5)),
+      (l10n.detailLoad, imperial ? lb(4820) : kg(4820)),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(l10n.unitsNote, style: AtemType.labelSmall.of(context)),
+        const SizedBox(height: 16),
+        AtemSegmented<UnitSystem>(
+          value: live.unitSystem,
+          groupSemanticLabel: l10n.unitsTitle,
+          onChanged: (value) => ref
+              .read(settingsControllerProvider.notifier)
+              .update(live.copyWith(unitSystem: value)),
+          segments: [
+            AtemSegment(
+              value: UnitSystem.metric,
+              label: l10n.unitsMetric,
+              semanticLabel: l10n.unitsMetric,
+            ),
+            AtemSegment(
+              value: UnitSystem.imperial,
+              label: l10n.unitsImperial,
+              semanticLabel: l10n.unitsImperial,
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        Text(l10n.unitsExample.toUpperCase(),
+            style: AtemType.labelMicro.of(context)),
+        const SizedBox(height: 8),
+        AtemStatBox(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Column(
+            children: [
+              for (final (label, value) in rows)
+                Semantics(
+                  label: '$label: $value',
+                  child: ExcludeSemantics(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(label,
+                                style: AtemType.labelSmall.of(context)),
+                          ),
+                          Text(value,
+                              style: AtemType.valueMedium
+                                  .of(context)
+                                  .copyWith(fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Der Profilkopf — **eine Tatsache, kein Formular** (Board 08, A1/1).
 ///
-/// Board 08, Entscheidung: Name und E-Mail kommen von Google und sind hier
-/// nicht änderbar. Ein gesperrtes Eingabefeld sähe aus wie ein Defekt; ein
-/// Chip mit „Über Google · fest" sagt dasselbe als Auskunft.
+/// Bild 52 dp mit Initialen auf dem Violet-Rose-Verlauf, Name, E-Mail in
+/// Mono mit Ellipse, Schloss-Chip „Über Google · fest". Ein Knoten für
+/// TalkBack: kein textField, kein disabled — ein deaktiviertes Feld liest
+/// sich als Defekt.
 class _ProfileHeader extends StatelessWidget {
   const _ProfileHeader({required this.user});
 
@@ -553,51 +725,88 @@ class _ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final email = user?.email ?? l10n.commonNotAvailable;
+    final name = user?.displayName ?? '';
+    final initials = name.trim().isEmpty
+        ? (email.isNotEmpty ? email[0].toUpperCase() : '?')
+        : name.trim().split(RegExp(r'\s+')).map((w) => w[0]).take(2).join()
+            .toUpperCase();
 
     return Semantics(
-      label: '${user?.displayName ?? ''} $email. ${l10n.profileLockedWhy}',
+      label: '$name $email. ${l10n.profileLocked}. ${l10n.profileLockedWhy}',
       child: ExcludeSemantics(
         child: AtemCard.list(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              if (user?.displayName case final name? when name.isNotEmpty) ...[
-                Text(name, style: AtemType.titleMedium.of(context)),
-                const SizedBox(height: 4),
-              ],
-              Text(email, style: AtemType.body.of(context)),
-              const SizedBox(height: 12),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AtemRadii.pill),
-                  border: Border.all(color: AtemColors.border),
+                width: 52,
+                height: 52,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  // Violet nur als Fläche — hier der Verlauf des Profilbilds.
+                  gradient: LinearGradient(
+                    colors: [AtemColors.violet, AtemColors.magentaDeep],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
-                // Nachgiebig: „Über Google · fest" ist bei 320 dp länger als
-                // der Platz, den die Karte dem Chip lässt — die Prüfmatrix
-                // hat 38 px Überlauf gefunden, schon bei einfacher Schrift.
-                child: Row(
+                child: Text(
+                  initials,
+                  style: AtemType.valueMedium.of(context).copyWith(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: AtemColors.textPrimary,
+                      ),
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.lock_outline,
-                        size: 13, color: AtemColors.textSecondary),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        l10n.profileLocked,
+                    if (name.isNotEmpty)
+                      Text(name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AtemType.titleSmallOrDefault(context)
+                              .copyWith(fontWeight: FontWeight.w700)),
+                    Text(email,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AtemType.labelMicro.of(context),
+                        style: AtemType.labelMicro
+                            .of(context)
+                            .copyWith(letterSpacing: 0)),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 9, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AtemColors.surfaceSolid,
+                        borderRadius: BorderRadius.circular(AtemRadii.pill),
+                        border: Border.all(color: AtemColors.border),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.lock_outline,
+                              size: 12, color: AtemColors.textSecondary),
+                          const SizedBox(width: 5),
+                          Flexible(
+                            child: Text(
+                              l10n.profileLocked.toUpperCase(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AtemType.labelDeco.of(context),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(l10n.profileLockedWhy,
-                  style: AtemType.labelMicro.of(context)),
             ],
           ),
         ),
@@ -619,7 +828,7 @@ class _DangerCard extends StatelessWidget {
     return AtemTappable(
       onTap: onTap,
       semanticLabel: '${l10n.accountDelete}. ${l10n.accountDeleteSub}',
-      minTapSize: const Size(0, 48),
+      minTapSize: const Size(0, 56),
       alignment: Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -658,9 +867,6 @@ class _DangerCard extends StatelessWidget {
 }
 
 /// Eine Auskunftszeile im Abschnitt „Über die App".
-///
-/// Beschriftung links, Wert rechts in Mono — kein Weg dahinter. Was hier
-/// steht, beantwortet eine Frage, statt eine Einstellung anzubieten.
 class _AboutRow extends StatelessWidget {
   const _AboutRow({required this.label, required this.value});
 
@@ -677,17 +883,17 @@ class _AboutRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(label,
-                      style: AtemType.labelSmall.of(context)),
+                  child: Text(label.toUpperCase(),
+                      style: AtemType.labelMicro.of(context)),
                 ),
                 const SizedBox(width: 12),
                 Flexible(
                   child: Text(
                     value,
                     textAlign: TextAlign.right,
-                    style: AtemType.labelMicro
+                    style: AtemType.valueMedium
                         .of(context)
-                        .copyWith(letterSpacing: 0),
+                        .copyWith(fontSize: 12, color: AtemColors.textTertiary),
                   ),
                 ),
               ],

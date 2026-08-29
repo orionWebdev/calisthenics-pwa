@@ -42,10 +42,17 @@ void main() {
     expect(find.text('Rechtliches'), findsOneWidget);
     expect(find.text('Über die App'), findsOneWidget);
 
-    // Aus den Vorlagen: 78 kg, Pausenzeit 90.
-    final weight = tester.widget<TextField>(find.byType(TextField).first);
-    expect(weight.controller?.text, '78');
+    // Aus den Vorlagen: 78 kg, Pausenzeit 90 — als Werte in den Zeilen
+    // (Board 08: Zeile mit Wert, Sheet dahinter).
+    expect(find.text('78 kg'), findsOneWidget);
+    expect(find.text('90 s'), findsOneWidget);
   });
+
+  /// Öffnet das Gewichts-Sheet über seine Zeile.
+  Future<void> openWeight(WidgetTester tester) async {
+    await tester.tap(find.text('Körpergewicht'));
+    await tester.pumpAndSettle();
+  }
 
   testWidgets('kein Themenschalter, aber die Tatsache dazu', (tester) async {
     await _pump(tester, const SettingsScreen());
@@ -58,6 +65,7 @@ void main() {
   testWidgets('die Vorschau erscheint erst bei einer Änderung',
       (tester) async {
     await _pump(tester, const SettingsScreen());
+    await openWeight(tester);
     expect(find.text('Was sich rückwirkend ändert'), findsNothing);
 
     await tester.enterText(find.byType(TextField).first, '95');
@@ -73,6 +81,7 @@ void main() {
 
   testWidgets('ein unsinniges Gewicht wird am Feld gemeldet', (tester) async {
     await _pump(tester, const SettingsScreen());
+    await openWeight(tester);
 
     await tester.enterText(find.byType(TextField).first, '780');
     await tester.pumpAndSettle();

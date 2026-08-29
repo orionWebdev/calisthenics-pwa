@@ -40,9 +40,14 @@ enum WeightUnit {
 /// wohnen in den Einstellungen. Nach zwei Sessions beantwortet die App sie
 /// ohnehin besser als der Nutzer am ersten Tag.
 class OnboardingScreen extends ConsumerStatefulWidget {
-  const OnboardingScreen({super.key, required this.user});
+  const OnboardingScreen({super.key, required this.user, this.onDone});
 
   final AuthUser user;
+
+  /// „Onboarding wiederholen" aus den Einstellungen (Board 08, A3/3): Der
+  /// Bildschirm wird gepusht statt vom Tor gezeigt und muss sich selbst
+  /// schliessen.
+  final VoidCallback? onDone;
 
   @override
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -111,6 +116,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             unitSystem: _unit.wire,
           );
       ref.invalidate(accessProvider);
+      widget.onDone?.call();
     } finally {
       if (mounted) setState(() => _saving = false);
     }

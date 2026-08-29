@@ -8,7 +8,12 @@ import '../../../history/application/history_providers.dart';
 import '../../../history/domain/exercise_history.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../../history/presentation/widgets/exercise_history_block.dart';
+import '../../../../app/application/snackbar_providers.dart';
+import '../../../auth/application/auth_providers.dart';
 import '../../../plans/application/plan_providers.dart';
+import '../../../plans/domain/plan.dart';
+import '../../../plans/domain/plan_draft.dart';
+import '../../../plans/presentation/plan_picker_sheet.dart';
 import '../../application/exercise_providers.dart';
 import '../../domain/exercise.dart';
 import '../difficulty_ui.dart';
@@ -78,13 +83,21 @@ class ExerciseDetailScreen extends ConsumerWidget {
                     children: [
                       Text(exerciseName(context, exercise),
                           style: AtemType.titleLarge.of(context)),
-                      if (exercise.isOwn) ...[
-                        const SizedBox(height: 8),
-                        AtemBadge(
-                          label: l10n.exercisesOwnTag,
-                          accent: AtemCategories.grey,
-                        ),
-                      ],
+                      const SizedBox(height: 8),
+                      // Herkunft als Wort im Kopf (Board 07, A3): EIGEN
+                      // oder KURATIERT — sie entscheidet, ob es einen
+                      // Bearbeiten-Weg gibt.
+                      AtemBadge(
+                        label: (exercise.isOwn
+                                ? l10n.exercisesOwnTag
+                                : l10n.exerciseCuratedBadge)
+                            .toUpperCase(),
+                        accent: AtemCategories.grey,
+                        leadingIcon: exercise.isOwn
+                            ? null
+                            : const Icon(Icons.lock_outline,
+                                size: 12, color: AtemColors.textSecondary),
+                      ),
                     ],
                   ),
                 ),
@@ -160,6 +173,16 @@ class ExerciseDetailScreen extends ConsumerWidget {
             ],
 
             const SizedBox(height: 32),
+            // **Die Hauptaktion** (Board 07, A3/1): Aus dem Detail heraus in
+            // einen Plan. Löschen sitzt darunter, in Grau, mit Abstand —
+            // erreichbar, aber nie versehentlich getroffen.
+            AtemButton.gradient(
+              label: l10n.exerciseAddToPlan,
+              semanticLabel: '${l10n.exerciseAddToPlan}: ${exercise.name}',
+              size: AtemButtonSize.compact,
+              onPressed: () => _addToPlan(context, ref),
+            ),
+            const SizedBox(height: 10),
             if (exercise.isOwn) ...[
               AtemButton.outline(
                 label: l10n.commonEdit,
@@ -194,6 +217,38 @@ class ExerciseDetailScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Hängt die Übung an einen gewählten Plan — ohne Zielwerte, die
+  /// niemand gemacht hat. Sichtbar wird es sofort, widerrufbar 30 s lang.
+  Future<void> _addToPlan(BuildContext context, WidgetRef ref) async {
+    final l10n = AppL10n.of(context);
+    final plan = await PlanPickerSheet.show(context);
+    if (plan == null || !context.mounted) return;
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null) return;
+
+    final repository = ref.read(planRepositoryProvider);
+    PlanDraft draft(List<PlanItem> items) => PlanDraft(
+          id: plan.id,
+          userId: userId,
+          name: plan.name,
+          items: items,
+          icon: plan.icon,
+          type: plan.type,
+        );
+    await repository.savePlan(
+        draft([...plan.items, PlanItem(exerciseId: exercise.id)]));
+    if (!context.mounted) return;
+
+    final message = l10n.exerciseAddedToPlan(plan.name);
+    ref.read(snackbarProvider.notifier).show(AtemSnack(
+          message: message,
+          semanticLabel: message,
+          tone: AtemSnackTone.success,
+          actionLabel: l10n.commonUndo,
+          onAction: () => repository.savePlan(draft(plan.items)),
+        ));
   }
 
   /// Zweimal fragen, dann endgültig.

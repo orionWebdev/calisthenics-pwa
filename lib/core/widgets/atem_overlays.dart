@@ -124,7 +124,8 @@ class AtemSheet extends StatelessWidget {
                   _TitleRow(title: title, closeLabel: closeLabel),
                   Flexible(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                      // Polster 20 dp seitlich (Board 02, A1 ③).
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
                       child: child,
                     ),
                   ),

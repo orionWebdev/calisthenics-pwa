@@ -43,6 +43,24 @@ class ExerciseFilter extends Notifier<MuscleGroup?> {
 final exerciseFilterProvider =
     NotifierProvider<ExerciseFilter, MuscleGroup?>(ExerciseFilter.new);
 
+/// Eigen, kuratiert oder beides — Board 07, A1/3.
+///
+/// Der Filter existiert, weil nur eine der beiden Mengen bearbeitbar ist:
+/// Wer aufräumen will, filtert auf 70 statt in 154 zu suchen.
+enum ExerciseOrigin { all, own, curated }
+
+class ExerciseOriginFilter extends Notifier<ExerciseOrigin> {
+  @override
+  ExerciseOrigin build() => ExerciseOrigin.all;
+
+  void set(ExerciseOrigin origin) => state = origin;
+}
+
+final exerciseOriginProvider =
+    NotifierProvider<ExerciseOriginFilter, ExerciseOrigin>(
+  ExerciseOriginFilter.new,
+);
+
 /// Die Suchanfrage.
 class ExerciseQuery extends Notifier<String> {
   @override
@@ -68,9 +86,12 @@ final exerciseQueryProvider =
 final filteredExercisesProvider = Provider<List<Exercise>>((ref) {
   final all = ref.watch(exercisesProvider).value ?? const <Exercise>[];
   final muscle = ref.watch(exerciseFilterProvider);
+  final origin = ref.watch(exerciseOriginProvider);
   final query = ref.watch(exerciseQueryProvider).trim().toLowerCase();
 
   return all.where((exercise) {
+    if (origin == ExerciseOrigin.own && !exercise.isOwn) return false;
+    if (origin == ExerciseOrigin.curated && exercise.isOwn) return false;
     // Über `filter` verglichen, nicht direkt: Eine Übung mit `quads` muss
     // unter „Beine" erscheinen, sonst wäre sie über keinen Filter erreichbar.
     if (muscle != null &&

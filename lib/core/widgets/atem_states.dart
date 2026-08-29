@@ -517,14 +517,17 @@ class AtemSectionError extends StatelessWidget {
       liveRegion: true,
       label: '$title. ${l10n.errorSectionBody}',
       child: ExcludeSemantics(
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AtemColors.card,
-            borderRadius: BorderRadius.circular(AtemRadii.card),
-            border: Border.all(color: AtemColors.border),
-          ),
-          child: Row(
+        // Gestrichelter Rand = „hier fehlt etwas" — ein Formmerkmal, keine
+        // Farbe (Board 02, B2).
+        child: CustomPaint(
+          foregroundPainter: _DashedCardBorder(),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AtemColors.card,
+              borderRadius: BorderRadius.circular(AtemRadii.card),
+            ),
+            child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
@@ -554,10 +557,36 @@ class AtemSectionError extends StatelessWidget {
               ),
             ],
           ),
+          ),
         ),
       ),
     );
   }
+}
+
+/// Der gestrichelte Kartenrand des Teilfehlers.
+class _DashedCardBorder extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = AtemColors.magenta.withValues(alpha: 0.4);
+    final path = Path()
+      ..addRRect(RRect.fromRectAndRadius(
+          Offset.zero & size, const Radius.circular(AtemRadii.card)));
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        final next = (distance + 5).clamp(0.0, metric.length);
+        canvas.drawPath(metric.extractPath(distance, next), paint);
+        distance = next + 4;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashedCardBorder old) => false;
 }
 
 /// Das Offline-Band.

@@ -8,6 +8,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/history_providers.dart';
 import '../../domain/session_consequence.dart';
 import '../../domain/session_patch.dart';
+import '../../../cardio/presentation/screens/cardio_form_screen.dart';
 import '../../domain/training_load.dart';
 import '../../domain/training_session.dart';
 import '../../../workout/domain/workout_start.dart';
@@ -50,6 +51,7 @@ class SessionEditScreen extends ConsumerStatefulWidget {
 class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
   late final TextEditingController _duration;
   late final TextEditingController _notes;
+  late final TextEditingController _distance;
   late DateTime _date;
 
   var _saving = false;
@@ -64,13 +66,27 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
       text: widget.session.duration?.inMinutes.toString() ?? '',
     );
     _notes = TextEditingController(text: widget.session.notes ?? '');
+    final km = switch (widget.session) {
+      CardioSession(:final distanceKm) => distanceKm,
+      _ => null,
+    };
+    _distance = TextEditingController(text: km == null ? '' : '$km');
   }
 
   @override
   void dispose() {
     _duration.dispose();
     _notes.dispose();
+    _distance.dispose();
     super.dispose();
+  }
+
+  CardioSession? get _cardio =>
+      widget.session is CardioSession ? widget.session as CardioSession : null;
+
+  double? get _distanceKm {
+    final v = AtemNumberField.parse(_distance.text);
+    return v == null || v <= 0 ? null : v;
   }
 
   Duration? get _durationValue {
@@ -155,7 +171,8 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
   bool get _changed =>
       _date != widget.session.date ||
       _durationValue != widget.session.duration ||
-      _notes.text.trim() != (widget.session.notes ?? '').trim();
+      _notes.text.trim() != (widget.session.notes ?? '').trim() ||
+      (_cardio != null && _distanceKm != _cardio!.distanceKm);
 
   Future<void> _save() async {
     final l10n = AppL10n.of(context);
@@ -171,6 +188,15 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
               date: _date,
               duration: _durationValue,
               notes: _notes.text,
+              // Nur bei Ausdauer: Distanz änderbar, Puls und RPE bleiben.
+              cardio: _cardio == null
+                  ? null
+                  : CardioPatch(
+                      distanceKm: _distanceKm,
+                      avgHr: _cardio!.avgHr,
+                      maxHr: _cardio!.maxHr,
+                      rpe: _cardio!.rpe,
+                    ),
             ),
           );
       if (mounted) Navigator.of(context).pop(true);
@@ -268,7 +294,77 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                       languageTag: tag,
                       onTap: _pickDate,
                     ),
+                    // „Vorher Di 08.07.2026 · +18 Tage" — sobald das Datum
+                    // verschoben ist (Board 07, A5/2).
+                    if (_date != widget.session.date) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        l10n
+                            .sessionDatePrevious(
+                              _date.difference(widget.session.date).inDays,
+                              DateFormat.yMEd(tag).format(widget.session.date),
+                            )
+                            .toUpperCase(),
+                        style: AtemType.labelMicro.of(context),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    // Datumsänderung wird nicht verboten, sondern erklärt.
+                    AtemNotice(
+                      title: l10n.sessionDateAllowedTitle,
+                      body: l10n.sessionDateAllowedBody,
+                      semanticLabel:
+                          '${l10n.sessionDateAllowedTitle}. ${l10n.sessionDateAllowedBody}',
+                    ),
                     const SizedBox(height: 24),
+
+                    // Die Art ist nicht änderbar — sie bestimmt, welche Werte
+                    // unten stehen (Board 07, A5/1).
+                    AtemFieldLabel(
+                        label: l10n.sessionFieldKind,
+                        hint: l10n.sessionKindNote),
+                    Semantics(
+                      label:
+                          '${l10n.sessionFieldKind}: ${sessionKindLabel(l10n, widget.session)}',
+                      child: ExcludeSemantics(
+                        child: AtemBadge(
+                          label:
+                              sessionKindLabel(l10n, widget.session).toUpperCase(),
+                          style: AtemType.labelSmall,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    if (_cardio != null) ...[
+                      AtemFieldLabel(label: l10n.formDistance),
+                      AtemNumberField(
+                        controller: _distance,
+                        semanticLabel: l10n.formDistance,
+                        width: null,
+                        decimal: true,
+                        onChanged: (_) {
+                          _touch();
+                          setState(() {});
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TempoOutput(
+                        tempo: CardioTempo.of(
+                          distanceKm: _distanceKm,
+                          duration: _durationValue,
+                          activity: _cardio!.activity,
+                        ),
+                        label: l10n.formPace,
+                        note: l10n.formPaceComputed,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(l10n.sessionPaceNote,
+                          style: AtemType.labelMicro
+                              .of(context)
+                              .copyWith(letterSpacing: 0)),
+                      const SizedBox(height: 24),
+                    ],
 
                     AtemFieldLabel(label: l10n.sessionEditDuration),
                     AtemNumberField(

@@ -201,6 +201,8 @@ class ExerciseRow extends StatelessWidget {
     // Die Farbe des Muskels, nicht die der Region.
     final color = muscle?.color ?? AtemCategories.grey;
 
+    // Subzeile: Muskel in seiner Farbe, Gerät grau, der Herkunfts-Tag als
+    // Pille dahinter (Board 05, Spezifikation Übungszeile / EIGEN-Tag).
     final sub = <String>[
       if (muscle != null) muscle.label(l10n),
       if (exercise.equipment.isNotEmpty) exercise.equipment.first,
@@ -235,8 +237,27 @@ class ExerciseRow extends StatelessWidget {
                   ),
                   if (sub.isNotEmpty) ...[
                     const SizedBox(height: 2),
-                    Text(
-                      sub,
+                    Text.rich(
+                      TextSpan(children: [
+                        if (muscle != null)
+                          TextSpan(
+                            text: muscle.label(l10n),
+                            style: TextStyle(color: color),
+                          ),
+                        if (muscle != null && exercise.equipment.isNotEmpty)
+                          const TextSpan(text: ' · '),
+                        if (exercise.equipment.isNotEmpty)
+                          TextSpan(text: exercise.equipment.first),
+                        if (exercise.isOwn) ...[
+                          if (muscle != null || exercise.equipment.isNotEmpty)
+                            const TextSpan(text: ' · '),
+                          TextSpan(
+                            text: l10n.exercisesOwnTag.toUpperCase(),
+                            style: const TextStyle(
+                                color: AtemColors.textTertiary),
+                          ),
+                        ],
+                      ]),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AtemType.labelMicro

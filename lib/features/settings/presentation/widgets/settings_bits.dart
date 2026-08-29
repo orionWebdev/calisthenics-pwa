@@ -52,10 +52,18 @@ class SettingsRow extends StatelessWidget {
     this.value,
     this.accent,
     this.semanticLabel,
+    this.onLongPress,
+    this.valueAccent = false,
   });
 
   final String label;
   final VoidCallback onTap;
+
+  /// Ein zweiter Weg am selben Ort — etwa „extern öffnen" bei Rechtstexten.
+  final VoidCallback? onLongPress;
+
+  /// Wert in Cyan, wenn er vom Standard abweicht (Board 08, Spezifikation).
+  final bool valueAccent;
 
   /// Erklärung unter der Beschriftung.
   final String? hint;
@@ -74,12 +82,16 @@ class SettingsRow extends StatelessWidget {
 
     return AtemTappable(
       onTap: onTap,
+      onLongPress: onLongPress,
+      // Der Wert steht vor der Unterzeile, damit er ohne Abwarten hörbar
+      // ist (Board 08, H).
       semanticLabel: semanticLabel ??
-          (hint == null ? label : '$label. $hint'),
-      minTapSize: const Size(0, 48),
+          [label, if (value != null) value!, if (hint != null) hint!]
+              .join(', '),
+      minTapSize: const Size(0, 56),
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -107,7 +119,12 @@ class SettingsRow extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
-                  style: AtemType.labelSmall.of(context),
+                  style: AtemType.valueMedium.of(context).copyWith(
+                        fontSize: 12,
+                        color: valueAccent
+                            ? AtemColors.cyan
+                            : AtemColors.textTertiary,
+                      ),
                 ),
               ),
             ],

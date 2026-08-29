@@ -4513,4 +4513,34 @@ class AppL10nDe extends AppL10n {
     );
     return 'Längste Kette $_temp0';
   }
+
+  @override
+  String get exerciseAddToPlan => 'Zu Plan hinzufügen';
+
+  @override
+  String exerciseAddedToPlan(String plan) {
+    return 'Zu „$plan\" hinzugefügt';
+  }
+
+  @override
+  String exerciseRequiredA11y(int n) {
+    return '$n von 3 Pflichtfeldern ausgefüllt';
+  }
+
+  @override
+  String exerciseMoreFilled(int n) {
+    return '$n gefüllt';
+  }
+
+  @override
+  String get sessionFieldKind => 'Art';
+
+  @override
+  String get sessionKindNote => 'Die Art bestimmt, welche Werte unten stehen.';
+
+  @override
+  String get sessionPaceNote => 'Tempo wird berechnet und ist nicht eingebbar.';
+
+  @override
+  String get exercisesFilterOrigin => 'Herkunft';
 }

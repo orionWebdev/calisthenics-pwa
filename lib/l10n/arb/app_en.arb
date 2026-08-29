@@ -5184,5 +5184,34 @@
         "type": "int"
       }
     }
-  }
+  },
+  "exerciseAddToPlan": "Add to plan",
+  "exerciseAddedToPlan": "Added to “{plan}”",
+  "@exerciseAddedToPlan": {
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseRequiredA11y": "{n} of 3 required fields filled",
+  "@exerciseRequiredA11y": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseMoreFilled": "{n} filled",
+  "@exerciseMoreFilled": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionFieldKind": "Type",
+  "sessionKindNote": "The type determines which values appear below.",
+  "sessionPaceNote": "Pace is calculated and cannot be entered.",
+  "exercisesFilterOrigin": "Origin"
 }

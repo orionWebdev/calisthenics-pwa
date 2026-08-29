@@ -6498,5 +6498,52 @@
         "type": "int"
       }
     }
+  },
+  "exerciseAddToPlan": "Zu Plan hinzufügen",
+  "@exerciseAddToPlan": {
+    "description": "Board 07 A3/1 — Hauptaktion im Übungsdetail"
+  },
+  "exerciseAddedToPlan": "Zu „{plan}\" hinzugefügt",
+  "@exerciseAddedToPlan": {
+    "description": "Board 07 — Meldung nach dem Hinzufügen",
+    "placeholders": {
+      "plan": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseRequiredA11y": "{n} von 3 Pflichtfeldern ausgefüllt",
+  "@exerciseRequiredA11y": {
+    "description": "Board 07 A2 — Zähler im Kopf, vorgelesen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseMoreFilled": "{n} gefüllt",
+  "@exerciseMoreFilled": {
+    "description": "Board 07 A2/2 — „Mehr Angaben 2 GEFÜLLT\"",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionFieldKind": "Art",
+  "@sessionFieldKind": {
+    "description": "Board 07 A5/1 — Feldlabel"
+  },
+  "sessionKindNote": "Die Art bestimmt, welche Werte unten stehen.",
+  "@sessionKindNote": {
+    "description": "Board 07 A5/1"
+  },
+  "sessionPaceNote": "Tempo wird berechnet und ist nicht eingebbar.",
+  "@sessionPaceNote": {
+    "description": "Board 07 A5/1"
+  },
+  "exercisesFilterOrigin": "Herkunft",
+  "@exercisesFilterOrigin": {
+    "description": "Board 07 A1/3 — Gruppe der Herkunftsfilter"
   }
 }

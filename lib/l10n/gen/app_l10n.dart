@@ -7374,6 +7374,54 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Längste Kette {n, plural, one{1 Tag} other{# Tage}}'**
   String analysisThinChain(int n);
+
+  /// Board 07 A3/1 — Hauptaktion im Übungsdetail
+  ///
+  /// In de, this message translates to:
+  /// **'Zu Plan hinzufügen'**
+  String get exerciseAddToPlan;
+
+  /// Board 07 — Meldung nach dem Hinzufügen
+  ///
+  /// In de, this message translates to:
+  /// **'Zu „{plan}\" hinzugefügt'**
+  String exerciseAddedToPlan(String plan);
+
+  /// Board 07 A2 — Zähler im Kopf, vorgelesen
+  ///
+  /// In de, this message translates to:
+  /// **'{n} von 3 Pflichtfeldern ausgefüllt'**
+  String exerciseRequiredA11y(int n);
+
+  /// Board 07 A2/2 — „Mehr Angaben 2 GEFÜLLT"
+  ///
+  /// In de, this message translates to:
+  /// **'{n} gefüllt'**
+  String exerciseMoreFilled(int n);
+
+  /// Board 07 A5/1 — Feldlabel
+  ///
+  /// In de, this message translates to:
+  /// **'Art'**
+  String get sessionFieldKind;
+
+  /// Board 07 A5/1
+  ///
+  /// In de, this message translates to:
+  /// **'Die Art bestimmt, welche Werte unten stehen.'**
+  String get sessionKindNote;
+
+  /// Board 07 A5/1
+  ///
+  /// In de, this message translates to:
+  /// **'Tempo wird berechnet und ist nicht eingebbar.'**
+  String get sessionPaceNote;
+
+  /// Board 07 A1/3 — Gruppe der Herkunftsfilter
+  ///
+  /// In de, this message translates to:
+  /// **'Herkunft'**
+  String get exercisesFilterOrigin;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
