@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../app/application/tab_providers.dart';
 import '../../../../core/theme/theme.dart';
@@ -7,12 +8,32 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
+import '../../../history/presentation/session_ui.dart';
 import '../../../strength/presentation/screens/strength_screen.dart';
+import '../../application/cardio_providers.dart';
+import '../../domain/iso_week.dart';
+import '../../domain/pace_series.dart';
+import '../../domain/weekly_distance.dart';
+import '../cardio_ui.dart';
+import '../widgets/cardio_session_row.dart';
+import '../widgets/distribution_bars.dart';
+import '../widgets/pace_chart.dart';
+import '../widgets/week_strip.dart';
+import 'cardio_form_screen.dart';
+import 'cardio_live_screen.dart';
 
-/// Der Cardio-Tab — Board 11, Sektion A2 und B1.
+/// Der Cardio-Tab — Board 11, A2, B1 und B3.
 ///
-/// Schritt S1: die Wurzel mit Kopf, Umschalter und dem Leerzustand aus B1/2.
-/// Wochenzahl, Liste und Auswertung folgen in S5 und S6.
+/// ## Was oben steht, bei 42, bei 3, bei 0
+///
+/// Bei genug Wochen die Wochenzahl mit Nenner und Verschiebung. Unter drei
+/// belegten Wochen die Gesamtstrecke mit Zeitraum — eine Woche mit einem Lauf
+/// ist kein Trend. Bei null der einzige echte Leerzustand des Moduls, weil es
+/// keinen anderen Weg zur ersten Einheit gibt.
+///
+/// Der Erfassen-Knopf ist ein FAB über der Liste, nicht in der Leiste: Die
+/// Leiste hat genau drei Plätze. Der Fehler eines rechnenden Blocks nimmt nie
+/// die Liste mit — sie ist gespeicherte Wahrheit.
 class CardioScreen extends ConsumerWidget {
   const CardioScreen({super.key});
 
@@ -20,8 +41,9 @@ class CardioScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final segment = ref.watch(appTabsProvider.select((s) => s.cardioSegment));
-    final sessions = ref.watch(sessionsProvider).value ?? const [];
-    final count = sessions.where((s) => s.kind == SessionKind.cardio).length;
+    final async = ref.watch(sessionsProvider);
+    final cardio = ref.watch(cardioSessionsProvider);
+    final live = ref.watch(cardioLiveProvider).value;
 
     return Scaffold(
       backgroundColor: AtemColors.base,
@@ -31,7 +53,7 @@ class CardioScreen extends ConsumerWidget {
           children: [
             TabHeader(
               title: l10n.tabCardio,
-              count: count,
+              count: cardio.length,
               switcher: AtemTabSwitch<CardioSegment>(
                 groupSemanticLabel: l10n.tabCardio,
                 value: segment,
@@ -46,13 +68,61 @@ class CardioScreen extends ConsumerWidget {
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AtemSpacing.screenPadding),
-                child: AtemEmptyState(
-                  title: l10n.cardioEmptyTitle,
-                  body: l10n.cardioEmptyBody,
+              child: async.when(
+                loading: () => Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AtemSpacing.screenPadding),
+                  child: AtemSkeleton(
+                    semanticLabel: l10n.commonLoading,
+                    blocks: const [
+                      // In Ergebnishöhe, damit die Liste beim Ankommen
+                      // nicht springt.
+                      AtemSkeletonBlock(height: 118),
+                      AtemSkeletonBlock(height: 64, radius: 14),
+                      AtemSkeletonBlock(height: 64, radius: 14),
+                      AtemSkeletonBlock(height: 64, radius: 14),
+                    ],
+                  ),
                 ),
+                error: (_, __) => Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AtemSpacing.screenPadding),
+                  child: AtemErrorState(
+                    title: l10n.historyErrorTitle,
+                    body: l10n.historyErrorBody,
+                    retryLabel: l10n.commonRetry,
+                    onRetry: () => ref.invalidate(sessionStreamProvider),
+                  ),
+                ),
+                data: (_) {
+                  if (cardio.isEmpty && live == null) {
+                    return _EmptyCardio(
+                      onLog: () => _openForm(context),
+                      onLive: () => _openLive(context),
+                    );
+                  }
+                  return Stack(
+                    children: [
+                      IndexedStack(
+                        index: segment == CardioSegment.sessions ? 0 : 1,
+                        children: [
+                          _Sessions(
+                            sessions: cardio,
+                            live: live,
+                            onLive: () => _openLive(context),
+                          ),
+                          _Analysis(sessions: cardio),
+                        ],
+                      ),
+                      Positioned(
+                        right: AtemSpacing.screenPadding,
+                        // Über der Leiste, die selbst über dem Inhalt liegt.
+                        bottom: 96,
+                        child: _Fab(onTap: () => _openForm(context)),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -60,4 +130,688 @@ class CardioScreen extends ConsumerWidget {
       ),
     );
   }
+
+  static void _openForm(BuildContext context) => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const CardioFormScreen()),
+      );
+
+  static void _openLive(BuildContext context) => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const CardioLiveScreen()),
+      );
+}
+
+/// Der Leerzustand — beide Erfassungswege gleichrangig, danach nie wieder.
+class _EmptyCardio extends StatelessWidget {
+  const _EmptyCardio({required this.onLog, required this.onLive});
+
+  final VoidCallback onLog;
+  final VoidCallback onLive;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+          AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 130),
+      children: [
+        AtemEmptyState(
+          title: l10n.cardioEmptyTitle,
+          body: l10n.cardioEmptyBody,
+        ),
+        const SizedBox(height: 8),
+        AtemButton.gradient(
+          label: l10n.cardioAddFirst,
+          semanticLabel: l10n.cardioAddFirst,
+          leading: const Icon(Icons.add, size: 18, color: AtemColors.textPrimary),
+          onPressed: onLog,
+        ),
+        const SizedBox(height: 10),
+        AtemButton.outline(
+          label: l10n.cardioLiveStart,
+          semanticLabel: l10n.cardioLiveStart,
+          onPressed: onLive,
+        ),
+      ],
+    );
+  }
+}
+
+/// Der FAB — „+ Einheit erfassen", über der Liste.
+class _Fab extends StatelessWidget {
+  const _Fab({required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return AtemButton.gradient(
+      label: l10n.cardioAdd,
+      semanticLabel: l10n.cardioAdd,
+      expand: false,
+      size: AtemButtonSize.compact,
+      glow: AtemColors.magenta,
+      leading: const Icon(Icons.add, size: 18, color: AtemColors.textPrimary),
+      onPressed: onTap,
+    );
+  }
+}
+
+/// Segment „Einheiten": Wochenzahl oben, darunter die Liste.
+class _Sessions extends ConsumerWidget {
+  const _Sessions({
+    required this.sessions,
+    required this.live,
+    required this.onLive,
+  });
+
+  final List<CardioSession> sessions;
+  final Object? live;
+  final VoidCallback onLive;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final weekly = ref.watch(weeklyDistanceProvider);
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+          AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 170),
+      children: [
+        if (live != null) ...[
+          _LiveNotice(onTap: onLive),
+          const SizedBox(height: 14),
+        ],
+        _WeekTile(weekly: weekly),
+        const SizedBox(height: 22),
+        Text(
+          (weekly.hasWeekly ? l10n.historyRecentLabel : l10n.cardioAllSessions)
+              .toUpperCase(),
+          style: AtemType.labelMedium.of(context),
+        ),
+        const SizedBox(height: 8),
+        AtemCard.list(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              for (var i = 0; i < sessions.length; i++) ...[
+                if (i > 0)
+                  const Divider(
+                      height: 1, thickness: 1, color: AtemColors.border),
+                CardioSessionRow(session: sessions[i]),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Die laufende Uhr, wiedergefunden — ein Weg zurück zu ihr.
+class _LiveNotice extends ConsumerWidget {
+  const _LiveNotice({required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final draft = ref.watch(cardioLiveProvider).value;
+    if (draft == null) return const SizedBox.shrink();
+    final text =
+        l10n.liveRunningNotice(formatClock(draft.clock.elapsed(DateTime.now())));
+
+    return AtemCard.list(
+      onTap: onTap,
+      semanticLabel: text,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        children: [
+          AtemStatusDot(
+            color: draft.clock.isPaused
+                ? AtemColors.textSecondary
+                : AtemColors.green,
+            pulsing: !draft.clock.isPaused,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(text, style: AtemType.labelSmall.of(context)),
+          ),
+          const Icon(Icons.chevron_right,
+              size: 18, color: AtemColors.textSecondary),
+        ],
+      ),
+    );
+  }
+}
+
+/// Die Wochenzahl-Kachel — Woche, Gesamt (dünn) oder Fehler.
+class _WeekTile extends StatelessWidget {
+  const _WeekTile({required this.weekly});
+
+  final WeeklyDistance weekly;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final tag = languageTag(context);
+
+    if (!weekly.hasWeekly) {
+      // Dünn: Gesamtstrecke mit Zeitraum, plus der Satz, ab wann die
+      // Wochenzahl erscheint.
+      final since = DateFormat.MMMd(tag).format(weekly.firstDate!);
+      final km = formatKm(context, weekly.totalKm);
+      final breakdown = [
+        for (final entry in weekly.countByActivity.entries)
+          '${activityLabel(l10n, entry.key)} · '
+              '${l10n.cardioActivityAverage(entry.value, formatKm(context, weekly.kmByActivity[entry.key]! / entry.value))}',
+      ].join(' · ');
+
+      return AtemCard.list(
+        padding: const EdgeInsets.all(13),
+        child: Semantics(
+          label: l10n.cardioTotalA11y(km, since, weekly.totalCount),
+          child: ExcludeSemantics(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.cardioTotalSince(since).toUpperCase(),
+                    style: AtemType.labelMicro.of(context)),
+                const SizedBox(height: 6),
+                Text(l10n.unitKilometers(km),
+                    style: AtemType.valueLarge
+                        .of(context)
+                        .copyWith(fontSize: 28)),
+                const SizedBox(height: 4),
+                Text(breakdown.toUpperCase(),
+                    style: AtemType.labelMicro.of(context)),
+                const SizedBox(height: 10),
+                _InfoLine(text: l10n.cardioWeekThin),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    final km = formatKm(context, weekly.thisWeekKm);
+    final shift = weekly.shiftKm;
+    final avg = weekly.fourWeekAverageKm;
+    final shiftText = shift == null
+        ? null
+        : '${shift >= 0 ? '▲' : '▼'} ${shift >= 0 ? '+' : '−'}${formatKm(context, shift.abs())}';
+
+    return AtemCard.list(
+      padding: const EdgeInsets.all(13),
+      child: Semantics(
+        label: [
+          l10n.cardioWeekA11y(km, weekly.thisWeekCount),
+          if (shift != null && avg != null)
+            l10n.cardioWeekShiftA11y(
+              formatKm(context, shift.abs()),
+              shift >= 0 ? l10n.ratioShiftUp : l10n.ratioShiftDown,
+              formatKm(context, avg),
+            ),
+        ].join(', '),
+        child: ExcludeSemantics(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${l10n.cardioWeekTitle(IsoWeek.number(weekly.weeks.last.weekStart))} · ${l10n.cardioWeekCount(weekly.thisWeekCount)}'
+                    .toUpperCase(),
+                style: AtemType.labelMicro.of(context),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.end,
+                spacing: 10,
+                children: [
+                  Text(l10n.unitKilometers(km),
+                      style: AtemType.valueLarge
+                          .of(context)
+                          .copyWith(fontSize: 28)),
+                  if (shiftText != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(shiftText,
+                          style: AtemType.labelSmall.of(context).copyWith(
+                              color: AtemColors.textTertiary,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                (avg == null
+                        ? l10n.ratioNoshift
+                        : l10n.cardioWeekBasis(formatKm(context, avg)))
+                    .toUpperCase(),
+                style: AtemType.labelMicro.of(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Segment „Auswertung": Wochenstreifen, Verteilung, Tempo, Perzentil.
+class _Analysis extends ConsumerStatefulWidget {
+  const _Analysis({required this.sessions});
+
+  final List<CardioSession> sessions;
+
+  @override
+  ConsumerState<_Analysis> createState() => _AnalysisState();
+}
+
+class _AnalysisState extends ConsumerState<_Analysis> {
+  CardioActivity? _activity;
+  var _activitySet = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final weekly = ref.watch(weeklyDistanceProvider);
+    final distribution = ref.watch(distanceDistributionProvider);
+    final activities = PaceSeries.activitiesByCount(widget.sessions);
+
+    // Die häufigste Aktivität voran — beim ersten Öffnen ist sie gewählt.
+    if (!_activitySet && activities.isNotEmpty) {
+      _activity = activities.first.key;
+      _activitySet = true;
+    }
+    final series = ref.watch(paceSeriesProvider(_activity));
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+          AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 170),
+      children: [
+        // ---- Wochenkilometer, 8 Wochen: nur ab drei belegten Wochen.
+        if (weekly.hasWeekly) ...[
+          _SectionTitle(
+            title: l10n.analysisWeeklyTitle,
+            tag: '${WeeklyDistance.stripWeeks} ${l10n.commonWeeks}',
+          ),
+          const SizedBox(height: 10),
+          AtemCard.list(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n
+                            .analysisWeeklyBasis(
+                                formatKm(context, weekly.eightWeekAverageKm ?? 0),
+                                weekly.eightWeekCount)
+                            .toUpperCase(),
+                        style: AtemType.labelMicro.of(context),
+                      ),
+                    ),
+                    if (weekly.shiftKm case final shift?)
+                      Text(
+                        '${shift >= 0 ? '▲' : '▼'} ${shift >= 0 ? '+' : '−'}${formatKm(context, shift.abs())}',
+                        style: AtemType.labelSmall.of(context).copyWith(
+                            color: AtemColors.textTertiary,
+                            fontWeight: FontWeight.w600),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                WeekStrip(distance: weekly),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+
+        // ---- Verteilung der Distanzen: nur mit Einheiten mit Distanz.
+        if (!distribution.isEmpty) ...[
+          _SectionTitle(
+            title: l10n.analysisDistTitle,
+            tag: l10n.analysisDistBasis(
+                distribution.withDistance, distribution.total),
+          ),
+          const SizedBox(height: 10),
+          AtemCard.list(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 6),
+            child: DistributionBars(distribution: distribution),
+          ),
+          const SizedBox(height: 24),
+        ],
+
+        // ---- Tempoentwicklung je Aktivität.
+        if (activities.isNotEmpty) ...[
+          _SectionTitle(title: l10n.analysisPaceTitle),
+          const SizedBox(height: 10),
+          _ActivityChips(
+            activities: activities,
+            selected: _activity,
+            onSelect: (a) => setState(() => _activity = a),
+          ),
+          const SizedBox(height: 12),
+          _PaceBlock(series: series),
+        ],
+      ],
+    );
+  }
+}
+
+class _PaceBlock extends StatelessWidget {
+  const _PaceBlock({required this.series});
+
+  final PaceSeries series;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final tag = languageTag(context);
+    final isRun = series.activity == CardioActivity.run;
+    String v(double x) =>
+        formatTempoValue(context, x, usesSpeed: series.usesSpeed);
+
+    if (series.isEmpty) {
+      // Einheiten ohne Distanz haben kein Tempo — nichts zu zeigen, kein
+      // Platzhalter. Der Bildschirm endet hier.
+      return const SizedBox.shrink();
+    }
+
+    final median = series.median!;
+    final last = series.last!;
+    final delta = last.value - median;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AtemCard.list(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Semantics(
+                label: '${v(last.value)}, '
+                    '${isRun ? l10n.analysisPaceBasis(v(median), series.count) : l10n.analysisPaceBasisOther(v(median), series.count)}',
+                child: ExcludeSemantics(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.end,
+                        spacing: 10,
+                        children: [
+                          Text(v(last.value),
+                              style: AtemType.valueLarge
+                                  .of(context)
+                                  .copyWith(fontSize: 28)),
+                          if (delta != 0)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                formatTempoDelta(context, delta,
+                                    usesSpeed: series.usesSpeed),
+                                style: AtemType.labelSmall.of(context).copyWith(
+                                    color: AtemColors.textTertiary,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        (isRun
+                                ? l10n.analysisPaceBasis(v(median), series.count)
+                                : l10n.analysisPaceBasisOther(
+                                    v(median), series.count))
+                            .toUpperCase(),
+                        style: AtemType.labelMicro.of(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              if (series.hasCurve)
+                PaceChart(series: series)
+              else
+                _InfoLine(
+                  text: l10n.analysisPaceThin(
+                    PaceSeries.curveMinimum,
+                    v(median),
+                    v(series.slowest!),
+                    v(series.fastest!),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        // ---- Perzentil und Spanne: erst ab zehn Einheiten. Darunter endet
+        // der Bildschirm nach der Spanne.
+        if (series.hasPercentile)
+          AtemCard.list(
+            padding: const EdgeInsets.all(14),
+            child: _PercentileBlock(series: series, isRun: isRun, tag: tag),
+          ),
+      ],
+    );
+  }
+}
+
+class _PercentileBlock extends StatelessWidget {
+  const _PercentileBlock({
+    required this.series,
+    required this.isRun,
+    required this.tag,
+  });
+
+  final PaceSeries series;
+  final bool isRun;
+  final String tag;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final last = series.last!;
+    final faster = series.fasterThan(last.value);
+    final total = series.count;
+    String v(double x) =>
+        formatTempoValue(context, x, usesSpeed: series.usesSpeed);
+    final sentence = isRun
+        ? l10n.analysisPctFaster(faster, total)
+        : l10n.analysisPctFasterOther(faster, total);
+    final share = total <= 1 ? 0.0 : faster / (total - 1);
+
+    return Semantics(
+      label: '${l10n.analysisPctThis(DateFormat.MMMd(tag).format(last.date))}, '
+          '${v(last.value)}. $sentence. ${l10n.analysisPctNoothers}',
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n
+                  .analysisPctThis(DateFormat.MMMd(tag).format(last.date))
+                  .toUpperCase(),
+              style: AtemType.labelMicro.of(context),
+            ),
+            const SizedBox(height: 6),
+            Text(v(last.value),
+                style: AtemType.valueLarge.of(context).copyWith(fontSize: 28)),
+            const SizedBox(height: 10),
+            // Der Balken aus Modul 9: 8 dp, Marker 3×14, Füllung Cyan.
+            SizedBox(
+              height: 14,
+              child: LayoutBuilder(
+                builder: (context, c) => Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    Positioned.fill(
+                      top: 3,
+                      bottom: 3,
+                      child: AtemProgressBar.share(
+                        value: share,
+                        semanticLabel: '',
+                        accent: AtemColors.cyan,
+                      ),
+                    ),
+                    Positioned(
+                      left: (c.maxWidth - 3) * share,
+                      child: Container(
+                        width: 3,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: AtemColors.textPrimary,
+                          borderRadius: BorderRadius.circular(AtemRadii.pill),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('${v(series.slowest!)} ${l10n.analysisPctSlowest.toUpperCase()}',
+                    style: AtemType.labelDeco.of(context)),
+                Text('${v(series.fastest!)} ${l10n.analysisPctFastest.toUpperCase()}',
+                    style: AtemType.labelDeco.of(context)),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text('$sentence ${l10n.analysisPctNoothers}',
+                style: AtemType.labelSmall.of(context)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Die Kapselreihe der Aktivitäten: belegte voran, mit Zahl.
+class _ActivityChips extends StatelessWidget {
+  const _ActivityChips({
+    required this.activities,
+    required this.selected,
+    required this.onSelect,
+  });
+
+  final List<MapEntry<CardioActivity?, int>> activities;
+  final CardioActivity? selected;
+  final ValueChanged<CardioActivity?> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final entry in activities)
+          AtemTappable(
+            onTap: entry.key == selected ? null : () => onSelect(entry.key),
+            semanticLabel:
+                '${activityLabel(l10n, entry.key)}, ${l10n.cardioListCount(entry.value)}',
+            selected: entry.key == selected,
+            inMutuallyExclusiveGroup: true,
+            minTapSize: const Size(48, 48),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 36),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(
+                color: entry.key == selected
+                    ? AtemColors.cyan.withValues(alpha: 0.08)
+                    : AtemColors.card,
+                borderRadius: BorderRadius.circular(AtemRadii.pill),
+                border: Border.all(
+                  color: entry.key == selected
+                      ? AtemColors.cyan.withValues(alpha: 0.35)
+                      : AtemColors.border,
+                ),
+              ),
+              child: Text(
+                '${activityLabel(l10n, entry.key)} · ${entry.value}'.toUpperCase(),
+                style: AtemType.labelMicro.of(context).copyWith(
+                      color: entry.key == selected
+                          ? AtemColors.cyan
+                          : AtemColors.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title, this.tag});
+  final String title;
+  final String? tag;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Flexible(
+            child: Text(title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AtemType.titleMedium.of(context)),
+          ),
+          if (tag != null) ...[
+            const SizedBox(width: 10),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Text(tag!.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.labelMicro.of(context)),
+              ),
+            ),
+          ],
+        ],
+      );
+}
+
+/// Die Hinweiszeile — der Notice-Slot aus Modul 2 in Grau.
+class _InfoLine extends StatelessWidget {
+  const _InfoLine({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        label: text,
+        child: ExcludeSemantics(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 18,
+                height: 18,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: AtemColors.border),
+                ),
+                child: Text('i',
+                    style: AtemType.labelMicro
+                        .of(context)
+                        .copyWith(letterSpacing: 0, height: 1)),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(text, style: AtemType.labelSmall.of(context)),
+              ),
+            ],
+          ),
+        ),
+      );
 }
