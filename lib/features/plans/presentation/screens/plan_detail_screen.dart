@@ -228,7 +228,9 @@ class _ItemRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  e?.name ?? l10n.planItemMissing,
+                  // Der deutsche Name, wenn es einen gibt — `name` ist der
+                  // englische Grundname aus dem Bestand.
+                  e == null ? l10n.planItemMissing : exerciseName(context, e),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: nameStyle,
@@ -236,11 +238,10 @@ class _ItemRow extends StatelessWidget {
                 if (muscle != null) ...[
                   const SizedBox(height: 2),
                   Text(
-                    muscle.label(l10n),
-                    style: AtemType.labelMicro.of(context).copyWith(
-                          color: muscle.color,
-                          letterSpacing: 0,
-                        ),
+                    muscle.label(l10n).toUpperCase(),
+                    style: AtemType.labelMicro
+                        .of(context)
+                        .copyWith(color: muscle.color),
                   ),
                 ],
               ],
@@ -248,12 +249,14 @@ class _ItemRow extends StatelessWidget {
           ),
           if (scheme.isNotEmpty) ...[
             const SizedBox(width: 10),
+            // „4×8" ist ein Messwert, kein Schmuck: Cyan-Mono, gross genug
+            // zum Ablesen (Board 05, A4/2).
             Text(
               scheme,
-              style: AtemType.labelMicro.of(context).copyWith(
+              style: AtemType.valueMedium.of(context).copyWith(
+                    fontSize: 14,
                     color:
                         e == null ? AtemColors.textSecondary : AtemColors.cyan,
-                    letterSpacing: 0,
                   ),
             ),
           ],

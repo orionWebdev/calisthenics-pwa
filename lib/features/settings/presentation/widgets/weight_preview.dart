@@ -4,6 +4,7 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../exercises/application/exercise_providers.dart';
+import '../../../exercises/presentation/muscle_ui.dart';
 import '../../../history/domain/training_session.dart';
 import '../../domain/body_weight_preview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,7 +87,7 @@ class WeightPreview extends ConsumerWidget {
       // Klimmzug, nur anders gerechnet.
       if (exerciseId != null)
         _Row(
-          label: l10n.weightImpactBest(_name(ref, exerciseId)),
+          label: l10n.weightImpactBest(_name(context, ref, exerciseId)),
           before: AtemNumberField.format(context, currentKg),
           after: AtemNumberField.format(context, candidateKg),
           rises: candidateKg > currentKg,
@@ -116,9 +117,9 @@ class WeightPreview extends ConsumerWidget {
   }
 
   /// Der Name der Übung — oder ihre Kennung, wenn der Katalog sie nicht führt.
-  String _name(WidgetRef ref, String exerciseId) {
+  String _name(BuildContext context, WidgetRef ref, String exerciseId) {
     for (final exercise in ref.read(exercisesProvider).value ?? const []) {
-      if (exercise.id == exerciseId) return exercise.name;
+      if (exercise.id == exerciseId) return exerciseName(context, exercise);
     }
     return exerciseId;
   }

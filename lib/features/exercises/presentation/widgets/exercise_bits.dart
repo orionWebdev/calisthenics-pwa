@@ -22,6 +22,47 @@ import '../muscle_ui.dart';
 ///
 /// Voller Kern in der Muskelfarbe, getönter Hof drumherum — dasselbe Rezept
 /// wie überall: Fläche 20 Prozent, Farbe voll. Ohne Muskel bleibt sie grau.
+/// Die Kennkachel einer Übung — **Initialen im Muskelton** (Board 05, A2).
+///
+/// Ein Punkt sagt nur „irgendein Rücken-Etwas"; „KR" neben „Kreuzheben" ist
+/// beim Überfliegen einer Liste von 154 Einträgen ein Anker. Die Farbe
+/// sortiert vor, der Muskelname steht in der Zeile darunter — Farbe ist nie
+/// der einzige Träger (Vertrag R6).
+class MuscleTile extends StatelessWidget {
+  const MuscleTile({super.key, required this.name, required this.color});
+
+  final String name;
+  final Color color;
+
+  static String initials(String name) {
+    final words = name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+    final letters = words.map((w) => w[0]).take(2).join();
+    return (letters.isEmpty ? '·' : letters).toUpperCase();
+  }
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
+        child: Container(
+          width: 36,
+          height: 36,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AtemCategories.surface(color),
+            borderRadius: BorderRadius.circular(AtemRadii.iconBox),
+            border: Border.all(color: AtemCategories.border(color)),
+          ),
+          child: Text(
+            initials(name),
+            style: AtemType.labelDeco.of(context).copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0,
+                ),
+          ),
+        ),
+      );
+}
+
 class MuscleOrb extends StatelessWidget {
   const MuscleOrb({super.key, required this.color, this.size = 36});
 
@@ -221,7 +262,7 @@ class ExerciseRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           children: [
-            MuscleOrb(color: color),
+            MuscleTile(name: exerciseName(context, exercise), color: color),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

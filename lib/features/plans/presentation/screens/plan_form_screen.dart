@@ -202,7 +202,8 @@ class _PlanFormScreenState extends ConsumerState<PlanFormScreen> {
 
   String _nameOf(String exerciseId) {
     for (final exercise in ref.read(exercisesProvider).value ?? const []) {
-      if (exercise.id == exerciseId) return exercise.name;
+      // Der angezeigte Name, nicht der englische Grundname.
+      if (exercise.id == exerciseId) return exerciseName(context, exercise);
     }
     return AppL10n.of(context).planBrokenEntry;
   }
@@ -506,7 +507,9 @@ class _ItemCardState extends State<_ItemCard> {
     final exercise = widget.resolved.exercise;
     final dangling = widget.resolved.isDangling;
     final muscle = exercise?.displayMuscles.firstOrNull;
-    final name = exercise?.name ?? l10n.planItemMissing;
+    final name = exercise == null
+        ? l10n.planItemMissing
+        : exerciseName(context, exercise);
 
     return Container(
       decoration: BoxDecoration(

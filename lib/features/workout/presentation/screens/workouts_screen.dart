@@ -100,9 +100,6 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               Text(l10n.workoutsTitle, style: AtemType.titleLarge.of(context)),
               const SizedBox(height: 20),
             ],
-            Text(l10n.workoutsTodayLabel,
-                style: AtemType.labelMedium.of(context)),
-            const SizedBox(height: 10),
             if (dashboard.hasError)
               AtemErrorState(
                 title: l10n.listErrorTitle,
@@ -121,7 +118,10 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                 onStart: () => _startToday(context, session),
               )
             else
-              _EmptyToday(onFree: () => _startFree(context)),
+              _EmptyToday(
+                onFree: () => _startFree(context),
+                onPickPlan: () => _openPlans(context),
+              ),
             // „Freies Training" ist gleichwertiger Eingang, kein versteckter
             // Link — direkt unter der Heute-Karte (Board 05, A1/1).
             if (session != null) ...[
@@ -135,7 +135,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             ],
             const SizedBox(height: 28),
             _SectionHeader(
-              title: l10n.workoutsPlansLabel,
+              title: l10n.workoutsPlansLabel.toUpperCase(),
               actionLabel:
                   plans.isEmpty ? null : l10n.workoutsPlansAll(plans.length),
               onAction: plans.isEmpty ? null : () => _openPlans(context),
@@ -185,7 +185,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"
               // sagt, wie gross der Bestand ist; „Alle ansehen" sagt, wohin
               // der Weg führt. Beides in einer Zeile wäre eine Zahl zu viel.
-              title: l10n.exercisesBlockTitle(exerciseCount),
+              title: l10n.exercisesBlockTitle(exerciseCount).toUpperCase(),
               actionLabel: l10n.exercisesBlockAll,
               onAction: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -360,6 +360,11 @@ class _TodayCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Text(l10n.workoutsTodayLabel.toUpperCase(),
+              style: AtemType.labelMicro
+                  .of(context)
+                  .copyWith(color: AtemColors.cyan)),
+          const SizedBox(height: 8),
           Text(session.title, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 8),
           Text(
@@ -381,29 +386,46 @@ class _TodayCard extends StatelessWidget {
 }
 
 class _EmptyToday extends StatelessWidget {
-  const _EmptyToday({required this.onFree});
+  const _EmptyToday({required this.onFree, required this.onPickPlan});
 
   final VoidCallback onFree;
+  final VoidCallback onPickPlan;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
 
+    // **Gleiche Kartenposition wie die Heute-Karte, kein Warnsymbol**
+    // (Board 05, A1/2). Leer ist kein Fehler; der Nutzer hat nichts falsch
+    // gemacht. Zwei Wege stehen bereit, weil beide gleich naheliegen: frei
+    // anfangen oder einen Plan holen.
     return AtemCard.list(
       padding: const EdgeInsets.all(18),
-      child: AtemEmptyState(
-        // Board 02: Der Leerzustand nennt beide Lesarten — Ruhetag **oder**
-        // Platz für etwas. „Kein Training geplant" allein liest sich wie ein
-        // Versäumnis.
-        title: l10n.emptyTodayTitle,
-        body: l10n.emptyTodayBody,
-        action: AtemButton.gradient(
-          label: l10n.workoutsFree,
-          semanticLabel: l10n.workoutsFreeStart,
-          expand: false,
-          size: AtemButtonSize.compact,
-          onPressed: onFree,
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l10n.workoutsTodayLabel.toUpperCase(),
+              style: AtemType.labelMicro.of(context)),
+          const SizedBox(height: 8),
+          Text(l10n.emptyTodayTitle,
+              style: AtemType.titleMedium.of(context)),
+          const SizedBox(height: 6),
+          Text(l10n.emptyTodayBody, style: AtemType.labelSmall.of(context)),
+          const SizedBox(height: 16),
+          AtemButton.gradient(
+            label: l10n.workoutsFreeStart,
+            semanticLabel: l10n.workoutsFreeStart,
+            size: AtemButtonSize.compact,
+            onPressed: onFree,
+          ),
+          const SizedBox(height: 8),
+          AtemButton.outline(
+            label: l10n.workoutsPlanPick,
+            semanticLabel: l10n.workoutsPlanPick,
+            size: AtemButtonSize.compact,
+            onPressed: onPickPlan,
+          ),
+        ],
       ),
     );
   }
@@ -428,7 +450,7 @@ class _SectionHeader extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AtemType.labelMedium.of(context),
+            style: AtemType.labelMicro.of(context),
           ),
         ),
         if (actionLabel != null && onAction != null) ...[

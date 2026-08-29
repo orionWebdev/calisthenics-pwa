@@ -369,6 +369,12 @@ class _CuratedLock extends StatelessWidget {
 }
 
 /// Ein Abschnitt — oder nichts.
+/// Ein Block des Übungsdokuments — **Haarlinie, Mono-Kopf, Inhalt**.
+///
+/// Board 05, A3: „Trenner sind Hairlines, keine Karten — der Screen bleibt
+/// ein Dokument, kein Dashboard." Nummeriert wird nur die Anleitung; Cues und
+/// Fehler sind Aufzählungen ohne Reihenfolge und stehen deshalb als eine
+/// Zeile mit Mittelpunkten.
 class _Block extends StatelessWidget {
   const _Block({
     required this.title,
@@ -387,29 +393,35 @@ class _Block extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 28),
-        Text(title, style: AtemType.labelMedium.of(context)),
+        const SizedBox(height: 22),
+        const Divider(height: 1, thickness: 1, color: AtemColors.border),
+        const SizedBox(height: 16),
+        Text(title.toUpperCase(), style: AtemType.labelMicro.of(context)),
         const SizedBox(height: 12),
-        for (var i = 0; i < lines.length; i++) ...[
-          if (i > 0) const SizedBox(height: 10),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 24,
-                child: Text(
-                  numbered ? '${i + 1}.' : '·',
-                  style: AtemType.labelSmall.of(context).copyWith(
-                        color: AtemColors.cyan,
-                      ),
+        if (!numbered)
+          Text(lines.join(' · '), style: AtemType.body.of(context))
+        else
+          for (var i = 0; i < lines.length; i++) ...[
+            if (i > 0) const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 24,
+                  child: Text(
+                    '${i + 1}',
+                    style: AtemType.valueMedium.of(context).copyWith(
+                          fontSize: 13,
+                          color: AtemColors.cyan,
+                        ),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Text(lines[i], style: AtemType.body.of(context)),
-              ),
-            ],
-          ),
-        ],
+                Expanded(
+                  child: Text(lines[i], style: AtemType.body.of(context)),
+                ),
+              ],
+            ),
+          ],
       ],
     );
   }

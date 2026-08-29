@@ -20,6 +20,7 @@ import '../../../cardio/presentation/widgets/intensity_box.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../exercises/domain/exercise.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
+import '../../../exercises/presentation/widgets/exercise_bits.dart';
 import '../widgets/acwr_scale.dart';
 import '../widgets/comparison_card.dart';
 import '../widgets/percentile_card.dart';
@@ -57,6 +58,9 @@ class SessionDetailScreen extends ConsumerWidget {
     final acwr = Readiness.compute(sessions, session.date, context: context_);
 
     final minutes = session.duration?.inMinutes;
+
+    final comparison =
+        SessionComparison.forSession(session, sessions, context: context_);
 
     return Scaffold(
       backgroundColor: AtemColors.base,
@@ -98,20 +102,24 @@ class SessionDetailScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 22),
-            _Stats(session: session, load: load),
 
-            // **Der Vergleich steht direkt unter den Absolutwerten.** „412"
-            // allein sagt niemandem etwas; „412, vorher 380" sagt alles —
-            // und beides nebeneinander zu lesen ist der ganze Zweck.
-            const SizedBox(height: 22),
-            ComparisonCard(
-              comparison: SessionComparison.forSession(
-                session,
-                sessions,
-                context: context_,
-              ),
-              languageTag: tag,
-            ),
+            // **Entweder Absolutwerte oder Vergleich, nie beides.**
+            //
+            // Der Vergleich (Board 09, A1/1) trägt Dauer, Last, Volumen und
+            // Sätze bereits als grosse Zahl mit Bezug und Delta. Standen die
+            // drei StatBoxen daneben, stand „58 min" zweimal auf demselben
+            // Bildschirm — genau der Grund, warum das Detail unstrukturiert
+            // wirkte. Ohne Bezug (A1/3) bleiben die Boxen die Aussage.
+            //
+            // Cardio ist die Ausnahme: Kilometer und Tempo kommen im
+            // Vergleich nicht vor und stehen deshalb weiter in Boxen.
+            if (comparison.hasReference && session is! CardioSession)
+              ComparisonCard(comparison: comparison, languageTag: tag)
+            else ...[
+              _Stats(session: session, load: load),
+              const SizedBox(height: 22),
+              ComparisonCard(comparison: comparison, languageTag: tag),
+            ],
             // „Belastung an diesem Tag" — die ACWR-Skala aus Board 06 mit
             // Zone als Wort, nicht nur als Segmentposition.
             if (acwr.acwr case final value?) ...[
@@ -606,20 +614,20 @@ class _StatTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    value ?? l10n.intensityNoneValue,
-                    maxLines: 1,
-                    style: AtemType.valueLarge.of(context).copyWith(
-                          fontSize: 22,
-                          color: missing
-                              ? AtemColors.textSecondary
-                              : (label == l10n.detailLoad
-                                  ? AtemColors.cyan
-                                  : AtemColors.textPrimary),
-                        ),
-                  ),
+                // Kein FittedBox: Text herunterzuskalieren nimmt genau die
+                // Vergrösserung zurück, die jemand eingestellt hat (R5).
+                Text(
+                  value ?? l10n.intensityNoneValue,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AtemType.valueLarge.of(context).copyWith(
+                        fontSize: 22,
+                        color: missing
+                            ? AtemColors.textSecondary
+                            : (label == l10n.detailLoad
+                                ? AtemColors.cyan
+                                : AtemColors.textPrimary),
+                      ),
                 ),
                 const SizedBox(height: 5),
                 Text(label.toUpperCase(),
@@ -675,12 +683,6 @@ class _ExerciseRow extends ConsumerWidget {
 
   final LoggedExercise exercise;
 
-  static String _initials(String name) {
-    final words = name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
-    final letters = words.map((w) => w[0]).take(2).join();
-    return (letters.isEmpty ? '·' : letters).toUpperCase();
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
@@ -718,24 +720,7 @@ class _ExerciseRow extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Row(
             children: [
-              Container(
-                width: 36,
-                height: 36,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AtemCategories.surface(color),
-                  borderRadius: BorderRadius.circular(AtemRadii.iconBox),
-                  border: Border.all(color: AtemCategories.border(color)),
-                ),
-                child: Text(
-                  _initials(name),
-                  style: AtemType.labelDeco.of(context).copyWith(
-                        color: color,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0,
-                      ),
-                ),
-              ),
+              MuscleTile(name: name, color: color),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

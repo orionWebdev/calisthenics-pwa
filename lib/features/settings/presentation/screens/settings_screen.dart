@@ -508,7 +508,9 @@ class _RestSheet extends ConsumerStatefulWidget {
 
   final UserSettings settings;
 
-  static const presets = [60, 90, 120, 180];
+  /// Board 08, A3/1: fünf Stufen, dazu ein eigener Wert. 45 s fehlte —
+  /// es ist die übliche Pause für Kraftausdauer.
+  static const presets = [45, 60, 90, 120, 180];
 
   static Future<void> show(BuildContext context, UserSettings settings) =>
       AtemSheet.show<void>(

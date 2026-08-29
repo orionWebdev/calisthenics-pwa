@@ -105,7 +105,7 @@ class _BodyState extends State<_Body> {
 
   /// Dieselben Stufen wie in den Einstellungen (Board 08, A3). Zwei Orte mit
   /// zwei Vorratslisten wären zwei Wahrheiten.
-  static const _presets = [60, 90, 120, 180];
+  static const _presets = [45, 60, 90, 120, 180];
 
   @override
   Widget build(BuildContext context) {
