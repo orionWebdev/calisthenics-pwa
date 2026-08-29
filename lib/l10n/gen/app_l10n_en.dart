@@ -132,6 +132,44 @@ class AppL10nEn extends AppL10n {
   String get accountPartialTitle => 'Not fully deleted';
 
   @override
+  String get activityBike => 'Cycling';
+
+  @override
+  String get activityBikeIndoor => 'Indoor bike';
+
+  @override
+  String get activityHike => 'Hiking';
+
+  @override
+  String get activityMore => 'More';
+
+  @override
+  String get activityOther => 'Other';
+
+  @override
+  String activityOwn(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return 'Your activities · $_temp0';
+  }
+
+  @override
+  String get activityRow => 'Rowing';
+
+  @override
+  String get activityRun => 'Running';
+
+  @override
+  String get activitySwim => 'Swimming';
+
+  @override
+  String get activityWalk => 'Walking';
+
+  @override
   String get analysisChartLabel => 'Form 0–100';
 
   @override
@@ -156,6 +194,14 @@ class AppL10nEn extends AppL10n {
   String analysisCompValue(int v, int max) {
     return '$v / $max';
   }
+
+  @override
+  String analysisDistBasis(int n, int total) {
+    return '$n of $total sessions with distance';
+  }
+
+  @override
+  String get analysisDistTitle => 'Distance distribution';
 
   @override
   String analysisErrorBody(int n) {
@@ -193,6 +239,39 @@ class AppL10nEn extends AppL10n {
   String get analysisLegendWithout => 'without training';
 
   @override
+  String analysisPaceBasis(String value, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# runs',
+      one: '1 run',
+    );
+    return 'vs. own average $value · $_temp0';
+  }
+
+  @override
+  String analysisPaceThin(int min, String value, String from, String to) {
+    return 'No curve below $min sessions of this activity. Average $value, range $from to $to.';
+  }
+
+  @override
+  String get analysisPaceTitle => 'Pace development';
+
+  @override
+  String analysisPctFaster(int n, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Faster than # of $total of your runs',
+      one: 'Faster than 1 of your runs',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get analysisPctNoothers => 'No comparison with other people.';
+
+  @override
   String analysisThinBody(int n, int d) {
     return 'A trend needs $n workouts and $d days of history.';
   }
@@ -213,6 +292,23 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get analysisToday => 'Form today';
+
+  @override
+  String analysisWeeklyBasis(String value, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return 'avg. $value km · $_temp0';
+  }
+
+  @override
+  String get analysisWeeklyCurrent => 'in progress';
+
+  @override
+  String get analysisWeeklyTitle => 'Weekly distance';
 
   @override
   String analysisWhyConsistency(int days, int span) {
@@ -356,6 +452,55 @@ class AppL10nEn extends AppL10n {
   @override
   String barrierSheet(String titel) {
     return 'Closes “$titel”';
+  }
+
+  @override
+  String get cardioAdd => 'Log session';
+
+  @override
+  String get cardioAddFirst => 'Log first session';
+
+  @override
+  String get cardioEmptyBody =>
+      'Log a run, a ride or a hike. From the second session of the same activity on, pace development appears here.';
+
+  @override
+  String get cardioEmptyTitle => 'No endurance session yet';
+
+  @override
+  String get cardioErrorWeek => 'Weekly distance cannot be calculated';
+
+  @override
+  String get cardioLiveStart => 'Track live';
+
+  @override
+  String cardioTotalSince(String date) {
+    return 'Total · since $date';
+  }
+
+  @override
+  String cardioWeekBasis(String value) {
+    return 'vs. 4-week average $value km';
+  }
+
+  @override
+  String cardioWeekCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cardioWeekThin =>
+      'Weekly distance from 3 weeks with sessions on. Until then, total distance is shown.';
+
+  @override
+  String cardioWeekTitle(String kw) {
+    return 'This week · W$kw';
   }
 
   @override
@@ -1565,6 +1710,12 @@ class AppL10nEn extends AppL10n {
   String get exportTitle => 'Export data';
 
   @override
+  String get formActivity => 'Activity';
+
+  @override
+  String get formDate => 'Date';
+
+  @override
   String get formDiscardBarrier => 'Discard changes';
 
   @override
@@ -1578,6 +1729,51 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get formDiscardTitle => 'Discard changes?';
+
+  @override
+  String get formDistance => 'Distance · km';
+
+  @override
+  String get formDuration => 'Duration · min';
+
+  @override
+  String get formHrAvg => 'Avg. HR';
+
+  @override
+  String get formHrHint =>
+      'Leaving heart rate empty is normal. No analysis requires it.';
+
+  @override
+  String get formHrMax => 'Max. HR';
+
+  @override
+  String get formNote => 'Note · optional';
+
+  @override
+  String formOptionalCount(int n) {
+    return 'Optional · $n fields';
+  }
+
+  @override
+  String get formPace => 'Pace';
+
+  @override
+  String get formPaceComputed => 'calculated';
+
+  @override
+  String get formRpe => 'Effort · RPE';
+
+  @override
+  String get formRpe1 => 'very easy';
+
+  @override
+  String get formRpe3 => 'moderate';
+
+  @override
+  String get formRpe5 => 'maximal';
+
+  @override
+  String get formToday => 'Today';
 
   @override
   String formatDistanceKm(num distance) {
@@ -1794,6 +1990,58 @@ class AppL10nEn extends AppL10n {
   String get historyZoneRhythm => 'In rhythm';
 
   @override
+  String get hybridEmptyBody =>
+      'This will show how strength and endurance relate for you. Start with either side — it does not matter which.';
+
+  @override
+  String get hybridEmptyTitle => 'No session yet';
+
+  @override
+  String hybridWeekThin(int min) {
+    return 'Readiness and form from $min sessions on.';
+  }
+
+  @override
+  String get hybridWeekTitle => 'Your week';
+
+  @override
+  String get intensityAbove => 'Above average';
+
+  @override
+  String get intensityBelow => 'Below average';
+
+  @override
+  String intensityFallbackNote(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# runs',
+      one: '1 run',
+    );
+    return 'Neither heart rate nor RPE recorded. Judged by pace against $_temp0.';
+  }
+
+  @override
+  String get intensityLevel1 => 'Avg. heart rate · from watch data';
+
+  @override
+  String get intensityLevel2 => 'Effort · your input';
+
+  @override
+  String get intensityLevel3 => 'Pace vs. own average';
+
+  @override
+  String get intensityNoneA11y => 'not recorded';
+
+  @override
+  String get intensityNoneValue => '—';
+
+  @override
+  String intensityZone(int n, String name) {
+    return 'Zone $n · $name';
+  }
+
+  @override
   String get languageDe => 'German';
 
   @override
@@ -1801,6 +2049,50 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get languageTitle => 'Language';
+
+  @override
+  String lastCardio(String activity, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$activity yesterday',
+      zero: '$activity today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String lastNone(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'No session for # days',
+      one: 'No session for 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String lastRecovery(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Recovery yesterday',
+      zero: 'Recovery today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String lastStrength(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Strength yesterday',
+      zero: 'Strength today',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get legalError => 'Text not loaded';
@@ -1884,6 +2176,33 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get listTitle => 'Workouts';
+
+  @override
+  String get liveDistanceManual => 'Distance by hand · km';
+
+  @override
+  String get liveDistanceSource => 'from display';
+
+  @override
+  String get liveNogps =>
+      'No GPS, no location permission. Distance comes from the machine display and can be corrected any time.';
+
+  @override
+  String get livePause => 'Pause';
+
+  @override
+  String liveStarted(String time) {
+    return 'Started $time';
+  }
+
+  @override
+  String get liveStatePaused => 'Paused';
+
+  @override
+  String get liveStateRunning => 'Running';
+
+  @override
+  String get liveStop => 'Finish';
 
   @override
   String loadingDone(String sektion) {
@@ -2273,6 +2592,82 @@ class AppL10nEn extends AppL10n {
   String get quickNoSessions => 'No workout yet';
 
   @override
+  String ratioBasis(int min, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return 'Share of $min training minutes · $_temp0';
+  }
+
+  @override
+  String get ratioNoshift => 'no 4-week average';
+
+  @override
+  String ratioShift(String value) {
+    return '$value pp vs. 4-week average';
+  }
+
+  @override
+  String get ratioShiftDown => 'less';
+
+  @override
+  String get ratioShiftUp => 'more';
+
+  @override
+  String get ratioSingleBody =>
+      'A split needs both tracks. From the first endurance session on, it appears here.';
+
+  @override
+  String get ratioSingleTitle => 'No endurance yet';
+
+  @override
+  String get ratioTitle => 'Split';
+
+  @override
+  String get recoveryAdd => 'Log';
+
+  @override
+  String recoveryGap(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'No recovery for # days',
+      one: 'No recovery for 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recoveryKindMobility => 'Mobility';
+
+  @override
+  String get recoveryKindSauna => 'Sauna';
+
+  @override
+  String get recoveryKindStretch => 'Stretching';
+
+  @override
+  String get recoveryKindYoga => 'Yoga';
+
+  @override
+  String recoveryLast(String when, String kind, int n) {
+    return '$when · $kind · $n min';
+  }
+
+  @override
+  String get recoveryNever => 'No recovery logged';
+
+  @override
+  String get recoveryNoload =>
+      'Breaks the inactivity penalty but carries no load. Form does not rise from it.';
+
+  @override
+  String get recoveryTitle => 'Recovery';
+
+  @override
   String get regionArms => 'Arms';
 
   @override
@@ -2335,6 +2730,18 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get sectionTraining => 'Training';
+
+  @override
+  String get segAnalysis => 'Analysis';
+
+  @override
+  String get segHistory => 'History';
+
+  @override
+  String get segSessions => 'Sessions';
+
+  @override
+  String get segTrain => 'Train';
 
   @override
   String get sessionDateAllowedBody =>
@@ -2764,6 +3171,15 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get switchOn => 'ON';
+
+  @override
+  String get tabCardio => 'Cardio';
+
+  @override
+  String get tabHybrid => 'Hybrid';
+
+  @override
+  String get tabStrength => 'Strength';
 
   @override
   String get typeBodyweight => 'Bodyweight';
@@ -3647,4 +4063,37 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get workoutsTodayLabel => 'Today';
+
+  @override
+  String analysisPaceBasisOther(String value, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return 'vs. own average $value · $_temp0';
+  }
+
+  @override
+  String analysisPctFasterOther(int n, int total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Faster than # of $total of your sessions',
+      one: 'Faster than 1 of your sessions',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String intensityFallbackNoteOther(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# sessions',
+      one: '1 session',
+    );
+    return 'Neither heart rate nor RPE recorded. Judged by pace against $_temp0 of the same activity.';
+  }
 }

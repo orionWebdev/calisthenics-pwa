@@ -182,6 +182,51 @@
   "@accountPartialTitle": {
     "description": "account.partial.title"
   },
+  "activityBike": "Rad",
+  "@activityBike": {
+    "description": "activity.bike"
+  },
+  "activityBikeIndoor": "Indoor-Rad",
+  "@activityBikeIndoor": {
+    "description": "activity.bike.indoor"
+  },
+  "activityHike": "Wandern",
+  "@activityHike": {
+    "description": "activity.hike"
+  },
+  "activityMore": "Weitere",
+  "@activityMore": {
+    "description": "activity.more"
+  },
+  "activityOther": "Sonstiges",
+  "@activityOther": {
+    "description": "activity.other"
+  },
+  "activityOwn": "Deine Aktivitäten · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@activityOwn": {
+    "description": "activity.own",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "activityRow": "Rudern",
+  "@activityRow": {
+    "description": "activity.row"
+  },
+  "activityRun": "Laufen",
+  "@activityRun": {
+    "description": "activity.run"
+  },
+  "activitySwim": "Schwimmen",
+  "@activitySwim": {
+    "description": "activity.swim"
+  },
+  "activityWalk": "Gehen",
+  "@activityWalk": {
+    "description": "activity.walk"
+  },
   "analysisChartLabel": "Form 0–100",
   "@analysisChartLabel": {
     "description": "Achsenbeschriftung"
@@ -221,6 +266,22 @@
         "type": "int"
       }
     }
+  },
+  "analysisDistBasis": "{n} von {total} Einheiten mit Distanz",
+  "@analysisDistBasis": {
+    "description": "analysis.dist.basis",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisDistTitle": "Verteilung der Distanzen",
+  "@analysisDistTitle": {
+    "description": "analysis.dist.title"
   },
   "analysisErrorBody": "Deine {n} Einheiten sind vollständig da — nur die Auswertung fehlt.",
   "@analysisErrorBody": {
@@ -272,6 +333,56 @@
   "@analysisLegendWithout": {
     "description": "Legende der Kurve — die Lücke"
   },
+  "analysisPaceBasis": "gegen eigenen Schnitt {value} · {n, plural, one{1 Lauf} other{# Läufe}}",
+  "@analysisPaceBasis": {
+    "description": "analysis.pace.basis",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisPaceThin": "Keine Kurve unter {min} Einheiten dieser Aktivität. Schnitt {value}, Spanne {from} bis {to}.",
+  "@analysisPaceThin": {
+    "description": "analysis.pace.thin",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisPaceTitle": "Tempoentwicklung",
+  "@analysisPaceTitle": {
+    "description": "analysis.pace.title"
+  },
+  "analysisPctFaster": "{n, plural, one{Schneller als 1 deiner Läufe} other{Schneller als # von {total} deiner Läufe}}",
+  "@analysisPctFaster": {
+    "description": "analysis.pct.faster",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisPctNoothers": "Kein Vergleich mit anderen Menschen.",
+  "@analysisPctNoothers": {
+    "description": "analysis.pct.noothers"
+  },
   "analysisThinBody": "Ein Trend braucht {n} Einheiten und {d} Tage Historie.",
   "@analysisThinBody": {
     "description": "Nennt die Schwellen aus DataSufficiency",
@@ -312,6 +423,26 @@
   "@analysisToday": {
     "description": "Überschrift der Zerlegung"
   },
+  "analysisWeeklyBasis": "Ø {value} km · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@analysisWeeklyBasis": {
+    "description": "analysis.weekly.basis",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisWeeklyCurrent": "laufend",
+  "@analysisWeeklyCurrent": {
+    "description": "analysis.weekly.current"
+  },
+  "analysisWeeklyTitle": "Wochenkilometer",
+  "@analysisWeeklyTitle": {
+    "description": "analysis.weekly.title"
+  },
   "analysisWhyConsistency": "{days} Trainingstage in {span}",
   "@analysisWhyConsistency": {
     "description": "Begründung unter der Konstanz — zeigt, woraus die Punktzahl entsteht",
@@ -346,17 +477,17 @@
     }
   },
   "analysisWhyRecency": "{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor # Tagen}}",
-  "analysisWhyRecencyRecovery": "{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor # Tagen · Regeneration}}",
-  "@analysisWhyRecencyRecovery": {
-    "description": "Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war",
+  "@analysisWhyRecency": {
+    "description": "Begründung der Aktualität",
     "placeholders": {
       "n": {
         "type": "int"
       }
     }
   },
-  "@analysisWhyRecency": {
-    "description": "Begründung der Aktualität",
+  "analysisWhyRecencyRecovery": "{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor # Tagen · Regeneration}}",
+  "@analysisWhyRecencyRecovery": {
+    "description": "Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war",
     "placeholders": {
       "n": {
         "type": "int"
@@ -518,6 +649,70 @@
     "description": "barrier.sheet (Board 02)",
     "placeholders": {
       "titel": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioAdd": "Einheit erfassen",
+  "@cardioAdd": {
+    "description": "cardio.add"
+  },
+  "cardioAddFirst": "Erste Einheit erfassen",
+  "@cardioAddFirst": {
+    "description": "cardio.add.first"
+  },
+  "cardioEmptyBody": "Erfasse einen Lauf, eine Radfahrt oder eine Wanderung. Ab der zweiten Einheit derselben Aktivität steht hier die Tempoentwicklung.",
+  "@cardioEmptyBody": {
+    "description": "cardio.empty.body"
+  },
+  "cardioEmptyTitle": "Noch keine Ausdauereinheit",
+  "@cardioEmptyTitle": {
+    "description": "cardio.empty.title"
+  },
+  "cardioErrorWeek": "Wochenkilometer nicht berechenbar",
+  "@cardioErrorWeek": {
+    "description": "cardio.error.week"
+  },
+  "cardioLiveStart": "Live mitlaufen lassen",
+  "@cardioLiveStart": {
+    "description": "cardio.live.start"
+  },
+  "cardioTotalSince": "Gesamt · seit {date}",
+  "@cardioTotalSince": {
+    "description": "cardio.total.since",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioWeekBasis": "gegen 4-Wochen-Schnitt {value} km",
+  "@cardioWeekBasis": {
+    "description": "cardio.week.basis",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioWeekCount": "{n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@cardioWeekCount": {
+    "description": "cardio.week.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "cardioWeekThin": "Wochenkilometer ab 3 Wochen mit Einheiten. Bis dahin steht hier die Gesamtstrecke.",
+  "@cardioWeekThin": {
+    "description": "cardio.week.thin"
+  },
+  "cardioWeekTitle": "Diese Woche · KW {kw}",
+  "@cardioWeekTitle": {
+    "description": "cardio.week.title",
+    "placeholders": {
+      "kw": {
         "type": "String"
       }
     }
@@ -2277,6 +2472,14 @@
   "@exportTitle": {
     "description": "export.title"
   },
+  "formActivity": "Aktivität",
+  "@formActivity": {
+    "description": "form.activity"
+  },
+  "formDate": "Datum",
+  "@formDate": {
+    "description": "form.date"
+  },
   "formDiscardBarrier": "Änderungen verwerfen",
   "@formDiscardBarrier": {
     "description": "Vorlesetext des Dialogschleiers"
@@ -2296,6 +2499,67 @@
   "formDiscardTitle": "Änderungen verwerfen?",
   "@formDiscardTitle": {
     "description": "Dialog beim Verlassen mit ungespeicherten Änderungen"
+  },
+  "formDistance": "Distanz · km",
+  "@formDistance": {
+    "description": "form.distance"
+  },
+  "formDuration": "Dauer · min",
+  "@formDuration": {
+    "description": "form.duration"
+  },
+  "formHrAvg": "Ø Puls",
+  "@formHrAvg": {
+    "description": "form.hr.avg"
+  },
+  "formHrHint": "Puls leer lassen ist der Normalfall. Die Auswertung setzt ihn nirgends voraus.",
+  "@formHrHint": {
+    "description": "form.hr.hint"
+  },
+  "formHrMax": "Max. Puls",
+  "@formHrMax": {
+    "description": "form.hr.max"
+  },
+  "formNote": "Notiz · optional",
+  "@formNote": {
+    "description": "form.note"
+  },
+  "formOptionalCount": "Optional · {n} Felder",
+  "@formOptionalCount": {
+    "description": "form.optional.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "formPace": "Tempo",
+  "@formPace": {
+    "description": "form.pace"
+  },
+  "formPaceComputed": "gerechnet",
+  "@formPaceComputed": {
+    "description": "form.pace.computed"
+  },
+  "formRpe": "Anstrengung · RPE",
+  "@formRpe": {
+    "description": "form.rpe"
+  },
+  "formRpe1": "sehr leicht",
+  "@formRpe1": {
+    "description": "form.rpe.1"
+  },
+  "formRpe3": "mittel",
+  "@formRpe3": {
+    "description": "form.rpe.3"
+  },
+  "formRpe5": "maximal",
+  "@formRpe5": {
+    "description": "form.rpe.5"
+  },
+  "formToday": "Heute",
+  "@formToday": {
+    "description": "form.today"
   },
   "formatDistanceKm": "{distance} km",
   "@formatDistanceKm": {
@@ -2626,6 +2890,76 @@
   "@historyZoneRhythm": {
     "description": "Zustandszone: bis 3 Tage Abstand"
   },
+  "hybridEmptyBody": "Hier steht später, wie Kraft und Ausdauer bei dir zueinander stehen. Fang mit einer Seite an — welcher, ist gleich.",
+  "@hybridEmptyBody": {
+    "description": "hybrid.empty.body"
+  },
+  "hybridEmptyTitle": "Noch keine Einheit",
+  "@hybridEmptyTitle": {
+    "description": "hybrid.empty.title"
+  },
+  "hybridWeekThin": "Bereitschaft und Formwert ab {min} Einheiten.",
+  "@hybridWeekThin": {
+    "description": "hybrid.week.thin",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridWeekTitle": "Deine Woche",
+  "@hybridWeekTitle": {
+    "description": "hybrid.week.title"
+  },
+  "intensityAbove": "Über dem Schnitt",
+  "@intensityAbove": {
+    "description": "intensity.above"
+  },
+  "intensityBelow": "Unter dem Schnitt",
+  "@intensityBelow": {
+    "description": "intensity.below"
+  },
+  "intensityFallbackNote": "Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Lauf} other{# Läufe}}.",
+  "@intensityFallbackNote": {
+    "description": "intensity.fallback.note",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "intensityLevel1": "Ø Herzfrequenz · aus Uhrdaten",
+  "@intensityLevel1": {
+    "description": "intensity.level1"
+  },
+  "intensityLevel2": "Anstrengung · deine Angabe",
+  "@intensityLevel2": {
+    "description": "intensity.level2"
+  },
+  "intensityLevel3": "Tempo gegen eigenen Schnitt",
+  "@intensityLevel3": {
+    "description": "intensity.level3"
+  },
+  "intensityNoneA11y": "nicht erfasst",
+  "@intensityNoneA11y": {
+    "description": "intensity.none.a11y"
+  },
+  "intensityNoneValue": "—",
+  "@intensityNoneValue": {
+    "description": "intensity.none.value"
+  },
+  "intensityZone": "Zone {n} · {name}",
+  "@intensityZone": {
+    "description": "intensity.zone",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "languageDe": "Deutsch",
   "@languageDe": {
     "description": "language.de"
@@ -2637,6 +2971,45 @@
   "languageTitle": "Sprache",
   "@languageTitle": {
     "description": "language.title"
+  },
+  "lastCardio": "{n, plural, =0{Heute {activity}} other{Gestern {activity}}}",
+  "@lastCardio": {
+    "description": "last.cardio",
+    "placeholders": {
+      "activity": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "lastNone": "{n, plural, one{Seit 1 Tag keine Einheit} other{Seit # Tagen keine Einheit}}",
+  "@lastNone": {
+    "description": "last.none",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "lastRecovery": "{n, plural, =0{Heute Regeneration} other{Gestern Regeneration}}",
+  "@lastRecovery": {
+    "description": "last.recovery",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "lastStrength": "{n, plural, =0{Heute Kraft} other{Gestern Kraft}}",
+  "@lastStrength": {
+    "description": "last.strength",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   },
   "legalError": "Text nicht geladen",
   "@legalError": {
@@ -2771,6 +3144,43 @@
   "listTitle": "Einheiten",
   "@listTitle": {
     "description": "Titel der vollständigen Liste"
+  },
+  "liveDistanceManual": "Distanz von Hand · km",
+  "@liveDistanceManual": {
+    "description": "live.distance.manual"
+  },
+  "liveDistanceSource": "vom Display",
+  "@liveDistanceSource": {
+    "description": "live.distance.source"
+  },
+  "liveNogps": "Kein GPS, keine Standortabfrage. Die Distanz kommt vom Gerätedisplay und kann jederzeit korrigiert werden.",
+  "@liveNogps": {
+    "description": "live.nogps"
+  },
+  "livePause": "Pause",
+  "@livePause": {
+    "description": "live.pause"
+  },
+  "liveStarted": "Gestartet {time}",
+  "@liveStarted": {
+    "description": "live.started",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "liveStatePaused": "Pausiert",
+  "@liveStatePaused": {
+    "description": "live.state.paused"
+  },
+  "liveStateRunning": "Läuft",
+  "@liveStateRunning": {
+    "description": "live.state.running"
+  },
+  "liveStop": "Beenden",
+  "@liveStop": {
+    "description": "live.stop"
   },
   "loadingDone": "{sektion} geladen",
   "@loadingDone": {
@@ -3305,6 +3715,107 @@
   "@quickNoSessions": {
     "description": "Leerer Bestand"
   },
+  "ratioBasis": "Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@ratioBasis": {
+    "description": "ratio.basis",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ratioNoshift": "kein 4-Wochen-Schnitt",
+  "@ratioNoshift": {
+    "description": "ratio.noshift"
+  },
+  "ratioShift": "{value} pp gegen 4-Wochen-Schnitt",
+  "@ratioShift": {
+    "description": "ratio.shift",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ratioShiftDown": "weniger",
+  "@ratioShiftDown": {
+    "description": "ratio.shift.down"
+  },
+  "ratioShiftUp": "mehr",
+  "@ratioShiftUp": {
+    "description": "ratio.shift.up"
+  },
+  "ratioSingleBody": "Ein Verhältnis braucht beide Spuren. Ab der ersten Ausdauereinheit steht es hier.",
+  "@ratioSingleBody": {
+    "description": "ratio.single.body"
+  },
+  "ratioSingleTitle": "Noch keine Ausdauer",
+  "@ratioSingleTitle": {
+    "description": "ratio.single.title"
+  },
+  "ratioTitle": "Verhältnis",
+  "@ratioTitle": {
+    "description": "ratio.title"
+  },
+  "recoveryAdd": "Erfassen",
+  "@recoveryAdd": {
+    "description": "recovery.add"
+  },
+  "recoveryGap": "{n, plural, one{Seit 1 Tag keine Regeneration} other{Seit # Tagen keine Regeneration}}",
+  "@recoveryGap": {
+    "description": "recovery.gap",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "recoveryKindMobility": "Mobility",
+  "@recoveryKindMobility": {
+    "description": "recovery.kind.mobility"
+  },
+  "recoveryKindSauna": "Sauna",
+  "@recoveryKindSauna": {
+    "description": "recovery.kind.sauna"
+  },
+  "recoveryKindStretch": "Dehnen",
+  "@recoveryKindStretch": {
+    "description": "recovery.kind.stretch"
+  },
+  "recoveryKindYoga": "Yoga",
+  "@recoveryKindYoga": {
+    "description": "recovery.kind.yoga"
+  },
+  "recoveryLast": "{when} · {kind} · {n} min",
+  "@recoveryLast": {
+    "description": "recovery.last",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "recoveryNever": "Keine Regeneration erfasst",
+  "@recoveryNever": {
+    "description": "recovery.never"
+  },
+  "recoveryNoload": "Bricht die Untätigkeitsstrafe, trägt aber keine Last. Der Formwert steigt davon nicht.",
+  "@recoveryNoload": {
+    "description": "recovery.noload"
+  },
+  "recoveryTitle": "Regeneration",
+  "@recoveryTitle": {
+    "description": "recovery.title"
+  },
   "regionArms": "Arme",
   "@regionArms": {
     "description": "Körperregion, Filter"
@@ -3389,6 +3900,22 @@
   "sectionTraining": "Training",
   "@sectionTraining": {
     "description": "section.training"
+  },
+  "segAnalysis": "Auswertung",
+  "@segAnalysis": {
+    "description": "seg.analysis"
+  },
+  "segHistory": "Verlauf",
+  "@segHistory": {
+    "description": "seg.history"
+  },
+  "segSessions": "Einheiten",
+  "@segSessions": {
+    "description": "seg.sessions"
+  },
+  "segTrain": "Trainieren",
+  "@segTrain": {
+    "description": "seg.train"
   },
   "sessionDateAllowedBody": "Verschiebst du den Tag, verschieben sich Lücken und Form-Kurve mit.",
   "@sessionDateAllowedBody": {
@@ -3992,6 +4519,18 @@
   "switchOn": "AN",
   "@switchOn": {
     "description": "switch.on"
+  },
+  "tabCardio": "Cardio",
+  "@tabCardio": {
+    "description": "tab.cardio"
+  },
+  "tabHybrid": "Hybrid",
+  "@tabHybrid": {
+    "description": "tab.hybrid"
+  },
+  "tabStrength": "Kraft",
+  "@tabStrength": {
+    "description": "tab.strength"
   },
   "typeBodyweight": "Körpergewicht",
   "@typeBodyweight": {
@@ -5313,5 +5852,38 @@
   "workoutsTodayLabel": "Heute",
   "@workoutsTodayLabel": {
     "description": "Abschnittslabel über der Session-Karte"
+  },
+  "analysisPaceBasisOther": "gegen eigenen Schnitt {value} · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@analysisPaceBasisOther": {
+    "description": "analysis.pace.basis (Board 11) — Fassung für alle Aktivitäten außer Laufen",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisPctFasterOther": "{n, plural, one{Schneller als 1 deiner Einheiten} other{Schneller als # von {total} deiner Einheiten}}",
+  "@analysisPctFasterOther": {
+    "description": "analysis.pct.faster (Board 11) — Fassung für alle Aktivitäten außer Laufen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "intensityFallbackNoteOther": "Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Einheit} other{# Einheiten}} derselben Aktivität.",
+  "@intensityFallbackNoteOther": {
+    "description": "intensity.fallback.note (Board 11) — Fassung für alle Aktivitäten außer Laufen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -319,6 +319,66 @@ abstract class AppL10n {
   /// **'Nicht vollständig gelöscht'**
   String get accountPartialTitle;
 
+  /// activity.bike
+  ///
+  /// In de, this message translates to:
+  /// **'Rad'**
+  String get activityBike;
+
+  /// activity.bike.indoor
+  ///
+  /// In de, this message translates to:
+  /// **'Indoor-Rad'**
+  String get activityBikeIndoor;
+
+  /// activity.hike
+  ///
+  /// In de, this message translates to:
+  /// **'Wandern'**
+  String get activityHike;
+
+  /// activity.more
+  ///
+  /// In de, this message translates to:
+  /// **'Weitere'**
+  String get activityMore;
+
+  /// activity.other
+  ///
+  /// In de, this message translates to:
+  /// **'Sonstiges'**
+  String get activityOther;
+
+  /// activity.own
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Aktivitäten · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String activityOwn(int n);
+
+  /// activity.row
+  ///
+  /// In de, this message translates to:
+  /// **'Rudern'**
+  String get activityRow;
+
+  /// activity.run
+  ///
+  /// In de, this message translates to:
+  /// **'Laufen'**
+  String get activityRun;
+
+  /// activity.swim
+  ///
+  /// In de, this message translates to:
+  /// **'Schwimmen'**
+  String get activitySwim;
+
+  /// activity.walk
+  ///
+  /// In de, this message translates to:
+  /// **'Gehen'**
+  String get activityWalk;
+
   /// Achsenbeschriftung
   ///
   /// In de, this message translates to:
@@ -366,6 +426,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{v} / {max}'**
   String analysisCompValue(int v, int max);
+
+  /// analysis.dist.basis
+  ///
+  /// In de, this message translates to:
+  /// **'{n} von {total} Einheiten mit Distanz'**
+  String analysisDistBasis(int n, int total);
+
+  /// analysis.dist.title
+  ///
+  /// In de, this message translates to:
+  /// **'Verteilung der Distanzen'**
+  String get analysisDistTitle;
 
   /// Erfasstes und Abgeleitetes fallen getrennt aus
   ///
@@ -427,6 +499,36 @@ abstract class AppL10n {
   /// **'ohne Training'**
   String get analysisLegendWithout;
 
+  /// analysis.pace.basis
+  ///
+  /// In de, this message translates to:
+  /// **'gegen eigenen Schnitt {value} · {n, plural, one{1 Lauf} other{# Läufe}}'**
+  String analysisPaceBasis(String value, int n);
+
+  /// analysis.pace.thin
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Kurve unter {min} Einheiten dieser Aktivität. Schnitt {value}, Spanne {from} bis {to}.'**
+  String analysisPaceThin(int min, String value, String from, String to);
+
+  /// analysis.pace.title
+  ///
+  /// In de, this message translates to:
+  /// **'Tempoentwicklung'**
+  String get analysisPaceTitle;
+
+  /// analysis.pct.faster
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Schneller als 1 deiner Läufe} other{Schneller als # von {total} deiner Läufe}}'**
+  String analysisPctFaster(int n, int total);
+
+  /// analysis.pct.noothers
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Vergleich mit anderen Menschen.'**
+  String get analysisPctNoothers;
+
   /// Nennt die Schwellen aus DataSufficiency
   ///
   /// In de, this message translates to:
@@ -462,6 +564,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Form heute'**
   String get analysisToday;
+
+  /// analysis.weekly.basis
+  ///
+  /// In de, this message translates to:
+  /// **'Ø {value} km · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String analysisWeeklyBasis(String value, int n);
+
+  /// analysis.weekly.current
+  ///
+  /// In de, this message translates to:
+  /// **'laufend'**
+  String get analysisWeeklyCurrent;
+
+  /// analysis.weekly.title
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenkilometer'**
+  String get analysisWeeklyTitle;
 
   /// Begründung unter der Konstanz — zeigt, woraus die Punktzahl entsteht
   ///
@@ -660,6 +780,72 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Schließt „{titel}\"'**
   String barrierSheet(String titel);
+
+  /// cardio.add
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit erfassen'**
+  String get cardioAdd;
+
+  /// cardio.add.first
+  ///
+  /// In de, this message translates to:
+  /// **'Erste Einheit erfassen'**
+  String get cardioAddFirst;
+
+  /// cardio.empty.body
+  ///
+  /// In de, this message translates to:
+  /// **'Erfasse einen Lauf, eine Radfahrt oder eine Wanderung. Ab der zweiten Einheit derselben Aktivität steht hier die Tempoentwicklung.'**
+  String get cardioEmptyBody;
+
+  /// cardio.empty.title
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Ausdauereinheit'**
+  String get cardioEmptyTitle;
+
+  /// cardio.error.week
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenkilometer nicht berechenbar'**
+  String get cardioErrorWeek;
+
+  /// cardio.live.start
+  ///
+  /// In de, this message translates to:
+  /// **'Live mitlaufen lassen'**
+  String get cardioLiveStart;
+
+  /// cardio.total.since
+  ///
+  /// In de, this message translates to:
+  /// **'Gesamt · seit {date}'**
+  String cardioTotalSince(String date);
+
+  /// cardio.week.basis
+  ///
+  /// In de, this message translates to:
+  /// **'gegen 4-Wochen-Schnitt {value} km'**
+  String cardioWeekBasis(String value);
+
+  /// cardio.week.count
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String cardioWeekCount(int n);
+
+  /// cardio.week.thin
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenkilometer ab 3 Wochen mit Einheiten. Bis dahin steht hier die Gesamtstrecke.'**
+  String get cardioWeekThin;
+
+  /// cardio.week.title
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche · KW {kw}'**
+  String cardioWeekTitle(String kw);
 
   /// aus common.activity
   ///
@@ -2689,6 +2875,18 @@ abstract class AppL10n {
   /// **'Daten ausgeben'**
   String get exportTitle;
 
+  /// form.activity
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivität'**
+  String get formActivity;
+
+  /// form.date
+  ///
+  /// In de, this message translates to:
+  /// **'Datum'**
+  String get formDate;
+
   /// Vorlesetext des Dialogschleiers
   ///
   /// In de, this message translates to:
@@ -2718,6 +2916,90 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Änderungen verwerfen?'**
   String get formDiscardTitle;
+
+  /// form.distance
+  ///
+  /// In de, this message translates to:
+  /// **'Distanz · km'**
+  String get formDistance;
+
+  /// form.duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer · min'**
+  String get formDuration;
+
+  /// form.hr.avg
+  ///
+  /// In de, this message translates to:
+  /// **'Ø Puls'**
+  String get formHrAvg;
+
+  /// form.hr.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Puls leer lassen ist der Normalfall. Die Auswertung setzt ihn nirgends voraus.'**
+  String get formHrHint;
+
+  /// form.hr.max
+  ///
+  /// In de, this message translates to:
+  /// **'Max. Puls'**
+  String get formHrMax;
+
+  /// form.note
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz · optional'**
+  String get formNote;
+
+  /// form.optional.count
+  ///
+  /// In de, this message translates to:
+  /// **'Optional · {n} Felder'**
+  String formOptionalCount(int n);
+
+  /// form.pace
+  ///
+  /// In de, this message translates to:
+  /// **'Tempo'**
+  String get formPace;
+
+  /// form.pace.computed
+  ///
+  /// In de, this message translates to:
+  /// **'gerechnet'**
+  String get formPaceComputed;
+
+  /// form.rpe
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung · RPE'**
+  String get formRpe;
+
+  /// form.rpe.1
+  ///
+  /// In de, this message translates to:
+  /// **'sehr leicht'**
+  String get formRpe1;
+
+  /// form.rpe.3
+  ///
+  /// In de, this message translates to:
+  /// **'mittel'**
+  String get formRpe3;
+
+  /// form.rpe.5
+  ///
+  /// In de, this message translates to:
+  /// **'maximal'**
+  String get formRpe5;
+
+  /// form.today
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get formToday;
 
   /// aus format.distanceKm
   ///
@@ -3055,6 +3337,84 @@ abstract class AppL10n {
   /// **'Im Rhythmus'**
   String get historyZoneRhythm;
 
+  /// hybrid.empty.body
+  ///
+  /// In de, this message translates to:
+  /// **'Hier steht später, wie Kraft und Ausdauer bei dir zueinander stehen. Fang mit einer Seite an — welcher, ist gleich.'**
+  String get hybridEmptyBody;
+
+  /// hybrid.empty.title
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Einheit'**
+  String get hybridEmptyTitle;
+
+  /// hybrid.week.thin
+  ///
+  /// In de, this message translates to:
+  /// **'Bereitschaft und Formwert ab {min} Einheiten.'**
+  String hybridWeekThin(int min);
+
+  /// hybrid.week.title
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Woche'**
+  String get hybridWeekTitle;
+
+  /// intensity.above
+  ///
+  /// In de, this message translates to:
+  /// **'Über dem Schnitt'**
+  String get intensityAbove;
+
+  /// intensity.below
+  ///
+  /// In de, this message translates to:
+  /// **'Unter dem Schnitt'**
+  String get intensityBelow;
+
+  /// intensity.fallback.note
+  ///
+  /// In de, this message translates to:
+  /// **'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Lauf} other{# Läufe}}.'**
+  String intensityFallbackNote(int n);
+
+  /// intensity.level1
+  ///
+  /// In de, this message translates to:
+  /// **'Ø Herzfrequenz · aus Uhrdaten'**
+  String get intensityLevel1;
+
+  /// intensity.level2
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung · deine Angabe'**
+  String get intensityLevel2;
+
+  /// intensity.level3
+  ///
+  /// In de, this message translates to:
+  /// **'Tempo gegen eigenen Schnitt'**
+  String get intensityLevel3;
+
+  /// intensity.none.a11y
+  ///
+  /// In de, this message translates to:
+  /// **'nicht erfasst'**
+  String get intensityNoneA11y;
+
+  /// intensity.none.value
+  ///
+  /// In de, this message translates to:
+  /// **'—'**
+  String get intensityNoneValue;
+
+  /// intensity.zone
+  ///
+  /// In de, this message translates to:
+  /// **'Zone {n} · {name}'**
+  String intensityZone(int n, String name);
+
   /// language.de
   ///
   /// In de, this message translates to:
@@ -3072,6 +3432,30 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Sprache'**
   String get languageTitle;
+
+  /// last.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{Heute {activity}} other{Gestern {activity}}}'**
+  String lastCardio(String activity, int n);
+
+  /// last.none
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Seit 1 Tag keine Einheit} other{Seit # Tagen keine Einheit}}'**
+  String lastNone(int n);
+
+  /// last.recovery
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{Heute Regeneration} other{Gestern Regeneration}}'**
+  String lastRecovery(int n);
+
+  /// last.strength
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{Heute Kraft} other{Gestern Kraft}}'**
+  String lastStrength(int n);
 
   /// legal.error
   ///
@@ -3198,6 +3582,54 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Einheiten'**
   String get listTitle;
+
+  /// live.distance.manual
+  ///
+  /// In de, this message translates to:
+  /// **'Distanz von Hand · km'**
+  String get liveDistanceManual;
+
+  /// live.distance.source
+  ///
+  /// In de, this message translates to:
+  /// **'vom Display'**
+  String get liveDistanceSource;
+
+  /// live.nogps
+  ///
+  /// In de, this message translates to:
+  /// **'Kein GPS, keine Standortabfrage. Die Distanz kommt vom Gerätedisplay und kann jederzeit korrigiert werden.'**
+  String get liveNogps;
+
+  /// live.pause
+  ///
+  /// In de, this message translates to:
+  /// **'Pause'**
+  String get livePause;
+
+  /// live.started
+  ///
+  /// In de, this message translates to:
+  /// **'Gestartet {time}'**
+  String liveStarted(String time);
+
+  /// live.state.paused
+  ///
+  /// In de, this message translates to:
+  /// **'Pausiert'**
+  String get liveStatePaused;
+
+  /// live.state.running
+  ///
+  /// In de, this message translates to:
+  /// **'Läuft'**
+  String get liveStateRunning;
+
+  /// live.stop
+  ///
+  /// In de, this message translates to:
+  /// **'Beenden'**
+  String get liveStop;
 
   /// loading.done (Board 02)
   ///
@@ -3847,6 +4279,114 @@ abstract class AppL10n {
   /// **'Noch keine Einheit'**
   String get quickNoSessions;
 
+  /// ratio.basis
+  ///
+  /// In de, this message translates to:
+  /// **'Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String ratioBasis(int min, int n);
+
+  /// ratio.noshift
+  ///
+  /// In de, this message translates to:
+  /// **'kein 4-Wochen-Schnitt'**
+  String get ratioNoshift;
+
+  /// ratio.shift
+  ///
+  /// In de, this message translates to:
+  /// **'{value} pp gegen 4-Wochen-Schnitt'**
+  String ratioShift(String value);
+
+  /// ratio.shift.down
+  ///
+  /// In de, this message translates to:
+  /// **'weniger'**
+  String get ratioShiftDown;
+
+  /// ratio.shift.up
+  ///
+  /// In de, this message translates to:
+  /// **'mehr'**
+  String get ratioShiftUp;
+
+  /// ratio.single.body
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Verhältnis braucht beide Spuren. Ab der ersten Ausdauereinheit steht es hier.'**
+  String get ratioSingleBody;
+
+  /// ratio.single.title
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Ausdauer'**
+  String get ratioSingleTitle;
+
+  /// ratio.title
+  ///
+  /// In de, this message translates to:
+  /// **'Verhältnis'**
+  String get ratioTitle;
+
+  /// recovery.add
+  ///
+  /// In de, this message translates to:
+  /// **'Erfassen'**
+  String get recoveryAdd;
+
+  /// recovery.gap
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Seit 1 Tag keine Regeneration} other{Seit # Tagen keine Regeneration}}'**
+  String recoveryGap(int n);
+
+  /// recovery.kind.mobility
+  ///
+  /// In de, this message translates to:
+  /// **'Mobility'**
+  String get recoveryKindMobility;
+
+  /// recovery.kind.sauna
+  ///
+  /// In de, this message translates to:
+  /// **'Sauna'**
+  String get recoveryKindSauna;
+
+  /// recovery.kind.stretch
+  ///
+  /// In de, this message translates to:
+  /// **'Dehnen'**
+  String get recoveryKindStretch;
+
+  /// recovery.kind.yoga
+  ///
+  /// In de, this message translates to:
+  /// **'Yoga'**
+  String get recoveryKindYoga;
+
+  /// recovery.last
+  ///
+  /// In de, this message translates to:
+  /// **'{when} · {kind} · {n} min'**
+  String recoveryLast(String when, String kind, int n);
+
+  /// recovery.never
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Regeneration erfasst'**
+  String get recoveryNever;
+
+  /// recovery.noload
+  ///
+  /// In de, this message translates to:
+  /// **'Bricht die Untätigkeitsstrafe, trägt aber keine Last. Der Formwert steigt davon nicht.'**
+  String get recoveryNoload;
+
+  /// recovery.title
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration'**
+  String get recoveryTitle;
+
   /// Körperregion, Filter
   ///
   /// In de, this message translates to:
@@ -3966,6 +4506,30 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Training'**
   String get sectionTraining;
+
+  /// seg.analysis
+  ///
+  /// In de, this message translates to:
+  /// **'Auswertung'**
+  String get segAnalysis;
+
+  /// seg.history
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf'**
+  String get segHistory;
+
+  /// seg.sessions
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten'**
+  String get segSessions;
+
+  /// seg.train
+  ///
+  /// In de, this message translates to:
+  /// **'Trainieren'**
+  String get segTrain;
 
   /// session.date.allowed.body
   ///
@@ -4716,6 +5280,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'AN'**
   String get switchOn;
+
+  /// tab.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get tabCardio;
+
+  /// tab.hybrid
+  ///
+  /// In de, this message translates to:
+  /// **'Hybrid'**
+  String get tabHybrid;
+
+  /// tab.strength
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft'**
+  String get tabStrength;
 
   /// Trainingsart eines Plans
   ///
@@ -6258,6 +6840,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Heute'**
   String get workoutsTodayLabel;
+
+  /// analysis.pace.basis (Board 11) — Fassung für alle Aktivitäten außer Laufen
+  ///
+  /// In de, this message translates to:
+  /// **'gegen eigenen Schnitt {value} · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String analysisPaceBasisOther(String value, int n);
+
+  /// analysis.pct.faster (Board 11) — Fassung für alle Aktivitäten außer Laufen
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Schneller als 1 deiner Einheiten} other{Schneller als # von {total} deiner Einheiten}}'**
+  String analysisPctFasterOther(int n, int total);
+
+  /// intensity.fallback.note (Board 11) — Fassung für alle Aktivitäten außer Laufen
+  ///
+  /// In de, this message translates to:
+  /// **'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Einheit} other{# Einheiten}} derselben Aktivität.'**
+  String intensityFallbackNoteOther(int n);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -182,6 +182,51 @@
   "@accountPartialTitle": {
     "description": "account.partial.title"
   },
+  "activityBike": "Cycling",
+  "@activityBike": {
+    "description": "activity.bike"
+  },
+  "activityBikeIndoor": "Indoor bike",
+  "@activityBikeIndoor": {
+    "description": "activity.bike.indoor"
+  },
+  "activityHike": "Hiking",
+  "@activityHike": {
+    "description": "activity.hike"
+  },
+  "activityMore": "More",
+  "@activityMore": {
+    "description": "activity.more"
+  },
+  "activityOther": "Other",
+  "@activityOther": {
+    "description": "activity.other"
+  },
+  "activityOwn": "Your activities · {n, plural, one{1 session} other{# sessions}}",
+  "@activityOwn": {
+    "description": "activity.own",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "activityRow": "Rowing",
+  "@activityRow": {
+    "description": "activity.row"
+  },
+  "activityRun": "Running",
+  "@activityRun": {
+    "description": "activity.run"
+  },
+  "activitySwim": "Swimming",
+  "@activitySwim": {
+    "description": "activity.swim"
+  },
+  "activityWalk": "Walking",
+  "@activityWalk": {
+    "description": "activity.walk"
+  },
   "analysisChartLabel": "Form 0–100",
   "analysisCompConsistency": "Consistency",
   "analysisCompFitness": "Fitness vs. peak",
@@ -190,6 +235,22 @@
   "analysisCompRecency": "Recency",
   "analysisCompToday": "Today bonus",
   "analysisCompValue": "{v} / {max}",
+  "analysisDistBasis": "{n} of {total} sessions with distance",
+  "@analysisDistBasis": {
+    "description": "analysis.dist.basis",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisDistTitle": "Distance distribution",
+  "@analysisDistTitle": {
+    "description": "analysis.dist.title"
+  },
   "analysisErrorBody": "All {n} workouts are there — only the analysis is missing.",
   "analysisErrorRetry": "Recalculate",
   "analysisErrorTitle": "Form cannot be calculated",
@@ -203,12 +264,82 @@
   },
   "analysisLegendWith": "with training",
   "analysisLegendWithout": "without training",
+  "analysisPaceBasis": "vs. own average {value} · {n, plural, one{1 run} other{# runs}}",
+  "@analysisPaceBasis": {
+    "description": "analysis.pace.basis",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisPaceThin": "No curve below {min} sessions of this activity. Average {value}, range {from} to {to}.",
+  "@analysisPaceThin": {
+    "description": "analysis.pace.thin",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisPaceTitle": "Pace development",
+  "@analysisPaceTitle": {
+    "description": "analysis.pace.title"
+  },
+  "analysisPctFaster": "{n, plural, one{Faster than 1 of your runs} other{Faster than # of {total} of your runs}}",
+  "@analysisPctFaster": {
+    "description": "analysis.pct.faster",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisPctNoothers": "No comparison with other people.",
+  "@analysisPctNoothers": {
+    "description": "analysis.pct.noothers"
+  },
   "analysisThinBody": "A trend needs {n} workouts and {d} days of history.",
   "analysisThinHave": "What you already have",
   "analysisThinProgress": "{cur} / {req}",
   "analysisThinTitle": "Not enough for a trend yet",
   "analysisTitle": "Analysis",
   "analysisToday": "Form today",
+  "analysisWeeklyBasis": "avg. {value} km · {n, plural, one{1 session} other{# sessions}}",
+  "@analysisWeeklyBasis": {
+    "description": "analysis.weekly.basis",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisWeeklyCurrent": "in progress",
+  "@analysisWeeklyCurrent": {
+    "description": "analysis.weekly.current"
+  },
+  "analysisWeeklyTitle": "Weekly distance",
+  "@analysisWeeklyTitle": {
+    "description": "analysis.weekly.title"
+  },
   "analysisWhyConsistency": "{days} training days in {span}",
   "analysisWhyFitness": "Share of your own peak",
   "analysisWhyLoadNone": "No load in the last 28 days",
@@ -330,6 +461,70 @@
     "description": "barrier.sheet (Board 02)",
     "placeholders": {
       "titel": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioAdd": "Log session",
+  "@cardioAdd": {
+    "description": "cardio.add"
+  },
+  "cardioAddFirst": "Log first session",
+  "@cardioAddFirst": {
+    "description": "cardio.add.first"
+  },
+  "cardioEmptyBody": "Log a run, a ride or a hike. From the second session of the same activity on, pace development appears here.",
+  "@cardioEmptyBody": {
+    "description": "cardio.empty.body"
+  },
+  "cardioEmptyTitle": "No endurance session yet",
+  "@cardioEmptyTitle": {
+    "description": "cardio.empty.title"
+  },
+  "cardioErrorWeek": "Weekly distance cannot be calculated",
+  "@cardioErrorWeek": {
+    "description": "cardio.error.week"
+  },
+  "cardioLiveStart": "Track live",
+  "@cardioLiveStart": {
+    "description": "cardio.live.start"
+  },
+  "cardioTotalSince": "Total · since {date}",
+  "@cardioTotalSince": {
+    "description": "cardio.total.since",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioWeekBasis": "vs. 4-week average {value} km",
+  "@cardioWeekBasis": {
+    "description": "cardio.week.basis",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioWeekCount": "{n, plural, one{1 session} other{# sessions}}",
+  "@cardioWeekCount": {
+    "description": "cardio.week.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "cardioWeekThin": "Weekly distance from 3 weeks with sessions on. Until then, total distance is shown.",
+  "@cardioWeekThin": {
+    "description": "cardio.week.thin"
+  },
+  "cardioWeekTitle": "This week · W{kw}",
+  "@cardioWeekTitle": {
+    "description": "cardio.week.title",
+    "placeholders": {
+      "kw": {
         "type": "String"
       }
     }
@@ -1896,6 +2091,14 @@
   "@exportTitle": {
     "description": "export.title"
   },
+  "formActivity": "Activity",
+  "@formActivity": {
+    "description": "form.activity"
+  },
+  "formDate": "Date",
+  "@formDate": {
+    "description": "form.date"
+  },
   "formDiscardBarrier": "Discard changes",
   "@formDiscardBarrier": {
     "description": "Vorlesetext des Dialogschleiers"
@@ -1915,6 +2118,67 @@
   "formDiscardTitle": "Discard changes?",
   "@formDiscardTitle": {
     "description": "Dialog beim Verlassen mit ungespeicherten Änderungen"
+  },
+  "formDistance": "Distance · km",
+  "@formDistance": {
+    "description": "form.distance"
+  },
+  "formDuration": "Duration · min",
+  "@formDuration": {
+    "description": "form.duration"
+  },
+  "formHrAvg": "Avg. HR",
+  "@formHrAvg": {
+    "description": "form.hr.avg"
+  },
+  "formHrHint": "Leaving heart rate empty is normal. No analysis requires it.",
+  "@formHrHint": {
+    "description": "form.hr.hint"
+  },
+  "formHrMax": "Max. HR",
+  "@formHrMax": {
+    "description": "form.hr.max"
+  },
+  "formNote": "Note · optional",
+  "@formNote": {
+    "description": "form.note"
+  },
+  "formOptionalCount": "Optional · {n} fields",
+  "@formOptionalCount": {
+    "description": "form.optional.count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "formPace": "Pace",
+  "@formPace": {
+    "description": "form.pace"
+  },
+  "formPaceComputed": "calculated",
+  "@formPaceComputed": {
+    "description": "form.pace.computed"
+  },
+  "formRpe": "Effort · RPE",
+  "@formRpe": {
+    "description": "form.rpe"
+  },
+  "formRpe1": "very easy",
+  "@formRpe1": {
+    "description": "form.rpe.1"
+  },
+  "formRpe3": "moderate",
+  "@formRpe3": {
+    "description": "form.rpe.3"
+  },
+  "formRpe5": "maximal",
+  "@formRpe5": {
+    "description": "form.rpe.5"
+  },
+  "formToday": "Today",
+  "@formToday": {
+    "description": "form.today"
   },
   "formatDistanceKm": "{distance} km",
   "@formatDistanceKm": {
@@ -2099,6 +2363,76 @@
   "historyZonePause": "Paused",
   "historyZoneRecent": "Keeping up",
   "historyZoneRhythm": "In rhythm",
+  "hybridEmptyBody": "This will show how strength and endurance relate for you. Start with either side — it does not matter which.",
+  "@hybridEmptyBody": {
+    "description": "hybrid.empty.body"
+  },
+  "hybridEmptyTitle": "No session yet",
+  "@hybridEmptyTitle": {
+    "description": "hybrid.empty.title"
+  },
+  "hybridWeekThin": "Readiness and form from {min} sessions on.",
+  "@hybridWeekThin": {
+    "description": "hybrid.week.thin",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridWeekTitle": "Your week",
+  "@hybridWeekTitle": {
+    "description": "hybrid.week.title"
+  },
+  "intensityAbove": "Above average",
+  "@intensityAbove": {
+    "description": "intensity.above"
+  },
+  "intensityBelow": "Below average",
+  "@intensityBelow": {
+    "description": "intensity.below"
+  },
+  "intensityFallbackNote": "Neither heart rate nor RPE recorded. Judged by pace against {n, plural, one{1 run} other{# runs}}.",
+  "@intensityFallbackNote": {
+    "description": "intensity.fallback.note",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "intensityLevel1": "Avg. heart rate · from watch data",
+  "@intensityLevel1": {
+    "description": "intensity.level1"
+  },
+  "intensityLevel2": "Effort · your input",
+  "@intensityLevel2": {
+    "description": "intensity.level2"
+  },
+  "intensityLevel3": "Pace vs. own average",
+  "@intensityLevel3": {
+    "description": "intensity.level3"
+  },
+  "intensityNoneA11y": "not recorded",
+  "@intensityNoneA11y": {
+    "description": "intensity.none.a11y"
+  },
+  "intensityNoneValue": "—",
+  "@intensityNoneValue": {
+    "description": "intensity.none.value"
+  },
+  "intensityZone": "Zone {n} · {name}",
+  "@intensityZone": {
+    "description": "intensity.zone",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "languageDe": "German",
   "@languageDe": {
     "description": "language.de"
@@ -2110,6 +2444,32 @@
   "languageTitle": "Language",
   "@languageTitle": {
     "description": "language.title"
+  },
+  "lastCardio": "{n, plural, =0{{activity} today} other{{activity} yesterday}}",
+  "@lastCardio": {
+    "description": "last.cardio",
+    "placeholders": {
+      "activity": {
+        "type": "String"
+      }
+    }
+  },
+  "lastNone": "{n, plural, one{No session for 1 day} other{No session for # days}}",
+  "@lastNone": {
+    "description": "last.none",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "lastRecovery": "{n, plural, =0{Recovery today} other{Recovery yesterday}}",
+  "@lastRecovery": {
+    "description": "last.recovery"
+  },
+  "lastStrength": "{n, plural, =0{Strength today} other{Strength yesterday}}",
+  "@lastStrength": {
+    "description": "last.strength"
   },
   "legalError": "Text not loaded",
   "@legalError": {
@@ -2181,6 +2541,43 @@
   "listMonthSummary": "{n} · load {load}",
   "listSecond": "workout {n}",
   "listTitle": "Workouts",
+  "liveDistanceManual": "Distance by hand · km",
+  "@liveDistanceManual": {
+    "description": "live.distance.manual"
+  },
+  "liveDistanceSource": "from display",
+  "@liveDistanceSource": {
+    "description": "live.distance.source"
+  },
+  "liveNogps": "No GPS, no location permission. Distance comes from the machine display and can be corrected any time.",
+  "@liveNogps": {
+    "description": "live.nogps"
+  },
+  "livePause": "Pause",
+  "@livePause": {
+    "description": "live.pause"
+  },
+  "liveStarted": "Started {time}",
+  "@liveStarted": {
+    "description": "live.started",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "liveStatePaused": "Paused",
+  "@liveStatePaused": {
+    "description": "live.state.paused"
+  },
+  "liveStateRunning": "Running",
+  "@liveStateRunning": {
+    "description": "live.state.running"
+  },
+  "liveStop": "Finish",
+  "@liveStop": {
+    "description": "live.stop"
+  },
   "loadingDone": "{sektion} loaded",
   "@loadingDone": {
     "description": "loading.done (Board 02)",
@@ -2584,6 +2981,107 @@
   "@quickNoSessions": {
     "description": "Leerer Bestand"
   },
+  "ratioBasis": "Share of {min} training minutes · {n, plural, one{1 session} other{# sessions}}",
+  "@ratioBasis": {
+    "description": "ratio.basis",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ratioNoshift": "no 4-week average",
+  "@ratioNoshift": {
+    "description": "ratio.noshift"
+  },
+  "ratioShift": "{value} pp vs. 4-week average",
+  "@ratioShift": {
+    "description": "ratio.shift",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ratioShiftDown": "less",
+  "@ratioShiftDown": {
+    "description": "ratio.shift.down"
+  },
+  "ratioShiftUp": "more",
+  "@ratioShiftUp": {
+    "description": "ratio.shift.up"
+  },
+  "ratioSingleBody": "A split needs both tracks. From the first endurance session on, it appears here.",
+  "@ratioSingleBody": {
+    "description": "ratio.single.body"
+  },
+  "ratioSingleTitle": "No endurance yet",
+  "@ratioSingleTitle": {
+    "description": "ratio.single.title"
+  },
+  "ratioTitle": "Split",
+  "@ratioTitle": {
+    "description": "ratio.title"
+  },
+  "recoveryAdd": "Log",
+  "@recoveryAdd": {
+    "description": "recovery.add"
+  },
+  "recoveryGap": "{n, plural, one{No recovery for 1 day} other{No recovery for # days}}",
+  "@recoveryGap": {
+    "description": "recovery.gap",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "recoveryKindMobility": "Mobility",
+  "@recoveryKindMobility": {
+    "description": "recovery.kind.mobility"
+  },
+  "recoveryKindSauna": "Sauna",
+  "@recoveryKindSauna": {
+    "description": "recovery.kind.sauna"
+  },
+  "recoveryKindStretch": "Stretching",
+  "@recoveryKindStretch": {
+    "description": "recovery.kind.stretch"
+  },
+  "recoveryKindYoga": "Yoga",
+  "@recoveryKindYoga": {
+    "description": "recovery.kind.yoga"
+  },
+  "recoveryLast": "{when} · {kind} · {n} min",
+  "@recoveryLast": {
+    "description": "recovery.last",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "kind": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "recoveryNever": "No recovery logged",
+  "@recoveryNever": {
+    "description": "recovery.never"
+  },
+  "recoveryNoload": "Breaks the inactivity penalty but carries no load. Form does not rise from it.",
+  "@recoveryNoload": {
+    "description": "recovery.noload"
+  },
+  "recoveryTitle": "Recovery",
+  "@recoveryTitle": {
+    "description": "recovery.title"
+  },
   "regionArms": "Arms",
   "regionBack": "Back",
   "regionChest": "Chest",
@@ -2642,6 +3140,22 @@
   "sectionTraining": "Training",
   "@sectionTraining": {
     "description": "section.training"
+  },
+  "segAnalysis": "Analysis",
+  "@segAnalysis": {
+    "description": "seg.analysis"
+  },
+  "segHistory": "History",
+  "@segHistory": {
+    "description": "seg.history"
+  },
+  "segSessions": "Sessions",
+  "@segSessions": {
+    "description": "seg.sessions"
+  },
+  "segTrain": "Train",
+  "@segTrain": {
+    "description": "seg.train"
   },
   "sessionDateAllowedBody": "Moving the day moves your gaps and form curve with it.",
   "@sessionDateAllowedBody": {
@@ -3225,6 +3739,18 @@
   "switchOn": "ON",
   "@switchOn": {
     "description": "switch.on"
+  },
+  "tabCardio": "Cardio",
+  "@tabCardio": {
+    "description": "tab.cardio"
+  },
+  "tabHybrid": "Hybrid",
+  "@tabHybrid": {
+    "description": "tab.hybrid"
+  },
+  "tabStrength": "Strength",
+  "@tabStrength": {
+    "description": "tab.strength"
   },
   "typeBodyweight": "Bodyweight",
   "typeCardio": "Cardio",
@@ -4472,5 +4998,8 @@
   "workoutsTitle": "Workouts",
   "workoutsTodayEmptyBody": "Start freely or pick a plan.",
   "workoutsTodayEmptyTitle": "No workout scheduled",
-  "workoutsTodayLabel": "Today"
+  "workoutsTodayLabel": "Today",
+  "analysisPaceBasisOther": "vs. own average {value} · {n, plural, one{1 session} other{# sessions}}",
+  "analysisPctFasterOther": "{n, plural, one{Faster than 1 of your sessions} other{Faster than # of {total} of your sessions}}",
+  "intensityFallbackNoteOther": "Neither heart rate nor RPE recorded. Judged by pace against {n, plural, one{1 session} other{# sessions}} of the same activity."
 }
