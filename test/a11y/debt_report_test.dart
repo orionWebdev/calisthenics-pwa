@@ -1,7 +1,7 @@
 @Tags(['debt'])
 library;
 
-import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:atem/features/hybrid/presentation/screens/hybrid_screen.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:flutter/widgets.dart';
@@ -40,7 +40,7 @@ Future<void> _report(WidgetTester tester, String name, Widget home) async {
 
 void main() {
   testWidgets('Schuldenbericht Dashboard', (tester) async {
-    await _report(tester, 'Dashboard', const DashboardScreen());
+    await _report(tester, 'Dashboard', const HybridScreen());
   });
 
   testWidgets('Schuldenbericht Workout Runner', (tester) async {

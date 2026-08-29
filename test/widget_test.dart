@@ -1,4 +1,4 @@
-import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:atem/features/hybrid/presentation/screens/hybrid_screen.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/main.dart';
@@ -49,19 +49,22 @@ Future<void> _pumpStill(WidgetTester tester, Widget home) async {
 }
 
 void main() {
-  testWidgets('Dashboard rendert Readiness-Score und Session', (tester) async {
+  testWidgets('Hybrid-Tab rendert Bereitschaft und Regenerationszeile',
+      (tester) async {
     _useTallSurface(tester);
-    await _pumpStill(tester, const DashboardScreen());
+    await _pumpStill(tester, const HybridScreen());
 
     // Der eigentliche Beweis: mit abgeschalteten Animationen kommt der Baum
     // zur Ruhe. Vor der Einführung von AtemMotion.syncLoop hing das hier.
     await tester.pumpAndSettle();
 
     expect(find.text('ATEM READINESS'), findsOneWidget);
-    expect(find.text('HEUTIGE SESSION'), findsOneWidget);
-    expect(find.textContaining('SESSION STARTEN'), findsOneWidget);
     // Count-up ist ohne Animation sofort am Ziel.
     expect(find.text('89'), findsOneWidget);
+    // Regeneration ist eine Zeile im Hybrid-Tab — nie erfasst im Bestand.
+    expect(find.text('Keine Regeneration erfasst'), findsOneWidget);
+    // Kein Hybrid-Score, keine Session-Karte mehr.
+    expect(find.text('HEUTIGE SESSION'), findsNothing);
   });
 
   testWidgets('Workout Runner baut die Einheit aus dem Plan', (tester) async {

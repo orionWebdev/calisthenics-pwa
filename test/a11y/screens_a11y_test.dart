@@ -6,7 +6,7 @@ import 'package:atem/features/auth/presentation/screens/onboarding_screen.dart';
 import 'package:atem/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:atem/features/auth/presentation/screens/splash_screen.dart';
 import 'package:atem/features/auth/presentation/screens/waiting_room_screen.dart';
-import 'package:atem/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:atem/features/hybrid/presentation/screens/hybrid_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_detail_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_form_screen.dart';
 import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
@@ -24,6 +24,9 @@ import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
 import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
 import 'package:atem/features/cardio/presentation/screens/cardio_screen.dart';
+import 'package:atem/features/cardio/presentation/screens/cardio_form_screen.dart';
+import 'package:atem/features/cardio/presentation/screens/cardio_live_screen.dart';
+import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/core/theme/theme.dart';
@@ -35,7 +38,7 @@ import '../support/a11y.dart';
 
 void main() {
   testWidgets('Dashboard erfüllt den A11y-Vertrag', (tester) async {
-    await expectA11y(tester, const DashboardScreen());
+    await expectA11y(tester, const HybridScreen());
   });
 
   testWidgets('Splash erfüllt den A11y-Vertrag', (tester) async {
@@ -74,6 +77,28 @@ void main() {
 
   testWidgets('Cardio-Tab erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const CardioScreen());
+  });
+
+  testWidgets('Ausdauer erfassen erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const CardioFormScreen());
+  });
+
+  testWidgets('Ausdauer erfassen, vorbefüllt, erfüllt den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(
+      tester,
+      const CardioFormScreen(
+        prefill: CardioPrefill(
+          activity: CardioActivity.bikeIndoor,
+          duration: Duration(minutes: 18, seconds: 42),
+          distanceText: '6,4',
+        ),
+      ),
+    );
+  });
+
+  testWidgets('Live-Uhr erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const CardioLiveScreen());
   });
 
   testWidgets('Übungsliste erfüllt den A11y-Vertrag', (tester) async {

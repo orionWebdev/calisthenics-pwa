@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/theme/theme.dart';
 import '../core/widgets/widgets.dart';
 import '../features/cardio/presentation/screens/cardio_screen.dart';
-import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
 import '../features/history/application/history_providers.dart';
+import '../features/hybrid/presentation/screens/hybrid_screen.dart';
 import '../features/plans/presentation/start_sheet.dart';
 import '../features/strength/presentation/screens/strength_screen.dart';
 import '../features/workout/domain/workout_start.dart';
@@ -161,7 +161,7 @@ class _AppShellState extends ConsumerState<AppShell>
                     _TabNavigator(
                       navigatorKey: _keys[AppTab.hybrid.index],
                       observer: _observers[AppTab.hybrid.index],
-                      root: const DashboardScreen(),
+                      root: const HybridScreen(),
                     ),
                   ],
                 ),
