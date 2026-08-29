@@ -247,6 +247,24 @@ abstract class AppL10n {
   /// **'Zeitraum'**
   String get accountDeleteRange;
 
+  /// Zeitraum des Bestands: Jahre und Monate
+  ///
+  /// In de, this message translates to:
+  /// **'{y} J {m} M'**
+  String accountDeleteSpan(int y, int m);
+
+  /// Zeile in der Folgenliste der Kontolöschung
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt und Bestwerte'**
+  String get accountRowProgress;
+
+  /// Zeile in der Folgenliste der Kontolöschung
+  ///
+  /// In de, this message translates to:
+  /// **'Profil und Einstellungen'**
+  String get accountRowProfile;
+
   /// account.delete.sub
   ///
   /// In de, this message translates to:
@@ -2832,6 +2850,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.'**
   String get exportFormatNote;
+
+  /// Umfang des Ausgabeformats
+  ///
+  /// In de, this message translates to:
+  /// **'Vollständig'**
+  String get exportFormatFull;
+
+  /// Umfang des Ausgabeformats
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten'**
+  String get exportFormatSessions;
 
   /// export.offline
   ///

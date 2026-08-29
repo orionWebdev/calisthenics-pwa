@@ -11,6 +11,7 @@ class ExerciseHeader extends StatelessWidget {
   const ExerciseHeader({
     super.key,
     required this.exercise,
+    required this.title,
     required this.index,
     required this.total,
     required this.onPrevious,
@@ -19,6 +20,12 @@ class ExerciseHeader extends StatelessWidget {
   });
 
   final WorkoutExercise exercise;
+
+  /// Der anzuzeigende Name. Er kommt von aussen, weil die Einheit nur die
+  /// Kennung und den englischen Grundnamen kennt — die deutsche Fassung
+  /// steht im Übungsbestand.
+  final String title;
+
   final int index;
   final int total;
 
@@ -58,7 +65,7 @@ class ExerciseHeader extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          exercise.name,
+                          title,
                           textAlign: TextAlign.center,
                           style: AtemType.titleMedium.of(context),
                         ),

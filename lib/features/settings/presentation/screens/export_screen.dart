@@ -37,24 +37,29 @@ class ExportScreen extends ConsumerStatefulWidget {
 }
 
 class _ExportScreenState extends ConsumerState<ExportScreen> {
-  ExportFormat? _running;
-  int? _done;
+  /// **Das Format ist eine Wahl, kein zweiter Knopf** (Board 08, A5/1).
+  /// Zwei gleich aussehende Erstellen-Knöpfe zwangen zur Entscheidung, bevor
+  /// erkennbar war, dass es überhaupt eine gibt.
+  ExportFormat _format = ExportFormat.json;
+
+  bool _running = false;
+  ExportResult? _done;
   String? _error;
 
-  Future<void> _create(ExportFormat format) async {
+  Future<void> _create() async {
     final l10n = AppL10n.of(context);
     setState(() {
-      _running = format;
+      _running = true;
       _error = null;
       _done = null;
     });
 
-    final count = await ref.read(accountExportProvider.notifier).run(format);
+    final result = await ref.read(accountExportProvider.notifier).run(_format);
     if (!mounted) return;
     setState(() {
-      _running = null;
-      _done = count;
-      _error = count == null ? l10n.settingsExportFailed : null;
+      _running = false;
+      _done = result;
+      _error = result == null ? l10n.settingsExportFailed : null;
     });
   }
 
@@ -104,6 +109,9 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                     value: l10n.exportRowDays(span),
                   ),
                   _Row(label: l10n.exportRowProfile, value: '1'),
+                  // „Termine" steht im Board, hat in dieser Fassung aber
+                  // keine Quelle: Der Kalender gehört nicht zu V1. Eine
+                  // Zeile mit erfundener Zahl wäre schlimmer als keine.
                   const SizedBox(height: 8),
                   // Eine grobe Schätzung, und sie sagt das auch: „ca.".
                   // Genauer ginge nur, indem man die Datei vorher baut.
@@ -116,9 +124,35 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
             ),
             const SizedBox(height: 20),
 
+            Row(
+              children: [
+                Expanded(
+                  child: _FormatChip(
+                    title: 'JSON',
+                    note: l10n.exportFormatFull,
+                    selected: _format == ExportFormat.json,
+                    onTap: _running
+                        ? null
+                        : () => setState(() => _format = ExportFormat.json),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _FormatChip(
+                    title: 'CSV',
+                    note: l10n.exportFormatSessions,
+                    selected: _format == ExportFormat.csv,
+                    onTap: _running
+                        ? null
+                        : () => setState(() => _format = ExportFormat.csv),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
             Text(l10n.exportFormatNote,
                 style: AtemType.labelSmall.of(context)),
-            const SizedBox(height: 14),
+            const SizedBox(height: 16),
 
             AtemNoticeSlot(
               notice: _error == null
@@ -130,35 +164,27 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                       semanticLabel: '${l10n.settingsExportFailed}. ${l10n.commonRetry}',
                     ),
             ),
-            if (_done case final count?) ...[
-              AtemNotice(
-                title: l10n.settingsExportDone(count),
-                body: l10n.exportDoneNote,
-                semanticLabel:
-                    '${l10n.settingsExportDone(count)}. ${l10n.exportDoneNote}',
-              ),
-              const SizedBox(height: 14),
-            ],
-
             AtemButton.gradient(
-              label: _running == ExportFormat.json
-                  ? l10n.settingsExportRunning
-                  : l10n.exportCreateJson,
-              semanticLabel: l10n.exportCreateJson,
-              busy: _running == ExportFormat.json,
-              onPressed:
-                  _running != null ? null : () => _create(ExportFormat.json),
+              label: _running ? l10n.settingsExportRunning : l10n.exportCreate,
+              semanticLabel: l10n.exportCreate,
+              busy: _running,
+              onPressed: _running ? null : _create,
             ),
-            const SizedBox(height: 10),
-            AtemButton.outline(
-              label: _running == ExportFormat.csv
-                  ? l10n.settingsExportRunning
-                  : l10n.exportCreateCsv,
-              semanticLabel: l10n.exportCreateCsv,
-              busy: _running == ExportFormat.csv,
-              onPressed:
-                  _running != null ? null : () => _create(ExportFormat.csv),
-            ),
+
+            // Danach: die Datei mit Namen und ein zweiter Weg zum Teilen —
+            // das Blatt kann man versehentlich wegwischen (Board 08, A5/2).
+            if (_done case final result?) ...[
+              const SizedBox(height: 16),
+              _DoneRow(
+                fileName: result.fileName,
+                count: result.documentCount,
+                onShare: () =>
+                    ref.read(accountExportProvider.notifier).shareAgain(),
+              ),
+              const SizedBox(height: 10),
+              Text(l10n.exportDoneNote,
+                  style: AtemType.labelMicro.of(context)),
+            ],
           ],
         ),
       ),
@@ -181,6 +207,109 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
   static String _estimateMb(int sessions, int exercises) {
     final bytes = sessions * 1500 + exercises * 500 + 2000;
     return (bytes / 1024 / 1024).toStringAsFixed(1);
+  }
+}
+
+/// Ein Formatfeld: Name gross, Umfang klein darunter.
+class _FormatChip extends StatelessWidget {
+  const _FormatChip({
+    required this.title,
+    required this.note,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String title;
+  final String note;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => AtemTappable(
+        onTap: onTap,
+        semanticLabel: '$title, $note',
+        selected: selected,
+        inMutuallyExclusiveGroup: true,
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: selected
+                ? AtemCategories.surface(AtemColors.cyan)
+                : AtemColors.surfaceSolid,
+            borderRadius: BorderRadius.circular(AtemRadii.statBox),
+            border: Border.all(
+              color: selected
+                  ? AtemCategories.border(AtemColors.cyan)
+                  : AtemColors.border,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AtemType.titleSmallOrDefault(context).copyWith(
+                      color:
+                          selected ? AtemColors.cyan : AtemColors.textPrimary,
+                    ),
+              ),
+              const SizedBox(height: 3),
+              Text(note.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: AtemType.labelMicro.of(context)),
+            ],
+          ),
+        ),
+      );
+}
+
+/// Die fertige Datei: Punkt, Name, „Teilen".
+class _DoneRow extends StatelessWidget {
+  const _DoneRow({
+    required this.fileName,
+    required this.count,
+    required this.onShare,
+  });
+
+  final String fileName;
+  final int count;
+  final VoidCallback onShare;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return AtemCard.list(
+      padding: const EdgeInsets.fromLTRB(14, 6, 6, 6),
+      child: Row(
+        children: [
+          const ExcludeSemantics(child: AtemStatusDot(color: AtemColors.green)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Semantics(
+              label: '${l10n.settingsExportDone(count)}. $fileName',
+              child: ExcludeSemantics(
+                child: Text(fileName,
+                    style: AtemType.labelSmall.of(context)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          AtemButton.ghost(
+            label: l10n.exportDoneShare,
+            semanticLabel: '${l10n.exportDoneShare}: $fileName',
+            expand: false,
+            size: AtemButtonSize.compact,
+            onPressed: onShare,
+          ),
+        ],
+      ),
+    );
   }
 }
 

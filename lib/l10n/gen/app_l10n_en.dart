@@ -90,6 +90,17 @@ class AppL10nEn extends AppL10n {
   String get accountDeleteRange => 'Time span';
 
   @override
+  String accountDeleteSpan(int y, int m) {
+    return '${y}y ${m}m';
+  }
+
+  @override
+  String get accountRowProgress => 'Progress and records';
+
+  @override
+  String get accountRowProfile => 'Profile and settings';
+
+  @override
   String get accountDeleteSub => 'Six collections · no undo';
 
   @override
@@ -1681,6 +1692,12 @@ class AppL10nEn extends AppL10n {
   @override
   String get exportFormatNote =>
       'JSON contains everything. CSV contains your workouts as a table, one row per set.';
+
+  @override
+  String get exportFormatFull => 'Complete';
+
+  @override
+  String get exportFormatSessions => 'Sessions';
 
   @override
   String get exportOffline => 'Not possible offline';

@@ -10,6 +10,22 @@ import 'settings_providers.dart';
 
 enum ExportFormat { json, csv }
 
+/// Was am Ende dasteht: **eine Datei mit Namen**, nicht nur eine Zahl.
+///
+/// Der Name ist die Auskunft, nach der man später sucht — „110 Dokumente"
+/// sagt nichts darüber, was im Teilen-Blatt ankam.
+class ExportResult {
+  const ExportResult({
+    required this.documentCount,
+    required this.fileName,
+    required this.path,
+  });
+
+  final int documentCount;
+  final String fileName;
+  final String path;
+}
+
 /// Gibt den Bestand als Datei aus.
 ///
 /// ## Warum über das Teilen-Blatt und nicht in einen Ordner
@@ -23,12 +39,31 @@ enum ExportFormat { json, csv }
 /// Die Datei wird ins temporäre Verzeichnis geschrieben. Sie überlebt das
 /// Teilen; das System räumt sie später weg. Sie dauerhaft liegenzulassen wäre
 /// eine zweite Kopie der Daten auf dem Gerät, die niemand angefordert hat.
-class AccountExportController extends AsyncNotifier<int?> {
+class AccountExportController extends AsyncNotifier<ExportResult?> {
   @override
-  int? build() => null;
+  ExportResult? build() => null;
 
-  /// Liefert die Anzahl ausgegebener Dokumente, oder `null` bei Abbruch.
-  Future<int?> run(ExportFormat format) async {
+  /// Der Dateiname trägt das Datum: `atem-daten-2026-08-27.json`.
+  ///
+  /// Board 08, A5/2. Zwei Ausgaben am selben Tag überschreiben sich — das
+  /// ist gewollt; ein Zeitstempel auf die Minute genau häbe Kopien an, die
+  /// niemand angefordert hat.
+  static String fileNameFor(ExportFormat format, DateTime day) {
+    final extension = format == ExportFormat.json ? 'json' : 'csv';
+    final month = day.month.toString().padLeft(2, '0');
+    final dayOfMonth = day.day.toString().padLeft(2, '0');
+    return 'atem-daten-${day.year}-$month-$dayOfMonth.$extension';
+  }
+
+  /// Gibt die Datei noch einmal ans Teilen-Blatt — ohne sie neu zu bauen.
+  Future<void> shareAgain() async {
+    final result = state.value;
+    if (result == null) return;
+    await SharePlus.instance.share(ShareParams(files: [XFile(result.path)]));
+  }
+
+  /// Liefert die erstellte Datei, oder `null` bei Abbruch.
+  Future<ExportResult?> run(ExportFormat format) async {
     final userId = ref.read(currentUserIdProvider);
     if (userId == null) return null;
 
@@ -37,25 +72,25 @@ class AccountExportController extends AsyncNotifier<int?> {
     try {
       final export = await ref.read(accountRepositoryProvider).export(userId);
 
-      final (content, extension) = switch (format) {
-        ExportFormat.json => (AccountExportFormat.toJson(export), 'json'),
-        ExportFormat.csv => (
-            AccountExportFormat.sessionsToCsv(export),
-            'csv',
-          ),
+      final content = switch (format) {
+        ExportFormat.json => AccountExportFormat.toJson(export),
+        ExportFormat.csv => AccountExportFormat.sessionsToCsv(export),
       };
 
       final directory = await getTemporaryDirectory();
-      // Ein fester Name, kein Zeitstempel: Der Zeitpunkt steht ohnehin an der
-      // Datei, und zwei Ausgaben am selben Tag sollen sich überschreiben
-      // statt sich anzuhäufen.
-      final file = File('${directory.path}/atem-export.$extension');
+      final name = fileNameFor(format, ref.read(exportDayProvider));
+      final file = File('${directory.path}/$name');
       await file.writeAsString(content);
 
       await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
 
-      state = AsyncData(export.documentCount);
-      return export.documentCount;
+      final result = ExportResult(
+        documentCount: export.documentCount,
+        fileName: name,
+        path: file.path,
+      );
+      state = AsyncData(result);
+      return result;
     } catch (error, stack) {
       state = AsyncError(error, stack);
       return null;
@@ -65,7 +100,11 @@ class AccountExportController extends AsyncNotifier<int?> {
   void reset() => state = const AsyncData(null);
 }
 
+/// Der Tag im Dateinamen — überschreibbar, damit Tests einen festen Namen
+/// bekommen.
+final exportDayProvider = Provider<DateTime>((ref) => DateTime.now());
+
 final accountExportProvider =
-    AsyncNotifierProvider<AccountExportController, int?>(
+    AsyncNotifierProvider<AccountExportController, ExportResult?>(
   AccountExportController.new,
 );

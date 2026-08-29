@@ -121,6 +121,26 @@
   "@accountDeleteRange": {
     "description": "account.delete.range"
   },
+  "accountDeleteSpan": "{y} J {m} M",
+  "@accountDeleteSpan": {
+    "description": "Zeitraum des Bestands: Jahre und Monate",
+    "placeholders": {
+      "y": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "accountRowProgress": "Fortschritt und Bestwerte",
+  "@accountRowProgress": {
+    "description": "Zeile in der Folgenliste der Kontolöschung"
+  },
+  "accountRowProfile": "Profil und Einstellungen",
+  "@accountRowProfile": {
+    "description": "Zeile in der Folgenliste der Kontolöschung"
+  },
   "accountDeleteSub": "Sechs Sammlungen · kein Widerruf",
   "@accountDeleteSub": {
     "description": "account.delete.sub"
@@ -2413,6 +2433,14 @@
   "exportFormatNote": "JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.",
   "@exportFormatNote": {
     "description": "Welche Datei wofür — die offene Frage aus Modul 8, Abschnitt K"
+  },
+  "exportFormatFull": "Vollständig",
+  "@exportFormatFull": {
+    "description": "Umfang des Ausgabeformats"
+  },
+  "exportFormatSessions": "Einheiten",
+  "@exportFormatSessions": {
+    "description": "Umfang des Ausgabeformats"
   },
   "exportOffline": "Offline nicht möglich",
   "@exportOffline": {

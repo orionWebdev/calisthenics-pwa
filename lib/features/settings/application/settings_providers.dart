@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../auth/application/auth_providers.dart';
 import '../data/firestore_account_repository.dart';
@@ -85,3 +86,13 @@ final settingsControllerProvider =
     NotifierProvider<SettingsController, AsyncValue<void>>(
   SettingsController.new,
 );
+
+/// Die Version, wie sie im Paket steht — **nicht als Konstante im Code**.
+///
+/// Eine Zeichenkette, die jemand beim Release von Hand nachziehen muss, ist
+/// spätestens beim zweiten Release falsch. `1.0.0 (118)` liest sich aus
+/// `pubspec.yaml` und der Build-Nummer des installierten Pakets.
+final appVersionProvider = FutureProvider<String>((ref) async {
+  final info = await PackageInfo.fromPlatform();
+  return '${info.version} (${info.buildNumber})';
+});

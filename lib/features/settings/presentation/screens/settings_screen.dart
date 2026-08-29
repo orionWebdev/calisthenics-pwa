@@ -11,6 +11,7 @@ import '../../../auth/domain/auth_user.dart';
 import '../../../auth/presentation/screens/onboarding_screen.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../history/application/history_providers.dart';
+import '../../../history/domain/training_session.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../application/pending_weight_change.dart';
 import '../../application/settings_providers.dart';
@@ -44,8 +45,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String? _notice;
-
-  static const _version = '1.0.0';
 
   /// Rechtstexte öffnen **in der App** (Board 08, A3/3): Custom Tab mit
   /// Zurück-Weg, keine fremde Adressleiste. Langdruck öffnet extern.
@@ -86,23 +85,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         .where((e) => e.isOwn)
         .length;
 
-    final choice = await AtemDialog.show<_DeleteChoice>(
+    final span = _spanMonths(ref.read(sessionsProvider).value ?? const []);
+
+    // **Ein Sheet mit gezählten Folgen, kein Dialog mit einem Satz**
+    // (Board 08, A4/1). Stufe 1 informiert; sie fragt nicht. Ein Dialog mit
+    // „Löschen" als Knopf legt die Entscheidung schon hier an, obwohl sie
+    // erst in Stufe 2 fällt.
+    final choice = await AtemSheet.show<_DeleteChoice>(
       context,
-      kind: AtemDialogKind.destructive,
-      title: l10n.settingsDeleteStep1Title,
-      message: l10n.settingsDeleteStep1Body,
-      confirmLabel: l10n.commonDelete,
-      dismissLabel: l10n.commonCancel,
-      barrierLabel: l10n.settingsDeleteBarrier,
+      title: l10n.accountDelete,
+      closeLabel: l10n.commonCancel,
+      child: _DeleteFacts(
+        sessions: sessions,
+        plans: plans,
+        own: own,
+        spanMonths: span,
+      ),
+      primaryAction: AtemButton.outline(
+        label: l10n.accountDeleteContinue,
+        semanticLabel: l10n.accountDeleteContinue,
+        accent: AtemColors.magenta,
+        onPressed: () => Navigator.of(context).pop(_DeleteChoice.proceed),
+      ),
       // Der zweite Ausgang ist kein zweites Löschen, sondern die Alternative
       // dazu: erst sichern.
-      alternativeLabel: l10n.settingsDeleteExport,
-      onAlternative: () => Navigator.of(context).pop(_DeleteChoice.export),
-      detail: Text(
-        l10n.settingsDeleteCounts(sessions, plans, own),
-        style: AtemType.labelSmall.of(context),
+      secondaryAction: AtemButton.ghost(
+        label: l10n.accountDeleteExport,
+        semanticLabel: l10n.accountDeleteExport,
+        expand: true,
+        onPressed: () => Navigator.of(context).pop(_DeleteChoice.export),
       ),
-      onConfirm: () => Navigator.of(context).pop(_DeleteChoice.proceed),
     );
 
     if (!mounted) return;
@@ -118,6 +130,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       case null:
         break;
     }
+  }
+
+  /// Über wie viele Monate sich der Bestand erstreckt.
+  static int _spanMonths(List<TrainingSession> sessions) {
+    if (sessions.isEmpty) return 0;
+    final first =
+        sessions.reduce((a, b) => a.date.isBefore(b.date) ? a : b).date;
+    final last = sessions.reduce((a, b) => a.date.isAfter(b.date) ? a : b).date;
+    return (last.year - first.year) * 12 + last.month - first.month;
   }
 
   Future<void> _openExport() => Navigator.of(context).push(
@@ -296,7 +317,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             SettingsSection(
               title: l10n.sectionAbout,
               children: [
-                _AboutRow(label: l10n.aboutVersionLabel, value: _version),
+                _AboutRow(
+                  label: l10n.aboutVersionLabel,
+                  // Solange das Paket noch nicht gelesen ist, steht ein
+                  // Strich da — keine erfundene Nummer.
+                  value: ref.watch(appVersionProvider).value ??
+                      l10n.commonNotAvailable,
+                ),
                 // Die Zeile steht dort, wo in der Vorgänger-App ein
                 // Themenschalter war. Für ATEM existiert keine helle Palette;
                 // eine Auskunft beantwortet die Frage, ein toter Schalter nicht.
@@ -332,6 +359,112 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 }
 
 enum _DeleteChoice { proceed, export }
+
+/// Stufe 1 der Kontolöschung: **was genau weggeht, in Zahlen**.
+///
+/// „Deine Daten werden gelöscht" ist eine Behauptung. „110 Einheiten · 10
+/// Pläne · 70 eigene Übungen · Zeitraum 2 J 4 M" ist eine Auskunft, an der
+/// man die Entscheidung treffen kann. Darunter steht, was **bleibt** — der
+/// Zugang —, weil das die häufigste stille Sorge ist.
+class _DeleteFacts extends StatelessWidget {
+  const _DeleteFacts({
+    required this.sessions,
+    required this.plans,
+    required this.own,
+    required this.spanMonths,
+  });
+
+  final int sessions;
+  final int plans;
+  final int own;
+  final int spanMonths;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final rows = <(String, String)>[
+      (l10n.listTitle, '$sessions'),
+      (l10n.navPlans, '$plans'),
+      (l10n.exportRowExercises, '$own'),
+      (l10n.accountRowProgress, l10n.exportRowDays(spanMonths * 30)),
+      (l10n.accountRowProfile, '1'),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(l10n.accountDeleteBody, style: AtemType.labelSmall.of(context)),
+        const SizedBox(height: 14),
+        AtemCard.list(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final (label, value) in rows)
+                Semantics(
+                  label: '$label: $value',
+                  child: ExcludeSemantics(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Row(
+                        children: [
+                          const AtemStatusDot(color: AtemColors.magenta),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(label,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AtemType.labelSmall.of(context)),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(value,
+                              style: AtemType.valueMedium
+                                  .of(context)
+                                  .copyWith(fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 6),
+              const _Rule(),
+              const SizedBox(height: 6),
+              Semantics(
+                label: '${l10n.accountDeleteRange}: '
+                    '${l10n.accountDeleteSpan(spanMonths ~/ 12, spanMonths % 12)}',
+                child: ExcludeSemantics(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(l10n.accountDeleteRange,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AtemType.labelMicro.of(context)),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(l10n.accountDeleteSpan(spanMonths ~/ 12, spanMonths % 12),
+                          style: AtemType.valueMedium
+                              .of(context)
+                              .copyWith(fontSize: 13)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        AtemNotice(
+          title: l10n.settingsDeletedAccessTitle,
+          body: l10n.accountDeleteAccess,
+          semanticLabel:
+              '${l10n.settingsDeletedAccessTitle}. ${l10n.accountDeleteAccess}',
+        ),
+      ],
+    );
+  }
+}
 
 /// Der Trenner zwischen Zeilen einer Sektion, 1 dp #232334.
 class _Rule extends StatelessWidget {

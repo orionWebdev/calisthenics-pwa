@@ -12,7 +12,10 @@ import '../../domain/workout_session.dart';
 import '../../data/workout_draft_store.dart';
 import '../../domain/workout_clock.dart';
 import '../../domain/workout_start.dart';
+import '../../../exercises/application/exercise_providers.dart';
+import '../../../exercises/domain/exercise.dart';
 import '../../../exercises/presentation/exercise_picker.dart';
+import '../../../exercises/presentation/muscle_ui.dart';
 import '../widgets/exercise_header.dart';
 import '../widgets/rest_bar.dart';
 import '../set_type_ui.dart';
@@ -237,11 +240,11 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     final confirmed = await AtemDialog.show<bool>(
       context,
       kind: AtemDialogKind.destructive,
-      title: l10n.workoutRemoveExerciseConfirm(exercise.name),
+      title: l10n.workoutRemoveExerciseConfirm(_displayName(exercise)),
       message: l10n.workoutRemoveExerciseBody,
       confirmLabel: l10n.workoutRunnerRemoveExercise,
       dismissLabel: l10n.commonCancel,
-      barrierLabel: l10n.workoutRunnerRemoveExerciseA11y(exercise.name),
+      barrierLabel: l10n.workoutRunnerRemoveExerciseA11y(_displayName(exercise)),
       onConfirm: () => Navigator.of(context).pop(true),
     );
     if (confirmed != true || !mounted) return;
@@ -411,6 +414,18 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     setState(() => _exIndex = count - 1);
   }
 
+  /// Der anzuzeigende Übungsname.
+  ///
+  /// Die laufende Einheit trägt den englischen Grundnamen — sie entsteht in
+  /// der Datenschicht, die kein Gebietsschema kennt. Hier ist der Bestand
+  /// da, und damit die deutsche Fassung.
+  String _displayName(WorkoutExercise exercise) {
+    for (final entry in ref.read(exercisesProvider).value ?? const <Exercise>[]) {
+      if (entry.id == exercise.id) return exerciseName(context, entry);
+    }
+    return exercise.name;
+  }
+
   Widget _buildRunner(ActiveWorkout w) {
     final l10n = AppL10n.of(context);
     if (w.exercises.isEmpty) {
@@ -476,6 +491,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                   const SizedBox(height: 14),
                   ExerciseHeader(
                     exercise: exercise,
+                    title: _displayName(exercise),
                     index: index,
                     total: w.exercises.length,
                     onPrevious:
@@ -556,7 +572,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                   AtemButton.ghost(
                     label: l10n.workoutRunnerRemoveExercise,
                     semanticLabel:
-                        l10n.workoutRunnerRemoveExerciseA11y(exercise.name),
+                        l10n.workoutRunnerRemoveExerciseA11y(_displayName(exercise)),
                     accent: AtemColors.magenta,
                     onPressed: () => _confirmRemove(index, exercise),
                   ),

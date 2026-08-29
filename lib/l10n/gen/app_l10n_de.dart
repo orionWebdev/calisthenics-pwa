@@ -90,6 +90,17 @@ class AppL10nDe extends AppL10n {
   String get accountDeleteRange => 'Zeitraum';
 
   @override
+  String accountDeleteSpan(int y, int m) {
+    return '$y J $m M';
+  }
+
+  @override
+  String get accountRowProgress => 'Fortschritt und Bestwerte';
+
+  @override
+  String get accountRowProfile => 'Profil und Einstellungen';
+
+  @override
   String get accountDeleteSub => 'Sechs Sammlungen · kein Widerruf';
 
   @override
@@ -1689,6 +1700,12 @@ class AppL10nDe extends AppL10n {
   @override
   String get exportFormatNote =>
       'JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.';
+
+  @override
+  String get exportFormatFull => 'Vollständig';
+
+  @override
+  String get exportFormatSessions => 'Einheiten';
 
   @override
   String get exportOffline => 'Offline nicht möglich';

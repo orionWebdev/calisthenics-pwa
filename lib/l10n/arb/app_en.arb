@@ -121,6 +121,20 @@
   "@accountDeleteRange": {
     "description": "account.delete.range"
   },
+  "accountDeleteSpan": "{y}y {m}m",
+  "@accountDeleteSpan": {
+    "description": "Zeitraum des Bestands: Jahre und Monate",
+    "placeholders": {
+      "y": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "accountRowProgress": "Progress and records",
+  "accountRowProfile": "Profile and settings",
   "accountDeleteSub": "Six collections · no undo",
   "@accountDeleteSub": {
     "description": "account.delete.sub"
@@ -2018,6 +2032,8 @@
   "@exportFormatNote": {
     "description": "Welche Datei wofür — die offene Frage aus Modul 8, Abschnitt K"
   },
+  "exportFormatFull": "Complete",
+  "exportFormatSessions": "Sessions",
   "exportOffline": "Not possible offline",
   "@exportOffline": {
     "description": "export.offline"
