@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../app/application/tab_providers.dart';
 import '../../../../core/theme/theme.dart';
@@ -11,8 +14,10 @@ import '../../../cardio/presentation/cardio_ui.dart';
 import '../../../cardio/presentation/screens/cardio_form_screen.dart';
 import '../../../dashboard/application/dashboard_providers.dart';
 import '../../../dashboard/domain/dashboard_data.dart';
-import '../../../dashboard/presentation/widgets/cyber_header.dart';
-import '../../../dashboard/presentation/widgets/readiness_hero.dart';
+import '../../../dashboard/domain/readiness_level.dart';
+import '../../../dashboard/presentation/readiness_level_ui.dart';
+import '../../../dashboard/presentation/readiness_zone_ui.dart';
+import '../../../history/presentation/session_ui.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/data_sufficiency.dart';
 import '../../../history/domain/form_series.dart';
@@ -148,10 +153,12 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
     final last = LastActivity.of(sessions, reference);
     final thin = sessions.length < HybridScreen.minimumSessions;
 
-    final header = CyberHeader(
+    // Kopf wie im Artboard A3: „Hybrid" mit dem Datum rechts. Das
+    // Profilbild bleibt der Zugang zu den Einstellungen (Modul 8) — klein,
+    // ganz rechts.
+    final header = _Header(
       user: data.user,
-      // Kein Platz in der Leiste: Einstellungen tut man selten. Das
-      // Profilbild ist die Stelle, an der man sie sucht (Modul 8).
+      date: reference,
       onProfile: () => Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
       ),
@@ -203,16 +210,12 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
             // ---- Bereitschaft (heute), oder der dünne Wochenblock (C3/1).
             if (thin)
               _ThinWeek(ratio: ratio, sessions: sessions)
-            else ...[
-              ReadinessHero(
+            else
+              _ReadinessCard(
                 readiness: data.readiness,
                 scoreAnimation: _score,
+                last: last,
               ),
-              if (last != null) ...[
-                const SizedBox(height: 8),
-                _LastActivityLine(last: last),
-              ],
-            ],
             const SizedBox(height: AtemSpacing.cardGap),
 
             // ---- Verhältnis (diese Woche). Mit beiden Spuren der Block;
@@ -272,12 +275,15 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
                       style: AtemType.titleMedium.of(context)),
                 ),
                 if (form.score case final score?)
-                  Text(
-                    [
-                      l10n.historyFormOf(score),
-                      if (trend != null) trend,
-                    ].join(' · '),
-                    style: AtemType.labelSmall.of(context),
+                  Flexible(
+                    child: Text(
+                      [
+                        l10n.historyFormOf(score),
+                        if (trend != null) trend,
+                      ].join(' · '),
+                      textAlign: TextAlign.end,
+                      style: AtemType.labelSmall.of(context),
+                    ),
                   ),
               ],
             ),
@@ -298,33 +304,198 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
   }
 }
 
-/// „Gestern Regeneration" — die Art der letzten Einheit, nicht nur ihr
-/// Datum (Sprachregel C2/3). Ab zwei Tagen: „Seit n Tagen keine Einheit",
-/// als Tatsache ohne Aufforderung — kein Ausrufezeichen, kein Magenta.
-class _LastActivityLine extends StatelessWidget {
-  const _LastActivityLine({required this.last});
+/// Der Kopf des Tabs: Titel, Datum, Profilbild (A3).
+class _Header extends StatelessWidget {
+  const _Header({
+    required this.user,
+    required this.date,
+    required this.onProfile,
+  });
 
-  final LastActivity last;
+  final UserSummary user;
+  final DateTime date;
+  final VoidCallback onProfile;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final days = last.daysAgo;
-    final text = days >= 2
-        ? l10n.lastNone(days)
-        : switch (last.session) {
-            RecoverySession() => l10n.lastRecovery(days),
-            CardioSession(:final activity) =>
-              l10n.lastCardio(activityLabel(l10n, activity), days),
-            _ => l10n.lastStrength(days),
-          };
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Text(text.toUpperCase(),
-          style: AtemType.labelMicro.of(context)),
+    return Row(
+      children: [
+        Expanded(
+          child: Text(l10n.tabHybrid, style: AtemType.titleLarge.of(context)),
+        ),
+        Flexible(
+          child: Text(
+            DateFormat.MMMEd(languageTag(context)).format(date).toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AtemType.labelMicro.of(context),
+          ),
+        ),
+        const SizedBox(width: 12),
+        AtemTappable(
+          onTap: onProfile,
+          semanticLabel: l10n.settingsEntryA11y,
+          child: Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [AtemColors.violet, AtemColors.magentaDeep],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Text(user.initial, style: AtemType.labelMedium.of(context)),
+          ),
+        ),
+      ],
     );
   }
+}
+
+/// Die Bereitschaftskarte — **Ring, Wort, Art der letzten Einheit** (A3).
+///
+/// Ring 56 dp in Zonenfarbe mit der Zahl innen; daneben „BEREITSCHAFT",
+/// die Zone als Wort und darunter „Gestern Regeneration" — die Sprachregel
+/// aus C2/3. Ab zwei Tagen „Seit n Tagen keine Einheit", als Tatsache ohne
+/// Aufforderung. Ein Semantics-Knoten für alles drei.
+class _ReadinessCard extends StatelessWidget {
+  const _ReadinessCard({
+    required this.readiness,
+    required this.scoreAnimation,
+    required this.last,
+  });
+
+  final ReadinessSnapshot readiness;
+  final Animation<double> scoreAnimation;
+  final LastActivity? last;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final zone = readiness.zone;
+    final lastText = switch (last) {
+      null => null,
+      final l when l.daysAgo >= 2 => l10n.lastNone(l.daysAgo),
+      LastActivity(session: RecoverySession(), :final daysAgo) =>
+        l10n.lastRecovery(daysAgo),
+      LastActivity(session: CardioSession(:final activity), :final daysAgo) =>
+        l10n.lastCardio(activityLabel(l10n, activity), daysAgo),
+      final l => l10n.lastStrength(l.daysAgo),
+    };
+
+    return AnimatedBuilder(
+      animation: scoreAnimation,
+      builder: (context, _) {
+        final value = scoreAnimation.value;
+        final level = ReadinessLevel.fromScore(value);
+        final color = zone?.color ?? level.color;
+        final word = zone?.label(l10n) ?? level.label(l10n);
+
+        return AtemCard.list(
+          padding: const EdgeInsets.all(16),
+          child: Semantics(
+            label: [
+              l10n.dashboardReadinessA11y(value.round(), word),
+              if (lastText != null) lastText,
+            ].join('. '),
+            child: ExcludeSemantics(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: CustomPaint(
+                      painter: _RingPainter(value: value / 100, color: color),
+                      child: Center(
+                        child: Text(
+                          '${value.round()}',
+                          style: AtemType.valueLarge
+                              .of(context)
+                              .copyWith(fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(l10n.dashboardReadinessSection.toUpperCase(),
+                            style: AtemType.labelMicro.of(context)),
+                        const SizedBox(height: 2),
+                        Text(word,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AtemType.titleMedium.of(context)),
+                        if (lastText != null) ...[
+                          const SizedBox(height: 4),
+                          Text(lastText.toUpperCase(),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AtemType.labelMicro
+                                  .of(context)
+                                  .copyWith(color: AtemColors.textTertiary)),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Der Ring: Track in #16161F, Wert in Zonenfarbe, Start bei zwölf Uhr.
+class _RingPainter extends CustomPainter {
+  const _RingPainter({required this.value, required this.color});
+
+  final double value;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const stroke = 4.0;
+    final rect = Rect.fromCircle(
+      center: size.center(Offset.zero),
+      radius: size.width / 2 - stroke / 2,
+    );
+    canvas.drawArc(
+      rect,
+      0,
+      math.pi * 2,
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..color = AtemColors.track,
+    );
+    if (value <= 0) return;
+    canvas.drawArc(
+      rect,
+      -math.pi / 2,
+      math.pi * 2 * value.clamp(0.0, 1.0),
+      false,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = StrokeCap.round
+        ..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_RingPainter old) =>
+      old.value != value || old.color != color;
 }
 
 /// Der dünne Hybrid-Tab: was gezählt ist, nicht, was daraus folgt (C3/1).

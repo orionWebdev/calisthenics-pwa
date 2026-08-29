@@ -98,7 +98,7 @@ class CardioSessionRow extends StatelessWidget {
                           .of(context)
                           .copyWith(fontSize: 14)),
                   if (tempo != null)
-                    Text(formatTempo(context, tempo),
+                    Text(formatTempo(context, tempo).toUpperCase(),
                         style: AtemType.labelMicro.of(context).copyWith(
                             color: AtemColors.textTertiary, letterSpacing: 0)),
                 ],

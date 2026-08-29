@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
-import '../../../dashboard/presentation/readiness_zone_ui.dart';
 import '../../application/history_providers.dart';
 import '../../domain/readiness.dart';
 import '../../domain/training_load.dart';
@@ -18,6 +17,10 @@ import '../../../cardio/application/cardio_providers.dart';
 import '../../../cardio/domain/cardio_intensity.dart';
 import '../../../cardio/presentation/cardio_ui.dart';
 import '../../../cardio/presentation/widgets/intensity_box.dart';
+import '../../../exercises/application/exercise_providers.dart';
+import '../../../exercises/domain/exercise.dart';
+import '../../../exercises/presentation/muscle_ui.dart';
+import '../widgets/acwr_scale.dart';
 import '../widgets/comparison_card.dart';
 import '../widgets/percentile_card.dart';
 import '../session_ui.dart';
@@ -109,20 +112,20 @@ class SessionDetailScreen extends ConsumerWidget {
               ),
               languageTag: tag,
             ),
+            // „Belastung an diesem Tag" — die ACWR-Skala aus Board 06 mit
+            // Zone als Wort, nicht nur als Segmentposition.
             if (acwr.acwr case final value?) ...[
-              const SizedBox(height: 24),
-              Text(l10n.detailAcwrLabel,
-                  style: AtemType.labelMedium.of(context)),
-              const SizedBox(height: 8),
-              AtemStatBox(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                child: Text(
-                  l10n.detailAcwrZone(
-                    value.toStringAsFixed(2),
-                    acwr.zone?.label(l10n) ?? '',
-                  ),
-                  style: AtemType.labelSmall.of(context),
+              const SizedBox(height: 22),
+              AtemCard.list(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.detailAcwrLabel.toUpperCase(),
+                        style: AtemType.labelMicro.of(context)),
+                    const SizedBox(height: 10),
+                    AcwrScale(acwr: value),
+                  ],
                 ),
               ),
             ],
@@ -153,7 +156,18 @@ class SessionDetailScreen extends ConsumerWidget {
             // Vorher erschien der Text nur, wenn schon eine Notiz existierte
             // — es gab also keinen Weg, die erste zu schreiben.
             if (session.notes case final notes? when notes.trim().isNotEmpty)
-              Text(notes, style: AtemType.body.of(context))
+              AtemCard.list(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.commonNotes.toUpperCase(),
+                        style: AtemType.labelMicro.of(context)),
+                    const SizedBox(height: 6),
+                    Text(notes, style: AtemType.body.of(context)),
+                  ],
+                ),
+              )
             else
               AtemButton.ghost(
                 label: l10n.detailNoteAdd,
@@ -268,9 +282,9 @@ class SessionDetailScreen extends ConsumerWidget {
         strength.exercises.fold<int>(0, (total, e) => total + e.sets.length);
 
     return [
-      const SizedBox(height: 24),
-      Text(l10n.detailSetsCount(strength.exercises.length, sets),
-          style: AtemType.labelMedium.of(context)),
+      const SizedBox(height: 22),
+      Text(l10n.detailSetsCount(strength.exercises.length, sets).toUpperCase(),
+          style: AtemType.labelMicro.of(context)),
       const SizedBox(height: 10),
       AtemCard.list(
         padding: EdgeInsets.zero,
@@ -642,42 +656,86 @@ class _DashedFrame extends CustomPainter {
   bool shouldRepaint(_DashedFrame old) => false;
 }
 
-class _ExerciseRow extends StatelessWidget {
+/// Eine Übung der Einheit — **Punkt im Muskelton, Name, Schema rechts**
+/// (Board 09, Spezifikation „Übungszeile im Einheitendetail": min-H 48 dp,
+/// Punkt 8 dp, Text weiss; das Schema in Cyan-Mono ist ein Messwert).
+///
+/// Der Name kommt aus dem Übungsbestand — die Einheit selbst kennt nur die
+/// Kennung, und `archer_push_up` ist kein Name.
+class _ExerciseRow extends ConsumerWidget {
   const _ExerciseRow({required this.exercise});
 
   final LoggedExercise exercise;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
+    final catalog = ref.watch(exercisesProvider).value ?? const <Exercise>[];
+    final entry =
+        catalog.where((e) => e.id == exercise.exerciseId).firstOrNull;
+    final name = entry == null ? exercise.exerciseId : exerciseName(context, entry);
+    final color = entry?.displayMuscles.firstOrNull?.color ?? AtemCategories.grey;
 
-    final sets = exercise.sets
-        .where((s) => !s.isEmpty)
-        .map((s) => [
-              if (s.reps != null) '${s.reps}',
-              if (s.weight != null) l10n.unitKilograms(_trim(s.weight!)),
-              if (s.holdSeconds != null) l10n.restSeconds(s.holdSeconds!),
-            ].join(' × '))
-        .join(' · ');
+    final done = exercise.sets.where((s) => !s.isEmpty).toList();
+    final reps = done.map((s) => s.reps).whereType<int>().toList();
+    final weights = done.map((s) => s.weight).whereType<double>().toList();
+    final holds = done.map((s) => s.holdSeconds).whereType<int>().toList();
+    // „4 × 8 · 60 kg": Satzzahl, Wiederholungen des ersten Satzes, das
+    // schwerste Gewicht — die drei Zahlen, die eine Zeile tragen kann.
+    final scheme = <String>[
+      if (done.isNotEmpty)
+        reps.isNotEmpty ? '${done.length} × ${reps.first}' : '${done.length}',
+      if (weights.isNotEmpty)
+        l10n.unitKilograms(_trim(weights.reduce((a, b) => a > b ? a : b))),
+      if (holds.isNotEmpty && reps.isEmpty)
+        l10n.restSeconds(holds.reduce((a, b) => a > b ? a : b)),
+    ].join(' · ');
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(exercise.exerciseId,
-              style: AtemType.titleSmallOrDefault(context)),
-          if (sets.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(sets,
-                style:
-                    AtemType.labelMicro.of(context).copyWith(letterSpacing: 0)),
-          ],
-        ],
+    return Semantics(
+      label: [name, if (scheme.isNotEmpty) scheme].join(', '),
+      child: ExcludeSemantics(
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 48),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.titleSmallOrDefault(context)),
+              ),
+              if (scheme.isNotEmpty) ...[
+                const SizedBox(width: 10),
+                // Bei 200 % darf das Schema umbrechen — der Name geht vor.
+                Flexible(
+                  child: Text(
+                    scheme,
+                    textAlign: TextAlign.end,
+                    style: AtemType.valueMedium.of(context).copyWith(
+                          fontSize: 13,
+                          color: AtemColors.cyan,
+                        ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
 
   static String _trim(double value) =>
       value == value.roundToDouble() ? value.round().toString() : '$value';
+}
+
+extension _FirstOrNull<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
 }

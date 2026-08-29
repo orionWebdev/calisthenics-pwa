@@ -233,28 +233,39 @@ class _Running extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 18),
-              Text(l10n.commonDuration.toUpperCase(),
-                  style: AtemType.labelMicro.of(context)),
-              const SizedBox(height: 4),
-              Semantics(
-                label: l10n.liveDurationA11y(clock, state),
-                child: ExcludeSemantics(
-                  child: Text(
-                    clock,
-                    style: AtemType.valueLarge.of(context).copyWith(
-                          fontSize: 40,
-                          shadows: AtemGlow.text(AtemColors.cyan),
+              // Die Uhr mittig in ihrer eigenen Fläche (B2/3).
+              AtemStatBox(
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                child: Column(
+                  children: [
+                    Text(l10n.commonDuration.toUpperCase(),
+                        style: AtemType.labelMicro.of(context)),
+                    const SizedBox(height: 6),
+                    Semantics(
+                      label: l10n.liveDurationA11y(clock, state),
+                      child: ExcludeSemantics(
+                        child: Text(
+                          clock,
+                          textAlign: TextAlign.center,
+                          style: AtemType.valueLarge.of(context).copyWith(
+                                fontSize: 40,
+                                shadows: AtemGlow.text(AtemColors.cyan),
+                              ),
                         ),
-                  ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n
+                          .liveStarted(DateFormat.Hm(languageTag(context))
+                              .format(draft.clock.startedAt))
+                          .toUpperCase(),
+                      style: AtemType.labelMicro.of(context),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.liveStarted(
-                    DateFormat.Hm(languageTag(context)).format(draft.clock.startedAt)),
-                style: AtemType.labelMicro.of(context),
-              ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 14),
               Row(
                 children: [
                   Expanded(

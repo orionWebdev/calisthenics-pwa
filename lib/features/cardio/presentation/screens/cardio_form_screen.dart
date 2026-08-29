@@ -295,6 +295,13 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
         backgroundColor: AtemColors.base,
         appBar: AppBar(
           backgroundColor: AtemColors.base,
+          // „✕ Ausdauer erfassen" — das Formular schliesst, es geht nicht
+          // zurück (B2/1).
+          leading: AtemTappable(
+            onTap: () => Navigator.of(context).maybePop(),
+            semanticLabel: l10n.commonClose,
+            child: const Icon(Icons.close, size: 22, color: AtemColors.textPrimary),
+          ),
           title: Text(l10n.cardioFormTitle,
               style: AtemType.titleMedium.of(context)),
         ),
@@ -324,6 +331,11 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                       const SizedBox(height: 22),
                     ],
 
+                    AtemCard.list(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
                     AtemFieldLabel(label: l10n.formDate),
                     _PickField(
                       text: DateFormat.yMMMEd(tag).format(_date),
@@ -424,8 +436,18 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                       label: l10n.formPace,
                       note: l10n.formPaceComputed,
                     ),
+                        ],
+                      ),
+                    ),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 14),
+                    // Die vier optionalen Felder in ihrer eigenen Karte,
+                    // deren Kopf die Zahl nennt (B2/1).
+                    AtemCard.list(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
                     _MoreSection(
                       open: _moreOpen,
                       count: 4,
@@ -497,6 +519,9 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                         onChanged: (_) => _touch(),
                       ),
                     ],
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -702,15 +727,13 @@ class _MoreSection extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Row(
         children: [
-          Icon(open ? Icons.expand_less : Icons.expand_more,
-              size: 20, color: AtemColors.cyan),
-          const SizedBox(width: 8),
           Expanded(
             child: Text(text.toUpperCase(),
-                style: AtemType.labelMicro
-                    .of(context)
-                    .copyWith(color: AtemColors.cyan)),
+                style: AtemType.labelMicro.of(context)),
           ),
+          const SizedBox(width: 8),
+          Icon(open ? Icons.expand_less : Icons.expand_more,
+              size: 20, color: AtemColors.textSecondary),
         ],
       ),
     );

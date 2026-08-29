@@ -114,12 +114,15 @@ class CardioScreen extends ConsumerWidget {
                           _Analysis(sessions: cardio),
                         ],
                       ),
-                      Positioned(
-                        right: AtemSpacing.screenPadding,
-                        // Über der Leiste, die selbst über dem Inhalt liegt.
-                        bottom: 96,
-                        child: _Fab(onTap: () => _openForm(context)),
-                      ),
+                      // Der FAB nur, wenn die Wochenzahl steht (A2). Im dünnen
+                      // Zustand trägt die Liste den Knopf selbst (B1/1).
+                      if (ref.watch(weeklyDistanceProvider).hasWeekly)
+                        Positioned(
+                          right: AtemSpacing.screenPadding,
+                          // Über der Leiste, die selbst über dem Inhalt liegt.
+                          bottom: 96,
+                          child: _Fab(onTap: () => _openForm(context)),
+                        ),
                     ],
                   );
                 },
@@ -212,6 +215,7 @@ class _Sessions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final weekly = ref.watch(weeklyDistanceProvider);
+    final thin = !weekly.hasWeekly;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
@@ -242,6 +246,18 @@ class _Sessions extends ConsumerWidget {
             ],
           ),
         ),
+        if (thin) ...[
+          const SizedBox(height: 16),
+          AtemButton.gradient(
+            label: l10n.cardioAdd,
+            semanticLabel: l10n.cardioAdd,
+            leading:
+                const Icon(Icons.add, size: 18, color: AtemColors.textPrimary),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const CardioFormScreen()),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -300,11 +316,13 @@ class _WeekTile extends StatelessWidget {
       // Wochenzahl erscheint.
       final since = DateFormat.MMMd(tag).format(weekly.firstDate!);
       final km = formatKm(context, weekly.totalKm);
-      final breakdown = [
-        for (final entry in weekly.countByActivity.entries)
-          '${activityLabel(l10n, entry.key)} · '
-              '${l10n.cardioActivityAverage(entry.value, formatKm(context, weekly.kmByActivity[entry.key]! / entry.value))}',
-      ].join(' · ');
+      // „3 LÄUFE" · „Ø 6,2 KM" als Kapseln (B1/1) — je Aktivität ein Paar.
+      final chips = <String>[
+        for (final entry in weekly.countByActivity.entries) ...[
+          '${entry.value} ${activityLabel(l10n, entry.key)}',
+          'Ø ${formatKm(context, weekly.kmByActivity[entry.key]! / entry.value)} km',
+        ],
+      ];
 
       return AtemCard.list(
         padding: const EdgeInsets.all(13),
@@ -321,10 +339,15 @@ class _WeekTile extends StatelessWidget {
                     style: AtemType.valueLarge
                         .of(context)
                         .copyWith(fontSize: 28)),
-                const SizedBox(height: 4),
-                Text(breakdown.toUpperCase(),
-                    style: AtemType.labelMicro.of(context)),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final chip in chips) AtemBadge(label: chip.toUpperCase()),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 _InfoLine(text: l10n.cardioWeekThin),
               ],
             ),
@@ -372,11 +395,8 @@ class _WeekTile extends StatelessWidget {
                           .copyWith(fontSize: 28)),
                   if (shiftText != null)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Text(shiftText,
-                          style: AtemType.labelSmall.of(context).copyWith(
-                              color: AtemColors.textTertiary,
-                              fontWeight: FontWeight.w600)),
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: AtemBadge(label: shiftText),
                     ),
                 ],
               ),
@@ -388,6 +408,8 @@ class _WeekTile extends StatelessWidget {
                     .toUpperCase(),
                 style: AtemType.labelMicro.of(context),
               ),
+              const SizedBox(height: 12),
+              _MiniStrip(weeks: weekly.weeks),
             ],
           ),
         ),
@@ -453,11 +475,9 @@ class _AnalysisState extends ConsumerState<_Analysis> {
                       ),
                     ),
                     if (weekly.shiftKm case final shift?)
-                      Text(
-                        '${shift >= 0 ? '▲' : '▼'} ${shift >= 0 ? '+' : '−'}${formatKm(context, shift.abs())}',
-                        style: AtemType.labelSmall.of(context).copyWith(
-                            color: AtemColors.textTertiary,
-                            fontWeight: FontWeight.w600),
+                      AtemBadge(
+                        label:
+                            '${shift >= 0 ? '▲' : '▼'} ${shift >= 0 ? '+' : '−'}${formatKm(context, shift.abs())}',
                       ),
                   ],
                 ),
@@ -549,13 +569,10 @@ class _PaceBlock extends StatelessWidget {
                                   .copyWith(fontSize: 28)),
                           if (delta != 0)
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: Text(
-                                formatTempoDelta(context, delta,
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: AtemBadge(
+                                label: formatTempoDelta(context, delta,
                                     usesSpeed: series.usesSpeed),
-                                style: AtemType.labelSmall.of(context).copyWith(
-                                    color: AtemColors.textTertiary,
-                                    fontWeight: FontWeight.w600),
                               ),
                             ),
                         ],
@@ -814,4 +831,46 @@ class _InfoLine extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Der Mini-Streifen in der Wochenkachel: acht Wochen als Balken, die
+/// laufende in Cyan, eine leere als 2-dp-Strich (A2). Rein dekorativ — die
+/// Kachel trägt die Zahl, der Streifen nur ihren Verlauf.
+class _MiniStrip extends StatelessWidget {
+  const _MiniStrip({required this.weeks});
+
+  final List<WeekDistance> weeks;
+
+  @override
+  Widget build(BuildContext context) {
+    final max = weeks.fold<double>(0, (m, w) => w.km > m ? w.km : m);
+    return ExcludeSemantics(
+      child: SizedBox(
+        height: 22,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            for (var i = 0; i < weeks.length; i++) ...[
+              if (i > 0) const SizedBox(width: 4),
+              Expanded(
+                child: Container(
+                  height: weeks[i].isEmpty || max <= 0
+                      ? 2
+                      : 6 + 16 * (weeks[i].km / max).clamp(0.0, 1.0),
+                  decoration: BoxDecoration(
+                    color: weeks[i].isCurrent
+                        ? AtemColors.cyan
+                        : (weeks[i].isEmpty
+                            ? AtemColors.border
+                            : AtemColors.surfaceRaised),
+                    borderRadius: BorderRadius.circular(AtemRadii.pill),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
