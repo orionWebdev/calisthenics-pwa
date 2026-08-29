@@ -500,7 +500,7 @@ class AppL10nDe extends AppL10n {
       'Wochenkilometer ab 3 Wochen mit Einheiten. Bis dahin steht hier die Gesamtstrecke.';
 
   @override
-  String cardioWeekTitle(String kw) {
+  String cardioWeekTitle(int kw) {
     return 'Diese Woche · KW $kw';
   }
 
@@ -4110,4 +4110,281 @@ class AppL10nDe extends AppL10n {
     );
     return 'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen $_temp0 derselben Aktivität.';
   }
+
+  @override
+  String get intensityZoneName1 => 'regenerativ';
+
+  @override
+  String get intensityZoneName2 => 'grundlagig';
+
+  @override
+  String get intensityZoneName3 => 'schwellig';
+
+  @override
+  String get intensityZoneName4 => 'hart';
+
+  @override
+  String get intensityZoneName5 => 'maximal';
+
+  @override
+  String intensityBasisA11y(String basis) {
+    return 'Grundlage: $basis';
+  }
+
+  @override
+  String intensityBasisPace(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Einheiten',
+      one: '1 Einheit',
+    );
+    return 'Tempo gegen eigenen Schnitt aus $_temp0';
+  }
+
+  @override
+  String intensityRpeValue(int n) {
+    return '$n / 5';
+  }
+
+  @override
+  String get formRpe2 => 'leicht';
+
+  @override
+  String get formRpe4 => 'hart';
+
+  @override
+  String get formModeLog => 'Nacherfassen';
+
+  @override
+  String get formModeLive => 'Live';
+
+  @override
+  String get cardioFormTitle => 'Ausdauer erfassen';
+
+  @override
+  String get formKind => 'Art';
+
+  @override
+  String get formDurationRequired => 'Dauer fehlt';
+
+  @override
+  String get formActivityRequired => 'Aktivität fehlt';
+
+  @override
+  String get formDistanceInvalid => 'Distanz ungültig';
+
+  @override
+  String cardioSavedSnack(String activity) {
+    return 'Einheit gespeichert · $activity';
+  }
+
+  @override
+  String get recoverySavedSnack => 'Regeneration gespeichert';
+
+  @override
+  String get liveResume => 'Fortsetzen';
+
+  @override
+  String get liveStopTooShort =>
+      'Beenden, nicht möglich — Einheit unter einer Minute.';
+
+  @override
+  String get livePaceRunning => 'läuft mit';
+
+  @override
+  String liveRunningNotice(String time) {
+    return 'Live-Uhr läuft · $time';
+  }
+
+  @override
+  String liveDurationA11y(String time, String state) {
+    return 'Dauer $time, $state';
+  }
+
+  @override
+  String analysisWeeklyA11y(String from, String to) {
+    return 'Wochenkilometer der letzten 8 Wochen, von $from bis $to.';
+  }
+
+  @override
+  String analysisWeeklyGapA11y(int kw) {
+    return 'KW $kw ohne Einheit';
+  }
+
+  @override
+  String analysisWeeklyWeek(int kw) {
+    return 'KW $kw';
+  }
+
+  @override
+  String analysisPctThis(String date) {
+    return 'Diese Einheit · $date';
+  }
+
+  @override
+  String get analysisPctSlowest => 'langsamster';
+
+  @override
+  String get analysisPctFastest => 'schnellster';
+
+  @override
+  String analysisPaceRange(String value, String from, String to) {
+    return 'Schnitt $value · Spanne $from bis $to';
+  }
+
+  @override
+  String distBucketBelow(String v) {
+    return '< $v km';
+  }
+
+  @override
+  String distBucketRange(String a, String b) {
+    return '$a–$b km';
+  }
+
+  @override
+  String distBucketAbove(String v) {
+    return '> $v km';
+  }
+
+  @override
+  String get cardioAllSessions => 'Alle Einheiten';
+
+  @override
+  String cardioWeekA11y(String km, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Einheiten',
+      one: '1 Einheit',
+    );
+    return '$km Kilometer diese Woche, aus $_temp0';
+  }
+
+  @override
+  String cardioWeekShiftA11y(String delta, String dir, String avg) {
+    return '$delta $dir als der 4-Wochen-Schnitt von $avg';
+  }
+
+  @override
+  String cardioTotalA11y(String km, String date, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Einheiten',
+      one: '1 Einheit',
+    );
+    return '$km Kilometer gesamt seit $date, aus $_temp0';
+  }
+
+  @override
+  String cardioActivityAverage(int n, String km) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Einheiten',
+      one: '1 Einheit',
+    );
+    return '$_temp0 Ø $km km';
+  }
+
+  @override
+  String get ratioStrengthWeek => 'Kraft diese Woche';
+
+  @override
+  String ratioStrengthMeasure(String t, int s) {
+    String _temp0 = intl.Intl.pluralLogic(
+      s,
+      locale: localeName,
+      other: '# Sätze',
+      one: '1 Satz',
+    );
+    return '$t t Volumen · $_temp0';
+  }
+
+  @override
+  String hybridWeekSummary(int n, int min) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Einheiten',
+      one: '1 Einheit',
+    );
+    return '$_temp0 · $min min';
+  }
+
+  @override
+  String get ratioOpenStrength => 'Öffnet Kraft-Verlauf';
+
+  @override
+  String get ratioOpenCardio => 'Öffnet Ausdauer-Auswertung';
+
+  @override
+  String ratioA11y(int s, int c, int min, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Einheiten',
+      one: '1 Einheit',
+    );
+    return 'Verhältnis dieser Woche: $s Prozent Kraft, $c Prozent Ausdauer, Anteil an $min Trainingsminuten aus $_temp0.';
+  }
+
+  @override
+  String ratioRowA11y(String track, int pct, int min) {
+    return '$track, $pct Prozent, $min Minuten';
+  }
+
+  @override
+  String ratioShiftA11y(String value, String dir) {
+    return '$value Prozentpunkte $dir als im 4-Wochen-Schnitt';
+  }
+
+  @override
+  String get hybridEmptyStrength => 'Krafttraining starten';
+
+  @override
+  String get hybridEmptyCardio => 'Ausdauer erfassen';
+
+  @override
+  String get hybridFormSection => 'Formwert · 4 Wochen';
+
+  @override
+  String get whenToday => 'Heute';
+
+  @override
+  String get whenYesterday => 'Gestern';
+
+  @override
+  String whenLast(String date) {
+    return 'Zuletzt $date';
+  }
+
+  @override
+  String get recoveryFormTitle => 'Regeneration erfassen';
+
+  @override
+  String tempoPerKm(String value) {
+    return '$value /km';
+  }
+
+  @override
+  String tempoKmh(String value) {
+    return '$value km/h';
+  }
+
+  @override
+  String cardioListCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '# Einheiten',
+      one: '1 Einheit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get intensityTitle => 'Intensität';
 }

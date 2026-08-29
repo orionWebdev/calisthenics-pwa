@@ -845,7 +845,7 @@ abstract class AppL10n {
   ///
   /// In de, this message translates to:
   /// **'Diese Woche · KW {kw}'**
-  String cardioWeekTitle(String kw);
+  String cardioWeekTitle(int kw);
 
   /// aus common.activity
   ///
@@ -6858,6 +6858,354 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Einheit} other{# Einheiten}} derselben Aktivität.'**
   String intensityFallbackNoteOther(int n);
+
+  /// Ergänzung zu Board 11 — Zonenname Stufe 1; das Board nennt nur „schwellig" als Beispiel
+  ///
+  /// In de, this message translates to:
+  /// **'regenerativ'**
+  String get intensityZoneName1;
+
+  /// Ergänzung zu Board 11 — Zonenname
+  ///
+  /// In de, this message translates to:
+  /// **'grundlagig'**
+  String get intensityZoneName2;
+
+  /// Ergänzung zu Board 11 — Zonenname, Beispiel aus B4/B
+  ///
+  /// In de, this message translates to:
+  /// **'schwellig'**
+  String get intensityZoneName3;
+
+  /// Ergänzung zu Board 11 — Zonenname
+  ///
+  /// In de, this message translates to:
+  /// **'hart'**
+  String get intensityZoneName4;
+
+  /// Ergänzung zu Board 11 — Zonenname
+  ///
+  /// In de, this message translates to:
+  /// **'maximal'**
+  String get intensityZoneName5;
+
+  /// Ergänzung zu Board 11 — Vorlesetext der Intensitätskapsel (H)
+  ///
+  /// In de, this message translates to:
+  /// **'Grundlage: {basis}'**
+  String intensityBasisA11y(String basis);
+
+  /// Ergänzung zu Board 11 — Grundlage der Stufe 3 mit Nenner
+  ///
+  /// In de, this message translates to:
+  /// **'Tempo gegen eigenen Schnitt aus {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String intensityBasisPace(int n);
+
+  /// Ergänzung zu Board 11 — RPE als Bruch, nie in Prozent (J)
+  ///
+  /// In de, this message translates to:
+  /// **'{n} / 5'**
+  String intensityRpeValue(int n);
+
+  /// Ergänzung zu Board 11 — RPE-Wort, das Board nennt 1, 3 und 5
+  ///
+  /// In de, this message translates to:
+  /// **'leicht'**
+  String get formRpe2;
+
+  /// Ergänzung zu Board 11 — RPE-Wort
+  ///
+  /// In de, this message translates to:
+  /// **'hart'**
+  String get formRpe4;
+
+  /// Ergänzung zu Board 11 — Segment im Formular (B2/1)
+  ///
+  /// In de, this message translates to:
+  /// **'Nacherfassen'**
+  String get formModeLog;
+
+  /// Ergänzung zu Board 11 — Segment im Formular (B2/1)
+  ///
+  /// In de, this message translates to:
+  /// **'Live'**
+  String get formModeLive;
+
+  /// Ergänzung zu Board 11 — Titel des Formulars (B2/1)
+  ///
+  /// In de, this message translates to:
+  /// **'Ausdauer erfassen'**
+  String get cardioFormTitle;
+
+  /// Ergänzung zu Board 11 — Feldlabel im Regenerationssheet (C2/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Art'**
+  String get formKind;
+
+  /// Ergänzung zu Board 11 — Feldfehler inline
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer fehlt'**
+  String get formDurationRequired;
+
+  /// Ergänzung zu Board 11 — Feldfehler inline
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivität fehlt'**
+  String get formActivityRequired;
+
+  /// Ergänzung zu Board 11 — Feldfehler inline
+  ///
+  /// In de, this message translates to:
+  /// **'Distanz ungültig'**
+  String get formDistanceInvalid;
+
+  /// Ergänzung zu Board 11 — Meldung mit 30-s-Widerruf (I, Modul 7)
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit gespeichert · {activity}'**
+  String cardioSavedSnack(String activity);
+
+  /// Ergänzung zu Board 11 — Meldung mit 30-s-Widerruf
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration gespeichert'**
+  String get recoverySavedSnack;
+
+  /// Ergänzung zu Board 11 — Knopf der Live-Uhr im pausierten Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Fortsetzen'**
+  String get liveResume;
+
+  /// Ergänzung zu Board 11 — Vorlesetext des gesperrten Knopfs (H)
+  ///
+  /// In de, this message translates to:
+  /// **'Beenden, nicht möglich — Einheit unter einer Minute.'**
+  String get liveStopTooShort;
+
+  /// Ergänzung zu Board 11 — Zusatz am Tempo der Live-Uhr (B2/3)
+  ///
+  /// In de, this message translates to:
+  /// **'läuft mit'**
+  String get livePaceRunning;
+
+  /// Ergänzung zu Board 11 — Wiederaufnahme aus der Persistenz (Matrix: Erfassen · Live)
+  ///
+  /// In de, this message translates to:
+  /// **'Live-Uhr läuft · {time}'**
+  String liveRunningNotice(String time);
+
+  /// Ergänzung zu Board 11 — Vorlesetext der Uhr (H)
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer {time}, {state}'**
+  String liveDurationA11y(String time, String state);
+
+  /// Ergänzung zu Board 11 — Vorlesetext des Wochenstreifens (H)
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenkilometer der letzten 8 Wochen, von {from} bis {to}.'**
+  String analysisWeeklyA11y(String from, String to);
+
+  /// Ergänzung zu Board 11 — Die Lücke wird genannt (H)
+  ///
+  /// In de, this message translates to:
+  /// **'KW {kw} ohne Einheit'**
+  String analysisWeeklyGapA11y(int kw);
+
+  /// Ergänzung zu Board 11 — Beschriftung eines Balkens
+  ///
+  /// In de, this message translates to:
+  /// **'KW {kw}'**
+  String analysisWeeklyWeek(int kw);
+
+  /// Ergänzung zu Board 11 — Kopf der Perzentilkarte (B3/3)
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Einheit · {date}'**
+  String analysisPctThis(String date);
+
+  /// Ergänzung zu Board 11 — Spanne (B3/3)
+  ///
+  /// In de, this message translates to:
+  /// **'langsamster'**
+  String get analysisPctSlowest;
+
+  /// Ergänzung zu Board 11 — Spanne (B3/3)
+  ///
+  /// In de, this message translates to:
+  /// **'schnellster'**
+  String get analysisPctFastest;
+
+  /// Ergänzung zu Board 11 — Schnitt und Spanne, wenn Perzentil fehlt
+  ///
+  /// In de, this message translates to:
+  /// **'Schnitt {value} · Spanne {from} bis {to}'**
+  String analysisPaceRange(String value, String from, String to);
+
+  /// Ergänzung zu Board 11 — Verteilungsklasse
+  ///
+  /// In de, this message translates to:
+  /// **'< {v} km'**
+  String distBucketBelow(String v);
+
+  /// Ergänzung zu Board 11 — Verteilungsklasse
+  ///
+  /// In de, this message translates to:
+  /// **'{a}–{b} km'**
+  String distBucketRange(String a, String b);
+
+  /// Ergänzung zu Board 11 — Verteilungsklasse
+  ///
+  /// In de, this message translates to:
+  /// **'> {v} km'**
+  String distBucketAbove(String v);
+
+  /// Ergänzung zu Board 11 — Listenkopf im dünnen Zustand (B1/1)
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Einheiten'**
+  String get cardioAllSessions;
+
+  /// Ergänzung zu Board 11 — Vorlesetext der Wochenzahl (H)
+  ///
+  /// In de, this message translates to:
+  /// **'{km} Kilometer diese Woche, aus {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String cardioWeekA11y(String km, int n);
+
+  /// Ergänzung zu Board 11 — Vorlesetext der Verschiebung; dir ist „mehr"/„weniger"
+  ///
+  /// In de, this message translates to:
+  /// **'{delta} {dir} als der 4-Wochen-Schnitt von {avg}'**
+  String cardioWeekShiftA11y(String delta, String dir, String avg);
+
+  /// Ergänzung zu Board 11 — Vorlesetext im dünnen Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'{km} Kilometer gesamt seit {date}, aus {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String cardioTotalA11y(String km, String date, int n);
+
+  /// Ergänzung zu Board 11 — „3 Läufe Ø 6,2 km" (B1/1)
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Einheit} other{# Einheiten}} Ø {km} km'**
+  String cardioActivityAverage(int n, String km);
+
+  /// Ergänzung zu Board 11 — Kraft-Wochenblock ohne Gegenspur (C1/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft diese Woche'**
+  String get ratioStrengthWeek;
+
+  /// Ergänzung zu Board 11 — Fachgrösse Kraft
+  ///
+  /// In de, this message translates to:
+  /// **'{t} t Volumen · {s, plural, one{1 Satz} other{# Sätze}}'**
+  String ratioStrengthMeasure(String t, int s);
+
+  /// Ergänzung zu Board 11 — „3 Einheiten · 128 min"
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Einheit} other{# Einheiten}} · {min} min'**
+  String hybridWeekSummary(int n, int min);
+
+  /// Ergänzung zu Board 11 — Zielort im Label (H)
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnet Kraft-Verlauf'**
+  String get ratioOpenStrength;
+
+  /// Ergänzung zu Board 11 — Zielort im Label (H)
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnet Ausdauer-Auswertung'**
+  String get ratioOpenCardio;
+
+  /// Ergänzung zu Board 11 — Vorlesetext des Verhältnisbalkens (H)
+  ///
+  /// In de, this message translates to:
+  /// **'Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{# Einheiten}}.'**
+  String ratioA11y(int s, int c, int min, int n);
+
+  /// Ergänzung zu Board 11 — Vorlesetext einer Verhältniszeile
+  ///
+  /// In de, this message translates to:
+  /// **'{track}, {pct} Prozent, {min} Minuten'**
+  String ratioRowA11y(String track, int pct, int min);
+
+  /// Ergänzung zu Board 11 — Vorlesetext der Verschiebung
+  ///
+  /// In de, this message translates to:
+  /// **'{value} Prozentpunkte {dir} als im 4-Wochen-Schnitt'**
+  String ratioShiftA11y(String value, String dir);
+
+  /// Ergänzung zu Board 11 — Leerer Hybrid-Tab (C3/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Krafttraining starten'**
+  String get hybridEmptyStrength;
+
+  /// Ergänzung zu Board 11 — Leerer Hybrid-Tab und Hinweiszeile (C1/2, C3/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Ausdauer erfassen'**
+  String get hybridEmptyCardio;
+
+  /// Ergänzung zu Board 11 — Block unter dem Verhältnis (A3)
+  ///
+  /// In de, this message translates to:
+  /// **'Formwert · 4 Wochen'**
+  String get hybridFormSection;
+
+  /// Ergänzung zu Board 11 — Zeitwort in der Regenerationszeile
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get whenToday;
+
+  /// Ergänzung zu Board 11 — Zeitwort in der Regenerationszeile
+  ///
+  /// In de, this message translates to:
+  /// **'Gestern'**
+  String get whenYesterday;
+
+  /// Ergänzung zu Board 11 — Zeitwort in der Regenerationszeile (C2/1)
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt {date}'**
+  String whenLast(String date);
+
+  /// Ergänzung zu Board 11 — Titel des Sheets (C2/2)
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration erfassen'**
+  String get recoveryFormTitle;
+
+  /// Ergänzung zu Board 11 — Tempo in min/km — die Einheit steht im Wert
+  ///
+  /// In de, this message translates to:
+  /// **'{value} /km'**
+  String tempoPerKm(String value);
+
+  /// Ergänzung zu Board 11 — Tempo in km/h
+  ///
+  /// In de, this message translates to:
+  /// **'{value} km/h'**
+  String tempoKmh(String value);
+
+  /// Ergänzung zu Board 11 — Zahl in der Aktivitätskapsel
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Einheit} other{# Einheiten}}'**
+  String cardioListCount(int n);
+
+  /// Ergänzung zu Board 11 — Beschriftung im Intensitätskasten (B4)
+  ///
+  /// In de, this message translates to:
+  /// **'Intensität'**
+  String get intensityTitle;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -713,7 +713,7 @@
     "description": "cardio.week.title",
     "placeholders": {
       "kw": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -5885,5 +5885,429 @@
         "type": "int"
       }
     }
+  },
+  "intensityZoneName1": "regenerativ",
+  "@intensityZoneName1": {
+    "description": "Ergänzung zu Board 11 — Zonenname Stufe 1; das Board nennt nur „schwellig\" als Beispiel"
+  },
+  "intensityZoneName2": "grundlagig",
+  "@intensityZoneName2": {
+    "description": "Ergänzung zu Board 11 — Zonenname"
+  },
+  "intensityZoneName3": "schwellig",
+  "@intensityZoneName3": {
+    "description": "Ergänzung zu Board 11 — Zonenname, Beispiel aus B4/B"
+  },
+  "intensityZoneName4": "hart",
+  "@intensityZoneName4": {
+    "description": "Ergänzung zu Board 11 — Zonenname"
+  },
+  "intensityZoneName5": "maximal",
+  "@intensityZoneName5": {
+    "description": "Ergänzung zu Board 11 — Zonenname"
+  },
+  "intensityBasisA11y": "Grundlage: {basis}",
+  "@intensityBasisA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext der Intensitätskapsel (H)",
+    "placeholders": {
+      "basis": {
+        "type": "String"
+      }
+    }
+  },
+  "intensityBasisPace": "Tempo gegen eigenen Schnitt aus {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@intensityBasisPace": {
+    "description": "Ergänzung zu Board 11 — Grundlage der Stufe 3 mit Nenner",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "intensityRpeValue": "{n} / 5",
+  "@intensityRpeValue": {
+    "description": "Ergänzung zu Board 11 — RPE als Bruch, nie in Prozent (J)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "formRpe2": "leicht",
+  "@formRpe2": {
+    "description": "Ergänzung zu Board 11 — RPE-Wort, das Board nennt 1, 3 und 5"
+  },
+  "formRpe4": "hart",
+  "@formRpe4": {
+    "description": "Ergänzung zu Board 11 — RPE-Wort"
+  },
+  "formModeLog": "Nacherfassen",
+  "@formModeLog": {
+    "description": "Ergänzung zu Board 11 — Segment im Formular (B2/1)"
+  },
+  "formModeLive": "Live",
+  "@formModeLive": {
+    "description": "Ergänzung zu Board 11 — Segment im Formular (B2/1)"
+  },
+  "cardioFormTitle": "Ausdauer erfassen",
+  "@cardioFormTitle": {
+    "description": "Ergänzung zu Board 11 — Titel des Formulars (B2/1)"
+  },
+  "formKind": "Art",
+  "@formKind": {
+    "description": "Ergänzung zu Board 11 — Feldlabel im Regenerationssheet (C2/2)"
+  },
+  "formDurationRequired": "Dauer fehlt",
+  "@formDurationRequired": {
+    "description": "Ergänzung zu Board 11 — Feldfehler inline"
+  },
+  "formActivityRequired": "Aktivität fehlt",
+  "@formActivityRequired": {
+    "description": "Ergänzung zu Board 11 — Feldfehler inline"
+  },
+  "formDistanceInvalid": "Distanz ungültig",
+  "@formDistanceInvalid": {
+    "description": "Ergänzung zu Board 11 — Feldfehler inline"
+  },
+  "cardioSavedSnack": "Einheit gespeichert · {activity}",
+  "@cardioSavedSnack": {
+    "description": "Ergänzung zu Board 11 — Meldung mit 30-s-Widerruf (I, Modul 7)",
+    "placeholders": {
+      "activity": {
+        "type": "String"
+      }
+    }
+  },
+  "recoverySavedSnack": "Regeneration gespeichert",
+  "@recoverySavedSnack": {
+    "description": "Ergänzung zu Board 11 — Meldung mit 30-s-Widerruf"
+  },
+  "liveResume": "Fortsetzen",
+  "@liveResume": {
+    "description": "Ergänzung zu Board 11 — Knopf der Live-Uhr im pausierten Zustand"
+  },
+  "liveStopTooShort": "Beenden, nicht möglich — Einheit unter einer Minute.",
+  "@liveStopTooShort": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext des gesperrten Knopfs (H)"
+  },
+  "livePaceRunning": "läuft mit",
+  "@livePaceRunning": {
+    "description": "Ergänzung zu Board 11 — Zusatz am Tempo der Live-Uhr (B2/3)"
+  },
+  "liveRunningNotice": "Live-Uhr läuft · {time}",
+  "@liveRunningNotice": {
+    "description": "Ergänzung zu Board 11 — Wiederaufnahme aus der Persistenz (Matrix: Erfassen · Live)",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "liveDurationA11y": "Dauer {time}, {state}",
+  "@liveDurationA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext der Uhr (H)",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisWeeklyA11y": "Wochenkilometer der letzten 8 Wochen, von {from} bis {to}.",
+  "@analysisWeeklyA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext des Wochenstreifens (H)",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisWeeklyGapA11y": "KW {kw} ohne Einheit",
+  "@analysisWeeklyGapA11y": {
+    "description": "Ergänzung zu Board 11 — Die Lücke wird genannt (H)",
+    "placeholders": {
+      "kw": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisWeeklyWeek": "KW {kw}",
+  "@analysisWeeklyWeek": {
+    "description": "Ergänzung zu Board 11 — Beschriftung eines Balkens",
+    "placeholders": {
+      "kw": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisPctThis": "Diese Einheit · {date}",
+  "@analysisPctThis": {
+    "description": "Ergänzung zu Board 11 — Kopf der Perzentilkarte (B3/3)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisPctSlowest": "langsamster",
+  "@analysisPctSlowest": {
+    "description": "Ergänzung zu Board 11 — Spanne (B3/3)"
+  },
+  "analysisPctFastest": "schnellster",
+  "@analysisPctFastest": {
+    "description": "Ergänzung zu Board 11 — Spanne (B3/3)"
+  },
+  "analysisPaceRange": "Schnitt {value} · Spanne {from} bis {to}",
+  "@analysisPaceRange": {
+    "description": "Ergänzung zu Board 11 — Schnitt und Spanne, wenn Perzentil fehlt",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "distBucketBelow": "< {v} km",
+  "@distBucketBelow": {
+    "description": "Ergänzung zu Board 11 — Verteilungsklasse",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "distBucketRange": "{a}–{b} km",
+  "@distBucketRange": {
+    "description": "Ergänzung zu Board 11 — Verteilungsklasse",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "distBucketAbove": "> {v} km",
+  "@distBucketAbove": {
+    "description": "Ergänzung zu Board 11 — Verteilungsklasse",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioAllSessions": "Alle Einheiten",
+  "@cardioAllSessions": {
+    "description": "Ergänzung zu Board 11 — Listenkopf im dünnen Zustand (B1/1)"
+  },
+  "cardioWeekA11y": "{km} Kilometer diese Woche, aus {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@cardioWeekA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext der Wochenzahl (H)",
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "cardioWeekShiftA11y": "{delta} {dir} als der 4-Wochen-Schnitt von {avg}",
+  "@cardioWeekShiftA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext der Verschiebung; dir ist „mehr\"/„weniger\"",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "dir": {
+        "type": "String"
+      },
+      "avg": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioTotalA11y": "{km} Kilometer gesamt seit {date}, aus {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@cardioTotalA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext im dünnen Zustand",
+    "placeholders": {
+      "km": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "cardioActivityAverage": "{n, plural, one{1 Einheit} other{# Einheiten}} Ø {km} km",
+  "@cardioActivityAverage": {
+    "description": "Ergänzung zu Board 11 — „3 Läufe Ø 6,2 km\" (B1/1)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "ratioStrengthWeek": "Kraft diese Woche",
+  "@ratioStrengthWeek": {
+    "description": "Ergänzung zu Board 11 — Kraft-Wochenblock ohne Gegenspur (C1/2)"
+  },
+  "ratioStrengthMeasure": "{t} t Volumen · {s, plural, one{1 Satz} other{# Sätze}}",
+  "@ratioStrengthMeasure": {
+    "description": "Ergänzung zu Board 11 — Fachgrösse Kraft",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      },
+      "s": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridWeekSummary": "{n, plural, one{1 Einheit} other{# Einheiten}} · {min} min",
+  "@hybridWeekSummary": {
+    "description": "Ergänzung zu Board 11 — „3 Einheiten · 128 min\"",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "ratioOpenStrength": "Öffnet Kraft-Verlauf",
+  "@ratioOpenStrength": {
+    "description": "Ergänzung zu Board 11 — Zielort im Label (H)"
+  },
+  "ratioOpenCardio": "Öffnet Ausdauer-Auswertung",
+  "@ratioOpenCardio": {
+    "description": "Ergänzung zu Board 11 — Zielort im Label (H)"
+  },
+  "ratioA11y": "Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{# Einheiten}}.",
+  "@ratioA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext des Verhältnisbalkens (H)",
+    "placeholders": {
+      "s": {
+        "type": "int"
+      },
+      "c": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ratioRowA11y": "{track}, {pct} Prozent, {min} Minuten",
+  "@ratioRowA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext einer Verhältniszeile",
+    "placeholders": {
+      "track": {
+        "type": "String"
+      },
+      "pct": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "ratioShiftA11y": "{value} Prozentpunkte {dir} als im 4-Wochen-Schnitt",
+  "@ratioShiftA11y": {
+    "description": "Ergänzung zu Board 11 — Vorlesetext der Verschiebung",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "dir": {
+        "type": "String"
+      }
+    }
+  },
+  "hybridEmptyStrength": "Krafttraining starten",
+  "@hybridEmptyStrength": {
+    "description": "Ergänzung zu Board 11 — Leerer Hybrid-Tab (C3/2)"
+  },
+  "hybridEmptyCardio": "Ausdauer erfassen",
+  "@hybridEmptyCardio": {
+    "description": "Ergänzung zu Board 11 — Leerer Hybrid-Tab und Hinweiszeile (C1/2, C3/2)"
+  },
+  "hybridFormSection": "Formwert · 4 Wochen",
+  "@hybridFormSection": {
+    "description": "Ergänzung zu Board 11 — Block unter dem Verhältnis (A3)"
+  },
+  "whenToday": "Heute",
+  "@whenToday": {
+    "description": "Ergänzung zu Board 11 — Zeitwort in der Regenerationszeile"
+  },
+  "whenYesterday": "Gestern",
+  "@whenYesterday": {
+    "description": "Ergänzung zu Board 11 — Zeitwort in der Regenerationszeile"
+  },
+  "whenLast": "Zuletzt {date}",
+  "@whenLast": {
+    "description": "Ergänzung zu Board 11 — Zeitwort in der Regenerationszeile (C2/1)",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "recoveryFormTitle": "Regeneration erfassen",
+  "@recoveryFormTitle": {
+    "description": "Ergänzung zu Board 11 — Titel des Sheets (C2/2)"
+  },
+  "tempoPerKm": "{value} /km",
+  "@tempoPerKm": {
+    "description": "Ergänzung zu Board 11 — Tempo in min/km — die Einheit steht im Wert",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "tempoKmh": "{value} km/h",
+  "@tempoKmh": {
+    "description": "Ergänzung zu Board 11 — Tempo in km/h",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "cardioListCount": "{n, plural, one{1 Einheit} other{# Einheiten}}",
+  "@cardioListCount": {
+    "description": "Ergänzung zu Board 11 — Zahl in der Aktivitätskapsel",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "intensityTitle": "Intensität",
+  "@intensityTitle": {
+    "description": "Ergänzung zu Board 11 — Beschriftung im Intensitätskasten (B4)"
   }
 }
