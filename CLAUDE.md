@@ -27,7 +27,9 @@ Bei Widersprüchen gilt, von oben nach unten:
 - Muss bei 200 % Systemschrift auf 320 dp Breite ohne Überlauf funktionieren.
 - Farbe nie als einziger Statusträger — immer Wort, Glyph oder Icon daneben.
 - Höchstens ein `BackdropFilter` pro scrollendem Screen.
-- Bottom-Bar hat genau drei Plätze: Home, Workouts, Analyse. Keine neuen Bereiche, keine leeren Slots.
+- Bottom-Bar hat genau drei Plätze. Keine neuen Bereiche, keine leeren Slots.
+  Ab Modul 11 heißen sie **Kraft · Cardio · Hybrid** (vorher Home · Workouts ·
+  Analyse). Der Verlauf gehört in **Kraft**, Regeneration in **Hybrid**.
 - Informationstragender Text ≥ 12 sp effektiv, Kontrast ≥ 4,5:1.
 
 ## Zustände sind Pflicht
