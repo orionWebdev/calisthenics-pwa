@@ -499,6 +499,12 @@ abstract class AppL10n {
   /// **'{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor # Tagen}}'**
   String analysisWhyRecency(int n);
 
+  /// Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor # Tagen · Regeneration}}'**
+  String analysisWhyRecencyRecovery(int n);
+
   /// Begründung des Tageszuschlags
   ///
   /// In de, this message translates to:

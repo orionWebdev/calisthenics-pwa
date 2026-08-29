@@ -187,7 +187,12 @@ class _Breakdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
 
-    final days = summary.daysSinceLast ?? 0;
+    // **Die Zahl der Rechnung, nicht die der Liste.** `summary.daysSinceLast`
+    // zählt über alle Arten, `form.recency` rechnete bisher nur über Last —
+    // die Begründungszeile widersprach damit dem Balken, den sie begründet.
+    // Seit Regeneration die Pause bricht, ist es dieselbe Zahl; sie kommt
+    // trotzdem aus der Rechnung, damit sie es bleibt.
+    final days = form.daysSinceLastSession ?? summary.daysSinceLast ?? 0;
 
     // **Jede Komponente mit ihrer Begründung.** Eine Zahlenreihe erklärt
     // nichts; „Aktualität 0 von 15 — letzte Einheit vor 50 Tagen" schon.
@@ -210,7 +215,9 @@ class _Breakdown extends StatelessWidget {
         l10n.analysisCompRecency,
         form.recency,
         15,
-        l10n.analysisWhyRecency(days)
+        form.lastWasRecovery
+            ? l10n.analysisWhyRecencyRecovery(days)
+            : l10n.analysisWhyRecency(days),
       ),
       (
         l10n.analysisCompFitness,

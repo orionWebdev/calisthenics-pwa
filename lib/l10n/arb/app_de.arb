@@ -346,6 +346,15 @@
     }
   },
   "analysisWhyRecency": "{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor # Tagen}}",
+  "analysisWhyRecencyRecovery": "{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor # Tagen · Regeneration}}",
+  "@analysisWhyRecencyRecovery": {
+    "description": "Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "@analysisWhyRecency": {
     "description": "Begründung der Aktualität",
     "placeholders": {

@@ -52,6 +52,7 @@ class FormResult {
     this.score,
     this.zone,
     this.daysSinceLastSession,
+    this.lastWasRecovery = false,
   });
 
   static const empty = FormResult(
@@ -85,7 +86,15 @@ class FormResult {
   final FormTrend trend;
   final int? score;
   final FormZone? zone;
+  /// Tage seit der letzten **Aktivität** — Regeneration zählt mit.
   final int? daysSinceLastSession;
+
+  /// War diese letzte Aktivität eine Regenerationseinheit?
+  ///
+  /// Die Oberfläche muss das sagen können. „Letzte Einheit gestern" neben
+  /// einem Formwert, der seit zehn Tagen fällt, wäre ein Widerspruch, den
+  /// niemand auflösen kann — „Gestern Regeneration" ist keiner.
+  final bool lastWasRecovery;
 
   bool get hasScore => score != null;
 }
@@ -103,10 +112,33 @@ abstract final class TrainingForm {
   /// das entspricht viermal pro Woche.
   static const _fullConsistencyDays = 16;
 
+  /// Zählt eine Regenerationseinheit als Aktivität?
+  ///
+  /// ## Eine bewusste Abweichung von der Vorgänger-App
+  ///
+  /// Dort geht Regeneration in die Form überhaupt nicht ein: Nach zehn Tagen
+  /// täglichem Yoga steht „letzte Einheit vor 10 Tagen" und der volle
+  /// Untätigkeitsabzug. Gleichzeitig zählt der Verlaufsbildschirm dieselbe
+  /// Einheit sehr wohl mit (`DataSufficiency.daysSinceLast` liest alle Arten) —
+  /// die Begründungszeile widersprach also der Zahl, die sie begründen soll.
+  ///
+  /// Hier bricht Regeneration die Pause, trägt aber **keine Last**: Sie setzt
+  /// Aktualität und Untätigkeitsabzug zurück und geht in Konstanz, Fitness und
+  /// Tageszuschlag nicht ein. Das beschreibt genau, was passiert ist — ohne zu
+  /// behaupten, Sauna baue Form auf.
+  ///
+  /// [countRecoveryAsActivity] auf `false` stellt die Rechnung der
+  /// Vorgänger-App wieder her. Das braucht genau eine Stelle: der Vergleich
+  /// gegen `js/views/sessions/scoring.js` in `scoring_oracle_test.dart`. Ohne
+  /// diesen Schalter wäre die Abweichung nicht mehr von einem Portierungsfehler
+  /// zu unterscheiden.
+  static const defaultCountRecoveryAsActivity = true;
+
   static FormResult compute(
     List<TrainingSession> sessions,
     DateTime referenceDate, {
     LoadContext context = const LoadContext(),
+    bool countRecoveryAsActivity = defaultCountRecoveryAsActivity,
   }) {
     if (sessions.isEmpty) return FormResult.empty;
 
@@ -114,13 +146,22 @@ abstract final class TrainingForm {
         DateTime(referenceDate.year, referenceDate.month, referenceDate.day);
     final end = refDay.add(const Duration(days: 1));
 
-    // Anders als beim ACWR spielen Erholungstage hier keine Rolle — Form kennt
-    // nur Last.
+    // **Last und Aktivität sind zwei verschiedene Mengen.** Nur `dailyLoads`
+    // geht in Konstanz, Fitnesskurve und Tageszuschlag ein; `recoveryDays`
+    // wirkt allein auf Aktualität und Untätigkeitsabzug.
     final dailyLoads = <String, double>{};
+    final recoveryDays = <String>{};
     for (final session in sessions) {
       final kind = session.kind;
-      if (kind == null || kind == SessionKind.recovery) continue;
+      if (kind == null) continue;
       if (!session.date.isBefore(end)) continue;
+
+      if (kind == SessionKind.recovery) {
+        if (countRecoveryAsActivity) {
+          recoveryDays.add(Readiness.dayKey(session.date));
+        }
+        continue;
+      }
 
       final load = TrainingLoad.of(session, context);
       if (load <= 0) continue;
@@ -136,8 +177,19 @@ abstract final class TrainingForm {
       return FormResult.empty;
     }
 
-    final lastSession = DateTime.parse(sortedKeys.last);
-    final daysSinceLastSession = _daysBetween(lastSession, refDay);
+    // Die letzte Aktivität ist die spätere von beiden. Eine Regenerationseinheit
+    // **vor** der letzten Trainingseinheit ändert nichts — sie ist dann nicht
+    // die letzte Aktivität.
+    final lastLoadDay = DateTime.parse(sortedKeys.last);
+    final lastRecoveryKey =
+        recoveryDays.isEmpty ? null : (recoveryDays.toList()..sort()).last;
+    final lastRecoveryDay =
+        lastRecoveryKey == null ? null : DateTime.parse(lastRecoveryKey);
+
+    final lastWasRecovery =
+        lastRecoveryDay != null && lastRecoveryDay.isAfter(lastLoadDay);
+    final lastActivityDay = lastWasRecovery ? lastRecoveryDay : lastLoadDay;
+    final daysSinceLastSession = _daysBetween(lastActivityDay, refDay);
 
     // ---- 1. Konstanz: Trainingstage der letzten 28 Tage ----
     final consistencyStart =
@@ -270,6 +322,7 @@ abstract final class TrainingForm {
       score: score,
       zone: mapZone(score, daysSinceLastSession),
       daysSinceLastSession: daysSinceLastSession,
+      lastWasRecovery: lastWasRecovery,
     );
   }
 

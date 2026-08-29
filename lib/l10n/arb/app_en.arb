@@ -215,6 +215,7 @@
   "analysisWhyLoadRatio": "Last 14 days against the 14 before",
   "analysisWhyPenalty": "{n, plural, other{# days without training}}",
   "analysisWhyRecency": "{n, plural, =0{Trained today} one{Last workout yesterday} other{Last workout # days ago}}",
+  "analysisWhyRecencyRecovery": "{n, plural, =0{Recovery today} one{Recovery yesterday} other{Last activity # days ago · recovery}}",
   "analysisWhyToday": "Trained today",
   "analysisWhyTodayNone": "No workout today",
   "authBetaBadge": "CLOSED BETA",

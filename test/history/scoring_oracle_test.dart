@@ -147,6 +147,12 @@ void main() {
           sessions,
           DateTime.parse(entry['referenceDate'] as String),
           context: context,
+          // Das Orakel prüft die **Portierung**, nicht die App. Regeneration
+          // bricht in der Vorgänger-App die Pause nicht; mit dem Vorgabewert
+          // wäre jede Abweichung hier eine gewollte und der Test damit blind
+          // für ungewollte. Was ATEM stattdessen tut, prüft
+          // `recovery_activity_test.dart`.
+          countRecoveryAsActivity: false,
         );
 
         expect(result.score, entry['formScore'], reason: 'Formwert');

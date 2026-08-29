@@ -251,6 +251,18 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String analysisWhyRecencyRecovery(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Last activity # days ago · recovery',
+      one: 'Recovery yesterday',
+      zero: 'Recovery today',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get analysisWhyToday => 'Trained today';
 
   @override
