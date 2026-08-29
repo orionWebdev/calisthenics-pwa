@@ -19,7 +19,11 @@ import 'session_list_screen.dart';
 /// Balkenwald deuten, sondern wissen, was gerade gilt. Erst danach kommen
 /// Verteilung und Einzelheiten.
 class HistoryScreen extends ConsumerWidget {
-  const HistoryScreen({super.key});
+  const HistoryScreen({super.key, this.embedded = false});
+
+  /// Als Segment „Verlauf" im Kraft-Tab (Modul 11): kein eigener Rahmen,
+  /// kein eigener Titel — der Verlauf ist ein Segment, kein Tab.
+  final bool embedded;
 
   static const _recentCount = 4;
 
@@ -28,10 +32,7 @@ class HistoryScreen extends ConsumerWidget {
     final l10n = AppL10n.of(context);
     final async = ref.watch(sessionsProvider);
 
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      body: SafeArea(
-        child: async.when(
+    final body = async.when(
           loading: () => Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: AtemSpacing.screenPadding),
@@ -56,8 +57,12 @@ class HistoryScreen extends ConsumerWidget {
             ),
           ),
           data: (sessions) => _content(context, ref, l10n, sessions),
-        ),
-      ),
+        );
+
+    if (embedded) return body;
+    return Scaffold(
+      backgroundColor: AtemColors.base,
+      body: SafeArea(child: body),
     );
   }
 
@@ -84,8 +89,10 @@ class HistoryScreen extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(
           AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 130),
       children: [
-        Text(l10n.historyTitle, style: AtemType.titleLarge.of(context)),
-        const SizedBox(height: 20),
+        if (!embedded) ...[
+          Text(l10n.historyTitle, style: AtemType.titleLarge.of(context)),
+          const SizedBox(height: 20),
+        ],
         StatementCard(summary: summary),
         if (summary.lastSession case final last?) ...[
           const SizedBox(height: 10),

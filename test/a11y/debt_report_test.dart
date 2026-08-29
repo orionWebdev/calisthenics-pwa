@@ -40,7 +40,7 @@ Future<void> _report(WidgetTester tester, String name, Widget home) async {
 
 void main() {
   testWidgets('Schuldenbericht Dashboard', (tester) async {
-    await _report(tester, 'Dashboard', DashboardScreen(onSelectTab: (_) {}));
+    await _report(tester, 'Dashboard', const DashboardScreen());
   });
 
   testWidgets('Schuldenbericht Workout Runner', (tester) async {

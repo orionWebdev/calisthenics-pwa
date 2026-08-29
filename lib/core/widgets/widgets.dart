@@ -9,6 +9,7 @@ export 'atem_number_field.dart';
 export 'atem_progress.dart';
 export 'atem_states.dart';
 export 'atem_segmented.dart';
+export 'atem_tab_switch.dart';
 export 'atem_snackbar.dart';
 export 'atem_status_dot.dart';
 export 'atem_card.dart';

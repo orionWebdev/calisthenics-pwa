@@ -20,11 +20,7 @@ import '../widgets/session_card.dart';
 /// Der Screen orchestriert: Score-Animation, Navigation, Bausteine. Alles
 /// Sichtbare liegt in `presentation/widgets/`.
 class DashboardScreen extends ConsumerStatefulWidget {
-  const DashboardScreen({super.key, required this.onSelectTab});
-
-  /// Wechselt den Tab. Der Bildschirm besitzt die Navigation **nicht** — sie
-  /// liegt im Rahmen darüber, sonst gehörte sie einem ihrer eigenen Ziele.
-  final ValueChanged<int> onSelectTab;
+  const DashboardScreen({super.key});
 
   @override
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
@@ -68,7 +64,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     // Plan **und** Termin wandern mit: der Plan, damit die Übungen ankommen;
     // der Termin, damit er nach dem Speichern als erledigt gilt.
     if (!wasRunning && ref.read(sessionTimerProvider).isRunning && mounted) {
-      await Navigator.of(context).pushNamed(
+      await Navigator.of(context, rootNavigator: true).pushNamed(
         WorkoutRunnerScreen.routeName,
         arguments: WorkoutStart(
           planId: session.planId,
@@ -203,7 +199,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               ),
             ),
           const SizedBox(height: AtemSpacing.cardGap),
-          QuickActions(data: data, onSelect: _select),
+          QuickActions(data: data),
         ],
       ),
     );
@@ -217,6 +213,4 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     if (i >= labels.length) return null;
     return l10n.dashboardChartToday(labels[i], today.load.round());
   }
-
-  void _select(int index) => widget.onSelectTab(index);
 }

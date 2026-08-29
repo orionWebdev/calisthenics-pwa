@@ -51,10 +51,14 @@ import '../../../exercises/presentation/widgets/exercise_search.dart';
 /// hier alles ohne den Tab zu verlassen; wer nicht sucht, scrollt daran vorbei
 /// wie vorher.
 class WorkoutsScreen extends ConsumerStatefulWidget {
-  const WorkoutsScreen({super.key, required this.onStart});
+  const WorkoutsScreen({super.key, required this.onStart, this.embedded = false});
 
   /// Trägt die Startanfrage nach oben. Der Tab kennt den Runner nicht.
   final ValueChanged<StartRequest> onStart;
+
+  /// Als Segment „Trainieren" im Kraft-Tab (Modul 11): Titel und Rahmen
+  /// stellt dann der Kraft-Tab, hier steht nur der Inhalt.
+  final bool embedded;
 
   @override
   ConsumerState<WorkoutsScreen> createState() => _WorkoutsScreenState();
@@ -87,15 +91,14 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
 
     final session = dashboard.value?.session;
 
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      body: SafeArea(
-        child: ListView(
+    final list = ListView(
           padding: const EdgeInsets.fromLTRB(
               AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 130),
           children: [
-            Text(l10n.workoutsTitle, style: AtemType.titleLarge.of(context)),
-            const SizedBox(height: 20),
+            if (!widget.embedded) ...[
+              Text(l10n.workoutsTitle, style: AtemType.titleLarge.of(context)),
+              const SizedBox(height: 20),
+            ],
             Text(l10n.workoutsTodayLabel,
                 style: AtemType.labelMedium.of(context)),
             const SizedBox(height: 10),
@@ -216,8 +219,12 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               onPressed: () => _startFree(context),
             ),
           ],
-        ),
-      ),
+        );
+
+    if (widget.embedded) return list;
+    return Scaffold(
+      backgroundColor: AtemColors.base,
+      body: SafeArea(child: list),
     );
   }
 

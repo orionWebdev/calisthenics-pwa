@@ -46,6 +46,7 @@ abstract final class AtemUnsavedDialog {
   }) {
     return showDialog<AtemUnsavedChoice>(
       context: context,
+      useRootNavigator: true,
       barrierDismissible: false,
       barrierColor: AtemOverlays.barrier(AtemOverlays.dialogBarrierOpacity),
       barrierLabel: title,

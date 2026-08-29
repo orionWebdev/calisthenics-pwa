@@ -24,16 +24,16 @@ import '../../../../l10n/gen/app_l10n.dart';
 ///
 /// Ein Platz kommt zurück, wenn ein Bildschirm dahinter steht. Nicht vorher.
 ///
-/// ## Warum der dritte „Verlauf" heißt und nicht „Analyse"
+/// ## Kraft · Cardio · Hybrid
 ///
-/// Er hieß Analyse — aus dem alten Handoff übernommen. Dahinter liegt aber
-/// nicht nur die Auswertung, sondern die Liste der absolvierten Einheiten,
-/// der Monatsstreifen und die Lücken. Die Auswertung ist ein Teil davon.
+/// Seit Modul 11 heissen die drei Plätze anders — und sie sind anders belegt.
+/// Der Verlauf ist kein Tab mehr, sondern ein Segment des Kraft-Tabs; der
+/// Start-Tab und die Auswertung sind zum Hybrid-Tab verschmolzen. Die App
+/// heisst Hybrid, und vorher konnte sie nur Kraft: 51 Ausdauereinheiten lagen
+/// im Bestand ohne Bildschirm.
 ///
-/// Das war in der Erprobung als „passt nur so halb" aufgefallen, und zwar zu
-/// Recht: Wer „Analyse" liest, erwartet Kurven und findet eine Liste. Die
-/// Einordnung stimmt — was passiert ist, gehört nicht zu „was mache ich
-/// jetzt" —, nur das Wort stimmte nicht.
+/// Die Leiste selbst ist unverändert Modul 1: drei Plätze, 48 dp, Skalierung
+/// 0,88 mit Glow, Labels 12 sp, die bei Platzmangel nur der aktive trägt.
 ///
 /// Ob sie passen, wird **gemessen statt geschätzt**. Eine Breitenschwelle war
 /// hier falsch: Bei 360 dp lag sie auf der sicheren Seite, die Zeile lief
@@ -82,10 +82,11 @@ class FloatingNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    // Versalien wie in Modul 1 — die Rolle labelMicro ist Mono in Grossbuchstaben.
     final labels = [
-      l10n.dashboardNavHome,
-      l10n.dashboardNavWorkouts,
-      l10n.dashboardNavAnalytics,
+      l10n.tabStrength.toUpperCase(),
+      l10n.tabCardio.toUpperCase(),
+      l10n.tabHybrid.toUpperCase(),
     ];
 
     return AtemBar(
@@ -123,12 +124,17 @@ class FloatingNav extends StatelessWidget {
         glyph: _NavGlyph.values[i],
         active: i == activeIndex,
         showLabel: showLabel,
-        semanticLabel: l10n.dashboardNavA11y(labels[i], i + 1, labels.length),
+        // Die Ansage in normaler Schreibung: „Cardio, Tab 2 von 3".
+        semanticLabel: l10n.dashboardNavA11y(
+          [l10n.tabStrength, l10n.tabCardio, l10n.tabHybrid][i],
+          i + 1,
+          labels.length,
+        ),
         onTap: () => onSelect(i),
       );
 }
 
-enum _NavGlyph { home, workouts, analytics }
+enum _NavGlyph { strength, cardio, hybrid }
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
@@ -207,16 +213,8 @@ class _NavPainter extends CustomPainter {
   Path _build() {
     final p = Path();
     switch (glyph) {
-      case _NavGlyph.home:
-        p
-          ..moveTo(4, 11.5)
-          ..lineTo(12, 4.5)
-          ..lineTo(20, 11.5)
-          ..moveTo(6.5, 10.5)
-          ..lineTo(6.5, 19.5)
-          ..lineTo(17.5, 19.5)
-          ..lineTo(17.5, 10.5);
-      case _NavGlyph.workouts:
+      // Die Hantel aus Modul 1 — sie stand schon für Workouts.
+      case _NavGlyph.strength:
         p
           ..moveTo(2.5, 12)
           ..lineTo(5.5, 12)
@@ -232,14 +230,18 @@ class _NavPainter extends CustomPainter {
           ..lineTo(14.5, 18)
           ..moveTo(9.5, 12)
           ..lineTo(14.5, 12);
-      case _NavGlyph.analytics:
+      // Die Welle aus Modul 1 (dort „Recovery"): eine Bewegung, die
+      // weitergeht — Ausdauer.
+      case _NavGlyph.cardio:
         p
-          ..moveTo(5, 19.5)
-          ..lineTo(5, 12.5)
-          ..moveTo(12, 19.5)
-          ..lineTo(12, 6.5)
-          ..moveTo(19, 19.5)
-          ..lineTo(19, 10);
+          ..moveTo(3, 12)
+          ..cubicTo(6, 5.5, 9, 5.5, 12, 12)
+          ..cubicTo(15, 18.5, 18, 18.5, 21, 12);
+      // Zwei Kreise, die sich überlappen: beide Spuren, eine Schnittmenge.
+      case _NavGlyph.hybrid:
+        p
+          ..addOval(Rect.fromCircle(center: const Offset(9, 12), radius: 5.5))
+          ..addOval(Rect.fromCircle(center: const Offset(15, 12), radius: 5.5));
     }
     return p;
   }

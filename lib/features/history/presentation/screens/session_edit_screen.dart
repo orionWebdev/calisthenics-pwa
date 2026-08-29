@@ -92,7 +92,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
   /// der sich Fehler einnisten — und zwei Wahrheiten darüber, was ein Satz
   /// ist.
   Future<void> _openSets(BuildContext context) async {
-    await Navigator.of(context).pushNamed(
+    await Navigator.of(context, rootNavigator: true).pushNamed(
       WorkoutRunnerScreen.routeName,
       arguments: WorkoutStart.session(widget.session.id),
     );
@@ -102,6 +102,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
     final now = ref.read(historyReferenceProvider);
     final picked = await showDatePicker(
       context: context,
+      useRootNavigator: true,
       initialDate: _date,
       // Die Vorgänger-App reicht bis 2023 zurück; ein Jahr Vorlauf lässt Raum
       // für eine Einheit, die versehentlich in der Zukunft gelandet ist.

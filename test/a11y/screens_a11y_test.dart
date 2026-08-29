@@ -22,6 +22,8 @@ import 'package:atem/features/settings/presentation/screens/export_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
+import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
+import 'package:atem/features/cardio/presentation/screens/cardio_screen.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/core/theme/theme.dart';
@@ -33,7 +35,7 @@ import '../support/a11y.dart';
 
 void main() {
   testWidgets('Dashboard erfüllt den A11y-Vertrag', (tester) async {
-    await expectA11y(tester, DashboardScreen(onSelectTab: (_) {}));
+    await expectA11y(tester, const DashboardScreen());
   });
 
   testWidgets('Splash erfüllt den A11y-Vertrag', (tester) async {
@@ -62,6 +64,16 @@ void main() {
 
   testWidgets('Workouts-Tab erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, WorkoutsScreen(onStart: (_) {}));
+  });
+
+  // ------------------------------------------------------------- Modul 11
+
+  testWidgets('Kraft-Tab erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, StrengthScreen(onStart: (_) {}));
+  });
+
+  testWidgets('Cardio-Tab erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const CardioScreen());
   });
 
   testWidgets('Übungsliste erfüllt den A11y-Vertrag', (tester) async {

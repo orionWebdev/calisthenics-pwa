@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/application/tab_providers.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
@@ -22,32 +24,22 @@ import '../../domain/dashboard_data.dart';
 /// nie etwas. Sie zeigen jetzt, was die App tatsächlich weiss: den Formwert,
 /// die letzte Einheit mit ihrem Vergleich und den nächsten Termin. Die
 /// gezeichneten Kacheln kommen zurück, wenn ihre Daten kommen — nicht vorher.
-class QuickActions extends StatelessWidget {
-  const QuickActions({
-    super.key,
-    required this.data,
-    required this.onSelect,
-  });
+class QuickActions extends ConsumerWidget {
+  const QuickActions({super.key, required this.data});
 
   final DashboardData data;
 
-  /// Zielbereich der Navigation.
-  ///
-  /// Die Zahlen sind die Tab-Indizes des Rahmens: 0 Dashboard · 1 Workouts ·
-  /// 2 Verlauf · 3 und 4 noch leer. Sie standen hier fest verdrahtet aus einer
-  /// Zeit, in der es nur einen Bildschirm gab — Ernährung zeigte auf 2 und
-  /// landete nach dem Umbau im Verlauf. Kacheln ohne eigenes Ziel führen jetzt
-  /// dorthin, wo ihre Zahlen herkommen.
-  final ValueChanged<int> onSelect;
-
-  /// Der Verlauf. Dort stehen die Einheiten, aus denen die Kachel ihre Zahlen
-  /// zieht.
-  static const _historyTab = 2;
-  static const _workoutsTab = 1;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
+    // Kacheln ohne eigenes Ziel führen dorthin, wo ihre Zahlen herkommen:
+    // in den Verlauf (Kraft, Segment Verlauf) oder zu den Plänen (Kraft,
+    // Segment Trainieren). Seit Modul 11 sind beides Segmente eines Tabs.
+    final tabs = ref.read(appTabsProvider.notifier);
+    void toHistory() =>
+        tabs.jump(AppTab.strength, strengthSegment: StrengthSegment.history);
+    void toWorkouts() =>
+        tabs.jump(AppTab.strength, strengthSegment: StrengthSegment.train);
 
     return Column(
       children: [
@@ -55,9 +47,9 @@ class QuickActions extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(child: _workout(l10n)),
+              Expanded(child: _workout(l10n, toHistory)),
               const SizedBox(width: AtemSpacing.gridGap),
-              Expanded(child: _form(l10n)),
+              Expanded(child: _form(l10n, toHistory)),
             ],
           ),
         ),
@@ -66,9 +58,9 @@ class QuickActions extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(child: _last(l10n)),
+              Expanded(child: _last(l10n, toHistory)),
               const SizedBox(width: AtemSpacing.gridGap),
-              Expanded(child: _next(l10n)),
+              Expanded(child: _next(l10n, toWorkouts)),
             ],
           ),
         ),
@@ -77,7 +69,7 @@ class QuickActions extends StatelessWidget {
   }
 
   /// Sätze der letzten Einheit — unverändert aus dem Board.
-  Widget _workout(AppL10n l10n) {
+  Widget _workout(AppL10n l10n, VoidCallback onTap) {
     final log = data.workoutLog;
     return _Tile(
       accent: AtemColors.cyan,
@@ -91,13 +83,13 @@ class QuickActions extends StatelessWidget {
           l10n.dashboardQuickSetsPlan(plan, log.totalSets),
         _ => l10n.dashboardQuickSetsPlain(log.totalSets),
       },
-      onTap: () => onSelect(_historyTab),
+      onTap: onTap,
     );
   }
 
   /// Der Formwert. **Die Richtung steht als Wort daneben**, nicht als Farbe —
   /// ob steigend gut ist, hängt davon ab, was jemand vorhat.
-  Widget _form(AppL10n l10n) {
+  Widget _form(AppL10n l10n, VoidCallback onTap) {
     final form = data.form;
     return _Tile(
       accent: AtemColors.magenta,
@@ -114,13 +106,13 @@ class QuickActions extends StatelessWidget {
               label: '${form.score}',
               semanticLabel: l10n.quickFormValue(form.score),
             ),
-      onTap: () => onSelect(_historyTab),
+      onTap: onTap,
     );
   }
 
   /// Die letzte Einheit mit dem Abstand und, wenn es einen Bezug gibt, der
   /// Veränderung der Last.
-  Widget _last(AppL10n l10n) {
+  Widget _last(AppL10n l10n, VoidCallback onTap) {
     final last = data.lastSession;
     if (last == null) {
       return _Tile(
@@ -128,7 +120,7 @@ class QuickActions extends StatelessWidget {
         glyph: _Glyph.wave,
         title: l10n.quickLast,
         body: l10n.quickNoSessions,
-        onTap: () => onSelect(_historyTab),
+        onTap: onTap,
       );
     }
 
@@ -148,12 +140,12 @@ class QuickActions extends StatelessWidget {
           ? '${last.name} · $when'
           : '${last.name} · ${l10n.detailLoad} '
               '${delta > 0 ? '+' : '−'}${delta.abs()}',
-      onTap: () => onSelect(_historyTab),
+      onTap: onTap,
     );
   }
 
   /// Der nächste Termin. Führt in die Workouts, wo er gestartet wird.
-  Widget _next(AppL10n l10n) {
+  Widget _next(AppL10n l10n, VoidCallback onTap) {
     final next = data.nextSession;
     return _Tile(
       accent: AtemColors.violet,
@@ -166,7 +158,7 @@ class QuickActions extends StatelessWidget {
               1 => l10n.quickNextTomorrow,
               _ => l10n.quickNextDays(next.daysAhead),
             }}',
-      onTap: () => onSelect(_workoutsTab),
+      onTap: onTap,
     );
   }
 }

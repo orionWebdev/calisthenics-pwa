@@ -66,6 +66,10 @@ class AtemSheet extends StatelessWidget {
   }) {
     return showModalBottomSheet<T>(
       context: context,
+      // Über allem, auch über der Leiste: Seit Modul 11 hat jeder Tab seinen
+      // eigenen Navigator. Ein Blatt in einem Tab-Stapel läge **unter** der
+      // schwebenden Leiste — und die gehört nicht auf ein Blatt.
+      useRootNavigator: true,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: const Color(0x00000000),
@@ -280,6 +284,7 @@ class AtemDialog extends StatelessWidget {
     );
     return showDialog<T>(
       context: context,
+      useRootNavigator: true,
       // Kein Tap-to-close: Der Dialog verlangt eine Entscheidung.
       barrierDismissible: false,
       barrierColor: AtemOverlays.barrier(AtemOverlays.dialogBarrierOpacity),
