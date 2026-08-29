@@ -31,6 +31,7 @@ class SessionPatch {
     this.duration,
     this.notes,
     this.exercises,
+    this.cardio,
   });
 
   /// Der Trainingstag. Wird auf Mitternacht gesetzt.
@@ -47,4 +48,28 @@ class SessionPatch {
 
   /// `null` heißt **unverändert**, nicht leer. Siehe Klassendokumentation.
   final List<LoggedExercise>? exercises;
+
+  /// Die Ausdauerfelder. `null` heißt **nicht anfassen** — wie bei
+  /// [exercises]: Eine Krafteinheit kennt die Frage nach der Distanz nicht.
+  final CardioPatch? cardio;
+}
+
+/// Die änderbaren Ausdauerfelder — Distanz und Puls.
+///
+/// Innerhalb dieses Objekts gilt die Regel von [SessionPatch.duration]:
+/// **`null` löscht das Feld.** Wer eine Distanz zurücknimmt, meint „nicht
+/// erfasst", nicht „unverändert" — deshalb wird das ganze Objekt geschrieben,
+/// nie ein Teil davon.
+///
+/// Das Tempo steht nicht hier: Es wird beim Lesen aus Distanz und Dauer
+/// gerechnet. Die Vorgänger-App liest allerdings ein Feld `pace`; das
+/// Repository schreibt es deshalb aus beiden **nach**, sobald sich eines von
+/// ihnen ändert.
+class CardioPatch {
+  const CardioPatch({this.distanceKm, this.avgHr, this.maxHr, this.rpe});
+
+  final double? distanceKm;
+  final int? avgHr;
+  final int? maxHr;
+  final int? rpe;
 }

@@ -110,9 +110,36 @@ class FirestoreSessionRepository implements SessionRepository {
       // eines Datums ist gerade der Unterschied die Information.
       if (patch.exercises case final exercises?)
         'exercises': _exercisesField(exercises),
+      if (patch.cardio case final cardio?) ...{
+        'distanceKm': cardio.distanceKm ?? FieldValue.delete(),
+        'avgHr': cardio.avgHr ?? FieldValue.delete(),
+        'maxHr': cardio.maxHr ?? FieldValue.delete(),
+        'rpe': cardio.rpe ?? FieldValue.delete(),
+        // Nachgezogen, nicht gepflegt: siehe [_paceField].
+        'pace': _paceField(cardio.distanceKm, patch.duration) ??
+            FieldValue.delete(),
+      },
     };
 
     await _db.collection(collection).doc(id).update(data);
+  }
+
+  /// Das Feld `pace` — **für die Vorgänger-App, nicht für diese**.
+  ///
+  /// Hier ist Tempo ein Getter aus Distanz und Dauer und nie eine Eingabe
+  /// (Board 11, Entscheidung „Tempo als Eingabefeld"). Die Vorgänger-App liest
+  /// aber `session.pace` direkt und zeigte für Einheiten ohne das Feld „—".
+  /// Alle 51 Ausdauereinheiten im Bestand tragen es.
+  ///
+  /// Deshalb wird es **aus den beiden Wahrheiten abgeleitet** und bei jeder
+  /// Änderung von Distanz oder Dauer neu geschrieben. Es ist ein Abbild, kein
+  /// Zustand: Nichts in dieser App liest es je zurück. Minuten je Kilometer,
+  /// wie die Vorgänger-App es rechnet (`calculatePace`).
+  static double? _paceField(double? distanceKm, Duration? duration) {
+    if (distanceKm == null || distanceKm <= 0) return null;
+    if (duration == null || duration <= Duration.zero) return null;
+    final pace = duration.inSeconds / 60 / distanceKm;
+    return (pace * 100).round() / 100;
   }
 
   @override
@@ -219,6 +246,21 @@ class FirestoreSessionRepository implements SessionRepository {
       if (draft.planName != null) 'planName': draft.planName,
       if (draft.scheduleId != null) 'scheduleId': draft.scheduleId,
       if (draft.rpe != null) 'rpe': draft.rpe,
+      // Sekunden nur, wenn sie echt sind — aus einer Uhr, nicht aus einer
+      // getippten Minutenzahl. Der Mapper liest `durationSec` mit Vorrang.
+      if (draft.durationHasSeconds) 'durationSec': draft.duration.inSeconds,
+      // ---- Ausdauer: dieselben Feldnamen wie `saveCardioSession` der PWA.
+      if (draft.kind == SessionKind.cardio) ...{
+        'activityType': (draft.activity ?? CardioActivity.other).wire,
+        if (draft.distanceKm != null) 'distanceKm': draft.distanceKm,
+        if (draft.avgHr != null) 'avgHr': draft.avgHr,
+        if (draft.maxHr != null) 'maxHr': draft.maxHr,
+        if (_paceField(draft.distanceKm, draft.duration) case final pace?)
+          'pace': pace,
+      },
+      // ---- Regeneration: dasselbe Feld, andere Werte (`saveRecoverySession`).
+      if (draft.kind == SessionKind.recovery && draft.recoveryKind != null)
+        'activityType': draft.recoveryKind!.wire,
     };
   }
 

@@ -144,12 +144,32 @@ void main() {
           SessionMapper.fromMap('c', {...base, 'notes': '   '})!.notes, null);
     });
 
-    test('pace: null, fehlend, integer und double', () {
-      CardioSession read(Object? value) => SessionMapper.fromMap(
-          'x', {...base, if (value != null) 'pace': value})! as CardioSession;
-      expect(read(null).pace, null);
-      expect(read(6).pace, 6.0);
-      expect(read(6.42).pace, 6.42);
+    test('pace wird nie gelesen — es ist eine Rechnung aus Distanz und Dauer',
+        () {
+      CardioSession read(Map<String, Object?> extra) =>
+          SessionMapper.fromMap('x', {...base, ...extra})! as CardioSession;
+      // Ein gespeichertes `pace` ohne Distanz ist eine Zahl ohne Grundlage.
+      expect(read({'pace': 6}).pace, null);
+      expect(read({'pace': 6.42}).pace, null);
+      // Mit Distanz und Dauer ergibt es sich — auch wenn das Feld etwas
+      // anderes behauptet.
+      expect(
+        read({'pace': 9, 'distanceKm': 10, 'duration': 60}).pace,
+        closeTo(6.0, 1e-9),
+      );
+    });
+
+    test('Regeneration liest ihre Art aus activityType', () {
+      final rec = {...base, 'type': 'recovery'};
+      RecoverySession read(Object? kind) => SessionMapper.fromMap(
+              'r', {...rec, if (kind != null) 'activityType': kind})!
+          as RecoverySession;
+      expect(read('stretching').recoveryKind, RecoveryKind.stretch);
+      expect(read('yoga').recoveryKind, RecoveryKind.yoga);
+      expect(read(null).recoveryKind, null);
+      // Unbekanntes überlebt als Rohwert.
+      expect(read('foam_roll').recoveryKind, null);
+      expect(read('foam_roll').rawKind, 'foam_roll');
     });
   });
 

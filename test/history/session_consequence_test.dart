@@ -215,12 +215,13 @@ void main() {
         date: date,
         createdAt: date,
         distanceKm: 5,
-        pace: 5.5,
+        duration: const Duration(minutes: 27, seconds: 30),
         avgHr: 140,
       ).copyWith(date: DateTime(2026, 2, 2));
 
       expect(moved.distanceKm, 5);
-      expect(moved.pace, 5.5);
+      // Gerechnet, nicht kopiert: 27:30 auf 5 km sind 5,5 min/km.
+      expect(moved.pace, closeTo(5.5, 1e-9));
       expect(moved.avgHr, 140);
     });
   });

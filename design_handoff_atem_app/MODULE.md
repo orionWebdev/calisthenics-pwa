@@ -119,6 +119,39 @@ Der interaktive Prototyp zeigt Timing und Animationen (Puls-Glow 2,2 s, Flacker-
 
 ---
 
+## 11 — Hybrid & Cardio: drei Tabs, zwei Spuren, ein Verhältnis
+`design_refs/11_Hybrid_Cardio.dc.html` · Modul 11 · Anleitungsprompt: `PROMPT_MODUL_11.md`
+
+Die App heißt Hybrid und kann nur Kraft. 51 Ausdauer- und 12 Regenerationseinheiten liegen im Bestand — ohne Erfassungsweg und ohne eine einzige Auswertung. **40 % des Bestands waren unsichtbar.**
+
+Leitsatz: *Hybrid heißt nicht, Kraft und Ausdauer zu einer Zahl zu verrechnen, sondern beide Spuren einzeln messbar zu halten und nur ihr Verhältnis zu zeigen.*
+
+Sektionen: `A` Navigation neu geschnitten (drei Tab-Wurzeln + drei Wege) · `B1` Cardio-Wurzel (voll, dünn, leer, ladend, Fehler) · `B2` Ausdauereinheit erfassen (nacherfassen, Aktivitätsauswahl, Live-Uhr) · `B3` Ausdauer-Auswertung (Wochenstreifen, Tempokurve, Verteilung, Perzentil) · `B4` Intensitätskaskade (drei Stufen + Führungsregel) · `C1` Zwei Spuren, ein Verhältnis · `C2` Regeneration (Zeile, Sheet, Sprachregel) · `C3` dünner und leerer Hybrid-Tab + **Zustandsmatrix** · `D` Datenlage · `F` Spezifikation · `G` Strings (rund 90 Keys) · `H` A11y · `I` Wiederverwendung aus Modul 01–10 · `J` Entscheidungsprotokoll (14 Einträge) · `K` Offene Fragen
+
+**Navigation — es bleiben genau drei Plätze:**
+
+| Platz | Frage | Was hineinwandert |
+|---|---|---|
+| **Kraft** | Was trainiere ich, und wie entwickelt es sich? | heutiger Workouts-Tab + kompletter Verlauf (Modul 6 + 9), Segment „Trainieren \| Verlauf" |
+| **Cardio** | Was bin ich gelaufen, und wird es besser? | neu: Wurzel, Erfassung, Auswertung, Segment „Einheiten \| Auswertung" |
+| **Hybrid** | Wie steht es um mich, über beides? | heutiger Start- + Analyse-Tab (Modul 10) + Regenerationszeile |
+
+**Intensitätskaskade — dreistufig, geführte Stufe immer sichtbar:**
+- **1 · Ø Herzfrequenz** — 4/51 belegt. Führt nur mit gemessenem Ø- *und* Maximalpuls. Heute leer, aber gebaut (Health Connect füllt sie später).
+- **2 · RPE 1–5** — 32/51. Trägt ein Wort, keinen Prozentwert.
+- **3 · Tempo gegen eigenen Schnitt derselben Aktivität** — 51/51. Der Rückfall, der nie ausfällt (Median, nie über Aktivitäten hinweg).
+- Sonst: kein Intensitätskasten. Genau eine Stufe urteilt, die anderen stehen als Zahl ohne Bewertung.
+
+**Schwellen:** Wochenkilometer ab 3 Wochen mit Einheiten · Tempokurve ab 8 Einheiten je Aktivität · Perzentil ab 10 je Aktivität · Bereitschaft und Formwert ab 8 Einheiten · Verhältnis schon ab 2 Einheiten (es ist ein Anteil, keine Prognose), Verschiebung erst ab 4 Wochen.
+
+**Wichtigste Festlegungen:** keine gemeinsame Lastwährung (kein Hybrid-Score) · Verhältnis über Trainingsminuten mit Nenner, kein Sollverhältnis · kein GPS und keine Standortberechtigung · Tempo ist Ausgabe, nie Eingabe · acht Aktivitäten, aber nicht gleich laut (vier unbelegte als Kapseln unter „Weitere") · Regeneration ist eine Zeile im Hybrid-Tab, kein vierter Tab, und trägt keine Last · leere Woche als 2-dp-Balken, kein Nullbalken.
+
+**Neu entstandene Bausteine (nur zwei):** **Verhältnisbalken** (zwei Segmente, eigene Fachgröße je Spur — Ausdauer in Violet als Fläche) und **Live-Uhr** (persistent gegen Prozesskill).
+
+**Offen:** Nenner des Verhältnisses (Annahme: Trainingsminuten) · Schwellen bei Kurve und Perzentil (bleiben, Schnitt+Spanne treten an die Stelle) · Zonengrenzen Stufe 1 (nur mit gemessenem Maximalpuls, keine Altersformel).
+
+---
+
 ## Prototypen
 `Prototyp_Dashboard.dc.html` · `Prototyp_Workout_Runner.dc.html`
 

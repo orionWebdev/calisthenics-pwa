@@ -40,11 +40,19 @@ abstract final class TrainingLoad {
 
   /// Sportarten-Faktoren für Cardio. `swim` und `row` stehen im JavaScript,
   /// kommen im Bestand aber nicht vor.
+  ///
+  /// **Zwei Einträge sind nicht aus der PWA:** `bikeIndoor` und `walk` kennt
+  /// sie nicht (Board 11 führt sie neu ein). Indoor-Rad bekommt den Radfaktor
+  /// — dieselbe Bewegung ohne Wind; Gehen den Wanderfaktor — Wandern ohne
+  /// Berg. Beide stehen hier, damit eine neue Aktivität nicht stillschweigend
+  /// mit 1,0 rechnet wie ein Lauf.
   static const _sportFactors = {
     'run': 1.0,
     'bike': 0.85,
+    'bikeindoor': 0.85,
     'swim': 0.9,
     'hike': 0.4,
+    'walk': 0.4,
     'row': 0.95,
     'other': 1.0,
   };

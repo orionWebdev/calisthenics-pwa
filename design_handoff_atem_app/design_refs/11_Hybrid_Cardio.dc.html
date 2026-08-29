@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.45}50%{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 11 / STUFE 11 · DIE ZWEITE HÄLFTE DES BESTANDS</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Hybrid & Cardio — drei Tabs, zwei Spuren, ein Verhältnis</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:920px;line-height:1.7">Die App heißt Hybrid und kann nur Kraft. 51 Ausdauer- und 12 Regenerationseinheiten liegen im Bestand, ohne Weg hinein und ohne eine einzige Auswertung. Modul 11 schneidet die Navigation neu, baut den Cardio-Bereich samt Erfassung und stellt Kraft und Ausdauer als Verhältnis nebeneinander — nie als Summe.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<sc-for list="{{ kopfChips }}" as="c" hint-placeholder-count="5">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">{{ c.t }}</span>
+</sc-for>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ · MODUL 11 · EIN SATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1060px">Hybrid heißt nicht, Kraft und Ausdauer zu einer Zahl zu verrechnen, sondern beide Spuren einzeln messbar zu halten und nur ihr Verhältnis zu zeigen.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Daraus folgen drei Regeln. <strong style="color:#CDD3EA;font-weight:600">Erste:</strong> Tonnage und Kilometer werden nie addiert — eine gemeinsame Lastwährung wäre eine Zahl, die niemand nachrechnen kann. <strong style="color:#CDD3EA;font-weight:600">Zweite:</strong> Das Verhältnis trägt immer seinen Nenner und niemals ein Soll — die App weiß nicht, wie viel Laufen richtig ist. <strong style="color:#CDD3EA;font-weight:600">Dritte:</strong> Intensität wird dreistufig hergeleitet und die benutzte Stufe steht sichtbar dabei, weil Puls bei 4 von 51 Einheiten liegt.</div>
+</div>
+
+<div data-screen-label="A Navigation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A · DIE NAVIGATION NEU GESCHNITTEN — DREI PLÄTZE, KEIN VIERTER</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px 20px">
+<div style="display:grid;grid-template-columns:0.7fr 1.15fr 1.6fr 1.35fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>PLATZ</div><div>FRAGE DES TABS</div><div>WAS HINEINWANDERT</div><div>WURZEL ZEIGT ZUERST</div>
+</div>
+<sc-for list="{{ navRows }}" as="n" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:0.7fr 1.15fr 1.6fr 1.35fr;gap:8px 16px;align-items:baseline;padding:14px 0;border-bottom:{{ n.bb }}">
+<div><span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:30px;background:{{ n.chipBg }};border:1px solid {{ n.chipBr }}"><span style="width:6px;height:6px;border-radius:30px;background:{{ n.dot }}"></span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.06em;color:{{ n.chipC }}">{{ n.platz }}</span></span></div>
+<div style="font-size:11.5px;color:#FFFFFF;line-height:1.65">{{ n.frage }}</div>
+<div style="font-size:11.5px;color:#CDD3EA;line-height:1.65">{{ n.rein }}</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.65">{{ n.wurzel }}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:22px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A1 · TAB-WURZEL KRAFT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px 8px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Kraft</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">63 EINHEITEN</span>
+</div>
+<div style="display:flex;gap:6px">
+<span style="flex:none;padding:6px 12px;border-radius:30px;background:rgba(0,242,254,0.10);border:1px solid rgba(0,242,254,0.35);font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#00F2FE">TRAINIEREN</span>
+<span style="flex:none;padding:6px 12px;border-radius:30px;background:#14141D;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA">VERLAUF</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">NÄCHSTER PLAN</div>
+<div style="margin-top:5px;font-size:14px;font-weight:700">Oberkörper Push</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA">5 ÜBUNGEN · ZULETZT 24. AUG</div>
+<div style="margin-top:11px;min-height:44px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">Training starten</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:12.5px;font-weight:600">Muskelbalance</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">8 WOCHEN</span>
+</div>
+<div style="margin-top:9px;display:flex;gap:2px;height:12px">
+<sc-for list="{{ balanceSeg }}" as="s" hint-placeholder-count="9">
+<span style="height:12px;border-radius:30px;background:{{ s.c }};width:{{ s.w }}"></span>
+</sc-for>
+</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">268 SÄTZE · 14 VON 18 KRAFT-EINHEITEN</div>
+</div>
+<div style="margin-top:2px;display:flex;gap:4px;border-top:1px solid #232334;padding-top:9px">
+<sc-for list="{{ barKraft }}" as="t" hint-placeholder-count="3">
+<span style="flex:1;min-height:48px;border-radius:14px;background:{{ t.bg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+<span style="width:16px;height:16px;border-radius:10px;border:2px solid {{ t.c }}"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;color:{{ t.c }}">{{ t.n }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der heutige Workouts-Tab, ergänzt um den Segment-Umschalter <strong style="color:#CDD3EA;font-weight:600">Trainieren / Verlauf</strong>. Der komplette Verlauf aus Modul 6 wandert hierher — keine neuen Bildschirme, nur ein neuer Einstieg.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A2 · TAB-WURZEL CARDIO</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px 8px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Cardio</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">51 EINHEITEN</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">DIESE WOCHE · KW 35 · 4 EINHEITEN</div>
+<div style="margin-top:6px;display:flex;align-items:baseline;gap:7px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#FFFFFF">28,4</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#CDD3EA">km</span>
+<span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:30px;background:#0B0B0E;border:1px solid #232334"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">▲</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">+3,1</span></span>
+</div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">GEGEN 4-WOCHEN-SCHNITT 25,3 KM</div>
+<div style="margin-top:11px;display:flex;align-items:flex-end;gap:3px;height:34px">
+<sc-for list="{{ wochenMini }}" as="w" hint-placeholder-count="8">
+<span style="flex:1;border-radius:30px;background:{{ w.c }};height:{{ w.h }}"></span>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">LETZTE EINHEITEN</div>
+<sc-for list="{{ cardioListe }}" as="e" hint-placeholder-count="3">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:10px 12px;display:flex;align-items:center;gap:9px;min-height:48px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#0B0B0E;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">{{ e.ic }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">{{ e.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ e.d }}</span></span>
+<span style="flex:none;text-align:right"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#FFFFFF">{{ e.km }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;margin-top:1px">{{ e.pace }}</span></span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:2px;display:flex;gap:4px;border-top:1px solid #232334;padding-top:9px">
+<sc-for list="{{ barCardio }}" as="t" hint-placeholder-count="3">
+<span style="flex:1;min-height:48px;border-radius:14px;background:{{ t.bg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+<span style="width:16px;height:16px;border-radius:10px;border:2px solid {{ t.c }}"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;color:{{ t.c }}">{{ t.n }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Neu. Oben die Wochenzahl mit Nenner und Verschiebung, darunter die Einheitenliste im Rezept aus Modul 6. Der Erfassen-Knopf ist ein FAB über der Liste (siehe B2), nicht in der Bar — die Bar hat genau drei Plätze.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A3 · TAB-WURZEL HYBRID · START + ANALYSE VERSCHMOLZEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px 8px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Hybrid</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DI 26. AUG</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:center;gap:11px">
+<span style="flex:none;width:52px;height:52px;border-radius:30px;border:3px solid #00FF87;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#FFFFFF">78</span>
+<span style="flex:1;min-width:0">
+<span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">BEREITSCHAFT</span>
+<span style="display:block;font-size:13px;font-weight:700;margin-top:2px">Bereit</span>
+<span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;margin-top:3px">GESTERN REGENERATION</span>
+</span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:12.5px;font-weight:600">Verhältnis</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">KW 35</span>
+</div>
+<div style="margin-top:10px;display:flex;gap:3px;height:14px">
+<span style="width:65%;height:14px;border-radius:30px;background:#00F2FE"></span>
+<span style="width:35%;height:14px;border-radius:30px;background:#7A2BDB"></span>
+</div>
+<div style="margin-top:9px;display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;align-items:baseline;gap:8px;min-height:26px">
+<span style="flex:none;width:7px;height:7px;border-radius:30px;background:#00F2FE"></span>
+<span style="flex:1;min-width:0;font-size:11.5px;font-weight:600">Kraft</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:#FFFFFF">65 %</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">184 min</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:8px;min-height:26px">
+<span style="flex:none;width:7px;height:7px;border-radius:30px;background:#7A2BDB"></span>
+<span style="flex:1;min-width:0;font-size:11.5px;font-weight:600">Ausdauer</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:#FFFFFF">35 %</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">99 min</span>
+</div>
+</div>
+<div style="margin-top:10px;padding-top:9px;border-top:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;line-height:1.6">ANTEIL AN 283 MIN AUS 7 EINHEITEN · <span style="color:#CDD3EA">▲ 6 PP KRAFT GEGEN 4-WOCHEN-SCHNITT</span></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:11px 12px;display:flex;align-items:center;gap:9px;min-height:48px">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:#00FF87"></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">Regeneration</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">GESTERN · YOGA · 25 MIN</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">ERFASSEN</span>
+</div>
+<div style="margin-top:2px;display:flex;gap:4px;border-top:1px solid #232334;padding-top:9px">
+<sc-for list="{{ barHybrid }}" as="t" hint-placeholder-count="3">
+<span style="flex:1;min-height:48px;border-radius:14px;background:{{ t.bg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+<span style="width:16px;height:16px;border-radius:10px;border:2px solid {{ t.c }}"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;color:{{ t.c }}">{{ t.n }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Start und Analyse verschmelzen ohne Doppelung: <strong style="color:#CDD3EA;font-weight:600">Bereitschaft</strong> (heute), <strong style="color:#CDD3EA;font-weight:600">Verhältnis</strong> (diese Woche), <strong style="color:#CDD3EA;font-weight:600">Formwert und Zonen</strong> (vier Wochen, darunter), <strong style="color:#CDD3EA;font-weight:600">Regenerationszeile</strong>. Jede Zeitspanne kommt genau einmal vor — das war die Doppelung zwischen Start und Analyse.</div>
+</div>
+
+</div>
+
+<div style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+<sc-for list="{{ wege }}" as="w" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">{{ w.k }}</div>
+<div style="margin-top:8px;font-size:12.5px;font-weight:600">{{ w.t }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.7">{{ w.b }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="B1 Cardio Wurzel Zustaende" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B1 · CARDIO-WURZEL — WAS OBEN STEHT BEI 42, BEI 3, BEI 0</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">1 · DÜNN — 3 EINHEITEN, KEINE WOCHENZAHL</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Cardio</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">3 EINHEITEN</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">GESAMT · SEIT 4. AUG</div>
+<div style="margin-top:6px;display:flex;align-items:baseline;gap:7px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#FFFFFF">18,6</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#CDD3EA">km</span>
+</div>
+<div style="margin-top:7px;display:flex;flex-wrap:wrap;gap:5px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;background:#0B0B0E;border:1px solid #232334;border-radius:30px;padding:3px 8px">3 LÄUFE</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;background:#0B0B0E;border:1px solid #232334;border-radius:30px;padding:3px 8px">Ø 6,2 KM</span>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;width:16px;height:16px;border-radius:10px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:1px">i</span>
+<span style="flex:1;min-width:0;font-size:10.5px;color:#94A3B8;line-height:1.6">Wochenkilometer ab 3 Wochen mit Einheiten. Bis dahin steht hier die Gesamtstrecke.</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">ALLE EINHEITEN</div>
+<sc-for list="{{ cardioDuenn }}" as="e" hint-placeholder-count="3">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:10px 12px;display:flex;align-items:center;gap:9px;min-height:48px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#0B0B0E;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">{{ e.ic }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">{{ e.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ e.d }}</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#FFFFFF">{{ e.km }}</span>
+</div>
+</sc-for>
+</div>
+<div style="min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600">
+<span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">+</span> Einheit erfassen
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Unter 3 belegten Wochen keine Wochenzahl und kein Trendbalken — eine Woche mit einem Lauf ist kein Trend. Statt der Kachel „0 km diese Woche" steht die Gesamtstrecke mit ihrem Zeitraum, plus der Satz, ab wann die Wochenzahl erscheint.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · LEER — 0 EINHEITEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px;min-height:398px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Cardio</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:18px 15px">
+<div style="width:36px;height:36px;border-radius:10px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;justify-content:center">
+<svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 17l5-6 4 3 7-8" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div style="margin-top:11px;font-size:14px;font-weight:700;line-height:1.4">Noch keine Ausdauereinheit</div>
+<div style="margin-top:7px;font-size:11.5px;color:#94A3B8;line-height:1.65">Erfasse einen Lauf, eine Radfahrt oder eine Wanderung. Ab der zweiten Einheit derselben Aktivität steht hier die Tempoentwicklung.</div>
+<div style="margin-top:13px;min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600"><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700">+</span> Erste Einheit erfassen</div>
+<div style="margin-top:9px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Live mitlaufen lassen</div>
+</div>
+<div style="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;line-height:1.6">KEINE LISTE · KEIN DIAGRAMM · KEIN PLATZHALTER</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der einzige Bildschirm des Moduls mit echtem Leerzustand, weil er ohne ihn unbenutzbar wäre: es gibt keinen anderen Weg zur ersten Einheit. Beide Erfassungswege stehen hier gleichrangig — danach nie wieder, dann trägt der FAB nur den Regelfall.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · LADEND UND FEHLER</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Cardio</span>
+<span style="width:52px;height:9px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<span style="display:block;width:104px;height:8px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span>
+<span style="display:block;margin-top:10px;width:128px;height:26px;border-radius:14px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span>
+<div style="margin-top:12px;display:flex;align-items:flex-end;gap:3px;height:34px">
+<sc-for list="{{ skelBars }}" as="s" hint-placeholder-count="8">
+<span style="flex:1;border-radius:30px;background:#16161F;height:{{ s.h }};animation:skelPulse 1.4s ease-in-out infinite"></span>
+</sc-for>
+</div>
+</div>
+<sc-for list="{{ skelZeilen }}" as="z" hint-placeholder-count="2">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:10px 12px;display:flex;align-items:center;gap:9px;min-height:48px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span>
+<span style="flex:1;min-width:0"><span style="display:block;width:{{ z.w1 }};height:8px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span><span style="display:block;margin-top:6px;width:{{ z.w2 }};height:7px;border-radius:30px;background:#16161F;animation:skelPulse 1.4s ease-in-out infinite"></span></span>
+</div>
+</sc-for>
+<div style="background:#14141D;border:1px solid rgba(240,34,119,0.35);border-radius:20px;padding:13px">
+<div style="display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;width:18px;height:18px;border-radius:10px;background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.4);display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#F02277">!</span>
+<span style="flex:1;min-width:0">
+<span style="display:block;font-size:12.5px;font-weight:600">Wochenkilometer nicht berechenbar</span>
+<span style="display:block;margin-top:5px;font-size:11px;color:#94A3B8;line-height:1.6">Die Einheiten sind da, die Auswertung nicht. Die Liste darunter bleibt bedienbar.</span>
+</span>
+</div>
+<div style="margin-top:11px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Erneut versuchen</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Skelett in Ergebnishöhe, damit die Liste beim Ankommen nicht springt. Der Fehler betrifft nur den rechnenden Block — die Einheitenliste ist gespeicherte Wahrheit und wird nie mit ihm zusammen ausgeblendet.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="B2 Ausdauereinheit erfassen" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B2 · EINE AUSDAUEREINHEIT ERFASSEN — DER WICHTIGSTE BILDSCHIRM DES MODULS</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · NACHERFASSEN — DER REGELFALL</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="#CDD3EA" stroke-width="2" stroke-linecap="round"></path></svg></span>
+<span style="flex:1;min-width:0;font-size:14px;font-weight:700">Ausdauer erfassen</span>
+</div>
+<div style="display:flex;gap:6px">
+<span style="flex:1;text-align:center;padding:7px 6px;border-radius:30px;background:rgba(0,242,254,0.10);border:1px solid rgba(0,242,254,0.35);font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">NACHERFASSEN</span>
+<span style="flex:1;text-align:center;padding:7px 6px;border-radius:30px;background:#14141D;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">LIVE</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">DATUM</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;justify-content:space-between;padding:0 12px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#FFFFFF">Di 26.08.2026</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">HEUTE</span>
+</div>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">AKTIVITÄT</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid rgba(0,242,254,0.35);display:flex;align-items:center;justify-content:space-between;padding:0 12px">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:7px;height:7px;border-radius:30px;background:#00F2FE"></span><span style="font-size:12.5px;font-weight:600">Laufen</span></span>
+<svg width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+</div>
+</div>
+<div style="display:flex;gap:8px">
+<div style="flex:1;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">DISTANZ · KM</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FFFFFF">7,80</div>
+</div>
+<div style="flex:1;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">DAUER · MIN</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FFFFFF">42:00</div>
+</div>
+</div>
+<div style="border-radius:14px;background:rgba(0,242,254,0.06);border:1px solid rgba(0,242,254,0.30);padding:10px 12px;display:flex;align-items:center;gap:9px">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.08em;color:#00F2FE">TEMPO</span>
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:#FFFFFF">5:23 /km</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">GERECHNET</span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">OPTIONAL · 4 FELDER</span>
+<svg width="12" height="12" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg>
+</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:9px">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">ANSTRENGUNG · RPE</div>
+<div style="margin-top:5px;display:flex;gap:5px">
+<sc-for list="{{ rpe }}" as="r" hint-placeholder-count="5">
+<span style="flex:1;min-height:44px;border-radius:14px;background:{{ r.bg }};border:1px solid {{ r.br }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ r.c }}">{{ r.n }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.04em;color:{{ r.lc }}">{{ r.l }}</span>
+</span>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;gap:8px">
+<div style="flex:1;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">Ø PULS</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;padding:0 11px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#94A3B8">—</div>
+</div>
+<div style="flex:1;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">MAX. PULS</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;padding:0 11px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#94A3B8">—</div>
+</div>
+</div>
+<div style="font-size:10.5px;color:#94A3B8;line-height:1.6">Puls leer lassen ist der Normalfall. Die Auswertung setzt ihn nirgends voraus.</div>
+</div>
+</div>
+<div style="min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">Speichern</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Vier Pflichtfelder oben, vier optionale in einem eingeklappten Abschnitt — dessen Kopf nennt die Zahl, damit niemand raten muss, was dort verborgen ist. <strong style="color:#CDD3EA;font-weight:600">Tempo ist ein Ausgabefeld</strong>: cyan gerahmt, nicht tippbar, mit dem Wort „gerechnet". Feldrezepte, Fokusring und Fehlertext unverändert aus Modul 7.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · AKTIVITÄTSAUSWAHL — ACHT WERTE, NICHT GLEICH LAUT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:0 0 14px;overflow:hidden">
+<div style="height:74px;background:#050507;opacity:0.5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px">
+<span style="width:44px;height:4px;border-radius:30px;background:#232334"></span>
+</div>
+<div style="background:#0B0B0E;border-top:1px solid #232334;border-radius:20px 20px 0 0;padding:14px 12px">
+<div style="font-size:14px;font-weight:700">Aktivität</div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">DEINE AKTIVITÄTEN · 51 EINHEITEN</div>
+<div style="margin-top:7px;display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ aktivHaeufig }}" as="a" hint-placeholder-count="4">
+<div style="min-height:48px;border-radius:14px;background:#14141D;border:1px solid {{ a.br }};display:flex;align-items:center;gap:10px;padding:0 12px">
+<span style="flex:none;width:7px;height:7px;border-radius:30px;background:{{ a.dot }}"></span>
+<span style="flex:1;min-width:0;font-size:12.5px;font-weight:600;color:#FFFFFF">{{ a.n }}</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA">{{ a.z }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">WEITERE</div>
+<div style="margin-top:7px;display:flex;flex-wrap:wrap;gap:6px">
+<sc-for list="{{ aktivSelten }}" as="a" hint-placeholder-count="4">
+<span style="min-height:36px;display:inline-flex;align-items:center;padding:0 13px;border-radius:30px;background:#0B0B0E;border:1px solid #232334;font-size:11.5px;color:#CDD3EA">{{ a.n }}</span>
+</sc-for>
+</div>
+<div style="margin-top:12px;font-size:10.5px;color:#94A3B8;line-height:1.6">Vier Werte kommen im Bestand nicht vor. Sie stehen als Kapseln unter „Weitere“ — erreichbar in einem Tap, aber nicht auf Augenhöhe mit 37 Läufen. Wird eine davon zum zweiten Mal benutzt, wandert sie nach oben.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Sheet im kurzen Höhenmodus aus Modul 2. Sortierung nach Häufigkeit im eigenen Bestand, nicht alphabetisch: die Liste ist ein Werkzeug, kein Verzeichnis. Kapselhöhe 36 dp sichtbar, Trefferfläche 48 dp.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · LIVE MITLAUFEN — LAUFBAND, INDOOR-RAD</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:1;min-width:0;font-size:14px;font-weight:700">Indoor-Rad</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:30px;background:rgba(0,255,135,0.10);border:1px solid rgba(0,255,135,0.35)">
+<span style="width:6px;height:6px;border-radius:30px;background:#00FF87"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;color:#00FF87">LÄUFT</span>
+</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px 13px;text-align:center">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.14em;color:#94A3B8">DAUER</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1;color:#FFFFFF">18:42</div>
+<div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">GESTARTET 19:04</div>
+</div>
+<div style="display:flex;gap:8px">
+<div style="flex:1;min-height:48px;border-radius:30px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12.5px;font-weight:600;color:#CDD3EA"><span style="font-family:'JetBrains Mono',monospace">II</span> Pause</div>
+<div style="flex:1;min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">Beenden</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">DISTANZ VON HAND · KM</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;justify-content:space-between;padding:0 12px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FFFFFF">6,40</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">VOM DISPLAY</span>
+</div>
+<div style="margin-top:10px;border-radius:14px;background:rgba(0,242,254,0.06);border:1px solid rgba(0,242,254,0.30);padding:9px 11px;display:flex;align-items:center;gap:9px">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#00F2FE">TEMPO</span>
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">20,5 km/h</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">LÄUFT MIT</span>
+</div>
+<div style="margin-top:10px;padding-top:10px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;width:16px;height:16px;border-radius:10px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:1px">i</span>
+<span style="flex:1;min-width:0;font-size:10.5px;color:#94A3B8;line-height:1.6">Kein GPS, keine Standortabfrage. Die Distanz kommt vom Gerätedisplay und kann jederzeit korrigiert werden — auch nach dem Beenden.</span>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Uhr ist die einzige laufende Zahl. Sie zählt weiter, wenn die App im Hintergrund liegt, und übersteht einen Prozesskill: Startzeitpunkt und Pausenspanne liegen persistent, die Anzeige wird daraus gerechnet. Nach „Beenden“ öffnet dasselbe Formular wie in 1, vorbefüllt — es gibt nur ein Formular.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="B3 Ausdauer Auswertung" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B3 · AUSDAUER-AUSWERTUNG — WOCHEN, TEMPO, VERTEILUNG</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · WOCHENKILOMETER · 8 WOCHEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;gap:6px">
+<span style="flex:1;text-align:center;padding:7px 6px;border-radius:30px;background:#14141D;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">EINHEITEN</span>
+<span style="flex:1;text-align:center;padding:7px 6px;border-radius:30px;background:rgba(0,242,254,0.10);border:1px solid rgba(0,242,254,0.35);font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">AUSWERTUNG</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:12.5px;font-weight:600">Wochenkilometer</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">8 WOCHEN</span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:flex-end;gap:4px;height:76px">
+<sc-for list="{{ wochen }}" as="w" hint-placeholder-count="8">
+<span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
+<span style="width:100%;border-radius:30px;background:{{ w.c }};height:{{ w.h }}"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:{{ w.lc }}">{{ w.kw }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">Ø 25,3 KM · 42 EINHEITEN</span>
+<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:30px;background:#0B0B0E;border:1px solid #232334"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">▲</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">+3,1</span></span>
+</div>
+<div style="margin-top:8px;font-size:10.5px;color:#94A3B8;line-height:1.6">KW 31 ohne Einheit bleibt leer. Keine Linie über die Lücke — die Woche fand statt, das Training nicht.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-size:12.5px;font-weight:600">Verteilung der Distanzen</div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">44 VON 51 EINHEITEN MIT DISTANZ</div>
+<div style="margin-top:11px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ verteilung }}" as="v" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:9px;min-height:26px">
+<span style="flex:none;width:52px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">{{ v.b }}</span>
+<span style="flex:1;min-width:0;height:6px;border-radius:30px;background:#16161F"><span style="display:block;height:6px;border-radius:30px;background:#00F2FE;width:{{ v.w }}"></span></span>
+<span style="flex:none;width:22px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#FFFFFF">{{ v.n }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Monatsstreifen aus Modul 6 wird zum Wochenstreifen: gleiche Balkenlogik, gleiche Lückenregel, gleiche 30er-Radien. Die aktuelle, noch unfertige Woche ist cyan gefüllt und trägt im Label „laufend“ — sonst liest man einen Einbruch, wo nur Dienstag ist.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">2 · TEMPOENTWICKLUNG JE AKTIVITÄT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;flex-wrap:wrap;gap:5px">
+<span style="padding:5px 11px;border-radius:30px;background:rgba(0,242,254,0.10);border:1px solid rgba(0,242,254,0.35);font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">LAUFEN · 37</span>
+<span style="padding:5px 11px;border-radius:30px;background:#0B0B0E;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">RAD · 5</span>
+<span style="padding:5px 11px;border-radius:30px;background:#0B0B0E;border:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">WANDERN · 4</span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;gap:7px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#FFFFFF">5:23</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA">/km</span>
+<span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:30px;background:#0B0B0E;border:1px solid #232334"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#CDD3EA">▼</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#CDD3EA">−0:11</span></span>
+</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">GEGEN EIGENEN SCHNITT 5:34 · 37 LÄUFE</div>
+<div style="margin-top:12px;background:#0B0B0E;border-radius:14px;padding:9px 8px 6px">
+<svg width="100%" height="66" viewBox="0 0 232 66" preserveAspectRatio="none">
+<line x1="0" y1="6" x2="232" y2="6" stroke="#232334" stroke-width="1"></line>
+<line x1="0" y1="58" x2="232" y2="58" stroke="#232334" stroke-width="1"></line>
+<polyline points="6,44 30,38 56,46 82,34 108,40 134,28 160,32 186,20 212,24 226,14" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+<circle cx="226" cy="14" r="3.5" fill="#050507" stroke="#00F2FE" stroke-width="2"></circle>
+</svg>
+<div style="display:flex;gap:2px;margin-top:5px">
+<sc-for list="{{ rug }}" as="r" hint-placeholder-count="16">
+<span style="flex:1;height:4px;border-radius:30px;background:{{ r.c }}"></span>
+</sc-for>
+</div>
+<div style="margin-top:5px;display:flex;justify-content:space-between">
+<span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#94A3B8">1. JUL</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;color:#94A3B8">25. AUG</span>
+</div>
+</div>
+<div style="margin-top:9px;font-size:10.5px;color:#94A3B8;line-height:1.6">Ein Punkt je Lauf, gleichmäßig verteilt. Der Rug-Plot darunter zeigt, wo die Läufe wirklich lagen — die Kurve behauptet keinen Rhythmus.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:12px;font-weight:600">Rad</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">5 EINHEITEN</span>
+</div>
+<div style="margin-top:9px;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;width:16px;height:16px;border-radius:10px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:1px">i</span>
+<span style="flex:1;min-width:0;font-size:10.5px;color:#94A3B8;line-height:1.6">Keine Kurve unter 8 Einheiten dieser Aktivität. Stattdessen der Schnitt: <strong style="color:#CDD3EA;font-weight:600">20,4 km/h aus 5 Fahrten</strong>, Spanne 18,1 bis 23,6.</span>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Formkurve aus Modul 6, unverändert in Höhe und Rug-Plot, nur mit Tempo statt Formwert. Aktivitätswahl als Kapselreihe: die belegten voran, mit Zahl. Aktivitäten unter 8 Einheiten bekommen keine Kurve — dieselbe Schwelle wie dort, aus demselben Grund.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">3 · PERZENTIL UND SPANNE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:12.5px;font-weight:600">Dieser Lauf</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">25. AUG</span>
+</div>
+<div style="margin-top:11px;display:flex;align-items:baseline;gap:7px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#FFFFFF">5:23</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA">/km</span>
+</div>
+<div style="margin-top:12px;height:8px;border-radius:30px;background:#16161F;position:relative">
+<span style="position:absolute;left:0;top:0;height:8px;width:78%;border-radius:30px;background:#00F2FE"></span>
+<span style="position:absolute;left:78%;top:-3px;width:3px;height:14px;border-radius:30px;background:#FFFFFF"></span>
+</div>
+<div style="margin-top:7px;display:flex;justify-content:space-between">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">6:12 LANGSAMSTER</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">5:02 SCHNELLSTER</span>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;font-size:11px;color:#CDD3EA;line-height:1.65">Schneller als <strong style="color:#FFFFFF;font-weight:700">29 von 37</strong> deiner Läufe. Kein Vergleich mit anderen Menschen.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-size:12px;font-weight:600">Bei 5 Einheiten</div>
+<div style="margin-top:9px;font-size:10.5px;color:#94A3B8;line-height:1.65">Kein Perzentil unter 10 Einheiten derselben Aktivität. „Schneller als 3 von 5“ ist eine Rangfolge, keine Verteilung — die Karte fehlt dann, und der Bildschirm endet nach der Spanne.</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Perzentil-Karte aus Modul 9, gleiche Balkenlogik, gleiche Markerbreite. Der Nenner steht im Satz, nicht im Kleingedruckten: <strong style="color:#CDD3EA;font-weight:600">29 von 37</strong>.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="B4 Intensitaetskaskade" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B4 · DIE INTENSITÄTSKASKADE — DREISTUFIG, GRUNDLAGE IMMER SICHTBAR</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+<sc-for list="{{ kaskade }}" as="k" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid {{ k.br }};border-radius:20px;padding:18px 20px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:30px;background:{{ k.bg }};border:1px solid {{ k.br }}">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ k.tc }}">STUFE {{ k.s }}</span>
+</span>
+<span style="font-size:13px;font-weight:700">{{ k.q }}</span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:{{ k.zc }}">{{ k.belegt }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8">HEUTE BELEGT</span>
+</div>
+<div style="margin-top:8px;height:6px;border-radius:30px;background:#16161F"><span style="display:block;height:6px;border-radius:30px;background:{{ k.fill }};width:{{ k.w }}"></span></div>
+<div style="margin-top:12px;font-size:11.5px;color:#CDD3EA;line-height:1.7">{{ k.t }}</div>
+<div style="margin-top:11px;padding-top:11px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;color:#00F2FE;margin-top:1px">KAPSEL</span>
+<span style="flex:1;min-width:0;font-size:11px;color:#94A3B8;line-height:1.6">{{ k.kapsel }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:22px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A · STUFE 3, WEIL SONST NICHTS DA IST</div>
+<div style="margin-top:8px;background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:30px;background:#0B0B0E;border:1px solid #232334">
+<svg width="9" height="9" viewBox="0 0 24 24"><path d="M4 16h16M4 8h16" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.06em;color:#CDD3EA">TEMPO GEGEN EIGENEN SCHNITT</span>
+</span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;min-width:0"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">INTENSITÄT</span><span style="display:block;font-size:15px;font-weight:700;margin-top:3px">Über dem Schnitt</span></span>
+</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:baseline;gap:8px;min-height:28px">
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">TEMPO</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;color:#FFFFFF">5:23 /km</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:30px;background:#0B0B0E;border:1px solid #232334"><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;color:#CDD3EA">▼</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#CDD3EA">0:11</span></span>
+</div>
+<div style="display:flex;align-items:baseline;gap:8px;min-height:28px">
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">Ø PULS</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:12px;color:#CDD3EA">—</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:8px;min-height:28px">
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">RPE</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:12px;color:#CDD3EA">—</span>
+</div>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.6">Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen deine 37 Läufe — gröber, aber nachprüfbar.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der heutige Regelfall bei 47 von 51 Einheiten. Die nicht belegten Stufen stehen als „—“ mit Namen da, statt zu verschwinden: nur so ist erkennbar, dass es eine feinere Stufe gibt und woran sie hängt.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">B · STUFE 1 VERFÜGBAR — PULS LIEGT VOR</div>
+<div style="margin-top:8px;background:#14141D;border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:14px">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:30px;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.35)">
+<svg width="9" height="9" viewBox="0 0 24 24"><path d="M3 12h4l2-4 3 8 2-5 2 1h5" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.06em;color:#00F2FE">Ø HERZFREQUENZ</span>
+</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">AUS UHRDATEN</span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;gap:8px">
+<span style="flex:1;min-width:0"><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">INTENSITÄT</span><span style="display:block;font-size:15px;font-weight:700;margin-top:3px">Zone 3 · schwellig</span></span>
+</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:baseline;gap:8px;min-height:28px">
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">Ø PULS</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;color:#FFFFFF">154 bpm</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">82 % MAX</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:8px;min-height:28px">
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">RPE</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;color:#FFFFFF">4 / 5</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:8px;min-height:28px">
+<span style="flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">TEMPO</span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#CDD3EA">5:23 /km</span>
+</div>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.6">Puls liegt vor und führt. RPE und Tempo bleiben sichtbar, aber ohne Urteil — die Stufe steht in der Kapsel, nicht im Wert.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Derselbe Kasten, dieselbe Höhe, dieselben drei Zeilen — nur die Kapsel und die Reihenfolge der Betonung ändern sich. Health Connect füllt später Stufe 1, ohne dass ein Bildschirm neu gebaut werden muss: <strong style="color:#CDD3EA;font-weight:600">Verfeinerung, nicht Grundlage</strong>.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">C · REGEL — WELCHE STUFE FÜHRT</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 15px">
+<div style="display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ kaskadeRegel }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;gap:9px;align-items:flex-start">
+<span style="flex:none;width:18px;height:18px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE">{{ r.n }}</span>
+<span style="flex:1;min-width:0;font-size:11px;color:#CDD3EA;line-height:1.65">{{ r.t }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:13px;padding-top:11px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.65">Nie zwei Urteile gleichzeitig. Genau eine Stufe führt, die anderen stehen als Zahl ohne Bewertung darunter — sonst widersprechen sich „Zone 2“ und „über dem Schnitt“ im selben Kasten.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Das Muster ist die Vergleichsgrundlage-Kapsel aus Modul 6, Wort für Wort dieselbe Mechanik: benannte Stufe, sichtbare Herkunft, kleinerer Vergleich bei gröberer Grundlage.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="C1 Zwei Spuren ein Verhaeltnis" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C1 · ZWEI SPUREN, EIN VERHÄLTNIS — NIEMALS EINE SUMME</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · VERHÄLTNIS DER WOCHE · DEFAULT</div>
+<div style="margin-top:8px;background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:13px;font-weight:700">Verhältnis</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">KW 35 · 7 EINHEITEN</span>
+</div>
+<div style="margin-top:11px;display:flex;gap:3px;height:14px">
+<span style="width:65%;height:14px;border-radius:30px;background:#00F2FE"></span>
+<span style="width:35%;height:14px;border-radius:30px;background:#7A2BDB"></span>
+</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ verhaeltnis }}" as="v" hint-placeholder-count="2">
+<div style="display:flex;align-items:baseline;gap:8px;min-height:30px">
+<span style="flex:none;width:7px;height:7px;border-radius:30px;background:{{ v.c }}"></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600">{{ v.n }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;margin-top:2px">{{ v.eigen }}</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FFFFFF">{{ v.pct }}</span>
+<span style="flex:none;display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:30px;background:#0B0B0E;border:1px solid #232334"><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;color:#CDD3EA">{{ v.glyph }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#CDD3EA">{{ v.delta }}</span></span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;line-height:1.65">ANTEIL AN 283 TRAININGSMINUTEN · 4 KRAFT · 3 AUSDAUER</div>
+<div style="margin-top:7px;font-size:10.5px;color:#94A3B8;line-height:1.65">Verschiebung gegen den 4-Wochen-Schnitt in Prozentpunkten. Kein Sollverhältnis — die App weiß nicht, wie viel Laufen richtig ist.</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Anteil rechnet über <strong style="color:#CDD3EA;font-weight:600">Trainingsminuten</strong>, die einzige Einheit, die beide Spuren wirklich teilen. Unter jeder Prozentzahl steht die Fachgröße der Spur — 8,4 t und 31,2 km — damit sichtbar bleibt, dass die Prozente aus Zeit stammen und nicht aus Leistung.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · KEIN VERHÄLTNIS — NUR EINE SPUR</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Hybrid</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DI 26. AUG</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:center;gap:11px">
+<span style="flex:none;width:52px;height:52px;border-radius:30px;border:3px solid #00F2FE;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#FFFFFF">64</span>
+<span style="flex:1;min-width:0">
+<span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">BEREITSCHAFT</span>
+<span style="display:block;font-size:13px;font-weight:700;margin-top:2px">Belastet</span>
+<span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;margin-top:3px">LETZTE EINHEIT GESTERN</span>
+</span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:12.5px;font-weight:600">Kraft diese Woche</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">KW 35</span>
+</div>
+<div style="margin-top:9px;display:flex;align-items:baseline;gap:7px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#FFFFFF">4</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA">Einheiten · 184 min</span>
+</div>
+<div style="margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">8,4 T VOLUMEN · 74 SÄTZE</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px;display:flex;gap:9px;align-items:flex-start">
+<span style="flex:none;width:18px;height:18px;border-radius:10px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:1px">i</span>
+<span style="flex:1;min-width:0">
+<span style="display:block;font-size:12px;font-weight:600">Noch keine Ausdauer</span>
+<span style="display:block;margin-top:5px;font-size:10.5px;color:#94A3B8;line-height:1.6">Ein Verhältnis braucht beide Spuren. Ab der ersten Ausdauereinheit steht es hier.</span>
+<span style="display:block;margin-top:10px;min-height:44px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#00F2FE">Ausdauer erfassen</span>
+</span>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Verhältnis-Block rendert nicht. An seine Stelle tritt keine Platzhalterkarte, sondern der Kraft-Wochenblock, der sonst weiter unten steht — der Bildschirm hört früher auf, statt eine Lücke zu tragen. Die eine Hinweiszeile ist erlaubt, weil sie den einzigen Weg zur Gegenspur trägt.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · WARUM KEINE GEMEINSAME WÄHRUNG</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid rgba(240,34,119,0.35);border-radius:20px;padding:16px 15px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.1em;color:#F02277">VERWORFEN · HYBRID-SCORE</div>
+<div style="margin-top:10px;font-size:11.5px;color:#CDD3EA;line-height:1.7">Ein Punktwert aus Tonnage, Distanz und Dauer — „Hybrid-Last 428". Er wäre in jeder Woche berechenbar und in keiner überprüfbar: niemand kann sagen, ob 428 richtig gerechnet ist, weil die Umrechnung von Kilogramm in Kilometer keine Grundlage hat.</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ waehrung }}" as="w" hint-placeholder-count="3">
+<div style="display:flex;gap:9px;align-items:flex-start">
+<span style="flex:none;width:16px;height:16px;border-radius:10px;background:#14141D;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:#F02277;margin-top:1px">×</span>
+<span style="flex:1;min-width:0;font-size:11px;color:#94A3B8;line-height:1.6">{{ w.t }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:13px;padding-top:11px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#00F2FE;margin-top:1px">STATT</span>
+<span style="flex:1;min-width:0;font-size:11.5px;color:#FFFFFF;line-height:1.65">Zwei Spuren mit eigener Fachgröße und ein Verhältnis über Trainingsminuten. Jede Zahl bleibt in ihrer Einheit nachrechenbar.</span>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Diese Karte steht nicht in der App. Sie steht hier, weil der Hybrid-Score die naheliegendste und teuerste Abkürzung des Moduls ist und bei jeder Erweiterung wieder vorgeschlagen wird.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="C2 Regeneration" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C2 · REGENERATION — EINE ZEILE, KEINE EBENE</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">1 · DIE ZEILE · DREI ZUSTÄNDE</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ regZeilen }}" as="r" hint-placeholder-count="3">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8;margin-bottom:5px">{{ r.k }}</div>
+<div style="background:#14141D;border:1px solid {{ r.br }};border-radius:20px;padding:11px 12px;display:flex;align-items:center;gap:9px;min-height:48px">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:{{ r.dot }}"></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;color:{{ r.tc }}">{{ r.t }}</span><span style="display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:2px">{{ r.s }}</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">{{ r.cta }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#94A3B8;line-height:1.6">Regeneration ist keine Leistung, sondern eine Eingangsgröße der Bereitschaft — deshalb eine Zeile im Hybrid-Tab unter der Bereitschaft, kein eigener Bereich und kein Tab. Lime nur als 8-dp-Punkt, nie als Fläche der Zeile: Erfolg gehört dem Runner.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · ERFASSUNG · VIER FELDER</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:0 0 14px;overflow:hidden">
+<div style="height:56px;opacity:0.5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px">
+<span style="width:44px;height:4px;border-radius:30px;background:#232334"></span>
+</div>
+<div style="background:#0B0B0E;border-top:1px solid #232334;border-radius:20px 20px 0 0;padding:14px 12px">
+<div style="font-size:14px;font-weight:700">Regeneration erfassen</div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">ART</div>
+<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">
+<sc-for list="{{ regArt }}" as="a" hint-placeholder-count="4">
+<span style="min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:30px;background:{{ a.bg }};border:1px solid {{ a.br }};font-size:12px;font-weight:600;color:{{ a.c }}">{{ a.n }}</span>
+</sc-for>
+</div>
+<div style="margin-top:13px;display:flex;gap:8px">
+<div style="flex:1;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">DATUM</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 11px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#FFFFFF">Di 26.08.</div>
+</div>
+<div style="flex:1;min-width:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">DAUER · MIN</div>
+<div style="margin-top:5px;min-height:44px;border-radius:14px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 11px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FFFFFF">25</div>
+</div>
+</div>
+<div style="margin-top:11px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">NOTIZ · OPTIONAL</div>
+<div style="margin-top:5px;min-height:56px;border-radius:14px;background:#14141D;border:1px solid #232334;padding:11px;font-size:11.5px;color:#94A3B8">Hüfte locker, Schulter noch fest</div>
+<div style="margin-top:12px;border-radius:14px;border:1px solid #232334;padding:10px 11px;display:flex;gap:9px;align-items:flex-start">
+<span style="flex:none;width:16px;height:16px;border-radius:10px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;margin-top:1px">i</span>
+<span style="flex:1;min-width:0;font-size:10.5px;color:#94A3B8;line-height:1.6">Bricht die Untätigkeitsstrafe, trägt aber keine Last. Der Formwert steigt davon nicht.</span>
+</div>
+<div style="margin-top:12px;min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">Speichern</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Kurzes Sheet, vier Felder, keine Distanz und keine Intensität — elf von zwölf Einheiten im Bestand tragen ohnehin nur Datum und Dauer. Die Hinweiszeile steht im Formular, nicht erst im Verlauf: der Widerspruch „frische Einheit, fallender Formwert" wird dort erklärt, wo er entsteht.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · SPRACHREGEL · WORTWAHL IM KOPF</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 15px">
+<div style="display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ regSprache }}" as="s" hint-placeholder-count="4">
+<div style="padding-bottom:11px;border-bottom:{{ s.bb }}">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">{{ s.fall }}</div>
+<div style="margin-top:6px;font-size:12px;font-weight:600;color:#FFFFFF">{{ s.satz }}</div>
+<div style="margin-top:5px;font-size:10.5px;color:#94A3B8;line-height:1.6">{{ s.warum }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die Bereitschaftskarte nennt die Art der letzten Einheit, nicht nur ihr Datum. Ohne das steht ein fallender Formwert neben einer frischen Einheit und niemand kann den Widerspruch auflösen.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="C3 Hybrid duenn und leer" style="margin-top:56px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C3 · DER DÜNNE UND DER LEERE HYBRID-TAB — WAS STATTDESSEN OBEN STEHT</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">1 · DÜNN · 3 EINHEITEN, KEIN FORMWERT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Hybrid</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DI 26. AUG</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">DEINE WOCHE</div>
+<div style="margin-top:8px;display:flex;align-items:baseline;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:#FFFFFF">3</span>
+<span style="font-size:12px;color:#CDD3EA">Einheiten · 128 min</span>
+</div>
+<div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:5px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;background:#0B0B0E;border:1px solid #232334;border-radius:30px;padding:3px 9px">2 KRAFT</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;background:#0B0B0E;border:1px solid #232334;border-radius:30px;padding:3px 9px">1 LAUFEN</span>
+</div>
+<div style="margin-top:11px;padding-top:10px;border-top:1px solid #232334;font-size:10.5px;color:#94A3B8;line-height:1.6">Bereitschaft und Formwert ab 8 Einheiten. Bis dahin steht hier, was gezählt ist — nicht, was daraus folgt.</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:12.5px;font-weight:600">Verhältnis</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">KW 35 · 3 EINHEITEN</span>
+</div>
+<div style="margin-top:10px;display:flex;gap:3px;height:14px">
+<span style="width:71%;height:14px;border-radius:30px;background:#00F2FE"></span>
+<span style="width:29%;height:14px;border-radius:30px;background:#7A2BDB"></span>
+</div>
+<div style="margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA">71 % KRAFT · 29 % AUSDAUER</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">ANTEIL AN 128 MIN · KEIN 4-WOCHEN-SCHNITT</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:11px 12px;display:flex;align-items:center;gap:9px;min-height:48px">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:#232334"></span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:600;color:#CDD3EA">Keine Regeneration erfasst</span></span>
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9px;color:#00F2FE">ERFASSEN</span>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Das Verhältnis trägt schon bei zwei Einheiten — es ist ein Anteil, keine Prognose. Die <strong style="color:#CDD3EA;font-weight:600">Verschiebung</strong> fehlt dagegen bis zum vierten Wochenblock und wird durch die Zeile „kein 4-Wochen-Schnitt" ersetzt, nicht durch eine 0.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">2 · LEER · 0 EINHEITEN GESAMT</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:14px 12px;display:flex;flex-direction:column;gap:11px;min-height:352px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="font-size:17px;font-weight:700">Hybrid</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">DI 26. AUG</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px 14px">
+<div style="font-size:14px;font-weight:700;line-height:1.4">Noch keine Einheit</div>
+<div style="margin-top:7px;font-size:11.5px;color:#94A3B8;line-height:1.65">Hier steht später, wie Kraft und Ausdauer bei dir zueinander stehen. Fang mit einer Seite an — welcher, ist gleich.</div>
+<div style="margin-top:13px;display:flex;flex-direction:column;gap:8px">
+<span style="min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">Krafttraining starten</span>
+<span style="min-height:48px;border-radius:30px;border:1px solid rgba(0,242,254,0.35);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#00F2FE">Ausdauer erfassen</span>
+</div>
+</div>
+<div style="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;line-height:1.6">KEIN VERHÄLTNIS · KEINE BEREITSCHAFT · KEINE REGENERATIONSZEILE</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der einzige Zustand mit zwei gleichrangigen Knöpfen im Hybrid-Tab, weil beide Spuren gleich weit entfernt sind. Auch die Regenerationszeile fehlt: ohne Training ist Regeneration von nichts eine Erholung.</div>
+</div>
+
+<div style="width:396px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">3 · ZUSTANDSMATRIX — KEIN ZUSTAND „KOMMT SPÄTER"</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:4px 16px 14px">
+<div style="display:grid;grid-template-columns:1.15fr 0.72fr 0.72fr 0.82fr 0.86fr 0.72fr;gap:6px 8px;padding:12px 0 9px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:#94A3B8">
+<div>BILDSCHIRM / BLOCK</div><div>DEFAULT</div><div>LOADING</div><div>LEER</div><div>ZU WENIG</div><div>FEHLER</div>
+</div>
+<sc-for list="{{ matrix }}" as="m" hint-placeholder-count="9">
+<div style="display:grid;grid-template-columns:1.15fr 0.72fr 0.72fr 0.82fr 0.86fr 0.72fr;gap:6px 8px;align-items:baseline;padding:9px 0;border-bottom:{{ m.bb }}">
+<div style="font-size:10.5px;font-weight:600;line-height:1.45">{{ m.n }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#CDD3EA;line-height:1.5">{{ m.d }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;line-height:1.5">{{ m.l }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;line-height:1.5">{{ m.e }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;line-height:1.5">{{ m.z }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;line-height:1.5">{{ m.f }}</div>
+</div>
+</sc-for>
+<div style="margin-top:12px;font-size:10.5px;color:#94A3B8;line-height:1.65">„fehlt" heißt: der Block rendert nicht und der Bildschirm endet früher. „Notice" ist der Slot aus Modul 2 in Grau. Ein Fehler nimmt nie eine gespeicherte Liste mit — nur den rechnenden Block darüber.</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="D Datenlage" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · DIE DATENLAGE, AUF DIE DER ENTWURF SICH STÜTZT · 26.08.2026</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+<sc-for list="{{ datenlage }}" as="d" hint-placeholder-count="6">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:16px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:{{ d.c }}">{{ d.zahl }}</div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.1em;color:#94A3B8">{{ d.label }}</div>
+<div style="margin-top:9px;font-size:11.5px;color:#CDD3EA;line-height:1.65">{{ d.folge }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="F Spezifikation" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · SPEZIFIKATION — VARIANTEN, MASSE, TOKENS</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:1.15fr 1.25fr 1.15fr 1.45fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>BAUSTEIN</div><div>VARIANTEN</div><div>MASSE</div><div>TOKENS</div>
+</div>
+<sc-for list="{{ specRows }}" as="r" hint-placeholder-count="16">
+<div style="display:grid;grid-template-columns:1.15fr 1.25fr 1.15fr 1.45fr;gap:8px 16px;align-items:baseline;padding:11px 0;border-bottom:{{ r.bb }}">
+<div style="font-size:12px;font-weight:600">{{ r.el }}</div>
+<div style="font-size:11px;color:#CDD3EA;line-height:1.6">{{ r.var }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#CDD3EA;line-height:1.65">{{ r.mass }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8;line-height:1.65">{{ r.tok }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="G Strings" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · STRINGTABELLE — KEY · DEUTSCH · ENGLISCH</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:0.95fr 1.5fr 1.5fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>KEY</div><div>DEUTSCH</div><div>ENGLISCH</div>
+</div>
+<sc-for list="{{ stringRows }}" as="s" hint-placeholder-count="40">
+<div style="display:grid;grid-template-columns:0.95fr 1.5fr 1.5fr;gap:8px 16px;align-items:baseline;padding:10px 0;border-bottom:{{ s.bb }}">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE;line-height:1.5">{{ s.k }}</div>
+<div style="font-size:11.5px;color:#FFFFFF;line-height:1.6">{{ s.de }}</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.6">{{ s.en }}</div>
+</div>
+</sc-for>
+<div style="margin-top:14px;font-size:11px;color:#94A3B8;line-height:1.7">Platzhalter in geschweiften Klammern. Jede Zählform hat in beiden Sprachen eine Einzahlform: <span style="font-family:'JetBrains Mono',monospace;font-size:10px">cardio.week.count</span> = „1 Einheit" / „{n} Einheiten", englisch „1 session" / „{n} sessions". <span style="font-family:'JetBrains Mono',monospace;font-size:10px">{pace}</span> ist bei Laufen, Gehen, Wandern und Schwimmen min/km, bei Rad, Indoor-Rad und Rudern km/h — die Einheit steht im Wert, nicht im Schlüssel.</div>
+</div>
+</div>
+
+<div data-screen-label="H A11y" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · A11Y — LABEL, ROLLE, ZUSTAND JE ELEMENT</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px">
+<sc-for list="{{ a11yRows }}" as="a" hint-placeholder-count="11">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 18px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline">
+<span style="font-size:12.5px;font-weight:600">{{ a.el }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.06em;padding:3px 8px;border-radius:30px;background:rgba(0,242,254,0.08);border:1px solid rgba(0,242,254,0.3);color:#00F2FE">{{ a.role }}</span>
+</div>
+<div style="margin-top:9px;font-size:11.5px;color:#94A3B8;line-height:1.7">{{ a.note }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I Wiederverwendung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · WIEDERVERWENDETE BAUSTEINE AUS MODUL 1–10</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:1fr 0.6fr 2fr;gap:8px 16px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:#94A3B8">
+<div>BAUSTEIN</div><div>HERKUNFT</div><div>ANPASSUNG IN MODUL 11</div>
+</div>
+<sc-for list="{{ reuseRows }}" as="r" hint-placeholder-count="14">
+<div style="display:grid;grid-template-columns:1fr 0.6fr 2fr;gap:8px 16px;align-items:baseline;padding:11px 0;border-bottom:{{ r.bb }}">
+<div style="font-size:12px;font-weight:600">{{ r.n }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE">{{ r.m }}</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.65">{{ r.a }}</div>
+</div>
+</sc-for>
+<div style="margin-top:14px;font-size:11px;color:#94A3B8;line-height:1.7">Neu entstanden sind zwei Bausteine: der <strong style="color:#CDD3EA;font-weight:600">Verhältnisbalken</strong> (zwei Segmente, eigene Fachgröße je Spur) und die <strong style="color:#CDD3EA;font-weight:600">Live-Uhr</strong>. Alles andere ist Wiederverwendung — Modul 11 kostet keine neue Farbe, keinen neuen Radius und keinen zweiten BackdropFilter.</div>
+</div>
+</div>
+
+<div data-screen-label="J Entscheidungsprotokoll" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · ENTSCHEIDUNGSPROTOKOLL — VERWORFEN UND WARUM</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="14">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">VERWORFEN · {{ d.t }}</div>
+<div style="margin-top:9px;font-size:12px;color:#CDD3EA;line-height:1.75">{{ d.w }}</div>
+<div style="margin-top:10px;padding-top:10px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.06em;color:#00F2FE;margin-top:1px">STATT</span>
+<span style="flex:1;min-width:0;font-size:11.5px;color:#FFFFFF;line-height:1.65">{{ d.s }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="K Offene Fragen" style="margin-top:56px;max-width:1240px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.35);border-radius:20px;padding:24px 28px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#F02277">K · OFFEN — ENTSCHEIDUNG VOR UMSETZUNG</div>
+<div style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px">
+<sc-for list="{{ offen }}" as="o" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:16px 18px">
+<div style="font-size:12.5px;font-weight:600">{{ o.f }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.7">{{ o.t }}</div>
+<div style="margin-top:10px;padding-top:10px;border-top:1px solid #232334;display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#00F2FE;margin-top:1px">ANNAHME</span>
+<span style="flex:1;min-width:0;font-size:11.5px;color:#CDD3EA;line-height:1.6">{{ o.a }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:16px;font-size:11.5px;color:#CDD3EA;line-height:1.7">Alle drei sind mit den Annahmen baubar — keine blockiert die Umsetzung. Sie stehen hier, weil die Annahme eine Entscheidung ist und nicht als Nebenwirkung durchrutschen soll.</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1400,&quot;height&quot;:1000}}">
+const bb = (arr) => arr.map((o, i) => ({ ...o, bb: i === arr.length - 1 ? 'none' : '1px solid #232334' }));
+const tab = (active) => [
+  { n: 'KRAFT', a: active === 0 }, { n: 'CARDIO', a: active === 1 }, { n: 'HYBRID', a: active === 2 },
+].map((t) => ({ n: t.n, c: t.a ? '#00F2FE' : '#94A3B8', bg: t.a ? 'rgba(0,242,254,0.08)' : 'transparent' }));
+
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      a11yRows: [
+        { el: 'Bottom-Bar-Platz', role: 'tab · selected', note: 'Label „Cardio, Tab 2 von 3". Der ausgewählte trägt selected: true, nicht bloß eine Farbe. Kein Badge mit Zahl — eine Zahl im Tab wäre ein Wert ohne Nenner.' },
+        { el: 'Segment-Umschalter', role: 'tabBar · 2 tabs', note: '„Einheiten" / „Auswertung", ausgewählter mit selected. Rolle tab, nicht button: der Wechsel ersetzt den Inhalt, er öffnet keinen Bildschirm.' },
+        { el: 'Wochenzahl mit Verschiebung', role: 'text · mergeSemantics', note: 'Ein Knoten: „28,4 Kilometer diese Woche, aus 4 Einheiten, 3,1 mehr als der 4-Wochen-Schnitt von 25,3." Das Dreieck wird nicht vorgelesen, das Wort „mehr" trägt die Richtung.' },
+        { el: 'Wochenstreifen', role: 'img mit Label', note: 'Ein Knoten für acht Balken: „Wochenkilometer der letzten 8 Wochen, von 12,8 bis 31,2. KW 31 ohne Einheit." Die Lücke wird genannt — ein stiller 2-dp-Balken wäre sonst unsichtbar und unhörbar.' },
+        { el: 'Tempo-Ausgabefeld', role: 'text · nicht fokussierbar', note: '„Tempo 5 Minuten 23 Sekunden pro Kilometer, gerechnet aus Distanz und Dauer." Kein TextField-Fokus, damit die Tastatur nicht erscheint und niemand hineinzutippen versucht.' },
+        { el: 'Aktivitätskapsel „Weitere"', role: 'button', note: '„Schwimmen, Aktivität wählen". Gleiches Label wie die häufigen Zeilen — die visuelle Zurückstufung ist keine semantische. 48 dp Trefferfläche trotz 36 dp Höhe.' },
+        { el: 'Live-Uhr', role: 'liveRegion polite · timer', note: 'Nicht jede Sekunde vorlesen: Ankündigung bei Start, Pause, Fortsetzen und Beenden. Label „Dauer 18 Minuten 42 Sekunden, läuft". Das Wort „läuft" steht neben dem Lime-Punkt.' },
+        { el: 'Knopf „Beenden"', role: 'button', note: 'Bei Dauer unter 60 Sekunden deaktiviert, Label mit Grund: „Beenden, nicht möglich — Einheit unter einer Minute." Ein deaktivierter Knopf ohne Grund ist eine Sackgasse.' },
+        { el: 'Intensitätskapsel', role: 'text (kein Knopf)', note: 'Erklärt, navigiert nicht: „Grundlage: Tempo gegen eigenen Schnitt aus 37 Läufen." Der Punkt nach „Grundlage" erzwingt die Pause vor dem Wert.' },
+        { el: 'Wert „—" im Intensitätskasten', role: 'text', note: '„Ø Puls, nicht erfasst." Nie stumm und nie „Strich" — ein übersprungenes Zeichen liest sich wie ein fehlendes Feld statt wie ein fehlender Wert.' },
+        { el: 'Verhältnisbalken', role: 'img mit Label', note: 'Ein Knoten, keine zwei Segmente: „Verhältnis dieser Woche: 65 Prozent Kraft, 35 Prozent Ausdauer, Anteil an 283 Trainingsminuten aus 7 Einheiten." Die Segmente sind excludeSemantics.' },
+        { el: 'Verhältniszeile (antippbar)', role: 'button · mergeSemantics', note: '„Kraft, 65 Prozent, 184 Minuten, 6 Prozentpunkte mehr als im 4-Wochen-Schnitt. Öffnet Kraft-Verlauf." Der Zielort steht im Label, weil der Tap den Tab wechselt.' },
+        { el: 'Regenerationszeile', role: 'button', note: 'Voll: „Regeneration, gestern, Yoga, 25 Minuten. Regeneration erfassen." Lücke: „Seit 9 Tagen keine Regeneration, zuletzt 17. August, Dehnen, 15 Minuten. Regeneration erfassen."' },
+        { el: 'Skelett / ladender Block', role: 'liveRegion polite', note: '„Wochenkilometer werden geladen", danach einmalig das fertige Ergebnis. Nie assertive — der Nutzer liest gerade die Liste darunter, die schon da ist.' },
+      ],
+      reuseRows: bb([
+        { n: 'Bottom-Bar', m: 'MODUL 1', a: 'Drei Plätze unverändert, nur umbenannt und neu belegt. Tap-Ziel 48 dp, Skalierung 0,97 mit Glow bei 200 ms — kein Ripple.' },
+        { n: 'Sheet, kurzer Höhenmodus', m: 'MODUL 2', a: 'Trägt Aktivitätsauswahl und Regenerationsformular. Beide passen in den kurzen Modus; kein Sheet des Moduls braucht die hohe Variante.' },
+        { n: 'Notice-Slot', m: 'MODUL 2', a: 'Trägt „zu wenig Daten", „kein 4-Wochen-Schnitt" und den Rechenfehler. Grau, außer beim echten Fehler — dort der magentafarbene Rand aus Modul 2.' },
+        { n: 'Kartenrezepte', m: 'MODUL 2', a: 'Alle Blöcke sind Rezept 2 (Card #14141D, R 20, Pad 13–14). Kein neues Kartenrezept in Modul 11.' },
+        { n: 'Pill mit vier Achsen', m: 'MODUL 3', a: 'Aktivitätskapseln, Intensitätskapseln, Segment-Umschalter. Achse „Betonung" trägt hier die Unterscheidung belegt / selten.' },
+        { n: 'Statbox', m: 'MODUL 3', a: 'Wochenzahl, Tempo, Distanzverteilung. Zahlen in JetBrains Mono, Nenner in 9 sp darunter — unverändertes Verhältnis.' },
+        { n: 'Fortschrittsbalken', m: 'MODUL 3', a: 'Wird Perzentilbalken und Belegungsbalken der Kaskade. Gleiche Höhe, gleicher Track #16161F.' },
+        { n: 'Übungskarte / Listenzeile', m: 'MODUL 5', a: 'Wird die Cardio-Einheitenzeile: gleiche 48-dp-Höhe, gleiche IconBox 26 dp, Kategoriefarbe ersetzt durch Aktivitätskürzel in Cyan.' },
+        { n: 'Regel „Block ohne Daten rendert nicht"', m: 'MODUL 5', a: 'Trägt C3 vollständig: Verhältnis, Perzentil, Kurve und Regenerationszeile verschwinden ersatzlos.' },
+        { n: 'Monatsstreifen mit Lücken', m: 'MODUL 6', a: 'Wird Wochenstreifen. Lückenregel unverändert: 2-dp-Balken in #232334, keine Interpolation.' },
+        { n: 'Formkurve mit Rug-Plot', m: 'MODUL 6', a: 'Tempo statt Formwert, 66 dp statt 62. Schwelle 8 Einheiten je Aktivität statt 8 Tage.' },
+        { n: 'Vergleichsgrundlage-Kapsel', m: 'MODUL 6', a: 'Wird die Intensitätskaskade — dasselbe Muster, andere Achse: benannte Stufe, sichtbare Herkunft, gröbere Grundlage ergibt kleineren Vergleich.' },
+        { n: 'Formularfelder, 30-s-Fenster', m: 'MODUL 7', a: 'Unverändert im Erfassungsformular. Das 30-Sekunden-Fenster gilt auch für eine gerade gespeicherte Ausdauereinheit.' },
+        { n: 'Schwierigkeitsauswahl', m: 'MODUL 7', a: 'Wird die RPE-Auswahl 1–5: gleiche fünf Kacheln, gleiche Höhe, andere Beschriftung.' },
+        { n: 'Perzentil-Karte', m: 'MODUL 9', a: 'Für Tempo statt Last. Schwelle von 8 auf 10 Einheiten derselben Aktivität erhöht — bei Ausdauer streuen Strecken stärker.' },
+        { n: 'Aussagen mit Nenner', m: 'MODUL 9', a: 'Pflicht in jedem Block: „29 von 37", „44 von 51", „Anteil an 283 Minuten".' },
+        { n: 'Bereitschaft, Formwert, Zonen', m: 'MODUL 10', a: 'Wandern unverändert in den Hybrid-Tab. Neu ist nur die Artangabe in der Bereitschaftszeile („Gestern Regeneration").' },
+      ]),
+      decisions: [
+        { t: 'GEMEINSAME LASTWÄHRUNG', w: 'Ein Hybrid-Score aus Tonnage, Distanz und Dauer. Die Gewichtung — 1 km Laufen = x kg — hat keine Grundlage, wäre also eine Meinung im Code. Jede Formeländerung würde rückwirkend eine andere Vergangenheit zeigen, und der Wert lädt dazu ein, eine Zahl zu optimieren, die kein Trainingsziel ist.', s: 'Zwei Spuren mit eigener Fachgröße, ein Verhältnis über Trainingsminuten. Jede Zahl bleibt in ihrer Einheit nachrechenbar.' },
+        { t: 'VIERTER TAB', w: 'Regeneration als eigener Platz. Zwölf Einheiten im Bestand, elf davon ohne Angabe — ein Tab für elf Datumseinträge. Außerdem ist Regeneration eine Eingangsgröße der Bereitschaft und gehört neben sie, nicht neben Kraft.', s: 'Eine Zeile im Hybrid-Tab unter der Bereitschaft, plus ein Sheet mit vier Feldern.' },
+        { t: 'SOLLVERHÄLTNIS 80/20', w: 'Ein hinterlegtes Verhältnis, gegen das die Woche gemessen wird. Es hängt von Ziel, Saison und Sportart ab, und niemand hat es hinterlegt. „Mehr Ausdauer" ist nicht „besser".', s: 'Anteil mit Nenner plus Verschiebung gegen den eigenen 4-Wochen-Schnitt. Tatsache in #CDD3EA, kein Urteil.' },
+        { t: 'GPS-TRACKING', w: 'Live-Aufzeichnung mit Route und Höhenprofil. Standortberechtigung, Hintergrunddienst, Kartenlizenz und Akkuverbrauch für einen Regelfall, den die Uhr schon erledigt — 51 von 51 Einheiten wurden extern getrackt.', s: 'Nacherfassen als Hauptweg, Live-Uhr ohne Ortung für Laufband und Indoor-Rad. Die App fragt keine Standortberechtigung.' },
+        { t: 'TEMPO ALS EINGABEFELD', w: 'Tempo tippbar machen, damit Läufe ohne Distanz erfassbar sind. Drei voneinander abhängige Felder, von denen zwei die Wahrheit sind — bei jeder Korrektur muss die App entscheiden, welches sie überschreibt.', s: 'Distanz und Dauer sind Eingabe, Tempo ist Ausgabe. Fehlt die Distanz, bleibt Tempo „—" und die Einheit zählt trotzdem in Minuten.' },
+        { t: 'ALLE ACHT AKTIVITÄTEN GLEICH LAUT', w: 'Eine alphabetische Liste von Gehen bis Wandern. 37 von 51 Einheiten sind Läufe; eine gleichrangige Liste macht den Regelfall zu einem Suchvorgang und zeigt vier Werte, die nie benutzt wurden.', s: 'Belegte Aktivitäten als Zeilen mit Zahl, die vier unbelegten als Kapseln unter „Weitere". Ab der zweiten Benutzung wandert eine hoch.' },
+        { t: 'PULS ALS INTENSITÄTSGRUNDLAGE', w: 'Zonen aus Ø Puls, wie in jeder Laufapp. Vier von 51 Einheiten haben Puls — 47 Einheiten hätten einen leeren Kasten und der wichtigste Wert des Bildschirms wäre meistens nicht da.', s: 'Dreistufige Kaskade mit sichtbarer Stufe. Puls führt, wenn er da ist; sonst RPE; sonst Tempo gegen den eigenen Schnitt.' },
+        { t: 'RPE IN PROZENT UMRECHNEN', w: 'RPE 4 von 5 als „80 % Intensität" anzeigen, damit es neben Pulsprozenten steht. Zwei Zahlen in derselben Einheit, von denen eine gemessen und eine geschätzt ist — genau die erfundene Genauigkeit, die Modul 9 verboten hat.', s: 'RPE bleibt „4 / 5" mit Wort. Nur Stufe 1 spricht in Prozent, und nur mit Maximalpuls.' },
+        { t: 'CARDIO-DETAIL ALS EIGENER BILDSCHIRM-TYP', w: 'Ein neues Detaillayout für Ausdauereinheiten. Das Einheitendetail aus Modul 6 hat vier Datenlagen und trägt Ausdauer bereits — ein zweiter Typ hieße zwei Bildschirme mit demselben Zweck pflegen.', s: 'Dasselbe Einheitendetail, andere Wertezeilen und der Intensitätskasten statt der Übungsliste.' },
+        { t: 'WOCHENKILOMETER ÜBER ALLE AKTIVITÄTEN', w: 'Laufen, Rad und Wandern in einer Summe. 24 km Rad und 24 km Laufen sind nicht dasselbe, und die Zahl würde bei einer einzigen Radfahrt springen, ohne dass sich am Laufen etwas ändert.', s: 'Wochenkilometer über alle Aktivitäten nur als Gesamtzeile mit Aufschlüsselung darunter; Tempo und Perzentil strikt je Aktivität.' },
+        { t: 'LEERE WOCHE ALS 0-BALKEN', w: 'Eine Woche ohne Einheit als Nullbalken auf der Grundlinie. Sieht sauber aus, behauptet aber eine Messung — der Balken sagt „gemessen: 0", nicht „nichts gemessen".', s: '2-dp-Balken in #232334, in der A11y-Beschreibung als „ohne Einheit" genannt. Keine Interpolation über Wochen ohne Ereignis.' },
+        { t: 'REGENERATION ERHÖHT DIE BEREITSCHAFT', w: 'Yoga rechnet als Plus auf den Bereitschaftswert. Damit wäre Regeneration eine Leistung, und 25 Minuten Dehnen könnten eine harte Woche kompensieren, ohne dass sich am Körper etwas ändert.', s: 'Bereits entschieden und beibehalten: bricht die Untätigkeitsstrafe, trägt keine Last. Die Zeile benennt es, das Formular sagt es.' },
+        { t: 'FAB IN DER BOTTOM-BAR', w: 'Ein vierter, runder Platz in der Mitte für „Erfassen". Er wäre optisch der vierte Tab und trüge je Tab eine andere Bedeutung — im Hybrid-Tab hätte er gar keine.', s: 'Ein FAB über der Liste im Cardio-Tab, ein CTA in der Karte im Kraft-Tab. Die Bar bleibt reine Navigation.' },
+        { t: 'ZWEI BACKDROPFILTER IM HYBRID-TAB', w: 'Bereitschaftskarte und Verhältnisblock beide mit Blur absetzen. Der Hybrid-Tab scrollt und hat seinen einen Filter in der Bereitschaftskarte schon vergeben.', s: 'Flächen und Ränder aus der Palette. Höchstens ein BackdropFilter je scrollendem Screen.' },
+      ],
+      offen: [
+        { f: 'Nenner des Verhältnisses', t: 'Trainingsminuten sind die einzige gemeinsame Größe, aber sie bevorteilen langsame Ausdauer: eine 3-Stunden-Wanderung schlägt vier Krafteinheiten. Alternativen wären Einheitenzahl (grob) oder Minuten mit RPE-Gewichtung (rechnet wieder eine Währung).', a: 'Trainingsminuten, Nenner immer sichtbar. Die Fachgröße je Spur steht darunter, damit die Wanderung im Kontext lesbar bleibt.' },
+        { f: 'Schwellen bei Kurve und Perzentil', t: 'Kurve ab 8, Perzentil ab 10 Einheiten je Aktivität. Bei Laufen (37) greift beides, bei Rad (5) und Wandern (4) keins — mit 5 Radfahrten im Jahr bleibt der Radbereich dauerhaft ohne Auswertung.', a: 'Schwellen bleiben, Schnitt und Spanne treten an die Stelle der Kurve. Sie sind aus 3 Einheiten schon ehrlich berechenbar.' },
+        { f: 'Zonengrenzen bei Stufe 1', t: 'Prozent vom Maximalpuls braucht einen Maximalpuls. 4 Einheiten tragen einen gemessenen; die Formel 220 minus Alter wäre eine erfundene Grundlage für den wichtigsten Wert des Kastens.', a: 'Stufe 1 nur mit gemessenem Maximalpuls aus der Einheit oder aus dem Profil. Ohne ihn fällt die Kaskade auf Stufe 2 — keine Altersformel.' },
+      ],
+      specRows: bb([
+        { el: 'Bottom-Bar', var: '3 Plätze · aktiv / inaktiv', mass: 'H 56 dp · Ziel 48 dp · Icon 16 dp · R 14', tok: 'Aktiv #00F2FE auf rgba(0,242,254,.08) · inaktiv #94A3B8' },
+        { el: 'Segment-Umschalter', var: 'Kraft: Trainieren/Verlauf · Cardio: Einheiten/Auswertung', mass: 'H 32 dp · Ziel 48 dp · R 30', tok: 'Aktiv Cyan-Rand .35 · inaktiv Card #14141D + #232334' },
+        { el: 'Wochenzahl-Kachel', var: 'Woche · Gesamt (dünn) · Skelett · Fehler', mass: 'R 20 · Pad 13 · Zahl 28 sp mono', tok: 'Card #14141D · Zahl #FFFFFF · Nenner #94A3B8' },
+        { el: 'Wochenstreifen', var: '8 Balken · laufende Woche · Lücke', mass: 'H 34–76 dp · Gap 3–4 · Lücke 2 dp · R 30', tok: 'Balken #16161F · laufend #00F2FE · Lücke #232334' },
+        { el: 'Cardio-Einheitenzeile', var: 'mit Distanz · ohne Distanz', mass: 'min-H 48 dp · IconBox 26 dp R 10', tok: 'Card #14141D · Wert #FFFFFF · Tempo #CDD3EA' },
+        { el: 'Tempo-Ausgabefeld', var: 'min/km · km/h · leer', mass: 'H 44 dp · R 14 · Wert 16 sp mono', tok: 'rgba(0,242,254,.06) + Rand .30 · Label #00F2FE' },
+        { el: 'Aktivitätsauswahl', var: 'belegt (Zeile) · selten (Kapsel)', mass: 'Zeile 48 dp · Kapsel 36 dp sichtbar / 48 dp Ziel · R 14 / 30', tok: 'Zeile #14141D · Kapsel #0B0B0E · Rand #232334' },
+        { el: 'RPE-Auswahl', var: '5 Stufen · nicht gesetzt', mass: 'je 44 dp hoch · Gap 5 · R 14 · Zahl 13 sp', tok: 'Gewählt rgba(0,242,254,.10) + Rand .35 · Rest #0B0B0E' },
+        { el: 'Live-Uhr', var: 'läuft · pausiert · wiederaufgenommen', mass: 'Zahl 40 sp mono · Karte R 20 · Knöpfe 48 dp', tok: 'Zustandskapsel Lime .10 + Rand .35 · Zahl #FFFFFF' },
+        { el: 'Tempokurve', var: 'ab 8 je Aktivität · sonst Schnitt', mass: 'H 66 dp · Rug 4 dp · Punkt r 3,5', tok: 'Linie #00F2FE · Achsen #232334 · Rug #00F2FE' },
+        { el: 'Perzentilbalken', var: 'ab 10 je Aktivität', mass: 'H 8 dp · Marker 3×14 dp · R 30', tok: 'Füllung #00F2FE · Track #16161F · Marker #FFFFFF' },
+        { el: 'Intensitätskasten', var: 'Stufe 1 · 2 · 3 · fehlt', mass: 'R 20 · Pad 14 · 3 Zeilen à 28 dp', tok: 'Stufe 1 Cyan-Rand .35 · Stufe 2/3 #232334' },
+        { el: 'Verhältnisbalken', var: '2 Segmente · min 4 %', mass: 'H 14 dp · Gap 3 · R 30', tok: 'Kraft #00F2FE · Ausdauer #7A2BDB (nur Fläche)' },
+        { el: 'Verhältniszeile', var: 'mit Verschiebung · ohne (dünn)', mass: 'min-H 30 dp · Punkt 7 dp · Werte nowrap', tok: 'Prozent #FFFFFF · Fachgröße #94A3B8 · Delta #CDD3EA' },
+        { el: 'Regenerationszeile', var: 'letzte · Lücke · nie erfasst', mass: 'min-H 48 dp · Punkt 8 dp · R 20', tok: 'Punkt #00FF87 / #232334 · Text #FFFFFF / #CDD3EA' },
+        { el: 'Regenerationssheet', var: '4 Arten · Notiz optional', mass: 'Kapsel 40 dp / Ziel 48 dp · Notiz 56 dp · R 14', tok: 'Gewählt Lime .10 + Rand .35 · CTA #F02277' },
+        { el: 'Hinweiszeile / Notice', var: 'zu wenig Daten · Fehler · Regel', mass: 'IconBox 16–18 dp · Text 10,5–11 sp', tok: 'Grau #232334 · Fehler rgba(240,34,119,.35)' },
+      ]),
+      stringRows: bb([
+        { k: 'tab.strength', de: 'Kraft', en: 'Strength' },
+        { k: 'tab.cardio', de: 'Cardio', en: 'Cardio' },
+        { k: 'tab.hybrid', de: 'Hybrid', en: 'Hybrid' },
+        { k: 'seg.train', de: 'Trainieren', en: 'Train' },
+        { k: 'seg.history', de: 'Verlauf', en: 'History' },
+        { k: 'seg.sessions', de: 'Einheiten', en: 'Sessions' },
+        { k: 'seg.analysis', de: 'Auswertung', en: 'Analysis' },
+        { k: 'cardio.week.title', de: 'Diese Woche · KW {kw}', en: 'This week · W{kw}' },
+        { k: 'cardio.week.count', de: '1 Einheit / {n} Einheiten', en: '1 session / {n} sessions' },
+        { k: 'cardio.week.basis', de: 'gegen 4-Wochen-Schnitt {value} km', en: 'vs. 4-week average {value} km' },
+        { k: 'cardio.week.thin', de: 'Wochenkilometer ab 3 Wochen mit Einheiten. Bis dahin steht hier die Gesamtstrecke.', en: 'Weekly distance from 3 weeks with sessions on. Until then, total distance is shown.' },
+        { k: 'cardio.total.since', de: 'Gesamt · seit {date}', en: 'Total · since {date}' },
+        { k: 'cardio.empty.title', de: 'Noch keine Ausdauereinheit', en: 'No endurance session yet' },
+        { k: 'cardio.empty.body', de: 'Erfasse einen Lauf, eine Radfahrt oder eine Wanderung. Ab der zweiten Einheit derselben Aktivität steht hier die Tempoentwicklung.', en: 'Log a run, a ride or a hike. From the second session of the same activity on, pace development appears here.' },
+        { k: 'cardio.add', de: 'Einheit erfassen', en: 'Log session' },
+        { k: 'cardio.add.first', de: 'Erste Einheit erfassen', en: 'Log first session' },
+        { k: 'cardio.live.start', de: 'Live mitlaufen lassen', en: 'Track live' },
+        { k: 'cardio.error.week', de: 'Wochenkilometer nicht berechenbar', en: 'Weekly distance cannot be calculated' },
+        { k: 'form.date', de: 'Datum', en: 'Date' },
+        { k: 'form.today', de: 'Heute', en: 'Today' },
+        { k: 'form.activity', de: 'Aktivität', en: 'Activity' },
+        { k: 'form.distance', de: 'Distanz · km', en: 'Distance · km' },
+        { k: 'form.duration', de: 'Dauer · min', en: 'Duration · min' },
+        { k: 'form.pace', de: 'Tempo', en: 'Pace' },
+        { k: 'form.pace.computed', de: 'gerechnet', en: 'calculated' },
+        { k: 'form.optional.count', de: 'Optional · {n} Felder', en: 'Optional · {n} fields' },
+        { k: 'form.rpe', de: 'Anstrengung · RPE', en: 'Effort · RPE' },
+        { k: 'form.rpe.1', de: 'sehr leicht', en: 'very easy' },
+        { k: 'form.rpe.3', de: 'mittel', en: 'moderate' },
+        { k: 'form.rpe.5', de: 'maximal', en: 'maximal' },
+        { k: 'form.hr.avg', de: 'Ø Puls', en: 'Avg. HR' },
+        { k: 'form.hr.max', de: 'Max. Puls', en: 'Max. HR' },
+        { k: 'form.hr.hint', de: 'Puls leer lassen ist der Normalfall. Die Auswertung setzt ihn nirgends voraus.', en: 'Leaving heart rate empty is normal. No analysis requires it.' },
+        { k: 'form.note', de: 'Notiz · optional', en: 'Note · optional' },
+        { k: 'activity.own', de: 'Deine Aktivitäten · {n} Einheiten', en: 'Your activities · {n} sessions' },
+        { k: 'activity.more', de: 'Weitere', en: 'More' },
+        { k: 'activity.run', de: 'Laufen', en: 'Running' },
+        { k: 'activity.bike', de: 'Rad', en: 'Cycling' },
+        { k: 'activity.bike.indoor', de: 'Indoor-Rad', en: 'Indoor bike' },
+        { k: 'activity.swim', de: 'Schwimmen', en: 'Swimming' },
+        { k: 'activity.hike', de: 'Wandern', en: 'Hiking' },
+        { k: 'activity.walk', de: 'Gehen', en: 'Walking' },
+        { k: 'activity.row', de: 'Rudern', en: 'Rowing' },
+        { k: 'activity.other', de: 'Sonstiges', en: 'Other' },
+        { k: 'live.state.running', de: 'Läuft', en: 'Running' },
+        { k: 'live.state.paused', de: 'Pausiert', en: 'Paused' },
+        { k: 'live.started', de: 'Gestartet {time}', en: 'Started {time}' },
+        { k: 'live.distance.manual', de: 'Distanz von Hand · km', en: 'Distance by hand · km' },
+        { k: 'live.distance.source', de: 'vom Display', en: 'from display' },
+        { k: 'live.nogps', de: 'Kein GPS, keine Standortabfrage. Die Distanz kommt vom Gerätedisplay und kann jederzeit korrigiert werden.', en: 'No GPS, no location permission. Distance comes from the machine display and can be corrected any time.' },
+        { k: 'live.pause', de: 'Pause', en: 'Pause' },
+        { k: 'live.stop', de: 'Beenden', en: 'Finish' },
+        { k: 'analysis.weekly.title', de: 'Wochenkilometer', en: 'Weekly distance' },
+        { k: 'analysis.weekly.basis', de: 'Ø {value} km · {n} Einheiten', en: 'avg. {value} km · {n} sessions' },
+        { k: 'analysis.weekly.current', de: 'laufend', en: 'in progress' },
+        { k: 'analysis.dist.title', de: 'Verteilung der Distanzen', en: 'Distance distribution' },
+        { k: 'analysis.dist.basis', de: '{n} von {total} Einheiten mit Distanz', en: '{n} of {total} sessions with distance' },
+        { k: 'analysis.pace.title', de: 'Tempoentwicklung', en: 'Pace development' },
+        { k: 'analysis.pace.basis', de: 'gegen eigenen Schnitt {value} · 1 Lauf / {n} Läufe', en: 'vs. own average {value} · 1 run / {n} runs' },
+        { k: 'analysis.pace.thin', de: 'Keine Kurve unter {min} Einheiten dieser Aktivität. Schnitt {value}, Spanne {from} bis {to}.', en: 'No curve below {min} sessions of this activity. Average {value}, range {from} to {to}.' },
+        { k: 'analysis.pct.faster', de: 'Schneller als 1 deiner Läufe / {n} von {total} deiner Läufe', en: 'Faster than 1 of your runs / {n} of {total} of your runs' },
+        { k: 'analysis.pct.noothers', de: 'Kein Vergleich mit anderen Menschen.', en: 'No comparison with other people.' },
+        { k: 'intensity.level1', de: 'Ø Herzfrequenz · aus Uhrdaten', en: 'Avg. heart rate · from watch data' },
+        { k: 'intensity.level2', de: 'Anstrengung · deine Angabe', en: 'Effort · your input' },
+        { k: 'intensity.level3', de: 'Tempo gegen eigenen Schnitt', en: 'Pace vs. own average' },
+        { k: 'intensity.zone', de: 'Zone {n} · {name}', en: 'Zone {n} · {name}' },
+        { k: 'intensity.above', de: 'Über dem Schnitt', en: 'Above average' },
+        { k: 'intensity.below', de: 'Unter dem Schnitt', en: 'Below average' },
+        { k: 'intensity.none.value', de: '—', en: '—' },
+        { k: 'intensity.none.a11y', de: 'nicht erfasst', en: 'not recorded' },
+        { k: 'intensity.fallback.note', de: 'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen 1 Lauf / {n} Läufe.', en: 'Neither heart rate nor RPE recorded. Judged by pace against 1 run / {n} runs.' },
+        { k: 'ratio.title', de: 'Verhältnis', en: 'Split' },
+        { k: 'ratio.basis', de: 'Anteil an {min} Trainingsminuten · 1 Einheit / {n} Einheiten', en: 'Share of {min} training minutes · 1 session / {n} sessions' },
+        { k: 'ratio.shift', de: '{value} pp gegen 4-Wochen-Schnitt', en: '{value} pp vs. 4-week average' },
+        { k: 'ratio.shift.up', de: 'mehr', en: 'more' },
+        { k: 'ratio.shift.down', de: 'weniger', en: 'less' },
+        { k: 'ratio.noshift', de: 'kein 4-Wochen-Schnitt', en: 'no 4-week average' },
+        { k: 'ratio.single.title', de: 'Noch keine Ausdauer', en: 'No endurance yet' },
+        { k: 'ratio.single.body', de: 'Ein Verhältnis braucht beide Spuren. Ab der ersten Ausdauereinheit steht es hier.', en: 'A split needs both tracks. From the first endurance session on, it appears here.' },
+        { k: 'hybrid.empty.title', de: 'Noch keine Einheit', en: 'No session yet' },
+        { k: 'hybrid.empty.body', de: 'Hier steht später, wie Kraft und Ausdauer bei dir zueinander stehen. Fang mit einer Seite an — welcher, ist gleich.', en: 'This will show how strength and endurance relate for you. Start with either side — it does not matter which.' },
+        { k: 'hybrid.week.title', de: 'Deine Woche', en: 'Your week' },
+        { k: 'hybrid.week.thin', de: 'Bereitschaft und Formwert ab {min} Einheiten.', en: 'Readiness and form from {min} sessions on.' },
+        { k: 'recovery.title', de: 'Regeneration', en: 'Recovery' },
+        { k: 'recovery.last', de: '{when} · {kind} · {n} min', en: '{when} · {kind} · {n} min' },
+        { k: 'recovery.gap', de: 'Seit 1 Tag keine Regeneration / Seit {n} Tagen keine Regeneration', en: 'No recovery for 1 day / No recovery for {n} days' },
+        { k: 'recovery.never', de: 'Keine Regeneration erfasst', en: 'No recovery logged' },
+        { k: 'recovery.add', de: 'Erfassen', en: 'Log' },
+        { k: 'recovery.kind.yoga', de: 'Yoga', en: 'Yoga' },
+        { k: 'recovery.kind.sauna', de: 'Sauna', en: 'Sauna' },
+        { k: 'recovery.kind.stretch', de: 'Dehnen', en: 'Stretching' },
+        { k: 'recovery.kind.mobility', de: 'Mobility', en: 'Mobility' },
+        { k: 'recovery.noload', de: 'Bricht die Untätigkeitsstrafe, trägt aber keine Last. Der Formwert steigt davon nicht.', en: 'Breaks the inactivity penalty but carries no load. Form does not rise from it.' },
+        { k: 'last.recovery', de: 'Gestern Regeneration', en: 'Recovery yesterday' },
+        { k: 'last.strength', de: 'Gestern Kraft', en: 'Strength yesterday' },
+        { k: 'last.cardio', de: 'Gestern {activity}', en: '{activity} yesterday' },
+        { k: 'last.none', de: 'Seit 1 Tag keine Einheit / Seit {n} Tagen keine Einheit', en: 'No session for 1 day / No session for {n} days' },
+      ]),
+      matrix: bb([
+        { n: 'Cardio-Wurzel · Wochenzahl', d: 'km + Nenner', l: 'Skelett', e: 'Gesamt-km', z: '< 3 Wochen: Gesamt', f: 'Notice + Retry' },
+        { n: 'Cardio-Wurzel · Liste', d: 'Einheiten', l: 'Skelett 3 Zeilen', e: 'Leerkarte + 2 Wege', z: '—', f: 'Notice, Liste bleibt' },
+        { n: 'Erfassen · Nacherfassen', d: '4 + 4 Felder', l: '—', e: 'leere Felder', z: '—', f: 'Feldfehler inline' },
+        { n: 'Erfassen · Live', d: 'Uhr läuft', l: 'Wiederaufnahme', e: '—', z: '—', f: 'Uhr aus Persistenz' },
+        { n: 'Auswertung · Tempokurve', d: 'ab 8 je Aktivität', l: 'Skelett 66 dp', e: 'fehlt', z: 'Schnitt + Spanne', f: 'Notice' },
+        { n: 'Auswertung · Perzentil', d: 'ab 10 je Aktivität', l: 'Skelett', e: 'fehlt', z: 'fehlt', f: 'Notice' },
+        { n: 'Intensitätskasten', d: 'Stufe 1–3', l: '—', e: 'fehlt bei < 3', z: 'Stufe 3', f: 'nur Rohwerte' },
+        { n: 'Hybrid · Verhältnis', d: '2 Spuren', l: 'Skelett', e: 'fehlt', z: 'ohne Verschiebung', f: 'Notice' },
+        { n: 'Hybrid · Regenerationszeile', d: 'letzte Reg.', l: '—', e: '„keine erfasst"', z: '—', f: 'Zeile fehlt' },
+      ]),
+      datenlage: [
+        { zahl: '136', label: 'EINHEITEN GESAMT', c: '#00F2FE', folge: '63 Kraft · 51 Ausdauer · 12 Regeneration · 10 Körpergewicht. 40 % des Bestands hatten bisher keinen Bildschirm.' },
+        { zahl: '51', label: 'AUSDAUER', c: '#00F2FE', folge: '37 Laufen · 5 Rad · 4 Wandern · 5 sonstiges. Nur Laufen erreicht die Kurvenschwelle von 8 — alle anderen zeigen Schnitt und Spanne.' },
+        { zahl: '4 / 51', label: 'MIT Ø PULS', c: '#F02277', folge: 'Keine Auswertung darf Puls voraussetzen. Stufe 1 der Kaskade ist gestaltet, aber heute in keinem Bildschirm sichtbar.' },
+        { zahl: '32 / 51', label: 'MIT RPE', c: '#00F2FE', folge: 'Stufe 2 trägt bei knapp zwei Dritteln. Deshalb steht sie in der Mitte der Kaskade und nicht am Rand.' },
+        { zahl: '44 / 51', label: 'MIT DISTANZ', c: '#00F2FE', folge: 'Sieben Einheiten ohne Distanz: Dauer und RPE tragen sie, Tempo bleibt „—". Der Nenner der Distanzverteilung sagt 44, nicht 51.' },
+        { zahl: '11 / 12', label: 'REGENERATION OHNE ANGABE', c: '#F02277', folge: 'Nur Datum und Dauer. Deshalb vier Felder im Formular und eine Zeile im Tab — mehr wäre ein Formular für Daten, die niemand einträgt.' },
+      ],
+      regZeilen: [
+        { k: 'DEFAULT · LETZTE REGENERATION BEKANNT', dot: '#00FF87', br: '#232334', tc: '#FFFFFF', t: 'Regeneration', s: 'GESTERN · YOGA · 25 MIN', cta: 'ERFASSEN' },
+        { k: 'LÜCKE · SEIT {N} TAGEN KEINE', dot: '#232334', br: '#232334', tc: '#FFFFFF', t: 'Seit 9 Tagen keine Regeneration', s: 'ZULETZT 17. AUG · DEHNEN · 15 MIN', cta: 'ERFASSEN' },
+        { k: 'LEER · NIE ERFASST', dot: '#232334', br: '#232334', tc: '#CDD3EA', t: 'Keine Regeneration erfasst', s: 'YOGA · SAUNA · DEHNEN · MOBILITY', cta: 'ERFASSEN' },
+      ],
+      regArt: [
+        { n: 'Yoga', bg: 'rgba(0,255,135,0.10)', br: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: 'Sauna', bg: '#14141D', br: '#232334', c: '#CDD3EA' },
+        { n: 'Dehnen', bg: '#14141D', br: '#232334', c: '#CDD3EA' },
+        { n: 'Mobility', bg: '#14141D', br: '#232334', c: '#CDD3EA' },
+      ],
+      regSprache: bb([
+        { fall: 'LETZTE EINHEIT = REGENERATION', satz: '„Gestern Regeneration"', warum: 'Nicht „Letzte Einheit gestern". Der Formwert fällt trotzdem — das Wort erklärt, warum.' },
+        { fall: 'LETZTE EINHEIT = KRAFT ODER CARDIO', satz: '„Gestern Kraft" · „Gestern Laufen"', warum: 'Immer die Art, nie die neutrale Formel. Gleiche Zeile, gleiche Länge, austauschbares Wort.' },
+        { fall: 'REGENERATION HEUTE', satz: '„Heute Regeneration"', warum: 'Kein „Ruhetag": ein Tag mit 25 Minuten Yoga ist kein Ruhetag, und die Untätigkeitsstrafe ist gebrochen.' },
+        { fall: 'KEINE EINHEIT SEIT {N} TAGEN', satz: '„Seit 9 Tagen keine Einheit"', warum: 'Tatsache ohne Aufforderung. Kein „Leg los!", kein Ausrufezeichen, kein Magenta.' },
+      ]),
+      verhaeltnis: [
+        { n: 'Kraft', eigen: '184 MIN · 8,4 T VOLUMEN', pct: '65 %', glyph: '▲', delta: '6 pp', c: '#00F2FE' },
+        { n: 'Ausdauer', eigen: '99 MIN · 31,2 KM', pct: '35 %', glyph: '▼', delta: '6 pp', c: '#7A2BDB' },
+      ],
+      waehrung: [
+        { t: 'Die Gewichtung wäre erfunden: 1 km Laufen = wie viele Kilogramm? Jede Antwort ist eine Meinung im Code.' },
+        { t: 'Der Wert würde bei jeder Formeländerung rückwirkend andere Vergangenheit zeigen — der Verlauf wäre nicht stabil.' },
+        { t: 'Er lädt zum Optimieren einer Zahl ein, die kein Trainingsziel ist. Mehr Punkte ist nicht mehr Fitness.' },
+      ],
+      wochen: [
+        { kw: '28', h: '44%', c: '#16161F', lc: '#94A3B8' },
+        { kw: '29', h: '68%', c: '#16161F', lc: '#94A3B8' },
+        { kw: '30', h: '52%', c: '#16161F', lc: '#94A3B8' },
+        { kw: '31', h: '2px', c: '#232334', lc: '#94A3B8' },
+        { kw: '32', h: '74%', c: '#16161F', lc: '#94A3B8' },
+        { kw: '33', h: '88%', c: '#16161F', lc: '#94A3B8' },
+        { kw: '34', h: '62%', c: '#16161F', lc: '#94A3B8' },
+        { kw: '35', h: '96%', c: '#00F2FE', lc: '#00F2FE' },
+      ],
+      verteilung: [
+        { b: '< 5 KM', w: '38%', n: '9' },
+        { b: '5–8 KM', w: '100%', n: '21' },
+        { b: '8–12 KM', w: '43%', n: '9' },
+        { b: '12–20 KM', w: '19%', n: '4' },
+        { b: '> 20 KM', w: '5%', n: '1' },
+      ],
+      rug: [3, 7, 8, 12, 13, 19, 24, 25, 31, 36, 37, 42, 48, 49, 55, 61, 62, 68, 74, 79]
+        .map((p) => ({ c: '#00F2FE' })).concat([]),
+      kaskade: [
+        { s: '1', q: 'Ø Herzfrequenz', belegt: '4 / 51', w: '8%', fill: '#00F2FE', zc: '#FFFFFF',
+          bg: 'rgba(0,242,254,0.08)', br: 'rgba(0,242,254,0.35)', tc: '#00F2FE',
+          t: 'Die feinste Stufe und heute die leerste. Sie ist gestaltet, obwohl kein Bildschirm sie derzeit zeigt — sobald Health Connect Pulsdaten liefert, füllt sie sich ohne neues Layout. Prozent vom Maximalpuls, Zonen aus Modul 10.',
+          kapsel: '„Ø Herzfrequenz · aus Uhrdaten" mit Cyan-Rand. Nur wenn Ø Puls UND Maximalpuls vorliegen — ein Zonenwert ohne Maximum ist geraten.' },
+        { s: '2', q: 'RPE 1–5', belegt: '32 / 51', w: '63%', fill: '#00F2FE', zc: '#FFFFFF',
+          bg: 'rgba(0,242,254,0.08)', br: 'rgba(0,242,254,0.35)', tc: '#00F2FE',
+          t: 'Die eigene Einschätzung, bei knapp zwei Dritteln vorhanden. Trägt kein Zonenurteil, sondern ein Wort: leicht, mittel, hart. Fünf Stufen, weil das Formular fünf anbietet — keine Umrechnung in Prozent, die Genauigkeit erfindet.',
+          kapsel: '„Anstrengung · deine Angabe" ohne Rand-Betonung. Der Zusatz „deine Angabe" trennt sie sichtbar von gemessenen Werten.' },
+        { s: '3', q: 'Tempo gegen eigenen Schnitt', belegt: '51 / 51', w: '100%', fill: '#CDD3EA', zc: '#FFFFFF',
+          bg: '#14141D', br: '#232334', tc: '#CDD3EA',
+          t: 'Trägt immer, weil Dauer und Tempo bei allen 51 Einheiten belegt sind. Verglichen wird gegen den Median derselben Aktivität, nie über Aktivitäten hinweg — ein Wanderschnitt neben einem Laufschnitt wäre eine Zahl ohne Bedeutung.',
+          kapsel: '„Tempo gegen eigenen Schnitt" in Grau. Grau, weil es der Rückfall ist: die Stufe ist gültig, aber die gröbste.' },
+      ],
+      kaskadeRegel: [
+        { n: '1', t: 'Stufe 1 führt, wenn Ø Puls und Maximalpuls beide vorliegen.' },
+        { n: '2', t: 'Sonst führt Stufe 2, wenn RPE erfasst ist.' },
+        { n: '3', t: 'Sonst führt Stufe 3, wenn mindestens 3 Einheiten derselben Aktivität existieren.' },
+        { n: '4', t: 'Sonst kein Intensitätskasten. Die Einheit zeigt Distanz, Dauer und Tempo — mehr weiß die App nicht.' },
+      ],
+      cardioDuenn: [
+        { ic: 'LA', n: 'Laufen', d: 'SO 24. AUG · 38 MIN', km: '6,8 km' },
+        { ic: 'LA', n: 'Laufen', d: 'MI 13. AUG · 34 MIN', km: '6,1 km' },
+        { ic: 'LA', n: 'Laufen', d: 'MO 4. AUG · 31 MIN', km: '5,7 km' },
+      ],
+      skelBars: [{ h: '40%' }, { h: '66%' }, { h: '48%' }, { h: '72%' }, { h: '54%' }, { h: '82%' }, { h: '50%' }, { h: '92%' }],
+      skelZeilen: [{ w1: '58%', w2: '38%' }, { w1: '44%', w2: '46%' }],
+      rpe: [1, 2, 3, 4, 5].map((n) => ({
+        n: String(n), l: ['SEHR LEICHT', 'LEICHT', 'MITTEL', 'HART', 'MAXIMAL'][n - 1],
+        bg: n === 3 ? 'rgba(0,242,254,0.10)' : '#0B0B0E',
+        br: n === 3 ? 'rgba(0,242,254,0.35)' : '#232334',
+        c: n === 3 ? '#00F2FE' : '#CDD3EA', lc: n === 3 ? '#00F2FE' : '#94A3B8',
+      })),
+      aktivHaeufig: [
+        { n: 'Laufen', z: '37×', dot: '#00F2FE', br: 'rgba(0,242,254,0.35)' },
+        { n: 'Rad', z: '5×', dot: '#00F2FE', br: '#232334' },
+        { n: 'Sonstiges', z: '5×', dot: '#94A3B8', br: '#232334' },
+        { n: 'Wandern', z: '4×', dot: '#00F2FE', br: '#232334' },
+      ],
+      aktivSelten: [{ n: 'Gehen' }, { n: 'Indoor-Rad' }, { n: 'Schwimmen' }, { n: 'Rudern' }],
+      kopfChips: [
+        { t: 'Drei Tabs, kein vierter' }, { t: 'Nie eine Summe aus beidem' },
+        { t: 'Puls 4 von 51 — nie Voraussetzung' }, { t: 'Kein GPS, keine Standortabfrage' },
+        { t: '320 dp · 200 % Schrift · ≥ 48 dp' }, { t: 'Datenstand 26.08.2026 · 136 Einheiten' },
+      ],
+      navRows: bb([
+        { platz: 'KRAFT', dot: '#00F2FE', chipBg: 'rgba(0,242,254,0.08)', chipBr: 'rgba(0,242,254,0.35)', chipC: '#00F2FE',
+          frage: 'Was trainiere ich, und wie entwickelt es sich?',
+          rein: 'Heutiger Workouts-Tab (Pläne, Übungen, Weg ins Training) plus der komplette Verlauf: Einheitenliste mit Monatsstreifen, Einheitendetail, Übungshistorie, Muskelbalance.',
+          wurzel: 'Nächster Plan mit Startknopf. Segment-Umschalter Trainieren / Verlauf darüber — der Verlauf ist ein Segment, kein eigener Tab.' },
+        { platz: 'CARDIO', dot: '#00F2FE', chipBg: 'rgba(0,242,254,0.08)', chipBr: 'rgba(0,242,254,0.35)', chipC: '#00F2FE',
+          frage: 'Was bin ich gelaufen, und wird es besser?',
+          rein: 'Neu: Wurzel mit Wochenkilometern, Einheitenliste, Ausdauerdetail, Erfassung (nacherfassen und live), Ausdauer-Auswertung mit Intensitätskaskade.',
+          wurzel: 'Wochenkilometer mit Nenner und Verschiebung, darunter die letzten Einheiten. Auswertung als zweites Segment, nicht als Karte in der Wurzel.' },
+        { platz: 'HYBRID', dot: '#00FF87', chipBg: 'rgba(0,255,135,0.08)', chipBr: 'rgba(0,255,135,0.30)', chipC: '#00FF87',
+          frage: 'Wie steht es um mich, über beides?',
+          rein: 'Heutiger Start-Tab plus heutiger Analyse-Tab plus Regeneration. Bereitschaft, Verhältnis, Formwert, Zonen, Regenerationszeile.',
+          wurzel: 'Bereitschaft mit Regenerationshinweis. Danach das Verhältnis der Woche, dann Formwert und Zonen über vier Wochen.' },
+      ]),
+      balanceSeg: [
+        { c: '#fb923c', w: '18%' }, { c: '#60a5fa', w: '17%' }, { c: '#f472b6', w: '15%' },
+        { c: '#34d399', w: '12%' }, { c: '#a78bfa', w: '11%' }, { c: '#fbbf24', w: '8%' },
+        { c: '#e879f9', w: '8%' }, { c: '#f59e0b', w: '6%' }, { c: '#2dd4bf', w: '5%' },
+      ],
+      wochenMini: [
+        { h: '38%', c: '#16161F' }, { h: '62%', c: '#16161F' }, { h: '44%', c: '#16161F' },
+        { h: '70%', c: '#16161F' }, { h: '55%', c: '#16161F' }, { h: '80%', c: '#16161F' },
+        { h: '48%', c: '#16161F' }, { h: '100%', c: '#00F2FE' },
+      ],
+      cardioListe: [
+        { ic: 'LA', n: 'Laufen', d: 'MO 25. AUG · 42 MIN', km: '7,8 km', pace: '5:23 /KM' },
+        { ic: 'RA', n: 'Rad', d: 'SO 24. AUG · 71 MIN', km: '24,1 km', pace: '20,4 KM/H' },
+        { ic: 'LA', n: 'Laufen', d: 'FR 22. AUG · 28 MIN', km: '5,2 km', pace: '5:35 /KM' },
+      ],
+      barKraft: tab(0), barCardio: tab(1), barHybrid: tab(2),
+      wege: [
+        { k: 'WEG 1 · HYBRID → KRAFT', t: 'Über das Verhältnis, nicht über einen Knopf', b: 'Die Kraft-Zeile im Verhältnis-Block ist antippbar und springt in den Kraft-Tab, Segment Verlauf. Grund: der Nutzer hat gerade „65 % Kraft" gelesen — die Frage danach ist „aus welchen Einheiten", und die Antwort ist die Einheitenliste, nicht die Planliste.' },
+        { k: 'WEG 2 · HYBRID → CARDIO', t: 'Die Ausdauer-Zeile führt in die Auswertung', b: 'Sie landet im Cardio-Tab, Segment Auswertung — dort steht die Tempoentwicklung. Beide Wege wechseln den Tab und setzen dessen Segment; sie öffnen keinen Bildschirm im Hybrid-Tab, damit es keine zweite Einheitenliste an zweiter Stelle gibt.' },
+        { k: 'WEG 3 · ZURÜCK', t: 'Systemzurück wechselt nicht den Tab', b: 'Nach einem Tabwechsel per Zeile führt Systemzurück in den Hybrid-Tab an dieselbe Scrollposition. Innerhalb eines Tabs bleibt der Stack erhalten — die drei Stacks werden nie zusammengelegt.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

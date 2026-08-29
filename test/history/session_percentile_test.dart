@@ -2,14 +2,18 @@ import 'package:atem/features/history/domain/session_percentile.dart';
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+/// Tempo ist ein Getter: Ein Lauf mit gewünschter Pace bekommt 10 km und die
+/// passende Dauer — `pace` ergibt sich dann von selbst.
 CardioSession _run(String id, {double? km, double? pace}) => CardioSession(
       id: id,
       userId: 'u',
       date: DateTime(2026, 8, 1),
       createdAt: DateTime(2026, 8, 1),
       activity: CardioActivity.run,
-      distanceKm: km,
-      pace: pace,
+      distanceKm: pace != null ? 10 : km,
+      duration: pace != null
+          ? Duration(milliseconds: (pace * 10 * 60000).round())
+          : null,
     );
 
 void main() {

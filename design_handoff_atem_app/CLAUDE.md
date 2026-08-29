@@ -4,12 +4,13 @@ Diese Datei in den Repo-Root legen. Sie gilt für jede Aufgabe an dieser App.
 
 ## Was hier gebaut wird
 ATEM Hybrid — Android-App (Flutter) für hybrides Training. Ästhetik: Dark Cyber-Athlete.
-Design-Referenzen: `design_handoff_atem_app/` — Spezifikations-Boards für Modul 1–10 plus zwei interaktive Prototypen.
+Design-Referenzen: `design_handoff_atem_app/` — Spezifikations-Boards für Modul 1–11 plus zwei interaktive Prototypen.
+Für Modul 11 liegt ein fertiger Anleitungsprompt bereit: `design_handoff_atem_app/PROMPT_MODUL_11.md`.
 
 ## Reihenfolge der Wahrheit
 Bei Widersprüchen gilt, von oben nach unten:
 1. `tokens/atem_theme.dart` — Farb- und Stilwerte
-2. Das Spezifikations-Board des betroffenen Moduls (`design_refs/01`–`10`) — Maße, Zustände, Texte, A11y
+2. Das Spezifikations-Board des betroffenen Moduls (`design_refs/01`–`11`) — Maße, Zustände, Texte, A11y
 3. Der Leitsatz im Kopf des Boards — bei Auslegungsfragen
 4. Die interaktiven Prototypen — nur für Bewegung und Timing; ihre Farben sind eine veraltete Fassung
 
@@ -27,7 +28,7 @@ Bei Widersprüchen gilt, von oben nach unten:
 - Muss bei 200 % Systemschrift auf 320 dp Breite ohne Überlauf funktionieren.
 - Farbe nie als einziger Statusträger — immer Wort, Glyph oder Icon daneben.
 - Höchstens ein `BackdropFilter` pro scrollendem Screen.
-- Bottom-Bar hat genau drei Plätze: Home, Workouts, Analyse. Keine neuen Bereiche, keine leeren Slots.
+- Bottom-Bar hat genau drei Plätze: **Kraft, Cardio, Hybrid** (Modul 11; der frühere Schnitt Home/Workouts/Analyse ist überholt). Keine neuen Bereiche, keine leeren Slots, kein FAB in der Bar.
 - Informationstragender Text ≥ 12 sp effektiv, Kontrast ≥ 4,5:1.
 
 ## Zustände sind Pflicht
@@ -42,6 +43,14 @@ Zwei Regeln dazu:
 - Kein Sollverhältnis, kein Urteil. Die App weiß nicht, wie viel Rücken richtig ist.
 - Deltas sind Tatsachen in `#CDD3EA` mit Richtungsglyph — **keine Ampelfarben**. „Mehr" ist nicht „besser".
 - Keine Interpolation über Tage ohne Ereignis.
+
+## Kraft und Ausdauer (Modul 11)
+- **Keine gemeinsame Lastwährung.** Kein Hybrid-Score, keine Summe aus Tonnage und Kilometern. Das Verhältnis rechnet über Trainingsminuten, mit Nenner und der Fachgröße je Spur darunter.
+- **Puls ist nie Voraussetzung** (4 von 51 Einheiten). Intensität kommt aus der dreistufigen Kaskade, die geführte Stufe steht sichtbar dabei. Keine Altersformel für den Maximalpuls.
+- **Kein GPS**, kein Hintergrund-Standortdienst, keine Standortberechtigung im Manifest. Live-Erfassung zählt Zeit, die Distanz kommt von Hand.
+- **Tempo ist Ausgabe, nie Eingabe.** Distanz und Dauer sind die Wahrheit; Tempo ist ein berechneter Getter.
+- **Regeneration trägt keine Last.** Sie bricht die Untätigkeitsstrafe. Die Oberfläche nennt die Art der letzten Einheit („Gestern Regeneration"), nicht nur ihr Datum.
+- Eine leere Woche ist ein 2-dp-Balken in `#232334`, kein Nullbalken — „gemessen: 0" ist etwas anderes als „nichts gemessen".
 
 ## Schreiben und Löschen (Modul 7 + 8)
 - Reversibel (anlegen, bearbeiten): optimistisch schreiben, bei Abweisung zurück ins Formular — nicht in einen Toast.

@@ -13,6 +13,8 @@
 /// ist. Siehe `docs/contracts/04-firestore-schema.md`.
 library;
 
+import 'package:meta/meta.dart';
+
 /// Die Art einer Einheit — der Diskriminator `type` im Dokument.
 enum SessionKind {
   strength('strength'),
@@ -33,30 +35,111 @@ enum SessionKind {
   }
 }
 
-/// Die Aktivität einer Cardio-Einheit.
+/// Die Aktivität einer Ausdauereinheit.
 ///
-/// `other` ist kein Auffangbecken für Unbekanntes, sondern ein echter Wert im
-/// Bestand (5 Dokumente). Unbekannte Zeichenketten landen in
-/// [CardioSession.rawActivity].
+/// Acht Werte, wie Board 11 sie festlegt. Vier davon kommen im Bestand nie
+/// vor (Indoor-Rad, Schwimmen, Gehen, Rudern) — sie sind gestaltet, aber
+/// nicht gleich laut. Unbekannte Zeichenketten landen in
+/// [CardioSession.rawActivity]; `other` ist ein echter Wert (5 Dokumente).
+///
+/// Yoga, Sauna und Dehnen sind **keine** Ausdauer — im Bestand tragen sie
+/// ausschliesslich `type: recovery`. Sie stehen in [RecoveryKind].
 enum CardioActivity {
   run('run'),
   bike('bike'),
+
+  /// Die Vorgänger-App kennt den Wert nicht und zeigt dann „Cardio" — sie
+  /// verwirft ihn nicht.
+  bikeIndoor('bikeIndoor'),
+  swim('swim'),
   hike('hike'),
   walk('walk'),
-  stretching('stretching'),
-  yoga('yoga'),
-  sauna('sauna'),
+  row('row'),
   other('other');
 
   const CardioActivity(this.wire);
 
   final String wire;
 
+  /// Wird das Tempo als Geschwindigkeit gelesen?
+  ///
+  /// Rad, Indoor-Rad und Rudern rechnen in km/h, alles andere in min/km —
+  /// „die Einheit steht im Wert, nicht im Schlüssel" (Board 11, G).
+  bool get usesSpeed => switch (this) {
+        CardioActivity.bike ||
+        CardioActivity.bikeIndoor ||
+        CardioActivity.row =>
+          true,
+        _ => false,
+      };
+
   static CardioActivity? fromWire(String? value) {
     for (final activity in values) {
       if (activity.wire == value) return activity;
     }
     return null;
+  }
+}
+
+/// Die Art einer Regenerationseinheit.
+///
+/// Vier Werte laut Board 11. Die Vorgänger-App schreibt dasselbe Feld
+/// (`activityType`) mit einem grösseren Vorrat — `foam_roll`, `walk`,
+/// `meditation` — der hier als [RecoverySession.rawKind] überlebt.
+enum RecoveryKind {
+  yoga('yoga'),
+  sauna('sauna'),
+
+  /// Der Draht heisst `stretching`, wie in den fünf Dokumenten des Bestands.
+  stretch('stretching'),
+  mobility('mobility');
+
+  const RecoveryKind(this.wire);
+
+  final String wire;
+
+  static RecoveryKind? fromWire(String? value) {
+    for (final kind in values) {
+      if (kind.wire == value) return kind;
+    }
+    return null;
+  }
+}
+
+/// Das Tempo einer Ausdauereinheit — **immer gerechnet, nie gespeichert**.
+///
+/// Distanz und Dauer sind die Wahrheit. Ein drittes Feld, das von beiden
+/// abhängt, müsste bei jeder Korrektur entscheiden, welches es überschreibt
+/// (Board 11, Entscheidung „Tempo als Eingabefeld"). Ohne Distanz gibt es
+/// kein Tempo — dann steht „—", und die Einheit zählt trotzdem in Minuten.
+@immutable
+class CardioTempo {
+  const CardioTempo._({required this.minutesPerKm, required this.usesSpeed});
+
+  /// Minuten je Kilometer, unabhängig von der Anzeigeeinheit.
+  final double minutesPerKm;
+
+  /// Ob die Anzeige in km/h erfolgt.
+  final bool usesSpeed;
+
+  double get kmPerHour => 60 / minutesPerKm;
+
+  /// Der Wert in der Einheit der Aktivität — für Vergleiche innerhalb einer
+  /// Aktivität, nie darüber hinaus.
+  double get value => usesSpeed ? kmPerHour : minutesPerKm;
+
+  /// `null`, wenn Distanz oder Dauer fehlen oder null sind.
+  static CardioTempo? of({
+    required double? distanceKm,
+    required Duration? duration,
+    required CardioActivity? activity,
+  }) {
+    if (distanceKm == null || duration == null) return null;
+    if (distanceKm <= 0 || duration <= Duration.zero) return null;
+    return CardioTempo._(
+      minutesPerKm: duration.inMilliseconds / 60000 / distanceKm,
+      usesSpeed: activity?.usesSpeed ?? false,
+    );
   }
 }
 
@@ -177,7 +260,7 @@ final class StrengthSession extends TrainingSession {
       );
 }
 
-/// Laufen, Rad, Wandern, Dehnen, Sauna — alles ohne Satzprotokoll.
+/// Laufen, Rad, Wandern, Schwimmen — alles mit Strecke statt Sätzen.
 final class CardioSession extends TrainingSession {
   const CardioSession({
     required super.id,
@@ -192,7 +275,6 @@ final class CardioSession extends TrainingSession {
     super.preWorkoutEnergy,
     super.postWorkoutFeeling,
     this.distanceKm,
-    this.pace,
     this.avgHr,
     this.maxHr,
     this.name,
@@ -206,12 +288,25 @@ final class CardioSession extends TrainingSession {
 
   final double? distanceKm;
 
-  /// Minuten je Kilometer.
-  final double? pace;
-
   final int? avgHr;
   final int? maxHr;
   final String? name;
+
+  /// Das Tempo, gerechnet aus Distanz und Dauer. `null` ohne Distanz.
+  ///
+  /// Der Bestand trägt ein Feld `pace` — es wird **nicht gelesen**. Wo beide
+  /// vorkommen, stimmt es mit dieser Rechnung überein; wo nur das Feld stünde,
+  /// wäre es eine Zahl ohne Grundlage.
+  CardioTempo? get tempo => CardioTempo.of(
+        distanceKm: distanceKm,
+        duration: duration,
+        activity: activity,
+      );
+
+  /// Minuten je Kilometer — die Grösse, in der Perzentil und Vergleich
+  /// rechnen. Für Rad und Rudern ist das nur eine andere Schreibweise der
+  /// Geschwindigkeit; verglichen wird ohnehin nur innerhalb einer Aktivität.
+  double? get pace => tempo?.minutesPerKm;
 
   @override
   SessionKind get kind => SessionKind.cardio;
@@ -230,14 +325,13 @@ final class CardioSession extends TrainingSession {
         preWorkoutEnergy: preWorkoutEnergy,
         postWorkoutFeeling: postWorkoutFeeling,
         distanceKm: distanceKm,
-        pace: pace,
         avgHr: avgHr,
         maxHr: maxHr,
         name: name,
       );
 }
 
-/// Regeneration — im Bestand ohne jede Kennzahl außer Dauer.
+/// Regeneration — im Bestand ohne jede Kennzahl außer Dauer und Art.
 final class RecoverySession extends TrainingSession {
   const RecoverySession({
     required super.id,
@@ -249,8 +343,18 @@ final class RecoverySession extends TrainingSession {
     super.rpe,
     super.preWorkoutEnergy,
     super.postWorkoutFeeling,
+    this.recoveryKind,
+    this.rawKind,
     this.name,
   });
+
+  /// Yoga, Sauna, Dehnen, Mobility. `null`, wenn nichts oder Unbekanntes
+  /// hinterlegt ist — dann steht der Rohwert in [rawKind].
+  final RecoveryKind? recoveryKind;
+
+  /// Der Draht, falls er zu keiner bekannten Art passt (`foam_roll`,
+  /// `meditation`, `walk` aus der Vorgänger-App).
+  final String? rawKind;
 
   final String? name;
 
@@ -269,6 +373,8 @@ final class RecoverySession extends TrainingSession {
         rpe: rpe,
         preWorkoutEnergy: preWorkoutEnergy,
         postWorkoutFeeling: postWorkoutFeeling,
+        recoveryKind: recoveryKind,
+        rawKind: rawKind,
         name: name,
       );
 }

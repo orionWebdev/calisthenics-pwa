@@ -18,6 +18,12 @@ class SessionDraft {
     this.planName,
     this.scheduleId,
     this.rpe,
+    this.activity,
+    this.distanceKm,
+    this.avgHr,
+    this.maxHr,
+    this.recoveryKind,
+    this.durationHasSeconds = false,
   });
 
   final String userId;
@@ -38,4 +44,26 @@ class SessionDraft {
   final String? scheduleId;
 
   final int? rpe;
+
+  // ---- Ausdauer (Board 11, nur diese Felder, keine Vorratsfelder) ----
+
+  /// Nur bei [SessionKind.cardio].
+  final CardioActivity? activity;
+
+  /// Fehlt sie, bleibt das Tempo „—" und die Einheit zählt in Minuten.
+  final double? distanceKm;
+
+  /// Puls ist nie Voraussetzung — 4 von 51 Einheiten tragen ihn.
+  final int? avgHr;
+  final int? maxHr;
+
+  // ---- Regeneration ----
+
+  /// Nur bei [SessionKind.recovery].
+  final RecoveryKind? recoveryKind;
+
+  /// Stammt die Dauer aus einer laufenden Uhr, sind die Sekunden echt und
+  /// werden zusätzlich als `durationSec` geschrieben. Eine getippte
+  /// Minutenzahl bekommt keine erfundenen Sekunden.
+  final bool durationHasSeconds;
 }

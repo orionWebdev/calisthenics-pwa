@@ -74,24 +74,33 @@ abstract final class SessionMapper {
             activity: activity,
             rawActivity: activity == null ? raw : null,
             distanceKm: _double(data['distanceKm']),
-            pace: _double(data['pace']),
+            // `pace` steht im Dokument, wird aber nicht gelesen: Tempo ist
+            // Ausgabe aus Distanz und Dauer, nie ein eigenes Feld (Board 11).
             avgHr: _int(data['avgHr']),
             maxHr: _int(data['maxHr']),
             name: _string(data['name']),
           );
         }(),
-      SessionKind.recovery => RecoverySession(
-          id: id,
-          userId: userId,
-          date: date,
-          createdAt: createdAt,
-          duration: duration,
-          notes: notes,
-          rpe: rpe,
-          preWorkoutEnergy: energy,
-          postWorkoutFeeling: feeling,
-          name: _string(data['name']),
-        ),
+      SessionKind.recovery => () {
+          // Dasselbe Feld wie bei Cardio — die Vorgänger-App schreibt die
+          // Art der Regeneration ebenfalls nach `activityType`.
+          final raw = _string(data['activityType']);
+          final kind = RecoveryKind.fromWire(raw);
+          return RecoverySession(
+            id: id,
+            userId: userId,
+            date: date,
+            createdAt: createdAt,
+            duration: duration,
+            notes: notes,
+            rpe: rpe,
+            preWorkoutEnergy: energy,
+            postWorkoutFeeling: feeling,
+            recoveryKind: kind,
+            rawKind: kind == null ? raw : null,
+            name: _string(data['name']),
+          );
+        }(),
       null => UnknownSession(
           id: id,
           userId: userId,
