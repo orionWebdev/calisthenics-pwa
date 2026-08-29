@@ -2205,6 +2205,26 @@
   "@exerciseLevel5": {
     "description": "exercise.level.5"
   },
+  "exerciseLevel1Short": "EINST.",
+  "@exerciseLevel1Short": {
+    "description": "Kurzform der Stufe 1 fuer die Auswahlreihe"
+  },
+  "exerciseLevel2Short": "LEICHT",
+  "@exerciseLevel2Short": {
+    "description": "Kurzform der Stufe 2 fuer die Auswahlreihe"
+  },
+  "exerciseLevel3Short": "MITTEL",
+  "@exerciseLevel3Short": {
+    "description": "Kurzform der Stufe 3 fuer die Auswahlreihe"
+  },
+  "exerciseLevel4Short": "FORTG.",
+  "@exerciseLevel4Short": {
+    "description": "Kurzform der Stufe 4 fuer die Auswahlreihe"
+  },
+  "exerciseLevel5Short": "EXP.",
+  "@exerciseLevel5Short": {
+    "description": "Kurzform der Stufe 5 fuer die Auswahlreihe"
+  },
   "exerciseLevelHint": "Wird als Zahl 1–5 gespeichert.",
   "@exerciseLevelHint": {
     "description": "exercise.level.hint"

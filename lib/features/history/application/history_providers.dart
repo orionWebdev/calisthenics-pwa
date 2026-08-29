@@ -117,12 +117,20 @@ final formSeriesProvider = Provider.autoDispose<FormSeries>((ref) {
 
 /// Ob der zuletzt gelieferte Stand aus dem lokalen Zwischenspeicher stammt.
 ///
-/// Hängt am Strom, nicht an einer eigenen Abfrage: Der Wert ändert sich nur,
-/// wenn Firestore etwas liefert — und genau dann ist er auch aktuell.
-final offlineProvider = Provider<bool>((ref) {
-  ref.watch(sessionStreamProvider);
-  return ref.watch(sessionRepositoryProvider).isFromCache;
+/// Ein eigener Strom auf derselben Abfrage — er hört auch auf reine
+/// Metadaten-Änderungen und meldet deshalb, wenn der Server antwortet, ohne
+/// dass sich Daten ändern. Ohne Anmeldung nie „offline": Ohne `userId` gibt
+/// es keine Abfrage, deren Herkunft man beurteilen könnte.
+final offlineStreamProvider = StreamProvider<bool>((ref) {
+  final userId = ref.watch(currentUserIdProvider);
+  if (userId == null) return Stream.value(false);
+  return ref.watch(sessionRepositoryProvider).watchFromCache(userId);
 });
+
+/// Solange die erste Antwort aussteht, gilt „nicht offline": Ein Band, das
+/// beim Start aufblitzt, ist eine Falschmeldung mit Ansage.
+final offlineProvider =
+    Provider<bool>((ref) => ref.watch(offlineStreamProvider).value ?? false);
 
 /// Der Filter der Einheitenliste.
 class SessionFilterController extends Notifier<SessionFilter> {
@@ -133,6 +141,10 @@ class SessionFilterController extends Notifier<SessionFilter> {
   /// „Alle"-Chip suchen.
   void toggleKind(SessionKind kind) =>
       state = state.withKind(state.kind == kind ? null : kind);
+
+  /// „Alle" hebt nur die Art auf, nicht den Zeitraum — der Chip steht in der
+  /// Artenreihe und verspricht nichts über den Monat.
+  void clearKind() => state = state.withKind(null);
 
   void setPeriod(int year, int month) => state = state.withPeriod(year, month);
 

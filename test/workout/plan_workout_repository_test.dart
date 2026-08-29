@@ -51,7 +51,7 @@ class _Sessions implements SessionRepository {
   Future<String> saveSession(SessionDraft d) async => 'x';
 
   @override
-  bool get isFromCache => false;
+  Stream<bool> watchFromCache(String userId) => Stream.value(false);
   @override
   Future<void> updateSession(String id, SessionPatch p) async {}
   @override

@@ -47,11 +47,16 @@ abstract final class StartSheet {
     final title =
         plan == null ? l10n.workoutsFreeStart : l10n.sheetStartTitle(plan.name);
 
+    // **Die Pausenzeit gehört dem Sheet, nicht dem Aufrufer.** Sie kommt als
+    // Vorgabe herein und wird hier geändert — der Startknopf liest den
+    // aktuellen Stand, nicht den beim Öffnen.
+    final chosen = ValueNotifier<int>(restSeconds);
+
     return AtemSheet.show<StartRequest>(
       context,
       title: title,
       closeLabel: l10n.commonCancel,
-      child: _Body(plan: plan, restSeconds: restSeconds, l10n: l10n),
+      child: _Body(plan: plan, rest: chosen, l10n: l10n),
       primaryAction: AtemButton.gradient(
         label: l10n.sheetStart,
         semanticLabel: title,
@@ -59,7 +64,7 @@ abstract final class StartSheet {
           StartRequest(
             plan: plan,
             scheduleId: scheduleId,
-            restSeconds: restSeconds,
+            restSeconds: chosen.value,
           ),
         ),
       ),
@@ -76,47 +81,152 @@ abstract final class StartSheet {
   }
 }
 
-class _Body extends StatelessWidget {
+/// Der Inhalt: Umfang der Einheit und die Pausenzeit, die gleich gilt.
+class _Body extends StatefulWidget {
   const _Body({
     required this.plan,
-    required this.restSeconds,
+    required this.rest,
     required this.l10n,
   });
 
   final Plan? plan;
-  final int restSeconds;
+  final ValueNotifier<int> rest;
   final AppL10n l10n;
 
   @override
-  Widget build(BuildContext context) {
-    final p = plan;
+  State<_Body> createState() => _BodyState();
+}
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          p == null
-              ? l10n.sheetFreeBody
-              : '${l10n.exerciseCountShort(p.exerciseCount)} · '
-                  '${l10n.durationApproxMinutes(p.estimatedDuration.inMinutes)}',
-          style: AtemType.labelSmall.of(context),
-        ),
-        const SizedBox(height: 16),
-        AtemStatBox(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.sheetRestLabel, style: AtemType.labelSmall.of(context)),
-              Text(
-                l10n.restSeconds(restSeconds),
-                style: AtemType.valueMedium.of(context),
+class _BodyState extends State<_Body> {
+  /// Die Vorauswahl bleibt zu, bis jemand sie braucht. Der häufige Fall ist
+  /// „Vorgabe stimmt" — ein aufgeklappter Wähler machte aus einem
+  /// Bestätigungsschritt ein Formular.
+  bool _open = false;
+
+  /// Dieselben Stufen wie in den Einstellungen (Board 08, A3). Zwei Orte mit
+  /// zwei Vorratslisten wären zwei Wahrheiten.
+  static const _presets = [60, 90, 120, 180];
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    final p = widget.plan;
+
+    return ValueListenableBuilder<int>(
+      valueListenable: widget.rest,
+      builder: (context, rest, _) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            p == null
+                ? l10n.sheetFreeBody
+                : '${l10n.exerciseCountShort(p.exerciseCount)} · '
+                    '${l10n.durationApproxMinutes(p.estimatedDuration.inMinutes)}',
+            style: AtemType.labelSmall.of(context),
+          ),
+          const SizedBox(height: 16),
+          AtemTappable(
+            onTap: () => setState(() => _open = !_open),
+            semanticLabel: '${l10n.sheetRestLabel}, ${l10n.restSeconds(rest)}',
+            child: AtemStatBox(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(l10n.sheetRestLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AtemType.labelSmall.of(context)),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    l10n.restSeconds(rest),
+                    style: AtemType.valueMedium
+                        .of(context)
+                        .copyWith(color: AtemColors.cyan),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(_open ? Icons.expand_less : Icons.expand_more,
+                      size: 20, color: AtemColors.textSecondary),
+                ],
               ),
-            ],
+            ),
+          ),
+          if (_open) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final value in {..._presets, rest}.toList()..sort())
+                  _RestChip(
+                    seconds: value,
+                    selected: value == rest,
+                    onTap: () => widget.rest.value = value,
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Eine Pausenstufe. Wort und Haken, nicht nur Farbe.
+class _RestChip extends StatelessWidget {
+  const _RestChip({
+    required this.seconds,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final int seconds;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = AppL10n.of(context).restSeconds(seconds);
+    return AtemTappable(
+      onTap: onTap,
+      semanticLabel: label,
+      selected: selected,
+      inMutuallyExclusiveGroup: true,
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        constraints: const BoxConstraints(minHeight: 40),
+        decoration: BoxDecoration(
+          color: selected
+              ? AtemCategories.surface(AtemColors.cyan)
+              : AtemColors.surfaceSolid,
+          borderRadius: BorderRadius.circular(AtemRadii.pill),
+          border: Border.all(
+            color: selected
+                ? AtemCategories.border(AtemColors.cyan)
+                : AtemColors.border,
           ),
         ),
-      ],
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (selected) ...[
+              const Icon(Icons.check, size: 14, color: AtemColors.cyan),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: AtemType.valueMedium.of(context).copyWith(
+                    fontSize: 13,
+                    color:
+                        selected ? AtemColors.cyan : AtemColors.textSecondary,
+                  ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

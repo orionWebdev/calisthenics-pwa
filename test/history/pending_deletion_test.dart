@@ -32,7 +32,7 @@ class _Repo implements SessionRepository {
   Future<String> saveSession(SessionDraft draft) async => 'neu';
 
   @override
-  bool get isFromCache => false;
+  Stream<bool> watchFromCache(String userId) => Stream.value(false);
 
   @override
   Future<void> updateSession(String id, SessionPatch patch) async {}

@@ -37,21 +37,25 @@ class FirestoreSessionRepository implements SessionRepository {
   @override
   Stream<List<TrainingSession>> watchSessions(String userId) =>
       _query(userId).snapshots().map((snapshot) {
-        // **Das Offline-Signal kommt aus Firestore selbst.**
-        //
-        // `isFromCache` sagt, ob die Momentaufnahme aus dem lokalen
-        // Zwischenspeicher stammt. Das ist genauer als „hat WLAN": Es
-        // beantwortet die Frage, die zählt — kommen meine Änderungen gerade
-        // beim Server an? Und es kostet kein zusätzliches Paket für eine
-        // einzelne Ja-Nein-Frage.
-        _fromCache = snapshot.metadata.isFromCache;
         return _convert(snapshot);
       });
 
-  /// Kam die letzte Momentaufnahme aus dem Zwischenspeicher?
+  /// Kommt der Stand gerade aus dem Zwischenspeicher?
+  ///
+  /// **`includeMetadataChanges: true` ist der ganze Punkt.** Ohne das Flag
+  /// meldet Firestore nur Ereignisse, bei denen sich Dokumente geändert
+  /// haben. Der Wechsel „aus dem Zwischenspeicher" → „vom Server" ist aber
+  /// genau das nicht — er ist eine reine Metadaten-Änderung. Das Band blieb
+  /// deshalb dauerhaft stehen, obwohl der Server längst geantwortet hatte.
+  ///
+  /// Es ist derselbe Abfrageausdruck wie in [watchSessions]: Firestore
+  /// bündelt beide Zuhörer auf einen Datenstrom, zusätzliche Lesevorgänge
+  /// entstehen nicht.
   @override
-  bool get isFromCache => _fromCache;
-  bool _fromCache = false;
+  Stream<bool> watchFromCache(String userId) => _query(userId)
+      .snapshots(includeMetadataChanges: true)
+      .map((snapshot) => snapshot.metadata.isFromCache)
+      .distinct();
 
   @override
   Future<List<TrainingSession>> fetchSessions(String userId) async =>

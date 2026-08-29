@@ -32,6 +32,19 @@ String difficultyLabel(AppL10n l, int level) => switch (level) {
       _ => l.exerciseLevel5,
     };
 
+/// Die Kurzform für die Auswahlreihe — „FORTG." statt „Fortgeschritten".
+///
+/// Fünf Felder müssen nebeneinander auf 320 dp passen; das längste volle Wort
+/// machte die Reihe dreimal so breit wie der Bildschirm. Vorgelesen wird
+/// weiterhin das ganze Wort: [difficultyLabel] steht im Semantics-Label.
+String difficultyShort(AppL10n l, int level) => switch (level) {
+      1 => l.exerciseLevel1Short,
+      2 => l.exerciseLevel2Short,
+      3 => l.exerciseLevel3Short,
+      4 => l.exerciseLevel4Short,
+      _ => l.exerciseLevel5Short,
+    };
+
 /// Die Stufenauswahl: **Zahl oben, Wort darunter**.
 ///
 /// ## Warum nicht die Segmentauswahl aus Modul 2
@@ -92,47 +105,67 @@ class DifficultyChoice extends StatelessWidget {
   static const _gap = 6.0;
 
   /// Auch das kürzeste Wort bekommt eine Fläche, die man trifft.
-  static const _minWidth = 78.0;
+  static const _minWidth = 48.0;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final scaler = MediaQuery.textScalerOf(context);
 
-    // Die Breite folgt dem längsten Wort — sonst wären fünf gleich breite
-    // Felder so breit wie „Fortgeschritten" und die Reihe unnötig lang.
-    final width = math.max(
-      _minWidth,
-      _widest(context, l10n, scaler) + 20,
-    );
-
     // Eine waagerechte Liste braucht eine feste Höhe; sie folgt der
     // Schriftskalierung, damit bei 200 % nichts abgeschnitten wird.
     final height = math.max(_height, scaler.scale(30) + 30);
 
+    // Die Breite folgt der längsten Kurzform, nie dem vollen Wort.
+    final needed = math.max(_minWidth, _widest(context, l10n, scaler) + 16);
+
     return SizedBox(
       height: height,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemCount: Difficulty.max,
-        separatorBuilder: (_, __) => const SizedBox(width: _gap),
-        itemBuilder: (context, i) {
-          final level = Difficulty.min + i;
-          return SizedBox(
-            width: width,
-            child: _Field(
-              level: level,
-              label: difficultyLabel(l10n, level),
-              selected: level == value,
-              hasError: hasError,
-              onTap: () => onChanged(level),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final fair =
+              (constraints.maxWidth - _gap * (Difficulty.max - 1)) /
+                  Difficulty.max;
+
+          // **Fünf gleiche Felder über die volle Breite** (Board 07, A2/1) —
+          // die Reihe stand vorher weit auseinandergezogen im Scroller, weil
+          // ihre Breite dem Wort „Fortgeschritten" folgte. Nur wenn die
+          // Kurzform bei 200 % Schrift nicht mehr in ihr Fünftel passt,
+          // bleibt der waagerechte Scroller als Ausweg.
+          if (fair >= needed) {
+            return Row(
+              children: [
+                for (var i = 0; i < Difficulty.max; i++) ...[
+                  if (i > 0) const SizedBox(width: _gap),
+                  Expanded(child: _field(l10n, Difficulty.min + i)),
+                ],
+              ],
+            );
+          }
+
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.zero,
+            itemCount: Difficulty.max,
+            separatorBuilder: (_, __) => const SizedBox(width: _gap),
+            itemBuilder: (context, i) => SizedBox(
+              width: needed,
+              child: _field(l10n, Difficulty.min + i),
             ),
           );
         },
       ),
     );
   }
+
+  Widget _field(AppL10n l10n, int level) => _Field(
+        level: level,
+        label: difficultyShort(l10n, level),
+        semanticLabel: difficultyLabel(l10n, level),
+        selected: level == value,
+        hasError: hasError,
+        onTap: () => onChanged(level),
+      );
 
   static double _widest(
     BuildContext context,
@@ -143,7 +176,7 @@ class DifficultyChoice extends StatelessWidget {
     for (var level = Difficulty.min; level <= Difficulty.max; level++) {
       final painter = TextPainter(
         text: TextSpan(
-          text: difficultyLabel(l10n, level),
+          text: difficultyShort(l10n, level),
           style: AtemType.labelMicro.base,
         ),
         textDirection: TextDirection.ltr,
@@ -160,6 +193,7 @@ class _Field extends StatelessWidget {
   const _Field({
     required this.level,
     required this.label,
+    required this.semanticLabel,
     required this.selected,
     required this.hasError,
     required this.onTap,
@@ -167,6 +201,9 @@ class _Field extends StatelessWidget {
 
   final int level;
   final String label;
+
+  /// Das volle Wort — es wird vorgelesen, während die Fläche kürzt.
+  final String semanticLabel;
   final bool selected;
   final bool hasError;
   final VoidCallback onTap;
@@ -183,8 +220,8 @@ class _Field extends StatelessWidget {
       // „Stufe 4, Fortgeschritten, 4 von 5" — Zahl und Wort zusammen, sonst
       // ist die eine bedeutungslos und das andere nicht auffindbar.
       semanticLabel:
-          '${l10n.exerciseFieldLevel} $level, $label, $level ${l10n.commonOf} '
-          '${Difficulty.max}',
+          '${l10n.exerciseFieldLevel} $level, $semanticLabel, '
+          '$level ${l10n.commonOf} ${Difficulty.max}',
       selected: selected,
       inMutuallyExclusiveGroup: true,
       minTapSize: const Size(0, DifficultyChoice._height),

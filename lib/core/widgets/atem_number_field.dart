@@ -104,8 +104,8 @@ class AtemNumberField extends StatelessWidget {
   /// Grosse Einzelfeld-Variante: Mono 28 sp, mindestens 56 dp, zentriert.
   final bool _large;
 
-  static const _minHeight = 48.0;
-  static const _largeMinHeight = 56.0;
+  static const _minHeight = 56.0;
+  static const _largeMinHeight = 68.0;
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +148,8 @@ class AtemNumberField extends StatelessWidget {
                     : (_large ? AtemColors.card : AtemColors.surfaceSolid),
                 contentPadding: _large
                     ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
-                    : const EdgeInsets.symmetric(horizontal: 6),
+                    : const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 14),
                 suffixText: suffix,
                 suffixStyle: AtemType.labelSmall.base,
                 enabledBorder:

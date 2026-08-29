@@ -440,6 +440,15 @@ class _ItemCardState extends State<_ItemCard> {
   /// Plans. Neue Einträge stehen offen, weil sie noch leer sind.
   late bool _open;
 
+  /// **Entweder Wiederholungen oder Halten.** Ein Eintrag, der beides trägt,
+  /// ist im Bestand nicht vorgesehen und war als zwei gleichzeitig sichtbare
+  /// Felder eine Einladung, ihn zu erzeugen.
+  late bool _holdMode;
+
+  /// Rad oder Tastatur für den Zielwert. Das Rad nur, wenn der Wert eine
+  /// reine Zahl ist — sonst zerstörte das Umschalten „8-12" beim ersten Dreh.
+  late bool _wheel;
+
   @override
   void initState() {
     super.initState();
@@ -452,6 +461,22 @@ class _ItemCardState extends State<_ItemCard> {
         item.reps == null &&
         item.holdSeconds == null &&
         item.restSeconds == null;
+    _holdMode = item.holdSeconds != null && (item.reps ?? '').trim().isEmpty;
+    _wheel = int.tryParse(_value.text.trim()) != null;
+  }
+
+  /// Das Feld, das gerade gilt.
+  TextEditingController get _value => _holdMode ? _hold : _reps;
+
+  /// Umschalten räumt das andere Feld ab — sonst stünde im Datensatz beides.
+  void _setHoldMode(bool hold) {
+    if (hold == _holdMode) return;
+    setState(() {
+      _holdMode = hold;
+      (hold ? _reps : _hold).clear();
+      _wheel = int.tryParse(_value.text.trim()) != null;
+    });
+    _emit();
   }
 
   @override
@@ -596,14 +621,22 @@ class _ItemCardState extends State<_ItemCard> {
           ),
           if (_open) ...[
             const SizedBox(height: 14),
-            // **Zwei Paare statt vier ungleicher Felder.** Sätze und
-            // Wiederholungen gehören zusammen („3 × 8-12"), Halten und Pause
-            // sind Sekundenwerte. Vorher standen alle vier nebeneinander, in
-            // unterschiedlichen Breiten und ohne erkennbare Gruppierung.
+            // **Der Zielwert ist eine Entscheidung, keine Sammlung.** Ein
+            // Eintrag hat Wiederholungen *oder* eine Haltezeit; der
+            // Umschalter sagt, welche gerade gilt, und räumt die andere ab.
+            _ModeSwitch(
+              hold: _holdMode,
+              onChanged: _setHoldMode,
+            ),
+            const SizedBox(height: 10),
+            // Sätze, Zielwert und die Eingabeart stehen in **einer** Zeile —
+            // das Rad war vorher ein Textlink unter dem Feld und wurde
+            // übersehen.
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
+                  flex: 2,
                   child: _Target(
                     label: l10n.planEntrySets,
                     controller: _sets,
@@ -612,32 +645,41 @@ class _ItemCardState extends State<_ItemCard> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  flex: 2,
-                  child: _Target(
-                    label: l10n.planEntryReps,
-                    controller: _reps,
-                    hint: l10n.planEntryRepsHint,
-                    // **Kein Zahlenfeld.** Bereiche wie „8-12" und „max"
-                    // gehören zum Bestand.
-                    text: true,
-                    onChanged: _emit,
-                  ),
+                  flex: 3,
+                  child: _holdMode
+                      ? _Target(
+                          key: const ValueKey('hold'),
+                          label: l10n.planFormHold,
+                          controller: _hold,
+                          suffix: l10n.unitSuffixSeconds,
+                          onChanged: _emit,
+                        )
+                      : _Target(
+                          key: const ValueKey('reps'),
+                          label: l10n.planEntryReps,
+                          controller: _reps,
+                          hint: l10n.planEntryRepsHint,
+                          // **Kein Zahlenfeld.** Bereiche wie „8-12" und
+                          // „max" gehören zum Bestand.
+                          text: true,
+                          wheel: _wheel,
+                          onChanged: _emit,
+                        ),
                 ),
+                if (!_holdMode) ...[
+                  const SizedBox(width: 10),
+                  _InputModeButton(
+                    wheel: _wheel,
+                    // Das Rad kennt nur Zahlen; bei „8-12" bliebe es stumm.
+                    enabled: int.tryParse(_reps.text.trim()) != null || _wheel,
+                    onTap: () => setState(() => _wheel = !_wheel),
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: 12),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _Target(
-                    label: l10n.planFormHold,
-                    controller: _hold,
-                    suffix: l10n.unitSuffixSeconds,
-                    onChanged: _emit,
-                  ),
-                ),
-                const SizedBox(width: 10),
                 Expanded(
                   child: _Target(
                     label: l10n.planEntryRest,
@@ -646,6 +688,7 @@ class _ItemCardState extends State<_ItemCard> {
                     onChanged: _emit,
                   ),
                 ),
+                const Spacer(),
               ],
             ),
             const SizedBox(height: 12),
@@ -709,12 +752,14 @@ class _ItemCardState extends State<_ItemCard> {
 /// Feld nimmt seine Spalte ein.
 class _Target extends StatelessWidget {
   const _Target({
+    super.key,
     required this.label,
     required this.controller,
     required this.onChanged,
     this.hint,
     this.suffix,
     this.text = false,
+    this.wheel = false,
   });
 
   final String label;
@@ -723,6 +768,9 @@ class _Target extends StatelessWidget {
   final String? hint;
   final String? suffix;
   final bool text;
+
+  /// Nur für den Wiederholungswert: Rad statt Tastatur.
+  final bool wheel;
 
   @override
   Widget build(BuildContext context) {
@@ -744,6 +792,7 @@ class _Target extends StatelessWidget {
             controller: controller,
             label: label,
             hint: hint,
+            wheel: wheel,
             onChanged: onChanged,
           )
         else
@@ -759,7 +808,131 @@ class _Target extends StatelessWidget {
   }
 }
 
-/// Das Wiederholungsfeld — **Rad und Tastatur, umschaltbar**.
+/// Der Umschalter zwischen Wiederholungen und Haltezeit.
+///
+/// Zwei Kapseln statt eines Schalters: „Wdh" und „Halten" sind zwei Namen,
+/// keine Ja/Nein-Frage, und eine Kapsel trägt ihr Wort selbst — Farbe ist
+/// hier nie der einzige Träger.
+class _ModeSwitch extends StatelessWidget {
+  const _ModeSwitch({required this.hold, required this.onChanged});
+
+  final bool hold;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _ModeChip(
+          label: l10n.planEntryReps,
+          selected: !hold,
+          onTap: () => onChanged(false),
+        ),
+        _ModeChip(
+          label: l10n.planFormHold,
+          selected: hold,
+          onTap: () => onChanged(true),
+        ),
+      ],
+    );
+  }
+}
+
+class _ModeChip extends StatelessWidget {
+  const _ModeChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => AtemTappable(
+        onTap: onTap,
+        semanticLabel: label,
+        selected: selected,
+        inMutuallyExclusiveGroup: true,
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          constraints: const BoxConstraints(minHeight: 38),
+          decoration: BoxDecoration(
+            color: selected
+                ? AtemCategories.surface(AtemColors.cyan)
+                : AtemColors.surfaceSolid,
+            borderRadius: BorderRadius.circular(AtemRadii.pill),
+            border: Border.all(
+              color: selected
+                  ? AtemCategories.border(AtemColors.cyan)
+                  : AtemColors.border,
+            ),
+          ),
+          child: Text(
+            label,
+            style: AtemType.labelSmall.of(context).copyWith(
+                  color: selected ? AtemColors.cyan : AtemColors.textSecondary,
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+        ),
+      );
+}
+
+/// Der Knopf, der zwischen Rad und Tastatur umschaltet.
+///
+/// Er steht in der Zeile neben Sätzen und Zielwert und sieht aus wie ein
+/// Knopf — als Textlink unter dem Feld wurde er übersehen. Symbol **und**
+/// Wort, weil ein Tastatursymbol allein nicht sagt, was passiert.
+class _InputModeButton extends StatelessWidget {
+  const _InputModeButton({
+    required this.wheel,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final bool wheel;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    // Beschriftet ist immer das Ziel, nicht der Zustand: Wer „Rad" liest,
+    // bekommt beim Tippen ein Rad.
+    final label = wheel ? l10n.repsKeyboard : l10n.repsWheel;
+    final color = enabled ? AtemColors.cyan : AtemColors.textSecondary;
+
+    return AtemTappable(
+      onTap: enabled ? onTap : null,
+      semanticLabel: enabled ? label : '$label, ${l10n.repsWheelHint}',
+      child: Container(
+        height: 56,
+        width: 56,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AtemColors.surfaceSolid,
+          borderRadius: BorderRadius.circular(AtemRadii.statBox),
+          border: Border.all(
+            color: enabled ? AtemCategories.border(AtemColors.cyan) : AtemColors.border,
+          ),
+        ),
+        child: Icon(
+          wheel ? Icons.keyboard : Icons.expand_circle_down_outlined,
+          size: 22,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+/// Das Wiederholungsfeld — **Rad oder Tastatur**.
 ///
 /// ## Warum nicht nur ein Rad
 ///
@@ -772,20 +945,19 @@ class _Target extends StatelessWidget {
 /// Der häufigste Fall ist eine einzelne Zahl, und die über eine Tastatur
 /// einzugeben ist für sechs Einträge sechsmal Tastatur auf und zu. Das Rad
 /// bedient diesen Fall schnell; die Tastatur bleibt für alles andere.
-///
-/// Umgeschaltet wird sichtbar, mit einem Satz daneben, der sagt warum. Ein
-/// stilles Rad, das „max" nicht annimmt, wäre eine Falle.
 class _RepsField extends StatefulWidget {
   const _RepsField({
     required this.controller,
     required this.label,
     required this.onChanged,
+    required this.wheel,
     this.hint,
   });
 
   final TextEditingController controller;
   final String label;
   final VoidCallback onChanged;
+  final bool wheel;
   final String? hint;
 
   @override
@@ -793,26 +965,28 @@ class _RepsField extends StatefulWidget {
 }
 
 class _RepsFieldState extends State<_RepsField> {
-  /// Das Rad nur, wenn der Wert eine reine Zahl ist — sonst zerstörte das
-  /// Umschalten den Wert beim ersten Dreh.
-  late bool _wheel = int.tryParse(widget.controller.text.trim()) != null;
-
   static const _min = 1;
   static const _max = 50;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
     final numeric = int.tryParse(widget.controller.text.trim());
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (_wheel && numeric != null)
-          SizedBox(
-            height: 76,
+    if (widget.wheel && numeric != null) {
+      return Semantics(
+        label: widget.label,
+        value: widget.controller.text,
+        slider: true,
+        child: ExcludeSemantics(
+          child: Container(
+            height: 56,
+            decoration: BoxDecoration(
+              color: AtemColors.surfaceSolid,
+              borderRadius: BorderRadius.circular(AtemRadii.statBox),
+              border: Border.all(color: AtemColors.border),
+            ),
             child: ListWheelScrollView.useDelegate(
-              itemExtent: 34,
+              itemExtent: 28,
               perspective: 0.004,
               physics: const FixedExtentScrollPhysics(),
               controller: FixedExtentScrollController(
@@ -832,47 +1006,20 @@ class _RepsFieldState extends State<_RepsField> {
                 ),
               ),
             ),
-          )
-        else
-          AtemTextField(
-            controller: widget.controller,
-            semanticLabel: widget.label,
-            hint: widget.hint,
-            textCapitalization: TextCapitalization.none,
-            onChanged: (_) {
-              setState(() {});
-              widget.onChanged();
-            },
-          ),
-        const SizedBox(height: 6),
-        AtemTappable(
-          onTap: () => setState(() => _wheel = !_wheel),
-          semanticLabel: _wheel ? l10n.repsKeyboard : l10n.repsWheel,
-          minTapSize: const Size(0, 44),
-          alignment: Alignment.centerLeft,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                _wheel ? Icons.keyboard : Icons.filter_list,
-                size: 15,
-                color: AtemColors.cyan,
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  _wheel ? l10n.repsKeyboard : l10n.repsWheel,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AtemType.labelMicro
-                      .of(context)
-                      .copyWith(color: AtemColors.cyan, letterSpacing: 0),
-                ),
-              ),
-            ],
           ),
         ),
-      ],
+      );
+    }
+
+    return AtemTextField(
+      controller: widget.controller,
+      semanticLabel: widget.label,
+      hint: widget.hint,
+      textCapitalization: TextCapitalization.none,
+      onChanged: (_) {
+        setState(() {});
+        widget.onChanged();
+      },
     );
   }
 }

@@ -593,34 +593,39 @@ class _StatTile extends StatelessWidget {
         child: CustomPaint(
           foregroundPainter: missing ? _DashedFrame() : null,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
             decoration: BoxDecoration(
               color: missing ? AtemColors.surfaceSolid : AtemColors.surfaceRaised,
               borderRadius: AtemRadii.statBoxR,
               border: missing ? null : Border.all(color: AtemColors.border),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // Mittig, weil drei gleich breite Kästen nebeneinander stehen:
+              // linksbündige Zahlen unterschiedlicher Länge lesen sich als
+              // schiefe Reihe (Board 06, A3).
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  value ?? l10n.intensityNoneValue,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AtemType.valueMedium.of(context).copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: missing
-                            ? AtemColors.textSecondary
-                            : (label == l10n.detailLoad
-                                ? AtemColors.cyan
-                                : AtemColors.textPrimary),
-                      ),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    value ?? l10n.intensityNoneValue,
+                    maxLines: 1,
+                    style: AtemType.valueLarge.of(context).copyWith(
+                          fontSize: 22,
+                          color: missing
+                              ? AtemColors.textSecondary
+                              : (label == l10n.detailLoad
+                                  ? AtemColors.cyan
+                                  : AtemColors.textPrimary),
+                        ),
+                  ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 5),
                 Text(label.toUpperCase(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                     style: AtemType.labelMicro.of(context)),
               ],
             ),
@@ -656,9 +661,12 @@ class _DashedFrame extends CustomPainter {
   bool shouldRepaint(_DashedFrame old) => false;
 }
 
-/// Eine Übung der Einheit — **Punkt im Muskelton, Name, Schema rechts**
-/// (Board 09, Spezifikation „Übungszeile im Einheitendetail": min-H 48 dp,
-/// Punkt 8 dp, Text weiss; das Schema in Cyan-Mono ist ein Messwert).
+/// Eine Übung der Einheit — **Kachel, Name mit Muskel, Schema rechts**.
+///
+/// Board 06, A3/1: links eine 36-dp-Kachel mit den Initialen im Muskelton,
+/// daneben der Übungsname und darunter der Muskel in Mono-Versalien, rechts
+/// das Schema („4×8 · 60 kg"). Der Muskelname steht dabei, weil die Farbe
+/// allein für Farbenblinde keine Auskunft ist (Vertrag R6).
 ///
 /// Der Name kommt aus dem Übungsbestand — die Einheit selbst kennt nur die
 /// Kennung, und `archer_push_up` ist kein Name.
@@ -667,24 +675,31 @@ class _ExerciseRow extends ConsumerWidget {
 
   final LoggedExercise exercise;
 
+  static String _initials(String name) {
+    final words = name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+    final letters = words.map((w) => w[0]).take(2).join();
+    return (letters.isEmpty ? '·' : letters).toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final catalog = ref.watch(exercisesProvider).value ?? const <Exercise>[];
-    final entry =
-        catalog.where((e) => e.id == exercise.exerciseId).firstOrNull;
-    final name = entry == null ? exercise.exerciseId : exerciseName(context, entry);
-    final color = entry?.displayMuscles.firstOrNull?.color ?? AtemCategories.grey;
+    final entry = catalog.where((e) => e.id == exercise.exerciseId).firstOrNull;
+    final name =
+        entry == null ? exercise.exerciseId : exerciseName(context, entry);
+    final muscle = entry?.displayMuscles.firstOrNull;
+    final color = muscle?.color ?? AtemCategories.grey;
 
     final done = exercise.sets.where((s) => !s.isEmpty).toList();
     final reps = done.map((s) => s.reps).whereType<int>().toList();
     final weights = done.map((s) => s.weight).whereType<double>().toList();
     final holds = done.map((s) => s.holdSeconds).whereType<int>().toList();
-    // „4 × 8 · 60 kg": Satzzahl, Wiederholungen des ersten Satzes, das
+    // „4×8 · 60 kg": Satzzahl, Wiederholungen des ersten Satzes, das
     // schwerste Gewicht — die drei Zahlen, die eine Zeile tragen kann.
     final scheme = <String>[
       if (done.isNotEmpty)
-        reps.isNotEmpty ? '${done.length} × ${reps.first}' : '${done.length}',
+        reps.isNotEmpty ? '${done.length}×${reps.first}' : '${done.length}',
       if (weights.isNotEmpty)
         l10n.unitKilograms(_trim(weights.reduce((a, b) => a > b ? a : b))),
       if (holds.isNotEmpty && reps.isEmpty)
@@ -692,24 +707,54 @@ class _ExerciseRow extends ConsumerWidget {
     ].join(' · ');
 
     return Semantics(
-      label: [name, if (scheme.isNotEmpty) scheme].join(', '),
+      label: [
+        name,
+        if (muscle != null) muscle.label(l10n),
+        if (scheme.isNotEmpty) scheme,
+      ].join(', '),
       child: ExcludeSemantics(
         child: Container(
-          constraints: const BoxConstraints(minHeight: 48),
+          constraints: const BoxConstraints(minHeight: 56),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Row(
             children: [
               Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                width: 36,
+                height: 36,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AtemCategories.surface(color),
+                  borderRadius: BorderRadius.circular(AtemRadii.iconBox),
+                  border: Border.all(color: AtemCategories.border(color)),
+                ),
+                child: Text(
+                  _initials(name),
+                  style: AtemType.labelDeco.of(context).copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
+                      ),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AtemType.titleSmallOrDefault(context)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AtemType.titleSmallOrDefault(context)),
+                    if (muscle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(muscle.label(l10n).toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AtemType.labelMicro.of(context)),
+                    ],
+                  ],
+                ),
               ),
               if (scheme.isNotEmpty) ...[
                 const SizedBox(width: 10),
@@ -718,10 +763,9 @@ class _ExerciseRow extends ConsumerWidget {
                   child: Text(
                     scheme,
                     textAlign: TextAlign.end,
-                    style: AtemType.valueMedium.of(context).copyWith(
-                          fontSize: 13,
-                          color: AtemColors.cyan,
-                        ),
+                    style: AtemType.valueMedium
+                        .of(context)
+                        .copyWith(fontSize: 13),
                   ),
                 ),
               ],

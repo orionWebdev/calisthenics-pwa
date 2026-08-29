@@ -127,10 +127,7 @@ class SessionListScreen extends ConsumerWidget {
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AtemSpacing.screenPadding),
-                  sliver: SliverList.builder(
-                    itemCount: group.length - 1,
-                    itemBuilder: (context, i) => _entry(group[i + 1]),
-                  ),
+                  sliver: _blocks(group.skip(1)),
                 ),
               ],
             )
@@ -138,10 +135,7 @@ class SessionListScreen extends ConsumerWidget {
             SliverPadding(
               padding: const EdgeInsets.symmetric(
                   horizontal: AtemSpacing.screenPadding),
-              sliver: SliverList.builder(
-                itemCount: group.length,
-                itemBuilder: (context, i) => _entry(group[i]),
-              ),
+              sliver: _blocks(group),
             ),
         const SliverToBoxAdapter(child: SizedBox(height: 32)),
       ],
@@ -151,25 +145,44 @@ class SessionListScreen extends ConsumerWidget {
   static double _monthHeaderHeight(BuildContext context) =>
       MediaQuery.textScalerOf(context).scale(14) + 30;
 
-  Widget _entry(TimelineEntry entry) => switch (entry) {
-        MonthHeader() => const SizedBox.shrink(),
-        TimelineSession(
-          :final session,
-          :final ordinalOnDay,
-          :final load,
-          :final monthMaxLoad
-        ) =>
-          _Row(
-            session: session,
-            ordinal: ordinalOnDay,
-            load: load,
-            monthMax: monthMaxLoad,
-          ),
-        TimelineGap(:final days, :final from, :final to, :final isLongest) =>
-          _Gap(days: days, from: from, to: to, isLongest: isLongest),
-        TimelineEnd(:final first, :final daysAgo) =>
-          _End(first: first, daysAgo: daysAgo),
-      };
+  /// **Ein Container je Monat, nicht je Einheit** (Board 06, A2/1).
+  ///
+  /// Aufeinanderfolgende Einheiten werden zu einer Karte mit Haarlinien
+  /// zusammengefasst; eine Lücke unterbricht sie und steht als eigener
+  /// Streifen dazwischen. Vorher trug jede Zeile ihre eigene Karte — die
+  /// Liste zerfiel damit in gleich aussehende Kacheln, an denen der Monat
+  /// nicht mehr ablesbar war.
+  Widget _blocks(Iterable<TimelineEntry> entries) {
+    final blocks = <Widget>[];
+    var run = <TimelineSession>[];
+
+    void flush() {
+      if (run.isEmpty) return;
+      blocks.add(_SessionBlock(entries: run));
+      run = <TimelineSession>[];
+    }
+
+    for (final entry in entries) {
+      switch (entry) {
+        case TimelineSession():
+          run.add(entry);
+        case TimelineGap(:final days, :final from, :final to, :final isLongest):
+          flush();
+          blocks.add(_Gap(days: days, from: from, to: to, isLongest: isLongest));
+        case TimelineEnd(:final first, :final daysAgo):
+          flush();
+          blocks.add(_End(first: first, daysAgo: daysAgo));
+        case MonthHeader():
+          break;
+      }
+    }
+    flush();
+
+    return SliverList.builder(
+      itemCount: blocks.length,
+      itemBuilder: (context, i) => blocks[i],
+    );
+  }
 
   /// Der gewählte Zeitraum in Worten, für den leeren Filterzustand.
   static String _periodLabel(
@@ -215,9 +228,9 @@ class _KindRow extends ConsumerWidget {
           _KindChip(
             label: l10n.commonAll,
             selected: filter.kind == null,
-            onTap: () => ref.read(sessionFilterProvider.notifier).toggleKind(
-                  filter.kind ?? SessionKind.strength,
-                ),
+            // Nicht `toggleKind`: Auf „Alle" zu tippen, während „Alle" gilt,
+            // sprang vorher auf Kraft.
+            onTap: () => ref.read(sessionFilterProvider.notifier).clearKind(),
           ),
           for (final kind in SessionKind.values)
             if ((counts[kind] ?? 0) > 0) ...[
@@ -424,10 +437,9 @@ class _Row extends StatelessWidget {
     final share = monthMax <= 0 ? 0.0 : (load / monthMax).clamp(0.0, 1.0);
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 8, left: _followUp ? 10 : 0),
-      child: AtemCard.list(
-        padding: EdgeInsets.zero,
-        child: AtemTappable(
+      padding: EdgeInsets.only(left: _followUp ? 10 : 0),
+      child: Builder(
+        builder: (context) => AtemTappable(
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) => SessionDetailScreen(session: session),
@@ -445,7 +457,7 @@ class _Row extends StatelessWidget {
           minTapSize: const Size(0, 56),
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
               children: [
                 SizedBox(
@@ -535,6 +547,39 @@ class _Row extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Die Einheiten eines Monats in **einer** Karte, mit Haarlinien getrennt.
+class _SessionBlock extends StatelessWidget {
+  const _SessionBlock({required this.entries});
+
+  final List<TimelineSession> entries;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: AtemCard.list(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              for (var i = 0; i < entries.length; i++) ...[
+                if (i > 0)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Divider(
+                        height: 1, thickness: 1, color: AtemColors.border),
+                  ),
+                _Row(
+                  session: entries[i].session,
+                  ordinal: entries[i].ordinalOnDay,
+                  load: entries[i].load,
+                  monthMax: entries[i].monthMaxLoad,
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
 }
 
 /// Der Lückenstreifen.

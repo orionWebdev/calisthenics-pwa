@@ -36,11 +36,12 @@ void main() {
       (tester) async {
     await _pump(tester, const SettingsScreen());
 
-    expect(find.text('Training'), findsOneWidget);
-    expect(find.text('App'), findsOneWidget);
-    expect(find.text('Deine Daten'), findsOneWidget);
-    expect(find.text('Rechtliches'), findsOneWidget);
-    expect(find.text('Über die App'), findsOneWidget);
+    // Abschnittsköpfe stehen in Mono-Versalien (Board 08, A1).
+    expect(find.text('TRAINING'), findsOneWidget);
+    expect(find.text('APP'), findsOneWidget);
+    expect(find.text('DEINE DATEN'), findsOneWidget);
+    expect(find.text('RECHTLICHES'), findsOneWidget);
+    expect(find.text('ÜBER DIE APP'), findsOneWidget);
 
     // Aus den Vorlagen: 78 kg, Pausenzeit 90 — als Werte in den Zeilen
     // (Board 08: Zeile mit Wert, Sheet dahinter).

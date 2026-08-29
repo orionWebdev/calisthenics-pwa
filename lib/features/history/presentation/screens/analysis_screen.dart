@@ -326,17 +326,23 @@ class _Breakdown extends StatelessWidget {
       ),
     ];
 
-    return Column(
+    // **Die Zerlegung steht in einer eigenen Fläche**, so wie die Kurve
+    // darüber (Board 06, A4/1). Frei auf dem Grund gestellt las sie sich als
+    // Fortsetzung des Diagramms statt als eigene Aussage.
+    return AtemCard.list(
+      padding: const EdgeInsets.all(16),
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-              child: Text(l10n.analysisToday,
+              child: Text(l10n.analysisToday.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AtemType.labelMedium.of(context)),
+                  style: AtemType.labelMicro.of(context)),
             ),
             const SizedBox(width: 12),
             if (form.score case final score?)
@@ -378,23 +384,18 @@ class _Breakdown extends StatelessWidget {
             style: AtemType.labelSmall.of(context),
           ),
         ],
-        const SizedBox(height: 24),
+        const SizedBox(height: 18),
+        const Divider(height: 1, thickness: 1, color: AtemColors.border),
+        const SizedBox(height: 14),
         // Die Rechnung selbst, einmal in Worten. Ohne sie bleibt die Zerlegung
         // eine Zahlenreihe, deren Summe nicht aufgeht.
-        AtemCard.list(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l10n.analysisExplainTitle,
-                  style: AtemType.labelMedium.of(context)),
-              const SizedBox(height: 8),
-              Text(l10n.analysisExplainBody,
-                  style: AtemType.labelSmall.of(context)),
-            ],
-          ),
-        ),
+        Text(l10n.analysisExplainTitle.toUpperCase(),
+            style: AtemType.labelMicro.of(context)),
+        const SizedBox(height: 8),
+        Text(l10n.analysisExplainBody,
+            style: AtemType.labelSmall.of(context)),
       ],
+      ),
     );
   }
 }
@@ -445,20 +446,20 @@ class _Row extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(text,
-                    style: AtemType.labelMicro
+                    style: AtemType.valueMedium
                         .of(context)
-                        .copyWith(color: color, letterSpacing: 0)),
+                        .copyWith(fontSize: 13, color: color)),
               ],
             ),
             if (!negative) ...[
-              const SizedBox(height: 6),
+              const SizedBox(height: 7),
               AtemProgressBar.share(
                 value: fraction,
                 semanticLabel: '',
                 accent: color,
               ),
             ],
-            const SizedBox(height: 5),
+            const SizedBox(height: 6),
             Text(why, style: AtemType.labelMicro.of(context)),
           ],
         ),

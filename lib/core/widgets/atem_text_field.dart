@@ -66,7 +66,11 @@ class AtemTextField extends StatelessWidget {
   final bool autofocus;
   final bool enabled;
 
-  static const _minHeight = 48.0;
+  /// **56 dp, nicht 48.** 48 ist die Untergrenze fuer einen Finger, nicht
+  /// das Mass fuer ein Eingabefeld: Ein Feld, das genauso hoch ist wie
+  /// eine Zeile Text, sieht aus wie eine Zeile Text. Die Boards zeigen
+  /// durchgehend die hoehere Fassung (07_A2, 08_A2).
+  static const _minHeight = 56.0;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +112,7 @@ class AtemTextField extends StatelessWidget {
                   suffixIcon: trailing,
                   // Genug Platz, dass die Schrift bei 200 % nicht am Rand klebt.
                   contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 13),
+                      horizontal: 16, vertical: 16),
                   enabledBorder: _border(
                       hasError ? AtemColors.magenta : AtemColors.border),
                   disabledBorder: _border(AtemColors.border),

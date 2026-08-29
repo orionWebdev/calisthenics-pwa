@@ -23,7 +23,8 @@ class SettingsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ExcludeSemantics(
-            child: Text(title, style: AtemType.labelMedium.of(context)),
+            child: Text(title.toUpperCase(),
+                style: AtemType.labelMicro.of(context)),
           ),
           const SizedBox(height: 10),
           Semantics(
@@ -54,7 +55,12 @@ class SettingsRow extends StatelessWidget {
     this.semanticLabel,
     this.onLongPress,
     this.valueAccent = false,
+    this.quiet = false,
   });
+
+  /// Der Wert ist eine Auskunft, kein Messwert — „IN DER APP", „DATEN
+  /// BLEIBEN". Er bleibt gedämpft statt in Cyan.
+  final bool quiet;
 
   final String label;
   final VoidCallback onTap;
@@ -120,16 +126,21 @@ class SettingsRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
                   style: AtemType.valueMedium.of(context).copyWith(
-                        fontSize: 12,
-                        color: valueAccent
-                            ? AtemColors.cyan
-                            : AtemColors.textTertiary,
+                        fontSize: 13,
+                        // Werte stehen in Cyan — sie sind Messwerte, keine
+                        // Unterzeilen (Board 08, A1/1). Nur Auskünfte wie
+                        // „IN DER APP" bleiben gedämpft.
+                        color: quiet ? AtemColors.textTertiary : AtemColors.cyan,
                       ),
                 ),
               ),
             ],
             const SizedBox(width: 8),
-            Icon(Icons.chevron_right, size: 18, color: color),
+            // Der Pfeil ist ein Wegweiser, kein Text: gedämpft, ausser er
+            // gehört zu einem zerstörenden Weg (Board 08, A1/2).
+            Icon(Icons.chevron_right,
+                size: 18,
+                color: accent ?? AtemColors.textSecondary),
           ],
         ),
       ),

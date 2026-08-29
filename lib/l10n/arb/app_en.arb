@@ -1884,6 +1884,11 @@
   "@exerciseLevel5": {
     "description": "exercise.level.5"
   },
+  "exerciseLevel1Short": "ENTRY",
+  "exerciseLevel2Short": "EASY",
+  "exerciseLevel3Short": "MED.",
+  "exerciseLevel4Short": "ADV.",
+  "exerciseLevel5Short": "EXP.",
   "exerciseLevelHint": "Saved as a number, 1–5.",
   "@exerciseLevelHint": {
     "description": "exercise.level.hint"

@@ -1544,6 +1544,21 @@ class AppL10nEn extends AppL10n {
   String get exerciseLevel5 => 'Expert';
 
   @override
+  String get exerciseLevel1Short => 'ENTRY';
+
+  @override
+  String get exerciseLevel2Short => 'EASY';
+
+  @override
+  String get exerciseLevel3Short => 'MED.';
+
+  @override
+  String get exerciseLevel4Short => 'ADV.';
+
+  @override
+  String get exerciseLevel5Short => 'EXP.';
+
+  @override
   String get exerciseLevelHint => 'Saved as a number, 1–5.';
 
   @override

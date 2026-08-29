@@ -244,13 +244,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       .read(settingsControllerProvider.notifier)
                       .update(settings.copyWith(hapticsEnabled: value)),
                 ),
-                const _Rule(),
-                SettingsRow(
-                  label: l10n.onboardingRepeat,
-                  hint: l10n.onboardingRepeatSub,
-                  value: l10n.onboardingRepeatAction,
-                  onTap: user == null ? () {} : () => _repeatOnboarding(user),
-                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -265,12 +258,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   onTap: _openExport,
                 ),
                 const _Rule(),
-                // „Daten bleiben", damit Abmelden und Löschen nie
-                // verwechselt werden (Board 08, A1/2).
+                // Steht bei den Daten, nicht bei den Vorlieben: Es zeigt die
+                // vier Einführungsseiten noch einmal (Board 08, A1/2).
                 SettingsRow(
-                  label: l10n.settingsSignOut,
-                  hint: l10n.signoutKeep,
-                  onTap: _confirmSignOut,
+                  label: l10n.onboardingRepeat,
+                  hint: l10n.onboardingRepeatSub,
+                  onTap: user == null ? () {} : () => _repeatOnboarding(user),
                 ),
               ],
             ),
@@ -289,6 +282,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   SettingsRow(
                     label: label,
                     value: l10n.legalInapp,
+                    quiet: true,
                     semanticLabel: '$label, ${l10n.legalInapp}',
                     onTap: () => _openLegal(url),
                     onLongPress: () => _openLegal(url, external: true),
@@ -322,9 +316,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 26),
 
-            // **Eigene Karte, ganz unten.** Der einzige Weg, der Jahre
-            // vernichtet, steht nicht zwischen Vorlieben.
-            _DangerCard(onTap: _confirmDelete),
+            // **Eigene Karte, ganz unten.** Abmelden und Löschen stehen
+            // zusammen — beides verlässt das Konto, und nur nebeneinander
+            // ist sichtbar, dass das eine die Daten behält und das andere
+            // nicht (Board 08, A1/2). Der zerstörende Weg steht unten.
+            _AccountCard(
+              onSignOut: _confirmSignOut,
+              onDelete: _confirmDelete,
+            ),
           ],
         ),
       ),
@@ -816,8 +815,39 @@ class _ProfileHeader extends StatelessWidget {
 }
 
 /// Der einzige Weg, der Jahre vernichtet — **für sich, ganz unten**.
-class _DangerCard extends StatelessWidget {
-  const _DangerCard({required this.onTap});
+class _AccountCard extends StatelessWidget {
+  const _AccountCard({required this.onSignOut, required this.onDelete});
+
+  final VoidCallback onSignOut;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return AtemCard.list(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // „Daten bleiben", damit Abmelden und Löschen nie verwechselt
+          // werden (Board 08, A1/2).
+          SettingsRow(
+            label: l10n.settingsSignOut,
+            value: l10n.signoutKeep,
+            quiet: true,
+            onTap: onSignOut,
+          ),
+          const _Rule(),
+          _DangerRow(onTap: onDelete),
+        ],
+      ),
+    );
+  }
+}
+
+class _DangerRow extends StatelessWidget {
+  const _DangerRow({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -830,13 +860,8 @@ class _DangerCard extends StatelessWidget {
       semanticLabel: '${l10n.accountDelete}. ${l10n.accountDeleteSub}',
       minTapSize: const Size(0, 56),
       alignment: Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AtemColors.card,
-          borderRadius: BorderRadius.circular(AtemRadii.card),
-          border: Border.all(color: AtemColors.border),
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
             Expanded(

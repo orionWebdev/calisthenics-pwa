@@ -2593,6 +2593,36 @@ abstract class AppL10n {
   /// **'Experte'**
   String get exerciseLevel5;
 
+  /// Kurzform der Stufe 1 fuer die Auswahlreihe
+  ///
+  /// In de, this message translates to:
+  /// **'EINST.'**
+  String get exerciseLevel1Short;
+
+  /// Kurzform der Stufe 2 fuer die Auswahlreihe
+  ///
+  /// In de, this message translates to:
+  /// **'LEICHT'**
+  String get exerciseLevel2Short;
+
+  /// Kurzform der Stufe 3 fuer die Auswahlreihe
+  ///
+  /// In de, this message translates to:
+  /// **'MITTEL'**
+  String get exerciseLevel3Short;
+
+  /// Kurzform der Stufe 4 fuer die Auswahlreihe
+  ///
+  /// In de, this message translates to:
+  /// **'FORTG.'**
+  String get exerciseLevel4Short;
+
+  /// Kurzform der Stufe 5 fuer die Auswahlreihe
+  ///
+  /// In de, this message translates to:
+  /// **'EXP.'**
+  String get exerciseLevel5Short;
+
   /// exercise.level.hint
   ///
   /// In de, this message translates to:

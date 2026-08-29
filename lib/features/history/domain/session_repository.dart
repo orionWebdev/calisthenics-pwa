@@ -29,12 +29,18 @@ abstract interface class SessionRepository {
   /// brauchen.
   Future<List<TrainingSession>> fetchSessions(String userId);
 
-  /// Stammt der zuletzt gelieferte Stand aus dem lokalen Zwischenspeicher?
+  /// Ob der Stand gerade aus dem lokalen Zwischenspeicher kommt.
   ///
   /// Die Oberfläche zeigt daraufhin „Offline — Änderungen werden lokal
   /// gespeichert". Bewusst kein eigener Netzwerkzustand: Was zählt, ist nicht
   /// ob ein Netz da ist, sondern ob Geschriebenes ankommt.
-  bool get isFromCache;
+  ///
+  /// **Ein Strom, kein Feld.** Als Feld stand der Wert auf dem Stand der
+  /// letzten Datenänderung fest — und weil Firestore eine reine
+  /// Metadaten-Änderung nicht als Ereignis meldet, blieb „offline" für immer
+  /// stehen, sobald der erste Stand aus dem Zwischenspeicher kam. Der Strom
+  /// hört ausdrücklich auf Metadaten-Änderungen.
+  Stream<bool> watchFromCache(String userId);
 
   /// Schreibt eine abgeschlossene Einheit und liefert ihre Dokument-ID.
   ///

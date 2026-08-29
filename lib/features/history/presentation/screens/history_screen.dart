@@ -127,11 +127,17 @@ class HistoryScreen extends ConsumerWidget {
             const SizedBox(width: 12),
             Flexible(
               child: AtemTappable(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const SessionListScreen(),
-                  ),
-                ),
+                // **„Alle" heisst alle.** Ohne das Zurücksetzen öffnete die
+                // Liste mit dem Zeitraum, den ein früherer Tap auf den
+                // Monatsstreifen gesetzt hatte — und stand leer da.
+                onTap: () {
+                  ref.read(sessionFilterProvider.notifier).clear();
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SessionListScreen(),
+                    ),
+                  );
+                },
                 semanticLabel: l10n.historyAll(summary.sessions),
                 alignment: Alignment.centerRight,
                 child: Text(

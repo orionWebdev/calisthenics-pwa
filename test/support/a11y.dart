@@ -101,7 +101,7 @@ class FakeSessionRepository implements SessionRepository {
   Future<String> saveSession(SessionDraft draft) async => 'neu';
 
   @override
-  bool get isFromCache => false;
+  Stream<bool> watchFromCache(String userId) => Stream.value(false);
 
   /// Was geschrieben wurde — die Attrappen protokollieren, statt zu schweigen.
   /// Ein Test, der nur prüft, dass nichts abstürzt, prüft zu wenig.
