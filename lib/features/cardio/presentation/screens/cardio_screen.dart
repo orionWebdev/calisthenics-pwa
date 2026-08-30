@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -875,17 +877,22 @@ class _MiniStrip extends StatelessWidget {
             for (var i = 0; i < weeks.length; i++) ...[
               if (i > 0) const SizedBox(width: 4),
               Expanded(
-                child: Container(
-                  height: weeks[i].isEmpty || max <= 0
-                      ? 2
-                      : 6 + 16 * (weeks[i].km / max).clamp(0.0, 1.0),
-                  decoration: BoxDecoration(
-                    color: weeks[i].isCurrent
-                        ? AtemColors.cyan
-                        : (weeks[i].isEmpty
-                            ? AtemColors.border
-                            : AtemColors.surfaceRaised),
-                    borderRadius: BorderRadius.circular(AtemRadii.pill),
+                child: AtemReveal(
+                  delay: Duration(milliseconds: 40 * i),
+                  builder: (context, t) => Container(
+                    height: weeks[i].isEmpty || max <= 0
+                        ? 2
+                        : math.max(
+                            2.0,
+                            (6 + 16 * (weeks[i].km / max).clamp(0.0, 1.0)) * t),
+                    decoration: BoxDecoration(
+                      color: weeks[i].isCurrent
+                          ? AtemColors.cyan
+                          : (weeks[i].isEmpty
+                              ? AtemColors.border
+                              : AtemColors.surfaceRaised),
+                      borderRadius: BorderRadius.circular(AtemRadii.pill),
+                    ),
                   ),
                 ),
               ),

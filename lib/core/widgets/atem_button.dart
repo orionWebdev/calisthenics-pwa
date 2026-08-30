@@ -163,7 +163,13 @@ class AtemButton extends StatelessWidget {
       ],
     );
 
-    final decorated = Container(
+    // **Gedrückt heisst leuchten.** Die Bewegungstabelle nennt für den
+    // Druckzustand „scale 0,97 + Akzent-Glow, 200 ms"; die Skalierung sass in
+    // `AtemTappable`, der Glow fehlte. Er kommt aus dem Akzent des Knopfes,
+    // nicht aus einer festen Farbe — ein löschender Knopf glüht magenta.
+    Widget decoratedWith(bool pressed) => AnimatedContainer(
+      duration: AtemMotion.duration(context, AtemMotion.fast),
+      curve: AtemMotion.curve,
       // Untergrenze statt fester Höhe: bei großer Schrift wächst der Button.
       constraints: BoxConstraints(minHeight: size.height),
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
@@ -185,9 +191,14 @@ class AtemButton extends StatelessWidget {
                     _enabled ? tint.withValues(alpha: 0.6) : AtemColors.border,
               )
             : null,
-        boxShadow: _enabled && glow != null
-            ? AtemGlow.soft(glow!, opacity: 0.35)
-            : null,
+        boxShadow: !_enabled
+            ? null
+            : pressed
+                ? AtemGlow.soft(
+                    _variant == _Variant.gradient ? AtemColors.magenta : tint,
+                    opacity: 0.55,
+                  )
+                : (glow != null ? AtemGlow.soft(glow!, opacity: 0.35) : null),
       ),
       child: content,
     );
@@ -198,10 +209,14 @@ class AtemButton extends StatelessWidget {
       semanticHint: semanticHint,
       haptic: haptic,
       minTapSize: Size(0, size.height),
+      pressBuilder: (context, pressed) {
+        final decorated = decoratedWith(pressed);
+        return expand
+            ? SizedBox(width: double.infinity, child: decorated)
+            : decorated;
+      },
       alignment: Alignment.center,
-      child: expand
-          ? SizedBox(width: double.infinity, child: decorated)
-          : decorated,
+      child: const SizedBox.shrink(),
     );
   }
 }

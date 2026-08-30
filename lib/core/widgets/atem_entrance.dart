@@ -130,3 +130,108 @@ List<Widget> atemEntranceList(List<Widget> children, {int from = 0}) => [
       for (var i = 0; i < children.length; i++)
         AtemEntrance(index: from + i, child: children[i]),
     ];
+
+/// Ein Fortschritt von 0 auf 1, einmal beim ersten Bauen.
+///
+/// Für Diagramme: Der Balken wächst aus der Grundlinie, die Kurve zeichnet
+/// sich von links nach rechts. Das ist keine Zierde — es sagt, in welcher
+/// Richtung die Achse läuft, bevor man die Beschriftung gelesen hat.
+///
+/// Wie [AtemEntrance] läuft es **einmal**. Ein Diagramm, das sich bei jeder
+/// Datenänderung neu aufbaut, verdeckt genau die Änderung, die es zeigen soll.
+class AtemReveal extends StatefulWidget {
+  const AtemReveal({
+    super.key,
+    required this.builder,
+    this.duration = const Duration(milliseconds: 620),
+    this.delay = Duration.zero,
+  });
+
+  /// Bekommt den Fortschritt 0..1.
+  final Widget Function(BuildContext context, double t) builder;
+
+  final Duration duration;
+  final Duration delay;
+
+  @override
+  State<AtemReveal> createState() => _AtemRevealState();
+}
+
+class _AtemRevealState extends State<AtemReveal>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: widget.duration);
+
+  late final Animation<double> _t =
+      CurvedAnimation(parent: _c, curve: AtemMotion.curve);
+
+  bool _started = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+
+    if (AtemMotion.reduced(context)) {
+      _c.value = 1;
+      return;
+    }
+    if (widget.delay == Duration.zero) {
+      _c.forward();
+    } else {
+      Future<void>.delayed(widget.delay, () {
+        if (mounted) _c.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: _t,
+        builder: (context, _) => widget.builder(context, _t.value),
+      );
+}
+
+/// Zeichnet seinen Inhalt einmal von links nach rechts frei.
+///
+/// Für Diagramme mit einer Zeitachse: Die Kurve erscheint in der Richtung, in
+/// der die Zeit läuft. Ein Diagramm, das komplett dasteht, muss man erst
+/// lesen, um zu wissen, wo es anfängt.
+class AtemSweep extends StatelessWidget {
+  const AtemSweep({
+    super.key,
+    required this.child,
+    this.duration = const Duration(milliseconds: 700),
+  });
+
+  final Widget child;
+  final Duration duration;
+
+  @override
+  Widget build(BuildContext context) => AtemReveal(
+        duration: duration,
+        builder: (context, t) => ClipRect(
+          clipper: _SweepClipper(t),
+          child: child,
+        ),
+      );
+}
+
+class _SweepClipper extends CustomClipper<Rect> {
+  const _SweepClipper(this.t);
+
+  final double t;
+
+  @override
+  Rect getClip(Size size) => Rect.fromLTWH(0, 0, size.width * t, size.height);
+
+  @override
+  bool shouldReclip(_SweepClipper old) => old.t != t;
+}

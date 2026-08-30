@@ -89,9 +89,15 @@ class AtemTappable extends StatefulWidget {
     this.haptic = AtemHaptic.none,
     this.excludeChildSemantics = true,
     this.onLongPress,
+    this.pressBuilder,
   });
 
   final Widget child;
+
+  /// Baut das Kind mit dem Druckzustand — für Flächen, die im gedrückten
+  /// Zustand mehr tun als kleiner zu werden (Knöpfe glühen dann in ihrem
+  /// Akzent). Ist er gesetzt, wird [child] nicht verwendet.
+  final Widget Function(BuildContext context, bool pressed)? pressBuilder;
 
   /// `null` bedeutet deaktiviert — das meldet auch Semantics.
   final VoidCallback? onTap;
@@ -144,7 +150,7 @@ class _AtemTappableState extends State<AtemTappable> {
 
   @override
   Widget build(BuildContext context) {
-    Widget visual = widget.child;
+    Widget visual = widget.pressBuilder?.call(context, _pressed) ?? widget.child;
     if (widget.excludeChildSemantics) {
       visual = ExcludeSemantics(child: visual);
     }

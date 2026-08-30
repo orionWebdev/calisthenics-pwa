@@ -37,8 +37,13 @@ void main() {
       expect(AtemType.valueMedium.base.fontSize, 16.0);
       // Bewusst 14, nicht 12 — sonst kippt die CTA-Hierarchie.
       expect(AtemType.labelMedium.base.fontSize, 14.0);
-      expect(AtemType.labelSmall.base.fontSize, 12.0);
+      // 13, nicht 12: Diese Rolle trägt die erklärenden Sätze und wird
+      // gelesen, nicht überflogen.
+      expect(AtemType.labelSmall.base.fontSize, 13.0);
       expect(AtemType.labelMicro.base.fontSize, 12.0);
+      // Fliesstext in der Systemschrift, 15 sp.
+      expect(AtemType.body.base.fontSize, 15.0);
+      expect(AtemType.body.base.fontFamily, isNull);
     });
   });
 

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/atem_entrance.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../domain/pace_series.dart';
@@ -50,7 +51,9 @@ class PaceChart extends StatelessWidget {
           children: [
             SizedBox(
               height: height + _rug + 6,
-              child: CustomPaint(painter: _Painter(series: series)),
+              child: AtemSweep(
+                child: CustomPaint(painter: _Painter(series: series)),
+              ),
             ),
             const SizedBox(height: 6),
             Row(

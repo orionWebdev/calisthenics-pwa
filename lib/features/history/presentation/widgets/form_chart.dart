@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/atem_entrance.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../domain/form_series.dart';
 import '../session_ui.dart';
@@ -114,14 +115,18 @@ class _FormChartState extends State<FormChart> {
                   child: SizedBox(
                     height: 168,
                     width: double.infinity,
-                    child: CustomPaint(
-                      painter: _ChartPainter(
-                        series: widget.series,
-                        cursor: _cursor == null ? null : index,
-                        labelCount: labels,
-                        labelFor: (date) => DateFormat.MMM(languageTag(context))
-                            .format(date)
-                            .toUpperCase(),
+                    // Die Kurve zeichnet sich in Richtung der Zeitachse.
+                    child: AtemSweep(
+                      child: CustomPaint(
+                        painter: _ChartPainter(
+                          series: widget.series,
+                          cursor: _cursor == null ? null : index,
+                          labelCount: labels,
+                          labelFor: (date) =>
+                              DateFormat.MMM(languageTag(context))
+                                  .format(date)
+                                  .toUpperCase(),
+                        ),
                       ),
                     ),
                   ),

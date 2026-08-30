@@ -56,6 +56,34 @@ abstract final class AtemType {
         letterSpacing: size * tracking,
       );
 
+  /// Fliesstext in der **Systemschrift** — auf Android also Roboto.
+  ///
+  /// ## Warum nicht Poppins
+  ///
+  /// Poppins ist geometrisch: kreisrunde Punzen, offene Formen, kaum
+  /// Unterscheidung zwischen `l`, `I` und `1`. Als Überschrift ist das ihr
+  /// Charakter; bei 14 sp Fliesstext auf einem Telefon ist es eine Hürde. Sie
+  /// war nie als Lesetext gedacht — die Design-Referenz nennt sie „UI".
+  ///
+  /// Die Systemschrift kostet keine Bytes, ist auf jedem Gerät da und für
+  /// genau diese Grösse gezeichnet. Sie bekommt bewusst **keine eigene
+  /// Familie im Vorrat**: Eine dritte Schriftdatei wäre eine dritte Stimme,
+  /// und die App hat schon zwei.
+  ///
+  /// Überschriften, Knöpfe und Labels bleiben Poppins, Messwerte bleiben Mono.
+  static TextStyle _text(
+    double size,
+    FontWeight weight, {
+    Color color = AtemColors.textPrimary,
+    double? height,
+  }) =>
+      TextStyle(
+        fontSize: size,
+        fontWeight: weight,
+        color: color,
+        height: height,
+      );
+
   static TextStyle _mono(
     double size,
     FontWeight weight, {
@@ -110,20 +138,30 @@ abstract final class AtemType {
     trackingEm: 0.10,
   );
 
-  /// 12 sp · Badges, Unterzeilen, Statuszeilen, Historie.
+  /// 13 sp · Badges, Unterzeilen, Statuszeilen, Historie.
+  ///
+  /// **Systemschrift, nicht Poppins**, und 13 statt 12: Diese Rolle trägt die
+  /// erklärenden Sätze unter jeder Überschrift — sie wird gelesen, nicht
+  /// überflogen.
   static final labelSmall = AtemTextRole(
-    _poppins(12, FontWeight.w500,
-        color: AtemColors.textTertiary, tracking: 0.01),
-    trackingEm: 0.01,
+    _text(13, FontWeight.w400,
+        color: AtemColors.textTertiary, height: 1.4),
   );
 
   /// 12 sp · Sektionslabels, Navigation, Tabellenköpfe, Stat-Beschriftung.
   ///
   /// Der HUD-Träger. Gewicht 500 statt 700: Bei 8,5 sp brauchte das Label Fett,
   /// um überhaupt zu existieren — bei 12 sp macht Fett es zur Überschrift.
+  ///
+  /// **Die Farbe ist `textTertiary`, nicht `textSecondary`.** Diese Rolle
+  /// trägt inzwischen nicht mehr nur Sektionsköpfe, sondern die Metazeile
+  /// unter fast jedem Titel — „KRAFT · 49 MIN", „6 ÜBUNGEN · 18 SÄTZE". In
+  /// #94A3B8 gesperrt und in Mono war das auf einem Telefon mühsam.
+  /// #94A3B8 bleibt die dunkelste erlaubte Textfarbe; sie wird nur nicht mehr
+  /// für Text verwendet, den man tatsächlich liest.
   static final labelMicro = AtemTextRole(
     _mono(12, FontWeight.w500,
-        color: AtemColors.textSecondary, tracking: 0.16, tabular: false),
+        color: AtemColors.textTertiary, tracking: 0.16, tabular: false),
     trackingEm: 0.16,
   );
 
@@ -139,8 +177,14 @@ abstract final class AtemType {
   );
 
   /// Fließtext. Nicht Teil der acht HUD-Rollen, aber gebraucht.
+  ///
+  /// 15 sp Systemschrift in `textTertiary`. Vorher 14 sp Poppins in
+  /// `textSecondary` — die dunkelste erlaubte Farbe in der Schrift mit den
+  /// rundesten Formen, bei der kleinsten Lesegrösse. Drei Entscheidungen, die
+  /// einzeln vertretbar waren und zusammen einen Absatz ergaben, den man
+  /// anstrengt zu lesen.
   static final body = AtemTextRole(
-    _poppins(14, FontWeight.w400, color: AtemColors.textSecondary, height: 1.5),
+    _text(15, FontWeight.w400, color: AtemColors.textTertiary, height: 1.5),
   );
 
   /// Kartentitel in einer Kachel — etwas kleiner als [titleMedium].

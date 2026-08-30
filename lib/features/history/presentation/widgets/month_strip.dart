@@ -104,9 +104,9 @@ class MonthStrip extends StatelessWidget {
                                   months[i].count),
                               minTapSize: Size(0, stripHeight),
                               alignment: Alignment.bottomCenter,
-                              child: _Bar(month: months[i], peak: peak),
+                              child: _Bar(month: months[i], peak: peak, index: i),
                             )
-                          : _Bar(month: months[i], peak: peak),
+                          : _Bar(month: months[i], peak: peak, index: i),
                     ),
                   ],
                 ],
@@ -157,7 +157,10 @@ class MonthStrip extends StatelessWidget {
 }
 
 class _Bar extends StatelessWidget {
-  const _Bar({required this.month, required this.peak});
+  const _Bar({required this.month, required this.peak, required this.index});
+
+  /// Position im Streifen — sie staffelt das Wachsen.
+  final int index;
 
   final MonthCount month;
   final int peak;
@@ -185,12 +188,17 @@ class _Bar extends StatelessWidget {
               ),
         ),
         const SizedBox(height: 3),
-        Container(
-          height: height,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: month.isEmpty ? AtemColors.border : AtemColors.cyan,
-            borderRadius: BorderRadius.circular(AtemRadii.pill),
+        // Der Balken wächst aus der Grundlinie — versetzt nach Monat, damit
+        // der Streifen von links nach rechts entsteht.
+        AtemReveal(
+          delay: Duration(milliseconds: 30 * index),
+          builder: (context, t) => Container(
+            height: month.isEmpty ? height : math.max(2.0, height * t),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: month.isEmpty ? AtemColors.border : AtemColors.cyan,
+              borderRadius: BorderRadius.circular(AtemRadii.pill),
+            ),
           ),
         ),
       ],
