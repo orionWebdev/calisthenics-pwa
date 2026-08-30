@@ -60,7 +60,14 @@ abstract final class StartSheet {
       primaryAction: AtemButton.gradient(
         label: l10n.sheetStart,
         semanticLabel: title,
-        onPressed: () => Navigator.of(context).pop(
+        // **`rootNavigator: true`, wie beim Abbrechen daneben.**
+        //
+        // Das Blatt liegt auf dem Wurzel-Navigator — sonst läge es unter der
+        // Navigationsleiste. `Navigator.of(context)` löst aber gegen den
+        // Navigator des Tabs auf, aus dem der Aufruf kam: Der Tap schloss
+        // damit nicht das Blatt, sondern versuchte den Tab-Stapel zu leeren.
+        // Ergebnis: Das Blatt blieb stehen und kein Training startete.
+        onPressed: () => Navigator.of(context, rootNavigator: true).pop(
           StartRequest(
             plan: plan,
             scheduleId: scheduleId,

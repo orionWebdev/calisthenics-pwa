@@ -105,7 +105,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         label: l10n.accountDeleteContinue,
         semanticLabel: l10n.accountDeleteContinue,
         accent: AtemColors.magenta,
-        onPressed: () => Navigator.of(context).pop(_DeleteChoice.proceed),
+        onPressed: () => Navigator.of(context, rootNavigator: true)
+            .pop(_DeleteChoice.proceed),
       ),
       // Der zweite Ausgang ist kein zweites Löschen, sondern die Alternative
       // dazu: erst sichern.
@@ -113,7 +114,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         label: l10n.accountDeleteExport,
         semanticLabel: l10n.accountDeleteExport,
         expand: true,
-        onPressed: () => Navigator.of(context).pop(_DeleteChoice.export),
+        onPressed: () => Navigator.of(context, rootNavigator: true)
+            .pop(_DeleteChoice.export),
       ),
     );
 
