@@ -54,6 +54,36 @@ abstract final class AtemColors {
   /// Warnstufe (zwischen green und magenta).
   static const amber = Color(0xFFFFB020);
 
+  // --- Tab-Töne -------------------------------------------------------------
+  //
+  // **Jeder Bereich hat einen Ton.** Er färbt sein Symbol in der Leiste und
+  // legt einen sehr schwachen Verlauf über den Bildschirmgrund — genug, damit
+  // man beim Umschalten merkt, dass man woanders ist, zu wenig, um mit den
+  // Datenfarben zu konkurrieren.
+  //
+  // Sie stehen hier und nicht verstreut in den Bildschirmen: „Nur die Tokens
+  // aus atem_theme.dart" heisst, dass neue Bedeutungen hier ankommen müssen.
+  //
+  // Drei der vier sind bestehende Töne. Nur `tabCardio` ist neu — im Vorrat
+  // gab es kein Blau ausser Cyan, und Cyan ist die Datenfarbe der ganzen App.
+
+  /// Hybrid — Lila. **Nicht `violet` und nicht `violetLight`:** Das tiefe
+  /// Violet trägt 2,8:1 gegen den Grund, `violetLight` 4,43:1 — beide reissen
+  /// AA für die Beschriftung daneben. Dieser Ton hält 5,9:1 auf `base` und
+  /// 5,3:1 auf `card`. Die Regel „Violet nur Fläche, nie Text" bleibt damit
+  /// unangetastet: Sie gilt weiter für `violet`, das hier nicht steht.
+  static const tabHybrid = Color(0xFFAB6BF0);
+
+  /// Kraft — Orange. Der vorhandene Warnton; er hat hier keine Warnbedeutung,
+  /// sondern ist schlicht der einzige Orangeton im Vorrat.
+  static const tabStrength = amber;
+
+  /// Cardio — Blau. Dunkler als Cyan, hell genug für 6,4:1 gegen `base`.
+  static const tabCardio = Color(0xFF4C8DFF);
+
+  /// Regeneration — Grün. Derselbe Ton, den Regeneration überall trägt.
+  static const tabRecovery = green;
+
   // --- Text -----------------------------------------------------------------
   static const textPrimary = Color(0xFFFFFFFF);
   static const textSecondary = Color(0xFF94A3B8);

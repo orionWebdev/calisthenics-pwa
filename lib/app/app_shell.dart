@@ -8,6 +8,7 @@ import '../features/cardio/presentation/screens/cardio_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
 import '../features/history/application/history_providers.dart';
 import '../features/hybrid/presentation/screens/hybrid_screen.dart';
+import '../features/recovery/presentation/screens/recovery_screen.dart';
 import '../features/plans/presentation/start_sheet.dart';
 import '../features/strength/presentation/screens/strength_screen.dart';
 import '../features/workout/domain/workout_start.dart';
@@ -147,7 +148,13 @@ class _AppShellState extends ConsumerState<AppShell>
                 )),
                 child: IndexedStack(
                   index: tab.index,
+                  // Die Reihenfolge folgt `AppTab` — Hybrid links.
                   children: [
+                    _TabNavigator(
+                      navigatorKey: _keys[AppTab.hybrid.index],
+                      observer: _observers[AppTab.hybrid.index],
+                      root: const HybridScreen(),
+                    ),
                     _TabNavigator(
                       navigatorKey: _keys[AppTab.strength.index],
                       observer: _observers[AppTab.strength.index],
@@ -159,9 +166,9 @@ class _AppShellState extends ConsumerState<AppShell>
                       root: const CardioScreen(),
                     ),
                     _TabNavigator(
-                      navigatorKey: _keys[AppTab.hybrid.index],
-                      observer: _observers[AppTab.hybrid.index],
-                      root: const HybridScreen(),
+                      navigatorKey: _keys[AppTab.recovery.index],
+                      observer: _observers[AppTab.recovery.index],
+                      root: const RecoveryScreen(),
                     ),
                   ],
                 ),

@@ -439,16 +439,21 @@ class _Row extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
+                  // Der Komponentenname ist die Überschrift seiner Zeile,
+                  // keine Unterzeile: 15 sp in Weiss (Board 06, A4/1).
                   child: Text(label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelSmall.of(context)),
+                      style: AtemType.titleMedium.of(context).copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          )),
                 ),
                 const SizedBox(width: 12),
                 Text(text,
                     style: AtemType.valueMedium
                         .of(context)
-                        .copyWith(fontSize: 13, color: color)),
+                        .copyWith(fontSize: 14, color: color)),
               ],
             ),
             if (!negative) ...[

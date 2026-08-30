@@ -222,7 +222,7 @@
   "@activityOther": {
     "description": "activity.other"
   },
-  "activityOwn": "Deine Aktivitäten · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "activityOwn": "Deine Aktivitäten · {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@activityOwn": {
     "description": "activity.own",
     "placeholders": {
@@ -353,7 +353,7 @@
   "@analysisLegendWithout": {
     "description": "Legende der Kurve — die Lücke"
   },
-  "analysisPaceBasis": "gegen eigenen Schnitt {value} · {n, plural, one{1 Lauf} other{# Läufe}}",
+  "analysisPaceBasis": "gegen eigenen Schnitt {value} · {n, plural, one{1 Lauf} other{{n} Läufe}}",
   "@analysisPaceBasis": {
     "description": "analysis.pace.basis",
     "placeholders": {
@@ -387,7 +387,7 @@
   "@analysisPaceTitle": {
     "description": "analysis.pace.title"
   },
-  "analysisPctFaster": "{n, plural, one{Schneller als 1 deiner Läufe} other{Schneller als # von {total} deiner Läufe}}",
+  "analysisPctFaster": "{n, plural, one{Schneller als 1 deiner Läufe} other{Schneller als {n} von {total} deiner Läufe}}",
   "@analysisPctFaster": {
     "description": "analysis.pct.faster",
     "placeholders": {
@@ -443,7 +443,7 @@
   "@analysisToday": {
     "description": "Überschrift der Zerlegung"
   },
-  "analysisWeeklyBasis": "Ø {value} km · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "analysisWeeklyBasis": "Ø {value} km · {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@analysisWeeklyBasis": {
     "description": "analysis.weekly.basis",
     "placeholders": {
@@ -487,7 +487,7 @@
   "@analysisWhyLoadRatio": {
     "description": "Begründung der Lastentwicklung"
   },
-  "analysisWhyPenalty": "{n, plural, other{# Tage ohne Training}}",
+  "analysisWhyPenalty": "{n, plural, other{{n} Tage ohne Training}}",
   "@analysisWhyPenalty": {
     "description": "Begründung des Abzugs",
     "placeholders": {
@@ -496,7 +496,7 @@
       }
     }
   },
-  "analysisWhyRecency": "{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor # Tagen}}",
+  "analysisWhyRecency": "{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor {n} Tagen}}",
   "@analysisWhyRecency": {
     "description": "Begründung der Aktualität",
     "placeholders": {
@@ -505,7 +505,7 @@
       }
     }
   },
-  "analysisWhyRecencyRecovery": "{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor # Tagen · Regeneration}}",
+  "analysisWhyRecencyRecovery": "{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor {n} Tagen · Regeneration}}",
   "@analysisWhyRecencyRecovery": {
     "description": "Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war",
     "placeholders": {
@@ -715,7 +715,7 @@
       }
     }
   },
-  "cardioWeekCount": "{n, plural, one{1 Einheit} other{# Einheiten}}",
+  "cardioWeekCount": "{n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@cardioWeekCount": {
     "description": "cardio.week.count",
     "placeholders": {
@@ -2094,7 +2094,7 @@
       }
     }
   },
-  "exerciseDeleteUsage": "Die Übung steckt in {p, plural, one {# Plan} other {# Plänen}} und {s, plural, one {# Einheit} other {# Einheiten}}.",
+  "exerciseDeleteUsage": "Die Übung steckt in {p, plural, one {{p} Plan} other {{p} Plänen}} und {s, plural, one {{s} Einheit} other {{s} Einheiten}}.",
   "@exerciseDeleteUsage": {
     "description": "exercise.delete.usage",
     "placeholders": {
@@ -2841,7 +2841,7 @@
       }
     }
   },
-  "historyLeadGap": "{n, plural, one {# Tag} other {# Tage}} ohne Training",
+  "historyLeadGap": "{n, plural, one {{n} Tag} other {{n} Tage}} ohne Training",
   "@historyLeadGap": {
     "description": "Der Satz der Aussage-Karte bei Pause und Untätigkeit",
     "placeholders": {
@@ -2967,7 +2967,7 @@
   "@intensityBelow": {
     "description": "intensity.below"
   },
-  "intensityFallbackNote": "Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Lauf} other{# Läufe}}.",
+  "intensityFallbackNote": "Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Lauf} other{{n} Läufe}}.",
   "@intensityFallbackNote": {
     "description": "intensity.fallback.note",
     "placeholders": {
@@ -3032,7 +3032,7 @@
       }
     }
   },
-  "lastNone": "{n, plural, one{Seit 1 Tag keine Einheit} other{Seit # Tagen keine Einheit}}",
+  "lastNone": "{n, plural, one{Seit 1 Tag keine Einheit} other{Seit {n} Tagen keine Einheit}}",
   "@lastNone": {
     "description": "last.none",
     "placeholders": {
@@ -3143,7 +3143,7 @@
   "@listFilterEmptyTitle": {
     "description": "list.filter.empty.title (Board 06)"
   },
-  "listGap": "{n, plural, one {# Tag} other {# Tage}} ohne Training",
+  "listGap": "{n, plural, one {{n} Tag} other {{n} Tage}} ohne Training",
   "@listGap": {
     "description": "Lückenstreifen zwischen zwei Einheiten",
     "placeholders": {
@@ -3465,7 +3465,7 @@
       }
     }
   },
-  "planBrokenNotice": "{n, plural, one {# Eintrag zeigt} other {# Einträge zeigen}} ins Leere.",
+  "planBrokenNotice": "{n, plural, one {{n} Eintrag zeigt} other {{n} Einträge zeigen}} ins Leere.",
   "@planBrokenNotice": {
     "description": "plan.broken.notice",
     "placeholders": {
@@ -3763,7 +3763,7 @@
   "@quickNoSessions": {
     "description": "Leerer Bestand"
   },
-  "ratioBasis": "Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "ratioBasis": "Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@ratioBasis": {
     "description": "ratio.basis",
     "placeholders": {
@@ -3812,7 +3812,7 @@
   "@recoveryAdd": {
     "description": "recovery.add"
   },
-  "recoveryGap": "{n, plural, one{Seit 1 Tag keine Regeneration} other{Seit # Tagen keine Regeneration}}",
+  "recoveryGap": "{n, plural, one{Seit 1 Tag keine Regeneration} other{Seit {n} Tagen keine Regeneration}}",
   "@recoveryGap": {
     "description": "recovery.gap",
     "placeholders": {
@@ -3863,6 +3863,22 @@
   "recoveryTitle": "Regeneration",
   "@recoveryTitle": {
     "description": "recovery.title"
+  },
+  "recoveryTabEmptyTitle": "Noch keine Regeneration",
+  "@recoveryTabEmptyTitle": {
+    "description": "Regenerations-Tab"
+  },
+  "recoveryTabEmptyBody": "Yoga, Sauna, Dehnen oder Mobility — sie bricht die Untätigkeit, ohne Last zu tragen.",
+  "@recoveryTabEmptyBody": {
+    "description": "Regenerations-Tab"
+  },
+  "recoveryTabKinds": "Nach Art",
+  "@recoveryTabKinds": {
+    "description": "Regenerations-Tab"
+  },
+  "recoveryTabAll": "Alle Einheiten",
+  "@recoveryTabAll": {
+    "description": "Regenerations-Tab"
   },
   "regionArms": "Arme",
   "@regionArms": {
@@ -3973,7 +3989,7 @@
   "@sessionDateAllowedTitle": {
     "description": "session.date.allowed.title"
   },
-  "sessionDatePrevious": "Vorher {date} · {n, plural, one {+# Tag} other {+# Tage}}",
+  "sessionDatePrevious": "Vorher {date} · {n, plural, one {+{n} Tag} other {+{n} Tage}}",
   "@sessionDatePrevious": {
     "description": "session.date.previous",
     "placeholders": {
@@ -4650,7 +4666,7 @@
   "@unitsTitle": {
     "description": "units.title"
   },
-  "unsavedBody": "Du hast {c, plural, one {# Eintrag} other {# Einträge}} geändert und {a} hinzugefügt.",
+  "unsavedBody": "Du hast {c, plural, one {{c} Eintrag} other {{c} Einträge}} geändert und {a} hinzugefügt.",
   "@unsavedBody": {
     "description": "unsaved.body",
     "placeholders": {
@@ -5901,7 +5917,7 @@
   "@workoutsTodayLabel": {
     "description": "Abschnittslabel über der Session-Karte"
   },
-  "analysisPaceBasisOther": "gegen eigenen Schnitt {value} · {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "analysisPaceBasisOther": "gegen eigenen Schnitt {value} · {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@analysisPaceBasisOther": {
     "description": "analysis.pace.basis (Board 11) — Fassung für alle Aktivitäten außer Laufen",
     "placeholders": {
@@ -5913,7 +5929,7 @@
       }
     }
   },
-  "analysisPctFasterOther": "{n, plural, one{Schneller als 1 deiner Einheiten} other{Schneller als # von {total} deiner Einheiten}}",
+  "analysisPctFasterOther": "{n, plural, one{Schneller als 1 deiner Einheiten} other{Schneller als {n} von {total} deiner Einheiten}}",
   "@analysisPctFasterOther": {
     "description": "analysis.pct.faster (Board 11) — Fassung für alle Aktivitäten außer Laufen",
     "placeholders": {
@@ -5925,7 +5941,7 @@
       }
     }
   },
-  "intensityFallbackNoteOther": "Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Einheit} other{# Einheiten}} derselben Aktivität.",
+  "intensityFallbackNoteOther": "Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Einheit} other{{n} Einheiten}} derselben Aktivität.",
   "@intensityFallbackNoteOther": {
     "description": "intensity.fallback.note (Board 11) — Fassung für alle Aktivitäten außer Laufen",
     "placeholders": {
@@ -5963,7 +5979,7 @@
       }
     }
   },
-  "intensityBasisPace": "Tempo gegen eigenen Schnitt aus {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "intensityBasisPace": "Tempo gegen eigenen Schnitt aus {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@intensityBasisPace": {
     "description": "Ergänzung zu Board 11 — Grundlage der Stufe 3 mit Nenner",
     "placeholders": {
@@ -6159,7 +6175,7 @@
   "@cardioAllSessions": {
     "description": "Ergänzung zu Board 11 — Listenkopf im dünnen Zustand (B1/1)"
   },
-  "cardioWeekA11y": "{km} Kilometer diese Woche, aus {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "cardioWeekA11y": "{km} Kilometer diese Woche, aus {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@cardioWeekA11y": {
     "description": "Ergänzung zu Board 11 — Vorlesetext der Wochenzahl (H)",
     "placeholders": {
@@ -6186,7 +6202,7 @@
       }
     }
   },
-  "cardioTotalA11y": "{km} Kilometer gesamt seit {date}, aus {n, plural, one{1 Einheit} other{# Einheiten}}",
+  "cardioTotalA11y": "{km} Kilometer gesamt seit {date}, aus {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@cardioTotalA11y": {
     "description": "Ergänzung zu Board 11 — Vorlesetext im dünnen Zustand",
     "placeholders": {
@@ -6201,7 +6217,7 @@
       }
     }
   },
-  "cardioActivityAverage": "{n, plural, one{1 Einheit} other{# Einheiten}} Ø {km} km",
+  "cardioActivityAverage": "{n, plural, one{1 Einheit} other{{n} Einheiten}} Ø {km} km",
   "@cardioActivityAverage": {
     "description": "Ergänzung zu Board 11 — „3 Läufe Ø 6,2 km\" (B1/1)",
     "placeholders": {
@@ -6217,7 +6233,7 @@
   "@ratioStrengthWeek": {
     "description": "Ergänzung zu Board 11 — Kraft-Wochenblock ohne Gegenspur (C1/2)"
   },
-  "ratioStrengthMeasure": "{t} t Volumen · {s, plural, one{1 Satz} other{# Sätze}}",
+  "ratioStrengthMeasure": "{t} t Volumen · {s, plural, one{1 Satz} other{{s} Sätze}}",
   "@ratioStrengthMeasure": {
     "description": "Ergänzung zu Board 11 — Fachgrösse Kraft",
     "placeholders": {
@@ -6229,7 +6245,7 @@
       }
     }
   },
-  "hybridWeekSummary": "{n, plural, one{1 Einheit} other{# Einheiten}} · {min} min",
+  "hybridWeekSummary": "{n, plural, one{1 Einheit} other{{n} Einheiten}} · {min} min",
   "@hybridWeekSummary": {
     "description": "Ergänzung zu Board 11 — „3 Einheiten · 128 min\"",
     "placeholders": {
@@ -6249,7 +6265,7 @@
   "@ratioOpenCardio": {
     "description": "Ergänzung zu Board 11 — Zielort im Label (H)"
   },
-  "ratioA11y": "Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{# Einheiten}}.",
+  "ratioA11y": "Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{{n} Einheiten}}.",
   "@ratioA11y": {
     "description": "Ergänzung zu Board 11 — Vorlesetext des Verhältnisbalkens (H)",
     "placeholders": {
@@ -6345,7 +6361,7 @@
       }
     }
   },
-  "cardioListCount": "{n, plural, one{1 Einheit} other{# Einheiten}}",
+  "cardioListCount": "{n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@cardioListCount": {
     "description": "Ergänzung zu Board 11 — Zahl in der Aktivitätskapsel",
     "placeholders": {
@@ -6417,7 +6433,7 @@
       }
     }
   },
-  "historyMonthOpenA11y": "{month}, {n, plural, one{1 Einheit} other{# Einheiten}}, öffnet die Liste",
+  "historyMonthOpenA11y": "{month}, {n, plural, one{1 Einheit} other{{n} Einheiten}}, öffnet die Liste",
   "@historyMonthOpenA11y": {
     "description": "Board 06 — Monatsbalken, 48-dp-Treffer (I/08)",
     "placeholders": {
@@ -6514,7 +6530,7 @@
       }
     }
   },
-  "analysisThinRange": "{n, plural, one{1 Einheit} other{# Einheiten}} {from}–{to}",
+  "analysisThinRange": "{n, plural, one{1 Einheit} other{{n} Einheiten}} {from}–{to}",
   "@analysisThinRange": {
     "description": "Board 06 — Was es schon gibt (A4/2)",
     "placeholders": {
@@ -6538,7 +6554,7 @@
       }
     }
   },
-  "analysisThinChain": "Längste Kette {n, plural, one{1 Tag} other{# Tage}}",
+  "analysisThinChain": "Längste Kette {n, plural, one{1 Tag} other{{n} Tage}}",
   "@analysisThinChain": {
     "description": "Board 06 — Was es schon gibt (A4/2)",
     "placeholders": {

@@ -23,6 +23,12 @@ const _textColors = <String, Color>{
   'cyan': AtemColors.cyan,
   'green': AtemColors.green,
   'amber': AtemColors.amber,
+  // Die vier Tab-Töne färben die Beschriftung in der Leiste mit — sie sind
+  // damit Textfarben und gehören in die Matrix.
+  'tabHybrid': AtemColors.tabHybrid,
+  'tabStrength': AtemColors.tabStrength,
+  'tabCardio': AtemColors.tabCardio,
+  'tabRecovery': AtemColors.tabRecovery,
 };
 
 /// Paare, die nur für großen Text zugelassen sind (≥ 18 sp, oder ≥ 14 sp fett).

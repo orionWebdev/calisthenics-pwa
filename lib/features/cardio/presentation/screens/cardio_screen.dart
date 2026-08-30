@@ -45,90 +45,95 @@ class CardioScreen extends ConsumerWidget {
     final cardio = ref.watch(cardioSessionsProvider);
     final live = ref.watch(cardioLiveProvider).value;
 
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TabHeader(
-              title: l10n.tabCardio,
-              count: cardio.length,
-              switcher: AtemTabSwitch<CardioSegment>(
-                groupSemanticLabel: l10n.tabCardio,
-                value: segment,
-                onChanged: (s) =>
-                    ref.read(appTabsProvider.notifier).setCardioSegment(s),
-                segments: [
-                  AtemTabSegment(
-                      value: CardioSegment.sessions, label: l10n.segSessions),
-                  AtemTabSegment(
-                      value: CardioSegment.analysis, label: l10n.segAnalysis),
-                ],
+    // Der Ton des Bereichs: er färbt das Symbol in der Leiste und
+    // legt einen sehr schwachen Verlauf über den Grund.
+    return AtemTabTheme(
+      tone: AtemColors.tabCardio,
+      child: Scaffold(
+        backgroundColor: AtemColors.base,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TabHeader(
+                title: l10n.tabCardio,
+                count: cardio.length,
+                switcher: AtemTabSwitch<CardioSegment>(
+                  groupSemanticLabel: l10n.tabCardio,
+                  value: segment,
+                  onChanged: (s) =>
+                      ref.read(appTabsProvider.notifier).setCardioSegment(s),
+                  segments: [
+                    AtemTabSegment(
+                        value: CardioSegment.sessions, label: l10n.segSessions),
+                    AtemTabSegment(
+                        value: CardioSegment.analysis, label: l10n.segAnalysis),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: async.when(
-                loading: () => Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AtemSpacing.screenPadding),
-                  child: AtemSkeleton(
-                    semanticLabel: l10n.commonLoading,
-                    blocks: const [
-                      // In Ergebnishöhe, damit die Liste beim Ankommen
-                      // nicht springt.
-                      AtemSkeletonBlock(height: 118),
-                      AtemSkeletonBlock(height: 64, radius: 14),
-                      AtemSkeletonBlock(height: 64, radius: 14),
-                      AtemSkeletonBlock(height: 64, radius: 14),
-                    ],
+              Expanded(
+                child: async.when(
+                  loading: () => Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AtemSpacing.screenPadding),
+                    child: AtemSkeleton(
+                      semanticLabel: l10n.commonLoading,
+                      blocks: const [
+                        // In Ergebnishöhe, damit die Liste beim Ankommen
+                        // nicht springt.
+                        AtemSkeletonBlock(height: 118),
+                        AtemSkeletonBlock(height: 64, radius: 14),
+                        AtemSkeletonBlock(height: 64, radius: 14),
+                        AtemSkeletonBlock(height: 64, radius: 14),
+                      ],
+                    ),
                   ),
-                ),
-                error: (_, __) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AtemSpacing.screenPadding),
-                  child: AtemErrorState(
-                    title: l10n.historyErrorTitle,
-                    body: l10n.historyErrorBody,
-                    retryLabel: l10n.commonRetry,
-                    onRetry: () => ref.invalidate(sessionStreamProvider),
+                  error: (_, __) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AtemSpacing.screenPadding),
+                    child: AtemErrorState(
+                      title: l10n.historyErrorTitle,
+                      body: l10n.historyErrorBody,
+                      retryLabel: l10n.commonRetry,
+                      onRetry: () => ref.invalidate(sessionStreamProvider),
+                    ),
                   ),
-                ),
-                data: (_) {
-                  if (cardio.isEmpty && live == null) {
-                    return _EmptyCardio(
-                      onLog: () => _openForm(context),
-                      onLive: () => _openLive(context),
-                    );
-                  }
-                  return Stack(
-                    children: [
-                      IndexedStack(
-                        index: segment == CardioSegment.sessions ? 0 : 1,
-                        children: [
-                          _Sessions(
-                            sessions: cardio,
-                            live: live,
-                            onLive: () => _openLive(context),
-                          ),
-                          _Analysis(sessions: cardio),
-                        ],
-                      ),
-                      // Der FAB nur, wenn die Wochenzahl steht (A2). Im dünnen
-                      // Zustand trägt die Liste den Knopf selbst (B1/1).
-                      if (ref.watch(weeklyDistanceProvider).hasWeekly)
-                        Positioned(
-                          right: AtemSpacing.screenPadding,
-                          // Über der Leiste, die selbst über dem Inhalt liegt.
-                          bottom: 96,
-                          child: _Fab(onTap: () => _openForm(context)),
+                  data: (_) {
+                    if (cardio.isEmpty && live == null) {
+                      return _EmptyCardio(
+                        onLog: () => _openForm(context),
+                        onLive: () => _openLive(context),
+                      );
+                    }
+                    return Stack(
+                      children: [
+                        IndexedStack(
+                          index: segment == CardioSegment.sessions ? 0 : 1,
+                          children: [
+                            _Sessions(
+                              sessions: cardio,
+                              live: live,
+                              onLive: () => _openLive(context),
+                            ),
+                            _Analysis(sessions: cardio),
+                          ],
                         ),
-                    ],
-                  );
-                },
+                        // Der FAB nur, wenn die Wochenzahl steht (A2). Im dünnen
+                        // Zustand trägt die Liste den Knopf selbst (B1/1).
+                        if (ref.watch(weeklyDistanceProvider).hasWeekly)
+                          Positioned(
+                            right: AtemSpacing.screenPadding,
+                            // Über der Leiste, die selbst über dem Inhalt liegt.
+                            bottom: 96,
+                            child: _Fab(onTap: () => _openForm(context)),
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

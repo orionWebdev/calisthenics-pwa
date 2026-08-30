@@ -216,7 +216,7 @@
   "@activityOther": {
     "description": "activity.other"
   },
-  "activityOwn": "Your activities · {n, plural, one{1 session} other{# sessions}}",
+  "activityOwn": "Your activities · {n, plural, one{1 session} other{{n} sessions}}",
   "@activityOwn": {
     "description": "activity.own",
     "placeholders": {
@@ -278,7 +278,7 @@
   },
   "analysisLegendWith": "with training",
   "analysisLegendWithout": "without training",
-  "analysisPaceBasis": "vs. own average {value} · {n, plural, one{1 run} other{# runs}}",
+  "analysisPaceBasis": "vs. own average {value} · {n, plural, one{1 run} other{{n} runs}}",
   "@analysisPaceBasis": {
     "description": "analysis.pace.basis",
     "placeholders": {
@@ -312,7 +312,7 @@
   "@analysisPaceTitle": {
     "description": "analysis.pace.title"
   },
-  "analysisPctFaster": "{n, plural, one{Faster than 1 of your runs} other{Faster than # of {total} of your runs}}",
+  "analysisPctFaster": "{n, plural, one{Faster than 1 of your runs} other{Faster than {n} of {total} of your runs}}",
   "@analysisPctFaster": {
     "description": "analysis.pct.faster",
     "placeholders": {
@@ -334,7 +334,7 @@
   "analysisThinTitle": "Not enough for a trend yet",
   "analysisTitle": "Analysis",
   "analysisToday": "Form today",
-  "analysisWeeklyBasis": "avg. {value} km · {n, plural, one{1 session} other{# sessions}}",
+  "analysisWeeklyBasis": "avg. {value} km · {n, plural, one{1 session} other{{n} sessions}}",
   "@analysisWeeklyBasis": {
     "description": "analysis.weekly.basis",
     "placeholders": {
@@ -358,9 +358,9 @@
   "analysisWhyFitness": "Share of your own peak",
   "analysisWhyLoadNone": "No load in the last 28 days",
   "analysisWhyLoadRatio": "Last 14 days against the 14 before",
-  "analysisWhyPenalty": "{n, plural, other{# days without training}}",
-  "analysisWhyRecency": "{n, plural, =0{Trained today} one{Last workout yesterday} other{Last workout # days ago}}",
-  "analysisWhyRecencyRecovery": "{n, plural, =0{Recovery today} one{Recovery yesterday} other{Last activity # days ago · recovery}}",
+  "analysisWhyPenalty": "{n, plural, other{{n} days without training}}",
+  "analysisWhyRecency": "{n, plural, =0{Trained today} one{Last workout yesterday} other{Last workout {n} days ago}}",
+  "analysisWhyRecencyRecovery": "{n, plural, =0{Recovery today} one{Recovery yesterday} other{Last activity {n} days ago · recovery}}",
   "analysisWhyToday": "Trained today",
   "analysisWhyTodayNone": "No workout today",
   "authBetaBadge": "CLOSED BETA",
@@ -521,7 +521,7 @@
       }
     }
   },
-  "cardioWeekCount": "{n, plural, one{1 session} other{# sessions}}",
+  "cardioWeekCount": "{n, plural, one{1 session} other{{n} sessions}}",
   "@cardioWeekCount": {
     "description": "cardio.week.count",
     "placeholders": {
@@ -1778,7 +1778,7 @@
       }
     }
   },
-  "exerciseDeleteUsage": "This exercise is used in {p, plural, one {# plan} other {# plans}} and {s, plural, one {# workout} other {# workouts}}.",
+  "exerciseDeleteUsage": "This exercise is used in {p, plural, one {{p} plan} other {{p} plans}} and {s, plural, one {{s} workout} other {{s} workouts}}.",
   "@exerciseDeleteUsage": {
     "description": "exercise.delete.usage",
     "placeholders": {
@@ -2347,7 +2347,7 @@
     "description": "history.last"
   },
   "historyLeadFrequency": "{n} workouts in {d} days",
-  "historyLeadGap": "{n, plural, one {# day} other {# days}} without training",
+  "historyLeadGap": "{n, plural, one {{n} day} other {{n} days}} without training",
   "historyLeadLast": "Last {weekday} {date} · {name}",
   "historyMonthsLabel": "Workouts per month",
   "historyMonthsMedian": "Median {n} days apart · longest break {max}",
@@ -2413,7 +2413,7 @@
   "@intensityBelow": {
     "description": "intensity.below"
   },
-  "intensityFallbackNote": "Neither heart rate nor RPE recorded. Judged by pace against {n, plural, one{1 run} other{# runs}}.",
+  "intensityFallbackNote": "Neither heart rate nor RPE recorded. Judged by pace against {n, plural, one{1 run} other{{n} runs}}.",
   "@intensityFallbackNote": {
     "description": "intensity.fallback.note",
     "placeholders": {
@@ -2475,7 +2475,7 @@
       }
     }
   },
-  "lastNone": "{n, plural, one{No session for 1 day} other{No session for # days}}",
+  "lastNone": "{n, plural, one{No session for 1 day} other{No session for {n} days}}",
   "@lastNone": {
     "description": "last.none",
     "placeholders": {
@@ -2556,7 +2556,7 @@
   "@listFilterEmptyTitle": {
     "description": "list.filter.empty.title (Board 06)"
   },
-  "listGap": "{n, plural, one {# day} other {# days}} without training",
+  "listGap": "{n, plural, one {{n} day} other {{n} days}} without training",
   "listGapLongest": "longest break on record",
   "listGapRange": "{from} – {to}",
   "listMonthSummary": "{n} · load {load}",
@@ -2737,7 +2737,7 @@
       }
     }
   },
-  "planBrokenNotice": "{n, plural, one {# entry points} other {# entries point}} to nothing.",
+  "planBrokenNotice": "{n, plural, one {{n} entry points} other {{n} entries point}} to nothing.",
   "@planBrokenNotice": {
     "description": "plan.broken.notice",
     "placeholders": {
@@ -3002,7 +3002,7 @@
   "@quickNoSessions": {
     "description": "Leerer Bestand"
   },
-  "ratioBasis": "Share of {min} training minutes · {n, plural, one{1 session} other{# sessions}}",
+  "ratioBasis": "Share of {min} training minutes · {n, plural, one{1 session} other{{n} sessions}}",
   "@ratioBasis": {
     "description": "ratio.basis",
     "placeholders": {
@@ -3051,7 +3051,7 @@
   "@recoveryAdd": {
     "description": "recovery.add"
   },
-  "recoveryGap": "{n, plural, one{No recovery for 1 day} other{No recovery for # days}}",
+  "recoveryGap": "{n, plural, one{No recovery for 1 day} other{No recovery for {n} days}}",
   "@recoveryGap": {
     "description": "recovery.gap",
     "placeholders": {
@@ -3103,6 +3103,10 @@
   "@recoveryTitle": {
     "description": "recovery.title"
   },
+  "recoveryTabEmptyTitle": "No recovery yet",
+  "recoveryTabEmptyBody": "Yoga, sauna, stretching or mobility — it breaks the inactivity, without carrying load.",
+  "recoveryTabKinds": "By kind",
+  "recoveryTabAll": "All sessions",
   "regionArms": "Arms",
   "regionBack": "Back",
   "regionChest": "Chest",
@@ -3186,7 +3190,7 @@
   "@sessionDateAllowedTitle": {
     "description": "session.date.allowed.title"
   },
-  "sessionDatePrevious": "Was {date} · {n, plural, one {+# day} other {+# days}}",
+  "sessionDatePrevious": "Was {date} · {n, plural, one {+{n} day} other {+{n} days}}",
   "@sessionDatePrevious": {
     "description": "session.date.previous",
     "placeholders": {
@@ -3812,7 +3816,7 @@
   "@unitsTitle": {
     "description": "units.title"
   },
-  "unsavedBody": "You changed {c, plural, one {# entry} other {# entries}} and added {a}.",
+  "unsavedBody": "You changed {c, plural, one {{c} entry} other {{c} entries}} and added {a}.",
   "@unsavedBody": {
     "description": "unsaved.body",
     "placeholders": {
@@ -5020,16 +5024,16 @@
   "workoutsTodayEmptyBody": "Start freely or pick a plan.",
   "workoutsTodayEmptyTitle": "No workout scheduled",
   "workoutsTodayLabel": "Today",
-  "analysisPaceBasisOther": "vs. own average {value} · {n, plural, one{1 session} other{# sessions}}",
-  "analysisPctFasterOther": "{n, plural, one{Faster than 1 of your sessions} other{Faster than # of {total} of your sessions}}",
-  "intensityFallbackNoteOther": "Neither heart rate nor RPE recorded. Judged by pace against {n, plural, one{1 session} other{# sessions}} of the same activity.",
+  "analysisPaceBasisOther": "vs. own average {value} · {n, plural, one{1 session} other{{n} sessions}}",
+  "analysisPctFasterOther": "{n, plural, one{Faster than 1 of your sessions} other{Faster than {n} of {total} of your sessions}}",
+  "intensityFallbackNoteOther": "Neither heart rate nor RPE recorded. Judged by pace against {n, plural, one{1 session} other{{n} sessions}} of the same activity.",
   "intensityZoneName1": "recovery",
   "intensityZoneName2": "base",
   "intensityZoneName3": "threshold",
   "intensityZoneName4": "hard",
   "intensityZoneName5": "maximal",
   "intensityBasisA11y": "Basis: {basis}",
-  "intensityBasisPace": "Pace vs. own average from {n, plural, one{1 session} other{# sessions}}",
+  "intensityBasisPace": "Pace vs. own average from {n, plural, one{1 session} other{{n} sessions}}",
   "intensityRpeValue": "{n} / 5",
   "formRpe2": "easy",
   "formRpe4": "hard",
@@ -5058,16 +5062,16 @@
   "distBucketRange": "{a}–{b} km",
   "distBucketAbove": "> {v} km",
   "cardioAllSessions": "All sessions",
-  "cardioWeekA11y": "{km} kilometres this week, from {n, plural, one{1 session} other{# sessions}}",
+  "cardioWeekA11y": "{km} kilometres this week, from {n, plural, one{1 session} other{{n} sessions}}",
   "cardioWeekShiftA11y": "{delta} {dir} than the 4-week average of {avg}",
-  "cardioTotalA11y": "{km} kilometres in total since {date}, from {n, plural, one{1 session} other{# sessions}}",
-  "cardioActivityAverage": "{n, plural, one{1 session} other{# sessions}} avg. {km} km",
+  "cardioTotalA11y": "{km} kilometres in total since {date}, from {n, plural, one{1 session} other{{n} sessions}}",
+  "cardioActivityAverage": "{n, plural, one{1 session} other{{n} sessions}} avg. {km} km",
   "ratioStrengthWeek": "Strength this week",
-  "ratioStrengthMeasure": "{t} t volume · {s, plural, one{1 set} other{# sets}}",
-  "hybridWeekSummary": "{n, plural, one{1 session} other{# sessions}} · {min} min",
+  "ratioStrengthMeasure": "{t} t volume · {s, plural, one{1 set} other{{s} sets}}",
+  "hybridWeekSummary": "{n, plural, one{1 session} other{{n} sessions}} · {min} min",
   "ratioOpenStrength": "Opens strength history",
   "ratioOpenCardio": "Opens endurance analysis",
-  "ratioA11y": "Split this week: {s} percent strength, {c} percent endurance, share of {min} training minutes from {n, plural, one{1 session} other{# sessions}}.",
+  "ratioA11y": "Split this week: {s} percent strength, {c} percent endurance, share of {min} training minutes from {n, plural, one{1 session} other{{n} sessions}}.",
   "ratioRowA11y": "{track}, {pct} percent, {min} minutes",
   "ratioShiftA11y": "{value} percentage points {dir} than the 4-week average",
   "hybridEmptyStrength": "Start strength training",
@@ -5079,7 +5083,7 @@
   "recoveryFormTitle": "Log recovery",
   "tempoPerKm": "{value} /km",
   "tempoKmh": "{value} km/h",
-  "cardioListCount": "{n, plural, one{1 session} other{# sessions}}",
+  "cardioListCount": "{n, plural, one{1 session} other{{n} sessions}}",
   "intensityTitle": "Intensity",
   "acwrLabel": "Load · ACWR {v}",
   "@acwrLabel": {
@@ -5114,7 +5118,7 @@
       }
     }
   },
-  "historyMonthOpenA11y": "{month}, {n, plural, one{1 session} other{# sessions}}, opens the list",
+  "historyMonthOpenA11y": "{month}, {n, plural, one{1 session} other{{n} sessions}}, opens the list",
   "@historyMonthOpenA11y": {
     "placeholders": {
       "month": {
@@ -5176,7 +5180,7 @@
       }
     }
   },
-  "analysisThinRange": "{n, plural, one{1 session} other{# sessions}} {from}–{to}",
+  "analysisThinRange": "{n, plural, one{1 session} other{{n} sessions}} {from}–{to}",
   "@analysisThinRange": {
     "placeholders": {
       "n": {
@@ -5198,7 +5202,7 @@
       }
     }
   },
-  "analysisThinChain": "Longest chain {n, plural, one{1 day} other{# days}}",
+  "analysisThinChain": "Longest chain {n, plural, one{1 day} other{{n} days}}",
   "@analysisThinChain": {
     "placeholders": {
       "n": {

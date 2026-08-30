@@ -37,43 +37,48 @@ class StrengthScreen extends ConsumerWidget {
             s.kind == SessionKind.strength || s.kind == SessionKind.bodyweight)
         .length;
 
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _TabHeader(
-              title: l10n.tabStrength,
-              count: count,
-              switcher: AtemTabSwitch<StrengthSegment>(
-                groupSemanticLabel: l10n.tabStrength,
-                value: segment,
-                onChanged: (s) =>
-                    ref.read(appTabsProvider.notifier).setStrengthSegment(s),
-                segments: [
-                  AtemTabSegment(
-                      value: StrengthSegment.train, label: l10n.segTrain),
-                  AtemTabSegment(
-                      value: StrengthSegment.history, label: l10n.segHistory),
-                ],
+    // Der Ton des Bereichs: er färbt das Symbol in der Leiste und
+    // legt einen sehr schwachen Verlauf über den Grund.
+    return AtemTabTheme(
+      tone: AtemColors.tabStrength,
+      child: Scaffold(
+        backgroundColor: AtemColors.base,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _TabHeader(
+                title: l10n.tabStrength,
+                count: count,
+                switcher: AtemTabSwitch<StrengthSegment>(
+                  groupSemanticLabel: l10n.tabStrength,
+                  value: segment,
+                  onChanged: (s) =>
+                      ref.read(appTabsProvider.notifier).setStrengthSegment(s),
+                  segments: [
+                    AtemTabSegment(
+                        value: StrengthSegment.train, label: l10n.segTrain),
+                    AtemTabSegment(
+                        value: StrengthSegment.history, label: l10n.segHistory),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              // IndexedStack: Der Scrollstand des anderen Segments überlebt
-              // den Wechsel — man kommt zurück, wo man war.
-              child: IndexedStack(
-                index: segment == StrengthSegment.train ? 0 : 1,
-                children: [
-                  WorkoutsScreen(onStart: onStart, embedded: true),
-                  HistoryScreen(
-                    embedded: true,
-                    onStart: () => _startFree(context, ref),
-                  ),
-                ],
+              Expanded(
+                // IndexedStack: Der Scrollstand des anderen Segments überlebt
+                // den Wechsel — man kommt zurück, wo man war.
+                child: IndexedStack(
+                  index: segment == StrengthSegment.train ? 0 : 1,
+                  children: [
+                    WorkoutsScreen(onStart: onStart, embedded: true),
+                    HistoryScreen(
+                      embedded: true,
+                      onStart: () => _startFree(context, ref),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

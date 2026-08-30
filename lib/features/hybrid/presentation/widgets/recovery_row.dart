@@ -36,9 +36,8 @@ class RecoveryRow extends StatelessWidget {
 
     if (last == null) {
       title = l10n.recoveryNever;
-      sub = RecoveryKind.values
-          .map((k) => recoveryKindName(l10n, k))
-          .join(' · ');
+      sub =
+          RecoveryKind.values.map((k) => recoveryKindName(l10n, k)).join(' · ');
       dot = AtemColors.border;
       titleColor = AtemColors.textTertiary;
     } else {
@@ -65,41 +64,50 @@ class RecoveryRow extends StatelessWidget {
       titleColor = AtemColors.textPrimary;
     }
 
-    return AtemCard.list(
+    // **Der Ton der Regeneration liegt als Verlauf auf der Zeile.**
+    //
+    // Board 11 verbot Lime als *Fläche der Zeile* — gemeint war eine
+    // ausgefüllte Lime-Kachel, die wie ein Erfolg aussieht. Ein Verlauf bei
+    // zehn Prozent Deckkraft ist das nicht; er sagt „das gehört zur
+    // Regeneration", und der 8-dp-Punkt bleibt der Statusträger.
+    return AtemTappable(
       onTap: onAdd,
       // Voll: „Regeneration, gestern, Yoga, 25 Minuten. Regeneration erfassen."
       semanticLabel: '$title, $sub. ${l10n.recoveryTitle} ${l10n.recoveryAdd}',
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 24),
-        child: Row(
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(title,
-                      style: AtemType.titleSmallOrDefault(context)
-                          .copyWith(color: titleColor)),
-                  const SizedBox(height: 2),
-                  Text(sub.toUpperCase(),
-                      style: AtemType.labelMicro.of(context)),
-                ],
+      child: AtemToneCard(
+        tone: AtemColors.tabRecovery,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 24),
+          child: Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
               ),
-            ),
-            const SizedBox(width: 10),
-            Text(l10n.recoveryAdd.toUpperCase(),
-                style: AtemType.labelMicro
-                    .of(context)
-                    .copyWith(color: AtemColors.cyan)),
-          ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(title,
+                        style: AtemType.titleSmallOrDefault(context)
+                            .copyWith(color: titleColor)),
+                    const SizedBox(height: 2),
+                    Text(sub.toUpperCase(),
+                        style: AtemType.labelMicro.of(context)),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(l10n.recoveryAdd.toUpperCase(),
+                  style: AtemType.labelMicro
+                      .of(context)
+                      .copyWith(color: AtemColors.green)),
+            ],
+          ),
         ),
       ),
     );

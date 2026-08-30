@@ -164,8 +164,11 @@ class _Legend extends StatelessWidget {
   final FormSeries series;
 
   @override
+  // Eine Reihe, die erst umbricht, wenn nichts mehr passt. Der Abstand ist
+  // knapp gewählt, damit „mit" und „ohne Training" auf 360 dp nebeneinander
+  // stehen bleiben.
   Widget build(BuildContext context) => Wrap(
-        spacing: 16,
+        spacing: 12,
         runSpacing: 6,
         children: [
           _Item(color: AtemColors.cyan, label: l10n.analysisLegendWith),

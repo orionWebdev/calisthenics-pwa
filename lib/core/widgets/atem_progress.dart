@@ -85,8 +85,13 @@ class AtemProgressBar extends StatelessWidget {
     return _ProgressSemantics(
       label: semanticLabel,
       value: value,
+      // **Volle Breite, nicht die des Kindes.** In einer `Column` ohne
+      // Streckung bekäme ein `SizedBox` ohne Breite null Pixel — der Balken
+      // verschwand dann spurlos, statt sichtbar falsch zu sein. Zwei Stellen
+      // im Verlauf haben genau das getan.
       child: SizedBox(
         height: _height,
+        width: double.infinity,
         child: value == null
             ? _IndeterminateTrack(height: _height)
             : CustomPaint(

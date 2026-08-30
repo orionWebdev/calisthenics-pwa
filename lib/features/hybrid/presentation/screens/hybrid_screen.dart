@@ -107,35 +107,40 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
       if (score != null) _animateScoreTo(score);
     });
 
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      body: async.when(
-        loading: () => Padding(
-          padding: EdgeInsets.fromLTRB(
-              AtemSpacing.screenPadding,
-              MediaQuery.paddingOf(context).top + 16,
-              AtemSpacing.screenPadding,
-              130),
-          child: AtemSkeleton(
-            semanticLabel: l10n.dashboardLoadingA11y,
-            blocks: const [
-              AtemSkeletonBlock(height: 64, radius: 14),
-              AtemSkeletonBlock(height: 360),
-              AtemSkeletonBlock(height: 210),
-              AtemSkeletonBlock(height: 64),
-            ],
+    // Der Ton des Bereichs: er färbt das Symbol in der Leiste und
+    // legt einen sehr schwachen Verlauf über den Grund.
+    return AtemTabTheme(
+      tone: AtemColors.tabHybrid,
+      child: Scaffold(
+        backgroundColor: AtemColors.base,
+        body: async.when(
+          loading: () => Padding(
+            padding: EdgeInsets.fromLTRB(
+                AtemSpacing.screenPadding,
+                MediaQuery.paddingOf(context).top + 16,
+                AtemSpacing.screenPadding,
+                130),
+            child: AtemSkeleton(
+              semanticLabel: l10n.dashboardLoadingA11y,
+              blocks: const [
+                AtemSkeletonBlock(height: 64, radius: 14),
+                AtemSkeletonBlock(height: 360),
+                AtemSkeletonBlock(height: 210),
+                AtemSkeletonBlock(height: 64),
+              ],
+            ),
           ),
-        ),
-        error: (e, _) => AtemErrorState(
-          title: l10n.dashboardNotAvailable,
-          body: l10n.errorsLoadFailed,
-          retryLabel: l10n.commonRetry,
-          onRetry: () => ref.invalidate(dashboardDataProvider),
-        ),
-        data: (data) => _content(
-          context,
-          data,
-          sessionsAsync.value ?? const [],
+          error: (e, _) => AtemErrorState(
+            title: l10n.dashboardNotAvailable,
+            body: l10n.errorsLoadFailed,
+            retryLabel: l10n.commonRetry,
+            onRetry: () => ref.invalidate(dashboardDataProvider),
+          ),
+          data: (data) => _content(
+            context,
+            data,
+            sessionsAsync.value ?? const [],
+          ),
         ),
       ),
     );
@@ -579,13 +584,31 @@ class _StrengthWeek extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 14),
-          AtemNotice(
-            title: l10n.ratioSingleTitle,
-            body: l10n.ratioSingleBody,
-            semanticLabel: '${l10n.ratioSingleTitle}. ${l10n.ratioSingleBody}',
-            actionLabel: l10n.hybridEmptyCardio,
-            onAction: onCardio,
+          const SizedBox(height: 12),
+          // **Der fehlende Teil ist eine Zeile, kein Kasten.**
+          //
+          // Hier stand eine ganze Notice mit Titel, Fliesstext und Aktion —
+          // sie war höher als die Kachel, die sie erklärte, und liess den
+          // Bildschirm so aussehen, als sei das Fehlen die Nachricht. Der
+          // Satz genügt; der Weg daneben ist ein Knopf im Ton des
+          // Cardio-Tabs, damit er als Weg dorthin erkennbar ist.
+          const SizedBox(
+              height: 1, child: ColoredBox(color: AtemColors.border)),
+          const SizedBox(height: 12),
+          Semantics(
+            label: '${l10n.ratioSingleTitle}. ${l10n.ratioSingleBody}',
+            child: ExcludeSemantics(
+              child: Text(l10n.ratioSingleTitle,
+                  style: AtemType.labelSmall.of(context)),
+            ),
+          ),
+          const SizedBox(height: 10),
+          AtemButton.outline(
+            label: l10n.hybridEmptyCardio,
+            semanticLabel: l10n.hybridEmptyCardio,
+            size: AtemButtonSize.compact,
+            accent: AtemColors.tabCardio,
+            onPressed: onCardio,
           ),
         ],
       ),

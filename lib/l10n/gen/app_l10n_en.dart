@@ -162,7 +162,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return 'Your activities · $_temp0';
@@ -254,7 +254,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# runs',
+      other: '$n runs',
       one: '1 run',
     );
     return 'vs. own average $value · $_temp0';
@@ -273,7 +273,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Faster than # of $total of your runs',
+      other: 'Faster than $n of $total of your runs',
       one: 'Faster than 1 of your runs',
     );
     return '$_temp0';
@@ -309,7 +309,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return 'avg. $value km · $_temp0';
@@ -340,7 +340,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# days without training',
+      other: '$n days without training',
     );
     return '$_temp0';
   }
@@ -350,7 +350,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Last workout # days ago',
+      other: 'Last workout $n days ago',
       one: 'Last workout yesterday',
       zero: 'Trained today',
     );
@@ -362,7 +362,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Last activity # days ago · recovery',
+      other: 'Last activity $n days ago · recovery',
       one: 'Recovery yesterday',
       zero: 'Recovery today',
     );
@@ -499,7 +499,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$_temp0';
@@ -1457,14 +1457,14 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       p,
       locale: localeName,
-      other: '# plans',
-      one: '# plan',
+      other: '$p plans',
+      one: '$p plan',
     );
     String _temp1 = intl.Intl.pluralLogic(
       s,
       locale: localeName,
-      other: '# workouts',
-      one: '# workout',
+      other: '$s workouts',
+      one: '$s workout',
     );
     return 'This exercise is used in $_temp0 and $_temp1.';
   }
@@ -1960,8 +1960,8 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# days',
-      one: '# day',
+      other: '$n days',
+      one: '$n day',
     );
     return '$_temp0 without training';
   }
@@ -2047,7 +2047,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# runs',
+      other: '$n runs',
       one: '1 run',
     );
     return 'Neither heart rate nor RPE recorded. Judged by pace against $_temp0.';
@@ -2098,7 +2098,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'No session for # days',
+      other: 'No session for $n days',
       one: 'No session for 1 day',
     );
     return '$_temp0';
@@ -2182,8 +2182,8 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# days',
-      one: '# day',
+      other: '$n days',
+      one: '$n day',
     );
     return '$_temp0 without training';
   }
@@ -2409,8 +2409,8 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# entries point',
-      one: '# entry points',
+      other: '$n entries point',
+      one: '$n entry points',
     );
     return '$_temp0 to nothing.';
   }
@@ -2628,7 +2628,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return 'Share of $min training minutes · $_temp0';
@@ -2666,7 +2666,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'No recovery for # days',
+      other: 'No recovery for $n days',
       one: 'No recovery for 1 day',
     );
     return '$_temp0';
@@ -2698,6 +2698,19 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get recoveryTitle => 'Recovery';
+
+  @override
+  String get recoveryTabEmptyTitle => 'No recovery yet';
+
+  @override
+  String get recoveryTabEmptyBody =>
+      'Yoga, sauna, stretching or mobility — it breaks the inactivity, without carrying load.';
+
+  @override
+  String get recoveryTabKinds => 'By kind';
+
+  @override
+  String get recoveryTabAll => 'All sessions';
 
   @override
   String get regionArms => 'Arms';
@@ -2787,8 +2800,8 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '+# days',
-      one: '+# day',
+      other: '+$n days',
+      one: '+$n day',
     );
     return 'Was $date · $_temp0';
   }
@@ -3268,8 +3281,8 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       c,
       locale: localeName,
-      other: '# entries',
-      one: '# entry',
+      other: '$c entries',
+      one: '$c entry',
     );
     return 'You changed $_temp0 and added $a.';
   }
@@ -4101,7 +4114,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return 'vs. own average $value · $_temp0';
@@ -4112,7 +4125,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: 'Faster than # of $total of your sessions',
+      other: 'Faster than $n of $total of your sessions',
       one: 'Faster than 1 of your sessions',
     );
     return '$_temp0';
@@ -4123,7 +4136,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return 'Neither heart rate nor RPE recorded. Judged by pace against $_temp0 of the same activity.';
@@ -4154,7 +4167,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return 'Pace vs. own average from $_temp0';
@@ -4274,7 +4287,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$km kilometres this week, from $_temp0';
@@ -4290,7 +4303,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$km kilometres in total since $date, from $_temp0';
@@ -4301,7 +4314,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$_temp0 avg. $km km';
@@ -4315,7 +4328,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       s,
       locale: localeName,
-      other: '# sets',
+      other: '$s sets',
       one: '1 set',
     );
     return '$t t volume · $_temp0';
@@ -4326,7 +4339,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$_temp0 · $min min';
@@ -4343,7 +4356,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return 'Split this week: $s percent strength, $c percent endurance, share of $min training minutes from $_temp0.';
@@ -4397,7 +4410,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$_temp0';
@@ -4449,7 +4462,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$month, $_temp0, opens the list';
@@ -4510,7 +4523,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# sessions',
+      other: '$n sessions',
       one: '1 session',
     );
     return '$_temp0 $from–$to';
@@ -4526,7 +4539,7 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '# days',
+      other: '$n days',
       one: '1 day',
     );
     return 'Longest chain $_temp0';

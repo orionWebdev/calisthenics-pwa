@@ -1,17 +1,33 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Die drei Plätze der Bottom-Bar — Board 11, Sektion A.
+/// Die vier Plätze der Bottom-Bar.
 ///
-/// Die Reihenfolge ist die der Leiste: Kraft links, Hybrid rechts. Der
-/// Index ist zugleich der Platz im `IndexedStack` der Hülle.
+/// Die Reihenfolge ist die der Leiste: **Hybrid links**, dann Kraft, Cardio,
+/// Regeneration. Der Index ist zugleich der Platz im `IndexedStack` der Hülle.
+///
+/// ## Vier statt drei
+///
+/// Board 11 gab drei Plätze vor und begründete das ausdrücklich: Regeneration
+/// sei eine Eingangsgrösse der Bereitschaft und gehöre als Zeile neben sie,
+/// nicht als eigener Bereich. Diese Entscheidung ist bewusst überstimmt
+/// worden — sie stand im Entscheidungsprotokoll von Modul 11 unter „VIERTER
+/// TAB", und die Begründung dort („zwölf Einheiten im Bestand, elf davon ohne
+/// Angabe") ist eine Aussage über den Bestand von damals, nicht über das
+/// Vorhaben.
+///
+/// Was von der alten Entscheidung bleibt: Die Regenerationszeile im
+/// Hybrid-Tab **bleibt stehen**. Sie beantwortet dort weiter die Frage „wie
+/// steht es um mich"; der Tab beantwortet „was habe ich gemacht".
 enum AppTab {
+  hybrid,
   strength,
   cardio,
-  hybrid;
+  recovery;
 
-  /// Wo die App aufmacht. Hybrid ist der frühere Start-Tab — „Wie steht es um
-  /// mich" ist die erste Frage, nicht „was trainiere ich".
+  /// Wo die App aufmacht. „Wie steht es um mich" ist die erste Frage, nicht
+  /// „was trainiere ich" — und seit Hybrid links steht, ist es auch der erste
+  /// Platz.
   static const initial = AppTab.hybrid;
 }
 

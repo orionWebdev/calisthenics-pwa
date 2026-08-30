@@ -370,7 +370,7 @@ abstract class AppL10n {
   /// activity.own
   ///
   /// In de, this message translates to:
-  /// **'Deine Aktivitäten · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'Deine Aktivitäten · {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String activityOwn(int n);
 
   /// activity.row
@@ -520,7 +520,7 @@ abstract class AppL10n {
   /// analysis.pace.basis
   ///
   /// In de, this message translates to:
-  /// **'gegen eigenen Schnitt {value} · {n, plural, one{1 Lauf} other{# Läufe}}'**
+  /// **'gegen eigenen Schnitt {value} · {n, plural, one{1 Lauf} other{{n} Läufe}}'**
   String analysisPaceBasis(String value, int n);
 
   /// analysis.pace.thin
@@ -538,7 +538,7 @@ abstract class AppL10n {
   /// analysis.pct.faster
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{Schneller als 1 deiner Läufe} other{Schneller als # von {total} deiner Läufe}}'**
+  /// **'{n, plural, one{Schneller als 1 deiner Läufe} other{Schneller als {n} von {total} deiner Läufe}}'**
   String analysisPctFaster(int n, int total);
 
   /// analysis.pct.noothers
@@ -586,7 +586,7 @@ abstract class AppL10n {
   /// analysis.weekly.basis
   ///
   /// In de, this message translates to:
-  /// **'Ø {value} km · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'Ø {value} km · {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String analysisWeeklyBasis(String value, int n);
 
   /// analysis.weekly.current
@@ -628,19 +628,19 @@ abstract class AppL10n {
   /// Begründung des Abzugs
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, other{# Tage ohne Training}}'**
+  /// **'{n, plural, other{{n} Tage ohne Training}}'**
   String analysisWhyPenalty(int n);
 
   /// Begründung der Aktualität
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor # Tagen}}'**
+  /// **'{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor {n} Tagen}}'**
   String analysisWhyRecency(int n);
 
   /// Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor # Tagen · Regeneration}}'**
+  /// **'{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor {n} Tagen · Regeneration}}'**
   String analysisWhyRecencyRecovery(int n);
 
   /// Begründung des Tageszuschlags
@@ -850,7 +850,7 @@ abstract class AppL10n {
   /// cardio.week.count
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'{n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String cardioWeekCount(int n);
 
   /// cardio.week.thin
@@ -2452,7 +2452,7 @@ abstract class AppL10n {
   /// exercise.delete.usage
   ///
   /// In de, this message translates to:
-  /// **'Die Übung steckt in {p, plural, one {# Plan} other {# Plänen}} und {s, plural, one {# Einheit} other {# Einheiten}}.'**
+  /// **'Die Übung steckt in {p, plural, one {{p} Plan} other {{p} Plänen}} und {s, plural, one {{s} Einheit} other {{s} Einheiten}}.'**
   String exerciseDeleteUsage(int p, int s);
 
   /// Vorlesefassung der Segmentanzeige
@@ -3298,7 +3298,7 @@ abstract class AppL10n {
   /// Der Satz der Aussage-Karte bei Pause und Untätigkeit
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one {# Tag} other {# Tage}} ohne Training'**
+  /// **'{n, plural, one {{n} Tag} other {{n} Tage}} ohne Training'**
   String historyLeadGap(int n);
 
   /// Zweite Zeile der Aussage-Karte
@@ -3436,7 +3436,7 @@ abstract class AppL10n {
   /// intensity.fallback.note
   ///
   /// In de, this message translates to:
-  /// **'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Lauf} other{# Läufe}}.'**
+  /// **'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Lauf} other{{n} Läufe}}.'**
   String intensityFallbackNote(int n);
 
   /// intensity.level1
@@ -3502,7 +3502,7 @@ abstract class AppL10n {
   /// last.none
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{Seit 1 Tag keine Einheit} other{Seit # Tagen keine Einheit}}'**
+  /// **'{n, plural, one{Seit 1 Tag keine Einheit} other{Seit {n} Tagen keine Einheit}}'**
   String lastNone(int n);
 
   /// last.recovery
@@ -3610,7 +3610,7 @@ abstract class AppL10n {
   /// Lückenstreifen zwischen zwei Einheiten
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one {# Tag} other {# Tage}} ohne Training'**
+  /// **'{n, plural, one {{n} Tag} other {{n} Tage}} ohne Training'**
   String listGap(int n);
 
   /// Zusatz am längsten Lückenstreifen
@@ -3988,7 +3988,7 @@ abstract class AppL10n {
   /// plan.broken.notice
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one {# Eintrag zeigt} other {# Einträge zeigen}} ins Leere.'**
+  /// **'{n, plural, one {{n} Eintrag zeigt} other {{n} Einträge zeigen}} ins Leere.'**
   String planBrokenNotice(int n);
 
   /// plan.broken.remove
@@ -4342,7 +4342,7 @@ abstract class AppL10n {
   /// ratio.basis
   ///
   /// In de, this message translates to:
-  /// **'Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String ratioBasis(int min, int n);
 
   /// ratio.noshift
@@ -4396,7 +4396,7 @@ abstract class AppL10n {
   /// recovery.gap
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{Seit 1 Tag keine Regeneration} other{Seit # Tagen keine Regeneration}}'**
+  /// **'{n, plural, one{Seit 1 Tag keine Regeneration} other{Seit {n} Tagen keine Regeneration}}'**
   String recoveryGap(int n);
 
   /// recovery.kind.mobility
@@ -4446,6 +4446,30 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Regeneration'**
   String get recoveryTitle;
+
+  /// Regenerations-Tab
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Regeneration'**
+  String get recoveryTabEmptyTitle;
+
+  /// Regenerations-Tab
+  ///
+  /// In de, this message translates to:
+  /// **'Yoga, Sauna, Dehnen oder Mobility — sie bricht die Untätigkeit, ohne Last zu tragen.'**
+  String get recoveryTabEmptyBody;
+
+  /// Regenerations-Tab
+  ///
+  /// In de, this message translates to:
+  /// **'Nach Art'**
+  String get recoveryTabKinds;
+
+  /// Regenerations-Tab
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Einheiten'**
+  String get recoveryTabAll;
 
   /// Körperregion, Filter
   ///
@@ -4606,7 +4630,7 @@ abstract class AppL10n {
   /// session.date.previous
   ///
   /// In de, this message translates to:
-  /// **'Vorher {date} · {n, plural, one {+# Tag} other {+# Tage}}'**
+  /// **'Vorher {date} · {n, plural, one {+{n} Tag} other {+{n} Tage}}'**
   String sessionDatePrevious(int n, String date);
 
   /// Vorlesetext des Dialogschleiers
@@ -5452,7 +5476,7 @@ abstract class AppL10n {
   /// unsaved.body
   ///
   /// In de, this message translates to:
-  /// **'Du hast {c, plural, one {# Eintrag} other {# Einträge}} geändert und {a} hinzugefügt.'**
+  /// **'Du hast {c, plural, one {{c} Eintrag} other {{c} Einträge}} geändert und {a} hinzugefügt.'**
   String unsavedBody(int c, int a);
 
   /// unsaved.continue
@@ -6904,19 +6928,19 @@ abstract class AppL10n {
   /// analysis.pace.basis (Board 11) — Fassung für alle Aktivitäten außer Laufen
   ///
   /// In de, this message translates to:
-  /// **'gegen eigenen Schnitt {value} · {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'gegen eigenen Schnitt {value} · {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String analysisPaceBasisOther(String value, int n);
 
   /// analysis.pct.faster (Board 11) — Fassung für alle Aktivitäten außer Laufen
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{Schneller als 1 deiner Einheiten} other{Schneller als # von {total} deiner Einheiten}}'**
+  /// **'{n, plural, one{Schneller als 1 deiner Einheiten} other{Schneller als {n} von {total} deiner Einheiten}}'**
   String analysisPctFasterOther(int n, int total);
 
   /// intensity.fallback.note (Board 11) — Fassung für alle Aktivitäten außer Laufen
   ///
   /// In de, this message translates to:
-  /// **'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Einheit} other{# Einheiten}} derselben Aktivität.'**
+  /// **'Weder Puls noch RPE erfasst. Beurteilt wird über das Tempo gegen {n, plural, one{1 Einheit} other{{n} Einheiten}} derselben Aktivität.'**
   String intensityFallbackNoteOther(int n);
 
   /// Ergänzung zu Board 11 — Zonenname Stufe 1; das Board nennt nur „schwellig" als Beispiel
@@ -6958,7 +6982,7 @@ abstract class AppL10n {
   /// Ergänzung zu Board 11 — Grundlage der Stufe 3 mit Nenner
   ///
   /// In de, this message translates to:
-  /// **'Tempo gegen eigenen Schnitt aus {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'Tempo gegen eigenen Schnitt aus {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String intensityBasisPace(int n);
 
   /// Ergänzung zu Board 11 — RPE als Bruch, nie in Prozent (J)
@@ -7132,7 +7156,7 @@ abstract class AppL10n {
   /// Ergänzung zu Board 11 — Vorlesetext der Wochenzahl (H)
   ///
   /// In de, this message translates to:
-  /// **'{km} Kilometer diese Woche, aus {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'{km} Kilometer diese Woche, aus {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String cardioWeekA11y(String km, int n);
 
   /// Ergänzung zu Board 11 — Vorlesetext der Verschiebung; dir ist „mehr"/„weniger"
@@ -7144,13 +7168,13 @@ abstract class AppL10n {
   /// Ergänzung zu Board 11 — Vorlesetext im dünnen Zustand
   ///
   /// In de, this message translates to:
-  /// **'{km} Kilometer gesamt seit {date}, aus {n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'{km} Kilometer gesamt seit {date}, aus {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String cardioTotalA11y(String km, String date, int n);
 
   /// Ergänzung zu Board 11 — „3 Läufe Ø 6,2 km" (B1/1)
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{1 Einheit} other{# Einheiten}} Ø {km} km'**
+  /// **'{n, plural, one{1 Einheit} other{{n} Einheiten}} Ø {km} km'**
   String cardioActivityAverage(int n, String km);
 
   /// Ergänzung zu Board 11 — Kraft-Wochenblock ohne Gegenspur (C1/2)
@@ -7162,13 +7186,13 @@ abstract class AppL10n {
   /// Ergänzung zu Board 11 — Fachgrösse Kraft
   ///
   /// In de, this message translates to:
-  /// **'{t} t Volumen · {s, plural, one{1 Satz} other{# Sätze}}'**
+  /// **'{t} t Volumen · {s, plural, one{1 Satz} other{{s} Sätze}}'**
   String ratioStrengthMeasure(String t, int s);
 
   /// Ergänzung zu Board 11 — „3 Einheiten · 128 min"
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{1 Einheit} other{# Einheiten}} · {min} min'**
+  /// **'{n, plural, one{1 Einheit} other{{n} Einheiten}} · {min} min'**
   String hybridWeekSummary(int n, int min);
 
   /// Ergänzung zu Board 11 — Zielort im Label (H)
@@ -7186,7 +7210,7 @@ abstract class AppL10n {
   /// Ergänzung zu Board 11 — Vorlesetext des Verhältnisbalkens (H)
   ///
   /// In de, this message translates to:
-  /// **'Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{# Einheiten}}.'**
+  /// **'Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{{n} Einheiten}}.'**
   String ratioA11y(int s, int c, int min, int n);
 
   /// Ergänzung zu Board 11 — Vorlesetext einer Verhältniszeile
@@ -7258,7 +7282,7 @@ abstract class AppL10n {
   /// Ergänzung zu Board 11 — Zahl in der Aktivitätskapsel
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{1 Einheit} other{# Einheiten}}'**
+  /// **'{n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String cardioListCount(int n);
 
   /// Ergänzung zu Board 11 — Beschriftung im Intensitätskasten (B4)
@@ -7330,7 +7354,7 @@ abstract class AppL10n {
   /// Board 06 — Monatsbalken, 48-dp-Treffer (I/08)
   ///
   /// In de, this message translates to:
-  /// **'{month}, {n, plural, one{1 Einheit} other{# Einheiten}}, öffnet die Liste'**
+  /// **'{month}, {n, plural, one{1 Einheit} other{{n} Einheiten}}, öffnet die Liste'**
   String historyMonthOpenA11y(String month, int n);
 
   /// Board 06 — StatBox-Dreier (A3)
@@ -7420,7 +7444,7 @@ abstract class AppL10n {
   /// Board 06 — Was es schon gibt (A4/2)
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, one{1 Einheit} other{# Einheiten}} {from}–{to}'**
+  /// **'{n, plural, one{1 Einheit} other{{n} Einheiten}} {from}–{to}'**
   String analysisThinRange(int n, String from, String to);
 
   /// Board 06 — Was es schon gibt (A4/2)
@@ -7432,7 +7456,7 @@ abstract class AppL10n {
   /// Board 06 — Was es schon gibt (A4/2)
   ///
   /// In de, this message translates to:
-  /// **'Längste Kette {n, plural, one{1 Tag} other{# Tage}}'**
+  /// **'Längste Kette {n, plural, one{1 Tag} other{{n} Tage}}'**
   String analysisThinChain(int n);
 
   /// Board 07 A3/1 — Hauptaktion im Übungsdetail
