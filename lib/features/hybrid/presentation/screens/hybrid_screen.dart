@@ -213,32 +213,49 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
             ),
           ] else ...[
             // ---- Bereitschaft (heute), oder der dünne Wochenblock (C3/1).
-            if (thin)
-              _ThinWeek(ratio: ratio, sessions: sessions)
-            else
-              _ReadinessCard(
-                readiness: data.readiness,
-                scoreAnimation: _score,
-                last: last,
-              ),
+            //
+            // Ab hier läuft die Kaskade: Die Blöcke steigen versetzt ein, in
+            // der Reihenfolge, in der man sie lesen soll.
+            AtemEntrance(
+              child: thin
+                  ? _ThinWeek(ratio: ratio, sessions: sessions)
+                  : _ReadinessCard(
+                      readiness: data.readiness,
+                      scoreAnimation: _score,
+                      last: last,
+                    ),
+            ),
             const SizedBox(height: AtemSpacing.cardGap),
 
             // ---- Verhältnis (diese Woche). Mit beiden Spuren der Block;
             // mit einer der Kraft-Wochenblock plus Hinweis; ohne Minuten
             // nichts — der Bildschirm hört früher auf.
             if (ratio.hasBothTracks) ...[
-              RatioBlock(ratio: ratio),
+              AtemEntrance(index: 1, child: RatioBlock(ratio: ratio)),
               const SizedBox(height: AtemSpacing.cardGap),
             ] else if (ratio.strength.minutes > 0) ...[
-              _StrengthWeek(ratio: ratio, onCardio: _openCardioForm),
+              AtemEntrance(
+                index: 1,
+                child: _StrengthWeek(ratio: ratio, onCardio: _openCardioForm),
+              ),
               const SizedBox(height: AtemSpacing.cardGap),
             ],
 
             // ---- Regenerationszeile.
-            RecoveryRow(status: recovery, onAdd: _addRecovery),
+            AtemEntrance(
+              index: 2,
+              child: RecoveryRow(status: recovery, onAdd: _addRecovery),
+            ),
 
             // ---- Formwert (vier Wochen), nur mit Trend.
-            if (!thin) ..._formBlock(context, sessions, reference),
+            if (!thin)
+              AtemEntrance(
+                index: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: _formBlock(context, sessions, reference),
+                ),
+              ),
           ],
         ],
       ),

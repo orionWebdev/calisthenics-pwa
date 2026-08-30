@@ -37,31 +37,31 @@ class HistoryScreen extends ConsumerWidget {
     final async = ref.watch(sessionsProvider);
 
     final body = async.when(
-          loading: () => Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AtemSpacing.screenPadding),
-            child: AtemSkeleton(
-              semanticLabel: l10n.dashboardLoadingA11y,
-              blocks: const [
-                AtemSkeletonBlock(height: 140),
-                AtemSkeletonBlock(height: 120),
-                AtemSkeletonBlock(height: 64, radius: 14),
-                AtemSkeletonBlock(height: 64, radius: 14),
-              ],
-            ),
-          ),
-          error: (_, __) => Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AtemSpacing.screenPadding),
-            child: AtemErrorState(
-              title: l10n.historyErrorTitle,
-              body: l10n.historyErrorBody,
-              retryLabel: l10n.commonRetry,
-              onRetry: () => ref.invalidate(sessionStreamProvider),
-            ),
-          ),
-          data: (sessions) => _content(context, ref, l10n, sessions),
-        );
+      loading: () => Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
+        child: AtemSkeleton(
+          semanticLabel: l10n.dashboardLoadingA11y,
+          blocks: const [
+            AtemSkeletonBlock(height: 140),
+            AtemSkeletonBlock(height: 120),
+            AtemSkeletonBlock(height: 64, radius: 14),
+            AtemSkeletonBlock(height: 64, radius: 14),
+          ],
+        ),
+      ),
+      error: (_, __) => Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
+        child: AtemErrorState(
+          title: l10n.historyErrorTitle,
+          body: l10n.historyErrorBody,
+          retryLabel: l10n.commonRetry,
+          onRetry: () => ref.invalidate(sessionStreamProvider),
+        ),
+      ),
+      data: (sessions) => _content(context, ref, l10n, sessions),
+    );
 
     if (embedded) return body;
     return Scaffold(
@@ -97,20 +97,25 @@ class HistoryScreen extends ConsumerWidget {
           Text(l10n.historyTitle, style: AtemType.titleLarge.of(context)),
           const SizedBox(height: 20),
         ],
-        StatementCard(summary: summary, onStart: onStart),
+        AtemEntrance(
+          child: StatementCard(summary: summary, onStart: onStart),
+        ),
         const SizedBox(height: 28),
         // Ein Monat angetippt: Die Liste öffnet auf genau diesen Monat —
         // der Zeitraumfilter kommt aus dem Streifen (Board 06, A2/2).
-        MonthStrip(
-          summary: summary,
-          onSelect: (year, month) {
-            ref.read(sessionFilterProvider.notifier).setPeriod(year, month);
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const SessionListScreen(),
-              ),
-            );
-          },
+        AtemEntrance(
+          index: 1,
+          child: MonthStrip(
+            summary: summary,
+            onSelect: (year, month) {
+              ref.read(sessionFilterProvider.notifier).setPeriod(year, month);
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const SessionListScreen(),
+                ),
+              );
+            },
+          ),
         ),
         const SizedBox(height: 28),
         Row(
@@ -154,17 +159,22 @@ class HistoryScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 8),
-        AtemCard.list(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              for (var i = 0; i < sessions.length && i < _recentCount; i++) ...[
-                if (i > 0)
-                  const Divider(
-                      height: 1, thickness: 1, color: AtemColors.border),
-                _SessionRow(session: sessions[i]),
+        AtemEntrance(
+          index: 2,
+          child: AtemCard.list(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0;
+                    i < sessions.length && i < _recentCount;
+                    i++) ...[
+                  if (i > 0)
+                    const Divider(
+                        height: 1, thickness: 1, color: AtemColors.border),
+                  _SessionRow(session: sessions[i]),
+                ],
               ],
-            ],
+            ),
           ),
         ),
         const SizedBox(height: 24),

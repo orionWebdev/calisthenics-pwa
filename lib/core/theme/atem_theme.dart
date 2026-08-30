@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'atem_colors.dart';
+import 'atem_page_transition.dart';
 import 'atem_type.dart';
 import 'atem_geometry.dart';
 
@@ -290,9 +290,11 @@ abstract final class AtemTheme {
         textStyle: text.bodySmall?.copyWith(color: AtemColors.textPrimary),
       ),
 
+      // Ein Übergang für alle Plattformen — er beschreibt keine Geste,
+      // sondern eine Richtung, und die ist überall dieselbe.
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
-        TargetPlatform.android: ZoomPageTransitionsBuilder(),
-        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.android: AtemPageTransitionsBuilder(),
+        TargetPlatform.iOS: AtemPageTransitionsBuilder(),
       }),
     );
   }

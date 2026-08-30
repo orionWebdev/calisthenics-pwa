@@ -189,8 +189,21 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? tone : AtemColors.textSecondary;
+    // **Der Ton läuft in seinen Platz.** Ein Farbsprung beim Umschalten liest
+    // sich wie ein Neuaufbau der Leiste; der Übergang zeigt, dass derselbe
+    // Eintrag jetzt aktiv ist.
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(
+        end: active ? tone : AtemColors.textSecondary,
+      ),
+      duration: AtemMotion.duration(context, AtemMotion.normal),
+      curve: AtemMotion.curve,
+      builder: (context, animated, _) =>
+          _build(context, animated ?? AtemColors.textSecondary),
+    );
+  }
 
+  Widget _build(BuildContext context, Color color) {
     return AtemTappable(
       onTap: onTap,
       semanticLabel: semanticLabel,
@@ -218,9 +231,17 @@ class _NavItem extends StatelessWidget {
             ],
             const SizedBox(height: 3),
             // Der Punkt ist dekorativ; der aktive Zustand steckt in Semantics.
-            Opacity(
-              opacity: active ? 1 : 0,
-              child: AtemStatusDot(color: tone, size: AtemDotSize.small),
+            // Der Punkt wächst in seinen Platz statt aufzublitzen.
+            AnimatedScale(
+              scale: active ? 1 : 0,
+              duration: AtemMotion.duration(context, AtemMotion.normal),
+              curve: AtemMotion.curve,
+              child: AnimatedOpacity(
+                opacity: active ? 1 : 0,
+                duration: AtemMotion.duration(context, AtemMotion.normal),
+                child:
+                    AtemStatusDot(color: tone, size: AtemDotSize.small),
+              ),
             ),
           ],
         ),

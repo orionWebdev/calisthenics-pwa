@@ -52,7 +52,8 @@ import '../../../exercises/presentation/widgets/exercise_search.dart';
 /// hier alles ohne den Tab zu verlassen; wer nicht sucht, scrollt daran vorbei
 /// wie vorher.
 class WorkoutsScreen extends ConsumerStatefulWidget {
-  const WorkoutsScreen({super.key, required this.onStart, this.embedded = false});
+  const WorkoutsScreen(
+      {super.key, required this.onStart, this.embedded = false});
 
   /// Trägt die Startanfrage nach oben. Der Tab kennt den Runner nicht.
   final ValueChanged<StartRequest> onStart;
@@ -93,174 +94,175 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     final session = dashboard.value?.session;
 
     final list = ListView(
-          padding: const EdgeInsets.fromLTRB(
-              AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 130),
-          children: [
-            if (!widget.embedded) ...[
-              Text(l10n.workoutsTitle, style: AtemType.titleLarge.of(context)),
-              const SizedBox(height: 20),
-            ],
-            if (dashboard.hasError)
-              AtemErrorState(
-                title: l10n.listErrorTitle,
-                body: l10n.listErrorBody,
-                retryLabel: l10n.commonRetry,
-                onRetry: () => ref.invalidate(dashboardDataProvider),
-              )
-            else if (session != null)
-              _TodayCard(
-                session: session,
-                plan: ref
-                    .watch(plansProvider)
-                    .value
-                    ?.where((p) => p.id == session.planId)
-                    .firstOrNull,
-                onStart: () => _startToday(context, session),
-              )
-            else
-              _EmptyToday(
-                onFree: () => _startFree(context),
-                onPickPlan: () => _openPlans(context),
-              ),
-            // „Freies Training" ist gleichwertiger Eingang, kein versteckter
-            // Link — direkt unter der Heute-Karte (Board 05, A1/1).
-            if (session != null) ...[
-              const SizedBox(height: 8),
-              AtemButton.ghost(
-                label: l10n.workoutsFree,
-                semanticLabel: l10n.workoutsFreeStart,
-                expand: true,
-                onPressed: () => _startFree(context),
-              ),
-            ],
-            const SizedBox(height: 28),
-            _SectionHeader(
-              title: l10n.workoutsPlansLabel.toUpperCase(),
-              actionLabel:
-                  plans.isEmpty ? null : l10n.workoutsPlansAll(plans.length),
-              onAction: plans.isEmpty ? null : () => _openPlans(context),
+      padding: const EdgeInsets.fromLTRB(
+          AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 130),
+      children: [
+        if (!widget.embedded) ...[
+          Text(l10n.workoutsTitle, style: AtemType.titleLarge.of(context)),
+          const SizedBox(height: 20),
+        ],
+        if (dashboard.hasError)
+          AtemErrorState(
+            title: l10n.listErrorTitle,
+            body: l10n.listErrorBody,
+            retryLabel: l10n.commonRetry,
+            onRetry: () => ref.invalidate(dashboardDataProvider),
+          )
+        else if (session != null)
+          AtemEntrance(
+            child: _TodayCard(
+              session: session,
+              plan: ref
+                  .watch(plansProvider)
+                  .value
+                  ?.where((p) => p.id == session.planId)
+                  .firstOrNull,
+              onStart: () => _startToday(context, session),
             ),
-            const SizedBox(height: 8),
-            if (plans.isEmpty)
-              AtemCard.list(
-                padding: const EdgeInsets.all(18),
-                child: AtemEmptyState(
-                  title: l10n.workoutsTodayEmptyTitle,
-                  body: l10n.workoutsTodayEmptyBody,
-                ),
-              )
-            else
-              AtemCard.list(
-                padding: EdgeInsets.zero,
-                child: Column(
-                  children: [
-                    for (var i = 0;
-                        i < plans.length && i < _plansPreview;
-                        i++) ...[
-                      if (i > 0)
-                        const Divider(
-                            height: 1, thickness: 1, color: AtemColors.border),
-                      PlanRow(
-                        plan: plans[i],
-                        onTap: () => _openPlan(context, plans[i]),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            const SizedBox(height: 28),
-            // Die Balance steht **zwischen** Plänen und Übungen: Sie
-            // beantwortet weder „was mache ich jetzt" noch „was gibt es
-            // sonst", sondern „was habe ich vernachlässigt" — und das ist
-            // die Frage, die zwischen beiden liegt.
-            Builder(
-              builder: (context) {
-                final balance = MuscleBalance.compute(
-                  ref.watch(sessionsProvider).value ?? const [],
-                  ref.watch(exercisesProvider).value ?? const [],
-                  ref.watch(historyReferenceProvider),
-                );
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    MuscleBalanceCard(balance: balance),
-                    if (balance.longestGaps.isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      MuscleGapsCard(balance: balance),
-                    ],
-                  ],
-                );
-              },
+          )
+        else
+          AtemEntrance(
+            child: _EmptyToday(
+              onFree: () => _startFree(context),
+              onPickPlan: () => _openPlans(context),
             ),
-            const SizedBox(height: 28),
-            _SectionHeader(
-              // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"
-              // sagt, wie gross der Bestand ist; „Alle ansehen" sagt, wohin
-              // der Weg führt. Beides in einer Zeile wäre eine Zahl zu viel.
-              title: l10n.exercisesBlockTitle(exerciseCount).toUpperCase(),
-              actionLabel: l10n.exercisesBlockAll,
-              onAction: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const ExerciseListScreen(),
-                ),
-              ),
+          ),
+        // „Freies Training" ist gleichwertiger Eingang, kein versteckter
+        // Link — direkt unter der Heute-Karte (Board 05, A1/1).
+        if (session != null) ...[
+          const SizedBox(height: 8),
+          AtemButton.ghost(
+            label: l10n.workoutsFree,
+            semanticLabel: l10n.workoutsFreeStart,
+            expand: true,
+            onPressed: () => _startFree(context),
+          ),
+        ],
+        const SizedBox(height: 28),
+        _SectionHeader(
+          title: l10n.workoutsPlansLabel.toUpperCase(),
+          actionLabel:
+              plans.isEmpty ? null : l10n.workoutsPlansAll(plans.length),
+          onAction: plans.isEmpty ? null : () => _openPlans(context),
+        ),
+        const SizedBox(height: 8),
+        if (plans.isEmpty)
+          AtemCard.list(
+            padding: const EdgeInsets.all(18),
+            child: AtemEmptyState(
+              title: l10n.workoutsTodayEmptyTitle,
+              body: l10n.workoutsTodayEmptyBody,
             ),
-            const SizedBox(height: 10),
-            // **Ein Block, keine losen Zeilen** (Board 07, A1/2): „Gewicht
-            // entsteht durch Fläche, nicht durch Position." Aus einer
-            // 44-dp-Suchzeile wird eine Karte mit Sucheingang, neun
-            // Muskelfiltern und dem Anlegen-Weg.
-            AtemCard.list(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ExerciseSearchField(
-                    controller: _search,
-                    onChanged: (v) {
-                      ref.read(exerciseQueryProvider.notifier).set(v);
-                      setState(() {});
-                    },
-                    onClear: () {
-                      _search.clear();
-                      ref.read(exerciseQueryProvider.notifier).clear();
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: 14),
-                  Text(l10n.exercisesBlockByMuscle.toUpperCase(),
-                      style: AtemType.labelMicro.of(context)),
-                  const SizedBox(height: 10),
-                  // Ohne eigenes Seitenpolster: Der Block liegt schon in dem
-                  // der Karte, und ein zweites schöbe den ersten Chip in die
-                  // Mitte.
-                  ExerciseFilterRow(
-                    selected: muscle,
-                    padding: EdgeInsets.zero,
-                    onSelect: (m) =>
-                        ref.read(exerciseFilterProvider.notifier).toggle(m),
-                    onAll: () =>
-                        ref.read(exerciseFilterProvider.notifier).clear(),
-                  ),
-                  const SizedBox(height: 10),
-                  _ExerciseMatches(matches: matches, limit: _exercisePreview),
-                  const SizedBox(height: 14),
-                  AtemButton.outline(
-                    label: l10n.exercisesCreate,
-                    semanticLabel: l10n.exercisesCreate,
-                    leading: const Icon(Icons.add,
-                        size: 18, color: AtemColors.cyan),
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const ExerciseFormScreen(),
-                      ),
-                    ),
+          )
+        else
+          AtemCard.list(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0; i < plans.length && i < _plansPreview; i++) ...[
+                  if (i > 0)
+                    const Divider(
+                        height: 1, thickness: 1, color: AtemColors.border),
+                  PlanRow(
+                    plan: plans[i],
+                    onTap: () => _openPlan(context, plans[i]),
                   ),
                 ],
-              ),
+              ],
             ),
-          ],
-        );
+          ),
+        const SizedBox(height: 28),
+        // Die Balance steht **zwischen** Plänen und Übungen: Sie
+        // beantwortet weder „was mache ich jetzt" noch „was gibt es
+        // sonst", sondern „was habe ich vernachlässigt" — und das ist
+        // die Frage, die zwischen beiden liegt.
+        Builder(
+          builder: (context) {
+            final balance = MuscleBalance.compute(
+              ref.watch(sessionsProvider).value ?? const [],
+              ref.watch(exercisesProvider).value ?? const [],
+              ref.watch(historyReferenceProvider),
+            );
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                MuscleBalanceCard(balance: balance),
+                if (balance.longestGaps.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  MuscleGapsCard(balance: balance),
+                ],
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 28),
+        _SectionHeader(
+          // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"
+          // sagt, wie gross der Bestand ist; „Alle ansehen" sagt, wohin
+          // der Weg führt. Beides in einer Zeile wäre eine Zahl zu viel.
+          title: l10n.exercisesBlockTitle(exerciseCount).toUpperCase(),
+          actionLabel: l10n.exercisesBlockAll,
+          onAction: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const ExerciseListScreen(),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        // **Ein Block, keine losen Zeilen** (Board 07, A1/2): „Gewicht
+        // entsteht durch Fläche, nicht durch Position." Aus einer
+        // 44-dp-Suchzeile wird eine Karte mit Sucheingang, neun
+        // Muskelfiltern und dem Anlegen-Weg.
+        AtemCard.list(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ExerciseSearchField(
+                controller: _search,
+                onChanged: (v) {
+                  ref.read(exerciseQueryProvider.notifier).set(v);
+                  setState(() {});
+                },
+                onClear: () {
+                  _search.clear();
+                  ref.read(exerciseQueryProvider.notifier).clear();
+                  setState(() {});
+                },
+              ),
+              const SizedBox(height: 14),
+              Text(l10n.exercisesBlockByMuscle.toUpperCase(),
+                  style: AtemType.labelMicro.of(context)),
+              const SizedBox(height: 10),
+              // Ohne eigenes Seitenpolster: Der Block liegt schon in dem
+              // der Karte, und ein zweites schöbe den ersten Chip in die
+              // Mitte.
+              ExerciseFilterRow(
+                selected: muscle,
+                padding: EdgeInsets.zero,
+                onSelect: (m) =>
+                    ref.read(exerciseFilterProvider.notifier).toggle(m),
+                onAll: () => ref.read(exerciseFilterProvider.notifier).clear(),
+              ),
+              const SizedBox(height: 10),
+              _ExerciseMatches(matches: matches, limit: _exercisePreview),
+              const SizedBox(height: 14),
+              AtemButton.outline(
+                label: l10n.exercisesCreate,
+                semanticLabel: l10n.exercisesCreate,
+                leading:
+                    const Icon(Icons.add, size: 18, color: AtemColors.cyan),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const ExerciseFormScreen(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
 
     if (widget.embedded) return list;
     return Scaffold(
@@ -377,7 +379,8 @@ class _TodayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final minutes = plan?.estimatedDuration.inMinutes ?? session.duration.inMinutes;
+    final minutes =
+        plan?.estimatedDuration.inMinutes ?? session.duration.inMinutes;
     final meta = <String>[
       if (plan != null) l10n.exerciseCountShort(plan!.exerciseCount),
       l10n.durationApproxMinutes(minutes),
@@ -437,8 +440,7 @@ class _EmptyToday extends StatelessWidget {
           Text(l10n.workoutsTodayLabel.toUpperCase(),
               style: AtemType.labelMicro.of(context)),
           const SizedBox(height: 8),
-          Text(l10n.emptyTodayTitle,
-              style: AtemType.titleMedium.of(context)),
+          Text(l10n.emptyTodayTitle, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 6),
           Text(l10n.emptyTodayBody, style: AtemType.labelSmall.of(context)),
           const SizedBox(height: 16),

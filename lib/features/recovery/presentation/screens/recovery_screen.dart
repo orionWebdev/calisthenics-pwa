@@ -63,7 +63,9 @@ class RecoveryScreen extends ConsumerWidget {
             children: [
               _Header(count: entries.length),
               const SizedBox(height: 18),
-              _StatusCard(status: status, onAdd: () => _add(context)),
+              AtemEntrance(
+                child: _StatusCard(status: status, onAdd: () => _add(context)),
+              ),
 
               if (byKind.isNotEmpty) ...[
                 const SizedBox(height: 22),
@@ -77,8 +79,8 @@ class RecoveryScreen extends ConsumerWidget {
                     for (final kind in RecoveryKind.values)
                       if (byKind[kind] case final n? when n > 0)
                         AtemBadge(
-                          label:
-                              '${recoveryKindName(l10n, kind)} $n'.toUpperCase(),
+                          label: '${recoveryKindName(l10n, kind)} $n'
+                              .toUpperCase(),
                         ),
                   ],
                 ),
@@ -92,19 +94,22 @@ class RecoveryScreen extends ConsumerWidget {
                 Text(l10n.recoveryTabAll.toUpperCase(),
                     style: AtemType.labelMicro.of(context)),
                 const SizedBox(height: 10),
-                AtemCard.list(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      for (var i = 0; i < entries.length; i++) ...[
-                        if (i > 0)
-                          const Divider(
-                              height: 1,
-                              thickness: 1,
-                              color: AtemColors.border),
-                        _Row(session: entries[i]),
+                AtemEntrance(
+                  index: 2,
+                  child: AtemCard.list(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < entries.length; i++) ...[
+                          if (i > 0)
+                            const Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: AtemColors.border),
+                          _Row(session: entries[i]),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ],
@@ -115,8 +120,7 @@ class RecoveryScreen extends ConsumerWidget {
     );
   }
 
-  static Future<void> _add(BuildContext context) =>
-      RecoverySheet.show(context);
+  static Future<void> _add(BuildContext context) => RecoverySheet.show(context);
 }
 
 class _Header extends StatelessWidget {
@@ -209,8 +213,7 @@ class _StatusCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(title,
-                            style: AtemType.titleMedium.of(context)),
+                        Text(title, style: AtemType.titleMedium.of(context)),
                         const SizedBox(height: 5),
                         Text(detail, style: AtemType.labelSmall.of(context)),
                       ],
@@ -225,8 +228,7 @@ class _StatusCard extends StatelessWidget {
             label: l10n.recoveryAdd,
             semanticLabel: l10n.recoveryAdd,
             accent: AtemColors.green,
-            leading:
-                const Icon(Icons.add, size: 18, color: AtemColors.green),
+            leading: const Icon(Icons.add, size: 18, color: AtemColors.green),
             onPressed: onAdd,
           ),
         ],

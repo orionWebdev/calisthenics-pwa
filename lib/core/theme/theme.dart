@@ -10,5 +10,6 @@ export 'atem_geometry.dart';
 export 'atem_glow.dart';
 export 'atem_gradients.dart';
 export 'atem_motion.dart';
+export 'atem_page_transition.dart';
 export 'atem_theme.dart';
 export 'atem_type.dart';

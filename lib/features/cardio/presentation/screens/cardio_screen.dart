@@ -170,7 +170,8 @@ class _EmptyCardio extends StatelessWidget {
         AtemButton.gradient(
           label: l10n.cardioAddFirst,
           semanticLabel: l10n.cardioAddFirst,
-          leading: const Icon(Icons.add, size: 18, color: AtemColors.textPrimary),
+          leading:
+              const Icon(Icons.add, size: 18, color: AtemColors.textPrimary),
           onPressed: onLog,
         ),
         const SizedBox(height: 10),
@@ -230,7 +231,7 @@ class _Sessions extends ConsumerWidget {
           _LiveNotice(onTap: onLive),
           const SizedBox(height: 14),
         ],
-        _WeekTile(weekly: weekly),
+        AtemEntrance(child: _WeekTile(weekly: weekly)),
         const SizedBox(height: 22),
         Text(
           (weekly.hasWeekly ? l10n.historyRecentLabel : l10n.cardioAllSessions)
@@ -238,17 +239,20 @@ class _Sessions extends ConsumerWidget {
           style: AtemType.labelMedium.of(context),
         ),
         const SizedBox(height: 8),
-        AtemCard.list(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              for (var i = 0; i < sessions.length; i++) ...[
-                if (i > 0)
-                  const Divider(
-                      height: 1, thickness: 1, color: AtemColors.border),
-                CardioSessionRow(session: sessions[i]),
+        AtemEntrance(
+          index: 1,
+          child: AtemCard.list(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (var i = 0; i < sessions.length; i++) ...[
+                  if (i > 0)
+                    const Divider(
+                        height: 1, thickness: 1, color: AtemColors.border),
+                  CardioSessionRow(session: sessions[i]),
+                ],
               ],
-            ],
+            ),
           ),
         ),
         if (thin) ...[
@@ -278,8 +282,8 @@ class _LiveNotice extends ConsumerWidget {
     final l10n = AppL10n.of(context);
     final draft = ref.watch(cardioLiveProvider).value;
     if (draft == null) return const SizedBox.shrink();
-    final text =
-        l10n.liveRunningNotice(formatClock(draft.clock.elapsed(DateTime.now())));
+    final text = l10n
+        .liveRunningNotice(formatClock(draft.clock.elapsed(DateTime.now())));
 
     return AtemCard.list(
       onTap: onTap,
@@ -341,15 +345,15 @@ class _WeekTile extends StatelessWidget {
                     style: AtemType.labelMicro.of(context)),
                 const SizedBox(height: 6),
                 Text(l10n.unitKilometers(km),
-                    style: AtemType.valueLarge
-                        .of(context)
-                        .copyWith(fontSize: 28)),
+                    style:
+                        AtemType.valueLarge.of(context).copyWith(fontSize: 28)),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 6,
                   runSpacing: 6,
                   children: [
-                    for (final chip in chips) AtemBadge(label: chip.toUpperCase()),
+                    for (final chip in chips)
+                      AtemBadge(label: chip.toUpperCase()),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -394,10 +398,18 @@ class _WeekTile extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.end,
                 spacing: 10,
                 children: [
-                  Text(l10n.unitKilometers(km),
+                  // Die Wochenzahl läuft zu ihrem Wert: Wer eine Einheit
+                  // erfasst und zurückkommt, soll sehen, dass sie
+                  // angekommen ist — nicht bloss eine andere Zahl vorfinden.
+                  AtemAnimatedNumber(
+                    value: weekly.thisWeekKm,
+                    builder: (context, v) => Text(
+                      l10n.unitKilometers(formatKm(context, v)),
                       style: AtemType.valueLarge
                           .of(context)
-                          .copyWith(fontSize: 28)),
+                          .copyWith(fontSize: 28),
+                    ),
+                  ),
                   if (shiftText != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 6),
@@ -473,7 +485,8 @@ class _AnalysisState extends ConsumerState<_Analysis> {
                       child: Text(
                         l10n
                             .analysisWeeklyBasis(
-                                formatKm(context, weekly.eightWeekAverageKm ?? 0),
+                                formatKm(
+                                    context, weekly.eightWeekAverageKm ?? 0),
                                 weekly.eightWeekCount)
                             .toUpperCase(),
                         style: AtemType.labelMicro.of(context),
@@ -585,7 +598,8 @@ class _PaceBlock extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         (isRun
-                                ? l10n.analysisPaceBasis(v(median), series.count)
+                                ? l10n.analysisPaceBasis(
+                                    v(median), series.count)
                                 : l10n.analysisPaceBasisOther(
                                     v(median), series.count))
                             .toUpperCase(),
@@ -699,9 +713,11 @@ class _PercentileBlock extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${v(series.slowest!)} ${l10n.analysisPctSlowest.toUpperCase()}',
+                Text(
+                    '${v(series.slowest!)} ${l10n.analysisPctSlowest.toUpperCase()}',
                     style: AtemType.labelDeco.of(context)),
-                Text('${v(series.fastest!)} ${l10n.analysisPctFastest.toUpperCase()}',
+                Text(
+                    '${v(series.fastest!)} ${l10n.analysisPctFastest.toUpperCase()}',
                     style: AtemType.labelDeco.of(context)),
               ],
             ),
@@ -757,7 +773,8 @@ class _ActivityChips extends StatelessWidget {
                 ),
               ),
               child: Text(
-                '${activityLabel(l10n, entry.key)} · ${entry.value}'.toUpperCase(),
+                '${activityLabel(l10n, entry.key)} · ${entry.value}'
+                    .toUpperCase(),
                 style: AtemType.labelMicro.of(context).copyWith(
                       color: entry.key == selected
                           ? AtemColors.cyan

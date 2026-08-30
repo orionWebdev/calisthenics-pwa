@@ -80,6 +80,12 @@ class AtemProgressBar extends StatelessWidget {
   final Color? accent;
   final double _height;
 
+  _BarPainter _painterFor(double v) => _BarPainter(
+        value: v,
+        gradient: mode == AtemProgressMode.share ? gradient : null,
+        accent: accent ?? AtemColors.cyan,
+      );
+
   @override
   Widget build(BuildContext context) {
     return _ProgressSemantics(
@@ -94,13 +100,23 @@ class AtemProgressBar extends StatelessWidget {
         width: double.infinity,
         child: value == null
             ? _IndeterminateTrack(height: _height)
-            : CustomPaint(
-                painter: _BarPainter(
-                  value: value!,
-                  gradient: mode == AtemProgressMode.share ? gradient : null,
-                  accent: accent ?? AtemColors.cyan,
-                ),
-              ),
+            // **Der Balken läuft zu seinem Wert.** Ein Anteil, der springt,
+            // sieht aus wie ein Neuaufbau; einer, der läuft, sieht aus wie
+            // eine Änderung. Beim ersten Bauen gibt es nichts zu laufen —
+            // `TweenAnimationBuilder` zeichnet den Wert dann sofort.
+            //
+            // Ausgenommen der Countdown: Er misst Zeit, und Zeit darf man
+            // nicht weichzeichnen. Er zeichnet immer den echten Stand.
+            : mode == AtemProgressMode.elapse
+                ? CustomPaint(painter: _painterFor(value!))
+                : TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: value, end: value),
+                    duration: AtemMotion.duration(
+                        context, AtemProgressRules.shareDuration),
+                    curve: AtemMotion.curve,
+                    builder: (context, v, _) =>
+                        CustomPaint(painter: _painterFor(v)),
+                  ),
       ),
     );
   }
