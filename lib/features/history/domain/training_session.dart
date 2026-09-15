@@ -106,6 +106,49 @@ enum RecoveryKind {
   }
 }
 
+/// Wogegen eine Krafteinheit ging, wenn die Sätze fehlen.
+///
+/// ## Wozu das Feld da ist
+///
+/// 16 der 63 Krafteinheiten im Bestand tragen **keine einzige Übung** — sie
+/// wurden nachträglich eingetragen, ohne jeden Satz. Für die Muskelbalance
+/// sind sie stumm: `MuscleBalance` zählt sie als `sessionsWithoutExercises`
+/// und lässt sie aus jeder Verteilung heraus. Ein grober Fokus macht aus
+/// „darüber weiss ich nichts" ein „das war ein Zugtag".
+///
+/// **Er ersetzt die Sätze nicht.** Eine Einheit mit Fokus und ohne Sätze
+/// trägt kein Volumen, keine Tonnage und keinen Satz — jede Auswertung, die
+/// beides mischt, muss die zwei Grundlagen getrennt ausweisen.
+///
+/// ## Warum eigene Werte statt der Muskelgruppen
+///
+/// `MuscleGroup` beschreibt, was eine Übung trainiert. Dies beschreibt, was
+/// man sich vorgenommen hat — und das denkt niemand in sechs Häkchen, sondern
+/// in einem Wort. `other` ist ein echter Wert, kein Auffangbecken für
+/// Unbekanntes: Was der Draht nicht kennt, wird `null`.
+enum WorkoutFocus {
+  push('push'),
+  pull('pull'),
+  legs('legs'),
+  upperBody('upper_body'),
+  lowerBody('lower_body'),
+  fullBody('full_body'),
+  core('core'),
+  other('other');
+
+  const WorkoutFocus(this.wire);
+
+  /// Der Wert, wie er in Firestore steht. Nie übersetzen, nie anzeigen.
+  final String wire;
+
+  static WorkoutFocus? fromWire(String? value) {
+    for (final focus in values) {
+      if (focus.wire == value) return focus;
+    }
+    return null;
+  }
+}
+
 /// Das Tempo einer Ausdauereinheit — **immer gerechnet, nie gespeichert**.
 ///
 /// Distanz und Dauer sind die Wahrheit. Ein drittes Feld, das von beiden
@@ -153,7 +196,7 @@ sealed class TrainingSession {
     this.duration,
     this.notes,
     this.rpe,
-    this.preWorkoutEnergy,
+    this.preWorkoutReadiness,
     this.postWorkoutFeeling,
   });
 
@@ -179,8 +222,25 @@ sealed class TrainingSession {
   /// auch bei Cardio.
   final int? rpe;
 
+  /// Wie bereit man sich **vor** der Einheit gefühlt hat, 1 bis 5.
+  ///
+  /// ## Nicht zu verwechseln mit `Readiness`
+  ///
+  /// `readiness.dart` rechnet aus akuter und chronischer Last eine Zone —
+  /// eine Ableitung aus dem Bestand, die niemand eintippt. Dies hier ist das
+  /// Gegenteil: eine **Selbstauskunft**, die nur der Mensch kennt und die aus
+  /// keiner anderen Zahl folgt. Die beiden dürfen nie ineinander gerechnet
+  /// werden — sonst erklärte die App eine Meinung zur Messung.
+  ///
+  /// **Der Draht heisst weiter `preWorkoutEnergy`.** Die Vorgänger-PWA hat das
+  /// Feld so angelegt, und 136 Dokumente tragen es. Ein neuer Feldname hätte
+  /// zwei Lesepfade für dieselbe Frage bedeutet.
+  ///
   /// Ebenfalls in allen Arten, in genau denselben Dokumenten wie [rpe].
-  final int? preWorkoutEnergy;
+  final int? preWorkoutReadiness;
+
+  /// Wie es sich **nach** der Einheit angefühlt hat, 1 bis 5. Selbstauskunft
+  /// wie [preWorkoutReadiness], derselbe Vorbehalt.
   final int? postWorkoutFeeling;
 
   SessionKind? get kind;
@@ -214,11 +274,12 @@ final class StrengthSession extends TrainingSession {
     super.duration,
     super.notes,
     super.rpe,
-    super.preWorkoutEnergy,
+    super.preWorkoutReadiness,
     super.postWorkoutFeeling,
     this.planId,
     this.planName,
     this.discipline,
+    this.workoutFocus,
   });
 
   /// `true` für `type: bodyweight`, `false` für `type: strength`. Die Daten
@@ -232,6 +293,13 @@ final class StrengthSession extends TrainingSession {
   /// `bodyweight` oder `weights` — im Bestand 14 beziehungsweise 3 Dokumente.
   /// Steuert im Scoring den Multiplikator der Ersatzrechnung nach Dauer.
   final String? discipline;
+
+  /// Wogegen die Einheit ging. Optional, auch neben Sätzen erlaubt.
+  ///
+  /// Steht **nur hier**, nicht auf der Basisklasse: Eine Ausdauereinheit kennt
+  /// die Frage nicht — dieselbe Begründung, mit der `distanceKm` nicht auf
+  /// [TrainingSession] steht.
+  final WorkoutFocus? workoutFocus;
 
   @override
   SessionKind get kind =>
@@ -252,11 +320,12 @@ final class StrengthSession extends TrainingSession {
         duration: duration ?? this.duration,
         notes: notes,
         rpe: rpe,
-        preWorkoutEnergy: preWorkoutEnergy,
+        preWorkoutReadiness: preWorkoutReadiness,
         postWorkoutFeeling: postWorkoutFeeling,
         planId: planId,
         planName: planName,
         discipline: discipline,
+        workoutFocus: workoutFocus,
       );
 }
 
@@ -272,7 +341,7 @@ final class CardioSession extends TrainingSession {
     super.duration,
     super.notes,
     super.rpe,
-    super.preWorkoutEnergy,
+    super.preWorkoutReadiness,
     super.postWorkoutFeeling,
     this.distanceKm,
     this.avgHr,
@@ -322,7 +391,7 @@ final class CardioSession extends TrainingSession {
         duration: duration ?? this.duration,
         notes: notes,
         rpe: rpe,
-        preWorkoutEnergy: preWorkoutEnergy,
+        preWorkoutReadiness: preWorkoutReadiness,
         postWorkoutFeeling: postWorkoutFeeling,
         distanceKm: distanceKm,
         avgHr: avgHr,
@@ -341,7 +410,7 @@ final class RecoverySession extends TrainingSession {
     super.duration,
     super.notes,
     super.rpe,
-    super.preWorkoutEnergy,
+    super.preWorkoutReadiness,
     super.postWorkoutFeeling,
     this.recoveryKind,
     this.rawKind,
@@ -371,7 +440,7 @@ final class RecoverySession extends TrainingSession {
         duration: duration ?? this.duration,
         notes: notes,
         rpe: rpe,
-        preWorkoutEnergy: preWorkoutEnergy,
+        preWorkoutReadiness: preWorkoutReadiness,
         postWorkoutFeeling: postWorkoutFeeling,
         recoveryKind: recoveryKind,
         rawKind: rawKind,
@@ -394,7 +463,7 @@ final class UnknownSession extends TrainingSession {
     super.duration,
     super.notes,
     super.rpe,
-    super.preWorkoutEnergy,
+    super.preWorkoutReadiness,
     super.postWorkoutFeeling,
   });
 
@@ -414,7 +483,7 @@ final class UnknownSession extends TrainingSession {
         duration: duration ?? this.duration,
         notes: notes,
         rpe: rpe,
-        preWorkoutEnergy: preWorkoutEnergy,
+        preWorkoutReadiness: preWorkoutReadiness,
         postWorkoutFeeling: postWorkoutFeeling,
       );
 }

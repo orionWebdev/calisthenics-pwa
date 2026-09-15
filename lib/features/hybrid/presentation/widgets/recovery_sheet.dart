@@ -12,6 +12,7 @@ import '../../../history/application/history_providers.dart';
 import '../../../history/domain/session_draft.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
+import '../../../history/presentation/widgets/wellness_fields.dart';
 
 /// Regeneration erfassen — **vier Felder, keine Distanz, keine Intensität**
 /// (Board 11, C2/2). Elf von zwölf Einheiten im Bestand tragen ohnehin nur
@@ -40,6 +41,8 @@ class _Body extends ConsumerStatefulWidget {
 
 class _BodyState extends ConsumerState<_Body> {
   RecoveryKind? _kind;
+  int? _readiness;
+  int? _feeling;
   late DateTime _date;
   final _duration = TextEditingController();
   final _notes = TextEditingController();
@@ -113,6 +116,8 @@ class _BodyState extends ConsumerState<_Body> {
         duration: _durationValue!,
         notes: _notes.text,
         recoveryKind: _kind,
+        preWorkoutReadiness: _readiness,
+        postWorkoutFeeling: _feeling,
       ));
       if (!mounted) return;
       ref.read(snackbarProvider.notifier).show(AtemSnack(
@@ -222,6 +227,20 @@ class _BodyState extends ConsumerState<_Body> {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 18),
+        // Freiwillig, wie überall. Regeneration trägt keine Last — aber wie
+        // man vorher und nachher dastand, ist genau hier eine Angabe wert.
+        AtemFieldLabel(label: l10n.formReadiness),
+        ReadinessChoice(
+          value: _readiness,
+          onChanged: (v) => setState(() => _readiness = v),
+        ),
+        const SizedBox(height: 18),
+        AtemFieldLabel(label: l10n.formFeeling),
+        FeelingChoice(
+          value: _feeling,
+          onChanged: (v) => setState(() => _feeling = v),
         ),
         const SizedBox(height: 18),
         AtemFieldLabel(label: l10n.formNote),

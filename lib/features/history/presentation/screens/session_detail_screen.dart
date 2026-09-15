@@ -340,7 +340,7 @@ class SessionDetailScreen extends ConsumerWidget {
           leading: const Icon(Icons.add, size: 18, color: AtemColors.cyan),
           onPressed: () => Navigator.of(context, rootNavigator: true).pushNamed(
             WorkoutRunnerScreen.routeName,
-            arguments: WorkoutStart.session(session.id),
+            arguments: WorkoutLaunch(WorkoutStart.session(session.id)),
           ),
         ),
       ];

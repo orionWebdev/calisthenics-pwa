@@ -71,3 +71,26 @@ class WorkoutStart {
   String toString() => 'WorkoutStart(plan: $planId, termin: $scheduleId, '
       'einheit: $sessionId, rest: ${restSeconds}s)';
 }
+
+/// Was der Runner beim Öffnen mitbekommt: der Schlüssel **und** die Antwort.
+///
+/// ## Warum zwei Dinge und nicht eins
+///
+/// [WorkoutStart] ist der Familienschlüssel des Runner-Providers und braucht
+/// deshalb Gleichheit. Die Bereitschaft aus dem Startblatt gehört nicht
+/// hinein: Zwei Einheiten mit demselben Plan sind dieselbe Einheit, egal wie
+/// bereit jemand war. Stünde sie im Schlüssel, legte Riverpod bei jeder
+/// Änderung eine zweite an — und sie aus `==` auszunehmen wäre ein Feld, das
+/// gleich und ungleich zugleich ist.
+///
+/// Also reist sie daneben mit, als Argument der Route.
+@immutable
+class WorkoutLaunch {
+  const WorkoutLaunch(this.start, {this.readiness});
+
+  final WorkoutStart start;
+
+  /// Bereitschaft vor dem Start, 1 bis 5. `null`, wenn übersprungen — oder
+  /// wenn eine bestehende Einheit ergänzt wird: Dort wäre sie geraten.
+  final int? readiness;
+}

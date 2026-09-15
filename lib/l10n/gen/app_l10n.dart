@@ -7506,6 +7506,174 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Herkunft'**
   String get exercisesFilterOrigin;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gruppenlabel der Selbstauskunft vor der Einheit
+  ///
+  /// In de, this message translates to:
+  /// **'Bereitschaft'**
+  String get formReadiness;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Bereitschaftsauswahl
+  ///
+  /// In de, this message translates to:
+  /// **'Vor dem Training. Freiwillig.'**
+  String get formReadinessHint;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 1
+  ///
+  /// In de, this message translates to:
+  /// **'erschöpft'**
+  String get formReadiness1;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 2
+  ///
+  /// In de, this message translates to:
+  /// **'müde'**
+  String get formReadiness2;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 3
+  ///
+  /// In de, this message translates to:
+  /// **'okay'**
+  String get formReadiness3;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 4
+  ///
+  /// In de, this message translates to:
+  /// **'gut'**
+  String get formReadiness4;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 5
+  ///
+  /// In de, this message translates to:
+  /// **'frisch'**
+  String get formReadiness5;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gruppenlabel der Selbstauskunft nach der Einheit
+  ///
+  /// In de, this message translates to:
+  /// **'Gefühl danach'**
+  String get formFeeling;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Gefühlsauswahl
+  ///
+  /// In de, this message translates to:
+  /// **'Nach dem Training. Freiwillig.'**
+  String get formFeelingHint;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 1
+  ///
+  /// In de, this message translates to:
+  /// **'platt'**
+  String get formFeeling1;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 2
+  ///
+  /// In de, this message translates to:
+  /// **'müde'**
+  String get formFeeling2;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 3
+  ///
+  /// In de, this message translates to:
+  /// **'okay'**
+  String get formFeeling3;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 4
+  ///
+  /// In de, this message translates to:
+  /// **'gut'**
+  String get formFeeling4;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 5
+  ///
+  /// In de, this message translates to:
+  /// **'stark'**
+  String get formFeeling5;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gruppenlabel der Fokusauswahl einer Krafteinheit
+  ///
+  /// In de, this message translates to:
+  /// **'Fokus'**
+  String get formFocus;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Fokusauswahl
+  ///
+  /// In de, this message translates to:
+  /// **'Wogegen die Einheit ging. Ersetzt keine Sätze.'**
+  String get formFocusHint;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.push
+  ///
+  /// In de, this message translates to:
+  /// **'Drücken'**
+  String get focusPush;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.pull
+  ///
+  /// In de, this message translates to:
+  /// **'Ziehen'**
+  String get focusPull;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.legs
+  ///
+  /// In de, this message translates to:
+  /// **'Beine'**
+  String get focusLegs;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.upperBody
+  ///
+  /// In de, this message translates to:
+  /// **'Oberkörper'**
+  String get focusUpperBody;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.lowerBody
+  ///
+  /// In de, this message translates to:
+  /// **'Unterkörper'**
+  String get focusLowerBody;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.fullBody
+  ///
+  /// In de, this message translates to:
+  /// **'Ganzkörper'**
+  String get focusFullBody;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.core
+  ///
+  /// In de, this message translates to:
+  /// **'Rumpf'**
+  String get focusCore;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.other
+  ///
+  /// In de, this message translates to:
+  /// **'Sonstiges'**
+  String get focusOther;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Titel des Nacherfassungs-Formulars
+  ///
+  /// In de, this message translates to:
+  /// **'Krafteinheit erfassen'**
+  String get strengthFormTitle;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Weg ins Nacherfassungs-Formular
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Sätze erfassen'**
+  String get strengthFormEntry;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis oben im Formular
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Einheit trägt keine Sätze. Sie zählt in Minuten, nicht in Volumen — und erscheint in keiner Muskelverteilung.'**
+  String get strengthFormNoSets;
+
+  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bestätigung nach dem Speichern
+  ///
+  /// In de, this message translates to:
+  /// **'Krafteinheit gespeichert'**
+  String get strengthSavedSnack;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -112,8 +112,13 @@ class FirestoreSessionRepository implements SessionRepository {
       // `createdAt` bleibt unangetastet: Es sagt, wann der Eintrag entstand,
       // nicht wann zuletzt daran gerührt wurde. Beim nachträglichen Verschieben
       // eines Datums ist gerade der Unterschied die Information.
+      // Selbstauskunft gilt in jeder Art — deshalb ohne Hülle, `null` löscht.
+      'preWorkoutEnergy': patch.preWorkoutReadiness ?? FieldValue.delete(),
+      'postWorkoutFeeling': patch.postWorkoutFeeling ?? FieldValue.delete(),
       if (patch.exercises case final exercises?)
         'exercises': _exercisesField(exercises),
+      if (patch.strength case final strength?)
+        'workoutFocus': strength.workoutFocus?.wire ?? FieldValue.delete(),
       if (patch.cardio case final cardio?) ...{
         'distanceKm': cardio.distanceKm ?? FieldValue.delete(),
         'avgHr': cardio.avgHr ?? FieldValue.delete(),
@@ -250,9 +255,22 @@ class FirestoreSessionRepository implements SessionRepository {
       if (draft.planName != null) 'planName': draft.planName,
       if (draft.scheduleId != null) 'scheduleId': draft.scheduleId,
       if (draft.rpe != null) 'rpe': draft.rpe,
+      // Selbstauskunft. Der Draht heisst weiter `preWorkoutEnergy` — siehe
+      // `TrainingSession.preWorkoutReadiness`.
+      if (draft.preWorkoutReadiness != null)
+        'preWorkoutEnergy': draft.preWorkoutReadiness,
+      if (draft.postWorkoutFeeling != null)
+        'postWorkoutFeeling': draft.postWorkoutFeeling,
       // Sekunden nur, wenn sie echt sind — aus einer Uhr, nicht aus einer
       // getippten Minutenzahl. Der Mapper liest `durationSec` mit Vorrang.
       if (draft.durationHasSeconds) 'durationSec': draft.duration.inSeconds,
+      // ---- Kraft: ein Feld, das die PWA nicht kennt. Sie reicht es unbesehen
+      // durch (`js/core/firebase.js:81` spreadet `...doc.data()`), scheitert
+      // also nicht daran und verwirft es auch nicht.
+      if ((draft.kind == SessionKind.strength ||
+              draft.kind == SessionKind.bodyweight) &&
+          draft.workoutFocus != null)
+        'workoutFocus': draft.workoutFocus!.wire,
       // ---- Ausdauer: dieselben Feldnamen wie `saveCardioSession` der PWA.
       if (draft.kind == SessionKind.cardio) ...{
         'activityType': (draft.activity ?? CardioActivity.other).wire,

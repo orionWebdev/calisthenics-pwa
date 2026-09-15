@@ -8,6 +8,7 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/workout_providers.dart';
+import '../../../history/presentation/widgets/wellness_fields.dart';
 import '../../domain/workout_session.dart';
 import '../../data/workout_draft_store.dart';
 import '../../domain/workout_clock.dart';
@@ -27,12 +28,20 @@ import '../widgets/set_row.dart';
 /// Der Screen orchestriert nur: Timer, Navigation, Bausteine. Alles Sichtbare
 /// liegt in `presentation/widgets/`.
 class WorkoutRunnerScreen extends ConsumerStatefulWidget {
-  const WorkoutRunnerScreen({super.key, required this.start});
+  const WorkoutRunnerScreen({
+    super.key,
+    required this.start,
+    this.readiness,
+  });
 
   static const routeName = '/runner';
 
   /// Plan und Pausenzeit. Freies Training trägt keinen Plan.
   final WorkoutStart start;
+
+  /// Die Antwort aus dem Startblatt, 1 bis 5. `null`, wenn übersprungen.
+  /// Sie wandert einmal in den Zustand und wird beim Beenden mitgeschrieben.
+  final int? readiness;
 
   @override
   ConsumerState<WorkoutRunnerScreen> createState() =>
@@ -51,6 +60,14 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   late WorkoutClock _clockState;
 
   bool _ended = false;
+
+  /// Die Antwort aus dem Beenden-Dialog, 1 bis 5.
+  ///
+  /// Sie wird **vor** dem Schreiben eingesammelt, nicht danach: Ein
+  /// nachgereichtes `SessionPatch` trägt laut seinem eigenen Vertrag
+  /// „`null` löscht das Feld" — ein Teilpatch nur für das Gefühl nähme der
+  /// Einheit Dauer und Notiz.
+  int? _feeling;
   int _exIndex = 0;
 
   bool _restCompact = false;
@@ -73,7 +90,31 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
     // Nach dem ersten Aufbau fragen — vorher gibt es keinen Kontext für
     // einen Dialog.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _offerDraft());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _applyReadiness();
+      _offerDraft();
+    });
+  }
+
+  /// Trägt die Antwort aus dem Startblatt in den Zustand.
+  ///
+  /// **Idempotent, und das ist keine Kür.** Beim ersten Frame ist die Einheit
+  /// noch nicht geladen — der `AsyncNotifier` holt sie aus dem Repository —,
+  /// also läuft der erste Versuch ins Leere. Ein zweiter kommt, sobald Daten
+  /// da sind, und ein dritter nach dem Übernehmen eines Zwischenstands, der
+  /// den Zustand ersetzt.
+  ///
+  /// Der Vergleich vor dem Schreiben ist der Schutz gegen die Schleife: Ohne
+  /// ihn erzeugte jedes Setzen einen neuen Zustand, der den Zuhörer weckt,
+  /// der wieder setzt.
+  void _applyReadiness() {
+    final value = widget.readiness;
+    if (value == null) return;
+    final workout = ref.read(workoutSessionProvider(widget.start)).value;
+    if (workout == null || workout.preWorkoutReadiness == value) return;
+    ref
+        .read(workoutSessionProvider(widget.start).notifier)
+        .setReadiness(value);
   }
 
   /// Bietet einen gefundenen Zwischenstand an.
@@ -326,6 +367,12 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final async = ref.watch(workoutSessionProvider(widget.start));
+
+    // Sobald die Einheit da ist — und wieder, wenn ein Zwischenstand den
+    // Zustand ersetzt hat. Siehe [_applyReadiness].
+    ref.listen(workoutSessionProvider(widget.start), (_, __) {
+      _applyReadiness();
+    });
 
     return PopScope(
       // **Die Zurück-Geste beendete das Training vollständig.** Kein
@@ -695,7 +742,12 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       // müsste eine falsche Einheit in seinen Verlauf schreiben.
       alternativeLabel: l10n.workoutScreenDiscardWorkout,
       onAlternative: () => Navigator.of(context).pop(_EndChoice.discard),
-      detail: _EndStats(workout: w, elapsed: _clock),
+      detail: _EndDetail(
+        workout: w,
+        elapsed: _clock,
+        feeling: _feeling,
+        onFeeling: (v) => _feeling = v,
+      ),
     );
 
     if (!mounted) return;
@@ -742,6 +794,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       _ended = true;
       _clockState = _clockState.stopRest();
     });
+    // Vor dem Schreiben, damit `toDraft` sie mitnimmt.
+    _notifier.setFeeling(_feeling);
     // Der Zwischenstand hat seinen Zweck erfüllt.
     await const WorkoutDraftStore().clear();
     try {
@@ -802,6 +856,62 @@ class _TableHead extends StatelessWidget {
 }
 
 /// Statistik im Beenden-Dialog — StatBox als Einlage, nie als eigene Karte.
+/// Der Detailteil des Beenden-Dialogs: die Zahlen und **eine** Frage.
+///
+/// ## Warum die Frage hier steht und nicht in der Zusammenfassung
+///
+/// Die Zusammenfassung erscheint erst, wenn die Einheit schon geschrieben
+/// ist. Eine Antwort von dort müsste nachgereicht werden — und ein
+/// `SessionPatch` nur für das Gefühl löschte laut seinem eigenen Vertrag
+/// Dauer und Notiz mit. Vor dem Schreiben gefragt, reist sie im Entwurf mit.
+///
+/// Der Dialog behält seine drei Wege (speichern, verwerfen, abbrechen). Die
+/// Frage ist keiner davon: Sie ist überspringbar, und wer sie übergeht,
+/// speichert genauso.
+class _EndDetail extends StatefulWidget {
+  const _EndDetail({
+    required this.workout,
+    required this.elapsed,
+    required this.feeling,
+    required this.onFeeling,
+  });
+
+  final ActiveWorkout workout;
+  final String elapsed;
+  final int? feeling;
+  final ValueChanged<int?> onFeeling;
+
+  @override
+  State<_EndDetail> createState() => _EndDetailState();
+}
+
+class _EndDetailState extends State<_EndDetail> {
+  late int? _value = widget.feeling;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _EndStats(workout: widget.workout, elapsed: widget.elapsed),
+        const SizedBox(height: 16),
+        AtemFieldLabel(label: l10n.formFeeling),
+        FeelingChoice(
+          value: _value,
+          surface: AtemColors.surfaceSolid,
+          onChanged: (v) {
+            setState(() => _value = v);
+            widget.onFeeling(v);
+          },
+        ),
+      ],
+    );
+  }
+}
+
 class _EndStats extends StatelessWidget {
   const _EndStats({required this.workout, required this.elapsed});
   final ActiveWorkout workout;

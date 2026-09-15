@@ -68,10 +68,13 @@ class AtemApp extends ConsumerWidget {
         if (settings.name == WorkoutRunnerScreen.routeName) {
           // Ohne Argument: freies Training. Vorher stand hier eine
           // Zeichenkette, die mal Plan-Kennung und mal leer bedeutete.
-          final start =
-              settings.arguments as WorkoutStart? ?? const WorkoutStart.free();
+          final launch = settings.arguments as WorkoutLaunch? ??
+              const WorkoutLaunch(WorkoutStart.free());
           return MaterialPageRoute<void>(
-            builder: (_) => WorkoutRunnerScreen(start: start),
+            builder: (_) => WorkoutRunnerScreen(
+              start: launch.start,
+              readiness: launch.readiness,
+            ),
             settings: settings,
           );
         }

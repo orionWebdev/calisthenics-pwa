@@ -94,10 +94,13 @@ class _AppShellState extends ConsumerState<AppShell>
     // Pausenzeit wandern mit.
     await Navigator.of(context, rootNavigator: true).pushNamed(
       WorkoutRunnerScreen.routeName,
-      arguments: WorkoutStart(
-        planId: request.plan?.id,
-        scheduleId: request.scheduleId,
-        restSeconds: request.restSeconds,
+      arguments: WorkoutLaunch(
+        WorkoutStart(
+          planId: request.plan?.id,
+          scheduleId: request.scheduleId,
+          restSeconds: request.restSeconds,
+        ),
+        readiness: request.readiness,
       ),
     );
   }

@@ -24,6 +24,9 @@ class SessionDraft {
     this.maxHr,
     this.recoveryKind,
     this.durationHasSeconds = false,
+    this.preWorkoutReadiness,
+    this.postWorkoutFeeling,
+    this.workoutFocus,
   });
 
   final String userId;
@@ -44,6 +47,25 @@ class SessionDraft {
   final String? scheduleId;
 
   final int? rpe;
+
+  // ---- Selbstauskunft: in jeder Art, immer freiwillig ----
+
+  /// Bereitschaft **vor** der Einheit, 1 bis 5. Geht nach `preWorkoutEnergy` —
+  /// der Draht der Vorgänger-App, siehe `TrainingSession`.
+  ///
+  /// `null` heisst „nicht beantwortet", nicht „mittelmäßig". Das Feld hat
+  /// keine Vorbelegung, und ein Entwurf ohne Antwort ist der Normalfall.
+  final int? preWorkoutReadiness;
+
+  /// Gefühl **nach** der Einheit, 1 bis 5. Dieselbe Regel.
+  final int? postWorkoutFeeling;
+
+  // ---- Kraft ----
+
+  /// Wogegen die Einheit ging. Nur bei [SessionKind.strength] und
+  /// [SessionKind.bodyweight] — der einzige Weg, eine Krafteinheit **ohne**
+  /// Sätze überhaupt beschreibbar zu machen.
+  final WorkoutFocus? workoutFocus;
 
   // ---- Ausdauer (Board 11, nur diese Felder, keine Vorratsfelder) ----
 

@@ -11,6 +11,7 @@ import '../../../history/application/history_providers.dart';
 import '../../../history/domain/session_draft.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
+import '../../../history/presentation/widgets/wellness_fields.dart';
 import '../cardio_ui.dart';
 import '../widgets/activity_sheet.dart';
 import '../widgets/rpe_choice.dart';
@@ -69,6 +70,8 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
   late final TextEditingController _maxHr;
   late final TextEditingController _notes;
   int? _rpe;
+  int? _readiness;
+  int? _feeling;
 
   /// Sekundengenaue Dauer aus der Uhr — gilt, solange das Feld unverändert
   /// ist. Wer die Minuten überschreibt, meint die Minuten.
@@ -201,6 +204,8 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
       durationHasSeconds: _preciseDuration != null,
       notes: _notes.text,
       rpe: _rpe,
+      preWorkoutReadiness: _readiness,
+      postWorkoutFeeling: _feeling,
       activity: activity,
       distanceKm: _distanceKm,
       avgHr: _intOf(_avgHr),
@@ -261,6 +266,8 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
       (_distanceKm == null ? 0 : 1) +
       (_durationValue == null ? 0 : 1) +
       (_rpe == null ? 0 : 1) +
+      (_readiness == null ? 0 : 1) +
+      (_feeling == null ? 0 : 1) +
       (_intOf(_avgHr) == null ? 0 : 1) +
       (_intOf(_maxHr) == null ? 0 : 1) +
       (_notes.text.trim().isEmpty ? 0 : 1);
@@ -450,7 +457,7 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                         children: [
                     _MoreSection(
                       open: _moreOpen,
-                      count: 4,
+                      count: 6,
                       onToggle: () => setState(() => _moreOpen = !_moreOpen),
                     ),
                     if (_moreOpen) ...[
@@ -461,6 +468,29 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                         onChanged: (v) {
                           _touch();
                           setState(() => _rpe = v);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      // Selbstauskunft. Beim Nacherfassen steht sie hier und
+                      // nicht oben: Wer einen Lauf von vorgestern einträgt,
+                      // erinnert Distanz und Dauer — nicht, wie bereit er war.
+                      AtemFieldLabel(label: l10n.formReadiness),
+                      ReadinessChoice(
+                        value: _readiness,
+                        surface: AtemColors.surfaceSolid,
+                        onChanged: (v) {
+                          _touch();
+                          setState(() => _readiness = v);
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      AtemFieldLabel(label: l10n.formFeeling),
+                      FeelingChoice(
+                        value: _feeling,
+                        surface: AtemColors.surfaceSolid,
+                        onChanged: (v) {
+                          _touch();
+                          setState(() => _feeling = v);
                         },
                       ),
                       const SizedBox(height: 20),

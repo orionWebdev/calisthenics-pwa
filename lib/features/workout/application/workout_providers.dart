@@ -171,6 +171,23 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
     state = AsyncData(w.copyWith(notes: notes));
   }
 
+  /// Die Bereitschaft aus dem Startblatt.
+  ///
+  /// Wird einmal beim Öffnen des Runners gesetzt. `null` bleibt `null` —
+  /// wer die Frage übersprungen hat, hat sie übersprungen.
+  void setReadiness(int? value) {
+    final w = _workout;
+    if (w == null || value == null) return;
+    state = AsyncData(w.copyWith(preWorkoutReadiness: value));
+  }
+
+  /// Das Gefühl beim Beenden.
+  void setFeeling(int? value) {
+    final w = _workout;
+    if (w == null || value == null) return;
+    state = AsyncData(w.copyWith(postWorkoutFeeling: value));
+  }
+
   /// Schliesst die Einheit ab und schreibt sie in die Historie.
   ///
   /// Liefert die Dokument-ID der gespeicherten Einheit, oder `null`, wenn es
@@ -261,6 +278,8 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
       planId: workout.planId,
       planName: workout.title,
       scheduleId: workout.sessionId.isEmpty ? null : workout.sessionId,
+      preWorkoutReadiness: workout.preWorkoutReadiness,
+      postWorkoutFeeling: workout.postWorkoutFeeling,
     );
   }
 }

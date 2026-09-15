@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/gen/app_l10n.dart';
+import '../../history/presentation/widgets/wellness_fields.dart';
 import '../domain/plan.dart';
 
 /// Was gestartet werden soll.
 class StartRequest {
-  const StartRequest({this.plan, this.scheduleId, required this.restSeconds});
+  const StartRequest({
+    this.plan,
+    this.scheduleId,
+    required this.restSeconds,
+    this.readiness,
+  });
 
   /// `null` heißt freies Training.
   final Plan? plan;
@@ -17,6 +23,13 @@ class StartRequest {
   final String? scheduleId;
 
   final int restSeconds;
+
+  /// Die Bereitschaft, 1 bis 5, oder `null` — die Frage ist überspringbar.
+  ///
+  /// Sie steht hier und **nicht** in `WorkoutStart`: Der ist der
+  /// Familienschlüssel des Runner-Providers, und eine Antwort im Schlüssel
+  /// legte bei jeder Änderung eine zweite Einheit an.
+  final int? readiness;
 
   bool get isFree => plan == null;
 }
@@ -52,11 +65,15 @@ abstract final class StartSheet {
     // aktuellen Stand, nicht den beim Öffnen.
     final chosen = ValueNotifier<int>(restSeconds);
 
+    // Ohne Vorbelegung: Wer die Frage übergeht, hat sie übergangen — eine
+    // vorgewählte 3 stünde später als Angabe in der Auswertung.
+    final readiness = ValueNotifier<int?>(null);
+
     return AtemSheet.show<StartRequest>(
       context,
       title: title,
       closeLabel: l10n.commonCancel,
-      child: _Body(plan: plan, rest: chosen, l10n: l10n),
+      child: _Body(plan: plan, rest: chosen, readiness: readiness, l10n: l10n),
       primaryAction: AtemButton.gradient(
         label: l10n.sheetStart,
         semanticLabel: title,
@@ -72,6 +89,7 @@ abstract final class StartSheet {
             plan: plan,
             scheduleId: scheduleId,
             restSeconds: chosen.value,
+            readiness: readiness.value,
           ),
         ),
       ),
@@ -93,11 +111,13 @@ class _Body extends StatefulWidget {
   const _Body({
     required this.plan,
     required this.rest,
+    required this.readiness,
     required this.l10n,
   });
 
   final Plan? plan;
   final ValueNotifier<int> rest;
+  final ValueNotifier<int?> readiness;
   final AppL10n l10n;
 
   @override
@@ -132,7 +152,24 @@ class _BodyState extends State<_Body> {
                     '${l10n.durationApproxMinutes(p.estimatedDuration.inMinutes)}',
             style: AtemType.labelSmall.of(context),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
+          // **Hier und nicht im Formular.** Die Bereitschaft ist die einzige
+          // Angabe, die man nur in diesem Moment ehrlich geben kann — eine
+          // Woche später ist sie geraten. Deshalb steht sie oben und offen,
+          // während die Pausenzeit darunter zugeklappt bleibt.
+          AtemFieldLabel(label: l10n.formReadiness),
+          ValueListenableBuilder<int?>(
+            valueListenable: widget.readiness,
+            builder: (context, value, _) => ReadinessChoice(
+              value: value,
+              onChanged: (v) => widget.readiness.value = v,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(l10n.formReadinessHint,
+              style:
+                  AtemType.labelMicro.of(context).copyWith(letterSpacing: 0)),
+          const SizedBox(height: 18),
           AtemTappable(
             onTap: () => setState(() => _open = !_open),
             semanticLabel: '${l10n.sheetRestLabel}, ${l10n.restSeconds(rest)}',

@@ -4575,4 +4575,89 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get exercisesFilterOrigin => 'Origin';
+
+  @override
+  String get formReadiness => 'Readiness';
+
+  @override
+  String get formReadinessHint => 'Before the session. Optional.';
+
+  @override
+  String get formReadiness1 => 'drained';
+
+  @override
+  String get formReadiness2 => 'tired';
+
+  @override
+  String get formReadiness3 => 'okay';
+
+  @override
+  String get formReadiness4 => 'good';
+
+  @override
+  String get formReadiness5 => 'fresh';
+
+  @override
+  String get formFeeling => 'How it felt';
+
+  @override
+  String get formFeelingHint => 'After the session. Optional.';
+
+  @override
+  String get formFeeling1 => 'wiped';
+
+  @override
+  String get formFeeling2 => 'tired';
+
+  @override
+  String get formFeeling3 => 'okay';
+
+  @override
+  String get formFeeling4 => 'good';
+
+  @override
+  String get formFeeling5 => 'strong';
+
+  @override
+  String get formFocus => 'Focus';
+
+  @override
+  String get formFocusHint => 'What the session worked. Does not replace sets.';
+
+  @override
+  String get focusPush => 'Push';
+
+  @override
+  String get focusPull => 'Pull';
+
+  @override
+  String get focusLegs => 'Legs';
+
+  @override
+  String get focusUpperBody => 'Upper body';
+
+  @override
+  String get focusLowerBody => 'Lower body';
+
+  @override
+  String get focusFullBody => 'Full body';
+
+  @override
+  String get focusCore => 'Core';
+
+  @override
+  String get focusOther => 'Other';
+
+  @override
+  String get strengthFormTitle => 'Log strength session';
+
+  @override
+  String get strengthFormEntry => 'Log without sets';
+
+  @override
+  String get strengthFormNoSets =>
+      'This session carries no sets. It counts in minutes, not volume — and appears in no muscle distribution.';
+
+  @override
+  String get strengthSavedSnack => 'Strength session saved';
 }

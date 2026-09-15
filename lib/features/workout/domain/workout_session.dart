@@ -157,6 +157,8 @@ class ActiveWorkout {
     required this.exercises,
     this.notes = '',
     this.defaultRestSeconds = 90,
+    this.preWorkoutReadiness,
+    this.postWorkoutFeeling,
   });
 
   final String sessionId;
@@ -177,6 +179,16 @@ class ActiveWorkout {
   final String notes;
   final int defaultRestSeconds;
 
+  /// Wie bereit man sich vor dem Start gefühlt hat, 1 bis 5.
+  ///
+  /// Steht hier und nicht in [WorkoutStart], obwohl sie dort erfragt wird:
+  /// `WorkoutStart` ist der Familienschlüssel des Providers, und ein Schlüssel,
+  /// der die Antwort enthält, legte bei jeder Änderung eine zweite Einheit an.
+  final int? preWorkoutReadiness;
+
+  /// Wie es sich am Ende angefühlt hat, 1 bis 5. Wird beim Beenden erfragt.
+  final int? postWorkoutFeeling;
+
   Iterable<WorkoutSet> get allSets => exercises.expand((e) => e.sets);
   int get completedSets => allSets.where((s) => s.done).length;
   int get totalSets => allSets.length;
@@ -194,6 +206,8 @@ class ActiveWorkout {
   ActiveWorkout copyWith({
     List<WorkoutExercise>? exercises,
     String? notes,
+    int? preWorkoutReadiness,
+    int? postWorkoutFeeling,
   }) {
     return ActiveWorkout(
       sessionId: sessionId,
@@ -203,6 +217,8 @@ class ActiveWorkout {
       exercises: exercises ?? this.exercises,
       notes: notes ?? this.notes,
       defaultRestSeconds: defaultRestSeconds,
+      preWorkoutReadiness: preWorkoutReadiness ?? this.preWorkoutReadiness,
+      postWorkoutFeeling: postWorkoutFeeling ?? this.postWorkoutFeeling,
     );
   }
 }

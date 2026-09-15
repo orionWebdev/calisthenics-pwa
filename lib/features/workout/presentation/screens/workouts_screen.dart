@@ -25,6 +25,7 @@ import '../../../exercises/presentation/screens/exercise_form_screen.dart';
 import '../../../exercises/presentation/screens/exercise_list_screen.dart';
 import '../../../exercises/presentation/widgets/exercise_bits.dart';
 import '../../../exercises/presentation/widgets/exercise_search.dart';
+import '../../../strength/presentation/screens/strength_form_screen.dart';
 
 /// Der Workouts-Tab.
 ///
@@ -138,6 +139,17 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             onPressed: () => _startFree(context),
           ),
         ],
+        // Der dritte Weg: nachtragen, was schon passiert ist. Er steht
+        // **unter** den beiden anderen, weil er der seltenere ist — aber
+        // sichtbar, weil es ihn bisher gar nicht gab.
+        const SizedBox(height: 8),
+        AtemButton.ghost(
+          label: l10n.strengthFormEntry,
+          semanticLabel: l10n.strengthFormTitle,
+          expand: true,
+          accent: AtemColors.textTertiary,
+          onPressed: () => _logWithoutSets(context),
+        ),
         const SizedBox(height: 28),
         _SectionHeader(
           title: l10n.workoutsPlansLabel.toUpperCase(),
@@ -270,6 +282,12 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
       body: SafeArea(child: list),
     );
   }
+
+  /// Nachtragen ohne Sätze — der Weg zu [StrengthFormScreen].
+  Future<void> _logWithoutSets(BuildContext context) =>
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const StrengthFormScreen()),
+      );
 
   Future<void> _startFree(BuildContext context) async {
     final request = await StartSheet.show(

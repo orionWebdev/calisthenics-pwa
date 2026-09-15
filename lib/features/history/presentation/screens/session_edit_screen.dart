@@ -14,6 +14,7 @@ import '../../domain/training_session.dart';
 import '../../../workout/domain/workout_start.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
 import '../session_ui.dart';
+import '../widgets/wellness_fields.dart';
 import '../widgets/consequence_table.dart';
 
 /// Eine absolvierte Einheit bearbeiten.
@@ -54,6 +55,15 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
   late final TextEditingController _distance;
   late DateTime _date;
 
+  /// Aus der Einheit vorbelegt — **nicht leer**.
+  ///
+  /// `SessionPatch` löscht ein Feld, das als `null` ankommt. Ein Formular,
+  /// das die bestehende Antwort nicht kennt, nähme sie beim ersten Speichern
+  /// weg, ohne dass jemand sie angefasst hätte.
+  int? _readiness;
+  int? _feeling;
+  WorkoutFocus? _focus;
+
   var _saving = false;
   var _dirty = false;
   String? _saveError;
@@ -62,6 +72,12 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
   void initState() {
     super.initState();
     _date = widget.session.date;
+    _readiness = widget.session.preWorkoutReadiness;
+    _feeling = widget.session.postWorkoutFeeling;
+    _focus = switch (widget.session) {
+      StrengthSession(:final workoutFocus) => workoutFocus,
+      _ => null,
+    };
     _duration = TextEditingController(
       text: widget.session.duration?.inMinutes.toString() ?? '',
     );
@@ -110,7 +126,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
   Future<void> _openSets(BuildContext context) async {
     await Navigator.of(context, rootNavigator: true).pushNamed(
       WorkoutRunnerScreen.routeName,
-      arguments: WorkoutStart.session(widget.session.id),
+      arguments: WorkoutLaunch(WorkoutStart.session(widget.session.id)),
     );
   }
 
@@ -172,7 +188,15 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
       _date != widget.session.date ||
       _durationValue != widget.session.duration ||
       _notes.text.trim() != (widget.session.notes ?? '').trim() ||
+      _readiness != widget.session.preWorkoutReadiness ||
+      _feeling != widget.session.postWorkoutFeeling ||
+      _focus != _originalFocus ||
       (_cardio != null && _distanceKm != _cardio!.distanceKm);
+
+  WorkoutFocus? get _originalFocus => switch (widget.session) {
+        StrengthSession(:final workoutFocus) => workoutFocus,
+        _ => null,
+      };
 
   Future<void> _save() async {
     final l10n = AppL10n.of(context);
@@ -188,6 +212,15 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
               date: _date,
               duration: _durationValue,
               notes: _notes.text,
+              // Immer mitgeben, auch unverändert: `null` hiesse hier löschen.
+              preWorkoutReadiness: _readiness,
+              postWorkoutFeeling: _feeling,
+              // Nur bei Kraft — eine Ausdauereinheit kennt die Frage nicht,
+              // und ein Patch ohne Hülle schriebe dort ein Löschen für ein
+              // Feld, das nie da war.
+              strength: widget.session is StrengthSession
+                  ? StrengthPatch(workoutFocus: _focus)
+                  : null,
               // Nur bei Ausdauer: Distanz änderbar, Puls und RPE bleiben.
               cardio: _cardio == null
                   ? null
@@ -375,6 +408,45 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                       onChanged: (_) {
                         _touch();
                         setState(() {});
+                      },
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Der Fokus steht nur bei Kraft — und er ist der einzige
+                    // Weg, den 16 Einheiten ohne Sätze nachträglich zu geben.
+                    if (widget.session is StrengthSession) ...[
+                      AtemFieldLabel(label: l10n.formFocus),
+                      FocusChoice(
+                        value: _focus,
+                        onChanged: (v) {
+                          _touch();
+                          setState(() => _focus = v);
+                        },
+                      ),
+                      const SizedBox(height: 6),
+                      Text(l10n.formFocusHint,
+                          style: AtemType.labelMicro
+                              .of(context)
+                              .copyWith(letterSpacing: 0)),
+                      const SizedBox(height: 24),
+                    ],
+
+                    AtemFieldLabel(label: l10n.formReadiness),
+                    ReadinessChoice(
+                      value: _readiness,
+                      onChanged: (v) {
+                        _touch();
+                        setState(() => _readiness = v);
+                      },
+                    ),
+                    const SizedBox(height: 24),
+
+                    AtemFieldLabel(label: l10n.formFeeling),
+                    FeelingChoice(
+                      value: _feeling,
+                      onChanged: (v) {
+                        _touch();
+                        setState(() => _feeling = v);
                       },
                     ),
                     const SizedBox(height: 24),

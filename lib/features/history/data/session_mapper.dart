@@ -37,8 +37,13 @@ abstract final class SessionMapper {
     final rawType = _string(data['type']);
 
     // In allen vier Arten vorhanden, in genau denselben Dokumenten.
+    //
+    // Der Draht heisst `preWorkoutEnergy`, das Domänenfeld
+    // `preWorkoutReadiness`. Der Unterschied ist Absicht und darf nicht
+    // „aufgeräumt" werden: 136 Dokumente tragen den alten Namen, und die PWA
+    // schreibt weiter in dieselbe Collection.
     final rpe = _int(data['rpe']);
-    final energy = _int(data['preWorkoutEnergy']);
+    final readiness = _int(data['preWorkoutEnergy']);
     final feeling = _int(data['postWorkoutFeeling']);
 
     return switch (SessionKind.fromWire(rawType)) {
@@ -53,8 +58,9 @@ abstract final class SessionMapper {
           exercises: _exercises(data['exercises']),
           planId: _string(data['planId']),
           planName: _string(data['planName']),
+          workoutFocus: WorkoutFocus.fromWire(_string(data['workoutFocus'])),
           rpe: rpe,
-          preWorkoutEnergy: energy,
+          preWorkoutReadiness: readiness,
           postWorkoutFeeling: feeling,
           discipline: _string(data['discipline']),
         ),
@@ -69,7 +75,7 @@ abstract final class SessionMapper {
             duration: duration,
             notes: notes,
             rpe: rpe,
-            preWorkoutEnergy: energy,
+            preWorkoutReadiness: readiness,
             postWorkoutFeeling: feeling,
             activity: activity,
             rawActivity: activity == null ? raw : null,
@@ -94,7 +100,7 @@ abstract final class SessionMapper {
             duration: duration,
             notes: notes,
             rpe: rpe,
-            preWorkoutEnergy: energy,
+            preWorkoutReadiness: readiness,
             postWorkoutFeeling: feeling,
             recoveryKind: kind,
             rawKind: kind == null ? raw : null,
@@ -109,7 +115,7 @@ abstract final class SessionMapper {
           duration: duration,
           notes: notes,
           rpe: rpe,
-          preWorkoutEnergy: energy,
+          preWorkoutReadiness: readiness,
           postWorkoutFeeling: feeling,
           rawType: rawType,
         ),

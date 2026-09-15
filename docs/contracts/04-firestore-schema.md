@@ -77,7 +77,8 @@ Nur **vier Felder existieren in allen 136 Dokumenten**:
 Je nach Art trägt das Dokument völlig verschiedene Felder:
 
 **Kraft und Körpergewicht** — `exercises: array`, Einträge `{exerciseId: string, sets: array}`,
-dazu `planId`, `planName`, `rpe`, `preWorkoutEnergy`, `postWorkoutFeeling`.
+dazu `planId`, `planName`, `rpe`, `preWorkoutEnergy`, `postWorkoutFeeling`, seit Phase 1
+zusätzlich `workoutFocus`.
 
 **Achtung: `exercises` fehlt auch bei Kraft.** Von 63 `strength`-Sessions tragen nur 47
 Übungen, 16 nicht; alle 10 `bodyweight`-Sessions tragen welche. Eine Kraft-Session ohne
@@ -115,6 +116,41 @@ Daraus folgen zwei Regeln, die nicht verhandelbar sind:
 **R2 — `null` und „Feld fehlt" sind derselbe Fall.** Beide kommen vor, teils im selben Feld
 (`notes`: 61 string, 59 explizit null, 16 gar nicht vorhanden). Der Deserialisierer darf sie
 nicht unterscheiden.
+
+### `preWorkoutEnergy` heisst in Dart `preWorkoutReadiness`
+
+Die einzige Stelle, an der Draht und Domänenfeld absichtlich verschiedene Namen tragen.
+
+Der Masterplan nennt das Feld `preWorkoutReadiness`; der Bestand trägt es seit der
+Vorgänger-PWA als `preWorkoutEnergy`. Ein neuer Feldname hätte zwei Felder für dieselbe Frage
+bedeutet, dauerhaft zwei Lesepfade und einen Bestand, der sich in zwei Hälften teilt.
+
+**Der Draht bleibt deshalb `preWorkoutEnergy`.** Gelesen wird er in
+`session_mapper.dart`, geschrieben in `firestore_session_repository.dart` — an beiden Stellen
+steht der Grund im Kommentar. `test/history/wellness_fields_test.dart` prüft ausdrücklich,
+dass **kein** Feld `preWorkoutReadiness` im Dokument entsteht.
+
+Nicht zu verwechseln mit `Readiness` aus `history/domain/readiness.dart`: Das ist die
+gerechnete ACWR-Zone, dies hier eine Selbstauskunft von 1 bis 5. Sie dürfen nie ineinander
+gerechnet werden.
+
+### `workoutFocus` — neu in Phase 1, von der PWA nicht gekannt
+
+Werte (Draht): `push` · `pull` · `legs` · `upper_body` · `lower_body` · `full_body` · `core` ·
+`other`. Unbekannte Zeichenketten werden `null`, **nicht** `other` — `other` ist eine Angabe,
+kein Auffangbecken.
+
+Das Feld steht nur auf `strength` und `bodyweight`. Es beschreibt, wogegen eine Einheit ging,
+und ist der einzige Weg, den **16 von 63** Krafteinheiten ohne Übungen nachträglich einen
+Inhalt zu geben. Es ersetzt keine Sätze: Eine Einheit mit Fokus und ohne Sätze trägt weiterhin
+kein Volumen und erscheint in keiner Muskelverteilung.
+
+Die PWA kennt das Feld nicht. Sie scheitert nicht daran und verwirft es auch nicht —
+`js/core/firebase.js:81` spreadet `...doc.data()` und reicht jedes Feld unbesehen durch.
+
+**Keine Migration.** Alte Dokumente bleiben ohne das Feld; `null` und „fehlt" sind derselbe
+Fall (R2). Die Firestore-Regeln brauchen keine Änderung: `create` prüft nur
+`hasAll(['type','userId'])`.
 
 ---
 

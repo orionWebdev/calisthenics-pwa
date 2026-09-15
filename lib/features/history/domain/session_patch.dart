@@ -21,6 +21,9 @@ import 'training_session.dart';
 /// | [duration] | **Feld löschen**, die Dauer wurde nicht erfasst |
 /// | [notes] | **Feld löschen**, die Notiz wurde geleert |
 /// | [exercises] | **nicht anfassen** — diese Einheit führt keine Sätze |
+/// | [preWorkoutReadiness] | **Feld löschen**, die Antwort wurde zurückgenommen |
+/// | [postWorkoutFeeling] | **Feld löschen**, dieselbe Regel |
+/// | [strength] | **nicht anfassen** — diese Einheit kennt keinen Fokus |
 ///
 /// Der Ausreißer ist [exercises], und er ist begründet: Eine Cardio-Einheit hat
 /// kein Übungsfeld, das man leeren könnte. Ein leeres Feld zu schreiben wäre
@@ -32,6 +35,9 @@ class SessionPatch {
     this.notes,
     this.exercises,
     this.cardio,
+    this.preWorkoutReadiness,
+    this.postWorkoutFeeling,
+    this.strength,
   });
 
   /// Der Trainingstag. Wird auf Mitternacht gesetzt.
@@ -52,6 +58,39 @@ class SessionPatch {
   /// Die Ausdauerfelder. `null` heißt **nicht anfassen** — wie bei
   /// [exercises]: Eine Krafteinheit kennt die Frage nach der Distanz nicht.
   final CardioPatch? cardio;
+
+  /// Selbstauskunft vor und nach der Einheit, 1 bis 5. `null` **löscht**.
+  ///
+  /// Anders als [exercises] und [cardio], weil die Frage jede Art betrifft:
+  /// Es gibt keine Einheit, bei der „wie bereit warst du" bedeutungslos wäre.
+  /// Wer die Antwort wieder leert, meint „nicht erfasst" — und genau das
+  /// entsteht daraus.
+  final int? preWorkoutReadiness;
+  final int? postWorkoutFeeling;
+
+  /// Die Kraftfelder. `null` heißt **nicht anfassen** — wie bei [cardio]:
+  /// Ein Lauf kennt die Frage nach dem Fokus nicht.
+  final StrengthPatch? strength;
+}
+
+/// Das änderbare Kraftfeld — der Fokus.
+///
+/// Ein eigenes Objekt für ein einziges Feld, und das aus demselben Grund wie
+/// [CardioPatch]: Ohne es liessen sich „diese Einheit hat keinen Fokus mehr"
+/// und „diese Einheit kennt die Frage gar nicht" nicht unterscheiden, und
+/// jede Bearbeitung eines Laufs schriebe ein `FieldValue.delete()` für ein
+/// Feld, das dort nie stand.
+///
+/// Innerhalb des Objekts gilt die Regel von [SessionPatch.duration]:
+/// **`null` löscht das Feld.**
+///
+/// Der Grund, warum der Fokus überhaupt änderbar ist: Die 16 bestehenden
+/// Krafteinheiten ohne Übungen sind längst geschrieben. Nur über das
+/// Bearbeiten bekommen sie nachträglich einen.
+class StrengthPatch {
+  const StrengthPatch({this.workoutFocus});
+
+  final WorkoutFocus? workoutFocus;
 }
 
 /// Die änderbaren Ausdauerfelder — Distanz und Puls.

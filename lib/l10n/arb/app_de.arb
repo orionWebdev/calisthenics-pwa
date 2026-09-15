@@ -6609,5 +6609,117 @@
   "exercisesFilterOrigin": "Herkunft",
   "@exercisesFilterOrigin": {
     "description": "Board 07 A1/3 — Gruppe der Herkunftsfilter"
+  },
+  "formReadiness": "Bereitschaft",
+  "@formReadiness": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gruppenlabel der Selbstauskunft vor der Einheit"
+  },
+  "formReadinessHint": "Vor dem Training. Freiwillig.",
+  "@formReadinessHint": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Bereitschaftsauswahl"
+  },
+  "formReadiness1": "erschöpft",
+  "@formReadiness1": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 1"
+  },
+  "formReadiness2": "müde",
+  "@formReadiness2": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 2"
+  },
+  "formReadiness3": "okay",
+  "@formReadiness3": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 3"
+  },
+  "formReadiness4": "gut",
+  "@formReadiness4": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 4"
+  },
+  "formReadiness5": "frisch",
+  "@formReadiness5": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bereitschaft, Stufe 5"
+  },
+  "formFeeling": "Gefühl danach",
+  "@formFeeling": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gruppenlabel der Selbstauskunft nach der Einheit"
+  },
+  "formFeelingHint": "Nach dem Training. Freiwillig.",
+  "@formFeelingHint": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Gefühlsauswahl"
+  },
+  "formFeeling1": "platt",
+  "@formFeeling1": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 1"
+  },
+  "formFeeling2": "müde",
+  "@formFeeling2": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 2"
+  },
+  "formFeeling3": "okay",
+  "@formFeeling3": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 3"
+  },
+  "formFeeling4": "gut",
+  "@formFeeling4": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 4"
+  },
+  "formFeeling5": "stark",
+  "@formFeeling5": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 5"
+  },
+  "formFocus": "Fokus",
+  "@formFocus": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gruppenlabel der Fokusauswahl einer Krafteinheit"
+  },
+  "formFocusHint": "Wogegen die Einheit ging. Ersetzt keine Sätze.",
+  "@formFocusHint": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Fokusauswahl"
+  },
+  "focusPush": "Drücken",
+  "@focusPush": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.push"
+  },
+  "focusPull": "Ziehen",
+  "@focusPull": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.pull"
+  },
+  "focusLegs": "Beine",
+  "@focusLegs": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.legs"
+  },
+  "focusUpperBody": "Oberkörper",
+  "@focusUpperBody": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.upperBody"
+  },
+  "focusLowerBody": "Unterkörper",
+  "@focusLowerBody": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.lowerBody"
+  },
+  "focusFullBody": "Ganzkörper",
+  "@focusFullBody": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.fullBody"
+  },
+  "focusCore": "Rumpf",
+  "@focusCore": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.core"
+  },
+  "focusOther": "Sonstiges",
+  "@focusOther": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — WorkoutFocus.other"
+  },
+  "strengthFormTitle": "Krafteinheit erfassen",
+  "@strengthFormTitle": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Titel des Nacherfassungs-Formulars"
+  },
+  "strengthFormEntry": "Ohne Sätze erfassen",
+  "@strengthFormEntry": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Weg ins Nacherfassungs-Formular"
+  },
+  "strengthFormNoSets": "Diese Einheit trägt keine Sätze. Sie zählt in Minuten, nicht in Volumen — und erscheint in keiner Muskelverteilung.",
+  "@strengthFormNoSets": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis oben im Formular"
+  },
+  "strengthSavedSnack": "Krafteinheit gespeichert",
+  "@strengthSavedSnack": {
+    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bestätigung nach dem Speichern"
   }
 }

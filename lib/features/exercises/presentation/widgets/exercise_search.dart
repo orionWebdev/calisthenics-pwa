@@ -98,7 +98,7 @@ class ExerciseFilterRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: padding,
         children: [
-          _Chip(
+          AtemChoiceChip(
             label: l10n.exercisesFilterAll,
             semanticLabel: l10n.exercisesFilterAll,
             selected: selected == null,
@@ -106,7 +106,7 @@ class ExerciseFilterRow extends StatelessWidget {
           ),
           for (final muscle in MuscleGroup.filters) ...[
             const SizedBox(width: 8),
-            _Chip(
+            AtemChoiceChip(
               label: muscle.label(l10n),
               semanticLabel: selected == muscle
                   ? l10n.exercisesFilterActive(muscle.label(l10n))
@@ -117,68 +117,6 @@ class ExerciseFilterRow extends StatelessWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  const _Chip({
-    required this.label,
-    required this.semanticLabel,
-    required this.selected,
-    required this.onTap,
-    this.color,
-  });
-
-  final String label;
-  final String semanticLabel;
-  final bool selected;
-  final VoidCallback onTap;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final tint = color ?? AtemColors.cyan;
-
-    return AtemTappable(
-      onTap: onTap,
-      semanticLabel: semanticLabel,
-      selected: selected,
-      inMutuallyExclusiveGroup: true,
-      child: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        constraints: const BoxConstraints(minHeight: 36),
-        decoration: BoxDecoration(
-          color: selected ? AtemCategories.surface(tint) : AtemColors.card,
-          borderRadius: BorderRadius.circular(AtemRadii.pill),
-          border: Border.all(
-            color: selected ? AtemCategories.border(tint) : AtemColors.border,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Der Punkt zeigt die Farbe auch im nicht gewählten Zustand — so
-            // ist die Zuordnung Muskel/Farbe lernbar, bevor man tippt.
-            if (color != null && !selected) ...[
-              ExcludeSemantics(child: AtemStatusDot(color: tint)),
-              const SizedBox(width: 8),
-            ],
-            if (selected) ...[
-              Icon(Icons.check, size: 14, color: tint),
-              const SizedBox(width: 6),
-            ],
-            Text(
-              label,
-              style: AtemType.labelSmall.of(context).copyWith(
-                    color: selected ? tint : AtemColors.textPrimary,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                  ),
-            ),
-          ],
-        ),
       ),
     );
   }

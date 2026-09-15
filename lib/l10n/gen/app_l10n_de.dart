@@ -4588,4 +4588,89 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get exercisesFilterOrigin => 'Herkunft';
+
+  @override
+  String get formReadiness => 'Bereitschaft';
+
+  @override
+  String get formReadinessHint => 'Vor dem Training. Freiwillig.';
+
+  @override
+  String get formReadiness1 => 'erschöpft';
+
+  @override
+  String get formReadiness2 => 'müde';
+
+  @override
+  String get formReadiness3 => 'okay';
+
+  @override
+  String get formReadiness4 => 'gut';
+
+  @override
+  String get formReadiness5 => 'frisch';
+
+  @override
+  String get formFeeling => 'Gefühl danach';
+
+  @override
+  String get formFeelingHint => 'Nach dem Training. Freiwillig.';
+
+  @override
+  String get formFeeling1 => 'platt';
+
+  @override
+  String get formFeeling2 => 'müde';
+
+  @override
+  String get formFeeling3 => 'okay';
+
+  @override
+  String get formFeeling4 => 'gut';
+
+  @override
+  String get formFeeling5 => 'stark';
+
+  @override
+  String get formFocus => 'Fokus';
+
+  @override
+  String get formFocusHint => 'Wogegen die Einheit ging. Ersetzt keine Sätze.';
+
+  @override
+  String get focusPush => 'Drücken';
+
+  @override
+  String get focusPull => 'Ziehen';
+
+  @override
+  String get focusLegs => 'Beine';
+
+  @override
+  String get focusUpperBody => 'Oberkörper';
+
+  @override
+  String get focusLowerBody => 'Unterkörper';
+
+  @override
+  String get focusFullBody => 'Ganzkörper';
+
+  @override
+  String get focusCore => 'Rumpf';
+
+  @override
+  String get focusOther => 'Sonstiges';
+
+  @override
+  String get strengthFormTitle => 'Krafteinheit erfassen';
+
+  @override
+  String get strengthFormEntry => 'Ohne Sätze erfassen';
+
+  @override
+  String get strengthFormNoSets =>
+      'Diese Einheit trägt keine Sätze. Sie zählt in Minuten, nicht in Volumen — und erscheint in keiner Muskelverteilung.';
+
+  @override
+  String get strengthSavedSnack => 'Krafteinheit gespeichert';
 }
