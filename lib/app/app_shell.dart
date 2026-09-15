@@ -202,11 +202,7 @@ class _AppShellState extends ConsumerState<AppShell>
                     // Weicht, sobald ein Tab etwas gepusht hat — kein
                     // Ausblenden per Deckkraft: Ein unsichtbares Tap-Ziel
                     // bliebe ein Tap-Ziel.
-                    if (atRoot)
-                      FloatingNav(
-                        activeIndex: tab.index,
-                        onSelect: (i) => _select(AppTab.values[i]),
-                      ),
+                    if (atRoot) FloatingNav(active: tab, onSelect: _select),
                   ],
                 ),
               ),

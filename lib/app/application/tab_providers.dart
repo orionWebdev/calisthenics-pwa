@@ -29,6 +29,16 @@ enum AppTab {
   /// „was trainiere ich" — und seit Hybrid links steht, ist es auch der erste
   /// Platz.
   static const initial = AppTab.hybrid;
+
+  /// Die Plätze, die die Leiste gerade zeigt.
+  ///
+  /// **Vorübergehend nur Hybrid und Kraft** (seit 15.09.2026): Der Kraft-Tab
+  /// wird zuerst rund gemacht, Cardio und Regeneration kommen danach wieder
+  /// in die Leiste. Die Screens, Provider und Stapel der beiden bleiben
+  /// vollständig bestehen — der `IndexedStack` in `AppShell` trägt weiter
+  /// alle vier —, nur die Leiste und die Sprünge aus dem Hybrid-Tab kennen
+  /// sie nicht. Zurück auf vier: die beiden Werte hier wieder eintragen.
+  static const visible = [AppTab.hybrid, AppTab.strength];
 }
 
 /// Die zwei Segmente des Kraft-Tabs.

@@ -71,8 +71,8 @@ class RatioBlock extends ConsumerWidget {
           // Ein Knoten, keine zwei Segmente.
           Semantics(
             image: true,
-            label: l10n.ratioA11y(
-                r.strengthPercent, r.cardioPercent, r.totalMinutes, r.totalCount),
+            label: l10n.ratioA11y(r.strengthPercent, r.cardioPercent,
+                r.totalMinutes, r.totalCount),
             child: ExcludeSemantics(
               child: SizedBox(
                 height: 14,
@@ -129,11 +129,17 @@ class RatioBlock extends ConsumerWidget {
             minutes: r.cardio.minutes,
             measure: l10n.unitKilometers(formatKm(context, r.cardio.measure)),
             shiftPp: shift == null ? null : -shift,
-            target: l10n.ratioOpenCardio,
-            onTap: () => ref.read(appTabsProvider.notifier).jump(
-                  AppTab.cardio,
-                  cardioSegment: CardioSegment.analysis,
-                ),
+            // Kein Sprung, solange Cardio nicht in der Leiste steht — die
+            // Zeile bliebe sonst ein Tap-Ziel in einen Tab ohne Rückweg.
+            target: AppTab.visible.contains(AppTab.cardio)
+                ? l10n.ratioOpenCardio
+                : null,
+            onTap: AppTab.visible.contains(AppTab.cardio)
+                ? () => ref.read(appTabsProvider.notifier).jump(
+                      AppTab.cardio,
+                      cardioSegment: CardioSegment.analysis,
+                    )
+                : null,
           ),
           const SizedBox(height: 12),
           Text(
@@ -143,8 +149,8 @@ class RatioBlock extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             (shift == null
-                    ? l10n.ratioNoshift
-                    : '${shift >= 0 ? '▲' : '▼'} ${l10n.ratioShift(shift.abs().round().toString())} · ${l10n.typeStrength}'),
+                ? l10n.ratioNoshift
+                : '${shift >= 0 ? '▲' : '▼'} ${l10n.ratioShift(shift.abs().round().toString())} · ${l10n.typeStrength}'),
             style: AtemType.meta
                 .of(context)
                 .copyWith(color: AtemColors.textTertiary),
@@ -175,8 +181,11 @@ class _TrackRow extends StatelessWidget {
   final int minutes;
   final String measure;
   final double? shiftPp;
-  final String target;
-  final VoidCallback onTap;
+
+  /// Ohne [onTap] ist die Zeile reine Anzeige: ein Semantics-Knoten mit
+  /// denselben Werten, nur ohne Ziel und ohne Rolle „Knopf".
+  final String? target;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -190,17 +199,33 @@ class _TrackRow extends StatelessWidget {
         : l10n.ratioShiftA11y('${shift.abs().round()}',
             shift >= 0 ? l10n.ratioShiftUp : l10n.ratioShiftDown);
 
+    final semanticLabel = [
+      l10n.ratioRowA11y(name, percent, minutes),
+      measure,
+      if (shiftA11y != null) shiftA11y,
+      if (target != null) target!,
+    ].join(', ');
+    final onTap = this.onTap;
+
+    if (onTap == null) {
+      return Semantics(
+        label: semanticLabel,
+        excludeSemantics: true,
+        child: _content(context, l10n, shiftText),
+      );
+    }
+
     return AtemTappable(
       onTap: onTap,
-      semanticLabel: [
-        l10n.ratioRowA11y(name, percent, minutes),
-        measure,
-        if (shiftA11y != null) shiftA11y,
-        target,
-      ].join(', '),
+      semanticLabel: semanticLabel,
       minTapSize: const Size(0, 48),
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: _content(context, l10n, shiftText),
+    );
+  }
+
+  Widget _content(BuildContext context, AppL10n l10n, String? shiftText) =>
+      Container(
         constraints: const BoxConstraints(minHeight: 30),
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
@@ -231,8 +256,7 @@ class _TrackRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text('$percent %',
-                    softWrap: false,
-                    style: AtemType.valueMedium.of(context)),
+                    softWrap: false, style: AtemType.valueMedium.of(context)),
                 if (shiftText != null)
                   Text(shiftText,
                       softWrap: false,
@@ -242,7 +266,5 @@ class _TrackRow extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
+      );
 }

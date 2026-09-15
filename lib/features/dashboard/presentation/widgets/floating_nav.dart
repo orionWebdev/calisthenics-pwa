@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../../app/application/tab_providers.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
@@ -47,12 +48,18 @@ import '../../../../l10n/gen/app_l10n.dart';
 class FloatingNav extends StatelessWidget {
   const FloatingNav({
     super.key,
-    required this.activeIndex,
+    required this.active,
     required this.onSelect,
   });
 
-  final int activeIndex;
-  final ValueChanged<int> onSelect;
+  final AppTab active;
+  final ValueChanged<AppTab> onSelect;
+
+  /// Die Einträge der Leiste — nur die sichtbaren Tabs, siehe
+  /// [AppTab.visible]. Position und „Tab n von m" zählen über diese Liste,
+  /// nicht über alle vier.
+  static List<_NavTab> get _tabs =>
+      [for (final t in AppTab.visible) _NavTab.values[t.index]];
 
   /// Innenpolster eines Eintrags — fließt in die Platzrechnung ein.
   static const _itemInset = 8.0;
@@ -88,9 +95,9 @@ class FloatingNav extends StatelessWidget {
     final l10n = AppL10n.of(context);
     // Gemischte Schreibung: Der Tab-Name ist ein Bedienelement, kein
     // HUD-Kopf. In Mono-Versalien las sich die Leiste wie ein Terminal.
-    final labels = [
-      for (final tab in _NavTab.values) tab.label(l10n),
-    ];
+    final tabs = _tabs;
+    final activeIndex = tabs.indexOf(_NavTab.values[active.index]);
+    final labels = [for (final tab in tabs) tab.label(l10n)];
 
     return AtemBar(
       child: LayoutBuilder(
@@ -105,10 +112,12 @@ class FloatingNav extends StatelessWidget {
                   // Überlauf strukturell — nicht über eine Schwelle, die man
                   // auf dem nächsten Gerät wieder nachziehen muss.
                   Expanded(
-                    child: _item(l10n, labels, i, showLabel: true),
+                    child: _item(l10n, tabs, labels, i,
+                        active: i == activeIndex, showLabel: true),
                   )
                 else
-                  _item(l10n, labels, i, showLabel: false),
+                  _item(l10n, tabs, labels, i,
+                      active: i == activeIndex, showLabel: false),
             ],
           );
         },
@@ -118,29 +127,32 @@ class FloatingNav extends StatelessWidget {
 
   Widget _item(
     AppL10n l10n,
+    List<_NavTab> tabs,
     List<String> labels,
     int i, {
+    required bool active,
     required bool showLabel,
   }) =>
       _NavItem(
         label: labels[i],
-        glyph: _NavTab.values[i].glyph,
-        active: i == activeIndex,
+        glyph: tabs[i].glyph,
+        active: active,
         showLabel: showLabel,
-        tone: _NavTab.values[i].tone,
-        // Die Ansage in normaler Schreibung: „Cardio, Tab 3 von 4".
+        tone: tabs[i].tone,
+        // Die Ansage in normaler Schreibung: „Kraft, Tab 2 von 2".
         semanticLabel: l10n.dashboardNavA11y(
-          _NavTab.values[i].label(l10n),
+          tabs[i].label(l10n),
           i + 1,
           labels.length,
         ),
-        onTap: () => onSelect(i),
+        onTap: () => onSelect(AppTab.values[tabs[i].index]),
       );
 }
 
 enum _NavGlyph { strength, cardio, hybrid, recovery }
 
-/// Die vier Plätze in der Reihenfolge der Leiste — sie folgt [AppTab].
+/// Die vier Plätze in der Reihenfolge von [AppTab] — gezeigt werden davon
+/// nur die aus [AppTab.visible].
 enum _NavTab {
   hybrid(_NavGlyph.hybrid, AtemColors.tabHybrid),
   strength(_NavGlyph.strength, AtemColors.tabStrength),
@@ -238,8 +250,7 @@ class _NavItem extends StatelessWidget {
               child: AnimatedOpacity(
                 opacity: active ? 1 : 0,
                 duration: AtemMotion.duration(context, AtemMotion.normal),
-                child:
-                    AtemStatusDot(color: tone, size: AtemDotSize.small),
+                child: AtemStatusDot(color: tone, size: AtemDotSize.small),
               ),
             ),
           ],
