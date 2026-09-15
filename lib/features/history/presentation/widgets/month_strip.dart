@@ -134,7 +134,7 @@ class MonthStrip extends StatelessWidget {
             ),
             if (label != null) ...[
               const SizedBox(height: 12),
-              Text(label, style: AtemType.labelMicro.of(context)),
+              Text(label, style: AtemType.meta.of(context)),
             ],
           ],
         ),

@@ -31,9 +31,7 @@ class DistributionBars extends StatelessWidget {
                     child: Text(_label(context, l10n, bucket),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AtemType.labelMicro
-                            .of(context)
-                            .copyWith(letterSpacing: 0)),
+                        style: AtemType.meta.of(context)),
                   ),
                   const SizedBox(width: 8),
                   Expanded(

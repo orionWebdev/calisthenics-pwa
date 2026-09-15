@@ -109,7 +109,7 @@ class PlanListScreen extends ConsumerWidget {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Text(l10n.planCount(plans.length),
-                            style: AtemType.labelMicro.of(context)),
+                            style: AtemType.meta.of(context)),
                       );
                     }
                     final plan = plans[i - 1];

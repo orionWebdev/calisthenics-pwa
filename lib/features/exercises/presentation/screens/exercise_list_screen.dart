@@ -120,7 +120,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                       ExcludeSemantics(
                         child: Text(
                           _countLine(l10n, all, filtered, muscle),
-                          style: AtemType.labelMicro.of(context),
+                          style: AtemType.meta.of(context),
                         ),
                       ),
                       // „Zurücksetzen" steht neben dem Ergebnis, nicht im
@@ -350,8 +350,7 @@ class _OriginRow extends ConsumerWidget {
                           '$label $count',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AtemType.labelMicro.of(context).copyWith(
-                                letterSpacing: 0,
+                          style: AtemType.labelUi.of(context).copyWith(
                                 color: value == origin
                                     ? AtemColors.cyan
                                     : AtemColors.textTertiary,

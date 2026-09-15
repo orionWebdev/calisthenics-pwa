@@ -139,8 +139,8 @@ class _TabHeader extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 3),
                     child: Text(
-                      countText.toUpperCase(),
-                      style: AtemType.labelMicro.of(context),
+                      countText,
+                      style: AtemType.meta.of(context),
                     ),
                   ),
                 ],

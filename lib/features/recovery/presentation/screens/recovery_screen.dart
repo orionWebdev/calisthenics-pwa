@@ -79,8 +79,7 @@ class RecoveryScreen extends ConsumerWidget {
                     for (final kind in RecoveryKind.values)
                       if (byKind[kind] case final n? when n > 0)
                         AtemBadge(
-                          label: '${recoveryKindName(l10n, kind)} $n'
-                              .toUpperCase(),
+                          label: '${recoveryKindName(l10n, kind)} $n',
                         ),
                   ],
                 ),
@@ -145,8 +144,8 @@ class _Header extends StatelessWidget {
             Text(l10n.recoveryTitle, style: AtemType.titleLarge.of(context)),
             Padding(
               padding: const EdgeInsets.only(bottom: 3),
-              child: Text(countText.toUpperCase(),
-                  style: AtemType.labelMicro.of(context)),
+              child: Text(countText,
+                  style: AtemType.meta.of(context)),
             ),
           ],
         ),
@@ -294,7 +293,7 @@ class _Row extends StatelessWidget {
             ),
             if (minutes != null) ...[
               const SizedBox(width: 10),
-              Text(l10n.durationMinutes(minutes).toUpperCase(),
+              Text(l10n.durationMinutes(minutes),
                   style: AtemType.labelMicro.of(context)),
             ],
           ],

@@ -48,10 +48,10 @@ class PlanRow extends StatelessWidget {
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 2),
-                  Text(meta.toUpperCase(),
+                  Text(meta,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelMicro
+                      style: AtemType.meta
                           .of(context)
                           .copyWith(letterSpacing: 0)),
                 ],

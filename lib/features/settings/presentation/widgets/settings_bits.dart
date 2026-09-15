@@ -110,7 +110,7 @@ class SettingsRow extends StatelessWidget {
                       style: AtemType.body.of(context).copyWith(color: color)),
                   if (hint case final text?) ...[
                     const SizedBox(height: 3),
-                    Text(text, style: AtemType.labelMicro.of(context)),
+                    Text(text, style: AtemType.labelSmall.of(context)),
                   ],
                 ],
               ),
@@ -201,7 +201,7 @@ class SettingsSwitch extends StatelessWidget {
                   Text(label, style: AtemType.body.of(context)),
                   if (hint case final text?) ...[
                     const SizedBox(height: 3),
-                    Text(text, style: AtemType.labelMicro.of(context)),
+                    Text(text, style: AtemType.labelSmall.of(context)),
                   ],
                 ],
               ),
@@ -240,7 +240,7 @@ class _Track extends StatelessWidget {
       children: [
         Text(
           on ? l10n.switchOn : l10n.switchOff,
-          style: AtemType.labelMicro
+          style: AtemType.labelUi
               .of(context)
               .copyWith(color: accent, fontWeight: FontWeight.w700),
         ),
@@ -288,7 +288,7 @@ class SettingsFact extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Text(
           text,
-          style: AtemType.labelMicro.of(context).copyWith(letterSpacing: 0),
+          style: AtemType.labelSmall.of(context),
         ),
       );
 }

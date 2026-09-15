@@ -248,9 +248,7 @@ class _Row extends StatelessWidget {
                       muscle.label(l10n),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelMicro
-                          .of(context)
-                          .copyWith(color: color, letterSpacing: 0),
+                      style: AtemType.meta.of(context).copyWith(color: color),
                     ),
                   ],
                 ],

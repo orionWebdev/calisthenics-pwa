@@ -81,10 +81,10 @@ class StatementCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          zone.label(l10n).toUpperCase(),
+                          zone.label(l10n),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AtemType.labelMicro.of(context).copyWith(
+                          style: AtemType.labelUi.of(context).copyWith(
                                 color: zone.color,
                               ),
                         ),
@@ -106,10 +106,10 @@ class StatementCard extends StatelessWidget {
                   if (last != null) ...[
                     const SizedBox(height: 8),
                     Text(
-                      _lastLine(context, l10n, last).toUpperCase(),
+                      _lastLine(context, l10n, last),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelMicro.of(context),
+                      style: AtemType.meta.of(context),
                     ),
                   ],
                   if (summary.form.hasScore) ...[

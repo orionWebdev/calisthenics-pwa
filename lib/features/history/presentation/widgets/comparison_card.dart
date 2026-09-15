@@ -104,7 +104,7 @@ class ComparisonCard extends StatelessWidget {
               ComparisonBasis.sameExercises => l10n.compareBasisExercises,
               ComparisonBasis.sameKind => l10n.compareNoteMedian,
             },
-            style: AtemType.labelMicro.of(context),
+            style: AtemType.meta.of(context),
           ),
         ],
       ),

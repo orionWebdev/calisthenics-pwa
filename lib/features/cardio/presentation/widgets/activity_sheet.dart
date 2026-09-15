@@ -58,8 +58,8 @@ class _Body extends ConsumerWidget {
       children: [
         if (frequent.isNotEmpty) ...[
           Text(
-            l10n.activityOwn(sessions.length).toUpperCase(),
-            style: AtemType.labelMicro.of(context),
+            l10n.activityOwn(sessions.length),
+            style: AtemType.meta.of(context),
           ),
           const SizedBox(height: 8),
           AtemCard.list(

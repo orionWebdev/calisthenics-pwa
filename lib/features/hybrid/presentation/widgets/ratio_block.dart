@@ -56,11 +56,10 @@ class RatioBlock extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 3),
                       child: Text(
-                        '${l10n.analysisWeeklyWeek(week)} · ${l10n.cardioWeekCount(r.totalCount)}'
-                            .toUpperCase(),
+                        '${l10n.analysisWeeklyWeek(week)} · ${l10n.cardioWeekCount(r.totalCount)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AtemType.labelMicro.of(context),
+                        style: AtemType.meta.of(context),
                       ),
                     ),
                   ),
@@ -138,16 +137,15 @@ class RatioBlock extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            l10n.ratioBasis(r.totalMinutes, r.totalCount).toUpperCase(),
-            style: AtemType.labelMicro.of(context),
+            l10n.ratioBasis(r.totalMinutes, r.totalCount),
+            style: AtemType.meta.of(context),
           ),
           const SizedBox(height: 4),
           Text(
             (shift == null
                     ? l10n.ratioNoshift
-                    : '${shift >= 0 ? '▲' : '▼'} ${l10n.ratioShift(shift.abs().round().toString())} · ${l10n.typeStrength}')
-                .toUpperCase(),
-            style: AtemType.labelMicro
+                    : '${shift >= 0 ? '▲' : '▼'} ${l10n.ratioShift(shift.abs().round().toString())} · ${l10n.typeStrength}'),
+            style: AtemType.meta
                 .of(context)
                 .copyWith(color: AtemColors.textTertiary),
           ),
@@ -221,8 +219,8 @@ class _TrackRow extends StatelessWidget {
                 children: [
                   Text(name, style: AtemType.titleSmallOrDefault(context)),
                   Text(
-                    '${l10n.durationMinutes(minutes)} · $measure'.toUpperCase(),
-                    style: AtemType.labelMicro.of(context),
+                    '${l10n.durationMinutes(minutes)} · $measure',
+                    style: AtemType.meta.of(context),
                   ),
                 ],
               ),

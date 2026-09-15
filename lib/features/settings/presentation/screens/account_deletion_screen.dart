@@ -175,7 +175,7 @@ class _AccountDeletionScreenState
                             ),
                             const SizedBox(height: 8),
                             Text(l10n.accountDeletingWait,
-                                style: AtemType.labelMicro.of(context)),
+                                style: AtemType.labelSmall.of(context)),
                           ],
                         ),
                       ),

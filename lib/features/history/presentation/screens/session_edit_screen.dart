@@ -336,9 +336,8 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                             .sessionDatePrevious(
                               _date.difference(widget.session.date).inDays,
                               DateFormat.yMEd(tag).format(widget.session.date),
-                            )
-                            .toUpperCase(),
-                        style: AtemType.labelMicro.of(context),
+                            ),
+                        style: AtemType.meta.of(context),
                       ),
                     ],
                     const SizedBox(height: 12),
@@ -362,7 +361,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                       child: ExcludeSemantics(
                         child: AtemBadge(
                           label:
-                              sessionKindLabel(l10n, widget.session).toUpperCase(),
+                              sessionKindLabel(l10n, widget.session),
                           style: AtemType.labelSmall,
                         ),
                       ),
@@ -393,9 +392,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(l10n.sessionPaceNote,
-                          style: AtemType.labelMicro
-                              .of(context)
-                              .copyWith(letterSpacing: 0)),
+                          style: AtemType.labelSmall.of(context)),
                       const SizedBox(height: 24),
                     ],
 
@@ -425,9 +422,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(l10n.formFocusHint,
-                          style: AtemType.labelMicro
-                              .of(context)
-                              .copyWith(letterSpacing: 0)),
+                          style: AtemType.labelSmall.of(context)),
                       const SizedBox(height: 24),
                     ],
 

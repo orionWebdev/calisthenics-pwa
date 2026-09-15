@@ -117,7 +117,9 @@ class _Segment<T> extends StatelessWidget {
           segment.label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: AtemType.labelMicro.of(context).copyWith(
+          // Ein Segment ist ein Bedienelement, kein HUD-Kopf — Poppins in
+          // gemischter Schreibung, siehe [AtemType.labelUi].
+          style: AtemType.labelUi.of(context).copyWith(
                 color: selected ? AtemColors.cyan : AtemColors.textSecondary,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
               ),

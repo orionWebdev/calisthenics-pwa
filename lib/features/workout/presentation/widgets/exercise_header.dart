@@ -59,7 +59,7 @@ class ExerciseHeader extends StatelessWidget {
                         Text(
                           l10n.workoutScreenExerciseOf(index + 1, total),
                           textAlign: TextAlign.center,
-                          style: AtemType.labelMicro
+                          style: AtemType.meta
                               .of(context)
                               .copyWith(color: AtemColors.cyan),
                         ),

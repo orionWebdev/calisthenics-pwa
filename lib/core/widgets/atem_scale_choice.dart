@@ -169,7 +169,7 @@ class AtemScaleChoice extends StatelessWidget {
     var widest = 0.0;
     for (var level = min; level <= max; level++) {
       final painter = TextPainter(
-        text: TextSpan(text: wordFor(level), style: AtemType.labelMicro.base),
+        text: TextSpan(text: wordFor(level), style: AtemType.labelUi.base),
         textDirection: TextDirection.ltr,
         textScaler: scaler,
         maxLines: 1,
@@ -240,8 +240,7 @@ class _ScaleField extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: AtemType.labelMicro.of(context).copyWith(
-                    letterSpacing: 0,
+              style: AtemType.labelUi.of(context).copyWith(
                     color:
                         selected ? AtemColors.cyan : AtemColors.textSecondary,
                   ),

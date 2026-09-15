@@ -212,7 +212,10 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
           // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"
           // sagt, wie gross der Bestand ist; „Alle ansehen" sagt, wohin
           // der Weg führt. Beides in einer Zeile wäre eine Zahl zu viel.
-          title: l10n.exercisesBlockTitle(exerciseCount).toUpperCase(),
+          // Der Titel trägt eine Zahl und ist damit eine Metazeile, kein
+          // HUD-Kopf — gemischte Schreibung in Poppins.
+          title: l10n.exercisesBlockTitle(exerciseCount),
+          role: AtemType.meta,
           actionLabel: l10n.exercisesBlockAll,
           onAction: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
@@ -419,8 +422,8 @@ class _TodayCard extends StatelessWidget {
           Text(session.title, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 8),
           Text(
-            meta.toUpperCase(),
-            style: AtemType.labelMicro.of(context),
+            meta,
+            style: AtemType.meta.of(context),
           ),
           const SizedBox(height: 16),
           AtemButton.gradient(
@@ -482,11 +485,20 @@ class _EmptyToday extends StatelessWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title, this.actionLabel, this.onAction});
+  const _SectionHeader({
+    required this.title,
+    this.actionLabel,
+    this.onAction,
+    AtemTextRole? role,
+  }) : _role = role;
 
   final String title;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// Standard ist der Mono-Kopf. Ein Titel mit Zahl übergibt
+  /// [AtemType.meta] — dann ohne Versalien.
+  final AtemTextRole? _role;
 
   @override
   Widget build(BuildContext context) {
@@ -500,7 +512,7 @@ class _SectionHeader extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AtemType.labelMicro.of(context),
+            style: (_role ?? AtemType.labelMicro).of(context),
           ),
         ),
         if (actionLabel != null && onAction != null) ...[

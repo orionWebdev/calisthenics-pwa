@@ -167,8 +167,7 @@ class _BodyState extends State<_Body> {
           ),
           const SizedBox(height: 6),
           Text(l10n.formReadinessHint,
-              style:
-                  AtemType.labelMicro.of(context).copyWith(letterSpacing: 0)),
+              style: AtemType.labelSmall.of(context)),
           const SizedBox(height: 18),
           AtemTappable(
             onTap: () => setState(() => _open = !_open),

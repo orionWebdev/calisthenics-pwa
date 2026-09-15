@@ -60,7 +60,7 @@ String difficultyShort(AppL10n l, int level) => switch (level) {
 /// wonach man greift. Die Ausnahme des Vertrags („Beschriftung neben einem
 /// grösseren Wert") greift also gerade nicht.
 ///
-/// Deshalb steht das Wort auf 12 sp (`AtemType.labelMicro` im Baustein). Das
+/// Deshalb steht das Wort auf 12 sp (`AtemType.labelUi` im Baustein). Das
 /// Feld wird dadurch höher, was der Ausweichscroller ohnehin abfängt.
 class DifficultyChoice extends StatelessWidget {
   const DifficultyChoice({

@@ -87,10 +87,10 @@ class AcwrScale extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(l10n.acwrLabel(value).toUpperCase(),
+                  child: Text(l10n.acwrLabel(value),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelMicro.of(context)),
+                      style: AtemType.meta.of(context)),
                 ),
               ],
             ),

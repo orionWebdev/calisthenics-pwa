@@ -130,9 +130,9 @@ class AtemTextField extends StatelessWidget {
           ExcludeSemantics(
             child: Text(
               text,
-              style: AtemType.labelMicro
+              style: AtemType.labelSmall
                   .of(context)
-                  .copyWith(color: AtemColors.magenta, letterSpacing: 0),
+                  .copyWith(color: AtemColors.magenta),
             ),
           ),
         ],
@@ -169,7 +169,7 @@ class AtemFieldLabel extends StatelessWidget {
             Text(label, style: AtemType.labelMedium.of(context)),
             if (hint case final text?) ...[
               const SizedBox(height: 4),
-              Text(text, style: AtemType.labelMicro.of(context)),
+              Text(text, style: AtemType.labelSmall.of(context)),
             ],
             const SizedBox(height: 8),
           ],

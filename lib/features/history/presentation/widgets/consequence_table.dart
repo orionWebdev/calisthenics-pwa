@@ -171,7 +171,7 @@ class ConsequenceTable extends StatelessWidget {
             style: AtemType.labelMedium.of(context)),
         if (note case final text?) ...[
           const SizedBox(height: 4),
-          Text(text, style: AtemType.labelMicro.of(context)),
+          Text(text, style: AtemType.meta.of(context)),
         ],
         const SizedBox(height: 12),
         for (var i = 0; i < rows.length; i++) ...[

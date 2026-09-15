@@ -103,7 +103,7 @@ class WeightPreview extends ConsumerWidget {
             style: AtemType.labelMedium.of(context)),
         const SizedBox(height: 4),
         Text(l10n.weightImpactScope(days, counted),
-            style: AtemType.labelMicro.of(context)),
+            style: AtemType.meta.of(context)),
         const SizedBox(height: 12),
         for (var i = 0; i < rows.length; i++) ...[
           if (i > 0) const SizedBox(height: 9),
@@ -111,7 +111,7 @@ class WeightPreview extends ConsumerWidget {
         ],
         const SizedBox(height: 12),
         Text(l10n.weightImpactNote,
-            style: AtemType.labelMicro.of(context)),
+            style: AtemType.labelSmall.of(context)),
       ],
     );
   }

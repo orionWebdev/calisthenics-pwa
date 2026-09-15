@@ -76,7 +76,7 @@ class ExerciseHistoryBlock extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(l10n.historyOnceNote,
-                style: AtemType.labelMicro.of(context)),
+                style: AtemType.meta.of(context)),
           ] else ...[
             Wrap(
               spacing: 10,
@@ -186,7 +186,7 @@ class _Tile extends StatelessWidget {
               const SizedBox(height: 3),
               Text(value, style: AtemType.valueMedium.of(context)),
               const SizedBox(height: 2),
-              Text(sub, style: AtemType.labelMicro.of(context)),
+              Text(sub, style: AtemType.meta.of(context)),
             ],
           ),
         ),
@@ -269,7 +269,7 @@ class _Curve extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(l10n.historyCurveLegend,
-            style: AtemType.labelMicro.of(context)),
+            style: AtemType.meta.of(context)),
       ],
     );
   }

@@ -2,7 +2,9 @@ import 'package:atem/core/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Die acht Rollen aus Design-Gespräch 01, plus die dekorative Ausnahme.
+/// Die acht Rollen aus Design-Gespräch 01, dazu `meta` und `labelUi` vom
+/// 15.09.2026 (Metazeilen und Bedienelemente in Poppins), plus die dekorative
+/// Ausnahme.
 final _roles = <String, AtemTextRole>{
   'display': AtemType.display,
   'valueLarge': AtemType.valueLarge,
@@ -12,6 +14,8 @@ final _roles = <String, AtemTextRole>{
   'labelMedium': AtemType.labelMedium,
   'labelSmall': AtemType.labelSmall,
   'labelMicro': AtemType.labelMicro,
+  'meta': AtemType.meta,
+  'labelUi': AtemType.labelUi,
   'body': AtemType.body,
 };
 
@@ -41,9 +45,16 @@ void main() {
       // gelesen, nicht überflogen.
       expect(AtemType.labelSmall.base.fontSize, 13.0);
       expect(AtemType.labelMicro.base.fontSize, 12.0);
-      // Fliesstext in der Systemschrift, 15 sp.
+      expect(AtemType.meta.base.fontSize, 13.0);
+      expect(AtemType.labelUi.base.fontSize, 12.0);
+      // Fliesstext 15 sp — in Poppins, nicht in der Systemschrift: Die ist
+      // auf dem Honor HONOR Sans und auf jedem Gerät eine andere.
       expect(AtemType.body.base.fontSize, 15.0);
-      expect(AtemType.body.base.fontFamily, isNull);
+      expect(AtemType.body.base.fontFamily, 'Poppins');
+      expect(AtemType.labelSmall.base.fontFamily, 'Poppins');
+      expect(AtemType.meta.base.fontFamily, 'Poppins');
+      expect(AtemType.labelUi.base.fontFamily, 'Poppins');
+      expect(AtemType.labelMicro.base.fontFamily, 'JetBrainsMono');
     });
   });
 
@@ -72,8 +83,8 @@ void main() {
       // Der eigentliche Punkt: Flutter skaliert fontSize, aber NICHT
       // letterSpacing. Ohne AtemTextRole.of bliebe die Sperrung konstant und
       // die Labels rückten bei großer Schrift optisch zusammen.
-      expect(atOne.letterSpacing, closeTo(12 * 0.16, 0.001));
-      expect(atTwo.letterSpacing, closeTo(24 * 0.16, 0.001));
+      expect(atOne.letterSpacing, closeTo(12 * 0.12, 0.001));
+      expect(atTwo.letterSpacing, closeTo(24 * 0.12, 0.001));
       expect(atTwo.letterSpacing! / atOne.letterSpacing!, closeTo(2.0, 0.001));
     });
 

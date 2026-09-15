@@ -256,11 +256,9 @@ class _Running extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      l10n
-                          .liveStarted(DateFormat.Hm(languageTag(context))
-                              .format(draft.clock.startedAt))
-                          .toUpperCase(),
-                      style: AtemType.labelMicro.of(context),
+                      l10n.liveStarted(DateFormat.Hm(languageTag(context))
+                          .format(draft.clock.startedAt)),
+                      style: AtemType.meta.of(context),
                     ),
                   ],
                 ),

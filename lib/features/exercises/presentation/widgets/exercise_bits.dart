@@ -124,11 +124,7 @@ class MuscleChip extends StatelessWidget {
       ),
       child: Text(
         muscle.label(l10n),
-        style: AtemType.labelMicro.of(context).copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0,
-            ),
+        style: AtemType.labelUi.of(context).copyWith(color: color),
       ),
     );
   }
@@ -168,10 +164,7 @@ class MuscleChipRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AtemRadii.pill),
                   border: Border.all(color: AtemColors.border),
                 ),
-                child: Text('+$rest',
-                    style: AtemType.labelMicro.of(context).copyWith(
-                          letterSpacing: 0,
-                        )),
+                child: Text('+$rest', style: AtemType.labelUi.of(context)),
               ),
           ],
         ),
@@ -298,7 +291,7 @@ class ExerciseRow extends StatelessWidget {
                           if (muscle != null || exercise.equipment.isNotEmpty)
                             const TextSpan(text: ' · '),
                           TextSpan(
-                            text: l10n.exercisesOwnTag.toUpperCase(),
+                            text: l10n.exercisesOwnTag,
                             style: const TextStyle(
                                 color: AtemColors.textTertiary),
                           ),
@@ -306,9 +299,7 @@ class ExerciseRow extends StatelessWidget {
                       ]),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelMicro
-                          .of(context)
-                          .copyWith(letterSpacing: 0),
+                      style: AtemType.meta.of(context),
                     ),
                   ],
                 ],

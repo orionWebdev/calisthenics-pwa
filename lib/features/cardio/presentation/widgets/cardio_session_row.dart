@@ -23,7 +23,7 @@ class CardioSessionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final tag = languageTag(context);
-    final date = DateFormat.E(tag).format(session.date).toUpperCase();
+    final date = DateFormat.E(tag).format(session.date);
     final day = DateFormat.MMMd(tag).format(session.date);
     final minutes = session.duration?.inMinutes;
     final name = session.name ?? activityLabel(l10n, session.activity);
@@ -81,9 +81,7 @@ class CardioSessionRow extends StatelessWidget {
                   Text(meta,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelMicro
-                          .of(context)
-                          .copyWith(letterSpacing: 0)),
+                      style: AtemType.meta.of(context)),
                 ],
               ),
             ),
@@ -98,7 +96,7 @@ class CardioSessionRow extends StatelessWidget {
                           .of(context)
                           .copyWith(fontSize: 14)),
                   if (tempo != null)
-                    Text(formatTempo(context, tempo).toUpperCase(),
+                    Text(formatTempo(context, tempo),
                         style: AtemType.labelMicro.of(context).copyWith(
                             color: AtemColors.textTertiary, letterSpacing: 0)),
                 ],

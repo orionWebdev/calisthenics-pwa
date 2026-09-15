@@ -266,9 +266,9 @@ class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
                           if (_showFaults && _durationValue == null) ...[
                             const SizedBox(height: 6),
                             Text(l10n.formDurationRequired,
-                                style: AtemType.labelMicro.of(context).copyWith(
-                                    color: AtemColors.magenta,
-                                    letterSpacing: 0)),
+                                style: AtemType.meta
+                                    .of(context)
+                                    .copyWith(color: AtemColors.magenta)),
                           ],
                           const SizedBox(height: 20),
                           AtemFieldLabel(label: l10n.formFocus),
@@ -281,9 +281,7 @@ class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
                           ),
                           const SizedBox(height: 6),
                           Text(l10n.formFocusHint,
-                              style: AtemType.labelMicro
-                                  .of(context)
-                                  .copyWith(letterSpacing: 0)),
+                              style: AtemType.meta.of(context)),
                           const SizedBox(height: 20),
                           AtemFieldLabel(label: l10n.formRpe),
                           RpeChoice(
@@ -363,9 +361,7 @@ class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
                         child: Text(
                           l10n.exerciseSaveBlocked(_missing),
                           textAlign: TextAlign.center,
-                          style: AtemType.labelMicro
-                              .of(context)
-                              .copyWith(letterSpacing: 0),
+                          style: AtemType.meta.of(context),
                         ),
                       ),
                     ],

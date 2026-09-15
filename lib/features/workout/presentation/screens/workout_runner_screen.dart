@@ -554,7 +554,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     const SizedBox(height: 8),
                     Text(target,
                         textAlign: TextAlign.center,
-                        style: AtemType.labelMicro
+                        style: AtemType.meta
                             .of(context)
                             .copyWith(color: AtemColors.cyan)),
                   ],
@@ -597,9 +597,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                         SetType.dropset.shortLabel(l10n),
                         SetType.failure.shortLabel(l10n),
                       ),
-                      style: AtemType.labelMicro
-                          .of(context)
-                          .copyWith(letterSpacing: 0),
+                      style: AtemType.meta.of(context),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -629,7 +627,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                       l10n.workoutRunnerSetsCompleted(
                           w.completedSets, w.totalSets),
                       textAlign: TextAlign.center,
-                      style: AtemType.labelMicro.of(context),
+                      style: AtemType.meta.of(context),
                     ),
                   ),
                 ],

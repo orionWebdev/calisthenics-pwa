@@ -106,8 +106,8 @@ class IntensityBox extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      capsule.toUpperCase(),
-                      style: AtemType.labelMicro.of(context).copyWith(
+                      capsule,
+                      style: AtemType.labelUi.of(context).copyWith(
                             color: neutral
                                 ? AtemColors.textTertiary
                                 : AtemColors.cyan,
@@ -161,9 +161,7 @@ class IntensityBox extends StatelessWidget {
               isRun
                   ? l10n.intensityFallbackNote(i.basisCount)
                   : l10n.intensityFallbackNoteOther(i.basisCount),
-              style: AtemType.labelMicro
-                  .of(context)
-                  .copyWith(letterSpacing: 0),
+              style: AtemType.meta.of(context),
             ),
           ],
         ],

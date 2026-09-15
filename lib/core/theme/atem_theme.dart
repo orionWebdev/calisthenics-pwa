@@ -179,7 +179,7 @@ abstract final class AtemTheme {
         elevation: 0,
         height: 64,
         labelTextStyle: WidgetStateProperty.resolveWith(
-          (states) => AtemType.labelMicro.base.copyWith(
+          (states) => AtemType.labelUi.base.copyWith(
             color: states.contains(WidgetState.selected)
                 ? AtemColors.cyan
                 : AtemColors.textSecondary,

@@ -365,11 +365,11 @@ class _MonthHeaderDelegate extends SliverPersistentHeaderDelegate {
               const SizedBox(width: 12),
               Flexible(
                 child: Text(
-                  summary.toUpperCase(),
+                  summary,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
-                  style: AtemType.labelMicro.of(context),
+                  style: AtemType.meta.of(context),
                 ),
               ),
             ],
@@ -491,12 +491,10 @@ class _Row extends StatelessWidget {
                               .copyWith(fontWeight: FontWeight.w600)),
                       if (meta.isNotEmpty) ...[
                         const SizedBox(height: 2),
-                        Text(meta.toUpperCase(),
+                        Text(meta,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AtemType.labelMicro
-                                .of(context)
-                                .copyWith(letterSpacing: 0)),
+                            style: AtemType.meta.of(context)),
                       ],
                     ],
                   ),
@@ -638,14 +636,14 @@ class _Gap extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10n.listGap(days).toUpperCase(),
+                          l10n.listGap(days),
                           style: AtemType.labelSmall.of(context).copyWith(
                               color: color, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           isLongest ? '$range · ${l10n.listGapLongest}' : range,
-                          style: AtemType.labelMicro.of(context),
+                          style: AtemType.meta.of(context),
                         ),
                       ],
                     ),
@@ -736,7 +734,7 @@ class _End extends StatelessWidget {
           Text(
             l10n.listEndBody(date, daysAgo),
             textAlign: TextAlign.center,
-            style: AtemType.labelMicro.of(context),
+            style: AtemType.meta.of(context),
           ),
         ],
       ),

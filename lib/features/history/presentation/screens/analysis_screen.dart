@@ -465,7 +465,7 @@ class _Row extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 6),
-            Text(why, style: AtemType.labelMicro.of(context)),
+            Text(why, style: AtemType.meta.of(context)),
           ],
         ),
       ),

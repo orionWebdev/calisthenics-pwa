@@ -96,8 +96,9 @@ class AtemBadge extends StatelessWidget {
 
   final VoidCallback? onTap;
 
-  /// Abweichender Textstil. Standard ist [AtemType.labelMicro]; die
-  /// Empfehlungs-Pille nutzt [AtemType.labelSmall], weil sie Fließtext trägt.
+  /// Abweichender Textstil. Standard ist [AtemType.labelUi] — eine Pille ist
+  /// ein Bedienelement, kein Messwert; die Empfehlungs-Pille nutzt
+  /// [AtemType.labelSmall], weil sie Fließtext trägt.
   final AtemTextRole? style;
 
   final bool _isCounter;
@@ -119,7 +120,7 @@ class AtemBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final tint = accent ?? AtemColors.border;
     final isAccented = accent != null;
-    final role = style ?? AtemType.labelMicro;
+    final role = style ?? AtemType.labelUi;
 
     final textColor = switch (fill) {
       AtemBadgeFill.solid => AtemColors.textPrimary,

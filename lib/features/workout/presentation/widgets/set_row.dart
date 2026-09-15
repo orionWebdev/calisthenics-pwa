@@ -167,9 +167,8 @@ class SetRow extends StatelessWidget {
         ),
         child: Text(
           set.type.shortLabel(l10n),
-          style: AtemType.labelMicro.of(context).copyWith(
+          style: AtemType.labelUi.of(context).copyWith(
                 fontWeight: FontWeight.w700,
-                letterSpacing: 0,
                 color: set.done ? AtemColors.textSecondary : tint,
               ),
         ),

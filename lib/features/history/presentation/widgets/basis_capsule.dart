@@ -77,14 +77,14 @@ class BasisCapsule extends StatelessWidget {
               ),
               child: Text(
                 chip,
-                style: AtemType.labelMicro.of(context).copyWith(
+                style: AtemType.labelUi.of(context).copyWith(
                       color:
                           strong ? AtemColors.cyan : AtemColors.textSecondary,
                       fontWeight: FontWeight.w600,
                     ),
               ),
             ),
-            Text(meta, style: AtemType.labelMicro.of(context)),
+            Text(meta, style: AtemType.meta.of(context)),
           ],
         ),
       ),

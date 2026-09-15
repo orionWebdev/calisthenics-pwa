@@ -120,7 +120,7 @@ class _WaitingRoomScreenState extends ConsumerState<WaitingRoomScreen> {
                             // Die volle Adresse steckt im Semantics-Label —
                             // abgeschnitten ist sie nur im Bild.
                             overflow: TextOverflow.ellipsis,
-                            style: AtemType.labelMicro.of(context),
+                            style: AtemType.meta.of(context),
                           ),
                         ),
                       ),

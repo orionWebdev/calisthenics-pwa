@@ -238,8 +238,8 @@ class _ItemRow extends StatelessWidget {
                 if (muscle != null) ...[
                   const SizedBox(height: 2),
                   Text(
-                    muscle.label(l10n).toUpperCase(),
-                    style: AtemType.labelMicro
+                    muscle.label(l10n),
+                    style: AtemType.meta
                         .of(context)
                         .copyWith(color: muscle.color),
                   ),

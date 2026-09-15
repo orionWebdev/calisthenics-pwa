@@ -599,15 +599,14 @@ class _WeightSheetState extends ConsumerState<_WeightSheet> {
         const SizedBox(height: 6),
         Text(
           fault ? l10n.weightErrorRange : l10n.weightHint,
-          style: AtemType.labelMicro.of(context).copyWith(
-                letterSpacing: 0,
+          style: AtemType.labelSmall.of(context).copyWith(
                 color: fault ? AtemColors.magenta : AtemColors.textSecondary,
               ),
         ),
         if (current != null && changed) ...[
           const SizedBox(height: 6),
           Text(l10n.weightPrevious(AtemNumberField.format(context, current)),
-              style: AtemType.labelMicro.of(context)),
+              style: AtemType.meta.of(context)),
         ],
         // Die Vorschau erscheint erst bei Abweichung — der leere Platz
         // darunter ist Absicht, er füllt sich beim Tippen.
@@ -737,8 +736,7 @@ class _RestSheetState extends ConsumerState<_RestSheet> {
           ),
           const SizedBox(height: 6),
           Text(
-            '${UserSettings.minRestSeconds}–${UserSettings.maxRestSeconds} ${l10n.unitSuffixSeconds}'
-                .toUpperCase(),
+            '${UserSettings.minRestSeconds}–${UserSettings.maxRestSeconds} ${l10n.unitSuffixSeconds}',
             style: AtemType.labelMicro.of(context),
           ),
         ],
@@ -911,9 +909,7 @@ class _ProfileHeader extends StatelessWidget {
                     Text(email,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AtemType.labelMicro
-                            .of(context)
-                            .copyWith(letterSpacing: 0)),
+                        style: AtemType.meta.of(context)),
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -931,7 +927,7 @@ class _ProfileHeader extends StatelessWidget {
                           const SizedBox(width: 5),
                           Flexible(
                             child: Text(
-                              l10n.profileLocked.toUpperCase(),
+                              l10n.profileLocked,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AtemType.labelDeco.of(context),
@@ -1014,7 +1010,7 @@ class _DangerRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(l10n.accountDeleteSub,
-                      style: AtemType.labelMicro.of(context)),
+                      style: AtemType.labelSmall.of(context)),
                 ],
               ),
             ),

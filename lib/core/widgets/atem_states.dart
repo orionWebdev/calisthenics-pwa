@@ -543,7 +543,7 @@ class AtemSectionError extends StatelessWidget {
                     Text(title, style: AtemType.labelMedium.of(context)),
                     const SizedBox(height: 3),
                     Text(l10n.errorSectionBody,
-                        style: AtemType.labelMicro.of(context)),
+                        style: AtemType.labelSmall.of(context)),
                     const SizedBox(height: 10),
                     AtemButton.outline(
                       label: l10n.errorSectionRetry,
@@ -630,7 +630,7 @@ class AtemOfflineBanner extends StatelessWidget {
               const SizedBox(width: 9),
               Expanded(
                 child: Text(l10n.errorOfflineBanner,
-                    style: AtemType.labelMicro.of(context)),
+                    style: AtemType.labelSmall.of(context)),
               ),
             ],
           ),

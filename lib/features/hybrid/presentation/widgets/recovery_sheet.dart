@@ -167,9 +167,9 @@ class _BodyState extends ConsumerState<_Body> {
         if (_showFaults && _kind == null) ...[
           const SizedBox(height: 6),
           Text(l10n.formActivityRequired,
-              style: AtemType.labelMicro
+              style: AtemType.meta
                   .of(context)
-                  .copyWith(color: AtemColors.magenta, letterSpacing: 0)),
+                  .copyWith(color: AtemColors.magenta)),
         ],
         const SizedBox(height: 18),
         Row(
@@ -220,8 +220,9 @@ class _BodyState extends ConsumerState<_Body> {
                   if (_showFaults && _durationValue == null) ...[
                     const SizedBox(height: 6),
                     Text(l10n.formDurationRequired,
-                        style: AtemType.labelMicro.of(context).copyWith(
-                            color: AtemColors.magenta, letterSpacing: 0)),
+                        style: AtemType.meta
+                            .of(context)
+                            .copyWith(color: AtemColors.magenta)),
                   ],
                 ],
               ),

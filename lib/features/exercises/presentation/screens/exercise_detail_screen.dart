@@ -88,10 +88,9 @@ class ExerciseDetailScreen extends ConsumerWidget {
                       // oder KURATIERT — sie entscheidet, ob es einen
                       // Bearbeiten-Weg gibt.
                       AtemBadge(
-                        label: (exercise.isOwn
-                                ? l10n.exercisesOwnTag
-                                : l10n.exerciseCuratedBadge)
-                            .toUpperCase(),
+                        label: exercise.isOwn
+                            ? l10n.exercisesOwnTag
+                            : l10n.exerciseCuratedBadge,
                         accent: AtemCategories.grey,
                         leadingIcon: exercise.isOwn
                             ? null
@@ -120,7 +119,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
                         difficultyLabel(l10n, level),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AtemType.labelMicro.of(context),
+                        style: AtemType.meta.of(context),
                       ),
                     ),
                   ),
@@ -132,7 +131,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
               // Gerät bleibt grauer Text, kein Chip: Vier eingefärbte
               // Kategorien nebeneinander wären ein Flickenteppich.
               Text(exercise.equipment.join(' · '),
-                  style: AtemType.labelMicro.of(context)),
+                  style: AtemType.meta.of(context)),
             ],
 
             // **Dein Verlauf steht vor der Anleitung.** Wer eine Übung

@@ -59,9 +59,9 @@ class PaceChart extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(fmt.format(points.first.date).toUpperCase(),
+                Text(fmt.format(points.first.date),
                     style: AtemType.labelDeco.of(context)),
-                Text(fmt.format(points.last.date).toUpperCase(),
+                Text(fmt.format(points.last.date),
                     style: AtemType.labelDeco.of(context)),
               ],
             ),

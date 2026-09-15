@@ -393,11 +393,9 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                               if (_showFaults && _distanceInvalid) ...[
                                 const SizedBox(height: 6),
                                 Text(l10n.formDistanceInvalid,
-                                    style: AtemType.labelMicro
+                                    style: AtemType.meta
                                         .of(context)
-                                        .copyWith(
-                                            color: AtemColors.magenta,
-                                            letterSpacing: 0)),
+                                        .copyWith(color: AtemColors.magenta)),
                               ],
                             ],
                           ),
@@ -426,11 +424,9 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                               if (_showFaults && _durationValue == null) ...[
                                 const SizedBox(height: 6),
                                 Text(l10n.formDurationRequired,
-                                    style: AtemType.labelMicro
+                                    style: AtemType.meta
                                         .of(context)
-                                        .copyWith(
-                                            color: AtemColors.magenta,
-                                            letterSpacing: 0)),
+                                        .copyWith(color: AtemColors.magenta)),
                               ],
                             ],
                           ),
@@ -536,9 +532,7 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(l10n.formHrHint,
-                          style: AtemType.labelMicro
-                              .of(context)
-                              .copyWith(letterSpacing: 0)),
+                          style: AtemType.meta.of(context)),
                       const SizedBox(height: 20),
                       AtemFieldLabel(label: l10n.formNote),
                       AtemTextField(
@@ -588,9 +582,7 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                       const SizedBox(height: 6),
                       ExcludeSemantics(
                         child: Text(l10n.exerciseSaveBlocked(_missing),
-                            style: AtemType.labelMicro
-                                .of(context)
-                                .copyWith(letterSpacing: 0)),
+                            style: AtemType.meta.of(context)),
                       ),
                     ],
                   ],
@@ -710,7 +702,7 @@ class _PickField extends StatelessWidget {
                   ),
                   if (badge != null) ...[
                     const SizedBox(width: 8),
-                    AtemBadge(label: badge!.toUpperCase()),
+                    AtemBadge(label: badge!),
                   ],
                   const SizedBox(width: 8),
                   Icon(icon, size: 18, color: AtemColors.textSecondary),
@@ -722,9 +714,9 @@ class _PickField extends StatelessWidget {
             const SizedBox(height: 6),
             ExcludeSemantics(
               child: Text(errorText!,
-                  style: AtemType.labelMicro
+                  style: AtemType.meta
                       .of(context)
-                      .copyWith(color: AtemColors.magenta, letterSpacing: 0)),
+                      .copyWith(color: AtemColors.magenta)),
             ),
           ],
         ],
@@ -758,8 +750,7 @@ class _MoreSection extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(text.toUpperCase(),
-                style: AtemType.labelMicro.of(context)),
+            child: Text(text, style: AtemType.labelUi.of(context)),
           ),
           const SizedBox(width: 8),
           Icon(open ? Icons.expand_less : Icons.expand_more,

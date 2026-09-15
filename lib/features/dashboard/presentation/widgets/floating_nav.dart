@@ -86,9 +86,10 @@ class FloatingNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    // Versalien wie in Modul 1 — die Rolle labelMicro ist Mono in Grossbuchstaben.
+    // Gemischte Schreibung: Der Tab-Name ist ein Bedienelement, kein
+    // HUD-Kopf. In Mono-Versalien las sich die Leiste wie ein Terminal.
     final labels = [
-      for (final tab in _NavTab.values) tab.label(l10n).toUpperCase(),
+      for (final tab in _NavTab.values) tab.label(l10n),
     ];
 
     return AtemBar(
@@ -183,9 +184,7 @@ class _NavItem extends StatelessWidget {
   /// Auch von [FloatingNav._allLabelsFit] benutzt — die Messung muss
   /// denselben Stil sehen wie die Darstellung.
   static TextStyle labelStyle(BuildContext context, Color color) =>
-      AtemType.labelMicro
-          .of(context)
-          .copyWith(color: color, letterSpacing: 0.5);
+      AtemType.labelUi.of(context).copyWith(color: color);
 
   @override
   Widget build(BuildContext context) {

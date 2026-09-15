@@ -562,15 +562,17 @@ class _ItemCardState extends State<_ItemCard> {
                           // sie sind der Grund, die Zeile stehenzulassen.
                           Text(
                             l10n.planBrokenKeepTarget(_scheme(l10n)),
-                            style: AtemType.labelMicro.of(context).copyWith(
-                                color: AtemColors.cyan, letterSpacing: 0),
+                            style: AtemType.meta
+                                .of(context)
+                                .copyWith(color: AtemColors.cyan),
                           ),
                         ] else if (muscle != null) ...[
                           const SizedBox(height: 2),
                           Text(
                             muscle.label(l10n),
-                            style: AtemType.labelMicro.of(context).copyWith(
-                                color: muscle.color, letterSpacing: 0),
+                            style: AtemType.meta
+                                .of(context)
+                                .copyWith(color: muscle.color),
                           ),
                         ],
                       ],
@@ -586,9 +588,7 @@ class _ItemCardState extends State<_ItemCard> {
             // jede Karte öffnen, um zu sehen, ob sie schon gefüllt ist.
             Text(
               _summary(l10n),
-              style: AtemType.labelMicro
-                  .of(context)
-                  .copyWith(letterSpacing: 0, color: AtemColors.cyan),
+              style: AtemType.meta.of(context).copyWith(color: AtemColors.cyan),
             ),
           ],
           const SizedBox(height: 12),
@@ -1088,9 +1088,7 @@ class _Action extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AtemType.labelMicro
-                      .of(context)
-                      .copyWith(color: color, letterSpacing: 0),
+                  style: AtemType.labelUi.of(context).copyWith(color: color),
                 ),
               ),
             ],

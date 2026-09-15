@@ -343,8 +343,8 @@ class _WeekTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l10n.cardioTotalSince(since).toUpperCase(),
-                    style: AtemType.labelMicro.of(context)),
+                Text(l10n.cardioTotalSince(since),
+                    style: AtemType.meta.of(context)),
                 const SizedBox(height: 6),
                 Text(l10n.unitKilometers(km),
                     style:
@@ -355,7 +355,7 @@ class _WeekTile extends StatelessWidget {
                   runSpacing: 6,
                   children: [
                     for (final chip in chips)
-                      AtemBadge(label: chip.toUpperCase()),
+                      AtemBadge(label: chip),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -391,9 +391,8 @@ class _WeekTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${l10n.cardioWeekTitle(IsoWeek.number(weekly.weeks.last.weekStart))} · ${l10n.cardioWeekCount(weekly.thisWeekCount)}'
-                    .toUpperCase(),
-                style: AtemType.labelMicro.of(context),
+                '${l10n.cardioWeekTitle(IsoWeek.number(weekly.weeks.last.weekStart))} · ${l10n.cardioWeekCount(weekly.thisWeekCount)}',
+                style: AtemType.meta.of(context),
               ),
               const SizedBox(height: 6),
               Wrap(
@@ -421,11 +420,10 @@ class _WeekTile extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                (avg == null
-                        ? l10n.ratioNoshift
-                        : l10n.cardioWeekBasis(formatKm(context, avg)))
-                    .toUpperCase(),
-                style: AtemType.labelMicro.of(context),
+                avg == null
+                    ? l10n.ratioNoshift
+                    : l10n.cardioWeekBasis(formatKm(context, avg)),
+                style: AtemType.meta.of(context),
               ),
               const SizedBox(height: 12),
               _MiniStrip(weeks: weekly.weeks),
@@ -485,13 +483,10 @@ class _AnalysisState extends ConsumerState<_Analysis> {
                   children: [
                     Expanded(
                       child: Text(
-                        l10n
-                            .analysisWeeklyBasis(
-                                formatKm(
-                                    context, weekly.eightWeekAverageKm ?? 0),
-                                weekly.eightWeekCount)
-                            .toUpperCase(),
-                        style: AtemType.labelMicro.of(context),
+                        l10n.analysisWeeklyBasis(
+                            formatKm(context, weekly.eightWeekAverageKm ?? 0),
+                            weekly.eightWeekCount),
+                        style: AtemType.meta.of(context),
                       ),
                     ),
                     if (weekly.shiftKm case final shift?)
@@ -599,13 +594,11 @@ class _PaceBlock extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        (isRun
-                                ? l10n.analysisPaceBasis(
-                                    v(median), series.count)
-                                : l10n.analysisPaceBasisOther(
-                                    v(median), series.count))
-                            .toUpperCase(),
-                        style: AtemType.labelMicro.of(context),
+                        isRun
+                            ? l10n.analysisPaceBasis(v(median), series.count)
+                            : l10n.analysisPaceBasisOther(
+                                v(median), series.count),
+                        style: AtemType.meta.of(context),
                       ),
                     ],
                   ),
@@ -671,10 +664,8 @@ class _PercentileBlock extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n
-                  .analysisPctThis(DateFormat.MMMd(tag).format(last.date))
-                  .toUpperCase(),
-              style: AtemType.labelMicro.of(context),
+              l10n.analysisPctThis(DateFormat.MMMd(tag).format(last.date)),
+              style: AtemType.meta.of(context),
             ),
             const SizedBox(height: 6),
             Text(v(last.value),
@@ -716,10 +707,10 @@ class _PercentileBlock extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                    '${v(series.slowest!)} ${l10n.analysisPctSlowest.toUpperCase()}',
+                    '${v(series.slowest!)} ${l10n.analysisPctSlowest}',
                     style: AtemType.labelDeco.of(context)),
                 Text(
-                    '${v(series.fastest!)} ${l10n.analysisPctFastest.toUpperCase()}',
+                    '${v(series.fastest!)} ${l10n.analysisPctFastest}',
                     style: AtemType.labelDeco.of(context)),
               ],
             ),
@@ -775,9 +766,8 @@ class _ActivityChips extends StatelessWidget {
                 ),
               ),
               child: Text(
-                '${activityLabel(l10n, entry.key)} · ${entry.value}'
-                    .toUpperCase(),
-                style: AtemType.labelMicro.of(context).copyWith(
+                '${activityLabel(l10n, entry.key)} · ${entry.value}',
+                style: AtemType.labelUi.of(context).copyWith(
                       color: entry.key == selected
                           ? AtemColors.cyan
                           : AtemColors.textSecondary,
@@ -811,10 +801,10 @@ class _SectionTitle extends StatelessWidget {
             Flexible(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 3),
-                child: Text(tag!.toUpperCase(),
+                child: Text(tag!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AtemType.labelMicro.of(context)),
+                    style: AtemType.meta.of(context)),
               ),
             ),
           ],

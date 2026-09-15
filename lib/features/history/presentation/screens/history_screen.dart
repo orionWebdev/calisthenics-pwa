@@ -215,10 +215,7 @@ class _SessionRow extends StatelessWidget {
             children: [
               SizedBox(
                 width: 76,
-                child: Text(date,
-                    style: AtemType.labelMicro
-                        .of(context)
-                        .copyWith(letterSpacing: 0)),
+                child: Text(date, style: AtemType.meta.of(context)),
               ),
               Expanded(
                 child: Text(

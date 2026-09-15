@@ -68,8 +68,8 @@ class SessionDetailScreen extends ConsumerWidget {
         backgroundColor: AtemColors.base,
         // Das Datum steht in der Leiste (Board 06, A3): „SA 05.07.2026".
         title: Text(
-          DateFormat.yMEd(tag).format(session.date).toUpperCase(),
-          style: AtemType.labelMicro.of(context),
+          DateFormat.yMEd(tag).format(session.date),
+          style: AtemType.meta.of(context),
         ),
       ),
       body: SafeArea(
@@ -93,9 +93,8 @@ class SessionDetailScreen extends ConsumerWidget {
                       (minutes == null
                               ? sessionKindLabel(l10n, session)
                               : l10n.detailSubtitle(
-                                  sessionKindLabel(l10n, session), minutes))
-                          .toUpperCase(),
-                      style: AtemType.labelMicro.of(context),
+                                  sessionKindLabel(l10n, session), minutes)),
+                      style: AtemType.meta.of(context),
                     ),
                   ],
                 ),
@@ -291,8 +290,8 @@ class SessionDetailScreen extends ConsumerWidget {
 
     return [
       const SizedBox(height: 22),
-      Text(l10n.detailSetsCount(strength.exercises.length, sets).toUpperCase(),
-          style: AtemType.labelMicro.of(context)),
+      Text(l10n.detailSetsCount(strength.exercises.length, sets),
+          style: AtemType.meta.of(context)),
       const SizedBox(height: 10),
       AtemCard.list(
         padding: EdgeInsets.zero,
@@ -472,7 +471,7 @@ class _Neighbours extends StatelessWidget {
                 const SizedBox(width: 10),
                 here
                     ? AtemBadge(
-                        label: tail.toUpperCase(),
+                        label: tail,
                         accent: AtemColors.green,
                         leadingDot: true,
                       )

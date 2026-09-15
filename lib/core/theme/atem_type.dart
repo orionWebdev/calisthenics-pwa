@@ -56,33 +56,24 @@ abstract final class AtemType {
         letterSpacing: size * tracking,
       );
 
-  /// Fliesstext in der **Systemschrift** — auf Android also Roboto.
+  /// Lesetext — **Poppins, nicht die Systemschrift.**
   ///
-  /// ## Warum nicht Poppins
+  /// ## Warum nicht die Systemschrift
   ///
-  /// Poppins ist geometrisch: kreisrunde Punzen, offene Formen, kaum
-  /// Unterscheidung zwischen `l`, `I` und `1`. Als Überschrift ist das ihr
-  /// Charakter; bei 14 sp Fliesstext auf einem Telefon ist es eine Hürde. Sie
-  /// war nie als Lesetext gedacht — die Design-Referenz nennt sie „UI".
-  ///
-  /// Die Systemschrift kostet keine Bytes, ist auf jedem Gerät da und für
-  /// genau diese Grösse gezeichnet. Sie bekommt bewusst **keine eigene
-  /// Familie im Vorrat**: Eine dritte Schriftdatei wäre eine dritte Stimme,
-  /// und die App hat schon zwei.
-  ///
-  /// Überschriften, Knöpfe und Labels bleiben Poppins, Messwerte bleiben Mono.
+  /// Vom 30.08. bis 15.09.2026 lief der Fliesstext ohne `fontFamily`, in der
+  /// Annahme, das sei Roboto. Auf dem Testgerät (Honor, MagicOS) ist die
+  /// Systemschrift aber HONOR Sans — eine dritte Stimme neben Poppins und
+  /// Mono, die niemand gewählt hat und die auf jedem Gerät anders aussieht.
+  /// Die Design-Referenz nennt Poppins für alle UI-Texte, den Fliesstext
+  /// eingeschlossen. Was hier als Lesetext steht, ist deshalb Poppins mit
+  /// etwas mehr Zeilenhöhe — und auf jedem Gerät dasselbe.
   static TextStyle _text(
     double size,
     FontWeight weight, {
     Color color = AtemColors.textPrimary,
     double? height,
   }) =>
-      TextStyle(
-        fontSize: size,
-        fontWeight: weight,
-        color: color,
-        height: height,
-      );
+      _poppins(size, weight, color: color, height: height);
 
   static TextStyle _mono(
     double size,
@@ -138,31 +129,67 @@ abstract final class AtemType {
     trackingEm: 0.10,
   );
 
-  /// 13 sp · Badges, Unterzeilen, Statuszeilen, Historie.
+  /// 13 sp · Unterzeilen, Statuszeilen, erklärende Sätze.
   ///
-  /// **Systemschrift, nicht Poppins**, und 13 statt 12: Diese Rolle trägt die
-  /// erklärenden Sätze unter jeder Überschrift — sie wird gelesen, nicht
-  /// überflogen.
+  /// 13 statt 12: Diese Rolle trägt die erklärenden Sätze unter jeder
+  /// Überschrift — sie wird gelesen, nicht überflogen. Für Metazeilen mit
+  /// Datum und Zahl siehe [meta], für Bedienelemente [labelUi].
   static final labelSmall = AtemTextRole(
     _text(13, FontWeight.w400,
         color: AtemColors.textTertiary, height: 1.4),
   );
 
-  /// 12 sp · Sektionslabels, Navigation, Tabellenköpfe, Stat-Beschriftung.
+  /// 12 sp · Sektionsköpfe, Tabellenköpfe, Achsen- und Stat-Beschriftung.
   ///
-  /// Der HUD-Träger. Gewicht 500 statt 700: Bei 8,5 sp brauchte das Label Fett,
-  /// um überhaupt zu existieren — bei 12 sp macht Fett es zur Überschrift.
+  /// Der HUD-Träger: Mono, gesperrt, in Versalien (die Versalien setzt der
+  /// Aufrufer mit `toUpperCase()`). Gewicht 500 statt 700: Bei 8,5 sp brauchte
+  /// das Label Fett, um überhaupt zu existieren — bei 12 sp macht Fett es zur
+  /// Überschrift.
   ///
-  /// **Die Farbe ist `textTertiary`, nicht `textSecondary`.** Diese Rolle
-  /// trägt inzwischen nicht mehr nur Sektionsköpfe, sondern die Metazeile
-  /// unter fast jedem Titel — „KRAFT · 49 MIN", „6 ÜBUNGEN · 18 SÄTZE". In
-  /// #94A3B8 gesperrt und in Mono war das auf einem Telefon mühsam.
-  /// #94A3B8 bleibt die dunkelste erlaubte Textfarbe; sie wird nur nicht mehr
-  /// für Text verwendet, den man tatsächlich liest.
+  /// ## Nur für Beschriftungen, nie für Inhalt
+  ///
+  /// Diese Rolle stand vom 26.08. bis 15.09.2026 an 193 Stellen — auch unter
+  /// jedem Titel als Metazeile: „SEIT 16 TAGEN KEINE EINHEIT", „ZULETZT 21.
+  /// APR. · WALK · 120 MIN". Auf dem Gerät, bei 1,15-facher Systemschrift,
+  /// brachen diese Zeilen zweizeilig um und waren die lauteste Stimme auf dem
+  /// Bildschirm. Ein Akzent, der für 8 sp gedacht war, trug plötzlich den
+  /// Inhalt.
+  ///
+  /// Deshalb gilt: Ein Mono-Label ist **ein kurzer Kopf über einem Block**
+  /// („HEUTE", „PLÄNE", „NACH ART") oder die Beschriftung neben einem Wert.
+  /// Alles, was ein Datum, eine Zählung mit Einheit oder einen Satz trägt,
+  /// steht in [meta]; alles, was man antippt, in [labelUi].
+  ///
+  /// Sperrung 0,12 em statt 0,16: Bei 8,5 sp brauchte das Label Luft, um
+  /// nicht zu verklumpen. Bei 12 sp macht 0,16 aus „ATEM READINESS" eine
+  /// halbe Zeile.
   static final labelMicro = AtemTextRole(
     _mono(12, FontWeight.w500,
-        color: AtemColors.textTertiary, tracking: 0.16, tabular: false),
-    trackingEm: 0.16,
+        color: AtemColors.textTertiary, tracking: 0.12, tabular: false),
+    trackingEm: 0.12,
+  );
+
+  /// 13 sp · Metazeilen: Datum, Zählung, „Zuletzt …", alles mit „·" verbunden.
+  ///
+  /// Poppins, gemischte Schreibung, ohne Sperrung, Gewicht 500 — etwas
+  /// fester als [labelSmall], weil eine Metazeile neben einem Titel steht
+  /// und nicht darunter erklärt. Sie ist Inhalt, kein HUD-Akzent, und muss
+  /// bei 1,15-facher Systemschrift auf 361 dp einzeilig bleiben, wo sie in
+  /// Mono-Versalien zweizeilig wurde.
+  static final meta = AtemTextRole(
+    _poppins(13, FontWeight.w500,
+        color: AtemColors.textTertiary, height: 1.35),
+  );
+
+  /// 12 sp · Bedienelemente: Navigationsleiste, Segmente, Chips, Badges.
+  ///
+  /// Poppins, gemischte Schreibung, Gewicht 600, leichte Sperrung. Ein
+  /// Segment „Einheiten | Auswertung" oder der Tab-Name „Kraft" ist kein
+  /// Messwert und kein HUD-Kopf — in Mono-Versalien sah die Leiste aus wie
+  /// ein Terminal, nicht wie eine Navigation.
+  static final labelUi = AtemTextRole(
+    _poppins(12, FontWeight.w600, tracking: 0.04),
+    trackingEm: 0.04,
   );
 
   /// 10 sp · **Nur** die fünf dekorativen Ausnahmen.
@@ -178,11 +205,10 @@ abstract final class AtemType {
 
   /// Fließtext. Nicht Teil der acht HUD-Rollen, aber gebraucht.
   ///
-  /// 15 sp Systemschrift in `textTertiary`. Vorher 14 sp Poppins in
-  /// `textSecondary` — die dunkelste erlaubte Farbe in der Schrift mit den
-  /// rundesten Formen, bei der kleinsten Lesegrösse. Drei Entscheidungen, die
-  /// einzeln vertretbar waren und zusammen einen Absatz ergaben, den man
-  /// anstrengt zu lesen.
+  /// 15 sp Poppins in `textTertiary` mit Zeilenhöhe 1,5. Vorher 14 sp in
+  /// `textSecondary` — die dunkelste erlaubte Farbe bei der kleinsten
+  /// Lesegrösse. Die Grösse und die hellere Farbe bleiben; die Schrift ist
+  /// wieder Poppins, siehe [_text].
   static final body = AtemTextRole(
     _text(15, FontWeight.w400, color: AtemColors.textTertiary, height: 1.5),
   );

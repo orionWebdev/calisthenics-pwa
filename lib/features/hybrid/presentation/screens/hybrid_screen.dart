@@ -348,10 +348,10 @@ class _Header extends StatelessWidget {
         ),
         Flexible(
           child: Text(
-            DateFormat.MMMEd(languageTag(context)).format(date).toUpperCase(),
+            DateFormat.MMMEd(languageTag(context)).format(date),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AtemType.labelMicro.of(context),
+            style: AtemType.meta.of(context),
           ),
         ),
         const SizedBox(width: 12),
@@ -457,10 +457,10 @@ class _ReadinessCard extends StatelessWidget {
                             style: AtemType.titleMedium.of(context)),
                         if (lastText != null) ...[
                           const SizedBox(height: 4),
-                          Text(lastText.toUpperCase(),
+                          Text(lastText,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: AtemType.labelMicro
+                              style: AtemType.meta
                                   .of(context)
                                   .copyWith(color: AtemColors.textTertiary)),
                         ],
@@ -549,8 +549,8 @@ class _ThinWeek extends StatelessWidget {
           ),
           if (parts.isNotEmpty) ...[
             const SizedBox(height: 4),
-            Text(parts.join(' · ').toUpperCase(),
-                style: AtemType.labelMicro.of(context)),
+            Text(parts.join(' · '),
+                style: AtemType.meta.of(context)),
           ],
           const SizedBox(height: 12),
           Text(l10n.hybridWeekThin(HybridScreen.minimumSessions),
@@ -595,8 +595,8 @@ class _StrengthWeek extends StatelessWidget {
                   Text(l10n.hybridWeekSummary(s.count, s.minutes),
                       style: AtemType.valueMedium.of(context)),
                   const SizedBox(height: 2),
-                  Text(measure.toUpperCase(),
-                      style: AtemType.labelMicro.of(context)),
+                  Text(measure,
+                      style: AtemType.meta.of(context)),
                 ],
               ),
             ),
