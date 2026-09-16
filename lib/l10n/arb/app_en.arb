@@ -5316,5 +5316,7 @@
   "historyTileA11y": "{label}, {value}, {detail}",
   "historyCountA11y": "{n, plural, =1{performed once} other{performed {n} times}}",
   "historyCurveBestA11y": "best {best}",
-  "historyCurveRepsA11y": "Reps per session across {n} sessions, from {from} to {to}"
+  "historyCurveRepsA11y": "Reps per session across {n} sessions, from {from} to {to}",
+  "thresholdProgress": "{cur} of {req}",
+  "thresholdA11y": "{title}. {what} {condition}. So far {cur} of {req}."
 }

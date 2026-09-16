@@ -4961,4 +4961,15 @@ class AppL10nDe extends AppL10n {
   String historyCurveRepsA11y(int n, String from, String to) {
     return 'Wiederholungen je Einheit über $n Einheiten, von $from auf $to';
   }
+
+  @override
+  String thresholdProgress(int cur, int req) {
+    return '$cur von $req';
+  }
+
+  @override
+  String thresholdA11y(
+      String title, String what, String condition, int cur, int req) {
+    return '$title. $what $condition. Bisher $cur von $req.';
+  }
 }

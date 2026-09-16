@@ -36,7 +36,8 @@ Bei Widersprüchen gilt, von oben nach unten:
 Jeder Screen und jeder Block braucht **default, loading, empty, zu-wenig-Daten und error**. Kein Zustand ist „kommt später". Die Boards zeigen jeden einzelnen als eigenes Artboard.
 
 Zwei Regeln dazu:
-- **Ein Block ohne Daten rendert nicht** — der Bildschirm hört einfach früher auf. Keine Platzhalterkarte, kein „Leg los!"-Aufruf (Modul 5).
+- **Auf Auswertungsbildschirmen rendert jeder Block immer** (seit 16.09.2026). Unter seiner Schwelle zeigt er Titel, was er zeigen wird, die Bedingung und den Fortschritt mit Nenner — aber **keinen Wert und keinen Null-Chart**. Baustein: `AtemThresholdBlock`. Grund: Nach einem Neubeginn war die Auswertung sonst leer, und niemand sah, was die App kann.
+- **Auf allen anderen Bildschirmen rendert ein Block ohne Daten nicht** — der Bildschirm hört einfach früher auf. Keine Platzhalterkarte, kein „Leg los!"-Aufruf (Modul 5).
 - **Wo die Daten dünn sind, muss das sichtbar sein** — mit Nenner und Grundlage, nicht mit einer glatt aussehenden Zahl.
 
 ## Umgang mit Zahlen und Aussagen

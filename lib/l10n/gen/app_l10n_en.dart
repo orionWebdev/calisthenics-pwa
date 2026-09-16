@@ -4947,4 +4947,15 @@ class AppL10nEn extends AppL10n {
   String historyCurveRepsA11y(int n, String from, String to) {
     return 'Reps per session across $n sessions, from $from to $to';
   }
+
+  @override
+  String thresholdProgress(int cur, int req) {
+    return '$cur of $req';
+  }
+
+  @override
+  String thresholdA11y(
+      String title, String what, String condition, int cur, int req) {
+    return '$title. $what $condition. So far $cur of $req.';
+  }
 }

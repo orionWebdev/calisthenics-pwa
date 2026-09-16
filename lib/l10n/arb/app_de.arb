@@ -7190,5 +7190,38 @@
         "type": "String"
       }
     }
+  },
+  "thresholdProgress": "{cur} von {req}",
+  "@thresholdProgress": {
+    "description": "Schwellen-Zustand auf Auswertungsbildschirmen (16.09.2026) — kein Board, aus Tokens gebaut — thresholdProgress",
+    "placeholders": {
+      "cur": {
+        "type": "int"
+      },
+      "req": {
+        "type": "int"
+      }
+    }
+  },
+  "thresholdA11y": "{title}. {what} {condition}. Bisher {cur} von {req}.",
+  "@thresholdA11y": {
+    "description": "Schwellen-Zustand auf Auswertungsbildschirmen (16.09.2026) — kein Board, aus Tokens gebaut — thresholdA11y",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "what": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "cur": {
+        "type": "int"
+      },
+      "req": {
+        "type": "int"
+      }
+    }
   }
 }

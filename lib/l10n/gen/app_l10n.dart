@@ -8010,6 +8010,19 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Wiederholungen je Einheit über {n} Einheiten, von {from} auf {to}'**
   String historyCurveRepsA11y(int n, String from, String to);
+
+  /// Schwellen-Zustand auf Auswertungsbildschirmen (16.09.2026) — kein Board, aus Tokens gebaut — thresholdProgress
+  ///
+  /// In de, this message translates to:
+  /// **'{cur} von {req}'**
+  String thresholdProgress(int cur, int req);
+
+  /// Schwellen-Zustand auf Auswertungsbildschirmen (16.09.2026) — kein Board, aus Tokens gebaut — thresholdA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{title}. {what} {condition}. Bisher {cur} von {req}.'**
+  String thresholdA11y(
+      String title, String what, String condition, int cur, int req);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
