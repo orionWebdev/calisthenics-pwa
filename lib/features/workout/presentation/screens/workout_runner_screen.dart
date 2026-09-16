@@ -149,7 +149,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       confirmLabel: l10n.workoutResumeContinue,
       dismissLabel: l10n.workoutResumeDiscard,
       barrierLabel: l10n.workoutResumeTitle,
-      onConfirm: () => Navigator.of(context).pop(true),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
 
     if (resume != true) {
@@ -287,7 +287,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       confirmLabel: l10n.workoutRunnerRemoveExercise,
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.workoutRunnerRemoveExerciseA11y(_displayName(exercise)),
-      onConfirm: () => Navigator.of(context).pop(true),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
     if (confirmed != true || !mounted) return;
 
@@ -434,7 +434,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       confirmLabel: l10n.workoutLeaveKeep,
       dismissLabel: l10n.workoutLeaveStay,
       barrierLabel: l10n.workoutLeaveTitle,
-      onConfirm: () => Navigator.of(context).pop(true),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
     if (leave != true) return false;
 
@@ -735,7 +735,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       confirmLabel: l10n.workoutScreenEndWorkoutAction,
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.workoutScreenEndWorkout,
-      onConfirm: () => Navigator.of(context).pop(_EndChoice.save),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(_EndChoice.save),
       // Der zweite Ausgang. Ohne ihn gäbe es nur „speichern" oder „weiter
       // trainieren" — wer sich vertan hat oder nur ausprobiert, säße fest und
       // müsste eine falsche Einheit in seinen Verlauf schreiben.
@@ -775,7 +775,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       confirmLabel: l10n.workoutScreenDiscardWorkout,
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.workoutScreenDiscardWorkout,
-      onConfirm: () => Navigator.of(context).pop(true),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
     if (confirmed != true || !mounted) return;
 

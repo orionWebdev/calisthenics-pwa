@@ -20,7 +20,6 @@ import '../../../dashboard/presentation/readiness_zone_ui.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
-import '../../../history/presentation/screens/analysis_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../../domain/training_heatmap.dart';
 import '../widgets/ratio_block.dart';
@@ -268,7 +267,6 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
     List<TrainingSession> sessions,
     DateTime reference,
   ) {
-    final l10n = AppL10n.of(context);
     final heatmap = TrainingHeatmap.compute(sessions, reference);
     final hasTime = TimeSplitCard.hasData(sessions, reference);
     final hasDays = heatmap.trainedDays > 0;
@@ -289,20 +287,9 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
           child: TrainingHeatmapCard(heatmap: heatmap),
         ),
       ],
-      const SizedBox(height: 12),
-      // Der Weg zur Kraft-Auswertung — Sätze je Muskelgruppe, geschätztes
-      // Maximum. Er bleibt hier, weil die Auswertung sonst nur über den
-      // Verlauf erreichbar wäre.
-      AtemEntrance(
-        index: 5,
-        child: AtemButton.outline(
-          label: l10n.historyAnalysisOpen,
-          semanticLabel: l10n.historyAnalysisOpen,
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (_) => const AnalysisScreen()),
-          ),
-        ),
-      ),
+      // Kein Weg zur Kraft-Auswertung mehr hier (seit 16.09.2026): Sie steht
+      // im Kraft-Tab, oben im Verlauf. Hybrid zeigt, was beide Spuren
+      // gemeinsam haben.
     ];
   }
 }

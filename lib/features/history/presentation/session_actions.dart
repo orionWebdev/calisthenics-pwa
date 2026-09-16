@@ -63,7 +63,7 @@ Future<bool> confirmDeleteSession(
         ofKind - 1,
       ),
     ),
-    onConfirm: () => Navigator.of(context).pop(true),
+    onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
   );
   if (first != true || !context.mounted) return false;
 
@@ -76,7 +76,7 @@ Future<bool> confirmDeleteSession(
     confirmLabel: l10n.deleteConfirm,
     dismissLabel: l10n.deleteKeep,
     barrierLabel: l10n.sessionDeleteQ,
-    onConfirm: () => Navigator.of(context).pop(true),
+    onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
   );
   if (second != true) return false;
 

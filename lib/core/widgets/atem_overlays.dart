@@ -282,6 +282,14 @@ class AtemDialog extends StatelessWidget {
   final String? alternativeLabel;
   final VoidCallback? onAlternative;
 
+  /// **[onConfirm] muss den Wurzel-Navigator schliessen:**
+  /// `Navigator.of(context, rootNavigator: true).pop(wert)`.
+  ///
+  /// Der Dialog liegt auf dem Wurzel-Navigator. Seit Modul 11 hat jeder Tab
+  /// einen eigenen; `Navigator.of(context)` aus einem Bildschirm im Tab
+  /// schliesst dann nicht den Dialog, sondern den Bildschirm dahinter. Das
+  /// Löschen einer Einheit, eines Plans und einer Übung schlug so bis zum
+  /// 16.09.2026 still fehl — der Dialog blieb stehen, nichts wurde gelöscht.
   static Future<T?> show<T>(
     BuildContext context, {
     required AtemDialogKind kind,

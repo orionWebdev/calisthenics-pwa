@@ -264,7 +264,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
             ),
         ],
       ),
-      onConfirm: () => Navigator.of(context).pop(true),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
     if (first != true || !context.mounted) return;
 
@@ -276,7 +276,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
       confirmLabel: l10n.deleteConfirm,
       dismissLabel: l10n.deleteKeep,
       barrierLabel: l10n.exerciseDelete,
-      onConfirm: () => Navigator.of(context).pop(true),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
     if (second != true) return;
 

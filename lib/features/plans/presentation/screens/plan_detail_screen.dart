@@ -151,7 +151,7 @@ Future<void> _delete(BuildContext context, WidgetRef ref, Plan plan) async {
       l10n.exerciseCountShort(plan.exerciseCount),
       style: AtemType.labelSmall.of(context),
     ),
-    onConfirm: () => Navigator.of(context).pop(true),
+    onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
   );
   if (first != true || !context.mounted) return;
 
@@ -163,7 +163,7 @@ Future<void> _delete(BuildContext context, WidgetRef ref, Plan plan) async {
     confirmLabel: l10n.deleteConfirm,
     dismissLabel: l10n.deleteKeep,
     barrierLabel: l10n.planDeleteTitle,
-    onConfirm: () => Navigator.of(context).pop(true),
+    onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
   );
   if (second != true) return;
 

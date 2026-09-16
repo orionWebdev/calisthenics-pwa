@@ -117,6 +117,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   ?.where((p) => p.id == session.planId)
                   .firstOrNull,
               onStart: () => _startToday(context, session),
+              onLogWithoutSets: () => _logWithoutSets(context),
             ),
           )
         else
@@ -124,6 +125,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             child: _EmptyToday(
               onFree: () => _startFree(context),
               onPickPlan: () => _openPlans(context),
+              onLogWithoutSets: () => _logWithoutSets(context),
             ),
           ),
         // „Freies Training" ist gleichwertiger Eingang, kein versteckter
@@ -137,17 +139,6 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             onPressed: () => _startFree(context),
           ),
         ],
-        // Der dritte Weg: nachtragen, was schon passiert ist. Er steht
-        // **unter** den beiden anderen, weil er der seltenere ist — aber
-        // sichtbar, weil es ihn bisher gar nicht gab.
-        const SizedBox(height: 8),
-        AtemButton.ghost(
-          label: l10n.strengthFormEntry,
-          semanticLabel: l10n.strengthFormTitle,
-          expand: true,
-          accent: AtemColors.textTertiary,
-          onPressed: () => _logWithoutSets(context),
-        ),
         const SizedBox(height: 28),
         _SectionHeader(
           title: l10n.workoutsPlansLabel.toUpperCase(),
@@ -371,11 +362,13 @@ class _TodayCard extends StatelessWidget {
   const _TodayCard({
     required this.session,
     required this.onStart,
+    required this.onLogWithoutSets,
     this.plan,
   });
 
   final TodaySession session;
   final VoidCallback onStart;
+  final VoidCallback onLogWithoutSets;
 
   /// Der Plan hinter dem Termin — für „8 ÜBUNGEN · ~45 MIN · KRAFT".
   final Plan? plan;
@@ -416,6 +409,7 @@ class _TodayCard extends StatelessWidget {
             size: AtemButtonSize.compact,
             onPressed: onStart,
           ),
+          _LogWithoutSetsLink(onPressed: onLogWithoutSets),
         ],
       ),
     );
@@ -423,10 +417,15 @@ class _TodayCard extends StatelessWidget {
 }
 
 class _EmptyToday extends StatelessWidget {
-  const _EmptyToday({required this.onFree, required this.onPickPlan});
+  const _EmptyToday({
+    required this.onFree,
+    required this.onPickPlan,
+    required this.onLogWithoutSets,
+  });
 
   final VoidCallback onFree;
   final VoidCallback onPickPlan;
+  final VoidCallback onLogWithoutSets;
 
   @override
   Widget build(BuildContext context) {
@@ -461,8 +460,56 @@ class _EmptyToday extends StatelessWidget {
             size: AtemButtonSize.compact,
             onPressed: onPickPlan,
           ),
+          _LogWithoutSetsLink(onPressed: onLogWithoutSets),
         ],
       ),
+    );
+  }
+}
+
+/// „Ohne Sätze erfassen" — **in** der ersten Karte, als dritter Weg.
+///
+/// Seit 16.09.2026 steht er in der Karte statt als eigener Knopf darunter:
+/// Alle Wege, eine Einheit anzulegen, gehören an eine Stelle. Er ist ein
+/// Textlink unter einer Trennlinie und kein dritter gleich breiter Knopf —
+/// nachtragen ist seltener als trainieren, und drei gleich gewichtete Knöpfe
+/// untereinander liessen keine Rangfolge erkennen.
+class _LogWithoutSetsLink extends StatelessWidget {
+  const _LogWithoutSetsLink({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 12),
+        const SizedBox(height: 1, child: ColoredBox(color: AtemColors.border)),
+        AtemTappable(
+          onTap: onPressed,
+          semanticLabel: l10n.strengthFormTitle,
+          minTapSize: const Size(0, 48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.strengthFormEntry,
+                    style: AtemType.labelUi
+                        .of(context)
+                        .copyWith(color: AtemColors.textTertiary),
+                  ),
+                ),
+                const Icon(Icons.chevron_right,
+                    size: 20, color: AtemColors.textTertiary),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -101,6 +101,18 @@ class HistoryScreen extends ConsumerWidget {
         AtemEntrance(
           child: StatementCard(summary: summary, onStart: onStart),
         ),
+        // **Die Auswertung gehört in den Kraft-Tab, nach oben** (seit
+        // 16.09.2026). Sie stand am Ende des Verlaufs und als Knopf im
+        // Hybrid-Tab — dort sucht niemand eine Kraft-Auswertung, und hier
+        // musste man erst an allen Einheiten vorbei.
+        const SizedBox(height: 12),
+        AtemButton.outline(
+          label: l10n.historyAnalysisOpen,
+          semanticLabel: l10n.historyAnalysisOpen,
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const AnalysisScreen()),
+          ),
+        ),
         const SizedBox(height: 28),
         // Ein Monat angetippt: Die Liste öffnet auf genau diesen Monat —
         // der Zeitraumfilter kommt aus dem Streifen (Board 06, A2/2).
@@ -176,14 +188,6 @@ class HistoryScreen extends ConsumerWidget {
                 ],
               ],
             ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        AtemButton.outline(
-          label: l10n.historyAnalysisOpen,
-          semanticLabel: l10n.historyAnalysisOpen,
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (_) => const AnalysisScreen()),
           ),
         ),
       ],

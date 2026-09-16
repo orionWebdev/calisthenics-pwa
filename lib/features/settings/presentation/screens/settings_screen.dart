@@ -68,7 +68,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       confirmLabel: l10n.settingsSignOut,
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.settingsSignOutBarrier,
-      onConfirm: () => Navigator.of(context).pop(true),
+      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
     if (confirmed != true) return;
     await ref.read(authRepositoryProvider).signOut();

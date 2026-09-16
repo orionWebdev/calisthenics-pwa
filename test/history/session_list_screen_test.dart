@@ -216,7 +216,11 @@ void main() {
       final element = tester.element(find.byType(HistoryScreen));
       final l10n = AppL10n.of(element);
 
-      await tester.tap(find.text('Push Day A').first);
+      // Die Auswertung steht seit 16.09.2026 oben im Verlauf; die Zeile liegt
+      // dadurch tiefer und muss erst in den sichtbaren Bereich.
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -300));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Push Day A').last);
       await tester.pumpAndSettle();
       expect(find.byType(SessionDetailScreen), findsOneWidget);
 
@@ -224,8 +228,10 @@ void main() {
       tester.state<NavigatorState>(find.byType(Navigator).first).pop();
       await tester.pumpAndSettle();
 
-      await tester
-          .tap(find.textContaining(l10n.historyAll(0).split(' ').first).last);
+      final all = find.textContaining(l10n.historyAll(0).split(' ').first).last;
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -300));
+      await tester.pumpAndSettle();
+      await tester.tap(all);
       await tester.pumpAndSettle();
       expect(find.byType(SessionListScreen), findsOneWidget);
       expect(tester.takeException(), isNull);
