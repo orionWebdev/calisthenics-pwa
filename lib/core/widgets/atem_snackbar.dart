@@ -47,7 +47,11 @@ class AtemSnackbar extends StatelessWidget {
         );
 
   /// Ohne Rückgängig. Die Meldung ist gelesen und geht.
-  static const shortDuration = Duration(seconds: 4);
+  ///
+  /// Seit 16.09.2026 wie [undoDuration] sechs Sekunden: Jede Meldung in der
+  /// App steht gleich lange, damit keine länger oder kürzer wirkt als die
+  /// andere.
+  static const shortDuration = Duration(seconds: 6);
 
   /// Mit Rückgängig. So lange bleibt der Weg zurück offen.
   /// Sechs statt dreissig Sekunden (seit 16.09.2026): Am Gerät stand die

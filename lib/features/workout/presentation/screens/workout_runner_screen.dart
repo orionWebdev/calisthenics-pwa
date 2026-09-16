@@ -22,6 +22,7 @@ import '../widgets/rest_bar.dart';
 import '../set_type_ui.dart';
 import '../widgets/session_top_bar.dart';
 import '../widgets/set_row.dart';
+import '../../../../app/application/snackbar_providers.dart';
 
 /// ATEM — Workout Runner.
 ///
@@ -804,9 +805,13 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     } catch (_) {
       if (!mounted) return;
       setState(() => _ended = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppL10n.of(context).workoutRunnerSavedFailed)),
-      );
+      // Über den gemeinsamen Kanal, nicht über Material: Nur so gilt dieselbe
+      // Dauer und dieselbe Gestalt wie für jede andere Meldung.
+      final message = AppL10n.of(context).workoutRunnerSavedFailed;
+      ref.read(snackbarProvider.notifier).show(AtemSnack(
+            message: message,
+            semanticLabel: message,
+          ));
     }
   }
 }

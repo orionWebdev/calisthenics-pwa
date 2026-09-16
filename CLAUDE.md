@@ -49,7 +49,7 @@ Zwei Regeln dazu:
 - Reversibel (anlegen, bearbeiten): optimistisch schreiben, bei Abweisung zurück ins Formular — nicht in einen Toast.
 - Irreversibel (löschen): zwei Stufen. Stufe 1 informiert und zählt die Folgen, Stufe 2 entscheidet. Genau zwei Wege in Stufe 2, kein dritter.
 - Kontolöschung: Stufe 2 verlangt getipptes „LÖSCHEN"; Stufe 1 bietet Datenexport als Alternative.
-- Undo-Fenster 6 s (seit 16.09.2026, vorher 30 s), ohne Undo Snackbar 4 s.
+- Jede Snackbar steht 6 s, mit oder ohne Undo (seit 16.09.2026; vorher 30 s mit Undo, 4 s ohne).
 - `reps` bleibt Text. `difficulty` ist eine Zahl 1–5, ohne Vorbelegung.
 - `userId` ist nie sichtbar und nie eine Formularfehlermeldung.
 
