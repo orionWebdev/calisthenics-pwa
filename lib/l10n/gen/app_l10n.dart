@@ -8367,6 +8367,78 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{label}, öffnet Übung'**
   String wellnessTrendOpenExercise(String label);
+
+  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Reiter der Seite mit ATEM-Plänen
+  ///
+  /// In de, this message translates to:
+  /// **'Pläne'**
+  String get segPlans;
+
+  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Vorlesetext eines Reiters
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, Seite {n} von {total}'**
+  String pageTabA11y(String name, int n, int total);
+
+  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Gruppenlabel der Reiterleiste
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft-Seiten'**
+  String get strengthPagesA11y;
+
+  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Titel des Leerzustands der Katalogseite
+  ///
+  /// In de, this message translates to:
+  /// **'Pläne von ATEM'**
+  String get planCatalogTitle;
+
+  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Text des Leerzustands der Katalogseite
+  ///
+  /// In de, this message translates to:
+  /// **'Hier erscheinen bald Trainingspläne, die wir für dich zusammenstellen — frei für alle und als Premium. Deine eigenen Pläne findest du unter Trainieren.'**
+  String get planCatalogBody;
+
+  /// Einheiten je Monat (16.09.2026) — Fenster rechts im Kopf
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Monate'**
+  String monthsWindow(int n);
+
+  /// Einheiten je Monat (16.09.2026) — Grundlage im Fenster
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}} an {days, plural, =1{1 Tag} other{{days} Tagen}} · seit {date}'**
+  String monthsBasis(int n, int days, String date);
+
+  /// Einheiten je Monat (16.09.2026) — Monat vor der ersten Einheit, Vorlesetext
+  ///
+  /// In de, this message translates to:
+  /// **'nicht erfasst'**
+  String get monthsNotMeasured;
+
+  /// Einheiten je Monat (16.09.2026) — ein Monat in der Sammelansage
+  ///
+  /// In de, this message translates to:
+  /// **'{month}: {n, plural, =0{keine Einheit} =1{1 Einheit} other{{n} Einheiten}}'**
+  String monthsEntryA11y(String month, int n);
+
+  /// Einheiten je Monat (16.09.2026) — Monat vor Beginn in der Sammelansage
+  ///
+  /// In de, this message translates to:
+  /// **'{month}: nicht erfasst'**
+  String monthsNotMeasuredA11y(String month);
+
+  /// Plan-Karte im Kraft-Tab (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext der ganzen Karte
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, {n, plural, =1{1 Übung} other{{n} Übungen}}, etwa {minutes} Minuten, öffnet Plan'**
+  String planCardA11y(String name, int n, int minutes);
+
+  /// Plan-Karte im Kraft-Tab (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext des Startknopfs
+  ///
+  /// In de, this message translates to:
+  /// **'Starten: {name}'**
+  String planCardStartA11y(String name);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

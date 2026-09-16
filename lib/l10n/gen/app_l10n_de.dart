@@ -5317,4 +5317,80 @@ class AppL10nDe extends AppL10n {
   String wellnessTrendOpenExercise(String label) {
     return '$label, öffnet Übung';
   }
+
+  @override
+  String get segPlans => 'Pläne';
+
+  @override
+  String pageTabA11y(String name, int n, int total) {
+    return '$name, Seite $n von $total';
+  }
+
+  @override
+  String get strengthPagesA11y => 'Kraft-Seiten';
+
+  @override
+  String get planCatalogTitle => 'Pläne von ATEM';
+
+  @override
+  String get planCatalogBody =>
+      'Hier erscheinen bald Trainingspläne, die wir für dich zusammenstellen — frei für alle und als Premium. Deine eigenen Pläne findest du unter Trainieren.';
+
+  @override
+  String monthsWindow(int n) {
+    return '$n Monate';
+  }
+
+  @override
+  String monthsBasis(int n, int days, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten',
+      one: '1 Einheit',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days Tagen',
+      one: '1 Tag',
+    );
+    return '$_temp0 an $_temp1 · seit $date';
+  }
+
+  @override
+  String get monthsNotMeasured => 'nicht erfasst';
+
+  @override
+  String monthsEntryA11y(String month, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten',
+      one: '1 Einheit',
+      zero: 'keine Einheit',
+    );
+    return '$month: $_temp0';
+  }
+
+  @override
+  String monthsNotMeasuredA11y(String month) {
+    return '$month: nicht erfasst';
+  }
+
+  @override
+  String planCardA11y(String name, int n, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Übungen',
+      one: '1 Übung',
+    );
+    return '$name, $_temp0, etwa $minutes Minuten, öffnet Plan';
+  }
+
+  @override
+  String planCardStartA11y(String name) {
+    return 'Starten: $name';
+  }
 }

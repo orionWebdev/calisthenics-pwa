@@ -9,16 +9,15 @@ import '../../application/history_providers.dart';
 import '../../domain/training_session.dart';
 import '../session_ui.dart';
 import '../widgets/month_strip.dart';
-import '../widgets/statement_card.dart';
-import 'analysis_screen.dart';
+import '../widgets/muscle_balance_card.dart';
 import 'session_detail_screen.dart';
 import 'session_list_screen.dart';
 
-/// Der Verlaufs-Tab.
+/// Der Verlauf — Seite 2 des Kraft-Tabs.
 ///
-/// **Die eine Aussage zuerst.** Wer diesen Bildschirm öffnet, will nicht einen
-/// Balkenwald deuten, sondern wissen, was gerade gilt. Erst danach kommen
-/// Verteilung und Einzelheiten.
+/// Drei Blöcke: Einheiten je Monat, Muskelbalance, letzte Einheiten. Die
+/// Aussagekarte, die hier bis zum 16.09.2026 zuerst stand, ist entfallen;
+/// ihre Datei bleibt, falls sie an anderer Stelle wiederkommt.
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key, this.embedded = false, this.onStart});
 
@@ -26,8 +25,9 @@ class HistoryScreen extends ConsumerWidget {
   /// kein eigener Titel — der Verlauf ist ein Segment, kein Tab.
   final bool embedded;
 
-  /// Der Start-Knopf in der Aussage-Karte (Board 06, A1). In jeder Zone
-  /// derselbe Weg: ein freies Training.
+  /// Der Weg in ein freies Training. Seit die Aussagekarte entfallen ist
+  /// (16.09.2026), zeigt der Verlauf keinen Startknopf mehr; der Parameter
+  /// bleibt, damit Aufrufer nicht brechen, und wird ignoriert.
   final VoidCallback? onStart;
 
   static const _recentCount = 4;
@@ -98,26 +98,14 @@ class HistoryScreen extends ConsumerWidget {
           Text(l10n.historyTitle, style: AtemType.titleLarge.of(context)),
           const SizedBox(height: 20),
         ],
-        AtemEntrance(
-          child: StatementCard(summary: summary, onStart: onStart),
-        ),
-        // **Die Auswertung gehört in den Kraft-Tab, nach oben** (seit
-        // 16.09.2026). Sie stand am Ende des Verlaufs und als Knopf im
-        // Hybrid-Tab — dort sucht niemand eine Kraft-Auswertung, und hier
-        // musste man erst an allen Einheiten vorbei.
-        const SizedBox(height: 12),
-        AtemButton.outline(
-          label: l10n.historyAnalysisOpen,
-          semanticLabel: l10n.historyAnalysisOpen,
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (_) => const AnalysisScreen()),
-          ),
-        ),
-        const SizedBox(height: 28),
+        // **Reihenfolge nach Nutzervorgabe vom 16.09.2026:** Einheiten je
+        // Monat, Muskelbalance, letzte Einheiten. Die Aussagekarte und der
+        // Knopf zur Auswertung sind entfallen — die Auswertung ist seitdem
+        // eine eigene Seite im Kraft-Tab, gleich rechts neben dieser.
+        //
         // Ein Monat angetippt: Die Liste öffnet auf genau diesen Monat —
         // der Zeitraumfilter kommt aus dem Streifen (Board 06, A2/2).
         AtemEntrance(
-          index: 1,
           child: MonthStrip(
             summary: summary,
             onSelect: (year, month) {
@@ -130,6 +118,10 @@ class HistoryScreen extends ConsumerWidget {
             },
           ),
         ),
+        // Ohne Einheit mit Übungen rendert die Kachel nicht (ausserhalb der
+        // Auswertung gilt weiter: ein Block ohne Daten fehlt).
+        const SizedBox(height: AtemSpacing.cardGap),
+        const AtemEntrance(index: 1, child: MuscleBalanceEntry()),
         const SizedBox(height: 28),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

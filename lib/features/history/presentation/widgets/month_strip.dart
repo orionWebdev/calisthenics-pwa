@@ -8,24 +8,31 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../domain/history_summary.dart';
 
-/// Einheiten je Monat — **mit den leeren Monaten**.
+/// Einheiten je Monat — **ein festes Fenster von bis zu sechs Monaten**.
 ///
-/// ## Warum kein Durchschnitt
+/// ## Warum ein festes Fenster (seit 16.09.2026)
 ///
-/// Im Bestand steht 1 Einheit im November und 30 im Mai. „Im Schnitt alle 2,2
-/// Tage" beschreibt keinen einzigen realen Monat und verschweigt genau das,
-/// was zählt: dass es Pausen gab.
+/// Vorher stand jeder Monat von der ersten bis zur letzten Einheit als
+/// `Expanded`-Spalte. Nach einem Neubeginn mit einer einzigen Einheit füllte
+/// ein Balken die ganze Kartenbreite — ein Trainingstag sah aus wie ein
+/// Rekordmonat. Jetzt hat jeder der sechs Monate dieselbe Spalte und einen
+/// schmalen Balken fester Breite; die Menge zeigt allein die Höhe.
 ///
-/// Ein Streifen, der nur Monate mit Training zeigt, macht denselben Fehler
-/// grafisch — er reiht die guten Monate aneinander und behauptet Gleichmaß.
-/// Die leeren Monate stehen deshalb als leere Spalte mit.
+/// ## Drei Zustände je Monat
 ///
-/// ## Zahl über dem Balken, Kürzel darunter
+/// * **Vor der ersten Einheit:** nicht gemessen — kein Balken, kein Strich,
+///   nur das Kürzel. Ein Nullstrich behauptete dort ein Messergebnis.
+/// * **Gemessen, ohne Einheit:** ein 2-dp-Strich in `border`. „Gemessen: 0"
+///   ist eine Aussage, und die Pausen sind die eigentliche Information.
+/// * **Mit Einheiten:** Balken, Höhe relativ zum Maximum des Fensters,
+///   mindestens 6 dp, damit eine einzelne Einheit sichtbar bleibt. Der
+///   aktuelle Monat trägt den Bereichston.
 ///
-/// Board 06, Spezifikation: Die Zahl steht über jedem Balken, beim Nullmonat
-/// in Magenta — die Nullen sind die eigentliche Information. Und jeder
-/// Balken ist ein 48-dp-Ziel (Entscheidung 08): Er öffnet die Einheitenliste
-/// auf diesen Monat.
+/// ## Keine glatte Zahl aus dünner Grundlage
+///
+/// Median-Abstand und längste Pause stehen erst ab drei Einheiten. Aus zwei
+/// Einheiten wird ein „Median" eine einzelne Differenz, die wie eine
+/// Gewohnheit aussieht.
 class MonthStrip extends StatelessWidget {
   const MonthStrip({super.key, required this.summary, this.onSelect});
 
@@ -34,174 +41,269 @@ class MonthStrip extends StatelessWidget {
   /// Ein Monat wurde angetippt. `null` heisst: nur ansehen.
   final void Function(int year, int month)? onSelect;
 
-  static const _maxHeight = 56.0;
+  /// Höhe der Balkenfläche. Fest — die Schrift wächst darüber und darunter.
+  static const chartHeight = 72.0;
+
+  /// Breite eines gefüllten Balkens.
+  static const barWidth = 18.0;
+
+  static const _minBar = 6.0;
+
+  /// Ab dieser effektiven Schriftgrösse wird das Monatskürzel einbuchstabig.
+  static const _initialScale = 1.6;
+
+  /// Ab so vielen Einheiten stehen Median und längste Pause.
+  static const gapLineMinimum = 3;
+
+  /// Kleinste Spaltenbreite — das Tap-Ziel eines Monats.
+  static const _minColumn = 48.0;
+
+  /// Mindestens so viele Monate, auch auf dem schmalsten Bildschirm.
+  static const _minMonths = 3;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final months = summary.months;
-    if (months.isEmpty) return const SizedBox.shrink();
+    final full = summary.monthWindow;
+    if (full.slots.isEmpty) return const SizedBox.shrink();
 
-    final peak = months.fold<int>(0, (a, m) => math.max(a, m.count));
-    final label =
-        summary.medianGapDays != null && summary.longestGapDays != null
-            ? l10n.historyMonthsMedian(
-                summary.medianGapDays!, summary.longestGapDays!)
-            : null;
-
-    final tappable = onSelect != null;
-    // Zahl über dem Balken: Die Zeile wächst mit der Schrift, der Balken nicht.
-    // Zeilenhöhe der Zahl (Faktor 1,5 auf die Schriftgrösse) plus Abstand.
-    final stripHeight =
-        _maxHeight + MediaQuery.textScalerOf(context).scale(10) * 1.5 + 8;
-
-    return Semantics(
-      // Ein Knoten für die Gruppe, solange es nichts zu tippen gibt. Mit
-      // Tap-Zielen trägt jeder Balken seinen eigenen — sonst bliebe die
-      // Sammelansage der einzige Weg hinein.
-      label: tappable
-          ? null
-          : [
-              l10n.historyMonthsLabel,
-              for (final m in months)
-                '${_monthName(context, m.month)} ${m.count}',
-              if (label != null) label,
-            ].join(', '),
-      child: ExcludeSemantics(
-        excluding: !tappable,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExcludeSemantics(
-              excluding: !tappable,
-              child: Semantics(
-                label: [
-                  l10n.historyMonthsLabel,
-                  if (label != null) label,
-                ].join(', '),
-                child: ExcludeSemantics(
-                  child: Text(l10n.historyMonthsLabel,
-                      style: AtemType.labelMedium.of(context)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              // Zahl plus Balken — und mindestens ein 48-dp-Ziel.
-              height: stripHeight,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  for (var i = 0; i < months.length; i++) ...[
-                    if (i > 0) const SizedBox(width: 5),
-                    Expanded(
-                      child: tappable
-                          ? AtemTappable(
-                              onTap: () => onSelect!(
-                                  months[i].year, months[i].month),
-                              semanticLabel: l10n.historyMonthOpenA11y(
-                                  _monthName(context, months[i].month),
-                                  months[i].count),
-                              minTapSize: Size(0, stripHeight),
-                              alignment: Alignment.bottomCenter,
-                              child: _Bar(month: months[i], peak: peak, index: i),
-                            )
-                          : _Bar(month: months[i], peak: peak, index: i),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                for (var i = 0; i < months.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 5),
-                  Expanded(
-                    child: Text(
-                      _monthInitial(context, months[i].month),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      style: AtemType.labelDeco.of(context).copyWith(
-                            color: months[i].isEmpty
-                                ? AtemColors.border
-                                : AtemColors.textSecondary,
-                          ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            if (label != null) ...[
-              const SizedBox(height: 12),
-              Text(label, style: AtemType.meta.of(context)),
-            ],
-          ],
-        ),
+    // **Nicht jede Breite trägt sechs 48-dp-Ziele.** Bei 320 dp bleiben in der
+    // Karte rund 258 dp — sechs Spalten wären je 43 dp. Dann stehen die
+    // letzten Monate, die voll antippbar sind; Kopf, Grundlage und Ansage
+    // zählen genau diese.
+    return AtemCard.list(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final fit = (constraints.maxWidth / _minColumn).floor();
+          final months = fit.clamp(_minMonths, full.slots.length);
+          return _content(context, full.lastMonths(months));
+        },
       ),
     );
   }
 
-  /// Der volle Monatsname für die Ansage.
-  ///
-  /// Über `intl` und das Gebietsschema, nicht über eine eigene Liste — sonst
-  /// stünde eine zweite Übersetzung neben dem ARB.
-  static String _monthName(BuildContext context, int month) =>
-      DateFormat.MMMM(Localizations.localeOf(context).toLanguageTag())
-          .format(DateTime(2026, month));
+  Widget _content(BuildContext context, MonthWindow window) {
+    final l10n = AppL10n.of(context);
 
-  /// Der Anfangsbuchstabe für die Achse. Er folgt derselben Quelle, damit
-  /// Ansage und Beschriftung nicht auseinanderlaufen.
-  static String _monthInitial(BuildContext context, int month) =>
-      _monthName(context, month).characters.first.toUpperCase();
+    final tag = Localizations.localeOf(context).toLanguageTag();
+    final scale = MediaQuery.textScalerOf(context).scale(10) / 10;
+    final peak = window.peak;
+
+    final basis = window.firstDate == null
+        ? null
+        : l10n.monthsBasis(
+            window.sessions,
+            window.trainingDays,
+            DateFormat.MMMd(tag).format(window.firstDate!),
+          );
+    final gapLine = summary.sessions >= gapLineMinimum &&
+            summary.medianGapDays != null &&
+            summary.longestGapDays != null
+        ? l10n.historyMonthsMedian(
+            summary.medianGapDays!, summary.longestGapDays!)
+        : null;
+
+    final sentence = [
+      for (final slot in window.slots)
+        slot.measured
+            ? l10n.monthsEntryA11y(_monthName(tag, slot.month), slot.count)
+            : l10n.monthsNotMeasuredA11y(_monthName(tag, slot.month)),
+    ].join(', ');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Ein Knoten für den ganzen Streifen: Titel, Fenster, Grundlage und
+        // alle sichtbaren Monate als Satz. Die antippbaren Monate kommen danach
+        // als eigene Knöpfe.
+        Semantics(
+          container: true,
+          label: [
+            l10n.historyMonthsLabel,
+            l10n.monthsWindow(window.slots.length),
+            if (basis != null) basis,
+            sentence,
+            if (gapLine != null) gapLine,
+          ].join('. '),
+          child: ExcludeSemantics(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 12,
+                  runSpacing: 4,
+                  children: [
+                    Text(l10n.historyMonthsLabel,
+                        style: AtemType.titleMedium.of(context)),
+                    Text(l10n.monthsWindow(window.slots.length),
+                        style: AtemType.meta.of(context)),
+                  ],
+                ),
+                if (basis != null) ...[
+                  const SizedBox(height: 4),
+                  Text(basis, style: AtemType.meta.of(context)),
+                ],
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            for (var i = 0; i < window.slots.length; i++)
+              Expanded(
+                child: _Column(
+                  slot: window.slots[i],
+                  peak: peak,
+                  index: i,
+                  label: scale >= _initialScale
+                      ? _monthName(tag, window.slots[i].month)
+                          .characters
+                          .first
+                          .toUpperCase()
+                      : _monthShort(tag, window.slots[i].month),
+                  onTap: onSelect == null || !window.slots[i].hasSessions
+                      ? null
+                      : () => onSelect!(
+                          window.slots[i].year, window.slots[i].month),
+                  semanticLabel: l10n.historyMonthOpenA11y(
+                    _monthName(tag, window.slots[i].month),
+                    window.slots[i].count,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        if (gapLine != null) ...[
+          const SizedBox(height: 14),
+          ExcludeSemantics(
+            child: Text(gapLine, style: AtemType.meta.of(context)),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Der volle Monatsname — über `intl`, damit keine zweite Übersetzung
+  /// neben dem ARB entsteht.
+  static String _monthName(String tag, int month) =>
+      DateFormat.MMMM(tag).format(DateTime(2026, month));
+
+  /// Das Kürzel für die Achse, ohne Abkürzungspunkt.
+  static String _monthShort(String tag, int month) =>
+      DateFormat.MMM(tag).format(DateTime(2026, month)).replaceAll('.', '');
 }
 
-class _Bar extends StatelessWidget {
-  const _Bar({required this.month, required this.peak, required this.index});
+/// Eine Monatsspalte: Zahl, Balken oder Strich, Kürzel.
+class _Column extends StatelessWidget {
+  const _Column({
+    required this.slot,
+    required this.peak,
+    required this.index,
+    required this.label,
+    required this.onTap,
+    required this.semanticLabel,
+  });
+
+  final MonthSlot slot;
+  final int peak;
 
   /// Position im Streifen — sie staffelt das Wachsen.
   final int index;
 
-  final MonthCount month;
-  final int peak;
+  final String label;
+  final VoidCallback? onTap;
+  final String semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    // Ein leerer Monat bekommt eine sichtbare Grundlinie, keinen Nullbalken:
-    // Sonst sähe die Lücke aus wie fehlende Daten statt wie fehlendes Training.
-    final fraction = peak <= 0 ? 0.0 : month.count / peak;
-    final height =
-        month.isEmpty ? 2.0 : math.max(6.0, fraction * MonthStrip._maxHeight);
+    final fraction = peak <= 0 ? 0.0 : slot.count / peak;
+    final target =
+        math.max(MonthStrip._minBar, fraction * MonthStrip.chartHeight);
+    final barColor = slot.isCurrent
+        ? AtemColors.tabStrength
+        : AtemColors.cyan.withValues(alpha: 0.7);
 
-    return Column(
+    final column = Column(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        // Die Zahl über dem Balken; die Null in Magenta — sie ist die
-        // Information, nicht der Balken.
-        Text(
-          '${month.count}',
-          maxLines: 1,
-          style: AtemType.labelDeco.of(context).copyWith(
-                color: month.isEmpty ? AtemColors.magenta : AtemColors.textTertiary,
-                letterSpacing: 0,
-              ),
+        // Die Zahl steht über dem Balken und wächst mit der Schrift; die
+        // Balkenfläche darunter bleibt fest hoch.
+        SizedBox(
+          height: MediaQuery.textScalerOf(context).scale(12) * 1.4,
+          child: slot.hasSessions
+              ? Text(
+                  '${slot.count}',
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: AtemType.labelMicro.of(context).copyWith(
+                        color: AtemColors.textTertiary,
+                        letterSpacing: 0,
+                      ),
+                )
+              : null,
         ),
-        const SizedBox(height: 3),
-        // Der Balken wächst aus der Grundlinie — versetzt nach Monat, damit
-        // der Streifen von links nach rechts entsteht.
-        AtemReveal(
-          delay: Duration(milliseconds: 30 * index),
-          builder: (context, t) => Container(
-            height: month.isEmpty ? height : math.max(2.0, height * t),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: month.isEmpty ? AtemColors.border : AtemColors.cyan,
-              borderRadius: BorderRadius.circular(AtemRadii.pill),
-            ),
+        const SizedBox(height: 4),
+        SizedBox(
+          height: MonthStrip.chartHeight,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: switch ((slot.measured, slot.hasSessions)) {
+              // Nicht gemessen: nichts.
+              (false, _) => const SizedBox(width: MonthStrip.barWidth),
+              // Gemessen, keine Einheit: der Strich.
+              (true, false) => Container(
+                  key: const ValueKey('month-zero'),
+                  width: MonthStrip.barWidth,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    color: AtemColors.border,
+                    borderRadius: BorderRadius.circular(1),
+                  ),
+                ),
+              // Mit Einheiten: der Balken wächst aus der Grundlinie.
+              (true, true) => AtemReveal(
+                  delay: Duration(milliseconds: 40 * index),
+                  builder: (context, t) => Container(
+                    key: const ValueKey('month-bar'),
+                    width: MonthStrip.barWidth,
+                    height: math.max(2.0, target * t),
+                    decoration: BoxDecoration(
+                      color: barColor,
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(4)),
+                    ),
+                  ),
+                ),
+            },
           ),
         ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.clip,
+          softWrap: false,
+          textAlign: TextAlign.center,
+          style: AtemType.labelMicro.of(context).copyWith(
+                letterSpacing: 0,
+                color: slot.measured
+                    ? AtemColors.textTertiary
+                    : AtemColors.textSecondary,
+              ),
+        ),
       ],
+    );
+
+    if (onTap == null) return ExcludeSemantics(child: column);
+
+    return AtemTappable(
+      onTap: onTap!,
+      semanticLabel: semanticLabel,
+      minTapSize: const Size(48, 48),
+      child: ExcludeSemantics(child: column),
     );
   }
 }

@@ -56,6 +56,151 @@ class MonthCount {
   bool get isEmpty => count == 0;
 }
 
+/// Ein Monat im festen Fenster des Monatsstreifens.
+class MonthSlot {
+  const MonthSlot({
+    required this.year,
+    required this.month,
+    required this.count,
+    required this.measured,
+    required this.isCurrent,
+    this.trainingDays = 0,
+    this.firstDate,
+  });
+
+  final int year;
+  final int month;
+  final int count;
+
+  /// Tage mit mindestens einer Einheit in diesem Monat.
+  final int trainingDays;
+
+  /// Die früheste Einheit in diesem Monat.
+  final DateTime? firstDate;
+
+  /// `false` für Monate **vor** der ersten Einheit überhaupt: nicht
+  /// gemessen, also weder Balken noch Nullstrich.
+  final bool measured;
+
+  /// Der Monat des Stichtags.
+  final bool isCurrent;
+
+  bool get hasSessions => count > 0;
+}
+
+/// Die letzten [MonthWindow.defaultMonths] Kalendermonate bis einschliesslich
+/// des Stichtags — **unabhängig vom Bestand**.
+///
+/// ## Warum ein festes Fenster
+///
+/// Bis zum 16.09.2026 zeigte der Streifen nur die Monate von der ersten bis
+/// zur letzten Einheit, jede Spalte `Expanded`. Nach einem Neubeginn mit einer
+/// einzigen Einheit füllte ein Balken die ganze Breite und sah aus wie ein
+/// Rekordmonat. Ein festes Fenster gibt jedem Monat dieselbe schmale Spalte.
+class MonthWindow {
+  const MonthWindow({
+    required this.slots,
+    required this.sessions,
+    required this.trainingDays,
+    this.firstDate,
+  });
+
+  static const defaultMonths = 6;
+
+  static const empty = MonthWindow(slots: [], sessions: 0, trainingDays: 0);
+
+  /// Älteste zuerst, genau [defaultMonths] Einträge (leer ohne Bestand).
+  final List<MonthSlot> slots;
+
+  /// Einheiten im Fenster.
+  final int sessions;
+
+  /// Tage mit mindestens einer Einheit im Fenster.
+  final int trainingDays;
+
+  /// Datum der ersten Einheit im Fenster.
+  final DateTime? firstDate;
+
+  int get peak =>
+      slots.fold(0, (max, slot) => slot.count > max ? slot.count : max);
+
+  /// Die letzten [months] Monate dieses Fensters, mit neu gezählter
+  /// Grundlage. Für schmale Bildschirme, auf denen nicht alle Spalten ein
+  /// 48-dp-Ziel bekommen — Kopf, Grundlage und Ansage zählen dann genau die
+  /// sichtbaren Monate.
+  MonthWindow lastMonths(int months) {
+    if (months >= slots.length) return this;
+    final kept = slots.sublist(slots.length - months);
+    DateTime? first;
+    for (final slot in kept) {
+      final d = slot.firstDate;
+      if (d != null && (first == null || d.isBefore(first))) first = d;
+    }
+    return MonthWindow(
+      slots: kept,
+      sessions: kept.fold(0, (a, s) => a + s.count),
+      trainingDays: kept.fold(0, (a, s) => a + s.trainingDays),
+      firstDate: first,
+    );
+  }
+
+  static MonthWindow compute(
+    List<TrainingSession> sessions,
+    DateTime reference, {
+    int months = defaultMonths,
+  }) {
+    if (sessions.isEmpty) return empty;
+
+    final earliest =
+        sessions.map((s) => s.date).reduce((a, b) => a.isBefore(b) ? a : b);
+    final firstMonth = DateTime(earliest.year, earliest.month);
+    final start = DateTime(reference.year, reference.month - (months - 1));
+    final end = DateTime(reference.year, reference.month + 1);
+
+    final counts = <String, int>{};
+    final days = <String, Set<String>>{};
+    final firsts = <String, DateTime>{};
+    for (final s in sessions) {
+      final d = s.date;
+      if (d.isBefore(start) || !d.isBefore(end)) continue;
+      final key = '${d.year}-${d.month}';
+      counts[key] = (counts[key] ?? 0) + 1;
+      (days[key] ??= <String>{}).add(Readiness.dayKey(d));
+      final f = firsts[key];
+      if (f == null || d.isBefore(f)) firsts[key] = d;
+    }
+
+    final slots = <MonthSlot>[
+      for (var i = 0; i < months; i++)
+        () {
+          // `DateTime` normalisiert den Monatsüberlauf selbst — Dezember
+          // plus eins ist Januar des Folgejahres.
+          final m = DateTime(start.year, start.month + i);
+          return MonthSlot(
+            year: m.year,
+            month: m.month,
+            count: counts['${m.year}-${m.month}'] ?? 0,
+            measured: !m.isBefore(firstMonth),
+            isCurrent: m.year == reference.year && m.month == reference.month,
+            trainingDays: days['${m.year}-${m.month}']?.length ?? 0,
+            firstDate: firsts['${m.year}-${m.month}'],
+          );
+        }(),
+    ];
+
+    DateTime? first;
+    for (final d in firsts.values) {
+      if (first == null || d.isBefore(first)) first = d;
+    }
+    return MonthWindow(
+      slots: slots,
+      sessions: counts.values.fold(0, (a, b) => a + b),
+      trainingDays: days.values.fold(0, (a, set) => a + set.length),
+      firstDate: first,
+    );
+  }
+}
+
 /// Alles, was der Verlaufs-Tab braucht — an einer Stelle gerechnet.
 class HistorySummary {
   const HistorySummary({
@@ -71,6 +216,7 @@ class HistorySummary {
     this.medianGapDays,
     this.longestGapDays,
     this.acwr,
+    this.monthWindow = MonthWindow.empty,
   });
 
   static const empty = HistorySummary(
@@ -108,9 +254,11 @@ class HistorySummary {
   /// Tage von der ersten Einheit bis heute.
   final int spanDays;
 
-
   /// `null`, wenn die Datenlage nicht reicht oder die Zone untätig ist.
   final AcwrResult? acwr;
+
+  /// Das feste Sechs-Monats-Fenster für den Monatsstreifen.
+  final MonthWindow monthWindow;
 
   bool get isEmpty => sessions == 0;
 
@@ -154,6 +302,7 @@ class HistorySummary {
       trainingDays: {for (final s in sessions) Readiness.dayKey(s.date)}.length,
       spanDays: DataSufficiency.spanDays(sessions, reference),
       acwr: acwrResult,
+      monthWindow: MonthWindow.compute(sessions, reference),
     );
   }
 

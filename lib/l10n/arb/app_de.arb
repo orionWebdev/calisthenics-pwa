@@ -7714,5 +7714,109 @@
         "type": "String"
       }
     }
+  },
+  "segPlans": "Pläne",
+  "@segPlans": {
+    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Reiter der Seite mit ATEM-Plänen"
+  },
+  "pageTabA11y": "{name}, Seite {n} von {total}",
+  "@pageTabA11y": {
+    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Vorlesetext eines Reiters",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "strengthPagesA11y": "Kraft-Seiten",
+  "@strengthPagesA11y": {
+    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Gruppenlabel der Reiterleiste"
+  },
+  "planCatalogTitle": "Pläne von ATEM",
+  "@planCatalogTitle": {
+    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Titel des Leerzustands der Katalogseite"
+  },
+  "planCatalogBody": "Hier erscheinen bald Trainingspläne, die wir für dich zusammenstellen — frei für alle und als Premium. Deine eigenen Pläne findest du unter Trainieren.",
+  "@planCatalogBody": {
+    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Text des Leerzustands der Katalogseite"
+  },
+  "monthsWindow": "{n} Monate",
+  "@monthsWindow": {
+    "description": "Einheiten je Monat (16.09.2026) — Fenster rechts im Kopf",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "monthsBasis": "{n, plural, =1{1 Einheit} other{{n} Einheiten}} an {days, plural, =1{1 Tag} other{{days} Tagen}} · seit {date}",
+  "@monthsBasis": {
+    "description": "Einheiten je Monat (16.09.2026) — Grundlage im Fenster",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "monthsNotMeasured": "nicht erfasst",
+  "@monthsNotMeasured": {
+    "description": "Einheiten je Monat (16.09.2026) — Monat vor der ersten Einheit, Vorlesetext"
+  },
+  "monthsEntryA11y": "{month}: {n, plural, =0{keine Einheit} =1{1 Einheit} other{{n} Einheiten}}",
+  "@monthsEntryA11y": {
+    "description": "Einheiten je Monat (16.09.2026) — ein Monat in der Sammelansage",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "monthsNotMeasuredA11y": "{month}: nicht erfasst",
+  "@monthsNotMeasuredA11y": {
+    "description": "Einheiten je Monat (16.09.2026) — Monat vor Beginn in der Sammelansage",
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "planCardA11y": "{name}, {n, plural, =1{1 Übung} other{{n} Übungen}}, etwa {minutes} Minuten, öffnet Plan",
+  "@planCardA11y": {
+    "description": "Plan-Karte im Kraft-Tab (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext der ganzen Karte",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "planCardStartA11y": "Starten: {name}",
+  "@planCardStartA11y": {
+    "description": "Plan-Karte im Kraft-Tab (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext des Startknopfs",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

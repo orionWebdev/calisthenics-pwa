@@ -41,8 +41,11 @@ enum AppTab {
   static const visible = [AppTab.hybrid, AppTab.strength];
 }
 
-/// Die zwei Segmente des Kraft-Tabs.
-enum StrengthSegment { train, history }
+/// Die vier Seiten des Kraft-Tabs, in der Reihenfolge der Reiterleiste.
+///
+/// Bis zum 16.09.2026 zwei Segmente (Trainieren, Verlauf). Der Index ist die
+/// Seite im PageView — die Reihenfolge hier ist deshalb nicht beliebig.
+enum StrengthSegment { train, history, analysis, plans }
 
 /// Die zwei Segmente des Cardio-Tabs.
 enum CardioSegment { sessions, analysis }

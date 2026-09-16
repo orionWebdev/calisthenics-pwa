@@ -7,16 +7,16 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../dashboard/application/dashboard_providers.dart';
 import '../../../dashboard/domain/dashboard_data.dart';
 import '../../../exercises/application/exercise_providers.dart';
-import '../../../history/presentation/widgets/muscle_balance_card.dart';
 import '../../../plans/application/pending_plan_deletion.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../../plans/domain/plan.dart';
-import '../../../plans/presentation/plan_bits.dart';
+import '../../../plans/presentation/widgets/plan_card.dart';
 import '../../../plans/presentation/screens/plan_detail_screen.dart';
 import '../../../plans/presentation/screens/plan_list_screen.dart';
 import '../../../plans/presentation/start_sheet.dart';
 import '../../../settings/application/settings_providers.dart';
 import '../../../exercises/domain/exercise.dart';
+import '../../../exercises/domain/muscle.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
 import '../../../exercises/presentation/screens/exercise_detail_screen.dart';
 import '../../../exercises/presentation/screens/exercise_form_screen.dart';
@@ -68,8 +68,6 @@ class WorkoutsScreen extends ConsumerStatefulWidget {
 class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   final _search = TextEditingController();
 
-  static const _plansPreview = 3;
-
   /// So viele Treffer stehen im Block. Mehr wäre eine zweite Liste im Tab.
   static const _exercisePreview = 3;
 
@@ -86,7 +84,9 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     final l10n = AppL10n.of(context);
     final dashboard = ref.watch(dashboardDataProvider);
     final plans = ref.watch(visiblePlansProvider).value ?? const <Plan>[];
-    final exerciseCount = ref.watch(exercisesProvider).value?.length ?? 0;
+    final exerciseList = ref.watch(exercisesProvider).value ?? const [];
+    final exerciseCount = exerciseList.length;
+    final exercisesById = {for (final e in exerciseList) e.id: e};
     final matches = ref.watch(filteredExercisesProvider);
     final muscle = ref.watch(exerciseFilterProvider);
 
@@ -117,6 +117,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   ?.where((p) => p.id == session.planId)
                   .firstOrNull,
               onStart: () => _startToday(context, session),
+              onFree: () => _startFree(context),
               onLogWithoutSets: () => _logWithoutSets(context),
             ),
           )
@@ -128,17 +129,6 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               onLogWithoutSets: () => _logWithoutSets(context),
             ),
           ),
-        // „Freies Training" ist gleichwertiger Eingang, kein versteckter
-        // Link — direkt unter der Heute-Karte (Board 05, A1/1).
-        if (session != null) ...[
-          const SizedBox(height: 8),
-          AtemButton.ghost(
-            label: l10n.workoutsFree,
-            semanticLabel: l10n.workoutsFreeStart,
-            expand: true,
-            onPressed: () => _startFree(context),
-          ),
-        ],
         const SizedBox(height: 28),
         _SectionHeader(
           title: l10n.workoutsPlansLabel.toUpperCase(),
@@ -156,31 +146,16 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             ),
           )
         else
-          AtemCard.list(
-            padding: EdgeInsets.zero,
-            child: Column(
-              children: [
-                for (var i = 0; i < plans.length && i < _plansPreview; i++) ...[
-                  if (i > 0)
-                    const Divider(
-                        height: 1, thickness: 1, color: AtemColors.border),
-                  PlanRow(
-                    plan: plans[i],
-                    onTap: () => _openPlan(context, plans[i]),
-                  ),
-                ],
-              ],
-            ),
+          // **Karten statt Zeilen** (seit 16.09.2026): Pläne werden ein
+          // eigenes Angebot mit Bild. Die Reihe scrollt seitlich; „Alle"
+          // im Kopf bleibt der Weg zur vollständigen Liste.
+          PlanCardRow(
+            plans: plans,
+            horizontalPadding: 0,
+            musclesOf: (plan) => _musclesOf(plan, exercisesById),
+            onOpen: (plan) => _openPlan(context, plan),
+            onStart: (plan) => _startPlan(context, plan),
           ),
-        const SizedBox(height: 28),
-        // Die Balance steht **zwischen** Plänen und Übungen: Sie
-        // beantwortet weder „was mache ich jetzt" noch „was gibt es
-        // sonst", sondern „was habe ich vernachlässigt" — und das ist
-        // die Frage, die zwischen beiden liegt.
-        //
-        // Hier steht nur die Kachel (Board 11, A1); Tabelle und längste
-        // Abstände liegen auf der Unterseite, die sie öffnet.
-        const MuscleBalanceEntry(),
         const SizedBox(height: 28),
         _SectionHeader(
           // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"
@@ -302,6 +277,33 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
         ),
       );
 
+  /// Startet einen Plan aus seiner Karte — derselbe Weg wie im Plandetail:
+  /// erst das Start-Blatt, dann der Runner.
+  Future<void> _startPlan(BuildContext context, Plan plan) async {
+    final request = await StartSheet.show(
+      context,
+      plan: plan,
+      restSeconds: ref.read(defaultRestSecondsProvider),
+    );
+    if (request != null) onStart(request);
+  }
+
+  /// Die Muskeln eines Plans, nach Häufigkeit über seine Übungen.
+  static List<MuscleGroup> _musclesOf(
+      Plan plan, Map<String, Exercise> exercisesById) {
+    final counts = <MuscleGroup, int>{};
+    for (final item in plan.items) {
+      final exercise = exercisesById[item.exerciseId];
+      if (exercise == null) continue;
+      for (final m in exercise.displayMuscles) {
+        counts[m] = (counts[m] ?? 0) + 1;
+      }
+    }
+    final sorted = counts.keys.toList()
+      ..sort((a, b) => counts[b]!.compareTo(counts[a]!));
+    return sorted.take(3).toList();
+  }
+
   void _openPlan(BuildContext context, Plan plan) => Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => PlanDetailScreen(plan: plan, onStart: onStart),
@@ -362,12 +364,17 @@ class _TodayCard extends StatelessWidget {
   const _TodayCard({
     required this.session,
     required this.onStart,
+    required this.onFree,
     required this.onLogWithoutSets,
     this.plan,
   });
 
   final TodaySession session;
   final VoidCallback onStart;
+
+  /// „Freies Training" — seit 16.09.2026 in der Karte statt als eigener
+  /// Knopf darunter: alle Wege, eine Einheit zu beginnen, an einer Stelle.
+  final VoidCallback onFree;
   final VoidCallback onLogWithoutSets;
 
   /// Der Plan hinter dem Termin — für „8 ÜBUNGEN · ~45 MIN · KRAFT".
@@ -409,6 +416,13 @@ class _TodayCard extends StatelessWidget {
             size: AtemButtonSize.compact,
             onPressed: onStart,
           ),
+          const SizedBox(height: 8),
+          AtemButton.outline(
+            label: l10n.workoutsFree,
+            semanticLabel: l10n.workoutsFreeStart,
+            size: AtemButtonSize.compact,
+            onPressed: onFree,
+          ),
           _LogWithoutSetsLink(onPressed: onLogWithoutSets),
         ],
       ),
@@ -435,13 +449,18 @@ class _EmptyToday extends StatelessWidget {
     // (Board 05, A1/2). Leer ist kein Fehler; der Nutzer hat nichts falsch
     // gemacht. Zwei Wege stehen bereit, weil beide gleich naheliegen: frei
     // anfangen oder einen Plan holen.
-    return AtemCard.list(
+    // Gradient-Rand wie die Heute-Karte und die Aussagekarte im Verlauf
+    // (seit 16.09.2026): Die erste Karte des Tabs ist immer die
+    // hervorgehobene — ob ein Termin da ist oder nicht.
+    return AtemCard.gradientBorder(
       padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(l10n.workoutsTodayLabel.toUpperCase(),
-              style: AtemType.labelMicro.of(context)),
+              style: AtemType.labelMicro
+                  .of(context)
+                  .copyWith(color: AtemColors.cyan)),
           const SizedBox(height: 8),
           Text(l10n.emptyTodayTitle, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 6),

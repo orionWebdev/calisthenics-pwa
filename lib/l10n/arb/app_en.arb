@@ -5375,5 +5375,17 @@
   "wellnessTrendOnlyOne": "{n, plural, =1{1 workout with only one answer is not included} other{{n} workouts with only one answer are not included}}",
   "wellnessTrendPair": "{date}: before {before} {beforeWord}, after {after} {afterWord}",
   "wellnessTrendRowA11y": "Before and after per workout, oldest first. {pairs}",
-  "wellnessTrendOpenExercise": "{label}, opens exercise"
+  "wellnessTrendOpenExercise": "{label}, opens exercise",
+  "segPlans": "Plans",
+  "pageTabA11y": "{name}, page {n} of {total}",
+  "strengthPagesA11y": "Strength pages",
+  "planCatalogTitle": "Plans by ATEM",
+  "planCatalogBody": "Training plans we put together for you will appear here soon — free for everyone and as Premium. Your own plans are under Train.",
+  "monthsWindow": "{n} months",
+  "monthsBasis": "{n, plural, =1{1 workout} other{{n} workouts}} on {days, plural, =1{1 day} other{{days} days}} · since {date}",
+  "monthsNotMeasured": "not recorded",
+  "monthsEntryA11y": "{month}: {n, plural, =0{no workout} =1{1 workout} other{{n} workouts}}",
+  "monthsNotMeasuredA11y": "{month}: not recorded",
+  "planCardA11y": "{name}, {n, plural, =1{1 exercise} other{{n} exercises}}, about {minutes} minutes, opens plan",
+  "planCardStartA11y": "Start: {name}"
 }

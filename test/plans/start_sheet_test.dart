@@ -1,5 +1,6 @@
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/plans/presentation/start_sheet.dart';
+import 'package:atem/features/plans/presentation/widgets/plan_card.dart';
 import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,9 @@ void main() {
 
     await tester.tap(find.text('Freies Training').first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Starten').first);
+    // `.last`: Seit 16.09.2026 tragen auch die Plan-Karten einen Knopf
+    // „Starten"; das Blatt liegt obenauf und ist das letzte Vorkommen.
+    await tester.tap(find.text('Starten').last);
     await tester.pumpAndSettle();
     return got;
   }
@@ -55,7 +58,13 @@ void main() {
     expect(request!.isFree, isTrue);
     // Vorgabe aus den Einstellungen, nicht die Konstante des Blattes.
     expect(request.restSeconds, greaterThan(0));
-    // Und das Blatt ist weg.
-    expect(find.text('Starten'), findsNothing);
+    // Und das Blatt ist weg: „Starten" steht nur noch auf den Plan-Karten.
+    expect(
+      find.text('Starten'),
+      findsNWidgets(find
+          .descendant(of: find.byType(PlanCard), matching: find.text('Starten'))
+          .evaluate()
+          .length),
+    );
   });
 }

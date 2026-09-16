@@ -33,6 +33,7 @@ import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/exercises/presentation/exercise_picker.dart';
+import 'package:atem/features/plans/presentation/screens/plan_catalog_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -150,6 +151,18 @@ void main() {
 
   testWidgets('Auswertung erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const AnalysisScreen());
+  });
+
+  // Seit 16.09.2026 Seite 3 des Kraft-Tabs: ohne eigenen Rahmen.
+  testWidgets('Auswertung eingebettet erfüllt den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(
+        tester, const Scaffold(body: AnalysisScreen(embedded: true)));
+  });
+
+  // Seite 4 des Kraft-Tabs.
+  testWidgets('Pläne von ATEM erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const Scaffold(body: PlanCatalogPage()));
   });
 
   testWidgets('Workout Runner aus einem Plan erfüllt den A11y-Vertrag',
