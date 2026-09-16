@@ -4030,7 +4030,7 @@
   "@sessionDeleteTitle": {
     "description": "Bestätigung"
   },
-  "sessionDeleteWindow": "30 Sekunden lang kannst du das rückgängig machen.",
+  "sessionDeleteWindow": "6 Sekunden lang kannst du das rückgängig machen.",
   "@sessionDeleteWindow": {
     "description": "session.delete.window"
   },
@@ -6734,5 +6734,275 @@
   "strengthSavedSnack": "Krafteinheit gespeichert",
   "@strengthSavedSnack": {
     "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Bestätigung nach dem Speichern"
+  },
+  "hybridTimeTitle": "Trainingszeit",
+  "@hybridTimeTitle": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeTitle"
+  },
+  "hybridTimeGroup": "Zeitraum der Trainingszeit",
+  "@hybridTimeGroup": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeGroup"
+  },
+  "hybridTimeDays14": "14 Tage",
+  "@hybridTimeDays14": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays14"
+  },
+  "hybridTimeDays28": "28 Tage",
+  "@hybridTimeDays28": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays28"
+  },
+  "hybridTimeUnits": "{n, plural, =1{1 Einheit} other{{n} Einheiten}}",
+  "@hybridTimeUnits": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeUnits",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridTimeBasis": "Anteil an {minutes} Trainingsminuten · {n} Einheiten · {days} Tage",
+  "@hybridTimeBasis": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeBasis",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridTimeWithoutDuration": "{n, plural, =1{1 Einheit ohne Dauer nicht enthalten} other{{n} Einheiten ohne Dauer nicht enthalten}}",
+  "@hybridTimeWithoutDuration": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeWithoutDuration",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridTimeNote": "Kein Sollverhältnis — die App weiss nicht, wie viel Ausdauer oder Regeneration richtig ist.",
+  "@hybridTimeNote": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeNote"
+  },
+  "hybridTimeRowA11y": "{track}: {minutes} Minuten, {n} Einheiten, {percent} Prozent",
+  "@hybridTimeRowA11y": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeRowA11y",
+    "placeholders": {
+      "track": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridTimeEmpty": "Keine Einheit mit Dauer in den letzten {days} Tagen.",
+  "@hybridTimeEmpty": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeEmpty",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridHeatmapTitle": "Trainingstage",
+  "@hybridHeatmapTitle": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapTitle"
+  },
+  "hybridHeatmapWindow": "{weeks} Wochen",
+  "@hybridHeatmapWindow": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapWindow",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridHeatmapBasis": "{trained} von {total} Tagen trainiert",
+  "@hybridHeatmapBasis": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapBasis",
+    "placeholders": {
+      "trained": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridHeatmapByTrack": "{strength} Kraft · {cardio} Ausdauer · {recovery} Regeneration",
+  "@hybridHeatmapByTrack": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapByTrack",
+    "placeholders": {
+      "strength": {
+        "type": "int"
+      },
+      "cardio": {
+        "type": "int"
+      },
+      "recovery": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridHeatmapLegendNone": "kein Training",
+  "@hybridHeatmapLegendNone": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapLegendNone"
+  },
+  "hybridHeatmapLegendMixed": "mehrere",
+  "@hybridHeatmapLegendMixed": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapLegendMixed"
+  },
+  "hybridHeatmapWeekA11y": "KW {week}: {days} Trainingstage. {detail}",
+  "@hybridHeatmapWeekA11y": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapWeekA11y",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "hybridHeatmapWeekNoneA11y": "KW {week}: kein Training",
+  "@hybridHeatmapWeekNoneA11y": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapWeekNoneA11y",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridHeatmapMixed": "{weekday} mehrere Arten",
+  "@hybridHeatmapMixed": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapMixed",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisMaxTitle": "Geschätztes Maximum",
+  "@analysisMaxTitle": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxTitle"
+  },
+  "analysisMaxHint": "Epley: Gewicht × (1 + Wdh ÷ 30), beste Schätzung je Einheit. Eine Schätzung, kein Test.",
+  "@analysisMaxHint": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxHint"
+  },
+  "analysisMaxBasis": "{n} Einheiten · zuletzt {kg} kg · Bestwert {best} kg",
+  "@analysisMaxBasis": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxBasis",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "kg": {
+        "type": "String"
+      },
+      "best": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisMaxDelta": "{delta} kg seit der ersten Einheit",
+  "@analysisMaxDelta": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxDelta",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisMaxDeltaA11y": "{direction} {delta} Kilogramm seit der ersten Einheit",
+  "@analysisMaxDeltaA11y": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxDeltaA11y",
+    "placeholders": {
+      "direction": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisMaxNoDelta": "kein Vergleich verfügbar",
+  "@analysisMaxNoDelta": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxNoDelta"
+  },
+  "analysisMaxThinTitle": "Noch keine Übung mit genug Einheiten",
+  "@analysisMaxThinTitle": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinTitle"
+  },
+  "analysisMaxThinBody": "Ab {n} Einheiten je Übung mit Gewicht und höchstens {reps} Wiederholungen je Satz.",
+  "@analysisMaxThinBody": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinBody",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisMaxProgress": "{name}: {cur} von {req} Einheiten",
+  "@analysisMaxProgress": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxProgress",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "cur": {
+        "type": "int"
+      },
+      "req": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisMaxChartA11y": "{name}: geschätztes Maximum von {first} auf {last} Kilogramm über {n} Einheiten",
+  "@analysisMaxChartA11y": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxChartA11y",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisMaxExerciseGroup": "Übung für das geschätzte Maximum",
+  "@analysisMaxExerciseGroup": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxExerciseGroup"
+  },
+  "analysisMaxYAxis": "kg",
+  "@analysisMaxYAxis": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxYAxis"
+  },
+  "analysisSetsTitle": "Sätze je Muskelgruppe",
+  "@analysisSetsTitle": {
+    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisSetsTitle"
   }
 }

@@ -32,7 +32,9 @@ class PendingWeightChange {
 ///
 /// Beides ist verlustfrei: Ein Körpergewicht ist eine Zahl, kein Bestand.
 class PendingWeightController extends Notifier<PendingWeightChange?> {
-  static const window = Duration(seconds: 30);
+  // Deckt sich mit AtemSnackbar.undoDuration — Rückgängig gibt es nur,
+  // solange die Meldung steht.
+  static const window = Duration(seconds: 6);
 
   Timer? _timer;
 

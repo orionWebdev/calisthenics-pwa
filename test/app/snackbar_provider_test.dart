@@ -7,8 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 /// Der eine Meldungskanal: Er räumt sich selbst weg.
 ///
 /// Anlass: „Regeneration gespeichert" schien am Gerät stehen zu bleiben. Die
-/// Meldung trägt „Rückgängig", also gilt das 30-s-Fenster — hier steht,
-/// dass es nach genau 30 s auch wirklich zu ist und nichts es verlängert.
+/// Meldung trägt „Rückgängig", also gilt das 6-s-Fenster — hier steht,
+/// dass es nach genau 6 s auch wirklich zu ist und nichts es verlängert.
 void main() {
   AtemSnack undoSnack() => AtemSnack(
         message: 'Regeneration gespeichert',
@@ -18,7 +18,7 @@ void main() {
         onAction: () {},
       );
 
-  test('mit Rückgängig verschwindet die Meldung nach 30 s, nicht früher', () {
+  test('mit Rückgängig verschwindet die Meldung nach 6 s, nicht früher', () {
     fakeAsync((async) {
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -56,12 +56,12 @@ void main() {
       final notifier = container.read(snackbarProvider.notifier);
 
       notifier.show(undoSnack());
-      async.elapse(const Duration(seconds: 20));
+      async.elapse(const Duration(seconds: 4));
       notifier.show(undoSnack());
-      async.elapse(const Duration(seconds: 20));
-      // 40 s nach der ersten, 20 s nach der zweiten: Die zweite steht noch.
+      async.elapse(const Duration(seconds: 4));
+      // 8 s nach der ersten, 4 s nach der zweiten: Die zweite steht noch.
       expect(container.read(snackbarProvider), isNotNull);
-      async.elapse(const Duration(seconds: 10));
+      async.elapse(const Duration(seconds: 2));
       expect(container.read(snackbarProvider), isNull);
       // Kein zweiter Timer feuert nach: Der Zustand bleibt leer.
       async.elapse(const Duration(minutes: 1));

@@ -2836,7 +2836,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get sessionDeleteWindow =>
-      '30 Sekunden lang kannst du das rückgängig machen.';
+      '6 Sekunden lang kannst du das rückgängig machen.';
 
   @override
   String sessionDeletedBody(int n) {
@@ -4681,4 +4681,148 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get strengthSavedSnack => 'Krafteinheit gespeichert';
+
+  @override
+  String get hybridTimeTitle => 'Trainingszeit';
+
+  @override
+  String get hybridTimeGroup => 'Zeitraum der Trainingszeit';
+
+  @override
+  String get hybridTimeDays14 => '14 Tage';
+
+  @override
+  String get hybridTimeDays28 => '28 Tage';
+
+  @override
+  String hybridTimeUnits(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten',
+      one: '1 Einheit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hybridTimeBasis(int minutes, int n, int days) {
+    return 'Anteil an $minutes Trainingsminuten · $n Einheiten · $days Tage';
+  }
+
+  @override
+  String hybridTimeWithoutDuration(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten ohne Dauer nicht enthalten',
+      one: '1 Einheit ohne Dauer nicht enthalten',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hybridTimeNote =>
+      'Kein Sollverhältnis — die App weiss nicht, wie viel Ausdauer oder Regeneration richtig ist.';
+
+  @override
+  String hybridTimeRowA11y(String track, int minutes, int n, int percent) {
+    return '$track: $minutes Minuten, $n Einheiten, $percent Prozent';
+  }
+
+  @override
+  String hybridTimeEmpty(int days) {
+    return 'Keine Einheit mit Dauer in den letzten $days Tagen.';
+  }
+
+  @override
+  String get hybridHeatmapTitle => 'Trainingstage';
+
+  @override
+  String hybridHeatmapWindow(int weeks) {
+    return '$weeks Wochen';
+  }
+
+  @override
+  String hybridHeatmapBasis(int trained, int total) {
+    return '$trained von $total Tagen trainiert';
+  }
+
+  @override
+  String hybridHeatmapByTrack(int strength, int cardio, int recovery) {
+    return '$strength Kraft · $cardio Ausdauer · $recovery Regeneration';
+  }
+
+  @override
+  String get hybridHeatmapLegendNone => 'kein Training';
+
+  @override
+  String get hybridHeatmapLegendMixed => 'mehrere';
+
+  @override
+  String hybridHeatmapWeekA11y(int week, int days, String detail) {
+    return 'KW $week: $days Trainingstage. $detail';
+  }
+
+  @override
+  String hybridHeatmapWeekNoneA11y(int week) {
+    return 'KW $week: kein Training';
+  }
+
+  @override
+  String hybridHeatmapMixed(String weekday) {
+    return '$weekday mehrere Arten';
+  }
+
+  @override
+  String get analysisMaxTitle => 'Geschätztes Maximum';
+
+  @override
+  String get analysisMaxHint =>
+      'Epley: Gewicht × (1 + Wdh ÷ 30), beste Schätzung je Einheit. Eine Schätzung, kein Test.';
+
+  @override
+  String analysisMaxBasis(int n, String kg, String best) {
+    return '$n Einheiten · zuletzt $kg kg · Bestwert $best kg';
+  }
+
+  @override
+  String analysisMaxDelta(String delta) {
+    return '$delta kg seit der ersten Einheit';
+  }
+
+  @override
+  String analysisMaxDeltaA11y(String direction, String delta) {
+    return '$direction $delta Kilogramm seit der ersten Einheit';
+  }
+
+  @override
+  String get analysisMaxNoDelta => 'kein Vergleich verfügbar';
+
+  @override
+  String get analysisMaxThinTitle => 'Noch keine Übung mit genug Einheiten';
+
+  @override
+  String analysisMaxThinBody(int n, int reps) {
+    return 'Ab $n Einheiten je Übung mit Gewicht und höchstens $reps Wiederholungen je Satz.';
+  }
+
+  @override
+  String analysisMaxProgress(String name, int cur, int req) {
+    return '$name: $cur von $req Einheiten';
+  }
+
+  @override
+  String analysisMaxChartA11y(String name, String first, String last, int n) {
+    return '$name: geschätztes Maximum von $first auf $last Kilogramm über $n Einheiten';
+  }
+
+  @override
+  String get analysisMaxExerciseGroup => 'Übung für das geschätzte Maximum';
+
+  @override
+  String get analysisMaxYAxis => 'kg';
+
+  @override
+  String get analysisSetsTitle => 'Sätze je Muskelgruppe';
 }

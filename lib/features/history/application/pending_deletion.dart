@@ -42,7 +42,9 @@ class PendingDeletion {
 /// die niemand mehr bestätigen konnte, nicht auszuführen, ist der Fehler, mit
 /// dem sich leben lässt.
 class PendingDeletionController extends Notifier<PendingDeletion?> {
-  static const window = Duration(seconds: 30);
+  // Deckt sich mit AtemSnackbar.undoDuration — Rückgängig gibt es nur,
+  // solange die Meldung steht (6 s seit 16.09.2026, vorher 30 s).
+  static const window = Duration(seconds: 6);
 
   Timer? _timer;
 

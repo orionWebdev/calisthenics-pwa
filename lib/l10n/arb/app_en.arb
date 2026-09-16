@@ -3220,7 +3220,7 @@
   "@sessionDeleteTitle": {
     "description": "Bestätigung"
   },
-  "sessionDeleteWindow": "You can undo this for 30 seconds.",
+  "sessionDeleteWindow": "You can undo this for 6 seconds.",
   "@sessionDeleteWindow": {
     "description": "session.delete.window"
   },
@@ -5268,5 +5268,37 @@
   "strengthFormTitle": "Log strength session",
   "strengthFormEntry": "Log without sets",
   "strengthFormNoSets": "This session carries no sets. It counts in minutes, not volume — and appears in no muscle distribution.",
-  "strengthSavedSnack": "Strength session saved"
+  "strengthSavedSnack": "Strength session saved",
+  "hybridTimeTitle": "Training time",
+  "hybridTimeGroup": "Training time window",
+  "hybridTimeDays14": "14 days",
+  "hybridTimeDays28": "28 days",
+  "hybridTimeUnits": "{n, plural, =1{1 workout} other{{n} workouts}}",
+  "hybridTimeBasis": "Share of {minutes} training minutes · {n} workouts · {days} days",
+  "hybridTimeWithoutDuration": "{n, plural, =1{1 workout without duration not included} other{{n} workouts without duration not included}}",
+  "hybridTimeNote": "No target ratio — the app does not know how much cardio or recovery is right.",
+  "hybridTimeRowA11y": "{track}: {minutes} minutes, {n} workouts, {percent} percent",
+  "hybridTimeEmpty": "No workout with a duration in the last {days} days.",
+  "hybridHeatmapTitle": "Training days",
+  "hybridHeatmapWindow": "{weeks} weeks",
+  "hybridHeatmapBasis": "{trained} of {total} days trained",
+  "hybridHeatmapByTrack": "{strength} strength · {cardio} cardio · {recovery} recovery",
+  "hybridHeatmapLegendNone": "no training",
+  "hybridHeatmapLegendMixed": "several",
+  "hybridHeatmapWeekA11y": "Week {week}: {days} training days. {detail}",
+  "hybridHeatmapWeekNoneA11y": "Week {week}: no training",
+  "hybridHeatmapMixed": "{weekday} several kinds",
+  "analysisMaxTitle": "Estimated max",
+  "analysisMaxHint": "Epley: weight × (1 + reps ÷ 30), best estimate per workout. An estimate, not a test.",
+  "analysisMaxBasis": "{n} workouts · latest {kg} kg · best {best} kg",
+  "analysisMaxDelta": "{delta} kg since the first workout",
+  "analysisMaxDeltaA11y": "{direction} {delta} kilograms since the first workout",
+  "analysisMaxNoDelta": "no comparison available",
+  "analysisMaxThinTitle": "No exercise with enough workouts yet",
+  "analysisMaxThinBody": "From {n} workouts per exercise with weight and at most {reps} reps per set.",
+  "analysisMaxProgress": "{name}: {cur} of {req} workouts",
+  "analysisMaxChartA11y": "{name}: estimated max from {first} to {last} kilograms over {n} workouts",
+  "analysisMaxExerciseGroup": "Exercise for the estimated max",
+  "analysisMaxYAxis": "kg",
+  "analysisSetsTitle": "Sets per muscle group"
 }

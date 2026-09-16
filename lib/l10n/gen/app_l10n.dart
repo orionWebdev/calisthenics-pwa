@@ -4672,7 +4672,7 @@ abstract class AppL10n {
   /// session.delete.window
   ///
   /// In de, this message translates to:
-  /// **'30 Sekunden lang kannst du das rückgängig machen.'**
+  /// **'6 Sekunden lang kannst du das rückgängig machen.'**
   String get sessionDeleteWindow;
 
   /// Widerrufshinweis, Text
@@ -7686,6 +7686,198 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Krafteinheit gespeichert'**
   String get strengthSavedSnack;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingszeit'**
+  String get hybridTimeTitle;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeGroup
+  ///
+  /// In de, this message translates to:
+  /// **'Zeitraum der Trainingszeit'**
+  String get hybridTimeGroup;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays14
+  ///
+  /// In de, this message translates to:
+  /// **'14 Tage'**
+  String get hybridTimeDays14;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays28
+  ///
+  /// In de, this message translates to:
+  /// **'28 Tage'**
+  String get hybridTimeDays28;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeUnits
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}}'**
+  String hybridTimeUnits(int n);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeBasis
+  ///
+  /// In de, this message translates to:
+  /// **'Anteil an {minutes} Trainingsminuten · {n} Einheiten · {days} Tage'**
+  String hybridTimeBasis(int minutes, int n, int days);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeWithoutDuration
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit ohne Dauer nicht enthalten} other{{n} Einheiten ohne Dauer nicht enthalten}}'**
+  String hybridTimeWithoutDuration(int n);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeNote
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Sollverhältnis — die App weiss nicht, wie viel Ausdauer oder Regeneration richtig ist.'**
+  String get hybridTimeNote;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeRowA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{track}: {minutes} Minuten, {n} Einheiten, {percent} Prozent'**
+  String hybridTimeRowA11y(String track, int minutes, int n, int percent);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeEmpty
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Einheit mit Dauer in den letzten {days} Tagen.'**
+  String hybridTimeEmpty(int days);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingstage'**
+  String get hybridHeatmapTitle;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapWindow
+  ///
+  /// In de, this message translates to:
+  /// **'{weeks} Wochen'**
+  String hybridHeatmapWindow(int weeks);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapBasis
+  ///
+  /// In de, this message translates to:
+  /// **'{trained} von {total} Tagen trainiert'**
+  String hybridHeatmapBasis(int trained, int total);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapByTrack
+  ///
+  /// In de, this message translates to:
+  /// **'{strength} Kraft · {cardio} Ausdauer · {recovery} Regeneration'**
+  String hybridHeatmapByTrack(int strength, int cardio, int recovery);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapLegendNone
+  ///
+  /// In de, this message translates to:
+  /// **'kein Training'**
+  String get hybridHeatmapLegendNone;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapLegendMixed
+  ///
+  /// In de, this message translates to:
+  /// **'mehrere'**
+  String get hybridHeatmapLegendMixed;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapWeekA11y
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week}: {days} Trainingstage. {detail}'**
+  String hybridHeatmapWeekA11y(int week, int days, String detail);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapWeekNoneA11y
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week}: kein Training'**
+  String hybridHeatmapWeekNoneA11y(int week);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapMixed
+  ///
+  /// In de, this message translates to:
+  /// **'{weekday} mehrere Arten'**
+  String hybridHeatmapMixed(String weekday);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Geschätztes Maximum'**
+  String get analysisMaxTitle;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxHint
+  ///
+  /// In de, this message translates to:
+  /// **'Epley: Gewicht × (1 + Wdh ÷ 30), beste Schätzung je Einheit. Eine Schätzung, kein Test.'**
+  String get analysisMaxHint;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxBasis
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Einheiten · zuletzt {kg} kg · Bestwert {best} kg'**
+  String analysisMaxBasis(int n, String kg, String best);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxDelta
+  ///
+  /// In de, this message translates to:
+  /// **'{delta} kg seit der ersten Einheit'**
+  String analysisMaxDelta(String delta);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxDeltaA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{direction} {delta} Kilogramm seit der ersten Einheit'**
+  String analysisMaxDeltaA11y(String direction, String delta);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxNoDelta
+  ///
+  /// In de, this message translates to:
+  /// **'kein Vergleich verfügbar'**
+  String get analysisMaxNoDelta;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Übung mit genug Einheiten'**
+  String get analysisMaxThinTitle;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinBody
+  ///
+  /// In de, this message translates to:
+  /// **'Ab {n} Einheiten je Übung mit Gewicht und höchstens {reps} Wiederholungen je Satz.'**
+  String analysisMaxThinBody(int n, int reps);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxProgress
+  ///
+  /// In de, this message translates to:
+  /// **'{name}: {cur} von {req} Einheiten'**
+  String analysisMaxProgress(String name, int cur, int req);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxChartA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{name}: geschätztes Maximum von {first} auf {last} Kilogramm über {n} Einheiten'**
+  String analysisMaxChartA11y(String name, String first, String last, int n);
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxExerciseGroup
+  ///
+  /// In de, this message translates to:
+  /// **'Übung für das geschätzte Maximum'**
+  String get analysisMaxExerciseGroup;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxYAxis
+  ///
+  /// In de, this message translates to:
+  /// **'kg'**
+  String get analysisMaxYAxis;
+
+  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisSetsTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze je Muskelgruppe'**
+  String get analysisSetsTitle;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

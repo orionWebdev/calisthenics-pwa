@@ -18,7 +18,9 @@ import 'plan_providers.dart';
 /// verschwindet sofort aus der Liste, gelöscht wird er erst, wenn das Fenster
 /// abgelaufen ist.
 class PendingPlanDeletionController extends Notifier<Plan?> {
-  static const window = Duration(seconds: 30);
+  // Deckt sich mit AtemSnackbar.undoDuration — Rückgängig gibt es nur,
+  // solange die Meldung steht.
+  static const window = Duration(seconds: 6);
 
   Timer? _timer;
 

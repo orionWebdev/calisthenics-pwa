@@ -113,7 +113,7 @@ void main() {
   });
 
   test('das Fenster ist dreissig Sekunden lang', () {
-    expect(PendingDeletionController.window, const Duration(seconds: 30));
+    expect(PendingDeletionController.window, const Duration(seconds: 6));
   });
 
   test('sofort ausführen löscht wirklich', () async {

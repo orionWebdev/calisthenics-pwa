@@ -2828,7 +2828,7 @@ class AppL10nEn extends AppL10n {
   String get sessionDeleteTitle => 'Delete session?';
 
   @override
-  String get sessionDeleteWindow => 'You can undo this for 30 seconds.';
+  String get sessionDeleteWindow => 'You can undo this for 6 seconds.';
 
   @override
   String sessionDeletedBody(int n) {
@@ -4668,4 +4668,148 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get strengthSavedSnack => 'Strength session saved';
+
+  @override
+  String get hybridTimeTitle => 'Training time';
+
+  @override
+  String get hybridTimeGroup => 'Training time window';
+
+  @override
+  String get hybridTimeDays14 => '14 days';
+
+  @override
+  String get hybridTimeDays28 => '28 days';
+
+  @override
+  String hybridTimeUnits(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts',
+      one: '1 workout',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hybridTimeBasis(int minutes, int n, int days) {
+    return 'Share of $minutes training minutes · $n workouts · $days days';
+  }
+
+  @override
+  String hybridTimeWithoutDuration(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts without duration not included',
+      one: '1 workout without duration not included',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hybridTimeNote =>
+      'No target ratio — the app does not know how much cardio or recovery is right.';
+
+  @override
+  String hybridTimeRowA11y(String track, int minutes, int n, int percent) {
+    return '$track: $minutes minutes, $n workouts, $percent percent';
+  }
+
+  @override
+  String hybridTimeEmpty(int days) {
+    return 'No workout with a duration in the last $days days.';
+  }
+
+  @override
+  String get hybridHeatmapTitle => 'Training days';
+
+  @override
+  String hybridHeatmapWindow(int weeks) {
+    return '$weeks weeks';
+  }
+
+  @override
+  String hybridHeatmapBasis(int trained, int total) {
+    return '$trained of $total days trained';
+  }
+
+  @override
+  String hybridHeatmapByTrack(int strength, int cardio, int recovery) {
+    return '$strength strength · $cardio cardio · $recovery recovery';
+  }
+
+  @override
+  String get hybridHeatmapLegendNone => 'no training';
+
+  @override
+  String get hybridHeatmapLegendMixed => 'several';
+
+  @override
+  String hybridHeatmapWeekA11y(int week, int days, String detail) {
+    return 'Week $week: $days training days. $detail';
+  }
+
+  @override
+  String hybridHeatmapWeekNoneA11y(int week) {
+    return 'Week $week: no training';
+  }
+
+  @override
+  String hybridHeatmapMixed(String weekday) {
+    return '$weekday several kinds';
+  }
+
+  @override
+  String get analysisMaxTitle => 'Estimated max';
+
+  @override
+  String get analysisMaxHint =>
+      'Epley: weight × (1 + reps ÷ 30), best estimate per workout. An estimate, not a test.';
+
+  @override
+  String analysisMaxBasis(int n, String kg, String best) {
+    return '$n workouts · latest $kg kg · best $best kg';
+  }
+
+  @override
+  String analysisMaxDelta(String delta) {
+    return '$delta kg since the first workout';
+  }
+
+  @override
+  String analysisMaxDeltaA11y(String direction, String delta) {
+    return '$direction $delta kilograms since the first workout';
+  }
+
+  @override
+  String get analysisMaxNoDelta => 'no comparison available';
+
+  @override
+  String get analysisMaxThinTitle => 'No exercise with enough workouts yet';
+
+  @override
+  String analysisMaxThinBody(int n, int reps) {
+    return 'From $n workouts per exercise with weight and at most $reps reps per set.';
+  }
+
+  @override
+  String analysisMaxProgress(String name, int cur, int req) {
+    return '$name: $cur of $req workouts';
+  }
+
+  @override
+  String analysisMaxChartA11y(String name, String first, String last, int n) {
+    return '$name: estimated max from $first to $last kilograms over $n workouts';
+  }
+
+  @override
+  String get analysisMaxExerciseGroup => 'Exercise for the estimated max';
+
+  @override
+  String get analysisMaxYAxis => 'kg';
+
+  @override
+  String get analysisSetsTitle => 'Sets per muscle group';
 }

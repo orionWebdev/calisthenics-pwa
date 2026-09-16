@@ -50,7 +50,10 @@ class AtemSnackbar extends StatelessWidget {
   static const shortDuration = Duration(seconds: 4);
 
   /// Mit Rückgängig. So lange bleibt der Weg zurück offen.
-  static const undoDuration = Duration(seconds: 30);
+  /// Sechs statt dreissig Sekunden (seit 16.09.2026): Am Gerät stand die
+  /// Meldung „Regeneration gespeichert" so lange, dass sie wie ein Fehler
+  /// wirkte. Sechs Sekunden reichen, um „Rückgängig" zu lesen und zu tippen.
+  static const undoDuration = Duration(seconds: 6);
 
   final String message;
   final String semanticLabel;
