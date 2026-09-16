@@ -15,7 +15,6 @@ import '../../../history/domain/training_session.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../application/pending_weight_change.dart';
 import '../../application/settings_providers.dart';
-import '../../domain/body_weight_preview.dart';
 import '../../domain/legal_links.dart';
 import '../../domain/user_settings.dart';
 import '../widgets/settings_bits.dart';
