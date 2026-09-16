@@ -1,12 +1,142 @@
+import 'package:flutter/material.dart' show Icons, MaterialPageRoute;
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../exercises/application/exercise_providers.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
+import '../../application/history_providers.dart';
 import '../../domain/muscle_balance.dart';
+import '../screens/muscle_balance_screen.dart';
 
-/// Die Muskelbalance im Workouts-Tab — **Verteilung und Abstand, kein Urteil**.
+/// Ab dieser effektiven Schriftgrösse wird eine Muskelzeile zweizeilig
+/// (Board 09, A3/3): Name oben, Werte als umbrechende Reihe darunter.
+const double _stackedFromScale = 1.6;
+
+/// Der Einstieg in die Muskelbalance — **Kachel, Laden, Fehler in einem**.
+///
+/// Kraft-Tab und Auswertung binden dieselbe Kachel ein; die Details stehen an
+/// genau einer Stelle, der Unterseite [MuscleBalanceScreen]. Zwei volle
+/// Tabellen an zwei Orten wären zwei Stellen, die auseinanderlaufen.
+///
+/// Ein Fehler lässt den Block wegfallen, statt eine Fehlerkarte zu zeigen: Die
+/// Kachel ist ein Einstieg, keine Aussage — der Fehlerzustand gehört auf die
+/// Unterseite, wo die Aussage steht.
+class MuscleBalanceEntry extends ConsumerWidget {
+  const MuscleBalanceEntry({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final sessions = ref.watch(sessionsProvider);
+    final exercises = ref.watch(exercisesProvider);
+
+    if (sessions.isLoading && !sessions.hasValue) {
+      return AtemSkeleton(
+        semanticLabel: l10n.balanceLoading,
+        blocks: const [AtemSkeletonBlock(height: 104)],
+      );
+    }
+    if (sessions.hasError && !sessions.hasValue) {
+      return const SizedBox.shrink();
+    }
+
+    final balance = MuscleBalance.compute(
+      sessions.value ?? const [],
+      exercises.value ?? const [],
+      ref.watch(historyReferenceProvider),
+    );
+    return MuscleBalanceTile(balance: balance);
+  }
+}
+
+/// Die kompakte Kachel (Board 11, A1): Titel, Fenster, Segmentbalken,
+/// Grundlage — die ganze Fläche öffnet die Unterseite.
+class MuscleBalanceTile extends StatelessWidget {
+  const MuscleBalanceTile({super.key, required this.balance, this.onOpen});
+
+  final MuscleBalance balance;
+
+  /// Ohne Rückruf öffnet die Kachel [MuscleBalanceScreen] auf dem nächsten
+  /// Navigator — im Kraft-Tab ist das der Stapel des Tabs.
+  final VoidCallback? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    // Kein Bestand im Fenster: Der Block rendert nicht. Kein „Leg los!".
+    if (balance.sessionsInWindow == 0) return const SizedBox.shrink();
+
+    final l10n = AppL10n.of(context);
+    final enough = balance.hasEnough;
+    final done = balance.sessionsCounted;
+    const target = MuscleBalance.minimumSessions;
+
+    final basis = enough
+        ? l10n.balanceBasis(balance.totalSets, done, balance.sessionsInWindow)
+        : l10n.balanceThinProgress(done, target, target - done);
+
+    return AtemTappable(
+      onTap: onOpen ??
+          () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const MuscleBalanceScreen(),
+                ),
+              ),
+      semanticLabel: [
+        l10n.balanceTileA11y(l10n.balanceTitle, basis, l10n.balanceWindow),
+        l10n.listOpenDetail,
+      ].join(', '),
+      pressScale: AtemPressScale.normal,
+      child: AtemCard.list(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(l10n.balanceTitle,
+                      style: AtemType.titleMedium.of(context)),
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    l10n.balanceWindow,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.meta.of(context),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                // Der Pfeil sagt, dass die Kachel sich öffnet — die Ansage
+                // sagt es in Worten.
+                const ExcludeSemantics(
+                  child: Icon(Icons.chevron_right,
+                      size: 20, color: AtemColors.textSecondary),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (enough)
+              _Bar(balance: balance, total: balance.totalSets)
+            else
+              AtemProgressBar.share(
+                value: (done / target).clamp(0.0, 1.0),
+                semanticLabel: basis,
+                accent: AtemColors.cyan,
+              ),
+            const SizedBox(height: 10),
+            Text(basis, style: AtemType.meta.of(context)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Die Muskelbalance im Detail — **Verteilung und Abstand, kein Urteil**.
 ///
 /// ## Was hier ausdrücklich nicht steht
 ///
@@ -18,9 +148,12 @@ import '../../domain/muscle_balance.dart';
 /// ## Der Nenner steht über dem Balken
 ///
 /// „268 Sätze · 14 von 18 Kraft-Einheiten". Die Balance rechnet über
-/// Krafteinheiten **mit Übungen**; Cardio, Regeneration und die 16
-/// Krafteinheiten ohne Übungsliste tragen nichts bei. Eine Verteilung, die
-/// sich als Verteilung über das ganze Training ausgäbe, wäre eine Behauptung.
+/// Krafteinheiten **mit Übungen**; Cardio, Regeneration und Krafteinheiten
+/// ohne Übungsliste tragen nichts bei. Eine Verteilung, die sich als
+/// Verteilung über das ganze Training ausgäbe, wäre eine Behauptung.
+///
+/// Das Fenster („8 Wochen") steht im Kopf der Unterseite, nicht in der Karte
+/// (Board 09, A3/1).
 class MuscleBalanceCard extends StatelessWidget {
   const MuscleBalanceCard({super.key, required this.balance});
 
@@ -36,23 +169,17 @@ class MuscleBalanceCard extends StatelessWidget {
     if (!balance.hasEnough) return _Thin(balance: balance);
 
     final total = balance.totalSets;
+    final rows = [
+      for (final share in balance.shares)
+        if (share.sets > 0) share,
+    ];
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(l10n.balanceTitle,
-                    style: AtemType.titleMedium.of(context)),
-              ),
-              const SizedBox(width: 10),
-              Text(l10n.balanceWindow,
-                  style: AtemType.meta.of(context)),
-            ],
-          ),
+          Text(l10n.balanceTitle, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 4),
           Text(
             l10n.balanceBasis(
@@ -62,27 +189,29 @@ class MuscleBalanceCard extends StatelessWidget {
             ),
             style: AtemType.meta.of(context),
           ),
-          const SizedBox(height: 12),
-          _Bar(balance: balance, total: total),
           const SizedBox(height: 14),
-          for (final share in balance.shares)
-            if (share.sets > 0)
-              _Row(share: share, total: total),
+          _Bar(balance: balance, total: total),
+          const SizedBox(height: 12),
+          for (var i = 0; i < rows.length; i++) ...[
+            if (i > 0)
+              const SizedBox(
+                  height: 1, child: ColoredBox(color: AtemColors.border)),
+            _Row(share: rows[i], total: total),
+          ],
           // **Die Spaltenüberschrift steht unten** (Board 09, A3/1). Oben
           // wäre sie ein Versprechen auf eine Tabelle; unten beantwortet sie
           // die Frage, die beim Lesen entsteht: was waren die drei Zahlen?
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           const SizedBox(
-              height: 1,
-              child: ColoredBox(color: AtemColors.border)),
-          const SizedBox(height: 8),
+              height: 1, child: ColoredBox(color: AtemColors.border)),
+          const SizedBox(height: 12),
           ExcludeSemantics(
             child: Text(
               [
                 l10n.balanceColShare,
                 l10n.balanceColSets,
                 l10n.balanceColLast,
-              ].join('  ').toUpperCase(),
+              ].join('   ').toUpperCase(),
               style: AtemType.labelMicro.of(context),
             ),
           ),
@@ -104,35 +233,37 @@ class MuscleGapsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (balance.longestGaps.isEmpty) return const SizedBox.shrink();
+    if (!balance.hasEnough || balance.longestGaps.isEmpty) {
+      return const SizedBox.shrink();
+    }
     final l10n = AppL10n.of(context);
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              // Ein Dreieck aus Zeichen statt einem Material-Symbol: Die
-              // Karte importiert sonst nur `widgets`.
-              ExcludeSemantics(
-                child: Text('△',
-                    style: AtemType.labelMicro
-                        .of(context)
-                        .copyWith(color: AtemColors.textSecondary)),
+          Semantics(
+            header: true,
+            label: l10n.balanceGapsTitle,
+            child: ExcludeSemantics(
+              child: Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded,
+                      size: 16, color: AtemColors.textSecondary),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(l10n.balanceGapsTitle.toUpperCase(),
+                        style: AtemType.labelMicro.of(context)),
+                  ),
+                ],
               ),
-              const SizedBox(width: 7),
-              Expanded(
-                child: Text(l10n.balanceGapsTitle.toUpperCase(),
-                    style: AtemType.labelMicro.of(context)),
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           _Gaps(gaps: balance.longestGaps),
-          const SizedBox(height: 10),
-          Text(l10n.balanceGapsNote, style: AtemType.meta.of(context)),
+          const SizedBox(height: 14),
+          Text(l10n.balanceGapsNote, style: AtemType.labelSmall.of(context)),
         ],
       ),
     );
@@ -167,14 +298,14 @@ class _Bar extends StatelessWidget {
       label: '${l10n.balanceColShare}: $spoken',
       child: ExcludeSemantics(
         child: SizedBox(
-          height: 12,
+          height: 14,
           child: Row(
             children: [
               for (var i = 0; i < parts.length; i++) ...[
-                if (i > 0) const SizedBox(width: 2),
+                if (i > 0) const SizedBox(width: 3),
                 Expanded(
-                  // Ein Prozent bleibt sichtbar: Der Anteil bestimmt das
-                  // Gewicht, ein Mindestmaß verhindert das Verschwinden.
+                  // Ein Mindestmaß verhindert das Verschwinden kleiner
+                  // Anteile; das Gewicht bleibt der Anteil.
                   flex: (parts[i].sets * 100 ~/ total).clamp(3, 100),
                   child: Container(
                     decoration: BoxDecoration(
@@ -204,6 +335,26 @@ class _Row extends StatelessWidget {
     final percent = (share.sets / total * 100).round();
     final days = share.lastSetDaysAgo;
     final name = share.muscle.label(l10n);
+    final stacked =
+        MediaQuery.textScalerOf(context).scale(1) >= _stackedFromScale;
+
+    final nameText = Text(
+      name,
+      maxLines: stacked ? 2 : 1,
+      overflow: TextOverflow.ellipsis,
+      style: AtemType.titleSmallOrDefault(context)
+          .copyWith(color: share.muscle.color),
+    );
+    final dot = AtemStatusDot(color: share.muscle.color);
+
+    final percentText = _Value(
+      text: '$percent${l10n.commonPercentSign}',
+      strong: true,
+    );
+    final setsText = _Value(text: l10n.balanceSetsShort(share.sets));
+    final lastText = _Value(
+      text: days == null ? l10n.commonNotAvailable : l10n.balanceLastDays(days),
+    );
 
     return Semantics(
       // Eine Zeile ist ein Knoten. Kein Knopf — es gibt kein Muskeldetail.
@@ -212,60 +363,80 @@ class _Row extends StatelessWidget {
           '${days == null ? '' : ', ${l10n.balanceLastDaysLong(days)}'}',
       child: ExcludeSemantics(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: [
-              ExcludeSemantics(
-                child: AtemStatusDot(color: share.muscle.color),
-              ),
-              const SizedBox(width: 9),
-              Expanded(
-                child: Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AtemType.labelSmall
-                      .of(context)
-                      .copyWith(color: share.muscle.color),
+          padding: const EdgeInsets.symmetric(vertical: 11),
+          child: stacked
+              // Ab 160 %: Name oben, Werte als umbrechende Reihe darunter.
+              // Der Punkt bleibt neben dem Namen — die Zuordnung läuft nicht
+              // nur über die Textfarbe.
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        dot,
+                        const SizedBox(width: 10),
+                        Expanded(child: nameText),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18),
+                      child: Wrap(
+                        spacing: 12,
+                        runSpacing: 2,
+                        children: [percentText, setsText, lastText],
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    dot,
+                    const SizedBox(width: 10),
+                    Expanded(child: nameText),
+                    const SizedBox(width: 8),
+                    // Drei Zahlenspalten mit fester Mindestbreite und
+                    // rechtsbündig — sonst tanzen sie von Zeile zu Zeile.
+                    _Column(width: 44, child: percentText),
+                    _Column(width: 44, child: setsText),
+                    _Column(width: 40, child: lastText),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              // Drei Zahlenspalten, jede für sich schmal und nicht umbrechend
-              // — sonst tanzen sie bei jeder Zeile an anderer Stelle.
-              _Cell(text: '$percent${l10n.commonPercentSign}', bold: true),
-              _Cell(text: '${share.sets}'),
-              _Cell(
-                text: days == null
-                    ? l10n.commonNotAvailable
-                    : l10n.balanceLastDays(days),
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
 }
 
-class _Cell extends StatelessWidget {
-  const _Cell({required this.text, this.bold = false});
+class _Column extends StatelessWidget {
+  const _Column({required this.width, required this.child});
 
-  final String text;
-  final bool bold;
+  final double width;
+  final Widget child;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: Text(
-          text,
-          maxLines: 1,
-          style: AtemType.labelMicro.of(context).copyWith(
-                letterSpacing: 0,
-                fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
-                color:
-                    bold ? AtemColors.textPrimary : AtemColors.textSecondary,
-              ),
-        ),
+  Widget build(BuildContext context) => ConstrainedBox(
+        constraints: BoxConstraints(minWidth: width),
+        child: Align(alignment: Alignment.centerRight, child: child),
+      );
+}
+
+class _Value extends StatelessWidget {
+  const _Value({required this.text, this.strong = false});
+
+  final String text;
+  final bool strong;
+
+  @override
+  Widget build(BuildContext context) => Text(
+        text,
+        maxLines: 1,
+        softWrap: false,
+        style: AtemType.labelMicro.of(context).copyWith(
+              letterSpacing: 0,
+              fontWeight: strong ? FontWeight.w700 : FontWeight.w500,
+              color: strong ? AtemColors.textPrimary : AtemColors.textTertiary,
+            ),
       );
 }
 
@@ -279,6 +450,8 @@ class _Gaps extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final longest = gaps.first.lastSetDaysAgo ?? 1;
+    final stacked =
+        MediaQuery.textScalerOf(context).scale(1) >= _stackedFromScale;
 
     return Column(
       children: [
@@ -288,48 +461,11 @@ class _Gaps extends StatelessWidget {
                 '${l10n.balanceLastDaysLong(gap.lastSetDaysAgo ?? 0)}',
             child: ExcludeSemantics(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 74,
-                      child: Text(
-                        gap.muscle.label(l10n),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AtemType.labelMicro.of(context),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(AtemRadii.pill),
-                        child: SizedBox(
-                          height: 6,
-                          // Länge relativ zum längsten Abstand, **nicht** zu
-                          // einem Sollwert — den gibt es nicht.
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: FractionallySizedBox(
-                              widthFactor:
-                                  ((gap.lastSetDaysAgo ?? 0) / longest)
-                                      .clamp(0.05, 1.0),
-                              child: Container(
-                                color: gap.muscle.color,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.balanceLastDaysLong(gap.lastSetDaysAgo ?? 0),
-                      style: AtemType.labelMicro
-                          .of(context)
-                          .copyWith(letterSpacing: 0),
-                    ),
-                  ],
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: _GapRow(
+                  gap: gap,
+                  longest: longest,
+                  stacked: stacked,
                 ),
               ),
             ),
@@ -339,7 +475,89 @@ class _Gaps extends StatelessWidget {
   }
 }
 
-/// Unter der Schwelle: **wie weit es noch ist**, nicht eine Absage.
+class _GapRow extends StatelessWidget {
+  const _GapRow({
+    required this.gap,
+    required this.longest,
+    required this.stacked,
+  });
+
+  final MuscleShare gap;
+  final int longest;
+  final bool stacked;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final days = gap.lastSetDaysAgo ?? 0;
+
+    final name = Text(
+      gap.muscle.label(l10n),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: AtemType.labelUi
+          .of(context)
+          .copyWith(color: gap.muscle.color, fontSize: 14),
+    );
+    final value = Text(
+      l10n.balanceGapDays(days),
+      maxLines: 1,
+      softWrap: false,
+      style: AtemType.labelMicro.of(context).copyWith(
+            letterSpacing: 0,
+            fontWeight: FontWeight.w700,
+            color: AtemColors.textTertiary,
+          ),
+    );
+    // Länge relativ zum längsten Abstand, **nicht** zu einem Sollwert — den
+    // gibt es nicht.
+    final bar = ClipRRect(
+      borderRadius: BorderRadius.circular(AtemRadii.pill),
+      child: SizedBox(
+        height: 6,
+        child: ColoredBox(
+          color: AtemColors.track,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: (days / longest).clamp(0.05, 1.0),
+              heightFactor: 1,
+              child: ColoredBox(color: gap.muscle.color),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (stacked) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(children: [
+            Expanded(child: name),
+            const SizedBox(width: 8),
+            value
+          ]),
+          const SizedBox(height: 6),
+          bar,
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        SizedBox(width: 96, child: name),
+        const SizedBox(width: 8),
+        Expanded(child: bar),
+        const SizedBox(width: 12),
+        value,
+      ],
+    );
+  }
+}
+
+/// Unter der Schwelle: **wie weit es noch ist**, nicht eine Absage
+/// (Board 09, A3/2).
 class _Thin extends StatelessWidget {
   const _Thin({required this.balance});
 
@@ -352,27 +570,64 @@ class _Thin extends StatelessWidget {
     const target = MuscleBalance.minimumSessions;
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.balanceTitle, style: AtemType.labelMedium.of(context)),
-          const SizedBox(height: 6),
-          Text(l10n.balanceThin(done, target),
-              style: AtemType.labelSmall.of(context)),
-          const SizedBox(height: 12),
+          Text(l10n.balanceTitle, style: AtemType.titleMedium.of(context)),
+          const SizedBox(height: 16),
+          Semantics(
+            label: l10n.balanceThin(done, target),
+            child: ExcludeSemantics(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 22,
+                    height: 22,
+                    margin: const EdgeInsets.only(top: 1),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AtemColors.border),
+                    ),
+                    child: Text('i',
+                        style: AtemType.labelMicro
+                            .of(context)
+                            .copyWith(letterSpacing: 0)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(l10n.balanceThin(done, target),
+                        style: AtemType.body
+                            .of(context)
+                            .copyWith(color: AtemColors.textPrimary)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
           AtemProgressBar.share(
             value: (done / target).clamp(0.0, 1.0),
             // Rolle Fortschrittsbalken: Der Wert bewegt sich von allein,
             // niemand kann ihn bedienen.
-            semanticLabel: l10n.balanceThin(done, target),
+            semanticLabel:
+                l10n.balanceThinProgress(done, target, target - done),
             accent: AtemColors.cyan,
           ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.balanceThinProgress(done, target, target - done),
-            style: AtemType.meta.of(context),
+          const SizedBox(height: 10),
+          ExcludeSemantics(
+            child: Text(
+              l10n.balanceThinProgress(done, target, target - done),
+              style: AtemType.meta.of(context),
+            ),
           ),
+          const SizedBox(height: 16),
+          const SizedBox(
+              height: 1, child: ColoredBox(color: AtemColors.border)),
+          const SizedBox(height: 14),
+          Text(l10n.balanceThinNote, style: AtemType.labelSmall.of(context)),
         ],
       ),
     );

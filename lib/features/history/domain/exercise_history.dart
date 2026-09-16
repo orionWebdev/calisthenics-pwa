@@ -85,8 +85,7 @@ class ExerciseHistory {
 
   int get sessionCount => occurrences.length;
 
-  DateTime? get lastDate =>
-      occurrences.isEmpty ? null : occurrences.first.date;
+  DateTime? get lastDate => occurrences.isEmpty ? null : occurrences.first.date;
 
   DateTime? get firstDate => occurrences.isEmpty ? null : occurrences.last.date;
 
@@ -115,8 +114,7 @@ class ExerciseHistory {
     return null;
   }
 
-  int get totalSets =>
-      occurrences.fold(0, (total, o) => total + o.setCount);
+  int get totalSets => occurrences.fold(0, (total, o) => total + o.setCount);
 
   /// Ausführungen je Woche über das Fenster, in dem sie stattfanden.
   ///
@@ -129,6 +127,18 @@ class ExerciseHistory {
     final days = reference.difference(first).inDays;
     if (days < 7) return null;
     return occurrences.length / (days / 7);
+  }
+
+  /// Über wie viele Wochen [frequencyPerWeek] gerechnet ist — der Nenner
+  /// der Häufigkeit („14× in 8 Wochen").
+  ///
+  /// `null` genau dann, wenn es keine Häufigkeit gibt. Gerundet, mindestens
+  /// eine Woche: Die Kachel nennt eine ganze Zahl, die Rechnung bleibt genau.
+  int? weeksSpan(DateTime reference) {
+    if (frequencyPerWeek(reference) == null) return null;
+    final days = reference.difference(firstDate!).inDays;
+    final weeks = (days / 7).round();
+    return weeks < 1 ? 1 : weeks;
   }
 
   /// Wie viele Ausführungen der Verlauf trägt — die Stufe des Blocks.
@@ -204,7 +214,8 @@ class ExerciseHistory {
 
   /// Eine einzelne Übung. Nie `null` — „nie gemacht" ist ein gültiges
   /// Ergebnis und soll kein Sonderfall an jeder Aufrufstelle sein.
-  static ExerciseHistory of(List<TrainingSession> sessions, String exerciseId) =>
+  static ExerciseHistory of(
+          List<TrainingSession> sessions, String exerciseId) =>
       index(sessions)[exerciseId] ??
       ExerciseHistory(exerciseId: exerciseId, occurrences: const []);
 }

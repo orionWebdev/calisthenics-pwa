@@ -6998,5 +6998,197 @@
   "analysisSetsTitle": "Sätze je Muskelgruppe",
   "@analysisSetsTitle": {
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisSetsTitle"
+  },
+  "balanceSetsShort": "{n} S",
+  "@balanceSetsShort": {
+    "description": "Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceSetsShort",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceGapDays": "{n, plural, =1{1 Tag} other{{n} Tage}}",
+  "@balanceGapDays": {
+    "description": "Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceGapDays",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "balanceThinNote": "Ein Anteil aus wenigen Einheiten schwankt um mehr, als er aussagt. Die Kachel zeigt deshalb, wie weit es noch ist, statt eine Verteilung zu zeichnen.",
+  "@balanceThinNote": {
+    "description": "Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceThinNote"
+  },
+  "balanceTileA11y": "{title}, {basis}, {window}",
+  "@balanceTileA11y": {
+    "description": "Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceTileA11y",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "basis": {
+        "type": "String"
+      },
+      "window": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceLoading": "Muskelbalance wird geladen",
+  "@balanceLoading": {
+    "description": "Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceLoading"
+  },
+  "balanceErrorTitle": "Muskelbalance nicht verfügbar",
+  "@balanceErrorTitle": {
+    "description": "Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceErrorTitle"
+  },
+  "balanceErrorBody": "Die Einheiten liessen sich gerade nicht laden.",
+  "@balanceErrorBody": {
+    "description": "Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceErrorBody"
+  },
+  "historyFreqBasis": "{n}× in {weeks, plural, =1{1 Woche} other{{weeks} Wochen}}",
+  "@historyFreqBasis": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyFreqBasis",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "historyVolumeSub": "letzte Einheit",
+  "@historyVolumeSub": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyVolumeSub"
+  },
+  "historyCurveCount": "{n, plural, =1{1 Einheit} other{{n} Einheiten}}",
+  "@historyCurveCount": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyCurveCount",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyCurveRepsLabel": "Wiederholungen je Einheit",
+  "@historyCurveRepsLabel": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyCurveRepsLabel"
+  },
+  "historyRepsValue": "{n} Wdh",
+  "@historyRepsValue": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyRepsValue",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historySetsA11y": "{sets} mal {reps}",
+  "@historySetsA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historySetsA11y",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "historySetsOnlyA11y": "{sets, plural, =1{1 Satz} other{{sets} Sätze}}",
+  "@historySetsOnlyA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historySetsOnlyA11y",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      }
+    }
+  },
+  "historyKgA11y": "{v} Kilogramm",
+  "@historyKgA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyKgA11y",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "historyRepsA11y": "{n, plural, =1{1 Wiederholung} other{{n} Wiederholungen}}",
+  "@historyRepsA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyRepsA11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyFreqA11y": "{n} pro Woche",
+  "@historyFreqA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyFreqA11y",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "historyDateA11y": "am {date}",
+  "@historyDateA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyDateA11y",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "historyTileA11y": "{label}, {value}, {detail}",
+  "@historyTileA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyTileA11y",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "historyCountA11y": "{n, plural, =1{einmal ausgeführt} other{{n} mal ausgeführt}}",
+  "@historyCountA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyCountA11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "historyCurveBestA11y": "Bestwert {best}",
+  "@historyCurveBestA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyCurveBestA11y",
+    "placeholders": {
+      "best": {
+        "type": "String"
+      }
+    }
+  },
+  "historyCurveRepsA11y": "Wiederholungen je Einheit über {n} Einheiten, von {from} auf {to}",
+  "@historyCurveRepsA11y": {
+    "description": "Board 09 A4 (16.09.2026 nachgezogen) — historyCurveRepsA11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
   }
 }

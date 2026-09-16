@@ -104,7 +104,11 @@ class MuscleOrb extends StatelessWidget {
       );
 }
 
-/// Ein Muskelchip: getönte Fläche, voller Text.
+/// Ein Muskelchip: Punkt und Name in der Muskelfarbe, getönte Fläche, Rand
+/// in der Muskelfarbe (Board 09, A4).
+///
+/// Der Punkt ist nicht Zierde: Die Muskelfarbe ist zugleich Textfarbe, und
+/// Farbe darf nie einziger Träger sein — Punkt und Wort tragen gemeinsam.
 class MuscleChip extends StatelessWidget {
   const MuscleChip({super.key, required this.muscle});
 
@@ -116,15 +120,28 @@ class MuscleChip extends StatelessWidget {
     final color = muscle.color;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
         color: AtemCategories.surface(color),
         borderRadius: BorderRadius.circular(AtemRadii.pill),
-        border: Border.all(color: AtemCategories.border(color)),
+        border: Border.all(color: color.withValues(alpha: 0.55)),
       ),
-      child: Text(
-        muscle.label(l10n),
-        style: AtemType.labelUi.of(context).copyWith(color: color),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 7),
+          Flexible(
+            child: Text(
+              muscle.label(l10n),
+              style: AtemType.labelUi.of(context).copyWith(color: color),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -292,8 +309,8 @@ class ExerciseRow extends StatelessWidget {
                             const TextSpan(text: ' · '),
                           TextSpan(
                             text: l10n.exercisesOwnTag,
-                            style: const TextStyle(
-                                color: AtemColors.textTertiary),
+                            style:
+                                const TextStyle(color: AtemColors.textTertiary),
                           ),
                         ],
                       ]),

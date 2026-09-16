@@ -4825,4 +4825,140 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get analysisSetsTitle => 'Sätze je Muskelgruppe';
+
+  @override
+  String balanceSetsShort(int n) {
+    return '$n S';
+  }
+
+  @override
+  String balanceGapDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Tage',
+      one: '1 Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get balanceThinNote =>
+      'Ein Anteil aus wenigen Einheiten schwankt um mehr, als er aussagt. Die Kachel zeigt deshalb, wie weit es noch ist, statt eine Verteilung zu zeichnen.';
+
+  @override
+  String balanceTileA11y(String title, String basis, String window) {
+    return '$title, $basis, $window';
+  }
+
+  @override
+  String get balanceLoading => 'Muskelbalance wird geladen';
+
+  @override
+  String get balanceErrorTitle => 'Muskelbalance nicht verfügbar';
+
+  @override
+  String get balanceErrorBody =>
+      'Die Einheiten liessen sich gerade nicht laden.';
+
+  @override
+  String historyFreqBasis(int n, int weeks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      weeks,
+      locale: localeName,
+      other: '$weeks Wochen',
+      one: '1 Woche',
+    );
+    return '$n× in $_temp0';
+  }
+
+  @override
+  String get historyVolumeSub => 'letzte Einheit';
+
+  @override
+  String historyCurveCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten',
+      one: '1 Einheit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get historyCurveRepsLabel => 'Wiederholungen je Einheit';
+
+  @override
+  String historyRepsValue(int n) {
+    return '$n Wdh';
+  }
+
+  @override
+  String historySetsA11y(int sets, int reps) {
+    return '$sets mal $reps';
+  }
+
+  @override
+  String historySetsOnlyA11y(int sets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      sets,
+      locale: localeName,
+      other: '$sets Sätze',
+      one: '1 Satz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String historyKgA11y(String v) {
+    return '$v Kilogramm';
+  }
+
+  @override
+  String historyRepsA11y(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Wiederholungen',
+      one: '1 Wiederholung',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String historyFreqA11y(String n) {
+    return '$n pro Woche';
+  }
+
+  @override
+  String historyDateA11y(String date) {
+    return 'am $date';
+  }
+
+  @override
+  String historyTileA11y(String label, String value, String detail) {
+    return '$label, $value, $detail';
+  }
+
+  @override
+  String historyCountA11y(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n mal ausgeführt',
+      one: 'einmal ausgeführt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String historyCurveBestA11y(String best) {
+    return 'Bestwert $best';
+  }
+
+  @override
+  String historyCurveRepsA11y(int n, String from, String to) {
+    return 'Wiederholungen je Einheit über $n Einheiten, von $from auf $to';
+  }
 }

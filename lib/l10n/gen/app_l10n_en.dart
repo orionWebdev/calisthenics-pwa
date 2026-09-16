@@ -4812,4 +4812,139 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get analysisSetsTitle => 'Sets per muscle group';
+
+  @override
+  String balanceSetsShort(int n) {
+    return '$n s';
+  }
+
+  @override
+  String balanceGapDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get balanceThinNote =>
+      'A share from only a few workouts swings more than it says. The tile therefore shows how far there is to go instead of drawing a distribution.';
+
+  @override
+  String balanceTileA11y(String title, String basis, String window) {
+    return '$title, $basis, $window';
+  }
+
+  @override
+  String get balanceLoading => 'Loading muscle balance';
+
+  @override
+  String get balanceErrorTitle => 'Muscle balance unavailable';
+
+  @override
+  String get balanceErrorBody => 'The workouts could not be loaded right now.';
+
+  @override
+  String historyFreqBasis(int n, int weeks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      weeks,
+      locale: localeName,
+      other: '$weeks weeks',
+      one: '1 week',
+    );
+    return '$n× in $_temp0';
+  }
+
+  @override
+  String get historyVolumeSub => 'last session';
+
+  @override
+  String historyCurveCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n sessions',
+      one: '1 session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get historyCurveRepsLabel => 'Reps per session';
+
+  @override
+  String historyRepsValue(int n) {
+    return '$n reps';
+  }
+
+  @override
+  String historySetsA11y(int sets, int reps) {
+    return '$sets times $reps';
+  }
+
+  @override
+  String historySetsOnlyA11y(int sets) {
+    String _temp0 = intl.Intl.pluralLogic(
+      sets,
+      locale: localeName,
+      other: '$sets sets',
+      one: '1 set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String historyKgA11y(String v) {
+    return '$v kilograms';
+  }
+
+  @override
+  String historyRepsA11y(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n reps',
+      one: '1 rep',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String historyFreqA11y(String n) {
+    return '$n per week';
+  }
+
+  @override
+  String historyDateA11y(String date) {
+    return 'on $date';
+  }
+
+  @override
+  String historyTileA11y(String label, String value, String detail) {
+    return '$label, $value, $detail';
+  }
+
+  @override
+  String historyCountA11y(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'performed $n times',
+      one: 'performed once',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String historyCurveBestA11y(String best) {
+    return 'best $best';
+  }
+
+  @override
+  String historyCurveRepsA11y(int n, String from, String to) {
+    return 'Reps per session across $n sessions, from $from to $to';
+  }
 }

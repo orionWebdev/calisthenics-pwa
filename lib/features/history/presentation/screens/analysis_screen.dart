@@ -114,13 +114,9 @@ class AnalysisScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(
                   AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
               children: [
-                // Die Karte trägt ihren Titel selbst („Muskelbalance");
-                // ein zweiter Kopf davor wäre eine Doppelung.
-                MuscleBalanceCard(balance: balance),
-                if (balance.longestGaps.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  MuscleGapsCard(balance: balance),
-                ],
+                // Dieselbe Kachel wie im Kraft-Tab: Die Details stehen an
+                // genau einer Stelle, der Unterseite.
+                MuscleBalanceTile(balance: balance),
                 const SizedBox(height: 28),
                 EstimatedMaxCard(
                   series: series,

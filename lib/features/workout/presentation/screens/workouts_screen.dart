@@ -7,8 +7,6 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../dashboard/application/dashboard_providers.dart';
 import '../../../dashboard/domain/dashboard_data.dart';
 import '../../../exercises/application/exercise_providers.dart';
-import '../../../history/application/history_providers.dart';
-import '../../../history/domain/muscle_balance.dart';
 import '../../../history/presentation/widgets/muscle_balance_card.dart';
 import '../../../plans/application/pending_plan_deletion.dart';
 import '../../../plans/application/plan_providers.dart';
@@ -188,25 +186,10 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
         // beantwortet weder „was mache ich jetzt" noch „was gibt es
         // sonst", sondern „was habe ich vernachlässigt" — und das ist
         // die Frage, die zwischen beiden liegt.
-        Builder(
-          builder: (context) {
-            final balance = MuscleBalance.compute(
-              ref.watch(sessionsProvider).value ?? const [],
-              ref.watch(exercisesProvider).value ?? const [],
-              ref.watch(historyReferenceProvider),
-            );
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                MuscleBalanceCard(balance: balance),
-                if (balance.longestGaps.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  MuscleGapsCard(balance: balance),
-                ],
-              ],
-            );
-          },
-        ),
+        //
+        // Hier steht nur die Kachel (Board 11, A1); Tabelle und längste
+        // Abstände liegen auf der Unterseite, die sie öffnet.
+        const MuscleBalanceEntry(),
         const SizedBox(height: 28),
         _SectionHeader(
           // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"

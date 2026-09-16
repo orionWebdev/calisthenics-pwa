@@ -7878,6 +7878,138 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Sätze je Muskelgruppe'**
   String get analysisSetsTitle;
+
+  /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceSetsShort
+  ///
+  /// In de, this message translates to:
+  /// **'{n} S'**
+  String balanceSetsShort(int n);
+
+  /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceGapDays
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Tag} other{{n} Tage}}'**
+  String balanceGapDays(int n);
+
+  /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceThinNote
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Anteil aus wenigen Einheiten schwankt um mehr, als er aussagt. Die Kachel zeigt deshalb, wie weit es noch ist, statt eine Verteilung zu zeichnen.'**
+  String get balanceThinNote;
+
+  /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceTileA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{title}, {basis}, {window}'**
+  String balanceTileA11y(String title, String basis, String window);
+
+  /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceLoading
+  ///
+  /// In de, this message translates to:
+  /// **'Muskelbalance wird geladen'**
+  String get balanceLoading;
+
+  /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceErrorTitle
+  ///
+  /// In de, this message translates to:
+  /// **'Muskelbalance nicht verfügbar'**
+  String get balanceErrorTitle;
+
+  /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceErrorBody
+  ///
+  /// In de, this message translates to:
+  /// **'Die Einheiten liessen sich gerade nicht laden.'**
+  String get balanceErrorBody;
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyFreqBasis
+  ///
+  /// In de, this message translates to:
+  /// **'{n}× in {weeks, plural, =1{1 Woche} other{{weeks} Wochen}}'**
+  String historyFreqBasis(int n, int weeks);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyVolumeSub
+  ///
+  /// In de, this message translates to:
+  /// **'letzte Einheit'**
+  String get historyVolumeSub;
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyCurveCount
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}}'**
+  String historyCurveCount(int n);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyCurveRepsLabel
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederholungen je Einheit'**
+  String get historyCurveRepsLabel;
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyRepsValue
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Wdh'**
+  String historyRepsValue(int n);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historySetsA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{sets} mal {reps}'**
+  String historySetsA11y(int sets, int reps);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historySetsOnlyA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{sets, plural, =1{1 Satz} other{{sets} Sätze}}'**
+  String historySetsOnlyA11y(int sets);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyKgA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{v} Kilogramm'**
+  String historyKgA11y(String v);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyRepsA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Wiederholung} other{{n} Wiederholungen}}'**
+  String historyRepsA11y(int n);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyFreqA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{n} pro Woche'**
+  String historyFreqA11y(String n);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyDateA11y
+  ///
+  /// In de, this message translates to:
+  /// **'am {date}'**
+  String historyDateA11y(String date);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyTileA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{label}, {value}, {detail}'**
+  String historyTileA11y(String label, String value, String detail);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyCountA11y
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{einmal ausgeführt} other{{n} mal ausgeführt}}'**
+  String historyCountA11y(int n);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyCurveBestA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Bestwert {best}'**
+  String historyCurveBestA11y(String best);
+
+  /// Board 09 A4 (16.09.2026 nachgezogen) — historyCurveRepsA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederholungen je Einheit über {n} Einheiten, von {from} auf {to}'**
+  String historyCurveRepsA11y(int n, String from, String to);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

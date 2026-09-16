@@ -60,86 +60,50 @@ class ExerciseDetailScreen extends ConsumerWidget {
       ref.watch(sessionsProvider).value ?? const [],
       exercise.id,
     );
-    final color =
-        exercise.displayMuscles.firstOrNull?.color ?? AtemCategories.grey;
 
     return Scaffold(
       backgroundColor: AtemColors.base,
-      appBar: AppBar(backgroundColor: AtemColors.base),
+      // **Kein AppBar** (Board 09, A4): Der Kopf gehört zum Inhalt — runder
+      // Zurück-Knopf, daneben Name und „Gerät · Schwierigkeit". Systemzurück
+      // bleibt unberührt, weil der Knopf nur `maybePop` auf dem Stapel ruft,
+      // in dem das Detail liegt (Tab-Navigator seit Modul 11).
       body: SafeArea(
-        top: false,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
-              AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
+              AtemSpacing.screenPadding, 12, AtemSpacing.screenPadding, 40),
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            _Header(exercise: exercise),
+            const SizedBox(height: 16),
+            // Muskeln als Pillen; dahinter die Herkunft als Wort (Board 07,
+            // A3): EIGEN oder KURATIERT entscheidet, ob es einen
+            // Bearbeiten-Weg gibt — sie bleibt im Kopfbereich.
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                MuscleOrb(color: color, size: 56),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(exerciseName(context, exercise),
-                          style: AtemType.titleLarge.of(context)),
-                      const SizedBox(height: 8),
-                      // Herkunft als Wort im Kopf (Board 07, A3): EIGEN
-                      // oder KURATIERT — sie entscheidet, ob es einen
-                      // Bearbeiten-Weg gibt.
-                      AtemBadge(
-                        label: exercise.isOwn
-                            ? l10n.exercisesOwnTag
-                            : l10n.exerciseCuratedBadge,
-                        accent: AtemCategories.grey,
-                        leadingIcon: exercise.isOwn
-                            ? null
-                            : const Icon(Icons.lock_outline,
-                                size: 12, color: AtemColors.textSecondary),
-                      ),
-                    ],
-                  ),
+                if (exercise.displayMuscles.isNotEmpty)
+                  MuscleChipRow(
+                      muscles: exercise.displayMuscles, maxVisible: 6),
+                AtemBadge(
+                  label: exercise.isOwn
+                      ? l10n.exercisesOwnTag
+                      : l10n.exerciseCuratedBadge,
+                  accent: AtemCategories.grey,
+                  leadingIcon: exercise.isOwn
+                      ? null
+                      : const Icon(Icons.lock_outline,
+                          size: 12, color: AtemColors.textSecondary),
                 ),
               ],
             ),
-            const SizedBox(height: 18),
-            MuscleChipRow(muscles: exercise.displayMuscles, maxVisible: 6),
-            if (exercise.difficulty case final level?) ...[
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  DifficultyMeter(level: level),
-                  const SizedBox(width: 10),
-                  // Das Wort neben den Balken: Dieselbe Stufe, die im Formular
-                  // gewählt wird, damit „Fortgeschritten" hier und dort
-                  // dasselbe meint.
-                  Flexible(
-                    child: ExcludeSemantics(
-                      child: Text(
-                        difficultyLabel(l10n, level),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AtemType.meta.of(context),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            if (exercise.equipment.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              // Gerät bleibt grauer Text, kein Chip: Vier eingefärbte
-              // Kategorien nebeneinander wären ein Flickenteppich.
-              Text(exercise.equipment.join(' · '),
-                  style: AtemType.meta.of(context)),
-            ],
 
             // **Dein Verlauf steht vor der Anleitung.** Wer eine Übung
             // öffnet, die er kennt, will wissen, wo er steht; wer eine
             // öffnet, die er nicht kennt, hat ohnehin keinen Verlauf — dann
             // fehlt der Block und die Anleitung rückt nach oben.
             if (!history.isEmpty) ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               ExerciseHistoryBlock(
                 history: history,
                 reference: ref.watch(historyReferenceProvider),
@@ -236,8 +200,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
           icon: plan.icon,
           type: plan.type,
         );
-    await repository.savePlan(
-        draft([...plan.items, PlanItem(exerciseId: exercise.id)]));
+    await repository
+        .savePlan(draft([...plan.items, PlanItem(exerciseId: exercise.id)]));
     if (!context.mounted) return;
 
     final message = l10n.exerciseAddedToPlan(plan.name);
@@ -426,10 +390,6 @@ class _Block extends StatelessWidget {
   }
 }
 
-extension _FirstOrNull<T> on List<T> {
-  T? get firstOrNull => isEmpty ? null : first;
-}
-
 /// Eine Zeile der Folgenaufzählung im ersten Löschdialog.
 ///
 /// Der Punkt trägt die Richtung — lime für „bleibt erhalten", neutral für
@@ -461,4 +421,70 @@ class _DeleteFact extends StatelessWidget {
           ],
         ),
       );
+}
+
+/// Der Kopf des Übungsdetails (Board 09, A4): runder Zurück-Knopf, Name,
+/// darunter „Langhantel · Mittel".
+///
+/// Gerät und Schwierigkeit stehen als **eine** Metazeile, nicht als Balken
+/// und Extrazeile: Beides beschreibt die Übung, keins davon wird verglichen.
+/// Fehlt eins, steht das andere allein; fehlen beide, fehlt die Zeile.
+class _Header extends StatelessWidget {
+  const _Header({required this.exercise});
+
+  final Exercise exercise;
+
+  /// Sichtbare Grösse des Knopfs — die Trefferfläche bleibt 48 dp.
+  static const _backSize = 40.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final meta = [
+      ...exercise.equipment,
+      if (exercise.difficulty case final level?) difficultyLabel(l10n, level),
+    ].join(' · ');
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AtemTappable(
+          onTap: () => Navigator.of(context).maybePop(),
+          semanticLabel: l10n.commonBack,
+          child: Container(
+            width: _backSize,
+            height: _backSize,
+            decoration: BoxDecoration(
+              color: AtemColors.card,
+              shape: BoxShape.circle,
+              border: Border.all(color: AtemColors.border),
+            ),
+            child: const Icon(Icons.chevron_left,
+                size: 22, color: AtemColors.textTertiary),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Padding(
+            // Der Name steht auf Höhe der Knopfmitte, nicht an seiner Kante.
+            padding: const EdgeInsets.only(top: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(exerciseName(context, exercise),
+                      style: AtemType.titleLarge.of(context)),
+                ),
+                if (meta.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(meta, style: AtemType.meta.of(context)),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

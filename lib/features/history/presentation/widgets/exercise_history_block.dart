@@ -8,12 +8,13 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../domain/exercise_history.dart';
 
-/// Dein Verlauf mit einer Übung — **vier Stufen, je nach Datenlage**.
+/// Dein Verlauf mit einer Übung — **vier Stufen, je nach Datenlage**
+/// (Board 09, A4).
 ///
 /// | Ausführungen | Was erscheint |
 /// |---|---|
 /// | 0 | nichts — der Bildschirm hört früher auf |
-/// | 1 | nur „Damals", mit dem Satz warum |
+/// | 1 | „1× ausgeführt · Datum", eine Kachel „Damals", der Satz warum |
 /// | 2–4 | die Kacheln, keine Kurve |
 /// | ab 5 | mit Kurve |
 ///
@@ -41,84 +42,37 @@ class ExerciseHistoryBlock extends StatelessWidget {
   final DateTime reference;
   final String languageTag;
 
+  /// Ab dieser skalierten Wertgrösse stehen die Kacheln untereinander.
+  ///
+  /// Bei 14 sp Mono passt „2.640 kg" in eine halbe Karte auf 320 dp. Ab etwa
+  /// 150 % nicht mehr — dann wird das Raster einspaltig, statt Werte zu
+  /// kürzen (Board 09, A4: Werte nowrap).
+  static const _twoColumnMaxValueSize = 21.0;
+
+  /// Unter dieser Breite je Kachel wird das Raster ebenfalls einspaltig.
+  static const _twoColumnMinTileWidth = 128.0;
+
   @override
   Widget build(BuildContext context) {
     if (history.isEmpty) return const SizedBox.shrink();
 
     final l10n = AppL10n.of(context);
-    final date = DateFormat.yMMMd(languageTag);
-    final last = history.occurrences.first;
+    final once = history.sessionCount == 1;
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(l10n.exerciseHistoryTitle,
-                    style: AtemType.labelMedium.of(context)),
-              ),
-              const SizedBox(width: 10),
-              Text(l10n.historyCount(history.sessionCount),
-                  style: AtemType.labelMicro.of(context)),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // Eine einzige Ausführung: „Damals", und der Satz, warum nicht mehr.
-          if (history.sessionCount == 1) ...[
-            _Tile(
-              label: l10n.historyOnceLabel,
-              value: _setsLabel(l10n, last),
-              sub: l10n.historyOnce(date.format(last.date)),
-            ),
-            const SizedBox(height: 10),
-            Text(l10n.historyOnceNote,
-                style: AtemType.meta.of(context)),
-          ] else ...[
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                _Tile(
-                  label: l10n.historyLast,
-                  value: _setsLabel(l10n, last),
-                  sub: date.format(last.date),
-                ),
-                if (history.recordOccurrence case final best?)
-                  _Tile(
-                    label: l10n.historyBest,
-                    // **Bestes Satzgewicht, wie im Runner.** Bei
-                    // Körpergewichtsübungen ohne Zusatzlast tritt die
-                    // Wiederholungszahl an seine Stelle — was gemessen wird,
-                    // steht im Untertitel.
-                    value: history.measuresWeight
-                        ? l10n.unitKilograms(
-                            _trim(history.recordWeightKg!))
-                        : '${best.totalReps ?? 0}',
-                    sub: '${_setsLabel(l10n, best)} · '
-                        '${date.format(best.date)}',
-                    highlight: true,
-                  ),
-                if (history.frequencyPerWeek(reference) case final f?)
-                  _Tile(
-                    label: l10n.historyFreq,
-                    // Eine Nachkommastelle: „1,8 / Wo" sagt etwas, „2 / Wo" rundet die
-                    // Aussage weg.
-                    value: l10n.historyFreqValue(
-                        NumberFormat('0.#', languageTag).format(f)),
-                    sub: l10n.historyCount(history.sessionCount),
-                  ),
-                _Tile(
-                  label: l10n.historyVolume,
-                  value: l10n.unitKilograms(last.volume.round().toString()),
-                  sub: l10n.historyLast,
-                ),
-              ],
-            ),
-            if (history.hasCurve) ...[
+          _Head(history: history, once: once),
+          const SizedBox(height: 14),
+          if (once)
+            ..._once(context, l10n)
+          else ...[
+            _Grid(tiles: _tiles(context, l10n)),
+            if (history.hasCurve && history.curve.length >= 2) ...[
+              const SizedBox(height: 16),
+              const _Rule(),
               const SizedBox(height: 14),
               _Curve(history: history, languageTag: languageTag),
             ],
@@ -128,40 +82,318 @@ class ExerciseHistoryBlock extends StatelessWidget {
     );
   }
 
-  static String _setsLabel(AppL10n l10n, ExerciseOccurrence occurrence) {
+  /// Stufe 1 — eine Ausführung (A4/2).
+  List<Widget> _once(BuildContext context, AppL10n l10n) {
+    final last = history.occurrences.first;
+    final shortDate = DateFormat.MMMd(languageTag).format(last.date);
+    final longDate = DateFormat.MMMMd(languageTag).format(last.date);
+
+    return [
+      Semantics(
+        label: '${l10n.historyCountA11y(1)}, '
+            '${l10n.historyDateA11y(longDate)}',
+        child: ExcludeSemantics(
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 10,
+            runSpacing: 2,
+            children: [
+              Text(l10n.historyCount(1),
+                  style: AtemType.valueLarge.of(context)),
+              Text(l10n.historyOnce(shortDate),
+                  style: AtemType.meta.of(context)),
+            ],
+          ),
+        ),
+      ),
+      const SizedBox(height: 14),
+      _Tile(
+        label: l10n.historyOnceLabel,
+        value: _setsWithWeight(context, l10n, last),
+        semanticLabel: l10n.historyTileA11y(
+          l10n.historyOnceLabel,
+          _setsA11y(l10n, last),
+          _weightA11y(context, l10n, last) ?? l10n.historyDateA11y(longDate),
+        ),
+      ),
+      const SizedBox(height: 16),
+      const _Rule(),
+      const SizedBox(height: 14),
+      Text(l10n.historyOnceNote, style: AtemType.labelSmall.of(context)),
+    ];
+  }
+
+  /// Stufe 2 bis 4 und ab 5 — die Kacheln (A4/1).
+  List<Widget> _tiles(BuildContext context, AppL10n l10n) {
+    final short = DateFormat.MMMd(languageTag);
+    final long = DateFormat.MMMMd(languageTag);
+    final last = history.occurrences.first;
+    final tiles = <Widget>[];
+
+    // ---- Zuletzt: „4 × 8" · „82,5 kg · 24. Aug."
+    final lastWeight = last.bestWeightKg;
+    tiles.add(_Tile(
+      label: l10n.historyLast,
+      value: _sets(last),
+      sub: [
+        if (lastWeight != null)
+          l10n.unitKilograms(AtemNumberField.format(context, lastWeight)),
+        short.format(last.date),
+      ].join(' · '),
+      semanticLabel: l10n.historyTileA11y(
+        l10n.historyLast,
+        _setsA11y(l10n, last),
+        [
+          if (_weightA11y(context, l10n, last) case final w?) w,
+          l10n.historyDateA11y(long.format(last.date)),
+        ].join(', '),
+      ),
+    ));
+
+    // ---- Bestwert: „82,5 kg" · „4 × 8 · 24. Aug."
+    //
+    // **Bestes Satzgewicht, wie im Runner.** Bei Körpergewichtsübungen ohne
+    // Zusatzlast gibt es keinen Bestwert in Kilogramm — dann trägt die
+    // Kachel die meisten Wiederholungen einer Einheit und sagt das im Wert.
+    final best = history.recordOccurrence ?? _mostReps();
+    if (best != null) {
+      final record = history.recordWeightKg;
+      final value = record != null
+          ? l10n.unitKilograms(AtemNumberField.format(context, record))
+          : l10n.historyRepsValue(best.totalReps ?? 0);
+      final valueA11y = record != null
+          ? l10n.historyKgA11y(AtemNumberField.format(context, record))
+          : l10n.historyRepsA11y(best.totalReps ?? 0);
+      tiles.add(_Tile(
+        label: l10n.historyBest,
+        value: value,
+        sub: '${_sets(best)} · ${short.format(best.date)}',
+        highlight: true,
+        semanticLabel: l10n.historyTileA11y(
+          l10n.historyBest,
+          valueA11y,
+          '${_setsA11y(l10n, best)}, '
+          '${l10n.historyDateA11y(long.format(best.date))}',
+        ),
+      ));
+    }
+
+    // ---- Häufigkeit: „1,8 / Wo" · „14× in 8 Wochen"
+    final frequency = history.frequencyPerWeek(reference);
+    final weeks = history.weeksSpan(reference);
+    if (frequency != null && weeks != null) {
+      // Eine Nachkommastelle: „1,8 / Wo" sagt etwas, „2 / Wo" rundet die
+      // Aussage weg.
+      final f = NumberFormat('0.#', languageTag).format(frequency);
+      tiles.add(_Tile(
+        label: l10n.historyFreq,
+        value: l10n.historyFreqValue(f),
+        sub: l10n.historyFreqBasis(history.sessionCount, weeks),
+        semanticLabel: l10n.historyTileA11y(
+          l10n.historyFreq,
+          l10n.historyFreqA11y(f),
+          l10n.historyFreqBasis(history.sessionCount, weeks),
+        ),
+      ));
+    }
+
+    // ---- Volumen: „2.640 kg" · „letzte Einheit"
+    //
+    // Nur mit Gewicht. Wiederholungen ohne Gewicht sind kein Volumen von
+    // null, sondern gar keins — „0 kg" wäre eine falsche Aussage.
+    if (last.volume > 0) {
+      final volume =
+          NumberFormat.decimalPattern(languageTag).format(last.volume.round());
+      tiles.add(_Tile(
+        label: l10n.historyVolume,
+        value: l10n.unitKilograms(volume),
+        sub: l10n.historyVolumeSub,
+        semanticLabel: l10n.historyTileA11y(
+          l10n.historyVolume,
+          l10n.historyKgA11y(volume),
+          l10n.historyVolumeSub,
+        ),
+      ));
+    }
+
+    return tiles;
+  }
+
+  /// Die Ausführung mit den meisten Wiederholungen — Bestwert ohne Gewicht.
+  ExerciseOccurrence? _mostReps() {
+    ExerciseOccurrence? best;
+    for (final occurrence in history.occurrences.reversed) {
+      final reps = occurrence.totalReps;
+      if (reps == null) continue;
+      if (best == null || reps > (best.totalReps ?? 0)) best = occurrence;
+    }
+    return best;
+  }
+
+  /// „4 × 8" — Sätze mal Wiederholungen des ersten Satzes; ohne
+  /// Wiederholungen (Halteübung) nur die Satzzahl.
+  static String _sets(ExerciseOccurrence occurrence) {
     final reps = occurrence.sets.first.reps;
     return reps == null
         ? '${occurrence.setCount}'
         : '${occurrence.setCount} × $reps';
   }
 
-  static String _trim(double value) =>
-      value == value.roundToDouble() ? value.round().toString() : '$value';
+  static String _setsA11y(AppL10n l10n, ExerciseOccurrence occurrence) {
+    final reps = occurrence.sets.first.reps;
+    return reps == null
+        ? l10n.historySetsOnlyA11y(occurrence.setCount)
+        : l10n.historySetsA11y(occurrence.setCount, reps);
+  }
+
+  /// „3 × 5 · 60 kg" — das Gewicht nur, wenn eins erfasst ist.
+  static String _setsWithWeight(
+    BuildContext context,
+    AppL10n l10n,
+    ExerciseOccurrence occurrence,
+  ) {
+    final weight = occurrence.bestWeightKg;
+    return weight == null
+        ? _sets(occurrence)
+        : '${_sets(occurrence)} · '
+            '${l10n.unitKilograms(AtemNumberField.format(context, weight))}';
+  }
+
+  static String? _weightA11y(
+    BuildContext context,
+    AppL10n l10n,
+    ExerciseOccurrence occurrence,
+  ) {
+    final weight = occurrence.bestWeightKg;
+    return weight == null
+        ? null
+        : l10n.historyKgA11y(AtemNumberField.format(context, weight));
+  }
 }
 
-/// Eine Kachel. Die Bestwert-Variante trägt einen magentafarbenen Rand —
-/// **Verstärkung, nicht Träger**: Das Wort „Bestwert" steht als Label da.
+/// Titel links, „14×" rechts. Bei einer Ausführung steht die Zahl in der
+/// Zeile darunter, gross — oben würde sie sich wiederholen.
+class _Head extends StatelessWidget {
+  const _Head({required this.history, required this.once});
+
+  final ExerciseHistory history;
+  final bool once;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Semantics(
+            header: true,
+            child: Text(l10n.exerciseHistoryTitle,
+                style: AtemType.titleMedium.of(context)),
+          ),
+        ),
+        if (!once) ...[
+          const SizedBox(width: 10),
+          Semantics(
+            label: l10n.historyCountA11y(history.sessionCount),
+            child: ExcludeSemantics(
+              child: Text(
+                l10n.historyCount(history.sessionCount),
+                style:
+                    AtemType.labelMicro.of(context).copyWith(letterSpacing: 0),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Zwei gleich breite Spalten, bei grosser Schrift oder schmaler Karte eine.
+class _Grid extends StatelessWidget {
+  const _Grid({required this.tiles});
+
+  final List<Widget> tiles;
+
+  static const _gap = 10.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final valueSize = MediaQuery.textScalerOf(context).scale(16);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final half = (constraints.maxWidth - _gap) / 2;
+        final twoColumns =
+            valueSize <= ExerciseHistoryBlock._twoColumnMaxValueSize &&
+                half >= ExerciseHistoryBlock._twoColumnMinTileWidth;
+
+        if (!twoColumns) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < tiles.length; i++) ...[
+                if (i > 0) const SizedBox(height: _gap),
+                tiles[i],
+              ],
+            ],
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < tiles.length; i += 2) ...[
+              if (i > 0) const SizedBox(height: _gap),
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: tiles[i]),
+                    const SizedBox(width: _gap),
+                    Expanded(
+                      child: i + 1 < tiles.length
+                          ? tiles[i + 1]
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Eine Kachel. Die Bestwert-Variante trägt einen magentafarbenen Rand und
+/// einen magentafarbenen Kopf — **Verstärkung, nicht Träger**: Das Wort
+/// „Bestwert" steht als Label da.
 class _Tile extends StatelessWidget {
   const _Tile({
     required this.label,
     required this.value,
-    required this.sub,
+    required this.semanticLabel,
+    this.sub,
     this.highlight = false,
   });
 
   final String label;
   final String value;
-  final String sub;
+  final String? sub;
+  final String semanticLabel;
   final bool highlight;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: '$label $value, $sub',
+      label: semanticLabel,
+      container: true,
       child: ExcludeSemantics(
         child: Container(
-          constraints: const BoxConstraints(minWidth: 132),
-          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
           decoration: BoxDecoration(
             color: AtemColors.surfaceSolid,
             borderRadius: AtemRadii.statBoxR,
@@ -176,17 +408,22 @@ class _Tile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                label,
+                label.toUpperCase(),
                 style: AtemType.labelMicro.of(context).copyWith(
                       color: highlight
                           ? AtemColors.magenta
                           : AtemColors.textSecondary,
                     ),
               ),
-              const SizedBox(height: 3),
-              Text(value, style: AtemType.valueMedium.of(context)),
-              const SizedBox(height: 2),
-              Text(sub, style: AtemType.meta.of(context)),
+              const SizedBox(height: 6),
+              Text(value,
+                  softWrap: false,
+                  overflow: TextOverflow.visible,
+                  style: AtemType.valueMedium.of(context)),
+              if (sub != null) ...[
+                const SizedBox(height: 4),
+                Text(sub!, style: AtemType.meta.of(context)),
+              ],
             ],
           ),
         ),
@@ -195,11 +432,23 @@ class _Tile extends StatelessWidget {
   }
 }
 
+class _Rule extends StatelessWidget {
+  const _Rule();
+
+  @override
+  Widget build(BuildContext context) =>
+      const SizedBox(height: 1, child: ColoredBox(color: AtemColors.border));
+}
+
 /// Die Verlaufskurve — **ein Bild, kein bedienbares Diagramm**.
 ///
 /// Kein Antippen einzelner Punkte: Der Bestwert steht ohnehin als Kachel
 /// darüber und muss nicht aus der Kurve gelesen werden. Das Label nennt
-/// Anzahl, Anfangs- und Endwert.
+/// Anzahl, Anfangs-, End- und Bestwert.
+///
+/// Nur Einheiten mit dieser Übung sind Punkte, gleichmässig verteilt —
+/// keine Interpolation über Wochen ohne Ausführung, sonst entstünde eine
+/// Kurve, die Tage behauptet, an denen nichts war.
 class _Curve extends StatelessWidget {
   const _Curve({required this.history, required this.languageTag});
 
@@ -210,67 +459,116 @@ class _Curve extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final points = history.curve;
-    if (points.length < 2) return const SizedBox.shrink();
+    final weight = history.measuresWeight;
 
-    final date = DateFormat.MMMd(languageTag);
-    final best = history.recordWeightKg;
+    final short = DateFormat.MMMd(languageTag);
+    var best = points.first.value;
+    for (final p in points) {
+      best = math.max(best, p.value);
+    }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          history.measuresWeight
-              ? l10n.historyCurveLabel
-              : l10n.historyVolume,
-          style: AtemType.labelMicro.of(context),
-        ),
-        const SizedBox(height: 6),
-        Semantics(
-          image: true,
-          label: l10n.historyCurveA11y(
-            points.length,
-            points.first.value.round().toString(),
-            points.last.value.round().toString(),
-          ),
-          child: ExcludeSemantics(
-            child: SizedBox(
-              height: 62,
-              child: CustomPaint(
-                painter: _CurvePainter(points: points, best: best),
-                size: Size.infinite,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 5),
-        // Erst die beiden Datumsangaben an den Enden — sie gehören zur Achse.
-        // Die Legende steht darunter: „Ring markiert den Bestwert" ist bei
-        // 320 dp breiter als der Platz zwischen zwei Datumsangaben, und ein
-        // `Spacer` dazwischen lief um 315 px über.
-        Row(
+    String shown(double v) => weight
+        ? l10n.unitKilograms(AtemNumberField.format(context, v))
+        : l10n.historyRepsValue(v.round());
+    String spoken(double v) => weight
+        ? l10n.historyKgA11y(AtemNumberField.format(context, v))
+        : l10n.historyRepsA11y(v.round());
+
+    final label = [
+      weight
+          ? l10n.historyCurveA11y(points.length, spoken(points.first.value),
+              spoken(points.last.value))
+          : l10n.historyCurveRepsA11y(points.length, spoken(points.first.value),
+              spoken(points.last.value)),
+      l10n.historyCurveBestA11y(spoken(best)),
+    ].join(', ');
+
+    return Semantics(
+      image: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: Text(date.format(points.first.date),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AtemType.labelMicro.of(context)),
+            // Wrap statt Row: Bei 200 % rutscht die Anzahl unter den Kopf,
+            // statt ihn Buchstabe für Buchstabe umbrechen zu lassen.
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: 10,
+              runSpacing: 4,
+              children: [
+                Text(
+                  (weight ? l10n.historyCurveLabel : l10n.historyCurveRepsLabel)
+                      .toUpperCase(),
+                  style: AtemType.labelMicro.of(context),
+                ),
+                Text(
+                  l10n.historyCurveCount(points.length),
+                  style: AtemType.labelMicro.of(context),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                date.format(points.last.date),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.right,
-                style: AtemType.labelMicro.of(context),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 62,
+              child: AtemSweep(
+                child: CustomPaint(
+                  painter: _CurvePainter(points: points, best: best),
+                  size: Size.infinite,
+                ),
               ),
+            ),
+            const SizedBox(height: 10),
+            // Datum und Wert an beiden Enden. `Flexible` statt Spacer: Bei
+            // 200 % auf 320 dp passen zwei Angaben nicht nebeneinander, dann
+            // kürzt die linke, statt über den Rand zu laufen.
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    '${short.format(points.first.date)} · ${shown(points.first.value)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.labelMicro
+                        .of(context)
+                        .copyWith(letterSpacing: 0),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Flexible(
+                  child: Text(
+                    '${short.format(points.last.date)} · ${shown(points.last.value)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: AtemType.labelMicro
+                        .of(context)
+                        .copyWith(letterSpacing: 0),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AtemColors.magenta, width: 2),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(l10n.historyCurveLegend,
+                      style: AtemType.labelSmall.of(context)),
+                ),
+              ],
             ),
           ],
         ),
-        const SizedBox(height: 4),
-        Text(l10n.historyCurveLegend,
-            style: AtemType.meta.of(context)),
-      ],
+      ),
     );
   }
 }
@@ -279,34 +577,55 @@ class _CurvePainter extends CustomPainter {
   const _CurvePainter({required this.points, required this.best});
 
   final List<({DateTime date, double value})> points;
-  final double? best;
+  final double best;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (points.length < 2) return;
+    if (points.length < 2 || !size.isFinite) return;
 
     var min = points.first.value;
-    var max = points.first.value;
     for (final point in points) {
       min = math.min(min, point.value);
-      max = math.max(max, point.value);
     }
     // Eine waagerechte Kurve ist gültig — dann liegt sie in der Mitte, statt
     // durch eine Division durch null zu verschwinden.
-    final span = max - min;
-    const padding = 6.0;
+    final span = best - min;
+    const padX = 8.0;
+    const padTop = 8.0;
+    const padBottom = 12.0;
 
-    double x(int i) => i / (points.length - 1) * size.width;
+    double x(int i) => padX + i / (points.length - 1) * (size.width - padX * 2);
     double y(double value) => span == 0
         ? size.height / 2
-        : size.height - padding -
-            (value - min) / span * (size.height - padding * 2);
+        : padTop +
+            (1 - (value - min) / span) * (size.height - padTop - padBottom);
+
+    // Grundlinie.
+    canvas.drawLine(
+      Offset(0, size.height - 0.5),
+      Offset(size.width, size.height - 0.5),
+      Paint()
+        ..strokeWidth = 1
+        ..color = AtemColors.border,
+    );
+
+    // Gestrichelte Bestwertlinie.
+    final bestY = y(best);
+    final dash = Paint()
+      ..strokeWidth = 1
+      ..color = AtemColors.border;
+    for (var dx = 0.0; dx < size.width; dx += 7) {
+      canvas.drawLine(
+        Offset(dx, bestY),
+        Offset(math.min(dx + 4, size.width), bestY),
+        dash,
+      );
+    }
 
     final line = Path()..moveTo(x(0), y(points.first.value));
     for (var i = 1; i < points.length; i++) {
       line.lineTo(x(i), y(points[i].value));
     }
-
     canvas.drawPath(
       line,
       Paint()
@@ -317,23 +636,24 @@ class _CurvePainter extends CustomPainter {
         ..color = AtemColors.cyan,
     );
 
+    // Der Bestwert wird einmal markiert — beim ersten Erreichen.
+    var bestMarked = false;
     for (var i = 0; i < points.length; i++) {
-      final isBest = best != null && points[i].value == best;
-      canvas.drawCircle(
-        Offset(x(i), y(points[i].value)),
-        isBest ? 3.5 : 3,
-        Paint()..color = isBest ? AtemColors.magenta : AtemColors.cyan,
-      );
+      final center = Offset(x(i), y(points[i].value));
+      final isBest = !bestMarked && points[i].value == best;
       if (isBest) {
-        // Der Ring markiert den Bestwert — die Legende sagt das auch in Worten.
+        bestMarked = true;
+        canvas.drawCircle(center, 5.5, Paint()..color = AtemColors.card);
         canvas.drawCircle(
-          Offset(x(i), y(points[i].value)),
-          6,
+          center,
+          5.5,
           Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 1.5
+            ..strokeWidth = 2
             ..color = AtemColors.magenta,
         );
+      } else {
+        canvas.drawCircle(center, 3, Paint()..color = AtemColors.cyan);
       }
     }
   }

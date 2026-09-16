@@ -11,6 +11,7 @@ import 'package:atem/features/exercises/presentation/screens/exercise_detail_scr
 import 'package:atem/features/exercises/presentation/screens/exercise_form_screen.dart';
 import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
 import 'package:atem/features/history/presentation/screens/history_screen.dart';
+import 'package:atem/features/history/presentation/screens/muscle_balance_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_detail_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_edit_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_list_screen.dart';
@@ -68,6 +69,10 @@ void main() {
 
   testWidgets('Workouts-Tab erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, WorkoutsScreen(onStart: (_) {}));
+  });
+
+  testWidgets('Muskelbalance erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const MuscleBalanceScreen());
   });
 
   // ------------------------------------------------------------- Modul 11
