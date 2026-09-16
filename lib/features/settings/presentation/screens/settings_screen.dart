@@ -538,13 +538,6 @@ class _WeightSheetState extends ConsumerState<_WeightSheet> {
     if (kg == null || kg == settings.bodyWeightKg) return;
 
     final l10n = AppL10n.of(context);
-    final sessions = ref.read(sessionsProvider).value ?? const [];
-    final preview = BodyWeightPreview.compute(
-      sessions,
-      ref.read(historyReferenceProvider),
-      currentKg: settings.bodyWeightKg ?? 0,
-      candidateKg: kg,
-    );
 
     ref
         .read(pendingWeightProvider.notifier)
@@ -554,11 +547,7 @@ class _WeightSheetState extends ConsumerState<_WeightSheet> {
         .update(settings.copyWith(bodyWeightKg: kg));
     if (!mounted) return;
 
-    final message = l10n.weightSavedSnack(
-      AtemNumberField.format(context, kg),
-      preview.formBefore?.toString() ?? l10n.commonNotAvailable,
-      preview.formAfter?.toString() ?? l10n.commonNotAvailable,
-    );
+    final message = l10n.weightSavedSnack(AtemNumberField.format(context, kg));
     ref.read(snackbarProvider.notifier).show(AtemSnack(
           message: message,
           semanticLabel: message,

@@ -60,17 +60,6 @@ void main() {
     expect(after, before);
   });
 
-  test('eine spürbare Änderung verschiebt den Formwert', () {
-    final preview = BodyWeightPreview.compute(
-      _history(_bodyweight),
-      _heute,
-      currentKg: 78,
-      candidateKg: 95,
-    );
-    expect(preview.formBefore, isNotNull);
-    expect(preview.formAfter, isNotNull);
-  });
-
   test('dasselbe Gewicht ändert nichts', () {
     final preview = BodyWeightPreview.compute(
       _history(_bodyweight),
@@ -78,9 +67,7 @@ void main() {
       currentKg: 78,
       candidateKg: 78,
     );
-    expect(preview.formChanges, isFalse);
     expect(preview.acwrChanges, isFalse);
-    expect(preview.fitnessChanges, isFalse);
   });
 
   test('ohne Historie gibt es nichts zu zeigen', () {
@@ -90,7 +77,6 @@ void main() {
       currentKg: 78,
       candidateKg: 95,
     );
-    expect(preview.formChanges, isFalse);
     expect(preview.acwrChanges, isFalse);
 
     final (before, after) = BodyWeightPreview.lastSessionLoad(

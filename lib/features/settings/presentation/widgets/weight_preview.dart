@@ -75,13 +75,6 @@ class WeightPreview extends ConsumerWidget {
         rises: (preview.acwrAfter ?? 0) > (preview.acwrBefore ?? 0),
         changes: preview.acwrChanges,
       ),
-      _Row(
-        label: l10n.weightImpactForm,
-        before: preview.formBefore?.toString() ?? l10n.commonNotAvailable,
-        after: preview.formAfter?.toString() ?? l10n.commonNotAvailable,
-        rises: (preview.formAfter ?? 0) > (preview.formBefore ?? 0),
-        changes: preview.formChanges,
-      ),
       // Der Bestwert einer Körpergewichtsübung **ist** das Körpergewicht.
       // Deshalb steht hier „neu bewertet" und nicht „höher": Es ist derselbe
       // Klimmzug, nur anders gerechnet.

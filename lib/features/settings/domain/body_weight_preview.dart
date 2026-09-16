@@ -26,15 +26,8 @@ class BodyWeightPreview {
   final HistorySummary before;
   final HistorySummary after;
 
-  int? get formBefore => before.form.score;
-  int? get formAfter => after.form.score;
-
   double? get acwrBefore => before.acwr?.acwr;
   double? get acwrAfter => after.acwr?.acwr;
-
-  /// Die Komponente „Fitness gegenüber Höchststand", 0 bis 15.
-  int get fitnessBefore => before.form.fitnessVsPeak;
-  int get fitnessAfter => after.form.fitnessVsPeak;
 
   /// Die Trainingslast der letzten sieben Tage, unter beiden Maßstäben.
   ///
@@ -104,8 +97,6 @@ class BodyWeightPreview {
     return counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
   }
 
-  bool get formChanges => formBefore != formAfter;
-  bool get fitnessChanges => fitnessBefore != fitnessAfter;
   bool get acwrChanges =>
       (acwrBefore == null) != (acwrAfter == null) ||
       (acwrBefore != null &&

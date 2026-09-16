@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:atem/features/history/data/session_mapper.dart';
 import 'package:atem/features/history/domain/readiness.dart';
-import 'package:atem/features/history/domain/training_form.dart';
 import 'package:atem/features/history/domain/training_load.dart';
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -129,44 +128,6 @@ void main() {
         if (!dst) {
           final pwa = entry['pwa'] as Map<String, dynamic>;
           expect(result.acwr, pwa['acwr'],
-              reason: 'Ohne Zeitumstellung müssen beide Fassungen '
-                  'übereinstimmen');
-        }
-      });
-    }
-  });
-
-  group('Form-Trend über den ganzen Zeitraum', () {
-    for (final entry
-        in (oracle['forms'] as List).cast<Map<String, dynamic>>()) {
-      final day = entry['day'];
-      final dst = entry['dstInWindow'] as bool;
-
-      test('Tag $day${dst ? ' (Zeitumstellung im Fenster)' : ''}', () {
-        final result = TrainingForm.compute(
-          sessions,
-          DateTime.parse(entry['referenceDate'] as String),
-          context: context,
-          // Das Orakel prüft die **Portierung**, nicht die App. Regeneration
-          // bricht in der Vorgänger-App die Pause nicht; mit dem Vorgabewert
-          // wäre jede Abweichung hier eine gewollte und der Test damit blind
-          // für ungewollte. Was ATEM stattdessen tut, prüft
-          // `recovery_activity_test.dart`.
-          countRecoveryAsActivity: false,
-        );
-
-        expect(result.score, entry['formScore'], reason: 'Formwert');
-        expect(result.zone?.wire, entry['zone'], reason: 'Zone');
-        expect(result.consistency, entry['consistency'], reason: 'Konstanz');
-        expect(result.loadLevel, entry['loadLevel'], reason: 'Lastentwicklung');
-        expect(result.recency, entry['recency'], reason: 'Aktualität');
-        expect(result.trend.wire, entry['trend'], reason: 'Richtung');
-        expect(result.daysSinceLastSession, entry['daysSinceLastSession'],
-            reason: 'Tage seit der letzten Einheit');
-
-        if (!dst) {
-          final pwa = entry['pwa'] as Map<String, dynamic>;
-          expect(result.score, pwa['formScore'],
               reason: 'Ohne Zeitumstellung müssen beide Fassungen '
                   'übereinstimmen');
         }

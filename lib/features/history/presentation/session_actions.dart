@@ -85,10 +85,10 @@ Future<bool> confirmDeleteSession(
         label: sessionName(l10n, session),
       );
 
-  // Die Meldung nennt die Folge, nicht nur die Tat: „Form 16 → 14" ist der
-  // Grund, warum jemand den Widerruf überhaupt in Erwägung zieht.
-  final before = consequence.formBefore?.toString() ?? l10n.commonNotAvailable;
-  final after = consequence.formAfter?.toString() ?? l10n.commonNotAvailable;
+  // Die Meldung nennt die Folge, nicht nur die Tat: „Einheiten 63 → 62" ist
+  // der Grund, warum jemand den Widerruf überhaupt in Erwägung zieht.
+  final before = consequence.sessionsBefore.toString();
+  final after = consequence.sessionsAfter.toString();
   final message = l10n.sessionDeletedSnack(before, after);
 
   ref.read(snackbarProvider.notifier).show(

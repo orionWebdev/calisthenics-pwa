@@ -4043,7 +4043,7 @@
       }
     }
   },
-  "sessionDeletedSnack": "Einheit gelöscht · Form {alt} → {neu}",
+  "sessionDeletedSnack": "Einheit gelöscht · Einheiten {alt} → {neu}",
   "@sessionDeletedSnack": {
     "description": "session.deleted.snack",
     "placeholders": {
@@ -4825,17 +4825,11 @@
   "@weightSaveNone": {
     "description": "weight.save.none"
   },
-  "weightSavedSnack": "Gewicht {kg} kg · Form {alt} → {neu}",
+  "weightSavedSnack": "Gewicht {kg} kg gespeichert",
   "@weightSavedSnack": {
     "description": "weight.saved.snack",
     "placeholders": {
       "kg": {
-        "type": "String"
-      },
-      "alt": {
-        "type": "String"
-      },
-      "neu": {
         "type": "String"
       }
     }
@@ -6840,7 +6834,7 @@
       }
     }
   },
-  "hybridHeatmapByTrack": "{strength} Kraft · {cardio} Ausdauer · {recovery} Regeneration",
+  "hybridHeatmapByTrack": "{strength} Kraft · {cardio} Cardio · {recovery} Regeneration",
   "@hybridHeatmapByTrack": {
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapByTrack",
     "placeholders": {

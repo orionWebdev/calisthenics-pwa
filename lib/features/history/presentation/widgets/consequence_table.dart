@@ -99,7 +99,6 @@ class ConsequenceTable extends StatelessWidget {
     return [
       _days(l10n.sessionImpactPause, c.pauseBefore, c.pauseAfter, l10n),
       _days(l10n.sessionImpactLongest, c.longestBefore, c.longestAfter, l10n),
-      _points(l10n.sessionImpactForm, c.formBefore, c.formAfter),
       ConsequenceRow.count(
         label: l10n.sessionImpactMonth(monthLabel),
         before: monthBefore,
@@ -123,8 +122,7 @@ class ConsequenceTable extends StatelessWidget {
           after: c.sessionsAfter,
         ),
         _days(l10n.sessionImpactPause, c.pauseBefore, c.pauseAfter, l10n),
-        _points(l10n.sessionImpactForm, c.formBefore, c.formAfter),
-        ConsequenceRow.count(
+          ConsequenceRow.count(
           label: l10n.sessionImpactOfKind(kindLabel),
           before: kindBefore,
           after: kindAfter,
@@ -150,15 +148,6 @@ class ConsequenceTable extends StatelessWidget {
       );
 
   /// Ein Punktwert. Mehr ist besser.
-  static ConsequenceRow _points(String label, int? before, int? after) =>
-      ConsequenceRow(
-        label: label,
-        before: before?.toString() ?? '—',
-        after: after?.toString() ?? '—',
-        direction: before == null || after == null || before == after
-            ? ConsequenceDirection.neutral
-            : (after > before ? ConsequenceDirection.better : ConsequenceDirection.worse),
-      );
 
   @override
   Widget build(BuildContext context) {

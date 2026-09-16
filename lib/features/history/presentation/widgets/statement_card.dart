@@ -7,7 +7,6 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../domain/history_summary.dart';
-import '../../domain/training_form.dart';
 import '../../domain/training_session.dart';
 import '../history_zone_ui.dart';
 import '../session_ui.dart';
@@ -67,9 +66,6 @@ class StatementCard extends StatelessWidget {
               zone.label(l10n),
               statement,
               if (last != null) _lastLine(context, l10n, last),
-              if (summary.form.hasScore)
-                '${l10n.historyFormLabel} ${l10n.historyFormOf(summary.form.score!)}'
-                    '${summary.form.trend.label(l10n) == null ? '' : ', ${summary.form.trend.label(l10n)}'}',
             ].join('. '),
             child: ExcludeSemantics(
               child: Column(
@@ -111,10 +107,6 @@ class StatementCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: AtemType.meta.of(context),
                     ),
-                  ],
-                  if (summary.form.hasScore) ...[
-                    const SizedBox(height: 10),
-                    _FormLine(summary: summary),
                   ],
                 ],
               ),
@@ -223,66 +215,6 @@ class _Statement extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-/// Die Formzeile unter der Aussage — **Zahl, Richtung und Balken**.
-///
-/// Der Balken ist nicht Schmuck: „Form 16" und „Form 80" lesen sich als
-/// zwei Zahlen, aber erst nebeneinander gestellt zeigt sich, dass die eine
-/// fast leer und die andere fast voll ist. Er trägt die Zonenfarbe, die
-/// daneben ohnehin als Wort steht (Board 06, A1/1 und A1/2).
-class _FormLine extends StatelessWidget {
-  const _FormLine({required this.summary});
-
-  final HistorySummary summary;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final form = summary.form;
-    final score = form.score!;
-    final trend = form.trend.label(l10n);
-    final glyph = switch (form.trend) {
-      FormTrend.rising => '↑ ',
-      FormTrend.falling => '↓ ',
-      _ => '',
-    };
-    // Dieselbe Schwelle wie die Zonen im Verlauf: unter einem Drittel ist die
-    // Form nicht „schlecht", sondern niedrig — und das steht als Wort daneben.
-    final accent = switch (score) {
-      >= 67 => AtemColors.green,
-      >= 34 => AtemColors.cyan,
-      _ => AtemColors.magenta,
-    };
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Wrap(
-          spacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(
-              '${l10n.historyFormLabel} ${l10n.historyFormOf(score)}',
-              style: AtemType.labelSmall.of(context),
-            ),
-            if (trend != null)
-              Text('$glyph$trend',
-                  style: AtemType.labelSmall
-                      .of(context)
-                      .copyWith(color: accent, fontWeight: FontWeight.w600)),
-          ],
-        ),
-        const SizedBox(height: 8),
-        AtemProgressBar.share(
-          value: (score / 100).clamp(0.0, 1.0),
-          semanticLabel: '',
-          accent: accent,
-        ),
-      ],
     );
   }
 }

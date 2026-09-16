@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/application/auth_providers.dart';
 import '../data/firestore_session_repository.dart';
 import '../domain/history_summary.dart';
-import '../domain/form_series.dart';
 import '../domain/history_timeline.dart';
 import '../domain/readiness.dart';
 import '../domain/training_load.dart';
@@ -103,17 +102,6 @@ final historyTimelineProvider = Provider<List<TimelineEntry>>((ref) {
   );
 });
 
-/// Die Formkurve. Bewusst `autoDispose`: 180 Auswertungen über je 120 Tage
-/// müssen nicht im Speicher bleiben, wenn niemand hinsieht.
-final formSeriesProvider = Provider.autoDispose<FormSeries>((ref) {
-  final sessions = ref.watch(sessionsProvider).value ?? const [];
-  final weight = ref.watch(bodyWeightProvider).value ?? 0;
-  return FormSeries.compute(
-    sessions,
-    ref.watch(historyReferenceProvider),
-    context: LoadContext(bodyWeightKg: weight),
-  );
-});
 
 /// Ob der zuletzt gelieferte Stand aus dem lokalen Zwischenspeicher stammt.
 ///

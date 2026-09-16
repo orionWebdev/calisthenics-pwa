@@ -33,9 +33,6 @@ class SessionConsequence {
   int? get pauseBefore => before.daysSinceLast;
   int? get pauseAfter => after.daysSinceLast;
 
-  int? get formBefore => before.form.score;
-  int? get formAfter => after.form.score;
-
   double? get acwrBefore => before.acwr?.acwr;
   double? get acwrAfter => after.acwr?.acwr;
 
@@ -64,7 +61,6 @@ class SessionConsequence {
   }
 
   bool get pauseChanges => pauseBefore != pauseAfter;
-  bool get formChanges => formBefore != formAfter;
 
   /// Der ACWR **erscheint oder verschwindet** — das ist die auffälligste Folge
   /// und keine Zahlenänderung. Wer seine letzte Einheit im akuten Fenster
@@ -84,7 +80,7 @@ class SessionConsequence {
   /// Wenn nicht, zeigt der Dialog **keine Folgenzeilen** statt drei Zeilen
   /// „unverändert". Eine Tabelle, in der nichts steht, behauptet Bedeutung,
   /// wo keine ist.
-  bool get isVisible => pauseChanges || formChanges || acwrChanges;
+  bool get isVisible => pauseChanges || acwrChanges;
 
   /// Die Folgen des Löschens.
   static SessionConsequence ofDeleting(

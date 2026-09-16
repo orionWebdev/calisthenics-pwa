@@ -19,25 +19,31 @@ import '../../../dashboard/presentation/readiness_level_ui.dart';
 import '../../../dashboard/presentation/readiness_zone_ui.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../../history/application/history_providers.dart';
-import '../../../history/domain/data_sufficiency.dart';
-import '../../../history/domain/form_series.dart';
-import '../../../history/domain/training_load.dart';
 import '../../../history/domain/training_session.dart';
-import '../../../history/presentation/history_zone_ui.dart';
 import '../../../history/presentation/screens/analysis_screen.dart';
-import '../../../history/presentation/widgets/form_chart.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
+import '../../domain/training_heatmap.dart';
 import '../widgets/ratio_block.dart';
 import '../widgets/recovery_row.dart';
 import '../widgets/recovery_sheet.dart';
+import '../widgets/time_split_card.dart';
+import '../widgets/training_heatmap_card.dart';
 
 /// Der Hybrid-Tab — **Start und Analyse verschmolzen, ohne Doppelung**
 /// (Board 11, A3).
 ///
 /// Jede Zeitspanne kommt genau einmal vor: Bereitschaft (heute), Verhältnis
-/// (diese Woche), Formwert (vier Wochen), Regenerationszeile. Das war die
-/// Doppelung zwischen Start und Analyse — beide zeigten die Woche, beide die
-/// Form.
+/// (diese Woche), Trainingszeit (14 oder 28 Tage), Trainingstage (zwölf
+/// Wochen), Regenerationszeile. Das war die Doppelung zwischen Start und
+/// Analyse — beide zeigten die Woche, beide die Form.
+///
+/// ## Der Formwert ist weg (16.09.2026)
+///
+/// Bis dahin stand unter dem Verhältnis die Formkurve, 0–100 aus fünf
+/// Bestandteilen. Nach 16 Tagen Pause sprang sie mit einer Einheit von 0 auf
+/// 75 — rechnerisch richtig, für niemanden erklärbar. An ihrer Stelle stehen
+/// zwei Zählungen nach Masterplan: die Trainingszeit je Spur und die
+/// Trainingstage als Raster. Beide nennen ihren Nenner und urteilen nicht.
 ///
 /// ## Was hier nicht mehr steht
 ///
@@ -49,7 +55,8 @@ import '../widgets/recovery_sheet.dart';
 class HybridScreen extends ConsumerStatefulWidget {
   const HybridScreen({super.key});
 
-  /// Bereitschaft und Formwert ab so vielen Einheiten (C3/1).
+  /// Bereitschaft ab so vielen Einheiten (C3/1). Trainingszeit und
+  /// Trainingstage zählen darunter schon — sie behaupten nichts.
   static const minimumSessions = 8;
 
   @override
@@ -246,79 +253,54 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
                 child: RecoveryRow(status: recovery, onAdd: _addRecovery),
               ),
 
-            // ---- Formwert (vier Wochen), nur mit Trend.
-            if (!thin)
-              AtemEntrance(
-                index: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _formBlock(context, sessions, reference),
-                ),
-              ),
+            // ---- Trainingszeit (14 | 28 Tage) und Trainingstage (zwölf
+            // Wochen). Keine Mindestzahl: Beide zählen nur. Ein Block ohne
+            // Daten rendert nicht — der Bildschirm hört früher auf.
+            ..._countBlocks(context, sessions, reference),
           ],
         ],
       ),
     );
   }
 
-  List<Widget> _formBlock(
+  List<Widget> _countBlocks(
     BuildContext context,
     List<TrainingSession> sessions,
     DateTime reference,
   ) {
     final l10n = AppL10n.of(context);
-    if (!DataSufficiency.hasTrend(sessions, reference)) return const [];
-
-    final summary = ref.watch(historySummaryProvider);
-    final weight = ref.watch(bodyWeightProvider).value ?? 0;
-    final series = FormSeries.compute(
-      sessions,
-      reference,
-      days: 28,
-      context: LoadContext(bodyWeightKg: weight),
-    );
-    if (series.isEmpty) return const [];
-    final form = summary.form;
-    final trend = form.trend.label(l10n);
+    final heatmap = TrainingHeatmap.compute(sessions, reference);
+    final hasTime = TimeSplitCard.hasData(sessions, reference);
+    final hasDays = heatmap.trainedDays > 0;
+    if (!hasTime && !hasDays) return const [];
 
     return [
-      const SizedBox(height: AtemSpacing.cardGap),
-      AtemCard.list(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Text(l10n.hybridFormSection,
-                      style: AtemType.titleMedium.of(context)),
-                ),
-                if (form.score case final score?)
-                  Flexible(
-                    child: Text(
-                      [
-                        l10n.historyFormOf(score),
-                        if (trend != null) trend,
-                      ].join(' · '),
-                      textAlign: TextAlign.end,
-                      style: AtemType.labelSmall.of(context),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            FormChart(series: series),
-          ],
+      if (hasTime) ...[
+        const SizedBox(height: AtemSpacing.cardGap),
+        AtemEntrance(
+          index: 3,
+          child: TimeSplitCard(sessions: sessions, reference: reference),
         ),
-      ),
+      ],
+      if (hasDays) ...[
+        const SizedBox(height: AtemSpacing.cardGap),
+        AtemEntrance(
+          index: 4,
+          child: TrainingHeatmapCard(heatmap: heatmap),
+        ),
+      ],
       const SizedBox(height: 12),
-      AtemButton.outline(
-        label: l10n.historyAnalysisOpen,
-        semanticLabel: l10n.historyAnalysisOpen,
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const AnalysisScreen()),
+      // Der Weg zur Kraft-Auswertung — Sätze je Muskelgruppe, geschätztes
+      // Maximum. Er bleibt hier, weil die Auswertung sonst nur über den
+      // Verlauf erreichbar wäre.
+      AtemEntrance(
+        index: 5,
+        child: AtemButton.outline(
+          label: l10n.historyAnalysisOpen,
+          semanticLabel: l10n.historyAnalysisOpen,
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const AnalysisScreen()),
+          ),
         ),
       ),
     ];

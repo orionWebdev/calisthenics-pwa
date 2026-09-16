@@ -1,7 +1,6 @@
 import 'data_sufficiency.dart';
 import 'readiness.dart';
 import 'training_load.dart';
-import 'training_form.dart';
 import 'training_session.dart';
 
 /// Wie es gerade um das Training steht — abgeleitet **allein aus dem Abstand
@@ -64,7 +63,6 @@ class HistorySummary {
     required this.zone,
     required this.daysSinceLast,
     required this.months,
-    required this.form,
     this.trainingDays = 0,
     this.spanDays = 0,
     this.lastSession,
@@ -80,7 +78,6 @@ class HistorySummary {
     zone: HistoryZone.inactive,
     daysSinceLast: null,
     months: [],
-    form: FormResult.empty,
   );
 
   final int sessions;
@@ -111,7 +108,6 @@ class HistorySummary {
   /// Tage von der ersten Einheit bis heute.
   final int spanDays;
 
-  final FormResult form;
 
   /// `null`, wenn die Datenlage nicht reicht oder die Zone untätig ist.
   final AcwrResult? acwr;
@@ -157,7 +153,6 @@ class HistorySummary {
       months: _months(sessions),
       trainingDays: {for (final s in sessions) Readiness.dayKey(s.date)}.length,
       spanDays: DataSufficiency.spanDays(sessions, reference),
-      form: TrainingForm.compute(sessions, reference, context: context),
       acwr: acwrResult,
     );
   }

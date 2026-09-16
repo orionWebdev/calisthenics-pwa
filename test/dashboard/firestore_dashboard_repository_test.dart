@@ -97,15 +97,6 @@ void main() {
   });
 
   group('Die Kacheln zeigen, was die App weiss', () {
-    test('Formwert und Richtung', () async {
-      final db = _db();
-      await _seedHistory(db);
-
-      final data = await _repo(db).watchDashboard().first;
-      expect(data.form, isNotNull);
-      expect(data.form!.score, inInclusiveRange(0, 100));
-    });
-
     test('die letzte Einheit mit ihrer Last', () async {
       final db = _db();
       await _seedHistory(db);
@@ -120,7 +111,6 @@ void main() {
         () async {
       final db = _db();
       final data = await _repo(db).watchDashboard().first;
-      expect(data.form, isNull);
       expect(data.lastSession, isNull,
           reason: '„Form 0" wäre eine Aussage über jemanden, der nie '
               'trainiert hat');

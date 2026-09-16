@@ -147,7 +147,6 @@ class DashboardData {
     required this.performance,
     required this.session,
     required this.workoutLog,
-    this.form,
     this.lastSession,
     this.nextSession,
   });
@@ -162,32 +161,11 @@ class DashboardData {
   /// Sätze der letzten Einheit. `null`, wenn keine welche trägt.
   final WorkoutLogSummary? workoutLog;
 
-  /// Formwert und Richtung.
-  final FormSummary? form;
-
   /// Die letzte Einheit, mit dem Vergleich zu ihrem Bezug.
   final LastSessionSummary? lastSession;
 
   /// Der nächste Termin nach heute.
   final NextSession? nextSession;
-}
-
-/// Der Formwert für die Kachel.
-@immutable
-class FormSummary {
-  const FormSummary({
-    required this.score,
-    required this.rising,
-    required this.changed,
-    required this.zoneDays,
-  });
-
-  final int score;
-  final bool rising;
-  final bool changed;
-
-  /// Tage seit der letzten Einheit — die Zahl, aus der die Zone folgt.
-  final int? zoneDays;
 }
 
 /// Die letzte Einheit mit ihrem Vergleich.

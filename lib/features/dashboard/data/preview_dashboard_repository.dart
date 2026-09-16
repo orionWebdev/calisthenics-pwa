@@ -53,12 +53,6 @@ class PreviewDashboardRepository implements DashboardRepository {
         planName: 'Upper Body Power',
         totalSets: 24,
       ),
-      form: const FormSummary(
-        score: 68,
-        rising: true,
-        changed: true,
-        zoneDays: 2,
-      ),
       lastSession: const LastSessionSummary(
         id: 's1',
         name: 'Upper Body Power',

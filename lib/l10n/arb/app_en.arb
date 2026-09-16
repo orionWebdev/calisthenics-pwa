@@ -3233,7 +3233,7 @@
       }
     }
   },
-  "sessionDeletedSnack": "Workout deleted · form {alt} → {neu}",
+  "sessionDeletedSnack": "Workout deleted · workouts {alt} → {neu}",
   "@sessionDeletedSnack": {
     "description": "session.deleted.snack",
     "placeholders": {
@@ -3964,17 +3964,11 @@
   "@weightSaveNone": {
     "description": "weight.save.none"
   },
-  "weightSavedSnack": "Weight {kg} kg · form {alt} → {neu}",
+  "weightSavedSnack": "Weight {kg} kg saved",
   "@weightSavedSnack": {
     "description": "weight.saved.snack",
     "placeholders": {
       "kg": {
-        "type": "String"
-      },
-      "alt": {
-        "type": "String"
-      },
-      "neu": {
         "type": "String"
       }
     }

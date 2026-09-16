@@ -2837,7 +2837,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String sessionDeletedSnack(String alt, String neu) {
-    return 'Workout deleted · form $alt → $neu';
+    return 'Workout deleted · workouts $alt → $neu';
   }
 
   @override
@@ -3384,8 +3384,8 @@ class AppL10nEn extends AppL10n {
   String get weightSaveNone => 'Unchanged · nothing to save';
 
   @override
-  String weightSavedSnack(String kg, String alt, String neu) {
-    return 'Weight $kg kg · form $alt → $neu';
+  String weightSavedSnack(String kg) {
+    return 'Weight $kg kg saved';
   }
 
   @override

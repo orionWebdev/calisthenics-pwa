@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../../../core/theme/theme.dart';
 import '../../../l10n/gen/app_l10n.dart';
 import '../domain/history_summary.dart';
-import '../domain/training_form.dart';
 
 /// Farbe und Text zu einer [HistoryZone].
 ///
@@ -23,14 +22,5 @@ extension HistoryZoneUi on HistoryZone {
         HistoryZone.recent => l.historyZoneRecent,
         HistoryZone.pause => l.historyZonePause,
         HistoryZone.inactive => l.historyZoneInactive,
-      };
-}
-
-extension FormTrendUi on FormTrend {
-  String? label(AppL10n l) => switch (this) {
-        FormTrend.rising => l.historyTrendRising,
-        FormTrend.stable => l.historyTrendStable,
-        FormTrend.falling => l.historyTrendFalling,
-        FormTrend.none => null,
       };
 }

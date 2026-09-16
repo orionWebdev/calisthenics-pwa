@@ -96,8 +96,7 @@ class RecoveryRow extends StatelessWidget {
                         style: AtemType.titleSmallOrDefault(context)
                             .copyWith(color: titleColor)),
                     const SizedBox(height: 2),
-                    Text(sub,
-                        style: AtemType.meta.of(context)),
+                    Text(sub, style: AtemType.meta.of(context)),
                   ],
                 ),
               ),

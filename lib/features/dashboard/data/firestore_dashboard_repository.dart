@@ -6,9 +6,7 @@ import '../../history/domain/data_sufficiency.dart';
 import '../../history/domain/readiness.dart';
 import '../../history/domain/session_repository.dart';
 import '../../history/domain/training_load.dart';
-import '../../history/domain/history_summary.dart';
 import '../../history/domain/session_comparison.dart';
-import '../../history/domain/training_form.dart';
 import '../../history/domain/training_session.dart';
 import '../domain/dashboard_data.dart';
 import '../domain/dashboard_repository.dart';
@@ -117,32 +115,8 @@ class FirestoreDashboardRepository implements DashboardRepository {
       performance: _weeklyPerformance(sessions, today, context),
       session: _todaySession(schedule, today),
       workoutLog: _lastWorkout(sessions),
-      form: _form(sessions, today, context),
       lastSession: _lastSession(sessions, today, context),
       nextSession: _nextSession(schedule, today),
-    );
-  }
-
-  /// Formwert und Richtung.
-  ///
-  /// Die Richtung kommt aus dem Trend der Formrechnung, nicht aus einem
-  /// eigenen Vergleich — sonst gäbe es zwei Antworten auf dieselbe Frage.
-  FormSummary? _form(
-    List<TrainingSession> sessions,
-    DateTime today,
-    LoadContext context,
-  ) {
-    if (sessions.isEmpty) return null;
-    final summary = HistorySummary.from(sessions, today, context: context);
-    final score = summary.form.score;
-    if (score == null) return null;
-
-    return FormSummary(
-      score: score,
-      rising: summary.form.trend == FormTrend.rising,
-      changed: summary.form.trend != FormTrend.none &&
-          summary.form.trend != FormTrend.stable,
-      zoneDays: summary.daysSinceLast,
     );
   }
 

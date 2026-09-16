@@ -2845,7 +2845,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String sessionDeletedSnack(String alt, String neu) {
-    return 'Einheit gelöscht · Form $alt → $neu';
+    return 'Einheit gelöscht · Einheiten $alt → $neu';
   }
 
   @override
@@ -3394,8 +3394,8 @@ class AppL10nDe extends AppL10n {
   String get weightSaveNone => 'Unverändert · nichts zu speichern';
 
   @override
-  String weightSavedSnack(String kg, String alt, String neu) {
-    return 'Gewicht $kg kg · Form $alt → $neu';
+  String weightSavedSnack(String kg) {
+    return 'Gewicht $kg kg gespeichert';
   }
 
   @override
@@ -4750,7 +4750,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String hybridHeatmapByTrack(int strength, int cardio, int recovery) {
-    return '$strength Kraft · $cardio Ausdauer · $recovery Regeneration';
+    return '$strength Kraft · $cardio Cardio · $recovery Regeneration';
   }
 
   @override

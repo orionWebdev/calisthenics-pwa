@@ -46,15 +46,6 @@ void main() {
       expect(c.pauseChanges, isFalse);
     });
 
-    test('der Formwert ändert sich, wenn Belastung wegfällt', () {
-      final c = SessionConsequence.ofDeleting(_dicht(), 's0', _heute);
-      expect(c.formBefore, isNotNull);
-      expect(c.formAfter, isNotNull);
-      expect(c.formChanges, isTrue);
-      expect(c.formAfter, lessThan(c.formBefore!),
-          reason: 'weniger Aktualität und weniger Tageszuschlag');
-    });
-
     test('eine Einheit von vor Jahren zu löschen ist folgenlos', () {
       // Die Auskunft „das ändert nichts" ist selbst eine Auskunft.
       final sessions = [
@@ -134,7 +125,7 @@ void main() {
         duration: const Duration(minutes: 120),
       );
       expect(c.pauseChanges, isFalse);
-      expect(c.formChanges || c.acwrChanges, isTrue,
+      expect(c.acwrChanges, isTrue,
           reason: 'mehr Dauer heisst mehr Last');
     });
 

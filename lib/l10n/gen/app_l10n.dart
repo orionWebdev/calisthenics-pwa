@@ -4684,7 +4684,7 @@ abstract class AppL10n {
   /// session.deleted.snack
   ///
   /// In de, this message translates to:
-  /// **'Einheit gelöscht · Form {alt} → {neu}'**
+  /// **'Einheit gelöscht · Einheiten {alt} → {neu}'**
   String sessionDeletedSnack(String alt, String neu);
 
   /// Widerrufshinweis nach dem Löschen
@@ -5644,8 +5644,8 @@ abstract class AppL10n {
   /// weight.saved.snack
   ///
   /// In de, this message translates to:
-  /// **'Gewicht {kg} kg · Form {alt} → {neu}'**
-  String weightSavedSnack(String kg, String alt, String neu);
+  /// **'Gewicht {kg} kg gespeichert'**
+  String weightSavedSnack(String kg);
 
   /// weight.sub
   ///
@@ -7768,7 +7768,7 @@ abstract class AppL10n {
   /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapByTrack
   ///
   /// In de, this message translates to:
-  /// **'{strength} Kraft · {cardio} Ausdauer · {recovery} Regeneration'**
+  /// **'{strength} Kraft · {cardio} Cardio · {recovery} Regeneration'**
   String hybridHeatmapByTrack(int strength, int cardio, int recovery);
 
   /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridHeatmapLegendNone
