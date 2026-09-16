@@ -38,6 +38,7 @@ Future<void> _pump(
   required List<ExerciseStrengthSeries> candidates,
   double scale = 1.0,
   double width = 361,
+  bool alwaysShow = false,
 }) async {
   tester.view.physicalSize = Size(width, 900);
   tester.view.devicePixelRatio = 1.0;
@@ -62,6 +63,7 @@ Future<void> _pump(
             series: series,
             candidates: candidates,
             nameOf: _name,
+            alwaysShow: alwaysShow,
           ),
         ),
       ),
@@ -185,6 +187,53 @@ void main() {
       expect(find.byType(EstimatedMaxCard), findsOneWidget);
       expect(find.text('Geschätztes Maximum'), findsNothing);
       expect(find.text('Noch keine Übung mit genug Einheiten'), findsNothing);
+    });
+  });
+
+  group('immer zeigen (Auswertung)', () {
+    testWidgets('ohne Kandidaten der Schwellenblock mit 0 von 5',
+        (tester) async {
+      await _pump(tester,
+          series: const [], candidates: const [], alwaysShow: true);
+      expect(find.text('Geschätztes Maximum'), findsOneWidget);
+      expect(find.text('0 von 5'), findsOneWidget);
+      expect(
+          find.text('Erscheint ab 5 Einheiten einer Übung mit Gewicht und '
+              'höchstens 12 Wiederholungen'),
+          findsOneWidget);
+      expect(find.textContaining('Übungen mit Körpergewicht'), findsOneWidget);
+      // Ein Knoten, der die Bedingung und den Stand nennt.
+      expect(
+          find.bySemanticsLabel(RegExp(r'Bisher 0 von 5\.$')), findsOneWidget);
+    });
+
+    testWidgets('mit Kandidaten bleibt der dünne Zustand, mit Titel',
+        (tester) async {
+      final two = _series('bench', [80, 82]);
+      await _pump(tester,
+          series: const [], candidates: [two], alwaysShow: true);
+      expect(find.text('Geschätztes Maximum'), findsOneWidget);
+      expect(find.text('Bankdrücken: 2 von 5 Einheiten'), findsOneWidget);
+      expect(find.text('0 von 5'), findsNothing);
+    });
+
+    testWidgets('mit Kurve ändert alwaysShow nichts', (tester) async {
+      final bench = _series('bench', [80, 82.5, 84, 84, 86]);
+      await _pump(tester,
+          series: [bench], candidates: [bench], alwaysShow: true);
+      expect(find.textContaining('Epley: Gewicht'), findsOneWidget);
+      expect(find.text('0 von 5'), findsNothing);
+    });
+
+    testWidgets('Schwellenblock bei 200 % auf 320 dp ohne Überlauf',
+        (tester) async {
+      await _pump(tester,
+          series: const [],
+          candidates: const [],
+          alwaysShow: true,
+          scale: 2.0,
+          width: 320);
+      expect(tester.takeException(), isNull);
     });
   });
 }

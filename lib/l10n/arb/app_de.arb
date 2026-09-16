@@ -7223,5 +7223,496 @@
         "type": "int"
       }
     }
+  },
+  "focusDistTitle": "Fokus",
+  "@focusDistTitle": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Titel"
+  },
+  "focusDistWindow": "8 Wochen",
+  "@focusDistWindow": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Fenster rechts neben dem Titel"
+  },
+  "focusDistWhat": "Wogegen deine Krafteinheiten gingen — Drücken, Ziehen, Beine und mehr, als Anteil mit Nenner.",
+  "@focusDistWhat": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Schwellen-Zustand: was der Block zeigen wird"
+  },
+  "focusDistCondition": "Erscheint ab {n} Einheiten mit Fokus — wählbar beim Start eines Trainings",
+  "@focusDistCondition": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Schwellen-Zustand: Bedingung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "focusDistCount": "{n, plural, =1{1 Einheit} other{{n} Einheiten}}",
+  "@focusDistCount": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Anzahl je Zeile",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "focusDistRowA11y": "{focus}, {n, plural, =1{1 Einheit} other{{n} Einheiten}}, {percent} Prozent",
+  "@focusDistRowA11y": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — eine Zeile als ein Semantics-Knoten",
+    "placeholders": {
+      "focus": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "focusDistBasis": "{withFocus} von {total} Krafteinheiten mit Fokus · 8 Wochen",
+  "@focusDistBasis": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Grundlage mit Nenner",
+    "placeholders": {
+      "withFocus": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "focusDistWithout": "{n, plural, =1{1 Einheit ohne Fokus ist nicht enthalten} other{{n} Einheiten ohne Fokus sind nicht enthalten}}",
+  "@focusDistWithout": {
+    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf Einheiten ohne Fokus",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "progressTitle": "Fortschritte",
+  "@progressTitle": {
+    "description": "Kraft-Auswertung, Block Fortschritte je Übung (16.09.2026) — Titel"
+  },
+  "progressWindow": "4 Wochen",
+  "@progressWindow": {
+    "description": "Kraft-Auswertung, Fortschritte — Fenster rechts neben dem Titel"
+  },
+  "progressWhat": "Hier stehen die Übungen, bei denen du in den letzten 4 Wochen einen neuen Bestwert gesetzt hast — an Gewicht, Wiederholungen oder Haltezeit.",
+  "@progressWhat": {
+    "description": "Kraft-Auswertung, Fortschritte — was der Block zeigen wird (Schwelle)"
+  },
+  "progressCondition": "Erscheint, sobald du eine Übung zum zweiten Mal machst",
+  "@progressCondition": {
+    "description": "Kraft-Auswertung, Fortschritte — Bedingung der Schwelle"
+  },
+  "progressNone": "Kein neuer Bestwert in den letzten 4 Wochen.",
+  "@progressNone": {
+    "description": "Kraft-Auswertung, Fortschritte — gefüllt, aber ohne Bestwert im Fenster"
+  },
+  "progressBasis": "{n, plural, =1{1 Übung verglichen} other{{n} Übungen verglichen}} · {m, plural, =1{1 Einheit} other{{m} Einheiten}} in 4 Wochen",
+  "@progressBasis": {
+    "description": "Kraft-Auswertung, Fortschritte — Grundlage",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "progressOn": "am {date}",
+  "@progressOn": {
+    "description": "Kraft-Auswertung, Fortschritte — Datum der Zeile",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "progressReps": "{v} Wdh",
+  "@progressReps": {
+    "description": "Kraft-Auswertung, Fortschritte — Wert in Wiederholungen",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "progressSeconds": "{v} s",
+  "@progressSeconds": {
+    "description": "Kraft-Auswertung, Fortschritte — Wert in Sekunden",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "progressBefore": "vorher {v}",
+  "@progressBefore": {
+    "description": "Kraft-Auswertung, Fortschritte — vorheriger Bestwert",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "progressRowA11y": "{name}, {value}, vorher {before}, {delta} mehr, am {date}",
+  "@progressRowA11y": {
+    "description": "Kraft-Auswertung, Fortschritte — Vorlesetext einer Zeile",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "before": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "progressOpensExercise": "öffnet Übung",
+  "@progressOpensExercise": {
+    "description": "Kraft-Auswertung, Fortschritte — Zusatz im Vorlesetext einer antippbaren Zeile"
+  },
+  "progressA11yReps": "{n, plural, =1{1 Wiederholung} other{{n} Wiederholungen}}",
+  "@progressA11yReps": {
+    "description": "Kraft-Auswertung, Fortschritte — Wiederholungen ausgeschrieben",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "progressA11ySeconds": "{n, plural, =1{1 Sekunde} other{{n} Sekunden}}",
+  "@progressA11ySeconds": {
+    "description": "Kraft-Auswertung, Fortschritte — Sekunden ausgeschrieben",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "progressA11yKg": "{v} Kilogramm",
+  "@progressA11yKg": {
+    "description": "Kraft-Auswertung, Fortschritte — Kilogramm ausgeschrieben",
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsTitle": "Sätze je Woche",
+  "@weeklySetsTitle": {
+    "description": "Kraft-Auswertung (16.09.2026) — Titel des Blocks Sätze je Woche"
+  },
+  "weeklySetsWhat": "Wie viele Sätze du Woche für Woche machst — und ob diese Woche mehr oder weniger ist als sonst.",
+  "@weeklySetsWhat": {
+    "description": "Kraft-Auswertung — Satz unter dem Titel im Schwellen-Zustand"
+  },
+  "weeklySetsCondition": "Erscheint mit deiner ersten Einheit mit Sätzen",
+  "@weeklySetsCondition": {
+    "description": "Kraft-Auswertung — Bedingung im Schwellen-Zustand"
+  },
+  "weeklySetsWeek": "Diese Woche · KW {week}",
+  "@weeklySetsWeek": {
+    "description": "Kraft-Auswertung — Kopfzeile, Teil 1",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsSessions": "{n, plural, =1{1 Einheit} other{{n} Einheiten}}",
+  "@weeklySetsSessions": {
+    "description": "Kraft-Auswertung — Kopfzeile, Teil 2",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsUnit": "{n, plural, =1{Satz} other{Sätze}}",
+  "@weeklySetsUnit": {
+    "description": "Kraft-Auswertung — Einheit neben der grossen Zahl",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsCount": "{n, plural, =1{1 Satz} other{{n} Sätze}}",
+  "@weeklySetsCount": {
+    "description": "Kraft-Auswertung — Satzzahl im Vorlese-Label",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsBasis": "gegen 4-Wochen-Schnitt {avg} Sätze",
+  "@weeklySetsBasis": {
+    "description": "Kraft-Auswertung — Grundlage der Verschiebung",
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsPending": "{n, plural, =1{Vergleich ab 2 vollen Wochen · noch 1} other{Vergleich ab 2 vollen Wochen · noch {n}}}",
+  "@weeklySetsPending": {
+    "description": "Kraft-Auswertung — statt der Grundlage, solange kein Vergleich möglich ist",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsWithoutSets": "{n, plural, =1{1 Einheit ohne Sätze nicht gezählt} other{{n} Einheiten ohne Sätze nicht gezählt}}",
+  "@weeklySetsWithoutSets": {
+    "description": "Kraft-Auswertung — Hinweis auf Einheiten ohne Sätze im Streifen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsHeadA11y": "Diese Woche, {sets} in {sessions}",
+  "@weeklySetsHeadA11y": {
+    "description": "Kraft-Auswertung — Vorlese-Label von Kopf und Wert",
+    "placeholders": {
+      "sets": {
+        "type": "String"
+      },
+      "sessions": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsShiftA11y": "{delta} {direction} als der 4-Wochen-Schnitt von {avg}",
+  "@weeklySetsShiftA11y": {
+    "description": "Kraft-Auswertung — Verschiebung im Vorlese-Label; direction ist ratioShiftUp oder ratioShiftDown",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "direction": {
+        "type": "String"
+      },
+      "avg": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsShiftEqualA11y": "gleich viel wie der 4-Wochen-Schnitt von {avg}",
+  "@weeklySetsShiftEqualA11y": {
+    "description": "Kraft-Auswertung — keine Verschiebung im Vorlese-Label",
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsStripA11y": "Sätze je Woche: {weeks}",
+  "@weeklySetsStripA11y": {
+    "description": "Kraft-Auswertung — Vorlese-Label des Streifens",
+    "placeholders": {
+      "weeks": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsWeekA11y": "KW {week}: {n}",
+  "@weeklySetsWeekA11y": {
+    "description": "Kraft-Auswertung — eine Woche im Vorlese-Label des Streifens",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsBeforeStartA11y": "KW {week}: vor deiner ersten Einheit",
+  "@weeklySetsBeforeStartA11y": {
+    "description": "Kraft-Auswertung — Woche vor Beginn im Vorlese-Label",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklySetsAxis": "KW {week}",
+  "@weeklySetsAxis": {
+    "description": "Kraft-Auswertung — Achsenbeschriftung unter dem Streifen",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisMaxWhat": "Die Entwicklung deiner stärksten Sätze je Übung, als Schätzung nach Epley.",
+  "@analysisMaxWhat": {
+    "description": "Schwellen-Zustand Geschätztes Maximum (16.09.2026) — was der Block zeigen wird"
+  },
+  "analysisMaxCondition": "Erscheint ab {n} Einheiten einer Übung mit Gewicht und höchstens {reps} Wiederholungen",
+  "@analysisMaxCondition": {
+    "description": "Schwellen-Zustand Geschätztes Maximum (16.09.2026) — Bedingung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisMaxBodyweightNote": "Übungen mit Körpergewicht ohne Zusatzgewicht zählen hier nicht — ihre Fortschritte stehen unter „Fortschritte“.",
+  "@analysisMaxBodyweightNote": {
+    "description": "Schwellen-Zustand Geschätztes Maximum (16.09.2026) — ehrlicher Hinweis zu Körpergewicht"
+  },
+  "wellnessTrendTitle": "Vorher und nachher",
+  "@wellnessTrendTitle": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Titel"
+  },
+  "wellnessTrendWindow": "{weeks} Wochen",
+  "@wellnessTrendWindow": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Fenster rechts neben dem Titel",
+    "placeholders": {
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendWhat": "Bereitschaft vor und Gefühl nach jeder Krafteinheit nebeneinander.",
+  "@wellnessTrendWhat": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Was der Block zeigt, im Schwellen-Zustand"
+  },
+  "wellnessTrendCondition": "Erscheint ab {n} Einheiten mit Bereitschaft und Gefühl danach",
+  "@wellnessTrendCondition": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Bedingung im Schwellen-Zustand",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendLegend": "oben vorher · unten nachher",
+  "@wellnessTrendLegend": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Legende über der Punktreihe"
+  },
+  "wellnessTrendHigher": "{n} nachher höher",
+  "@wellnessTrendHigher": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Zählung: Gefühl nachher höher als Bereitschaft vorher; wertfrei",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendSame": "{n} gleich",
+  "@wellnessTrendSame": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Zählung: gleich",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendLower": "{n} nachher niedriger",
+  "@wellnessTrendLower": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Zählung: nachher niedriger; wertfrei",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendCountsA11y": "Nachher höher: {higher}. Gleich: {same}. Nachher niedriger: {lower}.",
+  "@wellnessTrendCountsA11y": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext der Zählzeile, ohne Glyphen",
+    "placeholders": {
+      "higher": {
+        "type": "int"
+      },
+      "same": {
+        "type": "int"
+      },
+      "lower": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendBasis": "{n} von {total, plural, =1{1 Krafteinheit} other{{total} Krafteinheiten}} mit beiden Angaben · {weeks} Wochen",
+  "@wellnessTrendBasis": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Grundlage mit Nenner",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "weeks": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendOnlyOne": "{n, plural, =1{1 Einheit mit nur einer Angabe ist nicht enthalten} other{{n} Einheiten mit nur einer Angabe sind nicht enthalten}}",
+  "@wellnessTrendOnlyOne": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf ausgelassene Einheiten",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "wellnessTrendPair": "{date}: vorher {before} {beforeWord}, nachher {after} {afterWord}",
+  "@wellnessTrendPair": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Ein Paar im Vorlesetext",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "before": {
+        "type": "int"
+      },
+      "beforeWord": {
+        "type": "String"
+      },
+      "after": {
+        "type": "int"
+      },
+      "afterWord": {
+        "type": "String"
+      }
+    }
+  },
+  "wellnessTrendRowA11y": "Vorher und nachher je Einheit, älteste zuerst. {pairs}",
+  "@wellnessTrendRowA11y": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext der Punktreihe",
+    "placeholders": {
+      "pairs": {
+        "type": "String"
+      }
+    }
+  },
+  "wellnessTrendOpenExercise": "{label}, öffnet Übung",
+  "@wellnessTrendOpenExercise": {
+    "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Übungszeile im Einheitendetail öffnet das Übungsdetail",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
   }
 }

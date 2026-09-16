@@ -8023,6 +8023,350 @@ abstract class AppL10n {
   /// **'{title}. {what} {condition}. Bisher {cur} von {req}.'**
   String thresholdA11y(
       String title, String what, String condition, int cur, int req);
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Titel
+  ///
+  /// In de, this message translates to:
+  /// **'Fokus'**
+  String get focusDistTitle;
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Fenster rechts neben dem Titel
+  ///
+  /// In de, this message translates to:
+  /// **'8 Wochen'**
+  String get focusDistWindow;
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Schwellen-Zustand: was der Block zeigen wird
+  ///
+  /// In de, this message translates to:
+  /// **'Wogegen deine Krafteinheiten gingen — Drücken, Ziehen, Beine und mehr, als Anteil mit Nenner.'**
+  String get focusDistWhat;
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Schwellen-Zustand: Bedingung
+  ///
+  /// In de, this message translates to:
+  /// **'Erscheint ab {n} Einheiten mit Fokus — wählbar beim Start eines Trainings'**
+  String focusDistCondition(int n);
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Anzahl je Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}}'**
+  String focusDistCount(int n);
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — eine Zeile als ein Semantics-Knoten
+  ///
+  /// In de, this message translates to:
+  /// **'{focus}, {n, plural, =1{1 Einheit} other{{n} Einheiten}}, {percent} Prozent'**
+  String focusDistRowA11y(String focus, int n, int percent);
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Grundlage mit Nenner
+  ///
+  /// In de, this message translates to:
+  /// **'{withFocus} von {total} Krafteinheiten mit Fokus · 8 Wochen'**
+  String focusDistBasis(int withFocus, int total);
+
+  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf Einheiten ohne Fokus
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit ohne Fokus ist nicht enthalten} other{{n} Einheiten ohne Fokus sind nicht enthalten}}'**
+  String focusDistWithout(int n);
+
+  /// Kraft-Auswertung, Block Fortschritte je Übung (16.09.2026) — Titel
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritte'**
+  String get progressTitle;
+
+  /// Kraft-Auswertung, Fortschritte — Fenster rechts neben dem Titel
+  ///
+  /// In de, this message translates to:
+  /// **'4 Wochen'**
+  String get progressWindow;
+
+  /// Kraft-Auswertung, Fortschritte — was der Block zeigen wird (Schwelle)
+  ///
+  /// In de, this message translates to:
+  /// **'Hier stehen die Übungen, bei denen du in den letzten 4 Wochen einen neuen Bestwert gesetzt hast — an Gewicht, Wiederholungen oder Haltezeit.'**
+  String get progressWhat;
+
+  /// Kraft-Auswertung, Fortschritte — Bedingung der Schwelle
+  ///
+  /// In de, this message translates to:
+  /// **'Erscheint, sobald du eine Übung zum zweiten Mal machst'**
+  String get progressCondition;
+
+  /// Kraft-Auswertung, Fortschritte — gefüllt, aber ohne Bestwert im Fenster
+  ///
+  /// In de, this message translates to:
+  /// **'Kein neuer Bestwert in den letzten 4 Wochen.'**
+  String get progressNone;
+
+  /// Kraft-Auswertung, Fortschritte — Grundlage
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Übung verglichen} other{{n} Übungen verglichen}} · {m, plural, =1{1 Einheit} other{{m} Einheiten}} in 4 Wochen'**
+  String progressBasis(int n, int m);
+
+  /// Kraft-Auswertung, Fortschritte — Datum der Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'am {date}'**
+  String progressOn(String date);
+
+  /// Kraft-Auswertung, Fortschritte — Wert in Wiederholungen
+  ///
+  /// In de, this message translates to:
+  /// **'{v} Wdh'**
+  String progressReps(String v);
+
+  /// Kraft-Auswertung, Fortschritte — Wert in Sekunden
+  ///
+  /// In de, this message translates to:
+  /// **'{v} s'**
+  String progressSeconds(String v);
+
+  /// Kraft-Auswertung, Fortschritte — vorheriger Bestwert
+  ///
+  /// In de, this message translates to:
+  /// **'vorher {v}'**
+  String progressBefore(String v);
+
+  /// Kraft-Auswertung, Fortschritte — Vorlesetext einer Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, {value}, vorher {before}, {delta} mehr, am {date}'**
+  String progressRowA11y(
+      String name, String value, String before, String delta, String date);
+
+  /// Kraft-Auswertung, Fortschritte — Zusatz im Vorlesetext einer antippbaren Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'öffnet Übung'**
+  String get progressOpensExercise;
+
+  /// Kraft-Auswertung, Fortschritte — Wiederholungen ausgeschrieben
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Wiederholung} other{{n} Wiederholungen}}'**
+  String progressA11yReps(int n);
+
+  /// Kraft-Auswertung, Fortschritte — Sekunden ausgeschrieben
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Sekunde} other{{n} Sekunden}}'**
+  String progressA11ySeconds(int n);
+
+  /// Kraft-Auswertung, Fortschritte — Kilogramm ausgeschrieben
+  ///
+  /// In de, this message translates to:
+  /// **'{v} Kilogramm'**
+  String progressA11yKg(String v);
+
+  /// Kraft-Auswertung (16.09.2026) — Titel des Blocks Sätze je Woche
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze je Woche'**
+  String get weeklySetsTitle;
+
+  /// Kraft-Auswertung — Satz unter dem Titel im Schwellen-Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Wie viele Sätze du Woche für Woche machst — und ob diese Woche mehr oder weniger ist als sonst.'**
+  String get weeklySetsWhat;
+
+  /// Kraft-Auswertung — Bedingung im Schwellen-Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Erscheint mit deiner ersten Einheit mit Sätzen'**
+  String get weeklySetsCondition;
+
+  /// Kraft-Auswertung — Kopfzeile, Teil 1
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche · KW {week}'**
+  String weeklySetsWeek(int week);
+
+  /// Kraft-Auswertung — Kopfzeile, Teil 2
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}}'**
+  String weeklySetsSessions(int n);
+
+  /// Kraft-Auswertung — Einheit neben der grossen Zahl
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{Satz} other{Sätze}}'**
+  String weeklySetsUnit(int n);
+
+  /// Kraft-Auswertung — Satzzahl im Vorlese-Label
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Satz} other{{n} Sätze}}'**
+  String weeklySetsCount(int n);
+
+  /// Kraft-Auswertung — Grundlage der Verschiebung
+  ///
+  /// In de, this message translates to:
+  /// **'gegen 4-Wochen-Schnitt {avg} Sätze'**
+  String weeklySetsBasis(String avg);
+
+  /// Kraft-Auswertung — statt der Grundlage, solange kein Vergleich möglich ist
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{Vergleich ab 2 vollen Wochen · noch 1} other{Vergleich ab 2 vollen Wochen · noch {n}}}'**
+  String weeklySetsPending(int n);
+
+  /// Kraft-Auswertung — Hinweis auf Einheiten ohne Sätze im Streifen
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit ohne Sätze nicht gezählt} other{{n} Einheiten ohne Sätze nicht gezählt}}'**
+  String weeklySetsWithoutSets(int n);
+
+  /// Kraft-Auswertung — Vorlese-Label von Kopf und Wert
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche, {sets} in {sessions}'**
+  String weeklySetsHeadA11y(String sets, String sessions);
+
+  /// Kraft-Auswertung — Verschiebung im Vorlese-Label; direction ist ratioShiftUp oder ratioShiftDown
+  ///
+  /// In de, this message translates to:
+  /// **'{delta} {direction} als der 4-Wochen-Schnitt von {avg}'**
+  String weeklySetsShiftA11y(String delta, String direction, String avg);
+
+  /// Kraft-Auswertung — keine Verschiebung im Vorlese-Label
+  ///
+  /// In de, this message translates to:
+  /// **'gleich viel wie der 4-Wochen-Schnitt von {avg}'**
+  String weeklySetsShiftEqualA11y(String avg);
+
+  /// Kraft-Auswertung — Vorlese-Label des Streifens
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze je Woche: {weeks}'**
+  String weeklySetsStripA11y(String weeks);
+
+  /// Kraft-Auswertung — eine Woche im Vorlese-Label des Streifens
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week}: {n}'**
+  String weeklySetsWeekA11y(int week, int n);
+
+  /// Kraft-Auswertung — Woche vor Beginn im Vorlese-Label
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week}: vor deiner ersten Einheit'**
+  String weeklySetsBeforeStartA11y(int week);
+
+  /// Kraft-Auswertung — Achsenbeschriftung unter dem Streifen
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week}'**
+  String weeklySetsAxis(int week);
+
+  /// Schwellen-Zustand Geschätztes Maximum (16.09.2026) — was der Block zeigen wird
+  ///
+  /// In de, this message translates to:
+  /// **'Die Entwicklung deiner stärksten Sätze je Übung, als Schätzung nach Epley.'**
+  String get analysisMaxWhat;
+
+  /// Schwellen-Zustand Geschätztes Maximum (16.09.2026) — Bedingung
+  ///
+  /// In de, this message translates to:
+  /// **'Erscheint ab {n} Einheiten einer Übung mit Gewicht und höchstens {reps} Wiederholungen'**
+  String analysisMaxCondition(int n, int reps);
+
+  /// Schwellen-Zustand Geschätztes Maximum (16.09.2026) — ehrlicher Hinweis zu Körpergewicht
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen mit Körpergewicht ohne Zusatzgewicht zählen hier nicht — ihre Fortschritte stehen unter „Fortschritte“.'**
+  String get analysisMaxBodyweightNote;
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Titel
+  ///
+  /// In de, this message translates to:
+  /// **'Vorher und nachher'**
+  String get wellnessTrendTitle;
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Fenster rechts neben dem Titel
+  ///
+  /// In de, this message translates to:
+  /// **'{weeks} Wochen'**
+  String wellnessTrendWindow(int weeks);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Was der Block zeigt, im Schwellen-Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Bereitschaft vor und Gefühl nach jeder Krafteinheit nebeneinander.'**
+  String get wellnessTrendWhat;
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Bedingung im Schwellen-Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Erscheint ab {n} Einheiten mit Bereitschaft und Gefühl danach'**
+  String wellnessTrendCondition(int n);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Legende über der Punktreihe
+  ///
+  /// In de, this message translates to:
+  /// **'oben vorher · unten nachher'**
+  String get wellnessTrendLegend;
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Zählung: Gefühl nachher höher als Bereitschaft vorher; wertfrei
+  ///
+  /// In de, this message translates to:
+  /// **'{n} nachher höher'**
+  String wellnessTrendHigher(int n);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Zählung: gleich
+  ///
+  /// In de, this message translates to:
+  /// **'{n} gleich'**
+  String wellnessTrendSame(int n);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Zählung: nachher niedriger; wertfrei
+  ///
+  /// In de, this message translates to:
+  /// **'{n} nachher niedriger'**
+  String wellnessTrendLower(int n);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext der Zählzeile, ohne Glyphen
+  ///
+  /// In de, this message translates to:
+  /// **'Nachher höher: {higher}. Gleich: {same}. Nachher niedriger: {lower}.'**
+  String wellnessTrendCountsA11y(int higher, int same, int lower);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Grundlage mit Nenner
+  ///
+  /// In de, this message translates to:
+  /// **'{n} von {total, plural, =1{1 Krafteinheit} other{{total} Krafteinheiten}} mit beiden Angaben · {weeks} Wochen'**
+  String wellnessTrendBasis(int n, int total, int weeks);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf ausgelassene Einheiten
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Einheit mit nur einer Angabe ist nicht enthalten} other{{n} Einheiten mit nur einer Angabe sind nicht enthalten}}'**
+  String wellnessTrendOnlyOne(int n);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Ein Paar im Vorlesetext
+  ///
+  /// In de, this message translates to:
+  /// **'{date}: vorher {before} {beforeWord}, nachher {after} {afterWord}'**
+  String wellnessTrendPair(
+      String date, int before, String beforeWord, int after, String afterWord);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Vorlesetext der Punktreihe
+  ///
+  /// In de, this message translates to:
+  /// **'Vorher und nachher je Einheit, älteste zuerst. {pairs}'**
+  String wellnessTrendRowA11y(String pairs);
+
+  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Übungszeile im Einheitendetail öffnet das Übungsdetail
+  ///
+  /// In de, this message translates to:
+  /// **'{label}, öffnet Übung'**
+  String wellnessTrendOpenExercise(String label);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -25,16 +25,23 @@ import '../session_ui.dart';
 /// ## Dünn ist sichtbar
 ///
 /// Unter fünf Einheiten je Übung gibt es keine Kurve, sondern den Weg
-/// dorthin: die bis zu drei nächsten Kandidaten mit ihrem Stand. Ohne einen
-/// einzigen zählbaren Satz rendert die Karte nicht — der Bildschirm hört
-/// früher auf.
+/// dorthin: die bis zu drei nächsten Kandidaten mit ihrem Stand.
+///
+/// Ohne einen einzigen zählbaren Satz hängt es am Bildschirm ([alwaysShow]):
+/// Auf Auswertungsbildschirmen rendert jeder Block immer und zeigt dann
+/// [AtemThresholdBlock] mit Bedingung und 0 von 5 (CLAUDE.md, seit
+/// 16.09.2026). Anderswo rendert die Karte nicht.
 class EstimatedMaxCard extends StatefulWidget {
   const EstimatedMaxCard({
     super.key,
     required this.series,
     required this.candidates,
     required this.nameOf,
+    this.alwaysShow = false,
   });
+
+  /// Auch ohne einen einzigen Kandidaten rendern — auf Auswertungsbildschirmen.
+  final bool alwaysShow;
 
   /// Übungen mit mindestens [StrengthProgress.minimumSessions] Einheiten,
   /// sortiert nach Einheiten absteigend.
@@ -73,7 +80,9 @@ class _EstimatedMaxCardState extends State<EstimatedMaxCard> {
         for (final c in widget.candidates)
           if (c.sessionCount < StrengthProgress.minimumSessions) c,
       ]..sort((a, b) => b.sessionCount.compareTo(a.sessionCount));
-      if (thin.isEmpty) return const SizedBox.shrink();
+      if (thin.isEmpty) {
+        return widget.alwaysShow ? const _Threshold() : const SizedBox.shrink();
+      }
       return _Thin(
         candidates: thin.take(EstimatedMaxCard.thinCandidates).toList(),
         nameOf: widget.nameOf,
@@ -347,14 +356,17 @@ class _Thin extends StatelessWidget {
     final l10n = AppL10n.of(context);
     const target = StrengthProgress.minimumSessions;
 
+    // Derselbe Kopf wie der Schwellenblock: Titel des gefüllten Zustands,
+    // darunter was er zeigen wird. Der Weg dorthin je Kandidat.
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Text(l10n.analysisMaxTitle, style: AtemType.titleMedium.of(context)),
+          const SizedBox(height: 8),
           Text(l10n.analysisMaxThinTitle,
-              style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 6),
+              style: AtemType.labelSmall.of(context)),
+          const SizedBox(height: 4),
           Text(
             l10n.analysisMaxThinBody(target, StrengthProgress.maximumReps),
             style: AtemType.labelSmall.of(context),
@@ -364,7 +376,8 @@ class _Thin extends StatelessWidget {
             _Progress(
               text: l10n.analysisMaxProgress(
                   nameOf(c.exerciseId), c.sessionCount, target),
-              value: c.sessionCount / target,
+              current: c.sessionCount,
+              target: target,
             ),
           ],
         ],
@@ -373,25 +386,63 @@ class _Thin extends StatelessWidget {
   }
 }
 
-/// Ein Fortschrittsbalken der Wartezeit — Rolle progressBar mit value/max.
+/// Kein einziger zählbarer Satz — der Schwellenblock, dazu der ehrliche Satz
+/// zu Körpergewicht: Bei Calisthenics tritt die Bedingung sonst nie ein, und
+/// niemand wüsste, warum.
+class _Threshold extends StatelessWidget {
+  const _Threshold();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    const target = StrengthProgress.minimumSessions;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AtemThresholdBlock(
+          title: l10n.analysisMaxTitle,
+          what: l10n.analysisMaxWhat,
+          condition:
+              l10n.analysisMaxCondition(target, StrengthProgress.maximumReps),
+          current: 0,
+          required: target,
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Text(l10n.analysisMaxBodyweightNote,
+              style: AtemType.labelSmall.of(context)),
+        ),
+      ],
+    );
+  }
+}
+
+/// Eine Fortschrittszeile wie im Schwellenblock: Balken, darunter der Stand.
 class _Progress extends StatelessWidget {
-  const _Progress({required this.text, required this.value});
+  const _Progress({
+    required this.text,
+    required this.current,
+    required this.target,
+  });
 
   final String text;
-  final double value;
+  final int current;
+  final int target;
 
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ExcludeSemantics(
-            child: Text(text, style: AtemType.meta.of(context)),
-          ),
-          const SizedBox(height: 8),
           AtemProgressBar.share(
-            value: value.clamp(0.0, 1.0),
+            value: (current / target).clamp(0.0, 1.0),
             semanticLabel: text,
             accent: AtemColors.cyan,
+          ),
+          const SizedBox(height: 8),
+          ExcludeSemantics(
+            child: Text(text, style: AtemType.meta.of(context)),
           ),
         ],
       );

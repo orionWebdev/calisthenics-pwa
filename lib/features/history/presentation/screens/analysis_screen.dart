@@ -9,7 +9,11 @@ import '../../application/history_providers.dart';
 import '../../domain/muscle_balance.dart';
 import '../../domain/strength_progress.dart';
 import '../widgets/estimated_max_card.dart';
+import '../widgets/exercise_progress_card.dart';
+import '../widgets/focus_distribution_card.dart';
 import '../widgets/muscle_balance_card.dart';
+import '../widgets/weekly_sets_card.dart';
+import '../widgets/wellness_trend_card.dart';
 import 'session_list_screen.dart';
 
 /// Die Kraft-Auswertung — **zwei Blöcke, die man nachrechnen kann.**
@@ -110,19 +114,34 @@ class AnalysisScreen extends ConsumerWidget {
             final candidates =
                 StrengthProgress.compute(sessions, minimumSessions: 1);
 
+            // **Jeder Block rendert immer** (CLAUDE.md, seit 16.09.2026):
+            // Unter seiner Schwelle sagt er, was er zeigen wird und ab wann.
+            // Reihenfolge nach der Frage, die jemand zuerst hat — was ist
+            // besser geworden, wie viel trainiere ich, worauf, wie fühlt es
+            // sich an —, die Schätzung zuletzt, weil sie am meisten
+            // voraussetzt.
+            final blocks = <Widget>[
+              ExerciseProgressCard(sessions: sessions, reference: reference),
+              WeeklySetsCard(sessions: sessions, reference: reference),
+              MuscleBalanceTile(balance: balance, alwaysShow: true),
+              FocusDistributionCard(sessions: sessions, reference: reference),
+              WellnessTrendCard(sessions: sessions, reference: reference),
+              EstimatedMaxCard(
+                series: series,
+                candidates: candidates,
+                nameOf: nameOf,
+                alwaysShow: true,
+              ),
+            ];
+
             return ListView(
               padding: const EdgeInsets.fromLTRB(
                   AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
               children: [
-                // Dieselbe Kachel wie im Kraft-Tab: Die Details stehen an
-                // genau einer Stelle, der Unterseite.
-                MuscleBalanceTile(balance: balance),
-                const SizedBox(height: 28),
-                EstimatedMaxCard(
-                  series: series,
-                  candidates: candidates,
-                  nameOf: nameOf,
-                ),
+                for (var i = 0; i < blocks.length; i++) ...[
+                  if (i > 0) const SizedBox(height: AtemSpacing.cardGap),
+                  AtemEntrance(index: i, child: blocks[i]),
+                ],
               ],
             );
           },

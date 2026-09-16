@@ -4958,4 +4958,348 @@ class AppL10nEn extends AppL10n {
       String title, String what, String condition, int cur, int req) {
     return '$title. $what $condition. So far $cur of $req.';
   }
+
+  @override
+  String get focusDistTitle => 'Focus';
+
+  @override
+  String get focusDistWindow => '8 weeks';
+
+  @override
+  String get focusDistWhat =>
+      'What your strength workouts targeted — push, pull, legs and more, as a share with its basis.';
+
+  @override
+  String focusDistCondition(int n) {
+    return 'Appears from $n workouts with a focus — chosen when starting a workout';
+  }
+
+  @override
+  String focusDistCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts',
+      one: '1 workout',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String focusDistRowA11y(String focus, int n, int percent) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts',
+      one: '1 workout',
+    );
+    return '$focus, $_temp0, $percent percent';
+  }
+
+  @override
+  String focusDistBasis(int withFocus, int total) {
+    return '$withFocus of $total strength workouts with a focus · 8 weeks';
+  }
+
+  @override
+  String focusDistWithout(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts without a focus are not included',
+      one: '1 workout without a focus is not included',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get progressTitle => 'Progress';
+
+  @override
+  String get progressWindow => '4 weeks';
+
+  @override
+  String get progressWhat =>
+      'This lists the exercises where you set a new best in the last 4 weeks — by weight, reps or hold time.';
+
+  @override
+  String get progressCondition =>
+      'Appears once you do an exercise for the second time';
+
+  @override
+  String get progressNone => 'No new best in the last 4 weeks.';
+
+  @override
+  String progressBasis(int n, int m) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n exercises compared',
+      one: '1 exercise compared',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      m,
+      locale: localeName,
+      other: '$m workouts',
+      one: '1 workout',
+    );
+    return '$_temp0 · $_temp1 in 4 weeks';
+  }
+
+  @override
+  String progressOn(String date) {
+    return 'on $date';
+  }
+
+  @override
+  String progressReps(String v) {
+    return '$v reps';
+  }
+
+  @override
+  String progressSeconds(String v) {
+    return '$v s';
+  }
+
+  @override
+  String progressBefore(String v) {
+    return 'before $v';
+  }
+
+  @override
+  String progressRowA11y(
+      String name, String value, String before, String delta, String date) {
+    return '$name, $value, before $before, $delta more, on $date';
+  }
+
+  @override
+  String get progressOpensExercise => 'opens exercise';
+
+  @override
+  String progressA11yReps(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n reps',
+      one: '1 rep',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String progressA11ySeconds(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n seconds',
+      one: '1 second',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String progressA11yKg(String v) {
+    return '$v kilograms';
+  }
+
+  @override
+  String get weeklySetsTitle => 'Sets per week';
+
+  @override
+  String get weeklySetsWhat =>
+      'How many sets you do week by week — and whether this week is more or less than usual.';
+
+  @override
+  String get weeklySetsCondition => 'Appears with your first workout with sets';
+
+  @override
+  String weeklySetsWeek(int week) {
+    return 'This week · week $week';
+  }
+
+  @override
+  String weeklySetsSessions(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts',
+      one: '1 workout',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weeklySetsUnit(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'sets',
+      one: 'set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weeklySetsCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n sets',
+      one: '1 set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weeklySetsBasis(String avg) {
+    return 'vs. 4-week average $avg sets';
+  }
+
+  @override
+  String weeklySetsPending(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Comparison after 2 full weeks · $n to go',
+      one: 'Comparison after 2 full weeks · 1 to go',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weeklySetsWithoutSets(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts without sets not counted',
+      one: '1 workout without sets not counted',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weeklySetsHeadA11y(String sets, String sessions) {
+    return 'This week, $sets in $sessions';
+  }
+
+  @override
+  String weeklySetsShiftA11y(String delta, String direction, String avg) {
+    return '$delta $direction than the 4-week average of $avg';
+  }
+
+  @override
+  String weeklySetsShiftEqualA11y(String avg) {
+    return 'the same as the 4-week average of $avg';
+  }
+
+  @override
+  String weeklySetsStripA11y(String weeks) {
+    return 'Sets per week: $weeks';
+  }
+
+  @override
+  String weeklySetsWeekA11y(int week, int n) {
+    return 'Week $week: $n';
+  }
+
+  @override
+  String weeklySetsBeforeStartA11y(int week) {
+    return 'Week $week: before your first workout';
+  }
+
+  @override
+  String weeklySetsAxis(int week) {
+    return 'Wk $week';
+  }
+
+  @override
+  String get analysisMaxWhat =>
+      'How your strongest sets develop per exercise, estimated with Epley.';
+
+  @override
+  String analysisMaxCondition(int n, int reps) {
+    return 'Appears from $n workouts of one exercise with weight and at most $reps reps';
+  }
+
+  @override
+  String get analysisMaxBodyweightNote =>
+      'Bodyweight exercises without added weight do not count here — their progress is listed under “Progress”.';
+
+  @override
+  String get wellnessTrendTitle => 'Before and after';
+
+  @override
+  String wellnessTrendWindow(int weeks) {
+    return '$weeks weeks';
+  }
+
+  @override
+  String get wellnessTrendWhat =>
+      'Readiness before and feeling after each strength workout, side by side.';
+
+  @override
+  String wellnessTrendCondition(int n) {
+    return 'Appears from $n workouts with readiness and feeling after';
+  }
+
+  @override
+  String get wellnessTrendLegend => 'top before · bottom after';
+
+  @override
+  String wellnessTrendHigher(int n) {
+    return '$n higher after';
+  }
+
+  @override
+  String wellnessTrendSame(int n) {
+    return '$n the same';
+  }
+
+  @override
+  String wellnessTrendLower(int n) {
+    return '$n lower after';
+  }
+
+  @override
+  String wellnessTrendCountsA11y(int higher, int same, int lower) {
+    return 'Higher after: $higher. The same: $same. Lower after: $lower.';
+  }
+
+  @override
+  String wellnessTrendBasis(int n, int total, int weeks) {
+    String _temp0 = intl.Intl.pluralLogic(
+      total,
+      locale: localeName,
+      other: '$total strength workouts',
+      one: '1 strength workout',
+    );
+    return '$n of $_temp0 with both answers · $weeks weeks';
+  }
+
+  @override
+  String wellnessTrendOnlyOne(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts with only one answer are not included',
+      one: '1 workout with only one answer is not included',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String wellnessTrendPair(
+      String date, int before, String beforeWord, int after, String afterWord) {
+    return '$date: before $before $beforeWord, after $after $afterWord';
+  }
+
+  @override
+  String wellnessTrendRowA11y(String pairs) {
+    return 'Before and after per workout, oldest first. $pairs';
+  }
+
+  @override
+  String wellnessTrendOpenExercise(String label) {
+    return '$label, opens exercise';
+  }
 }

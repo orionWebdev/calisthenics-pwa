@@ -19,6 +19,7 @@ import '../../../cardio/presentation/cardio_ui.dart';
 import '../../../cardio/presentation/widgets/intensity_box.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../exercises/domain/exercise.dart';
+import '../../../exercises/presentation/screens/exercise_detail_screen.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
 import '../../../exercises/presentation/widgets/exercise_bits.dart';
 import '../widgets/acwr_scale.dart';
@@ -91,9 +92,9 @@ class SessionDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 6),
                     Text(
                       (minutes == null
-                              ? sessionKindLabel(l10n, session)
-                              : l10n.detailSubtitle(
-                                  sessionKindLabel(l10n, session), minutes)),
+                          ? sessionKindLabel(l10n, session)
+                          : l10n.detailSubtitle(
+                              sessionKindLabel(l10n, session), minutes)),
                       style: AtemType.meta.of(context),
                     ),
                   ],
@@ -210,7 +211,8 @@ class SessionDetailScreen extends ConsumerWidget {
             const SizedBox(height: 32),
             AtemButton.outline(
               label: l10n.commonEdit,
-              semanticLabel: '${l10n.commonEdit}: ${sessionName(l10n, session)}',
+              semanticLabel:
+                  '${l10n.commonEdit}: ${sessionName(l10n, session)}',
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => SessionEditScreen(session: session),
@@ -265,10 +267,8 @@ class SessionDetailScreen extends ConsumerWidget {
             PlanItem(
               exerciseId: exercise.exerciseId,
               sets: exercise.sets.where((s) => !s.isEmpty).length,
-              reps: exercise.sets
-                  .firstWhere((s) => !s.isEmpty)
-                  .reps
-                  ?.toString(),
+              reps:
+                  exercise.sets.firstWhere((s) => !s.isEmpty).reps?.toString(),
             ),
       ],
     );
@@ -396,8 +396,8 @@ class _Contribution extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(label,
-                            style: AtemType.labelSmall.of(context)),
+                        child:
+                            Text(label, style: AtemType.labelSmall.of(context)),
                       ),
                       const SizedBox(width: 10),
                       Text(value,
@@ -438,8 +438,8 @@ class _Neighbours extends StatelessWidget {
 
     int days(TrainingSession other) =>
         (DateTime(other.date.year, other.date.month, other.date.day)
-                    .difference(DateTime(
-                        session.date.year, session.date.month, session.date.day))
+                    .difference(DateTime(session.date.year, session.date.month,
+                        session.date.day))
                     .inHours /
                 24)
             .round();
@@ -536,7 +536,10 @@ class _Stats extends StatelessWidget {
             c.distanceKm == null ? null : formatKm(context, c.distanceKm!)
           ),
           (l10n.detailLoad, loadText),
-          (l10n.formPace, c.tempo == null ? null : formatTempo(context, c.tempo!)),
+          (
+            l10n.formPace,
+            c.tempo == null ? null : formatTempo(context, c.tempo!)
+          ),
         ],
       _ => <(String, String?)>[
           (l10n.detailStatMinutes, minutes?.toString()),
@@ -593,16 +596,15 @@ class _StatTile extends StatelessWidget {
     final missing = value == null;
 
     return Semantics(
-      label: missing
-          ? '$label, ${l10n.intensityNoneA11y}'
-          : '$label: $value',
+      label: missing ? '$label, ${l10n.intensityNoneA11y}' : '$label: $value',
       child: ExcludeSemantics(
         child: CustomPaint(
           foregroundPainter: missing ? _DashedFrame() : null,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
             decoration: BoxDecoration(
-              color: missing ? AtemColors.surfaceSolid : AtemColors.surfaceRaised,
+              color:
+                  missing ? AtemColors.surfaceSolid : AtemColors.surfaceRaised,
               borderRadius: AtemRadii.statBoxR,
               border: missing ? null : Border.all(color: AtemColors.border),
             ),
@@ -707,56 +709,82 @@ class _ExerciseRow extends ConsumerWidget {
         l10n.restSeconds(holds.reduce((a, b) => a > b ? a : b)),
     ].join(' · ');
 
-    return Semantics(
-      label: [
-        name,
-        if (muscle != null) muscle.label(l10n),
-        if (scheme.isNotEmpty) scheme,
-      ].join(', '),
-      child: ExcludeSemantics(
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 56),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Row(
-            children: [
-              MuscleTile(name: name, color: color),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AtemType.titleSmallOrDefault(context)),
-                    if (muscle != null) ...[
-                      const SizedBox(height: 2),
-                      Text(muscle.label(l10n).toUpperCase(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AtemType.labelMicro.of(context)),
-                    ],
-                  ],
-                ),
-              ),
-              if (scheme.isNotEmpty) ...[
-                const SizedBox(width: 10),
-                // Bei 200 % darf das Schema umbrechen — der Name geht vor.
-                Flexible(
-                  child: Text(
-                    scheme,
-                    textAlign: TextAlign.end,
-                    style: AtemType.valueMedium
-                        .of(context)
-                        .copyWith(fontSize: 13),
-                  ),
-                ),
+    final label = [
+      name,
+      if (muscle != null) muscle.label(l10n),
+      if (scheme.isNotEmpty) scheme,
+    ].join(', ');
+
+    final row = Container(
+      constraints: const BoxConstraints(minHeight: 56),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Row(
+        children: [
+          MuscleTile(name: name, color: color),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.titleSmallOrDefault(context)),
+                if (muscle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(muscle.label(l10n).toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AtemType.labelMicro.of(context)),
+                ],
               ],
-            ],
+            ),
           ),
+          if (scheme.isNotEmpty) ...[
+            const SizedBox(width: 10),
+            // Bei 200 % darf das Schema umbrechen — der Name geht vor.
+            Flexible(
+              child: Text(
+                scheme,
+                textAlign: TextAlign.end,
+                style: AtemType.valueMedium.of(context).copyWith(fontSize: 13),
+              ),
+            ),
+          ],
+          if (entry != null) ...[
+            const SizedBox(width: 4),
+            // Der Pfeil zeigt den Weg; die Ansage sagt ihn in Worten.
+            const ExcludeSemantics(
+              child: Icon(Icons.chevron_right,
+                  size: 20, color: AtemColors.textSecondary),
+            ),
+          ],
+        ],
+      ),
+    );
+
+    // Unbekannte Übung — etwa gelöscht oder nie synchronisiert: Die Zeile
+    // bleibt Anzeige. Ein Weg ins Leere wäre schlimmer als keiner.
+    if (entry == null) {
+      return Semantics(
+        container: true,
+        label: label,
+        child: ExcludeSemantics(child: row),
+      );
+    }
+
+    // Der Weg zum Übungsverlauf (16.09.2026): Bis dahin erreichte man
+    // „Du mit dieser Übung" nur über die Übungsliste im Kraft-Tab.
+    return AtemTappable(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ExerciseDetailScreen(exercise: entry),
         ),
       ),
+      semanticLabel: l10n.wellnessTrendOpenExercise(label),
+      alignment: Alignment.centerLeft,
+      child: row,
     );
   }
 

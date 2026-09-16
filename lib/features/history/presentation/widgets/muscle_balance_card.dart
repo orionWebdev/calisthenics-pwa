@@ -25,7 +25,10 @@ const double _stackedFromScale = 1.6;
 /// Kachel ist ein Einstieg, keine Aussage — der Fehlerzustand gehört auf die
 /// Unterseite, wo die Aussage steht.
 class MuscleBalanceEntry extends ConsumerWidget {
-  const MuscleBalanceEntry({super.key});
+  const MuscleBalanceEntry({super.key, this.alwaysShow = false});
+
+  /// Siehe [MuscleBalanceTile.alwaysShow].
+  final bool alwaysShow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,16 +51,27 @@ class MuscleBalanceEntry extends ConsumerWidget {
       exercises.value ?? const [],
       ref.watch(historyReferenceProvider),
     );
-    return MuscleBalanceTile(balance: balance);
+    return MuscleBalanceTile(balance: balance, alwaysShow: alwaysShow);
   }
 }
 
 /// Die kompakte Kachel (Board 11, A1): Titel, Fenster, Segmentbalken,
 /// Grundlage — die ganze Fläche öffnet die Unterseite.
 class MuscleBalanceTile extends StatelessWidget {
-  const MuscleBalanceTile({super.key, required this.balance, this.onOpen});
+  const MuscleBalanceTile({
+    super.key,
+    required this.balance,
+    this.onOpen,
+    this.alwaysShow = false,
+  });
 
   final MuscleBalance balance;
+
+  /// Auch ohne Einheit im Fenster rendern — dann als dünner Zustand „0 / 8".
+  ///
+  /// Auf Auswertungsbildschirmen rendert jeder Block immer (CLAUDE.md, seit
+  /// 16.09.2026); im Kraft-Tab gilt weiter: ohne Daten kein Block.
+  final bool alwaysShow;
 
   /// Ohne Rückruf öffnet die Kachel [MuscleBalanceScreen] auf dem nächsten
   /// Navigator — im Kraft-Tab ist das der Stapel des Tabs.
@@ -65,8 +79,11 @@ class MuscleBalanceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Kein Bestand im Fenster: Der Block rendert nicht. Kein „Leg los!".
-    if (balance.sessionsInWindow == 0) return const SizedBox.shrink();
+    // Kein Bestand im Fenster: ausserhalb von Auswertungen rendert der Block
+    // nicht. Kein „Leg los!".
+    if (balance.sessionsInWindow == 0 && !alwaysShow) {
+      return const SizedBox.shrink();
+    }
 
     final l10n = AppL10n.of(context);
     final enough = balance.hasEnough;

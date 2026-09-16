@@ -1,6 +1,7 @@
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/exercises/domain/muscle.dart';
 import 'package:atem/features/history/domain/muscle_balance.dart';
+import 'package:atem/features/history/presentation/screens/muscle_balance_screen.dart';
 import 'package:atem/features/history/presentation/widgets/muscle_balance_card.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
@@ -154,6 +155,47 @@ void main() {
       );
       await _pump(tester, const MuscleBalanceTile(balance: none));
       expect(find.text('Muskelbalance'), findsNothing);
+    });
+
+    testWidgets('mit alwaysShow ohne Einheit der dünne Zustand 0 / 8',
+        (tester) async {
+      const none = MuscleBalance(
+        shares: [],
+        windowDays: 56,
+        sessionsInWindow: 0,
+        sessionsCounted: 0,
+        sessionsWithoutExercises: 0,
+        unresolvedExerciseIds: {},
+      );
+      await _pump(
+          tester, const MuscleBalanceTile(balance: none, alwaysShow: true));
+      expect(find.text('Muskelbalance'), findsOneWidget);
+      expect(find.text('0 / 8 · noch 8 Einheiten'), findsOneWidget);
+      // Weiter antippbar: öffnet die Unterseite.
+      await tester.tap(find.text('Muskelbalance'));
+      await tester.pumpAndSettle();
+      expect(find.byType(MuscleBalanceScreen), findsOneWidget);
+    });
+
+    testWidgets('alwaysShow mit Daten ändert nichts', (tester) async {
+      await _pump(
+          tester, MuscleBalanceTile(balance: _thin(), alwaysShow: true));
+      expect(find.text('5 / 8 · noch 3 Einheiten'), findsOneWidget);
+    });
+
+    testWidgets('alwaysShow ohne Einheit bei 200 % auf 320 dp', (tester) async {
+      const none = MuscleBalance(
+        shares: [],
+        windowDays: 56,
+        sessionsInWindow: 0,
+        sessionsCounted: 0,
+        sessionsWithoutExercises: 0,
+        unresolvedExerciseIds: {},
+      );
+      await _pump(
+          tester, const MuscleBalanceTile(balance: none, alwaysShow: true),
+          scale: 2, width: 320);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('bei 200 % auf 320 dp ohne Überlauf', (tester) async {
