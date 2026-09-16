@@ -11,6 +11,7 @@ import '../session_ui.dart';
 import '../widgets/month_strip.dart';
 import '../widgets/statement_card.dart';
 import 'analysis_screen.dart';
+import 'session_detail_screen.dart';
 import 'session_list_screen.dart';
 
 /// Der Verlaufs-Tab.
@@ -202,38 +203,46 @@ class _SessionRow extends StatelessWidget {
     final name = sessionName(l10n, session);
     final minutes = session.duration?.inMinutes;
 
-    return Semantics(
-      label: [
+    // Eine Zeile ist ein Weg ins Detail — wie in der Einheitenliste. Vorher
+    // war sie stumm: Antippen tat nichts, und das las sich wie ein Hänger.
+    return AtemTappable(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => SessionDetailScreen(session: session),
+        ),
+      ),
+      semanticLabel: [
         date,
         name,
         if (minutes != null) l10n.durationMinutes(minutes),
+        l10n.listOpenDetail,
       ].join(', '),
-      child: ExcludeSemantics(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 76,
-                child: Text(date, style: AtemType.meta.of(context)),
+      minTapSize: const Size(0, 56),
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 76,
+              child: Text(date, style: AtemType.meta.of(context)),
+            ),
+            Expanded(
+              child: Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AtemType.titleSmallOrDefault(context),
               ),
-              Expanded(
-                child: Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AtemType.titleSmallOrDefault(context),
-                ),
-              ),
-              if (minutes != null) ...[
-                const SizedBox(width: 8),
-                Text(l10n.durationMinutes(minutes),
-                    style: AtemType.labelMicro
-                        .of(context)
-                        .copyWith(letterSpacing: 0)),
-              ],
+            ),
+            if (minutes != null) ...[
+              const SizedBox(width: 8),
+              Text(l10n.durationMinutes(minutes),
+                  style: AtemType.labelMicro
+                      .of(context)
+                      .copyWith(letterSpacing: 0)),
             ],
-          ),
+          ],
         ),
       ),
     );

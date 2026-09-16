@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,6 +22,15 @@ import '../../../cardio/presentation/cardio_ui.dart';
 /// Die Zeilen sind Wege (Sektion A): Kraft führt in den Kraft-Tab, Segment
 /// Verlauf; Ausdauer in den Cardio-Tab, Segment Auswertung. Der Zielort steht
 /// im Label, weil der Tap den Tab wechselt.
+///
+/// ## Eine Spur genügt (seit 16.09.2026)
+///
+/// C1/2 sah vor, dass der Block ohne die zweite Spur nicht rendert und ein
+/// Kraft-Wochenblock an seine Stelle tritt. Am Gerät wirkte das wie ein
+/// anderes Widget für dieselbe Frage. Jetzt steht der Block, sobald eine Spur
+/// Minuten trägt: Die fehlende Spur ist im Balken eine 2-dp-Linie in
+/// `border` — „gemessen: 0", nicht „nichts gemessen" — und ihre Zeile nennt
+/// 0 % und 0 min. Kein Sollverhältnis, keine Aufforderung.
 class RatioBlock extends ConsumerWidget {
   const RatioBlock({super.key, required this.ratio});
 
@@ -34,7 +45,9 @@ class RatioBlock extends ConsumerWidget {
     final week = IsoWeek.number(r.weekStart);
     final shift = r.shiftPp;
 
-    final strengthShare = r.strengthShare.clamp(_minShare, 1 - _minShare);
+    final strengthShare = r.hasBothTracks
+        ? r.strengthShare.clamp(_minShare, 1 - _minShare)
+        : r.strengthShare;
 
     return AtemCard.list(
       padding: const EdgeInsets.all(14),
@@ -77,27 +90,18 @@ class RatioBlock extends ConsumerWidget {
               child: SizedBox(
                 height: 14,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      flex: (strengthShare * 1000).round(),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: AtemColors.cyan,
-                          borderRadius: BorderRadius.circular(AtemRadii.pill),
-                        ),
-                        child: const SizedBox.expand(),
-                      ),
+                    _Segment(
+                      color: AtemColors.cyan,
+                      share: strengthShare,
+                      empty: r.strength.minutes == 0,
                     ),
                     const SizedBox(width: 3),
-                    Expanded(
-                      flex: ((1 - strengthShare) * 1000).round(),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: AtemColors.violet,
-                          borderRadius: BorderRadius.circular(AtemRadii.pill),
-                        ),
-                        child: const SizedBox.expand(),
-                      ),
+                    _Segment(
+                      color: AtemColors.violet,
+                      share: 1 - strengthShare,
+                      empty: r.cardio.minutes == 0,
                     ),
                   ],
                 ),
@@ -156,6 +160,47 @@ class RatioBlock extends ConsumerWidget {
                 .copyWith(color: AtemColors.textTertiary),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Ein Segment des Verhältnisbalkens.
+///
+/// Mit Minuten: eine Fläche in der Spurfarbe, Anteil nach Zeit. Ohne Minuten:
+/// eine 24 dp breite, 2 dp hohe Linie in `border` — der leere Balken aus
+/// Modul 11, kein Nullbalken und keine Lücke.
+class _Segment extends StatelessWidget {
+  const _Segment({
+    required this.color,
+    required this.share,
+    required this.empty,
+  });
+
+  final Color color;
+  final double share;
+  final bool empty;
+
+  @override
+  Widget build(BuildContext context) {
+    if (empty) {
+      return Container(
+        width: 24,
+        height: 2,
+        decoration: BoxDecoration(
+          color: AtemColors.border,
+          borderRadius: BorderRadius.circular(1),
+        ),
+      );
+    }
+    return Expanded(
+      flex: math.max(1, (share * 1000).round()),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(AtemRadii.pill),
+        ),
+        child: const SizedBox.expand(),
       ),
     );
   }

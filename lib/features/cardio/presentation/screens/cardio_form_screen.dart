@@ -68,7 +68,6 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
   late final TextEditingController _duration;
   late final TextEditingController _avgHr;
   late final TextEditingController _maxHr;
-  late final TextEditingController _notes;
   int? _rpe;
   int? _readiness;
   int? _feeling;
@@ -93,11 +92,11 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
     _preciseDuration = prefill?.duration;
     _distance = TextEditingController(text: prefill?.distanceText ?? '');
     _duration = TextEditingController(
-      text: prefill == null ? '' : '${(prefill.duration.inSeconds / 60).round()}',
+      text:
+          prefill == null ? '' : '${(prefill.duration.inSeconds / 60).round()}',
     );
     _avgHr = TextEditingController();
     _maxHr = TextEditingController();
-    _notes = TextEditingController();
     if (prefill != null) _dirty = true;
   }
 
@@ -107,7 +106,6 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
     _duration.dispose();
     _avgHr.dispose();
     _maxHr.dispose();
-    _notes.dispose();
     super.dispose();
   }
 
@@ -202,7 +200,6 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
       date: _date,
       duration: _durationValue!,
       durationHasSeconds: _preciseDuration != null,
-      notes: _notes.text,
       rpe: _rpe,
       preWorkoutReadiness: _readiness,
       postWorkoutFeeling: _feeling,
@@ -269,8 +266,7 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
       (_readiness == null ? 0 : 1) +
       (_feeling == null ? 0 : 1) +
       (_intOf(_avgHr) == null ? 0 : 1) +
-      (_intOf(_maxHr) == null ? 0 : 1) +
-      (_notes.text.trim().isEmpty ? 0 : 1);
+      (_intOf(_maxHr) == null ? 0 : 1);
 
   void _switchToLive() {
     // Dasselbe Formular am Ende — der Weg dorthin ersetzt diesen Bildschirm,
@@ -307,7 +303,8 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
           leading: AtemTappable(
             onTap: () => Navigator.of(context).maybePop(),
             semanticLabel: l10n.commonClose,
-            child: const Icon(Icons.close, size: 22, color: AtemColors.textPrimary),
+            child: const Icon(Icons.close,
+                size: 22, color: AtemColors.textPrimary),
           ),
           title: Text(l10n.cardioFormTitle,
               style: AtemType.titleMedium.of(context)),
@@ -343,102 +340,103 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                    AtemFieldLabel(label: l10n.formDate),
-                    _PickField(
-                      text: DateFormat.yMMMEd(tag).format(_date),
-                      badge: isToday ? l10n.formToday : null,
-                      icon: Icons.event,
-                      semanticLabel:
-                          '${l10n.formDate}: ${DateFormat.yMMMMEEEEd(tag).format(_date)}',
-                      onTap: _pickDate,
-                    ),
-                    const SizedBox(height: 20),
-
-                    AtemFieldLabel(label: l10n.formActivity),
-                    _PickField(
-                      text: _activity == null
-                          ? l10n.commonSelect
-                          : activityLabel(l10n, _activity),
-                      icon: Icons.expand_more,
-                      hasError: _showFaults && _activity == null,
-                      errorText: _showFaults && _activity == null
-                          ? l10n.formActivityRequired
-                          : null,
-                      semanticLabel: _activity == null
-                          ? '${l10n.formActivity}: ${l10n.commonSelect}'
-                          : '${l10n.formActivity}: ${activityLabel(l10n, _activity)}',
-                      onTap: _pickActivity,
-                    ),
-                    const SizedBox(height: 20),
-
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
+                          AtemFieldLabel(label: l10n.formDate),
+                          _PickField(
+                            text: DateFormat.yMMMEd(tag).format(_date),
+                            badge: isToday ? l10n.formToday : null,
+                            icon: Icons.event,
+                            semanticLabel:
+                                '${l10n.formDate}: ${DateFormat.yMMMMEEEEd(tag).format(_date)}',
+                            onTap: _pickDate,
+                          ),
+                          const SizedBox(height: 20),
+                          AtemFieldLabel(label: l10n.formActivity),
+                          _PickField(
+                            text: _activity == null
+                                ? l10n.commonSelect
+                                : activityLabel(l10n, _activity),
+                            icon: Icons.expand_more,
+                            hasError: _showFaults && _activity == null,
+                            errorText: _showFaults && _activity == null
+                                ? l10n.formActivityRequired
+                                : null,
+                            semanticLabel: _activity == null
+                                ? '${l10n.formActivity}: ${l10n.commonSelect}'
+                                : '${l10n.formActivity}: ${activityLabel(l10n, _activity)}',
+                            onTap: _pickActivity,
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AtemFieldLabel(label: l10n.formDistance),
-                              AtemNumberField(
-                                controller: _distance,
-                                semanticLabel: l10n.formDistance,
-                                width: null,
-                                decimal: true,
-                                hasError: _showFaults && _distanceInvalid,
-                                onChanged: (_) {
-                                  _touch();
-                                  setState(() {});
-                                },
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AtemFieldLabel(label: l10n.formDistance),
+                                    AtemNumberField(
+                                      controller: _distance,
+                                      semanticLabel: l10n.formDistance,
+                                      width: null,
+                                      decimal: true,
+                                      hasError: _showFaults && _distanceInvalid,
+                                      onChanged: (_) {
+                                        _touch();
+                                        setState(() {});
+                                      },
+                                    ),
+                                    if (_showFaults && _distanceInvalid) ...[
+                                      const SizedBox(height: 6),
+                                      Text(l10n.formDistanceInvalid,
+                                          style: AtemType.meta
+                                              .of(context)
+                                              .copyWith(
+                                                  color: AtemColors.magenta)),
+                                    ],
+                                  ],
+                                ),
                               ),
-                              if (_showFaults && _distanceInvalid) ...[
-                                const SizedBox(height: 6),
-                                Text(l10n.formDistanceInvalid,
-                                    style: AtemType.meta
-                                        .of(context)
-                                        .copyWith(color: AtemColors.magenta)),
-                              ],
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AtemFieldLabel(label: l10n.formDuration),
+                                    AtemNumberField(
+                                      controller: _duration,
+                                      semanticLabel: l10n.formDuration,
+                                      width: null,
+                                      decimal: false,
+                                      hasError:
+                                          _showFaults && _durationValue == null,
+                                      onChanged: (_) {
+                                        _touch();
+                                        // Getippt schlägt gemessen: Ab jetzt
+                                        // gilt die Minutenzahl.
+                                        _preciseDuration = null;
+                                        setState(() {});
+                                      },
+                                    ),
+                                    if (_showFaults &&
+                                        _durationValue == null) ...[
+                                      const SizedBox(height: 6),
+                                      Text(l10n.formDurationRequired,
+                                          style: AtemType.meta
+                                              .of(context)
+                                              .copyWith(
+                                                  color: AtemColors.magenta)),
+                                    ],
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AtemFieldLabel(label: l10n.formDuration),
-                              AtemNumberField(
-                                controller: _duration,
-                                semanticLabel: l10n.formDuration,
-                                width: null,
-                                decimal: false,
-                                hasError:
-                                    _showFaults && _durationValue == null,
-                                onChanged: (_) {
-                                  _touch();
-                                  // Getippt schlägt gemessen: Ab jetzt
-                                  // gilt die Minutenzahl.
-                                  _preciseDuration = null;
-                                  setState(() {});
-                                },
-                              ),
-                              if (_showFaults && _durationValue == null) ...[
-                                const SizedBox(height: 6),
-                                Text(l10n.formDurationRequired,
-                                    style: AtemType.meta
-                                        .of(context)
-                                        .copyWith(color: AtemColors.magenta)),
-                              ],
-                            ],
+                          const SizedBox(height: 14),
+                          TempoOutput(
+                            tempo: tempo,
+                            label: l10n.formPace,
+                            note: l10n.formPaceComputed,
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-                    TempoOutput(
-                      tempo: tempo,
-                      label: l10n.formPace,
-                      note: l10n.formPaceComputed,
-                    ),
                         ],
                       ),
                     ),
@@ -451,98 +449,92 @@ class _CardioFormScreenState extends ConsumerState<CardioFormScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                    _MoreSection(
-                      open: _moreOpen,
-                      count: 6,
-                      onToggle: () => setState(() => _moreOpen = !_moreOpen),
-                    ),
-                    if (_moreOpen) ...[
-                      const SizedBox(height: 16),
-                      AtemFieldLabel(label: l10n.formRpe),
-                      RpeChoice(
-                        value: _rpe,
-                        onChanged: (v) {
-                          _touch();
-                          setState(() => _rpe = v);
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      // Selbstauskunft. Beim Nacherfassen steht sie hier und
-                      // nicht oben: Wer einen Lauf von vorgestern einträgt,
-                      // erinnert Distanz und Dauer — nicht, wie bereit er war.
-                      AtemFieldLabel(label: l10n.formReadiness),
-                      ReadinessChoice(
-                        value: _readiness,
-                        surface: AtemColors.surfaceSolid,
-                        onChanged: (v) {
-                          _touch();
-                          setState(() => _readiness = v);
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      AtemFieldLabel(label: l10n.formFeeling),
-                      FeelingChoice(
-                        value: _feeling,
-                        surface: AtemColors.surfaceSolid,
-                        onChanged: (v) {
-                          _touch();
-                          setState(() => _feeling = v);
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
+                          _MoreSection(
+                            open: _moreOpen,
+                            count: 6,
+                            onToggle: () =>
+                                setState(() => _moreOpen = !_moreOpen),
+                          ),
+                          if (_moreOpen) ...[
+                            const SizedBox(height: 16),
+                            AtemFieldLabel(label: l10n.formRpe),
+                            RpeChoice(
+                              value: _rpe,
+                              onChanged: (v) {
+                                _touch();
+                                setState(() => _rpe = v);
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            // Selbstauskunft. Beim Nacherfassen steht sie hier und
+                            // nicht oben: Wer einen Lauf von vorgestern einträgt,
+                            // erinnert Distanz und Dauer — nicht, wie bereit er war.
+                            AtemFieldLabel(label: l10n.formReadiness),
+                            ReadinessChoice(
+                              value: _readiness,
+                              surface: AtemColors.surfaceSolid,
+                              onChanged: (v) {
+                                _touch();
+                                setState(() => _readiness = v);
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            AtemFieldLabel(label: l10n.formFeeling),
+                            FeelingChoice(
+                              value: _feeling,
+                              surface: AtemColors.surfaceSolid,
+                              onChanged: (v) {
+                                _touch();
+                                setState(() => _feeling = v);
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                AtemFieldLabel(label: l10n.formHrAvg),
-                                AtemNumberField(
-                                  controller: _avgHr,
-                                  semanticLabel: l10n.formHrAvg,
-                                  width: null,
-                                  onChanged: (_) {
-                                    _touch();
-                                    setState(() {});
-                                  },
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AtemFieldLabel(label: l10n.formHrAvg),
+                                      AtemNumberField(
+                                        controller: _avgHr,
+                                        semanticLabel: l10n.formHrAvg,
+                                        width: null,
+                                        onChanged: (_) {
+                                          _touch();
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AtemFieldLabel(label: l10n.formHrMax),
+                                      AtemNumberField(
+                                        controller: _maxHr,
+                                        semanticLabel: l10n.formHrMax,
+                                        width: null,
+                                        onChanged: (_) {
+                                          _touch();
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AtemFieldLabel(label: l10n.formHrMax),
-                                AtemNumberField(
-                                  controller: _maxHr,
-                                  semanticLabel: l10n.formHrMax,
-                                  width: null,
-                                  onChanged: (_) {
-                                    _touch();
-                                    setState(() {});
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(l10n.formHrHint,
-                          style: AtemType.meta.of(context)),
-                      const SizedBox(height: 20),
-                      AtemFieldLabel(label: l10n.formNote),
-                      AtemTextField(
-                        controller: _notes,
-                        semanticLabel: l10n.formNote,
-                        maxLines: null,
-                        textInputAction: TextInputAction.newline,
-                        onChanged: (_) => _touch(),
-                      ),
-                    ],
+                            const SizedBox(height: 8),
+                            Text(l10n.formHrHint,
+                                style: AtemType.meta.of(context)),
+                          ],
                         ],
                       ),
                     ),
@@ -644,8 +636,7 @@ class TempoOutput extends StatelessWidget {
                       .of(context)
                       .copyWith(color: AtemColors.cyan)),
               Text(value, style: AtemType.valueMedium.of(context)),
-              Text(note.toUpperCase(),
-                  style: AtemType.labelMicro.of(context)),
+              Text(note.toUpperCase(), style: AtemType.labelMicro.of(context)),
             ],
           ),
         ),
@@ -687,8 +678,7 @@ class _PickField extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
               decoration: BoxDecoration(
                 color: AtemColors.surfaceSolid,
                 borderRadius: AtemRadii.statBoxR,

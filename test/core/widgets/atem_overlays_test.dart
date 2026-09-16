@@ -67,7 +67,25 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('bleibt unter 90 Prozent der Höhe', (tester) async {
+    testWidgets('füllt die Höhe unter der Statusleiste — auch mit wenig Inhalt',
+        (tester) async {
+      await _host(tester, (c) {
+        AtemSheet.show<void>(
+          c,
+          title: 'Kurz',
+          closeLabel: 'Schließen',
+          child: const SizedBox(height: 40),
+        );
+      });
+
+      // Seit 16.09.2026: volle Höhe, nicht Inhaltshöhe. Im Test ist die
+      // Statusleiste 0 dp hoch, also die ganzen 800.
+      final sheet = tester.getSize(find.byType(AtemSheet));
+      expect(sheet.height, closeTo(800, 1));
+    });
+
+    testWidgets('langer Inhalt scrollt, das Blatt bleibt bei voller Höhe',
+        (tester) async {
       await _host(tester, (c) {
         AtemSheet.show<void>(
           c,
@@ -78,8 +96,8 @@ void main() {
       });
 
       final sheet = tester.getSize(find.byType(AtemSheet));
-      // Nie 100 %: ein Streifen Canvas bleibt sichtbar.
-      expect(sheet.height, lessThanOrEqualTo(800 * 0.9 + 1));
+      expect(sheet.height, closeTo(800, 1));
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
   });
 

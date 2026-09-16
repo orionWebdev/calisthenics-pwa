@@ -45,7 +45,6 @@ class _BodyState extends ConsumerState<_Body> {
   int? _feeling;
   late DateTime _date;
   final _duration = TextEditingController();
-  final _notes = TextEditingController();
   var _saving = false;
   var _showFaults = false;
   String? _error;
@@ -60,7 +59,6 @@ class _BodyState extends ConsumerState<_Body> {
   @override
   void dispose() {
     _duration.dispose();
-    _notes.dispose();
     super.dispose();
   }
 
@@ -69,7 +67,8 @@ class _BodyState extends ConsumerState<_Body> {
     return minutes == null || minutes <= 0 ? null : Duration(minutes: minutes);
   }
 
-  int get _missing => (_kind == null ? 1 : 0) + (_durationValue == null ? 1 : 0);
+  int get _missing =>
+      (_kind == null ? 1 : 0) + (_durationValue == null ? 1 : 0);
 
   Future<void> _pickDate() async {
     final now = ref.read(historyReferenceProvider);
@@ -114,7 +113,6 @@ class _BodyState extends ConsumerState<_Body> {
         kind: SessionKind.recovery,
         date: _date,
         duration: _durationValue!,
-        notes: _notes.text,
         recoveryKind: _kind,
         preWorkoutReadiness: _readiness,
         postWorkoutFeeling: _feeling,
@@ -243,14 +241,8 @@ class _BodyState extends ConsumerState<_Body> {
           value: _feeling,
           onChanged: (v) => setState(() => _feeling = v),
         ),
-        const SizedBox(height: 18),
-        AtemFieldLabel(label: l10n.formNote),
-        AtemTextField(
-          controller: _notes,
-          semanticLabel: l10n.formNote,
-          maxLines: 2,
-          textInputAction: TextInputAction.done,
-        ),
+        // Kein Notizfeld mehr (16.09.2026): Die Selbstauskunft ist die
+        // Angabe, die hier zählt; eine Notiz wurde fast nie geschrieben.
         const SizedBox(height: 14),
         Semantics(
           label: l10n.recoveryNoload,

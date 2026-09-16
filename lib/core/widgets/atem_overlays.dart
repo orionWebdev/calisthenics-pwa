@@ -33,9 +33,19 @@ abstract final class AtemOverlays {
 
 /// Bottom Sheet.
 ///
-/// Wächst mit dem Inhalt bis zur halben Höhe, danach scrollt der Inhalt bei
-/// höchstens 90 % — **nie 100 %**, damit immer ein Streifen Canvas sichtbar
-/// bleibt und man sieht, worauf das Sheet liegt.
+/// ## Volle Höhe, immer
+///
+/// Bis zum 16.09.2026 wuchs das Blatt mit dem Inhalt und blieb bei 90 %
+/// stehen, damit ein Streifen Canvas sichtbar blieb. Am Gerät war das die
+/// falsche Prioritaet: Ein Formular auf 361 dp braucht jeden Zentimeter, und
+/// der Streifen darüber war Fläche, die niemand nutzt. Seitdem füllt jedes
+/// Blatt die Höhe unter der Statusleiste **immer** aus — auch mit wenig
+/// Inhalt. Der Inhalt beginnt oben, die Fusszeile steht unten fest, dazwischen
+/// scrollt es. Griff, Titelzeile und runde obere Ecken bleiben, damit es ein
+/// Blatt bleibt und kein Bildschirm.
+///
+/// Über der Tastatur: Der untere Rand weicht ihr aus, das Blatt wird kleiner,
+/// nie verdeckt.
 class AtemSheet extends StatelessWidget {
   const AtemSheet._({
     required this.title,
@@ -78,8 +88,11 @@ class AtemSheet extends StatelessWidget {
       barrierLabel: closeLabel,
       // Kein eigener Griff von Material — wir zeichnen unseren mit Semantik.
       showDragHandle: false,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.sizeOf(context).height * 0.9,
+      // Straff: Das Blatt ist so hoch wie der Platz unter der Statusleiste,
+      // nicht so hoch wie sein Inhalt.
+      constraints: BoxConstraints.tightFor(
+        height: MediaQuery.sizeOf(context).height -
+            MediaQuery.paddingOf(context).top,
       ),
       builder: (_) => AtemSheet._(
         title: title,
@@ -118,11 +131,14 @@ class AtemSheet extends StatelessWidget {
                 ),
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   _Grabber(label: closeLabel),
                   _TitleRow(title: title, closeLabel: closeLabel),
-                  Flexible(
+                  // Expanded, nicht Flexible: Der Inhalt nimmt den ganzen
+                  // Platz, damit die Fusszeile unten steht und nicht am
+                  // Inhalt klebt.
+                  Expanded(
                     child: SingleChildScrollView(
                       // Polster 20 dp seitlich (Board 02, A1 ③).
                       padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),

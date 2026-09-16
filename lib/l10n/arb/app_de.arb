@@ -3156,6 +3156,19 @@
   "@listGapLongest": {
     "description": "Zusatz am längsten Lückenstreifen"
   },
+  "listOpenDetail": "öffnet Details",
+  "@listOpenDetail": {
+    "description": "Semantics-Zusatz einer Verlaufszeile, die ins Einheitendetail führt"
+  },
+  "listGapOpen": "{from} – heute",
+  "@listGapOpen": {
+    "description": "Board 06 A2 — Zeitraum der offenen Lücke seit der letzten Einheit bis heute",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
   "listGapRange": "{from} – {to}",
   "@listGapRange": {
     "description": "Zeitraum der Lücke",

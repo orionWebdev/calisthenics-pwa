@@ -2200,6 +2200,14 @@ class AppL10nDe extends AppL10n {
   String get listGapLongest => 'längste Pause im Verlauf';
 
   @override
+  String get listOpenDetail => 'öffnet Details';
+
+  @override
+  String listGapOpen(String from) {
+    return '$from – heute';
+  }
+
+  @override
   String listGapRange(String from, String to) {
     return '$from – $to';
   }

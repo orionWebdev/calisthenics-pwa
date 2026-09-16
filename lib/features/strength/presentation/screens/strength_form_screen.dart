@@ -49,7 +49,6 @@ class StrengthFormScreen extends ConsumerStatefulWidget {
 class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
   late DateTime _date;
   final _duration = TextEditingController();
-  final _notes = TextEditingController();
 
   WorkoutFocus? _focus;
   int? _rpe;
@@ -71,7 +70,6 @@ class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
   @override
   void dispose() {
     _duration.dispose();
-    _notes.dispose();
     super.dispose();
   }
 
@@ -105,8 +103,7 @@ class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
       (_focus == null ? 0 : 1) +
       (_rpe == null ? 0 : 1) +
       (_readiness == null ? 0 : 1) +
-      (_feeling == null ? 0 : 1) +
-      (_notes.text.trim().isEmpty ? 0 : 1);
+      (_feeling == null ? 0 : 1);
 
   Future<bool> _confirmDiscard() async {
     if (!_dirty) return true;
@@ -152,7 +149,6 @@ class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
         kind: SessionKind.strength,
         date: _date,
         duration: _durationValue!,
-        notes: _notes.text,
         workoutFocus: _focus,
         rpe: _rpe,
         preWorkoutReadiness: _readiness,
@@ -310,15 +306,6 @@ class _StrengthFormScreenState extends ConsumerState<StrengthFormScreen> {
                               _touch();
                               setState(() => _feeling = v);
                             },
-                          ),
-                          const SizedBox(height: 20),
-                          AtemFieldLabel(label: l10n.formNote),
-                          AtemTextField(
-                            controller: _notes,
-                            semanticLabel: l10n.formNote,
-                            maxLines: null,
-                            textInputAction: TextInputAction.newline,
-                            onChanged: (_) => _touch(),
                           ),
                         ],
                       ),

@@ -227,25 +227,24 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
             ),
             const SizedBox(height: AtemSpacing.cardGap),
 
-            // ---- Verhältnis (diese Woche). Mit beiden Spuren der Block;
-            // mit einer der Kraft-Wochenblock plus Hinweis; ohne Minuten
-            // nichts — der Bildschirm hört früher auf.
-            if (ratio.hasBothTracks) ...[
+            // ---- Verhältnis (diese Woche). Sobald eine Spur Minuten
+            // trägt, steht der Block — die fehlende Spur ist darin eine
+            // 2-dp-Linie und „0 min", kein eigener Wochenblock mehr (bis
+            // 16.09.2026 stand hier bei einer Spur „Kraft diese Woche" mit
+            // einem Cardio-Knopf; der Nutzer wollte das Verhältnis sehen).
+            // Ohne Minuten nichts — der Bildschirm hört früher auf.
+            if (ratio.totalMinutes > 0) ...[
               AtemEntrance(index: 1, child: RatioBlock(ratio: ratio)),
-              const SizedBox(height: AtemSpacing.cardGap),
-            ] else if (ratio.strength.minutes > 0) ...[
-              AtemEntrance(
-                index: 1,
-                child: _StrengthWeek(ratio: ratio, onCardio: _openCardioForm),
-              ),
               const SizedBox(height: AtemSpacing.cardGap),
             ],
 
-            // ---- Regenerationszeile.
-            AtemEntrance(
-              index: 2,
-              child: RecoveryRow(status: recovery, onAdd: _addRecovery),
-            ),
+            // ---- Regenerationszeile — nur, solange Regeneration einen
+            // Platz in der Leiste hat. Kein Platzhalter.
+            if (AppTab.visible.contains(AppTab.recovery))
+              AtemEntrance(
+                index: 2,
+                child: RecoveryRow(status: recovery, onAdd: _addRecovery),
+              ),
 
             // ---- Formwert (vier Wochen), nur mit Trend.
             if (!thin)
@@ -346,15 +345,19 @@ class _Header extends StatelessWidget {
         Expanded(
           child: Text(l10n.tabHybrid, style: AtemType.titleLarge.of(context)),
         ),
+        // Datum und Profilbild sitzen rechtsbündig: das Datum direkt links
+        // vom Bild, ohne Restraum dazwischen; das Bild bündig mit dem
+        // rechten Rand der Karten darunter.
         Flexible(
           child: Text(
             DateFormat.MMMEd(languageTag(context)).format(date),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.right,
             style: AtemType.meta.of(context),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         AtemTappable(
           onTap: onProfile,
           semanticLabel: l10n.settingsEntryA11y,
@@ -549,84 +552,11 @@ class _ThinWeek extends StatelessWidget {
           ),
           if (parts.isNotEmpty) ...[
             const SizedBox(height: 4),
-            Text(parts.join(' · '),
-                style: AtemType.meta.of(context)),
+            Text(parts.join(' · '), style: AtemType.meta.of(context)),
           ],
           const SizedBox(height: 12),
           Text(l10n.hybridWeekThin(HybridScreen.minimumSessions),
               style: AtemType.labelSmall.of(context)),
-        ],
-      ),
-    );
-  }
-}
-
-/// Kein Verhältnis — nur eine Spur (C1/2). An die Stelle des Blocks tritt
-/// der Kraft-Wochenblock; die eine Hinweiszeile ist erlaubt, weil sie den
-/// einzigen Weg zur Gegenspur trägt.
-class _StrengthWeek extends StatelessWidget {
-  const _StrengthWeek({required this.ratio, required this.onCardio});
-
-  final WeekRatio ratio;
-  final VoidCallback onCardio;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final s = ratio.strength;
-    final measure = l10n.ratioStrengthMeasure(
-        AtemNumberField.format(context, s.measure), s.sets);
-
-    return AtemCard.list(
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            label:
-                '${l10n.ratioStrengthWeek}, ${l10n.hybridWeekSummary(s.count, s.minutes)}, $measure',
-            child: ExcludeSemantics(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.ratioStrengthWeek,
-                      style: AtemType.titleMedium.of(context)),
-                  const SizedBox(height: 6),
-                  Text(l10n.hybridWeekSummary(s.count, s.minutes),
-                      style: AtemType.valueMedium.of(context)),
-                  const SizedBox(height: 2),
-                  Text(measure,
-                      style: AtemType.meta.of(context)),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // **Der fehlende Teil ist eine Zeile, kein Kasten.**
-          //
-          // Hier stand eine ganze Notice mit Titel, Fliesstext und Aktion —
-          // sie war höher als die Kachel, die sie erklärte, und liess den
-          // Bildschirm so aussehen, als sei das Fehlen die Nachricht. Der
-          // Satz genügt; der Weg daneben ist ein Knopf im Ton des
-          // Cardio-Tabs, damit er als Weg dorthin erkennbar ist.
-          const SizedBox(
-              height: 1, child: ColoredBox(color: AtemColors.border)),
-          const SizedBox(height: 12),
-          Semantics(
-            label: '${l10n.ratioSingleTitle}. ${l10n.ratioSingleBody}',
-            child: ExcludeSemantics(
-              child: Text(l10n.ratioSingleTitle,
-                  style: AtemType.labelSmall.of(context)),
-            ),
-          ),
-          const SizedBox(height: 10),
-          AtemButton.outline(
-            label: l10n.hybridEmptyCardio,
-            semanticLabel: l10n.hybridEmptyCardio,
-            size: AtemButtonSize.compact,
-            accent: AtemColors.tabCardio,
-            onPressed: onCardio,
-          ),
         ],
       ),
     );

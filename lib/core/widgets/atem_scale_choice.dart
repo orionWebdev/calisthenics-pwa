@@ -1,12 +1,10 @@
-import 'dart:math' as math;
-
 import 'package:flutter/widgets.dart';
 
 import '../theme/theme.dart';
 import 'atem_tappable.dart';
 
-/// Eine Auswahl auf einer kleinen ganzzahligen Skala: **Zahl oben, Wort
-/// darunter**.
+/// Eine Auswahl auf einer kleinen ganzzahligen Skala: **fünf gleich breite
+/// Zahlenfelder, das Wort einmal darunter**.
 ///
 /// ## Warum dieser Baustein existiert
 ///
@@ -14,36 +12,30 @@ import 'atem_tappable.dart';
 /// Anstrengung einer Einheit, Bereitschaft davor, Gefühl danach. Alle vier
 /// sind eine Skala von 1 bis 5 ohne Vorbelegung, und alle vier haben dieselben
 /// zwei schwierigen Stellen — fünf Felder, die bei 200 % Schrift auf 320 dp
-/// nicht mehr nebeneinander passen, und ein Semantics-Label, das Zahl **und**
+/// nebeneinander bleiben müssen, und ein Semantics-Label, das Zahl **und**
 /// Wort tragen muss.
 ///
-/// Das zweimal zu lösen war schon einmal zu viel; viermal wäre es sicher.
+/// ## Die Zahl im Feld, das Wort darunter — nicht beides im Feld
 ///
-/// ## Zwei Zeilen, nicht eine
+/// Bis 16.09.2026 stand das Wort mit in jedem Feld. Das sah unsauber aus:
+/// „erschöpft" ist doppelt so breit wie „okay", die Felder wurden ungleich
+/// breit, die Lücken dazwischen ungleich gross, und bei grosser Schrift wich
+/// die Reihe in einen waagerechten Scroller aus. Auf 320 dp bei 200 % bleibt
+/// einem Fünftel keine 50 dp — kein Wort passt da hinein, nicht einmal mit
+/// Ellipsis, die aus „erschöpft" ein „e…" macht.
 ///
-/// Die Zahl ist das, was gespeichert wird und was auf der Skala verortet; das
-/// Wort ist das, wonach jemand greift. Die Zahl allein wäre bedeutungslos, das
-/// Wort allein nicht auffindbar. Deshalb nicht die Segmentauswahl aus Modul 2,
-/// die ein Wort je Feld trägt.
+/// Deshalb tragen die Felder nur die Zahl und teilen sich die Breite zu
+/// gleichen Teilen. Das Wort steht **einmal** unter der Reihe: das der
+/// gewählten Stufe, oder — solange nichts gewählt ist — die beiden Enden der
+/// Skala („erschöpft … frisch"), damit die Richtung lesbar bleibt. Der
+/// Screenreader bekommt je Feld weiter das volle Label aus [semanticLabelFor].
 ///
-/// ## Waagerecht scrollbar statt umbrechend
+/// ## Farbe je Stufe
 ///
-/// Fünf gleiche Felder über die volle Breite, solange sie passen. Erst wenn
-/// die Kurzform bei 200 % Schrift nicht mehr in ihr Fünftel passt, weicht die
-/// Reihe in einen waagerechten Scroller aus — **nicht** in zwei Reihen.
-///
-/// Eine Skala ist eine Ordnung, und ein Umbruch in der Mitte zerschneidet sie:
-/// „Mittel" stünde rechts aussen, „Fortgeschritten" links unten, obwohl sie
-/// benachbart sind. Was nicht mehr passt, ist angeschnitten sichtbar — die
-/// übliche Andeutung, dass es weitergeht, und sie stimmt hier auch inhaltlich.
-///
-/// ## Beschriftung
-///
-/// [wordFor] liefert die **Kurzform** für die Fläche, [semanticLabelFor] das
-/// vollständige Label für den Screenreader. Beide kommen vom Aufrufer, weil
-/// nur er weiss, ob gerade „Stufe 4, Fortgeschritten, 4 von 5" oder
-/// „Bereitschaft 2, wenig, 2 von 5" vorgelesen werden soll. Der Baustein
-/// selbst kennt keine Sprache.
+/// Mit [colorFor] trägt jede Stufe eine eigene Farbe: ungewählt als Rand und
+/// Zahl, gewählt als **gefüllte Fläche**. Ohne [colorFor] gilt die neutrale
+/// Fassung: Rand in `border`, gewählt in Cyan — so bleiben Schwierigkeit und
+/// RPE, wie sie waren. Farbe ist nie der einzige Träger: Zahl und Wort bleiben.
 class AtemScaleChoice extends StatelessWidget {
   const AtemScaleChoice({
     super.key,
@@ -52,12 +44,13 @@ class AtemScaleChoice extends StatelessWidget {
     required this.groupLabel,
     required this.wordFor,
     required this.semanticLabelFor,
+    this.colorFor,
     this.min = 1,
     this.max = 5,
     this.allowDeselect = true,
     this.hasError = false,
     this.surface = AtemColors.card,
-    this.visibleHeight = 48,
+    this.visibleHeight = 52,
   });
 
   /// `null` heisst: nichts gewählt. **Es gibt keine Vorbelegung** — eine
@@ -71,11 +64,15 @@ class AtemScaleChoice extends StatelessWidget {
   /// Label der Gruppe für den Screenreader — „RPE", „Bereitschaft".
   final String groupLabel;
 
-  /// Die Kurzform auf der Fläche.
+  /// Das Wort zur Stufe — steht unter der Reihe, nicht im Feld.
   final String Function(int level) wordFor;
 
-  /// Das vollständige Label, das vorgelesen wird.
+  /// Das vollständige Label, das je Feld vorgelesen wird.
   final String Function(int level) semanticLabelFor;
+
+  /// Die Farbe einer Stufe. `null` heisst neutral (Rand in `border`, gewählt
+  /// in Cyan).
+  final Color Function(int level)? colorFor;
 
   final int min;
   final int max;
@@ -98,55 +95,47 @@ class AtemScaleChoice extends StatelessWidget {
   /// immer mindestens 48 dp.
   final double visibleHeight;
 
-  static const _gap = 6.0;
+  static const _gap = 8.0;
   static const _tapHeight = 48.0;
-
-  /// Auch das kürzeste Wort bekommt eine Fläche, die man trifft.
-  static const _minWidth = 48.0;
 
   int get _count => max - min + 1;
 
   @override
   Widget build(BuildContext context) {
-    final scaler = MediaQuery.textScalerOf(context);
-
-    // Eine waagerechte Liste braucht eine feste Höhe; sie folgt der
-    // Schriftskalierung, damit bei 200 % nichts abgeschnitten wird.
-    final height = math.max(visibleHeight, scaler.scale(30) + 30);
-
-    // Die Breite folgt der längsten Kurzform, nie dem vollen Wort.
-    final needed = math.max(_minWidth, _widest(scaler) + 16);
+    final selected = value;
+    final selectedColor =
+        selected == null ? null : (colorFor?.call(selected) ?? AtemColors.cyan);
 
     return Semantics(
       container: true,
       label: groupLabel,
-      child: SizedBox(
-        height: height,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final fair = (constraints.maxWidth - _gap * (_count - 1)) / _count;
-
-            if (fair >= needed) {
-              return Row(
-                children: [
-                  for (var i = 0; i < _count; i++) ...[
-                    if (i > 0) const SizedBox(width: _gap),
-                    Expanded(child: _field(min + i)),
-                  ],
-                ],
-              );
-            }
-
-            return ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.zero,
-              itemCount: _count,
-              separatorBuilder: (_, __) => const SizedBox(width: _gap),
-              itemBuilder: (context, i) =>
-                  SizedBox(width: needed, child: _field(min + i)),
-            );
-          },
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              for (var i = 0; i < _count; i++) ...[
+                if (i > 0) const SizedBox(width: _gap),
+                Expanded(child: _field(min + i)),
+              ],
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Das Wort ist im Feld-Label schon enthalten; hier nur zum Sehen.
+          ExcludeSemantics(
+            child: Text(
+              selected == null
+                  ? '${wordFor(min)} … ${wordFor(max)}'
+                  : wordFor(selected),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AtemType.meta.of(context).copyWith(
+                    color: selectedColor ?? AtemColors.textTertiary,
+                  ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -155,37 +144,23 @@ class AtemScaleChoice extends StatelessWidget {
     final selected = level == value;
     return _ScaleField(
       level: level,
-      word: wordFor(level),
       semanticLabel: semanticLabelFor(level),
       selected: selected,
+      color: colorFor?.call(level),
       hasError: hasError,
       surface: surface,
       visibleHeight: visibleHeight,
       onTap: () => onChanged(selected && allowDeselect ? null : level),
     );
   }
-
-  double _widest(TextScaler scaler) {
-    var widest = 0.0;
-    for (var level = min; level <= max; level++) {
-      final painter = TextPainter(
-        text: TextSpan(text: wordFor(level), style: AtemType.labelUi.base),
-        textDirection: TextDirection.ltr,
-        textScaler: scaler,
-        maxLines: 1,
-      )..layout();
-      widest = math.max(widest, painter.width);
-    }
-    return widest;
-  }
 }
 
 class _ScaleField extends StatelessWidget {
   const _ScaleField({
     required this.level,
-    required this.word,
     required this.semanticLabel,
     required this.selected,
+    required this.color,
     required this.hasError,
     required this.surface,
     required this.visibleHeight,
@@ -193,11 +168,13 @@ class _ScaleField extends StatelessWidget {
   });
 
   final int level;
-  final String word;
 
-  /// Das vollständige Label — es wird vorgelesen, während die Fläche kürzt.
+  /// Das vollständige Label — Zahl und Wort — für den Screenreader.
   final String semanticLabel;
   final bool selected;
+
+  /// Die Stufenfarbe; `null` ist die neutrale Fassung.
+  final Color? color;
   final bool hasError;
   final Color surface;
   final double visibleHeight;
@@ -205,9 +182,25 @@ class _ScaleField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final border = selected
-        ? AtemColors.cyan
-        : (hasError ? AtemColors.magenta : AtemColors.border);
+    final tone = color;
+    final neutral = tone == null;
+
+    // Neutral: wie bisher — Rand in `border`, gewählt Cyan-Tönung mit
+    // Cyan-Rand. Farbig: ungewählt Rand und Zahl in der Farbe, gewählt die
+    // Fläche voll gefüllt und die Zahl in `onNeon`. Alle fünf Stufenfarben
+    // halten auf `onNeon` mindestens 5,0:1 (test/core/widgets/atem_scale_choice_test).
+    final borderColor = hasError && !selected
+        ? AtemColors.magenta
+        : neutral
+            ? (selected ? AtemColors.cyan : AtemColors.border)
+            : tone.withValues(alpha: selected ? 1 : 0.6);
+    final fill = neutral
+        ? (selected ? AtemCategories.surface(AtemColors.cyan) : surface)
+        : (selected ? tone : surface);
+    final numberColor = neutral
+        ? (selected ? AtemColors.cyan : AtemColors.textPrimary)
+        : (selected ? AtemColors.onNeon : tone);
+    final glowColor = neutral ? AtemColors.cyan : tone;
 
     return AtemTappable(
       onTap: onTap,
@@ -215,39 +208,33 @@ class _ScaleField extends StatelessWidget {
       selected: selected,
       inMutuallyExclusiveGroup: true,
       minTapSize: const Size(0, AtemScaleChoice._tapHeight),
-      child: Container(
-        constraints: BoxConstraints(minHeight: visibleHeight),
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        decoration: BoxDecoration(
-          color: selected ? AtemCategories.surface(AtemColors.cyan) : surface,
-          borderRadius: BorderRadius.circular(AtemRadii.statBox),
-          border: Border.all(color: border, width: selected ? 1.5 : 1),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '$level',
-              style: AtemType.valueMedium.of(context).copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: selected ? AtemColors.cyan : AtemColors.textPrimary,
-                  ),
-            ),
-            Text(
-              word,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: AtemType.labelUi.of(context).copyWith(
-                    color:
-                        selected ? AtemColors.cyan : AtemColors.textSecondary,
-                  ),
-            ),
-          ],
+      // Gedrückt heisst leuchten: scale 0,97 aus AtemTappable, der Glow in
+      // der Stufenfarbe hier — 200 ms, kein Ripple.
+      pressBuilder: (context, pressed) => SizedBox(
+        width: double.infinity,
+        child: AnimatedContainer(
+          duration: AtemMotion.duration(context, AtemMotion.fast),
+          curve: AtemMotion.curve,
+          constraints: BoxConstraints(minHeight: visibleHeight),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          decoration: BoxDecoration(
+            color: fill,
+            borderRadius: BorderRadius.circular(AtemRadii.statBox),
+            border: Border.all(color: borderColor, width: selected ? 1.5 : 1),
+            boxShadow: pressed ? AtemGlow.soft(glowColor, opacity: 0.55) : null,
+          ),
+          child: Text(
+            '$level',
+            textAlign: TextAlign.center,
+            style: AtemType.valueMedium.of(context).copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: numberColor,
+                ),
+          ),
         ),
       ),
+      child: const SizedBox.shrink(),
     );
   }
 }

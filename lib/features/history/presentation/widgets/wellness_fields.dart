@@ -46,6 +46,23 @@ String workoutFocusName(AppL10n l, WorkoutFocus focus) => switch (focus) {
       WorkoutFocus.other => l.focusOther,
     };
 
+/// Die Farbe einer Stufe der Selbstauskunft, 1 bis 5.
+///
+/// Rot, Orange, Neutral, Grün, Blau — die Reihenfolge, die der Nutzer am
+/// 16.09.2026 festgelegt hat. Nur Tokens: Rot ist [AtemColors.magenta], Orange
+/// [AtemColors.amber], Grün [AtemColors.green], Blau [AtemColors.tabCardio].
+/// Für Gelb gibt es kein Token, und CLAUDE.md verbietet erfundene Töne; die
+/// mittlere Stufe „okay" trägt deshalb das neutrale [AtemColors.textTertiary]
+/// — ein Mittelwert ist keine Warnung und kein Lob. Die Farbe ist nie der
+/// einzige Träger: Zahl und Wort bleiben.
+Color wellnessColor(int level) => switch (level) {
+      1 => AtemColors.magenta,
+      2 => AtemColors.amber,
+      3 => AtemColors.textTertiary,
+      4 => AtemColors.green,
+      _ => AtemColors.tabCardio,
+    };
+
 /// Bereitschaft vor der Einheit, 1 bis 5.
 class ReadinessChoice extends StatelessWidget {
   const ReadinessChoice({
@@ -66,6 +83,7 @@ class ReadinessChoice extends StatelessWidget {
       value: value,
       onChanged: onChanged,
       groupLabel: l10n.formReadiness,
+      colorFor: wellnessColor,
       wordFor: (level) => readinessWord(l10n, level),
       semanticLabelFor: (level) => '${l10n.formReadiness} $level, '
           '${readinessWord(l10n, level)}, $level ${l10n.commonOf} 5',
@@ -94,6 +112,7 @@ class FeelingChoice extends StatelessWidget {
       value: value,
       onChanged: onChanged,
       groupLabel: l10n.formFeeling,
+      colorFor: wellnessColor,
       wordFor: (level) => feelingWord(l10n, level),
       semanticLabelFor: (level) => '${l10n.formFeeling} $level, '
           '${feelingWord(l10n, level)}, $level ${l10n.commonOf} 5',

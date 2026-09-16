@@ -3619,6 +3619,18 @@ abstract class AppL10n {
   /// **'längste Pause im Verlauf'**
   String get listGapLongest;
 
+  /// Semantics-Zusatz einer Verlaufszeile, die ins Einheitendetail führt
+  ///
+  /// In de, this message translates to:
+  /// **'öffnet Details'**
+  String get listOpenDetail;
+
+  /// Board 06 A2 — Zeitraum der offenen Lücke seit der letzten Einheit bis heute
+  ///
+  /// In de, this message translates to:
+  /// **'{from} – heute'**
+  String listGapOpen(String from);
+
   /// Zeitraum der Lücke
   ///
   /// In de, this message translates to:

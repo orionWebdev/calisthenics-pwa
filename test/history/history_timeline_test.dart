@@ -41,7 +41,9 @@ void main() {
       _s(DateTime(2026, 7, 25)),
     ], _ref);
 
-    final gaps = entries.whereType<TimelineGap>().toList();
+    // Die offene Pause bis zum Stichtag zählt hier nicht mit.
+    final gaps =
+        entries.whereType<TimelineGap>().where((g) => !g.isOpen).toList();
     expect(gaps, hasLength(1));
     expect(gaps.single.days, 20);
     // Der Streifen umfasst die trainingsfreien Tage, nicht die Einheiten
@@ -57,7 +59,8 @@ void main() {
       _s(DateTime(2026, 6, 1)),
     ], _ref);
 
-    final gaps = entries.whereType<TimelineGap>().toList();
+    final gaps =
+        entries.whereType<TimelineGap>().where((g) => !g.isOpen).toList();
     expect(gaps, hasLength(2));
     expect(gaps.where((g) => g.isLongest), hasLength(1));
     expect(gaps.firstWhere((g) => g.isLongest).days, 65);
@@ -77,6 +80,25 @@ void main() {
     expect(rows[1].ordinalOnDay, 1);
     // Ein Tag mit nur einer Einheit bekommt keine Nummer.
     expect(rows[2].ordinalOnDay, isNull);
+  });
+
+  test('die Pause seit der letzten Einheit steht offen ganz oben', () {
+    final entries = HistoryTimeline.build([
+      // 20 Tage vor dem Stichtag — offen, aber nicht „längste".
+      _s(DateTime(2026, 8, 7)),
+      _s(DateTime(2026, 8, 5)),
+    ], _ref);
+
+    expect(entries.first, isA<TimelineGap>());
+    final open = entries.first as TimelineGap;
+    expect(open.isOpen, isTrue);
+    expect(open.isLongest, isFalse);
+    expect(open.days, 20);
+    expect(open.from, DateTime(2026, 8, 8));
+    expect(open.to, _ref);
+    // Unter sieben Tagen gibt es sie nicht.
+    final fresh = HistoryTimeline.build([_s(DateTime(2026, 8, 25))], _ref);
+    expect(fresh.first, isA<MonthHeader>());
   });
 
   test('das Ende nennt die erste Einheit', () {

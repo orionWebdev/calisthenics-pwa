@@ -2192,6 +2192,14 @@ class AppL10nEn extends AppL10n {
   String get listGapLongest => 'longest break on record';
 
   @override
+  String get listOpenDetail => 'opens details';
+
+  @override
+  String listGapOpen(String from) {
+    return '$from – today';
+  }
+
+  @override
   String listGapRange(String from, String to) {
     return '$from – $to';
   }

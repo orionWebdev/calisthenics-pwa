@@ -58,6 +58,7 @@ final class TimelineGap extends TimelineEntry {
     required this.from,
     required this.to,
     required this.isLongest,
+    this.isOpen = false,
   });
 
   final int days;
@@ -69,6 +70,11 @@ final class TimelineGap extends TimelineEntry {
   /// Die längste Pause im gesamten Verlauf. Sie wird eigens benannt — eine
   /// Zahl allein sagt nicht, ob 74 Tage viel sind.
   final bool isLongest;
+
+  /// Die Pause **seit der letzten Einheit bis heute** (Board 06, A2/1:
+  /// „50 Tage ohne Training · 09.07. – heute"). Sie steht ganz oben, vor dem
+  /// ersten Monat, und zählt nie als längste: Sie ist noch nicht zu Ende.
+  final bool isOpen;
 }
 
 /// Das Ende: die erste aufgezeichnete Einheit.
@@ -105,6 +111,20 @@ abstract final class HistoryTimeline {
     int? currentYear;
     int? currentMonth;
 
+    // Die offene Lücke: Was seit der letzten Einheit vergangen ist, gehört
+    // genauso in die Liste wie die Pausen dazwischen — sonst sähe ein Verlauf
+    // mit 50 Tagen Stille aus, als wäre gestern trainiert worden.
+    final sinceLast = _days(sorted.first.date, reference);
+    if (sinceLast >= DataSufficiency.gapDays) {
+      entries.add(TimelineGap(
+        days: sinceLast,
+        from: _dayAfter(sorted.first.date),
+        to: DateTime(reference.year, reference.month, reference.day),
+        isLongest: false,
+        isOpen: true,
+      ));
+    }
+
     for (var i = 0; i < sorted.length; i++) {
       final session = sorted[i];
 
@@ -131,8 +151,8 @@ abstract final class HistoryTimeline {
       // die höchste Nummer.
       final index = (seenOnDay[key] = (seenOnDay[key] ?? 0) + 1);
       final monthMax = sorted
-          .where((s) =>
-              s.date.year == currentYear && s.date.month == currentMonth)
+          .where(
+              (s) => s.date.year == currentYear && s.date.month == currentMonth)
           .map(load)
           .fold<double>(0, (a, b) => b > a ? b : a);
       entries.add(TimelineSession(

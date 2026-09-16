@@ -49,7 +49,7 @@ Future<void> _pumpStill(WidgetTester tester, Widget home) async {
 }
 
 void main() {
-  testWidgets('Hybrid-Tab rendert Bereitschaft und Regenerationszeile',
+  testWidgets('Hybrid-Tab rendert Bereitschaft, ohne Regenerationszeile',
       (tester) async {
     _useTallSurface(tester);
     await _pumpStill(tester, const HybridScreen());
@@ -61,8 +61,9 @@ void main() {
     expect(find.text('ATEM READINESS'), findsOneWidget);
     // Count-up ist ohne Animation sofort am Ziel.
     expect(find.text('89'), findsOneWidget);
-    // Regeneration ist eine Zeile im Hybrid-Tab — nie erfasst im Bestand.
-    expect(find.text('Keine Regeneration erfasst'), findsOneWidget);
+    // Die Regenerationszeile steht nur, solange Regeneration einen Platz
+    // in der Leiste hat (AppTab.visible) — seit 16.09.2026 vorerst nicht.
+    expect(find.text('Keine Regeneration erfasst'), findsNothing);
     // Kein Hybrid-Score, keine Session-Karte mehr.
     expect(find.text('HEUTIGE SESSION'), findsNothing);
   });

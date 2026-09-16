@@ -27,14 +27,15 @@ class SessionListScreen extends ConsumerWidget {
     final l10n = AppL10n.of(context);
     final entries = ref.watch(filteredTimelineProvider);
     final filter = ref.watch(sessionFilterProvider);
-    final counts = SessionFilter.countByKind(
-        ref.watch(sessionsProvider).value ?? const []);
+    final loaded = ref.watch(sessionsProvider);
+    final counts = SessionFilter.countByKind(loaded.value ?? const []);
 
     return Scaffold(
       backgroundColor: AtemColors.base,
       appBar: AppBar(
         backgroundColor: AtemColors.base,
-        title: Text(l10n.listTitle, style: AtemType.titleMedium.of(context)),
+        // Board 06, A2: der Titel in Screen-Grösse, nicht als Kartenzeile.
+        title: Text(l10n.listTitle, style: AtemType.titleLarge.of(context)),
       ),
       body: SafeArea(
         top: false,
@@ -45,7 +46,22 @@ class SessionListScreen extends ConsumerWidget {
             // kein Formular.
             _KindRow(filter: filter, counts: counts),
             const SizedBox(height: 10),
-            Expanded(child: _body(context, ref, l10n, entries, filter, counts)),
+            Expanded(
+              // Solange der Strom noch nicht geantwortet hat, Zeilenskelette
+              // (Board 06, A2/2) — nie „Noch kein Verlauf": Das wäre eine
+              // Aussage über den Bestand, die noch niemand treffen kann.
+              child: loaded.isLoading
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AtemSpacing.screenPadding),
+                      child: AtemSkeleton(
+                        semanticLabel: l10n.loadingLabel,
+                        blocks:
+                            List.filled(4, const AtemSkeletonBlock(height: 64)),
+                      ),
+                    )
+                  : _body(context, ref, l10n, entries, filter, counts),
+            ),
           ],
         ),
       ),
@@ -106,12 +122,13 @@ class SessionListScreen extends ConsumerWidget {
     return CustomScrollView(
       slivers: [
         for (final group in groups)
-          if (group.first case MonthHeader(
-            :final year,
-            :final month,
-            :final sessions,
-            :final load
-          ))
+          if (group.first
+              case MonthHeader(
+                :final year,
+                :final month,
+                :final sessions,
+                :final load
+              ))
             SliverMainAxisGroup(
               slivers: [
                 SliverPersistentHeader(
@@ -166,9 +183,21 @@ class SessionListScreen extends ConsumerWidget {
       switch (entry) {
         case TimelineSession():
           run.add(entry);
-        case TimelineGap(:final days, :final from, :final to, :final isLongest):
+        case TimelineGap(
+            :final days,
+            :final from,
+            :final to,
+            :final isLongest,
+            :final isOpen
+          ):
           flush();
-          blocks.add(_Gap(days: days, from: from, to: to, isLongest: isLongest));
+          blocks.add(_Gap(
+            days: days,
+            from: from,
+            to: to,
+            isLongest: isLongest,
+            isOpen: isOpen,
+          ));
         case TimelineEnd(:final first, :final daysAgo):
           flush();
           blocks.add(_End(first: first, daysAgo: daysAgo));
@@ -226,7 +255,8 @@ class _KindRow extends ConsumerWidget {
             const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
         children: [
           _KindChip(
-            label: l10n.commonAll,
+            // „Alle 110": mit der Gesamtzahl, wie jeder andere Chip auch.
+            label: l10n.historyAll(counts.values.fold<int>(0, (a, b) => a + b)),
             selected: filter.kind == null,
             // Nicht `toggleKind`: Auf „Alle" zu tippen, während „Alle" gilt,
             // sprang vorher auf Kraft.
@@ -290,9 +320,8 @@ class _KindChip extends StatelessWidget {
               Text(
                 label,
                 style: AtemType.labelSmall.of(context).copyWith(
-                      color: selected
-                          ? AtemColors.cyan
-                          : AtemColors.textPrimary,
+                      color:
+                          selected ? AtemColors.cyan : AtemColors.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
               ),
@@ -516,8 +545,7 @@ class _Row extends StatelessWidget {
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: AtemColors.track,
-                            borderRadius:
-                                BorderRadius.circular(AtemRadii.pill),
+                            borderRadius: BorderRadius.circular(AtemRadii.pill),
                           ),
                           child: Align(
                             alignment: Alignment.centerLeft,
@@ -591,6 +619,7 @@ class _Gap extends StatelessWidget {
     required this.from,
     required this.to,
     required this.isLongest,
+    this.isOpen = false,
   });
 
   final int days;
@@ -598,14 +627,19 @@ class _Gap extends StatelessWidget {
   final DateTime to;
   final bool isLongest;
 
+  /// Bis heute offen: „09.07. – heute" statt zweier Daten.
+  final bool isOpen;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final tag = languageTag(context);
-    final range = l10n.listGapRange(
-      DateFormat.MMMd(tag).format(from),
-      DateFormat.MMMd(tag).format(to),
-    );
+    final range = isOpen
+        ? l10n.listGapOpen(DateFormat.MMMd(tag).format(from))
+        : l10n.listGapRange(
+            DateFormat.MMMd(tag).format(from),
+            DateFormat.MMMd(tag).format(to),
+          );
     final color = isLongest ? AtemColors.magenta : AtemColors.textTertiary;
 
     return Semantics(
@@ -619,34 +653,41 @@ class _Gap extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: CustomPaint(
             painter: _DashedBorder(color: color),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            // **Stack, nicht Row mit `stretch`.** Der Streifen liegt in einer
+            // Sliver-Liste und bekommt keine Höhe von oben. Eine Row mit
+            // `CrossAxisAlignment.stretch` reicht dann „unendlich hoch" an
+            // ihre Kinder weiter — im Debug-Build ein Assert, im Release-Build
+            // eine Rinne mit unendlicher Höhe, deren Strichschleife nie endet.
+            // Genau so hing die App am 16.09.2026, sobald der Verlauf eine
+            // Lücke von sieben Tagen enthielt. Der Text gibt jetzt die Höhe
+            // vor, die Rinne füllt sie.
+            child: Stack(
               children: [
                 // Die linke Rinne, 34 dp, mit gestrichelter Vertikalen: Der
                 // Streifen liest sich als Abwesenheit, nicht als Eintrag.
-                SizedBox(
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
                   width: 34,
                   child: CustomPaint(painter: _DashedRail(color: color)),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.listGap(days),
-                          style: AtemType.labelSmall.of(context).copyWith(
-                              color: color, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          isLongest ? '$range · ${l10n.listGapLongest}' : range,
-                          style: AtemType.meta.of(context),
-                        ),
-                      ],
-                    ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(46, 12, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.listGap(days),
+                        style: AtemType.labelSmall.of(context).copyWith(
+                            color: color, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        isLongest ? '$range · ${l10n.listGapLongest}' : range,
+                        style: AtemType.meta.of(context),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -669,6 +710,9 @@ class _DashedRail extends CustomPainter {
     final paint = Paint()
       ..strokeWidth = 1
       ..color = color.withValues(alpha: 0.5);
+    // Nie gegen eine unendliche Höhe zeichnen — die Schleife endete sonst
+    // nicht. Das Layout darf das nicht mehr liefern; der Maler prüft trotzdem.
+    if (!size.height.isFinite || !size.width.isFinite) return;
     final x = size.width / 2;
     var y = 6.0;
     while (y < size.height - 6) {
@@ -693,6 +737,7 @@ class _DashedBorder extends CustomPainter {
       ..strokeWidth = 1
       ..color = color.withValues(alpha: 0.5);
 
+    if (!size.height.isFinite || !size.width.isFinite) return;
     const radius = Radius.circular(AtemRadii.statBox);
     final rect = RRect.fromRectAndRadius(Offset.zero & size, radius);
     final path = Path()..addRRect(rect);
@@ -723,20 +768,29 @@ class _End extends StatelessWidget {
     final l10n = AppL10n.of(context);
     final date = DateFormat.yMMMd(languageTag(context)).format(first);
 
+    // Board 06, A2/3: Das Ende ist eine Karte mit Mono-Kopf und Satz —
+    // gestaltet, nicht bloss Scrollstopp.
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 28, 0, 8),
-      child: Column(
-        children: [
-          Text(l10n.listEndTitle,
-              textAlign: TextAlign.center,
-              style: AtemType.labelMedium.of(context)),
-          const SizedBox(height: 6),
-          Text(
-            l10n.listEndBody(date, daysAgo),
-            textAlign: TextAlign.center,
-            style: AtemType.meta.of(context),
+      padding: const EdgeInsets.fromLTRB(0, 18, 0, 8),
+      child: Semantics(
+        label: '${l10n.listEndTitle}. ${l10n.listEndBody(date, daysAgo)}',
+        child: ExcludeSemantics(
+          child: AtemCard.list(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.listEndTitle.toUpperCase(),
+                    style: AtemType.labelMicro.of(context)),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.listEndBody(date, daysAgo),
+                  style: AtemType.labelSmall.of(context),
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

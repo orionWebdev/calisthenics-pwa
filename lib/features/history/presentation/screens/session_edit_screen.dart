@@ -173,6 +173,8 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
     return count;
   }
 
+  bool get _hasExistingNote => (widget.session.notes ?? '').trim().isNotEmpty;
+
   /// Wie viele dazugekommen sind — Felder, die vorher leer waren.
   int get _addedCount {
     var count = 0;
@@ -332,11 +334,10 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                     if (_date != widget.session.date) ...[
                       const SizedBox(height: 6),
                       Text(
-                        l10n
-                            .sessionDatePrevious(
-                              _date.difference(widget.session.date).inDays,
-                              DateFormat.yMEd(tag).format(widget.session.date),
-                            ),
+                        l10n.sessionDatePrevious(
+                          _date.difference(widget.session.date).inDays,
+                          DateFormat.yMEd(tag).format(widget.session.date),
+                        ),
                         style: AtemType.meta.of(context),
                       ),
                     ],
@@ -360,8 +361,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                           '${l10n.sessionFieldKind}: ${sessionKindLabel(l10n, widget.session)}',
                       child: ExcludeSemantics(
                         child: AtemBadge(
-                          label:
-                              sessionKindLabel(l10n, widget.session),
+                          label: sessionKindLabel(l10n, widget.session),
                           style: AtemType.labelSmall,
                         ),
                       ),
@@ -446,16 +446,22 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    AtemFieldLabel(label: l10n.commonNotes),
-                    AtemTextField(
-                      controller: _notes,
-                      semanticLabel: l10n.commonNotes,
-                      maxLines: null,
-                      textInputAction: TextInputAction.newline,
-                      onChanged: (_) => _touch(),
-                    ),
+                    // Das Notizfeld gibt es nur noch für Einheiten, die
+                    // schon eine Notiz tragen (61 im Bestand) — damit man sie
+                    // ändern oder leeren kann. Neue Notizen entstehen seit
+                    // 16.09.2026 nirgends mehr.
+                    if (_hasExistingNote) ...[
+                      AtemFieldLabel(label: l10n.commonNotes),
+                      AtemTextField(
+                        controller: _notes,
+                        semanticLabel: l10n.commonNotes,
+                        maxLines: null,
+                        textInputAction: TextInputAction.newline,
+                        onChanged: (_) => _touch(),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
 
-                    const SizedBox(height: 24),
                     // Der Weg zu den Sätzen. Er steht **unter** den drei
                     // Feldern, weil das Nachtragen die seltenere Absicht ist
                     // — und über der Vorschau, weil er sie verändert.
@@ -507,12 +513,10 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
                     AtemButton.gradient(
                       // Ohne Änderung sagt der Knopf, warum er nichts tut —
                       // statt still gesperrt dazustehen.
-                      label: _changed
-                          ? l10n.commonSave
-                          : l10n.sessionEditNoChange,
-                      semanticLabel: _changed
-                          ? l10n.commonSave
-                          : l10n.sessionEditNoChange,
+                      label:
+                          _changed ? l10n.commonSave : l10n.sessionEditNoChange,
+                      semanticLabel:
+                          _changed ? l10n.commonSave : l10n.sessionEditNoChange,
                       busy: _saving,
                       onPressed: _saving || !_changed ? null : _save,
                     ),

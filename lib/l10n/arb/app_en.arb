@@ -2558,6 +2558,8 @@
   },
   "listGap": "{n, plural, one {{n} day} other {{n} days}} without training",
   "listGapLongest": "longest break on record",
+  "listOpenDetail": "opens details",
+  "listGapOpen": "{from} – today",
   "listGapRange": "{from} – {to}",
   "listMonthSummary": "{n} · load {load}",
   "listSecond": "workout {n}",
