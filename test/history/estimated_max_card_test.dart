@@ -88,8 +88,8 @@ void main() {
         find.bySemanticsLabel(RegExp(r'^Kniebeuge: geschätztes Maximum')),
         findsOneWidget,
       );
-      expect(find.text('7 Einheiten · zuletzt 112 kg · Bestwert 112 kg'),
-          findsOneWidget);
+      expect(find.text('112 kg'), findsOneWidget);
+      expect(find.text('7 Einheiten · Bestwert 112 kg'), findsOneWidget);
     });
 
     testWidgets('eine Kapsel antippen wechselt die Kurve', (tester) async {
@@ -101,8 +101,8 @@ void main() {
             RegExp(r'^Bankdrücken: geschätztes Maximum von 80 auf 86')),
         findsOneWidget,
       );
-      expect(find.text('5 Einheiten · zuletzt 86 kg · Bestwert 86 kg'),
-          findsOneWidget);
+      expect(find.text('86 kg'), findsOneWidget);
+      expect(find.text('5 Einheiten · Bestwert 86 kg'), findsOneWidget);
     });
 
     testWidgets('die Kurve ist ein Knoten mit Anfang, Ende und Anzahl',
@@ -133,12 +133,17 @@ void main() {
           findsOneWidget);
     });
 
-    testWidgets('die Formel steht sichtbar unter der Kurve', (tester) async {
+    testWidgets('Erklärung mit Formel ist hinter dem ⓘ', (tester) async {
       await _pump(tester, series: [bench], candidates: [bench]);
+      expect(
+          find.textContaining('Epley: Gewicht × (1 + Wdh ÷ 30)'), findsNothing);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pumpAndSettle();
       expect(
         find.textContaining('Epley: Gewicht × (1 + Wdh ÷ 30)'),
         findsOneWidget,
       );
+      expect(find.textContaining('Übungen mit Körpergewicht'), findsOneWidget);
     });
 
     testWidgets('200 % auf 320 dp läuft nicht über', (tester) async {
@@ -157,13 +162,16 @@ void main() {
       final two = _series('bench', [80, 82]);
       final four = _series('squat', [100, 101, 102, 103]);
       await _pump(tester, series: const [], candidates: [two, four]);
-      expect(find.text('Noch keine Übung mit genug Einheiten'), findsOneWidget);
       expect(find.text('Kniebeuge: 4 von 5 Einheiten'), findsOneWidget);
       expect(find.text('Bankdrücken: 2 von 5 Einheiten'), findsOneWidget);
-      // Die Schwelle steht mit beiden Zahlen im Satz.
-      expect(find.textContaining('Ab 5 Einheiten je Übung'), findsOneWidget);
+      // Sichtbar steht die Bedingung mit beiden Zahlen, die Erklärung hinter
+      // dem ⓘ.
       expect(
           find.textContaining('höchstens 12 Wiederholungen'), findsOneWidget);
+      expect(find.textContaining('Ab 5 Einheiten je Übung'), findsNothing);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Ab 5 Einheiten je Übung'), findsOneWidget);
     });
 
     testWidgets('höchstens drei Kandidaten, die nächsten zuerst',
@@ -186,7 +194,7 @@ void main() {
       await _pump(tester, series: const [], candidates: const []);
       expect(find.byType(EstimatedMaxCard), findsOneWidget);
       expect(find.text('Geschätztes Maximum'), findsNothing);
-      expect(find.text('Noch keine Übung mit genug Einheiten'), findsNothing);
+      expect(find.byIcon(Icons.info_outline), findsNothing);
     });
   });
 
@@ -201,6 +209,10 @@ void main() {
           find.text('Erscheint ab 5 Einheiten einer Übung mit Gewicht und '
               'höchstens 12 Wiederholungen'),
           findsOneWidget);
+      // Der Satz zu Körpergewicht steht seit 17.09.2026 hinter dem ⓘ.
+      expect(find.textContaining('Übungen mit Körpergewicht'), findsNothing);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pumpAndSettle();
       expect(find.textContaining('Übungen mit Körpergewicht'), findsOneWidget);
       // Ein Knoten, der die Bedingung und den Stand nennt.
       expect(
@@ -221,7 +233,7 @@ void main() {
       final bench = _series('bench', [80, 82.5, 84, 84, 86]);
       await _pump(tester,
           series: [bench], candidates: [bench], alwaysShow: true);
-      expect(find.textContaining('Epley: Gewicht'), findsOneWidget);
+      expect(find.text('86 kg'), findsOneWidget);
       expect(find.text('0 von 5'), findsNothing);
     });
 

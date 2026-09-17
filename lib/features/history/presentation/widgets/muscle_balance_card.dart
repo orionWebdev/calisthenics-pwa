@@ -196,7 +196,13 @@ class MuscleBalanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.balanceTitle, style: AtemType.titleMedium.of(context)),
+          // Seit 17.09.2026: Was die Verteilung zählt und dass sie kein
+          // Sollverhältnis ist, steht hinter dem ⓘ. Sichtbar bleibt die
+          // Grundlage mit Nenner.
+          AtemExplainHeader(
+            title: l10n.balanceTitle,
+            explanation: [l10n.balanceExplain],
+          ),
           const SizedBox(height: 4),
           Text(
             l10n.balanceBasis(
@@ -260,27 +266,14 @@ class MuscleGapsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Semantics(
-            header: true,
-            label: l10n.balanceGapsTitle,
-            child: ExcludeSemantics(
-              child: Row(
-                children: [
-                  const Icon(Icons.warning_amber_rounded,
-                      size: 16, color: AtemColors.textSecondary),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(l10n.balanceGapsTitle.toUpperCase(),
-                        style: AtemType.labelMicro.of(context)),
-                  ),
-                ],
-              ),
-            ),
+          // „Abstand seit dem letzten Satz… Kein Sollwert" steht seit
+          // 17.09.2026 hinter dem ⓘ — sichtbar bleiben Muskel und Tage.
+          AtemExplainHeader(
+            title: l10n.balanceGapsTitle,
+            explanation: [l10n.balanceGapsNote],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           _Gaps(gaps: balance.longestGaps),
-          const SizedBox(height: 14),
-          Text(l10n.balanceGapsNote, style: AtemType.labelSmall.of(context)),
         ],
       ),
     );
@@ -452,7 +445,9 @@ class _Value extends StatelessWidget {
         style: AtemType.labelMicro.of(context).copyWith(
               letterSpacing: 0,
               fontWeight: strong ? FontWeight.w700 : FontWeight.w500,
-              color: strong ? AtemColors.textPrimary : AtemColors.textTertiary,
+              // Drei Textstufen: der Anteil ist der Wert der Zeile (Weiss),
+              // Sätze und Abstand sind Beschriftung (#94A3B8).
+              color: strong ? AtemColors.textPrimary : AtemColors.textSecondary,
             ),
       );
 }
@@ -523,7 +518,7 @@ class _GapRow extends StatelessWidget {
       style: AtemType.labelMicro.of(context).copyWith(
             letterSpacing: 0,
             fontWeight: FontWeight.w700,
-            color: AtemColors.textTertiary,
+            color: AtemColors.textPrimary,
           ),
     );
     // Länge relativ zum längsten Abstand, **nicht** zu einem Sollwert — den
@@ -591,40 +586,16 @@ class _Thin extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.balanceTitle, style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 16),
-          Semantics(
-            label: l10n.balanceThin(done, target),
-            child: ExcludeSemantics(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 22,
-                    height: 22,
-                    margin: const EdgeInsets.only(top: 1),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AtemColors.border),
-                    ),
-                    child: Text('i',
-                        style: AtemType.labelMicro
-                            .of(context)
-                            .copyWith(letterSpacing: 0)),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(l10n.balanceThin(done, target),
-                        style: AtemType.body
-                            .of(context)
-                            .copyWith(color: AtemColors.textPrimary)),
-                  ),
-                ],
-              ),
-            ),
+          // Seit 17.09.2026: Warum hier keine Verteilung steht, erklärt das ⓘ.
+          // Sichtbar bleiben der eine Satz zur Lage, Balken und Nenner.
+          AtemExplainHeader(
+            title: l10n.balanceTitle,
+            explanation: [l10n.balanceThinNote],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 10),
+          Text(l10n.balanceThin(done, target),
+              style: AtemType.labelSmall.of(context)),
+          const SizedBox(height: 14),
           AtemProgressBar.share(
             value: (done / target).clamp(0.0, 1.0),
             // Rolle Fortschrittsbalken: Der Wert bewegt sich von allein,
@@ -640,11 +611,6 @@ class _Thin extends StatelessWidget {
               style: AtemType.meta.of(context),
             ),
           ),
-          const SizedBox(height: 16),
-          const SizedBox(
-              height: 1, child: ColoredBox(color: AtemColors.border)),
-          const SizedBox(height: 14),
-          Text(l10n.balanceThinNote, style: AtemType.labelSmall.of(context)),
         ],
       ),
     );

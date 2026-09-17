@@ -107,8 +107,13 @@ void main() {
       expect(find.text(l10n.wellnessTrendLegend), findsOneWidget);
       expect(find.text('▲ ${l10n.wellnessTrendHigher(3)}'), findsOneWidget);
       expect(find.text('▼ ${l10n.wellnessTrendLower(1)}'), findsOneWidget);
-      expect(find.text(l10n.wellnessTrendBasis(5, 7, 8)), findsOneWidget);
-      expect(find.text(l10n.wellnessTrendOnlyOne(1)), findsOneWidget);
+      expect(find.text(l10n.wellnessTrendBasis(5, 7)), findsOneWidget);
+      // Seit 17.09.2026 hinter dem ⓘ: der Hinweis auf Einheiten mit nur
+      // einer Angabe. Der Nenner verrät sie ohnehin.
+      expect(find.text(l10n.wellnessTrendOnlyOne(1)), findsNothing);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.wellnessTrendExplain), findsOneWidget);
 
       final labels = <String>[];
       void collect(SemanticsNode n) {

@@ -74,8 +74,8 @@ class PlanCard extends StatelessWidget {
       l10n.planMeta(plan.exerciseCount, trainingTypeLabel(l10n, plan.type)),
       l10n.durationApproxMinutes(minutes),
     ].join(' · ');
-    final text =
-        (description?.trim().isNotEmpty ?? false) ? description! : meta;
+    final hasDescription = description?.trim().isNotEmpty ?? false;
+    final text = hasDescription ? description! : meta;
     final shown = muscles.take(3).toList();
 
     return SizedBox(
@@ -107,6 +107,7 @@ class PlanCard extends StatelessWidget {
                   plan: plan,
                   image: image,
                   text: text,
+                  textIsMeta: !hasDescription,
                   muscles: shown,
                 ),
               ),
@@ -114,6 +115,7 @@ class PlanCard extends StatelessWidget {
                 plan: plan,
                 image: image,
                 text: text,
+                textIsMeta: !hasDescription,
                 muscles: shown,
               ),
             ),
@@ -139,12 +141,17 @@ class _Body extends StatelessWidget {
     required this.plan,
     required this.image,
     required this.text,
+    required this.textIsMeta,
     required this.muscles,
   });
 
   final Plan plan;
   final ImageProvider? image;
   final String text;
+
+  /// Ohne Beschreibung steht die Metazeile („7 Übungen · ~45 min") an dieser
+  /// Stelle — dann in der dritten Textstufe, nicht als Lesetext.
+  final bool textIsMeta;
   final List<MuscleGroup> muscles;
 
   @override
@@ -179,7 +186,9 @@ class _Body extends StatelessWidget {
                 text,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: AtemType.labelSmall.of(context),
+                style: textIsMeta
+                    ? AtemType.meta.of(context)
+                    : AtemType.labelSmall.of(context),
               ),
               if (muscles.isNotEmpty) ...[
                 const SizedBox(height: 10),

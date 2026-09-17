@@ -25,6 +25,10 @@ import '../../domain/weekly_strength_volume.dart';
 ///
 /// Unter der Schwelle (keine Einheit mit Sätzen) steht der
 /// [AtemThresholdBlock] — auf Auswertungsbildschirmen rendert jeder Block.
+///
+/// Seit 17.09.2026: Was der Block zeigt und wie der Schnitt gerechnet wird,
+/// steht hinter dem ⓘ. Die Sätze dieser Woche sind die Hauptzahl und tragen
+/// den Akzent Kraft; alles andere ist Beschriftung in der dritten Textstufe.
 class WeeklySetsCard extends StatelessWidget {
   const WeeklySetsCard({
     super.key,
@@ -55,16 +59,21 @@ class WeeklySetsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.weeklySetsTitle, style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 10),
+          AtemExplainHeader(
+            title: l10n.weeklySetsTitle,
+            explanation: [l10n.weeklySetsWhat, l10n.weeklySetsExplainAverage],
+          ),
+          const SizedBox(height: 6),
           _Head(volume: volume),
           const SizedBox(height: 16),
           _Strip(volume: volume),
           if (volume.sessionsWithoutSets > 0) ...[
             const SizedBox(height: 10),
+            // Die eine sichtbare Hinweiszeile: eine Tatsache über genau
+            // diese Daten, deshalb Beschriftung, kein Lesetext.
             Text(
               l10n.weeklySetsWithoutSets(volume.sessionsWithoutSets),
-              style: AtemType.labelSmall.of(context),
+              style: AtemType.meta.of(context),
             ),
           ],
         ],
@@ -140,9 +149,8 @@ class _Head extends StatelessWidget {
                       value: sets.toDouble(),
                       builder: (context, v) => Text(
                         '${v.round()}',
-                        style: AtemType.valueLarge
-                            .of(context)
-                            .copyWith(fontSize: 28),
+                        style: AtemType.valueLarge.of(context).copyWith(
+                            fontSize: 28, color: AtemColors.tabStrength),
                       ),
                     ),
                     Padding(

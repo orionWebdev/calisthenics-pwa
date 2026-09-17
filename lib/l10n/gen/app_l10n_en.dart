@@ -4694,7 +4694,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String hybridTimeBasis(int minutes, int n, int days) {
-    return 'Share of $minutes training minutes · $n workouts · $days days';
+    return '$minutes min in $days days · $n workouts';
   }
 
   @override
@@ -4769,8 +4769,8 @@ class AppL10nEn extends AppL10n {
       'Epley: weight × (1 + reps ÷ 30), best estimate per workout. An estimate, not a test.';
 
   @override
-  String analysisMaxBasis(int n, String kg, String best) {
-    return '$n workouts · latest $kg kg · best $best kg';
+  String analysisMaxBasis(int n, String best) {
+    return '$n workouts · best $best kg';
   }
 
   @override
@@ -4998,7 +4998,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String focusDistBasis(int withFocus, int total) {
-    return '$withFocus of $total strength workouts with a focus · 8 weeks';
+    return '$withFocus of $total workouts with a focus';
   }
 
   @override
@@ -5034,8 +5034,8 @@ class AppL10nEn extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '$n exercises compared',
-      one: '1 exercise compared',
+      other: '$n exercises',
+      one: '1 exercise',
     );
     String _temp1 = intl.Intl.pluralLogic(
       m,
@@ -5043,7 +5043,7 @@ class AppL10nEn extends AppL10n {
       other: '$m workouts',
       one: '1 workout',
     );
-    return '$_temp0 · $_temp1 in 4 weeks';
+    return '$_temp0 · $_temp1';
   }
 
   @override
@@ -5266,14 +5266,14 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String wellnessTrendBasis(int n, int total, int weeks) {
+  String wellnessTrendBasis(int n, int total) {
     String _temp0 = intl.Intl.pluralLogic(
       total,
       locale: localeName,
-      other: '$total strength workouts',
-      one: '1 strength workout',
+      other: '$total workouts',
+      one: '1 workout',
     );
-    return '$n of $_temp0 with both answers · $weeks weeks';
+    return '$n of $_temp0 with both answers';
   }
 
   @override
@@ -5319,7 +5319,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get planCatalogBody =>
-      'Training plans we put together for you will appear here soon — free for everyone and as Premium. Your own plans are under Train.';
+      'Plans by ATEM will appear here soon, free and as Premium. Your own plans are under Train.';
 
   @override
   String monthsWindow(int n) {
@@ -5387,5 +5387,50 @@ class AppL10nEn extends AppL10n {
   @override
   String explainCloseA11y(String title) {
     return 'Explanation for $title, collapse';
+  }
+
+  @override
+  String get balanceExplain =>
+      'Share of sets per muscle over the last 8 weeks, counted across strength workouts with exercises. Cardio, recovery and workouts without exercises add nothing. No target ratio — the app does not know how much back is right.';
+
+  @override
+  String get monthsExplain =>
+      'Workouts per calendar month. A dash means: measured, no workout. Empty means: before your first workout.';
+
+  @override
+  String get historyExplain =>
+      'Latest, best, frequency and volume from your workouts with this exercise. The curve appears from 5 sessions — fewer points would make a straight line look like a trend.';
+
+  @override
+  String get progressExplainMeasure =>
+      'Each exercise is compared with the best value of all earlier sessions: weight if you ever used extra load, otherwise reps, otherwise hold time. Warm-up sets do not count.';
+
+  @override
+  String get weeklySetsExplainAverage =>
+      'Compared with the average of the 4 full weeks before — only weeks since your first strength workout count. Warm-up sets do not count. No target.';
+
+  @override
+  String get focusDistExplainWithout =>
+      'The share only counts workouts where you picked a focus at the start — workouts without a focus are not included. No target ratio.';
+
+  @override
+  String get wellnessTrendExplain =>
+      'Top is your readiness before the workout, bottom how you felt after, each from 1 to 5. “Higher” only means higher, not better. Workouts with only one of the two answers are not included.';
+
+  @override
+  String get ratioExplain =>
+      'Share of strength and cardio in the training time of this week, counted in minutes. The shift compares with the average of the last 4 weeks. No target ratio — the app does not know which split is right.';
+
+  @override
+  String get hybridTimeExplain =>
+      'How your training minutes split across strength, cardio and recovery over the last 14 or 28 days.';
+
+  @override
+  String get hybridHeatmapExplain =>
+      'Each tile is a day, each column a week. The colour shows what you trained that day. Breaks are not penalised.';
+
+  @override
+  String hybridHeatmapOfDays(int total) {
+    return 'of $total days trained';
   }
 }

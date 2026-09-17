@@ -640,7 +640,9 @@ class _Gap extends StatelessWidget {
             DateFormat.MMMd(tag).format(from),
             DateFormat.MMMd(tag).format(to),
           );
-    final color = isLongest ? AtemColors.magenta : AtemColors.textTertiary;
+    // Drei Textstufen (17.09.2026): Eine gewöhnliche Pause ist Beschriftung,
+    // nur die längste trägt Magenta.
+    final color = isLongest ? AtemColors.magenta : AtemColors.textSecondary;
 
     return Semantics(
       label: [

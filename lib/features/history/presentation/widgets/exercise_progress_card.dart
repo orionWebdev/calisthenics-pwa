@@ -22,6 +22,11 @@ import '../session_ui.dart';
 /// - **gefüllt, ohne Bestwert** — ein Satz und die Grundlage. „Kein neuer
 ///   Bestwert" ist eine Tatsache, kein Urteil;
 /// - **gefüllt** — höchstens fünf Zeilen, jede öffnet die Übung.
+///
+/// Seit 17.09.2026 steht die Erklärung (was verglichen wird, welches Mass)
+/// hinter dem ⓘ im Kopf; sichtbar bleiben Titel, die Zeilen und die
+/// Grundlage. Der neue Wert jeder Zeile trägt den Akzent Kraft — in einer
+/// Liste ist die Zeile die Einheit, also hat jede ihren Blickfang.
 class ExerciseProgressCard extends ConsumerWidget {
   const ExerciseProgressCard({
     super.key,
@@ -65,19 +70,10 @@ class ExerciseProgressCard extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(AtemSpacing.cardPadding,
                 AtemSpacing.cardPadding, AtemSpacing.cardPadding, 8),
-            child: Semantics(
-              header: true,
-              child: Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
-                runSpacing: 4,
-                children: [
-                  Text(l10n.progressTitle,
-                      style: AtemType.titleMedium.of(context)),
-                  Text(l10n.progressWindow, style: AtemType.meta.of(context)),
-                ],
-              ),
+            child: AtemExplainHeader(
+              title: l10n.progressTitle,
+              trailing: l10n.progressWindow,
+              explanation: [l10n.progressWhat, l10n.progressExplainMeasure],
             ),
           ),
           if (rows.isEmpty)
@@ -180,7 +176,9 @@ class _Row extends StatelessWidget {
                 children: [
                   Text(value,
                       textAlign: TextAlign.end,
-                      style: AtemType.valueMedium.of(context)),
+                      style: AtemType.valueMedium
+                          .of(context)
+                          .copyWith(color: AtemColors.tabStrength)),
                   const SizedBox(height: 2),
                   Text.rich(
                     TextSpan(children: [

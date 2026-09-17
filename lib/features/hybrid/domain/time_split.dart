@@ -103,8 +103,8 @@ class TimeSplit {
     for (final session in sessions) {
       final track = TrainingTrack.of(session);
       if (track == null) continue;
-      final day = DateTime(
-          session.date.year, session.date.month, session.date.day);
+      final day =
+          DateTime(session.date.year, session.date.month, session.date.day);
       if (day.isBefore(start) || day.isAfter(refDay)) continue;
       counts[track] = counts[track]! + 1;
       final duration = session.duration;

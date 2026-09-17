@@ -75,7 +75,7 @@ void main() {
     expect(_segments(tester).toList(), [AtemColors.cyan]);
     expect(find.text('100 %'), findsOneWidget);
     expect(find.text('0 %'), findsNWidgets(2));
-    expect(find.text('Anteil an 90 Trainingsminuten · 2 Einheiten · 14 Tage'),
+    expect(find.text('90 min in 14 Tagen · 2 Einheiten'),
         findsOneWidget);
     // Eine Zeile, ein Knoten — mit dem Wort, nicht nur der Farbe.
     expect(find.bySemanticsLabel('Kraft: 90 Minuten, 2 Einheiten, 100 Prozent'),
@@ -94,7 +94,7 @@ void main() {
 
     expect(_segments(tester).toList(), [AtemColors.cyan, AtemColors.violet]);
     expect(find.text('50 %'), findsNWidgets(2));
-    expect(find.text('Anteil an 180 Trainingsminuten · 4 Einheiten · 28 Tage'),
+    expect(find.text('180 min in 28 Tagen · 4 Einheiten'),
         findsOneWidget);
     expect(find.text('1 Einheit ohne Dauer nicht enthalten'), findsOneWidget);
   });

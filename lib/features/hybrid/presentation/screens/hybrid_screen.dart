@@ -432,9 +432,7 @@ class _ReadinessCard extends StatelessWidget {
                           Text(lastText,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: AtemType.meta
-                                  .of(context)
-                                  .copyWith(color: AtemColors.textTertiary)),
+                              style: AtemType.meta.of(context)),
                         ],
                       ],
                     ),

@@ -224,7 +224,7 @@ void main() {
 
     testWidgets('längste Abstände in Tagen, längster zuerst', (tester) async {
       await _pump(tester, MuscleGapsCard(balance: _full()));
-      expect(find.text('LÄNGSTE ABSTÄNDE'), findsOneWidget);
+      expect(find.text('Längste Abstände'), findsOneWidget);
       final days = tester
           .widgetList<Text>(find.textContaining('Tage'))
           .map((t) => t.data)
@@ -237,9 +237,13 @@ void main() {
       await _pump(tester, MuscleBalanceCard(balance: _thin()));
       expect(find.textContaining('Noch zu wenig Grundlage'), findsOneWidget);
       expect(find.text('5 / 8 · noch 3 Einheiten'), findsOneWidget);
+      // Die Begründung steht seit 17.09.2026 hinter dem ⓘ.
+      expect(find.textContaining('schwankt'), findsNothing);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pumpAndSettle();
       expect(find.textContaining('schwankt'), findsOneWidget);
       await _pump(tester, MuscleGapsCard(balance: _thin()));
-      expect(find.text('LÄNGSTE ABSTÄNDE'), findsNothing);
+      expect(find.text('Längste Abstände'), findsNothing);
     });
 
     testWidgets('ab 160 % wird die Zeile zweizeilig, ohne Überlauf',

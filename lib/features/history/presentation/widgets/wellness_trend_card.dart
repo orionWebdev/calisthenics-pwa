@@ -24,6 +24,12 @@ import 'wellness_fields.dart';
 /// nachher, je in der Stufenfarbe mit der Zahl darin — und zählt, wie oft
 /// nachher höher, gleich oder niedriger lag. **Wertfrei:** „höher" ist nicht
 /// „besser".
+///
+/// Seit 17.09.2026 stehen die Erklärung der Punkte, das „höher ist nicht
+/// besser" und der Hinweis auf Einheiten mit nur einer Angabe hinter dem ⓘ.
+/// Sichtbar bleiben die kurze Legende — ohne sie ist die Reihe nicht lesbar
+/// —, die Zählung und die Grundlage mit Nenner. Keine Zahl in Amber: Die
+/// Stufenfarben der Punkte sind hier der Träger.
 class WellnessTrendCard extends StatelessWidget {
   const WellnessTrendCard({
     super.key,
@@ -63,25 +69,18 @@ class WellnessTrendCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 12,
-              runSpacing: 4,
-              children: [
-                Semantics(
-                  header: true,
-                  child: Text(l10n.wellnessTrendTitle,
-                      style: AtemType.titleMedium.of(context)),
-                ),
-                Text(l10n.wellnessTrendWindow(weeks),
-                    style: AtemType.meta.of(context)),
+            AtemExplainHeader(
+              title: l10n.wellnessTrendTitle,
+              trailing: l10n.wellnessTrendWindow(weeks),
+              explanation: [
+                l10n.wellnessTrendWhat,
+                l10n.wellnessTrendExplain,
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             ExcludeSemantics(
               child: Text(l10n.wellnessTrendLegend,
-                  style: AtemType.labelSmall.of(context)),
+                  style: AtemType.meta.of(context)),
             ),
             const SizedBox(height: 10),
             _PairRow(pairs: trend.latest(maxPairs)),
@@ -110,14 +109,9 @@ class WellnessTrendCard extends StatelessWidget {
                 height: 1, child: ColoredBox(color: AtemColors.border)),
             const SizedBox(height: 10),
             Text(
-              l10n.wellnessTrendBasis(trend.withBoth, trend.total, weeks),
+              l10n.wellnessTrendBasis(trend.withBoth, trend.total),
               style: AtemType.meta.of(context),
             ),
-            if (trend.withOnlyOne > 0) ...[
-              const SizedBox(height: 4),
-              Text(l10n.wellnessTrendOnlyOne(trend.withOnlyOne),
-                  style: AtemType.labelSmall.of(context)),
-            ],
           ],
         ),
       ),

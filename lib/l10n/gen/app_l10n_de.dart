@@ -4707,7 +4707,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String hybridTimeBasis(int minutes, int n, int days) {
-    return 'Anteil an $minutes Trainingsminuten · $n Einheiten · $days Tage';
+    return '$minutes min in $days Tagen · $n Einheiten';
   }
 
   @override
@@ -4782,8 +4782,8 @@ class AppL10nDe extends AppL10n {
       'Epley: Gewicht × (1 + Wdh ÷ 30), beste Schätzung je Einheit. Eine Schätzung, kein Test.';
 
   @override
-  String analysisMaxBasis(int n, String kg, String best) {
-    return '$n Einheiten · zuletzt $kg kg · Bestwert $best kg';
+  String analysisMaxBasis(int n, String best) {
+    return '$n Einheiten · Bestwert $best kg';
   }
 
   @override
@@ -5012,7 +5012,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String focusDistBasis(int withFocus, int total) {
-    return '$withFocus von $total Krafteinheiten mit Fokus · 8 Wochen';
+    return '$withFocus von $total Einheiten mit Fokus';
   }
 
   @override
@@ -5048,8 +5048,8 @@ class AppL10nDe extends AppL10n {
     String _temp0 = intl.Intl.pluralLogic(
       n,
       locale: localeName,
-      other: '$n Übungen verglichen',
-      one: '1 Übung verglichen',
+      other: '$n Übungen',
+      one: '1 Übung',
     );
     String _temp1 = intl.Intl.pluralLogic(
       m,
@@ -5057,7 +5057,7 @@ class AppL10nDe extends AppL10n {
       other: '$m Einheiten',
       one: '1 Einheit',
     );
-    return '$_temp0 · $_temp1 in 4 Wochen';
+    return '$_temp0 · $_temp1';
   }
 
   @override
@@ -5281,14 +5281,14 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
-  String wellnessTrendBasis(int n, int total, int weeks) {
+  String wellnessTrendBasis(int n, int total) {
     String _temp0 = intl.Intl.pluralLogic(
       total,
       locale: localeName,
-      other: '$total Krafteinheiten',
-      one: '1 Krafteinheit',
+      other: '$total Einheiten',
+      one: '1 Einheit',
     );
-    return '$n von $_temp0 mit beiden Angaben · $weeks Wochen';
+    return '$n von $_temp0 mit beiden Angaben';
   }
 
   @override
@@ -5334,7 +5334,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get planCatalogBody =>
-      'Hier erscheinen bald Trainingspläne, die wir für dich zusammenstellen — frei für alle und als Premium. Deine eigenen Pläne findest du unter Trainieren.';
+      'Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen unter Trainieren.';
 
   @override
   String monthsWindow(int n) {
@@ -5402,5 +5402,50 @@ class AppL10nDe extends AppL10n {
   @override
   String explainCloseA11y(String title) {
     return 'Erklärung zu $title, zuklappen';
+  }
+
+  @override
+  String get balanceExplain =>
+      'Anteil der Sätze je Muskel in den letzten 8 Wochen, gezählt über Krafteinheiten mit Übungen. Cardio, Regeneration und Einheiten ohne Übungen tragen nichts bei. Kein Sollverhältnis — die App weiß nicht, wie viel Rücken richtig ist.';
+
+  @override
+  String get monthsExplain =>
+      'Einheiten je Kalendermonat. Ein Strich heißt: gemessen, keine Einheit. Leer heißt: vor deiner ersten Einheit.';
+
+  @override
+  String get historyExplain =>
+      'Zuletzt, Bestwert, Häufigkeit und Volumen aus deinen Einheiten mit dieser Übung. Die Kurve erscheint ab 5 Ausführungen — aus weniger Punkten sähe eine Gerade wie ein Trend aus.';
+
+  @override
+  String get progressExplainMeasure =>
+      'Verglichen wird je Übung mit dem besten Wert aller früheren Ausführungen: Gewicht, wenn du je Zusatzlast hattest, sonst Wiederholungen, sonst Haltezeit. Aufwärmsätze zählen nicht.';
+
+  @override
+  String get weeklySetsExplainAverage =>
+      'Verglichen wird mit dem Schnitt der 4 vollen Wochen davor — nur Wochen seit deiner ersten Krafteinheit zählen. Aufwärmsätze zählen nicht. Kein Sollwert.';
+
+  @override
+  String get focusDistExplainWithout =>
+      'Der Anteil rechnet nur über Einheiten, bei denen du beim Start einen Fokus gewählt hast — Einheiten ohne Fokus zählen nicht mit. Kein Sollverhältnis.';
+
+  @override
+  String get wellnessTrendExplain =>
+      'Oben steht deine Bereitschaft vor der Einheit, unten dein Gefühl danach, je von 1 bis 5. „Höher“ heisst nur höher, nicht besser. Einheiten mit nur einer der beiden Angaben sind nicht enthalten.';
+
+  @override
+  String get ratioExplain =>
+      'Anteil von Kraft und Ausdauer an der Trainingszeit dieser Woche, gerechnet über Minuten. Die Verschiebung vergleicht mit dem Schnitt der letzten 4 Wochen. Kein Sollverhältnis — die App weiss nicht, welche Aufteilung richtig ist.';
+
+  @override
+  String get hybridTimeExplain =>
+      'Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen, in den letzten 14 oder 28 Tagen.';
+
+  @override
+  String get hybridHeatmapExplain =>
+      'Jede Kachel ist ein Tag, jede Spalte eine Woche. Die Farbe zeigt, was du an dem Tag trainiert hast. Pausen werden nicht bestraft.';
+
+  @override
+  String hybridHeatmapOfDays(int total) {
+    return 'von $total Tagen trainiert';
   }
 }

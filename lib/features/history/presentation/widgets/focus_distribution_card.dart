@@ -16,6 +16,12 @@ import 'wellness_fields.dart';
 /// Alle Balken tragen den Ton des Kraft-Bereichs. Eine Farbe je Fokus wäre
 /// eine neue Farbfamilie neben den Muskelfarben — und Fokus ist keine
 /// Muskelgruppe.
+///
+/// Seit 17.09.2026: Was der Block zeigt und dass Einheiten ohne Fokus nicht
+/// mitzählen, steht hinter dem ⓘ. Der Nenner („5 von 7 Einheiten mit Fokus")
+/// bleibt sichtbar — er verrät die fehlenden Einheiten ohnehin. Die
+/// Prozentwerte tragen den Akzent Kraft, die Zahl der Einheiten ist
+/// Beschriftung.
 class FocusDistributionCard extends StatelessWidget {
   const FocusDistributionCard({
     super.key,
@@ -36,8 +42,7 @@ class FocusDistributionCard extends StatelessWidget {
         title: l10n.focusDistTitle,
         trailing: l10n.focusDistWindow,
         what: l10n.focusDistWhat,
-        condition:
-            l10n.focusDistCondition(FocusDistribution.minimumWithFocus),
+        condition: l10n.focusDistCondition(FocusDistribution.minimumWithFocus),
         current: distribution.withFocus,
         required: FocusDistribution.minimumWithFocus,
         accent: AtemColors.tabStrength,
@@ -48,19 +53,10 @@ class FocusDistributionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Semantics(
-            header: true,
-            child: Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 12,
-              runSpacing: 4,
-              children: [
-                Text(l10n.focusDistTitle,
-                    style: AtemType.titleMedium.of(context)),
-                Text(l10n.focusDistWindow, style: AtemType.meta.of(context)),
-              ],
-            ),
+          AtemExplainHeader(
+            title: l10n.focusDistTitle,
+            trailing: l10n.focusDistWindow,
+            explanation: [l10n.focusDistWhat, l10n.focusDistExplainWithout],
           ),
           const SizedBox(height: 14),
           for (var i = 0; i < distribution.shares.length; i++) ...[
@@ -78,13 +74,6 @@ class FocusDistributionCard extends StatelessWidget {
             l10n.focusDistBasis(distribution.withFocus, distribution.total),
             style: AtemType.meta.of(context),
           ),
-          if (distribution.withoutFocus > 0) ...[
-            const SizedBox(height: 4),
-            Text(
-              l10n.focusDistWithout(distribution.withoutFocus),
-              style: AtemType.labelSmall.of(context),
-            ),
-          ],
         ],
       ),
     );
@@ -123,10 +112,11 @@ class _Row extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(l10n.focusDistCount(share.count),
-                        style: AtemType.valueMedium.of(context).copyWith(
-                            fontSize: 13, color: AtemColors.textTertiary)),
+                        style: AtemType.meta.of(context)),
                     Text('$percent${l10n.commonPercentSign}',
-                        style: AtemType.valueMedium.of(context)),
+                        style: AtemType.valueMedium
+                            .of(context)
+                            .copyWith(color: AtemColors.tabStrength)),
                   ],
                 ),
               ],

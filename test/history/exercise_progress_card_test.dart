@@ -111,8 +111,7 @@ void main() {
     await _pump(tester, _flat);
     expect(find.text('Kein neuer Bestwert in den letzten 4 Wochen.'),
         findsOneWidget);
-    expect(find.text('1 Übung verglichen · 2 Einheiten in 4 Wochen'),
-        findsOneWidget);
+    expect(find.text('1 Übung · 2 Einheiten'), findsOneWidget);
   });
 
   testWidgets('Zeile mit Wert, Vorher und einem Semantics-Knoten',
@@ -153,5 +152,14 @@ void main() {
     expect(tester.takeException(), isNull);
     await _pump(tester, _once, scale: 2.0, width: 320);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Erklärung ist hinter dem ⓘ', (tester) async {
+    await _pump(tester, _better);
+    expect(find.textContaining('neuen Bestwert gesetzt'), findsNothing);
+    await tester.tap(find.byIcon(Icons.info_outline));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('neuen Bestwert gesetzt'), findsOneWidget);
+    expect(find.textContaining('Aufwärmsätze zählen nicht'), findsOneWidget);
   });
 }

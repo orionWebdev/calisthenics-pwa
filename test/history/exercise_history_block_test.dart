@@ -90,6 +90,12 @@ void main() {
       expect(find.text('1×'), findsOneWidget);
       expect(find.text('DAMALS'), findsOneWidget);
       expect(find.text('4 × 8 · 70 kg'), findsOneWidget);
+      // Der Satz, warum es nichts davon gibt, steht seit 17.09.2026 hinter
+      // dem ⓘ.
+      expect(find.textContaining('aus einer Ausführung folgt keins davon'),
+          findsNothing);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pumpAndSettle();
       expect(find.textContaining('aus einer Ausführung folgt keins davon'),
           findsOneWidget);
       expect(find.text('BESTWERT'), findsNothing);

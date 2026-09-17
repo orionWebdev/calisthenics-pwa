@@ -55,42 +55,50 @@ class TrainingHeatmapCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Semantics(
-            header: true,
-            label:
-                '${l10n.hybridHeatmapTitle}, ${l10n.hybridHeatmapWindow(heatmap.weekCount)}',
-            child: ExcludeSemantics(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Text(l10n.hybridHeatmapTitle,
-                        style: AtemType.titleMedium.of(context)),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(l10n.hybridHeatmapWindow(heatmap.weekCount),
-                      style: AtemType.meta.of(context)),
-                ],
+          // Was das Raster zeigt und die Aufteilung je Spur stehen hinter
+          // dem ⓘ (seit 17.09.2026); sichtbar bleiben Raster, Legende und die
+          // Zählung mit Nenner.
+          AtemExplainHeader(
+            title: l10n.hybridHeatmapTitle,
+            trailing: l10n.hybridHeatmapWindow(heatmap.weekCount),
+            explanation: [
+              l10n.hybridHeatmapExplain,
+              l10n.hybridHeatmapByTrack(
+                heatmap.trainedDaysOf(TrainingTrack.strength),
+                heatmap.trainedDaysOf(TrainingTrack.cardio),
+                heatmap.trainedDaysOf(TrainingTrack.recovery),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: 14),
           _Grid(heatmap: heatmap),
           const SizedBox(height: 12),
           const _Legend(),
           const SizedBox(height: 12),
-          Text(
-            l10n.hybridHeatmapBasis(heatmap.trainedDays, heatmap.totalDays),
-            style: AtemType.meta.of(context),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            l10n.hybridHeatmapByTrack(
-              heatmap.trainedDaysOf(TrainingTrack.strength),
-              heatmap.trainedDaysOf(TrainingTrack.cardio),
-              heatmap.trainedDaysOf(TrainingTrack.recovery),
+          // Die Hauptzahl des Blocks im Hybrid-Ton, der Nenner daneben in
+          // der dritten Textstufe. Ein Knoten: „34 von 84 Tagen trainiert".
+          Semantics(
+            label:
+                l10n.hybridHeatmapBasis(heatmap.trainedDays, heatmap.totalDays),
+            child: ExcludeSemantics(
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 6,
+                runSpacing: 2,
+                children: [
+                  Text(
+                    '${heatmap.trainedDays}',
+                    style: AtemType.valueMedium
+                        .of(context)
+                        .copyWith(color: AtemColors.tabHybrid),
+                  ),
+                  Text(
+                    l10n.hybridHeatmapOfDays(heatmap.totalDays),
+                    style: AtemType.meta.of(context),
+                  ),
+                ],
+              ),
             ),
-            style: AtemType.labelSmall.of(context),
           ),
         ],
       ),
@@ -315,7 +323,7 @@ class _Legend extends StatelessWidget {
                   // Flexible: „Regeneration" bei 200 % auf 320 dp bricht um,
                   // statt die Zeile zu sprengen.
                   Flexible(
-                    child: Text(word, style: AtemType.labelSmall.of(context)),
+                    child: Text(word, style: AtemType.meta.of(context)),
                   ),
                 ],
               ),

@@ -152,8 +152,11 @@ void main() {
       final handle = tester.ensureSemantics();
       await _pump(tester, [_s('a', DateTime(2026, 9, 14))]);
       final l10n = AppL10n.of(tester.element(find.byType(MonthStrip)));
-      final node = find.bySemanticsLabel(RegExp(
-          '${l10n.historyMonthsLabel}.*April: nicht erfasst.*September: 1 Einheit'));
+      // Der Titel ist seit 17.09.2026 ein eigener Kopf mit ⓘ; der Knoten
+      // trägt Fenster, Grundlage und alle Monate.
+      expect(find.bySemanticsLabel(l10n.historyMonthsLabel), findsWidgets);
+      final node = find.bySemanticsLabel(
+          RegExp('April: nicht erfasst.*September: 1 Einheit'));
       expect(node, findsOneWidget);
       handle.dispose();
     });
@@ -164,6 +167,8 @@ void main() {
         _s('a', DateTime(2026, 9, 1)),
         _s('b', DateTime(2026, 9, 14)),
       ]);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pumpAndSettle();
       expect(find.textContaining('Median'), findsNothing);
 
       await _pump(tester, [
@@ -171,6 +176,9 @@ void main() {
         _s('b', DateTime(2026, 8, 20)),
         _s('c', DateTime(2026, 9, 14)),
       ]);
+      // Median und längste Pause stehen seit 17.09.2026 hinter dem ⓘ. Es ist
+      // aus dem ersten Aufbau noch aufgeklappt — derselbe Kopf, derselbe
+      // Zustand.
       expect(find.textContaining('Median'), findsOneWidget);
     });
 

@@ -396,8 +396,9 @@ class _Contribution extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child:
-                            Text(label, style: AtemType.labelSmall.of(context)),
+                        // Beschriftung in der dritten Textstufe, der Wert
+                        // daneben trägt die Zeile (17.09.2026).
+                        child: Text(label, style: AtemType.meta.of(context)),
                       ),
                       const SizedBox(width: 10),
                       Text(value,
@@ -465,7 +466,7 @@ class _Neighbours extends StatelessWidget {
                       style: AtemType.labelSmall.of(context).copyWith(
                             color: here
                                 ? AtemColors.textPrimary
-                                : AtemColors.textTertiary,
+                                : AtemColors.textSecondary,
                           )),
                 ),
                 const SizedBox(width: 10),

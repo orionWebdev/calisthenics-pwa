@@ -80,18 +80,16 @@ void main() {
     expect(find.text('Rumpf'), findsNothing);
     expect(find.text('3 Einheiten'), findsOneWidget);
     expect(find.text('60%'), findsOneWidget);
-    expect(find.text('5 von 7 Krafteinheiten mit Fokus · 8 Wochen'),
-        findsOneWidget);
-    expect(find.text('2 Einheiten ohne Fokus sind nicht enthalten'),
-        findsOneWidget);
+    // Seit 17.09.2026: Der Nenner bleibt sichtbar, der Hinweis auf Einheiten
+    // ohne Fokus steht hinter dem ⓘ.
+    expect(find.text('5 von 7 Einheiten mit Fokus'), findsOneWidget);
+    expect(find.textContaining('ohne Fokus'), findsNothing);
   });
 
   testWidgets('ohne Einheiten ohne Fokus fehlt der Hinweis', (tester) async {
-    await _pump(
-        tester, _filled.where((s) => s.workoutFocus != null).toList());
+    await _pump(tester, _filled.where((s) => s.workoutFocus != null).toList());
     expect(find.textContaining('ohne Fokus'), findsNothing);
-    expect(find.text('5 von 5 Krafteinheiten mit Fokus · 8 Wochen'),
-        findsOneWidget);
+    expect(find.text('5 von 5 Einheiten mit Fokus'), findsOneWidget);
   });
 
   testWidgets('eine Zeile ist ein Semantics-Knoten', (tester) async {
@@ -111,5 +109,17 @@ void main() {
     await _pump(tester, [_strength(1, WorkoutFocus.pull)],
         scale: 2.0, width: 320);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Erklärung ist hinter dem ⓘ', (tester) async {
+    await _pump(tester, _filled);
+    expect(find.textContaining('Wogegen deine Krafteinheiten gingen'),
+        findsNothing);
+    await tester.tap(find.byIcon(Icons.info_outline));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Wogegen deine Krafteinheiten gingen'),
+        findsOneWidget);
+    expect(find.textContaining('Einheiten ohne Fokus zählen nicht mit'),
+        findsOneWidget);
   });
 }

@@ -99,7 +99,14 @@ void main() {
     await _pump(tester, TrainingHeatmapCard(heatmap: heatmap));
 
     // 11 volle Wochen + Mo–Mi der Stichtagswoche = 80 Tage.
-    expect(find.text('4 von 80 Tagen trainiert'), findsOneWidget);
+    // Hauptzahl und Nenner sichtbar, ein Vorlese-Knoten für beide.
+    expect(find.text('4'), findsOneWidget);
+    expect(find.text('von 80 Tagen trainiert'), findsOneWidget);
+    expect(find.bySemanticsLabel('4 von 80 Tagen trainiert'), findsOneWidget);
+    // Die Aufteilung je Spur steht seit 17.09.2026 hinter dem ⓘ.
+    expect(find.text('3 Kraft · 1 Cardio · 1 Regeneration'), findsNothing);
+    await tester.tap(find.byIcon(Icons.info_outline));
+    await tester.pumpAndSettle();
     expect(find.text('3 Kraft · 1 Cardio · 1 Regeneration'), findsOneWidget);
     expect(find.text('12 Wochen'), findsOneWidget);
   });

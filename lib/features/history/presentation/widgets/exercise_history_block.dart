@@ -99,7 +99,9 @@ class ExerciseHistoryBlock extends StatelessWidget {
             runSpacing: 2,
             children: [
               Text(l10n.historyCount(1),
-                  style: AtemType.valueLarge.of(context)),
+                  style: AtemType.valueLarge
+                      .of(context)
+                      .copyWith(color: AtemColors.tabStrength)),
               Text(l10n.historyOnce(shortDate),
                   style: AtemType.meta.of(context)),
             ],
@@ -116,10 +118,7 @@ class ExerciseHistoryBlock extends StatelessWidget {
           _weightA11y(context, l10n, last) ?? l10n.historyDateA11y(longDate),
         ),
       ),
-      const SizedBox(height: 16),
-      const _Rule(),
-      const SizedBox(height: 14),
-      Text(l10n.historyOnceNote, style: AtemType.labelSmall.of(context)),
+      // „Kein Bestwert, keine Kurve…" steht seit 17.09.2026 hinter dem ⓘ.
     ];
   }
 
@@ -135,6 +134,9 @@ class ExerciseHistoryBlock extends StatelessWidget {
     tiles.add(_Tile(
       label: l10n.historyLast,
       value: _sets(last),
+      // Die Hauptzahl des Blocks trägt den Kraft-Ton; der Bestwert behält
+      // Magenta als Rand und Kopf (Board 09, A4).
+      accent: AtemColors.tabStrength,
       sub: [
         if (lastWeight != null)
           l10n.unitKilograms(AtemNumberField.format(context, lastWeight)),
@@ -282,19 +284,26 @@ class _Head extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    // Seit 17.09.2026 mit ⓘ: was die Kacheln zählen, ab wann die Kurve kommt
+    // und — nach einer einzigen Ausführung — warum es nichts davon gibt.
+    final header = AtemExplainHeader(
+      title: l10n.exerciseHistoryTitle,
+      explanation: [
+        if (once) l10n.historyOnceNote else l10n.historyExplain,
+      ],
+    );
+    if (once) return header;
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
+        Expanded(child: header),
+        const SizedBox(width: 10),
+        // Die Anzahl steht rechts neben dem ⓘ und hat ein eigenes Label:
+        // „14 mal ausgeführt" statt „14×".
+        Padding(
+          padding: const EdgeInsets.only(top: 14),
           child: Semantics(
-            header: true,
-            child: Text(l10n.exerciseHistoryTitle,
-                style: AtemType.titleMedium.of(context)),
-          ),
-        ),
-        if (!once) ...[
-          const SizedBox(width: 10),
-          Semantics(
             label: l10n.historyCountA11y(history.sessionCount),
             child: ExcludeSemantics(
               child: Text(
@@ -304,7 +313,7 @@ class _Head extends StatelessWidget {
               ),
             ),
           ),
-        ],
+        ),
       ],
     );
   }
@@ -378,6 +387,7 @@ class _Tile extends StatelessWidget {
     required this.semanticLabel,
     this.sub,
     this.highlight = false,
+    this.accent,
   });
 
   final String label;
@@ -385,6 +395,9 @@ class _Tile extends StatelessWidget {
   final String? sub;
   final String semanticLabel;
   final bool highlight;
+
+  /// Farbe des Werts — nur für die eine Hauptzahl des Blocks.
+  final Color? accent;
 
   @override
   Widget build(BuildContext context) {
@@ -419,7 +432,11 @@ class _Tile extends StatelessWidget {
               Text(value,
                   softWrap: false,
                   overflow: TextOverflow.visible,
-                  style: AtemType.valueMedium.of(context)),
+                  style: accent == null
+                      ? AtemType.valueMedium.of(context)
+                      : AtemType.valueMedium
+                          .of(context)
+                          .copyWith(color: accent)),
               if (sub != null) ...[
                 const SizedBox(height: 4),
                 Text(sub!, style: AtemType.meta.of(context)),

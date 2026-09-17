@@ -112,40 +112,35 @@ class MonthStrip extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Ein Knoten für den ganzen Streifen: Titel, Fenster, Grundlage und
-        // alle sichtbaren Monate als Satz. Die antippbaren Monate kommen danach
-        // als eigene Knöpfe.
+        // Seit 17.09.2026: Kopf mit ⓘ. Was ein Strich und eine leere Spalte
+        // bedeuten, Median-Abstand und längste Pause stehen hinter dem ⓘ;
+        // sichtbar bleibt die Grundlage mit Nenner. Der Kopf ist ein eigener
+        // Knoten, weil das ⓘ ein Knopf ist und nicht in einem ausgeschlossenen
+        // Knoten verschwinden darf.
+        AtemExplainHeader(
+          title: l10n.historyMonthsLabel,
+          trailing: l10n.monthsWindow(window.slots.length),
+          explanation: [
+            l10n.monthsExplain,
+            if (gapLine != null) gapLine,
+          ],
+        ),
+        // Ein Knoten für Grundlage und alle sichtbaren Monate als Satz. Die
+        // antippbaren Monate kommen danach als eigene Knöpfe.
         Semantics(
           container: true,
           label: [
-            l10n.historyMonthsLabel,
             l10n.monthsWindow(window.slots.length),
             if (basis != null) basis,
             sentence,
-            if (gapLine != null) gapLine,
           ].join('. '),
           child: ExcludeSemantics(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 12,
-                  runSpacing: 4,
-                  children: [
-                    Text(l10n.historyMonthsLabel,
-                        style: AtemType.titleMedium.of(context)),
-                    Text(l10n.monthsWindow(window.slots.length),
-                        style: AtemType.meta.of(context)),
-                  ],
-                ),
-                if (basis != null) ...[
-                  const SizedBox(height: 4),
-                  Text(basis, style: AtemType.meta.of(context)),
-                ],
-              ],
-            ),
+            child: basis == null
+                ? const SizedBox(width: double.infinity)
+                : Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(basis, style: AtemType.meta.of(context)),
+                  ),
           ),
         ),
         const SizedBox(height: 16),
@@ -176,12 +171,6 @@ class MonthStrip extends StatelessWidget {
               ),
           ],
         ),
-        if (gapLine != null) ...[
-          const SizedBox(height: 14),
-          ExcludeSemantics(
-            child: Text(gapLine, style: AtemType.meta.of(context)),
-          ),
-        ],
       ],
     );
   }
@@ -238,8 +227,15 @@ class _Column extends StatelessWidget {
                   '${slot.count}',
                   maxLines: 1,
                   textAlign: TextAlign.center,
+                  // Drei Textstufen: Die Zahl des aktuellen Monats ist die
+                  // Hauptzahl des Blocks und trägt den Kraft-Ton; die anderen
+                  // sind Beschriftung.
                   style: AtemType.labelMicro.of(context).copyWith(
-                        color: AtemColors.textTertiary,
+                        color: slot.isCurrent
+                            ? AtemColors.tabStrength
+                            : AtemColors.textSecondary,
+                        fontWeight:
+                            slot.isCurrent ? FontWeight.w700 : FontWeight.w500,
                         letterSpacing: 0,
                       ),
                 )
@@ -289,8 +285,8 @@ class _Column extends StatelessWidget {
           textAlign: TextAlign.center,
           style: AtemType.labelMicro.of(context).copyWith(
                 letterSpacing: 0,
-                color: slot.measured
-                    ? AtemColors.textTertiary
+                color: slot.isCurrent
+                    ? AtemColors.textPrimary
                     : AtemColors.textSecondary,
               ),
         ),

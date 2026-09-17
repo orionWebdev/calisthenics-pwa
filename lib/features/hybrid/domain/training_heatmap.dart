@@ -95,8 +95,8 @@ class TrainingHeatmap {
     for (final session in sessions) {
       final track = TrainingTrack.of(session);
       if (track == null) continue;
-      final day = DateTime(
-          session.date.year, session.date.month, session.date.day);
+      final day =
+          DateTime(session.date.year, session.date.month, session.date.day);
       if (day.isBefore(firstMonday) || day.isAfter(refDay)) continue;
       tracksByDay.putIfAbsent(day, () => {}).add(track);
       minutesByDay[day] =
@@ -126,8 +126,7 @@ class TrainingHeatmap {
   static int isoWeekOf(DateTime date) {
     final day = DateTime(date.year, date.month, date.day);
     // Der Donnerstag derselben Woche entscheidet über das Jahr.
-    final thursday =
-        DateTime(day.year, day.month, day.day + (4 - day.weekday));
+    final thursday = DateTime(day.year, day.month, day.day + (4 - day.weekday));
     final firstOfYear = DateTime(thursday.year, 1, 1);
     // Kalendarischer Abstand in Tagen, nicht aus Millisekunden — siehe oben.
     final dayOfYear = _daysBetween(firstOfYear, thursday) + 1;
@@ -136,6 +135,6 @@ class TrainingHeatmap {
 
   static int _daysBetween(DateTime from, DateTime to) =>
       (DateTime.utc(to.year, to.month, to.day)
-              .difference(DateTime.utc(from.year, from.month, from.day))
-              .inDays);
+          .difference(DateTime.utc(from.year, from.month, from.day))
+          .inDays);
 }

@@ -11,9 +11,16 @@ import '../session_ui.dart';
 ///
 /// Ersetzt seit dem 16.09.2026 die Formkurve in der Kraft-Auswertung
 /// (Masterplan, Abschnitt 3 B): Epley rechnet aus Gewicht und Wiederholungen
-/// eines Satzes ein Maximum, das niemand gehoben hat. Deshalb steht die
-/// Formel sichtbar unter dem Diagramm, und jede Zahl nennt die Zahl der
-/// Einheiten, aus denen sie kommt.
+/// eines Satzes ein Maximum, das niemand gehoben hat. Deshalb ist die
+/// Formel immer erreichbar, und jede Zahl nennt die Zahl der Einheiten, aus
+/// denen sie kommt.
+///
+/// ## Seit 17.09.2026
+///
+/// Formel, „eine Schätzung, kein Test" und der Hinweis zu Körpergewicht
+/// stehen hinter dem ⓘ. Der letzte geschätzte Wert ist die Hauptzahl — gross
+/// und im Akzent Kraft, die Kurve im selben Ton —, daneben die Verschiebung
+/// als neutrale Tatsache, darunter die Grundlage.
 ///
 /// ## Was nicht hier steht
 ///
@@ -98,7 +105,10 @@ class _EstimatedMaxCardState extends State<EstimatedMaxCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.analysisMaxTitle, style: AtemType.titleMedium.of(context)),
+          AtemExplainHeader(
+            title: l10n.analysisMaxTitle,
+            explanation: _explanation(l10n),
+          ),
           const SizedBox(height: 12),
           // Eine Kapselreihe, horizontal scrollend: Bei 200 % auf 320 dp
           // passen zwei Übungsnamen nebeneinander, mehr nicht — ein Wrap
@@ -125,25 +135,55 @@ class _EstimatedMaxCardState extends State<EstimatedMaxCard> {
             ),
           ),
           const SizedBox(height: 16),
-          _Chart(series: selected, name: name),
+          // Die Hauptzahl: der letzte geschätzte Wert, daneben die
+          // Verschiebung. Wrap, damit bei 200 % die Verschiebung darunter
+          // rutscht statt überzulaufen.
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.end,
+            spacing: 10,
+            runSpacing: 4,
+            children: [
+              Semantics(
+                label: l10n.progressA11yKg(
+                    AtemNumberField.format(context, selected.latest)),
+                child: ExcludeSemantics(
+                  child: Text(
+                    l10n.unitKilograms(
+                        AtemNumberField.format(context, selected.latest)),
+                    style: AtemType.valueLarge
+                        .of(context)
+                        .copyWith(fontSize: 28, color: AtemColors.tabStrength),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: _Delta(delta: selected.deltaSinceFirst),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
+          _Chart(series: selected, name: name),
+          const SizedBox(height: 10),
           Text(
             l10n.analysisMaxBasis(
               selected.sessionCount,
-              AtemNumberField.format(context, selected.latest),
               AtemNumberField.format(context, selected.best),
             ),
             style: AtemType.meta.of(context),
           ),
-          const SizedBox(height: 4),
-          _Delta(delta: selected.deltaSinceFirst),
-          const SizedBox(height: 10),
-          Text(l10n.analysisMaxHint, style: AtemType.labelSmall.of(context)),
         ],
       ),
     );
   }
 }
+
+/// Die Sätze hinter dem ⓘ — in jedem Zustand dieselben.
+List<String> _explanation(AppL10n l10n) => [
+      l10n.analysisMaxWhat,
+      l10n.analysisMaxHint,
+      l10n.analysisMaxBodyweightNote,
+    ];
 
 /// Die Verschiebung seit der ersten Einheit — Tatsache mit Richtungsglyph.
 ///
@@ -213,16 +253,9 @@ class _Chart extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${AtemNumberField.format(context, series.best)} ${l10n.analysisMaxYAxis}',
-                  style: AtemType.labelDeco.of(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
+            // Keine Beschriftung des Bestwerts über der Kurve mehr (seit
+            // 17.09.2026): Er steht in der Grundlage darunter, die
+            // gestrichelte Linie markiert ihn.
             SizedBox(
               height: height + rug + 6,
               child: AtemSweep(
@@ -308,7 +341,7 @@ class _Painter extends CustomPainter {
     }
 
     final line = Paint()
-      ..color = AtemColors.cyan
+      ..color = AtemColors.tabStrength
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke
       ..strokeJoin = StrokeJoin.round;
@@ -318,7 +351,7 @@ class _Painter extends CustomPainter {
     }
     canvas.drawPath(path, line);
 
-    final dot = Paint()..color = AtemColors.cyan;
+    final dot = Paint()..color = AtemColors.tabStrength;
     for (var i = 0; i < points.length; i++) {
       canvas.drawCircle(Offset(x(i), y(values[i])), _Chart.radius, dot);
     }
@@ -327,7 +360,7 @@ class _Painter extends CustomPainter {
     final first = points.first.date;
     final span = points.last.date.difference(first).inDays;
     final rugPaint = Paint()
-      ..color = AtemColors.cyan.withValues(alpha: 0.55)
+      ..color = AtemColors.tabStrength.withValues(alpha: 0.55)
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
     const top = chartHeight + 4;
@@ -362,14 +395,19 @@ class _Thin extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.analysisMaxTitle, style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 8),
-          Text(l10n.analysisMaxThinTitle,
-              style: AtemType.labelSmall.of(context)),
-          const SizedBox(height: 4),
+          AtemExplainHeader(
+            title: l10n.analysisMaxTitle,
+            explanation: [
+              ..._explanation(l10n),
+              l10n.analysisMaxThinBody(target, StrengthProgress.maximumReps),
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Sichtbar bleibt nur die Bedingung — die Erklärung steht hinter
+          // dem ⓘ, der Weg dorthin in den Zeilen darunter.
           Text(
-            l10n.analysisMaxThinBody(target, StrengthProgress.maximumReps),
-            style: AtemType.labelSmall.of(context),
+            l10n.analysisMaxCondition(target, StrengthProgress.maximumReps),
+            style: AtemType.meta.of(context),
           ),
           for (final c in candidates) ...[
             const SizedBox(height: 14),
@@ -397,24 +435,17 @@ class _Threshold extends StatelessWidget {
     final l10n = AppL10n.of(context);
     const target = StrengthProgress.minimumSessions;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AtemThresholdBlock(
-          title: l10n.analysisMaxTitle,
-          what: l10n.analysisMaxWhat,
-          condition:
-              l10n.analysisMaxCondition(target, StrengthProgress.maximumReps),
-          current: 0,
-          required: target,
-        ),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Text(l10n.analysisMaxBodyweightNote,
-              style: AtemType.labelSmall.of(context)),
-        ),
-      ],
+    // Der Satz zu Körpergewicht steht seit 17.09.2026 hinter dem ⓘ, nicht
+    // mehr als eigene Zeile unter der Karte. `what` ist der eine Text des
+    // Schwellenblocks — die Absätze trennt eine Leerzeile.
+    return AtemThresholdBlock(
+      title: l10n.analysisMaxTitle,
+      what: _explanation(l10n).join('\n\n'),
+      condition:
+          l10n.analysisMaxCondition(target, StrengthProgress.maximumReps),
+      current: 0,
+      required: target,
+      accent: AtemColors.tabStrength,
     );
   }
 }
@@ -438,7 +469,7 @@ class _Progress extends StatelessWidget {
           AtemProgressBar.share(
             value: (current / target).clamp(0.0, 1.0),
             semanticLabel: text,
-            accent: AtemColors.cyan,
+            accent: AtemColors.tabStrength,
           ),
           const SizedBox(height: 8),
           ExcludeSemantics(

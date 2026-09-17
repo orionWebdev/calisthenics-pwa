@@ -7717,10 +7717,10 @@ abstract class AppL10n {
   /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}}'**
   String hybridTimeUnits(int n);
 
-  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeBasis
+  /// Auswertung nach Masterplan (16.09.2026), gekürzt 17.09.2026 — hybridTimeBasis
   ///
   /// In de, this message translates to:
-  /// **'Anteil an {minutes} Trainingsminuten · {n} Einheiten · {days} Tage'**
+  /// **'{minutes} min in {days} Tagen · {n} Einheiten'**
   String hybridTimeBasis(int minutes, int n, int days);
 
   /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeWithoutDuration
@@ -7813,11 +7813,11 @@ abstract class AppL10n {
   /// **'Epley: Gewicht × (1 + Wdh ÷ 30), beste Schätzung je Einheit. Eine Schätzung, kein Test.'**
   String get analysisMaxHint;
 
-  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxBasis
+  /// Kraft-Auswertung, Geschätztes Maximum — Grundlage, gekürzt am 17.09.2026 (der letzte Wert steht gross darüber)
   ///
   /// In de, this message translates to:
-  /// **'{n} Einheiten · zuletzt {kg} kg · Bestwert {best} kg'**
-  String analysisMaxBasis(int n, String kg, String best);
+  /// **'{n} Einheiten · Bestwert {best} kg'**
+  String analysisMaxBasis(int n, String best);
 
   /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxDelta
   ///
@@ -8060,10 +8060,10 @@ abstract class AppL10n {
   /// **'{focus}, {n, plural, =1{1 Einheit} other{{n} Einheiten}}, {percent} Prozent'**
   String focusDistRowA11y(String focus, int n, int percent);
 
-  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Grundlage mit Nenner
+  /// Kraft-Auswertung, Fokus — Grundlage mit Nenner, gekürzt am 17.09.2026 (Fenster steht im Kopf)
   ///
   /// In de, this message translates to:
-  /// **'{withFocus} von {total} Krafteinheiten mit Fokus · 8 Wochen'**
+  /// **'{withFocus} von {total} Einheiten mit Fokus'**
   String focusDistBasis(int withFocus, int total);
 
   /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf Einheiten ohne Fokus
@@ -8102,10 +8102,10 @@ abstract class AppL10n {
   /// **'Kein neuer Bestwert in den letzten 4 Wochen.'**
   String get progressNone;
 
-  /// Kraft-Auswertung, Fortschritte — Grundlage
+  /// Kraft-Auswertung, Fortschritte — Grundlage, gekürzt am 17.09.2026 (Fenster steht im Kopf)
   ///
   /// In de, this message translates to:
-  /// **'{n, plural, =1{1 Übung verglichen} other{{n} Übungen verglichen}} · {m, plural, =1{1 Einheit} other{{m} Einheiten}} in 4 Wochen'**
+  /// **'{n, plural, =1{1 Übung} other{{n} Übungen}} · {m, plural, =1{1 Einheit} other{{m} Einheiten}}'**
   String progressBasis(int n, int m);
 
   /// Kraft-Auswertung, Fortschritte — Datum der Zeile
@@ -8337,11 +8337,11 @@ abstract class AppL10n {
   /// **'Nachher höher: {higher}. Gleich: {same}. Nachher niedriger: {lower}.'**
   String wellnessTrendCountsA11y(int higher, int same, int lower);
 
-  /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Grundlage mit Nenner
+  /// Kraft-Auswertung, Vorher und nachher — Grundlage mit Nenner, gekürzt am 17.09.2026 (Fenster steht im Kopf)
   ///
   /// In de, this message translates to:
-  /// **'{n} von {total, plural, =1{1 Krafteinheit} other{{total} Krafteinheiten}} mit beiden Angaben · {weeks} Wochen'**
-  String wellnessTrendBasis(int n, int total, int weeks);
+  /// **'{n} von {total, plural, =1{1 Einheit} other{{total} Einheiten}} mit beiden Angaben'**
+  String wellnessTrendBasis(int n, int total);
 
   /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf ausgelassene Einheiten
   ///
@@ -8392,10 +8392,10 @@ abstract class AppL10n {
   /// **'Pläne von ATEM'**
   String get planCatalogTitle;
 
-  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Text des Leerzustands der Katalogseite
+  /// Kraft-Tab Seite Pläne (16.09.2026), gekürzt 17.09.2026
   ///
   /// In de, this message translates to:
-  /// **'Hier erscheinen bald Trainingspläne, die wir für dich zusammenstellen — frei für alle und als Premium. Deine eigenen Pläne findest du unter Trainieren.'**
+  /// **'Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen unter Trainieren.'**
   String get planCatalogBody;
 
   /// Einheiten je Monat (16.09.2026) — Fenster rechts im Kopf
@@ -8451,6 +8451,72 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Erklärung zu {title}, zuklappen'**
   String explainCloseA11y(String title);
+
+  /// Muskelbalance-Karte — Erklärung hinter dem ⓘ (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Anteil der Sätze je Muskel in den letzten 8 Wochen, gezählt über Krafteinheiten mit Übungen. Cardio, Regeneration und Einheiten ohne Übungen tragen nichts bei. Kein Sollverhältnis — die App weiß nicht, wie viel Rücken richtig ist.'**
+  String get balanceExplain;
+
+  /// Monatsstreifen — Erklärung hinter dem ⓘ (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten je Kalendermonat. Ein Strich heißt: gemessen, keine Einheit. Leer heißt: vor deiner ersten Einheit.'**
+  String get monthsExplain;
+
+  /// Übungsverlauf — Erklärung hinter dem ⓘ (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt, Bestwert, Häufigkeit und Volumen aus deinen Einheiten mit dieser Übung. Die Kurve erscheint ab 5 Ausführungen — aus weniger Punkten sähe eine Gerade wie ein Trend aus.'**
+  String get historyExplain;
+
+  /// Kraft-Auswertung, Fortschritte — Erklärung hinter dem ⓘ (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Verglichen wird je Übung mit dem besten Wert aller früheren Ausführungen: Gewicht, wenn du je Zusatzlast hattest, sonst Wiederholungen, sonst Haltezeit. Aufwärmsätze zählen nicht.'**
+  String get progressExplainMeasure;
+
+  /// Kraft-Auswertung, Sätze je Woche — Erklärung hinter dem ⓘ (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Verglichen wird mit dem Schnitt der 4 vollen Wochen davor — nur Wochen seit deiner ersten Krafteinheit zählen. Aufwärmsätze zählen nicht. Kein Sollwert.'**
+  String get weeklySetsExplainAverage;
+
+  /// Kraft-Auswertung, Fokus — Erklärung hinter dem ⓘ (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Der Anteil rechnet nur über Einheiten, bei denen du beim Start einen Fokus gewählt hast — Einheiten ohne Fokus zählen nicht mit. Kein Sollverhältnis.'**
+  String get focusDistExplainWithout;
+
+  /// Kraft-Auswertung, Vorher und nachher — Erklärung hinter dem ⓘ (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'Oben steht deine Bereitschaft vor der Einheit, unten dein Gefühl danach, je von 1 bis 5. „Höher“ heisst nur höher, nicht besser. Einheiten mit nur einer der beiden Angaben sind nicht enthalten.'**
+  String get wellnessTrendExplain;
+
+  /// Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ des Verhältnisblocks
+  ///
+  /// In de, this message translates to:
+  /// **'Anteil von Kraft und Ausdauer an der Trainingszeit dieser Woche, gerechnet über Minuten. Die Verschiebung vergleicht mit dem Schnitt der letzten 4 Wochen. Kein Sollverhältnis — die App weiss nicht, welche Aufteilung richtig ist.'**
+  String get ratioExplain;
+
+  /// Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ der Trainingszeit
+  ///
+  /// In de, this message translates to:
+  /// **'Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen, in den letzten 14 oder 28 Tagen.'**
+  String get hybridTimeExplain;
+
+  /// Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ der Trainingstage
+  ///
+  /// In de, this message translates to:
+  /// **'Jede Kachel ist ein Tag, jede Spalte eine Woche. Die Farbe zeigt, was du an dem Tag trainiert hast. Pausen werden nicht bestraft.'**
+  String get hybridHeatmapExplain;
+
+  /// Text und Erklärungen (17.09.2026) — neben der Hauptzahl der Trainingstage
+  ///
+  /// In de, this message translates to:
+  /// **'von {total} Tagen trainiert'**
+  String hybridHeatmapOfDays(int total);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

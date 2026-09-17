@@ -105,27 +105,23 @@ class _TimeSplitCardState extends State<TimeSplitCard> {
               ),
             ],
           ],
-          const SizedBox(height: 8),
-          Text(l10n.hybridTimeNote, style: AtemType.labelSmall.of(context)),
         ],
       ),
     );
   }
 
-  /// Titel links, Umschalter rechts. Bei 200 % auf 320 dp rutscht der
-  /// Umschalter unter den Titel, statt ihn abzuschneiden — deshalb ein Wrap
-  /// und keine Row.
-  Widget _header(BuildContext context, AppL10n l10n) => Wrap(
-        alignment: WrapAlignment.spaceBetween,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 10,
-        runSpacing: 8,
+  /// Titel mit ⓘ, darunter der Umschalter (seit 17.09.2026). Was der Block
+  /// zeigt und „Kein Sollverhältnis" stehen hinter dem ⓘ — CLAUDE.md, „Text
+  /// und Erklärungen". Der Umschalter steht nicht im Kopf, damit das ⓘ
+  /// neben dem Titel bleibt und bei 200 % nichts abgeschnitten wird.
+  Widget _header(BuildContext context, AppL10n l10n) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Semantics(
-            header: true,
-            child: Text(l10n.hybridTimeTitle,
-                style: AtemType.titleMedium.of(context)),
+          AtemExplainHeader(
+            title: l10n.hybridTimeTitle,
+            explanation: [l10n.hybridTimeExplain, l10n.hybridTimeNote],
           ),
+          const SizedBox(height: 10),
           AtemTabSwitch<int>(
             groupSemanticLabel: l10n.hybridTimeGroup,
             value: _days,

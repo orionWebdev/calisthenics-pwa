@@ -164,4 +164,13 @@ void main() {
     await _pump(t, const [], scale: 2.0, width: 320);
     expect(t.takeException(), isNull);
   });
+
+  testWidgets('Erklärung ist hinter dem ⓘ', (t) async {
+    await _pump(t, [_s('a', DateTime(2026, 9, 15), sets: 4)]);
+    expect(find.textContaining('Woche für Woche'), findsNothing);
+    await t.tap(find.byIcon(Icons.info_outline));
+    await t.pumpAndSettle();
+    expect(find.textContaining('Woche für Woche'), findsOneWidget);
+    expect(find.textContaining('4 vollen Wochen davor'), findsOneWidget);
+  });
 }

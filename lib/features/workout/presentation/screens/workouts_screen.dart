@@ -397,10 +397,10 @@ class _TodayCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Neutral, nicht Cyan: Cyan trägt Daten, „Heute" ist eine
+          // Beschriftung (dritte Textstufe, seit 17.09.2026).
           Text(l10n.workoutsTodayLabel.toUpperCase(),
-              style: AtemType.labelMicro
-                  .of(context)
-                  .copyWith(color: AtemColors.cyan)),
+              style: AtemType.labelMicro.of(context)),
           const SizedBox(height: 8),
           Text(session.title, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 8),
@@ -457,10 +457,10 @@ class _EmptyToday extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Neutral, nicht Cyan: Cyan trägt Daten, „Heute" ist eine
+          // Beschriftung (dritte Textstufe, seit 17.09.2026).
           Text(l10n.workoutsTodayLabel.toUpperCase(),
-              style: AtemType.labelMicro
-                  .of(context)
-                  .copyWith(color: AtemColors.cyan)),
+              style: AtemType.labelMicro.of(context)),
           const SizedBox(height: 8),
           Text(l10n.emptyTodayTitle, style: AtemType.titleMedium.of(context)),
           const SizedBox(height: 6),

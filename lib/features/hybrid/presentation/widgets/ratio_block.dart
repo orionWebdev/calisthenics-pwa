@@ -54,31 +54,14 @@ class RatioBlock extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Semantics(
-            header: true,
-            label:
-                '${l10n.ratioTitle}, ${l10n.analysisWeeklyWeek(week)}, ${l10n.cardioWeekCount(r.totalCount)}',
-            child: ExcludeSemantics(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(l10n.ratioTitle,
-                      style: AtemType.titleMedium.of(context)),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 3),
-                      child: Text(
-                        '${l10n.analysisWeeklyWeek(week)} · ${l10n.cardioWeekCount(r.totalCount)}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AtemType.meta.of(context),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          // Wie gerechnet wird und „Kein Sollverhältnis" stehen hinter dem ⓘ
+          // (seit 17.09.2026). Sichtbar bleiben Balken, Zeilen, Grundlage und
+          // die Verschiebung — sie gehören zur Zahl.
+          AtemExplainHeader(
+            title: l10n.ratioTitle,
+            trailing:
+                '${l10n.analysisWeeklyWeek(week)} · ${l10n.cardioWeekCount(r.totalCount)}',
+            explanation: [l10n.ratioExplain],
           ),
           const SizedBox(height: 14),
           // Ein Knoten, keine zwei Segmente.

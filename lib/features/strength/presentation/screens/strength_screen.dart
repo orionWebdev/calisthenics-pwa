@@ -145,10 +145,28 @@ class _StrengthScreenState extends ConsumerState<StrengthScreen> {
                       children: [
                         Text(l10n.tabStrength,
                             style: AtemType.titleLarge.of(context)),
+                        // Die Zahl ist die Hauptzahl des Kopfes und trägt den
+                        // Bereichston; das Wort daneben steht in der dritten
+                        // Textstufe (seit 17.09.2026).
                         Padding(
                           padding: const EdgeInsets.only(bottom: 3),
-                          child:
-                              Text(countText, style: AtemType.meta.of(context)),
+                          child: Text.rich(
+                            TextSpan(children: [
+                              TextSpan(
+                                text: '$count ',
+                                style: AtemType.valueMedium
+                                    .of(context)
+                                    .copyWith(
+                                        fontSize: 13,
+                                        color: AtemColors.tabStrength),
+                              ),
+                              TextSpan(
+                                text: countText.replaceFirst(
+                                    RegExp('^$count\\s*'), ''),
+                              ),
+                            ]),
+                            style: AtemType.meta.of(context),
+                          ),
                         ),
                       ],
                     ),
