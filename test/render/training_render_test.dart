@@ -1,0 +1,172 @@
+@Tags(['render'])
+library;
+
+import 'package:atem/core/theme/theme.dart';
+import 'package:atem/features/exercises/domain/muscle.dart';
+import 'package:atem/features/plans/domain/plan.dart';
+import 'package:atem/features/plans/presentation/widgets/plan_card.dart';
+import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
+import 'package:atem/l10n/gen/app_l10n.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../support/a11y.dart';
+import '../support/render.dart';
+
+/// Sichtprüfung Kraft › Trainieren und Pläne mit echten Schriften.
+///
+///   ATEM_RENDER_DIR=/pfad flutter test test/render/training_render_test.dart
+///
+/// Ohne `ATEM_RENDER_DIR` wird nichts geschrieben.
+void main() {
+  Future<GlobalKey> pump(
+    WidgetTester tester,
+    Widget child, {
+    double width = 361,
+    double height = 2000,
+    double scale = 1.15,
+  }) async {
+    await loadRealFonts();
+    tester.view.physicalSize = Size(width, height);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    final key = GlobalKey();
+    await tester.pumpWidget(ProviderScope(
+      overrides: fixtureOverrides,
+      child: RepaintBoundary(
+        key: key,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AtemTheme.dark,
+          locale: const Locale('de'),
+          localizationsDelegates: AppL10n.localizationsDelegates,
+          supportedLocales: AppL10n.supportedLocales,
+          builder: (context, c) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.linear(scale),
+              disableAnimations: true,
+            ),
+            child: c!,
+          ),
+          home: child,
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    return key;
+  }
+
+  /// Schreibt [count] bildschirmhohe Ausschnitte, dazwischen wird die Seite
+  /// um eine gute Bildschirmhöhe weitergescrollt.
+  Future<void> shots(WidgetTester tester, GlobalKey key, String name,
+      {int count = 3, double step = 620}) async {
+    for (var i = 0; i < count; i++) {
+      await writePng(tester, key, '${name}_$i');
+      final lists = find.byType(Scrollable);
+      if (lists.evaluate().isEmpty) break;
+      // Die senkrechte Liste der aktiven Seite: die grösste Scrollable.
+      Finder? vertical;
+      var best = 0.0;
+      for (final e in lists.evaluate()) {
+        final state = (e as StatefulElement).state as ScrollableState;
+        if (state.axisDirection != AxisDirection.down) continue;
+        final box = e.renderObject! as RenderBox;
+        if (!box.hasSize || !box.attached) continue;
+        final area = box.size.width * box.size.height;
+        if (area > best) {
+          best = area;
+          vertical = find.byElementPredicate((x) => identical(x, e));
+        }
+      }
+      if (vertical == null) break;
+      await tester.drag(vertical, Offset(0, -step));
+      await tester.pumpAndSettle();
+    }
+  }
+
+  testWidgets('rendert Kraft › Trainieren (Kopf, Reiter, Seite)',
+      (tester) async {
+    if (!renderEnabled) return;
+    final key = await pump(tester, StrengthScreen(onStart: (_) {}),
+        height: 800);
+    await shots(tester, key, 'strength_trainieren');
+  });
+
+  testWidgets('rendert Kraft › Trainieren bei 200 % auf 320 dp',
+      (tester) async {
+    if (!renderEnabled) return;
+    final key = await pump(tester, StrengthScreen(onStart: (_) {}),
+        width: 320, height: 800, scale: 2.0);
+    await shots(tester, key, 'strength_trainieren_320_200',
+        count: 5, step: 640);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('rendert Kraft › Pläne und die Reiterleiste ganz rechts',
+      (tester) async {
+    if (!renderEnabled) return;
+    final key =
+        await pump(tester, StrengthScreen(onStart: (_) {}), height: 800);
+    final tab = find.text('Pläne').last;
+    await tester.ensureVisible(tab);
+    await tester.pumpAndSettle();
+    await tester.tap(tab);
+    await tester.pumpAndSettle();
+    await writePng(tester, key, 'strength_plaene');
+  });
+
+  testWidgets('rendert Kraft › Pläne bei 200 % auf 320 dp', (tester) async {
+    if (!renderEnabled) return;
+    final key = await pump(tester, StrengthScreen(onStart: (_) {}),
+        width: 320, height: 800, scale: 2.0);
+    final tab = find.text('Pläne').last;
+    await tester.ensureVisible(tab);
+    await tester.pumpAndSettle();
+    await tester.tap(tab);
+    await tester.pumpAndSettle();
+    await writePng(tester, key, 'strength_plaene_320_200');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('rendert eine Plan-Karten-Reihe mit langen Namen',
+      (tester) async {
+    if (!renderEnabled) return;
+    const plans = [
+      Plan(
+        id: 'a',
+        name: 'Oberkörper Push mit Zusatzgewicht und Handstand',
+        items: [
+          PlanItem(exerciseId: 'push_up'),
+          PlanItem(exerciseId: 'dip'),
+          PlanItem(exerciseId: 'pike'),
+        ],
+      ),
+      Plan(id: 'b', name: 'Pull', items: [PlanItem(exerciseId: 'pull_up')]),
+      Plan(
+        id: 'c',
+        name: 'Beine & Rumpf Ganzkörper',
+        items: [PlanItem(exerciseId: 'squat'), PlanItem(exerciseId: 'plank')],
+      ),
+    ];
+    final key = await pump(
+      tester,
+      Scaffold(
+        backgroundColor: AtemColors.base,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: PlanCardRow(
+            plans: plans,
+            musclesOf: (p) => p.id == 'a'
+                ? const [MuscleGroup.chest, MuscleGroup.triceps, MuscleGroup.shoulders]
+                : const [MuscleGroup.back],
+            onOpen: (_) {},
+            onStart: (_) {},
+          ),
+        ),
+      ),
+      height: 700,
+    );
+    await writePng(tester, key, 'plan_row_long');
+  });
+}

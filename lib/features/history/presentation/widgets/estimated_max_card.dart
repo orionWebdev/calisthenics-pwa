@@ -101,7 +101,6 @@ class _EstimatedMaxCardState extends State<EstimatedMaxCard> {
     final name = widget.nameOf(selected.exerciseId);
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -116,21 +115,34 @@ class _EstimatedMaxCardState extends State<EstimatedMaxCard> {
           Semantics(
             container: true,
             label: l10n.analysisMaxExerciseGroup,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (final (i, s) in widget.series.indexed) ...[
-                    if (i > 0) const SizedBox(width: 8),
-                    AtemChoiceChip(
-                      label: widget.nameOf(s.exerciseId),
-                      semanticLabel:
-                          '${widget.nameOf(s.exerciseId)}, ${l10n.hybridTimeUnits(s.sessionCount)}',
-                      selected: s.exerciseId == selected.exerciseId,
-                      onTap: () => setState(() => _selectedId = s.exerciseId),
-                    ),
+            // Eine Kapsel ist höchstens 60 % der Kartenbreite breit (seit
+            // 17.09.2026). Ohne Schranke lief ein langer Übungsname über den
+            // Kartenrand hinaus und wurde dort abgeschnitten; jetzt bricht er
+            // in der Kapsel um — so will es AtemChoiceChip, kein Ellipsis.
+            // 60 %, damit die nächste Kapsel sichtbar anragt.
+            child: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final (i, s) in widget.series.indexed) ...[
+                      if (i > 0) const SizedBox(width: 8),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxWidth: constraints.maxWidth * 0.6),
+                        child: AtemChoiceChip(
+                          label: widget.nameOf(s.exerciseId),
+                          semanticLabel:
+                              '${widget.nameOf(s.exerciseId)}, ${l10n.hybridTimeUnits(s.sessionCount)}',
+                          selected: s.exerciseId == selected.exerciseId,
+                          onTap: () =>
+                              setState(() => _selectedId = s.exerciseId),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
@@ -211,9 +223,11 @@ class _Delta extends StatelessWidget {
       child: ExcludeSemantics(
         child: Text(
           '$glyph${l10n.analysisMaxDelta(amount)}',
-          style: AtemType.meta
-              .of(context)
-              .copyWith(color: AtemColors.textTertiary),
+          // Poppins hat kein ▲▼ — die Mono-Schrift springt ein, damit die
+          // Glyphe auf jedem Gerät gleich aussieht.
+          style: AtemType.meta.of(context).copyWith(
+              color: AtemColors.textTertiary,
+              fontFamilyFallback: const ['JetBrainsMono']),
         ),
       ),
     );

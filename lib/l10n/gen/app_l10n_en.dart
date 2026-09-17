@@ -2030,7 +2030,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String hybridWeekThin(int min) {
-    return 'Readiness and form from $min sessions on.';
+    return 'Readiness from $min workouts on.';
   }
 
   @override
@@ -5423,7 +5423,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get hybridTimeExplain =>
-      'How your training minutes split across strength, cardio and recovery over the last 14 or 28 days.';
+      'How your training minutes split across strength, cardio and recovery — this week or over the last 28 days. Minutes are the only measure all three tracks share.';
 
   @override
   String get hybridHeatmapExplain =>
@@ -5432,5 +5432,53 @@ class AppL10nEn extends AppL10n {
   @override
   String hybridHeatmapOfDays(int total) {
     return 'of $total days trained';
+  }
+
+  @override
+  String get hybridTimeWeek => 'This week';
+
+  @override
+  String hybridTimeSets(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n sets',
+      one: '1 set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hybridTimeTonnage(String t) {
+    return '$t t volume';
+  }
+
+  @override
+  String hybridTimeBasisShort(int minutes, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n workouts',
+      one: '1 workout',
+    );
+    return '$minutes min · $_temp0';
+  }
+
+  @override
+  String get hybridTimeEmptyWeek => 'No workout with a duration this week yet.';
+
+  @override
+  String get hybridTimeShiftExplain =>
+      'The arrows in “This week” compare the share with the average of the four weeks before, in percentage points. They appear once your workouts reach back four weeks.';
+
+  @override
+  String hybridTimeRowShiftA11y(
+      String track, int minutes, int n, int percent, String shift) {
+    return '$track: $minutes minutes, $n workouts, $percent percent, $shift';
+  }
+
+  @override
+  String weeklySetsWindow(int weeks) {
+    return '$weeks weeks';
   }
 }

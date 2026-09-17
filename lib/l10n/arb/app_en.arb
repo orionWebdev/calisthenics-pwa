@@ -2392,7 +2392,7 @@
   "@hybridEmptyTitle": {
     "description": "hybrid.empty.title"
   },
-  "hybridWeekThin": "Readiness and form from {min} sessions on.",
+  "hybridWeekThin": "Readiness from {min} workouts on.",
   "@hybridWeekThin": {
     "description": "hybrid.week.thin",
     "placeholders": {
@@ -5398,7 +5398,15 @@
   "focusDistExplainWithout": "The share only counts workouts where you picked a focus at the start — workouts without a focus are not included. No target ratio.",
   "wellnessTrendExplain": "Top is your readiness before the workout, bottom how you felt after, each from 1 to 5. “Higher” only means higher, not better. Workouts with only one of the two answers are not included.",
   "ratioExplain": "Share of strength and cardio in the training time of this week, counted in minutes. The shift compares with the average of the last 4 weeks. No target ratio — the app does not know which split is right.",
-  "hybridTimeExplain": "How your training minutes split across strength, cardio and recovery over the last 14 or 28 days.",
+  "hybridTimeExplain": "How your training minutes split across strength, cardio and recovery — this week or over the last 28 days. Minutes are the only measure all three tracks share.",
   "hybridHeatmapExplain": "Each tile is a day, each column a week. The colour shows what you trained that day. Breaks are not penalised.",
-  "hybridHeatmapOfDays": "of {total} days trained"
+  "hybridHeatmapOfDays": "of {total} days trained",
+  "hybridTimeWeek": "This week",
+  "hybridTimeSets": "{n, plural, =1{1 set} other{{n} sets}}",
+  "hybridTimeTonnage": "{t} t volume",
+  "hybridTimeBasisShort": "{minutes} min · {n, plural, =1{1 workout} other{{n} workouts}}",
+  "hybridTimeEmptyWeek": "No workout with a duration this week yet.",
+  "hybridTimeShiftExplain": "The arrows in “This week” compare the share with the average of the four weeks before, in percentage points. They appear once your workouts reach back four weeks.",
+  "hybridTimeRowShiftA11y": "{track}: {minutes} minutes, {n} workouts, {percent} percent, {shift}",
+  "weeklySetsWindow": "{weeks} weeks"
 }

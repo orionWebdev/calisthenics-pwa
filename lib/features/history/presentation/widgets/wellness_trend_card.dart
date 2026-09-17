@@ -57,6 +57,7 @@ class WellnessTrendCard extends StatelessWidget {
         condition: l10n.wellnessTrendCondition(WellnessTrend.minimumPairs),
         current: trend.withBoth,
         required: WellnessTrend.minimumPairs,
+        accent: AtemColors.tabStrength,
       );
     }
 
@@ -94,12 +95,16 @@ class WellnessTrendCard extends StatelessWidget {
                   spacing: 12,
                   runSpacing: 4,
                   children: [
+                    // Poppins hat kein ▲▼ — Mono springt ein.
                     Text('▲ ${l10n.wellnessTrendHigher(trend.higher)}',
-                        style: AtemType.meta.of(context)),
+                        style: AtemType.meta.of(context).copyWith(
+                            fontFamilyFallback: const ['JetBrainsMono'])),
                     Text('— ${l10n.wellnessTrendSame(trend.same)}',
-                        style: AtemType.meta.of(context)),
+                        style: AtemType.meta.of(context).copyWith(
+                            fontFamilyFallback: const ['JetBrainsMono'])),
                     Text('▼ ${l10n.wellnessTrendLower(trend.lower)}',
-                        style: AtemType.meta.of(context)),
+                        style: AtemType.meta.of(context).copyWith(
+                            fontFamilyFallback: const ['JetBrainsMono'])),
                   ],
                 ),
               ),

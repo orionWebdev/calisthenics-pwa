@@ -123,9 +123,10 @@ class DeltaCapsule extends StatelessWidget {
         ),
         child: Text(
           '${rises ? '▲' : '▼'} $delta',
-          style: AtemType.labelMicro
-              .of(context)
-              .copyWith(color: AtemColors.textSecondary, letterSpacing: 0),
+          style: AtemType.labelMicro.of(context).copyWith(
+              color: AtemColors.textSecondary,
+              letterSpacing: 0,
+              fontFamilyFallback: const ['JetBrainsMono']),
         ),
       ),
     );

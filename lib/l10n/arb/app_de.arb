@@ -2946,9 +2946,9 @@
   "@hybridEmptyTitle": {
     "description": "hybrid.empty.title"
   },
-  "hybridWeekThin": "Bereitschaft und Formwert ab {min} Einheiten.",
+  "hybridWeekThin": "Bereitschaft ab {min} Einheiten.",
   "@hybridWeekThin": {
-    "description": "hybrid.week.thin",
+    "description": "Dünner Wochenblock — der Formwert ist seit 16.09.2026 entfernt",
     "placeholders": {
       "min": {
         "type": "int"
@@ -7863,9 +7863,9 @@
   "@ratioExplain": {
     "description": "Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ des Verhältnisblocks"
   },
-  "hybridTimeExplain": "Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen, in den letzten 14 oder 28 Tagen.",
+  "hybridTimeExplain": "Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen — in dieser Woche oder in den letzten 28 Tagen. Minuten sind die einzige Grösse, die alle drei Spuren teilen.",
   "@hybridTimeExplain": {
-    "description": "Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ der Trainingszeit"
+    "description": "Trainingszeit — Erklärung hinter dem ⓘ"
   },
   "hybridHeatmapExplain": "Jede Kachel ist ein Tag, jede Spalte eine Woche. Die Farbe zeigt, was du an dem Tag trainiert hast. Pausen werden nicht bestraft.",
   "@hybridHeatmapExplain": {
@@ -7876,6 +7876,78 @@
     "description": "Text und Erklärungen (17.09.2026) — neben der Hauptzahl der Trainingstage",
     "placeholders": {
       "total": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridTimeWeek": "Diese Woche",
+  "@hybridTimeWeek": {
+    "description": "Trainingszeit (17.09.2026, Verhältnis und Trainingszeit zusammengeführt) — Segment Woche"
+  },
+  "hybridTimeSets": "{n, plural, =1{1 Satz} other{{n} Sätze}}",
+  "@hybridTimeSets": {
+    "description": "Trainingszeit — Kraft-Metazeile, Arbeitssätze ohne Aufwärmen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridTimeTonnage": "{t} t Volumen",
+  "@hybridTimeTonnage": {
+    "description": "Trainingszeit — Kraft-Metazeile, nur wenn > 0",
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "hybridTimeBasisShort": "{minutes} min · {n, plural, =1{1 Einheit} other{{n} Einheiten}}",
+  "@hybridTimeBasisShort": {
+    "description": "Trainingszeit — Grundlage unter den Zeilen",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hybridTimeEmptyWeek": "Diese Woche noch keine Einheit mit Dauer.",
+  "@hybridTimeEmptyWeek": {
+    "description": "Trainingszeit — Wochenfenster ohne Minuten"
+  },
+  "hybridTimeShiftExplain": "Die Pfeile in „Diese Woche“ vergleichen den Anteil mit dem Schnitt der vier Wochen davor, in Prozentpunkten. Sie erscheinen, sobald deine Einheiten vier Wochen zurückreichen.",
+  "@hybridTimeShiftExplain": {
+    "description": "Trainingszeit — Erklärung der Verschiebung hinter dem ⓘ"
+  },
+  "hybridTimeRowShiftA11y": "{track}: {minutes} Minuten, {n} Einheiten, {percent} Prozent, {shift}",
+  "@hybridTimeRowShiftA11y": {
+    "description": "Trainingszeit — Zeile mit Verschiebung",
+    "placeholders": {
+      "track": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      },
+      "shift": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsWindow": "{weeks} Wochen",
+  "@weeklySetsWindow": {
+    "description": "Sätze je Woche — Zeitraum rechts im Kopf (17.09.2026)",
+    "placeholders": {
+      "weeks": {
         "type": "int"
       }
     }

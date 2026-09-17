@@ -122,21 +122,27 @@ class HistoryScreen extends ConsumerWidget {
         // Auswertung gilt weiter: ein Block ohne Daten fehlt).
         const SizedBox(height: AtemSpacing.cardGap),
         const AtemEntrance(index: 1, child: MuscleBalanceEntry()),
-        const SizedBox(height: 28),
+        const SizedBox(height: 24),
+        // Abschnittskopf wie ein Blocktitel: titleMedium, „Alle n" rechts.
+        // Vorher labelMedium mit Sperrung — der einzige Kopf dieser Art auf
+        // der Seite, und lauter als die Blocktitel darüber.
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
-              child: Text(
-                l10n.historyRecentLabel,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AtemType.labelMedium.of(context),
+            Expanded(
+              child: Semantics(
+                header: true,
+                child: Text(
+                  l10n.historyRecentLabel,
+                  style: AtemType.titleMedium.of(context),
+                ),
               ),
             ),
             const SizedBox(width: 12),
-            Flexible(
-              child: AtemTappable(
+            // Kein Flexible: Es liess die Trefferfläche nur so breit wie
+            // nötig werden, und „Alle n" stand mitten in der Zeile.
+            Builder(
+              builder: (context) => AtemTappable(
                 // **„Alle" heisst alle.** Ohne das Zurücksetzen öffnete die
                 // Liste mit dem Zeitraum, den ein früherer Tap auf den
                 // Monatsstreifen gesetzt hatte — und stand leer da.
@@ -153,9 +159,9 @@ class HistoryScreen extends ConsumerWidget {
                 child: Text(
                   l10n.historyAll(summary.sessions),
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
                   textAlign: TextAlign.right,
-                  style: AtemType.labelSmall
+                  style: AtemType.labelUi
                       .of(context)
                       .copyWith(color: AtemColors.cyan),
                 ),
@@ -163,7 +169,7 @@ class HistoryScreen extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         AtemEntrance(
           index: 2,
           child: AtemCard.list(
@@ -195,8 +201,14 @@ class _SessionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final date = DateFormat.yMd(languageTag(context)).format(session.date);
+    // Kurzes Datum mit Wochentag, wie in der Einheitenliste: „Di 25. Aug".
+    // Vorher „25.8.2026" in einer 76-dp-Spalte, die am Gerät zu schmal war —
+    // Datum und Name klebten aneinander.
+    final date = DateFormat('EEE d. MMM', languageTag(context))
+        .format(session.date)
+        .replaceAll('.,', '');
     final name = sessionName(l10n, session);
+    final kind = sessionKindLabel(l10n, session);
     final minutes = session.duration?.inMinutes;
 
     // Eine Zeile ist ein Weg ins Detail — wie in der Einheitenliste. Vorher
@@ -216,28 +228,39 @@ class _SessionRow extends StatelessWidget {
       minTapSize: const Size(0, 56),
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AtemSpacing.cardPadding, vertical: 12),
         child: Row(
           children: [
-            SizedBox(
-              width: 76,
-              child: Text(date, style: AtemType.meta.of(context)),
-            ),
             Expanded(
-              child: Text(
-                name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AtemType.titleSmallOrDefault(context),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AtemType.titleSmallOrDefault(context),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    [date, if (kind != name) kind].join(' · '),
+                    style: AtemType.meta.of(context),
+                  ),
+                ],
               ),
             ),
             if (minutes != null) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Text(l10n.durationMinutes(minutes),
-                  style: AtemType.labelMicro
-                      .of(context)
-                      .copyWith(letterSpacing: 0)),
+                  softWrap: false,
+                  style:
+                      AtemType.valueMedium.of(context).copyWith(fontSize: 14)),
             ],
+            const SizedBox(width: 6),
+            const Icon(Icons.chevron_right,
+                size: 20, color: AtemColors.textSecondary),
           ],
         ),
       ),

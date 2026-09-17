@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../../../app/application/tab_providers.dart';
 import '../../../../core/theme/theme.dart';
@@ -22,19 +22,19 @@ import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../../domain/training_heatmap.dart';
-import '../widgets/ratio_block.dart';
 import '../widgets/recovery_row.dart';
 import '../widgets/recovery_sheet.dart';
-import '../widgets/time_split_card.dart';
 import '../widgets/training_heatmap_card.dart';
+import '../widgets/training_time_card.dart';
 
 /// Der Hybrid-Tab — **Start und Analyse verschmolzen, ohne Doppelung**
 /// (Board 11, A3).
 ///
-/// Jede Zeitspanne kommt genau einmal vor: Bereitschaft (heute), Verhältnis
-/// (diese Woche), Trainingszeit (14 oder 28 Tage), Trainingstage (zwölf
-/// Wochen), Regenerationszeile. Das war die Doppelung zwischen Start und
-/// Analyse — beide zeigten die Woche, beide die Form.
+/// Jede Frage kommt genau einmal vor: Bereitschaft (heute), Trainingszeit
+/// (diese Woche oder 28 Tage), Trainingstage (zwölf Wochen),
+/// Regenerationszeile. Bis 17.09.2026 standen Verhältnis und Trainingszeit
+/// als zwei Blöcke da — beide teilten Minuten auf Spuren auf, der Nutzer las
+/// dieselbe Aussage zweimal. Sie sind jetzt ein Block mit zwei Fenstern.
 ///
 /// ## Der Formwert ist weg (16.09.2026)
 ///
@@ -233,14 +233,15 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
             ),
             const SizedBox(height: AtemSpacing.cardGap),
 
-            // ---- Verhältnis (diese Woche). Sobald eine Spur Minuten
-            // trägt, steht der Block — die fehlende Spur ist darin eine
-            // 2-dp-Linie und „0 min", kein eigener Wochenblock mehr (bis
-            // 16.09.2026 stand hier bei einer Spur „Kraft diese Woche" mit
-            // einem Cardio-Knopf; der Nutzer wollte das Verhältnis sehen).
-            // Ohne Minuten nichts — der Bildschirm hört früher auf.
-            if (ratio.totalMinutes > 0) ...[
-              AtemEntrance(index: 1, child: RatioBlock(ratio: ratio)),
+            // ---- Trainingszeit (diese Woche | 28 Tage). Ein Block statt
+            // Verhältnis und Zeit-Split (17.09.2026). Ohne Minuten in beiden
+            // Fenstern nichts — der Bildschirm hört früher auf.
+            if (TrainingTimeCard.hasData(sessions, reference)) ...[
+              AtemEntrance(
+                index: 1,
+                child:
+                    TrainingTimeCard(sessions: sessions, reference: reference),
+              ),
               const SizedBox(height: AtemSpacing.cardGap),
             ],
 
@@ -252,9 +253,7 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
                 child: RecoveryRow(status: recovery, onAdd: _addRecovery),
               ),
 
-            // ---- Trainingszeit (14 | 28 Tage) und Trainingstage (zwölf
-            // Wochen). Keine Mindestzahl: Beide zählen nur. Ein Block ohne
-            // Daten rendert nicht — der Bildschirm hört früher auf.
+            // ---- Trainingstage (zwölf Wochen). Zählt nur, keine Schwelle.
             ..._countBlocks(context, sessions, reference),
           ],
         ],
@@ -268,28 +267,19 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
     DateTime reference,
   ) {
     final heatmap = TrainingHeatmap.compute(sessions, reference);
-    final hasTime = TimeSplitCard.hasData(sessions, reference);
-    final hasDays = heatmap.trainedDays > 0;
-    if (!hasTime && !hasDays) return const [];
-
+    if (heatmap.trainedDays == 0) return const [];
+    // Der Abstand davor steht schon hinter der Trainingszeit. Nur wenn die
+    // Regenerationszeile dazwischen steht, braucht es einen eigenen — sonst
+    // lag hier der doppelte Abstand (am Render sichtbar, 17.09.2026).
+    final recoveryAbove = AppTab.visible.contains(AppTab.recovery);
+    final timeAbove = TrainingTimeCard.hasData(sessions, reference);
     return [
-      if (hasTime) ...[
+      if (recoveryAbove || !timeAbove)
         const SizedBox(height: AtemSpacing.cardGap),
-        AtemEntrance(
-          index: 3,
-          child: TimeSplitCard(sessions: sessions, reference: reference),
-        ),
-      ],
-      if (hasDays) ...[
-        const SizedBox(height: AtemSpacing.cardGap),
-        AtemEntrance(
-          index: 4,
-          child: TrainingHeatmapCard(heatmap: heatmap),
-        ),
-      ],
-      // Kein Weg zur Kraft-Auswertung mehr hier (seit 16.09.2026): Sie steht
-      // im Kraft-Tab, oben im Verlauf. Hybrid zeigt, was beide Spuren
-      // gemeinsam haben.
+      AtemEntrance(
+        index: 3,
+        child: TrainingHeatmapCard(heatmap: heatmap),
+      ),
     ];
   }
 }
@@ -309,44 +299,73 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: Text(l10n.tabHybrid, style: AtemType.titleLarge.of(context)),
-        ),
-        // Datum und Profilbild sitzen rechtsbündig: das Datum direkt links
-        // vom Bild, ohne Restraum dazwischen; das Bild bündig mit dem
-        // rechten Rand der Karten darunter.
-        Flexible(
-          child: Text(
-            DateFormat.MMMEd(languageTag(context)).format(date),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.right,
-            style: AtemType.meta.of(context),
-          ),
-        ),
-        const SizedBox(width: 10),
-        AtemTappable(
-          onTap: onProfile,
-          semanticLabel: l10n.settingsEntryA11y,
-          child: Container(
-            width: 36,
-            height: 36,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [AtemColors.violet, AtemColors.magentaDeep],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+    // **Rechtsbündig ohne Restraum** (17.09.2026). Vorher teilten sich Titel
+    // (`Expanded`) und Datum (`Flexible`) den freien Platz: Das Datum nahm
+    // nur seine eigene Breite, der Rest blieb rechts vom Profilbild liegen —
+    // am Gerät rund 50 dp. Jetzt nimmt der Titel seine Breite, das Datum den
+    // Rest rechtsbündig, und das Bild sitzt am rechten Rand seiner
+    // 48-dp-Trefferfläche, bündig mit den Karten darunter.
+    //
+    // Passt der Titel neben dem Bild nicht einmal allein (200 % auf 320 dp),
+    // entfällt das Datum — es steht auch in der Systemleiste — und der Titel
+    // kürzt, statt die Zeile zu sprengen.
+    final titleStyle = AtemType.titleLarge.of(context);
+    return LayoutBuilder(builder: (context, constraints) {
+      final titleWidth = (TextPainter(
+        text: TextSpan(text: l10n.tabHybrid, style: titleStyle),
+        textDirection: TextDirection.ltr,
+        textScaler: MediaQuery.textScalerOf(context),
+        maxLines: 1,
+      )..layout())
+          .width;
+      final fits = titleWidth + 12 + 10 + 48 <= constraints.maxWidth;
+      return Row(
+        children: [
+          if (fits)
+            Text(l10n.tabHybrid, softWrap: false, style: titleStyle)
+          else
+            Expanded(
+              child: Text(l10n.tabHybrid,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: titleStyle),
+            ),
+          if (fits) ...[
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                DateFormat.MMMEd(languageTag(context)).format(date),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+                style: AtemType.meta.of(context),
               ),
             ),
-            child: Text(user.initial, style: AtemType.labelMedium.of(context)),
+          ],
+          const SizedBox(width: 10),
+          AtemTappable(
+            onTap: onProfile,
+            semanticLabel: l10n.settingsEntryA11y,
+            alignment: Alignment.centerRight,
+            child: Container(
+              width: 36,
+              height: 36,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [AtemColors.violet, AtemColors.magentaDeep],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child:
+                  Text(user.initial, style: AtemType.labelMedium.of(context)),
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }
 
@@ -390,7 +409,6 @@ class _ReadinessCard extends StatelessWidget {
         final word = zone?.label(l10n) ?? level.label(l10n);
 
         return AtemCard.list(
-          padding: const EdgeInsets.all(16),
           child: Semantics(
             label: [
               l10n.dashboardReadinessA11y(value.round(), word),
@@ -404,9 +422,16 @@ class _ReadinessCard extends StatelessWidget {
                     height: 56,
                     child: CustomPaint(
                       painter: _RingPainter(value: value / 100, color: color),
+                      // Die Zahl im Ring wird bei grosser Systemschrift
+                      // begrenzt: Sie ist Teil einer Grafik, und Zone und
+                      // Satz daneben wachsen voll mit (Design-Gespräch 01,
+                      // „Readiness-Gauge"). Bei 200 % ragte sie sonst über
+                      // den Ring.
                       child: Center(
                         child: Text(
                           '${value.round()}',
+                          textScaler: MediaQuery.textScalerOf(context)
+                              .clamp(maxScaleFactor: 1.2),
                           style: AtemType.valueLarge
                               .of(context)
                               .copyWith(fontSize: 20),

@@ -138,33 +138,40 @@ class _StrengthScreenState extends ConsumerState<StrengthScreen> {
                   label: '${l10n.tabStrength}, $countText',
                   header: true,
                   child: ExcludeSemantics(
-                    child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.end,
-                      spacing: 10,
-                      runSpacing: 2,
+                    // **Eine Grundlinie** für Titel, Zahl und Wort (seit
+                    // 17.09.2026). Vorher stand die Zeile in einem Wrap mit
+                    // unterer Kante und 3 dp Versatz — „2 Einheiten" sass
+                    // sichtbar tiefer als „Kraft".
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
                       children: [
                         Text(l10n.tabStrength,
                             style: AtemType.titleLarge.of(context)),
+                        const SizedBox(width: 10),
                         // Die Zahl ist die Hauptzahl des Kopfes und trägt den
                         // Bereichston; das Wort daneben steht in der dritten
                         // Textstufe (seit 17.09.2026).
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 3),
+                        Flexible(
                           child: Text.rich(
                             TextSpan(children: [
                               TextSpan(
                                 text: '$count ',
-                                style: AtemType.valueMedium
-                                    .of(context)
-                                    .copyWith(
-                                        fontSize: 13,
-                                        color: AtemColors.tabStrength),
+                                style: AtemType.meta.of(context).copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: AtemColors.tabStrength,
+                                      fontFeatures: const [
+                                        FontFeature.tabularFigures()
+                                      ],
+                                    ),
                               ),
                               TextSpan(
                                 text: countText.replaceFirst(
                                     RegExp('^$count\\s*'), ''),
                               ),
                             ]),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: AtemType.meta.of(context),
                           ),
                         ),

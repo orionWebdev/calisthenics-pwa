@@ -107,33 +107,21 @@ class MuscleBalanceTile extends StatelessWidget {
       ].join(', '),
       pressScale: AtemPressScale.normal,
       child: AtemCard.list(
-        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(l10n.balanceTitle,
-                      style: AtemType.titleMedium.of(context)),
-                ),
-                const SizedBox(width: 10),
-                Flexible(
-                  child: Text(
-                    l10n.balanceWindow,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AtemType.meta.of(context),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                // Der Pfeil sagt, dass die Kachel sich öffnet — die Ansage
-                // sagt es in Worten.
-                const ExcludeSemantics(
-                  child: Icon(Icons.chevron_right,
-                      size: 20, color: AtemColors.textSecondary),
-                ),
-              ],
+            // Derselbe Kopf wie jeder Block (seit 17.09.2026): Titel ohne
+            // Umbruch, „8 Wochen" und Pfeil rechtsbündig. Vorher brach der
+            // Titel am Gerät mitten im Wort („Muskelbalanc / e"). Kein ⓘ —
+            // die Kachel öffnet ohnehin die Unterseite.
+            AtemExplainHeader(
+              title: l10n.balanceTitle,
+              trailing: l10n.balanceWindow,
+              explanation: const [],
+              // Der Pfeil sagt, dass die Kachel sich öffnet — die Ansage
+              // sagt es in Worten.
+              action: const Icon(Icons.chevron_right,
+                  size: 20, color: AtemColors.textSecondary),
             ),
             const SizedBox(height: 12),
             if (enough)
@@ -142,7 +130,7 @@ class MuscleBalanceTile extends StatelessWidget {
               AtemProgressBar.share(
                 value: (done / target).clamp(0.0, 1.0),
                 semanticLabel: basis,
-                accent: AtemColors.cyan,
+                accent: AtemColors.tabStrength,
               ),
             const SizedBox(height: 10),
             Text(basis, style: AtemType.meta.of(context)),
@@ -192,7 +180,6 @@ class MuscleBalanceCard extends StatelessWidget {
     ];
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -262,7 +249,6 @@ class MuscleGapsCard extends StatelessWidget {
     final l10n = AppL10n.of(context);
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -582,7 +568,6 @@ class _Thin extends StatelessWidget {
     const target = MuscleBalance.minimumSessions;
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

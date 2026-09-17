@@ -53,6 +53,7 @@ class ExerciseProgressCard extends ConsumerWidget {
         condition: l10n.progressCondition,
         current: progress.mostOccurrences,
         required: ExerciseProgress.minimumOccurrences,
+        accent: AtemColors.tabStrength,
       );
     }
 
@@ -187,9 +188,9 @@ class _Row extends StatelessWidget {
                       TextSpan(text: l10n.progressBefore(before)),
                     ]),
                     textAlign: TextAlign.end,
-                    style: AtemType.meta
-                        .of(context)
-                        .copyWith(color: AtemColors.textTertiary),
+                    style: AtemType.meta.of(context).copyWith(
+                        color: AtemColors.textTertiary,
+                        fontFamilyFallback: const ['JetBrainsMono']),
                   ),
                 ],
               ),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show Icons;
 import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/theme.dart';
@@ -23,14 +24,51 @@ class PlanCatalogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    // **Kein `AtemEmptyState`** (seit 17.09.2026): Der Baustein kürzt seinen
+    // Text nach zwei Zeilen mit „…". Am Gerät stand hier „Deine eigenen…" —
+    // ein abgeschnittener Satz ist kein ehrlicher Satz. Derselbe Aufbau,
+    // aber der Text steht vollständig und wächst mit der Schrift.
     return ListView(
       padding: const EdgeInsets.fromLTRB(
-          AtemSpacing.screenPadding, 24, AtemSpacing.screenPadding, 130),
+          AtemSpacing.screenPadding, 40, AtemSpacing.screenPadding, 130),
       children: [
         AtemEntrance(
-          child: AtemEmptyState(
-            title: l10n.planCatalogTitle,
-            body: l10n.planCatalogBody,
+          child: Semantics(
+            container: true,
+            label: '${l10n.planCatalogTitle}. ${l10n.planCatalogBody}',
+            child: ExcludeSemantics(
+              child: Column(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AtemColors.tabStrength.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(AtemRadii.iconBox),
+                    ),
+                    child: const Icon(Icons.auto_awesome_outlined,
+                        size: 22, color: AtemColors.tabStrength),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    l10n.planCatalogTitle,
+                    textAlign: TextAlign.center,
+                    style: AtemType.titleMedium.of(context),
+                  ),
+                  const SizedBox(height: 6),
+                  ConstrainedBox(
+                    // Lesbare Zeilenlänge: nicht über die volle Breite.
+                    constraints: const BoxConstraints(maxWidth: 300),
+                    child: Text(
+                      l10n.planCatalogBody,
+                      textAlign: TextAlign.center,
+                      style: AtemType.labelSmall.of(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ],

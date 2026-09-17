@@ -71,6 +71,11 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   /// So viele Treffer stehen im Block. Mehr wäre eine zweite Liste im Tab.
   static const _exercisePreview = 3;
 
+  /// Abstand über jedem Abschnittskopf und darunter — auf der ganzen Seite
+  /// gleich (seit 17.09.2026; vorher 28/8 und 28/10 gemischt).
+  static const _sectionGap = 28.0;
+  static const _headerGap = 10.0;
+
   ValueChanged<StartRequest> get onStart => widget.onStart;
 
   @override
@@ -129,21 +134,18 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               onLogWithoutSets: () => _logWithoutSets(context),
             ),
           ),
-        const SizedBox(height: 28),
+        const SizedBox(height: _sectionGap),
         _SectionHeader(
           title: l10n.workoutsPlansLabel.toUpperCase(),
           actionLabel:
               plans.isEmpty ? null : l10n.workoutsPlansAll(plans.length),
           onAction: plans.isEmpty ? null : () => _openPlans(context),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: _headerGap),
         if (plans.isEmpty)
-          AtemCard.list(
-            padding: const EdgeInsets.all(18),
-            child: AtemEmptyState(
-              title: l10n.workoutsTodayEmptyTitle,
-              body: l10n.workoutsTodayEmptyBody,
-            ),
+          _PlainEmpty(
+            title: l10n.workoutsTodayEmptyTitle,
+            body: l10n.workoutsTodayEmptyBody,
           )
         else
           // **Karten statt Zeilen** (seit 16.09.2026): Pläne werden ein
@@ -156,7 +158,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             onOpen: (plan) => _openPlan(context, plan),
             onStart: (plan) => _startPlan(context, plan),
           ),
-        const SizedBox(height: 28),
+        const SizedBox(height: _sectionGap),
         _SectionHeader(
           // Die Zahl steht im Titel, nicht in der Aktion: „Übungen · 154"
           // sagt, wie gross der Bestand ist; „Alle ansehen" sagt, wohin
@@ -172,13 +174,12 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: _headerGap),
         // **Ein Block, keine losen Zeilen** (Board 07, A1/2): „Gewicht
         // entsteht durch Fläche, nicht durch Position." Aus einer
         // 44-dp-Suchzeile wird eine Karte mit Sucheingang, neun
         // Muskelfiltern und dem Anlegen-Weg.
         AtemCard.list(
-          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -326,25 +327,26 @@ class _ExerciseMatches extends StatelessWidget {
     final l10n = AppL10n.of(context);
 
     if (matches.isEmpty) {
-      return AtemCard.list(
-        padding: const EdgeInsets.all(18),
-        child: AtemEmptyState(
-          title: l10n.exercisesNoMatchTitle,
-          body: l10n.exercisesNoMatchBody,
-        ),
+      return _PlainEmpty(
+        title: l10n.exercisesNoMatchTitle,
+        body: l10n.exercisesNoMatchBody,
       );
     }
 
     final visible = matches.take(limit).toList();
 
-    return AtemCard.list(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          for (var i = 0; i < visible.length; i++) ...[
-            if (i > 0)
-              const Divider(height: 1, thickness: 1, color: AtemColors.border),
-            ExerciseRow(
+    // **Keine Karte in der Karte** (seit 17.09.2026): Die Treffer stehen
+    // schon im Übungsblock. Eine zweite Kartenkante mit eigenem Radius
+    // machte zwei Ränder übereinander und zog das Innenpolster doppelt ein.
+    // Trennlinien oben und zwischen den Zeilen genügen.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < visible.length; i++) ...[
+          const Divider(height: 1, thickness: 1, color: AtemColors.border),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 56),
+            child: ExerciseRow(
               exercise: visible[i],
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -352,12 +354,51 @@ class _ExerciseMatches extends StatelessWidget {
                 ),
               ),
             ),
-          ],
+          ),
         ],
+        const Divider(height: 1, thickness: 1, color: AtemColors.border),
+      ],
+    );
+  }
+}
+
+/// Ein Leerzustand **innerhalb** eines Blocks — ohne Symbol, ohne Karte,
+/// und ohne abgeschnittenen Satz.
+///
+/// `AtemEmptyState` kürzt den Text nach zwei Zeilen mit „…" und bringt ein
+/// eigenes Polster von 24 dp mit. In einem Abschnitt der Seite ist beides zu
+/// viel: Der Satz muss ganz stehen, und das Polster kommt vom Abschnitt.
+class _PlainEmpty extends StatelessWidget {
+  const _PlainEmpty({required this.title, required this.body});
+
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      container: true,
+      label: '$title. $body',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: AtemType.titleMedium.of(context)),
+              const SizedBox(height: 4),
+              Text(body, style: AtemType.labelSmall.of(context)),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
+
+/// Innenpolster beider Heute-Karten — dasselbe wie jede andere Karte.
+/// Vorher 15 dp mit Termin und 18 dp ohne.
+const _todayPadding = EdgeInsets.all(AtemSpacing.cardPadding);
 
 /// Die einzige hervorgehobene Karte des Bildschirms.
 class _TodayCard extends StatelessWidget {
@@ -391,9 +432,14 @@ class _TodayCard extends StatelessWidget {
       if (trainingTypeLabel(l10n, plan?.type ?? session.intensityLabel)
           .isNotEmpty)
         trainingTypeLabel(l10n, plan?.type ?? session.intensityLabel),
-    ].join(' · ');
+    ]
+        // Geschützte Leerzeichen in einer Angabe: Die Zeile bricht nur
+        // zwischen Angaben um, nie „High / Intensity" (seit 17.09.2026).
+        .map((p) => p.replaceAll(' ', '\u00A0'))
+        .join(' · ');
 
     return AtemCard.gradientBorder(
+      padding: _todayPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -403,7 +449,7 @@ class _TodayCard extends StatelessWidget {
               style: AtemType.labelMicro.of(context)),
           const SizedBox(height: 8),
           Text(session.title, style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           Text(
             meta,
             style: AtemType.meta.of(context),
@@ -453,7 +499,7 @@ class _EmptyToday extends StatelessWidget {
     // (seit 16.09.2026): Die erste Karte des Tabs ist immer die
     // hervorgehobene — ob ein Termin da ist oder nicht.
     return AtemCard.gradientBorder(
-      padding: const EdgeInsets.all(18),
+      padding: _todayPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -463,7 +509,7 @@ class _EmptyToday extends StatelessWidget {
               style: AtemType.labelMicro.of(context)),
           const SizedBox(height: 8),
           Text(l10n.emptyTodayTitle, style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(l10n.emptyTodayBody, style: AtemType.labelSmall.of(context)),
           const SizedBox(height: 16),
           AtemButton.gradient(
@@ -510,8 +556,11 @@ class _LogWithoutSetsLink extends StatelessWidget {
           onTap: onPressed,
           semanticLabel: l10n.strengthFormTitle,
           minTapSize: const Size(0, 48),
+          alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            // Unten ohne Polster: Die Karte bringt ihres mit, und die Zeile
+            // endet sonst sichtbar tiefer als der Inhalt der Karte.
+            padding: const EdgeInsets.only(top: 12, bottom: 0),
             child: Row(
               children: [
                 Expanded(
@@ -551,39 +600,73 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Beide Seiten flexibel: Bei 200 % Schrift auf 320 dp passen Titel und
-    // Aktion sonst nicht nebeneinander und laufen um 11 px über.
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          child: Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: (_role ?? AtemType.labelMicro).of(context),
-          ),
-        ),
-        if (actionLabel != null && onAction != null) ...[
-          const SizedBox(width: 12),
-          Flexible(
-            child: AtemTappable(
-              onTap: onAction,
-              semanticLabel: actionLabel!,
-              alignment: Alignment.centerRight,
-              child: Text(
-                actionLabel!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.right,
-                style: AtemType.labelSmall
-                    .of(context)
-                    .copyWith(color: AtemColors.cyan),
-              ),
-            ),
-          ),
-        ],
-      ],
+    final hasAction = actionLabel != null && onAction != null;
+    final titleText = Text(
+      title,
+      maxLines: 1,
+      softWrap: false,
+      overflow: TextOverflow.ellipsis,
+      style: (_role ?? AtemType.labelMicro).of(context),
+    );
+    if (!hasAction) return titleText;
+
+    // **Eine Grundlinie, Aktion rechtsbündig** (seit 17.09.2026). Vorher
+    // standen Mono-Kopf und Aktion zentriert zueinander; weil beide
+    // verschieden gross sind, sass „Alle 4" sichtbar höher als „PLÄNE".
+    //
+    // Passen beide nicht nebeneinander (200 % Schrift auf 320 dp), wird
+    // nicht der Titel gekürzt — die Aktion rutscht rechtsbündig darunter.
+    final titleStyle = (_role ?? AtemType.labelMicro).of(context);
+    final actionStyle =
+        AtemType.labelUi.of(context).copyWith(color: AtemColors.cyan);
+    final action = AtemTappable(
+      onTap: onAction,
+      semanticLabel: actionLabel!,
+      minTapSize: const Size(48, 48),
+      alignment: Alignment.centerRight,
+      child: Text(
+        actionLabel!,
+        maxLines: 1,
+        softWrap: false,
+        textAlign: TextAlign.right,
+        style: actionStyle,
+      ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scaler = MediaQuery.textScalerOf(context);
+        double widthOf(String text, TextStyle style) => (TextPainter(
+              text: TextSpan(text: text, style: style),
+              textDirection: TextDirection.ltr,
+              textScaler: scaler,
+              maxLines: 1,
+            )..layout())
+                .width;
+        final fits = widthOf(title, titleStyle) +
+                12 +
+                widthOf(actionLabel!, actionStyle) <=
+            constraints.maxWidth;
+
+        if (!fits) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(title, style: titleStyle),
+              Align(alignment: Alignment.centerRight, child: action),
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Expanded(child: titleText),
+            const SizedBox(width: 12),
+            action,
+          ],
+        );
+      },
     );
   }
 }

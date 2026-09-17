@@ -25,7 +25,8 @@ enum ConsequenceDirection {
   String label(AppL10n l, {required bool isDuration}) => switch (this) {
         ConsequenceDirection.better =>
           isDuration ? l.directionShorter : l.directionBetter,
-        ConsequenceDirection.worse => isDuration ? l.directionLonger : l.directionWorse,
+        ConsequenceDirection.worse =>
+          isDuration ? l.directionLonger : l.directionWorse,
         ConsequenceDirection.neutral => l.directionSame,
       };
 }
@@ -122,7 +123,7 @@ class ConsequenceTable extends StatelessWidget {
           after: c.sessionsAfter,
         ),
         _days(l10n.sessionImpactPause, c.pauseBefore, c.pauseAfter, l10n),
-          ConsequenceRow.count(
+        ConsequenceRow.count(
           label: l10n.sessionImpactOfKind(kindLabel),
           before: kindBefore,
           after: kindAfter,
@@ -139,12 +140,18 @@ class ConsequenceTable extends StatelessWidget {
   ) =>
       ConsequenceRow(
         label: label,
-        before: before == null ? l10n.commonNotAvailable : l10n.consequenceDays(before),
-        after: after == null ? l10n.commonNotAvailable : l10n.consequenceDays(after),
+        before: before == null
+            ? l10n.commonNotAvailable
+            : l10n.consequenceDays(before),
+        after: after == null
+            ? l10n.commonNotAvailable
+            : l10n.consequenceDays(after),
         isDuration: true,
         direction: before == null || after == null || before == after
             ? ConsequenceDirection.neutral
-            : (after < before ? ConsequenceDirection.better : ConsequenceDirection.worse),
+            : (after < before
+                ? ConsequenceDirection.better
+                : ConsequenceDirection.worse),
       );
 
   /// Ein Punktwert. Mehr ist besser.
@@ -156,8 +163,7 @@ class ConsequenceTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.sessionImpactTitle,
-            style: AtemType.labelMedium.of(context)),
+        Text(l10n.sessionImpactTitle, style: AtemType.labelMedium.of(context)),
         if (note case final text?) ...[
           const SizedBox(height: 4),
           Text(text, style: AtemType.meta.of(context)),
@@ -194,8 +200,7 @@ class _Row extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Text(row.label,
-                  style: AtemType.labelSmall.of(context)),
+              child: Text(row.label, style: AtemType.labelSmall.of(context)),
             ),
             const SizedBox(width: 12),
             // Bei 200 % bricht die Zeile auf zwei — deshalb ein Wrap und

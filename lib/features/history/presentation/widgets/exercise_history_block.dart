@@ -60,7 +60,6 @@ class ExerciseHistoryBlock extends StatelessWidget {
     final once = history.sessionCount == 1;
 
     return AtemCard.list(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -286,35 +285,20 @@ class _Head extends StatelessWidget {
     final l10n = AppL10n.of(context);
     // Seit 17.09.2026 mit ⓘ: was die Kacheln zählen, ab wann die Kurve kommt
     // und — nach einer einzigen Ausführung — warum es nichts davon gibt.
-    final header = AtemExplainHeader(
-      title: l10n.exerciseHistoryTitle,
-      explanation: [
-        if (once) l10n.historyOnceNote else l10n.historyExplain,
-      ],
-    );
-    if (once) return header;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: header),
-        const SizedBox(width: 10),
-        // Die Anzahl steht rechts neben dem ⓘ und hat ein eigenes Label:
-        // „14 mal ausgeführt" statt „14×".
-        Padding(
-          padding: const EdgeInsets.only(top: 14),
-          child: Semantics(
-            label: l10n.historyCountA11y(history.sessionCount),
-            child: ExcludeSemantics(
-              child: Text(
-                l10n.historyCount(history.sessionCount),
-                style:
-                    AtemType.labelMicro.of(context).copyWith(letterSpacing: 0),
-              ),
-            ),
-          ),
-        ),
-      ],
+    //
+    // Die Anzahl steht als Zeitraum-Angabe im Kopf, **vor** dem ⓘ und
+    // rechtsbündig wie in jedem Block (seit 17.09.2026). Vorher stand sie
+    // hinter dem ⓘ in einer eigenen Spalte. Für den Screenreader trägt der
+    // Kopf zusätzlich „14 mal ausgeführt".
+    return Semantics(
+      label: once ? null : l10n.historyCountA11y(history.sessionCount),
+      child: AtemExplainHeader(
+        title: l10n.exerciseHistoryTitle,
+        trailing: once ? null : l10n.historyCount(history.sessionCount),
+        explanation: [
+          if (once) l10n.historyOnceNote else l10n.historyExplain,
+        ],
+      ),
     );
   }
 }
@@ -509,19 +493,33 @@ class _Curve extends StatelessWidget {
           children: [
             // Wrap statt Row: Bei 200 % rutscht die Anzahl unter den Kopf,
             // statt ihn Buchstabe für Buchstabe umbrechen zu lassen.
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              spacing: 10,
-              runSpacing: 4,
+            // Beschriftung links, Anzahl rechtsbündig in derselben Zeile.
+            // Vorher ein Wrap, der die Anzahl schon bei 1,15 in eine zweite
+            // Zeile schob. Erst wenn die Beschriftung allein nicht passt,
+            // bricht sie — die Anzahl bleibt rechts oben.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  (weight ? l10n.historyCurveLabel : l10n.historyCurveRepsLabel)
-                      .toUpperCase(),
-                  style: AtemType.labelMicro.of(context),
+                Expanded(
+                  child: Text(
+                    (weight
+                            ? l10n.historyCurveLabel
+                            : l10n.historyCurveRepsLabel)
+                        .toUpperCase(),
+                    style: AtemType.labelMicro.of(context),
+                  ),
                 ),
-                Text(
-                  l10n.historyCurveCount(points.length),
-                  style: AtemType.labelMicro.of(context),
+                const SizedBox(width: 10),
+                // Flexible: Bei 200 % auf 320 dp darf die Anzahl umbrechen,
+                // statt über den Rand zu laufen.
+                Flexible(
+                  child: Text(
+                    l10n.historyCurveCount(points.length),
+                    textAlign: TextAlign.right,
+                    style: AtemType.labelMicro
+                        .of(context)
+                        .copyWith(letterSpacing: 0),
+                  ),
                 ),
               ],
             ),
@@ -540,6 +538,9 @@ class _Curve extends StatelessWidget {
             // 200 % auf 320 dp passen zwei Angaben nicht nebeneinander, dann
             // kürzt die linke, statt über den Rand zu laufen.
             Row(
+              // Anfang links, Ende rechtsbündig — vorher klebten beide
+              // aneinander.
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
                   child: Text(

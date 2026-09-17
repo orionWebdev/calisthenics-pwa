@@ -158,13 +158,21 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
             .width;
 
     final hasExplanation = widget.explanation.isNotEmpty;
-    // Die Trefferfläche des ⓘ ragt unsichtbar über die sichtbare Box hinaus;
-    // für die Zeile zählt die sichtbare Breite.
-    final endWidth = (hasExplanation ? AtemExplainHeader._iconBox : 0) +
+    // Das ⓘ belegt seine volle Trefferfläche von 48 dp im Layout
+    // (AtemTappable vergrössert die Layoutfläche, nicht nur den Hit-Test).
+    // Mit der sichtbaren Breite gerechnet, passte die Zeile scheinbar und der
+    // Titel wurde abgeschnitten („Einheiten je Mona…").
+    // In der einzeiligen Form belegt das ⓘ nur seine sichtbare Breite plus
+    // Luft ([_visibleBox]); seine 48-dp-Trefferfläche liegt darüber und ragt
+    // in den Leerraum links davon. So passt „Vorher und nachher · 8 Wochen"
+    // in eine Zeile, ohne die Trefferfläche zu verkleinern.
+    final endWidth = (hasExplanation ? _visibleBox : 0) +
         (widget.action != null ? 24 + AtemExplainHeader._gap : 0);
-    final trailingWidth = widget.trailing == null
-        ? 0.0
-        : widthOf(widget.trailing!, metaStyle) + AtemExplainHeader._gap;
+    // Der Abstand vor dem Zeitraum zählt genau einmal — unten in der
+    // Bedingung. Doppelt gezählt schaltete der Kopf schon auf zwei Zeilen,
+    // obwohl alles passte („Einheiten je Monat · 6 Monate").
+    final trailingWidth =
+        widget.trailing == null ? 0.0 : widthOf(widget.trailing!, metaStyle);
     final titleWidth = widthOf(widget.title, titleStyle);
 
     final title = Semantics(
@@ -183,9 +191,9 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
         : Text(widget.trailing!, style: metaStyle, softWrap: false);
 
     // 1 — alles in einer Zeile, rechts gebündelt.
-    if (titleWidth + AtemExplainHeader._gap + trailingWidth + endWidth <=
-        maxWidth) {
-      return Row(
+    final trailingGap = widget.trailing == null ? 0.0 : AtemExplainHeader._gap;
+    if (titleWidth + trailingGap + trailingWidth + endWidth <= maxWidth) {
+      final row = Row(
         children: [
           Expanded(
             child: Semantics(
@@ -197,15 +205,65 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
             const SizedBox(width: AtemExplainHeader._gap),
             trailingText,
           ],
-          if (end.isNotEmpty) ...[
-            if (hasExplanation) const SizedBox(width: 4),
-            ...end,
+          if (widget.action != null) ...[
+            const SizedBox(width: AtemExplainHeader._gap),
+            ExcludeSemantics(child: widget.action!),
           ],
+          if (hasExplanation) const SizedBox(width: _visibleBox),
+        ],
+      );
+      if (!hasExplanation) return row;
+      return ConstrainedBox(
+        // Die Zeile ist mindestens so hoch wie die Trefferfläche — sonst
+        // schnitte der Hit-Test den überstehenden Teil ab.
+        constraints: const BoxConstraints(minHeight: _tapBox),
+        child: Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            row,
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: _infoButton(l10n, duration),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // 3 — Schon das längste Wort des Titels passt nicht neben das ⓘ
+    // (200 % Schrift auf 320 dp): Der Titel bekommt die volle Breite, damit
+    // er nur an Wortgrenzen bricht; Zeitraum und ⓘ stehen darunter.
+    final longestWord = widget.title
+        .split(RegExp(r'\s+'))
+        .map((w) => widthOf(w, titleStyle))
+        .fold<double>(0, (a, b) => a > b ? a : b);
+    if (longestWord + AtemExplainHeader._gap + endWidth > maxWidth) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          title,
+          const SizedBox(height: 2),
+          Row(
+            children: [
+              Expanded(
+                child: widget.trailing == null
+                    ? const SizedBox.shrink()
+                    : Text(widget.trailing!, style: metaStyle),
+              ),
+              ...end,
+            ],
+          ),
         ],
       );
     }
 
-    // 2 und 3 — Titel hat Vorrang, Zeitraum darunter.
+    // 2 — Titel hat Vorrang, Zeitraum darunter.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -226,6 +284,13 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
       ],
     );
   }
+
+  static const _tapBox = 48.0;
+
+  /// Platz, den das ⓘ in der einzeiligen Form belegt: der 32er-Kasten mit
+  /// dem 24er-Kreis, rechtsbündig, plus 8 dp Luft zum Zeitraum. Mit 32 dp
+  /// berührte „6 Monate" den Kreis.
+  static const _visibleBox = 40.0;
 
   Widget _infoButton(AppL10n l10n, Duration duration) => AtemTappable(
         onTap: () => setState(() => _open = !_open),

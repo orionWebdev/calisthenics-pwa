@@ -94,6 +94,10 @@ void main() {
 
     testWidgets('eine Kapsel antippen wechselt die Kurve', (tester) async {
       await _pump(tester, series: [squat, bench], candidates: [squat, bench]);
+      // Kapseln sind höchstens 60 % breit und scrollen seitlich; in der
+      // Testschrift liegt die zweite rechts ausserhalb.
+      await tester.ensureVisible(find.text('Bankdrücken'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Bankdrücken'));
       await tester.pumpAndSettle();
       expect(

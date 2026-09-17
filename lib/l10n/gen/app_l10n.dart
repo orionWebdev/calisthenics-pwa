@@ -3409,10 +3409,10 @@ abstract class AppL10n {
   /// **'Noch keine Einheit'**
   String get hybridEmptyTitle;
 
-  /// hybrid.week.thin
+  /// Dünner Wochenblock — der Formwert ist seit 16.09.2026 entfernt
   ///
   /// In de, this message translates to:
-  /// **'Bereitschaft und Formwert ab {min} Einheiten.'**
+  /// **'Bereitschaft ab {min} Einheiten.'**
   String hybridWeekThin(int min);
 
   /// hybrid.week.title
@@ -8500,10 +8500,10 @@ abstract class AppL10n {
   /// **'Anteil von Kraft und Ausdauer an der Trainingszeit dieser Woche, gerechnet über Minuten. Die Verschiebung vergleicht mit dem Schnitt der letzten 4 Wochen. Kein Sollverhältnis — die App weiss nicht, welche Aufteilung richtig ist.'**
   String get ratioExplain;
 
-  /// Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ der Trainingszeit
+  /// Trainingszeit — Erklärung hinter dem ⓘ
   ///
   /// In de, this message translates to:
-  /// **'Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen, in den letzten 14 oder 28 Tagen.'**
+  /// **'Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen — in dieser Woche oder in den letzten 28 Tagen. Minuten sind die einzige Grösse, die alle drei Spuren teilen.'**
   String get hybridTimeExplain;
 
   /// Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ der Trainingstage
@@ -8517,6 +8517,55 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'von {total} Tagen trainiert'**
   String hybridHeatmapOfDays(int total);
+
+  /// Trainingszeit (17.09.2026, Verhältnis und Trainingszeit zusammengeführt) — Segment Woche
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche'**
+  String get hybridTimeWeek;
+
+  /// Trainingszeit — Kraft-Metazeile, Arbeitssätze ohne Aufwärmen
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 Satz} other{{n} Sätze}}'**
+  String hybridTimeSets(int n);
+
+  /// Trainingszeit — Kraft-Metazeile, nur wenn > 0
+  ///
+  /// In de, this message translates to:
+  /// **'{t} t Volumen'**
+  String hybridTimeTonnage(String t);
+
+  /// Trainingszeit — Grundlage unter den Zeilen
+  ///
+  /// In de, this message translates to:
+  /// **'{minutes} min · {n, plural, =1{1 Einheit} other{{n} Einheiten}}'**
+  String hybridTimeBasisShort(int minutes, int n);
+
+  /// Trainingszeit — Wochenfenster ohne Minuten
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche noch keine Einheit mit Dauer.'**
+  String get hybridTimeEmptyWeek;
+
+  /// Trainingszeit — Erklärung der Verschiebung hinter dem ⓘ
+  ///
+  /// In de, this message translates to:
+  /// **'Die Pfeile in „Diese Woche“ vergleichen den Anteil mit dem Schnitt der vier Wochen davor, in Prozentpunkten. Sie erscheinen, sobald deine Einheiten vier Wochen zurückreichen.'**
+  String get hybridTimeShiftExplain;
+
+  /// Trainingszeit — Zeile mit Verschiebung
+  ///
+  /// In de, this message translates to:
+  /// **'{track}: {minutes} Minuten, {n} Einheiten, {percent} Prozent, {shift}'**
+  String hybridTimeRowShiftA11y(
+      String track, int minutes, int n, int percent, String shift);
+
+  /// Sätze je Woche — Zeitraum rechts im Kopf (17.09.2026)
+  ///
+  /// In de, this message translates to:
+  /// **'{weeks} Wochen'**
+  String weeklySetsWindow(int weeks);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

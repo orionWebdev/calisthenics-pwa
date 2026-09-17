@@ -8,6 +8,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../exercises/domain/muscle.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
 import '../../domain/plan.dart';
+import '../plan_bits.dart';
 
 /// Ein Plan als **Karte** — Bild oben, Titel, Text, Knopf.
 ///
@@ -40,6 +41,7 @@ class PlanCard extends StatelessWidget {
     this.muscles = const [],
     this.image,
     this.width = defaultWidth,
+    this.fillHeight = false,
   });
 
   final Plan plan;
@@ -57,6 +59,10 @@ class PlanCard extends StatelessWidget {
 
   final double width;
 
+  /// In einer Reihe gleich hoher Karten: Der Knopf rutscht an die Unterkante.
+  /// Nur setzen, wenn die Höhe von aussen begrenzt ist ([PlanCardRow]).
+  final bool fillHeight;
+
   static const defaultWidth = 260.0;
 
   /// Kürzel wie in der Planzeile: bis zu zwei Anfangsbuchstaben.
@@ -70,13 +76,49 @@ class PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final minutes = plan.estimatedDuration.inMinutes;
-    final meta = [
-      l10n.planMeta(plan.exerciseCount, trainingTypeLabel(l10n, plan.type)),
-      l10n.durationApproxMinutes(minutes),
-    ].join(' · ');
+    final meta = planMetaLine(l10n, plan, withDuration: true);
     final hasDescription = description?.trim().isNotEmpty ?? false;
     final text = hasDescription ? description! : meta;
     final shown = muscles.take(3).toList();
+
+    final body = AtemTappable(
+      onTap: onOpen,
+      semanticLabel: l10n.planCardA11y(plan.name, plan.exerciseCount, minutes),
+      minTapSize: const Size(0, 48),
+      pressBuilder: (context, pressed) => AnimatedContainer(
+        duration: AtemMotion.duration(context, AtemMotion.fast),
+        decoration: BoxDecoration(
+          boxShadow: pressed
+              ? AtemGlow.soft(AtemColors.tabStrength, opacity: 0.25)
+              : const [],
+        ),
+        child: _Body(
+          plan: plan,
+          image: image,
+          text: text,
+          textIsMeta: !hasDescription,
+          muscles: shown,
+        ),
+      ),
+      child: _Body(
+        plan: plan,
+        image: image,
+        text: text,
+        textIsMeta: !hasDescription,
+        muscles: shown,
+      ),
+    );
+    final button = Padding(
+      padding: const EdgeInsets.fromLTRB(AtemSpacing.cardPadding, 0,
+          AtemSpacing.cardPadding, AtemSpacing.cardPadding),
+      child: AtemButton.outline(
+        label: l10n.sheetStart,
+        semanticLabel: l10n.planCardStartA11y(plan.name),
+        size: AtemButtonSize.compact,
+        expand: true,
+        onPressed: onStart,
+      ),
+    );
 
     return SizedBox(
       width: width,
@@ -87,48 +129,19 @@ class PlanCard extends StatelessWidget {
           border: Border.all(color: AtemColors.border),
         ),
         clipBehavior: Clip.antiAlias,
+        // **Knopf unten bündig** (seit 17.09.2026): In der Reihe bestimmt
+        // die höchste Karte die Höhe, und der Knopf jeder Karte sitzt an
+        // derselben Unterkante. Eine Karte allein folgt dem Inhalt.
+        //
+        // Ein Schalter statt LayoutBuilder: Die Reihe misst die Karten mit
+        // IntrinsicHeight, und LayoutBuilder liefert keine Intrinsic-Masse.
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: fillHeight ? MainAxisSize.max : MainAxisSize.min,
           children: [
-            AtemTappable(
-              onTap: onOpen,
-              semanticLabel:
-                  l10n.planCardA11y(plan.name, plan.exerciseCount, minutes),
-              minTapSize: const Size(0, 48),
-              pressBuilder: (context, pressed) => AnimatedContainer(
-                duration: AtemMotion.duration(context, AtemMotion.fast),
-                decoration: BoxDecoration(
-                  boxShadow: pressed
-                      ? AtemGlow.soft(AtemColors.tabStrength, opacity: 0.25)
-                      : const [],
-                ),
-                child: _Body(
-                  plan: plan,
-                  image: image,
-                  text: text,
-                  textIsMeta: !hasDescription,
-                  muscles: shown,
-                ),
-              ),
-              child: _Body(
-                plan: plan,
-                image: image,
-                text: text,
-                textIsMeta: !hasDescription,
-                muscles: shown,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-              child: AtemButton.outline(
-                label: l10n.sheetStart,
-                semanticLabel: l10n.planCardStartA11y(plan.name),
-                size: AtemButtonSize.compact,
-                expand: true,
-                onPressed: onStart,
-              ),
-            ),
+            body,
+            if (fillHeight) const Spacer(),
+            button,
           ],
         ),
       ),
@@ -170,7 +183,10 @@ class _Body extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          // Bild → Titel 12, Titel → Meta 4, Meta → Muskeln 8, Muskeln →
+          // Knopf 12 (seit 17.09.2026, vorher 12/6/10/12 mit 14 dp Rand).
+          padding: const EdgeInsets.fromLTRB(
+              AtemSpacing.cardPadding, 12, AtemSpacing.cardPadding, 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -181,7 +197,7 @@ class _Body extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: AtemType.titleMedium.of(context),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Text(
                 text,
                 maxLines: 3,
@@ -191,9 +207,9 @@ class _Body extends StatelessWidget {
                     : AtemType.labelSmall.of(context),
               ),
               if (muscles.isNotEmpty) ...[
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 Wrap(
-                  spacing: 10,
+                  spacing: 12,
                   runSpacing: 4,
                   children: [
                     for (final m in muscles)
@@ -324,24 +340,29 @@ class PlanCardRow extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           clipBehavior: Clip.none,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (var i = 0; i < plans.length; i++) ...[
-                if (i > 0) const SizedBox(width: 12),
-                AtemEntrance(
-                  index: i,
-                  axis: AtemEntranceAxis.right,
-                  child: PlanCard(
-                    plan: plans[i],
-                    width: width,
-                    muscles: musclesOf?.call(plans[i]) ?? const [],
-                    onOpen: () => onOpen(plans[i]),
-                    onStart: () => onStart(plans[i]),
+          // Gleich hohe Karten: Die höchste bestimmt die Reihe, der Knopf
+          // sitzt überall an derselben Kante.
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = 0; i < plans.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 12),
+                  AtemEntrance(
+                    index: i,
+                    axis: AtemEntranceAxis.right,
+                    child: PlanCard(
+                      plan: plans[i],
+                      width: width,
+                      fillHeight: true,
+                      muscles: musclesOf?.call(plans[i]) ?? const [],
+                      onOpen: () => onOpen(plans[i]),
+                      onStart: () => onStart(plans[i]),
+                    ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         );
       },

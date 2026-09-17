@@ -163,4 +163,34 @@ void main() {
     expect(trailing.top, greaterThanOrEqualTo(title.bottom - 1));
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('langes Wort bei 200 % auf 320 dp bricht nicht im Wort',
+      (tester) async {
+    await _pump(
+      tester,
+      const AtemExplainHeader(
+        title: 'Trainingszeit',
+        trailing: 'KW 38',
+        explanation: explanation,
+      ),
+      width: 320,
+      scale: 2.0,
+    );
+    final title = tester.getRect(find.text('Trainingszeit'));
+    final info = tester.getRect(find.byIcon(Icons.info_outline));
+    // ⓘ steht unter dem Titel, nicht daneben — der Titel hat die volle Breite
+    expect(info.top, greaterThanOrEqualTo(title.bottom - 1));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('ⓘ sitzt bündig am rechten Rand', (tester) async {
+    await _pump(
+      tester,
+      const AtemExplainHeader(title: 'Tage', explanation: explanation),
+    );
+    final info = tester.getRect(find.byIcon(Icons.info_outline));
+    // Gemessen wird das 14-dp-Symbol im 24-dp-Kreis im 32-dp-Kasten — der
+    // Kreis selbst liegt am Rand, das Symbol sitzt darin rund 13 dp davor.
+    expect(361 - 16 - info.right, lessThan(16));
+  });
 }

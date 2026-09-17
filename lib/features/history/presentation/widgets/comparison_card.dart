@@ -44,14 +44,13 @@ class ComparisonCard extends StatelessWidget {
     final median = comparison.basis == ComparisonBasis.sameKind;
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           BasisCapsule(
             basis: comparison.basis!,
-            dateLabel: DateFormat.MMMd(languageTag)
-                .format(comparison.referenceDate!),
+            dateLabel:
+                DateFormat.MMMd(languageTag).format(comparison.referenceDate!),
             daysAgo: comparison.daysBetween ?? 0,
             medianCount: comparison.medianCount,
           ),
@@ -88,9 +87,8 @@ class ComparisonCard extends StatelessWidget {
           _Row(
             label: l10n.planEntrySets,
             value: current.sets?.toString() ?? l10n.commonNotAvailable,
-            reference: comparison.comparesVolume
-                ? previous.sets?.toString()
-                : null,
+            reference:
+                comparison.comparesVolume ? previous.sets?.toString() : null,
             median: median,
             delta: comparison.comparesVolume
                 ? _delta(current.sets, previous.sets)
@@ -116,11 +114,13 @@ class ComparisonCard extends StatelessWidget {
     return session is StrengthSession ? session.planName : null;
   }
 
-  static String _minutes(AppL10n l10n, Duration? value) =>
-      value == null ? l10n.commonNotAvailable : l10n.durationMinutes(value.inMinutes);
+  static String _minutes(AppL10n l10n, Duration? value) => value == null
+      ? l10n.commonNotAvailable
+      : l10n.durationMinutes(value.inMinutes);
 
-  static String _kilograms(AppL10n l10n, double? value) =>
-      value == null ? l10n.commonNotAvailable : l10n.unitKilograms(value.round().toString());
+  static String _kilograms(AppL10n l10n, double? value) => value == null
+      ? l10n.commonNotAvailable
+      : l10n.unitKilograms(value.round().toString());
 
   /// Ein absolutes Delta, oder `null`, wenn eine Seite fehlt.
   static (String, bool)? _delta(num? now, num? before) {
@@ -228,7 +228,6 @@ class _Empty extends StatelessWidget {
     final l10n = AppL10n.of(context);
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
       child: Text(
         l10n.compareEmptyType,
         style: AtemType.labelSmall.of(context),

@@ -61,6 +61,7 @@ class WeeklySetsCard extends StatelessWidget {
         children: [
           AtemExplainHeader(
             title: l10n.weeklySetsTitle,
+            trailing: l10n.weeklySetsWindow(volume.weeks.length),
             explanation: [l10n.weeklySetsWhat, l10n.weeklySetsExplainAverage],
           ),
           const SizedBox(height: 6),
@@ -163,7 +164,15 @@ class _Head extends StatelessWidget {
                 if (pill != null)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 6),
-                    child: AtemBadge(label: pill),
+                    // Poppins hat kein ▲▼ — Mono springt ein.
+                    child: AtemBadge(
+                      label: pill,
+                      style: AtemTextRole(
+                        AtemType.labelUi.base.copyWith(
+                            fontFamilyFallback: const ['JetBrainsMono']),
+                        trackingEm: AtemType.labelUi.trackingEm,
+                      ),
+                    ),
                   ),
               ],
             ),
@@ -189,8 +198,10 @@ class _Strip extends StatelessWidget {
 
   final WeeklyStrengthVolume volume;
 
-  static const _maxHeight = 64.0;
-  static const _minHeight = 10.0;
+  static const _maxHeight = 56.0;
+  static const _minHeight = 6.0;
+  static const _barWidth = 18.0;
+  static const _gap = 4.0;
 
   @override
   Widget build(BuildContext context) {
@@ -218,39 +229,75 @@ class _Strip extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   for (var i = 0; i < weeks.length; i++) ...[
-                    if (i > 0) const SizedBox(width: 4),
+                    if (i > 0) const SizedBox(width: _gap),
+                    // Feste schmale Balken, zentriert in der Spalte — wie im
+                    // Monatsstreifen. Vorher füllte der Balken die Spalte,
+                    // und eine einzige Woche wurde zum runden Klecks.
                     Expanded(
-                      child: _Bar(week: weeks[i], peak: peak, index: i),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          width: _barWidth,
+                          child: _Bar(week: weeks[i], peak: peak, index: i),
+                        ),
+                      ),
                     ),
                   ],
                 ],
               ),
             ),
             const SizedBox(height: 6),
-            Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    l10n.weeklySetsAxis(weeks.first.isoWeek),
+            // Die Beschriftung steht **unter ihrer Spalte**: erste Woche
+            // unter dem ersten Balken, letzte unter dem letzten — am Rand
+            // festgehalten, damit sie nicht aus der Karte ragt.
+            LayoutBuilder(builder: (context, constraints) {
+              final width = constraints.maxWidth;
+              final column = (width - _gap * (weeks.length - 1)) / weeks.length;
+              final first = l10n.weeklySetsAxis(weeks.first.isoWeek);
+              final last = l10n.weeklySetsAxis(weeks.last.isoWeek);
+              final firstStyle = AtemType.labelMicro.of(context);
+              final lastStyle = AtemType.labelMicro
+                  .of(context)
+                  .copyWith(color: AtemColors.tabStrength);
+              final scaler = MediaQuery.textScalerOf(context);
+              Size measure(String t, TextStyle st) => (TextPainter(
+                    text: TextSpan(text: t, style: st),
+                    textDirection: TextDirection.ltr,
+                    textScaler: scaler,
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AtemType.labelMicro.of(context),
-                  ),
+                  )..layout())
+                      .size;
+              final firstSize = measure(first, firstStyle);
+              final lastSize = measure(last, lastStyle);
+              final firstLeft = (column / 2 - firstSize.width / 2)
+                  .clamp(0.0, math.max(0.0, width - firstSize.width))
+                  .toDouble();
+              final lastLeft = (width - column / 2 - lastSize.width / 2)
+                  .clamp(0.0, math.max(0.0, width - lastSize.width))
+                  .toDouble();
+              // Bei grosser Schrift überlappen die beiden — dann bleibt nur
+              // die aktuelle Woche stehen.
+              final overlap = firstLeft + firstSize.width + 8 > lastLeft;
+              return SizedBox(
+                height: math.max(firstSize.height, lastSize.height),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    if (!overlap)
+                      Positioned(
+                        left: firstLeft,
+                        top: 0,
+                        child: Text(first, maxLines: 1, style: firstStyle),
+                      ),
+                    Positioned(
+                      left: lastLeft,
+                      top: 0,
+                      child: Text(last, maxLines: 1, style: lastStyle),
+                    ),
+                  ],
                 ),
-                const Spacer(),
-                Flexible(
-                  child: Text(
-                    l10n.weeklySetsAxis(weeks.last.isoWeek),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                    style: AtemType.labelMicro
-                        .of(context)
-                        .copyWith(color: AtemColors.tabStrength),
-                  ),
-                ),
-              ],
-            ),
+              );
+            }),
           ],
         ),
       ),
@@ -295,7 +342,7 @@ class _Bar extends StatelessWidget {
           color: week.isCurrent
               ? AtemColors.tabStrength
               : AtemColors.cyan.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(AtemRadii.pill),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
         ),
       ),
     );

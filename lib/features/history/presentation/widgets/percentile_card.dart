@@ -50,7 +50,6 @@ class PercentileCard extends StatelessWidget {
     final total = (distance ?? pace)!.total;
 
     return AtemCard.list(
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -62,8 +61,8 @@ class PercentileCard extends StatelessWidget {
           if (distance != null)
             _Row(
               label: l10n.detailDistance,
-              value: l10n.unitKilometers(
-                  session.distanceKm!.toStringAsFixed(1)),
+              value:
+                  l10n.unitKilometers(session.distanceKm!.toStringAsFixed(1)),
               percentile: distance,
             ),
           if (pace != null) ...[

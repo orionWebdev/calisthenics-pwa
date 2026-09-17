@@ -6,6 +6,25 @@ import '../../../l10n/gen/app_l10n.dart';
 import '../../exercises/presentation/muscle_ui.dart';
 import '../domain/plan.dart';
 
+/// Die Metazeile eines Plans — „7 Übungen · Kraft · ~45 min".
+///
+/// Leere Angaben fallen weg, statt einen leeren Platz zwischen zwei Trennern
+/// zu lassen: Ein Plan ohne Typ stand bis zum 17.09.2026 als
+/// „3 Übungen · · ~15 min" da.
+///
+/// Innerhalb einer Angabe stehen geschützte Leerzeichen, damit die Zeile nur
+/// **zwischen** Angaben umbricht — nie „~15 / min".
+String planMetaLine(AppL10n l10n, Plan plan, {bool withDuration = false}) {
+  final type = trainingTypeLabel(l10n, plan.type);
+  final parts = <String>[
+    l10n.exerciseCountShort(plan.exerciseCount),
+    if (type.trim().isNotEmpty) type,
+    if (withDuration)
+      l10n.durationApproxMinutes(plan.estimatedDuration.inMinutes),
+  ];
+  return parts.map((p) => p.replaceAll(' ', '\u00A0')).join(' · ');
+}
+
 /// Eine Zeile der Planliste.
 ///
 /// **Kein Fortschrittsring.** Die Daten kennen name, icon, type und items —
@@ -19,8 +38,7 @@ class PlanRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final meta =
-        l10n.planMeta(plan.exerciseCount, trainingTypeLabel(l10n, plan.type));
+    final meta = planMetaLine(l10n, plan);
 
     return AtemTappable(
       onTap: onTap,
@@ -51,9 +69,8 @@ class PlanRow extends StatelessWidget {
                   Text(meta,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AtemType.meta
-                          .of(context)
-                          .copyWith(letterSpacing: 0)),
+                      style:
+                          AtemType.meta.of(context).copyWith(letterSpacing: 0)),
                 ],
               ),
             ),

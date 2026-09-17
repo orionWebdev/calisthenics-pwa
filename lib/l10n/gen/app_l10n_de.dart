@@ -2038,7 +2038,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String hybridWeekThin(int min) {
-    return 'Bereitschaft und Formwert ab $min Einheiten.';
+    return 'Bereitschaft ab $min Einheiten.';
   }
 
   @override
@@ -5438,7 +5438,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get hybridTimeExplain =>
-      'Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen, in den letzten 14 oder 28 Tagen.';
+      'Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen — in dieser Woche oder in den letzten 28 Tagen. Minuten sind die einzige Grösse, die alle drei Spuren teilen.';
 
   @override
   String get hybridHeatmapExplain =>
@@ -5447,5 +5447,53 @@ class AppL10nDe extends AppL10n {
   @override
   String hybridHeatmapOfDays(int total) {
     return 'von $total Tagen trainiert';
+  }
+
+  @override
+  String get hybridTimeWeek => 'Diese Woche';
+
+  @override
+  String hybridTimeSets(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Sätze',
+      one: '1 Satz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hybridTimeTonnage(String t) {
+    return '$t t Volumen';
+  }
+
+  @override
+  String hybridTimeBasisShort(int minutes, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten',
+      one: '1 Einheit',
+    );
+    return '$minutes min · $_temp0';
+  }
+
+  @override
+  String get hybridTimeEmptyWeek => 'Diese Woche noch keine Einheit mit Dauer.';
+
+  @override
+  String get hybridTimeShiftExplain =>
+      'Die Pfeile in „Diese Woche“ vergleichen den Anteil mit dem Schnitt der vier Wochen davor, in Prozentpunkten. Sie erscheinen, sobald deine Einheiten vier Wochen zurückreichen.';
+
+  @override
+  String hybridTimeRowShiftA11y(
+      String track, int minutes, int n, int percent, String shift) {
+    return '$track: $minutes Minuten, $n Einheiten, $percent Prozent, $shift';
+  }
+
+  @override
+  String weeklySetsWindow(int weeks) {
+    return '$weeks Wochen';
   }
 }
