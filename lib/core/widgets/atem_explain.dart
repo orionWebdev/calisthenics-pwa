@@ -25,6 +25,19 @@ import 'atem_tappable.dart';
 /// Zahl und bleibt sichtbar — sonst sieht ein Wert aus zwei Einheiten genauso
 /// sicher aus wie einer aus zweihundert.
 ///
+/// ## Layout (seit 17.09.2026)
+///
+/// Am Gerät brachen Titel um — „Einheiten je / Monat", sogar mitten im Wort
+/// („Muskelbalanc / e") —, weil Titel und Zeitraum sich die Breite teilten.
+/// Und Zeitraum und ⓘ standen irgendwo in der Mitte. Jetzt wird gemessen:
+///
+/// 1. **Passt alles in eine Zeile**, steht der Titel links ohne Umbruch, und
+///    Zeitraum, ⓘ und [action] stehen **rechtsbündig** zusammen.
+/// 2. **Sonst** hat der Titel Vorrang: Titel links, ⓘ/[action] rechts, der
+///    Zeitraum rutscht linksbündig in die zweite Zeile.
+/// 3. Erst wenn der Titel allein nicht passt (200 % Schrift auf 320 dp),
+///    bricht er — an Wortgrenzen, nie im Wort.
+///
 /// ## Zustand
 ///
 /// Zugeklappt ist die Ruhelage. Der Zustand lebt im Widget und überlebt den
@@ -36,6 +49,7 @@ class AtemExplainHeader extends StatefulWidget {
     required this.title,
     required this.explanation,
     this.trailing,
+    this.action,
     this.titleStyle,
   });
 
@@ -47,7 +61,15 @@ class AtemExplainHeader extends StatefulWidget {
   /// Optional zwischen Titel und ⓘ, etwa „8 Wochen".
   final String? trailing;
 
+  /// Optional ganz rechts, etwa ein Chevron auf einer antippbaren Kachel.
+  /// Dekorativ; die Kachel trägt die Semantik.
+  final Widget? action;
+
   final TextStyle? titleStyle;
+
+  /// Sichtbare Grösse des ⓘ-Knopfs; die Trefferfläche ist 48 dp.
+  static const _iconBox = 32.0;
+  static const _gap = 8.0;
 
   @override
   State<AtemExplainHeader> createState() => _AtemExplainHeaderState();
@@ -66,65 +88,9 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Semantics(
-                header: true,
-                child: Text(
-                  widget.title,
-                  style: widget.titleStyle ?? AtemType.titleMedium.of(context),
-                ),
-              ),
-            ),
-            if (widget.trailing != null) ...[
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  widget.trailing!,
-                  textAlign: TextAlign.end,
-                  style: AtemType.meta.of(context),
-                ),
-              ),
-            ],
-            if (hasExplanation)
-              AtemTappable(
-                onTap: () => setState(() => _open = !_open),
-                semanticLabel: _open
-                    ? l10n.explainCloseA11y(widget.title)
-                    : l10n.explainOpenA11y(widget.title),
-                selected: _open,
-                child: SizedBox.square(
-                  dimension: 32,
-                  child: Center(
-                    child: AnimatedContainer(
-                      duration: duration,
-                      curve: AtemMotion.curve,
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _open
-                            ? AtemColors.cyan.withValues(alpha: 0.14)
-                            : const Color(0x00000000),
-                        border: Border.all(
-                          color: _open
-                              ? AtemColors.cyan.withValues(alpha: 0.6)
-                              : AtemColors.border,
-                        ),
-                      ),
-                      child: Icon(
-                        _open ? Icons.close : Icons.info_outline,
-                        size: 14,
-                        color:
-                            _open ? AtemColors.cyan : AtemColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) =>
+              _headRow(context, constraints.maxWidth, l10n, duration),
         ),
         if (hasExplanation)
           // Bei „Animationen reduzieren" ist die Dauer null — AnimatedSize
@@ -169,6 +135,128 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
                   ),
                 ],
               ],
+            ),
+          ),
+        ),
+      );
+
+  Widget _headRow(
+    BuildContext context,
+    double maxWidth,
+    AppL10n l10n,
+    Duration duration,
+  ) {
+    final titleStyle = widget.titleStyle ?? AtemType.titleMedium.of(context);
+    final metaStyle = AtemType.meta.of(context);
+    final scaler = MediaQuery.textScalerOf(context);
+    double widthOf(String text, TextStyle style) => (TextPainter(
+          text: TextSpan(text: text, style: style),
+          textDirection: TextDirection.ltr,
+          textScaler: scaler,
+          maxLines: 1,
+        )..layout())
+            .width;
+
+    final hasExplanation = widget.explanation.isNotEmpty;
+    // Die Trefferfläche des ⓘ ragt unsichtbar über die sichtbare Box hinaus;
+    // für die Zeile zählt die sichtbare Breite.
+    final endWidth = (hasExplanation ? AtemExplainHeader._iconBox : 0) +
+        (widget.action != null ? 24 + AtemExplainHeader._gap : 0);
+    final trailingWidth = widget.trailing == null
+        ? 0.0
+        : widthOf(widget.trailing!, metaStyle) + AtemExplainHeader._gap;
+    final titleWidth = widthOf(widget.title, titleStyle);
+
+    final title = Semantics(
+      header: true,
+      child: Text(widget.title, style: titleStyle),
+    );
+    final end = <Widget>[
+      if (hasExplanation) _infoButton(l10n, duration),
+      if (widget.action != null) ...[
+        const SizedBox(width: AtemExplainHeader._gap),
+        ExcludeSemantics(child: widget.action!),
+      ],
+    ];
+    final trailingText = widget.trailing == null
+        ? null
+        : Text(widget.trailing!, style: metaStyle, softWrap: false);
+
+    // 1 — alles in einer Zeile, rechts gebündelt.
+    if (titleWidth + AtemExplainHeader._gap + trailingWidth + endWidth <=
+        maxWidth) {
+      return Row(
+        children: [
+          Expanded(
+            child: Semantics(
+              header: true,
+              child: Text(widget.title, style: titleStyle, softWrap: false),
+            ),
+          ),
+          if (trailingText != null) ...[
+            const SizedBox(width: AtemExplainHeader._gap),
+            trailingText,
+          ],
+          if (end.isNotEmpty) ...[
+            if (hasExplanation) const SizedBox(width: 4),
+            ...end,
+          ],
+        ],
+      );
+    }
+
+    // 2 und 3 — Titel hat Vorrang, Zeitraum darunter.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(child: title),
+            if (end.isNotEmpty) ...[
+              const SizedBox(width: AtemExplainHeader._gap),
+              ...end,
+            ],
+          ],
+        ),
+        if (widget.trailing != null) ...[
+          const SizedBox(height: 2),
+          Text(widget.trailing!, style: metaStyle),
+        ],
+      ],
+    );
+  }
+
+  Widget _infoButton(AppL10n l10n, Duration duration) => AtemTappable(
+        onTap: () => setState(() => _open = !_open),
+        semanticLabel: _open
+            ? l10n.explainCloseA11y(widget.title)
+            : l10n.explainOpenA11y(widget.title),
+        selected: _open,
+        child: SizedBox.square(
+          dimension: AtemExplainHeader._iconBox,
+          child: Center(
+            child: AnimatedContainer(
+              duration: duration,
+              curve: AtemMotion.curve,
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _open
+                    ? AtemColors.cyan.withValues(alpha: 0.14)
+                    : const Color(0x00000000),
+                border: Border.all(
+                  color: _open
+                      ? AtemColors.cyan.withValues(alpha: 0.6)
+                      : AtemColors.border,
+                ),
+              ),
+              child: Icon(
+                _open ? Icons.close : Icons.info_outline,
+                size: 14,
+                color: _open ? AtemColors.cyan : AtemColors.textSecondary,
+              ),
             ),
           ),
         ),

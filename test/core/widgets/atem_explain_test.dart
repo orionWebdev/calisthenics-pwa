@@ -122,4 +122,45 @@ void main() {
     expect(AtemType.labelMicro.base.color, AtemColors.textSecondary);
     expect(AtemType.labelSmall.base.color, AtemColors.textTertiary);
   });
+
+  testWidgets('passt alles: Titel einzeilig, Zeitraum und ⓘ rechtsbündig',
+      (tester) async {
+    await _pump(
+      tester,
+      const AtemExplainHeader(
+        // Kurz, weil die Testschrift jedes Zeichen quadratisch zeichnet.
+        title: 'Tage',
+        trailing: '12 W',
+        explanation: explanation,
+      ),
+    );
+    final title = tester.getRect(find.text('Tage'));
+    final trailing = tester.getRect(find.text('12 W'));
+    final info = tester.getRect(find.byIcon(Icons.info_outline));
+    // eine Zeile
+    expect((title.center.dy - trailing.center.dy).abs(), lessThan(4));
+    // Titel nicht umbrochen: Höhe einer Zeile
+    expect(title.height, lessThan(40));
+    // Zeitraum steht direkt vor dem ⓘ, beide ganz rechts
+    expect(info.right, greaterThan(361 - 16 - 32));
+    expect(info.left - trailing.right, lessThan(24));
+  });
+
+  testWidgets('passt es nicht: Titel behält Vorrang, Zeitraum in Zeile 2',
+      (tester) async {
+    await _pump(
+      tester,
+      const AtemExplainHeader(
+        title: 'Einheiten je Monat',
+        trailing: 'KW 38 · 2 Einheiten',
+        explanation: explanation,
+      ),
+      width: 320,
+      scale: 1.6,
+    );
+    final title = tester.getRect(find.text('Einheiten je Monat'));
+    final trailing = tester.getRect(find.text('KW 38 · 2 Einheiten'));
+    expect(trailing.top, greaterThanOrEqualTo(title.bottom - 1));
+    expect(tester.takeException(), isNull);
+  });
 }
