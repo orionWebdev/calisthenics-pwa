@@ -39,6 +39,21 @@ class AtemTextRole {
   }
 }
 
+/// ## Drei Textstufen (seit 17.09.2026)
+///
+/// Bis dahin standen Lesetext, Metazeilen, Erklärsätze und Mono-Köpfe alle in
+/// `#CDD3EA` — nur 1,5:1 von Weiss entfernt. Titel, Werte und Erklärungen
+/// wirkten gleich laut; am Gerät „erschlug" das Weiss-Grau.
+///
+/// | Stufe | Farbe | Rollen |
+/// |---|---|---|
+/// | 1 | Weiss | Titel, die Hauptzahl eines Blocks |
+/// | 2 | `#CDD3EA` | Sätze, die gelesen werden: [labelSmall], [body] |
+/// | 3 | `#94A3B8` | Metazeilen, Grundlage, Beschriftungen: [meta], [labelMicro] |
+///
+/// `#94A3B8` erreicht 7,1:1 auf der Karte und bleibt die dunkelste erlaubte
+/// Textfarbe. Die Hauptzahl eines Blocks trägt zusätzlich den Akzent des
+/// Bereichs — so hat jeder Block genau einen Blickfang.
 abstract final class AtemType {
   static TextStyle _poppins(
     double size,
@@ -165,7 +180,7 @@ abstract final class AtemType {
   /// halbe Zeile.
   static final labelMicro = AtemTextRole(
     _mono(12, FontWeight.w500,
-        color: AtemColors.textTertiary, tracking: 0.12, tabular: false),
+        color: AtemColors.textSecondary, tracking: 0.12, tabular: false),
     trackingEm: 0.12,
   );
 
@@ -178,7 +193,7 @@ abstract final class AtemType {
   /// Mono-Versalien zweizeilig wurde.
   static final meta = AtemTextRole(
     _poppins(13, FontWeight.w500,
-        color: AtemColors.textTertiary, height: 1.35),
+        color: AtemColors.textSecondary, height: 1.35),
   );
 
   /// 12 sp · Bedienelemente: Navigationsleiste, Segmente, Chips, Badges.

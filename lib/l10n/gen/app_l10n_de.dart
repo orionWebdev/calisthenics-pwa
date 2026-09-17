@@ -5393,4 +5393,14 @@ class AppL10nDe extends AppL10n {
   String planCardStartA11y(String name) {
     return 'Starten: $name';
   }
+
+  @override
+  String explainOpenA11y(String title) {
+    return 'Erklärung zu $title, aufklappen';
+  }
+
+  @override
+  String explainCloseA11y(String title) {
+    return 'Erklärung zu $title, zuklappen';
+  }
 }

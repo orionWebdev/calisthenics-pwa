@@ -5387,5 +5387,7 @@
   "monthsEntryA11y": "{month}: {n, plural, =0{no workout} =1{1 workout} other{{n} workouts}}",
   "monthsNotMeasuredA11y": "{month}: not recorded",
   "planCardA11y": "{name}, {n, plural, =1{1 exercise} other{{n} exercises}}, about {minutes} minutes, opens plan",
-  "planCardStartA11y": "Start: {name}"
+  "planCardStartA11y": "Start: {name}",
+  "explainOpenA11y": "Explanation for {title}, expand",
+  "explainCloseA11y": "Explanation for {title}, collapse"
 }

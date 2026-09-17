@@ -7818,5 +7818,23 @@
         "type": "String"
       }
     }
+  },
+  "explainOpenA11y": "Erklärung zu {title}, aufklappen",
+  "@explainOpenA11y": {
+    "description": "AtemExplainHeader (17.09.2026) — ⓘ zugeklappt",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "explainCloseA11y": "Erklärung zu {title}, zuklappen",
+  "@explainCloseA11y": {
+    "description": "AtemExplainHeader (17.09.2026) — ⓘ aufgeklappt",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

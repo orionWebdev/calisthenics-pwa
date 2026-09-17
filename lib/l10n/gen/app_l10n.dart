@@ -8439,6 +8439,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Starten: {name}'**
   String planCardStartA11y(String name);
+
+  /// AtemExplainHeader (17.09.2026) — ⓘ zugeklappt
+  ///
+  /// In de, this message translates to:
+  /// **'Erklärung zu {title}, aufklappen'**
+  String explainOpenA11y(String title);
+
+  /// AtemExplainHeader (17.09.2026) — ⓘ aufgeklappt
+  ///
+  /// In de, this message translates to:
+  /// **'Erklärung zu {title}, zuklappen'**
+  String explainCloseA11y(String title);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

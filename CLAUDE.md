@@ -40,6 +40,11 @@ Zwei Regeln dazu:
 - **Auf allen anderen Bildschirmen rendert ein Block ohne Daten nicht** — der Bildschirm hört einfach früher auf. Keine Platzhalterkarte, kein „Leg los!"-Aufruf (Modul 5).
 - **Wo die Daten dünn sind, muss das sichtbar sein** — mit Nenner und Grundlage, nicht mit einer glatt aussehenden Zahl.
 
+## Text und Erklärungen (seit 17.09.2026)
+- **Drei Textstufen:** Weiss für Titel und die Hauptzahl eines Blocks · `#CDD3EA` nur für Sätze, die gelesen werden · `#94A3B8` für Metazeilen, Grundlage und Beschriftungen. Die Hauptzahl trägt den Akzent des Bereichs (Kraft Amber, sonst Cyan) — ein Blickfang je Block, keine Ampelfarben.
+- **Erklärungen sind versteckt.** Sichtbar bleiben Titel, Wert, eine kurze Grundlage mit Nenner und — unter der Schwelle — Bedingung und Fortschritt. Was der Block zeigt, wie gerechnet wird, Formeln und Hinweise („Kein Sollverhältnis") stehen hinter dem ⓘ neben dem Titel und klappen im Block auf. Baustein: `AtemExplainHeader`.
+- Höchstens **eine** sichtbare Hinweiszeile je Block ausser der Grundlage.
+
 ## Umgang mit Zahlen und Aussagen
 - Jede Zahl nennt ihre Grundlage („268 Sätze · 14 von 18 Kraft-Einheiten"). Nie einen Anteil ohne Nenner.
 - Kein Sollverhältnis, kein Urteil. Die App weiß nicht, wie viel Rücken richtig ist.

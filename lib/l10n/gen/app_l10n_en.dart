@@ -5378,4 +5378,14 @@ class AppL10nEn extends AppL10n {
   String planCardStartA11y(String name) {
     return 'Start: $name';
   }
+
+  @override
+  String explainOpenA11y(String title) {
+    return 'Explanation for $title, expand';
+  }
+
+  @override
+  String explainCloseA11y(String title) {
+    return 'Explanation for $title, collapse';
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../../l10n/gen/app_l10n.dart';
 import '../theme/theme.dart';
 import 'atem_card.dart';
+import 'atem_explain.dart';
 import 'atem_progress.dart';
 
 /// Ein Auswertungsblock **unter seiner Schwelle**.
@@ -29,7 +30,11 @@ import 'atem_progress.dart';
 /// 0"; ein Anteil aus zwei Einheiten sähe genauso glatt aus wie einer aus
 /// zweihundert. Die Fläche unter dem Titel bleibt deshalb Text.
 ///
-/// Ein ganzer Block ist **ein** Semantics-Knoten.
+/// Seit 17.09.2026 steht „was er zeigen wird" hinter dem ⓘ im Kopf
+/// ([AtemExplainHeader]); sichtbar bleiben Titel, Bedingung und Fortschritt.
+///
+/// Fortschritt und Bedingung sind **ein** Semantics-Knoten, der Kopf mit dem
+/// ⓘ ein eigener — sonst wäre der Knopf nicht erreichbar.
 class AtemThresholdBlock extends StatelessWidget {
   const AtemThresholdBlock({
     super.key,
@@ -64,50 +69,48 @@ class AtemThresholdBlock extends StatelessWidget {
     final l10n = AppL10n.of(context);
     final shown = current.clamp(0, required);
 
-    return Semantics(
-      container: true,
-      label: l10n.thresholdA11y(title, what, condition, shown, required),
-      child: ExcludeSemantics(
-        child: AtemCard.list(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
-                runSpacing: 4,
-                children: [
-                  Text(title, style: AtemType.titleMedium.of(context)),
-                  if (trailing != null)
-                    Text(trailing!, style: AtemType.meta.of(context)),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(what, style: AtemType.labelSmall.of(context)),
-              const SizedBox(height: 14),
-              AtemProgressBar.share(
-                value: shown / required,
-                semanticLabel: '',
-                accent: accent,
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 2,
-                children: [
-                  Text(
-                    l10n.thresholdProgress(shown, required),
-                    style: AtemType.valueMedium
-                        .of(context)
-                        .copyWith(fontSize: 13, color: AtemColors.textTertiary),
-                  ),
-                  Text(condition, style: AtemType.meta.of(context)),
-                ],
-              ),
-            ],
+    return AtemCard.list(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AtemExplainHeader(
+            title: title,
+            trailing: trailing,
+            explanation: [what],
           ),
-        ),
+          const SizedBox(height: 14),
+          Semantics(
+            container: true,
+            label: l10n.thresholdA11y(title, what, condition, shown, required),
+            child: ExcludeSemantics(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  AtemProgressBar.share(
+                    value: shown / required,
+                    semanticLabel: '',
+                    accent: accent,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 2,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        l10n.thresholdProgress(shown, required),
+                        style: AtemType.valueMedium
+                            .of(context)
+                            .copyWith(fontSize: 13, color: accent),
+                      ),
+                      Text(condition, style: AtemType.meta.of(context)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
