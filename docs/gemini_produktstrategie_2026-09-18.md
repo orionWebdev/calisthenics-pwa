@@ -209,14 +209,18 @@ zu „schnellstmöglich", weil sie Store-Vorbereitung erst nach vollem Feature-U
 
 ### 7.2 Echte Blocker — ohne diese kein Upload möglich
 
-1. **Signierung.** `android/app/build.gradle.kts:34` signiert die Release-Variante aktuell mit dem
-   **Debug-Schlüssel** (`signingConfig = signingConfigs.getByName("debug")`, dort steht wörtlich der
-   Kommentar „TODO: Add your own signing config"). Play Console verlangt ein eigenes Upload-Zertifikat.
-   Ohne Wechsel ist der Release-Build technisch nicht hochladbar. **Umsetzung:** eigenen Upload-Keystore
-   erzeugen, `key.properties` (nicht ins Repo, `.gitignore` prüfen) mit Passwort/Alias anlegen, echte
-   `signingConfigs.release` eintragen. Play App Signing übernimmt danach die eigentliche Signatur —
-   das Upload-Zertifikat ist bei Verlust über Google ersetzbar, nicht katastrophal, aber sollte
-   trotzdem sicher verwahrt werden.
+1. ~~**Signierung.**~~ **Erledigt am 18.09.2026.** `android/app/build.gradle.kts` liest jetzt
+   `android/key.properties` (nicht im Repo, siehe `.gitignore`) und signiert Release-Builds mit einem
+   eigenen Upload-Zertifikat (`android/app/atem-upload-key.jks`, Alias `atem-upload`, gültig 30 Jahre).
+   Geprüft mit `apksigner verify`: Zertifikat trägt „CN=ATEM Hybrid" statt des Android-Debug-Zertifikats.
+   Fehlt `key.properties` (jeder andere Rechner), fällt der Build automatisch auf den Debug-Schlüssel
+   zurück, statt zu brechen. **Christian muss `android/key.properties` und die `.jks`-Datei sichern**
+   (Passwort-Manager oder verschlüsseltes Backup) — beide liegen nur lokal, ein Verlust ist über Google
+   Play App Signing zwar ersetzbar, aber ein unnötiger Umweg.
+   ⚠️ **Achtung beim nächsten Testgerät-Update:** Ein Release-Build mit dem neuen Zertifikat hat eine
+   andere Signatur als der bisher auf dem Honor installierte. Android verweigert die Installation über
+   die alte Version („Signaturen stimmen nicht überein") — vor dem nächsten Aufspielen einmal
+   `adb uninstall com.atemhybrid.app` nötig, danach normal weiter.
 2. **Datenschutzerklärung nicht live.** `lib/features/settings/domain/legal_links.dart` verweist auf
    `https://calisthenics-pro-57d6d.web.app/legal/…`; die Seite liefert aktuell **404** (nicht deployt).
    Play Console verlangt eine erreichbare, öffentliche Datenschutz-URL **vor** der Einreichung — ohne
@@ -237,27 +241,43 @@ zu „schnellstmöglich", weil sie Store-Vorbereitung erst nach vollem Feature-U
 - Kontakt-E-Mail für den Store-Eintrag (kann von der Impressum-Adresse abweichen).
 - Preismodell in der Console setzen (auch „kostenlos" ist eine explizite Angabe).
 
-### 7.4 Drei Entscheidungen, die nur der Nutzer treffen kann
+### 7.4 Entscheidungen — vom Nutzer am 18.09.2026 getroffen
 
-Unten als Frage gestellt — sie verändern, was als Nächstes gebaut wird, deshalb zuerst klären statt
-raten:
+1. **Zugang beim Start: Registrierung öffnen.** `allowedUsers` wird kein Einladungs-Gate mehr — jeder
+   angemeldete Nutzer soll sofort hineinkommen. **Umsetzung:** Beim ersten Anmelden automatisch ein
+   `allowedUsers/{uid}`-Dokument mit `enabled: true` anlegen (Cloud Function `onCreate` beim
+   Firebase-Nutzer, oder ein Schreibvorgang direkt nach dem ersten erfolgreichen Sign-In, bevor
+   `AuthGate` den Zustand prüft). Das Feld `enabled` bleibt erhalten — es ist damit weiterhin möglich,
+   ein einzelnes Konto zu sperren (Missbrauch, Support), ohne die Regeln erneut zu ändern. Die
+   Firestore-Regel selbst (`request.auth.uid == userId` je Dokument) ändert sich nicht — sie war nie
+   das Zugangs-Gate, nur der Eigentumsschutz. `WaitingRoomScreen` bleibt für den kurzen Moment
+   zwischen Anmeldung und dem automatischen Freischalten, nicht mehr für eine manuelle Prüfung.
+2. **Veröffentlichungs-Gleis: geschlossener/interner Test zuerst.** Keine Store-Texte, keine Grafiken,
+   keine Alterseinstufung nötig, um den ersten Build in der Play Console laufen zu haben — nur
+   Signierung (erledigt) und eine erreichbare Datenschutzseite (Blocker 2) sind Pflicht dafür.
+3. **Zeitpunkt der Monetarisierung: Paywall vor dem ersten Upload.** Damit verzögert sich die
+   Veröffentlichung bewusst um die volle Play-Billing-Integration — das ist die getroffene Entscheidung,
+   nicht mehr die schnellste Variante, aber die gewollte. Siehe 7.6 für den Umfang und die offene
+   Frage, welche Funktionen frei bleiben.
 
-1. **Zugang beim Start:** `allowedUsers` bleibt einladungsbasiert (passt zu einem geschlossenen
-   Test-Track, keine Öffnung nötig) — oder die Registrierung wird für alle geöffnet (verlangt eine
-   robustere Onboarding-Prüfung und mehr Support-Aufwand von Anfang an).
-2. **Veröffentlichungs-Gleis:** Geschlossener/interner Test in der Play Console zuerst (in ein bis zwei
-   Tagen erreichbar, sobald Signierung und Datenschutzseite stehen, keine ASO-Texte nötig) — oder
-   direkt auf Produktion/öffentliche Sichtbarkeit zielen (verlangt alle Punkte aus 7.3 vollständig).
-3. **Zeitpunkt der Monetarisierung:** Frei starten, Pro-Funktionen und Play Billing als zweiten Schritt
-   nachziehen (das ist der schnellste Weg zu „im Store") — oder Paywall/Pro-Tier vor dem ersten Upload
-   fertig bauen (verzögert die Veröffentlichung um die gesamte Billing-Integration).
+### 7.5 Erledigt
 
-**Empfehlung:** 1 einladungsbasiert lassen, 2 geschlossener Test zuerst, 3 frei starten. Das ist der
-Weg, der „schnellstmöglich im Store" tatsächlich einlöst; alles andere lässt sich nach dem ersten
-erreichbaren Build ohne Zeitdruck nachziehen.
+- ✅ Upload-Keystore erzeugt, Signierung umgestellt (7.2 Punkt 1) — bestätigt mit `apksigner verify`.
 
-### 7.5 Sofort machbar, ohne auf die Antworten zu warten
+### 7.6 Als Nächstes — teils blockiert auf Angaben, die nur der Nutzer hat
 
-- Upload-Keystore anlegen und Signierung umstellen (7.2 Punkt 1).
-- Rechtstexte auf `web/legal/` deployen, sobald die fünf Platzhalter gefüllt sind.
-- Store-Texte (Kurz- und Vollbeschreibung) entwerfen — unabhängig vom Preismodell.
+- **Sofort machbar, unabhängig:** Registrierungs-Öffnung (7.4.1) umsetzen; Store-Texte (Kurz- und
+  Vollbeschreibung) entwerfen.
+- **Blockiert auf echte Angaben vom Nutzer:** Die fünf Platzhalter in `web/legal/datenschutz.html` und
+  `index.html` (Name, Strasse, PLZ/Ort, Land, Kontakt-E-Mail) — danach lassen sich die Rechtstexte
+  deployen und Blocker 2 und 3 aus 7.2 sind erledigt.
+- **Braucht eine Produktentscheidung, bevor gebaut wird:** Die Paywall verlangt einen Free/Pro-Schnitt.
+  Zwei bereits vorliegende Vorschläge widersprechen sich:
+  - Das frühere Masterplan-Dokument (1.09.2026): Pro schaltet Health-Connect-Import, den
+    „Gemini Hybrid Audit" und Cloud-Sync/Backup frei; **Preis ~4,99 €/Monat, Lifetime ~79,99 €.**
+  - Das heutige PDF (Abschnitt 7 dort): Pro schaltet Routine-Generierung, unbegrenzte Historie plus
+    CSV-Export, ACWR/Muskelbalance/e1RM-Trends und Skill-Tree/Plate-Calculator/Live-Activity frei —
+    ohne Preis.
+
+  **Diese Entscheidung braucht der Nutzer noch, bevor die Play-Billing-Integration beginnt** — welcher
+  Schnitt gilt (einer der beiden, eine Mischung, oder neu), und der Preis. Siehe die Frage unten.
