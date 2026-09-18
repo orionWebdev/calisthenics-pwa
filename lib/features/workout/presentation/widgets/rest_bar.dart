@@ -48,7 +48,9 @@ class RestBar extends StatelessWidget {
 
     return AnimatedContainer(
       duration: AtemMotion.normal,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: compact ? 8 : 14),
+      padding: EdgeInsets.symmetric(
+          horizontal: AtemSpacing.lg,
+          vertical: compact ? AtemSpacing.sm : AtemSpacing.cardPadding),
       decoration: BoxDecoration(
         color: AtemColors.surfaceSolid.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(24),
@@ -102,10 +104,16 @@ class RestBar extends StatelessWidget {
             ],
           ),
           if (!compact) ...[
-            const SizedBox(height: 11),
+            const SizedBox(height: AtemSpacing.md),
+            // **Drei zu vier statt eins zu zwei.** Bei 361 dp blieben den
+            // beiden Knöpfen 73 dp; „+30" brach dort mitten in der Zahl um
+            // („+3 / 0"). Flutter trennt eine zu breite Zeichenkette notfalls
+            // zeichenweise — sichtbar wurde es erst im Rendering mit den
+            // echten Schriften.
             Row(
               children: [
                 Expanded(
+                  flex: 3,
                   child: AtemButton.outline(
                     label: l10n.workoutRunnerRestMinus,
                     semanticLabel: l10n.workoutA11yRestShorten,
@@ -114,6 +122,7 @@ class RestBar extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
+                  flex: 3,
                   child: AtemButton.outline(
                     label: l10n.workoutRunnerRestPlus,
                     semanticLabel: l10n.workoutA11yRestExtend,
@@ -122,7 +131,7 @@ class RestBar extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  flex: 2,
+                  flex: 4,
                   child: AtemButton.gradient(
                     label: l10n.workoutRunnerRestSkip,
                     semanticLabel: l10n.workoutA11yRestSkip,

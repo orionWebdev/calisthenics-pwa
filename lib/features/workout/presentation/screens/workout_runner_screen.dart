@@ -585,7 +585,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+              padding: const EdgeInsets.fromLTRB(
+                  AtemSpacing.screenPadding, 6, AtemSpacing.screenPadding, 0),
               child: SessionTopBar(
                 amending: w.amendsSessionId != null,
                 elapsed: _clock,
@@ -625,7 +626,10 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
           child: NotificationListener<ScrollNotification>(
             onNotification: _onScroll,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 170),
+              // Unten Platz für die schwebende Pausenleiste, sonst deckt sie
+              // die letzten Sätze zu.
+              padding: const EdgeInsets.fromLTRB(AtemSpacing.screenPadding, 6,
+                  AtemSpacing.screenPadding, 170),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -636,7 +640,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     onTogglePause: () => _togglePause(w),
                     onEnd: () => _confirmEnd(w),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: AtemSpacing.cardGap),
                   ExerciseHeader(
                     exercise: exercise,
                     title: _displayName(exercise),
@@ -654,15 +658,16 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                   // Die Vorgabe aus dem Plan — **neben** den Feldern, nicht
                   // darin. Sie sagt, was gedacht war; was war, tippt man ein.
                   if (_target(l10n, exercise) case final target?) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AtemSpacing.sm),
                     Text(target,
                         textAlign: TextAlign.center,
                         style: AtemType.meta
                             .of(context)
                             .copyWith(color: AtemColors.cyan)),
                   ],
-                  const SizedBox(height: 10),
-                  if (!SetRow.isCompact(context)) _TableHead(isHold: exercise.isHold),
+                  const SizedBox(height: AtemSpacing.md),
+                  if (!SetRow.isCompact(context))
+                    _TableHead(isHold: exercise.isHold),
                   for (var i = 0; i < exercise.sets.length; i++)
                     SetRow(
                       set: exercise.sets[i],
@@ -703,13 +708,13 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     accent: AtemColors.textSecondary,
                     onPressed: () => _notifier.addSet(index),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AtemSpacing.sm),
                   AtemButton.outline(
                     label: l10n.workoutLoggingAddExercise,
                     semanticLabel: l10n.workoutLoggingAddExercise,
                     onPressed: _addExercise,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AtemSpacing.sm),
                   AtemButton.ghost(
                     label: l10n.workoutRunnerRemoveExercise,
                     semanticLabel:
@@ -717,7 +722,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     accent: AtemColors.magenta,
                     onPressed: () => _confirmRemove(index, exercise),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: AtemSpacing.lg),
                   Center(
                     child: Text(
                       l10n.workoutRunnerSetsCompleted(
