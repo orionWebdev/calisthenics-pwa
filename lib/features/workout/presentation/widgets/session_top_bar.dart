@@ -4,18 +4,21 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 
-/// Kopfzeile des Runners: Laufzeit links, drei Aktionen rechts.
+/// Kopfzeile des Runners: Laufzeit links, zwei Aktionen rechts.
 ///
-/// Die drei Icon-Buttons bleiben sichtbar 40×40, ihre Trefferfläche wächst
+/// Die Icon-Buttons bleiben sichtbar 40×40, ihre Trefferfläche wächst
 /// unsichtbar auf 48. Die Zentren rücken damit von 48 auf 56 dp Abstand — der
 /// sichtbare Zwischenraum bleibt gleich, weil die Lücke von 8 auf 0 fällt.
+///
+/// **Ohne Notizen** (seit 18.09.2026): Der dritte Knopf öffnete ein Blatt für
+/// eine Session-Notiz. Sie wurde nicht gebraucht und kostete im Training den
+/// Platz und die Aufmerksamkeit, die Pause und Beenden brauchen.
 class SessionTopBar extends StatelessWidget {
   const SessionTopBar({
     super.key,
     required this.elapsed,
     required this.paused,
     required this.onTogglePause,
-    required this.onOpenNotes,
     required this.onEnd,
     this.amending = false,
   });
@@ -30,7 +33,6 @@ class SessionTopBar extends StatelessWidget {
   final String elapsed;
   final bool paused;
   final VoidCallback onTogglePause;
-  final VoidCallback onOpenNotes;
   final VoidCallback onEnd;
 
   @override
@@ -98,12 +100,6 @@ class SessionTopBar extends StatelessWidget {
             onTap: onTogglePause,
           ),
         _IconAction(
-          glyph: _Glyph.notes,
-          semanticLabel: l10n.workoutA11yNotes,
-          tint: AtemColors.textSecondary,
-          onTap: onOpenNotes,
-        ),
-        _IconAction(
           glyph: _Glyph.close,
           semanticLabel: amending ? l10n.commonSave : l10n.workoutA11yEnd,
           tint: amending ? AtemColors.cyan : AtemColors.magenta,
@@ -118,7 +114,7 @@ class SessionTopBar extends StatelessWidget {
   }
 }
 
-enum _Glyph { pause, play, notes, close }
+enum _Glyph { pause, play, close }
 
 class _IconAction extends StatelessWidget {
   const _IconAction({
@@ -187,19 +183,6 @@ class _GlyphPainter extends CustomPainter {
             ..lineTo(s * 0.28, s * 0.82)
             ..close(),
           Paint()..color = color,
-        );
-      case _Glyph.notes:
-        canvas.drawPath(
-          Path()
-            ..moveTo(s * 0.22, s * 0.16)
-            ..lineTo(s * 0.78, s * 0.16)
-            ..lineTo(s * 0.78, s * 0.7)
-            ..lineTo(s * 0.62, s * 0.86)
-            ..lineTo(s * 0.22, s * 0.86)
-            ..close()
-            ..moveTo(s * 0.36, s * 0.4)
-            ..lineTo(s * 0.64, s * 0.4),
-          paint,
         );
       case _Glyph.close:
         canvas

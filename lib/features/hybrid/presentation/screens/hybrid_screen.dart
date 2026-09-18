@@ -20,11 +20,16 @@ import '../../../dashboard/presentation/readiness_zone_ui.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
+import '../../../plans/application/plan_providers.dart';
+import '../../../plans/domain/plan.dart';
+import '../../../plans/presentation/start_sheet.dart';
+import '../../../settings/application/settings_providers.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../../domain/training_heatmap.dart';
 import '../widgets/recovery_row.dart';
 import '../widgets/recovery_sheet.dart';
 import '../widgets/training_heatmap_card.dart';
+import '../widgets/today_week_card.dart';
 import '../widgets/training_time_card.dart';
 
 /// Der Hybrid-Tab — **Start und Analyse verschmolzen, ohne Doppelung**
@@ -46,13 +51,25 @@ import '../widgets/training_time_card.dart';
 ///
 /// ## Was hier nicht mehr steht
 ///
-/// Die Wochenkurve, die Session-Karte und die vier Kacheln des früheren
-/// Start-Tabs. Die Wochenkurve war eine zweite Sicht auf dieselbe Woche wie das
-/// Verhältnis; die Session-Karte gehört in den Kraft-Tab, wo gestartet wird;
+/// Die Wochenkurve und die vier Kacheln des früheren Start-Tabs. Die
+/// Wochenkurve war eine zweite Sicht auf dieselbe Woche wie das Verhältnis;
 /// die Kacheln zeigten Zahlen, die der Verlauf besser zeigt. Ein Block ohne
 /// eigene Zeitspanne rendert hier nicht.
+///
+/// ## Heute steht jetzt hier (18.09.2026)
+///
+/// Die Heute-Karte stand im Kraft-Tab und eröffnete ihn mit Planung, die es
+/// nicht gibt — Termine kommen aus der Vorgänger-App. Sie ist mit der
+/// Wochenkarte zu [TodayWeekCard] verschmolzen und steht ganz oben: erst der
+/// Tag mit dem Weg ins Training, dann die Woche, die ihn einordnet.
 class HybridScreen extends ConsumerStatefulWidget {
-  const HybridScreen({super.key});
+  const HybridScreen({super.key, this.onStart});
+
+  /// Trägt die Startanfrage nach oben — derselbe Weg wie im Kraft-Tab: Der
+  /// Runner liegt auf dem Wurzel-Navigator und gehört keinem Tab. Ohne
+  /// Rückruf (etwa in einer Vorschau) bleibt der Tagesteil verborgen, statt
+  /// einen Knopf ohne Ziel zu zeigen.
+  final ValueChanged<StartRequest>? onStart;
 
   /// Bereitschaft ab so vielen Einheiten (C3/1). Trainingszeit und
   /// Trainingstage zählen darunter schon — sie behaupten nichts.
@@ -97,6 +114,24 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
   void _openCardioForm() => Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const CardioFormScreen()),
       );
+
+  /// Der Termin von heute: erst das Start-Blatt, dann der Runner — derselbe
+  /// Weg wie im Kraft-Tab (Board 05). Fehlt der Plan (gelöscht oder
+  /// Schnelleintrag), wird daraus ein freies Training mit erhaltenem Termin.
+  Future<void> _startToday(TodaySession session) async {
+    final onStart = widget.onStart;
+    if (onStart == null) return;
+    final plans = ref.read(plansProvider).value ?? const <Plan>[];
+    final plan = plans.where((p) => p.id == session.planId).firstOrNull;
+
+    final request = await StartSheet.show(
+      context,
+      plan: plan,
+      scheduleId: session.id,
+      restSeconds: ref.read(defaultRestSecondsProvider),
+    );
+    if (request != null) onStart(request);
+  }
 
   void _openStrength() => ref
       .read(appTabsProvider.notifier)
@@ -218,27 +253,61 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
               onPressed: _openCardioForm,
             ),
           ] else ...[
-            // ---- Bereitschaft (heute), oder der dünne Wochenblock (C3/1).
+            // ---- Heute und diese Woche (18.09.2026). Die einzige
+            // hervorgehobene Karte des Bildschirms: Sie trägt als einzige
+            // eine Handlung.
             //
             // Ab hier läuft die Kaskade: Die Blöcke steigen versetzt ein, in
             // der Reihenfolge, in der man sie lesen soll.
-            AtemEntrance(
-              child: thin
-                  ? _ThinWeek(ratio: ratio, sessions: sessions)
-                  : _ReadinessCard(
-                      readiness: data.readiness,
-                      scoreAnimation: _score,
-                      last: last,
-                    ),
-            ),
-            const SizedBox(height: AtemSpacing.cardGap),
+            if (TodayWeekCard.hasData(
+              ratio: ratio,
+              session: data.session,
+              onStart: widget.onStart == null ? null : () {},
+            )) ...[
+              AtemEntrance(
+                child: TodayWeekCard(
+                  ratio: ratio,
+                  session: data.session,
+                  plan: data.session == null
+                      ? null
+                      : ref
+                          .watch(plansProvider)
+                          .value
+                          ?.where((p) => p.id == data.session!.planId)
+                          .firstOrNull,
+                  onStart: widget.onStart == null || data.session == null
+                      ? null
+                      : () => _startToday(data.session!),
+                  // Solange die Bereitschaft nicht trägt, erklärt die Zeile
+                  // hier, warum sie fehlt — vorher tat das der eigene
+                  // Wochenblock, den es nicht mehr gibt.
+                  thinHint: thin
+                      ? l10n.hybridWeekThin(HybridScreen.minimumSessions)
+                      : null,
+                ),
+              ),
+              const SizedBox(height: AtemSpacing.cardGap),
+            ],
+
+            // ---- Bereitschaft (heute), erst ab genug Einheiten (C3/1).
+            if (!thin) ...[
+              AtemEntrance(
+                index: 1,
+                child: _ReadinessCard(
+                  readiness: data.readiness,
+                  scoreAnimation: _score,
+                  last: last,
+                ),
+              ),
+              const SizedBox(height: AtemSpacing.cardGap),
+            ],
 
             // ---- Trainingszeit (diese Woche | 28 Tage). Ein Block statt
             // Verhältnis und Zeit-Split (17.09.2026). Ohne Minuten in beiden
             // Fenstern nichts — der Bildschirm hört früher auf.
             if (TrainingTimeCard.hasData(sessions, reference)) ...[
               AtemEntrance(
-                index: 1,
+                index: 2,
                 child:
                     TrainingTimeCard(sessions: sessions, reference: reference),
               ),
@@ -249,7 +318,7 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
             // Platz in der Leiste hat. Kein Platzhalter.
             if (AppTab.visible.contains(AppTab.recovery))
               AtemEntrance(
-                index: 2,
+                index: 3,
                 child: RecoveryRow(status: recovery, onAdd: _addRecovery),
               ),
 
@@ -277,7 +346,7 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
       if (recoveryAbove || !timeAbove)
         const SizedBox(height: AtemSpacing.cardGap),
       AtemEntrance(
-        index: 3,
+        index: 4,
         child: TrainingHeatmapCard(heatmap: heatmap),
       ),
     ];
@@ -513,44 +582,4 @@ class _RingPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RingPainter old) =>
       old.value != value || old.color != color;
-}
-
-/// Der dünne Hybrid-Tab: was gezählt ist, nicht, was daraus folgt (C3/1).
-class _ThinWeek extends StatelessWidget {
-  const _ThinWeek({required this.ratio, required this.sessions});
-
-  final WeekRatio ratio;
-  final List<TrainingSession> sessions;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final parts = <String>[
-      if (ratio.strength.count > 0)
-        '${ratio.strength.count} ${l10n.typeStrength}',
-      if (ratio.cardio.count > 0) '${ratio.cardio.count} ${l10n.typeCardio}',
-    ];
-
-    return AtemCard.gradientBorder(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.hybridWeekTitle.toUpperCase(),
-              style: AtemType.labelMicro.of(context)),
-          const SizedBox(height: 8),
-          Text(
-            l10n.hybridWeekSummary(ratio.totalCount, ratio.totalMinutes),
-            style: AtemType.titleLarge.of(context),
-          ),
-          if (parts.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(parts.join(' · '), style: AtemType.meta.of(context)),
-          ],
-          const SizedBox(height: 12),
-          Text(l10n.hybridWeekThin(HybridScreen.minimumSessions),
-              style: AtemType.labelSmall.of(context)),
-        ],
-      ),
-    );
-  }
 }

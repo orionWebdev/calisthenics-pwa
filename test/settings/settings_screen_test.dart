@@ -1,5 +1,6 @@
 import 'package:atem/core/widgets/widgets.dart';
 import 'package:atem/features/settings/presentation/screens/account_deletion_screen.dart';
+import 'package:atem/features/settings/presentation/screens/info_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +41,11 @@ void main() {
     expect(find.text('TRAINING'), findsOneWidget);
     expect(find.text('APP'), findsOneWidget);
     expect(find.text('DEINE DATEN'), findsOneWidget);
-    expect(find.text('RECHTLICHES'), findsOneWidget);
-    expect(find.text('ÜBER DIE APP'), findsOneWidget);
+
+    // Rechtliches und „Über die App" liegen seit 17.09.2026 hinter „Info".
+    expect(find.text('RECHTLICHES'), findsNothing);
+    expect(find.text('ÜBER DIE APP'), findsNothing);
+    expect(find.text('Info'), findsOneWidget);
 
     // Aus den Vorlagen: 78 kg, Pausenzeit 90 — als Werte in den Zeilen
     // (Board 08: Zeile mit Wert, Sheet dahinter).
@@ -55,8 +59,31 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('kein Themenschalter, aber die Tatsache dazu', (tester) async {
+  testWidgets('die Version steht als Fussnote, nicht in einem Abschnitt',
+      (tester) async {
     await _pump(tester, const SettingsScreen());
+
+    // Ohne gelesenes Paket steht ein Strich — keine erfundene Nummer.
+    expect(find.textContaining('Version'), findsOneWidget);
+  });
+
+  testWidgets('„Info" öffnet die Unterseite mit Rechtlichem und Auskünften',
+      (tester) async {
+    await _pump(tester, const SettingsScreen());
+
+    await tester.tap(find.text('Info'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(InfoScreen), findsOneWidget);
+    expect(find.text('RECHTLICHES'), findsOneWidget);
+    expect(find.text('ÜBER DIE APP'), findsOneWidget);
+    expect(find.text('Datenschutz'), findsOneWidget);
+    // Die Version bleibt draussen — sie steht auf der Profilseite.
+    expect(find.text('VERSION'), findsNothing);
+  });
+
+  testWidgets('kein Themenschalter, aber die Tatsache dazu', (tester) async {
+    await _pump(tester, const InfoScreen());
 
     expect(find.textContaining('keine helle Fassung'), findsOneWidget);
     // Es darf keine Zeile geben, die ein helles Thema anböte.

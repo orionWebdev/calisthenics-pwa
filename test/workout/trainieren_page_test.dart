@@ -88,30 +88,42 @@ void main() {
   late AppL10n l10n;
 
 
-  testWidgets('Heute-Karte trägt „Freies Training" in der Karte',
+  testWidgets('Startkarte trägt alle drei Wege, ohne Tagesplanung',
       (tester) async {
     await _pump(tester);
     l10n = AppL10n.of(tester.element(find.byType(WorkoutsScreen)));
 
     final start = find.text(l10n.workoutsStart);
     final free = find.text(l10n.workoutsFree);
+    final log = find.text(l10n.strengthFormEntry);
     expect(start, findsOneWidget);
     expect(free, findsOneWidget);
-    // Beide Knöpfe stehen in derselben Karte, und die hat den Gradient-Rand.
+    expect(log, findsOneWidget);
+    // Alle drei stehen in derselben Karte …
     expect(identical(_cardAround(tester, start), _cardAround(tester, free)),
         isTrue);
-    expect(_cardAround(tester, start).gradient, isNotNull);
+    expect(identical(_cardAround(tester, start), _cardAround(tester, log)),
+        isTrue);
+    // … und die ist ein ruhiger Block: kein Gradient-Rand mehr
+    // (seit 18.09.2026, der Tag steht auf dem Hybrid-Tab).
+    expect(_cardAround(tester, start).gradient, isNull);
   });
 
-  testWidgets('leere Heute-Karte hat den Gradient-Rand', (tester) async {
+  testWidgets('ohne Termin heisst der erste Weg „Freies Training starten"',
+      (tester) async {
     await _pump(tester, overrides: [
       dashboardRepositoryProvider.overrideWithValue(_NoSessionDashboard()),
     ]);
     l10n = AppL10n.of(tester.element(find.byType(WorkoutsScreen)));
 
-    final title = find.text(l10n.emptyTodayTitle);
-    expect(title, findsOneWidget);
-    expect(_cardAround(tester, title).gradient, isNotNull);
+    // Keine Planungssprache mehr im Kraft-Tab.
+    expect(find.text(l10n.emptyTodayTitle), findsNothing);
+    expect(find.text(l10n.workoutsTodayLabel.toUpperCase()), findsNothing);
+
+    final free = find.text(l10n.workoutsFreeStart);
+    expect(free, findsOneWidget);
+    expect(find.text(l10n.workoutsPlanPick), findsOneWidget);
+    expect(_cardAround(tester, free).gradient, isNull);
     expect(find.text(l10n.strengthFormEntry), findsOneWidget);
   });
 

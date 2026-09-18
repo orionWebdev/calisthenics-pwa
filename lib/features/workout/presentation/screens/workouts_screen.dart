@@ -17,7 +17,6 @@ import '../../../plans/presentation/start_sheet.dart';
 import '../../../settings/application/settings_providers.dart';
 import '../../../exercises/domain/exercise.dart';
 import '../../../exercises/domain/muscle.dart';
-import '../../../exercises/presentation/muscle_ui.dart';
 import '../../../exercises/presentation/screens/exercise_detail_screen.dart';
 import '../../../exercises/presentation/screens/exercise_form_screen.dart';
 import '../../../exercises/presentation/screens/exercise_list_screen.dart';
@@ -112,23 +111,12 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             retryLabel: l10n.commonRetry,
             onRetry: () => ref.invalidate(dashboardDataProvider),
           )
-        else if (session != null)
-          AtemEntrance(
-            child: _TodayCard(
-              session: session,
-              plan: ref
-                  .watch(plansProvider)
-                  .value
-                  ?.where((p) => p.id == session.planId)
-                  .firstOrNull,
-              onStart: () => _startToday(context, session),
-              onFree: () => _startFree(context),
-              onLogWithoutSets: () => _logWithoutSets(context),
-            ),
-          )
         else
           AtemEntrance(
-            child: _EmptyToday(
+            child: _StartCard(
+              session: session,
+              onStartToday:
+                  session == null ? null : () => _startToday(context, session),
               onFree: () => _startFree(context),
               onPickPlan: () => _openPlans(context),
               onLogWithoutSets: () => _logWithoutSets(context),
@@ -396,92 +384,38 @@ class _PlainEmpty extends StatelessWidget {
   }
 }
 
-/// Innenpolster beider Heute-Karten — dasselbe wie jede andere Karte.
-/// Vorher 15 dp mit Termin und 18 dp ohne.
-const _todayPadding = EdgeInsets.all(AtemSpacing.cardPadding);
-
-/// Die einzige hervorgehobene Karte des Bildschirms.
-class _TodayCard extends StatelessWidget {
-  const _TodayCard({
+/// Die Startkarte des Kraft-Tabs — **drei Wege ins Training, kein Tagesplan**.
+///
+/// ## Warum hier nichts mehr über „heute" steht
+///
+/// Bis zum 18.09.2026 eröffnete eine Heute-Karte den Tab: „Heute ist nichts
+/// geplant", „Ruhetag — oder Platz für eine freie Session". Sie versprach
+/// eine Planung, die es in ATEM nicht gibt — Termine stammen aus der
+/// Vorgänger-App, anlegen kann man sie hier nicht. Der Tag steht jetzt auf dem
+/// Hybrid-Tab neben der Woche ([TodayWeekCard]); hier steht nur noch, was der
+/// Tab kann: anfangen.
+///
+/// ## Ruhiger Block, keine Hervorhebung
+///
+/// Sie trägt bewusst keinen Gradient-Rand mehr. Auf dieser Seite gibt es
+/// nichts zu betonen — drei Wege stehen nebeneinander, und die Rangfolge
+/// steckt schon in Gradient-Knopf, Umriss-Knopf und Textlink.
+class _StartCard extends StatelessWidget {
+  const _StartCard({
     required this.session,
-    required this.onStart,
-    required this.onFree,
-    required this.onLogWithoutSets,
-    this.plan,
-  });
-
-  final TodaySession session;
-  final VoidCallback onStart;
-
-  /// „Freies Training" — seit 16.09.2026 in der Karte statt als eigener
-  /// Knopf darunter: alle Wege, eine Einheit zu beginnen, an einer Stelle.
-  final VoidCallback onFree;
-  final VoidCallback onLogWithoutSets;
-
-  /// Der Plan hinter dem Termin — für „8 ÜBUNGEN · ~45 MIN · KRAFT".
-  final Plan? plan;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final minutes =
-        plan?.estimatedDuration.inMinutes ?? session.duration.inMinutes;
-    final meta = <String>[
-      if (plan != null) l10n.exerciseCountShort(plan!.exerciseCount),
-      l10n.durationApproxMinutes(minutes),
-      if (trainingTypeLabel(l10n, plan?.type ?? session.intensityLabel)
-          .isNotEmpty)
-        trainingTypeLabel(l10n, plan?.type ?? session.intensityLabel),
-    ]
-        // Geschützte Leerzeichen in einer Angabe: Die Zeile bricht nur
-        // zwischen Angaben um, nie „High / Intensity" (seit 17.09.2026).
-        .map((p) => p.replaceAll(' ', '\u00A0'))
-        .join(' · ');
-
-    return AtemCard.gradientBorder(
-      padding: _todayPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Neutral, nicht Cyan: Cyan trägt Daten, „Heute" ist eine
-          // Beschriftung (dritte Textstufe, seit 17.09.2026).
-          Text(l10n.workoutsTodayLabel.toUpperCase(),
-              style: AtemType.labelMicro.of(context)),
-          const SizedBox(height: 8),
-          Text(session.title, style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 4),
-          Text(
-            meta,
-            style: AtemType.meta.of(context),
-          ),
-          const SizedBox(height: 16),
-          AtemButton.gradient(
-            label: l10n.workoutsStart,
-            // Der Planname gehört ins Label (Board 05, F).
-            semanticLabel: '${l10n.workoutsStart}: ${session.title}',
-            size: AtemButtonSize.compact,
-            onPressed: onStart,
-          ),
-          const SizedBox(height: 8),
-          AtemButton.outline(
-            label: l10n.workoutsFree,
-            semanticLabel: l10n.workoutsFreeStart,
-            size: AtemButtonSize.compact,
-            onPressed: onFree,
-          ),
-          _LogWithoutSetsLink(onPressed: onLogWithoutSets),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyToday extends StatelessWidget {
-  const _EmptyToday({
+    required this.onStartToday,
     required this.onFree,
     required this.onPickPlan,
     required this.onLogWithoutSets,
   });
+
+  /// Der Termin von heute, falls die Vorgänger-App einen trägt. Er ändert
+  /// nur die Beschriftung des ersten Knopfes — mehr sagt die Karte nicht
+  /// über den Tag.
+  final TodaySession? session;
+
+  /// Startet den Termin. `null`, wenn keiner vorliegt.
+  final VoidCallback? onStartToday;
 
   final VoidCallback onFree;
   final VoidCallback onPickPlan;
@@ -490,40 +424,32 @@ class _EmptyToday extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
+    final today = session;
+    final hasToday = today != null && onStartToday != null;
 
-    // **Gleiche Kartenposition wie die Heute-Karte, kein Warnsymbol**
-    // (Board 05, A1/2). Leer ist kein Fehler; der Nutzer hat nichts falsch
-    // gemacht. Zwei Wege stehen bereit, weil beide gleich naheliegen: frei
-    // anfangen oder einen Plan holen.
-    // Gradient-Rand wie die Heute-Karte und die Aussagekarte im Verlauf
-    // (seit 16.09.2026): Die erste Karte des Tabs ist immer die
-    // hervorgehobene — ob ein Termin da ist oder nicht.
-    return AtemCard.gradientBorder(
-      padding: _todayPadding,
+    return AtemCard.list(
+      padding: const EdgeInsets.all(AtemSpacing.cardPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Neutral, nicht Cyan: Cyan trägt Daten, „Heute" ist eine
-          // Beschriftung (dritte Textstufe, seit 17.09.2026).
-          Text(l10n.workoutsTodayLabel.toUpperCase(),
-              style: AtemType.labelMicro.of(context)),
-          const SizedBox(height: 8),
-          Text(l10n.emptyTodayTitle, style: AtemType.titleMedium.of(context)),
-          const SizedBox(height: 4),
-          Text(l10n.emptyTodayBody, style: AtemType.labelSmall.of(context)),
-          const SizedBox(height: 16),
+          // Mit Termin führt der erste Weg dorthin, und der Planname steht
+          // im Vorlese-Label (Board 05, F). Ohne Termin ist freies Training
+          // der erste Weg — nicht „nichts geplant".
           AtemButton.gradient(
-            label: l10n.workoutsFreeStart,
-            semanticLabel: l10n.workoutsFreeStart,
+            label: hasToday ? l10n.workoutsStart : l10n.workoutsFreeStart,
+            semanticLabel: hasToday
+                ? '${l10n.workoutsStart}: ${today.title}'
+                : l10n.workoutsFreeStart,
             size: AtemButtonSize.compact,
-            onPressed: onFree,
+            onPressed: hasToday ? onStartToday : onFree,
           ),
           const SizedBox(height: 8),
           AtemButton.outline(
-            label: l10n.workoutsPlanPick,
-            semanticLabel: l10n.workoutsPlanPick,
+            label: hasToday ? l10n.workoutsFree : l10n.workoutsPlanPick,
+            semanticLabel:
+                hasToday ? l10n.workoutsFreeStart : l10n.workoutsPlanPick,
             size: AtemButtonSize.compact,
-            onPressed: onPickPlan,
+            onPressed: hasToday ? onFree : onPickPlan,
           ),
           _LogWithoutSetsLink(onPressed: onLogWithoutSets),
         ],

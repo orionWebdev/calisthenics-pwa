@@ -4,6 +4,22 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 
+/// Misst, wie breit ein Text in einer Zeile wäre — mit der Schriftgrösse des
+/// Nutzers.
+///
+/// Die Zeilen hier entscheiden damit selbst, ob Beschriftung und Wert
+/// nebeneinander passen. Vorher trugen beide `flex: 1` und teilten den freien
+/// Platz **hälftig**: „Einheitensystem" brach mitten im Wort, während rechts
+/// neben „Metrisch" 80 dp leer blieben.
+double _textWidth(BuildContext context, String text, TextStyle style) =>
+    (TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    )..layout())
+        .width;
+
 /// Ein Abschnitt der Einstellungen.
 ///
 /// Die Überschrift steht **über** der Karte, nicht darin: So bleibt sie beim
@@ -32,7 +48,8 @@ class SettingsSection extends StatelessWidget {
             label: title,
             explicitChildNodes: true,
             child: AtemCard.list(
-              padding: const EdgeInsets.all(16),
+              // Dasselbe Polster wie in den Karten der anderen Bereiche.
+              padding: const EdgeInsets.all(AtemSpacing.cardPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: children,
@@ -82,9 +99,23 @@ class SettingsRow extends StatelessWidget {
 
   final String? semanticLabel;
 
+  /// Abstand zwischen Beschriftung und Wert.
+  static const _gap = 12.0;
+
+  /// Breite des Wegweisers samt Luft davor.
+  static const _chevron = 18.0 + 8.0;
+
   @override
   Widget build(BuildContext context) {
     final color = accent ?? AtemColors.textPrimary;
+    final labelStyle = AtemType.body.of(context).copyWith(color: color);
+    final valueStyle = AtemType.valueMedium.of(context).copyWith(
+          fontSize: 13,
+          // Werte stehen in Cyan — sie sind Messwerte, keine Unterzeilen
+          // (Board 08, A1/1). Nur Auskünfte wie „In der App" bleiben
+          // gedämpft.
+          color: quiet ? AtemColors.textTertiary : AtemColors.cyan,
+        );
 
     return AtemTappable(
       onTap: onTap,
@@ -98,50 +129,134 @@ class SettingsRow extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
+        // **Gemessen statt geteilt.** Passen Beschriftung und Wert
+        // nebeneinander, steht die Beschriftung ungekürzt links und der Wert
+        // rechts am Wegweiser. Passen sie nicht, bekommt die Beschriftung die
+        // volle Breite und bricht an Wortgrenzen; der Wert rutscht darunter,
+        // weiter rechtsbündig. Die Unterzeile läuft immer über die ganze
+        // Breite — sie hatte vorher nur die halbe und brach früh um.
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final text = value;
+            final labelWidth = _textWidth(context, label, labelStyle);
+            final valueWidth =
+                text == null ? 0.0 : _textWidth(context, text, valueStyle);
+            final fits = labelWidth + (text == null ? 0 : _gap + valueWidth) +
+                    _chevron <=
+                constraints.maxWidth;
+
+            final valueText = text == null
+                ? null
+                : Text(
+                    text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: valueStyle,
+                  );
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: labelStyle,
+                        softWrap: !fits,
+                      ),
+                    ),
+                    if (fits && valueText != null) ...[
+                      const SizedBox(width: _gap),
+                      valueText,
+                    ],
+                    const SizedBox(width: 8),
+                    // Der Pfeil ist ein Wegweiser, kein Text: gedämpft, ausser
+                    // er gehört zu einem zerstörenden Weg (Board 08, A1/2).
+                    Icon(Icons.chevron_right,
+                        size: 18, color: accent ?? AtemColors.textSecondary),
+                  ],
+                ),
+                if (!fits && valueText != null) ...[
+                  const SizedBox(height: 4),
+                  Align(alignment: Alignment.centerRight, child: valueText),
+                ],
+                if (hint case final text?) ...[
+                  const SizedBox(height: 3),
+                  Text(text, style: AtemType.labelSmall.of(context)),
+                ],
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Eine reine Auskunftszeile: Beschriftung links, Wert rechts, kein Weg
+/// dahinter.
+///
+/// Sie misst wie [SettingsRow]: Passt der Wert daneben, steht er rechtsbündig
+/// in derselben Zeile; sonst darunter, ebenfalls rechtsbündig. So bricht keine
+/// Beschriftung mitten im Wort.
+class SettingsFactRow extends StatelessWidget {
+  const SettingsFactRow({super.key, required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = AtemType.labelMicro.of(context);
+    final valueStyle = AtemType.valueMedium
+        .of(context)
+        .copyWith(fontSize: 12, color: AtemColors.textTertiary);
+
+    return Semantics(
+      label: '$label: $value',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final upper = label.toUpperCase();
+              final fits = _textWidth(context, upper, labelStyle) +
+                      12 +
+                      _textWidth(context, value, valueStyle) <=
+                  constraints.maxWidth;
+              final valueText = Text(
+                value,
+                textAlign: TextAlign.right,
+                style: valueStyle,
+              );
+
+              if (fits) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(child: Text(upper, style: labelStyle)),
+                    const SizedBox(width: 12),
+                    valueText,
+                  ],
+                );
+              }
+              // Umgebrochen steht der Wert **linksbündig** unter seiner
+              // Beschriftung: rechtsbündig sähe er aus wie der Wert der
+              // nächsten Zeile.
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(label,
-                      style: AtemType.body.of(context).copyWith(color: color)),
-                  if (hint case final text?) ...[
-                    const SizedBox(height: 3),
-                    Text(text, style: AtemType.labelSmall.of(context)),
-                  ],
+                  Text(upper, style: labelStyle),
+                  const SizedBox(height: 4),
+                  Text(value, style: valueStyle),
                 ],
-              ),
-            ),
-            if (value case final text?) ...[
-              const SizedBox(width: 12),
-              // Nachgiebig: Eine lange E-Mail-Adresse sprengt bei 200 %
-              // Schrift auf 320 dp jede feste Aufteilung.
-              Flexible(
-                child: Text(
-                  text,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: AtemType.valueMedium.of(context).copyWith(
-                        fontSize: 13,
-                        // Werte stehen in Cyan — sie sind Messwerte, keine
-                        // Unterzeilen (Board 08, A1/1). Nur Auskünfte wie
-                        // „IN DER APP" bleiben gedämpft.
-                        color: quiet ? AtemColors.textTertiary : AtemColors.cyan,
-                      ),
-                ),
-              ),
-            ],
-            const SizedBox(width: 8),
-            // Der Pfeil ist ein Wegweiser, kein Text: gedämpft, ausser er
-            // gehört zu einem zerstörenden Weg (Board 08, A1/2).
-            Icon(Icons.chevron_right,
-                size: 18,
-                color: accent ?? AtemColors.textSecondary),
-          ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -178,35 +293,38 @@ class SettingsSwitch extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        // **Ein `Wrap`, keine `Row`.** Wort, Bahn und Beschriftung stehen bei
-        // 200 % Schrift auf 320 dp nicht nebeneinander — die Prüfmatrix hat
-        // 38 px Überlauf gefunden. Passt es, sieht es aus wie eine Reihe;
-        // passt es nicht, rutscht der Schalter unter die Beschriftung.
-        child: Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 12,
-          runSpacing: 10,
+        // **Wie eine Zeile mit Wert:** Beschriftung links, Bahn rechts, und
+        // die Erklärung darunter über die **ganze** Breite. Vorher stand sie
+        // in einer schmalen Spalte neben der Bahn und brach früh um; seit
+        // 17.09.2026 nutzt sie den Platz.
+        //
+        // Passen Beschriftung und Bahn nicht nebeneinander (200 % Schrift auf
+        // 320 dp), rutscht die Bahn unter die Beschriftung — deshalb ein
+        // `Wrap` und keine `Row`.
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.sizeOf(context).width -
-                    AtemSpacing.screenPadding * 2 -
-                    32,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+            LayoutBuilder(
+              builder: (context, constraints) => Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 12,
+                runSpacing: 10,
                 children: [
-                  Text(label, style: AtemType.body.of(context)),
-                  if (hint case final text?) ...[
-                    const SizedBox(height: 3),
-                    Text(text, style: AtemType.labelSmall.of(context)),
-                  ],
+                  ConstrainedBox(
+                    constraints:
+                        BoxConstraints(maxWidth: constraints.maxWidth - 120),
+                    child: Text(label, style: AtemType.body.of(context)),
+                  ),
+                  _Track(on: value),
                 ],
               ),
             ),
-            _Track(on: value),
+            if (hint case final text?) ...[
+              const SizedBox(height: 3),
+              Text(text, style: AtemType.labelSmall.of(context)),
+            ],
           ],
         ),
       ),
@@ -275,6 +393,15 @@ class _Track extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Der Trenner zwischen zwei Zeilen einer Sektion, 1 dp in `#232334`.
+class SettingsRule extends StatelessWidget {
+  const SettingsRule({super.key});
+
+  @override
+  Widget build(BuildContext context) =>
+      const Divider(height: 1, thickness: 1, color: AtemColors.border);
 }
 
 /// Eine reine Auskunftszeile — Mono, kein Weg dahinter.

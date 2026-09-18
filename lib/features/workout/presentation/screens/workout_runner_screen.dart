@@ -78,7 +78,12 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   /// nach Ablauf erneut Vibration und Ton aus.
   bool _restAnnounced = false;
 
-  final _notesController = TextEditingController();
+  /// Welcher Wert gerade am Regler hängt — Satz-Kennung und Feld.
+  ///
+  /// Höchstens einer zur Zeit: Zwei offene Regler übereinander machen aus der
+  /// Satzliste ein Formular.
+  ({String setId, SetField field})? _editing;
+
   final _weightControllers = <String, TextEditingController>{};
   final _repsControllers = <String, TextEditingController>{};
   final _holdControllers = <String, TextEditingController>{};
@@ -188,7 +193,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     _ticker?.cancel();
     _expandTimer?.cancel();
     _flashTimer?.cancel();
-    _notesController.dispose();
     for (final c in [
       ..._weightControllers.values,
       ..._repsControllers.values,
@@ -245,12 +249,26 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
         ':${(seconds % 60).toString().padLeft(2, '0')}';
   }
 
+  /// Das Feld zu einem Satz — und der Abgleich mit dem Zustand.
+  ///
+  /// Der Zustand kann den Wert **selbst** setzen: Beim Abhaken wandern Gewicht
+  /// und Wiederholungen in den nächsten Satz. Ein Feld, das nur bei seiner
+  /// Erzeugung liest, zeigte davon nichts.
+  ///
+  /// Übernommen wird nur in ein **leeres** Feld. Alles andere hat jemand
+  /// getippt, und getippt schlägt gerechnet.
   TextEditingController _controller(
     Map<String, TextEditingController> pool,
     String id,
-    String initial,
-  ) =>
-      pool.putIfAbsent(id, () => TextEditingController(text: initial));
+    String value,
+  ) {
+    final controller =
+        pool.putIfAbsent(id, () => TextEditingController(text: value));
+    if (controller.text.trim().isEmpty && value.trim().isNotEmpty) {
+      controller.text = value;
+    }
+    return controller;
+  }
 
   bool get _amends => widget.start.amends;
 
@@ -310,8 +328,87 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   WorkoutSessionController get _notifier =>
       ref.read(workoutSessionProvider(widget.start).notifier);
 
+  /// Öffnet den Regler unter einer Satzzeile — oder schliesst ihn.
+  ///
+  /// Höchstens einer ist offen: Ein zweiter Regler daneben wäre eine zweite
+  /// Stelle, an der dieselbe Geste etwas anderes tut.
+  void _openStepper(WorkoutSet set, SetField? field) {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _editing =
+          field == null ? null : (setId: set.id, field: field);
+    });
+  }
+
+  /// Die Übung aus dem Bestand, **wenn sie etwas zu erklären hat**.
+  ///
+  /// Eigene Übungen tragen meist nur einen Namen; für sie erscheint kein
+  /// Chip, statt ein leeres Blatt zu öffnen.
+  Exercise? _formGuide(WorkoutExercise exercise) {
+    for (final entry
+        in ref.read(exercisesProvider).value ?? const <Exercise>[]) {
+      if (entry.id != exercise.id) continue;
+      final hasGuide = entry.instructions.isNotEmpty ||
+          entry.cues.isNotEmpty ||
+          entry.commonMistakes.isNotEmpty ||
+          (entry.description?.trim().isNotEmpty ?? false);
+      return hasGuide ? entry : null;
+    }
+    return null;
+  }
+
+  /// Anleitung, Cues und typische Fehler — im Blatt, ohne den Runner zu
+  /// verlassen.
+  ///
+  /// Der Chip lag bis zum 18.09.2026 auf einem leeren Rückruf: Er sah aus wie
+  /// ein Weg und war keiner.
+  void _openFormGuide(WorkoutExercise exercise) {
+    final guide = _formGuide(exercise);
+    if (guide == null) return;
+    final l10n = AppL10n.of(context);
+
+    AtemSheet.show<void>(
+      context,
+      title: _displayName(exercise),
+      closeLabel: l10n.commonClose,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (guide.description?.trim().isNotEmpty ?? false)
+            _GuideSection(
+              title: l10n.workoutFormGuideDescription,
+              lines: [guide.description!.trim()],
+              numbered: false,
+            ),
+          if (guide.instructions.isNotEmpty)
+            _GuideSection(
+              title: l10n.exerciseInstructions,
+              lines: guide.instructions,
+              numbered: true,
+            ),
+          if (guide.cues.isNotEmpty)
+            _GuideSection(
+              title: l10n.exerciseCues,
+              lines: guide.cues,
+              numbered: false,
+            ),
+          if (guide.commonMistakes.isNotEmpty)
+            _GuideSection(
+              title: l10n.exerciseMistakes,
+              lines: guide.commonMistakes,
+              numbered: false,
+              accent: AtemColors.magenta,
+            ),
+        ],
+      ),
+    );
+  }
+
   void _toggleSet(ActiveWorkout w, WorkoutSet set) {
     FocusScope.of(context).unfocus();
+    // Ein offener Regler gehört zum Eintragen, nicht zum Abhaken.
+    if (_editing?.setId == set.id) setState(() => _editing = null);
     final nowDone = _notifier.toggleSet(_exIndex, set.id);
     if (!nowDone) return;
 
@@ -368,6 +465,11 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final async = ref.watch(workoutSessionProvider(widget.start));
+    // **Beobachtet, nicht nur gelesen.** Der Übungsbestand kommt aus einem
+    // Strom und ist beim ersten Frame leer. Wer ihn nur liest, zeigt für
+    // immer den englischen Grundnamen und keinen Form-Guide-Chip — beides
+    // hing bis zum 18.09.2026 daran.
+    ref.watch(exercisesProvider);
 
     // Sobald die Einheit da ist — und wieder, wenn ein Zwischenstand den
     // Zustand ersetzt hat. Siehe [_applyReadiness].
@@ -489,7 +591,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                 elapsed: _clock,
                 paused: _paused,
                 onTogglePause: () => _togglePause(w),
-                onOpenNotes: () => _openNotes(w),
                 onEnd: () => _confirmEnd(w),
               ),
             ),
@@ -533,7 +634,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     elapsed: _clock,
                     paused: _paused,
                     onTogglePause: () => _togglePause(w),
-                    onOpenNotes: () => _openNotes(w),
                     onEnd: () => _confirmEnd(w),
                   ),
                   const SizedBox(height: 14),
@@ -547,7 +647,9 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     onNext: index < w.exercises.length - 1
                         ? () => setState(() => _exIndex++)
                         : null,
-                    onFormGuide: () {},
+                    onFormGuide: _formGuide(exercise) == null
+                        ? null
+                        : () => _openFormGuide(exercise),
                   ),
                   // Die Vorgabe aus dem Plan — **neben** den Feldern, nicht
                   // darin. Sie sagt, was gedacht war; was war, tippt man ein.
@@ -576,6 +678,10 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                           _notifier.updateWeight(index, exercise.sets[i].id, v),
                       onRepsChanged: (v) =>
                           _notifier.updateReps(index, exercise.sets[i].id, v),
+                      editing: _editing?.setId == exercise.sets[i].id
+                          ? _editing!.field
+                          : null,
+                      onEdit: (field) => _openStepper(exercise.sets[i], field),
                       holdController: exercise.isHold
                           ? _controller(_holdControllers,
                               exercise.sets[i].id, exercise.sets[i].hold)
@@ -585,23 +691,12 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                               index, exercise.sets[i].id, v)
                           : null,
                     ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AtemSpacing.sm),
                   // **Die Kürzel erklären sich nicht von selbst.** „D" und
                   // „N" standen unkommentiert in jeder Zeile; die Frage
                   // „was bedeutet das?" ist beim Training die falsche.
-                  // Eine Zeile beantwortet sie ein für alle Mal.
-                  ExcludeSemantics(
-                    child: Text(
-                      l10n.workoutSetTypeLegend(
-                        SetType.warmup.shortLabel(l10n),
-                        SetType.normal.shortLabel(l10n),
-                        SetType.dropset.shortLabel(l10n),
-                        SetType.failure.shortLabel(l10n),
-                      ),
-                      style: AtemType.meta.of(context),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
+                  const _SetTypeLegend(),
+                  const SizedBox(height: AtemSpacing.md),
                   AtemButton.outline(
                     label: l10n.workoutRunnerAddSet,
                     semanticLabel: l10n.workoutScreenAddSet,
@@ -672,31 +767,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
         if (_ended && w.amendsSessionId == null)
           _SummaryOverlay(workout: w, elapsed: _clock),
       ],
-    );
-  }
-
-  void _openNotes(ActiveWorkout w) {
-    final l10n = AppL10n.of(context);
-    _notesController.text = w.notes;
-    AtemSheet.show<void>(
-      context,
-      title: l10n.workoutRunnerNotesTitle,
-      closeLabel: l10n.commonClose,
-      primaryAction: AtemButton.gradient(
-        label: l10n.workoutRunnerNotesDone,
-        semanticLabel: l10n.workoutRunnerNotesDone,
-        onPressed: () {
-          _notifier.setNotes(_notesController.text);
-          Navigator.of(context).maybePop();
-        },
-      ),
-      child: TextField(
-        controller: _notesController,
-        maxLines: 4,
-        autofocus: true,
-        style: AtemType.body.base,
-        decoration: InputDecoration(hintText: l10n.workoutRunnerNotesHint),
-      ),
     );
   }
 
@@ -816,6 +886,130 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   }
 }
 
+/// Die vier Satztypen als farbige Pillen.
+///
+/// Vorher stand hier ein Satz — „W Aufwärmen · N Normal · D Dropsatz · F
+/// Failure" —, der auf dem Gerät mitten in einem Begriff umbrach („F /
+/// Failure"). Jede Pille trägt jetzt ihr Kürzel im Ton des Typs und das Wort
+/// daneben; der `Wrap` bricht **zwischen** Pillen, nie in einer.
+///
+/// Ein Semantics-Knoten für alle vier: Vier einzelne Knoten wären beim
+/// Durchwischen vier Stationen für eine Legende.
+class _SetTypeLegend extends StatelessWidget {
+  const _SetTypeLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return Semantics(
+      label: '${l10n.workoutSetTypeLegendTitle}: '
+          '${l10n.workoutSetTypeLegend(
+        SetType.warmup.longLabel(l10n),
+        SetType.normal.longLabel(l10n),
+        SetType.dropset.longLabel(l10n),
+        SetType.failure.longLabel(l10n),
+      )}',
+      excludeSemantics: true,
+      child: Wrap(
+        spacing: AtemSpacing.sm,
+        runSpacing: AtemSpacing.sm,
+        children: [
+          for (final type in SetType.values)
+            Container(
+              padding: const EdgeInsets.fromLTRB(6, 4, 10, 4),
+              decoration: BoxDecoration(
+                color: type.color.withValues(alpha: 0.07),
+                borderRadius: BorderRadius.circular(AtemRadii.pill),
+                border: Border.all(color: type.color.withValues(alpha: 0.30)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AtemColors.surfaceSolid,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      type.shortLabel(l10n),
+                      style: AtemType.labelUi.of(context).copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: type.labelColor,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  // Flexibel, nicht starr: Bei 200 % Schrift ist „Aufwärmen"
+                  // breiter als die Zeile, und eine Pille darf umbrechen —
+                  // aber sie darf nicht über den Rand laufen.
+                  Flexible(
+                    child: Text(type.longLabel(l10n),
+                        style: AtemType.meta.of(context)),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Ein Abschnitt im Anleitungs-Blatt.
+class _GuideSection extends StatelessWidget {
+  const _GuideSection({
+    required this.title,
+    required this.lines,
+    required this.numbered,
+    this.accent = AtemColors.cyan,
+  });
+
+  final String title;
+  final List<String> lines;
+
+  /// Anleitungsschritte sind nummeriert, Cues und Fehler nicht — die
+  /// Reihenfolge trägt dort keine Bedeutung.
+  final bool numbered;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: AtemSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(title.toUpperCase(),
+                style: AtemType.labelMicro.of(context)),
+            const SizedBox(height: AtemSpacing.sm),
+            for (var i = 0; i < lines.length; i++) ...[
+              if (i > 0) const SizedBox(height: AtemSpacing.sm),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 22,
+                    child: Text(
+                      numbered ? '${i + 1}.' : '·',
+                      style: AtemType.meta.of(context).copyWith(color: accent),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(lines[i],
+                        style: AtemType.labelSmall.of(context)),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      );
+}
+
 class _TableHead extends StatelessWidget {
   const _TableHead({required this.isHold});
 
@@ -833,24 +1027,32 @@ class _TableHead extends StatelessWidget {
           : SizedBox(width: w, child: text);
     }
 
+    // Dieselben Masse wie die Zeile darunter (SetRow) — vorher rechnete der
+    // Kopf mit eigenen Zahlen, und die Beschriftungen standen neben ihren
+    // Spalten.
     return ExcludeSemantics(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
+        padding: const EdgeInsets.fromLTRB(
+            SetRow.rowPadding, AtemSpacing.sm, SetRow.rowPadding, 6),
         child: Row(
           children: [
-            cell(l10n.workoutRunnerTableSet, w: 48),
-            const SizedBox(width: 8),
+            cell(l10n.workoutRunnerTableSet, w: SetRow.typeWidth),
+            const SizedBox(width: SetRow.columnGap),
             cell(l10n.workoutRunnerTableLast),
-            const SizedBox(width: 8),
-            cell(l10n.workoutRunnerTableWeight, align: TextAlign.center, w: 72),
-            const SizedBox(width: 8),
+            const SizedBox(width: SetRow.columnGap),
+            cell(l10n.workoutRunnerTableWeight,
+                align: TextAlign.center, w: SetRow.weightWidth),
+            const SizedBox(width: SetRow.columnGap),
             cell(
-              isHold ? l10n.workoutColHold : l10n.workoutRunnerTableReps,
+              isHold
+                  ? l10n.workoutRunnerTableHold
+                  : l10n.workoutRunnerTableReps,
               align: TextAlign.center,
-              w: 60,
+              w: SetRow.repsWidth,
             ),
-            const SizedBox(width: 8),
-            cell(l10n.workoutRunnerTableDone, align: TextAlign.center, w: 48),
+            const SizedBox(width: SetRow.columnGap),
+            cell(l10n.workoutRunnerTableDone,
+                align: TextAlign.center, w: SetRow.doneWidth),
           ],
         ),
       ),

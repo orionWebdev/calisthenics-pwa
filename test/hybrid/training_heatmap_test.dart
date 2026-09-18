@@ -52,7 +52,8 @@ void main() {
       }
     });
 
-    test('die letzte Woche enthält den Stichtag, die erste liegt 11 Wochen davor',
+    test(
+        'die letzte Woche enthält den Stichtag, die erste liegt 11 Wochen davor',
         () {
       final map = TrainingHeatmap.compute(const [], _reference);
       expect(map.weeks.last.monday, DateTime(2026, 9, 14));

@@ -4846,9 +4846,9 @@
   "@workoutA11yEnd": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutA11yFormGuide": "Form-Video zu {exercise} öffnen",
+  "workoutA11yFormGuide": "Anleitung zu {exercise} öffnen",
   "@workoutA11yFormGuide": {
-    "description": "Runner, Modul 1/2 Spezifikation",
+    "description": "Runner 18.09.2026 — der Chip öffnet die Anleitung der Übung, kein Video",
     "placeholders": {
       "exercise": {
         "type": "String"
@@ -5389,17 +5389,17 @@
   "@workoutRunnerRestLabel": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerRestMinus": "−15s",
+  "workoutRunnerRestMinus": "−15",
   "@workoutRunnerRestMinus": {
-    "description": "Runner, Modul 1/2 Spezifikation"
+    "description": "Runner 18.09.2026 — ohne Einheit: Auf dem 70-dp-Knopf brach „−15 s“ zeichenweise um; die Sekunde steht im Vorlese-Label"
   },
-  "workoutRunnerRestPlus": "+30s",
+  "workoutRunnerRestPlus": "+30",
   "@workoutRunnerRestPlus": {
-    "description": "Runner, Modul 1/2 Spezifikation"
+    "description": "Runner 18.09.2026 — ohne Einheit: Auf dem 70-dp-Knopf brach „+30 s“ zeichenweise um; die Sekunde steht im Vorlese-Label"
   },
-  "workoutRunnerRestSkip": "SKIP →",
+  "workoutRunnerRestSkip": "WEITER",
   "@workoutRunnerRestSkip": {
-    "description": "Runner, Modul 1/2 Spezifikation"
+    "description": "Runner 18.09.2026 — ohne Pfeil: Poppins zeichnet → nicht, auf dem Gerät stand ein leeres Kästchen"
   },
   "workoutRunnerRunning": "SESSION LÄUFT · {time}",
   "@workoutRunnerRunning": {
@@ -5457,17 +5457,17 @@
   "@workoutRunnerTableDone": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableLast": "LETZTES MAL",
+  "workoutRunnerTableLast": "ZULETZT",
   "@workoutRunnerTableLast": {
-    "description": "Runner, Modul 1/2 Spezifikation"
+    "description": "Runner 18.09.2026 — kurz genug für die Spalte; „LETZTES MAL“ wurde abgeschnitten"
   },
   "workoutRunnerTableReps": "WDH",
   "@workoutRunnerTableReps": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableSet": "SATZ",
+  "workoutRunnerTableSet": "TYP",
   "@workoutRunnerTableSet": {
-    "description": "Runner, Modul 1/2 Spezifikation"
+    "description": "Runner 18.09.2026 — die Spalte trägt den Satztyp (W/N/D/F); „SATZ“ passte nicht über 32 dp"
   },
   "workoutRunnerTableWeight": "KG",
   "@workoutRunnerTableWeight": {
@@ -7951,5 +7951,108 @@
         "type": "int"
       }
     }
+  },
+  "stepInputKeyboard": "Tastatur statt Regler, {label}",
+  "@stepInputKeyboard": {
+    "description": "AtemStepInput — Umschalter auf die Tastatureingabe",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "stepInputSlider": "Regler statt Tastatur, {label}",
+  "@stepInputSlider": {
+    "description": "AtemStepInput — Umschalter zurück auf den Regler",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "stepInputStep": "Schrittweite {step}, {label}",
+  "@stepInputStep": {
+    "description": "AtemStepInput — Kapsel für die Schrittweite",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "infoTitle": "Info",
+  "@infoTitle": {
+    "description": "Profilseite (17.09.2026) — Zeile und Titel der Unterseite mit Rechtlichem und Auskünften"
+  },
+  "infoSub": "Rechtliches und Auskünfte zur App",
+  "@infoSub": {
+    "description": "Profilseite (17.09.2026) — Unterzeile der Info-Zeile"
+  },
+  "infoVersionLine": "Version {version}",
+  "@infoVersionLine": {
+    "description": "Profilseite (17.09.2026) — Versionszeile ganz unten, zurückhaltend",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutPreviousShort": "{weight}×{reps}",
+  "@workoutPreviousShort": {
+    "description": "Runner 18.09.2026 — „letztes Mal“ in der Satzzeile, kurz; die lange Fassung steht im Vorlese-Label",
+    "placeholders": {
+      "weight": {
+        "type": "String"
+      },
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutValueEditA11y": "{field}, Satz {set}, {value}, zum Ändern tippen",
+  "@workoutValueEditA11y": {
+    "description": "Runner 18.09.2026 — Wert in der Satzzeile öffnet den Regler",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      },
+      "set": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutValueEmpty": "keine Angabe",
+  "@workoutValueEmpty": {
+    "description": "Runner 18.09.2026 — leerer Wert im Vorlese-Label"
+  },
+  "workoutValueDone": "Fertig",
+  "@workoutValueDone": {
+    "description": "Runner 18.09.2026 — schliesst den Regler unter der Satzzeile"
+  },
+  "workoutValueDoneA11y": "Regler schliessen, Satz {set}",
+  "@workoutValueDoneA11y": {
+    "description": "Runner 18.09.2026 — Vorlese-Label zum Schliessen des Reglers",
+    "placeholders": {
+      "set": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutSetTypeLegendTitle": "Satztypen",
+  "@workoutSetTypeLegendTitle": {
+    "description": "Runner 18.09.2026 — Vorlese-Kopf über den farbigen Typ-Pillen"
+  },
+  "workoutFormGuideDescription": "Kurz gesagt",
+  "@workoutFormGuideDescription": {
+    "description": "Runner 18.09.2026 — Abschnitt der Beschreibung im Anleitungs-Blatt"
+  },
+  "workoutRunnerTableHold": "SEK",
+  "@workoutRunnerTableHold": {
+    "description": "Runner 18.09.2026 — Spaltenkopf der Haltezeit; „Halten“ passte nicht über 56 dp"
   }
 }

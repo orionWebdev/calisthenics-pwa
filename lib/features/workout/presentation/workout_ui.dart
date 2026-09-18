@@ -34,6 +34,29 @@ String previousSetLabel(
   return l10n.workoutPreviousWeight(AtemNumberField.format(context, weight!));
 }
 
+/// Dasselbe in der Kurzform der Satzzeile: „99×8".
+///
+/// Die Spalte „letztes Mal" ist schmal, und „99 kg × 8" brauchte dort zwei
+/// Zeilen. Die Einheit steht ohnehin in der Spalte daneben; vorgelesen wird
+/// weiter die lange Fassung.
+String previousSetShortLabel(
+  BuildContext context,
+  AppL10n l10n,
+  SetReference? previous,
+) {
+  if (previous == null || previous.isEmpty) return l10n.commonNotAvailable;
+
+  final weight = previous.weightKg;
+  final reps = previous.reps;
+
+  if (weight != null && reps != null) {
+    return l10n.workoutPreviousShort(
+        AtemNumberField.format(context, weight), reps);
+  }
+  if (reps != null) return l10n.workoutPreviousReps(reps);
+  return l10n.workoutPreviousWeight(AtemNumberField.format(context, weight!));
+}
+
 /// Das schwerste je protokollierte Gewicht. `null`, wenn es keins gibt —
 /// dann erscheint **kein Chip**, statt „PR —" zu behaupten.
 String? recordLabel(BuildContext context, AppL10n l10n, double? weightKg) =>

@@ -5665,10 +5665,10 @@ abstract class AppL10n {
   /// **'Workout beenden'**
   String get workoutA11yEnd;
 
-  /// Runner, Modul 1/2 Spezifikation
+  /// Runner 18.09.2026 — der Chip öffnet die Anleitung der Übung, kein Video
   ///
   /// In de, this message translates to:
-  /// **'Form-Video zu {exercise} öffnen'**
+  /// **'Anleitung zu {exercise} öffnen'**
   String workoutA11yFormGuide(String exercise);
 
   /// Vorlesetext
@@ -6319,22 +6319,22 @@ abstract class AppL10n {
   /// **'PAUSE'**
   String get workoutRunnerRestLabel;
 
-  /// Runner, Modul 1/2 Spezifikation
+  /// Runner 18.09.2026 — ohne Einheit: Auf dem 70-dp-Knopf brach „−15 s“ zeichenweise um; die Sekunde steht im Vorlese-Label
   ///
   /// In de, this message translates to:
-  /// **'−15s'**
+  /// **'−15'**
   String get workoutRunnerRestMinus;
 
-  /// Runner, Modul 1/2 Spezifikation
+  /// Runner 18.09.2026 — ohne Einheit: Auf dem 70-dp-Knopf brach „+30 s“ zeichenweise um; die Sekunde steht im Vorlese-Label
   ///
   /// In de, this message translates to:
-  /// **'+30s'**
+  /// **'+30'**
   String get workoutRunnerRestPlus;
 
-  /// Runner, Modul 1/2 Spezifikation
+  /// Runner 18.09.2026 — ohne Pfeil: Poppins zeichnet → nicht, auf dem Gerät stand ein leeres Kästchen
   ///
   /// In de, this message translates to:
-  /// **'SKIP →'**
+  /// **'WEITER'**
   String get workoutRunnerRestSkip;
 
   /// Runner, Modul 1/2 Spezifikation
@@ -6385,10 +6385,10 @@ abstract class AppL10n {
   /// **'OK'**
   String get workoutRunnerTableDone;
 
-  /// Runner, Modul 1/2 Spezifikation
+  /// Runner 18.09.2026 — kurz genug für die Spalte; „LETZTES MAL“ wurde abgeschnitten
   ///
   /// In de, this message translates to:
-  /// **'LETZTES MAL'**
+  /// **'ZULETZT'**
   String get workoutRunnerTableLast;
 
   /// Runner, Modul 1/2 Spezifikation
@@ -6397,10 +6397,10 @@ abstract class AppL10n {
   /// **'WDH'**
   String get workoutRunnerTableReps;
 
-  /// Runner, Modul 1/2 Spezifikation
+  /// Runner 18.09.2026 — die Spalte trägt den Satztyp (W/N/D/F); „SATZ“ passte nicht über 32 dp
   ///
   /// In de, this message translates to:
-  /// **'SATZ'**
+  /// **'TYP'**
   String get workoutRunnerTableSet;
 
   /// Runner, Modul 1/2 Spezifikation
@@ -8566,6 +8566,90 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{weeks} Wochen'**
   String weeklySetsWindow(int weeks);
+
+  /// AtemStepInput — Umschalter auf die Tastatureingabe
+  ///
+  /// In de, this message translates to:
+  /// **'Tastatur statt Regler, {label}'**
+  String stepInputKeyboard(String label);
+
+  /// AtemStepInput — Umschalter zurück auf den Regler
+  ///
+  /// In de, this message translates to:
+  /// **'Regler statt Tastatur, {label}'**
+  String stepInputSlider(String label);
+
+  /// AtemStepInput — Kapsel für die Schrittweite
+  ///
+  /// In de, this message translates to:
+  /// **'Schrittweite {step}, {label}'**
+  String stepInputStep(String step, String label);
+
+  /// Profilseite (17.09.2026) — Zeile und Titel der Unterseite mit Rechtlichem und Auskünften
+  ///
+  /// In de, this message translates to:
+  /// **'Info'**
+  String get infoTitle;
+
+  /// Profilseite (17.09.2026) — Unterzeile der Info-Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Rechtliches und Auskünfte zur App'**
+  String get infoSub;
+
+  /// Profilseite (17.09.2026) — Versionszeile ganz unten, zurückhaltend
+  ///
+  /// In de, this message translates to:
+  /// **'Version {version}'**
+  String infoVersionLine(String version);
+
+  /// Runner 18.09.2026 — „letztes Mal“ in der Satzzeile, kurz; die lange Fassung steht im Vorlese-Label
+  ///
+  /// In de, this message translates to:
+  /// **'{weight}×{reps}'**
+  String workoutPreviousShort(String weight, int reps);
+
+  /// Runner 18.09.2026 — Wert in der Satzzeile öffnet den Regler
+  ///
+  /// In de, this message translates to:
+  /// **'{field}, Satz {set}, {value}, zum Ändern tippen'**
+  String workoutValueEditA11y(String field, int set, String value);
+
+  /// Runner 18.09.2026 — leerer Wert im Vorlese-Label
+  ///
+  /// In de, this message translates to:
+  /// **'keine Angabe'**
+  String get workoutValueEmpty;
+
+  /// Runner 18.09.2026 — schliesst den Regler unter der Satzzeile
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get workoutValueDone;
+
+  /// Runner 18.09.2026 — Vorlese-Label zum Schliessen des Reglers
+  ///
+  /// In de, this message translates to:
+  /// **'Regler schliessen, Satz {set}'**
+  String workoutValueDoneA11y(int set);
+
+  /// Runner 18.09.2026 — Vorlese-Kopf über den farbigen Typ-Pillen
+  ///
+  /// In de, this message translates to:
+  /// **'Satztypen'**
+  String get workoutSetTypeLegendTitle;
+
+  /// Runner 18.09.2026 — Abschnitt der Beschreibung im Anleitungs-Blatt
+  ///
+  /// In de, this message translates to:
+  /// **'Kurz gesagt'**
+  String get workoutFormGuideDescription;
+
+  /// Runner 18.09.2026 — Spaltenkopf der Haltezeit; „Halten“ passte nicht über 56 dp
+  ///
+  /// In de, this message translates to:
+  /// **'SEK'**
+  String get workoutRunnerTableHold;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

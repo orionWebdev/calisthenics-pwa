@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -15,20 +14,26 @@ import '../../../history/domain/training_session.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../application/pending_weight_change.dart';
 import '../../application/settings_providers.dart';
-import '../../domain/legal_links.dart';
 import '../../domain/user_settings.dart';
 import '../widgets/settings_bits.dart';
 import '../widgets/weight_preview.dart';
 import 'account_deletion_screen.dart';
 import 'export_screen.dart';
+import 'info_screen.dart';
 
 /// Einstellungen und Profil — Board 08.
 ///
 /// ## Der Aufbau
 ///
-/// Profilkopf als Tatsache, dann vier Sektionen — Training, App, Deine
-/// Daten, Rechtliches — und „Über die App". Ganz unten, allein in seiner
-/// Karte: Konto löschen. Position ist hier ein Statusträger.
+/// Profilkopf als Tatsache, dann drei Sektionen — Training, App, Deine
+/// Daten —, danach die Zeile „Info". Ganz unten, allein in seiner Karte:
+/// Konto löschen. Position ist hier ein Statusträger.
+///
+/// **Rechtliches und „Über die App" liegen seit 17.09.2026 hinter „Info"**
+/// ([InfoScreen]). Zusammen waren das sieben Zeilen, die man einmal im Leben
+/// liest, mitten zwischen den Einstellungen, die man tatsächlich ändert. Nur
+/// die Versionsnummer blieb — als Fussnote unter dem Konto-Bereich, weil sie
+/// beim Melden eines Fehlers gebraucht wird.
 ///
 /// Die rechnenden und wertetragenden Einstellungen (Körpergewicht,
 /// Pausenzeit, Einheiten) sind **Zeilen mit Wert**, die ein Sheet öffnen —
@@ -43,20 +48,11 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  String? _notice;
-
-  /// Rechtstexte öffnen **in der App** (Board 08, A3/3): Custom Tab mit
-  /// Zurück-Weg, keine fremde Adressleiste. Langdruck öffnet extern.
-  Future<void> _openLegal(Uri url, {bool external = false}) async {
-    final l10n = AppL10n.of(context);
-    final opened = await launchUrl(
-      url,
-      mode: external
-          ? LaunchMode.externalApplication
-          : LaunchMode.inAppBrowserView,
-    );
-    if (!opened && mounted) setState(() => _notice = l10n.legalError);
-  }
+  /// Rechtstexte und Auskünfte stehen seit 17.09.2026 auf einer eigenen
+  /// Seite — hier führt nur noch der Weg dorthin.
+  Future<void> _openInfo() => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const InfoScreen()),
+      );
 
   Future<void> _confirmSignOut() async {
     final l10n = AppL10n.of(context);
@@ -164,6 +160,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final user = ref.watch(authStateProvider).value;
     final language = Localizations.localeOf(context).languageCode;
 
+    // Solange das Paket noch nicht gelesen ist, steht ein Strich da — keine
+    // erfundene Nummer.
+    final version =
+        ref.watch(appVersionProvider).value ?? l10n.commonNotAvailable;
+
     final kg = settings.bodyWeightKg;
     final weightValue = kg == null
         ? l10n.commonNotAvailable
@@ -183,16 +184,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           padding: const EdgeInsets.fromLTRB(
               AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
           children: [
-            AtemNoticeSlot(
-              notice: _notice == null
-                  ? null
-                  : AtemNotice(
-                      tone: AtemNoticeTone.error,
-                      title: _notice!,
-                      body: l10n.legalRetry,
-                      semanticLabel: '$_notice. ${l10n.legalRetry}',
-                    ),
-            ),
+            // Der Hinweis „Text nicht geladen" gehört seit 17.09.2026 auf die
+            // Info-Seite: Dort wird ein Rechtstext geöffnet, dort scheitert
+            // er, dort steht die Meldung.
+            const SizedBox(height: 4),
             _ProfileHeader(user: user),
             const SizedBox(height: 22),
 
@@ -206,7 +201,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   value: async.isLoading ? l10n.commonLoading : weightValue,
                   onTap: () => _WeightSheet.show(context, settings),
                 ),
-                const _Rule(),
+                const SettingsRule(),
                 SettingsRow(
                   label: l10n.restTitle,
                   hint: l10n.restSub,
@@ -215,7 +210,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       settings.restSeconds != UserSettings.defaultRestSeconds,
                   onTap: () => _RestSheet.show(context, settings),
                 ),
-                const _Rule(),
+                const SettingsRule(),
                 SettingsRow(
                   label: l10n.unitsTitle,
                   value: settings.unitSystem == UnitSystem.metric
@@ -255,7 +250,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ],
                 ),
                 const SizedBox(height: 14),
-                const _Rule(),
+                const SettingsRule(),
                 SettingsSwitch(
                   label: l10n.hapticsTitle,
                   hint: l10n.hapticsSub,
@@ -279,7 +274,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   hint: l10n.exportSub,
                   onTap: _openExport,
                 ),
-                const _Rule(),
+                const SettingsRule(),
                 // Steht bei den Daten, nicht bei den Vorlieben: Es zeigt die
                 // vier Einführungsseiten noch einmal (Board 08, A1/2).
                 SettingsRow(
@@ -291,56 +286,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 12),
 
-            // ---- RECHTLICHES: in der App, Langdruck extern.
-            SettingsSection(
-              title: l10n.sectionLegal,
-              children: [
-                for (final (i, (label, url)) in [
-                  (l10n.legalPrivacy, LegalLinks.privacy(language)),
-                  (l10n.legalTerms, LegalLinks.terms(language)),
-                  (l10n.legalImprint, LegalLinks.imprint),
-                ].indexed) ...[
-                  if (i > 0) const _Rule(),
-                  SettingsRow(
-                    label: label,
-                    value: l10n.legalInapp,
-                    quiet: true,
-                    semanticLabel: '$label, ${l10n.legalInapp}',
-                    onTap: () => _openLegal(url),
-                    onLongPress: () => _openLegal(url, external: true),
-                  ),
-                ],
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // ---- ÜBER DIE APP: Tatsachen, keine Griffe.
-            SettingsSection(
-              title: l10n.sectionAbout,
-              children: [
-                _AboutRow(
-                  label: l10n.aboutVersionLabel,
-                  // Solange das Paket noch nicht gelesen ist, steht ein
-                  // Strich da — keine erfundene Nummer.
-                  value: ref.watch(appVersionProvider).value ??
-                      l10n.commonNotAvailable,
-                ),
-                // Die Zeile steht dort, wo in der Vorgänger-App ein
-                // Themenschalter war. Für ATEM existiert keine helle Palette;
-                // eine Auskunft beantwortet die Frage, ein toter Schalter nicht.
-                _AboutRow(
-                  label: l10n.aboutDisplayLabel,
-                  value: l10n.aboutDisplayValue,
-                ),
-                _AboutRow(
-                  label: l10n.aboutLanguagesLabel,
-                  value: l10n.aboutLanguagesValue,
-                ),
-                _AboutRow(
-                  label: l10n.aboutAccessLabel,
-                  value: l10n.aboutAccessValue,
-                ),
-              ],
+            // ---- INFO: Rechtliches und die Auskünfte über die App, eine
+            // Zeile tiefer. Sieben Zeilen, die man einmal liest, standen
+            // vorher zwischen den Einstellungen und dem Konto (17.09.2026).
+            // Ohne Abschnittstitel: Ein Kopf „INFO" über einer Zeile „Info"
+            // wäre dasselbe Wort zweimal.
+            AtemCard.list(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AtemSpacing.cardPadding),
+              child: SettingsRow(
+                label: l10n.infoTitle,
+                hint: l10n.infoSub,
+                onTap: _openInfo,
+              ),
             ),
             const SizedBox(height: 26),
 
@@ -351,6 +309,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _AccountCard(
               onSignOut: _confirmSignOut,
               onDelete: _confirmDelete,
+            ),
+
+            // **Die Version als Fussnote.** Sie wird beim Melden eines
+            // Fehlers gebraucht und sonst nie — deshalb ganz unten, gedämpft,
+            // ohne Karte und ohne Abschnitt.
+            const SizedBox(height: 22),
+            Semantics(
+              label: l10n.infoVersionLine(version),
+              child: ExcludeSemantics(
+                child: Text(
+                  l10n.infoVersionLine(version),
+                  textAlign: TextAlign.center,
+                  style: AtemType.meta.of(context),
+                ),
+              ),
             ),
           ],
         ),
@@ -429,7 +402,7 @@ class _DeleteFacts extends StatelessWidget {
                   ),
                 ),
               const SizedBox(height: 6),
-              const _Rule(),
+              const SettingsRule(),
               const SizedBox(height: 6),
               Semantics(
                 label: '${l10n.accountDeleteRange}: '
@@ -465,15 +438,6 @@ class _DeleteFacts extends StatelessWidget {
       ],
     );
   }
-}
-
-/// Der Trenner zwischen Zeilen einer Sektion, 1 dp #232334.
-class _Rule extends StatelessWidget {
-  const _Rule();
-
-  @override
-  Widget build(BuildContext context) =>
-      const Divider(height: 1, thickness: 1, color: AtemColors.border);
 }
 
 /// Körpergewicht — **die einzige Einstellung, die rückwirkend rechnet**.
@@ -857,7 +821,7 @@ class _ProfileHeader extends StatelessWidget {
       label: '$name $email. ${l10n.profileLocked}. ${l10n.profileLockedWhy}',
       child: ExcludeSemantics(
         child: AtemCard.list(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AtemSpacing.cardPadding),
           child: Row(
             children: [
               Container(
@@ -947,7 +911,8 @@ class _AccountCard extends StatelessWidget {
     final l10n = AppL10n.of(context);
 
     return AtemCard.list(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AtemSpacing.cardPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -959,7 +924,7 @@ class _AccountCard extends StatelessWidget {
             quiet: true,
             onTap: onSignOut,
           ),
-          const _Rule(),
+          const SettingsRule(),
           _DangerRow(onTap: onDelete),
         ],
       ),
@@ -1010,41 +975,4 @@ class _DangerRow extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Eine Auskunftszeile im Abschnitt „Über die App".
-class _AboutRow extends StatelessWidget {
-  const _AboutRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-        label: '$label: $value',
-        child: ExcludeSemantics(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 7),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(label.toUpperCase(),
-                      style: AtemType.labelMicro.of(context)),
-                ),
-                const SizedBox(width: 12),
-                Flexible(
-                  child: Text(
-                    value,
-                    textAlign: TextAlign.right,
-                    style: AtemType.valueMedium
-                        .of(context)
-                        .copyWith(fontSize: 12, color: AtemColors.textTertiary),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
 }

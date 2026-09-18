@@ -3985,7 +3985,7 @@
   "@workoutA11yEnd": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutA11yFormGuide": "Open form video for {exercise}",
+  "workoutA11yFormGuide": "Open instructions for {exercise}",
   "@workoutA11yFormGuide": {
     "description": "Runner, Modul 1/2 Spezifikation",
     "placeholders": {
@@ -4528,15 +4528,15 @@
   "@workoutRunnerRestLabel": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerRestMinus": "−15s",
+  "workoutRunnerRestMinus": "−15",
   "@workoutRunnerRestMinus": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerRestPlus": "+30s",
+  "workoutRunnerRestPlus": "+30",
   "@workoutRunnerRestPlus": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerRestSkip": "SKIP →",
+  "workoutRunnerRestSkip": "SKIP",
   "@workoutRunnerRestSkip": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
@@ -4596,7 +4596,7 @@
   "@workoutRunnerTableDone": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableLast": "LAST TIME",
+  "workoutRunnerTableLast": "LAST",
   "@workoutRunnerTableLast": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
@@ -4604,7 +4604,7 @@
   "@workoutRunnerTableReps": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableSet": "SET",
+  "workoutRunnerTableSet": "TYPE",
   "@workoutRunnerTableSet": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
@@ -5408,5 +5408,19 @@
   "hybridTimeEmptyWeek": "No workout with a duration this week yet.",
   "hybridTimeShiftExplain": "The arrows in “This week” compare the share with the average of the four weeks before, in percentage points. They appear once your workouts reach back four weeks.",
   "hybridTimeRowShiftA11y": "{track}: {minutes} minutes, {n} workouts, {percent} percent, {shift}",
-  "weeklySetsWindow": "{weeks} weeks"
+  "weeklySetsWindow": "{weeks} weeks",
+  "stepInputKeyboard": "Keyboard instead of slider, {label}",
+  "stepInputSlider": "Slider instead of keyboard, {label}",
+  "stepInputStep": "Step size {step}, {label}",
+  "infoTitle": "Info",
+  "infoSub": "Legal notices and app details",
+  "infoVersionLine": "Version {version}",
+  "workoutPreviousShort": "{weight}×{reps}",
+  "workoutValueEditA11y": "{field}, set {set}, {value}, tap to change",
+  "workoutValueEmpty": "no value",
+  "workoutValueDone": "Done",
+  "workoutValueDoneA11y": "Close slider, set {set}",
+  "workoutSetTypeLegendTitle": "Set types",
+  "workoutFormGuideDescription": "In short",
+  "workoutRunnerTableHold": "SEC"
 }

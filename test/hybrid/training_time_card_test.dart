@@ -10,8 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// Metazeilen ohne Nullgrössen, Verschiebung nur in der Woche.
 final _today = DateTime(2026, 9, 17);
 
-StrengthSession _lift(String id, DateTime date, int minutes,
-        {double? kg}) =>
+StrengthSession _lift(String id, DateTime date, int minutes, {double? kg}) =>
     StrengthSession(
       id: id,
       userId: 'u',
@@ -129,11 +128,12 @@ void main() {
     expect(TrainingTimeCard.hasData([], _today), isFalse);
   });
 
-  testWidgets('Woche leer, 28 Tage nicht: Zeile statt Balken, Umschalter bleibt',
+  testWidgets(
+      'Woche leer, 28 Tage nicht: Zeile statt Balken, Umschalter bleibt',
       (tester) async {
     await _pump(tester, [_lift('vorige', DateTime(2026, 9, 10, 18), 40)]);
-    expect(find.text('Diese Woche noch keine Einheit mit Dauer.'),
-        findsOneWidget);
+    expect(
+        find.text('Diese Woche noch keine Einheit mit Dauer.'), findsOneWidget);
     await tester.tap(find.text('28 Tage'));
     await tester.pumpAndSettle();
     expect(find.text('100 %'), findsOneWidget);

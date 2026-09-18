@@ -68,15 +68,46 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
     state = AsyncData(w.copyWith(exercises: exercises));
   }
 
+  /// Übernimmt Gewicht, Wiederholungen und Haltezeit in den nächsten Satz.
+  ///
+  /// **Nur in leere Felder.** Wer den nächsten Satz schon getippt hat, hat ihn
+  /// getippt; ein Übernehmen darüber wäre stilles Überschreiben einer Angabe.
+  ///
+  /// Die Werte sind damit sichtbar da und überschreibbar — anders als eine
+  /// Vorbelegung beim Anlegen der Einheit, die nach dem Abhaken eine Leistung
+  /// behauptet hätte, die niemand erbracht hat. Hier steht die Zahl erst, wenn
+  /// derselbe Satz einmal wirklich so absolviert wurde.
+  static WorkoutSet _carry(WorkoutSet target, WorkoutSet source) =>
+      target.copyWith(
+        weight: target.weight.trim().isEmpty ? source.weight : target.weight,
+        reps: target.reps.trim().isEmpty ? source.reps : target.reps,
+        hold: target.hold.trim().isEmpty ? source.hold : target.hold,
+      );
+
   /// Hakt ab oder entsperrt wieder — bewusst reversibel (Fehlertoleranz).
   /// Gibt zurück, ob der Satz jetzt abgeschlossen ist.
+  ///
+  /// Beim Abhaken wandern die Werte in den **nächsten offenen Satz**: Wer
+  /// dreimal dasselbe macht, soll es einmal eintragen.
   bool toggleSet(int exerciseIndex, String setId) {
     final w = _workout;
     if (w == null) return false;
-    final set =
-        w.exercises[exerciseIndex].sets.firstWhere((s) => s.id == setId);
-    final nowDone = !set.done;
-    _mutateSet(exerciseIndex, setId, (s) => s.copyWith(done: nowDone));
+    final exercises = [...w.exercises];
+    final ex = exercises[exerciseIndex];
+    final at = ex.sets.indexWhere((s) => s.id == setId);
+    if (at < 0) return false;
+
+    final nowDone = !ex.sets[at].done;
+    final sets = [...ex.sets];
+    sets[at] = sets[at].copyWith(done: nowDone);
+
+    final next = at + 1;
+    if (nowDone && next < sets.length && !sets[next].done) {
+      sets[next] = _carry(sets[next], sets[at]);
+    }
+
+    exercises[exerciseIndex] = ex.copyWith(sets: sets);
+    state = AsyncData(w.copyWith(exercises: exercises));
     return nowDone;
   }
 
@@ -92,7 +123,10 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
   void updateHold(int exerciseIndex, String setId, String value) =>
       _mutateSet(exerciseIndex, setId, (s) => s.copyWith(hold: value));
 
-  /// Dupliziert die Werte des letzten Satzes.
+  /// Dupliziert die Werte des letzten Satzes — **samt Haltezeit**.
+  ///
+  /// Die fehlte hier: Wer bei einer Halteübung „45 s" eintrug und einen Satz
+  /// anhängte, fing wieder bei null an.
   void addSet(int exerciseIndex) {
     final w = _workout;
     if (w == null) return;
@@ -106,9 +140,9 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
         WorkoutSet(
           id: '${ex.id}-${ex.sets.length}-${last.id}',
           type: last.type,
-
           weight: last.weight,
           reps: last.reps,
+          hold: last.hold,
         ),
       ],
     );

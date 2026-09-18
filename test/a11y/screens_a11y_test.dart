@@ -20,6 +20,7 @@ import 'package:atem/features/plans/presentation/screens/plan_detail_screen.dart
 import 'package:atem/features/plans/presentation/screens/plan_form_screen.dart';
 import 'package:atem/features/settings/presentation/screens/account_deletion_screen.dart';
 import 'package:atem/features/settings/presentation/screens/export_screen.dart';
+import 'package:atem/features/settings/presentation/screens/info_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
 import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
@@ -229,6 +230,10 @@ void main() {
 
   testWidgets('Einstellungen erfüllen den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const SettingsScreen());
+  });
+
+  testWidgets('Info erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const InfoScreen());
   });
 
   testWidgets('Daten ausgeben erfüllt den A11y-Vertrag', (tester) async {

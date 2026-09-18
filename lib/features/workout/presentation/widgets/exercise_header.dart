@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../exercises/domain/muscle.dart';
+import '../../../exercises/presentation/muscle_ui.dart';
 import '../workout_ui.dart';
 import '../../domain/workout_session.dart';
 
@@ -32,6 +34,12 @@ class ExerciseHeader extends StatelessWidget {
   /// `null` an den Enden — der Pfeil meldet sich dann als deaktiviert.
   final VoidCallback? onPrevious;
   final VoidCallback? onNext;
+
+  /// `null`, wenn die Übung keine Anleitung trägt — dann **fehlt der Chip**.
+  ///
+  /// Er lag bis zum 18.09.2026 auf einem leeren Rückruf: Ein Tap tat nichts.
+  /// Von 154 Übungen im Bestand haben nur die kuratierten eine Anleitung; für
+  /// alle anderen ist kein Chip die ehrliche Antwort.
   final VoidCallback? onFormGuide;
 
   @override
@@ -50,9 +58,11 @@ class ExerciseHeader extends StatelessWidget {
               ),
               Expanded(
                 child: Semantics(
-                  // Zählung und Name als ein Knoten.
+                  // Zählung und Name als ein Knoten — mit dem **angezeigten**
+                  // Namen: `exercise.name` trägt den englischen Grundnamen
+                  // aus der Datenschicht.
                   label: '${l10n.workoutScreenExerciseOf(index + 1, total)}: '
-                      '${exercise.name}',
+                      '$title',
                   child: ExcludeSemantics(
                     child: Column(
                       children: [
@@ -90,7 +100,12 @@ class ExerciseHeader extends StatelessWidget {
               // Neutral, nicht violett: Die Spezifikation rendert
               // Muskel-Chips als schlichte Statusträger — und violetter Text
               // erreicht ohnehin kein AA.
-              for (final m in exercise.muscles) AtemBadge(label: m),
+              //
+              // **Übersetzt.** Die Einheit trägt die Rohwerte (`chest`,
+              // `triceps`); sie standen bis zum 18.09.2026 englisch im
+              // deutschen Kopf.
+              for (final m in exercise.muscles)
+                AtemBadge(label: MuscleGroup.fromWire(m)?.label(l10n) ?? m),
               // Kein Chip ohne Bestwert: „PR —" wäre eine Behauptung über
               // eine Übung, die noch nie protokolliert wurde.
               if (recordLabel(context, l10n, exercise.recordWeightKg)
@@ -100,12 +115,13 @@ class ExerciseHeader extends StatelessWidget {
                   accent: AtemColors.green,
                   leadingDot: true,
                 ),
-              AtemBadge.chip(
-                label: l10n.workoutRunnerFormGuide,
-                semanticLabel: l10n.workoutA11yFormGuide(exercise.name),
-                accent: AtemColors.cyan,
-                onTap: onFormGuide,
-              ),
+              if (onFormGuide case final open?)
+                AtemBadge.chip(
+                  label: l10n.workoutRunnerFormGuide,
+                  semanticLabel: l10n.workoutA11yFormGuide(title),
+                  accent: AtemColors.cyan,
+                  onTap: open,
+                ),
             ],
           ),
         ],

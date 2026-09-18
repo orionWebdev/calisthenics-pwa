@@ -3409,7 +3409,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String workoutA11yFormGuide(String exercise) {
-    return 'Form-Video zu $exercise öffnen';
+    return 'Anleitung zu $exercise öffnen';
   }
 
   @override
@@ -3780,13 +3780,13 @@ class AppL10nDe extends AppL10n {
   String get workoutRunnerRestLabel => 'PAUSE';
 
   @override
-  String get workoutRunnerRestMinus => '−15s';
+  String get workoutRunnerRestMinus => '−15';
 
   @override
-  String get workoutRunnerRestPlus => '+30s';
+  String get workoutRunnerRestPlus => '+30';
 
   @override
-  String get workoutRunnerRestSkip => 'SKIP →';
+  String get workoutRunnerRestSkip => 'WEITER';
 
   @override
   String workoutRunnerRunning(String time) {
@@ -3819,13 +3819,13 @@ class AppL10nDe extends AppL10n {
   String get workoutRunnerTableDone => 'OK';
 
   @override
-  String get workoutRunnerTableLast => 'LETZTES MAL';
+  String get workoutRunnerTableLast => 'ZULETZT';
 
   @override
   String get workoutRunnerTableReps => 'WDH';
 
   @override
-  String get workoutRunnerTableSet => 'SATZ';
+  String get workoutRunnerTableSet => 'TYP';
 
   @override
   String get workoutRunnerTableWeight => 'KG';
@@ -5496,4 +5496,60 @@ class AppL10nDe extends AppL10n {
   String weeklySetsWindow(int weeks) {
     return '$weeks Wochen';
   }
+
+  @override
+  String stepInputKeyboard(String label) {
+    return 'Tastatur statt Regler, $label';
+  }
+
+  @override
+  String stepInputSlider(String label) {
+    return 'Regler statt Tastatur, $label';
+  }
+
+  @override
+  String stepInputStep(String step, String label) {
+    return 'Schrittweite $step, $label';
+  }
+
+  @override
+  String get infoTitle => 'Info';
+
+  @override
+  String get infoSub => 'Rechtliches und Auskünfte zur App';
+
+  @override
+  String infoVersionLine(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String workoutPreviousShort(String weight, int reps) {
+    return '$weight×$reps';
+  }
+
+  @override
+  String workoutValueEditA11y(String field, int set, String value) {
+    return '$field, Satz $set, $value, zum Ändern tippen';
+  }
+
+  @override
+  String get workoutValueEmpty => 'keine Angabe';
+
+  @override
+  String get workoutValueDone => 'Fertig';
+
+  @override
+  String workoutValueDoneA11y(int set) {
+    return 'Regler schliessen, Satz $set';
+  }
+
+  @override
+  String get workoutSetTypeLegendTitle => 'Satztypen';
+
+  @override
+  String get workoutFormGuideDescription => 'Kurz gesagt';
+
+  @override
+  String get workoutRunnerTableHold => 'SEK';
 }
