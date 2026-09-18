@@ -48,6 +48,7 @@ abstract final class ExerciseMapper {
       cues: _pick(german?['cues'], data['cues']),
       commonMistakes:
           _pick(german?['commonMistakes'], data['commonMistakes']),
+      unilateral: data['unilateral'] == true,
     );
   }
 

@@ -53,6 +53,7 @@ class ExerciseDraft {
     this.description,
     this.instructions = const [],
     this.cues = const [],
+    this.unilateral = false,
   });
 
   /// `null` heißt anlegen, gesetzt heißt überschreiben.
@@ -78,6 +79,9 @@ class ExerciseDraft {
   /// Kurze Merksätze, einer je Zeile — so liegen sie im Bestand und so
   /// schreibt es das Board.
   final List<String> cues;
+
+  /// Je Seite trainiert? Siehe `Exercise.unilateral`.
+  final bool unilateral;
 
   bool get isNew => id == null;
 

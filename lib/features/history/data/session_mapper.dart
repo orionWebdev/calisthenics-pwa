@@ -184,6 +184,13 @@ abstract final class SessionMapper {
     return out;
   }
 
+  /// Satz-RPE nur im gültigen Bereich; alles andere ist keine Angabe.
+  static int? _setRpe(Object? value) {
+    final rpe = _int(value);
+    if (rpe == null) return null;
+    return rpe < LoggedSet.minRpe || rpe > LoggedSet.maxRpe ? null : rpe;
+  }
+
   static List<LoggedSet> _sets(Object? value) {
     if (value is! List) return const [];
     final out = <LoggedSet>[];
@@ -196,6 +203,8 @@ abstract final class SessionMapper {
         weight: _double(entry['weight']),
         holdSeconds: _int(entry['holdSec']),
         rawType: _string(entry['type']),
+        rpe: _setRpe(entry['rpe']),
+        side: SetSide.fromWire(entry['side']),
       ));
     }
     return out;

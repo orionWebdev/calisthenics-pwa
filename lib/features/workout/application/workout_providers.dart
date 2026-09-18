@@ -310,6 +310,8 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
           // schreiben, wenn der Nutzer sie ausdrücklich gesetzt hat, hält den
           // Bestand sauber, ohne seine Eingabe zu verlieren.
           rawType: set.type == SetType.normal ? null : set.type.wire,
+          rpe: set.rpe,
+          side: set.side,
         ));
       }
       if (sets.isEmpty) continue;

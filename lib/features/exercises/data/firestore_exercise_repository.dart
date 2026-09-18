@@ -92,6 +92,9 @@ class FirestoreExerciseRepository implements ExerciseRepository {
         if (draft.instructions.isNotEmpty)
           'instructionsSteps': draft.instructions,
         if (draft.cues.isNotEmpty) 'cues': draft.cues,
+        // Beim Ändern immer mitschreiben — sonst liesse sich „einseitig"
+        // nicht wieder abschalten. Beim Anlegen nur, wenn gesetzt.
+        if (draft.unilateral || !draft.isNew) 'unilateral': draft.unilateral,
         if (draft.isNew) 'createdAt': Timestamp.now(),
       };
 

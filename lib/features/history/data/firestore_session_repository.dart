@@ -219,6 +219,8 @@ class FirestoreSessionRepository implements SessionRepository {
               if (set.weight != null) 'weight': set.weight,
               if (set.holdSeconds != null) 'holdSec': set.holdSeconds,
               if (set.rawType != null) 'type': set.rawType,
+              if (set.rpe != null) 'rpe': set.rpe,
+              if (set.side != null) 'side': set.side!.wire,
             },
         ],
       });

@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import '../domain/workout_clock.dart';
 import '../domain/workout_session.dart';
 import '../domain/workout_start.dart';
+import '../../history/domain/training_session.dart' show SetSide;
 
 /// Der Zwischenstand einer laufenden Einheit — **auf der Platte, nicht im
 /// Bildschirmzustand**.
@@ -144,6 +145,8 @@ class WorkoutDraft {
                       'reps': set.reps,
                       'hold': set.hold,
                       'done': set.done,
+                      if (set.rpe != null) 'rpe': set.rpe,
+                      if (set.side != null) 'side': set.side!.wire,
                       if (set.previous != null)
                         'previous': {
                           if (set.previous!.weightKg != null)
@@ -218,6 +221,8 @@ class WorkoutDraft {
       reps: json['reps'] as String? ?? '',
       hold: json['hold'] as String? ?? '',
       done: json['done'] == true,
+      rpe: (json['rpe'] as num?)?.round(),
+      side: SetSide.fromWire(json['side']),
       previous: previous == null
           ? null
           : SetReference(

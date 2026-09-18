@@ -512,8 +512,45 @@ class LoggedExercise {
 
 /// Ein Satz. Alle Werte können fehlen — im Bestand kommen sowohl `null` als
 /// auch vollständig leere Einträge vor.
+/// Welche Körperseite ein Satz trainiert hat — nur bei einseitigen Übungen.
+///
+/// `null` heisst **beidseitig** (der Normalfall und der ganze Bestand bis zum
+/// 18.09.2026). Eine dritte Ausprägung „beide" gibt es bewusst nicht: Sie wäre
+/// dasselbe wie `null`, nur mit zwei Schreibweisen für eine Aussage.
+enum SetSide {
+  left('left'),
+  right('right');
+
+  const SetSide(this.wire);
+
+  /// Der Wert, wie er in Firestore steht. Nie übersetzen, nie anzeigen.
+  final String wire;
+
+  /// Unbekanntes wird `null` — also beidseitig —, nicht eine erfundene Seite.
+  static SetSide? fromWire(Object? value) {
+    for (final side in values) {
+      if (side.wire == value) return side;
+    }
+    return null;
+  }
+}
+
 class LoggedSet {
-  const LoggedSet({this.reps, this.weight, this.holdSeconds, this.rawType});
+  const LoggedSet({
+    this.reps,
+    this.weight,
+    this.holdSeconds,
+    this.rawType,
+    this.rpe,
+    this.side,
+  });
+
+  /// Kleinste und grösste gültige Anstrengung **je Satz**.
+  static const minRpe = 1;
+  static const maxRpe = 10;
+
+  /// Ab hier gilt ein Satz als „harter Satz" (Hard Set).
+  static const hardSetRpe = 7;
 
   final int? reps;
   final double? weight;
@@ -531,6 +568,31 @@ class LoggedSet {
   /// bekannt.
   final String? rawType;
 
+  /// Anstrengung **dieses Satzes**, 1 bis 10 (seit 18.09.2026).
+  ///
+  /// ## Nicht dasselbe wie `TrainingSession.rpe`
+  ///
+  /// Die Einheit trägt seit der PWA eine RPE für alles zusammen, auf der Skala
+  /// **1 bis 5** (`TrainingLoad._rpeFactors`). Diese hier ist feiner und steht
+  /// am einzelnen Satz, auf der üblichen Skala **1 bis 10** — nur so lässt sich
+  /// sagen, wie viele Sätze einer Einheit hart waren. Die beiden werden nie
+  /// ineinander umgerechnet; die Last rechnet weiter mit der Einheits-RPE.
+  ///
+  /// Freiwillig und ohne Vorbelegung: `null` heisst „nicht angegeben", nicht
+  /// „mittel".
+  final int? rpe;
+
+  /// Seite bei einseitigen Übungen; `null` = beidseitig. Siehe [SetSide].
+  final SetSide? side;
+
+  /// Zählt dieser Satz als harter Satz? Nur mit Angabe — ohne `rpe` nie.
+  bool get isHard => rpe != null && rpe! >= hardSetRpe;
+
   bool get isEmpty =>
-      reps == null && weight == null && holdSeconds == null && rawType == null;
+      reps == null &&
+      weight == null &&
+      holdSeconds == null &&
+      rawType == null &&
+      rpe == null &&
+      side == null;
 }

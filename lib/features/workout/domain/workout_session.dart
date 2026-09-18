@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import '../../history/domain/training_session.dart' show SetSide;
+
 /// Satz-Typ. Tap auf den Chip zykliert W → N → D → F.
 ///
 /// Reine Daten: Farbe und Beschriftung leben in
@@ -54,6 +56,8 @@ class WorkoutSet {
     this.hold = '',
     this.done = false,
     this.carried = false,
+    this.rpe,
+    this.side,
   });
 
   final String id;
@@ -83,6 +87,16 @@ class WorkoutSet {
   /// dann schlicht der Wert.
   final bool carried;
 
+  /// Anstrengung dieses Satzes, 1 bis 10 — freiwillig, ohne Vorbelegung.
+  /// Siehe `LoggedSet.rpe`. Wird **nicht** in den nächsten Satz übernommen:
+  /// Wie schwer ein Satz war, weiss man erst nach ihm.
+  final int? rpe;
+
+  /// Seite bei einseitigen Übungen, `null` = beidseitig. Siehe `SetSide`.
+  final SetSide? side;
+
+  /// `clearRpe`/`clearSide` setzen den Wert zurück auf `null` — mit `??` allein
+  /// liesse sich eine Angabe nie wieder entfernen.
   WorkoutSet copyWith({
     SetType? type,
     String? weight,
@@ -90,6 +104,10 @@ class WorkoutSet {
     String? hold,
     bool? done,
     bool? carried,
+    int? rpe,
+    bool clearRpe = false,
+    SetSide? side,
+    bool clearSide = false,
   }) {
     return WorkoutSet(
       id: id,
@@ -100,6 +118,8 @@ class WorkoutSet {
       hold: hold ?? this.hold,
       done: done ?? this.done,
       carried: carried ?? this.carried,
+      rpe: clearRpe ? null : (rpe ?? this.rpe),
+      side: clearSide ? null : (side ?? this.side),
     );
   }
 

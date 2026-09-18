@@ -152,6 +152,28 @@ Die PWA kennt das Feld nicht. Sie scheitert nicht daran und verwirft es auch nic
 Fall (R2). Die Firestore-Regeln brauchen keine Änderung: `create` prüft nur
 `hasAll(['type','userId'])`.
 
+### Satz-RPE und Körperseite — neu am 18.09.2026, von der PWA nicht gekannt
+
+Zwei optionale Felder **am Satz** (`exercises[].sets[]`):
+
+| Feld | Werte (Draht) | Bedeutung |
+|---|---|---|
+| `rpe` | Ganzzahl **1–10** | Anstrengung dieses einen Satzes. Werte ausserhalb 1–10 werden beim Lesen `null`. Ab 7 gilt der Satz als harter Satz (`LoggedSet.isHard`). |
+| `side` | `left` · `right` | Seite bei einseitigen Übungen. Fehlt es, ist der Satz **beidseitig** — kein drittes Wort `both`. Unbekannte Zeichenketten werden `null`. |
+
+**`rpe` am Satz ist nicht `rpe` an der Einheit.** Die Einheit trägt seit der PWA eine RPE auf der
+Skala **1–5** (`TrainingLoad._rpeFactors`), die weiter allein die Last bestimmt. Die Satz-RPE ist feiner,
+steht auf der üblichen Skala 1–10 und dient nur der Zählung harter Sätze. Die beiden werden nie
+ineinander umgerechnet.
+
+Dazu an der **Übung** (`exercises`, eigene Übungen) ein Feld `unilateral: bool` — ob sie je Seite
+trainiert wird. Beim Anlegen nur geschrieben, wenn `true`; beim Ändern immer, damit es sich wieder
+abschalten lässt.
+
+Beide Satzfelder werden nur geschrieben, wenn jemand sie angegeben hat. **Keine Migration:** Der
+Bestand bleibt ohne sie, und `null` heisst dort „nicht angegeben" bzw. „beidseitig" — genau das, was
+er ist. Die Firestore-Regeln brauchen keine Änderung.
+
 ---
 
 ## `progress` — sauber und gleichförmig

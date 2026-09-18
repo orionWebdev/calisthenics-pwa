@@ -36,6 +36,7 @@ class Exercise {
     this.instructions = const [],
     this.cues = const [],
     this.commonMistakes = const [],
+    this.unilateral = false,
   });
 
   final String id;
@@ -82,6 +83,13 @@ class Exercise {
   final List<String> instructions;
   final List<String> cues;
   final List<String> commonMistakes;
+
+  /// Wird diese Übung **je Seite** trainiert — Bizeps-Curl mit einer Hantel,
+  /// Ausfallschritt, einarmiges Rudern? Dann trägt der Runner je Satz eine
+  /// Seite (`LoggedSet.side`). Seit 18.09.2026; im Bestand bei keiner Übung
+  /// gesetzt, deshalb `false` als Vorgabe. Auch ohne dieses Merkmal lässt sich
+  /// im Runner je Übung auf „Seiten getrennt" umschalten.
+  final bool unilateral;
 
   /// Die Muskeln in der Reihenfolge, in der sie angezeigt werden: primär
   /// zuerst, sekundär danach, ohne Wiederholung.
