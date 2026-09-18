@@ -4596,7 +4596,7 @@
   "@workoutRunnerTableDone": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableLast": "LAST",
+  "workoutRunnerTableLast": "LAST TIME",
   "@workoutRunnerTableLast": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
@@ -4604,7 +4604,7 @@
   "@workoutRunnerTableReps": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableSet": "TYPE",
+  "workoutRunnerTableSet": "SET",
   "@workoutRunnerTableSet": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
@@ -5409,18 +5409,44 @@
   "hybridTimeShiftExplain": "The arrows in “This week” compare the share with the average of the four weeks before, in percentage points. They appear once your workouts reach back four weeks.",
   "hybridTimeRowShiftA11y": "{track}: {minutes} minutes, {n} workouts, {percent} percent, {shift}",
   "weeklySetsWindow": "{weeks} weeks",
-  "stepInputKeyboard": "Keyboard instead of slider, {label}",
-  "stepInputSlider": "Slider instead of keyboard, {label}",
-  "stepInputStep": "Step size {step}, {label}",
   "infoTitle": "Info",
   "infoSub": "Legal notices and app details",
   "infoVersionLine": "Version {version}",
   "workoutPreviousShort": "{weight}×{reps}",
   "workoutValueEditA11y": "{field}, set {set}, {value}, tap to change",
   "workoutValueEmpty": "no value",
-  "workoutValueDone": "Done",
-  "workoutValueDoneA11y": "Close slider, set {set}",
   "workoutSetTypeLegendTitle": "Set types",
   "workoutFormGuideDescription": "In short",
-  "workoutRunnerTableHold": "SEC"
+  "workoutRunnerTableHold": "HOLD",
+  "stepPadTitleWeight": "WEIGHT · SET {n}",
+  "stepPadTitleReps": "REPS · SET {n}",
+  "stepPadTitleHold": "HOLD · SET {n}",
+  "stepPadFieldWeight": "Weight in kilograms",
+  "stepPadFieldReps": "Repetitions",
+  "stepPadFieldHold": "Hold time in seconds",
+  "stepPadPrevious": "Last time: {value}",
+  "stepPadDelta": "{value} {unit} VS LAST TIME",
+  "stepPadDeltaA11y": "{value} {unit} compared with last time",
+  "stepPadKeyboard": "KEYBOARD",
+  "stepPadRuler": "SLIDER",
+  "stepPadKeyboardA11y": "Keyboard instead of slider, {field}",
+  "stepPadRulerA11y": "Slider instead of keyboard, {field}",
+  "stepPadHint": "DRAG TO SET · STEP {step}",
+  "stepPadApply": "APPLY",
+  "stepPadStepKg": "{step} kg",
+  "stepPadStepSeconds": "{step} s",
+  "stepPadStepPlain": "{step}",
+  "stepPadStepA11y": "Step {step}, {field}",
+  "stepPadSliderA11y": "{field}, drag to set",
+  "stepPadIncrease": "Increase value",
+  "stepPadDecrease": "Decrease value",
+  "stepPadQuickA11y": "Change by {value}",
+  "stepPadClose": "Close input",
+  "workoutRunnerTableSetShort": "TYPE",
+  "workoutRunnerTableLastShort": "LAST",
+  "workoutRunnerTableHoldShort": "SEC",
+  "stepPadUnitWeight": "KG",
+  "stepPadUnitReps": "REPS",
+  "stepPadUnitHold": "SEC",
+  "workoutValueNone": "—"
 }

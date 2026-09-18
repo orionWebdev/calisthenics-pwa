@@ -7,7 +7,7 @@ import '../workout_ui.dart';
 import '../../domain/workout_session.dart';
 import '../set_type_ui.dart';
 
-/// Welcher Wert einer Satzzeile gerade am Regler hängt.
+/// Welcher Wert einer Satzzeile gerade geändert wird.
 enum SetField { weight, reps, hold }
 
 /// Eine Satzzeile im Runner.
@@ -20,32 +20,31 @@ enum SetField { weight, reps, hold }
 /// die Eingaben. Der Tabellenkopf entfällt dann, und die Spaltennamen wandern
 /// als Einheit in die Felder.
 ///
-/// ## Der Regler klappt **in der Zeile** auf
+/// ## Die Werte sind **Knöpfe**, keine Eingabefelder
 ///
-/// Ein Tap auf einen Wert öffnet [AtemStepInput] direkt unter der Zeile, nicht
-/// in einem Blatt. Ein Blatt läuft seit dem 16.09.2026 über die volle Höhe —
-/// es verdeckte damit die Satzliste, die Pausenleiste und die Vorgabe aus dem
-/// Plan, also genau das, worauf man beim Eintragen schaut. Aufgeklappt bleibt
-/// alles stehen, und der Daumen liegt neben der Zeile, die er ändert.
+/// Vorlage „TEM Workout Runner" (Claude Design, gelesen am 18.09.2026): Ein
+/// Tap öffnet das Eingabeblatt mit Regler und Tastatur, die Zeile selbst
+/// zeigt den Wert nur an. Leer heißt „—" — kein leeres Feld, das aussieht,
+/// als stünde dort eine Null.
 ///
-/// Die Tastatur bleibt der zweite Weg: Der Umschalter sitzt im Regler selbst.
-/// Das Feld in der Zeile zeigt den Wert nur noch an — sonst öffneten Regler
-/// und Tastatur beim selben Tap.
+/// Vorher lagen hier echte Textfelder unter einem [AbsorbPointer], damit sie
+/// nicht gleichzeitig die Tastatur öffneten. Ein Feld, das man nicht
+/// beschreiben kann, ist aber kein Feld; jetzt steht dort, was es ist.
+///
+/// ## Übernommen ist nicht eingetragen
+///
+/// Ein Wert, der beim Abhaken aus dem vorigen Satz kam ([WorkoutSet.carried]),
+/// steht in Cyan mit cyanem Rand. Er bleibt ein Vorschlag, bis man ihn ändert
+/// oder bestätigt — danach ist er weiß wie jede andere Angabe.
 class SetRow extends StatelessWidget {
   const SetRow({
     super.key,
     required this.set,
     required this.index,
-    required this.weightController,
-    required this.repsController,
     required this.onToggle,
     required this.onCycleType,
-    required this.onWeightChanged,
-    required this.onRepsChanged,
-    required this.editing,
     required this.onEdit,
-    this.holdController,
-    this.onHoldChanged,
+    this.isHold = false,
   });
 
   final WorkoutSet set;
@@ -53,28 +52,17 @@ class SetRow extends StatelessWidget {
   /// Satznummer ab 1 — für die Semantics-Labels.
   final int index;
 
-  final TextEditingController weightController;
-  final TextEditingController repsController;
   final VoidCallback onToggle;
   final VoidCallback onCycleType;
-  final ValueChanged<String> onWeightChanged;
-  final ValueChanged<String> onRepsChanged;
 
-  /// Der Wert, dessen Regler gerade offen ist. `null` heisst: zugeklappt.
-  final SetField? editing;
+  /// Öffnet das Eingabeblatt für einen Wert.
+  final ValueChanged<SetField> onEdit;
 
-  /// Öffnet einen Regler oder schliesst ihn mit `null`.
-  final ValueChanged<SetField?> onEdit;
-
-  /// Nur bei Halteübungen gesetzt.
+  /// Halteübung: Die Sekundenspalte tritt an die Stelle der Wiederholungen.
   ///
-  /// Die Haltezeit stand bisher im Plan und nirgends sonst: Wer „45 s halten"
-  /// eintrug, bekam im Training nur Gewicht und Wiederholungen zu sehen. Die
-  /// Vorgabe war damit genau dort unsichtbar, wo sie gebraucht wird.
-  final TextEditingController? holdController;
-  final ValueChanged<String>? onHoldChanged;
-
-  bool get isHold => holdController != null;
+  /// Beides nebeneinander wäre eine Spalte zu viel, und im Bestand tragen
+  /// Sätze immer nur eins von beiden.
+  final bool isHold;
 
   /// Ab hier trägt die Zeile ihre fünf Spalten nicht mehr.
   static bool isCompact(BuildContext context) =>
@@ -83,16 +71,22 @@ class SetRow extends StatelessWidget {
 
   /// Spaltenmasse — **eine Quelle für Zeile und Tabellenkopf**.
   ///
-  /// Vorher standen sie doppelt und verschieden da: Der Kopf rechnete mit
-  /// 48/72/60/48, die Zeile mit 34/72/60/48. Die Beschriftungen standen
-  /// deshalb neben ihren Spalten, und für „letztes Mal" blieben 63 dp — zu
-  /// wenig für „99 kg × 8" in einer Zeile.
+  /// Zahlen aus der Vorlage (32 / flexibel / 74 / 60 / 44). Das Häkchen ist
+  /// sichtbar 44 dp breit, seine Trefferfläche 48 — [AtemTappable] vergrößert
+  /// die Layoutfläche, deshalb rechnet die Spalte mit 48.
   static const typeWidth = 32.0;
-  static const weightWidth = 68.0;
-  static const repsWidth = 56.0;
+  static const weightWidth = 74.0;
+  static const repsWidth = 60.0;
+
+  /// Halteübungen haben **keine Gewichtsspalte** (Vorlage: `holdMode` zeigt
+  /// „SATZ · LETZTES MAL · HALTEN"). Ein Unterarmstütz wiegt nichts, was man
+  /// einträgt; die freie Breite bekommt die Haltezeit.
+  static const holdWidth = 100.0;
+  static const doneVisibleWidth = 44.0;
   static const doneWidth = 48.0;
-  static const columnGap = 6.0;
+  static const columnGap = 8.0;
   static const rowPadding = 10.0;
+  static const _cellHeight = 46.0;
 
   @override
   Widget build(BuildContext context) {
@@ -111,21 +105,14 @@ class SetRow extends StatelessWidget {
         color: set.done
             ? AtemColors.green.withValues(alpha: 0.07)
             : AtemColors.card.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: set.done
               ? AtemColors.green.withValues(alpha: 0.35)
               : AtemColors.border,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          compact ? _compactLayout(context, l10n) : _wideLayout(context, l10n),
-          if (editing != null && !set.done) _stepPanel(context, l10n),
-        ],
-      ),
+      child: compact ? _compactLayout(context, l10n) : _wideLayout(context, l10n),
     );
   }
 
@@ -135,12 +122,13 @@ class SetRow extends StatelessWidget {
           const SizedBox(width: columnGap),
           Expanded(child: _history(context, l10n)),
           const SizedBox(width: columnGap),
-          _weightField(context, l10n),
-          const SizedBox(width: columnGap),
-          // Bei einer Halteübung tritt die Sekundenspalte an die Stelle der
-          // Wiederholungen — beides nebeneinander wäre eine Spalte zu viel,
-          // und im Bestand tragen Sätze immer nur eins von beiden.
-          if (isHold) _holdField(context, l10n) else _repsField(context, l10n),
+          if (isHold)
+            _holdCell(context, l10n, width: holdWidth)
+          else ...[
+            _weightCell(context, l10n),
+            const SizedBox(width: columnGap),
+            _repsCell(context, l10n),
+          ],
           const SizedBox(width: columnGap),
           _doneButton(context, l10n),
         ],
@@ -148,6 +136,7 @@ class SetRow extends StatelessWidget {
 
   Widget _compactLayout(BuildContext context, AppL10n l10n) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -160,19 +149,23 @@ class SetRow extends StatelessWidget {
           Row(
             children: [
               // Die Spaltennamen wandern als Einheit ins Feld.
-              Expanded(
-                flex: 6,
-                child: _weightField(context, l10n,
-                    suffix: l10n.workoutSetLoggerWeightUnit, width: null),
-              ),
-              const SizedBox(width: AtemSpacing.sm),
-              Expanded(
-                flex: 5,
-                child: isHold
-                    ? _holdField(context, l10n,
-                        suffix: l10n.unitSuffixSeconds, width: null)
-                    : _repsField(context, l10n, suffix: '×', width: null),
-              ),
+              if (isHold)
+                Expanded(
+                  child: _holdCell(context, l10n,
+                      suffix: l10n.unitSuffixSeconds, width: null),
+                )
+              else ...[
+                Expanded(
+                  flex: 6,
+                  child: _weightCell(context, l10n,
+                      suffix: l10n.workoutSetLoggerWeightUnit, width: null),
+                ),
+                const SizedBox(width: AtemSpacing.sm),
+                Expanded(
+                  flex: 5,
+                  child: _repsCell(context, l10n, suffix: '×', width: null),
+                ),
+              ],
               const SizedBox(width: AtemSpacing.sm),
               _doneButton(context, l10n),
             ],
@@ -235,165 +228,116 @@ class SetRow extends StatelessWidget {
         ),
       );
 
-  Widget _weightField(BuildContext context, AppL10n l10n,
+  Widget _weightCell(BuildContext context, AppL10n l10n,
           {String? suffix, double? width = weightWidth}) =>
       _valueCell(
         context,
         l10n,
         field: SetField.weight,
-        controller: weightController,
+        value: set.weight,
         fieldName: l10n.workoutRunnerTableWeight,
         semanticLabel: l10n.workoutA11yWeightField(index),
-        decimal: true,
         width: width,
         suffix: suffix,
       );
 
-  Widget _holdField(BuildContext context, AppL10n l10n,
+  Widget _holdCell(BuildContext context, AppL10n l10n,
           {String? suffix, double? width = repsWidth}) =>
       _valueCell(
         context,
         l10n,
         field: SetField.hold,
-        controller: holdController!,
+        value: set.hold,
         fieldName: l10n.workoutColHold,
         semanticLabel: l10n.workoutA11yHoldField(index),
-        decimal: false,
         width: width,
-        suffix: suffix,
+        // Die Sekunde steht in der Zeile mit dabei („45 s"), weil die
+        // Spaltenüberschrift „HALTEN" heißt und nicht „SEK".
+        suffix: suffix ?? l10n.unitSuffixSeconds,
       );
 
-  Widget _repsField(BuildContext context, AppL10n l10n,
+  Widget _repsCell(BuildContext context, AppL10n l10n,
           {String? suffix, double? width = repsWidth}) =>
       _valueCell(
         context,
         l10n,
         field: SetField.reps,
-        controller: repsController,
+        value: set.reps,
         fieldName: l10n.workoutRunnerTableReps,
         semanticLabel: l10n.workoutA11yRepsField(index),
-        decimal: false,
         width: width,
         suffix: suffix,
       );
 
-  /// Ein Wert in der Zeile: sichtbar wie ein Feld, beim Tippen öffnet er den
-  /// Regler darunter.
-  ///
-  /// Das Feld bleibt ein echtes Textfeld — es zeigt den Wert und die Sperre
-  /// nach dem Abhaken so, wie die Spezifikation es beschreibt. Nur die Zeiger
-  /// kommen nicht mehr an es heran ([AbsorbPointer]); den Tap nimmt die
-  /// Fläche darüber und klappt den Regler auf.
+  /// Ein Wert in der Zeile: ein Knopf, der das Eingabeblatt öffnet.
   Widget _valueCell(
     BuildContext context,
     AppL10n l10n, {
     required SetField field,
-    required TextEditingController controller,
+    required String value,
     required String fieldName,
     required String semanticLabel,
-    required bool decimal,
     required double? width,
     String? suffix,
   }) {
-    final open = editing == field;
-    final value = controller.text.trim();
+    final text = value.trim();
+    final empty = text.isEmpty;
+    // Übernommen zählt nur, solange der Satz offen ist: Ist er abgehakt, ist
+    // der Wert das Ergebnis und kein Vorschlag mehr.
+    final carried = set.carried && !set.done && !empty;
+
+    final Color valueColor = empty
+        ? AtemColors.textDisabled
+        : (carried ? AtemColors.cyan : AtemColors.textPrimary);
+    final Color borderColor = set.done
+        ? AtemColors.green.withValues(alpha: 0.3)
+        : (carried ? AtemColors.cyan.withValues(alpha: 0.35) : AtemColors.border);
+
+    final cell = AnimatedContainer(
+      duration: AtemMotion.duration(context, AtemMotion.fast),
+      width: width,
+      height: _cellHeight,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        color: set.done ? const Color(0x00000000) : AtemColors.surfaceSolid,
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: borderColor),
+      ),
+      child: Text(
+        // Geviertstrich wie in der Vorlage: Er füllt die Zelle sichtbar aus,
+        // ein Bindestrich sah aus wie ein Rest vom Rand.
+        empty ? l10n.workoutValueNone : _withSuffix(text, suffix),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AtemType.valueMedium.of(context).copyWith(color: valueColor),
+      ),
+    );
+
+    // Abgehakt ist nicht bearbeitbar — erst entsperren, dann ändern. Der
+    // Knopf bleibt als Anzeige stehen, damit die Zeile nicht springt.
+    if (set.done) {
+      return Semantics(
+        label: '$semanticLabel, ${empty ? l10n.workoutValueEmpty : text}',
+        excludeSemantics: true,
+        child: cell,
+      );
+    }
 
     return AtemTappable(
-      onTap: set.done ? null : () => onEdit(open ? null : field),
-      semanticLabel: set.done
-          ? semanticLabel
-          : l10n.workoutValueEditA11y(
-              fieldName,
-              index,
-              value.isEmpty ? l10n.workoutValueEmpty : value,
-            ),
-      selected: open,
-      minTapSize: const Size.square(48),
-      child: AbsorbPointer(
-        child: AtemNumberField(
-          controller: controller,
-          semanticLabel: semanticLabel,
-          width: width,
-          decimal: decimal,
-          locked: set.done,
-          suffix: suffix,
-          onChanged: _onChangedFor(field),
-        ),
+      onTap: () => onEdit(field),
+      semanticLabel: l10n.workoutValueEditA11y(
+        fieldName,
+        index,
+        empty ? l10n.workoutValueEmpty : text,
       ),
+      minTapSize: Size(width ?? 0, 48),
+      child: cell,
     );
   }
 
-  ValueChanged<String>? _onChangedFor(SetField field) => switch (field) {
-        SetField.weight => onWeightChanged,
-        SetField.reps => onRepsChanged,
-        SetField.hold => onHoldChanged,
-      };
-
-  /// Der aufgeklappte Regler unter der Zeile.
-  Widget _stepPanel(BuildContext context, AppL10n l10n) {
-    final field = editing!;
-    final (controller, label, steps, decimals, unit) = switch (field) {
-      SetField.weight => (
-          weightController,
-          l10n.workoutRunnerTableWeight,
-          // Halbe, ganze und Fünferschritte: Hantelscheiben gibt es in 0,5,
-          // Körpergewicht wächst in Einern, Langhanteln springen in Fünfern.
-          const [0.5, 1.0, 5.0],
-          1,
-          l10n.workoutSetLoggerWeightUnit,
-        ),
-      SetField.reps => (
-          repsController,
-          l10n.workoutRunnerTableReps,
-          const [1.0],
-          0,
-          null,
-        ),
-      SetField.hold => (
-          holdController!,
-          l10n.workoutColHold,
-          const [1.0, 5.0],
-          0,
-          l10n.unitSuffixSeconds,
-        ),
-    };
-
-    return Padding(
-      padding: const EdgeInsets.only(top: AtemSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(
-            height: 1,
-            child: ColoredBox(color: AtemColors.border),
-          ),
-          const SizedBox(height: AtemSpacing.md),
-          AtemStepInput(
-            label: label,
-            controller: controller,
-            onChanged: _onChangedFor(field) ?? (_) {},
-            steps: steps,
-            decimals: decimals,
-            unit: unit,
-            semanticLabel: switch (field) {
-              SetField.weight => l10n.workoutA11yWeightField(index),
-              SetField.reps => l10n.workoutA11yRepsField(index),
-              SetField.hold => l10n.workoutA11yHoldField(index),
-            },
-          ),
-          const SizedBox(height: AtemSpacing.sm),
-          AtemButton.ghost(
-            label: l10n.workoutValueDone,
-            semanticLabel: l10n.workoutValueDoneA11y(index),
-            size: AtemButtonSize.compact,
-            accent: AtemColors.cyan,
-            onPressed: () => onEdit(null),
-          ),
-        ],
-      ),
-    );
-  }
+  String _withSuffix(String value, String? suffix) =>
+      suffix == null ? value : '$value $suffix';
 
   Widget _doneButton(BuildContext context, AppL10n l10n) => AtemTappable(
         onTap: onToggle,
@@ -404,8 +348,8 @@ class SetRow extends StatelessWidget {
         haptic: AtemHaptic.medium,
         child: AnimatedContainer(
           duration: AtemMotion.duration(context, AtemMotion.fast),
-          width: doneWidth,
-          height: 48,
+          width: doneVisibleWidth,
+          height: doneVisibleWidth,
           decoration: BoxDecoration(
             color: set.done ? AtemColors.green : AtemColors.surfaceSolid,
             borderRadius: BorderRadius.circular(13),

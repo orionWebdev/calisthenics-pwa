@@ -3819,13 +3819,13 @@ class AppL10nDe extends AppL10n {
   String get workoutRunnerTableDone => 'OK';
 
   @override
-  String get workoutRunnerTableLast => 'ZULETZT';
+  String get workoutRunnerTableLast => 'LETZTES MAL';
 
   @override
   String get workoutRunnerTableReps => 'WDH';
 
   @override
-  String get workoutRunnerTableSet => 'TYP';
+  String get workoutRunnerTableSet => 'SATZ';
 
   @override
   String get workoutRunnerTableWeight => 'KG';
@@ -5498,21 +5498,6 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
-  String stepInputKeyboard(String label) {
-    return 'Tastatur statt Regler, $label';
-  }
-
-  @override
-  String stepInputSlider(String label) {
-    return 'Regler statt Tastatur, $label';
-  }
-
-  @override
-  String stepInputStep(String step, String label) {
-    return 'Schrittweite $step, $label';
-  }
-
-  @override
   String get infoTitle => 'Info';
 
   @override
@@ -5537,19 +5522,134 @@ class AppL10nDe extends AppL10n {
   String get workoutValueEmpty => 'keine Angabe';
 
   @override
-  String get workoutValueDone => 'Fertig';
-
-  @override
-  String workoutValueDoneA11y(int set) {
-    return 'Regler schliessen, Satz $set';
-  }
-
-  @override
   String get workoutSetTypeLegendTitle => 'Satztypen';
 
   @override
   String get workoutFormGuideDescription => 'Kurz gesagt';
 
   @override
-  String get workoutRunnerTableHold => 'SEK';
+  String get workoutRunnerTableHold => 'HALTEN';
+
+  @override
+  String stepPadTitleWeight(int n) {
+    return 'GEWICHT · SATZ $n';
+  }
+
+  @override
+  String stepPadTitleReps(int n) {
+    return 'WIEDERHOLUNGEN · SATZ $n';
+  }
+
+  @override
+  String stepPadTitleHold(int n) {
+    return 'HALTEN · SATZ $n';
+  }
+
+  @override
+  String get stepPadFieldWeight => 'Gewicht in Kilogramm';
+
+  @override
+  String get stepPadFieldReps => 'Wiederholungen';
+
+  @override
+  String get stepPadFieldHold => 'Haltezeit in Sekunden';
+
+  @override
+  String stepPadPrevious(String value) {
+    return 'Letztes Mal: $value';
+  }
+
+  @override
+  String stepPadDelta(String value, String unit) {
+    return '$value $unit ZU LETZTEM MAL';
+  }
+
+  @override
+  String stepPadDeltaA11y(String value, String unit) {
+    return '$value $unit gegenüber dem letzten Mal';
+  }
+
+  @override
+  String get stepPadKeyboard => 'TASTATUR';
+
+  @override
+  String get stepPadRuler => 'REGLER';
+
+  @override
+  String stepPadKeyboardA11y(String field) {
+    return 'Tastatur statt Regler, $field';
+  }
+
+  @override
+  String stepPadRulerA11y(String field) {
+    return 'Regler statt Tastatur, $field';
+  }
+
+  @override
+  String stepPadHint(String step) {
+    return 'ZIEHEN ZUM EINSTELLEN · SCHRITT $step';
+  }
+
+  @override
+  String get stepPadApply => 'ÜBERNEHMEN';
+
+  @override
+  String stepPadStepKg(String step) {
+    return '$step kg';
+  }
+
+  @override
+  String stepPadStepSeconds(String step) {
+    return '$step s';
+  }
+
+  @override
+  String stepPadStepPlain(String step) {
+    return '$step';
+  }
+
+  @override
+  String stepPadStepA11y(String step, String field) {
+    return 'Schrittweite $step, $field';
+  }
+
+  @override
+  String stepPadSliderA11y(String field) {
+    return '$field, ziehen zum Einstellen';
+  }
+
+  @override
+  String get stepPadIncrease => 'Wert erhöhen';
+
+  @override
+  String get stepPadDecrease => 'Wert verringern';
+
+  @override
+  String stepPadQuickA11y(String value) {
+    return 'Um $value ändern';
+  }
+
+  @override
+  String get stepPadClose => 'Eingabe schliessen';
+
+  @override
+  String get workoutRunnerTableSetShort => 'TYP';
+
+  @override
+  String get workoutRunnerTableLastShort => 'ZULETZT';
+
+  @override
+  String get workoutRunnerTableHoldShort => 'SEK';
+
+  @override
+  String get stepPadUnitWeight => 'KG';
+
+  @override
+  String get stepPadUnitReps => 'WDH';
+
+  @override
+  String get stepPadUnitHold => 'SEK';
+
+  @override
+  String get workoutValueNone => '—';
 }

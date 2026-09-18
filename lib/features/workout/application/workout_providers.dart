@@ -77,12 +77,24 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
   /// Vorbelegung beim Anlegen der Einheit, die nach dem Abhaken eine Leistung
   /// behauptet hätte, die niemand erbracht hat. Hier steht die Zahl erst, wenn
   /// derselbe Satz einmal wirklich so absolviert wurde.
-  static WorkoutSet _carry(WorkoutSet target, WorkoutSet source) =>
-      target.copyWith(
-        weight: target.weight.trim().isEmpty ? source.weight : target.weight,
-        reps: target.reps.trim().isEmpty ? source.reps : target.reps,
-        hold: target.hold.trim().isEmpty ? source.hold : target.hold,
-      );
+  ///
+  /// Was so entstanden ist, trägt [WorkoutSet.carried] — die Zeile zeigt es in
+  /// Cyan, damit ein Vorschlag nicht wie eine Eingabe aussieht.
+  static WorkoutSet _carry(WorkoutSet target, WorkoutSet source) {
+    final weight = target.weight.trim().isEmpty ? source.weight : target.weight;
+    final reps = target.reps.trim().isEmpty ? source.reps : target.reps;
+    final hold = target.hold.trim().isEmpty ? source.hold : target.hold;
+    final took = weight != target.weight ||
+        reps != target.reps ||
+        hold != target.hold;
+
+    return target.copyWith(
+      weight: weight,
+      reps: reps,
+      hold: hold,
+      carried: took || target.carried,
+    );
+  }
 
   /// Hakt ab oder entsperrt wieder — bewusst reversibel (Fehlertoleranz).
   /// Gibt zurück, ob der Satz jetzt abgeschlossen ist.
@@ -114,14 +126,19 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
   void cycleType(int exerciseIndex, String setId) =>
       _mutateSet(exerciseIndex, setId, (s) => s.copyWith(type: s.type.next));
 
+  // Eine Eingabe hebt die Übernahme auf: Ab jetzt ist der Wert kein Vorschlag
+  // mehr, sondern eine Angabe — und steht deshalb nicht mehr in Cyan.
   void updateWeight(int exerciseIndex, String setId, String value) =>
-      _mutateSet(exerciseIndex, setId, (s) => s.copyWith(weight: value));
+      _mutateSet(exerciseIndex, setId,
+          (s) => s.copyWith(weight: value, carried: false));
 
   void updateReps(int exerciseIndex, String setId, String value) =>
-      _mutateSet(exerciseIndex, setId, (s) => s.copyWith(reps: value));
+      _mutateSet(exerciseIndex, setId,
+          (s) => s.copyWith(reps: value, carried: false));
 
   void updateHold(int exerciseIndex, String setId, String value) =>
-      _mutateSet(exerciseIndex, setId, (s) => s.copyWith(hold: value));
+      _mutateSet(exerciseIndex, setId,
+          (s) => s.copyWith(hold: value, carried: false));
 
   /// Dupliziert die Werte des letzten Satzes — **samt Haltezeit**.
   ///
@@ -143,6 +160,10 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
           weight: last.weight,
           reps: last.reps,
           hold: last.hold,
+          // Auch hier ist der Wert übernommen, nicht eingetragen.
+          carried: last.weight.trim().isNotEmpty ||
+              last.reps.trim().isNotEmpty ||
+              last.hold.trim().isNotEmpty,
         ),
       ],
     );

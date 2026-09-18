@@ -6385,10 +6385,10 @@ abstract class AppL10n {
   /// **'OK'**
   String get workoutRunnerTableDone;
 
-  /// Runner 18.09.2026 — kurz genug für die Spalte; „LETZTES MAL“ wurde abgeschnitten
+  /// Runner, Tabellenkopf Spalte 2 (Vorlage TEM Workout Runner)
   ///
   /// In de, this message translates to:
-  /// **'ZULETZT'**
+  /// **'LETZTES MAL'**
   String get workoutRunnerTableLast;
 
   /// Runner, Modul 1/2 Spezifikation
@@ -6397,10 +6397,10 @@ abstract class AppL10n {
   /// **'WDH'**
   String get workoutRunnerTableReps;
 
-  /// Runner 18.09.2026 — die Spalte trägt den Satztyp (W/N/D/F); „SATZ“ passte nicht über 32 dp
+  /// Runner, Tabellenkopf Spalte 1 (Vorlage TEM Workout Runner)
   ///
   /// In de, this message translates to:
-  /// **'TYP'**
+  /// **'SATZ'**
   String get workoutRunnerTableSet;
 
   /// Runner, Modul 1/2 Spezifikation
@@ -8567,24 +8567,6 @@ abstract class AppL10n {
   /// **'{weeks} Wochen'**
   String weeklySetsWindow(int weeks);
 
-  /// AtemStepInput — Umschalter auf die Tastatureingabe
-  ///
-  /// In de, this message translates to:
-  /// **'Tastatur statt Regler, {label}'**
-  String stepInputKeyboard(String label);
-
-  /// AtemStepInput — Umschalter zurück auf den Regler
-  ///
-  /// In de, this message translates to:
-  /// **'Regler statt Tastatur, {label}'**
-  String stepInputSlider(String label);
-
-  /// AtemStepInput — Kapsel für die Schrittweite
-  ///
-  /// In de, this message translates to:
-  /// **'Schrittweite {step}, {label}'**
-  String stepInputStep(String step, String label);
-
   /// Profilseite (17.09.2026) — Zeile und Titel der Unterseite mit Rechtlichem und Auskünften
   ///
   /// In de, this message translates to:
@@ -8621,18 +8603,6 @@ abstract class AppL10n {
   /// **'keine Angabe'**
   String get workoutValueEmpty;
 
-  /// Runner 18.09.2026 — schliesst den Regler unter der Satzzeile
-  ///
-  /// In de, this message translates to:
-  /// **'Fertig'**
-  String get workoutValueDone;
-
-  /// Runner 18.09.2026 — Vorlese-Label zum Schliessen des Reglers
-  ///
-  /// In de, this message translates to:
-  /// **'Regler schliessen, Satz {set}'**
-  String workoutValueDoneA11y(int set);
-
   /// Runner 18.09.2026 — Vorlese-Kopf über den farbigen Typ-Pillen
   ///
   /// In de, this message translates to:
@@ -8645,11 +8615,197 @@ abstract class AppL10n {
   /// **'Kurz gesagt'**
   String get workoutFormGuideDescription;
 
-  /// Runner 18.09.2026 — Spaltenkopf der Haltezeit; „Halten“ passte nicht über 56 dp
+  /// Runner, Tabellenkopf Haltespalte (Vorlage TEM Workout Runner)
+  ///
+  /// In de, this message translates to:
+  /// **'HALTEN'**
+  String get workoutRunnerTableHold;
+
+  /// Eingabe-Blatt im Runner (18.09.2026, Claude-Design) — Titel über dem Gewichtsregler
+  ///
+  /// In de, this message translates to:
+  /// **'GEWICHT · SATZ {n}'**
+  String stepPadTitleWeight(int n);
+
+  /// Eingabe-Blatt im Runner — Titel über dem Wiederholungsregler
+  ///
+  /// In de, this message translates to:
+  /// **'WIEDERHOLUNGEN · SATZ {n}'**
+  String stepPadTitleReps(int n);
+
+  /// Eingabe-Blatt im Runner — Titel über dem Haltezeitregler
+  ///
+  /// In de, this message translates to:
+  /// **'HALTEN · SATZ {n}'**
+  String stepPadTitleHold(int n);
+
+  /// Eingabe-Blatt im Runner — Feldname für Screenreader
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht in Kilogramm'**
+  String get stepPadFieldWeight;
+
+  /// Eingabe-Blatt im Runner — Feldname für Screenreader
+  ///
+  /// In de, this message translates to:
+  /// **'Wiederholungen'**
+  String get stepPadFieldReps;
+
+  /// Eingabe-Blatt im Runner — Feldname für Screenreader
+  ///
+  /// In de, this message translates to:
+  /// **'Haltezeit in Sekunden'**
+  String get stepPadFieldHold;
+
+  /// Eingabe-Blatt im Runner — Vorwert unter dem Titel
+  ///
+  /// In de, this message translates to:
+  /// **'Letztes Mal: {value}'**
+  String stepPadPrevious(String value);
+
+  /// Eingabe-Blatt im Runner — Unterschied zum Vorwert
+  ///
+  /// In de, this message translates to:
+  /// **'{value} {unit} ZU LETZTEM MAL'**
+  String stepPadDelta(String value, String unit);
+
+  /// Eingabe-Blatt im Runner — Unterschied für Screenreader, ohne Glyph
+  ///
+  /// In de, this message translates to:
+  /// **'{value} {unit} gegenüber dem letzten Mal'**
+  String stepPadDeltaA11y(String value, String unit);
+
+  /// Eingabe-Blatt im Runner — Umschalter auf die Tastatur
+  ///
+  /// In de, this message translates to:
+  /// **'TASTATUR'**
+  String get stepPadKeyboard;
+
+  /// Eingabe-Blatt im Runner — Umschalter zurück auf den Regler
+  ///
+  /// In de, this message translates to:
+  /// **'REGLER'**
+  String get stepPadRuler;
+
+  /// Eingabe-Blatt im Runner — Vorlese-Label des Umschalters
+  ///
+  /// In de, this message translates to:
+  /// **'Tastatur statt Regler, {field}'**
+  String stepPadKeyboardA11y(String field);
+
+  /// Eingabe-Blatt im Runner — Vorlese-Label des Umschalters
+  ///
+  /// In de, this message translates to:
+  /// **'Regler statt Tastatur, {field}'**
+  String stepPadRulerA11y(String field);
+
+  /// Eingabe-Blatt im Runner — Hinweiszeile unter dem Band
+  ///
+  /// In de, this message translates to:
+  /// **'ZIEHEN ZUM EINSTELLEN · SCHRITT {step}'**
+  String stepPadHint(String step);
+
+  /// Eingabe-Blatt im Runner — Knopf, der den Wert übernimmt
+  ///
+  /// In de, this message translates to:
+  /// **'ÜBERNEHMEN'**
+  String get stepPadApply;
+
+  /// Eingabe-Blatt im Runner — Schrittweite beim Gewicht
+  ///
+  /// In de, this message translates to:
+  /// **'{step} kg'**
+  String stepPadStepKg(String step);
+
+  /// Eingabe-Blatt im Runner — Schrittweite bei der Haltezeit
+  ///
+  /// In de, this message translates to:
+  /// **'{step} s'**
+  String stepPadStepSeconds(String step);
+
+  /// Eingabe-Blatt im Runner — Schrittweite bei den Wiederholungen
+  ///
+  /// In de, this message translates to:
+  /// **'{step}'**
+  String stepPadStepPlain(String step);
+
+  /// Eingabe-Blatt im Runner — Vorlese-Label einer Schrittkapsel
+  ///
+  /// In de, this message translates to:
+  /// **'Schrittweite {step}, {field}'**
+  String stepPadStepA11y(String step, String field);
+
+  /// Eingabe-Blatt im Runner — Vorlese-Label des Bandes
+  ///
+  /// In de, this message translates to:
+  /// **'{field}, ziehen zum Einstellen'**
+  String stepPadSliderA11y(String field);
+
+  /// Eingabe-Blatt im Runner — Plus-Knopf
+  ///
+  /// In de, this message translates to:
+  /// **'Wert erhöhen'**
+  String get stepPadIncrease;
+
+  /// Eingabe-Blatt im Runner — Minus-Knopf
+  ///
+  /// In de, this message translates to:
+  /// **'Wert verringern'**
+  String get stepPadDecrease;
+
+  /// Eingabe-Blatt im Runner — Vorlese-Label eines Schnellknopfs
+  ///
+  /// In de, this message translates to:
+  /// **'Um {value} ändern'**
+  String stepPadQuickA11y(String value);
+
+  /// Eingabe-Blatt im Runner — Verdunkler und Zurück-Geste
+  ///
+  /// In de, this message translates to:
+  /// **'Eingabe schliessen'**
+  String get stepPadClose;
+
+  /// Runner, Tabellenkopf Spalte 1, wenn SATZ nicht in 32 dp passt
+  ///
+  /// In de, this message translates to:
+  /// **'TYP'**
+  String get workoutRunnerTableSetShort;
+
+  /// Runner, Tabellenkopf Spalte 2, wenn LETZTES MAL nicht passt
+  ///
+  /// In de, this message translates to:
+  /// **'ZULETZT'**
+  String get workoutRunnerTableLastShort;
+
+  /// Runner, Tabellenkopf Haltespalte, wenn HALTEN nicht passt
   ///
   /// In de, this message translates to:
   /// **'SEK'**
-  String get workoutRunnerTableHold;
+  String get workoutRunnerTableHoldShort;
+
+  /// Eingabe-Blatt im Runner — Einheit neben der grossen Zahl
+  ///
+  /// In de, this message translates to:
+  /// **'KG'**
+  String get stepPadUnitWeight;
+
+  /// Eingabe-Blatt im Runner — Einheit neben der grossen Zahl
+  ///
+  /// In de, this message translates to:
+  /// **'WDH'**
+  String get stepPadUnitReps;
+
+  /// Eingabe-Blatt im Runner — Einheit neben der grossen Zahl
+  ///
+  /// In de, this message translates to:
+  /// **'SEK'**
+  String get stepPadUnitHold;
+
+  /// Runner, leeres Wertfeld in der Satzzeile (Geviertstrich wie in der Vorlage)
+  ///
+  /// In de, this message translates to:
+  /// **'—'**
+  String get workoutValueNone;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

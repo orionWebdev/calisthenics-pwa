@@ -83,6 +83,23 @@ void main() {
       expect(after[1].weight, '60');
     });
 
+    test('sind als übernommen erkennbar, bis man sie anfasst', () async {
+      final (container, notifier) = await loaded();
+      final sets = firstExercise(container).sets;
+
+      notifier.updateWeight(0, sets[0].id, '60');
+      notifier.updateReps(0, sets[0].id, '8');
+      expect(firstExercise(container).sets[0].carried, isFalse,
+          reason: 'getippt ist nicht übernommen');
+
+      notifier.toggleSet(0, sets[0].id);
+      expect(firstExercise(container).sets[1].carried, isTrue);
+
+      // Eine eigene Eingabe macht aus dem Vorschlag eine Angabe.
+      notifier.updateWeight(0, sets[1].id, '65');
+      expect(firstExercise(container).sets[1].carried, isFalse);
+    });
+
     test('ein neuer Satz erbt auch die Haltezeit', () async {
       final (container, notifier) = await loaded();
       final sets = firstExercise(container).sets;
@@ -128,24 +145,41 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('öffnet den Regler unter der Satzzeile und schliesst ihn',
+    testWidgets('öffnet das Eingabeblatt und übernimmt den Wert',
         (tester) async {
       final handle = tester.ensureSemantics();
       await pump(tester);
 
-      expect(find.byType(AtemStepInput), findsNothing);
+      expect(find.byType(AtemStepPad), findsNothing);
 
       await tester.tap(find.bySemanticsLabel(RegExp('^KG, Satz 1')));
       await tester.pumpAndSettle();
-      expect(find.byType(AtemStepInput), findsOneWidget);
-      // Genau einer: ein zweiter Wert löst den ersten ab.
-      await tester.tap(find.bySemanticsLabel(RegExp('^WDH, Satz 1')));
-      await tester.pumpAndSettle();
-      expect(find.byType(AtemStepInput), findsOneWidget);
+      expect(find.byType(AtemStepPad), findsOneWidget);
+      expect(find.text('GEWICHT · SATZ 1'), findsOneWidget);
 
-      await tester.tap(find.text('Fertig'));
+      await tester.tap(find.bySemanticsLabel('Wert erhöhen'));
       await tester.pumpAndSettle();
-      expect(find.byType(AtemStepInput), findsNothing);
+      await tester.tap(find.text('ÜBERNEHMEN'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AtemStepPad), findsNothing);
+      // Der Wert steht jetzt in der Zeile, nicht mehr „—".
+      expect(find.bySemanticsLabel(RegExp('^KG, Satz 1, keine Angabe')),
+          findsNothing);
+      handle.dispose();
+    });
+
+    testWidgets('ein leerer Satz wird nicht abgehakt, sondern geöffnet',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await pump(tester);
+
+      await tester.tap(find.bySemanticsLabel('Satz 1 abschließen'));
+      await tester.pumpAndSettle();
+
+      // Statt eines Häkchens ohne Zahlen steht das Eingabeblatt da.
+      expect(find.byType(AtemStepPad), findsOneWidget);
+      expect(find.text('WIEDERHOLUNGEN · SATZ 1'), findsOneWidget);
       handle.dispose();
     });
 

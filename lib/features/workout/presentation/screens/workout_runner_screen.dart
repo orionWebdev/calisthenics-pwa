@@ -22,6 +22,7 @@ import '../widgets/rest_bar.dart';
 import '../set_type_ui.dart';
 import '../widgets/session_top_bar.dart';
 import '../widgets/set_row.dart';
+import '../workout_ui.dart';
 import '../../../../app/application/snackbar_providers.dart';
 
 /// ATEM — Workout Runner.
@@ -77,16 +78,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   /// Ob die Pause schon als beendet gemeldet wurde — sonst löste jeder Tick
   /// nach Ablauf erneut Vibration und Ton aus.
   bool _restAnnounced = false;
-
-  /// Welcher Wert gerade am Regler hängt — Satz-Kennung und Feld.
-  ///
-  /// Höchstens einer zur Zeit: Zwei offene Regler übereinander machen aus der
-  /// Satzliste ein Formular.
-  ({String setId, SetField field})? _editing;
-
-  final _weightControllers = <String, TextEditingController>{};
-  final _repsControllers = <String, TextEditingController>{};
-  final _holdControllers = <String, TextEditingController>{};
 
   @override
   void initState() {
@@ -193,13 +184,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     _ticker?.cancel();
     _expandTimer?.cancel();
     _flashTimer?.cancel();
-    for (final c in [
-      ..._weightControllers.values,
-      ..._repsControllers.values,
-      ..._holdControllers.values,
-    ]) {
-      c.dispose();
-    }
     super.dispose();
   }
 
@@ -247,27 +231,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     final seconds = _elapsed.inSeconds;
     return '${(seconds ~/ 60).toString().padLeft(2, '0')}'
         ':${(seconds % 60).toString().padLeft(2, '0')}';
-  }
-
-  /// Das Feld zu einem Satz — und der Abgleich mit dem Zustand.
-  ///
-  /// Der Zustand kann den Wert **selbst** setzen: Beim Abhaken wandern Gewicht
-  /// und Wiederholungen in den nächsten Satz. Ein Feld, das nur bei seiner
-  /// Erzeugung liest, zeigte davon nichts.
-  ///
-  /// Übernommen wird nur in ein **leeres** Feld. Alles andere hat jemand
-  /// getippt, und getippt schlägt gerechnet.
-  TextEditingController _controller(
-    Map<String, TextEditingController> pool,
-    String id,
-    String value,
-  ) {
-    final controller =
-        pool.putIfAbsent(id, () => TextEditingController(text: value));
-    if (controller.text.trim().isEmpty && value.trim().isNotEmpty) {
-      controller.text = value;
-    }
-    return controller;
   }
 
   bool get _amends => widget.start.amends;
@@ -328,16 +291,68 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   WorkoutSessionController get _notifier =>
       ref.read(workoutSessionProvider(widget.start).notifier);
 
-  /// Öffnet den Regler unter einer Satzzeile — oder schliesst ihn.
+  /// Öffnet das Eingabeblatt für einen Wert und schreibt das Ergebnis.
   ///
-  /// Höchstens einer ist offen: Ein zweiter Regler daneben wäre eine zweite
-  /// Stelle, an der dieselbe Geste etwas anderes tut.
-  void _openStepper(WorkoutSet set, SetField? field) {
+  /// Das Blatt selbst schreibt nichts (siehe [showAtemStepPad]): Es gibt einen
+  /// Wert zurück oder `null`, wenn jemand abbricht. So entsteht keine Angabe,
+  /// die niemand gemacht hat.
+  Future<void> _editValue(
+    ActiveWorkout w,
+    int exerciseIndex,
+    WorkoutSet set,
+    int number,
+    SetField field,
+  ) async {
     FocusScope.of(context).unfocus();
-    setState(() {
-      _editing =
-          field == null ? null : (setId: set.id, field: field);
-    });
+
+    final previous = set.previous;
+    final (padField, current, previousValue) = switch (field) {
+      SetField.weight => (
+          AtemStepField.weight,
+          set.weightValue,
+          previous?.weightKg,
+        ),
+      SetField.reps => (
+          AtemStepField.reps,
+          set.repsValue?.toDouble(),
+          previous?.reps?.toDouble(),
+        ),
+      SetField.hold => (
+          AtemStepField.hold,
+          set.holdValue?.toDouble(),
+          // Die Historie kennt keine Haltezeit — dort steht, was an dieser
+          // Stelle zuletzt stand, und das sind Wiederholungen oder Gewicht.
+          null,
+        ),
+    };
+
+    final l10n = AppL10n.of(context);
+    final value = await showAtemStepPad(
+      context,
+      field: padField,
+      setNumber: number,
+      value: current,
+      previousValue: previousValue,
+      previousLabel: previous == null || previous.isEmpty
+          ? null
+          : previousSetLabel(context, l10n, previous),
+    );
+    if (value == null || !mounted) return;
+
+    // Gewicht darf halbe Schritte tragen, Wiederholungen und Sekunden nicht.
+    final text = field == SetField.weight
+        ? AtemNumberField.format(context, value)
+        : value.round().toString();
+
+    switch (field) {
+      case SetField.weight:
+        _notifier.updateWeight(exerciseIndex, set.id, text);
+      case SetField.reps:
+        _notifier.updateReps(exerciseIndex, set.id, text);
+      case SetField.hold:
+        _notifier.updateHold(exerciseIndex, set.id, text);
+    }
+    _persist(w);
   }
 
   /// Die Übung aus dem Bestand, **wenn sie etwas zu erklären hat**.
@@ -405,10 +420,31 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     );
   }
 
-  void _toggleSet(ActiveWorkout w, WorkoutSet set) {
+  /// Hakt ab — oder fragt erst nach den Werten.
+  ///
+  /// **Ein leerer Satz wird nicht abgehakt, sondern geöffnet** (Vorlage:
+  /// `toggleSet` → `openPad`). Ein Häkchen ohne eine einzige Zahl wäre ein
+  /// Satz, von dem die Auswertung nichts weiß.
+  ///
+  /// Gefragt wird nur, wenn **gar nichts** dasteht. Eine Klimmzug-Einheit
+  /// trägt Wiederholungen ohne Gewicht; dort nach Kilogramm zu fragen hieße,
+  /// eine Angabe zu verlangen, die es nicht gibt.
+  void _toggleSet(ActiveWorkout w, WorkoutSet set, int number) {
     FocusScope.of(context).unfocus();
-    // Ein offener Regler gehört zum Eintragen, nicht zum Abhaken.
-    if (_editing?.setId == set.id) setState(() => _editing = null);
+
+    if (!set.done) {
+      final exercise = w.exercises[_exIndex];
+      final missing = exercise.isHold
+          ? (set.hold.trim().isEmpty ? SetField.hold : null)
+          : (set.weight.trim().isEmpty && set.reps.trim().isEmpty
+              ? SetField.reps
+              : null);
+      if (missing != null) {
+        unawaited(_editValue(w, _exIndex, set, number, missing));
+        return;
+      }
+    }
+
     final nowDone = _notifier.toggleSet(_exIndex, set.id);
     if (!nowDone) return;
 
@@ -672,29 +708,14 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     SetRow(
                       set: exercise.sets[i],
                       index: i + 1,
-                      weightController: _controller(_weightControllers,
-                          exercise.sets[i].id, exercise.sets[i].weight),
-                      repsController: _controller(_repsControllers,
-                          exercise.sets[i].id, exercise.sets[i].reps),
-                      onToggle: () => _toggleSet(w, exercise.sets[i]),
+                      isHold: exercise.isHold,
+                      onToggle: () =>
+                          _toggleSet(w, exercise.sets[i], i + 1),
                       onCycleType: () =>
                           _notifier.cycleType(index, exercise.sets[i].id),
-                      onWeightChanged: (v) =>
-                          _notifier.updateWeight(index, exercise.sets[i].id, v),
-                      onRepsChanged: (v) =>
-                          _notifier.updateReps(index, exercise.sets[i].id, v),
-                      editing: _editing?.setId == exercise.sets[i].id
-                          ? _editing!.field
-                          : null,
-                      onEdit: (field) => _openStepper(exercise.sets[i], field),
-                      holdController: exercise.isHold
-                          ? _controller(_holdControllers,
-                              exercise.sets[i].id, exercise.sets[i].hold)
-                          : null,
-                      onHoldChanged: exercise.isHold
-                          ? (v) => _notifier.updateHold(
-                              index, exercise.sets[i].id, v)
-                          : null,
+                      onEdit: (field) => unawaited(
+                        _editValue(w, index, exercise.sets[i], i + 1, field),
+                      ),
                     ),
                   const SizedBox(height: AtemSpacing.sm),
                   // **Die Kürzel erklären sich nicht von selbst.** „D" und
@@ -1021,12 +1042,61 @@ class _TableHead extends StatelessWidget {
   /// Bei Halteübungen heißt die vierte Spalte „Halten" statt „Wdh".
   final bool isHold;
 
+  /// Die ausgeschriebene Beschriftung, wenn sie in ihre Spalte passt.
+  ///
+  /// Die Vorlage schreibt „SATZ · LETZTES MAL · HALTEN" — bei 7,5 px. Hier
+  /// sind es 12 sp (Vertrag: informationstragender Text ≥ 12 sp) plus
+  /// Systemschrift-Faktor, und in 32 dp steht dann kein „SATZ". Statt das Wort
+  /// abzuschneiden, tritt die kurze Fassung an seine Stelle: lieber ein
+  /// kürzeres Wort als ein halbes.
+  static (String, TextStyle) _fit(
+    String long,
+    String short,
+    TextStyle style,
+    TextScaler scaler,
+    double width,
+  ) {
+    // Die Sperrung kostet je Zeichen fast so viel wie ein Achtel Buchstabe:
+    // „ZULETZT" braucht gesperrt 70 dp, ungesperrt 58 — und die Spalte hat
+    // 63. Deshalb vier Stufen, von der Vorlage abwärts.
+    final tight = style.copyWith(letterSpacing: 0);
+    final candidates = <(String, TextStyle)>[
+      (long, style),
+      (long, tight),
+      (short, style),
+      (short, tight),
+    ];
+
+    for (final candidate in candidates) {
+      final painter = TextPainter(
+        text: TextSpan(text: candidate.$1, style: candidate.$2),
+        textDirection: TextDirection.ltr,
+        textScaler: scaler,
+        maxLines: 1,
+      )..layout();
+      // Ein Pixel Luft: Knapp gemessen schnitt Rundung „ZULETZT" zu „ZULETZ".
+      if (painter.width <= width - 1) return candidate;
+    }
+    // Passt gar nichts, kürzt der Text mit Auslassungspunkten — nie mitten
+    // im Buchstaben.
+    return candidates.last;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final style = AtemType.labelMicro.of(context);
-    Widget cell(String t, {TextAlign align = TextAlign.left, double? w}) {
-      final text = Text(t, textAlign: align, style: style, maxLines: 1);
+    final scaler = MediaQuery.textScalerOf(context);
+
+    Widget cell(String t,
+        {TextAlign align = TextAlign.left, double? w, TextStyle? s}) {
+      final text = Text(
+        t,
+        textAlign: align,
+        style: s ?? style,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
       return w == null
           ? Expanded(child: text)
           : SizedBox(width: w, child: text);
@@ -1039,26 +1109,54 @@ class _TableHead extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
             SetRow.rowPadding, AtemSpacing.sm, SetRow.rowPadding, 6),
-        child: Row(
-          children: [
-            cell(l10n.workoutRunnerTableSet, w: SetRow.typeWidth),
-            const SizedBox(width: SetRow.columnGap),
-            cell(l10n.workoutRunnerTableLast),
-            const SizedBox(width: SetRow.columnGap),
-            cell(l10n.workoutRunnerTableWeight,
-                align: TextAlign.center, w: SetRow.weightWidth),
-            const SizedBox(width: SetRow.columnGap),
-            cell(
-              isHold
-                  ? l10n.workoutRunnerTableHold
-                  : l10n.workoutRunnerTableReps,
-              align: TextAlign.center,
-              w: SetRow.repsWidth,
-            ),
-            const SizedBox(width: SetRow.columnGap),
-            cell(l10n.workoutRunnerTableDone,
-                align: TextAlign.center, w: SetRow.doneWidth),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Halteübungen haben keine Gewichtsspalte — die Zeile darunter
+            // auch nicht.
+            final historyWidth = isHold
+                ? constraints.maxWidth -
+                    SetRow.typeWidth -
+                    SetRow.holdWidth -
+                    SetRow.doneWidth -
+                    3 * SetRow.columnGap
+                : constraints.maxWidth -
+                    SetRow.typeWidth -
+                    SetRow.weightWidth -
+                    SetRow.repsWidth -
+                    SetRow.doneWidth -
+                    4 * SetRow.columnGap;
+
+            final set = _fit(l10n.workoutRunnerTableSet,
+                l10n.workoutRunnerTableSetShort, style, scaler,
+                SetRow.typeWidth);
+            final last = _fit(l10n.workoutRunnerTableLast,
+                l10n.workoutRunnerTableLastShort, style, scaler, historyWidth);
+            final hold = _fit(l10n.workoutRunnerTableHold,
+                l10n.workoutRunnerTableHoldShort, style, scaler,
+                SetRow.holdWidth);
+
+            return Row(
+              children: [
+                cell(set.$1, w: SetRow.typeWidth, s: set.$2),
+                const SizedBox(width: SetRow.columnGap),
+                cell(last.$1, s: last.$2),
+                const SizedBox(width: SetRow.columnGap),
+                if (isHold)
+                  cell(hold.$1,
+                      align: TextAlign.center, w: SetRow.holdWidth, s: hold.$2)
+                else ...[
+                  cell(l10n.workoutRunnerTableWeight,
+                      align: TextAlign.center, w: SetRow.weightWidth),
+                  const SizedBox(width: SetRow.columnGap),
+                  cell(l10n.workoutRunnerTableReps,
+                      align: TextAlign.center, w: SetRow.repsWidth),
+                ],
+                const SizedBox(width: SetRow.columnGap),
+                cell(l10n.workoutRunnerTableDone,
+                    align: TextAlign.center, w: SetRow.doneWidth),
+              ],
+            );
+          },
         ),
       ),
     );

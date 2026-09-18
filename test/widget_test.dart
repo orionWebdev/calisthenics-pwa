@@ -1,3 +1,4 @@
+import 'package:atem/core/widgets/widgets.dart';
 import 'package:atem/features/hybrid/presentation/screens/hybrid_screen.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
@@ -86,6 +87,14 @@ void main() {
     // Der erste Satz ist offen — über sein Semantics-Label finden, nicht über
     // ein Icon: das Häkchen erscheint erst im abgehakten Zustand.
     final handle = tester.ensureSemantics();
+    // Ein leerer Satz wird nicht abgehakt: Erst fragt das Eingabeblatt nach
+    // den Wiederholungen (Vorlage „TEM Workout Runner", `toggleSet`).
+    await tester.tap(find.bySemanticsLabel('Satz 1 abschließen'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AtemStepPad), findsOneWidget);
+    await tester.tap(find.text('ÜBERNEHMEN'));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.bySemanticsLabel('Satz 1 abschließen'));
     await tester.pump();
 
@@ -102,11 +111,12 @@ void main() {
       tester,
       const WorkoutRunnerScreen(start: WorkoutStart(planId: 'p1')),
     );
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    for (final field in tester.widgetList<TextField>(find.byType(TextField))) {
-      expect(field.controller?.text, isEmpty);
-    }
+    // Seit dem 18.09.2026 sind die Werte Knöpfe, keine Textfelder: Leer steht
+    // als Geviertstrich da. Vier Sätze der ersten Übung, je zwei Werte.
+    expect(find.text('—'), findsNWidgets(8));
+    expect(find.byType(TextField), findsNothing);
   });
 
   testWidgets('Freies Training beginnt leer, nicht erfunden', (tester) async {

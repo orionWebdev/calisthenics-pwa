@@ -53,6 +53,7 @@ class WorkoutSet {
     required this.reps,
     this.hold = '',
     this.done = false,
+    this.carried = false,
   });
 
   final String id;
@@ -70,12 +71,25 @@ class WorkoutSet {
 
   final bool done;
 
+  /// Stammt der Wert aus dem **vorigen Satz**, nicht aus einer Eingabe?
+  ///
+  /// Beim Abhaken wandern Gewicht, Wiederholungen und Haltezeit in den
+  /// nächsten offenen Satz. Übernommen ist nicht dasselbe wie eingetragen:
+  /// Ein übernommener Wert ist ein Vorschlag, den man noch bestätigt oder
+  /// ändert. Die Zeile zeigt ihn deshalb in Cyan, bis er angefasst wurde.
+  ///
+  /// Nur Anzeigezustand: Er wird nicht gespeichert und ist nach dem
+  /// Wiederherstellen eines Zwischenstands wieder `false` — dort ist der Wert
+  /// dann schlicht der Wert.
+  final bool carried;
+
   WorkoutSet copyWith({
     SetType? type,
     String? weight,
     String? reps,
     String? hold,
     bool? done,
+    bool? carried,
   }) {
     return WorkoutSet(
       id: id,
@@ -85,6 +99,7 @@ class WorkoutSet {
       reps: reps ?? this.reps,
       hold: hold ?? this.hold,
       done: done ?? this.done,
+      carried: carried ?? this.carried,
     );
   }
 

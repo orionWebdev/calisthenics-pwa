@@ -5457,17 +5457,17 @@
   "@workoutRunnerTableDone": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableLast": "ZULETZT",
+  "workoutRunnerTableLast": "LETZTES MAL",
   "@workoutRunnerTableLast": {
-    "description": "Runner 18.09.2026 — kurz genug für die Spalte; „LETZTES MAL“ wurde abgeschnitten"
+    "description": "Runner, Tabellenkopf Spalte 2 (Vorlage TEM Workout Runner)"
   },
   "workoutRunnerTableReps": "WDH",
   "@workoutRunnerTableReps": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerTableSet": "TYP",
+  "workoutRunnerTableSet": "SATZ",
   "@workoutRunnerTableSet": {
-    "description": "Runner 18.09.2026 — die Spalte trägt den Satztyp (W/N/D/F); „SATZ“ passte nicht über 32 dp"
+    "description": "Runner, Tabellenkopf Spalte 1 (Vorlage TEM Workout Runner)"
   },
   "workoutRunnerTableWeight": "KG",
   "@workoutRunnerTableWeight": {
@@ -7952,36 +7952,6 @@
       }
     }
   },
-  "stepInputKeyboard": "Tastatur statt Regler, {label}",
-  "@stepInputKeyboard": {
-    "description": "AtemStepInput — Umschalter auf die Tastatureingabe",
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "stepInputSlider": "Regler statt Tastatur, {label}",
-  "@stepInputSlider": {
-    "description": "AtemStepInput — Umschalter zurück auf den Regler",
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "stepInputStep": "Schrittweite {step}, {label}",
-  "@stepInputStep": {
-    "description": "AtemStepInput — Kapsel für die Schrittweite",
-    "placeholders": {
-      "step": {
-        "type": "String"
-      },
-      "label": {
-        "type": "String"
-      }
-    }
-  },
   "infoTitle": "Info",
   "@infoTitle": {
     "description": "Profilseite (17.09.2026) — Zeile und Titel der Unterseite mit Rechtlichem und Auskünften"
@@ -8030,19 +8000,6 @@
   "@workoutValueEmpty": {
     "description": "Runner 18.09.2026 — leerer Wert im Vorlese-Label"
   },
-  "workoutValueDone": "Fertig",
-  "@workoutValueDone": {
-    "description": "Runner 18.09.2026 — schliesst den Regler unter der Satzzeile"
-  },
-  "workoutValueDoneA11y": "Regler schliessen, Satz {set}",
-  "@workoutValueDoneA11y": {
-    "description": "Runner 18.09.2026 — Vorlese-Label zum Schliessen des Reglers",
-    "placeholders": {
-      "set": {
-        "type": "int"
-      }
-    }
-  },
   "workoutSetTypeLegendTitle": "Satztypen",
   "@workoutSetTypeLegendTitle": {
     "description": "Runner 18.09.2026 — Vorlese-Kopf über den farbigen Typ-Pillen"
@@ -8051,8 +8008,216 @@
   "@workoutFormGuideDescription": {
     "description": "Runner 18.09.2026 — Abschnitt der Beschreibung im Anleitungs-Blatt"
   },
-  "workoutRunnerTableHold": "SEK",
+  "workoutRunnerTableHold": "HALTEN",
   "@workoutRunnerTableHold": {
-    "description": "Runner 18.09.2026 — Spaltenkopf der Haltezeit; „Halten“ passte nicht über 56 dp"
+    "description": "Runner, Tabellenkopf Haltespalte (Vorlage TEM Workout Runner)"
+  },
+  "stepPadTitleWeight": "GEWICHT · SATZ {n}",
+  "@stepPadTitleWeight": {
+    "description": "Eingabe-Blatt im Runner (18.09.2026, Claude-Design) — Titel über dem Gewichtsregler",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "stepPadTitleReps": "WIEDERHOLUNGEN · SATZ {n}",
+  "@stepPadTitleReps": {
+    "description": "Eingabe-Blatt im Runner — Titel über dem Wiederholungsregler",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "stepPadTitleHold": "HALTEN · SATZ {n}",
+  "@stepPadTitleHold": {
+    "description": "Eingabe-Blatt im Runner — Titel über dem Haltezeitregler",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "stepPadFieldWeight": "Gewicht in Kilogramm",
+  "@stepPadFieldWeight": {
+    "description": "Eingabe-Blatt im Runner — Feldname für Screenreader"
+  },
+  "stepPadFieldReps": "Wiederholungen",
+  "@stepPadFieldReps": {
+    "description": "Eingabe-Blatt im Runner — Feldname für Screenreader"
+  },
+  "stepPadFieldHold": "Haltezeit in Sekunden",
+  "@stepPadFieldHold": {
+    "description": "Eingabe-Blatt im Runner — Feldname für Screenreader"
+  },
+  "stepPadPrevious": "Letztes Mal: {value}",
+  "@stepPadPrevious": {
+    "description": "Eingabe-Blatt im Runner — Vorwert unter dem Titel",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadDelta": "{value} {unit} ZU LETZTEM MAL",
+  "@stepPadDelta": {
+    "description": "Eingabe-Blatt im Runner — Unterschied zum Vorwert",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadDeltaA11y": "{value} {unit} gegenüber dem letzten Mal",
+  "@stepPadDeltaA11y": {
+    "description": "Eingabe-Blatt im Runner — Unterschied für Screenreader, ohne Glyph",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadKeyboard": "TASTATUR",
+  "@stepPadKeyboard": {
+    "description": "Eingabe-Blatt im Runner — Umschalter auf die Tastatur"
+  },
+  "stepPadRuler": "REGLER",
+  "@stepPadRuler": {
+    "description": "Eingabe-Blatt im Runner — Umschalter zurück auf den Regler"
+  },
+  "stepPadKeyboardA11y": "Tastatur statt Regler, {field}",
+  "@stepPadKeyboardA11y": {
+    "description": "Eingabe-Blatt im Runner — Vorlese-Label des Umschalters",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadRulerA11y": "Regler statt Tastatur, {field}",
+  "@stepPadRulerA11y": {
+    "description": "Eingabe-Blatt im Runner — Vorlese-Label des Umschalters",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadHint": "ZIEHEN ZUM EINSTELLEN · SCHRITT {step}",
+  "@stepPadHint": {
+    "description": "Eingabe-Blatt im Runner — Hinweiszeile unter dem Band",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadApply": "ÜBERNEHMEN",
+  "@stepPadApply": {
+    "description": "Eingabe-Blatt im Runner — Knopf, der den Wert übernimmt"
+  },
+  "stepPadStepKg": "{step} kg",
+  "@stepPadStepKg": {
+    "description": "Eingabe-Blatt im Runner — Schrittweite beim Gewicht",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadStepSeconds": "{step} s",
+  "@stepPadStepSeconds": {
+    "description": "Eingabe-Blatt im Runner — Schrittweite bei der Haltezeit",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadStepPlain": "{step}",
+  "@stepPadStepPlain": {
+    "description": "Eingabe-Blatt im Runner — Schrittweite bei den Wiederholungen",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadStepA11y": "Schrittweite {step}, {field}",
+  "@stepPadStepA11y": {
+    "description": "Eingabe-Blatt im Runner — Vorlese-Label einer Schrittkapsel",
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadSliderA11y": "{field}, ziehen zum Einstellen",
+  "@stepPadSliderA11y": {
+    "description": "Eingabe-Blatt im Runner — Vorlese-Label des Bandes",
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadIncrease": "Wert erhöhen",
+  "@stepPadIncrease": {
+    "description": "Eingabe-Blatt im Runner — Plus-Knopf"
+  },
+  "stepPadDecrease": "Wert verringern",
+  "@stepPadDecrease": {
+    "description": "Eingabe-Blatt im Runner — Minus-Knopf"
+  },
+  "stepPadQuickA11y": "Um {value} ändern",
+  "@stepPadQuickA11y": {
+    "description": "Eingabe-Blatt im Runner — Vorlese-Label eines Schnellknopfs",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "stepPadClose": "Eingabe schliessen",
+  "@stepPadClose": {
+    "description": "Eingabe-Blatt im Runner — Verdunkler und Zurück-Geste"
+  },
+  "workoutRunnerTableSetShort": "TYP",
+  "@workoutRunnerTableSetShort": {
+    "description": "Runner, Tabellenkopf Spalte 1, wenn SATZ nicht in 32 dp passt"
+  },
+  "workoutRunnerTableLastShort": "ZULETZT",
+  "@workoutRunnerTableLastShort": {
+    "description": "Runner, Tabellenkopf Spalte 2, wenn LETZTES MAL nicht passt"
+  },
+  "workoutRunnerTableHoldShort": "SEK",
+  "@workoutRunnerTableHoldShort": {
+    "description": "Runner, Tabellenkopf Haltespalte, wenn HALTEN nicht passt"
+  },
+  "stepPadUnitWeight": "KG",
+  "@stepPadUnitWeight": {
+    "description": "Eingabe-Blatt im Runner — Einheit neben der grossen Zahl"
+  },
+  "stepPadUnitReps": "WDH",
+  "@stepPadUnitReps": {
+    "description": "Eingabe-Blatt im Runner — Einheit neben der grossen Zahl"
+  },
+  "stepPadUnitHold": "SEK",
+  "@stepPadUnitHold": {
+    "description": "Eingabe-Blatt im Runner — Einheit neben der grossen Zahl"
+  },
+  "workoutValueNone": "—",
+  "@workoutValueNone": {
+    "description": "Runner, leeres Wertfeld in der Satzzeile (Geviertstrich wie in der Vorlage)"
   }
 }

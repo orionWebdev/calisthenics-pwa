@@ -176,14 +176,24 @@ void main() {
     await tester.pumpAndSettle();
     await _shot(tester, key, 'runner_halten');
 
-    // Zurück und den Regler unter Satz 1 aufklappen.
+    // Zurück und das Eingabeblatt über Satz 1 öffnen.
     await tester.tap(find.bySemanticsLabel('Vorherige Übung'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel(RegExp('^KG, Satz 1')));
     await tester.pumpAndSettle();
     await _shot(tester, key, 'runner_regler');
 
-    // Einen Satz abhaken — die Pausenleiste erscheint.
+    // Gewicht und Wiederholungen übernehmen …
+    await tester.tap(find.text('ÜBERNEHMEN'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel(RegExp('^WDH, Satz 1')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ÜBERNEHMEN'));
+    await tester.pumpAndSettle();
+    await _shot(tester, key, 'runner_werte');
+
+    // … und abhaken: Pausenleiste, und Satz 2 trägt die übernommenen Werte
+    // in Cyan.
     await tester.tap(find.bySemanticsLabel('Satz 1 abschließen'));
     await tester.pumpAndSettle();
     await _shot(tester, key, 'runner_pause');
