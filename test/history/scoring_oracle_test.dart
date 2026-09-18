@@ -48,7 +48,13 @@ void main() {
   });
 
   test('die Rohlast jeder einzelnen Einheit stimmt überein', () {
-    final expected = (oracle['loads'] as List).cast<Map<String, dynamic>>();
+    // Massstab ist `correctedLoads`, nicht `loads`: Seit dem 18.09.2026
+    // rechnet die Dart-Fassung Zusatzgewicht bei Körpergewichtsübungen mit,
+    // die PWA hat es verworfen. `correctedLoads` ist dieselbe PWA-Datei mit
+    // genau diesem einen Patch — siehe `training_load.dart:_strength` und
+    // `tool/scoring_oracle.mjs`.
+    final expected =
+        (oracle['correctedLoads'] as List).cast<Map<String, dynamic>>();
 
     for (var i = 0; i < sessions.length; i++) {
       final load = TrainingLoad.of(sessions[i], context);
@@ -123,11 +129,16 @@ void main() {
             closeTo((entry['chronicLoad'] as num).toDouble(), 1e-9),
             reason: 'chronische Last');
 
-        // Ohne Zeitumstellung im Fenster darf die Korrektur nichts ändern —
-        // sonst wäre sie keine Korrektur, sondern eine zweite Rechnung.
+        // Ohne Zeitumstellung im Fenster darf die Kalender-Korrektur nichts
+        // ändern — sonst wäre sie keine Korrektur, sondern eine zweite
+        // Rechnung. Massstab ist `weightOnly` (die PWA nur mit dem
+        // Gewichts-Patch, ohne den Kalender-Patch), nicht die rohe `pwa`:
+        // Seit dem Gewichts-Patch weicht die rohe PWA immer ab, nicht nur bei
+        // einer Zeitumstellung — das würde diesen Selbsttest sonst immer
+        // auslösen, unabhängig vom Kalender-Patch, den er eigentlich prüft.
         if (!dst) {
-          final pwa = entry['pwa'] as Map<String, dynamic>;
-          expect(result.acwr, pwa['acwr'],
+          final weightOnly = entry['weightOnly'] as Map<String, dynamic>;
+          expect(result.acwr, weightOnly['acwr'],
               reason: 'Ohne Zeitumstellung müssen beide Fassungen '
                   'übereinstimmen');
         }

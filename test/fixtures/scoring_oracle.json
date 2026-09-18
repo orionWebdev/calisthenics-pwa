@@ -1809,6 +1809,227 @@
    "isRecovery": false
   }
  ],
+ "correctedLoads": [
+  {
+   "rawLoad": 72
+  },
+  {
+   "rawLoad": 17.28
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 39.54
+  },
+  {
+   "rawLoad": 76.1
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 178.14
+  },
+  {
+   "rawLoad": 73.2
+  },
+  {
+   "rawLoad": 21.36
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 81.62
+  },
+  {
+   "rawLoad": 28.49
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 1641.36
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 22.96
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 588.24
+  },
+  {
+   "rawLoad": 1056.6
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 112.16
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 12.24
+  },
+  {
+   "rawLoad": 32.8
+  },
+  {
+   "rawLoad": 267
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 146.44
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 37.88
+  },
+  {
+   "rawLoad": 9.02
+  },
+  {
+   "rawLoad": 540
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 152.08
+  },
+  {
+   "rawLoad": 443.16
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 307.02
+  },
+  {
+   "rawLoad": 67.14
+  },
+  {
+   "rawLoad": 20.83
+  },
+  {
+   "rawLoad": 642.44
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 19.96
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 377.4
+  },
+  {
+   "rawLoad": 27.44
+  },
+  {
+   "rawLoad": 49.08
+  },
+  {
+   "rawLoad": 181.2
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 105.88
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 39.42
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 60.62
+  },
+  {
+   "rawLoad": 59.87
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 281.2
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 0
+  },
+  {
+   "rawLoad": 299.88
+  }
+ ],
  "curve": [
   {
    "acwr": 0,
@@ -2269,6 +2490,16 @@
     "daysSinceLastSession": null,
     "todayLoad": 0,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2293,6 +2524,16 @@
     "daysSinceLastSession": null,
     "todayLoad": 0,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2309,6 +2550,16 @@
    "todayLoad": 0,
    "fatiguePenalty": 0,
    "pwa": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "weightOnly": {
     "acuteLoad": 0,
     "chronicLoad": 0,
     "acwr": null,
@@ -2341,6 +2592,16 @@
     "daysSinceLastSession": null,
     "todayLoad": 0,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 0,
+    "chronicLoad": 0,
+    "acwr": null,
+    "readinessScore": null,
+    "zone": null,
+    "daysSinceLastSession": null,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2348,9 +2609,9 @@
    "applyFatigue": false,
    "dstInWindow": false,
    "referenceDate": "2026-01-21T11:00:00.000Z",
-   "acuteLoad": 45.661396909786085,
-   "chronicLoad": 22.59510423295998,
-   "acwr": 2.02,
+   "acuteLoad": 48.0812026011334,
+   "chronicLoad": 24.13933814664006,
+   "acwr": 1.99,
    "readinessScore": 14,
    "zone": "overreaching",
    "daysSinceLastSession": 0,
@@ -2365,6 +2626,16 @@
     "daysSinceLastSession": 0,
     "todayLoad": 21.36,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 48.0812026011334,
+    "chronicLoad": 24.13933814664006,
+    "acwr": 1.99,
+    "readinessScore": 14,
+    "zone": "overreaching",
+    "daysSinceLastSession": 0,
+    "todayLoad": 21.36,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2372,14 +2643,14 @@
    "applyFatigue": true,
    "dstInWindow": false,
    "referenceDate": "2026-01-21T11:00:00.000Z",
-   "acuteLoad": 45.661396909786085,
-   "chronicLoad": 22.59510423295998,
-   "acwr": 2.02,
+   "acuteLoad": 48.0812026011334,
+   "chronicLoad": 24.13933814664006,
+   "acwr": 1.99,
    "readinessScore": 5,
    "zone": "overreaching",
    "daysSinceLastSession": 0,
    "todayLoad": 21.36,
-   "fatiguePenalty": 10,
+   "fatiguePenalty": 9,
    "pwa": {
     "acuteLoad": 45.661396909786085,
     "chronicLoad": 22.59510423295998,
@@ -2389,6 +2660,16 @@
     "daysSinceLastSession": 0,
     "todayLoad": 21.36,
     "fatiguePenalty": 10
+   },
+   "weightOnly": {
+    "acuteLoad": 48.0812026011334,
+    "chronicLoad": 24.13933814664006,
+    "acwr": 1.99,
+    "readinessScore": 5,
+    "zone": "overreaching",
+    "daysSinceLastSession": 0,
+    "todayLoad": 21.36,
+    "fatiguePenalty": 9
    }
   },
   {
@@ -2396,8 +2677,8 @@
    "applyFatigue": false,
    "dstInWindow": false,
    "referenceDate": "2026-02-05T11:00:00.000Z",
-   "acuteLoad": 288.44310821139425,
-   "chronicLoad": 183.52595749402695,
+   "acuteLoad": 288.50134528372723,
+   "chronicLoad": 184.04590238397236,
    "acwr": 1.57,
    "readinessScore": 33,
    "zone": "fatigued",
@@ -2413,6 +2694,16 @@
     "daysSinceLastSession": 2,
     "todayLoad": 0,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 288.50134528372723,
+    "chronicLoad": 184.04590238397236,
+    "acwr": 1.57,
+    "readinessScore": 33,
+    "zone": "fatigued",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2420,8 +2711,8 @@
    "applyFatigue": true,
    "dstInWindow": false,
    "referenceDate": "2026-02-05T11:00:00.000Z",
-   "acuteLoad": 288.44310821139425,
-   "chronicLoad": 183.52595749402695,
+   "acuteLoad": 288.50134528372723,
+   "chronicLoad": 184.04590238397236,
    "acwr": 1.57,
    "readinessScore": 33,
    "zone": "fatigued",
@@ -2431,6 +2722,16 @@
    "pwa": {
     "acuteLoad": 288.44310821139425,
     "chronicLoad": 183.52595749402695,
+    "acwr": 1.57,
+    "readinessScore": 33,
+    "zone": "fatigued",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 288.50134528372723,
+    "chronicLoad": 184.04590238397236,
     "acwr": 1.57,
     "readinessScore": 33,
     "zone": "fatigued",
@@ -2444,10 +2745,10 @@
    "applyFatigue": false,
    "dstInWindow": false,
    "referenceDate": "2026-02-20T11:00:00.000Z",
-   "acuteLoad": 154.6073635903117,
-   "chronicLoad": 123.67838752044852,
-   "acwr": 1.25,
-   "readinessScore": 60,
+   "acuteLoad": 159.31583134357288,
+   "chronicLoad": 126.69337835544175,
+   "acwr": 1.26,
+   "readinessScore": 59,
    "zone": "maintaining",
    "daysSinceLastSession": 0,
    "todayLoad": 540,
@@ -2461,6 +2762,16 @@
     "daysSinceLastSession": 0,
     "todayLoad": 540,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 159.31583134357288,
+    "chronicLoad": 126.69337835544175,
+    "acwr": 1.26,
+    "readinessScore": 59,
+    "zone": "maintaining",
+    "daysSinceLastSession": 0,
+    "todayLoad": 540,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2468,10 +2779,10 @@
    "applyFatigue": true,
    "dstInWindow": false,
    "referenceDate": "2026-02-20T11:00:00.000Z",
-   "acuteLoad": 154.6073635903117,
-   "chronicLoad": 123.67838752044852,
-   "acwr": 1.25,
-   "readinessScore": 39,
+   "acuteLoad": 159.31583134357288,
+   "chronicLoad": 126.69337835544175,
+   "acwr": 1.26,
+   "readinessScore": 38,
    "zone": "fatigued",
    "daysSinceLastSession": 0,
    "todayLoad": 540,
@@ -2485,6 +2796,16 @@
     "daysSinceLastSession": 0,
     "todayLoad": 540,
     "fatiguePenalty": 21
+   },
+   "weightOnly": {
+    "acuteLoad": 159.31583134357288,
+    "chronicLoad": 126.69337835544175,
+    "acwr": 1.26,
+    "readinessScore": 38,
+    "zone": "fatigued",
+    "daysSinceLastSession": 0,
+    "todayLoad": 540,
+    "fatiguePenalty": 21
    }
   },
   {
@@ -2492,10 +2813,10 @@
    "applyFatigue": false,
    "dstInWindow": false,
    "referenceDate": "2026-03-12T11:00:00.000Z",
-   "acuteLoad": 46.380780581804935,
-   "chronicLoad": 89.40938761309052,
-   "acwr": 0.52,
-   "readinessScore": 40,
+   "acuteLoad": 46.60474313025443,
+   "chronicLoad": 90.74551772737759,
+   "acwr": 0.51,
+   "readinessScore": 39,
    "zone": "form_loss",
    "daysSinceLastSession": 6,
    "todayLoad": 0,
@@ -2505,6 +2826,16 @@
     "chronicLoad": 89.40938761309052,
     "acwr": 0.52,
     "readinessScore": 40,
+    "zone": "form_loss",
+    "daysSinceLastSession": 6,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 46.60474313025443,
+    "chronicLoad": 90.74551772737759,
+    "acwr": 0.51,
+    "readinessScore": 39,
     "zone": "form_loss",
     "daysSinceLastSession": 6,
     "todayLoad": 0,
@@ -2516,10 +2847,10 @@
    "applyFatigue": true,
    "dstInWindow": false,
    "referenceDate": "2026-03-12T11:00:00.000Z",
-   "acuteLoad": 46.380780581804935,
-   "chronicLoad": 89.40938761309052,
-   "acwr": 0.52,
-   "readinessScore": 40,
+   "acuteLoad": 46.60474313025443,
+   "chronicLoad": 90.74551772737759,
+   "acwr": 0.51,
+   "readinessScore": 39,
    "zone": "form_loss",
    "daysSinceLastSession": 6,
    "todayLoad": 0,
@@ -2533,6 +2864,16 @@
     "daysSinceLastSession": 6,
     "todayLoad": 0,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 46.60474313025443,
+    "chronicLoad": 90.74551772737759,
+    "acwr": 0.51,
+    "readinessScore": 39,
+    "zone": "form_loss",
+    "daysSinceLastSession": 6,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2540,10 +2881,10 @@
    "applyFatigue": false,
    "dstInWindow": true,
    "referenceDate": "2026-04-10T10:00:00.000Z",
-   "acuteLoad": 68.68021720259874,
-   "chronicLoad": 62.99866628620067,
-   "acwr": 1.09,
-   "readinessScore": 80,
+   "acuteLoad": 68.8399093280503,
+   "chronicLoad": 63.51686461647167,
+   "acwr": 1.08,
+   "readinessScore": 81,
    "zone": "building",
    "daysSinceLastSession": 2,
    "todayLoad": 0,
@@ -2557,6 +2898,16 @@
     "daysSinceLastSession": 2,
     "todayLoad": 0,
     "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 88.25629401032089,
+    "chronicLoad": 68.29770388867922,
+    "acwr": 1.29,
+    "readinessScore": 56,
+    "zone": "maintaining",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
    }
   },
   {
@@ -2564,10 +2915,10 @@
    "applyFatigue": true,
    "dstInWindow": true,
    "referenceDate": "2026-04-10T10:00:00.000Z",
-   "acuteLoad": 68.68021720259874,
-   "chronicLoad": 62.99866628620067,
-   "acwr": 1.09,
-   "readinessScore": 80,
+   "acuteLoad": 68.8399093280503,
+   "chronicLoad": 63.51686461647167,
+   "acwr": 1.08,
+   "readinessScore": 81,
    "zone": "building",
    "daysSinceLastSession": 2,
    "todayLoad": 0,
@@ -2577,6 +2928,16 @@
     "chronicLoad": 67.74050138301148,
     "acwr": 1.3,
     "readinessScore": 55,
+    "zone": "maintaining",
+    "daysSinceLastSession": 2,
+    "todayLoad": 0,
+    "fatiguePenalty": 0
+   },
+   "weightOnly": {
+    "acuteLoad": 88.25629401032089,
+    "chronicLoad": 68.29770388867922,
+    "acwr": 1.29,
+    "readinessScore": 56,
     "zone": "maintaining",
     "daysSinceLastSession": 2,
     "todayLoad": 0,
@@ -2673,10 +3034,10 @@
    "day": 50,
    "referenceDate": "2026-02-20T11:00:00.000Z",
    "dstInWindow": false,
-   "formScore": 72,
+   "formScore": 73,
    "zone": "building",
    "consistency": 31,
-   "loadLevel": 5,
+   "loadLevel": 6,
    "recency": 15,
    "trend": "stable",
    "daysSinceLastSession": 0,
@@ -2694,10 +3055,10 @@
    "day": 70,
    "referenceDate": "2026-03-12T11:00:00.000Z",
    "dstInWindow": false,
-   "formScore": 48,
+   "formScore": 47,
    "zone": "maintaining",
    "consistency": 24,
-   "loadLevel": 27,
+   "loadLevel": 26,
    "recency": 1,
    "trend": "rising",
    "daysSinceLastSession": 6,

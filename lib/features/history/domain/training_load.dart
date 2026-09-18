@@ -32,7 +32,8 @@ class LoadContext {
 ///
 /// Jede Zahl hier stammt aus der PWA und ist **nicht** neu erfunden. Wo sie
 /// überrascht, steht der Grund daneben. Ein Testorakel vergleicht die Ergebnisse
-/// direkt mit denen des JavaScripts (siehe `tool/scoring_oracle.mjs`).
+/// direkt mit denen des JavaScripts (siehe `tool/scoring_oracle.mjs`) — mit
+/// **einer** bewussten Ausnahme, siehe [_strength].
 abstract final class TrainingLoad {
   /// Faktoren der Anstrengung. Die Skala reicht **1 bis 5**, nicht 1 bis 10 —
   /// im Bestand kommen 1 bis 4 vor.
@@ -97,6 +98,20 @@ abstract final class TrainingLoad {
         RecoverySession() || UnknownSession() => 0,
       };
 
+  /// **Bewusste Abweichung vom Orakel** (seit 18.09.2026, Gemini-Review):
+  /// Die PWA verwarf ein eingetragenes `set.weight`, sobald eine Übung als
+  /// Körpergewicht galt — ein Klimmzug mit 20 kg Zusatzweste zählte wie einer
+  /// ohne. Hier zählt beides zusammen: `effectiveWeight = bodyWeightKg +
+  /// (set.weight ?? 0)`. Das ist kein übersehener Fall, sondern das
+  /// tatsächliche Verhalten des Originals über den ganzen Bestand — deshalb
+  /// prüft `test/history/scoring_oracle_test.dart` diese eine Stelle nicht
+  /// gegen die rohe PWA-Last, sondern gegen eine gleichermassen korrigierte
+  /// zweite Ausführung des Originals (`tool/scoring_oracle.mjs`, `corrected`).
+  ///
+  /// Wirkung auf den Bestand (geprüft gegen die Sicherung vom 16.09.2026):
+  /// 3 von 292 aufgezeichneten Übungseinträgen tragen sowohl die
+  /// Körpergewichts-Kennzeichnung als auch ein Satzgewicht — ihre Rohlast
+  /// ändert sich rückwirkend. Keiner davon gehört zum aktuell aktiven Konto.
   static double _strength(StrengthSession session, LoadContext context) {
     final factor = rpeFactor(session.rpe ?? _defaultRpe);
 
@@ -113,8 +128,9 @@ abstract final class TrainingLoad {
       for (final set in exercise.sets) {
         final reps = set.reps ?? 0;
         if (reps <= 0) continue;
-        final weight =
-            usesBodyweight ? context.bodyWeightKg : (set.weight ?? 0);
+        final weight = usesBodyweight
+            ? context.bodyWeightKg + (set.weight ?? 0)
+            : (set.weight ?? 0);
         if (weight == 0) continue;
         totalVolume += weight * reps;
       }

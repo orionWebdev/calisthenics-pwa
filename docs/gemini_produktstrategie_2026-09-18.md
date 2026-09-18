@@ -24,28 +24,31 @@ stimmen einige Tech-Annahmen nicht mit diesem Projekt überein (siehe Abschnitt 
 
 ## 2 · Übernehmen — mit Begründung und Umsetzung
 
-### 2.1 Weighted Calisthenics: Zusatzgewicht zur Last addieren
+### 2.1 Weighted Calisthenics: Zusatzgewicht zur Last addieren — ✅ erledigt (18.09.2026)
 
-**Das ist der einzige echte Fehler, den das PDF gefunden hat.** Geprüft in
-`lib/features/history/domain/training_load.dart:110`:
+**Das ist der einzige echte Fehler, den das PDF gefunden hat**, aber die Umsetzung war nicht so klein
+wie zuerst gedacht: `training_load.dart` ist Zeile für Zeile aus `js/views/sessions/scoring.js`
+portiert, und ein Testorakel (`tool/scoring_oracle.mjs`) führt das **echte** Original als JavaScript
+aus, um zu beweisen, dass die Portierung keine historischen Zahlen verändert. Das
+`usesBodyweight ? bodyWeight : (set.weight ?? 0)`-Verhalten war also kein Portierungsfehler, sondern
+das **tatsächliche Verhalten der PWA über den ganzen Bestand** — eine einfache Änderung hätte den
+Beweis der Gleichheit gebrochen, nicht nur den Fehler behoben.
 
-```dart
-final weight = usesBodyweight ? context.bodyWeightKg : (set.weight ?? 0);
-```
-
-Bei `usesBodyweight == true` wird **nur** das Körpergewicht gezählt, ein eingetragenes `set.weight`
-(Zusatzweste, Dip-Gürtel) geht komplett verloren. Ein Weighted Pull-up mit 20 kg Zusatzlast zählt
-also identisch zu einem ohne. Das PDF schlägt korrekt vor: `effectiveLoad = Körpergewicht + Zusatzlast`.
-
-**Umsetzung (klein, keine Migration):**
+**Umsetzung:**
 - `training_load.dart`: `weight = usesBodyweight ? context.bodyWeightKg + (set.weight ?? 0) : (set.weight ?? 0)`.
-- Gleiche Korrektur, falls sie an anderer Stelle dieselbe Fallunterscheidung wiederholt (grep nach
-  `usesBodyweight` vor dem Ändern — Stand heute nur diese eine Stelle in `training_load.dart`).
-- Test: Weighted Pull-up mit Körpergewicht 80 kg und Zusatzlast 20 kg muss dieselbe Last liefern wie
-  ein Hantelsatz mit 100 kg bei gleichen Wiederholungen.
-- Das Eingabefeld für Gewicht ist bei `usesBodyweight`-Übungen im Runner schon nicht gesperrt (Domäne
-  unterscheidet nicht) — nur die Rechnung muss korrigiert werden, keine UI-Änderung nötig.
-- **Aufwand:** klein, ein Agent, eine Session.
+- `tool/scoring_oracle.mjs` führt jetzt **drei** Fassungen der PWA aus: die rohe (`api`, bleibt
+  unangetastet — Beweis der Historie), eine mit Kalender- **und** Gewichts-Patch (`corrected`, der
+  Massstab für Dart) und eine nur mit dem Gewichts-Patch (`weightOnly`, der Massstab für den
+  bestehenden Kalender-Selbsttest, der sonst am neuen Gewichts-Unterschied gescheitert wäre).
+- `test/history/scoring_oracle_test.dart`: die Rohlast-Gleichheit prüft jetzt gegen `correctedLoads`
+  statt gegen die rohe PWA; ein neuer, von den Zufallsdaten unabhängiger Test
+  (`training_load_weighted_calisthenics_test.dart`) sagt in Worten, was der Fix tut: ein Klimmzug mit
+  80 kg Körpergewicht und 20 kg Zusatzlast liefert dieselbe Last wie ein Hantelsatz mit 100 kg.
+- **Wirkung auf den echten Bestand, geprüft gegen die Sicherung vom 16.09.2026:** 3 von 292
+  aufgezeichneten Übungseinträgen tragen sowohl die Körpergewichts-Kennzeichnung als auch ein
+  Satzgewicht — ihre historische Last ändert sich rückwirkend. Alle drei gehören zum zweiten Konto
+  (`e5pxNXB7…`), keiner zum aktuell aktiven. Das ist eine bewusste, dokumentierte Entscheidung.
+- 800 Tests grün, Analyse ohne Befund.
 
 ### 2.2 Hard Sets (RPE ≥ 7) als Muskelgruppen-Metrik
 
@@ -192,9 +195,12 @@ keiner wird durch ihn blockiert.
 
 ## 7 · Play-Store-Freigabe — Stand und Blocker (18.09.2026)
 
-Ziel des Nutzers: schnellstmöglich in den Play Store, Monetarisierung ist definitiv ein Thema.
-Geprüft am tatsächlichen Repo-Stand, nicht am PDF — die dortige Phase-1/2/3-Gliederung passt nicht
-zu „schnellstmöglich", weil sie Store-Vorbereitung erst nach vollem Feature-Umbau vorsieht.
+**Korrektur, noch am selben Tag:** Store und Monetarisierung sind ein reales Ziel, aber der Deploy
+selbst kommt **ganz zum Schluss** — erst nachdem die Metrik- und Feature-Arbeit aus Abschnitt 2 steht.
+Dieser Abschnitt bleibt als Bestandsaufnahme stehen, und der Signierschlüssel (7.5) ist bereits
+erledigt und bleibt so. An den übrigen offenen Punkten (Rechtstext-Platzhalter, Paywall-Schnitt,
+Registrierung öffnen) wird aber **nicht weitergearbeitet**, solange Abschnitt 2 offen ist. Die Arbeit
+geht dort weiter.
 
 ### 7.1 Was schon passt
 

@@ -112,7 +112,7 @@ const api = vm.runInNewContext(src + EXPORTS, sandbox);
 
 /**
  * Dieselbe Datei, aber mit kalendarischer statt millisekundengenauer
- * Fenstergrenze.
+ * Fenstergrenze — **und** mit dem Weighted-Calisthenics-Fix vom 18.09.2026.
  *
  * Die PWA rechnet `refDay.getTime() - N * 24 * 60 * 60 * 1000`. Liegt eine
  * Zeitumstellung im Fenster, ergibt das 23:00 des Vortags statt Mitternacht —
@@ -122,23 +122,66 @@ const api = vm.runInNewContext(src + EXPORTS, sandbox);
  *
  * Die Dart-Fassung rechnet kalendarisch und ist damit unabhängig von der
  * Zeitumstellung. Diese zweite Auswertung ist ihr Massstab.
+ *
+ * ## Der zweite Patch: Zusatzgewicht bei Körpergewichtsübungen
+ *
+ * Die PWA rechnet `effectiveWeight = usesBodyweight ? bodyWeight : (set.weight
+ * || 0)` — ein eingetragenes `set.weight` neben `usesBodyweight` geht komplett
+ * verloren. Ein Klimmzug mit 20 kg Zusatzweste zählt damit wie einer ohne.
+ * Das ist kein Rechenfehler der PWA, sondern ihr tatsächliches Verhalten über
+ * den ganzen Bestand — und genau deshalb *nicht* rückwirkend in der reinen
+ * `api`-Fassung korrigiert, die die Historie beweist. Die Dart-Fassung rechnet
+ * ab sofort `bodyWeight + (set.weight || 0)`; dieser zweite Patch macht das
+ * korrigierte Verhalten hier zum Massstab, den `training_load.dart` erfüllen
+ * muss, ohne die Rohlast-Gleichheit mit der echten PWA (`loads`, unten) zu
+ * verlieren.
+ *
+ * Im echten Bestand betrifft das 3 von 292 aufgezeichneten Übungseinträgen
+ * (geprüft gegen die Sicherung vom 16.09.2026) — alle beim zweiten Konto,
+ * keiner im aktuell aktiven. Die drei Lastwerte ändern sich rückwirkend; das
+ * ist eine bewusste Entscheidung, keine übersehene Nebenwirkung.
  */
-const corrected = vm.runInNewContext(
-  src
-    // Fenstergrenze kalendarisch statt in Millisekunden.
-    .replace(
-      /refDay\.getTime\(\) - (\d+) \* 24 \* 60 \* 60 \* 1000/g,
-      'new Date(refDay.getFullYear(), refDay.getMonth(), refDay.getDate() - $1).getTime()',
-    )
-    // Tagesabstände runden statt abschneiden. Zwischen zwei lokalen
-    // Mitternachten liegen bei einer Zeitumstellung 23 oder 25 Stunden;
-    // `Math.floor` macht daraus einen Tag zu wenig.
-    .replace(
-      /Math\.floor\(\(refDay\.getTime\(\) - ([A-Za-z]+)\.getTime\(\)\) \/ \(1000 \* 60 \* 60 \* 24\)\)/g,
-      'Math.round((refDay.getTime() - $1.getTime()) / (1000 * 60 * 60 * 24))',
-    ) + EXPORTS,
-  { ...sandbox },
-);
+const CALENDAR_PATCHES = [
+  // Fenstergrenze kalendarisch statt in Millisekunden.
+  [
+    /refDay\.getTime\(\) - (\d+) \* 24 \* 60 \* 60 \* 1000/g,
+    'new Date(refDay.getFullYear(), refDay.getMonth(), refDay.getDate() - $1).getTime()',
+  ],
+  // Tagesabstände runden statt abschneiden. Zwischen zwei lokalen
+  // Mitternachten liegen bei einer Zeitumstellung 23 oder 25 Stunden;
+  // `Math.floor` macht daraus einen Tag zu wenig.
+  [
+    /Math\.floor\(\(refDay\.getTime\(\) - ([A-Za-z]+)\.getTime\(\)\) \/ \(1000 \* 60 \* 60 \* 24\)\)/g,
+    'Math.round((refDay.getTime() - $1.getTime()) / (1000 * 60 * 60 * 24))',
+  ],
+];
+
+// Zusatzgewicht zählt jetzt zum Körpergewicht dazu, statt es zu verwerfen —
+// derselbe Patch, den `corrected` und `weightOnly` unten beide brauchen.
+const WEIGHT_PATCH = [
+  /const effectiveWeight = usesBodyweight\s*\n\s*\? bodyWeight\s*\n\s*: \(set\.weight \|\| 0\);/,
+  'const effectiveWeight = usesBodyweight\n          ? bodyWeight + (set.weight || 0)\n          : (set.weight || 0);',
+];
+
+function patched(...patches) {
+  let out = src;
+  for (const [pattern, replacement] of patches) out = out.replace(pattern, replacement);
+  return vm.runInNewContext(out + EXPORTS, { ...sandbox });
+}
+
+const corrected = patched(...CALENDAR_PATCHES, WEIGHT_PATCH);
+
+/**
+ * Nur der Gewichts-Patch, ohne den Kalender-Patch — der Massstab für den
+ * Selbsttest weiter unten („Ohne Zeitumstellung müssen beide Fassungen
+ * übereinstimmen"). Der Test prüft, dass der Kalender-Patch ausserhalb einer
+ * Zeitumstellung nichts ändert; seit dem Gewichts-Patch ist die rohe `api`
+ * dafür kein gültiger Vergleichswert mehr, weil sie **immer** abweicht, nicht
+ * nur bei einer Zeitumstellung. `weightOnly` trägt denselben Gewichts-Patch
+ * wie `corrected`, aber keinen Kalender-Patch — ausserhalb einer
+ * Zeitumstellung muss `corrected` exakt `weightOnly` ergeben.
+ */
+const weightOnly = patched(WEIGHT_PATCH);
 
 // ---------------------------------------------------------------- Ausgabe
 const sessions = buildSessions();
@@ -146,6 +189,13 @@ const sessions = buildSessions();
 const loads = sessions.map((s) => {
   const { rawLoad } = api.calculateSessionLoadValue(s);
   return { rawLoad, isRecovery: api.isRecoverySession(s) };
+});
+
+// Massstab für die Dart-Fassung (siehe Kommentar an `corrected` oben) — die
+// einzige Abweichung von `loads` ist der Weighted-Calisthenics-Fix.
+const correctedLoads = sessions.map((s) => {
+  const { rawLoad } = corrected.calculateSessionLoadValue(s);
+  return { rawLoad };
 });
 
 // Stützstellen der Kurve einzeln, damit ein Abweichen sofort lokalisierbar ist.
@@ -203,6 +253,7 @@ for (const day of [13, 14, 20, 35, 50, 70, 99]) {
       referenceDate: ref.toISOString(),
       ...shape(corrected.getACWR(sessions, ref, { applyFatigue })),
       pwa: shape(api.getACWR(sessions, ref, { applyFatigue })),
+      weightOnly: shape(weightOnly.getACWR(sessions, ref, { applyFatigue })),
     });
   }
 
@@ -227,7 +278,11 @@ for (const day of [13, 14, 20, 35, 50, 70, 99]) {
 const target = process.argv[2] ?? 'test/fixtures/scoring_oracle.json';
 writeFileSync(
   target,
-  JSON.stringify({ bodyWeightKg: 78, sessions, loads, curve, cases, forms }, null, 1),
+  JSON.stringify(
+    { bodyWeightKg: 78, sessions, loads, correctedLoads, curve, cases, forms },
+    null,
+    1,
+  ),
 );
 
 const abweichend = cases.filter((c) => c.acwr !== c.pwa.acwr).length;
