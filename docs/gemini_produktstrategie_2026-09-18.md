@@ -50,7 +50,7 @@ Beweis der Gleichheit gebrochen, nicht nur den Fehler behoben.
   (`e5pxNXB7…`), keiner zum aktuell aktiven. Das ist eine bewusste, dokumentierte Entscheidung.
 - 800 Tests grün, Analyse ohne Befund.
 
-### 2.2 Hard Sets (RPE ≥ 7) als Muskelgruppen-Metrik
+### 2.2 Hard Sets (RPE ≥ 7) als Muskelgruppen-Metrik — ✅ erledigt (18.09.2026)
 
 Sinnvolle Ergänzung zur Muskelbalance, **aber sie setzt eine Datenmodell-Änderung voraus**, die das
 PDF nicht benennt: `rpe` ist heute ein Feld der **Einheit**, nicht des **Satzes**
@@ -82,7 +82,13 @@ Umrechnung (`RIR ≈ 10 − RPE`, grob) und eine Entscheidung, welche Skala die 
 Einstellungen ein kleiner Aufsatz auf demselben Feld, keine zweite Datenquelle. Kein eigenes Ticket
 jetzt.
 
-### 2.4 Plate Calculator
+### 2.4 Plate Calculator — ✅ erledigt (18.09.2026)
+
+**Umgesetzt:** `lib/core/domain/plate_calculator.dart` (`PlateCalculator.solve`, rechnet in Gramm,
+Stangen 20/15/10 kg), `AtemPlateStack` und ein aufklappbares „Scheiben"-Feld im `AtemStepPad` — nur
+bei Übungen ohne Körpergewicht. Nicht steckbarer Rest wird mit dem nächsten ladbaren Wert benannt,
+nicht stillschweigend gerundet. Scheiben unterscheiden sich über Grösse und Beschriftung, keine
+Kennfarben. Ursprünglicher Plan:
 
 Eigenständiges, kleines Feature ohne Datenmodell-Abhängigkeit. Rechnet aus einem Zielgewicht und der
 Stangenmasse (Standard 20 kg) die Bestückung.
@@ -180,10 +186,10 @@ und wurden entsprechend übernommen oder begründet zurückgestellt.
 
 ## 6 · Empfohlene Reihenfolge für die Metriken
 
-1. **2.1 Weighted-Calisthenics-Fix** — echter Fehler, klein, sofort machbar.
-2. **2.2 + Zukunftsziel 2 zusammen** — `LoggedSet` um `rpe` und Seiten-Kennzeichnung in einem Zug
+1. ✅ **2.1 Weighted-Calisthenics-Fix** — echter Fehler, klein, sofort machbar.
+2. ✅ **2.2 + Zukunftsziel 2 zusammen** — `LoggedSet` um `rpe` und Seiten-Kennzeichnung in einem Zug
    erweitern, dann Hard-Sets-Auswertung und die Auswahl links/rechts im Runner.
-3. **2.4 Plate Calculator** — kleiner, unabhängiger Gewinn für Kraftsportler.
+3. ✅ **2.4 Plate Calculator** — kleiner, unabhängiger Gewinn für Kraftsportler.
 4. **2.5 Skill-Tree** — zurückgestellt, eigenes Redaktionsprojekt für die Übungsketten nötig.
 5. **2.3 RIR-Umschalter** — erst nach 2, kein eigener Aufwand mehr.
 6. **2.6 Tempo/TUT** — nicht bauen ohne konkreten Bedarf.

@@ -167,8 +167,8 @@ void main() {
 
   testWidgets('rendert den Runner auf Honor-Breite', (tester) async {
     if (!renderEnabled) return;
-    final key = await pumpRunner(tester,
-        size: const Size(361, 780), scale: 1.15);
+    final key =
+        await pumpRunner(tester, size: const Size(361, 780), scale: 1.15);
 
     await _shot(tester, key, 'runner_gewicht');
 
@@ -263,8 +263,8 @@ void main() {
       await show(find.text('Wie schwer war Satz 1?'));
       await _shot(tester, key, 'rpe_${label}_streifen');
 
-      await tester.tap(
-          find.bySemanticsLabel('RPE 8, noch 2 Wiederholungen möglich'));
+      await tester
+          .tap(find.bySemanticsLabel('RPE 8, noch 2 Wiederholungen möglich'));
       await tester.pumpAndSettle();
       await show(find.text('RPE 8'));
       await _shot(tester, key, 'rpe_${label}_kapsel');
@@ -280,11 +280,18 @@ void main() {
       await tester.tap(find.bySemanticsLabel(RegExp('^RPE 6,')));
       await tester.pumpAndSettle();
 
-      final sides = find.bySemanticsLabel('Seiten getrennt protokollieren');
-      await show(sides);
+      // Die ganze Seitenwahl ins Bild, nicht nur das getippte Segment.
+      final group = find.bySemanticsLabel(RegExp('^Seiten für Übung '));
+      final sides =
+          find.bySemanticsLabel('Getrennt, links und rechts je eigene Sätze');
+      // Mittig statt am Rand: Übungskopf, Beschriftung und Trennlinie mit
+      // ins Bild.
+      await Scrollable.ensureVisible(tester.element(group), alignment: 0.5);
+      await tester.pumpAndSettle();
+      await _shot(tester, key, 'rpe_${label}_seiten_aus');
       await tester.tap(sides);
       await tester.pumpAndSettle();
-      await show(sides);
+      await show(group);
       await _shot(tester, key, 'rpe_${label}_seiten');
       // „+ Satz" wechselt die Seite: Satz 3 ist links, der neue rechts.
       n.addSet(0);

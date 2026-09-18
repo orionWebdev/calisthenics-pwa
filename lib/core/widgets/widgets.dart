@@ -13,6 +13,7 @@ export 'atem_scale_choice.dart';
 export 'atem_states.dart';
 export 'atem_segmented.dart';
 export 'atem_page_tabs.dart';
+export 'atem_plate_stack.dart';
 export 'atem_tab_switch.dart';
 export 'atem_snackbar.dart';
 export 'atem_status_dot.dart';

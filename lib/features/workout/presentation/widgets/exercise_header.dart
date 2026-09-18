@@ -44,8 +44,8 @@ class ExerciseHeader extends StatelessWidget {
   /// alle anderen ist kein Chip die ehrliche Antwort.
   final VoidCallback? onFormGuide;
 
-  /// Schaltet „Seiten getrennt" für diese Übung. `null` blendet den Schalter
-  /// aus.
+  /// Wählt „Beidseitig" oder „Getrennt" für diese Übung. `null`
+  /// blendet die Zeile aus.
   final ValueChanged<bool>? onUnilateralChanged;
 
   @override
@@ -128,46 +128,101 @@ class ExerciseHeader extends StatelessWidget {
                   accent: AtemColors.cyan,
                   onTap: open,
                 ),
-              if (onUnilateralChanged case final change?)
-                _SidesToggle(
-                  on: exercise.unilateral,
-                  onChanged: change,
-                ),
             ],
           ),
+          if (onUnilateralChanged case final change?) ...[
+            const SizedBox(height: 12),
+            _SidesChoice(
+              title: title,
+              unilateral: exercise.unilateral,
+              onChanged: change,
+            ),
+          ],
         ],
       ),
     );
   }
 }
 
-/// Der Schalter „Seiten getrennt" — kein Board, aus Tokens gebaut
-/// (18.09.2026).
+/// Die Seitenwahl „Beidseitig | Getrennt" — kein Board, aus Tokens
+/// gebaut (18.09.2026).
 ///
-/// Eine Kapsel wie die übrigen im Kopf, aber umschaltbar: Aus steht sie
-/// neutral umrandet, an cyan getönt **mit Haken** — Form statt Farbe. Kein
-/// Chevron wie beim Form Guide: Sie öffnet nichts, sie schaltet.
-class _SidesToggle extends StatelessWidget {
-  const _SidesToggle({required this.on, required this.onChanged});
+/// **Eine eigene Zeile, keine Kapsel mehr.** Bis zum 18.09.2026 stand hier
+/// ein Chip „Seiten getrennt" zwischen Muskeln und Form Guide. Er sah aus wie
+/// die Muskel-Chips neben ihm — eine Angabe, kein Schalter — und wurde auf
+/// dem Honor übersehen. Zwei Segmente zeigen beide Möglichkeiten zugleich:
+/// Man sieht, dass es eine Wahl gibt, und welche gilt, ohne zu tippen.
+///
+/// Die Trennlinie darüber setzt die Zeile von den Chips ab: Die Chips
+/// beschreiben die Übung, diese Zeile steuert die Einheit.
+class _SidesChoice extends StatelessWidget {
+  const _SidesChoice({
+    required this.title,
+    required this.unilateral,
+    required this.onChanged,
+  });
 
-  final bool on;
+  final String title;
+  final bool unilateral;
   final ValueChanged<bool> onChanged;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    return AtemTappable(
-      onTap: () => onChanged(!on),
-      semanticLabel: l10n.workoutSidesChipA11y,
-      selected: on,
-      child: AtemBadge(
-        label: l10n.workoutSidesChip,
-        fill: on ? AtemBadgeFill.tinted : AtemBadgeFill.outline,
-        accent: on ? AtemColors.cyan : null,
-        leadingIcon: on
-            ? const Icon(Icons.check, size: 14, color: AtemColors.cyan)
-            : null,
-      ),
+    return Column(
+      children: [
+        Container(height: 1, color: AtemColors.border),
+        const SizedBox(height: 12),
+        // **Beschriftung über der Auswahl, nicht daneben**, und die zwei
+        // Segmente teilen sich die volle Breite. Nebeneinander mit der
+        // Beschriftung blieb auf 361 dp zu wenig Platz, und die Segmente
+        // stapelten sich — eine Wahl, die wie eine Liste aussah. Erst wenn ein
+        // Segment seinen halben Anteil nicht mehr füllt (200 % Schrift auf
+        // 320 dp), stehen beide untereinander.
+        Column(
+          children: [
+            // Die Gruppe benennt sich selbst („Seiten für Übung …") —
+            // die sichtbare Beschriftung wäre vorgelesen doppelt.
+            ExcludeSemantics(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.compare_arrows,
+                      size: 18, color: AtemColors.cyan),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      l10n.workoutSidesLabel,
+                      style: AtemType.labelUi
+                          .of(context)
+                          .copyWith(color: AtemColors.textSecondary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            AtemSegmented<bool>(
+              value: unilateral,
+              onChanged: onChanged,
+              groupSemanticLabel: l10n.workoutSidesGroupA11y(title),
+              expand: true,
+              segments: [
+                AtemSegment(
+                  value: false,
+                  label: l10n.workoutSidesBoth,
+                  semanticLabel: l10n.workoutSidesBothA11y,
+                ),
+                AtemSegment(
+                  value: true,
+                  label: l10n.workoutSidesSplit,
+                  semanticLabel: l10n.workoutSidesSplitA11y,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

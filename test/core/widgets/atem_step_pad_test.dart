@@ -19,6 +19,7 @@ Future<void> _pumpPad(
   String? previousLabel,
   double width = 361,
   double scale = 1.0,
+  bool showPlates = true,
 }) async {
   _lastApplied = null;
   tester.view.physicalSize = Size(width, 900);
@@ -50,6 +51,7 @@ Future<void> _pumpPad(
           value: value,
           previousValue: previousValue,
           previousLabel: previousLabel,
+          showPlates: showPlates,
           onApply: (v) => _lastApplied = v,
         ),
       ),
@@ -164,7 +166,8 @@ void main() {
       await _pumpPad(tester, field: AtemStepField.weight, value: 399);
       await tester.tap(find.text('5 kg'));
       await tester.pumpAndSettle();
-      await tester.drag(find.byKey(AtemStepPad.rulerKey), const Offset(-300, 0));
+      await tester.drag(
+          find.byKey(AtemStepPad.rulerKey), const Offset(-300, 0));
       await tester.pumpAndSettle();
       expect(_bigValue(tester), '400', reason: 'Gewicht endet bei 400');
     });
@@ -304,6 +307,155 @@ void main() {
       await tester.pumpAndSettle();
       expect(result, isNull);
       expect(opened, 2);
+    });
+  });
+
+  group('Scheiben', () {
+    const nb = ' ';
+
+    Future<void> openPlates(WidgetTester tester) async {
+      await tester.tap(find.text('Scheiben'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('nur beim Gewicht und nur mit showPlates', (tester) async {
+      await _pumpPad(tester, value: 60);
+      expect(find.text('Scheiben'), findsOneWidget);
+
+      await _pumpPad(tester, value: 60, showPlates: false);
+      expect(find.text('Scheiben'), findsNothing);
+
+      await _pumpPad(tester, field: AtemStepField.reps, value: 8);
+      expect(find.text('Scheiben'), findsNothing);
+
+      await _pumpPad(tester, field: AtemStepField.hold, value: 30);
+      expect(find.text('Scheiben'), findsNothing);
+    });
+
+    testWidgets('startet zu und klappt auf und wieder zu', (tester) async {
+      await _pumpPad(tester, value: 100);
+      expect(find.text('STANGE'), findsNothing);
+
+      await openPlates(tester);
+      expect(find.text('STANGE'), findsOneWidget);
+      expect(find.text('je Seite: 25 + 15 · Stange 20${nb}kg'), findsOneWidget);
+
+      await openPlates(tester);
+      expect(find.text('STANGE'), findsNothing);
+    });
+
+    testWidgets('folgt dem Wert beim Ziehen', (tester) async {
+      await _pumpPad(tester, value: 60);
+      await openPlates(tester);
+      expect(find.text('je Seite: 20 · Stange 20${nb}kg'), findsOneWidget);
+
+      await tester.tap(find.text('5 kg'));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byKey(AtemStepPad.rulerKey), const Offset(-30, 0));
+      await tester.pumpAndSettle();
+      expect(_bigValue(tester), '65');
+      expect(
+          find.text('je Seite: 20 + 2,5 · Stange 20${nb}kg'), findsOneWidget);
+    });
+
+    testWidgets('andere Stange rechnet neu', (tester) async {
+      await _pumpPad(tester, value: 100);
+      await openPlates(tester);
+      await tester.tap(find.text('15${nb}kg'));
+      await tester.pumpAndSettle();
+      expect(find.text('je Seite: 25 + 15 + 2,5 · Stange 15${nb}kg'),
+          findsOneWidget);
+    });
+
+    testWidgets('mehrere gleiche Scheiben und die 1,25', (tester) async {
+      await _pumpPad(tester, value: 142.5);
+      await openPlates(tester);
+      expect(find.text('je Seite: 2 × 25 + 10 + 1,25 · Stange 20${nb}kg'),
+          findsOneWidget);
+    });
+
+    testWidgets('ein Rest wird benannt, mit dem erreichbaren Wert',
+        (tester) async {
+      await _pumpPad(tester, value: 101);
+      await openPlates(tester);
+      expect(
+        find.text(
+            '1${nb}kg lässt sich nicht stecken — nächster Wert 100${nb}kg'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('leichter als die Stange und leere Stange', (tester) async {
+      await _pumpPad(tester, value: 15);
+      await openPlates(tester);
+      expect(find.text('Leichter als die Stange (20${nb}kg)'), findsOneWidget);
+
+      await _pumpPad(tester, value: 20);
+      await openPlates(tester);
+      expect(find.text('Leere Stange · 20${nb}kg'), findsOneWidget);
+    });
+
+    testWidgets('Grafik und Zeile sind ein Vorlese-Knoten', (tester) async {
+      final handle = tester.ensureSemantics();
+      await _pumpPad(tester, value: 101);
+      await tester.tap(find.bySemanticsLabel('Scheiben je Seite anzeigen'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.bySemanticsLabel('Scheiben je Seite: eine 25, eine 15. '
+            'Stange 20 Kilogramm. Rest 1 Kilogramm lässt sich nicht '
+            'stecken, nächster Wert 100 Kilogramm'),
+        findsOneWidget,
+      );
+      expect(find.bySemanticsLabel('Stange 15 Kilogramm'), findsOneWidget);
+      expect(find.bySemanticsLabel('Scheiben ausblenden'), findsOneWidget);
+      // Die Zahlen unter den Scheiben werden nicht einzeln vorgelesen.
+      expect(find.bySemanticsLabel('25'), findsNothing);
+
+      await tester.tap(find.bySemanticsLabel('Scheiben ausblenden'));
+      await tester.pumpAndSettle();
+      await _pumpPad(tester, value: 142.5);
+      await tester.tap(find.bySemanticsLabel('Scheiben je Seite anzeigen'));
+      await tester.pumpAndSettle();
+      expect(
+        find.bySemanticsLabel('Scheiben je Seite: 2-mal 25, eine 10, '
+            'eine 1,25. Stange 20 Kilogramm'),
+        findsOneWidget,
+      );
+      handle.dispose();
+    });
+
+    testWidgets('Trefferflächen ≥ 48 dp', (tester) async {
+      final handle = tester.ensureSemantics();
+      await _pumpPad(tester, value: 100);
+      await openPlates(tester);
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('die Höhe springt beim Ziehen nicht zurück', (tester) async {
+      await _pumpPad(tester, value: 101);
+      await openPlates(tester);
+      final withRest = tester.getTopLeft(find.byKey(AtemStepPad.rulerKey)).dy;
+
+      // 101 → 100: der Rest fällt weg, die Zeile darunter bleibt reserviert.
+      await tester.tap(find.bySemanticsLabel('Wert verringern'));
+      await tester.pumpAndSettle();
+      expect(_bigValue(tester), '100');
+      expect(tester.getTopLeft(find.byKey(AtemStepPad.rulerKey)).dy, withRest);
+    });
+
+    testWidgets('200 % Schrift auf 320 dp, bis 400 kg an der 10er-Stange',
+        (tester) async {
+      for (final value in [60.0, 100.0, 142.5, 101.0, 400.0]) {
+        await _pumpPad(tester,
+            value: value, previousValue: 95, width: 320, scale: 2.0);
+        await openPlates(tester);
+        expect(tester.takeException(), isNull, reason: '$value kg');
+      }
+      await tester.tap(find.text('10${nb}kg'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
     });
   });
 

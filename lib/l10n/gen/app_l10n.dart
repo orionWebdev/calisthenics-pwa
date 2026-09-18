@@ -8915,18 +8915,6 @@ abstract class AppL10n {
   /// **'gleich viele wie in den {days} Tagen davor'**
   String hardSetsShiftEqualA11y(int days);
 
-  /// Runner 18.09.2026 — Schalter im Übungskopf: Sätze je Körperseite protokollieren (kein Board, aus Tokens gebaut)
-  ///
-  /// In de, this message translates to:
-  /// **'Seiten getrennt'**
-  String get workoutSidesChip;
-
-  /// Runner — Vorlese-Label des Schalters „Seiten getrennt“; der Zustand kommt über selected
-  ///
-  /// In de, this message translates to:
-  /// **'Seiten getrennt protokollieren'**
-  String get workoutSidesChipA11y;
-
   /// Runner — Seitenmarke in der Satzzeile, links
   ///
   /// In de, this message translates to:
@@ -9088,6 +9076,138 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Satz {n}, RPE {rpe}, harter Satz. Tippen zum Ändern'**
   String workoutRpeBadgeHardA11y(int n, int rpe);
+
+  /// Runner, Übungskopf: Beschriftung vor der Seitenwahl
+  ///
+  /// In de, this message translates to:
+  /// **'Seiten'**
+  String get workoutSidesLabel;
+
+  /// Runner, Seitenwahl: Sätze ohne Körperseite
+  ///
+  /// In de, this message translates to:
+  /// **'Beidseitig'**
+  String get workoutSidesBoth;
+
+  /// Runner, Seitenwahl: Sätze je Körperseite, mit L/R-Marke
+  ///
+  /// In de, this message translates to:
+  /// **'Getrennt'**
+  String get workoutSidesSplit;
+
+  /// Runner, Seitenwahl: Vorlese-Label Beidseitig
+  ///
+  /// In de, this message translates to:
+  /// **'Beidseitig, Sätze ohne Seite'**
+  String get workoutSidesBothA11y;
+
+  /// Runner, Seitenwahl: Vorlese-Label Getrennt
+  ///
+  /// In de, this message translates to:
+  /// **'Getrennt, links und rechts je eigene Sätze'**
+  String get workoutSidesSplitA11y;
+
+  /// Runner, Seitenwahl: Gruppen-Label
+  ///
+  /// In de, this message translates to:
+  /// **'Seiten für Übung {name}'**
+  String workoutSidesGroupA11y(String name);
+
+  /// Eingabeblatt Gewicht — Kapsel, die den Scheibenrechner aufklappt
+  ///
+  /// In de, this message translates to:
+  /// **'Scheiben'**
+  String get platesToggle;
+
+  /// Eingabeblatt — Vorlese-Label der Scheiben-Kapsel, eingeklappt
+  ///
+  /// In de, this message translates to:
+  /// **'Scheiben je Seite anzeigen'**
+  String get platesToggleShowA11y;
+
+  /// Eingabeblatt — Vorlese-Label der Scheiben-Kapsel, aufgeklappt
+  ///
+  /// In de, this message translates to:
+  /// **'Scheiben ausblenden'**
+  String get platesToggleHideA11y;
+
+  /// Scheibenrechner — Kopf vor den Stangen-Kapseln (Mono-Versalien)
+  ///
+  /// In de, this message translates to:
+  /// **'STANGE'**
+  String get platesBarLabel;
+
+  /// Scheibenrechner — Stangen-Kapsel
+  ///
+  /// In de, this message translates to:
+  /// **'{kg} kg'**
+  String platesBarKg(String kg);
+
+  /// Scheibenrechner — Vorlese-Label einer Stangen-Kapsel
+  ///
+  /// In de, this message translates to:
+  /// **'Stange {kg} Kilogramm'**
+  String platesBarA11y(String kg);
+
+  /// Scheibenrechner — mehrere gleiche Scheiben je Seite, sichtbar
+  ///
+  /// In de, this message translates to:
+  /// **'{count} × {plate}'**
+  String platesTimes(String count, String plate);
+
+  /// Scheibenrechner — Belegung einer Stangenhälfte
+  ///
+  /// In de, this message translates to:
+  /// **'je Seite: {plates} · Stange {bar} kg'**
+  String platesPerSide(String plates, String bar);
+
+  /// Scheibenrechner — Zielgewicht gleich Stange
+  ///
+  /// In de, this message translates to:
+  /// **'Leere Stange · {bar} kg'**
+  String platesEmptyBar(String bar);
+
+  /// Scheibenrechner — Zielgewicht unter der Stange
+  ///
+  /// In de, this message translates to:
+  /// **'Leichter als die Stange ({bar} kg)'**
+  String platesBelowBar(String bar);
+
+  /// Scheibenrechner — Rest, der mit den Scheiben nicht aufgeht
+  ///
+  /// In de, this message translates to:
+  /// **'{rest} kg lässt sich nicht stecken — nächster Wert {loaded} kg'**
+  String platesRemainder(String rest, String loaded);
+
+  /// Scheibenrechner — eine Scheibengrösse im Vorlese-Label
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =1{eine {plate}} other{{count}-mal {plate}}}'**
+  String platesA11yPlate(int count, String plate);
+
+  /// Scheibenrechner — ein Vorlese-Knoten für Grafik und Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Scheiben je Seite: {plates}. Stange {bar} Kilogramm'**
+  String platesA11y(String plates, String bar);
+
+  /// Scheibenrechner — Vorlese-Label bei leerer Stange
+  ///
+  /// In de, this message translates to:
+  /// **'Leere Stange, {bar} Kilogramm, keine Scheiben'**
+  String platesA11yEmptyBar(String bar);
+
+  /// Scheibenrechner — Vorlese-Label unter der Stange
+  ///
+  /// In de, this message translates to:
+  /// **'Leichter als die Stange mit {bar} Kilogramm, keine Scheiben möglich'**
+  String platesA11yBelowBar(String bar);
+
+  /// Scheibenrechner — Vorlese-Zusatz bei Rest
+  ///
+  /// In de, this message translates to:
+  /// **'Rest {rest} Kilogramm lässt sich nicht stecken, nächster Wert {loaded} Kilogramm'**
+  String platesA11yRemainder(String rest, String loaded);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -344,6 +344,9 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       setNumber: number,
       value: current,
       previousValue: previousValue,
+      // Bei Körpergewichtsübungen ist das Feld die **Zusatzlast** am Gürtel
+      // oder in der Weste — keine Langhantel, also keine Scheibenrechnung.
+      showPlates: !_isBodyweight(w.exercises[exerciseIndex]),
       previousLabel: previous == null || previous.isEmpty
           ? null
           : previousSetLabel(context, l10n, previous),
@@ -381,6 +384,18 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       return hasGuide ? entry : null;
     }
     return null;
+  }
+
+  /// Ist die Übung im Bestand als Körpergewichtsübung geführt?
+  ///
+  /// Unbekannte Übungen gelten als Hantelübung: Der Scheibenrechner ist dort
+  /// eine Hilfe, die man übergehen kann, kein falscher Wert.
+  bool _isBodyweight(WorkoutExercise exercise) {
+    for (final entry
+        in ref.read(exercisesProvider).value ?? const <Exercise>[]) {
+      if (entry.id == exercise.id) return entry.type == 'bodyweight';
+    }
+    return false;
   }
 
   /// Anleitung, Cues und typische Fehler — im Blatt, ohne den Runner zu

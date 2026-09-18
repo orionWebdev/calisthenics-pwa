@@ -61,8 +61,7 @@ class SessionTopBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   if (amending)
-                    Text(l10n.setsAdd,
-                        style: AtemType.titleMedium.of(context))
+                    Text(l10n.setsAdd, style: AtemType.titleMedium.of(context))
                   else
                     Row(
                       children: [

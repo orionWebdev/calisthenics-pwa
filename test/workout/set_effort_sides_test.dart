@@ -300,12 +300,31 @@ void main() {
       handle.dispose();
     });
 
-    testWidgets('der Schalter im Kopf zeigt L und R, Tippen wechselt',
+    testWidgets('die Seitenwahl im Kopf zeigt L und R, Tippen wechselt',
         (tester) async {
       final handle = tester.ensureSemantics();
       final c = await pump(tester);
 
-      await tester.tap(find.bySemanticsLabel('Seiten getrennt protokollieren'));
+      // Die Seitenwahl ist eine benannte Gruppe mit zwei Segmenten, kein
+      // Chip mehr — und „Beidseitig" ist vorgewählt.
+      expect(
+          find.bySemanticsLabel(RegExp('^Seiten für Übung ')), findsOneWidget);
+      expect(
+        tester.getSemantics(
+            find.bySemanticsLabel('Beidseitig, Sätze ohne Seite')),
+        matchesSemantics(
+          label: 'Beidseitig, Sätze ohne Seite',
+          isSelected: true,
+          hasSelectedState: true,
+          isInMutuallyExclusiveGroup: true,
+          isButton: true,
+          // Wie jedes gewählte Segment in `AtemSegmented`: ohne Tap.
+          hasEnabledState: true,
+        ),
+      );
+
+      await tester.tap(
+          find.bySemanticsLabel('Getrennt, links und rechts je eigene Sätze'));
       await tester.pumpAndSettle();
       expect(workout(c).exercises.first.unilateral, isTrue);
       expect(find.text('L'), findsNWidgets(2));
@@ -316,8 +335,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(sets(c)[0].side, SetSide.right);
 
-      await tester.tap(find.bySemanticsLabel('Seiten getrennt protokollieren'));
+      await tester.tap(find.bySemanticsLabel('Beidseitig, Sätze ohne Seite'));
       await tester.pumpAndSettle();
+      expect(workout(c).exercises.first.unilateral, isFalse);
       expect(find.text('L'), findsNothing);
       handle.dispose();
     });

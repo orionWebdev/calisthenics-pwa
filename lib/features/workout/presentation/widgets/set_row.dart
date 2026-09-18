@@ -196,7 +196,15 @@ class SetRow extends StatelessWidget {
               _typeChip(context, l10n),
               const SizedBox(width: AtemSpacing.sm),
               if (unilateral) ...[
-                _sideMark(context, l10n),
+                // Beim Umschalten auf „Links / Rechts" laufen die Marken
+                // versetzt von rechts ein, Satz für Satz — man sieht, **wo**
+                // die Wahl gewirkt hat. Einmal beim Erscheinen, bei
+                // reduzierter Bewegung sofort (siehe [AtemEntrance]).
+                AtemEntrance(
+                  index: index - 1,
+                  axis: AtemEntranceAxis.right,
+                  child: _sideMark(context, l10n),
+                ),
                 const SizedBox(width: AtemSpacing.sm),
               ],
               Expanded(child: _history(context, l10n)),

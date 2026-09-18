@@ -5751,12 +5751,6 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
-  String get workoutSidesChip => 'Seiten getrennt';
-
-  @override
-  String get workoutSidesChipA11y => 'Seiten getrennt protokollieren';
-
-  @override
   String get workoutSideLeftShort => 'L';
 
   @override
@@ -5872,5 +5866,104 @@ class AppL10nDe extends AppL10n {
   @override
   String workoutRpeBadgeHardA11y(int n, int rpe) {
     return 'Satz $n, RPE $rpe, harter Satz. Tippen zum Ändern';
+  }
+
+  @override
+  String get workoutSidesLabel => 'Seiten';
+
+  @override
+  String get workoutSidesBoth => 'Beidseitig';
+
+  @override
+  String get workoutSidesSplit => 'Getrennt';
+
+  @override
+  String get workoutSidesBothA11y => 'Beidseitig, Sätze ohne Seite';
+
+  @override
+  String get workoutSidesSplitA11y =>
+      'Getrennt, links und rechts je eigene Sätze';
+
+  @override
+  String workoutSidesGroupA11y(String name) {
+    return 'Seiten für Übung $name';
+  }
+
+  @override
+  String get platesToggle => 'Scheiben';
+
+  @override
+  String get platesToggleShowA11y => 'Scheiben je Seite anzeigen';
+
+  @override
+  String get platesToggleHideA11y => 'Scheiben ausblenden';
+
+  @override
+  String get platesBarLabel => 'STANGE';
+
+  @override
+  String platesBarKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String platesBarA11y(String kg) {
+    return 'Stange $kg Kilogramm';
+  }
+
+  @override
+  String platesTimes(String count, String plate) {
+    return '$count × $plate';
+  }
+
+  @override
+  String platesPerSide(String plates, String bar) {
+    return 'je Seite: $plates · Stange $bar kg';
+  }
+
+  @override
+  String platesEmptyBar(String bar) {
+    return 'Leere Stange · $bar kg';
+  }
+
+  @override
+  String platesBelowBar(String bar) {
+    return 'Leichter als die Stange ($bar kg)';
+  }
+
+  @override
+  String platesRemainder(String rest, String loaded) {
+    return '$rest kg lässt sich nicht stecken — nächster Wert $loaded kg';
+  }
+
+  @override
+  String platesA11yPlate(int count, String plate) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count-mal $plate',
+      one: 'eine $plate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String platesA11y(String plates, String bar) {
+    return 'Scheiben je Seite: $plates. Stange $bar Kilogramm';
+  }
+
+  @override
+  String platesA11yEmptyBar(String bar) {
+    return 'Leere Stange, $bar Kilogramm, keine Scheiben';
+  }
+
+  @override
+  String platesA11yBelowBar(String bar) {
+    return 'Leichter als die Stange mit $bar Kilogramm, keine Scheiben möglich';
+  }
+
+  @override
+  String platesA11yRemainder(String rest, String loaded) {
+    return 'Rest $rest Kilogramm lässt sich nicht stecken, nächster Wert $loaded Kilogramm';
   }
 }

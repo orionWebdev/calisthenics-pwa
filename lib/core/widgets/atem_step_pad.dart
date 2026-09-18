@@ -1,13 +1,20 @@
+import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart'
     show Icons, showModalBottomSheet, TextBaseline;
 import 'package:flutter/widgets.dart';
 
+// Die einzige Stelle, an der `core/` in ein Feature greift: Der
+// Scheibenrechner ist reine Domäne ohne Flutter (Schichtregel „domain/"), und
+// das Eingabeblatt ist sein einziger Ort. Ihn nach `core/` zu ziehen, hätte
+// eine Rechenregel des Trainings zum Baustein des Baukastens gemacht.
+import '../domain/plate_calculator.dart';
 import '../../l10n/gen/app_l10n.dart';
 import '../theme/theme.dart';
 import 'atem_button.dart';
 import 'atem_choice_chip.dart';
 import 'atem_number_field.dart';
 import 'atem_overlays.dart';
+import 'atem_plate_stack.dart';
 import 'atem_tappable.dart';
 
 /// Welches Feld eines Satzes das Blatt einstellt.
@@ -44,6 +51,7 @@ Future<double?> showAtemStepPad(
   double? value,
   double? previousValue,
   String? previousLabel,
+  bool showPlates = true,
 }) {
   final l10n = AppL10n.of(context);
   return showModalBottomSheet<double>(
@@ -63,6 +71,7 @@ Future<double?> showAtemStepPad(
       value: value,
       previousValue: previousValue,
       previousLabel: previousLabel,
+      showPlates: showPlates,
     ),
   );
 }
@@ -77,6 +86,7 @@ class AtemStepPad extends StatefulWidget {
     this.value,
     this.previousValue,
     this.previousLabel,
+    this.showPlates = true,
     this.onApply,
   });
 
@@ -94,6 +104,11 @@ class AtemStepPad extends StatefulWidget {
 
   /// „100 kg × 8" — steht als „Letztes Mal: …" unter dem Titel.
   final String? previousLabel;
+
+  /// Bietet beim Gewicht den Scheibenrechner an („Scheiben"). Aus für
+  /// Übungen ohne Langhantel — eine Kurzhantel oder eine Weste steckt man
+  /// nicht. Bei Wiederholungen und Haltezeit wirkungslos.
+  final bool showPlates;
 
   /// Nur für Tests und die Sichtprüfung. Ohne ihn schliesst „ÜBERNEHMEN" das
   /// Blatt und gibt den Wert zurück.
@@ -180,6 +195,16 @@ class _AtemStepPadState extends State<AtemStepPad> {
   late double _step = _cfg.defaultStep;
   final _controller = TextEditingController();
   bool _keyboard = false;
+
+  /// Scheibenrechner aufgeklappt — startet zu, jedes Blatt neu.
+  bool _platesOpen = false;
+
+  /// Die gewählte Stange. Nur für dieses Blatt; 20 kg ist die übliche.
+  double _barKg = PlateCalculator.bars.first;
+
+  /// Reservierte Höhe der Textzeilen unter der Grafik und wofür sie gilt.
+  String? _platesTextKey;
+  double _platesTextHeight = 0;
 
   @override
   void initState() {
@@ -290,6 +315,9 @@ class _AtemStepPadState extends State<AtemStepPad> {
                     const SizedBox(height: 18),
                     _value_(l10n),
                     _delta(l10n),
+                    if (widget.field == AtemStepField.weight &&
+                        widget.showPlates)
+                      ..._plates(l10n),
                     if (_keyboard) ..._keys(l10n) else ..._ruler(l10n),
                     const SizedBox(height: 18),
                     AtemButton.gradient(
@@ -503,6 +531,237 @@ class _AtemStepPadState extends State<AtemStepPad> {
     );
   }
 
+  // --- Scheiben --------------------------------------------------------------
+
+  /// Der Scheibenrechner (Punkt 2.4 der Produktstrategie vom 18.09.2026).
+  ///
+  /// Kein Board — aus den Tokens gebaut. Eine zurückhaltende Kapsel unter der
+  /// Delta-Zeile; aufgeklappt eine Karte mit Stangenwahl, einer Stangenhälfte
+  /// und der Belegung als Satz. Sie folgt dem Wert beim Ziehen sofort und
+  /// ohne Übergang — es gibt also auch bei „Bewegung reduzieren" nichts
+  /// abzuschalten ausser dem Aufklappen selbst.
+  List<Widget> _plates(AppL10n l10n) {
+    final section = _platesOpen
+        ? Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: _platesCard(l10n),
+          )
+        : const SizedBox(width: double.infinity);
+
+    return [
+      const SizedBox(height: 6),
+      Center(child: _platesToggle(l10n)),
+      // AnimatedSize nimmt keine Dauer null; bei „Bewegung reduzieren" steht
+      // die Karte deshalb ohne ihn da.
+      if (AtemMotion.reduced(context))
+        section
+      else
+        AnimatedSize(
+          duration: AtemMotion.normal,
+          curve: AtemMotion.curve,
+          alignment: Alignment.topCenter,
+          child: section,
+        ),
+    ];
+  }
+
+  /// Gestalt wie der Umschalter zur Tastatur — dieselbe Familie, damit sie
+  /// als Bedienelement des Blattes erkannt wird und nicht als Inhalt.
+  Widget _platesToggle(AppL10n l10n) {
+    final open = _platesOpen;
+    final tint = open ? AtemColors.cyan : AtemColors.textSecondary;
+    return AtemTappable(
+      onTap: () => setState(() => _platesOpen = !open),
+      semanticLabel:
+          open ? l10n.platesToggleHideA11y : l10n.platesToggleShowA11y,
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 36),
+        padding: const EdgeInsets.symmetric(horizontal: 13),
+        decoration: BoxDecoration(
+          color: open
+              ? AtemColors.cyan.withValues(alpha: 0.10)
+              : const Color(0x00000000),
+          borderRadius: BorderRadius.circular(AtemRadii.pill),
+          border: Border.all(
+            color: open
+                ? AtemColors.cyan.withValues(alpha: 0.45)
+                : AtemColors.border,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.album_outlined, size: 15, color: tint),
+            const SizedBox(width: 7),
+            Flexible(
+              child: Text(
+                l10n.platesToggle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AtemType.labelUi.of(context).copyWith(color: tint),
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(open ? Icons.expand_less : Icons.expand_more,
+                size: 16, color: tint),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _platesCard(AppL10n l10n) {
+    final loading = PlateCalculator.solve(_value, barKg: _barKg);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+      decoration: BoxDecoration(
+        color: AtemColors.card,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AtemColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Der Kopf steht über den Kapseln, nicht davor: In einer Zeile
+          // mit ihnen brach schon bei 361 dp die dritte Kapsel um. Vorgelesen
+          // nennt jede Kapsel „Stange 20 Kilogramm" selbst.
+          ExcludeSemantics(
+            child: Text(l10n.platesBarLabel,
+                style: AtemType.labelMicro.of(context)),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final bar in PlateCalculator.bars)
+                IntrinsicWidth(
+                  child: AtemChoiceChip(
+                    label: l10n.platesBarKg(_kg(bar)),
+                    semanticLabel: l10n.platesBarA11y(_kg(bar)),
+                    selected: bar == _barKg,
+                    onTap: () => setState(() => _barKg = bar),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Grafik und Zeilen sind **ein** Knoten.
+          Semantics(
+            container: true,
+            label: _platesA11y(l10n, loading),
+            child: ExcludeSemantics(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AtemPlateStack(
+                    plates: loading.belowBar ? const [] : loading.sidePlates,
+                    heaviestKg: PlateCalculator.defaultPlates.first,
+                    dimmed: loading.belowBar,
+                  ),
+                  const SizedBox(height: 8),
+                  _platesText(l10n, loading),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _kg(double kg) => AtemPlateStack.formatKg(context, kg);
+
+  String _sideText(AppL10n l10n, PlateLoading loading) => [
+        for (final p in loading.perSide)
+          p.count == 1
+              ? _kg(p.plateKg)
+              : l10n.platesTimes('${p.count}', _kg(p.plateKg)),
+      ].join(' + ');
+
+  String _platesLine(AppL10n l10n, PlateLoading loading) {
+    final bar = _kg(loading.barKg);
+    if (loading.belowBar) return l10n.platesBelowBar(bar);
+    if (loading.isEmptyBar) return l10n.platesEmptyBar(bar);
+    return l10n.platesPerSide(_sideText(l10n, loading), bar);
+  }
+
+  String? _remainderLine(AppL10n l10n, PlateLoading loading) =>
+      loading.belowBar || loading.remainderKg <= 0
+          ? null
+          : l10n.platesRemainder(
+              _kg(loading.remainderKg), _kg(loading.loadedKg));
+
+  String _platesA11y(AppL10n l10n, PlateLoading loading) {
+    final bar = _kg(loading.barKg);
+    if (loading.belowBar) return l10n.platesA11yBelowBar(bar);
+    final base = loading.isEmptyBar
+        ? l10n.platesA11yEmptyBar(bar)
+        : l10n.platesA11y(
+            [
+              for (final p in loading.perSide)
+                l10n.platesA11yPlate(p.count, _kg(p.plateKg)),
+            ].join(', '),
+            bar,
+          );
+    if (loading.remainderKg <= 0) return base;
+    return '$base. ${l10n.platesA11yRemainder(_kg(loading.remainderKg), _kg(loading.loadedKg))}';
+  }
+
+  /// Die Belegung als Satz, darunter der Rest.
+  ///
+  /// **Die Höhe wächst, schrumpft aber nicht**, solange das Blatt offen ist.
+  /// Sonst bräche die Zeile beim Ziehen mal ein-, mal zweizeilig um, und
+  /// alles darüber spränge. Den längsten denkbaren Fall (bis 400 kg, mit
+  /// Rest) von Anfang an zu reservieren, liess bei 361 dp drei leere Zeilen
+  /// unter einer einzeiligen Belegung stehen — so wächst die Karte höchstens
+  /// ein-, zweimal und bleibt dann ruhig.
+  Widget _platesText(AppL10n l10n, PlateLoading loading) {
+    final lineStyle = AtemType.labelSmall.of(context);
+    final restStyle = AtemType.meta.of(context);
+    final line = _platesLine(l10n, loading);
+    final rest = _remainderLine(l10n, loading);
+
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      final scaler = MediaQuery.textScalerOf(context);
+      final key = '$width|${scaler.scale(100)}|'
+          '${Localizations.localeOf(context)}';
+      if (key != _platesTextKey) {
+        _platesTextKey = key;
+        _platesTextHeight = 0;
+      }
+
+      double measure(String text, TextStyle style) => (TextPainter(
+            text: TextSpan(text: text, style: style),
+            textDirection: TextDirection.ltr,
+            textScaler: scaler,
+          )..layout(maxWidth: width))
+              .height;
+
+      final height = measure(line, lineStyle) +
+          (rest == null ? 0 : 4 + measure(rest, restStyle));
+      if (height > _platesTextHeight) _platesTextHeight = height;
+
+      return ConstrainedBox(
+        constraints: BoxConstraints(minHeight: _platesTextHeight),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(line, style: lineStyle),
+            if (rest != null) ...[
+              const SizedBox(height: 4),
+              Text(rest, style: restStyle),
+            ],
+          ],
+        ),
+      );
+    });
+  }
+
   // --- Regler ----------------------------------------------------------------
 
   List<Widget> _ruler(AppL10n l10n) => [
@@ -586,6 +845,11 @@ class _AtemStepPadState extends State<AtemStepPad> {
         child: GestureDetector(
           key: AtemStepPad.rulerKey,
           behavior: HitTestBehavior.opaque,
+          // Ab dem Aufsetzen messen, nicht ab dem gewonnenen Wettstreit: Wird
+          // das Blatt scrollbar (aufgeklappte Scheiben, grosse Schrift),
+          // streitet die senkrechte Geste mit, und `start` verschluckte die
+          // ersten ~18 dp jedes Zugs — ein Schritt fehlte.
+          dragStartBehavior: DragStartBehavior.down,
           onHorizontalDragStart: (d) =>
               _dragFrom = (d.localPosition.dx, _value),
           onHorizontalDragUpdate: (d) {

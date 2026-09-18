@@ -8360,14 +8360,6 @@
       }
     }
   },
-  "workoutSidesChip": "Seiten getrennt",
-  "@workoutSidesChip": {
-    "description": "Runner 18.09.2026 — Schalter im Übungskopf: Sätze je Körperseite protokollieren (kein Board, aus Tokens gebaut)"
-  },
-  "workoutSidesChipA11y": "Seiten getrennt protokollieren",
-  "@workoutSidesChipA11y": {
-    "description": "Runner — Vorlese-Label des Schalters „Seiten getrennt“; der Zustand kommt über selected"
-  },
   "workoutSideLeftShort": "L",
   "@workoutSideLeftShort": {
     "description": "Runner — Seitenmarke in der Satzzeile, links"
@@ -8554,6 +8546,177 @@
       },
       "rpe": {
         "type": "int"
+      }
+    }
+  },
+  "workoutSidesLabel": "Seiten",
+  "@workoutSidesLabel": {
+    "description": "Runner, Übungskopf: Beschriftung vor der Seitenwahl"
+  },
+  "workoutSidesBoth": "Beidseitig",
+  "@workoutSidesBoth": {
+    "description": "Runner, Seitenwahl: Sätze ohne Körperseite"
+  },
+  "workoutSidesSplit": "Getrennt",
+  "@workoutSidesSplit": {
+    "description": "Runner, Seitenwahl: Sätze je Körperseite, mit L/R-Marke"
+  },
+  "workoutSidesBothA11y": "Beidseitig, Sätze ohne Seite",
+  "@workoutSidesBothA11y": {
+    "description": "Runner, Seitenwahl: Vorlese-Label Beidseitig"
+  },
+  "workoutSidesSplitA11y": "Getrennt, links und rechts je eigene Sätze",
+  "@workoutSidesSplitA11y": {
+    "description": "Runner, Seitenwahl: Vorlese-Label Getrennt"
+  },
+  "workoutSidesGroupA11y": "Seiten für Übung {name}",
+  "@workoutSidesGroupA11y": {
+    "description": "Runner, Seitenwahl: Gruppen-Label",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "platesToggle": "Scheiben",
+  "@platesToggle": {
+    "description": "Eingabeblatt Gewicht — Kapsel, die den Scheibenrechner aufklappt"
+  },
+  "platesToggleShowA11y": "Scheiben je Seite anzeigen",
+  "@platesToggleShowA11y": {
+    "description": "Eingabeblatt — Vorlese-Label der Scheiben-Kapsel, eingeklappt"
+  },
+  "platesToggleHideA11y": "Scheiben ausblenden",
+  "@platesToggleHideA11y": {
+    "description": "Eingabeblatt — Vorlese-Label der Scheiben-Kapsel, aufgeklappt"
+  },
+  "platesBarLabel": "STANGE",
+  "@platesBarLabel": {
+    "description": "Scheibenrechner — Kopf vor den Stangen-Kapseln (Mono-Versalien)"
+  },
+  "platesBarKg": "{kg} kg",
+  "@platesBarKg": {
+    "description": "Scheibenrechner — Stangen-Kapsel",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "platesBarA11y": "Stange {kg} Kilogramm",
+  "@platesBarA11y": {
+    "description": "Scheibenrechner — Vorlese-Label einer Stangen-Kapsel",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "platesTimes": "{count} × {plate}",
+  "@platesTimes": {
+    "description": "Scheibenrechner — mehrere gleiche Scheiben je Seite, sichtbar",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "plate": {
+        "type": "String"
+      }
+    }
+  },
+  "platesPerSide": "je Seite: {plates} · Stange {bar} kg",
+  "@platesPerSide": {
+    "description": "Scheibenrechner — Belegung einer Stangenhälfte",
+    "placeholders": {
+      "plates": {
+        "type": "String"
+      },
+      "bar": {
+        "type": "String"
+      }
+    }
+  },
+  "platesEmptyBar": "Leere Stange · {bar} kg",
+  "@platesEmptyBar": {
+    "description": "Scheibenrechner — Zielgewicht gleich Stange",
+    "placeholders": {
+      "bar": {
+        "type": "String"
+      }
+    }
+  },
+  "platesBelowBar": "Leichter als die Stange ({bar} kg)",
+  "@platesBelowBar": {
+    "description": "Scheibenrechner — Zielgewicht unter der Stange",
+    "placeholders": {
+      "bar": {
+        "type": "String"
+      }
+    }
+  },
+  "platesRemainder": "{rest} kg lässt sich nicht stecken — nächster Wert {loaded} kg",
+  "@platesRemainder": {
+    "description": "Scheibenrechner — Rest, der mit den Scheiben nicht aufgeht",
+    "placeholders": {
+      "rest": {
+        "type": "String"
+      },
+      "loaded": {
+        "type": "String"
+      }
+    }
+  },
+  "platesA11yPlate": "{count, plural, =1{eine {plate}} other{{count}-mal {plate}}}",
+  "@platesA11yPlate": {
+    "description": "Scheibenrechner — eine Scheibengrösse im Vorlese-Label",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plate": {
+        "type": "String"
+      }
+    }
+  },
+  "platesA11y": "Scheiben je Seite: {plates}. Stange {bar} Kilogramm",
+  "@platesA11y": {
+    "description": "Scheibenrechner — ein Vorlese-Knoten für Grafik und Zeile",
+    "placeholders": {
+      "plates": {
+        "type": "String"
+      },
+      "bar": {
+        "type": "String"
+      }
+    }
+  },
+  "platesA11yEmptyBar": "Leere Stange, {bar} Kilogramm, keine Scheiben",
+  "@platesA11yEmptyBar": {
+    "description": "Scheibenrechner — Vorlese-Label bei leerer Stange",
+    "placeholders": {
+      "bar": {
+        "type": "String"
+      }
+    }
+  },
+  "platesA11yBelowBar": "Leichter als die Stange mit {bar} Kilogramm, keine Scheiben möglich",
+  "@platesA11yBelowBar": {
+    "description": "Scheibenrechner — Vorlese-Label unter der Stange",
+    "placeholders": {
+      "bar": {
+        "type": "String"
+      }
+    }
+  },
+  "platesA11yRemainder": "Rest {rest} Kilogramm lässt sich nicht stecken, nächster Wert {loaded} Kilogramm",
+  "@platesA11yRemainder": {
+    "description": "Scheibenrechner — Vorlese-Zusatz bei Rest",
+    "placeholders": {
+      "rest": {
+        "type": "String"
+      },
+      "loaded": {
+        "type": "String"
       }
     }
   }

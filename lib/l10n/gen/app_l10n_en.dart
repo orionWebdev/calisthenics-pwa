@@ -5736,12 +5736,6 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get workoutSidesChip => 'Per side';
-
-  @override
-  String get workoutSidesChipA11y => 'Log each side separately';
-
-  @override
   String get workoutSideLeftShort => 'L';
 
   @override
@@ -5856,5 +5850,104 @@ class AppL10nEn extends AppL10n {
   @override
   String workoutRpeBadgeHardA11y(int n, int rpe) {
     return 'Set $n, RPE $rpe, hard set. Tap to change';
+  }
+
+  @override
+  String get workoutSidesLabel => 'Sides';
+
+  @override
+  String get workoutSidesBoth => 'Both';
+
+  @override
+  String get workoutSidesSplit => 'Separate';
+
+  @override
+  String get workoutSidesBothA11y => 'Both sides, sets without a side';
+
+  @override
+  String get workoutSidesSplitA11y =>
+      'Separate, left and right as their own sets';
+
+  @override
+  String workoutSidesGroupA11y(String name) {
+    return 'Sides for exercise $name';
+  }
+
+  @override
+  String get platesToggle => 'Plates';
+
+  @override
+  String get platesToggleShowA11y => 'Show plates per side';
+
+  @override
+  String get platesToggleHideA11y => 'Hide plates';
+
+  @override
+  String get platesBarLabel => 'BAR';
+
+  @override
+  String platesBarKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String platesBarA11y(String kg) {
+    return '$kg kilogram bar';
+  }
+
+  @override
+  String platesTimes(String count, String plate) {
+    return '$count × $plate';
+  }
+
+  @override
+  String platesPerSide(String plates, String bar) {
+    return 'per side: $plates · bar $bar kg';
+  }
+
+  @override
+  String platesEmptyBar(String bar) {
+    return 'Empty bar · $bar kg';
+  }
+
+  @override
+  String platesBelowBar(String bar) {
+    return 'Lighter than the bar ($bar kg)';
+  }
+
+  @override
+  String platesRemainder(String rest, String loaded) {
+    return '$rest kg cannot be loaded — nearest value $loaded kg';
+  }
+
+  @override
+  String platesA11yPlate(int count, String plate) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times $plate',
+      one: 'one $plate',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String platesA11y(String plates, String bar) {
+    return 'Plates per side: $plates. Bar $bar kilograms';
+  }
+
+  @override
+  String platesA11yEmptyBar(String bar) {
+    return 'Empty bar, $bar kilograms, no plates';
+  }
+
+  @override
+  String platesA11yBelowBar(String bar) {
+    return 'Lighter than the $bar kilogram bar, no plates possible';
+  }
+
+  @override
+  String platesA11yRemainder(String rest, String loaded) {
+    return 'Remaining $rest kilograms cannot be loaded, nearest value $loaded kilograms';
   }
 }
