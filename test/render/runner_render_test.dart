@@ -10,6 +10,7 @@ import 'package:atem/features/exercises/domain/muscle.dart';
 import 'package:atem/features/exercises/application/exercise_providers.dart';
 import 'package:atem/features/plans/application/plan_providers.dart';
 import 'package:atem/features/plans/domain/plan.dart';
+import 'package:atem/features/workout/application/workout_providers.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
@@ -219,4 +220,78 @@ void main() {
       await _shot(tester, key, 'runner_320_$shot');
     }
   });
+
+  // Anstrengung je Satz und Seiten getrennt (18.09.2026, kein Board): der
+  // Streifen nach dem Abhaken, die Kapsel danach, 1–5 aufgeklappt und die
+  // L/R-Marken — je auf Honor-Breite und im Extremfall.
+  for (final (label, size, scale) in [
+    ('361', const Size(361, 780), 1.15),
+    ('320', const Size(320, 800), 2.0),
+  ]) {
+    testWidgets('rendert Anstrengung und Seiten bei $label dp', (tester) async {
+      if (!renderEnabled) return;
+      final handle = tester.ensureSemantics();
+      final key = await pumpRunner(tester, size: size, scale: scale);
+      final c = ProviderScope.containerOf(
+          tester.element(find.byType(WorkoutRunnerScreen)));
+      final n = c.read(
+          workoutSessionProvider(const WorkoutStart(planId: 'p1')).notifier);
+      String setId(int i) => c
+          .read(workoutSessionProvider(const WorkoutStart(planId: 'p1')))
+          .value!
+          .exercises
+          .first
+          .sets[i]
+          .id;
+
+      Future<void> tick(int i) async {
+        n.updateReps(0, setId(i), '10');
+        await tester.pumpAndSettle();
+        final done = find.bySemanticsLabel('Satz ${i + 1} abschließen');
+        await tester.ensureVisible(done);
+        await tester.pumpAndSettle();
+        await tester.tap(done);
+        await tester.pumpAndSettle();
+      }
+
+      Future<void> show(Finder f) async {
+        await tester.ensureVisible(f);
+        await tester.pumpAndSettle();
+      }
+
+      await tick(0);
+      await show(find.text('Wie schwer war Satz 1?'));
+      await _shot(tester, key, 'rpe_${label}_streifen');
+
+      await tester.tap(
+          find.bySemanticsLabel('RPE 8, noch 2 Wiederholungen möglich'));
+      await tester.pumpAndSettle();
+      await show(find.text('RPE 8'));
+      await _shot(tester, key, 'rpe_${label}_kapsel');
+
+      await tick(1);
+      final low = find.bySemanticsLabel('Stufen 1 bis 5 zeigen');
+      await show(low);
+      await tester.tap(low);
+      await tester.pumpAndSettle();
+      await show(find.text('Wie schwer war Satz 2?'));
+      await _shot(tester, key, 'rpe_${label}_streifen_1-5');
+
+      await tester.tap(find.bySemanticsLabel(RegExp('^RPE 6,')));
+      await tester.pumpAndSettle();
+
+      final sides = find.bySemanticsLabel('Seiten getrennt protokollieren');
+      await show(sides);
+      await tester.tap(sides);
+      await tester.pumpAndSettle();
+      await show(sides);
+      await _shot(tester, key, 'rpe_${label}_seiten');
+      // „+ Satz" wechselt die Seite: Satz 3 ist links, der neue rechts.
+      n.addSet(0);
+      await tester.pumpAndSettle();
+      await show(find.bySemanticsLabel(RegExp('^Seite rechts, Satz 4')));
+      await _shot(tester, key, 'rpe_${label}_seiten_unten');
+      handle.dispose();
+    });
+  }
 }

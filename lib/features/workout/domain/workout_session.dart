@@ -139,6 +139,7 @@ class WorkoutExercise {
     this.targetReps,
     this.targetHoldSeconds,
     required this.sets,
+    this.unilateral = false,
   });
 
   final String id;
@@ -167,10 +168,19 @@ class WorkoutExercise {
 
   final List<WorkoutSet> sets;
 
+  /// Werden die Sätze **je Körperseite** protokolliert?
+  ///
+  /// Vorbelegt aus `Exercise.unilateral` im Katalog; der Nutzer kann es im
+  /// Übungskopf für diese Einheit umschalten. Die Seite selbst steht am Satz
+  /// ([WorkoutSet.side]) — dieser Schalter sagt nur, ob der Runner sie
+  /// anbietet und beim Hinzufügen wechselt.
+  final bool unilateral;
+
   /// Trägt die Übung eine Haltezeit statt Wiederholungen?
   bool get isHold => targetHoldSeconds != null;
 
-  WorkoutExercise copyWith({List<WorkoutSet>? sets}) => WorkoutExercise(
+  WorkoutExercise copyWith({List<WorkoutSet>? sets, bool? unilateral}) =>
+      WorkoutExercise(
         id: id,
         name: name,
         muscles: muscles,
@@ -178,6 +188,7 @@ class WorkoutExercise {
         targetReps: targetReps,
         targetHoldSeconds: targetHoldSeconds,
         sets: sets ?? this.sets,
+        unilateral: unilateral ?? this.unilateral,
       );
 }
 

@@ -8219,5 +8219,342 @@
   "workoutValueNone": "—",
   "@workoutValueNone": {
     "description": "Runner, leeres Wertfeld in der Satzzeile (Geviertstrich wie in der Vorlage)"
+  },
+  "exerciseUnilateralLabel": "Je Seite trainiert",
+  "@exerciseUnilateralLabel": {
+    "description": "Übungsformular (18.09.2026, kein Board) — Schalter für einseitige Übungen"
+  },
+  "exerciseUnilateralHint": "Für einseitige Übungen wie Bizeps-Curl mit einer Hantel oder Ausfallschritt — der Runner fragt dann je Satz nach links oder rechts.",
+  "@exerciseUnilateralHint": {
+    "description": "Übungsformular (18.09.2026, kein Board) — Erklärung unter dem Einseitig-Schalter"
+  },
+  "exerciseUnilateralA11y": "{label}, {state}",
+  "@exerciseUnilateralA11y": {
+    "description": "Übungsformular — Vorlesetext des Einseitig-Schalters mit Zustand",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseUnilateralMeta": "je Seite",
+  "@exerciseUnilateralMeta": {
+    "description": "Übungsdetail — Zusatz in der Metazeile bei einseitigen Übungen"
+  },
+  "hardSetsTitle": "Harte Sätze",
+  "@hardSetsTitle": {
+    "description": "Harte Sätze (18.09.2026) — Titel des Auswertungsblocks"
+  },
+  "hardSetsWindow": "{days, plural, =1{1 Tag} other{{days} Tage}}",
+  "@hardSetsWindow": {
+    "description": "Harte Sätze — Zeitraum rechts im Kopf",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsWhat": "Wie viele deiner Sätze je Muskelgruppe hart waren — Anstrengung 7 oder mehr.",
+  "@hardSetsWhat": {
+    "description": "Harte Sätze — was der Block zeigen wird (Schwellen-Zustand und Erklärung)"
+  },
+  "hardSetsCondition": "Erscheint ab {n} Sätzen mit Anstrengung — beim Abhaken im Runner wählbar",
+  "@hardSetsCondition": {
+    "description": "Harte Sätze — Bedingung im Schwellen-Zustand",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsExplainWhat": "Ein harter Satz ist einer mit Anstrengung 7 oder mehr auf der Skala 1 bis 10. Die Angabe ist freiwillig und wird beim Abhaken eines Satzes im Runner gewählt.",
+  "@hardSetsExplainWhat": {
+    "description": "Harte Sätze — Erklärung hinter dem ⓘ: was ein harter Satz ist"
+  },
+  "hardSetsExplainWhy": "Gezählt werden Sätze, nicht Kilogramm: So zählt ein Klimmzug am eigenen Körper genauso wie ein Satz mit der Langhantel.",
+  "@hardSetsExplainWhy": {
+    "description": "Harte Sätze — Erklärung hinter dem ⓘ: warum Sätze statt Tonnage"
+  },
+  "hardSetsExplainSides": "Bei einseitigen Übungen sind ein Satz links und einer rechts zusammen ein Satz.",
+  "@hardSetsExplainSides": {
+    "description": "Harte Sätze — Erklärung hinter dem ⓘ: Seitenregel"
+  },
+  "hardSetsExplainNoTarget": "Kein Sollwert — die App weiss nicht, wie viele harte Sätze richtig sind. Die Pfeile vergleichen mit den {days} Tagen davor.",
+  "@hardSetsExplainNoTarget": {
+    "description": "Harte Sätze — Erklärung hinter dem ⓘ: kein Sollwert, Vergleichsfenster",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsUnit": "{n, plural, =1{harter Satz} other{harte Sätze}}",
+  "@hardSetsUnit": {
+    "description": "Harte Sätze — Einheit neben der Hauptzahl",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsBasis": "{hard} harte von {total} Sätzen · {rpe} mit Angabe",
+  "@hardSetsBasis": {
+    "description": "Harte Sätze — Grundlage mit Nenner",
+    "placeholders": {
+      "hard": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsCount": "{n, plural, =1{1 harter Satz} other{{n} harte Sätze}}",
+  "@hardSetsCount": {
+    "description": "Harte Sätze — Zählform für Vorlesetexte",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsHeadA11y": "{count} in {days} Tagen",
+  "@hardSetsHeadA11y": {
+    "description": "Harte Sätze — Vorlesetext der Hauptzahl; count ist hardSetsCount",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsShiftA11y": "{n} {direction} als in den {days} Tagen davor",
+  "@hardSetsShiftA11y": {
+    "description": "Harte Sätze — Verschiebung im Vorlesetext; direction ist ratioShiftUp/ratioShiftDown",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "direction": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hardSetsShiftEqualA11y": "gleich viele wie in den {days} Tagen davor",
+  "@hardSetsShiftEqualA11y": {
+    "description": "Harte Sätze — keine Verschiebung im Vorlesetext",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutSidesChip": "Seiten getrennt",
+  "@workoutSidesChip": {
+    "description": "Runner 18.09.2026 — Schalter im Übungskopf: Sätze je Körperseite protokollieren (kein Board, aus Tokens gebaut)"
+  },
+  "workoutSidesChipA11y": "Seiten getrennt protokollieren",
+  "@workoutSidesChipA11y": {
+    "description": "Runner — Vorlese-Label des Schalters „Seiten getrennt“; der Zustand kommt über selected"
+  },
+  "workoutSideLeftShort": "L",
+  "@workoutSideLeftShort": {
+    "description": "Runner — Seitenmarke in der Satzzeile, links"
+  },
+  "workoutSideRightShort": "R",
+  "@workoutSideRightShort": {
+    "description": "Runner — Seitenmarke in der Satzzeile, rechts"
+  },
+  "workoutSideLeft": "links",
+  "@workoutSideLeft": {
+    "description": "Runner — Seite ausgeschrieben, für Vorlese-Labels"
+  },
+  "workoutSideRight": "rechts",
+  "@workoutSideRight": {
+    "description": "Runner — Seite ausgeschrieben, für Vorlese-Labels"
+  },
+  "workoutSideA11y": "Seite {side}, Satz {n}. Tippen wechselt zu {other}",
+  "@workoutSideA11y": {
+    "description": "Runner — Seitenmarke eines offenen Satzes",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "other": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSideDoneA11y": "Seite {side}, Satz {n}",
+  "@workoutSideDoneA11y": {
+    "description": "Runner — Seitenmarke eines abgehakten Satzes (gesperrt, erst entsperren)",
+    "placeholders": {
+      "side": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeQuestion": "Wie schwer war Satz {n}?",
+  "@workoutRpeQuestion": {
+    "description": "Runner — Kopf des RPE-Streifens nach dem Abhaken",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeGroupA11y": "Anstrengung von Satz {n}",
+  "@workoutRpeGroupA11y": {
+    "description": "Runner — Semantics-Gruppe des RPE-Streifens",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeRangeA11y": "RPE {from} bis {to}",
+  "@workoutRpeRangeA11y": {
+    "description": "Runner — Gruppe einer Reihe im RPE-Streifen",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeNone": "keine Angabe",
+  "@workoutRpeNone": {
+    "description": "Runner — löscht die Anstrengung des Satzes und schließt den Streifen"
+  },
+  "workoutRpeNoneA11y": "Keine Anstrengung angeben für Satz {n}",
+  "@workoutRpeNoneA11y": {
+    "description": "Runner — Vorlese-Label zu „keine Angabe“",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeShowLow": "1–5 zeigen",
+  "@workoutRpeShowLow": {
+    "description": "Runner — blendet die Stufen 1 bis 5 im RPE-Streifen ein"
+  },
+  "workoutRpeHideLow": "1–5 ausblenden",
+  "@workoutRpeHideLow": {
+    "description": "Runner — blendet die Stufen 1 bis 5 wieder aus"
+  },
+  "workoutRpeShowLowA11y": "Stufen 1 bis 5 zeigen",
+  "@workoutRpeShowLowA11y": {
+    "description": "Runner — Vorlese-Label zu „1–5 zeigen“"
+  },
+  "workoutRpeHideLowA11y": "Stufen 1 bis 5 ausblenden",
+  "@workoutRpeHideLowA11y": {
+    "description": "Runner — Vorlese-Label zu „1–5 ausblenden“"
+  },
+  "workoutRpeWordMax": "Max",
+  "@workoutRpeWordMax": {
+    "description": "Runner — Wort zu RPE 10 unter der Reihe. Kurz, weil „noch 4 Wdh. … Max“ bei 200 % auf 320 dp in eine Zeile passen muss"
+  },
+  "workoutRpeWordReserve": "{n, plural, =1{noch 1 Wdh.} other{noch {n} Wdh.}}",
+  "@workoutRpeWordReserve": {
+    "description": "Runner — Wort zu RPE 6–9: Wiederholungen in Reserve (RPE 9 = 1)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeWordReserveMany": "noch 5+",
+  "@workoutRpeWordReserveMany": {
+    "description": "Runner — Wort zu RPE 5. Kurz, weil „leicht … noch 5+“ bei 200 % auf 320 dp in eine Zeile passen muss"
+  },
+  "workoutRpeWordEasy": "leicht",
+  "@workoutRpeWordEasy": {
+    "description": "Runner — Wort zu RPE 1–4"
+  },
+  "workoutRpeMaxA11y": "keine Wiederholung mehr möglich",
+  "@workoutRpeMaxA11y": {
+    "description": "Runner — Vorlese-Fassung von RPE 10"
+  },
+  "workoutRpeReserveA11y": "{n, plural, =1{noch 1 Wiederholung möglich} other{noch {n} Wiederholungen möglich}}",
+  "@workoutRpeReserveA11y": {
+    "description": "Runner — Vorlese-Fassung von RPE 6–9",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeReserveManyA11y": "noch 5 oder mehr Wiederholungen möglich",
+  "@workoutRpeReserveManyA11y": {
+    "description": "Runner — Vorlese-Fassung von RPE 5"
+  },
+  "workoutRpeLevelA11y": "RPE {level}, {word}",
+  "@workoutRpeLevelA11y": {
+    "description": "Runner — Vorlese-Label eines Feldes im RPE-Streifen",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutRpeBadge": "RPE {rpe}",
+  "@workoutRpeBadge": {
+    "description": "Runner — Kapsel in der Satzzeile nach der Angabe",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutHardSet": "harter Satz",
+  "@workoutHardSet": {
+    "description": "Runner — steht ab RPE 7 an der Kapsel, neben dem Punkt"
+  },
+  "workoutRpeBadgeA11y": "Satz {n}, RPE {rpe}. Tippen zum Ändern",
+  "@workoutRpeBadgeA11y": {
+    "description": "Runner — Vorlese-Label der RPE-Kapsel unter 7",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRpeBadgeHardA11y": "Satz {n}, RPE {rpe}, harter Satz. Tippen zum Ändern",
+  "@workoutRpeBadgeHardA11y": {
+    "description": "Runner — Vorlese-Label der RPE-Kapsel ab 7",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
   }
 }

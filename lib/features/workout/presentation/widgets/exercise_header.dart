@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show Icons;
 import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/theme.dart';
@@ -19,6 +20,7 @@ class ExerciseHeader extends StatelessWidget {
     required this.onPrevious,
     required this.onNext,
     required this.onFormGuide,
+    this.onUnilateralChanged,
   });
 
   final WorkoutExercise exercise;
@@ -41,6 +43,10 @@ class ExerciseHeader extends StatelessWidget {
   /// Von 154 Übungen im Bestand haben nur die kuratierten eine Anleitung; für
   /// alle anderen ist kein Chip die ehrliche Antwort.
   final VoidCallback? onFormGuide;
+
+  /// Schaltet „Seiten getrennt" für diese Übung. `null` blendet den Schalter
+  /// aus.
+  final ValueChanged<bool>? onUnilateralChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +128,45 @@ class ExerciseHeader extends StatelessWidget {
                   accent: AtemColors.cyan,
                   onTap: open,
                 ),
+              if (onUnilateralChanged case final change?)
+                _SidesToggle(
+                  on: exercise.unilateral,
+                  onChanged: change,
+                ),
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Der Schalter „Seiten getrennt" — kein Board, aus Tokens gebaut
+/// (18.09.2026).
+///
+/// Eine Kapsel wie die übrigen im Kopf, aber umschaltbar: Aus steht sie
+/// neutral umrandet, an cyan getönt **mit Haken** — Form statt Farbe. Kein
+/// Chevron wie beim Form Guide: Sie öffnet nichts, sie schaltet.
+class _SidesToggle extends StatelessWidget {
+  const _SidesToggle({required this.on, required this.onChanged});
+
+  final bool on;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return AtemTappable(
+      onTap: () => onChanged(!on),
+      semanticLabel: l10n.workoutSidesChipA11y,
+      selected: on,
+      child: AtemBadge(
+        label: l10n.workoutSidesChip,
+        fill: on ? AtemBadgeFill.tinted : AtemBadgeFill.outline,
+        accent: on ? AtemColors.cyan : null,
+        leadingIcon: on
+            ? const Icon(Icons.check, size: 14, color: AtemColors.cyan)
+            : null,
       ),
     );
   }

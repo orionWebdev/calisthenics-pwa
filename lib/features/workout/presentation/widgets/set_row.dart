@@ -6,6 +6,8 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../workout_ui.dart';
 import '../../domain/workout_session.dart';
 import '../set_type_ui.dart';
+import '../../../history/domain/training_session.dart' show SetSide;
+import 'set_effort.dart';
 
 /// Welcher Wert einer Satzzeile gerade geändert wird.
 enum SetField { weight, reps, hold }
@@ -36,6 +38,17 @@ enum SetField { weight, reps, hold }
 /// Ein Wert, der beim Abhaken aus dem vorigen Satz kam ([WorkoutSet.carried]),
 /// steht in Cyan mit cyanem Rand. Er bleibt ein Vorschlag, bis man ihn ändert
 /// oder bestätigt — danach ist er weiß wie jede andere Angabe.
+///
+/// ## Seite und Anstrengung (18.09.2026, kein Board, aus Tokens gebaut)
+///
+/// Seitengetrennte Übungen tragen eine Marke L/R neben dem Typ. Für sie ist in
+/// der breiten Zeile kein Platz — 48 dp mehr liessen der Historie nichts —,
+/// deshalb nehmen sie **immer** das zweizeilige Layout.
+///
+/// Ein abgehakter Satz mit Anstrengung zeigt darunter die Kapsel „RPE 8"
+/// ([RpeBadge]). Sie steht in einer eigenen Zeile, nicht in der Historie:
+/// Dort bleiben bei 361 dp keine 50 dp, und „harter Satz" muss ausgeschrieben
+/// dabeistehen.
 class SetRow extends StatelessWidget {
   const SetRow({
     super.key,
@@ -45,6 +58,10 @@ class SetRow extends StatelessWidget {
     required this.onCycleType,
     required this.onEdit,
     this.isHold = false,
+    this.unilateral = false,
+    this.onToggleSide,
+    this.onOpenRpe,
+    this.rpeOpen = false,
   });
 
   final WorkoutSet set;
@@ -63,6 +80,19 @@ class SetRow extends StatelessWidget {
   /// Beides nebeneinander wäre eine Spalte zu viel, und im Bestand tragen
   /// Sätze immer nur eins von beiden.
   final bool isHold;
+
+  /// Seitengetrennt: Die Zeile zeigt die Marke L/R und nimmt das zweizeilige
+  /// Layout.
+  final bool unilateral;
+
+  /// Wechselt die Seite. Nur bei [unilateral] und offenem Satz wirksam.
+  final VoidCallback? onToggleSide;
+
+  /// Öffnet den Anstrengungs-Streifen über die Kapsel erneut.
+  final VoidCallback? onOpenRpe;
+
+  /// Steht der Streifen dieses Satzes gerade offen?
+  final bool rpeOpen;
 
   /// Ab hier trägt die Zeile ihre fünf Spalten nicht mehr.
   static bool isCompact(BuildContext context) =>
@@ -91,7 +121,10 @@ class SetRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
-    final compact = isCompact(context);
+    final compact = isCompact(context) || unilateral;
+    final rpe = set.rpe;
+    final main =
+        compact ? _compactLayout(context, l10n) : _wideLayout(context, l10n);
 
     return AnimatedContainer(
       duration: AtemMotion.duration(context, AtemMotion.normal),
@@ -112,7 +145,27 @@ class SetRow extends StatelessWidget {
               : AtemColors.border,
         ),
       ),
-      child: compact ? _compactLayout(context, l10n) : _wideLayout(context, l10n),
+      child: !set.done || rpe == null
+          ? main
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                main,
+                const SizedBox(height: 4),
+                // Unter der Historienspalte, nicht am Zeilenrand: Dort liest
+                // man ohnehin, was zu diesem Satz gehört.
+                Padding(
+                  padding: EdgeInsets.only(left: compact ? 0 : 48 + columnGap),
+                  child: RpeBadge(
+                    rpe: rpe,
+                    setNumber: index,
+                    open: rpeOpen,
+                    onTap: onOpenRpe ?? () {},
+                  ),
+                ),
+              ],
+            ),
     );
   }
 
@@ -142,6 +195,10 @@ class SetRow extends StatelessWidget {
             children: [
               _typeChip(context, l10n),
               const SizedBox(width: AtemSpacing.sm),
+              if (unilateral) ...[
+                _sideMark(context, l10n),
+                const SizedBox(width: AtemSpacing.sm),
+              ],
               Expanded(child: _history(context, l10n)),
             ],
           ),
@@ -207,6 +264,58 @@ class SetRow extends StatelessWidget {
           style: AtemType.labelUi.of(context).copyWith(
                 fontWeight: FontWeight.w700,
                 color: set.done ? AtemColors.textSecondary : tint,
+              ),
+        ),
+      ),
+    );
+  }
+
+  /// Die Seite des Satzes, L oder R. Tippen wechselt sie.
+  ///
+  /// Gebaut wie der Typ-Chip daneben — sichtbar 32 dp, Trefferfläche 48 —,
+  /// aber mit Cyan-Rand: Sie ist eine Angabe zum Satz, kein Satztyp. Ohne
+  /// Seite (abgehakt, bevor „Seiten getrennt" an war) steht ein Geviertstrich,
+  /// vorgelesen als „keine Angabe" — eine Seite wird nicht erfunden.
+  Widget _sideMark(BuildContext context, AppL10n l10n) {
+    final side = set.side;
+    final name = switch (side) {
+      SetSide.left => l10n.workoutSideLeft,
+      SetSide.right => l10n.workoutSideRight,
+      null => l10n.workoutValueEmpty,
+    };
+    final other =
+        side == SetSide.left ? l10n.workoutSideRight : l10n.workoutSideLeft;
+    final short = switch (side) {
+      SetSide.left => l10n.workoutSideLeftShort,
+      SetSide.right => l10n.workoutSideRightShort,
+      null => l10n.workoutValueNone,
+    };
+
+    return AtemTappable(
+      // Gesperrt wie der Typ: Abgehakt ist abgehakt, erst entsperren.
+      onTap: set.done ? null : onToggleSide,
+      semanticLabel: set.done
+          ? l10n.workoutSideDoneA11y(name, index)
+          : l10n.workoutSideA11y(name, index, other),
+      minTapSize: const Size.square(48),
+      child: Container(
+        width: typeWidth,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: set.done ? const Color(0x00000000) : AtemColors.surfaceSolid,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: set.done
+                ? AtemColors.border
+                : AtemColors.cyan.withValues(alpha: 0.35),
+          ),
+        ),
+        child: Text(
+          short,
+          style: AtemType.labelUi.of(context).copyWith(
+                fontWeight: FontWeight.w700,
+                color: set.done ? AtemColors.textSecondary : AtemColors.cyan,
               ),
         ),
       ),
@@ -291,7 +400,9 @@ class SetRow extends StatelessWidget {
         : (carried ? AtemColors.cyan : AtemColors.textPrimary);
     final Color borderColor = set.done
         ? AtemColors.green.withValues(alpha: 0.3)
-        : (carried ? AtemColors.cyan.withValues(alpha: 0.35) : AtemColors.border);
+        : (carried
+            ? AtemColors.cyan.withValues(alpha: 0.35)
+            : AtemColors.border);
 
     final cell = AnimatedContainer(
       duration: AtemMotion.duration(context, AtemMotion.fast),

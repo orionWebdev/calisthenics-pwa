@@ -6,6 +6,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../app/application/snackbar_providers.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../auth/application/auth_providers.dart';
+import '../../../settings/presentation/widgets/settings_bits.dart'
+    show SettingsSwitch;
 import '../../application/exercise_providers.dart';
 import '../../domain/exercise.dart';
 import '../../domain/exercise_draft.dart';
@@ -75,6 +77,9 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
   late final Set<MuscleGroup> _muscles;
   int? _difficulty;
 
+  /// Je Seite trainiert? Siehe `Exercise.unilateral`.
+  late bool _unilateral;
+
   /// Erst nach dem ersten Speicherversuch werden Fehler gezeigt. Ein Formular,
   /// das schon beim Öffnen drei Fehler anzeigt, beschuldigt für nichts.
   var _showFaults = false;
@@ -98,6 +103,8 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
     _equipment = TextEditingController(text: source?.equipment.join(', ') ?? '');
     _description = TextEditingController(text: source?.description ?? '');
     _cues = TextEditingController(text: source?.cues.join('\n') ?? '');
+    // Vor `_optionalCount`: Der zählt „einseitig" als gefüllte Zusatzangabe.
+    _unilateral = source?.unilateral ?? false;
     // Wer eine Übung bearbeitet, die schon Angaben trägt, soll sie sehen —
     // sonst sähe der Bildschirm aus, als wären sie verloren.
     _showOptional = _optionalCount > 0;
@@ -119,11 +126,13 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
   }
 
   /// Wie viele der optionalen Felder gefüllt sind.
-  int get _optionalCount => [
+  int get _optionalCount =>
+      [
         _equipment.text,
         _description.text,
         _cues.text,
-      ].where((t) => t.trim().isNotEmpty).length;
+      ].where((t) => t.trim().isNotEmpty).length +
+      (_unilateral ? 1 : 0);
 
   /// Wie viele Angaben gegenüber dem Ausgangszustand **geändert** wurden.
   ///
@@ -143,6 +152,8 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
     compare(source.description ?? '', _description.text);
     compare(source.cues.join('\n'), _cues.text);
     if (source.difficulty != null && source.difficulty != _difficulty) count++;
+    // Abschalten ist ein Eingriff, Einschalten eine Ergänzung (unten).
+    if (source.unilateral && !_unilateral) count++;
     return count;
   }
 
@@ -159,6 +170,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
     added(source?.description ?? '', _description.text);
     added(source?.cues.join('\n') ?? '', _cues.text);
     if (source?.difficulty == null && _difficulty != null) count++;
+    if (!(source?.unilateral ?? false) && _unilateral) count++;
     if ((source?.displayMuscles.isEmpty ?? true) && _muscles.isNotEmpty) {
       count++;
     }
@@ -249,6 +261,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
               description: _description.text,
               instructions: _source?.instructions ?? const [],
               cues: _splitLines(_cues.text),
+              unilateral: _unilateral,
             ),
           );
       if (!mounted) return;
@@ -315,6 +328,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
               description: before.description,
               instructions: before.instructions,
               cues: before.cues,
+              unilateral: before.unilateral,
             ),
           ),
     ));
@@ -512,6 +526,23 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                         hint: l10n.exerciseFieldEquipmentHint,
                         textCapitalization: TextCapitalization.words,
                         onChanged: (_) => setState(_touch),
+                      ),
+                      // Ergänzt am 18.09.2026, kein Board: Board 07 A2 kennt
+                      // einseitige Übungen noch nicht. Unter der Ausrüstung,
+                      // weil beides beschreibt, *womit* trainiert wird.
+                      const SizedBox(height: 12),
+                      SettingsSwitch(
+                        label: l10n.exerciseUnilateralLabel,
+                        hint: l10n.exerciseUnilateralHint,
+                        value: _unilateral,
+                        semanticLabel: l10n.exerciseUnilateralA11y(
+                          l10n.exerciseUnilateralLabel,
+                          _unilateral ? l10n.switchOn : l10n.switchOff,
+                        ),
+                        onChanged: (on) {
+                          _touch();
+                          setState(() => _unilateral = on);
+                        },
                       ),
                       const SizedBox(height: 20),
                       AtemFieldLabel(label: l10n.exerciseFieldInstructions),

@@ -5652,4 +5652,225 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get workoutValueNone => '—';
+
+  @override
+  String get exerciseUnilateralLabel => 'Je Seite trainiert';
+
+  @override
+  String get exerciseUnilateralHint =>
+      'Für einseitige Übungen wie Bizeps-Curl mit einer Hantel oder Ausfallschritt — der Runner fragt dann je Satz nach links oder rechts.';
+
+  @override
+  String exerciseUnilateralA11y(String label, String state) {
+    return '$label, $state';
+  }
+
+  @override
+  String get exerciseUnilateralMeta => 'je Seite';
+
+  @override
+  String get hardSetsTitle => 'Harte Sätze';
+
+  @override
+  String hardSetsWindow(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days Tage',
+      one: '1 Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hardSetsWhat =>
+      'Wie viele deiner Sätze je Muskelgruppe hart waren — Anstrengung 7 oder mehr.';
+
+  @override
+  String hardSetsCondition(int n) {
+    return 'Erscheint ab $n Sätzen mit Anstrengung — beim Abhaken im Runner wählbar';
+  }
+
+  @override
+  String get hardSetsExplainWhat =>
+      'Ein harter Satz ist einer mit Anstrengung 7 oder mehr auf der Skala 1 bis 10. Die Angabe ist freiwillig und wird beim Abhaken eines Satzes im Runner gewählt.';
+
+  @override
+  String get hardSetsExplainWhy =>
+      'Gezählt werden Sätze, nicht Kilogramm: So zählt ein Klimmzug am eigenen Körper genauso wie ein Satz mit der Langhantel.';
+
+  @override
+  String get hardSetsExplainSides =>
+      'Bei einseitigen Übungen sind ein Satz links und einer rechts zusammen ein Satz.';
+
+  @override
+  String hardSetsExplainNoTarget(int days) {
+    return 'Kein Sollwert — die App weiss nicht, wie viele harte Sätze richtig sind. Die Pfeile vergleichen mit den $days Tagen davor.';
+  }
+
+  @override
+  String hardSetsUnit(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'harte Sätze',
+      one: 'harter Satz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hardSetsBasis(int hard, int total, int rpe) {
+    return '$hard harte von $total Sätzen · $rpe mit Angabe';
+  }
+
+  @override
+  String hardSetsCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n harte Sätze',
+      one: '1 harter Satz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hardSetsHeadA11y(String count, int days) {
+    return '$count in $days Tagen';
+  }
+
+  @override
+  String hardSetsShiftA11y(int n, String direction, int days) {
+    return '$n $direction als in den $days Tagen davor';
+  }
+
+  @override
+  String hardSetsShiftEqualA11y(int days) {
+    return 'gleich viele wie in den $days Tagen davor';
+  }
+
+  @override
+  String get workoutSidesChip => 'Seiten getrennt';
+
+  @override
+  String get workoutSidesChipA11y => 'Seiten getrennt protokollieren';
+
+  @override
+  String get workoutSideLeftShort => 'L';
+
+  @override
+  String get workoutSideRightShort => 'R';
+
+  @override
+  String get workoutSideLeft => 'links';
+
+  @override
+  String get workoutSideRight => 'rechts';
+
+  @override
+  String workoutSideA11y(String side, int n, String other) {
+    return 'Seite $side, Satz $n. Tippen wechselt zu $other';
+  }
+
+  @override
+  String workoutSideDoneA11y(String side, int n) {
+    return 'Seite $side, Satz $n';
+  }
+
+  @override
+  String workoutRpeQuestion(int n) {
+    return 'Wie schwer war Satz $n?';
+  }
+
+  @override
+  String workoutRpeGroupA11y(int n) {
+    return 'Anstrengung von Satz $n';
+  }
+
+  @override
+  String workoutRpeRangeA11y(int from, int to) {
+    return 'RPE $from bis $to';
+  }
+
+  @override
+  String get workoutRpeNone => 'keine Angabe';
+
+  @override
+  String workoutRpeNoneA11y(int n) {
+    return 'Keine Anstrengung angeben für Satz $n';
+  }
+
+  @override
+  String get workoutRpeShowLow => '1–5 zeigen';
+
+  @override
+  String get workoutRpeHideLow => '1–5 ausblenden';
+
+  @override
+  String get workoutRpeShowLowA11y => 'Stufen 1 bis 5 zeigen';
+
+  @override
+  String get workoutRpeHideLowA11y => 'Stufen 1 bis 5 ausblenden';
+
+  @override
+  String get workoutRpeWordMax => 'Max';
+
+  @override
+  String workoutRpeWordReserve(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'noch $n Wdh.',
+      one: 'noch 1 Wdh.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutRpeWordReserveMany => 'noch 5+';
+
+  @override
+  String get workoutRpeWordEasy => 'leicht';
+
+  @override
+  String get workoutRpeMaxA11y => 'keine Wiederholung mehr möglich';
+
+  @override
+  String workoutRpeReserveA11y(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'noch $n Wiederholungen möglich',
+      one: 'noch 1 Wiederholung möglich',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutRpeReserveManyA11y =>
+      'noch 5 oder mehr Wiederholungen möglich';
+
+  @override
+  String workoutRpeLevelA11y(int level, String word) {
+    return 'RPE $level, $word';
+  }
+
+  @override
+  String workoutRpeBadge(int rpe) {
+    return 'RPE $rpe';
+  }
+
+  @override
+  String get workoutHardSet => 'harter Satz';
+
+  @override
+  String workoutRpeBadgeA11y(int n, int rpe) {
+    return 'Satz $n, RPE $rpe. Tippen zum Ändern';
+  }
+
+  @override
+  String workoutRpeBadgeHardA11y(int n, int rpe) {
+    return 'Satz $n, RPE $rpe, harter Satz. Tippen zum Ändern';
+  }
 }

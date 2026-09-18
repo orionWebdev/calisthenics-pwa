@@ -30,6 +30,7 @@
 library;
 
 import '../../cardio/domain/iso_week.dart';
+import 'set_counting.dart';
 import 'training_session.dart';
 
 /// Eine Woche im Streifen.
@@ -157,9 +158,9 @@ class WeeklyStrengthVolume {
       final key = IsoWeek.key(s.date);
       var count = 0;
       for (final exercise in s.exercises) {
-        for (final set in exercise.sets) {
-          if (countsSet(set)) count++;
-        }
+        // Seitengetrennte Sätze nach [SetCounting]: ein Paar links/rechts ist
+        // ein Satz, nicht zwei.
+        count += SetCounting.count(exercise.sets, include: countsSet);
       }
       if (count > 0) hasSets = true;
       setsByWeek[key] = (setsByWeek[key] ?? 0) + count;

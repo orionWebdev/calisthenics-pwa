@@ -1,3 +1,4 @@
+import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/workout/data/workout_draft_store.dart';
 import 'package:atem/features/workout/domain/workout_clock.dart';
 import 'package:atem/features/workout/domain/workout_session.dart';
@@ -104,6 +105,59 @@ void main() {
     expect(plank.targetHoldSeconds, 45);
     expect(plank.isHold, isTrue);
     expect(plank.sets.first.hold, '40');
+  });
+
+  test('Anstrengung, Seite und „Seiten getrennt" überleben', () {
+    const unilateral = ActiveWorkout(
+      sessionId: 's',
+      defaultRestSeconds: 90,
+      exercises: [
+        WorkoutExercise(
+          id: 'split_squat',
+          name: 'Split Squat',
+          muscles: ['quads'],
+          unilateral: true,
+          sets: [
+            WorkoutSet(
+              id: 'a',
+              type: SetType.normal,
+              weight: '20',
+              reps: '8',
+              done: true,
+              rpe: 8,
+              side: SetSide.left,
+            ),
+            WorkoutSet(
+              id: 'b',
+              type: SetType.normal,
+              weight: '',
+              reps: '',
+              side: SetSide.right,
+            ),
+          ],
+        ),
+      ],
+    );
+    final draft = WorkoutDraft(
+      start: const WorkoutStart.free(),
+      clock: WorkoutClock.startingAt(_start),
+      exerciseIndex: 0,
+      workout: unilateral,
+    );
+
+    final back =
+        WorkoutDraft.fromJson(draft.toJson())!.workout.exercises.single;
+    expect(back.unilateral, isTrue);
+    expect(back.sets[0].rpe, 8);
+    expect(back.sets[0].side, SetSide.left);
+    expect(back.sets[1].rpe, isNull);
+    expect(back.sets[1].side, SetSide.right);
+
+    // Und ohne: beidseitig bleibt beidseitig, statt eine Seite zu erfinden.
+    final plain = WorkoutDraft.fromJson(_draft().toJson())!.workout;
+    expect(plain.exercises.first.unilateral, isFalse);
+    expect(plain.exercises.first.sets.first.side, isNull);
+    expect(plain.exercises.first.sets.first.rpe, isNull);
   });
 
   test('ein unbekannter Satztyp fällt auf normal zurück', () {

@@ -136,6 +136,7 @@ class WorkoutDraft {
                   'targetHoldSeconds': exercise.targetHoldSeconds,
                 if (exercise.targetReps != null)
                   'targetReps': exercise.targetReps,
+                if (exercise.unilateral) 'unilateral': true,
                 'sets': [
                   for (final set in exercise.sets)
                     {
@@ -203,6 +204,7 @@ class WorkoutDraft {
         recordWeightKg: (json['recordWeightKg'] as num?)?.toDouble(),
         targetHoldSeconds: (json['targetHoldSeconds'] as num?)?.round(),
         targetReps: json['targetReps'] as String?,
+        unilateral: json['unilateral'] == true,
         sets: [
           for (final raw in (json['sets'] as List? ?? const []))
             if (raw is Map) _set(raw.cast<String, Object?>()),

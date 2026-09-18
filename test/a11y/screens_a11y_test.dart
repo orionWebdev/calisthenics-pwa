@@ -32,6 +32,9 @@ import 'package:atem/features/cardio/presentation/screens/cardio_live_screen.dar
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
+import 'package:atem/features/workout/domain/workout_session.dart';
+import 'package:atem/features/workout/presentation/widgets/set_effort.dart';
+import 'package:atem/features/workout/presentation/widgets/set_row.dart';
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/exercises/presentation/exercise_picker.dart';
 import 'package:atem/features/plans/presentation/screens/plan_catalog_page.dart';
@@ -181,6 +184,75 @@ void main() {
     await expectA11y(
       tester,
       const WorkoutRunnerScreen(start: WorkoutStart.free()),
+    );
+  });
+
+  // Seitengetrennte Zeilen und der Anstrengungs-Streifen (18.09.2026). Sie
+  // erscheinen im Runner erst nach Eingaben — hier stehen sie direkt, damit
+  // die Matrix sie bei 200 % auf 320 dp sieht.
+  testWidgets(
+      'Runner-Zeilen mit Seite, Anstrengung und Streifen erfüllen den '
+      'A11y-Vertrag', (tester) async {
+    await expectA11y(
+      tester,
+      Scaffold(
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            SetRow(
+              set: const WorkoutSet(
+                id: 'a',
+                type: SetType.normal,
+                weight: '20',
+                reps: '8',
+                done: true,
+                rpe: 8,
+                side: SetSide.left,
+              ),
+              index: 1,
+              unilateral: true,
+              rpeOpen: true,
+              onToggle: () {},
+              onCycleType: () {},
+              onToggleSide: () {},
+              onOpenRpe: () {},
+              onEdit: (_) {},
+            ),
+            RpeStrip(setNumber: 1, value: 8, onChanged: (_) {}),
+            SetRow(
+              set: const WorkoutSet(
+                id: 'b',
+                type: SetType.normal,
+                weight: '20',
+                reps: '8',
+                carried: true,
+                side: SetSide.right,
+              ),
+              index: 2,
+              unilateral: true,
+              onToggle: () {},
+              onCycleType: () {},
+              onToggleSide: () {},
+              onEdit: (_) {},
+            ),
+            SetRow(
+              set: const WorkoutSet(
+                id: 'c',
+                type: SetType.normal,
+                weight: '60',
+                reps: '5',
+                done: true,
+                rpe: 6,
+              ),
+              index: 3,
+              onToggle: () {},
+              onCycleType: () {},
+              onOpenRpe: () {},
+              onEdit: (_) {},
+            ),
+          ],
+        ),
+      ),
     );
   });
 

@@ -270,8 +270,7 @@ void main() {
     });
 
     test('gilt auch ohne Plan — Schnelleinträge haben keinen', () async {
-      final w = await _repo()
-          .loadWorkout(const WorkoutStart(scheduleId: 't1'));
+      final w = await _repo().loadWorkout(const WorkoutStart(scheduleId: 't1'));
       expect(w.sessionId, 't1');
       expect(w.exercises, isEmpty);
     });
@@ -280,6 +279,96 @@ void main() {
       final w = await _repo(plans: [_plan], exercises: _exercises)
           .loadWorkout(const WorkoutStart(planId: 'p1'));
       expect(w.sessionId, isEmpty);
+    });
+  });
+
+  group('Seitengetrennte Übungen', () {
+    const exercises = [
+      Exercise(
+        id: 'bench',
+        name: 'Einarmiges Rudern',
+        source: ExerciseSource.own,
+        unilateral: true,
+      ),
+      Exercise(id: 'row', name: 'Rudern', source: ExerciseSource.own),
+    ];
+
+    test('beginnen links und wechseln ab', () async {
+      final w = await _repo(plans: [_plan], exercises: exercises)
+          .loadWorkout(const WorkoutStart(planId: 'p1'));
+
+      expect(w.exercises.first.unilateral, isTrue);
+      expect([for (final s in w.exercises.first.sets) s.side],
+          [SetSide.left, SetSide.right, SetSide.left]);
+      expect(w.exercises.last.unilateral, isFalse);
+      expect(w.exercises.last.sets.first.side, isNull);
+    });
+
+    test('vergleichen mit derselben Seite vom letzten Mal', () async {
+      final sessions = [
+        _session('neu', DateTime(2026, 8, 1), [
+          const LoggedExercise(exerciseId: 'bench', sets: [
+            LoggedSet(reps: 10, weight: 20, side: SetSide.left),
+            LoggedSet(reps: 9, weight: 20, side: SetSide.left),
+            LoggedSet(reps: 8, weight: 22, side: SetSide.right),
+          ]),
+        ]),
+      ];
+      final w = await _repo(
+        plans: [_plan],
+        exercises: exercises,
+        sessions: sessions,
+      ).loadWorkout(const WorkoutStart(planId: 'p1'));
+
+      final sets = w.exercises.first.sets;
+      // Satz 1 links ↔ erster linker, Satz 2 rechts ↔ erster rechter,
+      // Satz 3 links ↔ zweiter linker — nicht der an derselben Position.
+      expect(sets[0].previous?.reps, 10);
+      expect(sets[1].previous?.weightKg, 22);
+      expect(sets[2].previous?.reps, 9);
+    });
+
+    test('ohne Seiten vom letzten Mal gilt die Position', () async {
+      final sessions = [
+        _session('neu', DateTime(2026, 8, 1), [
+          const LoggedExercise(exerciseId: 'bench', sets: [
+            LoggedSet(reps: 10, weight: 20),
+            LoggedSet(reps: 8, weight: 22),
+          ]),
+        ]),
+      ];
+      final w = await _repo(
+        plans: [_plan],
+        exercises: exercises,
+        sessions: sessions,
+      ).loadWorkout(const WorkoutStart(planId: 'p1'));
+
+      expect(w.exercises.first.sets[1].previous?.weightKg, 22);
+      expect(w.exercises.first.sets[2].previous, isNull);
+    });
+
+    test('Nachtragen bringt Seite und Anstrengung mit', () async {
+      final session = StrengthSession(
+        id: 'alt',
+        userId: 'u',
+        date: DateTime(2026, 7, 3),
+        createdAt: DateTime(2026, 7, 3),
+        bodyweight: false,
+        exercises: const [
+          LoggedExercise(exerciseId: 'row', sets: [
+            LoggedSet(reps: 8, weight: 30, rpe: 8, side: SetSide.right),
+          ]),
+        ],
+      );
+      final w = await _repo(exercises: exercises, sessions: [session])
+          .loadWorkout(const WorkoutStart.session('alt'));
+
+      final ex = w.exercises.single;
+      expect(ex.unilateral, isTrue,
+          reason: 'ein Satz mit Seite war seitengetrennt, gleich was der '
+              'Katalog heute sagt');
+      expect(ex.sets.single.side, SetSide.right);
+      expect(ex.sets.single.rpe, 8);
     });
   });
 

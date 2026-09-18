@@ -1,5 +1,6 @@
 import '../../exercises/domain/exercise.dart';
 import '../../exercises/domain/muscle.dart';
+import 'set_counting.dart';
 import 'training_session.dart';
 
 /// Was ein Muskel in einem Zeitraum abbekommen hat.
@@ -131,6 +132,15 @@ class MuscleBalance {
     return withGap.take(3).toList();
   }
 
+  /// Die Muskelgruppen, auf die eine Übung bucht.
+  ///
+  /// Über `filter` gebündelt: Eine Übung mit `quads` zählt auf „Beine",
+  /// sonst fiele sie aus jeder Darstellung — die Palette kennt neun Töne.
+  /// Die einzige Zuordnung; `HardSets` nutzt dieselbe.
+  static Set<MuscleGroup> musclesOf(Exercise exercise) => {
+        for (final muscle in exercise.displayMuscles) muscle.filter,
+      };
+
   static MuscleBalance compute(
     List<TrainingSession> sessions,
     List<Exercise> exercises,
@@ -175,11 +185,7 @@ class MuscleBalance {
           continue;
         }
 
-        // Über `filter` gebündelt: Eine Übung mit `quads` zählt auf „Beine",
-        // sonst fiele sie aus jeder Darstellung — die Palette kennt neun Töne.
-        final muscles = {
-          for (final muscle in exercise.displayMuscles) muscle.filter,
-        };
+        final muscles = musclesOf(exercise);
         if (muscles.isEmpty) continue;
 
         final filled = [
@@ -196,7 +202,9 @@ class MuscleBalance {
         }
 
         for (final muscle in muscles) {
-          sets[muscle] = (sets[muscle] ?? 0) + filled.length;
+          // Seitengetrennte Sätze nach [SetCounting] — ohne Seiten ist das
+          // `filled.length` wie bisher.
+          sets[muscle] = (sets[muscle] ?? 0) + SetCounting.count(filled);
           volume[muscle] = (volume[muscle] ?? 0) + moved;
           contributors.putIfAbsent(muscle, () => {}).add(logged.exerciseId);
           final seen = lastSeen[muscle];

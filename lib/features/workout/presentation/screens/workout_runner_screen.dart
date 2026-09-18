@@ -21,6 +21,7 @@ import '../widgets/exercise_header.dart';
 import '../widgets/rest_bar.dart';
 import '../set_type_ui.dart';
 import '../widgets/session_top_bar.dart';
+import '../widgets/set_effort.dart';
 import '../widgets/set_row.dart';
 import '../workout_ui.dart';
 import '../../../../app/application/snackbar_providers.dart';
@@ -72,6 +73,16 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   int? _feeling;
   int _exIndex = 0;
 
+  /// Unter welchem Satz der Anstrengungs-Streifen steht — `null`, wenn unter
+  /// keinem. Es gibt höchstens einen: Wer den nächsten Satz abhakt, schliesst
+  /// den vorigen ohne Angabe.
+  String? _rpeOpenSetId;
+
+  /// Der Wechsel zur nächsten Übung, aufgeschoben bis der Streifen des
+  /// letzten Satzes zu ist — sonst verschwände er mit der Übung, bevor man
+  /// antworten kann.
+  bool _advanceAfterRpe = false;
+
   bool _restCompact = false;
   bool _restFinishing = false;
 
@@ -109,9 +120,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     if (value == null) return;
     final workout = ref.read(workoutSessionProvider(widget.start)).value;
     if (workout == null || workout.preWorkoutReadiness == value) return;
-    ref
-        .read(workoutSessionProvider(widget.start).notifier)
-        .setReadiness(value);
+    ref.read(workoutSessionProvider(widget.start).notifier).setReadiness(value);
   }
 
   /// Bietet einen gefundenen Zwischenstand an.
@@ -267,7 +276,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       message: l10n.workoutRemoveExerciseBody,
       confirmLabel: l10n.workoutRunnerRemoveExercise,
       dismissLabel: l10n.commonCancel,
-      barrierLabel: l10n.workoutRunnerRemoveExerciseA11y(_displayName(exercise)),
+      barrierLabel:
+          l10n.workoutRunnerRemoveExerciseA11y(_displayName(exercise)),
       onConfirm: () => Navigator.of(context, rootNavigator: true).pop(true),
     );
     if (confirmed != true || !mounted) return;
@@ -282,8 +292,9 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   void _togglePause(ActiveWorkout workout) {
     final now = DateTime.now();
     setState(() {
-      _clockState =
-          _clockState.isPaused ? _clockState.resume(now) : _clockState.pause(now);
+      _clockState = _clockState.isPaused
+          ? _clockState.resume(now)
+          : _clockState.pause(now);
     });
     _persist(workout);
   }
@@ -352,7 +363,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       case SetField.hold:
         _notifier.updateHold(exerciseIndex, set.id, text);
     }
-    _persist(w);
+    _persistCurrent();
   }
 
   /// Die Übung aus dem Bestand, **wenn sie etwas zu erklären hat**.
@@ -446,7 +457,28 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     }
 
     final nowDone = _notifier.toggleSet(_exIndex, set.id);
-    if (!nowDone) return;
+    if (!nowDone) {
+      // Entsperrt: Der Streifen dieses Satzes hat nichts mehr zu fragen.
+      if (_rpeOpenSetId == set.id) {
+        setState(() {
+          _rpeOpenSetId = null;
+          _advanceAfterRpe = false;
+        });
+      }
+      _persistCurrent();
+      return;
+    }
+
+    // **War das der letzte offene Satz dieser Übung, weiter zur nächsten.**
+    //
+    // Vorher blieb der Bildschirm stehen, und man tippte sich durch den
+    // Pfeil oben — mitten in der Pause, in der man ohnehin nichts anderes
+    // tut. Die Pause läuft dabei weiter: Sie gehört zum Satz, nicht zur
+    // Übung, und sie neu zu starten verschenkte die Hälfte.
+    //
+    // Seit dem Anstrengungs-Streifen (18.09.2026) erst, wenn er zu ist.
+    final exercise = w.exercises[_exIndex];
+    final open = exercise.sets.where((s) => !s.done && s.id != set.id).length;
 
     setState(() {
       _clockState = _clockState.startRest(
@@ -456,20 +488,67 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       _restAnnounced = false;
       _restCompact = false;
       _restFinishing = false;
+      // Der Streifen wandert zum eben abgehakten Satz; ein offener unter dem
+      // vorigen schliesst ohne Angabe.
+      _rpeOpenSetId = set.id;
+      _advanceAfterRpe = open == 0 && _exIndex < w.exercises.length - 1;
     });
-    _persist(w);
+    _persistCurrent();
+  }
 
-    // **War das der letzte offene Satz dieser Übung, weiter zur nächsten.**
-    //
-    // Vorher blieb der Bildschirm stehen, und man tippte sich durch den
-    // Pfeil oben — mitten in der Pause, in der man ohnehin nichts anderes
-    // tut. Die Pause läuft dabei weiter: Sie gehört zum Satz, nicht zur
-    // Übung, und sie neu zu starten verschenkte die Hälfte.
-    final exercise = w.exercises[_exIndex];
-    final open = exercise.sets.where((s) => !s.done && s.id != set.id).length;
-    if (open == 0 && _exIndex < w.exercises.length - 1) {
-      setState(() => _exIndex++);
-    }
+  /// Schreibt die Anstrengung und schliesst den Streifen — auch bei „keine
+  /// Angabe" (`null`).
+  void _setRpe(int exerciseIndex, String setId, int? rpe) {
+    _notifier.setRpe(exerciseIndex, setId, rpe);
+    _closeRpe();
+    _persistCurrent();
+  }
+
+  void _closeRpe() {
+    setState(() {
+      _rpeOpenSetId = null;
+      if (_advanceAfterRpe) {
+        _advanceAfterRpe = false;
+        final total = ref
+                .read(workoutSessionProvider(widget.start))
+                .value
+                ?.exercises
+                .length ??
+            0;
+        if (_exIndex < total - 1) _exIndex++;
+      }
+    });
+  }
+
+  /// Die Kapsel öffnet den Streifen erneut — oder schliesst ihn, wenn er
+  /// schon offen ist. Ohne Wechsel zur nächsten Übung: Wer nachträgt, will
+  /// bleiben, wo er ist.
+  void _toggleRpe(String setId) {
+    setState(() {
+      _advanceAfterRpe = false;
+      _rpeOpenSetId = _rpeOpenSetId == setId ? null : setId;
+    });
+  }
+
+  /// Wechselt die Übung über die Pfeile. Ein offener Streifen bleibt bei
+  /// seiner Übung zurück und schliesst ohne Angabe.
+  void _goTo(int index) {
+    setState(() {
+      _exIndex = index;
+      _rpeOpenSetId = null;
+      _advanceAfterRpe = false;
+    });
+  }
+
+  /// Sichert den **aktuellen** Stand.
+  ///
+  /// Die Handler bekommen die Einheit aus dem letzten Build; nach einer
+  /// Änderung am Controller ist die veraltet. Bis zum 18.09.2026 sicherten
+  /// Abhaken und Eingabe genau diese alte Fassung — der Zwischenspeicher hinkte
+  /// immer einen Schritt hinterher.
+  void _persistCurrent() {
+    final workout = ref.read(workoutSessionProvider(widget.start)).value;
+    if (workout != null) _persist(workout);
   }
 
   /// Sichert den Zwischenstand.
@@ -528,27 +607,26 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
         backgroundColor: AtemColors.base,
         resizeToAvoidBottomInset: false,
         body: async.when(
-        loading: () => Padding(
-          padding: EdgeInsets.fromLTRB(
-              16, MediaQuery.paddingOf(context).top + 16, 16, 16),
-          child: AtemSkeleton(
-            semanticLabel: l10n.workoutA11yLoading,
-            blocks: const [
-              AtemSkeletonBlock(height: 56, radius: 14),
-              AtemSkeletonBlock(height: 150),
-              AtemSkeletonBlock(height: 64, radius: 14),
-              AtemSkeletonBlock(height: 64, radius: 14),
-              AtemSkeletonBlock(height: 64, radius: 14),
-            ],
+          loading: () => Padding(
+            padding: EdgeInsets.fromLTRB(
+                16, MediaQuery.paddingOf(context).top + 16, 16, 16),
+            child: AtemSkeleton(
+              semanticLabel: l10n.workoutA11yLoading,
+              blocks: const [
+                AtemSkeletonBlock(height: 56, radius: 14),
+                AtemSkeletonBlock(height: 150),
+                AtemSkeletonBlock(height: 64, radius: 14),
+                AtemSkeletonBlock(height: 64, radius: 14),
+                AtemSkeletonBlock(height: 64, radius: 14),
+              ],
+            ),
           ),
-        ),
-        error: (e, _) => AtemErrorState(
-          title: l10n.workoutRunnerNotAvailable,
-          body: l10n.errorsLoadFailed,
-          retryLabel: l10n.commonRetry,
-          onRetry: () =>
-              ref.invalidate(workoutSessionProvider(widget.start)),
-        ),
+          error: (e, _) => AtemErrorState(
+            title: l10n.workoutRunnerNotAvailable,
+            body: l10n.errorsLoadFailed,
+            retryLabel: l10n.commonRetry,
+            onRetry: () => ref.invalidate(workoutSessionProvider(widget.start)),
+          ),
           data: _buildRunner,
         ),
       ),
@@ -594,8 +672,11 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       _notifier.addExercise(exercise);
     }
     // Direkt zur neuen Übung springen: Wer sie hinzufügt, will sie eintragen.
-    final count = ref.read(workoutSessionProvider(widget.start)).value
-            ?.exercises.length ??
+    final count = ref
+            .read(workoutSessionProvider(widget.start))
+            .value
+            ?.exercises
+            .length ??
         1;
     setState(() => _exIndex = count - 1);
   }
@@ -606,7 +687,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   /// der Datenschicht, die kein Gebietsschema kennt. Hier ist der Bestand
   /// da, und damit die deutsche Fassung.
   String _displayName(WorkoutExercise exercise) {
-    for (final entry in ref.read(exercisesProvider).value ?? const <Exercise>[]) {
+    for (final entry
+        in ref.read(exercisesProvider).value ?? const <Exercise>[]) {
       if (entry.id == exercise.id) return exerciseName(context, entry);
     }
     return exercise.name;
@@ -664,8 +746,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
             child: SingleChildScrollView(
               // Unten Platz für die schwebende Pausenleiste, sonst deckt sie
               // die letzten Sätze zu.
-              padding: const EdgeInsets.fromLTRB(AtemSpacing.screenPadding, 6,
-                  AtemSpacing.screenPadding, 170),
+              padding: const EdgeInsets.fromLTRB(
+                  AtemSpacing.screenPadding, 6, AtemSpacing.screenPadding, 170),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -682,14 +764,17 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     title: _displayName(exercise),
                     index: index,
                     total: w.exercises.length,
-                    onPrevious:
-                        index > 0 ? () => setState(() => _exIndex--) : null,
+                    onPrevious: index > 0 ? () => _goTo(index - 1) : null,
                     onNext: index < w.exercises.length - 1
-                        ? () => setState(() => _exIndex++)
+                        ? () => _goTo(index + 1)
                         : null,
                     onFormGuide: _formGuide(exercise) == null
                         ? null
                         : () => _openFormGuide(exercise),
+                    onUnilateralChanged: (on) {
+                      _notifier.setUnilateral(index, on);
+                      _persistCurrent();
+                    },
                   ),
                   // Die Vorgabe aus dem Plan — **neben** den Feldern, nicht
                   // darin. Sie sagt, was gedacht war; was war, tippt man ein.
@@ -702,21 +787,41 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                             .copyWith(color: AtemColors.cyan)),
                   ],
                   const SizedBox(height: AtemSpacing.md),
-                  if (!SetRow.isCompact(context))
+                  // Seitengetrennt nimmt jede Zeile das zweizeilige Layout
+                  // (siehe [SetRow]) — dann trägt der Kopf keine Spalten.
+                  if (!SetRow.isCompact(context) && !exercise.unilateral)
                     _TableHead(isHold: exercise.isHold),
-                  for (var i = 0; i < exercise.sets.length; i++)
+                  for (var i = 0; i < exercise.sets.length; i++) ...[
                     SetRow(
                       set: exercise.sets[i],
                       index: i + 1,
                       isHold: exercise.isHold,
-                      onToggle: () =>
-                          _toggleSet(w, exercise.sets[i], i + 1),
+                      unilateral: exercise.unilateral,
+                      rpeOpen: _rpeOpenSetId == exercise.sets[i].id,
+                      onToggle: () => _toggleSet(w, exercise.sets[i], i + 1),
                       onCycleType: () =>
                           _notifier.cycleType(index, exercise.sets[i].id),
+                      onToggleSide: () {
+                        _notifier.toggleSide(index, exercise.sets[i].id);
+                        _persistCurrent();
+                      },
+                      onOpenRpe: () => _toggleRpe(exercise.sets[i].id),
                       onEdit: (field) => unawaited(
                         _editValue(w, index, exercise.sets[i], i + 1, field),
                       ),
                     ),
+                    if (_rpeOpenSetId == exercise.sets[i].id &&
+                        exercise.sets[i].done)
+                      AtemEntrance(
+                        key: ValueKey('rpe-${exercise.sets[i].id}'),
+                        child: RpeStrip(
+                          setNumber: i + 1,
+                          value: exercise.sets[i].rpe,
+                          onChanged: (rpe) =>
+                              _setRpe(index, exercise.sets[i].id, rpe),
+                        ),
+                      ),
+                  ],
                   const SizedBox(height: AtemSpacing.sm),
                   // **Die Kürzel erklären sich nicht von selbst.** „D" und
                   // „N" standen unkommentiert in jeder Zeile; die Frage
@@ -727,7 +832,10 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     label: l10n.workoutRunnerAddSet,
                     semanticLabel: l10n.workoutScreenAddSet,
                     accent: AtemColors.textSecondary,
-                    onPressed: () => _notifier.addSet(index),
+                    onPressed: () {
+                      _notifier.addSet(index);
+                      _persistCurrent();
+                    },
                   ),
                   const SizedBox(height: AtemSpacing.sm),
                   AtemButton.outline(
@@ -738,8 +846,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                   const SizedBox(height: AtemSpacing.sm),
                   AtemButton.ghost(
                     label: l10n.workoutRunnerRemoveExercise,
-                    semanticLabel:
-                        l10n.workoutRunnerRemoveExerciseA11y(_displayName(exercise)),
+                    semanticLabel: l10n.workoutRunnerRemoveExerciseA11y(
+                        _displayName(exercise)),
                     accent: AtemColors.magenta,
                     onPressed: () => _confirmRemove(index, exercise),
                   ),
@@ -831,7 +939,8 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       confirmLabel: l10n.workoutScreenEndWorkoutAction,
       dismissLabel: l10n.commonCancel,
       barrierLabel: l10n.workoutScreenEndWorkout,
-      onConfirm: () => Navigator.of(context, rootNavigator: true).pop(_EndChoice.save),
+      onConfirm: () =>
+          Navigator.of(context, rootNavigator: true).pop(_EndChoice.save),
       // Der zweite Ausgang. Ohne ihn gäbe es nur „speichern" oder „weiter
       // trainieren" — wer sich vertan hat oder nur ausprobiert, säße fest und
       // müsste eine falsche Einheit in seinen Verlauf schreiben.
@@ -1009,8 +1118,7 @@ class _GuideSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(title.toUpperCase(),
-                style: AtemType.labelMicro.of(context)),
+            Text(title.toUpperCase(), style: AtemType.labelMicro.of(context)),
             const SizedBox(height: AtemSpacing.sm),
             for (var i = 0; i < lines.length; i++) ...[
               if (i > 0) const SizedBox(height: AtemSpacing.sm),
@@ -1025,8 +1133,8 @@ class _GuideSection extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Text(lines[i],
-                        style: AtemType.labelSmall.of(context)),
+                    child:
+                        Text(lines[i], style: AtemType.labelSmall.of(context)),
                   ),
                 ],
               ),
@@ -1126,13 +1234,19 @@ class _TableHead extends StatelessWidget {
                     SetRow.doneWidth -
                     4 * SetRow.columnGap;
 
-            final set = _fit(l10n.workoutRunnerTableSet,
-                l10n.workoutRunnerTableSetShort, style, scaler,
+            final set = _fit(
+                l10n.workoutRunnerTableSet,
+                l10n.workoutRunnerTableSetShort,
+                style,
+                scaler,
                 SetRow.typeWidth);
             final last = _fit(l10n.workoutRunnerTableLast,
                 l10n.workoutRunnerTableLastShort, style, scaler, historyWidth);
-            final hold = _fit(l10n.workoutRunnerTableHold,
-                l10n.workoutRunnerTableHoldShort, style, scaler,
+            final hold = _fit(
+                l10n.workoutRunnerTableHold,
+                l10n.workoutRunnerTableHoldShort,
+                style,
+                scaler,
                 SetRow.holdWidth);
 
             return Row(

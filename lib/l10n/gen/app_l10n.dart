@@ -8806,6 +8806,288 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'—'**
   String get workoutValueNone;
+
+  /// Übungsformular (18.09.2026, kein Board) — Schalter für einseitige Übungen
+  ///
+  /// In de, this message translates to:
+  /// **'Je Seite trainiert'**
+  String get exerciseUnilateralLabel;
+
+  /// Übungsformular (18.09.2026, kein Board) — Erklärung unter dem Einseitig-Schalter
+  ///
+  /// In de, this message translates to:
+  /// **'Für einseitige Übungen wie Bizeps-Curl mit einer Hantel oder Ausfallschritt — der Runner fragt dann je Satz nach links oder rechts.'**
+  String get exerciseUnilateralHint;
+
+  /// Übungsformular — Vorlesetext des Einseitig-Schalters mit Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'{label}, {state}'**
+  String exerciseUnilateralA11y(String label, String state);
+
+  /// Übungsdetail — Zusatz in der Metazeile bei einseitigen Übungen
+  ///
+  /// In de, this message translates to:
+  /// **'je Seite'**
+  String get exerciseUnilateralMeta;
+
+  /// Harte Sätze (18.09.2026) — Titel des Auswertungsblocks
+  ///
+  /// In de, this message translates to:
+  /// **'Harte Sätze'**
+  String get hardSetsTitle;
+
+  /// Harte Sätze — Zeitraum rechts im Kopf
+  ///
+  /// In de, this message translates to:
+  /// **'{days, plural, =1{1 Tag} other{{days} Tage}}'**
+  String hardSetsWindow(int days);
+
+  /// Harte Sätze — was der Block zeigen wird (Schwellen-Zustand und Erklärung)
+  ///
+  /// In de, this message translates to:
+  /// **'Wie viele deiner Sätze je Muskelgruppe hart waren — Anstrengung 7 oder mehr.'**
+  String get hardSetsWhat;
+
+  /// Harte Sätze — Bedingung im Schwellen-Zustand
+  ///
+  /// In de, this message translates to:
+  /// **'Erscheint ab {n} Sätzen mit Anstrengung — beim Abhaken im Runner wählbar'**
+  String hardSetsCondition(int n);
+
+  /// Harte Sätze — Erklärung hinter dem ⓘ: was ein harter Satz ist
+  ///
+  /// In de, this message translates to:
+  /// **'Ein harter Satz ist einer mit Anstrengung 7 oder mehr auf der Skala 1 bis 10. Die Angabe ist freiwillig und wird beim Abhaken eines Satzes im Runner gewählt.'**
+  String get hardSetsExplainWhat;
+
+  /// Harte Sätze — Erklärung hinter dem ⓘ: warum Sätze statt Tonnage
+  ///
+  /// In de, this message translates to:
+  /// **'Gezählt werden Sätze, nicht Kilogramm: So zählt ein Klimmzug am eigenen Körper genauso wie ein Satz mit der Langhantel.'**
+  String get hardSetsExplainWhy;
+
+  /// Harte Sätze — Erklärung hinter dem ⓘ: Seitenregel
+  ///
+  /// In de, this message translates to:
+  /// **'Bei einseitigen Übungen sind ein Satz links und einer rechts zusammen ein Satz.'**
+  String get hardSetsExplainSides;
+
+  /// Harte Sätze — Erklärung hinter dem ⓘ: kein Sollwert, Vergleichsfenster
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Sollwert — die App weiss nicht, wie viele harte Sätze richtig sind. Die Pfeile vergleichen mit den {days} Tagen davor.'**
+  String hardSetsExplainNoTarget(int days);
+
+  /// Harte Sätze — Einheit neben der Hauptzahl
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{harter Satz} other{harte Sätze}}'**
+  String hardSetsUnit(int n);
+
+  /// Harte Sätze — Grundlage mit Nenner
+  ///
+  /// In de, this message translates to:
+  /// **'{hard} harte von {total} Sätzen · {rpe} mit Angabe'**
+  String hardSetsBasis(int hard, int total, int rpe);
+
+  /// Harte Sätze — Zählform für Vorlesetexte
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{1 harter Satz} other{{n} harte Sätze}}'**
+  String hardSetsCount(int n);
+
+  /// Harte Sätze — Vorlesetext der Hauptzahl; count ist hardSetsCount
+  ///
+  /// In de, this message translates to:
+  /// **'{count} in {days} Tagen'**
+  String hardSetsHeadA11y(String count, int days);
+
+  /// Harte Sätze — Verschiebung im Vorlesetext; direction ist ratioShiftUp/ratioShiftDown
+  ///
+  /// In de, this message translates to:
+  /// **'{n} {direction} als in den {days} Tagen davor'**
+  String hardSetsShiftA11y(int n, String direction, int days);
+
+  /// Harte Sätze — keine Verschiebung im Vorlesetext
+  ///
+  /// In de, this message translates to:
+  /// **'gleich viele wie in den {days} Tagen davor'**
+  String hardSetsShiftEqualA11y(int days);
+
+  /// Runner 18.09.2026 — Schalter im Übungskopf: Sätze je Körperseite protokollieren (kein Board, aus Tokens gebaut)
+  ///
+  /// In de, this message translates to:
+  /// **'Seiten getrennt'**
+  String get workoutSidesChip;
+
+  /// Runner — Vorlese-Label des Schalters „Seiten getrennt“; der Zustand kommt über selected
+  ///
+  /// In de, this message translates to:
+  /// **'Seiten getrennt protokollieren'**
+  String get workoutSidesChipA11y;
+
+  /// Runner — Seitenmarke in der Satzzeile, links
+  ///
+  /// In de, this message translates to:
+  /// **'L'**
+  String get workoutSideLeftShort;
+
+  /// Runner — Seitenmarke in der Satzzeile, rechts
+  ///
+  /// In de, this message translates to:
+  /// **'R'**
+  String get workoutSideRightShort;
+
+  /// Runner — Seite ausgeschrieben, für Vorlese-Labels
+  ///
+  /// In de, this message translates to:
+  /// **'links'**
+  String get workoutSideLeft;
+
+  /// Runner — Seite ausgeschrieben, für Vorlese-Labels
+  ///
+  /// In de, this message translates to:
+  /// **'rechts'**
+  String get workoutSideRight;
+
+  /// Runner — Seitenmarke eines offenen Satzes
+  ///
+  /// In de, this message translates to:
+  /// **'Seite {side}, Satz {n}. Tippen wechselt zu {other}'**
+  String workoutSideA11y(String side, int n, String other);
+
+  /// Runner — Seitenmarke eines abgehakten Satzes (gesperrt, erst entsperren)
+  ///
+  /// In de, this message translates to:
+  /// **'Seite {side}, Satz {n}'**
+  String workoutSideDoneA11y(String side, int n);
+
+  /// Runner — Kopf des RPE-Streifens nach dem Abhaken
+  ///
+  /// In de, this message translates to:
+  /// **'Wie schwer war Satz {n}?'**
+  String workoutRpeQuestion(int n);
+
+  /// Runner — Semantics-Gruppe des RPE-Streifens
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung von Satz {n}'**
+  String workoutRpeGroupA11y(int n);
+
+  /// Runner — Gruppe einer Reihe im RPE-Streifen
+  ///
+  /// In de, this message translates to:
+  /// **'RPE {from} bis {to}'**
+  String workoutRpeRangeA11y(int from, int to);
+
+  /// Runner — löscht die Anstrengung des Satzes und schließt den Streifen
+  ///
+  /// In de, this message translates to:
+  /// **'keine Angabe'**
+  String get workoutRpeNone;
+
+  /// Runner — Vorlese-Label zu „keine Angabe“
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Anstrengung angeben für Satz {n}'**
+  String workoutRpeNoneA11y(int n);
+
+  /// Runner — blendet die Stufen 1 bis 5 im RPE-Streifen ein
+  ///
+  /// In de, this message translates to:
+  /// **'1–5 zeigen'**
+  String get workoutRpeShowLow;
+
+  /// Runner — blendet die Stufen 1 bis 5 wieder aus
+  ///
+  /// In de, this message translates to:
+  /// **'1–5 ausblenden'**
+  String get workoutRpeHideLow;
+
+  /// Runner — Vorlese-Label zu „1–5 zeigen“
+  ///
+  /// In de, this message translates to:
+  /// **'Stufen 1 bis 5 zeigen'**
+  String get workoutRpeShowLowA11y;
+
+  /// Runner — Vorlese-Label zu „1–5 ausblenden“
+  ///
+  /// In de, this message translates to:
+  /// **'Stufen 1 bis 5 ausblenden'**
+  String get workoutRpeHideLowA11y;
+
+  /// Runner — Wort zu RPE 10 unter der Reihe. Kurz, weil „noch 4 Wdh. … Max“ bei 200 % auf 320 dp in eine Zeile passen muss
+  ///
+  /// In de, this message translates to:
+  /// **'Max'**
+  String get workoutRpeWordMax;
+
+  /// Runner — Wort zu RPE 6–9: Wiederholungen in Reserve (RPE 9 = 1)
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{noch 1 Wdh.} other{noch {n} Wdh.}}'**
+  String workoutRpeWordReserve(int n);
+
+  /// Runner — Wort zu RPE 5. Kurz, weil „leicht … noch 5+“ bei 200 % auf 320 dp in eine Zeile passen muss
+  ///
+  /// In de, this message translates to:
+  /// **'noch 5+'**
+  String get workoutRpeWordReserveMany;
+
+  /// Runner — Wort zu RPE 1–4
+  ///
+  /// In de, this message translates to:
+  /// **'leicht'**
+  String get workoutRpeWordEasy;
+
+  /// Runner — Vorlese-Fassung von RPE 10
+  ///
+  /// In de, this message translates to:
+  /// **'keine Wiederholung mehr möglich'**
+  String get workoutRpeMaxA11y;
+
+  /// Runner — Vorlese-Fassung von RPE 6–9
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =1{noch 1 Wiederholung möglich} other{noch {n} Wiederholungen möglich}}'**
+  String workoutRpeReserveA11y(int n);
+
+  /// Runner — Vorlese-Fassung von RPE 5
+  ///
+  /// In de, this message translates to:
+  /// **'noch 5 oder mehr Wiederholungen möglich'**
+  String get workoutRpeReserveManyA11y;
+
+  /// Runner — Vorlese-Label eines Feldes im RPE-Streifen
+  ///
+  /// In de, this message translates to:
+  /// **'RPE {level}, {word}'**
+  String workoutRpeLevelA11y(int level, String word);
+
+  /// Runner — Kapsel in der Satzzeile nach der Angabe
+  ///
+  /// In de, this message translates to:
+  /// **'RPE {rpe}'**
+  String workoutRpeBadge(int rpe);
+
+  /// Runner — steht ab RPE 7 an der Kapsel, neben dem Punkt
+  ///
+  /// In de, this message translates to:
+  /// **'harter Satz'**
+  String get workoutHardSet;
+
+  /// Runner — Vorlese-Label der RPE-Kapsel unter 7
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n}, RPE {rpe}. Tippen zum Ändern'**
+  String workoutRpeBadgeA11y(int n, int rpe);
+
+  /// Runner — Vorlese-Label der RPE-Kapsel ab 7
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n}, RPE {rpe}, harter Satz. Tippen zum Ändern'**
+  String workoutRpeBadgeHardA11y(int n, int rpe);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

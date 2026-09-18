@@ -85,11 +85,9 @@ class PlanWorkoutRepository implements WorkoutRepository {
       sessionId: start.scheduleId ?? '',
       planId: plan.id,
       title: plan.name,
-      defaultRestSeconds: plan.items
-              .map((i) => i.restSeconds)
-              .whereType<int>()
-              .firstOrNull ??
-          start.restSeconds,
+      defaultRestSeconds:
+          plan.items.map((i) => i.restSeconds).whereType<int>().firstOrNull ??
+              start.restSeconds,
       exercises: [
         for (var i = 0; i < plan.items.length; i++)
           _exercise(plan.items[i], i, byId[plan.items[i].exerciseId], history),
@@ -146,6 +144,11 @@ class PlanWorkoutRepository implements WorkoutRepository {
       name: exercise?.name ?? logged.exerciseId,
       muscles: [for (final m in exercise?.displayMuscles ?? const []) m.wire],
       recordWeightKg: entry.recordWeightKg,
+      // Beim Nachtragen zählt auch, was gespeichert ist: Trägt ein Satz eine
+      // Seite, war die Übung seitengetrennt — gleich, was der Katalog heute
+      // sagt.
+      unilateral:
+          (exercise?.unilateral ?? false) || filled.any((s) => s.side != null),
       sets: [
         for (var i = 0; i < filled.length; i++)
           WorkoutSet(
@@ -153,6 +156,8 @@ class PlanWorkoutRepository implements WorkoutRepository {
             type: SetType.normal,
             weight: filled[i].weight == null ? '' : '${filled[i].weight}',
             reps: filled[i].reps == null ? '' : '${filled[i].reps}',
+            rpe: filled[i].rpe,
+            side: filled[i].side,
             done: true,
           ),
       ],
@@ -168,6 +173,11 @@ class PlanWorkoutRepository implements WorkoutRepository {
     final entry = history[item.exerciseId] ?? ExerciseHistory.empty;
     final previous = entry.lastSets;
     final count = item.sets ?? defaultSets;
+    final unilateral = exercise?.unilateral ?? false;
+    // Seitengetrennt beginnt links und wechselt ab — dieselbe Regel wie beim
+    // Einschalten im Runner.
+    SetSide? sideAt(int i) =>
+        !unilateral ? null : (i.isEven ? SetSide.left : SetSide.right);
 
     return WorkoutExercise(
       id: item.exerciseId,
@@ -181,19 +191,17 @@ class PlanWorkoutRepository implements WorkoutRepository {
       // waren im Training unsichtbar — die Haltezeit vollständig.
       targetReps: item.reps,
       targetHoldSeconds: item.holdSeconds,
+      unilateral: unilateral,
       sets: [
         for (var i = 0; i < count; i++)
           WorkoutSet(
             id: '${item.exerciseId}-$position-$i',
             type: SetType.normal,
+            side: sideAt(i),
             // Der Satz an derselben Position vom letzten Mal. Gibt es ihn
             // nicht, bleibt die Zeile leer statt einen fremden Satz zu zeigen.
-            previous: i < previous.length
-                ? SetReference(
-                    weightKg: previous[i].weight,
-                    reps: previous[i].reps,
-                  )
-                : null,
+            previous: previousSet(previous, i, sideAt(i),
+                [for (var j = 0; j < i; j++) sideAt(j)]),
             // **Die Zielvorgabe wird nicht vorbelegt.** Ein Feld, in dem schon
             // „8" steht, ist nach dem Abhaken eine Leistungsangabe — und zwar
             // eine, die niemand gemacht hat. Das Ziel steht daneben als
@@ -205,6 +213,36 @@ class PlanWorkoutRepository implements WorkoutRepository {
       ],
     );
   }
+}
+
+/// Der Satz vom letzten Mal, mit dem Satz [index] verglichen wird.
+///
+/// Beidseitig — oder wenn das letzte Mal keine Seiten kannte — der Satz an
+/// derselben Position. Seitengetrennt der k-te Satz **derselben Seite**: Der
+/// zweite linke Satz heute steht neben dem zweiten linken vom letzten Mal,
+/// nicht neben dem, der zufällig an derselben Stelle stand. Gibt es auf dieser
+/// Seite keinen k-ten, bleibt die Zeile leer.
+///
+/// [before] sind die Seiten der Sätze vor [index] in der heutigen Einheit.
+SetReference? previousSet(
+  List<LoggedSet> last,
+  int index,
+  SetSide? side,
+  List<SetSide?> before,
+) {
+  LoggedSet? match;
+  if (side != null && last.any((s) => s.side != null)) {
+    final k = before.where((s) => s == side).length;
+    final sameSide = [
+      for (final s in last)
+        if (s.side == side) s
+    ];
+    match = k < sameSide.length ? sameSide[k] : null;
+  } else {
+    match = index < last.length ? last[index] : null;
+  }
+  if (match == null) return null;
+  return SetReference(weightKg: match.weight, reps: match.reps);
 }
 
 extension _FirstOrNull<T> on Iterable<T> {

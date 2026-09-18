@@ -5637,4 +5637,224 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get workoutValueNone => '—';
+
+  @override
+  String get exerciseUnilateralLabel => 'Trained per side';
+
+  @override
+  String get exerciseUnilateralHint =>
+      'For one-sided exercises like a single-dumbbell curl or a lunge — the runner then asks for left or right on every set.';
+
+  @override
+  String exerciseUnilateralA11y(String label, String state) {
+    return '$label, $state';
+  }
+
+  @override
+  String get exerciseUnilateralMeta => 'per side';
+
+  @override
+  String get hardSetsTitle => 'Hard sets';
+
+  @override
+  String hardSetsWindow(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hardSetsWhat =>
+      'How many of your sets per muscle group were hard — effort 7 or more.';
+
+  @override
+  String hardSetsCondition(int n) {
+    return 'Appears from $n sets with effort — selectable when checking off a set';
+  }
+
+  @override
+  String get hardSetsExplainWhat =>
+      'A hard set is one with effort 7 or more on the 1 to 10 scale. The rating is optional and chosen when you check off a set.';
+
+  @override
+  String get hardSetsExplainWhy =>
+      'Sets are counted, not kilograms: a bodyweight pull-up counts the same as a barbell set.';
+
+  @override
+  String get hardSetsExplainSides =>
+      'For one-sided exercises, one set left and one set right count as one set together.';
+
+  @override
+  String hardSetsExplainNoTarget(int days) {
+    return 'No target — the app does not know how many hard sets are right. The arrows compare with the $days days before.';
+  }
+
+  @override
+  String hardSetsUnit(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'hard sets',
+      one: 'hard set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hardSetsBasis(int hard, int total, int rpe) {
+    return '$hard hard of $total sets · $rpe rated';
+  }
+
+  @override
+  String hardSetsCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n hard sets',
+      one: '1 hard set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hardSetsHeadA11y(String count, int days) {
+    return '$count in $days days';
+  }
+
+  @override
+  String hardSetsShiftA11y(int n, String direction, int days) {
+    return '$n $direction than in the $days days before';
+  }
+
+  @override
+  String hardSetsShiftEqualA11y(int days) {
+    return 'as many as in the $days days before';
+  }
+
+  @override
+  String get workoutSidesChip => 'Per side';
+
+  @override
+  String get workoutSidesChipA11y => 'Log each side separately';
+
+  @override
+  String get workoutSideLeftShort => 'L';
+
+  @override
+  String get workoutSideRightShort => 'R';
+
+  @override
+  String get workoutSideLeft => 'left';
+
+  @override
+  String get workoutSideRight => 'right';
+
+  @override
+  String workoutSideA11y(String side, int n, String other) {
+    return 'Side $side, set $n. Tap to switch to $other';
+  }
+
+  @override
+  String workoutSideDoneA11y(String side, int n) {
+    return 'Side $side, set $n';
+  }
+
+  @override
+  String workoutRpeQuestion(int n) {
+    return 'How hard was set $n?';
+  }
+
+  @override
+  String workoutRpeGroupA11y(int n) {
+    return 'Effort of set $n';
+  }
+
+  @override
+  String workoutRpeRangeA11y(int from, int to) {
+    return 'RPE $from to $to';
+  }
+
+  @override
+  String get workoutRpeNone => 'no rating';
+
+  @override
+  String workoutRpeNoneA11y(int n) {
+    return 'No effort rating for set $n';
+  }
+
+  @override
+  String get workoutRpeShowLow => 'Show 1–5';
+
+  @override
+  String get workoutRpeHideLow => 'Hide 1–5';
+
+  @override
+  String get workoutRpeShowLowA11y => 'Show levels 1 to 5';
+
+  @override
+  String get workoutRpeHideLowA11y => 'Hide levels 1 to 5';
+
+  @override
+  String get workoutRpeWordMax => 'max';
+
+  @override
+  String workoutRpeWordReserve(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n reps left',
+      one: '1 rep left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutRpeWordReserveMany => '5+ left';
+
+  @override
+  String get workoutRpeWordEasy => 'easy';
+
+  @override
+  String get workoutRpeMaxA11y => 'no more reps possible';
+
+  @override
+  String workoutRpeReserveA11y(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n more reps possible',
+      one: '1 more rep possible',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutRpeReserveManyA11y => '5 or more reps possible';
+
+  @override
+  String workoutRpeLevelA11y(int level, String word) {
+    return 'RPE $level, $word';
+  }
+
+  @override
+  String workoutRpeBadge(int rpe) {
+    return 'RPE $rpe';
+  }
+
+  @override
+  String get workoutHardSet => 'hard set';
+
+  @override
+  String workoutRpeBadgeA11y(int n, int rpe) {
+    return 'Set $n, RPE $rpe. Tap to change';
+  }
+
+  @override
+  String workoutRpeBadgeHardA11y(int n, int rpe) {
+    return 'Set $n, RPE $rpe, hard set. Tap to change';
+  }
 }

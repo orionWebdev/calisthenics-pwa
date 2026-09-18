@@ -443,6 +443,8 @@ class _Header extends StatelessWidget {
     final meta = [
       ...exercise.equipment,
       if (exercise.difficulty case final level?) difficultyLabel(l10n, level),
+      // Nur eigene Übungen tragen das Merkmal; kuratierte zeigen nichts.
+      if (exercise.unilateral) l10n.exerciseUnilateralMeta,
     ].join(' · ');
 
     return Row(

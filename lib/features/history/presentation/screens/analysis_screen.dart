@@ -9,6 +9,7 @@ import '../../application/history_providers.dart';
 import '../../domain/muscle_balance.dart';
 import '../../domain/strength_progress.dart';
 import '../widgets/estimated_max_card.dart';
+import '../widgets/hard_sets_card.dart';
 import '../widgets/exercise_progress_card.dart';
 import '../widgets/focus_distribution_card.dart';
 import '../widgets/muscle_balance_card.dart';
@@ -117,6 +118,7 @@ class AnalysisScreen extends ConsumerWidget {
         final blocks = <Widget>[
           ExerciseProgressCard(sessions: sessions, reference: reference),
           WeeklySetsCard(sessions: sessions, reference: reference),
+          HardSetsCard(sessions: sessions, reference: reference),
           MuscleBalanceTile(balance: balance, alwaysShow: true),
           FocusDistributionCard(sessions: sessions, reference: reference),
           WellnessTrendCard(sessions: sessions, reference: reference),

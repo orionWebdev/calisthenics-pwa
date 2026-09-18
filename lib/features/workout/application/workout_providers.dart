@@ -84,9 +84,8 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
     final weight = target.weight.trim().isEmpty ? source.weight : target.weight;
     final reps = target.reps.trim().isEmpty ? source.reps : target.reps;
     final hold = target.hold.trim().isEmpty ? source.hold : target.hold;
-    final took = weight != target.weight ||
-        reps != target.reps ||
-        hold != target.hold;
+    final took =
+        weight != target.weight || reps != target.reps || hold != target.hold;
 
     return target.copyWith(
       weight: weight,
@@ -113,14 +112,96 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
     final sets = [...ex.sets];
     sets[at] = sets[at].copyWith(done: nowDone);
 
-    final next = at + 1;
-    if (nowDone && next < sets.length && !sets[next].done) {
+    final next = _carryTarget(ex, sets, at);
+    if (nowDone && next != null) {
       sets[next] = _carry(sets[next], sets[at]);
     }
 
     exercises[exerciseIndex] = ex.copyWith(sets: sets);
     state = AsyncData(w.copyWith(exercises: exercises));
     return nowDone;
+  }
+
+  /// Wohin die Werte nach dem Abhaken von Satz [at] wandern.
+  ///
+  /// Beidseitig: in den unmittelbar folgenden Satz, wenn er offen ist.
+  /// Seitengetrennt: in den nächsten offenen Satz **der anderen Seite** — wer
+  /// links 8 × 20 kg gemacht hat, macht rechts dasselbe, nicht links noch
+  /// einmal. Trägt der Satz selbst keine Seite (abgehakt vor dem Einschalten),
+  /// gilt die beidseitige Regel.
+  static int? _carryTarget(WorkoutExercise ex, List<WorkoutSet> sets, int at) {
+    final side = sets[at].side;
+    if (ex.unilateral && side != null) {
+      for (var i = at + 1; i < sets.length; i++) {
+        if (!sets[i].done && sets[i].side == _other(side)) return i;
+      }
+      return null;
+    }
+    final next = at + 1;
+    return next < sets.length && !sets[next].done ? next : null;
+  }
+
+  static history.SetSide _other(history.SetSide? side) =>
+      side == history.SetSide.left
+          ? history.SetSide.right
+          : history.SetSide.left;
+
+  /// Die Anstrengung eines Satzes, 1 bis 10 — `null` heisst „keine Angabe".
+  ///
+  /// **Freiwillig und ohne Übernahme.** Weder [_carry] noch [addSet] tragen
+  /// sie weiter: Wie schwer ein Satz war, weiss man erst nach ihm.
+  void setRpe(int exerciseIndex, String setId, int? rpe) => _mutateSet(
+        exerciseIndex,
+        setId,
+        (s) => rpe == null
+            ? s.copyWith(clearRpe: true)
+            : s.copyWith(
+                rpe: rpe.clamp(
+                    history.LoggedSet.minRpe, history.LoggedSet.maxRpe)),
+      );
+
+  /// Wechselt die Seite eines Satzes zwischen links und rechts.
+  void toggleSide(int exerciseIndex, String setId) =>
+      _mutateSet(exerciseIndex, setId, (s) => s.copyWith(side: _other(s.side)));
+
+  /// Schaltet „Seiten getrennt" für eine Übung.
+  ///
+  /// **Ein:** Die offenen Sätze werden abwechselnd belegt — links zuerst, oder
+  /// rechts, wenn der letzte abgehakte Satz schon links war. **Abgehakte
+  /// bleiben, wie sie sind**: Eine Seite nachträglich zu behaupten wäre eine
+  /// Angabe, die niemand gemacht hat.
+  ///
+  /// **Aus:** Die offenen Sätze verlieren ihre Seite. Abgehakte behalten sie —
+  /// sie wurden so absolviert.
+  void setUnilateral(int exerciseIndex, bool on) {
+    final w = _workout;
+    if (w == null) return;
+    final exercises = [...w.exercises];
+    final ex = exercises[exerciseIndex];
+    if (ex.unilateral == on) return;
+
+    final sets = <WorkoutSet>[];
+    if (on) {
+      final done = ex.sets.where((s) => s.done);
+      var side = done.isNotEmpty && done.last.side == history.SetSide.left
+          ? history.SetSide.right
+          : history.SetSide.left;
+      for (final s in ex.sets) {
+        if (s.done) {
+          sets.add(s);
+        } else {
+          sets.add(s.copyWith(side: side));
+          side = _other(side);
+        }
+      }
+    } else {
+      for (final s in ex.sets) {
+        sets.add(s.done ? s : s.copyWith(clearSide: true));
+      }
+    }
+
+    exercises[exerciseIndex] = ex.copyWith(sets: sets, unilateral: on);
+    state = AsyncData(w.copyWith(exercises: exercises));
   }
 
   void cycleType(int exerciseIndex, String setId) =>
@@ -132,15 +213,14 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
       _mutateSet(exerciseIndex, setId,
           (s) => s.copyWith(weight: value, carried: false));
 
-  void updateReps(int exerciseIndex, String setId, String value) =>
-      _mutateSet(exerciseIndex, setId,
-          (s) => s.copyWith(reps: value, carried: false));
+  void updateReps(int exerciseIndex, String setId, String value) => _mutateSet(
+      exerciseIndex, setId, (s) => s.copyWith(reps: value, carried: false));
 
-  void updateHold(int exerciseIndex, String setId, String value) =>
-      _mutateSet(exerciseIndex, setId,
-          (s) => s.copyWith(hold: value, carried: false));
+  void updateHold(int exerciseIndex, String setId, String value) => _mutateSet(
+      exerciseIndex, setId, (s) => s.copyWith(hold: value, carried: false));
 
-  /// Dupliziert die Werte des letzten Satzes — **samt Haltezeit**.
+  /// Dupliziert die Werte des letzten Satzes — **samt Haltezeit**, und bei
+  /// seitengetrennten Übungen mit gewechselter Seite.
   ///
   /// Die fehlte hier: Wer bei einer Halteübung „45 s" eintrug und einen Satz
   /// anhängte, fing wieder bei null an.
@@ -160,6 +240,9 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
           weight: last.weight,
           reps: last.reps,
           hold: last.hold,
+          // Seitengetrennt: die andere Seite als der letzte Satz. Die
+          // Anstrengung wandert nicht mit — sie gehört zum absolvierten Satz.
+          side: ex.unilateral ? _other(last.side) : null,
           // Auch hier ist der Wert übernommen, nicht eingetragen.
           carried: last.weight.trim().isNotEmpty ||
               last.reps.trim().isNotEmpty ||
@@ -190,10 +273,12 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
         id: exercise.id,
         name: exercise.name,
         muscles: [for (final m in exercise.displayMuscles) m.wire],
+        unilateral: exercise.unilateral,
         sets: [
           WorkoutSet(
             id: '${exercise.id}-$position-0',
             type: SetType.normal,
+            side: exercise.unilateral ? history.SetSide.left : null,
             weight: '',
             reps: '',
           ),
@@ -376,7 +461,8 @@ class SessionTimerController extends Notifier<SessionTimerState> {
     if (state.isRunning) return;
     _ticker?.cancel();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
-    state = SessionTimerState(startedAt: DateTime.now(), elapsed: Duration.zero);
+    state =
+        SessionTimerState(startedAt: DateTime.now(), elapsed: Duration.zero);
   }
 
   void stop() {
