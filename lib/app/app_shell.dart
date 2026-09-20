@@ -7,6 +7,7 @@ import '../core/widgets/widgets.dart';
 import '../features/cardio/presentation/screens/cardio_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
 import '../features/health_import/application/health_import_providers.dart';
+import '../features/weight/application/weight_sync_providers.dart';
 import '../features/history/application/history_providers.dart';
 import '../features/hybrid/presentation/screens/hybrid_screen.dart';
 import '../features/recovery/presentation/screens/recovery_screen.dart';
@@ -77,7 +78,14 @@ class _AppShellState extends ConsumerState<AppShell>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _readHealthConnect();
+    if (state != AppLifecycleState.resumed) return;
+    // „Heute" neu bestimmen. `historyReferenceProvider` wertet `DateTime.now()`
+    // **einmal** aus und lebt so lange wie der Prozess — bei einer App, die
+    // über Mitternacht im Hintergrund bleibt, läse der Abgleich sonst nur bis
+    // zum Ende des Tages, an dem sie gestartet wurde, und Werte vom neuen Tag
+    // kämen nie an.
+    ref.invalidate(historyReferenceProvider);
+    _readHealthConnect();
   }
 
   /// Liest Health Connect — **beim Öffnen, nicht im Hintergrund**.
@@ -93,6 +101,13 @@ class _AppShellState extends ConsumerState<AppShell>
   void _readHealthConnect() {
     if (!mounted) return;
     ref.read(healthImportControllerProvider.notifier).refresh();
+    // Das Gewicht hatte bis zum 20.09.2026 **keinen Auslöser**: Der Abgleich
+    // aus Modul 14 war gebaut und getestet, aber niemand rief ihn auf — auf
+    // dem Gerät blieb die Kurve deshalb leer, obwohl der Zugriff frei war.
+    //
+    // Auch hier ohne zu fragen. Und der Abgleich wartet selbst, bis die
+    // Reihe geladen ist, bevor er rechnet (`WeightSyncController`).
+    ref.read(weightSyncProvider.notifier).run();
   }
 
   @override

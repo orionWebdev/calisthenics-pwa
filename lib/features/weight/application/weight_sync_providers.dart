@@ -91,9 +91,20 @@ class WeightSyncController extends Notifier<AsyncValue<WeightSyncResult?>> {
         .add(const Duration(days: 1))
         .subtract(const Duration(milliseconds: 1));
 
+    // **Erst wenn die Reihe wirklich da ist.** Gegen eine leere Reihe zu
+    // rechnen hiesse, die getippten Werte nicht zu kennen — und Regel 3
+    // („eine Messung überschreibt keine Eingabe") könnte sie dann
+    // überschreiben. Beim App-Start ist der Strom noch nicht angekommen.
+    final series = await _loadedSeries();
+    if (series == null) {
+      // Lieber gar nichts tun als gegen einen Stand rechnen, den es nicht
+      // gibt. Beim nächsten Öffnen läuft der Abgleich noch einmal.
+      return WeightSyncResult(availability: availability, granted: true);
+    }
+
     final measured = await gateway.readWeights(from: from, to: to);
     final plan = WeightSync.plan(
-      series: ref.read(weightSeriesProvider).value ?? WeightSeries.empty,
+      series: series,
       measured: measured,
       ownSourceId: await gateway.ownSourceId(),
       reference: reference,
@@ -123,6 +134,26 @@ class WeightSyncController extends Notifier<AsyncValue<WeightSyncResult?>> {
       published: published,
       failedToPublish: failed,
     );
+  }
+
+  /// Die Reihe, sobald sie **geladen** ist — höchstens zehn Sekunden.
+  ///
+  /// ## Warum kein `weightSeriesProvider.future`
+  ///
+  /// Der Strom wird neu gebaut, sobald die Anmeldung eintrifft; die erste
+  /// Zukunft läuft dann ins Leere.
+  ///
+  /// ## Warum `isLoading` mitgeprüft wird
+  ///
+  /// Beim Neubau trägt der Zustand den **alten** Wert weiter — den leeren aus
+  /// der Zeit vor der Anmeldung. `hasValue` allein hielte ihn für die Reihe.
+  Future<WeightSeries?> _loadedSeries() async {
+    for (var i = 0; i < 100; i++) {
+      final state = ref.read(weightSeriesProvider);
+      if (state.hasValue && !state.isLoading) return state.requireValue;
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+    return null;
   }
 }
 

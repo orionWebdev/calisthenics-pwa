@@ -7,6 +7,7 @@ import 'package:atem/features/settings/domain/user_settings.dart';
 import 'package:atem/features/weight/application/weight_providers.dart';
 import 'package:atem/features/weight/application/weight_sync_providers.dart';
 import 'package:atem/features/weight/domain/weight_entry.dart';
+import 'package:atem/features/weight/domain/weight_series.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -20,6 +21,23 @@ final _today = DateTime(2026, 9, 20);
 
 DateTime _daysAgo(int days) =>
     DateTime(_today.year, _today.month, _today.day - days);
+
+/// Ein Repository, dessen Strom die Reihe **erst nach einer Weile** liefert —
+/// wie Firestore beim Kaltstart, wenn noch nichts im Zwischenspeicher liegt.
+///
+/// Mit dem sofort antwortenden Fake entsteht das Rennen gar nicht: Die
+/// `await`s im Lauf geben dem Strom von selbst genug Zeit.
+class _SlowWeightRepository extends FakeWeightRepository {
+  _SlowWeightRepository({required super.entries, required this.delay});
+
+  final Duration delay;
+
+  @override
+  Stream<WeightSeries> watch(String userId) async* {
+    await Future<void>.delayed(delay);
+    yield* super.watch(userId);
+  }
+}
 
 ProviderContainer _container({
   required FakeHealthGateway gateway,
@@ -56,6 +74,21 @@ Future<void> _settle(ProviderContainer container) async {
     await Future<void>.delayed(Duration.zero);
   }
   throw StateError('Reihe wurde nicht geladen');
+}
+
+/// Wartet **nur** auf die Anmeldung — nicht auf die Reihe.
+///
+/// Genau die Lage, um die es geht: Wer angemeldet ist, darf schreiben; die
+/// Reihe, gegen die der Abgleich rechnet, ist aber noch unterwegs. Ohne
+/// Anmeldung täte `importFromHealth` ohnehin nichts (`userId == null`), und
+/// ein Test in dieser Lage bewiese nichts.
+Future<void> _waitForUser(ProviderContainer container) async {
+  container.listen(currentUserIdProvider, (_, __) {});
+  for (var i = 0; i < 100; i++) {
+    if (container.read(currentUserIdProvider) != null) return;
+    await Future<void>.delayed(Duration.zero);
+  }
+  throw StateError('Anmeldung ist nicht eingetroffen');
 }
 
 void main() {
@@ -139,6 +172,43 @@ void main() {
         gateway.records.firstWhere((r) => r.sourceId == FakeHealthGateway.packageName);
     expect(published.kg, 78.9);
     expect(published.id, '2026-09-19');
+  });
+
+  test('ein Lauf vor dem Laden der Reihe überschreibt keine Eingabe',
+      () async {
+    // Der Fall vom Start: Der Abgleich läuft, bevor der Strom die Reihe
+    // geliefert hat. Gegen eine **leere** Reihe gerechnet, kennte er den
+    // getippten Wert nicht — und die Messung vom selben Tag nähme seinen
+    // Platz ein.
+    final gateway = FakeHealthGateway(granted: true, records: [
+      MeasuredWeight(
+        id: 'hc-1',
+        // Derselbe Tag wie der getippte Eintrag.
+        measuredAt: _daysAgo(2).add(const Duration(hours: 7)),
+        kg: 79.9,
+        sourceId: 'com.garmin.android.apps.connectmobile',
+      ),
+    ]);
+    final repository = _SlowWeightRepository(
+      entries: [
+        WeightEntry(date: _daysAgo(2), kg: 77.5, source: WeightSource.manual),
+      ],
+      // Länger als alles, was der Lauf sonst abwartet.
+      delay: const Duration(milliseconds: 400),
+    );
+    final container = _container(gateway: gateway, repository: repository);
+
+    // Bewusst **kein** `_settle`: Angemeldet ja, die Reihe aber noch nicht da.
+    await _waitForUser(container);
+    final result = await container.read(weightSyncProvider.notifier).run();
+
+    expect(result, isNotNull);
+    final onThatDay =
+        repository.entries.where((e) => e.date == _daysAgo(2)).toList();
+    expect(onThatDay, hasLength(1));
+    expect(onThatDay.single.kg, 77.5,
+        reason: 'Eine Messung überschreibt keine Eingabe');
+    expect(onThatDay.single.source, WeightSource.manual);
   });
 
   test('ein zweiter Lauf ändert nichts mehr', () async {
