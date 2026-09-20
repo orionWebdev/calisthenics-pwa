@@ -395,3 +395,47 @@ erledigt, mit einer Anbindung statt vier.
 
 Eine eigene Garmin-Anbindung erst, wenn jemand sie vermisst **und** etwas kommt, das über Health
 Connect nicht zu haben ist. Dann ist es ein Backend-Vorhaben, kein App-Vorhaben.
+
+---
+
+## 8.4 Trainings aus Health Connect übernehmen — angemeldet am 20.09.2026
+
+**Noch nicht begonnen. Das Design kommt zuerst** (`docs/design-prompts/15-health-import.md`).
+
+Der Nutzer hat das am 20.09.2026 angemeldet, mit drei Sätzen, die den Umfang bestimmen:
+
+1. **Nicht nur Gewicht.** Auch Trainings sollen gelesen werden — mit Puls, Zeit und allem,
+   was die Uhr mitliefert. Dafür ist die App heute nicht ausgelegt: `CardioSession` kennt
+   Dauer, Strecke und Aktivität, aber keinen Durchschnitts- oder Maximalpuls, keine Zonen
+   und keine fremde Kennung.
+2. **Ein Bildschirm, der aufgeht, wenn ein Training hereinkommt.** Er zeigt die Werte des
+   importierten Trainings zur Prüfung und fragt nach, was die Uhr nicht weiss: Belastung
+   (RPE/RIR) und Empfinden nach dem Training. Ohne ihn stünden fremde Einheiten ungeprüft
+   und ohne Anstrengung im Verlauf — und die Trainingslast rechnete mit dem Ersatzwert 3.
+3. **Ein Validator, der zusammengehörende Trainings erkennt.** Wer eine Krafteinheit im
+   Runner mitschreibt und dabei eine Uhr trägt, erzeugt zwei Datensätze über **eine**
+   Einheit. Die App muss das Paar erkennen (Überlappung von Start und Dauer, Art der
+   Einheit) und darf die eigene Einheit dann nicht verdoppeln, sondern **ergänzen**:
+   Durchschnittspuls, Maximalpuls, Kalorien — alles, was in der App fehlt und in der Uhr
+   steht. Umgekehrt bleiben Sätze, Wiederholungen und Anstrengung die Wahrheit der App.
+
+**Was daran keine Designfrage ist** (und vor dem Board geklärt sein muss):
+
+- **Das Datenmodell.** `sessions` braucht Felder für fremde Herkunft (`source`,
+  `externalId`), für Pulswerte (`avgHeartRate`, `maxHeartRate`) und für den Zustand
+  „importiert, aber noch nicht geprüft". Ein Absatz in `docs/contracts/04-firestore-schema.md`
+  gehört dazu, bevor die erste Zeile Code entsteht.
+- **Die Regel für ein Paar.** Vorschlag: Zwei Einheiten gelten als dieselbe, wenn sich ihre
+  Zeitfenster um mehr als die Hälfte der kürzeren überlappen. Das ist eine Schwelle, keine
+  Wahrheit — sie gehört ins Entscheidungsprotokoll des Boards, mit dem Grund gegen die
+  Alternativen (fester Abstand in Minuten, gleiche Aktivität als Bedingung).
+- **Wer gewinnt bei Widerspruch.** Vorschlag: Die App gewinnt bei allem, was jemand getippt
+  hat; die Uhr gewinnt bei allem, was sie gemessen hat. Nichts wird stillschweigend
+  überschrieben — ein Feld, das beide tragen, zeigt beide Werte zur Wahl.
+- **Was bei „nein" passiert.** Wer den Prüfbildschirm abbricht: Wird die Einheit verworfen,
+  aufgehoben, oder kommt sie beim nächsten Lesen wieder? Ohne Antwort baut man eine
+  Endlosschleife aus immer derselben Einheit.
+
+**Reihenfolge:** 8.2 Schritt 1 und 2 (Gewicht lesen und schreiben) zuerst — das ist der
+kleine, prüfbare Schnitt und die Lernstrecke für Googles Freigabeverfahren. Erst danach 8.4.
+Garmin bleibt bei 8.3: über Health Connect, nicht direkt.
