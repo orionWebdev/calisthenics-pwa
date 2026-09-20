@@ -8045,7 +8045,7 @@ abstract class AppL10n {
   /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Schwellen-Zustand: Bedingung
   ///
   /// In de, this message translates to:
-  /// **'Erscheint ab {n} Einheiten mit Fokus — wählbar beim Start eines Trainings'**
+  /// **'Ab {n} Einheiten mit Fokus'**
   String focusDistCondition(int n);
 
   /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Anzahl je Zeile
@@ -8093,7 +8093,7 @@ abstract class AppL10n {
   /// Kraft-Auswertung, Fortschritte — Bedingung der Schwelle
   ///
   /// In de, this message translates to:
-  /// **'Erscheint, sobald du eine Übung zum zweiten Mal machst'**
+  /// **'Ab der zweiten Ausführung einer Übung'**
   String get progressCondition;
 
   /// Kraft-Auswertung, Fortschritte — gefüllt, aber ohne Bestwert im Fenster
@@ -8178,7 +8178,7 @@ abstract class AppL10n {
   /// Kraft-Auswertung — Bedingung im Schwellen-Zustand
   ///
   /// In de, this message translates to:
-  /// **'Erscheint mit deiner ersten Einheit mit Sätzen'**
+  /// **'Ab der ersten Einheit mit Sätzen'**
   String get weeklySetsCondition;
 
   /// Kraft-Auswertung — Kopfzeile, Teil 1
@@ -8274,7 +8274,7 @@ abstract class AppL10n {
   /// Schwellen-Zustand Geschätztes Maximum (16.09.2026) — Bedingung
   ///
   /// In de, this message translates to:
-  /// **'Erscheint ab {n} Einheiten einer Übung mit Gewicht und höchstens {reps} Wiederholungen'**
+  /// **'Ab {n} Einheiten mit Gewicht, bis {reps} Wdh.'**
   String analysisMaxCondition(int n, int reps);
 
   /// Schwellen-Zustand Geschätztes Maximum (16.09.2026) — ehrlicher Hinweis zu Körpergewicht
@@ -8304,7 +8304,7 @@ abstract class AppL10n {
   /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Bedingung im Schwellen-Zustand
   ///
   /// In de, this message translates to:
-  /// **'Erscheint ab {n} Einheiten mit Bereitschaft und Gefühl danach'**
+  /// **'Ab {n} Einheiten mit beiden Angaben'**
   String wellnessTrendCondition(int n);
 
   /// Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Legende über der Punktreihe
@@ -8852,7 +8852,7 @@ abstract class AppL10n {
   /// Harte Sätze — Bedingung im Schwellen-Zustand
   ///
   /// In de, this message translates to:
-  /// **'Erscheint ab {n} Sätzen mit Anstrengung — beim Abhaken im Runner wählbar'**
+  /// **'Ab {n} Sätzen mit Anstrengung'**
   String hardSetsCondition(int n);
 
   /// Harte Sätze — Erklärung hinter dem ⓘ: was ein harter Satz ist
@@ -9442,6 +9442,36 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Frei starten'**
   String get trainFreeTitle;
+
+  /// workoutEffortAdd
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung eintragen'**
+  String get workoutEffortAdd;
+
+  /// workoutEffortAddA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n}, Anstrengung eintragen'**
+  String workoutEffortAddA11y(int n);
+
+  /// settingsEffortScaleRpeLong
+  ///
+  /// In de, this message translates to:
+  /// **'RPE · Anstrengung'**
+  String get settingsEffortScaleRpeLong;
+
+  /// settingsEffortScaleRirLong
+  ///
+  /// In de, this message translates to:
+  /// **'RIR · Wdh. in Reserve'**
+  String get settingsEffortScaleRirLong;
+
+  /// Board 13 (20.09.2026) — kurze Bedingung des gesperrten Muskelbalance-Blocks; der ganze Satz steht weiter als balanceThin auf der Unterseite
+  ///
+  /// In de, this message translates to:
+  /// **'Ab {n} Einheiten mit Übungen'**
+  String balanceCondition(int n);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

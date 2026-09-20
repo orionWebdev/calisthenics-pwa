@@ -4985,7 +4985,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String focusDistCondition(int n) {
-    return 'Erscheint ab $n Einheiten mit Fokus — wählbar beim Start eines Trainings';
+    return 'Ab $n Einheiten mit Fokus';
   }
 
   @override
@@ -5037,8 +5037,7 @@ class AppL10nDe extends AppL10n {
       'Hier stehen die Übungen, bei denen du in den letzten 4 Wochen einen neuen Bestwert gesetzt hast — an Gewicht, Wiederholungen oder Haltezeit.';
 
   @override
-  String get progressCondition =>
-      'Erscheint, sobald du eine Übung zum zweiten Mal machst';
+  String get progressCondition => 'Ab der zweiten Ausführung einer Übung';
 
   @override
   String get progressNone => 'Kein neuer Bestwert in den letzten 4 Wochen.';
@@ -5124,8 +5123,7 @@ class AppL10nDe extends AppL10n {
       'Wie viele Sätze du Woche für Woche machst — und ob diese Woche mehr oder weniger ist als sonst.';
 
   @override
-  String get weeklySetsCondition =>
-      'Erscheint mit deiner ersten Einheit mit Sätzen';
+  String get weeklySetsCondition => 'Ab der ersten Einheit mit Sätzen';
 
   @override
   String weeklySetsWeek(int week) {
@@ -5233,7 +5231,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String analysisMaxCondition(int n, int reps) {
-    return 'Erscheint ab $n Einheiten einer Übung mit Gewicht und höchstens $reps Wiederholungen';
+    return 'Ab $n Einheiten mit Gewicht, bis $reps Wdh.';
   }
 
   @override
@@ -5254,7 +5252,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String wellnessTrendCondition(int n) {
-    return 'Erscheint ab $n Einheiten mit Bereitschaft und Gefühl danach';
+    return 'Ab $n Einheiten mit beiden Angaben';
   }
 
   @override
@@ -5688,7 +5686,7 @@ class AppL10nDe extends AppL10n {
 
   @override
   String hardSetsCondition(int n) {
-    return 'Erscheint ab $n Sätzen mit Anstrengung — beim Abhaken im Runner wählbar';
+    return 'Ab $n Sätzen mit Anstrengung';
   }
 
   @override
@@ -6132,4 +6130,23 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get trainFreeTitle => 'Frei starten';
+
+  @override
+  String get workoutEffortAdd => 'Anstrengung eintragen';
+
+  @override
+  String workoutEffortAddA11y(int n) {
+    return 'Satz $n, Anstrengung eintragen';
+  }
+
+  @override
+  String get settingsEffortScaleRpeLong => 'RPE · Anstrengung';
+
+  @override
+  String get settingsEffortScaleRirLong => 'RIR · Wdh. in Reserve';
+
+  @override
+  String balanceCondition(int n) {
+    return 'Ab $n Einheiten mit Übungen';
+  }
 }

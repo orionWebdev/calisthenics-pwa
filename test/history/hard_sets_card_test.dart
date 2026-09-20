@@ -95,7 +95,7 @@ void main() {
     ]);
     expect(find.byType(AtemThresholdBlock), findsOneWidget);
     expect(find.text('3 von 10'), findsOneWidget);
-    expect(find.textContaining('Erscheint ab 10 Sätzen'), findsOneWidget);
+    expect(find.textContaining('Ab 10 Sätzen'), findsOneWidget);
   });
 
   testWidgets('gefüllt: Summe, Zeilen je Muskel, Grundlage mit Nenner',

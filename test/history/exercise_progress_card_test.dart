@@ -101,7 +101,7 @@ void main() {
       (tester) async {
     await _pump(tester, _once);
     expect(find.text('Fortschritte'), findsOneWidget);
-    expect(find.text('Erscheint, sobald du eine Übung zum zweiten Mal machst'),
+    expect(find.text('Ab der zweiten Ausführung einer Übung'),
         findsOneWidget);
     expect(find.text('1 von 2'), findsOneWidget);
     expect(find.textContaining('Wdh'), findsNothing);

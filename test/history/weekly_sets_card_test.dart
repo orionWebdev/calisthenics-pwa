@@ -66,7 +66,7 @@ void main() {
     expect(find.byType(AtemThresholdBlock), findsOneWidget);
     expect(find.text('Sätze je Woche'), findsOneWidget);
     expect(find.text('0 von 1'), findsOneWidget);
-    expect(find.text('Erscheint mit deiner ersten Einheit mit Sätzen'),
+    expect(find.text('Ab der ersten Einheit mit Sätzen'),
         findsOneWidget);
     // Kein Wert, kein Streifen.
     expect(find.byKey(const ValueKey('empty')), findsNothing);

@@ -104,7 +104,13 @@ class AtemSectionBar extends StatelessWidget {
   static const nameSize = 16.0;
 
   /// Höhe des Markenstreifens.
-  static const markHeight = 2.0;
+  ///
+  /// Das Board setzt 2 dp. Am Gerät war der Streifen damit kaum zu erkennen —
+  /// er sitzt an der Unterkante der Zeile, und `#16161F` auf `#0B0C14` hat
+  /// fast keinen Abstand. Auf Rückmeldung des Nutzers (20.09.2026) auf 4 dp,
+  /// und der Track trägt `border` statt `track`: Ein Fortschrittsanzeiger,
+  /// den man suchen muss, ist keiner.
+  static const markHeight = 4.0;
 
   /// Die Marke des aktuellen Themas ist nie ganz leer — sonst sähe das
   /// laufende Thema aus wie ein noch nicht besuchtes.
@@ -353,7 +359,7 @@ class _Mark extends StatelessWidget {
         height: AtemSectionBar.markHeight,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: AtemColors.track,
+            color: AtemColors.border,
             borderRadius:
                 BorderRadius.circular(AtemSectionBar.markHeight),
           ),

@@ -102,7 +102,7 @@ class MuscleBalanceTile extends StatelessWidget {
     if (asPanel && !enough) {
       return AtemThresholdBlock(
         title: l10n.balanceTitle,
-        condition: l10n.balanceThin(done, target),
+        condition: l10n.balanceCondition(target),
         current: done,
         required: target,
         accent: AtemColors.tabStrength,

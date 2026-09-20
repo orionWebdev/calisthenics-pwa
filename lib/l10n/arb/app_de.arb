@@ -7233,7 +7233,7 @@
   "@focusDistWhat": {
     "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Schwellen-Zustand: was der Block zeigen wird"
   },
-  "focusDistCondition": "Erscheint ab {n} Einheiten mit Fokus — wählbar beim Start eines Trainings",
+  "focusDistCondition": "Ab {n} Einheiten mit Fokus",
   "@focusDistCondition": {
     "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Schwellen-Zustand: Bedingung",
     "placeholders": {
@@ -7299,7 +7299,7 @@
   "@progressWhat": {
     "description": "Kraft-Auswertung, Fortschritte — was der Block zeigen wird (Schwelle)"
   },
-  "progressCondition": "Erscheint, sobald du eine Übung zum zweiten Mal machst",
+  "progressCondition": "Ab der zweiten Ausführung einer Übung",
   "@progressCondition": {
     "description": "Kraft-Auswertung, Fortschritte — Bedingung der Schwelle"
   },
@@ -7415,7 +7415,7 @@
   "@weeklySetsWhat": {
     "description": "Kraft-Auswertung — Satz unter dem Titel im Schwellen-Zustand"
   },
-  "weeklySetsCondition": "Erscheint mit deiner ersten Einheit mit Sätzen",
+  "weeklySetsCondition": "Ab der ersten Einheit mit Sätzen",
   "@weeklySetsCondition": {
     "description": "Kraft-Auswertung — Bedingung im Schwellen-Zustand"
   },
@@ -7561,7 +7561,7 @@
   "@analysisMaxWhat": {
     "description": "Schwellen-Zustand Geschätztes Maximum (16.09.2026) — was der Block zeigen wird"
   },
-  "analysisMaxCondition": "Erscheint ab {n} Einheiten einer Übung mit Gewicht und höchstens {reps} Wiederholungen",
+  "analysisMaxCondition": "Ab {n} Einheiten mit Gewicht, bis {reps} Wdh.",
   "@analysisMaxCondition": {
     "description": "Schwellen-Zustand Geschätztes Maximum (16.09.2026) — Bedingung",
     "placeholders": {
@@ -7594,7 +7594,7 @@
   "@wellnessTrendWhat": {
     "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Was der Block zeigt, im Schwellen-Zustand"
   },
-  "wellnessTrendCondition": "Erscheint ab {n} Einheiten mit Bereitschaft und Gefühl danach",
+  "wellnessTrendCondition": "Ab {n} Einheiten mit beiden Angaben",
   "@wellnessTrendCondition": {
     "description": "Auswertung Kraft, Block Vorher und nachher (16.09.2026) — kein Board, aus Tokens gebaut — Bedingung im Schwellen-Zustand",
     "placeholders": {
@@ -8261,7 +8261,7 @@
   "@hardSetsWhat": {
     "description": "Harte Sätze — was der Block zeigen wird (Schwellen-Zustand und Erklärung)"
   },
-  "hardSetsCondition": "Erscheint ab {n} Sätzen mit Anstrengung — beim Abhaken im Runner wählbar",
+  "hardSetsCondition": "Ab {n} Sätzen mit Anstrengung",
   "@hardSetsCondition": {
     "description": "Harte Sätze — Bedingung im Schwellen-Zustand",
     "placeholders": {
@@ -8870,19 +8870,33 @@
   "@analysisLockedA11y": {
     "description": "Board 13 (20.09.2026) — Vorlesetext eines gesperrten Auswertungsblocks (Boardschlüssel analysis.locked_a11y)",
     "placeholders": {
-      "title": { "type": "String" },
-      "condition": { "type": "String" },
-      "cur": { "type": "int" },
-      "req": { "type": "int" }
+      "title": {
+        "type": "String"
+      },
+      "condition": {
+        "type": "String"
+      },
+      "cur": {
+        "type": "int"
+      },
+      "req": {
+        "type": "int"
+      }
     }
   },
   "sectionBarA11y": "Thema {name}, {n} von {total}. Öffnet die Themenliste.",
   "@sectionBarA11y": {
     "description": "Board 13 (20.09.2026) — Vorlesetext der Ortszeile (Boardschlüssel sectionbar.a11y)",
     "placeholders": {
-      "name": { "type": "String" },
-      "n": { "type": "int" },
-      "total": { "type": "int" }
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "sectionJumpTitle": "Springen zu",
@@ -8893,18 +8907,30 @@
   "@sectionJumpA11y": {
     "description": "Board 13 (20.09.2026) — Vorlesetext einer Zeile der Sprungliste (Boardschlüssel sectionbar.jump_a11y)",
     "placeholders": {
-      "name": { "type": "String" },
-      "n": { "type": "int" },
-      "total": { "type": "int" }
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "sectionArrivedA11y": "{name}, {n} von {total}",
   "@sectionArrivedA11y": {
     "description": "Board 13 (20.09.2026) — Ansage nach einem erscrollten Themenwechsel (Boardschlüssel sectionbar.arrived_a11y)",
     "placeholders": {
-      "name": { "type": "String" },
-      "n": { "type": "int" },
-      "total": { "type": "int" }
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "sectionHere": "HIER",
@@ -8931,7 +8957,9 @@
   "@historyTotalSince": {
     "description": "Board 13 (20.09.2026) — Grundlage der Gesamtzahl (Boardschlüssel history.total_since)",
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "plansAtemLabel": "ATEM-Pläne",
@@ -8941,5 +8969,33 @@
   "trainFreeTitle": "Frei starten",
   "@trainFreeTitle": {
     "description": "Board 13 (20.09.2026) — Titel des freien Starts (Boardschlüssel train.free_title)"
+  },
+  "workoutEffortAdd": "Anstrengung eintragen",
+  "@workoutEffortAdd": {
+    "description": "workoutEffortAdd"
+  },
+  "workoutEffortAddA11y": "Satz {n}, Anstrengung eintragen",
+  "@workoutEffortAddA11y": {
+    "description": "workoutEffortAddA11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsEffortScaleRpeLong": "RPE · Anstrengung",
+  "@settingsEffortScaleRpeLong": {
+    "description": "settingsEffortScaleRpeLong"
+  },
+  "settingsEffortScaleRirLong": "RIR · Wdh. in Reserve",
+  "@settingsEffortScaleRirLong": {
+    "description": "settingsEffortScaleRirLong"
+  },
+  "balanceCondition": "Ab {n} Einheiten mit Übungen",
+  "@balanceCondition": {
+    "description": "Board 13 (20.09.2026) — kurze Bedingung des gesperrten Muskelbalance-Blocks; der ganze Satz steht weiter als balanceThin auf der Unterseite",
+    "placeholders": {
+      "n": { "type": "int" }
+    }
   }
 }

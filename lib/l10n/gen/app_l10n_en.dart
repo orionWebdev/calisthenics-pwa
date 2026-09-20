@@ -4971,7 +4971,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String focusDistCondition(int n) {
-    return 'Appears from $n workouts with a focus — chosen when starting a workout';
+    return 'From $n workouts with a focus';
   }
 
   @override
@@ -5023,8 +5023,7 @@ class AppL10nEn extends AppL10n {
       'This lists the exercises where you set a new best in the last 4 weeks — by weight, reps or hold time.';
 
   @override
-  String get progressCondition =>
-      'Appears once you do an exercise for the second time';
+  String get progressCondition => 'From the second time you do an exercise';
 
   @override
   String get progressNone => 'No new best in the last 4 weeks.';
@@ -5110,7 +5109,7 @@ class AppL10nEn extends AppL10n {
       'How many sets you do week by week — and whether this week is more or less than usual.';
 
   @override
-  String get weeklySetsCondition => 'Appears with your first workout with sets';
+  String get weeklySetsCondition => 'From your first workout with sets';
 
   @override
   String weeklySetsWeek(int week) {
@@ -5218,7 +5217,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String analysisMaxCondition(int n, int reps) {
-    return 'Appears from $n workouts of one exercise with weight and at most $reps reps';
+    return 'From $n workouts with weight, up to $reps reps';
   }
 
   @override
@@ -5239,7 +5238,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String wellnessTrendCondition(int n) {
-    return 'Appears from $n workouts with readiness and feeling after';
+    return 'From $n workouts with both entries';
   }
 
   @override
@@ -5673,7 +5672,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String hardSetsCondition(int n) {
-    return 'Appears from $n sets with effort — selectable when checking off a set';
+    return 'From $n sets with effort';
   }
 
   @override
@@ -6114,4 +6113,23 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get trainFreeTitle => 'Start free';
+
+  @override
+  String get workoutEffortAdd => 'Add effort';
+
+  @override
+  String workoutEffortAddA11y(int n) {
+    return 'Set $n, add effort';
+  }
+
+  @override
+  String get settingsEffortScaleRpeLong => 'RPE · Exertion';
+
+  @override
+  String get settingsEffortScaleRirLong => 'RIR · Reps in reserve';
+
+  @override
+  String balanceCondition(int n) {
+    return 'From $n workouts with exercises';
+  }
 }

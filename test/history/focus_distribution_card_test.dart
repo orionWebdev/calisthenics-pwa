@@ -59,7 +59,7 @@ void main() {
     ]);
     expect(find.text('Fokus'), findsOneWidget);
     expect(find.text('2 von 3'), findsOneWidget);
-    expect(find.textContaining('Erscheint ab 3 Einheiten mit Fokus'),
+    expect(find.textContaining('Ab 3 Einheiten mit Fokus'),
         findsOneWidget);
     expect(find.textContaining('%'), findsNothing);
     expect(find.text('Ziehen'), findsNothing);

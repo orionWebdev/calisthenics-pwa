@@ -170,8 +170,7 @@ void main() {
       expect(find.text('Bankdrücken: 2 von 5 Einheiten'), findsOneWidget);
       // Sichtbar steht die Bedingung mit beiden Zahlen, die Erklärung hinter
       // dem ⓘ.
-      expect(
-          find.textContaining('höchstens 12 Wiederholungen'), findsOneWidget);
+      expect(find.textContaining('bis 12 Wdh.'), findsOneWidget);
       expect(find.textContaining('Ab 5 Einheiten je Übung'), findsNothing);
       await tester.tap(find.byIcon(Icons.info_outline));
       await tester.pumpAndSettle();
@@ -210,8 +209,7 @@ void main() {
       expect(find.text('Geschätztes Maximum'), findsOneWidget);
       expect(find.text('0 von 5'), findsOneWidget);
       expect(
-          find.text('Erscheint ab 5 Einheiten einer Übung mit Gewicht und '
-              'höchstens 12 Wiederholungen'),
+          find.text('Ab 5 Einheiten mit Gewicht, bis 12 Wdh.'),
           findsOneWidget);
       // Seit Board 13 (20.09.2026) trägt der gesperrte Block **kein ⓘ**: Er
       // zeigt drei Dinge und keine vierte, und er hat keine Handlung. Was er
