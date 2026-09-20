@@ -8,8 +8,8 @@ import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_detail_screen.dart';
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/history/application/history_providers.dart';
-import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
-import 'package:atem/features/history/presentation/screens/history_screen.dart';
+import 'package:atem/features/history/presentation/widgets/analysis_section.dart';
+import 'package:atem/features/history/presentation/widgets/history_section.dart';
 import 'package:atem/features/history/presentation/screens/muscle_balance_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
@@ -93,10 +93,17 @@ void main() {
   ];
 
   final cases = <(String, Widget, List<dynamic>)>[
-    ('verlauf', HistoryScreen(embedded: true, onStart: () {}), fixtureOverrides),
-    ('verlauf_duenn', HistoryScreen(embedded: true, onStart: () {}), thin),
-    ('auswertung', const AnalysisScreen(embedded: true), fixtureOverrides),
-    ('auswertung_duenn', const AnalysisScreen(embedded: true), thin),
+    // Die Abschnitte des One-Pagers scrollen nicht selbst — die Seite tut
+    // es. Fürs Bild bekommen sie einen Scroll-Container, sonst läuft ein
+    // Abschnitt, der höher als das Bild ist, über.
+    ('verlauf', const SingleChildScrollView(child: HistorySection()),
+        fixtureOverrides),
+    ('verlauf_duenn', const SingleChildScrollView(child: HistorySection()),
+        thin),
+    ('auswertung', const SingleChildScrollView(child: AnalysisSection()),
+        fixtureOverrides),
+    ('auswertung_duenn', const SingleChildScrollView(child: AnalysisSection()),
+        thin),
     ('muskelbalance', const MuscleBalanceScreen(), fixtureOverrides),
     (
       'uebung',

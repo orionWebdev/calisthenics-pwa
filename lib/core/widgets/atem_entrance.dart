@@ -19,9 +19,21 @@ import '../theme/theme.dart';
 /// sieht ohnehin niemand mehr hin, weil er scrollen muss, um dort
 /// anzukommen.
 ///
-/// Die Bewegung läuft **einmal**, beim ersten Bauen. Sie wiederholt sich nicht
-/// beim Scrollen und nicht bei jeder Datenänderung: Ein Wert, der sich ändert,
-/// soll auffallen — nicht die Karte, in der er steht.
+/// Die Bewegung läuft **einmal je Block**, wenn er zum ersten Mal in Sicht
+/// kommt. Sie wiederholt sich nicht beim Zurückscrollen und nicht bei jeder
+/// Datenänderung: Ein Wert, der sich ändert, soll auffallen — nicht die
+/// Karte, in der er steht.
+///
+/// ## Warum beim Kreuzen und nicht beim Bauen (seit 20.09.2026)
+///
+/// Auf einer wischbaren Seite war „beim Bauen" dasselbe wie „beim
+/// Erscheinen". Auf dem One-Pager wird die ganze Seite auf einmal gebaut —
+/// vier Themen, zwanzig Blöcke. Die Kaskade lief damit für Blöcke, die man
+/// erst Sekunden später sieht, und war vorbei, bevor man dort ankam.
+///
+/// Der Block startet jetzt, wenn seine Oberkante **25 % der Viewporthöhe von
+/// unten** kreuzt (Board 13, Bewegungstabelle). Ohne umgebenden Scroller —
+/// in einem Dialog, einem Blatt, einem Test — läuft sie wie bisher sofort.
 ///
 /// Bei abgeschalteten Animationen erscheint der Block sofort und vollständig.
 class AtemEntrance extends StatefulWidget {
@@ -70,17 +82,54 @@ class _AtemEntranceState extends State<AtemEntrance>
       CurvedAnimation(parent: _c, curve: AtemMotion.curve);
 
   bool _started = false;
+  ScrollPosition? _watched;
+
+  /// Der Anteil der Viewporthöhe, den die Oberkante unterschreiten muss.
+  static const _trigger = 0.75;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_started) return;
-    _started = true;
 
     if (AtemMotion.reduced(context)) {
+      _started = true;
       _c.value = 1;
       return;
     }
+
+    final scrollable = Scrollable.maybeOf(context);
+    if (scrollable == null) {
+      // Kein Scroller darüber: Der Block ist da, sobald er gebaut ist.
+      _start();
+      return;
+    }
+
+    _watched?.removeListener(_check);
+    _watched = scrollable.position..addListener(_check);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _check();
+    });
+  }
+
+  /// Steht die Oberkante des Blocks im unteren Viertel oder darüber?
+  void _check() {
+    if (_started || !mounted) return;
+    final box = context.findRenderObject() as RenderBox?;
+    final viewport = _watched?.context.storageContext.findRenderObject()
+        as RenderBox?;
+    if (box == null || viewport == null || !box.hasSize || !viewport.hasSize) {
+      return;
+    }
+    final top = box.localToGlobal(Offset.zero, ancestor: viewport).dy;
+    if (top <= viewport.size.height * _trigger) _start();
+  }
+
+  void _start() {
+    if (_started) return;
+    _started = true;
+    _watched?.removeListener(_check);
+    _watched = null;
 
     final steps = widget.index.clamp(0, AtemEntrance.maxStaggered);
     final delay = AtemEntrance._step * steps;
@@ -97,6 +146,7 @@ class _AtemEntranceState extends State<AtemEntrance>
 
   @override
   void dispose() {
+    _watched?.removeListener(_check);
     _c.dispose();
     super.dispose();
   }

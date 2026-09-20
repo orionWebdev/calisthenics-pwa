@@ -8374,17 +8374,17 @@ abstract class AppL10n {
   /// **'Pläne'**
   String get segPlans;
 
-  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Vorlesetext eines Reiters
+  /// One-Pager (20.09.2026) — kein Board — Vorlesetext eines Reiters der Abschnittsleiste
   ///
   /// In de, this message translates to:
-  /// **'{name}, Seite {n} von {total}'**
-  String pageTabA11y(String name, int n, int total);
+  /// **'{name}, Abschnitt {n} von {total}'**
+  String sectionTabA11y(String name, int n, int total);
 
-  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Gruppenlabel der Reiterleiste
+  /// One-Pager (20.09.2026) — kein Board — Gruppenlabel der Abschnittsleiste im Kraft-Tab
   ///
   /// In de, this message translates to:
-  /// **'Kraft-Seiten'**
-  String get strengthPagesA11y;
+  /// **'Kraft-Abschnitte'**
+  String get strengthSectionsA11y;
 
   /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Titel des Leerzustands der Katalogseite
   ///
@@ -8395,7 +8395,7 @@ abstract class AppL10n {
   /// Kraft-Tab Seite Pläne (16.09.2026), gekürzt 17.09.2026
   ///
   /// In de, this message translates to:
-  /// **'Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen unter Trainieren.'**
+  /// **'Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen darüber.'**
   String get planCatalogBody;
 
   /// Einheiten je Monat (16.09.2026) — Fenster rechts im Kopf
@@ -9208,6 +9208,240 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Rest {rest} Kilogramm lässt sich nicht stecken, nächster Wert {loaded} Kilogramm'**
   String platesA11yRemainder(String rest, String loaded);
+
+  /// One-Pager (20.09.2026) — kein Board — Kopf über den eigenen Plänen im Abschnitt Pläne
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Pläne'**
+  String get plansOwnLabel;
+
+  /// One-Pager (20.09.2026) — kein Board — Unterzeile der Hauptkachel ohne Termin
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Plan loslegen'**
+  String get trainFreeBody;
+
+  /// One-Pager (20.09.2026) — kein Board — Unterzeile der Kachel „Plan wählen“
+  ///
+  /// In de, this message translates to:
+  /// **'Aus deinen Plänen'**
+  String get trainPlanBody;
+
+  /// One-Pager (20.09.2026) — kein Board — Unterzeile der Kachel Übungen, mit Bestandszahl
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Übung} other{{n} Übungen}} · suchen, anlegen'**
+  String trainExercisesBody(int n);
+
+  /// One-Pager (20.09.2026) — kein Board — Unterzeile der Zeile „Ohne Sätze erfassen“
+  ///
+  /// In de, this message translates to:
+  /// **'Eine Einheit nachtragen, ohne jeden Satz einzeln.'**
+  String get trainLogBody;
+
+  /// workoutRirBadge
+  ///
+  /// In de, this message translates to:
+  /// **'{rir} RIR'**
+  String workoutRirBadge(int rir);
+
+  /// workoutRirBadgeA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n}, {rir, plural, =0{keine Wiederholung in Reserve} one{1 Wiederholung in Reserve} other{{rir} Wiederholungen in Reserve}}. Tippen zum Ändern'**
+  String workoutRirBadgeA11y(int n, int rir);
+
+  /// workoutRirBadgeHardA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n}, {rir, plural, =0{keine Wiederholung in Reserve} one{1 Wiederholung in Reserve} other{{rir} Wiederholungen in Reserve}}, harter Satz. Tippen zum Ändern'**
+  String workoutRirBadgeHardA11y(int n, int rir);
+
+  /// workoutRirLevelA11y
+  ///
+  /// In de, this message translates to:
+  /// **'RIR {level}, {word}'**
+  String workoutRirLevelA11y(int level, String word);
+
+  /// workoutRirRangeA11y
+  ///
+  /// In de, this message translates to:
+  /// **'RIR {from} bis {to}'**
+  String workoutRirRangeA11y(int from, int to);
+
+  /// workoutRirShowLow
+  ///
+  /// In de, this message translates to:
+  /// **'5–9 zeigen'**
+  String get workoutRirShowLow;
+
+  /// workoutRirHideLow
+  ///
+  /// In de, this message translates to:
+  /// **'5–9 ausblenden'**
+  String get workoutRirHideLow;
+
+  /// workoutRirShowLowA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Stufen 5 bis 9 in Reserve zeigen'**
+  String get workoutRirShowLowA11y;
+
+  /// workoutRirHideLowA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Stufen 5 bis 9 in Reserve ausblenden'**
+  String get workoutRirHideLowA11y;
+
+  /// settingsEffortScale
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung je Satz'**
+  String get settingsEffortScale;
+
+  /// settingsEffortScaleRpe
+  ///
+  /// In de, this message translates to:
+  /// **'RPE'**
+  String get settingsEffortScaleRpe;
+
+  /// settingsEffortScaleRir
+  ///
+  /// In de, this message translates to:
+  /// **'RIR'**
+  String get settingsEffortScaleRir;
+
+  /// settingsEffortScaleValue
+  ///
+  /// In de, this message translates to:
+  /// **'RPE — hoch ist schwer'**
+  String get settingsEffortScaleValue;
+
+  /// settingsEffortScaleValueRir
+  ///
+  /// In de, this message translates to:
+  /// **'RIR — niedrig ist schwer'**
+  String get settingsEffortScaleValueRir;
+
+  /// settingsEffortScaleGroupA11y
+  ///
+  /// In de, this message translates to:
+  /// **'Skala für die Anstrengung je Satz'**
+  String get settingsEffortScaleGroupA11y;
+
+  /// settingsEffortScaleRpeA11y
+  ///
+  /// In de, this message translates to:
+  /// **'RPE, Anstrengung von 1 bis 10, je höher desto schwerer'**
+  String get settingsEffortScaleRpeA11y;
+
+  /// settingsEffortScaleRirA11y
+  ///
+  /// In de, this message translates to:
+  /// **'RIR, Wiederholungen in Reserve, je niedriger desto schwerer'**
+  String get settingsEffortScaleRirA11y;
+
+  /// settingsEffortScaleExplain
+  ///
+  /// In de, this message translates to:
+  /// **'Dieselbe Angabe, andersherum gezählt. RPE 8 ist 2 RIR: zwei Wiederholungen wären noch drin gewesen. Gespeichert wird immer dasselbe — ein Wechsel ändert nur die Anzeige, auch rückwirkend, und geht jederzeit zurück.'**
+  String get settingsEffortScaleExplain;
+
+  /// hardSetsWhatRir
+  ///
+  /// In de, this message translates to:
+  /// **'Wie viele deiner Sätze je Muskelgruppe hart waren — 3 RIR oder weniger.'**
+  String get hardSetsWhatRir;
+
+  /// hardSetsExplainWhatRir
+  ///
+  /// In de, this message translates to:
+  /// **'Ein harter Satz ist einer mit höchstens 3 Wiederholungen in Reserve. Die Angabe ist freiwillig und wird beim Abhaken eines Satzes im Runner gewählt.'**
+  String get hardSetsExplainWhatRir;
+
+  /// Board 13 (20.09.2026) — Marke über dem Namen eines gesperrten Auswertungsblocks
+  ///
+  /// In de, this message translates to:
+  /// **'Gesperrt'**
+  String get analysisLockedBadge;
+
+  /// Board 13 (20.09.2026) — Vorlesetext eines gesperrten Auswertungsblocks (Boardschlüssel analysis.locked_a11y)
+  ///
+  /// In de, this message translates to:
+  /// **'{title}: gesperrt. {condition}. {cur} von {req}.'**
+  String analysisLockedA11y(String title, String condition, int cur, int req);
+
+  /// Board 13 (20.09.2026) — Vorlesetext der Ortszeile (Boardschlüssel sectionbar.a11y)
+  ///
+  /// In de, this message translates to:
+  /// **'Thema {name}, {n} von {total}. Öffnet die Themenliste.'**
+  String sectionBarA11y(String name, int n, int total);
+
+  /// Board 13 (20.09.2026) — Gruppenlabel der Sprungliste (Boardschlüssel sectionbar.list_title)
+  ///
+  /// In de, this message translates to:
+  /// **'Springen zu'**
+  String get sectionJumpTitle;
+
+  /// Board 13 (20.09.2026) — Vorlesetext einer Zeile der Sprungliste (Boardschlüssel sectionbar.jump_a11y)
+  ///
+  /// In de, this message translates to:
+  /// **'Zu {name} springen, {n} von {total}'**
+  String sectionJumpA11y(String name, int n, int total);
+
+  /// Board 13 (20.09.2026) — Ansage nach einem erscrollten Themenwechsel (Boardschlüssel sectionbar.arrived_a11y)
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, {n} von {total}'**
+  String sectionArrivedA11y(String name, int n, int total);
+
+  /// Board 13 (20.09.2026) — Marke der aktuellen Zeile in der Sprungliste (Boardschlüssel sectionbar.here)
+  ///
+  /// In de, this message translates to:
+  /// **'HIER'**
+  String get sectionHere;
+
+  /// Board 13 (20.09.2026) — Kicker der Startkarte (Boardschlüssel train.today_kicker)
+  ///
+  /// In de, this message translates to:
+  /// **'Heute geplant'**
+  String get trainTodayKicker;
+
+  /// Board 13 (20.09.2026) — Zeile zum Übungskatalog (Boardschlüssel train.catalog)
+  ///
+  /// In de, this message translates to:
+  /// **'Übungskatalog'**
+  String get trainCatalog;
+
+  /// Board 13 (20.09.2026) — Zeile zum Nachtragen (Boardschlüssel train.log_later)
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit nachtragen'**
+  String get trainLogLater;
+
+  /// Board 13 (20.09.2026) — Blockkopf über der Gesamtzahl (Boardschlüssel history.total_label)
+  ///
+  /// In de, this message translates to:
+  /// **'Erfasste Einheiten'**
+  String get historyTotalLabel;
+
+  /// Board 13 (20.09.2026) — Grundlage der Gesamtzahl (Boardschlüssel history.total_since)
+  ///
+  /// In de, this message translates to:
+  /// **'seit {date}'**
+  String historyTotalSince(String date);
+
+  /// Board 13 (20.09.2026) — Blockkopf über der Katalog-Ankündigung (Boardschlüssel plans.atem_label)
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM-Pläne'**
+  String get plansAtemLabel;
+
+  /// Board 13 (20.09.2026) — Titel des freien Starts (Boardschlüssel train.free_title)
+  ///
+  /// In de, this message translates to:
+  /// **'Frei starten'**
+  String get trainFreeTitle;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

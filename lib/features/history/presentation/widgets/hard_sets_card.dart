@@ -39,18 +39,19 @@ class HardSetsCard extends ConsumerWidget {
     if (!hard.hasEnough) {
       return AtemThresholdBlock(
         title: l10n.hardSetsTitle,
-        trailing: l10n.hardSetsWindow(days),
-        what: l10n.hardSetsWhat,
         condition: l10n.hardSetsCondition(HardSets.minimumSetsWithRpe),
         current: hard.setsWithRpe,
         required: HardSets.minimumSetsWithRpe,
         accent: AtemColors.tabStrength,
+        // Ein Wert mit Bezug, kein Verlauf: Gezeigt wird später eine Zahl je
+        // Muskelgruppe.
+        shape: AtemThresholdShape.ring,
       );
     }
 
     final totalShift = hard.hardTotal - hard.previousHardTotal;
 
-    return AtemCard.list(
+    return AtemAnalysisPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

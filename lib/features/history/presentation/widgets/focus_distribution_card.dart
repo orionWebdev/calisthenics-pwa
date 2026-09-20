@@ -40,16 +40,15 @@ class FocusDistributionCard extends StatelessWidget {
     if (!distribution.hasEnough) {
       return AtemThresholdBlock(
         title: l10n.focusDistTitle,
-        trailing: l10n.focusDistWindow,
-        what: l10n.focusDistWhat,
         condition: l10n.focusDistCondition(FocusDistribution.minimumWithFocus),
         current: distribution.withFocus,
         required: FocusDistribution.minimumWithFocus,
         accent: AtemColors.tabStrength,
+        shape: AtemThresholdShape.bars,
       );
     }
 
-    return AtemCard.list(
+    return AtemAnalysisPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

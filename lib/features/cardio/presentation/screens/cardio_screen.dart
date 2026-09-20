@@ -11,7 +11,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
-import '../../../strength/presentation/screens/strength_screen.dart';
+import '../../../strength/presentation/widgets/tab_header.dart';
 import '../../application/cardio_providers.dart';
 import '../../domain/iso_week.dart';
 import '../../domain/pace_series.dart';

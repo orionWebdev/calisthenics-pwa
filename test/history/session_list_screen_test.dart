@@ -6,7 +6,7 @@ import 'package:atem/features/dashboard/data/preview_dashboard_repository.dart';
 import 'package:atem/features/exercises/application/exercise_providers.dart';
 import 'package:atem/features/history/application/history_providers.dart';
 import 'package:atem/features/history/domain/training_session.dart';
-import 'package:atem/features/history/presentation/screens/history_screen.dart';
+import 'package:atem/features/history/presentation/widgets/history_section.dart';
 import 'package:atem/features/history/presentation/screens/session_detail_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_list_screen.dart';
 import 'package:atem/features/plans/application/plan_providers.dart';
@@ -212,8 +212,8 @@ void main() {
   group('Letzte Einheiten im Verlaufs-Tab', () {
     testWidgets('eine Zeile öffnet das Detail, „Alle" die Liste',
         (tester) async {
-      await _pump(tester, HistoryScreen(onStart: () {}));
-      final element = tester.element(find.byType(HistoryScreen));
+      await _pump(tester, const SingleChildScrollView(child: HistorySection()));
+      final element = tester.element(find.byType(HistorySection));
       final l10n = AppL10n.of(element);
 
       // Die Auswertung steht seit 16.09.2026 oben im Verlauf; die Zeile liegt

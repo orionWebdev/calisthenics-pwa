@@ -213,14 +213,14 @@ void main() {
           find.text('Erscheint ab 5 Einheiten einer Übung mit Gewicht und '
               'höchstens 12 Wiederholungen'),
           findsOneWidget);
-      // Der Satz zu Körpergewicht steht seit 17.09.2026 hinter dem ⓘ.
+      // Seit Board 13 (20.09.2026) trägt der gesperrte Block **kein ⓘ**: Er
+      // zeigt drei Dinge und keine vierte, und er hat keine Handlung. Was er
+      // zeigen wird, sagt die Form des Umrisses.
+      expect(find.byIcon(Icons.info_outline), findsNothing);
       expect(find.textContaining('Übungen mit Körpergewicht'), findsNothing);
-      await tester.tap(find.byIcon(Icons.info_outline));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Übungen mit Körpergewicht'), findsOneWidget);
-      // Ein Knoten, der die Bedingung und den Stand nennt.
-      expect(
-          find.bySemanticsLabel(RegExp(r'Bisher 0 von 5\.$')), findsOneWidget);
+      // Ein Knoten, der Sperre, Bedingung und Stand nennt.
+      expect(find.bySemanticsLabel(RegExp(r'gesperrt.*0 von 5\.$')),
+          findsOneWidget);
     });
 
     testWidgets('mit Kandidaten bleibt der dünne Zustand, mit Titel',

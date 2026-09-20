@@ -59,3 +59,6 @@ web/main.dart.js
 # Firestore-Sicherungen — enthalten personenbezogene Trainingsdaten
 atem-firestore-sicherung-*/
 firestore-dump*/
+
+# --- Firebase-Emulator ---
+*-debug.log

@@ -41,7 +41,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Freies Training').first);
+    await tester.tap(find.text('Frei starten').first);
     await tester.pumpAndSettle();
     // `.last`: Seit 16.09.2026 tragen auch die Plan-Karten einen Knopf
     // „Starten"; das Blatt liegt obenauf und ist das letzte Vorkommen.

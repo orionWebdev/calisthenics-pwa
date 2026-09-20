@@ -7,28 +7,35 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../application/history_providers.dart';
 import '../../domain/training_session.dart';
+import '../screens/session_detail_screen.dart';
+import '../screens/session_list_screen.dart';
 import '../session_ui.dart';
-import '../widgets/month_strip.dart';
-import '../widgets/muscle_balance_card.dart';
-import 'session_detail_screen.dart';
-import 'session_list_screen.dart';
+import 'month_strip.dart';
+import 'muscle_balance_card.dart';
 
-/// Der Verlauf — Seite 2 des Kraft-Tabs.
+/// Der Abschnitt „Verlauf" — **Einheiten je Monat, Muskelbalance, zuletzt**.
 ///
-/// Drei Blöcke: Einheiten je Monat, Muskelbalance, letzte Einheiten. Die
-/// Aussagekarte, die hier bis zum 16.09.2026 zuerst stand, ist entfallen;
-/// ihre Datei bleibt, falls sie an anderer Stelle wiederkommt.
-class HistoryScreen extends ConsumerWidget {
-  const HistoryScreen({super.key, this.embedded = false, this.onStart});
-
-  /// Als Segment „Verlauf" im Kraft-Tab (Modul 11): kein eigener Rahmen,
-  /// kein eigener Titel — der Verlauf ist ein Segment, kein Tab.
-  final bool embedded;
-
-  /// Der Weg in ein freies Training. Seit die Aussagekarte entfallen ist
-  /// (16.09.2026), zeigt der Verlauf keinen Startknopf mehr; der Parameter
-  /// bleibt, damit Aufrufer nicht brechen, und wird ignoriert.
-  final VoidCallback? onStart;
+/// Die Reihenfolge ist Nutzervorgabe vom 16.09.2026. Die Aussagekarte, die
+/// hier davor zuerst stand, ist entfallen; ihre Datei bleibt, falls sie an
+/// anderer Stelle wiederkommt.
+///
+/// ## Die Einheitenzahl steht jetzt hier
+///
+/// Bis zum 20.09.2026 trug der Kraft-Tab einen Kopf: „Kraft · 63 Einheiten".
+/// Mit dem One-Pager ist die Ortszeile die Überschrift, und ein zweiter Titel
+/// darüber wäre derselbe Name zweimal. Die Zahl gehört ohnehin hierher — sie
+/// zählt, was im Verlauf liegt — und steht als eigener Block mit ihrer
+/// Grundlage daneben (Board 13, „Verlauf & Pläne — knapp gehalten").
+///
+/// ## Ein Rezept für alle Blocküberschriften
+///
+/// `labelMicro` in Versalien, optional mit rechtsbündiger Aktion in derselben
+/// Zeile. Vorher stand „Letzte Einheiten" in `titleMedium` neben Mono-Köpfen
+/// — zwei Rezepte nebeneinander, gewachsen statt entschieden.
+///
+/// Der Abschnitt **scrollt nicht selbst**: Er ist ein Stück der Seite.
+class HistorySection extends ConsumerWidget {
+  const HistorySection({super.key});
 
   static const _recentCount = 4;
 
@@ -37,11 +44,11 @@ class HistoryScreen extends ConsumerWidget {
     final l10n = AppL10n.of(context);
     final async = ref.watch(sessionsProvider);
 
-    final body = async.when(
-      loading: () => Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
-        child: AtemSkeleton(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+          AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 0),
+      child: async.when(
+        loading: () => AtemSkeleton(
           semanticLabel: l10n.dashboardLoadingA11y,
           blocks: const [
             AtemSkeletonBlock(height: 140),
@@ -50,24 +57,14 @@ class HistoryScreen extends ConsumerWidget {
             AtemSkeletonBlock(height: 64, radius: 14),
           ],
         ),
-      ),
-      error: (_, __) => Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
-        child: AtemErrorState(
+        error: (_, __) => AtemErrorState(
           title: l10n.historyErrorTitle,
           body: l10n.historyErrorBody,
           retryLabel: l10n.commonRetry,
           onRetry: () => ref.invalidate(sessionStreamProvider),
         ),
+        data: (sessions) => _content(context, ref, l10n, sessions),
       ),
-      data: (sessions) => _content(context, ref, l10n, sessions),
-    );
-
-    if (embedded) return body;
-    return Scaffold(
-      backgroundColor: AtemColors.base,
-      body: SafeArea(child: body),
     );
   }
 
@@ -78,34 +75,27 @@ class HistoryScreen extends ConsumerWidget {
     List<TrainingSession> sessions,
   ) {
     if (sessions.isEmpty) {
-      return Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
-        child: AtemEmptyState(
-          title: l10n.emptyHistoryTitle,
-          body: l10n.emptyHistoryBody,
-        ),
+      return AtemEmptyState(
+        title: l10n.emptyHistoryTitle,
+        body: l10n.emptyHistoryBody,
       );
     }
 
     final summary = ref.watch(historySummaryProvider);
+    final strength = sessions
+        .where((s) =>
+            s.kind == SessionKind.strength || s.kind == SessionKind.bodyweight)
+        .length;
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-          AtemSpacing.screenPadding, 8, AtemSpacing.screenPadding, 130),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (!embedded) ...[
-          Text(l10n.historyTitle, style: AtemType.titleLarge.of(context)),
-          const SizedBox(height: 20),
-        ],
-        // **Reihenfolge nach Nutzervorgabe vom 16.09.2026:** Einheiten je
-        // Monat, Muskelbalance, letzte Einheiten. Die Aussagekarte und der
-        // Knopf zur Auswertung sind entfallen — die Auswertung ist seitdem
-        // eine eigene Seite im Kraft-Tab, gleich rechts neben dieser.
-        //
+        AtemEntrance(child: _TotalCard(count: strength, sessions: sessions)),
+        const SizedBox(height: AtemSpacing.cardGap),
         // Ein Monat angetippt: Die Liste öffnet auf genau diesen Monat —
         // der Zeitraumfilter kommt aus dem Streifen (Board 06, A2/2).
         AtemEntrance(
+          index: 1,
           child: MonthStrip(
             summary: summary,
             onSelect: (year, month) {
@@ -121,57 +111,24 @@ class HistoryScreen extends ConsumerWidget {
         // Ohne Einheit mit Übungen rendert die Kachel nicht (ausserhalb der
         // Auswertung gilt weiter: ein Block ohne Daten fehlt).
         const SizedBox(height: AtemSpacing.cardGap),
-        const AtemEntrance(index: 1, child: MuscleBalanceEntry()),
+        const AtemEntrance(index: 2, child: MuscleBalanceEntry()),
         const SizedBox(height: 24),
-        // Abschnittskopf wie ein Blocktitel: titleMedium, „Alle n" rechts.
-        // Vorher labelMedium mit Sperrung — der einzige Kopf dieser Art auf
-        // der Seite, und lauter als die Blocktitel darüber.
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Semantics(
-                header: true,
-                child: Text(
-                  l10n.historyRecentLabel,
-                  style: AtemType.titleMedium.of(context),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            // Kein Flexible: Es liess die Trefferfläche nur so breit wie
-            // nötig werden, und „Alle n" stand mitten in der Zeile.
-            Builder(
-              builder: (context) => AtemTappable(
-                // **„Alle" heisst alle.** Ohne das Zurücksetzen öffnete die
-                // Liste mit dem Zeitraum, den ein früherer Tap auf den
-                // Monatsstreifen gesetzt hatte — und stand leer da.
-                onTap: () {
-                  ref.read(sessionFilterProvider.notifier).clear();
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const SessionListScreen(),
-                    ),
-                  );
-                },
-                semanticLabel: l10n.historyAll(summary.sessions),
-                alignment: Alignment.centerRight,
-                child: Text(
-                  l10n.historyAll(summary.sessions),
-                  maxLines: 1,
-                  softWrap: false,
-                  textAlign: TextAlign.right,
-                  style: AtemType.labelUi
-                      .of(context)
-                      .copyWith(color: AtemColors.cyan),
-                ),
-              ),
-            ),
-          ],
+        AtemBlockHeader(
+          title: l10n.historyRecentLabel.toUpperCase(),
+          actionLabel: l10n.historyAll(summary.sessions),
+          // **„Alle" heisst alle.** Ohne das Zurücksetzen öffnete die Liste
+          // mit dem Zeitraum, den ein früherer Tap auf den Monatsstreifen
+          // gesetzt hatte — und stand leer da.
+          onAction: () {
+            ref.read(sessionFilterProvider.notifier).clear();
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const SessionListScreen()),
+            );
+          },
         ),
         const SizedBox(height: 10),
         AtemEntrance(
-          index: 2,
+          index: 3,
           child: AtemCard.list(
             padding: EdgeInsets.zero,
             child: Column(
@@ -190,6 +147,80 @@ class HistoryScreen extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+/// **Erfasste Einheiten** — die Zahl und woher sie kommt.
+///
+/// Die Zahl steht weiss, nicht im Bereichston: Das Board teilt die Farben neu
+/// auf — Amber sagt „wo du bist", Cyan sagt „das kannst du antippen". Eine
+/// Zahl sagt keines von beidem.
+///
+/// Die Grundlage steht in derselben Zeile wie der Wert, wie überall in der
+/// App: nie ein Wert ohne seinen Nenner.
+class _TotalCard extends StatelessWidget {
+  const _TotalCard({required this.count, required this.sessions});
+
+  final int count;
+  final List<TrainingSession> sessions;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final since = _since(context);
+    final basis = since == null ? null : l10n.historyTotalSince(since);
+
+    return Semantics(
+      container: true,
+      label: [
+        l10n.historyTotalLabel,
+        l10n.cardioWeekCount(count),
+        if (basis != null) basis,
+      ].join(', '),
+      child: ExcludeSemantics(
+        child: AtemCard.list(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.historyTotalLabel.toUpperCase(),
+                  style: AtemType.labelMicro.of(context)),
+              const SizedBox(height: 4),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.end,
+                spacing: 6,
+                children: [
+                  Text(
+                    '$count',
+                    style: AtemType.display.of(context).copyWith(
+                          fontSize: 28,
+                          height: 1.1,
+                          fontFeatures: const [
+                            FontFeature.tabularFigures()
+                          ],
+                        ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: Text(basis ?? l10n.cardioWeekCount(count),
+                        style: AtemType.meta.of(context)),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Der Monat der ältesten Einheit — „seit Mai 2025".
+  String? _since(BuildContext context) {
+    DateTime? first;
+    for (final s in sessions) {
+      if (first == null || s.date.isBefore(first)) first = s.date;
+    }
+    if (first == null) return null;
+    return DateFormat('MMMM yyyy', languageTag(context)).format(first);
   }
 }
 

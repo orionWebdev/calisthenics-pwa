@@ -9,8 +9,8 @@ import 'package:atem/features/auth/presentation/screens/waiting_room_screen.dart
 import 'package:atem/features/hybrid/presentation/screens/hybrid_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_detail_screen.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_form_screen.dart';
-import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
-import 'package:atem/features/history/presentation/screens/history_screen.dart';
+import 'package:atem/features/history/presentation/widgets/analysis_section.dart';
+import 'package:atem/features/history/presentation/widgets/history_section.dart';
 import 'package:atem/features/history/presentation/screens/muscle_balance_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_detail_screen.dart';
 import 'package:atem/features/history/presentation/screens/session_edit_screen.dart';
@@ -23,7 +23,7 @@ import 'package:atem/features/settings/presentation/screens/export_screen.dart';
 import 'package:atem/features/settings/presentation/screens/info_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
-import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
+import 'package:atem/features/workout/presentation/widgets/train_section.dart';
 import 'package:atem/features/strength/presentation/screens/strength_form_screen.dart';
 import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
 import 'package:atem/features/cardio/presentation/screens/cardio_screen.dart';
@@ -37,7 +37,7 @@ import 'package:atem/features/workout/presentation/widgets/set_effort.dart';
 import 'package:atem/features/workout/presentation/widgets/set_row.dart';
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/exercises/presentation/exercise_picker.dart';
-import 'package:atem/features/plans/presentation/screens/plan_catalog_page.dart';
+import 'package:atem/features/plans/presentation/widgets/plans_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -72,8 +72,8 @@ void main() {
     );
   });
 
-  testWidgets('Workouts-Tab erfüllt den A11y-Vertrag', (tester) async {
-    await expectA11y(tester, WorkoutsScreen(onStart: (_) {}));
+  testWidgets('Abschnitt Trainieren erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, _scrolled(TrainSection(onStart: (_) {})));
   });
 
   testWidgets('Muskelbalance erfüllt den A11y-Vertrag', (tester) async {
@@ -140,8 +140,8 @@ void main() {
     await expectA11y(tester, PlanDetailScreen(plan: fixturePlans.first));
   });
 
-  testWidgets('Verlauf erfüllt den A11y-Vertrag', (tester) async {
-    await expectA11y(tester, HistoryScreen(onStart: () {}));
+  testWidgets('Abschnitt Verlauf erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, _scrolled(const HistorySection()));
   });
 
   testWidgets('Einheitenliste erfüllt den A11y-Vertrag', (tester) async {
@@ -153,20 +153,12 @@ void main() {
         tester, SessionDetailScreen(session: fixtureSessions.first));
   });
 
-  testWidgets('Auswertung erfüllt den A11y-Vertrag', (tester) async {
-    await expectA11y(tester, const AnalysisScreen());
+  testWidgets('Abschnitt Auswertung erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, _scrolled(const AnalysisSection()));
   });
 
-  // Seit 16.09.2026 Seite 3 des Kraft-Tabs: ohne eigenen Rahmen.
-  testWidgets('Auswertung eingebettet erfüllt den A11y-Vertrag',
-      (tester) async {
-    await expectA11y(
-        tester, const Scaffold(body: AnalysisScreen(embedded: true)));
-  });
-
-  // Seite 4 des Kraft-Tabs.
-  testWidgets('Pläne von ATEM erfüllt den A11y-Vertrag', (tester) async {
-    await expectA11y(tester, const Scaffold(body: PlanCatalogPage()));
+  testWidgets('Abschnitt Pläne erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, _scrolled(PlansSection(onStart: (_) {})));
   });
 
   testWidgets('Workout Runner aus einem Plan erfüllt den A11y-Vertrag',
@@ -338,3 +330,11 @@ class _Sheet extends StatelessWidget {
         ),
       );
 }
+
+/// Ein Abschnitt des One-Pagers steht für sich in keinem Scroll-Container —
+/// die Seite scrollt als Ganzes. Für die Prüfmatrix bekommt er einen, sonst
+/// läuft er auf 320x640 über und jeder Befund wäre ein Layoutfehler.
+Widget _scrolled(Widget section) => Scaffold(
+      backgroundColor: AtemColors.base,
+      body: SafeArea(child: SingleChildScrollView(child: section)),
+    );

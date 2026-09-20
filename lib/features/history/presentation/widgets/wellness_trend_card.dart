@@ -52,18 +52,17 @@ class WellnessTrendCard extends StatelessWidget {
     if (!trend.hasEnough) {
       return AtemThresholdBlock(
         title: l10n.wellnessTrendTitle,
-        trailing: l10n.wellnessTrendWindow(weeks),
-        what: l10n.wellnessTrendWhat,
         condition: l10n.wellnessTrendCondition(WellnessTrend.minimumPairs),
         current: trend.withBoth,
         required: WellnessTrend.minimumPairs,
         accent: AtemColors.tabStrength,
+        shape: AtemThresholdShape.curve,
       );
     }
 
     // Eigene Knoten für Titel, Reihe, Zählung und Grundlage: Ohne Container
     // verschmolz TalkBack die ganze Karte zu einem einzigen Absatz.
-    return AtemCard.list(
+    return AtemAnalysisPanel(
       child: Semantics(
         container: true,
         explicitChildNodes: true,

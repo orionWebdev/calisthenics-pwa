@@ -5307,19 +5307,19 @@ class AppL10nEn extends AppL10n {
   String get segPlans => 'Plans';
 
   @override
-  String pageTabA11y(String name, int n, int total) {
-    return '$name, page $n of $total';
+  String sectionTabA11y(String name, int n, int total) {
+    return '$name, section $n of $total';
   }
 
   @override
-  String get strengthPagesA11y => 'Strength pages';
+  String get strengthSectionsA11y => 'Strength sections';
 
   @override
   String get planCatalogTitle => 'Plans by ATEM';
 
   @override
   String get planCatalogBody =>
-      'Plans by ATEM will appear here soon, free and as Premium. Your own plans are under Train.';
+      'Plans by ATEM will appear here soon, free and as Premium. Your own plans are above.';
 
   @override
   String monthsWindow(int n) {
@@ -5950,4 +5950,168 @@ class AppL10nEn extends AppL10n {
   String platesA11yRemainder(String rest, String loaded) {
     return 'Remaining $rest kilograms cannot be loaded, nearest value $loaded kilograms';
   }
+
+  @override
+  String get plansOwnLabel => 'Your plans';
+
+  @override
+  String get trainFreeBody => 'Begin without a plan';
+
+  @override
+  String get trainPlanBody => 'From your plans';
+
+  @override
+  String trainExercisesBody(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n exercises',
+      one: '1 exercise',
+    );
+    return '$_temp0 · search, create';
+  }
+
+  @override
+  String get trainLogBody => 'Log a session without entering every set.';
+
+  @override
+  String workoutRirBadge(int rir) {
+    return '$rir RIR';
+  }
+
+  @override
+  String workoutRirBadgeA11y(int n, int rir) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rir,
+      locale: localeName,
+      other: '$rir reps in reserve',
+      one: '1 rep in reserve',
+      zero: 'no reps in reserve',
+    );
+    return 'Set $n, $_temp0. Tap to change';
+  }
+
+  @override
+  String workoutRirBadgeHardA11y(int n, int rir) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rir,
+      locale: localeName,
+      other: '$rir reps in reserve',
+      one: '1 rep in reserve',
+      zero: 'no reps in reserve',
+    );
+    return 'Set $n, $_temp0, hard set. Tap to change';
+  }
+
+  @override
+  String workoutRirLevelA11y(int level, String word) {
+    return 'RIR $level, $word';
+  }
+
+  @override
+  String workoutRirRangeA11y(int from, int to) {
+    return 'RIR $from to $to';
+  }
+
+  @override
+  String get workoutRirShowLow => 'Show 5–9';
+
+  @override
+  String get workoutRirHideLow => 'Hide 5–9';
+
+  @override
+  String get workoutRirShowLowA11y => 'Show levels 5 to 9 in reserve';
+
+  @override
+  String get workoutRirHideLowA11y => 'Hide levels 5 to 9 in reserve';
+
+  @override
+  String get settingsEffortScale => 'Effort per set';
+
+  @override
+  String get settingsEffortScaleRpe => 'RPE';
+
+  @override
+  String get settingsEffortScaleRir => 'RIR';
+
+  @override
+  String get settingsEffortScaleValue => 'RPE — higher is harder';
+
+  @override
+  String get settingsEffortScaleValueRir => 'RIR — lower is harder';
+
+  @override
+  String get settingsEffortScaleGroupA11y => 'Scale for effort per set';
+
+  @override
+  String get settingsEffortScaleRpeA11y =>
+      'RPE, effort from 1 to 10, higher means harder';
+
+  @override
+  String get settingsEffortScaleRirA11y =>
+      'RIR, reps in reserve, lower means harder';
+
+  @override
+  String get settingsEffortScaleExplain =>
+      'The same entry, counted the other way. RPE 8 is 2 RIR: two reps were left in the tank. What is stored never changes — switching only changes the display, including for past sets, and you can switch back at any time.';
+
+  @override
+  String get hardSetsWhatRir =>
+      'How many of your sets per muscle group were hard — 3 RIR or fewer.';
+
+  @override
+  String get hardSetsExplainWhatRir =>
+      'A hard set is one with at most 3 reps in reserve. The entry is optional and is chosen when you tick off a set in the runner.';
+
+  @override
+  String get analysisLockedBadge => 'Locked';
+
+  @override
+  String analysisLockedA11y(String title, String condition, int cur, int req) {
+    return '$title: locked. $condition. $cur of $req.';
+  }
+
+  @override
+  String sectionBarA11y(String name, int n, int total) {
+    return 'Topic $name, $n of $total. Opens the topic list.';
+  }
+
+  @override
+  String get sectionJumpTitle => 'Jump to';
+
+  @override
+  String sectionJumpA11y(String name, int n, int total) {
+    return 'Jump to $name, $n of $total';
+  }
+
+  @override
+  String sectionArrivedA11y(String name, int n, int total) {
+    return '$name, $n of $total';
+  }
+
+  @override
+  String get sectionHere => 'HERE';
+
+  @override
+  String get trainTodayKicker => 'Planned today';
+
+  @override
+  String get trainCatalog => 'Exercise catalog';
+
+  @override
+  String get trainLogLater => 'Log a past session';
+
+  @override
+  String get historyTotalLabel => 'Sessions logged';
+
+  @override
+  String historyTotalSince(String date) {
+    return 'since $date';
+  }
+
+  @override
+  String get plansAtemLabel => 'ATEM plans';
+
+  @override
+  String get trainFreeTitle => 'Start free';
 }

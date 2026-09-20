@@ -63,6 +63,7 @@ class MuscleBalanceTile extends StatelessWidget {
     required this.balance,
     this.onOpen,
     this.alwaysShow = false,
+    this.asPanel = false,
   });
 
   final MuscleBalance balance;
@@ -72,6 +73,11 @@ class MuscleBalanceTile extends StatelessWidget {
   /// Auf Auswertungsbildschirmen rendert jeder Block immer (CLAUDE.md, seit
   /// 16.09.2026); im Kraft-Tab gilt weiter: ohne Daten kein Block.
   final bool alwaysShow;
+
+  /// In der Auswertung liegt der Block auf der Blockfläche
+  /// ([AtemAnalysisPanel]) statt als Karte — und unter seiner Schwelle ist er
+  /// der gesperrte Block aus Board 13, ohne Tap-Ziel.
+  final bool asPanel;
 
   /// Ohne Rückruf öffnet die Kachel [MuscleBalanceScreen] auf dem nächsten
   /// Navigator — im Kraft-Tab ist das der Stapel des Tabs.
@@ -90,6 +96,20 @@ class MuscleBalanceTile extends StatelessWidget {
     final done = balance.sessionsCounted;
     const target = MuscleBalance.minimumSessions;
 
+    // In der Auswertung, unter der Schwelle: der gesperrte Block. Er hat
+    // keine Handlung, also auch kein Tap-Ziel — die Unterseite zeigt
+    // dieselbe leere Verteilung.
+    if (asPanel && !enough) {
+      return AtemThresholdBlock(
+        title: l10n.balanceTitle,
+        condition: l10n.balanceThin(done, target),
+        current: done,
+        required: target,
+        accent: AtemColors.tabStrength,
+        shape: AtemThresholdShape.bars,
+      );
+    }
+
     final basis = enough
         ? l10n.balanceBasis(balance.totalSets, done, balance.sessionsInWindow)
         : l10n.balanceThinProgress(done, target, target - done);
@@ -106,7 +126,7 @@ class MuscleBalanceTile extends StatelessWidget {
         l10n.listOpenDetail,
       ].join(', '),
       pressScale: AtemPressScale.normal,
-      child: AtemCard.list(
+      child: _surface(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -139,6 +159,11 @@ class MuscleBalanceTile extends StatelessWidget {
       ),
     );
   }
+
+  /// Auswertung: Blockfläche. Verlauf: Listenkarte.
+  Widget _surface({required Widget child}) => asPanel
+      ? AtemAnalysisPanel(accent: AtemColors.tabStrength, child: child)
+      : AtemCard.list(child: child);
 }
 
 /// Die Muskelbalance im Detail — **Verteilung und Abstand, kein Urteil**.

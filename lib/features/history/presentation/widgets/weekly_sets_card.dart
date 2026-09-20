@@ -47,15 +47,15 @@ class WeeklySetsCard extends StatelessWidget {
     if (!volume.hasSets) {
       return AtemThresholdBlock(
         title: l10n.weeklySetsTitle,
-        what: l10n.weeklySetsWhat,
         condition: l10n.weeklySetsCondition,
         current: 0,
         required: 1,
         accent: AtemColors.tabStrength,
+        shape: AtemThresholdShape.curve,
       );
     }
 
-    return AtemCard.list(
+    return AtemAnalysisPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

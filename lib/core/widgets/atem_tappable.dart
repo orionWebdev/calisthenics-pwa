@@ -82,6 +82,7 @@ class AtemTappable extends StatefulWidget {
     required this.semanticLabel,
     this.semanticHint,
     this.selected,
+    this.expanded,
     this.inMutuallyExclusiveGroup = false,
     this.pressScale = AtemPressScale.normal,
     this.minTapSize = const Size.square(48),
@@ -112,6 +113,11 @@ class AtemTappable extends StatefulWidget {
 
   /// Für Elemente in einer Auswahl — Tabs, Filter, Navigationseinträge.
   final bool? selected;
+
+  /// Für Elemente, die etwas auf- und zuklappen — die Ortszeile mit ihrer
+  /// Sprungliste. Ein Screenreader sagt dann „eingeblendet" statt nur
+  /// „Schaltfläche".
+  final bool? expanded;
 
   /// Einer von mehreren, von denen genau einer gilt — Segmente, Optionsfelder.
   /// Ein Screenreader sagt dann „ausgewählt, 1 von 2" statt nur „ausgewählt".
@@ -169,6 +175,7 @@ class _AtemTappableState extends State<AtemTappable> {
       button: true,
       enabled: _enabled,
       selected: widget.selected,
+      expanded: widget.expanded,
       inMutuallyExclusiveGroup: widget.inMutuallyExclusiveGroup ? true : null,
       label: widget.semanticLabel,
       hint: widget.semanticHint,

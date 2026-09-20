@@ -1,11 +1,14 @@
 import 'package:atem/app/application/tab_providers.dart';
 import 'package:atem/core/theme/theme.dart';
-import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
+import 'package:atem/core/widgets/widgets.dart';
+import 'package:atem/features/history/presentation/widgets/analysis_section.dart';
+import 'package:atem/features/history/presentation/widgets/history_section.dart';
 import 'package:atem/features/history/presentation/widgets/month_strip.dart';
 import 'package:atem/features/history/presentation/widgets/muscle_balance_card.dart';
 import 'package:atem/features/history/presentation/widgets/statement_card.dart';
-import 'package:atem/features/plans/presentation/screens/plan_catalog_page.dart';
+import 'package:atem/features/plans/presentation/widgets/plans_section.dart';
 import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
+import 'package:atem/features/workout/presentation/widgets/train_section.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +16,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../support/a11y.dart';
 
-/// Der Kraft-Tab mit vier wischbaren Seiten (seit 16.09.2026).
+/// Der Kraft-Tab als One-Pager mit gehefteter Ortszeile (Board 13,
+/// seit 20.09.2026).
 void main() {
   late ProviderContainer container;
 
@@ -43,48 +47,124 @@ void main() {
   }
 
   StrengthSegment segment() => container.read(appTabsProvider).strengthSegment;
-  double page(WidgetTester tester) =>
-      tester.widget<PageView>(find.byType(PageView)).controller!.page!;
 
-  Future<void> swipe(WidgetTester tester, double dx) async {
-    // Unterhalb der Reiterleiste ansetzen, damit die Geste den PageView trifft.
-    await tester.flingFrom(const Offset(180, 600), Offset(dx, 0), 1500);
+  /// Die Unterkante der gehefteten Zeile — dort beginnt das Thema, in das
+  /// gesprungen wurde.
+  double barBottom(WidgetTester tester) =>
+      tester.getRect(find.byType(AtemSectionBar)).bottom;
+
+  /// Das eine Wort, das die Zeile gerade zeigt.
+  String word(WidgetTester tester, AppL10n l10n) {
+    for (final l in [
+      l10n.segTrain,
+      l10n.segHistory,
+      l10n.segAnalysis,
+      l10n.segPlans
+    ]) {
+      final finder = find.descendant(
+          of: find.byType(AtemSectionBar), matching: find.text(l));
+      if (finder.evaluate().isNotEmpty) return l;
+    }
+    return '';
+  }
+
+  /// Zeile antippen, Thema aus der Sprungliste wählen.
+  Future<void> jumpTo(WidgetTester tester, String label) async {
+    await tester.tap(find.byType(AtemSectionBar));
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+        of: find.byType(AtemSectionJumpList), matching: find.text(label)));
     await tester.pumpAndSettle();
   }
 
-  testWidgets('vier Reiter in der Reihenfolge der Vorgabe', (tester) async {
+  Future<void> scrollBy(WidgetTester tester, double dy) async {
+    await tester.drag(find.byType(CustomScrollView), Offset(0, dy),
+        warnIfMissed: false);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('ein Wort, ein Zähler, kein Tab-Kopf', (tester) async {
     final l10n = await pump(tester);
-    final xs = [
+
+    expect(word(tester, l10n), l10n.segTrain);
+    expect(find.text('1 / 4'), findsOneWidget);
+    expect(segment(), StrengthSegment.train);
+
+    // Die Zeile ist die Überschrift — ein Titel „Kraft" darüber wäre
+    // derselbe Name zweimal (Board 13, Entscheidung 6).
+    expect(find.text(l10n.tabStrength), findsNothing);
+  });
+
+  testWidgets('die vier Themen stehen vollständig in der Sprungliste',
+      (tester) async {
+    final l10n = await pump(tester);
+    await tester.tap(find.byType(AtemSectionBar));
+    await tester.pumpAndSettle();
+
+    final ys = [
       for (final label in [
         l10n.segTrain,
         l10n.segHistory,
         l10n.segAnalysis,
         l10n.segPlans,
       ])
-        tester.getTopLeft(find.text(label).first).dx,
+        tester
+            .getTopLeft(find.descendant(
+                of: find.byType(AtemSectionJumpList),
+                matching: find.text(label)))
+            .dy,
     ];
-    expect(xs, orderedEquals([...xs]..sort()));
+    expect(ys, orderedEquals([...ys]..sort()));
+    expect(find.text(l10n.sectionHere), findsOneWidget);
+  });
+
+  testWidgets('zwischen je zwei Themen liegt eine Fuge, am Ende der Abschluss',
+      (tester) async {
+    await pump(tester);
+    // Drei Fugen zwischen den vier Themen, plus der Abschluss nach dem
+    // letzten — Ende statt Ankündigung.
+    expect(find.byType(AtemSectionSeam, skipOffstage: false),
+        findsNWidgets(4));
+  });
+
+  testWidgets('eine Auswahl scrollt das Thema unter die Zeile',
+      (tester) async {
+    final l10n = await pump(tester);
+
+    await jumpTo(tester, l10n.segAnalysis);
+    expect(segment(), StrengthSegment.analysis);
+    expect(word(tester, l10n), l10n.segAnalysis);
+    expect(
+      tester.getTopLeft(find.byType(AnalysisSection)).dy,
+      closeTo(barBottom(tester), 1.5),
+    );
+
+    await jumpTo(tester, l10n.segTrain);
+    expect(segment(), StrengthSegment.train);
+    expect(
+      tester.getTopLeft(find.byType(TrainSection)).dy,
+      closeTo(barBottom(tester), 1.5),
+    );
+  });
+
+  testWidgets('Scrollen wandert von Thema zu Thema', (tester) async {
+    await pump(tester);
+    expect(segment(), StrengthSegment.train);
+
+    // Weit genug, damit der Verlauf unter der Leiste beginnt.
+    for (var i = 0; i < 4 && segment() != StrengthSegment.history; i++) {
+      await scrollBy(tester, -300);
+    }
+    expect(segment(), StrengthSegment.history);
+
+    // Und wieder zurück nach oben.
+    for (var i = 0; i < 6 && segment() != StrengthSegment.train; i++) {
+      await scrollBy(tester, 300);
+    }
     expect(segment(), StrengthSegment.train);
   });
 
-  testWidgets('Wischen nach links und rechts wechselt Seite und Provider',
-      (tester) async {
-    await pump(tester);
-    await swipe(tester, -300);
-    expect(page(tester), 1);
-    expect(segment(), StrengthSegment.history);
-
-    await swipe(tester, -300);
-    expect(page(tester), 2);
-    expect(segment(), StrengthSegment.analysis);
-    expect(find.byType(AnalysisScreen), findsOneWidget);
-
-    await swipe(tester, 300);
-    expect(page(tester), 1);
-    expect(segment(), StrengthSegment.history);
-  });
-
-  testWidgets('ein Sprung über den Provider wirft die Seite an',
+  testWidgets('ein Sprung über den Provider scrollt an den Abschnitt',
       (tester) async {
     await pump(tester);
     // Wie die Kraft-Zeile im Hybrid-Tab.
@@ -92,74 +172,52 @@ void main() {
         .read(appTabsProvider.notifier)
         .jump(AppTab.strength, strengthSegment: StrengthSegment.history);
     await tester.pumpAndSettle();
-    expect(page(tester), 1);
-
-    container
-        .read(appTabsProvider.notifier)
-        .setStrengthSegment(StrengthSegment.plans);
-    await tester.pumpAndSettle();
-    expect(page(tester), 3);
-    expect(find.byType(PlanCatalogPage), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.byType(HistorySection)).dy,
+      closeTo(barBottom(tester), 1.5),
+    );
   });
 
   testWidgets(
-      'Verlauf: Einheiten je Monat, Muskelbalance, letzte Einheiten — '
+      'Verlauf: Einheitenzahl, Monate, Muskelbalance, letzte Einheiten — '
       'ohne Aussagekarte', (tester) async {
     final l10n = await pump(tester);
-    await swipe(tester, -300);
+    await jumpTo(tester, l10n.segHistory);
 
     expect(find.byType(StatementCard), findsNothing);
     expect(find.text(l10n.historyAnalysisOpen), findsNothing);
 
+    // Die Zahl, die bis zum 20.09.2026 im Kopf des Tabs stand.
+    expect(find.byType(HistorySection), findsOneWidget);
     final month = tester.getTopLeft(find.byType(MonthStrip)).dy;
     final balance = tester.getTopLeft(find.byType(MuscleBalanceEntry)).dy;
-    await tester.dragFrom(const Offset(180, 600), const Offset(0, -400));
-    await tester.pumpAndSettle();
-    final recentAfterScroll =
-        tester.getTopLeft(find.text(l10n.historyRecentLabel)).dy;
     expect(month, lessThan(balance));
-    // Nach 400 dp Scrollen liegt „Letzte Einheiten" immer noch unter der
-    // ursprünglichen Position der Muskelbalance minus Scrollweg.
-    expect(recentAfterScroll + 400, greaterThan(balance));
   });
 
-  testWidgets('Pläne: ehrlicher Leerzustand ohne Knopf', (tester) async {
+  testWidgets('Pläne: die eigenen und die Ankündigung ohne Knopf',
+      (tester) async {
     final l10n = await pump(tester);
-    container
-        .read(appTabsProvider.notifier)
-        .setStrengthSegment(StrengthSegment.plans);
-    await tester.pumpAndSettle();
+    await jumpTo(tester, l10n.segPlans);
 
-    expect(find.text(l10n.planCatalogTitle), findsOneWidget);
-    expect(find.text(l10n.planCatalogBody), findsOneWidget);
+    expect(find.byType(PlansSection), findsOneWidget);
+    expect(find.text(l10n.plansOwnLabel.toUpperCase()), findsOneWidget);
+    await tester.ensureVisible(find.byType(PlanCatalogTeaser));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.plansAtemLabel.toUpperCase()), findsOneWidget);
     expect(
         find.descendant(
-            of: find.byType(PlanCatalogPage),
+            of: find.byType(PlanCatalogTeaser),
             matching: find.byType(GestureDetector)),
         findsNothing,
         reason: 'Kein Knopf ins Leere');
   });
 
-  testWidgets('Seiten behalten ihren Scrollstand beim Weiterwischen',
-      (tester) async {
+  testWidgets('Systemzurück wechselt keinen Abschnitt', (tester) async {
     final l10n = await pump(tester);
-    await swipe(tester, -300);
-    await tester.dragFrom(const Offset(180, 600), const Offset(0, -300));
-    await tester.pumpAndSettle();
-    final before = tester.getTopLeft(find.text(l10n.historyRecentLabel)).dy;
-
-    await swipe(tester, -300);
-    await swipe(tester, 300);
-    expect(tester.getTopLeft(find.text(l10n.historyRecentLabel)).dy,
-        closeTo(before, 0.5));
-  });
-
-  testWidgets('Systemzurück wechselt keine Seite', (tester) async {
-    await pump(tester);
-    await swipe(tester, -300);
+    await jumpTo(tester, l10n.segHistory);
     final handled = await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(handled, isFalse);
-    expect(page(tester), 1);
+    expect(segment(), StrengthSegment.history);
   });
 }

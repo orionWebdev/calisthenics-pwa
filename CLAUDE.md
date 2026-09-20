@@ -36,9 +36,52 @@ Bei Widersprüchen gilt, von oben nach unten:
 Jeder Screen und jeder Block braucht **default, loading, empty, zu-wenig-Daten und error**. Kein Zustand ist „kommt später". Die Boards zeigen jeden einzelnen als eigenes Artboard.
 
 Zwei Regeln dazu:
-- **Auf Auswertungsbildschirmen rendert jeder Block immer** (seit 16.09.2026). Unter seiner Schwelle zeigt er Titel, was er zeigen wird, die Bedingung und den Fortschritt mit Nenner — aber **keinen Wert und keinen Null-Chart**. Baustein: `AtemThresholdBlock`. Grund: Nach einem Neubeginn war die Auswertung sonst leer, und niemand sah, was die App kann.
+- **Auf Auswertungsbildschirmen rendert jeder Block immer** (seit 16.09.2026). Unter seiner Schwelle zeigt er Titel, was er zeigen wird, die Bedingung und den Fortschritt mit Nenner — aber **keinen Wert und keinen Null-Chart**. Baustein: `AtemThresholdBlock`. Er zeigt **drei Dinge und keine vierte**: Namen, den **Umriss** des künftigen Inhalts (`AtemThresholdShape`: Kurve, Balken, Zeilen, Ring — an die Datenform gebunden, keine freie Wahl) und die Bedingung mit Nenner. Kein ⓘ, kein Tap-Ziel, und **statisch**: Ein atmender Umriss sähe aus wie das Ladeskelett und müsste bei reduzierter Bewegung halb eingefroren stehen bleiben. Grund: Nach einem Neubeginn war die Auswertung sonst leer, und niemand sah, was die App kann.
 - **Auf allen anderen Bildschirmen rendert ein Block ohne Daten nicht** — der Bildschirm hört einfach früher auf. Keine Platzhalterkarte, kein „Leg los!"-Aufruf (Modul 5).
 - **Wo die Daten dünn sind, muss das sichtbar sein** — mit Nenner und Grundlage, nicht mit einer glatt aussehenden Zahl.
+
+## Die Ortszeile — Themen statt Seiten (Board 13, seit 20.09.2026)
+Der Kraft-Tab ist **eine durchgehende Seite** mit vier Themen: Trainieren,
+Verlauf, Auswertung, Pläne. Kein `PageView`, kein Tab-Kopf.
+- Bausteine: `AtemSectionPage` mit `AtemSectionBar` und `AtemSectionSeam` —
+  global, Bereichszahl und -ton sind Parameter.
+- **Die Zeile zeigt genau ein Wort**: das Thema, in dem man steht. Die anderen
+  liegen vollständig in einer Liste, die ein Tipp aufklappt. Nie ellipsieren,
+  nie verkleinern, nie durch Symbole ersetzen — daran scheitert jede
+  Reiterleiste bei 200 % auf 320 dp.
+- Vier Träger, Farbe ist der letzte: Wort · Zähler „2 / 4" · Chevron ·
+  Marken. Die Marken sind drei **Formzustände** (erledigt gefüllt, aktuell
+  mitwachsend, offen leer), nicht drei Farben.
+- **Sie blendet nie aus.** Sie ist die einzige Ortsangabe und zugleich der
+  Fortschrittsanzeiger. Deckende Fläche (`surfaceSolid`), kein Blur.
+- **Die Zeile ist die Überschrift.** Kein Thema trägt seinen Namen ein zweites
+  Mal im Inhalt; Blocküberschriften heissen nach dem Block. Genau **ein
+  Rezept**: `labelMicro` in Versalien, optional mit Aktion rechts.
+- Zwischen zwei Themen liegt die Fuge, nach dem letzten die Endfuge — Ende
+  statt Ankündigung. Sie ist stumm; den Wechsel sagt die Zeile an, gedrosselt
+  auf eine Ansage je Wechsel und frühestens 400 ms nach der letzten.
+- Ein Thema **scrollt nicht selbst**; Sprungziele kommen aus
+  `precedingScrollExtent`, nicht aus `localToGlobal`.
+- **Ein Ladegate je Seite**, nicht eines je Thema. Leere Themen bleiben
+  stehen: Fehlte beim Neubeginn die halbe Seite, sähe die App kleiner aus,
+  als sie ist.
+- Die Eintrittskaskade läuft, wenn ein Block 25 % der Viewporthöhe kreuzt —
+  nicht beim Bauen. Auf einer Seite, die alles auf einmal baut, wäre sie
+  sonst vorbei, bevor man dort ankommt.
+
+## Farbteilung: Ort gegen Handlung (Board 13, seit 20.09.2026)
+- **Cyan trägt Handlung** — global reserviert. Textaktionen („Alle 6"), die
+  Marke „HIER", Links. Wer Cyan sieht, kann tippen.
+- **Der Bereichston trägt den Ort** — im Kraft-Tab Amber `#FFB020`, wie der
+  Nav-Punkt der Bottom-Bar. Marken, Fuge, Kicker der Startkarte, Symbolkästen
+  der Wege, Sperr-Fortschritt, Rand eines freigeschalteten Blocks. **Amber ist
+  nie ein Versprechen auf eine Handlung.**
+- Messwerte behalten ihre Fachfarben, der Marken-CTA bleibt der
+  Magenta-Verlauf.
+- Rangfolge in „Trainieren": Gradient-Rand-Karte (genau eine) = der Weg, den
+  die Seite verkauft · Halbkarten = die regelmässigen Alternativen · Zeilen
+  mit Chevron = Unterseiten und Seltenes. Nach **Häufigkeit** belegt, nicht
+  nach Wichtigkeitsgefühl.
 
 ## Text und Erklärungen (seit 17.09.2026)
 - **Drei Textstufen:** Weiss für Titel und die Hauptzahl eines Blocks · `#CDD3EA` nur für Sätze, die gelesen werden · `#94A3B8` für Metazeilen, Grundlage und Beschriftungen. Die Hauptzahl trägt den Akzent des Bereichs (Kraft Amber, sonst Cyan) — ein Blickfang je Block, keine Ampelfarben.

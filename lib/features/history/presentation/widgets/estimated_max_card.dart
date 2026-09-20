@@ -100,7 +100,7 @@ class _EstimatedMaxCardState extends State<EstimatedMaxCard> {
     final selected = _selected!;
     final name = widget.nameOf(selected.exerciseId);
 
-    return AtemCard.list(
+    return AtemAnalysisPanel(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -454,12 +454,12 @@ class _Threshold extends StatelessWidget {
     // Schwellenblocks — die Absätze trennt eine Leerzeile.
     return AtemThresholdBlock(
       title: l10n.analysisMaxTitle,
-      what: _explanation(l10n).join('\n\n'),
       condition:
           l10n.analysisMaxCondition(target, StrengthProgress.maximumReps),
       current: 0,
       required: target,
       accent: AtemColors.tabStrength,
+      shape: AtemThresholdShape.rows,
     );
   }
 }

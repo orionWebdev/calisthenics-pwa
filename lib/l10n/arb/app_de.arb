@@ -7713,9 +7713,9 @@
   "@segPlans": {
     "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Reiter der Seite mit ATEM-Plänen"
   },
-  "pageTabA11y": "{name}, Seite {n} von {total}",
-  "@pageTabA11y": {
-    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Vorlesetext eines Reiters",
+  "sectionTabA11y": "{name}, Abschnitt {n} von {total}",
+  "@sectionTabA11y": {
+    "description": "One-Pager (20.09.2026) — kein Board — Vorlesetext eines Reiters der Abschnittsleiste",
     "placeholders": {
       "name": {
         "type": "String"
@@ -7728,15 +7728,15 @@
       }
     }
   },
-  "strengthPagesA11y": "Kraft-Seiten",
-  "@strengthPagesA11y": {
-    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Gruppenlabel der Reiterleiste"
+  "strengthSectionsA11y": "Kraft-Abschnitte",
+  "@strengthSectionsA11y": {
+    "description": "One-Pager (20.09.2026) — kein Board — Gruppenlabel der Abschnittsleiste im Kraft-Tab"
   },
   "planCatalogTitle": "Pläne von ATEM",
   "@planCatalogTitle": {
     "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Titel des Leerzustands der Katalogseite"
   },
-  "planCatalogBody": "Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen unter Trainieren.",
+  "planCatalogBody": "Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen darüber.",
   "@planCatalogBody": {
     "description": "Kraft-Tab Seite Pläne (16.09.2026), gekürzt 17.09.2026"
   },
@@ -8719,5 +8719,227 @@
         "type": "String"
       }
     }
+  },
+  "plansOwnLabel": "Deine Pläne",
+  "@plansOwnLabel": {
+    "description": "One-Pager (20.09.2026) — kein Board — Kopf über den eigenen Plänen im Abschnitt Pläne"
+  },
+  "trainFreeBody": "Ohne Plan loslegen",
+  "@trainFreeBody": {
+    "description": "One-Pager (20.09.2026) — kein Board — Unterzeile der Hauptkachel ohne Termin"
+  },
+  "trainPlanBody": "Aus deinen Plänen",
+  "@trainPlanBody": {
+    "description": "One-Pager (20.09.2026) — kein Board — Unterzeile der Kachel „Plan wählen“"
+  },
+  "trainExercisesBody": "{n, plural, one{1 Übung} other{{n} Übungen}} · suchen, anlegen",
+  "@trainExercisesBody": {
+    "description": "One-Pager (20.09.2026) — kein Board — Unterzeile der Kachel Übungen, mit Bestandszahl",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "trainLogBody": "Eine Einheit nachtragen, ohne jeden Satz einzeln.",
+  "@trainLogBody": {
+    "description": "One-Pager (20.09.2026) — kein Board — Unterzeile der Zeile „Ohne Sätze erfassen“"
+  },
+  "workoutRirBadge": "{rir} RIR",
+  "@workoutRirBadge": {
+    "description": "workoutRirBadge",
+    "placeholders": {
+      "rir": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRirBadgeA11y": "Satz {n}, {rir, plural, =0{keine Wiederholung in Reserve} one{1 Wiederholung in Reserve} other{{rir} Wiederholungen in Reserve}}. Tippen zum Ändern",
+  "@workoutRirBadgeA11y": {
+    "description": "workoutRirBadgeA11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "rir": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRirBadgeHardA11y": "Satz {n}, {rir, plural, =0{keine Wiederholung in Reserve} one{1 Wiederholung in Reserve} other{{rir} Wiederholungen in Reserve}}, harter Satz. Tippen zum Ändern",
+  "@workoutRirBadgeHardA11y": {
+    "description": "workoutRirBadgeHardA11y",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "rir": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRirLevelA11y": "RIR {level}, {word}",
+  "@workoutRirLevelA11y": {
+    "description": "workoutRirLevelA11y",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutRirRangeA11y": "RIR {from} bis {to}",
+  "@workoutRirRangeA11y": {
+    "description": "workoutRirRangeA11y",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRirShowLow": "5–9 zeigen",
+  "@workoutRirShowLow": {
+    "description": "workoutRirShowLow"
+  },
+  "workoutRirHideLow": "5–9 ausblenden",
+  "@workoutRirHideLow": {
+    "description": "workoutRirHideLow"
+  },
+  "workoutRirShowLowA11y": "Stufen 5 bis 9 in Reserve zeigen",
+  "@workoutRirShowLowA11y": {
+    "description": "workoutRirShowLowA11y"
+  },
+  "workoutRirHideLowA11y": "Stufen 5 bis 9 in Reserve ausblenden",
+  "@workoutRirHideLowA11y": {
+    "description": "workoutRirHideLowA11y"
+  },
+  "settingsEffortScale": "Anstrengung je Satz",
+  "@settingsEffortScale": {
+    "description": "settingsEffortScale"
+  },
+  "settingsEffortScaleRpe": "RPE",
+  "@settingsEffortScaleRpe": {
+    "description": "settingsEffortScaleRpe"
+  },
+  "settingsEffortScaleRir": "RIR",
+  "@settingsEffortScaleRir": {
+    "description": "settingsEffortScaleRir"
+  },
+  "settingsEffortScaleValue": "RPE — hoch ist schwer",
+  "@settingsEffortScaleValue": {
+    "description": "settingsEffortScaleValue"
+  },
+  "settingsEffortScaleValueRir": "RIR — niedrig ist schwer",
+  "@settingsEffortScaleValueRir": {
+    "description": "settingsEffortScaleValueRir"
+  },
+  "settingsEffortScaleGroupA11y": "Skala für die Anstrengung je Satz",
+  "@settingsEffortScaleGroupA11y": {
+    "description": "settingsEffortScaleGroupA11y"
+  },
+  "settingsEffortScaleRpeA11y": "RPE, Anstrengung von 1 bis 10, je höher desto schwerer",
+  "@settingsEffortScaleRpeA11y": {
+    "description": "settingsEffortScaleRpeA11y"
+  },
+  "settingsEffortScaleRirA11y": "RIR, Wiederholungen in Reserve, je niedriger desto schwerer",
+  "@settingsEffortScaleRirA11y": {
+    "description": "settingsEffortScaleRirA11y"
+  },
+  "settingsEffortScaleExplain": "Dieselbe Angabe, andersherum gezählt. RPE 8 ist 2 RIR: zwei Wiederholungen wären noch drin gewesen. Gespeichert wird immer dasselbe — ein Wechsel ändert nur die Anzeige, auch rückwirkend, und geht jederzeit zurück.",
+  "@settingsEffortScaleExplain": {
+    "description": "settingsEffortScaleExplain"
+  },
+  "hardSetsWhatRir": "Wie viele deiner Sätze je Muskelgruppe hart waren — 3 RIR oder weniger.",
+  "@hardSetsWhatRir": {
+    "description": "hardSetsWhatRir"
+  },
+  "hardSetsExplainWhatRir": "Ein harter Satz ist einer mit höchstens 3 Wiederholungen in Reserve. Die Angabe ist freiwillig und wird beim Abhaken eines Satzes im Runner gewählt.",
+  "@hardSetsExplainWhatRir": {
+    "description": "hardSetsExplainWhatRir"
+  },
+  "analysisLockedBadge": "Gesperrt",
+  "@analysisLockedBadge": {
+    "description": "Board 13 (20.09.2026) — Marke über dem Namen eines gesperrten Auswertungsblocks"
+  },
+  "analysisLockedA11y": "{title}: gesperrt. {condition}. {cur} von {req}.",
+  "@analysisLockedA11y": {
+    "description": "Board 13 (20.09.2026) — Vorlesetext eines gesperrten Auswertungsblocks (Boardschlüssel analysis.locked_a11y)",
+    "placeholders": {
+      "title": { "type": "String" },
+      "condition": { "type": "String" },
+      "cur": { "type": "int" },
+      "req": { "type": "int" }
+    }
+  },
+  "sectionBarA11y": "Thema {name}, {n} von {total}. Öffnet die Themenliste.",
+  "@sectionBarA11y": {
+    "description": "Board 13 (20.09.2026) — Vorlesetext der Ortszeile (Boardschlüssel sectionbar.a11y)",
+    "placeholders": {
+      "name": { "type": "String" },
+      "n": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "sectionJumpTitle": "Springen zu",
+  "@sectionJumpTitle": {
+    "description": "Board 13 (20.09.2026) — Gruppenlabel der Sprungliste (Boardschlüssel sectionbar.list_title)"
+  },
+  "sectionJumpA11y": "Zu {name} springen, {n} von {total}",
+  "@sectionJumpA11y": {
+    "description": "Board 13 (20.09.2026) — Vorlesetext einer Zeile der Sprungliste (Boardschlüssel sectionbar.jump_a11y)",
+    "placeholders": {
+      "name": { "type": "String" },
+      "n": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "sectionArrivedA11y": "{name}, {n} von {total}",
+  "@sectionArrivedA11y": {
+    "description": "Board 13 (20.09.2026) — Ansage nach einem erscrollten Themenwechsel (Boardschlüssel sectionbar.arrived_a11y)",
+    "placeholders": {
+      "name": { "type": "String" },
+      "n": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "sectionHere": "HIER",
+  "@sectionHere": {
+    "description": "Board 13 (20.09.2026) — Marke der aktuellen Zeile in der Sprungliste (Boardschlüssel sectionbar.here)"
+  },
+  "trainTodayKicker": "Heute geplant",
+  "@trainTodayKicker": {
+    "description": "Board 13 (20.09.2026) — Kicker der Startkarte (Boardschlüssel train.today_kicker)"
+  },
+  "trainCatalog": "Übungskatalog",
+  "@trainCatalog": {
+    "description": "Board 13 (20.09.2026) — Zeile zum Übungskatalog (Boardschlüssel train.catalog)"
+  },
+  "trainLogLater": "Einheit nachtragen",
+  "@trainLogLater": {
+    "description": "Board 13 (20.09.2026) — Zeile zum Nachtragen (Boardschlüssel train.log_later)"
+  },
+  "historyTotalLabel": "Erfasste Einheiten",
+  "@historyTotalLabel": {
+    "description": "Board 13 (20.09.2026) — Blockkopf über der Gesamtzahl (Boardschlüssel history.total_label)"
+  },
+  "historyTotalSince": "seit {date}",
+  "@historyTotalSince": {
+    "description": "Board 13 (20.09.2026) — Grundlage der Gesamtzahl (Boardschlüssel history.total_since)",
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "plansAtemLabel": "ATEM-Pläne",
+  "@plansAtemLabel": {
+    "description": "Board 13 (20.09.2026) — Blockkopf über der Katalog-Ankündigung (Boardschlüssel plans.atem_label)"
+  },
+  "trainFreeTitle": "Frei starten",
+  "@trainFreeTitle": {
+    "description": "Board 13 (20.09.2026) — Titel des freien Starts (Boardschlüssel train.free_title)"
   }
 }

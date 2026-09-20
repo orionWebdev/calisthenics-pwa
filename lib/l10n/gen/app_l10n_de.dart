@@ -5322,19 +5322,19 @@ class AppL10nDe extends AppL10n {
   String get segPlans => 'Pläne';
 
   @override
-  String pageTabA11y(String name, int n, int total) {
-    return '$name, Seite $n von $total';
+  String sectionTabA11y(String name, int n, int total) {
+    return '$name, Abschnitt $n von $total';
   }
 
   @override
-  String get strengthPagesA11y => 'Kraft-Seiten';
+  String get strengthSectionsA11y => 'Kraft-Abschnitte';
 
   @override
   String get planCatalogTitle => 'Pläne von ATEM';
 
   @override
   String get planCatalogBody =>
-      'Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen unter Trainieren.';
+      'Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen darüber.';
 
   @override
   String monthsWindow(int n) {
@@ -5966,4 +5966,170 @@ class AppL10nDe extends AppL10n {
   String platesA11yRemainder(String rest, String loaded) {
     return 'Rest $rest Kilogramm lässt sich nicht stecken, nächster Wert $loaded Kilogramm';
   }
+
+  @override
+  String get plansOwnLabel => 'Deine Pläne';
+
+  @override
+  String get trainFreeBody => 'Ohne Plan loslegen';
+
+  @override
+  String get trainPlanBody => 'Aus deinen Plänen';
+
+  @override
+  String trainExercisesBody(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Übungen',
+      one: '1 Übung',
+    );
+    return '$_temp0 · suchen, anlegen';
+  }
+
+  @override
+  String get trainLogBody =>
+      'Eine Einheit nachtragen, ohne jeden Satz einzeln.';
+
+  @override
+  String workoutRirBadge(int rir) {
+    return '$rir RIR';
+  }
+
+  @override
+  String workoutRirBadgeA11y(int n, int rir) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rir,
+      locale: localeName,
+      other: '$rir Wiederholungen in Reserve',
+      one: '1 Wiederholung in Reserve',
+      zero: 'keine Wiederholung in Reserve',
+    );
+    return 'Satz $n, $_temp0. Tippen zum Ändern';
+  }
+
+  @override
+  String workoutRirBadgeHardA11y(int n, int rir) {
+    String _temp0 = intl.Intl.pluralLogic(
+      rir,
+      locale: localeName,
+      other: '$rir Wiederholungen in Reserve',
+      one: '1 Wiederholung in Reserve',
+      zero: 'keine Wiederholung in Reserve',
+    );
+    return 'Satz $n, $_temp0, harter Satz. Tippen zum Ändern';
+  }
+
+  @override
+  String workoutRirLevelA11y(int level, String word) {
+    return 'RIR $level, $word';
+  }
+
+  @override
+  String workoutRirRangeA11y(int from, int to) {
+    return 'RIR $from bis $to';
+  }
+
+  @override
+  String get workoutRirShowLow => '5–9 zeigen';
+
+  @override
+  String get workoutRirHideLow => '5–9 ausblenden';
+
+  @override
+  String get workoutRirShowLowA11y => 'Stufen 5 bis 9 in Reserve zeigen';
+
+  @override
+  String get workoutRirHideLowA11y => 'Stufen 5 bis 9 in Reserve ausblenden';
+
+  @override
+  String get settingsEffortScale => 'Anstrengung je Satz';
+
+  @override
+  String get settingsEffortScaleRpe => 'RPE';
+
+  @override
+  String get settingsEffortScaleRir => 'RIR';
+
+  @override
+  String get settingsEffortScaleValue => 'RPE — hoch ist schwer';
+
+  @override
+  String get settingsEffortScaleValueRir => 'RIR — niedrig ist schwer';
+
+  @override
+  String get settingsEffortScaleGroupA11y =>
+      'Skala für die Anstrengung je Satz';
+
+  @override
+  String get settingsEffortScaleRpeA11y =>
+      'RPE, Anstrengung von 1 bis 10, je höher desto schwerer';
+
+  @override
+  String get settingsEffortScaleRirA11y =>
+      'RIR, Wiederholungen in Reserve, je niedriger desto schwerer';
+
+  @override
+  String get settingsEffortScaleExplain =>
+      'Dieselbe Angabe, andersherum gezählt. RPE 8 ist 2 RIR: zwei Wiederholungen wären noch drin gewesen. Gespeichert wird immer dasselbe — ein Wechsel ändert nur die Anzeige, auch rückwirkend, und geht jederzeit zurück.';
+
+  @override
+  String get hardSetsWhatRir =>
+      'Wie viele deiner Sätze je Muskelgruppe hart waren — 3 RIR oder weniger.';
+
+  @override
+  String get hardSetsExplainWhatRir =>
+      'Ein harter Satz ist einer mit höchstens 3 Wiederholungen in Reserve. Die Angabe ist freiwillig und wird beim Abhaken eines Satzes im Runner gewählt.';
+
+  @override
+  String get analysisLockedBadge => 'Gesperrt';
+
+  @override
+  String analysisLockedA11y(String title, String condition, int cur, int req) {
+    return '$title: gesperrt. $condition. $cur von $req.';
+  }
+
+  @override
+  String sectionBarA11y(String name, int n, int total) {
+    return 'Thema $name, $n von $total. Öffnet die Themenliste.';
+  }
+
+  @override
+  String get sectionJumpTitle => 'Springen zu';
+
+  @override
+  String sectionJumpA11y(String name, int n, int total) {
+    return 'Zu $name springen, $n von $total';
+  }
+
+  @override
+  String sectionArrivedA11y(String name, int n, int total) {
+    return '$name, $n von $total';
+  }
+
+  @override
+  String get sectionHere => 'HIER';
+
+  @override
+  String get trainTodayKicker => 'Heute geplant';
+
+  @override
+  String get trainCatalog => 'Übungskatalog';
+
+  @override
+  String get trainLogLater => 'Einheit nachtragen';
+
+  @override
+  String get historyTotalLabel => 'Erfasste Einheiten';
+
+  @override
+  String historyTotalSince(String date) {
+    return 'seit $date';
+  }
+
+  @override
+  String get plansAtemLabel => 'ATEM-Pläne';
+
+  @override
+  String get trainFreeTitle => 'Frei starten';
 }

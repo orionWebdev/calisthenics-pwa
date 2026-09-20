@@ -8,6 +8,7 @@ import 'l10n/gen/app_l10n.dart';
 import 'core/theme/theme.dart';
 import 'core/widgets/widgets.dart';
 import 'app/app_shell.dart';
+import 'app/emulator.dart';
 import 'features/auth/presentation/auth_gate.dart';
 import 'features/settings/application/settings_providers.dart';
 import 'features/workout/domain/workout_start.dart';
@@ -25,10 +26,13 @@ Future<void> main() async {
   // Offline-Persistenz ersetzt die lokale Datenbank, die im Gemini-Entwurf
   // stand (Vertrag 3, „Getroffene Entscheidungen"). Sie muss vor der ersten
   // Abfrage gesetzt werden, sonst greift sie nicht.
-  FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: true,
+  FirebaseFirestore.instance.settings = Settings(
+    // Im Emulator ohne Zwischenspeicher: Nach dem Neustart des Emulators wäre
+    // sonst der Bestand des vorigen Laufs noch auf dem Gerät.
+    persistenceEnabled: !AtemEmulator.active,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
+  await AtemEmulator.connect();
 
   // Keine Überschreibungen mehr: Jeder Bereich baut sein Repository selbst.
   runApp(const ProviderScope(child: AtemApp()));

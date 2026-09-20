@@ -2,10 +2,10 @@
 library;
 
 import 'package:atem/core/theme/theme.dart';
-import 'package:atem/features/history/presentation/screens/analysis_screen.dart';
-import 'package:atem/features/history/presentation/screens/history_screen.dart';
+import 'package:atem/features/history/presentation/widgets/analysis_section.dart';
+import 'package:atem/features/history/presentation/widgets/history_section.dart';
 import 'package:atem/features/hybrid/presentation/screens/hybrid_screen.dart';
-import 'package:atem/features/workout/presentation/screens/workouts_screen.dart';
+import 'package:atem/features/workout/presentation/widgets/train_section.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,9 +24,12 @@ import '../support/render.dart';
 void main() {
   final screens = <String, Widget>{
     'hybrid': const HybridScreen(),
-    'kraft_trainieren': WorkoutsScreen(onStart: (_) {}, embedded: true),
-    'kraft_verlauf': HistoryScreen(embedded: true, onStart: () {}),
-    'kraft_auswertung': const AnalysisScreen(embedded: true),
+    // Die Abschnitte des One-Pagers scrollen nicht selbst — die Seite tut
+    // es. Fürs Bild bekommen sie einen Scroll-Container, sonst läuft ein
+    // Abschnitt, der höher als das Bild ist, über.
+    'kraft_trainieren': SingleChildScrollView(child: TrainSection(onStart: (_) {})),
+    'kraft_verlauf': const SingleChildScrollView(child: HistorySection()),
+    'kraft_auswertung': const SingleChildScrollView(child: AnalysisSection()),
   };
 
   for (final entry in screens.entries) {

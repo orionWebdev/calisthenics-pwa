@@ -251,13 +251,7 @@ class AtemSkeletonBlock {
   final double radius;
 }
 
-class _AtemSkeletonState extends State<AtemSkeleton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1100),
-  );
-
+class _AtemSkeletonState extends State<AtemSkeleton> {
   Timer? _delay;
   var _visible = false;
 
@@ -274,16 +268,8 @@ class _AtemSkeletonState extends State<AtemSkeleton>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Ruhelage 0,8: sichtbar, aber erkennbar Platzhalter.
-    AtemMotion.syncLoop(context, _controller, reverse: true, restingValue: 0.5);
-  }
-
-  @override
   void dispose() {
     _delay?.cancel();
-    _controller.dispose();
     super.dispose();
   }
 
@@ -297,6 +283,75 @@ class _AtemSkeletonState extends State<AtemSkeleton>
       liveRegion: true,
       label: widget.semanticLabel,
       child: ExcludeSemantics(
+        child: AtemPlaceholderShape(
+          blocks: widget.blocks,
+          spacing: widget.spacing,
+        ),
+      ),
+    );
+  }
+}
+
+/// Dieselbe Geometrie, aber **ohne Ladeversprechen**.
+///
+/// ## Wofür
+///
+/// Ein Auswertungsblock unter seiner Schwelle zeigt seit dem 20.09.2026, wie
+/// er aussehen wird, sobald er trägt: die Form des Charts als ruhig atmende
+/// Fläche, darunter die Bedingung und der Fortschritt. Das ist kein
+/// Ladevorgang — es lädt nichts, und es wird auch gleich nichts fertig.
+///
+/// Deshalb kein [AtemSkeleton]: Dessen `liveRegion` sagt einem Screenreader
+/// „wird geladen", und seine 300-ms-Schwelle liesse den Block erst nachträglich
+/// erscheinen. Diese Form ist **stumm und sofort da**; was sie bedeutet, sagt
+/// der Text daneben.
+///
+/// Der Puls friert bei „Animationen reduzieren" auf einem festen Wert ein —
+/// wie beim Skelett, und aus demselben Grund: Ein Dauerlauf brächte
+/// `pumpAndSettle()` nie zur Ruhe.
+class AtemPlaceholderShape extends StatefulWidget {
+  const AtemPlaceholderShape({
+    super.key,
+    required this.blocks,
+    this.spacing = 13,
+    this.fill = AtemColors.track,
+  });
+
+  final List<AtemSkeletonBlock> blocks;
+  final double spacing;
+
+  /// Die Fläche der Platzhalter. `track` steht auf dem Bildschirmgrund; **in
+  /// einer Karte** ist er von `card` kaum zu unterscheiden (#16161F gegen
+  /// #14141D) und der Platzhalter sah aus wie ein Loch. Dort gehört
+  /// [AtemColors.surfaceRaised] hin.
+  final Color fill;
+
+  @override
+  State<AtemPlaceholderShape> createState() => _AtemPlaceholderShapeState();
+}
+
+class _AtemPlaceholderShapeState extends State<AtemPlaceholderShape>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1100),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Ruhelage 0,5: sichtbar, aber erkennbar Platzhalter.
+    AtemMotion.syncLoop(context, _controller, reverse: true, restingValue: 0.5);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => ExcludeSemantics(
         // Die Blockhöhen sind fest — auf einem 320x640-Gerät ist der
         // Platzhalter höher als der Bildschirm. Ein nicht scrollbarer
         // Scroll-Container gibt ihm unbegrenzte Höhe und schneidet den Rest
@@ -323,7 +378,7 @@ class _AtemSkeletonState extends State<AtemSkeleton>
                   child: Container(
                     height: widget.blocks[i].height,
                     decoration: BoxDecoration(
-                      color: AtemColors.track,
+                      color: widget.fill,
                       borderRadius:
                           BorderRadius.circular(widget.blocks[i].radius),
                     ),
@@ -333,9 +388,7 @@ class _AtemSkeletonState extends State<AtemSkeleton>
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 /// Kleiner Kreisel — **nur** im auslösenden Button, 16 dp.

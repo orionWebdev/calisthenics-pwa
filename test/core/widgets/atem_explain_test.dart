@@ -98,29 +98,31 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Schwellenblock: „was" steht hinter ⓘ, Bedingung bleibt sichtbar',
+  // Seit Board 13 (20.09.2026) trägt der gesperrte Block **kein ⓘ**: Er
+  // zeigt drei Dinge und keine vierte — Name, Umriss, Bedingung mit Nenner —
+  // und hat keine Handlung, also auch kein Tap-Ziel. „Was er zeigen wird"
+  // sagt seitdem die Form des Umrisses, nicht ein Satz hinter einem Knopf.
+  testWidgets('Schwellenblock: Bedingung sichtbar, kein ⓘ, kein Tap-Ziel',
       (tester) async {
     await _pump(
       tester,
       const AtemThresholdBlock(
         title: 'Fortschritte',
-        what: 'Neue Bestwerte der letzten 4 Wochen.',
         condition: 'Erscheint ab der zweiten Ausführung',
         current: 1,
         required: 2,
       ),
     );
     expect(find.text('Erscheint ab der zweiten Ausführung'), findsOneWidget);
-    expect(find.text('Neue Bestwerte der letzten 4 Wochen.'), findsNothing);
-    await tester.tap(find.byIcon(Icons.info_outline));
-    await tester.pumpAndSettle();
-    expect(find.text('Neue Bestwerte der letzten 4 Wochen.'), findsOneWidget);
-  });
-
-  test('Metazeilen und Mono-Köpfe stehen in der dritten Textstufe', () {
-    expect(AtemType.meta.base.color, AtemColors.textSecondary);
-    expect(AtemType.labelMicro.base.color, AtemColors.textSecondary);
-    expect(AtemType.labelSmall.base.color, AtemColors.textTertiary);
+    expect(find.text('Fortschritte'), findsOneWidget);
+    expect(find.byIcon(Icons.info_outline), findsNothing);
+    expect(
+      find.descendant(
+          of: find.byType(AtemThresholdBlock),
+          matching: find.byType(GestureDetector)),
+      findsNothing,
+      reason: 'gesperrt heisst: es gibt nichts zu tun',
+    );
   });
 
   testWidgets('passt alles: Titel einzeilig, Zeitraum und ⓘ rechtsbündig',

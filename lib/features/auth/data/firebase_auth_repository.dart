@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../app/emulator.dart';
 import '../domain/auth_user.dart';
 
 /// Anmeldung über Google, gegen Firebase Auth.
@@ -54,9 +55,40 @@ class FirebaseAuthRepository implements AuthRepository {
   @override
   AuthUser? get current => _map(_auth.currentUser);
 
+  /// Im Emulator gibt es kein Google-Konto: Das Testkonto meldet sich mit
+  /// E-Mail und Passwort an und wird beim ersten Mal angelegt. Der Knopf im
+  /// Anmeldebildschirm bleibt derselbe.
+  Future<fb.User?> _signInToEmulator() async {
+    try {
+      return (await _auth.signInWithEmailAndPassword(
+        email: AtemEmulator.testEmail,
+        password: AtemEmulator.testPassword,
+      ))
+          .user;
+    } on fb.FirebaseAuthException catch (e) {
+      if (e.code != 'user-not-found' && e.code != 'invalid-credential') {
+        rethrow;
+      }
+      return (await _auth.createUserWithEmailAndPassword(
+        email: AtemEmulator.testEmail,
+        password: AtemEmulator.testPassword,
+      ))
+          .user;
+    }
+  }
+
   @override
   Future<AuthUser> signInWithGoogle() async {
     try {
+      if (AtemEmulator.active) {
+        final user = _map(await _signInToEmulator());
+        if (user == null) {
+          throw const AuthException(
+              AuthFailure.unbekannt, 'Emulator lieferte keinen Nutzer');
+        }
+        return user;
+      }
+
       await _ensureInitialized();
 
       final account = await _google.authenticate();

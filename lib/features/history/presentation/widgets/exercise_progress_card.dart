@@ -48,12 +48,11 @@ class ExerciseProgressCard extends ConsumerWidget {
     if (!progress.hasEnough) {
       return AtemThresholdBlock(
         title: l10n.progressTitle,
-        trailing: l10n.progressWindow,
-        what: l10n.progressWhat,
         condition: l10n.progressCondition,
         current: progress.mostOccurrences,
         required: ExerciseProgress.minimumOccurrences,
         accent: AtemColors.tabStrength,
+        shape: AtemThresholdShape.curve,
       );
     }
 
@@ -63,7 +62,7 @@ class ExerciseProgressCard extends ConsumerWidget {
         progress.exercisesCompared, progress.sessionsInWindow);
     final rows = progress.entries.take(maxRows).toList();
 
-    return AtemCard.list(
+    return AtemAnalysisPanel(
       padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
