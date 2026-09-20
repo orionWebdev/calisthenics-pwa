@@ -91,6 +91,26 @@ class Exercise {
   /// im Runner je Übung auf „Seiten getrennt" umschalten.
   final bool unilateral;
 
+  /// Wird die Übung an einer **Langhantel** ausgeführt?
+  ///
+  /// Entscheidet allein darüber, ob das Eingabeblatt die Scheibenrechnung
+  /// anbietet. Nur an der Langhantel steckt man ein Gewicht zusammen; am
+  /// Latzug, an der Kurzhantel und an der Kettlebell wählt man eines aus, und
+  /// bei Körpergewichtsübungen ist die Angabe die Zusatzlast am Gürtel.
+  ///
+  /// Massstab ist [equipment], nicht [type]: Von 155 Übungen im Bestand nennen
+  /// 13 eine Langhantel, 13 nennen gar kein Gerät — und diese 13 sind bis auf
+  /// zwei Körpergewichtsübungen. **Ohne Geräteangabe also keine Rechnung.** Wer
+  /// sie für eine eigene Übung will, trägt `barbell` oder `Langhantel` in
+  /// „Ausrüstung" ein.
+  ///
+  /// `dumbbell` enthält die Zeichenfolge `barbell` **nicht** — die Prüfung auf
+  /// einen Teilstring trifft die Kurzhantel nicht versehentlich mit.
+  bool get usesBarbell => equipment.any((item) {
+        final name = item.toLowerCase();
+        return name.contains('barbell') || name.contains('langhantel');
+      });
+
   /// Die Muskeln in der Reihenfolge, in der sie angezeigt werden: primär
   /// zuerst, sekundär danach, ohne Wiederholung.
   ///

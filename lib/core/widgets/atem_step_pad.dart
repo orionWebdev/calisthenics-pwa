@@ -51,7 +51,7 @@ Future<double?> showAtemStepPad(
   double? value,
   double? previousValue,
   String? previousLabel,
-  bool showPlates = true,
+  bool showPlates = false,
 }) {
   final l10n = AppL10n.of(context);
   return showModalBottomSheet<double>(
@@ -86,7 +86,7 @@ class AtemStepPad extends StatefulWidget {
     this.value,
     this.previousValue,
     this.previousLabel,
-    this.showPlates = true,
+    this.showPlates = false,
     this.onApply,
   });
 
