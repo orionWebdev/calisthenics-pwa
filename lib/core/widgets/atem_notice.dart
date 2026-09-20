@@ -41,6 +41,9 @@ class AtemNotice extends StatelessWidget {
         );
 
   final String title;
+
+  /// Der Satz unter dem Titel. **Leer erlaubt** — dann fehlt die Zeile, statt
+  /// als Leerraum zwischen Titel und Aktion zu stehen.
   final String body;
 
   /// Was ein Screenreader ansagt. Enthält Titel, Text **und** den Code — beim
@@ -98,8 +101,14 @@ class AtemNotice extends StatelessWidget {
                           .of(context)
                           .copyWith(fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 4),
-                    Text(body, style: AtemType.labelSmall.of(context)),
+                    // Kein leerer Absatz: Trägt eine Meldung ihre ganze
+                    // Aussage schon im Titel, stünde hier sonst eine
+                    // Leerzeile — am Gerät als Loch zwischen Titel und
+                    // Aktion sichtbar (20.09.2026).
+                    if (body.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(body, style: AtemType.labelSmall.of(context)),
+                    ],
                     if (code != null) ...[
                       const SizedBox(height: 6),
                       Text(
