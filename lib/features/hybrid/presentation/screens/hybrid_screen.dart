@@ -25,6 +25,7 @@ import '../../../plans/domain/plan.dart';
 import '../../../plans/presentation/start_sheet.dart';
 import '../../../settings/application/settings_providers.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
+import '../../../weight/presentation/widgets/weight_card.dart';
 import '../../domain/training_heatmap.dart';
 import '../widgets/recovery_row.dart';
 import '../widgets/recovery_sheet.dart';
@@ -322,6 +323,19 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
                 child: RecoveryRow(status: recovery, onAdd: _addRecovery),
               ),
 
+            // ---- Gewicht (Board 14, A). Nach der Regenerationszeile: Das
+            // Körpergewicht bewegt sich langsamer als Bereitschaft (heute)
+            // und Verhältnis (Woche) und kommt beim täglichen Blick zuletzt.
+            //
+            // Der einzige Block hier, der **immer** rendert: Das Onboarding
+            // verlangt ein Körpergewicht, also kennt jedes Profil einen Wert
+            // (Board 14, Entscheidung 7). Ohne ihn gäbe es keinen Weg zum
+            // ersten Verlaufseintrag.
+            if (WeightCard.hasData(ref)) ...[
+              const SizedBox(height: AtemSpacing.cardGap),
+              const AtemEntrance(index: 4, child: WeightCard()),
+            ],
+
             // ---- Trainingstage (zwölf Wochen). Zählt nur, keine Schwelle.
             ..._countBlocks(context, sessions, reference),
           ],
@@ -340,13 +354,16 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
     // Der Abstand davor steht schon hinter der Trainingszeit. Nur wenn die
     // Regenerationszeile dazwischen steht, braucht es einen eigenen — sonst
     // lag hier der doppelte Abstand (am Render sichtbar, 17.09.2026).
+    // Der Gewichtsblock zählt dabei wie die Regenerationszeile: Steht er
+    // dazwischen, braucht es hier einen eigenen Abstand.
+    final weightAbove = WeightCard.hasData(ref);
     final recoveryAbove = AppTab.visible.contains(AppTab.recovery);
     final timeAbove = TrainingTimeCard.hasData(sessions, reference);
     return [
-      if (recoveryAbove || !timeAbove)
+      if (weightAbove || recoveryAbove || !timeAbove)
         const SizedBox(height: AtemSpacing.cardGap),
       AtemEntrance(
-        index: 4,
+        index: 5,
         child: TrainingHeatmapCard(heatmap: heatmap),
       ),
     ];

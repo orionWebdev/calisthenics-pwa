@@ -7,7 +7,6 @@ import '../../../l10n/gen/app_l10n.dart';
 import '../application/history_providers.dart';
 import '../application/pending_deletion.dart';
 import '../domain/session_consequence.dart';
-import '../domain/training_load.dart';
 import '../domain/training_session.dart';
 import 'session_ui.dart';
 import 'widgets/consequence_table.dart';
@@ -38,7 +37,7 @@ Future<bool> confirmDeleteSession(
     sessions,
     session.id,
     ref.read(historyReferenceProvider),
-    context: LoadContext(bodyWeightKg: ref.read(bodyWeightProvider).value ?? 0),
+    context: ref.read(loadContextProvider),
   );
 
   // Die vierte Zeile zählt die Einheiten derselben Art — „Cardio-Einheiten

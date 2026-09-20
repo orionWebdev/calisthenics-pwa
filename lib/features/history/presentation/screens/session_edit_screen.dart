@@ -9,7 +9,6 @@ import '../../application/history_providers.dart';
 import '../../domain/session_consequence.dart';
 import '../../domain/session_patch.dart';
 import '../../../cardio/presentation/screens/cardio_form_screen.dart';
-import '../../domain/training_load.dart';
 import '../../domain/training_session.dart';
 import '../../../workout/domain/workout_start.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
@@ -290,9 +289,7 @@ class _SessionEditScreenState extends ConsumerState<SessionEditScreen> {
       ref.watch(historyReferenceProvider),
       date: _date,
       duration: _durationValue,
-      context: LoadContext(
-        bodyWeightKg: ref.watch(bodyWeightProvider).value ?? 0,
-      ),
+      context: ref.watch(loadContextProvider),
     );
 
     return PopScope(

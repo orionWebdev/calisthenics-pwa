@@ -23,6 +23,7 @@ import 'package:atem/features/settings/presentation/screens/export_screen.dart';
 import 'package:atem/features/settings/presentation/screens/info_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/features/plans/presentation/screens/plan_list_screen.dart';
+import 'package:atem/features/weight/presentation/screens/weight_history_screen.dart';
 import 'package:atem/features/workout/presentation/widgets/train_section.dart';
 import 'package:atem/features/strength/presentation/screens/strength_form_screen.dart';
 import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
@@ -78,6 +79,12 @@ void main() {
 
   testWidgets('Muskelbalance erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const MuscleBalanceScreen());
+  });
+
+  // ------------------------------------------------------------- Modul 14
+
+  testWidgets('Gewichtsverlauf erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(tester, const WeightHistoryScreen());
   });
 
   // ------------------------------------------------------------- Modul 11

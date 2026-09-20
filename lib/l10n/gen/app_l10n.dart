@@ -5515,142 +5515,10 @@ abstract class AppL10n {
   /// **'Änderungen behalten?'**
   String get unsavedTitle;
 
-  /// weight.body
+  /// Board 14 (20.09.2026): Der Wert bewertet nicht mehr den ganzen Verlauf neu, sondern je Einheit den Tag, an dem sie stattfand
   ///
   /// In de, this message translates to:
-  /// **'Bewertet jede Körpergewichtsübung in deinem Verlauf — heute und rückwirkend.'**
-  String get weightBody;
-
-  /// weight.delta
-  ///
-  /// In de, this message translates to:
-  /// **'{sign}{kg} kg · {sign}{pct} %'**
-  String weightDelta(String sign, String kg, String pct);
-
-  /// weight.dir.down
-  ///
-  /// In de, this message translates to:
-  /// **'niedriger'**
-  String get weightDirDown;
-
-  /// weight.dir.rescored
-  ///
-  /// In de, this message translates to:
-  /// **'neu bewertet'**
-  String get weightDirRescored;
-
-  /// weight.dir.same
-  ///
-  /// In de, this message translates to:
-  /// **'gleich'**
-  String get weightDirSame;
-
-  /// weight.dir.up
-  ///
-  /// In de, this message translates to:
-  /// **'höher'**
-  String get weightDirUp;
-
-  /// weight.error.range
-  ///
-  /// In de, this message translates to:
-  /// **'Zwischen 30 und 250 kg. Vorschau bleibt aus, bis der Wert stimmt.'**
-  String get weightErrorRange;
-
-  /// weight.hint
-  ///
-  /// In de, this message translates to:
-  /// **'Eine Nachkommastelle · 30–250 kg'**
-  String get weightHint;
-
-  /// weight.impact.acwr
-  ///
-  /// In de, this message translates to:
-  /// **'ACWR'**
-  String get weightImpactAcwr;
-
-  /// weight.impact.best
-  ///
-  /// In de, this message translates to:
-  /// **'Bestwert {exercise}'**
-  String weightImpactBest(String exercise);
-
-  /// weight.impact.form
-  ///
-  /// In de, this message translates to:
-  /// **'Formwert heute'**
-  String get weightImpactForm;
-
-  /// weight.impact.load
-  ///
-  /// In de, this message translates to:
-  /// **'Trainingslast 7 T'**
-  String get weightImpactLoad;
-
-  /// weight.impact.note
-  ///
-  /// In de, this message translates to:
-  /// **'Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.'**
-  String get weightImpactNote;
-
-  /// Board 08, bwFolgen
-  ///
-  /// In de, this message translates to:
-  /// **'Bestwert {exercise}'**
-  String weightImpactRecord(String exercise);
-
-  /// Board 08, bwFolgen — der Bestwert ändert sich nicht, seine Bewertung schon
-  ///
-  /// In de, this message translates to:
-  /// **'neu bewertet'**
-  String get weightImpactRescored;
-
-  /// weight.impact.scope
-  ///
-  /// In de, this message translates to:
-  /// **'{d} Tage · {n} Einheiten mit Körpergewichtsübungen'**
-  String weightImpactScope(int d, int n);
-
-  /// weight.impact.title
-  ///
-  /// In de, this message translates to:
-  /// **'Was sich rückwirkend ändert'**
-  String get weightImpactTitle;
-
-  /// weight.previous
-  ///
-  /// In de, this message translates to:
-  /// **'Vorher {alt} kg'**
-  String weightPrevious(String alt);
-
-  /// weight.save
-  ///
-  /// In de, this message translates to:
-  /// **'Speichern und neu rechnen'**
-  String get weightSave;
-
-  /// weight.save.busy
-  ///
-  /// In de, this message translates to:
-  /// **'Wird gerechnet'**
-  String get weightSaveBusy;
-
-  /// weight.save.none
-  ///
-  /// In de, this message translates to:
-  /// **'Unverändert · nichts zu speichern'**
-  String get weightSaveNone;
-
-  /// weight.saved.snack
-  ///
-  /// In de, this message translates to:
-  /// **'Gewicht {kg} kg gespeichert'**
-  String weightSavedSnack(String kg);
-
-  /// weight.sub
-  ///
-  /// In de, this message translates to:
-  /// **'Bewertet deinen ganzen Verlauf'**
+  /// **'Grundlage jeder Eigengewichts-Rechnung'**
   String get weightSub;
 
   /// weight.title
@@ -9472,6 +9340,384 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Ab {n} Einheiten mit Übungen'**
   String balanceCondition(int n);
+
+  /// Board 14 · weight.title — Titel des Blocks. Nicht weightTitle: das ist seit Modul 8 die Einstellung 'Körpergewicht'.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht'**
+  String get weightBlockTitle;
+
+  /// Board 14 · weight.unit
+  ///
+  /// In de, this message translates to:
+  /// **'KG'**
+  String get weightUnitKg;
+
+  /// Board 14 · A1 — die Zählung neben dem Wert
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Eintrag} other{{n} Einträge}}'**
+  String weightEntries(int n);
+
+  /// Board 14 · weight.basis — die Grundlage mit Nenner
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Eintrag} other{{n} Einträge}} seit dem {date}'**
+  String weightBasis(int n, String date);
+
+  /// Board 14 · weight.change_up — sichtbarer Text, Richtung trägt der Glyph
+  ///
+  /// In de, this message translates to:
+  /// **'{delta} kg seit dem {date} · {days} Tage her'**
+  String weightChangeUp(String delta, String date, int days);
+
+  /// Board 14 · weight.change_down — gleicher Satz, anderer Glyph; getrennter Schlüssel, damit eine Sprache die Richtung im Satz führen kann
+  ///
+  /// In de, this message translates to:
+  /// **'{delta} kg seit dem {date} · {days} Tage her'**
+  String weightChangeDown(String delta, String date, int days);
+
+  /// Board 14 · A11y — Richtung als Wort, nie nur der Glyph
+  ///
+  /// In de, this message translates to:
+  /// **'{delta} Kilogramm mehr seit dem {date}, {days} Tage her'**
+  String weightChangeUpA11y(String delta, String date, int days);
+
+  /// Board 14 · A11y — Richtung als Wort, nie nur der Glyph
+  ///
+  /// In de, this message translates to:
+  /// **'{delta} Kilogramm weniger seit dem {date}, {days} Tage her'**
+  String weightChangeDownA11y(String delta, String date, int days);
+
+  /// Board 14 · A1 — die beiden Datumsanker unter der Kurve
+  ///
+  /// In de, this message translates to:
+  /// **'{date} · {kg} kg'**
+  String weightAnchor(String date, String kg);
+
+  /// Board 14 · A1 — die Zeile über 'Eintragen'
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{Letzter Eintrag heute} one{Letzter Eintrag gestern} other{Letzter Eintrag vor {n} Tagen}}'**
+  String weightLastEntryDays(int n);
+
+  /// Board 14 · weight.enter_cta
+  ///
+  /// In de, this message translates to:
+  /// **'Eintragen'**
+  String get weightEnterCta;
+
+  /// Board 14 · A2 — die Marke rechts in der betonten Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Start'**
+  String get weightStartCta;
+
+  /// Board 14 · weight.single_value_title
+  ///
+  /// In de, this message translates to:
+  /// **'Ersten Verlaufswert eintragen'**
+  String get weightSingleValueTitle;
+
+  /// Board 14 · weight.single_value_note
+  ///
+  /// In de, this message translates to:
+  /// **'Aus der Einrichtung, {date} — noch kein zweiter Eintrag.'**
+  String weightSingleValueNote(String date);
+
+  /// Board 14 · A2, selbst eingetragener erster Wert
+  ///
+  /// In de, this message translates to:
+  /// **'Erster Eintrag, {date} — noch kein zweiter Eintrag.'**
+  String weightSingleValueFirst(String date);
+
+  /// Board 14 · E — der Profilwert eines Kontos von vor dem 20.09.2026, ohne Ursprungsdatum
+  ///
+  /// In de, this message translates to:
+  /// **'Aus den Einstellungen übernommen — noch kein Verlaufseintrag.'**
+  String get weightSingleValueSeed;
+
+  /// Board 14 · A2
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Verlauf, keine Kurve: aus einem Wert folgt keine Reihe.'**
+  String get weightSingleValueWhy;
+
+  /// Board 14 · weight.gap_note — Bodennotiz in der Lücke
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Woche ohne Eintrag} other{{n} Wochen ohne Eintrag}}'**
+  String weightGapNote(int n);
+
+  /// Board 14 · A6 — der gedimmte Wert im Fehlerfall
+  ///
+  /// In de, this message translates to:
+  /// **'ZULETZT BEKANNT · {date}'**
+  String weightLastKnown(String date);
+
+  /// Board 14 · weight.load_error
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf konnte nicht aktualisiert werden.'**
+  String get weightLoadError;
+
+  /// Board 14 · weight.range_3m
+  ///
+  /// In de, this message translates to:
+  /// **'3 Mon.'**
+  String get weightRange3m;
+
+  /// Board 14 · weight.range_6m
+  ///
+  /// In de, this message translates to:
+  /// **'6 Mon.'**
+  String get weightRange6m;
+
+  /// Board 14 · weight.range_1y
+  ///
+  /// In de, this message translates to:
+  /// **'1 Jahr'**
+  String get weightRange1y;
+
+  /// Board 14 · weight.range_all
+  ///
+  /// In de, this message translates to:
+  /// **'Alle'**
+  String get weightRangeAll;
+
+  /// Board 14 · A11y — Gruppenname der Range-Pillen
+  ///
+  /// In de, this message translates to:
+  /// **'Zeitraum'**
+  String get weightRangeGroup;
+
+  /// Board 14 · A11y — Range-Pille
+  ///
+  /// In de, this message translates to:
+  /// **'Zeitraum {range}, ausgewählt'**
+  String weightRangeA11y(String range);
+
+  /// Board 14 · weight.sheet_title — Kicker im Eingabeblatt, Versalien wie im Runner
+  ///
+  /// In de, this message translates to:
+  /// **'GEWICHT EINTRAGEN'**
+  String get weightSheetTitle;
+
+  /// Board 14 · weight.sheet_edit_title
+  ///
+  /// In de, this message translates to:
+  /// **'EINTRAG BEARBEITEN'**
+  String get weightSheetEditTitle;
+
+  /// Board 14 · weight.date_today
+  ///
+  /// In de, this message translates to:
+  /// **'Heute · {date}'**
+  String weightDateToday(String date);
+
+  /// Board 14 · weight.date_pick
+  ///
+  /// In de, this message translates to:
+  /// **'Datum wählen'**
+  String get weightDatePick;
+
+  /// Board 14 · A11y — Datums-Chip öffnet den Systemkalender
+  ///
+  /// In de, this message translates to:
+  /// **'Datum, {date}. Ändern.'**
+  String weightDateChipA11y(String date);
+
+  /// Board 14 · weight.same_day_note — informiert, blockiert nichts
+  ///
+  /// In de, this message translates to:
+  /// **'Heute bereits erfasst: {kg} kg. Ein zweiter Eintrag ersetzt diesen Wert.'**
+  String weightSameDayNote(String kg);
+
+  /// Board 14 · B1 — der Vorwert unter der grossen Zahl
+  ///
+  /// In de, this message translates to:
+  /// **'ZULETZT {kg} KG · {days, plural, =0{HEUTE} one{VOR 1 TAG} other{VOR {days} TAGEN}}'**
+  String weightPadPrevious(String kg, int days);
+
+  /// Board 14 · weight.update_cta
+  ///
+  /// In de, this message translates to:
+  /// **'Aktualisieren'**
+  String get weightUpdateCta;
+
+  /// Board 14 · weight.retro_title
+  ///
+  /// In de, this message translates to:
+  /// **'WIRKT AUF {from} – {to}'**
+  String weightRetroTitle(String from, String to);
+
+  /// Board 14 · weight.retro_scope
+  ///
+  /// In de, this message translates to:
+  /// **'BIS ZUM NÄCHSTEN EINTRAG · NICHT DEN GANZEN VERLAUF'**
+  String get weightRetroScope;
+
+  /// Board 14 · C2 — worauf die Änderung wirkt
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Eigengewichts-Satz} other{{n} Eigengewichts-Sätze}}'**
+  String weightRetroSets(int n);
+
+  /// Board 14 · C2 — der Nenner ist null, und das steht da statt einer leeren Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Eigengewichts-Sätze in dieser Spanne'**
+  String get weightRetroNone;
+
+  /// Board 14 · weight.confirm_snackbar
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht {kg} kg · {date} erfasst'**
+  String weightConfirmSnack(String kg, String date);
+
+  /// Board 14 · weight.delete_entry
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag löschen'**
+  String get weightDeleteEntry;
+
+  /// Board 14 · C2 — Stufe 2 der Löschbestätigung aus Modul 2
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag löschen?'**
+  String get weightDeleteTitle;
+
+  /// Board 14 · C2 — nennt die Folge, nicht nur die Frage
+  ///
+  /// In de, this message translates to:
+  /// **'{date} · {kg} kg. Für diese Tage gilt danach wieder der Wert davor.'**
+  String weightDeleteBody(String date, String kg);
+
+  /// Board 14 · C2
+  ///
+  /// In de, this message translates to:
+  /// **'Endgültig löschen'**
+  String get weightDeleteConfirm;
+
+  /// Board 14 · C2
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag vom {date} gelöscht'**
+  String weightDeletedSnack(String date);
+
+  /// Board 14 · weight.source_typed
+  ///
+  /// In de, this message translates to:
+  /// **'Eigene Eingabe'**
+  String get weightSourceTyped;
+
+  /// Board 14 · weight.source_measured
+  ///
+  /// In de, this message translates to:
+  /// **'Aus Health Connect'**
+  String get weightSourceMeasured;
+
+  /// Board 14 · E
+  ///
+  /// In de, this message translates to:
+  /// **'Aus den Einstellungen übernommen'**
+  String get weightSourceSettings;
+
+  /// Board 14 · weight.explain_body
+  ///
+  /// In de, this message translates to:
+  /// **'Zeigt dein Körpergewicht über Zeit — was war, kein Ziel.'**
+  String get weightExplainBody;
+
+  /// Board 14 · hinter dem ⓘ
+  ///
+  /// In de, this message translates to:
+  /// **'Die Veränderung vergleicht immer mit dem letzten Eintrag.'**
+  String get weightExplainChange;
+
+  /// Board 14 · hinter dem ⓘ
+  ///
+  /// In de, this message translates to:
+  /// **'Lücken werden nicht überbrückt: keine Linie ohne einen echten Eintrag dahinter.'**
+  String get weightExplainGaps;
+
+  /// Board 14 · hinter dem ⓘ — die Legende steht hier, nicht dauerhaft auf dem Schirm
+  ///
+  /// In de, this message translates to:
+  /// **'Gefüllter Punkt: eigene Eingabe. Hohler Punkt: aus Health Connect.'**
+  String get weightExplainSources;
+
+  /// Board 14 · E — hinter dem ⓘ
+  ///
+  /// In de, this message translates to:
+  /// **'Die Trainingslast einer Einheit rechnet mit dem Gewicht, das an ihrem Tag zuletzt bekannt war.'**
+  String get weightExplainLoad;
+
+  /// Board 14 · weight.history_open
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf öffnen'**
+  String get weightHistoryOpen;
+
+  /// Board 14 · A11y — eine Zeile ist ein Knoten, nicht vier
+  ///
+  /// In de, this message translates to:
+  /// **'{date}, {kg} Kilogramm, {source}. Bearbeiten.'**
+  String weightRowA11y(String date, String kg, String source);
+
+  /// Board 14 · A11y — die Kurve ist ein img mit Von-Bis-Label
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf über {n} Einträge, von {from} auf {to} Kilogramm'**
+  String weightChartA11y(int n, String from, String to);
+
+  /// Board 14 · A11y — ein '—' ist nie stumm, eine Lücke auch nicht
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf über {n} Einträge mit einer Lücke von {weeks} Wochen, von {from} auf {to} Kilogramm'**
+  String weightChartGapA11y(int n, int weeks, String from, String to);
+
+  /// Board 14 · A3 — Punktwolke statt Linie
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Einträge ohne verbundene Kurve, von {from} auf {to} Kilogramm'**
+  String weightChartThinA11y(int n, String from, String to);
+
+  /// Board 14 · A11y — die Karte ist ein Knoten, nicht vier
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht, {kg} Kilogramm, {basis}, {change}'**
+  String weightCardA11y(String kg, String basis, String change);
+
+  /// Board 14 · A2, A11y
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht, {kg} Kilogramm, noch kein zweiter Eintrag'**
+  String weightCardSingleA11y(String kg);
+
+  /// Board 14 · A11y — Hinweis auf der Karte
+  ///
+  /// In de, this message translates to:
+  /// **'Öffnet den Verlauf'**
+  String get weightCardOpenHint;
+
+  /// Board 14 · weight.settings_row_meta
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt {date} · {source}'**
+  String weightSettingsMeta(String date, String source);
+
+  /// Board 14 · C1 — Titel des Bildschirms für Vorleseprogramme
+  ///
+  /// In de, this message translates to:
+  /// **'Gewichtsverlauf'**
+  String get weightHistoryTitle;
+
+  /// Board 14 · A5 — Ladezustand, liveRegion polite
+  ///
+  /// In de, this message translates to:
+  /// **'Gewichtsverlauf lädt'**
+  String get weightLoadingA11y;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

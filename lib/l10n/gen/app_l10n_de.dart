@@ -3318,88 +3318,7 @@ class AppL10nDe extends AppL10n {
   String get unsavedTitle => 'Änderungen behalten?';
 
   @override
-  String get weightBody =>
-      'Bewertet jede Körpergewichtsübung in deinem Verlauf — heute und rückwirkend.';
-
-  @override
-  String weightDelta(String sign, String kg, String pct) {
-    return '$sign$kg kg · $sign$pct %';
-  }
-
-  @override
-  String get weightDirDown => 'niedriger';
-
-  @override
-  String get weightDirRescored => 'neu bewertet';
-
-  @override
-  String get weightDirSame => 'gleich';
-
-  @override
-  String get weightDirUp => 'höher';
-
-  @override
-  String get weightErrorRange =>
-      'Zwischen 30 und 250 kg. Vorschau bleibt aus, bis der Wert stimmt.';
-
-  @override
-  String get weightHint => 'Eine Nachkommastelle · 30–250 kg';
-
-  @override
-  String get weightImpactAcwr => 'ACWR';
-
-  @override
-  String weightImpactBest(String exercise) {
-    return 'Bestwert $exercise';
-  }
-
-  @override
-  String get weightImpactForm => 'Formwert heute';
-
-  @override
-  String get weightImpactLoad => 'Trainingslast 7 T';
-
-  @override
-  String get weightImpactNote =>
-      'Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.';
-
-  @override
-  String weightImpactRecord(String exercise) {
-    return 'Bestwert $exercise';
-  }
-
-  @override
-  String get weightImpactRescored => 'neu bewertet';
-
-  @override
-  String weightImpactScope(int d, int n) {
-    return '$d Tage · $n Einheiten mit Körpergewichtsübungen';
-  }
-
-  @override
-  String get weightImpactTitle => 'Was sich rückwirkend ändert';
-
-  @override
-  String weightPrevious(String alt) {
-    return 'Vorher $alt kg';
-  }
-
-  @override
-  String get weightSave => 'Speichern und neu rechnen';
-
-  @override
-  String get weightSaveBusy => 'Wird gerechnet';
-
-  @override
-  String get weightSaveNone => 'Unverändert · nichts zu speichern';
-
-  @override
-  String weightSavedSnack(String kg) {
-    return 'Gewicht $kg kg gespeichert';
-  }
-
-  @override
-  String get weightSub => 'Bewertet deinen ganzen Verlauf';
+  String get weightSub => 'Grundlage jeder Eigengewichts-Rechnung';
 
   @override
   String get weightTitle => 'Körpergewicht';
@@ -6149,4 +6068,297 @@ class AppL10nDe extends AppL10n {
   String balanceCondition(int n) {
     return 'Ab $n Einheiten mit Übungen';
   }
+
+  @override
+  String get weightBlockTitle => 'Gewicht';
+
+  @override
+  String get weightUnitKg => 'KG';
+
+  @override
+  String weightEntries(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einträge',
+      one: '1 Eintrag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weightBasis(int n, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einträge',
+      one: '1 Eintrag',
+    );
+    return '$_temp0 seit dem $date';
+  }
+
+  @override
+  String weightChangeUp(String delta, String date, int days) {
+    return '$delta kg seit dem $date · $days Tage her';
+  }
+
+  @override
+  String weightChangeDown(String delta, String date, int days) {
+    return '$delta kg seit dem $date · $days Tage her';
+  }
+
+  @override
+  String weightChangeUpA11y(String delta, String date, int days) {
+    return '$delta Kilogramm mehr seit dem $date, $days Tage her';
+  }
+
+  @override
+  String weightChangeDownA11y(String delta, String date, int days) {
+    return '$delta Kilogramm weniger seit dem $date, $days Tage her';
+  }
+
+  @override
+  String weightAnchor(String date, String kg) {
+    return '$date · $kg kg';
+  }
+
+  @override
+  String weightLastEntryDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Letzter Eintrag vor $n Tagen',
+      one: 'Letzter Eintrag gestern',
+      zero: 'Letzter Eintrag heute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weightEnterCta => 'Eintragen';
+
+  @override
+  String get weightStartCta => 'Start';
+
+  @override
+  String get weightSingleValueTitle => 'Ersten Verlaufswert eintragen';
+
+  @override
+  String weightSingleValueNote(String date) {
+    return 'Aus der Einrichtung, $date — noch kein zweiter Eintrag.';
+  }
+
+  @override
+  String weightSingleValueFirst(String date) {
+    return 'Erster Eintrag, $date — noch kein zweiter Eintrag.';
+  }
+
+  @override
+  String get weightSingleValueSeed =>
+      'Aus den Einstellungen übernommen — noch kein Verlaufseintrag.';
+
+  @override
+  String get weightSingleValueWhy =>
+      'Kein Verlauf, keine Kurve: aus einem Wert folgt keine Reihe.';
+
+  @override
+  String weightGapNote(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Wochen ohne Eintrag',
+      one: '1 Woche ohne Eintrag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weightLastKnown(String date) {
+    return 'ZULETZT BEKANNT · $date';
+  }
+
+  @override
+  String get weightLoadError => 'Verlauf konnte nicht aktualisiert werden.';
+
+  @override
+  String get weightRange3m => '3 Mon.';
+
+  @override
+  String get weightRange6m => '6 Mon.';
+
+  @override
+  String get weightRange1y => '1 Jahr';
+
+  @override
+  String get weightRangeAll => 'Alle';
+
+  @override
+  String get weightRangeGroup => 'Zeitraum';
+
+  @override
+  String weightRangeA11y(String range) {
+    return 'Zeitraum $range, ausgewählt';
+  }
+
+  @override
+  String get weightSheetTitle => 'GEWICHT EINTRAGEN';
+
+  @override
+  String get weightSheetEditTitle => 'EINTRAG BEARBEITEN';
+
+  @override
+  String weightDateToday(String date) {
+    return 'Heute · $date';
+  }
+
+  @override
+  String get weightDatePick => 'Datum wählen';
+
+  @override
+  String weightDateChipA11y(String date) {
+    return 'Datum, $date. Ändern.';
+  }
+
+  @override
+  String weightSameDayNote(String kg) {
+    return 'Heute bereits erfasst: $kg kg. Ein zweiter Eintrag ersetzt diesen Wert.';
+  }
+
+  @override
+  String weightPadPrevious(String kg, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'VOR $days TAGEN',
+      one: 'VOR 1 TAG',
+      zero: 'HEUTE',
+    );
+    return 'ZULETZT $kg KG · $_temp0';
+  }
+
+  @override
+  String get weightUpdateCta => 'Aktualisieren';
+
+  @override
+  String weightRetroTitle(String from, String to) {
+    return 'WIRKT AUF $from – $to';
+  }
+
+  @override
+  String get weightRetroScope =>
+      'BIS ZUM NÄCHSTEN EINTRAG · NICHT DEN GANZEN VERLAUF';
+
+  @override
+  String weightRetroSets(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Eigengewichts-Sätze',
+      one: '1 Eigengewichts-Satz',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weightRetroNone => 'Keine Eigengewichts-Sätze in dieser Spanne';
+
+  @override
+  String weightConfirmSnack(String kg, String date) {
+    return 'Gewicht $kg kg · $date erfasst';
+  }
+
+  @override
+  String get weightDeleteEntry => 'Eintrag löschen';
+
+  @override
+  String get weightDeleteTitle => 'Eintrag löschen?';
+
+  @override
+  String weightDeleteBody(String date, String kg) {
+    return '$date · $kg kg. Für diese Tage gilt danach wieder der Wert davor.';
+  }
+
+  @override
+  String get weightDeleteConfirm => 'Endgültig löschen';
+
+  @override
+  String weightDeletedSnack(String date) {
+    return 'Eintrag vom $date gelöscht';
+  }
+
+  @override
+  String get weightSourceTyped => 'Eigene Eingabe';
+
+  @override
+  String get weightSourceMeasured => 'Aus Health Connect';
+
+  @override
+  String get weightSourceSettings => 'Aus den Einstellungen übernommen';
+
+  @override
+  String get weightExplainBody =>
+      'Zeigt dein Körpergewicht über Zeit — was war, kein Ziel.';
+
+  @override
+  String get weightExplainChange =>
+      'Die Veränderung vergleicht immer mit dem letzten Eintrag.';
+
+  @override
+  String get weightExplainGaps =>
+      'Lücken werden nicht überbrückt: keine Linie ohne einen echten Eintrag dahinter.';
+
+  @override
+  String get weightExplainSources =>
+      'Gefüllter Punkt: eigene Eingabe. Hohler Punkt: aus Health Connect.';
+
+  @override
+  String get weightExplainLoad =>
+      'Die Trainingslast einer Einheit rechnet mit dem Gewicht, das an ihrem Tag zuletzt bekannt war.';
+
+  @override
+  String get weightHistoryOpen => 'Verlauf öffnen';
+
+  @override
+  String weightRowA11y(String date, String kg, String source) {
+    return '$date, $kg Kilogramm, $source. Bearbeiten.';
+  }
+
+  @override
+  String weightChartA11y(int n, String from, String to) {
+    return 'Verlauf über $n Einträge, von $from auf $to Kilogramm';
+  }
+
+  @override
+  String weightChartGapA11y(int n, int weeks, String from, String to) {
+    return 'Verlauf über $n Einträge mit einer Lücke von $weeks Wochen, von $from auf $to Kilogramm';
+  }
+
+  @override
+  String weightChartThinA11y(int n, String from, String to) {
+    return '$n Einträge ohne verbundene Kurve, von $from auf $to Kilogramm';
+  }
+
+  @override
+  String weightCardA11y(String kg, String basis, String change) {
+    return 'Gewicht, $kg Kilogramm, $basis, $change';
+  }
+
+  @override
+  String weightCardSingleA11y(String kg) {
+    return 'Gewicht, $kg Kilogramm, noch kein zweiter Eintrag';
+  }
+
+  @override
+  String get weightCardOpenHint => 'Öffnet den Verlauf';
+
+  @override
+  String weightSettingsMeta(String date, String source) {
+    return 'Zuletzt $date · $source';
+  }
+
+  @override
+  String get weightHistoryTitle => 'Gewichtsverlauf';
+
+  @override
+  String get weightLoadingA11y => 'Gewichtsverlauf lädt';
 }

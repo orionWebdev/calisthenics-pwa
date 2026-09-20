@@ -224,6 +224,36 @@ Einträge sind leere Maps ohne jedes Feld. R1 und R2 gelten hier unverändert.
 `language` und `unitSystem` sind die Brücke zur i18n aus Vertrag 2: Die App darf die Sprache
 nicht allein aus dem Systemgebietsschema ableiten, wenn hier eine Wahl hinterlegt ist.
 
+### `userProfiles/{uid}/bodyWeights` — neu am 20.09.2026 (Board 14)
+
+Die Gewichtsreihe. Eine Unter-Sammlung, kein weiteres Feld im Profil: Eine Liste in einem
+Dokument wächst unbegrenzt, lässt sich nicht nach Zeitraum abfragen und wird bei jedem
+Eintrag ganz neu geschrieben.
+
+| Feld | Typ | Bemerkung |
+|---|---|---|
+| — (Dokument-ID) | `string` | Das Datum als `yyyy-MM-dd`. **Damit ist „ein Tag, ein Wert" die Form der Daten und keine Regel im Code.** |
+| `kg` | `number` | Wie überall im Bestand mal `int`, mal `double` lesen (R1). |
+| `date` | `timestamp` | Lokale Mitternacht. Steht **zusätzlich** zur Kennung im Dokument, damit sich ein Fenster serverseitig begrenzen lässt. |
+| `source` | `string` | `manual`, `healthConnect` oder `settings`. Unbekannte Werte werden als `manual` gelesen — ein Wert aus einer späteren Quelle darf nicht verschwinden. |
+| `externalId` | `string?` | Die Kennung des Datensatzes in der Quelle. Nur bei gemessenen Werten. Ohne sie liesse sich beim zweiten Lesen aus Health Connect nicht unterscheiden, ob ein Wert neu ist oder derselbe noch einmal. |
+| `updatedAt` | `timestamp` | |
+
+**`bodyWeight` im Profil bleibt stehen** und trägt weiterhin den jüngsten Wert. Es ist die
+Brücke zur Vorgänger-App, die die Unter-Sammlung nicht kennt, und der Rückfall für jede
+Rechnung ohne Reihe. Geschrieben wird es nur, wenn der neue Eintrag tatsächlich der jüngste
+ist — ein nachgetragener Wert vom letzten Monat darf den aktuellen nicht überschreiben.
+
+Zwei Folgen, die leicht übersehen werden:
+
+1. **Regeln kaskadieren nicht.** `match /userProfiles/{userId}` deckt die Unter-Sammlung
+   **nicht** ab; ohne den eigenen `match /bodyWeights/{day}`-Block in `firestore.rules` fiele
+   sie auf das abschliessende `allow read, write: if false` zurück.
+2. **Löschen kaskadiert nicht.** Wird `userProfiles/{uid}` entfernt, bleiben die Dokumente
+   der Unter-Sammlung als verwaiste Datensätze stehen — unsichtbar in der Konsole, aber
+   vorhanden. `FirestoreAccountRepository.profileSubcollections` löscht und exportiert sie
+   deshalb ausdrücklich; aus den sechs Sammlungen der Kontolöschung sind sieben geworden.
+
 ## `allowedUsers`
 
 Zwei Felder: `email`, `enabled`. Das ist die Zugangsliste der geschlossenen Beta aus Stufe 7.

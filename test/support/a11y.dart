@@ -20,6 +20,10 @@ import 'package:atem/features/plans/domain/plan_repository.dart';
 import 'package:atem/features/settings/application/settings_providers.dart';
 import 'package:atem/features/settings/domain/settings_repository.dart';
 import 'package:atem/features/settings/domain/user_settings.dart';
+import 'package:atem/features/weight/application/weight_providers.dart';
+import 'package:atem/features/weight/domain/weight_entry.dart';
+import 'package:atem/features/weight/domain/weight_repository.dart';
+import 'package:atem/features/weight/domain/weight_series.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,6 +50,7 @@ final fixtureOverrides = [
   planRepositoryProvider.overrideWithValue(FakePlanRepository()),
   sessionRepositoryProvider.overrideWithValue(FakeSessionRepository()),
   settingsRepositoryProvider.overrideWithValue(FakeSettingsRepository()),
+  weightRepositoryProvider.overrideWithValue(FakeWeightRepository()),
   accountRepositoryProvider.overrideWithValue(FakeAccountRepository()),
   // Fester Stichtag: Sonst hinge die Aussage-Karte am Kalender des Rechners
   // und zeigte mal „Pause", mal „Untätig".
@@ -311,6 +316,56 @@ Future<void> expectA11y(
         '${findings.map((f) => '  $f').join('\n')}',
   );
 }
+
+/// Eine Gewichtsreihe über drei Monate, mit einer Lücke und einem gemessenen
+/// Wert — sonst prüfte die Matrix nur die Punktwolke und nie die Kurve.
+class FakeWeightRepository implements WeightRepository {
+  FakeWeightRepository({List<WeightEntry>? entries})
+      : entries = entries ?? List.of(fixtureWeights);
+
+  final List<WeightEntry> entries;
+
+  @override
+  Stream<WeightSeries> watch(String userId) =>
+      Stream.value(WeightSeries.of(entries));
+
+  @override
+  Future<WeightSeries> fetch(String userId) async => WeightSeries.of(entries);
+
+  @override
+  Future<void> save(String userId, WeightEntry entry) async {
+    entries.removeWhere((e) => e.documentId == entry.documentId);
+    entries.add(entry);
+  }
+
+  @override
+  Future<void> delete(String userId, DateTime day) async =>
+      entries.removeWhere((e) => e.documentId == WeightEntry.idFor(day));
+}
+
+/// Neun Einträge bis zum [fixtureToday], darin eine Lücke von sechs Wochen
+/// und zwei gemessene Werte.
+final fixtureWeights = <WeightEntry>[
+  WeightEntry(
+      date: DateTime(2026, 5, 20), kg: 80.9, source: WeightSource.settings),
+  WeightEntry(
+      date: DateTime(2026, 5, 27), kg: 80.6, source: WeightSource.manual),
+  WeightEntry(
+      date: DateTime(2026, 6, 3), kg: 80.3, source: WeightSource.healthConnect),
+  // Sechs Wochen ohne Eintrag — der Bruch in der Kurve.
+  WeightEntry(
+      date: DateTime(2026, 7, 16), kg: 79.8, source: WeightSource.manual),
+  WeightEntry(
+      date: DateTime(2026, 7, 26), kg: 79.6, source: WeightSource.manual),
+  WeightEntry(
+      date: DateTime(2026, 8, 4), kg: 79.3, source: WeightSource.healthConnect),
+  WeightEntry(
+      date: DateTime(2026, 8, 13), kg: 79.1, source: WeightSource.manual),
+  WeightEntry(
+      date: DateTime(2026, 8, 20), kg: 78.9, source: WeightSource.manual),
+  WeightEntry(
+      date: DateTime(2026, 8, 25), kg: 78.5, source: WeightSource.manual),
+];
 
 /// Einstellungen mit hinterlegtem Gewicht — sonst prüfte die Matrix nur den
 /// Zustand „noch nichts eingetragen".

@@ -48,8 +48,7 @@ class SessionDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final tag = languageTag(context);
-    final weight = ref.watch(bodyWeightProvider).value ?? 0;
-    final context_ = LoadContext(bodyWeightKg: weight);
+    final context_ = ref.watch(loadContextProvider);
 
     final load = TrainingLoad.of(session, context_);
     final sessions = ref.watch(sessionsProvider).value ?? const [];

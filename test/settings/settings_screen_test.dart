@@ -2,6 +2,7 @@ import 'package:atem/core/widgets/widgets.dart';
 import 'package:atem/features/settings/presentation/screens/account_deletion_screen.dart';
 import 'package:atem/features/settings/presentation/screens/info_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
+import 'package:atem/features/weight/presentation/screens/weight_history_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,17 +48,13 @@ void main() {
     expect(find.text('ÜBER DIE APP'), findsNothing);
     expect(find.text('Info'), findsOneWidget);
 
-    // Aus den Vorlagen: 78 kg, Pausenzeit 90 — als Werte in den Zeilen
-    // (Board 08: Zeile mit Wert, Sheet dahinter).
-    expect(find.text('78 kg'), findsOneWidget);
+    // Aus den Vorlagen: Pausenzeit 90 als Wert in der Zeile (Board 08).
+    // Das Gewicht steht seit Board 14 nicht mehr aus dem Profil da (78), sondern
+    // als jüngster Verlaufseintrag (78,5) — die Zeile ist eine Ableitung.
+    expect(find.text('78,5 kg'), findsOneWidget);
     expect(find.text('90 s'), findsOneWidget);
   });
 
-  /// Öffnet das Gewichts-Sheet über seine Zeile.
-  Future<void> openWeight(WidgetTester tester) async {
-    await tester.tap(find.text('Körpergewicht'));
-    await tester.pumpAndSettle();
-  }
 
   testWidgets('die Version steht als Fussnote, nicht in einem Abschnitt',
       (tester) async {
@@ -90,31 +87,21 @@ void main() {
     expect(find.text('Hell'), findsNothing);
   });
 
-  testWidgets('die Vorschau erscheint erst bei einer Änderung',
+  testWidgets('das Körpergewicht ist eine Ableitung, kein Eingabefeld',
       (tester) async {
     await _pump(tester, const SettingsScreen());
-    await openWeight(tester);
-    expect(find.text('Was sich rückwirkend ändert'), findsNothing);
 
-    await tester.enterText(find.byType(TextField).first, '95');
+    // Board 14, E: Die Zeile zeigt den jüngsten Verlaufseintrag samt Datum
+    // und Herkunft — und nennt damit ihre Grundlage.
+    expect(find.textContaining('Zuletzt'), findsWidgets);
+    expect(find.textContaining('Eigene Eingabe'), findsOneWidget);
+
+    // Es gibt nur noch **einen** Weg zu schreiben: den Verlauf.
+    await tester.tap(find.text('Körpergewicht'));
     await tester.pumpAndSettle();
 
-    // Der Bestand aus den Vorlagen trägt keine Körpergewichtsübungen —
-    // dann sagt die Vorschau genau das, statt eine Zahl zu erfinden.
-    expect(find.text('Was sich rückwirkend ändert'), findsOneWidget,
-        reason: 'die Vorschau erscheint, sobald ein gültiger Wert dasteht');
-    expect(find.textContaining('nur ihre Bewertung'), findsOneWidget,
-        reason: 'der Satz, der die Sätze selbst unangetastet erklärt');
-  });
-
-  testWidgets('ein unsinniges Gewicht wird am Feld gemeldet', (tester) async {
-    await _pump(tester, const SettingsScreen());
-    await openWeight(tester);
-
-    await tester.enterText(find.byType(TextField).first, '780');
-    await tester.pumpAndSettle();
-
-    expect(find.textContaining('Zwischen 30 und 250 kg'), findsOneWidget);
+    expect(find.byType(WeightHistoryScreen), findsOneWidget);
+    expect(find.text('Speichern und neu rechnen'), findsNothing);
   });
 
   testWidgets('Löschen bleibt gesperrt, bis das Wort getippt ist',

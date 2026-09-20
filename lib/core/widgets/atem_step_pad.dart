@@ -17,8 +17,12 @@ import 'atem_overlays.dart';
 import 'atem_plate_stack.dart';
 import 'atem_tappable.dart';
 
-/// Welches Feld eines Satzes das Blatt einstellt.
-enum AtemStepField { weight, reps, hold }
+/// Welches Feld das Blatt einstellt.
+///
+/// Die ersten drei gehören einem Satz im Runner. [bodyWeight] gehört keinem
+/// Satz — es ist der Gewichtsverlauf (Board 14, B), der dasselbe Blatt mit
+/// anderen Schrittweiten und einem Datum darüber benutzt.
+enum AtemStepField { weight, reps, hold, bodyWeight }
 
 /// Das Zahlen-Eingabeblatt des Runners — **ein Blatt von unten**, kein
 /// Bereich in der Satzzeile.
@@ -47,11 +51,18 @@ enum AtemStepField { weight, reps, hold }
 Future<double?> showAtemStepPad(
   BuildContext context, {
   required AtemStepField field,
-  required int setNumber,
+  int setNumber = 1,
   double? value,
   double? previousValue,
   String? previousLabel,
   bool showPlates = false,
+  String? title,
+  String? applyLabel,
+  String? valueNote,
+  Widget? headline,
+  Widget? notice,
+  Widget Function(BuildContext context, double value)? footerBuilder,
+  Widget? trailing,
 }) {
   final l10n = AppL10n.of(context);
   return showModalBottomSheet<double>(
@@ -72,6 +83,13 @@ Future<double?> showAtemStepPad(
       previousValue: previousValue,
       previousLabel: previousLabel,
       showPlates: showPlates,
+      title: title,
+      applyLabel: applyLabel,
+      valueNote: valueNote,
+      headline: headline,
+      notice: notice,
+      footerBuilder: footerBuilder,
+      trailing: trailing,
     ),
   );
 }
@@ -82,18 +100,59 @@ class AtemStepPad extends StatefulWidget {
   const AtemStepPad({
     super.key,
     required this.field,
-    required this.setNumber,
+    this.setNumber = 1,
     this.value,
     this.previousValue,
     this.previousLabel,
     this.showPlates = false,
     this.onApply,
+    this.title,
+    this.applyLabel,
+    this.valueNote,
+    this.headline,
+    this.notice,
+    this.footerBuilder,
+    this.trailing,
   });
 
   final AtemStepField field;
 
-  /// 1-basiert, steht im Titel: „GEWICHT · SATZ 2".
+  /// 1-basiert, steht im Titel: „GEWICHT · SATZ 2". Ohne Satzbezug
+  /// bedeutungslos — dann trägt [title] die Kopfzeile.
   final int setNumber;
+
+  /// Ersetzt den Titel aus dem Feld. Für Aufrufer ausserhalb des Runners.
+  final String? title;
+
+  /// Ersetzt „ÜBERNEHMEN" — „EINTRAGEN" oder „AKTUALISIEREN" (Board 14, B).
+  final String? applyLabel;
+
+  /// Eine Zeile unter der grossen Zahl statt der Delta-Zeile.
+  ///
+  /// Der Runner vergleicht mit dem letzten Mal; der Gewichtsverlauf nennt
+  /// stattdessen den zuletzt bekannten Wert samt Abstand („ZULETZT 78,9 KG ·
+  /// VOR 5 TAGEN"). Beides an derselben Stelle, nie beides zugleich.
+  final String? valueNote;
+
+  /// Unter dem Titel, über dem Wert — der Datums-Chip aus Board 14.
+  ///
+  /// **Die einzige echte Ergänzung an diesem Blatt.** Im Runner stand „jetzt"
+  /// nie zur Debatte; beim Gewicht ist Nachtragen der häufigste Fall.
+  final Widget? headline;
+
+  /// Über dem Wert: die Notiz „heute schon erfasst" (Board 14, B2). Sie
+  /// informiert und blockiert nichts.
+  final Widget? notice;
+
+  /// Zwischen Band und Knopf, mit dem **aktuellen** Wert.
+  ///
+  /// Die rückwirkende Vorschau aus Board 14, C2 zeigt „80,5 → 80,2" und muss
+  /// dem Band folgen — ein fertiges Widget könnte das nicht.
+  final Widget Function(BuildContext context, double value)? footerBuilder;
+
+  /// Unter dem Knopf: „Eintrag löschen". Der zerstörende Weg steht nie neben
+  /// dem vorwärts führenden, sondern darunter (Modul 2).
+  final Widget? trailing;
 
   /// Der aktuelle Wert; `null` heisst leer — dann startet das Band beim
   /// Vorwert, sonst beim Rückfallwert aus der Vorlage.
@@ -182,10 +241,27 @@ class _PadConfig {
     decimals: 0,
   );
 
+  /// Körpergewicht (Board 14, B): 0,1 / 0,5 / 1 kg.
+  ///
+  /// Feiner als beim Satzgewicht, weil die meisten Änderungen klein sind —
+  /// eine halbe Hantelscheibe gibt es nicht, ein halbes Kilo Körpergewicht
+  /// schon. Die Grenzen 30–250 kg sind dieselben wie in den Einstellungen
+  /// (`UserSettings`): Sie fangen den Vertipper, aus dem 780 statt 78 wird.
+  static const bodyWeight = _PadConfig(
+    steps: [0.1, 0.5, 1],
+    defaultStep: 0.1,
+    min: 30,
+    max: 250,
+    fallback: 75,
+    quick: [-1, -0.5, 0.5, 1],
+    decimals: 1,
+  );
+
   static _PadConfig of(AtemStepField field) => switch (field) {
         AtemStepField.weight => weight,
         AtemStepField.reps => reps,
         AtemStepField.hold => hold,
+        AtemStepField.bodyWeight => bodyWeight,
       };
 }
 
@@ -250,27 +326,38 @@ class _AtemStepPadState extends State<AtemStepPad> {
   /// dem Runner und dürfen sich dort ändern, ohne dass hier „HALTEN" neben
   /// der Zahl steht, wo „SEK" hingehört.
   String get _unit => switch (widget.field) {
-        AtemStepField.weight => AppL10n.of(context).stepPadUnitWeight,
+        AtemStepField.weight ||
+        AtemStepField.bodyWeight =>
+          AppL10n.of(context).stepPadUnitWeight,
         AtemStepField.reps => AppL10n.of(context).stepPadUnitReps,
         AtemStepField.hold => AppL10n.of(context).stepPadUnitHold,
       };
 
   String get _fieldName => switch (widget.field) {
-        AtemStepField.weight => AppL10n.of(context).stepPadFieldWeight,
+        AtemStepField.weight ||
+        AtemStepField.bodyWeight =>
+          AppL10n.of(context).stepPadFieldWeight,
         AtemStepField.reps => AppL10n.of(context).stepPadFieldReps,
         AtemStepField.hold => AppL10n.of(context).stepPadFieldHold,
       };
 
-  String _title(AppL10n l10n) => switch (widget.field) {
+  String _title(AppL10n l10n) =>
+      widget.title ??
+      switch (widget.field) {
         AtemStepField.weight => l10n.stepPadTitleWeight(widget.setNumber),
         AtemStepField.reps => l10n.stepPadTitleReps(widget.setNumber),
         AtemStepField.hold => l10n.stepPadTitleHold(widget.setNumber),
+        // Ohne Titel vom Aufrufer gibt es für dieses Feld keinen Satzbezug,
+        // aus dem sich einer bilden liesse.
+        AtemStepField.bodyWeight => l10n.stepPadFieldWeight,
       };
 
   String _stepLabel(AppL10n l10n, double step) {
     final text = AtemNumberField.format(context, step);
     return switch (widget.field) {
-      AtemStepField.weight => l10n.stepPadStepKg(text),
+      AtemStepField.weight ||
+      AtemStepField.bodyWeight =>
+        l10n.stepPadStepKg(text),
       AtemStepField.hold => l10n.stepPadStepSeconds(text),
       AtemStepField.reps => l10n.stepPadStepPlain(text),
     };
@@ -312,19 +399,38 @@ class _AtemStepPadState extends State<AtemStepPad> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _header(l10n),
+                    if (widget.headline != null) ...[
+                      const SizedBox(height: 6),
+                      widget.headline!,
+                    ],
+                    if (widget.notice != null) ...[
+                      const SizedBox(height: 10),
+                      widget.notice!,
+                    ],
                     const SizedBox(height: 18),
                     _value_(l10n),
-                    _delta(l10n),
+                    if (widget.valueNote != null)
+                      _note(widget.valueNote!)
+                    else
+                      _delta(l10n),
                     if (widget.field == AtemStepField.weight &&
                         widget.showPlates)
                       ..._plates(l10n),
                     if (_keyboard) ..._keys(l10n) else ..._ruler(l10n),
+                    if (widget.footerBuilder != null) ...[
+                      const SizedBox(height: 12),
+                      widget.footerBuilder!(context, _value),
+                    ],
                     const SizedBox(height: 18),
                     AtemButton.gradient(
-                      label: l10n.stepPadApply,
-                      semanticLabel: l10n.stepPadApply,
+                      label: widget.applyLabel ?? l10n.stepPadApply,
+                      semanticLabel: widget.applyLabel ?? l10n.stepPadApply,
                       onPressed: _apply,
                     ),
+                    if (widget.trailing != null) ...[
+                      const SizedBox(height: 10),
+                      widget.trailing!,
+                    ],
                   ],
                 ),
               ),
@@ -489,6 +595,25 @@ class _AtemStepPadState extends State<AtemStepPad> {
       ],
     );
   }
+
+  /// Die Zeile unter der grossen Zahl, wenn der Aufrufer eine eigene mitgibt.
+  ///
+  /// Sie belegt dieselbe Höhe wie die Delta-Zeile, damit das Band an derselben
+  /// Stelle steht, egal welches Feld das Blatt gerade führt.
+  Widget _note(String text) => Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: SizedBox(
+          height: MediaQuery.textScalerOf(context).scale(16),
+          child: Center(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AtemType.labelMicro.of(context),
+            ),
+          ),
+        ),
+      );
 
   /// Der Unterschied zum letzten Mal.
   ///

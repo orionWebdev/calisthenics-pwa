@@ -3308,88 +3308,7 @@ class AppL10nEn extends AppL10n {
   String get unsavedTitle => 'Keep changes?';
 
   @override
-  String get weightBody =>
-      'Scores every bodyweight exercise in your history — today and retroactively.';
-
-  @override
-  String weightDelta(String sign, String kg, String pct) {
-    return '$sign$kg kg · $sign$pct %';
-  }
-
-  @override
-  String get weightDirDown => 'lower';
-
-  @override
-  String get weightDirRescored => 're-scored';
-
-  @override
-  String get weightDirSame => 'unchanged';
-
-  @override
-  String get weightDirUp => 'higher';
-
-  @override
-  String get weightErrorRange =>
-      'Between 66 and 550 lb. No preview until the value is valid.';
-
-  @override
-  String get weightHint => 'One decimal · 66–550 lb';
-
-  @override
-  String get weightImpactAcwr => 'ACWR';
-
-  @override
-  String weightImpactBest(String exercise) {
-    return 'Best $exercise';
-  }
-
-  @override
-  String get weightImpactForm => 'Form today';
-
-  @override
-  String get weightImpactLoad => 'Training load 7 d';
-
-  @override
-  String get weightImpactNote =>
-      'Preview — not saved yet. Your sets, weights and reps stay unchanged — only how they are scored.';
-
-  @override
-  String weightImpactRecord(String exercise) {
-    return 'Best $exercise';
-  }
-
-  @override
-  String get weightImpactRescored => 'rescored';
-
-  @override
-  String weightImpactScope(int d, int n) {
-    return '$d days · $n workouts with bodyweight exercises';
-  }
-
-  @override
-  String get weightImpactTitle => 'What changes retroactively';
-
-  @override
-  String weightPrevious(String alt) {
-    return 'Was $alt kg';
-  }
-
-  @override
-  String get weightSave => 'Save and recalculate';
-
-  @override
-  String get weightSaveBusy => 'Recalculating';
-
-  @override
-  String get weightSaveNone => 'Unchanged · nothing to save';
-
-  @override
-  String weightSavedSnack(String kg) {
-    return 'Weight $kg kg saved';
-  }
-
-  @override
-  String get weightSub => 'Scores your whole history';
+  String get weightSub => 'The basis of every bodyweight calculation';
 
   @override
   String get weightTitle => 'Body weight';
@@ -6132,4 +6051,296 @@ class AppL10nEn extends AppL10n {
   String balanceCondition(int n) {
     return 'From $n workouts with exercises';
   }
+
+  @override
+  String get weightBlockTitle => 'Weight';
+
+  @override
+  String get weightUnitKg => 'KG';
+
+  @override
+  String weightEntries(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n entries',
+      one: '1 entry',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weightBasis(int n, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n entries',
+      one: '1 entry',
+    );
+    return '$_temp0 since $date';
+  }
+
+  @override
+  String weightChangeUp(String delta, String date, int days) {
+    return '$delta kg since $date · $days days ago';
+  }
+
+  @override
+  String weightChangeDown(String delta, String date, int days) {
+    return '$delta kg since $date · $days days ago';
+  }
+
+  @override
+  String weightChangeUpA11y(String delta, String date, int days) {
+    return '$delta kilograms more since $date, $days days ago';
+  }
+
+  @override
+  String weightChangeDownA11y(String delta, String date, int days) {
+    return '$delta kilograms less since $date, $days days ago';
+  }
+
+  @override
+  String weightAnchor(String date, String kg) {
+    return '$date · $kg kg';
+  }
+
+  @override
+  String weightLastEntryDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Last entry $n days ago',
+      one: 'Last entry yesterday',
+      zero: 'Last entry today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weightEnterCta => 'Log entry';
+
+  @override
+  String get weightStartCta => 'Start';
+
+  @override
+  String get weightSingleValueTitle => 'Log your first history value';
+
+  @override
+  String weightSingleValueNote(String date) {
+    return 'From setup, $date — no second entry yet.';
+  }
+
+  @override
+  String weightSingleValueFirst(String date) {
+    return 'First entry, $date — no second entry yet.';
+  }
+
+  @override
+  String get weightSingleValueSeed =>
+      'Carried over from settings — no history entry yet.';
+
+  @override
+  String get weightSingleValueWhy =>
+      'No history, no curve: one value does not make a series.';
+
+  @override
+  String weightGapNote(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n weeks without an entry',
+      one: '1 week without an entry',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weightLastKnown(String date) {
+    return 'LAST KNOWN · $date';
+  }
+
+  @override
+  String get weightLoadError => 'History could not be refreshed.';
+
+  @override
+  String get weightRange3m => '3 mo';
+
+  @override
+  String get weightRange6m => '6 mo';
+
+  @override
+  String get weightRange1y => '1 yr';
+
+  @override
+  String get weightRangeAll => 'All';
+
+  @override
+  String get weightRangeGroup => 'Range';
+
+  @override
+  String weightRangeA11y(String range) {
+    return 'Range $range, selected';
+  }
+
+  @override
+  String get weightSheetTitle => 'LOG WEIGHT';
+
+  @override
+  String get weightSheetEditTitle => 'EDIT ENTRY';
+
+  @override
+  String weightDateToday(String date) {
+    return 'Today · $date';
+  }
+
+  @override
+  String get weightDatePick => 'Choose date';
+
+  @override
+  String weightDateChipA11y(String date) {
+    return 'Date, $date. Change.';
+  }
+
+  @override
+  String weightSameDayNote(String kg) {
+    return 'Already logged today: $kg kg. A second entry replaces it.';
+  }
+
+  @override
+  String weightPadPrevious(String kg, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days DAYS AGO',
+      one: '1 DAY AGO',
+      zero: 'TODAY',
+    );
+    return 'LAST $kg KG · $_temp0';
+  }
+
+  @override
+  String get weightUpdateCta => 'Update';
+
+  @override
+  String weightRetroTitle(String from, String to) {
+    return 'AFFECTS $from – $to';
+  }
+
+  @override
+  String get weightRetroScope => 'UNTIL THE NEXT ENTRY · NOT THE WHOLE HISTORY';
+
+  @override
+  String weightRetroSets(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n bodyweight sets',
+      one: '1 bodyweight set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get weightRetroNone => 'No bodyweight sets in this range';
+
+  @override
+  String weightConfirmSnack(String kg, String date) {
+    return 'Weight $kg kg · logged $date';
+  }
+
+  @override
+  String get weightDeleteEntry => 'Delete entry';
+
+  @override
+  String get weightDeleteTitle => 'Delete entry?';
+
+  @override
+  String weightDeleteBody(String date, String kg) {
+    return '$date · $kg kg. Those days will fall back to the previous value.';
+  }
+
+  @override
+  String get weightDeleteConfirm => 'Delete for good';
+
+  @override
+  String weightDeletedSnack(String date) {
+    return 'Entry from $date deleted';
+  }
+
+  @override
+  String get weightSourceTyped => 'Manual entry';
+
+  @override
+  String get weightSourceMeasured => 'From Health Connect';
+
+  @override
+  String get weightSourceSettings => 'Carried over from settings';
+
+  @override
+  String get weightExplainBody =>
+      'Shows your body weight over time — what was, not a goal.';
+
+  @override
+  String get weightExplainChange =>
+      'The change always compares with the previous entry.';
+
+  @override
+  String get weightExplainGaps =>
+      'Gaps are not bridged: no line without a real entry behind it.';
+
+  @override
+  String get weightExplainSources =>
+      'Filled dot: manual entry. Hollow dot: from Health Connect.';
+
+  @override
+  String get weightExplainLoad =>
+      'The training load of a session uses the weight last known on its day.';
+
+  @override
+  String get weightHistoryOpen => 'Open history';
+
+  @override
+  String weightRowA11y(String date, String kg, String source) {
+    return '$date, $kg kilograms, $source. Edit.';
+  }
+
+  @override
+  String weightChartA11y(int n, String from, String to) {
+    return 'History across $n entries, from $from to $to kilograms';
+  }
+
+  @override
+  String weightChartGapA11y(int n, int weeks, String from, String to) {
+    return 'History across $n entries with a gap of $weeks weeks, from $from to $to kilograms';
+  }
+
+  @override
+  String weightChartThinA11y(int n, String from, String to) {
+    return '$n entries without a connected curve, from $from to $to kilograms';
+  }
+
+  @override
+  String weightCardA11y(String kg, String basis, String change) {
+    return 'Weight, $kg kilograms, $basis, $change';
+  }
+
+  @override
+  String weightCardSingleA11y(String kg) {
+    return 'Weight, $kg kilograms, no second entry yet';
+  }
+
+  @override
+  String get weightCardOpenHint => 'Opens the history';
+
+  @override
+  String weightSettingsMeta(String date, String source) {
+    return 'Last $date · $source';
+  }
+
+  @override
+  String get weightHistoryTitle => 'Weight history';
+
+  @override
+  String get weightLoadingA11y => 'Loading weight history';
 }

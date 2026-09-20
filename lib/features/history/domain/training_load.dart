@@ -9,15 +9,44 @@ import 'training_session.dart';
 /// testbar, nicht nachvollziehbar, und beim Laden in falscher Reihenfolge
 /// stillschweigend leer. In Dart sind es Parameter.
 class LoadContext {
-  const LoadContext(
-      {this.bodyWeightKg = 0, this.bodyweightExerciseIds = const {}});
+  const LoadContext({
+    this.bodyWeightKg = 0,
+    this.bodyweightExerciseIds = const {},
+    this.bodyWeightOn,
+  });
 
   /// Körpergewicht in Kilogramm, 0 wenn unbekannt.
   ///
   /// Ist es 0, liefern Körpergewichtsübungen ein Volumen von 0 — dann greift
   /// die Ersatzrechnung nach Dauer. Das ist im JavaScript so angelegt und wird
   /// hier bewusst übernommen.
+  ///
+  /// Seit dem 20.09.2026 ist dies der **Rückfall**, nicht mehr der Maßstab:
+  /// Gibt es eine Gewichtsreihe, fragt [weightOn] sie nach dem Wert, der am
+  /// Tag der Einheit galt.
   final double bodyWeightKg;
+
+  /// Das Körpergewicht, das an einem bestimmten Tag zuletzt bekannt war.
+  ///
+  /// ## Warum die Last ein Datum braucht (Board 14, Abschnitt E)
+  ///
+  /// Bis hierher bewertete **ein** aktuelles Gewicht jede Körpergewichtsübung
+  /// des gesamten Verlaufs. Wer über ein Jahr zehn Kilo verliert, liess damit
+  /// die Trainingslast jeder Einheit dieses Jahres mitwandern — rückwirkend
+  /// und ohne dass sich eine einzige Einheit geändert hätte.
+  ///
+  /// Mit einer Reihe gilt je Einheit der Wert, der an ihrem Tag zuletzt
+  /// bekannt war. Ein neuer Eintrag verschiebt deshalb nur noch die Spanne bis
+  /// zum nächsten Eintrag, nicht mehr die ganze Vergangenheit.
+  ///
+  /// `null` — der Rückruf selbst oder sein Ergebnis — heisst: für diesen Tag
+  /// weiss die Reihe nichts, dann gilt [bodyWeightKg] wie bisher. Die Funktion
+  /// ist bewusst ein Rückruf und keine Reihe: Die Lastrechnung soll nichts
+  /// über die Form des Verlaufs wissen müssen.
+  final double? Function(DateTime date)? bodyWeightOn;
+
+  /// Der Maßstab für eine Einheit an [date].
+  double weightOn(DateTime date) => bodyWeightOn?.call(date) ?? bodyWeightKg;
 
   /// Übungen, die laut Katalog mit dem Körpergewicht rechnen.
   ///
@@ -120,6 +149,10 @@ abstract final class TrainingLoad {
       return _durationFallback(session, factor);
     }
 
+    // Einmal je Einheit, nicht je Satz: Der Maßstab ist für die ganze
+    // Einheit derselbe — sie hat genau ein Datum.
+    final bodyWeight = context.weightOn(session.date);
+
     var totalVolume = 0.0;
     for (final exercise in session.exercises) {
       final usesBodyweight = exercise.usesBodyweight ??
@@ -129,7 +162,7 @@ abstract final class TrainingLoad {
         final reps = set.reps ?? 0;
         if (reps <= 0) continue;
         final weight = usesBodyweight
-            ? context.bodyWeightKg + (set.weight ?? 0)
+            ? bodyWeight + (set.weight ?? 0)
             : (set.weight ?? 0);
         if (weight == 0) continue;
         totalVolume += weight * reps;

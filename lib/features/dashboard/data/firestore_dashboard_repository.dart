@@ -30,6 +30,7 @@ class FirestoreDashboardRepository implements DashboardRepository {
     required SessionRepository sessions,
     required this.userId,
     this.fallbackDisplayName,
+    this.bodyWeightOn,
     DateTime Function()? now,
   })  : _db = firestore,
         _sessions = sessions,
@@ -45,6 +46,15 @@ class FirestoreDashboardRepository implements DashboardRepository {
 
   /// Einspritzbar, damit Tests einen festen Stichtag setzen können.
   final DateTime Function() _now;
+
+  /// Das Körpergewicht, das am Tag einer Einheit zuletzt bekannt war.
+  ///
+  /// Kommt aus der Gewichtsreihe (Board 14, E). `null` — oder ein `null`
+  /// Ergebnis — heisst: keine Reihe für diesen Tag, dann gilt der Profilwert
+  /// wie bisher. Ohne ihn rechnete die Bereitschaft auf dem Hybrid-Tab mit
+  /// einem anderen Maßstab als die Auswertung im Kraft-Tab — zwei Wahrheiten
+  /// über dieselbe Einheit.
+  final double? Function(DateTime date)? bodyWeightOn;
 
   @override
   Stream<DashboardData> watchDashboard() {
@@ -72,7 +82,8 @@ class FirestoreDashboardRepository implements DashboardRepository {
     // R1 aus Vertrag 4: Das Körpergewicht steht im Bestand einmal als 70
     // (integer) und einmal als 68.5 (double).
     final bodyWeight = (data['bodyWeight'] as num?)?.toDouble() ?? 0;
-    final context = LoadContext(bodyWeightKg: bodyWeight);
+    final context =
+        LoadContext(bodyWeightKg: bodyWeight, bodyWeightOn: bodyWeightOn);
 
     final name = _nonEmpty(data['displayName']) ??
         _nonEmpty(fallbackDisplayName) ??

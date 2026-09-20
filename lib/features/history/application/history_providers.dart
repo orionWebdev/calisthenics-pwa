@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/application/auth_providers.dart';
+import '../../weight/application/weight_providers.dart';
+import '../../weight/domain/weight_series.dart';
 import '../data/firestore_session_repository.dart';
 import '../domain/history_summary.dart';
 import '../domain/history_timeline.dart';
@@ -58,14 +60,31 @@ final sessionStreamProvider = StreamProvider<List<TrainingSession>>((ref) {
 /// können, ohne dass jeder Bildschirm ein Datum durchreicht.
 final historySummaryProvider = Provider<HistorySummary>((ref) {
   final sessions = ref.watch(sessionsProvider).value ?? const [];
-  // Ohne Körpergewicht rechnet jede Körpergewichtsübung mit einer Last von
-  // null. Solange das Profil lädt, gilt 0 — der Wert bessert sich, sobald es
-  // da ist, und die Rechnung läuft erneut.
-  final weight = ref.watch(bodyWeightProvider).value ?? 0;
   return HistorySummary.from(
     sessions,
     ref.watch(historyReferenceProvider),
-    context: LoadContext(bodyWeightKg: weight),
+    context: ref.watch(loadContextProvider),
+  );
+});
+
+/// Der Maßstab jeder Lastrechnung — **an einer Stelle**.
+///
+/// Bis zum 20.09.2026 baute jede Aufrufstelle ihren eigenen [LoadContext] aus
+/// dem einen Profilwert. Seit es eine Gewichtsreihe gibt, rechnet jede Einheit
+/// mit dem Wert, der an **ihrem** Tag zuletzt bekannt war (Board 14, E) — und
+/// sieben Stellen, die das je für sich ableiten, wären sieben Gelegenheiten,
+/// es unterschiedlich zu tun.
+///
+/// Ohne Reihe bleibt es beim Profilwert: exakt das Verhalten von vorher.
+final loadContextProvider = Provider<LoadContext>((ref) {
+  // Ohne Körpergewicht rechnet jede Körpergewichtsübung mit einer Last von
+  // null. Solange das Profil lädt, gilt 0 — der Wert bessert sich, sobald es
+  // da ist, und die Rechnung läuft erneut.
+  final fallback = ref.watch(bodyWeightProvider).value ?? 0;
+  final series = ref.watch(weightSeriesProvider).value ?? WeightSeries.empty;
+  return LoadContext(
+    bodyWeightKg: fallback,
+    bodyWeightOn: series.isEmpty ? null : series.kgOn,
   );
 });
 
@@ -83,8 +102,7 @@ final bodyWeightProvider = FutureProvider<double?>((ref) async {
 /// Die Verlaufsliste: Einheiten, Monatsköpfe und die Lücken dazwischen.
 final historyTimelineProvider = Provider<List<TimelineEntry>>((ref) {
   final sessions = ref.watch(sessionsProvider).value ?? const [];
-  final weight = ref.watch(bodyWeightProvider).value ?? 0;
-  final context = LoadContext(bodyWeightKg: weight);
+  final context = ref.watch(loadContextProvider);
 
   // Die Tageslast einmal vorrechnen: Der Monatskopf summiert sie, und ohne
   // Zwischenspeicher liefe die Rechnung je Monat erneut über alle Einheiten.
@@ -157,8 +175,7 @@ final filteredTimelineProvider = Provider<List<TimelineEntry>>((ref) {
   if (filter.isEmpty) return ref.watch(historyTimelineProvider);
 
   final sessions = filter.apply(ref.watch(sessionsProvider).value ?? const []);
-  final weight = ref.watch(bodyWeightProvider).value ?? 0;
-  final context = LoadContext(bodyWeightKg: weight);
+  final context = ref.watch(loadContextProvider);
 
   final loadByDay = <String, double>{};
   for (final session in sessions) {

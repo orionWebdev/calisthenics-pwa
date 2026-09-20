@@ -5,12 +5,15 @@ import '../domain/settings_repository.dart';
 
 /// Löscht und gibt aus, was einem Konto gehört.
 ///
-/// ## Die sechs Sammlungen
+/// ## Die Sammlungen
 ///
 /// Dieselben, die die Vorgänger-App löscht (`js/views/settings.js`,
 /// `deleteAllUserFirestoreData`), abzüglich derer, die es in dieser App nicht
 /// gibt. `exercises_curated` ist **nicht** dabei: Die kuratierten Übungen
 /// gehören allen, und die Regeln lassen ohnehin niemanden dort schreiben.
+///
+/// Seit dem 20.09.2026 kommt die Unter-Sammlung `bodyWeights` dazu — aus
+/// sechs Sammlungen sind sieben geworden (Board 14).
 class FirestoreAccountRepository implements AccountRepository {
   FirestoreAccountRepository(this._db, this._auth);
 
@@ -30,6 +33,15 @@ class FirestoreAccountRepository implements AccountRepository {
   /// Sammlungen, deren Dokument-Kennung die Nutzerkennung **ist**.
   static const keyedCollections = ['userProfiles'];
 
+  /// Unter-Sammlungen des Profils.
+  ///
+  /// **Sie hängen nicht am Löschen des Profils.** Firestore kennt kein
+  /// kaskadierendes Löschen: Wird `userProfiles/{uid}` entfernt, bleiben seine
+  /// Unter-Sammlungen als verwaiste Dokumente stehen — unsichtbar in der
+  /// Konsole, aber vorhanden. Bei einer Kontolöschung wäre genau das der
+  /// schwerste Fehler, den man machen kann.
+  static const profileSubcollections = ['bodyWeights'];
+
   /// Firestore nimmt höchstens 500 Schreibvorgänge je Stapel.
   static const _batchLimit = 450;
 
@@ -39,7 +51,11 @@ class FirestoreAccountRepository implements AccountRepository {
   /// Körpergewicht; solange es steht, lässt sich ein abgebrochener Lauf
   /// fortsetzen. Wäre es das erste, stünde nach einem Abbruch ein Bestand
   /// ohne Maßstab da.
-  static const deletionOrder = [...ownedCollections, ...keyedCollections];
+  static const deletionOrder = [
+    ...ownedCollections,
+    ...profileSubcollections,
+    ...keyedCollections,
+  ];
 
   @override
   Future<void> deleteData(
@@ -52,6 +68,9 @@ class FirestoreAccountRepository implements AccountRepository {
     for (final name in deletionOrder) {
       if (keyedCollections.contains(name)) {
         await _db.collection(name).doc(userId).delete();
+      } else if (profileSubcollections.contains(name)) {
+        final snapshot = await _profileSub(userId, name).get();
+        await _deleteAll(snapshot.docs.map((d) => d.reference));
       } else {
         final snapshot =
             await _db.collection(name).where('userId', isEqualTo: userId).get();
@@ -60,6 +79,12 @@ class FirestoreAccountRepository implements AccountRepository {
       onProgress?.call(++done, total, name);
     }
   }
+
+  CollectionReference<Map<String, dynamic>> _profileSub(
+    String userId,
+    String name,
+  ) =>
+      _db.collection(keyedCollections.first).doc(userId).collection(name);
 
   Future<void> _deleteAll(Iterable<DocumentReference<Object?>> refs) async {
     var batch = _db.batch();
@@ -106,6 +131,15 @@ class FirestoreAccountRepository implements AccountRepository {
     for (final name in ownedCollections) {
       final snapshot =
           await _db.collection(name).where('userId', isEqualTo: userId).get();
+      if (snapshot.docs.isEmpty) continue;
+      collections[name] = [
+        for (final doc in snapshot.docs)
+          {'id': doc.id, ..._plain(doc.data()) as Map<String, Object?>},
+      ];
+    }
+
+    for (final name in profileSubcollections) {
+      final snapshot = await _profileSub(userId, name).get();
       if (snapshot.docs.isEmpty) continue;
       collections[name] = [
         for (final doc in snapshot.docs)

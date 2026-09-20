@@ -23,6 +23,12 @@ abstract final class AtemMotion {
   static const brandDotFlicker = Duration(milliseconds: 2600);
   static const livePulse = Duration(milliseconds: 1800);
   static const buttonGlowPulse = Duration(milliseconds: 2200);
+
+  /// Ruhepuls des jüngsten Punkts einer Kurve (Board 14, G).
+  ///
+  /// Deckkraft und Radius eines Rings, **kein Farbwechsel** — die Farbe trägt
+  /// dort schon die Herkunft des Punktes.
+  static const latestPointPulse = Duration(milliseconds: 2200);
   static const sessionDotPulse = Duration(milliseconds: 1200);
 
   static const curve = Curves.easeOutCubic;

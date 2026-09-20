@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../../app/application/snackbar_providers.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../auth/application/auth_providers.dart';
 import '../../../auth/domain/auth_user.dart';
@@ -12,11 +11,12 @@ import '../../../exercises/application/exercise_providers.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../plans/application/plan_providers.dart';
-import '../../application/pending_weight_change.dart';
+import '../../../weight/application/weight_providers.dart';
+import '../../../weight/presentation/screens/weight_history_screen.dart';
+import '../../../weight/presentation/weight_ui.dart';
 import '../../application/settings_providers.dart';
 import '../../domain/user_settings.dart';
 import '../widgets/settings_bits.dart';
-import '../widgets/weight_preview.dart';
 import 'account_deletion_screen.dart';
 import 'export_screen.dart';
 import 'info_screen.dart';
@@ -165,11 +165,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final version =
         ref.watch(appVersionProvider).value ?? l10n.commonNotAvailable;
 
-    final kg = settings.bodyWeightKg;
-    final weightValue = kg == null
+    // **Nur noch eine Ableitung** (Board 14, E). Die Zeile zeigt den jüngsten
+    // Verlaufseintrag und schreibt nicht mehr selbst: Zwei Wege zu derselben
+    // Zahl waren zwei Wahrheiten, sobald es eine Reihe gibt.
+    final latest = ref.watch(latestWeightProvider);
+    final weightValue = latest == null
         ? l10n.commonNotAvailable
-        : '${AtemNumberField.format(context, settings.unitSystem.fromKilograms(kg))} '
+        : '${AtemNumberField.format(context, settings.unitSystem.fromKilograms(latest.kg))} '
             '${settings.unitSystem == UnitSystem.metric ? l10n.unitSuffixKilograms : l10n.unitSuffixPounds}';
+    final weightHint = latest == null
+        ? l10n.weightSub
+        : (ref.watch(weightIsUnseededProvider)
+            ? l10n.weightSourceSettings
+            : l10n.weightSettingsMeta(
+                WeightUi.shortDate(context, latest.date),
+                WeightUi.source(l10n, latest.source),
+              ));
 
     return Scaffold(
       backgroundColor: AtemColors.base,
@@ -197,9 +208,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 SettingsRow(
                   label: l10n.weightTitle,
-                  hint: l10n.weightSub,
+                  hint: weightHint,
                   value: async.isLoading ? l10n.commonLoading : weightValue,
-                  onTap: () => _WeightSheet.show(context, settings),
+                  semanticLabel: '${l10n.weightTitle}, $weightValue, '
+                      '$weightHint. ${l10n.weightHistoryOpen}.',
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const WeightHistoryScreen(),
+                    ),
+                  ),
                 ),
                 const SettingsRule(),
                 SettingsRow(
@@ -477,154 +494,6 @@ class _DeleteFacts extends StatelessWidget {
           body: l10n.accountDeleteAccess,
           semanticLabel:
               '${l10n.settingsDeletedAccessTitle}. ${l10n.accountDeleteAccess}',
-        ),
-      ],
-    );
-  }
-}
-
-/// Körpergewicht — **die einzige Einstellung, die rückwirkend rechnet**.
-///
-/// Sheet mit Feld, Hinweis, Vorschau beim Tippen und „Speichern und neu
-/// rechnen" (Board 08, A2). Ohne Änderung keine Vorschau und kein aktiver
-/// Knopf.
-class _WeightSheet extends ConsumerStatefulWidget {
-  const _WeightSheet({required this.settings});
-
-  final UserSettings settings;
-
-  static Future<void> show(BuildContext context, UserSettings settings) =>
-      AtemSheet.show<void>(
-        context,
-        title: AppL10n.of(context).weightTitle,
-        closeLabel: AppL10n.of(context).commonClose,
-        child: _WeightSheet(settings: settings),
-      );
-
-  @override
-  ConsumerState<_WeightSheet> createState() => _WeightSheetState();
-}
-
-class _WeightSheetState extends ConsumerState<_WeightSheet> {
-  final _weight = TextEditingController();
-  double? _candidateKg;
-  var _seeded = false;
-
-  UserSettings get settings => widget.settings;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Einmal füllen — und erst hier, weil die Zahlformatierung das
-    // Gebietsschema braucht, das in initState noch nicht erreichbar ist.
-    if (_seeded) return;
-    _seeded = true;
-    final kg = settings.bodyWeightKg;
-    if (kg != null) {
-      _weight.text =
-          AtemNumberField.format(context, settings.unitSystem.fromKilograms(kg));
-    }
-  }
-
-  @override
-  void dispose() {
-    _weight.dispose();
-    super.dispose();
-  }
-
-  double? _parsedKg() {
-    final raw = AtemNumberField.parse(_weight.text);
-    if (raw == null) return null;
-    final kg = settings.unitSystem.toKilograms(raw);
-    return UserSettings.isPlausibleWeight(kg) ? kg : null;
-  }
-
-  Future<void> _save() async {
-    final kg = _candidateKg;
-    if (kg == null || kg == settings.bodyWeightKg) return;
-
-    final l10n = AppL10n.of(context);
-
-    ref
-        .read(pendingWeightProvider.notifier)
-        .begin(previousKg: settings.bodyWeightKg, newKg: kg);
-    await ref
-        .read(settingsControllerProvider.notifier)
-        .update(settings.copyWith(bodyWeightKg: kg));
-    if (!mounted) return;
-
-    final message = l10n.weightSavedSnack(AtemNumberField.format(context, kg));
-    ref.read(snackbarProvider.notifier).show(AtemSnack(
-          message: message,
-          semanticLabel: message,
-          tone: AtemSnackTone.success,
-          actionLabel: l10n.commonUndo,
-          onAction: () => ref.read(pendingWeightProvider.notifier).undo(),
-        ));
-    Navigator.of(context).pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final async = ref.watch(sessionsProvider);
-    final current = settings.bodyWeightKg;
-    final raw = AtemNumberField.parse(_weight.text);
-    final typedKg = raw == null ? null : settings.unitSystem.toKilograms(raw);
-    final fault = typedKg != null && !UserSettings.isPlausibleWeight(typedKg);
-    final changed = _candidateKg != null && _candidateKg != current;
-    final busy = ref.watch(settingsControllerProvider).isLoading;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(l10n.weightBody, style: AtemType.labelSmall.of(context)),
-        const SizedBox(height: 16),
-        AtemNumberField.large(
-          controller: _weight,
-          semanticLabel: l10n.weightTitle,
-          hasError: fault,
-          locked: busy,
-          suffix: settings.unitSystem == UnitSystem.metric
-              ? l10n.unitSuffixKilograms
-              : l10n.unitSuffixPounds,
-          onChanged: (_) => setState(() => _candidateKg = _parsedKg()),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          fault ? l10n.weightErrorRange : l10n.weightHint,
-          style: AtemType.labelSmall.of(context).copyWith(
-                color: fault ? AtemColors.magenta : AtemColors.textSecondary,
-              ),
-        ),
-        if (current != null && changed) ...[
-          const SizedBox(height: 6),
-          Text(l10n.weightPrevious(AtemNumberField.format(context, current)),
-              style: AtemType.meta.of(context)),
-        ],
-        // Die Vorschau erscheint erst bei Abweichung — der leere Platz
-        // darunter ist Absicht, er füllt sich beim Tippen.
-        if (changed && !fault) ...[
-          const SizedBox(height: 18),
-          if (async.isLoading)
-            Text(l10n.weightSaveBusy, style: AtemType.labelSmall.of(context))
-          else
-            WeightPreview(
-              sessions: async.value ?? const [],
-              reference: ref.watch(historyReferenceProvider),
-              currentKg: current ?? 0,
-              candidateKg: _candidateKg!,
-            ),
-        ],
-        const SizedBox(height: 18),
-        AtemButton.gradient(
-          label: changed
-              ? (busy ? l10n.weightSaveBusy : l10n.weightSave)
-              : l10n.weightSaveNone,
-          semanticLabel: changed ? l10n.weightSave : l10n.weightSaveNone,
-          busy: busy,
-          onPressed: fault || !changed || busy ? null : _save,
         ),
       ],
     );

@@ -309,7 +309,37 @@ geht dort weiter.
 
 Drei Punkte, die der Nutzer an diesem Tag angemeldet hat. Keiner davon ist begonnen.
 
-### 8.1 Gewichtstracking als Widget im Hybrid-Tab
+### 8.1 Gewichtstracking als Widget im Hybrid-Tab — ✅ erledigt (20.09.2026)
+
+**Gebaut gegen Board 14** („Gewichtsverlauf — eine Reihe, kein Urteil"), Abschnitte A–K.
+Neu: `lib/features/weight/` (Reihe, Repository, Block, Verlaufsansicht, Eingabeblatt),
+die Unter-Sammlung `userProfiles/{uid}/bodyWeights` samt Regeln, Löschung und Export
+(siehe Vertrag 4) und der zeitgenaue Maßstab der Trainingslast (`LoadContext.bodyWeightOn`).
+Die Einstellung „Körpergewicht" schreibt nicht mehr selbst; sie zeigt den jüngsten
+Verlaufseintrag und öffnet denselben Verlauf.
+
+**Vier bewusste Abweichungen vom Board**, jeweils weil CLAUDE.md vorgeht:
+
+1. **Widerruf 6 s statt 30 s.** Das Board zitiert Modul 7; seit dem 16.09.2026 stehen alle
+   Meldungen 6 s. Zwei Fristen im selben Produkt wären ein Versprechen, das ein Bildschirm
+   nicht hält.
+2. **Die Lückennotiz steht unter der Kurve, nicht in ihr.** 7 sp in `#4b5563` verbietet
+   CLAUDE.md für informationstragenden Text; in zulässiger Grösse passt der Satz in eine
+   56 dp hohe Kurve fast nie hinein (am Render geprüft).
+3. **Listenzeilen im Verlauf sind 48 dp hoch, nicht 44.** Jedes Tap-Ziel ≥ 48 dp.
+4. **Das ⓘ klappt im Block auf, es öffnet kein Blatt.** So steht es in CLAUDE.md und so
+   arbeitet `AtemExplainHeader` seit dem 17.09.2026.
+
+**Eine Entscheidung, die das Board offenliess:** Der Profilwert eines Kontos von vor dem
+20.09.2026 wird **nicht** als Verlaufseintrag nachgeschrieben. Er erscheint als der eine
+Wert des A2-Zustands mit dem Hinweis „Aus den Einstellungen übernommen"; der erste echte
+Eintrag entsteht, wenn jemand ihn macht. Ein Schreibvorgang, den ein Lesen auslöst, liefe
+auf jedem Gerät erneut, bräuchte ein Merkfeld im Profil gegen Wiederauferstehung nach dem
+Löschen — und sähe am Ende genauso aus.
+
+---
+
+### 8.1 (Ursprüngliche Beschreibung)
 
 Ein eigener Block im Hybrid-Tab, der das Körpergewicht über die Zeit zeigt.
 
@@ -332,12 +362,20 @@ Ampelfarben — die Regeln aus `CLAUDE.md` gelten hier genauso wie in der Auswer
 **Google Fit ist kein Weg mehr** — die Fit-APIs sind abgekündigt und abgeschaltet. Auf Android läuft
 alles über **Health Connect**, eine Systemkomponente, mit der Apps Gesundheitsdaten teilen.
 
+**Ergänzung vom 20.09.2026:** Gewicht soll in **beide** Richtungen gehen — lesen *und*
+schreiben. Der Datenweg dafür steht seit 8.1: `WeightEntry.source` unterscheidet getippt von
+gemessen, `externalId` trägt die Kennung des Datensatzes in der Quelle, und die Herkunft
+wechselt nur bei einer echten Änderung der Zahl. Ein selbst eingetragener Wert kann damit
+zurückgeschrieben werden, ohne beim nächsten Lesen als fremder Wert wieder hereinzukommen.
+
 Vorgehen in dieser Reihenfolge:
 1. Nur **lesen**, nur **Gewicht** (`WeightRecord`). Das speist 8.1 und ist der kleinste sinnvolle
    Schnitt. Flutter-Seite: das Paket `health`, Berechtigungen einzeln je Datentyp.
-2. Danach **schreiben**: abgeschlossene Einheiten als Trainingseinheit zurückgeben, damit ATEM kein
-   Datensilo ist.
-3. Erst wenn beides steht: Puls und Schlaf für die Regeneration lesen.
+   Abgleich über `externalId`; ein Tag trägt weiterhin genau einen Wert.
+2. Gewicht **schreiben**: jeder Eintrag mit `source == manual` geht als `WeightRecord` zurück.
+3. Danach Einheiten **schreiben**: abgeschlossene Trainings als Trainingseinheit zurückgeben,
+   damit ATEM kein Datensilo ist.
+4. Erst wenn das steht: Einheiten, Puls und Schlaf **lesen** — siehe 8.4.
 
 **Der Haken liegt nicht im Code, sondern in der Freigabe.** Wer Health-Connect-Daten in einer
 veröffentlichten App liest, braucht von Google eine Freigabe je Datentyp — mit Datenschutzerklärung,

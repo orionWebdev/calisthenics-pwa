@@ -203,6 +203,23 @@ service cloud.firestore {
       allow create: if isAuthenticated() && request.auth.uid == userId;
       allow update: if isAuthenticated() && request.auth.uid == userId;
       allow delete: if isAuthenticated() && request.auth.uid == userId;
+
+      /**
+       * bodyWeights subcollection (weight history, board 14)
+       * - One document per day, document id is the date (yyyy-MM-dd)
+       * - Rules do NOT cascade in Firestore: without this block the
+       *   subcollection would fall through to the default deny below,
+       *   and the weight history would be unreadable.
+       */
+      match /bodyWeights/{day} {
+        allow read: if isAuthenticated() && request.auth.uid == userId;
+        allow create, update: if isAuthenticated() &&
+          request.auth.uid == userId &&
+          request.resource.data.kg is number &&
+          request.resource.data.kg > 0 &&
+          request.resource.data.date is timestamp;
+        allow delete: if isAuthenticated() && request.auth.uid == userId;
+      }
     }
 
     // ==================== DEFAULT DENY ====================

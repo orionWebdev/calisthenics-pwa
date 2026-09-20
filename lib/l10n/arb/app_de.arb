@@ -4707,136 +4707,9 @@
   "@unsavedTitle": {
     "description": "unsaved.title"
   },
-  "weightBody": "Bewertet jede Körpergewichtsübung in deinem Verlauf — heute und rückwirkend.",
-  "@weightBody": {
-    "description": "weight.body"
-  },
-  "weightDelta": "{sign}{kg} kg · {sign}{pct} %",
-  "@weightDelta": {
-    "description": "weight.delta",
-    "placeholders": {
-      "sign": {
-        "type": "String"
-      },
-      "kg": {
-        "type": "String"
-      },
-      "pct": {
-        "type": "String"
-      }
-    }
-  },
-  "weightDirDown": "niedriger",
-  "@weightDirDown": {
-    "description": "weight.dir.down"
-  },
-  "weightDirRescored": "neu bewertet",
-  "@weightDirRescored": {
-    "description": "weight.dir.rescored"
-  },
-  "weightDirSame": "gleich",
-  "@weightDirSame": {
-    "description": "weight.dir.same"
-  },
-  "weightDirUp": "höher",
-  "@weightDirUp": {
-    "description": "weight.dir.up"
-  },
-  "weightErrorRange": "Zwischen 30 und 250 kg. Vorschau bleibt aus, bis der Wert stimmt.",
-  "@weightErrorRange": {
-    "description": "weight.error.range"
-  },
-  "weightHint": "Eine Nachkommastelle · 30–250 kg",
-  "@weightHint": {
-    "description": "weight.hint"
-  },
-  "weightImpactAcwr": "ACWR",
-  "@weightImpactAcwr": {
-    "description": "weight.impact.acwr"
-  },
-  "weightImpactBest": "Bestwert {exercise}",
-  "@weightImpactBest": {
-    "description": "weight.impact.best",
-    "placeholders": {
-      "exercise": {
-        "type": "String"
-      }
-    }
-  },
-  "weightImpactForm": "Formwert heute",
-  "@weightImpactForm": {
-    "description": "weight.impact.form"
-  },
-  "weightImpactLoad": "Trainingslast 7 T",
-  "@weightImpactLoad": {
-    "description": "weight.impact.load"
-  },
-  "weightImpactNote": "Vorschau, noch nicht gespeichert. Deine Sätze, Gewichte und Wiederholungen bleiben unverändert — nur ihre Bewertung.",
-  "@weightImpactNote": {
-    "description": "weight.impact.note"
-  },
-  "weightImpactRecord": "Bestwert {exercise}",
-  "@weightImpactRecord": {
-    "description": "Board 08, bwFolgen",
-    "placeholders": {
-      "exercise": {
-        "type": "String"
-      }
-    }
-  },
-  "weightImpactRescored": "neu bewertet",
-  "@weightImpactRescored": {
-    "description": "Board 08, bwFolgen — der Bestwert ändert sich nicht, seine Bewertung schon"
-  },
-  "weightImpactScope": "{d} Tage · {n} Einheiten mit Körpergewichtsübungen",
-  "@weightImpactScope": {
-    "description": "weight.impact.scope",
-    "placeholders": {
-      "d": {
-        "type": "int"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "weightImpactTitle": "Was sich rückwirkend ändert",
-  "@weightImpactTitle": {
-    "description": "weight.impact.title"
-  },
-  "weightPrevious": "Vorher {alt} kg",
-  "@weightPrevious": {
-    "description": "weight.previous",
-    "placeholders": {
-      "alt": {
-        "type": "String"
-      }
-    }
-  },
-  "weightSave": "Speichern und neu rechnen",
-  "@weightSave": {
-    "description": "weight.save"
-  },
-  "weightSaveBusy": "Wird gerechnet",
-  "@weightSaveBusy": {
-    "description": "weight.save.busy"
-  },
-  "weightSaveNone": "Unverändert · nichts zu speichern",
-  "@weightSaveNone": {
-    "description": "weight.save.none"
-  },
-  "weightSavedSnack": "Gewicht {kg} kg gespeichert",
-  "@weightSavedSnack": {
-    "description": "weight.saved.snack",
-    "placeholders": {
-      "kg": {
-        "type": "String"
-      }
-    }
-  },
-  "weightSub": "Bewertet deinen ganzen Verlauf",
+  "weightSub": "Grundlage jeder Eigengewichts-Rechnung",
   "@weightSub": {
-    "description": "weight.sub"
+    "description": "Board 14 (20.09.2026): Der Wert bewertet nicht mehr den ganzen Verlauf neu, sondern je Einheit den Tag, an dem sie stattfand"
   },
   "weightTitle": "Körpergewicht",
   "@weightTitle": {
@@ -8995,7 +8868,484 @@
   "@balanceCondition": {
     "description": "Board 13 (20.09.2026) — kurze Bedingung des gesperrten Muskelbalance-Blocks; der ganze Satz steht weiter als balanceThin auf der Unterseite",
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
+  },
+  "weightBlockTitle": "Gewicht",
+  "@weightBlockTitle": {
+    "description": "Board 14 · weight.title — Titel des Blocks. Nicht weightTitle: das ist seit Modul 8 die Einstellung 'Körpergewicht'."
+  },
+  "weightUnitKg": "KG",
+  "@weightUnitKg": {
+    "description": "Board 14 · weight.unit"
+  },
+  "weightEntries": "{n, plural, one{1 Eintrag} other{{n} Einträge}}",
+  "@weightEntries": {
+    "description": "Board 14 · A1 — die Zählung neben dem Wert",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weightBasis": "{n, plural, one{1 Eintrag} other{{n} Einträge}} seit dem {date}",
+  "@weightBasis": {
+    "description": "Board 14 · weight.basis — die Grundlage mit Nenner",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightChangeUp": "{delta} kg seit dem {date} · {days} Tage her",
+  "@weightChangeUp": {
+    "description": "Board 14 · weight.change_up — sichtbarer Text, Richtung trägt der Glyph",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weightChangeDown": "{delta} kg seit dem {date} · {days} Tage her",
+  "@weightChangeDown": {
+    "description": "Board 14 · weight.change_down — gleicher Satz, anderer Glyph; getrennter Schlüssel, damit eine Sprache die Richtung im Satz führen kann",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weightChangeUpA11y": "{delta} Kilogramm mehr seit dem {date}, {days} Tage her",
+  "@weightChangeUpA11y": {
+    "description": "Board 14 · A11y — Richtung als Wort, nie nur der Glyph",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weightChangeDownA11y": "{delta} Kilogramm weniger seit dem {date}, {days} Tage her",
+  "@weightChangeDownA11y": {
+    "description": "Board 14 · A11y — Richtung als Wort, nie nur der Glyph",
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weightAnchor": "{date} · {kg} kg",
+  "@weightAnchor": {
+    "description": "Board 14 · A1 — die beiden Datumsanker unter der Kurve",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "weightLastEntryDays": "{n, plural, =0{Letzter Eintrag heute} one{Letzter Eintrag gestern} other{Letzter Eintrag vor {n} Tagen}}",
+  "@weightLastEntryDays": {
+    "description": "Board 14 · A1 — die Zeile über 'Eintragen'",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weightEnterCta": "Eintragen",
+  "@weightEnterCta": {
+    "description": "Board 14 · weight.enter_cta"
+  },
+  "weightStartCta": "Start",
+  "@weightStartCta": {
+    "description": "Board 14 · A2 — die Marke rechts in der betonten Zeile"
+  },
+  "weightSingleValueTitle": "Ersten Verlaufswert eintragen",
+  "@weightSingleValueTitle": {
+    "description": "Board 14 · weight.single_value_title"
+  },
+  "weightSingleValueNote": "Aus der Einrichtung, {date} — noch kein zweiter Eintrag.",
+  "@weightSingleValueNote": {
+    "description": "Board 14 · weight.single_value_note",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSingleValueFirst": "Erster Eintrag, {date} — noch kein zweiter Eintrag.",
+  "@weightSingleValueFirst": {
+    "description": "Board 14 · A2, selbst eingetragener erster Wert",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSingleValueSeed": "Aus den Einstellungen übernommen — noch kein Verlaufseintrag.",
+  "@weightSingleValueSeed": {
+    "description": "Board 14 · E — der Profilwert eines Kontos von vor dem 20.09.2026, ohne Ursprungsdatum"
+  },
+  "weightSingleValueWhy": "Kein Verlauf, keine Kurve: aus einem Wert folgt keine Reihe.",
+  "@weightSingleValueWhy": {
+    "description": "Board 14 · A2"
+  },
+  "weightGapNote": "{n, plural, one{1 Woche ohne Eintrag} other{{n} Wochen ohne Eintrag}}",
+  "@weightGapNote": {
+    "description": "Board 14 · weight.gap_note — Bodennotiz in der Lücke",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weightLastKnown": "ZULETZT BEKANNT · {date}",
+  "@weightLastKnown": {
+    "description": "Board 14 · A6 — der gedimmte Wert im Fehlerfall",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightLoadError": "Verlauf konnte nicht aktualisiert werden.",
+  "@weightLoadError": {
+    "description": "Board 14 · weight.load_error"
+  },
+  "weightRange3m": "3 Mon.",
+  "@weightRange3m": {
+    "description": "Board 14 · weight.range_3m"
+  },
+  "weightRange6m": "6 Mon.",
+  "@weightRange6m": {
+    "description": "Board 14 · weight.range_6m"
+  },
+  "weightRange1y": "1 Jahr",
+  "@weightRange1y": {
+    "description": "Board 14 · weight.range_1y"
+  },
+  "weightRangeAll": "Alle",
+  "@weightRangeAll": {
+    "description": "Board 14 · weight.range_all"
+  },
+  "weightRangeGroup": "Zeitraum",
+  "@weightRangeGroup": {
+    "description": "Board 14 · A11y — Gruppenname der Range-Pillen"
+  },
+  "weightRangeA11y": "Zeitraum {range}, ausgewählt",
+  "@weightRangeA11y": {
+    "description": "Board 14 · A11y — Range-Pille",
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSheetTitle": "GEWICHT EINTRAGEN",
+  "@weightSheetTitle": {
+    "description": "Board 14 · weight.sheet_title — Kicker im Eingabeblatt, Versalien wie im Runner"
+  },
+  "weightSheetEditTitle": "EINTRAG BEARBEITEN",
+  "@weightSheetEditTitle": {
+    "description": "Board 14 · weight.sheet_edit_title"
+  },
+  "weightDateToday": "Heute · {date}",
+  "@weightDateToday": {
+    "description": "Board 14 · weight.date_today",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightDatePick": "Datum wählen",
+  "@weightDatePick": {
+    "description": "Board 14 · weight.date_pick"
+  },
+  "weightDateChipA11y": "Datum, {date}. Ändern.",
+  "@weightDateChipA11y": {
+    "description": "Board 14 · A11y — Datums-Chip öffnet den Systemkalender",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSameDayNote": "Heute bereits erfasst: {kg} kg. Ein zweiter Eintrag ersetzt diesen Wert.",
+  "@weightSameDayNote": {
+    "description": "Board 14 · weight.same_day_note — informiert, blockiert nichts",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "weightPadPrevious": "ZULETZT {kg} KG · {days, plural, =0{HEUTE} one{VOR 1 TAG} other{VOR {days} TAGEN}}",
+  "@weightPadPrevious": {
+    "description": "Board 14 · B1 — der Vorwert unter der grossen Zahl",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "weightUpdateCta": "Aktualisieren",
+  "@weightUpdateCta": {
+    "description": "Board 14 · weight.update_cta"
+  },
+  "weightRetroTitle": "WIRKT AUF {from} – {to}",
+  "@weightRetroTitle": {
+    "description": "Board 14 · weight.retro_title",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "weightRetroScope": "BIS ZUM NÄCHSTEN EINTRAG · NICHT DEN GANZEN VERLAUF",
+  "@weightRetroScope": {
+    "description": "Board 14 · weight.retro_scope"
+  },
+  "weightRetroSets": "{n, plural, one{1 Eigengewichts-Satz} other{{n} Eigengewichts-Sätze}}",
+  "@weightRetroSets": {
+    "description": "Board 14 · C2 — worauf die Änderung wirkt",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weightRetroNone": "Keine Eigengewichts-Sätze in dieser Spanne",
+  "@weightRetroNone": {
+    "description": "Board 14 · C2 — der Nenner ist null, und das steht da statt einer leeren Zeile"
+  },
+  "weightConfirmSnack": "Gewicht {kg} kg · {date} erfasst",
+  "@weightConfirmSnack": {
+    "description": "Board 14 · weight.confirm_snackbar",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightDeleteEntry": "Eintrag löschen",
+  "@weightDeleteEntry": {
+    "description": "Board 14 · weight.delete_entry"
+  },
+  "weightDeleteTitle": "Eintrag löschen?",
+  "@weightDeleteTitle": {
+    "description": "Board 14 · C2 — Stufe 2 der Löschbestätigung aus Modul 2"
+  },
+  "weightDeleteBody": "{date} · {kg} kg. Für diese Tage gilt danach wieder der Wert davor.",
+  "@weightDeleteBody": {
+    "description": "Board 14 · C2 — nennt die Folge, nicht nur die Frage",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "weightDeleteConfirm": "Endgültig löschen",
+  "@weightDeleteConfirm": {
+    "description": "Board 14 · C2"
+  },
+  "weightDeletedSnack": "Eintrag vom {date} gelöscht",
+  "@weightDeletedSnack": {
+    "description": "Board 14 · C2",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weightSourceTyped": "Eigene Eingabe",
+  "@weightSourceTyped": {
+    "description": "Board 14 · weight.source_typed"
+  },
+  "weightSourceMeasured": "Aus Health Connect",
+  "@weightSourceMeasured": {
+    "description": "Board 14 · weight.source_measured"
+  },
+  "weightSourceSettings": "Aus den Einstellungen übernommen",
+  "@weightSourceSettings": {
+    "description": "Board 14 · E"
+  },
+  "weightExplainBody": "Zeigt dein Körpergewicht über Zeit — was war, kein Ziel.",
+  "@weightExplainBody": {
+    "description": "Board 14 · weight.explain_body"
+  },
+  "weightExplainChange": "Die Veränderung vergleicht immer mit dem letzten Eintrag.",
+  "@weightExplainChange": {
+    "description": "Board 14 · hinter dem ⓘ"
+  },
+  "weightExplainGaps": "Lücken werden nicht überbrückt: keine Linie ohne einen echten Eintrag dahinter.",
+  "@weightExplainGaps": {
+    "description": "Board 14 · hinter dem ⓘ"
+  },
+  "weightExplainSources": "Gefüllter Punkt: eigene Eingabe. Hohler Punkt: aus Health Connect.",
+  "@weightExplainSources": {
+    "description": "Board 14 · hinter dem ⓘ — die Legende steht hier, nicht dauerhaft auf dem Schirm"
+  },
+  "weightExplainLoad": "Die Trainingslast einer Einheit rechnet mit dem Gewicht, das an ihrem Tag zuletzt bekannt war.",
+  "@weightExplainLoad": {
+    "description": "Board 14 · E — hinter dem ⓘ"
+  },
+  "weightHistoryOpen": "Verlauf öffnen",
+  "@weightHistoryOpen": {
+    "description": "Board 14 · weight.history_open"
+  },
+  "weightRowA11y": "{date}, {kg} Kilogramm, {source}. Bearbeiten.",
+  "@weightRowA11y": {
+    "description": "Board 14 · A11y — eine Zeile ist ein Knoten, nicht vier",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "kg": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "weightChartA11y": "Verlauf über {n} Einträge, von {from} auf {to} Kilogramm",
+  "@weightChartA11y": {
+    "description": "Board 14 · A11y — die Kurve ist ein img mit Von-Bis-Label",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "weightChartGapA11y": "Verlauf über {n} Einträge mit einer Lücke von {weeks} Wochen, von {from} auf {to} Kilogramm",
+  "@weightChartGapA11y": {
+    "description": "Board 14 · A11y — ein '—' ist nie stumm, eine Lücke auch nicht",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "weeks": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "weightChartThinA11y": "{n} Einträge ohne verbundene Kurve, von {from} auf {to} Kilogramm",
+  "@weightChartThinA11y": {
+    "description": "Board 14 · A3 — Punktwolke statt Linie",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "weightCardA11y": "Gewicht, {kg} Kilogramm, {basis}, {change}",
+  "@weightCardA11y": {
+    "description": "Board 14 · A11y — die Karte ist ein Knoten, nicht vier",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      },
+      "basis": {
+        "type": "String"
+      },
+      "change": {
+        "type": "String"
+      }
+    }
+  },
+  "weightCardSingleA11y": "Gewicht, {kg} Kilogramm, noch kein zweiter Eintrag",
+  "@weightCardSingleA11y": {
+    "description": "Board 14 · A2, A11y",
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "weightCardOpenHint": "Öffnet den Verlauf",
+  "@weightCardOpenHint": {
+    "description": "Board 14 · A11y — Hinweis auf der Karte"
+  },
+  "weightSettingsMeta": "Zuletzt {date} · {source}",
+  "@weightSettingsMeta": {
+    "description": "Board 14 · weight.settings_row_meta",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "weightHistoryTitle": "Gewichtsverlauf",
+  "@weightHistoryTitle": {
+    "description": "Board 14 · C1 — Titel des Bildschirms für Vorleseprogramme"
+  },
+  "weightLoadingA11y": "Gewichtsverlauf lädt",
+  "@weightLoadingA11y": {
+    "description": "Board 14 · A5 — Ladezustand, liveRegion polite"
   }
 }
