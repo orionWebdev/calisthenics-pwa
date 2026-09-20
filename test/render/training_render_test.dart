@@ -2,6 +2,7 @@
 library;
 
 import 'package:atem/core/theme/theme.dart';
+import 'package:atem/core/widgets/widgets.dart';
 import 'package:atem/features/exercises/domain/muscle.dart';
 import 'package:atem/features/plans/domain/plan.dart';
 import 'package:atem/features/plans/presentation/widgets/plan_card.dart';
@@ -85,6 +86,23 @@ void main() {
     }
   }
 
+  /// Springt über die Ortszeile in ein Thema.
+  ///
+  /// Seit dem One-Pager (Board 13) steht in der Zeile **genau ein Wort** — das
+  /// Thema, in dem man gerade ist. Die anderen liegen in einer Liste, die ein
+  /// Tipp aufklappt. Bis zum 20.09.2026 suchte dieser Test `find.text('Pläne')`
+  /// direkt und starb an „Bad state: No element", weil es den Reiter nicht
+  /// mehr gibt.
+  Future<void> jumpTo(WidgetTester tester, String label) async {
+    await tester.tap(find.byType(AtemSectionBar));
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+      of: find.byType(AtemSectionJumpList),
+      matching: find.text(label),
+    ));
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('rendert Kraft › Trainieren (Kopf, Reiter, Seite)',
       (tester) async {
     if (!renderEnabled) return;
@@ -103,28 +121,20 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('rendert Kraft › Pläne und die Reiterleiste ganz rechts',
-      (tester) async {
+  testWidgets('rendert Kraft › Pläne über die Ortszeile', (tester) async {
     if (!renderEnabled) return;
     final key =
         await pump(tester, StrengthScreen(onStart: (_) {}), height: 800);
-    final tab = find.text('Pläne').last;
-    await tester.ensureVisible(tab);
-    await tester.pumpAndSettle();
-    await tester.tap(tab);
-    await tester.pumpAndSettle();
+    await jumpTo(tester, 'Pläne');
     await writePng(tester, key, 'strength_plaene');
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('rendert Kraft › Pläne bei 200 % auf 320 dp', (tester) async {
     if (!renderEnabled) return;
     final key = await pump(tester, StrengthScreen(onStart: (_) {}),
         width: 320, height: 800, scale: 2.0);
-    final tab = find.text('Pläne').last;
-    await tester.ensureVisible(tab);
-    await tester.pumpAndSettle();
-    await tester.tap(tab);
-    await tester.pumpAndSettle();
+    await jumpTo(tester, 'Pläne');
     await writePng(tester, key, 'strength_plaene_320_200');
     expect(tester.takeException(), isNull);
   });
