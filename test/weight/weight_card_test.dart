@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:atem/core/theme/theme.dart';
+import 'package:atem/core/widgets/widgets.dart';
 import 'package:atem/features/auth/application/auth_providers.dart';
 import 'package:atem/features/auth/domain/auth_user.dart';
 import 'package:atem/features/settings/application/settings_providers.dart';
@@ -7,6 +10,7 @@ import 'package:atem/features/weight/application/weight_providers.dart';
 import 'package:atem/features/weight/domain/weight_entry.dart';
 import 'package:atem/features/weight/presentation/widgets/weight_card.dart';
 import 'package:atem/features/weight/presentation/widgets/weight_chart.dart';
+import 'package:atem/features/settings/domain/settings_repository.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,12 +29,26 @@ WeightEntry _e(int month, int day, double kg,
         [WeightSource source = WeightSource.manual]) =>
     WeightEntry(date: DateTime(2026, month, day), kg: kg, source: source);
 
+/// Einstellungen, die nie eintreffen — das Profil lädt noch.
+class _PendingSettings implements SettingsRepository {
+  @override
+  Stream<UserSettings> watch(String userId) => const Stream.empty();
+
+  @override
+  Future<UserSettings> fetch(String userId) => Completer<UserSettings>().future;
+
+  @override
+  Future<void> save(String userId, UserSettings settings) async {}
+}
+
 Future<void> _pump(
   WidgetTester tester,
   List<WeightEntry> entries, {
   double? profileKg = 78,
   double scale = 1.0,
   double width = 361,
+  bool denied = false,
+  SettingsRepository? settings,
 }) async {
   tester.view.physicalSize = Size(width, 1600);
   tester.view.devicePixelRatio = 1.0;
@@ -44,11 +62,12 @@ Future<void> _pump(
       authRepositoryProvider.overrideWithValue(
         FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c')),
       ),
-      weightRepositoryProvider
-          .overrideWithValue(FakeWeightRepository(entries: entries)),
-      settingsRepositoryProvider.overrideWithValue(FakeSettingsRepository(
-        settings: UserSettings(bodyWeightKg: profileKg),
-      )),
+      weightRepositoryProvider.overrideWithValue(
+          FakeWeightRepository(entries: entries, denied: denied)),
+      settingsRepositoryProvider.overrideWithValue(settings ??
+          FakeSettingsRepository(
+            settings: UserSettings(bodyWeightKg: profileKg),
+          )),
     ],
     child: MaterialApp(
       theme: AtemTheme.dark,
@@ -181,5 +200,30 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('78,9'), findsOneWidget);
+  });
+
+  testWidgets('abgewiesener Zugriff: der letzte bekannte Wert bleibt stehen',
+      (tester) async {
+    await _pump(tester, [], denied: true);
+
+    // Der Wert ist ja nicht falsch, nur nicht mehr bestätigt frisch.
+    expect(find.text('78'), findsOneWidget);
+    expect(find.text('Verlauf konnte nicht aktualisiert werden.'),
+        findsOneWidget);
+    expect(find.text('Erneut versuchen'), findsOneWidget);
+
+    // **Kein erfundenes Datum.** Der Profilwert hat keines; „Zuletzt bekannt ·
+    // 1. Januar" wäre eine Angabe, die niemand gemacht hat.
+    expect(find.textContaining('ZULETZT BEKANNT'), findsNothing);
+  });
+
+  testWidgets('solange das Profil lädt, steht das Skelett — nicht nichts',
+      (tester) async {
+    await _pump(tester, [], settings: _PendingSettings());
+
+    // Der Block verschwindet nicht, während eine seiner beiden Quellen noch
+    // unterwegs ist: erst weg, dann da, und die halbe Seite springt.
+    expect(find.byType(AtemSkeleton), findsOneWidget);
+    expect(find.text('Gewicht'), findsOneWidget);
   });
 }

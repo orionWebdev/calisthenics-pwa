@@ -322,8 +322,12 @@ Future<void> expectA11y(
 /// Eine Gewichtsreihe über drei Monate, mit einer Lücke und einem gemessenen
 /// Wert — sonst prüfte die Matrix nur die Punktwolke und nie die Kurve.
 class FakeWeightRepository implements WeightRepository {
-  FakeWeightRepository({List<WeightEntry>? entries})
+  FakeWeightRepository({List<WeightEntry>? entries, this.denied = false})
       : entries = entries ?? List.of(fixtureWeights);
+
+  /// Simuliert einen abgewiesenen Zugriff — der Zustand, in dem die
+  /// Firestore-Regeln für `bodyWeights` noch nicht ausgerollt sind.
+  final bool denied;
 
   final List<WeightEntry> entries;
 
@@ -335,6 +339,7 @@ class FakeWeightRepository implements WeightRepository {
 
   @override
   Stream<WeightSeries> watch(String userId) async* {
+    if (denied) throw StateError('PERMISSION_DENIED');
     yield WeightSeries.of(entries);
     yield* _changes.stream;
   }

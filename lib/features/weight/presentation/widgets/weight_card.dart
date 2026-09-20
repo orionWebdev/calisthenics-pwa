@@ -6,6 +6,7 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../history/application/history_providers.dart';
+import '../../../settings/application/settings_providers.dart';
 import '../../application/weight_providers.dart';
 import '../../domain/weight_entry.dart';
 import '../../domain/weight_series.dart';
@@ -44,18 +45,39 @@ class WeightCard extends ConsumerWidget {
   const WeightCard({super.key});
 
   /// Ob der Block überhaupt etwas zu zeigen hat.
-  static bool hasData(WidgetRef ref) =>
-      ref.watch(latestWeightProvider) != null ||
-      ref.watch(weightSeriesProvider).isLoading;
+  ///
+  /// **Solange etwas lädt, lautet die Antwort ja.** Der Wert kommt aus zwei
+  /// Strömen — der Reihe und dem Profil —, und sie treffen nicht gleichzeitig
+  /// ein. Wer nur den einen fragt, lässt den Block in dem Augenblick
+  /// verschwinden, in dem der andere noch unterwegs ist: erst weg, dann
+  /// plötzlich da, und die halbe Seite springt.
+  static bool hasData(WidgetRef ref) {
+    if (_loadingNow(ref)) return true;
+    return ref.watch(latestWeightProvider) != null;
+  }
+
+  static bool _loadingNow(WidgetRef ref) =>
+      ref.watch(weightSeriesProvider).isLoading ||
+      ref.watch(settingsProvider).isLoading;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final async = ref.watch(weightSeriesProvider);
 
+    // Das Ladegate fragt **beide** Quellen. Fragte es nur die Reihe, stünde
+    // bei geladener Reihe und ladendem Profil ein leerer Platz da, wo
+    // [hasData] gerade noch einen Block versprochen hat.
+    if (_loadingNow(ref)) return _loading();
+
     return async.when(
       loading: _loading,
-      error: (_, __) => _Error(latest: ref.watch(latestWeightProvider)),
+      error: (_, __) => _Error(
+        latest: ref.watch(latestWeightProvider),
+        // Ein Profilwert hat kein Datum. „Zuletzt bekannt · 1. Januar" wäre
+        // ein erfundenes — am Probelauf sichtbar geworden (20.09.2026).
+        dated: !ref.watch(weightIsUnseededProvider),
+      ),
       data: (series) {
         final latest = ref.watch(latestWeightProvider);
         if (latest == null) return const SizedBox.shrink();
@@ -123,9 +145,13 @@ class WeightCard extends ConsumerWidget {
 /// Er ist ja nicht falsch, nur nicht mehr bestätigt frisch. Ihn zu entfernen
 /// hiesse, aus einem Netzfehler eine gelöschte Zahl zu machen.
 class _Error extends ConsumerWidget {
-  const _Error({required this.latest});
+  const _Error({required this.latest, required this.dated});
 
   final WeightEntry? latest;
+
+  /// Ob [latest] ein echter Verlaufseintrag ist. Der Profilwert trägt kein
+  /// Datum — dann fehlt die Zeile, statt eines zu erfinden.
+  final bool dated;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -146,12 +172,14 @@ class _Error extends ConsumerWidget {
                       style: AtemType.titleSmallOrDefault(context)),
                   const SizedBox(height: 10),
                   _Value(kg: known.kg),
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.weightLastKnown(WeightUi.shortDate(context,
-                        known.date)),
-                    style: AtemType.labelMicro.of(context),
-                  ),
+                  if (dated) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.weightLastKnown(
+                          WeightUi.shortDate(context, known.date)),
+                      style: AtemType.labelMicro.of(context),
+                    ),
+                  ],
                 ],
               ),
             ),
