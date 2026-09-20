@@ -79,6 +79,7 @@ class _WeightEntrySheetState extends ConsumerState<WeightEntrySheet> {
     final picked = await showDatePicker(
       context: context,
       useRootNavigator: true,
+      helpText: AppL10n.of(context).weightDatePick,
       initialDate: _date,
       // Kein Datum in der Zukunft: Ein Gewicht, das noch niemand gemessen
       // hat, ist keine Nachtragung, sondern ein Ziel — und Ziele hat dieser

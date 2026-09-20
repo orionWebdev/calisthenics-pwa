@@ -295,15 +295,19 @@ class _Block extends ConsumerWidget {
   /// einem Satz; die Kinder der Karte sind für Vorleseprogramme ausgeschlossen.
   String _cardLabel(BuildContext context, WeightChange? change) {
     final kg = WeightUi.kg(context, latest.kg);
+    // Das Ziel gehört ins Label: `AtemCard` kennt keinen eigenen Hinweis, und
+    // ein Knopf ohne Ziel ist für ein Vorleseprogramm eine Überraschung.
+    final hint = l10n.weightCardOpenHint;
     if (change == null || !_hasCurve) {
-      return l10n.weightCardSingleA11y(kg);
+      return '${l10n.weightCardSingleA11y(kg)}. $hint';
     }
     final basis = l10n.weightBasis(
       window.length,
       WeightUi.longDate(context, window.first!.date),
     );
-    return l10n.weightCardA11y(
+    final label = l10n.weightCardA11y(
         kg, basis, WeightUi.changeA11y(context, l10n, change));
+    return '$label. $hint';
   }
 }
 
