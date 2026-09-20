@@ -7,6 +7,7 @@ import '../workout_ui.dart';
 import '../../domain/workout_session.dart';
 import '../set_type_ui.dart';
 import '../../../history/domain/training_session.dart' show SetSide;
+import '../../../settings/domain/user_settings.dart' show EffortScale;
 import 'set_effort.dart';
 
 /// Welcher Wert einer Satzzeile gerade geändert wird.
@@ -57,6 +58,7 @@ class SetRow extends StatelessWidget {
     required this.onToggle,
     required this.onCycleType,
     required this.onEdit,
+    this.effortScale = EffortScale.rpe,
     this.isHold = false,
     this.unilateral = false,
     this.onToggleSide,
@@ -74,6 +76,9 @@ class SetRow extends StatelessWidget {
 
   /// Öffnet das Eingabeblatt für einen Wert.
   final ValueChanged<SetField> onEdit;
+
+  /// In welcher Skala die Anstrengungs-Kapsel erscheint — RPE oder RIR.
+  final EffortScale effortScale;
 
   /// Halteübung: Die Sekundenspalte tritt an die Stelle der Wiederholungen.
   ///
@@ -159,6 +164,7 @@ class SetRow extends StatelessWidget {
                   padding: EdgeInsets.only(left: compact ? 0 : 48 + columnGap),
                   child: RpeBadge(
                     rpe: rpe,
+                    scale: effortScale,
                     setNumber: index,
                     open: rpeOpen,
                     onTap: onOpenRpe ?? () {},

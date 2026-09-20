@@ -25,6 +25,7 @@ import '../widgets/set_effort.dart';
 import '../widgets/set_row.dart';
 import '../workout_ui.dart';
 import '../../../../app/application/snackbar_providers.dart';
+import '../../../settings/application/settings_providers.dart';
 
 /// ATEM — Workout Runner.
 ///
@@ -713,6 +714,9 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   }
 
   Widget _buildRunner(ActiveWorkout w) {
+    // RPE oder RIR — eine reine Anzeigefrage, siehe [EffortScale]. Beobachtet,
+    // damit ein Wechsel in den Einstellungen auch ein offenes Training erreicht.
+    final effortScale = ref.watch(effortScaleProvider);
     final l10n = AppL10n.of(context);
     if (w.exercises.isEmpty) {
       // **Kein Fehlerbild.** Ein leerer Runner ist beim freien Training der
@@ -813,6 +817,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                     SetRow(
                       set: exercise.sets[i],
                       index: i + 1,
+                      effortScale: effortScale,
                       isHold: exercise.isHold,
                       unilateral: exercise.unilateral,
                       rpeOpen: _rpeOpenSetId == exercise.sets[i].id,
@@ -834,6 +839,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
                         key: ValueKey('rpe-${exercise.sets[i].id}'),
                         child: RpeStrip(
                           setNumber: i + 1,
+                          scale: effortScale,
                           value: exercise.sets[i].rpe,
                           onChanged: (rpe) =>
                               _setRpe(index, exercise.sets[i].id, rpe),

@@ -72,7 +72,18 @@ sonst zählt entweder die ganze Einheit oder keiner ihrer Sätze.
 - **Aufwand:** mittel — ein neues Feld im Bestand (additiv), eine Domänenrechnung, ein Auswertungsblock,
   eine Runner-Eingabe. Guter Kandidat für einen eigenen Durchgang mit mehreren Agenten.
 
-### 2.3 RIR statt/neben RPE, umschaltbar
+### 2.3 RIR statt/neben RPE, umschaltbar — ✅ erledigt (20.09.2026)
+
+**Umgesetzt:** `EffortScale` in `user_settings.dart` (`rpe` | `rir`, Feld `effortScale` im
+Profil), Segment-Schalter „Anstrengung je Satz" in den Einstellungen, `effortScaleProvider`.
+Streifen und Kapsel im Runner zeigen in RIR 4–3–2–1–0 statt 6–7–8–9–10; die Karte „Harte Sätze"
+nennt die Schwelle als „3 RIR oder weniger" statt „Anstrengung 7 oder mehr".
+
+**Die Wahrheit bleibt RPE.** Gespeichert wird ausnahmslos `LoggedSet.rpe` 1–10 — RIR ist dieselbe
+Zahl von der anderen Seite gezählt (`10 − RPE`, verlustfrei). Ein Wechsel wirkt sofort auch auf alle
+früheren Sätze und geht jederzeit zurück; niemand muss sich entscheiden, bevor er beide gesehen hat.
+Die Alternative — RIR speichern — hätte die Bedeutung jeder Zahl im Bestand an eine
+Kontoeinstellung gehängt. Ursprüngliche Einschätzung:
 
 Nachvollziehbar für Hypertrophie-Training, aber **kein Free-Lunch**: Der Bestand trägt heute RPE
 (1–10 auf Einheitsebene). Ein Umschalter „intern als RIR speichern, UI umschaltbar" verlangt eine
@@ -191,7 +202,7 @@ und wurden entsprechend übernommen oder begründet zurückgestellt.
    erweitern, dann Hard-Sets-Auswertung und die Auswahl links/rechts im Runner.
 3. ✅ **2.4 Plate Calculator** — kleiner, unabhängiger Gewinn für Kraftsportler.
 4. **2.5 Skill-Tree** — zurückgestellt, eigenes Redaktionsprojekt für die Übungsketten nötig.
-5. **2.3 RIR-Umschalter** — erst nach 2, kein eigener Aufwand mehr.
+5. ✅ **2.3 RIR-Umschalter** — erst nach 2, kein eigener Aufwand mehr.
 6. **2.6 Tempo/TUT** — nicht bauen ohne konkreten Bedarf.
 
 Diese Reihenfolge ist unabhängig vom Store-Termin — keiner dieser Punkte blockiert Abschnitt 7 und

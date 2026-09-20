@@ -57,6 +57,7 @@ void main() {
               value: value,
               previousValue: 95,
               previousLabel: '95 kg × 8',
+              showPlates: true,
               onApply: (_) {},
             ),
           ),

@@ -219,6 +219,49 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   valueAccent: settings.unitSystem != UnitSystem.metric,
                   onTap: () => _UnitsSheet.show(context, settings),
                 ),
+                const SettingsRule(),
+                // Zwei Segmente statt einer Zeile mit Blatt: Die Wahl hat
+                // genau zwei Werte und wirkt sofort auf jede Anstrengung im
+                // Bestand — ein Blatt mit Übernehmen liesse das Gegenteil
+                // vermuten. Die Erklärung steht hinter dem ⓘ (Regel vom
+                // 17.09.2026).
+                AtemExplainHeader(
+                  title: l10n.settingsEffortScale,
+                  explanation: [l10n.settingsEffortScaleExplain],
+                ),
+                const SizedBox(height: 8),
+                AtemSegmented<EffortScale>(
+                  value: settings.effortScale,
+                  groupSemanticLabel: l10n.settingsEffortScaleGroupA11y,
+                  onChanged: (value) => ref
+                      .read(settingsControllerProvider.notifier)
+                      .update(settings.copyWith(effortScale: value)),
+                  segments: [
+                    AtemSegment(
+                      value: EffortScale.rpe,
+                      label: l10n.settingsEffortScaleRpe,
+                      semanticLabel: l10n.settingsEffortScaleRpeA11y,
+                    ),
+                    AtemSegment(
+                      value: EffortScale.rir,
+                      label: l10n.settingsEffortScaleRir,
+                      semanticLabel: l10n.settingsEffortScaleRirA11y,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                // Die Richtung einmal im Klartext: „hoch ist schwer" gegen
+                // „niedrig ist schwer". Ohne sie wäre RIR 2 leicht mit RPE 2
+                // zu verwechseln.
+                Text(
+                  settings.effortScale == EffortScale.rir
+                      ? l10n.settingsEffortScaleValueRir
+                      : l10n.settingsEffortScaleValue,
+                  style: AtemType.meta
+                      .of(context)
+                      .copyWith(color: AtemColors.textTertiary),
+                ),
+                const SizedBox(height: 6),
               ],
             ),
             const SizedBox(height: 12),

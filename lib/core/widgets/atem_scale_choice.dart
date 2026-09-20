@@ -44,6 +44,7 @@ class AtemScaleChoice extends StatelessWidget {
     required this.groupLabel,
     required this.wordFor,
     required this.semanticLabelFor,
+    this.labelFor,
     this.colorFor,
     this.min = 1,
     this.max = 5,
@@ -69,6 +70,13 @@ class AtemScaleChoice extends StatelessWidget {
 
   /// Das vollständige Label, das je Feld vorgelesen wird.
   final String Function(int level) semanticLabelFor;
+
+  /// Die **Zahl im Feld**, wenn sie eine andere ist als die Stufe selbst.
+  ///
+  /// Gebraucht für RIR: Gespeichert wird RPE 6–10, im Feld steht 4–0. Ohne
+  /// diesen Umweg müsste die Skala die Stufen rückwärts führen, und jede
+  /// Stelle, die einen Wert liest, müsste die Umrechnung kennen.
+  final String Function(int level)? labelFor;
 
   /// Die Farbe einer Stufe. `null` heisst neutral (Rand in `border`, gewählt
   /// in Cyan).
@@ -143,7 +151,7 @@ class AtemScaleChoice extends StatelessWidget {
   Widget _field(int level) {
     final selected = level == value;
     return _ScaleField(
-      level: level,
+      label: labelFor?.call(level) ?? '$level',
       semanticLabel: semanticLabelFor(level),
       selected: selected,
       color: colorFor?.call(level),
@@ -157,7 +165,7 @@ class AtemScaleChoice extends StatelessWidget {
 
 class _ScaleField extends StatelessWidget {
   const _ScaleField({
-    required this.level,
+    required this.label,
     required this.semanticLabel,
     required this.selected,
     required this.color,
@@ -167,7 +175,8 @@ class _ScaleField extends StatelessWidget {
     required this.onTap,
   });
 
-  final int level;
+  /// Was im Feld steht — meist die Stufe, bei RIR die Gegenzahl.
+  final String label;
 
   /// Das vollständige Label — Zahl und Wort — für den Screenreader.
   final String semanticLabel;
@@ -225,7 +234,7 @@ class _ScaleField extends StatelessWidget {
             boxShadow: pressed ? AtemGlow.soft(glowColor, opacity: 0.55) : null,
           ),
           child: Text(
-            '$level',
+            label,
             textAlign: TextAlign.center,
             style: AtemType.valueMedium.of(context).copyWith(
                   fontWeight: FontWeight.w700,

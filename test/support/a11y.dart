@@ -315,6 +315,12 @@ Future<void> expectA11y(
 /// Einstellungen mit hinterlegtem Gewicht — sonst prüfte die Matrix nur den
 /// Zustand „noch nichts eingetragen".
 class FakeSettingsRepository implements SettingsRepository {
+  /// Ohne Angabe die [fixture]; mit Angabe ein abweichender Stand, etwa für
+  /// die RIR-Skala.
+  FakeSettingsRepository({UserSettings? settings})
+      : settings = settings ?? fixture;
+
+  final UserSettings settings;
   final saved = <UserSettings>[];
 
   static const fixture = UserSettings(
@@ -324,10 +330,10 @@ class FakeSettingsRepository implements SettingsRepository {
   );
 
   @override
-  Stream<UserSettings> watch(String userId) => Stream.value(fixture);
+  Stream<UserSettings> watch(String userId) => Stream.value(settings);
 
   @override
-  Future<UserSettings> fetch(String userId) async => fixture;
+  Future<UserSettings> fetch(String userId) async => settings;
 
   @override
   Future<void> save(String userId, UserSettings settings) async =>

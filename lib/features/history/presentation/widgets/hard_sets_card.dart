@@ -6,6 +6,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../exercises/presentation/muscle_ui.dart';
+import '../../../settings/application/settings_providers.dart';
+import '../../../settings/domain/user_settings.dart' show EffortScale;
 import '../../domain/hard_sets.dart';
 import '../../domain/training_session.dart';
 
@@ -35,6 +37,9 @@ class HardSetsCard extends ConsumerWidget {
     final exercises = ref.watch(exercisesProvider).value ?? const [];
     final hard = HardSets.compute(sessions, exercises, reference);
     final days = hard.windowDays;
+    // Die Schwelle ist dieselbe — RPE 7 ist 3 RIR. Nur benannt wird sie in der
+    // Skala, in der der Nutzer seine Sätze einträgt.
+    final rir = ref.watch(effortScaleProvider) == EffortScale.rir;
 
     if (!hard.hasEnough) {
       return AtemThresholdBlock(
@@ -59,7 +64,7 @@ class HardSetsCard extends ConsumerWidget {
             title: l10n.hardSetsTitle,
             trailing: l10n.hardSetsWindow(days),
             explanation: [
-              l10n.hardSetsExplainWhat,
+              rir ? l10n.hardSetsExplainWhatRir : l10n.hardSetsExplainWhat,
               l10n.hardSetsExplainWhy,
               l10n.hardSetsExplainSides,
               l10n.hardSetsExplainNoTarget(days),

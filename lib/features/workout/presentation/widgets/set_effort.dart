@@ -4,6 +4,7 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../history/domain/training_session.dart' show LoggedSet;
+import '../../../settings/domain/user_settings.dart' show EffortScale;
 
 // Anstrengung je Satz im Runner — kein Board, aus Tokens gebaut (18.09.2026).
 //
@@ -62,6 +63,7 @@ class RpeStrip extends StatefulWidget {
     required this.setNumber,
     required this.value,
     required this.onChanged,
+    this.scale = EffortScale.rpe,
   });
 
   /// Satznummer ab 1 — für Frage und Labels.
@@ -72,6 +74,10 @@ class RpeStrip extends StatefulWidget {
 
   /// `null` heisst „keine Angabe".
   final ValueChanged<int?> onChanged;
+
+  /// In welcher Skala die Zahlen erscheinen. Der Wert, der nach aussen geht,
+  /// ist **immer RPE** — die Skala betrifft nur die Beschriftung.
+  final EffortScale scale;
 
   @override
   State<RpeStrip> createState() => _RpeStripState();
@@ -86,14 +92,24 @@ class _RpeStripState extends State<RpeStrip> {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final value = widget.value;
+    final scale = widget.scale;
+    final rir = scale == EffortScale.rir;
 
+    // Die Reihe führt weiter die RPE-Stufen 6–10; in RIR steht in den Feldern
+    // 4–3–2–1–0. Beide Male wird es nach rechts schwerer — die Richtung bleibt,
+    // nur die Zählung dreht sich.
     Widget row(int min, int max) => AtemScaleChoice(
           value: value != null && value >= min && value <= max ? value : null,
           onChanged: widget.onChanged,
-          groupLabel: l10n.workoutRpeRangeA11y(min, max),
+          groupLabel: rir
+              ? l10n.workoutRirRangeA11y(scale.number(min), scale.number(max))
+              : l10n.workoutRpeRangeA11y(min, max),
+          labelFor: rir ? (level) => '${scale.number(level)}' : null,
           wordFor: (level) => rpeWord(l10n, level),
-          semanticLabelFor: (level) =>
-              l10n.workoutRpeLevelA11y(level, rpeWordA11y(l10n, level)),
+          semanticLabelFor: (level) => rir
+              ? l10n.workoutRirLevelA11y(
+                  scale.number(level), rpeWordA11y(l10n, level))
+              : l10n.workoutRpeLevelA11y(level, rpeWordA11y(l10n, level)),
           min: min,
           max: max,
           surface: AtemColors.surfaceSolid,
@@ -152,12 +168,18 @@ class _RpeStripState extends State<RpeStrip> {
               spacing: AtemSpacing.sm,
               children: [
                 _TextAction(
-                  label: _showLow
-                      ? l10n.workoutRpeHideLow
-                      : l10n.workoutRpeShowLow,
-                  semanticLabel: _showLow
-                      ? l10n.workoutRpeHideLowA11y
-                      : l10n.workoutRpeShowLowA11y,
+                  label: switch ((rir, _showLow)) {
+                    (true, true) => l10n.workoutRirHideLow,
+                    (true, false) => l10n.workoutRirShowLow,
+                    (false, true) => l10n.workoutRpeHideLow,
+                    (false, false) => l10n.workoutRpeShowLow,
+                  },
+                  semanticLabel: switch ((rir, _showLow)) {
+                    (true, true) => l10n.workoutRirHideLowA11y,
+                    (true, false) => l10n.workoutRirShowLowA11y,
+                    (false, true) => l10n.workoutRpeHideLowA11y,
+                    (false, false) => l10n.workoutRpeShowLowA11y,
+                  },
                   onTap: () => setState(() => _showLow = !_showLow),
                 ),
                 _TextAction(
@@ -217,9 +239,13 @@ class RpeBadge extends StatelessWidget {
     required this.setNumber,
     required this.open,
     required this.onTap,
+    this.scale = EffortScale.rpe,
   });
 
+  /// Immer der gespeicherte RPE-Wert, auch wenn „2 RIR" darauf steht.
   final int rpe;
+
+  final EffortScale scale;
   final int setNumber;
   final bool open;
   final VoidCallback onTap;
@@ -228,6 +254,8 @@ class RpeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final hard = isHardRpe(rpe);
+    final rir = scale == EffortScale.rir;
+    final number = scale.number(rpe);
     // Ohne Sperrung: `labelMicro` ist für Überschriften gesperrt, und „RPE 8"
     // zerfiel damit in zwei Wörter mit einem Loch dazwischen.
     final text = AtemType.labelMicro
@@ -236,9 +264,12 @@ class RpeBadge extends StatelessWidget {
 
     return AtemTappable(
       onTap: onTap,
-      semanticLabel: hard
-          ? l10n.workoutRpeBadgeHardA11y(setNumber, rpe)
-          : l10n.workoutRpeBadgeA11y(setNumber, rpe),
+      semanticLabel: switch ((rir, hard)) {
+        (true, true) => l10n.workoutRirBadgeHardA11y(setNumber, number),
+        (true, false) => l10n.workoutRirBadgeA11y(setNumber, number),
+        (false, true) => l10n.workoutRpeBadgeHardA11y(setNumber, rpe),
+        (false, false) => l10n.workoutRpeBadgeA11y(setNumber, rpe),
+      },
       selected: open,
       minTapSize: const Size(48, 48),
       alignment: Alignment.centerLeft,
@@ -265,7 +296,10 @@ class RpeBadge extends StatelessWidget {
               const ExcludeSemantics(
                 child: AtemStatusDot(color: AtemColors.tabStrength),
               ),
-            Text(l10n.workoutRpeBadge(rpe), style: text),
+            Text(
+              rir ? l10n.workoutRirBadge(number) : l10n.workoutRpeBadge(rpe),
+              style: text,
+            ),
             if (hard)
               Text(
                 l10n.workoutHardSet,

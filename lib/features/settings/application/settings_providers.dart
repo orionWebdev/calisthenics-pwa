@@ -56,6 +56,14 @@ final defaultRestSecondsProvider = Provider<int>(
       UserSettings.defaultRestSeconds,
 );
 
+/// In welcher Skala die Anstrengung je Satz erscheint — RPE oder RIR.
+///
+/// Reine Anzeigefrage: Gespeichert wird immer RPE, ein Wechsel wirkt sofort
+/// auch auf alle früheren Sätze.
+final effortScaleProvider = Provider<EffortScale>(
+  (ref) => ref.watch(settingsProvider).value?.effortScale ?? EffortScale.rpe,
+);
+
 /// Ob Haptik überhaupt ausgelöst wird.
 final hapticsEnabledProvider = Provider<bool>(
   (ref) => ref.watch(settingsProvider).value?.hapticsEnabled ?? true,

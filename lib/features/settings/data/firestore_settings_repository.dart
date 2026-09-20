@@ -7,7 +7,8 @@ import '../domain/user_settings.dart';
 ///
 /// Die Feldnamen folgen der Vorgänger-App, damit beide Anwendungen dasselbe
 /// Profil lesen: `bodyWeight`, `unitSystem`, `language`, `defaultRestTimer`,
-/// `hapticsEnabled`.
+/// `hapticsEnabled`. Dazu ein Feld, das es dort nicht gibt: `effortScale`.
+/// Die PWA kennt es nicht und lässt es beim Schreiben stehen.
 class FirestoreSettingsRepository implements SettingsRepository {
   FirestoreSettingsRepository(this._db);
 
@@ -34,6 +35,7 @@ class FirestoreSettingsRepository implements SettingsRepository {
       if (settings.language != null) 'language': settings.language!.code,
       'defaultRestTimer': settings.restSeconds,
       'hapticsEnabled': settings.hapticsEnabled,
+      'effortScale': settings.effortScale.wire,
       'updatedAt': Timestamp.now(),
       // `merge`: Im Profil stehen zwanzig Felder, die diese App nicht kennt.
       // Ohne merge wären sie nach dem ersten Speichern weg.
@@ -54,10 +56,14 @@ class FirestoreSettingsRepository implements SettingsRepository {
       language: AppLanguage.fromCode(data['language']),
       restSeconds: rest == null
           ? UserSettings.defaultRestSeconds
-          : rest.clamp(UserSettings.minRestSeconds, UserSettings.maxRestSeconds),
+          : rest.clamp(
+              UserSettings.minRestSeconds, UserSettings.maxRestSeconds),
       // Fehlt das Feld, ist Haptik an. Ein stiller Schalter, den niemand
       // gesetzt hat, sollte im aktiveren Zustand stehen.
       hapticsEnabled: data['hapticsEnabled'] != false,
+      // Fehlt das Feld — im ganzen Bestand der Fall —, gilt RPE: die Skala,
+      // in der alle bisherigen Angaben gemacht wurden.
+      effortScale: EffortScale.fromWire(data['effortScale']),
     );
   }
 }

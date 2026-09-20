@@ -59,6 +59,39 @@ enum AppLanguage {
       languageCode == 'de' ? AppLanguage.german : AppLanguage.english;
 }
 
+/// Wie die Anstrengung eines Satzes **abgefragt und angezeigt** wird.
+///
+/// **Nur eine Anzeigefrage, wie [UnitSystem].** Gespeichert wird ausnahmslos
+/// RPE 1–10 (`LoggedSet.rpe`); RIR ist dieselbe Zahl von der anderen Seite
+/// gezählt. Zwei Skalen im selben Feld wären eine Falle für jede spätere
+/// Rechnung: Eine 2 wäre je nach Kontoeinstellung ein leichter Satz oder einer
+/// bis fast ans Ende.
+///
+/// RIR heisst „reps in reserve" — wie viele Wiederholungen nach dem Satz noch
+/// drin gewesen wären. Viele schätzen das leichter als eine Anstrengungszahl,
+/// weil es eine abzählbare Sache ist und kein Gefühl.
+enum EffortScale {
+  /// „RPE 8" — je höher, desto schwerer.
+  rpe('rpe'),
+
+  /// „2 RIR" — je niedriger, desto schwerer.
+  rir('rir');
+
+  const EffortScale(this.wire);
+
+  final String wire;
+
+  static EffortScale fromWire(Object? value) =>
+      value == 'rir' ? EffortScale.rir : EffortScale.rpe;
+
+  /// Die Zahl, die in dieser Skala zu einem RPE-Wert angezeigt wird.
+  ///
+  /// RPE 10 ist 0 RIR („nichts mehr drin"), RPE 8 ist 2 RIR. Die Umrechnung
+  /// ist die übliche Lesart der Skala im Krafttraining und verliert nichts:
+  /// Jeder RPE-Wert hat genau einen RIR-Wert und umgekehrt.
+  int number(int rpe) => this == EffortScale.rir ? 10 - rpe : rpe;
+}
+
 /// Alles, was in den Einstellungen steht.
 ///
 /// ## Warum nicht alle Felder des Bestands
@@ -82,6 +115,7 @@ class UserSettings {
     this.language,
     this.restSeconds = defaultRestSeconds,
     this.hapticsEnabled = true,
+    this.effortScale = EffortScale.rpe,
   });
 
   /// Wie die Vorgänger-App: 60 Sekunden.
@@ -111,12 +145,17 @@ class UserSettings {
   final int restSeconds;
   final bool hapticsEnabled;
 
+  /// In welcher Skala die Anstrengung je Satz erscheint. Ändert nur die
+  /// Anzeige, nie den gespeicherten Wert.
+  final EffortScale effortScale;
+
   UserSettings copyWith({
     double? bodyWeightKg,
     UnitSystem? unitSystem,
     AppLanguage? language,
     int? restSeconds,
     bool? hapticsEnabled,
+    EffortScale? effortScale,
   }) =>
       UserSettings(
         bodyWeightKg: bodyWeightKg ?? this.bodyWeightKg,
@@ -124,6 +163,7 @@ class UserSettings {
         language: language ?? this.language,
         restSeconds: restSeconds ?? this.restSeconds,
         hapticsEnabled: hapticsEnabled ?? this.hapticsEnabled,
+        effortScale: effortScale ?? this.effortScale,
       );
 
   static bool isPlausibleWeight(double kg) =>
