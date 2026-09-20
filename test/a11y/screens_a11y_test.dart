@@ -36,7 +36,14 @@ import 'package:atem/features/workout/presentation/screens/workout_runner_screen
 import 'package:atem/features/workout/domain/workout_session.dart';
 import 'package:atem/features/workout/presentation/widgets/set_effort.dart';
 import 'package:atem/features/workout/presentation/widgets/set_row.dart';
+import 'package:atem/core/domain/health_gateway.dart';
 import 'package:atem/core/theme/theme.dart';
+import 'package:atem/features/auth/application/auth_providers.dart';
+import 'package:atem/features/health_import/application/health_import_providers.dart';
+import 'package:atem/features/health_import/domain/health_session.dart';
+import 'package:atem/features/health_import/domain/health_session_repository.dart';
+import 'package:atem/features/health_import/presentation/widgets/health_permissions.dart';
+import 'package:atem/features/health_import/presentation/widgets/review_sheet.dart';
 import 'package:atem/features/exercises/presentation/exercise_picker.dart';
 import 'package:atem/features/plans/presentation/widgets/plans_section.dart';
 import 'package:flutter/material.dart';
@@ -153,6 +160,40 @@ void main() {
 
   testWidgets('Einheitenliste erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const SessionListScreen());
+  });
+
+  // ------------------------------------------------------------- Modul 15
+
+  testWidgets('Einheitenliste mit Eingang erfüllt den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(tester, const SessionListScreen(),
+        extraOverrides: healthOverrides);
+  });
+
+  testWidgets('Health-Connect-Zeilen erfüllen den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(
+      tester,
+      const Scaffold(
+        backgroundColor: AtemColors.base,
+        body: SingleChildScrollView(child: HealthPermissionsSection()),
+      ),
+      extraOverrides: healthOverrides,
+    );
+  });
+
+  testWidgets('Prüfblatt erfüllt den A11y-Vertrag', (tester) async {
+    // `showModalBottomSheet` gibt dem Blatt sonst seine Höhe.
+    await expectA11y(
+      tester,
+      Scaffold(
+        backgroundColor: AtemColors.base,
+        body: SizedBox.expand(
+          child: HealthReviewSheet(pending: _healthPending),
+        ),
+      ),
+      extraOverrides: healthOverrides,
+    );
   });
 
   testWidgets('Einheitendetail erfüllt den A11y-Vertrag', (tester) async {
@@ -345,3 +386,47 @@ Widget _scrolled(Widget section) => Scaffold(
       backgroundColor: AtemColors.base,
       body: SafeArea(child: SingleChildScrollView(child: section)),
     );
+
+/// Eine Uhr-Quelle im Speicher — nur so weit, wie die Prüfmatrix sie braucht.
+class _HealthRepo implements HealthSessionRepository {
+  _HealthRepo(this.sessions);
+
+  final List<HealthSession> sessions;
+
+  @override
+  Stream<List<HealthSession>> watch(String userId) => Stream.value(sessions);
+  @override
+  Future<List<HealthSession>> fetch(String userId) async => sessions;
+  @override
+  Future<void> save(String userId, HealthSession session) async {}
+  @override
+  Future<void> delete(String userId, String externalId) async {}
+  @override
+  Future<DateTime?> lastRead(String userId) async =>
+      DateTime(2026, 9, 20, 7, 12);
+  @override
+  Future<void> markRead(String userId, DateTime at) async {}
+}
+
+final _healthPending = [
+  HealthSession.pending(
+    MeasuredSession(
+      id: 'hc-1',
+      start: DateTime(2026, 9, 20, 9, 14),
+      end: DateTime(2026, 9, 20, 9, 56),
+      sourceId: 'com.garmin.android.apps.connectmobile',
+      activity: 'RUNNING',
+      deviceName: 'Garmin',
+      averageHeartRate: 148,
+      maxHeartRate: 171,
+      calories: 412,
+    ),
+    DateTime(2026, 9, 20, 7, 12),
+  ),
+];
+
+/// Die Überschreibungen, die den Eingang füllen.
+final healthOverrides = [
+  healthSessionRepositoryProvider.overrideWithValue(_HealthRepo(_healthPending)),
+  currentUserIdProvider.overrideWithValue('u'),
+];

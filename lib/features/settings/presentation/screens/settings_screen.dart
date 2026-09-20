@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../health_import/presentation/widgets/health_permissions.dart';
 import '../../../auth/application/auth_providers.dart';
 import '../../../auth/domain/auth_user.dart';
 import '../../../auth/presentation/screens/onboarding_screen.dart';
@@ -324,6 +325,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
             ),
             const SizedBox(height: 12),
+
+            // ---- HEALTH CONNECT: der Zugang je Datentyp (Board 15, D).
+            // Kein Bar-Slot, kein eigener Bildschirm — Modul 8 hält
+            // Einstellungen an einem Ort.
+            const HealthPermissionsSection(),
 
             // ---- DEINE DATEN.
             SettingsSection(

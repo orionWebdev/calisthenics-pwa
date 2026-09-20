@@ -5907,5 +5907,447 @@
   "weightLoadingA11y": "Loading weight history",
   "@weightLoadingA11y": {
     "description": "Board 14 · A5 — Ladezustand, liveRegion polite"
+  },
+  "hcInboxTitle": "{n, plural, one{1 session from Health Connect} other{{n} sessions from Health Connect}}",
+  "@hcInboxTitle": {
+    "description": "Board 15 · hc.inbox_title — Kopf des Eingangs mit Zähler",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcInboxMeta": "Read {time} · awaiting review",
+  "@hcInboxMeta": {
+    "description": "Board 15 · hc.inbox_meta",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hcInboxAction": "Review",
+  "@hcInboxAction": {
+    "description": "Board 15 · hc.inbox_action"
+  },
+  "hcRowUnreviewed": "Unreviewed · not counted yet",
+  "@hcRowUnreviewed": {
+    "description": "Board 15 · hc.row_unreviewed — Metazeile der wartenden Zeile"
+  },
+  "hcSheetKicker": "From Health Connect · {i} of {n}",
+  "@hcSheetKicker": {
+    "description": "Board 15 · hc.sheet_kicker",
+    "placeholders": {
+      "i": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcSheetTitle": "Review session · {i} of {n}",
+  "@hcSheetTitle": {
+    "description": "Board 15 · A11y-Titel des Prüfblatts",
+    "placeholders": {
+      "i": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcFieldDuration": "Duration",
+  "@hcFieldDuration": {
+    "description": "Board 15 · hc.field_duration"
+  },
+  "hcFieldHrAvg": "Avg. HR",
+  "@hcFieldHrAvg": {
+    "description": "Board 15 · hc.field_hr_avg"
+  },
+  "hcFieldHrMax": "Max",
+  "@hcFieldHrMax": {
+    "description": "Board 15 · hc.field_hr_max"
+  },
+  "hcMoreDeviceValues": "{n, plural, one{1 more value from the device} other{More values from the device · {n}}}",
+  "@hcMoreDeviceValues": {
+    "description": "Board 15 · hc.more_device_values",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcAccept": "Add to history",
+  "@hcAccept": {
+    "description": "Board 15 · hc.accept"
+  },
+  "hcAcceptWithoutEffort": "Add without effort",
+  "@hcAcceptWithoutEffort": {
+    "description": "Board 15 · hc.accept_without_effort — das Label ist die Warnung"
+  },
+  "hcDecline": "Don''t add",
+  "@hcDecline": {
+    "description": "Board 15 · hc.decline"
+  },
+  "hcNoEffortNote": "Without effort this session is missing from training load — it is not estimated.",
+  "@hcNoEffortNote": {
+    "description": "Board 15 · hc.no_effort_note — die eine erlaubte Hinweiszeile"
+  },
+  "hcContinueLater": "Continue later",
+  "@hcContinueLater": {
+    "description": "Board 15 · hc.continue_later"
+  },
+  "hcAcceptedSnack": "{type} {date} added",
+  "@hcAcceptedSnack": {
+    "description": "Board 15 · hc.accepted_snack",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcDeclinedSnack": "Not added · {date}",
+  "@hcDeclinedSnack": {
+    "description": "Board 15 · hc.declined_snack",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcDeclinedSection": "Declined",
+  "@hcDeclinedSection": {
+    "description": "Board 15 · hc.declined_section"
+  },
+  "hcDeclinedMeta": "Declined on {date}",
+  "@hcDeclinedMeta": {
+    "description": "Board 15 · hc.declined_meta",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcDeclinedRestore": "Add after all",
+  "@hcDeclinedRestore": {
+    "description": "Board 15 · hc.declined_restore"
+  },
+  "hcDeclinedNote": "Will not be suggested again on the next read.",
+  "@hcDeclinedNote": {
+    "description": "Board 15 · hc.declined_note"
+  },
+  "hcOriginWatch": "from the watch",
+  "@hcOriginWatch": {
+    "description": "Board 15 · hc.origin_watch — Herkunft als Wort ab 130 % Schrift"
+  },
+  "hcOriginBoth": "app + watch",
+  "@hcOriginBoth": {
+    "description": "Board 15 · hc.origin_both"
+  },
+  "hcOriginMissingEffort": "without effort",
+  "@hcOriginMissingEffort": {
+    "description": "Board 15 · hc.origin_missing_effort — Tatsache, keine Mahnung"
+  },
+  "hcReadError": "Health Connect unavailable",
+  "@hcReadError": {
+    "description": "Board 15 · hc.read_error"
+  },
+  "hcReadErrorMeta": "Last read {date}",
+  "@hcReadErrorMeta": {
+    "description": "Board 15 · hc.read_error_meta",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcRetry": "Retry",
+  "@hcRetry": {
+    "description": "Board 15 · hc.retry"
+  },
+  "hcReading": "Reading Health Connect",
+  "@hcReading": {
+    "description": "Board 15 · hc.reading"
+  },
+  "hcRowA11y": "{title}, {meta}, from the watch, unreviewed, not counted yet. Review.",
+  "@hcRowA11y": {
+    "description": "Board 15 · A11y der wartenden Zeile — ein Knoten",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "meta": {
+        "type": "String"
+      }
+    }
+  },
+  "hcInboxA11y": "{count} awaiting review, read {time}. Review.",
+  "@hcInboxA11y": {
+    "description": "Board 15 · A11y des Eingangskopfs",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hcPairQuestion": "Does this belong to your strength session?",
+  "@hcPairQuestion": {
+    "description": "Board 15 · hc.pair_question — die Vermutung wird als Frage gestellt"
+  },
+  "hcPairAppRow": "Your app session",
+  "@hcPairAppRow": {
+    "description": "Board 15 · hc.pair_app_row"
+  },
+  "hcPairWatchRow": "From the watch",
+  "@hcPairWatchRow": {
+    "description": "Board 15 · hc.pair_watch_row"
+  },
+  "hcPairOverlap": "Overlap {x} of {y} min of the shorter session · starts {d} min apart",
+  "@hcPairOverlap": {
+    "description": "Board 15 · hc.pair_overlap — die Begründung der Vermutung, in Zahlen",
+    "placeholders": {
+      "x": {
+        "type": "int"
+      },
+      "y": {
+        "type": "int"
+      },
+      "d": {
+        "type": "int"
+      }
+    }
+  },
+  "hcPairMerge": "Merge",
+  "@hcPairMerge": {
+    "description": "Board 15 · hc.pair_merge"
+  },
+  "hcPairKeepApart": "Keep separate",
+  "@hcPairKeepApart": {
+    "description": "Board 15 · hc.pair_keep_apart"
+  },
+  "hcMergeStage1Title": "Merge — what changes",
+  "@hcMergeStage1Title": {
+    "description": "Board 15 · hc.merge_stage1_title"
+  },
+  "hcUnlinkStage1Title": "Unlink — what changes",
+  "@hcUnlinkStage1Title": {
+    "description": "Board 15 · hc.unlink_stage1_title"
+  },
+  "hcMergeStays": "{value} stays",
+  "@hcMergeStays": {
+    "description": "Board 15 · hc.merge_stays — die Zeilen, die sagen, was gleich bleibt",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "hcMergeGains": "becomes {value}",
+  "@hcMergeGains": {
+    "description": "Board 15 · eine Grösse, die hinzukommt; der Pfeil wird nie vorgelesen",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "hcMergeLoses": "is removed",
+  "@hcMergeLoses": {
+    "description": "Board 15 · eine Grösse, die beim Lösen wegfällt"
+  },
+  "hcMergeDurationNote": "Duration stays with the app: {app} min. The watch reports {watch} min.",
+  "@hcMergeDurationNote": {
+    "description": "Board 15 · hc.merge_duration_note — bei Widerspruch gewinnt die App",
+    "placeholders": {
+      "app": {
+        "type": "int"
+      },
+      "watch": {
+        "type": "int"
+      }
+    }
+  },
+  "hcMergedSnack": "Merged · heart rate added",
+  "@hcMergedSnack": {
+    "description": "Board 15 · hc.merged_snack"
+  },
+  "hcUnlinkedSnack": "Unlinked · watch session back in the inbox",
+  "@hcUnlinkedSnack": {
+    "description": "Board 15 · Meldung nach dem Lösen"
+  },
+  "hcAmbiguousNote": "Several app sessions fall in this window. ATEM does not assign when the match is not unique.",
+  "@hcAmbiguousNote": {
+    "description": "Board 15 · hc.ambiguous_note"
+  },
+  "hcAmbiguousPick": "Choose",
+  "@hcAmbiguousPick": {
+    "description": "Board 15 · hc.ambiguous_pick"
+  },
+  "hcAmbiguousStandalone": "Review as its own session",
+  "@hcAmbiguousStandalone": {
+    "description": "Board 15 · hc.ambiguous_standalone"
+  },
+  "hcUnlink": "Unlink",
+  "@hcUnlink": {
+    "description": "Board 15 · hc.unlink"
+  },
+  "hcSourcesLabel": "Sources",
+  "@hcSourcesLabel": {
+    "description": "Board 15 · hc.sources_label"
+  },
+  "hcSourceApp": "App · sets, duration, effort",
+  "@hcSourceApp": {
+    "description": "Board 15 · hc.source_app"
+  },
+  "hcSourceWatch": "{device} · heart rate, calories",
+  "@hcSourceWatch": {
+    "description": "Board 15 · hc.source_watch",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "hcWatchReports": "Watch reports {start}–{end} · {min} min",
+  "@hcWatchReports": {
+    "description": "Board 15 · hc.watch_reports — der abweichende Fremdwert, violett hinterlegt",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "hcFieldSets": "Sets",
+  "@hcFieldSets": {
+    "description": "Board 15 · Beschriftung im Folgen-Panel"
+  },
+  "hcFieldEffort": "Effort",
+  "@hcFieldEffort": {
+    "description": "Board 15 · Beschriftung im Folgen-Panel"
+  },
+  "hcFieldWatchSession": "Watch session",
+  "@hcFieldWatchSession": {
+    "description": "Board 15 · hc.unlink_back_to_inbox, als Zeile im Folgen-Panel"
+  },
+  "hcBackToInbox": "back to the inbox",
+  "@hcBackToInbox": {
+    "description": "Board 15 · hc.unlink_back_to_inbox"
+  },
+  "hcPermSection": "Health Connect",
+  "@hcPermSection": {
+    "description": "Board 15 · hc.perm_section — Abschnitt in den Einstellungen"
+  },
+  "hcPermWeight": "Body weight",
+  "@hcPermWeight": {
+    "description": "Board 15 · hc.perm_weight"
+  },
+  "hcPermSessions": "Exercise sessions",
+  "@hcPermSessions": {
+    "description": "Board 15 · hc.perm_sessions"
+  },
+  "hcPermGrant": "Grant",
+  "@hcPermGrant": {
+    "description": "Board 15 · hc.perm_grant"
+  },
+  "hcPermInstall": "Install",
+  "@hcPermInstall": {
+    "description": "Board 15 · D1 — führt in den Play Store, ohne Ausrufezeichen"
+  },
+  "hcStateMissing": "Health Connect missing",
+  "@hcStateMissing": {
+    "description": "Board 15 · D1 — Zustand beider Zeilen"
+  },
+  "hcStateDenied": "Not granted",
+  "@hcStateDenied": {
+    "description": "Board 15 · D2 — Zustand einer Zeile"
+  },
+  "hcStateGranted": "Granted",
+  "@hcStateGranted": {
+    "description": "Board 15 · D3 — Zustand einer Zeile"
+  },
+  "hcStateGrantedSince": "Granted · last {date}",
+  "@hcStateGrantedSince": {
+    "description": "Board 15 · D3/D4 — Zustand mit Lesemarke",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcStateGrantedEmpty": "Granted · nothing found",
+  "@hcStateGrantedEmpty": {
+    "description": "Board 15 · D4 — ein leerer Zeitraum ist kein Fehler"
+  },
+  "hcStateRevoked": "Access revoked",
+  "@hcStateRevoked": {
+    "description": "Board 15 · D5 — Zustand einer Zeile"
+  },
+  "hcStateRevokedKept": "{n, plural, one{Revoked · 1 imported stays} other{Revoked · {n} imported stay}}",
+  "@hcStateRevokedKept": {
+    "description": "Board 15 · D5 — zuerst, was bleibt, dann was aufhört",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcPermMissingNote": "Health Connect is not set up on this device. ATEM works without it — weight and sessions are kept by hand.",
+  "@hcPermMissingNote": {
+    "description": "Board 15 · hc.perm_missing"
+  },
+  "hcPermNoneNote": "Nothing granted. ATEM reads only once you allow it per data type.",
+  "@hcPermNoneNote": {
+    "description": "Board 15 · hc.perm_none"
+  },
+  "hcPermPartialNote": "Weight is read, sessions are not. The inbox in your history appears with the second grant.",
+  "@hcPermPartialNote": {
+    "description": "Board 15 · hc.perm_partial"
+  },
+  "hcPermEmptyNote": "Last checked {time}, no new sessions found.",
+  "@hcPermEmptyNote": {
+    "description": "Board 15 · hc.perm_empty — die Lesemarke als Tatsache",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hcPermRevokedNote": "{n, plural, one{1 imported session stays as it is.} other{{n} imported sessions stay as they are.}} New ones are no longer read.",
+  "@hcPermRevokedNote": {
+    "description": "Board 15 · hc.perm_revoked — kein Countdown, kein Ausrufezeichen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcPermRowA11y": "{type}, {state}. {action}.",
+  "@hcPermRowA11y": {
+    "description": "Board 15 · A11y der Berechtigungszeile — Zustand vor Aktion",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      },
+      "action": {
+        "type": "String"
+      }
+    }
   }
 }

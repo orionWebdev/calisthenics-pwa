@@ -40,7 +40,7 @@ class FirestoreAccountRepository implements AccountRepository {
   /// Unter-Sammlungen als verwaiste Dokumente stehen — unsichtbar in der
   /// Konsole, aber vorhanden. Bei einer Kontolöschung wäre genau das der
   /// schwerste Fehler, den man machen kann.
-  static const profileSubcollections = ['bodyWeights'];
+  static const profileSubcollections = ['bodyWeights', 'healthSessions'];
 
   /// Firestore nimmt höchstens 500 Schreibvorgänge je Stapel.
   static const _batchLimit = 450;

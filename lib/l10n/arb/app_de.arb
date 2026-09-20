@@ -9347,5 +9347,447 @@
   "weightLoadingA11y": "Gewichtsverlauf lädt",
   "@weightLoadingA11y": {
     "description": "Board 14 · A5 — Ladezustand, liveRegion polite"
+  },
+  "hcInboxTitle": "{n, plural, one{1 Einheit aus Health Connect} other{{n} Einheiten aus Health Connect}}",
+  "@hcInboxTitle": {
+    "description": "Board 15 · hc.inbox_title — Kopf des Eingangs mit Zähler",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcInboxMeta": "Gelesen {time} · warten auf Prüfung",
+  "@hcInboxMeta": {
+    "description": "Board 15 · hc.inbox_meta",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hcInboxAction": "Prüfen",
+  "@hcInboxAction": {
+    "description": "Board 15 · hc.inbox_action"
+  },
+  "hcRowUnreviewed": "Ungeprüft · zählt noch nicht",
+  "@hcRowUnreviewed": {
+    "description": "Board 15 · hc.row_unreviewed — Metazeile der wartenden Zeile"
+  },
+  "hcSheetKicker": "Aus Health Connect · {i} von {n}",
+  "@hcSheetKicker": {
+    "description": "Board 15 · hc.sheet_kicker",
+    "placeholders": {
+      "i": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcSheetTitle": "Einheit prüfen · {i} von {n}",
+  "@hcSheetTitle": {
+    "description": "Board 15 · Titel des Prüfblatts. Das Board setzt „Einheit aus Health Connect prüfen, 1 von 3\" — bei 200 % Systemschrift auf 320 dp läuft das Blatt damit über, und Kürzen ist verboten. „Aus Health Connect\" sagen die HC-Kapsel und der Inhalt ohnehin.",
+    "placeholders": {
+      "i": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcFieldDuration": "Dauer",
+  "@hcFieldDuration": {
+    "description": "Board 15 · hc.field_duration"
+  },
+  "hcFieldHrAvg": "Ø Puls",
+  "@hcFieldHrAvg": {
+    "description": "Board 15 · hc.field_hr_avg"
+  },
+  "hcFieldHrMax": "Max",
+  "@hcFieldHrMax": {
+    "description": "Board 15 · hc.field_hr_max"
+  },
+  "hcMoreDeviceValues": "{n, plural, one{1 weitere Angabe vom Gerät} other{Weitere Angaben vom Gerät · {n}}}",
+  "@hcMoreDeviceValues": {
+    "description": "Board 15 · hc.more_device_values",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcAccept": "Übernehmen",
+  "@hcAccept": {
+    "description": "Board 15 · hc.accept"
+  },
+  "hcAcceptWithoutEffort": "Ohne Anstrengung übernehmen",
+  "@hcAcceptWithoutEffort": {
+    "description": "Board 15 · hc.accept_without_effort — das Label ist die Warnung"
+  },
+  "hcDecline": "Nicht übernehmen",
+  "@hcDecline": {
+    "description": "Board 15 · hc.decline"
+  },
+  "hcNoEffortNote": "Ohne Anstrengung fehlt diese Einheit in der Trainingslast — sie wird nicht geschätzt.",
+  "@hcNoEffortNote": {
+    "description": "Board 15 · hc.no_effort_note — die eine erlaubte Hinweiszeile"
+  },
+  "hcContinueLater": "Später fortsetzen",
+  "@hcContinueLater": {
+    "description": "Board 15 · hc.continue_later"
+  },
+  "hcAcceptedSnack": "{type} {date} übernommen",
+  "@hcAcceptedSnack": {
+    "description": "Board 15 · hc.accepted_snack",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcDeclinedSnack": "Nicht übernommen · {date}",
+  "@hcDeclinedSnack": {
+    "description": "Board 15 · hc.declined_snack",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcDeclinedSection": "Abgelehnt",
+  "@hcDeclinedSection": {
+    "description": "Board 15 · hc.declined_section"
+  },
+  "hcDeclinedMeta": "Abgelehnt am {date}",
+  "@hcDeclinedMeta": {
+    "description": "Board 15 · hc.declined_meta",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcDeclinedRestore": "Doch übernehmen",
+  "@hcDeclinedRestore": {
+    "description": "Board 15 · hc.declined_restore"
+  },
+  "hcDeclinedNote": "Wird beim nächsten Lesen nicht erneut vorgeschlagen.",
+  "@hcDeclinedNote": {
+    "description": "Board 15 · hc.declined_note"
+  },
+  "hcOriginWatch": "aus der Uhr",
+  "@hcOriginWatch": {
+    "description": "Board 15 · hc.origin_watch — Herkunft als Wort ab 130 % Schrift"
+  },
+  "hcOriginBoth": "App + Uhr",
+  "@hcOriginBoth": {
+    "description": "Board 15 · hc.origin_both"
+  },
+  "hcOriginMissingEffort": "ohne Anstrengung",
+  "@hcOriginMissingEffort": {
+    "description": "Board 15 · hc.origin_missing_effort — Tatsache, keine Mahnung"
+  },
+  "hcReadError": "Health Connect nicht erreichbar",
+  "@hcReadError": {
+    "description": "Board 15 · hc.read_error"
+  },
+  "hcReadErrorMeta": "Zuletzt gelesen {date}",
+  "@hcReadErrorMeta": {
+    "description": "Board 15 · hc.read_error_meta",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcRetry": "Erneut",
+  "@hcRetry": {
+    "description": "Board 15 · hc.retry"
+  },
+  "hcReading": "Health Connect wird gelesen",
+  "@hcReading": {
+    "description": "Board 15 · hc.reading"
+  },
+  "hcRowA11y": "{title}, {meta}, aus der Uhr, ungeprüft, zählt noch nicht. Prüfen.",
+  "@hcRowA11y": {
+    "description": "Board 15 · A11y der wartenden Zeile — ein Knoten",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "meta": {
+        "type": "String"
+      }
+    }
+  },
+  "hcInboxA11y": "{count} warten auf Prüfung, gelesen {time}. Prüfen.",
+  "@hcInboxA11y": {
+    "description": "Board 15 · A11y des Eingangskopfs",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hcPairQuestion": "Gehört das zu deiner Krafteinheit?",
+  "@hcPairQuestion": {
+    "description": "Board 15 · hc.pair_question — die Vermutung wird als Frage gestellt"
+  },
+  "hcPairAppRow": "Deine App-Einheit",
+  "@hcPairAppRow": {
+    "description": "Board 15 · hc.pair_app_row"
+  },
+  "hcPairWatchRow": "Aus der Uhr",
+  "@hcPairWatchRow": {
+    "description": "Board 15 · hc.pair_watch_row"
+  },
+  "hcPairOverlap": "Überlappung {x} von {y} min der kürzeren Einheit · Start {d} min auseinander",
+  "@hcPairOverlap": {
+    "description": "Board 15 · hc.pair_overlap — die Begründung der Vermutung, in Zahlen",
+    "placeholders": {
+      "x": {
+        "type": "int"
+      },
+      "y": {
+        "type": "int"
+      },
+      "d": {
+        "type": "int"
+      }
+    }
+  },
+  "hcPairMerge": "Zusammenführen",
+  "@hcPairMerge": {
+    "description": "Board 15 · hc.pair_merge"
+  },
+  "hcPairKeepApart": "Getrennt lassen",
+  "@hcPairKeepApart": {
+    "description": "Board 15 · hc.pair_keep_apart"
+  },
+  "hcMergeStage1Title": "Zusammenführen — das ändert sich",
+  "@hcMergeStage1Title": {
+    "description": "Board 15 · hc.merge_stage1_title"
+  },
+  "hcUnlinkStage1Title": "Verbindung lösen — das ändert sich",
+  "@hcUnlinkStage1Title": {
+    "description": "Board 15 · hc.unlink_stage1_title"
+  },
+  "hcMergeStays": "{value} bleibt",
+  "@hcMergeStays": {
+    "description": "Board 15 · hc.merge_stays — die Zeilen, die sagen, was gleich bleibt",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "hcMergeGains": "wird {value}",
+  "@hcMergeGains": {
+    "description": "Board 15 · eine Grösse, die hinzukommt; der Pfeil wird nie vorgelesen",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "hcMergeLoses": "entfällt",
+  "@hcMergeLoses": {
+    "description": "Board 15 · eine Grösse, die beim Lösen wegfällt"
+  },
+  "hcMergeDurationNote": "Dauer bleibt bei der App: {app} min. Die Uhr meldet {watch} min.",
+  "@hcMergeDurationNote": {
+    "description": "Board 15 · hc.merge_duration_note — bei Widerspruch gewinnt die App",
+    "placeholders": {
+      "app": {
+        "type": "int"
+      },
+      "watch": {
+        "type": "int"
+      }
+    }
+  },
+  "hcMergedSnack": "Zusammengeführt · Puls übernommen",
+  "@hcMergedSnack": {
+    "description": "Board 15 · hc.merged_snack"
+  },
+  "hcUnlinkedSnack": "Verbindung gelöst · Uhr-Einheit zurück im Eingang",
+  "@hcUnlinkedSnack": {
+    "description": "Board 15 · Meldung nach dem Lösen"
+  },
+  "hcAmbiguousNote": "Mehrere App-Einheiten liegen in diesem Zeitraum. ATEM ordnet nicht zu, wenn die Zuordnung nicht eindeutig ist.",
+  "@hcAmbiguousNote": {
+    "description": "Board 15 · hc.ambiguous_note"
+  },
+  "hcAmbiguousPick": "Wählen",
+  "@hcAmbiguousPick": {
+    "description": "Board 15 · hc.ambiguous_pick"
+  },
+  "hcAmbiguousStandalone": "Als eigene Einheit prüfen",
+  "@hcAmbiguousStandalone": {
+    "description": "Board 15 · hc.ambiguous_standalone"
+  },
+  "hcUnlink": "Verbindung lösen",
+  "@hcUnlink": {
+    "description": "Board 15 · hc.unlink"
+  },
+  "hcSourcesLabel": "Quellen",
+  "@hcSourcesLabel": {
+    "description": "Board 15 · hc.sources_label"
+  },
+  "hcSourceApp": "App · Sätze, Dauer, Anstrengung",
+  "@hcSourceApp": {
+    "description": "Board 15 · hc.source_app"
+  },
+  "hcSourceWatch": "{device} · Puls, Kalorien",
+  "@hcSourceWatch": {
+    "description": "Board 15 · hc.source_watch",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "hcWatchReports": "Uhr meldet {start}–{end} · {min} min",
+  "@hcWatchReports": {
+    "description": "Board 15 · hc.watch_reports — der abweichende Fremdwert, violett hinterlegt",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "hcFieldSets": "Sätze",
+  "@hcFieldSets": {
+    "description": "Board 15 · Beschriftung im Folgen-Panel"
+  },
+  "hcFieldEffort": "Anstrengung",
+  "@hcFieldEffort": {
+    "description": "Board 15 · Beschriftung im Folgen-Panel"
+  },
+  "hcFieldWatchSession": "Uhr-Einheit",
+  "@hcFieldWatchSession": {
+    "description": "Board 15 · hc.unlink_back_to_inbox, als Zeile im Folgen-Panel"
+  },
+  "hcBackToInbox": "zurück in den Eingang",
+  "@hcBackToInbox": {
+    "description": "Board 15 · hc.unlink_back_to_inbox"
+  },
+  "hcPermSection": "Health Connect",
+  "@hcPermSection": {
+    "description": "Board 15 · hc.perm_section — Abschnitt in den Einstellungen"
+  },
+  "hcPermWeight": "Körpergewicht",
+  "@hcPermWeight": {
+    "description": "Board 15 · hc.perm_weight"
+  },
+  "hcPermSessions": "Trainingseinheiten",
+  "@hcPermSessions": {
+    "description": "Board 15 · hc.perm_sessions"
+  },
+  "hcPermGrant": "Freigeben",
+  "@hcPermGrant": {
+    "description": "Board 15 · hc.perm_grant"
+  },
+  "hcPermInstall": "Installieren",
+  "@hcPermInstall": {
+    "description": "Board 15 · D1 — führt in den Play Store, ohne Ausrufezeichen"
+  },
+  "hcStateMissing": "Health Connect fehlt",
+  "@hcStateMissing": {
+    "description": "Board 15 · D1 — Zustand beider Zeilen"
+  },
+  "hcStateDenied": "Nicht freigegeben",
+  "@hcStateDenied": {
+    "description": "Board 15 · D2 — Zustand einer Zeile"
+  },
+  "hcStateGranted": "Freigegeben",
+  "@hcStateGranted": {
+    "description": "Board 15 · D3 — Zustand einer Zeile"
+  },
+  "hcStateGrantedSince": "Freigegeben · zuletzt {date}",
+  "@hcStateGrantedSince": {
+    "description": "Board 15 · D3/D4 — Zustand mit Lesemarke",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "hcStateGrantedEmpty": "Freigegeben · nichts gefunden",
+  "@hcStateGrantedEmpty": {
+    "description": "Board 15 · D4 — ein leerer Zeitraum ist kein Fehler"
+  },
+  "hcStateRevoked": "Zugriff entzogen",
+  "@hcStateRevoked": {
+    "description": "Board 15 · D5 — Zustand einer Zeile"
+  },
+  "hcStateRevokedKept": "{n, plural, one{Entzogen · 1 übernommene bleibt} other{Entzogen · {n} übernommene bleiben}}",
+  "@hcStateRevokedKept": {
+    "description": "Board 15 · D5 — zuerst, was bleibt, dann was aufhört",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcPermMissingNote": "Health Connect ist auf diesem Gerät nicht eingerichtet. ATEM funktioniert ohne — Gewicht und Einheiten werden von Hand geführt.",
+  "@hcPermMissingNote": {
+    "description": "Board 15 · hc.perm_missing"
+  },
+  "hcPermNoneNote": "Nichts freigegeben. ATEM liest erst, wenn du es je Datentyp erlaubst.",
+  "@hcPermNoneNote": {
+    "description": "Board 15 · hc.perm_none"
+  },
+  "hcPermPartialNote": "Gewicht wird gelesen, Einheiten nicht. Der Eingang im Verlauf erscheint erst mit der zweiten Freigabe.",
+  "@hcPermPartialNote": {
+    "description": "Board 15 · hc.perm_partial"
+  },
+  "hcPermEmptyNote": "Zuletzt geprüft {time}, keine neuen Einheiten gefunden.",
+  "@hcPermEmptyNote": {
+    "description": "Board 15 · hc.perm_empty — die Lesemarke als Tatsache",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hcPermRevokedNote": "{n, plural, one{1 übernommene Einheit bleibt, wie sie ist.} other{{n} übernommene Einheiten bleiben, wie sie sind.}} Neue werden nicht mehr gelesen.",
+  "@hcPermRevokedNote": {
+    "description": "Board 15 · hc.perm_revoked — kein Countdown, kein Ausrufezeichen",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcPermRowA11y": "{type}, {state}. {action}.",
+  "@hcPermRowA11y": {
+    "description": "Board 15 · A11y der Berechtigungszeile — Zustand vor Aktion",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      },
+      "action": {
+        "type": "String"
+      }
+    }
   }
 }

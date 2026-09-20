@@ -6,6 +6,7 @@ import '../core/theme/theme.dart';
 import '../core/widgets/widgets.dart';
 import '../features/cardio/presentation/screens/cardio_screen.dart';
 import '../features/dashboard/presentation/widgets/floating_nav.dart';
+import '../features/health_import/application/health_import_providers.dart';
 import '../features/history/application/history_providers.dart';
 import '../features/hybrid/presentation/screens/hybrid_screen.dart';
 import '../features/recovery/presentation/screens/recovery_screen.dart';
@@ -45,7 +46,7 @@ class AppShell extends ConsumerStatefulWidget {
 }
 
 class _AppShellState extends ConsumerState<AppShell>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final _keys = [
     for (final _ in AppTab.values) GlobalKey<NavigatorState>(),
   ];
@@ -67,7 +68,36 @@ class _AppShellState extends ConsumerState<AppShell>
   );
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Beim Start einmal — danach bei jeder Rückkehr in den Vordergrund.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _readHealthConnect());
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _readHealthConnect();
+  }
+
+  /// Liest Health Connect — **beim Öffnen, nicht im Hintergrund**.
+  ///
+  /// Kein Dienst, keine Benachrichtigung, keine Berechtigung mehr (Board 15,
+  /// Entscheidung 3). Und **ohne zu fragen**: Ein Lesen, das von sich aus den
+  /// Systemdialog öffnet, überfiele jeden, der die App aus einem anderen
+  /// Grund gestartet hat. Gefragt wird nur in den Einstellungen, wo jemand
+  /// danach gefragt hat.
+  ///
+  /// Ohne Freigabe kehrt der Lauf sofort zurück; was er findet, legt er als
+  /// ungeprüft an. Sichtbar wird es als Zeile im Verlauf, nicht als Blatt.
+  void _readHealthConnect() {
+    if (!mounted) return;
+    ref.read(healthImportControllerProvider.notifier).refresh();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _fadeController.dispose();
     super.dispose();
   }

@@ -162,6 +162,15 @@ class FirestoreSessionRepository implements SessionRepository {
   }
 
   @override
+  Future<void> linkHealthSession(String id, String? healthSessionId) =>
+      _db.collection(collection).doc(id).update({
+        // `delete()` und nicht `null`: Ein gelöster Verweis muss weg sein,
+        // nicht leer dastehen — der Mapper läse `null` sonst als „kein
+        // Verweis", aber jede Abfrage nach dem Feld fände das Dokument.
+        'healthSessionId': healthSessionId ?? FieldValue.delete(),
+      });
+
+  @override
   Future<void> deleteSession(String id) async {
     final document = _db.collection(collection).doc(id);
 
@@ -263,6 +272,11 @@ class FirestoreSessionRepository implements SessionRepository {
         'preWorkoutEnergy': draft.preWorkoutReadiness,
       if (draft.postWorkoutFeeling != null)
         'postWorkoutFeeling': draft.postWorkoutFeeling,
+      // Herkunft (Board 15). Beide Felder fehlen an jeder Einheit, die in
+      // der App entstanden ist — das ist der Normalfall.
+      if (draft.healthSessionId != null)
+        'healthSessionId': draft.healthSessionId,
+      if (draft.fromHealth) 'fromHealth': true,
       // Sekunden nur, wenn sie echt sind — aus einer Uhr, nicht aus einer
       // getippten Minutenzahl. Der Mapper liest `durationSec` mit Vorrang.
       if (draft.durationHasSeconds) 'durationSec': draft.duration.inSeconds,

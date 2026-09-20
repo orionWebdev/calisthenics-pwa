@@ -27,6 +27,8 @@ class SessionDraft {
     this.preWorkoutReadiness,
     this.postWorkoutFeeling,
     this.workoutFocus,
+    this.healthSessionId,
+    this.fromHealth = false,
   });
 
   final String userId;
@@ -88,4 +90,12 @@ class SessionDraft {
   /// werden zusätzlich als `durationSec` geschrieben. Eine getippte
   /// Minutenzahl bekommt keine erfundenen Sekunden.
   final bool durationHasSeconds;
+
+  /// Die Health-Connect-Kennung, aus der diese Einheit entstanden ist
+  /// (Board 15). Der Uhr-Datensatz bleibt daneben liegen — deshalb ein
+  /// Verweis und keine Kopie.
+  final String? healthSessionId;
+
+  /// Ob die Einheit aus der Uhr stammt. Siehe [TrainingSession.origin].
+  final bool fromHealth;
 }

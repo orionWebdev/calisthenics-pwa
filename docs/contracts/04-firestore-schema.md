@@ -254,6 +254,62 @@ Zwei Folgen, die leicht übersehen werden:
    vorhanden. `FirestoreAccountRepository.profileSubcollections` löscht und exportiert sie
    deshalb ausdrücklich; aus den sechs Sammlungen der Kontolöschung sind sieben geworden.
 
+### `userProfiles/{uid}/healthSessions` — neu am 20.09.2026 (Board 15)
+
+Die aus Health Connect gelesenen Uhr-Einheiten. Eine eigene Sammlung, **nicht `sessions`**
+— und das ist die tragende Entscheidung des Moduls, nicht eine Ablagefrage.
+
+`sessions` ist die Sammlung, die zählt: Last, ACWR, Muskelbalance, Sätze je Woche, harte
+Sätze, Verteilung, Verhältnis, Bereitschaft. Ein wartender, ungeprüfter Datensatz darf auf
+keine einzige dieser Zahlen wirken. Über ein Feld in `sessions` wäre das nur durchzuhalten,
+solange **jede** dieser Rechnungen den Filter mitschreibt; vergisst eine von zwölf ihn,
+zählt Ungeprüftes mit, und niemand sieht es. Getrennt liegt die Grenze in der Form der
+Daten statt in der Disziplin jeder einzelnen Rechnung.
+
+| Feld | Typ | Bemerkung |
+|---|---|---|
+| — (Dokument-ID) | `string` | Die Health-Connect-Kennung, `/` durch `_` ersetzt (Firestore verbietet den Schrägstrich). **Damit ist „ein Datensatz aus der Quelle, ein Dokument" die Form der Daten.** Zweimal Lesen legt nie ein zweites Dokument an. |
+| `externalId` | `string` | Die **rohe** Kennung. Die Dokument-ID ist gesäubert, der Abgleich mit Health Connect läuft über diesen Wert. |
+| `state` | `string` | `pending`, `accepted` oder `rejected`. Unbekannte Werte werden als `pending` gelesen — ein Zustand aus einer späteren Fassung darf einen Datensatz nicht verschwinden lassen. |
+| `start`, `end` | `timestamp` | Ohne Zeitraum ist der Datensatz wertlos: Er liesse sich weder prüfen noch paaren. Ein Dokument ohne beide wird übergangen. |
+| `sourceId` | `string` | Das schreibende Paket. Der Schutz gegen die Schleife, sollte ATEM je eigene Einheiten zurückschreiben. |
+| `deviceName` | `string?` | Der lesbare Name für die Oberfläche — „Garmin". |
+| `activity` | `string?` | Wie die Uhr das Training nennt. **Nie eine Paar-Bedingung** — Uhren melden Krafttraining regelmässig als „Andere". |
+| `averageHeartRate`, `maxHeartRate` | `number?` | Health Connect liefert keinen Ø-Puls; er entsteht im Gateway aus den Pulspunkten im Zeitfenster der Einheit. |
+| `calories`, `distanceKm` | `number?` | |
+| `sessionId` | `string?` | Die App-Einheit, sobald übernommen oder zusammengeführt. Beim Lösen wird das Feld **entfernt**, nicht auf `null` gesetzt — `merge` liesse den alten Verweis sonst stehen. |
+| `decidedAt` | `timestamp?` | Wann angenommen oder abgelehnt wurde. |
+| `seenAt` | `timestamp` | Wann ATEM den Datensatz zum ersten Mal gelesen hat. |
+
+**Abgelehnt heisst abgelehnt und gemerkt, nicht gelöscht.** Ohne dieses Gedächtnis läge
+derselbe Datensatz beim nächsten Lesen wieder im Eingang — die schnellste Art, eine Funktion
+unbenutzbar zu machen. Löschen wäre ohnehin unmöglich: Der Datensatz gehört Health Connect.
+Gelöscht wird hier allein bei der Kontolöschung.
+
+### `userProfiles/{uid}.healthSessionsReadAt` — die Lesemarke
+
+Ein Profilfeld, kein Dokument in einer Unter-Sammlung: ein einzelner Zeitpunkt,
+überschreibbar, ohne Vergangenheit. Gelesen wird beim Öffnen der App gegen diese Marke, nie
+der ganze Bestand; fehlt sie, dreissig Tage zurück. Weiter zurück gibt Health Connect ohne
+die zusätzliche Berechtigung `READ_HEALTH_DATA_HISTORY` nichts heraus, und ein voller
+Bestandsimport erzeugte einen Eingang, den niemand durcharbeitet.
+
+### `sessions` bekommt zwei Felder — die Herkunft
+
+| Feld | Typ | Bemerkung |
+|---|---|---|
+| `healthSessionId` | `string?` | Die Kennung der verknüpften Uhr-Einheit. **Eine Verknüpfung, kein Überschreiben:** Der Uhr-Datensatz liegt als eigenes Dokument daneben und behält alles, was er mitbrachte. Deshalb ist „Verbindung lösen" verlustfrei. |
+| `fromHealth` | `bool` | Ob die Einheit **aus** der Uhr entstanden ist. Nicht dasselbe wie ein Verweis: Eine in der App geführte Einheit kann mit einer Uhr-Einheit verknüpft sein, ohne aus ihr zu stammen. |
+
+Beide fehlen in jedem Dokument von vor dem 20.09.2026 — das ist der Normalfall und heisst
+„in der App geführt". Aus beiden zusammen folgen die drei Punktformen der Einheitenzeile:
+gefüllt (nur App), hohl (nur Uhr), Ring mit Kern (beides). Die vierte Form — gestrichelt,
+„ungeprüft" — gehört keiner Einheit, sondern einem Dokument in `healthSessions`.
+
+**Keine Grösse hat zwei Quellen.** Sätze, Dauer, Anstrengung und Notiz kommen aus der App,
+Puls und Kalorien aus der Uhr. Es wird nie gemittelt und nie gewählt, es wird zugeordnet —
+deshalb steht hier auch keine Quellenkarte je Feld, sondern nur der Verweis.
+
 ## `allowedUsers`
 
 Zwei Felder: `email`, `enabled`. Das ist die Zugangsliste der geschlossenen Beta aus Stufe 7.

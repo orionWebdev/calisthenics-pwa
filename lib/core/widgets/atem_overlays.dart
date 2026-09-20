@@ -55,6 +55,27 @@ class AtemSheet extends StatelessWidget {
     this.secondaryAction,
   });
 
+  /// Dieselbe Anatomie, aber selbst gebaut — für ein Blatt, dessen **Fussweg
+  /// sich mit dem Inhalt ändert**.
+  ///
+  /// [show] friert die Aktionen beim Öffnen ein. Das Prüfblatt aus Board 15
+  /// kann das nicht: Sein Hauptknopf heisst „Übernehmen", solange eine
+  /// Anstrengung gewählt ist, und „Ohne Anstrengung übernehmen", wenn nicht —
+  /// das Label **ist** dort die Warnung.
+  ///
+  /// Wer diesen Weg nimmt, ruft `showModalBottomSheet` selbst auf und
+  /// übernimmt dessen Einstellungen aus [show] unverändert: Wurzel-Navigator,
+  /// `isScrollControlled`, `useSafeArea`, durchsichtiger Grund, der Verdunkler
+  /// aus [AtemOverlays] und **kein** Material-Griff.
+  const AtemSheet.content({
+    super.key,
+    required this.title,
+    required this.child,
+    required this.closeLabel,
+    this.primaryAction,
+    this.secondaryAction,
+  });
+
   final String title;
   final Widget child;
 

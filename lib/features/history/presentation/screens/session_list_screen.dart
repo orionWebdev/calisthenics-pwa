@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../health_import/application/health_import_providers.dart';
+import '../../../health_import/presentation/pending_in_timeline.dart';
+import '../../../health_import/presentation/widgets/health_inbox.dart';
 import '../../application/history_providers.dart';
 import '../../domain/history_timeline.dart';
 import '../../domain/training_session.dart';
@@ -113,21 +116,40 @@ class SessionListScreen extends ConsumerWidget {
     // jedem Scrollframe über die volle Breite neu gerechnet würde
     // (Entscheidung 12). Dafür ist die Liste in Slivers gruppiert: je Monat
     // ein Kopf und die Zeilen darunter.
-    final groups = <List<TimelineEntry>>[];
-    for (final entry in entries) {
-      if (entry is MonthHeader || groups.isEmpty) groups.add([]);
-      groups.last.add(entry);
+    // **Einmal mischen, dann gruppieren.** Andersherum bekäme jede
+    // Monatsgruppe denselben Stapel wartender Einheiten — sie stünden so oft
+    // in der Liste, wie es Monate gibt.
+    final listed = mergePendingIntoTimeline(
+      entries,
+      ref.watch(healthInboxProvider).pending,
+    );
+
+    final groups = <List<ListedEntry>>[];
+    for (final item in listed) {
+      final isHeader =
+          item is ListedTimeline && item.entry is MonthHeader;
+      if (isHeader || groups.isEmpty) groups.add([]);
+      groups.last.add(item);
     }
 
     return CustomScrollView(
       slivers: [
+        // Der Eingang steht über der Liste — ein Ort **und** ein Datum
+        // (Board 15, Entscheidung 4). Er rendert nicht, wenn nichts wartet.
+        const SliverPadding(
+          padding: EdgeInsets.fromLTRB(
+              AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 0),
+          sliver: SliverToBoxAdapter(child: HealthInboxHeader()),
+        ),
         for (final group in groups)
           if (group.first
-              case MonthHeader(
-                :final year,
-                :final month,
-                :final sessions,
-                :final load
+              case ListedTimeline(
+                entry: MonthHeader(
+                  :final year,
+                  :final month,
+                  :final sessions,
+                  :final load
+                )
               ))
             SliverMainAxisGroup(
               slivers: [
@@ -154,6 +176,11 @@ class SessionListScreen extends ConsumerWidget {
                   horizontal: AtemSpacing.screenPadding),
               sliver: _blocks(group),
             ),
+        const SliverPadding(
+          padding: EdgeInsets.symmetric(
+              horizontal: AtemSpacing.screenPadding),
+          sliver: SliverToBoxAdapter(child: HealthDeclinedList()),
+        ),
         const SliverToBoxAdapter(child: SizedBox(height: 32)),
       ],
     );
@@ -169,7 +196,7 @@ class SessionListScreen extends ConsumerWidget {
   /// Streifen dazwischen. Vorher trug jede Zeile ihre eigene Karte — die
   /// Liste zerfiel damit in gleich aussehende Kacheln, an denen der Monat
   /// nicht mehr ablesbar war.
-  Widget _blocks(Iterable<TimelineEntry> entries) {
+  Widget _blocks(Iterable<ListedEntry> items) {
     final blocks = <Widget>[];
     var run = <TimelineSession>[];
 
@@ -179,7 +206,15 @@ class SessionListScreen extends ConsumerWidget {
       run = <TimelineSession>[];
     }
 
-    for (final entry in entries) {
+    for (final item in items) {
+      // Eine wartende Einheit unterbricht den Block: Sie liegt nicht in
+      // derselben Karte wie die Einheiten, die zählen.
+      if (item case ListedPending(:final session)) {
+        flush();
+        blocks.add(HealthPendingRow(session: session));
+        continue;
+      }
+      final entry = (item as ListedTimeline).entry;
       switch (entry) {
         case TimelineSession():
           run.add(entry);

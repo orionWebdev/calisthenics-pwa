@@ -6361,4 +6361,301 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get weightLoadingA11y => 'Gewichtsverlauf lädt';
+
+  @override
+  String hcInboxTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten aus Health Connect',
+      one: '1 Einheit aus Health Connect',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hcInboxMeta(String time) {
+    return 'Gelesen $time · warten auf Prüfung';
+  }
+
+  @override
+  String get hcInboxAction => 'Prüfen';
+
+  @override
+  String get hcRowUnreviewed => 'Ungeprüft · zählt noch nicht';
+
+  @override
+  String hcSheetKicker(int i, int n) {
+    return 'Aus Health Connect · $i von $n';
+  }
+
+  @override
+  String hcSheetTitle(int i, int n) {
+    return 'Einheit prüfen · $i von $n';
+  }
+
+  @override
+  String get hcFieldDuration => 'Dauer';
+
+  @override
+  String get hcFieldHrAvg => 'Ø Puls';
+
+  @override
+  String get hcFieldHrMax => 'Max';
+
+  @override
+  String hcMoreDeviceValues(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Weitere Angaben vom Gerät · $n',
+      one: '1 weitere Angabe vom Gerät',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hcAccept => 'Übernehmen';
+
+  @override
+  String get hcAcceptWithoutEffort => 'Ohne Anstrengung übernehmen';
+
+  @override
+  String get hcDecline => 'Nicht übernehmen';
+
+  @override
+  String get hcNoEffortNote =>
+      'Ohne Anstrengung fehlt diese Einheit in der Trainingslast — sie wird nicht geschätzt.';
+
+  @override
+  String get hcContinueLater => 'Später fortsetzen';
+
+  @override
+  String hcAcceptedSnack(String type, String date) {
+    return '$type $date übernommen';
+  }
+
+  @override
+  String hcDeclinedSnack(String date) {
+    return 'Nicht übernommen · $date';
+  }
+
+  @override
+  String get hcDeclinedSection => 'Abgelehnt';
+
+  @override
+  String hcDeclinedMeta(String date) {
+    return 'Abgelehnt am $date';
+  }
+
+  @override
+  String get hcDeclinedRestore => 'Doch übernehmen';
+
+  @override
+  String get hcDeclinedNote =>
+      'Wird beim nächsten Lesen nicht erneut vorgeschlagen.';
+
+  @override
+  String get hcOriginWatch => 'aus der Uhr';
+
+  @override
+  String get hcOriginBoth => 'App + Uhr';
+
+  @override
+  String get hcOriginMissingEffort => 'ohne Anstrengung';
+
+  @override
+  String get hcReadError => 'Health Connect nicht erreichbar';
+
+  @override
+  String hcReadErrorMeta(String date) {
+    return 'Zuletzt gelesen $date';
+  }
+
+  @override
+  String get hcRetry => 'Erneut';
+
+  @override
+  String get hcReading => 'Health Connect wird gelesen';
+
+  @override
+  String hcRowA11y(String title, String meta) {
+    return '$title, $meta, aus der Uhr, ungeprüft, zählt noch nicht. Prüfen.';
+  }
+
+  @override
+  String hcInboxA11y(String count, String time) {
+    return '$count warten auf Prüfung, gelesen $time. Prüfen.';
+  }
+
+  @override
+  String get hcPairQuestion => 'Gehört das zu deiner Krafteinheit?';
+
+  @override
+  String get hcPairAppRow => 'Deine App-Einheit';
+
+  @override
+  String get hcPairWatchRow => 'Aus der Uhr';
+
+  @override
+  String hcPairOverlap(int x, int y, int d) {
+    return 'Überlappung $x von $y min der kürzeren Einheit · Start $d min auseinander';
+  }
+
+  @override
+  String get hcPairMerge => 'Zusammenführen';
+
+  @override
+  String get hcPairKeepApart => 'Getrennt lassen';
+
+  @override
+  String get hcMergeStage1Title => 'Zusammenführen — das ändert sich';
+
+  @override
+  String get hcUnlinkStage1Title => 'Verbindung lösen — das ändert sich';
+
+  @override
+  String hcMergeStays(String value) {
+    return '$value bleibt';
+  }
+
+  @override
+  String hcMergeGains(String value) {
+    return 'wird $value';
+  }
+
+  @override
+  String get hcMergeLoses => 'entfällt';
+
+  @override
+  String hcMergeDurationNote(int app, int watch) {
+    return 'Dauer bleibt bei der App: $app min. Die Uhr meldet $watch min.';
+  }
+
+  @override
+  String get hcMergedSnack => 'Zusammengeführt · Puls übernommen';
+
+  @override
+  String get hcUnlinkedSnack =>
+      'Verbindung gelöst · Uhr-Einheit zurück im Eingang';
+
+  @override
+  String get hcAmbiguousNote =>
+      'Mehrere App-Einheiten liegen in diesem Zeitraum. ATEM ordnet nicht zu, wenn die Zuordnung nicht eindeutig ist.';
+
+  @override
+  String get hcAmbiguousPick => 'Wählen';
+
+  @override
+  String get hcAmbiguousStandalone => 'Als eigene Einheit prüfen';
+
+  @override
+  String get hcUnlink => 'Verbindung lösen';
+
+  @override
+  String get hcSourcesLabel => 'Quellen';
+
+  @override
+  String get hcSourceApp => 'App · Sätze, Dauer, Anstrengung';
+
+  @override
+  String hcSourceWatch(String device) {
+    return '$device · Puls, Kalorien';
+  }
+
+  @override
+  String hcWatchReports(String start, String end, int min) {
+    return 'Uhr meldet $start–$end · $min min';
+  }
+
+  @override
+  String get hcFieldSets => 'Sätze';
+
+  @override
+  String get hcFieldEffort => 'Anstrengung';
+
+  @override
+  String get hcFieldWatchSession => 'Uhr-Einheit';
+
+  @override
+  String get hcBackToInbox => 'zurück in den Eingang';
+
+  @override
+  String get hcPermSection => 'Health Connect';
+
+  @override
+  String get hcPermWeight => 'Körpergewicht';
+
+  @override
+  String get hcPermSessions => 'Trainingseinheiten';
+
+  @override
+  String get hcPermGrant => 'Freigeben';
+
+  @override
+  String get hcPermInstall => 'Installieren';
+
+  @override
+  String get hcStateMissing => 'Health Connect fehlt';
+
+  @override
+  String get hcStateDenied => 'Nicht freigegeben';
+
+  @override
+  String get hcStateGranted => 'Freigegeben';
+
+  @override
+  String hcStateGrantedSince(String date) {
+    return 'Freigegeben · zuletzt $date';
+  }
+
+  @override
+  String get hcStateGrantedEmpty => 'Freigegeben · nichts gefunden';
+
+  @override
+  String get hcStateRevoked => 'Zugriff entzogen';
+
+  @override
+  String hcStateRevokedKept(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Entzogen · $n übernommene bleiben',
+      one: 'Entzogen · 1 übernommene bleibt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hcPermMissingNote =>
+      'Health Connect ist auf diesem Gerät nicht eingerichtet. ATEM funktioniert ohne — Gewicht und Einheiten werden von Hand geführt.';
+
+  @override
+  String get hcPermNoneNote =>
+      'Nichts freigegeben. ATEM liest erst, wenn du es je Datentyp erlaubst.';
+
+  @override
+  String get hcPermPartialNote =>
+      'Gewicht wird gelesen, Einheiten nicht. Der Eingang im Verlauf erscheint erst mit der zweiten Freigabe.';
+
+  @override
+  String hcPermEmptyNote(String time) {
+    return 'Zuletzt geprüft $time, keine neuen Einheiten gefunden.';
+  }
+
+  @override
+  String hcPermRevokedNote(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n übernommene Einheiten bleiben, wie sie sind.',
+      one: '1 übernommene Einheit bleibt, wie sie ist.',
+    );
+    return '$_temp0 Neue werden nicht mehr gelesen.';
+  }
+
+  @override
+  String hcPermRowA11y(String type, String state, String action) {
+    return '$type, $state. $action.';
+  }
 }

@@ -6343,4 +6343,299 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get weightLoadingA11y => 'Loading weight history';
+
+  @override
+  String hcInboxTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n sessions from Health Connect',
+      one: '1 session from Health Connect',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hcInboxMeta(String time) {
+    return 'Read $time · awaiting review';
+  }
+
+  @override
+  String get hcInboxAction => 'Review';
+
+  @override
+  String get hcRowUnreviewed => 'Unreviewed · not counted yet';
+
+  @override
+  String hcSheetKicker(int i, int n) {
+    return 'From Health Connect · $i of $n';
+  }
+
+  @override
+  String hcSheetTitle(int i, int n) {
+    return 'Review session · $i of $n';
+  }
+
+  @override
+  String get hcFieldDuration => 'Duration';
+
+  @override
+  String get hcFieldHrAvg => 'Avg. HR';
+
+  @override
+  String get hcFieldHrMax => 'Max';
+
+  @override
+  String hcMoreDeviceValues(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'More values from the device · $n',
+      one: '1 more value from the device',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hcAccept => 'Add to history';
+
+  @override
+  String get hcAcceptWithoutEffort => 'Add without effort';
+
+  @override
+  String get hcDecline => 'Don\'t add';
+
+  @override
+  String get hcNoEffortNote =>
+      'Without effort this session is missing from training load — it is not estimated.';
+
+  @override
+  String get hcContinueLater => 'Continue later';
+
+  @override
+  String hcAcceptedSnack(String type, String date) {
+    return '$type $date added';
+  }
+
+  @override
+  String hcDeclinedSnack(String date) {
+    return 'Not added · $date';
+  }
+
+  @override
+  String get hcDeclinedSection => 'Declined';
+
+  @override
+  String hcDeclinedMeta(String date) {
+    return 'Declined on $date';
+  }
+
+  @override
+  String get hcDeclinedRestore => 'Add after all';
+
+  @override
+  String get hcDeclinedNote => 'Will not be suggested again on the next read.';
+
+  @override
+  String get hcOriginWatch => 'from the watch';
+
+  @override
+  String get hcOriginBoth => 'app + watch';
+
+  @override
+  String get hcOriginMissingEffort => 'without effort';
+
+  @override
+  String get hcReadError => 'Health Connect unavailable';
+
+  @override
+  String hcReadErrorMeta(String date) {
+    return 'Last read $date';
+  }
+
+  @override
+  String get hcRetry => 'Retry';
+
+  @override
+  String get hcReading => 'Reading Health Connect';
+
+  @override
+  String hcRowA11y(String title, String meta) {
+    return '$title, $meta, from the watch, unreviewed, not counted yet. Review.';
+  }
+
+  @override
+  String hcInboxA11y(String count, String time) {
+    return '$count awaiting review, read $time. Review.';
+  }
+
+  @override
+  String get hcPairQuestion => 'Does this belong to your strength session?';
+
+  @override
+  String get hcPairAppRow => 'Your app session';
+
+  @override
+  String get hcPairWatchRow => 'From the watch';
+
+  @override
+  String hcPairOverlap(int x, int y, int d) {
+    return 'Overlap $x of $y min of the shorter session · starts $d min apart';
+  }
+
+  @override
+  String get hcPairMerge => 'Merge';
+
+  @override
+  String get hcPairKeepApart => 'Keep separate';
+
+  @override
+  String get hcMergeStage1Title => 'Merge — what changes';
+
+  @override
+  String get hcUnlinkStage1Title => 'Unlink — what changes';
+
+  @override
+  String hcMergeStays(String value) {
+    return '$value stays';
+  }
+
+  @override
+  String hcMergeGains(String value) {
+    return 'becomes $value';
+  }
+
+  @override
+  String get hcMergeLoses => 'is removed';
+
+  @override
+  String hcMergeDurationNote(int app, int watch) {
+    return 'Duration stays with the app: $app min. The watch reports $watch min.';
+  }
+
+  @override
+  String get hcMergedSnack => 'Merged · heart rate added';
+
+  @override
+  String get hcUnlinkedSnack => 'Unlinked · watch session back in the inbox';
+
+  @override
+  String get hcAmbiguousNote =>
+      'Several app sessions fall in this window. ATEM does not assign when the match is not unique.';
+
+  @override
+  String get hcAmbiguousPick => 'Choose';
+
+  @override
+  String get hcAmbiguousStandalone => 'Review as its own session';
+
+  @override
+  String get hcUnlink => 'Unlink';
+
+  @override
+  String get hcSourcesLabel => 'Sources';
+
+  @override
+  String get hcSourceApp => 'App · sets, duration, effort';
+
+  @override
+  String hcSourceWatch(String device) {
+    return '$device · heart rate, calories';
+  }
+
+  @override
+  String hcWatchReports(String start, String end, int min) {
+    return 'Watch reports $start–$end · $min min';
+  }
+
+  @override
+  String get hcFieldSets => 'Sets';
+
+  @override
+  String get hcFieldEffort => 'Effort';
+
+  @override
+  String get hcFieldWatchSession => 'Watch session';
+
+  @override
+  String get hcBackToInbox => 'back to the inbox';
+
+  @override
+  String get hcPermSection => 'Health Connect';
+
+  @override
+  String get hcPermWeight => 'Body weight';
+
+  @override
+  String get hcPermSessions => 'Exercise sessions';
+
+  @override
+  String get hcPermGrant => 'Grant';
+
+  @override
+  String get hcPermInstall => 'Install';
+
+  @override
+  String get hcStateMissing => 'Health Connect missing';
+
+  @override
+  String get hcStateDenied => 'Not granted';
+
+  @override
+  String get hcStateGranted => 'Granted';
+
+  @override
+  String hcStateGrantedSince(String date) {
+    return 'Granted · last $date';
+  }
+
+  @override
+  String get hcStateGrantedEmpty => 'Granted · nothing found';
+
+  @override
+  String get hcStateRevoked => 'Access revoked';
+
+  @override
+  String hcStateRevokedKept(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Revoked · $n imported stay',
+      one: 'Revoked · 1 imported stays',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hcPermMissingNote =>
+      'Health Connect is not set up on this device. ATEM works without it — weight and sessions are kept by hand.';
+
+  @override
+  String get hcPermNoneNote =>
+      'Nothing granted. ATEM reads only once you allow it per data type.';
+
+  @override
+  String get hcPermPartialNote =>
+      'Weight is read, sessions are not. The inbox in your history appears with the second grant.';
+
+  @override
+  String hcPermEmptyNote(String time) {
+    return 'Last checked $time, no new sessions found.';
+  }
+
+  @override
+  String hcPermRevokedNote(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n imported sessions stay as they are.',
+      one: '1 imported session stays as it is.',
+    );
+    return '$_temp0 New ones are no longer read.';
+  }
+
+  @override
+  String hcPermRowA11y(String type, String state, String action) {
+    return '$type, $state. $action.';
+  }
 }

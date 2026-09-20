@@ -70,6 +70,18 @@ abstract interface class SessionRepository {
   /// Notiz bleiben, wie sie waren.
   Future<void> updateSessionExercises(String id, List<LoggedExercise> exercises);
 
+  /// Verknüpft eine Einheit mit einer Uhr-Einheit — oder löst die
+  /// Verknüpfung wieder ([healthSessionId] `null`).
+  ///
+  /// **Bewusst eng**, aus demselben Grund wie [updateSessionExercises]:
+  /// [updateSession] verlangt ein Datum, und eine Zusammenführung darf das
+  /// Datum der Einheit nicht anfassen.
+  ///
+  /// Geschrieben wird **nur der Verweis**. Puls und Kalorien bleiben am
+  /// Uhr-Datensatz liegen, wo sie herkommen (Board 15, Entscheidung 1) —
+  /// deshalb ist Lösen verlustfrei und braucht keine Gegenbuchung.
+  Future<void> linkHealthSession(String id, String? healthSessionId);
+
   /// Löscht eine Einheit.
   ///
   /// Stammte sie aus einem Kalendertermin, wird der Termin wieder geöffnet:

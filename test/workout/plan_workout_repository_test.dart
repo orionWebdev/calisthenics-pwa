@@ -40,6 +40,9 @@ class _Exercises implements ExerciseRepository {
 }
 
 class _Sessions implements SessionRepository {
+  /// Verweise auf Uhr-Einheiten — je Einheit höchstens einer.
+  final links = <String, String?>{};
+
   _Sessions(this.sessions);
   final List<TrainingSession> sessions;
   @override
@@ -58,6 +61,11 @@ class _Sessions implements SessionRepository {
   @override
   Future<void> updateSessionExercises(
       String id, List<LoggedExercise> exercises) async {}
+
+  @override
+  Future<void> linkHealthSession(String id, String? healthSessionId) async {
+    links[id] = healthSessionId;
+  }
 
   @override
   Future<void> deleteSession(String id) async {}

@@ -34,8 +34,20 @@ class HealthConnectGateway implements HealthGateway {
 
   String? _ownSourceId;
 
-  static const _types = [HealthDataType.WEIGHT];
-  static const _access = [HealthDataAccess.READ_WRITE];
+  static const _weightTypes = [HealthDataType.WEIGHT];
+  static const _weightAccess = [HealthDataAccess.READ_WRITE];
+
+  /// Einheiten **und** Puls: Health Connect führt beides getrennt, und ein
+  /// Ø-Puls entsteht erst, wenn man die Pulspunkte im Zeitfenster der Einheit
+  /// zusammenfasst. Beides nur lesend — dieses Modul schreibt nichts zurück.
+  static const _sessionTypes = [
+    HealthDataType.WORKOUT,
+    HealthDataType.HEART_RATE,
+  ];
+  static const _sessionAccess = [
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+  ];
 
   Future<void> _ensureConfigured() async {
     if (_configured) return;
@@ -65,13 +77,14 @@ class HealthConnectGateway implements HealthGateway {
   @override
   Future<bool?> hasWeightAccess() async {
     await _ensureConfigured();
-    return _health.hasPermissions(_types, permissions: _access);
+    return _health.hasPermissions(_weightTypes, permissions: _weightAccess);
   }
 
   @override
   Future<bool> requestWeightAccess() async {
     await _ensureConfigured();
-    return _health.requestAuthorization(_types, permissions: _access);
+    return _health.requestAuthorization(_weightTypes,
+        permissions: _weightAccess);
   }
 
   @override
@@ -81,7 +94,7 @@ class HealthConnectGateway implements HealthGateway {
   }) async {
     await _ensureConfigured();
     final points = await _health.getHealthDataFromTypes(
-      types: _types,
+      types: _weightTypes,
       startTime: from,
       endTime: to,
     );
@@ -125,6 +138,80 @@ class HealthConnectGateway implements HealthGateway {
       // und andere Apps können danach filtern.
       recordingMethod: RecordingMethod.manual,
     );
+  }
+
+  @override
+  Future<bool?> hasSessionAccess() async {
+    await _ensureConfigured();
+    return _health.hasPermissions(_sessionTypes, permissions: _sessionAccess);
+  }
+
+  @override
+  Future<bool> requestSessionAccess() async {
+    await _ensureConfigured();
+    return _health.requestAuthorization(_sessionTypes,
+        permissions: _sessionAccess);
+  }
+
+  @override
+  Future<List<MeasuredSession>> readSessions({
+    required DateTime from,
+    required DateTime to,
+  }) async {
+    await _ensureConfigured();
+    final points = await _health.getHealthDataFromTypes(
+      types: _sessionTypes,
+      startTime: from,
+      endTime: to,
+    );
+
+    // Puls kommt als Punktwolke, nicht als Zusammenfassung. Er wird je
+    // Einheit über ihr Zeitfenster gebündelt — das ist die einzige Rechnung
+    // in dieser Datei, und sie ist eine Übersetzung, keine Regel.
+    final pulses = <({DateTime at, int bpm})>[];
+    for (final point in points) {
+      if (point.type != HealthDataType.HEART_RATE) continue;
+      final value = point.value;
+      if (value is! NumericHealthValue) continue;
+      final bpm = value.numericValue.round();
+      if (bpm <= 0 || bpm > 300) continue;
+      pulses.add((at: point.dateFrom, bpm: bpm));
+    }
+
+    final result = <MeasuredSession>[];
+    for (final point in points) {
+      if (point.type != HealthDataType.WORKOUT) continue;
+      final value = point.value;
+      if (value is! WorkoutHealthValue) continue;
+      // Eine Einheit ohne Dauer kann nie ein Paar bilden und trägt keine
+      // Aussage — sie kommt gar nicht erst in den Eingang.
+      if (!point.dateTo.isAfter(point.dateFrom)) continue;
+
+      final inside = [
+        for (final p in pulses)
+          if (!p.at.isBefore(point.dateFrom) && !p.at.isAfter(point.dateTo))
+            p.bpm,
+      ];
+
+      result.add(MeasuredSession(
+        id: point.uuid,
+        start: point.dateFrom,
+        end: point.dateTo,
+        sourceId: point.sourceId,
+        activity: value.workoutActivityType.name,
+        deviceName: point.sourceName,
+        averageHeartRate: inside.isEmpty
+            ? null
+            : (inside.reduce((a, b) => a + b) / inside.length).round(),
+        maxHeartRate:
+            inside.isEmpty ? null : inside.reduce((a, b) => a > b ? a : b),
+        calories: value.totalEnergyBurned,
+        distanceKm: value.totalDistance == null
+            ? null
+            : value.totalDistance! / 1000,
+      ));
+    }
+    return result;
   }
 
   @override

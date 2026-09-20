@@ -46,6 +46,12 @@ abstract final class SessionMapper {
     final readiness = _int(data['preWorkoutEnergy']);
     final feeling = _int(data['postWorkoutFeeling']);
 
+    // Herkunft (Board 15). Beide Felder fehlen in jedem Dokument, das vor dem
+    // 20.09.2026 entstanden ist — das ist der Normalfall und bedeutet
+    // „in der App geführt".
+    final healthSessionId = _string(data['healthSessionId']);
+    final fromHealth = data['fromHealth'] == true;
+
     return switch (SessionKind.fromWire(rawType)) {
       SessionKind.strength || SessionKind.bodyweight => StrengthSession(
           id: id,
@@ -62,6 +68,8 @@ abstract final class SessionMapper {
           rpe: rpe,
           preWorkoutReadiness: readiness,
           postWorkoutFeeling: feeling,
+          healthSessionId: healthSessionId,
+          fromHealth: fromHealth,
           discipline: _string(data['discipline']),
         ),
       SessionKind.cardio => () {
@@ -77,6 +85,8 @@ abstract final class SessionMapper {
             rpe: rpe,
             preWorkoutReadiness: readiness,
             postWorkoutFeeling: feeling,
+            healthSessionId: healthSessionId,
+            fromHealth: fromHealth,
             activity: activity,
             rawActivity: activity == null ? raw : null,
             distanceKm: _double(data['distanceKm']),
@@ -102,6 +112,8 @@ abstract final class SessionMapper {
             rpe: rpe,
             preWorkoutReadiness: readiness,
             postWorkoutFeeling: feeling,
+            healthSessionId: healthSessionId,
+            fromHealth: fromHealth,
             recoveryKind: kind,
             rawKind: kind == null ? raw : null,
             name: _string(data['name']),
@@ -117,6 +129,8 @@ abstract final class SessionMapper {
           rpe: rpe,
           preWorkoutReadiness: readiness,
           postWorkoutFeeling: feeling,
+          healthSessionId: healthSessionId,
+          fromHealth: fromHealth,
           rawType: rawType,
         ),
     };

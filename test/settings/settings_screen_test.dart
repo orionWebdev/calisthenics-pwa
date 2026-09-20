@@ -97,7 +97,11 @@ void main() {
     expect(find.textContaining('Eigene Eingabe'), findsOneWidget);
 
     // Es gibt nur noch **einen** Weg zu schreiben: den Verlauf.
-    await tester.tap(find.text('Körpergewicht'));
+    //
+    // `.first`: Seit Board 15 trägt auch die Health-Connect-Zeile das Wort
+    // „Körpergewicht" — je Datentyp eine Zeile. Gemeint ist die Zeile im
+    // Körper-Abschnitt, und die steht zuerst.
+    await tester.tap(find.text('Körpergewicht').first);
     await tester.pumpAndSettle();
 
     expect(find.byType(WeightHistoryScreen), findsOneWidget);

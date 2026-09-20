@@ -186,6 +186,23 @@ class CardioTempo {
   }
 }
 
+/// Woher eine Einheit stammt — die vier Zustände des Herkunfts-Idioms
+/// (Board 15, Abschnitt C).
+///
+/// Farbe trägt das nie: Es ist **dieselbe Form in vier Zuständen**, und ab
+/// 130 % Systemschrift tritt an die Stelle des Punktes ein Wort in der
+/// Metazeile.
+enum SessionOrigin {
+  /// Gefüllt — in der App geführt.
+  app,
+
+  /// Hohl — aus der Uhr übernommen.
+  watch,
+
+  /// Ring mit Kern — beides, zusammengeführt.
+  merged,
+}
+
 /// Gemeinsamer Kern jeder Einheit.
 sealed class TrainingSession {
   const TrainingSession({
@@ -198,6 +215,8 @@ sealed class TrainingSession {
     this.rpe,
     this.preWorkoutReadiness,
     this.postWorkoutFeeling,
+    this.healthSessionId,
+    this.fromHealth = false,
   });
 
   final String id;
@@ -243,6 +262,31 @@ sealed class TrainingSession {
   /// wie [preWorkoutReadiness], derselbe Vorbehalt.
   final int? postWorkoutFeeling;
 
+  /// Die Health-Connect-Kennung der verknüpften Uhr-Einheit.
+  ///
+  /// **Eine Verknüpfung, kein Überschreiben** (Board 15, Entscheidung 1): Der
+  /// Uhr-Datensatz liegt als eigenes Dokument daneben und behält alles, was
+  /// er mitbrachte. Deshalb ist „Verbindung lösen" verlustfrei — es fällt nur
+  /// dieser Verweis weg.
+  final String? healthSessionId;
+
+  /// Ob diese Einheit **aus** der Uhr entstanden ist.
+  ///
+  /// Nicht dasselbe wie [healthSessionId]: Eine in der App geführte Einheit
+  /// kann mit einer Uhr-Einheit verknüpft sein, ohne aus ihr zu stammen. Aus
+  /// beiden zusammen folgt [origin].
+  final bool fromHealth;
+
+  /// Welche der drei Punktformen die Zeile trägt.
+  ///
+  /// Der vierte Zustand — gestrichelt, „ungeprüft" — gehört keiner Einheit:
+  /// Was noch wartet, ist gar keine, sondern ein Datensatz im Eingang.
+  SessionOrigin get origin => fromHealth
+      ? SessionOrigin.watch
+      : healthSessionId == null
+          ? SessionOrigin.app
+          : SessionOrigin.merged;
+
   SessionKind? get kind;
 
   /// Trägt die Einheit Satzdaten?
@@ -276,6 +320,8 @@ final class StrengthSession extends TrainingSession {
     super.rpe,
     super.preWorkoutReadiness,
     super.postWorkoutFeeling,
+    super.healthSessionId,
+    super.fromHealth,
     this.planId,
     this.planName,
     this.discipline,
@@ -343,6 +389,8 @@ final class CardioSession extends TrainingSession {
     super.rpe,
     super.preWorkoutReadiness,
     super.postWorkoutFeeling,
+    super.healthSessionId,
+    super.fromHealth,
     this.distanceKm,
     this.avgHr,
     this.maxHr,
@@ -412,6 +460,8 @@ final class RecoverySession extends TrainingSession {
     super.rpe,
     super.preWorkoutReadiness,
     super.postWorkoutFeeling,
+    super.healthSessionId,
+    super.fromHealth,
     this.recoveryKind,
     this.rawKind,
     this.name,
@@ -465,6 +515,8 @@ final class UnknownSession extends TrainingSession {
     super.rpe,
     super.preWorkoutReadiness,
     super.postWorkoutFeeling,
+    super.healthSessionId,
+    super.fromHealth,
   });
 
   final String? rawType;

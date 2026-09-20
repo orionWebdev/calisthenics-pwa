@@ -220,6 +220,30 @@ service cloud.firestore {
           request.resource.data.date is timestamp;
         allow delete: if isAuthenticated() && request.auth.uid == userId;
       }
+
+      /**
+       * healthSessions subcollection (workouts read from Health Connect,
+       * board 15)
+       * - One document per source record, document id is its Health Connect
+       *   id. Reading the same record twice never creates a second document.
+       * - Deliberately NOT in `sessions`: that is the collection every
+       *   statistic counts. A pending record must not affect a single
+       *   number, and that boundary belongs in the shape of the data rather
+       *   than in the discipline of twelve separate calculations.
+       * - Rules do NOT cascade in Firestore: without this block the
+       *   subcollection would fall through to the default deny below.
+       */
+      match /healthSessions/{recordId} {
+        allow read: if isAuthenticated() && request.auth.uid == userId;
+        allow create, update: if isAuthenticated() &&
+          request.auth.uid == userId &&
+          request.resource.data.start is timestamp &&
+          request.resource.data.end is timestamp &&
+          request.resource.data.state in ['pending', 'accepted', 'rejected'];
+        // Only account deletion removes these. Rejecting is a state, not a
+        // disappearance — the record belongs to Health Connect, not to us.
+        allow delete: if isAuthenticated() && request.auth.uid == userId;
+      }
     }
 
     // ==================== DEFAULT DENY ====================

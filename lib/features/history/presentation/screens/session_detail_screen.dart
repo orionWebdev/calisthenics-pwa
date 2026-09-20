@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../health_import/presentation/widgets/source_capsule.dart';
 import '../../application/history_providers.dart';
 import '../../domain/readiness.dart';
 import '../../domain/training_load.dart';
@@ -187,6 +188,11 @@ class SessionDetailScreen extends ConsumerWidget {
                   ),
                 ),
               ),
+
+            // **Eine Einheit, zwei Quellen** (Board 15, B3). Rendert nur
+            // bei einer Verknüpfung — eine Einheit ohne fremde Quelle hat
+            // keine Quellenfrage.
+            SourceCapsule(session: session),
 
             // **Aus einer Einheit einen Plan machen.** Wer etwas
             // zusammengestellt hat, das gut war, will es wiederholen — und

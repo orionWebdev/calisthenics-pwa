@@ -9718,6 +9718,450 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Gewichtsverlauf lädt'**
   String get weightLoadingA11y;
+
+  /// Board 15 · hc.inbox_title — Kopf des Eingangs mit Zähler
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Einheit aus Health Connect} other{{n} Einheiten aus Health Connect}}'**
+  String hcInboxTitle(int n);
+
+  /// Board 15 · hc.inbox_meta
+  ///
+  /// In de, this message translates to:
+  /// **'Gelesen {time} · warten auf Prüfung'**
+  String hcInboxMeta(String time);
+
+  /// Board 15 · hc.inbox_action
+  ///
+  /// In de, this message translates to:
+  /// **'Prüfen'**
+  String get hcInboxAction;
+
+  /// Board 15 · hc.row_unreviewed — Metazeile der wartenden Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Ungeprüft · zählt noch nicht'**
+  String get hcRowUnreviewed;
+
+  /// Board 15 · hc.sheet_kicker
+  ///
+  /// In de, this message translates to:
+  /// **'Aus Health Connect · {i} von {n}'**
+  String hcSheetKicker(int i, int n);
+
+  /// Board 15 · Titel des Prüfblatts. Das Board setzt „Einheit aus Health Connect prüfen, 1 von 3" — bei 200 % Systemschrift auf 320 dp läuft das Blatt damit über, und Kürzen ist verboten. „Aus Health Connect" sagen die HC-Kapsel und der Inhalt ohnehin.
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit prüfen · {i} von {n}'**
+  String hcSheetTitle(int i, int n);
+
+  /// Board 15 · hc.field_duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer'**
+  String get hcFieldDuration;
+
+  /// Board 15 · hc.field_hr_avg
+  ///
+  /// In de, this message translates to:
+  /// **'Ø Puls'**
+  String get hcFieldHrAvg;
+
+  /// Board 15 · hc.field_hr_max
+  ///
+  /// In de, this message translates to:
+  /// **'Max'**
+  String get hcFieldHrMax;
+
+  /// Board 15 · hc.more_device_values
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 weitere Angabe vom Gerät} other{Weitere Angaben vom Gerät · {n}}}'**
+  String hcMoreDeviceValues(int n);
+
+  /// Board 15 · hc.accept
+  ///
+  /// In de, this message translates to:
+  /// **'Übernehmen'**
+  String get hcAccept;
+
+  /// Board 15 · hc.accept_without_effort — das Label ist die Warnung
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Anstrengung übernehmen'**
+  String get hcAcceptWithoutEffort;
+
+  /// Board 15 · hc.decline
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht übernehmen'**
+  String get hcDecline;
+
+  /// Board 15 · hc.no_effort_note — die eine erlaubte Hinweiszeile
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Anstrengung fehlt diese Einheit in der Trainingslast — sie wird nicht geschätzt.'**
+  String get hcNoEffortNote;
+
+  /// Board 15 · hc.continue_later
+  ///
+  /// In de, this message translates to:
+  /// **'Später fortsetzen'**
+  String get hcContinueLater;
+
+  /// Board 15 · hc.accepted_snack
+  ///
+  /// In de, this message translates to:
+  /// **'{type} {date} übernommen'**
+  String hcAcceptedSnack(String type, String date);
+
+  /// Board 15 · hc.declined_snack
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht übernommen · {date}'**
+  String hcDeclinedSnack(String date);
+
+  /// Board 15 · hc.declined_section
+  ///
+  /// In de, this message translates to:
+  /// **'Abgelehnt'**
+  String get hcDeclinedSection;
+
+  /// Board 15 · hc.declined_meta
+  ///
+  /// In de, this message translates to:
+  /// **'Abgelehnt am {date}'**
+  String hcDeclinedMeta(String date);
+
+  /// Board 15 · hc.declined_restore
+  ///
+  /// In de, this message translates to:
+  /// **'Doch übernehmen'**
+  String get hcDeclinedRestore;
+
+  /// Board 15 · hc.declined_note
+  ///
+  /// In de, this message translates to:
+  /// **'Wird beim nächsten Lesen nicht erneut vorgeschlagen.'**
+  String get hcDeclinedNote;
+
+  /// Board 15 · hc.origin_watch — Herkunft als Wort ab 130 % Schrift
+  ///
+  /// In de, this message translates to:
+  /// **'aus der Uhr'**
+  String get hcOriginWatch;
+
+  /// Board 15 · hc.origin_both
+  ///
+  /// In de, this message translates to:
+  /// **'App + Uhr'**
+  String get hcOriginBoth;
+
+  /// Board 15 · hc.origin_missing_effort — Tatsache, keine Mahnung
+  ///
+  /// In de, this message translates to:
+  /// **'ohne Anstrengung'**
+  String get hcOriginMissingEffort;
+
+  /// Board 15 · hc.read_error
+  ///
+  /// In de, this message translates to:
+  /// **'Health Connect nicht erreichbar'**
+  String get hcReadError;
+
+  /// Board 15 · hc.read_error_meta
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt gelesen {date}'**
+  String hcReadErrorMeta(String date);
+
+  /// Board 15 · hc.retry
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut'**
+  String get hcRetry;
+
+  /// Board 15 · hc.reading
+  ///
+  /// In de, this message translates to:
+  /// **'Health Connect wird gelesen'**
+  String get hcReading;
+
+  /// Board 15 · A11y der wartenden Zeile — ein Knoten
+  ///
+  /// In de, this message translates to:
+  /// **'{title}, {meta}, aus der Uhr, ungeprüft, zählt noch nicht. Prüfen.'**
+  String hcRowA11y(String title, String meta);
+
+  /// Board 15 · A11y des Eingangskopfs
+  ///
+  /// In de, this message translates to:
+  /// **'{count} warten auf Prüfung, gelesen {time}. Prüfen.'**
+  String hcInboxA11y(String count, String time);
+
+  /// Board 15 · hc.pair_question — die Vermutung wird als Frage gestellt
+  ///
+  /// In de, this message translates to:
+  /// **'Gehört das zu deiner Krafteinheit?'**
+  String get hcPairQuestion;
+
+  /// Board 15 · hc.pair_app_row
+  ///
+  /// In de, this message translates to:
+  /// **'Deine App-Einheit'**
+  String get hcPairAppRow;
+
+  /// Board 15 · hc.pair_watch_row
+  ///
+  /// In de, this message translates to:
+  /// **'Aus der Uhr'**
+  String get hcPairWatchRow;
+
+  /// Board 15 · hc.pair_overlap — die Begründung der Vermutung, in Zahlen
+  ///
+  /// In de, this message translates to:
+  /// **'Überlappung {x} von {y} min der kürzeren Einheit · Start {d} min auseinander'**
+  String hcPairOverlap(int x, int y, int d);
+
+  /// Board 15 · hc.pair_merge
+  ///
+  /// In de, this message translates to:
+  /// **'Zusammenführen'**
+  String get hcPairMerge;
+
+  /// Board 15 · hc.pair_keep_apart
+  ///
+  /// In de, this message translates to:
+  /// **'Getrennt lassen'**
+  String get hcPairKeepApart;
+
+  /// Board 15 · hc.merge_stage1_title
+  ///
+  /// In de, this message translates to:
+  /// **'Zusammenführen — das ändert sich'**
+  String get hcMergeStage1Title;
+
+  /// Board 15 · hc.unlink_stage1_title
+  ///
+  /// In de, this message translates to:
+  /// **'Verbindung lösen — das ändert sich'**
+  String get hcUnlinkStage1Title;
+
+  /// Board 15 · hc.merge_stays — die Zeilen, die sagen, was gleich bleibt
+  ///
+  /// In de, this message translates to:
+  /// **'{value} bleibt'**
+  String hcMergeStays(String value);
+
+  /// Board 15 · eine Grösse, die hinzukommt; der Pfeil wird nie vorgelesen
+  ///
+  /// In de, this message translates to:
+  /// **'wird {value}'**
+  String hcMergeGains(String value);
+
+  /// Board 15 · eine Grösse, die beim Lösen wegfällt
+  ///
+  /// In de, this message translates to:
+  /// **'entfällt'**
+  String get hcMergeLoses;
+
+  /// Board 15 · hc.merge_duration_note — bei Widerspruch gewinnt die App
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer bleibt bei der App: {app} min. Die Uhr meldet {watch} min.'**
+  String hcMergeDurationNote(int app, int watch);
+
+  /// Board 15 · hc.merged_snack
+  ///
+  /// In de, this message translates to:
+  /// **'Zusammengeführt · Puls übernommen'**
+  String get hcMergedSnack;
+
+  /// Board 15 · Meldung nach dem Lösen
+  ///
+  /// In de, this message translates to:
+  /// **'Verbindung gelöst · Uhr-Einheit zurück im Eingang'**
+  String get hcUnlinkedSnack;
+
+  /// Board 15 · hc.ambiguous_note
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere App-Einheiten liegen in diesem Zeitraum. ATEM ordnet nicht zu, wenn die Zuordnung nicht eindeutig ist.'**
+  String get hcAmbiguousNote;
+
+  /// Board 15 · hc.ambiguous_pick
+  ///
+  /// In de, this message translates to:
+  /// **'Wählen'**
+  String get hcAmbiguousPick;
+
+  /// Board 15 · hc.ambiguous_standalone
+  ///
+  /// In de, this message translates to:
+  /// **'Als eigene Einheit prüfen'**
+  String get hcAmbiguousStandalone;
+
+  /// Board 15 · hc.unlink
+  ///
+  /// In de, this message translates to:
+  /// **'Verbindung lösen'**
+  String get hcUnlink;
+
+  /// Board 15 · hc.sources_label
+  ///
+  /// In de, this message translates to:
+  /// **'Quellen'**
+  String get hcSourcesLabel;
+
+  /// Board 15 · hc.source_app
+  ///
+  /// In de, this message translates to:
+  /// **'App · Sätze, Dauer, Anstrengung'**
+  String get hcSourceApp;
+
+  /// Board 15 · hc.source_watch
+  ///
+  /// In de, this message translates to:
+  /// **'{device} · Puls, Kalorien'**
+  String hcSourceWatch(String device);
+
+  /// Board 15 · hc.watch_reports — der abweichende Fremdwert, violett hinterlegt
+  ///
+  /// In de, this message translates to:
+  /// **'Uhr meldet {start}–{end} · {min} min'**
+  String hcWatchReports(String start, String end, int min);
+
+  /// Board 15 · Beschriftung im Folgen-Panel
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze'**
+  String get hcFieldSets;
+
+  /// Board 15 · Beschriftung im Folgen-Panel
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung'**
+  String get hcFieldEffort;
+
+  /// Board 15 · hc.unlink_back_to_inbox, als Zeile im Folgen-Panel
+  ///
+  /// In de, this message translates to:
+  /// **'Uhr-Einheit'**
+  String get hcFieldWatchSession;
+
+  /// Board 15 · hc.unlink_back_to_inbox
+  ///
+  /// In de, this message translates to:
+  /// **'zurück in den Eingang'**
+  String get hcBackToInbox;
+
+  /// Board 15 · hc.perm_section — Abschnitt in den Einstellungen
+  ///
+  /// In de, this message translates to:
+  /// **'Health Connect'**
+  String get hcPermSection;
+
+  /// Board 15 · hc.perm_weight
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht'**
+  String get hcPermWeight;
+
+  /// Board 15 · hc.perm_sessions
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingseinheiten'**
+  String get hcPermSessions;
+
+  /// Board 15 · hc.perm_grant
+  ///
+  /// In de, this message translates to:
+  /// **'Freigeben'**
+  String get hcPermGrant;
+
+  /// Board 15 · D1 — führt in den Play Store, ohne Ausrufezeichen
+  ///
+  /// In de, this message translates to:
+  /// **'Installieren'**
+  String get hcPermInstall;
+
+  /// Board 15 · D1 — Zustand beider Zeilen
+  ///
+  /// In de, this message translates to:
+  /// **'Health Connect fehlt'**
+  String get hcStateMissing;
+
+  /// Board 15 · D2 — Zustand einer Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht freigegeben'**
+  String get hcStateDenied;
+
+  /// Board 15 · D3 — Zustand einer Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Freigegeben'**
+  String get hcStateGranted;
+
+  /// Board 15 · D3/D4 — Zustand mit Lesemarke
+  ///
+  /// In de, this message translates to:
+  /// **'Freigegeben · zuletzt {date}'**
+  String hcStateGrantedSince(String date);
+
+  /// Board 15 · D4 — ein leerer Zeitraum ist kein Fehler
+  ///
+  /// In de, this message translates to:
+  /// **'Freigegeben · nichts gefunden'**
+  String get hcStateGrantedEmpty;
+
+  /// Board 15 · D5 — Zustand einer Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Zugriff entzogen'**
+  String get hcStateRevoked;
+
+  /// Board 15 · D5 — zuerst, was bleibt, dann was aufhört
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Entzogen · 1 übernommene bleibt} other{Entzogen · {n} übernommene bleiben}}'**
+  String hcStateRevokedKept(int n);
+
+  /// Board 15 · hc.perm_missing
+  ///
+  /// In de, this message translates to:
+  /// **'Health Connect ist auf diesem Gerät nicht eingerichtet. ATEM funktioniert ohne — Gewicht und Einheiten werden von Hand geführt.'**
+  String get hcPermMissingNote;
+
+  /// Board 15 · hc.perm_none
+  ///
+  /// In de, this message translates to:
+  /// **'Nichts freigegeben. ATEM liest erst, wenn du es je Datentyp erlaubst.'**
+  String get hcPermNoneNote;
+
+  /// Board 15 · hc.perm_partial
+  ///
+  /// In de, this message translates to:
+  /// **'Gewicht wird gelesen, Einheiten nicht. Der Eingang im Verlauf erscheint erst mit der zweiten Freigabe.'**
+  String get hcPermPartialNote;
+
+  /// Board 15 · hc.perm_empty — die Lesemarke als Tatsache
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt geprüft {time}, keine neuen Einheiten gefunden.'**
+  String hcPermEmptyNote(String time);
+
+  /// Board 15 · hc.perm_revoked — kein Countdown, kein Ausrufezeichen
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 übernommene Einheit bleibt, wie sie ist.} other{{n} übernommene Einheiten bleiben, wie sie sind.}} Neue werden nicht mehr gelesen.'**
+  String hcPermRevokedNote(int n);
+
+  /// Board 15 · A11y der Berechtigungszeile — Zustand vor Aktion
+  ///
+  /// In de, this message translates to:
+  /// **'{type}, {state}. {action}.'**
+  String hcPermRowA11y(String type, String state, String action);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

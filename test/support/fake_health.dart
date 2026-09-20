@@ -11,8 +11,11 @@ class FakeHealthGateway implements HealthGateway {
     this.granted = false,
     this.grantOnRequest = true,
     this.writeSucceeds = true,
+    this.sessionsGranted = false,
     List<MeasuredWeight>? records,
-  }) : records = records ?? [];
+    List<MeasuredSession>? sessions,
+  })  : records = records ?? [],
+        sessions = sessions ?? [];
 
   HealthAvailability availabilityValue;
   bool granted;
@@ -24,8 +27,14 @@ class FakeHealthGateway implements HealthGateway {
 
   final List<MeasuredWeight> records;
 
+  /// Einheiten und Berechtigung sind vom Gewicht getrennt — Google fragt je
+  /// Datentyp einzeln, und die Oberfläche zeigt darum zwei Zeilen.
+  bool sessionsGranted;
+  final List<MeasuredSession> sessions;
+
   /// Zählt mit, damit ein Test „hat nicht gefragt" prüfen kann.
   int requests = 0;
+  int sessionRequests = 0;
   int installs = 0;
 
   static const packageName = 'com.atemhybrid.app';
@@ -74,6 +83,26 @@ class FakeHealthGateway implements HealthGateway {
       ));
     return true;
   }
+
+  @override
+  Future<bool?> hasSessionAccess() async => sessionsGranted;
+
+  @override
+  Future<bool> requestSessionAccess() async {
+    sessionRequests++;
+    return sessionsGranted = grantOnRequest;
+  }
+
+  @override
+  Future<List<MeasuredSession>> readSessions({
+    required DateTime from,
+    required DateTime to,
+  }) async =>
+      [
+        for (final session in sessions)
+          if (!session.start.isBefore(from) && !session.start.isAfter(to))
+            session,
+      ];
 
   @override
   Future<void> openInstall() async => installs++;

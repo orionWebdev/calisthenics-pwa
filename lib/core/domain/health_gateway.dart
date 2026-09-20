@@ -15,12 +15,13 @@
 /// gehört deshalb hierher, die Umsetzung nach `core/services/` — dieselbe
 /// Trennung wie bei `plate_calculator.dart` und dem Eingabeblatt.
 ///
-/// ## Was hier bewusst fehlt
+/// ## Zwei Datentypen, getrennt gefragt
 ///
-/// Alles ausser Gewicht. Google gibt Health-Connect-Zugriff **je Datentyp**
-/// frei, mit Begründung und Demo-Video je Typ — ein Vertrag, der schon
-/// Einheiten und Puls kennt, lädt dazu ein, sie zu deklarieren, bevor jemand
-/// sie begründen kann. Sie kommen mit Abschnitt 8.4 dazu.
+/// Google gibt Health-Connect-Zugriff **je Datentyp** frei, mit Begründung
+/// und Demo-Video je Typ. Deshalb hat jeder Typ hier sein eigenes Paar aus
+/// `has…Access` und `request…Access`: Gewicht kann freigegeben sein und
+/// Einheiten nicht, und die Oberfläche zeigt zwei Zeilen statt einer
+/// (Board 15, D).
 library;
 
 /// Ob und wie die Quelle auf diesem Gerät zu erreichen ist.
@@ -71,7 +72,64 @@ class MeasuredWeight {
   final String sourceId;
 }
 
-/// Liest und schreibt Gewichtswerte in einer Gesundheitsquelle.
+/// Eine Trainingseinheit, wie die Quelle sie führt.
+///
+/// **Alles daran ist gemessen oder gemeldet, nichts ist gerechnet.** Was die
+/// App daraus macht — annehmen, ablehnen, mit einer eigenen Einheit paaren —
+/// entscheidet `SessionPairing` und der Eingang, nicht diese Klasse.
+class MeasuredSession {
+  const MeasuredSession({
+    required this.id,
+    required this.start,
+    required this.end,
+    required this.sourceId,
+    this.activity,
+    this.deviceName,
+    this.averageHeartRate,
+    this.maxHeartRate,
+    this.calories,
+    this.distanceKm,
+  });
+
+  /// Die Kennung des Datensatzes in der Quelle.
+  ///
+  /// Sie ist das Gedächtnis des Moduls: Sie steht an der übernommenen
+  /// Einheit, damit dieselbe nicht zweimal hereinkommt, und sie steht in der
+  /// Ablehnliste, damit ein „Nein" ein „Nein" bleibt (Board 15,
+  /// Entscheidung 11).
+  final String id;
+
+  final DateTime start;
+  final DateTime end;
+
+  /// Das Paket, das den Datensatz geschrieben hat — „com.garmin.android…".
+  final String sourceId;
+
+  /// Wie die Uhr das Training nennt: „Laufen", „Andere", „HIIT".
+  ///
+  /// **Nie eine Paar-Bedingung** (Entscheidung 6): Uhren melden Krafttraining
+  /// regelmässig als „Andere" oder „Cardio". Eine Artprüfung verwürfe mehr
+  /// echte Paare, als sie falsche verhindert.
+  final String? activity;
+
+  /// Der lesbare Name der Quelle für die Oberfläche — „Garmin".
+  final String? deviceName;
+
+  final int? averageHeartRate;
+  final int? maxHeartRate;
+  final int? calories;
+  final double? distanceKm;
+
+  Duration get duration => end.difference(start);
+
+  /// Wie viele Angaben ausser Dauer und Puls dabei sind — die Zeile
+  /// „Weitere Angaben vom Gerät · 3".
+  int get extrasCount =>
+      [calories, distanceKm].where((v) => v != null).length;
+}
+
+/// Liest Gewichtswerte und Trainingseinheiten in einer Gesundheitsquelle —
+/// und schreibt Gewichtswerte zurück.
 abstract interface class HealthGateway {
   /// Das eigene Paket. Wird gebraucht, um eigene Rückschreibungen beim Lesen
   /// wiederzuerkennen.
@@ -105,6 +163,27 @@ abstract interface class HealthGateway {
     required DateTime at,
     required double kg,
     required String recordId,
+  });
+
+  /// Ob Trainingseinheiten **gelesen** werden dürfen.
+  ///
+  /// Getrennt von [hasWeightAccess], weil Google je Datentyp fragt. `null`
+  /// bedeutet dasselbe wie dort: Die Plattform kann es nicht beantworten, es
+  /// muss gefragt werden.
+  Future<bool?> hasSessionAccess();
+
+  /// Fragt nach. Gibt zurück, ob am Ende Zugriff besteht.
+  Future<bool> requestSessionAccess();
+
+  /// Alle Trainingseinheiten im Zeitraum, mit Puls, sofern die Quelle ihn
+  /// führt.
+  ///
+  /// **Dieses Modul liest nur.** Ob ATEM eigene Einheiten nach Health Connect
+  /// schreibt, ist eine eigene Entscheidung mit eigener Berechtigung und
+  /// eigener Vertrauensfrage (Board 15, offene Frage 2).
+  Future<List<MeasuredSession>> readSessions({
+    required DateTime from,
+    required DateTime to,
   });
 
   /// Führt zum Installieren von Health Connect. Nur sinnvoll bei

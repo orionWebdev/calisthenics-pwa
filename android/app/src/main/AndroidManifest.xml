@@ -1,14 +1,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Health Connect (Produktstrategie 8.2, 20.09.2026).
+    <!-- Health Connect (Produktstrategie 8.2 und 8.4, 20.09.2026).
 
-         **Nur Gewicht, lesen und schreiben.** Google verlangt die Freigabe je
-         Datentyp einzeln, mit Begründung und Demo-Video. Jede Berechtigung,
-         die hier ohne Abnehmer steht, ist eine Begründung mehr, die niemand
-         schreiben kann — und ein Ablehnungsgrund bei der Einreichung.
-         Puls, Einheiten und Schlaf kommen mit Abschnitt 8.4 dazu, nicht
-         vorher. -->
+         **Jede Zeile hat einen Abnehmer im Code.** Google verlangt die
+         Freigabe je Datentyp einzeln, mit Begründung und Demo-Video. Jede
+         Berechtigung, die hier ohne Abnehmer steht, ist eine Begründung mehr,
+         die niemand schreiben kann — und ein Ablehnungsgrund bei der
+         Einreichung.
+
+         Gewicht, lesen und schreiben (8.2): `WeightSync`.
+         Einheiten und Puls, **nur lesen** (8.4, Board 15): `ImportInbox` und
+         `SessionPairing`. Der Puls ist kein eigener Wunsch — ohne ihn hat
+         eine importierte Einheit nichts, was die App nicht schon wüsste.
+
+         Nicht deklariert: Schreiben von Einheiten (eigene Entscheidung mit
+         eigener Vertrauensfrage) und `READ_HEALTH_DATA_HISTORY` (das
+         Lesefenster von dreissig Tagen genügt). -->
     <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
     <uses-permission android:name="android.permission.health.WRITE_WEIGHT"/>
+    <uses-permission android:name="android.permission.health.READ_EXERCISE"/>
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
 
     <application
         android:label="ATEM Hybrid"

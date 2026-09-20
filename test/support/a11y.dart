@@ -96,6 +96,9 @@ final fixtureSessions = <TrainingSession>[
 ];
 
 class FakeSessionRepository implements SessionRepository {
+  /// Verweise auf Uhr-Einheiten — je Einheit höchstens einer.
+  final links = <String, String?>{};
+
   @override
   Stream<List<TrainingSession>> watchSessions(String userId) =>
       Stream.value(fixtureSessions);
@@ -124,6 +127,11 @@ class FakeSessionRepository implements SessionRepository {
   @override
   Future<void> updateSessionExercises(
       String id, List<LoggedExercise> exercises) async {}
+
+  @override
+  Future<void> linkHealthSession(String id, String? healthSessionId) async {
+    links[id] = healthSessionId;
+  }
 
   @override
   Future<void> deleteSession(String id) async => deleted.add(id);
@@ -242,6 +250,7 @@ Future<List<A11yFinding>> collectA11yFindings(
   Widget home, {
   List<double> textScales = a11yTextScales,
   List<Size> sizes = a11ySizes,
+  List<Object> extraOverrides = const [],
 }) async {
   final findings = <A11yFinding>[];
 
@@ -254,7 +263,12 @@ Future<List<A11yFinding>> collectA11yFindings(
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
         ProviderScope(
-          overrides: fixtureOverrides,
+          // Ohne Typannotation, aus demselben Grund wie bei
+          // `fixtureOverrides`: `Override` wird nicht exportiert.
+          overrides: [
+            ...fixtureOverrides,
+            for (final o in extraOverrides) o as dynamic,
+          ],
           child: MaterialApp(
             theme: AtemTheme.dark,
             locale: const Locale('de'),
@@ -304,12 +318,14 @@ Future<void> expectA11y(
   Widget home, {
   List<double> textScales = a11yTextScales,
   List<Size> sizes = a11ySizes,
+  List<Object> extraOverrides = const [],
 }) async {
   final findings = await collectA11yFindings(
     tester,
     home,
     textScales: textScales,
     sizes: sizes,
+    extraOverrides: extraOverrides,
   );
   expect(
     findings,

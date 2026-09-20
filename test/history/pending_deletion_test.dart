@@ -12,6 +12,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// Zählt Löschungen und lässt den Strom von Hand steuern.
 class _Repo implements SessionRepository {
+  /// Verweise auf Uhr-Einheiten — je Einheit höchstens einer.
+  final links = <String, String?>{};
+
   _Repo(this._sessions);
 
   List<TrainingSession> _sessions;
@@ -41,6 +44,11 @@ class _Repo implements SessionRepository {
   @override
   Future<void> updateSessionExercises(
       String id, List<LoggedExercise> exercises) async {}
+
+  @override
+  Future<void> linkHealthSession(String id, String? healthSessionId) async {
+    links[id] = healthSessionId;
+  }
 
   @override
   Future<void> deleteSession(String id) async {
