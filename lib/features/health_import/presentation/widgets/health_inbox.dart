@@ -98,9 +98,8 @@ class HealthInboxHeader extends ConsumerWidget {
             const SizedBox(width: 12),
             Text(
               l10n.hcInboxAction,
-              style: AtemType.labelUi
-                  .of(context)
-                  .copyWith(color: AtemColors.cyan),
+              style:
+                  AtemType.labelUi.of(context).copyWith(color: AtemColors.cyan),
             ),
           ],
         ),
@@ -172,9 +171,8 @@ class _Error extends ConsumerWidget {
             ),
             const SizedBox(width: 12),
             AtemTappable(
-              onTap: () => ref
-                  .read(healthImportControllerProvider.notifier)
-                  .refresh(),
+              onTap: () =>
+                  ref.read(healthImportControllerProvider.notifier).refresh(),
               semanticLabel: l10n.hcRetry,
               minTapSize: const Size(48, 48),
               alignment: Alignment.centerRight,
@@ -197,13 +195,23 @@ class _Error extends ConsumerWidget {
 /// Drei Träger ohne Farbe allein: der gestrichelte Punkt und der gestrichelte
 /// Rand (Zustand), das Wort „Ungeprüft" und die Folge „zählt noch nicht".
 class HealthPendingRow extends ConsumerWidget {
-  const HealthPendingRow({super.key, required this.session, this.all});
+  const HealthPendingRow({
+    super.key,
+    required this.session,
+    this.all,
+    this.quiet = false,
+  });
 
   final HealthSession session;
 
   /// Der ganze Stapel, falls die Zeile aus dem Eingang heraus geöffnet wird.
   /// Ohne ihn prüft sie nur sich selbst.
   final List<HealthSession>? all;
+
+  /// Ohne Aufforderung — die Zeile, während sie in eine andere läuft
+  /// (Board 15, B6). Die Entscheidung ist da schon gefallen; „Prüfen"
+  /// lüde zu etwas ein, das es nicht mehr gibt.
+  final bool quiet;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -254,13 +262,15 @@ class HealthPendingRow extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10),
-                Text(
-                  l10n.hcInboxAction,
-                  style: AtemType.labelUi
-                      .of(context)
-                      .copyWith(color: AtemColors.cyan),
-                ),
+                if (!quiet) ...[
+                  const SizedBox(width: 10),
+                  Text(
+                    l10n.hcInboxAction,
+                    style: AtemType.labelUi
+                        .of(context)
+                        .copyWith(color: AtemColors.cyan),
+                  ),
+                ],
               ],
             ),
           ),
@@ -291,9 +301,8 @@ class _DashedRow extends CustomPainter {
     for (final metric in (Path()..addRRect(rect)).computeMetrics()) {
       var distance = 0.0;
       while (distance < metric.length) {
-        final end = distance + _dash < metric.length
-            ? distance + _dash
-            : metric.length;
+        final end =
+            distance + _dash < metric.length ? distance + _dash : metric.length;
         canvas.drawPath(metric.extractPath(distance, end), paint);
         distance = end + _gap;
       }

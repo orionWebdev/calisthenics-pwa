@@ -121,7 +121,8 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
     final repo = ref.read(healthSessionRepositoryProvider);
     final known = await repo.fetch(userId);
     final now = DateTime.now();
-    final from = ImportInbox.readFrom(now, lastRead: await repo.lastRead(userId));
+    final from =
+        ImportInbox.readFrom(now, lastRead: await repo.lastRead(userId));
 
     final measured = await gateway.readSessions(from: from, to: now);
     final fresh = ImportInbox.pending(
@@ -224,7 +225,9 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
     final userId = ref.read(currentUserIdProvider);
     if (userId == null) return;
 
-    await ref.read(sessionRepositoryProvider).linkHealthSession(sessionId, null);
+    await ref
+        .read(sessionRepositoryProvider)
+        .linkHealthSession(sessionId, null);
 
     await ref.read(healthSessionRepositoryProvider).save(
           userId,
@@ -319,3 +322,39 @@ final healthAccessProvider = FutureProvider<HealthAccessState>((ref) async {
     lastRead: ref.watch(healthLastReadProvider).value,
   );
 });
+
+/// Eine Zusammenführung, die noch gezeigt werden will (Board 15, B6).
+///
+/// Der Schreibvorgang ist längst durch, wenn das Blatt sich schliesst — ohne
+/// diesen Zustand stünde die Liste einfach mit einer Zeile weniger da. Hier
+/// liegt die Momentaufnahme der Uhr-Einheit, damit die Liste die **beiden**
+/// Zeilen noch einmal zeigen und sie ineinander laufen lassen kann.
+class MergeAnimation {
+  const MergeAnimation({required this.sessionId, required this.measured});
+
+  /// Die App-Einheit, die bleibt.
+  final String sessionId;
+
+  /// Die Uhr-Einheit, wie sie vor der Entscheidung aussah.
+  final HealthSession measured;
+}
+
+/// **Höchstens eine zur Zeit.** Wer einen Stapel durchgeht und zweimal
+/// zusammenführt, sieht die letzte Bewegung — die einzige, die beim
+/// Schliessen des Blatts noch auf dem Bildschirm liegt. Zwei Bewegungen
+/// nacheinander abzuspielen hiesse, den Nutzer auf eine Animation warten zu
+/// lassen, die er nicht angefordert hat.
+class MergeAnimationController extends Notifier<MergeAnimation?> {
+  @override
+  MergeAnimation? build() => null;
+
+  void arm(String sessionId, HealthSession measured) =>
+      state = MergeAnimation(sessionId: sessionId, measured: measured);
+
+  void done() => state = null;
+}
+
+final mergeAnimationProvider =
+    NotifierProvider<MergeAnimationController, MergeAnimation?>(
+  MergeAnimationController.new,
+);

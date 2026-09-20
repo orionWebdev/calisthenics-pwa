@@ -10162,6 +10162,12 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{type}, {state}. {action}.'**
   String hcPermRowA11y(String type, String state, String action);
+
+  /// Board 15 · H · gesprochene Fassung von hcOriginBoth. Ein Vorleser liest das Pluszeichen je nach Stimme als "plus" oder gar nicht; die Reihenfolge App zuerst ist fest, damit das Muster hoerbar bleibt.
+  ///
+  /// In de, this message translates to:
+  /// **'App und Uhr'**
+  String get hcOriginBothSpoken;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

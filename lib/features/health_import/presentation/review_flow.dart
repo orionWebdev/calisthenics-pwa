@@ -33,13 +33,18 @@ Future<void> reviewPending(
   final verdict = ref.read(pairVerdictProvider(first));
 
   if (verdict is! PairNone) {
-    final merged = await showPairSheet(
+    final mergedInto = await showPairSheet(
       context,
       measured: first,
       verdict: verdict,
     );
     if (!context.mounted) return;
-    if (merged) {
+    if (mergedInto != null) {
+      // Die Liste soll die beiden Zeilen noch einmal zeigen und ineinander
+      // laufen lassen (Board 15, B6). Geschrieben ist zu diesem Zeitpunkt
+      // alles; was hier gesetzt wird, ist nur der Auftrag zur Bewegung — sie
+      // läuft erst los, wenn kein Blatt mehr darüber liegt.
+      ref.read(mergeAnimationProvider.notifier).arm(mergedInto, first);
       // Erledigt — weiter mit dem Rest des Stapels.
       return reviewPending(context, ref, pending.sublist(1));
     }

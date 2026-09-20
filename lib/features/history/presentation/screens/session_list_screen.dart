@@ -9,6 +9,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../health_import/application/health_import_providers.dart';
 import '../../../health_import/presentation/pending_in_timeline.dart';
 import '../../../health_import/presentation/widgets/health_inbox.dart';
+import '../../../health_import/presentation/widgets/merge_motion.dart';
 import '../../application/history_providers.dart';
 import '../../domain/history_timeline.dart';
 import '../../domain/training_session.dart';
@@ -22,16 +23,72 @@ import 'session_detail_screen.dart';
 /// Eine Liste aus lauter Trainingstagen wäre unehrlich: Sie reiht die guten
 /// Tage aneinander und lässt die Pausen verschwinden. Ab sieben Tagen bekommt
 /// die Unterbrechung deshalb eine eigene Zeile.
-class SessionListScreen extends ConsumerWidget {
+class SessionListScreen extends ConsumerStatefulWidget {
   const SessionListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SessionListScreen> createState() => _SessionListScreenState();
+}
+
+class _SessionListScreenState extends ConsumerState<SessionListScreen>
+    with SingleTickerProviderStateMixin {
+  /// **Eine Uhr für beide Zeilen.** Die Verschmelzung läuft über zwei
+  /// getrennte Blöcke der Liste — die Uhr-Zeile und die Zeile in ihrer Karte.
+  /// Zwei eigene Controller liefen auseinander, sobald einer von beiden
+  /// einen Frame später gebaut würde; dann rückten die Zeilen nicht mehr
+  /// aufeinander zu, sondern aneinander vorbei.
+  late final AnimationController _merge = AnimationController(
+    vsync: this,
+    duration: AtemMergeMotion.duration,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _merge.addStatusListener((status) {
+      if (status != AnimationStatus.completed) return;
+      // Erst im nächsten Frame: Der Auftrag zu löschen baut die Liste neu,
+      // und das mitten im Abschluss der Animation wirft.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_merge.isCompleted) return;
+        _merge.value = 0;
+        ref.read(mergeAnimationProvider.notifier).done();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _merge.dispose();
+    super.dispose();
+  }
+
+  /// Fährt los, sobald ein Auftrag vorliegt **und** kein Blatt mehr darüber
+  /// liegt. Ohne die zweite Bedingung liefe die Bewegung hinter dem
+  /// Prüfblatt ab, und zurück auf der Liste wäre sie vorbei.
+  void _driveMerge(MergeAnimation? armed) {
+    final route = ModalRoute.of(context);
+    if (armed == null || (route != null && !route.isCurrent)) return;
+    if (_merge.isAnimating || _merge.isCompleted) return;
+    _merge.duration = MediaQuery.disableAnimationsOf(context)
+        ? AtemMergeMotion.reducedDuration
+        : AtemMergeMotion.duration;
+    _merge.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final entries = ref.watch(filteredTimelineProvider);
     final filter = ref.watch(sessionFilterProvider);
     final loaded = ref.watch(sessionsProvider);
     final counts = SessionFilter.countByKind(loaded.value ?? const []);
+    final armed = ref.watch(mergeAnimationProvider);
+    // Nach dem Bau, nicht währenddessen: `forward()` im Build löste einen
+    // zweiten Build im selben Frame aus.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _driveMerge(armed);
+    });
 
     return Scaffold(
       backgroundColor: AtemColors.base,
@@ -63,7 +120,7 @@ class SessionListScreen extends ConsumerWidget {
                             List.filled(4, const AtemSkeletonBlock(height: 64)),
                       ),
                     )
-                  : _body(context, ref, l10n, entries, filter, counts),
+                  : _body(context, ref, l10n, entries, filter, counts, armed),
             ),
           ],
         ),
@@ -78,6 +135,7 @@ class SessionListScreen extends ConsumerWidget {
     List<TimelineEntry> entries,
     SessionFilter filter,
     Map<SessionKind, int> counts,
+    MergeAnimation? armed,
   ) {
     if (entries.isEmpty) {
       return Padding(
@@ -119,15 +177,20 @@ class SessionListScreen extends ConsumerWidget {
     // **Einmal mischen, dann gruppieren.** Andersherum bekäme jede
     // Monatsgruppe denselben Stapel wartender Einheiten — sie stünden so oft
     // in der Liste, wie es Monate gibt.
+    // **Die zusammengeführte Uhr-Einheit kommt zurück in die Liste** —
+    // solange die Bewegung läuft. Geschrieben ist sie längst weg; ohne die
+    // Momentaufnahme gäbe es nur noch eine Zeile, und es bliebe nichts, was
+    // in etwas hineinlaufen könnte.
+    final pending = ref.watch(healthInboxProvider).pending;
+    final replay = armed != null && !MediaQuery.disableAnimationsOf(context);
     final listed = mergePendingIntoTimeline(
       entries,
-      ref.watch(healthInboxProvider).pending,
+      replay ? [...pending, armed.measured] : pending,
     );
 
     final groups = <List<ListedEntry>>[];
     for (final item in listed) {
-      final isHeader =
-          item is ListedTimeline && item.entry is MonthHeader;
+      final isHeader = item is ListedTimeline && item.entry is MonthHeader;
       if (isHeader || groups.isEmpty) groups.add([]);
       groups.last.add(item);
     }
@@ -166,7 +229,7 @@ class SessionListScreen extends ConsumerWidget {
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AtemSpacing.screenPadding),
-                  sliver: _blocks(group.skip(1)),
+                  sliver: _blocks(group.skip(1), armed),
                 ),
               ],
             )
@@ -174,11 +237,10 @@ class SessionListScreen extends ConsumerWidget {
             SliverPadding(
               padding: const EdgeInsets.symmetric(
                   horizontal: AtemSpacing.screenPadding),
-              sliver: _blocks(group),
+              sliver: _blocks(group, armed),
             ),
         const SliverPadding(
-          padding: EdgeInsets.symmetric(
-              horizontal: AtemSpacing.screenPadding),
+          padding: EdgeInsets.symmetric(horizontal: AtemSpacing.screenPadding),
           sliver: SliverToBoxAdapter(child: HealthDeclinedList()),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 32)),
@@ -196,13 +258,25 @@ class SessionListScreen extends ConsumerWidget {
   /// Streifen dazwischen. Vorher trug jede Zeile ihre eigene Karte — die
   /// Liste zerfiel damit in gleich aussehende Kacheln, an denen der Monat
   /// nicht mehr ablesbar war.
-  Widget _blocks(Iterable<ListedEntry> items) {
+  Widget _blocks(Iterable<ListedEntry> items, MergeAnimation? armed) {
     final blocks = <Widget>[];
     var run = <TimelineSession>[];
 
+    // Steht die Uhr-Zeile vor oder hinter der Zeile, in die sie läuft? Die
+    // Reihenfolge steht nicht fest — eine Uhr-Einheit, die ein paar Minuten
+    // früher beginnt, steht davor. Die Richtung entscheidet, wohin die
+    // beiden Zeilen in Phase 1 rücken.
+    var watchSeen = false;
+    var appSeen = false;
+
     void flush() {
       if (run.isEmpty) return;
-      blocks.add(_SessionBlock(entries: run));
+      blocks.add(_SessionBlock(
+        entries: run,
+        merging: armed,
+        animation: _merge,
+        watchAbove: watchSeen,
+      ));
       run = <TimelineSession>[];
     }
 
@@ -211,12 +285,31 @@ class SessionListScreen extends ConsumerWidget {
       // derselben Karte wie die Einheiten, die zählen.
       if (item case ListedPending(:final session)) {
         flush();
-        blocks.add(HealthPendingRow(session: session));
+        final merging =
+            armed != null && armed.measured.externalId == session.externalId;
+        if (merging) watchSeen = true;
+        blocks.add(
+          merging
+              ? AtemMergingWatchRow(
+                  animation: _merge,
+                  towards: appSeen ? -1 : 1,
+                  child: IgnorePointer(
+                    // Während der Bewegung ist die Entscheidung schon
+                    // gefallen. Ein Tipp darauf öffnete ein Prüfblatt für
+                    // etwas, das es nicht mehr gibt.
+                    child: ExcludeSemantics(
+                      child: HealthPendingRow(session: session, quiet: true),
+                    ),
+                  ),
+                )
+              : HealthPendingRow(session: session),
+        );
         continue;
       }
       final entry = (item as ListedTimeline).entry;
       switch (entry) {
         case TimelineSession():
+          if (entry.session.id == armed?.sessionId) appSeen = true;
           run.add(entry);
         case TimelineGap(
             :final days,
@@ -465,6 +558,8 @@ class _Row extends StatelessWidget {
     required this.ordinal,
     required this.load,
     required this.monthMax,
+    this.merging,
+    this.towards = 1,
   });
 
   final TrainingSession session;
@@ -472,11 +567,50 @@ class _Row extends StatelessWidget {
   final double load;
   final double monthMax;
 
+  /// Läuft gerade eine Uhr-Einheit in **diese** Zeile? Dann rückt sie ihr
+  /// entgegen (Phase 1) und ihr Herkunftspunkt stellt sich um (Phase 3).
+  final Animation<double>? merging;
+
+  /// `-1`, wenn die Uhr-Zeile darüber steht, sonst `1`.
+  final double towards;
+
   /// Die zweite Einheit des Tages — eingerückt, ohne Datum.
   bool get _followUp => ordinal != null && ordinal! > 1;
 
   @override
   Widget build(BuildContext context) {
+    final running = merging;
+    if (running == null) return _content(context, null);
+
+    // Bei reduzierter Bewegung bleibt von der Choreografie **nur der
+    // Punkt**: Er blendet in 120 ms auf seinen Endzustand um. Kein Rücken,
+    // keine Uhr-Zeile, die noch einmal auftaucht — was geschehen ist, sagt
+    // die Meldung in Worten.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return AnimatedBuilder(
+        animation: running,
+        builder: (context, _) => _content(context, running.value),
+      );
+    }
+
+    // Die Verschiebung ist **reine Malerei**: Die Zeile behält ihre Höhe,
+    // ihre Nachbarn in der Karte bleiben stehen. Nur so stimmt die Zusage
+    // aus Phase 1, dass sonst nichts weicht.
+    return AnimatedBuilder(
+      animation: running,
+      builder: (context, _) => Transform.translate(
+        offset: Offset(
+          0,
+          AtemMergeMotion.approach *
+              AtemMergeMotion.gather(running.value) *
+              towards,
+        ),
+        child: _content(context, AtemMergeMotion.settle(running.value)),
+      ),
+    );
+  }
+
+  Widget _content(BuildContext context, double? mergeT) {
     final l10n = AppL10n.of(context);
     final tag = languageTag(context);
     final day = DateFormat.d(tag).format(session.date);
@@ -497,6 +631,27 @@ class _Row extends StatelessWidget {
       if (_followUp) l10n.listSecond(ordinal!),
     ].join(' · ');
 
+    // Die Herkunft (Board 15, C1). Der Punkt trägt sie als **Form**, nicht als
+    // Farbe — und ab 130 % Systemschrift trägt sie ein Wort in der Metazeile,
+    // weil ein 10-dp-Punkt neben 24-sp-Text zum Staubkorn wird. Nie beides.
+    final origin = session.origin;
+    final showDot = AtemOriginDot.fitsAt(context);
+    final originWord = switch (origin) {
+      SessionOrigin.app => null,
+      SessionOrigin.watch => l10n.hcOriginWatch,
+      SessionOrigin.merged => l10n.hcOriginBoth,
+    };
+    // Was die Uhr nicht messen kann, steht als Tatsache da — keine Mahnung,
+    // keine Aufforderung, es nachzutragen. Nur an Einheiten, die überhaupt
+    // aus der Uhr kommen: Bei einer App-Einheit ohne Anstrengung hat man die
+    // Angabe schlicht nicht gemacht, und das gehört nicht in jede Zeile.
+    final missingEffort = origin != SessionOrigin.app && session.rpe == null;
+    final visibleMeta = <String>[
+      if (meta.isNotEmpty) meta,
+      if (!showDot && originWord != null) originWord,
+      if (missingEffort) l10n.hcOriginMissingEffort,
+    ].join(' · ');
+
     final hasLoad = load > 0;
     final share = monthMax <= 0 ? 0.0 : (load / monthMax).clamp(0.0, 1.0);
 
@@ -512,10 +667,19 @@ class _Row extends StatelessWidget {
           // „Dienstag, 8. Juli, Laufen, Cardio, 8,2 Kilometer, Pace 5:42 pro
           // Kilometer, Last 412." — bei Mehrfachtagen ergänzt „2. Einheit",
           // weil die Einrückung nicht hörbar ist.
+          //
+          // Die Herkunft steht **immer** im Label, auch wenn sie sichtbar nur
+          // als Punkt erscheint: Der Punkt ist `excludeSemantics`, und ein
+          // eigener Knoten dafür machte aus einer Zeile zwei (Board 15, H).
+          // Gesprochen heisst der dritte Zustand „App und Uhr" — App zuerst,
+          // damit das Muster hörbar bleibt.
           semanticLabel: [
             spokenDate,
             name,
             meta,
+            if (origin == SessionOrigin.watch) l10n.hcOriginWatch,
+            if (origin == SessionOrigin.merged) l10n.hcOriginBothSpoken,
+            if (missingEffort) l10n.hcOriginMissingEffort,
             if (hasLoad) '${l10n.detailLoad} ${load.round()}',
           ].join(', '),
           minTapSize: const Size(0, 56),
@@ -553,12 +717,48 @@ class _Row extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: AtemType.titleSmallOrDefault(context)
                               .copyWith(fontWeight: FontWeight.w600)),
-                      if (meta.isNotEmpty) ...[
+                      if (visibleMeta.isNotEmpty) ...[
                         const SizedBox(height: 2),
-                        Text(meta,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AtemType.meta.of(context)),
+                        Row(
+                          // Der Punkt sitzt auf der **ersten** Zeile, nicht
+                          // in der Mitte des Blocks: Bei zwei Zeilen rutschte
+                          // er sonst zwischen sie. Drei dp sind die halbe
+                          // Differenz zur Zeilenhöhe der Metaschrift — er
+                          // erscheint ohnehin nur unter 130 %, wo diese
+                          // Differenz kaum wandert.
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Der Punkt sitzt in der Metazeile, nicht als
+                            // dritte Spalte vor dem Namen: Er und das Wort,
+                            // das ihn bei grosser Schrift ablöst, sollen
+                            // denselben Platz haben. Eine eigene Spalte
+                            // nähme dem Namen ausserdem 20 dp, und der
+                            // ellipsiert auf 320 dp ohnehin schon.
+                            if (showDot) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: mergeT == null
+                                    ? AtemOriginDot(shape: originShape(origin))
+                                    : AtemOriginDot.merging(progress: mergeT),
+                              ),
+                              const SizedBox(width: 6),
+                            ],
+                            Expanded(
+                              child: Text(visibleMeta,
+                                  // **Zwei Zeilen, sobald etwas dazukommt.**
+                                  // „Cardio · 42 min · ohne Anstrengung"
+                                  // passt auf 361 dp nicht auf eine Zeile —
+                                  // abgeschnitten fiele genau die Tatsache
+                                  // weg, für die die Zeile steht. Die Höhe
+                                  // kommt von innen, es läuft nichts über,
+                                  // und betroffen sind nur die wenigen
+                                  // Zeilen aus der Uhr.
+                                  maxLines: visibleMeta == meta ? 1 : 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AtemType.meta.of(context)),
+                            ),
+                          ],
+                        ),
                       ],
                     ],
                   ),
@@ -612,9 +812,22 @@ class _Row extends StatelessWidget {
 
 /// Die Einheiten eines Monats in **einer** Karte, mit Haarlinien getrennt.
 class _SessionBlock extends StatelessWidget {
-  const _SessionBlock({required this.entries});
+  const _SessionBlock({
+    required this.entries,
+    this.merging,
+    this.animation,
+    this.watchAbove = false,
+  });
 
   final List<TimelineSession> entries;
+
+  /// Die laufende Zusammenführung, falls eine läuft. Betrifft höchstens
+  /// **eine** Zeile dieser Karte.
+  final MergeAnimation? merging;
+  final Animation<double>? animation;
+
+  /// Ob die Uhr-Zeile über dieser Karte steht. Die Zeile rückt ihr entgegen.
+  final bool watchAbove;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -635,6 +848,10 @@ class _SessionBlock extends StatelessWidget {
                   ordinal: entries[i].ordinalOnDay,
                   load: entries[i].load,
                   monthMax: entries[i].monthMaxLoad,
+                  merging: entries[i].session.id == merging?.sessionId
+                      ? animation
+                      : null,
+                  towards: watchAbove ? -1 : 1,
                 ),
               ],
             ],

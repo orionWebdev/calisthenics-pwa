@@ -18,15 +18,20 @@ import 'merge_consequences.dart';
 
 /// Fragt, ob eine Uhr-Einheit zu einer App-Einheit gehört (Board 15, B1).
 ///
-/// Gibt `true` zurück, wenn zusammengeführt wurde — dann ist die Uhr-Einheit
-/// erledigt und das Prüfblatt braucht sie nicht mehr.
-Future<bool> showPairSheet(
+/// Gibt die **Kennung der App-Einheit** zurück, mit der zusammengeführt
+/// wurde — dann ist die Uhr-Einheit erledigt und das Prüfblatt braucht sie
+/// nicht mehr. `null`, wenn nicht zusammengeführt wurde.
+///
+/// Nicht `bool`: Bei mehreren Kandidaten entscheidet sich erst **im Blatt**,
+/// welche Einheit es wird. Die Liste braucht sie danach, um die Bewegung an
+/// der richtigen Zeile zu zeigen (B6).
+Future<String?> showPairSheet(
   BuildContext context, {
   required HealthSession measured,
   required PairVerdict verdict,
 }) async {
   final l10n = AppL10n.of(context);
-  final merged = await showModalBottomSheet<bool>(
+  return showModalBottomSheet<String>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -37,7 +42,6 @@ Future<bool> showPairSheet(
     showDragHandle: false,
     builder: (_) => PairSheet(measured: measured, verdict: verdict),
   );
-  return merged ?? false;
 }
 
 /// **Die Vermutung wird als Frage gestellt, nie als Tatsache angekündigt.**
@@ -97,8 +101,7 @@ class _Suggestion extends ConsumerWidget {
     final shorter = (session.duration ?? Duration.zero) < measured.duration
         ? (session.duration ?? Duration.zero)
         : measured.duration;
-    final apart =
-        appStart.difference(measured.start).abs().inMinutes;
+    final apart = appStart.difference(measured.start).abs().inMinutes;
 
     return AtemSheet.content(
       title: l10n.hcPairQuestion,
@@ -114,7 +117,7 @@ class _Suggestion extends ConsumerWidget {
         semanticLabel: l10n.hcPairKeepApart,
         // Getrennt lassen führt in den normalen Prüfbildschirm — sie wird
         // dann eine eigene Einheit.
-        onPressed: () => Navigator.of(context).pop(false),
+        onPressed: () => Navigator.of(context).pop(),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -187,7 +190,7 @@ class _Suggestion extends ConsumerWidget {
         .merge(measured, session);
     if (!context.mounted) return;
     _announceMerge(ref, AppL10n.of(context), measured, session.id);
-    Navigator.of(context).pop(true);
+    Navigator.of(context).pop(session.id);
   }
 }
 
@@ -258,7 +261,7 @@ class _Ambiguous extends ConsumerWidget {
           AtemButton.outline(
             label: l10n.hcAmbiguousStandalone,
             semanticLabel: l10n.hcAmbiguousStandalone,
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ],
       ),
@@ -278,7 +281,7 @@ class _Ambiguous extends ConsumerWidget {
         .merge(measured, session);
     if (!context.mounted) return;
     _announceMerge(ref, AppL10n.of(context), measured, session.id);
-    Navigator.of(context).pop(true);
+    Navigator.of(context).pop(session.id);
   }
 }
 
@@ -371,9 +374,7 @@ class _PairCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: filled
-                  ? tone.withValues(alpha: 0.2)
-                  : AtemColors.card,
+              color: filled ? tone.withValues(alpha: 0.2) : AtemColors.card,
               borderRadius: BorderRadius.circular(AtemRadii.statBox),
               border: Border.all(
                 color: tone.withValues(alpha: filled ? 0.5 : 0.3),
@@ -441,7 +442,8 @@ class _OverlapBar extends StatelessWidget {
           children: [
             _Track(range: range(appStart, appEnd), color: AtemColors.cyan),
             const SizedBox(height: 4),
-            _Track(range: range(watchStart, watchEnd), color: AtemColors.violet),
+            _Track(
+                range: range(watchStart, watchEnd), color: AtemColors.violet),
             const SizedBox(height: 8),
             Text(label, style: AtemType.meta.of(context)),
           ],

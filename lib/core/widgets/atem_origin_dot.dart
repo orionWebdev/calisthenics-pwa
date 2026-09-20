@@ -38,9 +38,23 @@ enum AtemOriginShape {
 }
 
 class AtemOriginDot extends StatelessWidget {
-  const AtemOriginDot({super.key, required this.shape, this.color});
+  const AtemOriginDot({super.key, required this.shape, this.color})
+      : mergeProgress = null;
+
+  /// Der Punkt **während** einer Zusammenführung (Board 15, B6, Phase 3).
+  ///
+  /// Bei 0 steht er auf „gefüllt", bei 1 auf „Ring mit Kern": Der Kern
+  /// schrumpft von vollem Radius auf 2,2, der Ring blendet ein. Dazwischen
+  /// gibt es keinen dritten Zustand — es ist dieselbe Form, die sich
+  /// umstellt, und genau das soll sie behaupten.
+  const AtemOriginDot.merging({super.key, required double progress, this.color})
+      : shape = AtemOriginShape.ringWithCore,
+        mergeProgress = progress;
 
   final AtemOriginShape shape;
+
+  /// `null` ausserhalb der Zusammenführung — der Normalfall.
+  final double? mergeProgress;
 
   /// `null` nimmt die Metazeilenfarbe. Der ungeprüfte Zustand bleibt immer
   /// grau: Er sagt noch nichts über die Einheit aus.
@@ -64,6 +78,7 @@ class AtemOriginDot extends StatelessWidget {
               shape == AtemOriginShape.dashed
                   ? AtemColors.textSecondary
                   : (color ?? AtemColors.textSecondary),
+              mergeProgress,
             ),
           ),
         ),
@@ -71,10 +86,11 @@ class AtemOriginDot extends StatelessWidget {
 }
 
 class _OriginPainter extends CustomPainter {
-  const _OriginPainter(this.shape, this.color);
+  const _OriginPainter(this.shape, this.color, this.merge);
 
   final AtemOriginShape shape;
   final Color color;
+  final double? merge;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -85,6 +101,27 @@ class _OriginPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
+
+    final t = merge;
+    if (t != null) {
+      // Der Kern wandert vom vollen Radius auf 2,2, der Ring blendet ein.
+      // Beides auf **einer** Zeitachse: Zwei getrennte Überblendungen sähen
+      // aus, als wechselte der Punkt die Sorte, statt sich umzustellen.
+      canvas
+        ..drawCircle(
+          center,
+          radius + (2.2 - radius) * t,
+          fill,
+        )
+        ..drawCircle(
+          center,
+          radius - 1,
+          stroke
+            ..strokeWidth = 1.6
+            ..color = color.withValues(alpha: t),
+        );
+      return;
+    }
 
     switch (shape) {
       case AtemOriginShape.filled:
@@ -117,5 +154,5 @@ class _OriginPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_OriginPainter old) =>
-      old.shape != shape || old.color != color;
+      old.shape != shape || old.color != color || old.merge != merge;
 }

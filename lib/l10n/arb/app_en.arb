@@ -6349,5 +6349,9 @@
         "type": "String"
       }
     }
+  },
+  "hcOriginBothSpoken": "app and watch",
+  "@hcOriginBothSpoken": {
+    "description": "Board 15 · H · gesprochene Fassung von hcOriginBoth. Ein Vorleser liest das Pluszeichen je nach Stimme als \"plus\" oder gar nicht; die Reihenfolge App zuerst ist fest, damit das Muster hoerbar bleibt."
   }
 }

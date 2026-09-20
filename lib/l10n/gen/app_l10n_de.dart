@@ -6658,4 +6658,7 @@ class AppL10nDe extends AppL10n {
   String hcPermRowA11y(String type, String state, String action) {
     return '$type, $state. $action.';
   }
+
+  @override
+  String get hcOriginBothSpoken => 'App und Uhr';
 }

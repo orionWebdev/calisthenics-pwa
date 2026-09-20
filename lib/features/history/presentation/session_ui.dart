@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../core/theme/theme.dart';
+import '../../../core/widgets/atem_origin_dot.dart';
 import '../../../l10n/gen/app_l10n.dart';
 import '../domain/training_session.dart';
 
@@ -34,8 +35,7 @@ String sessionKindLabel(AppL10n l10n, TrainingSession session) =>
 ///
 /// Der Filter braucht ihn für seine Chips, und dort gibt es keine Einheit,
 /// nur die Art.
-String sessionKindName(AppL10n l10n, SessionKind? kind) =>
-    switch (kind) {
+String sessionKindName(AppL10n l10n, SessionKind? kind) => switch (kind) {
       SessionKind.strength => l10n.typeStrength,
       SessionKind.bodyweight => l10n.typeBodyweight,
       SessionKind.cardio => l10n.typeCardio,
@@ -57,4 +57,18 @@ Color sessionKindColor(TrainingSession session) => switch (session.kind) {
       SessionKind.cardio => AtemColors.cyan,
       SessionKind.recovery => AtemColors.green,
       null => AtemColors.textSecondary,
+    };
+
+/// Welche Punktform die Herkunft einer Einheit trägt (Board 15, C).
+///
+/// Die Zuordnung steht hier und nicht an [SessionOrigin]: Die Domäne kennt
+/// kein Flutter, und `AtemOriginShape` ist ein Zeichenbefehl.
+///
+/// Den vierten Zustand — gestrichelt — gibt es hier nicht. Er gehört keiner
+/// Einheit: Was noch ungeprüft ist, ist gar keine, sondern ein Datensatz im
+/// Eingang.
+AtemOriginShape originShape(SessionOrigin origin) => switch (origin) {
+      SessionOrigin.app => AtemOriginShape.filled,
+      SessionOrigin.watch => AtemOriginShape.hollow,
+      SessionOrigin.merged => AtemOriginShape.ringWithCore,
     };

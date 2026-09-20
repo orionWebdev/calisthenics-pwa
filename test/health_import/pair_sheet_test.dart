@@ -148,6 +148,67 @@ void main() {
     expect(repo.saved.single.sessionId, 'a1');
   });
 
+  testWidgets('das Blatt gibt zurück, mit welcher Einheit verknüpft wurde',
+      (tester) async {
+    // Nicht `bool`: Bei mehreren Kandidaten fällt die Wahl erst im Blatt,
+    // und die Liste braucht die Kennung, um die Bewegung an der richtigen
+    // Zeile zu zeigen (B6).
+    repo = _Repo();
+    tester.view.physicalSize = const Size(361, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    String? result;
+    var opened = false;
+    await tester.pumpWidget(ProviderScope(
+      overrides: [
+        ...fixtureOverrides,
+        healthSessionRepositoryProvider.overrideWithValue(repo),
+        currentUserIdProvider.overrideWithValue('u'),
+      ],
+      child: MaterialApp(
+        theme: AtemTheme.dark,
+        locale: const Locale('de'),
+        localizationsDelegates: AppL10n.localizationsDelegates,
+        supportedLocales: AppL10n.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
+        home: Consumer(
+          builder: (context, ref, _) => Scaffold(
+            backgroundColor: AtemColors.base,
+            body: Builder(builder: (context) {
+              if (!opened) {
+                opened = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  result = await showPairSheet(
+                    context,
+                    measured: watch(),
+                    verdict: PairSuggested(
+                      session: app(),
+                      overlap: const Duration(minutes: 52),
+                    ),
+                  );
+                });
+              }
+              return const SizedBox.expand();
+            }),
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    final l10n = AppL10n.of(tester.element(find.byType(PairSheet)));
+    await tester.tap(find.text(l10n.hcPairMerge));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.hcPairMerge).last);
+    await tester.pumpAndSettle();
+
+    expect(result, 'a1');
+  });
+
   testWidgets('die Rücknahme löst die Verbindung wieder', (tester) async {
     // B4: Zwei Wege zurück. Der erste sind sechs Sekunden unmittelbar danach
     // — verlustfrei, weil die Uhr-Einheit danebenliegen bleibt.
