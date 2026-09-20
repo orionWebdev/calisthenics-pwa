@@ -32,17 +32,26 @@ abstract final class ImportInbox {
   /// Eingang, den niemand durcharbeitet.
   static const windowDays = 30;
 
-  /// Ab wann gelesen wird.
+  /// Ab wann gelesen wird — **immer dreissig Tage zurück**.
   ///
-  /// Beim ersten Mal dreissig Tage zurück, danach ab der letzten Lesemarke —
-  /// nie der ganze Bestand. Eine Marke, die älter ist als das Fenster, wird
-  /// auf das Fenster angehoben: Was davor liegt, gibt die Quelle ohnehin
-  /// nicht heraus.
-  static DateTime readFrom(DateTime reference, {DateTime? lastRead}) {
-    final floor = reference.subtract(const Duration(days: windowDays));
-    if (lastRead == null || lastRead.isBefore(floor)) return floor;
-    return lastRead;
-  }
+  /// ## Warum die Lesemarke das Fenster nicht mehr verengt
+  ///
+  /// Bis zum 21.09.2026 begann das Fenster an der letzten Lesemarke. Das
+  /// sparte nichts und kostete alles: Die Marke rückt vor, sobald ein Lauf
+  /// durchläuft — auch wenn er nichts gefunden hat, weil eine Berechtigung
+  /// fehlte und die Quelle still null Einheiten lieferte. Danach begann
+  /// jeder weitere Lauf hinter den Einheiten, die er nie gesehen hatte. Auf
+  /// dem Honor war das Fenster zuletzt **zwei Minuten** breit, und die
+  /// Einheiten vom 16. und 18.09. lagen für immer davor.
+  ///
+  /// Ein Fenster, das sich an einem gespeicherten Zeitpunkt festmacht, macht
+  /// jeden vorübergehenden Fehler dauerhaft. Dreissig Tage jedes Mal zu
+  /// lesen ist nicht teuer — und doppelt kommt nichts herein: Dafür sorgen
+  /// die Kennungen in [pending], nicht das Fenster.
+  ///
+  /// Die Marke bleibt, aber nur als Auskunft („zuletzt gelesen").
+  static DateTime readFrom(DateTime reference) =>
+      reference.subtract(const Duration(days: windowDays));
 
   /// Die Einheiten, die zur Prüfung anstehen — **jüngste zuerst**.
   ///

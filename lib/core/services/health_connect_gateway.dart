@@ -44,10 +44,45 @@ class HealthConnectGateway implements HealthGateway {
     HealthDataType.WORKOUT,
     HealthDataType.HEART_RATE,
   ];
+
+  /// **Gefragt wird nach mehr, als gelesen wird** — und das ist keine
+  /// Bequemlichkeit, sondern eine Eigenart des Pakets.
+  ///
+  /// `health` liest zu **jeder** Trainingseinheit zusätzlich Strecke,
+  /// Kalorien und Schritte über ihr Zeitfenster; erst daraus entsteht der
+  /// `WorkoutHealthValue`. Fehlt auch nur eines dieser Rechte, wirft Health
+  /// Connect eine `SecurityException`, das Paket fängt sie ab und gibt
+  /// **null Einheiten** zurück — ohne Fehler nach Dart. Auf dem Honor sah
+  /// das am 20.09.2026 so aus: 890 Pulspunkte kamen an, kein einziges
+  /// Workout, und im Logcat stand
+  /// „Caller requires android.permission.health.READ_DISTANCE".
+  ///
+  /// Die drei Zusatzrechte stehen deshalb auch im Manifest. Gelesen wird
+  /// weiterhin nur [_sessionTypes]: Alle Schritt- und Streckenpunkte von
+  /// dreissig Tagen zu holen, wäre eine Punktwolke, die niemand braucht.
+  static const _sessionPermissionTypes = [
+    HealthDataType.WORKOUT,
+    HealthDataType.HEART_RATE,
+    HealthDataType.DISTANCE_DELTA,
+    HealthDataType.TOTAL_CALORIES_BURNED,
+    HealthDataType.STEPS,
+  ];
   static const _sessionAccess = [
     HealthDataAccess.READ,
     HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
+    HealthDataAccess.READ,
   ];
+
+  /// Die Kennung der schreibenden App.
+  ///
+  /// **`sourceId` ist auf Android immer leer.** Das Paket setzt das Feld dort
+  /// hart auf `""` und legt den Paketnamen stattdessen in `sourceName` ab.
+  /// Wer `sourceId` läse, verlöre den Schutz gegen die Schleife: ATEMs eigene
+  /// zurückgeschriebene Werte kämen beim nächsten Lauf als fremde Messung
+  /// wieder herein.
+  static String _packageOf(HealthDataPoint point) => point.sourceName;
 
   Future<void> _ensureConfigured() async {
     if (_configured) return;
@@ -112,7 +147,7 @@ class HealthConnectGateway implements HealthGateway {
         id: point.uuid,
         measuredAt: point.dateFrom,
         kg: kg,
-        sourceId: point.sourceId,
+        sourceId: _packageOf(point),
       ));
     }
     return result;
@@ -143,13 +178,14 @@ class HealthConnectGateway implements HealthGateway {
   @override
   Future<bool?> hasSessionAccess() async {
     await _ensureConfigured();
-    return _health.hasPermissions(_sessionTypes, permissions: _sessionAccess);
+    return _health.hasPermissions(_sessionPermissionTypes,
+        permissions: _sessionAccess);
   }
 
   @override
   Future<bool> requestSessionAccess() async {
     await _ensureConfigured();
-    return _health.requestAuthorization(_sessionTypes,
+    return _health.requestAuthorization(_sessionPermissionTypes,
         permissions: _sessionAccess);
   }
 
@@ -197,18 +233,22 @@ class HealthConnectGateway implements HealthGateway {
         id: point.uuid,
         start: point.dateFrom,
         end: point.dateTo,
-        sourceId: point.sourceId,
+        sourceId: _packageOf(point),
         activity: value.workoutActivityType.name,
-        deviceName: point.sourceName,
+        // **Kein Gerätename.** Was das Paket liefert, ist der Paketname der
+        // schreibenden App — „com.garmin.android.apps.connectmobile" ist
+        // kein Name, den man jemandem hinstellt. Health Connect gibt den
+        // echten Gerätenamen nicht heraus, also steht hier nichts, und die
+        // Anzeige fällt auf „Aus der Uhr" zurück.
+        deviceName: null,
         averageHeartRate: inside.isEmpty
             ? null
             : (inside.reduce((a, b) => a + b) / inside.length).round(),
         maxHeartRate:
             inside.isEmpty ? null : inside.reduce((a, b) => a > b ? a : b),
         calories: value.totalEnergyBurned,
-        distanceKm: value.totalDistance == null
-            ? null
-            : value.totalDistance! / 1000,
+        distanceKm:
+            value.totalDistance == null ? null : value.totalDistance! / 1000,
       ));
     }
     return result;

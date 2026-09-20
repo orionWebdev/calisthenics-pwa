@@ -20,6 +20,19 @@
     <uses-permission android:name="android.permission.health.READ_EXERCISE"/>
     <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
 
+    <!-- Strecke, Kalorien und Schritte: **nicht gewünscht, sondern nötig.**
+         Das Paket `health` liest zu jeder Einheit diese drei Sätze über ihr
+         Zeitfenster mit und baut daraus erst den Workout-Wert. Fehlt eines
+         der Rechte, fängt es die SecurityException ab und liefert null
+         Einheiten — ohne dass in Dart ein Fehler ankäme. Gefunden am
+         20.09.2026 im Logcat des Honor: 890 Pulspunkte, kein Workout,
+         „Caller requires android.permission.health.READ_DISTANCE".
+         Strecke und Kalorien landen ohnehin an der importierten Einheit;
+         die Schritte verwendet ATEM nicht. -->
+    <uses-permission android:name="android.permission.health.READ_DISTANCE"/>
+    <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
+    <uses-permission android:name="android.permission.health.READ_STEPS"/>
+
     <application
         android:label="ATEM Hybrid"
         android:name="${applicationName}"

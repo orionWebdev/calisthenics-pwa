@@ -6,7 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final now = DateTime(2026, 9, 20, 8);
 
-  MeasuredSession watch(String id, DateTime start, {String source = 'garmin'}) =>
+  MeasuredSession watch(String id, DateTime start,
+          {String source = 'garmin'}) =>
       MeasuredSession(
         id: id,
         start: start,
@@ -15,22 +16,21 @@ void main() {
       );
 
   group('Lesefenster', () {
-    test('beim ersten Mal dreissig Tage zurück', () {
+    test('immer dreissig Tage zurück', () {
       expect(ImportInbox.readFrom(now),
           DateTime(2026, 9, 20, 8).subtract(const Duration(days: 30)));
     });
 
-    test('danach ab der letzten Lesemarke', () {
-      final mark = DateTime(2026, 9, 19, 8, 3);
-      expect(ImportInbox.readFrom(now, lastRead: mark), mark);
-    });
-
-    test('eine zu alte Marke wird auf das Fenster angehoben', () {
-      // Was davor liegt, gibt Health Connect ohne die Historien-Berechtigung
-      // ohnehin nicht heraus.
-      final ancient = DateTime(2025, 1, 1);
-      expect(ImportInbox.readFrom(now, lastRead: ancient),
-          now.subtract(const Duration(days: 30)));
+    test('ein zweiter Lauf beginnt nicht später als der erste', () {
+      // Der Fehler vom 20.09.2026: Das Fenster begann an der letzten
+      // Lesemarke. Ein Lauf, der nichts fand — weil eine Berechtigung
+      // fehlte und Health Connect still null Einheiten lieferte —, rückte
+      // die Marke trotzdem vor. Danach lag alles Ältere für immer davor.
+      final erster = ImportInbox.readFrom(now);
+      final zweiter = ImportInbox.readFrom(now.add(const Duration(minutes: 2)));
+      expect(zweiter.difference(erster), const Duration(minutes: 2),
+          reason: 'das Fenster wandert mit der Zeit, es schrumpft nicht');
+      expect(now.difference(zweiter).inDays, 29);
     });
   });
 
@@ -56,21 +56,32 @@ void main() {
     });
 
     test('schon übernommene kommen nicht zurück', () {
-      expect([for (final s in pending(imported: {'hc-b'})) s.id],
-          ['hc-c', 'hc-a']);
+      expect([
+        for (final s in pending(imported: {'hc-b'})) s.id
+      ], [
+        'hc-c',
+        'hc-a'
+      ]);
     });
 
     test('abgelehnte kommen nicht wieder', () {
       // Ohne dieses Gedächtnis läge derselbe Datensatz am nächsten Morgen
       // wieder im Eingang.
-      expect([for (final s in pending(rejected: {'hc-a', 'hc-c'})) s.id],
-          ['hc-b']);
+      expect([
+        for (final s in pending(rejected: {'hc-a', 'hc-c'})) s.id
+      ], [
+        'hc-b'
+      ]);
     });
 
     test('was ATEM selbst geschrieben hat, kommt nicht als fremd herein', () {
       final own = watch('hc-own', DateTime(2026, 9, 20, 6),
           source: 'com.atemhybrid.app');
-      expect([for (final s in pending(measured: [own, a])) s.id], ['hc-a']);
+      expect([
+        for (final s in pending(measured: [own, a])) s.id
+      ], [
+        'hc-a'
+      ]);
     });
 
     test('nichts offen heisst leerer Eingang', () {

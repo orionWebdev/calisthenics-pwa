@@ -121,8 +121,7 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
     final repo = ref.read(healthSessionRepositoryProvider);
     final known = await repo.fetch(userId);
     final now = DateTime.now();
-    final from =
-        ImportInbox.readFrom(now, lastRead: await repo.lastRead(userId));
+    final from = ImportInbox.readFrom(now);
 
     final measured = await gateway.readSessions(from: from, to: now);
     final fresh = ImportInbox.pending(
