@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/auth/application/auth_providers.dart';
 import 'package:atem/features/auth/domain/auth_user.dart';
@@ -325,9 +327,17 @@ class FakeWeightRepository implements WeightRepository {
 
   final List<WeightEntry> entries;
 
+  /// **Der Strom meldet jede Änderung nach**, wie Firestore es tut. Ein Fake,
+  /// der nur einmal liefert, lässt jeden Ablauf mit zwei Schreibvorgängen
+  /// gegen einen veralteten Stand rechnen — und der zweite Lauf eines
+  /// Abgleichs sähe aus, als hätte der erste nichts bewirkt.
+  final _changes = StreamController<WeightSeries>.broadcast();
+
   @override
-  Stream<WeightSeries> watch(String userId) =>
-      Stream.value(WeightSeries.of(entries));
+  Stream<WeightSeries> watch(String userId) async* {
+    yield WeightSeries.of(entries);
+    yield* _changes.stream;
+  }
 
   @override
   Future<WeightSeries> fetch(String userId) async => WeightSeries.of(entries);
@@ -336,11 +346,14 @@ class FakeWeightRepository implements WeightRepository {
   Future<void> save(String userId, WeightEntry entry) async {
     entries.removeWhere((e) => e.documentId == entry.documentId);
     entries.add(entry);
+    _changes.add(WeightSeries.of(entries));
   }
 
   @override
-  Future<void> delete(String userId, DateTime day) async =>
-      entries.removeWhere((e) => e.documentId == WeightEntry.idFor(day));
+  Future<void> delete(String userId, DateTime day) async {
+    entries.removeWhere((e) => e.documentId == WeightEntry.idFor(day));
+    _changes.add(WeightSeries.of(entries));
+  }
 }
 
 /// Neun Einträge bis zum [fixtureToday], darin eine Lücke von sechs Wochen

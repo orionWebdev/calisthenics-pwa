@@ -263,6 +263,11 @@ geht dort weiter.
 - Kategorie, Zielgruppe/Altersfreigabe-Fragebogen, Datensicherheits-Fragebogen (Formular, keine Datei).
 - Kontakt-E-Mail für den Store-Eintrag (kann von der Impressum-Adresse abweichen).
 - Preismodell in der Console setzen (auch „kostenlos" ist eine explizite Angabe).
+- **Health-Connect-Erklärung (neu am 20.09.2026).** Seit 8.2 deklariert das Manifest
+  `READ_WEIGHT` und `WRITE_WEIGHT`. Google verlangt dafür das Formular „Health Connect
+  data access", eine Begründung **je Datentyp**, die erreichbare Datenschutzerklärung
+  (Blocker 2 aus 7.2) und ein Demo-Video, das die Nutzung zeigt. Ohne UI gibt es noch
+  nichts zu filmen — das wird erst nach Board 15 möglich.
 
 ### 7.4 Entscheidungen — vom Nutzer am 18.09.2026 getroffen
 
@@ -357,7 +362,50 @@ künftig den jüngsten Eintrag der Reihe.
 Beachten: jede Zahl mit Grundlage, kein Urteil („Sollgewicht" gibt es nicht), Deltas ohne
 Ampelfarben — die Regeln aus `CLAUDE.md` gelten hier genauso wie in der Auswertung.
 
-### 8.2 Google Health (Health Connect)
+### 8.2 Google Health (Health Connect) — Schritt 1 und 2 ✅ im Code (20.09.2026)
+
+**Gebaut ist der Teil, den kein Board bestimmt:** lesen, rechnen, schreiben.
+
+- `android/`: `minSdk` von 24 auf **26** (Health Connect gibt es erst ab Android 8.0, und
+  das `health`-Plugin verlangt es). Im Manifest stehen **genau zwei** Berechtigungen,
+  `READ_WEIGHT` und `WRITE_WEIGHT` — jede weitere wäre eine Begründung mehr, die bei
+  Googles Freigabe je Datentyp niemand schreiben kann. Dazu der
+  Rationale-Filter, der `ViewPermissionUsageActivity`-Alias (ab Android 14) und die
+  `<queries>`-Einträge, ohne die die App nicht sieht, ob Health Connect installiert ist.
+- `lib/core/domain/health_gateway.dart`: der Vertrag, ohne Plugin-Typen.
+  `lib/core/services/health_connect_gateway.dart`: die Umsetzung über `health ^13.3.2` —
+  die einzige Datei, die das Paket kennt.
+- `lib/features/weight/domain/weight_sync.dart`: der Abgleich als **Plan**, reine Rechnung,
+  ohne Gerät prüfbar. Vier Regeln: was ATEM selbst geschrieben hat, kommt nicht als fremde
+  Messung zurück (erkannt am Paketnamen); ein Tag trägt einen Wert, bei zwei Messungen gilt
+  die spätere; **eine Messung überschreibt keine Eingabe**; und nur Getipptes geht zurück.
+- `weightSyncProvider` führt ihn aus. Geprüft mit `FakeHealthGateway` über alle Zustände.
+
+**Was bewusst fehlt: der Auslöser und der Zugang.** Wann abgeglichen wird und wie die fünf
+Berechtigungszustände aussehen, entscheidet Board 15 (Abschnitt 4 des Design-Prompts).
+Niemand ruft `run()` auf — gebaut wird gegen das Board, nicht gegen eine Vermutung.
+
+**Drei Entscheidungen, die dabei gefallen sind:**
+
+1. **Fenster: 30 Tage.** Ohne die zusätzliche Berechtigung `READ_HEALTH_DATA_HISTORY`
+   liefert Health Connect nichts, was länger als dreissig Tage vor der Freigabe liegt. Sie
+   ist **nicht** deklariert: Für den laufenden Abgleich reicht das Fenster, und jede
+   Berechtigung kostet bei der Einreichung eine eigene Begründung. Ein einmaliger Import
+   der ganzen Vergangenheit wäre ein eigenes Vorhaben — **offene Frage an den Nutzer.**
+2. **Eine Messung überschreibt keinen getippten Wert.** Wer eine Zahl eingetragen hat, hat
+   eine Aussage gemacht; ein Import, der sie still ersetzt, nimmt sie zurück, ohne zu
+   fragen. Der Widerspruch bleibt stattdessen sichtbar: Der getippte Wert wird an die
+   Quelle zurückgeschrieben. Board 15 darf das anders entscheiden — dann steht der Grund
+   dort.
+3. **Zurückgeschrieben wird auf 12:00 Uhr**, nicht auf Mitternacht. Ein Tageswert um 00:00
+   fällt in anderen Apps je nach Zeitzone auf den Vortag.
+
+Release-APK gebaut und auf dem Honor installiert: startet ohne Absturz, im gebauten Manifest
+stehen `minSdkVersion=26` und genau die zwei Berechtigungen.
+
+---
+
+### 8.2 Google Health (Health Connect) — ursprüngliche Beschreibung
 
 **Google Fit ist kein Weg mehr** — die Fit-APIs sind abgekündigt und abgeschaltet. Auf Android läuft
 alles über **Health Connect**, eine Systemkomponente, mit der Apps Gesundheitsdaten teilen.

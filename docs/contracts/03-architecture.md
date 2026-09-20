@@ -11,7 +11,8 @@ lib/
 │   └── router.dart           go_router, StatefulShellRoute für die Nav
 ├── core/
 │   ├── i18n/                 AtemFormat
-│   ├── services/             Haptik, Audio, Health Connect (später)
+│   ├── domain/              Rechnungen und Verträge ohne Flutter
+│   ├── services/             Haptik, Audio, Health Connect
 │   ├── theme/                atem_colors, atem_gradients, atem_geometry,
 │   │                         atem_motion, atem_type, atem_theme
 │   ├── utils/

@@ -106,6 +106,27 @@ class WeightController extends Notifier<PendingWeightEntry?> {
     _timer = Timer(window, dismiss);
   }
 
+  /// Übernimmt Einträge aus einer Gesundheitsquelle.
+  ///
+  /// **Ohne Widerrufsfenster und ohne Meldung je Eintrag.** Ein Abgleich ist
+  /// keine einzelne Handlung, die sich zurücknehmen liesse — er kann zehn Tage
+  /// auf einmal betreffen. Wer einen übernommenen Wert nicht will, ändert oder
+  /// löscht ihn im Verlauf; dort steht er mit seiner Herkunft.
+  ///
+  /// Der Profilwert wird **einmal am Ende** nachgezogen, nicht je Eintrag.
+  Future<void> importFromHealth(List<WeightEntry> entries) async {
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null || entries.isEmpty) return;
+
+    final repository = ref.read(weightRepositoryProvider);
+    for (final entry in entries) {
+      await repository.save(userId, entry);
+    }
+
+    final latest = WeightSeries.of([..._series.entries, ...entries]).latest;
+    if (latest != null) await _mirrorLatest(latest);
+  }
+
   /// Löscht einen Eintrag. **Ohne Widerruf** — der Weg dorthin ist die
   /// zweistufige Bestätigung aus Modul 2, und zwei Sicherungen hintereinander
   /// sind eine zu viel.

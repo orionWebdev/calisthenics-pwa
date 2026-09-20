@@ -33,7 +33,12 @@ android {
         applicationId = "com.atemhybrid.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // **26 statt flutter.minSdkVersion (24).** Health Connect gibt es erst
+        // ab Android 8.0, und das `health`-Plugin setzt `minSdkVersion 26` —
+        // ohne diese Zeile scheitert der Manifest-Merger. Der Preis sind
+        // Android 7.0 und 7.1; beide liegen 2026 unter einem Prozent der
+        // aktiven Geräte, und die App hat dort noch nie einen Nutzer gehabt.
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
