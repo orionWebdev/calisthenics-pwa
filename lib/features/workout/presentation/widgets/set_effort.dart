@@ -225,6 +225,82 @@ class _TextAction extends StatelessWidget {
       );
 }
 
+/// Die Kapsel „Anstrengung eintragen" — dort, wo sonst die Angabe steht.
+///
+/// Sie erscheint unter jedem abgehakten Satz **ohne** Angabe. Seit der Runner
+/// nach dem letzten Satz einer Übung sofort weiterspringt (20.09.2026), zieht
+/// der Streifen mit der Übung weg, bevor jemand antworten konnte; ohne diesen
+/// Knopf wäre die Frage damit für immer verpasst.
+///
+/// Gedämpft, ohne Ton der Kraft: Sie ist ein Angebot, keine Mahnung. Die
+/// Angabe bleibt freiwillig.
+class EffortAddBadge extends StatelessWidget {
+  const EffortAddBadge({
+    super.key,
+    required this.setNumber,
+    required this.open,
+    required this.onTap,
+  });
+
+  final int setNumber;
+
+  /// Ob der Streifen zu diesem Satz gerade offen ist.
+  final bool open;
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+
+    return AtemTappable(
+      onTap: onTap,
+      semanticLabel: l10n.workoutEffortAddA11y(setNumber),
+      selected: open,
+      minTapSize: const Size(48, 48),
+      alignment: Alignment.centerLeft,
+      child: AnimatedContainer(
+        duration: AtemMotion.duration(context, AtemMotion.fast),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: open
+              ? AtemColors.tabStrength.withValues(alpha: 0.08)
+              : const Color(0x00000000),
+          borderRadius: AtemRadii.pillR,
+          border: Border.all(
+            color: open
+                ? AtemColors.tabStrength.withValues(alpha: 0.4)
+                : AtemColors.border,
+          ),
+        ),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 6,
+          runSpacing: 2,
+          children: [
+            // Das Pluszeichen wird nicht vorgelesen — „eintragen" steht im
+            // Label.
+            ExcludeSemantics(
+              child: Text(
+                '+',
+                style: AtemType.labelUi
+                    .of(context)
+                    .copyWith(color: AtemColors.textTertiary),
+              ),
+            ),
+            Text(
+              l10n.workoutEffortAdd,
+              style: AtemType.meta
+                  .of(context)
+                  .copyWith(color: AtemColors.textTertiary),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Die Kapsel „RPE 8" in der Satzzeile.
 ///
 /// Mono in `textSecondary` — eine Angabe, keine Hervorhebung. Ab RPE 7 steht

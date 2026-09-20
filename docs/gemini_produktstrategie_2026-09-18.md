@@ -304,3 +304,56 @@ geht dort weiter.
 
   **Diese Entscheidung braucht der Nutzer noch, bevor die Play-Billing-Integration beginnt** — welcher
   Schnitt gilt (einer der beiden, eine Mischung, oder neu), und der Preis. Siehe die Frage unten.
+
+## 8 · Neue Vorhaben vom 20.09.2026
+
+Drei Punkte, die der Nutzer an diesem Tag angemeldet hat. Keiner davon ist begonnen.
+
+### 8.1 Gewichtstracking als Widget im Hybrid-Tab
+
+Ein eigener Block im Hybrid-Tab, der das Körpergewicht über die Zeit zeigt.
+
+**Das Design kommt zuerst.** Der Nutzer lässt den Block in Claude Design entwerfen; gebaut wird erst
+danach, gegen das Board (`DesignSync get_file`, Projekt `14523979-ed88-4a5a-ac09-cacf10614050`).
+Nicht vorher aus der Beschreibung bauen — siehe die Rückmeldung vom 18.09.2026.
+
+**Die Datenfrage, die das Board nicht beantwortet:** Der Bestand führt in `userProfiles/{uid}` genau
+**einen** Wert `bodyWeight`. Eine Kurve braucht eine Reihe. Das ist eine neue Sammlung (Vorschlag:
+`userProfiles/{uid}/bodyWeights/{datum}` mit `kg`, `date`, `source`) — und `source` zählt, sobald
+8.2 dazukommt: Ein Wert aus Health Connect ist etwas anderes als ein getippter. Die bestehende
+Einstellung „Körpergewicht" bleibt, was sie ist: der Wert, mit dem die Last gerechnet wird; sie zeigt
+künftig den jüngsten Eintrag der Reihe.
+
+Beachten: jede Zahl mit Grundlage, kein Urteil („Sollgewicht" gibt es nicht), Deltas ohne
+Ampelfarben — die Regeln aus `CLAUDE.md` gelten hier genauso wie in der Auswertung.
+
+### 8.2 Google Health (Health Connect)
+
+**Google Fit ist kein Weg mehr** — die Fit-APIs sind abgekündigt und abgeschaltet. Auf Android läuft
+alles über **Health Connect**, eine Systemkomponente, mit der Apps Gesundheitsdaten teilen.
+
+Vorgehen in dieser Reihenfolge:
+1. Nur **lesen**, nur **Gewicht** (`WeightRecord`). Das speist 8.1 und ist der kleinste sinnvolle
+   Schnitt. Flutter-Seite: das Paket `health`, Berechtigungen einzeln je Datentyp.
+2. Danach **schreiben**: abgeschlossene Einheiten als Trainingseinheit zurückgeben, damit ATEM kein
+   Datensilo ist.
+3. Erst wenn beides steht: Puls und Schlaf für die Regeneration lesen.
+
+**Der Haken liegt nicht im Code, sondern in der Freigabe.** Wer Health-Connect-Daten in einer
+veröffentlichten App liest, braucht von Google eine Freigabe je Datentyp — mit Datenschutzerklärung,
+Begründung je Typ und einem Demo-Video. Das ist ein weiterer Punkt für Abschnitt 7 und ein Grund,
+den Datenschutztext endlich zu veröffentlichen, statt ihn als Platzhalter liegen zu lassen.
+
+### 8.3 Garmin
+
+**Direkt geht es nicht ohne Vertrag.** Die Garmin Health API ist server-zu-server (OAuth, Webhooks)
+und setzt eine Aufnahme ins Garmin-Entwicklerprogramm voraus — ein Antrag mit Vertrag, kein
+Schlüssel zum Selbstholen. Dazu bräuchte ATEM einen serverseitigen Teil, den es heute nicht gibt.
+
+**Der pragmatische Weg führt über 8.2:** Die Garmin-Connect-App schreibt auf Android nach Health
+Connect. Wer eine Garmin trägt, bringt seine Daten also schon mit — ATEM muss nur Health Connect
+lesen und kennt keinen Hersteller. Damit sind Garmin, Fitbit, Withings und Samsung in einem Zug
+erledigt, mit einer Anbindung statt vier.
+
+Eine eigene Garmin-Anbindung erst, wenn jemand sie vermisst **und** etwas kommt, das über Health
+Connect nicht zu haben ist. Dann ist es ein Backend-Vorhaben, kein App-Vorhaben.

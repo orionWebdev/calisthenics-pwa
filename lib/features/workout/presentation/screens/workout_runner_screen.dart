@@ -79,11 +79,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   /// den vorigen ohne Angabe.
   String? _rpeOpenSetId;
 
-  /// Der Wechsel zur nächsten Übung, aufgeschoben bis der Streifen des
-  /// letzten Satzes zu ist — sonst verschwände er mit der Übung, bevor man
-  /// antworten kann.
-  bool _advanceAfterRpe = false;
-
   bool _restCompact = false;
   bool _restFinishing = false;
 
@@ -478,12 +473,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     final nowDone = _notifier.toggleSet(_exIndex, set.id);
     if (!nowDone) {
       // Entsperrt: Der Streifen dieses Satzes hat nichts mehr zu fragen.
-      if (_rpeOpenSetId == set.id) {
-        setState(() {
-          _rpeOpenSetId = null;
-          _advanceAfterRpe = false;
-        });
-      }
+      if (_rpeOpenSetId == set.id) setState(() => _rpeOpenSetId = null);
       _persistCurrent();
       return;
     }
@@ -495,9 +485,15 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     // tut. Die Pause läuft dabei weiter: Sie gehört zum Satz, nicht zur
     // Übung, und sie neu zu starten verschenkte die Hälfte.
     //
-    // Seit dem Anstrengungs-Streifen (18.09.2026) erst, wenn er zu ist.
+    // **Der Anstrengungs-Streifen hält den Wechsel nicht mehr auf**
+    // (20.09.2026). Zwei Tage lang wartete der Runner auf eine Antwort, die
+    // freiwillig ist — wer nichts angeben wollte, musste „keine Angabe"
+    // tippen, um weiterzukommen. Jetzt springt er sofort; die Frage geht
+    // dabei nicht verloren, sondern steht als „Anstrengung eintragen" unter
+    // dem Satz ([EffortAddBadge]).
     final exercise = w.exercises[_exIndex];
     final open = exercise.sets.where((s) => !s.done && s.id != set.id).length;
+    final advance = open == 0 && _exIndex < w.exercises.length - 1;
 
     setState(() {
       _clockState = _clockState.startRest(
@@ -507,10 +503,16 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
       _restAnnounced = false;
       _restCompact = false;
       _restFinishing = false;
-      // Der Streifen wandert zum eben abgehakten Satz; ein offener unter dem
-      // vorigen schliesst ohne Angabe.
-      _rpeOpenSetId = set.id;
-      _advanceAfterRpe = open == 0 && _exIndex < w.exercises.length - 1;
+      if (advance) {
+        // Mit der Übung zöge der Streifen ohnehin weg — gar nicht erst
+        // öffnen, statt ihn aufblitzen zu lassen.
+        _exIndex++;
+        _rpeOpenSetId = null;
+      } else {
+        // Der Streifen wandert zum eben abgehakten Satz; ein offener unter
+        // dem vorigen schliesst ohne Angabe.
+        _rpeOpenSetId = set.id;
+      }
     });
     _persistCurrent();
   }
@@ -524,29 +526,14 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
   }
 
   void _closeRpe() {
-    setState(() {
-      _rpeOpenSetId = null;
-      if (_advanceAfterRpe) {
-        _advanceAfterRpe = false;
-        final total = ref
-                .read(workoutSessionProvider(widget.start))
-                .value
-                ?.exercises
-                .length ??
-            0;
-        if (_exIndex < total - 1) _exIndex++;
-      }
-    });
+    setState(() => _rpeOpenSetId = null);
   }
 
   /// Die Kapsel öffnet den Streifen erneut — oder schliesst ihn, wenn er
-  /// schon offen ist. Ohne Wechsel zur nächsten Übung: Wer nachträgt, will
-  /// bleiben, wo er ist.
+  /// schon offen ist. Das ist auch der Weg zum Nachtragen: Wer die Frage beim
+  /// Abhaken übergangen hat, findet sie unter dem Satz wieder.
   void _toggleRpe(String setId) {
-    setState(() {
-      _advanceAfterRpe = false;
-      _rpeOpenSetId = _rpeOpenSetId == setId ? null : setId;
-    });
+    setState(() => _rpeOpenSetId = _rpeOpenSetId == setId ? null : setId);
   }
 
   /// Wechselt die Übung über die Pfeile. Ein offener Streifen bleibt bei
@@ -555,7 +542,6 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     setState(() {
       _exIndex = index;
       _rpeOpenSetId = null;
-      _advanceAfterRpe = false;
     });
   }
 

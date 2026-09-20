@@ -150,7 +150,7 @@ class SetRow extends StatelessWidget {
               : AtemColors.border,
         ),
       ),
-      child: !set.done || rpe == null
+      child: !set.done
           ? main
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,13 +162,21 @@ class SetRow extends StatelessWidget {
                 // man ohnehin, was zu diesem Satz gehört.
                 Padding(
                   padding: EdgeInsets.only(left: compact ? 0 : 48 + columnGap),
-                  child: RpeBadge(
-                    rpe: rpe,
-                    scale: effortScale,
-                    setNumber: index,
-                    open: rpeOpen,
-                    onTap: onOpenRpe ?? () {},
-                  ),
+                  child: rpe == null
+                      // Ohne Angabe ein Angebot zum Nachtragen — der Streifen
+                      // ist längst weitergezogen.
+                      ? EffortAddBadge(
+                          setNumber: index,
+                          open: rpeOpen,
+                          onTap: onOpenRpe ?? () {},
+                        )
+                      : RpeBadge(
+                          rpe: rpe,
+                          scale: effortScale,
+                          setNumber: index,
+                          open: rpeOpen,
+                          onTap: onOpenRpe ?? () {},
+                        ),
                 ),
               ],
             ),

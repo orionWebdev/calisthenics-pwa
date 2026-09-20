@@ -239,12 +239,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   segments: [
                     AtemSegment(
                       value: EffortScale.rpe,
-                      label: l10n.settingsEffortScaleRpe,
+                      label: l10n.settingsEffortScaleRpeLong,
                       semanticLabel: l10n.settingsEffortScaleRpeA11y,
                     ),
                     AtemSegment(
                       value: EffortScale.rir,
-                      label: l10n.settingsEffortScaleRir,
+                      label: l10n.settingsEffortScaleRirLong,
                       semanticLabel: l10n.settingsEffortScaleRirA11y,
                     ),
                   ],
