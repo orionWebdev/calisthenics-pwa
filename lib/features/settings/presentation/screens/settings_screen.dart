@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -11,7 +12,9 @@ import '../../../auth/presentation/screens/onboarding_screen.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
+import '../../../history/presentation/session_ui.dart';
 import '../../../plans/application/plan_providers.dart';
+import '../../../pulse/presentation/screens/heart_rate_zones_screen.dart';
 import '../../../weight/application/weight_providers.dart';
 import '../../../weight/presentation/screens/weight_history_screen.dart';
 import '../../../weight/presentation/weight_ui.dart';
@@ -237,6 +240,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   valueAccent: settings.unitSystem != UnitSystem.metric,
                   onTap: () => _UnitsSheet.show(context, settings),
                 ),
+                const SettingsRule(),
+                // **Der Zustand steht vor der Aktion** (Modul 8): „Festgelegt
+                // am 12. Sep" oder „Nicht festgelegt", bevor man tippt.
+                _ZonesRow(settings: settings),
                 const SettingsRule(),
                 // Zwei Segmente statt einer Zeile mit Blatt: Die Wahl hat
                 // genau zwei Werte und wirkt sofort auf jede Anstrengung im
@@ -890,6 +897,36 @@ class _DangerRow extends StatelessWidget {
                 size: 18, color: AtemColors.magenta),
           ],
         ),
+      ),
+    );
+  }
+}
+
+
+/// Die Zeile „Herzfrequenzzonen" im Einstellungsbaum (Board 16, D).
+class _ZonesRow extends StatelessWidget {
+  const _ZonesRow({required this.settings});
+
+  final UserSettings settings;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final at = settings.heartRate.zonesSetAt;
+    final state = settings.heartRate.hasZones
+        ? l10n.settingsZonesStateSet(
+            at == null ? '' : DateFormat.MMMd(languageTag(context)).format(at))
+        : l10n.settingsZonesStateUnset;
+
+    return SettingsRow(
+      label: l10n.settingsZonesTitle,
+      value: state,
+      // Auskunft, kein Messwert: gedämpft statt Cyan.
+      quiet: true,
+      semanticLabel: '${l10n.settingsZonesTitle}. '
+          '${l10n.settingsZonesRowA11y(state)}',
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const HeartRateZonesScreen()),
       ),
     );
   }

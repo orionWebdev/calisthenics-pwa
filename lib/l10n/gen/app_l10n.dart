@@ -10180,6 +10180,564 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'ATEM kennt die Uhrzeit dieser Einheiten nicht und vermutet deshalb nichts.'**
   String get hcUndatedNote;
+
+  /// Board 16 · detail.back
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf'**
+  String get detailBack;
+
+  /// Board 16 · detail.kind.strength
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft'**
+  String get detailKindStrength;
+
+  /// Board 16 · detail.kind.bodyweight
+  ///
+  /// In de, this message translates to:
+  /// **'Körpergewicht'**
+  String get detailKindBodyweight;
+
+  /// Board 16 · detail.kind.endurance
+  ///
+  /// In de, this message translates to:
+  /// **'Ausdauer'**
+  String get detailKindEndurance;
+
+  /// Board 16 · detail.kind.run
+  ///
+  /// In de, this message translates to:
+  /// **'Laufen'**
+  String get detailKindRun;
+
+  /// Board 16 · detail.kind.bike
+  ///
+  /// In de, this message translates to:
+  /// **'Radfahren'**
+  String get detailKindBike;
+
+  /// Board 16 · detail.kind.swim
+  ///
+  /// In de, this message translates to:
+  /// **'Schwimmen'**
+  String get detailKindSwim;
+
+  /// Board 16 · detail.kind.recovery
+  ///
+  /// In de, this message translates to:
+  /// **'Regeneration'**
+  String get detailKindRecovery;
+
+  /// Board 16 · detail.time_range
+  ///
+  /// In de, this message translates to:
+  /// **'{day} {date} · {start}–{end}'**
+  String detailTimeRange(String day, String date, String start, String end);
+
+  /// Board 16 · detail.time_no_duration
+  ///
+  /// In de, this message translates to:
+  /// **'{day} {date} · keine Dauer erfasst'**
+  String detailTimeNoDuration(String day, String date);
+
+  /// Board 16 · detail.lead.sets
+  ///
+  /// In de, this message translates to:
+  /// **'Sätze'**
+  String get detailLeadSets;
+
+  /// Board 16 · detail.lead.volume
+  ///
+  /// In de, this message translates to:
+  /// **'kg'**
+  String get detailLeadVolume;
+
+  /// Board 16 · detail.lead.distance
+  ///
+  /// In de, this message translates to:
+  /// **'km'**
+  String get detailLeadDistance;
+
+  /// Board 16 · detail.lead.duration
+  ///
+  /// In de, this message translates to:
+  /// **'min'**
+  String get detailLeadDuration;
+
+  /// Board 16 · detail.basis.strength
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{{n} Übung} other{{n} Übungen}} · {dur} min · Anstrengung {rpe} von 5'**
+  String detailBasisStrength(int n, int dur, int rpe);
+
+  /// Board 16 · detail.basis.run
+  ///
+  /// In de, this message translates to:
+  /// **'{dur} min · {pace} /km im Schnitt'**
+  String detailBasisRun(int dur, String pace);
+
+  /// Board 16 · detail.basis.recovery
+  ///
+  /// In de, this message translates to:
+  /// **'ohne Last · {name}'**
+  String detailBasisRecovery(String name);
+
+  /// Board 16 · detail.basis.empty
+  ///
+  /// In de, this message translates to:
+  /// **'Nur Art und Tag sind bekannt.'**
+  String get detailBasisEmpty;
+
+  /// Board 16 · detail.no_effort
+  ///
+  /// In de, this message translates to:
+  /// **'ohne Anstrengung'**
+  String get detailNoEffort;
+
+  /// Board 16 · detail.metric.duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer'**
+  String get detailMetricDuration;
+
+  /// Board 16 · detail.metric.volume
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen'**
+  String get detailMetricVolume;
+
+  /// Board 16 · detail.metric.hr_avg
+  ///
+  /// In de, this message translates to:
+  /// **'Ø Puls'**
+  String get detailMetricHrAvg;
+
+  /// Board 16 · detail.metric.hr_max
+  ///
+  /// In de, this message translates to:
+  /// **'Max. Puls'**
+  String get detailMetricHrMax;
+
+  /// Board 16 · detail.metric.hr_min
+  ///
+  /// In de, this message translates to:
+  /// **'Min. Puls'**
+  String get detailMetricHrMin;
+
+  /// Board 16 · detail.metric.calories
+  ///
+  /// In de, this message translates to:
+  /// **'Kalorien'**
+  String get detailMetricCalories;
+
+  /// Board 16 · detail.metric.pace
+  ///
+  /// In de, this message translates to:
+  /// **'Ø Tempo'**
+  String get detailMetricPace;
+
+  /// Board 16 · detail.metric.elevation
+  ///
+  /// In de, this message translates to:
+  /// **'Höhenmeter'**
+  String get detailMetricElevation;
+
+  /// Board 16 · detail.block.work.strength
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Übung · {n}} other{Übungen · {n}}}'**
+  String detailBlockWorkStrength(int n);
+
+  /// Board 16 · detail.block.work.splits
+  ///
+  /// In de, this message translates to:
+  /// **'Splits · je km'**
+  String get detailBlockWorkSplits;
+
+  /// Board 16 · detail.block.hr
+  ///
+  /// In de, this message translates to:
+  /// **'Puls'**
+  String get detailBlockHr;
+
+  /// Board 16 · detail.block.zones
+  ///
+  /// In de, this message translates to:
+  /// **'Zeit in Zonen'**
+  String get detailBlockZones;
+
+  /// Board 16 · detail.block.note
+  ///
+  /// In de, this message translates to:
+  /// **'Notiz'**
+  String get detailBlockNote;
+
+  /// Board 16 · detail.block.sources
+  ///
+  /// In de, this message translates to:
+  /// **'Herkunft'**
+  String get detailBlockSources;
+
+  /// Board 16 · detail.set_line
+  ///
+  /// In de, this message translates to:
+  /// **'{sets}×{reps} · {weight} kg'**
+  String detailSetLine(int sets, String reps, String weight);
+
+  /// Board 16 · detail.delta_vs
+  ///
+  /// In de, this message translates to:
+  /// **'{glyph} {value} gegen {date}'**
+  String detailDeltaVs(String glyph, String value, String date);
+
+  /// Board 16 · detail.hr_basis
+  ///
+  /// In de, this message translates to:
+  /// **'Ø {value} aus {min} von {total} min Aufzeichnung'**
+  String detailHrBasis(int value, int min, int total);
+
+  /// Board 16 · detail.zones_basis
+  ///
+  /// In de, this message translates to:
+  /// **'Aus {min} von {total} min Aufzeichnung · deine Zonen vom {date}'**
+  String detailZonesBasis(int min, int total, String date);
+
+  /// Board 16 · detail.zones_thin
+  ///
+  /// In de, this message translates to:
+  /// **'Nur {min} von {total} min aufgezeichnet — die Verteilung beschreibt diesen Teil, nicht die Einheit.'**
+  String detailZonesThin(int min, int total);
+
+  /// Board 16 · detail.zones_unset
+  ///
+  /// In de, this message translates to:
+  /// **'Zonen sind nicht festgelegt. ATEM rechnet keine Verteilung, solange die Grenzen fehlen.'**
+  String get detailZonesUnset;
+
+  /// Board 16 · detail.zones_set_action
+  ///
+  /// In de, this message translates to:
+  /// **'Zonen festlegen'**
+  String get detailZonesSetAction;
+
+  /// Board 16 · detail.zone_name
+  ///
+  /// In de, this message translates to:
+  /// **'Zone {n}'**
+  String detailZoneName(int n);
+
+  /// Board 16 · detail.zone_range_upto
+  ///
+  /// In de, this message translates to:
+  /// **'bis {bpm} bpm'**
+  String detailZoneRangeUpto(int bpm);
+
+  /// Board 16 · detail.zone_range_from
+  ///
+  /// In de, this message translates to:
+  /// **'ab {bpm} bpm'**
+  String detailZoneRangeFrom(int bpm);
+
+  /// Board 16 · detail.zone_range
+  ///
+  /// In de, this message translates to:
+  /// **'{from}–{to} bpm'**
+  String detailZoneRange(int from, int to);
+
+  /// Board 16 · detail.explain.zones
+  ///
+  /// In de, this message translates to:
+  /// **'Gerechnet aus dem Pulsverlauf der Uhr: jede Sekunde zählt in die Zone, in der sie liegt. Kein Sollwert — die Verteilung beschreibt, was war.'**
+  String get detailExplainZones;
+
+  /// Board 16 · detail.explain.volume
+  ///
+  /// In de, this message translates to:
+  /// **'Summe aus Wiederholungen × Gewicht aller Sätze mit Gewichtsangabe. Sätze ohne Gewicht fehlen im Volumen und stehen im Nenner.'**
+  String get detailExplainVolume;
+
+  /// Board 16 · detail.error.hr
+  ///
+  /// In de, this message translates to:
+  /// **'Puls nicht lesbar'**
+  String get detailErrorHr;
+
+  /// Board 16 · detail.error.session
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit nicht lesbar'**
+  String get detailErrorSession;
+
+  /// Board 16 · detail.retry
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut'**
+  String get detailRetry;
+
+  /// Board 16 · detail.edit
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit bearbeiten'**
+  String get detailEdit;
+
+  /// Board 16 · detail.delete
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit löschen'**
+  String get detailDelete;
+
+  /// Board 16 · settings.zones_title
+  ///
+  /// In de, this message translates to:
+  /// **'Herzfrequenzzonen'**
+  String get settingsZonesTitle;
+
+  /// Board 16 · settings.zones_state_set
+  ///
+  /// In de, this message translates to:
+  /// **'Festgelegt am {date}'**
+  String settingsZonesStateSet(String date);
+
+  /// Board 16 · settings.zones_state_unset
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht festgelegt'**
+  String get settingsZonesStateUnset;
+
+  /// Board 16 · settings.zones_basis
+  ///
+  /// In de, this message translates to:
+  /// **'Grundlage'**
+  String get settingsZonesBasis;
+
+  /// Board 16 · settings.zones_basis_pct
+  ///
+  /// In de, this message translates to:
+  /// **'% von HFmax {hrmax}'**
+  String settingsZonesBasisPct(int hrmax);
+
+  /// Board 16 · settings.zones_basis_bpm
+  ///
+  /// In de, this message translates to:
+  /// **'Absolute bpm'**
+  String get settingsZonesBasisBpm;
+
+  /// Board 16 · settings.zones_proposal
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschlag aus HFmax rechnen'**
+  String get settingsZonesProposal;
+
+  /// Board 16 · settings.zones_proposal_note
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Startpunkt, keine Empfehlung. Jede Grenze bleibt einzeln änderbar.'**
+  String get settingsZonesProposalNote;
+
+  /// Board 16 · settings.zones_boundary
+  ///
+  /// In de, this message translates to:
+  /// **'Grenze {n} · zwischen Zone {a} und Zone {b}'**
+  String settingsZonesBoundary(int n, int a, int b);
+
+  /// Board 16 · settings.zones_boundary_limit
+  ///
+  /// In de, this message translates to:
+  /// **'Höchstens {bpm} bpm — die nächste Grenze liegt darüber.'**
+  String settingsZonesBoundaryLimit(int bpm);
+
+  /// Board 16 · settings.zones_retro
+  ///
+  /// In de, this message translates to:
+  /// **'Gilt auch für vergangene Einheiten: Zonen werden aus dem gespeicherten Pulsverlauf gerechnet, nicht beim Import festgeschrieben.'**
+  String get settingsZonesRetro;
+
+  /// Board 16 · settings.zones_no_hrmax
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax fehlt. Prozentgrenzen brauchen einen Wert — oder du legst die Grenzen in bpm fest.'**
+  String get settingsZonesNoHrmax;
+
+  /// Board 16 · settings.zones_saved
+  ///
+  /// In de, this message translates to:
+  /// **'Zonen gespeichert'**
+  String get settingsZonesSaved;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Grenzen in bpm festlegen'**
+  String get settingsZonesSetBounds;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax eintragen'**
+  String get settingsZonesHrMaxEnter;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax {hrmax} · selbst eingetragen am {date}'**
+  String settingsZonesHrMaxLine(int hrmax, String date);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht festgelegt. Ohne Grenzen zeigt eine Einheit ihren Puls, aber keine Verteilung.'**
+  String get settingsZonesUnsetNote;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Bestehende Grenzen bleiben unverändert, solange nichts gespeichert wird.'**
+  String get settingsZonesKeepNote;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax {hrmax} selbst eingetragen. Gespeichert werden immer bpm; die Prozente sind daraus gerechnet.'**
+  String settingsZonesBasisNotePct(int hrmax);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Grenzen direkt in bpm. Ohne HFmax — nichts wird umgerechnet.'**
+  String get settingsZonesBasisNoteBpm;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Grenze {n}'**
+  String settingsZonesBoundaryTitle(int n);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'bpm · {pct} % von {hrmax}'**
+  String settingsZonesStepperCaption(int pct, int hrmax);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'bpm'**
+  String get settingsZonesStepperCaptionBpm;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Minus 1 bpm'**
+  String get settingsZonesMinusA11y;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Plus 1 bpm'**
+  String get settingsZonesPlusA11y;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Mindestens {bpm} bpm — die vorige Grenze liegt darunter.'**
+  String settingsZonesLowerLimit(int bpm);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Minuten rechts: Einheit vom {date}'**
+  String settingsZonesLastSession(String date);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{state}. Öffnen.'**
+  String settingsZonesRowA11y(String state);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Maximalpuls'**
+  String get settingsZonesHrMaxTitle;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax in bpm'**
+  String get settingsZonesHrMaxField;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Zwischen {min} und {max} bpm. ATEM schätzt HFmax nicht aus dem Alter.'**
+  String settingsZonesHrMaxRange(int min, int max);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax speichern'**
+  String get settingsZonesHrMaxSave;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax speichern, nicht möglich, Wert zwischen {min} und {max} nötig'**
+  String settingsZonesHrMaxInvalid(int min, int max);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'HFmax {hrmax}, selbst eingetragen am {date}. Ändern.'**
+  String settingsZonesHrMaxA11y(int hrmax, String date);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Grenzen festlegen'**
+  String get settingsZonesBoundsTitle;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Jede Grenze ist der erste Pulswert der oberen Zone und liegt über der vorigen.'**
+  String get settingsZonesBoundsRule;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Grenze {n} in bpm'**
+  String settingsZonesBoundsField(int n);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern, nicht möglich, Grenze {n} muss über Grenze {m} liegen'**
+  String settingsZonesBoundsInvalid(int n, int m);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern, nicht möglich, noch {n} Grenzen fehlen'**
+  String settingsZonesBoundsMissing(int n);
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschlag übernommen. Jede Grenze bleibt einzeln änderbar.'**
+  String get settingsZonesProposalDone;
+
+  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Zonen konnten nicht gespeichert werden.'**
+  String get settingsZonesError;
+
+  /// Board 16 · D3 · Untertitel des Grenzen-Blatts — der Titel nennt die Grenze schon, der Untertitel wiederholt sie nicht
+  ///
+  /// In de, this message translates to:
+  /// **'zwischen Zone {a} und Zone {b}'**
+  String settingsZonesBetween(int a, int b);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

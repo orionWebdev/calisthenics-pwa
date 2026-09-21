@@ -9801,5 +9801,620 @@
   "hcUndatedNote": "ATEM kennt die Uhrzeit dieser Einheiten nicht und vermutet deshalb nichts.",
   "@hcUndatedNote": {
     "description": "Board 15 · B5, Fall ohne Uhrzeit. Nennt den Grund, nicht die Schuld: Einheiten aus der Vorgaenger-App und nachgetragene tragen keine Startzeit."
+  },
+  "detailBack": "Verlauf",
+  "@detailBack": {
+    "description": "Board 16 · detail.back"
+  },
+  "detailKindStrength": "Kraft",
+  "@detailKindStrength": {
+    "description": "Board 16 · detail.kind.strength"
+  },
+  "detailKindBodyweight": "Körpergewicht",
+  "@detailKindBodyweight": {
+    "description": "Board 16 · detail.kind.bodyweight"
+  },
+  "detailKindEndurance": "Ausdauer",
+  "@detailKindEndurance": {
+    "description": "Board 16 · detail.kind.endurance"
+  },
+  "detailKindRun": "Laufen",
+  "@detailKindRun": {
+    "description": "Board 16 · detail.kind.run"
+  },
+  "detailKindBike": "Radfahren",
+  "@detailKindBike": {
+    "description": "Board 16 · detail.kind.bike"
+  },
+  "detailKindSwim": "Schwimmen",
+  "@detailKindSwim": {
+    "description": "Board 16 · detail.kind.swim"
+  },
+  "detailKindRecovery": "Regeneration",
+  "@detailKindRecovery": {
+    "description": "Board 16 · detail.kind.recovery"
+  },
+  "detailTimeRange": "{day} {date} · {start}–{end}",
+  "@detailTimeRange": {
+    "description": "Board 16 · detail.time_range",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "detailTimeNoDuration": "{day} {date} · keine Dauer erfasst",
+  "@detailTimeNoDuration": {
+    "description": "Board 16 · detail.time_no_duration",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailLeadSets": "Sätze",
+  "@detailLeadSets": {
+    "description": "Board 16 · detail.lead.sets"
+  },
+  "detailLeadVolume": "kg",
+  "@detailLeadVolume": {
+    "description": "Board 16 · detail.lead.volume"
+  },
+  "detailLeadDistance": "km",
+  "@detailLeadDistance": {
+    "description": "Board 16 · detail.lead.distance"
+  },
+  "detailLeadDuration": "min",
+  "@detailLeadDuration": {
+    "description": "Board 16 · detail.lead.duration"
+  },
+  "detailBasisStrength": "{n, plural, one{{n} Übung} other{{n} Übungen}} · {dur} min · Anstrengung {rpe} von 5",
+  "@detailBasisStrength": {
+    "description": "Board 16 · detail.basis.strength",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "dur": {
+        "type": "int"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailBasisRun": "{dur} min · {pace} /km im Schnitt",
+  "@detailBasisRun": {
+    "description": "Board 16 · detail.basis.run",
+    "placeholders": {
+      "dur": {
+        "type": "int"
+      },
+      "pace": {
+        "type": "String"
+      }
+    }
+  },
+  "detailBasisRecovery": "ohne Last · {name}",
+  "@detailBasisRecovery": {
+    "description": "Board 16 · detail.basis.recovery",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "detailBasisEmpty": "Nur Art und Tag sind bekannt.",
+  "@detailBasisEmpty": {
+    "description": "Board 16 · detail.basis.empty"
+  },
+  "detailNoEffort": "ohne Anstrengung",
+  "@detailNoEffort": {
+    "description": "Board 16 · detail.no_effort"
+  },
+  "detailMetricDuration": "Dauer",
+  "@detailMetricDuration": {
+    "description": "Board 16 · detail.metric.duration"
+  },
+  "detailMetricVolume": "Volumen",
+  "@detailMetricVolume": {
+    "description": "Board 16 · detail.metric.volume"
+  },
+  "detailMetricHrAvg": "Ø Puls",
+  "@detailMetricHrAvg": {
+    "description": "Board 16 · detail.metric.hr_avg"
+  },
+  "detailMetricHrMax": "Max. Puls",
+  "@detailMetricHrMax": {
+    "description": "Board 16 · detail.metric.hr_max"
+  },
+  "detailMetricHrMin": "Min. Puls",
+  "@detailMetricHrMin": {
+    "description": "Board 16 · detail.metric.hr_min"
+  },
+  "detailMetricCalories": "Kalorien",
+  "@detailMetricCalories": {
+    "description": "Board 16 · detail.metric.calories"
+  },
+  "detailMetricPace": "Ø Tempo",
+  "@detailMetricPace": {
+    "description": "Board 16 · detail.metric.pace"
+  },
+  "detailMetricElevation": "Höhenmeter",
+  "@detailMetricElevation": {
+    "description": "Board 16 · detail.metric.elevation"
+  },
+  "detailBlockWorkStrength": "{n, plural, one{Übung · {n}} other{Übungen · {n}}}",
+  "@detailBlockWorkStrength": {
+    "description": "Board 16 · detail.block.work.strength",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailBlockWorkSplits": "Splits · je km",
+  "@detailBlockWorkSplits": {
+    "description": "Board 16 · detail.block.work.splits"
+  },
+  "detailBlockHr": "Puls",
+  "@detailBlockHr": {
+    "description": "Board 16 · detail.block.hr"
+  },
+  "detailBlockZones": "Zeit in Zonen",
+  "@detailBlockZones": {
+    "description": "Board 16 · detail.block.zones"
+  },
+  "detailBlockNote": "Notiz",
+  "@detailBlockNote": {
+    "description": "Board 16 · detail.block.note"
+  },
+  "detailBlockSources": "Herkunft",
+  "@detailBlockSources": {
+    "description": "Board 16 · detail.block.sources"
+  },
+  "detailSetLine": "{sets}×{reps} · {weight} kg",
+  "@detailSetLine": {
+    "description": "Board 16 · detail.set_line",
+    "placeholders": {
+      "sets": {
+        "type": "int"
+      },
+      "reps": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "detailDeltaVs": "{glyph} {value} gegen {date}",
+  "@detailDeltaVs": {
+    "description": "Board 16 · detail.delta_vs",
+    "placeholders": {
+      "glyph": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailHrBasis": "Ø {value} aus {min} von {total} min Aufzeichnung",
+  "@detailHrBasis": {
+    "description": "Board 16 · detail.hr_basis",
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZonesBasis": "Aus {min} von {total} min Aufzeichnung · deine Zonen vom {date}",
+  "@detailZonesBasis": {
+    "description": "Board 16 · detail.zones_basis",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailZonesThin": "Nur {min} von {total} min aufgezeichnet — die Verteilung beschreibt diesen Teil, nicht die Einheit.",
+  "@detailZonesThin": {
+    "description": "Board 16 · detail.zones_thin",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZonesUnset": "Zonen sind nicht festgelegt. ATEM rechnet keine Verteilung, solange die Grenzen fehlen.",
+  "@detailZonesUnset": {
+    "description": "Board 16 · detail.zones_unset"
+  },
+  "detailZonesSetAction": "Zonen festlegen",
+  "@detailZonesSetAction": {
+    "description": "Board 16 · detail.zones_set_action"
+  },
+  "detailZoneName": "Zone {n}",
+  "@detailZoneName": {
+    "description": "Board 16 · detail.zone_name",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZoneRangeUpto": "bis {bpm} bpm",
+  "@detailZoneRangeUpto": {
+    "description": "Board 16 · detail.zone_range_upto",
+    "placeholders": {
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZoneRangeFrom": "ab {bpm} bpm",
+  "@detailZoneRangeFrom": {
+    "description": "Board 16 · detail.zone_range_from",
+    "placeholders": {
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZoneRange": "{from}–{to} bpm",
+  "@detailZoneRange": {
+    "description": "Board 16 · detail.zone_range",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "detailExplainZones": "Gerechnet aus dem Pulsverlauf der Uhr: jede Sekunde zählt in die Zone, in der sie liegt. Kein Sollwert — die Verteilung beschreibt, was war.",
+  "@detailExplainZones": {
+    "description": "Board 16 · detail.explain.zones"
+  },
+  "detailExplainVolume": "Summe aus Wiederholungen × Gewicht aller Sätze mit Gewichtsangabe. Sätze ohne Gewicht fehlen im Volumen und stehen im Nenner.",
+  "@detailExplainVolume": {
+    "description": "Board 16 · detail.explain.volume"
+  },
+  "detailErrorHr": "Puls nicht lesbar",
+  "@detailErrorHr": {
+    "description": "Board 16 · detail.error.hr"
+  },
+  "detailErrorSession": "Einheit nicht lesbar",
+  "@detailErrorSession": {
+    "description": "Board 16 · detail.error.session"
+  },
+  "detailRetry": "Erneut",
+  "@detailRetry": {
+    "description": "Board 16 · detail.retry"
+  },
+  "detailEdit": "Einheit bearbeiten",
+  "@detailEdit": {
+    "description": "Board 16 · detail.edit"
+  },
+  "detailDelete": "Einheit löschen",
+  "@detailDelete": {
+    "description": "Board 16 · detail.delete"
+  },
+  "settingsZonesTitle": "Herzfrequenzzonen",
+  "@settingsZonesTitle": {
+    "description": "Board 16 · settings.zones_title"
+  },
+  "settingsZonesStateSet": "Festgelegt am {date}",
+  "@settingsZonesStateSet": {
+    "description": "Board 16 · settings.zones_state_set",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsZonesStateUnset": "Nicht festgelegt",
+  "@settingsZonesStateUnset": {
+    "description": "Board 16 · settings.zones_state_unset"
+  },
+  "settingsZonesBasis": "Grundlage",
+  "@settingsZonesBasis": {
+    "description": "Board 16 · settings.zones_basis"
+  },
+  "settingsZonesBasisPct": "% von HFmax {hrmax}",
+  "@settingsZonesBasisPct": {
+    "description": "Board 16 · settings.zones_basis_pct",
+    "placeholders": {
+      "hrmax": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesBasisBpm": "Absolute bpm",
+  "@settingsZonesBasisBpm": {
+    "description": "Board 16 · settings.zones_basis_bpm"
+  },
+  "settingsZonesProposal": "Vorschlag aus HFmax rechnen",
+  "@settingsZonesProposal": {
+    "description": "Board 16 · settings.zones_proposal"
+  },
+  "settingsZonesProposalNote": "Ein Startpunkt, keine Empfehlung. Jede Grenze bleibt einzeln änderbar.",
+  "@settingsZonesProposalNote": {
+    "description": "Board 16 · settings.zones_proposal_note"
+  },
+  "settingsZonesBoundary": "Grenze {n} · zwischen Zone {a} und Zone {b}",
+  "@settingsZonesBoundary": {
+    "description": "Board 16 · settings.zones_boundary",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesBoundaryLimit": "Höchstens {bpm} bpm — die nächste Grenze liegt darüber.",
+  "@settingsZonesBoundaryLimit": {
+    "description": "Board 16 · settings.zones_boundary_limit",
+    "placeholders": {
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesRetro": "Gilt auch für vergangene Einheiten: Zonen werden aus dem gespeicherten Pulsverlauf gerechnet, nicht beim Import festgeschrieben.",
+  "@settingsZonesRetro": {
+    "description": "Board 16 · settings.zones_retro"
+  },
+  "settingsZonesNoHrmax": "HFmax fehlt. Prozentgrenzen brauchen einen Wert — oder du legst die Grenzen in bpm fest.",
+  "@settingsZonesNoHrmax": {
+    "description": "Board 16 · settings.zones_no_hrmax"
+  },
+  "settingsZonesSaved": "Zonen gespeichert",
+  "@settingsZonesSaved": {
+    "description": "Board 16 · settings.zones_saved"
+  },
+  "settingsZonesSetBounds": "Grenzen in bpm festlegen",
+  "@settingsZonesSetBounds": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesHrMaxEnter": "HFmax eintragen",
+  "@settingsZonesHrMaxEnter": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesHrMaxLine": "HFmax {hrmax} · selbst eingetragen am {date}",
+  "@settingsZonesHrMaxLine": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "hrmax": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsZonesUnsetNote": "Nicht festgelegt. Ohne Grenzen zeigt eine Einheit ihren Puls, aber keine Verteilung.",
+  "@settingsZonesUnsetNote": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesKeepNote": "Bestehende Grenzen bleiben unverändert, solange nichts gespeichert wird.",
+  "@settingsZonesKeepNote": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesBasisNotePct": "HFmax {hrmax} selbst eingetragen. Gespeichert werden immer bpm; die Prozente sind daraus gerechnet.",
+  "@settingsZonesBasisNotePct": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "hrmax": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesBasisNoteBpm": "Grenzen direkt in bpm. Ohne HFmax — nichts wird umgerechnet.",
+  "@settingsZonesBasisNoteBpm": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesBoundaryTitle": "Grenze {n}",
+  "@settingsZonesBoundaryTitle": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesStepperCaption": "bpm · {pct} % von {hrmax}",
+  "@settingsZonesStepperCaption": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      },
+      "hrmax": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesStepperCaptionBpm": "bpm",
+  "@settingsZonesStepperCaptionBpm": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesMinusA11y": "Minus 1 bpm",
+  "@settingsZonesMinusA11y": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesPlusA11y": "Plus 1 bpm",
+  "@settingsZonesPlusA11y": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesLowerLimit": "Mindestens {bpm} bpm — die vorige Grenze liegt darunter.",
+  "@settingsZonesLowerLimit": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesLastSession": "Minuten rechts: Einheit vom {date}",
+  "@settingsZonesLastSession": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsZonesRowA11y": "{state}. Öffnen.",
+  "@settingsZonesRowA11y": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsZonesHrMaxTitle": "Maximalpuls",
+  "@settingsZonesHrMaxTitle": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesHrMaxField": "HFmax in bpm",
+  "@settingsZonesHrMaxField": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesHrMaxRange": "Zwischen {min} und {max} bpm. ATEM schätzt HFmax nicht aus dem Alter.",
+  "@settingsZonesHrMaxRange": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesHrMaxSave": "HFmax speichern",
+  "@settingsZonesHrMaxSave": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesHrMaxInvalid": "HFmax speichern, nicht möglich, Wert zwischen {min} und {max} nötig",
+  "@settingsZonesHrMaxInvalid": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesHrMaxA11y": "HFmax {hrmax}, selbst eingetragen am {date}. Ändern.",
+  "@settingsZonesHrMaxA11y": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "hrmax": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsZonesBoundsTitle": "Grenzen festlegen",
+  "@settingsZonesBoundsTitle": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesBoundsRule": "Jede Grenze ist der erste Pulswert der oberen Zone und liegt über der vorigen.",
+  "@settingsZonesBoundsRule": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesBoundsField": "Grenze {n} in bpm",
+  "@settingsZonesBoundsField": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesBoundsInvalid": "Speichern, nicht möglich, Grenze {n} muss über Grenze {m} liegen",
+  "@settingsZonesBoundsInvalid": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesBoundsMissing": "Speichern, nicht möglich, noch {n} Grenzen fehlen",
+  "@settingsZonesBoundsMissing": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsZonesProposalDone": "Vorschlag übernommen. Jede Grenze bleibt einzeln änderbar.",
+  "@settingsZonesProposalDone": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesError": "Zonen konnten nicht gespeichert werden.",
+  "@settingsZonesError": {
+    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "settingsZonesBetween": "zwischen Zone {a} und Zone {b}",
+  "@settingsZonesBetween": {
+    "description": "Board 16 · D3 · Untertitel des Grenzen-Blatts — der Titel nennt die Grenze schon, der Untertitel wiederholt sie nicht",
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
   }
 }

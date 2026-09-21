@@ -6668,4 +6668,372 @@ class AppL10nDe extends AppL10n {
   @override
   String get hcUndatedNote =>
       'ATEM kennt die Uhrzeit dieser Einheiten nicht und vermutet deshalb nichts.';
+
+  @override
+  String get detailBack => 'Verlauf';
+
+  @override
+  String get detailKindStrength => 'Kraft';
+
+  @override
+  String get detailKindBodyweight => 'Körpergewicht';
+
+  @override
+  String get detailKindEndurance => 'Ausdauer';
+
+  @override
+  String get detailKindRun => 'Laufen';
+
+  @override
+  String get detailKindBike => 'Radfahren';
+
+  @override
+  String get detailKindSwim => 'Schwimmen';
+
+  @override
+  String get detailKindRecovery => 'Regeneration';
+
+  @override
+  String detailTimeRange(String day, String date, String start, String end) {
+    return '$day $date · $start–$end';
+  }
+
+  @override
+  String detailTimeNoDuration(String day, String date) {
+    return '$day $date · keine Dauer erfasst';
+  }
+
+  @override
+  String get detailLeadSets => 'Sätze';
+
+  @override
+  String get detailLeadVolume => 'kg';
+
+  @override
+  String get detailLeadDistance => 'km';
+
+  @override
+  String get detailLeadDuration => 'min';
+
+  @override
+  String detailBasisStrength(int n, int dur, int rpe) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Übungen',
+      one: '$n Übung',
+    );
+    return '$_temp0 · $dur min · Anstrengung $rpe von 5';
+  }
+
+  @override
+  String detailBasisRun(int dur, String pace) {
+    return '$dur min · $pace /km im Schnitt';
+  }
+
+  @override
+  String detailBasisRecovery(String name) {
+    return 'ohne Last · $name';
+  }
+
+  @override
+  String get detailBasisEmpty => 'Nur Art und Tag sind bekannt.';
+
+  @override
+  String get detailNoEffort => 'ohne Anstrengung';
+
+  @override
+  String get detailMetricDuration => 'Dauer';
+
+  @override
+  String get detailMetricVolume => 'Volumen';
+
+  @override
+  String get detailMetricHrAvg => 'Ø Puls';
+
+  @override
+  String get detailMetricHrMax => 'Max. Puls';
+
+  @override
+  String get detailMetricHrMin => 'Min. Puls';
+
+  @override
+  String get detailMetricCalories => 'Kalorien';
+
+  @override
+  String get detailMetricPace => 'Ø Tempo';
+
+  @override
+  String get detailMetricElevation => 'Höhenmeter';
+
+  @override
+  String detailBlockWorkStrength(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Übungen · $n',
+      one: 'Übung · $n',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get detailBlockWorkSplits => 'Splits · je km';
+
+  @override
+  String get detailBlockHr => 'Puls';
+
+  @override
+  String get detailBlockZones => 'Zeit in Zonen';
+
+  @override
+  String get detailBlockNote => 'Notiz';
+
+  @override
+  String get detailBlockSources => 'Herkunft';
+
+  @override
+  String detailSetLine(int sets, String reps, String weight) {
+    return '$sets×$reps · $weight kg';
+  }
+
+  @override
+  String detailDeltaVs(String glyph, String value, String date) {
+    return '$glyph $value gegen $date';
+  }
+
+  @override
+  String detailHrBasis(int value, int min, int total) {
+    return 'Ø $value aus $min von $total min Aufzeichnung';
+  }
+
+  @override
+  String detailZonesBasis(int min, int total, String date) {
+    return 'Aus $min von $total min Aufzeichnung · deine Zonen vom $date';
+  }
+
+  @override
+  String detailZonesThin(int min, int total) {
+    return 'Nur $min von $total min aufgezeichnet — die Verteilung beschreibt diesen Teil, nicht die Einheit.';
+  }
+
+  @override
+  String get detailZonesUnset =>
+      'Zonen sind nicht festgelegt. ATEM rechnet keine Verteilung, solange die Grenzen fehlen.';
+
+  @override
+  String get detailZonesSetAction => 'Zonen festlegen';
+
+  @override
+  String detailZoneName(int n) {
+    return 'Zone $n';
+  }
+
+  @override
+  String detailZoneRangeUpto(int bpm) {
+    return 'bis $bpm bpm';
+  }
+
+  @override
+  String detailZoneRangeFrom(int bpm) {
+    return 'ab $bpm bpm';
+  }
+
+  @override
+  String detailZoneRange(int from, int to) {
+    return '$from–$to bpm';
+  }
+
+  @override
+  String get detailExplainZones =>
+      'Gerechnet aus dem Pulsverlauf der Uhr: jede Sekunde zählt in die Zone, in der sie liegt. Kein Sollwert — die Verteilung beschreibt, was war.';
+
+  @override
+  String get detailExplainVolume =>
+      'Summe aus Wiederholungen × Gewicht aller Sätze mit Gewichtsangabe. Sätze ohne Gewicht fehlen im Volumen und stehen im Nenner.';
+
+  @override
+  String get detailErrorHr => 'Puls nicht lesbar';
+
+  @override
+  String get detailErrorSession => 'Einheit nicht lesbar';
+
+  @override
+  String get detailRetry => 'Erneut';
+
+  @override
+  String get detailEdit => 'Einheit bearbeiten';
+
+  @override
+  String get detailDelete => 'Einheit löschen';
+
+  @override
+  String get settingsZonesTitle => 'Herzfrequenzzonen';
+
+  @override
+  String settingsZonesStateSet(String date) {
+    return 'Festgelegt am $date';
+  }
+
+  @override
+  String get settingsZonesStateUnset => 'Nicht festgelegt';
+
+  @override
+  String get settingsZonesBasis => 'Grundlage';
+
+  @override
+  String settingsZonesBasisPct(int hrmax) {
+    return '% von HFmax $hrmax';
+  }
+
+  @override
+  String get settingsZonesBasisBpm => 'Absolute bpm';
+
+  @override
+  String get settingsZonesProposal => 'Vorschlag aus HFmax rechnen';
+
+  @override
+  String get settingsZonesProposalNote =>
+      'Ein Startpunkt, keine Empfehlung. Jede Grenze bleibt einzeln änderbar.';
+
+  @override
+  String settingsZonesBoundary(int n, int a, int b) {
+    return 'Grenze $n · zwischen Zone $a und Zone $b';
+  }
+
+  @override
+  String settingsZonesBoundaryLimit(int bpm) {
+    return 'Höchstens $bpm bpm — die nächste Grenze liegt darüber.';
+  }
+
+  @override
+  String get settingsZonesRetro =>
+      'Gilt auch für vergangene Einheiten: Zonen werden aus dem gespeicherten Pulsverlauf gerechnet, nicht beim Import festgeschrieben.';
+
+  @override
+  String get settingsZonesNoHrmax =>
+      'HFmax fehlt. Prozentgrenzen brauchen einen Wert — oder du legst die Grenzen in bpm fest.';
+
+  @override
+  String get settingsZonesSaved => 'Zonen gespeichert';
+
+  @override
+  String get settingsZonesSetBounds => 'Grenzen in bpm festlegen';
+
+  @override
+  String get settingsZonesHrMaxEnter => 'HFmax eintragen';
+
+  @override
+  String settingsZonesHrMaxLine(int hrmax, String date) {
+    return 'HFmax $hrmax · selbst eingetragen am $date';
+  }
+
+  @override
+  String get settingsZonesUnsetNote =>
+      'Nicht festgelegt. Ohne Grenzen zeigt eine Einheit ihren Puls, aber keine Verteilung.';
+
+  @override
+  String get settingsZonesKeepNote =>
+      'Bestehende Grenzen bleiben unverändert, solange nichts gespeichert wird.';
+
+  @override
+  String settingsZonesBasisNotePct(int hrmax) {
+    return 'HFmax $hrmax selbst eingetragen. Gespeichert werden immer bpm; die Prozente sind daraus gerechnet.';
+  }
+
+  @override
+  String get settingsZonesBasisNoteBpm =>
+      'Grenzen direkt in bpm. Ohne HFmax — nichts wird umgerechnet.';
+
+  @override
+  String settingsZonesBoundaryTitle(int n) {
+    return 'Grenze $n';
+  }
+
+  @override
+  String settingsZonesStepperCaption(int pct, int hrmax) {
+    return 'bpm · $pct % von $hrmax';
+  }
+
+  @override
+  String get settingsZonesStepperCaptionBpm => 'bpm';
+
+  @override
+  String get settingsZonesMinusA11y => 'Minus 1 bpm';
+
+  @override
+  String get settingsZonesPlusA11y => 'Plus 1 bpm';
+
+  @override
+  String settingsZonesLowerLimit(int bpm) {
+    return 'Mindestens $bpm bpm — die vorige Grenze liegt darunter.';
+  }
+
+  @override
+  String settingsZonesLastSession(String date) {
+    return 'Minuten rechts: Einheit vom $date';
+  }
+
+  @override
+  String settingsZonesRowA11y(String state) {
+    return '$state. Öffnen.';
+  }
+
+  @override
+  String get settingsZonesHrMaxTitle => 'Maximalpuls';
+
+  @override
+  String get settingsZonesHrMaxField => 'HFmax in bpm';
+
+  @override
+  String settingsZonesHrMaxRange(int min, int max) {
+    return 'Zwischen $min und $max bpm. ATEM schätzt HFmax nicht aus dem Alter.';
+  }
+
+  @override
+  String get settingsZonesHrMaxSave => 'HFmax speichern';
+
+  @override
+  String settingsZonesHrMaxInvalid(int min, int max) {
+    return 'HFmax speichern, nicht möglich, Wert zwischen $min und $max nötig';
+  }
+
+  @override
+  String settingsZonesHrMaxA11y(int hrmax, String date) {
+    return 'HFmax $hrmax, selbst eingetragen am $date. Ändern.';
+  }
+
+  @override
+  String get settingsZonesBoundsTitle => 'Grenzen festlegen';
+
+  @override
+  String get settingsZonesBoundsRule =>
+      'Jede Grenze ist der erste Pulswert der oberen Zone und liegt über der vorigen.';
+
+  @override
+  String settingsZonesBoundsField(int n) {
+    return 'Grenze $n in bpm';
+  }
+
+  @override
+  String settingsZonesBoundsInvalid(int n, int m) {
+    return 'Speichern, nicht möglich, Grenze $n muss über Grenze $m liegen';
+  }
+
+  @override
+  String settingsZonesBoundsMissing(int n) {
+    return 'Speichern, nicht möglich, noch $n Grenzen fehlen';
+  }
+
+  @override
+  String get settingsZonesProposalDone =>
+      'Vorschlag übernommen. Jede Grenze bleibt einzeln änderbar.';
+
+  @override
+  String get settingsZonesError => 'Zonen konnten nicht gespeichert werden.';
+
+  @override
+  String settingsZonesBetween(int a, int b) {
+    return 'zwischen Zone $a und Zone $b';
+  }
 }

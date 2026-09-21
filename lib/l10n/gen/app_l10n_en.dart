@@ -6648,4 +6648,372 @@ class AppL10nEn extends AppL10n {
   @override
   String get hcUndatedNote =>
       'ATEM does not know the time of day for these sessions and therefore suggests nothing.';
+
+  @override
+  String get detailBack => 'History';
+
+  @override
+  String get detailKindStrength => 'Strength';
+
+  @override
+  String get detailKindBodyweight => 'Bodyweight';
+
+  @override
+  String get detailKindEndurance => 'Endurance';
+
+  @override
+  String get detailKindRun => 'Running';
+
+  @override
+  String get detailKindBike => 'Cycling';
+
+  @override
+  String get detailKindSwim => 'Swimming';
+
+  @override
+  String get detailKindRecovery => 'Recovery';
+
+  @override
+  String detailTimeRange(String day, String date, String start, String end) {
+    return '$day $date · $start–$end';
+  }
+
+  @override
+  String detailTimeNoDuration(String day, String date) {
+    return '$day $date · no duration recorded';
+  }
+
+  @override
+  String get detailLeadSets => 'sets';
+
+  @override
+  String get detailLeadVolume => 'kg';
+
+  @override
+  String get detailLeadDistance => 'km';
+
+  @override
+  String get detailLeadDuration => 'min';
+
+  @override
+  String detailBasisStrength(int n, int dur, int rpe) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n exercises',
+      one: '$n exercise',
+    );
+    return '$_temp0 · $dur min · effort $rpe of 5';
+  }
+
+  @override
+  String detailBasisRun(int dur, String pace) {
+    return '$dur min · $pace /km average';
+  }
+
+  @override
+  String detailBasisRecovery(String name) {
+    return 'no load · $name';
+  }
+
+  @override
+  String get detailBasisEmpty => 'Only type and day are known.';
+
+  @override
+  String get detailNoEffort => 'without effort';
+
+  @override
+  String get detailMetricDuration => 'Duration';
+
+  @override
+  String get detailMetricVolume => 'Volume';
+
+  @override
+  String get detailMetricHrAvg => 'Avg. HR';
+
+  @override
+  String get detailMetricHrMax => 'Max. HR';
+
+  @override
+  String get detailMetricHrMin => 'Min. HR';
+
+  @override
+  String get detailMetricCalories => 'Calories';
+
+  @override
+  String get detailMetricPace => 'Avg. pace';
+
+  @override
+  String get detailMetricElevation => 'Elevation';
+
+  @override
+  String detailBlockWorkStrength(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Exercises · $n',
+      one: 'Exercise · $n',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get detailBlockWorkSplits => 'Splits · per km';
+
+  @override
+  String get detailBlockHr => 'Heart rate';
+
+  @override
+  String get detailBlockZones => 'Time in zones';
+
+  @override
+  String get detailBlockNote => 'Note';
+
+  @override
+  String get detailBlockSources => 'Origin';
+
+  @override
+  String detailSetLine(int sets, String reps, String weight) {
+    return '$sets×$reps · $weight kg';
+  }
+
+  @override
+  String detailDeltaVs(String glyph, String value, String date) {
+    return '$glyph $value vs $date';
+  }
+
+  @override
+  String detailHrBasis(int value, int min, int total) {
+    return 'Avg. $value from $min of $total min recorded';
+  }
+
+  @override
+  String detailZonesBasis(int min, int total, String date) {
+    return 'From $min of $total min recorded · your zones from $date';
+  }
+
+  @override
+  String detailZonesThin(int min, int total) {
+    return 'Only $min of $total min recorded — the distribution describes that part, not the session.';
+  }
+
+  @override
+  String get detailZonesUnset =>
+      'Zones are not set. ATEM computes no distribution while the boundaries are missing.';
+
+  @override
+  String get detailZonesSetAction => 'Set zones';
+
+  @override
+  String detailZoneName(int n) {
+    return 'Zone $n';
+  }
+
+  @override
+  String detailZoneRangeUpto(int bpm) {
+    return 'up to $bpm bpm';
+  }
+
+  @override
+  String detailZoneRangeFrom(int bpm) {
+    return 'from $bpm bpm';
+  }
+
+  @override
+  String detailZoneRange(int from, int to) {
+    return '$from–$to bpm';
+  }
+
+  @override
+  String get detailExplainZones =>
+      'Computed from the watch heart-rate series: each second counts into the zone it falls in. No target — the distribution describes what happened.';
+
+  @override
+  String get detailExplainVolume =>
+      'Sum of reps × weight across all sets with a weight. Sets without weight are missing from volume and appear in the denominator.';
+
+  @override
+  String get detailErrorHr => 'Heart rate unavailable';
+
+  @override
+  String get detailErrorSession => 'Session unavailable';
+
+  @override
+  String get detailRetry => 'Retry';
+
+  @override
+  String get detailEdit => 'Edit session';
+
+  @override
+  String get detailDelete => 'Delete session';
+
+  @override
+  String get settingsZonesTitle => 'Heart rate zones';
+
+  @override
+  String settingsZonesStateSet(String date) {
+    return 'Set on $date';
+  }
+
+  @override
+  String get settingsZonesStateUnset => 'Not set';
+
+  @override
+  String get settingsZonesBasis => 'Basis';
+
+  @override
+  String settingsZonesBasisPct(int hrmax) {
+    return '% of max HR $hrmax';
+  }
+
+  @override
+  String get settingsZonesBasisBpm => 'Absolute bpm';
+
+  @override
+  String get settingsZonesProposal => 'Compute proposal from max HR';
+
+  @override
+  String get settingsZonesProposalNote =>
+      'A starting point, not a recommendation. Every boundary stays individually editable.';
+
+  @override
+  String settingsZonesBoundary(int n, int a, int b) {
+    return 'Boundary $n · between zone $a and zone $b';
+  }
+
+  @override
+  String settingsZonesBoundaryLimit(int bpm) {
+    return 'At most $bpm bpm — the next boundary is above it.';
+  }
+
+  @override
+  String get settingsZonesRetro =>
+      'Applies to past sessions too: zones are computed from the stored heart-rate series, not fixed at import.';
+
+  @override
+  String get settingsZonesNoHrmax =>
+      'Max HR is missing. Percentage boundaries need a value — or set the boundaries in bpm.';
+
+  @override
+  String get settingsZonesSaved => 'Zones saved';
+
+  @override
+  String get settingsZonesSetBounds => 'Set boundaries in bpm';
+
+  @override
+  String get settingsZonesHrMaxEnter => 'Enter max HR';
+
+  @override
+  String settingsZonesHrMaxLine(int hrmax, String date) {
+    return 'Max HR $hrmax · entered by you on $date';
+  }
+
+  @override
+  String get settingsZonesUnsetNote =>
+      'Not set. Without boundaries a session shows its heart rate but no distribution.';
+
+  @override
+  String get settingsZonesKeepNote =>
+      'Existing boundaries stay unchanged until something is saved.';
+
+  @override
+  String settingsZonesBasisNotePct(int hrmax) {
+    return 'Max HR $hrmax entered by you. Only bpm are stored; the percentages are computed from them.';
+  }
+
+  @override
+  String get settingsZonesBasisNoteBpm =>
+      'Boundaries directly in bpm. Without max HR — nothing is converted.';
+
+  @override
+  String settingsZonesBoundaryTitle(int n) {
+    return 'Boundary $n';
+  }
+
+  @override
+  String settingsZonesStepperCaption(int pct, int hrmax) {
+    return 'bpm · $pct % of $hrmax';
+  }
+
+  @override
+  String get settingsZonesStepperCaptionBpm => 'bpm';
+
+  @override
+  String get settingsZonesMinusA11y => 'Minus 1 bpm';
+
+  @override
+  String get settingsZonesPlusA11y => 'Plus 1 bpm';
+
+  @override
+  String settingsZonesLowerLimit(int bpm) {
+    return 'At least $bpm bpm — the previous boundary is below it.';
+  }
+
+  @override
+  String settingsZonesLastSession(String date) {
+    return 'Minutes on the right: session from $date';
+  }
+
+  @override
+  String settingsZonesRowA11y(String state) {
+    return '$state. Open.';
+  }
+
+  @override
+  String get settingsZonesHrMaxTitle => 'Max heart rate';
+
+  @override
+  String get settingsZonesHrMaxField => 'Max HR in bpm';
+
+  @override
+  String settingsZonesHrMaxRange(int min, int max) {
+    return 'Between $min and $max bpm. ATEM does not estimate max HR from age.';
+  }
+
+  @override
+  String get settingsZonesHrMaxSave => 'Save max HR';
+
+  @override
+  String settingsZonesHrMaxInvalid(int min, int max) {
+    return 'Save max HR, not possible, a value between $min and $max is needed';
+  }
+
+  @override
+  String settingsZonesHrMaxA11y(int hrmax, String date) {
+    return 'Max HR $hrmax, entered by you on $date. Change.';
+  }
+
+  @override
+  String get settingsZonesBoundsTitle => 'Set boundaries';
+
+  @override
+  String get settingsZonesBoundsRule =>
+      'Each boundary is the first heart rate of the upper zone and lies above the previous one.';
+
+  @override
+  String settingsZonesBoundsField(int n) {
+    return 'Boundary $n in bpm';
+  }
+
+  @override
+  String settingsZonesBoundsInvalid(int n, int m) {
+    return 'Save, not possible, boundary $n must be above boundary $m';
+  }
+
+  @override
+  String settingsZonesBoundsMissing(int n) {
+    return 'Save, not possible, $n boundaries are still missing';
+  }
+
+  @override
+  String get settingsZonesProposalDone =>
+      'Proposal applied. Every boundary stays individually editable.';
+
+  @override
+  String get settingsZonesError => 'Zones could not be saved.';
+
+  @override
+  String settingsZonesBetween(int a, int b) {
+    return 'between zone $a and zone $b';
+  }
 }

@@ -251,6 +251,7 @@ Future<List<A11yFinding>> collectA11yFindings(
   List<double> textScales = a11yTextScales,
   List<Size> sizes = a11ySizes,
   List<Object> extraOverrides = const [],
+  List<Object>? baseOverrides,
 }) async {
   final findings = <A11yFinding>[];
 
@@ -266,7 +267,10 @@ Future<List<A11yFinding>> collectA11yFindings(
           // Ohne Typannotation, aus demselben Grund wie bei
           // `fixtureOverrides`: `Override` wird nicht exportiert.
           overrides: [
-            ...fixtureOverrides,
+            // `baseOverrides` ersetzt die Fixture **ganz**: Ein Provider, der
+            // in ihr schon steht, darf nicht ein zweites Mal überschrieben
+            // werden — Riverpod bricht dann mit einer Assertion ab.
+            for (final o in baseOverrides ?? fixtureOverrides) o as dynamic,
             for (final o in extraOverrides) o as dynamic,
           ],
           child: MaterialApp(
@@ -319,6 +323,7 @@ Future<void> expectA11y(
   List<double> textScales = a11yTextScales,
   List<Size> sizes = a11ySizes,
   List<Object> extraOverrides = const [],
+  List<Object>? baseOverrides,
 }) async {
   final findings = await collectA11yFindings(
     tester,
@@ -326,6 +331,7 @@ Future<void> expectA11y(
     textScales: textScales,
     sizes: sizes,
     extraOverrides: extraOverrides,
+    baseOverrides: baseOverrides,
   );
   expect(
     findings,
