@@ -31,6 +31,35 @@ final settingsProvider = StreamProvider<UserSettings>((ref) {
   return ref.watch(settingsRepositoryProvider).watch(userId);
 });
 
+/// Die Einstellungen, sobald sie **geladen** sind — höchstens zehn Sekunden.
+///
+/// Wer eine Sperre aus den Einstellungen liest, darf nicht den Vorgabewert
+/// nehmen, solange der Strom noch nicht geantwortet hat: „an" ist die
+/// Vorgabe, und ein Abgleich, den jemand ausgeschaltet hat, liefe sonst beim
+/// App-Start einmal los. `isLoading` wird mitgeprüft, weil der Zustand beim
+/// Neubau den alten Wert weiterträgt.
+Future<UserSettings> loadedSettings(Ref ref) async {
+  // **Zuhören, solange gewartet wird.** Ein Provider ohne Zuhörer wird
+  // angehalten und liefert nie einen Wert — in der App hält ihn die
+  // Oberfläche wach, hier niemand.
+  final subscription = ref.listen(settingsProvider, (_, __) {});
+  try {
+    for (var i = 0; i < 100; i++) {
+      final state = ref.read(settingsProvider);
+      if (state.hasValue && !state.isLoading) return state.requireValue;
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+  } finally {
+    subscription.close();
+  }
+  // Lieber „aus" annehmen als etwas tun, das jemand ausgeschaltet haben
+  // könnte: Beim nächsten Öffnen läuft der Abgleich noch einmal.
+  return const UserSettings(
+    healthWeightEnabled: false,
+    healthSessionsEnabled: false,
+  );
+}
+
 /// Die Sprache der App.
 ///
 /// ## Die Systemsprache zählt genau einmal

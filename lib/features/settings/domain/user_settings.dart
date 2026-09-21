@@ -159,6 +159,8 @@ class UserSettings {
     this.hapticsEnabled = true,
     this.effortScale = EffortScale.rpe,
     this.heartRate = const HeartRateSettings(),
+    this.healthWeightEnabled = true,
+    this.healthSessionsEnabled = true,
   });
 
   /// Wie die Vorgänger-App: 60 Sekunden.
@@ -195,6 +197,24 @@ class UserSettings {
   /// HFmax und Zonengrenzen — beides kann fehlen.
   final HeartRateSettings heartRate;
 
+  /// Ob ATEM Körpergewicht mit Health Connect abgleicht — **der Schalter in
+  /// ATEM, nicht die Freigabe des Systems**.
+  ///
+  /// ## Warum es ihn gibt
+  ///
+  /// Health Connect kennt für eine App nur „alles entziehen"
+  /// (`revokeAllPermissions`), nicht je Datentyp. Ein Schalter je Zeile, der
+  /// wirklich schaltet, muss deshalb hier sitzen: Aus heisst, ATEM liest und
+  /// schreibt diesen Typ nicht mehr. Die Freigabe des Systems bleibt
+  /// bestehen und lässt sich dort ganz entziehen.
+  ///
+  /// Vorgabe **an**: Wer vor dem 21.09.2026 freigegeben hat, soll nicht
+  /// plötzlich nichts mehr synchronisieren.
+  final bool healthWeightEnabled;
+
+  /// Dasselbe für Trainingseinheiten (Einheiten und Puls).
+  final bool healthSessionsEnabled;
+
   UserSettings copyWith({
     double? bodyWeightKg,
     UnitSystem? unitSystem,
@@ -203,6 +223,8 @@ class UserSettings {
     bool? hapticsEnabled,
     EffortScale? effortScale,
     HeartRateSettings? heartRate,
+    bool? healthWeightEnabled,
+    bool? healthSessionsEnabled,
   }) =>
       UserSettings(
         bodyWeightKg: bodyWeightKg ?? this.bodyWeightKg,
@@ -212,6 +234,9 @@ class UserSettings {
         hapticsEnabled: hapticsEnabled ?? this.hapticsEnabled,
         effortScale: effortScale ?? this.effortScale,
         heartRate: heartRate ?? this.heartRate,
+        healthWeightEnabled: healthWeightEnabled ?? this.healthWeightEnabled,
+        healthSessionsEnabled:
+            healthSessionsEnabled ?? this.healthSessionsEnabled,
       );
 
   static bool isPlausibleWeight(double kg) =>

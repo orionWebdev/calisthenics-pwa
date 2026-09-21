@@ -5,6 +5,9 @@ import 'package:atem/features/health_import/application/health_import_providers.
 import 'package:atem/features/health_import/domain/health_session.dart';
 import 'package:atem/features/health_import/domain/health_session_repository.dart';
 import 'package:atem/features/health_import/presentation/widgets/health_permissions.dart';
+import 'package:atem/features/settings/presentation/widgets/settings_bits.dart';
+import 'package:atem/features/settings/application/settings_providers.dart';
+import 'package:atem/features/settings/domain/user_settings.dart';
 import 'package:atem/features/weight/application/weight_providers.dart';
 import 'package:atem/features/weight/application/weight_sync_providers.dart';
 import 'package:atem/features/weight/domain/weight_entry.dart';
@@ -46,9 +49,14 @@ HealthSession _accepted(String id) => HealthSession.pending(
       DateTime(2026, 9, 20, 10),
     ).copyWith(state: HealthSessionState.accepted, sessionId: 's$id');
 
-/// Die zwei Berechtigungszeilen aus Board 15, Abschnitt D.
+/// Die zwei Schalter aus Board 15, Abschnitt D.
+///
+/// Sie waren bis zum 21.09.2026 Zeilen mit „Freigeben"; Health Connect kennt
+/// für eine App aber nur „alles entziehen". Ein Schalter, der wirklich
+/// schaltet, sitzt deshalb in ATEM — die Tests prüfen, dass er es tut.
 void main() {
   late FakeHealthGateway gateway;
+  late FakeSettingsRepository settingsRepo;
 
   Future<AppL10n> pump(
     WidgetTester tester, {
@@ -57,7 +65,11 @@ void main() {
     bool sessions = false,
     List<HealthSession> known = const [],
     WeightSeries series = WeightSeries.empty,
+    UserSettings? settings,
   }) async {
+    settingsRepo = FakeSettingsRepository(
+      settings: settings ?? const UserSettings(),
+    );
     gateway = FakeHealthGateway(
       availabilityValue: availability,
       granted: weight,
@@ -69,7 +81,11 @@ void main() {
 
     await tester.pumpWidget(ProviderScope(
       overrides: [
-        ...fixtureOverrides,
+        // Die Einstellungsquelle der Fixture wird ersetzt, nicht ergänzt:
+        // Ein Provider darf nicht zweimal überschrieben werden.
+        for (final o in fixtureOverrides)
+          if (!identical(o, fixtureOverrides[7])) o as dynamic,
+        settingsRepositoryProvider.overrideWithValue(settingsRepo),
         healthGatewayProvider.overrideWithValue(gateway),
         healthSessionRepositoryProvider.overrideWithValue(_Repo(known)),
         currentUserIdProvider.overrideWithValue('u'),
@@ -99,40 +115,49 @@ void main() {
     return AppL10n.of(tester.element(find.byType(HealthPermissionsSection)));
   }
 
-  testWidgets('D1 — ohne Health Connect keine bedienbare Zeile',
+  /// Der Wert des Schalters mit dieser Beschriftung.
+  bool isOn(WidgetTester tester, String label) => tester
+      .widgetList<SettingsSwitch>(find.byType(SettingsSwitch))
+      .firstWhere((s) => s.label == label)
+      .value;
+
+  testWidgets('D1 — ohne Health Connect gibt es keinen Schalter',
       (tester) async {
     final l10n =
         await pump(tester, availability: HealthAvailability.notInstalled);
 
-    expect(find.text(l10n.hcStateMissing.toUpperCase()), findsNWidgets(2));
-    expect(find.text(l10n.hcPermGrant), findsNothing);
+    // Kein Schalter, der nichts tun könnte — der Satz erklärt, warum.
+    expect(find.byType(SettingsSwitch), findsNothing);
     expect(find.text(l10n.hcPermMissingNote), findsOneWidget);
-    // Der Weg zum Installieren steht unter der Notiz, ohne Ausrufezeichen.
     expect(find.text(l10n.hcPermInstall), findsOneWidget);
   });
 
-  testWidgets('D2 — zwei Wege, weil Google zwei Fragen stellt',
+  testWidgets('D2 — zwei Schalter, weil Google zwei Fragen stellt',
       (tester) async {
     final l10n = await pump(tester);
 
-    expect(find.text(l10n.hcStateDenied.toUpperCase()), findsNWidgets(2));
+    expect(find.byType(SettingsSwitch), findsNWidgets(2));
+    expect(isOn(tester, l10n.hcPermWeight), isFalse);
+    expect(isOn(tester, l10n.hcPermSessions), isFalse);
     // Kein Sammelknopf „Alles erlauben".
-    expect(find.text(l10n.hcPermGrant), findsNWidgets(2));
-    expect(find.text(l10n.hcPermNoneNote), findsOneWidget);
+    expect(find.text(l10n.hcPermGrant), findsNothing);
+    // Und keine Unterzeilen: Der Zustand steht im Schalter.
+    expect(find.text(l10n.hcStateDenied.toUpperCase()), findsNothing);
+    expect(find.text(l10n.hcPermNoneNote), findsNothing);
   });
 
-  testWidgets('D3 — Gewicht ja, Einheiten nein', (tester) async {
+  testWidgets('D3 — Gewicht an, Einheiten aus', (tester) async {
     final l10n = await pump(tester, weight: true);
 
-    expect(find.text(l10n.hcStateGranted.toUpperCase()), findsOneWidget);
-    expect(find.text(l10n.hcStateDenied.toUpperCase()), findsOneWidget);
-    expect(find.text(l10n.hcPermGrant), findsOneWidget);
-    expect(find.text(l10n.hcPermPartialNote), findsOneWidget);
+    expect(isOn(tester, l10n.hcPermWeight), isTrue);
+    expect(isOn(tester, l10n.hcPermSessions), isFalse);
+    expect(find.text(l10n.hcPermPartialNote), findsNothing);
   });
 
-  testWidgets('D5 — entzogen: zuerst, was bleibt', (tester) async {
-    // Entzogen heisst: Es liegt schon etwas aus der Quelle da. Beide Zeilen
-    // brauchen dafür ihren eigenen Bestand — Google fragt je Datentyp.
+  testWidgets('entzogen: aus, und keine Drohung darunter', (tester) async {
+    // Entzogen heisst: Es liegt schon etwas aus der Quelle da. Die Zeile
+    // sagt dazu nichts mehr — der Schalter steht aus, mehr gibt es nicht zu
+    // sagen.
     final l10n = await pump(
       tester,
       known: [_accepted('a'), _accepted('b')],
@@ -146,18 +171,80 @@ void main() {
       ]),
     );
 
-    expect(find.text(l10n.hcStateRevoked.toUpperCase()), findsOneWidget);
-    expect(find.text(l10n.hcStateRevokedKept(2).toUpperCase()), findsOneWidget);
-    // Kein Countdown, kein Ausrufezeichen — erst das Bleibende.
-    expect(find.text(l10n.hcPermRevokedNote(2)), findsOneWidget);
+    expect(isOn(tester, l10n.hcPermWeight), isFalse);
+    expect(isOn(tester, l10n.hcPermSessions), isFalse);
+    expect(find.text(l10n.hcPermRevokedNote(2)), findsNothing);
   });
 
-  testWidgets('Freigeben fragt genau einmal, je Datentyp', (tester) async {
-    final l10n = await pump(tester);
+  group('schalten', () {
+    testWidgets('anschalten ohne Freigabe fragt genau einmal, je Datentyp',
+        (tester) async {
+      final l10n = await pump(tester);
 
-    await tester.tap(find.text(l10n.hcPermGrant).first);
-    await tester.pumpAndSettle();
-    expect(gateway.requests, 1);
-    expect(gateway.sessionRequests, 0);
+      await tester.tap(find.text(l10n.hcPermWeight));
+      await tester.pumpAndSettle();
+
+      expect(gateway.requests, 1);
+      expect(gateway.sessionRequests, 0);
+      expect(settingsRepo.saved.last.healthWeightEnabled, isTrue);
+    });
+
+    testWidgets('lehnt jemand den Dialog ab, bleibt der Schalter aus',
+        (tester) async {
+      final l10n = await pump(tester);
+      gateway.grantOnRequest = false;
+
+      await tester.tap(find.text(l10n.hcPermWeight));
+      await tester.pumpAndSettle();
+
+      expect(gateway.requests, 1);
+      expect(settingsRepo.saved, isEmpty,
+          reason: 'ein Schalter auf „an", der nichts tut, wäre gelogen');
+      expect(isOn(tester, l10n.hcPermWeight), isFalse);
+    });
+
+    testWidgets('ausschalten schaltet in ATEM — ohne Dialog', (tester) async {
+      // Health Connect kennt nur „alles entziehen". Aus heisst deshalb: ATEM
+      // liest und schreibt nicht mehr; die Freigabe des Systems bleibt.
+      final l10n = await pump(tester, weight: true);
+      expect(isOn(tester, l10n.hcPermWeight), isTrue);
+
+      await tester.tap(find.text(l10n.hcPermWeight));
+      await tester.pumpAndSettle();
+
+      expect(settingsRepo.saved.last.healthWeightEnabled, isFalse);
+      expect(settingsRepo.saved.last.healthSessionsEnabled, isTrue,
+          reason: 'der andere Datentyp bleibt, wie er ist');
+      expect(gateway.requests, 0);
+    });
+
+    testWidgets('freigegeben, aber ausgeschaltet: anschalten fragt nicht',
+        (tester) async {
+      final l10n = await pump(
+        tester,
+        weight: true,
+        settings: const UserSettings(healthWeightEnabled: false),
+      );
+      expect(isOn(tester, l10n.hcPermWeight), isFalse,
+          reason: 'an ist nur, wenn beides stimmt');
+
+      await tester.tap(find.text(l10n.hcPermWeight));
+      await tester.pumpAndSettle();
+
+      expect(gateway.requests, 0, reason: 'die Freigabe steht ja noch');
+      expect(settingsRepo.saved.last.healthWeightEnabled, isTrue);
+    });
+
+    testWidgets('Einheiten anschalten fragt für Einheiten, nicht für Gewicht',
+        (tester) async {
+      final l10n = await pump(tester);
+
+      await tester.tap(find.text(l10n.hcPermSessions));
+      await tester.pumpAndSettle();
+
+      expect(gateway.sessionRequests, 1);
+      expect(gateway.requests, 0);
+      expect(settingsRepo.saved.last.healthSessionsEnabled, isTrue);
+    });
   });
 }

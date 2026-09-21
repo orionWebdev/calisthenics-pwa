@@ -6,6 +6,7 @@ import '../../history/application/history_providers.dart';
 import '../domain/weight_entry.dart';
 import '../domain/weight_series.dart';
 import '../domain/weight_sync.dart';
+import '../../settings/application/settings_providers.dart';
 import 'weight_providers.dart';
 
 final healthGatewayProvider = Provider<HealthGateway>(
@@ -74,6 +75,13 @@ class WeightSyncController extends Notifier<AsyncValue<WeightSyncResult?>> {
 
     final availability = await gateway.availability();
     if (availability != HealthAvailability.available) {
+      return WeightSyncResult(availability: availability, granted: false);
+    }
+
+    // **Der Schalter in den Einstellungen.** Aus heisst: kein Lesen, kein
+    // Schreiben, kein Dialog — auch wenn die Freigabe des Systems noch
+    // steht.
+    if (!(await loadedSettings(ref)).healthWeightEnabled) {
       return WeightSyncResult(availability: availability, granted: false);
     }
 

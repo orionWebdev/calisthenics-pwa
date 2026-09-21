@@ -328,6 +328,9 @@ Vier Felder, die die Vorgänger-PWA nicht kennt und beim Schreiben stehen lässt
 | `hrZones` | `array<number>?` | **Vier Grenzen, aufsteigend** — jede der erste bpm-Wert der oberen Zone (`[112, 131, 149, 168]`: Zone 1 bis 111, Zone 5 ab 168). Vier Grenzen statt fünf Bereichen: Lücken und Überlappungen sind durch Konstruktion unmöglich. Eine ungültige Folge im Dokument gilt als „nicht festgelegt", sie wird nicht repariert. |
 | `hrZonesSetAt` | `timestamp?` | Wann die Grenzen festgelegt wurden — steht über jeder Verteilung („deine Zonen vom 12. Sep"). |
 
+| `healthWeightEnabled` | `bool?` | **Der Schalter in ATEM**, nicht die Freigabe des Systems: Aus heisst, ATEM liest und schreibt Körpergewicht nicht mehr. Health Connect kennt für eine App nur „alles entziehen", nicht je Datentyp — ein Schalter je Zeile muss deshalb hier sitzen. Fehlt das Feld, gilt **an**: Wer vor dem 21.09.2026 freigegeben hat, soll nicht plötzlich nichts mehr abgleichen. |
+| `healthSessionsEnabled` | `bool?` | Dasselbe für Trainingseinheiten und Puls. |
+
 Gespeichert werden immer **bpm**, nie Prozent. Der Vorschlag aus HFmax (60/70/80/90 %,
 aufgerundet) rechnet einmal und schreibt Grenzen; danach bleibt jede einzeln änderbar, und
 eine spätere Änderung von HFmax verschiebt sie nicht.

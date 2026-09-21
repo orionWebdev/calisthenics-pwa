@@ -22,6 +22,7 @@ import '../../application/settings_providers.dart';
 import '../../domain/user_settings.dart';
 import '../widgets/settings_bits.dart';
 import 'account_deletion_screen.dart';
+import 'effort_scale_screen.dart';
 import 'export_screen.dart';
 import 'info_screen.dart';
 
@@ -212,7 +213,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 SettingsRow(
                   label: l10n.weightTitle,
-                  hint: weightHint,
+                  // Keine sichtbare Zeile „Zuletzt 21. Sept. …": Der Wert
+                  // steht rechts, der Verlauf hinter dem Tipp. Vorgelesen
+                  // bleibt sie.
                   value: async.isLoading ? l10n.commonLoading : weightValue,
                   semanticLabel: '${l10n.weightTitle}, $weightValue, '
                       '$weightHint. ${l10n.weightHistoryOpen}.',
@@ -225,7 +228,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SettingsRule(),
                 SettingsRow(
                   label: l10n.restTitle,
-                  hint: l10n.restSub,
+                  spokenHint: l10n.restSub,
                   value: l10n.restSeconds(settings.restSeconds),
                   valueAccent:
                       settings.restSeconds != UserSettings.defaultRestSeconds,
@@ -245,48 +248,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 // am 12. Sep" oder „Nicht festgelegt", bevor man tippt.
                 _ZonesRow(settings: settings),
                 const SettingsRule(),
-                // Zwei Segmente statt einer Zeile mit Blatt: Die Wahl hat
-                // genau zwei Werte und wirkt sofort auf jede Anstrengung im
-                // Bestand — ein Blatt mit Übernehmen liesse das Gegenteil
-                // vermuten. Die Erklärung steht hinter dem ⓘ (Regel vom
-                // 17.09.2026).
-                AtemExplainHeader(
-                  title: l10n.settingsEffortScale,
-                  explanation: [l10n.settingsEffortScaleExplain],
-                ),
-                const SizedBox(height: 8),
-                AtemSegmented<EffortScale>(
-                  value: settings.effortScale,
-                  groupSemanticLabel: l10n.settingsEffortScaleGroupA11y,
-                  onChanged: (value) => ref
-                      .read(settingsControllerProvider.notifier)
-                      .update(settings.copyWith(effortScale: value)),
-                  segments: [
-                    AtemSegment(
-                      value: EffortScale.rpe,
-                      label: l10n.settingsEffortScaleRpeLong,
-                      semanticLabel: l10n.settingsEffortScaleRpeA11y,
+                // Eine Unterseite statt Segmenten in der Liste: Die Wahl hat
+                // eine Erklärung, eine Richtung („hoch ist schwer" gegen
+                // „niedrig ist schwer") und zwei Namen — das ist eine Seite
+                // Inhalt, keine Zeile.
+                SettingsRow(
+                  label: l10n.settingsEffortScale,
+                  value: settings.effortScale == EffortScale.rir
+                      ? l10n.settingsEffortScaleRir
+                      : l10n.settingsEffortScaleRpe,
+                  valueAccent: settings.effortScale != EffortScale.rpe,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const EffortScaleScreen(),
                     ),
-                    AtemSegment(
-                      value: EffortScale.rir,
-                      label: l10n.settingsEffortScaleRirLong,
-                      semanticLabel: l10n.settingsEffortScaleRirA11y,
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 6),
-                // Die Richtung einmal im Klartext: „hoch ist schwer" gegen
-                // „niedrig ist schwer". Ohne sie wäre RIR 2 leicht mit RPE 2
-                // zu verwechseln.
-                Text(
-                  settings.effortScale == EffortScale.rir
-                      ? l10n.settingsEffortScaleValueRir
-                      : l10n.settingsEffortScaleValue,
-                  style: AtemType.meta
-                      .of(context)
-                      .copyWith(color: AtemColors.textTertiary),
-                ),
-                const SizedBox(height: 6),
               ],
             ),
             const SizedBox(height: 12),
@@ -321,7 +298,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SettingsRule(),
                 SettingsSwitch(
                   label: l10n.hapticsTitle,
-                  hint: l10n.hapticsSub,
                   value: settings.hapticsEnabled,
                   semanticLabel: '${l10n.hapticsTitle}, '
                       '${settings.hapticsEnabled ? l10n.switchOn : l10n.switchOff}. ${l10n.hapticsSub}',
@@ -344,7 +320,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 SettingsRow(
                   label: l10n.exportTitle,
-                  hint: l10n.exportSub,
+                  spokenHint: l10n.exportSub,
                   onTap: _openExport,
                 ),
                 const SettingsRule(),
@@ -352,7 +328,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 // vier Einführungsseiten noch einmal (Board 08, A1/2).
                 SettingsRow(
                   label: l10n.onboardingRepeat,
-                  hint: l10n.onboardingRepeatSub,
+                  spokenHint: l10n.onboardingRepeatSub,
                   onTap: user == null ? () {} : () => _repeatOnboarding(user),
                 ),
               ],
@@ -369,7 +345,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   horizontal: AtemSpacing.cardPadding),
               child: SettingsRow(
                 label: l10n.infoTitle,
-                hint: l10n.infoSub,
+                spokenHint: l10n.infoSub,
                 onTap: _openInfo,
               ),
             ),

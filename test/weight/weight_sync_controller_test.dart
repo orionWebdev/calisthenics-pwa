@@ -91,6 +91,8 @@ Future<void> _waitForUser(ProviderContainer container) async {
   throw StateError('Anmeldung ist nicht eingetroffen');
 }
 
+late FakeHealthGateway gatewayUnderTest;
+
 void main() {
   test('ohne Health Connect wird nichts gelesen und nichts geschrieben',
       () async {
@@ -254,5 +256,51 @@ void main() {
     expect(result.failedToPublish, 1);
     expect(repository.entries, hasLength(1),
         reason: 'der Eintrag bleibt in ATEM stehen');
+  });
+
+  group('der Schalter in den Einstellungen', () {
+    // Health Connect kennt für eine App nur „alles entziehen". Ein Schalter
+    // je Datentyp muss deshalb in ATEM sitzen — und wirklich schalten.
+    ProviderContainer off({required bool weight}) {
+      final container = ProviderContainer(overrides: [
+        authRepositoryProvider.overrideWithValue(
+          FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c')),
+        ),
+        weightRepositoryProvider
+            .overrideWithValue(FakeWeightRepository(entries: [])),
+        settingsRepositoryProvider.overrideWithValue(
+          FakeSettingsRepository(
+            settings: UserSettings(healthWeightEnabled: !weight),
+          ),
+        ),
+        healthGatewayProvider.overrideWithValue(gatewayUnderTest),
+        historyReferenceProvider.overrideWithValue(_today),
+      ]);
+      addTearDown(container.dispose);
+      return container;
+    }
+
+    test('aus: nichts wird gelesen, geschrieben oder gefragt', () async {
+      gatewayUnderTest = FakeHealthGateway(granted: true, records: [
+        MeasuredWeight(
+          id: 'hc-1',
+          measuredAt: _daysAgo(2).add(const Duration(hours: 7)),
+          kg: 79.2,
+          sourceId: 'com.garmin.android.apps.connectmobile',
+        ),
+      ]);
+      final container = off(weight: true);
+      await _waitForUser(container);
+
+      final result = await container
+          .read(weightSyncProvider.notifier)
+          .run(askForAccess: true);
+
+      expect(result!.ran, isFalse);
+      expect(gatewayUnderTest.requests, 0,
+          reason: 'auch mit askForAccess kein Dialog — es ist ausgeschaltet');
+      expect(gatewayUnderTest.records.length, 1,
+          reason: 'nichts wird zurückgeschrieben');
+    });
   });
 }

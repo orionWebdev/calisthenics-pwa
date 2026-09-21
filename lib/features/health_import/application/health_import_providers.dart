@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/domain/health_gateway.dart';
 import '../../auth/application/auth_providers.dart';
+import '../../settings/application/settings_providers.dart';
 import '../../history/application/history_providers.dart';
 import '../../history/domain/training_session.dart';
 import '../../weight/application/weight_providers.dart';
@@ -111,6 +112,10 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
 
     final gateway = ref.read(healthGatewayProvider);
     if (await gateway.availability() != HealthAvailability.available) return;
+
+    // **Der Schalter in den Einstellungen.** Aus heisst: nichts lesen, nichts
+    // nachtragen, keinen Dialog öffnen. Schon Übernommenes bleibt, wie es ist.
+    if (!(await loadedSettings(ref)).healthSessionsEnabled) return;
 
     var granted = await gateway.hasSessionAccess() ?? false;
     if (!granted && askForAccess) {

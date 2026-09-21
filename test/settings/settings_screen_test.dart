@@ -1,5 +1,7 @@
 import 'package:atem/core/widgets/widgets.dart';
+import 'package:atem/features/settings/domain/user_settings.dart';
 import 'package:atem/features/settings/presentation/screens/account_deletion_screen.dart';
+import 'package:atem/features/settings/presentation/screens/effort_scale_screen.dart';
 import 'package:atem/features/settings/presentation/screens/info_screen.dart';
 import 'package:atem/features/settings/presentation/screens/settings_screen.dart';
 import 'package:atem/features/weight/presentation/screens/weight_history_screen.dart';
@@ -10,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../support/a11y.dart';
 
-Future<void> _pump(WidgetTester tester, Widget home) async {
+Future<AppL10n> _pump(WidgetTester tester, Widget home) async {
   tester.view.physicalSize = const Size(430, 2400);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
@@ -31,6 +33,7 @@ Future<void> _pump(WidgetTester tester, Widget home) async {
     ),
   );
   await tester.pumpAndSettle();
+  return AppL10n.of(tester.element(find.byWidget(home)));
 }
 
 void main() {
@@ -89,12 +92,17 @@ void main() {
 
   testWidgets('das Körpergewicht ist eine Ableitung, kein Eingabefeld',
       (tester) async {
+    final handle = tester.ensureSemantics();
     await _pump(tester, const SettingsScreen());
 
-    // Board 14, E: Die Zeile zeigt den jüngsten Verlaufseintrag samt Datum
-    // und Herkunft — und nennt damit ihre Grundlage.
-    expect(find.textContaining('Zuletzt'), findsWidgets);
-    expect(find.textContaining('Eigene Eingabe'), findsOneWidget);
+    // Board 14, E: Die Zeile zeigt den jüngsten Verlaufseintrag und nennt
+    // damit ihre Grundlage — **vorgelesen**. Sichtbar steht seit dem
+    // 21.09.2026 keine Unterzeile mehr da: „Zuletzt 21. Sept. · Eigene
+    // Eingabe" unter jeder Einstellung machte die Seite unruhig.
+    expect(find.textContaining('Zuletzt'), findsNothing);
+    expect(find.textContaining('Eigene Eingabe'), findsNothing);
+    expect(find.bySemanticsLabel(RegExp(r'^Körpergewicht, .*Zuletzt')),
+        findsOneWidget);
 
     // Es gibt nur noch **einen** Weg zu schreiben: den Verlauf.
     //
@@ -106,6 +114,40 @@ void main() {
 
     expect(find.byType(WeightHistoryScreen), findsOneWidget);
     expect(find.text('Speichern und neu rechnen'), findsNothing);
+    handle.dispose();
+  });
+
+  testWidgets('keine Unterzeilen unter den Einstellungen', (tester) async {
+    final handle = tester.ensureSemantics();
+    final l10n = await _pump(tester, const SettingsScreen());
+
+    // Sichtbar steht nur die Zeile selbst. Die Erklärung bleibt dem, der sie
+    // hört — Rückmeldung vom 21.09.2026: „zu viel Unruhe".
+    for (final sub in [
+      l10n.restSub,
+      l10n.hapticsSub,
+      l10n.exportSub,
+      l10n.onboardingRepeatSub,
+      l10n.infoSub,
+    ]) {
+      expect(find.text(sub), findsNothing, reason: sub);
+    }
+    // Vorgelesen wird sie trotzdem.
+    expect(find.bySemanticsLabel(RegExp(l10n.restSub)), findsOneWidget);
+    handle.dispose();
+  });
+
+  testWidgets('Anstrengung je Satz führt auf eine Unterseite', (tester) async {
+    final l10n = await _pump(tester, const SettingsScreen());
+
+    // In der Liste steht nur die Zeile mit ihrem Wert — keine Segmente.
+    expect(find.byType(AtemSegmented<EffortScale>), findsNothing);
+    await tester.tap(find.text(l10n.settingsEffortScale));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(EffortScaleScreen), findsOneWidget);
+    expect(find.byType(AtemSegmented<EffortScale>), findsOneWidget);
+    expect(find.text(l10n.settingsEffortScaleExplain), findsOneWidget);
   });
 
   testWidgets('Löschen bleibt gesperrt, bis das Wort getippt ist',

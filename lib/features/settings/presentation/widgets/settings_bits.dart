@@ -73,7 +73,17 @@ class SettingsRow extends StatelessWidget {
     this.onLongPress,
     this.valueAccent = false,
     this.quiet = false,
+    this.spokenHint,
   });
+
+  /// Eine Erklärung, die **nur vorgelesen** wird.
+  ///
+  /// Sichtbare Unterzeilen unter jeder Einstellung machten die Seite unruhig
+  /// (Rückmeldung vom 21.09.2026): Wer die Zeile liest, weiss, was sie tut;
+  /// wer sie hört, bekommt den Satz weiterhin. Deshalb gibt es [hint] für den,
+  /// der sichtbar sein muss, und diesen hier für den, der nur gesprochen
+  /// werden soll.
+  final String? spokenHint;
 
   /// Der Wert ist eine Auskunft, kein Messwert — „IN DER APP", „DATEN
   /// BLEIBEN". Er bleibt gedämpft statt in Cyan.
@@ -123,8 +133,12 @@ class SettingsRow extends StatelessWidget {
       // Der Wert steht vor der Unterzeile, damit er ohne Abwarten hörbar
       // ist (Board 08, H).
       semanticLabel: semanticLabel ??
-          [label, if (value != null) value!, if (hint != null) hint!]
-              .join(', '),
+          [
+            label,
+            if (value != null) value!,
+            if (hint != null) hint!,
+            if (spokenHint != null) spokenHint!,
+          ].join(', '),
       minTapSize: const Size(0, 56),
       alignment: Alignment.centerLeft,
       child: Padding(

@@ -37,6 +37,10 @@ class FirestoreSettingsRepository implements SettingsRepository {
       'defaultRestTimer': settings.restSeconds,
       'hapticsEnabled': settings.hapticsEnabled,
       'effortScale': settings.effortScale.wire,
+      // Die Schalter für Health Connect. Fehlt das Feld, gilt „an" — siehe
+      // `UserSettings.healthWeightEnabled`.
+      'healthWeightEnabled': settings.healthWeightEnabled,
+      'healthSessionsEnabled': settings.healthSessionsEnabled,
       // Herzfrequenz — Felder, die es in der Vorgänger-App nicht gibt. Sie
       // lässt sie beim Schreiben stehen.
       if (settings.heartRate.hrMax != null) ...{
@@ -103,6 +107,8 @@ class FirestoreSettingsRepository implements SettingsRepository {
       // in der alle bisherigen Angaben gemacht wurden.
       effortScale: EffortScale.fromWire(data['effortScale']),
       heartRate: _heartRate(data),
+      healthWeightEnabled: data['healthWeightEnabled'] != false,
+      healthSessionsEnabled: data['healthSessionsEnabled'] != false,
     );
   }
 }

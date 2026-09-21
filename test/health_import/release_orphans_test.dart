@@ -5,6 +5,8 @@ import 'package:atem/features/health_import/application/health_import_providers.
 import 'package:atem/features/health_import/domain/health_session.dart';
 import 'package:atem/features/health_import/domain/health_session_repository.dart';
 import 'package:atem/features/history/application/history_providers.dart';
+import 'package:atem/features/settings/application/settings_providers.dart';
+import 'package:atem/features/settings/domain/user_settings.dart';
 import 'package:atem/features/weight/application/weight_sync_providers.dart';
 import 'package:atem/features/history/domain/training_session.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,6 +89,9 @@ Future<_Repo> _run({
       FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c')),
     ),
     sessionRepositoryProvider.overrideWithValue(_Sessions(sessions)),
+    // Der Abgleich fragt die Schalter der Einstellungen — ohne Quelle hinge er
+    // an Firestore und wartete auf eine Antwort, die nie kommt.
+    settingsRepositoryProvider.overrideWithValue(FakeSettingsRepository()),
     healthSessionRepositoryProvider.overrideWithValue(repo),
     healthGatewayProvider.overrideWithValue(
       FakeHealthGateway(sessionsGranted: true, sessions: const []),
@@ -139,5 +144,44 @@ void main() {
     );
 
     expect(repo.records.single.state, HealthSessionState.accepted);
+  });
+
+  test('ist der Schalter aus, wird nichts gelesen und nichts gefragt',
+      () async {
+    // Health Connect kennt für eine App nur „alles entziehen". Der Schalter
+    // je Datentyp sitzt deshalb in ATEM — und muss wirklich schalten, auch
+    // wenn die Freigabe des Systems noch steht und ein Dialog möglich wäre.
+    // **Nicht freigegeben**: Ein Abgleich ohne Sperre würde jetzt den
+    // Systemdialog öffnen — genau das darf bei ausgeschaltetem Schalter nie
+    // passieren.
+    final gateway = FakeHealthGateway(sessionsGranted: false);
+    final repo = _Repo([_accepted('hc-1', 'noch-da')]);
+    final container = ProviderContainer(overrides: [
+      authRepositoryProvider.overrideWithValue(
+        FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c')),
+      ),
+      sessionRepositoryProvider
+          .overrideWithValue(_Sessions([_session('noch-da')])),
+      settingsRepositoryProvider.overrideWithValue(FakeSettingsRepository(
+        settings: const UserSettings(healthSessionsEnabled: false),
+      )),
+      healthSessionRepositoryProvider.overrideWithValue(repo),
+      healthGatewayProvider.overrideWithValue(gateway),
+    ]);
+    addTearDown(container.dispose);
+    container.listen(currentUserIdProvider, (_, __) {});
+    for (var i = 0;
+        i < 100 && container.read(currentUserIdProvider) == null;
+        i++) {
+      await Future<void>.delayed(Duration.zero);
+    }
+
+    await container
+        .read(healthImportControllerProvider.notifier)
+        .refresh(askForAccess: true);
+
+    expect(gateway.sessionRequests, 0, reason: 'kein Dialog');
+    expect(repo.records.single.state, HealthSessionState.accepted,
+        reason: 'was übernommen ist, bleibt, wie es ist');
   });
 }
