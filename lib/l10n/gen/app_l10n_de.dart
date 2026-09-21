@@ -6876,7 +6876,7 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
-  String get settingsZonesStateUnset => 'Nicht festgelegt';
+  String get settingsZonesStateUnset => 'Offen';
 
   @override
   String get settingsZonesBasis => 'Grundlage';

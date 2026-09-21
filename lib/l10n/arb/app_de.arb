@@ -10145,9 +10145,9 @@
       }
     }
   },
-  "settingsZonesStateUnset": "Nicht festgelegt",
+  "settingsZonesStateUnset": "Offen",
   "@settingsZonesStateUnset": {
-    "description": "Board 16 · settings.zones_state_unset"
+    "description": "Board 16 · settings.zones_state_unset. Das Board sagt „Nicht festgelegt“ — auf 361 dp brach der Wert damit unter die Beschriftung und machte die Zeile unruhiger als die Nachbarn; „Offen“ steht daneben (auf Wunsch, 21.09.2026). Nur Deutsch: „Not set“ passt in die Zeile."
   },
   "settingsZonesBasis": "Grundlage",
   "@settingsZonesBasis": {

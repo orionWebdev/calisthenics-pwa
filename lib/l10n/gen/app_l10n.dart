@@ -10499,10 +10499,10 @@ abstract class AppL10n {
   /// **'Festgelegt am {date}'**
   String settingsZonesStateSet(String date);
 
-  /// Board 16 · settings.zones_state_unset
+  /// Board 16 · settings.zones_state_unset. Das Board sagt „Nicht festgelegt“ — auf 361 dp brach der Wert damit unter die Beschriftung und machte die Zeile unruhiger als die Nachbarn; „Offen“ steht daneben (auf Wunsch, 21.09.2026). Nur Deutsch: „Not set“ passt in die Zeile.
   ///
   /// In de, this message translates to:
-  /// **'Nicht festgelegt'**
+  /// **'Offen'**
   String get settingsZonesStateUnset;
 
   /// Board 16 · settings.zones_basis
