@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../history/application/history_providers.dart';
+import '../../settings/application/settings_providers.dart';
 import '../../history/domain/training_session.dart';
 import '../data/cardio_live_store.dart';
 import '../domain/distance_distribution.dart';
@@ -29,14 +30,17 @@ final paceSeriesProvider =
         PaceSeries.forActivity(
             ref.watch(sessionsProvider).value ?? const [], activity));
 
-/// Der Maximalpuls aus dem Profil — **heute immer null**.
+/// Der Maximalpuls aus dem Profil — was jemand **selbst eingetragen** hat.
 ///
 /// Board 11, Sektion K: Stufe 1 der Kaskade führt nur mit gemessenem
 /// Maximalpuls aus der Einheit oder aus dem Profil, nie aus einer Altersformel.
-/// Das Profil (Modul 8) hat das Feld noch nicht; der Haken steht hier, damit
-/// Health Connect oder ein Profilfeld ihn später füllt, ohne dass ein
-/// Bildschirm neu gebaut werden muss.
-final profileMaxHrProvider = Provider<int?>((ref) => null);
+/// Der Haken stand bis zum 21.09.2026 leer; seitdem füllt ihn das Feld aus
+/// den Herzfrequenz-Einstellungen (Board 16, D), ohne dass ein Bildschirm neu
+/// gebaut werden musste. `null`, solange niemand einen Wert eingetragen hat —
+/// geschätzt wird nie.
+final profileMaxHrProvider = Provider<int?>(
+  (ref) => ref.watch(settingsProvider).value?.heartRate.hrMax,
+);
 
 final cardioLiveStoreProvider =
     Provider<CardioLiveStore>((ref) => const CardioLiveStore());

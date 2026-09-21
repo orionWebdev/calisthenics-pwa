@@ -1,4 +1,5 @@
 import '../../../core/domain/health_gateway.dart';
+import '../../../core/domain/pulse_profile.dart';
 
 /// Wo eine Uhr-Einheit im Eingang steht.
 ///
@@ -60,6 +61,7 @@ class HealthSession {
     this.maxHeartRate,
     this.calories,
     this.distanceKm,
+    this.pulse,
     this.sessionId,
     this.decidedAt,
   });
@@ -79,6 +81,7 @@ class HealthSession {
         maxHeartRate: measured.maxHeartRate,
         calories: measured.calories,
         distanceKm: measured.distanceKm,
+        pulse: measured.pulse,
       );
 
   /// Die Kennung des Datensatzes in Health Connect.
@@ -100,6 +103,11 @@ class HealthSession {
   final int? maxHeartRate;
   final int? calories;
   final double? distanceKm;
+
+  /// Der Pulsverlauf als Sekunden je bpm — die Quelle für Ø, Maximum,
+  /// Minimum und Zonen. `null` an Datensätzen, die vor dem 21.09.2026
+  /// gelesen wurden; der nächste Abgleich trägt ihn nach.
+  final PulseProfile? pulse;
 
   /// Die App-Einheit, zu der er gehört — sobald übernommen oder
   /// zusammengeführt.
@@ -138,6 +146,9 @@ class HealthSession {
     String? sessionId,
     DateTime? decidedAt,
     bool clearSession = false,
+    PulseProfile? pulse,
+    int? averageHeartRate,
+    int? maxHeartRate,
   }) =>
       HealthSession(
         externalId: externalId,
@@ -148,10 +159,11 @@ class HealthSession {
         seenAt: seenAt,
         activity: activity,
         deviceName: deviceName,
-        averageHeartRate: averageHeartRate,
-        maxHeartRate: maxHeartRate,
+        averageHeartRate: averageHeartRate ?? this.averageHeartRate,
+        maxHeartRate: maxHeartRate ?? this.maxHeartRate,
         calories: calories,
         distanceKm: distanceKm,
+        pulse: pulse ?? this.pulse,
         sessionId: clearSession ? null : (sessionId ?? this.sessionId),
         decidedAt: decidedAt ?? this.decidedAt,
       );

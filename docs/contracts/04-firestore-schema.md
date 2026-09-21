@@ -296,7 +296,9 @@ Daten statt in der Disziplin jeder einzelnen Rechnung.
 | `sourceId` | `string` | Das schreibende Paket. Der Schutz gegen die Schleife, sollte ATEM je eigene Einheiten zurückschreiben. |
 | `deviceName` | `string?` | Der lesbare Name für die Oberfläche — „Garmin". |
 | `activity` | `string?` | Wie die Uhr das Training nennt. **Nie eine Paar-Bedingung** — Uhren melden Krafttraining regelmässig als „Andere". |
-| `averageHeartRate`, `maxHeartRate` | `number?` | Health Connect liefert keinen Ø-Puls; er entsteht im Gateway aus den Pulspunkten im Zeitfenster der Einheit. |
+| `averageHeartRate`, `maxHeartRate` | `number?` | Health Connect liefert keinen Ø-Puls; er entsteht im Gateway aus dem Pulsverlauf der Einheit — **zeitgewichtet**, nicht als Mittel der Punkte. Seit dem 21.09.2026 Ableitungen aus `pulse`. |
+| `pulse` | `map<string, number>?` | **Der Pulsverlauf als Histogramm: Sekunden je bpm** (`{"118": 42, "119": 38, …}`). Ein Messwert gilt bis zum nächsten, höchstens 60 s; eine grössere Lücke zählt nicht zur Aufzeichnung. Daraus entstehen Ø, Maximum, Minimum **und** die Zonen. Nicht die Punktwolke: Zonen werden immer neu gerechnet (Board 16, Entscheidung 15), und dafür zählt nur, wie lange welcher Wert galt. Trägt keine Zeitachse — eine Pulskurve liesse sich daraus nicht zeichnen. |
+| `pulseWindowSeconds` | `number?` | Die Länge der Einheit in Sekunden — der Nenner zu „aufgezeichnet". Ohne ihn stünde „21 min aufgezeichnet" ohne Bezug da. |
 | `calories`, `distanceKm` | `number?` | |
 | `sessionId` | `string?` | Die App-Einheit, sobald übernommen oder zusammengeführt. Beim Lösen wird das Feld **entfernt**, nicht auf `null` gesetzt — `merge` liesse den alten Verweis sonst stehen. |
 | `decidedAt` | `timestamp?` | Wann angenommen oder abgelehnt wurde. |
@@ -314,6 +316,21 @@ Ein Profilfeld, kein Dokument in einer Unter-Sammlung: ein einzelner Zeitpunkt,
 der ganze Bestand; fehlt sie, dreissig Tage zurück. Weiter zurück gibt Health Connect ohne
 die zusätzliche Berechtigung `READ_HEALTH_DATA_HISTORY` nichts heraus, und ein voller
 Bestandsimport erzeugte einen Eingang, den niemand durcharbeitet.
+
+### `userProfiles/{uid}` — Herzfrequenz (Board 16, D)
+
+Vier Felder, die die Vorgänger-PWA nicht kennt und beim Schreiben stehen lässt:
+
+| Feld | Typ | Bemerkung |
+|---|---|---|
+| `hrMax` | `number?` | **Nur, was jemand selbst eingetragen hat.** ATEM schätzt HFmax nie — „220 minus Alter" wäre eine erfundene Angabe mit ±20 bpm Streuung, und auf ihr stünden fünf Zonen und jede Verteilung. |
+| `hrMaxSetAt` | `timestamp?` | Wann er eingetragen wurde („selbst eingetragen am 2. Sep"). |
+| `hrZones` | `array<number>?` | **Vier Grenzen, aufsteigend** — jede der erste bpm-Wert der oberen Zone (`[112, 131, 149, 168]`: Zone 1 bis 111, Zone 5 ab 168). Vier Grenzen statt fünf Bereichen: Lücken und Überlappungen sind durch Konstruktion unmöglich. Eine ungültige Folge im Dokument gilt als „nicht festgelegt", sie wird nicht repariert. |
+| `hrZonesSetAt` | `timestamp?` | Wann die Grenzen festgelegt wurden — steht über jeder Verteilung („deine Zonen vom 12. Sep"). |
+
+Gespeichert werden immer **bpm**, nie Prozent. Der Vorschlag aus HFmax (60/70/80/90 %,
+aufgerundet) rechnet einmal und schreibt Grenzen; danach bleibt jede einzeln änderbar, und
+eine spätere Änderung von HFmax verschiebt sie nicht.
 
 ### `sessions` bekommt zwei Felder — die Herkunft
 

@@ -24,6 +24,8 @@
 /// (Board 15, D).
 library;
 
+import 'pulse_profile.dart';
+
 /// Ob und wie die Quelle auf diesem Gerät zu erreichen ist.
 ///
 /// Vier Zustände, nicht zwei: „Nicht da" und „nichts freigegeben" fühlen sich
@@ -89,6 +91,7 @@ class MeasuredSession {
     this.maxHeartRate,
     this.calories,
     this.distanceKm,
+    this.pulse,
   });
 
   /// Die Kennung des Datensatzes in der Quelle.
@@ -119,6 +122,14 @@ class MeasuredSession {
   final int? maxHeartRate;
   final int? calories;
   final double? distanceKm;
+
+  /// Der Pulsverlauf der Einheit, als Sekunden je bpm.
+  ///
+  /// Daraus entstehen Ø, Maximum, Minimum **und** die Zonen — aus einer
+  /// Quelle, damit keine Grösse zwei hat. [averageHeartRate] und
+  /// [maxHeartRate] bleiben als die Werte, die das Gateway daraus gerechnet
+  /// hat.
+  final PulseProfile? pulse;
 
   Duration get duration => end.difference(start);
 

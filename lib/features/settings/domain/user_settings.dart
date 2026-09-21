@@ -1,3 +1,5 @@
+import '../../pulse/domain/heart_rate_zones.dart';
+
 /// Metrisch oder imperial — **nur eine Anzeigefrage**.
 ///
 /// Gespeichert wird ausnahmslos in Kilogramm. Der Bestand führt `bodyWeight`
@@ -92,6 +94,46 @@ enum EffortScale {
   int number(int rpe) => this == EffortScale.rir ? 10 - rpe : rpe;
 }
 
+/// Die Herzfrequenz-Einstellungen: HFmax und die vier Zonengrenzen.
+///
+/// **Beides mit Datum.** „Festgelegt am 12. Sep" steht in den Einstellungen
+/// und über jeder Zonenverteilung im Einheitendetail („deine Zonen vom 12.
+/// Sep"): Wer seine Grenzen ändert, ändert damit jede Verteilung, auch die
+/// vergangener Einheiten — das Datum sagt, welche Fassung gerade gilt.
+///
+/// **HFmax wird nie geschätzt.** „220 minus Alter" wäre eine erfundene
+/// Angabe mit ±20 bpm Streuung, und auf ihr stünden fünf Zonen und jede
+/// Verteilung (Board 16, Entscheidung 13). Es steht da, was jemand
+/// eingetragen hat, oder nichts.
+class HeartRateSettings {
+  const HeartRateSettings({
+    this.hrMax,
+    this.hrMaxSetAt,
+    this.zones,
+    this.zonesSetAt,
+  });
+
+  final int? hrMax;
+  final DateTime? hrMaxSetAt;
+  final HeartRateZones? zones;
+  final DateTime? zonesSetAt;
+
+  bool get hasZones => zones != null;
+
+  HeartRateSettings copyWith({
+    int? hrMax,
+    DateTime? hrMaxSetAt,
+    HeartRateZones? zones,
+    DateTime? zonesSetAt,
+  }) =>
+      HeartRateSettings(
+        hrMax: hrMax ?? this.hrMax,
+        hrMaxSetAt: hrMaxSetAt ?? this.hrMaxSetAt,
+        zones: zones ?? this.zones,
+        zonesSetAt: zonesSetAt ?? this.zonesSetAt,
+      );
+}
+
 /// Alles, was in den Einstellungen steht.
 ///
 /// ## Warum nicht alle Felder des Bestands
@@ -116,6 +158,7 @@ class UserSettings {
     this.restSeconds = defaultRestSeconds,
     this.hapticsEnabled = true,
     this.effortScale = EffortScale.rpe,
+    this.heartRate = const HeartRateSettings(),
   });
 
   /// Wie die Vorgänger-App: 60 Sekunden.
@@ -149,6 +192,9 @@ class UserSettings {
   /// Anzeige, nie den gespeicherten Wert.
   final EffortScale effortScale;
 
+  /// HFmax und Zonengrenzen — beides kann fehlen.
+  final HeartRateSettings heartRate;
+
   UserSettings copyWith({
     double? bodyWeightKg,
     UnitSystem? unitSystem,
@@ -156,6 +202,7 @@ class UserSettings {
     int? restSeconds,
     bool? hapticsEnabled,
     EffortScale? effortScale,
+    HeartRateSettings? heartRate,
   }) =>
       UserSettings(
         bodyWeightKg: bodyWeightKg ?? this.bodyWeightKg,
@@ -164,6 +211,7 @@ class UserSettings {
         restSeconds: restSeconds ?? this.restSeconds,
         hapticsEnabled: hapticsEnabled ?? this.hapticsEnabled,
         effortScale: effortScale ?? this.effortScale,
+        heartRate: heartRate ?? this.heartRate,
       );
 
   static bool isPlausibleWeight(double kg) =>

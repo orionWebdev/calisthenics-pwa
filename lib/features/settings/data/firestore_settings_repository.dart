@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../pulse/domain/heart_rate_zones.dart';
 import '../domain/settings_repository.dart';
 import '../domain/user_settings.dart';
 
@@ -36,10 +37,47 @@ class FirestoreSettingsRepository implements SettingsRepository {
       'defaultRestTimer': settings.restSeconds,
       'hapticsEnabled': settings.hapticsEnabled,
       'effortScale': settings.effortScale.wire,
+      // Herzfrequenz — Felder, die es in der Vorgänger-App nicht gibt. Sie
+      // lässt sie beim Schreiben stehen.
+      if (settings.heartRate.hrMax != null) ...{
+        'hrMax': settings.heartRate.hrMax,
+        if (settings.heartRate.hrMaxSetAt != null)
+          'hrMaxSetAt': Timestamp.fromDate(settings.heartRate.hrMaxSetAt!),
+      },
+      if (settings.heartRate.zones != null) ...{
+        'hrZones': settings.heartRate.zones!.bounds,
+        if (settings.heartRate.zonesSetAt != null)
+          'hrZonesSetAt': Timestamp.fromDate(settings.heartRate.zonesSetAt!),
+      },
       'updatedAt': Timestamp.now(),
       // `merge`: Im Profil stehen zwanzig Felder, die diese App nicht kennt.
       // Ohne merge wären sie nach dem ersten Speichern weg.
     }, SetOptions(merge: true));
+  }
+
+  static HeartRateSettings _heartRate(Map<String, dynamic> data) {
+    final max = (data['hrMax'] as num?)?.round();
+    final rawBounds = data['hrZones'];
+    final bounds = rawBounds is List
+        ? [
+            for (final b in rawBounds)
+              if (b is num) b.round()
+          ]
+        : const <int>[];
+    final maxAt = data['hrMaxSetAt'];
+    final zonesAt = data['hrZonesSetAt'];
+    return HeartRateSettings(
+      hrMax: max != null &&
+              max >= HeartRateZones.minHrMax &&
+              max <= HeartRateZones.maxHrMax
+          ? max
+          : null,
+      hrMaxSetAt: maxAt is Timestamp ? maxAt.toDate() : null,
+      // Eine ungültige Folge ist keine Einstellung — sie wird nicht
+      // repariert, sondern gilt als nicht festgelegt.
+      zones: HeartRateZones.tryFrom(bounds),
+      zonesSetAt: zonesAt is Timestamp ? zonesAt.toDate() : null,
+    );
   }
 
   static UserSettings _from(Map<String, dynamic>? data) {
@@ -64,6 +102,7 @@ class FirestoreSettingsRepository implements SettingsRepository {
       // Fehlt das Feld — im ganzen Bestand der Fall —, gilt RPE: die Skala,
       // in der alle bisherigen Angaben gemacht wurden.
       effortScale: EffortScale.fromWire(data['effortScale']),
+      heartRate: _heartRate(data),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/domain/pulse_profile.dart';
 import '../domain/health_session.dart';
 import '../domain/health_session_repository.dart';
 
@@ -59,6 +60,14 @@ class FirestoreHealthSessionRepository implements HealthSessionRepository {
         if (session.maxHeartRate != null) 'maxHeartRate': session.maxHeartRate,
         if (session.calories != null) 'calories': session.calories,
         if (session.distanceKm != null) 'distanceKm': session.distanceKm,
+        // Der Pulsverlauf als Sekunden je bpm — Schlüssel sind Strings, weil
+        // Firestore keine anderen kennt. Nicht die Punktwolke: Zonen werden
+        // aus ihm immer neu gerechnet, und dafür zählt nur, wie lange welcher
+        // Wert galt.
+        if (session.pulse != null) ...{
+          'pulse': session.pulse!.toWire(),
+          'pulseWindowSeconds': session.pulse!.windowSeconds,
+        },
         if (session.decidedAt != null)
           'decidedAt': Timestamp.fromDate(session.decidedAt!),
         // Eine gelöste Verknüpfung muss das Feld wirklich **entfernen**:
@@ -116,6 +125,7 @@ class FirestoreHealthSessionRepository implements HealthSessionRepository {
       maxHeartRate: (data['maxHeartRate'] as num?)?.round(),
       calories: (data['calories'] as num?)?.round(),
       distanceKm: (data['distanceKm'] as num?)?.toDouble(),
+      pulse: PulseProfile.fromWire(data['pulse'], data['pulseWindowSeconds']),
       sessionId: data['sessionId'] as String?,
       decidedAt: decided is Timestamp ? decided.toDate() : null,
     );

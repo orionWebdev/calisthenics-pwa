@@ -4,6 +4,7 @@ import 'package:health/health.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../domain/health_gateway.dart';
+import '../domain/pulse_profile.dart';
 
 /// [HealthGateway] über das Paket `health` — **die einzige Datei, die es
 /// kennt**.
@@ -204,14 +205,14 @@ class HealthConnectGateway implements HealthGateway {
     // Puls kommt als Punktwolke, nicht als Zusammenfassung. Er wird je
     // Einheit über ihr Zeitfenster gebündelt — das ist die einzige Rechnung
     // in dieser Datei, und sie ist eine Übersetzung, keine Regel.
-    final pulses = <({DateTime at, int bpm})>[];
+    final pulses = <PulseSample>[];
     for (final point in points) {
       if (point.type != HealthDataType.HEART_RATE) continue;
       final value = point.value;
       if (value is! NumericHealthValue) continue;
       final bpm = value.numericValue.round();
       if (bpm <= 0 || bpm > 300) continue;
-      pulses.add((at: point.dateFrom, bpm: bpm));
+      pulses.add(PulseSample(at: point.dateFrom, bpm: bpm));
     }
 
     final result = <MeasuredSession>[];
@@ -223,11 +224,15 @@ class HealthConnectGateway implements HealthGateway {
       // Aussage — sie kommt gar nicht erst in den Eingang.
       if (!point.dateTo.isAfter(point.dateFrom)) continue;
 
-      final inside = [
-        for (final p in pulses)
-          if (!p.at.isBefore(point.dateFrom) && !p.at.isAfter(point.dateTo))
-            p.bpm,
-      ];
+      // **Eine Quelle für Ø, Maximum, Minimum und Zonen**: der Verlauf, als
+      // Sekunden je bpm. Vorher wurde der Durchschnitt aus den Punkten
+      // gemittelt, ohne Gewicht der Zeit — ein Wert, der eine Minute lang
+      // galt, zählte wie einer, der zehn Sekunden galt.
+      final profile = PulseProfile.fromSamples(
+        pulses,
+        start: point.dateFrom,
+        end: point.dateTo,
+      );
 
       result.add(MeasuredSession(
         id: point.uuid,
@@ -241,11 +246,9 @@ class HealthConnectGateway implements HealthGateway {
         // echten Gerätenamen nicht heraus, also steht hier nichts, und die
         // Anzeige fällt auf „Aus der Uhr" zurück.
         deviceName: null,
-        averageHeartRate: inside.isEmpty
-            ? null
-            : (inside.reduce((a, b) => a + b) / inside.length).round(),
-        maxHeartRate:
-            inside.isEmpty ? null : inside.reduce((a, b) => a > b ? a : b),
+        averageHeartRate: profile.average,
+        maxHeartRate: profile.max,
+        pulse: profile.isEmpty ? null : profile,
         calories: value.totalEnergyBurned,
         distanceKm:
             value.totalDistance == null ? null : value.totalDistance! / 1000,

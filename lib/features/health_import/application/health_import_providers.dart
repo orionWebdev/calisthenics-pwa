@@ -144,6 +144,26 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
       await repo.save(userId, HealthSession.pending(session, now));
     }
 
+    // **Den Pulsverlauf nachtragen**, wo er fehlt. Datensätze, die vor dem
+    // 21.09.2026 gelesen wurden, tragen nur Ø und Maximum — aus denen sich
+    // keine Zone rechnen lässt. Die Uhr gibt sie noch her (dreissig Tage),
+    // und was schon entschieden ist, bleibt es: Geschrieben wird der Verlauf
+    // und die daraus gerechneten Ø/Maximum, sonst nichts.
+    for (final k in known) {
+      if (k.pulse != null) continue;
+      final source = measured.where((m) => m.id == k.externalId).firstOrNull;
+      final pulse = source?.pulse;
+      if (pulse == null) continue;
+      await repo.save(
+        userId,
+        k.copyWith(
+          pulse: pulse,
+          averageHeartRate: pulse.average,
+          maxHeartRate: pulse.max,
+        ),
+      );
+    }
+
     // Die Marke erst danach — bricht das Schreiben ab, wird beim nächsten
     // Öffnen derselbe Zeitraum noch einmal gelesen. Das ist harmlos (die
     // Kennung macht jeden Datensatz eindeutig), ein Verlust wäre es nicht.
