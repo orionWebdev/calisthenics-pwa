@@ -25,10 +25,17 @@ const double _stackedFromScale = 1.6;
 /// Kachel ist ein Einstieg, keine Aussage — der Fehlerzustand gehört auf die
 /// Unterseite, wo die Aussage steht.
 class MuscleBalanceEntry extends ConsumerWidget {
-  const MuscleBalanceEntry({super.key, this.alwaysShow = false});
+  const MuscleBalanceEntry({
+    super.key,
+    this.alwaysShow = false,
+    this.compact = false,
+  });
 
   /// Siehe [MuscleBalanceTile.alwaysShow].
   final bool alwaysShow;
+
+  /// Siehe [MuscleBalanceTile.compact].
+  final bool compact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,7 +58,11 @@ class MuscleBalanceEntry extends ConsumerWidget {
       exercises.value ?? const [],
       ref.watch(historyReferenceProvider),
     );
-    return MuscleBalanceTile(balance: balance, alwaysShow: alwaysShow);
+    return MuscleBalanceTile(
+      balance: balance,
+      alwaysShow: alwaysShow,
+      compact: compact,
+    );
   }
 }
 
@@ -64,6 +75,7 @@ class MuscleBalanceTile extends StatelessWidget {
     this.onOpen,
     this.alwaysShow = false,
     this.asPanel = false,
+    this.compact = false,
   });
 
   final MuscleBalance balance;
@@ -82,6 +94,15 @@ class MuscleBalanceTile extends StatelessWidget {
   /// Ohne Rückruf öffnet die Kachel [MuscleBalanceScreen] auf dem nächsten
   /// Navigator — im Kraft-Tab ist das der Stapel des Tabs.
   final VoidCallback? onOpen;
+
+  /// In halber Breite, als eine Hälfte einer [AtemSplit].
+  ///
+  /// Das Fenster („8 Wochen") fällt aus dem Kopf: Neben einem Titel und einem
+  /// Pfeil bleiben auf 145 dp keine weiteren Wörter. Es steht weiterhin im
+  /// Kopf der Unterseite und in der Ansage. Die Grundlage bleibt — eine
+  /// Verteilung ohne ihren Nenner gibt es nicht, auch nicht auf halber
+  /// Breite; sie bricht dort einfach um.
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -134,16 +155,37 @@ class MuscleBalanceTile extends StatelessWidget {
             // Umbruch, „8 Wochen" und Pfeil rechtsbündig. Vorher brach der
             // Titel am Gerät mitten im Wort („Muskelbalanc / e"). Kein ⓘ —
             // die Kachel öffnet ohnehin die Unterseite.
-            AtemExplainHeader(
-              title: l10n.balanceTitle,
-              trailing: l10n.balanceWindow,
-              explanation: const [],
-              // Der Pfeil sagt, dass die Kachel sich öffnet — die Ansage
-              // sagt es in Worten.
-              action: const Icon(Icons.chevron_right,
-                  size: 20, color: AtemColors.textSecondary),
-            ),
-            const SizedBox(height: 12),
+            // Auf halber Breite das Rezept der Blocküberschrift: labelMicro
+            // in Versalien, wie „ERFASSTE EINHEITEN" daneben. Der grosse
+            // Titel brach dort mitten im Wort („Muskelbalan / ce"), und zwei
+            // Kopfrezepte nebeneinander sähen gewachsen aus statt
+            // entschieden (Board 13).
+            if (compact)
+              Row(
+                children: [
+                  Expanded(
+                    // Kurztitel: „MUSKELBALANCE" bricht auf 145 dp in
+                    // Versalien mitten im Wort, und Verkleinern kommt nicht
+                    // in Frage. Der volle Name steht in der Ansage und im
+                    // Kopf der Unterseite.
+                    child: Text(l10n.balanceTitleShort.toUpperCase(),
+                        style: AtemType.labelMicro.of(context)),
+                  ),
+                  const Icon(Icons.chevron_right,
+                      size: 18, color: AtemColors.textSecondary),
+                ],
+              )
+            else
+              AtemExplainHeader(
+                title: l10n.balanceTitle,
+                trailing: l10n.balanceWindow,
+                explanation: const [],
+                // Der Pfeil sagt, dass die Kachel sich öffnet — die Ansage
+                // sagt es in Worten.
+                action: const Icon(Icons.chevron_right,
+                    size: 20, color: AtemColors.textSecondary),
+              ),
+            SizedBox(height: compact ? 10 : 12),
             if (enough)
               _Bar(balance: balance, total: balance.totalSets)
             else

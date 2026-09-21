@@ -18,6 +18,7 @@ export 'atem_section_nav.dart';
 export 'atem_plate_stack.dart';
 export 'atem_tab_switch.dart';
 export 'atem_snackbar.dart';
+export 'atem_split.dart';
 export 'atem_status_dot.dart';
 export 'atem_step_pad.dart';
 export 'atem_card.dart';

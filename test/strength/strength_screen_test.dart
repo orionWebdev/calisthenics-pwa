@@ -4,7 +4,6 @@ import 'package:atem/core/widgets/widgets.dart';
 import 'package:atem/features/history/presentation/widgets/analysis_section.dart';
 import 'package:atem/features/history/presentation/widgets/history_section.dart';
 import 'package:atem/features/history/presentation/widgets/month_strip.dart';
-import 'package:atem/features/history/presentation/widgets/muscle_balance_card.dart';
 import 'package:atem/features/history/presentation/widgets/statement_card.dart';
 import 'package:atem/features/plans/presentation/widgets/plans_section.dart';
 import 'package:atem/features/strength/presentation/screens/strength_screen.dart';
@@ -123,12 +122,10 @@ void main() {
     await pump(tester);
     // Drei Fugen zwischen den vier Themen, plus der Abschluss nach dem
     // letzten — Ende statt Ankündigung.
-    expect(find.byType(AtemSectionSeam, skipOffstage: false),
-        findsNWidgets(4));
+    expect(find.byType(AtemSectionSeam, skipOffstage: false), findsNWidgets(4));
   });
 
-  testWidgets('eine Auswahl scrollt das Thema unter die Zeile',
-      (tester) async {
+  testWidgets('eine Auswahl scrollt das Thema unter die Zeile', (tester) async {
     final l10n = await pump(tester);
 
     await jumpTo(tester, l10n.segAnalysis);
@@ -179,7 +176,7 @@ void main() {
   });
 
   testWidgets(
-      'Verlauf: Einheitenzahl, Monate, Muskelbalance, letzte Einheiten — '
+      'Verlauf: Einheitenzahl und Balance nebeneinander, dann Monate — '
       'ohne Aussagekarte', (tester) async {
     final l10n = await pump(tester);
     await jumpTo(tester, l10n.segHistory);
@@ -187,11 +184,14 @@ void main() {
     expect(find.byType(StatementCard), findsNothing);
     expect(find.text(l10n.historyAnalysisOpen), findsNothing);
 
-    // Die Zahl, die bis zum 20.09.2026 im Kopf des Tabs stand.
     expect(find.byType(HistorySection), findsOneWidget);
+    // **Split-Card** (21.09.2026): Die Einheitenzahl und die Muskelbalance
+    // teilen sich die erste Zeile, der Monatsstreifen kommt darunter. Vorher
+    // standen alle drei untereinander.
+    expect(find.byType(AtemSplit), findsOneWidget);
+    final split = tester.getTopLeft(find.byType(AtemSplit)).dy;
     final month = tester.getTopLeft(find.byType(MonthStrip)).dy;
-    final balance = tester.getTopLeft(find.byType(MuscleBalanceEntry)).dy;
-    expect(month, lessThan(balance));
+    expect(split, lessThan(month));
   });
 
   testWidgets('Pläne: die eigenen und die Ankündigung ohne Knopf',

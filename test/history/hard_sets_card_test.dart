@@ -37,6 +37,25 @@ const _pullUp = Exercise(
   primaryMuscles: [MuscleGroup.back],
 );
 
+const _squat = Exercise(
+  id: 'squat',
+  name: 'Kniebeuge',
+  source: ExerciseSource.curated,
+  primaryMuscles: [MuscleGroup.legs],
+);
+const _curl = Exercise(
+  id: 'curl',
+  name: 'Curl',
+  source: ExerciseSource.curated,
+  primaryMuscles: [MuscleGroup.biceps],
+);
+const _press = Exercise(
+  id: 'press',
+  name: 'Schulterdrücken',
+  source: ExerciseSource.curated,
+  primaryMuscles: [MuscleGroup.shoulders],
+);
+
 LoggedSet _rpe(int rpe) => LoggedSet(reps: 8, rpe: rpe);
 
 Future<void> _pump(
@@ -52,8 +71,8 @@ Future<void> _pump(
     ProviderScope(
       overrides: [
         sessionsProvider.overrideWith((_) => AsyncValue.data(sessions)),
-        exercisesProvider
-            .overrideWith((_) => Stream.value(const [_bench, _pullUp])),
+        exercisesProvider.overrideWith((_) =>
+            Stream.value(const [_bench, _pullUp, _squat, _curl, _press])),
       ],
       child: MaterialApp(
         theme: AtemTheme.dark,
@@ -135,5 +154,56 @@ void main() {
   testWidgets('200 % Schrift auf 320 dp ohne Überlauf', (tester) async {
     await _pump(tester, _filled, scale: 2.0, width: 320);
     expect(tester.takeException(), isNull);
+  });
+
+  group('viele Muskelgruppen', () {
+    /// Fünf Gruppen mit harten Sätzen — mehr, als offen stehen sollen.
+    final many = [
+      for (final id in ['bench', 'pull_up', 'squat', 'curl', 'press'])
+        _s(0, id, [_rpe(8), _rpe(8)]),
+    ];
+
+    /// Wie viele der fünf Gruppen gerade dastehen. Welche drei es sind,
+    /// entscheidet die Reihenfolge der Verteilung — geprüft wird die Anzahl.
+    int visible(WidgetTester tester) => [
+          'Brust',
+          'Rücken',
+          'Beine',
+          'Bizeps',
+          'Schultern',
+        ].where((m) => find.text(m).evaluate().isNotEmpty).length;
+
+    testWidgets('drei Zeilen offen, der Rest hinter „weitere"', (tester) async {
+      // Neun Zeilen machten den Block höher als jeden anderen der Auswertung
+      // (gemeldet am 21.09.2026).
+      await _pump(tester, many);
+
+      expect(visible(tester), 3);
+      expect(find.text('+ 2 WEITERE'), findsOneWidget);
+    });
+
+    testWidgets('ein Tipp zeigt alle, und die Summe bleibt dieselbe',
+        (tester) async {
+      await _pump(tester, many);
+      expect(find.text('10'), findsOneWidget, reason: 'fünf mal zwei');
+
+      await tester.tap(find.text('+ 2 WEITERE'));
+      await tester.pumpAndSettle();
+
+      expect(visible(tester), 5);
+      expect(find.textContaining('WEITERE'), findsNothing);
+      expect(find.text('10'), findsOneWidget);
+    });
+
+    testWidgets('vier Gruppen stehen ganz da — eine Zeile lohnt den Tipp nicht',
+        (tester) async {
+      await _pump(tester, [
+        for (final id in ['bench', 'pull_up', 'squat', 'curl'])
+          _s(0, id, [_rpe(8), _rpe(8), _rpe(8)]),
+      ]);
+
+      expect(find.textContaining('WEITERE'), findsNothing);
+      expect(visible(tester), 4);
+    });
   });
 }

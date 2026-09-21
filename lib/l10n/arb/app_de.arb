@@ -10885,5 +10885,36 @@
         "type": "int"
       }
     }
+  },
+  "balanceTitleShort": "Balance",
+  "@balanceTitleShort": {
+    "description": "Board 09 · Kurztitel der Muskelbalance für die halbe Breite (Split-Card, 21.09.2026). „MUSKELBALANCE\" bricht dort in Versalien mitten im Wort; der volle Name steht weiter in der Ansage und im Kopf der Unterseite."
+  },
+  "weeklySetsLine": "KW {week} · {n, plural, =1{1 Einheit} other{{n} Einheiten}} · Ø {avg} aus 4 Wochen",
+  "@weeklySetsLine": {
+    "description": "Auswertung · „Sätze je Woche\": Woche, Einheiten und Schnitt in einer Zeile statt in dreien (21.09.2026, auf Rückmeldung „viel zu viel Text\"). Der Nenner bleibt — nur die Zeilen werden zu einer.",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      },
+      "avg": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklySetsLinePending": "KW {week} · {n, plural, =1{1 Einheit} other{{n} Einheiten}} · Vergleich ab 2 vollen Wochen",
+  "@weeklySetsLinePending": {
+    "description": "Dieselbe Zeile, solange der Schnitt noch nicht trägt.",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

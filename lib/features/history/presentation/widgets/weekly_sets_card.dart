@@ -130,12 +130,6 @@ class _Head extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${l10n.weeklySetsWeek(current.isoWeek)} · '
-              '${l10n.weeklySetsSessions(volume.currentSessions)}',
-              style: AtemType.meta.of(context),
-            ),
-            const SizedBox(height: 6),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.end,
               spacing: 10,
@@ -177,10 +171,17 @@ class _Head extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
+            // **Eine Zeile statt dreier.** „Diese Woche · KW 35 · 0
+            // Einheiten" stand oben, „gegen 4-Wochen-Schnitt" unten, und
+            // dazwischen die Zahl — auf dem Gerät war das zu viel Text
+            // (21.09.2026). Woche, Einheiten und Schnitt stehen jetzt
+            // zusammen; der Nenner bleibt vollständig.
             Text(
               avgText == null
-                  ? l10n.weeklySetsPending(volume.weeksUntilComparison)
-                  : l10n.weeklySetsBasis(avgText),
+                  ? l10n.weeklySetsLinePending(
+                      current.isoWeek, volume.currentSessions)
+                  : l10n.weeklySetsLine(
+                      current.isoWeek, volume.currentSessions, avgText),
               style: AtemType.meta.of(context),
             ),
           ],

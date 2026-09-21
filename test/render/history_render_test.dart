@@ -83,6 +83,48 @@ Future<void> _shot(WidgetTester tester, GlobalKey key, String name) async {
   }
 }
 
+/// Ein Bestand **im Fenster der Muskelbalance** — sonst rendert die Kachel
+/// nicht, und die Split-Zeile hat nur eine Hälfte.
+class _RecentSessions extends FakeSessionRepository {
+  static final sessions = <TrainingSession>[
+    for (var i = 0; i < 6; i++)
+      StrengthSession(
+        id: 'r$i',
+        userId: 'u',
+        date: DateTime(2026, 8, 25 - i * 3),
+        createdAt: DateTime(2026, 8, 25 - i * 3),
+        bodyweight: false,
+        duration: const Duration(minutes: 52),
+        planName: 'Push A',
+        exercises: [
+          // Mit Anstrengung je Satz — sonst bleibt „Harte Sätze" gesperrt
+          // und das Ausklappen der Muskelzeilen wäre nie zu sehen.
+          LoggedExercise(
+            exerciseId: 'archer_push_up',
+            sets: [
+              for (var k = 0; k < 4; k++)
+                const LoggedSet(reps: 8, weight: 40, rpe: 8),
+            ],
+          ),
+          LoggedExercise(
+            exerciseId: 'pistol_squat',
+            sets: [
+              for (var k = 0; k < 3; k++)
+                const LoggedSet(reps: 6, weight: 20, rpe: 9),
+            ],
+          ),
+        ],
+      ),
+  ];
+
+  @override
+  Stream<List<TrainingSession>> watchSessions(String userId) =>
+      Stream.value(sessions);
+
+  @override
+  Future<List<TrainingSession>> fetchSessions(String userId) async => sessions;
+}
+
 void main() {
   // fixtureOverrides[6] ist die Sitzungsquelle — ersetzen, nicht doppeln.
   final thin = [
@@ -92,18 +134,48 @@ void main() {
           : fixtureOverrides[i],
   ];
 
+  // fixtureOverrides[6] ist die Sitzungsquelle — ersetzen, nicht doppeln.
+  final recent = [
+    for (var i = 0; i < fixtureOverrides.length; i++)
+      i == 6
+          ? sessionRepositoryProvider.overrideWithValue(_RecentSessions())
+          : fixtureOverrides[i],
+  ];
+
   final cases = <(String, Widget, List<dynamic>)>[
+    (
+      'verlauf_split',
+      const SingleChildScrollView(child: HistorySection()),
+      recent
+    ),
+    (
+      'auswertung_voll',
+      const SingleChildScrollView(child: AnalysisSection()),
+      recent
+    ),
     // Die Abschnitte des One-Pagers scrollen nicht selbst — die Seite tut
     // es. Fürs Bild bekommen sie einen Scroll-Container, sonst läuft ein
     // Abschnitt, der höher als das Bild ist, über.
-    ('verlauf', const SingleChildScrollView(child: HistorySection()),
-        fixtureOverrides),
-    ('verlauf_duenn', const SingleChildScrollView(child: HistorySection()),
-        thin),
-    ('auswertung', const SingleChildScrollView(child: AnalysisSection()),
-        fixtureOverrides),
-    ('auswertung_duenn', const SingleChildScrollView(child: AnalysisSection()),
-        thin),
+    (
+      'verlauf',
+      const SingleChildScrollView(child: HistorySection()),
+      fixtureOverrides
+    ),
+    (
+      'verlauf_duenn',
+      const SingleChildScrollView(child: HistorySection()),
+      thin
+    ),
+    (
+      'auswertung',
+      const SingleChildScrollView(child: AnalysisSection()),
+      fixtureOverrides
+    ),
+    (
+      'auswertung_duenn',
+      const SingleChildScrollView(child: AnalysisSection()),
+      thin
+    ),
     ('muskelbalance', const MuscleBalanceScreen(), fixtureOverrides),
     (
       'uebung',
@@ -146,8 +218,8 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      final scrollables = find.byWidgetPredicate((w) =>
-          w is Scrollable && w.axisDirection == AxisDirection.down);
+      final scrollables = find.byWidgetPredicate(
+          (w) => w is Scrollable && w.axisDirection == AxisDirection.down);
       for (var shot = 0; shot < 6; shot++) {
         await _shot(tester, key, '${name}_$shot');
         if (scrollables.evaluate().isEmpty) break;

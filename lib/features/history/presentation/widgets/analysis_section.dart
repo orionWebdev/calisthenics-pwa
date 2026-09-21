@@ -6,15 +6,12 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../exercises/application/exercise_providers.dart';
 import '../../application/history_providers.dart';
-import '../../domain/muscle_balance.dart';
 import '../../domain/strength_progress.dart';
 import '../screens/session_list_screen.dart';
 import 'estimated_max_card.dart';
 import 'exercise_progress_card.dart';
 import 'focus_distribution_card.dart';
 import 'hard_sets_card.dart';
-import 'muscle_balance_card.dart';
-import '../../../pulse/presentation/widgets/zone_five_card.dart';
 import 'weekly_sets_card.dart';
 import 'wellness_trend_card.dart';
 
@@ -103,7 +100,6 @@ class AnalysisSection extends ConsumerWidget {
           final names = {for (final e in exercises) e.id: e.name};
           String nameOf(String id) => names[id] ?? id;
 
-          final balance = MuscleBalance.compute(sessions, exercises, reference);
           final series = StrengthProgress.compute(sessions);
           final candidates =
               StrengthProgress.compute(sessions, minimumSessions: 1);
@@ -117,12 +113,6 @@ class AnalysisSection extends ConsumerWidget {
             ExerciseProgressCard(sessions: sessions, reference: reference),
             WeeklySetsCard(sessions: sessions, reference: reference),
             HardSetsCard(sessions: sessions, reference: reference),
-            // Zone 5 je Woche (auf Wunsch vom 21.09.2026): Die Zeit im
-            // obersten Pulsbereich als eigener Graph, neben den harten Sätzen
-            // — beides fragt, wie hart trainiert wurde.
-            ZoneFiveCard(sessions: sessions, reference: reference),
-            MuscleBalanceTile(
-                balance: balance, alwaysShow: true, asPanel: true),
             FocusDistributionCard(sessions: sessions, reference: reference),
             WellnessTrendCard(sessions: sessions, reference: reference),
             EstimatedMaxCard(

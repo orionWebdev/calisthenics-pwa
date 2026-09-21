@@ -66,8 +66,7 @@ void main() {
     expect(find.byType(AtemThresholdBlock), findsOneWidget);
     expect(find.text('Sätze je Woche'), findsOneWidget);
     expect(find.text('0 von 1'), findsOneWidget);
-    expect(find.text('Ab der ersten Einheit mit Sätzen'),
-        findsOneWidget);
+    expect(find.text('Ab der ersten Einheit mit Sätzen'), findsOneWidget);
     // Kein Wert, kein Streifen.
     expect(find.byKey(const ValueKey('empty')), findsNothing);
     expect(find.byKey(const ValueKey('filled')), findsNothing);
@@ -76,11 +75,15 @@ void main() {
   testWidgets('ohne Vergleich: Zahl, keine Pille, „noch 2"', (t) async {
     await _pump(t, [_s('a', DateTime(2026, 9, 15), sets: 4)]);
     expect(find.byType(AtemThresholdBlock), findsNothing);
-    expect(find.text('Diese Woche · KW 38 · 1 Einheit'), findsOneWidget);
     expect(find.text('4'), findsOneWidget);
     expect(find.text('Sätze'), findsOneWidget);
     expect(find.byType(AtemBadge), findsNothing);
-    expect(find.text('Vergleich ab 2 vollen Wochen · noch 2'), findsOneWidget);
+    // **Eine Zeile statt dreier** (21.09.2026): Woche, Einheiten und der
+    // fehlende Vergleich stehen zusammen.
+    expect(
+      find.text('KW 38 · 1 Einheit · Vergleich ab 2 vollen Wochen'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('mit Vergleich: Pille und Grundlage', (t) async {
@@ -90,7 +93,8 @@ void main() {
       _s('c', DateTime(2026, 9, 15), sets: 12),
     ]);
     expect(find.text('▲ +4'), findsOneWidget);
-    expect(find.text('gegen 4-Wochen-Schnitt 8 Sätze'), findsOneWidget);
+    // Der Nenner bleibt vollständig, nur kürzer geschrieben.
+    expect(find.text('KW 38 · 1 Einheit · Ø 8 aus 4 Wochen'), findsOneWidget);
   });
 
   testWidgets('weniger als der Schnitt: Pille nach unten', (t) async {

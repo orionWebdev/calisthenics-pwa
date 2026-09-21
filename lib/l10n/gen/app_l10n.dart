@@ -11124,6 +11124,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Kalenderwoche {week}, kein Puls aufgezeichnet'**
   String zoneFiveWeekNoneA11y(int week);
+
+  /// Board 09 · Kurztitel der Muskelbalance für die halbe Breite (Split-Card, 21.09.2026). „MUSKELBALANCE" bricht dort in Versalien mitten im Wort; der volle Name steht weiter in der Ansage und im Kopf der Unterseite.
+  ///
+  /// In de, this message translates to:
+  /// **'Balance'**
+  String get balanceTitleShort;
+
+  /// Auswertung · „Sätze je Woche": Woche, Einheiten und Schnitt in einer Zeile statt in dreien (21.09.2026, auf Rückmeldung „viel zu viel Text"). Der Nenner bleibt — nur die Zeilen werden zu einer.
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week} · {n, plural, =1{1 Einheit} other{{n} Einheiten}} · Ø {avg} aus 4 Wochen'**
+  String weeklySetsLine(int week, int n, String avg);
+
+  /// Dieselbe Zeile, solange der Schnitt noch nicht trägt.
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week} · {n, plural, =1{1 Einheit} other{{n} Einheiten}} · Vergleich ab 2 vollen Wochen'**
+  String weeklySetsLinePending(int week, int n);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

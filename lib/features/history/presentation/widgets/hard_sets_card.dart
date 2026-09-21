@@ -21,7 +21,7 @@ import '../../domain/training_session.dart';
 /// harten Sätze —, darunter je Muskel eine Zeile mit neutraler Zahl und der
 /// Verschiebung zum Fenster davor. Die Verschiebung ist eine Tatsache in
 /// `textTertiary`, kein Urteil und keine Ampel.
-class HardSetsCard extends ConsumerWidget {
+class HardSetsCard extends ConsumerStatefulWidget {
   const HardSetsCard({
     super.key,
     required this.sessions,
@@ -31,8 +31,25 @@ class HardSetsCard extends ConsumerWidget {
   final List<TrainingSession> sessions;
   final DateTime reference;
 
+  /// So viele Muskelgruppen stehen offen da, der Rest hinter „+ n weitere".
+  ///
+  /// Neun Zeilen machten den Block höher als jeden anderen der Auswertung
+  /// (gemeldet am 21.09.2026). Drei sagen, worauf das Fenster hinauslief; wer
+  /// die Verteilung ganz sehen will, klappt auf — dasselbe Muster wie bei den
+  /// Übungen im Einheitendetail.
+  static const visibleShares = 3;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HardSetsCard> createState() => _HardSetsCardState();
+}
+
+class _HardSetsCardState extends ConsumerState<HardSetsCard> {
+  bool _all = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final sessions = widget.sessions;
+    final reference = widget.reference;
     final l10n = AppL10n.of(context);
     final exercises = ref.watch(exercisesProvider).value ?? const [];
     final hard = HardSets.compute(sessions, exercises, reference);
@@ -108,12 +125,25 @@ class HardSetsCard extends ConsumerWidget {
           ),
           if (hard.shares.isNotEmpty) ...[
             const SizedBox(height: 8),
-            for (var i = 0; i < hard.shares.length; i++) ...[
+            for (var i = 0; i < _shown(hard.shares.length); i++) ...[
               if (i > 0)
                 const SizedBox(
                     height: 1, child: ColoredBox(color: AtemColors.border)),
               _Row(share: hard.shares[i], days: days),
             ],
+            if (_hidden(hard.shares.length) > 0)
+              AtemTappable(
+                onTap: () => setState(() => _all = true),
+                semanticLabel: l10n.detailWorkMore(_hidden(hard.shares.length)),
+                minTapSize: const Size(0, 48),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  l10n
+                      .detailWorkMore(_hidden(hard.shares.length))
+                      .toUpperCase(),
+                  style: AtemType.meta.of(context),
+                ),
+              ),
           ],
           const SizedBox(height: 12),
           Text(
@@ -125,6 +155,14 @@ class HardSetsCard extends ConsumerWidget {
       ),
     );
   }
+
+  /// Wie viele Zeilen sichtbar sind. Steckt nur eine hinter „weitere", steht
+  /// sie gleich da — eine Zeile aufzuklappen lohnt den Tipp nicht.
+  int _shown(int total) => _all || total <= HardSetsCard.visibleShares + 1
+      ? total
+      : HardSetsCard.visibleShares;
+
+  int _hidden(int total) => total - _shown(total);
 }
 
 String _shiftA11y(AppL10n l10n, int shift, int days) => shift == 0
@@ -143,17 +181,15 @@ class _Delta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = shift == 0
-        ? '— 0'
-        : '${shift > 0 ? '▲' : '▼'} ${shift.abs()}';
+    final text = shift == 0 ? '— 0' : '${shift > 0 ? '▲' : '▼'} ${shift.abs()}';
     return Text(
       text,
       softWrap: false,
       style: AtemType.labelUi.of(context).copyWith(
-            color: AtemColors.textTertiary,
-            // Poppins hat kein ▲▼ — Mono springt ein.
-            fontFamilyFallback: const ['JetBrainsMono'],
-          ),
+        color: AtemColors.textTertiary,
+        // Poppins hat kein ▲▼ — Mono springt ein.
+        fontFamilyFallback: const ['JetBrainsMono'],
+      ),
     );
   }
 }

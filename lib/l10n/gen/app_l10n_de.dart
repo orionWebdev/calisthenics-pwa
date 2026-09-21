@@ -7323,4 +7323,29 @@ class AppL10nDe extends AppL10n {
   String zoneFiveWeekNoneA11y(int week) {
     return 'Kalenderwoche $week, kein Puls aufgezeichnet';
   }
+
+  @override
+  String get balanceTitleShort => 'Balance';
+
+  @override
+  String weeklySetsLine(int week, int n, String avg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten',
+      one: '1 Einheit',
+    );
+    return 'KW $week · $_temp0 · Ø $avg aus 4 Wochen';
+  }
+
+  @override
+  String weeklySetsLinePending(int week, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten',
+      one: '1 Einheit',
+    );
+    return 'KW $week · $_temp0 · Vergleich ab 2 vollen Wochen';
+  }
 }

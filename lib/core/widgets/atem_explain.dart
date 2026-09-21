@@ -92,6 +92,12 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
           builder: (context, constraints) =>
               _headRow(context, constraints.maxWidth, l10n, duration),
         ),
+        // **Der Abstand ist der Überstand der Trefferfläche.** Das ⓘ ist
+        // 48 dp hoch, die Zeile nur so hoch wie ihr Titel (rund 24 dp) — das
+        // Ziel ragt also je zwölf dp nach oben und unten hinaus. Oben landet
+        // es im Kartenrand, unten läge es ohne diesen Abstand auf dem
+        // Inhalt. Köpfe ohne ⓘ brauchen ihn nicht und bekommen ihn nicht.
+        if (hasExplanation) const SizedBox(height: _tapOverhang),
         if (hasExplanation)
           // Bei „Animationen reduzieren" ist die Dauer null — AnimatedSize
           // verträgt das nicht (es mutiert sich im eigenen Layout). Dann
@@ -111,7 +117,9 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
   }
 
   Widget _body(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 4),
+        // Oben nichts: Den Abstand zum Titel setzt bereits die Kopfzeile,
+        // damit offen und zugeklappt gleich weit vom Titel wegstehen.
+        padding: const EdgeInsets.only(bottom: 4),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -213,25 +221,42 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
         ],
       );
       if (!hasExplanation) return row;
-      return ConstrainedBox(
-        // Die Zeile ist mindestens so hoch wie die Trefferfläche — sonst
-        // schnitte der Hit-Test den überstehenden Teil ab.
-        constraints: const BoxConstraints(minHeight: _tapBox),
-        child: Stack(
-          alignment: Alignment.centerRight,
-          children: [
-            row,
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: Align(
-                alignment: Alignment.centerRight,
+      // **Die Zeile ist so hoch wie ihr Titel, nicht wie das Tap-Ziel.**
+      //
+      // Bis zum 21.09.2026 zwang das ⓘ die ganze Kopfzeile auf 48 dp. Der
+      // Titel ist rund 24 dp hoch, also blieben oben und unten je zwölf
+      // leere dp stehen — auf dem Gerät sah jede Karte aus, als hätte sie
+      // oben zu viel Rand (gemeldet am 21.09.2026). Sichtbar war das nur bei
+      // Karten **mit** ⓘ; daneben standen Karten ohne, und die Kartenränder
+      // stimmten nicht mehr überein.
+      //
+      // Die Trefferfläche bleibt 48 dp und ragt jetzt über die Zeile hinaus,
+      // nach oben in den Kartenrand. Genau wie in der Breite, wo sie schon
+      // seit Längerem übersteht ([_visibleBox]). `OverflowBox` gibt dem
+      // Knopf seine volle Grösse, ohne dass die Zeile davon wächst.
+      return Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.centerRight,
+        children: [
+          row,
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            // Der Slot ist so breit wie die sichtbare Luft um das Symbol; die
+            // Trefferfläche darin ist 48 dp und ragt nach allen Seiten hinaus.
+            width: _visibleBox,
+            child: Center(
+              child: OverflowBox(
+                minWidth: _tapBox,
+                maxWidth: _tapBox,
+                minHeight: _tapBox,
+                maxHeight: _tapBox,
                 child: _infoButton(l10n, duration),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       );
     }
 
@@ -286,6 +311,9 @@ class _AtemExplainHeaderState extends State<AtemExplainHeader> {
   }
 
   static const _tapBox = 48.0;
+
+  /// Wie weit die Trefferfläche unter der Titelzeile hervorsteht.
+  static const _tapOverhang = 12.0;
 
   /// Platz, den das ⓘ in der einzeiligen Form belegt: der 32er-Kasten mit
   /// dem 24er-Kreis, rechtsbündig, plus 8 dp Luft zum Zeitraum. Mit 32 dp

@@ -11,6 +11,8 @@ import '../screens/session_detail_screen.dart';
 import '../screens/session_list_screen.dart';
 import '../session_ui.dart';
 import 'month_strip.dart';
+import '../../../exercises/application/exercise_providers.dart';
+import '../../domain/muscle_balance.dart';
 import 'muscle_balance_card.dart';
 
 /// Der Abschnitt „Verlauf" — **Einheiten je Monat, Muskelbalance, zuletzt**.
@@ -82,6 +84,11 @@ class HistorySection extends ConsumerWidget {
     }
 
     final summary = ref.watch(historySummaryProvider);
+    final balance = MuscleBalance.compute(
+      sessions,
+      ref.watch(exercisesProvider).value ?? const [],
+      ref.watch(historyReferenceProvider),
+    );
     final strength = sessions
         .where((s) =>
             s.kind == SessionKind.strength || s.kind == SessionKind.bodyweight)
@@ -90,7 +97,19 @@ class HistorySection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AtemEntrance(child: _TotalCard(count: strength, sessions: sessions)),
+        // **Split-Card**: Muskelbalance und Einheitenzahl teilen sich eine
+        // Zeile (21.09.2026). Beide sind schmale Blöcke; untereinander
+        // schoben sie den Monatsstreifen unnötig weit nach unten.
+        AtemEntrance(
+          child: AtemSplit(
+            left: _TotalCard(count: strength, sessions: sessions),
+            // Ohne Einheit mit Übungen im Fenster rendert die Kachel nicht —
+            // dann nimmt die Einheitenzahl die ganze Zeile.
+            right: balance.sessionsInWindow == 0
+                ? null
+                : MuscleBalanceTile(balance: balance, compact: true),
+          ),
+        ),
         const SizedBox(height: AtemSpacing.cardGap),
         // Ein Monat angetippt: Die Liste öffnet auf genau diesen Monat —
         // der Zeitraumfilter kommt aus dem Streifen (Board 06, A2/2).
@@ -108,10 +127,6 @@ class HistorySection extends ConsumerWidget {
             },
           ),
         ),
-        // Ohne Einheit mit Übungen rendert die Kachel nicht (ausserhalb der
-        // Auswertung gilt weiter: ein Block ohne Daten fehlt).
-        const SizedBox(height: AtemSpacing.cardGap),
-        const AtemEntrance(index: 2, child: MuscleBalanceEntry()),
         const SizedBox(height: 24),
         AtemBlockHeader(
           title: l10n.historyRecentLabel.toUpperCase(),
@@ -122,7 +137,8 @@ class HistorySection extends ConsumerWidget {
           onAction: () {
             ref.read(sessionFilterProvider.notifier).clear();
             Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const SessionListScreen()),
+              MaterialPageRoute<void>(
+                  builder: (_) => const SessionListScreen()),
             );
           },
         ),
@@ -192,12 +208,10 @@ class _TotalCard extends StatelessWidget {
                   Text(
                     '$count',
                     style: AtemType.display.of(context).copyWith(
-                          fontSize: 28,
-                          height: 1.1,
-                          fontFeatures: const [
-                            FontFeature.tabularFigures()
-                          ],
-                        ),
+                      fontSize: 28,
+                      height: 1.1,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 3),
