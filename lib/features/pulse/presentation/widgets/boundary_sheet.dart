@@ -218,7 +218,12 @@ class _AffectedZone extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            ZoneTrack(fraction: width, height: 10),
+            ZoneTrack(
+              fraction: width,
+              height: 10,
+              // Rückmeldung auf einen Tipp: 120 ms, kein Nachfedern.
+              duration: const Duration(milliseconds: 120),
+            ),
           ],
         ),
       ),

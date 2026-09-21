@@ -7016,4 +7016,228 @@ class AppL10nEn extends AppL10n {
   String settingsZonesBetween(int a, int b) {
     return 'between zone $a and zone $b';
   }
+
+  @override
+  String get detailUnitBpm => 'bpm';
+
+  @override
+  String get detailUnitKcal => 'kcal';
+
+  @override
+  String get detailUnitHm => 'm';
+
+  @override
+  String detailBasisExercises(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n exercises',
+      one: '$n exercise',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String detailBasisEffort(int rpe) {
+    return 'effort $rpe of 5';
+  }
+
+  @override
+  String get detailSpokenHrAvg => 'Average heart rate';
+
+  @override
+  String get detailSpokenHrMax => 'Maximum heart rate';
+
+  @override
+  String get detailSpokenHrMin => 'Minimum heart rate';
+
+  @override
+  String get detailSpokenLoad => 'Load';
+
+  @override
+  String detailSpokenTile(
+      String label, String value, String unit, String source) {
+    return '$label $value $unit, $source';
+  }
+
+  @override
+  String get detailSourceApp => 'from the app';
+
+  @override
+  String get detailHrAvgShort => 'Avg';
+
+  @override
+  String get detailHrMaxShort => 'Max';
+
+  @override
+  String get detailHrMinShort => 'Min';
+
+  @override
+  String get detailBlockHrZones => 'Heart rate & zones';
+
+  @override
+  String detailZoneShort(int n) {
+    return 'Z$n';
+  }
+
+  @override
+  String detailZoneSpokenRange(int from, int to) {
+    return '$from to $to bpm';
+  }
+
+  @override
+  String detailZoneA11y(int n, String range, String time, int total) {
+    return 'Zone $n, $range, $time of $total minutes';
+  }
+
+  @override
+  String detailZoneTimeSpoken(int min, int sec) {
+    return '$min minutes $sec';
+  }
+
+  @override
+  String detailZonesGroupA11y(int min, int total, String date) {
+    return 'Time in zones, from $min of $total minutes recorded, your zones from $date';
+  }
+
+  @override
+  String detailHrBasisNoZones(int min, int total) {
+    return 'From $min of $total min recorded';
+  }
+
+  @override
+  String get detailHrLoading => 'Heart rate is loading';
+
+  @override
+  String get detailErrorHrBody => 'The watch record does not respond.';
+
+  @override
+  String detailHrLastRead(String date) {
+    return 'Last read $date';
+  }
+
+  @override
+  String detailWorkMore(int n) {
+    return '+ $n more';
+  }
+
+  @override
+  String get detailWorkLess => 'Show less';
+
+  @override
+  String get detailWorkNoComparison => 'no comparison';
+
+  @override
+  String detailWorkSets(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n sets',
+      one: '$n set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String detailDeltaWeight(String n) {
+    return '$n kg';
+  }
+
+  @override
+  String detailDeltaReps(String n) {
+    return '$n reps';
+  }
+
+  @override
+  String get detailDeltaSame => 'same';
+
+  @override
+  String detailDeltaSpokenMore(String value, String date) {
+    return '$value more than on $date';
+  }
+
+  @override
+  String detailDeltaSpokenLess(String value, String date) {
+    return '$value less than on $date';
+  }
+
+  @override
+  String detailDeltaSpokenSame(String date) {
+    return 'same as on $date';
+  }
+
+  @override
+  String detailSpokenKg(String n) {
+    return '$n kilograms';
+  }
+
+  @override
+  String detailSpokenReps(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n repetitions',
+      one: '$n repetition',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String detailExerciseA11y(
+      String name, String sets, String best, String delta) {
+    return '$name, $sets, best $best$delta. Show sets.';
+  }
+
+  @override
+  String get detailExerciseHistory => 'Exercise history';
+
+  @override
+  String detailSetRow(int n, String detail) {
+    return 'Set $n · $detail';
+  }
+
+  @override
+  String get detailOriginApp => 'Recorded by you';
+
+  @override
+  String get detailOriginWatch => 'Imported from the watch';
+
+  @override
+  String get detailOriginBoth => 'App + watch · merged';
+
+  @override
+  String get detailOriginMetaApp => 'App · all values';
+
+  @override
+  String get detailOriginMetaEmpty => 'App · type and day only';
+
+  @override
+  String get detailOriginMetaMerged =>
+      'App: sets, duration · watch: heart rate, kcal';
+
+  @override
+  String detailOriginMetaWatch(String device) {
+    return '$device · all values';
+  }
+
+  @override
+  String get detailOriginA11yBoth =>
+      'Origin: app and watch, merged. The app provides sets and duration, the watch provides heart rate and calories.';
+
+  @override
+  String get detailAddEffort => 'Add effort';
+
+  @override
+  String get detailBackA11y => 'Back to history';
+
+  @override
+  String get detailLoadingA11y => 'Session is loading';
+
+  @override
+  String detailTimeDayOnly(String day, String date) {
+    return '$day $date';
+  }
+
+  @override
+  String get detailBasisNoLoad => 'no load';
 }

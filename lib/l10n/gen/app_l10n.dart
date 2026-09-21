@@ -10738,6 +10738,320 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'zwischen Zone {a} und Zone {b}'**
   String settingsZonesBetween(int a, int b);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'bpm'**
+  String get detailUnitBpm;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'kcal'**
+  String get detailUnitKcal;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'hm'**
+  String get detailUnitHm;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{{n} Übung} other{{n} Übungen}}'**
+  String detailBasisExercises(int n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung {rpe} von 5'**
+  String detailBasisEffort(int rpe);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Durchschnittspuls'**
+  String get detailSpokenHrAvg;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Maximalpuls'**
+  String get detailSpokenHrMax;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Minimalpuls'**
+  String get detailSpokenHrMin;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Last'**
+  String get detailSpokenLoad;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{label} {value} {unit}, {source}'**
+  String detailSpokenTile(
+      String label, String value, String unit, String source);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'aus der App'**
+  String get detailSourceApp;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Ø'**
+  String get detailHrAvgShort;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Max'**
+  String get detailHrMaxShort;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Min'**
+  String get detailHrMinShort;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Puls & Zonen'**
+  String get detailBlockHrZones;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Z{n}'**
+  String detailZoneShort(int n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{from} bis {to} bpm'**
+  String detailZoneSpokenRange(int from, int to);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Zone {n}, {range}, {time} von {total} Minuten'**
+  String detailZoneA11y(int n, String range, String time, int total);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{min} Minuten {sec}'**
+  String detailZoneTimeSpoken(int min, int sec);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Zeit in Zonen, aus {min} von {total} Minuten Aufzeichnung, deine Zonen vom {date}'**
+  String detailZonesGroupA11y(int min, int total, String date);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Aus {min} von {total} min Aufzeichnung'**
+  String detailHrBasisNoZones(int min, int total);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Puls wird geladen'**
+  String get detailHrLoading;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Der Uhr-Datensatz antwortet nicht.'**
+  String get detailErrorHrBody;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt gelesen {date}'**
+  String detailHrLastRead(String date);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'+ {n} weitere'**
+  String detailWorkMore(int n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Weniger anzeigen'**
+  String get detailWorkLess;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'ohne Vergleich'**
+  String get detailWorkNoComparison;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{{n} Satz} other{{n} Sätze}}'**
+  String detailWorkSets(int n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{n} kg'**
+  String detailDeltaWeight(String n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Wdh'**
+  String detailDeltaReps(String n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'gleich'**
+  String get detailDeltaSame;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{value} mehr als am {date}'**
+  String detailDeltaSpokenMore(String value, String date);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{value} weniger als am {date}'**
+  String detailDeltaSpokenLess(String value, String date);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'gleich wie am {date}'**
+  String detailDeltaSpokenSame(String date);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Kilogramm'**
+  String detailSpokenKg(String n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{{n} Wiederholung} other{{n} Wiederholungen}}'**
+  String detailSpokenReps(int n);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{name}, {sets}, bestes {best}{delta}. Sätze anzeigen.'**
+  String detailExerciseA11y(
+      String name, String sets, String best, String delta);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Übungsverlauf'**
+  String get detailExerciseHistory;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Satz {n} · {detail}'**
+  String detailSetRow(int n, String detail);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Selbst geführt'**
+  String get detailOriginApp;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Aus der Uhr übernommen'**
+  String get detailOriginWatch;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'App + Uhr · zusammengeführt'**
+  String get detailOriginBoth;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'App · alle Werte'**
+  String get detailOriginMetaApp;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'App · nur Art und Tag'**
+  String get detailOriginMetaEmpty;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'App: Sätze, Dauer · Uhr: Puls, kcal'**
+  String get detailOriginMetaMerged;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{device} · alle Werte'**
+  String detailOriginMetaWatch(String device);
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Herkunft: App und Uhr, zusammengeführt. App liefert Sätze und Dauer, Uhr liefert Puls und Kalorien.'**
+  String get detailOriginA11yBoth;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung nachtragen'**
+  String get detailAddEffort;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Zurück zum Verlauf'**
+  String get detailBackA11y;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit wird geladen'**
+  String get detailLoadingA11y;
+
+  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
+  ///
+  /// In de, this message translates to:
+  /// **'{day} {date}'**
+  String detailTimeDayOnly(String day, String date);
+
+  /// Board 16 · Ergänzung — „ohne Last · {name}" ohne Namen: Regeneration ohne bekannte Art
+  ///
+  /// In de, this message translates to:
+  /// **'ohne Last'**
+  String get detailBasisNoLoad;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -12,19 +12,37 @@ import '../../../../core/theme/theme.dart';
 /// vollständig lesbar.
 ///
 /// Violett ist **Fläche, nie Text**: Diese Spur trägt keine Schrift.
+///
+/// ## Bewegung
+///
+/// Die Füllung wächst von 0 auf ihre Breite — alle fünf gleichzeitig, gleiche
+/// Dauer (420 ms, `easeOutQuart`), einmal beim ersten Zeigen. Ändert sich der
+/// Wert später (neue Grenzen), wandert sie von dort, wo sie steht. Bei
+/// reduzierter Bewegung steht sie sofort am Ziel.
 class ZoneTrack extends StatelessWidget {
-  const ZoneTrack({super.key, required this.fraction, this.height = 10});
+  const ZoneTrack({
+    super.key,
+    required this.fraction,
+    this.height = 10,
+    this.duration = const Duration(milliseconds: 420),
+  });
 
   /// 0 bis 1 — der Anteil an der aufgezeichneten Zeit.
   final double fraction;
   final double height;
 
+  /// Wie lange die Füllung braucht. Im Grenzen-Blatt 120 ms: Dort ist sie
+  /// eine Rückmeldung auf einen Tipp, keine Einführung.
+  final Duration duration;
+
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final width = constraints.maxWidth * fraction.clamp(0.0, 1.0);
-            return SizedBox(
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(end: fraction.clamp(0.0, 1.0)),
+          duration: AtemMotion.reduced(context) ? Duration.zero : duration,
+          curve: Curves.easeOutQuart,
+          builder: (context, value, _) => LayoutBuilder(
+            builder: (context, constraints) => SizedBox(
               height: height,
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -37,7 +55,7 @@ class ZoneTrack extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
-                    width: width,
+                    width: constraints.maxWidth * value,
                     height: height,
                     child: const DecoratedBox(
                       decoration: BoxDecoration(
@@ -48,8 +66,8 @@ class ZoneTrack extends StatelessWidget {
                   ),
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       );
 }

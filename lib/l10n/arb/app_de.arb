@@ -10416,5 +10416,382 @@
         "type": "int"
       }
     }
+  },
+  "detailUnitBpm": "bpm",
+  "@detailUnitBpm": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailUnitKcal": "kcal",
+  "@detailUnitKcal": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailUnitHm": "hm",
+  "@detailUnitHm": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailBasisExercises": "{n, plural, one{{n} Übung} other{{n} Übungen}}",
+  "@detailBasisExercises": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailBasisEffort": "Anstrengung {rpe} von 5",
+  "@detailBasisEffort": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailSpokenHrAvg": "Durchschnittspuls",
+  "@detailSpokenHrAvg": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailSpokenHrMax": "Maximalpuls",
+  "@detailSpokenHrMax": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailSpokenHrMin": "Minimalpuls",
+  "@detailSpokenHrMin": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailSpokenLoad": "Last",
+  "@detailSpokenLoad": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailSpokenTile": "{label} {value} {unit}, {source}",
+  "@detailSpokenTile": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "detailSourceApp": "aus der App",
+  "@detailSourceApp": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailHrAvgShort": "Ø",
+  "@detailHrAvgShort": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailHrMaxShort": "Max",
+  "@detailHrMaxShort": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailHrMinShort": "Min",
+  "@detailHrMinShort": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailBlockHrZones": "Puls & Zonen",
+  "@detailBlockHrZones": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailZoneShort": "Z{n}",
+  "@detailZoneShort": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZoneSpokenRange": "{from} bis {to} bpm",
+  "@detailZoneSpokenRange": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZoneA11y": "Zone {n}, {range}, {time} von {total} Minuten",
+  "@detailZoneA11y": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZoneTimeSpoken": "{min} Minuten {sec}",
+  "@detailZoneTimeSpoken": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "sec": {
+        "type": "int"
+      }
+    }
+  },
+  "detailZonesGroupA11y": "Zeit in Zonen, aus {min} von {total} Minuten Aufzeichnung, deine Zonen vom {date}",
+  "@detailZonesGroupA11y": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailHrBasisNoZones": "Aus {min} von {total} min Aufzeichnung",
+  "@detailHrBasisNoZones": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "detailHrLoading": "Puls wird geladen",
+  "@detailHrLoading": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailErrorHrBody": "Der Uhr-Datensatz antwortet nicht.",
+  "@detailErrorHrBody": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailHrLastRead": "Zuletzt gelesen {date}",
+  "@detailHrLastRead": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailWorkMore": "+ {n} weitere",
+  "@detailWorkMore": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailWorkLess": "Weniger anzeigen",
+  "@detailWorkLess": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailWorkNoComparison": "ohne Vergleich",
+  "@detailWorkNoComparison": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailWorkSets": "{n, plural, one{{n} Satz} other{{n} Sätze}}",
+  "@detailWorkSets": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailDeltaWeight": "{n} kg",
+  "@detailDeltaWeight": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "detailDeltaReps": "{n} Wdh",
+  "@detailDeltaReps": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "detailDeltaSame": "gleich",
+  "@detailDeltaSame": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailDeltaSpokenMore": "{value} mehr als am {date}",
+  "@detailDeltaSpokenMore": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailDeltaSpokenLess": "{value} weniger als am {date}",
+  "@detailDeltaSpokenLess": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailDeltaSpokenSame": "gleich wie am {date}",
+  "@detailDeltaSpokenSame": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailSpokenKg": "{n} Kilogramm",
+  "@detailSpokenKg": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "detailSpokenReps": "{n, plural, one{{n} Wiederholung} other{{n} Wiederholungen}}",
+  "@detailSpokenReps": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailExerciseA11y": "{name}, {sets}, bestes {best}{delta}. Sätze anzeigen.",
+  "@detailExerciseA11y": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "sets": {
+        "type": "String"
+      },
+      "best": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "detailExerciseHistory": "Übungsverlauf",
+  "@detailExerciseHistory": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailSetRow": "Satz {n} · {detail}",
+  "@detailSetRow": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "detailOriginApp": "Selbst geführt",
+  "@detailOriginApp": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailOriginWatch": "Aus der Uhr übernommen",
+  "@detailOriginWatch": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailOriginBoth": "App + Uhr · zusammengeführt",
+  "@detailOriginBoth": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailOriginMetaApp": "App · alle Werte",
+  "@detailOriginMetaApp": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailOriginMetaEmpty": "App · nur Art und Tag",
+  "@detailOriginMetaEmpty": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailOriginMetaMerged": "App: Sätze, Dauer · Uhr: Puls, kcal",
+  "@detailOriginMetaMerged": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailOriginMetaWatch": "{device} · alle Werte",
+  "@detailOriginMetaWatch": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "detailOriginA11yBoth": "Herkunft: App und Uhr, zusammengeführt. App liefert Sätze und Dauer, Uhr liefert Puls und Kalorien.",
+  "@detailOriginA11yBoth": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailAddEffort": "Anstrengung nachtragen",
+  "@detailAddEffort": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailBackA11y": "Zurück zum Verlauf",
+  "@detailBackA11y": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailLoadingA11y": "Einheit wird geladen",
+  "@detailLoadingA11y": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
+  },
+  "detailTimeDayOnly": "{day} {date}",
+  "@detailTimeDayOnly": {
+    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailBasisNoLoad": "ohne Last",
+  "@detailBasisNoLoad": {
+    "description": "Board 16 · Ergänzung — „ohne Last · {name}\" ohne Namen: Regeneration ohne bekannte Art"
   }
 }

@@ -190,12 +190,31 @@ void main() {
       final name = find.text('Archer Push-up mit sehr langem Namen');
       await tester.scrollUntilVisible(name, 200,
           scrollable: find.byType(Scrollable).first);
-      // Die bekannte Übung ist ein Weg, die unbekannte bleibt Anzeige.
-      expect(tester.getSemantics(name).label, contains(', öffnet Übung'));
-      expect(find.bySemanticsLabel(RegExp(r'^gibt_es_nicht')), findsOneWidget);
-      expect(find.bySemanticsLabel(RegExp(r'^gibt_es_nicht.*öffnet')),
-          findsNothing);
+
+      // Die Zeile öffnet ihre Sätze (Board 16, Platz 3). Der Weg zum
+      // Übungsverlauf steht **in** der aufgeklappten Zeile — und nur bei einer
+      // Übung, die der Bestand kennt.
+      expect(find.text(l10n.detailExerciseHistory), findsNothing,
+          reason: 'zugeklappt steht dort nur die Zeile');
       await tester.tap(name);
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.detailExerciseHistory), findsOneWidget);
+      expect(
+        find.bySemanticsLabel(
+            RegExp(r'^Archer Push-up mit sehr langem Namen, öffnet Übung')),
+        findsOneWidget,
+      );
+
+      // Die unbekannte Übung bleibt Anzeige: ein Weg ins Leere wäre
+      // schlimmer als keiner.
+      await tester.tap(find.text('gibt_es_nicht'));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.detailExerciseHistory), findsNothing,
+          reason: 'es ist nur eine Zeile offen — und die kennt keinen Verlauf');
+
+      await tester.tap(name);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l10n.detailExerciseHistory));
       await tester.pumpAndSettle();
       expect(find.byType(ExerciseDetailScreen), findsOneWidget);
       expect(l10n.wellnessTrendOpenExercise('a'), 'a, öffnet Übung');

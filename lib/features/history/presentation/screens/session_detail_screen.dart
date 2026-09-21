@@ -1,45 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
-import '../../../health_import/presentation/widgets/source_capsule.dart';
-import '../../application/history_providers.dart';
-import '../../domain/readiness.dart';
-import '../../domain/training_load.dart';
-import '../../domain/training_session.dart';
-import '../../domain/session_comparison.dart';
-import '../../../plans/domain/plan.dart';
-import '../../../plans/presentation/screens/plan_form_screen.dart';
-import '../session_actions.dart';
 import '../../../cardio/application/cardio_providers.dart';
 import '../../../cardio/domain/cardio_intensity.dart';
-import '../../../cardio/presentation/cardio_ui.dart';
 import '../../../cardio/presentation/widgets/intensity_box.dart';
-import '../../../exercises/application/exercise_providers.dart';
-import '../../../exercises/domain/exercise.dart';
-import '../../../exercises/presentation/screens/exercise_detail_screen.dart';
-import '../../../exercises/presentation/muscle_ui.dart';
-import '../../../exercises/presentation/widgets/exercise_bits.dart';
-import '../widgets/acwr_scale.dart';
-import '../widgets/comparison_card.dart';
-import '../widgets/percentile_card.dart';
-import '../session_ui.dart';
+import '../../../health_import/application/health_import_providers.dart';
+import '../../../health_import/domain/health_session.dart';
+import '../../../health_import/presentation/widgets/source_capsule.dart';
+import '../../../plans/domain/plan.dart';
+import '../../../plans/presentation/screens/plan_form_screen.dart';
 import '../../../workout/domain/workout_start.dart';
 import '../../../workout/presentation/screens/workout_runner_screen.dart';
+import '../../application/history_providers.dart';
+import '../../domain/readiness.dart';
+import '../../domain/session_detail.dart';
+import '../../domain/training_load.dart';
+import '../../domain/training_session.dart';
+import '../detail/detail_blocks.dart';
+import '../detail/detail_header.dart';
+import '../detail/detail_providers.dart';
+import '../detail/detail_text.dart';
+import '../detail/pulse_block.dart';
+import '../session_actions.dart';
+import '../widgets/acwr_scale.dart';
+import '../widgets/percentile_card.dart';
 import 'session_edit_screen.dart';
 
-/// Detail einer Einheit — **vier Datenlagen, ein Layout**.
+/// Detail einer Einheit — **ein Kopf, ein Rückgrat, so viele Blöcke wie Daten**
+/// (Board 16).
 ///
-/// Der Bestand ist ungleich: 57 von 73 Krafteinheiten tragen Sätze, 16 nicht.
-/// Cardio hat Strecke und Pace statt Volumen, Regeneration gar keine Kennzahl.
+/// ## Der Satz, an dem alles gemessen wird
 ///
-/// Wie im Übungsdetail gilt: **Ein Block rendert nur mit Daten.** Was fehlt,
-/// existiert nicht — außer es gibt etwas zu erklären. Genau zwei Erklärungen
-/// sind vorgesehen, und beide sagen dem Nutzer, dass seine Einheit trotzdem
-/// zählt.
+/// Die Art einer Einheit wählt nie das Layout — sie füllt nur einen Katalog von
+/// Grössen und eine feste Reihe von Blockplätzen. Oben steht genau eine Zahl,
+/// die sagt, was das war; jede weitere Zahl nennt ihre Grundlage; und was
+/// keine Daten hat, ist nicht leer, sondern nicht da.
+///
+/// ## Sechs Plätze, immer in dieser Reihenfolge
+///
+/// Kopf · Kennzahlen · Arbeit · Puls & Zonen · Notiz · Herkunft und Eingriffe.
+/// Sortiert nach Blickrichtung: was war · wie viel · was genau · wie hat der
+/// Körper reagiert · wie hat es sich angefühlt · woher weiss die App das. Eine
+/// Art füllt Plätze, sie sortiert nicht um und fügt keinen siebten hinzu.
+/// Laufen, Radfahren und Schwimmen sind keine neuen Bildschirme, sondern neue
+/// Einträge im Grössenkatalog und andere Zeilen in derselben Listenanatomie.
+///
+/// ## Was hier nicht mehr steht
+///
+/// Der Vergleichsblock mit Dauer, Last, Volumen und Sätzen im Kopf ist weg:
+/// Ein Delta neben der Leitzahl wäre ein zweiter Blickfang und stellte eine
+/// Einheit gegen eine willkürliche Vorgängerin (Entscheidung 19). Vergleichen
+/// tut jetzt die Übungszeile — gegen dieselbe Übung, mit genanntem Datum.
+///
+/// ## Was **hinter** den sechs Plätzen bleibt
+///
+/// Die Einordnungen aus den Boards 06, 09 und 11 — Belastung an diesem Tag,
+/// Perzentil, Beitrag zur Form — hat Board 16 nicht neu gefasst. Sie stehen
+/// unverändert zwischen Notiz und Herkunft und sind **eine offene
+/// Entscheidung**, kein Bestandteil des Rückgrats.
 class SessionDetailScreen extends ConsumerWidget {
   const SessionDetailScreen({super.key, required this.session});
 
@@ -48,188 +69,226 @@ class SessionDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
-    final tag = languageTag(context);
-    final context_ = ref.watch(loadContextProvider);
-
-    final load = TrainingLoad.of(session, context_);
     final sessions = ref.watch(sessionsProvider).value ?? const [];
 
-    // Der ACWR **an diesem Tag**, nicht heute. Eine Einheit im April soll
-    // zeigen, was sie damals bedeutet hat.
-    final acwr = Readiness.compute(sessions, session.date, context: context_);
+    // **Die lebende Einheit, nicht die übergebene.** Nach „Verbindung lösen"
+    // oder einer Zusammenführung ändert sich die Einheit im Bestand; die, die
+    // beim Öffnen übergeben wurde, bliebe auf dem alten Stand stehen.
+    final live =
+        sessions.where((s) => s.id == session.id).firstOrNull ?? session;
 
-    final minutes = session.duration?.inMinutes;
+    final loadContext = ref.watch(loadContextProvider);
+    final load = TrainingLoad.of(live, loadContext);
+    final watch = ref.watch(watchFiguresProvider(live));
 
-    final comparison =
-        SessionComparison.forSession(session, sessions, context: context_);
+    final lead = SessionDetail.leadOf(live);
+    final tiles = SessionDetail.tilesOf(live, watch: watch.value, load: load);
+    final text = DetailHeaderText.of(context, live, lead: lead);
+    final rows = SessionDetail.exercisesOf(live, sessions);
+
+    // Ein Block ohne Daten rendert nicht: Was nicht da ist, fehlt.
+    final hasPulseBlock = watch.isLoading ||
+        watch.hasError ||
+        (watch.value?.pulse != null && !watch.value!.pulse!.isEmpty);
+
+    // **Eine Einordnung braucht etwas, das einzuordnen ist.** Ohne Last —
+    // Regeneration, eine Krafteinheit ohne Angaben — gibt es nichts, was die
+    // Belastung dieses Tages einordnen könnte, und der Bildschirm hört
+    // dort auf, wo seine Daten aufhören (Board 16, A3 und A4).
+    final acwr = load > 0
+        ? Readiness.compute(sessions, live.date, context: loadContext)
+        : null;
+
+    var index = 0;
+    Widget block(Widget child) => AtemEntrance(index: index++, child: child);
 
     return Scaffold(
       backgroundColor: AtemColors.base,
-      appBar: AppBar(
-        backgroundColor: AtemColors.base,
-        // Das Datum steht in der Leiste (Board 06, A3): „SA 05.07.2026".
-        title: Text(
-          DateFormat.yMEd(tag).format(session.date),
-          style: AtemType.meta.of(context),
-        ),
-      ),
       body: SafeArea(
-        top: false,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
               AtemSpacing.screenPadding, 0, AtemSpacing.screenPadding, 40),
           children: [
-            Semantics(
-              header: true,
-              label:
-                  '${sessionName(l10n, session)}. ${DateFormat.yMMMMEEEEd(tag).format(session.date)}',
-              child: ExcludeSemantics(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(sessionName(l10n, session),
-                        style: AtemType.titleLarge.of(context)),
-                    const SizedBox(height: 6),
-                    Text(
-                      (minutes == null
-                          ? sessionKindLabel(l10n, session)
-                          : l10n.detailSubtitle(
-                              sessionKindLabel(l10n, session), minutes)),
-                      style: AtemType.meta.of(context),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 22),
+            const _BackRow(),
+            block(DetailHeader(session: live, text: text)),
 
-            // **Entweder Absolutwerte oder Vergleich, nie beides.**
-            //
-            // Der Vergleich (Board 09, A1/1) trägt Dauer, Last, Volumen und
-            // Sätze bereits als grosse Zahl mit Bezug und Delta. Standen die
-            // drei StatBoxen daneben, stand „58 min" zweimal auf demselben
-            // Bildschirm — genau der Grund, warum das Detail unstrukturiert
-            // wirkte. Ohne Bezug (A1/3) bleiben die Boxen die Aussage.
-            //
-            // Cardio ist die Ausnahme: Kilometer und Tempo kommen im
-            // Vergleich nicht vor und stehen deshalb weiter in Boxen.
-            if (comparison.hasReference && session is! CardioSession)
-              ComparisonCard(comparison: comparison, languageTag: tag)
-            else ...[
-              _Stats(session: session, load: load),
-              const SizedBox(height: 22),
-              ComparisonCard(comparison: comparison, languageTag: tag),
-            ],
-            // „Belastung an diesem Tag" — die ACWR-Skala aus Board 06 mit
-            // Zone als Wort, nicht nur als Segmentposition.
-            if (acwr.acwr case final value?) ...[
-              const SizedBox(height: 22),
-              AtemCard.list(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.detailAcwrLabel.toUpperCase(),
-                        style: AtemType.labelMicro.of(context)),
-                    const SizedBox(height: 10),
-                    AcwrScale(acwr: value),
-                  ],
-                ),
-              ),
-            ],
-            // Für Cardio: wo diese Einheit im eigenen Bestand steht. Der
-            // Vergleichsblock darüber misst Dauer und Last; hier geht es um
-            // Strecke und Pace, die nur untereinander vergleichbar sind.
-            if (session case final CardioSession cardio) ...[
-              // Der Intensitätskasten steht an der Stelle der Übungsliste
-              // (Board 11, Entscheidung „Cardio-Detail als eigener
-              // Bildschirm-Typ": dasselbe Detail, andere Wertezeilen).
-              if (CardioIntensity.of(cardio, sessions,
-                      profileMaxHr: ref.watch(profileMaxHrProvider))
-                  case final intensity?) ...[
-                const SizedBox(height: 20),
-                IntensityBox(
-                  intensity: intensity,
-                  isRun: cardio.activity == CardioActivity.run,
-                ),
-              ],
-              const SizedBox(height: 20),
-              PercentileCard(session: cardio, sessions: sessions),
+            // ---- 2 · Kennzahlen -----------------------------------------
+            // Solange die Uhr antwortet, stehen die Kacheln im Skelett: vier,
+            // auch wenn am Ende zwei kommen — die Höhe ist reserviert, damit
+            // nichts springt.
+            if (tiles.isNotEmpty || watch.isLoading) ...[
+              const SizedBox(height: 16),
+              block(Semantics(
+                liveRegion: watch.isLoading,
+                label: watch.isLoading ? l10n.detailLoadingA11y : null,
+                child: MetricTiles(tiles: tiles, loading: watch.isLoading),
+              )),
             ],
 
-            ..._exercises(context, l10n),
-            ..._explanations(context, l10n, sessions),
+            // ---- 3 · Arbeit ---------------------------------------------
+            if (rows.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              block(WorkBlock(
+                rows: rows,
+                setCount: SessionDetail.setCount(live),
+              )),
+            ],
+
+            // ---- 4 · Puls & Zonen ---------------------------------------
+            if (hasPulseBlock) ...[
+              const SizedBox(height: 12),
+              block(PulseZonesBlock(watch: watch)),
+            ],
+
+            // ---- 5 · Notiz ----------------------------------------------
+            if (live.notes case final notes? when notes.trim().isNotEmpty) ...[
+              const SizedBox(height: 12),
+              block(NoteBlock(text: notes)),
+            ],
+
+            // ---- Einordnungen aus den Boards 06, 09 und 11 ---------------
+            ..._placements(context, ref, l10n, live, sessions, acwr?.acwr,
+                load: load, hasWatchPulse: hasPulseBlock),
+
+            // ---- 6 · Herkunft und Eingriffe -----------------------------
             const SizedBox(height: 24),
-            // **Der Weg zur Notiz steht auch dann da, wenn keine da ist.**
-            // Vorher erschien der Text nur, wenn schon eine Notiz existierte
-            // — es gab also keinen Weg, die erste zu schreiben.
-            if (session.notes case final notes? when notes.trim().isNotEmpty)
-              AtemCard.list(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l10n.commonNotes.toUpperCase(),
-                        style: AtemType.labelMicro.of(context)),
-                    const SizedBox(height: 6),
-                    Text(notes, style: AtemType.body.of(context)),
-                  ],
-                ),
-              ),
-
-            // **Eine Einheit, zwei Quellen** (Board 15, B3). Rendert nur
-            // bei einer Verknüpfung — eine Einheit ohne fremde Quelle hat
-            // keine Quellenfrage.
-            SourceCapsule(session: session),
-
-            // **Aus einer Einheit einen Plan machen.** Wer etwas
-            // zusammengestellt hat, das gut war, will es wiederholen — und
-            // hat die Zusammenstellung hier vor sich. Sie noch einmal von
-            // Hand in den Planbuilder zu tippen wäre Abschreiben.
-            //
-            // Nur bei Einheiten mit Übungen: Aus einem Lauf lässt sich kein
-            // Plan bauen, und aus einer Krafteinheit ohne Sätze auch nicht.
-            if (session case StrengthSession(hasExerciseData: true)) ...[
-              const SizedBox(height: 28),
-              AtemButton.outline(
-                label: l10n.detailSaveAsPlan,
-                semanticLabel: l10n.detailSaveAsPlan,
-                onPressed: () => _saveAsPlan(context, ref, l10n),
-              ),
-            ],
-
-            // Die beiden Wege, die Einheit zu verändern — ganz unten, hinter
-            // allem, was sie aussagt. Wer den Bildschirm öffnet, will in aller
-            // Regel nachsehen, nicht ändern.
-            const SizedBox(height: 32),
-            AtemButton.outline(
-              label: l10n.commonEdit,
-              semanticLabel:
-                  '${l10n.commonEdit}: ${sessionName(l10n, session)}',
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => SessionEditScreen(session: session),
-                ),
-              ),
-            ),
+            block(SourceCapsule(
+              session: live,
+              onlyKindAndDay: lead == null && rows.isEmpty,
+            )),
             const SizedBox(height: 10),
-            AtemButton.ghost(
-              label: l10n.commonDelete,
-              semanticLabel:
-                  '${l10n.commonDelete}: ${sessionName(l10n, session)}',
-              accent: AtemColors.magenta,
-              onPressed: () async {
-                final deleted =
-                    await confirmDeleteSession(context, ref, session);
-                // Zurück zur Liste: Ein Detail zu einer Einheit, die gerade
-                // verschwunden ist, wäre ein Bildschirm über nichts.
-                if (deleted && context.mounted) Navigator.of(context).pop();
-              },
-            ),
+            ..._interventions(context, ref, l10n, live),
           ],
         ),
       ),
     );
+  }
+
+  /// Die Einordnungen, die Board 16 nicht neu gefasst hat.
+  List<Widget> _placements(
+    BuildContext context,
+    WidgetRef ref,
+    AppL10n l10n,
+    TrainingSession live,
+    List<TrainingSession> sessions,
+    double? acwr, {
+    required double load,
+    required bool hasWatchPulse,
+  }) {
+    final intensity = live is CardioSession && !hasWatchPulse && load > 0
+        ? CardioIntensity.of(live, sessions,
+            profileMaxHr: ref.watch(profileMaxHrProvider))
+        : null;
+
+    return [
+      // „Belastung an diesem Tag" — die ACWR-Skala aus Board 06 mit Zone als
+      // Wort, nicht nur als Segmentposition.
+      if (acwr != null) ...[
+        const SizedBox(height: 12),
+        AtemCard.list(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.detailAcwrLabel.toUpperCase(),
+                  style: AtemType.labelMicro.of(context)),
+              const SizedBox(height: 10),
+              AcwrScale(acwr: acwr),
+            ],
+          ),
+        ),
+      ],
+      if (live case final CardioSession cardio) ...[
+        // **Der Intensitätskasten weicht dem Pulsblock.** Er teilt den Puls in
+        // Zonen nach festen Prozenten von HFmax und nennt sie „schwellig" —
+        // ein Urteil und ein zweites Zonensystem neben den eigenen fünf. Wo
+        // eine Uhr den Verlauf liefert, gilt dieser; der Kasten bleibt für
+        // Einheiten, deren Puls von Hand eingetragen wurde.
+        if (intensity != null) ...[
+          const SizedBox(height: 12),
+          IntensityBox(
+            intensity: intensity,
+            isRun: cardio.activity == CardioActivity.run,
+          ),
+        ],
+        if (load > 0 && cardio.distanceKm != null) ...[
+          const SizedBox(height: 12),
+          PercentileCard(session: cardio, sessions: sessions),
+        ],
+      ],
+    ];
+  }
+
+  /// Die Eingriffe — **ganz unten**, hinter allem, was die Einheit aussagt.
+  /// Wer den Bildschirm öffnet, will in aller Regel nachsehen, nicht ändern.
+  List<Widget> _interventions(
+    BuildContext context,
+    WidgetRef ref,
+    AppL10n l10n,
+    TrainingSession live,
+  ) {
+    HealthSession? measured;
+    final linked = live.healthSessionId;
+    if (linked != null) {
+      for (final s in ref.watch(healthSessionsProvider).value ?? const []) {
+        if (s.externalId == linked) measured = s;
+      }
+    }
+
+    Future<void> edit() => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => SessionEditScreen(session: live),
+          ),
+        );
+
+    return [
+      // **Die Anstrengung kann eine Uhr nicht messen.** An einer Einheit aus
+      // der Uhr steht der Weg, sie nachzutragen — als Weg, nicht als Mahnung.
+      if (live.origin == SessionOrigin.watch && live.rpe == null) ...[
+        _ActionRow(label: l10n.detailAddEffort, onTap: edit),
+        const SizedBox(height: 8),
+      ],
+      _ActionRow(label: l10n.detailEdit, onTap: edit),
+      // Der Weg, Sätze an eine bestehende Einheit zu hängen, bleibt — als
+      // Zeile unter den Eingriffen, **nicht als Aufruf**. Board 16 (A4) zeigt
+      // hier nur Bearbeiten und Löschen; ohne diese Zeile gäbe es aber keinen
+      // Weg mehr, eine Einheit ohne Sätze zu ergänzen. Offen für dich.
+      if (live case StrengthSession(hasExerciseData: false)) ...[
+        const SizedBox(height: 8),
+        _ActionRow(
+          label: l10n.setsAdd,
+          onTap: () => Navigator.of(context, rootNavigator: true).pushNamed(
+            WorkoutRunnerScreen.routeName,
+            arguments: WorkoutLaunch(WorkoutStart.session(live.id)),
+          ),
+        ),
+      ],
+      if (live case StrengthSession(hasExerciseData: true)) ...[
+        const SizedBox(height: 8),
+        // **Aus einer Einheit einen Plan machen.** Wer etwas zusammengestellt
+        // hat, das gut war, will es wiederholen — und hat die Zusammenstellung
+        // hier vor sich.
+        _ActionRow(
+          label: l10n.detailSaveAsPlan,
+          onTap: () => _saveAsPlan(context, ref, l10n, live),
+        ),
+      ],
+      if (live.origin == SessionOrigin.merged && measured != null) ...[
+        const SizedBox(height: 8),
+        UnlinkRow(session: live, measured: measured),
+      ],
+      const SizedBox(height: 8),
+      _ActionRow(
+        label: l10n.detailDelete,
+        danger: true,
+        onTap: () async {
+          final deleted = await confirmDeleteSession(context, ref, live);
+          // Zurück zur Liste: Ein Detail zu einer Einheit, die gerade
+          // verschwunden ist, wäre ein Bildschirm über nichts.
+          if (deleted && context.mounted) Navigator.of(context).pop();
+        },
+      ),
+    ];
   }
 
   /// Legt aus dieser Einheit einen Plan an.
@@ -247,9 +306,10 @@ class SessionDetailScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     AppL10n l10n,
+    TrainingSession session,
   ) async {
     if (session is! StrengthSession) return;
-    final strength = session as StrengthSession;
+    final strength = session;
 
     final draft = Plan(
       id: '',
@@ -272,518 +332,87 @@ class SessionDetailScreen extends ConsumerWidget {
       ),
     );
   }
+}
 
-  List<Widget> _exercises(BuildContext context, AppL10n l10n) {
-    if (session is! StrengthSession) return const [];
-    final strength = session as StrengthSession;
-    if (strength.exercises.isEmpty) return const [];
+/// „‹ VERLAUF" — die Rückweg-Zeile, 48 × 96 dp.
+class _BackRow extends StatelessWidget {
+  const _BackRow();
 
-    final sets =
-        strength.exercises.fold<int>(0, (total, e) => total + e.sets.length);
-
-    return [
-      const SizedBox(height: 22),
-      Text(l10n.detailSetsCount(strength.exercises.length, sets),
-          style: AtemType.meta.of(context)),
-      const SizedBox(height: 10),
-      AtemCard.list(
-        padding: EdgeInsets.zero,
-        child: Column(
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: AtemTappable(
+        onTap: () => Navigator.of(context).maybePop(),
+        semanticLabel: l10n.detailBackA11y,
+        minTapSize: const Size(96, 48),
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            for (var i = 0; i < strength.exercises.length; i++) ...[
-              if (i > 0)
-                const Divider(
-                    height: 1, thickness: 1, color: AtemColors.border),
-              _ExerciseRow(exercise: strength.exercises[i]),
-            ],
+            const Icon(Icons.chevron_left, size: 20, color: AtemColors.cyan),
+            const SizedBox(width: 2),
+            Text(
+              l10n.detailBack.toUpperCase(),
+              style: AtemType.labelMicro
+                  .of(context)
+                  .copyWith(color: AtemColors.cyan),
+            ),
           ],
         ),
       ),
-    ];
-  }
-
-  /// Die beiden Erklärungen — beide sagen: **deine Einheit zählt trotzdem.**
-  List<Widget> _explanations(
-    BuildContext context,
-    AppL10n l10n,
-    List<TrainingSession> sessions,
-  ) {
-    // 16 der 63 Krafteinheiten im Bestand tragen keine Übungen. Ohne diesen
-    // Hinweis sähe das nach einem Fehler aus — und der Block „Beitrag zur
-    // Form" sagt, was die Einheit trotzdem trägt (Board 06, A3/3).
-    if (session case StrengthSession(exercises: final exercises)
-        when exercises.isEmpty) {
-      final load = TrainingLoad.of(session, const LoadContext());
-      return [
-        const SizedBox(height: 24),
-        AtemNotice(
-          title: l10n.detailSetsMissingTitle,
-          body: l10n.detailSetsMissingBody,
-          semanticLabel:
-              '${l10n.detailSetsMissingTitle}. ${l10n.detailSetsMissingBody}',
-        ),
-        const SizedBox(height: 18),
-        _Contribution(load: load),
-        const SizedBox(height: 14),
-        // Die Nachtrag-Aktion ist der einzige CTA dieser Datenlage.
-        AtemButton.outline(
-          label: l10n.setsAdd,
-          semanticLabel: l10n.setsAdd,
-          leading: const Icon(Icons.add, size: 18, color: AtemColors.cyan),
-          onPressed: () => Navigator.of(context, rootNavigator: true).pushNamed(
-            WorkoutRunnerScreen.routeName,
-            arguments: WorkoutLaunch(WorkoutStart.session(session.id)),
-          ),
-        ),
-      ];
-    }
-
-    if (session is RecoverySession) {
-      return [
-        const SizedBox(height: 24),
-        AtemNotice(
-          title: l10n.detailRecoveryTitle,
-          body: l10n.detailRecoveryBody,
-          semanticLabel:
-              '${l10n.detailRecoveryTitle}. ${l10n.detailRecoveryBody}',
-        ),
-        // Der Nachbarblock gibt dem dünnsten Detail Substanz, ohne Daten zu
-        // erfinden (A3/4).
-        const SizedBox(height: 18),
-        _Neighbours(session: session, sessions: sessions),
-      ];
-    }
-
-    return const [];
-  }
-}
-
-/// „Beitrag zur Form" — was eine Einheit ohne Sätze trotzdem trägt.
-class _Contribution extends StatelessWidget {
-  const _Contribution({required this.load});
-
-  final double load;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final rows = <(String, String)>[
-      (l10n.analysisCompConsistency, '+ ${l10n.detailContribCounts}'),
-      (l10n.analysisCompLoad, l10n.detailContribLoad('${load.round()}')),
-      (l10n.detailContribVolumeTrend, l10n.detailContribNa),
-    ];
-    return AtemCard.list(
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.detailContribTitle.toUpperCase(),
-              style: AtemType.labelMicro.of(context)),
-          const SizedBox(height: 8),
-          for (final (label, value) in rows)
-            Semantics(
-              label: '$label: $value',
-              child: ExcludeSemantics(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        // Beschriftung in der dritten Textstufe, der Wert
-                        // daneben trägt die Zeile (17.09.2026).
-                        child: Text(label, style: AtemType.meta.of(context)),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(value,
-                          style: AtemType.valueMedium
-                              .of(context)
-                              .copyWith(fontSize: 13)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
 
-/// „Eingebettet im Verlauf" — die Nachbarn der Regenerationseinheit.
-///
-/// Die nächstjüngere und die nächstältere Einheit mit ihrem Abstand in
-/// Tagen; die Einheit selbst trägt „hier" (Badge + Dot aus Modul 3).
-class _Neighbours extends StatelessWidget {
-  const _Neighbours({required this.session, required this.sessions});
-
-  final TrainingSession session;
-  final List<TrainingSession> sessions;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final tag = languageTag(context);
-    final sorted = [...sessions]..sort((a, b) => b.date.compareTo(a.date));
-    final index = sorted.indexWhere((s) => s.id == session.id);
-    if (index < 0) return const SizedBox.shrink();
-    final newer = index > 0 ? sorted[index - 1] : null;
-    final older = index + 1 < sorted.length ? sorted[index + 1] : null;
-    if (newer == null && older == null) return const SizedBox.shrink();
-
-    int days(TrainingSession other) =>
-        (DateTime(other.date.year, other.date.month, other.date.day)
-                    .difference(DateTime(session.date.year, session.date.month,
-                        session.date.day))
-                    .inHours /
-                24)
-            .round();
-
-    Widget row(TrainingSession s, {required bool here}) {
-      final date = DateFormat.MMMEd(tag).format(s.date);
-      final name = sessionName(l10n, s);
-      final d = days(s);
-      final tail = here
-          ? l10n.detailNeighbourHere
-          : l10n.detailNeighbourDays(d >= 0 ? '+' : '−', d.abs());
-      return Semantics(
-        label: '$date, $name, $tail',
-        child: ExcludeSemantics(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text('$date · $name',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelSmall.of(context).copyWith(
-                            color: here
-                                ? AtemColors.textPrimary
-                                : AtemColors.textSecondary,
-                          )),
-                ),
-                const SizedBox(width: 10),
-                here
-                    ? AtemBadge(
-                        label: tail,
-                        accent: AtemColors.green,
-                        leadingDot: true,
-                      )
-                    : Text(tail,
-                        style: AtemType.labelMicro
-                            .of(context)
-                            .copyWith(letterSpacing: 0)),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    return AtemCard.list(
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l10n.detailNeighboursTitle.toUpperCase(),
-              style: AtemType.labelMicro.of(context)),
-          const SizedBox(height: 6),
-          if (newer != null) row(newer, here: false),
-          row(session, here: true),
-          if (older != null) row(older, here: false),
-        ],
-      ),
-    );
-  }
-}
-
-/// Der StatBox-Dreier — **feste Gruppe, fehlender Wert gestrichelt**.
-///
-/// Board 06, A3: Kraft zeigt Minuten, Last, Volumen; Cardio Kilometer, Last,
-/// Pace; Regeneration nur zwei Boxen. Eine leere Box bleibt sichtbar
-/// (gestrichelter Rand, „—"), damit die Dreiergruppe nicht springt — und
-/// vorgelesen wird „nicht erfasst", nie „Strich".
-class _Stats extends StatelessWidget {
-  const _Stats({required this.session, required this.load});
-
-  final TrainingSession session;
-  final double load;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final minutes = session.duration?.inMinutes;
-    final loadText = load > 0 ? load.round().toString() : null;
-
-    final entries = switch (session) {
-      StrengthSession s => <(String, String?)>[
-          (l10n.detailStatMinutes, minutes?.toString()),
-          (l10n.detailLoad, loadText),
-          (
-            l10n.detailVolume,
-            s.hasExerciseData ? _volumeText(context, _volume(s)) : null
-          ),
-        ],
-      CardioSession c => <(String, String?)>[
-          (
-            l10n.detailStatKilometers,
-            c.distanceKm == null ? null : formatKm(context, c.distanceKm!)
-          ),
-          (l10n.detailLoad, loadText),
-          (
-            l10n.formPace,
-            c.tempo == null ? null : formatTempo(context, c.tempo!)
-          ),
-        ],
-      _ => <(String, String?)>[
-          (l10n.detailStatMinutes, minutes?.toString()),
-          (l10n.detailLoad, loadText),
-        ],
-    };
-
-    // IntrinsicHeight statt stretch allein: Eine Row mit stretch verlangt
-    // eine begrenzte Höhe, in einer Liste gibt es die nicht. So bekommen die
-    // Boxen trotzdem dieselbe Höhe.
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (var i = 0; i < entries.length; i++) ...[
-            if (i > 0) const SizedBox(width: AtemSpacing.gridGap),
-            Expanded(
-                child: _StatTile(label: entries[i].$1, value: entries[i].$2)),
-          ],
-        ],
-      ),
-    );
-  }
-
-  /// „7,2 t" ab einer Tonne, sonst Kilogramm.
-  static String _volumeText(BuildContext context, double kg) => kg >= 1000
-      ? '${AtemNumberField.format(context, kg / 1000)} t'
-      : AppL10n.of(context).unitKilograms(kg.round().toString());
-
-  static double _volume(StrengthSession s) {
-    var total = 0.0;
-    for (final e in s.exercises) {
-      for (final set in e.sets) {
-        final reps = set.reps ?? 0;
-        final weight = set.weight ?? 0;
-        total += reps * weight;
-      }
-    }
-    return total;
-  }
-}
-
-class _StatTile extends StatelessWidget {
-  const _StatTile({required this.label, required this.value});
+/// Eine Eingriffszeile: 48 dp, Rand, Chevron. „Löschen" in Magenta — Magenta
+/// ist Eingriff und Störung, nie ein Wert.
+class _ActionRow extends StatelessWidget {
+  const _ActionRow({
+    required this.label,
+    required this.onTap,
+    this.danger = false,
+  });
 
   final String label;
-
-  /// `null` heisst: nicht erfasst — gestrichelt, „—".
-  final String? value;
+  final VoidCallback onTap;
+  final bool danger;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    final missing = value == null;
-
-    return Semantics(
-      label: missing ? '$label, ${l10n.intensityNoneA11y}' : '$label: $value',
-      child: ExcludeSemantics(
-        child: CustomPaint(
-          foregroundPainter: missing ? _DashedFrame() : null,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
-            decoration: BoxDecoration(
-              color:
-                  missing ? AtemColors.surfaceSolid : AtemColors.surfaceRaised,
-              borderRadius: AtemRadii.statBoxR,
-              border: missing ? null : Border.all(color: AtemColors.border),
-            ),
-            child: Column(
-              // Mittig, weil drei gleich breite Kästen nebeneinander stehen:
-              // linksbündige Zahlen unterschiedlicher Länge lesen sich als
-              // schiefe Reihe (Board 06, A3).
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Kein FittedBox: Text herunterzuskalieren nimmt genau die
-                // Vergrösserung zurück, die jemand eingestellt hat (R5).
-                Text(
-                  value ?? l10n.intensityNoneValue,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AtemType.valueLarge.of(context).copyWith(
-                        fontSize: 22,
-                        color: missing
-                            ? AtemColors.textSecondary
-                            : (label == l10n.detailLoad
-                                ? AtemColors.cyan
-                                : AtemColors.textPrimary),
-                      ),
-                ),
-                const SizedBox(height: 5),
-                Text(label.toUpperCase(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: AtemType.labelMicro.of(context)),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Gestrichelter Rand = „hier fehlt etwas" (Formmerkmal, Board 02).
-class _DashedFrame extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..color = AtemColors.border;
-    final path = Path()
-      ..addRRect(RRect.fromRectAndRadius(
-          Offset.zero & size, const Radius.circular(AtemRadii.statBox)));
-    for (final metric in path.computeMetrics()) {
-      var distance = 0.0;
-      while (distance < metric.length) {
-        final next = (distance + 5).clamp(0.0, metric.length);
-        canvas.drawPath(metric.extractPath(distance, next), paint);
-        distance = next + 4;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_DashedFrame old) => false;
-}
-
-/// Eine Übung der Einheit — **Kachel, Name mit Muskel, Schema rechts**.
-///
-/// Board 06, A3/1: links eine 36-dp-Kachel mit den Initialen im Muskelton,
-/// daneben der Übungsname und darunter der Muskel in Mono-Versalien, rechts
-/// das Schema („4×8 · 60 kg"). Der Muskelname steht dabei, weil die Farbe
-/// allein für Farbenblinde keine Auskunft ist (Vertrag R6).
-///
-/// Der Name kommt aus dem Übungsbestand — die Einheit selbst kennt nur die
-/// Kennung, und `archer_push_up` ist kein Name.
-class _ExerciseRow extends ConsumerWidget {
-  const _ExerciseRow({required this.exercise});
-
-  final LoggedExercise exercise;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppL10n.of(context);
-    final catalog = ref.watch(exercisesProvider).value ?? const <Exercise>[];
-    final entry = catalog.where((e) => e.id == exercise.exerciseId).firstOrNull;
-    final name =
-        entry == null ? exercise.exerciseId : exerciseName(context, entry);
-    final muscle = entry?.displayMuscles.firstOrNull;
-    final color = muscle?.color ?? AtemCategories.grey;
-
-    final done = exercise.sets.where((s) => !s.isEmpty).toList();
-    final reps = done.map((s) => s.reps).whereType<int>().toList();
-    final weights = done.map((s) => s.weight).whereType<double>().toList();
-    final holds = done.map((s) => s.holdSeconds).whereType<int>().toList();
-    // „4×8 · 60 kg": Satzzahl, Wiederholungen des ersten Satzes, das
-    // schwerste Gewicht — die drei Zahlen, die eine Zeile tragen kann.
-    final scheme = <String>[
-      if (done.isNotEmpty)
-        reps.isNotEmpty ? '${done.length}×${reps.first}' : '${done.length}',
-      if (weights.isNotEmpty)
-        l10n.unitKilograms(_trim(weights.reduce((a, b) => a > b ? a : b))),
-      if (holds.isNotEmpty && reps.isEmpty)
-        l10n.restSeconds(holds.reduce((a, b) => a > b ? a : b)),
-    ].join(' · ');
-
-    final label = [
-      name,
-      if (muscle != null) muscle.label(l10n),
-      if (scheme.isNotEmpty) scheme,
-    ].join(', ');
-
-    final row = Container(
-      constraints: const BoxConstraints(minHeight: 56),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      child: Row(
-        children: [
-          MuscleTile(name: name, color: color),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AtemType.titleSmallOrDefault(context)),
-                if (muscle != null) ...[
-                  const SizedBox(height: 2),
-                  Text(muscle.label(l10n).toUpperCase(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AtemType.labelMicro.of(context)),
-                ],
-              ],
-            ),
-          ),
-          if (scheme.isNotEmpty) ...[
-            const SizedBox(width: 10),
-            // Bei 200 % darf das Schema umbrechen — der Name geht vor.
-            Flexible(
-              child: Text(
-                scheme,
-                textAlign: TextAlign.end,
-                style: AtemType.valueMedium.of(context).copyWith(fontSize: 13),
-              ),
-            ),
-          ],
-          if (entry != null) ...[
-            const SizedBox(width: 4),
-            // Der Pfeil zeigt den Weg; die Ansage sagt ihn in Worten.
-            const ExcludeSemantics(
-              child: Icon(Icons.chevron_right,
-                  size: 20, color: AtemColors.textSecondary),
-            ),
-          ],
-        ],
-      ),
-    );
-
-    // Unbekannte Übung — etwa gelöscht oder nie synchronisiert: Die Zeile
-    // bleibt Anzeige. Ein Weg ins Leere wäre schlimmer als keiner.
-    if (entry == null) {
-      return Semantics(
-        container: true,
-        label: label,
-        child: ExcludeSemantics(child: row),
-      );
-    }
-
-    // Der Weg zum Übungsverlauf (16.09.2026): Bis dahin erreichte man
-    // „Du mit dieser Übung" nur über die Übungsliste im Kraft-Tab.
+    final color = danger ? AtemColors.magenta : AtemColors.textTertiary;
     return AtemTappable(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => ExerciseDetailScreen(exercise: entry),
+      onTap: onTap,
+      semanticLabel: label,
+      minTapSize: const Size(0, 48),
+      alignment: Alignment.centerLeft,
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 48),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: danger
+                ? AtemColors.magenta.withValues(alpha: 0.4)
+                : AtemColors.border,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(label,
+                  style:
+                      AtemType.labelSmall.of(context).copyWith(color: color)),
+            ),
+            Icon(Icons.chevron_right,
+                size: 20,
+                color: danger ? AtemColors.magenta : AtemColors.textSecondary),
+          ],
         ),
       ),
-      semanticLabel: l10n.wellnessTrendOpenExercise(label),
-      alignment: Alignment.centerLeft,
-      child: row,
     );
   }
-
-  static String _trim(double value) =>
-      value == value.roundToDouble() ? value.round().toString() : '$value';
 }
 
 extension _FirstOrNull<T> on Iterable<T> {

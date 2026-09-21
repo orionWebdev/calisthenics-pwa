@@ -10,6 +10,7 @@ export 'atem_notice.dart';
 export 'atem_origin_dot.dart';
 export 'atem_number_field.dart';
 export 'atem_progress.dart';
+export 'atem_disclosure.dart';
 export 'atem_scale_choice.dart';
 export 'atem_states.dart';
 export 'atem_segmented.dart';

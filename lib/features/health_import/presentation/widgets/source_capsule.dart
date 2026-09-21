@@ -14,89 +14,189 @@ import '../../domain/health_session.dart';
 import '../../domain/merge_preview.dart';
 import 'merge_consequences.dart';
 
-/// **Eine Einheit, zwei Quellen** (Board 15, B3).
+/// **Woher weiss die App das?** — die Quellenkapsel (Board 15, B3 · Board 16,
+/// Platz 6).
 ///
-/// ## Was sie beantwortet
+/// ## Sie steht immer da
 ///
-/// Welche Grösse woher kommt — und was die Uhr abweichend meldet. Die
-/// widersprüchliche Dauer verschwindet nicht: 52 min ist der Wert der
-/// Einheit, 58 min steht als Meldung der Uhr daneben, violett hinterlegt.
-/// Zwei Zahlen, eine gültig, beide sichtbar.
+/// Bis zum 21.09.2026 rendete sie nur bei einer Verknüpfung. Board 16 macht
+/// „Herkunft und Eingriffe" zum sechsten Platz, der **für jede Art gefüllt
+/// ist**: Auch eine Einheit, die niemand je mit einer Uhr gesehen hat, sagt,
+/// dass sie selbst geführt ist. Ohne diese Zeile wäre das Fehlen der Uhr
+/// unlesbar — man sähe nicht, ob sie fehlt oder ob niemand nachgesehen hat.
 ///
-/// ## Sie rendert nur bei einer Verknüpfung
+/// ## Drei Herkünfte, eine Form
 ///
-/// Eine Einheit ohne fremde Quelle hat keine Quellenfrage — und ausserhalb
-/// von Auswertungen rendert ein Block ohne Daten nicht.
-class SourceCapsule extends ConsumerWidget {
-  const SourceCapsule({super.key, required this.session});
+/// Gefüllter Punkt = selbst geführt, hohler Ring = aus der Uhr, Ring mit Kern
+/// = zusammengeführt (Idiom aus Modul 14/15, unverändert). Die Kapsel klappt
+/// auf und nennt, welche Grösse woher kommt — und was die Uhr abweichend
+/// meldet: Die widersprüchliche Dauer verschwindet nicht, 52 min ist der Wert
+/// der Einheit, 58 min steht als Meldung der Uhr daneben, violett hinterlegt.
+class SourceCapsule extends ConsumerStatefulWidget {
+  const SourceCapsule({
+    super.key,
+    required this.session,
+    this.onlyKindAndDay = false,
+  });
 
   final TrainingSession session;
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final linked = session.healthSessionId;
-    if (linked == null) return const SizedBox.shrink();
+  /// Die Einheit trägt nichts ausser Art und Tag — das steht dann in der
+  /// Metazeile, damit die Lücke eine Tatsache bleibt.
+  final bool onlyKindAndDay;
 
-    final all = ref.watch(healthSessionsProvider).value ?? const [];
+  @override
+  ConsumerState<SourceCapsule> createState() => _SourceCapsuleState();
+}
+
+class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final session = widget.session;
+    final linked = session.healthSessionId;
+
     HealthSession? measured;
-    for (final s in all) {
-      if (s.externalId == linked) measured = s;
+    if (linked != null) {
+      for (final s in ref.watch(healthSessionsProvider).value ?? const []) {
+        if (s.externalId == linked) measured = s;
+      }
     }
-    // Der Verweis steht, der Datensatz fehlt — etwa nach einer
-    // Kontoübertragung. Dann ist die Quellenfrage nicht zu beantworten, und
-    // eine halbe Antwort wäre schlechter als keine.
-    if (measured == null) return const SizedBox.shrink();
 
     final l10n = AppL10n.of(context);
     final tag = languageTag(context);
     final clock = DateFormat.Hm(tag);
-    final device = measured.deviceName ?? l10n.hcPairWatchRow;
+    final origin = session.origin;
+    final device = measured?.deviceName ?? l10n.hcPairWatchRow;
     final appMinutes = (session.duration ?? Duration.zero).inMinutes;
-    final watchMinutes = measured.duration.inMinutes;
+    final watchMinutes = measured?.duration.inMinutes;
+
+    final (word, meta, shape) = switch (origin) {
+      SessionOrigin.app => (
+          l10n.detailOriginApp,
+          widget.onlyKindAndDay
+              ? l10n.detailOriginMetaEmpty
+              : l10n.detailOriginMetaApp,
+          AtemOriginShape.filled,
+        ),
+      SessionOrigin.watch => (
+          l10n.detailOriginWatch,
+          l10n.detailOriginMetaWatch(device),
+          AtemOriginShape.hollow,
+        ),
+      SessionOrigin.merged => (
+          l10n.detailOriginBoth,
+          l10n.detailOriginMetaMerged,
+          AtemOriginShape.ringWithCore,
+        ),
+    };
+
+    // **Herkunft als Wort im Label, der Punkt stumm**: „zusammengeführt" ist
+    // das Wort dafür (Board 16, H).
+    final spoken = switch (origin) {
+      SessionOrigin.app => '${l10n.hcSourcesLabel}: $word. $meta.',
+      SessionOrigin.watch => '${l10n.hcSourcesLabel}: $word. $meta.',
+      SessionOrigin.merged => l10n.detailOriginA11yBoth,
+    };
+
+    final showApp = origin != SessionOrigin.watch;
+    final showWatch = origin != SessionOrigin.app;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 24),
-        AtemCard.list(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(l10n.hcSourcesLabel.toUpperCase(),
-                  style: AtemType.labelMicro.of(context)),
-              const SizedBox(height: 8),
-              _SourceLine(
-                text: l10n.hcSourceApp,
-                shape: AtemOriginShape.filled,
-              ),
-              const SizedBox(height: 6),
-              _SourceLine(
-                text: l10n.hcSourceWatch(device),
-                shape: AtemOriginShape.hollow,
-              ),
-              if (appMinutes != watchMinutes) ...[
-                const SizedBox(height: 10),
-                _WatchReport(
-                  text: l10n.hcWatchReports(
-                    clock.format(measured.start),
-                    clock.format(measured.end),
-                    watchMinutes,
+        AtemTappable(
+          onTap: () => setState(() => _open = !_open),
+          expanded: _open,
+          semanticLabel: spoken,
+          minTapSize: const Size(0, 56),
+          alignment: Alignment.centerLeft,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: AtemColors.card,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AtemColors.border),
+            ),
+            child: Row(
+              children: [
+                // 12 dp, wie im Board; der Punkt selbst ist stumm.
+                Transform.scale(
+                  scale: 1.2,
+                  child: AtemOriginDot(
+                    shape: shape,
+                    color: AtemColors.textTertiary,
                   ),
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(word, style: AtemType.labelSmall.of(context)),
+                      const SizedBox(height: 2),
+                      Text(meta.toUpperCase(),
+                          style: AtemType.meta.of(context)),
+                    ],
+                  ),
+                ),
+                AnimatedRotation(
+                  turns: _open ? 0.25 : 0,
+                  duration: AtemMotion.duration(
+                      context, const Duration(milliseconds: 200)),
+                  child: const Icon(Icons.chevron_right,
+                      size: 20, color: AtemColors.textSecondary),
+                ),
               ],
-            ],
+            ),
           ),
         ),
-        const SizedBox(height: 10),
-        _UnlinkRow(session: session, measured: measured),
+        AtemDisclosure(
+          open: _open,
+          curve: Curves.easeOutCubic,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (showApp)
+                  SourceLine(
+                    text: l10n.hcSourceApp,
+                    shape: AtemOriginShape.filled,
+                  ),
+                if (showApp && showWatch) const SizedBox(height: 6),
+                if (showWatch)
+                  SourceLine(
+                    text: l10n.hcSourceWatch(device),
+                    shape: AtemOriginShape.hollow,
+                  ),
+                // Der abweichende Fremdwert — nur bei einer
+                // Zusammenführung, denn nur dort gibt es zwei Zahlen.
+                if (origin == SessionOrigin.merged &&
+                    measured != null &&
+                    watchMinutes != appMinutes) ...[
+                  const SizedBox(height: 10),
+                  WatchReport(
+                    text: l10n.hcWatchReports(
+                      clock.format(measured.start),
+                      clock.format(measured.end),
+                      watchMinutes!,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
 }
 
 /// Eine Quelle mit ihrem Punkt — dieselbe Form wie in der Liste.
-class _SourceLine extends StatelessWidget {
-  const _SourceLine({required this.text, required this.shape});
+class SourceLine extends StatelessWidget {
+  const SourceLine({super.key, required this.text, required this.shape});
 
   final String text;
   final AtemOriginShape shape;
@@ -123,8 +223,8 @@ class _SourceLine extends StatelessWidget {
 }
 
 /// Der abweichende Fremdwert — **violett als Fläche, nie als Text**.
-class _WatchReport extends StatelessWidget {
-  const _WatchReport({required this.text});
+class WatchReport extends StatelessWidget {
+  const WatchReport({super.key, required this.text});
 
   final String text;
 
@@ -151,8 +251,8 @@ class _WatchReport extends StatelessWidget {
 }
 
 /// **Zweistufig, weil es eine Einheit im Bestand verändert.**
-class _UnlinkRow extends ConsumerWidget {
-  const _UnlinkRow({required this.session, required this.measured});
+class UnlinkRow extends ConsumerWidget {
+  const UnlinkRow({super.key, required this.session, required this.measured});
 
   final TrainingSession session;
   final HealthSession measured;
@@ -176,8 +276,8 @@ class _UnlinkRow extends ConsumerWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(l10n.hcUnlink,
-                  style: AtemType.labelSmall.of(context)),
+              child:
+                  Text(l10n.hcUnlink, style: AtemType.labelSmall.of(context)),
             ),
             const Icon(Icons.chevron_right,
                 size: 20, color: AtemColors.magenta),
@@ -191,8 +291,7 @@ class _UnlinkRow extends ConsumerWidget {
     final l10n = AppL10n.of(context);
     final ok = await showMergeConsequences(
       context,
-      preview:
-          MergePreview.unlinking(session: session, measured: measured),
+      preview: MergePreview.unlinking(session: session, measured: measured),
       merging: false,
     );
     if (!ok || !context.mounted) return;
