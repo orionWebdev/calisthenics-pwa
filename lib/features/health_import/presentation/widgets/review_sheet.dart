@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart'
-    show TextInputAction, showModalBottomSheet;
+import 'package:flutter/material.dart' show showModalBottomSheet;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,7 +68,6 @@ class HealthReviewSheet extends ConsumerStatefulWidget {
 class _HealthReviewSheetState extends ConsumerState<HealthReviewSheet> {
   int _index = 0;
   int? _rpe;
-  String? _note;
   bool _busy = false;
 
   HealthSession get _session => widget.pending[_index];
@@ -85,7 +83,6 @@ class _HealthReviewSheetState extends ConsumerState<HealthReviewSheet> {
     setState(() {
       _index++;
       _rpe = null;
-      _note = null;
       _busy = false;
     });
   }
@@ -94,7 +91,7 @@ class _HealthReviewSheetState extends ConsumerState<HealthReviewSheet> {
     if (_busy) return;
     setState(() => _busy = true);
     final controller = ref.read(healthImportControllerProvider.notifier);
-    await controller.accept(_session, rpe: _rpe, note: _note);
+    await controller.accept(_session, rpe: _rpe);
     if (mounted) _next();
   }
 
@@ -115,8 +112,7 @@ class _HealthReviewSheetState extends ConsumerState<HealthReviewSheet> {
     // Der zweite rutscht in den Inhalt — **nicht** weg: Beide Wege bleiben
     // erreichbar, nur nicht mehr beide im festen Fuss. Sonst schöbe die
     // Fusszeile bei 200 % auf 320 dp den Inhalt aus dem Blatt.
-    final tight =
-        MediaQuery.textScalerOf(context).scale(14) / 14 >= 1.6;
+    final tight = MediaQuery.textScalerOf(context).scale(14) / 14 >= 1.6;
     final secondLabel = _hasMore ? l10n.hcContinueLater : l10n.hcDecline;
     void secondWay() => _hasMore ? Navigator.of(context).pop() : _decline();
 
@@ -182,10 +178,6 @@ class _HealthReviewSheetState extends ConsumerState<HealthReviewSheet> {
             ),
           ],
           const SizedBox(height: 14),
-          _NoteRow(
-            note: _note,
-            onChanged: (value) => setState(() => _note = value),
-          ),
           // Im Stapel hat „Nicht übernehmen" seinen Platz in der Liste, weil
           // der Fussweg dann „Später fortsetzen" trägt.
           if (_hasMore) ...[
@@ -244,7 +236,8 @@ class _StackProgress extends StatelessWidget {
 
 /// Kicker, Quellkapsel, Titel, Metazeile.
 class _Head extends StatelessWidget {
-  const _Head({required this.session, required this.index, required this.total});
+  const _Head(
+      {required this.session, required this.index, required this.total});
 
   final HealthSession session;
   final int index;
@@ -453,44 +446,3 @@ class _Tile extends StatelessWidget {
 /// Board 15, Entscheidung 16: Ein eigenes Fünf-Stufen-Raster fürs Empfinden
 /// wäre eine neue Bewertungsachse im ganzen Produkt — und stünde im Import,
 /// nicht aber im Runner, wo dieselbe Frage entsteht.
-class _NoteRow extends StatefulWidget {
-  const _NoteRow({required this.note, required this.onChanged});
-
-  final String? note;
-  final ValueChanged<String?> onChanged;
-
-  @override
-  State<_NoteRow> createState() => _NoteRowState();
-}
-
-class _NoteRowState extends State<_NoteRow> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.note ?? '');
-
-  @override
-  void didUpdateWidget(_NoteRow old) {
-    super.didUpdateWidget(old);
-    // Die nächste Einheit im Stapel beginnt ohne Notiz.
-    if (widget.note == null && old.note != null) _controller.clear();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppL10n.of(context);
-    return AtemTextField(
-      controller: _controller,
-      semanticLabel: l10n.detailNoteAdd,
-      hint: l10n.detailNoteAdd,
-      maxLines: 2,
-      textInputAction: TextInputAction.done,
-      onChanged: (value) =>
-          widget.onChanged(value.trim().isEmpty ? null : value),
-    );
-  }
-}

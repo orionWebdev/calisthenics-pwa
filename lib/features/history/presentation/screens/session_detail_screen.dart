@@ -175,18 +175,6 @@ class SessionDetailScreen extends ConsumerWidget {
                     Text(notes, style: AtemType.body.of(context)),
                   ],
                 ),
-              )
-            else
-              AtemButton.ghost(
-                label: l10n.detailNoteAdd,
-                semanticLabel: l10n.detailNoteAdd,
-                leading: const Icon(Icons.edit_note,
-                    size: 18, color: AtemColors.cyan),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => SessionEditScreen(session: session),
-                  ),
-                ),
               ),
 
             // **Eine Einheit, zwei Quellen** (Board 15, B3). Rendert nur
