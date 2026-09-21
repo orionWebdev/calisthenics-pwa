@@ -66,9 +66,15 @@ class _SessionListScreenState extends ConsumerState<SessionListScreen>
   /// Fährt los, sobald ein Auftrag vorliegt **und** kein Blatt mehr darüber
   /// liegt. Ohne die zweite Bedingung liefe die Bewegung hinter dem
   /// Prüfblatt ab, und zurück auf der Liste wäre sie vorbei.
-  void _driveMerge(MergeAnimation? armed) {
-    final route = ModalRoute.of(context);
-    if (armed == null || (route != null && !route.isCurrent)) return;
+  ///
+  /// [onTop] kommt aus dem Bau und nicht von hier: `ModalRoute.of` meldet
+  /// einen Wechsel nur denen, die es **während des Baus** gelesen haben.
+  /// Von hier aus gelesen war dieser Screen kein Abhängiger — er erfuhr nie,
+  /// dass das Blatt wieder weg ist, wurde nicht neu gebaut, und die Bewegung
+  /// blieb für immer stehen. Genau so lief sie am 21.09.2026 auf dem Gerät
+  /// dreimal nicht, während jeder Einzelteil-Test grün war.
+  void _driveMerge(MergeAnimation? armed, bool onTop) {
+    if (armed == null || !onTop) return;
     if (_merge.isAnimating || _merge.isCompleted) return;
     _merge.duration = MediaQuery.disableAnimationsOf(context)
         ? AtemMergeMotion.reducedDuration
@@ -84,10 +90,12 @@ class _SessionListScreenState extends ConsumerState<SessionListScreen>
     final loaded = ref.watch(sessionsProvider);
     final counts = SessionFilter.countByKind(loaded.value ?? const []);
     final armed = ref.watch(mergeAnimationProvider);
+    // **Im Bau gelesen, nicht im Callback.** Siehe `_driveMerge`.
+    final onTop = ModalRoute.of(context)?.isCurrent ?? true;
     // Nach dem Bau, nicht währenddessen: `forward()` im Build löste einen
     // zweiten Build im selben Frame aus.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _driveMerge(armed);
+      if (mounted) _driveMerge(armed, onTop);
     });
 
     return Scaffold(

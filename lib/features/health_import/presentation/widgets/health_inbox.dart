@@ -77,7 +77,7 @@ class HealthInboxHeader extends ConsumerWidget {
     return _Frame(
       tone: AtemColors.cyan,
       child: AtemTappable(
-        onTap: () => reviewPending(context, ref, inbox.pending),
+        onTap: () => runReview(context, ref, inbox.pending),
         semanticLabel: l10n.hcInboxA11y(count, time),
         minTapSize: const Size(0, 48),
         alignment: Alignment.centerLeft,
@@ -223,7 +223,7 @@ class HealthPendingRow extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: AtemTappable(
-        onTap: () => reviewPending(context, ref, all ?? [session]),
+        onTap: () => runReview(context, ref, all ?? [session]),
         semanticLabel: l10n.hcRowA11y(title, meta),
         minTapSize: const Size(0, 52),
         alignment: Alignment.centerLeft,

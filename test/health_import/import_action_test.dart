@@ -47,8 +47,10 @@ void main() {
   });
 
   test('die Sekunden sind echt, sie kommen aus einer Uhr', () {
-    expect(ImportAction.draftOf(session: session(), userId: 'u')
-        .durationHasSeconds, isTrue);
+    expect(
+        ImportAction.draftOf(session: session(), userId: 'u')
+            .durationHasSeconds,
+        isTrue);
   });
 
   test('ohne Anstrengung wird nichts erfunden', () {
@@ -70,18 +72,61 @@ void main() {
     test('was die Uhr „Andere" nennt, bleibt leer statt geraten', () {
       expect(ImportAction.activityOf('OTHER'), isNull);
       expect(ImportAction.activityOf(null), isNull);
-      expect(ImportAction.activityOf('HIGH_INTENSITY_INTERVAL_TRAINING'),
-          isNull);
+      expect(
+          ImportAction.activityOf('HIGH_INTENSITY_INTERVAL_TRAINING'), isNull);
     });
 
-    test('die Art ist immer Ausdauer, solange die Zuordnungstabelle fehlt',
-        () {
+    test('die Art ist immer Ausdauer, solange die Zuordnungstabelle fehlt', () {
       // Offene Frage 4 des Boards. Eine falsch einsortierte Regeneration
       // trüge Last, die sie nicht hat.
-      final yoga = ImportAction.draftOf(
-          session: session(activity: 'YOGA'), userId: 'u');
+      final yoga =
+          ImportAction.draftOf(session: session(activity: 'YOGA'), userId: 'u');
       expect(yoga.kind, SessionKind.cardio);
       expect(yoga.activity, isNull);
+    });
+  });
+
+  group('die Art, die die Uhr meldet', () {
+    // Gemeldet am 21.09.2026: Wer auf der Uhr „Krafttraining" oder
+    // „Calisthenics" abschliesst, fand es in ATEM unter Cardio wieder.
+    test('Krafttraining und Gewichtheben werden Kraft', () {
+      expect(ImportAction.kindOf('STRENGTH_TRAINING'), SessionKind.strength);
+      expect(ImportAction.kindOf('WEIGHTLIFTING'), SessionKind.strength);
+    });
+
+    test('Calisthenics wird Körpergewicht', () {
+      expect(ImportAction.kindOf('CALISTHENICS'), SessionKind.bodyweight);
+    });
+
+    test('alles andere bleibt Ausdauer', () {
+      // „Andere" meldet jede Uhr für alles — daraus lässt sich nichts
+      // ableiten. Yoga und Pilates sind im Board weiterhin offen.
+      for (final raw in ['RUNNING', 'OTHER', 'YOGA', 'PILATES', null]) {
+        expect(ImportAction.kindOf(raw), SessionKind.cardio, reason: '$raw');
+      }
+    });
+
+    test('eine Krafteinheit trägt keine Aktivität und keine Strecke', () {
+      final draft = ImportAction.draftOf(
+        session: HealthSession.pending(
+          MeasuredSession(
+            id: 'hc-1',
+            start: DateTime(2026, 9, 18, 18),
+            end: DateTime(2026, 9, 18, 18, 52),
+            sourceId: 'com.garmin.android.apps.connectmobile',
+            activity: 'STRENGTH_TRAINING',
+            averageHeartRate: 118,
+          ),
+          DateTime(2026, 9, 20, 7),
+        ),
+        userId: 'u',
+      );
+
+      expect(draft.kind, SessionKind.strength);
+      expect(draft.activity, isNull);
+      // Die Startzeit kommt mit — ohne sie könnte sie später nie zugeordnet
+      // werden.
+      expect(draft.startedAt, DateTime(2026, 9, 18, 18));
     });
   });
 }

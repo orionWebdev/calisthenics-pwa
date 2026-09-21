@@ -44,6 +44,20 @@ class AtemMergeMotion {
   /// Wie weit die beiden Zeilen aufeinander zu rücken — **je** Zeile.
   static const approach = 3.0;
 
+  /// Wie lange nach dem Zusammenführen gewartet wird, bis die Bewegung
+  /// losfährt.
+  ///
+  /// Die Zukunft von `showModalBottomSheet` löst sich auf, sobald `pop`
+  /// gerufen wird — **nicht**, wenn das Blatt ausgefahren ist. Wer dort
+  /// scharfstellt, lässt die Bewegung hinter einem Blatt ablaufen, das noch
+  /// über der Liste herunterfährt: Von 420 ms lagen 300 dahinter, sichtbar
+  /// blieb der Punkt. Am 21.09.2026 sah der Nutzer sie dreimal nicht.
+  ///
+  /// Dass die Zahl passt, bewacht ein Test: Er zählt die Bilder, in denen
+  /// sich etwas bewegt, während noch ein Blatt im Baum steht, und besteht
+  /// nur bei null.
+  static const afterSheet = Duration(milliseconds: 300);
+
   static const _gather = Interval(0, 140 / 420, curve: Curves.easeOut);
   static const _fuse = Interval(140 / 420, 320 / 420, curve: Curves.easeInOut);
   static const _settle = Interval(320 / 420, 1, curve: Curves.easeOut);
