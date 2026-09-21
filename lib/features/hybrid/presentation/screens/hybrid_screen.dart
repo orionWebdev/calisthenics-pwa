@@ -17,6 +17,7 @@ import '../../../dashboard/domain/dashboard_data.dart';
 import '../../../dashboard/domain/readiness_level.dart';
 import '../../../dashboard/presentation/readiness_level_ui.dart';
 import '../../../dashboard/presentation/readiness_zone_ui.dart';
+import '../../../health_import/presentation/widgets/health_inbox.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
@@ -228,6 +229,13 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
         children: [
           header,
           const SizedBox(height: AtemSpacing.cardGap),
+
+          // **Was auf eine Entscheidung wartet, steht oben.** Der Eingang
+          // hat seinen Ort im Verlauf; hier steht nur der Hinweis, und auch
+          // der nur, solange wirklich etwas wartet — sonst rendert er nicht
+          // (die Regel für jeden Block ausserhalb der Auswertung). Ein Tipp
+          // führt direkt ins Prüfblatt, nicht auf einen Zwischenbildschirm.
+          const HealthInboxHeader(onlyWhenPending: true),
 
           // ---- Leer: null Einheiten gesamt (C3/2). Beide Spuren sind
           // gleich weit entfernt — der einzige Zustand mit zwei gleichrangigen

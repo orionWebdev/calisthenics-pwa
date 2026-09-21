@@ -31,13 +31,61 @@ import '../review_flow.dart';
 /// Zeitraum ist kein Ereignis; wer wissen will, ob gelesen wurde, findet die
 /// Lesemarke in den Einstellungen.
 class HealthInboxHeader extends ConsumerWidget {
-  const HealthInboxHeader({super.key});
+  const HealthInboxHeader({super.key, this.onlyWhenPending = false});
+
+  /// **Still, solange nichts wartet** — für Bildschirme, die dem Eingang
+  /// nicht gehören.
+  ///
+  /// An seinem eigenen Ort trägt der Kopf auch das Lesen und den Fehler: Dort
+  /// fragt man danach. Auf dem Hybrid-Tab wäre ein „Lese…", das bei jedem
+  /// Start erscheint und wieder geht, ein Flackern über der Startseite, und
+  /// ein Lesefehler gehörte dorthin, wo man ihn beheben kann. Hier spricht er
+  /// nur, wenn wirklich etwas auf eine Entscheidung wartet.
+  ///
+  /// Die Bewegung der Zusammenführung bleibt ebenfalls aus: Sie braucht die
+  /// beiden Zeilen der Liste, die es hier nicht gibt. Sie hier
+  /// scharfzustellen hiesse, sie liefe später einmal aus dem Nichts los,
+  /// sobald jemand den Verlauf öffnet.
+  final bool onlyWhenPending;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppL10n.of(context);
     final inbox = ref.watch(healthInboxProvider);
     final status = ref.watch(healthImportControllerProvider);
+
+    if (onlyWhenPending) {
+      if (inbox.isEmpty) return const SizedBox.shrink();
+      return _Frame(
+        tone: AtemColors.cyan,
+        child: AtemTappable(
+          onTap: () => reviewPending(context, ref, inbox.pending),
+          semanticLabel: l10n.hcInboxA11y(
+            l10n.hcInboxTitle(inbox.pending.length),
+            _readTime(context, inbox.lastRead),
+          ),
+          minTapSize: const Size(0, 48),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.hcInboxTitle(inbox.pending.length),
+                  style: AtemType.labelSmall.of(context),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                l10n.hcInboxAction,
+                style: AtemType.labelUi
+                    .of(context)
+                    .copyWith(color: AtemColors.cyan),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     // Der Fehler betrifft das Lesen, nicht den Bestand: Die Liste bleibt
     // vollständig, nur der Eingang trägt den Zustand (A8).
