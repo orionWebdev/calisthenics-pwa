@@ -1,5 +1,6 @@
 import 'package:atem/core/theme/theme.dart';
 import 'package:atem/features/history/domain/training_session.dart';
+import 'package:atem/features/history/presentation/detail/detail_blocks.dart';
 import 'package:atem/features/history/presentation/screens/session_detail_screen.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +88,11 @@ void main() {
       expect(find.text('0'), findsNothing);
       expect(find.text('—'), findsNothing);
       // Das Board verwirft die Platzhalterkarte ausdrücklich (Entscheidung
-      // 20): Bestand ist kein Mangel.
-      expect(find.text(l10n.detailSetsMissingTitle), findsNothing);
-      expect(find.text(l10n.detailContribTitle.toUpperCase()), findsNothing);
+      // 20): Bestand ist kein Mangel. Seit dem Umbau auf Board 16 gibt es
+      // weder „Sätze fehlen" noch „Beitrag zur Form" überhaupt noch als
+      // Baustein — die Abwesenheit steht nicht mehr hier, sondern darin,
+      // dass der Bildschirm nach dem Kopf aufhört.
+      expect(find.byType(DetailBlock), findsNothing);
       // Es gibt keine Tageszeit, also steht keine erfunden da.
       expect(find.textContaining('00:00'), findsNothing);
     });

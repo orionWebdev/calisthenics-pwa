@@ -1,8 +1,4 @@
 {
-  "aboutAccess": "Zugang",
-  "@aboutAccess": {
-    "description": "about.access"
-  },
   "aboutAccessLabel": "Zugang",
   "@aboutAccessLabel": {
     "description": "Board 08, ueber"
@@ -10,14 +6,6 @@
   "aboutAccessValue": "Freigeschaltete Adresse",
   "@aboutAccessValue": {
     "description": "about.access.value"
-  },
-  "aboutAppearance": "Darstellung",
-  "@aboutAppearance": {
-    "description": "about.appearance"
-  },
-  "aboutAppearanceValue": "Dunkel · keine helle Fassung",
-  "@aboutAppearanceValue": {
-    "description": "about.appearance.value"
   },
   "aboutDisplayLabel": "Darstellung",
   "@aboutDisplayLabel": {
@@ -27,24 +15,12 @@
   "@aboutDisplayValue": {
     "description": "Board 08, ueber — steht dort, wo sonst ein Schalter wäre"
   },
-  "aboutLanguages": "Sprachen",
-  "@aboutLanguages": {
-    "description": "about.languages"
-  },
   "aboutLanguagesLabel": "Sprachen",
   "@aboutLanguagesLabel": {
     "description": "Board 08, ueber"
   },
   "aboutLanguagesValue": "Deutsch · English",
   "@aboutLanguagesValue": {
-    "description": "Board 08, ueber"
-  },
-  "aboutVersion": "Version",
-  "@aboutVersion": {
-    "description": "about.version"
-  },
-  "aboutVersionLabel": "Version",
-  "@aboutVersionLabel": {
     "description": "Board 08, ueber"
   },
   "accountDelete": "Konto löschen",
@@ -69,29 +45,9 @@
       }
     }
   },
-  "accountDelete2Confirm": "Konto löschen",
-  "@accountDelete2Confirm": {
-    "description": "account.delete2.confirm"
-  },
-  "accountDelete2Keep": "Behalten",
-  "@accountDelete2Keep": {
-    "description": "account.delete2.keep"
-  },
   "accountDelete2Title": "Endgültig löschen",
   "@accountDelete2Title": {
     "description": "account.delete2.title"
-  },
-  "accountDelete2TypeCount": "{a} / {b} Zeichen",
-  "@accountDelete2TypeCount": {
-    "description": "account.delete2.typeCount",
-    "placeholders": {
-      "a": {
-        "type": "int"
-      },
-      "b": {
-        "type": "String"
-      }
-    }
   },
   "accountDelete2TypeLabel": "Tippe „LÖSCHEN\", um zu bestätigen",
   "@accountDelete2TypeLabel": {
@@ -148,15 +104,6 @@
   "accountDeleting": "Konto wird gelöscht",
   "@accountDeleting": {
     "description": "account.deleting"
-  },
-  "accountDeletingStep": "{name}",
-  "@accountDeletingStep": {
-    "description": "account.deleting.step",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
   },
   "accountDeletingWait": "Nicht abbrechbar. Das dauert einen Moment.",
   "@accountDeletingWait": {
@@ -247,46 +194,6 @@
   "@activityWalk": {
     "description": "activity.walk"
   },
-  "analysisChartLabel": "Form 0–100",
-  "@analysisChartLabel": {
-    "description": "Achsenbeschriftung"
-  },
-  "analysisCompConsistency": "Konstanz",
-  "@analysisCompConsistency": {
-    "description": "Komponente des Form-Werts"
-  },
-  "analysisCompFitness": "Fitness ggü. Höchststand",
-  "@analysisCompFitness": {
-    "description": "Komponente des Form-Werts"
-  },
-  "analysisCompLoad": "Lastentwicklung",
-  "@analysisCompLoad": {
-    "description": "Komponente des Form-Werts"
-  },
-  "analysisCompPenalty": "Abzug Untätigkeit",
-  "@analysisCompPenalty": {
-    "description": "Wird getrennt ausgewiesen, nicht verrechnet"
-  },
-  "analysisCompRecency": "Aktualität",
-  "@analysisCompRecency": {
-    "description": "Komponente des Form-Werts"
-  },
-  "analysisCompToday": "Tageszuschlag",
-  "@analysisCompToday": {
-    "description": "Komponente des Form-Werts"
-  },
-  "analysisCompValue": "{v} / {max}",
-  "@analysisCompValue": {
-    "description": "Wert einer Komponente",
-    "placeholders": {
-      "v": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
   "analysisDistBasis": "{n} von {total} Einheiten mit Distanz",
   "@analysisDistBasis": {
     "description": "analysis.dist.basis",
@@ -323,35 +230,6 @@
   "analysisErrorToList": "Zur Liste",
   "@analysisErrorToList": {
     "description": "Ausweg im Fehlerzustand"
-  },
-  "analysisExplainBody": "Fünf Bestandteile ergeben zusammen bis zu 103 Punkte, gedeckelt auf 100. Wer lange nicht trainiert, verliert zusätzlich — und zwar beschleunigt: drei Tage kosten 3 Punkte, sieben Tage 21, vierzehn Tage 70.",
-  "@analysisExplainBody": {
-    "description": "Erklärt die Rechnung — ohne sie ist die Zerlegung eine Zahlenreihe"
-  },
-  "analysisExplainTitle": "Wie sich die Form zusammensetzt",
-  "@analysisExplainTitle": {
-    "description": "Überschrift der Erklärung"
-  },
-  "analysisHintRecency": "Was fehlt, ist Aktualität — eine Einheit heute bringt sofort {n} Punkte.",
-  "@analysisHintRecency": {
-    "description": "Begründung unter der Zerlegung",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisLegendRug": "Einheiten/Woche",
-  "@analysisLegendRug": {
-    "description": "analysis.legend.rug (Board 06)"
-  },
-  "analysisLegendWith": "mit Training",
-  "@analysisLegendWith": {
-    "description": "Legende der Kurve"
-  },
-  "analysisLegendWithout": "ohne Training",
-  "@analysisLegendWithout": {
-    "description": "Legende der Kurve — die Lücke"
   },
   "analysisPaceBasis": "gegen eigenen Schnitt {value} · {n, plural, one{1 Lauf} other{{n} Läufe}}",
   "@analysisPaceBasis": {
@@ -403,46 +281,6 @@
   "@analysisPctNoothers": {
     "description": "analysis.pct.noothers"
   },
-  "analysisThinBody": "Ein Trend braucht {n} Einheiten und {d} Tage Historie.",
-  "@analysisThinBody": {
-    "description": "Nennt die Schwellen aus DataSufficiency",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "d": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisThinHave": "Was es schon gibt",
-  "@analysisThinHave": {
-    "description": "Überschrift über dem Vorhandenen"
-  },
-  "analysisThinProgress": "{cur} / {req}",
-  "@analysisThinProgress": {
-    "description": "Fortschritt zur Schwelle",
-    "placeholders": {
-      "cur": {
-        "type": "int"
-      },
-      "req": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisThinTitle": "Noch zu wenig für einen Trend",
-  "@analysisThinTitle": {
-    "description": "Zustand bei zu dünner Datenlage"
-  },
-  "analysisTitle": "Auswertung",
-  "@analysisTitle": {
-    "description": "Titel der Formkurve"
-  },
-  "analysisToday": "Form heute",
-  "@analysisToday": {
-    "description": "Überschrift der Zerlegung"
-  },
   "analysisWeeklyBasis": "Ø {value} km · {n, plural, one{1 Einheit} other{{n} Einheiten}}",
   "@analysisWeeklyBasis": {
     "description": "analysis.weekly.basis",
@@ -462,65 +300,6 @@
   "analysisWeeklyTitle": "Wochenkilometer",
   "@analysisWeeklyTitle": {
     "description": "analysis.weekly.title"
-  },
-  "analysisWhyConsistency": "{days} Trainingstage in {span}",
-  "@analysisWhyConsistency": {
-    "description": "Begründung unter der Konstanz — zeigt, woraus die Punktzahl entsteht",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      },
-      "span": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisWhyFitness": "Anteil am eigenen Höchststand",
-  "@analysisWhyFitness": {
-    "description": "Begründung der Fitness gegenüber dem Höchststand"
-  },
-  "analysisWhyLoadNone": "Keine Last in den letzten 28 Tagen",
-  "@analysisWhyLoadNone": {
-    "description": "Begründung, wenn die Lastentwicklung bei null steht"
-  },
-  "analysisWhyLoadRatio": "Letzte 14 Tage gegen die 14 davor",
-  "@analysisWhyLoadRatio": {
-    "description": "Begründung der Lastentwicklung"
-  },
-  "analysisWhyPenalty": "{n, plural, other{{n} Tage ohne Training}}",
-  "@analysisWhyPenalty": {
-    "description": "Begründung des Abzugs",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisWhyRecency": "{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor {n} Tagen}}",
-  "@analysisWhyRecency": {
-    "description": "Begründung der Aktualität",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisWhyRecencyRecovery": "{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor {n} Tagen · Regeneration}}",
-  "@analysisWhyRecencyRecovery": {
-    "description": "Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisWhyToday": "Heute trainiert",
-  "@analysisWhyToday": {
-    "description": "Begründung des Tageszuschlags"
-  },
-  "analysisWhyTodayNone": "Heute keine Einheit",
-  "@analysisWhyTodayNone": {
-    "description": "Begründung, wenn der Tageszuschlag entfällt"
   },
   "authBetaBadge": "GESCHLOSSENE BETA",
   "@authBetaBadge": {
@@ -558,10 +337,6 @@
   "authNetworkTitle": "Keine Verbindung",
   "@authNetworkTitle": {
     "description": "Notice-Titel ohne Netz"
-  },
-  "authSignOut": "Abmelden",
-  "@authSignOut": {
-    "description": "Abmelden"
   },
   "authSigningIn": "Anmeldung läuft …",
   "@authSigningIn": {
@@ -655,24 +430,6 @@
   "@balanceWindow": {
     "description": "balance.window"
   },
-  "barrierDialog": "„{titel}\" — bitte eine Option wählen",
-  "@barrierDialog": {
-    "description": "barrier.dialog (Board 02)",
-    "placeholders": {
-      "titel": {
-        "type": "String"
-      }
-    }
-  },
-  "barrierSheet": "Schließt „{titel}\"",
-  "@barrierSheet": {
-    "description": "barrier.sheet (Board 02)",
-    "placeholders": {
-      "titel": {
-        "type": "String"
-      }
-    }
-  },
   "cardioAdd": "Einheit erfassen",
   "@cardioAdd": {
     "description": "cardio.add"
@@ -688,10 +445,6 @@
   "cardioEmptyTitle": "Noch keine Ausdauereinheit",
   "@cardioEmptyTitle": {
     "description": "cardio.empty.title"
-  },
-  "cardioErrorWeek": "Wochenkilometer nicht berechenbar",
-  "@cardioErrorWeek": {
-    "description": "cardio.error.week"
   },
   "cardioLiveStart": "Live mitlaufen lassen",
   "@cardioLiveStart": {
@@ -737,37 +490,13 @@
       }
     }
   },
-  "commonActivity": "Aktivität",
-  "@commonActivity": {
-    "description": "aus common.activity"
-  },
-  "commonAdd": "Hinzufügen",
-  "@commonAdd": {
-    "description": "aus common.add"
-  },
-  "commonAddSession": "Session hinzufügen",
-  "@commonAddSession": {
-    "description": "aus common.addSession"
-  },
-  "commonAll": "Alle",
-  "@commonAll": {
-    "description": "Filterchip ohne Einschränkung"
-  },
   "commonBack": "Zurück",
   "@commonBack": {
     "description": "aus common.back"
   },
-  "commonBodyweight": "Bodyweight",
-  "@commonBodyweight": {
-    "description": "aus common.bodyweight"
-  },
   "commonCancel": "Abbrechen",
   "@commonCancel": {
     "description": "common.cancel"
-  },
-  "commonCardio": "Cardio",
-  "@commonCardio": {
-    "description": "aus common.cardio"
   },
   "commonClose": "Schließen",
   "@commonClose": {
@@ -777,17 +506,9 @@
   "@commonCreated": {
     "description": "common.created"
   },
-  "commonDays": "Tage",
-  "@commonDays": {
-    "description": "aus common.days"
-  },
   "commonDelete": "Löschen",
   "@commonDelete": {
     "description": "aus common.delete"
-  },
-  "commonDistance": "Distanz",
-  "@commonDistance": {
-    "description": "aus common.distance"
   },
   "commonDone": "Fertig",
   "@commonDone": {
@@ -801,14 +522,6 @@
   "@commonEdit": {
     "description": "aus common.edit"
   },
-  "commonEditSession": "Session bearbeiten",
-  "@commonEditSession": {
-    "description": "aus common.editSession"
-  },
-  "commonGotIt": "Verstanden",
-  "@commonGotIt": {
-    "description": "common.got_it (Board 02)"
-  },
   "commonLoading": "Lade Daten...",
   "@commonLoading": {
     "description": "aus common.loading"
@@ -816,10 +529,6 @@
   "commonMinutes": "Minuten",
   "@commonMinutes": {
     "description": "aus common.minutes"
-  },
-  "commonNext": "Weiter",
-  "@commonNext": {
-    "description": "aus common.next"
   },
   "commonNotAvailable": "-",
   "@commonNotAvailable": {
@@ -833,33 +542,13 @@
   "@commonOf": {
     "description": "Verbindungswort in Vorlesetexten: 4 von 5"
   },
-  "commonOffline": "Lokal gesichert · wird synchronisiert",
-  "@commonOffline": {
-    "description": "common.offline"
-  },
-  "commonOfflineSync": "Lokal gesichert · wird synchronisiert",
-  "@commonOfflineSync": {
-    "description": "common.offline.sync"
-  },
   "commonOpen": "Öffnen",
   "@commonOpen": {
     "description": "common.open"
   },
-  "commonOptional": "optional",
-  "@commonOptional": {
-    "description": "aus common.optional"
-  },
-  "commonPace": "Pace",
-  "@commonPace": {
-    "description": "aus common.pace"
-  },
   "commonPercentSign": "%",
   "@commonPercentSign": {
     "description": "Prozentzeichen, allein stehend"
-  },
-  "commonRecovery": "Recovery",
-  "@commonRecovery": {
-    "description": "aus common.recovery"
   },
   "commonRetry": "Erneut versuchen",
   "@commonRetry": {
@@ -898,126 +587,13 @@
   "@commonSession": {
     "description": "aus common.session"
   },
-  "commonSessions": "Sessions",
-  "@commonSessions": {
-    "description": "aus common.sessions"
-  },
-  "commonStart": "Starten",
-  "@commonStart": {
-    "description": "aus common.start"
-  },
-  "commonStartAgain": "Erneut starten",
-  "@commonStartAgain": {
-    "description": "aus common.startAgain"
-  },
-  "commonStrength": "Kraft",
-  "@commonStrength": {
-    "description": "aus common.strength"
-  },
-  "commonTime": "Zeit",
-  "@commonTime": {
-    "description": "aus common.time"
-  },
   "commonUndo": "Rückgängig",
   "@commonUndo": {
     "description": "common.undo"
   },
-  "commonView": "Ansehen",
-  "@commonView": {
-    "description": "aus common.view"
-  },
-  "commonViewDetails": "Details ansehen",
-  "@commonViewDetails": {
-    "description": "aus common.viewDetails"
-  },
   "commonWeeks": "Wochen",
   "@commonWeeks": {
     "description": "aus common.weeks"
-  },
-  "commonWorkout": "Workout",
-  "@commonWorkout": {
-    "description": "aus common.workout"
-  },
-  "compareBasisDate": "{date} · {n} Tage her",
-  "@compareBasisDate": {
-    "description": "compare.basis.date",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "compareBasisExercises": "Gleiche Übungen",
-  "@compareBasisExercises": {
-    "description": "compare.basis.exercises"
-  },
-  "compareBasisMedian": "Mittel · {n} Einheiten",
-  "@compareBasisMedian": {
-    "description": "compare.basis.median",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "compareBasisPlan": "Gleicher Plan",
-  "@compareBasisPlan": {
-    "description": "compare.basis.plan"
-  },
-  "compareEmptyPlan": "Erste Einheit des Plans „{plan}\". Ab der nächsten steht hier der Vergleich.",
-  "@compareEmptyPlan": {
-    "description": "compare.empty.plan",
-    "placeholders": {
-      "plan": {
-        "type": "String"
-      }
-    }
-  },
-  "compareEmptyType": "Erste Einheit dieser Art. Ab der nächsten steht hier der Vergleich.",
-  "@compareEmptyType": {
-    "description": "compare.empty.type"
-  },
-  "compareLoading": "Vergleich wird geladen",
-  "@compareLoading": {
-    "description": "compare.loading"
-  },
-  "compareMedian": "Mittel {value}",
-  "@compareMedian": {
-    "description": "compare.median",
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "compareNoneValue": "kein Bezug",
-  "@compareNoneValue": {
-    "description": "compare.none.value"
-  },
-  "compareNoteMedian": "Keine Plan-ID, keine Übungsüberdeckung. Verglichen wird nur, was von den Übungen unabhängig ist: Dauer und Last.",
-  "@compareNoteMedian": {
-    "description": "compare.note.median"
-  },
-  "compareNotePlan": "Beide Einheiten folgen Plan „{plan}\". Alle vier Werte sind vergleichbar.",
-  "@compareNotePlan": {
-    "description": "compare.note.plan",
-    "placeholders": {
-      "plan": {
-        "type": "String"
-      }
-    }
-  },
-  "comparePrev": "vorher {value}",
-  "@comparePrev": {
-    "description": "compare.prev",
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
   },
   "consequenceDays": "{n, plural, one{1 Tag} other{{n} Tage}}",
   "@consequenceDays": {
@@ -1025,42 +601,6 @@
     "placeholders": {
       "n": {
         "type": "int"
-      }
-    }
-  },
-  "consequenceForm": "Form",
-  "@consequenceForm": {
-    "description": "Zeile der Folgentabelle"
-  },
-  "consequenceGone": "entfällt",
-  "@consequenceGone": {
-    "description": "ACWR verschwindet"
-  },
-  "consequenceLoad": "Belastung",
-  "@consequenceLoad": {
-    "description": "Zeile der Folgentabelle: ACWR"
-  },
-  "consequenceNew": "erscheint",
-  "@consequenceNew": {
-    "description": "ACWR erscheint"
-  },
-  "consequenceNone": "An deiner Auswertung ändert das nichts.",
-  "@consequenceNone": {
-    "description": "Folgentabelle ohne Änderung"
-  },
-  "consequencePause": "Pause",
-  "@consequencePause": {
-    "description": "Zeile der Folgentabelle: Tage seit der letzten Einheit"
-  },
-  "consequenceStep": "{from} → {to}",
-  "@consequenceStep": {
-    "description": "Vorher-Nachher in der Folgentabelle",
-    "placeholders": {
-      "from": {
-        "type": "String"
-      },
-      "to": {
-        "type": "String"
       }
     }
   },
@@ -1079,177 +619,6 @@
       }
     }
   },
-  "consequenceTitle": "Was sich ändert",
-  "@consequenceTitle": {
-    "description": "Überschrift der Folgentabelle"
-  },
-  "dashboardActivityCalendarDurationUnit": "Bewegungsstunden",
-  "@dashboardActivityCalendarDurationUnit": {
-    "description": "aus dashboard.activityCalendar.durationUnit"
-  },
-  "dashboardActivityCalendarEmptyState": "Noch keine Sessions in diesem Zeitraum",
-  "@dashboardActivityCalendarEmptyState": {
-    "description": "aus dashboard.activityCalendar.emptyState"
-  },
-  "dashboardActivityCalendarMore": "Mehr",
-  "@dashboardActivityCalendarMore": {
-    "description": "aus dashboard.activityCalendar.more"
-  },
-  "dashboardActivityCalendarThisMonth": "Diesen Monat",
-  "@dashboardActivityCalendarThisMonth": {
-    "description": "aus dashboard.activityCalendar.thisMonth"
-  },
-  "dashboardAddWorkoutTitle": "Workout hinzufügen",
-  "@dashboardAddWorkoutTitle": {
-    "description": "aus dashboard.addWorkout.title"
-  },
-  "dashboardAllSessionsEarlier": "Früher",
-  "@dashboardAllSessionsEarlier": {
-    "description": "aus dashboard.allSessions.earlier"
-  },
-  "dashboardAllSessionsEmpty": "Noch keine Sessions vorhanden",
-  "@dashboardAllSessionsEmpty": {
-    "description": "aus dashboard.allSessions.empty"
-  },
-  "dashboardAllSessionsTitle": "Alle Sessions",
-  "@dashboardAllSessionsTitle": {
-    "description": "aus dashboard.allSessions.title"
-  },
-  "dashboardAllSessionsToday": "Heute",
-  "@dashboardAllSessionsToday": {
-    "description": "aus dashboard.allSessions.today"
-  },
-  "dashboardAllSessionsYesterday": "Gestern",
-  "@dashboardAllSessionsYesterday": {
-    "description": "aus dashboard.allSessions.yesterday"
-  },
-  "dashboardAvatarA11y": "Profil von {name}",
-  "@dashboardAvatarA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardBlocks": "{n} Blocks",
-  "@dashboardBlocks": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardBrand": "ATEM HYBRID",
-  "@dashboardBrand": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardBrandA11y": "System aktiv",
-  "@dashboardBrandA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardBreathwork": "{n} Min Breathwork",
-  "@dashboardBreathwork": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardCalendarAddTraining": "Training hinzufügen",
-  "@dashboardCalendarAddTraining": {
-    "description": "aus dashboard.calendar.addTraining"
-  },
-  "dashboardCalendarNextMonth": "Nächster Monat",
-  "@dashboardCalendarNextMonth": {
-    "description": "aus dashboard.calendar.nextMonth"
-  },
-  "dashboardCalendarPrevMonth": "Vorheriger Monat",
-  "@dashboardCalendarPrevMonth": {
-    "description": "aus dashboard.calendar.prevMonth"
-  },
-  "dashboardCalendarTabActivity": "Aktivität",
-  "@dashboardCalendarTabActivity": {
-    "description": "aus dashboard.calendar.tabActivity"
-  },
-  "dashboardCalendarTabPlan": "Planen",
-  "@dashboardCalendarTabPlan": {
-    "description": "aus dashboard.calendar.tabPlan"
-  },
-  "dashboardChartA11y": "Wochenverlauf: Load, Strain, Recovery, Montag bis Sonntag",
-  "@dashboardChartA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardChartSection": "PERFORMANCE · 7 TAGE",
-  "@dashboardChartSection": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardChartToday": "{day} · LOAD {load}",
-  "@dashboardChartToday": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "day": {
-        "type": "String"
-      },
-      "load": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardDurationMinutes": "{n} Min",
-  "@dashboardDurationMinutes": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardGreetingDay": "Guten Tag, {name}",
-  "@dashboardGreetingDay": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardGreetingEvening": "Guten Abend, {name}",
-  "@dashboardGreetingEvening": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardGreetingMorning": "Guten Morgen, {name}",
-  "@dashboardGreetingMorning": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardHybridBalanceAria": "Kraft {strength} Prozent, Cardio {cardio} Prozent",
-  "@dashboardHybridBalanceAria": {
-    "placeholders": {
-      "strength": {
-        "type": "String"
-      },
-      "cardio": {
-        "type": "String"
-      }
-    },
-    "description": "aus dashboard.hybridBalance.aria"
-  },
-  "dashboardHybridBalanceDescription": "Zeigt die Zeitverteilung zwischen Kraft und Cardio.",
-  "@dashboardHybridBalanceDescription": {
-    "description": "aus dashboard.hybridBalance.description"
-  },
   "dashboardHybridBalanceSubtitle": "Letzte {days} Tage",
   "@dashboardHybridBalanceSubtitle": {
     "placeholders": {
@@ -1259,61 +628,9 @@
     },
     "description": "aus dashboard.hybridBalance.subtitle"
   },
-  "dashboardHybridBalanceTitle": "Hybrid Balance",
-  "@dashboardHybridBalanceTitle": {
-    "description": "aus dashboard.hybridBalance.title"
-  },
-  "dashboardLive": "LIVE",
-  "@dashboardLive": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardLiveHrv": "Live HRV {hrv} ms · {n} Min Breathwork",
-  "@dashboardLiveHrv": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "hrv": {
-        "type": "int"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "dashboardLoadingA11y": "Dashboard wird geladen",
   "@dashboardLoadingA11y": {
     "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardLogWorkoutLog": "Workout loggen",
-  "@dashboardLogWorkoutLog": {
-    "description": "aus dashboard.logWorkout.log"
-  },
-  "dashboardLogWorkoutLogDesc": "Erfasse ein abgeschlossenes Training",
-  "@dashboardLogWorkoutLogDesc": {
-    "description": "aus dashboard.logWorkout.logDesc"
-  },
-  "dashboardLogWorkoutPlan": "Workout planen",
-  "@dashboardLogWorkoutPlan": {
-    "description": "aus dashboard.logWorkout.plan"
-  },
-  "dashboardLogWorkoutPlanDesc": "Plane ein Training im Kalender",
-  "@dashboardLogWorkoutPlanDesc": {
-    "description": "aus dashboard.logWorkout.planDesc"
-  },
-  "dashboardLogWorkoutStart": "Workout starten",
-  "@dashboardLogWorkoutStart": {
-    "description": "aus dashboard.logWorkout.start"
-  },
-  "dashboardLogWorkoutStartDesc": "Starte ein Training aus deinen Plänen",
-  "@dashboardLogWorkoutStartDesc": {
-    "description": "aus dashboard.logWorkout.startDesc"
-  },
-  "dashboardLogWorkoutSubtitle": "Logge, starte oder plane ein Workout",
-  "@dashboardLogWorkoutSubtitle": {
-    "description": "aus dashboard.logWorkout.subtitle"
-  },
-  "dashboardLogWorkoutTitle": "Workout erfassen",
-  "@dashboardLogWorkoutTitle": {
-    "description": "aus dashboard.logWorkout.title"
   },
   "dashboardNavA11y": "{name}, Tab {n} von {total}",
   "@dashboardNavA11y": {
@@ -1330,186 +647,8 @@
       }
     }
   },
-  "dashboardNavAnalytics": "VERLAUF",
-  "@dashboardNavAnalytics": {
-    "description": "Leistenbeschriftung. „Analyse\" versprach nur die Auswertung — der Tab trägt aber den ganzen Verlauf, von dem sie ein Teil ist."
-  },
-  "dashboardNavHome": "HOME",
-  "@dashboardNavHome": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardNavRecovery": "RECOVERY",
-  "@dashboardNavRecovery": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardNavWorkouts": "WORKOUTS",
-  "@dashboardNavWorkouts": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardNoDataYet": "Noch keine Daten",
-  "@dashboardNoDataYet": {
-    "description": "Steht in einer Kachel, für die es noch keine Datenquelle gibt"
-  },
   "dashboardNotAvailable": "Daten nicht verfügbar",
   "@dashboardNotAvailable": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardNotificationsA11y": "{n} ungelesene Benachrichtigungen",
-  "@dashboardNotificationsA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardPhaseA11y": "Woche {week} von {total}, Phase {phase}",
-  "@dashboardPhaseA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "week": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      },
-      "phase": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardPhaseWeek": "Woche {week} von {total} · {phase}",
-  "@dashboardPhaseWeek": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "week": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      },
-      "phase": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardPlanCalendarTitle": "Planungskalender",
-  "@dashboardPlanCalendarTitle": {
-    "description": "aus dashboard.planCalendar.title"
-  },
-  "dashboardPrimaryHelper": "Starte oder setze dein aktuelles Training fort.",
-  "@dashboardPrimaryHelper": {
-    "description": "aus dashboard.primary.helper"
-  },
-  "dashboardPrimaryResume": "Workout fortsetzen",
-  "@dashboardPrimaryResume": {
-    "description": "aus dashboard.primary.resume"
-  },
-  "dashboardPrimaryStart": "Workout starten",
-  "@dashboardPrimaryStart": {
-    "description": "aus dashboard.primary.start"
-  },
-  "dashboardPrimarySubtitleActive": "Ein Workout ist aktiv.",
-  "@dashboardPrimarySubtitleActive": {
-    "description": "aus dashboard.primary.subtitleActive"
-  },
-  "dashboardPrimarySubtitleInactive": "Wähle Kraft, Cardio oder Recovery.",
-  "@dashboardPrimarySubtitleInactive": {
-    "description": "aus dashboard.primary.subtitleInactive"
-  },
-  "dashboardPrimaryTitle": "Workout",
-  "@dashboardPrimaryTitle": {
-    "description": "aus dashboard.primary.title"
-  },
-  "dashboardProteinA11y": "Ernährung, Protein {value} von {goal} Gramm",
-  "@dashboardProteinA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "value": {
-        "type": "int"
-      },
-      "goal": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardProteinGoal": " / {goal}g Ziel",
-  "@dashboardProteinGoal": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "goal": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardProteinOf": "Protein {value}g",
-  "@dashboardProteinOf": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardQuickNutrition": "Nutrition & Fuel",
-  "@dashboardQuickNutrition": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardQuickPeriod": "Periodisierung",
-  "@dashboardQuickPeriod": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardQuickRecovery": "Recovery Scan",
-  "@dashboardQuickRecovery": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardQuickSets": "{headline} · {sets} Sets",
-  "@dashboardQuickSets": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "headline": {
-        "type": "String"
-      },
-      "sets": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardQuickSetsPlain": "{count, plural, =0{Keine Sätze erfasst} one{1 Satz zuletzt} other{{count} Sätze zuletzt}}",
-  "@dashboardQuickSetsPlain": {
-    "description": "Sätze der letzten Einheit, ohne Planname",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardQuickSetsPlan": "{plan} · {count, plural, one{1 Satz} other{{count} Sätze}}",
-  "@dashboardQuickSetsPlan": {
-    "description": "Planname und Sätze der letzten Einheit",
-    "placeholders": {
-      "plan": {
-        "type": "String"
-      },
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardQuickStatsMovementMinutes": "Bewegungsmin.",
-  "@dashboardQuickStatsMovementMinutes": {
-    "description": "aus dashboard.quickStats.movementMinutes"
-  },
-  "dashboardQuickStatsSessions": "Sessions",
-  "@dashboardQuickStatsSessions": {
-    "description": "aus dashboard.quickStats.sessions"
-  },
-  "dashboardQuickStatsThisWeek": "Diese Woche",
-  "@dashboardQuickStatsThisWeek": {
-    "description": "aus dashboard.quickStats.thisWeek"
-  },
-  "dashboardQuickWorkout": "Workout Log",
-  "@dashboardQuickWorkout": {
     "description": "Dashboard, Modul 1 Spezifikation"
   },
   "dashboardReadinessA11y": "Readiness {percent} Prozent, {status}",
@@ -1588,132 +727,6 @@
   "@dashboardReadinessTagSolid": {
     "description": "Aus dem Design-Handoff ATEM Dashboard, nicht aus der PWA"
   },
-  "dashboardRecentDescription": "Die letzten Sessions in chronologischer Reihenfolge.",
-  "@dashboardRecentDescription": {
-    "description": "aus dashboard.recent.description"
-  },
-  "dashboardRecentEmpty": "Noch keine Sessions",
-  "@dashboardRecentEmpty": {
-    "description": "aus dashboard.recent.empty"
-  },
-  "dashboardRecentTitle": "Letzte Sessions",
-  "@dashboardRecentTitle": {
-    "description": "aus dashboard.recent.title"
-  },
-  "dashboardRecentViewAll": "Alle anzeigen",
-  "@dashboardRecentViewAll": {
-    "description": "aus dashboard.recent.viewAll"
-  },
-  "dashboardScheduledTitle": "Geplant für heute",
-  "@dashboardScheduledTitle": {
-    "description": "aus dashboard.scheduled.title"
-  },
-  "dashboardSeriesLoad": "LOAD",
-  "@dashboardSeriesLoad": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSeriesRecovery": "RECOVERY",
-  "@dashboardSeriesRecovery": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSeriesStrain": "STRAIN",
-  "@dashboardSeriesStrain": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSessionNone": "Für heute ist nichts geplant",
-  "@dashboardSessionNone": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSessionNoneHint": "Plane eine Einheit oder logge ein freies Workout.",
-  "@dashboardSessionNoneHint": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSessionRunning": "SESSION LÄUFT · {time}",
-  "@dashboardSessionRunning": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardSessionRunningA11y": "Session läuft, {time}, tippen zum Stoppen",
-  "@dashboardSessionRunningA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "dashboardSessionSection": "HEUTIGE SESSION",
-  "@dashboardSessionSection": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSessionStart": "SESSION STARTEN",
-  "@dashboardSessionStart": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSessionStartA11y": "Session starten",
-  "@dashboardSessionStartA11y": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardStartWorkoutNewWorkout": "Neues Training",
-  "@dashboardStartWorkoutNewWorkout": {
-    "description": "aus dashboard.startWorkout.newWorkout"
-  },
-  "dashboardStartWorkoutNewWorkoutDesc": "Starte ein leeres Workout und füge Übungen hinzu",
-  "@dashboardStartWorkoutNewWorkoutDesc": {
-    "description": "aus dashboard.startWorkout.newWorkoutDesc"
-  },
-  "dashboardStartWorkoutSelectPlan": "Plan auswählen",
-  "@dashboardStartWorkoutSelectPlan": {
-    "description": "aus dashboard.startWorkout.selectPlan"
-  },
-  "dashboardStartWorkoutSelectPlanDesc": "Starte ein Training aus deinen Plänen",
-  "@dashboardStartWorkoutSelectPlanDesc": {
-    "description": "aus dashboard.startWorkout.selectPlanDesc"
-  },
-  "dashboardStatHrv": "HRV",
-  "@dashboardStatHrv": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardStatRhr": "RUHE-HF",
-  "@dashboardStatRhr": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardStatSleep": "SCHLAF",
-  "@dashboardStatSleep": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardSubtitle": "Optimales System-Level erreicht",
-  "@dashboardSubtitle": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
-  "dashboardToday": "Heute",
-  "@dashboardToday": {
-    "description": "aus dashboard.today"
-  },
-  "dashboardTrainingTypesBodyweight": "Bodyweight",
-  "@dashboardTrainingTypesBodyweight": {
-    "description": "aus dashboard.trainingTypes.bodyweight"
-  },
-  "dashboardTrainingTypesCardio": "Cardio",
-  "@dashboardTrainingTypesCardio": {
-    "description": "aus dashboard.trainingTypes.cardio"
-  },
-  "dashboardTrainingTypesRecovery": "Recovery",
-  "@dashboardTrainingTypesRecovery": {
-    "description": "aus dashboard.trainingTypes.recovery"
-  },
-  "dashboardTrainingTypesStrength": "Krafttraining",
-  "@dashboardTrainingTypesStrength": {
-    "description": "aus dashboard.trainingTypes.strength"
-  },
-  "dashboardWeekdays": "MO,DI,MI,DO,FR,SA,SO",
-  "@dashboardWeekdays": {
-    "description": "Dashboard, Modul 1 Spezifikation"
-  },
   "deleteConfirm": "Löschen",
   "@deleteConfirm": {
     "description": "delete.confirm"
@@ -1737,18 +750,6 @@
   "detailAcwrLabel": "Belastung an diesem Tag",
   "@detailAcwrLabel": {
     "description": "Überschrift im Detail"
-  },
-  "detailAcwrZone": "ACWR {v} · {zone}",
-  "@detailAcwrZone": {
-    "description": "Belastungsverhältnis mit Zone",
-    "placeholders": {
-      "v": {
-        "type": "String"
-      },
-      "zone": {
-        "type": "String"
-      }
-    }
   },
   "detailCompareMid": "Mittelfeld",
   "@detailCompareMid": {
@@ -1776,69 +777,13 @@
   "@detailDistance": {
     "description": "Kennzahl im Detail"
   },
-  "detailDuration": "Dauer",
-  "@detailDuration": {
-    "description": "Kennzahl im Detail"
-  },
   "detailLoad": "Last",
   "@detailLoad": {
     "description": "Kennzahl im Detail"
   },
-  "detailNoteAdd": "Notiz hinzufügen",
-  "@detailNoteAdd": {
-    "description": "detail.note.add (Board 06)"
-  },
-  "detailPace": "Pace /km",
-  "@detailPace": {
-    "description": "Kennzahl im Detail"
-  },
-  "detailRecoveryBody": "Recovery hält die Kette, treibt aber die Lastentwicklung nicht.",
-  "@detailRecoveryBody": {
-    "description": "Hinweis bei Regeneration"
-  },
-  "detailRecoveryTitle": "Zählt für die Konstanz",
-  "@detailRecoveryTitle": {
-    "description": "Hinweis bei Regeneration"
-  },
   "detailSaveAsPlan": "Als Plan speichern",
   "@detailSaveAsPlan": {
     "description": "detail.saveAsPlan (Board 06)"
-  },
-  "detailSetsCount": "{e} Übungen · {s} Sätze",
-  "@detailSetsCount": {
-    "description": "Umfang der Einheit",
-    "placeholders": {
-      "e": {
-        "type": "int"
-      },
-      "s": {
-        "type": "int"
-      }
-    }
-  },
-  "detailSetsMissingBody": "Diese Einheit wurde als Dauer erfasst. Last und Konstanz zählen trotzdem, Volumen bleibt leer.",
-  "@detailSetsMissingBody": {
-    "description": "Erklärt, warum eine Einheit ohne Sätze trotzdem zählt"
-  },
-  "detailSetsMissingTitle": "Keine Sätze aufgezeichnet",
-  "@detailSetsMissingTitle": {
-    "description": "16 der 63 Krafteinheiten im Bestand tragen keine Übungen"
-  },
-  "detailVolume": "Volumen",
-  "@detailVolume": {
-    "description": "Kennzahl im Detail"
-  },
-  "dialogDeleteTitle": "Verlauf löschen?",
-  "@dialogDeleteTitle": {
-    "description": "dialog.delete.title (Board 02)"
-  },
-  "dialogEndConfirm": "Beenden & speichern",
-  "@dialogEndConfirm": {
-    "description": "dialog.end.confirm (Board 02)"
-  },
-  "dialogEndTitle": "Workout beenden?",
-  "@dialogEndTitle": {
-    "description": "dialog.end.title (Board 02)"
   },
   "directionBetter": "besser",
   "@directionBetter": {
@@ -1906,14 +851,6 @@
   "@emptySearchTitle": {
     "description": "empty.search.title (Board 02)"
   },
-  "emptyTodayBody": "Ruhetag — oder Platz für eine freie Session.",
-  "@emptyTodayBody": {
-    "description": "empty.today.body (Board 02)"
-  },
-  "emptyTodayCta": "Session planen",
-  "@emptyTodayCta": {
-    "description": "empty.today.cta (Board 02)"
-  },
   "emptyTodayTitle": "Heute ist nichts geplant",
   "@emptyTodayTitle": {
     "description": "empty.today.title (Board 02)"
@@ -1945,18 +882,6 @@
       }
     }
   },
-  "errorBack": "Zurück zum Dashboard",
-  "@errorBack": {
-    "description": "error.back (Board 02)"
-  },
-  "errorLoadBody": "Der Plan konnte nicht abgerufen werden. Deine bisherigen Daten sind sicher.",
-  "@errorLoadBody": {
-    "description": "error.load.body (Board 02)"
-  },
-  "errorLoadTitle": "Workout nicht ladbar",
-  "@errorLoadTitle": {
-    "description": "error.load.title (Board 02)"
-  },
   "errorOfflineBanner": "Offline — Änderungen werden lokal gespeichert",
   "@errorOfflineBanner": {
     "description": "error.offline.banner (Board 02)"
@@ -1978,61 +903,13 @@
       }
     }
   },
-  "errorsDeleteFailed": "Fehler beim Löschen",
-  "@errorsDeleteFailed": {
-    "description": "aus errors.deleteFailed"
-  },
-  "errorsExerciseNameRequired": "Bitte gib einen Namen für die Übung ein!",
-  "@errorsExerciseNameRequired": {
-    "description": "aus errors.exerciseNameRequired"
-  },
-  "errorsExercisesLoading": "Übungen werden noch geladen. Bitte versuche es gleich erneut.",
-  "@errorsExercisesLoading": {
-    "description": "aus errors.exercisesLoading"
-  },
   "errorsLoadFailed": "Laden fehlgeschlagen. Bitte erneut versuchen.",
   "@errorsLoadFailed": {
     "description": "Runner, Modul 2 Spezifikation"
   },
-  "errorsMuscleGroupsRequired": "Bitte wähle mindestens eine Muskelgruppe!",
-  "@errorsMuscleGroupsRequired": {
-    "description": "aus errors.muscleGroupsRequired"
-  },
-  "errorsPlanExercisesRequired": "Bitte füge mindestens eine Übung hinzu!",
-  "@errorsPlanExercisesRequired": {
-    "description": "aus errors.planExercisesRequired"
-  },
-  "errorsPlanNameRequired": "Bitte gib einen Namen für den Plan ein!",
-  "@errorsPlanNameRequired": {
-    "description": "aus errors.planNameRequired"
-  },
-  "errorsPlanNotFound": "Plan nicht gefunden",
-  "@errorsPlanNotFound": {
-    "description": "aus errors.planNotFound"
-  },
   "errorsSaveFailed": "Fehler beim Speichern.",
   "@errorsSaveFailed": {
     "description": "aus errors.saveFailed"
-  },
-  "errorsSessionNotFound": "Session nicht gefunden",
-  "@errorsSessionNotFound": {
-    "description": "aus errors.sessionNotFound"
-  },
-  "errorsStartUnavailable": "Start-Auswahl ist nicht verfügbar.",
-  "@errorsStartUnavailable": {
-    "description": "aus errors.startUnavailable"
-  },
-  "errorsWorkoutNotFound": "Workout nicht gefunden",
-  "@errorsWorkoutNotFound": {
-    "description": "aus errors.workoutNotFound"
-  },
-  "errorsWorkoutStartFailed": "Fehler beim Starten des Workouts",
-  "@errorsWorkoutStartFailed": {
-    "description": "aus errors.workoutStartFailed"
-  },
-  "exerciseCopyNotice": "Die kuratierte Übung bleibt bestehen. Deine Fassung steht daneben.",
-  "@exerciseCopyNotice": {
-    "description": "Hinweis im Formular der eigenen Fassung"
   },
   "exerciseCountShort": "{n, plural, one{1 Übung} other{{n} Übungen}}",
   "@exerciseCountShort": {
@@ -2189,10 +1066,6 @@
   "@exerciseFieldNameHint": {
     "description": "exercise.field.name.hint"
   },
-  "exerciseFormSaveError": "Übung nicht gespeichert",
-  "@exerciseFormSaveError": {
-    "description": "Fehlermeldung beim Speichern"
-  },
   "exerciseFormSaveErrorBody": "Prüfe die Verbindung und versuche es erneut.",
   "@exerciseFormSaveErrorBody": {
     "description": "Fehlermeldung, Text"
@@ -2287,26 +1160,9 @@
   "@exerciseSparseTitle": {
     "description": "Nur bei eigenen Übungen ohne Inhalt"
   },
-  "exercisesBlockAll": "Alle ansehen",
-  "@exercisesBlockAll": {
-    "description": "exercises.block.all"
-  },
   "exercisesBlockByMuscle": "Nach Muskel",
   "@exercisesBlockByMuscle": {
     "description": "exercises.block.byMuscle"
-  },
-  "exercisesBlockSearch": "Name oder Muskel",
-  "@exercisesBlockSearch": {
-    "description": "exercises.block.search"
-  },
-  "exercisesBlockTitle": "Übungen · {n}",
-  "@exercisesBlockTitle": {
-    "description": "exercises.block.title",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
   },
   "exercisesCount": "{n} Übungen · {k} kuratiert · {e} eigene",
   "@exercisesCount": {
@@ -2327,15 +1183,6 @@
   "@exercisesCreate": {
     "description": "exercises.create"
   },
-  "exercisesEmptyBody": "Keine Übung passt zu „{q}“ — auch nicht auf Englisch.",
-  "@exercisesEmptyBody": {
-    "description": "Suche ohne Treffer, Text",
-    "placeholders": {
-      "q": {
-        "type": "String"
-      }
-    }
-  },
   "exercisesEmptyOwnBody": "Name, Muskeln und eine Stufe genügen — der Rest ist freiwillig.",
   "@exercisesEmptyOwnBody": {
     "description": "exercises.empty.own.body"
@@ -2343,10 +1190,6 @@
   "exercisesEmptyOwnTitle": "Noch keine eigene Übung",
   "@exercisesEmptyOwnTitle": {
     "description": "exercises.empty.own.title"
-  },
-  "exercisesEmptyTitle": "Nichts gefunden",
-  "@exercisesEmptyTitle": {
-    "description": "Suche ohne Treffer"
   },
   "exercisesFilterActive": "{muscle}, Filter aktiv",
   "@exercisesFilterActive": {
@@ -2414,14 +1257,6 @@
   "@exportCreate": {
     "description": "export.create"
   },
-  "exportCreateCsv": "Als CSV erstellen",
-  "@exportCreateCsv": {
-    "description": "Aktion"
-  },
-  "exportCreateJson": "Als JSON erstellen",
-  "@exportCreateJson": {
-    "description": "Aktion"
-  },
   "exportDoneNote": "Die Datei liegt im Downloads-Ordner. Die App verschickt nichts selbst.",
   "@exportDoneNote": {
     "description": "export.done.note"
@@ -2442,34 +1277,6 @@
   "@exportFormatSessions": {
     "description": "Umfang des Ausgabeformats"
   },
-  "exportOffline": "Offline nicht möglich",
-  "@exportOffline": {
-    "description": "export.offline"
-  },
-  "exportProgress": "Einheiten {a}/{b} · Pläne {c}/{d} · Übungen {e}/{f}",
-  "@exportProgress": {
-    "description": "export.progress",
-    "placeholders": {
-      "a": {
-        "type": "int"
-      },
-      "b": {
-        "type": "int"
-      },
-      "c": {
-        "type": "int"
-      },
-      "d": {
-        "type": "int"
-      },
-      "e": {
-        "type": "int"
-      },
-      "f": {
-        "type": "int"
-      }
-    }
-  },
   "exportRowDays": "{n} T",
   "@exportRowDays": {
     "description": "Zeitraum in der Inhaltsliste",
@@ -2489,10 +1296,6 @@
   },
   "exportRowProfile": "Profilangaben",
   "@exportRowProfile": {
-    "description": "Board 08, exportInhalt"
-  },
-  "exportRowSchedule": "Termine",
-  "@exportRowSchedule": {
     "description": "Board 08, exportInhalt"
   },
   "exportRowScores": "Bestwerte und Formkurve",
@@ -2528,26 +1331,6 @@
   "@formDate": {
     "description": "form.date"
   },
-  "formDiscardBarrier": "Änderungen verwerfen",
-  "@formDiscardBarrier": {
-    "description": "Vorlesetext des Dialogschleiers"
-  },
-  "formDiscardBody": "Was du eingegeben hast, geht verloren.",
-  "@formDiscardBody": {
-    "description": "Dialogtext"
-  },
-  "formDiscardConfirm": "Verwerfen",
-  "@formDiscardConfirm": {
-    "description": "Dialogaktion"
-  },
-  "formDiscardKeep": "Weiter bearbeiten",
-  "@formDiscardKeep": {
-    "description": "Dialogaktion, Abbruch"
-  },
-  "formDiscardTitle": "Änderungen verwerfen?",
-  "@formDiscardTitle": {
-    "description": "Dialog beim Verlassen mit ungespeicherten Änderungen"
-  },
   "formDistance": "Distanz · km",
   "@formDistance": {
     "description": "form.distance"
@@ -2567,10 +1350,6 @@
   "formHrMax": "Max. Puls",
   "@formHrMax": {
     "description": "form.hr.max"
-  },
-  "formNote": "Notiz · optional",
-  "@formNote": {
-    "description": "form.note"
   },
   "formOptionalCount": "Optional · {n} Felder",
   "@formOptionalCount": {
@@ -2609,16 +1388,6 @@
   "@formToday": {
     "description": "form.today"
   },
-  "formatDistanceKm": "{distance} km",
-  "@formatDistanceKm": {
-    "placeholders": {
-      "distance": {
-        "type": "num",
-        "format": "decimalPattern"
-      }
-    },
-    "description": "aus format.distanceKm"
-  },
   "formatDurationHours": "{hours}h",
   "@formatDurationHours": {
     "placeholders": {
@@ -2648,14 +1417,6 @@
       }
     },
     "description": "aus format.duration.minutes"
-  },
-  "formatDurationZero": "0 min",
-  "@formatDurationZero": {
-    "description": "aus format.duration.zero"
-  },
-  "formatPaceNa": "-",
-  "@formatPaceNa": {
-    "description": "aus format.pace.na"
   },
   "formatPaceValue": "{min}:{sec} min/km",
   "@formatPaceValue": {
@@ -2730,10 +1491,6 @@
   "@hapticsTitle": {
     "description": "haptics.title"
   },
-  "hapticsUnavailable": "Dein Gerät hat keinen Vibrationsmotor.",
-  "@hapticsUnavailable": {
-    "description": "haptics.unavailable"
-  },
   "historyAll": "Alle {n}",
   "@historyAll": {
     "description": "Öffnet die vollständige Liste",
@@ -2783,14 +1540,6 @@
   "@historyCurveLegend": {
     "description": "history.curve.legend"
   },
-  "historyEmptyBody": "Deine erste Einheit steht hier, sobald du sie beendet hast.",
-  "@historyEmptyBody": {
-    "description": "Leerzustand des Verlaufs"
-  },
-  "historyEmptyTitle": "Noch nichts aufgezeichnet",
-  "@historyEmptyTitle": {
-    "description": "Leerzustand des Verlaufs"
-  },
   "historyErrorBody": "Deine Einheiten konnten nicht geladen werden.",
   "@historyErrorBody": {
     "description": "Fehlerzustand"
@@ -2798,19 +1547,6 @@
   "historyErrorTitle": "Verlauf nicht verfügbar",
   "@historyErrorTitle": {
     "description": "Fehlerzustand"
-  },
-  "historyFormLabel": "Form",
-  "@historyFormLabel": {
-    "description": "Beschriftung des Form-Werts"
-  },
-  "historyFormOf": "{v}/100",
-  "@historyFormOf": {
-    "description": "Form-Wert mit Maximum",
-    "placeholders": {
-      "v": {
-        "type": "int"
-      }
-    }
   },
   "historyFreq": "Häufigkeit",
   "@historyFreq": {
@@ -2905,18 +1641,6 @@
   "historyTitle": "Verlauf",
   "@historyTitle": {
     "description": "history.title (Modul 6)"
-  },
-  "historyTrendFalling": "fallend",
-  "@historyTrendFalling": {
-    "description": "Richtung der Formkurve"
-  },
-  "historyTrendRising": "steigend",
-  "@historyTrendRising": {
-    "description": "Richtung der Formkurve"
-  },
-  "historyTrendStable": "stabil",
-  "@historyTrendStable": {
-    "description": "Richtung der Formkurve"
   },
   "historyVolume": "Volumen",
   "@historyVolume": {
@@ -3063,22 +1787,9 @@
   "@legalError": {
     "description": "legal.error"
   },
-  "legalExternal": "Extern öffnen",
-  "@legalExternal": {
-    "description": "legal.external"
-  },
   "legalImprint": "Impressum",
   "@legalImprint": {
     "description": "legal.imprint"
-  },
-  "legalImprintBody": "Privates Projekt einer natürlichen Person. Angaben nach § 5 TMG: {betreiber}",
-  "@legalImprintBody": {
-    "description": "legal.imprint.body",
-    "placeholders": {
-      "betreiber": {
-        "type": "String"
-      }
-    }
   },
   "legalInapp": "In der App",
   "@legalInapp": {
@@ -3243,15 +1954,6 @@
   "@liveStop": {
     "description": "live.stop"
   },
-  "loadingDone": "{sektion} geladen",
-  "@loadingDone": {
-    "description": "loading.done (Board 02)",
-    "placeholders": {
-      "sektion": {
-        "type": "String"
-      }
-    }
-  },
   "loadingLabel": "Wird geladen …",
   "@loadingLabel": {
     "description": "loading.label (Board 02)"
@@ -3328,33 +2030,9 @@
   "@muscleTriceps": {
     "description": "Muskelgruppe"
   },
-  "navCalendar": "Kalender",
-  "@navCalendar": {
-    "description": "aus nav.calendar"
-  },
-  "navDashboard": "Heute",
-  "@navDashboard": {
-    "description": "aus nav.dashboard"
-  },
-  "navExercises": "Übungen",
-  "@navExercises": {
-    "description": "aus nav.exercises"
-  },
   "navPlans": "Pläne",
   "@navPlans": {
     "description": "aus nav.plans"
-  },
-  "navProfile": "Profil",
-  "@navProfile": {
-    "description": "aus nav.profile"
-  },
-  "navProgress": "Fortschritt",
-  "@navProgress": {
-    "description": "aus nav.progress"
-  },
-  "navTraining": "Training",
-  "@navTraining": {
-    "description": "aus nav.training"
   },
   "onbCta": "Los geht’s",
   "@onbCta": {
@@ -3436,10 +2114,6 @@
   "@onboardingRepeat": {
     "description": "onboarding.repeat"
   },
-  "onboardingRepeatAction": "Ansehen",
-  "@onboardingRepeatAction": {
-    "description": "onboarding.repeat.action"
-  },
   "onboardingRepeatSub": "Die vier Einführungsseiten noch einmal",
   "@onboardingRepeatSub": {
     "description": "onboarding.repeat.sub"
@@ -3478,15 +2152,6 @@
       }
     }
   },
-  "planBrokenNotice": "{n, plural, one {{n} Eintrag zeigt} other {{n} Einträge zeigen}} ins Leere.",
-  "@planBrokenNotice": {
-    "description": "plan.broken.notice",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "planBrokenRemove": "Entfernen",
   "@planBrokenRemove": {
     "description": "plan.broken.remove"
@@ -3503,10 +2168,6 @@
         "type": "int"
       }
     }
-  },
-  "planDeleteBarrier": "Plan löschen",
-  "@planDeleteBarrier": {
-    "description": "Vorlesetext des Dialogschleiers"
   },
   "planDeleteBody": "Deine absolvierten Einheiten bleiben unverändert — sie tragen den Plannamen bei sich.",
   "@planDeleteBody": {
@@ -3540,10 +2201,6 @@
   "@planEntrySets": {
     "description": "plan.entry.sets"
   },
-  "planFormAdd": "Übung hinzufügen",
-  "@planFormAdd": {
-    "description": "Aktion unter der Übungsliste"
-  },
   "planFormEditTitle": "Plan bearbeiten",
   "@planFormEditTitle": {
     "description": "Titel beim Ändern"
@@ -3560,10 +2217,6 @@
       }
     }
   },
-  "planFormGapBody": "Die Zielwerte bleiben stehen. Ersetze sie durch eine andere Übung.",
-  "@planFormGapBody": {
-    "description": "Text einer Lücke im Plan"
-  },
   "planFormGapTitle": "Übung gelöscht",
   "@planFormGapTitle": {
     "description": "Titel einer Lücke im Plan"
@@ -3575,10 +2228,6 @@
   "planFormItems": "Übungen",
   "@planFormItems": {
     "description": "Abschnittslabel"
-  },
-  "planFormItemsFault": "Ein Plan braucht mindestens eine Übung.",
-  "@planFormItemsFault": {
-    "description": "Fehler an der Übungsliste"
   },
   "planFormMoveA11y": "{name}, Platz {n} von {total}",
   "@planFormMoveA11y": {
@@ -3607,10 +2256,6 @@
   "@planFormName": {
     "description": "Feldbeschriftung"
   },
-  "planFormNameFault": "Ein Plan braucht einen Namen.",
-  "@planFormNameFault": {
-    "description": "Fehler am Namensfeld"
-  },
   "planFormNameHint": "z. B. Oberkörper A",
   "@planFormNameHint": {
     "description": "Platzhalter im Namensfeld"
@@ -3618,14 +2263,6 @@
   "planFormNewTitle": "Neuer Plan",
   "@planFormNewTitle": {
     "description": "Titel beim Anlegen"
-  },
-  "planFormPickTitle": "Übung wählen",
-  "@planFormPickTitle": {
-    "description": "Titel des Auswahlblatts"
-  },
-  "planFormRemove": "Entfernen",
-  "@planFormRemove": {
-    "description": "Aktion an einem Planeintrag"
   },
   "planFormRemoveA11y": "{name} aus dem Plan entfernen",
   "@planFormRemoveA11y": {
@@ -3636,49 +2273,13 @@
       }
     }
   },
-  "planFormReplace": "Ersetzen",
-  "@planFormReplace": {
-    "description": "Erste Aktion an einer Lücke"
-  },
-  "planFormReps": "Wdh.",
-  "@planFormReps": {
-    "description": "Zielwert"
-  },
-  "planFormRepsHint": "8-12",
-  "@planFormRepsHint": {
-    "description": "Platzhalter im Wiederholungsfeld — Bereiche sind erlaubt"
-  },
-  "planFormRest": "Pause",
-  "@planFormRest": {
-    "description": "Zielwert in Sekunden"
-  },
   "planFormSaveError": "Plan nicht gespeichert",
   "@planFormSaveError": {
     "description": "Fehlermeldung"
   },
-  "planFormSaved": "Plan gespeichert",
-  "@planFormSaved": {
-    "description": "Rückmeldung nach dem Speichern"
-  },
-  "planFormSets": "Sätze",
-  "@planFormSets": {
-    "description": "Zielwert"
-  },
   "planItemMissing": "Nicht mehr vorhanden",
   "@planItemMissing": {
     "description": "Steht statt des Namens, wenn die Übung gelöscht wurde"
-  },
-  "planMeta": "{n} Übungen · {type}",
-  "@planMeta": {
-    "description": "Zweite Zeile einer Planzeile",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "type": {
-        "type": "String"
-      }
-    }
   },
   "planMissingBody": "Sie wurden gelöscht. Der Plan startet ohne sie.",
   "@planMissingBody": {
@@ -3705,101 +2306,9 @@
   "@profileLockedWhy": {
     "description": "profile.locked.why"
   },
-  "quickForm": "Form",
-  "@quickForm": {
-    "description": "Kachelüberschrift"
-  },
-  "quickFormFalling": "fallend",
-  "@quickFormFalling": {
-    "description": "Richtung des Formtrends"
-  },
-  "quickFormFlat": "gleichbleibend",
-  "@quickFormFlat": {
-    "description": "Richtung des Formtrends"
-  },
-  "quickFormRising": "steigend",
-  "@quickFormRising": {
-    "description": "Richtung des Formtrends"
-  },
-  "quickFormValue": "{v} von 100",
-  "@quickFormValue": {
-    "description": "Formwert in der Kachel",
-    "placeholders": {
-      "v": {
-        "type": "int"
-      }
-    }
-  },
-  "quickLast": "Letzte Einheit",
-  "@quickLast": {
-    "description": "Kachelüberschrift"
-  },
-  "quickLastDays": "vor {n, plural, one {einem Tag} other {{n} Tagen}}",
-  "@quickLastDays": {
-    "description": "Abstand zur letzten Einheit",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "quickLastToday": "heute",
-  "@quickLastToday": {
-    "description": "Die letzte Einheit war heute"
-  },
-  "quickNext": "Nächster Termin",
-  "@quickNext": {
-    "description": "Kachelüberschrift"
-  },
-  "quickNextDays": "in {n} Tagen",
-  "@quickNextDays": {
-    "description": "Terminabstand",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "quickNextNone": "Nichts geplant",
-  "@quickNextNone": {
-    "description": "Kein Termin in Sicht"
-  },
-  "quickNextToday": "heute",
-  "@quickNextToday": {
-    "description": "Terminabstand"
-  },
-  "quickNextTomorrow": "morgen",
-  "@quickNextTomorrow": {
-    "description": "Terminabstand"
-  },
-  "quickNoSessions": "Noch keine Einheit",
-  "@quickNoSessions": {
-    "description": "Leerer Bestand"
-  },
-  "ratioBasis": "Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{{n} Einheiten}}",
-  "@ratioBasis": {
-    "description": "ratio.basis",
-    "placeholders": {
-      "min": {
-        "type": "int"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "ratioNoshift": "kein 4-Wochen-Schnitt",
   "@ratioNoshift": {
     "description": "ratio.noshift"
-  },
-  "ratioShift": "{value} pp gegen 4-Wochen-Schnitt",
-  "@ratioShift": {
-    "description": "ratio.shift",
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
   },
   "ratioShiftDown": "weniger",
   "@ratioShiftDown": {
@@ -3808,18 +2317,6 @@
   "ratioShiftUp": "mehr",
   "@ratioShiftUp": {
     "description": "ratio.shift.up"
-  },
-  "ratioSingleBody": "Ein Verhältnis braucht beide Spuren. Ab der ersten Ausdauereinheit steht es hier.",
-  "@ratioSingleBody": {
-    "description": "ratio.single.body"
-  },
-  "ratioSingleTitle": "Noch keine Ausdauer",
-  "@ratioSingleTitle": {
-    "description": "ratio.single.title"
-  },
-  "ratioTitle": "Verhältnis",
-  "@ratioTitle": {
-    "description": "ratio.title"
   },
   "recoveryAdd": "Erfassen",
   "@recoveryAdd": {
@@ -4014,10 +2511,6 @@
       }
     }
   },
-  "sessionDeleteBarrier": "Einheit löschen",
-  "@sessionDeleteBarrier": {
-    "description": "Vorlesetext des Dialogschleiers"
-  },
   "sessionDeleteBody": "Sie zählt in jede Auswertung. Danach steht dort:",
   "@sessionDeleteBody": {
     "description": "session.delete.body"
@@ -4026,22 +2519,9 @@
   "@sessionDeleteQ": {
     "description": "session.delete.q"
   },
-  "sessionDeleteTitle": "Einheit löschen?",
-  "@sessionDeleteTitle": {
-    "description": "Bestätigung"
-  },
   "sessionDeleteWindow": "6 Sekunden lang kannst du das rückgängig machen.",
   "@sessionDeleteWindow": {
     "description": "session.delete.window"
-  },
-  "sessionDeletedBody": "Du kannst das {n} Sekunden lang zurücknehmen.",
-  "@sessionDeletedBody": {
-    "description": "Widerrufshinweis, Text",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
   },
   "sessionDeletedSnack": "Einheit gelöscht · Einheiten {alt} → {neu}",
   "@sessionDeletedSnack": {
@@ -4054,23 +2534,6 @@
         "type": "String"
       }
     }
-  },
-  "sessionDeletedTitle": "{name} gelöscht",
-  "@sessionDeletedTitle": {
-    "description": "Widerrufshinweis nach dem Löschen",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "sessionDeletedUndo": "Rückgängig",
-  "@sessionDeletedUndo": {
-    "description": "Aktion im Widerrufshinweis"
-  },
-  "sessionEditDate": "Datum",
-  "@sessionEditDate": {
-    "description": "Feldbeschriftung"
   },
   "sessionEditDateA11y": "Datum ändern, aktuell {date}",
   "@sessionEditDateA11y": {
@@ -4093,14 +2556,6 @@
   "@sessionEditSaveError": {
     "description": "Fehlermeldung"
   },
-  "sessionEditSaved": "Einheit gespeichert",
-  "@sessionEditSaved": {
-    "description": "Rückmeldung"
-  },
-  "sessionEditSets": "Sätze",
-  "@sessionEditSets": {
-    "description": "Abschnittslabel über den Sätzen"
-  },
   "sessionEditTitle": "Einheit bearbeiten",
   "@sessionEditTitle": {
     "description": "session.edit.title"
@@ -4112,10 +2567,6 @@
   "sessionImpactCount": "Einheiten gesamt",
   "@sessionImpactCount": {
     "description": "session.impact.count"
-  },
-  "sessionImpactForm": "Form heute",
-  "@sessionImpactForm": {
-    "description": "session.impact.form"
   },
   "sessionImpactLongest": "Längste Pause",
   "@sessionImpactLongest": {
@@ -4155,154 +2606,13 @@
   "@setsAdd": {
     "description": "sets.add"
   },
-  "settingsAboutPrivate": "Privates Projekt, keine kommerzielle Nutzung.",
-  "@settingsAboutPrivate": {
-    "description": "Zeile im Abschnitt ueber die App"
-  },
-  "settingsAboutTheme": "Nur dunkel — ATEM ist für dunkle Umgebungen gebaut.",
-  "@settingsAboutTheme": {
-    "description": "Die Tatsache an der Stelle, an der sonst ein Schalter stuende"
-  },
-  "settingsAboutVersion": "Version {version}",
-  "@settingsAboutVersion": {
-    "description": "Zeile im Abschnitt ueber die App",
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsBodyWeight": "Körpergewicht",
-  "@settingsBodyWeight": {
-    "description": "Feldbeschriftung"
-  },
-  "settingsBodyWeightFault": "Zwischen {min} und {max} kg.",
-  "@settingsBodyWeightFault": {
-    "description": "Fehler am Gewichtsfeld",
-    "placeholders": {
-      "min": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsBodyWeightHint": "Rechnet jede Körpergewichtsübung neu — auch die von früher.",
-  "@settingsBodyWeightHint": {
-    "description": "Hilfetext unter dem Gewichtsfeld"
-  },
-  "settingsBodyWeightNone": "Noch nicht hinterlegt",
-  "@settingsBodyWeightNone": {
-    "description": "Zustand ohne Körpergewicht"
-  },
-  "settingsDelete": "Konto löschen",
-  "@settingsDelete": {
-    "description": "Aktion"
-  },
-  "settingsDeleteBarrier": "Konto löschen",
-  "@settingsDeleteBarrier": {
-    "description": "Vorlesetext des Dialogschleiers"
-  },
-  "settingsDeleteConfirmHint": "Genau so, in Großbuchstaben.",
-  "@settingsDeleteConfirmHint": {
-    "description": "Hilfetext am Bestätigungsfeld"
-  },
-  "settingsDeleteConfirmWord": "LÖSCHEN",
-  "@settingsDeleteConfirmWord": {
-    "description": "Das Wort, das getippt werden muss, in Grossbuchstaben"
-  },
-  "settingsDeleteCounts": "{sessions} Einheiten · {plans} Pläne · {exercises} eigene Übungen",
-  "@settingsDeleteCounts": {
-    "description": "Was konkret verschwindet",
-    "placeholders": {
-      "sessions": {
-        "type": "int"
-      },
-      "plans": {
-        "type": "int"
-      },
-      "exercises": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsDeleteExport": "Daten vorher sichern",
-  "@settingsDeleteExport": {
-    "description": "Zweiter Ausgang der ersten Stufe"
-  },
-  "settingsDeleteFailed": "Löschen nicht abgeschlossen",
-  "@settingsDeleteFailed": {
-    "description": "Fehlermeldung"
-  },
-  "settingsDeleteFailedBody": "Ein Teil deiner Daten ist noch da. Versuche es erneut, solange du angemeldet bist.",
-  "@settingsDeleteFailedBody": {
-    "description": "Fehlermeldung, Text"
-  },
-  "settingsDeleteOfflineBody": "Löschen greift über mehrere Sammlungen. Ohne Verbindung bliebe die Hälfte stehen.",
-  "@settingsDeleteOfflineBody": {
-    "description": "Gesperrt ohne Netz, Text"
-  },
-  "settingsDeleteOfflineTitle": "Ohne Verbindung nicht möglich",
-  "@settingsDeleteOfflineTitle": {
-    "description": "Gesperrt ohne Netz"
-  },
-  "settingsDeleteRunning": "Wird gelöscht …",
-  "@settingsDeleteRunning": {
-    "description": "Ladezustand"
-  },
-  "settingsDeleteStep1Body": "Einheiten, Pläne, eigene Übungen, Termine und dein Profil werden entfernt. Es gibt kein Zurück und kein Zeitfenster.",
-  "@settingsDeleteStep1Body": {
-    "description": "Erste Stufe, Text"
-  },
-  "settingsDeleteStep1Title": "Konto und alle Daten löschen?",
-  "@settingsDeleteStep1Title": {
-    "description": "Erste Stufe"
-  },
-  "settingsDeleteStep2Body": "Tippe {word}, um zu bestätigen.",
-  "@settingsDeleteStep2Body": {
-    "description": "Zweite Stufe, Text",
-    "placeholders": {
-      "word": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsDeleteStep2Title": "Wirklich endgültig löschen?",
-  "@settingsDeleteStep2Title": {
-    "description": "Zweite Stufe"
-  },
-  "settingsDeletedAccessBody": "ATEM ist geschlossen; die Freischaltung steht in einer Liste, die zum Programm gehört und nicht zum Konto. Meldest du dich erneut an, bist du wieder dabei — mit leerem Bestand.",
-  "@settingsDeletedAccessBody": {
-    "description": "Erklärung"
-  },
   "settingsDeletedAccessTitle": "Dein Zugang bleibt bestehen",
   "@settingsDeletedAccessTitle": {
     "description": "Der erklärungsbedürftige Teil"
   },
-  "settingsDeletedBody": "Deine Trainingsdaten sind entfernt.",
-  "@settingsDeletedBody": {
-    "description": "Abschlussbildschirm, Text"
-  },
-  "settingsDeletedClose": "Schließen",
-  "@settingsDeletedClose": {
-    "description": "Aktion"
-  },
-  "settingsDeletedTitle": "Konto gelöscht",
-  "@settingsDeletedTitle": {
-    "description": "Abschlussbildschirm"
-  },
   "settingsEntryA11y": "Profil und Einstellungen",
   "@settingsEntryA11y": {
     "description": "settings.entry.a11y"
-  },
-  "settingsExportBody": "JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.",
-  "@settingsExportBody": {
-    "description": "Erklärung der beiden Formate"
-  },
-  "settingsExportCsv": "Einheiten als CSV",
-  "@settingsExportCsv": {
-    "description": "Aktion"
   },
   "settingsExportDone": "{n} Dokumente gesichert",
   "@settingsExportDone": {
@@ -4317,145 +2627,9 @@
   "@settingsExportFailed": {
     "description": "Fehlermeldung"
   },
-  "settingsExportJson": "Alles als JSON",
-  "@settingsExportJson": {
-    "description": "Aktion"
-  },
   "settingsExportRunning": "Wird gesammelt …",
   "@settingsExportRunning": {
     "description": "Ladezustand"
-  },
-  "settingsExportTitle": "Daten sichern",
-  "@settingsExportTitle": {
-    "description": "Titel"
-  },
-  "settingsFromGoogle": "Name und Bild kommen von deinem Google-Konto.",
-  "@settingsFromGoogle": {
-    "description": "Erklaerung am Profilkopf statt eines defekt wirkenden Formulars"
-  },
-  "settingsHaptics": "Vibration",
-  "@settingsHaptics": {
-    "description": "Schalterbeschriftung"
-  },
-  "settingsHapticsHint": "Kurze Rückmeldung beim Antippen und am Pausenende.",
-  "@settingsHapticsHint": {
-    "description": "Hilfetext"
-  },
-  "settingsHapticsOff": "Vibration aus",
-  "@settingsHapticsOff": {
-    "description": "Vorlesetext, Zustand"
-  },
-  "settingsHapticsOn": "Vibration an",
-  "@settingsHapticsOn": {
-    "description": "Vorlesetext, Zustand"
-  },
-  "settingsImprint": "Impressum",
-  "@settingsImprint": {
-    "description": "Rechtlicher Weg"
-  },
-  "settingsLanguage": "Sprache",
-  "@settingsLanguage": {
-    "description": "Feldbeschriftung"
-  },
-  "settingsLanguageEnglish": "Englisch",
-  "@settingsLanguageEnglish": {
-    "description": "Sprache"
-  },
-  "settingsLanguageGerman": "Deutsch",
-  "@settingsLanguageGerman": {
-    "description": "Sprache"
-  },
-  "settingsLanguageHint": "Wirkt sofort.",
-  "@settingsLanguageHint": {
-    "description": "Hilfetext unter der Sprachwahl"
-  },
-  "settingsLinkFailed": "Seite lässt sich nicht öffnen",
-  "@settingsLinkFailed": {
-    "description": "Fehlermeldung"
-  },
-  "settingsOpenA11y": "Einstellungen und Profil öffnen",
-  "@settingsOpenA11y": {
-    "description": "Vorlesetext des Profilbilds im Dashboard-Kopf"
-  },
-  "settingsOpensBrowser": "Öffnet im Browser",
-  "@settingsOpensBrowser": {
-    "description": "Hilfetext an den rechtlichen Wegen"
-  },
-  "settingsPreviewComputing": "Wird gerechnet …",
-  "@settingsPreviewComputing": {
-    "description": "Ladezustand der Vorschau"
-  },
-  "settingsPreviewFitness": "Fitness ggü. Höchststand",
-  "@settingsPreviewFitness": {
-    "description": "Zeile der Vorschau"
-  },
-  "settingsPreviewLoad": "Last der letzten Einheit",
-  "@settingsPreviewLoad": {
-    "description": "Zeile der Vorschau"
-  },
-  "settingsPreviewNone": "An deinen Auswertungen ändert das nichts.",
-  "@settingsPreviewNone": {
-    "description": "Vorschau ohne Änderung"
-  },
-  "settingsPreviewTitle": "Was sich dadurch ändert",
-  "@settingsPreviewTitle": {
-    "description": "Überschrift der Vorschau"
-  },
-  "settingsPrivacy": "Datenschutzerklärung",
-  "@settingsPrivacy": {
-    "description": "Rechtlicher Weg"
-  },
-  "settingsReplayOnboarding": "Onboarding wiederholen",
-  "@settingsReplayOnboarding": {
-    "description": "Aktion"
-  },
-  "settingsReplayOnboardingHint": "Fragt das Körpergewicht erneut ab.",
-  "@settingsReplayOnboardingHint": {
-    "description": "Hilfetext"
-  },
-  "settingsRest": "Pausenzeit",
-  "@settingsRest": {
-    "description": "Feldbeschriftung"
-  },
-  "settingsRestFault": "Zwischen {min} und {max} Sekunden.",
-  "@settingsRestFault": {
-    "description": "Fehler an der Pausenzeit",
-    "placeholders": {
-      "min": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsRestHint": "Vorschlag beim Start einer Einheit. Im Training änderbar.",
-  "@settingsRestHint": {
-    "description": "Hilfetext unter der Pausenzeit"
-  },
-  "settingsSectionAbout": "Über die App",
-  "@settingsSectionAbout": {
-    "description": "Abschnitt"
-  },
-  "settingsSectionAccount": "Konto",
-  "@settingsSectionAccount": {
-    "description": "Abschnitt"
-  },
-  "settingsSectionApp": "App",
-  "@settingsSectionApp": {
-    "description": "Abschnitt"
-  },
-  "settingsSectionLegal": "Rechtliches",
-  "@settingsSectionLegal": {
-    "description": "Abschnitt"
-  },
-  "settingsSectionProfile": "Profil",
-  "@settingsSectionProfile": {
-    "description": "Abschnitt"
-  },
-  "settingsSectionTraining": "Training",
-  "@settingsSectionTraining": {
-    "description": "Abschnitt"
   },
   "settingsSignOut": "Abmelden",
   "@settingsSignOut": {
@@ -4473,88 +2647,13 @@
   "@settingsSignOutTitle": {
     "description": "Bestätigung"
   },
-  "settingsSignedInAs": "Angemeldet als",
-  "@settingsSignedInAs": {
-    "description": "Beschriftung am Konto"
-  },
-  "settingsTerms": "Nutzungsbedingungen",
-  "@settingsTerms": {
-    "description": "Rechtlicher Weg"
-  },
   "settingsTitle": "Einstellungen",
   "@settingsTitle": {
     "description": "settings.title"
   },
-  "settingsUnits": "Einheiten",
-  "@settingsUnits": {
-    "description": "Feldbeschriftung"
-  },
-  "settingsUnitsHint": "Gespeichert wird immer in Kilogramm.",
-  "@settingsUnitsHint": {
-    "description": "Hilfetext unter der Einheitenwahl"
-  },
-  "settingsUnitsImperial": "Imperial",
-  "@settingsUnitsImperial": {
-    "description": "Einheitensystem"
-  },
-  "settingsUnitsImperialA11y": "Imperial, Pfund",
-  "@settingsUnitsImperialA11y": {
-    "description": "Vorlesetext"
-  },
-  "settingsUnitsMetric": "Metrisch",
-  "@settingsUnitsMetric": {
-    "description": "Einheitensystem"
-  },
-  "settingsUnitsMetricA11y": "Metrisch, Kilogramm",
-  "@settingsUnitsMetricA11y": {
-    "description": "Vorlesetext"
-  },
-  "settingsWeightChanged": "Körpergewicht auf {weight} kg geändert",
-  "@settingsWeightChanged": {
-    "description": "Widerrufshinweis",
-    "placeholders": {
-      "weight": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsWeightChangedBody": "Du kannst das {n} Sekunden lang zurücknehmen.",
-  "@settingsWeightChangedBody": {
-    "description": "Widerrufshinweis, Text",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "sheetFilterActive": "{n} aktiv",
-  "@sheetFilterActive": {
-    "description": "sheet.filter.active (Board 02)",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "sheetFilterApply": "Anwenden",
-  "@sheetFilterApply": {
-    "description": "sheet.filter.apply (Board 02)"
-  },
-  "sheetFilterTitle": "Filter",
-  "@sheetFilterTitle": {
-    "description": "sheet.filter.title (Board 02)"
-  },
   "sheetFreeBody": "Ohne Plan starten — Übungen fügst du im Training hinzu.",
   "@sheetFreeBody": {
     "description": "Text im Start-Sheet beim freien Training"
-  },
-  "sheetGrabberHint": "Ziehen zum Schließen",
-  "@sheetGrabberHint": {
-    "description": "sheet.grabber_hint (Board 02)"
-  },
-  "sheetNoteTitle": "Notiz zum Satz",
-  "@sheetNoteTitle": {
-    "description": "sheet.note.title (Board 02)"
   },
   "sheetPickerApply": "Übernehmen",
   "@sheetPickerApply": {
@@ -4576,10 +2675,6 @@
         "type": "String"
       }
     }
-  },
-  "signout": "Abmelden",
-  "@signout": {
-    "description": "signout"
   },
   "signoutKeep": "Daten bleiben",
   "@signoutKeep": {
@@ -4745,10 +2840,6 @@
   "@workoutA11yNextExercise": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutA11yNotes": "Session-Notizen öffnen",
-  "@workoutA11yNotes": {
-    "description": "Runner, Modul 1/2 Spezifikation"
-  },
   "workoutA11yPause": "Training pausieren",
   "@workoutA11yPause": {
     "description": "Runner, Modul 1/2 Spezifikation"
@@ -4827,78 +2918,9 @@
       }
     }
   },
-  "workoutBannerActive": "Aktives Workout: {name}",
-  "@workoutBannerActive": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    },
-    "description": "aus workout.banner.active"
-  },
-  "workoutBannerCancel": "Abbrechen",
-  "@workoutBannerCancel": {
-    "description": "aus workout.banner.cancel"
-  },
-  "workoutBannerCancelConfirm": "Aktives Workout wirklich abbrechen? Alle Fortschritte gehen verloren.",
-  "@workoutBannerCancelConfirm": {
-    "description": "aus workout.banner.cancelConfirm"
-  },
-  "workoutBannerCancelWorkoutConfirm": "Workout wirklich abbrechen? Alle Fortschritte gehen verloren.",
-  "@workoutBannerCancelWorkoutConfirm": {
-    "description": "aus workout.banner.cancelWorkoutConfirm"
-  },
-  "workoutBannerResume": "Fortsetzen",
-  "@workoutBannerResume": {
-    "description": "aus workout.banner.resume"
-  },
-  "workoutCardioDistance": "Distanz (km)",
-  "@workoutCardioDistance": {
-    "description": "aus workout.cardio.distance"
-  },
-  "workoutCardioDuration": "Dauer (Min.)",
-  "@workoutCardioDuration": {
-    "description": "aus workout.cardio.duration"
-  },
-  "workoutCardioLog": "Cardio loggen",
-  "@workoutCardioLog": {
-    "description": "aus workout.cardio.log"
-  },
-  "workoutCardioPace": "Pace",
-  "@workoutCardioPace": {
-    "description": "aus workout.cardio.pace"
-  },
-  "workoutCardioRpe": "Belastung (1–5)",
-  "@workoutCardioRpe": {
-    "description": "aus workout.cardio.rpe"
-  },
   "workoutColHold": "Halten",
   "@workoutColHold": {
     "description": "Spaltenkopf im Satzprotokoll"
-  },
-  "workoutCopyLastSet": "Letzten Satz kopieren",
-  "@workoutCopyLastSet": {
-    "description": "aus workout.copyLastSet"
-  },
-  "workoutEditDateError": "Ungültiges Datumsformat. Bitte verwende YYYY-MM-DD",
-  "@workoutEditDateError": {
-    "description": "aus workout.editDate.error"
-  },
-  "workoutEditDatePrompt": "Neues Datum (YYYY-MM-DD):",
-  "@workoutEditDatePrompt": {
-    "description": "aus workout.editDate.prompt"
-  },
-  "workoutExerciseCurrent": "Aktuelle Übung",
-  "@workoutExerciseCurrent": {
-    "description": "aus workout.exercise.current"
-  },
-  "workoutExerciseFinish": "Workout beenden",
-  "@workoutExerciseFinish": {
-    "description": "aus workout.exercise.finish"
-  },
-  "workoutExerciseNext": "Nächste Übung",
-  "@workoutExerciseNext": {
-    "description": "aus workout.exercise.next"
   },
   "workoutExerciseProgress": "{completed} / {total} Übungen",
   "@workoutExerciseProgress": {
@@ -4911,42 +2933,6 @@
       }
     },
     "description": "aus workout.exercise.progress"
-  },
-  "workoutFeedbackEnterDuration": "Bitte Dauer eingeben",
-  "@workoutFeedbackEnterDuration": {
-    "description": "aus workout.feedback.enterDuration"
-  },
-  "workoutFeedbackExerciseComplete": "Übung abgeschlossen!",
-  "@workoutFeedbackExerciseComplete": {
-    "description": "aus workout.feedback.exerciseComplete"
-  },
-  "workoutFeedbackRestartError": "Fehler beim Neustarten des Workouts",
-  "@workoutFeedbackRestartError": {
-    "description": "aus workout.feedback.restartError"
-  },
-  "workoutFeedbackSaveError": "Fehler beim Speichern des Workouts",
-  "@workoutFeedbackSaveError": {
-    "description": "aus workout.feedback.saveError"
-  },
-  "workoutFeedbackSaved": "Workout gespeichert!",
-  "@workoutFeedbackSaved": {
-    "description": "aus workout.feedback.saved"
-  },
-  "workoutFreeTitle": "Freies Training",
-  "@workoutFreeTitle": {
-    "description": "Titel des Runners ohne Plan"
-  },
-  "workoutHold": "Halten",
-  "@workoutHold": {
-    "description": "aus workout.hold"
-  },
-  "workoutHoldDurationLabel": "Haltedauer (Sek.)",
-  "@workoutHoldDurationLabel": {
-    "description": "aus workout.holdDurationLabel"
-  },
-  "workoutLastPerformance": "Letztes Mal",
-  "@workoutLastPerformance": {
-    "description": "aus workout.lastPerformance"
   },
   "workoutLeaveBody": "Dein Stand bleibt gesichert. Du kannst später fortsetzen.",
   "@workoutLeaveBody": {
@@ -4968,73 +2954,13 @@
   "@workoutLoggingAddExercise": {
     "description": "aus workout.logging.addExercise"
   },
-  "workoutLoggingExerciseAlreadyAdded": "Übung bereits hinzugefügt",
-  "@workoutLoggingExerciseAlreadyAdded": {
-    "description": "aus workout.logging.exerciseAlreadyAdded"
-  },
-  "workoutLoggingExercisesOptional": "Übungen (optional)",
-  "@workoutLoggingExercisesOptional": {
-    "description": "aus workout.logging.exercisesOptional"
-  },
-  "workoutLoggingReps": "Wiederholungen pro Satz",
-  "@workoutLoggingReps": {
-    "description": "aus workout.logging.reps"
-  },
-  "workoutLoggingSet": "Satz",
-  "@workoutLoggingSet": {
-    "description": "aus workout.logging.set"
-  },
   "workoutLoggingSets": "Sätze",
   "@workoutLoggingSets": {
     "description": "aus workout.logging.sets"
   },
-  "workoutLoggingTotalReps": "Wdh.",
-  "@workoutLoggingTotalReps": {
-    "description": "aus workout.logging.totalReps"
-  },
-  "workoutNoPreviousData": "Keine vorherigen Daten",
-  "@workoutNoPreviousData": {
-    "description": "aus workout.noPreviousData"
-  },
-  "workoutPostWorkoutComparisonTitle": "Vergleich zum letzten Mal",
-  "@workoutPostWorkoutComparisonTitle": {
-    "description": "aus workout.postWorkout.comparisonTitle"
-  },
-  "workoutPostWorkoutEditDuration": "Trainingszeit anpassen",
-  "@workoutPostWorkoutEditDuration": {
-    "description": "aus workout.postWorkout.editDuration"
-  },
-  "workoutPostWorkoutExercises": "Übungen",
-  "@workoutPostWorkoutExercises": {
-    "description": "aus workout.postWorkout.exercises"
-  },
-  "workoutPostWorkoutFallbackName": "Training",
-  "@workoutPostWorkoutFallbackName": {
-    "description": "aus workout.postWorkout.fallbackName"
-  },
-  "workoutPostWorkoutMinutes": "Minuten",
-  "@workoutPostWorkoutMinutes": {
-    "description": "aus workout.postWorkout.minutes"
-  },
   "workoutPostWorkoutSets": "Sets",
   "@workoutPostWorkoutSets": {
     "description": "aus workout.postWorkout.sets"
-  },
-  "workoutPostWorkoutTime": "Zeit",
-  "@workoutPostWorkoutTime": {
-    "description": "aus workout.postWorkout.time"
-  },
-  "workoutPostWorkoutTitle": "Workout abgeschlossen!",
-  "@workoutPostWorkoutTitle": {
-    "description": "aus workout.postWorkout.title"
-  },
-  "workoutPostWorkoutToProgress": "Zum Fortschritt",
-  "@workoutPostWorkoutToProgress": {
-    "description": "aus workout.postWorkout.toProgress"
-  },
-  "workoutPostWorkoutVolume": "Volumen",
-  "@workoutPostWorkoutVolume": {
-    "description": "aus workout.postWorkout.volume"
   },
   "workoutPreviousReps": "{reps} Wdh.",
   "@workoutPreviousReps": {
@@ -5066,62 +2992,6 @@
       }
     }
   },
-  "workoutQuickBodyweight": "Bodyweight",
-  "@workoutQuickBodyweight": {
-    "description": "aus workout.quick.bodyweight"
-  },
-  "workoutQuickBodyweightDesc": "Training mit Eigengewicht",
-  "@workoutQuickBodyweightDesc": {
-    "description": "aus workout.quick.bodyweightDesc"
-  },
-  "workoutQuickDate": "Datum *",
-  "@workoutQuickDate": {
-    "description": "aus workout.quick.date"
-  },
-  "workoutQuickDateRequired": "Bitte wähle ein Datum",
-  "@workoutQuickDateRequired": {
-    "description": "aus workout.quick.dateRequired"
-  },
-  "workoutQuickDifficulty": "Schwierigkeit",
-  "@workoutQuickDifficulty": {
-    "description": "aus workout.quick.difficulty"
-  },
-  "workoutQuickDuration": "Dauer (Minuten)",
-  "@workoutQuickDuration": {
-    "description": "aus workout.quick.duration"
-  },
-  "workoutQuickDurationRequired": "Bitte gib eine gültige Dauer ein",
-  "@workoutQuickDurationRequired": {
-    "description": "aus workout.quick.durationRequired"
-  },
-  "workoutQuickName": "Workout Name",
-  "@workoutQuickName": {
-    "description": "aus workout.quick.name"
-  },
-  "workoutQuickNameRequired": "Bitte gib einen Workout Namen ein",
-  "@workoutQuickNameRequired": {
-    "description": "aus workout.quick.nameRequired"
-  },
-  "workoutQuickSaveError": "Fehler beim Speichern des Workouts",
-  "@workoutQuickSaveError": {
-    "description": "aus workout.quick.saveError"
-  },
-  "workoutQuickTitle": "Workout Schnell-Eintrag",
-  "@workoutQuickTitle": {
-    "description": "aus workout.quick.title"
-  },
-  "workoutQuickType": "Typ",
-  "@workoutQuickType": {
-    "description": "aus workout.quick.type"
-  },
-  "workoutQuickWeights": "Gewichte",
-  "@workoutQuickWeights": {
-    "description": "aus workout.quick.weights"
-  },
-  "workoutQuickWeightsDesc": "Gym / Hanteln",
-  "@workoutQuickWeightsDesc": {
-    "description": "aus workout.quick.weightsDesc"
-  },
   "workoutRecordKg": "PR {weight} kg",
   "@workoutRecordKg": {
     "description": "Schwerstes je protokolliertes Gewicht dieser Übung",
@@ -5130,14 +3000,6 @@
         "type": "String"
       }
     }
-  },
-  "workoutRecoveryDuration": "Dauer (Min.)",
-  "@workoutRecoveryDuration": {
-    "description": "aus workout.recovery.duration"
-  },
-  "workoutRecoveryLog": "Recovery loggen",
-  "@workoutRecoveryLog": {
-    "description": "aus workout.recovery.log"
   },
   "workoutRelativeTimeDaysAgo": "vor {n} Tagen",
   "@workoutRelativeTimeDaysAgo": {
@@ -5148,14 +3010,6 @@
     },
     "description": "aus workout.relativeTime.daysAgo"
   },
-  "workoutRelativeTimeOneWeekAgo": "vor 1 Woche",
-  "@workoutRelativeTimeOneWeekAgo": {
-    "description": "aus workout.relativeTime.oneWeekAgo"
-  },
-  "workoutRelativeTimeToday": "heute",
-  "@workoutRelativeTimeToday": {
-    "description": "aus workout.relativeTime.today"
-  },
   "workoutRelativeTimeWeeksAgo": "vor {n} Wochen",
   "@workoutRelativeTimeWeeksAgo": {
     "placeholders": {
@@ -5164,10 +3018,6 @@
       }
     },
     "description": "aus workout.relativeTime.weeksAgo"
-  },
-  "workoutRelativeTimeYesterday": "gestern",
-  "@workoutRelativeTimeYesterday": {
-    "description": "aus workout.relativeTime.yesterday"
   },
   "workoutRemoveExerciseBody": "Die abgehakten Sätze dieser Übung gehen verloren.",
   "@workoutRemoveExerciseBody": {
@@ -5213,10 +3063,6 @@
   "@workoutRunnerAddSet": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutRunnerBack": "Zurück",
-  "@workoutRunnerBack": {
-    "description": "Runner, Modul 1/2 Spezifikation"
-  },
   "workoutRunnerEmptyBody": "Füge hinzu, was du machst. Die Einheit wächst mit.",
   "@workoutRunnerEmptyBody": {
     "description": "Leerer Runner, Text"
@@ -5231,18 +3077,6 @@
   },
   "workoutRunnerNotAvailable": "Workout nicht verfügbar",
   "@workoutRunnerNotAvailable": {
-    "description": "Runner, Modul 1/2 Spezifikation"
-  },
-  "workoutRunnerNotesDone": "FERTIG",
-  "@workoutRunnerNotesDone": {
-    "description": "Runner, Modul 1/2 Spezifikation"
-  },
-  "workoutRunnerNotesHint": "Wie fühlt sich die Session an?",
-  "@workoutRunnerNotesHint": {
-    "description": "Runner, Modul 1/2 Spezifikation"
-  },
-  "workoutRunnerNotesTitle": "SESSION-NOTIZEN",
-  "@workoutRunnerNotesTitle": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
   "workoutRunnerRemoveExercise": "Übung entfernen",
@@ -5273,15 +3107,6 @@
   "workoutRunnerRestSkip": "WEITER",
   "@workoutRunnerRestSkip": {
     "description": "Runner 18.09.2026 — ohne Pfeil: Poppins zeichnet → nicht, auf dem Gerät stand ein leeres Kästchen"
-  },
-  "workoutRunnerRunning": "SESSION LÄUFT · {time}",
-  "@workoutRunnerRunning": {
-    "description": "Runner, Modul 1/2 Spezifikation",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
   },
   "workoutRunnerSaved": "Session gespeichert",
   "@workoutRunnerSaved": {
@@ -5346,29 +3171,9 @@
   "@workoutRunnerTableWeight": {
     "description": "Runner, Modul 1/2 Spezifikation"
   },
-  "workoutScreenAddExercise": "Übung hinzufügen",
-  "@workoutScreenAddExercise": {
-    "description": "aus workout.screen.addExercise"
-  },
   "workoutScreenAddSet": "Satz hinzufügen",
   "@workoutScreenAddSet": {
     "description": "aus workout.screen.addSet"
-  },
-  "workoutScreenBodyweight": "Bodyweight",
-  "@workoutScreenBodyweight": {
-    "description": "aus workout.screen.bodyweight"
-  },
-  "workoutScreenCancelWorkout": "Abbrechen",
-  "@workoutScreenCancelWorkout": {
-    "description": "aus workout.screen.cancelWorkout"
-  },
-  "workoutScreenCardio": "Cardio",
-  "@workoutScreenCardio": {
-    "description": "aus workout.screen.cardio"
-  },
-  "workoutScreenCurrentExercise": "Aktuelle Übung",
-  "@workoutScreenCurrentExercise": {
-    "description": "aus workout.screen.currentExercise"
   },
   "workoutScreenDiscardConfirm": "Workout wirklich verwerfen? Alle Fortschritte gehen verloren.",
   "@workoutScreenDiscardConfirm": {
@@ -5381,10 +3186,6 @@
   "workoutScreenDiscardWorkout": "Workout verwerfen",
   "@workoutScreenDiscardWorkout": {
     "description": "aus workout.screen.discardWorkout"
-  },
-  "workoutScreenEmptyHint": "Füge Übungen hinzu, um dein Workout zu starten",
-  "@workoutScreenEmptyHint": {
-    "description": "aus workout.screen.emptyHint"
   },
   "workoutScreenEndWorkout": "Workout beenden",
   "@workoutScreenEndWorkout": {
@@ -5438,158 +3239,6 @@
     },
     "description": "aus workout.screen.exercisesButton"
   },
-  "workoutScreenExercisesSheetTitle": "Übungen",
-  "@workoutScreenExercisesSheetTitle": {
-    "description": "aus workout.screen.exercisesSheetTitle"
-  },
-  "workoutScreenFinishWorkout": "Workout abschließen",
-  "@workoutScreenFinishWorkout": {
-    "description": "aus workout.screen.finishWorkout"
-  },
-  "workoutScreenFreeWorkout": "Freies Workout",
-  "@workoutScreenFreeWorkout": {
-    "description": "aus workout.screen.freeWorkout"
-  },
-  "workoutScreenGoal": "Ziel",
-  "@workoutScreenGoal": {
-    "description": "aus workout.screen.goal"
-  },
-  "workoutScreenLogWorkout": "Workout erfassen",
-  "@workoutScreenLogWorkout": {
-    "description": "aus workout.screen.logWorkout"
-  },
-  "workoutScreenMenu": "Menü",
-  "@workoutScreenMenu": {
-    "description": "aus workout.screen.menu"
-  },
-  "workoutScreenNextExercise": "Nächste Übung",
-  "@workoutScreenNextExercise": {
-    "description": "aus workout.screen.nextExercise"
-  },
-  "workoutScreenNoActiveWorkout": "Kein aktives Workout",
-  "@workoutScreenNoActiveWorkout": {
-    "description": "aus workout.screen.noActiveWorkout"
-  },
-  "workoutScreenNoActiveWorkoutText": "Starte ein Training aus dem Kalender oder einem Plan.",
-  "@workoutScreenNoActiveWorkoutText": {
-    "description": "aus workout.screen.noActiveWorkoutText"
-  },
-  "workoutScreenNoExercisesFound": "Keine Übungen gefunden",
-  "@workoutScreenNoExercisesFound": {
-    "description": "aus workout.screen.noExercisesFound"
-  },
-  "workoutScreenRecovery": "Recovery",
-  "@workoutScreenRecovery": {
-    "description": "aus workout.screen.recovery"
-  },
-  "workoutScreenRest": "Pause",
-  "@workoutScreenRest": {
-    "description": "aus workout.screen.rest"
-  },
-  "workoutScreenRestTimer": "Pause",
-  "@workoutScreenRestTimer": {
-    "description": "aus workout.screen.restTimer"
-  },
-  "workoutScreenSaveWorkout": "Workout speichern",
-  "@workoutScreenSaveWorkout": {
-    "description": "aus workout.screen.saveWorkout"
-  },
-  "workoutScreenSearchExercise": "Übung suchen...",
-  "@workoutScreenSearchExercise": {
-    "description": "aus workout.screen.searchExercise"
-  },
-  "workoutScreenSwitchToExercise": "Zu dieser Übung wechseln",
-  "@workoutScreenSwitchToExercise": {
-    "description": "aus workout.screen.switchToExercise"
-  },
-  "workoutScreenTimerAdd": "+10s",
-  "@workoutScreenTimerAdd": {
-    "description": "aus workout.screen.timerAdd"
-  },
-  "workoutScreenTimerDone": "Pause vorbei!",
-  "@workoutScreenTimerDone": {
-    "description": "aus workout.screen.timerDone"
-  },
-  "workoutScreenTimerPause": "Pausieren",
-  "@workoutScreenTimerPause": {
-    "description": "aus workout.screen.timerPause"
-  },
-  "workoutScreenTimerResume": "Fortsetzen",
-  "@workoutScreenTimerResume": {
-    "description": "aus workout.screen.timerResume"
-  },
-  "workoutScreenTimerSkip": "Ueberspringen",
-  "@workoutScreenTimerSkip": {
-    "description": "aus workout.screen.timerSkip"
-  },
-  "workoutScreenTimerStart": "Timer starten",
-  "@workoutScreenTimerStart": {
-    "description": "aus workout.screen.timerStart"
-  },
-  "workoutScreenTimerSub": "-10s",
-  "@workoutScreenTimerSub": {
-    "description": "aus workout.screen.timerSub"
-  },
-  "workoutScreenToPlans": "Zu den Plänen",
-  "@workoutScreenToPlans": {
-    "description": "aus workout.screen.toPlans"
-  },
-  "workoutScreenWeighted": "Gewichte",
-  "@workoutScreenWeighted": {
-    "description": "aus workout.screen.weighted"
-  },
-  "workoutSetLoggerAddSet": "Satz hinzufügen",
-  "@workoutSetLoggerAddSet": {
-    "description": "aus workout.setLogger.addSet"
-  },
-  "workoutSetLoggerAtLeastOneSet": "Bitte logge mindestens einen Satz bevor du weitergehst",
-  "@workoutSetLoggerAtLeastOneSet": {
-    "description": "aus workout.setLogger.atLeastOneSet"
-  },
-  "workoutSetLoggerCompletedSets": "Abgeschlossene Sätze",
-  "@workoutSetLoggerCompletedSets": {
-    "description": "aus workout.setLogger.completedSets"
-  },
-  "workoutSetLoggerDecreaseWeight": "Gewicht verringern",
-  "@workoutSetLoggerDecreaseWeight": {
-    "description": "aus workout.setLogger.decreaseWeight"
-  },
-  "workoutSetLoggerDeleteSet": "Satz löschen",
-  "@workoutSetLoggerDeleteSet": {
-    "description": "aus workout.setLogger.deleteSet"
-  },
-  "workoutSetLoggerDeleteSetConfirm": "Diesen Satz wirklich löschen?",
-  "@workoutSetLoggerDeleteSetConfirm": {
-    "description": "aus workout.setLogger.deleteSetConfirm"
-  },
-  "workoutSetLoggerDuplicateLast": "Letzten Satz kopieren",
-  "@workoutSetLoggerDuplicateLast": {
-    "description": "aus workout.setLogger.duplicateLast"
-  },
-  "workoutSetLoggerEnterHold": "Bitte gib die Haltedauer ein",
-  "@workoutSetLoggerEnterHold": {
-    "description": "aus workout.setLogger.enterHold"
-  },
-  "workoutSetLoggerEnterReps": "Bitte gib die Anzahl der Wiederholungen ein",
-  "@workoutSetLoggerEnterReps": {
-    "description": "aus workout.setLogger.enterReps"
-  },
-  "workoutSetLoggerIncreaseWeight": "Gewicht erhöhen",
-  "@workoutSetLoggerIncreaseWeight": {
-    "description": "aus workout.setLogger.increaseWeight"
-  },
-  "workoutSetLoggerLogSet": "Satz loggen",
-  "@workoutSetLoggerLogSet": {
-    "description": "aus workout.setLogger.logSet"
-  },
-  "workoutSetLoggerNoSets": "Noch keine Sätze geloggt",
-  "@workoutSetLoggerNoSets": {
-    "description": "aus workout.setLogger.noSets"
-  },
-  "workoutSetLoggerReps": "Wiederholungen",
-  "@workoutSetLoggerReps": {
-    "description": "aus workout.setLogger.reps"
-  },
   "workoutSetLoggerRest": "{seconds}s Pause",
   "@workoutSetLoggerRest": {
     "placeholders": {
@@ -5598,10 +3247,6 @@
       }
     },
     "description": "aus workout.setLogger.rest"
-  },
-  "workoutSetLoggerSet": "Satz",
-  "@workoutSetLoggerSet": {
-    "description": "aus workout.setLogger.set"
   },
   "workoutSetLoggerStepModeChanged": "Schrittweite: {step} {unit}",
   "@workoutSetLoggerStepModeChanged": {
@@ -5614,10 +3259,6 @@
       }
     },
     "description": "aus workout.setLogger.stepModeChanged"
-  },
-  "workoutSetLoggerTarget": "Ziel",
-  "@workoutSetLoggerTarget": {
-    "description": "aus workout.setLogger.target"
   },
   "workoutSetLoggerTargetReps": "{reps} Wdh",
   "@workoutSetLoggerTargetReps": {
@@ -5645,10 +3286,6 @@
       }
     },
     "description": "aus workout.setLogger.title"
-  },
-  "workoutSetLoggerWeight": "Gewicht",
-  "@workoutSetLoggerWeight": {
-    "description": "aus workout.setLogger.weight"
   },
   "workoutSetLoggerWeightUnit": "kg",
   "@workoutSetLoggerWeightUnit": {
@@ -5713,18 +3350,6 @@
       }
     }
   },
-  "workoutTargetRef": "Ziel {sets}×{reps}",
-  "@workoutTargetRef": {
-    "description": "Zielvorgabe aus dem Plan, als Referenz neben dem Feld",
-    "placeholders": {
-      "sets": {
-        "type": "int"
-      },
-      "reps": {
-        "type": "String"
-      }
-    }
-  },
   "workoutTargetReps": "Ziel {reps}",
   "@workoutTargetReps": {
     "description": "Zielvorgabe aus dem Plan, neben dem Feld",
@@ -5733,19 +3358,6 @@
         "type": "String"
       }
     }
-  },
-  "workoutTargetSets": "Ziel {sets} Sätze",
-  "@workoutTargetSets": {
-    "description": "Zielvorgabe ohne Wiederholungsangabe",
-    "placeholders": {
-      "sets": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutsFree": "Freies Training",
-  "@workoutsFree": {
-    "description": "Name des Trainings ohne Plan"
   },
   "workoutsFreeStart": "Freies Training starten",
   "@workoutsFreeStart": {
@@ -5768,22 +3380,9 @@
   "@workoutsPlansLabel": {
     "description": "Abschnittslabel Pläne"
   },
-  "workoutsSearchEntry": "{n} Übungen durchsuchen",
-  "@workoutsSearchEntry": {
-    "description": "Einstieg in die Übungsliste",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "workoutsStart": "Training starten",
   "@workoutsStart": {
     "description": "Aktion auf der Session-Karte"
-  },
-  "workoutsTitle": "Workouts",
-  "@workoutsTitle": {
-    "description": "Titel des Tabs"
   },
   "workoutsTodayEmptyBody": "Starte frei oder wähle einen Plan.",
   "@workoutsTodayEmptyBody": {
@@ -6097,34 +3696,6 @@
       }
     }
   },
-  "cardioActivityAverage": "{n, plural, one{1 Einheit} other{{n} Einheiten}} Ø {km} km",
-  "@cardioActivityAverage": {
-    "description": "Ergänzung zu Board 11 — „3 Läufe Ø 6,2 km\" (B1/1)",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "km": {
-        "type": "String"
-      }
-    }
-  },
-  "ratioStrengthWeek": "Kraft diese Woche",
-  "@ratioStrengthWeek": {
-    "description": "Ergänzung zu Board 11 — Kraft-Wochenblock ohne Gegenspur (C1/2)"
-  },
-  "ratioStrengthMeasure": "{t} t Volumen · {s, plural, one{1 Satz} other{{s} Sätze}}",
-  "@ratioStrengthMeasure": {
-    "description": "Ergänzung zu Board 11 — Fachgrösse Kraft",
-    "placeholders": {
-      "t": {
-        "type": "String"
-      },
-      "s": {
-        "type": "int"
-      }
-    }
-  },
   "hybridWeekSummary": "{n, plural, one{1 Einheit} other{{n} Einheiten}} · {min} min",
   "@hybridWeekSummary": {
     "description": "Ergänzung zu Board 11 — „3 Einheiten · 128 min\"",
@@ -6145,39 +3716,6 @@
   "@ratioOpenCardio": {
     "description": "Ergänzung zu Board 11 — Zielort im Label (H)"
   },
-  "ratioA11y": "Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{{n} Einheiten}}.",
-  "@ratioA11y": {
-    "description": "Ergänzung zu Board 11 — Vorlesetext des Verhältnisbalkens (H)",
-    "placeholders": {
-      "s": {
-        "type": "int"
-      },
-      "c": {
-        "type": "int"
-      },
-      "min": {
-        "type": "int"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "ratioRowA11y": "{track}, {pct} Prozent, {min} Minuten",
-  "@ratioRowA11y": {
-    "description": "Ergänzung zu Board 11 — Vorlesetext einer Verhältniszeile",
-    "placeholders": {
-      "track": {
-        "type": "String"
-      },
-      "pct": {
-        "type": "int"
-      },
-      "min": {
-        "type": "int"
-      }
-    }
-  },
   "ratioShiftA11y": "{value} Prozentpunkte {dir} als im 4-Wochen-Schnitt",
   "@ratioShiftA11y": {
     "description": "Ergänzung zu Board 11 — Vorlesetext der Verschiebung",
@@ -6197,10 +3735,6 @@
   "hybridEmptyCardio": "Ausdauer erfassen",
   "@hybridEmptyCardio": {
     "description": "Ergänzung zu Board 11 — Leerer Hybrid-Tab und Hinweiszeile (C1/2, C3/2)"
-  },
-  "hybridFormSection": "Formwert · 4 Wochen",
-  "@hybridFormSection": {
-    "description": "Ergänzung zu Board 11 — Block unter dem Verhältnis (A3)"
   },
   "whenToday": "Heute",
   "@whenToday": {
@@ -6325,124 +3859,6 @@
       }
     }
   },
-  "detailStatMinutes": "Minuten",
-  "@detailStatMinutes": {
-    "description": "Board 06 — StatBox-Dreier (A3)"
-  },
-  "detailStatKilometers": "Kilometer",
-  "@detailStatKilometers": {
-    "description": "Board 06 — StatBox-Dreier (A3)"
-  },
-  "detailSubtitle": "{kind} · {n} min",
-  "@detailSubtitle": {
-    "description": "Board 06 — Unterzeile im Einheitendetail (A3)",
-    "placeholders": {
-      "kind": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "detailContribTitle": "Beitrag zur Form",
-  "@detailContribTitle": {
-    "description": "Board 06 — Block bei Kraft ohne Sätze (A3/3)"
-  },
-  "detailContribCounts": "zählt",
-  "@detailContribCounts": {
-    "description": "Board 06 — Konstanz: zählt (A3/3)"
-  },
-  "detailContribLoad": "+ {v}",
-  "@detailContribLoad": {
-    "description": "Board 06 — Lastentwicklung (A3/3)",
-    "placeholders": {
-      "v": {
-        "type": "String"
-      }
-    }
-  },
-  "detailContribVolumeTrend": "Volumen-Trend ohne Sätze",
-  "@detailContribVolumeTrend": {
-    "description": "Board 06 — A3/3"
-  },
-  "detailContribNa": "n. a.",
-  "@detailContribNa": {
-    "description": "Board 06 — A3/3"
-  },
-  "detailNeighboursTitle": "Eingebettet im Verlauf",
-  "@detailNeighboursTitle": {
-    "description": "Board 06 — Nachbarblock bei Regeneration (A3/4)"
-  },
-  "detailNeighbourHere": "hier",
-  "@detailNeighbourHere": {
-    "description": "Board 06 — Markierung der Einheit selbst (A3/4)"
-  },
-  "detailNeighbourDays": "{sign}{n} T",
-  "@detailNeighbourDays": {
-    "description": "Board 06 — Abstand zur Nachbareinheit (A3/4)",
-    "placeholders": {
-      "sign": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisThinUnitsLabel": "Einheiten",
-  "@analysisThinUnitsLabel": {
-    "description": "Board 06 — Fortschritt „zu wenig Daten\" (A4/2)"
-  },
-  "analysisThinHistoryLabel": "Historie",
-  "@analysisThinHistoryLabel": {
-    "description": "Board 06 — Fortschritt „zu wenig Daten\" (A4/2)"
-  },
-  "analysisThinDaysProgress": "{cur} / {req} Tage",
-  "@analysisThinDaysProgress": {
-    "description": "Board 06 — A4/2",
-    "placeholders": {
-      "cur": {
-        "type": "int"
-      },
-      "req": {
-        "type": "int"
-      }
-    }
-  },
-  "analysisThinRange": "{n, plural, one{1 Einheit} other{{n} Einheiten}} {from}–{to}",
-  "@analysisThinRange": {
-    "description": "Board 06 — Was es schon gibt (A4/2)",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      },
-      "from": {
-        "type": "String"
-      },
-      "to": {
-        "type": "String"
-      }
-    }
-  },
-  "analysisThinLoad": "Gesamtlast {v}",
-  "@analysisThinLoad": {
-    "description": "Board 06 — Was es schon gibt (A4/2)",
-    "placeholders": {
-      "v": {
-        "type": "String"
-      }
-    }
-  },
-  "analysisThinChain": "Längste Kette {n, plural, one{1 Tag} other{{n} Tage}}",
-  "@analysisThinChain": {
-    "description": "Board 06 — Was es schon gibt (A4/2)",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "exerciseAddToPlan": "Zu Plan hinzufügen",
   "@exerciseAddToPlan": {
     "description": "Board 07 A3/1 — Hauptaktion im Übungsdetail"
@@ -6522,10 +3938,6 @@
   "@formFeeling": {
     "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gruppenlabel der Selbstauskunft nach der Einheit"
   },
-  "formFeelingHint": "Nach dem Training. Freiwillig.",
-  "@formFeelingHint": {
-    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Gefühlsauswahl"
-  },
   "formFeeling1": "platt",
   "@formFeeling1": {
     "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 1"
@@ -6590,10 +4002,6 @@
   "@strengthFormTitle": {
     "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Titel des Nacherfassungs-Formulars"
   },
-  "strengthFormEntry": "Ohne Sätze erfassen",
-  "@strengthFormEntry": {
-    "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Weg ins Nacherfassungs-Formular"
-  },
   "strengthFormNoSets": "Diese Einheit trägt keine Sätze. Sie zählt in Minuten, nicht in Volumen — und erscheint in keiner Muskelverteilung.",
   "@strengthFormNoSets": {
     "description": "Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis oben im Formular"
@@ -6610,10 +4018,6 @@
   "@hybridTimeGroup": {
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeGroup"
   },
-  "hybridTimeDays14": "14 Tage",
-  "@hybridTimeDays14": {
-    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays14"
-  },
   "hybridTimeDays28": "28 Tage",
   "@hybridTimeDays28": {
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays28"
@@ -6623,21 +4027,6 @@
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeUnits",
     "placeholders": {
       "n": {
-        "type": "int"
-      }
-    }
-  },
-  "hybridTimeBasis": "{minutes} min in {days} Tagen · {n} Einheiten",
-  "@hybridTimeBasis": {
-    "description": "Auswertung nach Masterplan (16.09.2026), gekürzt 17.09.2026 — hybridTimeBasis",
-    "placeholders": {
-      "minutes": {
-        "type": "int"
-      },
-      "n": {
-        "type": "int"
-      },
-      "days": {
         "type": "int"
       }
     }
@@ -6808,10 +4197,6 @@
   "@analysisMaxNoDelta": {
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxNoDelta"
   },
-  "analysisMaxThinTitle": "Noch keine Übung mit genug Einheiten",
-  "@analysisMaxThinTitle": {
-    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinTitle"
-  },
   "analysisMaxThinBody": "Ab {n} Einheiten je Übung mit Gewicht und höchstens {reps} Wiederholungen je Satz.",
   "@analysisMaxThinBody": {
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinBody",
@@ -6860,14 +4245,6 @@
   "analysisMaxExerciseGroup": "Übung für das geschätzte Maximum",
   "@analysisMaxExerciseGroup": {
     "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxExerciseGroup"
-  },
-  "analysisMaxYAxis": "kg",
-  "@analysisMaxYAxis": {
-    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxYAxis"
-  },
-  "analysisSetsTitle": "Sätze je Muskelgruppe",
-  "@analysisSetsTitle": {
-    "description": "Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisSetsTitle"
   },
   "balanceSetsShort": "{n} S",
   "@balanceSetsShort": {
@@ -7073,27 +4450,6 @@
       }
     }
   },
-  "thresholdA11y": "{title}. {what} {condition}. Bisher {cur} von {req}.",
-  "@thresholdA11y": {
-    "description": "Schwellen-Zustand auf Auswertungsbildschirmen (16.09.2026) — kein Board, aus Tokens gebaut — thresholdA11y",
-    "placeholders": {
-      "title": {
-        "type": "String"
-      },
-      "what": {
-        "type": "String"
-      },
-      "condition": {
-        "type": "String"
-      },
-      "cur": {
-        "type": "int"
-      },
-      "req": {
-        "type": "int"
-      }
-    }
-  },
   "focusDistTitle": "Fokus",
   "@focusDistTitle": {
     "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Titel"
@@ -7147,15 +4503,6 @@
         "type": "int"
       },
       "total": {
-        "type": "int"
-      }
-    }
-  },
-  "focusDistWithout": "{n, plural, =1{1 Einheit ohne Fokus ist nicht enthalten} other{{n} Einheiten ohne Fokus sind nicht enthalten}}",
-  "@focusDistWithout": {
-    "description": "Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf Einheiten ohne Fokus",
-    "placeholders": {
-      "n": {
         "type": "int"
       }
     }
@@ -7292,15 +4639,6 @@
   "@weeklySetsCondition": {
     "description": "Kraft-Auswertung — Bedingung im Schwellen-Zustand"
   },
-  "weeklySetsWeek": "Diese Woche · KW {week}",
-  "@weeklySetsWeek": {
-    "description": "Kraft-Auswertung — Kopfzeile, Teil 1",
-    "placeholders": {
-      "week": {
-        "type": "int"
-      }
-    }
-  },
   "weeklySetsSessions": "{n, plural, =1{1 Einheit} other{{n} Einheiten}}",
   "@weeklySetsSessions": {
     "description": "Kraft-Auswertung — Kopfzeile, Teil 2",
@@ -7325,15 +4663,6 @@
     "placeholders": {
       "n": {
         "type": "int"
-      }
-    }
-  },
-  "weeklySetsBasis": "gegen 4-Wochen-Schnitt {avg} Sätze",
-  "@weeklySetsBasis": {
-    "description": "Kraft-Auswertung — Grundlage der Verschiebung",
-    "placeholders": {
-      "avg": {
-        "type": "String"
       }
     }
   },
@@ -7586,29 +4915,6 @@
   "@segPlans": {
     "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Reiter der Seite mit ATEM-Plänen"
   },
-  "sectionTabA11y": "{name}, Abschnitt {n} von {total}",
-  "@sectionTabA11y": {
-    "description": "One-Pager (20.09.2026) — kein Board — Vorlesetext eines Reiters der Abschnittsleiste",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "n": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "strengthSectionsA11y": "Kraft-Abschnitte",
-  "@strengthSectionsA11y": {
-    "description": "One-Pager (20.09.2026) — kein Board — Gruppenlabel der Abschnittsleiste im Kraft-Tab"
-  },
-  "planCatalogTitle": "Pläne von ATEM",
-  "@planCatalogTitle": {
-    "description": "Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Titel des Leerzustands der Katalogseite"
-  },
   "planCatalogBody": "Bald findest du hier Pläne von ATEM, frei und als Premium. Deine eigenen Pläne stehen darüber.",
   "@planCatalogBody": {
     "description": "Kraft-Tab Seite Pläne (16.09.2026), gekürzt 17.09.2026"
@@ -7636,10 +4942,6 @@
         "type": "String"
       }
     }
-  },
-  "monthsNotMeasured": "nicht erfasst",
-  "@monthsNotMeasured": {
-    "description": "Einheiten je Monat (16.09.2026) — Monat vor der ersten Einheit, Vorlesetext"
   },
   "monthsEntryA11y": "{month}: {n, plural, =0{keine Einheit} =1{1 Einheit} other{{n} Einheiten}}",
   "@monthsEntryA11y": {
@@ -7731,10 +5033,6 @@
   "wellnessTrendExplain": "Oben steht deine Bereitschaft vor der Einheit, unten dein Gefühl danach, je von 1 bis 5. „Höher“ heisst nur höher, nicht besser. Einheiten mit nur einer der beiden Angaben sind nicht enthalten.",
   "@wellnessTrendExplain": {
     "description": "Kraft-Auswertung, Vorher und nachher — Erklärung hinter dem ⓘ (17.09.2026)"
-  },
-  "ratioExplain": "Anteil von Kraft und Ausdauer an der Trainingszeit dieser Woche, gerechnet über Minuten. Die Verschiebung vergleicht mit dem Schnitt der letzten 4 Wochen. Kein Sollverhältnis — die App weiss nicht, welche Aufteilung richtig ist.",
-  "@ratioExplain": {
-    "description": "Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ des Verhältnisblocks"
   },
   "hybridTimeExplain": "Wie sich deine Trainingsminuten auf Kraft, Cardio und Regeneration verteilen — in dieser Woche oder in den letzten 28 Tagen. Minuten sind die einzige Grösse, die alle drei Spuren teilen.",
   "@hybridTimeExplain": {
@@ -8129,10 +5427,6 @@
         "type": "int"
       }
     }
-  },
-  "hardSetsWhat": "Wie viele deiner Sätze je Muskelgruppe hart waren — Anstrengung 7 oder mehr.",
-  "@hardSetsWhat": {
-    "description": "Harte Sätze — was der Block zeigen wird (Schwellen-Zustand und Erklärung)"
   },
   "hardSetsCondition": "Ab {n} Sätzen mit Anstrengung",
   "@hardSetsCondition": {
@@ -8605,19 +5899,6 @@
   "@trainPlanBody": {
     "description": "One-Pager (20.09.2026) — kein Board — Unterzeile der Kachel „Plan wählen“"
   },
-  "trainExercisesBody": "{n, plural, one{1 Übung} other{{n} Übungen}} · suchen, anlegen",
-  "@trainExercisesBody": {
-    "description": "One-Pager (20.09.2026) — kein Board — Unterzeile der Kachel Übungen, mit Bestandszahl",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
-  "trainLogBody": "Eine Einheit nachtragen, ohne jeden Satz einzeln.",
-  "@trainLogBody": {
-    "description": "One-Pager (20.09.2026) — kein Board — Unterzeile der Zeile „Ohne Sätze erfassen“"
-  },
   "workoutRirBadge": "{rir} RIR",
   "@workoutRirBadge": {
     "description": "workoutRirBadge",
@@ -8726,10 +6007,6 @@
   "settingsEffortScaleExplain": "Dieselbe Angabe, andersherum gezählt. RPE 8 ist 2 RIR: zwei Wiederholungen wären noch drin gewesen. Gespeichert wird immer dasselbe — ein Wechsel ändert nur die Anzeige, auch rückwirkend, und geht jederzeit zurück.",
   "@settingsEffortScaleExplain": {
     "description": "settingsEffortScaleExplain"
-  },
-  "hardSetsWhatRir": "Wie viele deiner Sätze je Muskelgruppe hart waren — 3 RIR oder weniger.",
-  "@hardSetsWhatRir": {
-    "description": "hardSetsWhatRir"
   },
   "hardSetsExplainWhatRir": "Ein harter Satz ist einer mit höchstens 3 Wiederholungen in Reserve. Die Angabe ist freiwillig und wird beim Abhaken eines Satzes im Runner gewählt.",
   "@hardSetsExplainWhatRir": {
@@ -9374,18 +6651,6 @@
   "@hcRowUnreviewed": {
     "description": "Board 15 · hc.row_unreviewed — Metazeile der wartenden Zeile"
   },
-  "hcSheetKicker": "Aus Health Connect · {i} von {n}",
-  "@hcSheetKicker": {
-    "description": "Board 15 · hc.sheet_kicker",
-    "placeholders": {
-      "i": {
-        "type": "int"
-      },
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "hcSheetTitle": "Einheit prüfen · {i} von {n}",
   "@hcSheetTitle": {
     "description": "Board 15 · Titel des Prüfblatts. Das Board setzt „Einheit aus Health Connect prüfen, 1 von 3\" — bei 200 % Systemschrift auf 320 dp läuft das Blatt damit über, und Kürzen ist verboten. „Aus Health Connect\" sagen die HC-Kapsel und der Inhalt ohnehin.",
@@ -9438,27 +6703,6 @@
   "hcContinueLater": "Später fortsetzen",
   "@hcContinueLater": {
     "description": "Board 15 · hc.continue_later"
-  },
-  "hcAcceptedSnack": "{type} {date} übernommen",
-  "@hcAcceptedSnack": {
-    "description": "Board 15 · hc.accepted_snack",
-    "placeholders": {
-      "type": {
-        "type": "String"
-      },
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "hcDeclinedSnack": "Nicht übernommen · {date}",
-  "@hcDeclinedSnack": {
-    "description": "Board 15 · hc.declined_snack",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
   },
   "hcDeclinedSection": "Abgelehnt",
   "@hcDeclinedSection": {
@@ -9707,43 +6951,9 @@
   "@hcPermInstall": {
     "description": "Board 15 · D1 — führt in den Play Store, ohne Ausrufezeichen"
   },
-  "hcStateMissing": "Health Connect fehlt",
-  "@hcStateMissing": {
-    "description": "Board 15 · D1 — Zustand beider Zeilen"
-  },
   "hcStateDenied": "Nicht freigegeben",
   "@hcStateDenied": {
     "description": "Board 15 · D2 — Zustand einer Zeile"
-  },
-  "hcStateGranted": "Freigegeben",
-  "@hcStateGranted": {
-    "description": "Board 15 · D3 — Zustand einer Zeile"
-  },
-  "hcStateGrantedSince": "Freigegeben · zuletzt {date}",
-  "@hcStateGrantedSince": {
-    "description": "Board 15 · D3/D4 — Zustand mit Lesemarke",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "hcStateGrantedEmpty": "Freigegeben · nichts gefunden",
-  "@hcStateGrantedEmpty": {
-    "description": "Board 15 · D4 — ein leerer Zeitraum ist kein Fehler"
-  },
-  "hcStateRevoked": "Zugriff entzogen",
-  "@hcStateRevoked": {
-    "description": "Board 15 · D5 — Zustand einer Zeile"
-  },
-  "hcStateRevokedKept": "{n, plural, one{Entzogen · 1 übernommene bleibt} other{Entzogen · {n} übernommene bleiben}}",
-  "@hcStateRevokedKept": {
-    "description": "Board 15 · D5 — zuerst, was bleibt, dann was aufhört",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
   },
   "hcPermMissingNote": "Health Connect ist auf diesem Gerät nicht eingerichtet. ATEM funktioniert ohne — Gewicht und Einheiten werden von Hand geführt.",
   "@hcPermMissingNote": {
@@ -9757,36 +6967,12 @@
   "@hcPermPartialNote": {
     "description": "Board 15 · hc.perm_partial"
   },
-  "hcPermEmptyNote": "Zuletzt geprüft {time}, keine neuen Einheiten gefunden.",
-  "@hcPermEmptyNote": {
-    "description": "Board 15 · hc.perm_empty — die Lesemarke als Tatsache",
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
   "hcPermRevokedNote": "{n, plural, one{1 übernommene Einheit bleibt, wie sie ist.} other{{n} übernommene Einheiten bleiben, wie sie sind.}} Neue werden nicht mehr gelesen.",
   "@hcPermRevokedNote": {
     "description": "Board 15 · hc.perm_revoked — kein Countdown, kein Ausrufezeichen",
     "placeholders": {
       "n": {
         "type": "int"
-      }
-    }
-  },
-  "hcPermRowA11y": "{type}, {state}. {action}.",
-  "@hcPermRowA11y": {
-    "description": "Board 15 · A11y der Berechtigungszeile — Zustand vor Aktion",
-    "placeholders": {
-      "type": {
-        "type": "String"
-      },
-      "state": {
-        "type": "String"
-      },
-      "action": {
-        "type": "String"
       }
     }
   },
@@ -9817,18 +7003,6 @@
   "detailKindEndurance": "Ausdauer",
   "@detailKindEndurance": {
     "description": "Board 16 · detail.kind.endurance"
-  },
-  "detailKindRun": "Laufen",
-  "@detailKindRun": {
-    "description": "Board 16 · detail.kind.run"
-  },
-  "detailKindBike": "Radfahren",
-  "@detailKindBike": {
-    "description": "Board 16 · detail.kind.bike"
-  },
-  "detailKindSwim": "Schwimmen",
-  "@detailKindSwim": {
-    "description": "Board 16 · detail.kind.swim"
   },
   "detailKindRecovery": "Regeneration",
   "@detailKindRecovery": {
@@ -9936,21 +7110,9 @@
   "@detailMetricHrAvg": {
     "description": "Board 16 · detail.metric.hr_avg"
   },
-  "detailMetricHrMax": "Max. Puls",
-  "@detailMetricHrMax": {
-    "description": "Board 16 · detail.metric.hr_max"
-  },
-  "detailMetricHrMin": "Min. Puls",
-  "@detailMetricHrMin": {
-    "description": "Board 16 · detail.metric.hr_min"
-  },
   "detailMetricCalories": "Kalorien",
   "@detailMetricCalories": {
     "description": "Board 16 · detail.metric.calories"
-  },
-  "detailMetricPace": "Ø Tempo",
-  "@detailMetricPace": {
-    "description": "Board 16 · detail.metric.pace"
   },
   "detailMetricElevation": "Höhenmeter",
   "@detailMetricElevation": {
@@ -9965,40 +7127,13 @@
       }
     }
   },
-  "detailBlockWorkSplits": "Splits · je km",
-  "@detailBlockWorkSplits": {
-    "description": "Board 16 · detail.block.work.splits"
-  },
   "detailBlockHr": "Puls",
   "@detailBlockHr": {
     "description": "Board 16 · detail.block.hr"
   },
-  "detailBlockZones": "Zeit in Zonen",
-  "@detailBlockZones": {
-    "description": "Board 16 · detail.block.zones"
-  },
   "detailBlockNote": "Notiz",
   "@detailBlockNote": {
     "description": "Board 16 · detail.block.note"
-  },
-  "detailBlockSources": "Herkunft",
-  "@detailBlockSources": {
-    "description": "Board 16 · detail.block.sources"
-  },
-  "detailSetLine": "{sets}×{reps} · {weight} kg",
-  "@detailSetLine": {
-    "description": "Board 16 · detail.set_line",
-    "placeholders": {
-      "sets": {
-        "type": "int"
-      },
-      "reps": {
-        "type": "String"
-      },
-      "weight": {
-        "type": "String"
-      }
-    }
   },
   "detailDeltaVs": "{glyph} {value} gegen {date}",
   "@detailDeltaVs": {
@@ -10012,21 +7147,6 @@
       },
       "date": {
         "type": "String"
-      }
-    }
-  },
-  "detailHrBasis": "Ø {value} aus {min} von {total} min Aufzeichnung",
-  "@detailHrBasis": {
-    "description": "Board 16 · detail.hr_basis",
-    "placeholders": {
-      "value": {
-        "type": "int"
-      },
-      "min": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
       }
     }
   },
@@ -10116,10 +7236,6 @@
   "@detailErrorHr": {
     "description": "Board 16 · detail.error.hr"
   },
-  "detailErrorSession": "Einheit nicht lesbar",
-  "@detailErrorSession": {
-    "description": "Board 16 · detail.error.session"
-  },
   "detailRetry": "Erneut",
   "@detailRetry": {
     "description": "Board 16 · detail.retry"
@@ -10148,10 +7264,6 @@
   "settingsZonesStateUnset": "Offen",
   "@settingsZonesStateUnset": {
     "description": "Board 16 · settings.zones_state_unset. Das Board sagt „Nicht festgelegt“ — auf 361 dp brach der Wert damit unter die Beschriftung und machte die Zeile unruhiger als die Nachbarn; „Offen“ steht daneben (auf Wunsch, 21.09.2026). Nur Deutsch: „Not set“ passt in die Zeile."
-  },
-  "settingsZonesBasis": "Grundlage",
-  "@settingsZonesBasis": {
-    "description": "Board 16 · settings.zones_basis"
   },
   "settingsZonesBasisPct": "% von HFmax {hrmax}",
   "@settingsZonesBasisPct": {
@@ -10401,10 +7513,6 @@
   "@settingsZonesProposalDone": {
     "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
   },
-  "settingsZonesError": "Zonen konnten nicht gespeichert werden.",
-  "@settingsZonesError": {
-    "description": "Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
-  },
   "settingsZonesBetween": "zwischen Zone {a} und Zone {b}",
   "@settingsZonesBetween": {
     "description": "Board 16 · D3 · Untertitel des Grenzen-Blatts — der Titel nennt die Grenze schon, der Untertitel wiederholt sie nicht",
@@ -10604,10 +7712,6 @@
         "type": "int"
       }
     }
-  },
-  "detailWorkLess": "Weniger anzeigen",
-  "@detailWorkLess": {
-    "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
   },
   "detailWorkNoComparison": "ohne Vergleich",
   "@detailWorkNoComparison": {

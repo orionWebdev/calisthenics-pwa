@@ -97,12 +97,6 @@ abstract class AppL10n {
     Locale('en')
   ];
 
-  /// about.access
-  ///
-  /// In de, this message translates to:
-  /// **'Zugang'**
-  String get aboutAccess;
-
   /// Board 08, ueber
   ///
   /// In de, this message translates to:
@@ -114,18 +108,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Freigeschaltete Adresse'**
   String get aboutAccessValue;
-
-  /// about.appearance
-  ///
-  /// In de, this message translates to:
-  /// **'Darstellung'**
-  String get aboutAppearance;
-
-  /// about.appearance.value
-  ///
-  /// In de, this message translates to:
-  /// **'Dunkel · keine helle Fassung'**
-  String get aboutAppearanceValue;
 
   /// Board 08, ueber
   ///
@@ -139,12 +121,6 @@ abstract class AppL10n {
   /// **'Dunkel · keine helle Fassung'**
   String get aboutDisplayValue;
 
-  /// about.languages
-  ///
-  /// In de, this message translates to:
-  /// **'Sprachen'**
-  String get aboutLanguages;
-
   /// Board 08, ueber
   ///
   /// In de, this message translates to:
@@ -156,18 +132,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Deutsch · English'**
   String get aboutLanguagesValue;
-
-  /// about.version
-  ///
-  /// In de, this message translates to:
-  /// **'Version'**
-  String get aboutVersion;
-
-  /// Board 08, ueber
-  ///
-  /// In de, this message translates to:
-  /// **'Version'**
-  String get aboutVersionLabel;
 
   /// account.delete
   ///
@@ -181,29 +145,11 @@ abstract class AppL10n {
   /// **'{y} Jahre {m} Monate, {n} Einheiten und {e} eigene Übungen. Es gibt kein Rückgängig und kein Zeitfenster.'**
   String accountDelete2Body(int y, int m, int n, int e);
 
-  /// account.delete2.confirm
-  ///
-  /// In de, this message translates to:
-  /// **'Konto löschen'**
-  String get accountDelete2Confirm;
-
-  /// account.delete2.keep
-  ///
-  /// In de, this message translates to:
-  /// **'Behalten'**
-  String get accountDelete2Keep;
-
   /// account.delete2.title
   ///
   /// In de, this message translates to:
   /// **'Endgültig löschen'**
   String get accountDelete2Title;
-
-  /// account.delete2.typeCount
-  ///
-  /// In de, this message translates to:
-  /// **'{a} / {b} Zeichen'**
-  String accountDelete2TypeCount(int a, String b);
 
   /// account.delete2.typeLabel
   ///
@@ -276,12 +222,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Konto wird gelöscht'**
   String get accountDeleting;
-
-  /// account.deleting.step
-  ///
-  /// In de, this message translates to:
-  /// **'{name}'**
-  String accountDeletingStep(String name);
 
   /// account.deleting.wait
   ///
@@ -397,54 +337,6 @@ abstract class AppL10n {
   /// **'Gehen'**
   String get activityWalk;
 
-  /// Achsenbeschriftung
-  ///
-  /// In de, this message translates to:
-  /// **'Form 0–100'**
-  String get analysisChartLabel;
-
-  /// Komponente des Form-Werts
-  ///
-  /// In de, this message translates to:
-  /// **'Konstanz'**
-  String get analysisCompConsistency;
-
-  /// Komponente des Form-Werts
-  ///
-  /// In de, this message translates to:
-  /// **'Fitness ggü. Höchststand'**
-  String get analysisCompFitness;
-
-  /// Komponente des Form-Werts
-  ///
-  /// In de, this message translates to:
-  /// **'Lastentwicklung'**
-  String get analysisCompLoad;
-
-  /// Wird getrennt ausgewiesen, nicht verrechnet
-  ///
-  /// In de, this message translates to:
-  /// **'Abzug Untätigkeit'**
-  String get analysisCompPenalty;
-
-  /// Komponente des Form-Werts
-  ///
-  /// In de, this message translates to:
-  /// **'Aktualität'**
-  String get analysisCompRecency;
-
-  /// Komponente des Form-Werts
-  ///
-  /// In de, this message translates to:
-  /// **'Tageszuschlag'**
-  String get analysisCompToday;
-
-  /// Wert einer Komponente
-  ///
-  /// In de, this message translates to:
-  /// **'{v} / {max}'**
-  String analysisCompValue(int v, int max);
-
   /// analysis.dist.basis
   ///
   /// In de, this message translates to:
@@ -481,42 +373,6 @@ abstract class AppL10n {
   /// **'Zur Liste'**
   String get analysisErrorToList;
 
-  /// Erklärt die Rechnung — ohne sie ist die Zerlegung eine Zahlenreihe
-  ///
-  /// In de, this message translates to:
-  /// **'Fünf Bestandteile ergeben zusammen bis zu 103 Punkte, gedeckelt auf 100. Wer lange nicht trainiert, verliert zusätzlich — und zwar beschleunigt: drei Tage kosten 3 Punkte, sieben Tage 21, vierzehn Tage 70.'**
-  String get analysisExplainBody;
-
-  /// Überschrift der Erklärung
-  ///
-  /// In de, this message translates to:
-  /// **'Wie sich die Form zusammensetzt'**
-  String get analysisExplainTitle;
-
-  /// Begründung unter der Zerlegung
-  ///
-  /// In de, this message translates to:
-  /// **'Was fehlt, ist Aktualität — eine Einheit heute bringt sofort {n} Punkte.'**
-  String analysisHintRecency(int n);
-
-  /// analysis.legend.rug (Board 06)
-  ///
-  /// In de, this message translates to:
-  /// **'Einheiten/Woche'**
-  String get analysisLegendRug;
-
-  /// Legende der Kurve
-  ///
-  /// In de, this message translates to:
-  /// **'mit Training'**
-  String get analysisLegendWith;
-
-  /// Legende der Kurve — die Lücke
-  ///
-  /// In de, this message translates to:
-  /// **'ohne Training'**
-  String get analysisLegendWithout;
-
   /// analysis.pace.basis
   ///
   /// In de, this message translates to:
@@ -547,42 +403,6 @@ abstract class AppL10n {
   /// **'Kein Vergleich mit anderen Menschen.'**
   String get analysisPctNoothers;
 
-  /// Nennt die Schwellen aus DataSufficiency
-  ///
-  /// In de, this message translates to:
-  /// **'Ein Trend braucht {n} Einheiten und {d} Tage Historie.'**
-  String analysisThinBody(int n, int d);
-
-  /// Überschrift über dem Vorhandenen
-  ///
-  /// In de, this message translates to:
-  /// **'Was es schon gibt'**
-  String get analysisThinHave;
-
-  /// Fortschritt zur Schwelle
-  ///
-  /// In de, this message translates to:
-  /// **'{cur} / {req}'**
-  String analysisThinProgress(int cur, int req);
-
-  /// Zustand bei zu dünner Datenlage
-  ///
-  /// In de, this message translates to:
-  /// **'Noch zu wenig für einen Trend'**
-  String get analysisThinTitle;
-
-  /// Titel der Formkurve
-  ///
-  /// In de, this message translates to:
-  /// **'Auswertung'**
-  String get analysisTitle;
-
-  /// Überschrift der Zerlegung
-  ///
-  /// In de, this message translates to:
-  /// **'Form heute'**
-  String get analysisToday;
-
   /// analysis.weekly.basis
   ///
   /// In de, this message translates to:
@@ -600,60 +420,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Wochenkilometer'**
   String get analysisWeeklyTitle;
-
-  /// Begründung unter der Konstanz — zeigt, woraus die Punktzahl entsteht
-  ///
-  /// In de, this message translates to:
-  /// **'{days} Trainingstage in {span}'**
-  String analysisWhyConsistency(int days, int span);
-
-  /// Begründung der Fitness gegenüber dem Höchststand
-  ///
-  /// In de, this message translates to:
-  /// **'Anteil am eigenen Höchststand'**
-  String get analysisWhyFitness;
-
-  /// Begründung, wenn die Lastentwicklung bei null steht
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Last in den letzten 28 Tagen'**
-  String get analysisWhyLoadNone;
-
-  /// Begründung der Lastentwicklung
-  ///
-  /// In de, this message translates to:
-  /// **'Letzte 14 Tage gegen die 14 davor'**
-  String get analysisWhyLoadRatio;
-
-  /// Begründung des Abzugs
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, other{{n} Tage ohne Training}}'**
-  String analysisWhyPenalty(int n);
-
-  /// Begründung der Aktualität
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, =0{Heute trainiert} one{Letzte Einheit gestern} other{Letzte Einheit vor {n} Tagen}}'**
-  String analysisWhyRecency(int n);
-
-  /// Begründung der Aktualität, wenn die letzte Aktivität eine Regenerationseinheit war
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, =0{Heute Regeneration} one{Gestern Regeneration} other{Letzte Aktivität vor {n} Tagen · Regeneration}}'**
-  String analysisWhyRecencyRecovery(int n);
-
-  /// Begründung des Tageszuschlags
-  ///
-  /// In de, this message translates to:
-  /// **'Heute trainiert'**
-  String get analysisWhyToday;
-
-  /// Begründung, wenn der Tageszuschlag entfällt
-  ///
-  /// In de, this message translates to:
-  /// **'Heute keine Einheit'**
-  String get analysisWhyTodayNone;
 
   /// Pille über dem Anmeldeknopf
   ///
@@ -702,12 +468,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Keine Verbindung'**
   String get authNetworkTitle;
-
-  /// Abmelden
-  ///
-  /// In de, this message translates to:
-  /// **'Abmelden'**
-  String get authSignOut;
 
   /// Zustand während der Anmeldung
   ///
@@ -787,18 +547,6 @@ abstract class AppL10n {
   /// **'8 Wochen'**
   String get balanceWindow;
 
-  /// barrier.dialog (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'„{titel}\" — bitte eine Option wählen'**
-  String barrierDialog(String titel);
-
-  /// barrier.sheet (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Schließt „{titel}\"'**
-  String barrierSheet(String titel);
-
   /// cardio.add
   ///
   /// In de, this message translates to:
@@ -822,12 +570,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Noch keine Ausdauereinheit'**
   String get cardioEmptyTitle;
-
-  /// cardio.error.week
-  ///
-  /// In de, this message translates to:
-  /// **'Wochenkilometer nicht berechenbar'**
-  String get cardioErrorWeek;
 
   /// cardio.live.start
   ///
@@ -865,53 +607,17 @@ abstract class AppL10n {
   /// **'Diese Woche · KW {kw}'**
   String cardioWeekTitle(int kw);
 
-  /// aus common.activity
-  ///
-  /// In de, this message translates to:
-  /// **'Aktivität'**
-  String get commonActivity;
-
-  /// aus common.add
-  ///
-  /// In de, this message translates to:
-  /// **'Hinzufügen'**
-  String get commonAdd;
-
-  /// aus common.addSession
-  ///
-  /// In de, this message translates to:
-  /// **'Session hinzufügen'**
-  String get commonAddSession;
-
-  /// Filterchip ohne Einschränkung
-  ///
-  /// In de, this message translates to:
-  /// **'Alle'**
-  String get commonAll;
-
   /// aus common.back
   ///
   /// In de, this message translates to:
   /// **'Zurück'**
   String get commonBack;
 
-  /// aus common.bodyweight
-  ///
-  /// In de, this message translates to:
-  /// **'Bodyweight'**
-  String get commonBodyweight;
-
   /// common.cancel
   ///
   /// In de, this message translates to:
   /// **'Abbrechen'**
   String get commonCancel;
-
-  /// aus common.cardio
-  ///
-  /// In de, this message translates to:
-  /// **'Cardio'**
-  String get commonCardio;
 
   /// aus common.close
   ///
@@ -925,23 +631,11 @@ abstract class AppL10n {
   /// **'Übung angelegt'**
   String get commonCreated;
 
-  /// aus common.days
-  ///
-  /// In de, this message translates to:
-  /// **'Tage'**
-  String get commonDays;
-
   /// aus common.delete
   ///
   /// In de, this message translates to:
   /// **'Löschen'**
   String get commonDelete;
-
-  /// aus common.distance
-  ///
-  /// In de, this message translates to:
-  /// **'Distanz'**
-  String get commonDistance;
 
   /// aus common.done
   ///
@@ -961,18 +655,6 @@ abstract class AppL10n {
   /// **'Bearbeiten'**
   String get commonEdit;
 
-  /// aus common.editSession
-  ///
-  /// In de, this message translates to:
-  /// **'Session bearbeiten'**
-  String get commonEditSession;
-
-  /// common.got_it (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Verstanden'**
-  String get commonGotIt;
-
   /// aus common.loading
   ///
   /// In de, this message translates to:
@@ -984,12 +666,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Minuten'**
   String get commonMinutes;
-
-  /// aus common.next
-  ///
-  /// In de, this message translates to:
-  /// **'Weiter'**
-  String get commonNext;
 
   /// aus common.notAvailable
   ///
@@ -1009,47 +685,17 @@ abstract class AppL10n {
   /// **'von'**
   String get commonOf;
 
-  /// common.offline
-  ///
-  /// In de, this message translates to:
-  /// **'Lokal gesichert · wird synchronisiert'**
-  String get commonOffline;
-
-  /// common.offline.sync
-  ///
-  /// In de, this message translates to:
-  /// **'Lokal gesichert · wird synchronisiert'**
-  String get commonOfflineSync;
-
   /// common.open
   ///
   /// In de, this message translates to:
   /// **'Öffnen'**
   String get commonOpen;
 
-  /// aus common.optional
-  ///
-  /// In de, this message translates to:
-  /// **'optional'**
-  String get commonOptional;
-
-  /// aus common.pace
-  ///
-  /// In de, this message translates to:
-  /// **'Pace'**
-  String get commonPace;
-
   /// Prozentzeichen, allein stehend
   ///
   /// In de, this message translates to:
   /// **'%'**
   String get commonPercentSign;
-
-  /// aus common.recovery
-  ///
-  /// In de, this message translates to:
-  /// **'Recovery'**
-  String get commonRecovery;
 
   /// Runner, Modul 2 Spezifikation
   ///
@@ -1099,53 +745,11 @@ abstract class AppL10n {
   /// **'Session'**
   String get commonSession;
 
-  /// aus common.sessions
-  ///
-  /// In de, this message translates to:
-  /// **'Sessions'**
-  String get commonSessions;
-
-  /// aus common.start
-  ///
-  /// In de, this message translates to:
-  /// **'Starten'**
-  String get commonStart;
-
-  /// aus common.startAgain
-  ///
-  /// In de, this message translates to:
-  /// **'Erneut starten'**
-  String get commonStartAgain;
-
-  /// aus common.strength
-  ///
-  /// In de, this message translates to:
-  /// **'Kraft'**
-  String get commonStrength;
-
-  /// aus common.time
-  ///
-  /// In de, this message translates to:
-  /// **'Zeit'**
-  String get commonTime;
-
   /// common.undo
   ///
   /// In de, this message translates to:
   /// **'Rückgängig'**
   String get commonUndo;
-
-  /// aus common.view
-  ///
-  /// In de, this message translates to:
-  /// **'Ansehen'**
-  String get commonView;
-
-  /// aus common.viewDetails
-  ///
-  /// In de, this message translates to:
-  /// **'Details ansehen'**
-  String get commonViewDetails;
 
   /// aus common.weeks
   ///
@@ -1153,131 +757,11 @@ abstract class AppL10n {
   /// **'Wochen'**
   String get commonWeeks;
 
-  /// aus common.workout
-  ///
-  /// In de, this message translates to:
-  /// **'Workout'**
-  String get commonWorkout;
-
-  /// compare.basis.date
-  ///
-  /// In de, this message translates to:
-  /// **'{date} · {n} Tage her'**
-  String compareBasisDate(String date, int n);
-
-  /// compare.basis.exercises
-  ///
-  /// In de, this message translates to:
-  /// **'Gleiche Übungen'**
-  String get compareBasisExercises;
-
-  /// compare.basis.median
-  ///
-  /// In de, this message translates to:
-  /// **'Mittel · {n} Einheiten'**
-  String compareBasisMedian(int n);
-
-  /// compare.basis.plan
-  ///
-  /// In de, this message translates to:
-  /// **'Gleicher Plan'**
-  String get compareBasisPlan;
-
-  /// compare.empty.plan
-  ///
-  /// In de, this message translates to:
-  /// **'Erste Einheit des Plans „{plan}\". Ab der nächsten steht hier der Vergleich.'**
-  String compareEmptyPlan(String plan);
-
-  /// compare.empty.type
-  ///
-  /// In de, this message translates to:
-  /// **'Erste Einheit dieser Art. Ab der nächsten steht hier der Vergleich.'**
-  String get compareEmptyType;
-
-  /// compare.loading
-  ///
-  /// In de, this message translates to:
-  /// **'Vergleich wird geladen'**
-  String get compareLoading;
-
-  /// compare.median
-  ///
-  /// In de, this message translates to:
-  /// **'Mittel {value}'**
-  String compareMedian(String value);
-
-  /// compare.none.value
-  ///
-  /// In de, this message translates to:
-  /// **'kein Bezug'**
-  String get compareNoneValue;
-
-  /// compare.note.median
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Plan-ID, keine Übungsüberdeckung. Verglichen wird nur, was von den Übungen unabhängig ist: Dauer und Last.'**
-  String get compareNoteMedian;
-
-  /// compare.note.plan
-  ///
-  /// In de, this message translates to:
-  /// **'Beide Einheiten folgen Plan „{plan}\". Alle vier Werte sind vergleichbar.'**
-  String compareNotePlan(String plan);
-
-  /// compare.prev
-  ///
-  /// In de, this message translates to:
-  /// **'vorher {value}'**
-  String comparePrev(String value);
-
   /// Tage in der Folgentabelle
   ///
   /// In de, this message translates to:
   /// **'{n, plural, one{1 Tag} other{{n} Tage}}'**
   String consequenceDays(int n);
-
-  /// Zeile der Folgentabelle
-  ///
-  /// In de, this message translates to:
-  /// **'Form'**
-  String get consequenceForm;
-
-  /// ACWR verschwindet
-  ///
-  /// In de, this message translates to:
-  /// **'entfällt'**
-  String get consequenceGone;
-
-  /// Zeile der Folgentabelle: ACWR
-  ///
-  /// In de, this message translates to:
-  /// **'Belastung'**
-  String get consequenceLoad;
-
-  /// ACWR erscheint
-  ///
-  /// In de, this message translates to:
-  /// **'erscheint'**
-  String get consequenceNew;
-
-  /// Folgentabelle ohne Änderung
-  ///
-  /// In de, this message translates to:
-  /// **'An deiner Auswertung ändert das nichts.'**
-  String get consequenceNone;
-
-  /// Zeile der Folgentabelle: Tage seit der letzten Einheit
-  ///
-  /// In de, this message translates to:
-  /// **'Pause'**
-  String get consequencePause;
-
-  /// Vorher-Nachher in der Folgentabelle
-  ///
-  /// In de, this message translates to:
-  /// **'{from} → {to}'**
-  String consequenceStep(String from, String to);
 
   /// Vorlesetext einer Folgenzeile
   ///
@@ -1285,209 +769,11 @@ abstract class AppL10n {
   /// **'{label}: von {from} auf {to}'**
   String consequenceStepA11y(String label, String from, String to);
 
-  /// Überschrift der Folgentabelle
-  ///
-  /// In de, this message translates to:
-  /// **'Was sich ändert'**
-  String get consequenceTitle;
-
-  /// aus dashboard.activityCalendar.durationUnit
-  ///
-  /// In de, this message translates to:
-  /// **'Bewegungsstunden'**
-  String get dashboardActivityCalendarDurationUnit;
-
-  /// aus dashboard.activityCalendar.emptyState
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Sessions in diesem Zeitraum'**
-  String get dashboardActivityCalendarEmptyState;
-
-  /// aus dashboard.activityCalendar.more
-  ///
-  /// In de, this message translates to:
-  /// **'Mehr'**
-  String get dashboardActivityCalendarMore;
-
-  /// aus dashboard.activityCalendar.thisMonth
-  ///
-  /// In de, this message translates to:
-  /// **'Diesen Monat'**
-  String get dashboardActivityCalendarThisMonth;
-
-  /// aus dashboard.addWorkout.title
-  ///
-  /// In de, this message translates to:
-  /// **'Workout hinzufügen'**
-  String get dashboardAddWorkoutTitle;
-
-  /// aus dashboard.allSessions.earlier
-  ///
-  /// In de, this message translates to:
-  /// **'Früher'**
-  String get dashboardAllSessionsEarlier;
-
-  /// aus dashboard.allSessions.empty
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Sessions vorhanden'**
-  String get dashboardAllSessionsEmpty;
-
-  /// aus dashboard.allSessions.title
-  ///
-  /// In de, this message translates to:
-  /// **'Alle Sessions'**
-  String get dashboardAllSessionsTitle;
-
-  /// aus dashboard.allSessions.today
-  ///
-  /// In de, this message translates to:
-  /// **'Heute'**
-  String get dashboardAllSessionsToday;
-
-  /// aus dashboard.allSessions.yesterday
-  ///
-  /// In de, this message translates to:
-  /// **'Gestern'**
-  String get dashboardAllSessionsYesterday;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Profil von {name}'**
-  String dashboardAvatarA11y(String name);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'{n} Blocks'**
-  String dashboardBlocks(int n);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'ATEM HYBRID'**
-  String get dashboardBrand;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'System aktiv'**
-  String get dashboardBrandA11y;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'{n} Min Breathwork'**
-  String dashboardBreathwork(int n);
-
-  /// aus dashboard.calendar.addTraining
-  ///
-  /// In de, this message translates to:
-  /// **'Training hinzufügen'**
-  String get dashboardCalendarAddTraining;
-
-  /// aus dashboard.calendar.nextMonth
-  ///
-  /// In de, this message translates to:
-  /// **'Nächster Monat'**
-  String get dashboardCalendarNextMonth;
-
-  /// aus dashboard.calendar.prevMonth
-  ///
-  /// In de, this message translates to:
-  /// **'Vorheriger Monat'**
-  String get dashboardCalendarPrevMonth;
-
-  /// aus dashboard.calendar.tabActivity
-  ///
-  /// In de, this message translates to:
-  /// **'Aktivität'**
-  String get dashboardCalendarTabActivity;
-
-  /// aus dashboard.calendar.tabPlan
-  ///
-  /// In de, this message translates to:
-  /// **'Planen'**
-  String get dashboardCalendarTabPlan;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Wochenverlauf: Load, Strain, Recovery, Montag bis Sonntag'**
-  String get dashboardChartA11y;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'PERFORMANCE · 7 TAGE'**
-  String get dashboardChartSection;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'{day} · LOAD {load}'**
-  String dashboardChartToday(String day, int load);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'{n} Min'**
-  String dashboardDurationMinutes(int n);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Guten Tag, {name}'**
-  String dashboardGreetingDay(String name);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Guten Abend, {name}'**
-  String dashboardGreetingEvening(String name);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Guten Morgen, {name}'**
-  String dashboardGreetingMorning(String name);
-
-  /// aus dashboard.hybridBalance.aria
-  ///
-  /// In de, this message translates to:
-  /// **'Kraft {strength} Prozent, Cardio {cardio} Prozent'**
-  String dashboardHybridBalanceAria(String strength, String cardio);
-
-  /// aus dashboard.hybridBalance.description
-  ///
-  /// In de, this message translates to:
-  /// **'Zeigt die Zeitverteilung zwischen Kraft und Cardio.'**
-  String get dashboardHybridBalanceDescription;
-
   /// aus dashboard.hybridBalance.subtitle
   ///
   /// In de, this message translates to:
   /// **'Letzte {days} Tage'**
   String dashboardHybridBalanceSubtitle(int days);
-
-  /// aus dashboard.hybridBalance.title
-  ///
-  /// In de, this message translates to:
-  /// **'Hybrid Balance'**
-  String get dashboardHybridBalanceTitle;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'LIVE'**
-  String get dashboardLive;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Live HRV {hrv} ms · {n} Min Breathwork'**
-  String dashboardLiveHrv(int hrv, int n);
 
   /// Dashboard, Modul 1 Spezifikation
   ///
@@ -1495,233 +781,17 @@ abstract class AppL10n {
   /// **'Dashboard wird geladen'**
   String get dashboardLoadingA11y;
 
-  /// aus dashboard.logWorkout.log
-  ///
-  /// In de, this message translates to:
-  /// **'Workout loggen'**
-  String get dashboardLogWorkoutLog;
-
-  /// aus dashboard.logWorkout.logDesc
-  ///
-  /// In de, this message translates to:
-  /// **'Erfasse ein abgeschlossenes Training'**
-  String get dashboardLogWorkoutLogDesc;
-
-  /// aus dashboard.logWorkout.plan
-  ///
-  /// In de, this message translates to:
-  /// **'Workout planen'**
-  String get dashboardLogWorkoutPlan;
-
-  /// aus dashboard.logWorkout.planDesc
-  ///
-  /// In de, this message translates to:
-  /// **'Plane ein Training im Kalender'**
-  String get dashboardLogWorkoutPlanDesc;
-
-  /// aus dashboard.logWorkout.start
-  ///
-  /// In de, this message translates to:
-  /// **'Workout starten'**
-  String get dashboardLogWorkoutStart;
-
-  /// aus dashboard.logWorkout.startDesc
-  ///
-  /// In de, this message translates to:
-  /// **'Starte ein Training aus deinen Plänen'**
-  String get dashboardLogWorkoutStartDesc;
-
-  /// aus dashboard.logWorkout.subtitle
-  ///
-  /// In de, this message translates to:
-  /// **'Logge, starte oder plane ein Workout'**
-  String get dashboardLogWorkoutSubtitle;
-
-  /// aus dashboard.logWorkout.title
-  ///
-  /// In de, this message translates to:
-  /// **'Workout erfassen'**
-  String get dashboardLogWorkoutTitle;
-
   /// Dashboard, Modul 1 Spezifikation
   ///
   /// In de, this message translates to:
   /// **'{name}, Tab {n} von {total}'**
   String dashboardNavA11y(String name, int n, int total);
 
-  /// Leistenbeschriftung. „Analyse" versprach nur die Auswertung — der Tab trägt aber den ganzen Verlauf, von dem sie ein Teil ist.
-  ///
-  /// In de, this message translates to:
-  /// **'VERLAUF'**
-  String get dashboardNavAnalytics;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'HOME'**
-  String get dashboardNavHome;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'RECOVERY'**
-  String get dashboardNavRecovery;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'WORKOUTS'**
-  String get dashboardNavWorkouts;
-
-  /// Steht in einer Kachel, für die es noch keine Datenquelle gibt
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Daten'**
-  String get dashboardNoDataYet;
-
   /// Dashboard, Modul 1 Spezifikation
   ///
   /// In de, this message translates to:
   /// **'Daten nicht verfügbar'**
   String get dashboardNotAvailable;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'{n} ungelesene Benachrichtigungen'**
-  String dashboardNotificationsA11y(int n);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Woche {week} von {total}, Phase {phase}'**
-  String dashboardPhaseA11y(int week, int total, String phase);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Woche {week} von {total} · {phase}'**
-  String dashboardPhaseWeek(int week, int total, String phase);
-
-  /// aus dashboard.planCalendar.title
-  ///
-  /// In de, this message translates to:
-  /// **'Planungskalender'**
-  String get dashboardPlanCalendarTitle;
-
-  /// aus dashboard.primary.helper
-  ///
-  /// In de, this message translates to:
-  /// **'Starte oder setze dein aktuelles Training fort.'**
-  String get dashboardPrimaryHelper;
-
-  /// aus dashboard.primary.resume
-  ///
-  /// In de, this message translates to:
-  /// **'Workout fortsetzen'**
-  String get dashboardPrimaryResume;
-
-  /// aus dashboard.primary.start
-  ///
-  /// In de, this message translates to:
-  /// **'Workout starten'**
-  String get dashboardPrimaryStart;
-
-  /// aus dashboard.primary.subtitleActive
-  ///
-  /// In de, this message translates to:
-  /// **'Ein Workout ist aktiv.'**
-  String get dashboardPrimarySubtitleActive;
-
-  /// aus dashboard.primary.subtitleInactive
-  ///
-  /// In de, this message translates to:
-  /// **'Wähle Kraft, Cardio oder Recovery.'**
-  String get dashboardPrimarySubtitleInactive;
-
-  /// aus dashboard.primary.title
-  ///
-  /// In de, this message translates to:
-  /// **'Workout'**
-  String get dashboardPrimaryTitle;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Ernährung, Protein {value} von {goal} Gramm'**
-  String dashboardProteinA11y(int value, int goal);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **' / {goal}g Ziel'**
-  String dashboardProteinGoal(int goal);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Protein {value}g'**
-  String dashboardProteinOf(int value);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Nutrition & Fuel'**
-  String get dashboardQuickNutrition;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Periodisierung'**
-  String get dashboardQuickPeriod;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Recovery Scan'**
-  String get dashboardQuickRecovery;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'{headline} · {sets} Sets'**
-  String dashboardQuickSets(String headline, int sets);
-
-  /// Sätze der letzten Einheit, ohne Planname
-  ///
-  /// In de, this message translates to:
-  /// **'{count, plural, =0{Keine Sätze erfasst} one{1 Satz zuletzt} other{{count} Sätze zuletzt}}'**
-  String dashboardQuickSetsPlain(int count);
-
-  /// Planname und Sätze der letzten Einheit
-  ///
-  /// In de, this message translates to:
-  /// **'{plan} · {count, plural, one{1 Satz} other{{count} Sätze}}'**
-  String dashboardQuickSetsPlan(String plan, int count);
-
-  /// aus dashboard.quickStats.movementMinutes
-  ///
-  /// In de, this message translates to:
-  /// **'Bewegungsmin.'**
-  String get dashboardQuickStatsMovementMinutes;
-
-  /// aus dashboard.quickStats.sessions
-  ///
-  /// In de, this message translates to:
-  /// **'Sessions'**
-  String get dashboardQuickStatsSessions;
-
-  /// aus dashboard.quickStats.thisWeek
-  ///
-  /// In de, this message translates to:
-  /// **'Diese Woche'**
-  String get dashboardQuickStatsThisWeek;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Workout Log'**
-  String get dashboardQuickWorkout;
 
   /// Dashboard, Modul 1 Spezifikation
   ///
@@ -1825,180 +895,6 @@ abstract class AppL10n {
   /// **'Regeneration: Gut • Normale Trainingslast fahren'**
   String get dashboardReadinessTagSolid;
 
-  /// aus dashboard.recent.description
-  ///
-  /// In de, this message translates to:
-  /// **'Die letzten Sessions in chronologischer Reihenfolge.'**
-  String get dashboardRecentDescription;
-
-  /// aus dashboard.recent.empty
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Sessions'**
-  String get dashboardRecentEmpty;
-
-  /// aus dashboard.recent.title
-  ///
-  /// In de, this message translates to:
-  /// **'Letzte Sessions'**
-  String get dashboardRecentTitle;
-
-  /// aus dashboard.recent.viewAll
-  ///
-  /// In de, this message translates to:
-  /// **'Alle anzeigen'**
-  String get dashboardRecentViewAll;
-
-  /// aus dashboard.scheduled.title
-  ///
-  /// In de, this message translates to:
-  /// **'Geplant für heute'**
-  String get dashboardScheduledTitle;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'LOAD'**
-  String get dashboardSeriesLoad;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'RECOVERY'**
-  String get dashboardSeriesRecovery;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'STRAIN'**
-  String get dashboardSeriesStrain;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Für heute ist nichts geplant'**
-  String get dashboardSessionNone;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Plane eine Einheit oder logge ein freies Workout.'**
-  String get dashboardSessionNoneHint;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'SESSION LÄUFT · {time}'**
-  String dashboardSessionRunning(String time);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Session läuft, {time}, tippen zum Stoppen'**
-  String dashboardSessionRunningA11y(String time);
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'HEUTIGE SESSION'**
-  String get dashboardSessionSection;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'SESSION STARTEN'**
-  String get dashboardSessionStart;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Session starten'**
-  String get dashboardSessionStartA11y;
-
-  /// aus dashboard.startWorkout.newWorkout
-  ///
-  /// In de, this message translates to:
-  /// **'Neues Training'**
-  String get dashboardStartWorkoutNewWorkout;
-
-  /// aus dashboard.startWorkout.newWorkoutDesc
-  ///
-  /// In de, this message translates to:
-  /// **'Starte ein leeres Workout und füge Übungen hinzu'**
-  String get dashboardStartWorkoutNewWorkoutDesc;
-
-  /// aus dashboard.startWorkout.selectPlan
-  ///
-  /// In de, this message translates to:
-  /// **'Plan auswählen'**
-  String get dashboardStartWorkoutSelectPlan;
-
-  /// aus dashboard.startWorkout.selectPlanDesc
-  ///
-  /// In de, this message translates to:
-  /// **'Starte ein Training aus deinen Plänen'**
-  String get dashboardStartWorkoutSelectPlanDesc;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'HRV'**
-  String get dashboardStatHrv;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'RUHE-HF'**
-  String get dashboardStatRhr;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'SCHLAF'**
-  String get dashboardStatSleep;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Optimales System-Level erreicht'**
-  String get dashboardSubtitle;
-
-  /// aus dashboard.today
-  ///
-  /// In de, this message translates to:
-  /// **'Heute'**
-  String get dashboardToday;
-
-  /// aus dashboard.trainingTypes.bodyweight
-  ///
-  /// In de, this message translates to:
-  /// **'Bodyweight'**
-  String get dashboardTrainingTypesBodyweight;
-
-  /// aus dashboard.trainingTypes.cardio
-  ///
-  /// In de, this message translates to:
-  /// **'Cardio'**
-  String get dashboardTrainingTypesCardio;
-
-  /// aus dashboard.trainingTypes.recovery
-  ///
-  /// In de, this message translates to:
-  /// **'Recovery'**
-  String get dashboardTrainingTypesRecovery;
-
-  /// aus dashboard.trainingTypes.strength
-  ///
-  /// In de, this message translates to:
-  /// **'Krafttraining'**
-  String get dashboardTrainingTypesStrength;
-
-  /// Dashboard, Modul 1 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'MO,DI,MI,DO,FR,SA,SO'**
-  String get dashboardWeekdays;
-
   /// delete.confirm
   ///
   /// In de, this message translates to:
@@ -2035,12 +931,6 @@ abstract class AppL10n {
   /// **'Belastung an diesem Tag'**
   String get detailAcwrLabel;
 
-  /// Belastungsverhältnis mit Zone
-  ///
-  /// In de, this message translates to:
-  /// **'ACWR {v} · {zone}'**
-  String detailAcwrZone(String v, String zone);
-
   /// detail.compare.mid (Board 06)
   ///
   /// In de, this message translates to:
@@ -2068,86 +958,14 @@ abstract class AppL10n {
   /// Kennzahl im Detail
   ///
   /// In de, this message translates to:
-  /// **'Dauer'**
-  String get detailDuration;
-
-  /// Kennzahl im Detail
-  ///
-  /// In de, this message translates to:
   /// **'Last'**
   String get detailLoad;
-
-  /// detail.note.add (Board 06)
-  ///
-  /// In de, this message translates to:
-  /// **'Notiz hinzufügen'**
-  String get detailNoteAdd;
-
-  /// Kennzahl im Detail
-  ///
-  /// In de, this message translates to:
-  /// **'Pace /km'**
-  String get detailPace;
-
-  /// Hinweis bei Regeneration
-  ///
-  /// In de, this message translates to:
-  /// **'Recovery hält die Kette, treibt aber die Lastentwicklung nicht.'**
-  String get detailRecoveryBody;
-
-  /// Hinweis bei Regeneration
-  ///
-  /// In de, this message translates to:
-  /// **'Zählt für die Konstanz'**
-  String get detailRecoveryTitle;
 
   /// detail.saveAsPlan (Board 06)
   ///
   /// In de, this message translates to:
   /// **'Als Plan speichern'**
   String get detailSaveAsPlan;
-
-  /// Umfang der Einheit
-  ///
-  /// In de, this message translates to:
-  /// **'{e} Übungen · {s} Sätze'**
-  String detailSetsCount(int e, int s);
-
-  /// Erklärt, warum eine Einheit ohne Sätze trotzdem zählt
-  ///
-  /// In de, this message translates to:
-  /// **'Diese Einheit wurde als Dauer erfasst. Last und Konstanz zählen trotzdem, Volumen bleibt leer.'**
-  String get detailSetsMissingBody;
-
-  /// 16 der 63 Krafteinheiten im Bestand tragen keine Übungen
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Sätze aufgezeichnet'**
-  String get detailSetsMissingTitle;
-
-  /// Kennzahl im Detail
-  ///
-  /// In de, this message translates to:
-  /// **'Volumen'**
-  String get detailVolume;
-
-  /// dialog.delete.title (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Verlauf löschen?'**
-  String get dialogDeleteTitle;
-
-  /// dialog.end.confirm (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Beenden & speichern'**
-  String get dialogEndConfirm;
-
-  /// dialog.end.title (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Workout beenden?'**
-  String get dialogEndTitle;
 
   /// Richtungswort im Vorlesetext — die Farbe trägt sie nie allein
   ///
@@ -2221,18 +1039,6 @@ abstract class AppL10n {
   /// **'Keine Übung gefunden'**
   String get emptySearchTitle;
 
-  /// empty.today.body (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Ruhetag — oder Platz für eine freie Session.'**
-  String get emptyTodayBody;
-
-  /// empty.today.cta (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Session planen'**
-  String get emptyTodayCta;
-
   /// empty.today.title (Board 02)
   ///
   /// In de, this message translates to:
@@ -2263,24 +1069,6 @@ abstract class AppL10n {
   /// **'{sets}×{reps} · {rest} s Pause'**
   String entrySummary(String sets, String reps, String rest);
 
-  /// error.back (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Zurück zum Dashboard'**
-  String get errorBack;
-
-  /// error.load.body (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Der Plan konnte nicht abgerufen werden. Deine bisherigen Daten sind sicher.'**
-  String get errorLoadBody;
-
-  /// error.load.title (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Workout nicht ladbar'**
-  String get errorLoadTitle;
-
   /// error.offline.banner (Board 02)
   ///
   /// In de, this message translates to:
@@ -2305,89 +1093,17 @@ abstract class AppL10n {
   /// **'{sektion} nicht ladbar'**
   String errorSectionTitle(String sektion);
 
-  /// aus errors.deleteFailed
-  ///
-  /// In de, this message translates to:
-  /// **'Fehler beim Löschen'**
-  String get errorsDeleteFailed;
-
-  /// aus errors.exerciseNameRequired
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte gib einen Namen für die Übung ein!'**
-  String get errorsExerciseNameRequired;
-
-  /// aus errors.exercisesLoading
-  ///
-  /// In de, this message translates to:
-  /// **'Übungen werden noch geladen. Bitte versuche es gleich erneut.'**
-  String get errorsExercisesLoading;
-
   /// Runner, Modul 2 Spezifikation
   ///
   /// In de, this message translates to:
   /// **'Laden fehlgeschlagen. Bitte erneut versuchen.'**
   String get errorsLoadFailed;
 
-  /// aus errors.muscleGroupsRequired
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte wähle mindestens eine Muskelgruppe!'**
-  String get errorsMuscleGroupsRequired;
-
-  /// aus errors.planExercisesRequired
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte füge mindestens eine Übung hinzu!'**
-  String get errorsPlanExercisesRequired;
-
-  /// aus errors.planNameRequired
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte gib einen Namen für den Plan ein!'**
-  String get errorsPlanNameRequired;
-
-  /// aus errors.planNotFound
-  ///
-  /// In de, this message translates to:
-  /// **'Plan nicht gefunden'**
-  String get errorsPlanNotFound;
-
   /// aus errors.saveFailed
   ///
   /// In de, this message translates to:
   /// **'Fehler beim Speichern.'**
   String get errorsSaveFailed;
-
-  /// aus errors.sessionNotFound
-  ///
-  /// In de, this message translates to:
-  /// **'Session nicht gefunden'**
-  String get errorsSessionNotFound;
-
-  /// aus errors.startUnavailable
-  ///
-  /// In de, this message translates to:
-  /// **'Start-Auswahl ist nicht verfügbar.'**
-  String get errorsStartUnavailable;
-
-  /// aus errors.workoutNotFound
-  ///
-  /// In de, this message translates to:
-  /// **'Workout nicht gefunden'**
-  String get errorsWorkoutNotFound;
-
-  /// aus errors.workoutStartFailed
-  ///
-  /// In de, this message translates to:
-  /// **'Fehler beim Starten des Workouts'**
-  String get errorsWorkoutStartFailed;
-
-  /// Hinweis im Formular der eigenen Fassung
-  ///
-  /// In de, this message translates to:
-  /// **'Die kuratierte Übung bleibt bestehen. Deine Fassung steht daneben.'**
-  String get exerciseCopyNotice;
 
   /// Anzahl Übungen, kurz
   ///
@@ -2557,12 +1273,6 @@ abstract class AppL10n {
   /// **'z. B. Bulgarian Split Squat'**
   String get exerciseFieldNameHint;
 
-  /// Fehlermeldung beim Speichern
-  ///
-  /// In de, this message translates to:
-  /// **'Übung nicht gespeichert'**
-  String get exerciseFormSaveError;
-
   /// Fehlermeldung, Text
   ///
   /// In de, this message translates to:
@@ -2689,29 +1399,11 @@ abstract class AppL10n {
   /// **'Keine Anleitung hinterlegt'**
   String get exerciseSparseTitle;
 
-  /// exercises.block.all
-  ///
-  /// In de, this message translates to:
-  /// **'Alle ansehen'**
-  String get exercisesBlockAll;
-
   /// exercises.block.byMuscle
   ///
   /// In de, this message translates to:
   /// **'Nach Muskel'**
   String get exercisesBlockByMuscle;
-
-  /// exercises.block.search
-  ///
-  /// In de, this message translates to:
-  /// **'Name oder Muskel'**
-  String get exercisesBlockSearch;
-
-  /// exercises.block.title
-  ///
-  /// In de, this message translates to:
-  /// **'Übungen · {n}'**
-  String exercisesBlockTitle(int n);
 
   /// Zählzeile über der Liste
   ///
@@ -2725,12 +1417,6 @@ abstract class AppL10n {
   /// **'Eigene Übung anlegen'**
   String get exercisesCreate;
 
-  /// Suche ohne Treffer, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Übung passt zu „{q}“ — auch nicht auf Englisch.'**
-  String exercisesEmptyBody(String q);
-
   /// exercises.empty.own.body
   ///
   /// In de, this message translates to:
@@ -2742,12 +1428,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Noch keine eigene Übung'**
   String get exercisesEmptyOwnTitle;
-
-  /// Suche ohne Treffer
-  ///
-  /// In de, this message translates to:
-  /// **'Nichts gefunden'**
-  String get exercisesEmptyTitle;
 
   /// Vorlesetext eines gewählten Muskelfilters
   ///
@@ -2821,18 +1501,6 @@ abstract class AppL10n {
   /// **'Datei erstellen'**
   String get exportCreate;
 
-  /// Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'Als CSV erstellen'**
-  String get exportCreateCsv;
-
-  /// Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'Als JSON erstellen'**
-  String get exportCreateJson;
-
   /// export.done.note
   ///
   /// In de, this message translates to:
@@ -2863,18 +1531,6 @@ abstract class AppL10n {
   /// **'Einheiten'**
   String get exportFormatSessions;
 
-  /// export.offline
-  ///
-  /// In de, this message translates to:
-  /// **'Offline nicht möglich'**
-  String get exportOffline;
-
-  /// export.progress
-  ///
-  /// In de, this message translates to:
-  /// **'Einheiten {a}/{b} · Pläne {c}/{d} · Übungen {e}/{f}'**
-  String exportProgress(int a, int b, int c, int d, int e, int f);
-
   /// Zeitraum in der Inhaltsliste
   ///
   /// In de, this message translates to:
@@ -2898,12 +1554,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Profilangaben'**
   String get exportRowProfile;
-
-  /// Board 08, exportInhalt
-  ///
-  /// In de, this message translates to:
-  /// **'Termine'**
-  String get exportRowSchedule;
 
   /// Board 08, exportInhalt
   ///
@@ -2947,36 +1597,6 @@ abstract class AppL10n {
   /// **'Datum'**
   String get formDate;
 
-  /// Vorlesetext des Dialogschleiers
-  ///
-  /// In de, this message translates to:
-  /// **'Änderungen verwerfen'**
-  String get formDiscardBarrier;
-
-  /// Dialogtext
-  ///
-  /// In de, this message translates to:
-  /// **'Was du eingegeben hast, geht verloren.'**
-  String get formDiscardBody;
-
-  /// Dialogaktion
-  ///
-  /// In de, this message translates to:
-  /// **'Verwerfen'**
-  String get formDiscardConfirm;
-
-  /// Dialogaktion, Abbruch
-  ///
-  /// In de, this message translates to:
-  /// **'Weiter bearbeiten'**
-  String get formDiscardKeep;
-
-  /// Dialog beim Verlassen mit ungespeicherten Änderungen
-  ///
-  /// In de, this message translates to:
-  /// **'Änderungen verwerfen?'**
-  String get formDiscardTitle;
-
   /// form.distance
   ///
   /// In de, this message translates to:
@@ -3006,12 +1626,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Max. Puls'**
   String get formHrMax;
-
-  /// form.note
-  ///
-  /// In de, this message translates to:
-  /// **'Notiz · optional'**
-  String get formNote;
 
   /// form.optional.count
   ///
@@ -3061,12 +1675,6 @@ abstract class AppL10n {
   /// **'Heute'**
   String get formToday;
 
-  /// aus format.distanceKm
-  ///
-  /// In de, this message translates to:
-  /// **'{distance} km'**
-  String formatDistanceKm(num distance);
-
   /// aus format.duration.hours
   ///
   /// In de, this message translates to:
@@ -3084,18 +1692,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{minutes} min'**
   String formatDurationMinutes(int minutes);
-
-  /// aus format.duration.zero
-  ///
-  /// In de, this message translates to:
-  /// **'0 min'**
-  String get formatDurationZero;
-
-  /// aus format.pace.na
-  ///
-  /// In de, this message translates to:
-  /// **'-'**
-  String get formatPaceNa;
 
   /// aus format.pace.value
   ///
@@ -3187,12 +1783,6 @@ abstract class AppL10n {
   /// **'Haptik'**
   String get hapticsTitle;
 
-  /// haptics.unavailable
-  ///
-  /// In de, this message translates to:
-  /// **'Dein Gerät hat keinen Vibrationsmotor.'**
-  String get hapticsUnavailable;
-
   /// Öffnet die vollständige Liste
   ///
   /// In de, this message translates to:
@@ -3235,18 +1825,6 @@ abstract class AppL10n {
   /// **'Ring markiert den Bestwert'**
   String get historyCurveLegend;
 
-  /// Leerzustand des Verlaufs
-  ///
-  /// In de, this message translates to:
-  /// **'Deine erste Einheit steht hier, sobald du sie beendet hast.'**
-  String get historyEmptyBody;
-
-  /// Leerzustand des Verlaufs
-  ///
-  /// In de, this message translates to:
-  /// **'Noch nichts aufgezeichnet'**
-  String get historyEmptyTitle;
-
   /// Fehlerzustand
   ///
   /// In de, this message translates to:
@@ -3258,18 +1836,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Verlauf nicht verfügbar'**
   String get historyErrorTitle;
-
-  /// Beschriftung des Form-Werts
-  ///
-  /// In de, this message translates to:
-  /// **'Form'**
-  String get historyFormLabel;
-
-  /// Form-Wert mit Maximum
-  ///
-  /// In de, this message translates to:
-  /// **'{v}/100'**
-  String historyFormOf(int v);
 
   /// history.freq
   ///
@@ -3348,24 +1914,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Verlauf'**
   String get historyTitle;
-
-  /// Richtung der Formkurve
-  ///
-  /// In de, this message translates to:
-  /// **'fallend'**
-  String get historyTrendFalling;
-
-  /// Richtung der Formkurve
-  ///
-  /// In de, this message translates to:
-  /// **'steigend'**
-  String get historyTrendRising;
-
-  /// Richtung der Formkurve
-  ///
-  /// In de, this message translates to:
-  /// **'stabil'**
-  String get historyTrendStable;
 
   /// history.volume
   ///
@@ -3523,23 +2071,11 @@ abstract class AppL10n {
   /// **'Text nicht geladen'**
   String get legalError;
 
-  /// legal.external
-  ///
-  /// In de, this message translates to:
-  /// **'Extern öffnen'**
-  String get legalExternal;
-
   /// legal.imprint
   ///
   /// In de, this message translates to:
   /// **'Impressum'**
   String get legalImprint;
-
-  /// legal.imprint.body
-  ///
-  /// In de, this message translates to:
-  /// **'Privates Projekt einer natürlichen Person. Angaben nach § 5 TMG: {betreiber}'**
-  String legalImprintBody(String betreiber);
 
   /// legal.inapp
   ///
@@ -3703,12 +2239,6 @@ abstract class AppL10n {
   /// **'Beenden'**
   String get liveStop;
 
-  /// loading.done (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'{sektion} geladen'**
-  String loadingDone(String sektion);
-
   /// loading.label (Board 02)
   ///
   /// In de, this message translates to:
@@ -3811,47 +2341,11 @@ abstract class AppL10n {
   /// **'Trizeps'**
   String get muscleTriceps;
 
-  /// aus nav.calendar
-  ///
-  /// In de, this message translates to:
-  /// **'Kalender'**
-  String get navCalendar;
-
-  /// aus nav.dashboard
-  ///
-  /// In de, this message translates to:
-  /// **'Heute'**
-  String get navDashboard;
-
-  /// aus nav.exercises
-  ///
-  /// In de, this message translates to:
-  /// **'Übungen'**
-  String get navExercises;
-
   /// aus nav.plans
   ///
   /// In de, this message translates to:
   /// **'Pläne'**
   String get navPlans;
-
-  /// aus nav.profile
-  ///
-  /// In de, this message translates to:
-  /// **'Profil'**
-  String get navProfile;
-
-  /// aus nav.progress
-  ///
-  /// In de, this message translates to:
-  /// **'Fortschritt'**
-  String get navProgress;
-
-  /// aus nav.training
-  ///
-  /// In de, this message translates to:
-  /// **'Training'**
-  String get navTraining;
 
   /// Abschlussknopf des Onboardings
   ///
@@ -3949,12 +2443,6 @@ abstract class AppL10n {
   /// **'Onboarding wiederholen'**
   String get onboardingRepeat;
 
-  /// onboarding.repeat.action
-  ///
-  /// In de, this message translates to:
-  /// **'Ansehen'**
-  String get onboardingRepeatAction;
-
   /// onboarding.repeat.sub
   ///
   /// In de, this message translates to:
@@ -3997,12 +2485,6 @@ abstract class AppL10n {
   /// **'Ziel bleibt · {ziel}'**
   String planBrokenKeepTarget(String ziel);
 
-  /// plan.broken.notice
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, one {{n} Eintrag zeigt} other {{n} Einträge zeigen}} ins Leere.'**
-  String planBrokenNotice(int n);
-
   /// plan.broken.remove
   ///
   /// In de, this message translates to:
@@ -4020,12 +2502,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{n} Pläne'**
   String planCount(int n);
-
-  /// Vorlesetext des Dialogschleiers
-  ///
-  /// In de, this message translates to:
-  /// **'Plan löschen'**
-  String get planDeleteBarrier;
 
   /// Bestätigung, Text
   ///
@@ -4075,12 +2551,6 @@ abstract class AppL10n {
   /// **'Sätze'**
   String get planEntrySets;
 
-  /// Aktion unter der Übungsliste
-  ///
-  /// In de, this message translates to:
-  /// **'Übung hinzufügen'**
-  String get planFormAdd;
-
   /// Titel beim Ändern
   ///
   /// In de, this message translates to:
@@ -4092,12 +2562,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Lücke an Platz {n}: gelöschte Übung, {scheme}'**
   String planFormGapA11y(int n, String scheme);
-
-  /// Text einer Lücke im Plan
-  ///
-  /// In de, this message translates to:
-  /// **'Die Zielwerte bleiben stehen. Ersetze sie durch eine andere Übung.'**
-  String get planFormGapBody;
 
   /// Titel einer Lücke im Plan
   ///
@@ -4116,12 +2580,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Übungen'**
   String get planFormItems;
-
-  /// Fehler an der Übungsliste
-  ///
-  /// In de, this message translates to:
-  /// **'Ein Plan braucht mindestens eine Übung.'**
-  String get planFormItemsFault;
 
   /// Vorlesetext eines Planeintrags
   ///
@@ -4147,12 +2605,6 @@ abstract class AppL10n {
   /// **'Name'**
   String get planFormName;
 
-  /// Fehler am Namensfeld
-  ///
-  /// In de, this message translates to:
-  /// **'Ein Plan braucht einen Namen.'**
-  String get planFormNameFault;
-
   /// Platzhalter im Namensfeld
   ///
   /// In de, this message translates to:
@@ -4165,47 +2617,11 @@ abstract class AppL10n {
   /// **'Neuer Plan'**
   String get planFormNewTitle;
 
-  /// Titel des Auswahlblatts
-  ///
-  /// In de, this message translates to:
-  /// **'Übung wählen'**
-  String get planFormPickTitle;
-
-  /// Aktion an einem Planeintrag
-  ///
-  /// In de, this message translates to:
-  /// **'Entfernen'**
-  String get planFormRemove;
-
   /// Vorlesetext der Entfernen-Aktion
   ///
   /// In de, this message translates to:
   /// **'{name} aus dem Plan entfernen'**
   String planFormRemoveA11y(String name);
-
-  /// Erste Aktion an einer Lücke
-  ///
-  /// In de, this message translates to:
-  /// **'Ersetzen'**
-  String get planFormReplace;
-
-  /// Zielwert
-  ///
-  /// In de, this message translates to:
-  /// **'Wdh.'**
-  String get planFormReps;
-
-  /// Platzhalter im Wiederholungsfeld — Bereiche sind erlaubt
-  ///
-  /// In de, this message translates to:
-  /// **'8-12'**
-  String get planFormRepsHint;
-
-  /// Zielwert in Sekunden
-  ///
-  /// In de, this message translates to:
-  /// **'Pause'**
-  String get planFormRest;
 
   /// Fehlermeldung
   ///
@@ -4213,29 +2629,11 @@ abstract class AppL10n {
   /// **'Plan nicht gespeichert'**
   String get planFormSaveError;
 
-  /// Rückmeldung nach dem Speichern
-  ///
-  /// In de, this message translates to:
-  /// **'Plan gespeichert'**
-  String get planFormSaved;
-
-  /// Zielwert
-  ///
-  /// In de, this message translates to:
-  /// **'Sätze'**
-  String get planFormSets;
-
   /// Steht statt des Namens, wenn die Übung gelöscht wurde
   ///
   /// In de, this message translates to:
   /// **'Nicht mehr vorhanden'**
   String get planItemMissing;
-
-  /// Zweite Zeile einer Planzeile
-  ///
-  /// In de, this message translates to:
-  /// **'{n} Übungen · {type}'**
-  String planMeta(int n, String type);
 
   /// Hinweis über einem Plan mit gelöschten Übungen
   ///
@@ -4267,107 +2665,11 @@ abstract class AppL10n {
   /// **'Name und E-Mail kommen aus deinem Google-Konto und werden hier nur angezeigt.'**
   String get profileLockedWhy;
 
-  /// Kachelüberschrift
-  ///
-  /// In de, this message translates to:
-  /// **'Form'**
-  String get quickForm;
-
-  /// Richtung des Formtrends
-  ///
-  /// In de, this message translates to:
-  /// **'fallend'**
-  String get quickFormFalling;
-
-  /// Richtung des Formtrends
-  ///
-  /// In de, this message translates to:
-  /// **'gleichbleibend'**
-  String get quickFormFlat;
-
-  /// Richtung des Formtrends
-  ///
-  /// In de, this message translates to:
-  /// **'steigend'**
-  String get quickFormRising;
-
-  /// Formwert in der Kachel
-  ///
-  /// In de, this message translates to:
-  /// **'{v} von 100'**
-  String quickFormValue(int v);
-
-  /// Kachelüberschrift
-  ///
-  /// In de, this message translates to:
-  /// **'Letzte Einheit'**
-  String get quickLast;
-
-  /// Abstand zur letzten Einheit
-  ///
-  /// In de, this message translates to:
-  /// **'vor {n, plural, one {einem Tag} other {{n} Tagen}}'**
-  String quickLastDays(int n);
-
-  /// Die letzte Einheit war heute
-  ///
-  /// In de, this message translates to:
-  /// **'heute'**
-  String get quickLastToday;
-
-  /// Kachelüberschrift
-  ///
-  /// In de, this message translates to:
-  /// **'Nächster Termin'**
-  String get quickNext;
-
-  /// Terminabstand
-  ///
-  /// In de, this message translates to:
-  /// **'in {n} Tagen'**
-  String quickNextDays(int n);
-
-  /// Kein Termin in Sicht
-  ///
-  /// In de, this message translates to:
-  /// **'Nichts geplant'**
-  String get quickNextNone;
-
-  /// Terminabstand
-  ///
-  /// In de, this message translates to:
-  /// **'heute'**
-  String get quickNextToday;
-
-  /// Terminabstand
-  ///
-  /// In de, this message translates to:
-  /// **'morgen'**
-  String get quickNextTomorrow;
-
-  /// Leerer Bestand
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Einheit'**
-  String get quickNoSessions;
-
-  /// ratio.basis
-  ///
-  /// In de, this message translates to:
-  /// **'Anteil an {min} Trainingsminuten · {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
-  String ratioBasis(int min, int n);
-
   /// ratio.noshift
   ///
   /// In de, this message translates to:
   /// **'kein 4-Wochen-Schnitt'**
   String get ratioNoshift;
-
-  /// ratio.shift
-  ///
-  /// In de, this message translates to:
-  /// **'{value} pp gegen 4-Wochen-Schnitt'**
-  String ratioShift(String value);
 
   /// ratio.shift.down
   ///
@@ -4380,24 +2682,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'mehr'**
   String get ratioShiftUp;
-
-  /// ratio.single.body
-  ///
-  /// In de, this message translates to:
-  /// **'Ein Verhältnis braucht beide Spuren. Ab der ersten Ausdauereinheit steht es hier.'**
-  String get ratioSingleBody;
-
-  /// ratio.single.title
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Ausdauer'**
-  String get ratioSingleTitle;
-
-  /// ratio.title
-  ///
-  /// In de, this message translates to:
-  /// **'Verhältnis'**
-  String get ratioTitle;
 
   /// recovery.add
   ///
@@ -4645,12 +2929,6 @@ abstract class AppL10n {
   /// **'Vorher {date} · {n, plural, one {+{n} Tag} other {+{n} Tage}}'**
   String sessionDatePrevious(int n, String date);
 
-  /// Vorlesetext des Dialogschleiers
-  ///
-  /// In de, this message translates to:
-  /// **'Einheit löschen'**
-  String get sessionDeleteBarrier;
-
   /// session.delete.body
   ///
   /// In de, this message translates to:
@@ -4663,47 +2941,17 @@ abstract class AppL10n {
   /// **'Diese Einheit löschen?'**
   String get sessionDeleteQ;
 
-  /// Bestätigung
-  ///
-  /// In de, this message translates to:
-  /// **'Einheit löschen?'**
-  String get sessionDeleteTitle;
-
   /// session.delete.window
   ///
   /// In de, this message translates to:
   /// **'6 Sekunden lang kannst du das rückgängig machen.'**
   String get sessionDeleteWindow;
 
-  /// Widerrufshinweis, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Du kannst das {n} Sekunden lang zurücknehmen.'**
-  String sessionDeletedBody(int n);
-
   /// session.deleted.snack
   ///
   /// In de, this message translates to:
   /// **'Einheit gelöscht · Einheiten {alt} → {neu}'**
   String sessionDeletedSnack(String alt, String neu);
-
-  /// Widerrufshinweis nach dem Löschen
-  ///
-  /// In de, this message translates to:
-  /// **'{name} gelöscht'**
-  String sessionDeletedTitle(String name);
-
-  /// Aktion im Widerrufshinweis
-  ///
-  /// In de, this message translates to:
-  /// **'Rückgängig'**
-  String get sessionDeletedUndo;
-
-  /// Feldbeschriftung
-  ///
-  /// In de, this message translates to:
-  /// **'Datum'**
-  String get sessionEditDate;
 
   /// Vorlesetext des Datumsfelds
   ///
@@ -4729,18 +2977,6 @@ abstract class AppL10n {
   /// **'Einheit nicht gespeichert'**
   String get sessionEditSaveError;
 
-  /// Rückmeldung
-  ///
-  /// In de, this message translates to:
-  /// **'Einheit gespeichert'**
-  String get sessionEditSaved;
-
-  /// Abschnittslabel über den Sätzen
-  ///
-  /// In de, this message translates to:
-  /// **'Sätze'**
-  String get sessionEditSets;
-
   /// session.edit.title
   ///
   /// In de, this message translates to:
@@ -4758,12 +2994,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Einheiten gesamt'**
   String get sessionImpactCount;
-
-  /// session.impact.form
-  ///
-  /// In de, this message translates to:
-  /// **'Form heute'**
-  String get sessionImpactForm;
 
   /// Board 07, folgen
   ///
@@ -4807,185 +3037,17 @@ abstract class AppL10n {
   /// **'Sätze nachtragen'**
   String get setsAdd;
 
-  /// Zeile im Abschnitt ueber die App
-  ///
-  /// In de, this message translates to:
-  /// **'Privates Projekt, keine kommerzielle Nutzung.'**
-  String get settingsAboutPrivate;
-
-  /// Die Tatsache an der Stelle, an der sonst ein Schalter stuende
-  ///
-  /// In de, this message translates to:
-  /// **'Nur dunkel — ATEM ist für dunkle Umgebungen gebaut.'**
-  String get settingsAboutTheme;
-
-  /// Zeile im Abschnitt ueber die App
-  ///
-  /// In de, this message translates to:
-  /// **'Version {version}'**
-  String settingsAboutVersion(String version);
-
-  /// Feldbeschriftung
-  ///
-  /// In de, this message translates to:
-  /// **'Körpergewicht'**
-  String get settingsBodyWeight;
-
-  /// Fehler am Gewichtsfeld
-  ///
-  /// In de, this message translates to:
-  /// **'Zwischen {min} und {max} kg.'**
-  String settingsBodyWeightFault(int min, int max);
-
-  /// Hilfetext unter dem Gewichtsfeld
-  ///
-  /// In de, this message translates to:
-  /// **'Rechnet jede Körpergewichtsübung neu — auch die von früher.'**
-  String get settingsBodyWeightHint;
-
-  /// Zustand ohne Körpergewicht
-  ///
-  /// In de, this message translates to:
-  /// **'Noch nicht hinterlegt'**
-  String get settingsBodyWeightNone;
-
-  /// Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'Konto löschen'**
-  String get settingsDelete;
-
-  /// Vorlesetext des Dialogschleiers
-  ///
-  /// In de, this message translates to:
-  /// **'Konto löschen'**
-  String get settingsDeleteBarrier;
-
-  /// Hilfetext am Bestätigungsfeld
-  ///
-  /// In de, this message translates to:
-  /// **'Genau so, in Großbuchstaben.'**
-  String get settingsDeleteConfirmHint;
-
-  /// Das Wort, das getippt werden muss, in Grossbuchstaben
-  ///
-  /// In de, this message translates to:
-  /// **'LÖSCHEN'**
-  String get settingsDeleteConfirmWord;
-
-  /// Was konkret verschwindet
-  ///
-  /// In de, this message translates to:
-  /// **'{sessions} Einheiten · {plans} Pläne · {exercises} eigene Übungen'**
-  String settingsDeleteCounts(int sessions, int plans, int exercises);
-
-  /// Zweiter Ausgang der ersten Stufe
-  ///
-  /// In de, this message translates to:
-  /// **'Daten vorher sichern'**
-  String get settingsDeleteExport;
-
-  /// Fehlermeldung
-  ///
-  /// In de, this message translates to:
-  /// **'Löschen nicht abgeschlossen'**
-  String get settingsDeleteFailed;
-
-  /// Fehlermeldung, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Ein Teil deiner Daten ist noch da. Versuche es erneut, solange du angemeldet bist.'**
-  String get settingsDeleteFailedBody;
-
-  /// Gesperrt ohne Netz, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Löschen greift über mehrere Sammlungen. Ohne Verbindung bliebe die Hälfte stehen.'**
-  String get settingsDeleteOfflineBody;
-
-  /// Gesperrt ohne Netz
-  ///
-  /// In de, this message translates to:
-  /// **'Ohne Verbindung nicht möglich'**
-  String get settingsDeleteOfflineTitle;
-
-  /// Ladezustand
-  ///
-  /// In de, this message translates to:
-  /// **'Wird gelöscht …'**
-  String get settingsDeleteRunning;
-
-  /// Erste Stufe, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Einheiten, Pläne, eigene Übungen, Termine und dein Profil werden entfernt. Es gibt kein Zurück und kein Zeitfenster.'**
-  String get settingsDeleteStep1Body;
-
-  /// Erste Stufe
-  ///
-  /// In de, this message translates to:
-  /// **'Konto und alle Daten löschen?'**
-  String get settingsDeleteStep1Title;
-
-  /// Zweite Stufe, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Tippe {word}, um zu bestätigen.'**
-  String settingsDeleteStep2Body(String word);
-
-  /// Zweite Stufe
-  ///
-  /// In de, this message translates to:
-  /// **'Wirklich endgültig löschen?'**
-  String get settingsDeleteStep2Title;
-
-  /// Erklärung
-  ///
-  /// In de, this message translates to:
-  /// **'ATEM ist geschlossen; die Freischaltung steht in einer Liste, die zum Programm gehört und nicht zum Konto. Meldest du dich erneut an, bist du wieder dabei — mit leerem Bestand.'**
-  String get settingsDeletedAccessBody;
-
   /// Der erklärungsbedürftige Teil
   ///
   /// In de, this message translates to:
   /// **'Dein Zugang bleibt bestehen'**
   String get settingsDeletedAccessTitle;
 
-  /// Abschlussbildschirm, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Deine Trainingsdaten sind entfernt.'**
-  String get settingsDeletedBody;
-
-  /// Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'Schließen'**
-  String get settingsDeletedClose;
-
-  /// Abschlussbildschirm
-  ///
-  /// In de, this message translates to:
-  /// **'Konto gelöscht'**
-  String get settingsDeletedTitle;
-
   /// settings.entry.a11y
   ///
   /// In de, this message translates to:
   /// **'Profil und Einstellungen'**
   String get settingsEntryA11y;
-
-  /// Erklärung der beiden Formate
-  ///
-  /// In de, this message translates to:
-  /// **'JSON enthält alles. CSV enthält deine Einheiten als Tabelle, eine Zeile je Satz.'**
-  String get settingsExportBody;
-
-  /// Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'Einheiten als CSV'**
-  String get settingsExportCsv;
 
   /// Rückmeldung
   ///
@@ -4999,203 +3061,11 @@ abstract class AppL10n {
   /// **'Sichern fehlgeschlagen'**
   String get settingsExportFailed;
 
-  /// Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'Alles als JSON'**
-  String get settingsExportJson;
-
   /// Ladezustand
   ///
   /// In de, this message translates to:
   /// **'Wird gesammelt …'**
   String get settingsExportRunning;
-
-  /// Titel
-  ///
-  /// In de, this message translates to:
-  /// **'Daten sichern'**
-  String get settingsExportTitle;
-
-  /// Erklaerung am Profilkopf statt eines defekt wirkenden Formulars
-  ///
-  /// In de, this message translates to:
-  /// **'Name und Bild kommen von deinem Google-Konto.'**
-  String get settingsFromGoogle;
-
-  /// Schalterbeschriftung
-  ///
-  /// In de, this message translates to:
-  /// **'Vibration'**
-  String get settingsHaptics;
-
-  /// Hilfetext
-  ///
-  /// In de, this message translates to:
-  /// **'Kurze Rückmeldung beim Antippen und am Pausenende.'**
-  String get settingsHapticsHint;
-
-  /// Vorlesetext, Zustand
-  ///
-  /// In de, this message translates to:
-  /// **'Vibration aus'**
-  String get settingsHapticsOff;
-
-  /// Vorlesetext, Zustand
-  ///
-  /// In de, this message translates to:
-  /// **'Vibration an'**
-  String get settingsHapticsOn;
-
-  /// Rechtlicher Weg
-  ///
-  /// In de, this message translates to:
-  /// **'Impressum'**
-  String get settingsImprint;
-
-  /// Feldbeschriftung
-  ///
-  /// In de, this message translates to:
-  /// **'Sprache'**
-  String get settingsLanguage;
-
-  /// Sprache
-  ///
-  /// In de, this message translates to:
-  /// **'Englisch'**
-  String get settingsLanguageEnglish;
-
-  /// Sprache
-  ///
-  /// In de, this message translates to:
-  /// **'Deutsch'**
-  String get settingsLanguageGerman;
-
-  /// Hilfetext unter der Sprachwahl
-  ///
-  /// In de, this message translates to:
-  /// **'Wirkt sofort.'**
-  String get settingsLanguageHint;
-
-  /// Fehlermeldung
-  ///
-  /// In de, this message translates to:
-  /// **'Seite lässt sich nicht öffnen'**
-  String get settingsLinkFailed;
-
-  /// Vorlesetext des Profilbilds im Dashboard-Kopf
-  ///
-  /// In de, this message translates to:
-  /// **'Einstellungen und Profil öffnen'**
-  String get settingsOpenA11y;
-
-  /// Hilfetext an den rechtlichen Wegen
-  ///
-  /// In de, this message translates to:
-  /// **'Öffnet im Browser'**
-  String get settingsOpensBrowser;
-
-  /// Ladezustand der Vorschau
-  ///
-  /// In de, this message translates to:
-  /// **'Wird gerechnet …'**
-  String get settingsPreviewComputing;
-
-  /// Zeile der Vorschau
-  ///
-  /// In de, this message translates to:
-  /// **'Fitness ggü. Höchststand'**
-  String get settingsPreviewFitness;
-
-  /// Zeile der Vorschau
-  ///
-  /// In de, this message translates to:
-  /// **'Last der letzten Einheit'**
-  String get settingsPreviewLoad;
-
-  /// Vorschau ohne Änderung
-  ///
-  /// In de, this message translates to:
-  /// **'An deinen Auswertungen ändert das nichts.'**
-  String get settingsPreviewNone;
-
-  /// Überschrift der Vorschau
-  ///
-  /// In de, this message translates to:
-  /// **'Was sich dadurch ändert'**
-  String get settingsPreviewTitle;
-
-  /// Rechtlicher Weg
-  ///
-  /// In de, this message translates to:
-  /// **'Datenschutzerklärung'**
-  String get settingsPrivacy;
-
-  /// Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'Onboarding wiederholen'**
-  String get settingsReplayOnboarding;
-
-  /// Hilfetext
-  ///
-  /// In de, this message translates to:
-  /// **'Fragt das Körpergewicht erneut ab.'**
-  String get settingsReplayOnboardingHint;
-
-  /// Feldbeschriftung
-  ///
-  /// In de, this message translates to:
-  /// **'Pausenzeit'**
-  String get settingsRest;
-
-  /// Fehler an der Pausenzeit
-  ///
-  /// In de, this message translates to:
-  /// **'Zwischen {min} und {max} Sekunden.'**
-  String settingsRestFault(int min, int max);
-
-  /// Hilfetext unter der Pausenzeit
-  ///
-  /// In de, this message translates to:
-  /// **'Vorschlag beim Start einer Einheit. Im Training änderbar.'**
-  String get settingsRestHint;
-
-  /// Abschnitt
-  ///
-  /// In de, this message translates to:
-  /// **'Über die App'**
-  String get settingsSectionAbout;
-
-  /// Abschnitt
-  ///
-  /// In de, this message translates to:
-  /// **'Konto'**
-  String get settingsSectionAccount;
-
-  /// Abschnitt
-  ///
-  /// In de, this message translates to:
-  /// **'App'**
-  String get settingsSectionApp;
-
-  /// Abschnitt
-  ///
-  /// In de, this message translates to:
-  /// **'Rechtliches'**
-  String get settingsSectionLegal;
-
-  /// Abschnitt
-  ///
-  /// In de, this message translates to:
-  /// **'Profil'**
-  String get settingsSectionProfile;
-
-  /// Abschnitt
-  ///
-  /// In de, this message translates to:
-  /// **'Training'**
-  String get settingsSectionTraining;
 
   /// Aktion
   ///
@@ -5221,107 +3091,17 @@ abstract class AppL10n {
   /// **'Abmelden?'**
   String get settingsSignOutTitle;
 
-  /// Beschriftung am Konto
-  ///
-  /// In de, this message translates to:
-  /// **'Angemeldet als'**
-  String get settingsSignedInAs;
-
-  /// Rechtlicher Weg
-  ///
-  /// In de, this message translates to:
-  /// **'Nutzungsbedingungen'**
-  String get settingsTerms;
-
   /// settings.title
   ///
   /// In de, this message translates to:
   /// **'Einstellungen'**
   String get settingsTitle;
 
-  /// Feldbeschriftung
-  ///
-  /// In de, this message translates to:
-  /// **'Einheiten'**
-  String get settingsUnits;
-
-  /// Hilfetext unter der Einheitenwahl
-  ///
-  /// In de, this message translates to:
-  /// **'Gespeichert wird immer in Kilogramm.'**
-  String get settingsUnitsHint;
-
-  /// Einheitensystem
-  ///
-  /// In de, this message translates to:
-  /// **'Imperial'**
-  String get settingsUnitsImperial;
-
-  /// Vorlesetext
-  ///
-  /// In de, this message translates to:
-  /// **'Imperial, Pfund'**
-  String get settingsUnitsImperialA11y;
-
-  /// Einheitensystem
-  ///
-  /// In de, this message translates to:
-  /// **'Metrisch'**
-  String get settingsUnitsMetric;
-
-  /// Vorlesetext
-  ///
-  /// In de, this message translates to:
-  /// **'Metrisch, Kilogramm'**
-  String get settingsUnitsMetricA11y;
-
-  /// Widerrufshinweis
-  ///
-  /// In de, this message translates to:
-  /// **'Körpergewicht auf {weight} kg geändert'**
-  String settingsWeightChanged(String weight);
-
-  /// Widerrufshinweis, Text
-  ///
-  /// In de, this message translates to:
-  /// **'Du kannst das {n} Sekunden lang zurücknehmen.'**
-  String settingsWeightChangedBody(int n);
-
-  /// sheet.filter.active (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'{n} aktiv'**
-  String sheetFilterActive(int n);
-
-  /// sheet.filter.apply (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Anwenden'**
-  String get sheetFilterApply;
-
-  /// sheet.filter.title (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Filter'**
-  String get sheetFilterTitle;
-
   /// Text im Start-Sheet beim freien Training
   ///
   /// In de, this message translates to:
   /// **'Ohne Plan starten — Übungen fügst du im Training hinzu.'**
   String get sheetFreeBody;
-
-  /// sheet.grabber_hint (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Ziehen zum Schließen'**
-  String get sheetGrabberHint;
-
-  /// sheet.note.title (Board 02)
-  ///
-  /// In de, this message translates to:
-  /// **'Notiz zum Satz'**
-  String get sheetNoteTitle;
 
   /// sheet.picker.apply (Board 02)
   ///
@@ -5346,12 +3126,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{plan} starten?'**
   String sheetStartTitle(String plan);
-
-  /// signout
-  ///
-  /// In de, this message translates to:
-  /// **'Abmelden'**
-  String get signout;
 
   /// signout.keep
   ///
@@ -5560,12 +3334,6 @@ abstract class AppL10n {
   /// Runner, Modul 1/2 Spezifikation
   ///
   /// In de, this message translates to:
-  /// **'Session-Notizen öffnen'**
-  String get workoutA11yNotes;
-
-  /// Runner, Modul 1/2 Spezifikation
-  ///
-  /// In de, this message translates to:
   /// **'Training pausieren'**
   String get workoutA11yPause;
 
@@ -5635,167 +3403,17 @@ abstract class AppL10n {
   /// **'Gewicht in Kilogramm, Satz {n}'**
   String workoutA11yWeightField(int n);
 
-  /// aus workout.banner.active
-  ///
-  /// In de, this message translates to:
-  /// **'Aktives Workout: {name}'**
-  String workoutBannerActive(String name);
-
-  /// aus workout.banner.cancel
-  ///
-  /// In de, this message translates to:
-  /// **'Abbrechen'**
-  String get workoutBannerCancel;
-
-  /// aus workout.banner.cancelConfirm
-  ///
-  /// In de, this message translates to:
-  /// **'Aktives Workout wirklich abbrechen? Alle Fortschritte gehen verloren.'**
-  String get workoutBannerCancelConfirm;
-
-  /// aus workout.banner.cancelWorkoutConfirm
-  ///
-  /// In de, this message translates to:
-  /// **'Workout wirklich abbrechen? Alle Fortschritte gehen verloren.'**
-  String get workoutBannerCancelWorkoutConfirm;
-
-  /// aus workout.banner.resume
-  ///
-  /// In de, this message translates to:
-  /// **'Fortsetzen'**
-  String get workoutBannerResume;
-
-  /// aus workout.cardio.distance
-  ///
-  /// In de, this message translates to:
-  /// **'Distanz (km)'**
-  String get workoutCardioDistance;
-
-  /// aus workout.cardio.duration
-  ///
-  /// In de, this message translates to:
-  /// **'Dauer (Min.)'**
-  String get workoutCardioDuration;
-
-  /// aus workout.cardio.log
-  ///
-  /// In de, this message translates to:
-  /// **'Cardio loggen'**
-  String get workoutCardioLog;
-
-  /// aus workout.cardio.pace
-  ///
-  /// In de, this message translates to:
-  /// **'Pace'**
-  String get workoutCardioPace;
-
-  /// aus workout.cardio.rpe
-  ///
-  /// In de, this message translates to:
-  /// **'Belastung (1–5)'**
-  String get workoutCardioRpe;
-
   /// Spaltenkopf im Satzprotokoll
   ///
   /// In de, this message translates to:
   /// **'Halten'**
   String get workoutColHold;
 
-  /// aus workout.copyLastSet
-  ///
-  /// In de, this message translates to:
-  /// **'Letzten Satz kopieren'**
-  String get workoutCopyLastSet;
-
-  /// aus workout.editDate.error
-  ///
-  /// In de, this message translates to:
-  /// **'Ungültiges Datumsformat. Bitte verwende YYYY-MM-DD'**
-  String get workoutEditDateError;
-
-  /// aus workout.editDate.prompt
-  ///
-  /// In de, this message translates to:
-  /// **'Neues Datum (YYYY-MM-DD):'**
-  String get workoutEditDatePrompt;
-
-  /// aus workout.exercise.current
-  ///
-  /// In de, this message translates to:
-  /// **'Aktuelle Übung'**
-  String get workoutExerciseCurrent;
-
-  /// aus workout.exercise.finish
-  ///
-  /// In de, this message translates to:
-  /// **'Workout beenden'**
-  String get workoutExerciseFinish;
-
-  /// aus workout.exercise.next
-  ///
-  /// In de, this message translates to:
-  /// **'Nächste Übung'**
-  String get workoutExerciseNext;
-
   /// aus workout.exercise.progress
   ///
   /// In de, this message translates to:
   /// **'{completed} / {total} Übungen'**
   String workoutExerciseProgress(String completed, int total);
-
-  /// aus workout.feedback.enterDuration
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte Dauer eingeben'**
-  String get workoutFeedbackEnterDuration;
-
-  /// aus workout.feedback.exerciseComplete
-  ///
-  /// In de, this message translates to:
-  /// **'Übung abgeschlossen!'**
-  String get workoutFeedbackExerciseComplete;
-
-  /// aus workout.feedback.restartError
-  ///
-  /// In de, this message translates to:
-  /// **'Fehler beim Neustarten des Workouts'**
-  String get workoutFeedbackRestartError;
-
-  /// aus workout.feedback.saveError
-  ///
-  /// In de, this message translates to:
-  /// **'Fehler beim Speichern des Workouts'**
-  String get workoutFeedbackSaveError;
-
-  /// aus workout.feedback.saved
-  ///
-  /// In de, this message translates to:
-  /// **'Workout gespeichert!'**
-  String get workoutFeedbackSaved;
-
-  /// Titel des Runners ohne Plan
-  ///
-  /// In de, this message translates to:
-  /// **'Freies Training'**
-  String get workoutFreeTitle;
-
-  /// aus workout.hold
-  ///
-  /// In de, this message translates to:
-  /// **'Halten'**
-  String get workoutHold;
-
-  /// aus workout.holdDurationLabel
-  ///
-  /// In de, this message translates to:
-  /// **'Haltedauer (Sek.)'**
-  String get workoutHoldDurationLabel;
-
-  /// aus workout.lastPerformance
-  ///
-  /// In de, this message translates to:
-  /// **'Letztes Mal'**
-  String get workoutLastPerformance;
 
   /// Zurück-Geste, Text
   ///
@@ -5827,107 +3445,17 @@ abstract class AppL10n {
   /// **'Übung hinzufügen'**
   String get workoutLoggingAddExercise;
 
-  /// aus workout.logging.exerciseAlreadyAdded
-  ///
-  /// In de, this message translates to:
-  /// **'Übung bereits hinzugefügt'**
-  String get workoutLoggingExerciseAlreadyAdded;
-
-  /// aus workout.logging.exercisesOptional
-  ///
-  /// In de, this message translates to:
-  /// **'Übungen (optional)'**
-  String get workoutLoggingExercisesOptional;
-
-  /// aus workout.logging.reps
-  ///
-  /// In de, this message translates to:
-  /// **'Wiederholungen pro Satz'**
-  String get workoutLoggingReps;
-
-  /// aus workout.logging.set
-  ///
-  /// In de, this message translates to:
-  /// **'Satz'**
-  String get workoutLoggingSet;
-
   /// aus workout.logging.sets
   ///
   /// In de, this message translates to:
   /// **'Sätze'**
   String get workoutLoggingSets;
 
-  /// aus workout.logging.totalReps
-  ///
-  /// In de, this message translates to:
-  /// **'Wdh.'**
-  String get workoutLoggingTotalReps;
-
-  /// aus workout.noPreviousData
-  ///
-  /// In de, this message translates to:
-  /// **'Keine vorherigen Daten'**
-  String get workoutNoPreviousData;
-
-  /// aus workout.postWorkout.comparisonTitle
-  ///
-  /// In de, this message translates to:
-  /// **'Vergleich zum letzten Mal'**
-  String get workoutPostWorkoutComparisonTitle;
-
-  /// aus workout.postWorkout.editDuration
-  ///
-  /// In de, this message translates to:
-  /// **'Trainingszeit anpassen'**
-  String get workoutPostWorkoutEditDuration;
-
-  /// aus workout.postWorkout.exercises
-  ///
-  /// In de, this message translates to:
-  /// **'Übungen'**
-  String get workoutPostWorkoutExercises;
-
-  /// aus workout.postWorkout.fallbackName
-  ///
-  /// In de, this message translates to:
-  /// **'Training'**
-  String get workoutPostWorkoutFallbackName;
-
-  /// aus workout.postWorkout.minutes
-  ///
-  /// In de, this message translates to:
-  /// **'Minuten'**
-  String get workoutPostWorkoutMinutes;
-
   /// aus workout.postWorkout.sets
   ///
   /// In de, this message translates to:
   /// **'Sets'**
   String get workoutPostWorkoutSets;
-
-  /// aus workout.postWorkout.time
-  ///
-  /// In de, this message translates to:
-  /// **'Zeit'**
-  String get workoutPostWorkoutTime;
-
-  /// aus workout.postWorkout.title
-  ///
-  /// In de, this message translates to:
-  /// **'Workout abgeschlossen!'**
-  String get workoutPostWorkoutTitle;
-
-  /// aus workout.postWorkout.toProgress
-  ///
-  /// In de, this message translates to:
-  /// **'Zum Fortschritt'**
-  String get workoutPostWorkoutToProgress;
-
-  /// aus workout.postWorkout.volume
-  ///
-  /// In de, this message translates to:
-  /// **'Volumen'**
-  String get workoutPostWorkoutVolume;
 
   /// Letztes Mal, ohne Gewicht — Körpergewichtsübung
   ///
@@ -5947,107 +3475,11 @@ abstract class AppL10n {
   /// **'{weight} kg'**
   String workoutPreviousWeight(String weight);
 
-  /// aus workout.quick.bodyweight
-  ///
-  /// In de, this message translates to:
-  /// **'Bodyweight'**
-  String get workoutQuickBodyweight;
-
-  /// aus workout.quick.bodyweightDesc
-  ///
-  /// In de, this message translates to:
-  /// **'Training mit Eigengewicht'**
-  String get workoutQuickBodyweightDesc;
-
-  /// aus workout.quick.date
-  ///
-  /// In de, this message translates to:
-  /// **'Datum *'**
-  String get workoutQuickDate;
-
-  /// aus workout.quick.dateRequired
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte wähle ein Datum'**
-  String get workoutQuickDateRequired;
-
-  /// aus workout.quick.difficulty
-  ///
-  /// In de, this message translates to:
-  /// **'Schwierigkeit'**
-  String get workoutQuickDifficulty;
-
-  /// aus workout.quick.duration
-  ///
-  /// In de, this message translates to:
-  /// **'Dauer (Minuten)'**
-  String get workoutQuickDuration;
-
-  /// aus workout.quick.durationRequired
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte gib eine gültige Dauer ein'**
-  String get workoutQuickDurationRequired;
-
-  /// aus workout.quick.name
-  ///
-  /// In de, this message translates to:
-  /// **'Workout Name'**
-  String get workoutQuickName;
-
-  /// aus workout.quick.nameRequired
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte gib einen Workout Namen ein'**
-  String get workoutQuickNameRequired;
-
-  /// aus workout.quick.saveError
-  ///
-  /// In de, this message translates to:
-  /// **'Fehler beim Speichern des Workouts'**
-  String get workoutQuickSaveError;
-
-  /// aus workout.quick.title
-  ///
-  /// In de, this message translates to:
-  /// **'Workout Schnell-Eintrag'**
-  String get workoutQuickTitle;
-
-  /// aus workout.quick.type
-  ///
-  /// In de, this message translates to:
-  /// **'Typ'**
-  String get workoutQuickType;
-
-  /// aus workout.quick.weights
-  ///
-  /// In de, this message translates to:
-  /// **'Gewichte'**
-  String get workoutQuickWeights;
-
-  /// aus workout.quick.weightsDesc
-  ///
-  /// In de, this message translates to:
-  /// **'Gym / Hanteln'**
-  String get workoutQuickWeightsDesc;
-
   /// Schwerstes je protokolliertes Gewicht dieser Übung
   ///
   /// In de, this message translates to:
   /// **'PR {weight} kg'**
   String workoutRecordKg(String weight);
-
-  /// aus workout.recovery.duration
-  ///
-  /// In de, this message translates to:
-  /// **'Dauer (Min.)'**
-  String get workoutRecoveryDuration;
-
-  /// aus workout.recovery.log
-  ///
-  /// In de, this message translates to:
-  /// **'Recovery loggen'**
-  String get workoutRecoveryLog;
 
   /// aus workout.relativeTime.daysAgo
   ///
@@ -6055,29 +3487,11 @@ abstract class AppL10n {
   /// **'vor {n} Tagen'**
   String workoutRelativeTimeDaysAgo(int n);
 
-  /// aus workout.relativeTime.oneWeekAgo
-  ///
-  /// In de, this message translates to:
-  /// **'vor 1 Woche'**
-  String get workoutRelativeTimeOneWeekAgo;
-
-  /// aus workout.relativeTime.today
-  ///
-  /// In de, this message translates to:
-  /// **'heute'**
-  String get workoutRelativeTimeToday;
-
   /// aus workout.relativeTime.weeksAgo
   ///
   /// In de, this message translates to:
   /// **'vor {n} Wochen'**
   String workoutRelativeTimeWeeksAgo(int n);
-
-  /// aus workout.relativeTime.yesterday
-  ///
-  /// In de, this message translates to:
-  /// **'gestern'**
-  String get workoutRelativeTimeYesterday;
 
   /// Bestätigung, Text
   ///
@@ -6121,12 +3535,6 @@ abstract class AppL10n {
   /// **'+ SATZ HINZUFÜGEN'**
   String get workoutRunnerAddSet;
 
-  /// Runner, Modul 1/2 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Zurück'**
-  String get workoutRunnerBack;
-
   /// Leerer Runner, Text
   ///
   /// In de, this message translates to:
@@ -6150,24 +3558,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Workout nicht verfügbar'**
   String get workoutRunnerNotAvailable;
-
-  /// Runner, Modul 1/2 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'FERTIG'**
-  String get workoutRunnerNotesDone;
-
-  /// Runner, Modul 1/2 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'Wie fühlt sich die Session an?'**
-  String get workoutRunnerNotesHint;
-
-  /// Runner, Modul 1/2 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'SESSION-NOTIZEN'**
-  String get workoutRunnerNotesTitle;
 
   /// Aktion am Übungskopf im Runner
   ///
@@ -6204,12 +3594,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'WEITER'**
   String get workoutRunnerRestSkip;
-
-  /// Runner, Modul 1/2 Spezifikation
-  ///
-  /// In de, this message translates to:
-  /// **'SESSION LÄUFT · {time}'**
-  String workoutRunnerRunning(String time);
 
   /// Runner, Modul 1/2 Spezifikation
   ///
@@ -6277,41 +3661,11 @@ abstract class AppL10n {
   /// **'KG'**
   String get workoutRunnerTableWeight;
 
-  /// aus workout.screen.addExercise
-  ///
-  /// In de, this message translates to:
-  /// **'Übung hinzufügen'**
-  String get workoutScreenAddExercise;
-
   /// aus workout.screen.addSet
   ///
   /// In de, this message translates to:
   /// **'Satz hinzufügen'**
   String get workoutScreenAddSet;
-
-  /// aus workout.screen.bodyweight
-  ///
-  /// In de, this message translates to:
-  /// **'Bodyweight'**
-  String get workoutScreenBodyweight;
-
-  /// aus workout.screen.cancelWorkout
-  ///
-  /// In de, this message translates to:
-  /// **'Abbrechen'**
-  String get workoutScreenCancelWorkout;
-
-  /// aus workout.screen.cardio
-  ///
-  /// In de, this message translates to:
-  /// **'Cardio'**
-  String get workoutScreenCardio;
-
-  /// aus workout.screen.currentExercise
-  ///
-  /// In de, this message translates to:
-  /// **'Aktuelle Übung'**
-  String get workoutScreenCurrentExercise;
 
   /// aus workout.screen.discardConfirm
   ///
@@ -6330,12 +3684,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Workout verwerfen'**
   String get workoutScreenDiscardWorkout;
-
-  /// aus workout.screen.emptyHint
-  ///
-  /// In de, this message translates to:
-  /// **'Füge Übungen hinzu, um dein Workout zu starten'**
-  String get workoutScreenEmptyHint;
 
   /// aus workout.screen.endWorkout
   ///
@@ -6379,257 +3727,17 @@ abstract class AppL10n {
   /// **'Übungen ({completed}/{total})'**
   String workoutScreenExercisesButton(String completed, int total);
 
-  /// aus workout.screen.exercisesSheetTitle
-  ///
-  /// In de, this message translates to:
-  /// **'Übungen'**
-  String get workoutScreenExercisesSheetTitle;
-
-  /// aus workout.screen.finishWorkout
-  ///
-  /// In de, this message translates to:
-  /// **'Workout abschließen'**
-  String get workoutScreenFinishWorkout;
-
-  /// aus workout.screen.freeWorkout
-  ///
-  /// In de, this message translates to:
-  /// **'Freies Workout'**
-  String get workoutScreenFreeWorkout;
-
-  /// aus workout.screen.goal
-  ///
-  /// In de, this message translates to:
-  /// **'Ziel'**
-  String get workoutScreenGoal;
-
-  /// aus workout.screen.logWorkout
-  ///
-  /// In de, this message translates to:
-  /// **'Workout erfassen'**
-  String get workoutScreenLogWorkout;
-
-  /// aus workout.screen.menu
-  ///
-  /// In de, this message translates to:
-  /// **'Menü'**
-  String get workoutScreenMenu;
-
-  /// aus workout.screen.nextExercise
-  ///
-  /// In de, this message translates to:
-  /// **'Nächste Übung'**
-  String get workoutScreenNextExercise;
-
-  /// aus workout.screen.noActiveWorkout
-  ///
-  /// In de, this message translates to:
-  /// **'Kein aktives Workout'**
-  String get workoutScreenNoActiveWorkout;
-
-  /// aus workout.screen.noActiveWorkoutText
-  ///
-  /// In de, this message translates to:
-  /// **'Starte ein Training aus dem Kalender oder einem Plan.'**
-  String get workoutScreenNoActiveWorkoutText;
-
-  /// aus workout.screen.noExercisesFound
-  ///
-  /// In de, this message translates to:
-  /// **'Keine Übungen gefunden'**
-  String get workoutScreenNoExercisesFound;
-
-  /// aus workout.screen.recovery
-  ///
-  /// In de, this message translates to:
-  /// **'Recovery'**
-  String get workoutScreenRecovery;
-
-  /// aus workout.screen.rest
-  ///
-  /// In de, this message translates to:
-  /// **'Pause'**
-  String get workoutScreenRest;
-
-  /// aus workout.screen.restTimer
-  ///
-  /// In de, this message translates to:
-  /// **'Pause'**
-  String get workoutScreenRestTimer;
-
-  /// aus workout.screen.saveWorkout
-  ///
-  /// In de, this message translates to:
-  /// **'Workout speichern'**
-  String get workoutScreenSaveWorkout;
-
-  /// aus workout.screen.searchExercise
-  ///
-  /// In de, this message translates to:
-  /// **'Übung suchen...'**
-  String get workoutScreenSearchExercise;
-
-  /// aus workout.screen.switchToExercise
-  ///
-  /// In de, this message translates to:
-  /// **'Zu dieser Übung wechseln'**
-  String get workoutScreenSwitchToExercise;
-
-  /// aus workout.screen.timerAdd
-  ///
-  /// In de, this message translates to:
-  /// **'+10s'**
-  String get workoutScreenTimerAdd;
-
-  /// aus workout.screen.timerDone
-  ///
-  /// In de, this message translates to:
-  /// **'Pause vorbei!'**
-  String get workoutScreenTimerDone;
-
-  /// aus workout.screen.timerPause
-  ///
-  /// In de, this message translates to:
-  /// **'Pausieren'**
-  String get workoutScreenTimerPause;
-
-  /// aus workout.screen.timerResume
-  ///
-  /// In de, this message translates to:
-  /// **'Fortsetzen'**
-  String get workoutScreenTimerResume;
-
-  /// aus workout.screen.timerSkip
-  ///
-  /// In de, this message translates to:
-  /// **'Ueberspringen'**
-  String get workoutScreenTimerSkip;
-
-  /// aus workout.screen.timerStart
-  ///
-  /// In de, this message translates to:
-  /// **'Timer starten'**
-  String get workoutScreenTimerStart;
-
-  /// aus workout.screen.timerSub
-  ///
-  /// In de, this message translates to:
-  /// **'-10s'**
-  String get workoutScreenTimerSub;
-
-  /// aus workout.screen.toPlans
-  ///
-  /// In de, this message translates to:
-  /// **'Zu den Plänen'**
-  String get workoutScreenToPlans;
-
-  /// aus workout.screen.weighted
-  ///
-  /// In de, this message translates to:
-  /// **'Gewichte'**
-  String get workoutScreenWeighted;
-
-  /// aus workout.setLogger.addSet
-  ///
-  /// In de, this message translates to:
-  /// **'Satz hinzufügen'**
-  String get workoutSetLoggerAddSet;
-
-  /// aus workout.setLogger.atLeastOneSet
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte logge mindestens einen Satz bevor du weitergehst'**
-  String get workoutSetLoggerAtLeastOneSet;
-
-  /// aus workout.setLogger.completedSets
-  ///
-  /// In de, this message translates to:
-  /// **'Abgeschlossene Sätze'**
-  String get workoutSetLoggerCompletedSets;
-
-  /// aus workout.setLogger.decreaseWeight
-  ///
-  /// In de, this message translates to:
-  /// **'Gewicht verringern'**
-  String get workoutSetLoggerDecreaseWeight;
-
-  /// aus workout.setLogger.deleteSet
-  ///
-  /// In de, this message translates to:
-  /// **'Satz löschen'**
-  String get workoutSetLoggerDeleteSet;
-
-  /// aus workout.setLogger.deleteSetConfirm
-  ///
-  /// In de, this message translates to:
-  /// **'Diesen Satz wirklich löschen?'**
-  String get workoutSetLoggerDeleteSetConfirm;
-
-  /// aus workout.setLogger.duplicateLast
-  ///
-  /// In de, this message translates to:
-  /// **'Letzten Satz kopieren'**
-  String get workoutSetLoggerDuplicateLast;
-
-  /// aus workout.setLogger.enterHold
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte gib die Haltedauer ein'**
-  String get workoutSetLoggerEnterHold;
-
-  /// aus workout.setLogger.enterReps
-  ///
-  /// In de, this message translates to:
-  /// **'Bitte gib die Anzahl der Wiederholungen ein'**
-  String get workoutSetLoggerEnterReps;
-
-  /// aus workout.setLogger.increaseWeight
-  ///
-  /// In de, this message translates to:
-  /// **'Gewicht erhöhen'**
-  String get workoutSetLoggerIncreaseWeight;
-
-  /// aus workout.setLogger.logSet
-  ///
-  /// In de, this message translates to:
-  /// **'Satz loggen'**
-  String get workoutSetLoggerLogSet;
-
-  /// aus workout.setLogger.noSets
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Sätze geloggt'**
-  String get workoutSetLoggerNoSets;
-
-  /// aus workout.setLogger.reps
-  ///
-  /// In de, this message translates to:
-  /// **'Wiederholungen'**
-  String get workoutSetLoggerReps;
-
   /// aus workout.setLogger.rest
   ///
   /// In de, this message translates to:
   /// **'{seconds}s Pause'**
   String workoutSetLoggerRest(int seconds);
 
-  /// aus workout.setLogger.set
-  ///
-  /// In de, this message translates to:
-  /// **'Satz'**
-  String get workoutSetLoggerSet;
-
   /// aus workout.setLogger.stepModeChanged
   ///
   /// In de, this message translates to:
   /// **'Schrittweite: {step} {unit}'**
   String workoutSetLoggerStepModeChanged(int step, String unit);
-
-  /// aus workout.setLogger.target
-  ///
-  /// In de, this message translates to:
-  /// **'Ziel'**
-  String get workoutSetLoggerTarget;
 
   /// aus workout.setLogger.targetReps
   ///
@@ -6648,12 +3756,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Satz {number} loggen'**
   String workoutSetLoggerTitle(int number);
-
-  /// aus workout.setLogger.weight
-  ///
-  /// In de, this message translates to:
-  /// **'Gewicht'**
-  String get workoutSetLoggerWeight;
 
   /// aus workout.setLogger.weightUnit
   ///
@@ -6721,29 +3823,11 @@ abstract class AppL10n {
   /// **'Ziel {n} s halten'**
   String workoutTargetHold(int n);
 
-  /// Zielvorgabe aus dem Plan, als Referenz neben dem Feld
-  ///
-  /// In de, this message translates to:
-  /// **'Ziel {sets}×{reps}'**
-  String workoutTargetRef(int sets, String reps);
-
   /// Zielvorgabe aus dem Plan, neben dem Feld
   ///
   /// In de, this message translates to:
   /// **'Ziel {reps}'**
   String workoutTargetReps(String reps);
-
-  /// Zielvorgabe ohne Wiederholungsangabe
-  ///
-  /// In de, this message translates to:
-  /// **'Ziel {sets} Sätze'**
-  String workoutTargetSets(int sets);
-
-  /// Name des Trainings ohne Plan
-  ///
-  /// In de, this message translates to:
-  /// **'Freies Training'**
-  String get workoutsFree;
 
   /// Aktion für Training ohne Plan
   ///
@@ -6769,23 +3853,11 @@ abstract class AppL10n {
   /// **'Pläne'**
   String get workoutsPlansLabel;
 
-  /// Einstieg in die Übungsliste
-  ///
-  /// In de, this message translates to:
-  /// **'{n} Übungen durchsuchen'**
-  String workoutsSearchEntry(int n);
-
   /// Aktion auf der Session-Karte
   ///
   /// In de, this message translates to:
   /// **'Training starten'**
   String get workoutsStart;
-
-  /// Titel des Tabs
-  ///
-  /// In de, this message translates to:
-  /// **'Workouts'**
-  String get workoutsTitle;
 
   /// Leerzustand, Text
   ///
@@ -7051,24 +4123,6 @@ abstract class AppL10n {
   /// **'{km} Kilometer gesamt seit {date}, aus {n, plural, one{1 Einheit} other{{n} Einheiten}}'**
   String cardioTotalA11y(String km, String date, int n);
 
-  /// Ergänzung zu Board 11 — „3 Läufe Ø 6,2 km" (B1/1)
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, one{1 Einheit} other{{n} Einheiten}} Ø {km} km'**
-  String cardioActivityAverage(int n, String km);
-
-  /// Ergänzung zu Board 11 — Kraft-Wochenblock ohne Gegenspur (C1/2)
-  ///
-  /// In de, this message translates to:
-  /// **'Kraft diese Woche'**
-  String get ratioStrengthWeek;
-
-  /// Ergänzung zu Board 11 — Fachgrösse Kraft
-  ///
-  /// In de, this message translates to:
-  /// **'{t} t Volumen · {s, plural, one{1 Satz} other{{s} Sätze}}'**
-  String ratioStrengthMeasure(String t, int s);
-
   /// Ergänzung zu Board 11 — „3 Einheiten · 128 min"
   ///
   /// In de, this message translates to:
@@ -7087,18 +4141,6 @@ abstract class AppL10n {
   /// **'Öffnet Ausdauer-Auswertung'**
   String get ratioOpenCardio;
 
-  /// Ergänzung zu Board 11 — Vorlesetext des Verhältnisbalkens (H)
-  ///
-  /// In de, this message translates to:
-  /// **'Verhältnis dieser Woche: {s} Prozent Kraft, {c} Prozent Ausdauer, Anteil an {min} Trainingsminuten aus {n, plural, one{1 Einheit} other{{n} Einheiten}}.'**
-  String ratioA11y(int s, int c, int min, int n);
-
-  /// Ergänzung zu Board 11 — Vorlesetext einer Verhältniszeile
-  ///
-  /// In de, this message translates to:
-  /// **'{track}, {pct} Prozent, {min} Minuten'**
-  String ratioRowA11y(String track, int pct, int min);
-
   /// Ergänzung zu Board 11 — Vorlesetext der Verschiebung
   ///
   /// In de, this message translates to:
@@ -7116,12 +4158,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Ausdauer erfassen'**
   String get hybridEmptyCardio;
-
-  /// Ergänzung zu Board 11 — Block unter dem Verhältnis (A3)
-  ///
-  /// In de, this message translates to:
-  /// **'Formwert · 4 Wochen'**
-  String get hybridFormSection;
 
   /// Ergänzung zu Board 11 — Zeitwort in der Regenerationszeile
   ///
@@ -7237,108 +4273,6 @@ abstract class AppL10n {
   /// **'{month}, {n, plural, one{1 Einheit} other{{n} Einheiten}}, öffnet die Liste'**
   String historyMonthOpenA11y(String month, int n);
 
-  /// Board 06 — StatBox-Dreier (A3)
-  ///
-  /// In de, this message translates to:
-  /// **'Minuten'**
-  String get detailStatMinutes;
-
-  /// Board 06 — StatBox-Dreier (A3)
-  ///
-  /// In de, this message translates to:
-  /// **'Kilometer'**
-  String get detailStatKilometers;
-
-  /// Board 06 — Unterzeile im Einheitendetail (A3)
-  ///
-  /// In de, this message translates to:
-  /// **'{kind} · {n} min'**
-  String detailSubtitle(String kind, int n);
-
-  /// Board 06 — Block bei Kraft ohne Sätze (A3/3)
-  ///
-  /// In de, this message translates to:
-  /// **'Beitrag zur Form'**
-  String get detailContribTitle;
-
-  /// Board 06 — Konstanz: zählt (A3/3)
-  ///
-  /// In de, this message translates to:
-  /// **'zählt'**
-  String get detailContribCounts;
-
-  /// Board 06 — Lastentwicklung (A3/3)
-  ///
-  /// In de, this message translates to:
-  /// **'+ {v}'**
-  String detailContribLoad(String v);
-
-  /// Board 06 — A3/3
-  ///
-  /// In de, this message translates to:
-  /// **'Volumen-Trend ohne Sätze'**
-  String get detailContribVolumeTrend;
-
-  /// Board 06 — A3/3
-  ///
-  /// In de, this message translates to:
-  /// **'n. a.'**
-  String get detailContribNa;
-
-  /// Board 06 — Nachbarblock bei Regeneration (A3/4)
-  ///
-  /// In de, this message translates to:
-  /// **'Eingebettet im Verlauf'**
-  String get detailNeighboursTitle;
-
-  /// Board 06 — Markierung der Einheit selbst (A3/4)
-  ///
-  /// In de, this message translates to:
-  /// **'hier'**
-  String get detailNeighbourHere;
-
-  /// Board 06 — Abstand zur Nachbareinheit (A3/4)
-  ///
-  /// In de, this message translates to:
-  /// **'{sign}{n} T'**
-  String detailNeighbourDays(String sign, int n);
-
-  /// Board 06 — Fortschritt „zu wenig Daten" (A4/2)
-  ///
-  /// In de, this message translates to:
-  /// **'Einheiten'**
-  String get analysisThinUnitsLabel;
-
-  /// Board 06 — Fortschritt „zu wenig Daten" (A4/2)
-  ///
-  /// In de, this message translates to:
-  /// **'Historie'**
-  String get analysisThinHistoryLabel;
-
-  /// Board 06 — A4/2
-  ///
-  /// In de, this message translates to:
-  /// **'{cur} / {req} Tage'**
-  String analysisThinDaysProgress(int cur, int req);
-
-  /// Board 06 — Was es schon gibt (A4/2)
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, one{1 Einheit} other{{n} Einheiten}} {from}–{to}'**
-  String analysisThinRange(int n, String from, String to);
-
-  /// Board 06 — Was es schon gibt (A4/2)
-  ///
-  /// In de, this message translates to:
-  /// **'Gesamtlast {v}'**
-  String analysisThinLoad(String v);
-
-  /// Board 06 — Was es schon gibt (A4/2)
-  ///
-  /// In de, this message translates to:
-  /// **'Längste Kette {n, plural, one{1 Tag} other{{n} Tage}}'**
-  String analysisThinChain(int n);
-
   /// Board 07 A3/1 — Hauptaktion im Übungsdetail
   ///
   /// In de, this message translates to:
@@ -7434,12 +4368,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Gefühl danach'**
   String get formFeeling;
-
-  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis unter der Gefühlsauswahl
-  ///
-  /// In de, this message translates to:
-  /// **'Nach dem Training. Freiwillig.'**
-  String get formFeelingHint;
 
   /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Gefühl danach, Stufe 1
   ///
@@ -7537,12 +4465,6 @@ abstract class AppL10n {
   /// **'Krafteinheit erfassen'**
   String get strengthFormTitle;
 
-  /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Weg ins Nacherfassungs-Formular
-  ///
-  /// In de, this message translates to:
-  /// **'Ohne Sätze erfassen'**
-  String get strengthFormEntry;
-
   /// Phase 1 (Masterplan) — kein Board, aus Tokens gebaut — Hinweis oben im Formular
   ///
   /// In de, this message translates to:
@@ -7567,12 +4489,6 @@ abstract class AppL10n {
   /// **'Zeitraum der Trainingszeit'**
   String get hybridTimeGroup;
 
-  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays14
-  ///
-  /// In de, this message translates to:
-  /// **'14 Tage'**
-  String get hybridTimeDays14;
-
   /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeDays28
   ///
   /// In de, this message translates to:
@@ -7584,12 +4500,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}}'**
   String hybridTimeUnits(int n);
-
-  /// Auswertung nach Masterplan (16.09.2026), gekürzt 17.09.2026 — hybridTimeBasis
-  ///
-  /// In de, this message translates to:
-  /// **'{minutes} min in {days} Tagen · {n} Einheiten'**
-  String hybridTimeBasis(int minutes, int n, int days);
 
   /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — hybridTimeWithoutDuration
   ///
@@ -7705,12 +4615,6 @@ abstract class AppL10n {
   /// **'kein Vergleich verfügbar'**
   String get analysisMaxNoDelta;
 
-  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinTitle
-  ///
-  /// In de, this message translates to:
-  /// **'Noch keine Übung mit genug Einheiten'**
-  String get analysisMaxThinTitle;
-
   /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxThinBody
   ///
   /// In de, this message translates to:
@@ -7734,18 +4638,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Übung für das geschätzte Maximum'**
   String get analysisMaxExerciseGroup;
-
-  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisMaxYAxis
-  ///
-  /// In de, this message translates to:
-  /// **'kg'**
-  String get analysisMaxYAxis;
-
-  /// Auswertung nach Masterplan (16.09.2026) — kein Board, aus Tokens gebaut — analysisSetsTitle
-  ///
-  /// In de, this message translates to:
-  /// **'Sätze je Muskelgruppe'**
-  String get analysisSetsTitle;
 
   /// Board 09 A3 — Muskelbalance-Unterseite (16.09.2026) — balanceSetsShort
   ///
@@ -7885,13 +4777,6 @@ abstract class AppL10n {
   /// **'{cur} von {req}'**
   String thresholdProgress(int cur, int req);
 
-  /// Schwellen-Zustand auf Auswertungsbildschirmen (16.09.2026) — kein Board, aus Tokens gebaut — thresholdA11y
-  ///
-  /// In de, this message translates to:
-  /// **'{title}. {what} {condition}. Bisher {cur} von {req}.'**
-  String thresholdA11y(
-      String title, String what, String condition, int cur, int req);
-
   /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Titel
   ///
   /// In de, this message translates to:
@@ -7933,12 +4818,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{withFocus} von {total} Einheiten mit Fokus'**
   String focusDistBasis(int withFocus, int total);
-
-  /// Kraft-Auswertung, Block Fokus-Verteilung (16.09.2026) — kein Board, aus Tokens gebaut — Hinweis auf Einheiten ohne Fokus
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, =1{1 Einheit ohne Fokus ist nicht enthalten} other{{n} Einheiten ohne Fokus sind nicht enthalten}}'**
-  String focusDistWithout(int n);
 
   /// Kraft-Auswertung, Block Fortschritte je Übung (16.09.2026) — Titel
   ///
@@ -8049,12 +4928,6 @@ abstract class AppL10n {
   /// **'Ab der ersten Einheit mit Sätzen'**
   String get weeklySetsCondition;
 
-  /// Kraft-Auswertung — Kopfzeile, Teil 1
-  ///
-  /// In de, this message translates to:
-  /// **'Diese Woche · KW {week}'**
-  String weeklySetsWeek(int week);
-
   /// Kraft-Auswertung — Kopfzeile, Teil 2
   ///
   /// In de, this message translates to:
@@ -8072,12 +4945,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{n, plural, =1{1 Satz} other{{n} Sätze}}'**
   String weeklySetsCount(int n);
-
-  /// Kraft-Auswertung — Grundlage der Verschiebung
-  ///
-  /// In de, this message translates to:
-  /// **'gegen 4-Wochen-Schnitt {avg} Sätze'**
-  String weeklySetsBasis(String avg);
 
   /// Kraft-Auswertung — statt der Grundlage, solange kein Vergleich möglich ist
   ///
@@ -8242,24 +5109,6 @@ abstract class AppL10n {
   /// **'Pläne'**
   String get segPlans;
 
-  /// One-Pager (20.09.2026) — kein Board — Vorlesetext eines Reiters der Abschnittsleiste
-  ///
-  /// In de, this message translates to:
-  /// **'{name}, Abschnitt {n} von {total}'**
-  String sectionTabA11y(String name, int n, int total);
-
-  /// One-Pager (20.09.2026) — kein Board — Gruppenlabel der Abschnittsleiste im Kraft-Tab
-  ///
-  /// In de, this message translates to:
-  /// **'Kraft-Abschnitte'**
-  String get strengthSectionsA11y;
-
-  /// Kraft-Tab mit vier Seiten (16.09.2026) — kein Board — Titel des Leerzustands der Katalogseite
-  ///
-  /// In de, this message translates to:
-  /// **'Pläne von ATEM'**
-  String get planCatalogTitle;
-
   /// Kraft-Tab Seite Pläne (16.09.2026), gekürzt 17.09.2026
   ///
   /// In de, this message translates to:
@@ -8277,12 +5126,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{n, plural, =1{1 Einheit} other{{n} Einheiten}} an {days, plural, =1{1 Tag} other{{days} Tagen}} · seit {date}'**
   String monthsBasis(int n, int days, String date);
-
-  /// Einheiten je Monat (16.09.2026) — Monat vor der ersten Einheit, Vorlesetext
-  ///
-  /// In de, this message translates to:
-  /// **'nicht erfasst'**
-  String get monthsNotMeasured;
 
   /// Einheiten je Monat (16.09.2026) — ein Monat in der Sammelansage
   ///
@@ -8361,12 +5204,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Oben steht deine Bereitschaft vor der Einheit, unten dein Gefühl danach, je von 1 bis 5. „Höher“ heisst nur höher, nicht besser. Einheiten mit nur einer der beiden Angaben sind nicht enthalten.'**
   String get wellnessTrendExplain;
-
-  /// Text und Erklärungen (17.09.2026) — Erklärung hinter dem ⓘ des Verhältnisblocks
-  ///
-  /// In de, this message translates to:
-  /// **'Anteil von Kraft und Ausdauer an der Trainingszeit dieser Woche, gerechnet über Minuten. Die Verschiebung vergleicht mit dem Schnitt der letzten 4 Wochen. Kein Sollverhältnis — die App weiss nicht, welche Aufteilung richtig ist.'**
-  String get ratioExplain;
 
   /// Trainingszeit — Erklärung hinter dem ⓘ
   ///
@@ -8710,12 +5547,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{days, plural, =1{1 Tag} other{{days} Tage}}'**
   String hardSetsWindow(int days);
-
-  /// Harte Sätze — was der Block zeigen wird (Schwellen-Zustand und Erklärung)
-  ///
-  /// In de, this message translates to:
-  /// **'Wie viele deiner Sätze je Muskelgruppe hart waren — Anstrengung 7 oder mehr.'**
-  String get hardSetsWhat;
 
   /// Harte Sätze — Bedingung im Schwellen-Zustand
   ///
@@ -9095,18 +5926,6 @@ abstract class AppL10n {
   /// **'Aus deinen Plänen'**
   String get trainPlanBody;
 
-  /// One-Pager (20.09.2026) — kein Board — Unterzeile der Kachel Übungen, mit Bestandszahl
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, one{1 Übung} other{{n} Übungen}} · suchen, anlegen'**
-  String trainExercisesBody(int n);
-
-  /// One-Pager (20.09.2026) — kein Board — Unterzeile der Zeile „Ohne Sätze erfassen“
-  ///
-  /// In de, this message translates to:
-  /// **'Eine Einheit nachtragen, ohne jeden Satz einzeln.'**
-  String get trainLogBody;
-
   /// workoutRirBadge
   ///
   /// In de, this message translates to:
@@ -9214,12 +6033,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Dieselbe Angabe, andersherum gezählt. RPE 8 ist 2 RIR: zwei Wiederholungen wären noch drin gewesen. Gespeichert wird immer dasselbe — ein Wechsel ändert nur die Anzeige, auch rückwirkend, und geht jederzeit zurück.'**
   String get settingsEffortScaleExplain;
-
-  /// hardSetsWhatRir
-  ///
-  /// In de, this message translates to:
-  /// **'Wie viele deiner Sätze je Muskelgruppe hart waren — 3 RIR oder weniger.'**
-  String get hardSetsWhatRir;
 
   /// hardSetsExplainWhatRir
   ///
@@ -9743,12 +6556,6 @@ abstract class AppL10n {
   /// **'Ungeprüft · zählt noch nicht'**
   String get hcRowUnreviewed;
 
-  /// Board 15 · hc.sheet_kicker
-  ///
-  /// In de, this message translates to:
-  /// **'Aus Health Connect · {i} von {n}'**
-  String hcSheetKicker(int i, int n);
-
   /// Board 15 · Titel des Prüfblatts. Das Board setzt „Einheit aus Health Connect prüfen, 1 von 3" — bei 200 % Systemschrift auf 320 dp läuft das Blatt damit über, und Kürzen ist verboten. „Aus Health Connect" sagen die HC-Kapsel und der Inhalt ohnehin.
   ///
   /// In de, this message translates to:
@@ -9808,18 +6615,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Später fortsetzen'**
   String get hcContinueLater;
-
-  /// Board 15 · hc.accepted_snack
-  ///
-  /// In de, this message translates to:
-  /// **'{type} {date} übernommen'**
-  String hcAcceptedSnack(String type, String date);
-
-  /// Board 15 · hc.declined_snack
-  ///
-  /// In de, this message translates to:
-  /// **'Nicht übernommen · {date}'**
-  String hcDeclinedSnack(String date);
 
   /// Board 15 · hc.declined_section
   ///
@@ -10085,47 +6880,11 @@ abstract class AppL10n {
   /// **'Installieren'**
   String get hcPermInstall;
 
-  /// Board 15 · D1 — Zustand beider Zeilen
-  ///
-  /// In de, this message translates to:
-  /// **'Health Connect fehlt'**
-  String get hcStateMissing;
-
   /// Board 15 · D2 — Zustand einer Zeile
   ///
   /// In de, this message translates to:
   /// **'Nicht freigegeben'**
   String get hcStateDenied;
-
-  /// Board 15 · D3 — Zustand einer Zeile
-  ///
-  /// In de, this message translates to:
-  /// **'Freigegeben'**
-  String get hcStateGranted;
-
-  /// Board 15 · D3/D4 — Zustand mit Lesemarke
-  ///
-  /// In de, this message translates to:
-  /// **'Freigegeben · zuletzt {date}'**
-  String hcStateGrantedSince(String date);
-
-  /// Board 15 · D4 — ein leerer Zeitraum ist kein Fehler
-  ///
-  /// In de, this message translates to:
-  /// **'Freigegeben · nichts gefunden'**
-  String get hcStateGrantedEmpty;
-
-  /// Board 15 · D5 — Zustand einer Zeile
-  ///
-  /// In de, this message translates to:
-  /// **'Zugriff entzogen'**
-  String get hcStateRevoked;
-
-  /// Board 15 · D5 — zuerst, was bleibt, dann was aufhört
-  ///
-  /// In de, this message translates to:
-  /// **'{n, plural, one{Entzogen · 1 übernommene bleibt} other{Entzogen · {n} übernommene bleiben}}'**
-  String hcStateRevokedKept(int n);
 
   /// Board 15 · hc.perm_missing
   ///
@@ -10145,23 +6904,11 @@ abstract class AppL10n {
   /// **'Gewicht wird gelesen, Einheiten nicht. Der Eingang im Verlauf erscheint erst mit der zweiten Freigabe.'**
   String get hcPermPartialNote;
 
-  /// Board 15 · hc.perm_empty — die Lesemarke als Tatsache
-  ///
-  /// In de, this message translates to:
-  /// **'Zuletzt geprüft {time}, keine neuen Einheiten gefunden.'**
-  String hcPermEmptyNote(String time);
-
   /// Board 15 · hc.perm_revoked — kein Countdown, kein Ausrufezeichen
   ///
   /// In de, this message translates to:
   /// **'{n, plural, one{1 übernommene Einheit bleibt, wie sie ist.} other{{n} übernommene Einheiten bleiben, wie sie sind.}} Neue werden nicht mehr gelesen.'**
   String hcPermRevokedNote(int n);
-
-  /// Board 15 · A11y der Berechtigungszeile — Zustand vor Aktion
-  ///
-  /// In de, this message translates to:
-  /// **'{type}, {state}. {action}.'**
-  String hcPermRowA11y(String type, String state, String action);
 
   /// Board 15 · H · gesprochene Fassung von hcOriginBoth. Ein Vorleser liest das Pluszeichen je nach Stimme als "plus" oder gar nicht; die Reihenfolge App zuerst ist fest, damit das Muster hoerbar bleibt.
   ///
@@ -10204,24 +6951,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Ausdauer'**
   String get detailKindEndurance;
-
-  /// Board 16 · detail.kind.run
-  ///
-  /// In de, this message translates to:
-  /// **'Laufen'**
-  String get detailKindRun;
-
-  /// Board 16 · detail.kind.bike
-  ///
-  /// In de, this message translates to:
-  /// **'Radfahren'**
-  String get detailKindBike;
-
-  /// Board 16 · detail.kind.swim
-  ///
-  /// In de, this message translates to:
-  /// **'Schwimmen'**
-  String get detailKindSwim;
 
   /// Board 16 · detail.kind.recovery
   ///
@@ -10313,29 +7042,11 @@ abstract class AppL10n {
   /// **'Ø Puls'**
   String get detailMetricHrAvg;
 
-  /// Board 16 · detail.metric.hr_max
-  ///
-  /// In de, this message translates to:
-  /// **'Max. Puls'**
-  String get detailMetricHrMax;
-
-  /// Board 16 · detail.metric.hr_min
-  ///
-  /// In de, this message translates to:
-  /// **'Min. Puls'**
-  String get detailMetricHrMin;
-
   /// Board 16 · detail.metric.calories
   ///
   /// In de, this message translates to:
   /// **'Kalorien'**
   String get detailMetricCalories;
-
-  /// Board 16 · detail.metric.pace
-  ///
-  /// In de, this message translates to:
-  /// **'Ø Tempo'**
-  String get detailMetricPace;
 
   /// Board 16 · detail.metric.elevation
   ///
@@ -10349,23 +7060,11 @@ abstract class AppL10n {
   /// **'{n, plural, one{Übung · {n}} other{Übungen · {n}}}'**
   String detailBlockWorkStrength(int n);
 
-  /// Board 16 · detail.block.work.splits
-  ///
-  /// In de, this message translates to:
-  /// **'Splits · je km'**
-  String get detailBlockWorkSplits;
-
   /// Board 16 · detail.block.hr
   ///
   /// In de, this message translates to:
   /// **'Puls'**
   String get detailBlockHr;
-
-  /// Board 16 · detail.block.zones
-  ///
-  /// In de, this message translates to:
-  /// **'Zeit in Zonen'**
-  String get detailBlockZones;
 
   /// Board 16 · detail.block.note
   ///
@@ -10373,29 +7072,11 @@ abstract class AppL10n {
   /// **'Notiz'**
   String get detailBlockNote;
 
-  /// Board 16 · detail.block.sources
-  ///
-  /// In de, this message translates to:
-  /// **'Herkunft'**
-  String get detailBlockSources;
-
-  /// Board 16 · detail.set_line
-  ///
-  /// In de, this message translates to:
-  /// **'{sets}×{reps} · {weight} kg'**
-  String detailSetLine(int sets, String reps, String weight);
-
   /// Board 16 · detail.delta_vs
   ///
   /// In de, this message translates to:
   /// **'{glyph} {value} gegen {date}'**
   String detailDeltaVs(String glyph, String value, String date);
-
-  /// Board 16 · detail.hr_basis
-  ///
-  /// In de, this message translates to:
-  /// **'Ø {value} aus {min} von {total} min Aufzeichnung'**
-  String detailHrBasis(int value, int min, int total);
 
   /// Board 16 · detail.zones_basis
   ///
@@ -10463,12 +7144,6 @@ abstract class AppL10n {
   /// **'Puls nicht lesbar'**
   String get detailErrorHr;
 
-  /// Board 16 · detail.error.session
-  ///
-  /// In de, this message translates to:
-  /// **'Einheit nicht lesbar'**
-  String get detailErrorSession;
-
   /// Board 16 · detail.retry
   ///
   /// In de, this message translates to:
@@ -10504,12 +7179,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Offen'**
   String get settingsZonesStateUnset;
-
-  /// Board 16 · settings.zones_basis
-  ///
-  /// In de, this message translates to:
-  /// **'Grundlage'**
-  String get settingsZonesBasis;
 
   /// Board 16 · settings.zones_basis_pct
   ///
@@ -10727,12 +7396,6 @@ abstract class AppL10n {
   /// **'Vorschlag übernommen. Jede Grenze bleibt einzeln änderbar.'**
   String get settingsZonesProposalDone;
 
-  /// Board 16 · D · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
-  ///
-  /// In de, this message translates to:
-  /// **'Zonen konnten nicht gespeichert werden.'**
-  String get settingsZonesError;
-
   /// Board 16 · D3 · Untertitel des Grenzen-Blatts — der Titel nennt die Grenze schon, der Untertitel wiederholt sie nicht
   ///
   /// In de, this message translates to:
@@ -10889,12 +7552,6 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'+ {n} weitere'**
   String detailWorkMore(int n);
-
-  /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
-  ///
-  /// In de, this message translates to:
-  /// **'Weniger anzeigen'**
-  String get detailWorkLess;
 
   /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
   ///
