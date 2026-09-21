@@ -69,10 +69,31 @@ Nur **vier Felder existieren in allen 136 Dokumenten**:
 | `userId` | string | 136/136 |
 | `createdAt` | timestamp | 136/136 |
 | `date` | timestamp | 136/136 |
+| `startedAt` | timestamp | 0/136 — neu seit 21.09.2026 |
 | `type` | string | 136/136 |
 
 `type` ist der Diskriminator: `strength` (63) · `cardio` (51) · `recovery` (12) ·
 `bodyweight` (10).
+
+### `date` ist ein Tag, `startedAt` ist ein Zeitpunkt
+
+`date` steht in allen 136 Dokumenten auf **lokaler Mitternacht**, und das
+Repository schreibt es weiterhin so — gleich, was ein Entwurf mitbringt. Der
+Tagesschlüssel im Scoring und jede Monatsgruppierung verlassen sich darauf.
+
+Seit dem 21.09.2026 steht **daneben** `startedAt` mit der echten Uhrzeit, wenn
+sie bekannt ist: aus der Uhr des Läufers oder aus einer übernommenen
+Health-Connect-Einheit. Kein Dokument der Vorgänger-PWA trägt es.
+
+Das Feld gibt es aus einem Grund: `SessionPairing` vergleicht Startzeiten.
+Gegen Mitternacht gerechnet liegt jede Uhr-Einheit Stunden daneben, und bis
+zum 21.09.2026 paarte die Regel deshalb **nie** — jede Uhr-Einheit wurde eine
+eigene Cardio-Einheit neben der Krafteinheit, zu der sie gehörte. Wer kein
+`startedAt` trägt, paart weiterhin nicht; das ist richtig so, denn ein Paar
+auf geratener Zeit wäre schlechter als kein Paar.
+
+`date` durfte dafür nicht umgedeutet werden: Dieselbe Zahl bedeutete dann in
+alten Dokumenten etwas anderes als in neuen.
 
 Je nach Art trägt das Dokument völlig verschiedene Felder:
 

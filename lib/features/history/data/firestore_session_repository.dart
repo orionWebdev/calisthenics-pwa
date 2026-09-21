@@ -253,6 +253,11 @@ class FirestoreSessionRepository implements SessionRepository {
       'date': Timestamp.fromDate(
         DateTime(draft.date.year, draft.date.month, draft.date.day),
       ),
+      // **Zusätzlich zum Tag, nicht statt seiner.** `date` bleibt Mitternacht
+      // (Vertrag 04); die Uhrzeit steht daneben, damit `SessionPairing`
+      // überhaupt etwas zu vergleichen hat.
+      if (draft.startedAt != null)
+        'startedAt': Timestamp.fromDate(draft.startedAt!),
       // Nicht `serverTimestamp()`: Der lokale Zwischenspeicher trüge das Feld
       // dann bis zur Antwort des Servers als `null`, und der Mapper fiele
       // solange auf `date` zurück. Ein echter Zeitpunkt ist ehrlicher.

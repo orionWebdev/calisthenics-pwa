@@ -29,6 +29,7 @@ class SessionDraft {
     this.workoutFocus,
     this.healthSessionId,
     this.fromHealth = false,
+    this.startedAt,
   });
 
   final String userId;
@@ -37,6 +38,11 @@ class SessionDraft {
   /// Der Trainingstag. Wird auf Mitternacht gesetzt — so schreibt es die PWA,
   /// und der Tagesschlüssel im Scoring erwartet es so.
   final DateTime date;
+
+  /// Wann begonnen wurde, **mit Uhrzeit** — oder `null`, wenn es niemand
+  /// weiss (nachgetragene Einheiten). Ohne sie kann nichts gepaart werden;
+  /// siehe `TrainingSession.startedAt`.
+  final DateTime? startedAt;
 
   final Duration duration;
   final List<LoggedExercise> exercises;

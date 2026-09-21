@@ -24,16 +24,22 @@ void main() {
         maxHeartRate: 164,
       );
 
+  /// Eine App-Einheit, wie das Repository sie schreibt: `date` auf
+  /// **Mitternacht**, die Uhrzeit daneben in `startedAt`. Genau so liegt sie
+  /// im Bestand — ein Test, der die Uhrzeit in `date` stellte, prüfte eine
+  /// Einheit, die es nicht gibt.
   TrainingSession app({
     required DateTime start,
     required Duration? duration,
     String id = 'app-1',
+    bool withStartTime = true,
   }) =>
       StrengthSession(
         id: id,
         userId: 'u',
-        date: start,
+        date: DateTime(start.year, start.month, start.day),
         createdAt: start,
+        startedAt: withStartTime ? start : null,
         duration: duration,
         bodyweight: false,
         exercises: const [],
@@ -43,7 +49,9 @@ void main() {
     test('App 18:02–18:54 und Uhr 18:00–18:58 sind ein Paar', () {
       final verdict = SessionPairing.verdict(
         measured: watch(start: at(18, 0), end: at(18, 58)),
-        sessions: [app(start: at(18, 2), duration: const Duration(minutes: 52))],
+        sessions: [
+          app(start: at(18, 2), duration: const Duration(minutes: 52))
+        ],
       );
 
       expect(verdict, isA<PairSuggested>());
@@ -120,7 +128,9 @@ void main() {
     test('ohne Kandidat wird die Uhr-Einheit eine eigene Einheit', () {
       final verdict = SessionPairing.verdict(
         measured: watch(start: at(9, 14), end: at(9, 56)),
-        sessions: [app(start: at(18, 2), duration: const Duration(minutes: 52))],
+        sessions: [
+          app(start: at(18, 2), duration: const Duration(minutes: 52))
+        ],
       );
       expect(verdict, isA<PairNone>());
     });
@@ -129,8 +139,7 @@ void main() {
   test('die Art ist keine Bedingung — „Andere" paart mit einer Krafteinheit',
       () {
     final verdict = SessionPairing.verdict(
-      measured:
-          watch(start: at(18, 0), end: at(18, 58), activity: 'OTHER'),
+      measured: watch(start: at(18, 0), end: at(18, 58), activity: 'OTHER'),
       sessions: [app(start: at(18, 2), duration: const Duration(minutes: 52))],
     );
     expect(verdict, isA<PairSuggested>());
@@ -157,6 +166,37 @@ void main() {
         ],
       );
       expect(verdict, isA<PairNone>());
+    });
+
+    test('ohne Startzeit paart nichts, auch bei passender Dauer', () {
+      // **Der Fehler vom 20.09.2026.** Die Regel las `date`, und `date` steht
+      // im ganzen Bestand auf Mitternacht — sie paarte deshalb nie. Auf dem
+      // Gerät wurde jede Uhr-Einheit eine eigene Cardio-Einheit neben der
+      // Krafteinheit, zu der sie gehörte.
+      //
+      // Richtig bleibt, dass eine Einheit **ohne** Startzeit nicht paart:
+      // Alles andere wäre geraten. Nur trägt sie jetzt eine, wenn der Läufer
+      // sie kennt.
+      final ohneZeit = SessionPairing.verdict(
+        measured: watch(start: at(18, 0), end: at(18, 58)),
+        sessions: [
+          app(
+            start: at(18, 2),
+            duration: const Duration(minutes: 52),
+            withStartTime: false,
+          ),
+        ],
+      );
+      expect(ohneZeit, isA<PairNone>());
+
+      // Dieselbe Einheit, dieselben Zeiten — nur mit gespeicherter Startzeit.
+      final mitZeit = SessionPairing.verdict(
+        measured: watch(start: at(18, 0), end: at(18, 58)),
+        sessions: [
+          app(start: at(18, 2), duration: const Duration(minutes: 52)),
+        ],
+      );
+      expect(mitZeit, isA<PairSuggested>());
     });
   });
 }

@@ -22,7 +22,8 @@ abstract final class ImportAction {
   /// Bewusst knapp und ohne Rateversuche: Was nicht sicher zuzuordnen ist,
   /// bleibt leer. Eine leere Aktivität ist eine fehlende Angabe, eine falsche
   /// eine Behauptung.
-  static CardioActivity? activityOf(String? raw) => switch (raw?.toUpperCase()) {
+  static CardioActivity? activityOf(String? raw) =>
+      switch (raw?.toUpperCase()) {
         'RUNNING' || 'RUNNING_TREADMILL' => CardioActivity.run,
         'BIKING' => CardioActivity.bike,
         'BIKING_STATIONARY' => CardioActivity.bikeIndoor,
@@ -47,6 +48,10 @@ abstract final class ImportAction {
         userId: userId,
         kind: kind,
         date: session.start,
+        // Die Uhr weiss die Uhrzeit — nur landet sie in `date` auf
+        // Mitternacht. Hier steht sie, damit auch eine übernommene Einheit
+        // später noch zugeordnet werden kann.
+        startedAt: session.start,
         duration: session.duration,
         // Die Sekunden sind echt — sie kommen aus einer Uhr, nicht aus einer
         // getippten Minutenzahl.

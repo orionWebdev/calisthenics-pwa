@@ -334,7 +334,8 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
   /// nichts zu speichern gab. Fehler werden **weitergereicht** — eine verlorene
   /// Trainingseinheit darf nicht stillschweigend verschwinden, und der Screen
   /// muss sie melden können.
-  Future<String?> finish(Duration duration, {DateTime? at}) async {
+  Future<String?> finish(Duration duration,
+      {DateTime? at, DateTime? startedAt}) async {
     final w = _workout;
     if (w == null) return null;
 
@@ -343,7 +344,8 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
       throw StateError('Kein angemeldeter Nutzer — Einheit nicht speicherbar');
     }
 
-    final draft = toDraft(w, userId: userId, duration: duration, at: at);
+    final draft = toDraft(w,
+        userId: userId, duration: duration, at: at, startedAt: startedAt);
     // Nichts abgehakt heisst: nichts passiert. Ein leeres Dokument im Bestand
     // verfälschte jede Auswertung.
     if (draft == null) return null;
@@ -378,6 +380,7 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
     required String userId,
     required Duration duration,
     DateTime? at,
+    DateTime? startedAt,
   }) {
     final exercises = <history.LoggedExercise>[];
 
@@ -411,6 +414,12 @@ class WorkoutSessionController extends AsyncNotifier<ActiveWorkout> {
       userId: userId,
       kind: history.SessionKind.strength,
       date: DateTime(now.year, now.month, now.day),
+      // **Der Tag und die Uhrzeit, nicht das eine statt des anderen.** Ohne
+      // die Startzeit kann keine Uhr-Einheit je zugeordnet werden — sie
+      // würde daneben als eigene Einheit landen. Kennt der Aufrufer die Uhr
+      // nicht, bleibt das Feld leer, statt `now` zu behaupten: Gespeichert
+      // wird am Ende, begonnen wurde davor.
+      startedAt: startedAt,
       duration: duration,
       exercises: exercises,
       notes: workout.notes,

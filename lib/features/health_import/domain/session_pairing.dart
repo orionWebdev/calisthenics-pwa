@@ -55,12 +55,19 @@ final class PairNone extends PairVerdict {
 /// verhindert — und „zwei Einheiten für ein Training" ist der teurere Fehler
 /// (Entscheidung 6).
 ///
-/// ## Einheiten ohne Dauer paaren nie
+/// ## Einheiten ohne Startzeit oder ohne Dauer paaren nie
 ///
-/// 25 von 136 Einheiten im Bestand tragen keine Dauer, und ältere aus der
-/// Vorgänger-App stehen auf Mitternacht statt auf ihrer Uhrzeit. Beide
-/// scheitern an Regel 1 oder 2 — und das ist richtig so: Ein Paar, das auf
-/// geratenen Zeiten beruht, wäre schlechter als kein Paar.
+/// Verglichen wird `startedAt`, **nicht** `date`: `date` steht im ganzen
+/// Bestand auf lokaler Mitternacht (Vertrag 04), und gegen Mitternacht
+/// gerechnet liegt jede Uhr-Einheit Stunden daneben. Bis zum 21.09.2026 las
+/// diese Regel `date` — und paarte deshalb **nie**. Auf dem Gerät hiess das:
+/// Jede Uhr-Einheit wurde eine eigene Cardio-Einheit neben der
+/// Krafteinheit, zu der sie gehörte.
+///
+/// Wer keine Startzeit trägt, paart nicht: alle Einheiten der Vorgänger-App,
+/// alle nachgetragenen. Dasselbe gilt ohne Dauer (25 von 136 im Bestand).
+/// Das ist richtig so — ein Paar, das auf geratenen Zeiten beruht, wäre
+/// schlechter als kein Paar.
 abstract final class SessionPairing {
   /// Wie weit die Startzeiten auseinanderliegen dürfen.
   static const startTolerance = Duration(minutes: 20);
@@ -94,7 +101,8 @@ abstract final class SessionPairing {
     final duration = session.duration;
     if (duration == null || duration <= Duration.zero) return null;
 
-    final start = session.date;
+    final start = session.startedAt;
+    if (start == null) return null;
     final end = start.add(duration);
 
     // Regel 2 zuerst: Sie ist die billigere Prüfung und wirft die
@@ -107,8 +115,7 @@ abstract final class SessionPairing {
     if (overlap <= Duration.zero) return null;
 
     // Regel 1: **mehr** als die Hälfte der kürzeren Dauer — nicht „mindestens".
-    final shorter =
-        duration < measured.duration ? duration : measured.duration;
+    final shorter = duration < measured.duration ? duration : measured.duration;
     if (overlap * 2 <= shorter) return null;
 
     return overlap;

@@ -1013,7 +1013,7 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     // Der Zwischenstand hat seinen Zweck erfüllt.
     await const WorkoutDraftStore().clear();
     try {
-      await _notifier.finish(duration);
+      await _notifier.finish(duration, startedAt: _clockState.startedAt);
       // Beim Nachtragen führt der Weg direkt zurück — es gibt keine
       // Zusammenfassung, auf die man noch schauen würde.
       if (mounted && _amends) Navigator.of(context).pop(true);

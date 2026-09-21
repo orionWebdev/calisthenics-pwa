@@ -119,6 +119,7 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
     if (!granted) return;
 
     final repo = ref.read(healthSessionRepositoryProvider);
+    await _releaseOrphans(userId, repo);
     final known = await repo.fetch(userId);
     final now = DateTime.now();
     final from = ImportInbox.readFrom(now);
@@ -190,6 +191,45 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
             clearSession: true,
           ),
         );
+  }
+
+  /// Gibt Uhr-Einheiten frei, deren App-Einheit es nicht mehr gibt.
+  ///
+  /// ## Warum das hier steht und nicht beim Löschen
+  ///
+  /// Eine Einheit kann auf vielen Wegen verschwinden — aus dem Detail, nach
+  /// Ablauf des Widerrufsfensters, von einem anderen Gerät aus. Hinge die
+  /// Freigabe an einem dieser Wege, bliebe bei allen anderen ein Uhr-Satz
+  /// zurück, der auf eine Einheit zeigt, die es nicht gibt: Er wäre
+  /// „übernommen", stünde in keinem Eingang und wäre durch nichts mehr
+  /// erreichbar. Genau so lag es am 21.09.2026 auf dem Gerät.
+  ///
+  /// Beim Abgleich zu vergleichen heilt zugleich, was schon entstanden ist —
+  /// eine Reparatur, die kein eigener Knopf sein muss.
+  ///
+  /// ## Warum ein leerer Bestand nichts freigibt
+  ///
+  /// Ein Abruf, der offline mit leerem Zwischenspeicher antwortet, sähe aus
+  /// wie „alle Einheiten gelöscht". Dann lieber nichts tun: Beim nächsten
+  /// Öffnen mit Netz steht dieselbe Frage noch einmal an.
+  Future<void> _releaseOrphans(
+      String userId, HealthSessionRepository repo) async {
+    final sessions =
+        await ref.read(sessionRepositoryProvider).fetchSessions(userId);
+    if (sessions.isEmpty) return;
+    final alive = {for (final s in sessions) s.id};
+
+    for (final record in await repo.fetch(userId)) {
+      final linked = record.sessionId;
+      if (linked == null || alive.contains(linked)) continue;
+      await repo.save(
+        userId,
+        record.copyWith(
+          state: HealthSessionState.pending,
+          clearSession: true,
+        ),
+      );
+    }
   }
 
   /// Zusammenführen: Die App-Einheit bekommt **nur einen Verweis**.

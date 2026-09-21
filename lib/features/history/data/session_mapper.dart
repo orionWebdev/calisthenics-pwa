@@ -51,6 +51,9 @@ abstract final class SessionMapper {
     // „in der App geführt".
     final healthSessionId = _string(data['healthSessionId']);
     final fromHealth = data['fromHealth'] == true;
+    // Fehlt in allen Dokumenten der Vorgänger-PWA — und das ist kein Mangel,
+    // sondern die Wahrheit: Für die weiss niemand die Uhrzeit.
+    final startedAt = _date(data['startedAt']);
 
     return switch (SessionKind.fromWire(rawType)) {
       SessionKind.strength || SessionKind.bodyweight => StrengthSession(
@@ -70,6 +73,7 @@ abstract final class SessionMapper {
           postWorkoutFeeling: feeling,
           healthSessionId: healthSessionId,
           fromHealth: fromHealth,
+          startedAt: startedAt,
           discipline: _string(data['discipline']),
         ),
       SessionKind.cardio => () {
@@ -87,6 +91,7 @@ abstract final class SessionMapper {
             postWorkoutFeeling: feeling,
             healthSessionId: healthSessionId,
             fromHealth: fromHealth,
+            startedAt: startedAt,
             activity: activity,
             rawActivity: activity == null ? raw : null,
             distanceKm: _double(data['distanceKm']),
@@ -114,6 +119,7 @@ abstract final class SessionMapper {
             postWorkoutFeeling: feeling,
             healthSessionId: healthSessionId,
             fromHealth: fromHealth,
+            startedAt: startedAt,
             recoveryKind: kind,
             rawKind: kind == null ? raw : null,
             name: _string(data['name']),
@@ -131,6 +137,7 @@ abstract final class SessionMapper {
           postWorkoutFeeling: feeling,
           healthSessionId: healthSessionId,
           fromHealth: fromHealth,
+          startedAt: startedAt,
           rawType: rawType,
         ),
     };

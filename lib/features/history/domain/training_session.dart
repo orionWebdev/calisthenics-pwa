@@ -217,13 +217,39 @@ sealed class TrainingSession {
     this.postWorkoutFeeling,
     this.healthSessionId,
     this.fromHealth = false,
+    this.startedAt,
   });
 
   final String id;
   final String userId;
 
-  /// Wann trainiert wurde.
+  /// Wann trainiert wurde — **der Tag, auf lokaler Mitternacht**.
+  ///
+  /// So steht es im Bestand (Vertrag 04: „Lokale Mitternacht"), und so
+  /// schreibt es das Repository, gleich was ein Entwurf mitbringt. Wer eine
+  /// Uhrzeit braucht, nimmt [startedAt].
   final DateTime date;
+
+  /// Wann die Einheit **begonnen** hat, mit Uhrzeit — oder `null`.
+  ///
+  /// ## Warum ein zweites Feld und nicht `date` mit Uhrzeit
+  ///
+  /// `date` ist im Bestand ein Tag, in allen 136 Dokumenten. Ihm nachträglich
+  /// eine Uhrzeit zu geben, hiesse: dieselbe Zahl bedeutet in alten
+  /// Dokumenten etwas anderes als in neuen, und jede Tagesgruppierung müsste
+  /// das wissen.
+  ///
+  /// ## Warum es ihn überhaupt braucht
+  ///
+  /// Ohne Startzeit kann [SessionPairing] nichts paaren: Es vergleicht die
+  /// Startzeit der Uhr-Einheit mit der der App-Einheit, und gegen Mitternacht
+  /// gerechnet liegen die immer Stunden auseinander. Am 20.09.2026 hiess das
+  /// auf dem Gerät: Jede Uhr-Einheit wurde eine eigene Cardio-Einheit neben
+  /// der Krafteinheit, zu der sie gehörte.
+  ///
+  /// Alte Einheiten tragen es nicht und paaren deshalb nie — das ist richtig
+  /// so. Ein Paar auf geratener Zeit wäre schlechter als kein Paar.
+  final DateTime? startedAt;
 
   /// Wann der Eintrag entstand. Weicht ab, wenn nachträglich erfasst wurde.
   final DateTime createdAt;
@@ -322,6 +348,7 @@ final class StrengthSession extends TrainingSession {
     super.postWorkoutFeeling,
     super.healthSessionId,
     super.fromHealth,
+    super.startedAt,
     this.planId,
     this.planName,
     this.discipline,
@@ -391,6 +418,7 @@ final class CardioSession extends TrainingSession {
     super.postWorkoutFeeling,
     super.healthSessionId,
     super.fromHealth,
+    super.startedAt,
     this.distanceKm,
     this.avgHr,
     this.maxHr,
@@ -462,6 +490,7 @@ final class RecoverySession extends TrainingSession {
     super.postWorkoutFeeling,
     super.healthSessionId,
     super.fromHealth,
+    super.startedAt,
     this.recoveryKind,
     this.rawKind,
     this.name,
@@ -517,6 +546,7 @@ final class UnknownSession extends TrainingSession {
     super.postWorkoutFeeling,
     super.healthSessionId,
     super.fromHealth,
+    super.startedAt,
   });
 
   final String? rawType;
