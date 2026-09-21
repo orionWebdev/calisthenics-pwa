@@ -29,6 +29,21 @@ final class PairAmbiguous extends PairVerdict {
   final List<TrainingSession> candidates;
 }
 
+/// Kandidaten **ohne Uhrzeit**: Einheiten am selben Tag, deren Startzeit
+/// nicht gespeichert ist.
+///
+/// Hier wird nichts vermutet und nichts gerechnet — es gibt keine Zahl, mit
+/// der sich eine Vermutung begründen liesse. Der Mensch wählt, oder er lässt
+/// es. Dieselbe Haltung wie bei [PairAmbiguous], nur aus einem anderen Grund:
+/// dort sind es zu viele Kandidaten, hier zu wenige Angaben.
+///
+/// Betrifft jede Einheit aus der Vorgänger-App und jede nachgetragene.
+final class PairUndated extends PairVerdict {
+  const PairUndated(this.candidates);
+
+  final List<TrainingSession> candidates;
+}
+
 /// Kein Kandidat: Die Uhr-Einheit wird eine eigene Einheit (A2).
 final class PairNone extends PairVerdict {
   const PairNone();
@@ -78,21 +93,50 @@ abstract final class SessionPairing {
     required List<TrainingSession> sessions,
   }) {
     final candidates = <({TrainingSession session, Duration overlap})>[];
+    final undated = <TrainingSession>[];
 
     for (final session in sessions) {
       final overlap = _overlapOf(measured, session);
-      if (overlap == null) continue;
-      candidates.add((session: session, overlap: overlap));
+      if (overlap != null) {
+        candidates.add((session: session, overlap: overlap));
+      } else if (_sameDayWithoutTime(measured, session)) {
+        undated.add(session);
+      }
     }
 
+    // **Eine gerechnete Vermutung schlägt jede Auswahl.** Wo es Zahlen gibt,
+    // wird die Frage mit ihnen gestellt; die Auswahl von Hand ist der Weg
+    // für den Fall, dass es keine gibt. Beides zu mischen hiesse, eine
+    // begründete Vermutung neben unbegründete Kandidaten zu stellen.
     return switch (candidates.length) {
-      0 => const PairNone(),
       1 => PairSuggested(
           session: candidates.single.session,
           overlap: candidates.single.overlap,
         ),
+      0 => undated.isEmpty ? const PairNone() : PairUndated(undated),
       _ => PairAmbiguous([for (final c in candidates) c.session]),
     };
+  }
+
+  /// Eine Einheit am selben Tag, deren Startzeit **nicht gespeichert** ist.
+  ///
+  /// Der Tag ist die einzige Angabe, die beide sicher teilen. Sie genügt für
+  /// eine Auswahl, nie für eine Vermutung: Wer morgens läuft und abends
+  /// Kraft macht, hat zwei Einheiten an einem Tag, die nichts miteinander zu
+  /// tun haben. Deshalb entscheidet hier der Mensch.
+  ///
+  /// Ohne Dauer bleibt es dabei aussen vor — eine Einheit, von der weder
+  /// Beginn noch Länge bekannt ist, trägt zu wenig, um sie überhaupt
+  /// anzubieten.
+  static bool _sameDayWithoutTime(
+      MeasuredSession measured, TrainingSession session) {
+    if (session.startedAt != null) return false;
+    final duration = session.duration;
+    if (duration == null || duration <= Duration.zero) return false;
+    final day = session.date;
+    return day.year == measured.start.year &&
+        day.month == measured.start.month &&
+        day.day == measured.start.day;
   }
 
   /// Die gemeinsame Spanne, wenn beide Bedingungen greifen — sonst `null`.

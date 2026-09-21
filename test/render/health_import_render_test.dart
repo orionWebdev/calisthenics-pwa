@@ -193,6 +193,21 @@ void main() {
         ),
       ]),
     ),
+    // Ohne Uhrzeit: keine Vermutung, nur die Auswahl und ihr Grund.
+    'hc_ohne_uhrzeit': PairSheet(
+      measured: watchForPair,
+      verdict: PairUndated([
+        StrengthSession(
+          id: 'alt',
+          userId: 'u',
+          date: DateTime(2026, 9, 18),
+          createdAt: DateTime(2026, 9, 18),
+          duration: const Duration(minutes: 26),
+          bodyweight: false,
+          planName: 'Pull \u2013 Home',
+        ),
+      ]),
+    ),
     'hc_pruefblatt': HealthReviewSheet(pending: pending),
     'hc_pruefblatt_stapel': HealthReviewSheet(pending: pending),
     // Board 15, C: der Punkt in drei Zuständen …

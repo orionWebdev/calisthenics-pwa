@@ -253,6 +253,32 @@ void main() {
     expect(repo.saved, isEmpty);
   });
 
+  testWidgets('ohne Uhrzeit steht der Grund da, nicht eine Vermutung',
+      (tester) async {
+    final l10n = await pump(tester, PairUndated([app()]));
+
+    expect(find.text(l10n.hcUndatedQuestion), findsOneWidget);
+    expect(find.text(l10n.hcUndatedNote), findsOneWidget);
+    // Keine Zahlen: Es gibt keine, mit der sich etwas begründen liesse.
+    expect(find.textContaining(l10n.hcPairOverlap(52, 52, 2)), findsNothing);
+    // Der Weg ohne Zuordnung bleibt gleichwertig sichtbar.
+    expect(find.text(l10n.hcAmbiguousStandalone), findsOneWidget);
+    expect(find.text(l10n.hcAmbiguousPick), findsOneWidget);
+  });
+
+  testWidgets('die Auswahl von Hand verknüpft dieselbe Einheit',
+      (tester) async {
+    final l10n = await pump(tester, PairUndated([app()]));
+
+    await tester.tap(find.text(l10n.hcAmbiguousPick));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.hcPairMerge).last);
+    await tester.pumpAndSettle();
+
+    expect(repo.saved.single.state, HealthSessionState.accepted);
+    expect(repo.saved.single.sessionId, 'a1');
+  });
+
   testWidgets('bei mehreren Kandidaten gibt es keine Vermutung',
       (tester) async {
     final l10n = await pump(

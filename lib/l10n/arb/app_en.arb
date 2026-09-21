@@ -6353,5 +6353,13 @@
   "hcOriginBothSpoken": "app and watch",
   "@hcOriginBothSpoken": {
     "description": "Board 15 · H · gesprochene Fassung von hcOriginBoth. Ein Vorleser liest das Pluszeichen je nach Stimme als \"plus\" oder gar nicht; die Reihenfolge App zuerst ist fest, damit das Muster hoerbar bleibt."
+  },
+  "hcUndatedQuestion": "Does this belong to one of your sessions?",
+  "@hcUndatedQuestion": {
+    "description": "Board 15 · B5, Fall ohne Uhrzeit. Frage statt Vermutung — ATEM hat hier keine Zahl, mit der es etwas begruenden koennte."
+  },
+  "hcUndatedNote": "ATEM does not know the time of day for these sessions and therefore suggests nothing.",
+  "@hcUndatedNote": {
+    "description": "Board 15 · B5, Fall ohne Uhrzeit. Nennt den Grund, nicht die Schuld: Einheiten aus der Vorgaenger-App und nachgetragene tragen keine Startzeit."
   }
 }

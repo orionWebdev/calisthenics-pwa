@@ -69,6 +69,16 @@ class PairSheet extends ConsumerWidget {
       PairAmbiguous(:final candidates) => _Ambiguous(
           measured: measured,
           candidates: candidates,
+          noticeTitle: l10n.hcAmbiguousPick,
+          noticeBody: l10n.hcAmbiguousNote,
+        ),
+      // Kein Kandidat mit Uhrzeit, aber Einheiten am selben Tag. Dieselbe
+      // Auswahl, ein anderer Grund — und deshalb ein anderer Hinweis.
+      PairUndated(:final candidates) => _Ambiguous(
+          measured: measured,
+          candidates: candidates,
+          noticeTitle: l10n.hcUndatedQuestion,
+          noticeBody: l10n.hcUndatedNote,
         ),
       // Ohne Kandidat gibt es nichts zu fragen — der Aufrufer öffnet dann
       // gar kein Paar-Blatt.
@@ -222,12 +232,24 @@ void _announceMerge(
       ));
 }
 
-/// Zwei Einheiten im Zeitraum: **keine Vermutung**, sondern eine Auswahl.
+/// **Keine Vermutung, sondern eine Auswahl.**
+///
+/// Zwei Wege führen hierher, und beide enden bei derselben Frage an den
+/// Menschen: zu viele Kandidaten im Zeitraum ([PairAmbiguous]) oder zu wenige
+/// Angaben, um überhaupt zu rechnen ([PairUndated]). Was sich unterscheidet,
+/// ist allein der Grund — und der steht im Hinweis.
 class _Ambiguous extends ConsumerWidget {
-  const _Ambiguous({required this.measured, required this.candidates});
+  const _Ambiguous({
+    required this.measured,
+    required this.candidates,
+    required this.noticeTitle,
+    required this.noticeBody,
+  });
 
   final HealthSession measured;
   final List<TrainingSession> candidates;
+  final String noticeTitle;
+  final String noticeBody;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -241,9 +263,9 @@ class _Ambiguous extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AtemNotice(
-            title: l10n.hcAmbiguousPick,
-            body: l10n.hcAmbiguousNote,
-            semanticLabel: '${l10n.hcAmbiguousPick}. ${l10n.hcAmbiguousNote}',
+            title: noticeTitle,
+            body: noticeBody,
+            semanticLabel: '$noticeTitle. $noticeBody',
           ),
           const SizedBox(height: 12),
           for (final candidate in candidates) ...[
@@ -300,9 +322,18 @@ class _CandidateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppL10n.of(context);
     final name = sessionName(l10n, session);
-    final clock = DateFormat.Hm(languageTag);
-    final end = session.date.add(session.duration ?? Duration.zero);
-    final meta = '${clock.format(session.date)}–${clock.format(end)}';
+    final duration = session.duration ?? Duration.zero;
+    final start = session.startedAt;
+
+    // **Keine erfundene Uhrzeit.** Wer keine Startzeit trägt, bekommt hier
+    // auch keine: Aus `date` gebaut stünde an jeder solchen Einheit
+    // „00:00–00:26", und das ist keine ungenaue Angabe, sondern eine
+    // falsche. Stattdessen der Tag und die Dauer — beides ist bekannt.
+    final meta = start == null
+        ? '${DateFormat('EEE d. MMM', languageTag).format(session.date).replaceAll('.,', '')}'
+            ' · ${l10n.durationMinutes(duration.inMinutes)}'
+        : '${DateFormat.Hm(languageTag).format(start)}'
+            '–${DateFormat.Hm(languageTag).format(start.add(duration))}';
 
     return AtemTappable(
       onTap: onPick,

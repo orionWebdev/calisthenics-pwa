@@ -6641,4 +6641,11 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get hcOriginBothSpoken => 'app and watch';
+
+  @override
+  String get hcUndatedQuestion => 'Does this belong to one of your sessions?';
+
+  @override
+  String get hcUndatedNote =>
+      'ATEM does not know the time of day for these sessions and therefore suggests nothing.';
 }

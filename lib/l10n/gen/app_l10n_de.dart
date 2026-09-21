@@ -6661,4 +6661,11 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get hcOriginBothSpoken => 'App und Uhr';
+
+  @override
+  String get hcUndatedQuestion => 'Gehört das zu einer deiner Einheiten?';
+
+  @override
+  String get hcUndatedNote =>
+      'ATEM kennt die Uhrzeit dieser Einheiten nicht und vermutet deshalb nichts.';
 }

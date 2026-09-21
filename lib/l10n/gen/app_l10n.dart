@@ -10168,6 +10168,18 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'App und Uhr'**
   String get hcOriginBothSpoken;
+
+  /// Board 15 · B5, Fall ohne Uhrzeit. Frage statt Vermutung — ATEM hat hier keine Zahl, mit der es etwas begruenden koennte.
+  ///
+  /// In de, this message translates to:
+  /// **'Gehört das zu einer deiner Einheiten?'**
+  String get hcUndatedQuestion;
+
+  /// Board 15 · B5, Fall ohne Uhrzeit. Nennt den Grund, nicht die Schuld: Einheiten aus der Vorgaenger-App und nachgetragene tragen keine Startzeit.
+  ///
+  /// In de, this message translates to:
+  /// **'ATEM kennt die Uhrzeit dieser Einheiten nicht und vermutet deshalb nichts.'**
+  String get hcUndatedNote;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

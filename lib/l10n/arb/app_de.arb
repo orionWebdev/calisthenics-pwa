@@ -9793,5 +9793,13 @@
   "hcOriginBothSpoken": "App und Uhr",
   "@hcOriginBothSpoken": {
     "description": "Board 15 · H · gesprochene Fassung von hcOriginBoth. Ein Vorleser liest das Pluszeichen je nach Stimme als \"plus\" oder gar nicht; die Reihenfolge App zuerst ist fest, damit das Muster hoerbar bleibt."
+  },
+  "hcUndatedQuestion": "Gehört das zu einer deiner Einheiten?",
+  "@hcUndatedQuestion": {
+    "description": "Board 15 · B5, Fall ohne Uhrzeit. Frage statt Vermutung — ATEM hat hier keine Zahl, mit der es etwas begruenden koennte."
+  },
+  "hcUndatedNote": "ATEM kennt die Uhrzeit dieser Einheiten nicht und vermutet deshalb nichts.",
+  "@hcUndatedNote": {
+    "description": "Board 15 · B5, Fall ohne Uhrzeit. Nennt den Grund, nicht die Schuld: Einheiten aus der Vorgaenger-App und nachgetragene tragen keine Startzeit."
   }
 }

@@ -168,7 +168,7 @@ void main() {
       expect(verdict, isA<PairNone>());
     });
 
-    test('ohne Startzeit paart nichts, auch bei passender Dauer', () {
+    test('ohne Startzeit wird nichts vermutet, aber angeboten', () {
       // **Der Fehler vom 20.09.2026.** Die Regel las `date`, und `date` steht
       // im ganzen Bestand auf Mitternacht — sie paarte deshalb nie. Auf dem
       // Gerät wurde jede Uhr-Einheit eine eigene Cardio-Einheit neben der
@@ -177,6 +177,9 @@ void main() {
       // Richtig bleibt, dass eine Einheit **ohne** Startzeit nicht paart:
       // Alles andere wäre geraten. Nur trägt sie jetzt eine, wenn der Läufer
       // sie kennt.
+      // Ohne Uhrzeit gibt es **keine Vermutung** — aber der Tag ist bekannt,
+      // und mehr braucht eine Auswahl von Hand nicht. Für den Bestand der
+      // Vorgänger-App ist das der einzige Weg zu einem Paar.
       final ohneZeit = SessionPairing.verdict(
         measured: watch(start: at(18, 0), end: at(18, 58)),
         sessions: [
@@ -187,7 +190,8 @@ void main() {
           ),
         ],
       );
-      expect(ohneZeit, isA<PairNone>());
+      expect(ohneZeit, isA<PairUndated>());
+      expect((ohneZeit as PairUndated).candidates.single.id, 'app-1');
 
       // Dieselbe Einheit, dieselben Zeiten — nur mit gespeicherter Startzeit.
       final mitZeit = SessionPairing.verdict(
@@ -197,6 +201,54 @@ void main() {
         ],
       );
       expect(mitZeit, isA<PairSuggested>());
+    });
+
+    test('eine gerechnete Vermutung schlägt die Auswahl von Hand', () {
+      // Sonst stünde eine begründete Vermutung neben unbegründeten
+      // Kandidaten, und die Zahlen wären nichts mehr wert.
+      final verdict = SessionPairing.verdict(
+        measured: watch(start: at(18, 0), end: at(18, 58)),
+        sessions: [
+          app(start: at(18, 2), duration: const Duration(minutes: 52)),
+          app(
+            start: at(7, 30),
+            duration: const Duration(minutes: 40),
+            id: 'app-2',
+            withStartTime: false,
+          ),
+        ],
+      );
+      expect(verdict, isA<PairSuggested>());
+      expect((verdict as PairSuggested).session.id, 'app-1');
+    });
+
+    test('ein anderer Tag wird nicht angeboten', () {
+      final verdict = SessionPairing.verdict(
+        measured: watch(start: at(18, 0), end: at(18, 58)),
+        sessions: [
+          StrengthSession(
+            id: 'gestern',
+            userId: 'u',
+            date: DateTime(2026, 9, 17),
+            createdAt: DateTime(2026, 9, 17),
+            duration: const Duration(minutes: 52),
+            bodyweight: false,
+          ),
+        ],
+      );
+      expect(verdict, isA<PairNone>());
+    });
+
+    test('ohne Dauer wird auch am selben Tag nichts angeboten', () {
+      // Weder Beginn noch Länge bekannt: zu wenig, um es überhaupt
+      // hinzustellen.
+      final verdict = SessionPairing.verdict(
+        measured: watch(start: at(18, 0), end: at(18, 58)),
+        sessions: [
+          app(start: at(18, 2), duration: null, withStartTime: false),
+        ],
+      );
+      expect(verdict, isA<PairNone>());
     });
   });
 }
