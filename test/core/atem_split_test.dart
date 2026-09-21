@@ -71,8 +71,8 @@ void main() {
     expect(find.byType(ColoredBox), findsNothing);
   });
 
-  testWidgets('ab 130 Prozent stehen sie untereinander', (tester) async {
-    await _pump(tester, left: _box('A'), right: _box('B'), scale: 1.3);
+  testWidgets('über 145 Prozent stehen sie untereinander', (tester) async {
+    await _pump(tester, left: _box('A'), right: _box('B'), scale: 1.5);
 
     final a = tester.getRect(find.text('A'));
     final b = tester.getRect(find.text('B'));

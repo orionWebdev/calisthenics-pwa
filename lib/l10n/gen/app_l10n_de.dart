@@ -5326,4 +5326,132 @@ class AppL10nDe extends AppL10n {
     );
     return 'KW $week · $_temp0 · Vergleich ab 2 vollen Wochen';
   }
+
+  @override
+  String get trainLastKicker => 'Zuletzt';
+
+  @override
+  String trainLastMeta(int n, int e, int min) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'vor $n Tagen · $e Übungen · $min Min',
+      one: 'gestern · $e Übungen · $min Min',
+      zero: 'heute · $e Übungen · $min Min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trainStartFree => 'Frei starten';
+
+  @override
+  String get trainFootNewPlan => 'Plan anlegen';
+
+  @override
+  String get trainFootLog => 'Nachtragen';
+
+  @override
+  String get trainTileExercises => 'Übungen';
+
+  @override
+  String trainTileExercisesMeta(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n im Katalog',
+      one: '1 im Katalog',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trainTilePlan => 'Training planen';
+
+  @override
+  String trainTilePlanMeta(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n eigene Pläne',
+      one: '1 eigener Plan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trainTilePlanMetaNone => 'Noch kein eigener Plan';
+
+  @override
+  String get trainErrorKicker => 'Nicht geladen';
+
+  @override
+  String get trainErrorTitle => 'Heutiger Plan nicht verfügbar';
+
+  @override
+  String trainErrorMeta(String time) {
+    return 'Zuletzt geprüft $time';
+  }
+
+  @override
+  String get trainLoadingA11y => 'Heutiger Plan wird geladen';
+
+  @override
+  String trainBlockA11yPlanned(String name, int n, int min) {
+    return 'Heute geplant: $name, $n Übungen, etwa $min Minuten';
+  }
+
+  @override
+  String trainBlockA11yPlannedPlain(String name) {
+    return 'Heute geplant: $name';
+  }
+
+  @override
+  String trainBlockA11yLast(String name, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Zuletzt: $name, vor $n Tagen',
+      one: 'Zuletzt: $name, gestern',
+      zero: 'Zuletzt: $name, heute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trainStartA11yPlanned(String name) {
+    return '$name starten';
+  }
+
+  @override
+  String get trainStartA11yFree => 'Freie Einheit starten';
+
+  @override
+  String trainTileExercisesA11y(String title, String meta) {
+    return '$title, $meta';
+  }
+
+  @override
+  String trainLastMetaShort(int n, int min) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'vor $n Tagen · $min Min',
+      one: 'gestern · $min Min',
+      zero: 'heute · $min Min',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String trainLastMetaBare(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'vor $n Tagen',
+      one: 'gestern',
+      zero: 'heute',
+    );
+    return '$_temp0';
+  }
 }

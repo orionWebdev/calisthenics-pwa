@@ -12,8 +12,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:atem/features/dashboard/application/dashboard_providers.dart';
+import 'package:atem/features/dashboard/data/preview_dashboard_repository.dart';
+import 'package:atem/features/dashboard/domain/dashboard_data.dart';
+import 'package:atem/features/dashboard/domain/dashboard_repository.dart';
+import 'package:atem/features/history/application/history_providers.dart';
+import 'package:atem/features/history/domain/training_session.dart';
+import 'package:atem/features/plans/application/plan_providers.dart';
+import 'package:atem/features/workout/presentation/widgets/train_section.dart';
+
 import '../support/a11y.dart';
 import '../support/render.dart';
+
+/// Kein Termin für heute — der Kopf trägt dann die letzte Einheit.
+class _NoToday implements DashboardRepository {
+  @override
+  Stream<DashboardData> watchDashboard() =>
+      PreviewDashboardRepository().watchDashboard().map((d) => DashboardData(
+            user: d.user,
+            readiness: d.readiness,
+            performance: d.performance,
+            session: null,
+            workoutLog: d.workoutLog,
+            lastSession: d.lastSession,
+            nextSession: d.nextSession,
+          ));
+}
+
+/// Der Plan liess sich nicht lesen.
+class _Broken implements DashboardRepository {
+  @override
+  Stream<DashboardData> watchDashboard() =>
+      Stream<DashboardData>.error(StateError('offline'));
+}
 
 /// Sichtprüfung Kraft › Trainieren und Pläne mit echten Schriften.
 ///
@@ -109,6 +140,67 @@ void main() {
     final key = await pump(tester, StrengthScreen(onStart: (_) {}),
         height: 800);
     await shots(tester, key, 'strength_trainieren');
+  });
+
+  /// Die drei übrigen Füllungen des Kopfs — mit Plan steht schon oben.
+  testWidgets('rendert den Startblock ohne Plan, leer und im Fehler',
+      (tester) async {
+    if (!renderEnabled) return;
+
+    for (final entry in <String, List<dynamic>>{
+      'ohne_plan': [
+        dashboardRepositoryProvider.overrideWithValue(_NoToday()),
+      ],
+      'erstoeffnung': [
+        dashboardRepositoryProvider.overrideWithValue(_NoToday()),
+        sessionStreamProvider
+            .overrideWith((ref) => Stream.value(const <TrainingSession>[])),
+        plansProvider.overrideWith((ref) => Stream.value(const <Plan>[])),
+      ],
+      'fehler': [
+        dashboardRepositoryProvider.overrideWithValue(_Broken()),
+      ],
+    }.entries) {
+      await loadRealFonts();
+      tester.view.physicalSize = const Size(361, 460);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      final key = GlobalKey();
+      await tester.pumpWidget(ProviderScope(
+        // Eigener Schlüssel je Fall: Riverpod verbietet es, die **Anzahl**
+        // der Überschreibungen eines bestehenden Scopes zu ändern.
+        key: ValueKey(entry.key),
+        overrides: [
+          for (final o in fixtureOverrides)
+            if (!entry.value.any((x) =>
+                x.toString().split('#').first ==
+                o.toString().split('#').first))
+              o,
+          ...entry.value,
+        ],
+        child: RepaintBoundary(
+          key: key,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: AtemTheme.dark,
+            locale: const Locale('de'),
+            localizationsDelegates: AppL10n.localizationsDelegates,
+            supportedLocales: AppL10n.supportedLocales,
+            builder: (context, c) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(1.15)),
+              child: c!,
+            ),
+            home: Scaffold(
+              backgroundColor: AtemColors.base,
+              body: TrainSection(onStart: (_) {}),
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      await writePng(tester, key, 'startblock_${entry.key}');
+    }
   });
 
   testWidgets('rendert Kraft › Trainieren bei 200 % auf 320 dp',

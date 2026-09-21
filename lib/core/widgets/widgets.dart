@@ -12,6 +12,7 @@ export 'atem_number_field.dart';
 export 'atem_progress.dart';
 export 'atem_disclosure.dart';
 export 'atem_scale_choice.dart';
+export 'atem_start_block.dart';
 export 'atem_states.dart';
 export 'atem_segmented.dart';
 export 'atem_section_nav.dart';

@@ -24,13 +24,20 @@ import '../theme/theme.dart';
 /// sie gleich hoch haben will, gibt beiden denselben Aufbau — gleicher Kopf,
 /// gleiche Zahl, gleiche Grundlage.
 ///
-/// ## Ab 130 % Schrift untereinander
+/// ## Zwei Schwellen, eine Regel
 ///
-/// Auf 320 dp bleiben je Karte rund 145 dp. Was dort in zwei Zeilen passt,
-/// braucht bei anderthalbfacher Schrift fünf — und bei 200 % steht in jeder
-/// Karte ein Wort je Zeile. Die Grenze liegt deshalb früh: **ab 130 %** stehen
-/// die Karten untereinander, in derselben Reihenfolge. Kein Verkleinern, kein
-/// Ellipsieren, kein horizontales Scrollen.
+/// Board 17 legt den Umbruch fest: **Schriftskalierung über 1,45 oder eine
+/// gemessene Hälfte unter 140 dp** — dann stehen die Karten untereinander, in
+/// derselben Reihenfolge. Kein Verkleinern, kein Ellipsieren, kein
+/// horizontales Scrollen.
+///
+/// Beide Bedingungen sind nötig, und zwar an *einem* Messpunkt. Die Schrift
+/// allein reicht nicht: Auf 320 dp bleiben je Hälfte 138 dp, dort bricht
+/// schon bei normaler Schrift ein Wort mitten durch. Die Breite allein
+/// reicht auch nicht: Auf einem breiten Gerät sind die Hälften bei 200 %
+/// Systemschrift zwar 180 dp breit, tragen aber nur noch ein Wort je Zeile.
+/// Und weil beide Hälften dieselbe Messung benutzen, stapelt nie eine, ohne
+/// dass die andere mitstapelt.
 ///
 /// ## Was es nicht tut
 ///
@@ -57,11 +64,23 @@ class AtemSplit extends StatelessWidget {
   /// Abstand zwischen den beiden — waagerecht wie senkrecht.
   final double gap;
 
-  /// Ab dieser Schriftskalierung stehen die Karten untereinander.
-  static const stackFrom = 1.3;
+  /// Über dieser Schriftskalierung stehen die Karten untereinander.
+  static const stackFrom = 1.45;
 
-  static bool stacksAt(BuildContext context) =>
-      MediaQuery.textScalerOf(context).scale(10) / 10 >= stackFrom;
+  /// Schmaler als das darf eine Hälfte nicht werden.
+  static const minHalf = 140.0;
+
+  /// Die Umbruchregel, ohne zu bauen — für Aufrufer, die ihren Inhalt je
+  /// nach Lage anders zusammensetzen (etwa eine Kachel, die gestapelt ihr
+  /// Symbol neben statt über den Text legt).
+  ///
+  /// [width] ist die **volle** verfügbare Breite, nicht die einer Hälfte.
+  static bool stacksIn(BuildContext context, double width,
+      {double gap = AtemSpacing.gridGap}) {
+    final scale = MediaQuery.textScalerOf(context).scale(10) / 10;
+    if (scale > stackFrom) return true;
+    return (width - gap) / 2 < minHalf;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,21 +90,35 @@ class AtemSplit extends StatelessWidget {
     if (a == null) return b!;
     if (b == null) return a;
 
-    if (stacksAt(context)) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [a, SizedBox(height: gap), b],
-      );
-    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Ohne obere Schranke gibt es nichts zu messen — dann entscheidet
+        // die Schrift allein. Das passiert nur in Tests und in Zeilen ohne
+        // Breitenvorgabe; auf jedem Bildschirm ist die Breite bekannt.
+        final width = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : double.infinity;
+        final stacks = width.isFinite
+            ? stacksIn(context, width, gap: gap)
+            : MediaQuery.textScalerOf(context).scale(10) / 10 > stackFrom;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: a),
-        SizedBox(width: gap),
-        Expanded(child: b),
-      ],
+        if (stacks) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [a, SizedBox(height: gap), b],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: a),
+            SizedBox(width: gap),
+            Expanded(child: b),
+          ],
+        );
+      },
     );
   }
 }

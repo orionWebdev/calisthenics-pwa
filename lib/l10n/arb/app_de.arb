@@ -8020,5 +8020,169 @@
         "type": "int"
       }
     }
+  },
+  "trainLastKicker": "Zuletzt",
+  "@trainLastKicker": {
+    "description": "Board 17 · train.last_kicker — Kicker des Faktenkopfs, ohne Plan für heute"
+  },
+  "trainLastMeta": "{n, plural, =0{heute · {e} Übungen · {min} Min} one{gestern · {e} Übungen · {min} Min} other{vor {n} Tagen · {e} Übungen · {min} Min}}",
+  "@trainLastMeta": {
+    "description": "Board 17 · train.last_meta",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "e": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "trainStartFree": "Frei starten",
+  "@trainStartFree": {
+    "description": "Board 17 · train.start_free — Knopfbeschriftung ohne Plan"
+  },
+  "trainFootNewPlan": "Plan anlegen",
+  "@trainFootNewPlan": {
+    "description": "Board 17 · train.foot_new_plan"
+  },
+  "trainFootLog": "Nachtragen",
+  "@trainFootLog": {
+    "description": "Board 17 · train.foot_log"
+  },
+  "trainTileExercises": "Übungen",
+  "@trainTileExercises": {
+    "description": "Board 17 · train.tile_exercises — gekürzt, damit der Titel auch bei 200 % einzeilig bleibt"
+  },
+  "trainTileExercisesMeta": "{n, plural, one{1 im Katalog} other{{n} im Katalog}}",
+  "@trainTileExercisesMeta": {
+    "description": "Board 17 · train.tile_exercises_meta",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "trainTilePlan": "Training planen",
+  "@trainTilePlan": {
+    "description": "Board 17 · train.tile_plan"
+  },
+  "trainTilePlanMeta": "{n, plural, one{1 eigener Plan} other{{n} eigene Pläne}}",
+  "@trainTilePlanMeta": {
+    "description": "Board 17 · train.tile_plan_meta",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "trainTilePlanMetaNone": "Noch kein eigener Plan",
+  "@trainTilePlanMetaNone": {
+    "description": "Board 17 · train.tile_plan_meta_none"
+  },
+  "trainErrorKicker": "Nicht geladen",
+  "@trainErrorKicker": {
+    "description": "Board 17 · train.error_kicker"
+  },
+  "trainErrorTitle": "Heutiger Plan nicht verfügbar",
+  "@trainErrorTitle": {
+    "description": "Board 17 · train.error_title"
+  },
+  "trainErrorMeta": "Zuletzt geprüft {time}",
+  "@trainErrorMeta": {
+    "description": "Board 17 · train.error_meta",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "trainLoadingA11y": "Heutiger Plan wird geladen",
+  "@trainLoadingA11y": {
+    "description": "Board 17 · train.loading_a11y"
+  },
+  "trainBlockA11yPlanned": "Heute geplant: {name}, {n} Übungen, etwa {min} Minuten",
+  "@trainBlockA11yPlanned": {
+    "description": "Board 17 · train.block_a11y_planned — ein Knoten für Kicker, Titel und Meta",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "trainBlockA11yPlannedPlain": "Heute geplant: {name}",
+  "@trainBlockA11yPlannedPlain": {
+    "description": "Board 17 · train.block_a11y_planned ohne bekannten Plan — keine erfundene Zählung",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "trainBlockA11yLast": "{n, plural, =0{Zuletzt: {name}, heute} one{Zuletzt: {name}, gestern} other{Zuletzt: {name}, vor {n} Tagen}}",
+  "@trainBlockA11yLast": {
+    "description": "Board 17 · train.block_a11y_last",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "trainStartA11yPlanned": "{name} starten",
+  "@trainStartA11yPlanned": {
+    "description": "Board 17 · train.start_a11y_planned",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "trainStartA11yFree": "Freie Einheit starten",
+  "@trainStartA11yFree": {
+    "description": "Board 17 · train.start_a11y_free"
+  },
+  "trainTileExercisesA11y": "{title}, {meta}",
+  "@trainTileExercisesA11y": {
+    "description": "Board 17 · Kachel: Titel und Zahl als ein Knoten",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "meta": {
+        "type": "String"
+      }
+    }
+  },
+  "trainLastMetaShort": "{n, plural, =0{heute · {min} Min} one{gestern · {min} Min} other{vor {n} Tagen · {min} Min}}",
+  "@trainLastMetaShort": {
+    "description": "Board 17 · train.last_meta ohne bekannte Übungszahl — keine erfundene Null",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "trainLastMetaBare": "{n, plural, =0{heute} one{gestern} other{vor {n} Tagen}}",
+  "@trainLastMetaBare": {
+    "description": "Board 17 · train.last_meta ohne Dauer und ohne Übungszahl",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

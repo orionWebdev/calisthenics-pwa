@@ -131,11 +131,14 @@ void main() {
     await jumpTo(tester, l10n.segAnalysis);
     expect(segment(), StrengthSegment.analysis);
     expect(word(tester, l10n), l10n.segAnalysis);
+    // Seit Board 17 landet der Sprung **an der Linie**, nicht am ersten
+    // Block: darunter liegen 24 dp Luft, dann das Thema.
     expect(
       tester.getTopLeft(find.byType(AnalysisSection)).dy,
-      closeTo(barBottom(tester), 1.5),
+      closeTo(barBottom(tester) + AtemSectionSeam.airBottom, 1.5),
     );
 
+    // Das erste Thema hat keine Zäsur über sich.
     await jumpTo(tester, l10n.segTrain);
     expect(segment(), StrengthSegment.train);
     expect(
@@ -171,7 +174,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       tester.getTopLeft(find.byType(HistorySection)).dy,
-      closeTo(barBottom(tester), 1.5),
+      closeTo(barBottom(tester) + AtemSectionSeam.airBottom, 1.5),
     );
   });
 
@@ -188,8 +191,12 @@ void main() {
     // **Split-Card** (21.09.2026): Die Einheitenzahl und die Muskelbalance
     // teilen sich die erste Zeile, der Monatsstreifen kommt darunter. Vorher
     // standen alle drei untereinander.
-    expect(find.byType(AtemSplit), findsOneWidget);
-    final split = tester.getTopLeft(find.byType(AtemSplit)).dy;
+    // `descendant`: Seit Board 17 trägt auch „Trainieren" eine Split-Card
+    // (das Kachelpaar), und die Seite baut alle Themen auf einmal.
+    final splitHere = find.descendant(
+        of: find.byType(HistorySection), matching: find.byType(AtemSplit));
+    expect(splitHere, findsOneWidget);
+    final split = tester.getTopLeft(splitHere).dy;
     final month = tester.getTopLeft(find.byType(MonthStrip)).dy;
     expect(split, lessThan(month));
   });

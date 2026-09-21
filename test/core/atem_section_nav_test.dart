@@ -137,8 +137,10 @@ void main() {
     expect(word(tester), 'Auswertung');
     expect(find.byType(AtemSectionJumpList), findsNothing,
         reason: 'die Liste schliesst sich mit der Auswahl');
+    // **Nicht bis zum ersten Block, sondern bis an die Linie** (Board 17):
+    // Die Hairline steht an der Unterkante der Zeile, darunter 24 dp Luft.
     expect(tester.getTopLeft(find.text('Inhalt Auswertung')).dy,
-        closeTo(barBottom(tester), 0.5));
+        closeTo(barBottom(tester) + AtemSectionSeam.airBottom, 0.5));
   });
 
   testWidgets('Scrollen schliesst die Liste', (tester) async {
@@ -183,7 +185,7 @@ void main() {
     await pump(tester, selected: 2);
     expect(word(tester), 'Auswertung');
     expect(tester.getTopLeft(find.text('Inhalt Auswertung')).dy,
-        closeTo(barBottom(tester), 0.5));
+        closeTo(barBottom(tester) + AtemSectionSeam.airBottom, 0.5));
   });
 
   testWidgets('Semantics: Knopf mit Zustand, Liste als Auswahl',

@@ -71,6 +71,7 @@ class AtemSectionBar extends StatelessWidget {
     required this.jumpSemanticLabel,
     required this.hereLabel,
     this.accent,
+    this.pulse,
     this.horizontalPadding = AtemSpacing.screenPadding,
   });
 
@@ -98,10 +99,21 @@ class AtemSectionBar extends StatelessWidget {
   /// `null` nimmt den Ton des Bereichs.
   final Color? accent;
 
+  /// Die Quittung des Themenwechsels — eine 2-dp-Linie an der Unterkante,
+  /// 0 → 1 → 0. `null` heisst: keine.
+  ///
+  /// Raum wirkt beim langsamen Lesen; beim schnellen Wischen rauscht die
+  /// Zäsur in unter 60 ms vorbei. Für diesen Fall quittiert die Zeile den
+  /// Wechsel (Board 17, Entscheidung 16).
+  final Animation<double>? pulse;
+
   final double horizontalPadding;
 
   /// Schriftgrösse des Themennamens.
   static const nameSize = 16.0;
+
+  /// Stärke der Pulslinie.
+  static const pulseHeight = 2.0;
 
   /// Höhe des Markenstreifens.
   ///
@@ -138,6 +150,8 @@ class AtemSectionBar extends StatelessWidget {
     final tone = accent ?? AtemTabTheme.of(context);
     final rowHeight = extentOf(context) - markHeight;
 
+    final beat = pulse;
+
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: AtemColors.surfaceSolid,
@@ -145,7 +159,10 @@ class AtemSectionBar extends StatelessWidget {
         // Inhalt durch.
         border: Border(bottom: BorderSide(color: AtemColors.border)),
       ),
-      child: AtemTappable(
+      child: _WithPulse(
+        pulse: beat,
+        tone: tone,
+        child: AtemTappable(
         onTap: onToggle,
         semanticLabel: barSemanticLabel,
         expanded: open,
@@ -204,8 +221,60 @@ class AtemSectionBar extends StatelessWidget {
               ),
             ),
           ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+/// Die Pulslinie liegt **über** der Zeile statt in ihr: Als weiteres Kind
+/// einer Spalte hätte sie die Zeile um 2 dp wachsen lassen — und die
+/// geheftete Kopfzeile muss ihre Höhe vor dem Layout kennen.
+class _WithPulse extends StatelessWidget {
+  const _WithPulse({
+    required this.pulse,
+    required this.tone,
+    required this.child,
+  });
+
+  final Animation<double>? pulse;
+  final Color tone;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final beat = pulse;
+    if (beat == null) return child;
+
+    return Stack(
+      children: [
+        child,
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: AtemSectionBar.pulseHeight,
+          child: ExcludeSemantics(
+            child: AnimatedBuilder(
+              animation: beat,
+              builder: (context, _) => beat.value == 0
+                  ? const SizedBox.shrink()
+                  : DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            tone.withValues(alpha: 0),
+                            tone.withValues(alpha: beat.value),
+                            tone.withValues(alpha: 0),
+                          ],
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -574,16 +643,37 @@ class _CheckPainter extends CustomPainter {
   bool shouldRepaint(_CheckPainter old) => false;
 }
 
-/// Die Fuge zwischen zwei Themen — **sichtbar beim Wischen, dezent im
-/// Stand**.
+/// Die Zäsur zwischen zwei Themen — **die einzige Stelle der Seite, an der
+/// nichts steht** (Board 17, Abschnitt C).
 ///
 /// Hairline über die volle Breite, darüber ein 2-dp-Segment über 72 % im
 /// Bereichston, das nach beiden Seiten ausläuft, plus eine unscharfe Kopie
 /// als Schein. Beim schnellen Wischen bleibt der helle Kern als Blitz
 /// sichtbar; sie selbst bewegt sich nicht.
 ///
-/// Nach dem letzten Thema ([end]) nur die Hairline auf 24 dp, ohne Segment —
-/// **Ende statt Ankündigung**.
+/// ## 65 dp, und zwar asymmetrisch
+///
+/// Bis zum 21.09.2026 waren es 44 dp, gleichmässig verteilt. Das las sich wie
+/// eine weitere Trennlinie in einer Liste — und davon hat die Seite viele.
+/// Jetzt liegen **40 dp über und 24 dp unter** der Linie. Durch die
+/// Asymmetrie gehört sie sichtbar zum **folgenden** Thema, nach derselben
+/// Regel, nach der eine Überschrift mehr Abstand nach oben hat als nach
+/// unten. Wären die Abstände gleich, schwebte die Fuge zwischen zwei Themen
+/// und gehörte zu keinem.
+///
+/// 65 dp sind rund 9 % einer Bildschirmhöhe: genug, dass nie zwei Themen
+/// ohne Pause gleichzeitig „anfangen" wirken, und zu wenig, um als leerer
+/// Bildschirm zu lesen — über oder unter der Zäsur steht immer Inhalt.
+///
+/// ## Vollbreit
+///
+/// Die Hairline läuft von Kante zu Kante, während jeder Inhalt 16 dp Rand
+/// hat. Sie ist damit das einzige randlose Element der Seite: ein Schnitt,
+/// keine Trennlinie.
+///
+/// Nach dem letzten Thema ([end]) nur die Hairline, ohne Segment, und mit
+/// getauschten Abständen — 24 dp darüber, 40 dp darunter. **Ende statt
+/// Ankündigung.**
 ///
 /// Rein dekorativ und stumm: Den Themenwechsel sagt die Ortszeile an, nicht
 /// die Fuge — sonst wäre dasselbe Ereignis zweimal hörbar (Entscheidung 14).
@@ -596,17 +686,24 @@ class AtemSectionSeam extends StatelessWidget {
   /// Der Abschluss nach dem letzten Thema.
   final bool end;
 
-  static const height = 44.0;
-  static const endHeight = 24.0;
+  /// Luft über der Linie — sie gehört noch dem Thema darüber.
+  static const airTop = 40.0;
+
+  /// Luft unter der Linie, bis zum schwersten Block des neuen Themas.
+  static const airBottom = 24.0;
+
+  static const height = airTop + airBottom + 1;
+  static const endHeight = height;
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
         child: SizedBox(
-          height: end ? endHeight : height,
+          height: height,
           width: double.infinity,
           child: CustomPaint(
             painter: _SeamPainter(
               end ? null : (accent ?? AtemTabTheme.of(context)),
+              end ? airBottom : airTop,
             ),
           ),
         ),
@@ -614,14 +711,17 @@ class AtemSectionSeam extends StatelessWidget {
 }
 
 class _SeamPainter extends CustomPainter {
-  const _SeamPainter(this.accent);
+  const _SeamPainter(this.accent, this.airTop);
 
   /// `null` zeichnet nur die Hairline — das Seitenende.
   final Color? accent;
 
+  /// Wo die Linie sitzt, von oben gemessen.
+  final double airTop;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final y = size.height / 2;
+    final y = airTop + 0.5;
 
     canvas.drawLine(
       Offset(0, y),
@@ -659,7 +759,8 @@ class _SeamPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_SeamPainter old) => old.accent != accent;
+  bool shouldRepaint(_SeamPainter old) =>
+      old.accent != accent || old.airTop != airTop;
 }
 
 /// Ein One-Pager aus Themen, über denen die [AtemSectionBar] klebt.
@@ -751,12 +852,15 @@ class AtemSectionPage extends StatefulWidget {
   /// Frühestens so lange nach der letzten Ansage kommt die nächste.
   static const announceGap = Duration(milliseconds: 400);
 
+  /// Auf und wieder ab — die Quittung des Themenwechsels in der Ortszeile.
+  static const pulseDuration = Duration(milliseconds: 480);
+
   @override
   State<AtemSectionPage> createState() => _AtemSectionPageState();
 }
 
 class _AtemSectionPageState extends State<AtemSectionPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final _scroll = ScrollController();
 
   /// Der Scrollstand, bei dem ein Thema oben steht — je Thema einer.
@@ -783,6 +887,25 @@ class _AtemSectionPageState extends State<AtemSectionPage>
     duration: const Duration(milliseconds: 200),
     reverseDuration: const Duration(milliseconds: 160),
   );
+
+  /// Die Quittung des Wechsels: 80 ms auf, 400 ms ab.
+  late final AnimationController _beat = AnimationController(
+    vsync: this,
+    duration: AtemSectionPage.pulseDuration,
+  );
+
+  late final Animation<double> _pulse = TweenSequence<double>([
+    TweenSequenceItem(
+      tween: Tween(begin: 0.0, end: 1.0)
+          .chain(CurveTween(curve: Curves.easeOut)),
+      weight: 80,
+    ),
+    TweenSequenceItem(
+      tween: Tween(begin: 1.0, end: 0.0)
+          .chain(CurveTween(curve: Curves.easeIn)),
+      weight: 400,
+    ),
+  ]).animate(_beat);
 
   @override
   void initState() {
@@ -821,6 +944,7 @@ class _AtemSectionPageState extends State<AtemSectionPage>
     _scroll.removeListener(_spy);
     _scroll.dispose();
     _list.dispose();
+    _beat.dispose();
     super.dispose();
   }
 
@@ -841,10 +965,17 @@ class _AtemSectionPageState extends State<AtemSectionPage>
     for (var i = 0; i < _offsets.length; i++) {
       if (_offsets[i] <= line + 1) found = i;
     }
-    final height = _heights[found];
-    final read = height <= 0 ? 1.0 : (line - _offsets[found]) / height;
+    // Die Zäsur zählt nicht als gelesen: Sonst stünde die Marke direkt nach
+    // einem Sprung schon bei 6 %, obwohl noch keine Zeile gelesen ist.
+    final lead = _leadOf(found);
+    final height = _heights[found] - lead;
+    final read =
+        height <= 0 ? 1.0 : (line - _offsets[found] - lead) / height;
     return (found, read.clamp(0.0, 1.0));
   }
+
+  /// Die Zäsur am Kopf eines Themas — das erste hat keine.
+  double _leadOf(int index) => index == 0 ? 0 : AtemSectionSeam.height;
 
   void _spy() {
     if (_open) _closeList();
@@ -860,6 +991,11 @@ class _AtemSectionPageState extends State<AtemSectionPage>
     if (changed) {
       widget.onSelected?.call(index);
       _announce(index);
+      // **Nur beim Scrollen.** Ein Sprung aus der Liste hat seine eigene
+      // Bewegung und sein eigenes Ziel; dort wäre der Puls die zweite
+      // Antwort auf dieselbe Handlung. Bei reduzierter Bewegung entfällt er
+      // ersatzlos — Wort, Zähler und Marke tragen den Wechsel dann allein.
+      if (!AtemMotion.reduced(context)) _beat.forward(from: 0);
     }
   }
 
@@ -900,7 +1036,14 @@ class _AtemSectionPageState extends State<AtemSectionPage>
     final position = _scroll.position;
     if (!position.hasContentDimensions) return;
 
-    final goal = (_offsets[index] - _barExtent)
+    // **Nicht bis zum ersten Block, sondern bis an die Linie.** Die
+    // Hairline steht danach genau an der Unterkante der Ortszeile, darunter
+    // 24 dp Luft, dann der schwerste Block des Themas — der Schnitt ist
+    // Teil dessen, wo man gelandet ist (Board 17, Bewegungstabelle).
+    final lead = _leadOf(index);
+    final goal = (_offsets[index] +
+            (lead == 0 ? 0 : AtemSectionSeam.airTop + 1) -
+            _barExtent)
         .clamp(position.minScrollExtent, position.maxScrollExtent);
 
     setState(() {
@@ -961,14 +1104,11 @@ class _AtemSectionPageState extends State<AtemSectionPage>
                     jumpSemanticLabel: widget.jumpSemanticLabel,
                     hereLabel: widget.hereLabel,
                     accent: accent,
+                    pulse: _pulse,
                   ),
                 ),
               ),
-              for (var i = 0; i < widget.sections.length; i++) ...[
-                if (i > 0)
-                  SliverToBoxAdapter(
-                    child: AtemSectionSeam(accent: accent),
-                  ),
+              for (var i = 0; i < widget.sections.length; i++)
                 _SectionSliver(
                   // Nur schreiben, nie `setState`: Die Meldung kommt mitten
                   // aus dem Layout.
@@ -976,9 +1116,22 @@ class _AtemSectionPageState extends State<AtemSectionPage>
                     _offsets[i] = preceding;
                     _heights[i] = extent;
                   },
-                  child: widget.sections[i].child,
+                  // **Die Zäsur liegt im Thema, nicht dazwischen.** Sie
+                  // gehört durch ihre Asymmetrie zum folgenden Thema (Board
+                  // 17, Entscheidung 11) — also muss sie auch zu dessen
+                  // Sliver gehören, sonst zeigte ein Sprung auf das Thema an
+                  // der Zäsur vorbei und der Schnitt bliebe ungesehen.
+                  child: i == 0
+                      ? widget.sections[i].child
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AtemSectionSeam(accent: accent),
+                            widget.sections[i].child,
+                          ],
+                        ),
                 ),
-              ],
               // Ende statt Ankündigung.
               SliverToBoxAdapter(
                 child: AtemSectionSeam(accent: accent, end: true),

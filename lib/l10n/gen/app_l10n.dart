@@ -7799,6 +7799,138 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'KW {week} · {n, plural, =1{1 Einheit} other{{n} Einheiten}} · Vergleich ab 2 vollen Wochen'**
   String weeklySetsLinePending(int week, int n);
+
+  /// Board 17 · train.last_kicker — Kicker des Faktenkopfs, ohne Plan für heute
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt'**
+  String get trainLastKicker;
+
+  /// Board 17 · train.last_meta
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{heute · {e} Übungen · {min} Min} one{gestern · {e} Übungen · {min} Min} other{vor {n} Tagen · {e} Übungen · {min} Min}}'**
+  String trainLastMeta(int n, int e, int min);
+
+  /// Board 17 · train.start_free — Knopfbeschriftung ohne Plan
+  ///
+  /// In de, this message translates to:
+  /// **'Frei starten'**
+  String get trainStartFree;
+
+  /// Board 17 · train.foot_new_plan
+  ///
+  /// In de, this message translates to:
+  /// **'Plan anlegen'**
+  String get trainFootNewPlan;
+
+  /// Board 17 · train.foot_log
+  ///
+  /// In de, this message translates to:
+  /// **'Nachtragen'**
+  String get trainFootLog;
+
+  /// Board 17 · train.tile_exercises — gekürzt, damit der Titel auch bei 200 % einzeilig bleibt
+  ///
+  /// In de, this message translates to:
+  /// **'Übungen'**
+  String get trainTileExercises;
+
+  /// Board 17 · train.tile_exercises_meta
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 im Katalog} other{{n} im Katalog}}'**
+  String trainTileExercisesMeta(int n);
+
+  /// Board 17 · train.tile_plan
+  ///
+  /// In de, this message translates to:
+  /// **'Training planen'**
+  String get trainTilePlan;
+
+  /// Board 17 · train.tile_plan_meta
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 eigener Plan} other{{n} eigene Pläne}}'**
+  String trainTilePlanMeta(int n);
+
+  /// Board 17 · train.tile_plan_meta_none
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein eigener Plan'**
+  String get trainTilePlanMetaNone;
+
+  /// Board 17 · train.error_kicker
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht geladen'**
+  String get trainErrorKicker;
+
+  /// Board 17 · train.error_title
+  ///
+  /// In de, this message translates to:
+  /// **'Heutiger Plan nicht verfügbar'**
+  String get trainErrorTitle;
+
+  /// Board 17 · train.error_meta
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt geprüft {time}'**
+  String trainErrorMeta(String time);
+
+  /// Board 17 · train.loading_a11y
+  ///
+  /// In de, this message translates to:
+  /// **'Heutiger Plan wird geladen'**
+  String get trainLoadingA11y;
+
+  /// Board 17 · train.block_a11y_planned — ein Knoten für Kicker, Titel und Meta
+  ///
+  /// In de, this message translates to:
+  /// **'Heute geplant: {name}, {n} Übungen, etwa {min} Minuten'**
+  String trainBlockA11yPlanned(String name, int n, int min);
+
+  /// Board 17 · train.block_a11y_planned ohne bekannten Plan — keine erfundene Zählung
+  ///
+  /// In de, this message translates to:
+  /// **'Heute geplant: {name}'**
+  String trainBlockA11yPlannedPlain(String name);
+
+  /// Board 17 · train.block_a11y_last
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{Zuletzt: {name}, heute} one{Zuletzt: {name}, gestern} other{Zuletzt: {name}, vor {n} Tagen}}'**
+  String trainBlockA11yLast(String name, int n);
+
+  /// Board 17 · train.start_a11y_planned
+  ///
+  /// In de, this message translates to:
+  /// **'{name} starten'**
+  String trainStartA11yPlanned(String name);
+
+  /// Board 17 · train.start_a11y_free
+  ///
+  /// In de, this message translates to:
+  /// **'Freie Einheit starten'**
+  String get trainStartA11yFree;
+
+  /// Board 17 · Kachel: Titel und Zahl als ein Knoten
+  ///
+  /// In de, this message translates to:
+  /// **'{title}, {meta}'**
+  String trainTileExercisesA11y(String title, String meta);
+
+  /// Board 17 · train.last_meta ohne bekannte Übungszahl — keine erfundene Null
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{heute · {min} Min} one{gestern · {min} Min} other{vor {n} Tagen · {min} Min}}'**
+  String trainLastMetaShort(int n, int min);
+
+  /// Board 17 · train.last_meta ohne Dauer und ohne Übungszahl
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, =0{heute} one{gestern} other{vor {n} Tagen}}'**
+  String trainLastMetaBare(int n);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
