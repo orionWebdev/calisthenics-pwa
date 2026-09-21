@@ -11052,6 +11052,78 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'ohne Last'**
   String get detailBasisNoLoad;
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Zone 5 je Woche'**
+  String get zoneFiveTitle;
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Ab festgelegten Zonen und einer Einheit mit Puls'**
+  String get zoneFiveConditionZones;
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Ab einer Einheit mit Puls aus der Uhr'**
+  String get zoneFiveConditionPulse;
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Die Minuten, in denen dein Puls in Zone 5 lag — ab {bpm} bpm, nach deinen Grenzen. Je Woche summiert, aus den Einheiten mit Puls aus der Uhr.'**
+  String zoneFiveWhat(int bpm);
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Kein Sollwert: Mehr Zeit in Zone 5 ist nicht besser, weniger nicht schlechter. Ändern sich deine Grenzen, rechnet sich jede Woche neu.'**
+  String get zoneFiveExplainNoTarget;
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'KW {week} · {n, plural, one{1 Einheit mit Puls} other{{n} Einheiten mit Puls}}'**
+  String zoneFiveHead(int week, int n);
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'aus {n} von {m, plural, one{1 Einheit} other{{m} Einheiten}} · Puls aus der Uhr'**
+  String zoneFiveBasis(int n, int m);
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche ohne Puls'**
+  String get zoneFiveNoPulseThisWeek;
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Zone 5 je Woche: {weeks}'**
+  String zoneFiveStripA11y(String weeks);
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Kalenderwoche {week}, {min} Minuten in Zone 5'**
+  String zoneFiveWeekA11y(int week, int min);
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Kalenderwoche {week}, gemessen, keine Zeit in Zone 5'**
+  String zoneFiveWeekZeroA11y(int week);
+
+  /// Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)
+  ///
+  /// In de, this message translates to:
+  /// **'Kalenderwoche {week}, kein Puls aufgezeichnet'**
+  String zoneFiveWeekNoneA11y(int week);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -7259,4 +7259,68 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get detailBasisNoLoad => 'ohne Last';
+
+  @override
+  String get zoneFiveTitle => 'Zone 5 je Woche';
+
+  @override
+  String get zoneFiveConditionZones =>
+      'Ab festgelegten Zonen und einer Einheit mit Puls';
+
+  @override
+  String get zoneFiveConditionPulse => 'Ab einer Einheit mit Puls aus der Uhr';
+
+  @override
+  String zoneFiveWhat(int bpm) {
+    return 'Die Minuten, in denen dein Puls in Zone 5 lag — ab $bpm bpm, nach deinen Grenzen. Je Woche summiert, aus den Einheiten mit Puls aus der Uhr.';
+  }
+
+  @override
+  String get zoneFiveExplainNoTarget =>
+      'Kein Sollwert: Mehr Zeit in Zone 5 ist nicht besser, weniger nicht schlechter. Ändern sich deine Grenzen, rechnet sich jede Woche neu.';
+
+  @override
+  String zoneFiveHead(int week, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Einheiten mit Puls',
+      one: '1 Einheit mit Puls',
+    );
+    return 'KW $week · $_temp0';
+  }
+
+  @override
+  String zoneFiveBasis(int n, int m) {
+    String _temp0 = intl.Intl.pluralLogic(
+      m,
+      locale: localeName,
+      other: '$m Einheiten',
+      one: '1 Einheit',
+    );
+    return 'aus $n von $_temp0 · Puls aus der Uhr';
+  }
+
+  @override
+  String get zoneFiveNoPulseThisWeek => 'Diese Woche ohne Puls';
+
+  @override
+  String zoneFiveStripA11y(String weeks) {
+    return 'Zone 5 je Woche: $weeks';
+  }
+
+  @override
+  String zoneFiveWeekA11y(int week, int min) {
+    return 'Kalenderwoche $week, $min Minuten in Zone 5';
+  }
+
+  @override
+  String zoneFiveWeekZeroA11y(int week) {
+    return 'Kalenderwoche $week, gemessen, keine Zeit in Zone 5';
+  }
+
+  @override
+  String zoneFiveWeekNoneA11y(int week) {
+    return 'Kalenderwoche $week, kein Puls aufgezeichnet';
+  }
 }

@@ -262,7 +262,8 @@ class _Values extends StatelessWidget {
   }
 }
 
-/// Fünf Balken — oder **weniger Zeilen**, wenn Zonen leer blieben.
+/// Fünf Balken in den Farben ihrer Zonen — oder **weniger Zeilen**, wenn
+/// Zonen leer blieben.
 ///
 /// Eine Zone mit 0:00 verschwindet nicht: Eine leere Spur zeigt, dass sie
 /// gemessen und nicht erreicht wurde. **Zwei** leere Zonen fasst eine einzige
@@ -402,7 +403,7 @@ class _ZoneRow extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            ZoneTrack(fraction: fraction),
+            ZoneTrack(zone: zoneNumbers.first, fraction: fraction),
           ],
         ),
       ),
@@ -430,7 +431,7 @@ class _Loading extends StatelessWidget {
             children: [
               for (var i = 0; i < HeartRateZones.zoneCount; i++) ...[
                 if (i > 0) const SizedBox(height: 14),
-                const ZoneTrack(fraction: 0, height: 12),
+                ZoneTrack(zone: i + 1, fraction: 0, height: 12),
               ],
             ],
           ),

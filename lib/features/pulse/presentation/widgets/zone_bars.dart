@@ -2,16 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/theme.dart';
 
-/// Eine Spur mit Füllung — **ein Material für alle fünf Zonen**.
+/// Eine Spur mit Füllung in der **Farbe ihrer Zone**.
 ///
-/// Violett, immer in derselben Reihenfolge; unterschieden nur durch Platz,
-/// Name und Minuten. Keine Farbskala von Grün nach Rot: Das wäre ein Urteil
-/// („rot heisst zu viel" oder „endlich hart", je nach Tagesform), das die App
-/// nicht fällen kann — und Farbe trägt hier ohnehin nichts (Board 16,
-/// Entscheidung 7). Damit ist die Verteilung auch bei Farbfehlsichtigkeit
-/// vollständig lesbar.
+/// Cyan, Grün, Gelb, Orange, Rot — Zone 1 bis 5. Das Board 16 wollte hier ein
+/// einziges Material (Entscheidung 7), weil eine Skala von Grün nach Rot ein
+/// Urteil ist; der Nutzer hat sich am 21.09.2026 für die Farben entschieden.
+/// Was bleibt: **Farbe trägt nichts allein.** Neben jeder Spur stehen Name,
+/// bpm-Bereich und Minuten, und die Verteilung ist auch bei Farbfehlsichtigkeit
+/// vollständig lesbar. Kein Wort nennt eine Zone hoch, gut oder zu viel.
 ///
-/// Violett ist **Fläche, nie Text**: Diese Spur trägt keine Schrift.
+/// Die Farbe ist **Fläche, nie Text**: Diese Spur trägt keine Schrift.
 ///
 /// ## Bewegung
 ///
@@ -22,10 +22,14 @@ import '../../../../core/theme/theme.dart';
 class ZoneTrack extends StatelessWidget {
   const ZoneTrack({
     super.key,
+    required this.zone,
     required this.fraction,
     this.height = 10,
     this.duration = const Duration(milliseconds: 420),
   });
+
+  /// Welche Zone die Spur trägt, 1 bis 5 — bestimmt die Farbe.
+  final int zone;
 
   /// 0 bis 1 — der Anteil an der aufgezeichneten Zeit.
   final double fraction;
@@ -57,10 +61,11 @@ class ZoneTrack extends StatelessWidget {
                   child: SizedBox(
                     width: constraints.maxWidth * value,
                     height: height,
-                    child: const DecoratedBox(
+                    child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: AtemColors.violet,
-                        borderRadius: BorderRadius.all(Radius.circular(3)),
+                        color: AtemColors.zone(zone),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(3)),
                       ),
                     ),
                   ),

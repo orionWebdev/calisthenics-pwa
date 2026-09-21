@@ -10793,5 +10793,97 @@
   "detailBasisNoLoad": "ohne Last",
   "@detailBasisNoLoad": {
     "description": "Board 16 · Ergänzung — „ohne Last · {name}\" ohne Namen: Regeneration ohne bekannte Art"
+  },
+  "zoneFiveTitle": "Zone 5 je Woche",
+  "@zoneFiveTitle": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveConditionZones": "Ab festgelegten Zonen und einer Einheit mit Puls",
+  "@zoneFiveConditionZones": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveConditionPulse": "Ab einer Einheit mit Puls aus der Uhr",
+  "@zoneFiveConditionPulse": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveWhat": "Die Minuten, in denen dein Puls in Zone 5 lag — ab {bpm} bpm, nach deinen Grenzen. Je Woche summiert, aus den Einheiten mit Puls aus der Uhr.",
+  "@zoneFiveWhat": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveExplainNoTarget": "Kein Sollwert: Mehr Zeit in Zone 5 ist nicht besser, weniger nicht schlechter. Ändern sich deine Grenzen, rechnet sich jede Woche neu.",
+  "@zoneFiveExplainNoTarget": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveHead": "KW {week} · {n, plural, one{1 Einheit mit Puls} other{{n} Einheiten mit Puls}}",
+  "@zoneFiveHead": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveBasis": "aus {n} von {m, plural, one{1 Einheit} other{{m} Einheiten}} · Puls aus der Uhr",
+  "@zoneFiveBasis": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveNoPulseThisWeek": "Diese Woche ohne Puls",
+  "@zoneFiveNoPulseThisWeek": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveStripA11y": "Zone 5 je Woche: {weeks}",
+  "@zoneFiveStripA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "weeks": {
+        "type": "String"
+      }
+    }
+  },
+  "zoneFiveWeekA11y": "Kalenderwoche {week}, {min} Minuten in Zone 5",
+  "@zoneFiveWeekA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveWeekZeroA11y": "Kalenderwoche {week}, gemessen, keine Zeit in Zone 5",
+  "@zoneFiveWeekZeroA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveWeekNoneA11y": "Kalenderwoche {week}, kein Puls aufgezeichnet",
+  "@zoneFiveWeekNoneA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
   }
 }

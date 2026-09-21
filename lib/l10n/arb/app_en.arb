@@ -7353,5 +7353,97 @@
   "detailBasisNoLoad": "no load",
   "@detailBasisNoLoad": {
     "description": "Board 16 · Ergänzung — „ohne Last · {name}\" ohne Namen: Regeneration ohne bekannte Art"
+  },
+  "zoneFiveTitle": "Zone 5 per week",
+  "@zoneFiveTitle": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveConditionZones": "Once zones are set and one session has heart rate",
+  "@zoneFiveConditionZones": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveConditionPulse": "Once one session has heart rate from the watch",
+  "@zoneFiveConditionPulse": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveWhat": "The minutes your heart rate was in zone 5 — from {bpm} bpm, by your boundaries. Summed per week, from the sessions with heart rate from the watch.",
+  "@zoneFiveWhat": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveExplainNoTarget": "No target: more time in zone 5 is not better, less is not worse. If your boundaries change, every week is recomputed.",
+  "@zoneFiveExplainNoTarget": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveHead": "Week {week} · {n, plural, one{1 session with heart rate} other{{n} sessions with heart rate}}",
+  "@zoneFiveHead": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveBasis": "from {n} of {m, plural, one{1 session} other{{m} sessions}} · heart rate from the watch",
+  "@zoneFiveBasis": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveNoPulseThisWeek": "No heart rate this week",
+  "@zoneFiveNoPulseThisWeek": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)"
+  },
+  "zoneFiveStripA11y": "Zone 5 per week: {weeks}",
+  "@zoneFiveStripA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "weeks": {
+        "type": "String"
+      }
+    }
+  },
+  "zoneFiveWeekA11y": "Week {week}, {min} minutes in zone 5",
+  "@zoneFiveWeekA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveWeekZeroA11y": "Week {week}, measured, no time in zone 5",
+  "@zoneFiveWeekZeroA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "zoneFiveWeekNoneA11y": "Week {week}, no heart rate recorded",
+  "@zoneFiveWeekNoneA11y": {
+    "description": "Auswertung · Zone 5 je Woche — auf Wunsch vom 21.09.2026, ohne Board (Ergänzung)",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
   }
 }

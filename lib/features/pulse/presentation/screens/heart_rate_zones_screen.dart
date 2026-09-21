@@ -401,6 +401,17 @@ class _ZoneRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           child: Row(
             children: [
+              // Der Farbpunkt der Zone — dieselbe Farbe wie im Einheitendetail.
+              // Dekorativ: Name, Bereich und Minuten tragen die Auskunft.
+              Container(
+                width: 10,
+                height: 10,
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  color: AtemColors.zone(zone),
+                  shape: BoxShape.circle,
+                ),
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

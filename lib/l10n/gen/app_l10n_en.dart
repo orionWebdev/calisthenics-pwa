@@ -7240,4 +7240,69 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get detailBasisNoLoad => 'no load';
+
+  @override
+  String get zoneFiveTitle => 'Zone 5 per week';
+
+  @override
+  String get zoneFiveConditionZones =>
+      'Once zones are set and one session has heart rate';
+
+  @override
+  String get zoneFiveConditionPulse =>
+      'Once one session has heart rate from the watch';
+
+  @override
+  String zoneFiveWhat(int bpm) {
+    return 'The minutes your heart rate was in zone 5 — from $bpm bpm, by your boundaries. Summed per week, from the sessions with heart rate from the watch.';
+  }
+
+  @override
+  String get zoneFiveExplainNoTarget =>
+      'No target: more time in zone 5 is not better, less is not worse. If your boundaries change, every week is recomputed.';
+
+  @override
+  String zoneFiveHead(int week, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n sessions with heart rate',
+      one: '1 session with heart rate',
+    );
+    return 'Week $week · $_temp0';
+  }
+
+  @override
+  String zoneFiveBasis(int n, int m) {
+    String _temp0 = intl.Intl.pluralLogic(
+      m,
+      locale: localeName,
+      other: '$m sessions',
+      one: '1 session',
+    );
+    return 'from $n of $_temp0 · heart rate from the watch';
+  }
+
+  @override
+  String get zoneFiveNoPulseThisWeek => 'No heart rate this week';
+
+  @override
+  String zoneFiveStripA11y(String weeks) {
+    return 'Zone 5 per week: $weeks';
+  }
+
+  @override
+  String zoneFiveWeekA11y(int week, int min) {
+    return 'Week $week, $min minutes in zone 5';
+  }
+
+  @override
+  String zoneFiveWeekZeroA11y(int week) {
+    return 'Week $week, measured, no time in zone 5';
+  }
+
+  @override
+  String zoneFiveWeekNoneA11y(int week) {
+    return 'Week $week, no heart rate recorded';
+  }
 }

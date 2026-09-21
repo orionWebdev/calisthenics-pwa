@@ -54,6 +54,47 @@ abstract final class AtemColors {
   /// Warnstufe (zwischen green und magenta).
   static const amber = Color(0xFFFFB020);
 
+  // ---- Herzfrequenzzonen (Board 16, auf Wunsch vom 21.09.2026) -----------
+  //
+  // **Eine Abweichung vom Board, ausdrücklich.** Board 16 (Entscheidung 7)
+  // verwirft eine Farbskala für die Zonen: Rot hiesse „zu viel" oder „endlich
+  // hart", je nach Tagesform, und das weiss die App nicht. Der Nutzer hat sich
+  // dennoch dafür entschieden — die Zonen sind auf einen Blick
+  // auseinanderzuhalten, und Zone 5 bekommt ihre eigene Auswertung.
+  //
+  // Was davon bleibt: Die Farbe trägt **nichts allein**. Jede Zone hat weiter
+  // ihren Namen, ihren bpm-Bereich und ihre Minuten, und kein Text nennt eine
+  // Zone „hoch", „gut" oder „zu viel". Die Farben unterscheiden, sie
+  // bewerten nicht.
+
+  /// Zone 1 (und darunter): Cyan.
+  static const zone1 = cyan;
+
+  /// Zone 2: Grün.
+  static const zone2 = green;
+
+  /// Zone 3: Gelb. Heller und gelber als [amber], damit Zone 3 und 4
+  /// nebeneinander nicht ineinander laufen.
+  static const zone3 = Color(0xFFFFE14D);
+
+  /// Zone 4: Orange. Dunkler und röter als [amber] — der Vorrat hatte
+  /// keinen Orangeton, der sich von Gelb abhebt.
+  static const zone4 = Color(0xFFFF8A1F);
+
+  /// Zone 5: Rot. Orangeroter als [magenta] (Markenfarbe, Strain, Alerts):
+  /// Magenta bleibt Eingriff und Störung, dieses Rot ist nur Zone 5.
+  static const zone5 = Color(0xFFFF3D2E);
+
+  /// Die Farbe einer Zone, 1 bis 5. Zone 0 gibt es nicht: Zone 1 ist nach
+  /// unten offen.
+  static Color zone(int number) => switch (number) {
+        <= 1 => zone1,
+        2 => zone2,
+        3 => zone3,
+        4 => zone4,
+        _ => zone5,
+      };
+
   // --- Tab-Töne -------------------------------------------------------------
   //
   // **Jeder Bereich hat einen Ton.** Er färbt sein Symbol in der Leiste und
