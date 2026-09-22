@@ -6,6 +6,7 @@ import '../../history/domain/data_sufficiency.dart';
 import '../../history/domain/readiness.dart';
 import '../../history/domain/session_repository.dart';
 import '../../history/domain/training_load.dart';
+import '../../pulse/domain/measured_effort.dart';
 import '../../history/domain/session_comparison.dart';
 import '../../history/domain/training_session.dart';
 import '../domain/dashboard_data.dart';
@@ -31,6 +32,7 @@ class FirestoreDashboardRepository implements DashboardRepository {
     required this.userId,
     this.fallbackDisplayName,
     this.bodyWeightOn,
+    this.measuredEfforts,
     DateTime Function()? now,
   })  : _db = firestore,
         _sessions = sessions,
@@ -55,6 +57,18 @@ class FirestoreDashboardRepository implements DashboardRepository {
   /// einem anderen Maßstab als die Auswertung im Kraft-Tab — zwei Wahrheiten
   /// über dieselbe Einheit.
   final double? Function(DateTime date)? bodyWeightOn;
+
+  /// Die gemessene Anstrengung je Einheit — siehe [LoadContext.effortFor].
+  ///
+  /// Wie [bodyWeightOn] ein Rückruf: Das Repository sitzt ausserhalb von
+  /// Riverpod in drei Firestore-Strömen und soll nicht bei jeder Änderung
+  /// neu gebaut werden.
+  ///
+  /// Er liefert die **ganze Tabelle**, nicht eine Zahl je Einheit. Ein
+  /// Rückruf je Einheit müsste sie bei jedem Aufruf neu aufbauen — die
+  /// Lastrechnung läuft über den gesamten Verlauf, und daraus würde eine
+  /// quadratische Rechnung. Hier wird er einmal je Neuberechnung gezogen.
+  final MeasuredEfforts Function()? measuredEfforts;
 
   @override
   Stream<DashboardData> watchDashboard() {
@@ -82,8 +96,14 @@ class FirestoreDashboardRepository implements DashboardRepository {
     // R1 aus Vertrag 4: Das Körpergewicht steht im Bestand einmal als 70
     // (integer) und einmal als 68.5 (double).
     final bodyWeight = (data['bodyWeight'] as num?)?.toDouble() ?? 0;
-    final context =
-        LoadContext(bodyWeightKg: bodyWeight, bodyWeightOn: bodyWeightOn);
+    // Einmal je Neuberechnung, nicht einmal je Einheit.
+    final efforts = measuredEfforts?.call();
+    final context = LoadContext(
+      bodyWeightKg: bodyWeight,
+      bodyWeightOn: bodyWeightOn,
+      measuredEffortOf:
+          efforts == null || efforts.isEmpty ? null : efforts.of,
+    );
 
     final name = _nonEmpty(data['displayName']) ??
         _nonEmpty(fallbackDisplayName) ??

@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/application/auth_providers.dart';
+import '../../health_import/application/health_import_providers.dart';
+import '../../pulse/application/pulse_providers.dart';
+import '../../pulse/domain/measured_effort.dart';
 import '../../weight/application/weight_providers.dart';
 import '../../weight/domain/weight_series.dart';
 import '../data/firestore_session_repository.dart';
@@ -82,9 +85,26 @@ final loadContextProvider = Provider<LoadContext>((ref) {
   // da ist, und die Rechnung läuft erneut.
   final fallback = ref.watch(bodyWeightProvider).value ?? 0;
   final series = ref.watch(weightSeriesProvider).value ?? WeightSeries.empty;
+
+  // Die gemessene Anstrengung aus dem Pulsverlauf — einmal für alle Einheiten
+  // aufgebaut, nicht je Einheit gesucht (A1, Schritt 2).
+  //
+  // Hier `watch` und nicht `read`: Wer seine Zonengrenzen ändert, ändert jede
+  // Verteilung, auch die vergangener Einheiten (Board 16, Entscheidung 15) —
+  // und damit jede Last, die daraus stammt. Ein Kontext, der das verschliefe,
+  // zeigte bis zum nächsten Neustart alte Zahlen.
+  final efforts = MeasuredEfforts.from(
+    records: ref.watch(healthSessionsProvider).value ?? const [],
+    zones: ref.watch(heartRateZonesProvider),
+  );
+
   return LoadContext(
     bodyWeightKg: fallback,
     bodyWeightOn: series.isEmpty ? null : series.kgOn,
+    // `null` statt einer leeren Tabelle: Ohne Messung soll die Rechnung
+    // denselben Weg nehmen wie vor dem 22.09.2026, nicht einen neuen, der
+    // zufällig dasselbe ergibt.
+    measuredEffortOf: efforts.isEmpty ? null : efforts.of,
   );
 });
 

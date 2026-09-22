@@ -13,6 +13,7 @@ class LoadContext {
     this.bodyWeightKg = 0,
     this.bodyweightExerciseIds = const {},
     this.bodyWeightOn,
+    this.measuredEffortOf,
   });
 
   /// Körpergewicht in Kilogramm, 0 wenn unbekannt.
@@ -47,6 +48,35 @@ class LoadContext {
 
   /// Der Maßstab für eine Einheit an [date].
   double weightOn(DateTime date) => bodyWeightOn?.call(date) ?? bodyWeightKg;
+
+  /// Die **gemessene** Anstrengung einer Einheit, 1 bis 5 — oder `null`.
+  ///
+  /// ## Warum das hier steht und nicht an der Einheit
+  ///
+  /// Der Puls liegt am Uhr-Datensatz daneben, nicht in der Einheit (Board 15,
+  /// Entscheidung 1: „Lösen ist verlustfrei"). Die Lastrechnung soll davon
+  /// nichts wissen müssen — so wenig, wie sie von der Form der Gewichtsreihe
+  /// weiss. Deshalb ein Rückruf, der eine fertige Zahl liefert, genau wie
+  /// [bodyWeightOn]: Der Aufrufer schlägt nach, hier wird nur gerechnet.
+  ///
+  /// `null` heisst durchweg dasselbe: **Die Messung sagt nichts.** Keine Uhr,
+  /// keine Zonen, kein Pulsverlauf oder zu wenig davon. Ohne den Rückruf
+  /// verhält sich alles wie vor dem 22.09.2026.
+  final int? Function(TrainingSession session)? measuredEffortOf;
+
+  /// Die Anstrengung, mit der eine Einheit rechnet — **in dieser Reihenfolge**.
+  ///
+  /// 1. Was jemand **eingetragen** hat. Eine Messung überschreibt keine
+  ///    Eingabe; wer eine Zahl genannt hat, hat eine Aussage gemacht, und ein
+  ///    stiller Ersatz nähme sie zurück, ohne zu fragen. Dieselbe Regel gilt
+  ///    seit dem 20.09.2026 fürs Gewicht (`weight_sync.dart`).
+  /// 2. Was die Uhr **gemessen** hat.
+  /// 3. Sonst der Ersatzwert 3 — der neutrale Faktor 1,0, wie bisher.
+  ///
+  /// Schritt 2 ist der ganze Unterschied: Er tritt **nur** an die Stelle, an
+  /// der die App bisher geraten hat.
+  int effortFor(TrainingSession session) =>
+      session.rpe ?? measuredEffortOf?.call(session) ?? TrainingLoad.defaultRpe;
 
   /// Übungen, die laut Katalog mit dem Körpergewicht rechnen.
   ///
@@ -96,7 +126,11 @@ abstract final class TrainingLoad {
   static const _dampeningExponent = 0.8;
 
   /// Fehlt `rpe`, rechnet die PWA mit 3 — der neutrale Wert, Faktor 1,0.
-  static const _defaultRpe = 3;
+  ///
+  /// Öffentlich, seit [LoadContext.effortFor] die Reihenfolge kennt: Der
+  /// Ersatzwert ist das letzte Glied dieser Kette und soll nur einmal im
+  /// Quelltext stehen.
+  static const defaultRpe = 3;
 
   static double rpeFactor(int? rpe) =>
       rpe == null ? 1.0 : (_rpeFactors[rpe] ?? 1.0);
@@ -121,7 +155,7 @@ abstract final class TrainingLoad {
   static double of(TrainingSession session, LoadContext context) =>
       switch (session) {
         StrengthSession() => _strength(session, context),
-        CardioSession() => _cardio(session),
+        CardioSession() => _cardio(session, context),
         // Regeneration und Unbekanntes tragen keine Last. Regeneration wirkt
         // trotzdem — über den Erholungsbonus im ACWR, nicht über die Last.
         RecoverySession() || UnknownSession() => 0,
@@ -142,7 +176,7 @@ abstract final class TrainingLoad {
   /// Körpergewichts-Kennzeichnung als auch ein Satzgewicht — ihre Rohlast
   /// ändert sich rückwirkend. Keiner davon gehört zum aktuell aktiven Konto.
   static double _strength(StrengthSession session, LoadContext context) {
-    final factor = rpeFactor(session.rpe ?? _defaultRpe);
+    final factor = rpeFactor(session.rpe ?? defaultRpe);
 
     // Ohne Übungen: Ersatzrechnung nach Dauer (Schnellerfassung).
     if (session.exercises.isEmpty) {
@@ -189,10 +223,22 @@ abstract final class TrainingLoad {
     return _round2(minutes * factor * multiplier);
   }
 
-  static double _cardio(CardioSession session) {
+  /// ## Warum hier der Puls zählt und bei Kraft (noch) nicht
+  ///
+  /// Cardio geht **ausschliesslich** über Dauer mal Anstrengung mal Sportart
+  /// ein — es gibt kein Volumen, das die Anstrengung relativieren würde. Eine
+  /// geratene 3 wiegt hier also schwerer als anderswo. Und bei Ausdauer
+  /// beschreibt der Puls genau das, wonach gefragt wird: wie hart es war.
+  ///
+  /// Bei Kraft misst er etwas anderes — eine schwere Kniebeuge treibt ihn
+  /// kaum, ein Zirkel dafür weit. Deshalb bleibt [_strength] vorerst bei der
+  /// getippten Anstrengung und ihrem Ersatzwert. Der Weg dorthin ist offen:
+  /// Es wäre dieselbe eine Zeile, [LoadContext.effortFor]. Was fehlt, ist
+  /// nicht der Code, sondern die Begründung.
+  static double _cardio(CardioSession session, LoadContext context) {
     final minutes = _minutes(session.duration);
     if (minutes <= 0) return 0;
-    final factor = rpeFactor(session.rpe ?? _defaultRpe);
+    final factor = rpeFactor(context.effortFor(session));
     final sport = sportFactor(session.rawActivity ?? session.activity?.wire);
     return _round2(effectiveDuration(minutes) * factor * 4 * sport);
   }
@@ -204,7 +250,7 @@ abstract final class TrainingLoad {
   /// zu erkennen; die Portierung bildet es ab, statt es stillschweigend zu
   /// korrigieren. Eine Änderung verschöbe jeden historischen Wert.
   static bool isRecovery(TrainingSession session) {
-    if ((session.rpe ?? _defaultRpe) > 2) return false;
+    if ((session.rpe ?? defaultRpe) > 2) return false;
 
     final minutes = _minutes(session.duration);
     if (minutes <= 0 || minutes > 60) return false;

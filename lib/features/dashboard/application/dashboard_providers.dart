@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/application/auth_providers.dart';
-import '../../weight/application/weight_providers.dart';
+import '../../health_import/application/health_import_providers.dart';
 import '../../history/application/history_providers.dart';
+import '../../pulse/application/pulse_providers.dart';
+import '../../pulse/domain/measured_effort.dart';
+import '../../weight/application/weight_providers.dart';
 import '../data/firestore_dashboard_repository.dart';
 import '../domain/dashboard_data.dart';
 import '../domain/dashboard_repository.dart';
@@ -36,6 +39,14 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
     // Quellen.
     bodyWeightOn: (date) =>
         ref.read(weightSeriesProvider).value?.kgOn(date),
+    // Ebenfalls `read` und aus demselben Grund. Die Tabelle entsteht bei
+    // jeder Neuberechnung frisch: Sie stammt aus höchstens ein paar Dutzend
+    // Uhr-Datensätzen, und ein Zwischenspeicher wäre ein zweiter Ort, an dem
+    // geänderte Zonengrenzen veralten könnten.
+    measuredEfforts: () => MeasuredEfforts.from(
+      records: ref.read(healthSessionsProvider).value ?? const [],
+      zones: ref.read(heartRateZonesProvider),
+    ),
   );
 });
 
