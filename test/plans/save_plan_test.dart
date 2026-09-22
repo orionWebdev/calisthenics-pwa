@@ -171,4 +171,74 @@ void main() {
       expect(plan.items.last.reps, '8-12');
     });
   });
+
+  group('Ältere Schreibweisen aus dem Bestand', () {
+    /// Die Vorgänger-App normalisiert beim Lesen vier Fassungen
+    /// (`js/views/plans/state-helpers.js`). Wer sie hier nicht kennt, verliert
+    /// still die Zielwerte: Aus „2 Sätze" wurden drei, aus „14" nichts.
+    Future<List<PlanItem>> read(Map<String, dynamic> doc) async {
+      await db.collection('plans').add({'name': 'Alt', 'userId': 'u1', ...doc});
+      final plan = (await repo.fetchPlans('u1')).single;
+      return plan.items;
+    }
+
+    test('flach am Eintrag statt unter target', () async {
+      final items = await read({
+        'items': [
+          {'exerciseId': 'push_up', 'sets': 2, 'reps': '14', 'restSec': 60},
+        ],
+      });
+      expect(items.single.sets, 2);
+      expect(items.single.reps, '14');
+      expect(items.single.restSeconds, 60);
+    });
+
+    test('Zahlen als Text', () async {
+      final items = await read({
+        'items': [
+          {
+            'exerciseId': 'push_up',
+            'target': {'sets': '2', 'reps': 14, 'holdSec': '45'},
+            'restSec': '90',
+          },
+        ],
+      });
+      expect(items.single.sets, 2);
+      expect(items.single.reps, '14', reason: 'reps bleibt Text');
+      expect(items.single.holdSeconds, 45);
+      expect(items.single.restSeconds, 90);
+    });
+
+    test('hold statt holdSec, rest statt restSec, id statt exerciseId',
+        () async {
+      final items = await read({
+        'items': [
+          {'id': 'plank', 'hold': 45, 'rest': 30},
+        ],
+      });
+      expect(items.single.exerciseId, 'plank');
+      expect(items.single.holdSeconds, 45);
+      expect(items.single.restSeconds, 30);
+    });
+
+    test('exercises statt items', () async {
+      final items = await read({
+        'exercises': [
+          {'exerciseId': 'push_up', 'sets': 2},
+        ],
+      });
+      expect(items.single.sets, 2);
+    });
+
+    test('ein Zielbereich wird nie zur Satzzahl', () async {
+      final items = await read({
+        'items': [
+          {'exerciseId': 'push_up', 'reps': '8-12', 'sets': 'viele'},
+        ],
+      });
+      expect(items.single.reps, '8-12');
+      expect(items.single.sets, isNull,
+          reason: 'unlesbar heisst ohne Angabe, nicht irgendeine Zahl');
+    });
+  });
 }
