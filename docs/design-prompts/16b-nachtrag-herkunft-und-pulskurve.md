@@ -110,6 +110,65 @@ Zehn-Sekunden-Werten, nebeneinander im selben Verlauf? Eine Kurve, die je nach
 Alter anders aussieht, ohne es zu sagen, behauptet einen Unterschied im
 Training, wo nur einer in der Aufzeichnung liegt.
 
+---
+
+## Nachtrag zum Nachtrag (22.09.2026, abends) — die Wechselmarke hat noch keine Regel
+
+Die Sektionen M bis U sind gebaut. Eines fehlt, und zwar weil die Antwort
+fehlt: die **Wechselmarke** für Kurven, deren Dichte sich mitten in der
+Einheit ändert („Gestrichelte Senkrechte … dazu ein Wort in der Grundlage:
+‚ab 12:00 je 10 s'").
+
+**Das Board nennt keine Schwelle**, ab der eine Kurve als gemischt gilt. Eine
+selbst erfundene wäre eine Behauptung über Daten, die noch niemand gesehen
+hat — deshalb steht die Marke aus.
+
+### Was am Gerät tatsächlich steht
+
+Eine echte Einheit vom 13.09.2026, 24 Minuten, Garmin über Health Connect,
+nach dem Umstieg auf die Zehn-Sekunden-Ablage neu gelesen. Ihr Taktstreifen
+sieht so aus:
+
+```
+||||||||||||||||||||||||||||||  |||||||||||||||||||||  ||||||  |||||||||||||||||||||  ||||||||||
+```
+
+**Fünf dichte Blöcke, vier Lücken dazwischen.** Innerhalb jedes Blocks steht
+alle zehn Sekunden ein Wert — der Abstand ist gleichmässig. Die Uhr hat also
+**nicht gröber** gemessen, sie hat **gar nicht** gemessen.
+
+### Und genau da liegt die Frage
+
+Ein Taktstreifen kann zwei Dinge nicht auseinanderhalten, die verschieden
+sind:
+
+1. **Eine Lücke** — die Uhr hat nichts gemessen. Dort steht nichts, und die
+   Kurve ist unterbrochen. Das ist der beobachtete Fall.
+2. **Eine gröbere Stelle** — die Uhr hat gemessen, nur seltener. Die Kurve
+   läuft durch, die Striche stehen weiter auseinander.
+
+Im Streifen sehen beide nach „weniger Striche" aus. Die Wechselmarke ist nur
+für den zweiten Fall richtig; über dem ersten wäre sie schlicht falsch, denn
+dort wechselt keine Auflösung.
+
+**Drei Fragen, die das Board beantworten soll:**
+
+1. **Ab wann gilt eine Kurve als gemischt?** Ein einzelnes weiteres
+   Intervall ist noch keine andere Auflösung. Reicht ein Abschnitt, oder
+   braucht es einen Anteil der Einheit? Und wie lange muss die gröbere
+   Stelle sein, damit sie eine Marke verdient?
+2. **Wie unterscheidet sich die Marke von einer Lücke?** Beide sind eine
+   Unterbrechung im Bild. Die Lücke trägt heute nichts — keine Linie, keinen
+   Strich. Die Marke wäre eine gestrichelte Senkrechte. Nebeneinander in
+   derselben Kurve: Woran sieht man, welche welche ist?
+3. **Braucht die Lücke auch ein Wort?** Die Grundlage nennt heute die
+   Auflösung („je 10 Sekunden ein Wert"). Sie nennt **nicht**, dass vier
+   Blöcke fehlen. Der Schieber sagt es an der Stelle („14:00 · keine
+   Aufzeichnung"), das Bild zeigt es — aber die Grundlagenzeile schweigt
+   darüber, und „aus 24 von 24 min Aufzeichnung" darüber klingt lückenlos.
+
+---
+
 ## Nicht verhandelbar
 
 - Nur die Tokens aus `atem_theme.dart`. Keine erfundenen Zwischentöne, keine
