@@ -27,10 +27,12 @@ void main() {
     for (var m = 25; m <= 34; m++) m: 150 - (m - 25) * 4,
   };
 
-  final cases = <String, (Map<int, int>, HeartRateZones?, double)>{
-    'kurve_zonen': (intervals, zones, 1.0),
-    'kurve_ohne_zonen': (intervals, null, 1.0),
-    'kurve_200': (intervals, zones, 2.0),
+  final cases = <String, (Map<int, int>, HeartRateZones?, double, double?)>{
+    'kurve_zonen': (intervals, zones, 1.0, null),
+    'kurve_ohne_zonen': (intervals, null, 1.0, null),
+    'kurve_200': (intervals, zones, 2.0, null),
+    // Mit gesetzter Marke: der Zustand, den ein Standbild sonst nie zeigt.
+    'kurve_abgelesen': (intervals, zones, 1.0, 0.33),
   };
 
   for (final entry in cases.entries) {
@@ -38,7 +40,7 @@ void main() {
       if (!renderEnabled) return;
       await loadRealFonts();
 
-      final (curve, z, scale) = entry.value;
+      final (curve, z, scale, scrubAt) = entry.value;
       tester.view.physicalSize = const Size(361 * 2, 320 * 2);
       tester.view.devicePixelRatio = 2;
       addTearDown(tester.view.reset);
@@ -73,7 +75,19 @@ void main() {
         ),
       ));
       await tester.pumpAndSettle();
+
+      TestGesture? gesture;
+      if (scrubAt != null) {
+        final box = tester.getRect(find.byType(CustomPaint).last);
+        gesture = await tester.startGesture(
+            Offset(box.left + 2, box.center.dy));
+        await gesture.moveTo(
+            Offset(box.left + box.width * scrubAt, box.center.dy));
+        await tester.pump();
+      }
+
       await writePng(tester, key, entry.key);
+      await gesture?.up();
     });
   }
 }
