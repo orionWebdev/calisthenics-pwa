@@ -84,6 +84,21 @@ Für ein ruhiges Ausdauertraining reicht das. Für ein Intervalltraining mit
 30/30 oder 40/20 ist es womöglich zu grob: Genau die Struktur, die man sehen
 will, verschwindet im Mittel.
 
+**Am Gerät wird daraus ein sichtbarer Widerspruch.** In einer echten Einheit
+vom 13.09. steht im selben Block, untereinander:
+
+- die Kacheln **Ø 96 · Max 120 · Min 71** — aus den Rohwerten,
+- und über der Kurve **„85–109 bpm"** — aus den Minutenmitteln.
+
+Beides stimmt, beides beschreibt dieselben 24 Minuten, und die Zahlen
+widersprechen sich trotzdem. Keine von beiden sagt, worauf sie beruht. Wer das
+liest, sucht den Fehler bei sich.
+
+**Auch das gehört entschieden:** Sagt die Spanne über der Kurve, dass sie aus
+Minutenmitteln stammt? Verschwindet sie, weil die Kacheln darüber dasselbe
+besser beantworten? Oder ist es genau der Beweis, dass die Kurve feiner
+aufgezeichnet werden muss, bis beide Zahlen zusammenfallen?
+
 **Die Frage:** Muss der Verlauf feiner sein, damit er seinen Zweck erfüllt?
 Eine feinere Ablage (etwa alle zehn Sekunden) ist machbar — sie kostet die
 sechsfache Menge Punkte je Einheit und einen Schemawechsel, und sie wirkt
