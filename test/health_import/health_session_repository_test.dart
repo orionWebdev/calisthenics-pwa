@@ -1,4 +1,5 @@
 import 'package:atem/core/domain/health_gateway.dart';
+import 'package:atem/core/domain/pulse_profile.dart';
 import 'package:atem/features/health_import/data/firestore_health_session_repository.dart';
 import 'package:atem/features/health_import/domain/health_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -59,6 +60,37 @@ void main() {
     expect(stored.deviceName, 'Garmin');
     expect(stored.duration, const Duration(minutes: 42));
     expect(stored.seenAt, seen);
+  });
+
+  test('die Pulskurve überlebt den Weg durch Firestore', () async {
+    const profile = PulseProfile(
+      secondsByBpm: {118: 42, 140: 38},
+      windowSeconds: 80,
+      curveBpmByMinute: {0: 118, 2: 140},
+    );
+    await repo.save(
+      uid,
+      HealthSession.pending(measured(), seen).copyWith(pulse: profile),
+    );
+
+    final stored = (await repo.fetch(uid)).single;
+    expect(stored.pulse!.curveBpmByMinute, {0: 118, 2: 140});
+  });
+
+  test('eine Einheit ohne Kurve schreibt kein pulseCurve-Feld', () async {
+    const profile = PulseProfile(secondsByBpm: {118: 42}, windowSeconds: 42);
+    await repo.save(
+      uid,
+      HealthSession.pending(measured(), seen).copyWith(pulse: profile),
+    );
+
+    final doc = await db
+        .collection('userProfiles')
+        .doc(uid)
+        .collection('healthSessions')
+        .doc(HealthSession.idFor('hc-1'))
+        .get();
+    expect(doc.data(), isNot(contains('pulseCurve')));
   });
 
   test('abgelehnt ist ein Zustand, kein Verschwinden', () async {

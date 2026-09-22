@@ -4728,6 +4728,28 @@
       }
     }
   },
+  "detailPulseCurveTitle": "Pulse curve",
+  "@detailPulseCurveTitle": {
+    "description": "Board 16 · offene Frage 1, gelöst am 22.09.2026 — Unterüberschrift über der Verlaufskurve, labelMicro in Versalien"
+  },
+  "detailPulseCurveA11y": "Pulse curve, from {min} to {max} bpm, over {count} of {total} minutes",
+  "@detailPulseCurveA11y": {
+    "description": "Board 16 · offene Frage 1, gelöst am 22.09.2026 — ein Semantics-Knoten statt einer Bildbeschreibung ohne Zahlen",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "detailHrLoading": "Heart rate is loading",
   "@detailHrLoading": {
     "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"

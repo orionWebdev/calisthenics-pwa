@@ -5107,6 +5107,14 @@ class AppL10nDe extends AppL10n {
   }
 
   @override
+  String get detailPulseCurveTitle => 'Pulsverlauf';
+
+  @override
+  String detailPulseCurveA11y(int min, int max, int count, int total) {
+    return 'Pulsverlauf, von $min bis $max bpm, über $count von $total Minuten';
+  }
+
+  @override
   String get detailHrLoading => 'Puls wird geladen';
 
   @override

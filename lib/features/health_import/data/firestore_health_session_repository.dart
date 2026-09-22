@@ -67,6 +67,10 @@ class FirestoreHealthSessionRepository implements HealthSessionRepository {
         if (session.pulse != null) ...{
           'pulse': session.pulse!.toWire(),
           'pulseWindowSeconds': session.pulse!.windowSeconds,
+          // Die Zeitachse dazu: bpm je Minute, nur wo gemessen wurde. Leer
+          // heisst „vor dem 22.09.2026 gelesen" — kein Feld, kein Wert.
+          if (session.pulse!.curveBpmByMinute.isNotEmpty)
+            'pulseCurve': session.pulse!.curveToWire(),
         },
         if (session.decidedAt != null)
           'decidedAt': Timestamp.fromDate(session.decidedAt!),
@@ -125,7 +129,8 @@ class FirestoreHealthSessionRepository implements HealthSessionRepository {
       maxHeartRate: (data['maxHeartRate'] as num?)?.round(),
       calories: (data['calories'] as num?)?.round(),
       distanceKm: (data['distanceKm'] as num?)?.toDouble(),
-      pulse: PulseProfile.fromWire(data['pulse'], data['pulseWindowSeconds']),
+      pulse: PulseProfile.fromWire(
+          data['pulse'], data['pulseWindowSeconds'], data['pulseCurve']),
       sessionId: data['sessionId'] as String?,
       decidedAt: decided is Timestamp ? decided.toDate() : null,
     );

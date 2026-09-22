@@ -132,6 +132,26 @@ PulseProfile detailPulse({int recordedMinutes = 52}) {
   );
 }
 
+/// Dieselbe Einheit wie [detailPulse], mit Zeitachse — Einheiten, die nach
+/// dem 22.09.2026 gelesen wurden. Eine Lücke von Minute 20 bis 29 zeigt die
+/// leere Spur mittendrin.
+PulseProfile detailPulseWithCurve() => PulseProfile(
+      secondsByBpm: {
+        100: 6 * 60 + 10,
+        120: 11 * 60 + 40,
+        140: 21 * 60 + 30,
+        160: 9 * 60 + 20,
+        175: 3 * 60 + 20,
+        62: 30,
+      },
+      windowSeconds: 52 * 60,
+      curveBpmByMinute: {
+        for (var m = 0; m <= 19; m++) m: 100 + m * 3,
+        // Lücke: die Uhr hat 20 bis 29 nichts gemessen.
+        for (var m = 30; m <= 51; m++) m: 175 - (m - 30) * 3,
+      },
+    );
+
 HealthSession detailRecord({PulseProfile? pulse}) => HealthSession.pending(
       MeasuredSession(
         id: 'hc-1',

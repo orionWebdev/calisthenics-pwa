@@ -19,21 +19,22 @@ class PulseSample {
 /// verliert nichts, was eine Zonenrechnung braucht. Es hat zudem höchstens
 /// ein paar Dutzend Einträge statt tausend Punkte — es passt in ein Dokument.
 ///
-/// Was es **nicht** trägt: die Zeitachse. Eine Pulskurve über die Einheit
-/// (Board 16, offene Frage 1) liesse sich daraus nicht zeichnen. Das ist
-/// bewusst: Sie ist ein eigener Block mit eigener Entscheidung.
+/// ## [curveBpmByMinute] — die Zeitachse (Board 16, offene Frage 1, gelöst
+/// am 22.09.2026)
 ///
-/// ## Was „aufgezeichnet" heisst
-///
-/// Jeder Messwert gilt bis zum nächsten, **höchstens [maxGapSeconds]** lang.
-/// Liegt mehr als eine Minute zwischen zwei Werten, hat die Uhr dort nichts
-/// gemessen, und die Lücke zählt nicht zur Aufzeichnung. Daraus entsteht der
-/// Nenner „aus 21 von 52 min Aufzeichnung": Er sagt, wie viel von der
-/// Einheit der Puls überhaupt beschreibt.
+/// Das Histogramm allein trägt keine Zeitachse — eine Pulskurve über die
+/// Einheit liesse sich daraus nicht zeichnen. Deshalb hält [fromSamples]
+/// zusätzlich einen **zeitgewichteten Minutenmittelwert**: bpm je Minute seit
+/// [PulseProfile]-Beginn, nur für Minuten mit tatsächlicher Messung. Eine
+/// Minute ohne Eintrag ist eine echte Lücke, nie interpoliert — dieselbe
+/// Regel wie bei jeder anderen Zahl in dieser App. Für Einheiten, die vor
+/// diesem Datum importiert wurden, bleibt die Karte leer: Ihre Rohdaten sind
+/// nicht mehr da, nur noch das Histogramm.
 class PulseProfile {
   const PulseProfile({
     required this.secondsByBpm,
     required this.windowSeconds,
+    this.curveBpmByMinute = const {},
   });
 
   /// Aus den Messwerten einer Einheit.
@@ -52,17 +53,29 @@ class PulseProfile {
     ]..sort((a, b) => a.at.compareTo(b.at));
 
     final seconds = <int, int>{};
+    final curveWeightedSum = <int, int>{};
+    final curveWeight = <int, int>{};
     for (var i = 0; i < inside.length; i++) {
       final until = i + 1 < inside.length ? inside[i + 1].at : end;
       var held = until.difference(inside[i].at).inSeconds;
       if (held > maxGapSeconds) held = maxGapSeconds;
       if (held <= 0) continue;
-      seconds.update(inside[i].bpm, (v) => v + held, ifAbsent: () => held);
+      final bpm = inside[i].bpm;
+      seconds.update(bpm, (v) => v + held, ifAbsent: () => held);
+
+      final minute = inside[i].at.difference(start).inSeconds ~/ 60;
+      curveWeightedSum.update(minute, (v) => v + bpm * held,
+          ifAbsent: () => bpm * held);
+      curveWeight.update(minute, (v) => v + held, ifAbsent: () => held);
     }
 
     return PulseProfile(
       secondsByBpm: seconds,
       windowSeconds: end.difference(start).inSeconds,
+      curveBpmByMinute: {
+        for (final entry in curveWeight.entries)
+          entry.key: (curveWeightedSum[entry.key]! / entry.value).round(),
+      },
     );
   }
 
@@ -74,6 +87,9 @@ class PulseProfile {
 
   /// Die Länge der Einheit — der Nenner, gegen den „aufgezeichnet" steht.
   final int windowSeconds;
+
+  /// bpm je Minute seit Beginn — nur Minuten mit Messung, siehe Klassenkopf.
+  final Map<int, int> curveBpmByMinute;
 
   bool get isEmpty => secondsByBpm.isEmpty;
 
@@ -109,7 +125,18 @@ class PulseProfile {
         for (final e in secondsByBpm.entries) '${e.key}': e.value,
       };
 
-  static PulseProfile? fromWire(Object? histogram, Object? windowSeconds) {
+  /// Für Firestore: Schlüssel sind Minuten seit Beginn als String, Werte bpm.
+  /// Leer, wenn keine Minute erfasst wurde — dann schreibt der Aufrufer das
+  /// Feld gar nicht erst.
+  Map<String, int> curveToWire() => {
+        for (final e in curveBpmByMinute.entries) '${e.key}': e.value,
+      };
+
+  static PulseProfile? fromWire(
+    Object? histogram,
+    Object? windowSeconds, [
+    Object? curve,
+  ]) {
     if (histogram is! Map) return null;
     final result = <int, int>{};
     for (final entry in histogram.entries) {
@@ -119,9 +146,21 @@ class PulseProfile {
       result[bpm] = seconds.round();
     }
     if (result.isEmpty) return null;
+
+    final curveResult = <int, int>{};
+    if (curve is Map) {
+      for (final entry in curve.entries) {
+        final minute = int.tryParse('${entry.key}');
+        final bpm = entry.value;
+        if (minute == null || minute < 0 || bpm is! num || bpm <= 0) continue;
+        curveResult[minute] = bpm.round();
+      }
+    }
+
     return PulseProfile(
       secondsByBpm: result,
       windowSeconds: windowSeconds is num ? windowSeconds.round() : 0,
+      curveBpmByMinute: curveResult,
     );
   }
 }

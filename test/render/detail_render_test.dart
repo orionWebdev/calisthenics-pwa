@@ -40,6 +40,8 @@ void main() {
         DetailHealth([detailRecord(pulse: detailPulse(recordedMinutes: 21))])),
     'c2_zonen_fehlen': _Case(detailMerged, detailSettings(withZones: false),
         DetailHealth([detailRecord()])),
+    'a5_pulsverlauf': _Case(detailMerged, detailSettings(),
+        DetailHealth([detailRecord(pulse: detailPulseWithCurve())])),
     'c4_laedt': _Case(
         detailMerged, detailSettings(), DetailHealth(const [], hangs: true)),
     'c5_fehler': _Case(

@@ -5099,6 +5099,14 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
+  String get detailPulseCurveTitle => 'Pulse curve';
+
+  @override
+  String detailPulseCurveA11y(int min, int max, int count, int total) {
+    return 'Pulse curve, from $min to $max bpm, over $count of $total minutes';
+  }
+
+  @override
   String get detailHrLoading => 'Heart rate is loading';
 
   @override

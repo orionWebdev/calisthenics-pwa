@@ -90,6 +90,28 @@ void main() {
       expect(profile.recordedSeconds, 90);
     });
 
+    test('die Zeitachse: bpm je Minute, zeitgewichtet', () {
+      final profile = PulseProfile.fromSamples(
+        [at(0, 0, 100), at(0, 30, 120), at(1, 0, 140)],
+        start: start,
+        end: start.add(const Duration(minutes: 1, seconds: 30)),
+      );
+
+      // Minute 0: 30 s bei 100, 30 s bei 120 — Mittel 110. Minute 1: 140.
+      expect(profile.curveBpmByMinute, {0: 110, 1: 140});
+    });
+
+    test('eine Minute ohne Messung bleibt eine Lücke, nie interpoliert', () {
+      final profile = PulseProfile.fromSamples(
+        [at(0, 0, 120), at(5, 0, 130)],
+        start: start,
+        end: end,
+      );
+
+      expect(profile.curveBpmByMinute, {0: 120, 5: 130});
+      expect(profile.curveBpmByMinute.containsKey(2), isFalse);
+    });
+
     test('eine Lücke über eine Minute zählt nicht zur Aufzeichnung', () {
       // Die Uhr hat fünf Minuten nichts gemessen. Der Wert davor gilt eine
       // Minute lang — mehr behauptet niemand.
@@ -150,10 +172,26 @@ void main() {
       final back = PulseProfile.fromWire(
         profile.toWire(),
         profile.windowSeconds,
+        profile.curveToWire(),
       )!;
 
       expect(back.secondsByBpm, profile.secondsByBpm);
       expect(back.windowSeconds, profile.windowSeconds);
+      expect(back.curveBpmByMinute, profile.curveBpmByMinute);
+    });
+
+    test(
+        'ohne Kurvenfeld bleibt die Zeitachse leer — Einheiten vor dem '
+        '22.09.2026', () {
+      final profile = PulseProfile.fromSamples(
+        [at(0, 0, 100), at(0, 30, 140)],
+        start: start,
+        end: start.add(const Duration(minutes: 1)),
+      );
+      final back =
+          PulseProfile.fromWire(profile.toWire(), profile.windowSeconds)!;
+
+      expect(back.curveBpmByMinute, isEmpty);
     });
 
     test('ein unlesbares Dokument ist kein Profil', () {

@@ -11,6 +11,7 @@ import '../../../health_import/application/health_import_providers.dart';
 import '../../../pulse/application/pulse_providers.dart';
 import '../../../pulse/domain/heart_rate_zones.dart';
 import '../../../pulse/presentation/screens/heart_rate_zones_screen.dart';
+import '../../../pulse/presentation/widgets/pulse_curve_chart.dart';
 import '../../../pulse/presentation/widgets/zone_bars.dart';
 import '../../domain/session_detail.dart';
 import '../session_ui.dart';
@@ -166,6 +167,26 @@ class _Data extends ConsumerWidget {
               Text(basis, style: AtemType.meta.of(context)),
             ],
           ],
+          // Unter zwei Minutenwerten zeichnet der Baustein nichts — dann
+          // bleibt dieser Teil einfach weg, kein leerer Titel davor.
+          if (pulse.curveBpmByMinute.length >= 2) ...[
+            const SizedBox(height: 14),
+            Text(l10n.detailPulseCurveTitle.toUpperCase(),
+                style: AtemType.labelMicro
+                    .of(context)
+                    .copyWith(color: AtemColors.textTertiary)),
+            const SizedBox(height: 8),
+            PulseCurveChart(
+              bpmByMinute: pulse.curveBpmByMinute,
+              totalMinutes: total,
+              semanticLabel: l10n.detailPulseCurveA11y(
+                pulse.curveBpmByMinute.values.reduce((a, b) => a < b ? a : b),
+                pulse.curveBpmByMinute.values.reduce((a, b) => a > b ? a : b),
+                pulse.curveBpmByMinute.length,
+                total,
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -266,8 +287,14 @@ class _Values extends StatelessWidget {
 /// Zonen leer blieben.
 ///
 /// Eine Zone mit 0:00 verschwindet nicht: Eine leere Spur zeigt, dass sie
-/// gemessen und nicht erreicht wurde. **Zwei** leere Zonen fasst eine einzige
-/// Zeile zusammen — die einzige Ausnahme, weil 0:00 keine Länge hat.
+/// gemessen und nicht erreicht wurde. **Zwei** leere Zonen unter Zone 4
+/// fasst eine einzige Zeile zusammen — die einzige Ausnahme, weil 0:00 keine
+/// Länge hat.
+///
+/// Zone 5 nimmt daran nie teil: Sie bekommt immer eine eigene Zeile unterhalb
+/// von Zone 4, auch bei 0:00 — sonst verschwindet ihre eigene Farbe in der
+/// einer anderen Zone, wenn beide leer sind. „Zone 5 bekommt ihre eigene
+/// Auswertung" (`AtemColors`, Board 16, auf Wunsch vom 21.09.2026).
 class _Zones extends StatelessWidget {
   const _Zones({
     required this.zones,
@@ -283,14 +310,15 @@ class _Zones extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const lastMergeable = HeartRateZones.zoneCount - 1;
     final empty = [
-      for (var z = 1; z <= HeartRateZones.zoneCount; z++)
+      for (var z = 1; z <= lastMergeable; z++)
         if (distribution.secondsPerZone[z - 1] == 0) z,
     ];
     final merge = empty.length >= 2;
 
     final rows = <Widget>[
-      for (var z = 1; z <= HeartRateZones.zoneCount; z++)
+      for (var z = 1; z <= lastMergeable; z++)
         if (!(merge && empty.contains(z)))
           _ZoneRow(
             zones: zones,
@@ -307,6 +335,13 @@ class _Zones extends StatelessWidget {
           fraction: 0,
           totalMinutes: totalMinutes,
         ),
+      _ZoneRow(
+        zones: zones,
+        zoneNumbers: const [HeartRateZones.zoneCount],
+        seconds: distribution.secondsPerZone[HeartRateZones.zoneCount - 1],
+        fraction: distribution.shareOfRecorded(HeartRateZones.zoneCount),
+        totalMinutes: totalMinutes,
+      ),
     ];
 
     return Semantics(

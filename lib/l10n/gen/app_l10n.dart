@@ -7529,6 +7529,18 @@ abstract class AppL10n {
   /// **'Aus {min} von {total} min Aufzeichnung'**
   String detailHrBasisNoZones(int min, int total);
 
+  /// Board 16 · offene Frage 1, gelöst am 22.09.2026 — Unterüberschrift über der Verlaufskurve, labelMicro in Versalien
+  ///
+  /// In de, this message translates to:
+  /// **'Pulsverlauf'**
+  String get detailPulseCurveTitle;
+
+  /// Board 16 · offene Frage 1, gelöst am 22.09.2026 — ein Semantics-Knoten statt einer Bildbeschreibung ohne Zahlen
+  ///
+  /// In de, this message translates to:
+  /// **'Pulsverlauf, von {min} bis {max} bpm, über {count} von {total} Minuten'**
+  String detailPulseCurveA11y(int min, int max, int count, int total);
+
   /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
   ///
   /// In de, this message translates to:

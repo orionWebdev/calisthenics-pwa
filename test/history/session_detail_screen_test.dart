@@ -191,6 +191,29 @@ void main() {
         expect(find.textContaining(l10n.detailZoneShort(z)), findsWidgets);
       }
       expect(find.textContaining('deine Zonen vom 12. Sept.'), findsOneWidget);
+      // Ohne Zeitachse (Einheiten vor dem 22.09.2026) bleibt der
+      // Pulsverlauf weg — kein leerer Titel ohne Kurve.
+      expect(find.text(l10n.detailPulseCurveTitle.toUpperCase()), findsNothing);
+    });
+
+    testWidgets('Pulsverlauf: eigene Zeile, ein Semantics-Knoten mit Lücke',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      final l10n = await _pump(
+        tester,
+        detailMerged,
+        health: DetailHealth([detailRecord(pulse: detailPulseWithCurve())]),
+      );
+
+      expect(
+          find.text(l10n.detailPulseCurveTitle.toUpperCase()), findsOneWidget);
+      // 42 gemessene von 52 Minuten, 100 bis 175 bpm — die Lücke von Minute
+      // 20 bis 29 zählt nicht mit, ist aber im Bild als Bruch sichtbar.
+      expect(
+        find.bySemanticsLabel(l10n.detailPulseCurveA11y(100, 175, 42, 52)),
+        findsOneWidget,
+      );
+      handle.dispose();
     });
 
     testWidgets('zu wenig Daten: der Satz steht vor den Balken',
@@ -208,9 +231,11 @@ void main() {
       final firstZone = find.textContaining('${l10n.detailZoneShort(1)} ·');
       expect(tester.getTopLeft(thin).dy,
           lessThan(tester.getTopLeft(firstZone.first).dy));
-      // Eine Zone ohne Zeit bleibt sichtbar — zwei leere fasst eine Zeile.
-      expect(find.text('0:00'), findsOneWidget,
-          reason: 'zwei leere Zonen werden zu einer Zeile');
+      // Zone 1 und Zone 5 bleiben leer, sind aber nicht benachbart — sie
+      // fassen sich nicht zusammen. Zone 5 bekommt immer ihre eigene Zeile.
+      expect(find.text('0:00'), findsNWidgets(2),
+          reason: 'nicht benachbarte leere Zonen bleiben getrennt, '
+              'Zone 5 fasst nie zusammen');
     });
 
     testWidgets('Zonen fehlen: nur „Puls", ein Weg — kein Aufruf',
