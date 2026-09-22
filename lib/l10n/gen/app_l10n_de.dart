@@ -5638,4 +5638,15 @@ class AppL10nDe extends AppL10n {
   String detailZonesSetOn(Object date) {
     return 'Deine Zonen vom $date';
   }
+
+  @override
+  String get pulseCurveResolutionShortMinute => 'je Minute';
+
+  @override
+  String get pulseCurveResolutionShortTen => 'je 10 Sekunden';
+
+  @override
+  String pulseCurveResolutionMixed(String first, String time, String second) {
+    return '$first, ab $time $second';
+  }
 }

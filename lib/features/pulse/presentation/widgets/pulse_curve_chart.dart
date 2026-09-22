@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/theme.dart';
@@ -87,6 +88,7 @@ class PulseCurveChart extends StatefulWidget {
     required this.resolution,
     this.zones,
     this.gapSeconds = 60,
+    this.changeSlot,
     this.height = 96,
   });
 
@@ -118,6 +120,13 @@ class PulseCurveChart extends StatefulWidget {
   /// minütlich misst, füllt im Zehn-Sekunden-Raster jeden sechsten Schlitz,
   /// und ihre Kurve zerfiele sonst in lauter Einzelpunkte.
   final int gapSeconds;
+
+  /// Der Schlitz, ab dem anders dicht gespeichert wurde — oder `null`.
+  ///
+  /// Dort steht eine gestrichelte Senkrechte (Board 16, Nachtrag). Sie ist
+  /// **kein** Zeichen für eine Lücke: Über eine Lücke läuft die Linie nicht,
+  /// durch die Marke läuft sie durch — daran sind beide zu unterscheiden.
+  final int? changeSlot;
 
   /// Wie dicht gespeichert wurde, als Wort — „je Minute ein Wert".
   ///
@@ -262,6 +271,7 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
                       zones: widget.zones,
                       slotSeconds: widget.slotSeconds,
                       gapSeconds: widget.gapSeconds,
+                      changeSlot: widget.changeSlot,
                       progress: progress,
                       marked: _marked,
                     ),
@@ -410,6 +420,7 @@ class _PulseCurvePainter extends CustomPainter {
     required this.zones,
     required this.slotSeconds,
     required this.gapSeconds,
+    required this.changeSlot,
     required this.progress,
     required this.marked,
   });
@@ -419,6 +430,7 @@ class _PulseCurvePainter extends CustomPainter {
   final HeartRateZones? zones;
   final int slotSeconds;
   final int gapSeconds;
+  final int? changeSlot;
   final double progress;
   final int? marked;
 
@@ -578,6 +590,24 @@ class _PulseCurvePainter extends CustomPainter {
       );
     }
 
+    // ---- Die Wechselmarke: gestrichelt, neutral, über die ganze Plothöhe.
+    // Sie liegt **innerhalb** des Laufs, damit sie mit der Front erscheint
+    // und nicht vorher aufblitzt.
+    final change = changeSlot;
+    if (change != null && change > 0 && change <= lastSlot) {
+      final x = xFor(change);
+      const dash = 3.0;
+      for (var y = top; y < bottom; y += dash * 2) {
+        canvas.drawLine(
+          Offset(x, y),
+          Offset(x, math.min(y + dash, bottom)),
+          Paint()
+            ..color = AtemColors.border
+            ..strokeWidth = 1,
+        );
+      }
+    }
+
     canvas.restore();
 
     if (progress < 1) return;
@@ -628,6 +658,7 @@ class _PulseCurvePainter extends CustomPainter {
       old.zones != zones ||
       old.slotSeconds != slotSeconds ||
       old.gapSeconds != gapSeconds ||
+      old.changeSlot != changeSlot ||
       old.progress != progress ||
       old.marked != marked;
 }

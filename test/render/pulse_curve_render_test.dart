@@ -46,6 +46,19 @@ void main() {
     'kurve_abgelesen': (intervals, zones, 1.0, 0.33, 60),
     // Die feine Ablage — der Grund für den Schemawechsel.
     'kurve_10s': (fine, zones, 1.0, null, 10),
+    // Ein Wechsel mitten in der Einheit: erst minütlich, ab 12:00 alle zehn
+    // Sekunden. Die gestrichelte Marke steht dort, und die Linie läuft
+    // durch sie hindurch — anders als über eine Lücke.
+    'kurve_wechsel': (
+      {
+        for (var m = 0; m < 12; m++) m * 6: 100 + m * 3,
+        for (var s = 72; s < 160; s++) s: 136 + (s % 12) * 3,
+      },
+      zones,
+      1.0,
+      null,
+      10,
+    ),
     // Minütlich gemessen, im feinen Raster abgelegt: jeder sechste Schlitz.
     // Hingen die Abschnitte an der Schlitznachbarschaft, wäre hier nichts
     // zu sehen ausser Punkten.
@@ -92,6 +105,7 @@ void main() {
                     resolution: slot >= 60
                         ? 'je Minute ein Wert'
                         : 'je 10 Sekunden ein Wert',
+                    changeSlot: entry.key == 'kurve_wechsel' ? 72 : null,
                     height: 120,
                     semanticLabel: 'Pulsverlauf',
                   ),

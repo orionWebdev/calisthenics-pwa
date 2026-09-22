@@ -8149,6 +8149,24 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Deine Zonen vom {date}'**
   String detailZonesSetOn(Object date);
+
+  /// Board 16 Nachtrag · Kurzform für die gemischte Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'je Minute'**
+  String get pulseCurveResolutionShortMinute;
+
+  /// Board 16 Nachtrag · Kurzform für die gemischte Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'je 10 Sekunden'**
+  String get pulseCurveResolutionShortTen;
+
+  /// Board 16 Nachtrag · detail.hr.resolution.mixed — die Wechselmarke steht als Wort, nicht allein als Strich
+  ///
+  /// In de, this message translates to:
+  /// **'{first}, ab {time} {second}'**
+  String pulseCurveResolutionMixed(String first, String time, String second);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

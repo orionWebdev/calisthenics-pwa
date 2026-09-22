@@ -156,6 +156,66 @@ class PulseProfile {
     return [...sections, current];
   }
 
+  /// Der Schlitz, **ab dem anders dicht gespeichert wurde** — oder `null`.
+  ///
+  /// ## Die Regel (Board 16, Nachtrag, „Wechselmarke · Regel")
+  ///
+  /// Ein Wechsel liegt nur vor, wenn in **einer** Einheit zwei verschiedene
+  /// gespeicherte Auflösungen liegen. Drei Bedingungen folgen daraus:
+  ///
+  /// * Er wird **innerhalb eines Abschnitts** gesucht. Über eine Lücke hinweg
+  ///   gibt es keinen Wechsel — dort läuft die Linie nicht durch, und die
+  ///   Marke behauptete einen Zusammenhang, den es nicht gibt.
+  /// * **Ungleiche Abstände sind zuerst Lücken, nicht Wechsel.** Ein
+  ///   einzelner grösserer Abstand zwischen sonst dichten Werten ist eine
+  ///   Messpause, kein anderes Raster.
+  /// * Eine gröbere Strecke braucht deshalb **mindestens zwei Abstände**
+  ///   derselben Grösse hintereinander. Darunter ist sie eine Lücke.
+  ///
+  /// Zurückgegeben wird der erste Schlitz der **zweiten** Dichte — die
+  /// Stelle, an der die Marke steht.
+  ///
+  /// **Noch nie an echten Daten gesehen.** Eine Uhr müsste mitten in der
+  /// Einheit ihre Messrate ändern. Möglich ist es (Batteriesparen), und die
+  /// Regel steht im Board; geraten wird hier nichts.
+  int? get resolutionChangeSlot {
+    for (final section in curveSections) {
+      if (section.length < 4) continue;
+      final gaps = [
+        for (var i = 0; i < section.length - 1; i++)
+          section[i + 1] - section[i],
+      ];
+
+      // Läufe gleicher Abstände: (Abstand, erster Index, Länge).
+      final runs = <(int, int, int)>[];
+      var i = 0;
+      while (i < gaps.length) {
+        var j = i;
+        while (j + 1 < gaps.length && gaps[j + 1] == gaps[i]) {
+          j++;
+        }
+        runs.add((gaps[i], i, j - i + 1));
+        i = j + 1;
+      }
+
+      // **Ein einzelner Abstand ist keine Auflösung.** Erst ab zwei gleichen
+      // hintereinander ist eine Strecke ein Raster; darunter bleibt sie eine
+      // Messpause zwischen zwei Werten derselben Dichte.
+      final solid = [
+        for (final run in runs)
+          if (run.$3 >= 2) run,
+      ];
+
+      for (var k = 1; k < solid.length; k++) {
+        if (solid[k].$1 == solid[k - 1].$1) continue;
+        // Der erste Wert, den es **nur wegen** der neuen Dichte gibt: Der
+        // Schlitz davor liegt noch auf dem alten Raster.
+        return section[solid[k].$2 + 1];
+      }
+    }
+    return null;
+  }
+
   /// Der typische Abstand zwischen zwei gespeicherten Werten, in Sekunden.
   ///
   /// **Er beschreibt, was dasteht — nicht, wie fein das Raster ist.** Eine

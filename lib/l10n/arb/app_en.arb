@@ -5554,5 +5554,28 @@
   "detailZonesSetOn": "Your zones from {date}",
   "@detailZonesSetOn": {
     "description": "Board 16 Nachtrag · der Zonenstichtag zog aus der Grundlage ins ⓘ, weil die Zeile nur drei Glieder trägt. **Ohne Schlusspunkt**: Ein abgekürztes Datum endet selbst auf einen Punkt („12. Sept.\"), und zwei nebeneinander sind ein sichtbarer Fehler."
+  },
+  "pulseCurveResolutionShortMinute": "per minute",
+  "@pulseCurveResolutionShortMinute": {
+    "description": "Board 16 Nachtrag · Kurzform für die gemischte Zeile"
+  },
+  "pulseCurveResolutionShortTen": "per 10 seconds",
+  "@pulseCurveResolutionShortTen": {
+    "description": "Board 16 Nachtrag · Kurzform für die gemischte Zeile"
+  },
+  "pulseCurveResolutionMixed": "{first}, from {time} {second}",
+  "@pulseCurveResolutionMixed": {
+    "description": "Board 16 Nachtrag · detail.hr.resolution.mixed — die Wechselmarke steht als Wort, nicht allein als Strich",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
   }
 }

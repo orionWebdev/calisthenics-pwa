@@ -94,9 +94,24 @@ class _Data extends ConsumerWidget {
     final interval = pulse.slotSeconds >= 60
         ? l10n.pulseCurveIntervalMinute
         : l10n.pulseCurveIntervalTen;
-    final resolution = (pulse.curveStepSeconds ?? pulse.slotSeconds) >= 60
-        ? l10n.pulseCurveResolutionMinute
-        : l10n.pulseCurveResolutionTen;
+    // **Die Auflösung als Wort** — und bei einem Wechsel beide, mit der
+    // Stelle dazwischen. Die gestrichelte Marke im Plot allein trüge die
+    // Auskunft nicht; Farbe und Strich sind nie alleinige Statusträger.
+    final change = pulse.resolutionChangeSlot;
+    String shortWord(int seconds) => seconds >= 60
+        ? l10n.pulseCurveResolutionShortMinute
+        : l10n.pulseCurveResolutionShortTen;
+
+    final step = pulse.curveStepSeconds ?? pulse.slotSeconds;
+    final resolution = change == null
+        ? (step >= 60
+            ? l10n.pulseCurveResolutionMinute
+            : l10n.pulseCurveResolutionTen)
+        : l10n.pulseCurveResolutionMixed(
+            shortWord(_stepBefore(pulse, change)),
+            _clock(change * pulse.slotSeconds),
+            shortWord(_stepAfter(pulse, change)),
+          );
 
     final basis = pulse.curve.length < 2
         ? l10n.detailHrBasisNoZones(minutes, total)
@@ -218,6 +233,7 @@ class _Data extends ConsumerWidget {
               // Raster ist. Eine Uhr, die nur jede Minute misst, füllt auch
               // im Zehn-Sekunden-Raster nur jeden sechsten Schlitz.
               resolution: resolution,
+              changeSlot: change,
               semanticLabel: l10n.pulseCurveA11yCurve(
                 total,
                 minutes,
@@ -595,4 +611,22 @@ class _Error extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// „12:00" — eine Stelle in der Einheit, als Uhrzeit seit dem Beginn.
+String _clock(int seconds) =>
+    '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
+
+/// Der Abstand zweier gespeicherter Werte **vor** dem Wechsel, in Sekunden.
+int _stepBefore(PulseProfile pulse, int changeSlot) {
+  final before = pulse.curve.keys.where((s) => s < changeSlot).toList()..sort();
+  if (before.length < 2) return pulse.slotSeconds;
+  return (before.last - before[before.length - 2]) * pulse.slotSeconds;
+}
+
+/// Derselbe Abstand **nach** dem Wechsel.
+int _stepAfter(PulseProfile pulse, int changeSlot) {
+  final after = pulse.curve.keys.where((s) => s >= changeSlot).toList()..sort();
+  if (after.length < 2) return pulse.slotSeconds;
+  return (after[1] - after.first) * pulse.slotSeconds;
 }
