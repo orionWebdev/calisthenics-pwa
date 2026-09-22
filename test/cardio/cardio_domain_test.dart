@@ -1,4 +1,5 @@
 import 'package:atem/features/cardio/domain/cardio_intensity.dart';
+import 'package:atem/features/pulse/domain/heart_rate_zones.dart';
 import 'package:atem/features/cardio/domain/distance_distribution.dart';
 import 'package:atem/features/cardio/domain/iso_week.dart';
 import 'package:atem/features/cardio/domain/pace_series.dart';
@@ -182,23 +183,32 @@ void main() {
         run('r$i', DateTime(2026, 7, 1 + i * 4), km: 10, minutes: 55),
     ];
 
-    test('Stufe 1 nur mit Ø- und Maximalpuls', () {
-      final withBoth = run('h', ref, km: 10, minutes: 50, avgHr: 154, maxHr: 188);
-      final i = CardioIntensity.of(withBoth, [...base, withBoth])!;
-      expect(i.level, IntensityLevel.heartRate);
-      expect(i.percentOfMax, 82);
-      expect(i.zone, 3);
+    // Dieselben fünf Grenzen wie im Pulsblock und in „Zone 5 je Woche".
+    final zones = HeartRateZones.tryFrom(const [120, 140, 160, 175])!;
 
-      final onlyAvg = run('a', ref, km: 10, avgHr: 154, rpe: 4);
-      expect(CardioIntensity.of(onlyAvg, [...base, onlyAvg])!.level,
-          IntensityLevel.rpe);
+    test('Stufe 1 braucht Ø-Puls und festgelegte Zonen', () {
+      final s = run('h', ref, km: 10, minutes: 50, avgHr: 154, maxHr: 188);
+      final i = CardioIntensity.of(s, [...base, s], zones: zones)!;
+      expect(i.level, IntensityLevel.heartRate);
+      expect(i.zone, 3); // 154 liegt zwischen 140 und 160
     });
 
-    test('der Maximalpuls darf aus dem Profil kommen — nie aus dem Alter', () {
+    test('ohne festgelegte Zonen fällt die Kaskade auf Stufe 2', () {
+      // Board 16, Entscheidung 13: ATEM rechnet keine Zonen, solange die
+      // Grenzen fehlen, und schlägt auch keine still vor. Eine Prozenttabelle
+      // wäre genau so ein stiller Vorschlag — sie ist am 22.09.2026 entfallen.
+      final s = run('a', ref, km: 10, avgHr: 154, maxHr: 188, rpe: 4);
+      expect(CardioIntensity.of(s, [...base, s])!.level, IntensityLevel.rpe);
+    });
+
+    test('der Maximalpuls entscheidet die Stufe nicht mehr mit', () {
+      // Früher brauchte Stufe 1 **beide** Pulswerte. Der Ø-Puls genügt
+      // jetzt — das Maximum steht weiter als Rohwert darunter.
       final s = run('a', ref, km: 10, avgHr: 150);
       expect(CardioIntensity.of(s, [...base, s])!.level, IntensityLevel.pace);
-      expect(CardioIntensity.of(s, [...base, s], profileMaxHr: 190)!.level,
-          IntensityLevel.heartRate);
+      final withZones = CardioIntensity.of(s, [...base, s], zones: zones)!;
+      expect(withZones.level, IntensityLevel.heartRate);
+      expect(withZones.maxHr, isNull);
     });
 
     test('Stufe 3 braucht drei Einheiten derselben Aktivität', () {
@@ -220,12 +230,17 @@ void main() {
       expect(i.basisCount, 6);
     });
 
-    test('Zonengrenzen', () {
-      expect(CardioIntensity.zoneFor(60), 1);
-      expect(CardioIntensity.zoneFor(70), 2);
-      expect(CardioIntensity.zoneFor(82), 3);
-      expect(CardioIntensity.zoneFor(90), 4);
-      expect(CardioIntensity.zoneFor(95), 5);
+    test('die Zone kommt aus den festgelegten Grenzen, nicht aus Prozent', () {
+      CardioIntensity at(int bpm) {
+        final s = run('z$bpm', ref, km: 10, minutes: 50, avgHr: bpm);
+        return CardioIntensity.of(s, [...base, s], zones: zones)!;
+      }
+
+      expect(at(110).zone, 1); // Zone 1 ist nach unten offen
+      expect(at(130).zone, 2);
+      expect(at(154).zone, 3);
+      expect(at(168).zone, 4);
+      expect(at(180).zone, 5);
     });
   });
 

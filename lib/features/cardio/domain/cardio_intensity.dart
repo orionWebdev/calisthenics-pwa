@@ -1,9 +1,10 @@
 import '../../history/domain/training_session.dart';
+import '../../pulse/domain/heart_rate_zones.dart';
 import 'pace_series.dart';
 
 /// Welche Stufe der Kaskade urteilt.
 enum IntensityLevel {
-  /// Ø Herzfrequenz in Prozent vom Maximalpuls.
+  /// Ø Herzfrequenz, eingeordnet in die **festgelegten** Zonen.
   heartRate,
 
   /// Die eigene Angabe, 1 bis 5.
@@ -27,8 +28,25 @@ enum IntensityLevel {
 ///
 /// Der Maximalpuls kommt aus der Einheit oder aus dem Profil — nie aus „220
 /// minus Alter". Das wäre eine erfundene Grundlage für den wichtigsten Wert
-/// des Kastens (Sektion K, Punkt 3). Ohne Maximalpuls fällt die Kaskade auf
-/// Stufe 2.
+/// des Kastens (Sektion K, Punkt 3).
+///
+/// ## Ein Zonensystem, nicht zwei (seit 22.09.2026)
+///
+/// Stufe 1 rechnete bis dahin `Ø / Max` in Prozent und ordnete das Ergebnis
+/// einer eigenen Tabelle zu (`[0, 70, 80, 87, 93]`). Das war ein **zweites**
+/// Zonensystem neben den fünf Grenzen, die der Nutzer in den Einstellungen
+/// selbst setzt — zwei Antworten auf dieselbe Frage, je nachdem, welcher
+/// Bildschirm gerade fragt.
+///
+/// Es widersprach ausserdem Board 16, Entscheidung 13: „Ohne Grenzen keine
+/// Verteilung. ATEM rechnet keine, solange sie fehlen, und schlägt auch keine
+/// still vor." Eine Prozenttabelle **ist** ein stiller Vorschlag.
+///
+/// Stufe 1 fragt jetzt [HeartRateZones.zoneOf] mit dem Ø-Puls. Fehlen die
+/// Grenzen, fällt die Kaskade auf Stufe 2 — wie sie es ohne Maximalpuls schon
+/// immer tat. Der Prozentwert entfällt ersatzlos: Er war ein Anteil am
+/// Maximum **dieser** Einheit, nicht an HFmax, und damit ohnehin schwer zu
+/// lesen.
 class CardioIntensity {
   const CardioIntensity({
     required this.level,
@@ -39,7 +57,6 @@ class CardioIntensity {
     required this.usesSpeed,
     required this.basisCount,
     this.zone,
-    this.percentOfMax,
     this.aboveAverage,
   });
 
@@ -56,34 +73,21 @@ class CardioIntensity {
   /// Wie viele Einheiten derselben Aktivität den Schnitt bilden.
   final int basisCount;
 
-  /// Stufe 1: Zone 1 bis 5.
+  /// Stufe 1: Zone 1 bis 5 — die **festgelegten** Zonen, dieselben wie im
+  /// Pulsblock und in „Zone 5 je Woche".
   final int? zone;
-  final int? percentOfMax;
 
   /// Stufe 3: über dem eigenen Schnitt? `null` bei Gleichstand.
   final bool? aboveAverage;
-
-  /// Zonengrenzen in Prozent vom Maximalpuls — untere Kante je Zone.
-  ///
-  /// Zone 3 beginnt bei 80 %: Das Board nennt 82 % als „Zone 3 · schwellig".
-  static const zoneFloors = <int>[0, 70, 80, 87, 93];
-
-  static int zoneFor(int percent) {
-    var zone = 1;
-    for (var i = 1; i < zoneFloors.length; i++) {
-      if (percent >= zoneFloors[i]) zone = i + 1;
-    }
-    return zone;
-  }
 
   /// `null` heisst: kein Intensitätskasten.
   static CardioIntensity? of(
     CardioSession session,
     List<TrainingSession> sessions, {
-    int? profileMaxHr,
+    HeartRateZones? zones,
   }) {
     final series = PaceSeries.forActivity(sessions, session.activity);
-    final maxHr = session.maxHr ?? profileMaxHr;
+    final maxHr = session.maxHr;
     final avgHr = session.avgHr;
     final tempo = session.tempo;
 
@@ -96,10 +100,9 @@ class CardioIntensity {
       basisCount: series.count,
     );
 
-    // Regel 1: beide Pulswerte, und das Maximum muss über dem Mittel liegen —
-    // sonst wäre der Prozentwert eine Behauptung über einen Tippfehler.
-    if (avgHr != null && maxHr != null && maxHr > 0 && avgHr <= maxHr) {
-      final percent = (avgHr / maxHr * 100).round();
+    // Regel 1: Ø-Puls und festgelegte Zonen. Der Maximalpuls der Einheit
+    // wird nicht mehr gebraucht — er steht weiter als Rohwert darunter.
+    if (avgHr != null && avgHr > 0 && zones != null) {
       return CardioIntensity(
         level: IntensityLevel.heartRate,
         avgHr: base.avgHr,
@@ -108,8 +111,7 @@ class CardioIntensity {
         tempoValue: base.tempoValue,
         usesSpeed: base.usesSpeed,
         basisCount: base.basisCount,
-        zone: zoneFor(percent),
-        percentOfMax: percent,
+        zone: zones.zoneOf(avgHr),
       );
     }
 

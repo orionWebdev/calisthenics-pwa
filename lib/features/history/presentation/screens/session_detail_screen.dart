@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
-import '../../../cardio/application/cardio_providers.dart';
+import '../../../pulse/application/pulse_providers.dart';
 import '../../../cardio/domain/cardio_intensity.dart';
 import '../../../cardio/presentation/widgets/intensity_box.dart';
 import '../../../health_import/application/health_import_providers.dart';
@@ -177,7 +177,7 @@ class SessionDetailScreen extends ConsumerWidget {
   }) {
     final intensity = live is CardioSession && !hasWatchPulse && load > 0
         ? CardioIntensity.of(live, sessions,
-            profileMaxHr: ref.watch(profileMaxHrProvider))
+            zones: ref.watch(heartRateZonesProvider))
         : null;
 
     return [

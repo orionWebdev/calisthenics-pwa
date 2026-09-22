@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../history/application/history_providers.dart';
-import '../../settings/application/settings_providers.dart';
 import '../../history/domain/training_session.dart';
 import '../data/cardio_live_store.dart';
 import '../domain/distance_distribution.dart';
@@ -32,16 +31,6 @@ final paceSeriesProvider =
 
 /// Der Maximalpuls aus dem Profil — was jemand **selbst eingetragen** hat.
 ///
-/// Board 11, Sektion K: Stufe 1 der Kaskade führt nur mit gemessenem
-/// Maximalpuls aus der Einheit oder aus dem Profil, nie aus einer Altersformel.
-/// Der Haken stand bis zum 21.09.2026 leer; seitdem füllt ihn das Feld aus
-/// den Herzfrequenz-Einstellungen (Board 16, D), ohne dass ein Bildschirm neu
-/// gebaut werden musste. `null`, solange niemand einen Wert eingetragen hat —
-/// geschätzt wird nie.
-final profileMaxHrProvider = Provider<int?>(
-  (ref) => ref.watch(settingsProvider).value?.heartRate.hrMax,
-);
-
 final cardioLiveStoreProvider =
     Provider<CardioLiveStore>((ref) => const CardioLiveStore());
 

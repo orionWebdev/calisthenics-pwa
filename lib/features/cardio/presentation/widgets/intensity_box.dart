@@ -57,11 +57,10 @@ class IntensityBox extends StatelessWidget {
     final strong = i.level == IntensityLevel.heartRate;
     final neutral = i.level == IntensityLevel.pace;
 
-    final hrValue = i.avgHr == null
-        ? null
-        : i.percentOfMax == null
-            ? '${i.avgHr} bpm'
-            : '${i.avgHr} bpm · ${i.percentOfMax} % max';
+    // Nur noch der Wert. Der Prozentanteil am Maximum dieser Einheit ist mit
+    // dem zweiten Zonensystem entfallen (22.09.2026); die Einordnung macht
+    // die Zone darüber, aus den festgelegten Grenzen.
+    final hrValue = i.avgHr == null ? null : '${i.avgHr} ${l10n.detailUnitBpm}';
     final rpeValue = i.rpe == null ? null : l10n.intensityRpeValue(i.rpe!);
     final tempoValue = i.tempoValue == null
         ? null
