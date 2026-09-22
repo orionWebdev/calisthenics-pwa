@@ -11,6 +11,7 @@ import '../../../../l10n/gen/app_l10n.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
+import '../../../pulse/presentation/widgets/zone_five_card.dart';
 import '../../../strength/presentation/widgets/tab_header.dart';
 import '../../application/cardio_providers.dart';
 import '../../domain/iso_week.dart';
@@ -435,7 +436,7 @@ class _WeekTile extends StatelessWidget {
   }
 }
 
-/// Segment „Auswertung": Wochenstreifen, Verteilung, Tempo, Perzentil.
+/// Segment „Auswertung": Wochenstreifen, Verteilung, Tempo, Perzentil, Zone 5.
 class _Analysis extends ConsumerStatefulWidget {
   const _Analysis({required this.sessions});
 
@@ -455,6 +456,8 @@ class _AnalysisState extends ConsumerState<_Analysis> {
     final weekly = ref.watch(weeklyDistanceProvider);
     final distribution = ref.watch(distanceDistributionProvider);
     final activities = PaceSeries.activitiesByCount(widget.sessions);
+    final reference = ref.watch(historyReferenceProvider);
+    final allSessions = ref.watch(sessionsProvider).value ?? const [];
 
     // Die häufigste Aktivität voran — beim ersten Öffnen ist sie gewählt.
     if (!_activitySet && activities.isNotEmpty) {
@@ -530,7 +533,24 @@ class _AnalysisState extends ConsumerState<_Analysis> {
           ),
           const SizedBox(height: 12),
           _PaceBlock(series: series),
+          const SizedBox(height: 24),
         ],
+
+        // ---- Zone 5 je Woche. Hierher verschoben aus der Kraft-Auswertung
+        // (`b5a6665`): Die Zonenauswertung gehört in den Cardio-Teil.
+        //
+        // **Zuletzt, nicht zuerst.** Der Block rendert immer — auf
+        // Auswertungsbildschirmen zeigt er unter seiner Schwelle Umriss und
+        // Bedingung. Weiter oben eröffnete er den Bildschirm mit „GESPERRT",
+        // sobald die Wochenkilometer noch unter ihrer eigenen Schwelle lagen
+        // (am Render gesehen). Was gemessen ist, steht vorn; was noch
+        // aussteht, danach.
+        //
+        // **Alle** Einheiten als Nenner, nicht nur die Cardio-Einheiten: So
+        // verlangt es `ZoneFiveWeeks.compute`. Der Zähler zählt jede
+        // übernommene Uhr-Einheit mit Puls, auch eine Krafteinheit mit Uhr —
+        // ein Nenner aus Cardio allein wäre kleiner als sein eigener Zähler.
+        ZoneFiveCard(sessions: allSessions, reference: reference),
       ],
     );
   }
