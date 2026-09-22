@@ -66,7 +66,7 @@ void main() {
     const profile = PulseProfile(
       secondsByBpm: {118: 42, 140: 38},
       windowSeconds: 80,
-      curveBpmByMinute: {0: 118, 2: 140},
+      curve: {0: 118, 2: 140},
     );
     await repo.save(
       uid,
@@ -74,7 +74,7 @@ void main() {
     );
 
     final stored = (await repo.fetch(uid)).single;
-    expect(stored.pulse!.curveBpmByMinute, {0: 118, 2: 140});
+    expect(stored.pulse!.curve, {0: 118, 2: 140});
   });
 
   test('eine Einheit ohne Kurve schreibt kein pulseCurve-Feld', () async {

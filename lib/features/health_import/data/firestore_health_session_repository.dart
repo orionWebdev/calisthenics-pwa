@@ -67,10 +67,16 @@ class FirestoreHealthSessionRepository implements HealthSessionRepository {
         if (session.pulse != null) ...{
           'pulse': session.pulse!.toWire(),
           'pulseWindowSeconds': session.pulse!.windowSeconds,
-          // Die Zeitachse dazu: bpm je Minute, nur wo gemessen wurde. Leer
+          // Die Zeitachse dazu: bpm je Schlitz, nur wo gemessen wurde. Leer
           // heisst „vor dem 22.09.2026 gelesen" — kein Feld, kein Wert.
-          if (session.pulse!.curveBpmByMinute.isNotEmpty)
+          //
+          // `pulseCurveSlot` sagt, wie lang ein Schlitz ist. Ohne das Feld
+          // gilt die Minute; mit ihm zehn Sekunden. Es steht **neben** der
+          // Kurve und nie ohne sie — ein Raster ohne Werte sagt nichts.
+          if (session.pulse!.curve.isNotEmpty) ...{
             'pulseCurve': session.pulse!.curveToWire(),
+            'pulseCurveSlot': session.pulse!.slotSeconds,
+          },
         },
         if (session.decidedAt != null)
           'decidedAt': Timestamp.fromDate(session.decidedAt!),
@@ -129,8 +135,8 @@ class FirestoreHealthSessionRepository implements HealthSessionRepository {
       maxHeartRate: (data['maxHeartRate'] as num?)?.round(),
       calories: (data['calories'] as num?)?.round(),
       distanceKm: (data['distanceKm'] as num?)?.toDouble(),
-      pulse: PulseProfile.fromWire(
-          data['pulse'], data['pulseWindowSeconds'], data['pulseCurve']),
+      pulse: PulseProfile.fromWire(data['pulse'], data['pulseWindowSeconds'],
+          data['pulseCurve'], data['pulseCurveSlot']),
       sessionId: data['sessionId'] as String?,
       decidedAt: decided is Timestamp ? decided.toDate() : null,
     );

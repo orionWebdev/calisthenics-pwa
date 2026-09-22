@@ -27,12 +27,25 @@ void main() {
     for (var m = 25; m <= 34; m++) m: 150 - (m - 25) * 4,
   };
 
-  final cases = <String, (Map<int, int>, HeartRateZones?, double, double?)>{
-    'kurve_zonen': (intervals, zones, 1.0, null),
-    'kurve_ohne_zonen': (intervals, null, 1.0, null),
-    'kurve_200': (intervals, zones, 2.0, null),
+  /// Dasselbe Training, alle zehn Sekunden abgelegt: 40 Sekunden hart, 20
+  /// leicht. Im Minutenmittel wäre davon ein gleichmässiger Lauf übrig.
+  final fine = <int, int>{
+    for (var s = 0; s < 6 * 6; s++) s: 100 + s,
+    for (var block = 0; block < 6; block++)
+      for (var s = 0; s < 6; s++)
+        6 * 6 + block * 6 + s: s < 4 ? 168 + s * 2 : 138,
+    for (var s = 0; s < 8 * 6; s++) 6 * 6 + 36 + s: 150 - s,
+  };
+
+  final cases =
+      <String, (Map<int, int>, HeartRateZones?, double, double?, int)>{
+    'kurve_zonen': (intervals, zones, 1.0, null, 60),
+    'kurve_ohne_zonen': (intervals, null, 1.0, null, 60),
+    'kurve_200': (intervals, zones, 2.0, null, 60),
     // Mit gesetzter Marke: der Zustand, den ein Standbild sonst nie zeigt.
-    'kurve_abgelesen': (intervals, zones, 1.0, 0.33),
+    'kurve_abgelesen': (intervals, zones, 1.0, 0.33, 60),
+    // Die feine Ablage — der Grund für den Schemawechsel.
+    'kurve_10s': (fine, zones, 1.0, null, 10),
   };
 
   for (final entry in cases.entries) {
@@ -40,7 +53,7 @@ void main() {
       if (!renderEnabled) return;
       await loadRealFonts();
 
-      final (curve, z, scale, scrubAt) = entry.value;
+      final (curve, z, scale, scrubAt, slot) = entry.value;
       tester.view.physicalSize = const Size(361 * 2, 320 * 2);
       tester.view.devicePixelRatio = 2;
       addTearDown(tester.view.reset);
@@ -62,10 +75,13 @@ void main() {
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: PulseCurveChart(
-                    bpmByMinute: curve,
-                    totalMinutes: 36,
+                    bpmBySlot: curve,
+                    slotSeconds: slot,
+                    totalSeconds: 36 * 60,
                     zones: z,
-                    resolution: 'je Minute ein Wert',
+                    resolution: slot >= 60
+                        ? 'je Minute ein Wert'
+                        : 'je 10 Sekunden ein Wert',
                     height: 120,
                     semanticLabel: 'Pulsverlauf',
                   ),

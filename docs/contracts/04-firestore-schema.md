@@ -299,7 +299,20 @@ Daten statt in der Disziplin jeder einzelnen Rechnung.
 | `averageHeartRate`, `maxHeartRate` | `number?` | Health Connect liefert keinen Ø-Puls; er entsteht im Gateway aus dem Pulsverlauf der Einheit — **zeitgewichtet**, nicht als Mittel der Punkte. Seit dem 21.09.2026 Ableitungen aus `pulse`. |
 | `pulse` | `map<string, number>?` | **Der Pulsverlauf als Histogramm: Sekunden je bpm** (`{"118": 42, "119": 38, …}`). Ein Messwert gilt bis zum nächsten, höchstens 60 s; eine grössere Lücke zählt nicht zur Aufzeichnung. Daraus entstehen Ø, Maximum, Minimum **und** die Zonen. Nicht die Punktwolke: Zonen werden immer neu gerechnet (Board 16, Entscheidung 15), und dafür zählt nur, wie lange welcher Wert galt. |
 | `pulseWindowSeconds` | `number?` | Die Länge der Einheit in Sekunden — der Nenner zu „aufgezeichnet". Ohne ihn stünde „21 min aufgezeichnet" ohne Bezug da. |
-| `pulseCurve` | `map<string, number>?` | **Die Zeitachse zu `pulse` (Board 16, offene Frage 1, gelöst am 22.09.2026): bpm je Minute seit Beginn**, Schlüssel ist die Minute als String (`{"0": 96, "1": 104, "3": 118, …}`). Nur Minuten mit tatsächlicher Messung — eine fehlende Minute ist eine echte Lücke, nie interpoliert. Fehlt das Feld ganz, wurde die Einheit vor dem 22.09.2026 gelesen: Die Rohdaten dafür sind nicht mehr da, nur noch `pulse`. |
+| `pulseCurve` | `map<string, number>?` | **Die Zeitachse zu `pulse` (Board 16, offene Frage 1, gelöst am 22.09.2026): bpm je Schlitz seit Beginn**, Schlüssel ist der Schlitzindex als String (`{"0": 96, "1": 104, "3": 118, …}`). Nur Schlitze mit tatsächlicher Messung — ein fehlender ist eine echte Lücke, nie interpoliert. Fehlt das Feld ganz, wurde die Einheit vor dem 22.09.2026 gelesen: Die Rohdaten dafür sind nicht mehr da, nur noch `pulse`. |
+| `pulseCurveSlot` | `number?` | **Wie lang ein Schlitz von `pulseCurve` ist, in Sekunden** (Board 16, Nachtrag, P — seit 22.09.2026 abends). `10` in allem, was seitdem gelesen wurde; **fehlt das Feld, gilt `60`** — dann sind die Schlüssel Minuten. Es steht nie ohne `pulseCurve`: ein Raster ohne Werte sagt nichts. Kein Feld wird umgerechnet, und nichts wird nachgetragen: Was minutengenau abgelegt ist, bleibt es. |
+
+**Warum zehn Sekunden (22.09.2026).** Je Minute *ein* gemittelter Wert löschte
+genau die Struktur, die ein Intervalltraining ausmacht: 40 Sekunden hart und
+20 leicht ergaben einen mittleren Dauerlauf. Zehn Sekunden kosten sechsmal so
+viele Einträge — für eine Stunde rund 360 statt 60, gut drei Kilobyte mehr im
+Dokument — und bleiben damit weit unter dem Dokumentlimit.
+
+**Das Raster ist nicht die Auflösung.** Eine Uhr, die nur jede Minute misst,
+füllt auch im Zehn-Sekunden-Raster nur jeden sechsten Schlitz. Was tatsächlich
+dasteht, sagt der Median der Abstände (`PulseProfile.curveStepSeconds`) — und
+nur der darf als Wort erscheinen. „Je 10 Sekunden ein Wert" über einer
+minütlich gemessenen Kurve wäre eine Zahl ohne ihre Grundlage.
 | `calories`, `distanceKm` | `number?` | |
 | `sessionId` | `string?` | Die App-Einheit, sobald übernommen oder zusammengeführt. Beim Lösen wird das Feld **entfernt**, nicht auf `null` gesetzt — `merge` liesse den alten Verweis sonst stehen. |
 | `decidedAt` | `timestamp?` | Wann angenommen oder abgelehnt wurde. |

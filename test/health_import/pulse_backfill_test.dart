@@ -63,7 +63,7 @@ class _Sessions extends FakeSessionRepository {
 final _full = PulseProfile(
   secondsByBpm: const {96: 1394, 120: 30},
   windowSeconds: 1440,
-  curveBpmByMinute: {for (var m = 0; m < 24; m++) m: 96 + (m == 12 ? 24 : 0)},
+  curve: {for (var m = 0; m < 24; m++) m: 96 + (m == 12 ? 24 : 0)},
 );
 
 /// Derselbe Verlauf, wie er am 21.09. abgelegt wurde — ohne Kurve.
@@ -121,13 +121,13 @@ Future<_Repo> _run(List<HealthSession> records) async {
 void main() {
   test('ein Datensatz ohne Puls bekommt ihn nachgetragen', () async {
     final repo = await _run([_record()]);
-    expect(repo.records.single.pulse?.curveBpmByMinute, isNotEmpty);
+    expect(repo.records.single.pulse?.curve, isNotEmpty);
   });
 
   test('ein Datensatz mit Puls, aber ohne Kurve bekommt die Kurve', () async {
     // Der Fall vom Gerät. Vorher übersprang der Nachtrag ihn.
     final repo = await _run([_record(pulse: _withoutCurve)]);
-    expect(repo.records.single.pulse?.curveBpmByMinute, isNotEmpty);
+    expect(repo.records.single.pulse?.curve, isNotEmpty);
   });
 
   test('der Zustand bleibt, was er war', () async {
@@ -138,6 +138,6 @@ void main() {
 
   test('ein vollständiger Datensatz wird nicht neu geschrieben', () async {
     final repo = await _run([_record(pulse: _full)]);
-    expect(repo.records.single.pulse?.curveBpmByMinute.length, 24);
+    expect(repo.records.single.pulse?.curve.length, 24);
   });
 }

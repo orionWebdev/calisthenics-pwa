@@ -51,8 +51,11 @@ void main() {
               child: SizedBox(
                 width: width,
                 child: PulseCurveChart(
-                  bpmByMinute: curve,
-                  totalMinutes: 10,
+                  bpmBySlot: curve,
+                  // Diese Fälle rechnen in Minuten — das Raster steht hier
+                  // ausdrücklich, damit die Schlitze Minuten bleiben.
+                  slotSeconds: 60,
+                  totalSeconds: 10 * 60,
                   zones: withZones,
                   resolution: 'je Minute ein Wert',
                   semanticLabel: 'Pulsverlauf',
@@ -218,6 +221,65 @@ void main() {
     });
   });
 
+  group('bei feiner Ablage', () {
+    // Zehn Sekunden je Schlitz: 0:00, 0:10, 0:20 … Genau der Fall, für den
+    // der Schemawechsel vom 22.09.2026 gemacht ist.
+    final fine = {for (var s = 0; s <= 30; s++) s: 120 + s};
+
+    Future<AppL10n> pumpFine(WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        theme: AtemTheme.dark,
+        locale: const Locale('de'),
+        localizationsDelegates: AppL10n.localizationsDelegates,
+        supportedLocales: AppL10n.supportedLocales,
+        home: Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: true),
+            child: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 340,
+                  child: PulseCurveChart(
+                    bpmBySlot: fine,
+                    slotSeconds: 10,
+                    totalSeconds: 5 * 60,
+                    zones: zones,
+                    resolution: 'je 10 Sekunden ein Wert',
+                    semanticLabel: 'Pulsverlauf',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      return AppL10n.of(tester.element(find.byType(PulseCurveChart)));
+    }
+
+    testWidgets('die Zeit steht als mm:ss, nicht in ganzen Minuten',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await pumpFine(tester);
+
+      // Sechs Schritte sind eine Minute. Wären die Schlitze Minuten, stünde
+      // hier „6 min" — und die Kurve wäre sechsmal zu lang.
+      for (var i = 0; i < 7; i++) {
+        tester.semantics.performAction(
+            find.semantics.byLabel('Pulsverlauf'), SemanticsAction.increase);
+        await tester.pumpAndSettle();
+      }
+      expect(find.textContaining('1:10'), findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets('die Zeitachse zählt weiter in Minuten', (tester) async {
+      final l10n = await pumpFine(tester);
+      expect(find.text(l10n.durationMinutes(5)), findsOneWidget);
+      expect(find.text(l10n.pulseCurveStart), findsOneWidget);
+    });
+  });
+
   testWidgets('unter zwei Messpunkten zeichnet der Baustein nichts',
       (tester) async {
     await tester.pumpWidget(MaterialApp(
@@ -227,8 +289,9 @@ void main() {
       supportedLocales: AppL10n.supportedLocales,
       home: const Scaffold(
         body: PulseCurveChart(
-          bpmByMinute: {0: 120},
-          totalMinutes: 10,
+          bpmBySlot: {0: 120},
+          slotSeconds: 60,
+          totalSeconds: 10 * 60,
           resolution: 'je Minute ein Wert',
           semanticLabel: 'Pulsverlauf',
         ),

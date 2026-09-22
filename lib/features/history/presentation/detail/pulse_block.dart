@@ -167,31 +167,41 @@ class _Data extends ConsumerWidget {
               Text(basis, style: AtemType.meta.of(context)),
             ],
           ],
-          // Unter zwei Minutenwerten zeichnet der Baustein nichts — dann
-          // bleibt dieser Teil einfach weg, kein leerer Titel davor.
-          if (pulse.curveBpmByMinute.length >= 2) ...[
+          // Unter zwei Werten zeichnet der Baustein nichts — dann bleibt
+          // dieser Teil einfach weg, kein leerer Titel davor.
+          if (pulse.curve.length >= 2) ...[
             const SizedBox(height: 14),
             Text(l10n.detailPulseCurveTitle.toUpperCase(),
                 style: AtemType.labelMicro
                     .of(context)
                     .copyWith(color: AtemColors.textTertiary)),
             const SizedBox(height: 8),
-            PulseCurveChart(
-              bpmByMinute: pulse.curveBpmByMinute,
-              totalMinutes: total,
-              // Dieselben Grenzen, die auch die Verteilung darüber rechnet.
-              // Fehlen sie, bleibt die Linie einfarbig — geraten wird nicht.
-              zones: zones,
-              // Heute liegt jede Kurve minutengenau. Sobald es eine feinere
-              // Ablage gibt, entscheidet das der Datensatz, nicht der Graph.
-              resolution: l10n.pulseCurveResolutionMinute,
-              semanticLabel: l10n.pulseCurveA11ySlider(
-                total,
-                pulse.curveBpmByMinute.values.reduce((a, b) => a < b ? a : b),
-                pulse.curveBpmByMinute.values.reduce((a, b) => a > b ? a : b),
-                l10n.pulseCurveResolutionMinute,
-              ),
-            ),
+            Builder(builder: (context) {
+              // **Die Auflösung sagt, was dasteht** — nicht, wie fein das
+              // Raster ist. Eine Uhr, die nur jede Minute misst, füllt auch
+              // im Zehn-Sekunden-Raster nur jeden sechsten Schlitz.
+              final step = pulse.curveStepSeconds ?? pulse.slotSeconds;
+              final word = step >= 60
+                  ? l10n.pulseCurveResolutionMinute
+                  : l10n.pulseCurveResolutionTen;
+              final lowest =
+                  pulse.curve.values.reduce((a, b) => a < b ? a : b);
+              final highest =
+                  pulse.curve.values.reduce((a, b) => a > b ? a : b);
+
+              return PulseCurveChart(
+                bpmBySlot: pulse.curve,
+                slotSeconds: pulse.slotSeconds,
+                totalSeconds: pulse.windowSeconds,
+                // Dieselben Grenzen, die auch die Verteilung darüber
+                // rechnet. Fehlen sie, bleibt die Linie einfarbig — geraten
+                // wird nicht.
+                zones: zones,
+                resolution: word,
+                semanticLabel:
+                    l10n.pulseCurveA11ySlider(total, lowest, highest, word),
+              );
+            }),
           ],
         ],
       ),

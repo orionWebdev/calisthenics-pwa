@@ -145,7 +145,7 @@ PulseProfile detailPulseWithCurve() => PulseProfile(
         62: 30,
       },
       windowSeconds: 52 * 60,
-      curveBpmByMinute: {
+      curve: {
         for (var m = 0; m <= 19; m++) m: 100 + m * 3,
         // Lücke: die Uhr hat 20 bis 29 nichts gemessen.
         for (var m = 30; m <= 51; m++) m: 175 - (m - 30) * 3,

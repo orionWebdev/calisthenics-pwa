@@ -165,7 +165,7 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
     // ist, bleibt es: Geschrieben wird der Verlauf und die daraus gerechneten
     // Ø/Maximum, sonst nichts.
     for (final k in known) {
-      if (k.pulse != null && k.pulse!.curveBpmByMinute.isNotEmpty) continue;
+      if (k.pulse != null && k.pulse!.curve.isNotEmpty) continue;
       final source = measured.where((m) => m.id == k.externalId).firstOrNull;
       final pulse = source?.pulse;
       if (pulse == null) continue;

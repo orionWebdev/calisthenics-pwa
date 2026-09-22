@@ -34,7 +34,8 @@ class PulseProfile {
   const PulseProfile({
     required this.secondsByBpm,
     required this.windowSeconds,
-    this.curveBpmByMinute = const {},
+    this.curve = const {},
+    this.slotSeconds = legacySlotSeconds,
   });
 
   /// Aus den Messwerten einer Einheit.
@@ -63,21 +64,40 @@ class PulseProfile {
       final bpm = inside[i].bpm;
       seconds.update(bpm, (v) => v + held, ifAbsent: () => held);
 
-      final minute = inside[i].at.difference(start).inSeconds ~/ 60;
-      curveWeightedSum.update(minute, (v) => v + bpm * held,
+      final slot =
+          inside[i].at.difference(start).inSeconds ~/ fineSlotSeconds;
+      curveWeightedSum.update(slot, (v) => v + bpm * held,
           ifAbsent: () => bpm * held);
-      curveWeight.update(minute, (v) => v + held, ifAbsent: () => held);
+      curveWeight.update(slot, (v) => v + held, ifAbsent: () => held);
     }
 
     return PulseProfile(
       secondsByBpm: seconds,
       windowSeconds: end.difference(start).inSeconds,
-      curveBpmByMinute: {
+      slotSeconds: fineSlotSeconds,
+      curve: {
         for (final entry in curveWeight.entries)
           entry.key: (curveWeightedSum[entry.key]! / entry.value).round(),
       },
     );
   }
+
+  /// Wie lang ein Schlitz der Kurve ist — **zehn Sekunden** seit dem
+  /// 22.09.2026 (Board 16, Nachtrag, P).
+  ///
+  /// Vorher war es eine Minute, und ein Intervall von 40/20 verschwand im
+  /// Mittel: Genau die Struktur, die man sehen will, war weggerechnet.
+  ///
+  /// **Sechsmal so viele Einträge je Einheit** — für eine Stunde rund 360
+  /// statt 60, gut drei Kilobyte mehr im Dokument. Das Fenster von dreissig
+  /// Tagen bleibt, das Histogramm `secondsByBpm` bleibt, und was vorher
+  /// abgelegt wurde, bleibt minutengenau: Dieses Raster gilt ab dem nächsten
+  /// Lesen, es rechnet nichts um.
+  static const fineSlotSeconds = 10;
+
+  /// Das Raster von vor dem 22.09.2026. Dokumente ohne `pulseCurveSlot`
+  /// tragen es — kein Feld heisst hier „eine Minute", nicht „unbekannt".
+  static const legacySlotSeconds = 60;
 
   /// Wie lange ein Messwert höchstens gilt, ohne dass ein neuer kommt.
   static const maxGapSeconds = 60;
@@ -88,8 +108,41 @@ class PulseProfile {
   /// Die Länge der Einheit — der Nenner, gegen den „aufgezeichnet" steht.
   final int windowSeconds;
 
-  /// bpm je Minute seit Beginn — nur Minuten mit Messung, siehe Klassenkopf.
-  final Map<int, int> curveBpmByMinute;
+  /// bpm je Schlitz seit Beginn — nur Schlitze mit Messung.
+  ///
+  /// Wie lang ein Schlitz ist, sagt [slotSeconds]. Der Schlüssel ist ein
+  /// Index, keine Minute: Wer ihn als Minute liest, bekommt seit dem
+  /// 22.09.2026 das Sechsfache.
+  final Map<int, int> curve;
+
+  /// Die Länge eines Schlitzes dieser Kurve in Sekunden.
+  ///
+  /// Nicht global, sondern **je Datensatz**: Was vor dem 22.09.2026 abgelegt
+  /// wurde, trägt 60 und bleibt dabei.
+  ///
+  /// **Der Standard ist die Minute, nicht die feine Ablage.** Wer ein Profil
+  /// von Hand baut, meint fast immer eine Kurve alten Zuschnitts; ein
+  /// stillschweigend feines Raster stauchte sie auf ein Sechstel der Einheit
+  /// zusammen. Neu gelesene Kurven kommen aus [PulseProfile.fromSamples] und
+  /// setzen [fineSlotSeconds] ausdrücklich.
+  final int slotSeconds;
+
+  /// Der typische Abstand zwischen zwei gespeicherten Werten, in Sekunden.
+  ///
+  /// **Er beschreibt, was dasteht — nicht, wie fein das Raster ist.** Eine
+  /// Uhr, die nur jede Minute misst, füllt auch im Zehn-Sekunden-Raster nur
+  /// jeden sechsten Schlitz; „je 10 Sekunden ein Wert" wäre dann gelogen.
+  /// Deshalb der Median der tatsächlichen Abstände und nicht [slotSeconds].
+  ///
+  /// `null` unter zwei Werten — aus einem Punkt folgt kein Abstand.
+  int? get curveStepSeconds {
+    if (curve.length < 2) return null;
+    final slots = curve.keys.toList()..sort();
+    final gaps = [
+      for (var i = 0; i < slots.length - 1; i++) slots[i + 1] - slots[i],
+    ]..sort();
+    return gaps[gaps.length ~/ 2] * slotSeconds;
+  }
 
   bool get isEmpty => secondsByBpm.isEmpty;
 
@@ -125,17 +178,18 @@ class PulseProfile {
         for (final e in secondsByBpm.entries) '${e.key}': e.value,
       };
 
-  /// Für Firestore: Schlüssel sind Minuten seit Beginn als String, Werte bpm.
-  /// Leer, wenn keine Minute erfasst wurde — dann schreibt der Aufrufer das
-  /// Feld gar nicht erst.
+  /// Für Firestore: Schlüssel sind Schlitze seit Beginn als String, Werte
+  /// bpm. Leer, wenn nichts erfasst wurde — dann schreibt der Aufrufer das
+  /// Feld gar nicht erst. Die Länge eines Schlitzes steht daneben.
   Map<String, int> curveToWire() => {
-        for (final e in curveBpmByMinute.entries) '${e.key}': e.value,
+        for (final e in curve.entries) '${e.key}': e.value,
       };
 
   static PulseProfile? fromWire(
     Object? histogram,
     Object? windowSeconds, [
     Object? curve,
+    Object? slotSeconds,
   ]) {
     if (histogram is! Map) return null;
     final result = <int, int>{};
@@ -150,17 +204,24 @@ class PulseProfile {
     final curveResult = <int, int>{};
     if (curve is Map) {
       for (final entry in curve.entries) {
-        final minute = int.tryParse('${entry.key}');
+        final slot = int.tryParse('${entry.key}');
         final bpm = entry.value;
-        if (minute == null || minute < 0 || bpm is! num || bpm <= 0) continue;
-        curveResult[minute] = bpm.round();
+        if (slot == null || slot < 0 || bpm is! num || bpm <= 0) continue;
+        curveResult[slot] = bpm.round();
       }
     }
 
     return PulseProfile(
       secondsByBpm: result,
       windowSeconds: windowSeconds is num ? windowSeconds.round() : 0,
-      curveBpmByMinute: curveResult,
+      curve: curveResult,
+      // **Fehlt das Feld, gilt die Minute.** Ein Dokument von vor dem
+      // 22.09.2026 trägt es nicht, und seine Schlüssel sind Minuten. Es als
+      // Zehn-Sekunden-Kurve zu lesen, stauchte sie auf ein Sechstel der
+      // Einheit zusammen.
+      slotSeconds: slotSeconds is num && slotSeconds > 0
+          ? slotSeconds.round()
+          : legacySlotSeconds,
     );
   }
 }

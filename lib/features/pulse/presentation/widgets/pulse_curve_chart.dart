@@ -82,21 +82,26 @@ import '../../domain/heart_rate_zones.dart';
 class PulseCurveChart extends StatefulWidget {
   const PulseCurveChart({
     super.key,
-    required this.bpmByMinute,
-    required this.totalMinutes,
+    required this.bpmBySlot,
+    required this.slotSeconds,
+    required this.totalSeconds,
     required this.semanticLabel,
     required this.resolution,
     this.zones,
     this.height = 96,
   });
 
-  /// bpm je Minute seit Beginn — nur Minuten mit Messung.
-  final Map<int, int> bpmByMinute;
+  /// bpm je Schlitz seit Beginn — nur Schlitze mit Messung.
+  final Map<int, int> bpmBySlot;
 
-  /// Die Länge der Einheit in Minuten — bestimmt die Breite der Zeitachse,
+  /// Wie lang ein Schlitz ist. Zehn Sekunden seit dem 22.09.2026, sechzig in
+  /// allem, was vorher abgelegt wurde.
+  final int slotSeconds;
+
+  /// Die Länge der Einheit in Sekunden — bestimmt die Breite der Zeitachse,
   /// nicht nur die Zahl der Messpunkte. So bleibt eine Lücke am Anfang oder
   /// Ende sichtbar, nicht nur eine mittendrin.
-  final int totalMinutes;
+  final int totalSeconds;
 
   /// „Pulsverlauf, von 96 bis 172 bpm über 52 Minuten" — **ein** Knoten, wie
   /// jede Datenzeile in dieser App (CLAUDE.md, Barrierefreiheit).
@@ -117,7 +122,12 @@ class PulseCurveChart extends StatefulWidget {
   /// Unter zwei Minutenwerten zeichnet das Widget nichts — aus einem Punkt
   /// folgt keine Linie, und der Block rendert dann ohne diesen Teil weiter
   /// („ein Block ohne Daten rendert nicht", CLAUDE.md).
-  bool get hasCurve => bpmByMinute.length >= 2 && totalMinutes > 0;
+  bool get hasCurve => bpmBySlot.length >= 2 && totalSeconds > 0;
+
+  /// Der letzte Schlitz der Einheit — die rechte Kante der Zeitachse.
+  int get lastSlot => totalSeconds <= slotSeconds
+      ? 0
+      : (totalSeconds / slotSeconds).ceil() - 1;
 
   @override
   State<PulseCurveChart> createState() => _PulseCurveChartState();
@@ -127,7 +137,19 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
   /// Die Minute unter dem Finger, oder `null` — dann steht die Spanne da.
   int? _marked;
 
-  List<int> get _minutes => widget.bpmByMinute.keys.toList()..sort();
+  List<int> get _slots => widget.bpmBySlot.keys.toList()..sort();
+
+  /// Die Zeit eines Schlitzes als Wort.
+  ///
+  /// Bei minutengenauer Ablage „12 min", bei feinerer „12:30" — eine Kurve,
+  /// die alle zehn Sekunden einen Wert trägt, bräuchte sonst sechs gleich
+  /// beschriftete Punkte je Minute.
+  String _timeLabel(AppL10n l10n, int slot) {
+    final seconds = slot * widget.slotSeconds;
+    if (widget.slotSeconds >= 60) return l10n.durationMinutes(seconds ~/ 60);
+    final rest = (seconds % 60).toString().padLeft(2, '0');
+    return '${seconds ~/ 60}:$rest';
+  }
 
   /// Einen gespeicherten Wert weiter — **oder in eine Lücke hinein**.
   ///
@@ -135,9 +157,9 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
   /// mit dem Screenreader geht über **jede** Minute, auch die ohne Messung
   /// (Board 16, Nachtrag, nA11y). Eine Lücke zu überspringen hiesse, sie zu
   /// verschweigen — sie ist ein eigener Schritt, kein Sprung.
-  /// Die Minute [delta] Schritte von der aktuellen Marke entfernt.
+  /// Der Schlitz [delta] Schritte von der aktuellen Marke entfernt.
   int _at(int delta) =>
-      ((_marked ?? _minutes.first) + delta).clamp(0, widget.totalMinutes - 1);
+      ((_marked ?? _slots.first) + delta).clamp(0, widget.lastSlot);
 
   void _step(int delta) {
     final next = _at(delta);
@@ -146,15 +168,15 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
 
   void _markAt(Offset local, double width) {
     if (width <= 0) return;
-    final span = widget.totalMinutes <= 1 ? 1 : widget.totalMinutes - 1;
+    final span = widget.lastSlot <= 0 ? 1 : widget.lastSlot;
     final ratio = (local.dx / width).clamp(0.0, 1.0);
     final wanted = ratio * span;
 
-    // Die **nächstgelegene gemessene** Minute, nicht die nächstgelegene
+    // Der **nächstgelegene gemessene** Schlitz, nicht der nächstgelegene
     // überhaupt: Zwischen zwei Messungen gibt es keinen Wert, und einen zu
     // zeigen wäre eine Interpolation über eine Lücke (CLAUDE.md).
-    var best = _minutes.first;
-    for (final m in _minutes) {
+    var best = _slots.first;
+    for (final m in _slots) {
       if ((m - wanted).abs() < (best - wanted).abs()) best = m;
     }
     if (best != _marked) setState(() => _marked = best);
@@ -165,7 +187,7 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
     if (!widget.hasCurve) return const SizedBox.shrink();
 
     final l10n = AppL10n.of(context);
-    final values = widget.bpmByMinute.values;
+    final values = widget.bpmBySlot.values;
     final minBpm = values.reduce((a, b) => a < b ? a : b);
     final maxBpm = values.reduce((a, b) => a > b ? a : b);
 
@@ -198,7 +220,7 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
             // letzte Zone. Gemessen wird sie, gezeichnet nie — eine zweite,
             // unsichtbare Zeile im Baum wäre ein doppelter Text.
             widest: l10n.pulseCurveReadout(
-              l10n.durationMinutes(widget.totalMinutes),
+              _timeLabel(l10n, widget.lastSlot),
               '$maxBpm ${l10n.detailUnitBpm}',
               l10n.detailZoneName(HeartRateZones.zoneCount),
             ),
@@ -226,8 +248,8 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
                   curve: Curves.easeOutQuart,
                   builder: (context, progress, _) => CustomPaint(
                     painter: _PulseCurvePainter(
-                      bpmByMinute: widget.bpmByMinute,
-                      totalMinutes: widget.totalMinutes,
+                      bpmBySlot: widget.bpmBySlot,
+                      lastSlot: widget.lastSlot,
                       zones: widget.zones,
                       progress: progress,
                       marked: _marked,
@@ -240,7 +262,7 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
           const SizedBox(height: 6),
           _TimeAxis(
             start: l10n.pulseCurveStart,
-            end: l10n.durationMinutes(widget.totalMinutes),
+            end: l10n.durationMinutes((widget.totalSeconds / 60).round()),
           ),
         ],
       ),
@@ -252,10 +274,10 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
   /// In einer Lücke steht „12 min · keine Aufzeichnung": Was nicht gemessen
   /// wurde, bekommt keinen geschätzten Wert.
   String? _markedText(AppL10n l10n) {
-    final minute = _marked;
-    if (minute == null) return null;
-    final time = l10n.durationMinutes(minute);
-    final bpm = widget.bpmByMinute[minute];
+    final slot = _marked;
+    if (slot == null) return null;
+    final time = _timeLabel(l10n, slot);
+    final bpm = widget.bpmBySlot[slot];
     if (bpm == null) return l10n.pulseCurveGap(time);
 
     final zone = widget.zones?.zoneOf(bpm);
@@ -266,9 +288,9 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
   }
 
   /// Derselbe Punkt für den Screenreader — als Wert des Sliders.
-  String _spokenPoint(AppL10n l10n, int minute) {
-    final time = l10n.durationMinutes(minute);
-    final bpm = widget.bpmByMinute[minute];
+  String _spokenPoint(AppL10n l10n, int slot) {
+    final time = _timeLabel(l10n, slot);
+    final bpm = widget.bpmBySlot[slot];
     if (bpm == null) return l10n.pulseCurveA11yGap(time);
     final zone = widget.zones?.zoneOf(bpm);
     return zone == null
@@ -376,15 +398,15 @@ class _TimeAxis extends StatelessWidget {
 
 class _PulseCurvePainter extends CustomPainter {
   _PulseCurvePainter({
-    required this.bpmByMinute,
-    required this.totalMinutes,
+    required this.bpmBySlot,
+    required this.lastSlot,
     required this.zones,
     required this.progress,
     required this.marked,
   });
 
-  final Map<int, int> bpmByMinute;
-  final int totalMinutes;
+  final Map<int, int> bpmBySlot;
+  final int lastSlot;
   final HeartRateZones? zones;
   final double progress;
   final int? marked;
@@ -396,6 +418,12 @@ class _PulseCurvePainter extends CustomPainter {
   static const _bottomPad = 10.0;
   static const _tickGap = 5.0;
   static const _tickLength = 5.0;
+
+  /// Ab welchem Abstand zwei Wertpunkte noch als zwei zu erkennen sind.
+  ///
+  /// Etwas mehr als ihr Durchmesser (2,6 dp). Darunter wären sie eine Fläche,
+  /// und eine Fläche sagt nichts, was der Taktstreifen nicht besser sagt.
+  static const _pointGap = 3.5;
 
   /// Luft über dem höchsten und unter dem niedrigsten Wert, in bpm.
   ///
@@ -409,10 +437,10 @@ class _PulseCurvePainter extends CustomPainter {
   /// eine Behauptung.
   static const _flatThreshold = 3;
 
-  List<List<int>> _segments(List<int> sortedMinutes) {
+  List<List<int>> _segments(List<int> sortedSlots) {
     final segments = <List<int>>[];
     List<int>? current;
-    for (final m in sortedMinutes) {
+    for (final m in sortedSlots) {
       if (current != null && m == current.last + 1) {
         current.add(m);
       } else {
@@ -430,10 +458,10 @@ class _PulseCurvePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (size.width <= 0 || size.height <= 0 || bpmByMinute.length < 2) return;
+    if (size.width <= 0 || size.height <= 0 || bpmBySlot.length < 2) return;
 
-    final minutes = bpmByMinute.keys.toList()..sort();
-    final values = bpmByMinute.values;
+    final slots = bpmBySlot.keys.toList()..sort();
+    final values = bpmBySlot.values;
     final minBpm = values.reduce((a, b) => a < b ? a : b);
     final maxBpm = values.reduce((a, b) => a > b ? a : b);
     final flat = (maxBpm - minBpm) < _flatThreshold;
@@ -447,15 +475,14 @@ class _PulseCurvePainter extends CustomPainter {
     final right = size.width - _sidePad;
     const top = _topPad;
     final bottom = size.height - _bottomPad - _tickGap - _tickLength;
-    final span = totalMinutes <= 1 ? 1 : totalMinutes - 1;
+    final span = lastSlot <= 0 ? 1 : lastSlot;
 
     double yFor(int bpm) => flat
         ? (top + bottom) / 2
         : bottom - (bottom - top) * ((bpm - low) / (high - low));
-    double xFor(int minute) =>
-        left + (right - left) * (minute / span).clamp(0.0, 1.0);
-    Offset pointFor(int minute) =>
-        Offset(xFor(minute), yFor(bpmByMinute[minute]!));
+    double xFor(int slot) =>
+        left + (right - left) * (slot / span).clamp(0.0, 1.0);
+    Offset pointFor(int slot) => Offset(xFor(slot), yFor(bpmBySlot[slot]!));
 
     // ---- Das Gitter: Haarlinien auf den Zonengrenzen, neutral. Nur, wo sie
     // in das Fenster fallen — eine Grenze ausserhalb sagt nichts über diese
@@ -487,33 +514,43 @@ class _PulseCurvePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
-    for (final segment in _segments(minutes)) {
+    for (final segment in _segments(slots)) {
       if (segment.length < 2) continue;
       for (var i = 0; i < segment.length - 1; i++) {
         final a = pointFor(segment[i]);
         final b = pointFor(segment[i + 1]);
         final mid = Offset((a.dx + b.dx) / 2, (a.dy + b.dy) / 2);
         canvas.drawLine(
-            a, mid, line..color = _colorFor(bpmByMinute[segment[i]]!));
+            a, mid, line..color = _colorFor(bpmBySlot[segment[i]]!));
         canvas.drawLine(
-            mid, b, line..color = _colorFor(bpmByMinute[segment[i + 1]]!));
+            mid, b, line..color = _colorFor(bpmBySlot[segment[i + 1]]!));
       }
     }
 
     // ---- Ein Punkt je gespeichertem Wert, 2,6 dp in `#CDD3EA`.
     //
     // Er liegt auf der 2 dp breiten Linie und unterbricht sie sichtbar —
-    // genau das ist gemeint: Man sieht, **wo** gespeichert wurde. Bei feiner
-    // Ablage rücken die Punkte zusammen und die Spur wird dicht.
-    for (final m in minutes) {
-      canvas.drawCircle(
-          pointFor(m), 1.3, Paint()..color = AtemColors.textTertiary);
+    // genau das ist gemeint: Man sieht, **wo** gespeichert wurde.
+    //
+    // **Nur solange sie sich nicht berühren.** Das Board rechnet damit, dass
+    // sie bei feiner Ablage „zur dichten Spur verschmelzen"; am Render war zu
+    // sehen, was das kostet: Bei zehn Sekunden über 36 Minuten liegen sie
+    // enger als ihr eigener Durchmesser und überdecken die Linie
+    // vollständig — die Zonenfarben, also die eigentliche Auskunft, waren
+    // weg. Rücken sie enger als [_pointGap] zusammen, trägt der Taktstreifen
+    // die Dichte allein; er ist genau dafür da.
+    final perSlot = (right - left) / span;
+    if (perSlot >= _pointGap) {
+      for (final m in slots) {
+        canvas.drawCircle(
+            pointFor(m), 1.3, Paint()..color = AtemColors.textTertiary);
+      }
     }
 
     // ---- Der Taktstreifen: ein Strich je gespeichertem Wert, unter dem
     // Plot. Lücken tragen keinen Strich — die Dichte ist die Auskunft.
     final tickTop = bottom + _tickGap;
-    for (final m in minutes) {
+    for (final m in slots) {
       canvas.drawLine(
         Offset(xFor(m), tickTop),
         Offset(xFor(m), tickTop + _tickLength),
@@ -531,9 +568,9 @@ class _PulseCurvePainter extends CustomPainter {
     // Zonenfarbe: Der Ring markiert eine Stelle, er benennt keine Zone.
     if (!flat) {
       for (final bpm in {maxBpm, minBpm}) {
-        final minute = minutes.firstWhere((m) => bpmByMinute[m] == bpm);
+        final slot = slots.firstWhere((m) => bpmBySlot[m] == bpm);
         canvas.drawCircle(
-          pointFor(minute),
+          pointFor(slot),
           4,
           Paint()
             ..color = AtemColors.textPrimary
@@ -545,7 +582,7 @@ class _PulseCurvePainter extends CustomPainter {
 
     // ---- Die Marke unter dem Finger.
     final m = marked;
-    if (m != null && bpmByMinute[m] != null) {
+    if (m != null && bpmBySlot[m] != null) {
       final p = pointFor(m);
       canvas.drawLine(
         Offset(p.dx, top - 4),
@@ -554,7 +591,7 @@ class _PulseCurvePainter extends CustomPainter {
           ..color = AtemColors.textSecondary.withValues(alpha: 0.45)
           ..strokeWidth = 1,
       );
-      canvas.drawCircle(p, 5, Paint()..color = _colorFor(bpmByMinute[m]!));
+      canvas.drawCircle(p, 5, Paint()..color = _colorFor(bpmBySlot[m]!));
       canvas.drawCircle(
         p,
         5,
@@ -568,8 +605,8 @@ class _PulseCurvePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_PulseCurvePainter old) =>
-      old.bpmByMinute != bpmByMinute ||
-      old.totalMinutes != totalMinutes ||
+      old.bpmBySlot != bpmBySlot ||
+      old.lastSlot != lastSlot ||
       old.zones != zones ||
       old.progress != progress ||
       old.marked != marked;

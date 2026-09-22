@@ -90,26 +90,51 @@ void main() {
       expect(profile.recordedSeconds, 90);
     });
 
-    test('die Zeitachse: bpm je Minute, zeitgewichtet', () {
+    test('die Zeitachse: bpm je Zehn-Sekunden-Schlitz, zeitgewichtet', () {
+      // Seit dem 22.09.2026 (Board 16, Nachtrag, P) sind die Schlüssel
+      // Schlitze zu zehn Sekunden, nicht Minuten: Ein Intervall von 40/20
+      // verschwand vorher im Minutenmittel.
       final profile = PulseProfile.fromSamples(
         [at(0, 0, 100), at(0, 30, 120), at(1, 0, 140)],
         start: start,
         end: start.add(const Duration(minutes: 1, seconds: 30)),
       );
 
-      // Minute 0: 30 s bei 100, 30 s bei 120 — Mittel 110. Minute 1: 140.
-      expect(profile.curveBpmByMinute, {0: 110, 1: 140});
+      expect(profile.slotSeconds, PulseProfile.fineSlotSeconds);
+      // 0:00 bei 100 gilt bis 0:30, danach 120 bis 1:00, dann 140.
+      expect(profile.curve, {0: 100, 3: 120, 6: 140});
     });
 
-    test('eine Minute ohne Messung bleibt eine Lücke, nie interpoliert', () {
+    test('die Auflösung beschreibt, was dasteht — nicht das Raster', () {
+      // Eine Uhr, die nur jede Minute misst, füllt auch im feinen Raster nur
+      // jeden sechsten Schlitz. „Je 10 Sekunden ein Wert" wäre dann gelogen.
+      final coarse = PulseProfile.fromSamples(
+        [at(0, 0, 120), at(1, 0, 130), at(2, 0, 125)],
+        start: start,
+        end: start.add(const Duration(minutes: 3)),
+      );
+      expect(coarse.curveStepSeconds, 60);
+
+      final fine = PulseProfile.fromSamples(
+        [at(0, 0, 120), at(0, 10, 150), at(0, 20, 170), at(0, 30, 160)],
+        start: start,
+        end: start.add(const Duration(minutes: 1)),
+      );
+      expect(fine.curveStepSeconds, PulseProfile.fineSlotSeconds);
+    });
+
+    test('ein Schlitz ohne Messung bleibt eine Lücke, nie interpoliert', () {
       final profile = PulseProfile.fromSamples(
         [at(0, 0, 120), at(5, 0, 130)],
         start: start,
         end: end,
       );
 
-      expect(profile.curveBpmByMinute, {0: 120, 5: 130});
-      expect(profile.curveBpmByMinute.containsKey(2), isFalse);
+      // Der erste Wert gilt höchstens eine Minute (`maxGapSeconds`), also
+      // die Schlitze 0 bis 5; dann kommt lange nichts, bis 5:00 = Schlitz 30.
+      expect(profile.curve[0], 120);
+      expect(profile.curve[30], 130);
+      expect(profile.curve.containsKey(12), isFalse);
     });
 
     test('eine Lücke über eine Minute zählt nicht zur Aufzeichnung', () {
@@ -177,7 +202,7 @@ void main() {
 
       expect(back.secondsByBpm, profile.secondsByBpm);
       expect(back.windowSeconds, profile.windowSeconds);
-      expect(back.curveBpmByMinute, profile.curveBpmByMinute);
+      expect(back.curve, profile.curve);
     });
 
     test(
@@ -191,7 +216,7 @@ void main() {
       final back =
           PulseProfile.fromWire(profile.toWire(), profile.windowSeconds)!;
 
-      expect(back.curveBpmByMinute, isEmpty);
+      expect(back.curve, isEmpty);
     });
 
     test('ein unlesbares Dokument ist kein Profil', () {
