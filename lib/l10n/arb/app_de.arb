@@ -8230,5 +8230,125 @@
   "pulseCurveStart": "0 min",
   "@pulseCurveStart": {
     "description": "Board 16 · pulse.curve.axis.start — der linke Rand der Zeitachse"
+  },
+  "detailLoadBasisEntered": "gerechnet · eingetragen {rpe} von 5",
+  "@detailLoadBasisEntered": {
+    "description": "Board 16 Nachtrag · detail.load.basis.entered",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadBasisMeasured": "gerechnet · {ring}gemessen {rpe} von 5",
+  "@detailLoadBasisMeasured": {
+    "description": "Board 16 Nachtrag · detail.load.basis.measured — {ring} ist die Stelle des Ring-Glyphs, nicht Text. Er qualifiziert die Eingangsgrösse, deshalb steht er unmittelbar vor dem Wort, das sie benennt.",
+    "placeholders": {
+      "ring": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadBasisFallback": "gerechnet · Ersatzwert {rpe} von 5",
+  "@detailLoadBasisFallback": {
+    "description": "Board 16 Nachtrag · detail.load.basis.fallback",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadA11yEntered": "Last {value}, gerechnet aus eingetragener Anstrengung {rpe} von 5",
+  "@detailLoadA11yEntered": {
+    "description": "Board 16 Nachtrag · detail.load.a11y.entered",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadA11yMeasured": "Last {value}, gerechnet aus gemessener Anstrengung {rpe} von 5, aus der Uhr",
+  "@detailLoadA11yMeasured": {
+    "description": "Board 16 Nachtrag · detail.load.a11y.measured",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadA11yFallback": "Last {value}, gerechnet mit Ersatzwert {rpe} von 5",
+  "@detailLoadA11yFallback": {
+    "description": "Board 16 Nachtrag · detail.load.a11y.fallback",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainTitle": "Wie die Last gerechnet wird",
+  "@detailLoadExplainTitle": {
+    "description": "Board 16 Nachtrag · detail.load.explain.title"
+  },
+  "detailLoadExplainFormulaEndurance": "Dauer in Minuten × Anstrengung (1–5) × 4 × Faktor der Sportart. Ab zwei Stunden zählt jede weitere Minute weniger.",
+  "@detailLoadExplainFormulaEndurance": {
+    "description": "Board 16 Nachtrag · detail.load.explain.formula.endurance — volle Formel statt der verkürzten aus dem Board"
+  },
+  "detailLoadExplainFormulaStrength": "Volumen in Kilogramm × Anstrengung (1–5), geteilt durch 50. Ohne Sätze zählt die Dauer.",
+  "@detailLoadExplainFormulaStrength": {
+    "description": "Board 16 Nachtrag · detail.load.explain.formula.strength — Teiler 50 wie in der Rechnung"
+  },
+  "detailLoadExplainEntered": "Anstrengung {rpe} von 5 — von dir eingetragen.",
+  "@detailLoadExplainEntered": {
+    "description": "Board 16 Nachtrag · detail.load.explain.entered",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainMeasured": "Keine Anstrengung eingetragen. An ihre Stelle tritt der gemessene Schnitt aus dem Pulsverlauf: {rpe} von 5, zeitgewichtet aus {n, plural, one{1 Minute} other{{n} Minuten}} Aufzeichnung.",
+  "@detailLoadExplainMeasured": {
+    "description": "Board 16 Nachtrag · detail.load.explain.measured",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainEnteredWins": "Eingetragen gilt: {entered} von 5. Aus dem Pulsverlauf gemessen: {measured} von 5.",
+  "@detailLoadExplainEnteredWins": {
+    "description": "Board 16 Nachtrag · detail.load.explain.entered_wins",
+    "placeholders": {
+      "entered": {
+        "type": "int"
+      },
+      "measured": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainFallback": "Weder eingetragen noch gemessen. Gerechnet wird mit {rpe} von 5.",
+  "@detailLoadExplainFallback": {
+    "description": "Board 16 Nachtrag · detail.load.explain.fallback",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
   }
 }

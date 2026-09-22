@@ -5480,4 +5480,71 @@ class AppL10nDe extends AppL10n {
 
   @override
   String get pulseCurveStart => '0 min';
+
+  @override
+  String detailLoadBasisEntered(int rpe) {
+    return 'gerechnet · eingetragen $rpe von 5';
+  }
+
+  @override
+  String detailLoadBasisMeasured(String ring, int rpe) {
+    return 'gerechnet · ${ring}gemessen $rpe von 5';
+  }
+
+  @override
+  String detailLoadBasisFallback(int rpe) {
+    return 'gerechnet · Ersatzwert $rpe von 5';
+  }
+
+  @override
+  String detailLoadA11yEntered(String value, int rpe) {
+    return 'Last $value, gerechnet aus eingetragener Anstrengung $rpe von 5';
+  }
+
+  @override
+  String detailLoadA11yMeasured(String value, int rpe) {
+    return 'Last $value, gerechnet aus gemessener Anstrengung $rpe von 5, aus der Uhr';
+  }
+
+  @override
+  String detailLoadA11yFallback(String value, int rpe) {
+    return 'Last $value, gerechnet mit Ersatzwert $rpe von 5';
+  }
+
+  @override
+  String get detailLoadExplainTitle => 'Wie die Last gerechnet wird';
+
+  @override
+  String get detailLoadExplainFormulaEndurance =>
+      'Dauer in Minuten × Anstrengung (1–5) × 4 × Faktor der Sportart. Ab zwei Stunden zählt jede weitere Minute weniger.';
+
+  @override
+  String get detailLoadExplainFormulaStrength =>
+      'Volumen in Kilogramm × Anstrengung (1–5), geteilt durch 50. Ohne Sätze zählt die Dauer.';
+
+  @override
+  String detailLoadExplainEntered(int rpe) {
+    return 'Anstrengung $rpe von 5 — von dir eingetragen.';
+  }
+
+  @override
+  String detailLoadExplainMeasured(int rpe, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n Minuten',
+      one: '1 Minute',
+    );
+    return 'Keine Anstrengung eingetragen. An ihre Stelle tritt der gemessene Schnitt aus dem Pulsverlauf: $rpe von 5, zeitgewichtet aus $_temp0 Aufzeichnung.';
+  }
+
+  @override
+  String detailLoadExplainEnteredWins(int entered, int measured) {
+    return 'Eingetragen gilt: $entered von 5. Aus dem Pulsverlauf gemessen: $measured von 5.';
+  }
+
+  @override
+  String detailLoadExplainFallback(int rpe) {
+    return 'Weder eingetragen noch gemessen. Gerechnet wird mit $rpe von 5.';
+  }
 }

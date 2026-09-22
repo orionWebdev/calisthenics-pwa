@@ -7967,6 +7967,84 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'0 min'**
   String get pulseCurveStart;
+
+  /// Board 16 Nachtrag · detail.load.basis.entered
+  ///
+  /// In de, this message translates to:
+  /// **'gerechnet · eingetragen {rpe} von 5'**
+  String detailLoadBasisEntered(int rpe);
+
+  /// Board 16 Nachtrag · detail.load.basis.measured — {ring} ist die Stelle des Ring-Glyphs, nicht Text. Er qualifiziert die Eingangsgrösse, deshalb steht er unmittelbar vor dem Wort, das sie benennt.
+  ///
+  /// In de, this message translates to:
+  /// **'gerechnet · {ring}gemessen {rpe} von 5'**
+  String detailLoadBasisMeasured(String ring, int rpe);
+
+  /// Board 16 Nachtrag · detail.load.basis.fallback
+  ///
+  /// In de, this message translates to:
+  /// **'gerechnet · Ersatzwert {rpe} von 5'**
+  String detailLoadBasisFallback(int rpe);
+
+  /// Board 16 Nachtrag · detail.load.a11y.entered
+  ///
+  /// In de, this message translates to:
+  /// **'Last {value}, gerechnet aus eingetragener Anstrengung {rpe} von 5'**
+  String detailLoadA11yEntered(String value, int rpe);
+
+  /// Board 16 Nachtrag · detail.load.a11y.measured
+  ///
+  /// In de, this message translates to:
+  /// **'Last {value}, gerechnet aus gemessener Anstrengung {rpe} von 5, aus der Uhr'**
+  String detailLoadA11yMeasured(String value, int rpe);
+
+  /// Board 16 Nachtrag · detail.load.a11y.fallback
+  ///
+  /// In de, this message translates to:
+  /// **'Last {value}, gerechnet mit Ersatzwert {rpe} von 5'**
+  String detailLoadA11yFallback(String value, int rpe);
+
+  /// Board 16 Nachtrag · detail.load.explain.title
+  ///
+  /// In de, this message translates to:
+  /// **'Wie die Last gerechnet wird'**
+  String get detailLoadExplainTitle;
+
+  /// Board 16 Nachtrag · detail.load.explain.formula.endurance — volle Formel statt der verkürzten aus dem Board
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer in Minuten × Anstrengung (1–5) × 4 × Faktor der Sportart. Ab zwei Stunden zählt jede weitere Minute weniger.'**
+  String get detailLoadExplainFormulaEndurance;
+
+  /// Board 16 Nachtrag · detail.load.explain.formula.strength — Teiler 50 wie in der Rechnung
+  ///
+  /// In de, this message translates to:
+  /// **'Volumen in Kilogramm × Anstrengung (1–5), geteilt durch 50. Ohne Sätze zählt die Dauer.'**
+  String get detailLoadExplainFormulaStrength;
+
+  /// Board 16 Nachtrag · detail.load.explain.entered
+  ///
+  /// In de, this message translates to:
+  /// **'Anstrengung {rpe} von 5 — von dir eingetragen.'**
+  String detailLoadExplainEntered(int rpe);
+
+  /// Board 16 Nachtrag · detail.load.explain.measured
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Anstrengung eingetragen. An ihre Stelle tritt der gemessene Schnitt aus dem Pulsverlauf: {rpe} von 5, zeitgewichtet aus {n, plural, one{1 Minute} other{{n} Minuten}} Aufzeichnung.'**
+  String detailLoadExplainMeasured(int rpe, int n);
+
+  /// Board 16 Nachtrag · detail.load.explain.entered_wins
+  ///
+  /// In de, this message translates to:
+  /// **'Eingetragen gilt: {entered} von 5. Aus dem Pulsverlauf gemessen: {measured} von 5.'**
+  String detailLoadExplainEnteredWins(int entered, int measured);
+
+  /// Board 16 Nachtrag · detail.load.explain.fallback
+  ///
+  /// In de, this message translates to:
+  /// **'Weder eingetragen noch gemessen. Gerechnet wird mit {rpe} von 5.'**
+  String detailLoadExplainFallback(int rpe);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

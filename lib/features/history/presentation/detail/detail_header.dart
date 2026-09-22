@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
@@ -184,27 +185,52 @@ class MetricTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     if (tiles.isEmpty && !loading) return const SizedBox.shrink();
 
-    // Ab 200 % Schrift eine Spalte: Wrap, kein horizontaler Scroll.
-    final oneColumn = MediaQuery.textScalerOf(context).scale(10) / 10 >= 2.0;
+    // Ab 200 % Schrift eine Spalte: kein horizontaler Scroll.
+    final perRow =
+        MediaQuery.textScalerOf(context).scale(10) / 10 >= 2.0 ? 1 : 2;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = oneColumn
-            ? constraints.maxWidth
-            : (constraints.maxWidth - _gap) / 2;
-        return Wrap(
-          spacing: _gap,
-          runSpacing: _gap,
-          children: [
-            if (loading)
-              for (var i = 0; i < 4; i++)
-                SizedBox(width: width, child: const _TileSkeleton())
-            else
-              for (final tile in tiles)
-                SizedBox(width: width, child: _TileView(tile: tile)),
-          ],
-        );
-      },
+    // **Eine Reihe teilt die Höhe ihrer höchsten Kachel** (Board 16,
+    // Nachtrag, N). Seit die Last eine Grundlagenzeile trägt, ist sie oft die
+    // höchste; ein `Wrap` liesse die Nachbarin kurz stehen, und die Reihe
+    // bekäme eine Stufe. Deshalb feste Reihen mit `IntrinsicHeight`, nicht
+    // `Wrap`.
+    //
+    // Der Vorbehalt aus `b5a6665` gilt hier nicht: Er betraf Karten, deren
+    // Kopf selbst einen `LayoutBuilder` benutzt. Eine Kachel misst nichts.
+    final items = loading
+        ? [for (var i = 0; i < 4; i++) const _TileSkeleton()]
+        : [for (final tile in tiles) _TileView(tile: tile)];
+
+    final rows = <List<Widget>>[];
+    for (var i = 0; i < items.length; i += perRow) {
+      rows.add(items.sublist(i, math.min(i + perRow, items.length)));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var r = 0; r < rows.length; r++) ...[
+          if (r > 0) const SizedBox(height: _gap),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var c = 0; c < perRow; c++) ...[
+                  if (c > 0) const SizedBox(width: _gap),
+                  // Eine halbe Reihe bleibt halb: Die letzte Kachel einer
+                  // ungeraden Zahl füllt nicht die Breite, sonst stünde sie
+                  // als Sonderfall da.
+                  Expanded(
+                    child: c < rows[r].length
+                        ? rows[r][c]
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -278,12 +304,23 @@ class _TileView extends StatelessWidget {
 
     // **Die Herkunft im Label, nicht als eigener Knoten**: „Durchschnittspuls
     // 118 bpm, aus der Uhr".
-    final spoken = l10n.detailSpokenTile(
-      spokenLabel,
-      value,
-      unit,
-      fromWatch ? l10n.hcOriginWatch : l10n.detailSourceApp,
-    );
+    //
+    // Die Last spricht anders: Sie ist eine App-Rechnung, und was gemessen
+    // sein kann, ist eine ihrer Eingangsgrössen (Board 16, Nachtrag, N).
+    final basis = tile.effortBasis;
+    final effort = tile.effort;
+    final spoken = basis == null || effort == null
+        ? l10n.detailSpokenTile(
+            spokenLabel,
+            value,
+            unit,
+            fromWatch ? l10n.hcOriginWatch : l10n.detailSourceApp,
+          )
+        : switch (basis) {
+            EffortBasis.entered => l10n.detailLoadA11yEntered(value, effort),
+            EffortBasis.measured => l10n.detailLoadA11yMeasured(value, effort),
+            EffortBasis.fallback => l10n.detailLoadA11yFallback(value, effort),
+          };
 
     return Semantics(
       container: true,
@@ -341,10 +378,77 @@ class _TileView extends StatelessWidget {
                     Text(unit.toUpperCase(), style: AtemType.meta.of(context)),
                 ],
               ),
+              // Die Grundlagenzeile: **nur** die Last hat eine. Sie bricht um
+              // statt zu kürzen — die Kachel wächst nach unten, die Reihe
+              // teilt die Höhe der höchsten (Board 16, Nachtrag, N).
+              if (basis != null && effort != null) ...[
+                const SizedBox(height: 4),
+                _EffortBasisLine(basis: basis, effort: effort),
+              ],
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Womit die Last gerechnet wurde — die Zeile unter dem Wert.
+///
+/// ## Warum der Ring mitten im Satz steht
+///
+/// Er qualifiziert die **Eingangsgrösse**, nicht die Kachel: Gemessen ist die
+/// Anstrengung, nicht die Last (Board 16, Nachtrag, N). Deshalb steht er
+/// unmittelbar vor dem Wort, das sie benennt, und nicht oben neben dem Label,
+/// wo er „diese Zahl kommt aus der Uhr" hiesse.
+///
+/// Seine Stelle kommt aus der Zeichenkette (`{ring}`), nicht aus dem Code:
+/// Im Englischen steht „measured" an einer anderen Stelle des Satzes als
+/// „gemessen" im Deutschen, und eine im Code festgenagelte Position wäre in
+/// der zweiten Sprache falsch.
+///
+/// Vorgelesen wird der Ring nie — das Wort daneben trägt die Auskunft
+/// (CLAUDE.md, Barrierefreiheit). Die ganze Kachel ist ohnehin ein Knoten.
+class _EffortBasisLine extends StatelessWidget {
+  const _EffortBasisLine({required this.basis, required this.effort});
+
+  final EffortBasis basis;
+  final int effort;
+
+  /// Die Marke, an der der Ring sitzt. Ein Zeichen, das in keinem Text
+  /// vorkommt — sonst zerteilte es den Satz an der falschen Stelle.
+  static const _mark = '\u0000';
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppL10n.of(context);
+    final style = AtemType.meta.of(context).copyWith(height: 1.45);
+
+    final text = switch (basis) {
+      EffortBasis.entered => l10n.detailLoadBasisEntered(effort),
+      EffortBasis.measured => l10n.detailLoadBasisMeasured(_mark, effort),
+      EffortBasis.fallback => l10n.detailLoadBasisFallback(effort),
+    };
+
+    final parts = text.split(_mark);
+    if (parts.length != 2) return Text(text, style: style);
+
+    return Text.rich(
+      TextSpan(children: [
+        TextSpan(text: parts.first),
+        const WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: Padding(
+            padding: EdgeInsets.only(right: 4),
+            child: AtemOriginDot(
+              shape: AtemOriginShape.hollow,
+              color: AtemColors.textSecondary,
+            ),
+          ),
+        ),
+        TextSpan(text: parts.last),
+      ]),
+      style: style,
     );
   }
 }

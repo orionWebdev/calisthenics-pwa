@@ -5271,5 +5271,125 @@
   "pulseCurveStart": "0 min",
   "@pulseCurveStart": {
     "description": "Board 16 · pulse.curve.axis.start — der linke Rand der Zeitachse"
+  },
+  "detailLoadBasisEntered": "calculated · entered {rpe} of 5",
+  "@detailLoadBasisEntered": {
+    "description": "Board 16 Nachtrag · detail.load.basis.entered",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadBasisMeasured": "calculated · {ring}measured {rpe} of 5",
+  "@detailLoadBasisMeasured": {
+    "description": "Board 16 Nachtrag · detail.load.basis.measured — {ring} ist die Stelle des Ring-Glyphs, nicht Text. Er qualifiziert die Eingangsgrösse, deshalb steht er unmittelbar vor dem Wort, das sie benennt.",
+    "placeholders": {
+      "ring": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadBasisFallback": "calculated · substitute {rpe} of 5",
+  "@detailLoadBasisFallback": {
+    "description": "Board 16 Nachtrag · detail.load.basis.fallback",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadA11yEntered": "Load {value}, calculated from entered effort {rpe} of 5",
+  "@detailLoadA11yEntered": {
+    "description": "Board 16 Nachtrag · detail.load.a11y.entered",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadA11yMeasured": "Load {value}, calculated from measured effort {rpe} of 5, from the watch",
+  "@detailLoadA11yMeasured": {
+    "description": "Board 16 Nachtrag · detail.load.a11y.measured",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadA11yFallback": "Load {value}, calculated with substitute value {rpe} of 5",
+  "@detailLoadA11yFallback": {
+    "description": "Board 16 Nachtrag · detail.load.a11y.fallback",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainTitle": "How load is calculated",
+  "@detailLoadExplainTitle": {
+    "description": "Board 16 Nachtrag · detail.load.explain.title"
+  },
+  "detailLoadExplainFormulaEndurance": "Duration in minutes × effort (1–5) × 4 × sport factor. Beyond two hours each further minute counts less.",
+  "@detailLoadExplainFormulaEndurance": {
+    "description": "Board 16 Nachtrag · detail.load.explain.formula.endurance — volle Formel statt der verkürzten aus dem Board"
+  },
+  "detailLoadExplainFormulaStrength": "Volume in kilograms × effort (1–5), divided by 50. Without sets, duration counts.",
+  "@detailLoadExplainFormulaStrength": {
+    "description": "Board 16 Nachtrag · detail.load.explain.formula.strength — Teiler 50 wie in der Rechnung"
+  },
+  "detailLoadExplainEntered": "Effort {rpe} of 5 — entered by you.",
+  "@detailLoadExplainEntered": {
+    "description": "Board 16 Nachtrag · detail.load.explain.entered",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainMeasured": "No effort entered. The measured average from the heart-rate curve takes its place: {rpe} of 5, time-weighted from {n, plural, one{1 minute} other{{n} minutes}} of recording.",
+  "@detailLoadExplainMeasured": {
+    "description": "Board 16 Nachtrag · detail.load.explain.measured",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainEnteredWins": "Your entry applies: {entered} of 5. Measured from the heart-rate curve: {measured} of 5.",
+  "@detailLoadExplainEnteredWins": {
+    "description": "Board 16 Nachtrag · detail.load.explain.entered_wins",
+    "placeholders": {
+      "entered": {
+        "type": "int"
+      },
+      "measured": {
+        "type": "int"
+      }
+    }
+  },
+  "detailLoadExplainFallback": "Neither entered nor measured. Calculated with {rpe} of 5.",
+  "@detailLoadExplainFallback": {
+    "description": "Board 16 Nachtrag · detail.load.explain.fallback",
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
   }
 }

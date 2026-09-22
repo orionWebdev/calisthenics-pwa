@@ -5474,4 +5474,71 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get pulseCurveStart => '0 min';
+
+  @override
+  String detailLoadBasisEntered(int rpe) {
+    return 'calculated · entered $rpe of 5';
+  }
+
+  @override
+  String detailLoadBasisMeasured(String ring, int rpe) {
+    return 'calculated · ${ring}measured $rpe of 5';
+  }
+
+  @override
+  String detailLoadBasisFallback(int rpe) {
+    return 'calculated · substitute $rpe of 5';
+  }
+
+  @override
+  String detailLoadA11yEntered(String value, int rpe) {
+    return 'Load $value, calculated from entered effort $rpe of 5';
+  }
+
+  @override
+  String detailLoadA11yMeasured(String value, int rpe) {
+    return 'Load $value, calculated from measured effort $rpe of 5, from the watch';
+  }
+
+  @override
+  String detailLoadA11yFallback(String value, int rpe) {
+    return 'Load $value, calculated with substitute value $rpe of 5';
+  }
+
+  @override
+  String get detailLoadExplainTitle => 'How load is calculated';
+
+  @override
+  String get detailLoadExplainFormulaEndurance =>
+      'Duration in minutes × effort (1–5) × 4 × sport factor. Beyond two hours each further minute counts less.';
+
+  @override
+  String get detailLoadExplainFormulaStrength =>
+      'Volume in kilograms × effort (1–5), divided by 50. Without sets, duration counts.';
+
+  @override
+  String detailLoadExplainEntered(int rpe) {
+    return 'Effort $rpe of 5 — entered by you.';
+  }
+
+  @override
+  String detailLoadExplainMeasured(int rpe, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n minutes',
+      one: '1 minute',
+    );
+    return 'No effort entered. The measured average from the heart-rate curve takes its place: $rpe of 5, time-weighted from $_temp0 of recording.';
+  }
+
+  @override
+  String detailLoadExplainEnteredWins(int entered, int measured) {
+    return 'Your entry applies: $entered of 5. Measured from the heart-rate curve: $measured of 5.';
+  }
+
+  @override
+  String detailLoadExplainFallback(int rpe) {
+    return 'Neither entered nor measured. Calculated with $rpe of 5.';
+  }
 }

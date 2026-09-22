@@ -1,3 +1,4 @@
+import 'training_load.dart';
 import '../../../core/domain/pulse_profile.dart';
 import 'training_session.dart';
 
@@ -89,12 +90,42 @@ class SessionLead {
 }
 
 /// Eine Kennzahlkachel: Grösse, Wert, Quelle.
+/// Woher die Anstrengung kam, mit der die Last gerechnet wurde.
+///
+/// **Die dritte Grundlage steht nicht in [MetricSource]** (Board 16,
+/// Nachtrag, Sektion M). Die Last ist und bleibt eine App-Rechnung — sie
+/// trägt deshalb weiter keinen Herkunftspunkt. Gemessen ist nicht die Zahl,
+/// sondern eine ihrer Eingangsgrössen, und das gehört in die Grundlagenzeile
+/// darunter, nicht in den Punkt darüber.
+enum EffortBasis {
+  /// Eingetragen — die Aussage eines Menschen.
+  entered,
+
+  /// Aus dem Pulsverlauf gemessen, weil nichts eingetragen war.
+  measured,
+
+  /// Weder noch: der Ersatzwert.
+  fallback,
+}
+
 class MetricTile {
-  const MetricTile(this.kind, this.value, this.source);
+  const MetricTile(
+    this.kind,
+    this.value,
+    this.source, {
+    this.effortBasis,
+    this.effort,
+  });
 
   final MetricKind kind;
   final num value;
   final MetricSource source;
+
+  /// Nur an [MetricKind.load]: womit gerechnet wurde.
+  final EffortBasis? effortBasis;
+
+  /// Die Anstrengung 1–5, die in die Rechnung ging.
+  final int? effort;
 }
 
 /// Wie ein Vergleich mit der letzten Ausführung derselben Übung ausgeht.
@@ -247,6 +278,7 @@ abstract final class SessionDetail {
     TrainingSession session, {
     WatchFigures? watch,
     double load = 0,
+    LoadContext context = const LoadContext(),
   }) {
     final lead = leadOf(session);
     final origin = session.origin;
@@ -281,7 +313,22 @@ abstract final class SessionDetail {
         MetricTile(MetricKind.calories, calories, MetricSource.watch),
       // Last steht **zuletzt**: Sie ist eine App-Rechnung, keine Messung, und
       // rückt nur nach, wo weniger als vier andere Grössen da sind.
-      if (load > 0) MetricTile(MetricKind.load, load.round(), MetricSource.app),
+      //
+      // Seit dem 22.09.2026 nennt sie zusätzlich, **womit** gerechnet wurde.
+      // Die Reihenfolge ist die von `LoadContext.effortFor`; hier wird sie
+      // nur nachgelesen, nicht ein zweites Mal entschieden.
+      if (load > 0)
+        MetricTile(
+          MetricKind.load,
+          load.round(),
+          MetricSource.app,
+          effortBasis: session.rpe != null
+              ? EffortBasis.entered
+              : context.measuredEffortOf?.call(session) != null
+                  ? EffortBasis.measured
+                  : EffortBasis.fallback,
+          effort: context.effortFor(session),
+        ),
     ];
 
     return [

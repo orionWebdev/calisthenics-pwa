@@ -82,7 +82,8 @@ class SessionDetailScreen extends ConsumerWidget {
     final watch = ref.watch(watchFiguresProvider(live));
 
     final lead = SessionDetail.leadOf(live);
-    final tiles = SessionDetail.tilesOf(live, watch: watch.value, load: load);
+    final tiles = SessionDetail.tilesOf(live,
+        watch: watch.value, load: load, context: loadContext);
     final text = DetailHeaderText.of(context, live, lead: lead);
     final rows = SessionDetail.exercisesOf(live, sessions);
 
