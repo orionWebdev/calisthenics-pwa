@@ -138,6 +138,7 @@ class WorkoutExercise {
     this.recordWeightKg,
     this.targetReps,
     this.targetHoldSeconds,
+    this.restSeconds,
     required this.sets,
     this.unilateral = false,
   });
@@ -154,8 +155,10 @@ class WorkoutExercise {
 
   /// Die Zielvorgabe aus dem Plan, als Text — „8-12" ist gültig.
   ///
-  /// Sie steht **neben** dem Eingabefeld, nicht darin: Ein vorbelegtes Feld
-  /// wäre nach dem Abhaken eine Leistungsangabe, die niemand gemacht hat.
+  /// Sie steht über der Tabelle **und**, wenn sie eine reine Zahl ist, als
+  /// Vorschlag im Feld ([WorkoutSet.carried] — cyan, überschreibbar). Ein
+  /// Bereich wie „8-12" bleibt allein in der Zeile: Als Feldwert wäre er beim
+  /// Auswerten keine Wiederholungszahl.
   final String? targetReps;
 
   /// Die Haltezeit aus dem Plan, in Sekunden.
@@ -165,6 +168,14 @@ class WorkoutExercise {
   /// Vorgabe war damit unsichtbar an genau der Stelle, an der sie gebraucht
   /// wird.
   final int? targetHoldSeconds;
+
+  /// Die Pause dieser Übung aus dem Plan, in Sekunden.
+  ///
+  /// `null` heisst: die der Einheit ([ActiveWorkout.defaultRestSeconds]). Eine
+  /// Pause je Übung ist im Plan seit je einstellbar, wurde im Training aber
+  /// nie gelesen — wer für Klimmzüge 180 s und für Rudern 60 s hinterlegte,
+  /// bekam überall dieselbe Zahl.
+  final int? restSeconds;
 
   final List<WorkoutSet> sets;
 
@@ -187,6 +198,7 @@ class WorkoutExercise {
         recordWeightKg: recordWeightKg,
         targetReps: targetReps,
         targetHoldSeconds: targetHoldSeconds,
+        restSeconds: restSeconds,
         sets: sets ?? this.sets,
         unilateral: unilateral ?? this.unilateral,
       );

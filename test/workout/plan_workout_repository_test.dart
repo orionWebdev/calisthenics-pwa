@@ -152,16 +152,69 @@ void main() {
       );
     });
 
-    test('belegt keine Felder vor', () async {
+    test('belegt das Gewicht nie vor', () async {
       final w = await _repo(plans: [_plan], exercises: _exercises)
           .loadWorkout(const WorkoutStart(planId: 'p1'));
       for (final set in w.allSets) {
-        expect(set.weight, isEmpty);
-        expect(set.reps, isEmpty,
-            reason: 'ein vorbelegtes Feld wäre nach dem Abhaken eine '
-                'Leistungsangabe, die niemand gemacht hat');
+        expect(set.weight, isEmpty,
+            reason: 'der Plan kennt kein Gewicht — die Zahl vom letzten Mal '
+                'steht als Referenz daneben');
         expect(set.done, isFalse);
       }
+    });
+
+    test('ein Zielbereich bleibt aus dem Feld', () async {
+      final w = await _repo(plans: [_plan], exercises: _exercises)
+          .loadWorkout(const WorkoutStart(planId: 'p1'));
+      for (final set in w.exercises.first.sets) {
+        expect(set.reps, isEmpty,
+            reason: '„8-12" wäre als Feldwert beim Auswerten keine Zahl');
+        expect(set.carried, isFalse);
+      }
+      expect(w.exercises.first.targetReps, '8-12',
+          reason: 'die Zielzeile über der Tabelle trägt ihn weiter');
+    });
+
+    test('eine reine Zahl steht als Vorschlag im Feld', () async {
+      const plan = Plan(id: 'p2', name: 'Liegestütze', items: [
+        PlanItem(exerciseId: 'push_up', sets: 2, reps: '14'),
+      ]);
+      final w = await _repo(plans: [plan], exercises: _exercises)
+          .loadWorkout(const WorkoutStart(planId: 'p2'));
+
+      final sets = w.exercises.single.sets;
+      expect(sets, hasLength(2), reason: '2 × 14 heisst zwei Sätze');
+      for (final set in sets) {
+        expect(set.reps, '14');
+        expect(set.carried, isTrue,
+            reason: 'ein Vorschlag steht cyan, bis er geändert oder '
+                'abgehakt wird');
+        expect(set.done, isFalse);
+      }
+    });
+
+    test('die Haltezeit steht als Vorschlag im Feld', () async {
+      const plan = Plan(id: 'p3', name: 'Plank', items: [
+        PlanItem(exerciseId: 'plank', sets: 3, holdSeconds: 45),
+      ]);
+      final w = await _repo(plans: [plan], exercises: _exercises)
+          .loadWorkout(const WorkoutStart(planId: 'p3'));
+
+      final exercise = w.exercises.single;
+      expect(exercise.isHold, isTrue);
+      for (final set in exercise.sets) {
+        expect(set.hold, '45');
+        expect(set.reps, isEmpty);
+        expect(set.carried, isTrue);
+      }
+    });
+
+    test('die Pause je Übung wandert mit', () async {
+      final w = await _repo(plans: [_plan], exercises: _exercises)
+          .loadWorkout(const WorkoutStart(planId: 'p1', restSeconds: 90));
+      expect(w.exercises.first.restSeconds, 120);
+      expect(w.exercises.last.restSeconds, isNull,
+          reason: 'ohne Angabe gilt die Pause der Einheit');
     });
 
     test('übernimmt die Pausenzeit des Plans', () async {

@@ -174,6 +174,26 @@ class PlanWorkoutRepository implements WorkoutRepository {
     final previous = entry.lastSets;
     final count = item.sets ?? defaultSets;
     final unilateral = exercise?.unilateral ?? false;
+
+    // **Die Zielvorgabe steht im Feld** (22.09.2026). Wer im Plan „2 × 14"
+    // hinterlegt, hat die Entscheidung getroffen; sie im Training noch einmal
+    // tippen zu müssen, machte den Plan zur Zierde.
+    //
+    // Der alte Einwand — ein vorbelegtes Feld sei nach dem Abhaken eine
+    // Leistungsangabe, die niemand gemacht hat — bleibt richtig und wird
+    // anders beantwortet: Der Wert kommt als **Vorschlag** herein
+    // ([WorkoutSet.carried]) und steht damit cyan, wie ein aus dem vorigen
+    // Satz übernommener. Wer ihn ändert, macht ihn zur eigenen Angabe; wer
+    // abhakt, bestätigt ihn.
+    //
+    // **Nur eine reine Zahl.** „8-12" und „max" sind Zielbereiche, keine
+    // Leistungen — als Feldwert wären sie beim Auswerten `null`, also ein
+    // abgehakter Satz ohne Wiederholungen. Sie bleiben in der Zielzeile über
+    // der Tabelle.
+    final target = item.reps?.trim() ?? '';
+    final suggestedReps = int.tryParse(target) == null ? '' : target;
+    final suggestedHold = item.holdSeconds?.toString() ?? '';
+    final suggested = suggestedReps.isNotEmpty || suggestedHold.isNotEmpty;
     // Seitengetrennt beginnt links und wechselt ab — dieselbe Regel wie beim
     // Einschalten im Runner.
     SetSide? sideAt(int i) =>
@@ -191,6 +211,9 @@ class PlanWorkoutRepository implements WorkoutRepository {
       // waren im Training unsichtbar — die Haltezeit vollständig.
       targetReps: item.reps,
       targetHoldSeconds: item.holdSeconds,
+      // Die Pause dieser Übung. Bisher gewann die des **ersten** Eintrags für
+      // die ganze Einheit; jede andere Angabe im Plan war wirkungslos.
+      restSeconds: item.restSeconds,
       unilateral: unilateral,
       sets: [
         for (var i = 0; i < count; i++)
@@ -202,13 +225,12 @@ class PlanWorkoutRepository implements WorkoutRepository {
             // nicht, bleibt die Zeile leer statt einen fremden Satz zu zeigen.
             previous: previousSet(previous, i, sideAt(i),
                 [for (var j = 0; j < i; j++) sideAt(j)]),
-            // **Die Zielvorgabe wird nicht vorbelegt.** Ein Feld, in dem schon
-            // „8" steht, ist nach dem Abhaken eine Leistungsangabe — und zwar
-            // eine, die niemand gemacht hat. Das Ziel steht daneben als
-            // Referenz, nicht im Eingabefeld.
+            // Das Gewicht bleibt leer: Der Plan kennt keins, und die Zahl
+            // vom letzten Mal steht als Referenz daneben.
             weight: '',
-            reps: '',
-            hold: '',
+            reps: suggestedReps,
+            hold: suggestedHold,
+            carried: suggested,
           ),
       ],
     );

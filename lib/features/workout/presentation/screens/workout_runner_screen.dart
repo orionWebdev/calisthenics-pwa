@@ -498,7 +498,10 @@ class _WorkoutRunnerScreenState extends ConsumerState<WorkoutRunnerScreen>
     setState(() {
       _clockState = _clockState.startRest(
         DateTime.now(),
-        Duration(seconds: w.defaultRestSeconds),
+        // Die Pause der Übung, wenn der Plan eine trägt — sonst die der
+        // Einheit. Vorher galt überall dieselbe Zahl, und eine Angabe je
+        // Übung im Plan war wirkungslos.
+        Duration(seconds: exercise.restSeconds ?? w.defaultRestSeconds),
       );
       _restAnnounced = false;
       _restCompact = false;
