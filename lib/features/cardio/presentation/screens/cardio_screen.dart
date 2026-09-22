@@ -801,35 +801,76 @@ class _ActivityChips extends StatelessWidget {
   }
 }
 
+/// Der Kopf eines Abschnitts der Auswertung: **Titel links, Grundlage rechts**.
+///
+/// ## Warum hier nichts gekürzt wird (seit 22.09.2026)
+///
+/// Beide Texte standen bis dahin auf `maxLines: 1` mit Ellipse. Schon bei
+/// Schriftfaktor 1,15 auf 361 dp las man deshalb „Verteilung der …" und
+/// „6 von 6 Einheiten m…" — am Render gesehen. Der abgeschnittene Teil ist
+/// nicht Zierrat: Rechts steht die **Grundlage mit Nenner**, und eine Zahl
+/// ohne ihre Grundlage ist in dieser App keine Zahl.
+///
+/// Die Regel und die Mechanik stammen aus [AtemBlockHeader]: gemessen wird
+/// mit einem [TextPainter], und passen beide nicht nebeneinander, rutscht
+/// der rechte Teil darunter. Eine Zeile mehr ist billiger als ein verlorener
+/// Titel. Anders als dort ist die Grundlage **keine Handlung** — sie bleibt
+/// linksbündig und in der dritten Textstufe, damit niemand sie für ein
+/// Tap-Ziel hält.
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle({required this.title, this.tag});
   final String title;
   final String? tag;
 
   @override
-  Widget build(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Flexible(
-            child: Text(title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AtemType.titleMedium.of(context)),
-          ),
-          if (tag != null) ...[
+  Widget build(BuildContext context) {
+    final titleStyle = AtemType.titleMedium.of(context);
+    final tagStyle = AtemType.meta.of(context);
+    final titleText = Text(title, style: titleStyle);
+    final label = tag;
+    if (label == null) return titleText;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scaler = MediaQuery.textScalerOf(context);
+        // `Directionality`, nicht `TextDirection.ltr`: In dieser Datei
+        // verdeckt `intl` den Namen — und die Leserichtung des Baums ist
+        // ohnehin die richtige Antwort.
+        final direction = Directionality.of(context);
+        double widthOf(String text, TextStyle style) => (TextPainter(
+              text: TextSpan(text: text, style: style),
+              textDirection: direction,
+              textScaler: scaler,
+              maxLines: 1,
+            )..layout())
+                .width;
+        final fits = widthOf(title, titleStyle) + 10 + widthOf(label, tagStyle) <=
+            constraints.maxWidth;
+
+        if (!fits) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              titleText,
+              const SizedBox(height: 2),
+              Text(label, style: tagStyle),
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Flexible(child: titleText),
             const SizedBox(width: 10),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 3),
-                child: Text(tag!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AtemType.meta.of(context)),
-              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Text(label, style: tagStyle),
             ),
           ],
-        ],
-      );
+        );
+      },
+    );
+  }
 }
 
 /// Die Hinweiszeile — der Notice-Slot aus Modul 2 in Grau.

@@ -7,6 +7,7 @@ import 'package:atem/features/history/domain/training_session.dart';
 import 'package:atem/features/pulse/presentation/widgets/zone_five_card.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -49,8 +50,12 @@ final _sessions = <TrainingSession>[
 ];
 
 void main() {
-  Future<AppL10n> pump(WidgetTester tester) async {
-    tester.view.physicalSize = const Size(361, 900);
+  Future<AppL10n> pump(
+    WidgetTester tester, {
+    Size size = const Size(361, 900),
+    double textScale = 1.0,
+  }) async {
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
@@ -69,7 +74,10 @@ void main() {
         localizationsDelegates: AppL10n.localizationsDelegates,
         supportedLocales: AppL10n.supportedLocales,
         builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          data: MediaQuery.of(context).copyWith(
+            disableAnimations: true,
+            textScaler: TextScaler.linear(textScale),
+          ),
           child: child!,
         ),
         home: const CardioScreen(),
@@ -110,5 +118,25 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('bei 200 % auf 320 dp wird keine Grundlage abgeschnitten',
+      (tester) async {
+    final l10n = await pump(tester,
+        size: const Size(320, 2400), textScale: 2.0);
+
+    /// Ob dieser Text an seiner Zeilengrenze gekürzt wurde. `find.text` allein
+    /// beweist nichts: Das Widget trägt die volle Zeichenkette auch dann, wenn
+    /// auf dem Schirm „6 von 6 Einheiten m…" steht.
+    bool truncated(Finder finder) =>
+        tester.renderObject<RenderParagraph>(finder).didExceedMaxLines;
+
+    final basis = l10n.analysisDistBasis(6, 6);
+    expect(find.text(l10n.analysisDistTitle), findsOneWidget);
+    expect(find.text(basis), findsOneWidget);
+    expect(truncated(find.text(l10n.analysisDistTitle)), isFalse,
+        reason: 'Ein abgeschnittener Titel ist ein verlorener Titel');
+    expect(truncated(find.text(basis)), isFalse,
+        reason: 'Eine Zahl ohne ihre Grundlage ist keine Zahl');
   });
 }
