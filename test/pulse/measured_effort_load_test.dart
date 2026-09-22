@@ -158,6 +158,52 @@ void main() {
     });
   });
 
+  group('die aktive Erholung', () {
+    test('ein gemessener leichter Lauf zählt jetzt als Erholung', () {
+      final session = run(linked: 'w');
+      // Ohne Kontext greift `rpe ?? 3 > 2` — die Einheit fiel durch.
+      expect(TrainingLoad.isRecovery(session), isFalse);
+      expect(
+        TrainingLoad.isRecovery(session, context: contextOf([watch('w', 1)])),
+        isTrue,
+      );
+    });
+
+    test('ein gemessenes Intervall zählt weiterhin nicht', () {
+      expect(
+        TrainingLoad.isRecovery(run(linked: 'w'),
+            context: contextOf([watch('w', 5)])),
+        isFalse,
+      );
+    });
+
+    test('eine eingetragene Anstrengung bleibt auch hier die Wahrheit', () {
+      // Getippt 4, gemessen Zone 1: Die Eingabe gewinnt, keine Erholung.
+      expect(
+        TrainingLoad.isRecovery(run(rpe: 4, linked: 'w'),
+            context: contextOf([watch('w', 1)])),
+        isFalse,
+      );
+    });
+
+    test('über einer Stunde ist nichts Erholung, auch nicht gemessen', () {
+      final long = CardioSession(
+        id: 'c',
+        userId: 'u',
+        date: day,
+        createdAt: day,
+        activity: CardioActivity.run,
+        duration: const Duration(minutes: 75),
+        healthSessionId: 'w',
+      );
+      expect(
+        TrainingLoad.isRecovery(long,
+            context: contextOf([watch('w', 1, windowMinutes: 75)])),
+        isFalse,
+      );
+    });
+  });
+
   group('Kraft bleibt vorerst unberührt', () {
     test('eine Krafteinheit mit Uhr rechnet weiter mit der Ersatzzahl', () {
       StrengthSession lifting({String? linked}) => StrengthSession(

@@ -104,7 +104,7 @@ abstract final class Readiness {
     for (final session in sessions) {
       if (!session.date.isBefore(end)) continue;
 
-      if (TrainingLoad.isRecovery(session)) {
+      if (TrainingLoad.isRecovery(session, context: context)) {
         recoveryDays.add(dayKey(session.date));
       }
 

@@ -61,9 +61,22 @@ class MeasuredEfforts {
   /// Die gemessene Anstrengung dieser Einheit, oder `null`.
   ///
   /// `null` heisst hier durchweg dasselbe: **Die Messung sagt nichts.** Keine
-  /// Uhr, keine Zonen, kein Pulsverlauf oder zu wenig davon — für den
-  /// Aufrufer ist das ein Fall, nicht vier.
+  /// Uhr, keine Zonen, kein Pulsverlauf, zu wenig davon — oder eine Einheit,
+  /// für die der Puls nicht spricht. Für den Aufrufer ist das ein Fall, nicht
+  /// fünf.
+  ///
+  /// ## Warum nur Cardio
+  ///
+  /// Bei Ausdauer beschreibt der Puls genau das, wonach die Anstrengung
+  /// fragt: wie hart es war. Bei Kraft misst er etwas anderes — eine schwere
+  /// Kniebeuge treibt ihn kaum, ein Zirkel dafür weit. Eine Krafteinheit mit
+  /// Uhr bekäme sonst eine Anstrengung, die an ihrer Last vorbeigeht.
+  ///
+  /// **Die Beschränkung steht hier und nur hier.** Jede Rechnung, die
+  /// [LoadContext.effortFor] benutzt, erbt sie damit — Last, Erholung und
+  /// was noch kommt. Fällt sie irgendwann, ist es diese eine Zeile.
   int? of(TrainingSession session) {
+    if (session is! CardioSession) return null;
     final linked = session.healthSessionId;
     return linked == null ? null : _byExternalId[linked];
   }

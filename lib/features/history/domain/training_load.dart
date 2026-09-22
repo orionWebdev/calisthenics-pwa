@@ -176,7 +176,10 @@ abstract final class TrainingLoad {
   /// Körpergewichts-Kennzeichnung als auch ein Satzgewicht — ihre Rohlast
   /// ändert sich rückwirkend. Keiner davon gehört zum aktuell aktiven Konto.
   static double _strength(StrengthSession session, LoadContext context) {
-    final factor = rpeFactor(session.rpe ?? defaultRpe);
+    // Dasselbe Rezept wie bei Cardio. Dass hier nichts Gemessenes ankommt,
+    // entscheidet `MeasuredEfforts.of` — nicht diese Zeile. Ein zweiter Weg
+    // zur selben Zahl wäre eine Stelle mehr, an der sie auseinanderlaufen.
+    final factor = rpeFactor(context.effortFor(session));
 
     // Ohne Übungen: Ersatzrechnung nach Dauer (Schnellerfassung).
     if (session.exercises.isEmpty) {
@@ -249,8 +252,28 @@ abstract final class TrainingLoad {
   /// Liste** — so steht es im JavaScript. Ob Absicht oder Versehen, ist nicht
   /// zu erkennen; die Portierung bildet es ab, statt es stillschweigend zu
   /// korrigieren. Eine Änderung verschöbe jeden historischen Wert.
-  static bool isRecovery(TrainingSession session) {
-    if ((session.rpe ?? defaultRpe) > 2) return false;
+  ///
+  /// ## Was der Puls hier ändert (seit 22.09.2026)
+  ///
+  /// „Leicht" hiess bisher `rpe ?? 3`, und der Ersatzwert 3 ist grösser als 2
+  /// — eine Einheit **ohne** eingetragene Anstrengung galt damit **nie** als
+  /// aktive Erholung. Ein Spaziergang von der Uhr fiel also durch, obwohl der
+  /// Puls die ganze Zeit in Zone 1 lag.
+  ///
+  /// Mit [context] gilt dieselbe Reihenfolge wie bei der Last: Eingetragenes
+  /// zuerst, dann Gemessenes, dann der Ersatzwert. Ohne [context] verhält sich
+  /// alles wie vorher — deshalb bleibt das Orakel grün.
+  ///
+  /// **Das ist mehr als eine Lückenfüllung.** Ein Erholungstag senkt die akute
+  /// Last im ACWR (`Readiness._recoveryBoost`). Gemessene leichte Einheiten
+  /// zählen von hier an mit, und die Bereitschaft fällt entsprechend milder
+  /// aus. Das ist gewollt: Ein leichter Lauf *ist* Erholung, und ihn als
+  /// Belastung zu führen war die Folge einer fehlenden Angabe, nicht einer
+  /// Aussage.
+  static bool isRecovery(TrainingSession session, {LoadContext? context}) {
+    final effort =
+        context?.effortFor(session) ?? session.rpe ?? defaultRpe;
+    if (effort > 2) return false;
 
     final minutes = _minutes(session.duration);
     if (minutes <= 0 || minutes > 60) return false;
