@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/widgets.dart';
 
 import '../../../../core/theme/theme.dart';
@@ -88,6 +86,7 @@ class PulseCurveChart extends StatefulWidget {
     required this.semanticLabel,
     required this.resolution,
     this.zones,
+    this.gapSeconds = 60,
     this.height = 96,
   });
 
@@ -109,6 +108,16 @@ class PulseCurveChart extends StatefulWidget {
 
   /// Ohne Grenzen eine einfarbige Linie, keine geratenen Zonen.
   final HeartRateZones? zones;
+
+  /// Wie lange ein Wert höchstens gilt, ohne dass ein neuer kommt.
+  ///
+  /// **Darüber beginnt ein neuer Abschnitt, darunter läuft die Linie durch.**
+  /// Das ist der Unterschied zwischen einer Lücke und einer gröberen Stelle
+  /// (Board 16, Nachtrag, „Wechselmarke · Regel") — und der Grund, warum die
+  /// Abschnitte nicht an der Schlitznachbarschaft hängen: Eine Uhr, die
+  /// minütlich misst, füllt im Zehn-Sekunden-Raster jeden sechsten Schlitz,
+  /// und ihre Kurve zerfiele sonst in lauter Einzelpunkte.
+  final int gapSeconds;
 
   /// Wie dicht gespeichert wurde, als Wort — „je Minute ein Wert".
   ///
@@ -197,7 +206,12 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
       // einen Wert erhöhen und senken; damit ist die Kurve auch ohne Augen
       // begehbar. Ein Bild wäre eine Zahl weniger, die jemand erfährt.
       slider: true,
-      label: widget.semanticLabel,
+      // **Die Ringe sprechen mit** (Board 16, Nachtrag, nA11y): Sie sind
+      // Teil des Kurvenlabels, kein eigener Knoten. Und sie sagen
+      // ausdrücklich „gezeichnet" — Max und Min der Einheit stehen in den
+      // Kacheln darüber und weichen ab, weil die Kurve Mittel zeichnet.
+      label: '${widget.semanticLabel} '
+          '${l10n.pulseCurveRingsA11y(maxBpm, minBpm)}.',
       // Flutter verlangt zu `increase`/`decrease` auch, wie der Wert danach
       // lautet — sonst kündigt der Screenreader den Schritt nicht an.
       value: _spokenPoint(l10n, _at(0)),
@@ -210,11 +224,6 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _Readout(
-            // Spanne **und** Auflösung in einer Zeile. Der Block trägt schon
-            // eine Grundlage; eine zweite darunter wäre die zweite sichtbare
-            // Hinweiszeile, die CLAUDE.md nicht zulässt.
-            range: l10n.pulseCurveSpan(
-                l10n.pulseCurveRange(minBpm, maxBpm), widget.resolution),
             marked: _markedText(l10n),
             // Die Obergrenze für die Höhe: längste Zeit, grösster Wert,
             // letzte Zone. Gemessen wird sie, gezeichnet nie — eine zweite,
@@ -251,6 +260,8 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
                       bpmBySlot: widget.bpmBySlot,
                       lastSlot: widget.lastSlot,
                       zones: widget.zones,
+                      slotSeconds: widget.slotSeconds,
+                      gapSeconds: widget.gapSeconds,
                       progress: progress,
                       marked: _marked,
                     ),
@@ -299,56 +310,54 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
   }
 }
 
-/// Spanne oder abgelesener Wert — **immer dieselbe Höhe**.
+/// Der abgelesene Wert — und sonst nichts.
 ///
-/// Die Höhe kommt aus einer Messung, nicht aus einer zweiten, unsichtbaren
-/// Zeile im Baum: Die stünde doppelt im Widget-Baum, und `find.text` fände
-/// sie zweimal. Gemessen werden die Spanne und die **längstmögliche**
-/// Ablesung ([widest]); die grössere gewinnt.
+/// ## Warum hier keine Spanne mehr steht (Board 16, Nachtrag)
 ///
-/// Bei 200 % auf 320 dp bricht die Ablesung um — die Zeile ist dann von
-/// vornherein zwei Zeilen hoch, und der Aufbau springt nicht, während man
-/// zieht.
+/// Bis zum 22.09.2026 abends stand hier „95–176 bpm". Daneben nennen die
+/// Kacheln Ø, Max und Min **aus den Rohwerten** der Uhr, während die Kurve
+/// Mittel zeichnet — zwei Zahlenpaare zur selben Frage, mit verschiedenen
+/// Grundlagen. Am Gerät las man „Max 120" und einen Schritt darunter
+/// „75–115 bpm"; wer das liest, sucht den Fehler bei sich.
+///
+/// Die Spanne ist deshalb entfallen. Die Ringe im Plot markieren weiter den
+/// höchsten und niedrigsten **gezeichneten** Wert; dass er unter Max liegt,
+/// sagt ein Satz im ⓘ.
+///
+/// ## Warum die Zeile trotzdem bleibt
+///
+/// Ihre Höhe kommt aus einer Messung der **längstmöglichen** Ablesung
+/// ([widest]), nicht aus einer zweiten, unsichtbaren Zeile im Baum: Die
+/// stünde doppelt darin, und `find.text` fände sie zweimal. So steht die
+/// Höhe vorher fest, und der Aufbau springt nicht, während man zieht — auch
+/// bei 200 %, wo die Ablesung umbricht.
 class _Readout extends StatelessWidget {
-  const _Readout({
-    required this.range,
-    required this.marked,
-    required this.widest,
-  });
+  const _Readout({required this.marked, required this.widest});
 
-  final String range;
   final String? marked;
   final String widest;
 
   @override
   Widget build(BuildContext context) {
-    // Die Spanne ist eine Metazeile, der abgelesene Wert die Aussage —
-    // deshalb steht er heller.
-    final rangeStyle = AtemType.meta.of(context);
-    final markedStyle = AtemType.body.of(context);
+    final style = AtemType.body.of(context);
     final shown = marked;
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final direction = Directionality.of(context);
-        final scaler = MediaQuery.textScalerOf(context);
-        double heightOf(String text, TextStyle style) => (TextPainter(
-              text: TextSpan(text: text, style: style),
-              textDirection: direction,
-              textScaler: scaler,
-            )..layout(maxWidth: constraints.maxWidth))
-                .height;
+        final height = (TextPainter(
+          text: TextSpan(text: widest, style: style),
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+        )..layout(maxWidth: constraints.maxWidth))
+            .height;
 
         return SizedBox(
-          height: math.max(
-            heightOf(range, rangeStyle),
-            heightOf(widest, markedStyle),
-          ),
+          height: height,
           child: Align(
             alignment: Alignment.centerLeft,
             child: shown == null
-                ? Text(range, style: rangeStyle)
-                : Text(shown, style: markedStyle),
+                ? const SizedBox.shrink()
+                : Text(shown, style: style),
           ),
         );
       },
@@ -356,8 +365,6 @@ class _Readout extends StatelessWidget {
   }
 }
 
-/// Anfang und Ende der Zeitachse. Passen beide nicht nebeneinander, bleibt
-/// das Ende — der Anfang ist immer null und damit die verzichtbare Hälfte.
 class _TimeAxis extends StatelessWidget {
   const _TimeAxis({required this.start, required this.end});
 
@@ -401,6 +408,8 @@ class _PulseCurvePainter extends CustomPainter {
     required this.bpmBySlot,
     required this.lastSlot,
     required this.zones,
+    required this.slotSeconds,
+    required this.gapSeconds,
     required this.progress,
     required this.marked,
   });
@@ -408,6 +417,8 @@ class _PulseCurvePainter extends CustomPainter {
   final Map<int, int> bpmBySlot;
   final int lastSlot;
   final HeartRateZones? zones;
+  final int slotSeconds;
+  final int gapSeconds;
   final double progress;
   final int? marked;
 
@@ -437,11 +448,18 @@ class _PulseCurvePainter extends CustomPainter {
   /// eine Behauptung.
   static const _flatThreshold = 3;
 
+  /// Die zusammenhängenden Abschnitte — **zeitlich**, nicht schlitzweise.
+  ///
+  /// Zwei Werte sechzig Sekunden auseinander sind kein Loch: Der erste gilt
+  /// bis zum zweiten, die Linie läuft durch. Erst über [gapSeconds] beginnt
+  /// ein neuer Abschnitt. Hinge das an der Schlitznachbarschaft, zerfiele
+  /// eine minütlich gemessene Kurve im Zehn-Sekunden-Raster in lauter
+  /// Einzelpunkte — und würde gar nicht gezeichnet.
   List<List<int>> _segments(List<int> sortedSlots) {
     final segments = <List<int>>[];
     List<int>? current;
     for (final m in sortedSlots) {
-      if (current != null && m == current.last + 1) {
+      if (current != null && (m - current.last) * slotSeconds <= gapSeconds) {
         current.add(m);
       } else {
         current = [m];
@@ -608,6 +626,8 @@ class _PulseCurvePainter extends CustomPainter {
       old.bpmBySlot != bpmBySlot ||
       old.lastSlot != lastSlot ||
       old.zones != zones ||
+      old.slotSeconds != slotSeconds ||
+      old.gapSeconds != gapSeconds ||
       old.progress != progress ||
       old.marked != marked;
 }

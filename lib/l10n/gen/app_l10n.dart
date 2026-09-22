@@ -8093,6 +8093,62 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{span} · {resolution}'**
   String pulseCurveSpan(String span, String resolution);
+
+  /// Board 16 Nachtrag · detail.hr.sections — nur wenn grösser als 1
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{in 1 Abschnitt} other{in {n} Abschnitten}}'**
+  String pulseCurveSections(int n);
+
+  /// Board 16 Nachtrag · detail.hr.basis — drei Glieder in einer Zeile
+  ///
+  /// In de, this message translates to:
+  /// **'Aus {min} von {total} min Aufzeichnung · {sections} · {resolution}'**
+  String pulseCurveBlockBasis(
+      int min, int total, String sections, String resolution);
+
+  /// Board 16 Nachtrag · dieselbe Zeile ohne Abschnittsglied, wenn es nur einen gibt
+  ///
+  /// In de, this message translates to:
+  /// **'Aus {min} von {total} min Aufzeichnung · {resolution}'**
+  String pulseCurveBlockBasisWhole(int min, int total, String resolution);
+
+  /// Board 16 Nachtrag · detail.hr.rings.a11y — ausdrücklich gezeichnet, nicht gemessen
+  ///
+  /// In de, this message translates to:
+  /// **'höchster gezeichneter Wert {max} bpm, niedrigster {min} bpm'**
+  String pulseCurveRingsA11y(int max, int min);
+
+  /// Board 16 Nachtrag · nA11y „Kurve mit Lücken" — die Abschnittszahl steht im Label, nicht nur im Bild
+  ///
+  /// In de, this message translates to:
+  /// **'Pulsverlauf, {dur} Minuten, aufgezeichnet {rec} Minuten {sections}, {resolution}'**
+  String pulseCurveA11yCurve(
+      int dur, int rec, String sections, String resolution);
+
+  /// Board 16 Nachtrag · detail.hr.explain.raw_vs_curve
+  ///
+  /// In de, this message translates to:
+  /// **'Die Kacheln nennen die Rohwerte der Uhr. Die Kurve zeichnet Mittel über je {interval}; ihr höchster Punkt liegt deshalb unter Max.'**
+  String pulseCurveExplainRawVsCurve(String interval);
+
+  /// Board 16 Nachtrag · das Mittelungsfenster als Wort, für den Erklärsatz
+  ///
+  /// In de, this message translates to:
+  /// **'10 Sekunden'**
+  String get pulseCurveIntervalTen;
+
+  /// Board 16 Nachtrag · dasselbe für die alte Ablage
+  ///
+  /// In de, this message translates to:
+  /// **'eine Minute'**
+  String get pulseCurveIntervalMinute;
+
+  /// Board 16 Nachtrag · der Zonenstichtag zog aus der Grundlage ins ⓘ, weil die Zeile nur drei Glieder trägt. **Ohne Schlusspunkt**: Ein abgekürztes Datum endet selbst auf einen Punkt („12. Sept."), und zwei nebeneinander sind ein sichtbarer Fehler.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Zonen vom {date}'**
+  String detailZonesSetOn(Object date);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

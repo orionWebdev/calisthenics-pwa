@@ -984,7 +984,7 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">100 % · 320 DP</span>
 <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,176,32,0.5),rgba(255,176,32,0))"></span>
 </div>
-<div style="margin-top:12px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:1000px">Ein 30/30-Intervalltraining über 24 Minuten mit 1,5 Minuten Lücke: Einlaufen, zwölf Minuten Wechsel, Auslaufen. Dieselben Rohdaten, dreimal abgelegt. Die Kurve steht unverändert (Zonenfarbe, Grenzlinien, Ringe, Spanne, Schieber) — nur die Auflösung ist verschieden, und sie wird genannt: <strong style="color:#CDD3EA">als Wort in der Grundlage und als Dichte im Taktstreifen</strong> unter dem Plot.</div>
+<div style="margin-top:12px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:1000px">Ein 30/30-Intervalltraining über 24 Minuten mit 1,5 Minuten Lücke: Einlaufen, zwölf Minuten Wechsel, Auslaufen. Dieselben Rohdaten, dreimal abgelegt. Die Kurve steht unverändert (Zonenfarbe, Grenzlinien, Ringe, Schieber — die Spanne ist mit <a href="#nachtrag-protokoll">N15</a> entfallen) — nur die Auflösung ist verschieden, und sie wird genannt: <strong style="color:#CDD3EA">als Wort in der Grundlage und als Dichte im Taktstreifen</strong> unter dem Plot.</div>
 
 <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:18px">
 
@@ -995,9 +995,8 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 <div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:9px">
 <div style="display:flex;align-items:center;gap:8px;min-height:28px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;color:#00F2FE">i</span></div>
-<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.1em;color:#94A3B8">SPANNE</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#FFFFFF">{{ cmspan }}</span></div>
 <svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
-<path d="{{ gridD }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="{{ cmgrid }}" stroke="#232334" stroke-width="1" fill="none"></path>
 <path d="{{ cmz1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ cmz2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ cmz3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
@@ -1031,9 +1030,8 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 <div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:9px">
 <div style="display:flex;align-items:center;gap:8px;min-height:28px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;color:#00F2FE">i</span></div>
-<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.1em;color:#94A3B8">SPANNE</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#FFFFFF">{{ ctspan }}</span></div>
 <svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
-<path d="{{ gridD }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="{{ ctgrid }}" stroke="#232334" stroke-width="1" fill="none"></path>
 <path d="{{ ctz1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ ctz2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ ctz3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
@@ -1059,10 +1057,9 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 <div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:9px">
 <div style="display:flex;align-items:center;gap:8px;min-height:28px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;color:#00F2FE">i</span></div>
-<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.1em;color:#94A3B8">SPANNE</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#FFFFFF">{{ cxspan }}</span></div>
 <svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
-<path d="{{ gridD }}" stroke="#232334" stroke-width="1" fill="none"></path>
-<path d="M125 8V80" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3 3" fill="none"></path>
+<path d="{{ cxgrid }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="M125 12V76" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3 3" fill="none"></path>
 <path d="{{ cxz1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ cxz2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ cxz3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
@@ -1111,9 +1108,8 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#FFB020">P1 · 10 S · 200 %</span></div>
 <div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px">
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:48px"><span style="font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:0.1em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:26px;height:26px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#00F2FE">i</span></div>
-<div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:0.08em;color:#94A3B8">SPANNE</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#FFFFFF">{{ ctspan }}</span></div>
 <svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
-<path d="{{ gridD }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="{{ ctgrid }}" stroke="#232334" stroke-width="1" fill="none"></path>
 <path d="{{ ctz1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ ctz2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ ctz3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
@@ -1136,10 +1132,9 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#FFB020">P2 · GEMISCHT · 200 %</span></div>
 <div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px">
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:48px"><span style="font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:0.1em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:26px;height:26px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#00F2FE">i</span></div>
-<div style="display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:0.08em;color:#94A3B8">SPANNE</span><span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#FFFFFF">{{ cxspan }}</span></div>
 <svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
-<path d="{{ gridD }}" stroke="#232334" stroke-width="1" fill="none"></path>
-<path d="M125 8V80" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3 3" fill="none"></path>
+<path d="{{ cxgrid }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="M125 12V76" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3 3" fill="none"></path>
 <path d="{{ cxz1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ cxz2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
 <path d="{{ cxz3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
@@ -1158,9 +1153,175 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 </div>
 
-<div data-screen-label="Q Bausteine Nachtrag" style="margin-top:60px;max-width:1240px">
+<div data-screen-label="Q Spanne und Rohwerte" style="margin-top:60px;max-width:1240px">
 <div style="display:flex;align-items:center;gap:12px">
-<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">Q</span>
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.45);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFB020">Q</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">DIE SPANNE UND DIE ROHWERTE — DER WIDERSPRUCH VOM 13.09.</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">ECHTE EINHEIT</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,176,32,0.5),rgba(255,176,32,0))"></span>
+</div>
+<div style="margin-top:12px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:1000px">Im selben Block standen untereinander <strong style="color:#CDD3EA">Ø 96 · Max 120 · Min 71</strong> (aus den Rohwerten) und darüber der Kurve <strong style="color:#CDD3EA">„82–107 bpm"</strong> (aus den Minutenmitteln). Beides stimmt, beides beschreibt dieselben 24 Minuten. Zwei Zahlenpaare für dieselbe Frage, mit verschiedenen Grundlagen, lesen sich als Fehler. Die Antwort ist nicht eine feinere Ablage — auch 10-s-Mittel bleiben Mittel — sondern <strong style="color:#CDD3EA">eine Zahl weniger und ein Satz mehr</strong> (<a href="#nachtrag-protokoll">N15</a>–<a href="#nachtrag-protokoll">N17</a>).</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:18px">
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.1);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">Q1 · HEUTE · WIDERSPRUCH</span>
+</div>
+<div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:8px;min-height:28px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;color:#00F2FE">i</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:12px;padding:7px 8px;display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:3px"><span style="flex:none;width:6px;height:6px;border-radius:50%;border:1.5px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.08em;color:#CDD3EA">Ø</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">96</span></div>
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:12px;padding:7px 8px;display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:3px"><span style="flex:none;width:6px;height:6px;border-radius:50%;border:1.5px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.08em;color:#CDD3EA">MAX</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">120</span></div>
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:12px;padding:7px 8px;display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:3px"><span style="flex:none;width:6px;height:6px;border-radius:50%;border:1.5px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.08em;color:#CDD3EA">MIN</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">71</span></div>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.1em;color:#94A3B8">SPANNE</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#FFFFFF">{{ m13span }}</span></div>
+<svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
+<path d="{{ m13grid }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="{{ m13z1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ m13z2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ m13z3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ m13dots }}" fill="#CDD3EA"></path>
+<circle cx="{{ m13maxX }}" cy="{{ m13maxY }}" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle cx="{{ m13minX }}" cy="{{ m13minY }}" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<path d="{{ m13ticks }}" stroke="#94A3B8" stroke-width="1" fill="none"></path>
+</svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;line-height:1.5">AUS 24 VON 24 MIN AUFZEICHNUNG · JE MINUTE EIN WERT</span>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Drei Fehler in einem Block: die Spanne widerspricht Max und Min, keine der beiden nennt ihre Grundlage, und „24 von 24 min" behauptet eine lückenlose Aufzeichnung, während vier Blöcke fehlen. Der Taktstreifen zeigt die Lücken bereits — die Zeile darunter leugnet sie.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,255,135,0.1);border:1px solid rgba(0,255,135,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00FF87">Q2 · GEWÄHLT · ⓘ OFFEN</span>
+</div>
+<div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:8px;min-height:28px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);background:rgba(0,242,254,0.12);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:700;color:#00F2FE">i</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:12px;padding:7px 8px;display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:3px"><span style="flex:none;width:6px;height:6px;border-radius:50%;border:1.5px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.08em;color:#CDD3EA">Ø</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">96</span></div>
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:12px;padding:7px 8px;display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:3px"><span style="flex:none;width:6px;height:6px;border-radius:50%;border:1.5px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.08em;color:#CDD3EA">MAX</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">120</span></div>
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:12px;padding:7px 8px;display:flex;flex-direction:column;gap:3px"><span style="display:flex;align-items:center;gap:3px"><span style="flex:none;width:6px;height:6px;border-radius:50%;border:1.5px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.08em;color:#CDD3EA">MIN</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">71</span></div>
+</div>
+<svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
+<path d="{{ s13grid }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="{{ s13z1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ s13z2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ s13z3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ s13dots }}" fill="#CDD3EA"></path>
+<circle cx="{{ s13maxX }}" cy="{{ s13maxY }}" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle cx="{{ s13minX }}" cy="{{ s13minY }}" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<path d="{{ s13ticks }}" stroke="#94A3B8" stroke-width="1" fill="none"></path>
+</svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;line-height:1.5">AUS {{ s13rec }} VON 24 MIN AUFZEICHNUNG · IN {{ s13sec }} ABSCHNITTEN · JE 10 S EIN WERT</span>
+<div style="background:#050507;border:1px solid #232334;border-radius:12px;padding:10px 11px;display:flex;flex-direction:column;gap:6px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.12em;color:#94A3B8">WIE DER VERLAUF ENTSTEHT</span>
+<span style="font-size:10.5px;color:#CDD3EA;line-height:1.65">Die Kacheln nennen die Rohwerte der Uhr. Die Kurve zeichnet Mittel über je 10 Sekunden; ihr höchster Punkt liegt deshalb unter Max.</span>
+<span style="font-size:10.5px;color:#94A3B8;line-height:1.65">Die Ringe markieren den höchsten und niedrigsten gezeichneten Wert.</span>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Die Spanne ist weg — nicht beschriftet, sondern weggelassen. Der Nenner nennt jetzt die aufgezeichneten Minuten und die Zahl der Abschnitte; die Auflösung steht in derselben Zeile. Der eine Satz im ⓘ erklärt, warum der höchste Punkt unter Max liegt — statt dass zwei Zahlen sich widersprechen.</div>
+</div>
+
+<div style="width:320px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,255,135,0.1);border:1px solid rgba(0,255,135,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00FF87">Q3 · GEWÄHLT · 200 %</span>
+</div>
+<div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:48px"><span style="font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:0.1em;color:#FFFFFF">PULS &amp; ZONEN</span><span style="flex:none;width:26px;height:26px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#00F2FE">i</span></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="display:flex;align-items:center;gap:8px"><span style="flex:none;width:12px;height:12px;border-radius:50%;border:2px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:0.06em;color:#CDD3EA">Ø PULS</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#FFFFFF">96</span></div>
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="display:flex;align-items:center;gap:8px"><span style="flex:none;width:12px;height:12px;border-radius:50%;border:2px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:0.06em;color:#CDD3EA">MAX</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#FFFFFF">120</span></div>
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.55);border-radius:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="display:flex;align-items:center;gap:8px"><span style="flex:none;width:12px;height:12px;border-radius:50%;border:2px solid #CDD3EA"></span><span style="font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:0.06em;color:#CDD3EA">MIN</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#FFFFFF">71</span></div>
+</div>
+<svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
+<path d="{{ s13grid }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="{{ s13z1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ s13z2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ s13z3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ s13dots }}" fill="#CDD3EA"></path>
+<circle cx="{{ s13maxX }}" cy="{{ s13maxY }}" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle cx="{{ s13minX }}" cy="{{ s13minY }}" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<path d="{{ s13ticks }}" stroke="#94A3B8" stroke-width="1.6" fill="none"></path>
+</svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:15px;color:#94A3B8;line-height:1.55">AUS {{ s13rec }} VON 24 MIN AUFZEICHNUNG · IN {{ s13sec }} ABSCHNITTEN · JE 10 S EIN WERT</span>
+<div style="border:1px solid #232334;border-radius:16px;padding:0 14px;min-height:48px;display:flex;align-items:center;gap:10px">
+<span style="flex:none;width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,242,254,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#00F2FE">i</span>
+<span style="flex:1;font-size:15px;color:#00F2FE;line-height:1.4">Wie der Verlauf entsteht</span>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Bei 200 % stehen die drei Pulskacheln als Zeilen mit Label links und Wert rechts — dieselbe Reihenfolge, nur gestapelt. Die Grundlage nimmt drei Zeilen, die Kurve behält ihre Höhe.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="R Lücke oder Wechsel" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.45);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFB020">R</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">LÜCKE ODER WECHSEL — ZWEI UNTERBRECHUNGEN, EINE REGEL</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,176,32,0.5),rgba(255,176,32,0))"></span>
+</div>
+<div style="margin-top:12px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:1000px">Im Taktstreifen sehen beide nach „weniger Striche" aus. Sie sind aber verschieden: bei der Lücke <strong style="color:#CDD3EA">hat die Uhr nichts gemessen</strong>, beim Wechsel <strong style="color:#CDD3EA">hat sie seltener gemessen</strong>. Die Unterscheidung liegt deshalb nicht im Streifen, sondern in der Linie.</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:18px">
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00F2FE">R1 · LÜCKE</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">BEOBACHTET</span>
+</div>
+<div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:9px">
+<svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
+<path d="{{ gagrid }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="{{ gaz1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ gaz2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ gaz3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ gadots }}" fill="#CDD3EA"></path>
+<path d="{{ gaticks }}" stroke="#94A3B8" stroke-width="1" fill="none"></path>
+</svg>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.1em;color:#94A3B8">SCHIEBER</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#FFFFFF">11:20 · KEINE AUFZEICHNUNG</span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;line-height:1.5">AUS {{ gaRec }} VON 24 MIN AUFZEICHNUNG · IN {{ gaSec }} ABSCHNITTEN · JE 10 S EIN WERT</span>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Die Linie ist unterbrochen, keine Punkte, keine Striche. Die Lücke trägt <strong style="color:#CDD3EA">kein eigenes Zeichen</strong> — Abwesenheit wird nicht dekoriert. Genannt wird sie zweimal in Worten: der Schieber sagt es an der Stelle, die Grundlage zählt die Abschnitte.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00F2FE">R2 · WECHSEL</span>
+<span style="border:1px solid rgba(255,176,32,0.4);border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#FFB020">NOCH KEIN FALL IM BESTAND</span>
+</div>
+<div style="margin-top:9px;background:#0B0C14;border:1px solid #232334;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:9px">
+<svg viewBox="0 0 248 92" style="width:100%;height:auto;display:block">
+<path d="{{ gbgrid }}" stroke="#232334" stroke-width="1" fill="none"></path>
+<path d="M125 12V76" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3 3" fill="none"></path>
+<path d="{{ gbz1 }}" stroke="#00F2FE" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ gbz2 }}" stroke="#00FF87" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ gbz3 }}" stroke="#FFB020" stroke-width="2" fill="none" stroke-linecap="round"></path>
+<path d="{{ gbdots }}" fill="#CDD3EA"></path>
+<path d="{{ gbticks }}" stroke="#94A3B8" stroke-width="1" fill="none"></path>
+</svg>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.1em;color:#94A3B8">SCHIEBER</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#FFFFFF">{{ gbmk }}</span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;line-height:1.5">AUS 24 VON 24 MIN AUFZEICHNUNG · JE 10 S, AB 12:00 JE MINUTE</span>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Die Linie <strong style="color:#CDD3EA">läuft durch</strong> die gestrichelte Marke, die Punkte stehen weiter auseinander, der Streifen wird dünner besetzt — aber er bleibt besetzt. Kein Loch, keine zweite Fläche, kein Farbwechsel.</div>
+</div>
+
+<div style="flex:1 1 400px;min-width:360px;background:#0B0B0E;border:1px solid rgba(255,176,32,0.35);border-radius:20px;padding:22px 24px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#FFB020">DIE REGEL — DREI ANTWORTEN</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:13px">
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:18px;height:18px;border-radius:6px;background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#FFB020">1</span><span style="flex:1;font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Gemischt ist keine Schwelle, sondern eine Eigenschaft der Ablage.</strong> Eine Marke steht nur, wo zwei verschiedene <em style="font-style:normal;color:#FFFFFF">gespeicherte</em> Auflösungen aneinandergrenzen. Ungleiche Abstände innerhalb einer Auflösung sind Lücken — wie unregelmässig die Uhr auch gemessen hat. Ein gröberer Abschnitt mit weniger als zwei eigenen Werten ist ebenfalls eine Lücke, weil zwei Werte das Mindeste sind, aus dem ein Abstand entsteht.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:18px;height:18px;border-radius:6px;background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#FFB020">2</span><span style="flex:1;font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Die Linie unterscheidet, nicht der Streifen.</strong> Über eine Lücke läuft keine Linie; durch eine Marke läuft sie weiter. Wer beide in derselben Kurve sieht, liest den Unterschied am Bild ab, ohne die Legende zu kennen. Deshalb braucht die Lücke kein Zeichen und die Marke keine Farbe.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:18px;height:18px;border-radius:6px;background:rgba(255,176,32,0.12);border:1px solid rgba(255,176,32,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#FFB020">3</span><span style="flex:1;font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Ja, die Lücke bekommt ein Wort — in der Grundlage.</strong> Der Nenner sind die aufgezeichneten Minuten, und die Zahl der Abschnitte steht daneben: „aus 18 von 24 min Aufzeichnung · in 5 Abschnitten · je 10 s ein Wert". Sie erscheint nur, wenn es mehr als einen Abschnitt gibt, und bleibt Teil derselben Zeile — keine zweite Hinweiszeile.</span></div>
+</div>
+<div style="margin-top:16px;padding-top:14px;border-top:1px solid #232334;font-size:12px;color:#94A3B8;line-height:1.7">Damit ist die Marke gebaut, aber ausgesetzt: Health Connect liefert je Datensatz eine Auflösung, und der Bestand kennt keinen Fall mit zwei. Bis einer auftritt, ist <strong style="color:#CDD3EA">jede Unterbrechung eine Lücke</strong> — und genau so wird sie gezeichnet.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="S Bausteine Nachtrag" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">S</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">BAUSTEINE DES NACHTRAGS</span>
 <span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
 </div>
@@ -1177,9 +1338,9 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 </div>
 
-<div data-screen-label="R Bewegung Nachtrag" style="margin-top:60px;max-width:1240px">
+<div data-screen-label="T Bewegung Nachtrag" style="margin-top:60px;max-width:1240px">
 <div style="display:flex;align-items:center;gap:12px">
-<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">R</span>
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">T</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">BEWEGUNG — WAS SICH BEWEGT UND WAS EIN ZUSTAND IST</span>
 <span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
 </div>
@@ -1196,9 +1357,9 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 </div>
 
-<div data-screen-label="S Stringtabelle Nachtrag" style="margin-top:60px;max-width:1160px">
+<div data-screen-label="U Stringtabelle Nachtrag" style="margin-top:60px;max-width:1160px">
 <div style="display:flex;align-items:center;gap:12px">
-<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">S</span>
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">U</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">STRINGTABELLE · NACHTRAG</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">DEUTSCH IST PRIMÄR · ZÄHLFORMEN MIT EINZAHL</span>
 <span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
@@ -1217,9 +1378,9 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 </div>
 
-<div data-screen-label="T A11y Nachtrag" style="margin-top:60px;max-width:1240px">
+<div data-screen-label="V A11y Nachtrag" style="margin-top:60px;max-width:1240px">
 <div style="display:flex;align-items:center;gap:12px">
-<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">T</span>
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">V</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">A11Y · NACHTRAG</span>
 <span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
 </div>
@@ -1236,9 +1397,9 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 </div>
 
-<div id="nachtrag-protokoll" data-screen-label="U Entscheidungsprotokoll Nachtrag" style="margin-top:60px;max-width:980px">
+<div id="nachtrag-protokoll" data-screen-label="W Entscheidungsprotokoll Nachtrag" style="margin-top:60px;max-width:980px">
 <div style="display:flex;align-items:center;gap:12px">
-<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">U</span>
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">W</span>
 <span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">ENTSCHEIDUNGSPROTOKOLL · NACHTRAG</span>
 <span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
 </div>
@@ -1256,8 +1417,8 @@ a{color:#00F2FE}a:hover{color:#7ee9ff}
 </div>
 </div>
 
-<div data-screen-label="V Offene Fragen Nachtrag" style="margin-top:60px;max-width:980px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px 28px">
-<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">V · OFFEN AUS DIESEM NACHTRAG</div>
+<div data-screen-label="X Offene Fragen Nachtrag" style="margin-top:60px;max-width:980px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px 28px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">X · OFFEN AUS DIESEM NACHTRAG</div>
 <div style="margin-top:14px;display:flex;flex-direction:column;gap:11px">
 <div style="font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">Gemessene Anstrengung bei Kraft.</strong> Die neue Reihenfolge gilt für Cardio. Liegt an einer Krafteinheit ein Pulsverlauf, wäre die gemessene Anstrengung dort ebenso rechenbar — mit der Frage, ob ein Zirkel und ein schweres Kreuzheben dieselbe Zonenzählung verdienen. Annahme: erst nach einer Beobachtung am Bestand, nicht jetzt.</div>
 <div style="font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">Nenner der gemessenen Anstrengung.</strong> Sie ist der zeitgewichtete Schnitt über die aufgezeichneten Minuten, nicht über die Einheit. Bei 21 von 52 min ist das ein Schnitt über 40 % der Zeit. Offen: ab welchem Anteil die App lieber den Ersatzwert nimmt — Annahme: keine Schwelle, aber der Nenner steht im ⓘ.</div>
@@ -1475,20 +1636,23 @@ class Component extends DCLogic {
       if (t < 960) { const p = ((t - 240) % 60) / 60; return p < 0.5 ? 138 + (p / 0.5) * 36 : 174 - ((p - 0.5) / 0.5) * 36; }
       return 152 - ((t - 960) / 480) * 46;
     };
-    const GAP = [840, 930];
-    const bucket = (start, len) => {
+    const GAP = [[840, 930]];
+    const inGaps = (t, gaps) => gaps.some(g => t >= g[0] && t < g[1]);
+    const bucket = (start, len, fn, gaps) => {
       let s = 0, n = 0;
-      for (let t = start; t < start + len; t++) { if (t >= GAP[0] && t < GAP[1]) continue; s += hr(t); n++; }
+      for (let t = start; t < start + len; t++) { if (inGaps(t, gaps)) continue; s += fn(t); n++; }
       return n < len * 0.5 ? null : Math.round(s / n);
     };
-    const series = (len, from, to) => {
+    const series = (len, from, to, fn, gaps) => {
       const out = [];
-      for (let t = from; t < to; t += len) out.push({ t: t + len / 2, v: bucket(t, len), len });
+      for (let t = from; t < to; t += len) out.push({ t: t + len / 2, v: bucket(t, len, fn, gaps), len });
       return out;
     };
-    const L = 10, R = 240, T = 12, B = 76, LO = 94, HI = 180;
+    const runs = pts => { let n = 0, prev = null; pts.forEach(p => { if (p.v != null && (prev === null || prev.v == null)) n++; prev = p; }); return n; };
+    const L = 10, R = 240, T = 12, B = 76;
     const X = t => L + (t / 1440) * (R - L);
-    const Y = v => B - ((v - LO) / (HI - LO)) * (B - T);
+    const mkY = (lo, hi) => v => B - ((v - lo) / (hi - lo)) * (B - T);
+    let Y = mkY(94, 180);
     const paths = pts => {
       const d = { 1: '', 2: '', 3: '', 4: '', 5: '' };
       for (let i = 0; i < pts.length - 1; i++) {
@@ -1506,19 +1670,30 @@ class Component extends DCLogic {
       return d;
     };
     const ticks = pts => pts.filter(p => p.v != null).map(p => 'M' + X(p.t).toFixed(1) + ' 84v5').join('');
-    const dots = pts => pts.filter(p => p.v != null).map(p => {
-      const x = X(p.t).toFixed(1), y = Y(p.v).toFixed(1);
-      return 'M' + x + ' ' + y + 'm-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0';
-    }).join('');
+    const dots = pts => {
+      const av = pts.filter(p => p.v != null);
+      return av.map((p, i) => {
+        const gapL = i > 0 ? X(p.t) - X(av[i - 1].t) : Infinity;
+        const gapR = i < av.length - 1 ? X(av[i + 1].t) - X(p.t) : Infinity;
+        if (Math.min(gapL, gapR) < 3.5) return '';
+        const x = X(p.t).toFixed(1), y = Y(p.v).toFixed(1);
+        return 'M' + x + ' ' + y + 'm-1.3 0a1.3 1.3 0 1 0 2.6 0a1.3 1.3 0 1 0 -2.6 0';
+      }).join('');
+    };
     const mmss = s => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
     const pack = (p, pts, t0) => {
-      const d = paths(pts), av = pts.filter(q => q.v != null);
+      const av = pts.filter(q => q.v != null);
+      const lo = av.reduce((a, b) => Math.min(a, b.v), 999) - 6;
+      const hi = av.reduce((a, b) => Math.max(a, b.v), 0) + 6;
+      Y = mkY(lo, hi);
+      const d = paths(pts);
       const mx = av.reduce((a, b) => b.v > a.v ? b : a), mn = av.reduce((a, b) => b.v < a.v ? b : a);
       const c = av.reduce((a, b) => Math.abs(b.t - t0) < Math.abs(a.t - t0) ? b : a);
       const o = {};
       [1, 2, 3, 4, 5].forEach(i => { o[p + 'z' + i] = d[i] || ''; });
       o[p + 'dots'] = dots(pts);
       o[p + 'ticks'] = ticks(pts);
+      o[p + 'grid'] = [111, 130, 148, 167].filter(v => v > lo && v < hi).map(v => 'M' + L + ' ' + Y(v).toFixed(1) + 'H' + R).join('');
       o[p + 'maxX'] = X(mx.t).toFixed(1); o[p + 'maxY'] = Y(mx.v).toFixed(1);
       o[p + 'minX'] = X(mn.t).toFixed(1); o[p + 'minY'] = Y(mn.v).toFixed(1);
       o[p + 'span'] = mn.v + '–' + mx.v + ' BPM';
@@ -1528,9 +1703,16 @@ class Component extends DCLogic {
       o[p + 'count'] = av.length;
       return o;
     };
-    const min1 = series(60, 0, 1440);
-    const ten = series(10, 0, 1440);
-    const mix = series(60, 0, 720).concat(series(10, 720, 1440));
+    const min1 = series(60, 0, 1440, hr, GAP);
+    const ten = series(10, 0, 1440, hr, GAP);
+    const mix = series(60, 0, 720, hr, GAP).concat(series(10, 720, 1440, hr, GAP));
+    const G13 = [[300, 390], [690, 750], [840, 960], [1230, 1320]];
+    const hr13 = t => 96 + 11 * Math.sin(t / 113) + 4 * Math.sin(t / 41);
+    const m13 = series(60, 0, 1440, hr13, G13);
+    const s13 = series(10, 0, 1440, hr13, G13);
+    const hrB = t => 104 + 20 * Math.sin(t / 150) + 5 * Math.sin(t / 47);
+    const gA = series(10, 0, 1440, hrB, [[600, 780]]);
+    const gB = series(10, 0, 720, hrB, []).concat(series(60, 720, 1440, hrB, []));
     const zTime = pts => {
       const m = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
       pts.forEach(p => { if (p.v != null) m[zoneOf(p.v)] += p.len; });
@@ -1539,8 +1721,13 @@ class Component extends DCLogic {
     const tm = zTime(min1), tt = zTime(ten);
     const maxT = Math.max.apply(null, [1, 2, 3, 4, 5].map(i => Math.max(tm[i], tt[i])));
     return Object.assign(
-      { gridD: [111, 130, 148, 167].map(v => 'M' + L + ' ' + Y(v).toFixed(1) + 'H' + R).join('') },
+      {},
       pack('cm', min1, 690), pack('ct', ten, 690), pack('cx', mix, 690),
+      pack('m13', m13, 690), pack('s13', s13, 690), pack('ga', gA, 540), pack('gb', gB, 960),
+      {
+        s13sec: runs(s13), s13rec: Math.round(s13.filter(p => p.v != null).length / 6),
+        gaSec: runs(gA), gaRec: Math.round(gA.filter(p => p.v != null).length / 6)
+      },
       {
         nzLeg: [1, 2, 3, 4, 5].map(i => ({
           z: 'Z' + i, c: ZC[i],
@@ -1567,15 +1754,21 @@ class Component extends DCLogic {
         { el: 'Ring-Glyph in der Grundlagenzeile', v: '8 dp hohl, 1,5 dp #CDD3EA, unmittelbar vor dem Wort „gemessen" — er qualifiziert die Eingangsgrösse, nicht die Kachel. Bedeutung unverändert aus Modul 14/15: aus fremder Quelle.' },
         { el: 'Herkunftspunkt der Kachel', v: 'Entfällt bei der Last — sie trägt keinen. Punktlos heisst: diese Zahl behauptet keine Messung. Die drei anderen Kacheln behalten gefüllt bzw. hohl.' },
         { el: 'Erklärung (ⓘ Quellenkapsel)', v: 'Formel, gewählte Eingangsgrösse, Zeitgewichtung und — falls vorhanden — der nicht verwendete gemessene Wert. Klappt in der Kapsel auf, öffnet kein Blatt.' },
-        { el: 'Kurve · Plotfeld', v: 'viewBox 248 × 92 (320 dp) · Plot x 10…240, y 12…76 · bpm-Fenster 94…180 fest je Einheit aus min/max + 6 bpm Luft.' },
+        { el: 'Kurve · Plotfeld', v: 'viewBox 248 × 92 (320 dp) · Plot x 10…240, y 12…76 · bpm-Fenster je Einheit aus ihrem eigenen kleinsten und grössten gezeichneten Wert + 6 bpm Luft. Keine gemeinsame Skala über Einheiten — zwei Kurven sind nicht der Höhe nach vergleichbar, und die Achse behauptet es auch nicht.' },
+        { el: 'Kurve · Zonengrenzen', v: 'Haarlinie 1 dp #232334 auf 111/130/148/167 — aber nur auf den Grenzen, die im Fenster dieser Einheit liegen. Eine ruhige Einheit zeigt eine Grenze, ein Intervalltraining vier. Ohne Beschriftung im Plot; die Zonenzeilen darunter nennen Nummer, Bereich und Minuten.' },
         { el: 'Kurve · Linie', v: '2 dp, Farbe der Zone des Werts, Wechsel auf der Segmentmitte. Keine Glättung, keine Bezier — nur Geraden zwischen gespeicherten Werten. Lücke = keine Linie.' },
-        { el: 'Kurve · Wertpunkt', v: '2,6 dp Punkt #CDD3EA auf jedem gespeicherten Wert. Bei 10-s-Ablage verschmelzen sie zur dichten Spur — die Dichte selbst ist die Auskunft.' },
+        { el: 'Kurve · Wertpunkt', v: '2,6 dp Punkt #CDD3EA auf jedem gespeicherten Wert — aber nur, wo zwischen zwei Werten mindestens 3,5 dp liegen. Bei 10-s-Ablage stehen die Werte enger als der Punkt breit ist; dort entfallen die Punkte, weil sie sonst die Zonenfarbe der Linie überdecken würden. Die Dichte trägt dann der Taktstreifen, nicht der Plot. In einer gemischten Kurve gilt das je Stelle: der gröbere Teil behält seine Punkte.' },
         { el: 'Kurve · Zonengrenzen', v: 'Haarlinie 1 dp #232334 auf 111/130/148/167. Ohne Beschriftung im Plot — die Zonenzeilen darunter nennen Nummer, Bereich und Minuten.' },
-        { el: 'Kurve · Ringe', v: 'Höchster und niedrigster Wert, 4 dp Ring 1,5 dp #FFFFFF, ohne Zahl im Plot. Die Spanne steht als Wort darüber.' },
+        { el: 'Kurve · Ringe', v: 'Höchster und niedrigster Wert, 4 dp Ring 1,5 dp #FFFFFF, ohne Zahl im Plot. Sie liegen nie am Rand, weil das Fenster 6 bpm Luft nach oben und unten lässt.' },
         { el: 'Taktstreifen', v: 'Unter dem Plot, y 84…89, 1 dp #94A3B8 je gespeichertem Wert — in dieser Einheit 23 Striche bei Minutenablage, 135 bei 10-s-Ablage. Lücken tragen keine Striche.' },
         { el: 'Wechselmarke (gemischt)', v: 'Gestrichelte Senkrechte 1 dp #232334 (3/3) über die Plothöhe, dazu ein Wort in der Grundlage: „ab 12:00 je 10 s". Kein Farbwechsel, keine zweite Fläche.' },
         { el: 'Schieber-Ablesung', v: 'Mono 11 sp #FFFFFF: Zeit · bpm · Zone als Wort. Marke rastet auf den nächstgelegenen gespeicherten Wert — bei 10-s-Ablage auf 10 s, bei Minutenablage auf die Minute.' },
-        { el: 'Zonenzeile (ergänzt)', v: 'Unverändert violetter Balken, zusätzlich 6 dp Punkt in der Zonenfarbe vor „Z3". Der Punkt ist der einzige Schlüssel zwischen Kurvenfarbe und Zonennamen; Text bleibt #CDD3EA / #94A3B8.' }
+        { el: 'Zonenzeile (ergänzt)', v: 'Unverändert violetter Balken, zusätzlich 6 dp Punkt in der Zonenfarbe vor „Z3". Der Punkt ist der einzige Schlüssel zwischen Kurvenfarbe und Zonennamen; Text bleibt #CDD3EA / #94A3B8.' },
+        { el: 'Spanne über der Kurve', v: 'Entfällt. Ø, Max und Min stehen als Kacheln aus den Rohwerten der Uhr; die Kurve zeichnet Mittel. Zwei Zahlenpaare für dieselbe Frage, mit verschiedenen Grundlagen, widersprechen sich sichtbar — die Kurve trägt deshalb keine eigene Spanne mehr.' },
+        { el: 'Ringe der Kurve', v: 'Bleiben, bedeuten aber „höchster und niedrigster gezeichneter Wert", nicht Max und Min der Einheit. Ohne Zahl im Plot; der Unterschied zu den Kacheln steht in einem Satz im ⓘ.' },
+        { el: 'Grundlage des Blocks', v: 'Drei Glieder in einer Zeile: aufgezeichnete von der Gesamtdauer · Zahl der Abschnitte (nur wenn grösser als 1) · Auflösung. „aus 18 von 24 min Aufzeichnung · in 5 Abschnitten · je 10 s ein Wert". Kein „24 von 24", wenn sechs Minuten fehlen.' },
+        { el: 'Lücke', v: 'Keine Linie, keine Punkte, keine Striche im Taktstreifen — Abwesenheit bekommt kein eigenes Zeichen. Genannt wird sie zweimal in Worten: die Grundlage zählt die Abschnitte, der Schieber sagt an der Stelle „keine Aufzeichnung".' },
+        { el: 'Wechselmarke · Regel', v: 'Nur wenn in einer Einheit zwei verschiedene gespeicherte Auflösungen liegen. Ungleiche Abstände innerhalb einer Auflösung sind Lücken, nie ein Wechsel. Ein gröberer Abschnitt mit weniger als zwei eigenen Werten ist eine Lücke. Prüfbar am Bild: die Linie läuft durch die Marke, über eine Lücke läuft sie nicht.' }
       ],
       nMotion: [
         { el: 'Herkunft der Lastkachel', trigger: '— (kein Auslöser)', prop: 'Zustand. Die Grundlagenzeile ist mit der Kachel da, sie blendet nicht ein und zählt nicht auf.', dur: '0 ms', curve: '—', rest: 'sichtbar, solange die Kachel da ist', reduced: 'unverändert', tc: '#94A3B8' },
@@ -1584,7 +1777,8 @@ class Component extends DCLogic {
         { el: 'Kurve zeichnet', trigger: 'Block erstmals sichtbar', prop: 'Pfadlänge 0 → 1 von links nach rechts, einmal; Punkte und Ringe erscheinen mit ihrer Stelle', dur: '420 ms', curve: 'ease-out-quart', rest: 'vollständige Kurve', reduced: 'sofort fertig', tc: '#FFB020' },
         { el: 'Taktstreifen', trigger: 'derselbe Anschluss', prop: 'wächst mit der Kurve, dieselbe Front, keine eigene Dauer — Auflösung und Verlauf entstehen zusammen', dur: '420 ms', curve: 'ease-out-quart', rest: 'stehend', reduced: 'sofort fertig', tc: '#94A3B8' },
         { el: 'Wechselmarke', trigger: 'Front erreicht den Wechsel', prop: 'Deckkraft 0 → 1 an der Stelle, an der die Front sie passiert; kein Aufblitzen, kein Nachziehen', dur: '120 ms', curve: 'ease-out', rest: 'sichtbar', reduced: 'sofort sichtbar', tc: '#CDD3EA' },
-        { el: 'Schieber', trigger: 'Ziehen über die Kurve', prop: 'folgt dem Finger ohne eigene Dauer; Marke springt auf den nächsten gespeicherten Wert, Ablesung wechselt hart', dur: '—', curve: '—', rest: 'Schieber verschwindet beim Loslassen, Kurve bleibt', reduced: 'unverändert', tc: '#00F2FE' }
+        { el: 'Schieber', trigger: 'Ziehen über die Kurve', prop: 'folgt dem Finger ohne eigene Dauer; Marke springt auf den nächsten gespeicherten Wert, Ablesung wechselt hart', dur: '—', curve: '—', rest: 'Schieber verschwindet beim Loslassen, Kurve bleibt', reduced: 'unverändert', tc: '#00F2FE' },
+        { el: 'Lücke beim Zeichnen', trigger: 'Front erreicht eine Lücke', prop: 'die Front überspringt den Bereich im selben Lauf — nichts wird gezeichnet, nichts pausiert, nichts blitzt auf. Die Linie endet und beginnt später neu', dur: '— (Teil der 420 ms)', curve: 'derselbe Lauf', rest: 'unterbrochene Linie', reduced: 'sofort fertig', tc: '#94A3B8' }
       ],
       nStrings: [
         { k: 'detail.load.label', de: 'Last', en: 'Load' },
@@ -1604,8 +1798,10 @@ class Component extends DCLogic {
         { k: 'detail.hr.resolution.minute', de: 'je Minute ein Wert', en: 'one value per minute' },
         { k: 'detail.hr.resolution.ten', de: 'je 10 Sekunden ein Wert', en: 'one value per 10 seconds' },
         { k: 'detail.hr.resolution.mixed', de: 'je Minute, ab {time} je 10 Sekunden', en: 'per minute, from {time} per 10 seconds' },
-        { k: 'detail.hr.basis', de: 'Aus {n, plural, one {# Minute} other {# Minuten}} von {total} Aufzeichnung · {resolution}', en: 'From {n, plural, one {# minute} other {# minutes}} of {total} recorded · {resolution}' },
-        { k: 'detail.hr.span', de: '{min}–{max} bpm', en: '{min}–{max} bpm' },
+        { k: 'detail.hr.basis', de: 'Aus {n, plural, one {# Minute} other {# Minuten}} von {total} Aufzeichnung · {sections} · {resolution}', en: 'From {n, plural, one {# minute} other {# minutes}} of {total} recorded · {sections} · {resolution}' },
+        { k: 'detail.hr.sections', de: 'in {n, plural, one {# Abschnitt} other {# Abschnitten}}', en: 'in {n, plural, one {# section} other {# sections}}' },
+        { k: 'detail.hr.explain.raw_vs_curve', de: 'Die Kacheln nennen die Rohwerte der Uhr. Die Kurve zeichnet Mittel über je {interval}; ihr höchster Punkt liegt deshalb unter Max.', en: 'The tiles show the watch’s raw values. The curve draws averages over {interval} each; its highest point is therefore below max.' },
+        { k: 'detail.hr.rings.a11y', de: 'höchster gezeichneter Wert {max} bpm, niedrigster {min} bpm', en: 'highest drawn value {max} bpm, lowest {min} bpm' },
         { k: 'detail.hr.point', de: '{time} · {bpm} bpm · Zone {zone}', en: '{time} · {bpm} bpm · zone {zone}' },
         { k: 'detail.hr.gap', de: '{n, plural, one {# Minute} other {# Minuten}} ohne Aufzeichnung', en: '{n, plural, one {# minute} other {# minutes}} without recording' },
         { k: 'detail.hr.a11y.curve', de: 'Pulsverlauf, {dur} Minuten, {min} bis {max} bpm, {resolution}. Zum Durchgehen wischen.', en: 'Heart-rate curve, {dur} minutes, {min} to {max} bpm, {resolution}. Swipe to step through.' },
@@ -1624,7 +1820,9 @@ class Component extends DCLogic {
         { el: 'Lücke in der Kurve', label: '„14:00, keine Aufzeichnung."', role: 'Wert des Sliders', state: 'die Lücke ist ein eigener Schritt, kein Sprung' },
         { el: 'Taktstreifen', label: '—', role: 'excludeSemantics', state: 'die Auflösung steht als Wort in der Grundlage und im Kurvenlabel' },
         { el: 'Wechselmarke (gemischt)', label: '„ab 12:00 je 10 Sekunden" (Teil der Grundlage)', role: 'Text', state: 'als Wort, nicht als Marke allein' },
-        { el: 'Zonenzeile', label: '„Zone 3, 131 bis 148 bpm, 6 Minuten 20."', role: 'ein Knoten je Zeile · img', state: 'Punktfarbe wird nicht genannt — Nummer und Bereich tragen die Zuordnung' }
+        { el: 'Zonenzeile', label: '„Zone 3, 131 bis 148 bpm, 6 Minuten 20."', role: 'ein Knoten je Zeile · img', state: 'Punktfarbe wird nicht genannt — Nummer und Bereich tragen die Zuordnung' },
+        { el: 'Kurve mit Lücken', label: '„Pulsverlauf, 24 Minuten, aufgezeichnet 18 Minuten in 5 Abschnitten, je 10 Sekunden ein Wert."', role: 'slider · ein Knoten', state: 'die Abschnittszahl steht im Label, nicht nur im Bild' },
+        { el: 'Ringe der Kurve', label: '„höchster gezeichneter Wert 107 bpm, niedrigster 82 bpm" (Teil des Kurvenlabels)', role: 'Text', state: 'ausdrücklich „gezeichnet" — Max und Min der Einheit stehen in den Kacheln und weichen ab' }
       ],
       nDecisions: [
         D('N1', 'Gewählt: die Herkunft bleibt zweiformig — „gerechnet" ist keine dritte Quelle, sondern eine andere Achse', 'Eine dritte Punktform hätte behauptet, es gäbe einen dritten Ort, an dem Daten herkommen. Den gibt es nicht: die Last kommt aus keiner Quelle, sie entsteht aus zweien. „App" und „Uhr" beantworten „wer hat es aufgeschrieben", „gerechnet" beantwortet „wie ist die Zahl entstanden" — zwei Fragen, die nicht in dasselbe Zeichen passen. Die Kachel trägt deshalb gar keinen Herkunftspunkt mehr und stattdessen eine Grundlagenzeile in Worten. Punktlos ist die stärkste verfügbare Aussage: diese Zahl behauptet keine Messung.', ok),
@@ -1638,37 +1836,4 @@ class Component extends DCLogic {
         D('N9', 'Verworfen: den Bestand auf Minutenwerten belassen und neue Einheiten ebenfalls mitteln', 'Hätte eine Auflösung für alle erhalten und die Frage endgültig beantwortet — mit „nein". Damit wäre der Block für Intervalltraining dauerhaft falsch: er zeigt einen ruhigen Dauerlauf, wo 24 Wechsel liegen. Ebenfalls verworfen: den Bestand nachträglich feiner einlesen. Health Connect hält die Einzelmesswerte nur begrenzt; für die meisten alten Einheiten gibt es nichts feineres mehr, und eine teilweise nachgeschärfte Vergangenheit wäre schlimmer als eine ehrlich grobe.', no),
         D('N10', 'Gewählt: die Auflösung steht als Wort in der Grundlage und als Dichte im Taktstreifen', 'Zwei Kurven, die unterschiedlich aussehen, müssen sagen, warum. Das Wort steht in der Grundlage, die ohnehin den Nenner trägt („aus 22 von 24 min Aufzeichnung · je 10 s ein Wert") — damit bleibt es beim Budget von einer Hinweiszeile. Der Taktstreifen zeigt dieselbe Auskunft ohne Lesen: 23 Striche oder 135. Er trägt zusätzlich die Lücken, weil dort keine Striche stehen.', ok),
         D('N11', 'Gewählt: gemischte Einheiten tragen eine Wechselmarke, keine zwei Kurven', 'Eine Einheit, deren Aufzeichnung mitten drin feiner wird, bleibt eine Kurve mit einer Achse. An der Stelle des Wechsels steht eine gestrichelte Senkrechte, die Grundlage nennt die Uhrzeit. Verworfen: zwei getrennte Plots — sie hätten aus einem Training zwei gemacht. Verworfen auch, den feineren Teil auf Minuten zurückzumitteln, um „einheitlich" auszusehen: das hätte vorhandene Daten weggeworfen, damit eine Aufzeichnungsgrenze unsichtbar bleibt.', ok),
-        D('N12', 'Verworfen: die Kurve glätten (Bezier oder gleitender Schnitt)', 'Glättung erfindet Werte zwischen Messungen und macht eine 10-s-Kurve einer Minutenkurve absichtlich ähnlich — genau die Verwechslung, die dieser Nachtrag verhindern soll. Gezeichnet werden Geraden zwischen gespeicherten Werten, Punkte auf den Werten, nichts dazwischen.', no),
-        D('N13', 'Gewählt: die Zonenzeilen bekommen den Farbpunkt, die Balken bleiben ein Material', 'Die Kurve trägt fünf Zonenfarben, die Balken tragen bewusst keine (Modul 16, Protokoll 7: fünf Farben wären ein Urteil). Ohne Brücke stünden Farbe und Name unverbunden auf demselben Bildschirm. Ein 6-dp-Punkt in der Zonenfarbe vor „Z3" ist die Brücke: er ordnet zu, ohne die Verteilung zu färben. Der Text bleibt #CDD3EA — keine Zonenfarbe wird Textfarbe.', ok),
-        D('N14', 'Gewählt: keine Bewegung für die Herkunft — sie ist ein Zustand', 'Die Grundlagenzeile blendet nicht ein, zählt nicht hoch und blinkt nicht, wenn die Anstrengung aus der Uhr kam. Eine Zahl, deren Grundlage sich bewegt, wirkt gerade eingetroffen; sie stand aber schon immer so da. Bewegt wird nur, was sich ändert: das ⓘ klappt auf (200 ms), die Kurve zeichnet sich einmal (420 ms), der Taktstreifen wächst in derselben Front mit.', ok)
-      ]
-    };
-  }
-  renderVals() {
-    const leit = this.props.leitwert ?? 'Sätze (gewählt)';
-    const satz = leit.startsWith('Sätze');
-    const basis = this.props.zoneBasis ?? '% von HFmax';
-    const pct = basis.startsWith('%');
-    return Object.assign({
-      leitValue: satz ? '24' : '4 180',
-      leitUnit: satz ? 'SÄTZE' : 'KG',
-      leitBasis: satz
-        ? '5 Übungen · 52 min · Anstrengung 4 von 5'
-        : '24 Sätze in 5 Übungen · 52 min — verworfen: 4 180 kg sagt nichts über eine Einheit ohne Gewichtsangabe',
-      zoneBasisLabel: pct ? 'GRUNDLAGE · % VON HFMAX 186' : 'GRUNDLAGE · ABSOLUTE BPM',
-      zoneBasisNote: pct
-        ? 'HFmax 186 selbst eingetragen. Grenzen in Prozent, angezeigt in bpm.'
-        : 'Grenzen direkt in bpm. Ohne HFmax — nichts wird umgerechnet.',
-      zoneRows: [
-        { z: 'Z1', range: 'bis 111', time: '6:10', w: '12%', basisPct: 'bis 60 %' },
-        { z: 'Z2', range: '112–130', time: '11:40', w: '22%', basisPct: '60–70 %' },
-        { z: 'Z3', range: '131–148', time: '21:30', w: '41%', basisPct: '70–80 %' },
-        { z: 'Z4', range: '149–167', time: '9:20', w: '18%', basisPct: '80–90 %' },
-        { z: 'Z5', range: 'ab 168', time: '3:20', w: '7%', basisPct: 'ab 90 %' }
-      ]
-    }, this.spineData(), this.tablesA(), this.tablesB(), this.curves(), this.nachtrag());
-  }
-}
-</script>
-</body>
-</html>
+        D('N12', 'Verworfen: die Kurve glätten (Bezier oder gleitender Schnitt)', 'Glättung erfindet Werte zwischen Messungen und macht eine 10-s-Kurve einer Minutenkurve absichtlich ähnlich — genau die Verwechslung, die dieser Nachtrag verhindern soll. Gezeichnet werden Geraden zwischen gespeicherten Werten, Punkte auf den Wert

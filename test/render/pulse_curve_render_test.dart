@@ -46,6 +46,16 @@ void main() {
     'kurve_abgelesen': (intervals, zones, 1.0, 0.33, 60),
     // Die feine Ablage — der Grund für den Schemawechsel.
     'kurve_10s': (fine, zones, 1.0, null, 10),
+    // Minütlich gemessen, im feinen Raster abgelegt: jeder sechste Schlitz.
+    // Hingen die Abschnitte an der Schlitznachbarschaft, wäre hier nichts
+    // zu sehen ausser Punkten.
+    'kurve_minuetlich_im_feinen_raster': (
+      {for (var m = 0; m < 36; m++) m * 6: 100 + (m % 9) * 8},
+      zones,
+      1.0,
+      null,
+      10,
+    ),
   };
 
   for (final entry in cases.entries) {

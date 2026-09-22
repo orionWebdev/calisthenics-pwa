@@ -5589,4 +5589,53 @@ class AppL10nDe extends AppL10n {
   String pulseCurveSpan(String span, String resolution) {
     return '$span · $resolution';
   }
+
+  @override
+  String pulseCurveSections(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'in $n Abschnitten',
+      one: 'in 1 Abschnitt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pulseCurveBlockBasis(
+      int min, int total, String sections, String resolution) {
+    return 'Aus $min von $total min Aufzeichnung · $sections · $resolution';
+  }
+
+  @override
+  String pulseCurveBlockBasisWhole(int min, int total, String resolution) {
+    return 'Aus $min von $total min Aufzeichnung · $resolution';
+  }
+
+  @override
+  String pulseCurveRingsA11y(int max, int min) {
+    return 'höchster gezeichneter Wert $max bpm, niedrigster $min bpm';
+  }
+
+  @override
+  String pulseCurveA11yCurve(
+      int dur, int rec, String sections, String resolution) {
+    return 'Pulsverlauf, $dur Minuten, aufgezeichnet $rec Minuten $sections, $resolution';
+  }
+
+  @override
+  String pulseCurveExplainRawVsCurve(String interval) {
+    return 'Die Kacheln nennen die Rohwerte der Uhr. Die Kurve zeichnet Mittel über je $interval; ihr höchster Punkt liegt deshalb unter Max.';
+  }
+
+  @override
+  String get pulseCurveIntervalTen => '10 Sekunden';
+
+  @override
+  String get pulseCurveIntervalMinute => 'eine Minute';
+
+  @override
+  String detailZonesSetOn(Object date) {
+    return 'Deine Zonen vom $date';
+  }
 }

@@ -81,14 +81,14 @@ void main() {
   }
 
   group('die Zeile über der Kurve', () {
-    testWidgets('zeigt in Ruhe die Spanne', (tester) async {
+    testWidgets('steht in Ruhe leer', (tester) async {
+      // Bis zum 22.09.2026 abends stand hier die Spanne „100–180 bpm".
+      // Daneben nennen die Kacheln Max und Min aus den **Rohwerten**, während
+      // die Kurve Mittel zeichnet — zwei Zahlenpaare zur selben Frage. Der
+      // Nachtrag zu Board 16 hat die Spanne deshalb gestrichen.
       final l10n = await pump(tester, withZones: zones);
-      // Spanne **und** Auflösung — eine Zeile, zwei Auskünfte.
-      expect(
-        find.text(l10n.pulseCurveSpan(
-            l10n.pulseCurveRange(100, 180), 'je Minute ein Wert')),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.pulseCurveRange(100, 180)), findsNothing);
+      expect(find.textContaining('bpm'), findsNothing);
     });
 
     testWidgets('zeigt beim Ziehen Zeit, Wert und Zone', (tester) async {
@@ -105,12 +105,8 @@ void main() {
 
       await gesture.up();
       await tester.pumpAndSettle();
-      // Losgelassen steht wieder die Spanne da.
-      expect(
-        find.text(l10n.pulseCurveSpan(
-            l10n.pulseCurveRange(100, 180), 'je Minute ein Wert')),
-        findsOneWidget,
-      );
+      // Losgelassen bleibt die Zeile leer — sie hält nur ihre Höhe.
+      expect(find.textContaining('bpm'), findsNothing);
     });
 
     testWidgets('ohne festgelegte Zonen nennt sie keine Zone', (tester) async {
@@ -159,7 +155,9 @@ void main() {
   group('für den Screenreader', () {
     /// Der Slider-Knoten der Kurve, über sein Label gefunden. Es kommt hier
     /// von aussen — der Baustein reicht `semanticLabel` nur durch.
-    final curveNode = find.semantics.byLabel('Pulsverlauf');
+    // Das Label trägt seit dem Nachtrag auch die Ringe („höchster
+    // gezeichneter Wert …"), deshalb nur der Anfang.
+    final curveNode = find.semantics.byLabel(RegExp('^Pulsverlauf'));
 
     testWidgets('die Kurve ist ein Slider und nennt den Wert', (tester) async {
       final handle = tester.ensureSemantics();
@@ -168,6 +166,8 @@ void main() {
       final node = tester.getSemantics(find.byType(PulseCurveChart));
       expect(node.flagsCollection.isSlider, isTrue,
           reason: 'ein Bild wäre eine Zahl weniger, die jemand erfährt');
+      // Die Ringe sprechen mit, und zwar ausdrücklich als „gezeichnet".
+      expect(node.label, contains(l10n.pulseCurveRingsA11y(180, 100)));
       expect(node.value,
           l10n.pulseCurveA11yPoint(l10n.durationMinutes(0), 100, 1));
       handle.dispose();
@@ -266,7 +266,8 @@ void main() {
       // hier „6 min" — und die Kurve wäre sechsmal zu lang.
       for (var i = 0; i < 7; i++) {
         tester.semantics.performAction(
-            find.semantics.byLabel('Pulsverlauf'), SemanticsAction.increase);
+            find.semantics.byLabel(RegExp('^Pulsverlauf')),
+            SemanticsAction.increase);
         await tester.pumpAndSettle();
       }
       expect(find.textContaining('1:10'), findsOneWidget);

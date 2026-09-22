@@ -123,6 +123,42 @@ void main() {
       expect(fine.curveStepSeconds, PulseProfile.fineSlotSeconds);
     });
 
+    group('Abschnitte — Lücke oder gröbere Stelle', () {
+      test('minütlich gemessen ist **ein** Abschnitt, nicht sechzig', () {
+        // Der Fall, an dem die Kurve fast verschwunden wäre: Eine Uhr, die
+        // jede Minute misst, füllt im Zehn-Sekunden-Raster jeden sechsten
+        // Schlitz. Hingen die Abschnitte an der Schlitznachbarschaft,
+        // zerfiele sie in lauter Einzelpunkte — und eine Linie aus einem
+        // Punkt wird nicht gezeichnet.
+        final profile = PulseProfile.fromSamples(
+          [for (var m = 0; m < 10; m++) at(m, 0, 120 + m)],
+          start: start,
+          end: start.add(const Duration(minutes: 10)),
+        );
+
+        expect(profile.curve.length, 10);
+        expect(profile.curveSections.length, 1);
+      });
+
+      test('über einer Minute beginnt ein neuer Abschnitt', () {
+        final profile = PulseProfile.fromSamples(
+          [at(0, 0, 120), at(0, 10, 122), at(5, 0, 130), at(5, 10, 132)],
+          start: start,
+          end: start.add(const Duration(minutes: 6)),
+        );
+
+        // Zwischen 0:10 und 5:00 liegen mehr als sechzig Sekunden — dort
+        // hat die Uhr nichts gemessen, und die Linie läuft nicht durch.
+        expect(profile.curveSections.length, 2);
+      });
+
+      test('ohne Kurve gibt es keine Abschnitte', () {
+        const profile =
+            PulseProfile(secondsByBpm: {120: 600}, windowSeconds: 600);
+        expect(profile.curveSections, isEmpty);
+      });
+    });
+
     test('ein Schlitz ohne Messung bleibt eine Lücke, nie interpoliert', () {
       final profile = PulseProfile.fromSamples(
         [at(0, 0, 120), at(5, 0, 130)],

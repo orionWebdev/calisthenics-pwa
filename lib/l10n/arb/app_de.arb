@@ -8420,5 +8420,98 @@
         "type": "String"
       }
     }
+  },
+  "pulseCurveSections": "{n, plural, one{in 1 Abschnitt} other{in {n} Abschnitten}}",
+  "@pulseCurveSections": {
+    "description": "Board 16 Nachtrag · detail.hr.sections — nur wenn grösser als 1",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "pulseCurveBlockBasis": "Aus {min} von {total} min Aufzeichnung · {sections} · {resolution}",
+  "@pulseCurveBlockBasis": {
+    "description": "Board 16 Nachtrag · detail.hr.basis — drei Glieder in einer Zeile",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "sections": {
+        "type": "String"
+      },
+      "resolution": {
+        "type": "String"
+      }
+    }
+  },
+  "pulseCurveBlockBasisWhole": "Aus {min} von {total} min Aufzeichnung · {resolution}",
+  "@pulseCurveBlockBasisWhole": {
+    "description": "Board 16 Nachtrag · dieselbe Zeile ohne Abschnittsglied, wenn es nur einen gibt",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "resolution": {
+        "type": "String"
+      }
+    }
+  },
+  "pulseCurveRingsA11y": "höchster gezeichneter Wert {max} bpm, niedrigster {min} bpm",
+  "@pulseCurveRingsA11y": {
+    "description": "Board 16 Nachtrag · detail.hr.rings.a11y — ausdrücklich gezeichnet, nicht gemessen",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "pulseCurveA11yCurve": "Pulsverlauf, {dur} Minuten, aufgezeichnet {rec} Minuten {sections}, {resolution}",
+  "@pulseCurveA11yCurve": {
+    "description": "Board 16 Nachtrag · nA11y „Kurve mit Lücken\" — die Abschnittszahl steht im Label, nicht nur im Bild",
+    "placeholders": {
+      "dur": {
+        "type": "int"
+      },
+      "rec": {
+        "type": "int"
+      },
+      "sections": {
+        "type": "String"
+      },
+      "resolution": {
+        "type": "String"
+      }
+    }
+  },
+  "pulseCurveExplainRawVsCurve": "Die Kacheln nennen die Rohwerte der Uhr. Die Kurve zeichnet Mittel über je {interval}; ihr höchster Punkt liegt deshalb unter Max.",
+  "@pulseCurveExplainRawVsCurve": {
+    "description": "Board 16 Nachtrag · detail.hr.explain.raw_vs_curve",
+    "placeholders": {
+      "interval": {
+        "type": "String"
+      }
+    }
+  },
+  "pulseCurveIntervalTen": "10 Sekunden",
+  "@pulseCurveIntervalTen": {
+    "description": "Board 16 Nachtrag · das Mittelungsfenster als Wort, für den Erklärsatz"
+  },
+  "pulseCurveIntervalMinute": "eine Minute",
+  "@pulseCurveIntervalMinute": {
+    "description": "Board 16 Nachtrag · dasselbe für die alte Ablage"
+  },
+  "detailZonesSetOn": "Deine Zonen vom {date}",
+  "@detailZonesSetOn": {
+    "description": "Board 16 Nachtrag · der Zonenstichtag zog aus der Grundlage ins ⓘ, weil die Zeile nur drei Glieder trägt. **Ohne Schlusspunkt**: Ein abgekürztes Datum endet selbst auf einen Punkt („12. Sept.\"), und zwei nebeneinander sind ein sichtbarer Fehler."
   }
 }

@@ -81,19 +81,46 @@ class _Data extends ConsumerWidget {
           );
 
     final setAt = settings.zonesSetAt;
-    final basis = zones == null
+
+    // **Die Grundlage trägt drei Glieder** (Board 16, Nachtrag): aufgezeichnet
+    // von der Gesamtdauer · Zahl der Abschnitte · Auflösung. Das
+    // Abschnittsglied nur, wenn es mehr als einen gibt — „in 1 Abschnitt" ist
+    // keine Auskunft.
+    //
+    // Der Stichtag der Zonen stand bis zum 22.09.2026 abends hier und zog
+    // ins ⓘ: Die Zeile hat drei Plätze, und die Auflösung ist der Grund,
+    // warum die Kurve aussieht, wie sie aussieht. Verschwunden ist er nicht.
+    final sections = pulse.curveSections.length;
+    final interval = pulse.slotSeconds >= 60
+        ? l10n.pulseCurveIntervalMinute
+        : l10n.pulseCurveIntervalTen;
+    final resolution = (pulse.curveStepSeconds ?? pulse.slotSeconds) >= 60
+        ? l10n.pulseCurveResolutionMinute
+        : l10n.pulseCurveResolutionTen;
+
+    final basis = pulse.curve.length < 2
         ? l10n.detailHrBasisNoZones(minutes, total)
-        : setAt == null
-            ? l10n.detailHrBasisNoZones(minutes, total)
-            : l10n.detailZonesBasis(
-                minutes, total, DateFormat.MMMd(tag).format(setAt));
+        : sections > 1
+            ? l10n.pulseCurveBlockBasis(minutes, total,
+                l10n.pulseCurveSections(sections), resolution)
+            : l10n.pulseCurveBlockBasisWhole(minutes, total, resolution);
 
     return DetailBlock(
       // Ohne Zonen heisst er nur „Puls" — kein Titel verspricht etwas, das
       // nicht kommt (C2).
       title: zones == null ? l10n.detailBlockHr : l10n.detailBlockHrZones,
       // Erklärt wird nur, was gerechnet wurde: ohne Zonen kein ⓘ.
-      explanation: zones == null ? const [] : [l10n.detailExplainZones],
+      explanation: [
+        if (zones != null) l10n.detailExplainZones,
+        if (zones != null && setAt != null)
+          l10n.detailZonesSetOn(DateFormat.MMMd(tag).format(setAt)),
+        // **Warum die Kurve flacher aussieht als die Kacheln.** Sie zeichnet
+        // Mittel, die Kacheln nennen Rohwerte — ohne diesen Satz liest man
+        // „Max 120" über einer Kurve, die nie über 115 kommt, und sucht den
+        // Fehler bei sich.
+        if (pulse.curve.length >= 2)
+          l10n.pulseCurveExplainRawVsCurve(interval),
+      ],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -176,32 +203,28 @@ class _Data extends ConsumerWidget {
                     .of(context)
                     .copyWith(color: AtemColors.textTertiary)),
             const SizedBox(height: 8),
-            Builder(builder: (context) {
+            PulseCurveChart(
+              bpmBySlot: pulse.curve,
+              slotSeconds: pulse.slotSeconds,
+              totalSeconds: pulse.windowSeconds,
+              // Wie lange ein Wert gilt — dieselbe Grenze, an der auch die
+              // Abschnitte hängen. Über ihr eine Lücke, darunter läuft die
+              // Linie durch.
+              gapSeconds: PulseProfile.maxGapSeconds,
+              // Dieselben Grenzen, die auch die Verteilung darüber rechnet.
+              // Fehlen sie, bleibt die Linie einfarbig — geraten wird nicht.
+              zones: zones,
               // **Die Auflösung sagt, was dasteht** — nicht, wie fein das
               // Raster ist. Eine Uhr, die nur jede Minute misst, füllt auch
               // im Zehn-Sekunden-Raster nur jeden sechsten Schlitz.
-              final step = pulse.curveStepSeconds ?? pulse.slotSeconds;
-              final word = step >= 60
-                  ? l10n.pulseCurveResolutionMinute
-                  : l10n.pulseCurveResolutionTen;
-              final lowest =
-                  pulse.curve.values.reduce((a, b) => a < b ? a : b);
-              final highest =
-                  pulse.curve.values.reduce((a, b) => a > b ? a : b);
-
-              return PulseCurveChart(
-                bpmBySlot: pulse.curve,
-                slotSeconds: pulse.slotSeconds,
-                totalSeconds: pulse.windowSeconds,
-                // Dieselben Grenzen, die auch die Verteilung darüber
-                // rechnet. Fehlen sie, bleibt die Linie einfarbig — geraten
-                // wird nicht.
-                zones: zones,
-                resolution: word,
-                semanticLabel:
-                    l10n.pulseCurveA11ySlider(total, lowest, highest, word),
-              );
-            }),
+              resolution: resolution,
+              semanticLabel: l10n.pulseCurveA11yCurve(
+                total,
+                minutes,
+                l10n.pulseCurveSections(sections),
+                resolution,
+              ),
+            ),
           ],
         ],
       ),

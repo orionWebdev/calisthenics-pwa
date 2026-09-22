@@ -5583,4 +5583,53 @@ class AppL10nEn extends AppL10n {
   String pulseCurveSpan(String span, String resolution) {
     return '$span · $resolution';
   }
+
+  @override
+  String pulseCurveSections(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'in $n sections',
+      one: 'in 1 section',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pulseCurveBlockBasis(
+      int min, int total, String sections, String resolution) {
+    return 'From $min of $total min recorded · $sections · $resolution';
+  }
+
+  @override
+  String pulseCurveBlockBasisWhole(int min, int total, String resolution) {
+    return 'From $min of $total min recorded · $resolution';
+  }
+
+  @override
+  String pulseCurveRingsA11y(int max, int min) {
+    return 'highest drawn value $max bpm, lowest $min bpm';
+  }
+
+  @override
+  String pulseCurveA11yCurve(
+      int dur, int rec, String sections, String resolution) {
+    return 'Heart-rate curve, $dur minutes, $rec minutes recorded $sections, $resolution';
+  }
+
+  @override
+  String pulseCurveExplainRawVsCurve(String interval) {
+    return 'The tiles show the watch raw values. The curve draws averages over $interval each; its highest point is therefore below max.';
+  }
+
+  @override
+  String get pulseCurveIntervalTen => '10 seconds';
+
+  @override
+  String get pulseCurveIntervalMinute => 'one minute';
+
+  @override
+  String detailZonesSetOn(Object date) {
+    return 'Your zones from $date';
+  }
 }

@@ -117,7 +117,12 @@ PulseProfile detailPulse({int recordedMinutes = 52}) {
   final full = <int, int>{
     100: 6 * 60 + 10,
     120: 11 * 60 + 40,
-    140: 21 * 60 + 30,
+    // 21:00, nicht 21:30: Mit den übrigen Zonen und den 30 s unter Zone 1
+    // ergäben sich 3150 Sekunden — mehr, als die Einheit lang ist, und die
+    // Grundlage läse „Aus 53 von 52 min Aufzeichnung". Echte Daten können
+    // das nicht (`fromSamples` zählt nur innerhalb des Fensters); die
+    // Fixture konnte es.
+    140: 21 * 60,
     160: 9 * 60 + 20,
     175: 3 * 60 + 20,
   };
@@ -139,7 +144,12 @@ PulseProfile detailPulseWithCurve() => PulseProfile(
       secondsByBpm: {
         100: 6 * 60 + 10,
         120: 11 * 60 + 40,
-        140: 21 * 60 + 30,
+        // 21:00, nicht 21:30: Mit den übrigen Zonen und den 30 s unter Zone 1
+    // ergäben sich 3150 Sekunden — mehr, als die Einheit lang ist, und die
+    // Grundlage läse „Aus 53 von 52 min Aufzeichnung". Echte Daten können
+    // das nicht (`fromSamples` zählt nur innerhalb des Fensters); die
+    // Fixture konnte es.
+    140: 21 * 60,
         160: 9 * 60 + 20,
         175: 3 * 60 + 20,
         62: 30,

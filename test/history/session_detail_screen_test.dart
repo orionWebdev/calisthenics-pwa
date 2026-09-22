@@ -184,16 +184,27 @@ void main() {
   group('Puls & Zonen', () {
     testWidgets('Default: Werte, Grundlage vor den Balken, fünf Zonen',
         (tester) async {
+      final handle = tester.ensureSemantics();
       final l10n = await _pump(tester, detailMerged);
 
       expect(find.text(l10n.detailBlockHrZones.toUpperCase()), findsOneWidget);
       for (var z = 1; z <= 5; z++) {
         expect(find.textContaining(l10n.detailZoneShort(z)), findsWidgets);
       }
-      expect(find.textContaining('deine Zonen vom 12. Sept.'), findsOneWidget);
+      // Der Stichtag der Zonen zog mit dem Nachtrag zu Board 16 aus der
+      // Grundlage ins ⓘ: Die Zeile trägt drei Glieder, und die Auflösung
+      // wiegt dort schwerer als das Datum. Verschwunden ist er nicht.
+      expect(find.textContaining('deine Zonen vom 12. Sept.'), findsNothing);
+      final block = tester.widgetList<DetailBlock>(find.byType(DetailBlock))
+          .firstWhere((b) => b.title == l10n.detailBlockHrZones);
+      // Kein doppelter Punkt: Das abgekürzte Datum bringt seinen eigenen mit.
+      expect(block.explanation, contains(l10n.detailZonesSetOn('12. Sept.')));
+      expect(block.explanation.any((s) => s.contains('Sept..')), isFalse);
+
       // Ohne Zeitachse (Einheiten vor dem 22.09.2026) bleibt der
       // Pulsverlauf weg — kein leerer Titel ohne Kurve.
       expect(find.text(l10n.detailPulseCurveTitle.toUpperCase()), findsNothing);
+      handle.dispose();
     });
 
     testWidgets('Pulsverlauf: eigene Zeile, ein Semantics-Knoten mit Lücke',
@@ -207,12 +218,17 @@ void main() {
 
       expect(
           find.text(l10n.detailPulseCurveTitle.toUpperCase()), findsOneWidget);
-      // 52 Minuten, 100 bis 175 bpm, minutengenau. Seit dem Nachtrag zu
-      // Board 16 ist die Kurve ein **Slider**: Das Label nennt Dauer, Spanne
-      // und Auflösung, den einzelnen Wert trägt `value`.
+      // Seit dem Nachtrag zu Board 16 ist die Kurve ein **Slider**, und ihr
+      // Label nennt Dauer, Aufzeichnung, **Abschnitte** und Auflösung — die
+      // Lücke von Minute 20 bis 29 steht damit im Wort, nicht nur im Bild.
+      // Die Ringe sprechen mit, ausdrücklich als „gezeichnet".
       expect(
-        find.bySemanticsLabel(l10n.pulseCurveA11ySlider(
-            52, 100, 175, l10n.pulseCurveResolutionMinute)),
+        find.bySemanticsLabel('${l10n.pulseCurveA11yCurve(
+          52,
+          52,
+          l10n.pulseCurveSections(2),
+          l10n.pulseCurveResolutionMinute,
+        )} ${l10n.pulseCurveRingsA11y(175, 100)}.'),
         findsOneWidget,
       );
       handle.dispose();

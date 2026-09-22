@@ -127,6 +127,35 @@ class PulseProfile {
   /// setzen [fineSlotSeconds] ausdrücklich.
   final int slotSeconds;
 
+  /// Die **zusammenhängenden Abschnitte** der Kurve, als Listen von Schlitzen.
+  ///
+  /// Zusammenhängend heisst **zeitlich**, nicht schlitzweise: Ein Wert gilt
+  /// bis zum nächsten, höchstens [maxGapSeconds] lang. Liegen zwei Werte
+  /// sechzig Sekunden auseinander, ist das kein Loch — die Linie läuft
+  /// durch. Erst darüber beginnt ein neuer Abschnitt.
+  ///
+  /// **Das ist der Unterschied zwischen einer Lücke und einer gröberen
+  /// Stelle** (Board 16, Nachtrag, „Wechselmarke · Regel"): Über eine Lücke
+  /// läuft die Linie nicht, über eine gröbere Stelle schon. Eine Uhr, die
+  /// minütlich misst, füllt im Zehn-Sekunden-Raster jeden sechsten Schlitz —
+  /// würde man Abschnitte an der Schlitznachbarschaft festmachen, zerfiele
+  /// ihre Kurve in lauter Einzelpunkte und verschwände.
+  List<List<int>> get curveSections {
+    if (curve.isEmpty) return const [];
+    final slots = curve.keys.toList()..sort();
+    final sections = <List<int>>[];
+    var current = <int>[slots.first];
+    for (final slot in slots.skip(1)) {
+      if ((slot - current.last) * slotSeconds <= maxGapSeconds) {
+        current.add(slot);
+      } else {
+        sections.add(current);
+        current = [slot];
+      }
+    }
+    return [...sections, current];
+  }
+
   /// Der typische Abstand zwischen zwei gespeicherten Werten, in Sekunden.
   ///
   /// **Er beschreibt, was dasteht — nicht, wie fein das Raster ist.** Eine
