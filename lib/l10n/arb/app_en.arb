@@ -4732,24 +4732,6 @@
   "@detailPulseCurveTitle": {
     "description": "Board 16 · offene Frage 1, gelöst am 22.09.2026 — Unterüberschrift über der Verlaufskurve, labelMicro in Versalien"
   },
-  "detailPulseCurveA11y": "Pulse curve, from {min} to {max} bpm, over {count} of {total} minutes",
-  "@detailPulseCurveA11y": {
-    "description": "Board 16 · offene Frage 1, gelöst am 22.09.2026 — ein Semantics-Knoten statt einer Bildbeschreibung ohne Zahlen",
-    "placeholders": {
-      "min": {
-        "type": "int"
-      },
-      "max": {
-        "type": "int"
-      },
-      "count": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
   "detailHrLoading": "Heart rate is loading",
   "@detailHrLoading": {
     "description": "Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards"
@@ -5389,6 +5371,94 @@
     "placeholders": {
       "rpe": {
         "type": "int"
+      }
+    }
+  },
+  "pulseCurveResolutionMinute": "one value per minute",
+  "@pulseCurveResolutionMinute": {
+    "description": "Board 16 Nachtrag · detail.hr.resolution.minute"
+  },
+  "pulseCurveResolutionTen": "one value per 10 seconds",
+  "@pulseCurveResolutionTen": {
+    "description": "Board 16 Nachtrag · detail.hr.resolution.ten"
+  },
+  "pulseCurveBasis": "{n, plural, one{From 1 minute} other{From {n} minutes}} of {total} recorded · {resolution}",
+  "@pulseCurveBasis": {
+    "description": "Board 16 Nachtrag · detail.hr.basis — die Grundlage unter der Kurve",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "resolution": {
+        "type": "String"
+      }
+    }
+  },
+  "pulseCurveA11ySlider": "Heart-rate curve, {dur} minutes, {min} to {max} bpm, {resolution}. Swipe to step through.",
+  "@pulseCurveA11ySlider": {
+    "description": "Board 16 Nachtrag · detail.hr.a11y.curve — die Kurve ist ein Slider-Knoten",
+    "placeholders": {
+      "dur": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      },
+      "resolution": {
+        "type": "String"
+      }
+    }
+  },
+  "pulseCurveA11yPoint": "{time}, {bpm} bpm, zone {zone}",
+  "@pulseCurveA11yPoint": {
+    "description": "Board 16 Nachtrag · detail.hr.a11y.point — der Wert des Sliders",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "bpm": {
+        "type": "int"
+      },
+      "zone": {
+        "type": "int"
+      }
+    }
+  },
+  "pulseCurveA11yPointPlain": "{time}, {bpm} bpm",
+  "@pulseCurveA11yPointPlain": {
+    "description": "Board 16 Nachtrag · dasselbe ohne festgelegte Zonen",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "bpm": {
+        "type": "int"
+      }
+    }
+  },
+  "pulseCurveGap": "{time} · no recording",
+  "@pulseCurveGap": {
+    "description": "Board 16 Nachtrag · was abgelesen wird, wo die Uhr nichts gemessen hat"
+  },
+  "pulseCurveA11yGap": "{time}, no recording",
+  "@pulseCurveA11yGap": {
+    "description": "Board 16 Nachtrag · detail.hr.a11y.gap — die Lücke ist ein eigener Schritt"
+  },
+  "pulseCurveSpan": "{span} · {resolution}",
+  "@pulseCurveSpan": {
+    "description": "Board 16 Nachtrag · Spanne und Auflösung in einer Zeile über der Kurve. Platzhalter ausdrücklich erklärt: Ohne das ordnet gen-l10n die Parameter alphabetisch, und {resolution} stünde vor {span}.",
+    "placeholders": {
+      "span": {
+        "type": "String"
+      },
+      "resolution": {
+        "type": "String"
       }
     }
   }

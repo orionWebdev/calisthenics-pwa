@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 
@@ -30,14 +29,36 @@ import '../../domain/heart_rate_zones.dart';
 /// ist eine echte Lücke in der Linie — dieselbe Form wie beim Gewichtsverlauf
 /// (Modul 9), nur mit Minuten statt Tagen als Abstand.
 ///
-/// ## Die Farben
+/// ## Die Farben (Board 16, Nachtrag, O)
 ///
-/// Jedes Minutenstück trägt die Farbe der Zone, in der sein Wert liegt
-/// (`AtemColors.zone`). Dazu liegen Haarlinien auf den Zonengrenzen, damit
-/// die Farbe nicht die einzige Auskunft ist — man sieht, **wo** die Grenze
-/// verläuft, nicht nur dass sich etwas geändert hat. Ohne festgelegte Grenzen
-/// bleibt die Linie einfarbig: ATEM rechnet keine Zonen, solange sie fehlen
-/// (Board 16, Entscheidung 13).
+/// Jedes Stück trägt die Farbe der Zone, in der sein Wert liegt
+/// (`AtemColors.zone`); der Wechsel liegt auf der **Mitte** des Stücks, nicht
+/// an seinem Anfang — ein Wert gilt von der Mitte davor bis zur Mitte danach.
+///
+/// Die Zonengrenzen sind **neutrale Haarlinien** (`AtemColors.border`), nicht
+/// farbig: Zwei Farbebenen im selben Plot — Linie und Gitter — stritten um
+/// dieselbe Auskunft. Der Schlüssel zwischen Kurvenfarbe und Zonennamen liegt
+/// stattdessen in den Zonenzeilen darunter, die seit dem Nachtrag einen Punkt
+/// in der Zonenfarbe tragen.
+///
+/// **Keine Fläche unter der Kurve.** Sie stand hier am 22.09. zuerst und ist
+/// mit dem Nachtrag entfallen: Der Plot trägt Linie, Punkte, Gitter, Ringe
+/// und Taktstreifen — eine sechste Ebene aus eingefärbten Bändern machte ihn
+/// laut, und die Zonenminuten stehen ohnehin als Zahl darunter.
+///
+/// Ohne festgelegte Grenzen bleibt die Linie einfarbig: ATEM rechnet keine
+/// Zonen, solange sie fehlen (Board 16, Entscheidung 13).
+///
+/// ## Was sonst im Plot steht
+///
+/// * **Ein Punkt je gespeichertem Wert** (#CDD3EA). Bei feiner Ablage
+///   verschmelzen sie zur dichten Spur — die Dichte selbst ist die Auskunft.
+/// * **Ein Taktstreifen** unter dem Plot, ein Strich je gespeichertem Wert.
+///   Er sagt dasselbe noch einmal, aber ohne die Kurve zu belasten.
+/// * **Ringe auf höchstem und niedrigstem Wert**, weiss — nicht in der
+///   Zonenfarbe: Sie markieren eine Stelle, sie benennen keine Zone.
+/// * Das bpm-Fenster steht **fest** aus min/max plus 6 bpm Luft, damit die
+///   Ringe nicht am Rand kleben.
 ///
 /// **Die Auflösung ist eine Minute.** Feiner geht es nicht: `PulseProfile`
 /// legt je Minute *einen* gemittelten Wert ab. Zwanzig Sekunden in einer
@@ -64,6 +85,7 @@ class PulseCurveChart extends StatefulWidget {
     required this.bpmByMinute,
     required this.totalMinutes,
     required this.semanticLabel,
+    required this.resolution,
     this.zones,
     this.height = 96,
   });
@@ -83,6 +105,13 @@ class PulseCurveChart extends StatefulWidget {
   /// Ohne Grenzen eine einfarbige Linie, keine geratenen Zonen.
   final HeartRateZones? zones;
 
+  /// Wie dicht gespeichert wurde, als Wort — „je Minute ein Wert".
+  ///
+  /// Der Baustein rechnet es nicht selbst aus: Ob eine Einheit minutengenau
+  /// oder feiner abgelegt ist, weiss die Quelle, nicht der Graph. Er sagt es
+  /// nur weiter — in der Zeile über der Kurve und im Vorlesetext.
+  final String resolution;
+
   final double height;
 
   /// Unter zwei Minutenwerten zeichnet das Widget nichts — aus einem Punkt
@@ -99,6 +128,21 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
   int? _marked;
 
   List<int> get _minutes => widget.bpmByMinute.keys.toList()..sort();
+
+  /// Einen gespeicherten Wert weiter — **oder in eine Lücke hinein**.
+  ///
+  /// Der Schieber am Finger rastet auf gespeicherte Werte; das Durchgehen
+  /// mit dem Screenreader geht über **jede** Minute, auch die ohne Messung
+  /// (Board 16, Nachtrag, nA11y). Eine Lücke zu überspringen hiesse, sie zu
+  /// verschweigen — sie ist ein eigener Schritt, kein Sprung.
+  /// Die Minute [delta] Schritte von der aktuellen Marke entfernt.
+  int _at(int delta) =>
+      ((_marked ?? _minutes.first) + delta).clamp(0, widget.totalMinutes - 1);
+
+  void _step(int delta) {
+    final next = _at(delta);
+    if (next != _marked) setState(() => _marked = next);
+  }
 
   void _markAt(Offset local, double width) {
     if (width <= 0) return;
@@ -127,23 +171,36 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
 
     return Semantics(
       container: true,
-      image: true,
+      // **Ein Slider, kein Bild** (Board 16, Nachtrag, nA11y). TalkBack kann
+      // einen Wert erhöhen und senken; damit ist die Kurve auch ohne Augen
+      // begehbar. Ein Bild wäre eine Zahl weniger, die jemand erfährt.
+      slider: true,
       label: widget.semanticLabel,
+      // Flutter verlangt zu `increase`/`decrease` auch, wie der Wert danach
+      // lautet — sonst kündigt der Screenreader den Schritt nicht an.
+      value: _spokenPoint(l10n, _at(0)),
+      increasedValue: _spokenPoint(l10n, _at(1)),
+      decreasedValue: _spokenPoint(l10n, _at(-1)),
+      onIncrease: () => _step(1),
+      onDecrease: () => _step(-1),
       excludeSemantics: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _Readout(
-            range: l10n.pulseCurveRange(minBpm, maxBpm),
+            // Spanne **und** Auflösung in einer Zeile. Der Block trägt schon
+            // eine Grundlage; eine zweite darunter wäre die zweite sichtbare
+            // Hinweiszeile, die CLAUDE.md nicht zulässt.
+            range: l10n.pulseCurveSpan(
+                l10n.pulseCurveRange(minBpm, maxBpm), widget.resolution),
             marked: _markedText(l10n),
             // Die Obergrenze für die Höhe: längste Zeit, grösster Wert,
             // letzte Zone. Gemessen wird sie, gezeichnet nie — eine zweite,
             // unsichtbare Zeile im Baum wäre ein doppelter Text.
-            widest: _readoutText(
-              l10n,
+            widest: l10n.pulseCurveReadout(
               l10n.durationMinutes(widget.totalMinutes),
               '$maxBpm ${l10n.detailUnitBpm}',
-              HeartRateZones.zoneCount,
+              l10n.detailZoneName(HeartRateZones.zoneCount),
             ),
           ),
           const SizedBox(height: 8),
@@ -191,24 +248,33 @@ class _PulseCurveChartState extends State<PulseCurveChart> {
   }
 
   /// „12 min · 152 bpm · Zone 3" — oder `null`, wenn niemand zieht.
+  ///
+  /// In einer Lücke steht „12 min · keine Aufzeichnung": Was nicht gemessen
+  /// wurde, bekommt keinen geschätzten Wert.
   String? _markedText(AppL10n l10n) {
     final minute = _marked;
     if (minute == null) return null;
+    final time = l10n.durationMinutes(minute);
     final bpm = widget.bpmByMinute[minute];
-    if (bpm == null) return null;
+    if (bpm == null) return l10n.pulseCurveGap(time);
 
-    return _readoutText(
-      l10n,
-      l10n.durationMinutes(minute),
-      '$bpm ${l10n.detailUnitBpm}',
-      widget.zones?.zoneOf(bpm),
-    );
+    final zone = widget.zones?.zoneOf(bpm);
+    final value = '$bpm ${l10n.detailUnitBpm}';
+    return zone == null
+        ? l10n.pulseCurveReadoutPlain(time, value)
+        : l10n.pulseCurveReadout(time, value, l10n.detailZoneName(zone));
   }
 
-  String _readoutText(AppL10n l10n, String time, String value, int? zone) =>
-      zone == null
-          ? l10n.pulseCurveReadoutPlain(time, value)
-          : l10n.pulseCurveReadout(time, value, l10n.detailZoneName(zone));
+  /// Derselbe Punkt für den Screenreader — als Wert des Sliders.
+  String _spokenPoint(AppL10n l10n, int minute) {
+    final time = l10n.durationMinutes(minute);
+    final bpm = widget.bpmByMinute[minute];
+    if (bpm == null) return l10n.pulseCurveA11yGap(time);
+    final zone = widget.zones?.zoneOf(bpm);
+    return zone == null
+        ? l10n.pulseCurveA11yPointPlain(time, bpm)
+        : l10n.pulseCurveA11yPoint(time, bpm, zone);
+  }
 }
 
 /// Spanne oder abgelesener Wert — **immer dieselbe Höhe**.
@@ -325,7 +391,17 @@ class _PulseCurvePainter extends CustomPainter {
 
   static const _sidePad = 4.0;
   static const _topPad = 10.0;
+
+  /// Unter dem Plot bleibt Platz für den Taktstreifen.
   static const _bottomPad = 10.0;
+  static const _tickGap = 5.0;
+  static const _tickLength = 5.0;
+
+  /// Luft über dem höchsten und unter dem niedrigsten Wert, in bpm.
+  ///
+  /// Ohne sie klebte der Ring des Höchstwerts an der Oberkante und wäre zur
+  /// Hälfte abgeschnitten (Board 16, Nachtrag, O).
+  static const _headroom = 6;
 
   /// Unter 3 bpm Spanne wird mittig eine flache Linie gezeichnet statt sie
   /// auf volle Höhe zu spreizen — dieselbe Regel wie beim Gewichtsverlauf:
@@ -360,35 +436,40 @@ class _PulseCurvePainter extends CustomPainter {
     final values = bpmByMinute.values;
     final minBpm = values.reduce((a, b) => a < b ? a : b);
     final maxBpm = values.reduce((a, b) => a > b ? a : b);
-    final range = (maxBpm - minBpm) < _flatThreshold ? null : (maxBpm - minBpm);
+    final flat = (maxBpm - minBpm) < _flatThreshold;
+
+    // Das feste Fenster: min/max plus Luft. Es gilt für die ganze Einheit,
+    // damit derselbe bpm-Wert überall auf derselben Höhe liegt.
+    final low = minBpm - _headroom;
+    final high = maxBpm + _headroom;
 
     const left = _sidePad;
     final right = size.width - _sidePad;
     const top = _topPad;
-    final bottom = size.height - _bottomPad;
+    final bottom = size.height - _bottomPad - _tickGap - _tickLength;
     final span = totalMinutes <= 1 ? 1 : totalMinutes - 1;
 
-    double yFor(int bpm) => range == null
+    double yFor(int bpm) => flat
         ? (top + bottom) / 2
-        : bottom - (bottom - top) * ((bpm - minBpm) / range);
-    Offset pointFor(int minute) => Offset(
-          left + (right - left) * (minute / span).clamp(0.0, 1.0),
-          yFor(bpmByMinute[minute]!),
-        );
+        : bottom - (bottom - top) * ((bpm - low) / (high - low));
+    double xFor(int minute) =>
+        left + (right - left) * (minute / span).clamp(0.0, 1.0);
+    Offset pointFor(int minute) =>
+        Offset(xFor(minute), yFor(bpmByMinute[minute]!));
 
-    // ---- Haarlinien auf den Zonengrenzen. Sie stehen **hinter** der Kurve
-    // und nur, wo sie in den gezeichneten Bereich fallen: Eine Grenze
-    // ausserhalb der Spanne sagt nichts über diese Einheit.
+    // ---- Das Gitter: Haarlinien auf den Zonengrenzen, neutral. Nur, wo sie
+    // in das Fenster fallen — eine Grenze ausserhalb sagt nichts über diese
+    // Einheit.
     final z = zones;
-    if (z != null && range != null) {
+    if (z != null && !flat) {
       for (var boundary = 1; boundary < HeartRateZones.zoneCount; boundary++) {
         final bpm = z.lowerOf(boundary + 1);
-        if (bpm == null || bpm <= minBpm || bpm >= maxBpm) continue;
+        if (bpm == null || bpm <= low || bpm >= high) continue;
         canvas.drawLine(
           Offset(left, yFor(bpm)),
           Offset(right, yFor(bpm)),
           Paint()
-            ..color = AtemColors.zone(boundary + 1).withValues(alpha: 0.28)
+            ..color = AtemColors.border
             ..strokeWidth = 1,
         );
       }
@@ -397,87 +478,66 @@ class _PulseCurvePainter extends CustomPainter {
     canvas.save();
     canvas.clipRect(Rect.fromLTWH(0, 0, size.width * progress, size.height));
 
-    // ---- Die Linie, Minutenstück für Minutenstück in der Farbe seiner Zone.
+    // ---- Die Linie. **Der Farbwechsel liegt auf der Mitte** eines Stücks:
+    // Ein Wert gilt von der Mitte davor bis zur Mitte danach, nicht erst ab
+    // seinem eigenen Punkt. Sonst begänne die neue Zone eine halbe Minute zu
+    // spät.
+    final line = Paint()
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
     for (final segment in _segments(minutes)) {
       if (segment.length < 2) continue;
-
-      final xs = [for (final m in segment) pointFor(m).dx];
-      final first = xs.first;
-      final last = xs.last;
-
-      // Die Fläche darunter: **ein** Pfad je zusammenhängendem Stück, gefüllt
-      // mit einem Verlauf aus harten Stopps.
-      //
-      // Vorher trug jede Minute ihr eigenes Viereck. Am Render standen dann
-      // Nähte zwischen ihnen — zwei antialiaste Kanten nebeneinander lassen
-      // eine helle Linie stehen, auch wenn die Farbe dieselbe ist. Ein Pfad
-      // und ein Verlauf, dessen Farbe an der Minutengrenze **springt** statt
-      // zu blenden: keine Naht, und die Zonen bleiben als Bänder lesbar
-      // statt ineinanderzulaufen.
-      if (last > first) {
-        final colors = <Color>[];
-        final stops = <double>[];
-        for (var i = 0; i < segment.length - 1; i++) {
-          final c = _colorFor(bpmByMinute[segment[i]]!).withValues(alpha: 0.14);
-          colors.add(c);
-          stops.add((xs[i] - first) / (last - first));
-          colors.add(c);
-          stops.add((xs[i + 1] - first) / (last - first));
-        }
-
-        final area = Path()..moveTo(xs.first, pointFor(segment.first).dy);
-        for (var i = 1; i < segment.length; i++) {
-          final p = pointFor(segment[i]);
-          area.lineTo(p.dx, p.dy);
-        }
-        area
-          ..lineTo(last, bottom)
-          ..lineTo(first, bottom)
-          ..close();
-
-        canvas.drawPath(
-          area,
-          Paint()
-            ..shader = ui.Gradient.linear(
-              Offset(first, 0),
-              Offset(last, 0),
-              colors,
-              stops,
-            ),
-        );
-      }
-
       for (var i = 0; i < segment.length - 1; i++) {
+        final a = pointFor(segment[i]);
+        final b = pointFor(segment[i + 1]);
+        final mid = Offset((a.dx + b.dx) / 2, (a.dy + b.dy) / 2);
         canvas.drawLine(
-          pointFor(segment[i]),
-          pointFor(segment[i + 1]),
-          Paint()
-            ..color = _colorFor(bpmByMinute[segment[i]]!)
-            ..strokeWidth = 2
-            ..strokeCap = StrokeCap.round,
-        );
+            a, mid, line..color = _colorFor(bpmByMinute[segment[i]]!));
+        canvas.drawLine(
+            mid, b, line..color = _colorFor(bpmByMinute[segment[i + 1]]!));
       }
+    }
+
+    // ---- Ein Punkt je gespeichertem Wert, 2,6 dp in `#CDD3EA`.
+    //
+    // Er liegt auf der 2 dp breiten Linie und unterbricht sie sichtbar —
+    // genau das ist gemeint: Man sieht, **wo** gespeichert wurde. Bei feiner
+    // Ablage rücken die Punkte zusammen und die Spur wird dicht.
+    for (final m in minutes) {
+      canvas.drawCircle(
+          pointFor(m), 1.3, Paint()..color = AtemColors.textTertiary);
+    }
+
+    // ---- Der Taktstreifen: ein Strich je gespeichertem Wert, unter dem
+    // Plot. Lücken tragen keinen Strich — die Dichte ist die Auskunft.
+    final tickTop = bottom + _tickGap;
+    for (final m in minutes) {
+      canvas.drawLine(
+        Offset(xFor(m), tickTop),
+        Offset(xFor(m), tickTop + _tickLength),
+        Paint()
+          ..color = AtemColors.textSecondary
+          ..strokeWidth = 1,
+      );
     }
 
     canvas.restore();
 
     if (progress < 1) return;
 
-    // ---- Höchster und niedrigster Wert. Ein gefüllter Punkt mit Ring: Der
-    // Ring hebt ihn von jedem anderen Punkt der Linie ab, auch wenn beide
-    // dieselbe Zonenfarbe tragen.
-    if (range != null) {
+    // ---- Höchster und niedrigster Wert, weiss geringt. Nicht in der
+    // Zonenfarbe: Der Ring markiert eine Stelle, er benennt keine Zone.
+    if (!flat) {
       for (final bpm in {maxBpm, minBpm}) {
-        final minute =
-            minutes.firstWhere((m) => bpmByMinute[m] == bpm);
-        final p = pointFor(minute);
-        canvas.drawCircle(p, 4.5, Paint()..color = AtemColors.base);
+        final minute = minutes.firstWhere((m) => bpmByMinute[m] == bpm);
         canvas.drawCircle(
-          p,
-          4.5,
+          pointFor(minute),
+          4,
           Paint()
-            ..color = _colorFor(bpm)
-            ..strokeWidth = 2
+            ..color = AtemColors.textPrimary
+            ..strokeWidth = 1.5
             ..style = PaintingStyle.stroke,
         );
       }

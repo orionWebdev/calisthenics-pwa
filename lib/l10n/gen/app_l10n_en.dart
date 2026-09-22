@@ -5102,11 +5102,6 @@ class AppL10nEn extends AppL10n {
   String get detailPulseCurveTitle => 'Pulse curve';
 
   @override
-  String detailPulseCurveA11y(int min, int max, int count, int total) {
-    return 'Pulse curve, from $min to $max bpm, over $count of $total minutes';
-  }
-
-  @override
   String get detailHrLoading => 'Heart rate is loading';
 
   @override
@@ -5540,5 +5535,52 @@ class AppL10nEn extends AppL10n {
   @override
   String detailLoadExplainFallback(int rpe) {
     return 'Neither entered nor measured. Calculated with $rpe of 5.';
+  }
+
+  @override
+  String get pulseCurveResolutionMinute => 'one value per minute';
+
+  @override
+  String get pulseCurveResolutionTen => 'one value per 10 seconds';
+
+  @override
+  String pulseCurveBasis(int n, int total, String resolution) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'From $n minutes',
+      one: 'From 1 minute',
+    );
+    return '$_temp0 of $total recorded · $resolution';
+  }
+
+  @override
+  String pulseCurveA11ySlider(int dur, int min, int max, String resolution) {
+    return 'Heart-rate curve, $dur minutes, $min to $max bpm, $resolution. Swipe to step through.';
+  }
+
+  @override
+  String pulseCurveA11yPoint(String time, int bpm, int zone) {
+    return '$time, $bpm bpm, zone $zone';
+  }
+
+  @override
+  String pulseCurveA11yPointPlain(String time, int bpm) {
+    return '$time, $bpm bpm';
+  }
+
+  @override
+  String pulseCurveGap(Object time) {
+    return '$time · no recording';
+  }
+
+  @override
+  String pulseCurveA11yGap(Object time) {
+    return '$time, no recording';
+  }
+
+  @override
+  String pulseCurveSpan(String span, String resolution) {
+    return '$span · $resolution';
   }
 }

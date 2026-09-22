@@ -65,6 +65,7 @@ void main() {
                     bpmByMinute: curve,
                     totalMinutes: 36,
                     zones: z,
+                    resolution: 'je Minute ein Wert',
                     height: 120,
                     semanticLabel: 'Pulsverlauf',
                   ),

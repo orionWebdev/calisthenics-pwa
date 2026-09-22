@@ -7535,12 +7535,6 @@ abstract class AppL10n {
   /// **'Pulsverlauf'**
   String get detailPulseCurveTitle;
 
-  /// Board 16 · offene Frage 1, gelöst am 22.09.2026 — ein Semantics-Knoten statt einer Bildbeschreibung ohne Zahlen
-  ///
-  /// In de, this message translates to:
-  /// **'Pulsverlauf, von {min} bis {max} bpm, über {count} von {total} Minuten'**
-  String detailPulseCurveA11y(int min, int max, int count, int total);
-
   /// Board 16 · Ergänzung — steht nicht in der Stringtabelle des Boards, folgt aber den Artboards
   ///
   /// In de, this message translates to:
@@ -8045,6 +8039,60 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'Weder eingetragen noch gemessen. Gerechnet wird mit {rpe} von 5.'**
   String detailLoadExplainFallback(int rpe);
+
+  /// Board 16 Nachtrag · detail.hr.resolution.minute
+  ///
+  /// In de, this message translates to:
+  /// **'je Minute ein Wert'**
+  String get pulseCurveResolutionMinute;
+
+  /// Board 16 Nachtrag · detail.hr.resolution.ten
+  ///
+  /// In de, this message translates to:
+  /// **'je 10 Sekunden ein Wert'**
+  String get pulseCurveResolutionTen;
+
+  /// Board 16 Nachtrag · detail.hr.basis — die Grundlage unter der Kurve
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{Aus 1 Minute} other{Aus {n} Minuten}} von {total} Aufzeichnung · {resolution}'**
+  String pulseCurveBasis(int n, int total, String resolution);
+
+  /// Board 16 Nachtrag · detail.hr.a11y.curve — die Kurve ist ein Slider-Knoten
+  ///
+  /// In de, this message translates to:
+  /// **'Pulsverlauf, {dur} Minuten, {min} bis {max} bpm, {resolution}. Zum Durchgehen wischen.'**
+  String pulseCurveA11ySlider(int dur, int min, int max, String resolution);
+
+  /// Board 16 Nachtrag · detail.hr.a11y.point — der Wert des Sliders
+  ///
+  /// In de, this message translates to:
+  /// **'{time}, {bpm} bpm, Zone {zone}'**
+  String pulseCurveA11yPoint(String time, int bpm, int zone);
+
+  /// Board 16 Nachtrag · dasselbe ohne festgelegte Zonen
+  ///
+  /// In de, this message translates to:
+  /// **'{time}, {bpm} bpm'**
+  String pulseCurveA11yPointPlain(String time, int bpm);
+
+  /// Board 16 Nachtrag · was abgelesen wird, wo die Uhr nichts gemessen hat
+  ///
+  /// In de, this message translates to:
+  /// **'{time} · keine Aufzeichnung'**
+  String pulseCurveGap(Object time);
+
+  /// Board 16 Nachtrag · detail.hr.a11y.gap — die Lücke ist ein eigener Schritt
+  ///
+  /// In de, this message translates to:
+  /// **'{time}, keine Aufzeichnung'**
+  String pulseCurveA11yGap(Object time);
+
+  /// Board 16 Nachtrag · Spanne und Auflösung in einer Zeile über der Kurve. Platzhalter ausdrücklich erklärt: Ohne das ordnet gen-l10n die Parameter alphabetisch, und {resolution} stünde vor {span}.
+  ///
+  /// In de, this message translates to:
+  /// **'{span} · {resolution}'**
+  String pulseCurveSpan(String span, String resolution);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -442,7 +442,7 @@ class _EffortBasisLine extends StatelessWidget {
             padding: EdgeInsets.only(right: 4),
             child: AtemOriginDot(
               shape: AtemOriginShape.hollow,
-              color: AtemColors.textSecondary,
+              color: AtemColors.textTertiary,
             ),
           ),
         ),

@@ -3,6 +3,7 @@ import 'package:atem/features/pulse/domain/heart_rate_zones.dart';
 import 'package:atem/features/pulse/presentation/widgets/pulse_curve_chart.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Der Pulsverlauf als Baustein — Zeile darüber, Achse darunter, Schieber.
@@ -53,6 +54,7 @@ void main() {
                   bpmByMinute: curve,
                   totalMinutes: 10,
                   zones: withZones,
+                  resolution: 'je Minute ein Wert',
                   semanticLabel: 'Pulsverlauf',
                 ),
               ),
@@ -78,7 +80,12 @@ void main() {
   group('die Zeile über der Kurve', () {
     testWidgets('zeigt in Ruhe die Spanne', (tester) async {
       final l10n = await pump(tester, withZones: zones);
-      expect(find.text(l10n.pulseCurveRange(100, 180)), findsOneWidget);
+      // Spanne **und** Auflösung — eine Zeile, zwei Auskünfte.
+      expect(
+        find.text(l10n.pulseCurveSpan(
+            l10n.pulseCurveRange(100, 180), 'je Minute ein Wert')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('zeigt beim Ziehen Zeit, Wert und Zone', (tester) async {
@@ -96,7 +103,11 @@ void main() {
       await gesture.up();
       await tester.pumpAndSettle();
       // Losgelassen steht wieder die Spanne da.
-      expect(find.text(l10n.pulseCurveRange(100, 180)), findsOneWidget);
+      expect(
+        find.text(l10n.pulseCurveSpan(
+            l10n.pulseCurveRange(100, 180), 'je Minute ein Wert')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('ohne festgelegte Zonen nennt sie keine Zone', (tester) async {
@@ -142,6 +153,57 @@ void main() {
     });
   });
 
+  group('für den Screenreader', () {
+    /// Der Slider-Knoten der Kurve, über sein Label gefunden. Es kommt hier
+    /// von aussen — der Baustein reicht `semanticLabel` nur durch.
+    final curveNode = find.semantics.byLabel('Pulsverlauf');
+
+    testWidgets('die Kurve ist ein Slider und nennt den Wert', (tester) async {
+      final handle = tester.ensureSemantics();
+      final l10n = await pump(tester, withZones: zones);
+
+      final node = tester.getSemantics(find.byType(PulseCurveChart));
+      expect(node.flagsCollection.isSlider, isTrue,
+          reason: 'ein Bild wäre eine Zahl weniger, die jemand erfährt');
+      expect(node.value,
+          l10n.pulseCurveA11yPoint(l10n.durationMinutes(0), 100, 1));
+      handle.dispose();
+    });
+
+    testWidgets('ein Schritt geht einen Wert weiter', (tester) async {
+      final handle = tester.ensureSemantics();
+      final l10n = await pump(tester, withZones: zones);
+
+      tester.semantics.performAction(curveNode, SemanticsAction.increase);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10n.pulseCurveReadout(l10n.durationMinutes(1),
+            '110 ${l10n.detailUnitBpm}', l10n.detailZoneName(1))),
+        findsOneWidget,
+      );
+      handle.dispose();
+    });
+
+    testWidgets('eine Lücke ist ein eigener Schritt, kein Sprung',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      final l10n = await pump(tester, withZones: zones);
+      // Minute 4 ist nicht gemessen. Vier Schritte von 0 landen darauf —
+      // und sie wird benannt, nicht übersprungen.
+      for (var i = 0; i < 4; i++) {
+        tester.semantics.performAction(curveNode, SemanticsAction.increase);
+        await tester.pumpAndSettle();
+      }
+
+      expect(find.text(l10n.pulseCurveGap(l10n.durationMinutes(4))),
+          findsOneWidget);
+      expect(tester.getSemantics(find.byType(PulseCurveChart)).value,
+          l10n.pulseCurveA11yGap(l10n.durationMinutes(4)));
+      handle.dispose();
+    });
+  });
+
   group('die Zeitachse', () {
     testWidgets('nennt Anfang und Ende', (tester) async {
       final l10n = await pump(tester, withZones: zones);
@@ -167,6 +229,7 @@ void main() {
         body: PulseCurveChart(
           bpmByMinute: {0: 120},
           totalMinutes: 10,
+          resolution: 'je Minute ein Wert',
           semanticLabel: 'Pulsverlauf',
         ),
       ),

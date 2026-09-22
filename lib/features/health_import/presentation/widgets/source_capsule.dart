@@ -7,6 +7,7 @@ import '../../../../core/theme/theme.dart';
 import '../../../../app/application/snackbar_providers.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
+import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../application/health_import_providers.dart';
@@ -103,6 +104,8 @@ class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
     final showApp = origin != SessionOrigin.watch;
     final showWatch = origin != SessionOrigin.app;
 
+    final explain = _explainLoad(l10n, session, measured);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -171,6 +174,18 @@ class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
                     text: l10n.hcSourceWatch(device),
                     shape: AtemOriginShape.hollow,
                   ),
+                // **Wie die Last gerechnet wird** (Board 16, Nachtrag, M).
+                // Sie ist eine App-Rechnung; was daran gemessen sein kann,
+                // ist die Anstrengung. Das gehört erklärt, nicht behauptet —
+                // und es klappt hier auf, statt ein Blatt zu öffnen.
+                if (explain.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  AtemExplainHeader(
+                    title: l10n.detailLoadExplainTitle,
+                    titleStyle: AtemType.meta.of(context),
+                    explanation: explain,
+                  ),
+                ],
                 // Der abweichende Fremdwert — nur bei einer
                 // Zusammenführung, denn nur dort gibt es zwei Zahlen.
                 if (origin == SessionOrigin.merged &&
@@ -191,6 +206,54 @@ class _SourceCapsuleState extends ConsumerState<SourceCapsule> {
         ),
       ],
     );
+  }
+
+  /// Die Sätze hinter dem ⓘ: Formel, dann der Fall, der hier gilt.
+  ///
+  /// Leer, wo es keine Last gibt — Regeneration trägt keine, und ein ⓘ über
+  /// eine Zahl, die nicht da ist, wäre ein Versprechen ins Leere.
+  ///
+  /// **Die Formel steht hier voll**, nicht in der verkürzten Fassung des
+  /// Boards: Dort heisst es „Dauer × Anstrengung" und „Volumen × Anstrengung
+  /// / 100". Gerechnet wird aber mit dem Faktor 4 und der Sportart, und bei
+  /// Kraft durch 50 (`TrainingLoad`). Ein Erklärtext, der die Rechnung falsch
+  /// wiedergibt, ist schlimmer als keiner.
+  List<String> _explainLoad(
+    AppL10n l10n,
+    TrainingSession session,
+    HealthSession? measured,
+  ) {
+    final formula = switch (session) {
+      CardioSession() => l10n.detailLoadExplainFormulaEndurance,
+      StrengthSession() => l10n.detailLoadExplainFormulaStrength,
+      _ => null,
+    };
+    if (formula == null) return const [];
+
+    final context = ref.watch(loadContextProvider);
+    final entered = session.rpe;
+    final fromPulse = context.measuredEffortOf?.call(session);
+
+    if (entered != null) {
+      // Beide da: Beide nennen, ohne die eine zur Abweichung der anderen zu
+      // erklären. „Eingetragen gilt" ist die Reihenfolge, kein Urteil.
+      return [
+        formula,
+        fromPulse == null
+            ? l10n.detailLoadExplainEntered(entered)
+            : l10n.detailLoadExplainEnteredWins(entered, fromPulse),
+      ];
+    }
+
+    if (fromPulse != null) {
+      final seconds = measured?.pulse?.recordedSeconds ?? 0;
+      return [
+        formula,
+        l10n.detailLoadExplainMeasured(fromPulse, (seconds / 60).round()),
+      ];
+    }
+
+    return [formula, l10n.detailLoadExplainFallback(context.effortFor(session))];
   }
 }
 

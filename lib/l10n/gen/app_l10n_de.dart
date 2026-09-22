@@ -5110,11 +5110,6 @@ class AppL10nDe extends AppL10n {
   String get detailPulseCurveTitle => 'Pulsverlauf';
 
   @override
-  String detailPulseCurveA11y(int min, int max, int count, int total) {
-    return 'Pulsverlauf, von $min bis $max bpm, über $count von $total Minuten';
-  }
-
-  @override
   String get detailHrLoading => 'Puls wird geladen';
 
   @override
@@ -5546,5 +5541,52 @@ class AppL10nDe extends AppL10n {
   @override
   String detailLoadExplainFallback(int rpe) {
     return 'Weder eingetragen noch gemessen. Gerechnet wird mit $rpe von 5.';
+  }
+
+  @override
+  String get pulseCurveResolutionMinute => 'je Minute ein Wert';
+
+  @override
+  String get pulseCurveResolutionTen => 'je 10 Sekunden ein Wert';
+
+  @override
+  String pulseCurveBasis(int n, int total, String resolution) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Aus $n Minuten',
+      one: 'Aus 1 Minute',
+    );
+    return '$_temp0 von $total Aufzeichnung · $resolution';
+  }
+
+  @override
+  String pulseCurveA11ySlider(int dur, int min, int max, String resolution) {
+    return 'Pulsverlauf, $dur Minuten, $min bis $max bpm, $resolution. Zum Durchgehen wischen.';
+  }
+
+  @override
+  String pulseCurveA11yPoint(String time, int bpm, int zone) {
+    return '$time, $bpm bpm, Zone $zone';
+  }
+
+  @override
+  String pulseCurveA11yPointPlain(String time, int bpm) {
+    return '$time, $bpm bpm';
+  }
+
+  @override
+  String pulseCurveGap(Object time) {
+    return '$time · keine Aufzeichnung';
+  }
+
+  @override
+  String pulseCurveA11yGap(Object time) {
+    return '$time, keine Aufzeichnung';
+  }
+
+  @override
+  String pulseCurveSpan(String span, String resolution) {
+    return '$span · $resolution';
   }
 }

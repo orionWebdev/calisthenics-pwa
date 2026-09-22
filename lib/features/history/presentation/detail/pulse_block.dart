@@ -182,11 +182,14 @@ class _Data extends ConsumerWidget {
               // Dieselben Grenzen, die auch die Verteilung darüber rechnet.
               // Fehlen sie, bleibt die Linie einfarbig — geraten wird nicht.
               zones: zones,
-              semanticLabel: l10n.detailPulseCurveA11y(
+              // Heute liegt jede Kurve minutengenau. Sobald es eine feinere
+              // Ablage gibt, entscheidet das der Datensatz, nicht der Graph.
+              resolution: l10n.pulseCurveResolutionMinute,
+              semanticLabel: l10n.pulseCurveA11ySlider(
+                total,
                 pulse.curveBpmByMinute.values.reduce((a, b) => a < b ? a : b),
                 pulse.curveBpmByMinute.values.reduce((a, b) => a > b ? a : b),
-                pulse.curveBpmByMinute.length,
-                total,
+                l10n.pulseCurveResolutionMinute,
               ),
             ),
           ],
@@ -431,6 +434,27 @@ class _ZoneRow extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // **Der Schlüssel zwischen Kurve und Zonennamen** (Board 16,
+                // Nachtrag, Q): Die Kurve trägt die Zonenfarben, hier steht
+                // dieselbe Farbe neben dem Namen. Ohne ihn wüsste niemand,
+                // welches Rot welche Zone ist.
+                //
+                // Er trägt nichts allein — Nummer, Bereich und Minuten stehen
+                // daneben —, und er wird nie vorgelesen. Bei gestapelten
+                // Zonen („Z3 · Z4") gilt die erste: Zwei Punkte vor einer
+                // Zeile behaupteten zwei Zeilen.
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, right: 7),
+                  child: SizedBox.square(
+                    dimension: 6,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AtemColors.zone(zoneNumbers.first),
+                      ),
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: Text(name, style: AtemType.meta.of(context)),
                 ),

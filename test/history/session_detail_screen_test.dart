@@ -207,10 +207,12 @@ void main() {
 
       expect(
           find.text(l10n.detailPulseCurveTitle.toUpperCase()), findsOneWidget);
-      // 42 gemessene von 52 Minuten, 100 bis 175 bpm — die Lücke von Minute
-      // 20 bis 29 zählt nicht mit, ist aber im Bild als Bruch sichtbar.
+      // 52 Minuten, 100 bis 175 bpm, minutengenau. Seit dem Nachtrag zu
+      // Board 16 ist die Kurve ein **Slider**: Das Label nennt Dauer, Spanne
+      // und Auflösung, den einzelnen Wert trägt `value`.
       expect(
-        find.bySemanticsLabel(l10n.detailPulseCurveA11y(100, 175, 42, 52)),
+        find.bySemanticsLabel(l10n.pulseCurveA11ySlider(
+            52, 100, 175, l10n.pulseCurveResolutionMinute)),
         findsOneWidget,
       );
       handle.dispose();
@@ -305,6 +307,33 @@ void main() {
       expect(find.text(l10n.detailOriginApp), findsOneWidget);
       expect(
           find.text(l10n.detailOriginMetaEmpty.toUpperCase()), findsOneWidget);
+    });
+
+    testWidgets('die Kapsel erklärt, wie die Last gerechnet wird',
+        (tester) async {
+      // Board 16, Nachtrag, M: Die Erklärung klappt **in** der Kapsel auf,
+      // sie öffnet kein Blatt.
+      final l10n = await _pump(tester, detailMerged);
+      expect(find.text(l10n.detailLoadExplainTitle), findsNothing);
+
+      await tester.tap(find.text(l10n.detailOriginBoth));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.detailLoadExplainTitle), findsOneWidget);
+
+      // Die Formel steht erst hinter dem ⓘ, nicht schon daneben.
+      expect(find.text(l10n.detailLoadExplainFormulaStrength), findsNothing);
+      await tester.tap(find.bySemanticsLabel(
+          l10n.explainOpenA11y(l10n.detailLoadExplainTitle)));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.detailLoadExplainFormulaStrength), findsOneWidget);
+    });
+
+    testWidgets('Regeneration trägt keine Last und deshalb keine Erklärung',
+        (tester) async {
+      final l10n = await _pump(tester, detailRecovery);
+      await tester.tap(find.text(l10n.detailOriginApp));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.detailLoadExplainTitle), findsNothing);
     });
   });
 
