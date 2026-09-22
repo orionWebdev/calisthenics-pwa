@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/domain/health_gateway.dart';
+import '../../../core/domain/pulse_profile.dart';
 import '../../auth/application/auth_providers.dart';
 import '../../settings/application/settings_providers.dart';
 import '../../history/application/history_providers.dart';
@@ -160,12 +161,25 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
     //   bei diesen Datensätzen, der Verlaufsgraph bliebe aber für immer leer,
     //   weil ein vorhandener Puls den Nachtrag übersprang. Am Gerät
     //   aufgefallen: Eine Einheit vom 13.09. zeigte Zonen, aber keine Kurve.
+    // * Am 22.09.2026 mittags gelesen: eine Kurve, aber im **Minutenraster**.
+    //   Abends wurde daraus das Zehn-Sekunden-Raster. Solange die Uhr die
+    //   Rohwerte noch hergibt, ist die feine Kurve nicht erfunden, sondern
+    //   dieselbe Messung genauer gelesen — deshalb wird sie einmal geholt.
     //
-    // Die Uhr gibt beides noch her (dreissig Tage), und was schon entschieden
-    // ist, bleibt es: Geschrieben wird der Verlauf und die daraus gerechneten
-    // Ø/Maximum, sonst nichts.
+    // Das ist **kein** Umrechnen: Aus einer Minutenkurve lässt sich keine
+    // feine machen, und es wird auch keine versucht. Es wird neu gelesen,
+    // und nur dort, wo die Quelle noch antwortet. Danach greift die
+    // Bedingung nicht mehr, und es bleibt bei einem Schreibvorgang.
+    //
+    // Was schon entschieden ist, bleibt es: Geschrieben wird der Verlauf und
+    // die daraus gerechneten Ø/Maximum, sonst nichts.
     for (final k in known) {
-      if (k.pulse != null && k.pulse!.curve.isNotEmpty) continue;
+      final stored = k.pulse;
+      if (stored != null &&
+          stored.curve.isNotEmpty &&
+          stored.slotSeconds <= PulseProfile.fineSlotSeconds) {
+        continue;
+      }
       final source = measured.where((m) => m.id == k.externalId).firstOrNull;
       final pulse = source?.pulse;
       if (pulse == null) continue;

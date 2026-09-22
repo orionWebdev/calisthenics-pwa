@@ -59,11 +59,12 @@ class _Sessions extends FakeSessionRepository {
   Future<List<TrainingSession>> fetchSessions(String userId) async => const [];
 }
 
-/// Der Verlauf, wie ihn die Uhr heute liefert — mit Kurve.
+/// Der Verlauf, wie ihn die Uhr heute liefert — fein und mit Kurve.
 final _full = PulseProfile(
   secondsByBpm: const {96: 1394, 120: 30},
   windowSeconds: 1440,
   curve: {for (var m = 0; m < 24; m++) m: 96 + (m == 12 ? 24 : 0)},
+  slotSeconds: PulseProfile.fineSlotSeconds,
 );
 
 /// Derselbe Verlauf, wie er am 21.09. abgelegt wurde — ohne Kurve.
@@ -139,5 +140,21 @@ void main() {
   test('ein vollständiger Datensatz wird nicht neu geschrieben', () async {
     final repo = await _run([_record(pulse: _full)]);
     expect(repo.records.single.pulse?.curve.length, 24);
+  });
+
+  test('eine Minutenkurve wird einmal fein nachgeholt', () async {
+    // Der Fall vom 22.09.2026 mittags: Kurve da, aber im Minutenraster. Die
+    // Uhr gibt die Rohwerte noch her — das ist kein Umrechnen, sondern
+    // dieselbe Messung genauer gelesen.
+    final coarse = PulseProfile(
+      secondsByBpm: const {96: 1394, 120: 30},
+      windowSeconds: 1440,
+      curve: {for (var m = 0; m < 24; m++) m: 96},
+      slotSeconds: PulseProfile.legacySlotSeconds,
+    );
+
+    final repo = await _run([_record(pulse: coarse)]);
+    expect(repo.records.single.pulse?.slotSeconds,
+        PulseProfile.fineSlotSeconds);
   });
 }
