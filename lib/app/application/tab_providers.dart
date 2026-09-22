@@ -32,13 +32,18 @@ enum AppTab {
 
   /// Die Plätze, die die Leiste gerade zeigt.
   ///
-  /// **Vorübergehend nur Hybrid und Kraft** (seit 15.09.2026): Der Kraft-Tab
-  /// wird zuerst rund gemacht, Cardio und Regeneration kommen danach wieder
-  /// in die Leiste. Die Screens, Provider und Stapel der beiden bleiben
-  /// vollständig bestehen — der `IndexedStack` in `AppShell` trägt weiter
-  /// alle vier —, nur die Leiste und die Sprünge aus dem Hybrid-Tab kennen
-  /// sie nicht. Zurück auf vier: die beiden Werte hier wieder eintragen.
-  static const visible = [AppTab.hybrid, AppTab.strength];
+  /// **Drei: Hybrid, Kraft, Cardio** — so verlangt es `CLAUDE.md` („Bottom-Bar
+  /// hat genau drei Plätze. Keine neuen Bereiche, keine leeren Slots").
+  ///
+  /// Vom 15. bis zum 22.09.2026 standen hier nur zwei: Der Kraft-Tab wurde
+  /// zuerst rund gemacht, Cardio sollte danach zurückkommen. Es kam zurück,
+  /// weil sonst gebaute Dinge unerreichbar blieben — „Zone 5 je Woche" stand
+  /// in einer Auswertung, zu der es keinen Weg gab.
+  ///
+  /// **Regeneration bleibt draussen**, und das ist kein Versehen: Ein vierter
+  /// Platz widerspräche der Regel. Regeneration wohnt im Hybrid-Tab, wo die
+  /// Zeile „Regeneration" sie erfasst.
+  static const visible = [AppTab.hybrid, AppTab.strength, AppTab.cardio];
 }
 
 /// Die vier Seiten des Kraft-Tabs, in der Reihenfolge der Reiterleiste.
