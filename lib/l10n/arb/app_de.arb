@@ -8206,5 +8206,29 @@
         "type": "int"
       }
     }
+  },
+  "pulseCurveRange": "{from}–{to} bpm",
+  "@pulseCurveRange": {
+    "description": "Board 16 · pulse.curve.range — die Spanne über der Kurve, solange niemand schiebt",
+    "placeholders": {
+      "from": {
+        "type": "int"
+      },
+      "to": {
+        "type": "int"
+      }
+    }
+  },
+  "pulseCurveReadout": "{time} · {value} · {zone}",
+  "@pulseCurveReadout": {
+    "description": "Board 16 · pulse.curve.readout — was unter dem Finger steht, mit Zone"
+  },
+  "pulseCurveReadoutPlain": "{time} · {value}",
+  "@pulseCurveReadoutPlain": {
+    "description": "Board 16 · pulse.curve.readout.plain — dasselbe ohne festgelegte Zonen"
+  },
+  "pulseCurveStart": "0 min",
+  "@pulseCurveStart": {
+    "description": "Board 16 · pulse.curve.axis.start — der linke Rand der Zeitachse"
   }
 }

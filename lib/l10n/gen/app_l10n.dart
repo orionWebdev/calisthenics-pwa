@@ -7943,6 +7943,30 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{n, plural, =0{heute} one{gestern} other{vor {n} Tagen}}'**
   String trainLastMetaBare(int n);
+
+  /// Board 16 · pulse.curve.range — die Spanne über der Kurve, solange niemand schiebt
+  ///
+  /// In de, this message translates to:
+  /// **'{from}–{to} bpm'**
+  String pulseCurveRange(int from, int to);
+
+  /// Board 16 · pulse.curve.readout — was unter dem Finger steht, mit Zone
+  ///
+  /// In de, this message translates to:
+  /// **'{time} · {value} · {zone}'**
+  String pulseCurveReadout(Object time, Object value, Object zone);
+
+  /// Board 16 · pulse.curve.readout.plain — dasselbe ohne festgelegte Zonen
+  ///
+  /// In de, this message translates to:
+  /// **'{time} · {value}'**
+  String pulseCurveReadoutPlain(Object time, Object value);
+
+  /// Board 16 · pulse.curve.axis.start — der linke Rand der Zeitachse
+  ///
+  /// In de, this message translates to:
+  /// **'0 min'**
+  String get pulseCurveStart;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

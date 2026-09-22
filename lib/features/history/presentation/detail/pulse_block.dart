@@ -179,6 +179,9 @@ class _Data extends ConsumerWidget {
             PulseCurveChart(
               bpmByMinute: pulse.curveBpmByMinute,
               totalMinutes: total,
+              // Dieselben Grenzen, die auch die Verteilung darüber rechnet.
+              // Fehlen sie, bleibt die Linie einfarbig — geraten wird nicht.
+              zones: zones,
               semanticLabel: l10n.detailPulseCurveA11y(
                 pulse.curveBpmByMinute.values.reduce((a, b) => a < b ? a : b),
                 pulse.curveBpmByMinute.values.reduce((a, b) => a > b ? a : b),

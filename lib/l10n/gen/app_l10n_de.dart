@@ -5462,4 +5462,22 @@ class AppL10nDe extends AppL10n {
     );
     return '$_temp0';
   }
+
+  @override
+  String pulseCurveRange(int from, int to) {
+    return '$from–$to bpm';
+  }
+
+  @override
+  String pulseCurveReadout(Object time, Object value, Object zone) {
+    return '$time · $value · $zone';
+  }
+
+  @override
+  String pulseCurveReadoutPlain(Object time, Object value) {
+    return '$time · $value';
+  }
+
+  @override
+  String get pulseCurveStart => '0 min';
 }
