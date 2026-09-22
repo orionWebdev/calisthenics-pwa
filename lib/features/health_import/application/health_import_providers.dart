@@ -149,13 +149,23 @@ class HealthImportController extends Notifier<AsyncValue<void>> {
       await repo.save(userId, HealthSession.pending(session, now));
     }
 
-    // **Den Pulsverlauf nachtragen**, wo er fehlt. Datensätze, die vor dem
-    // 21.09.2026 gelesen wurden, tragen nur Ø und Maximum — aus denen sich
-    // keine Zone rechnen lässt. Die Uhr gibt sie noch her (dreissig Tage),
-    // und was schon entschieden ist, bleibt es: Geschrieben wird der Verlauf
-    // und die daraus gerechneten Ø/Maximum, sonst nichts.
+    // **Den Pulsverlauf nachtragen**, wo er fehlt oder unvollständig ist.
+    //
+    // Zwei Jahrgänge brauchen das, und der zweite ist leicht zu übersehen:
+    //
+    // * Vor dem 21.09.2026 gelesen: gar kein Puls, nur Ø und Maximum — daraus
+    //   lässt sich keine Zone rechnen.
+    // * Am 21.09.2026 gelesen: ein Puls mit Sekunden je bpm, aber **ohne**
+    //   die Kurve über die Zeit. Die kam erst am 22.09. dazu. Zonen stimmen
+    //   bei diesen Datensätzen, der Verlaufsgraph bliebe aber für immer leer,
+    //   weil ein vorhandener Puls den Nachtrag übersprang. Am Gerät
+    //   aufgefallen: Eine Einheit vom 13.09. zeigte Zonen, aber keine Kurve.
+    //
+    // Die Uhr gibt beides noch her (dreissig Tage), und was schon entschieden
+    // ist, bleibt es: Geschrieben wird der Verlauf und die daraus gerechneten
+    // Ø/Maximum, sonst nichts.
     for (final k in known) {
-      if (k.pulse != null) continue;
+      if (k.pulse != null && k.pulse!.curveBpmByMinute.isNotEmpty) continue;
       final source = measured.where((m) => m.id == k.externalId).firstOrNull;
       final pulse = source?.pulse;
       if (pulse == null) continue;
