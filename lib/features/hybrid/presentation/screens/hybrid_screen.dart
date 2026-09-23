@@ -9,7 +9,6 @@ import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/gen/app_l10n.dart';
 import '../../../cardio/domain/last_activity.dart';
-import '../../../cardio/domain/week_ratio.dart';
 import '../../../cardio/presentation/cardio_ui.dart';
 import '../../../cardio/presentation/screens/cardio_form_screen.dart';
 import '../../../dashboard/application/dashboard_providers.dart';
@@ -21,17 +20,16 @@ import '../../../health_import/presentation/widgets/health_inbox.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
-import '../../../plans/application/plan_providers.dart';
-import '../../../plans/domain/plan.dart';
 import '../../../plans/presentation/start_sheet.dart';
-import '../../../settings/application/settings_providers.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../../../weight/presentation/widgets/weight_card.dart';
 import '../../domain/training_heatmap.dart';
 import '../widgets/recovery_row.dart';
 import '../widgets/recovery_sheet.dart';
 import '../widgets/training_heatmap_card.dart';
-import '../widgets/today_week_card.dart';
+import '../../../planning/presentation/screens/week_screen.dart';
+import '../../../planning/presentation/week_ui.dart' show WeekWords;
+import '../../../planning/presentation/widgets/today_widget.dart';
 import '../widgets/training_time_card.dart';
 
 /// Der Hybrid-Tab — **Start und Analyse verschmolzen, ohne Doppelung**
@@ -61,9 +59,10 @@ import '../widgets/training_time_card.dart';
 /// ## Heute steht jetzt hier (18.09.2026)
 ///
 /// Die Heute-Karte stand im Kraft-Tab und eröffnete ihn mit Planung, die es
-/// nicht gibt — Termine kommen aus der Vorgänger-App. Sie ist mit der
-/// Wochenkarte zu [TodayWeekCard] verschmolzen und steht ganz oben: erst der
-/// Tag mit dem Weg ins Training, dann die Woche, die ihn einordnet.
+/// nicht gibt — Termine kommen aus der Vorgänger-App. Sie war seit dem
+/// 18.09.2026 mit der Wochenkarte verschmolzen; seit Board 19 (23.09.2026)
+/// steht an ihrer Stelle das `TodayWidget`: gelesen aus der Woche von Hand,
+/// ohne Startknopf — Starten bleibt im Kraft- und im Cardio-Tab.
 class HybridScreen extends ConsumerStatefulWidget {
   const HybridScreen({super.key, this.onStart});
 
@@ -116,24 +115,6 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
   void _openCardioForm() => Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const CardioFormScreen()),
       );
-
-  /// Der Termin von heute: erst das Start-Blatt, dann der Runner — derselbe
-  /// Weg wie im Kraft-Tab (Board 05). Fehlt der Plan (gelöscht oder
-  /// Schnelleintrag), wird daraus ein freies Training mit erhaltenem Termin.
-  Future<void> _startToday(TodaySession session) async {
-    final onStart = widget.onStart;
-    if (onStart == null) return;
-    final plans = ref.read(plansProvider).value ?? const <Plan>[];
-    final plan = plans.where((p) => p.id == session.planId).firstOrNull;
-
-    final request = await StartSheet.show(
-      context,
-      plan: plan,
-      scheduleId: session.id,
-      restSeconds: ref.read(defaultRestSecondsProvider),
-    );
-    if (request != null) onStart(request);
-  }
 
   void _openStrength() => ref
       .read(appTabsProvider.notifier)
@@ -196,7 +177,6 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
   ) {
     final l10n = AppL10n.of(context);
     final reference = ref.watch(historyReferenceProvider);
-    final ratio = WeekRatio.compute(sessions, reference);
     final recovery = RecoveryStatus.of(sessions, reference);
     final last = LastActivity.of(sessions, reference);
     final thin = sessions.length < HybridScreen.minimumSessions;
@@ -209,6 +189,9 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
       date: reference,
       onProfile: () => Navigator.of(context).push(
         MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
+      ),
+      onWeek: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const WeekScreen()),
       ),
     );
 
@@ -268,33 +251,18 @@ class _HybridScreenState extends ConsumerState<HybridScreen>
             //
             // Ab hier läuft die Kaskade: Die Blöcke steigen versetzt ein, in
             // der Reihenfolge, in der man sie lesen soll.
-            if (TodayWeekCard.hasData(
-              ratio: ratio,
-              session: data.session,
-              onStart: widget.onStart == null ? null : () {},
-            )) ...[
-              AtemEntrance(
-                child: TodayWeekCard(
-                  ratio: ratio,
-                  session: data.session,
-                  plan: data.session == null
-                      ? null
-                      : ref
-                          .watch(plansProvider)
-                          .value
-                          ?.where((p) => p.id == data.session!.planId)
-                          .firstOrNull,
-                  onStart: widget.onStart == null || data.session == null
-                      ? null
-                      : () => _startToday(data.session!),
-                  // Solange die Bereitschaft nicht trägt, erklärt die Zeile
-                  // hier, warum sie fehlt — vorher tat das der eigene
-                  // Wochenblock, den es nicht mehr gibt.
-                  thinHint: thin
-                      ? l10n.hybridWeekThin(HybridScreen.minimumSessions)
-                      : null,
-                ),
-              ),
+            // „Was wird heute trainiert?" (Board 19, D) — liest dieselbe
+            // Ableitung wie der Kraft-Tab. Ohne Woche und ohne Termin
+            // rendert es nicht; der Weg zur Planung ist dann das
+            // Kalender-Symbol im Kopf.
+            const AtemEntrance(
+              child: TodayWidget(gapAfter: AtemSpacing.cardGap),
+            ),
+            // Solange die Bereitschaft nicht trägt, sagt eine Zeile, warum
+            // sie fehlt — das tat bis Board 19 die Heute-Karte.
+            if (thin) ...[
+              Text(l10n.hybridWeekThin(HybridScreen.minimumSessions),
+                  style: AtemType.meta.of(context)),
               const SizedBox(height: AtemSpacing.cardGap),
             ],
 
@@ -384,11 +352,16 @@ class _Header extends StatelessWidget {
     required this.user,
     required this.date,
     required this.onProfile,
+    required this.onWeek,
   });
 
   final UserSummary user;
   final DateTime date;
   final VoidCallback onProfile;
+
+  /// Der feste Einstieg in die Woche — steht immer, auch wenn das Widget
+  /// nicht rendert (Board 19, Entscheidung 11).
+  final VoidCallback onWeek;
 
   @override
   Widget build(BuildContext context) {
@@ -412,7 +385,7 @@ class _Header extends StatelessWidget {
         maxLines: 1,
       )..layout())
           .width;
-      final fits = titleWidth + 12 + 10 + 48 <= constraints.maxWidth;
+      final fits = titleWidth + 12 + 10 + 48 + 48 <= constraints.maxWidth;
       return Row(
         children: [
           if (fits)
@@ -437,6 +410,18 @@ class _Header extends StatelessWidget {
             ),
           ],
           const SizedBox(width: 10),
+          AtemTappable(
+            onTap: onWeek,
+            semanticLabel: l10n.hybridWeekButtonA11y,
+            child: const SizedBox(
+              width: 48,
+              height: 48,
+              child: Center(
+                child: AtemGlyph(WeekWords.calendarGlyph,
+                    color: AtemColors.cyan, size: 20, strokeWidth: 1.9),
+              ),
+            ),
+          ),
           AtemTappable(
             onTap: onProfile,
             semanticLabel: l10n.settingsEntryA11y,

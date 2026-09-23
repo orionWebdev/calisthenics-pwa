@@ -4,14 +4,14 @@ Diese Datei in den Repo-Root legen. Sie gilt für jede Aufgabe an dieser App.
 
 ## Was hier gebaut wird
 ATEM Hybrid — Android-App (Flutter) für hybrides Training. Ästhetik: Dark Cyber-Athlete.
-Design-Referenzen: `design_handoff_atem_app/` — Spezifikations-Boards für Modul 1–11, 13–18 und 18b plus zwei interaktive Prototypen.
+Design-Referenzen: `design_handoff_atem_app/` — Spezifikations-Boards für Modul 1–11, 13–19 und 18b plus zwei interaktive Prototypen.
 Board 12 (Kraft-Tab als wischbare Seiten) ist durch Board 13 abgelöst und existiert nicht mehr.
 Lesbar ohne Browser: `python3 tool/read_board.py NN`.
 
 ## Reihenfolge der Wahrheit
 Bei Widersprüchen gilt, von oben nach unten:
 1. `tokens/atem_theme.dart` — Farb- und Stilwerte
-2. Das Spezifikations-Board des betroffenen Moduls (`design_refs/01`–`18`) — Maße, Zustände, Texte, A11y
+2. Das Spezifikations-Board des betroffenen Moduls (`design_refs/01`–`19`) — Maße, Zustände, Texte, A11y
 3. Der Leitsatz im Kopf des Boards — bei Auslegungsfragen
 4. Die interaktiven Prototypen — nur für Bewegung und Timing; ihre Farben sind eine veraltete Fassung
 
@@ -97,6 +97,8 @@ Verlauf, Auswertung, Pläne. Kein `PageView`, kein Tab-Kopf.
 - **Nichts leuchtet an Offenem, Fehlendem, Unerledigtem.** Kein stehender
   Schein an Punkten. Dauerschleifen gibt es genau zwei: die Aurora (nur
   Unterseiten; auf Plankarten stehend) und das Ladeskelett.
+- **Die Lichtkante läuft bei jedem Aufklappen** (Nutzerentscheidung
+  23.09.2026, gegen 18b C6) — auch im Runner bei der Satzhistorie.
 - Kurven und Dauern nur aus `AtemMotion` (`settle`, `pop`, `draw`, `travel`,
   `enter`, `exit`, `drift`, `press`).
 - Haptik bestätigt die Berührung, nie das Ergebnis: Raste bei Wahl, mittel

@@ -30,7 +30,9 @@ import 'package:atem/features/strength/presentation/screens/strength_screen.dart
 import 'package:atem/features/cardio/presentation/screens/cardio_screen.dart';
 import 'package:atem/features/cardio/presentation/screens/cardio_form_screen.dart';
 import 'package:atem/features/cardio/presentation/screens/cardio_live_screen.dart';
+import 'package:atem/features/history/application/history_providers.dart';
 import 'package:atem/features/history/domain/training_session.dart';
+import 'package:atem/features/plans/application/plan_providers.dart';
 import 'package:atem/features/workout/domain/workout_start.dart';
 import 'package:atem/features/workout/presentation/screens/workout_runner_screen.dart';
 import 'package:atem/features/workout/domain/workout_session.dart';
@@ -48,6 +50,9 @@ import 'package:atem/features/exercises/presentation/exercise_picker.dart';
 import 'package:atem/features/planning/application/training_goal_providers.dart';
 import 'package:atem/features/planning/domain/training_goal.dart';
 import 'package:atem/features/planning/presentation/screens/training_goal_screen.dart';
+import 'package:atem/features/planning/application/week_plan_providers.dart';
+import 'package:atem/features/planning/domain/week_plan.dart';
+import 'package:atem/features/planning/presentation/screens/week_screen.dart';
 import 'package:atem/features/plans/presentation/widgets/plans_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -55,6 +60,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../support/a11y.dart';
 import '../support/fake_auth.dart';
 import '../support/fake_training_goal.dart';
+import '../support/fake_week_plan.dart';
 
 void main() {
   testWidgets('Dashboard erfüllt den A11y-Vertrag', (tester) async {
@@ -134,6 +140,61 @@ void main() {
           ),
         ),
       ],
+    );
+  });
+
+  // ------------------------------------------------------------- Modul 19
+
+  List<Object> weekBase(WeekPlan plan) => [
+        authRepositoryProvider.overrideWithValue(
+          FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c')),
+        ),
+        planRepositoryProvider.overrideWithValue(FakePlanRepository()),
+        trainingGoalRepositoryProvider
+            .overrideWithValue(FakeTrainingGoalRepository()),
+        weekPlanRepositoryProvider
+            .overrideWithValue(FakeWeekPlanRepository(initial: plan)),
+        sessionRepositoryProvider.overrideWithValue(FakeSessionRepository()),
+      ];
+
+  testWidgets('Woche, leer, erfüllt den A11y-Vertrag', (tester) async {
+    await expectA11y(
+      tester,
+      WeekScreen(today: DateTime(2026, 9, 23)),
+      baseOverrides: weekBase(WeekPlan.empty),
+    );
+  });
+
+  testWidgets('Woche, voll, erfüllt den A11y-Vertrag', (tester) async {
+    var plan = WeekPlan.empty;
+    for (final e in [
+      const WeekEntry(id: 'a', weekday: 1, kind: WeekKind.strength, planId: 'p1'),
+      const WeekEntry(
+          id: 'b',
+          weekday: 3,
+          kind: WeekKind.cardio,
+          activity: CardioActivity.run,
+          durationMin: 45,
+          daypart: WeekDaypart.morning),
+      const WeekEntry(
+          id: 'c',
+          weekday: 3,
+          kind: WeekKind.strength,
+          daypart: WeekDaypart.evening),
+      const WeekEntry(
+          id: 'd',
+          weekday: 5,
+          kind: WeekKind.strength,
+          planId: 'weg',
+          planName: 'Alter Plan'),
+      const WeekEntry(id: 'e', weekday: 7, kind: WeekKind.off),
+    ]) {
+      plan = plan.add(WeekSide.a, e).next;
+    }
+    await expectA11y(
+      tester,
+      WeekScreen(today: DateTime(2026, 9, 23)),
+      baseOverrides: weekBase(plan),
     );
   });
 

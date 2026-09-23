@@ -88,9 +88,13 @@ Du übernimmst die Arbeit an **ATEM Hybrid** (Flutter, Android). Lies zuerst, da
    Auswertungsblock — braucht ein Gedächtnis über App-Sitzungen hinweg), die
    Querblende beim Übungswechsel im Runner, die Ansage „Satz 3 erledigt.
    Pause 90 Sekunden." prüfen, und der Scan an Einstellungsblöcken.
-3c. **Board 19 (Woche von Hand)** und **Board 21 (Hauptmuskel und
-   Hilfsmuskeln)** — beide Prompts liegen in `docs/design-prompts/`, beide
-   warten auf Claude Design. 21 ist datenseitig vorbereitet: alle 84
+3c. ~~Board 19 (Woche von Hand)~~ — **gebaut am 23.09.**: Planungsseite
+   (Hybrid-Kopf › Kalender-Symbol, Widget-Fusszeile, Einstellungen ›
+   Training › Woche), `todayPlan()` speist Hybrid-Widget und Kraft-Startblock,
+   `TodayWeekCard` ist ersetzt, die Kachel heisst „Pläne". Offen daraus: der
+   FLIP-Flug beim Verschieben (heute Eintritt + Scan am Ziel), der
+   Mitternachtswechsel im Widget, das Blatt ohne Blur (Entscheidung 16).
+   **Board 21 (Hauptmuskel und Hilfsmuskeln)** wartet auf Claude Design. 21 ist datenseitig vorbereitet: alle 84
    kuratierten Übungen tragen `primaryMuscles`, die App verschmilzt sie heute
    in `displayMuscles` und zählt Hilfsmuskeln in der Muskelbalance voll.
 4. **Store-Vorlauf**, sobald der Nutzer die Gewerbefrage entschieden hat. Die

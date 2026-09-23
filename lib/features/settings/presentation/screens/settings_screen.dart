@@ -15,7 +15,9 @@ import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
 import '../../../planning/application/training_goal_providers.dart';
 import '../../../planning/presentation/briefing_ui.dart';
+import '../../../planning/application/week_plan_providers.dart';
 import '../../../planning/presentation/screens/training_goal_screen.dart';
+import '../../../planning/presentation/screens/week_screen.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../../pulse/presentation/screens/heart_rate_zones_screen.dart';
 import '../../../weight/application/weight_providers.dart';
@@ -256,6 +258,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 // „niedrig ist schwer") und zwei Namen — das ist eine Seite
                 // Inhalt, keine Zeile.
                 const _BriefingRow(),
+                const SettingsRule(),
+                const _WeekRow(),
                 const SettingsRule(),
                 SettingsRow(
                   label: l10n.settingsEffortScale,
@@ -882,6 +886,35 @@ class _DangerRow extends StatelessWidget {
   }
 }
 
+
+/// Die Zeile „Woche" (Board 19, Entscheidung 11): ein dritter Weg in die
+/// Planung, neben dem Kalender-Symbol im Hybrid-Kopf und der Fusszeile des
+/// Widgets. Der Wert nennt, wie viele Einträge die Woche hat — keinen
+/// Füllstand, keinen Auftrag.
+class _WeekRow extends ConsumerWidget {
+  const _WeekRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final week = ref.watch(weekPlanProvider).value;
+    final count = week == null ? null : week.a.length + week.b.length;
+    final value = count == null
+        ? l10n.commonLoading
+        : count == 0
+            ? l10n.settingsRowWeekEmpty
+            : l10n.weekEntries(count);
+    return SettingsRow(
+      label: l10n.settingsRowWeek,
+      value: value,
+      quiet: count == null || count == 0,
+      semanticLabel: '${l10n.settingsRowWeek}, $value',
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const WeekScreen()),
+      ),
+    );
+  }
+}
 
 /// Die Zeile „Trainingsangaben" (Board 18, A8).
 ///

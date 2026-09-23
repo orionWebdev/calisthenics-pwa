@@ -436,13 +436,41 @@ Die Felder (Board 18, Sektion C):
   Frage (Ausstattung, Selbsteinschätzung) und haben in ATEM keinen Abnehmer. Die
   Vorgänger-App liest sie weiter.
 
-**`planning/week` — der Wochenplan:** Die Felder entscheidet Board 19. Vorab fest:
+**`planning/week` — der Wochenplan** (Board 19, Sektion L):
 
-- Ein Eintrag verweist auf einen Plan über `planId` und trägt zusätzlich dessen Namen.
-  Ein **gelöschter Plan ist der Normalfall**, nicht der Fehler — der Eintrag bleibt als
-  freies Training seiner Art stehen, wie ein Termin ohne `planId` (siehe `schedule`).
-- **Cardio hat keine Pläne.** Ein Cardio-Eintrag trägt seine Art und optional eine Dauer,
-  nie eine `planId`.
+```
+a:  { entries: { <id>: Entry } }   immer
+b:  { entries: { <id>: Entry } }   nur in Gebrauch, wenn goal.weekPattern = alternating
+updatedAt: timestamp
+Entry:
+  weekday      1–7, ISO, Montag = 1
+  kind         strength | cardio | off
+  planId?      nur strength; fehlt = ohne Plan
+  planName?    Schnappschuss, wenn planId
+  activity     nur cardio, Pflicht — Wortschatz von CardioActivity (run, bike, swim, …)
+  durationMin? nur cardio, 10–240
+  daypart?     morning | midday | evening; nicht bei off
+  order        Reihenfolge innerhalb Tag und Tageszeit
+```
+
+Sechs Schreibregeln:
+1. **Map statt Array.** Jede Handlung ist ein Feld-Update; Verschieben schreibt
+   `a.entries.<id>.weekday` (und `order`), sonst nichts. **Ändern schreibt Feld für Feld**:
+   Ein ganzer Eintrag mit `merge` löschte keine Felder, die wegfallen.
+2. **Kein Datum, kein Heute.** „Heute" ist `todayPlan()` und wird nie gespeichert.
+3. **`off` ist exklusiv.** Training auf einen freien Tag löscht das `off` im selben
+   Schreibvorgang.
+4. **Plan löschen schreibt nichts hierher.** Unbekannte `planId` → freies Krafttraining mit
+   `planName`. Ein **gelöschter Plan ist der Normalfall**, nicht der Fehler.
+5. **Woche leeren** löscht `<a|b>.entries` als Ganzes, ohne Rückgängig. `b` bleibt
+   bestehen, wenn das Briefing zurück auf „jede Woche gleich" geht — es gilt dann nur nicht.
+6. **Keine Kopie des Briefings.** Kein Feld wiederholt `perWeek`, `days`, `dayparts`; der
+   A/B-Anker wird aus `planning/goal` gelesen, nie gespiegelt.
+
+Abweichungen vom Board, mit Grund: `activity` benutzt den Wortschatz der App
+(`CardioActivity`: `bike` statt `ride`) — ein Wortschatz für dieselbe Sache. `createdAt`
+wird gelesen, aber nicht geschrieben; nichts braucht es bisher. `origin` bleibt für
+Board 20 reserviert.
 
 **Folgen, die leicht übersehen werden** — dieselben wie bei `bodyWeights`:
 

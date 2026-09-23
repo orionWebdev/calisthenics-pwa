@@ -27,6 +27,7 @@ import 'package:atem/features/weight/domain/weight_entry.dart';
 import 'package:atem/features/weight/domain/weight_repository.dart';
 import 'package:atem/features/weight/domain/weight_series.dart';
 import 'package:atem/features/planning/application/training_goal_providers.dart';
+import 'package:atem/features/planning/application/week_plan_providers.dart';
 import 'package:atem/l10n/gen/app_l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +35,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_auth.dart';
 import 'fake_training_goal.dart';
+import 'fake_week_plan.dart';
 
 /// Fixture-Datenquellen für alle Tests.
 ///
@@ -58,6 +60,7 @@ final fixtureOverrides = [
   accountRepositoryProvider.overrideWithValue(FakeAccountRepository()),
   trainingGoalRepositoryProvider
       .overrideWithValue(FakeTrainingGoalRepository()),
+  weekPlanRepositoryProvider.overrideWithValue(FakeWeekPlanRepository()),
   // Fester Stichtag: Sonst hinge die Aussage-Karte am Kalender des Rechners
   // und zeigte mal „Pause", mal „Untätig".
   historyReferenceProvider.overrideWithValue(fixtureToday),

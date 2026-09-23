@@ -8069,7 +8069,7 @@
       }
     }
   },
-  "trainTilePlan": "Training planen",
+  "trainTilePlan": "Pläne",
   "@trainTilePlan": {
     "description": "Board 17 · train.tile_plan"
   },
@@ -9170,5 +9170,619 @@
   "runnerHistoryTitle": "FRÜHERE SÄTZE",
   "@runnerHistoryTitle": {
     "description": "Runner · Satzhistorie, Kopf der Liste"
+  },
+  "weekPlace": "HYBRID · WOCHE",
+  "@weekPlace": {
+    "description": "week.place"
+  },
+  "weekTitle": "Deine Woche",
+  "@weekTitle": {
+    "description": "week.title"
+  },
+  "weekSub": "Was an welchem Wochentag üblich ist. Gilt jede Woche, bis du es änderst.",
+  "@weekSub": {
+    "description": "week.sub"
+  },
+  "weekSubAlternating": "Zwei Wochen im Wechsel, wie in deinen Trainingsangaben.",
+  "@weekSubAlternating": {
+    "description": "week.sub_alternating"
+  },
+  "weekEdited": "Zuletzt geändert · {date}",
+  "@weekEdited": {
+    "description": "week.edited",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weekBriefLabel": "Trainingsangaben",
+  "@weekBriefLabel": {
+    "description": "week.brief.label"
+  },
+  "weekBriefNone": "Nicht angegeben — freiwillig",
+  "@weekBriefNone": {
+    "description": "week.brief.none"
+  },
+  "weekBriefSource": "Deine Angabe vom {date}",
+  "@weekBriefSource": {
+    "description": "week.brief.source",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weekBriefSourceIntended": "Vorgenommen am {date}",
+  "@weekBriefSourceIntended": {
+    "description": "week.brief.source_intended",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "weekBriefA11y": "Trainingsangaben: {value}. {source}. Öffnen",
+  "@weekBriefA11y": {
+    "description": "Board 19 · A11y Bezugszeile",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "weekBriefA11yNone": "Trainingsangaben: nicht angegeben, freiwillig. Öffnen",
+  "@weekBriefA11yNone": {
+    "description": "Board 19 · A11y Bezugszeile"
+  },
+  "weekHead": "GILT JEDE WOCHE",
+  "@weekHead": {
+    "description": "week.head"
+  },
+  "weekHeadAb": "WOCHE {ab} · GILT JEDE ZWEITE WOCHE",
+  "@weekHeadAb": {
+    "description": "week.head_ab",
+    "placeholders": {
+      "ab": {
+        "type": "String"
+      }
+    }
+  },
+  "weekAb": "Woche {ab}",
+  "@weekAb": {
+    "description": "week.ab",
+    "placeholders": {
+      "ab": {
+        "type": "String"
+      }
+    }
+  },
+  "weekAbCurrent": "Diese Woche (KW {kw}) ist Woche {ab}",
+  "@weekAbCurrent": {
+    "description": "week.ab.current",
+    "placeholders": {
+      "kw": {
+        "type": "int"
+      },
+      "ab": {
+        "type": "String"
+      }
+    }
+  },
+  "weekAbGroup": "Welche Woche",
+  "@weekAbGroup": {
+    "description": "Board 19 · A11y A/B"
+  },
+  "weekAbInactive": "Woche B bleibt gespeichert, gilt aber nicht, solange deine Angabe „jede Woche gleich“ ist.",
+  "@weekAbInactive": {
+    "description": "week.ab.inactive"
+  },
+  "weekToday": "HEUTE",
+  "@weekToday": {
+    "description": "week.today"
+  },
+  "weekAddA11y": "Eintrag am {day} hinzufügen",
+  "@weekAddA11y": {
+    "description": "week.add.a11y",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekKindStrength": "Kraft",
+  "@weekKindStrength": {
+    "description": "week.kind.strength"
+  },
+  "weekKindCardio": "Cardio",
+  "@weekKindCardio": {
+    "description": "week.kind.cardio"
+  },
+  "weekKindOff": "Frei",
+  "@weekKindOff": {
+    "description": "week.kind.off"
+  },
+  "weekStrengthFree": "Krafttraining",
+  "@weekStrengthFree": {
+    "description": "week.strength.free"
+  },
+  "weekStrengthNoPlan": "ohne Plan",
+  "@weekStrengthNoPlan": {
+    "description": "week.strength.no_plan"
+  },
+  "weekCardioMinutes": "{n} Min",
+  "@weekCardioMinutes": {
+    "description": "week.cardio.minutes",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weekOffMeta": "kein Training vorgesehen",
+  "@weekOffMeta": {
+    "description": "week.off.meta"
+  },
+  "weekPlanDeleted": "Plan „{name}“ gelöscht — bleibt freies Krafttraining",
+  "@weekPlanDeleted": {
+    "description": "week.plan_deleted",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "weekFact": "Trainiert · {what}",
+  "@weekFact": {
+    "description": "week.fact",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSumHead": "DIESE WOCHE BISHER · KW {kw}",
+  "@weekSumHead": {
+    "description": "week.sum.head",
+    "placeholders": {
+      "kw": {
+        "type": "int"
+      }
+    }
+  },
+  "weekSumStrength": "{n, plural, one{1 Kraft-Einheit} other{{n} Kraft-Einheiten}}",
+  "@weekSumStrength": {
+    "description": "week.sum.strength",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weekSumCardio": "{n, plural, one{1 Cardio-Einheit} other{{n} Cardio-Einheiten}}",
+  "@weekSumCardio": {
+    "description": "week.sum.cardio",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weekSumPlanned": "in deiner Woche {n}",
+  "@weekSumPlanned": {
+    "description": "week.sum.planned",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weekUsed": "Genutzt von · Hybrid (Heute) · Kraft (Trainieren)",
+  "@weekUsed": {
+    "description": "week.used"
+  },
+  "weekClear": "Woche leeren",
+  "@weekClear": {
+    "description": "week.clear"
+  },
+  "weekClearTitle": "Ganze Woche leeren?",
+  "@weekClearTitle": {
+    "description": "week.clear.title"
+  },
+  "weekClearTitleAb": "Woche {ab} leeren?",
+  "@weekClearTitleAb": {
+    "description": "week.clear.title",
+    "placeholders": {
+      "ab": {
+        "type": "String"
+      }
+    }
+  },
+  "weekEntries": "{n, plural, one{1 Eintrag} other{{n} Einträge}}",
+  "@weekEntries": {
+    "description": "Board 19 · Zählung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weekDays": "{n, plural, one{1 Tag} other{{n} Tagen}}",
+  "@weekDays": {
+    "description": "Board 19 · Zählung",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weekClearCount": "Entfernt werden: {entries} an {days}.",
+  "@weekClearCount": {
+    "description": "week.clear.count",
+    "placeholders": {
+      "entries": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "weekClearPlans": "{n, plural, one{1 davon mit Plan.} other{{n} davon mit Plan.}} Deine Pläne selbst bleiben.",
+  "@weekClearPlans": {
+    "description": "week.clear.plans",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "weekClearIrreversible": "Das lässt sich nicht rückgängig machen.",
+  "@weekClearIrreversible": {
+    "description": "week.clear.irreversible"
+  },
+  "weekClearContinue": "Weiter",
+  "@weekClearContinue": {
+    "description": "Board 19 · Stufe 1"
+  },
+  "weekClearConfirm": "Woche endgültig leeren",
+  "@weekClearConfirm": {
+    "description": "week.clear.confirm"
+  },
+  "weekSheetAddTitle": "Eintrag am {day}",
+  "@weekSheetAddTitle": {
+    "description": "sheet.add.title",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSheetEditTitle": "Eintrag am {day} ändern",
+  "@weekSheetEditTitle": {
+    "description": "sheet.edit.title",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSheetAddSub": "Gilt jeden {day}.",
+  "@weekSheetAddSub": {
+    "description": "sheet.add.sub",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSheetGroupKind": "Art",
+  "@weekSheetGroupKind": {
+    "description": "sheet.group.kind"
+  },
+  "weekSheetGroupPlan": "Plan",
+  "@weekSheetGroupPlan": {
+    "description": "sheet.group.plan"
+  },
+  "weekSheetGroupActivity": "Aktivität",
+  "@weekSheetGroupActivity": {
+    "description": "sheet.group.activity"
+  },
+  "weekSheetGroupDuration": "Dauer · optional",
+  "@weekSheetGroupDuration": {
+    "description": "sheet.group.duration"
+  },
+  "weekSheetGroupDaypart": "Tageszeit · optional",
+  "@weekSheetGroupDaypart": {
+    "description": "sheet.group.daypart"
+  },
+  "weekSheetPlanNone": "Ohne Plan — freies Krafttraining",
+  "@weekSheetPlanNone": {
+    "description": "sheet.plan.none"
+  },
+  "weekSheetOffDisabled": "nur an Tagen ohne Eintrag",
+  "@weekSheetOffDisabled": {
+    "description": "sheet.off.disabled"
+  },
+  "weekSheetAdd": "Hinzufügen",
+  "@weekSheetAdd": {
+    "description": "sheet.add.confirm"
+  },
+  "weekSheetApply": "Übernehmen",
+  "@weekSheetApply": {
+    "description": "sheet.edit.confirm"
+  },
+  "weekSheetIncompleteA11y": "{action}, nicht möglich: Aktivität wählen",
+  "@weekSheetIncompleteA11y": {
+    "description": "Board 19 · A11y Hinzufügen",
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSheetMoveLabel": "Verschieben nach",
+  "@weekSheetMoveLabel": {
+    "description": "sheet.move.label"
+  },
+  "weekSheetMoveHint": "Oder lange drücken und auf einen anderen Tag ziehen.",
+  "@weekSheetMoveHint": {
+    "description": "sheet.move.hint"
+  },
+  "weekSheetRemove": "Eintrag entfernen",
+  "@weekSheetRemove": {
+    "description": "sheet.remove"
+  },
+  "weekSheetCurrentDay": "{day}, aktueller Tag",
+  "@weekSheetCurrentDay": {
+    "description": "Board 19 · A11y Tag-Chip",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSnackAdded": "{title} am {day} eingetragen",
+  "@weekSnackAdded": {
+    "description": "snack.added",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSnackAddedReplaced": "{title} am {day} eingetragen — „Frei“ ersetzt",
+  "@weekSnackAddedReplaced": {
+    "description": "snack.added_replaced",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSnackMoved": "{title} auf {day} verschoben",
+  "@weekSnackMoved": {
+    "description": "snack.moved",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSnackRemoved": "„{title}“ am {day} entfernt",
+  "@weekSnackRemoved": {
+    "description": "snack.removed",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekSnackCleared": "Woche geleert",
+  "@weekSnackCleared": {
+    "description": "snack.cleared"
+  },
+  "weekErrLoad": "Woche konnte nicht geladen werden.",
+  "@weekErrLoad": {
+    "description": "err.load"
+  },
+  "weekErrLoadSub": "Bis sie geladen ist, zeigt die Seite keine Tage — sonst sähe sie leer aus.",
+  "@weekErrLoadSub": {
+    "description": "err.load.sub"
+  },
+  "weekErrSave": "„{title}“ nicht gespeichert — der Server hat abgelehnt. {day} bleibt wie vorher.",
+  "@weekErrSave": {
+    "description": "err.save.add",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekErrMove": "„{title}“ nicht auf {to} verschoben — der Server hat abgelehnt. Steht wieder am {from}.",
+  "@weekErrMove": {
+    "description": "err.save.move",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "todayKicker": "HEUTE · {weekday}",
+  "@todayKicker": {
+    "description": "today.kicker",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "todayKickerWeek": "DEINE WOCHE",
+  "@todayKickerWeek": {
+    "description": "today.kicker_week"
+  },
+  "todaySourceWeek": "LAUT DEINER WOCHE",
+  "@todaySourceWeek": {
+    "description": "today.source.week"
+  },
+  "todaySourceAppointment": "TERMIN",
+  "@todaySourceAppointment": {
+    "description": "today.source.appointment"
+  },
+  "todayLink": "Deine Woche",
+  "@todayLink": {
+    "description": "today.link"
+  },
+  "todayErr": "Deine Woche wurde nicht geladen.",
+  "@todayErr": {
+    "description": "today.err"
+  },
+  "todayA11y": "Heute, {weekday}: {entries}. {source}.",
+  "@todayA11y": {
+    "description": "today.a11y",
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      },
+      "entries": {
+        "type": "String"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "todayWeekA11y": "Deine Woche: {days}",
+  "@todayWeekA11y": {
+    "description": "Board 19 · A11y Widget ohne Heute",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "todayStripNone": "kein Eintrag",
+  "@todayStripNone": {
+    "description": "Board 19 · A11y Streifen"
+  },
+  "hybridWeekButtonA11y": "Deine Woche öffnen",
+  "@hybridWeekButtonA11y": {
+    "description": "hybrid.week_button.a11y"
+  },
+  "trainTodaySourceWeek": "laut deiner Woche",
+  "@trainTodaySourceWeek": {
+    "description": "train.today_source"
+  },
+  "trainTodaySourceAppointment": "Termin",
+  "@trainTodaySourceAppointment": {
+    "description": "train.today_source"
+  },
+  "weekEntryMoveTo": "Auf {day} verschieben",
+  "@weekEntryMoveTo": {
+    "description": "a11y.entry.move_to",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekEntryEarlier": "Einen Tag früher",
+  "@weekEntryEarlier": {
+    "description": "a11y.entry.earlier"
+  },
+  "weekEntryLater": "Einen Tag später",
+  "@weekEntryLater": {
+    "description": "a11y.entry.later"
+  },
+  "weekEntryEdit": "Ändern",
+  "@weekEntryEdit": {
+    "description": "sheet.edit"
+  },
+  "weekEntryA11y": "{title}, {meta}. {day}.",
+  "@weekEntryA11y": {
+    "description": "Board 19 · A11y Eintragszeile",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "meta": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekDragLifted": "{title} angehoben. Über {day}.",
+  "@weekDragLifted": {
+    "description": "a11y.drag.lifted",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekDayA11y": "{day}, {count}",
+  "@weekDayA11y": {
+    "description": "Board 19 · A11y Tagesabschnitt",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "weekDayTodayA11y": "{day}, heute, {count}",
+  "@weekDayTodayA11y": {
+    "description": "Board 19 · A11y Tagesabschnitt",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "weekUsedByPlanning": "Woche (Planung)",
+  "@weekUsedByPlanning": {
+    "description": "Board 18 · Registerzeile ab Board 19"
+  },
+  "settingsRowWeek": "Woche",
+  "@settingsRowWeek": {
+    "description": "Board 19 · Einstellungen › Training"
+  },
+  "settingsRowWeekEmpty": "Nicht geplant",
+  "@settingsRowWeekEmpty": {
+    "description": "Board 19 · Einstellungen › Training"
   }
 }

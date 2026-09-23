@@ -5363,7 +5363,7 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get trainTilePlan => 'Plan training';
+  String get trainTilePlan => 'Plans';
 
   @override
   String trainTilePlanMeta(int n) {
@@ -6050,4 +6050,392 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get runnerHistoryTitle => 'EARLIER SETS';
+
+  @override
+  String get weekPlace => 'HYBRID · WEEK';
+
+  @override
+  String get weekTitle => 'Your week';
+
+  @override
+  String get weekSub =>
+      'What usually happens on which weekday. Applies every week until you change it.';
+
+  @override
+  String get weekSubAlternating =>
+      'Two alternating weeks, as in your training details.';
+
+  @override
+  String weekEdited(String date) {
+    return 'Last changed · $date';
+  }
+
+  @override
+  String get weekBriefLabel => 'Training details';
+
+  @override
+  String get weekBriefNone => 'Not given — optional';
+
+  @override
+  String weekBriefSource(String date) {
+    return 'Your answer from $date';
+  }
+
+  @override
+  String weekBriefSourceIntended(String date) {
+    return 'Your intention from $date';
+  }
+
+  @override
+  String weekBriefA11y(String value, String source) {
+    return 'Training details: $value. $source. Open';
+  }
+
+  @override
+  String get weekBriefA11yNone => 'Training details: not given, optional. Open';
+
+  @override
+  String get weekHead => 'APPLIES EVERY WEEK';
+
+  @override
+  String weekHeadAb(String ab) {
+    return 'WEEK $ab · EVERY OTHER WEEK';
+  }
+
+  @override
+  String weekAb(String ab) {
+    return 'Week $ab';
+  }
+
+  @override
+  String weekAbCurrent(int kw, String ab) {
+    return 'This week (CW $kw) is week $ab';
+  }
+
+  @override
+  String get weekAbGroup => 'Which week';
+
+  @override
+  String get weekAbInactive =>
+      'Week B stays saved but doesn\'t apply while your answer is “same every week”.';
+
+  @override
+  String get weekToday => 'TODAY';
+
+  @override
+  String weekAddA11y(String day) {
+    return 'Add entry on $day';
+  }
+
+  @override
+  String get weekKindStrength => 'Strength';
+
+  @override
+  String get weekKindCardio => 'Cardio';
+
+  @override
+  String get weekKindOff => 'Free';
+
+  @override
+  String get weekStrengthFree => 'Strength training';
+
+  @override
+  String get weekStrengthNoPlan => 'no plan';
+
+  @override
+  String weekCardioMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get weekOffMeta => 'no training intended';
+
+  @override
+  String weekPlanDeleted(String name) {
+    return 'Plan “$name” deleted — stays as free strength training';
+  }
+
+  @override
+  String weekFact(String what) {
+    return 'Trained · $what';
+  }
+
+  @override
+  String weekSumHead(int kw) {
+    return 'THIS WEEK SO FAR · CW $kw';
+  }
+
+  @override
+  String weekSumStrength(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n strength sessions',
+      one: '1 strength session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekSumCardio(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n cardio sessions',
+      one: '1 cardio session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekSumPlanned(int n) {
+    return 'in your week $n';
+  }
+
+  @override
+  String get weekUsed => 'Used by · Hybrid (Today) · Strength (Train)';
+
+  @override
+  String get weekClear => 'Clear week';
+
+  @override
+  String get weekClearTitle => 'Clear the whole week?';
+
+  @override
+  String weekClearTitleAb(String ab) {
+    return 'Clear week $ab?';
+  }
+
+  @override
+  String weekEntries(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n entries',
+      one: '1 entry',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String weekClearCount(String entries, String days) {
+    return 'To be removed: $entries on $days.';
+  }
+
+  @override
+  String weekClearPlans(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n of them with a plan.',
+      one: '1 of them with a plan.',
+    );
+    return '$_temp0 Your plans themselves stay.';
+  }
+
+  @override
+  String get weekClearIrreversible => 'This can\'t be undone.';
+
+  @override
+  String get weekClearContinue => 'Continue';
+
+  @override
+  String get weekClearConfirm => 'Clear week permanently';
+
+  @override
+  String weekSheetAddTitle(String day) {
+    return 'Entry on $day';
+  }
+
+  @override
+  String weekSheetEditTitle(String day) {
+    return 'Edit entry on $day';
+  }
+
+  @override
+  String weekSheetAddSub(String day) {
+    return 'Applies every $day.';
+  }
+
+  @override
+  String get weekSheetGroupKind => 'Type';
+
+  @override
+  String get weekSheetGroupPlan => 'Plan';
+
+  @override
+  String get weekSheetGroupActivity => 'Activity';
+
+  @override
+  String get weekSheetGroupDuration => 'Duration · optional';
+
+  @override
+  String get weekSheetGroupDaypart => 'Time of day · optional';
+
+  @override
+  String get weekSheetPlanNone => 'No plan — free strength training';
+
+  @override
+  String get weekSheetOffDisabled => 'only on days without entries';
+
+  @override
+  String get weekSheetAdd => 'Add';
+
+  @override
+  String get weekSheetApply => 'Apply';
+
+  @override
+  String weekSheetIncompleteA11y(String action) {
+    return '$action, not possible: choose an activity';
+  }
+
+  @override
+  String get weekSheetMoveLabel => 'Move to';
+
+  @override
+  String get weekSheetMoveHint => 'Or long-press and drag to another day.';
+
+  @override
+  String get weekSheetRemove => 'Remove entry';
+
+  @override
+  String weekSheetCurrentDay(String day) {
+    return '$day, current day';
+  }
+
+  @override
+  String weekSnackAdded(String title, String day) {
+    return '$title added on $day';
+  }
+
+  @override
+  String weekSnackAddedReplaced(String title, String day) {
+    return '$title added on $day — replaced “Free”';
+  }
+
+  @override
+  String weekSnackMoved(String title, String day) {
+    return '$title moved to $day';
+  }
+
+  @override
+  String weekSnackRemoved(String title, String day) {
+    return '“$title” removed from $day';
+  }
+
+  @override
+  String get weekSnackCleared => 'Week cleared';
+
+  @override
+  String get weekErrLoad => 'Your week couldn\'t be loaded.';
+
+  @override
+  String get weekErrLoadSub =>
+      'Until it loads, no days are shown — otherwise it would look empty.';
+
+  @override
+  String weekErrSave(String title, String day) {
+    return '“$title” not saved — the server declined. $day stays as before.';
+  }
+
+  @override
+  String weekErrMove(String title, String to, String from) {
+    return '“$title” not moved to $to — the server declined. Back on $from.';
+  }
+
+  @override
+  String todayKicker(String weekday) {
+    return 'TODAY · $weekday';
+  }
+
+  @override
+  String get todayKickerWeek => 'YOUR WEEK';
+
+  @override
+  String get todaySourceWeek => 'FROM YOUR WEEK';
+
+  @override
+  String get todaySourceAppointment => 'APPOINTMENT';
+
+  @override
+  String get todayLink => 'Your week';
+
+  @override
+  String get todayErr => 'Your week wasn\'t loaded.';
+
+  @override
+  String todayA11y(String weekday, String entries, String source) {
+    return 'Today, $weekday: $entries. $source.';
+  }
+
+  @override
+  String todayWeekA11y(String days) {
+    return 'Your week: $days';
+  }
+
+  @override
+  String get todayStripNone => 'no entry';
+
+  @override
+  String get hybridWeekButtonA11y => 'Open your week';
+
+  @override
+  String get trainTodaySourceWeek => 'from your week';
+
+  @override
+  String get trainTodaySourceAppointment => 'appointment';
+
+  @override
+  String weekEntryMoveTo(String day) {
+    return 'Move to $day';
+  }
+
+  @override
+  String get weekEntryEarlier => 'One day earlier';
+
+  @override
+  String get weekEntryLater => 'One day later';
+
+  @override
+  String get weekEntryEdit => 'Edit';
+
+  @override
+  String weekEntryA11y(String title, String meta, String day) {
+    return '$title, $meta. $day.';
+  }
+
+  @override
+  String weekDragLifted(String title, String day) {
+    return '$title lifted. Over $day.';
+  }
+
+  @override
+  String weekDayA11y(String day, String count) {
+    return '$day, $count';
+  }
+
+  @override
+  String weekDayTodayA11y(String day, String count) {
+    return '$day, today, $count';
+  }
+
+  @override
+  String get weekUsedByPlanning => 'Week (planning)';
+
+  @override
+  String get settingsRowWeek => 'Week';
+
+  @override
+  String get settingsRowWeekEmpty => 'Not planned';
 }

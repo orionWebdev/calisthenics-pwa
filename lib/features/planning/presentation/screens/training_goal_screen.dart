@@ -696,7 +696,9 @@ class _TrainingGoalScreenState extends ConsumerState<TrainingGoalScreen> {
           const SizedBox(height: 16),
           // Ein Register, kein Werbetext (Entscheidung F2): Sobald eine
           // Auswertung die Angaben nutzt, steht sie hier.
-          Text(l10n.briefingUsedByNone, style: AtemType.meta.of(context)),
+          // Seit Board 19 nutzt die Woche die Angaben als Bezug.
+          Text(l10n.briefingUsedBy(l10n.weekUsedByPlanning),
+              style: AtemType.meta.of(context)),
           if (goal.hasAny)
             _TextAction(
               label: l10n.briefingClearAll,

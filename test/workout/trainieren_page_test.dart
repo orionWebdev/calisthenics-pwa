@@ -7,6 +7,8 @@ import 'package:atem/features/dashboard/domain/dashboard_repository.dart';
 import 'package:atem/features/exercises/presentation/screens/exercise_list_screen.dart';
 import 'package:atem/features/history/application/history_providers.dart';
 import 'package:atem/features/history/domain/training_session.dart';
+import 'package:atem/features/planning/application/week_plan_providers.dart';
+import 'package:atem/features/planning/domain/week_plan.dart';
 import 'package:atem/features/plans/application/plan_providers.dart';
 import 'package:atem/features/plans/domain/plan.dart';
 import 'package:atem/features/plans/presentation/screens/plan_form_screen.dart';
@@ -21,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/a11y.dart';
+import '../support/fake_week_plan.dart';
 
 /// Dashboard ohne Termin für heute.
 class _NoSessionDashboard implements DashboardRepository {
@@ -112,6 +115,52 @@ void main() {
 
   /// Der Knopf — in jedem Zustand genau einer.
   Finder cta(AppL10n l10n) => find.byType(AtemButton);
+
+  group('heute aus der Woche (Board 19, F2)', () {
+    // Der Stichtag der Fixtures ist Donnerstag, der 27.08.2026.
+    WeekPlan week(WeekEntry e) => WeekPlan.empty.add(WeekSide.a, e).next;
+
+    testWidgets('Kraft aus der Woche: Titel, Quelle, Knopf „STARTEN"',
+        (tester) async {
+      await _pump(tester, overrides: [
+        dashboardRepositoryProvider.overrideWithValue(_NoSessionDashboard()),
+        weekPlanRepositoryProvider.overrideWithValue(FakeWeekPlanRepository(
+          initial: week(const WeekEntry(
+              id: 'k', weekday: 4, kind: WeekKind.strength)),
+        )),
+      ]);
+      final l10n = read(tester);
+      expect(find.text(l10n.trainTodayKicker.toUpperCase()), findsOneWidget);
+      expect(find.text(l10n.weekStrengthFree), findsOneWidget);
+      expect(find.textContaining(l10n.trainTodaySourceWeek), findsOneWidget);
+      expect(find.text(l10n.sheetStart.toUpperCase()), findsOneWidget);
+    });
+
+    testWidgets('Termin: die Quelle steht dabei', (tester) async {
+      await _pump(tester);
+      final l10n = read(tester);
+      expect(find.textContaining(l10n.trainTodaySourceAppointment),
+          findsOneWidget);
+    });
+
+    testWidgets('heute nur Cardio: der Kraft-Tab schweigt und zeigt „Zuletzt"',
+        (tester) async {
+      await _pump(tester, overrides: [
+        dashboardRepositoryProvider.overrideWithValue(_NoSessionDashboard()),
+        weekPlanRepositoryProvider.overrideWithValue(FakeWeekPlanRepository(
+          initial: week(const WeekEntry(
+              id: 'c',
+              weekday: 4,
+              kind: WeekKind.cardio,
+              activity: CardioActivity.run)),
+        )),
+      ]);
+      final l10n = read(tester);
+      expect(find.text(l10n.trainLastKicker.toUpperCase()), findsOneWidget);
+      expect(find.text(l10n.trainTodayKicker.toUpperCase()), findsNothing);
+      expect(find.textContaining(l10n.activityRun), findsNothing);
+    });
+  });
 
   group('die fünf Zustände tragen dieselbe Komposition', () {
     testWidgets('mit Plan: Kicker im Bereichston, Knopf „STARTEN"',

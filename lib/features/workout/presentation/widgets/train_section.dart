@@ -12,6 +12,9 @@ import '../../../exercises/presentation/screens/exercise_list_screen.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
+import '../../../planning/application/week_plan_providers.dart';
+import '../../../planning/domain/week_plan.dart';
+import '../../../planning/presentation/week_ui.dart' show WeekWords;
 import '../../../plans/application/pending_plan_deletion.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../../plans/domain/plan.dart';
@@ -56,8 +59,20 @@ class TrainSection extends ConsumerWidget {
     final l10n = AppL10n.of(context);
     final dashboard = ref.watch(dashboardDataProvider);
     final plans = ref.watch(visiblePlansProvider).value ?? const <Plan>[];
-    final session = dashboard.value?.session;
-    final hasToday = session != null;
+    // **Heute aus derselben Ableitung wie das Hybrid-Widget** (Board 19,
+    // F2), nur auf Kraft gefiltert: Ist heute Cardio oder „Frei", schweigt
+    // der Kraft-Tab darüber und zeigt „Zuletzt" — er sagt weniger, nie
+    // etwas anderes.
+    final todayItem = (ref.watch(todayPlanProvider).value ?? const [])
+        .where((i) => i.kind == WeekKind.strength)
+        .firstOrNull;
+    final session = todayItem?.source == TodaySource.appointment
+        ? dashboard.value?.session
+        : null;
+    final weekEntry = todayItem?.entry;
+    final hasToday = session != null || weekEntry != null;
+    final todayTitle = session?.title ??
+        (weekEntry == null ? null : WeekWords(context).title(weekEntry, plans));
     final hasPlans = plans.isNotEmpty;
 
     return Padding(
@@ -68,16 +83,18 @@ class TrainSection extends ConsumerWidget {
         children: [
           AtemEntrance(
             child: AtemStartBlock(
-              head: _head(context, ref, l10n, dashboard, plans),
+              head: _head(context, ref, l10n, dashboard, plans, weekEntry),
               ctaLabel: hasToday
                   ? l10n.sheetStart.toUpperCase()
                   : l10n.trainStartFree.toUpperCase(),
               ctaSemanticLabel: hasToday
-                  ? l10n.trainStartA11yPlanned(session.title)
+                  ? l10n.trainStartA11yPlanned(todayTitle!)
                   : l10n.trainStartA11yFree,
-              onStart: () => hasToday
+              onStart: () => session != null
                   ? _startToday(context, ref, session)
-                  : _startFree(context, ref),
+                  : weekEntry != null
+                      ? _startWeek(context, ref, weekEntry)
+                      : _startFree(context, ref),
               // **Der Fuss wiederholt nie die Handlung des Knopfs**: Links
               // steht, was der Knopf gerade nicht tut.
               footLeft: hasToday
@@ -150,6 +167,7 @@ class TrainSection extends ConsumerWidget {
     AppL10n l10n,
     AsyncValue<DashboardData> dashboard,
     List<Plan> plans,
+    WeekEntry? weekEntry,
   ) {
     if (dashboard.hasError) {
       return AtemStartHead.failed(
@@ -166,16 +184,40 @@ class TrainSection extends ConsumerWidget {
       return AtemStartHead.loading(semanticLabel: l10n.trainLoadingA11y);
     }
 
+    // Aus der Woche: Titel und Umfang wie in der Woche, dazu die Quelle.
+    if (weekEntry != null) {
+      final words = WeekWords(context);
+      final plan = words.planOf(weekEntry, plans);
+      final title = words.title(weekEntry, plans);
+      return AtemStartHead.fact(
+        kicker: l10n.trainTodayKicker,
+        title: title,
+        meta: [
+          plan == null
+              ? l10n.weekStrengthNoPlan
+              : planMetaLine(l10n, plan, withDuration: true),
+          l10n.trainTodaySourceWeek,
+        ].join(' · '),
+        toned: true,
+        semanticLabel: plan == null
+            ? l10n.trainBlockA11yPlannedPlain(title)
+            : l10n.trainBlockA11yPlanned(title, plan.exerciseCount,
+                plan.estimatedDuration.inMinutes),
+      );
+    }
+
     final today = dashboard.value?.session;
     if (today != null) {
       final plan = plans.where((p) => p.id == today.planId).firstOrNull;
       return AtemStartHead.fact(
         kicker: l10n.trainTodayKicker,
         title: today.title,
-        // Ohne den Plan bleibt die Zeile leer statt zu raten.
+        // Ohne den Plan bleibt die Zeile leer statt zu raten; die Quelle
+        // steht immer dabei (Board 19, F2).
         meta: plan == null
-            ? null
-            : planMetaLine(l10n, plan, withDuration: true),
+            ? l10n.trainTodaySourceAppointment
+            : '${planMetaLine(l10n, plan, withDuration: true)} · '
+                '${l10n.trainTodaySourceAppointment}',
         toned: true,
         semanticLabel: plan == null
             ? l10n.trainBlockA11yPlannedPlain(today.title)
@@ -249,6 +291,21 @@ class TrainSection extends ConsumerWidget {
       context,
       plan: plan,
       scheduleId: session.id,
+      restSeconds: ref.read(defaultRestSecondsProvider),
+    );
+    if (request != null) onStart(request);
+  }
+
+  /// Startet den Kraft-Eintrag von heute aus der Woche — mit seinem Plan,
+  /// wenn es ihn noch gibt, sonst als freies Training. Kein Termin: Die
+  /// Woche legt keine an (Board 19, Regel 2).
+  Future<void> _startWeek(
+      BuildContext context, WidgetRef ref, WeekEntry entry) async {
+    final all = ref.read(plansProvider).value ?? const <Plan>[];
+    final plan = all.where((p) => p.id == entry.planId).firstOrNull;
+    final request = await StartSheet.show(
+      context,
+      plan: plan,
       restSeconds: ref.read(defaultRestSecondsProvider),
     );
     if (request != null) onStart(request);

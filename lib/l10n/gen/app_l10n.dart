@@ -7851,7 +7851,7 @@ abstract class AppL10n {
   /// Board 17 · train.tile_plan
   ///
   /// In de, this message translates to:
-  /// **'Training planen'**
+  /// **'Pläne'**
   String get trainTilePlan;
 
   /// Board 17 · train.tile_plan_meta
@@ -8851,6 +8851,558 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'FRÜHERE SÄTZE'**
   String get runnerHistoryTitle;
+
+  /// week.place
+  ///
+  /// In de, this message translates to:
+  /// **'HYBRID · WOCHE'**
+  String get weekPlace;
+
+  /// week.title
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Woche'**
+  String get weekTitle;
+
+  /// week.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Was an welchem Wochentag üblich ist. Gilt jede Woche, bis du es änderst.'**
+  String get weekSub;
+
+  /// week.sub_alternating
+  ///
+  /// In de, this message translates to:
+  /// **'Zwei Wochen im Wechsel, wie in deinen Trainingsangaben.'**
+  String get weekSubAlternating;
+
+  /// week.edited
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt geändert · {date}'**
+  String weekEdited(String date);
+
+  /// week.brief.label
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsangaben'**
+  String get weekBriefLabel;
+
+  /// week.brief.none
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht angegeben — freiwillig'**
+  String get weekBriefNone;
+
+  /// week.brief.source
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Angabe vom {date}'**
+  String weekBriefSource(String date);
+
+  /// week.brief.source_intended
+  ///
+  /// In de, this message translates to:
+  /// **'Vorgenommen am {date}'**
+  String weekBriefSourceIntended(String date);
+
+  /// Board 19 · A11y Bezugszeile
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsangaben: {value}. {source}. Öffnen'**
+  String weekBriefA11y(String value, String source);
+
+  /// Board 19 · A11y Bezugszeile
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsangaben: nicht angegeben, freiwillig. Öffnen'**
+  String get weekBriefA11yNone;
+
+  /// week.head
+  ///
+  /// In de, this message translates to:
+  /// **'GILT JEDE WOCHE'**
+  String get weekHead;
+
+  /// week.head_ab
+  ///
+  /// In de, this message translates to:
+  /// **'WOCHE {ab} · GILT JEDE ZWEITE WOCHE'**
+  String weekHeadAb(String ab);
+
+  /// week.ab
+  ///
+  /// In de, this message translates to:
+  /// **'Woche {ab}'**
+  String weekAb(String ab);
+
+  /// week.ab.current
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche (KW {kw}) ist Woche {ab}'**
+  String weekAbCurrent(int kw, String ab);
+
+  /// Board 19 · A11y A/B
+  ///
+  /// In de, this message translates to:
+  /// **'Welche Woche'**
+  String get weekAbGroup;
+
+  /// week.ab.inactive
+  ///
+  /// In de, this message translates to:
+  /// **'Woche B bleibt gespeichert, gilt aber nicht, solange deine Angabe „jede Woche gleich“ ist.'**
+  String get weekAbInactive;
+
+  /// week.today
+  ///
+  /// In de, this message translates to:
+  /// **'HEUTE'**
+  String get weekToday;
+
+  /// week.add.a11y
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag am {day} hinzufügen'**
+  String weekAddA11y(String day);
+
+  /// week.kind.strength
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft'**
+  String get weekKindStrength;
+
+  /// week.kind.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get weekKindCardio;
+
+  /// week.kind.off
+  ///
+  /// In de, this message translates to:
+  /// **'Frei'**
+  String get weekKindOff;
+
+  /// week.strength.free
+  ///
+  /// In de, this message translates to:
+  /// **'Krafttraining'**
+  String get weekStrengthFree;
+
+  /// week.strength.no_plan
+  ///
+  /// In de, this message translates to:
+  /// **'ohne Plan'**
+  String get weekStrengthNoPlan;
+
+  /// week.cardio.minutes
+  ///
+  /// In de, this message translates to:
+  /// **'{n} Min'**
+  String weekCardioMinutes(int n);
+
+  /// week.off.meta
+  ///
+  /// In de, this message translates to:
+  /// **'kein Training vorgesehen'**
+  String get weekOffMeta;
+
+  /// week.plan_deleted
+  ///
+  /// In de, this message translates to:
+  /// **'Plan „{name}“ gelöscht — bleibt freies Krafttraining'**
+  String weekPlanDeleted(String name);
+
+  /// week.fact
+  ///
+  /// In de, this message translates to:
+  /// **'Trainiert · {what}'**
+  String weekFact(String what);
+
+  /// week.sum.head
+  ///
+  /// In de, this message translates to:
+  /// **'DIESE WOCHE BISHER · KW {kw}'**
+  String weekSumHead(int kw);
+
+  /// week.sum.strength
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Kraft-Einheit} other{{n} Kraft-Einheiten}}'**
+  String weekSumStrength(int n);
+
+  /// week.sum.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Cardio-Einheit} other{{n} Cardio-Einheiten}}'**
+  String weekSumCardio(int n);
+
+  /// week.sum.planned
+  ///
+  /// In de, this message translates to:
+  /// **'in deiner Woche {n}'**
+  String weekSumPlanned(int n);
+
+  /// week.used
+  ///
+  /// In de, this message translates to:
+  /// **'Genutzt von · Hybrid (Heute) · Kraft (Trainieren)'**
+  String get weekUsed;
+
+  /// week.clear
+  ///
+  /// In de, this message translates to:
+  /// **'Woche leeren'**
+  String get weekClear;
+
+  /// week.clear.title
+  ///
+  /// In de, this message translates to:
+  /// **'Ganze Woche leeren?'**
+  String get weekClearTitle;
+
+  /// week.clear.title
+  ///
+  /// In de, this message translates to:
+  /// **'Woche {ab} leeren?'**
+  String weekClearTitleAb(String ab);
+
+  /// Board 19 · Zählung
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Eintrag} other{{n} Einträge}}'**
+  String weekEntries(int n);
+
+  /// Board 19 · Zählung
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 Tag} other{{n} Tagen}}'**
+  String weekDays(int n);
+
+  /// week.clear.count
+  ///
+  /// In de, this message translates to:
+  /// **'Entfernt werden: {entries} an {days}.'**
+  String weekClearCount(String entries, String days);
+
+  /// week.clear.plans
+  ///
+  /// In de, this message translates to:
+  /// **'{n, plural, one{1 davon mit Plan.} other{{n} davon mit Plan.}} Deine Pläne selbst bleiben.'**
+  String weekClearPlans(int n);
+
+  /// week.clear.irreversible
+  ///
+  /// In de, this message translates to:
+  /// **'Das lässt sich nicht rückgängig machen.'**
+  String get weekClearIrreversible;
+
+  /// Board 19 · Stufe 1
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter'**
+  String get weekClearContinue;
+
+  /// week.clear.confirm
+  ///
+  /// In de, this message translates to:
+  /// **'Woche endgültig leeren'**
+  String get weekClearConfirm;
+
+  /// sheet.add.title
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag am {day}'**
+  String weekSheetAddTitle(String day);
+
+  /// sheet.edit.title
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag am {day} ändern'**
+  String weekSheetEditTitle(String day);
+
+  /// sheet.add.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Gilt jeden {day}.'**
+  String weekSheetAddSub(String day);
+
+  /// sheet.group.kind
+  ///
+  /// In de, this message translates to:
+  /// **'Art'**
+  String get weekSheetGroupKind;
+
+  /// sheet.group.plan
+  ///
+  /// In de, this message translates to:
+  /// **'Plan'**
+  String get weekSheetGroupPlan;
+
+  /// sheet.group.activity
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivität'**
+  String get weekSheetGroupActivity;
+
+  /// sheet.group.duration
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer · optional'**
+  String get weekSheetGroupDuration;
+
+  /// sheet.group.daypart
+  ///
+  /// In de, this message translates to:
+  /// **'Tageszeit · optional'**
+  String get weekSheetGroupDaypart;
+
+  /// sheet.plan.none
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Plan — freies Krafttraining'**
+  String get weekSheetPlanNone;
+
+  /// sheet.off.disabled
+  ///
+  /// In de, this message translates to:
+  /// **'nur an Tagen ohne Eintrag'**
+  String get weekSheetOffDisabled;
+
+  /// sheet.add.confirm
+  ///
+  /// In de, this message translates to:
+  /// **'Hinzufügen'**
+  String get weekSheetAdd;
+
+  /// sheet.edit.confirm
+  ///
+  /// In de, this message translates to:
+  /// **'Übernehmen'**
+  String get weekSheetApply;
+
+  /// Board 19 · A11y Hinzufügen
+  ///
+  /// In de, this message translates to:
+  /// **'{action}, nicht möglich: Aktivität wählen'**
+  String weekSheetIncompleteA11y(String action);
+
+  /// sheet.move.label
+  ///
+  /// In de, this message translates to:
+  /// **'Verschieben nach'**
+  String get weekSheetMoveLabel;
+
+  /// sheet.move.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Oder lange drücken und auf einen anderen Tag ziehen.'**
+  String get weekSheetMoveHint;
+
+  /// sheet.remove
+  ///
+  /// In de, this message translates to:
+  /// **'Eintrag entfernen'**
+  String get weekSheetRemove;
+
+  /// Board 19 · A11y Tag-Chip
+  ///
+  /// In de, this message translates to:
+  /// **'{day}, aktueller Tag'**
+  String weekSheetCurrentDay(String day);
+
+  /// snack.added
+  ///
+  /// In de, this message translates to:
+  /// **'{title} am {day} eingetragen'**
+  String weekSnackAdded(String title, String day);
+
+  /// snack.added_replaced
+  ///
+  /// In de, this message translates to:
+  /// **'{title} am {day} eingetragen — „Frei“ ersetzt'**
+  String weekSnackAddedReplaced(String title, String day);
+
+  /// snack.moved
+  ///
+  /// In de, this message translates to:
+  /// **'{title} auf {day} verschoben'**
+  String weekSnackMoved(String title, String day);
+
+  /// snack.removed
+  ///
+  /// In de, this message translates to:
+  /// **'„{title}“ am {day} entfernt'**
+  String weekSnackRemoved(String title, String day);
+
+  /// snack.cleared
+  ///
+  /// In de, this message translates to:
+  /// **'Woche geleert'**
+  String get weekSnackCleared;
+
+  /// err.load
+  ///
+  /// In de, this message translates to:
+  /// **'Woche konnte nicht geladen werden.'**
+  String get weekErrLoad;
+
+  /// err.load.sub
+  ///
+  /// In de, this message translates to:
+  /// **'Bis sie geladen ist, zeigt die Seite keine Tage — sonst sähe sie leer aus.'**
+  String get weekErrLoadSub;
+
+  /// err.save.add
+  ///
+  /// In de, this message translates to:
+  /// **'„{title}“ nicht gespeichert — der Server hat abgelehnt. {day} bleibt wie vorher.'**
+  String weekErrSave(String title, String day);
+
+  /// err.save.move
+  ///
+  /// In de, this message translates to:
+  /// **'„{title}“ nicht auf {to} verschoben — der Server hat abgelehnt. Steht wieder am {from}.'**
+  String weekErrMove(String title, String to, String from);
+
+  /// today.kicker
+  ///
+  /// In de, this message translates to:
+  /// **'HEUTE · {weekday}'**
+  String todayKicker(String weekday);
+
+  /// today.kicker_week
+  ///
+  /// In de, this message translates to:
+  /// **'DEINE WOCHE'**
+  String get todayKickerWeek;
+
+  /// today.source.week
+  ///
+  /// In de, this message translates to:
+  /// **'LAUT DEINER WOCHE'**
+  String get todaySourceWeek;
+
+  /// today.source.appointment
+  ///
+  /// In de, this message translates to:
+  /// **'TERMIN'**
+  String get todaySourceAppointment;
+
+  /// today.link
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Woche'**
+  String get todayLink;
+
+  /// today.err
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Woche wurde nicht geladen.'**
+  String get todayErr;
+
+  /// today.a11y
+  ///
+  /// In de, this message translates to:
+  /// **'Heute, {weekday}: {entries}. {source}.'**
+  String todayA11y(String weekday, String entries, String source);
+
+  /// Board 19 · A11y Widget ohne Heute
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Woche: {days}'**
+  String todayWeekA11y(String days);
+
+  /// Board 19 · A11y Streifen
+  ///
+  /// In de, this message translates to:
+  /// **'kein Eintrag'**
+  String get todayStripNone;
+
+  /// hybrid.week_button.a11y
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Woche öffnen'**
+  String get hybridWeekButtonA11y;
+
+  /// train.today_source
+  ///
+  /// In de, this message translates to:
+  /// **'laut deiner Woche'**
+  String get trainTodaySourceWeek;
+
+  /// train.today_source
+  ///
+  /// In de, this message translates to:
+  /// **'Termin'**
+  String get trainTodaySourceAppointment;
+
+  /// a11y.entry.move_to
+  ///
+  /// In de, this message translates to:
+  /// **'Auf {day} verschieben'**
+  String weekEntryMoveTo(String day);
+
+  /// a11y.entry.earlier
+  ///
+  /// In de, this message translates to:
+  /// **'Einen Tag früher'**
+  String get weekEntryEarlier;
+
+  /// a11y.entry.later
+  ///
+  /// In de, this message translates to:
+  /// **'Einen Tag später'**
+  String get weekEntryLater;
+
+  /// sheet.edit
+  ///
+  /// In de, this message translates to:
+  /// **'Ändern'**
+  String get weekEntryEdit;
+
+  /// Board 19 · A11y Eintragszeile
+  ///
+  /// In de, this message translates to:
+  /// **'{title}, {meta}. {day}.'**
+  String weekEntryA11y(String title, String meta, String day);
+
+  /// a11y.drag.lifted
+  ///
+  /// In de, this message translates to:
+  /// **'{title} angehoben. Über {day}.'**
+  String weekDragLifted(String title, String day);
+
+  /// Board 19 · A11y Tagesabschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'{day}, {count}'**
+  String weekDayA11y(String day, String count);
+
+  /// Board 19 · A11y Tagesabschnitt
+  ///
+  /// In de, this message translates to:
+  /// **'{day}, heute, {count}'**
+  String weekDayTodayA11y(String day, String count);
+
+  /// Board 18 · Registerzeile ab Board 19
+  ///
+  /// In de, this message translates to:
+  /// **'Woche (Planung)'**
+  String get weekUsedByPlanning;
+
+  /// Board 19 · Einstellungen › Training
+  ///
+  /// In de, this message translates to:
+  /// **'Woche'**
+  String get settingsRowWeek;
+
+  /// Board 19 · Einstellungen › Training
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht geplant'**
+  String get settingsRowWeekEmpty;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
