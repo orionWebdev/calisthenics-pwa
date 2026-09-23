@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes mergePulse{0%,100%{box-shadow:0 0 0 0 rgba(0,242,254,0.5)}50%{box-shadow:0 0 0 5px rgba(0,242,254,0)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 15 · DESIGN-GESPRÄCH 15</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Trainings aus Health Connect — geprüft, gepaart, erkennbar</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:880px;line-height:1.7">Auf dem Telefon liegt eine zweite Quelle für dasselbe Training. Die Uhr weiss Dauer und Puls, nicht aber, wie schwer es sich angefühlt hat. Modul 15 gibt dieser Quelle einen Eingang statt eines Automatismus: nichts steht im Verlauf, bevor es jemand gesehen hat — und aus zwei Datensätzen über eine Einheit wird <strong style="color:#CDD3EA">eine Einheit mit zwei Quellen</strong>, nie zwei Einheiten.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Nur Tokens aus atem_theme.dart</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">#94A3B8 dunkelste Textfarbe · #7A2BDB nie Text</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · Text ≥ 12 sp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">200 % auf 320 dp ohne Überlauf</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Kein vierter Bar-Platz</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">Kein stiller Abgleich · kein Urteil über einen Puls · keine erfundene Angabe</span>
+</div>
+</div>
+
+<div style="margin-top:44px;max-width:1240px;display:flex;flex-wrap:wrap;gap:20px;align-items:stretch">
+
+<div style="flex:1 1 560px;min-width:440px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">DER SATZ, AN DEM ALLES GEMESSEN WIRD</div>
+<div style="margin-top:10px;font-size:18px;font-weight:600;line-height:1.55">Eine fremde Quelle darf den Bestand berühren, aber nie ohne Zeugen: Jede Einheit aus der Uhr wartet sichtbar an ihrem Tag, bis jemand sie annimmt; jede Zusammenführung nennt ihre Folge mit Zahlen, bevor sie geschieht; und jede ist in zwei Schritten wieder zu lösen, weil beide Datensätze erhalten bleiben.</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE">1</span><span style="font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Datenmodell:</strong> Zusammenführen ist eine Verknüpfung, kein Überschreiben. Die Uhr-Einheit bleibt als eigener Datensatz mit ihrer Health-Connect-Kennung liegen, die App-Einheit verweist auf sie.</span></div>
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE">2</span><span style="font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Keine Grösse hat zwei Quellen:</strong> Sätze, Dauer, Anstrengung und Notiz kommen aus der App; Puls und Kalorien aus der Uhr. Es wird nie gemittelt und nie gewählt, es wird zugeordnet.</span></div>
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE">3</span><span style="font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Warten ist ein Zustand, kein Hinweis:</strong> eine ungeprüfte Einheit steht als Zeile an ihrem Datum, nicht in einer Meldung, die man wegwischen kann.</span></div>
+</div>
+</div>
+
+<div style="flex:1 1 380px;min-width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px 26px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">FARBSCHLÜSSEL — VIER ROLLEN, KEINE NEUE FARBE</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:14px;height:14px;border-radius:5px;background:#00F2FE"></span><span style="font-size:12px;color:#CDD3EA;line-height:1.6"><strong style="color:#FFFFFF">Cyan — gemessen.</strong> Puls und alles, was die Uhr geliefert hat. Entspricht der Theme-Semantik „Herzfrequenz".</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:14px;height:14px;border-radius:5px;background:#7A2BDB"></span><span style="font-size:12px;color:#CDD3EA;line-height:1.6"><strong style="color:#FFFFFF">Violett — fremde Quelle, nur als Fläche.</strong> Das Zeitfenster der Uhr, die Gerätekapsel. Nie Text, nie Rand allein.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:14px;height:14px;border-radius:5px;background:#F02277"></span><span style="font-size:12px;color:#CDD3EA;line-height:1.6"><strong style="color:#FFFFFF">Magenta — Eingriff.</strong> Primäraktion (wie „Speichern" in Modul 11), Widerspruch, Lösen, Fehler.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:14px;height:14px;border-radius:5px;background:#00FF87"></span><span style="font-size:12px;color:#CDD3EA;line-height:1.6"><strong style="color:#FFFFFF">Lime — bestätigt und unverändert.</strong> Meldungen nach dem Schreiben, und jede Folgenzeile, die „bleibt" sagt.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;margin-top:2px;width:14px;height:14px;border-radius:5px;background:transparent;border:2px dashed #94A3B8"></span><span style="font-size:12px;color:#CDD3EA;line-height:1.6"><strong style="color:#FFFFFF">Grau gestrichelt — ungeprüft.</strong> Sichtbar, aber ohne Wirkung auf eine einzige Zahl.</span></div>
+</div>
+</div>
+
+</div>
+
+<div data-screen-label="A Eingang und Pruefblatt" style="margin-top:56px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#00F2FE">A</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">DER EINGANG UND DER PRÜFBILDSCHIRM</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">NEUN ZUSTÄNDE</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,242,254,0.5),rgba(0,242,254,0))"></span>
+</div>
+<div style="margin-top:12px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:980px"><strong style="color:#CDD3EA">Wann geht er auf? Gar nicht von selbst.</strong> Gelesen wird beim Öffnen der App im Vordergrund — kein Hintergrunddienst, keine Benachrichtigung. Was hereinkommt, wird als <em style="color:#CDD3EA;font-style:normal">ungeprüft</em> angelegt und steht ab sofort an seinem Datum in der Einheitenliste: sichtbar, aber ohne Wirkung auf eine einzige Zahl. Darüber steht, solange etwas offen ist, genau eine Zeile — der Eingang mit Zähler. Ein Blatt, das beim Start aufgeht, wäre ein Überfall; eine Zeile ohne Ort im Verlauf wäre ein Datenfriedhof. Diese Zeile hat beides: einen Ort und ein Datum.</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:18px">
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00F2FE">A1 · EINGANG IN DER LISTE</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">DEFAULT</span>
+</div>
+<div style="margin-top:9px;background:#050507;border:1px solid #232334;border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:6px;background:#0B0B0E;border:1px solid #232334;border-radius:30px;padding:3px">
+<span style="flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#94A3B8;padding:7px 0">TRAINIEREN</span>
+<span style="flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#050507;background:#00F2FE;border-radius:30px;padding:7px 0;font-weight:700">VERLAUF</span>
+</div>
+<div style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.4);border-radius:16px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;box-sizing:border-box">
+<span style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:12px;font-weight:600;color:#FFFFFF">{{ pendingHeadline }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">GELESEN HEUTE 07:12 · WARTEN AUF PRÜFUNG</span>
+</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#00F2FE;flex:none">PRÜFEN</span>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8;padding-left:2px;margin-top:2px">SEPTEMBER</div>
+<div style="display:flex;align-items:center;gap:10px;border:1px dashed #2E3142;border-radius:12px;padding:9px 10px">
+<svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="2.6 2"></circle></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:12px;color:#CDD3EA">Laufen · 42 min</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">SO 20. SEP · UNGEPRÜFT · ZÄHLT NOCH NICHT</span>
+</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#F02277;flex:none">PRÜFEN</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid #16161F">
+<svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="#00F2FE"></circle></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:12px;color:#CDD3EA">Kraft · Push A · 24 Sätze</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">MI 18. SEP · 52 MIN · RPE 4</span>
+</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 2px">
+<svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="#00F2FE"></circle></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:12px;color:#CDD3EA">Regeneration · 30 min</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">DI 17. SEP · OHNE LAST</span>
+</span>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Drei Träger ohne Farbe allein: gestrichelter Punkt <em style="color:#CDD3EA;font-style:normal">und</em> gestrichelter Rand (Zustand), das Wort „Ungeprüft", die Folge „zählt noch nicht". Die Zeile steht an ihrem echten Datum — die Liste bleibt chronologisch. Der Eingangskopf verschwindet, sobald nichts mehr wartet.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00F2FE">A2 · PRÜFBLATT</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">KEIN PAAR</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px 18px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#00F2FE">AUS HEALTH CONNECT · {{ sheetCounter }}</span>
+<span style="width:36px;height:5px;border-radius:30px;background:#232334"></span>
+</div>
+<div style="margin-top:12px;display:flex;align-items:center;gap:9px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:rgba(122,43,219,0.28);border:1px solid rgba(122,43,219,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#FFFFFF">HC</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14.5px;font-weight:600;line-height:1.25">Laufen</span><span style="display:block;margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">SO 20. SEP · 09:14–09:56 · GARMIN</span></span>
+</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+<span style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:9px 8px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;letter-spacing:0.08em">DAUER</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#FFFFFF">42<span style="font-size:8.5px;color:#94A3B8"> MIN</span></span></span>
+<span style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:9px 8px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#00F2FE;letter-spacing:0.08em">Ø PULS</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#FFFFFF">148</span></span>
+<span style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:9px 8px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#00F2FE;letter-spacing:0.08em">MAX</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#FFFFFF">171</span></span>
+</div>
+<div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;min-height:34px;font-size:11px;color:#94A3B8"><span>Weitere Angaben vom Gerät · 3</span><svg width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"></path></svg></div>
+<div style="margin-top:4px;height:1px;background:#16161F"></div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">ANSTRENGUNG · RPE</div>
+<div style="margin-top:5px;display:flex;gap:5px">
+<sc-for list="{{ rpe }}" as="r" hint-placeholder-count="5">
+<span style="flex:1;min-height:44px;border-radius:14px;background:{{ r.bg }};border:1px solid {{ r.br }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ r.c }}">{{ r.n }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.04em;color:{{ r.lc }}">{{ r.l }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:10px;min-height:40px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;gap:7px;font-size:11.5px;font-weight:600;color:#CDD3EA"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#94A3B8">+</span>Notiz hinzufügen</div>
+<div style="margin-top:14px;min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#FFFFFF">Übernehmen</div>
+<div style="margin-top:8px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Nicht übernehmen</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Zwei Bausteine unverändert aus dem Cardio-Formular: die <strong style="color:#CDD3EA">RPE-Kachelreihe 1–5</strong> mit Wort unter der Zahl und die <strong style="color:#CDD3EA">Notiz-Zeile</strong> — das ist das „Empfinden danach", das die App schon hat. Cyan tragen nur die gemessenen Kacheln, weiss die Dauer: man sieht auf einen Blick, was von der Uhr kommt. Die violette Kapsel „HC" markiert die Fremdquelle als Fläche.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">A3 · NICHTS ANGEGEBEN</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">ZU WENIG DATEN</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#00F2FE">AUS HEALTH CONNECT · {{ sheetCounter }}</div>
+<div style="margin-top:10px;font-size:14.5px;font-weight:600">Laufen</div>
+<div style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">SO 20. SEP · 09:14–09:56 · GARMIN</div>
+<div style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">ANSTRENGUNG · RPE</div>
+<div style="margin-top:5px;display:flex;gap:5px">
+<sc-for list="{{ rpeEmpty }}" as="r" hint-placeholder-count="5">
+<span style="flex:1;min-height:44px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#CDD3EA">{{ r.n }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:7px;letter-spacing:0.04em;color:#94A3B8">{{ r.l }}</span>
+</span>
+</sc-for>
+</div>
+<div style="margin-top:12px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.3);border-radius:14px;padding:11px 12px;display:flex;gap:9px;align-items:flex-start">
+<span style="flex:none;margin-top:1px;width:14px;height:14px;border-radius:30px;border:1px solid rgba(240,34,119,0.6);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#F02277">!</span>
+<span style="flex:1;font-size:11px;color:#CDD3EA;line-height:1.6">Ohne Anstrengung fehlt diese Einheit in der Trainingslast — sie wird nicht geschätzt. Nachtragen geht jederzeit im Detail.</span>
+</div>
+<div style="margin-top:12px;min-height:48px;border-radius:30px;border:1px solid #F02277;background:rgba(240,34,119,0.1);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#FFFFFF;text-align:center;padding:6px 10px">Ohne Anstrengung übernehmen</div>
+<div style="margin-top:8px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Nicht übernehmen</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Kein deaktivierter Knopf, kein Ersatzwert: der Hauptknopf <em style="color:#CDD3EA;font-style:normal">benennt</em>, was er tut, und verliert dabei seine Füllung — eine Aktion mit Lücke ist kein voller Knopf. Die eine erlaubte Hinweiszeile nennt die Folge, der Rest steht hinter dem ⓘ.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00F2FE">A4 · DREI WARTEN</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">STAPEL</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px 18px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#00F2FE">AUS HEALTH CONNECT · 2 VON 3</span>
+<span style="display:flex;gap:4px"><span style="width:14px;height:3px;border-radius:30px;background:#00FF87"></span><span style="width:14px;height:3px;border-radius:30px;background:#00F2FE"></span><span style="width:14px;height:3px;border-radius:30px;background:#232334"></span></span>
+</div>
+<div style="margin-top:12px;background:rgba(0,255,135,0.07);border:1px solid rgba(0,255,135,0.35);border-radius:14px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;box-sizing:border-box">
+<span style="font-size:11.5px;color:#CDD3EA;line-height:1.5">Laufen 20. Sep übernommen</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#00FF87;flex:none">RÜCKGÄNGIG</span>
+</div>
+<div style="margin-top:14px;display:flex;align-items:center;gap:9px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:rgba(122,43,219,0.28);border:1px solid rgba(122,43,219,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#FFFFFF">HC</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14.5px;font-weight:600;line-height:1.25">Radfahren</span><span style="display:block;margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">FR 18. SEP · 42 MIN · Ø 121</span></span>
+</div>
+<div style="margin-top:14px;min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#FFFFFF">Übernehmen</div>
+<div style="margin-top:8px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Nicht übernehmen</div>
+<div style="margin-top:10px;text-align:center;font-size:11px;color:#94A3B8">Später fortsetzen</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Nacheinander im selben Blatt, mit Zähler und Fortschrittsstrich — erledigt in Lime, aktuell in Cyan, offen in Grau. Eine Sammelübernahme könnte die Anstrengung nur weglassen oder erfinden. „Später fortsetzen" schliesst; die Restlichen bleiben als Zeilen stehen.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">A5 · „NEIN"</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">ABGELEHNT, NICHT GELÖSCHT</span>
+</div>
+<div style="margin-top:9px;background:#050507;border:1px solid #232334;border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;box-sizing:border-box">
+<span style="font-size:11.5px;color:#CDD3EA;line-height:1.5">Nicht übernommen · 20. Sep</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#00FF87;flex:none">RÜCKGÄNGIG</span>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:16px;padding:12px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-size:12px;font-weight:600">Abgelehnt</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:2px 8px">1</span></div>
+<div style="margin-top:9px;display:flex;align-items:center;gap:9px;padding-top:9px;border-top:1px solid #16161F">
+<svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="2.6 2"></circle></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:11.5px;color:#CDD3EA">Laufen · 42 min · 20. Sep</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">ABGELEHNT AM 20. SEP</span></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE;flex:none">DOCH</span>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Wird beim nächsten Lesen nicht erneut vorgeschlagen. Die Einheit bleibt in Health Connect unverändert.</div>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">„Nein" heisst <strong style="color:#CDD3EA">abgelehnt und gemerkt</strong>: ATEM speichert allein die Health-Connect-Kennung mit dem Ablehndatum. Ohne dieses Gedächtnis stünde derselbe Datensatz am nächsten Morgen wieder da. Die Liste liegt am Fuss des Eingangs, nicht im Verlauf — abgelehnt ist keine Einheit.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#CDD3EA">A6 · LIEST BEIM ÖFFNEN</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">LADEN</span>
+</div>
+<div style="margin-top:9px;background:#050507;border:1px solid #232334;border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:16px;padding:12px;min-height:48px;box-sizing:border-box;display:flex;align-items:center;gap:10px">
+<span style="width:14px;height:14px;border-radius:30px;border:2px solid #232334;border-top-color:#00F2FE;flex:none"></span>
+<span style="font-size:11.5px;color:#CDD3EA">Health Connect wird gelesen</span>
+</div>
+<div style="height:44px;border-radius:12px;background:#16161F;animation:skelPulse 1.6s ease-in-out infinite"></div>
+<div style="height:44px;border-radius:12px;background:#16161F;animation:skelPulse 1.6s ease-in-out .1s infinite"></div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Nur der Eingangskopf lädt, die bestehende Liste bleibt stehen und bedienbar — gelesen wird gegen die letzte Lesemarke, nie der ganze Bestand. Ab 300 ms sichtbar (Modul 2), <code style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#CDD3EA">liveRegion: polite</code>.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#CDD3EA">A7 · NICHTS GEFUNDEN</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">LEER</span>
+</div>
+<div style="margin-top:9px;background:#050507;border:1px solid #232334;border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8;padding-left:2px">SEPTEMBER</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid #16161F">
+<svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="#00F2FE"></circle></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#CDD3EA">Kraft · Push A · 24 Sätze</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">MI 18. SEP · 52 MIN · RPE 4</span></span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 2px">
+<svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="#00F2FE"></circle></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#CDD3EA">Regeneration · 30 min</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">DI 17. SEP · OHNE LAST</span></span>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Der Eingang <strong style="color:#CDD3EA">rendert gar nicht</strong> (Modul 5) — keine leere Karte, kein „nichts gefunden" über der Liste. Wer wissen will, ob gelesen wurde, findet die Lesemarke in den Einstellungen (D4). Ein leerer Zeitraum ist kein Ereignis.</div>
+</div>
+
+<div style="width:272px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">A8 · LESEN FEHLGESCHLAGEN</span>
+<span style="border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#F02277">FEHLER</span>
+</div>
+<div style="margin-top:9px;background:#050507;border:1px solid #232334;border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:16px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;box-sizing:border-box">
+<span style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:11.5px;color:#CDD3EA;line-height:1.5">Health Connect nicht erreichbar</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">ZULETZT GELESEN 19. SEP 08:03</span>
+</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#F02277;flex:none">ERNEUT</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid #16161F">
+<svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="#00F2FE"></circle></svg>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#CDD3EA">Kraft · Push A · 24 Sätze</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">MI 18. SEP · 52 MIN · RPE 4</span></span>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Der Fehler betrifft das Lesen, nicht den Bestand: die Liste bleibt vollständig, nur der Eingang trägt den Zustand — mit der letzten erfolgreichen Lesemarke als Tatsache. Bereits wartende Einheiten bleiben prüfbar, denn sie liegen längst lokal.</div>
+</div>
+
+<div style="width:320px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00F2FE">A9 · 200 % AUF 320 DP</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">SKALIERUNG</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:14px;width:280px;margin-left:auto;margin-right:auto">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#00F2FE;line-height:1.5">AUS HEALTH CONNECT<br>1 VON 3</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.3">Laufen</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#94A3B8;line-height:1.6">So, 20. Sep<br>09:14–09:56<br>Garmin</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+<span style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:10px 12px;display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#94A3B8">DAUER</span><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700">42 MIN</span></span>
+<span style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:10px 12px;display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00F2FE">Ø PULS</span><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700">148</span></span>
+<span style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:10px 12px;display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00F2FE">MAX</span><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700">171</span></span>
+</div>
+<div style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#94A3B8">ANSTRENGUNG · RPE</div>
+<div style="margin-top:6px;display:flex;flex-direction:column;gap:6px">
+<span style="min-height:56px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;gap:12px;padding:0 14px"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#CDD3EA">3</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#94A3B8">MITTEL</span></span>
+<span style="min-height:56px;border-radius:14px;background:rgba(0,242,254,0.10);border:1px solid rgba(0,242,254,0.35);display:flex;align-items:center;gap:12px;padding:0 14px"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#FFFFFF">4</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#CDD3EA">HART</span></span>
+<span style="min-height:56px;border-radius:14px;background:#0B0B0E;border:1px solid #232334;display:flex;align-items:center;gap:12px;padding:0 14px"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#CDD3EA">5</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#94A3B8">MAXIMAL</span></span>
+</div>
+<div style="margin-top:14px;min-height:56px;border-radius:24px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;padding:10px">Übernehmen</div>
+<div style="margin-top:8px;min-height:56px;border-radius:24px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#CDD3EA;text-align:center;padding:10px">Nicht übernehmen</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Drei Umbauten bei 200 %: die Wertekacheln kippen von drei Spalten in drei Zeilen, die <strong style="color:#CDD3EA">RPE-Reihe kippt von fünf Spalten in fünf Zeilen</strong> (Zahl links, Wort daneben — scrollend, 56 dp hoch), die Kopfzeile bricht dreizeilig um. Kein Wert wird gekürzt, keine Zeile ausgeblendet, kein Ziel unter 48 dp.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="B Abgleich" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:rgba(240,34,119,0.14);border:1px solid rgba(240,34,119,0.5);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#F02277">B</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">DER ABGLEICH</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">VERMUTUNG → FOLGEN → ERGEBNIS → WEG ZURÜCK</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(240,34,119,0.5),rgba(240,34,119,0))"></span>
+</div>
+
+<div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:20px">
+<div style="flex:1 1 580px;min-width:440px;background:rgba(0,255,135,0.05);border:1px solid rgba(0,255,135,0.35);border-radius:20px;padding:22px 26px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00FF87">DIE PAAR-REGEL — VORSCHLAG GESCHÄRFT, NICHT VERWORFEN</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;margin-top:1px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#00FF87">1</span><span style="font-size:12.5px;color:#CDD3EA;line-height:1.65">Die Überlappung beträgt <strong style="color:#FFFFFF">mehr als die Hälfte der kürzeren Dauer</strong>.</span></div>
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;margin-top:1px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#00FF87">2</span><span style="font-size:12.5px;color:#CDD3EA;line-height:1.65">Die Startzeiten liegen <strong style="color:#FFFFFF">höchstens 20 Minuten</strong> auseinander.</span></div>
+<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;margin-top:1px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#00FF87">3</span><span style="font-size:12.5px;color:#CDD3EA;line-height:1.65">Es gibt <strong style="color:#FFFFFF">genau einen</strong> Kandidaten.</span></div>
+</div>
+<div style="margin-top:12px;font-size:12px;color:#94A3B8;line-height:1.7">Die Überlappung allein genügt nicht: eine 90-minütige Uhr-Einheit („Ganztagsaktivität") verschluckt jede 20-Minuten-Krafteinheit mit 100 % Überlappung, ohne dasselbe Training zu sein — die Startzeitnähe schliesst das aus. Die <strong style="color:#CDD3EA">Art wird nicht geprüft</strong>: Uhren melden Krafttraining regelmässig als „Andere" oder „Cardio"; eine Artprüfung würde mehr echte Paare verwerfen, als sie falsche verhindert.</div>
+</div>
+<div style="flex:1 1 300px;min-width:280px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px 24px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">DER FALL AUS DEM AUFTRAG</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+<div style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#00F2FE">APP</div><div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#FFFFFF">18:02–18:54 · 52 MIN · 24 SÄTZE</div></div>
+<div style="background:rgba(122,43,219,0.22);border:1px solid rgba(122,43,219,0.5);border-radius:14px;padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#CDD3EA">UHR</div><div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#FFFFFF">18:00–18:58 · 58 MIN · Ø 118 · MAX 164</div></div>
+</div>
+<div style="margin-top:12px;font-size:12px;color:#94A3B8;line-height:1.7">Überlappung 52 von 52 min der kürzeren Einheit, Start 2 min auseinander, ein Kandidat — die Regel greift dreifach.</div>
+</div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:18px">
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">B1 · DIE VERMUTUNG</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">ZWEI ZEILEN, EINE FRAGE</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#00F2FE">AUS HEALTH CONNECT · MÖGLICHES PAAR</div>
+<div style="margin-top:10px;font-size:14px;font-weight:600;line-height:1.35">Gehört das zu deiner Krafteinheit?</div>
+<div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">
+<div style="background:#14141D;border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:10px 12px">
+<div style="display:flex;align-items:center;gap:8px"><svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="#00F2FE"></circle></svg><span style="font-size:12px;font-weight:600;color:#FFFFFF">Deine App-Einheit</span></div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA;letter-spacing:0.03em">18:02–18:54 · 52 MIN · 24 SÄTZE · RPE 4</div>
+</div>
+<div style="background:rgba(122,43,219,0.2);border:1px solid rgba(122,43,219,0.5);border-radius:14px;padding:10px 12px">
+<div style="display:flex;align-items:center;gap:8px"><svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="none" stroke="#00F2FE" stroke-width="2"></circle></svg><span style="font-size:12px;font-weight:600;color:#FFFFFF">Aus der Uhr</span></div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA;letter-spacing:0.03em">18:00–18:58 · 58 MIN · Ø 118 · MAX 164</div>
+</div>
+</div>
+<svg viewBox="0 0 252 40" width="100%" height="40" style="margin-top:10px;display:block" role="img" aria-label="Zeitstrahl: App-Einheit 18:02 bis 18:54, Uhr-Einheit 18:00 bis 18:58, Überlappung 52 von 52 Minuten der kürzeren Einheit">
+<rect x="10" y="4" width="232" height="10" rx="5" fill="#14141D"></rect>
+<rect x="18" y="4" width="208" height="10" rx="5" fill="#00F2FE"></rect>
+<rect x="10" y="20" width="232" height="10" rx="5" fill="#7A2BDB"></rect>
+<line x1="18" y1="34" x2="226" y2="34" stroke="#CDD3EA" stroke-width="1" stroke-dasharray="3 2"></line>
+</svg>
+<div style="margin-top:8px;font-size:11.5px;color:#CDD3EA;line-height:1.6">Überlappung 52 von 52 min der kürzeren Einheit · Start 2 min auseinander</div>
+<div style="margin-top:12px;min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#FFFFFF">Zusammenführen</div>
+<div style="margin-top:8px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Getrennt lassen</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Die Vermutung wird als Frage gestellt, nie als Tatsache angekündigt. Der Balken ist die Begründung in Form: oben die App in Cyan, unten die Uhr als violette Fläche, dazwischen die gemeinsame Spanne. „Getrennt lassen" führt in den normalen Prüfbildschirm A2 — sie wird dann eine eigene Einheit.</div>
+</div>
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">B2 · STUFE 1</span>
+<span style="border:1px solid rgba(0,255,135,0.4);border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#00FF87">RECHNEN, NICHT WARNEN</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px 18px">
+<div style="font-size:14px;font-weight:600;line-height:1.35">Zusammenführen — das ändert sich</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.06em">KRAFT · PUSH A · MI 18. SEP</div>
+<div style="margin-top:12px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:4px 12px">
+<sc-for list="{{ mergeConsequences }}" as="c" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #16161F">
+<span style="font-size:11px;color:#94A3B8;line-height:1.5">{{ c.label }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:{{ c.color }};text-align:right;flex:none;background:{{ c.bg }};border-radius:30px;padding:3px 9px">{{ c.value }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#94A3B8;line-height:1.6">{{ conflictNote }}</div>
+<div style="margin-top:12px;min-height:48px;border-radius:30px;background:#F02277;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#FFFFFF">Zusammenführen</div>
+<div style="margin-top:8px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Abbrechen</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Fünf Zeilen, drei davon in Lime — sie sagen ausdrücklich, was <em style="color:#CDD3EA;font-style:normal">gleich bleibt</em>. Genau das nimmt der eingreifendsten Operation den Schrecken: nicht ein Warnton, sondern die gerechnete Folge. Stufe 2 ist der Knopf selbst; ein dritter Weg existiert nicht.</div>
+</div>
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00FF87">B3 · ERGEBNIS IM DETAIL</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">EINE EINHEIT, ZWEI QUELLEN</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px 18px">
+<div style="display:flex;align-items:center;gap:9px">
+<svg width="16" height="16" viewBox="0 0 16 16" style="flex:none"><circle cx="8" cy="8" r="5.6" fill="none" stroke="#00F2FE" stroke-width="2"></circle><circle cx="8" cy="8" r="2.2" fill="#00F2FE"></circle></svg>
+<span style="font-size:15px;font-weight:600">Push A</span>
+</div>
+<div style="margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8;letter-spacing:0.05em">MI 18. SEP · 18:02–18:54 · APP + UHR</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+<span style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;letter-spacing:0.08em">DAUER</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">52<span style="font-size:8.5px;color:#94A3B8"> MIN</span></span></span>
+<span style="background:#14141D;border:1px solid #232334;border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;letter-spacing:0.08em">SÄTZE</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">24</span></span>
+<span style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#00F2FE;letter-spacing:0.08em">Ø PULS</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">118</span></span>
+<span style="background:rgba(0,242,254,0.07);border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:9px 10px;display:flex;flex-direction:column;gap:3px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#00F2FE;letter-spacing:0.08em">MAX PULS</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700">164</span></span>
+</div>
+<div style="margin-top:10px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:11px 12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;color:#94A3B8">QUELLEN</div>
+<div style="margin-top:8px;display:flex;align-items:center;gap:8px"><svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="#00F2FE"></circle></svg><span style="font-size:11px;color:#CDD3EA;line-height:1.5">App · Sätze, Dauer, Anstrengung</span></div>
+<div style="margin-top:7px;display:flex;align-items:center;gap:8px"><svg width="12" height="12" viewBox="0 0 12 12" style="flex:none"><circle cx="6" cy="6" r="4.2" fill="none" stroke="#00F2FE" stroke-width="2"></circle></svg><span style="font-size:11px;color:#CDD3EA;line-height:1.5">Garmin · Puls, Kalorien</span></div>
+<div style="margin-top:9px;background:rgba(122,43,219,0.2);border-radius:10px;padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;letter-spacing:0.03em;line-height:1.5">UHR MELDET 18:00–18:58 · 58 MIN</div>
+</div>
+<div style="margin-top:10px;min-height:48px;border-radius:16px;border:1px solid #232334;display:flex;align-items:center;justify-content:space-between;padding:0 14px"><span style="font-size:12px;color:#CDD3EA">Verbindung lösen</span><svg width="6" height="10" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4" stroke="#94A3B8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Die widersprüchliche Dauer verschwindet nicht: 52 min ist der Wert der Einheit, 58 min steht als violett hinterlegte Meldung der Uhr in der Quellenkapsel. Zwei Zahlen, eine gültig, beide sichtbar — und an der Farbe ablesbar, welche Grösse woher kommt.</div>
+</div>
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00FF87">B4 · WEG ZURÜCK</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">6 S, DANN ZWEITER SCHRITT</span>
+</div>
+<div style="margin-top:9px;display:flex;flex-direction:column;gap:12px">
+<div style="background:rgba(0,255,135,0.07);border:1px solid rgba(0,255,135,0.35);border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;box-sizing:border-box">
+<span style="font-size:11.5px;color:#CDD3EA;line-height:1.5">Zusammengeführt · Puls übernommen</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:#00FF87;flex:none">RÜCKGÄNGIG</span>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 14px">
+<div style="font-size:13.5px;font-weight:600;line-height:1.4">Verbindung lösen — das ändert sich</div>
+<div style="margin-top:10px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:4px 12px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #16161F"><span style="font-size:11px;color:#94A3B8">Ø und max. Puls</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#F02277;background:rgba(240,34,119,0.12);border-radius:30px;padding:3px 9px">entfallen</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #16161F"><span style="font-size:11px;color:#94A3B8">Sätze, Dauer, RPE</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#00FF87;background:rgba(0,255,135,0.1);border-radius:30px;padding:3px 9px">bleiben</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #16161F"><span style="font-size:11px;color:#94A3B8">Uhr-Einheit</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#CDD3EA;background:rgba(122,43,219,0.22);border-radius:30px;padding:3px 9px">in den Eingang</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0"><span style="font-size:11px;color:#94A3B8">Einheiten im September</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:#00FF87;background:rgba(0,255,135,0.1);border-radius:30px;padding:3px 9px">14 → 14</span></div>
+</div>
+<div style="margin-top:12px;min-height:48px;border-radius:30px;border:1px solid #F02277;background:rgba(240,34,119,0.12);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#FFFFFF">Lösen</div>
+<div style="margin-top:8px;min-height:44px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Abbrechen</div>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Zwei Wege zurück, bewusst getrennt: <strong style="color:#CDD3EA">6 Sekunden Rücknahme</strong> unmittelbar danach, und dauerhaft der <strong style="color:#CDD3EA">zweite Schritt</strong> „Verbindung lösen" im Detail — zweistufig, weil er eine Einheit im Bestand verändert. Verlustfrei, weil die Uhr-Einheit die ganze Zeit als eigener Datensatz danebenlag.</div>
+</div>
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">B5 · ZWEI KANDIDATEN</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">KEINE VERMUTUNG</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">AUS HEALTH CONNECT · 1 VON 1</div>
+<div style="margin-top:10px;display:flex;align-items:center;gap:9px">
+<span style="flex:none;width:26px;height:26px;border-radius:10px;background:rgba(122,43,219,0.28);border:1px solid rgba(122,43,219,0.55);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#FFFFFF">HC</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:600">Andere</span><span style="display:block;margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">MI 18. SEP · 17:50–19:10 · 80 MIN</span></span>
+</div>
+<div style="margin-top:12px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:12px">
+<div style="font-size:11.5px;color:#CDD3EA;line-height:1.6">Zwei App-Einheiten liegen in diesem Zeitraum. ATEM ordnet nicht zu, wenn die Zuordnung nicht eindeutig ist.</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+<span style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0B0B0E;border:1px solid #232334;border-radius:12px;padding:9px 10px;min-height:44px;box-sizing:border-box"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA">PUSH A · 18:02–18:54</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#F02277">WÄHLEN</span></span>
+<span style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:#0B0B0E;border:1px solid #232334;border-radius:12px;padding:9px 10px;min-height:44px;box-sizing:border-box"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#CDD3EA">MOBILITY · 19:00–19:20</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#F02277">WÄHLEN</span></span>
+</div>
+</div>
+<div style="margin-top:12px;min-height:48px;border-radius:30px;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:#CDD3EA">Als eigene Einheit prüfen</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Mehrdeutigkeit wird zur Auswahl von Hand, nicht zu einer geratenen Vorauswahl — eine Vermutung unter mehreren ist keine Vermutung. Der Weg ohne Zuordnung bleibt gleichwertig sichtbar; er führt nach A2.</div>
+</div>
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00F2FE">B6 · DIE VERSCHMELZUNG</span>
+<span style="border:1px solid #232334;border-radius:30px;padding:4px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;color:#94A3B8">DREI PHASEN · 420 MS</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 14px">
+<div style="display:flex;flex-direction:column;gap:13px">
+<div>
+<div style="display:flex;align-items:center;gap:7px"><span style="width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE">1</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#00F2FE">SAMMELN · 0–140 MS</span></div>
+<div style="margin-top:7px;display:flex;flex-direction:column;gap:4px">
+<span style="height:26px;border-radius:10px;background:#14141D;border:1px solid rgba(0,242,254,0.3);display:flex;align-items:center;padding:0 10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">APP · 24 SÄTZE</span>
+<span style="height:26px;border-radius:10px;background:rgba(122,43,219,0.2);border:1px solid rgba(122,43,219,0.5);display:flex;align-items:center;padding:0 10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;margin-left:14px">UHR · Ø 118</span>
+</div>
+<div style="margin-top:6px;font-size:10.5px;color:#94A3B8;line-height:1.5">Beide Zeilen rücken 6 dp aufeinander zu, alles andere in der Liste weicht nicht.</div>
+</div>
+<div>
+<div style="display:flex;align-items:center;gap:7px"><span style="width:18px;height:18px;border-radius:6px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00F2FE">2</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#00F2FE">VERSCHMELZEN · 140–320 MS</span></div>
+<div style="margin-top:7px;display:flex;flex-direction:column;gap:2px">
+<span style="height:24px;border-radius:10px 10px 0 0;background:#14141D;border:1px solid rgba(0,242,254,0.3);border-bottom:none;display:flex;align-items:center;padding:0 10px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA">APP · 24 SÄTZE</span>
+<span style="height:14px;border-radius:0 0 10px 10px;background:rgba(122,43,219,0.12);border:1px solid rgba(122,43,219,0.3);border-top:none;display:flex;align-items:center;padding:0 10px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">UHR · Ø 118</span>
+</div>
+<div style="margin-top:6px;font-size:10.5px;color:#94A3B8;line-height:1.5">Die untere Zeile kollabiert auf Höhe 0, die obere wächst um exakt dieselbe Höhe — die Liste darunter bewegt sich kein Pixel.</div>
+</div>
+<div>
+<div style="display:flex;align-items:center;gap:7px"><span style="width:18px;height:18px;border-radius:6px;background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:#00FF87">3</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#00FF87">SETZEN · 320–420 MS</span></div>
+<div style="margin-top:7px">
+<span style="min-height:36px;border-radius:10px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;gap:8px;padding:6px 10px">
+<svg width="14" height="14" viewBox="0 0 16 16" style="flex:none;{{ mergeDotAnim }}"><circle cx="8" cy="8" r="5.6" fill="none" stroke="#00F2FE" stroke-width="2"></circle><circle cx="8" cy="8" r="2.2" fill="#00F2FE"></circle></svg>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#CDD3EA;line-height:1.4">PUSH A · 24 SÄTZE · Ø 118</span>
+</span>
+</div>
+<div style="margin-top:6px;font-size:10.5px;color:#94A3B8;line-height:1.5">Der Punkt morpht vom gefüllten zum Ring mit Kern: Kern von r 4,2 auf r 2,2, Ring blendet ein. Danach Ruhelage, kein Nachpulsen.</div>
+</div>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Die einzige Bewegung im Modul, die etwas behauptet: <em style="color:#CDD3EA;font-style:normal">zwei Dinge werden eins</em>. Deshalb orchestriert statt verstreut — eine Zeitachse, drei Phasen, ein Ziel. Bei reduzierter Bewegung entfällt sie vollständig: 120 ms Überblendung auf den Endzustand, und die Meldung sagt in Worten, was geschehen ist.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="C Herkunft im Bestand" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.45);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#00FF87">C</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">DIE HERKUNFT IM BESTAND</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">DAS IDIOM TRÄGT — ABER NICHT ÜBERALL</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,255,135,0.5),rgba(0,255,135,0))"></span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:376px;flex:none;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Vier Zustände, eine Form</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:11px;background:#14141D;border:1px solid #232334;border-radius:12px;padding:9px 11px"><svg width="16" height="16" viewBox="0 0 16 16" style="flex:none"><circle cx="8" cy="8" r="5.2" fill="#00F2FE"></circle></svg><span style="font-size:12px;color:#CDD3EA">Gefüllt — selbst geführt</span></div>
+<div style="display:flex;align-items:center;gap:11px;background:#14141D;border:1px solid #232334;border-radius:12px;padding:9px 11px"><svg width="16" height="16" viewBox="0 0 16 16" style="flex:none"><circle cx="8" cy="8" r="5.2" fill="#14141D" stroke="#00F2FE" stroke-width="2"></circle></svg><span style="font-size:12px;color:#CDD3EA">Hohl — aus der Uhr übernommen</span></div>
+<div style="display:flex;align-items:center;gap:11px;background:#14141D;border:1px solid #232334;border-radius:12px;padding:9px 11px"><svg width="16" height="16" viewBox="0 0 16 16" style="flex:none"><circle cx="8" cy="8" r="5.2" fill="none" stroke="#00F2FE" stroke-width="2"></circle><circle cx="8" cy="8" r="2.2" fill="#00F2FE"></circle></svg><span style="font-size:12px;color:#CDD3EA">Ring mit Kern — beides, zusammengeführt</span></div>
+<div style="display:flex;align-items:center;gap:11px;background:#14141D;border:1px solid #232334;border-radius:12px;padding:9px 11px"><svg width="16" height="16" viewBox="0 0 16 16" style="flex:none"><circle cx="8" cy="8" r="5.2" fill="none" stroke="#94A3B8" stroke-width="2" stroke-dasharray="2.6 2.2"></circle></svg><span style="font-size:12px;color:#CDD3EA">Gestrichelt — ungeprüft, zählt noch nicht</span></div>
+</div>
+<div style="margin-top:14px;font-size:12px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Das Idiom trägt — mit zwei Eingriffen.</strong> Erstens wächst der Punkt von 6 dp (Kurve, Modul 14) auf <strong style="color:#CDD3EA">10 dp</strong>, sonst wäre der Kern im dritten Zustand nicht unterscheidbar. Zweitens kommt ein vierter Zustand dazu, den Modul 14 nicht kannte: ungeprüft — dieselbe Form, ohne neue Farbe, im Grauton der Metazeile, weil er noch nichts über die Einheit aussagt.</div>
+</div>
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(0,255,135,0.12);border:1px solid rgba(0,255,135,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#00FF87">C1 · IN DER LISTE</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px">
+<sc-for list="{{ listRows }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #16161F">
+<span style="width:12px;height:12px;border-radius:30px;flex:none;background:{{ r.dotBg }};border:{{ r.dotBorder }};box-shadow:{{ r.dotCore }}"></span>
+<span style="flex:1;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:12px;color:#CDD3EA">{{ r.title }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">{{ r.meta }}</span>
+</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Kein Abzeichen, kein zweites Farbwort, keine zusätzliche Zeile: der Punkt sitzt dort, wo in Modul 6 schon der Typpunkt sass, und trägt jetzt die Herkunft. Die Metazeile nennt zusätzlich die Fehlstelle („ohne Anstrengung") — eine Tatsache, keine Mahnung.</div>
+</div>
+
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:rgba(240,34,119,0.12);border:1px solid rgba(240,34,119,0.45);border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:#F02277">C2 · WO ES NICHT TRÄGT</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 14px;display:flex;flex-direction:column;gap:12px">
+<div>
+<div style="font-size:12.5px;font-weight:600">Bei 200 % Systemschrift</div>
+<div style="margin-top:5px;font-size:11px;color:#94A3B8;line-height:1.6">Ein 10-dp-Punkt wächst nicht mit der Schrift und wird neben 24-sp-Text zum Staubkorn. Ab Textskalierung 1,3 tritt an seine Stelle ein Wort in der Metazeile: „aus der Uhr" / „App + Uhr". Der Punkt entfällt dann ganz — nicht beides.</div>
+</div>
+<div style="height:1px;background:#16161F"></div>
+<div>
+<div style="font-size:12.5px;font-weight:600">In der Auswertung</div>
+<div style="margin-top:5px;font-size:11px;color:#94A3B8;line-height:1.6">Kurven und Balken bekommen keine Herkunftsmarkierung — punktweise Formunterschiede in einem Balkendiagramm wären Rauschen. Stattdessen trägt der Nenner die Auskunft.</div>
+<div style="margin-top:9px;background:#14141D;border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:11px 12px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;color:#00F2FE">PULS · SEPTEMBER</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700">Ø 124</div>
+<div style="margin-top:4px;font-size:10.5px;color:#94A3B8;line-height:1.5">aus 4 von 14 Einheiten · alle aus der Uhr</div>
+</div>
+</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">Ausdrücklich gesagt: das Formidiom endet an der Grenze zur Statistik. Dort ist Herkunft keine Eigenschaft eines Punktes mehr, sondern eine Eigenschaft des Nenners.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="D Berechtigungen" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:rgba(122,43,219,0.35);border:1px solid rgba(122,43,219,0.6);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FFFFFF">D</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">DER ZUGANG ZU HEALTH CONNECT</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">FÜNF ZUSTÄNDE · ZWEI ZEILEN JE DATENTYP</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(122,43,219,0.7),rgba(122,43,219,0))"></span>
+</div>
+<div style="margin-top:12px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:980px">Ort: Einstellungen → „Health Connect" (Modul 8, kein Bar-Slot). Weil Google je Datentyp einzeln fragt, gibt es <strong style="color:#CDD3EA">zwei Zeilen statt einer</strong> — Gewicht und Einheiten haben getrennte Zustände und getrennte Wege. Jede Zeile trägt Wort und Zustand, nie nur eine Farbe.</div>
+<div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;margin-top:16px">
+<sc-for list="{{ permStates }}" as="p" hint-placeholder-count="5">
+<div style="width:292px;flex:none">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+<span style="background:{{ p.chipBg }};border:1px solid {{ p.chipBorder }};border-radius:30px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.08em;color:{{ p.kickerColor }}">{{ p.kicker }}</span>
+</div>
+<div style="margin-top:9px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:#94A3B8">HEALTH CONNECT</div>
+<div style="margin-top:10px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;box-sizing:border-box">
+<span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;color:#CDD3EA">Körpergewicht</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:{{ p.weightStateColor }};letter-spacing:0.04em">{{ p.weightState }}</span></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ p.weightActionColor }};flex:none">{{ p.weightAction }}</span>
+</div>
+<div style="margin-top:7px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;box-sizing:border-box">
+<span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;color:#CDD3EA">Trainingseinheiten</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:{{ p.sessionStateColor }};letter-spacing:0.04em">{{ p.sessionState }}</span></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:{{ p.sessionActionColor }};flex:none">{{ p.sessionAction }}</span>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#CDD3EA;line-height:1.65">{{ p.note }}</div>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#94A3B8;line-height:1.6">{{ p.rationale }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="E Spezifikationstabelle" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">E</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">SPEZIFIKATIONSTABELLE</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
+</div>
+<div style="margin-top:14px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:196px 96px 100px 150px 1fr 118px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>HÖHE</span><span>INNENPOLSTER</span><span>FLÄCHE</span><span>TYP-ROLLE</span><span>TAP-ZIEL</span>
+</div>
+<sc-for list="{{ spec }}" as="s" hint-placeholder-count="20">
+<div style="display:grid;grid-template-columns:196px 96px 100px 150px 1fr 118px;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline;line-height:1.5">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:{{ s.elC }}">{{ s.el }}</span>
+<span style="color:#CDD3EA;font-variant-numeric:tabular-nums">{{ s.h }}</span>
+<span style="color:#CDD3EA;font-variant-numeric:tabular-nums">{{ s.pad }}</span>
+<span style="color:#94A3B8">{{ s.surface }}</span>
+<span style="color:#94A3B8">{{ s.type }}</span>
+<span style="color:{{ s.tapC }}">{{ s.tap }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="F Bewegungstabelle" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">F</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">BEWEGUNGSTABELLE</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
+</div>
+<div style="margin-top:14px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:172px 148px 1fr 96px 148px 116px 178px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ÜBERGANG</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>REDUZIERTE BEWEGUNG</span>
+</div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="11">
+<div style="display:grid;grid-template-columns:172px 148px 1fr 96px 148px 116px 178px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:{{ m.tc }}">{{ m.trigger }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-variant-numeric:tabular-nums">{{ m.dur }}</span><span style="color:#94A3B8">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.reduced }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="G Stringtabelle" style="margin-top:60px;max-width:1080px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">G</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">STRINGTABELLE</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
+</div>
+<div style="margin-top:14px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:248px 1fr 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span>
+</div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="34">
+<div style="display:grid;grid-template-columns:248px 1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline;line-height:1.5">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="H A11y-Notizen" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">H</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">A11Y-NOTIZEN</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
+</div>
+<div style="margin-top:14px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND / LIVE-REGION</span>
+</div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="13">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.55">
+<span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I Wiederverwendung" style="margin-top:60px;max-width:1240px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">I</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">WIEDERVERWENDUNG UND WAS WIRKLICH NEU IST</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
+</div>
+<div style="margin-top:14px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:110px 280px 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>HERKUNFT</span><span>BAUSTEIN</span><span>VERWENDUNG HIER</span>
+</div>
+<sc-for list="{{ reuse }}" as="r" hint-placeholder-count="20">
+<div style="display:grid;grid-template-columns:110px 280px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:{{ r.c }}">{{ r.m }}</span><span style="color:#FFFFFF;font-weight:600">{{ r.b }}</span><span style="color:#94A3B8;line-height:1.6">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="J Entscheidungsprotokoll" style="margin-top:60px;max-width:980px">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:34px;height:34px;border-radius:12px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#CDD3EA">J</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.14em;color:#FFFFFF">ENTSCHEIDUNGSPROTOKOLL</span>
+<span style="flex:1;height:1px;background:linear-gradient(90deg,#232334,rgba(35,35,52,0))"></span>
+</div>
+<div style="margin-top:12px;font-size:12.5px;color:#94A3B8;line-height:1.7">Die vier Fragen aus Abschnitt 8.4 sind hier ausdrücklich beantwortet: <strong style="color:#CDD3EA">Datenmodell</strong> (1), <strong style="color:#CDD3EA">Paar-Regel</strong> (5–7), <strong style="color:#CDD3EA">Vorrang bei Widerspruch</strong> (8–9), <strong style="color:#CDD3EA">Verhalten bei „nein"</strong> (11–12).</div>
+<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="20">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start">
+<div style="width:36px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="margin-top:60px;max-width:980px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px 28px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">K · OFFENE FRAGEN</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:11px">
+<div style="font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">Lesefenster beim ersten Zugriff.</strong> Annahme: 30 Tage rückwirkend, danach nur ab der letzten Lesemarke. Ein voller Bestandsimport könnte 200 wartende Einheiten erzeugen — ein Eingang, den niemand durcharbeitet.</div>
+<div style="font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">Schreibt ATEM zurück?</strong> Dieses Modul liest ausschliesslich. Ob eigene Einheiten nach Health Connect geschrieben werden, ist eine eigene Entscheidung mit eigener Berechtigung — und eine eigene Vertrauensfrage.</div>
+<div style="font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">Nachträglich geänderte Uhr-Datensätze.</strong> Health Connect erlaubt Korrekturen an bereits gelesenen Einheiten. Annahme: eine übernommene Einheit wird nicht nachgezogen — sonst änderten sich Zahlen, ohne dass jemand zugestimmt hat.</div>
+<div style="font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">Regeneration aus der Uhr.</strong> „Yoga", „Dehnen", „Atemübung" melden Uhren als Einheit mit Puls. Ob sie als Regeneration (ohne Last) oder als Cardio ankommen, entscheidet die Artzuordnungstabelle — sie fehlt noch.</div>
+<div style="font-size:12.5px;color:#CDD3EA;line-height:1.7"><strong style="color:#FFFFFF">RIR statt RPE.</strong> Die Einstellung schaltet im Kraft-Runner von RPE auf RIR. Für eine importierte Ausdauereinheit ist RIR sinnlos — offen bleibt, ob die Umschaltung hier die Beschriftung mitzieht oder der Import bewusst bei RPE bleibt (Annahme: bleibt bei RPE, mit dem Wort unter der Zahl).</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;pendingCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:1,&quot;max&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;durationWinner&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;App (Sätze protokolliert)&quot;,&quot;options&quot;:[&quot;App (Sätze protokolliert)&quot;,&quot;Uhr (Health Connect)&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;reducedMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const n = Math.max(1, Math.min(5, this.props.pendingCount ?? 3));
+    const winner = this.props.durationWinner ?? 'App (Sätze protokolliert)';
+    const appWins = winner.startsWith('App');
+    const reduced = this.props.reducedMotion ?? false;
+
+    const sel = { bg: 'rgba(0,242,254,0.10)', br: 'rgba(0,242,254,0.35)', c: '#FFFFFF', lc: '#CDD3EA' };
+    const off = { bg: '#0B0B0E', br: '#232334', c: '#CDD3EA', lc: '#94A3B8' };
+    const rpeLabels = ['SEHR LEICHT', 'LEICHT', 'MITTEL', 'HART', 'MAXIMAL'];
+    const rpe = [1, 2, 3, 4, 5].map((v, i) => Object.assign({ n: String(v), l: rpeLabels[i] }, v === 4 ? sel : off));
+    const rpeEmpty = [1, 2, 3, 4, 5].map((v, i) => ({ n: String(v), l: rpeLabels[i] }));
+
+    const limeBg = 'rgba(0,255,135,0.10)';
+    const cyanBg = 'rgba(0,242,254,0.10)';
+    const magBg = 'rgba(240,34,119,0.12)';
+
+    const mergeConsequences = appWins ? [
+      { label: 'Ø und max. Puls', value: '— → 118 / 164', color: '#00F2FE', bg: cyanBg },
+      { label: 'Dauer der Einheit', value: '52 min bleibt', color: '#00FF87', bg: limeBg },
+      { label: 'Einheiten im September', value: '14 → 14', color: '#00FF87', bg: limeBg },
+      { label: 'Trainingsminuten der Woche', value: '214 → 214', color: '#00FF87', bg: limeBg },
+      { label: 'Trainingslast', value: '412 → 412', color: '#00FF87', bg: limeBg }
+    ] : [
+      { label: 'Ø und max. Puls', value: '— → 118 / 164', color: '#00F2FE', bg: cyanBg },
+      { label: 'Dauer der Einheit', value: '52 → 58 min', color: '#F02277', bg: magBg },
+      { label: 'Einheiten im September', value: '14 → 14', color: '#00FF87', bg: limeBg },
+      { label: 'Trainingsminuten der Woche', value: '214 → 220', color: '#F02277', bg: magBg },
+      { label: 'Verhältnis Kraft/Ausdauer', value: '61/39 → 62/38', color: '#F02277', bg: magBg }
+    ];
+
+    return {
+      pendingHeadline: n === 1 ? '1 Einheit aus Health Connect' : n + ' Einheiten aus Health Connect',
+      sheetCounter: n === 1 ? '1 VON 1' : '1 VON ' + n,
+      rpe, rpeEmpty, mergeConsequences,
+      conflictNote: appWins
+        ? 'Die Dauer bleibt bei der App: 52 min sind die protokollierten Sätze. Die Uhr meldet 58 min — der Wert bleibt sichtbar, ändert aber keine Zahl, die schon stand.'
+        : 'Die Dauer wechselt zur Uhr: 58 min statt 52. Drei bereits gezeigte Zahlen ändern sich rückwirkend mit — deshalb ist das nicht die gewählte Regel (Protokoll 8).',
+      mergeDotAnim: reduced ? '' : 'animation: mergePulse 2.2s ease-in-out infinite; border-radius: 50%;',
+
+      listRows: [
+        { title: 'Kraft · Push A · 24 Sätze', meta: 'MI 18. SEP · 52 MIN · Ø 118 · APP + UHR', dotBg: 'transparent', dotBorder: '2px solid #00F2FE', dotCore: 'inset 0 0 0 2px #0B0B0E, inset 0 0 0 4px #00F2FE' },
+        { title: 'Laufen · 42 min', meta: 'SO 20. SEP · Ø 148 · AUS DER UHR', dotBg: '#0B0B0E', dotBorder: '2px solid #00F2FE', dotCore: 'none' },
+        { title: 'Radfahren · 42 min', meta: 'FR 18. SEP · OHNE ANSTRENGUNG', dotBg: '#0B0B0E', dotBorder: '2px solid #00F2FE', dotCore: 'none' },
+        { title: 'Kraft · Pull B · 21 Sätze', meta: 'MO 15. SEP · 48 MIN · RPE 5', dotBg: '#00F2FE', dotBorder: 'none', dotCore: 'none' }
+      ],
+
+      permStates: [
+        { kicker: 'D1 · NICHT AUF DEM GERÄT', kickerColor: '#94A3B8', chipBg: '#14141D', chipBorder: '#232334',
+          weightState: 'HEALTH CONNECT FEHLT', weightStateColor: '#94A3B8', weightAction: '', weightActionColor: '#94A3B8',
+          sessionState: 'HEALTH CONNECT FEHLT', sessionStateColor: '#94A3B8', sessionAction: '', sessionActionColor: '#94A3B8',
+          note: 'Health Connect ist auf diesem Gerät nicht eingerichtet. ATEM funktioniert ohne — Gewicht und Einheiten werden von Hand geführt.',
+          rationale: 'Ein Knopf „Installieren" führt in den Play Store und steht unter der Notiz — ohne Ausrufezeichen und ohne Zählung dessen, was man verpasst. Beide Zeilen sind nicht bedienbar und tragen den Grund im Label, kein ausgegrauter Knopf ohne Erklärung.' },
+        { kicker: 'D2 · NICHTS FREIGEGEBEN', kickerColor: '#94A3B8', chipBg: '#14141D', chipBorder: '#232334',
+          weightState: 'NICHT FREIGEGEBEN', weightStateColor: '#94A3B8', weightAction: 'FREIGEBEN', weightActionColor: '#F02277',
+          sessionState: 'NICHT FREIGEGEBEN', sessionStateColor: '#94A3B8', sessionAction: 'FREIGEBEN', sessionActionColor: '#F02277',
+          note: 'Nichts freigegeben. ATEM liest erst, wenn du es je Datentyp erlaubst.',
+          rationale: 'Zwei Wege, weil Google zwei Fragen stellt. Kein Sammelknopf „Alles erlauben" — er würde eine Systemabfrage verdecken, die ohnehin einzeln kommt, und im Ablehnungsfall eine halbe Freigabe hinterlassen, die niemand versteht.' },
+        { kicker: 'D3 · GEWICHT JA, EINHEITEN NEIN', kickerColor: '#00F2FE', chipBg: 'rgba(0,242,254,0.12)', chipBorder: 'rgba(0,242,254,0.45)',
+          weightState: 'FREIGEGEBEN · ZULETZT 20. SEP', weightStateColor: '#00F2FE', weightAction: '', weightActionColor: '#94A3B8',
+          sessionState: 'NICHT FREIGEGEBEN', sessionStateColor: '#94A3B8', sessionAction: 'FREIGEBEN', sessionActionColor: '#F02277',
+          note: 'Gewicht wird gelesen, Einheiten nicht. Der Eingang im Verlauf erscheint erst mit der zweiten Freigabe.',
+          rationale: 'Der häufigste reale Zustand nach Modul 14. Die Gewichtskurve zeigt weiter hohle Punkte, der Verlauf bleibt ohne Eingangszeile — nichts blinkt, nichts erinnert. Diese Zeile ist der einzige Ort, an dem der fehlende Zugang benannt wird.' },
+        { kicker: 'D4 · ALLES FREI, NICHTS GELESEN', kickerColor: '#94A3B8', chipBg: '#14141D', chipBorder: '#232334',
+          weightState: 'FREIGEGEBEN · ZULETZT 20. SEP', weightStateColor: '#00F2FE', weightAction: '', weightActionColor: '#94A3B8',
+          sessionState: 'FREIGEGEBEN · NICHTS GEFUNDEN', sessionStateColor: '#00F2FE', sessionAction: '', sessionActionColor: '#94A3B8',
+          note: 'Seit dem 1. September gelesen, keine Einheiten gefunden. Zuletzt geprüft heute 07:12.',
+          rationale: 'Der leere Zeitraum ist kein Fehler und bekommt deshalb keine Fehlerfläche — nur die Lesemarke als Tatsache, mit Zeitraum und Zeitpunkt. Im Verlauf selbst erscheint gar nichts (A7).' },
+        { kicker: 'D5 · ENTZOGEN, DATEN BLEIBEN', kickerColor: '#F02277', chipBg: 'rgba(240,34,119,0.12)', chipBorder: 'rgba(240,34,119,0.45)',
+          weightState: 'ZUGRIFF ENTZOGEN', weightStateColor: '#F02277', weightAction: 'FREIGEBEN', weightActionColor: '#F02277',
+          sessionState: 'ENTZOGEN · 14 ÜBERNOMMEN BLEIBEN', sessionStateColor: '#F02277', sessionAction: 'FREIGEBEN', sessionActionColor: '#F02277',
+          note: '14 übernommene Einheiten und 9 gemessene Gewichtswerte bleiben, wie sie sind. Neue werden nicht mehr gelesen.',
+          rationale: 'Der interessante Fall. Die Zeile nennt zuerst, was bleibt, und erst dann, was aufhört — keine Drohung, kein Countdown. Die Herkunftspunkte im Bestand bleiben unverändert: die Einheiten kamen aus der Uhr, daran ändert ein entzogener Zugang nichts.' }
+      ],
+
+      spec: [
+        { el: 'Eingangszeile (Kopf)', h: '48 dp min', pad: '11/12 dp', surface: 'cyan @0,07 · Rand cyan @0,4 · R 16', type: 'Titel 12/600 · Meta Mono 8,5 sp', tap: '48 dp × Breite', tapC: '#00FF87', elC: '#00F2FE' },
+        { el: 'Zeile ungeprüft', h: '52 dp', pad: '9/10 dp', surface: 'transparent · Rand 1 dp gestrichelt #2E3142 · R 12', type: 'Titel 12 sp #CDD3EA · Meta Mono 8,5 sp', tap: '52 dp × Breite', tapC: '#00FF87', elC: '#00F2FE' },
+        { el: 'Herkunftspunkt', h: '10 dp Ø', pad: '—', surface: 'gefüllt / hohl 2 dp / Ring+Kern / gestrichelt', type: '—', tap: 'keines · Teil der Zeile', tapC: '#94A3B8', elC: '#00F2FE' },
+        { el: 'Prüfblatt (Sheet)', h: 'kurzer Modus', pad: '16/14 dp', surface: '#0B0B0E · Rand #232334 · R 22 oben', type: 'Modul 2 unverändert', tap: 'Griff 36×5, Zone 44 dp', tapC: '#00FF87', elC: '#00F2FE' },
+        { el: 'Quellkapsel „HC"', h: '26 dp', pad: '—', surface: 'violett @0,28 · Rand @0,55 · R 10', type: 'Mono 9/700 weiss — Violett nur Fläche', tap: 'keines', tapC: '#94A3B8', elC: '#CDD3EA' },
+        { el: 'Wertekachel App', h: '46 dp', pad: '9/8 dp', surface: '#14141D · Rand #232334 · R 14', type: 'Label Mono 8 sp #94A3B8 · Wert Mono 15/700 weiss', tap: 'keines', tapC: '#94A3B8', elC: '#CDD3EA' },
+        { el: 'Wertekachel gemessen', h: '46 dp', pad: '9/8 dp', surface: 'cyan @0,07 · Rand cyan @0,3 · R 14', type: 'Label Mono 8 sp cyan · Wert Mono 15/700 weiss', tap: 'keines', tapC: '#94A3B8', elC: '#00F2FE' },
+        { el: 'RPE-Kachel (M11)', h: '44 dp min', pad: '—', surface: 'gewählt cyan @0,10 + Rand @0,35 · sonst #0B0B0E/#232334', type: 'Zahl Mono 13/700 · Wort Mono 7 sp', tap: '48 dp erweitert · 5 Spalten', tapC: '#00FF87', elC: '#00F2FE' },
+        { el: 'Notiz-Zeile (M6)', h: '40 dp', pad: '0/14 dp', surface: 'transparent · Rand #232334 · R 30', type: 'Body 11,5/600 #CDD3EA', tap: '48 dp erweitert', tapC: '#00FF87', elC: '#CDD3EA' },
+        { el: 'Primäraktion', h: '48 dp min', pad: '0/16 dp', surface: '#F02277 voll · bei Lücke Rand @1 + Fläche @0,1', type: 'Body 13/600 weiss (wie „Speichern", M11)', tap: '48 dp × Breite', tapC: '#00FF87', elC: '#F02277' },
+        { el: 'Zweitweg', h: '44 dp min', pad: '0/16 dp', surface: 'Rand #232334 · R 30', type: 'Body 12,5/600 #CDD3EA', tap: '44 dp × Breite', tapC: '#00FF87', elC: '#CDD3EA' },
+        { el: 'Stapel-Fortschritt', h: '3 dp', pad: '—', surface: 'erledigt lime · aktuell cyan · offen #232334', type: 'Segment 14 dp · R 30', tap: 'keines', tapC: '#94A3B8', elC: '#CDD3EA' },
+        { el: 'Paar-Karte App', h: '58 dp', pad: '10/12 dp', surface: '#14141D · Rand cyan @0,3 · R 14', type: 'Titel 12/600 · Werte Mono 9,5 sp', tap: 'keines', tapC: '#94A3B8', elC: '#00F2FE' },
+        { el: 'Paar-Karte Uhr', h: '58 dp', pad: '10/12 dp', surface: 'violett @0,2 · Rand @0,5 · R 14', type: 'Titel 12/600 weiss · Werte Mono 9,5 sp', tap: 'keines', tapC: '#94A3B8', elC: '#CDD3EA' },
+        { el: 'Überlappungsbalken', h: '40 dp (2×10 dp)', pad: '—', surface: 'Spur #14141D · App cyan · Uhr violett', type: '— (img mit Label)', tap: 'keines', tapC: '#94A3B8', elC: '#00F2FE' },
+        { el: 'Folgen-Panel', h: 'Inhalt', pad: '4/12 dp', surface: '#14141D · Rand #232334 · Zeilen 36 dp', type: 'Label 11 sp #94A3B8 · Wertpille Mono 10,5/700', tap: 'keines', tapC: '#94A3B8', elC: '#F02277' },
+        { el: 'Wertpille „bleibt"', h: '22 dp', pad: '3/9 dp', surface: 'lime @0,10 · R 30', type: 'Mono 10,5/700 #00FF87', tap: 'keines', tapC: '#94A3B8', elC: '#00FF87' },
+        { el: 'Quellenkapsel', h: 'Inhalt', pad: '11/12 dp', surface: '#14141D · Rand #232334 · Fremdwert violett @0,2', type: 'Kicker Mono 8 sp · Zeilen 11 sp', tap: 'keines', tapC: '#94A3B8', elC: '#CDD3EA' },
+        { el: 'Zeile „Verbindung lösen"', h: '48 dp', pad: '0/14 dp', surface: 'Rand #232334 · R 16', type: 'Body 12 sp #CDD3EA + Chevron', tap: '48 dp × Breite', tapC: '#00FF87', elC: '#F02277' },
+        { el: 'Meldung (6 s)', h: '48 dp min', pad: '12 dp', surface: 'lime @0,07 · Rand lime @0,35 · R 16', type: 'Body 11,5 sp · Aktion Mono 9,5/700 lime', tap: 'Rückgängig 48×48', tapC: '#00FF87', elC: '#00FF87' },
+        { el: 'Abgelehnt-Liste', h: '44 dp je Zeile', pad: '9 dp', surface: '#0B0B0E · Trennlinie #16161F', type: 'Zeile 11,5 sp · Meta Mono 8,5 sp', tap: '44 dp × Breite', tapC: '#00FF87', elC: '#CDD3EA' },
+        { el: 'Berechtigungszeile', h: '48 dp min', pad: '11/12 dp', surface: '#14141D · Rand #232334 · R 14', type: 'Titel 12 sp · Zustand Mono 8,5 sp farbig', tap: '48 dp × Breite', tapC: '#00FF87', elC: '#CDD3EA' }
+      ],
+
+      motion: [
+        { el: 'Eingangszeile erscheint', trigger: 'Lesen fertig, n > 0', prop: 'translateY −8 dp → 0 + Deckkraft 0 → 1; Liste schiebt mit', dur: '220 ms', curve: 'ease-out-cubic', rest: 'sichtbar bis leer', reduced: 'nur Deckkraft, 120 ms', tc: '#00F2FE' },
+        { el: 'Prüfblatt öffnet/schliesst', trigger: 'Tipp Eingang / Zeile', prop: 'translateY 100 % → 0 + Verdunkler (Modul 2)', dur: '220 / 160 ms', curve: 'ease-out-cubic / ease-in', rest: 'offen / entfernt', reduced: 'nur Deckkraft', tc: '#00F2FE' },
+        { el: 'Nächste im Stapel', trigger: 'Übernehmen / Ablehnen', prop: 'Inhalt quert −24 dp raus, +24 dp rein; Blatthöhe animiert', dur: '240 ms', curve: 'ease-in-out-cubic', rest: 'Blatt offen, Zähler +1', reduced: 'Crossfade 120 ms, keine Höhenanimation', tc: '#00F2FE' },
+        { el: 'RPE-Kachel wählen', trigger: 'Tipp auf Kachel', prop: 'Fläche 0 → cyan @0,10, Rand @0,35; scale 0,97 beim Drücken', dur: '160 ms', curve: 'ease-out', rest: 'gewählt, Knopflabel wechselt', reduced: 'harter Wechsel, Knopflabel bleibt', tc: '#00F2FE' },
+        { el: 'Verschmelzung · 1 Sammeln', trigger: 'Zusammenführen bestätigt', prop: 'beide Zeilen translateY je 6 dp aufeinander zu', dur: '140 ms', curve: 'ease-in-quad', rest: '— (Phase 2 folgt)', reduced: 'entfällt', tc: '#F02277' },
+        { el: 'Verschmelzung · 2 Verschmelzen', trigger: 'Anschluss Phase 1', prop: 'Uhr-Zeile Höhe → 0 + Deckkraft → 0, App-Zeile + Δ; Summe konstant', dur: '180 ms', curve: 'ease-in-out-cubic', rest: '— (Phase 3 folgt)', reduced: 'entfällt', tc: '#F02277' },
+        { el: 'Verschmelzung · 3 Setzen', trigger: 'Anschluss Phase 2', prop: 'Punkt morpht Kern r 4,2 → 2,2, Ring 0 → 1; Pulskacheln blenden ein', dur: '100 ms', curve: 'ease-out', rest: 'Ring mit Kern, kein Nachpulsen', reduced: 'entfällt — Endzustand nach 120 ms Blende', tc: '#F02277' },
+        { el: 'Zeile wird geprüft', trigger: 'Übernehmen ohne Paar', prop: 'gestrichelter Rand blendet aus, Punkt bleibt hohl', dur: '200 ms', curve: 'ease-out', rest: 'normale Zeile', reduced: 'harter Wechsel', tc: '#00F2FE' },
+        { el: 'Meldung erscheint', trigger: 'jedes Schreiben', prop: 'translateY 12 dp → 0 + Deckkraft 0 → 1', dur: '200 ms', curve: 'ease-out', rest: 'sichtbar 6 s, dann 200 ms aus', reduced: 'nur Deckkraft', tc: '#00FF87' },
+        { el: 'Rücknahme (6 s)', trigger: 'Tipp „Rückgängig"', prop: 'Verschmelzung rückwärts, dieselben Phasen gespiegelt', dur: '420 ms', curve: 'gespiegelt', rest: 'zwei getrennte Zeilen', reduced: 'harter Wechsel + Meldung', tc: '#00FF87' },
+        { el: 'Lösen Stufe 1 → 2', trigger: '„Verbindung lösen"', prop: 'Dialog-Anatomie Modul 2, scale 0,94 → 1 + Verdunkler', dur: '220 ms', curve: 'ease-out-cubic', rest: 'zentriert', reduced: 'nur Überblendung', tc: '#F02277' },
+        { el: 'Gedrückt (alle Ziele)', trigger: 'pointer down', prop: 'scale 0,97 + Akzent-Glow, kein Ripple', dur: '200 ms', curve: 'ease-out', rest: 'zurück auf 1,0', reduced: 'unverändert — Rückmeldung, keine Dekoration', tc: '#94A3B8' }
+      ],
+
+      strings: [
+        { key: 'hc.inbox_title', de: '{n} Einheit aus Health Connect', en: '{n} session from Health Connect' },
+        { key: 'hc.inbox_title_plural', de: '{n} Einheiten aus Health Connect', en: '{n} sessions from Health Connect' },
+        { key: 'hc.inbox_meta', de: 'Gelesen {zeit} · warten auf Prüfung', en: 'Read {time} · awaiting review' },
+        { key: 'hc.inbox_action', de: 'Prüfen', en: 'Review' },
+        { key: 'hc.row_unreviewed', de: 'Ungeprüft · zählt noch nicht', en: 'Unreviewed · not counted yet' },
+        { key: 'hc.sheet_kicker', de: 'Aus Health Connect · {i} von {n}', en: 'From Health Connect · {i} of {n}' },
+        { key: 'hc.sheet_meta', de: '{tag} {datum} · {beginn}–{ende} · {geraet}', en: '{day} {date} · {start}–{end} · {device}' },
+        { key: 'hc.field_duration', de: 'Dauer', en: 'Duration' },
+        { key: 'hc.field_hr_avg', de: 'Ø Puls', en: 'Avg. HR' },
+        { key: 'hc.field_hr_max', de: 'Max', en: 'Max' },
+        { key: 'hc.more_device_values', de: 'Weitere Angaben vom Gerät · {n}', en: 'More values from the device · {n}' },
+        { key: 'form.rpe', de: 'Anstrengung · RPE', en: 'Effort · RPE' },
+        { key: 'form.rpe.1', de: 'sehr leicht', en: 'very easy' },
+        { key: 'form.rpe.2', de: 'leicht', en: 'easy' },
+        { key: 'form.rpe.3', de: 'mittel', en: 'moderate' },
+        { key: 'form.rpe.4', de: 'hart', en: 'hard' },
+        { key: 'form.rpe.5', de: 'maximal', en: 'maximal' },
+        { key: 'detail.note.add', de: 'Notiz hinzufügen', en: 'Add note' },
+        { key: 'hc.accept', de: 'Übernehmen', en: 'Add to history' },
+        { key: 'hc.accept_without_effort', de: 'Ohne Anstrengung übernehmen', en: 'Add without effort' },
+        { key: 'hc.decline', de: 'Nicht übernehmen', en: 'Don\u2019t add' },
+        { key: 'hc.no_effort_note', de: 'Ohne Anstrengung fehlt diese Einheit in der Trainingslast — sie wird nicht geschätzt.', en: 'Without effort this session is missing from training load — it is not estimated.' },
+        { key: 'hc.continue_later', de: 'Später fortsetzen', en: 'Continue later' },
+        { key: 'hc.accepted_snack', de: '{art} {datum} übernommen', en: '{type} {date} added' },
+        { key: 'hc.declined_snack', de: 'Nicht übernommen · {datum}', en: 'Not added · {date}' },
+        { key: 'hc.declined_section', de: 'Abgelehnt', en: 'Declined' },
+        { key: 'hc.declined_meta', de: 'Abgelehnt am {datum}', en: 'Declined on {date}' },
+        { key: 'hc.declined_restore', de: 'Doch übernehmen', en: 'Add after all' },
+        { key: 'hc.declined_note', de: 'Wird beim nächsten Lesen nicht erneut vorgeschlagen.', en: 'Will not be suggested again on the next read.' },
+        { key: 'hc.pair_question', de: 'Gehört das zu deiner Krafteinheit?', en: 'Does this belong to your strength session?' },
+        { key: 'hc.pair_app_row', de: 'Deine App-Einheit', en: 'Your app session' },
+        { key: 'hc.pair_watch_row', de: 'Aus der Uhr', en: 'From the watch' },
+        { key: 'hc.pair_overlap', de: 'Überlappung {x} von {y} min der kürzeren Einheit · Start {d} min auseinander', en: 'Overlap {x} of {y} min of the shorter session · starts {d} min apart' },
+        { key: 'hc.pair_merge', de: 'Zusammenführen', en: 'Merge' },
+        { key: 'hc.pair_keep_apart', de: 'Getrennt lassen', en: 'Keep separate' },
+        { key: 'hc.merge_stage1_title', de: 'Zusammenführen — das ändert sich', en: 'Merge — what changes' },
+        { key: 'hc.merge_stays', de: '{wert} bleibt', en: '{value} stays' },
+        { key: 'hc.merge_duration_note', de: 'Dauer bleibt bei der App: {app} min. Die Uhr meldet {uhr} min.', en: 'Duration stays with the app: {app} min. The watch reports {watch} min.' },
+        { key: 'hc.merged_snack', de: 'Zusammengeführt · Puls übernommen', en: 'Merged · heart rate added' },
+        { key: 'hc.ambiguous_note', de: 'Zwei App-Einheiten liegen in diesem Zeitraum. ATEM ordnet nicht zu, wenn die Zuordnung nicht eindeutig ist.', en: 'Two app sessions fall in this window. ATEM does not assign when the match is not unique.' },
+        { key: 'hc.ambiguous_pick', de: 'Wählen', en: 'Choose' },
+        { key: 'hc.ambiguous_standalone', de: 'Als eigene Einheit prüfen', en: 'Review as its own session' },
+        { key: 'hc.unlink', de: 'Verbindung lösen', en: 'Unlink' },
+        { key: 'hc.unlink_stage1_title', de: 'Verbindung lösen — das ändert sich', en: 'Unlink — what changes' },
+        { key: 'hc.unlink_back_to_inbox', de: 'Uhr-Einheit zurück in den Eingang', en: 'Watch session returns to the inbox' },
+        { key: 'hc.sources_label', de: 'Quellen', en: 'Sources' },
+        { key: 'hc.source_app', de: 'App · Sätze, Dauer, Anstrengung', en: 'App · sets, duration, effort' },
+        { key: 'hc.source_watch', de: '{geraet} · Puls, Kalorien', en: '{device} · heart rate, calories' },
+        { key: 'hc.watch_reports', de: 'Uhr meldet {beginn}–{ende} · {min} min', en: 'Watch reports {start}–{end} · {min} min' },
+        { key: 'hc.origin_watch', de: 'aus der Uhr', en: 'from the watch' },
+        { key: 'hc.origin_both', de: 'App + Uhr', en: 'app + watch' },
+        { key: 'hc.origin_missing_effort', de: 'ohne Anstrengung', en: 'without effort' },
+        { key: 'hc.perm_section', de: 'Health Connect', en: 'Health Connect' },
+        { key: 'hc.perm_weight', de: 'Körpergewicht', en: 'Body weight' },
+        { key: 'hc.perm_sessions', de: 'Trainingseinheiten', en: 'Exercise sessions' },
+        { key: 'hc.perm_grant', de: 'Freigeben', en: 'Grant' },
+        { key: 'hc.perm_missing', de: 'Health Connect ist auf diesem Gerät nicht eingerichtet.', en: 'Health Connect is not set up on this device.' },
+        { key: 'hc.perm_none', de: 'Nichts freigegeben. ATEM liest erst, wenn du es je Datentyp erlaubst.', en: 'Nothing granted. ATEM reads only once you allow it per data type.' },
+        { key: 'hc.perm_partial', de: 'Gewicht wird gelesen, Einheiten nicht.', en: 'Weight is read, sessions are not.' },
+        { key: 'hc.perm_empty', de: 'Seit dem {datum} gelesen, keine Einheiten gefunden.', en: 'Read since {date}, no sessions found.' },
+        { key: 'hc.perm_revoked', de: '{n} übernommene Einheiten bleiben, wie sie sind. Neue werden nicht mehr gelesen.', en: '{n} imported sessions stay as they are. New ones are no longer read.' },
+        { key: 'hc.read_error', de: 'Health Connect nicht erreichbar', en: 'Health Connect unavailable' },
+        { key: 'hc.read_error_meta', de: 'Zuletzt gelesen {datum} {zeit}', en: 'Last read {date} {time}' },
+        { key: 'hc.retry', de: 'Erneut', en: 'Retry' },
+        { key: 'hc.reading', de: 'Health Connect wird gelesen', en: 'Reading Health Connect' }
+      ],
+
+      a11y: [
+        { el: 'Eingangszeile', label: '„3 Einheiten aus Health Connect warten auf Prüfung, gelesen heute 7 Uhr 12. Prüfen."', role: 'button · mergeSemantics', state: 'liveRegion polite, einmalig — nicht bei jedem Neuzeichnen' },
+        { el: 'Ungeprüfte Zeile', label: '„Laufen, 42 Minuten, Sonntag 20. September, aus der Uhr, ungeprüft, zählt noch nicht. Prüfen."', role: 'button', state: 'ein Knoten; Punkt und gestrichelter Rand excludeSemantics' },
+        { el: 'Übernommene Einheit', label: '„Laufen, 42 Minuten, aus der Uhr, Durchschnittspuls 148, Maximalpuls 171." — ohne Wertung', role: 'button', state: 'Herkunft ist Teil des Zeilenlabels, nie ein eigener Knoten' },
+        { el: 'Zusammengeführte Einheit', label: '„Push A, 24 Sätze, 52 Minuten, App und Uhr, Durchschnittspuls 118."', role: 'button', state: 'Reihenfolge App zuerst ist fest, damit das Muster hörbar bleibt' },
+        { el: 'Einheit ohne Anstrengung', label: '„… , ohne Anstrengung." am Ende, nie am Anfang', role: 'button', state: 'kein Fehlerton — eine Tatsache im selben Satz' },
+        { el: 'Prüfblatt', label: 'Titel „Einheit aus Health Connect prüfen, 1 von 3"', role: 'dialog · Fokusfalle', state: 'Fokus auf Titel; Schliessen kehrt zur auslösenden Zeile zurück' },
+        { el: 'RPE-Kachelreihe', label: 'radio-Gruppe „Anstrengung, 1 bis 5, nichts ausgewählt"; je Kachel „4, hart"', role: 'radio (Gruppe)', state: 'keine Vorbelegung; das Wort steht im Label, nicht nur unter der Zahl' },
+        { el: 'Hauptknopf ohne Angabe', label: '„Ohne Anstrengung übernehmen" — das Label ist die Warnung', role: 'button', state: 'nie deaktiviert, deshalb kein Grund-im-Label nötig' },
+        { el: 'Quellkapsel „HC"', label: '(kein eigenes Label)', role: 'excludeSemantics', state: 'die Herkunft steht im Titel des Blatts' },
+        { el: 'Überlappungsbalken', label: '„Überlappung 52 von 52 Minuten der kürzeren Einheit, Start 2 Minuten auseinander"', role: 'img', state: 'die Zahl steht im Label, die Balken sind excludeSemantics' },
+        { el: 'Folgen-Panel', label: 'je Zeile ein Knoten: „Trainingslast, 412, bleibt 412"', role: 'list · mergeSemantics je Zeile', state: '„→" wird nie vorgelesen — „wird" bzw. „bleibt" steht im Label' },
+        { el: 'Verschmelzung', label: 'nach Abschluss: „Zusammengeführt. Push A hat jetzt Durchschnittspuls 118 und Maximalpuls 164."', role: 'liveRegion assertive', state: 'die Bewegung selbst ist stumm; angesagt wird das Ergebnis, einmal' },
+        { el: 'Meldung (6 s)', label: 'Meldungstext + „Rückgängig"', role: 'liveRegion assertive', state: 'Rückgängig 6 s per Fokus erreichbar; danach verschwindet der Knoten' },
+        { el: 'Berechtigungszeile', label: '„Trainingseinheiten, Zugriff entzogen, 14 übernommen. Freigeben."', role: 'button', state: 'Zustand vor Aktion — was gilt, bevor was man tun kann' }
+      ],
+
+      reuse: [
+        { m: 'MODUL 2', b: 'Sheet, kurzer Höhenmodus', use: 'Prüfblatt und Paar-Blatt — unverändert, inklusive Griff und Verdunkler', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Dialog-Anatomie, zwei Wege', use: 'Stufe 1/2 beim Zusammenführen und beim Lösen; kein dritter Weg in Stufe 2', c: '#00F2FE' },
+        { m: 'MODUL 3', b: 'Notice-Slot', use: 'Die eine erlaubte Hinweiszeile („ohne Anstrengung", „nicht eindeutig")', c: '#94A3B8' },
+        { m: 'MODUL 5', b: 'Regel „Block ohne Daten rendert nicht"', use: 'Der Eingang verschwindet bei 0 wartenden Einheiten vollständig (A7)', c: '#94A3B8' },
+        { m: 'MODUL 6', b: 'Einheitenzeile + Monatsgruppierung', use: 'Trägt die ungeprüfte Einheit an ihrem echten Datum, chronologisch einsortiert', c: '#00F2FE' },
+        { m: 'MODUL 6', b: 'Zeile „Notiz hinzufügen"', use: 'Das „Empfinden nach dem Training" — vorhandenes Feld, keine neue Skala', c: '#00FF87' },
+        { m: 'MODUL 6', b: 'Einheitendetail, vier Datenlagen', use: 'Bekommt eine fünfte Lage: die Quellenkapsel', c: '#CDD3EA' },
+        { m: 'MODUL 7', b: 'Folgen-Panel („rechnen, nicht warnen")', use: 'Stufe 1 beider Eingriffe — erstmals auch mit Zeilen, die „bleibt" sagen', c: '#00FF87' },
+        { m: 'MODUL 7', b: 'Meldung mit Rückgängig', use: 'Nach Übernehmen, Ablehnen, Zusammenführen und Lösen — 6 s (Modulvorgabe 15)', c: '#94A3B8' },
+        { m: 'MODUL 7', b: 'Schwierigkeitsauswahl 1–5', use: 'Bereits in Modul 11 zur RPE-Reihe geworden; hier identisch übernommen', c: '#CDD3EA' },
+        { m: 'MODUL 8', b: 'Einstellungszeile mit Zustand', use: 'Zwei Health-Connect-Zeilen, je Datentyp eine — Zustand vor Aktion', c: '#00F2FE' },
+        { m: 'MODUL 9', b: 'Bezugskapsel', use: 'Vorbild der Quellenkapsel: Grundlage über einer Wertegruppe, hier Herkunft je Grösse', c: '#CDD3EA' },
+        { m: 'MODUL 11', b: 'RPE-Kachelreihe 1–5', use: 'Unverändert: 44 dp, Zahl 13 sp Mono, Wort 7 sp darunter, gewählt cyan @0,10', c: '#00FF87' },
+        { m: 'MODUL 11', b: 'Primäraktion Magenta', use: '„Speichern" wird „Übernehmen" / „Zusammenführen" — gleiche Fläche, gleiche Höhe', c: '#F02277' },
+        { m: 'MODUL 11', b: 'Intensitätskaskade Stufe 1 (Ø HF)', use: 'Wird durch importierte Einheiten erstmals gefüllt — gebaut war sie längst', c: '#00FF87' },
+        { m: 'MODUL 11', b: 'Violett als Ausdauer-Fläche', use: 'Erweitert auf „fremde Quelle": Uhr-Zeitfenster, HC-Kapsel, Fremdwert — nie Text', c: '#CDD3EA' },
+        { m: 'MODUL 14', b: 'Herkunfts-Idiom gefüllt/hohl', use: 'Übertragen auf die Einheitenzeile, 6 → 10 dp vergrössert', c: '#CDD3EA' },
+        { m: 'MODUL 14', b: 'AtemExplainHeader (ⓘ)', use: 'Legende der vier Punktformen und die Paar-Regel im Klartext', c: '#00F2FE' },
+        { m: 'NEU', b: 'Eingang (wartende Einheiten)', use: 'Erster Ort im Produkt, an dem Daten sichtbar sind, ohne zu zählen', c: '#FFFFFF' },
+        { m: 'NEU', b: 'Paar-Karte mit Überlappungsbalken', use: 'Zeigt die Begründung der Vermutung als Form, nicht als Satz', c: '#FFFFFF' },
+        { m: 'NEU', b: 'Quellenkapsel', use: 'Nennt je Grösse die zuständige Quelle und den abweichenden Fremdwert', c: '#FFFFFF' },
+        { m: 'NEU', b: 'Punktform „Ring mit Kern" + gestrichelt', use: 'Dritter und vierter Zustand des Herkunfts-Idioms', c: '#FFFFFF' }
+      ],
+
+      decisions: [
+        { n: '1', title: 'Gewählt: Verknüpfung statt Verschmelzung im Datenmodell', body: 'Die Uhr-Einheit bleibt ein eigener Datensatz mit ihrer Health-Connect-Kennung; die App-Einheit trägt nur einen Verweis und einen Merker, welche Grösse aus welcher Quelle stammt. Ein echtes Überschreiben wäre einfacher zu rechnen, aber dann wäre „Verbindung lösen" ein Datenverlust und eine Ablehnung nicht merkbar. Alle drei geforderten Rückwege hängen an dieser einen Entscheidung.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '2', title: 'Verworfen: Blatt geht beim App-Start von selbst auf', body: 'Es wäre der zuverlässigste Weg, jede Einheit geprüft zu bekommen — und ein Überfall: man öffnet die App, um etwas zu tun, und muss zuerst über Vergangenes urteilen. Wer dreimal hintereinander wegtippt, hat gelernt, das Blatt wegzutippen.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '3', title: 'Verworfen: Systembenachrichtigung nach dem Training', body: 'Sie käme aus einer App, die im Hintergrund lesen müsste — also mit Hintergrunddienst, Akkuverbrauch und einer Berechtigung mehr. Für eine Einzelnutzer-App ohne Zeitdruck ein hoher Preis für null Gewinn: die Einheit läuft nicht weg.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '4', title: 'Gewählt: Zeile am Datum plus ein Eingangskopf mit Zähler', body: 'Die wartende Einheit steht dort, wo man sie sucht — an ihrem Tag im Verlauf — und trägt sichtbar, dass sie noch nicht zählt. Der Eingangskopf gibt ihr den Weg, den eine einzelne Zeile in einer langen Liste nicht hätte. Zusammen: kein Überfall, kein Datenfriedhof, genau eine sichtbare Hinweiszeile.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '5', title: 'Verworfen: Überlappungsregel allein (der Vorschlag)', body: 'Mehr als die Hälfte der kürzeren Dauer ist die richtige Grundidee, greift aber bei Uhr-Einheiten, die den ganzen Nachmittag umspannen: eine 90-Minuten-Aufzeichnung überlappt eine 20-Minuten-Krafteinheit zu 100 % und ist trotzdem etwas anderes. Ergänzt um: Startzeiten höchstens 20 Minuten auseinander.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '6', title: 'Verworfen: die Trainingsart als Paar-Bedingung', body: 'Naheliegend und falsch: Uhren melden Krafttraining regelmässig als „Andere", „Cardio" oder „HIIT". Eine Artprüfung würde mehr echte Paare verwerfen, als sie falsche verhindert — und der Fehler „zwei Einheiten für ein Training" ist der teurere von beiden.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '7', title: 'Gewählt: bei mehreren Kandidaten keine Vermutung', body: 'Die App ordnet nur zu, wenn genau ein Kandidat die Regel erfüllt. Sonst wird gefragt, mit beiden Einheiten zur Auswahl. Eine Vermutung unter mehreren ist keine Vermutung, sondern eine Münze — und zwar eine, die ein Fremdsystem wirft.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '8', title: 'Gewählt: bei Widerspruch gewinnt die App — Dauer bleibt 52 min', body: 'Die App-Dauer ist der protokollierte Satzzeitraum und geht als Trainingsminute in das Verhältnis aus Modul 11 und in die Last ein. Übernähme man die Uhr, änderten sich rückwirkend drei Zahlen, die längst gezeigt wurden — für eine Dauer, die zusätzlich Umziehen und Aufwärmen enthält. Der Uhr-Wert verschwindet nicht: er steht violett hinterlegt in der Quellenkapsel. (Der Tweak „Vorrang" zeigt die verworfene Variante mit ihren Zahlen.)', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '9', title: 'Verworfen: je Grösse die „bessere" Quelle wählen', body: 'Eine Regel wie „die Uhr gewinnt bei Dauer, die App bei Sätzen, der Mittelwert bei Kalorien" wäre eine Meinung im Code und in keiner Oberfläche erklärbar. Stattdessen gilt hart: keine Grösse hat zwei Quellen. Die App liefert, was sie gemessen hat; die Uhr liefert, was die App nicht hat.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '10', title: 'Verworfen: stiller Abgleich mit nachträglichem Protokoll', body: 'Automatisch zusammenführen und das Ergebnis in einer Liste „zuletzt abgeglichen" nachlesbar machen, wäre der bequemste Weg — und genau der Vertrauensbruch, den der Auftrag benennt. Eine Einheit im Bestand ändert sich nie ohne ein Ja.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '11', title: 'Gewählt: „nein" heisst abgelehnt und gemerkt, nicht gelöscht', body: 'ATEM speichert die Health-Connect-Kennung mit Ablehndatum. Ohne dieses Gedächtnis läge derselbe Datensatz beim nächsten Lesen wieder im Eingang — die schnellste Art, eine Funktion unbenutzbar zu machen. Löschen wäre ohnehin unmöglich: der Datensatz gehört Health Connect, nicht uns.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '12', title: 'Verworfen: „Später erinnern" als dritter Weg im Prüfblatt', body: 'Es gibt ihn bereits, ohne Knopf: wer das Blatt schliesst, lässt die Zeile stehen. Ein eigener Weg hätte aus zwei Antworten drei gemacht und die Bedeutung von „nicht übernehmen" verwässert. Genau zwei Wege, plus Schliessen.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '13', title: 'Verworfen: Ersatzwert für fehlende Anstrengung', body: 'Ein RPE-Mittelwert derselben Aktivität wäre rechnerisch plausibel und wäre eine erfundene Angabe. Die Einheit wird ohne Anstrengung übernommen und fehlt im Nenner der Last („aus 12 von 14 Einheiten") — sichtbar dünn statt glatt gerechnet.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '14', title: 'Verworfen: Sammelübernahme („Alle 3 übernehmen")', body: 'Ein Knopf, der drei Einheiten auf einmal annimmt, kann die Anstrengung nur weglassen oder erfinden. Der Stapel führt nacheinander — mit Zähler, Fortschrittsstrich und einem Ausgang nach jeder Einheit.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '15', title: 'Verworfen: RPE-Skala 1–10 für importierte Einheiten', body: 'Der Auftrag nennt 1–10; der Bestand kennt 1–5. Modul 11 hat die RPE-Reihe aus der Schwierigkeitsauswahl (Modul 7) gebaut, 32 von 51 Ausdauereinheiten tragen diese Skala. Zwei Skalen in derselben Spalte wären nicht vergleichbar, und zehn Kacheln passen bei 320 dp nicht in eine Reihe mit 48-dp-Zielen. Übernommen wird deshalb die bestehende Fünferreihe mit Wort unter der Zahl.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '16', title: 'Verworfen: eigene „Empfinden"-Skala nach dem Training', body: 'Ein Fünf-Stufen-Raster für das Empfinden wäre eine neue Bewertungsachse im ganzen Produkt — und stünde im Import, nicht aber im Runner, wo dieselbe Frage entstünde. Die App hat dafür bereits ein Feld: die Notiz („Wie fühlt sich die Session an?"). Sie wird unverändert übernommen; eine strukturierte Empfindensachse ist eine Produktentscheidung, kein Health-Connect-Detail.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '17', title: 'Gewählt: vier Farbrollen statt Farbe als Dekoration', body: 'Cyan trägt ausschliesslich Gemessenes (Theme-Semantik „Herzfrequenz"), Violett ausschliesslich die fremde Quelle als Fläche (Modul 11: Violett ist nie Text), Magenta jeden Eingriff (die Primäraktion war schon in Modul 11 magenta), Lime jede Bestätigung und jedes „bleibt". Keine neue Farbe, aber vier lesbare Rollen — man sieht ohne Lesen, was von der Uhr kommt und was die App behauptet.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '18', title: 'Verworfen: Herkunfts-Chip „AUS DER UHR" in der Zeile', body: 'Ein Abzeichen wäre sofort lesbar und wäre eine zweite Bedeutungsebene über jeder Zeile — Modul 14 hat dieselbe Idee für den Gewichtspunkt schon verworfen. Gewählt: dieselbe Form in vier Zuständen, plus das Wort in der Metazeile, wo es ohnehin steht.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '19', title: 'Gewählt: Punkt 6 → 10 dp und ein vierter Zustand', body: 'Das Idiom aus Modul 14 trägt, aber nicht unverändert: bei 6 dp ist „Ring mit Kern" nicht von „gefüllt" zu unterscheiden. Zehn dp in der Zeile lösen das ohne neue Farbe. Ausdrücklich neu ist der gestrichelte Zustand „ungeprüft" — ein Zustand, den eine Gewichtszahl nie hatte, weil sie nie wartete.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '20', title: 'Verworfen: eine Herkunftsspalte in der Auswertung', body: 'Kurven und Balken nach Quelle zu trennen, hätte jede Auswertung verdoppelt, um eine Frage zu beantworten, die niemand an ein Diagramm stellt. Die Herkunft steht dort, wo sie hingehört: im Nenner („Ø 124 aus 4 von 14 Einheiten · alle aus der Uhr").', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '21', title: 'Verworfen: Warnung beim Entzug der Berechtigung', body: '„Achtung: ATEM verliert den Zugriff" wäre Druck in eine Entscheidung hinein, die dem Nutzer gehört. Die Zeile nennt zuerst, was bleibt (14 Einheiten, 9 Gewichtswerte), dann was aufhört. Kein Countdown, kein Ausrufezeichen, kein Weg, der zurückdrängt.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 17 · TRAINIEREN &amp; DIE TRENNUNG DER THEMEN</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Ein Startblock statt drei Rezepte — und eine Grenze, die man am Raum erkennt, nicht an der Farbe</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:880px;line-height:1.7">Beide Probleme haben dieselbe Ursache: die Seite zeigt <strong style="color:#CDD3EA">Objekte</strong>, wo sie <strong style="color:#CDD3EA">Ordnung</strong> zeigen müsste. „Trainieren" ist heute eine Stapelung dreier gleichberechtigter Bauformen; die Fuge ist eine Linie ohne Raum um sich. Die Antwort auf beides ist Masse und Abstand — kein neues Token, keine vierte Fläche.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Nur Tokens aus atem_theme.dart · drei Flächen + #0B0B0E</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · Text ≥ 12 sp · ≥ 4,5:1</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">200 % auf 320 dp ohne Überlauf</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">1 Gradient-Rand · 1 BackdropFilter je Seite</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">Kein Sollwert · kein Leer-Aufruf · Cyan = Handlung</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">DER SATZ, AN DEM ALLES GEMESSEN WIRD</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1020px">„Trainieren" ist <em style="color:#FFB020;font-style:normal">ein</em> Gegenstand mit einem Knopf — sein Kopf sagt, woran man heute ist, sein Fuss die zwei Umwege. Und zwischen zwei Themen liegt die einzige Stelle der Seite, an der nichts steht.</div>
+<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:24px;font-size:12.5px;color:#94A3B8;line-height:1.7">
+<div style="flex:1;min-width:340px"><strong style="color:#CDD3EA">Zu Frage 1:</strong> Der Zustand „ohne Plan" wirkt nicht wie ein Mangel, weil er <strong style="color:#FFFFFF">dieselbe Karte an derselben Stelle mit demselben Knopf</strong> ist. Nicht die Komposition wechselt, nur der Kopf — und wenn es auch keinen Kopf gibt, beginnt die Karte eben beim Knopf.</div>
+<div style="flex:1;min-width:340px"><strong style="color:#CDD3EA">Zu Frage 2:</strong> Keine Hintergründe je Thema (Begründung in <a href="#hg">E</a>). Stattdessen vier Mittel ohne Farbe: <strong style="color:#FFFFFF">Zäsur</strong> (65 dp Luft statt 44), <strong style="color:#FFFFFF">Vollbreite</strong> (die Fuge ist das einzige randlose Element), <strong style="color:#FFFFFF">Kadenz</strong> (jedes Thema läuft schwer → leicht, die Fuge liegt immer zwischen dem leichtesten und dem schwersten Element) und der <strong style="color:#FFFFFF">Wechsel in der Ortszeile</strong>, den es schon gibt.</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A · TRAINIEREN — FÜNF ZUSTÄNDE, EINE KOMPOSITION</div>
+<div style="margin-top:8px;font-size:12.5px;color:#94A3B8;max-width:1100px;line-height:1.7">Alle fünf Artboards zeigen dieselben Zonen an denselben Koordinaten. Was wechselt, ist der Inhalt des Kopfs und die Beschriftung des Knopfs — nie das Raster. <strong style="color:#CDD3EA">Der Knopf steht in jedem Zustand auf derselben Höhe;</strong> der Daumen lernt eine Position, nicht fünf.</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:18px">
+
+<sc-for list="{{ boards }}" as="b" hint-placeholder-count="5">
+<div style="width:292px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+<span style="font-size:14px;font-weight:600">{{ b.title }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.1em;color:{{ b.tagC }};border:1px solid {{ b.tagB }};border-radius:30px;padding:3px 8px;white-space:nowrap">{{ b.tag }}</span>
+</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6;min-height:54px">{{ b.sub }}</div>
+
+<div style="margin-top:12px;width:252px;margin-left:auto;margin-right:auto;border:1px solid #232334;border-radius:20px;background:#050507;overflow:hidden">
+<div style="background:#0B0C14;border-bottom:1px solid #232334">
+<div style="height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 14px"><span style="font-size:15px;font-weight:600">Trainieren</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">1 / 4</span></div>
+<div style="display:flex;gap:4px;padding:0 14px"><div style="flex:1;height:2px;border-radius:2px;background:#16161F;overflow:hidden"><div style="width:12%;height:100%;background:#FFB020"></div></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div></div>
+</div>
+
+<div style="padding:14px 12px 16px">
+<div style="border-radius:19px;padding:1.5px;background:{{ b.frame }}">
+<div style="border-radius:17.5px;background:#14141D;overflow:hidden">
+
+<sc-if value="{{ b.hasHead }}" hint-placeholder-val="{{ true }}">
+<div style="padding:13px 13px 0">
+<div style="display:flex;align-items:center;gap:6px">
+<span style="width:6px;height:6px;border-radius:50%;background:{{ b.dot }};box-shadow:{{ b.dotGlow }};flex:none"></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:{{ b.kickerC }}">{{ b.kicker }}</span>
+</div>
+<div style="margin-top:6px;font-size:14px;font-weight:600;line-height:1.3;color:{{ b.titleC }}">{{ b.headTitle }}</div>
+<div style="margin-top:3px;font-size:11px;color:#94A3B8;line-height:1.5">{{ b.headMeta }}</div>
+<sc-if value="{{ b.hasRetry }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:8px;height:34px;display:flex;align-items:center;font-size:12px;font-weight:600;color:#00F2FE">Erneut versuchen</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ b.skeleton }}" hint-placeholder-val="{{ false }}">
+<div style="padding:13px 13px 0">
+<div style="height:9px;width:44%;border-radius:4px;background:#1A1A26;animation:skelPulse 1600ms ease-in-out infinite"></div>
+<div style="margin-top:9px;height:13px;width:76%;border-radius:4px;background:#1A1A26;animation:skelPulse 1600ms ease-in-out infinite"></div>
+<div style="margin-top:7px;height:9px;width:58%;border-radius:4px;background:#1A1A26;animation:skelPulse 1600ms ease-in-out infinite"></div>
+</div>
+</sc-if>
+
+<div style="padding:12px 13px 13px">
+<div style="height:44px;border-radius:30px;background:{{ b.ctaBg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;letter-spacing:0.10em;color:{{ b.ctaC }}">{{ b.cta }}</div>
+</div>
+
+<div style="display:flex;border-top:1px solid #232334;background:#1A1A26">
+<div style="flex:1;height:52px;display:flex;align-items:center;gap:8px;padding:0 12px;border-right:1px solid #232334;min-width:0">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex:none"><path d="{{ b.footLPath }}" stroke="{{ b.footIcon }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="font-size:11.5px;color:{{ b.footC }};line-height:1.25">{{ b.footL }}</span>
+</div>
+<div style="flex:1;height:52px;display:flex;align-items:center;gap:8px;padding:0 12px;min-width:0">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex:none"><path d="{{ b.footRPath }}" stroke="{{ b.footIcon }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span style="font-size:11.5px;color:{{ b.footC }};line-height:1.25">{{ b.footR }}</span>
+</div>
+</div>
+
+</div>
+</div>
+
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0">
+<div style="width:32px;height:32px;border-radius:10px;background:#1A1A26;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 9v6M20 9v6M7 6v12M17 6v12M7 12h10" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg></div>
+<div style="min-width:0"><div style="font-size:12.5px;font-weight:600;line-height:1.25">Übungen</div><div style="margin-top:2px;font-size:10.5px;color:#94A3B8;line-height:1.35">{{ b.tileCatalogMeta }}</div></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0">
+<div style="width:32px;height:32px;border-radius:10px;background:#1A1A26;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="3" stroke="#00F2FE" stroke-width="2"></rect><path d="M8 3v4M16 3v4M3.5 10h17" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg></div>
+<div style="min-width:0"><div style="font-size:12.5px;font-weight:600;line-height:1.25">Training planen</div><div style="margin-top:2px;font-size:10.5px;color:#94A3B8;line-height:1.35">{{ b.tilePlanMeta }}</div></div>
+</div>
+</div>
+
+<div style="margin-top:22px;height:1px;background:#232334;margin-left:-12px;margin-right:-12px;position:relative">
+<div style="position:absolute;left:22%;right:22%;top:-1px;height:2px;background:linear-gradient(90deg,transparent,#FFB020,transparent)"></div>
+</div>
+<div style="height:16px"></div>
+</div>
+</div>
+
+<div style="margin-top:12px;font-size:11px;color:#94A3B8;line-height:1.65">{{ b.note }}</div>
+</div>
+</sc-for>
+
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · DER STARTBLOCK — DREI ZONEN, EIN GEGENSTAND</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:400px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Anatomie · 329 dp Inhaltsbreite</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Aus drei gestapelten Bauformen werden zwei Gegenstände: der Startblock mit Kopf, Knopf und Fuss — und darunter das Kachelpaar für die Unterseiten. Die Gewichtsklassen bleiben vollzählig, sie liegen nur nicht mehr alle in derselben Karte.</div>
+<div style="margin-top:18px;display:flex;flex-direction:column">
+<div style="border:1.5px dashed rgba(255,176,32,0.5);border-radius:14px 14px 0 0;padding:11px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#FFB020">① KOPF · WORAN MAN HEUTE IST</div>
+<div style="margin-top:3px;font-size:11.5px;color:#94A3B8;line-height:1.6">Kicker labelMicro + 6-dp-Punkt · Titel titleSmall 16 sp weiss · Metazeile 12 sp #94A3B8. Amber trägt der Kicker nur dann, wenn für heute wirklich etwas geplant ist — sonst #94A3B8. Ohne Plan <em style="color:#CDD3EA;font-style:normal">und</em> ohne Historie rendert die Zone nicht.</div>
+</div>
+<div style="border:1.5px dashed rgba(240,34,119,0.5);border-top:none;padding:11px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#F02277">② KNOPF · IMMER GENAU EINER, IMMER 56 DP</div>
+<div style="margin-top:3px;font-size:11.5px;color:#94A3B8;line-height:1.6">Der einzige Magenta-Gradient des Bildschirms. Die Beschriftung ist der Zustandsträger: „STARTEN" wenn ein Plan anliegt, „FREI STARTEN" wenn nicht. Nie „Los!", nie ein Ausrufezeichen.</div>
+</div>
+<div style="border:1.5px dashed rgba(0,242,254,0.45);border-top:none;border-radius:0 0 14px 14px;padding:11px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">③ FUSS · DIE ZWEI UMWEGE, 2 × 56 DP</div>
+<div style="margin-top:3px;font-size:11.5px;color:#94A3B8;line-height:1.6">Angehobene Fläche <code style="color:#CDD3EA">#1A1A26</code> innerhalb derselben Karte, Trennlinien #232334. Zwei Tap-Ziele à 164 × 56 dp. Rechts steht immer „Nachtragen" — es gehört zum Erfassen einer Einheit und damit in denselben Gegenstand. Links steht, was der Knopf <em style="color:#CDD3EA;font-style:normal">nicht</em> schon tut: bei „STARTEN" das freie Starten, bei „FREI STARTEN" die Planauswahl. <strong style="color:#CDD3EA">Der Fuss wiederholt nie die Handlung des Knopfs.</strong> Bei 200 % Systemschrift stapeln sie zu zwei vollbreiten Zeilen à 72 dp — die Karte wächst, die Ordnung bleibt.</div>
+</div>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">Gesamthöhe: mit Kopf 244 dp · ohne Kopf 168 dp · bei 200 % mit Kopf 402 dp. Radius 20 dp aussen, 18,5 dp innen, Gradient-Rand 1,5 dp (K2 aus Modul 2, unverändert).</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">200 % Systemschrift · 320 dp</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Der Fuss ist der kritische Teil — zwei Hälften nebeneinander gehen bei 24 sp nicht mehr. Er stapelt, statt zu schrumpfen.</div>
+<div style="margin-top:16px;width:280px;margin-left:auto;margin-right:auto;border-radius:20px;padding:1.5px;background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)">
+<div style="border-radius:18.5px;background:#14141D;overflow:hidden">
+<div style="padding:14px 14px 0">
+<div style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#FFB020;box-shadow:0 0 8px #FFB020;flex:none"></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:0.12em;color:#FFB020">HEUTE GEPLANT</span></div>
+<div style="margin-top:8px;font-size:24px;font-weight:600;line-height:1.25">Oberkörper A · Woche 3</div>
+<div style="margin-top:5px;font-size:17px;color:#94A3B8;line-height:1.4">5 Übungen · ca. 40 Min</div>
+</div>
+<div style="padding:14px">
+<div style="height:64px;border-radius:32px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;letter-spacing:0.08em">STARTEN</div>
+</div>
+<div style="background:#1A1A26;border-top:1px solid #232334">
+<div style="height:72px;display:flex;align-items:center;gap:10px;padding:0 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:none"><path d="M7 5l11 7-11 7z" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font-size:17px;color:#CDD3EA">Frei starten</span></div>
+<div style="height:72px;display:flex;align-items:center;gap:10px;padding:0 16px;border-top:1px solid #232334"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:none"><path d="M12 6.5v11M6.5 12h11" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg><span style="font-size:17px;color:#CDD3EA">Nachtragen</span></div>
+</div>
+</div>
+</div>
+<div style="margin-top:10px;width:280px;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;gap:10px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:12px;background:#1A1A26;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 9v6M20 9v6M7 6v12M17 6v12M7 12h10" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg></div><div style="min-width:0"><div style="font-size:17px;font-weight:600">Übungen</div><div style="margin-top:2px;font-size:14px;color:#94A3B8">142 im Katalog</div></div></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:12px;background:#1A1A26;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="3" stroke="#00F2FE" stroke-width="2"></rect><path d="M8 3v4M16 3v4M3.5 10h17" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg></div><div style="min-width:0"><div style="font-size:17px;font-weight:600">Training planen</div><div style="margin-top:2px;font-size:14px;color:#94A3B8">6 eigene Pläne</div></div></div>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">Umbruchregel: <code style="color:#CDD3EA">MediaQuery.textScaler &gt; 1,45</code> oder gemessene Hälfte &lt; 140 dp → Fuss stapelt. <strong style="color:#CDD3EA">Dieselbe Schwelle stapelt das Kachelpaar</strong> zu zwei vollbreiten Kacheln mit seitlichem Icon — gleiche Regel, gleicher Messpunkt, damit nie eine Hälfte stapelt und die andere nicht. Der Titel darf zweizeilig umbrechen und wird nie ellipsiert; die Metazeile darf ebenfalls umbrechen. Kein Text wird verkleinert.</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Die Rangfolge, in Masse übersetzt</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ ranks }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:120px;flex:none;display:flex"><div style="width:{{ r.w }};height:{{ r.h }}px;border-radius:10px;background:{{ r.bg }};border:1px solid {{ r.bd }}"></div></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;font-weight:600;color:#FFFFFF">{{ r.name }}</div>
+<div style="margin-top:2px;font-size:11px;color:#94A3B8;line-height:1.5">{{ r.why }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">Vier Gewichte, absteigend nach Häufigkeit — und diese Folge ist zugleich das Mittel gegen Problem 2: jedes Thema beginnt mit seinem schwersten und endet mit seinem leichtesten Element (in „Trainieren“ sind das die Kacheln, siehe die Einschränkung in <a href="#kadenz">D</a>).</div>
+</div>
+
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · DIE ZÄSUR — DERSELBE INHALT, ZWEIMAL GESCROLLT</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:420px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:15px;font-weight:600">Live — scrollen und umschalten</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE;border:1px solid rgba(0,242,254,0.4);border-radius:30px;padding:3px 9px">INTERAKTIV</span>
+</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Beides ist dieselbe Seite mit derselben Hairline. Der Unterschied ist Luft, Breite und die Reihenfolge der Massen.</div>
+<div style="margin-top:14px;display:flex;gap:8px">
+<div onClick="{{ setAlt }}" role="button" style="flex:1;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:600;background:{{ altBg }};border:1px solid {{ altBd }};color:{{ altC }}">Heute · 44 dp Fuge</div>
+<div onClick="{{ setNeu }}" role="button" style="flex:1;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:600;background:{{ neuBg }};border:1px solid {{ neuBd }};color:{{ neuC }}">Neu · 65 dp Zäsur</div>
+</div>
+
+<div style="margin-top:16px;width:361px;margin-left:auto;margin-right:auto;border:1px solid #232334;border-radius:18px;background:#050507;overflow:hidden">
+<div style="background:#0B0C14;border-bottom:1px solid #232334">
+<div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px"><span style="font-size:16px;font-weight:600">{{ demoWord }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#94A3B8">{{ demoCount }}</span></div>
+<div style="display:flex;gap:4px;padding:0 16px;position:relative">
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F;overflow:hidden"><div style="width:{{ demoM1 }};height:100%;background:{{ demoM1c }}"></div></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F;overflow:hidden"><div style="width:{{ demoM2 }};height:100%;background:#FFB020"></div></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div>
+</div>
+<div style="height:2px;margin-top:2px;background:linear-gradient(90deg,transparent,#FFB020,transparent);opacity:{{ pulseOp }};transition:opacity 240ms ease-out"></div>
+</div>
+
+<div onScroll="{{ onDemoScroll }}" style="height:300px;overflow-y:auto;scrollbar-width:none;background:#050507">
+<div style="padding:0 16px">
+<div style="height:12px"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<div style="width:32px;height:32px;border-radius:10px;background:#1A1A26;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 9v6M20 9v6M7 6v12M17 6v12M7 12h10" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg></div>
+<div><div style="font-size:13px;font-weight:600">Übungen</div><div style="margin-top:2px;font-size:11px;color:#94A3B8">142 im Katalog</div></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<div style="width:32px;height:32px;border-radius:10px;background:#1A1A26;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="3" stroke="#00F2FE" stroke-width="2"></rect><path d="M8 3v4M16 3v4M3.5 10h17" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></path></svg></div>
+<div><div style="font-size:13px;font-weight:600">Training planen</div><div style="margin-top:2px;font-size:11px;color:#94A3B8">6 eigene Pläne</div></div>
+</div>
+</div>
+
+</div>
+<div style="height:{{ airTop }}px"></div>
+<div style="height:1px;background:#232334;margin:0 {{ seamInset }}px;position:relative">
+<div style="position:absolute;left:22%;right:22%;top:-3px;height:6px;background:linear-gradient(90deg,transparent,#FFB020,transparent);filter:blur(6px);opacity:0.65"></div>
+<div style="position:absolute;left:22%;right:22%;top:-1px;height:2px;background:linear-gradient(90deg,transparent,#FFB020,transparent)"></div>
+</div>
+<div style="height:{{ airBottom }}px"></div>
+
+<div style="padding:0 16px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;color:#94A3B8">ERFASSTE EINHEITEN</div>
+<div style="margin-top:6px;display:flex;align-items:baseline;gap:7px"><span style="font-size:30px;font-weight:700;font-variant-numeric:tabular-nums">63</span><span style="font-size:12px;color:#94A3B8">seit Mai 2025</span></div>
+<div style="margin-top:14px;display:flex;align-items:flex-end;gap:6px;height:56px">
+<div style="flex:1;height:38%;border-radius:3px;background:#1A1A26"></div><div style="flex:1;height:62%;border-radius:3px;background:#1A1A26"></div><div style="flex:1;height:48%;border-radius:3px;background:#1A1A26"></div><div style="flex:1;height:86%;border-radius:3px;background:#1A1A26"></div><div style="flex:1;height:70%;border-radius:3px;background:#1A1A26"></div><div style="flex:1;height:100%;border-radius:3px;background:#00F2FE"></div>
+</div>
+</div>
+<div style="height:10px"></div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px;height:92px"></div>
+<div style="height:10px"></div>
+<div style="height:44px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Alle Einheiten</span><svg width="7" height="11" viewBox="0 0 7 11"><path d="M1 1l5 4.5L1 10" stroke="#94A3B8" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div>
+<div style="height:120px"></div>
+</div>
+</div>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">{{ demoNote }}</div>
+</div>
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Die Zäsur, vermasst</div>
+<div style="margin-top:14px;background:#050507;border:1px solid #16161F;border-radius:14px;padding:0;overflow:hidden">
+<div style="padding:10px 12px;background:#14141D;border-bottom:1px solid #232334"><div style="font-size:11px;color:#94A3B8">letztes Element des Themas (88 dp Kachel)</div></div>
+<div style="height:40px;display:flex;align-items:center;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#FFB020">40 dp LUFT</span></div>
+<div style="height:1px;background:#232334;position:relative"><div style="position:absolute;left:22%;right:22%;top:-1px;height:2px;background:linear-gradient(90deg,transparent,#FFB020,transparent)"></div></div>
+<div style="height:24px;display:flex;align-items:center;justify-content:center"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">24 dp LUFT</span></div>
+<div style="padding:10px 12px;background:#14141D;border-top:1px solid #232334"><div style="font-size:11px;color:#94A3B8">erstes Element des Themas (schwerste Karte)</div></div>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Asymmetrisch, 40 über / 24 unter.</strong> Die Linie gehört damit sichtbar zum <em style="color:#CDD3EA;font-style:normal">folgenden</em> Thema — dieselbe Regel, nach der eine Überschrift mehr Abstand nach oben als nach unten hat. Wären die Abstände gleich, schwebte die Fuge zwischen zwei Themen und gehörte zu keinem.</div>
+<div style="margin-top:10px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Vollbreite.</strong> Die Hairline läuft von Kante zu Kante (0 dp Rand), während jeder Inhalt 16 dp Rand hat. Sie ist damit das einzige randlose Element der ganzen Seite — ein Schnitt, keine Trennlinie in einer Liste.</div>
+<div style="margin-top:10px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Endfuge:</strong> 24 dp Luft, Hairline vollbreit, kein Segment, 40 dp Luft darunter. Ende statt Ankündigung — unverändert aus Modul 13.</div>
+</div>
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Warum 65 dp reichen</div>
+<div style="margin-top:10px;font-size:12px;color:#94A3B8;line-height:1.7">Ein Gerät zeigt bei 361 × 780 dp rund <strong style="color:#CDD3EA">700 dp Inhalt</strong>. 65 dp sind 9 % davon: genug, dass nie zwei Themen ohne Pause gleichzeitig „anfangen" wirken, und zu wenig, um als leerer Bildschirm zu lesen — die Zäsur ist nie allein im Sichtfeld, oben oder unten steht immer Inhalt.</div>
+<div style="margin-top:12px;font-size:12px;color:#94A3B8;line-height:1.7">Beim schnellen Wischen (über 1 200 dp/s) passiert die Zäsur in unter 60 ms — dann trägt nicht der Raum, sondern der Wechsel in der Ortszeile. Beide Mittel greifen bei entgegengesetzten Geschwindigkeiten; deshalb braucht es beide.</div>
+<div style="margin-top:14px;padding-top:14px;border-top:1px solid #16161F;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Kosten:</strong> 3 × 21 dp zusätzliche Scrollhöhe gegenüber heute = 63 dp auf einer Seite von rund 3 400 dp. Ein Fünfzigstel mehr Weg für die einzige Gliederung, die die Seite hat.</div>
+</div>
+
+</div>
+
+<div id="kadenz" style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · KADENZ — DIE SEITE ALS MASSEPROFIL</div>
+<div style="margin-top:16px;max-width:1240px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:26px 28px">
+<div style="font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:1000px">Jedes Thema ordnet seine Blöcke absteigend nach Gewicht: <strong style="color:#CDD3EA">schwerster Block zuerst, leichtestes Element zuletzt</strong>. Dadurch fällt die Masse zur Zäsur hin ab und springt direkt danach auf den höchsten Wert des nächsten Themas. Die Regel verlangt Disziplin: kein Thema darf mit seinem leichtesten Element beginnen oder mit seinem schwersten enden. <strong style="color:#CDD3EA">Ehrlich bleibt zu sagen:</strong> in „Trainieren“ ist der Abfall seit dem Kachelpaar kleiner als in den übrigen Themen — 88 dp statt einer 48-dp-Zeile. Dafür tragen dort Zäsur, Vollbreite und der Puls der Ortszeile den Wechsel; die Kadenz ist ein Mittel von vieren, keines davon allein tragend.</div>
+<div style="margin-top:20px;display:flex;align-items:flex-end;gap:3px;height:150px;padding-bottom:22px;position:relative">
+<sc-for list="{{ cadence }}" as="c" hint-placeholder-count="26">
+<div style="flex:{{ c.flex }};display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;position:relative">
+<div style="width:100%;height:{{ c.h }}%;border-radius:4px 4px 0 0;background:{{ c.bg }}"></div>
+<div style="position:absolute;bottom:-20px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:{{ c.labelC }};white-space:nowrap">{{ c.label }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:20px;font-size:12px;color:#94A3B8;line-height:1.7">
+<div style="flex:1;min-width:280px"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#1A1A26;border:1px solid #232334;margin-right:6px"></span>Blöcke eines Themas, Höhe = visuelles Gewicht (Fläche × Kontrast).</div>
+<div style="flex:1;min-width:280px"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#FFB020;margin-right:6px"></span>Zäsur — liegt per Regel immer im Tal vor einem Gipfel.</div>
+<div style="flex:1;min-width:280px"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:#00F2FE;margin-right:6px"></span>Der Startblock: der einzige Gipfel mit Gradient-Rand, zugleich der höchste Punkt der ganzen Seite.</div>
+</div>
+</div>
+
+<div id="hg" style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · VERWORFEN: EIN HINTERGRUND JE THEMA — MIT DEN ZAHLEN</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:520px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Aus welchen Werten ginge es überhaupt?</div>
+<div style="margin-top:12px;display:flex;gap:10px">
+<sc-for list="{{ grounds }}" as="g" hint-placeholder-count="4">
+<div style="flex:1;border:1px solid #232334;border-radius:14px;overflow:hidden">
+<div style="height:64px;background:{{ g.hex }};display:flex;align-items:flex-end;padding:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">{{ g.hex }}</span></div>
+<div style="padding:9px 10px;background:#050507"><div style="font-size:11px;font-weight:600;color:{{ g.vC }}">{{ g.verdict }}</div><div style="margin-top:3px;font-size:10.5px;color:#94A3B8;line-height:1.5">{{ g.why }}</div></div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:16px;font-size:12px;color:#94A3B8;line-height:1.7">Zwei der vier Werte sind Kartenflächen — als Vollflächen-Grund lägen die Karten dann auf ihrer eigenen Farbe und verlören ihre Kante. Es bleiben <strong style="color:#CDD3EA">#050507 und #0B0B0E</strong>: <strong style="color:#FFFFFF">zwei Gründe für vier Themen</strong>. Entweder wiederholen sich Thema 1 und 3 (dann sagt die Farbe etwas Falsches) oder es braucht Zwischentöne — die verboten sind.</div>
+</div>
+
+<div style="width:380px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Und wie sähe der Wechsel aus?</div>
+<div style="margin-top:14px;width:300px;margin-left:auto;margin-right:auto;border:1px solid #232334;border-radius:16px;overflow:hidden">
+<div style="background:#050507;padding:14px 14px 18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">GRUND #050507</div>
+<div style="margin-top:8px;height:40px;border-radius:12px;background:#14141D;border:1px solid #232334"></div>
+</div>
+<div style="height:1px;background:#232334"></div>
+<div style="background:#0B0B0E;padding:18px 14px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;color:#94A3B8">GRUND #0B0B0E</div>
+<div style="margin-top:8px;height:40px;border-radius:12px;background:#14141D;border:1px solid #232334"></div>
+</div>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">Der Sprung beträgt rund <strong style="color:#CDD3EA">1,4 % relative Leuchtdichte</strong>. Im Labor sichtbar, auf einem AMOLED bei 40 % Helligkeit im Tageslicht nicht — und bei <em style="color:#CDD3EA;font-style:normal">sichtbarem</em> Sprung läse er sich wie ein Rendering-Fehler, nicht wie eine Gliederung. Dazu verliert die Karte #14141D auf #0B0B0E einen Teil ihrer Kantenwirkung; sie hinge dann ganz an ihrem Rand #232334.</div>
+<div style="margin-top:10px;font-size:11.5px;color:#94A3B8;line-height:1.7">Der eigentliche Einwand ist aber inhaltlich: ein Hintergrund je Thema wäre <strong style="color:#FFFFFF">dauerhaft</strong> sichtbar und würde die Seite in vier Räume teilen — genau das, was Modul 13 aufgelöst hat. Die Grenze soll <em style="color:#CDD3EA;font-style:normal">im Moment des Übergangs</em> auffallen und danach verschwinden. Das kann Raum, das kann Farbe nicht.</div>
+</div>
+
+<div style="width:296px;background:rgba(255,176,32,0.05);border:1px solid rgba(255,176,32,0.35);border-radius:20px;padding:24px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#FFB020">DIE EINE AUSNAHME</div>
+<div style="margin-top:10px;font-size:13px;font-weight:600;line-height:1.5">Ein Thema darf eine andere Fläche haben — aber nur je Block, nicht je Thema.</div>
+<div style="margin-top:10px;font-size:11.5px;color:#94A3B8;line-height:1.7">Die Auswertungsblöcke sitzen schon heute auf <code style="color:#CDD3EA">#050507</code> mit Rand #16161F statt auf <code style="color:#CDD3EA">#14141D</code> (Modul 13, Abschnitt D). Das ist eine Aussage über den <em style="color:#CDD3EA;font-style:normal">Blocktyp</em> („noch nichts drin"), keine über den Ort. Diese Unterscheidung bleibt und darf nicht zu einer Themenfarbe umgedeutet werden.</div>
+</div>
+
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · SPEZIFIKATIONSTABELLE</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:180px 110px 110px 170px 1fr 110px;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>HÖHE</span><span>INNENPOLSTER</span><span>FLÄCHE</span><span>TYP-ROLLE</span><span>TAP-ZIEL</span>
+</div>
+<sc-for list="{{ spec }}" as="s" hint-placeholder-count="18">
+<div style="display:grid;grid-template-columns:180px 110px 110px 170px 1fr 110px;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline;line-height:1.5">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">{{ s.el }}</span>
+<span style="color:#CDD3EA;font-variant-numeric:tabular-nums">{{ s.h }}</span>
+<span style="color:#94A3B8">{{ s.pad }}</span>
+<span style="color:#94A3B8">{{ s.surface }}</span>
+<span style="color:#94A3B8">{{ s.type }}</span>
+<span style="color:{{ s.tapC }}">{{ s.tap }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · BEWEGUNGSTABELLE</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:150px 150px 1fr 90px 140px 100px 170px;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ÜBERGANG</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>REDUZIERTE BEWEGUNG</span>
+</div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="10">
+<div style="display:grid;grid-template-columns:150px 150px 1fr 90px 140px 100px 170px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:{{ m.tc }}">{{ m.trigger }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-variant-numeric:tabular-nums">{{ m.dur }}</span><span style="color:#94A3B8">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.reduced }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · STRINGTABELLE</div>
+<div style="margin-top:16px;width:980px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:240px 1fr 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span>
+</div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="24">
+<div style="display:grid;grid-template-columns:240px 1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · A11Y-NOTIZEN</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND / LIVE-REGION</span>
+</div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="11">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.55">
+<span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · WIEDERVERWENDUNG UND WAS WIRKLICH NEU IST</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:110px 250px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>HERKUNFT</span><span>BAUSTEIN</span><span>VERWENDUNG HIER</span>
+</div>
+<sc-for list="{{ reuse }}" as="r" hint-placeholder-count="11">
+<div style="display:grid;grid-template-columns:110px 250px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:{{ r.c }}">{{ r.m }}</span><span style="color:#FFFFFF;font-weight:600">{{ r.b }}</span><span style="color:#94A3B8;line-height:1.6">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">K · ENTSCHEIDUNGSPROTOKOLL — JEDE VERWORFENE IDEE MIT DEM GRUND</div>
+<div style="margin-top:16px;max-width:960px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="15">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start">
+<div style="width:36px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;areaTone&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FFB020&quot;,&quot;options&quot;:[&quot;#FFB020&quot;,&quot;#7B2CBF&quot;,&quot;#F02277&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;zaesur&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:65,&quot;min&quot;:44,&quot;max&quot;:96,&quot;step&quot;:1,&quot;unit&quot;:&quot;dp&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;reducedMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;}}">
+class Component extends DCLogic {
+  state = { seam: 'neu', scrolled: 0 };
+
+  setAlt = () => this.setState({ seam: 'alt' });
+  setNeu = () => this.setState({ seam: 'neu' });
+  onDemoScroll = (e) => {
+    const t = e.currentTarget.scrollTop;
+    if (Math.abs(t - this.state.scrolled) > 4) this.setState({ scrolled: t });
+  };
+
+  renderVals() {
+    const tone = this.props.areaTone ?? '#FFB020';
+    const neu = this.state.seam === 'neu';
+    const air = this.props.zaesur ?? 65;
+    const airTop = neu ? Math.round(air * 0.615) : 26;
+    const airBottom = neu ? air - airTop : 17;
+    const seamY = 100 + airTop;
+    const past = this.state.scrolled > seamY - 30;
+
+    const on = { bg: 'rgba(0,242,254,0.10)', bd: 'rgba(0,242,254,0.5)', c: '#00F2FE' };
+    const off = { bg: '#14141D', bd: '#232334', c: '#94A3B8' };
+    const a = neu ? off : on, n = neu ? on : off;
+
+    const ICON = {
+      'Frei starten': 'M7 5l11 7-11 7z',
+      'Plan wählen': 'M4.5 4h15v16h-15z M8.5 9.5h7 M8.5 14h4',
+      'Plan anlegen': 'M4.5 4h15v16h-15z M12 9v6 M9 12h6',
+      'Nachtragen': 'M12 6.5v11 M6.5 12h11'
+    };
+    const board = (o) => Object.assign({
+      frame: 'linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)',
+      dot: tone, dotGlow: '0 0 8px ' + tone, kickerC: tone, titleC: '#FFFFFF',
+      ctaBg: 'linear-gradient(90deg,#F02277,#C01963)', ctaC: '#FFFFFF',
+      footIcon: '#00F2FE', footC: '#CDD3EA', rowC: '#CDD3EA',
+      hasHead: true, hasRetry: false, skeleton: false,
+      footL: 'Frei starten', footR: 'Nachtragen',
+      tileCatalogMeta: '142 im Katalog', tilePlanMeta: '6 eigene Pläne'
+    }, o, { footLPath: ICON[o.footL ?? 'Frei starten'], footRPath: ICON[o.footR ?? 'Nachtragen'] });
+
+    return {
+      setAlt: this.setAlt, setNeu: this.setNeu, onDemoScroll: this.onDemoScroll,
+      altBg: a.bg, altBd: a.bd, altC: a.c, neuBg: n.bg, neuBd: n.bd, neuC: n.c,
+      airTop, airBottom, seamInset: neu ? 0 : 16,
+      demoWord: past ? 'Verlauf' : 'Trainieren',
+      demoCount: past ? '2 / 4' : '1 / 4',
+      demoM1: past ? '100%' : '72%',
+      demoM1c: past ? '#94A3B8' : tone,
+      demoM2: past ? '14%' : '0%',
+      pulseOp: (this.props.reducedMotion ?? false) ? 0 : (past && this.state.scrolled < seamY + 90 ? 1 : 0),
+      demoNote: neu
+        ? 'Neu: die Hairline läuft randlos durch, darüber 40 dp und darunter 24 dp Nichts — und direkt danach kommt die schwerste Karte des nächsten Themas. Drei Signale gleichzeitig, keines davon eine neue Farbe.'
+        : 'Heute: 44 dp Fuge mit 16 dp Rand, links und rechts von Inhaltskanten flankiert. Sie liest sich wie eine weitere Trennlinie in einer Liste — deshalb fällt der Themenwechsel beim Scrollen durch.',
+
+      boards: [
+        board({ title: 'Mit Plan für heute', tag: 'HÄUFIGSTER FALL', tagC: '#FFB020', tagB: 'rgba(255,176,32,0.4)',
+          sub: 'Der Regelfall, sobald ein Plan läuft. Der Kopf nennt die Einheit, der Knopf startet genau sie.',
+          kicker: 'HEUTE GEPLANT', headTitle: 'Oberkörper A · Woche 3', headMeta: '5 Übungen · ca. 40 Min', cta: 'STARTEN',
+          note: 'Amber im Kopf heisst: für heute steht etwas an. Punkt und Wort tragen die Aussage mit, nicht die Farbe allein.' }),
+        board({ title: 'Ohne Plan für heute', tag: 'KEIN MANGEL', tagC: '#00FF87', tagB: 'rgba(0,255,135,0.35)',
+          sub: 'Gleiche Karte, gleiche Stelle, gleicher Knopf — der Kopf trägt statt eines Termins eine Tatsache aus dem Verlauf.',
+          kicker: 'ZULETZT', dot: '#94A3B8', dotGlow: 'none', kickerC: '#94A3B8',
+          headTitle: 'Beine & Rumpf', headMeta: 'vor 3 Tagen · 6 Übungen · 52 Min', cta: 'FREI STARTEN', footL: 'Plan wählen', footR: 'Nachtragen',
+          note: 'Keine Aussage darüber, ob heute Training „anstünde". Die Zeile ist ein Fakt mit Datum — kein Sollwert, kein Zuruf.' }),
+        board({ title: 'Erstöffnung', tag: 'OHNE HISTORIE', tagC: '#00FF87', tagB: 'rgba(0,255,135,0.35)',
+          sub: 'Kein Plan, kein Verlauf: der Kopf rendert nicht. Die Karte beginnt beim Knopf — die Seite hört oben früher auf.',
+          hasHead: false, cta: 'FREI STARTEN', footL: 'Plan anlegen', footR: 'Nachtragen',
+          tilePlanMeta: 'Noch kein eigener Plan',
+          note: 'Kein „Willkommen", kein Onboarding-Kasten, kein leerer Zustand. Der erste Bildschirm ist einfach kürzer — und startbereit.' }),
+        board({ title: 'Lädt', tag: 'EIN GATE JE SEITE', tagC: '#94A3B8', tagB: '#232334',
+          sub: 'Nur der Kopf hängt an Daten. Knopf und Fuss stehen sofort und sind sofort bedienbar.',
+          hasHead: false, skeleton: true, cta: 'FREI STARTEN', footL: 'Plan wählen', footR: 'Nachtragen', tilePlanMeta: '',
+          note: 'Skelett in Inhaltsform (Modul 2), erst ab 300 ms. Der Knopf ist nie ausgegraut: frei starten geht ohne jede geladene Zeile.' }),
+        board({ title: 'Fehler', tag: 'FUNKTION BLEIBT', tagC: '#F02277', tagB: 'rgba(240,34,119,0.4)',
+          sub: 'Der Plan liess sich nicht lesen. Betroffen ist nur der Kopf — der Bildschirm verliert seinen Zweck nicht.',
+          kicker: 'NICHT GELADEN', dot: '#F02277', dotGlow: '0 0 8px rgba(240,34,119,0.8)', kickerC: '#F02277',
+          headTitle: 'Heutiger Plan nicht verfügbar', headMeta: 'Zuletzt geprüft 14:02', hasRetry: true, cta: 'FREI STARTEN', footL: 'Plan wählen', footR: 'Nachtragen', tilePlanMeta: '',
+          note: 'Magenta trägt die Störung, das Wort „nicht geladen" trägt sie ebenso. „Erneut versuchen" ist cyan — es ist eine Handlung.' })
+      ],
+
+      ranks: [
+        { name: 'Knopf im Startblock', why: 'einmal je Sitzung, der Grund für das Öffnen', w: '100%', h: 34, bg: 'linear-gradient(90deg,#F02277,#C01963)', bd: 'transparent' },
+        { name: 'Kopf des Startblocks', why: 'wird gelesen, nicht getippt — trägt kein Tap-Ziel', w: '78%', h: 26, bg: '#14141D', bd: '#232334' },
+        { name: 'Fuss · zwei Hälften', why: 'die Umwege am selben Gegenstand: frei starten bzw. Plan wählen, nachtragen', w: '58%', h: 20, bg: '#1A1A26', bd: '#232334' },
+        { name: 'Zwei Kacheln', why: 'die Unterseiten: Übungen · Training planen — je 158 × 88 dp, mit Icon und Zahl', w: '44%', h: 16, bg: '#14141D', bd: '#232334' }
+      ],
+
+      cadence: [
+        { label: '', flex: 1, h: 6, bg: '#16161F', labelC: '#94A3B8' },
+        { label: 'TRAINIEREN', flex: 3, h: 100, bg: '#00F2FE', labelC: '#00F2FE' },
+        { label: '', flex: 2.8, h: 30, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 0.8, h: 3, bg: '#FFB020', labelC: '#FFB020' },
+        { label: 'VERLAUF', flex: 3, h: 72, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 2, h: 48, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 1.4, h: 18, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 0.8, h: 3, bg: '#FFB020', labelC: '#FFB020' },
+        { label: 'AUSWERTUNG', flex: 3, h: 66, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 2.4, h: 52, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 2, h: 40, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 1.4, h: 16, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 0.8, h: 3, bg: '#FFB020', labelC: '#FFB020' },
+        { label: 'PLÄNE', flex: 3, h: 58, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 1.8, h: 30, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: '', flex: 1.4, h: 14, bg: '#1A1A26', labelC: '#94A3B8' },
+        { label: 'ENDE', flex: 0.8, h: 2, bg: '#232334', labelC: '#94A3B8' }
+      ],
+
+      grounds: [
+        { hex: '#050507', verdict: 'Grund — bleibt', vC: '#00FF87', why: 'die Seitenfläche, an der sich jeder Kontrast der App misst' },
+        { hex: '#0B0B0E', verdict: 'nur für Kästen', vC: '#FFB020', why: 'deckende Kästen (Ortszeile); als Grund nur einmal verwendbar' },
+        { hex: '#14141D', verdict: 'Karte — geht nicht', vC: '#F02277', why: 'Karten lägen auf ihrer eigenen Farbe und verlören die Kante' },
+        { hex: '#1A1A26', verdict: 'angehoben — geht nicht', vC: '#F02277', why: 'ist bereits das Innere von Karten (StatBox, Fuss)' }
+      ],
+
+      spec: [
+        { el: 'Startblock (K2)', h: '244 dp / 168 ohne Kopf', pad: '0 dp', surface: '#14141D, Gradient-Rand 1,5 dp, Radius 20', type: '—', tap: 'nicht als Ganzes', tapC: '#94A3B8' },
+        { el: '· Kopf', h: 'Inhalt, min. 72 dp', pad: '16 / 16 / 0 dp', surface: '#14141D', type: 'Kicker labelMicro 11 +0,16 em · Titel 16/600 weiss · Meta 12 #94A3B8', tap: 'keines (nur Text)', tapC: '#94A3B8' },
+        { el: '· Kicker-Punkt', h: '6 dp', pad: 'Abstand 6 dp', surface: 'Bereichston, Schein 8 dp — bei Störung Magenta', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: '· Knopf (CTA)', h: '56 dp', pad: '16 dp ringsum', surface: 'Gradient #F02277 → #C01963, Radius 28', type: 'labelLarge 15/600, +0,10 em, weiss', tap: '297 × 56 dp', tapC: '#00FF87' },
+        { el: '· Fuss', h: '56 dp (200 %: 2 × 72)', pad: '14 dp seitlich', surface: '#1A1A26, Trennlinien #232334', type: 'Icon 20 cyan · Label 13 #CDD3EA', tap: '2 × 164 × 56 dp', tapC: '#00FF87' },
+        { el: 'Kachelpaar', h: '88 dp', pad: 'Spalt 12 dp', surface: '#14141D, Rand #232334, Radius 16', type: '—', tap: '2 × 158 × 88 dp', tapC: '#00FF87' },
+        { el: '· Kachel-Icon', h: '36 dp Kasten', pad: '12 dp', surface: '#1A1A26, Radius 10, Glyph 18 cyan', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: '· Kachel-Text', h: 'Inhalt', pad: '12 dp', surface: '—', type: 'Titel 14/600 weiss · Zahl 11 #94A3B8 (nennt ihre Grundlage)', tap: '—', tapC: '#94A3B8' },
+        { el: 'Abstand Block → Kacheln', h: '12 dp', pad: '—', surface: '—', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Fehlerzeile im Kopf', h: 'Inhalt + 48 dp Aktion', pad: '16 dp', surface: '#14141D', type: 'Titel 16/600 weiss · Meta 12 #94A3B8 · Aktion 13/600 cyan', tap: 'Aktion 329 × 48 dp', tapC: '#00FF87' },
+        { el: 'Skelett im Kopf', h: '9 / 13 / 9 dp', pad: '16 / 16 / 0 dp', surface: '#1A1A26, Radius 4', type: '—', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Zäsur gesamt', h: '65 dp', pad: '—', surface: '—', type: '—', tap: 'keines (dekorativ)', tapC: '#94A3B8' },
+        { el: '· Luft oben', h: '40 dp', pad: '—', surface: '#050507', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: '· Hairline', h: '1 dp', pad: '0 dp Rand — vollbreit', surface: '#232334', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: '· Segment', h: '2 dp', pad: '56 % Breite, mittig', surface: 'Bereichston, beidseitig auslaufend, Schein 6 dp Blur 0,65', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: '· Luft unten', h: '24 dp', pad: '—', surface: '#050507', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Endfuge', h: '65 dp', pad: '24 oben / 40 unten', surface: 'nur Hairline #232334 vollbreit, kein Segment', type: '—', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Themen-Innenabstand', h: '10 dp zwischen Blöcken', pad: '16 dp seitlich', surface: '—', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Ortszeilen-Puls', h: '2 dp', pad: 'volle Breite', surface: 'Bereichston, Verlauf nach aussen transparent', type: '—', tap: 'keines', tapC: '#94A3B8' }
+      ],
+
+      motion: [
+        { el: 'Zustandswechsel Kopf', trigger: 'Plan geladen / gelöscht', prop: 'Kopf: Höhe + Deckkraft; Knopf und Fuss bewegen sich mit, ohne zu springen', dur: '260 ms', curve: 'ease-out-cubic', rest: 'neuer Kopf', reduced: 'harter Austausch', tc: '#00F2FE' },
+        { el: 'Skelett → Kopf', trigger: 'Daten da', prop: 'Skelettbalken → Text, Deckkraft-Kreuzblende', dur: '200 ms', curve: 'ease-out', rest: 'Text', reduced: 'sofortiger Austausch', tc: '#00F2FE' },
+        { el: 'Skelett-Puls', trigger: 'Laden > 300 ms', prop: 'Deckkraft 0,55 ↔ 1,0', dur: '1600 ms', curve: 'ease-in-out', rest: '— (Loop)', reduced: 'eingefroren bei 0,8', tc: '#94A3B8' },
+        { el: 'Knopf gedrückt', trigger: 'Tipp-Halten', prop: 'scale 0,97 + Magenta-Schein 12 dp (kein Ripple)', dur: '160 ms', curve: 'ease-out', rest: 'scale 1', reduced: 'nur Schein', tc: '#00FF87' },
+        { el: 'Fusshälfte gedrückt', trigger: 'Tipp-Halten', prop: 'scale 0,97 + Cyan-Schein 8 dp, nur die getippte Hälfte', dur: '160 ms', curve: 'ease-out', rest: 'scale 1', reduced: 'nur Schein', tc: '#00FF87' },
+        { el: 'Startblock-Eintritt', trigger: 'kreuzt 25 % Viewporthöhe', prop: 'translateY 14 dp → 0 + Deckkraft 0 → 1', dur: '320 ms', curve: 'ease-out', rest: 'sichtbar', reduced: 'entfällt', tc: '#00FF87' },
+        { el: 'Zäsur beim Passieren', trigger: 'Scroll', prop: 'keine — statisch; der Blitz entsteht aus der Scrollgeschwindigkeit', dur: '—', curve: '—', rest: 'statisch', reduced: 'unverändert', tc: '#94A3B8' },
+        { el: 'Ortszeilen-Puls', trigger: 'Zäsur passiert Unterkante der Zeile', prop: '2-dp-Linie unter der Zeile, Deckkraft 0 → 1 → 0', dur: '80 / 400 ms', curve: 'ease-out / ease-in', rest: 'unsichtbar', reduced: 'entfällt ganz', tc: '#F02277' },
+        { el: 'Wort wechselt', trigger: 'wie Puls', prop: 'alt −4 dp + Deckkraft 0 · neu +5 dp → 0 (Modul 13, unverändert)', dur: '240 ms', curve: 'ease-out-cubic', rest: 'neues Wort', reduced: 'harter Austausch', tc: '#F02277' },
+        { el: 'Sprung aus der Liste', trigger: 'Auswahl in der Sprungliste', prop: 'Scroll bis Oberkante der Zäsur unter die Ortszeile — nicht bis zum ersten Block', dur: '420 ms', curve: 'ease-out-cubic', rest: '24 dp Luft sichtbar', reduced: 'jumpTo', tc: '#F02277' }
+      ],
+
+      strings: [
+        { key: 'train.today_kicker', de: 'HEUTE GEPLANT', en: 'PLANNED TODAY' },
+        { key: 'train.today_meta', de: '{n} Übungen · ca. {min} Min', en: '{n} exercises · approx. {min} min' },
+        { key: 'train.start_planned', de: 'STARTEN', en: 'START' },
+        { key: 'train.last_kicker', de: 'ZULETZT', en: 'LAST TIME' },
+        { key: 'train.last_meta', de: 'vor {n} Tagen · {e} Übungen · {min} Min', en: '{n} days ago · {e} exercises · {min} min' },
+        { key: 'train.last_meta_yesterday', de: 'gestern · {e} Übungen · {min} Min', en: 'yesterday · {e} exercises · {min} min' },
+        { key: 'train.start_free', de: 'FREI STARTEN', en: 'START FREE' },
+        { key: 'train.foot_pick_plan', de: 'Plan wählen', en: 'Choose plan' },
+        { key: 'train.foot_new_plan', de: 'Plan anlegen', en: 'Create plan' },
+        { key: 'train.foot_free', de: 'Frei starten', en: 'Start free' },
+        { key: 'train.foot_log', de: 'Nachtragen', en: 'Log past' },
+        { key: 'train.tile_exercises', de: 'Übungen', en: 'Exercises' },
+        { key: 'train.tile_exercises_meta', de: '{n} im Katalog', en: '{n} in the catalog' },
+        { key: 'train.tile_plan', de: 'Training planen', en: 'Plan training' },
+        { key: 'train.tile_plan_meta', de: '{n} eigene Pläne', en: '{n} own plans' },
+        { key: 'train.tile_plan_meta_none', de: 'Noch kein eigener Plan', en: 'No plan of your own yet' },
+        { key: 'train.error_kicker', de: 'NICHT GELADEN', en: 'NOT LOADED' },
+        { key: 'train.error_title', de: 'Heutiger Plan nicht verfügbar', en: 'Today’s plan unavailable' },
+        { key: 'train.error_meta', de: 'Zuletzt geprüft {zeit}', en: 'Last checked {time}' },
+        { key: 'train.error_retry', de: 'Erneut versuchen', en: 'Try again' },
+        { key: 'train.loading_a11y', de: 'Heutiger Plan wird geladen', en: 'Loading today’s plan' },
+        { key: 'train.block_a11y_planned', de: 'Heute geplant: {name}, {n} Übungen, etwa {min} Minuten', en: 'Planned today: {name}, {n} exercises, about {min} minutes' },
+        { key: 'train.block_a11y_last', de: 'Zuletzt: {name}, vor {n} Tagen', en: 'Last session: {name}, {n} days ago' },
+        { key: 'train.start_a11y_planned', de: '{name} starten', en: 'Start {name}' },
+        { key: 'train.start_a11y_free', de: 'Freie Einheit starten', en: 'Start a free session' },
+        { key: 'seam.a11y', de: '(ohne Semantik)', en: '(no semantics)' }
+      ],
+
+      a11y: [
+        { el: 'Startblock', label: 'kein eigenes Label — die Karte ist ein Container, kein Knopf', role: 'container', state: 'Fokusreihenfolge: Kopf (Text) → Knopf → Fuss links → Fuss rechts' },
+        { el: 'Kopf · mit Plan', label: 'train.block_a11y_planned — „Heute geplant: Oberkörper A, 5 Übungen, etwa 40 Minuten"', role: 'text', state: 'Kicker, Titel und Meta werden als ein Knoten gelesen (mergeSemantics)' },
+        { el: 'Kopf · ohne Plan', label: 'train.block_a11y_last — „Zuletzt: Beine & Rumpf, vor 3 Tagen"', role: 'text', state: 'keine Ansage über einen fehlenden Plan — es fehlt nichts' },
+        { el: 'Kopf · Erstöffnung', label: '(existiert nicht)', role: '—', state: 'kein Knoten, keine Ansage. Der Fokus beginnt beim Knopf.' },
+        { el: 'Knopf', label: 'train.start_a11y_planned / _free — „Oberkörper A starten" bzw. „Freie Einheit starten"', role: 'button', state: 'nie disabled; auch beim Laden und im Fehlerfall bedienbar' },
+        { el: 'Fusshälften', label: 'train.foot_* wörtlich', role: 'button', state: 'zwei getrennte Knoten, kein gemeinsamer Container-Knopf' },
+        { el: 'Kacheln', label: 'Titel + Zahl als ein Knoten — „Übungen, 142 im Katalog"', role: 'button', state: 'zwei getrennte Knoten nach dem Startblock; die Zahl ist Teil des Labels, nicht ein eigener Knoten' },
+        { el: 'Skelett', label: 'train.loading_a11y', role: 'liveRegion polite', state: 'genau eine Ansage beim Start des Ladens, keine beim Ende — das Ergebnis liest der Nutzer selbst' },
+        { el: 'Fehlerzeile', label: 'train.error_title + _meta', role: 'liveRegion assertive', state: 'einmalig; „Erneut versuchen" ist ein eigener button-Knoten dahinter' },
+        { el: 'Zäsur', label: '(kein Label)', role: 'excludeSemantics', state: 'stumm — den Wechsel sagt die Ortszeile an (Modul 13), sonst wäre dasselbe Ereignis zweimal hörbar' },
+        { el: 'Ortszeilen-Puls', label: '(kein Label)', role: 'excludeSemantics', state: 'rein visuelle Quittung des Wechsels' },
+        { el: 'Thema-Container', label: 'Name des Themas', role: 'header + region', state: 'unverändert aus Modul 13 — der Rotor springt Thema für Thema, die Zäsur ändert daran nichts' }
+      ],
+
+      reuse: [
+        { m: 'MODUL 1', b: 'Typenskala · 48-dp-Regel · Press-Scale 0,97', use: 'alle Grössen und Tap-Ziele; kein Ripple, Schein statt Welle', c: '#F02277' },
+        { m: 'MODUL 2', b: 'K2 Session-Card mit Gradient-Rand', use: 'der Startblock — weiterhin genau eine je Bildschirm, jetzt als Träger aller drei Zonen', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Skeleton in Inhaltsform · 300-ms-Regel', use: 'nur im Kopf, nicht in der ganzen Karte', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Leer-Anatomie: Feststellung ohne Knopf', use: 'die Erstöffnung rendert gar keinen Kopf — die konsequenteste Form derselben Regel', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'K3 Listenkarte', use: 'das Kachelpaar „Übungen“ / „Training planen“ — gleiche Bauform wie überall, nur paarweise statt gestapelt', c: '#00F2FE' },
+        { m: 'MODUL 3', b: 'StatBox-Fläche #1A1A26', use: 'der Fuss des Startblocks — keine neue Flächenebene erfunden', c: '#94A3B8' },
+        { m: 'MODUL 5', b: 'Wege-Gewichtung nach Häufigkeit', use: 'vier Gewichtsklassen statt drei Bauformen; Rangfolge unverändert', c: '#00FF87' },
+        { m: 'MODUL 11', b: 'Bereichston je Tab-Root', use: 'Kicker, Marken, Segment und Puls — Kraft Amber #FFB020, Cardio Violet, Hybrid Magenta', c: '#CDD3EA' },
+        { m: 'MODUL 13', b: 'AtemSectionBar (Ortszeile)', use: 'unverändert; sie bekommt nur eine 2-dp-Pulslinie als Quittung am Wechsel', c: '#CDD3EA' },
+        { m: 'MODUL 13', b: 'AtemSectionSeam (Fuge)', use: 'zwei Parameter neu: vollbreit statt eingerückt, Luft 40/24 statt 22/22. Grafik unverändert.', c: '#CDD3EA' },
+        { m: 'MODUL 13', b: 'Eintrittskaskade bei 25 % Viewport', use: 'greift direkt nach der Zäsur — Bewegung nach Leere ist der vierte Träger des Wechsels', c: '#CDD3EA' },
+        { m: 'NEU', b: 'AtemStartBlock (Kopf · Knopf · Fuss)', use: 'der einzige wirklich neue Baustein. Kopf ist ein Slot mit vier Füllungen (Plan · Zuletzt · leer · Fehler), Knopf und Fuss sind konstant. Kadenzregel „schwer → leicht" ist Lint-fähig, kein Widget.', c: '#FFFFFF' }
+      ],
+
+      decisions: [
+        { n: '1', title: 'Gewählt: ein Gegenstand statt drei Bauformen', body: 'Die drei Rezepte (Gradient-Karte, zwei Halbkarten, zwei Zeilen) waren inhaltlich richtig gewichtet, aber visuell drei gleichrangige Objekte mit drei Rändern und drei Radien. Sie werden zu einem Gegenstand mit drei Zonen: Kopf, Knopf, Fuss. Die Rangfolge nach Häufigkeit bleibt exakt erhalten — sie wird nur statt durch Kartengrenzen durch Fläche, Grösse und Position innerhalb einer Karte ausgedrückt. Ergebnis: ein Rand statt drei, ein Blickziel statt drei.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '2', title: 'Gewählt: der Zustand steckt im Kopf, nie in der Komposition', body: 'Der entscheidende Kniff gegen „ohne Plan wirkt wie ein Mangel": Karte, Position und Knopf sind in allen fünf Zuständen identisch. Verglichen wird immer nur der Kopf — und ein Kopf, der eine andere Tatsache trägt, ist kein Loch. Hätte der Fall ohne Plan ein anderes Raster (z. B. „Frei starten" rückt in die Gradient-Karte, die Halbkarten schrumpfen auf eine), wäre er erkennbar die zweite Wahl.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '3', title: 'Verworfen: Platzhalterkarte „Heute nichts geplant"', body: 'Die naheliegende Lösung für den leeren Fall. Sie verstösst gegen zwei Regeln gleichzeitig: sie behauptet einen Mangel („nichts geplant" setzt voraus, dass etwas geplant sein sollte) und sie rendert einen Block ohne Daten. Stattdessen trägt der Kopf eine überprüfbare Tatsache aus dem Verlauf — „Zuletzt: Beine & Rumpf, vor 3 Tagen" — oder gar nichts.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '4', title: 'Verworfen: Amber-Kicker auch für „ZULETZT"', body: 'Optisch ruhiger wäre ein Kicker, der immer gleich aussieht. Aber Amber ist der Bereichston und markiert im Kopf genau eine Sache: dass für heute etwas ansteht. Trüge „ZULETZT" dasselbe Amber, hiesse Amber nichts mehr. Der Faktenkopf ist #94A3B8, der Störungskopf Magenta — drei Töne für drei Aussagen, jeder zusätzlich durch sein Wort getragen.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '5', title: 'Gewählt: Kacheln statt Chevron-Zeilen — und „Nachtragen" wandert in den Startblock', body: 'Die zwei Zeilen am Fuss der Seite waren die einzige Bauform ohne Gewicht: schmucklos, ohne Icon, ohne Zahl — und „Einheit nachtragen" stand dort falsch, denn es erzeugt eine Einheit wie der Startknopf auch. Es zieht deshalb in den Fuss des Startblocks. Übrig bleiben zwei echte Unterseiten, und die stehen jetzt als zwei gleich grosse Kacheln nebeneinander: „Übungen" (Katalog) und „Training planen". Jede trägt Icon, Titel und eine Zahl mit Grundlage. Das Kürzen von „Übungskatalog" auf „Übungen" hält den Titel auch bei 200 % einzeilig.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '6', title: 'Gewählt: die Knopfbeschriftung ist der Zustandsträger', body: '„STARTEN" mit Plan, „FREI STARTEN" ohne. Damit kann niemand blind auf einen Knopf tippen und etwas anderes bekommen, als er erwartet — und der Zustand ist auch dann lesbar, wenn der Kopf abgeschnitten, vorgelesen oder noch nicht geladen ist. Kein Ausrufezeichen, keine Aufforderung: der Knopf benennt, was passiert, nicht was man tun sollte.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '7', title: 'Verworfen: der Knopf wird beim Laden ausgegraut', body: 'Üblich, aber hier falsch: „frei starten" braucht keine einzige geladene Zeile. Ein deaktivierter Startknopf würde eine Abhängigkeit behaupten, die es nicht gibt — auf dem Bildschirm, dessen ganzer Zweck das Starten ist. Der Knopf bleibt bedienbar; lädt der Plan noch, heisst er „FREI STARTEN" und tut genau das.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '8', title: 'Verworfen: Vollbild-Fehlerzustand', body: 'Ein fehlgeschlagener Plan-Abruf ist kein Seitenfehler. Betroffen ist eine Zone von dreien; Knopf, Fuss und Liste funktionieren weiter. Der Fehler bleibt deshalb im Kopf, mit Magenta-Punkt, dem Wort „NICHT GELADEN", einem Zeitstempel und einer cyanen Handlung. Ein Vollbild-Fehler hätte einen funktionsfähigen Bildschirm für eine einzige fehlende Zeile stillgelegt.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '9', title: 'Verworfen: zweite Gradient-Karte für „Plan wählen"', body: 'Im Zustand ohne Plan liegt es nahe, die Planauswahl aufzuwerten. Das bräche die Ein-Karte-Regel und würde zwei Wege gleich laut anbieten — die Seite verkauft aber immer genau einen. „Plan wählen" bleibt im Fuss, ist dort 164 × 56 dp gross und damit alles andere als versteckt.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '10', title: 'Verworfen: ein Hintergrund je Thema', body: 'Es gibt nur zwei grundtaugliche Werte (#050507, #0B0B0E) für vier Themen — der Rest sind Kartenflächen, auf denen Karten ihre Kante verlieren. Zwei Gründe für vier Themen heisst Wiederholung (Thema 1 und 3 sähen gleich aus, die Farbe sagte etwas Falsches) oder erfundene Zwischentöne. Dazu: der Sprung beträgt rund 1,4 % Leuchtdichte — im Tageslicht unsichtbar, im Dunkeln wie ein Rendering-Fehler. Der grundsätzliche Einwand bleibt aber: ein Themen-Hintergrund ist dauerhaft sichtbar und teilt die Seite in vier Räume — das Gegenteil dessen, was Modul 13 erreicht hat.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '11', title: 'Gewählt: Luft statt Farbe — 65 dp, asymmetrisch', body: 'Die Fuge bekommt 40 dp über und 24 dp unter sich. Sie wird damit zur einzigen Stelle der Seite, an der nichts steht, und gehört durch die Asymmetrie sichtbar zum folgenden Thema. 65 dp sind 9 % einer Bildschirmhöhe: genug für eine Pause, zu wenig für einen eigenen Bildschirm. Preis: 63 dp mehr Scrollweg auf rund 3 400 dp.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '12', title: 'Gewählt: die Fuge läuft vollbreit', body: 'Bisher endete die Hairline an derselben 16-dp-Kante wie jeder Inhalt — sie sah aus wie eine Trennlinie in einer Liste, und davon hat die Seite viele. Randlos gezogen ist sie das einzige Element ohne Seitenrand und liest sich als Schnitt durch die Seite. Kostet nichts, ändert die Wirkung sofort — im Live-Vergleich in Abschnitt C nachzuvollziehen.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '13', title: 'Gewählt: Kadenz — jedes Thema läuft schwer → leicht', body: 'Eine Anordnungsregel statt eines Bauteils: der schwerste Block eines Themas steht oben, die leichteste Zeile unten. Dadurch fällt die Masse zur Zäsur hin ab und springt direkt danach auf den Gipfel des nächsten Themas. Zusätzlich greift dort die bestehende Eintrittskaskade — nach der Leere bewegt sich etwas Grosses. Diese Regel ist prüfbar (Lint über die Blockreihenfolge), kostet keinen Token und kein Pixel.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '14', title: 'Verworfen: Scroll-Rastung an der Fuge', body: 'Ein snapTo an jeder Zäsur würde den Wechsel unübersehbar machen — und die Seite genau in die vier Bildschirme zerlegen, die der Umbau von Modul 13 beseitigt hat. Ausserdem kämpft Rastung mit Fling-Gesten und macht das Durchwischen zu langen Themen zäh. Verworfen ohne Ersatz: die Seite bleibt frei scrollbar.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '15', title: 'Verworfen: der Themenname in der Fuge', body: 'Ein kleines Wort an der Fuge („Verlauf") wäre die klarste Grenze überhaupt. Es stünde aber dieselbe Sekunde zweimal auf dem Schirm — einmal in der Ortszeile, einmal in der Fuge — und würde die Regel „kein Thema trägt seinen Namen ein zweites Mal" brechen. Die Fuge bleibt stumm; die Ansage macht die Zeile, die ohnehin immer sichtbar ist.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '16', title: 'Gewählt: ein 2-dp-Puls in der Ortszeile, 480 ms', body: 'Raum wirkt beim langsamen Lesen, aber beim schnellen Wischen rauscht die Zäsur in unter 60 ms vorbei. Für diesen Fall quittiert die Ortszeile den Wechsel mit einer 2-dp-Linie im Bereichston unter ihrer Unterkante: 80 ms auf, 400 ms ab. Kein neues Element, keine neue Farbe, kein Ton und keine Vibration — und bei reduzierter Bewegung entfällt sie ersatzlos, weil Wort, Zähler und Marke den Wechsel dann allein tragen.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

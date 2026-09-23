@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes sheetUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 13 · KRAFT-TAB ALS EINE SEITE</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Die Ortszeile — eine Navigation, die nie ein Wort abschneidet</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:840px;line-height:1.7">Vier Themen passen als vier Wörter auf 361 dp nicht nebeneinander, bei 200 % nicht einmal zwei. Die Antwort ist deshalb nicht, die Wörter kleiner, kürzer oder zu Symbolen zu machen, sondern <strong style="color:#CDD3EA">immer nur eines zu zeigen</strong> — das, in dem man steht — und die anderen drei einen Tipp entfernt als vollständige Wörter zu halten.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Nur Tokens aus atem_theme.dart</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · Text ≥ 12 sp · ≥ 4,5:1</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">200 % auf 320 dp ohne Überlauf</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Kein Ripple · max. 1 BackdropFilter</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">Farbe nie allein · #7A2BDB nie als Text</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">DER SATZ, AN DEM ALLES GEMESSEN WIRD</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1000px">Ein Wort sagt, wo ich bin. Vier Marken sagen, wie viel es gibt und wie weit ich bin. Ein Tipp zeigt alle vier Wörter — vollständig, in 48 dp Zeilen, bei jeder Schriftgrösse.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Damit trägt die Leiste alle vier geforderten Fähigkeiten, ohne je mit dem Platz zu ringen: sie zeigt immer nur so viel Text, wie garantiert passt, und verlagert die Vollständigkeit in eine Fläche, die vertikal wachsen darf.</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A · DIE ORTSZEILE — ZUSTÄNDE UND ANATOMIE</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:420px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:15px;font-weight:600">Live — tippen, springen, scrollen</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#00F2FE;border:1px solid rgba(0,242,254,0.4);border-radius:30px;padding:3px 9px">INTERAKTIV</span>
+</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Tipp auf die Zeile öffnet die Sprungliste; die Marken zeigen Position und Fortschritt im Thema.</div>
+
+<div style="margin-top:16px;position:relative;width:361px;margin-left:auto;margin-right:auto;border:1px solid #232334;border-radius:18px;background:#050507;overflow:hidden">
+<div onClick="{{ toggleJump }}" role="button" aria-label="{{ barA11y }}" style="cursor:pointer;background:#0B0C14;border-bottom:1px solid #232334">
+<div style="height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 16px">
+<span style="font-size:16px;font-weight:600;color:#FFFFFF">{{ currentName }}</span>
+<span style="display:flex;align-items:center;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#94A3B8;font-variant-numeric:tabular-nums">{{ counter }}</span>
+<svg width="11" height="7" viewBox="0 0 11 7" style="transform:rotate({{ chevronDeg }}deg);transition:transform 200ms ease-out"><path d="M1 1l4.5 4.5L10 1" stroke="#94A3B8" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg>
+</span>
+</div>
+<div style="display:flex;gap:4px;padding:0 16px 0">
+<sc-for list="{{ marks }}" as="m" hint-placeholder-count="4">
+<div style="flex:1;height:2px;border-radius:2px;background:{{ m.track }};position:relative;overflow:hidden">
+<div style="position:absolute;left:0;top:0;bottom:0;width:{{ m.fill }};background:{{ m.fillColor }};box-shadow:{{ m.glow }};transition:{{ markTransition }}"></div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ jumpOpen }}" hint-placeholder-val="{{ false }}">
+<div style="background:#0B0C14;border-bottom:1px solid #232334;animation:sheetUp 200ms cubic-bezier(0.33,1,0.68,1)">
+<sc-for list="{{ jumpRows }}" as="r" hint-placeholder-count="4">
+<div onClick="{{ r.onClick }}" role="button" aria-label="{{ r.a11y }}" style="height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer;border-top:1px solid #16161F" style-hover="background:#14141D">
+<span style="font-size:14px;font-weight:{{ r.weight }};color:{{ r.color }}">{{ r.name }}</span>
+<span style="display:flex;align-items:center;gap:8px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:{{ r.hereColor }}">{{ r.here }}</span>
+<svg width="13" height="10" viewBox="0 0 13 10"><path d="M1 5l4 4 7-8" stroke="{{ r.checkColor }}" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<div onScroll="{{ onDemoScroll }}" style="height:190px;overflow-y:auto;padding:0 16px 16px;scrollbar-width:none">
+<sc-for list="{{ demoSections }}" as="s" hint-placeholder-count="4">
+<div>
+<div style="height:16px"></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">{{ s.kicker }}</div>
+<div style="margin-top:8px;height:{{ s.h }}px;border-radius:16px;background:#14141D;border:1px solid #232334"></div>
+<div style="margin-top:8px;height:{{ s.h2 }}px;border-radius:16px;background:#14141D;border:1px solid #232334"></div>
+<div style="position:relative;margin-top:16px;height:36px;display:flex;align-items:center">
+<div style="position:absolute;left:0;right:0;top:50%;height:1px;background:#232334"></div>
+<div style="position:absolute;left:14%;right:14%;top:50%;height:2px;transform:translateY(-1px);background:linear-gradient(90deg,transparent,#FFB020,transparent)"></div>
+</div>
+</div>
+</sc-for>
+<div style="height:40px"></div>
+</div>
+</div>
+
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Drei Träger je Zustand:</strong> das Wort (welches Thema), die Zahl „{{ counter }}" (die Position), die Marken (wie viele, wie weit) — Farbe ist der vierte, nie der erste.</div>
+</div>
+
+<div style="width:360px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Anatomie · 48 dp, drei Zonen</div>
+<div style="margin-top:16px;display:flex;flex-direction:column">
+<div style="border:1.5px dashed rgba(0,242,254,0.45);border-radius:14px 14px 0 0;padding:10px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">① NAME · titleMedium 16 SP, WEISS</div>
+<div style="margin-top:2px;font-size:11px;color:#94A3B8;line-height:1.6">Immer genau ein Wort, immer vollständig. Nie ellipsiert, nie verkleinert — deshalb existiert das Platzproblem nicht mehr.</div>
+</div>
+<div style="border:1.5px dashed rgba(0,242,254,0.45);border-top:none;padding:10px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">② POSITION · labelMicro „2 / 4" + CHEVRON</div>
+<div style="margin-top:2px;font-size:11px;color:#94A3B8;line-height:1.6">Die Zahl ist der farbunabhängige Träger von „es gibt mehr". Der Chevron sagt „öffnet sich", nicht „scrollt seitlich".</div>
+</div>
+<div style="border:1.5px dashed rgba(240,34,119,0.5);border-radius:0 0 14px 14px;padding:10px 14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#F02277">③ MARKEN · n × 2 DP, GLEICHE BREITE</div>
+<div style="margin-top:2px;font-size:11px;color:#94A3B8;line-height:1.6">Erledigt: #94A3B8 gefüllt · aktuell: Bereichston (Kraft #FFB020), füllt sich mit dem Scrollfortschritt · offen: #16161F. Drei Formzustände, nicht drei Farben.</div>
+</div>
+</div>
+<div style="margin-top:14px;font-size:11.5px;color:#94A3B8;line-height:1.7">Höhe: <code style="color:#CDD3EA">max(48, Schriftgrösse × 1,35 + 24) + 2</code> · Fläche <code style="color:#CDD3EA">surfaceSolid #0B0C14</code> deckend (kein Blur — das Blur-Budget der Seite bleibt frei) · Hairline #232334 unten, dauerhaft, weil hier immer Inhalt durchläuft.</div>
+</div>
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">200 % Systemschrift · 320 dp</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Der kritische Fall der alten Lösung — hier unkritisch, weil nur ein Wort im Rennen ist.</div>
+<div style="margin-top:14px;width:256px;border:1px solid #232334;border-radius:14px;background:#0B0C14;padding:0;overflow:hidden">
+<div style="height:69px;display:flex;align-items:center;justify-content:space-between;padding:0 14px">
+<span style="font-size:32px;font-weight:600;color:#FFFFFF;white-space:nowrap">Auswertung</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:20px;color:#94A3B8;flex:none;margin-left:8px">3/4</span>
+</div>
+<div style="display:flex;gap:4px;padding:0 14px 0">
+<div style="flex:1;height:2px;border-radius:2px;background:#94A3B8"></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#94A3B8"></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#FFB020;box-shadow:0 0 6px rgba(255,176,32,0.6)"></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Längstes Wort („Auswertung", 10 Zeichen) bei 32 sp ≈ 170 dp + Zähler 52 dp + Polster 28 dp = 250 dp auf 320 dp. Die Sprungliste wächst vertikal, ihre Zeilen auf 68 dp — Vollwörter bleiben vollständig.</div>
+</div>
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Wiederverwendung · Cardio mit 2 Themen</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Derselbe Baustein, andere Zahl an Marken und anderer Bereichston — keine Sonderfassung.</div>
+<div style="margin-top:14px;border:1px solid #232334;border-radius:14px;background:#0B0C14;overflow:hidden">
+<div style="height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 14px">
+<span style="font-size:16px;font-weight:600;color:#FFFFFF">Auswertung</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#94A3B8">2 / 2</span>
+</div>
+<div style="display:flex;gap:4px;padding:0 14px"><div style="flex:1;height:2px;border-radius:2px;background:#94A3B8"></div><div style="flex:1;height:2px;border-radius:2px;background:#7B2CBF"></div></div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Ab zwei Themen sinnvoll, ab drei zwingend. Der Bereichston kommt vom Tab-Root — <strong style="color:#FFB020">Kraft #FFB020</strong>, Cardio Violet, Hybrid Magenta. Die Marke ist Fläche, nie Text, deshalb ist Violet hier erlaubt.</div>
+</div>
+
+</div>
+
+<div style="margin-top:24px;max-width:1240px;background:rgba(255,176,32,0.05);border:1px solid rgba(255,176,32,0.35);border-radius:20px;padding:24px 28px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#FFB020">FARBTEILUNG · BEREICHSTON GEGEN INTERAKTIONSFARBE</div>
+<div style="margin-top:10px;font-size:15px;font-weight:600;line-height:1.55;max-width:1000px">Cyan bleibt global für alles Antippbare reserviert. Der Bereichston sagt nur, <em>wo</em> man ist — im Kraft-Tab ist er Amber #FFB020, wie der Nav-Punkt der Bottom-Bar.</div>
+<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:20px;font-size:12.5px;color:#94A3B8;line-height:1.7">
+<div style="flex:1;min-width:300px"><strong style="color:#FFB020">Amber trägt Ort:</strong> Marken der Ortszeile, die Fuge, der Kicker der Startkarte, Symbolkästen der Wege, der Sperr-Fortschritt in der Auswertung, der Rand eines freigeschalteten Blocks. Amber ist nie ein Versprechen auf eine Handlung.</div>
+<div style="flex:1;min-width:300px"><strong style="color:#00F2FE">Cyan trägt Handlung:</strong> Textaktionen („Alle 6"), die Auswahlmarkierung „HIER" in der Sprungliste, Links. Wer Cyan sieht, kann tippen — im ganzen Produkt, unabhängig vom Bereich.</div>
+<div style="flex:1;min-width:280px"><strong style="color:#FFFFFF">Unverändert:</strong> Messwerte behalten ihre Fachfarben (Volumen-Balken cyan als Last-Kanal aus Modul 3), und der Marken-CTA bleibt der Magenta-Gradient. Damit kollidiert der Bereichston mit keiner bestehenden Semantik.</div>
+</div>
+<div style="margin-top:10px;font-size:11.5px;color:#F02277;line-height:1.6">Nachzutragen in <code style="color:#CDD3EA">atem_theme.dart</code>: <code style="color:#CDD3EA">AtemColors.toneStrength = #FFB020</code> als Bereichston-Familie (Kraft Amber, Cardio Violet, Hybrid Magenta) — die einzige Tokenerweiterung dieses Moduls.</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · DIE GLIEDERUNG — EINE ÜBERSCHRIFT, NICHT ZWEI</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:400px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Die Fuge — 44 dp, sichtbar beim Wischen</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Hairline über die volle Breite, darüber ein 2-dp-Segment über 72 % im Bereichston, das nach beiden Seiten ausläuft, plus unscharfe Kopie als Schein.</div>
+<div style="margin-top:16px;background:#050507;border-radius:14px;height:44px;position:relative;display:flex;align-items:center">
+<div style="position:absolute;left:0;right:0;top:50%;height:1px;background:#232334"></div>
+<div style="position:absolute;left:14%;right:14%;top:50%;height:6px;transform:translateY(-3px);background:linear-gradient(90deg,transparent,#FFB020,transparent);filter:blur(6px);opacity:0.65"></div>
+<div style="position:absolute;left:14%;right:14%;top:50%;height:2px;transform:translateY(-1px);background:linear-gradient(90deg,transparent,#FFB020,transparent)"></div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Beim schnellen Wischen bleibt der helle Kern als Blitz sichtbar, im Stand ist er dezent. Rein dekorativ, <code style="color:#CDD3EA">excludeSemantics</code> — der Themenwechsel wird über die Ortszeile angesagt, nicht über die Fuge. Nach dem letzten Thema: nur Hairline auf 24 dp, ohne Segment (Ende statt Ankündigung).</div>
+</div>
+
+<div style="width:360px;background:rgba(0,255,135,0.05);border:1px solid rgba(0,255,135,0.35);border-radius:20px;padding:24px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00FF87">ENTSCHEIDUNG · DER NAME LEBT IN DER ZEILE</div>
+<div style="margin-top:10px;font-size:14.5px;font-weight:600;line-height:1.6">Kein Thema trägt seinen Namen ein zweites Mal im Inhalt. Innerhalb eines Themas heissen Überschriften nach dem <em>Block</em>, nie nach dem Thema.</div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.7">„Verlauf" steht in der Ortszeile; im Inhalt steht „EINHEITEN JE MONAT", „MUSKELBALANCE", „LETZTE EINHEITEN". Alle Blocküberschriften: labelMicro 12 sp Mono, +0,16 em, #94A3B8 — genau ein Rezept, optional mit rechtsbündiger Aktion in derselben Zeile.</div>
+</div>
+
+<div style="width:360px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Woran man beim Wischen merkt, dass ein Thema endet</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Drei Signale gleichzeitig, keines davon Text: die <strong style="color:#CDD3EA">Fuge</strong> läuft durch, die <strong style="color:#CDD3EA">Marke</strong> in der Ortszeile springt eine Position weiter und füllt von 0 an, das <strong style="color:#CDD3EA">Wort</strong> wechselt. Wer nicht liest, sieht mindestens die Fuge; wer hinsieht, liest das neue Wort.</div>
+</div>
+
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · TRAINIEREN — HÄUFIGKEIT ALS GRÖSSE</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:320px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Vier Wege, vier Gewichte</div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.6">Der Grund, warum jemand die App öffnet, bekommt die einzige Gradient-Rand-Karte (K2, genau 1 je Screen). Nachtragen ist eine Zeile.</div>
+<div style="margin-top:16px;width:272px;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;gap:10px">
+<div style="border-radius:20px;padding:1.5px;background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)">
+<div style="border-radius:19px;background:#14141D;padding:16px">
+<div style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#FFB020;box-shadow:0 0 8px #FFB020"></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#FFB020">HEUTE GEPLANT</span></div>
+<div style="margin-top:8px;font-size:16px;font-weight:600">Oberkörper A · Woche 3</div>
+<div style="margin-top:3px;font-size:12px;color:#94A3B8">5 Übungen · ca. 40 Min</div>
+<div style="margin-top:14px;height:48px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;letter-spacing:0.10em">STARTEN</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<div style="width:36px;height:36px;border-radius:10px;background:rgba(255,176,32,0.08);border:1px solid rgba(255,176,32,0.35);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="5,3 21,12 5,21" fill="none" stroke="#FFB020" stroke-width="2" stroke-linejoin="round"></polygon></svg></div>
+<div><div style="font-size:13px;font-weight:600">Frei starten</div><div style="margin-top:2px;font-size:11px;color:#94A3B8">Ohne Plan loslegen</div></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<div style="width:36px;height:36px;border-radius:10px;background:rgba(255,176,32,0.08);border:1px solid rgba(255,176,32,0.35);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="3" stroke="#FFB020" stroke-width="2"></rect><path d="M8 9h8 M8 14h5" stroke="#FFB020" stroke-width="2" stroke-linecap="round"></path></svg></div>
+<div><div style="font-size:13px;font-weight:600">Plan wählen</div><div style="margin-top:2px;font-size:11px;color:#94A3B8">Aus deinen Plänen</div></div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column">
+<div style="height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Übungskatalog</span><svg width="7" height="11" viewBox="0 0 7 11"><path d="M1 1l5 4.5L1 10" stroke="#94A3B8" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div>
+<div style="height:48px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #16161F"><span style="font-size:13px;color:#CDD3EA">Einheit nachtragen</span><svg width="7" height="11" viewBox="0 0 7 11"><path d="M1 1l5 4.5L1 10" stroke="#94A3B8" stroke-width="1.8" fill="none" stroke-linecap="round"></path></svg></div>
+</div>
+</div>
+</div>
+
+<div style="width:340px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Die Rangfolge ist eine Regel</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7"><strong style="color:#CDD3EA">Karte mit Gradient-Rand</strong> = der eine Weg, den die Seite verkauft (heute geplante Einheit; ohne Termin nimmt „Frei starten" diesen Platz ein und rückt aus dem Raster). <strong style="color:#CDD3EA">Halbkarten</strong> = die zwei regelmässigen Alternativen. <strong style="color:#CDD3EA">Zeilen mit Chevron</strong> = Wege auf Unterseiten und seltene Handlungen. Drei Gewichtsklassen, nach Häufigkeit belegt — nicht nach Wichtigkeitsgefühl.</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Kein Termin und kein Plan vorhanden: die Gradient-Karte trägt „Frei starten", die Halbkarten werden zu einer („Plan anlegen"), die Zeilen bleiben. Das Raster ändert die Belegung, nie die Klassenordnung.</div>
+</div>
+
+<div style="width:320px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:24px">
+<div style="font-size:15px;font-weight:600">Verlauf &amp; Pläne — knapp gehalten</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">ERFASSTE EINHEITEN</div>
+<div style="margin-top:4px;display:flex;align-items:baseline;gap:6px"><span style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums">63</span><span style="font-size:12px;color:#94A3B8">seit Mai 2025</span></div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:14px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">DEINE PLÄNE</span><span style="font-size:12px;color:#00F2FE">Alle 6</span></div>
+<div style="margin-top:10px;display:flex;gap:8px"><div style="flex:1;height:52px;border-radius:14px;background:#1A1A26"></div><div style="flex:1;height:52px;border-radius:14px;background:#1A1A26"></div></div>
+</div>
+<div style="background:#14141D;border:1px dashed #232334;border-radius:16px;padding:14px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#94A3B8">ATEM-PLÄNE</div>
+<div style="margin-top:4px;font-size:12px;color:#CDD3EA;line-height:1.6">Kuratierte Pläne, frei und als Premium — in Vorbereitung.</div>
+</div>
+</div>
+<div style="margin-top:12px;font-size:11.5px;color:#94A3B8;line-height:1.7">Der leere ATEM-Platz trägt den gestrichelten Rand aus Modul 2 („hier fehlt etwas", als Form statt als Farbe) und keinen Knopf — es gibt nichts zu tippen, was den Zustand ändert.</div>
+</div>
+
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · AUSWERTUNG — DER GESPERRTE BLOCK</div>
+<div style="margin-top:16px;max-width:1240px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:26px">
+<div style="font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Ein gesperrter Block zeigt drei Dinge und keine vierte: <strong style="color:#CDD3EA">seinen Namen</strong>, <strong style="color:#CDD3EA">die Form dessen, was kommt</strong> (als Umriss in <code style="color:#CDD3EA">#1A1A26</code>, ohne Achse, ohne Zahl, ohne Beschriftung) und <strong style="color:#CDD3EA">die Bedingung mit Nenner</strong>. Er behauptet damit keinen Wert, den er nicht hat, und er verschwindet nicht — nach einem Neubeginn steht die ganze Auswertung als Versprechen da.</div>
+<div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:16px">
+
+<div style="width:250px;background:#050507;border:1px solid #16161F;border-radius:18px;padding:18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;color:#94A3B8">GESPERRT</div>
+<div style="margin-top:8px;font-size:14px;font-weight:600">Formkurve</div>
+<div style="margin-top:12px;height:54px;border-radius:12px;background:#1A1A26;display:flex;align-items:center;justify-content:center">
+<svg width="120" height="30" viewBox="0 0 120 30"><path d="M4 24 30 13 58 19 86 7 116 4" fill="none" stroke="#232334" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:12px;color:#CDD3EA">Ab 8 Einheiten</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;font-variant-numeric:tabular-nums">5 / 8</span></div>
+<div style="margin-top:6px;height:5px;border-radius:5px;background:#16161F;overflow:hidden"><div style="width:62%;height:100%;border-radius:5px;background:#FFB020"></div></div>
+</div>
+
+<div style="width:250px;background:#050507;border:1px solid #16161F;border-radius:18px;padding:18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;color:#94A3B8">GESPERRT · NEUBEGINN</div>
+<div style="margin-top:8px;font-size:14px;font-weight:600">Muskelbalance</div>
+<div style="margin-top:12px;height:54px;border-radius:12px;background:#1A1A26;display:flex;align-items:flex-end;justify-content:center;gap:8px;padding-bottom:12px">
+<div style="width:16px;height:16px;border-radius:3px;background:#232334"></div>
+<div style="width:16px;height:28px;border-radius:3px;background:#232334"></div>
+<div style="width:16px;height:22px;border-radius:3px;background:#232334"></div>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:12px;color:#CDD3EA">Ab 8 Einheiten mit Übungen</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;font-variant-numeric:tabular-nums">0 / 8</span></div>
+<div style="margin-top:6px;height:5px;border-radius:5px;background:#16161F;overflow:hidden"><div style="width:2px;height:100%;border-radius:5px;background:#94A3B8"></div></div>
+</div>
+
+<div style="width:250px;background:#050507;border:1px solid #16161F;border-radius:18px;padding:18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;color:#94A3B8">GESPERRT · TEXTAUSSAGE</div>
+<div style="margin-top:8px;font-size:14px;font-weight:600">Trainingsmuster</div>
+<div style="margin-top:12px;height:54px;border-radius:12px;background:#1A1A26;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 16px">
+<div style="height:6px;border-radius:3px;background:#232334"></div>
+<div style="height:6px;width:64%;border-radius:3px;background:#232334"></div>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:12px;color:#CDD3EA">Ab 6 Wochen mit Einheiten</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;font-variant-numeric:tabular-nums">3 / 6</span></div>
+<div style="margin-top:6px;height:5px;border-radius:5px;background:#16161F;overflow:hidden"><div style="width:50%;height:100%;border-radius:5px;background:#FFB020"></div></div>
+</div>
+
+<div style="width:250px;background:#050507;border:1px solid rgba(255,176,32,0.35);border-radius:18px;padding:18px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;color:#FFB020">FREIGESCHALTET</div>
+<div style="margin-top:8px;font-size:14px;font-weight:600">Wochenvolumen</div>
+<div style="margin-top:12px;height:54px;display:flex;align-items:flex-end;gap:7px">
+<div style="flex:1;height:60%;border-radius:3px;background:#00F2FE"></div>
+<div style="flex:1;height:82%;border-radius:3px;background:#00F2FE"></div>
+<div style="flex:1;height:44%;border-radius:3px;background:#00F2FE"></div>
+<div style="flex:1;height:100%;border-radius:3px;background:#00F2FE"></div>
+<div style="flex:1;height:2px;border-radius:3px;background:#94A3B8"></div>
+</div>
+<div style="margin-top:12px;display:flex;align-items:baseline;justify-content:space-between"><span style="font-size:12px;color:#CDD3EA">Ø 12,4 t je Woche</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">5 WOCHEN</span></div>
+<div style="margin-top:6px;font-size:11px;color:#94A3B8;line-height:1.6">Grundlage steht in derselben Zeile wie der Wert — kein Urteil, keine Ampel.</div>
+</div>
+
+</div>
+<div style="margin-top:20px;border-top:1px solid #16161F;padding-top:18px;display:flex;flex-wrap:wrap;gap:24px">
+<div style="flex:1;min-width:300px;font-size:12px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Formvokabular — vier Umrisse, an die Datenform gebunden:</strong> Kurve (Trend über Zeit) · Balken (Vergleich diskreter Werte) · Zeilen (Textaussage) · Ring/Zahl (ein Wert mit Bezug). Keine freie Wahl je Block: der Umriss ist die Silhouette der späteren Darstellung, sonst lügt er über die Form.</div>
+<div style="flex:1;min-width:300px;font-size:12px;color:#94A3B8;line-height:1.7"><strong style="color:#FFFFFF">Der Umriss pulsiert nicht.</strong> Ein Atmen sähe aus wie das Ladeskelett aus Modul 2 (gleiche Fläche, gleiche Geometrie) und müsste bei „Animationen reduzieren" auf halber Deckkraft einfrieren — genau der Renderfehler-Eindruck, den die Randbedingung verbietet. Der gesperrte Block ist statisch; das einzige Lebendige ist der Fortschrittsbalken, und der bewegt sich nur, wenn sich Daten ändern.</div>
+</div>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · DIE SEITE ALS GANZES — VIER ARTBOARDS</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Normalfall</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Ortszeile gepinnt, Thema 1 zu 40 % gelesen.</div>
+<div style="margin-top:14px;width:256px;height:440px;border:1px solid #232334;border-radius:22px;background:#050507;overflow:hidden;margin-left:auto;margin-right:auto;display:flex;flex-direction:column">
+<div style="flex:none;background:#0B0C14;border-bottom:1px solid #232334">
+<div style="height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 14px"><span style="font-size:15px;font-weight:600">Trainieren</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">1 / 4</span></div>
+<div style="display:flex;gap:4px;padding:0 14px"><div style="flex:1;height:2px;border-radius:2px;background:#16161F;overflow:hidden"><div style="width:40%;height:100%;background:#FFB020"></div></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div></div>
+</div>
+<div style="flex:1;padding:14px;display:flex;flex-direction:column;gap:9px;overflow:hidden">
+<div style="border-radius:18px;padding:1.5px;background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)"><div style="border-radius:17px;background:#14141D;padding:13px"><div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#FFB020">HEUTE GEPLANT</div><div style="margin-top:5px;font-size:13px;font-weight:600">Oberkörper A · Woche 3</div><div style="margin-top:10px;height:36px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:0.1em">STARTEN</div></div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="height:74px;border-radius:16px;background:#14141D;border:1px solid #232334;padding:10px;box-sizing:border-box;font-size:11px;font-weight:600">Frei starten</div><div style="height:74px;border-radius:16px;background:#14141D;border:1px solid #232334;padding:10px;box-sizing:border-box;font-size:11px;font-weight:600">Plan wählen</div></div>
+<div style="height:40px;display:flex;align-items:center;border-top:1px solid #16161F;font-size:11.5px;color:#CDD3EA">Übungskatalog</div>
+<div style="height:40px;display:flex;align-items:center;border-top:1px solid #16161F;font-size:11.5px;color:#CDD3EA">Einheit nachtragen</div>
+<div style="position:relative;height:30px"><div style="position:absolute;left:0;right:0;top:50%;height:1px;background:#232334"></div><div style="position:absolute;left:14%;right:14%;top:50%;height:2px;transform:translateY(-1px);background:linear-gradient(90deg,transparent,#FFB020,transparent)"></div></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#94A3B8">EINHEITEN JE MONAT</div>
+</div>
+</div>
+</div>
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Laden — ein Gate, nicht vier</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Skelett nur für den sichtbaren Bereich; die Ortszeile zeigt sofort Wort und Marken, weil die Themen feststehen und keine Daten brauchen.</div>
+<div style="margin-top:14px;width:256px;height:440px;border:1px solid #232334;border-radius:22px;background:#050507;overflow:hidden;margin-left:auto;margin-right:auto;display:flex;flex-direction:column">
+<div style="flex:none;background:#0B0C14;border-bottom:1px solid #232334">
+<div style="height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 14px"><span style="font-size:15px;font-weight:600">Trainieren</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">1 / 4</span></div>
+<div style="display:flex;gap:4px;padding:0 14px"><div style="flex:1;height:2px;border-radius:2px;background:#FFB020"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div></div>
+</div>
+<div style="flex:1;padding:14px;display:flex;flex-direction:column;gap:9px">
+<div style="height:104px;border-radius:18px;background:#16161F;animation:skelPulse 1.6s ease-in-out infinite"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="height:74px;border-radius:16px;background:#16161F;animation:skelPulse 1.6s ease-in-out .12s infinite"></div><div style="height:74px;border-radius:16px;background:#16161F;animation:skelPulse 1.6s ease-in-out .12s infinite"></div></div>
+<div style="height:14px;width:60%;border-radius:7px;background:#16161F;animation:skelPulse 1.6s ease-in-out .24s infinite"></div>
+<div style="height:14px;width:45%;border-radius:7px;background:#16161F;animation:skelPulse 1.6s ease-in-out .24s infinite"></div>
+</div>
+</div>
+</div>
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Neubeginn — leer, nicht defekt</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Trainieren voll, Verlauf ein Satz, Auswertung als Versprechen, Pläne mit Ankündigung. Kein Thema fehlt — sonst sähe die App kleiner aus, als sie ist.</div>
+<div style="margin-top:14px;width:256px;height:440px;border:1px solid #232334;border-radius:22px;background:#050507;overflow:hidden;margin-left:auto;margin-right:auto;display:flex;flex-direction:column">
+<div style="flex:none;background:#0B0C14;border-bottom:1px solid #232334">
+<div style="height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 14px"><span style="font-size:15px;font-weight:600">Auswertung</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">3 / 4</span></div>
+<div style="display:flex;gap:4px;padding:0 14px"><div style="flex:1;height:2px;border-radius:2px;background:#94A3B8"></div><div style="flex:1;height:2px;border-radius:2px;background:#94A3B8"></div><div style="flex:1;height:2px;border-radius:2px;background:#FFB020"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div></div>
+</div>
+<div style="flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:hidden">
+<div style="background:#050507;border:1px solid #16161F;border-radius:16px;padding:12px"><div style="font-size:12px;font-weight:600">Formkurve</div><div style="margin-top:8px;height:34px;border-radius:10px;background:#1A1A26;display:flex;align-items:center;justify-content:center"><svg width="90" height="20" viewBox="0 0 90 20"><path d="M3 16 22 8 44 12 66 4 87 3" fill="none" stroke="#232334" stroke-width="2.6" stroke-linecap="round"></path></svg></div><div style="margin-top:8px;display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:10.5px;color:#CDD3EA">Ab 8 Einheiten</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">0 / 8</span></div><div style="margin-top:5px;height:4px;border-radius:4px;background:#16161F"><div style="width:2px;height:100%;background:#94A3B8;border-radius:4px"></div></div></div>
+<div style="background:#050507;border:1px solid #16161F;border-radius:16px;padding:12px"><div style="font-size:12px;font-weight:600">Muskelbalance</div><div style="margin-top:8px;height:34px;border-radius:10px;background:#1A1A26;display:flex;align-items:flex-end;justify-content:center;gap:6px;padding-bottom:8px"><div style="width:12px;height:12px;border-radius:2px;background:#232334"></div><div style="width:12px;height:18px;border-radius:2px;background:#232334"></div><div style="width:12px;height:15px;border-radius:2px;background:#232334"></div></div><div style="margin-top:8px;display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:10.5px;color:#CDD3EA">Ab 8 mit Übungen</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">0 / 8</span></div></div>
+</div>
+</div>
+</div>
+
+<div style="width:300px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">200 % auf 320 dp</div>
+<div style="margin-top:4px;font-size:11.5px;color:#94A3B8;line-height:1.6">Ortszeile 69 dp, ein Wort, Zähler bleibt. Inhalt einspaltig: Halbkarten stapeln, Zeilen wachsen auf 68 dp.</div>
+<div style="margin-top:14px;width:256px;height:440px;border:1px solid #232334;border-radius:22px;background:#050507;overflow:hidden;margin-left:auto;margin-right:auto;display:flex;flex-direction:column">
+<div style="flex:none;background:#0B0C14;border-bottom:1px solid #232334">
+<div style="height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px"><span style="font-size:26px;font-weight:600">Trainieren</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;color:#94A3B8;flex:none">1/4</span></div>
+<div style="display:flex;gap:4px;padding:0 12px"><div style="flex:1;height:2px;border-radius:2px;background:#FFB020"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div><div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div></div>
+</div>
+<div style="flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;overflow:hidden">
+<div style="border-radius:18px;padding:1.5px;background:linear-gradient(135deg,#F02277,#7A2BDB,#00F2FE)"><div style="border-radius:17px;background:#14141D;padding:12px"><div style="font-size:19px;font-weight:600;line-height:1.3">Oberkörper A · Woche 3</div><div style="margin-top:10px;height:52px;border-radius:30px;background:linear-gradient(90deg,#F02277,#C01963);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">STARTEN</div></div></div>
+<div style="height:68px;border-radius:16px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 14px;font-size:17px;font-weight:600">Frei starten</div>
+<div style="height:68px;border-radius:16px;background:#14141D;border:1px solid #232334;display:flex;align-items:center;padding:0 14px;font-size:17px;font-weight:600">Plan wählen</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · ÜBERGANG ZWISCHEN ZWEI THEMEN — BILDFOLGE</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-top:16px">
+
+<sc-for list="{{ transition }}" as="f" hint-placeholder-count="4">
+<div style="width:270px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:{{ f.kc }}">{{ f.kicker }}</div>
+<div style="margin-top:12px;border:1px solid #232334;border-radius:14px;background:#0B0C14;overflow:hidden">
+<div style="height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 14px"><span style="font-size:15px;font-weight:600;opacity:{{ f.wordOp }};transform:translateY({{ f.wordY }}px);transition:none">{{ f.word }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">{{ f.count }}</span></div>
+<div style="display:flex;gap:4px;padding:0 14px 0">
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F;overflow:hidden"><div style="width:{{ f.m1 }};height:100%;background:{{ f.m1c }}"></div></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F;overflow:hidden"><div style="width:{{ f.m2 }};height:100%;background:#FFB020"></div></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div>
+<div style="flex:1;height:2px;border-radius:2px;background:#16161F"></div>
+</div>
+<div style="height:70px;background:#050507;position:relative;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;left:0;right:0;top:{{ f.seamTop }};height:1px;background:#232334"></div>
+<div style="position:absolute;left:14%;right:14%;top:{{ f.seamTop }};height:2px;transform:translateY(-1px);background:linear-gradient(90deg,transparent,#FFB020,transparent);opacity:{{ f.seamOp }}"></div>
+</div>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#94A3B8;line-height:1.6">{{ f.note }}</div>
+</div>
+</sc-for>
+
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · SPEZIFIKATIONSTABELLE</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:180px 90px 110px 150px 1fr 110px;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>HÖHE</span><span>INNENPOLSTER</span><span>FLÄCHE</span><span>TYP-ROLLE</span><span>TAP-ZIEL</span>
+</div>
+<sc-for list="{{ spec }}" as="s" hint-placeholder-count="16">
+<div style="display:grid;grid-template-columns:180px 90px 110px 150px 1fr 110px;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline;line-height:1.5">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">{{ s.el }}</span>
+<span style="color:#CDD3EA;font-variant-numeric:tabular-nums">{{ s.h }}</span>
+<span style="color:#94A3B8">{{ s.pad }}</span>
+<span style="color:#94A3B8">{{ s.surface }}</span>
+<span style="color:#94A3B8">{{ s.type }}</span>
+<span style="color:{{ s.tapC }}">{{ s.tap }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · BEWEGUNGSTABELLE</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:150px 140px 1fr 90px 150px 110px 180px;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ÜBERGANG</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>REDUZIERTE BEWEGUNG</span>
+</div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="11">
+<div style="display:grid;grid-template-columns:150px 140px 1fr 90px 150px 110px 180px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:{{ m.tc }}">{{ m.trigger }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-variant-numeric:tabular-nums">{{ m.dur }}</span><span style="color:#94A3B8">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.reduced }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · STRINGTABELLE</div>
+<div style="margin-top:16px;width:980px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:230px 1fr 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span>
+</div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="26">
+<div style="display:grid;grid-template-columns:230px 1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · A11Y-NOTIZEN</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND / LIVE-REGION</span>
+</div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="10">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.55">
+<span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">K · WIEDERVERWENDUNG UND WAS WIRKLICH NEU IST</div>
+<div style="margin-top:16px;width:1164px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:28px">
+<div style="display:grid;grid-template-columns:110px 240px 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>HERKUNFT</span><span>BAUSTEIN</span><span>VERWENDUNG HIER</span>
+</div>
+<sc-for list="{{ reuse }}" as="r" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:110px 240px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:{{ r.c }}">{{ r.m }}</span><span style="color:#FFFFFF;font-weight:600">{{ r.b }}</span><span style="color:#94A3B8;line-height:1.6">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:56px;font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">L · ENTSCHEIDUNGSPROTOKOLL — JEDE VERWORFENE IDEE MIT DEM GRUND</div>
+<div style="margin-top:16px;max-width:960px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="12">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start">
+<div style="width:36px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;areaTone&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FFB020&quot;,&quot;options&quot;:[&quot;#FFB020&quot;,&quot;#7B2CBF&quot;,&quot;#F02277&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;showMarkProgress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;reducedMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;}}">
+class Component extends DCLogic {
+  state = { current: 0, progress: 0.35, jumpOpen: false };
+
+  themes = [
+    { name: 'Trainieren', kicker: 'TRAINIEREN', h: 92, h2: 60 },
+    { name: 'Verlauf', kicker: 'VERLAUF', h: 66, h2: 76 },
+    { name: 'Auswertung', kicker: 'AUSWERTUNG', h: 80, h2: 80 },
+    { name: 'Pläne', kicker: 'PLÄNE', h: 70, h2: 54 }
+  ];
+
+  toggleJump = () => this.setState({ jumpOpen: !this.state.jumpOpen });
+  pick = (i) => () => this.setState({ current: i, progress: 0, jumpOpen: false });
+
+  onDemoScroll = (e) => {
+    const el = e.currentTarget;
+    const max = Math.max(1, el.scrollHeight - el.clientHeight);
+    const t = Math.min(0.999, el.scrollTop / max);
+    const idx = Math.min(this.themes.length - 1, Math.floor(t * this.themes.length));
+    const within = t * this.themes.length - idx;
+    if (idx !== this.state.current || Math.abs(within - this.state.progress) > 0.02) {
+      this.setState({ current: idx, progress: within });
+    }
+  };
+
+  renderVals() {
+    const cur = this.state.current;
+    const prog = this.state.progress;
+    const tone = this.props.areaTone ?? '#FFB020';
+    const withProgress = this.props.showMarkProgress ?? true;
+    const marks = this.themes.map((t, i) => ({
+      track: '#16161F',
+      fill: i < cur ? '100%' : i === cur ? (withProgress ? Math.round(Math.max(4, prog * 100)) + '%' : '100%') : '0%',
+      fillColor: i < cur ? '#94A3B8' : tone,
+      glow: i === cur ? '0 0 6px ' + tone + '99' : 'none'
+    }));
+    const jumpRows = this.themes.map((t, i) => ({
+      name: t.name,
+      onClick: this.pick(i),
+      a11y: 'Zu ' + t.name + ' springen, ' + (i + 1) + ' von 4',
+      weight: i === cur ? 600 : 500,
+      color: i === cur ? '#FFFFFF' : '#CDD3EA',
+      here: i === cur ? 'HIER' : '',
+      hereColor: '#00F2FE',
+      checkColor: i === cur ? '#00F2FE' : 'transparent'
+    }));
+
+    return {
+      currentName: this.themes[cur].name,
+      counter: (cur + 1) + ' / 4',
+      barA11y: 'Thema ' + this.themes[cur].name + ', ' + (cur + 1) + ' von 4. Öffnet die Themenliste.',
+      chevronDeg: this.state.jumpOpen ? 180 : 0,
+      jumpOpen: this.state.jumpOpen,
+      marks, jumpRows,
+      markTransition: (this.props.reducedMotion ?? false) ? 'none' : 'width 120ms linear',
+      demoSections: this.themes,
+      toggleJump: this.toggleJump,
+      onDemoScroll: this.onDemoScroll,
+      transition: [
+        { kicker: '1 · IM THEMA', kc: '#94A3B8', word: 'Trainieren', count: '1 / 4', wordOp: 1, wordY: 0, m1: '78%', m1c: '#FFB020', m2: '0%', seamTop: '92%', seamOp: 0.35, note: 'Marke 1 füllt sich mit dem Scrollfortschritt, die Fuge ist am unteren Rand gerade sichtbar geworden.' },
+        { kicker: '2 · FUGE UNTER DER ZEILE', kc: '#00F2FE', word: 'Trainieren', count: '1 / 4', wordOp: 0.35, wordY: -4, m1: '100%', m1c: '#FFB020', m2: '0%', seamTop: '22%', seamOp: 1, note: 'Auslösepunkt: die Fuge passiert die Unterkante der Ortszeile. Das alte Wort verlässt nach oben, Marke 1 ist voll.' },
+        { kicker: '3 · NEUES WORT', kc: '#00F2FE', word: 'Verlauf', count: '2 / 4', wordOp: 0.6, wordY: 5, m1: '100%', m1c: '#94A3B8', m2: '4%', seamTop: '8%', seamOp: 0.6, note: 'Das neue Wort kommt von unten herein, Marke 1 wird grau (erledigt), Marke 2 beginnt bei 4 % — nie bei 0, damit sie sichtbar ist.' },
+        { kicker: '4 · RUHELAGE', kc: '#94A3B8', word: 'Verlauf', count: '2 / 4', wordOp: 1, wordY: 0, m1: '100%', m1c: '#94A3B8', m2: '18%', seamTop: '-10%', seamOp: 0, note: 'Nach 240 ms ruht alles. Gesamtgewinn: drei gleichzeitige Signale, kein einziges davon ein Ton oder eine Vibration.' }
+      ],
+      spec: [
+        { el: 'Ortszeile', h: 'max(48, sp×1,35+24)+2', pad: '16 / 0 dp', surface: '#0B0C14 deckend', type: 'Name titleMedium 16 weiss · Zähler labelMicro #94A3B8', tap: 'volle Breite × Höhe', tapC: '#00FF87' },
+        { el: 'Marken-Streifen', h: '2 dp', pad: '16 dp seitlich', surface: 'Track #16161F', type: '—', tap: 'nicht separat', tapC: '#94A3B8' },
+        { el: 'Marke erledigt', h: '2 dp', pad: 'Lücke 4 dp', surface: '#94A3B8 gefüllt', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Marke aktuell', h: '2 dp', pad: 'Lücke 4 dp', surface: 'Bereichston #FFB020 + Schein, füllt 4→100 %', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Sprungliste', h: 'n × 48 dp', pad: '16 dp seitlich', surface: '#0B0C14, Trennlinien #16161F', type: 'Zeile labelSmall 14 · „HIER" labelMicro cyan', tap: '48 dp je Zeile', tapC: '#00FF87' },
+        { el: 'Fuge (regulär)', h: '44 dp', pad: '—', surface: 'Hairline #232334 + Segment 2 dp Bereichston, 72 % Breite, Schein 6 dp Blur', type: '—', tap: 'keines (dekorativ)', tapC: '#94A3B8' },
+        { el: 'Fuge (Seitenende)', h: '24 dp', pad: '—', surface: 'nur Hairline #232334', type: '—', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Startkarte (K2)', h: 'Inhalt', pad: '16 dp', surface: '#14141D + Gradient-Rand 1,5 dp', type: 'Kicker labelMicro Bereichston · Titel titleMedium · Meta labelSmall', tap: 'CTA 48 dp', tapC: '#00FF87' },
+        { el: 'Halbkarte (K3)', h: 'min. 96 dp', pad: '14 dp', surface: '#14141D, Rand #232334', type: 'Titel 13/600 · Unterzeile labelSmall #94A3B8', tap: 'ganze Karte ≥ 48 dp', tapC: '#00FF87' },
+        { el: 'Zeile mit Chevron', h: '48 dp', pad: '0 / 14 dp', surface: 'transparent, Trennlinie #16161F oben', type: 'labelSmall #CDD3EA', tap: '48 dp × volle Breite', tapC: '#00FF87' },
+        { el: 'Blocküberschrift', h: 'Inhalt', pad: '0 dp', surface: '—', type: 'labelMicro 12 Mono +0,16 em #94A3B8', tap: 'keines (Aktion separat)', tapC: '#94A3B8' },
+        { el: 'Auswertungsblock', h: 'Inhalt', pad: '18 dp', surface: '#050507, Rand #16161F', type: 'Name 14/600 weiss · Bedingung labelSmall #CDD3EA', tap: 'gesperrt: keines', tapC: '#94A3B8' },
+        { el: 'Umriss-Fläche', h: '54 dp', pad: '—', surface: '#1A1A26, Form in #232334', type: '— (keine Achse, keine Zahl)', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Fortschritt (Sperre)', h: '5 dp', pad: '—', surface: 'Track #16161F, Füllung Bereichston (bei 0: 2-dp-Stummel #94A3B8)', type: 'Nenner labelMicro #94A3B8', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Leerer ATEM-Platz', h: 'Inhalt', pad: '14 dp', surface: '#14141D, Rand gestrichelt #232334', type: 'Kicker labelMicro · Satz labelSmall #CDD3EA', tap: 'keines (nichts zu tun)', tapC: '#94A3B8' },
+        { el: 'Themen-Abstand', h: '—', pad: '16 dp oben/unten je Thema', surface: '—', type: '—', tap: '—', tapC: '#94A3B8' }
+      ],
+      motion: [
+        { el: 'Marke füllt', trigger: 'Scrollposition', prop: 'Breite der Füllung = gelesener Anteil des Themas', dur: 'positional', curve: 'linear an den Scroll gekoppelt', rest: 'Anteil', reduced: 'bleibt — funktional, keine Animation', tc: '#00F2FE' },
+        { el: 'Wort wechselt', trigger: 'Fuge passiert Unterkante der Zeile', prop: 'alt: −4 dp + Deckkraft → 0 · neu: +5 dp → 0 + Deckkraft → 1', dur: '240 ms', curve: 'ease-out-cubic', rest: 'neues Wort mittig', reduced: 'harter Austausch, kein Weg', tc: '#00F2FE' },
+        { el: 'Marke wird erledigt', trigger: 'wie Wortwechsel', prop: 'Füllfarbe cyan → #94A3B8, Schein → 0', dur: '240 ms', curve: 'ease-out', rest: 'grau gefüllt', reduced: 'harter Farbwechsel', tc: '#00F2FE' },
+        { el: 'Liste öffnet', trigger: 'Tipp auf Ortszeile', prop: 'Höhe 0 → n×48 + Deckkraft, Chevron 0 → 180°', dur: '200 ms', curve: 'ease-out-cubic', rest: 'offen', reduced: 'nur Höhe, ohne Deckkraft-Verlauf', tc: '#F02277' },
+        { el: 'Liste schliesst', trigger: 'Auswahl / zweiter Tipp / Scroll', prop: 'Höhe → 0, Chevron → 0°', dur: '160 ms', curve: 'ease-in', rest: 'geschlossen', reduced: 'sofort', tc: '#F02277' },
+        { el: 'Sprung zum Thema', trigger: 'Auswahl in der Liste', prop: 'Scroll bis Themenanfang direkt unter die Ortszeile', dur: '420 ms', curve: 'ease-out-cubic', rest: 'Themenanfang oben', reduced: 'Sprung ohne Verlauf (jumpTo)', tc: '#F02277' },
+        { el: 'Fuge beim Passieren', trigger: 'Scroll', prop: 'keine — die Fuge ist statisch, ihr Blitz entsteht aus der Scrollgeschwindigkeit', dur: '—', curve: '—', rest: 'statisch', reduced: 'unverändert', tc: '#94A3B8' },
+        { el: 'Block-Eintritt', trigger: 'Block kreuzt 25 % Höhe (einmalig je Block)', prop: 'translateY 14 dp → 0 + Deckkraft 0 → 1, Versatz 55 ms', dur: '320 ms', curve: 'ease-out', rest: 'sichtbar', reduced: 'entfällt, Blöcke stehen sofort', tc: '#00FF87' },
+        { el: 'Karte gedrückt', trigger: 'Tipp-Halten', prop: 'scale 0,97 + Akzent-Schein (kein Ripple)', dur: '160 ms', curve: 'ease-out', rest: 'scale 1', reduced: 'nur Schein, kein scale', tc: '#00FF87' },
+        { el: 'Skelett-Puls', trigger: 'Laden > 300 ms', prop: 'Deckkraft 0,55 ↔ 1,0, Versatz 120 ms/Block', dur: '1600 ms', curve: 'ease-in-out', rest: '— (Loop)', reduced: 'eingefroren bei 0,8 (Modul 2)', tc: '#94A3B8' },
+        { el: 'Gesperrter Block', trigger: '—', prop: 'keine Bewegung, bewusst statisch', dur: '—', curve: '—', rest: 'statisch', reduced: 'identisch — nichts einzufrieren', tc: '#00FF87' }
+      ],
+      strings: [
+        { key: 'strength.section.train', de: 'Trainieren', en: 'Train' },
+        { key: 'strength.section.history', de: 'Verlauf', en: 'History' },
+        { key: 'strength.section.analysis', de: 'Auswertung', en: 'Analysis' },
+        { key: 'strength.section.plans', de: 'Pläne', en: 'Plans' },
+        { key: 'sectionbar.counter', de: '{index} / {count}', en: '{index} / {count}' },
+        { key: 'sectionbar.a11y', de: 'Thema {name}, {index} von {count}. Öffnet die Themenliste.', en: 'Topic {name}, {index} of {count}. Opens the topic list.' },
+        { key: 'sectionbar.list_title', de: 'Springen zu', en: 'Jump to' },
+        { key: 'sectionbar.here', de: 'HIER', en: 'HERE' },
+        { key: 'sectionbar.jump_a11y', de: 'Zu {name} springen, {index} von {count}', en: 'Jump to {name}, {index} of {count}' },
+        { key: 'sectionbar.arrived_a11y', de: '{name}, {index} von {count}', en: '{name}, {index} of {count}' },
+        { key: 'train.today_kicker', de: 'HEUTE GEPLANT', en: 'PLANNED TODAY' },
+        { key: 'train.today_meta', de: '{n} Übungen · ca. {min} Min', en: '{n} exercises · approx. {min} min' },
+        { key: 'train.start', de: 'STARTEN', en: 'START' },
+        { key: 'train.free_title', de: 'Frei starten', en: 'Start free' },
+        { key: 'train.free_body', de: 'Ohne Plan loslegen', en: 'Begin without a plan' },
+        { key: 'train.plan_title', de: 'Plan wählen', en: 'Choose plan' },
+        { key: 'train.plan_body', de: 'Aus deinen Plänen', en: 'From your plans' },
+        { key: 'train.catalog', de: 'Übungskatalog', en: 'Exercise catalog' },
+        { key: 'train.log_later', de: 'Einheit nachtragen', en: 'Log a past session' },
+        { key: 'history.total_label', de: 'ERFASSTE EINHEITEN', en: 'SESSIONS LOGGED' },
+        { key: 'history.total_since', de: 'seit {monat} {jahr}', en: 'since {month} {year}' },
+        { key: 'history.per_month', de: 'EINHEITEN JE MONAT', en: 'SESSIONS PER MONTH' },
+        { key: 'history.balance', de: 'MUSKELBALANCE', en: 'MUSCLE BALANCE' },
+        { key: 'history.recent', de: 'LETZTE EINHEITEN', en: 'RECENT SESSIONS' },
+        { key: 'history.empty', de: 'Noch keine Einheit erfasst. Der Verlauf entsteht mit der ersten.', en: 'No sessions logged yet. Your history starts with the first one.' },
+        { key: 'analysis.locked_from', de: 'Ab {n} {einheit}', en: 'From {n} {unit}' },
+        { key: 'analysis.locked_progress', de: '{have} / {need}', en: '{have} / {need}' },
+        { key: 'analysis.locked_a11y', de: '{name}: gesperrt, {have} von {need} {einheit}', en: '{name}: locked, {have} of {need} {unit}' },
+        { key: 'analysis.basis', de: '{wert} · Grundlage {n} {einheit}', en: '{value} · based on {n} {unit}' },
+        { key: 'plans.own_label', de: 'DEINE PLÄNE', en: 'YOUR PLANS' },
+        { key: 'plans.see_all', de: 'Alle {n}', en: 'All {n}' },
+        { key: 'plans.new', de: 'Neuer Plan', en: 'New plan' },
+        { key: 'plans.atem_label', de: 'ATEM-PLÄNE', en: 'ATEM PLANS' },
+        { key: 'plans.atem_teaser', de: 'Kuratierte Pläne, frei und als Premium — in Vorbereitung.', en: 'Curated plans, free and premium — in preparation.' }
+      ],
+      a11y: [
+        { el: 'Ortszeile', label: 'sectionbar.a11y — „Thema Verlauf, 2 von 4. Öffnet die Themenliste."', role: 'button + expanded', state: 'expanded spiegelt die Liste; KEINE liveRegion am Knopf selbst' },
+        { el: 'Themenwechsel beim Scrollen', label: 'sectionbar.arrived_a11y — „Auswertung, 3 von 4"', role: 'liveRegion polite', state: 'genau eine Ansage je Wechsel, frühestens 400 ms nach dem letzten — so wird schnelles Durchwischen nicht zur Litanei' },
+        { el: 'Marken-Streifen', label: '(kein Label)', role: 'excludeSemantics', state: 'der Fortschritt ist rein visuell; die Position steht schon im Zähler des Labels' },
+        { el: 'Sprungliste', label: 'sectionbar.list_title', role: 'menu', state: 'Fokus beim Öffnen auf die aktuelle Zeile; Zurück-Geste schliesst ohne Sprung' },
+        { el: 'Listenzeile', label: 'sectionbar.jump_a11y', role: 'menuItem', state: 'selected=true auf der aktuellen; „HIER" ist echter Text, nicht nur Haken' },
+        { el: 'Fuge', label: '(kein Label)', role: 'excludeSemantics', state: 'stumm — die Grenze ist grafisch, die Ansage macht die Ortszeile' },
+        { el: 'Thema-Container', label: 'Name des Themas', role: 'header + region', state: 'Screenreader-Rotor springt Thema für Thema; genau eine Ebene, keine zweite Überschrift im Inhalt' },
+        { el: 'Gesperrter Block', label: 'analysis.locked_a11y — „Formkurve: gesperrt, 5 von 8 Einheiten"', role: 'text', state: 'nicht fokussierbar als Knopf (es gibt keine Handlung); Umriss-Fläche excludeSemantics' },
+        { el: 'Startkarte', label: 'Kicker + Titel + Meta als ein Block, CTA separat', role: 'button', state: 'CTA zuerst im Fokusweg des Themas — der häufigste Weg ist der kürzeste' },
+        { el: 'Leerer ATEM-Platz', label: 'plans.atem_label + teaser', role: 'text', state: 'keine liveRegion, kein Fokus — eine Ankündigung ist kein Ereignis' }
+      ],
+      reuse: [
+        { m: 'MODUL 1', b: 'Typenskala + 48-dp-Regel + Press-Scale 0,97', use: 'titleMedium für den Namen, labelMicro für Zähler und Blocküberschriften, kein Ripple', c: '#F02277' },
+        { m: 'MODUL 2', b: 'K2 Session-Card (Gradient-Rand)', use: 'die Startkarte — genau eine je Screen, hier der Weg „heute geplante Einheit"', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'K3 Listenkarte', use: 'Halbkarten „Frei starten" / „Plan wählen"', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Skeleton in Inhaltsform + 300-ms-Regel', use: 'das eine Ladegate des sichtbaren Bereichs', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Gestrichelter Rand = „hier fehlt etwas"', use: 'leerer ATEM-Plan-Platz', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Leer-Anatomie (Feststellung ohne Knopf)', use: 'leerer Verlauf, leere Pläne — ein Satz, kein konkurrierender CTA', c: '#00F2FE' },
+        { m: 'MODUL 3', b: 'Fortschrittsbalken + Track #16161F', use: 'Sperr-Fortschritt „5 / 8" im Auswertungsblock', c: '#94A3B8' },
+        { m: 'MODUL 3', b: 'StatBox #1A1A26', use: 'Fläche des Umrisses — keine neue Flächenebene erfunden', c: '#94A3B8' },
+        { m: 'MODUL 5', b: 'Wege-Gewichtung des Workouts-Tabs', use: 'drei Gewichtsklassen nach Häufigkeit in „Trainieren"', c: '#00FF87' },
+        { m: 'MODUL 6 + 9', b: 'Verlauf, Muskelbalance, Schwellen mit Nenner', use: 'Inhalt der Themen Verlauf und Auswertung inklusive Mindestdatenmengen', c: '#CDD3EA' },
+        { m: 'MODUL 11', b: 'Bereichston je Tab-Root', use: 'Marken- und Fugenfarbe — Kraft Amber #FFB020 (wie der Nav-Punkt), Cardio Violet, Hybrid Magenta; nur als Fläche, nie als Text', c: '#CDD3EA' },
+        { m: 'NEU', b: 'AtemSectionBar (Ortszeile) + AtemSectionSeam + AtemSectionPage', use: 'die drei wirklich neuen Bausteine: Ein-Wort-Navigation mit Marken, Fuge, und die Seite, die Scrollposition und Zeile koppelt. Bereichszahl und -ton sind Parameter, nicht Konstanten.', c: '#FFFFFF' }
+      ],
+      decisions: [
+        { n: '1', title: 'Verworfen: seitlich scrollende Reiterleiste mit allen vier Wörtern', body: 'Der naheliegende Weg (Wörter in einer Zeile, Unterstrich, horizontal scrollbar) scheitert genau am Grenzfall: bei 200 % auf 320 dp steht anderthalb Wörter da, und das halbe ist abgeschnitten. Eine Navigation, die ihre eigenen Beschriftungen verstümmelt, ist an der Stelle am schlechtesten, wo sie am wichtigsten ist.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '2', title: 'Verworfen: Symbole statt Wörter', body: 'Vier Glyphen hätten immer gepasst — aber „Verlauf" und „Auswertung" sind mit Symbolen nicht unterscheidbar (Diagramm gegen Diagramm), und die Randbedingung verlangt neben der Farbe einen Wort- oder Formträger. Ein Symbolpaar, das erklärt werden muss, ist keine Ortsangabe.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '3', title: 'Verworfen: Punktreihe wie ein Karussell', body: 'Vier Punkte sagen „es gibt vier", aber nicht, welches — und sie sind bei 48 dp Tap-Ziel entweder zu klein oder fressen die halbe Zeile. Die Marken übernehmen die Zählfunktion, aber als Strecke: sie tragen zusätzlich den Lesefortschritt, was ein Punkt nicht kann.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '4', title: 'Gewählt: ein Wort + Zähler + Marken, Vollständigkeit einen Tipp entfernt', body: 'Nur ein Wort steht je Zustand auf dem Schirm, deshalb existiert kein Platzproblem — bei 100 % nicht und bei 200 % nicht. Die Liste, die alle vier zeigt, darf vertikal wachsen; 48-dp-Zeilen (68 bei 200 %) sind der einzige Ort, an dem vier Vollwörter garantiert lesbar sind.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '5', title: 'Verworfen: Bottom-Sheet für die Themenliste', body: 'Die Sheet-Regel aus Modul 2 (Auswahl aus mehr als zwei Optionen → Sheet) hätte es hergegeben, aber ein Sheet kommt von unten und verdeckt den Inhalt, auf den man zielt. Die Liste klappt stattdessen direkt unter der Zeile auf — dort, wo der Finger schon ist, und an derselben Kante, an der die Navigation lebt.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '6', title: 'Verworfen: Themenname zusätzlich im Inhalt', body: 'Eine Überschrift im Inhalt wäre die ehrlichste Gliederung — aber zusammen mit der Ortszeile stünde derselbe Name zweimal auf 361 dp. Die Zeile gewinnt, weil sie dauerhaft sichtbar ist; im Inhalt heissen Überschriften nach dem Block, nie nach dem Thema.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '7', title: 'Verworfen: Ortszeile blendet beim Runterscrollen aus', body: 'Platzgewinn von 48 dp gegen den Verlust der einzigen Ortsangabe — seit es keinen Tab-Kopf mehr gibt, ist die Zeile das einzige, was „wo bin ich" beantwortet. Sie bleibt immer stehen. Der Marken-Streifen macht sie ausserdem zum Fortschrittsanzeiger, und ein Fortschritt, der sich versteckt, ist keiner.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '8', title: 'Verworfen: Glas (BackdropFilter) für die Ortszeile', body: 'Sie wäre der einzige Blur der Seite — zulässig, aber sie sitzt über einem Scrollbereich mit sieben Auswertungsblöcken, also am teuersten Ort. Deckendes #0B0C14 ist bereits Tokenfläche (surfaceSolid) und hält das Blur-Budget für eine Karte frei, die davon sichtbar profitiert.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '9', title: 'Verworfen: atmender Umriss im gesperrten Block', body: 'Der Puls wäre das naheliegende „hier kommt noch was" — sieht aber genau aus wie das Ladeskelett aus Modul 2 (gleiche Fläche, gleiche Geometrie) und müsste bei reduzierter Bewegung halb eingefroren stehen bleiben, was wie ein Renderfehler liest. Der gesperrte Block ist statisch; der Fortschrittsbalken mit Nenner sagt dasselbe, überprüfbar.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '10', title: 'Gewählt: vier Umriss-Formen, an die Datenform gebunden', body: 'Kurve, Balken, Zeilen, Ring/Zahl — der Umriss ist die Silhouette der späteren Darstellung, keine freie Wahl. So lernt man die Form eines Blocks, bevor er Daten hat, und erkennt ihn beim Freischalten wieder. Kein Umriss zeigt eine Achse, eine Zahl oder eine Beschriftung, die eine Aussage behaupten würde.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '11', title: 'Verworfen: vier parallele Ladeskelette', body: 'Wenn jedes Thema sein eigenes Skelett zeigt, lädt die Seite viermal gleichzeitig und liest sich wie vier gestapelte Bildschirme — der Gegensatz zum Zweck des Umbaus. Ein Gate für den sichtbaren Bereich; was unten liegt, lädt normal nach, während man dorthin scrollt. Die Ortszeile ist nie Teil des Skeletts: die Themen stehen fest und brauchen keine Daten.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '12', title: 'Verworfen: leere Themen ausblenden', body: 'Die Regel „ein Block ohne Daten rendert nicht" gilt für Blöcke, nicht für Themen. Würde beim Neubeginn die halbe Seite fehlen, sähe die App kleiner aus, als sie ist — und die Ortszeile zeigte „1 / 2" statt „1 / 4", also einen falschen Umfang. Leere Themen bleiben und tragen einen Satz; gesperrte Auswertungsblöcke bleiben und tragen ihre Bedingung.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '13', title: 'Verworfen: Cyan als Bereichston des Kraft-Tabs', body: 'Der erste Entwurf färbte Marken, Fuge und Kicker cyan — dieselbe Farbe, die im Produkt „das kannst du antippen" bedeutet. Damit hätte die Ortsangabe eine Handlung versprochen, die sie nicht hat, und die einzige verlässliche Interaktionsfarbe wäre verwässert. Der Bereichston ist jetzt Amber #FFB020, derselbe Ton, den der Kraft-Punkt der Bottom-Bar schon trägt: die Farbe zeigt nur, in welchem Bereich man steht. Cyan bleibt global reserviert. Preis der Entscheidung: eine Tokenerweiterung (Bereichston-Familie) — ehrlicher als ein doppelt belegtes Cyan.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '14', title: 'Gewählt: der Themenwechsel wird angesagt, die Fuge bleibt stumm', body: 'Ein Wechsel, den niemand ausgelöst hat (man hat nur gescrollt), wird als liveRegion polite gemeldet — aber gedrosselt: eine Ansage je Wechsel, frühestens 400 ms nach der letzten. Ohne Drosselung würde schnelles Durchwischen vier Ansagen hintereinander stapeln. Die Fuge ist excludeSemantics, sonst wäre dasselbe Ereignis zweimal hörbar.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

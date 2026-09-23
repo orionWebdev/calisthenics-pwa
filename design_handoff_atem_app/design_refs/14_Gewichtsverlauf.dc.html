@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes sheetUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes latestPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,242,254,0.55)}50%{box-shadow:0 0 0 5px rgba(0,242,254,0)}}
+@keyframes drawIn{from{stroke-dashoffset:260}to{stroke-dashoffset:0}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 14 · DESIGN-GESPRÄCH 14</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2">Gewichtsverlauf — eine Reihe, kein Urteil</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:860px;line-height:1.7">Heute kennt ATEM genau eine Zahl fürs Körpergewicht — überschreibbar, ohne Vergangenheit. Daraus wird eine Reihe: eintragen in drei Sekunden, wiederfinden, den Verlauf sehen. Die Kurve, die in jeder anderen App wie eine Bewertung aussieht, darf hier <strong style="color:#CDD3EA">nichts behaupten</strong> — kein Soll, kein Urteil, keine Ampel.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Nur Tokens aus atem_theme.dart</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">#94A3B8 dunkelste Textfarbe · #7A2BDB nie Text</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · Text ≥ 12 sp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">200 % auf 320 dp ohne Überlauf</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">Kein Soll · keine Ampelfarben · keine Interpolation über Lücken</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">DER SATZ, AN DEM ALLES GEMESSEN WIRD</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1000px">Der Block zeigt, was war — nie, was sein soll. Eine Veränderung ist eine Tatsache mit Richtungsglyph, nie eine Farbe; eine Lücke ist eine Lücke, nie eine gerade Linie; und weil das Profil immer einen Wert kennt, hört der Bildschirm hier nie früher auf.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7">Drei Folgen. <strong style="color:#CDD3EA">Erste:</strong> Farbe ist im ganzen Block neutral — Zunahme und Abnahme tragen dieselbe Textfarbe #CDD3EA, nur die Glyphrichtung unterscheidet. <strong style="color:#CDD3EA">Zweite:</strong> jede Zahl nennt ihren Nenner — „9 Einträge seit dem 23. Juni", nie eine nackte Differenz. <strong style="color:#CDD3EA">Dritte:</strong> die Kurve verbindet nur, was zusammengehört — über einer Lücke bleibt sie unterbrochen, weil zwischen zwei Einträgen niemand misst.</div>
+</div>
+
+<div data-screen-label="A Block im Hybrid-Tab" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A · DER BLOCK IM HYBRID-TAB — SIEBEN ZUSTÄNDE</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:900px">Platzierung: <strong style="color:#CDD3EA">nach der Regenerationszeile, vor den drei Wegen unten</strong> — nicht neben Bereitschaft (heute) oder Verhältnis (Woche), weil Körpergewicht sich langsamer bewegt als beides und beim täglichen Blick zuletzt kommt. Dichte in der Karte: Titelzeile mit ⓘ → Wert mit Nenner → eine Veränderungs-Tatsache → Kurve → zwei Datumsanker. Fünf Elemente, eine sichtbare Hinweiszeile höchstens — der Rest steht hinter dem ⓘ.</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A1 · NORMALFALL — INTERAKTIV</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">⋯ VERHÄLTNIS · REGENERATION</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="display:flex;align-items:center;gap:6px"><span style="font-size:12.5px;font-weight:600">Gewicht</span><span style="width:15px;height:15px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;flex:none">i</span></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">{{ rangeLabelUpper }}</span>
+</div>
+<div style="margin-top:10px;display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<span style="display:flex;align-items:baseline;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums">78,9</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">KG</span></span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">{{ entryCountLabel }}</span>
+</div>
+<div style="margin-top:6px;display:flex;align-items:center;gap:6px">
+<svg width="8" height="8" viewBox="0 0 8 8" style="flex:none"><polygon points="4,8 0,1 8,1" fill="#CDD3EA"></polygon></svg>
+<span style="font-size:11.5px;color:#CDD3EA;line-height:1.5">0,4 kg seit dem 1. September · 14 Tage her</span>
+</div>
+<svg viewBox="0 0 248 56" width="100%" height="56" style="margin-top:10px;display:block" role="img" aria-label="Gewichtsverlauf über 9 Einträge, von 80,9 auf 78,9 Kilogramm">
+<line x1="0" y1="48" x2="248" y2="48" stroke="#232334" stroke-width="1"></line>
+<polyline points="8,10 37,14 66,18 95,16 124,21 153,31 182,35 211,40 240,48" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+<sc-if value="{{ showSourceDots }}" hint-placeholder-val="{{ true }}">
+<circle cx="8" cy="10" r="3" fill="#00F2FE"></circle>
+<circle cx="37" cy="14" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle>
+<circle cx="66" cy="18" r="3" fill="#00F2FE"></circle>
+<circle cx="95" cy="16" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle>
+<circle cx="124" cy="21" r="3" fill="#00F2FE"></circle>
+<circle cx="153" cy="31" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle>
+<circle cx="182" cy="35" r="3" fill="#00F2FE"></circle>
+<circle cx="211" cy="40" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle>
+</sc-if>
+<sc-if value="{{ hideSourceDots }}" hint-placeholder-val="{{ false }}">
+<circle cx="8" cy="10" r="3" fill="#00F2FE"></circle><circle cx="37" cy="14" r="3" fill="#00F2FE"></circle><circle cx="66" cy="18" r="3" fill="#00F2FE"></circle><circle cx="95" cy="16" r="3" fill="#00F2FE"></circle><circle cx="124" cy="21" r="3" fill="#00F2FE"></circle><circle cx="153" cy="31" r="3" fill="#00F2FE"></circle><circle cx="182" cy="35" r="3" fill="#00F2FE"></circle><circle cx="211" cy="40" r="3" fill="#00F2FE"></circle>
+</sc-if>
+<circle cx="240" cy="48" r="4" fill="#00F2FE" style="{{ latestPulseStyle }}"></circle>
+</svg>
+<div style="display:flex;justify-content:space-between;gap:8px;margin-top:5px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">23. JUN · 80,9 KG</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">15. SEP · 78,9 KG</span>
+</div>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;min-height:40px">
+<span style="font-size:11px;color:#CDD3EA">Letzter Eintrag vor 5 Tagen</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#00F2FE">EINTRAGEN</span>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">DREI WEGE ⋯</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Fünf Träger, keiner davon Farbe allein: Wort „Gewicht", Zahl mit Nenner, Glyph+Satz für die Veränderung, Kurvenform, zwei Datumsanker. Die Zeile „EINTRAGEN" ist ein eigenes Tap-Ziel (48 dp Zeile) — die Karte selbst öffnet den vollen Verlauf.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A2 · EIN EINZIGER WERT — DER EINSTIEG</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">⋯ VERHÄLTNIS · REGENERATION</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:center;gap:6px"><span style="font-size:12.5px;font-weight:600">Gewicht</span><span style="width:15px;height:15px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">i</span></div>
+<div style="margin-top:10px;display:flex;align-items:baseline;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700">82,4</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">KG</span></div>
+<div style="margin-top:6px;font-size:11px;color:#94A3B8;line-height:1.6">Aus der Einrichtung, 2. März — noch kein zweiter Eintrag. Kein Verlauf, keine Kurve: aus einem Wert folgt keine Reihe.</div>
+</div>
+<div style="background:rgba(0,242,254,0.06);border:1px solid rgba(0,242,254,0.4);border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:space-between;min-height:48px">
+<span style="font-size:12px;font-weight:600;color:#FFFFFF">Ersten Verlaufswert eintragen</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#00F2FE">START</span>
+</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">DREI WEGE ⋯</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Löst den Widerspruch: die Onboarding-Pflichtangabe garantiert immer <em style="color:#CDD3EA;font-style:normal">einen</em> Wert, also rendert der Block immer — die „ohne Daten rendert nicht"-Regel gilt hier bewusst nicht. Die betonte Zeile ersetzt die normale „EINTRAGEN"-Zeile und ist der Weg zum ersten echten Eintrag.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A3 · DÜNNE DATEN — DREI WERTE, VIER MONATE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">⋯ VERHÄLTNIS · REGENERATION</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="display:flex;align-items:center;gap:6px"><span style="font-size:12.5px;font-weight:600">Gewicht</span><span style="width:15px;height:15px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">i</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">4 MONATE</span></div>
+<div style="margin-top:10px;display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="display:flex;align-items:baseline;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700">79,6</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">KG</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">3 EINTRÄGE</span></div>
+<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><svg width="8" height="8" viewBox="0 0 8 8"><polygon points="4,8 0,1 8,1" fill="#CDD3EA"></polygon></svg><span style="font-size:11.5px;color:#CDD3EA;line-height:1.5">1,2 kg seit dem 30. Juni · 76 Tage her</span></div>
+<svg viewBox="0 0 248 56" width="100%" height="56" style="margin-top:10px;display:block" role="img" aria-label="Gewichtsverlauf über drei Einträge, von 81,5 auf 79,6 Kilogramm, weit verteilt über vier Monate">
+<line x1="0" y1="48" x2="248" y2="48" stroke="#232334" stroke-width="1"></line>
+<circle cx="8" cy="10" r="3" fill="#00F2FE"></circle>
+<circle cx="124" cy="24" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle>
+<circle cx="240" cy="48" r="4" fill="#00F2FE"></circle>
+</svg>
+<div style="display:flex;justify-content:space-between;gap:8px;margin-top:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">18. MAI · 81,5 KG</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">14. SEP · 79,6 KG</span></div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Keine Linie zwischen den drei Punkten — bei diesem Abstand wäre jede Verbindung eine Behauptung über Wochen, die niemand gemessen hat. Sichtbar dünn statt glatt gerechnet: drei Punkte, kein Trendpfeil.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A4 · LÜCKE — SECHS WOCHEN OHNE EINTRAG</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">⋯ VERHÄLTNIS · REGENERATION</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="display:flex;align-items:center;gap:6px"><span style="font-size:12.5px;font-weight:600">Gewicht</span><span style="width:15px;height:15px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">i</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">3 MONATE</span></div>
+<div style="margin-top:10px;display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="display:flex;align-items:baseline;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700">78,9</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">KG</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">4 EINTRÄGE</span></div>
+<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><svg width="8" height="8" viewBox="0 0 8 8"><polygon points="4,8 0,1 8,1" fill="#CDD3EA"></polygon></svg><span style="font-size:11.5px;color:#CDD3EA;line-height:1.5">0,2 kg seit dem 8. September · 7 Tage her</span></div>
+<svg viewBox="0 0 248 56" width="100%" height="56" style="margin-top:10px;display:block" role="img" aria-label="Gewichtsverlauf mit einer Lücke von sechs Wochen zwischen dem 28. Juli und dem 8. September, keine Interpolation">
+<line x1="0" y1="48" x2="248" y2="48" stroke="#232334" stroke-width="1"></line>
+<polyline points="8,14 40,18" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></polyline>
+<circle cx="8" cy="14" r="3" fill="#00F2FE"></circle>
+<circle cx="40" cy="18" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle>
+<polyline points="176,40 240,48" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round"></polyline>
+<circle cx="176" cy="40" r="3" fill="#00F2FE"></circle>
+<circle cx="240" cy="48" r="4" fill="#00F2FE"></circle>
+<text x="108" y="46" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" letter-spacing="0.5" fill="#4b5563">6 WOCHEN OHNE EINTRAG</text>
+</svg>
+<div style="display:flex;justify-content:space-between;gap:8px;margin-top:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">21. JUL · 80,2 KG</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8">15. SEP · 78,9 KG</span></div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Zwei Linienstücke, keine Brücke dazwischen. Die Mono-Bodennotiz benennt die Lücke als Zeitspanne, nicht als Ereignis — reine Information, kein Fehler, keine Farbe.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A5 · LADEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">⋯ VERHÄLTNIS · REGENERATION</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="height:14px;width:70px;border-radius:30px;background:#16161F;animation:skelPulse 1.6s ease-in-out infinite"></div>
+<div style="margin-top:12px;height:22px;width:110px;border-radius:6px;background:#16161F;animation:skelPulse 1.6s ease-in-out .1s infinite"></div>
+<div style="margin-top:10px;height:56px;border-radius:12px;background:#16161F;animation:skelPulse 1.6s ease-in-out .2s infinite"></div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Skelett in Inhaltsform, ab 300 ms (Modul 2). Die Titelzeile „Gewicht" bleibt sofort sichtbar, weil sie keine Daten braucht — nur Wert, Kurve und Nenner laden.</div>
+</div>
+
+<div style="width:268px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">A6 · FEHLER — AKTUALISIERUNG FEHLGESCHLAGEN</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:#4b5563;opacity:0.6;padding-left:2px">⋯ VERHÄLTNIS · REGENERATION</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:13px;opacity:0.55">
+<div style="display:flex;align-items:center;gap:6px"><span style="font-size:12.5px;font-weight:600">Gewicht</span></div>
+<div style="margin-top:10px;display:flex;align-items:baseline;gap:5px"><span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700">78,9</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">KG</span></div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">ZULETZT BEKANNT · 15. SEP</div>
+</div>
+<div style="background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:16px;padding:11px 12px;display:flex;align-items:flex-start;gap:8px">
+<svg width="12" height="12" viewBox="0 0 24 24" style="flex:none;margin-top:1px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg>
+<span style="flex:1;font-size:10.5px;color:#F02277;line-height:1.55">Verlauf konnte nicht aktualisiert werden. <span style="color:#00F2FE;font-weight:600">Erneut versuchen</span></span>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der zuletzt bekannte Wert bleibt gedimmt stehen statt zu verschwinden — er ist ja nicht falsch, nur nicht mehr bestätigt frisch. Magenta-Rand + Dreieck, wie überall im Produkt bei einem echten Fehler.</div>
+</div>
+
+<div style="width:300px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A7 · 200 % SYSTEMSCHRIFT AUF 320 DP</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:24px;padding:10px 12px 12px;width:256px;margin-left:auto;margin-right:auto">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:14px">
+<div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px"><span style="display:flex;align-items:center;gap:8px"><span style="font-size:21px;font-weight:600">Gewicht</span><span style="width:24px;height:24px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;color:#94A3B8">i</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;color:#94A3B8">3 MON.</span></div>
+<div style="margin-top:12px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px"><span style="font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700">78,9</span><span style="font-family:'JetBrains Mono',monospace;font-size:16px;color:#94A3B8">KG</span></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#94A3B8;margin-top:2px">9 Einträge</div>
+<div style="margin-top:8px;display:flex;align-items:flex-start;gap:8px"><svg width="14" height="14" viewBox="0 0 8 8" style="flex:none;margin-top:3px"><polygon points="4,8 0,1 8,1" fill="#CDD3EA"></polygon></svg><span style="font-size:17px;color:#CDD3EA;line-height:1.4">0,4 kg seit dem 1. September, 14 Tage her</span></div>
+<svg viewBox="0 0 220 50" width="100%" height="50" style="margin-top:12px;display:block"><line x1="0" y1="42" x2="220" y2="42" stroke="#232334" stroke-width="1"></line><polyline points="6,8 213,42" fill="none" stroke="#00F2FE" stroke-width="2.5" stroke-linecap="round"></polyline><circle cx="6" cy="8" r="3.5" fill="#00F2FE"></circle><circle cx="213" cy="42" r="4.5" fill="#00F2FE"></circle></svg>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Titelzeile bricht auf zwei Zeilen, bevor sie den Rand berührt. Wert und Einheit bleiben nebeneinander lesbar (40 sp + 16 sp = 132 dp von 320); der Nenner wandert unter den Wert statt daneben. Kein Element unterschreitet 44 dp Kantenlänge.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="B Weg zum Eintragen" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · DER WEG ZUM EINTRAGEN — DAS EINGABEBLATT (ATEMSTEPPAD)</div>
+<div style="margin-top:16px;max-width:1240px;background:rgba(0,255,135,0.05);border:1px solid rgba(0,255,135,0.35);border-radius:20px;padding:22px 26px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00FF87">PASST — MIT EINER ECHTEN ERGÄNZUNG</div>
+<div style="margin-top:8px;font-size:13.5px;font-weight:600;line-height:1.6">AtemStepPad (Zahlenband + Tastatur-Umschalter aus dem Workout Runner) trägt die Eingabe unverändert: großer Wert oben, Ziehen zum Einstellen mit Schrittweiten-Pillen, Umschalter auf Tastatur für die genaue Zahl.</div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8;line-height:1.7">Neu ist genau eine Zeile: ein <strong style="color:#CDD3EA">Datums-Chip</strong> über dem Wert, weil im Runner „jetzt" nie zur Debatte stand — beim Gewicht schon (Nachtragen ist der häufigste Fall aus Modul 7). Schrittweiten werden auf 0,1 / 0,5 / 1 kg umgestellt, das ist ein Parameter, kein neuer Baustein.</div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:20px">
+
+<div style="width:280px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">B1 · ZEILE „EINTRAGEN" → NEUE EINGABE HEUTE</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 16px 22px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:#00F2FE">GEWICHT EINTRAGEN</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:#94A3B8"><svg width="10" height="10" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.8"></rect><path d="M3 9h18 M8 3v4 M16 3v4" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path></svg>Heute · 20. Sept</span></div>
+<button style="display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1.2px">TASTATUR</button>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:center;gap:7px;padding:16px 0 2px"><span style="font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700">78,9</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:#94A3B8">KG</span></div>
+<div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8">ZULETZT 78,9 KG · VOR 5 TAGEN</div>
+<div style="display:flex;justify-content:center;gap:6px;padding:12px 0 10px"><span style="min-width:52px;height:28px;padding:0 10px;border-radius:30px;background:rgba(0,242,254,0.1);border:1px solid rgba(0,242,254,0.45);color:#00F2FE;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">0,1</span><span style="min-width:52px;height:28px;padding:0 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">0,5</span><span style="min-width:52px;height:28px;padding:0 10px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">1</span></div>
+<div style="display:flex;align-items:center;gap:8px"><span style="width:36px;height:48px;flex:none;border-radius:14px;background:#14141D;border:1px solid #232334;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">−</span><div style="position:relative;flex:1;height:60px;border-radius:16px;background:#050507;border:1px solid #232334;overflow:hidden"><div style="position:absolute;left:50%;top:8px;width:2px;height:28px;transform:translateX(-50%);border-radius:2px;background:linear-gradient(180deg,#00F2FE,#7A2BDB);box-shadow:0 0 10px rgba(0,242,254,0.8)"></div></div><span style="width:36px;height:48px;flex:none;border-radius:14px;background:#14141D;border:1px solid #232334;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">+</span></div>
+<button style="margin-top:14px;width:100%;padding:12px;border-radius:30px;background:linear-gradient(90deg,#00F2FE,#7A2BDB);border:none;color:#FFFFFF;font-size:10.5px;font-weight:700;letter-spacing:2px;font-family:'Poppins',sans-serif">EINTRAGEN</button>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Startwert des Bands ist der letzte bekannte Wert, nicht 0 — die meisten Änderungen sind klein. Datum ist antippbar (öffnet den Systemkalender), Vorgabe ist immer heute.</div>
+</div>
+
+<div style="width:280px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">B2 · SCHON EIN WERT HEUTE → AKTUALISIEREN</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 16px 22px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:#00F2FE">GEWICHT EINTRAGEN</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:#94A3B8"><svg width="10" height="10" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.8"></rect><path d="M3 9h18 M8 3v4 M16 3v4" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path></svg>Heute · 20. Sept</span></div>
+<button style="display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1.2px">TASTATUR</button>
+</div>
+<div style="margin-top:10px;background:rgba(255,255,255,0.03);border:1px solid #232334;border-radius:12px;padding:8px 10px;font-size:10px;color:#CDD3EA;line-height:1.5">Heute bereits erfasst: <strong style="color:#FFFFFF">78,7 kg</strong>. Ein zweiter Eintrag ersetzt diesen Wert.</div>
+<div style="display:flex;align-items:baseline;justify-content:center;gap:7px;padding:14px 0 2px"><span style="font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700">78,7</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:#94A3B8">KG</span></div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:10px"><span style="width:36px;height:48px;flex:none;border-radius:14px;background:#14141D;border:1px solid #232334;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">−</span><div style="position:relative;flex:1;height:60px;border-radius:16px;background:#050507;border:1px solid #232334;overflow:hidden"><div style="position:absolute;left:50%;top:8px;width:2px;height:28px;transform:translateX(-50%);border-radius:2px;background:linear-gradient(180deg,#00F2FE,#7A2BDB);box-shadow:0 0 10px rgba(0,242,254,0.8)"></div></div><span style="width:36px;height:48px;flex:none;border-radius:14px;background:#14141D;border:1px solid #232334;color:#FFFFFF;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">+</span></div>
+<button style="margin-top:14px;width:100%;padding:12px;border-radius:30px;background:linear-gradient(90deg,#00F2FE,#7A2BDB);border:none;color:#FFFFFF;font-size:10.5px;font-weight:700;letter-spacing:2px;font-family:'Poppins',sans-serif">AKTUALISIEREN</button>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Ein Tag, ein Wert — nie zwei Punkte am selben Datum. Die Notice ersetzt eine Warnung: sie informiert, blockiert aber nichts, wie das „Endgültig vs. nebenbei"-Rezept aus Modul 2.</div>
+</div>
+
+<div style="width:280px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00FF87">B3 · BESTÄTIGT — 30 S RÜCKGÄNGIG</div>
+<div style="margin-top:8px;display:flex;flex-direction:column;gap:12px">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#00FF87">GESPEICHERT · 30 S RÜCKGÄNGIG</div>
+<div style="margin-top:9px;background:#14141D;border:1px solid #232334;border-radius:14px;min-height:48px;display:flex;align-items:center;gap:9px;padding:0 13px">
+<span style="flex:none;width:8px;height:8px;border-radius:30px;background:#00FF87"></span>
+<span style="flex:1;font-size:11px;line-height:1.45">Gewicht 78,9 kg · 20. Sept erfasst</span>
+<span style="flex:none;font-size:11px;font-weight:700;color:#00F2FE">Rückgängig</span>
+</div>
+<div style="margin-top:8px;font-size:10.5px;color:#94A3B8;line-height:1.6">Die Karte im Hybrid-Tab zeigt den neuen Punkt schon, während die Zeile noch steht — dieselbe Snackbar-Logik wie beim Körpergewicht in Modul 7/8, nur ohne Rückrechnung der Trainingslast alter Sessions.</div>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:13px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.1em;color:#94A3B8">WÄHREND DER 30 S</div>
+<div style="margin-top:7px;font-size:10.5px;color:#CDD3EA;line-height:1.6">Rückgängig entfernt genau diesen Eintrag und stellt den vorherigen Tageswert wieder her (oder „kein Wert", falls es der erste war) — dieselbe Operation wie Speichern, andere Richtung.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="C Verlaufsansicht" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · DIE VERLAUFSANSICHT — RANGE, LISTE, BEARBEITEN, LÖSCHEN</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:280px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">C1 · ÜBER DIE KARTE GEÖFFNET — 6 MONATE</div>
+<div style="margin-top:8px;background:#050507;border:1px solid #232334;border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px"><svg width="9" height="15" viewBox="0 0 9 15"><path d="M8 1 1 7.5 8 14" stroke="#CDD3EA" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="flex:1;font-size:15px;font-weight:600">Gewicht</span><span style="width:16px;height:16px;border-radius:30px;border:1px solid #232334;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">i</span></div>
+<div style="display:flex;gap:4px">
+<span style="flex:1;height:28px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">3 MON.</span>
+<span style="flex:1;height:28px;border-radius:30px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.5);color:#00F2FE;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">6 MON.</span>
+<span style="flex:1;height:28px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">1 JAHR</span>
+<span style="flex:1;height:28px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">ALLE</span>
+</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:16px;padding:13px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700">78,9</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#94A3B8">13 EINTRÄGE SEIT 21. MÄR</span></div>
+<svg viewBox="0 0 232 66" width="100%" height="66" style="margin-top:8px;display:block"><line x1="0" y1="58" x2="232" y2="58" stroke="#232334" stroke-width="1"></line><polyline points="6,6 30,12 54,18 78,22 102,20 126,32 150,44 174,50 198,54 226,58" fill="none" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="6" cy="6" r="3" fill="#00F2FE"></circle><circle cx="30" cy="12" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle><circle cx="54" cy="18" r="3" fill="#00F2FE"></circle><circle cx="78" cy="22" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle><circle cx="102" cy="20" r="3" fill="#00F2FE"></circle><circle cx="126" cy="32" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle><circle cx="150" cy="44" r="3" fill="#00F2FE"></circle><circle cx="174" cy="50" r="3" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle><circle cx="198" cy="54" r="3" fill="#00F2FE"></circle><circle cx="226" cy="58" r="4" fill="#00F2FE"></circle></svg>
+</div>
+<div style="height:44px;border-radius:30px;background:rgba(0,242,254,0.1);border:1px solid rgba(0,242,254,0.4);color:#00F2FE;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">Eintragen</div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ historyRows }}" as="r" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:10px;height:44px;border-top:1px solid #16161F">
+<span style="flex:none;width:7px;height:7px;border-radius:30px;background:{{ r.dotBg }};border:{{ r.dotBorder }}"></span>
+<span style="flex:1;font-size:12px;color:#CDD3EA">{{ r.date }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#FFFFFF">{{ r.val }}</span>
+<svg width="6" height="10" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4" stroke="#94A3B8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Der Nenner beschreibt genau das gezeigte Fenster: „13 Einträge seit 21. Mär" ändert sich mit der Range-Pille, nicht mit der Lebenszeit des Kontos. Eine Zeile ist ein Knoten: Punkt, Datum, Wert, Pfeil — keine vier separaten Werte für den Screenreader.</div>
+</div>
+
+<div style="width:280px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">C2 · EINTRAG ANTIPPEN — BEARBEITEN, RÜCKWIRKEND, LÖSCHEN</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:22px;padding:16px 16px 20px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:#00F2FE">EINTRAG BEARBEITEN</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:#94A3B8"><svg width="10" height="10" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#94A3B8" stroke-width="1.8"></rect><path d="M3 9h18 M8 3v4 M16 3v4" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round"></path></svg>21. Juli</span></div>
+<button style="display:flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:30px;background:#14141D;border:1px solid #232334;color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1.2px">TASTATUR</button>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:center;gap:7px;padding:14px 0 0"><span style="font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700">80,2</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:#94A3B8">KG</span></div>
+<div style="margin-top:12px;background:#14141D;border:1px solid rgba(0,242,254,0.3);border-radius:14px;padding:11px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;color:#00F2FE">WIRKT AUF 21. JUL – 27. JUL</div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8px;color:#94A3B8;letter-spacing:0.04em">BIS ZUM NÄCHSTEN EINTRAG · NICHT DEN GANZEN VERLAUF</div>
+<div style="margin-top:8px;display:flex;align-items:center;gap:7px"><span style="flex:1;font-size:10.5px;color:#CDD3EA">3 Eigengewichts-Sätze</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">80,5</span><span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94A3B8">→</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#00F2FE">80,2</span></div>
+</div>
+<button style="margin-top:12px;width:100%;padding:11px;border-radius:30px;background:linear-gradient(90deg,#00F2FE,#7A2BDB);border:none;color:#FFFFFF;font-size:10.5px;font-weight:700;letter-spacing:2px;font-family:'Poppins',sans-serif">AKTUALISIEREN</button>
+<div style="margin-top:10px;text-align:center;font-size:11px;font-weight:600;color:#94A3B8">Eintrag löschen</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Die rückwirkende Vorschau aus Modul 7/8 kehrt zurück, aber <strong style="color:#CDD3EA">begrenzt auf das betroffene Fenster</strong> — von diesem Eintrag bis zum nächsten, nicht die komplette Historie. „Eintrag löschen" öffnet die zweistufige Löschbestätigung aus Modul 2, kein Wisch-Gestus.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="D Herkunft" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · HERKUNFT EINES WERTS — GETIPPT GEGEN GEMESSEN</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:360px;flex:none;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Gefüllt gegen hohl — dieselbe Form, keine zweite Ebene</div>
+<div style="margin-top:14px;display:flex;gap:24px">
+<div style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="#00F2FE"></circle></svg><span style="font-size:12px;color:#CDD3EA">Eigene Eingabe</span></div>
+<div style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="#0B0B0E" stroke="#00F2FE" stroke-width="2"></circle></svg><span style="font-size:12px;color:#CDD3EA">Aus Health Connect</span></div>
+</div>
+<div style="margin-top:14px;font-size:12px;color:#94A3B8;line-height:1.7">Dieselbe Form (Punkt), dieselbe Farbe (Cyan), nur gefüllt gegen hohl — ein Formunterschied, kein neues Farbwort und kein Badge. Die Legende steht hinter dem ⓘ, nicht dauerhaft auf dem Screen; auf dem Punkt selbst steht nichts weiter, sonst wäre er ein zweites Mal beschriftet.</div>
+</div>
+
+<div style="width:360px;flex:none;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Wenn beide Quellen denselben Tag berühren</div>
+<div style="margin-top:10px;font-size:12px;color:#94A3B8;line-height:1.7">Ein Tag trägt weiterhin genau einen Wert. Bestätigt jemand einen von Health Connect gemessenen Tageswert im Eingabeblatt <em style="color:#CDD3EA;font-style:normal">unverändert</em>, bleibt er „gemessen" — die Herkunft wechselt nur, wenn sich die Zahl wirklich ändert. Ein reines Anschauen darf keine Quelle umschreiben.</div>
+</div>
+
+<div style="width:360px;flex:none;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Hinter dem ⓘ — AtemExplainHeader</div>
+<div style="margin-top:10px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:14px">
+<div style="font-size:12.5px;font-weight:700">Über diesen Block</div>
+<div style="margin-top:8px;font-size:11px;color:#CDD3EA;line-height:1.7">Zeigt dein Körpergewicht über Zeit — was war, kein Ziel. Die Veränderung vergleicht immer mit dem letzten Eintrag. Lücken werden nicht überbrückt: keine Linie ohne einen echten Eintrag dahinter. <span style="color:#00F2FE">●</span> eigene Eingabe, <span style="color:#00F2FE">○</span> aus Health Connect.</div>
+<div style="margin-top:10px;font-size:11px;font-weight:600;color:#00F2FE">Verlauf öffnen</div>
+</div>
+<div style="margin-top:10px;font-size:11px;color:#94A3B8;line-height:1.6">Strukturell derselbe Info-Kreis wie in Modul 9 (16 dp, Rand #232334, „i" in Mono), hier erstmals als eigenständiger Kopfzeilen-Baustein verallgemeinert — Titel links, ⓘ rechts, öffnet ein Sheet statt einer Inline-Notiz.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="E Beziehung Einstellung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · DIE BEZIEHUNG ZUR EINSTELLUNG „KÖRPERGEWICHT"</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-top:16px">
+
+<div style="width:300px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">VORHER · MODUL 8 · EIGENE QUELLE</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px;opacity:0.55">
+<div style="font-size:13px;font-weight:700">Körpergewicht</div>
+<div style="margin-top:8px;display:flex;align-items:center;gap:8px;height:44px;border-radius:12px;background:#14141D;border:1px solid #232334;padding:0 12px"><span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700">78,0</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">KG</span></div>
+<div style="margin-top:8px;height:38px;border-radius:30px;background:#16161F;display:flex;align-items:center;justify-content:center;font-size:11px;color:#94A3B8">Speichern</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Editierbares Feld, eigener Speichern-Weg — eine zweite Quelle für dieselbe Zahl.</div>
+</div>
+
+<div style="width:300px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">NACHHER · ABLEITUNG AUS DEM VERLAUF</div>
+<div style="margin-top:8px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:16px">
+<div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;font-weight:700">Körpergewicht</span><svg width="6" height="10" viewBox="0 0 6 10"><path d="M1 1l4 4-4 4" stroke="#94A3B8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="margin-top:8px;display:flex;align-items:baseline;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700">78,9</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">KG</span></div>
+<div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#94A3B8;letter-spacing:0.04em">ZULETZT 15. SEP · GETIPPT · VERLAUF ÖFFNEN</div>
+</div>
+<div style="margin-top:8px;font-size:11px;color:#94A3B8;line-height:1.6">Keine Zeile ist mehr editierbar oder „gespeichert" — sie zeigt den letzten Verlaufseintrag als Tatsache und öffnet denselben Verlauf wie der Hybrid-Tab. Es gibt nur noch einen Weg zu schreiben.</div>
+</div>
+
+<div style="width:340px;flex:none;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Wer bisher nur hier gepflegt hat</div>
+<div style="margin-top:10px;font-size:12px;color:#94A3B8;line-height:1.7">Der bestehende Einstellungswert wird zum ersten Verlaufseintrag, datiert auf den Tag der Migration und markiert „aus den Einstellungen übernommen" statt mit echtem Ursprungsdatum — ehrlicher als ein erfundenes Datum. Die Person sieht beim ersten Öffnen des Blocks genau den A2-Zustand (ein einziger Wert).</div>
+</div>
+
+<div style="width:340px;flex:none;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:22px">
+<div style="font-size:14px;font-weight:600">Trainingslast rechnet jetzt zeitgenau</div>
+<div style="margin-top:10px;font-size:12px;color:#94A3B8;line-height:1.7">Statt eines einzigen „aktuellen" Gewichts für alle Eigengewichtsübungen verwendet jede Einheit ab jetzt den Verlaufswert, der zu ihrem Datum zuletzt bekannt war. Ein neuer Eintrag rechnet deshalb nur die Zeitspanne bis zum nächsten Eintrag neu (Abschnitt C2) — nicht mehr, wie in Modul 8, die gesamte Vergangenheit bei jeder Änderung.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="F Spezifikationstabelle" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · SPEZIFIKATIONSTABELLE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:190px 100px 130px 1fr 110px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>HÖHE</span><span>FLÄCHE</span><span>TYP-ROLLE</span><span>TAP-ZIEL</span>
+</div>
+<sc-for list="{{ spec }}" as="s" hint-placeholder-count="18">
+<div style="display:grid;grid-template-columns:190px 100px 130px 1fr 110px;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline;line-height:1.5">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#00F2FE">{{ s.el }}</span>
+<span style="color:#CDD3EA;font-variant-numeric:tabular-nums">{{ s.h }}</span>
+<span style="color:#94A3B8">{{ s.surface }}</span>
+<span style="color:#94A3B8">{{ s.type }}</span>
+<span style="color:{{ s.tapC }}">{{ s.tap }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="G Bewegungstabelle" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · BEWEGUNGSTABELLE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:170px 150px 1fr 90px 150px 110px 180px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ÜBERGANG</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>REDUZIERTE BEWEGUNG</span>
+</div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="10">
+<div style="display:grid;grid-template-columns:170px 150px 1fr 90px 150px 110px 180px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:{{ m.tc }}">{{ m.trigger }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-variant-numeric:tabular-nums">{{ m.dur }}</span><span style="color:#94A3B8">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.reduced }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="H Stringtabelle" style="margin-top:56px;max-width:980px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · STRINGTABELLE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:230px 1fr 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span>
+</div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="24">
+<div style="display:grid;grid-template-columns:230px 1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I A11y-Notizen" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · A11Y-NOTIZEN</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND / LIVE-REGION</span>
+</div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="10">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.55">
+<span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="J Wiederverwendung" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · WIEDERVERWENDUNG UND WAS WIRKLICH NEU IST</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:110px 260px 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>HERKUNFT</span><span>BAUSTEIN</span><span>VERWENDUNG HIER</span>
+</div>
+<sc-for list="{{ reuse }}" as="r" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:110px 260px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:{{ r.c }}">{{ r.m }}</span><span style="color:#FFFFFF;font-weight:600">{{ r.b }}</span><span style="color:#94A3B8;line-height:1.6">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="K Entscheidungsprotokoll" style="margin-top:56px;max-width:960px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">K · ENTSCHEIDUNGSPROTOKOLL — JEDE VERWORFENE IDEE MIT DEM GRUND</div>
+<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="13">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start">
+<div style="width:36px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7">{{ d.body }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;areaTone&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#00F2FE&quot;,&quot;options&quot;:[&quot;#00F2FE&quot;,&quot;#7B2CBF&quot;,&quot;#F02277&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;rangeWindow&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;3 Monate&quot;,&quot;options&quot;:[&quot;3 Monate&quot;,&quot;6 Monate&quot;,&quot;1 Jahr&quot;,&quot;Alle&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;showSourceDots&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;},&quot;reducedMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Baustein-Parameter&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const range = this.props.rangeWindow ?? '3 Monate';
+    const rangeMap = { '3 Monate': ['3 MONATE', '9 EINTRÄGE'], '6 Monate': ['6 MONATE', '13 EINTRÄGE'], '1 Jahr': ['1 JAHR', '18 EINTRÄGE'], 'Alle': ['ALLE', '19 EINTRÄGE'] };
+    const [rl, ec] = rangeMap[range] || rangeMap['3 Monate'];
+    const reduced = this.props.reducedMotion ?? false;
+    const showDots = this.props.showSourceDots ?? true;
+
+    return {
+      rangeLabelUpper: rl,
+      entryCountLabel: ec,
+      showSourceDots: showDots,
+      hideSourceDots: !showDots,
+      latestPulseStyle: reduced ? '' : 'animation: latestPulse 2.2s ease-in-out infinite; border-radius: 50%;',
+
+      historyRows: [
+        { date: '15. Sept', val: '78,9 KG', dotBg: '#00F2FE', dotBorder: 'none' },
+        { date: '1. Sept', val: '79,3 KG', dotBg: '#0B0B0E', dotBorder: '2px solid #00F2FE' },
+        { date: '18. Aug', val: '79,6 KG', dotBg: '#00F2FE', dotBorder: 'none' },
+        { date: '4. Aug', val: '79,8 KG', dotBg: '#0B0B0E', dotBorder: '2px solid #00F2FE' },
+        { date: '21. Jul', val: '80,3 KG', dotBg: '#00F2FE', dotBorder: 'none' },
+        { date: '14. Jul', val: '80,6 KG', dotBg: '#0B0B0E', dotBorder: '2px solid #00F2FE' }
+      ],
+
+      spec: [
+        { el: 'Block-Karte', h: 'Inhalt', surface: '#14141D, Rand #232334, R 20', type: 'Rezept 2, unverändert', tap: 'öffnet Verlauf', tapC: '#00FF87' },
+        { el: 'Titelzeile + ⓘ', h: '20 dp Zeile', surface: '—', type: 'Titel 12,5/600 · ⓘ 16 dp Ring', tap: 'ⓘ 44 dp erweiterter Bereich', tapC: '#00FF87' },
+        { el: 'Wertzeile', h: 'Inhalt', surface: '—', type: 'displaySmall 26 sp Mono weiss · Nenner labelMicro #94A3B8', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Änderungszeile', h: '18 dp', surface: '—', type: 'Glyph 8 dp + Satz 11,5 sp #CDD3EA', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Kurve (kompakt)', h: '56 dp', surface: 'Grundlinie #232334', type: '— (img mit Label)', tap: 'keines separat', tapC: '#94A3B8' },
+        { el: 'Punkt getippt', h: '6 dp Ø', surface: 'gefüllt #00F2FE', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Punkt gemessen', h: '6 dp Ø', surface: 'hohl, Rand #00F2FE 2 dp', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Lückenbereich', h: '—', surface: 'kein Pfad, Bodennotiz Mono 7 sp #4b5563', type: '—', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Zeile „EINTRAGEN"', h: '40 dp min', surface: '#14141D, Rand #232334', type: 'labelSmall #CDD3EA · Aktion cyan', tap: '48 dp Zeile', tapC: '#00FF87' },
+        { el: 'Eingabeblatt-Kopf', h: '36 dp', surface: '—', type: 'Kicker 8 sp Mono cyan · Vorwert 10,5 sp', tap: 'Umschalter 36×36', tapC: '#00FF87' },
+        { el: 'Datums-Chip (neu)', h: '24 dp', surface: 'inline, kein Rahmen', type: 'labelSmall #94A3B8 + Kalender-Glyph', tap: '44 dp erweiterter Bereich', tapC: '#00FF87' },
+        { el: 'Wertanzeige (Pad)', h: '48 dp', surface: '—', type: 'displayMedium 38–44 sp Mono', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Schrittweiten-Pille', h: '28–34 dp', surface: 'aktiv: cyan @0,1 · sonst #14141D', tap: '44 dp erweiterter Bereich', type: 'labelMicro Mono 9–10 sp', tapC: '#00FF87' },
+        { el: 'Zahlenband (Ruler)', h: '60–76 dp', surface: '#0B0B0E / #050507, Rand #232334', type: '—', tap: 'Drag, ± Knöpfe 42×60', tapC: '#00FF87' },
+        { el: 'Rückwirkende Vorschau', h: 'Inhalt', surface: '#14141D, Rand cyan @0,3', type: 'Kicker 8 sp cyan · Zeile 10,5 sp', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Bestätigungszeile', h: '48 dp min', surface: '#14141D, Rand #232334', type: 'labelSmall + „Rückgängig" cyan', tap: '48 dp, Rückgängig 44×44', tapC: '#00FF87' },
+        { el: 'Range-Pille', h: '28 dp', surface: 'aktiv cyan @0,12 · sonst #14141D', type: 'labelMicro Mono 9 sp', tap: '44 dp erweiterter Bereich', tapC: '#00FF87' },
+        { el: 'Listenzeile (Verlauf)', h: '44 dp', surface: 'transparent, Trennlinie #16161F', type: 'Datum 12 sp #CDD3EA · Wert Mono 12/700', tap: '44 dp × volle Breite', tapC: '#00FF87' }
+      ],
+
+      motion: [
+        { el: 'Neuer Punkt erscheint', trigger: 'Eintrag bestätigt', prop: 'Punkt scale 0→1, Linie zum Punkt zieht sich (stroke-dashoffset)', dur: '280 ms', curve: 'ease-out-cubic', rest: 'Punkt sichtbar, Wert aktuell', reduced: 'harter Wechsel, kein Zeichnen', tc: '#00F2FE' },
+        { el: 'Wert zählt um', trigger: 'Eintrag bestätigt', prop: 'Zahl interpoliert alt → neu', dur: '240 ms', curve: 'ease-out', rest: 'neuer Wert', reduced: 'harter Sprung', tc: '#00F2FE' },
+        { el: 'Aktuellster Punkt', trigger: '—, Ruhezustand', prop: 'Puls-Ring Deckkraft/Radius, kein Farbwechsel', dur: '2200 ms Loop', curve: 'ease-in-out', rest: '— (Loop)', reduced: 'kein Puls, statischer Punkt', tc: '#94A3B8' },
+        { el: 'Karte → Verlauf öffnen', trigger: 'Tipp auf Karte (ausser Eintragen-Zeile)', prop: 'Push-Übergang, Standard-Systemkurve', dur: 'System', curve: 'System', rest: 'Verlaufsscreen', reduced: 'kürzer, kein Parallax', tc: '#F02277' },
+        { el: 'Range wechselt', trigger: 'Tipp auf Pille', prop: 'Kurve morpht zwischen Punktesätzen + Crossfade der Liste', dur: '240 ms', curve: 'ease-out-cubic', rest: 'neues Fenster', reduced: 'harter Wechsel', tc: '#F02277' },
+        { el: 'Eingabeblatt öffnet/schliesst', trigger: 'Zeile „Eintragen" / Listenzeile', prop: 'translateY 100%→0 + Verdunkler (Modul 2)', dur: '220/160 ms', curve: 'ease-out-cubic / ease-in', rest: 'offen/entfernt', reduced: 'nur Deckkraft', tc: '#00FF87' },
+        { el: 'Zahlenband-Drag', trigger: 'Pointer auf Band', prop: 'Wertanzeige folgt 1:1 der Zugposition (Modul Runner, unverändert)', dur: 'direkt', curve: '1:1 gekoppelt', rest: 'letzte Position', reduced: 'unverändert — funktional, keine Animation', tc: '#00FF87' },
+        { el: 'Bestätigungszeile erscheint', trigger: 'Speichern', prop: 'translateY 12 dp→0 + Deckkraft 0→1', dur: '200 ms', curve: 'ease-out', rest: 'sichtbar 30 s, dann Ausblenden 200 ms', reduced: 'nur Deckkraft', tc: '#00FF87' },
+        { el: 'Löschen Stufe 1 → 2', trigger: '„Eintrag löschen"', prop: 'Dialog-Anatomie aus Modul 2, Scale 0,94→1', dur: '220 ms', curve: 'ease-out-cubic', rest: 'zentriert', reduced: 'nur Überblendung', tc: '#F02277' },
+        { el: 'Skelett-Puls', trigger: 'Laden > 300 ms', prop: 'Deckkraft 0,55↔1,0', dur: '1600 ms Loop', curve: 'ease-in-out', rest: '— (Loop)', reduced: 'eingefroren bei 0,8', tc: '#94A3B8' }
+      ],
+
+      strings: [
+        { key: 'weight.title', de: 'Gewicht', en: 'Weight' },
+        { key: 'weight.unit', de: 'KG', en: 'KG' },
+        { key: 'weight.basis', de: '{n} Einträge seit dem {datum}', en: '{n} entries since {date}' },
+        { key: 'weight.change_up', de: '{delta} kg seit dem {datum} · {tage} Tage her', en: '{delta} kg since {date} · {days} days ago' },
+        { key: 'weight.change_down', de: '{delta} kg seit dem {datum} · {tage} Tage her', en: '{delta} kg since {date} · {days} days ago' },
+        { key: 'weight.single_value_title', de: 'Ersten Verlaufswert eintragen', en: 'Log your first history value' },
+        { key: 'weight.single_value_note', de: 'Aus der Einrichtung, {datum} — noch kein zweiter Eintrag.', en: 'From setup, {date} — no second entry yet.' },
+        { key: 'weight.gap_note', de: '{n} Wochen ohne Eintrag', en: '{n} weeks without an entry' },
+        { key: 'weight.enter_cta', de: 'Eintragen', en: 'Log entry' },
+        { key: 'weight.update_cta', de: 'Aktualisieren', en: 'Update' },
+        { key: 'weight.sheet_title', de: 'Gewicht eintragen', en: 'Log weight' },
+        { key: 'weight.sheet_edit_title', de: 'Eintrag bearbeiten', en: 'Edit entry' },
+        { key: 'weight.date_today', de: 'Heute · {datum}', en: 'Today · {date}' },
+        { key: 'weight.date_pick', de: 'Datum wählen', en: 'Choose date' },
+        { key: 'weight.same_day_note', de: 'Heute bereits erfasst: {wert} kg. Ein zweiter Eintrag ersetzt diesen Wert.', en: 'Already logged today: {wert} kg. A second entry replaces it.' },
+        { key: 'weight.retro_title', de: 'Wirkt auf {von} – {bis}', en: 'Affects {from} – {to}' },
+        { key: 'weight.retro_scope', de: 'Bis zum nächsten Eintrag · nicht den ganzen Verlauf', en: 'Until the next entry · not the whole history' },
+        { key: 'weight.confirm_snackbar', de: 'Gewicht {wert} kg · {datum} erfasst', en: 'Weight {wert} kg · logged {date}' },
+        { key: 'weight.delete_entry', de: 'Eintrag löschen', en: 'Delete entry' },
+        { key: 'weight.source_typed', de: 'Eigene Eingabe', en: 'Manual entry' },
+        { key: 'weight.source_measured', de: 'Aus Health Connect', en: 'From Health Connect' },
+        { key: 'weight.explain_title', de: 'Über diesen Block', en: 'About this block' },
+        { key: 'weight.explain_body', de: 'Zeigt dein Körpergewicht über Zeit — was war, kein Ziel.', en: 'Shows your body weight over time — what was, not a goal.' },
+        { key: 'weight.history_open', de: 'Verlauf öffnen', en: 'Open history' },
+        { key: 'weight.range_3m', de: '3 Mon.', en: '3 mo' },
+        { key: 'weight.range_6m', de: '6 Mon.', en: '6 mo' },
+        { key: 'weight.range_1y', de: '1 Jahr', en: '1 yr' },
+        { key: 'weight.range_all', de: 'Alle', en: 'All' },
+        { key: 'weight.settings_row_meta', de: 'Zuletzt {datum} · {quelle}', en: 'Last {date} · {source}' },
+        { key: 'weight.load_error', de: 'Verlauf konnte nicht aktualisiert werden.', en: 'History could not be refreshed.' }
+      ],
+
+      a11y: [
+        { el: 'Block-Karte', label: 'Gruppe: „Gewicht, 78,9 Kilogramm, 9 Einträge seit dem 23. Juni, 0,4 Kilogramm weniger seit dem 1. September."', role: 'button · mergeSemantics', state: 'öffnet den Verlauf; ein Knoten, nicht vier' },
+        { el: 'Kurve', label: 'img-Label mit von-bis: „Verlauf über 9 Einträge, von 80,9 auf 78,9 Kilogramm"', role: 'img', state: 'Punkte selbst excludeSemantics — die Aussage steht im Label' },
+        { el: 'Änderungszeile', label: 'Richtung als Wort: „weniger" / „mehr", nie nur der Glyph', role: 'text (Teil der Gruppe)', state: 'kein eigener Fokusstopp' },
+        { el: 'Zeile „Eintragen"', label: 'weight.enter_cta', role: 'button', state: 'eigener Fokusstopp, getrennt von der Karte' },
+        { el: 'Zahlenband', label: '„Gewicht, 78,9 Kilogramm" + customActions „Erhöhen"/„Verringern"', role: 'adjustable · customActions', state: 'Drag ist nicht die einzige Bedienung — ± Knöpfe sind der a11y-Pfad' },
+        { el: 'Datums-Chip', label: '„Datum, heute, 20. September. Ändern."', role: 'button', state: 'öffnet Systemkalender, kein Zwang zu einem Custom-Picker' },
+        { el: 'Quelle-Punkt (Liste)', label: '(kein eigenes Label)', role: 'excludeSemantics', state: 'Quelle steht im Zeilenlabel: „…, eigene Eingabe" bzw. „…, aus Health Connect"' },
+        { el: 'Bestätigungszeile', label: 'weight.confirm_snackbar', role: 'liveRegion assertive', state: 'einmalige Ansage, danach Rückgängig 30 s per Fokus erreichbar' },
+        { el: 'Listenzeile (Verlauf)', label: '„21. Juli, 80,3 Kilogramm, eigene Eingabe. Bearbeiten."', role: 'button', state: 'öffnet das Eingabeblatt vorausgefüllt' },
+        { el: 'Range-Pille', label: '„Zeitraum 6 Monate, ausgewählt."', role: 'radio (Gruppe)', state: 'selected spiegelt die aktive Pille' }
+      ],
+
+      reuse: [
+        { m: 'MODUL 2', b: 'Sheet, kurzer Höhenmodus', use: 'Grundgerüst des Eingabeblatts und der Explain-Sheet hinter dem ⓘ', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Dialog-Anatomie Stufe 2', use: 'Löschbestätigung für einen Verlaufseintrag, unverändert', c: '#00F2FE' },
+        { m: 'MODUL 2', b: 'Endgültig-vs-nebenbei-Notice', use: '„Heute bereits erfasst"-Hinweis — informiert, blockiert nichts', c: '#00F2FE' },
+        { m: 'MODUL 3', b: 'Pille mit Achse „Betonung"', use: 'Range-Pillen 3 Mon./6 Mon./1 Jahr/Alle', c: '#94A3B8' },
+        { m: 'MODUL 5', b: 'Regel „Block ohne Daten rendert nicht"', use: 'BEWUSSTE AUSNAHME — Onboarding garantiert immer einen Wert, der Block rendert deshalb immer', c: '#00FF87' },
+        { m: 'MODUL 6', b: 'Lücke ohne Interpolation', use: 'Vom Kalenderstreifen auf das Liniendiagramm übertragen: kein Pfad über eine Lücke', c: '#00FF87' },
+        { m: 'MODUL 7', b: 'Rückwirkende-Folgen-Panel', use: 'Wiederverwendet, aber auf das Fenster bis zum nächsten Eintrag begrenzt statt global', c: '#94A3B8' },
+        { m: 'MODUL 7', b: 'Snackbar mit 30-s-Undo', use: 'Bestätigung nach dem Speichern eines Eintrags', c: '#94A3B8' },
+        { m: 'MODUL 8', b: 'Einstellung „Körpergewicht"', use: 'Wird zur reinen Ableitung: zeigt den letzten Verlaufswert, schreibt nicht mehr selbst', c: '#CDD3EA' },
+        { m: 'MODUL 9', b: 'Formkurve-Rezept (Grundlinie, Punkte, von-bis-Label)', use: 'Basis der Gewichtskurve inkl. gefüllt/hohl-Punktidiom', c: '#CDD3EA' },
+        { m: 'RUNNER', b: 'AtemStepPad (Zahlenband + Tastatur-Umschalter)', use: 'Unverändertes Eingabeblatt, Schrittweiten auf 0,1/0,5/1 kg parametrisiert', c: '#FFFFFF' },
+        { m: 'NEU', b: 'Datums-Chip im Eingabeblatt', use: 'Die einzige echte Ergänzung an AtemStepPad — Nachtragen war im Runner nie nötig', c: '#FFFFFF' },
+        { m: 'NEU', b: 'AtemExplainHeader (Titel + ⓘ)', use: 'Verallgemeinerung des Info-Kreises aus Modul 9 zu einem eigenständigen Kopfzeilen-Baustein', c: '#FFFFFF' }
+      ],
+
+      decisions: [
+        { n: '1', title: 'Verworfen: 2-Wochen-Standardfenster', body: 'Körpergewicht schwankt am selben Tag um mehr, als es in zwei Wochen wandert — bei diesem Fenster zeigt die Kurve fast nur Tagesrauschen, kein Verlauf.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '2', title: 'Verworfen: 2-Jahres-Standardfenster', body: 'Über zwei Jahre komprimiert sich fast jede reale Entwicklung zu einer flachen Gerade — die kurzfristige Frage „wie stehe ich gerade" bekommt keine Antwort mehr.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '3', title: 'Gewählt: 3-Monats-Fenster in der Karte, wechselbar im Detail', body: 'Drei Monate zeigen bei üblicher Eintragshäufigkeit genug Punkte für eine echte Kurve, ohne im Tagesrauschen zu verschwinden. Die kompakte Karte bleibt bei einem Fenster; wer mehr will, wechselt im Verlaufsscreen zwischen 3 Mon./6 Mon./1 Jahr/Alle.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '4', title: 'Verworfen: Ampelfarben für die Veränderung', body: 'Grün für weniger, Rot für mehr wäre die naheliegende Lösung jeder Fitness-App — und genau das Urteil, das der Auftrag ausdrücklich verbietet. Auf/Ab bleibt neutral: gleiche Textfarbe #CDD3EA, nur der Glyph zeigt die Richtung.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '5', title: 'Verworfen: ein Zielgewicht-Feld', body: 'Selbst als optionales, versteckbares Feld würde es dem Block eine Bewertungsachse geben, die er per Auftrag nicht haben soll. Der Block zeigt, was war — kein Soll, an dem sich der Verlauf messen liesse.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '6', title: 'Verworfen: eigene Badge/Chip-Ebene für die Herkunft', body: 'Ein „Getippt"/„Gemessen"-Chip neben jedem Punkt wäre eine zweite Bedeutungsebene über der Kurve. Gewählt: derselbe Punkt, gefüllt oder hohl — unterscheidbar, aber ohne neue Farbe, neues Wort oder neue Zeile.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '7', title: 'Gewählt: Ausnahme von „Block ohne Daten rendert nicht"', body: 'Die Onboarding-Pflichtangabe garantiert, dass jedes Profil immer mindestens einen Gewichtswert kennt — „kein Wert" ist datenseitig eigentlich unmöglich. Der Block bleibt deshalb immer sichtbar; sonst gäbe es nie einen Weg zum ersten echten Verlaufseintrag.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '8', title: 'Verworfen: interpolierte Linie über Lücken', body: 'Eine durchgezogene Linie zwischen zwei sechs Wochen entfernten Punkten würde eine Entwicklung an Tagen behaupten, an denen niemand gemessen hat. Die Kurve bricht an der Lücke ab und beginnt danach neu.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '9', title: 'Verworfen: eigener Kalender-Picker fürs Nachtragen', body: 'Ein selbst gebauter Datumsraster-Picker wäre ein weiteres neues Sheet für eine Aufgabe, die der Systemkalender bereits löst — bekannt, barrierefrei, ohne Wartung. Der Datums-Chip öffnet ihn, statt eine eigene Fläche zu bauen.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '10', title: 'Gewählt: Quellwechsel nur bei echter Änderung', body: 'Ein unverändert bestätigter Health-Connect-Wert bleibt „gemessen" — nur eine tatsächlich geänderte Zahl wird zu einer getippten. Sonst würde jedes Ansehen eines Tages leise seine Herkunft umschreiben.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '11', title: 'Gewählt: rückwirkende Vorschau nur für das betroffene Fenster', body: 'Modul 7/8 rechnete bei jeder Änderung die gesamte Vergangenheit neu, weil es nur einen Wert gab. Mit einer echten Reihe gilt ein Eintrag nur bis zum nächsten — die Vorschau zeigt jetzt genau dieses Fenster, nicht mehr den ganzen Verlauf.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87' },
+        { n: '12', title: 'Verworfen: ein gemeinsames Gewicht-Trainings-Lastfeld', body: 'Ein Score aus Gewichtsverlauf und Trainingslast wäre exakt das gemeinsame Lastfeld, das Modul 11 für Kraft/Ausdauer bereits verworfen hat — dieselbe Begründung greift hier: die Gewichtung wäre eine Meinung im Code.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' },
+        { n: '13', title: 'Verworfen: Wisch-Geste zum Löschen in der Liste', body: 'Kein anderer Listen-Editierweg im Produkt nutzt Wischen; Modul 7/8 editieren und löschen durchgängig per Tap in dasselbe Sheet. Ein Sonderfall hier hätte zwei Löschgesten im selben Produkt bedeutet.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

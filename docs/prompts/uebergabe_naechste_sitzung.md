@@ -17,11 +17,15 @@ Du übernimmst die Arbeit an **ATEM Hybrid** (Flutter, Android). Lies zuerst, da
 2. **`docs/design-prompts/`** — die Gespräche mit Claude Design, aufsteigend nummeriert.
    Zuletzt `16b-nachtrag-herkunft-und-pulskurve.md` (zweimal durchgelaufen, vollständig
    umgesetzt).
-3. **`design_handoff_atem_app/design_refs/`** — die Spezifikations-Boards. **01–11 und 16**
-   liegen als `.dc.html` im Repo und sind mit `python3 tool/read_board.py 16` ohne Browser
-   lesbar. **12–15 und 17 fehlen noch** — sie liegen nur in Claude Design (Projekt
-   `14523979-ed88-4a5a-ac09-cacf10614050`, lesbar nach `/design-login` über
-   `DesignSync get_file`). Das Spiegeln dieser fünf ist eine offene Aufgabe (siehe unten).
+3. **`design_handoff_atem_app/design_refs/`** — die Spezifikations-Boards. **01–11 und
+   13–17** liegen als `.dc.html` im Repo (gespiegelt am 23.09.) und sind mit
+   `python3 tool/read_board.py 16` ohne Browser lesbar. **Board 12** (Kraft-Tab als
+   wischbare Seiten) gibt es nicht mehr — Board 13 hat es abgelöst.
+   **Board 16 ist abgeschnitten**: `DesignSync get_file` liefert höchstens 256 KiB, das
+   Board ist grösser. Die Datei im Repo endet mitten im Entscheidungsprotokoll (N12);
+   alles danach steht nur in Claude Design (Projekt
+   `14523979-ed88-4a5a-ac09-cacf10614050`). Ein Board, das so gross wird, muss der Nutzer
+   von Hand exportieren.
 4. **`docs/contracts/`** — die verbindlichen Verträge: A11y, i18n, Architektur, Firestore-
    Schema. Bei Datenmodell-Änderungen gehört ein Absatz in `04-firestore-schema.md`.
 5. **`docs/gemini_produktstrategie_2026-09-18.md`** — der alte Fahrplan. **Er ist
@@ -51,11 +55,8 @@ Du übernimmst die Arbeit an **ATEM Hybrid** (Flutter, Android). Lies zuerst, da
 
 **In dieser Reihenfolge, solange der Nutzer nichts anderes sagt:**
 
-1. **Boards 12–15 und 17 ins Repo spiegeln.** Aus Claude Design nach
-   `design_handoff_atem_app/design_refs/NN_Titel.dc.html`, danach `CLAUDE.md` von
-   „`design_refs/01`–`10`" auf den wirklichen Stand berichtigen. Ohne das ist die
-   Spezifikation der halben Oberfläche nur mit `/design-login` einsehbar — und keine
-   Sonnet-Sitzung kann gegen ein Board arbeiten.
+1. ~~Boards ins Repo spiegeln~~ — erledigt am 23.09. (13, 14, 15, 17; 12 ist abgelöst).
+   Offen bleibt nur der Schwanz von Board 16, siehe oben.
 2. **CI einrichten.** `.github/workflows/` gibt es nicht, obwohl beide Tore existieren und
    im Vertrag als „CI-Tor" beschrieben sind: `flutter analyze lib test` · `flutter test` ·
    `dart tool/check_conventions.dart` · `flutter gen-l10n && git diff --exit-code
