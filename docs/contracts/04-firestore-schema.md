@@ -365,6 +365,68 @@ gefüllt (nur App), hohl (nur Uhr), Ring mit Kern (beides). Die vierte Form — 
 Puls und Kalorien aus der Uhr. Es wird nie gemittelt und nie gewählt, es wird zugeordnet —
 deshalb steht hier auch keine Quellenkarte je Feld, sondern nur der Verweis.
 
+### `userProfiles/{uid}/planning` — Zielbriefing und Woche (Boards 18–19, vorab am 23.09.2026)
+
+Festgelegt **vor** dem Design-Gespräch, damit das Board nicht ins Blaue entwirft. Die Felder
+im Einzelnen entscheiden die Boards; was hier steht, sind die Grenzen, die sie nicht
+verschieben.
+
+**Drei Dinge, die gleich klingen und es nicht sind:**
+
+| | Was es ist | Wo es liegt |
+|---|---|---|
+| **Plan** | Eine Übungsliste mit Zielvorgaben. Hat kein Datum. | `plans` |
+| **Termin** | Eine Einheit an einem bestimmten Tag, mit oder ohne Plan. Bestand der Vorgänger-App; ATEM liest ihn und hakt ihn ab, legt aber keinen an. | `schedule` |
+| **Wochenplan** | Ein wiederkehrender Rhythmus: welche Art an welchem Tag, optional mit einem Plan. Hat kein Datum, sondern Wochentage. | `planning/week` (Board 19) |
+| **Zielbriefing** | Was jemand selbst über sein Training sagt. Erzeugt keine Einheit. | `planning/goal` (Board 18) |
+
+Ein Wochenplan ist deshalb **kein `Plan`**: In `plans` erschiene er in der Vorgänger-App als
+Übungsliste ohne Übungen. Und er ist **kein Stapel `schedule`-Termine**: Vorab angelegte
+Termine für Wochen im Voraus müssten bei jeder Änderung des Rhythmus gelöscht und neu
+geschrieben werden, und ein abgehakter Termin aus einem alten Rhythmus wäre von einem neuen
+nicht zu unterscheiden. „Heute" wird aus dem Rhythmus **abgeleitet**, nicht gespeichert.
+Liegt für denselben Tag zusätzlich ein Termin in `schedule`, gewinnt der Termin — das
+Datierte schlägt das Wiederkehrende —, solange Board 19 nicht anders entscheidet.
+
+**Warum eine Unter-Sammlung und kein Feld im Profil.** Die Vorgänger-App legt das Profil mit
+`set` **ohne** `merge` neu an, wenn sie es nicht laden konnte (`js/views/settings.js`,
+`createDefaultProfile` — auch bei einem Netzfehler). Ein Feld im Profil wäre dann weg, ohne
+dass es jemand merkt. Eine Unter-Sammlung übersteht das.
+
+**`planning/goal` — das Zielbriefing:**
+
+- **Nichts ist vorbelegt, nichts wird ergänzt.** Eine unbeantwortete Frage **fehlt** im
+  Dokument. Sie steht nicht als `0`, `false` oder `[]` da: „Cardio 0× die Woche" ist eine
+  Aussage, „Cardio nicht beantwortet" keine. Liest der Code eine fehlende Antwort als Null,
+  entsteht genau die falsche Zahl, vor der Board 04 warnt.
+- **Ein halbes Briefing ist als halbes erkennbar.** Ob es gilt, entscheidet Board 18. Die
+  Daten müssen beide Antworten zulassen, also: je Antwort ein eigenes Feld, und ein
+  `completedAt` nur, wenn das Board ein Briefing als abgeschlossen definiert.
+- **Unbekannte Felder werden beim Lesen übergangen und beim Schreiben nicht gelöscht**
+  (`merge`). Eine spätere Fassung darf Fragen ergänzen, ohne dass eine ältere App sie
+  verwirft.
+- **`updatedAt`** steht immer. Jede spätere Ableitung nennt, auf welchem Stand sie beruht
+  („nach deinem Briefing vom 23. Sep").
+- **Die Altfelder `trainingStyle` (`gym` · `bodyweight` · `hybrid`) und `trainingLevel` im
+  Profil werden nicht übernommen und nicht überschrieben.** Sie beantworten eine andere
+  Frage (Ausstattung, Selbsteinschätzung) und haben in ATEM keinen Abnehmer. Die
+  Vorgänger-App liest sie weiter.
+
+**`planning/week` — der Wochenplan:** Die Felder entscheidet Board 19. Vorab fest:
+
+- Ein Eintrag verweist auf einen Plan über `planId` und trägt zusätzlich dessen Namen.
+  Ein **gelöschter Plan ist der Normalfall**, nicht der Fehler — der Eintrag bleibt als
+  freies Training seiner Art stehen, wie ein Termin ohne `planId` (siehe `schedule`).
+- **Cardio hat keine Pläne.** Ein Cardio-Eintrag trägt seine Art und optional eine Dauer,
+  nie eine `planId`.
+
+**Folgen, die leicht übersehen werden** — dieselben wie bei `bodyWeights`:
+
+1. `firestore.rules` braucht einen eigenen `match /planning/{doc}`-Block unter
+   `userProfiles/{userId}`, sonst greift das abschliessende `allow read, write: if false`.
+2. `FirestoreAccountRepository.profileSubcollections` bekommt `planning` — sonst bleibt das
+   Briefing nach einer Kontolöschung stehen und fehlt im Datenexport.
+
 ## `allowedUsers`
 
 Zwei Felder: `email`, `enabled`. Das ist die Zugangsliste der geschlossenen Beta aus Stufe 7.
