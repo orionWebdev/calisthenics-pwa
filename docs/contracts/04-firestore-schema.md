@@ -399,9 +399,33 @@ dass es jemand merkt. Eine Unter-Sammlung übersteht das.
   Dokument. Sie steht nicht als `0`, `false` oder `[]` da: „Cardio 0× die Woche" ist eine
   Aussage, „Cardio nicht beantwortet" keine. Liest der Code eine fehlende Antwort als Null,
   entsteht genau die falsche Zahl, vor der Board 04 warnt.
-- **Ein halbes Briefing ist als halbes erkennbar.** Ob es gilt, entscheidet Board 18. Die
-  Daten müssen beide Antworten zulassen, also: je Antwort ein eigenes Feld, und ein
-  `completedAt` nur, wenn das Board ein Briefing als abgeschlossen definiert.
+- **Es gibt kein Briefing als Ganzes, nur einzelne Antworten** (Board 18, F1). Kein
+  `completedAt`, kein Status, keine Schwelle: Jede Antwort gilt ab ihrem eigenen Datum.
+
+Die Felder (Board 18, Sektion C):
+
+| Feld | Typ | Bemerkung |
+|---|---|---|
+| `modalities` | `array<string>` | `strength`, `cardio` oder beide. **Die einzige Stelle, an der eine Null entstehen darf**: Fehlt `cardio` hier bei beantworteter Frage, ist „kein Cardio" gesagt. |
+| `weekPattern` | `string` | `same` · `alternating` · `irregular` |
+| `anchorWeekStart` | `string` | `yyyy-MM-dd`, der Montag einer Woche A. Nur bei `alternating`. Ohne ihn wüsste keine Woche, ob sie A oder B ist. |
+| `perWeek` | `map` | `{strength?: 1–8, cardio?: 1–8}`, `8` heisst „8+". Einheiten, nicht Tage. Keine `0`. |
+| `perWeekB` | `map` | Dasselbe für Woche B, nur bei `alternating`. |
+| `schedule` | `string` | `fixed` · `free` |
+| `days` | `map` | `{strength?: [1–7], cardio?: [1–7]}`, ISO-Wochentag. Nur bei `fixed`. |
+| `multiPerDay` | `string` | `no` · `some` · `most` |
+| `dayparts` | `map` | `{strength?: […], cardio?: […]}` aus `morning` · `midday` · `evening`. Nur bei `some`/`most`. |
+| `places` | `array<string>` | `home` · `gym` · `outdoor` |
+| `goals` | `array<string>` | `weight` · `endurance` · `mobility` · `fitness` · `health` · `strength` · `muscle`. Ungeordnet — die Reihenfolge im Array ist keine Rangfolge. |
+| `describes` | `string` | `current` · `intended` |
+| `answeredAt` | `map<string, timestamp>` | **Je Feld, nie fürs Ganze.** Gleich verschachtelt wie der Wert: `answeredAt.perWeek.strength` gehört zu `perWeek.strength`. Geschrieben über Feldpfade mit `update`, deshalb entsteht eine Verschachtelung und kein Schlüssel mit Punkt. |
+
+**Drei Schreibregeln** (Board 18, C):
+1. Offen heisst: der Schlüssel fehlt. Zurücknehmen löscht ihn **samt** `answeredAt`.
+2. Abhängiges geht mit: Wer „nur Kraft" wählt, löscht im selben Schreibvorgang alles unter
+   `cardio`. Versteckt aufbewahrte Werte sickerten sonst in eine spätere Ableitung.
+3. Jede Antwort ist ein eigener Schreibvorgang, Feld-Update mit Merge. Eine Ablehnung setzt
+   genau dieses Feld zurück, nie das Dokument.
 - **Unbekannte Felder werden beim Lesen übergangen und beim Schreiben nicht gelöscht**
   (`merge`). Eine spätere Fassung darf Fragen ergänzen, ohne dass eine ältere App sie
   verwirft.

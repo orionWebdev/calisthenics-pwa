@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050507}
+a{color:#00F2FE}a:hover{color:#7ee9ff}
+@keyframes skelPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes snackIn{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+@property --sweep{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes selBloom{0%{box-shadow:0 0 0 0 rgba(0,242,254,0.6),0 0 0 0 rgba(0,242,254,0.4)}35%{box-shadow:0 0 0 4px rgba(0,242,254,0.22),0 0 28px 4px rgba(0,242,254,0.38)}100%{box-shadow:0 0 0 10px rgba(0,242,254,0),0 0 18px 0 rgba(0,242,254,0)}}
+@keyframes selBloom2{0%{box-shadow:0 0 0 0 rgba(0,242,254,0.6),0 0 0 0 rgba(0,242,254,0.4)}35%{box-shadow:0 0 0 4px rgba(0,242,254,0.22),0 0 28px 4px rgba(0,242,254,0.38)}100%{box-shadow:0 0 0 10px rgba(0,242,254,0),0 0 18px 0 rgba(0,242,254,0)}}
+@keyframes checkDraw{from{stroke-dashoffset:22}to{stroke-dashoffset:0}}
+@keyframes checkDraw2{from{stroke-dashoffset:22}to{stroke-dashoffset:0}}
+@keyframes popIn{0%{transform:scale(0)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes popIn2{0%{transform:scale(0)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes edgeSweep{0%{--sweep:0deg;opacity:0}12%{opacity:1}80%{opacity:1}100%{--sweep:360deg;opacity:0}}
+@keyframes edgeSweep2{0%{--sweep:0deg;opacity:0}12%{opacity:1}80%{opacity:1}100%{--sweep:360deg;opacity:0}}
+@keyframes blockIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes scanA{0%{transform:translateX(-120%);opacity:0}15%{opacity:1}100%{transform:translateX(320%);opacity:0}}
+@keyframes scanB{0%{transform:translateX(-120%);opacity:0}15%{opacity:1}100%{transform:translateX(320%);opacity:0}}
+@keyframes auroraDrift{0%{transform:translate3d(-5%,0,0) rotate(0deg)}50%{transform:translate3d(5%,8px,0) rotate(6deg)}100%{transform:translate3d(-5%,0,0) rotate(0deg)}}
+@keyframes titleSheen{from{background-position:100% 0}to{background-position:0% 0}}
+@keyframes titleSheen2{from{background-position:100% 0}to{background-position:0% 0}}
+@keyframes errFlicker{0%,100%{opacity:1}20%{opacity:.35}40%{opacity:1}60%{opacity:.6}80%{opacity:1}}
+@keyframes skelShimmer{from{background-position:120% 0}to{background-position:-20% 0}}
+@keyframes snackGlow{0%{transform:translateY(12px);opacity:0;box-shadow:0 0 0 0 rgba(0,242,254,0)}60%{opacity:1;box-shadow:0 0 26px 0 rgba(0,242,254,0.35)}100%{transform:none;opacity:1;box-shadow:0 10px 30px rgba(0,0,0,0.6)}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#050507;color:#FFFFFF;font-family:'Poppins',sans-serif;padding:48px 56px 96px">
+
+<div style="max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#00F2FE">ATEM HYBRID · MODUL 18 · WOCHENPLANUNG 1 VON 3</div>
+<h1 style="margin:10px 0 0;font-size:34px;font-weight:600;line-height:1.2;max-width:1100px">Das Zielbriefing — acht Fragen, keine vorbelegt, jede Antwort für sich gültig</h1>
+<p style="margin:12px 0 0;font-size:14px;color:#94A3B8;max-width:900px;line-height:1.7;text-wrap:pretty">Bevor ATEM eine Woche planen hilft, muss es wissen, was jemand vorhat — in dessen eigenen Worten. Dieses Board entwirft den Bildschirm, auf dem das gesagt wird. Er fragt nach Rhythmus, Ort und Ziel — nur so viel, wie vier reale Trainingsweisen <strong style="color:#CDD3EA">auseinanderhält</strong>, speichert jede Antwort sofort und einzeln, und behandelt eine offene Frage nie als Null. Er ist Formular und Zusammenfassung zugleich: beantwortete Fragen falten sich beim Wiederansehen zu Zeilen.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Nur Tokens aus atem_theme.dart</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Cyan = Handlung · #AB6BF0 = Ort · #7A2BDB nie Text</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">Tap ≥ 48 dp · Text ≥ 12 sp · 200 % auf 320 dp</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8;border:1px solid #232334;border-radius:30px;padding:5px 12px">0 × Gradient-Karte (Lichtkante nur 1,2 s) · 1 × BackdropFilter</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#F02277;border:1px solid rgba(240,34,119,0.4);border-radius:30px;padding:5px 12px">Nichts vorbelegt · kein Zähler · kein Badge · keine Erinnerung</span>
+</div>
+</div>
+
+<div style="margin-top:48px;max-width:1240px;background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:26px 30px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#00F2FE">LEITSATZ</div>
+<div style="margin-top:10px;font-size:19px;font-weight:600;line-height:1.55;max-width:1040px;text-wrap:pretty">Das Briefing hält fest, was jemand über sein Training sagt — nie, was er tun sollte. Nichts steht da, bevor er es hinschreibt; was offen bleibt, bleibt offen und wird nirgends zur Null; und der Bildschirm sagt über den Verbleib der Antworten genau so viel, wie heute stimmt.</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:1040px">Drei Folgen. <strong style="color:#CDD3EA">Erste:</strong> es gibt kein „Briefing" als Ganzes, das gelten oder nicht gelten könnte — nur einzelne Antworten, jede mit eigenem Datum. <strong style="color:#CDD3EA">Zweite:</strong> kein Knopf, der das Ausfüllen abschliesst; ohne „Fertig" gibt es kein „unfertig". <strong style="color:#CDD3EA">Dritte:</strong> eine Frage steht nur da, wenn ihre Antwort etwas unterscheidet, das keine andere Antwort schon unterscheidet.</div>
+</div>
+
+<div data-screen-label="A1 Interaktiv" style="margin-top:56px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">A · DER BILDSCHIRM — ZUSTÄNDE</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:920px">Artboards 1 : 1 in dp bei 360 dp Breite. <strong style="color:#CDD3EA">A1 ist bedienbar</strong>: Antworten wählen, zurücknehmen, „nur Kraft" wählen und die Cardio-Fragen verschwinden sehen, dann „Seite neu öffnen" — dieselbe Seite erscheint als Zusammenfassung. Tweaks: Startzustand, Speicherfehler simulieren, Animationen reduzieren.</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:18px">
+
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A1 · ERSTER AUFRUF → AUSFÜLLEN · INTERAKTIV</div>
+<div style="margin-top:8px;position:relative;width:360px;height:760px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="position:absolute;inset:0;overflow-y:auto">
+<div style="position:sticky;top:0;z-index:2;height:56px;display:flex;align-items:center;padding:0 4px;border-bottom:1px solid #232334;background:rgba(5,5,7,0.82);backdrop-filter:blur(14px)">
+<span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#AB6BF0"><span style="width:6px;height:6px;border-radius:50%;background:#AB6BF0;box-shadow:0 0 8px #AB6BF0"></span>HYBRID · EINSTELLUNGEN</span>
+</div>
+<div style="position:relative;isolation:isolate;padding:18px 16px 0">
+<div aria-hidden="true" style="position:absolute;left:-50px;right:-50px;top:-64px;height:200px;z-index:-1;pointer-events:none;background:radial-gradient(110px 70px at 22% 58%, rgba(0,242,254,0.20), rgba(0,242,254,0) 70%), radial-gradient(150px 80px at 78% 42%, rgba(171,107,240,0.22), rgba(171,107,240,0) 70%), radial-gradient(140px 70px at 50% 88%, rgba(122,43,219,0.30), rgba(122,43,219,0) 70%);animation:{{ auroraAnim }}"></div>
+<div style="display:flex;align-items:center;gap:2px">
+<span style="font-size:22px;font-weight:600;line-height:1.25;background:linear-gradient(100deg,#FFFFFF 0%,#FFFFFF 42%,#AB6BF0 49%,#00F2FE 53%,#FFFFFF 60%,#FFFFFF 100%);background-size:260% 100%;background-position:0% 0;-webkit-background-clip:text;background-clip:text;color:transparent;animation:{{ sheenAnim }}">Trainingsangaben</span>
+<span onClick="{{ toggleExplain }}" role="button" aria-label="Erklärung" style="width:48px;height:48px;margin:-12px 0;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none" style-active="transform:scale(0.97)"><span style="width:20px;height:20px;border-radius:50%;border:1.5px solid #00F2FE;color:#00F2FE;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box">i</span></span>
+</div>
+<div style="display:grid;grid-template-rows:{{ explainRows }};opacity:{{ explainOp }};transition:{{ trBase }}"><div style="overflow:hidden;min-height:0">
+<div style="margin-top:10px;background:#0B0B0E;border:1px solid #232334;border-radius:14px;padding:12px 14px;font-size:13px;color:#CDD3EA;line-height:1.6">Hier beschreibst du dein Training in eigenen Worten. Jede Antwort wird sofort gespeichert und gilt für sich; was du offen lässt, bleibt offen und zählt nirgends als Null. Bisher rechnet keine Auswertung mit diesen Angaben — nutzt eine sie später, nennt sie deine Angabe als Grundlage.</div>
+</div></div>
+<div style="margin-top:6px;font-size:13px;color:#94A3B8;line-height:1.5">Freiwillig. Jede Antwort gilt für sich.</div>
+<sc-if value="{{ hasAny }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">ZULETZT GEÄNDERT · HEUTE, 23. SEPT</div></sc-if>
+</div>
+
+<div style="padding:4px 16px 0">
+<sc-for list="{{ qs }}" as="q" hint-placeholder-count="4">
+<div style="display:grid;grid-template-rows:{{ q.rows }};opacity:{{ q.op }};transition:{{ q.tr }}"><div style="overflow:hidden;min-height:0"><div style="padding-top:12px">
+
+<div style="display:grid;grid-template-rows:{{ q.rowRows }};opacity:{{ q.rowOp }};transition:{{ q.trIn }}"><div style="overflow:hidden;min-height:0">
+<div onClick="{{ q.onOpen }}" role="button" aria-label="{{ q.rowLabel }}" style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:11px 4px 11px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;box-sizing:border-box;transition:transform 200ms ease-out, box-shadow 200ms ease-out" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.3)">
+<span style="position:relative;width:36px;height:36px;border-radius:10px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="{{ q.qIcon }}" stroke="{{ q.qIconC }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;box-sizing:border-box;background:{{ q.dotBg }};border:1.5px solid {{ q.dotBd }};box-shadow:0 0 0 2px #14141D"></span></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#94A3B8;line-height:1.4">{{ q.short }}</span><span style="font-size:14px;line-height:1.4;color:{{ q.ansC }}">{{ q.summary }}</span></div>
+<span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+</div>
+</div></div>
+
+<div style="display:grid;grid-template-rows:{{ q.blockRows }};opacity:{{ q.blockOp }};transition:{{ q.trIn }}"><div style="overflow:hidden;min-height:0;padding:1px">
+<div style="position:relative;background:#14141D;border:1px solid {{ q.cardBd }};border-radius:20px;padding:16px;transition:border-color 200ms ease-out;animation:{{ q.intro }}">
+<span aria-hidden="true" style="position:absolute;inset:-1px;border-radius:20px;padding:1.5px;background:conic-gradient(from var(--sweep), rgba(0,242,254,0) 0deg, rgba(0,242,254,0) 230deg, #00F2FE 292deg, #AB6BF0 332deg, rgba(171,107,240,0) 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;pointer-events:none;animation:{{ q.sweep }}"></span>
+<span aria-hidden="true" style="position:absolute;left:20px;right:20px;top:-1px;height:2px;overflow:hidden;pointer-events:none"><span style="position:absolute;top:0;left:0;width:34%;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(0,242,254,0),#00F2FE,rgba(0,242,254,0));box-shadow:0 0 10px #00F2FE;opacity:0;animation:{{ q.scan }}"></span></span>
+<div onClick="{{ q.onClose }}" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;cursor:{{ q.titleCursor }}">
+<span style="display:flex;align-items:flex-start;gap:10px;min-width:0"><span style="width:32px;height:32px;border-radius:10px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="{{ q.qIcon }}" stroke="#CDD3EA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:15px;font-weight:600;line-height:1.4;padding-top:5px">{{ q.title }}</span></span>
+<sc-if value="{{ q.isReview }}" hint-placeholder-val="{{ false }}"><span style="width:44px;height:44px;margin:-10px -10px -10px 0;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></sc-if>
+</div>
+<sc-if value="{{ q.hasHint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.5">{{ q.hint }}</div></sc-if>
+
+<sc-for list="{{ q.groups }}" as="g" hint-placeholder-count="1">
+<div style="display:grid;grid-template-rows:{{ g.rows }};opacity:{{ g.op }};transition:{{ g.tr }}"><div style="overflow:hidden;min-height:0;margin:0 -10px -10px;padding:0 10px 10px"><div style="padding-top:12px">
+<sc-if value="{{ g.hasLabel }}" hint-placeholder-val="{{ false }}"><div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#94A3B8;margin-bottom:8px">{{ g.label }}</div></sc-if>
+<sc-if value="{{ g.isList }}" hint-placeholder-val="{{ true }}">
+<div role="radiogroup" style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3">
+<div onClick="{{ o.onClick }}" role="radio" aria-checked="{{ o.aria }}" style="min-height:52px;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;box-sizing:border-box;background:{{ o.bg }};border:1.5px solid {{ o.bdC }};transition:{{ o.tr }};animation:{{ o.anim }};cursor:pointer" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)">
+<sc-if value="{{ o.hasIcon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:10px;background:{{ o.iconBg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="{{ o.icon }}" stroke="{{ o.iconC }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></sc-if>
+<span style="flex:1;min-width:0;font-size:14px;line-height:1.35;color:{{ o.txtC }};font-weight:{{ o.fw }}">{{ o.label }}</span>
+<span style="width:20px;height:20px;border-radius:50%;box-sizing:border-box;border:2px solid {{ o.ringC }};display:flex;align-items:center;justify-content:center;flex:none;transition:border-color 200ms ease-out"><span style="width:10px;height:10px;border-radius:50%;background:#00F2FE;box-shadow:0 0 10px rgba(0,242,254,0.9);transform:scale({{ o.dot }});transition:{{ o.dotTr }}"></span></span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ g.isChips }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ g.options }}" as="o" hint-placeholder-count="7">
+<div onClick="{{ o.onClick }}" role="{{ o.role }}" aria-checked="{{ o.aria }}" style="position:relative;min-width:48px;min-height:48px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:14px;background:{{ o.bg }};border:1.5px solid {{ o.bdC }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:{{ o.fw }};color:{{ o.txtC }};transition:{{ o.tr }};animation:{{ o.anim }};cursor:pointer" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)">{{ o.label }}<span style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }});transition:{{ o.dotTr }};box-shadow:0 0 10px rgba(0,242,254,0.8)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:22;animation:{{ o.chk }}"></path></svg></span></div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ g.isTiles }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3">
+<div onClick="{{ o.onClick }}" role="checkbox" aria-checked="{{ o.aria }}" style="position:relative;flex:1 1 {{ g.basis }};min-height:92px;padding:12px 10px 10px;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:10px;border-radius:14px;background:{{ o.bg }};border:1.5px solid {{ o.bdC }};transition:{{ o.tr }};animation:{{ o.anim }};cursor:pointer" style-active="transform:scale(0.97);box-shadow:0 0 18px rgba(0,242,254,0.35)">
+<span style="width:40px;height:40px;border-radius:10px;background:{{ o.iconBg }};display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="{{ o.icon }}" stroke="{{ o.iconC }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="font-size:13.5px;line-height:1.3;color:{{ o.txtC }};font-weight:{{ o.fw }}">{{ o.label }}</span>
+<span style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }});transition:{{ o.dotTr }};box-shadow:0 0 10px rgba(0,242,254,0.8)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:22;animation:{{ o.chk }}"></path></svg></span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div></div></div>
+</sc-for>
+
+<sc-if value="{{ q.hasErr }}" hint-placeholder-val="{{ false }}">
+<div role="alert" style="animation:{{ errAnim }};margin-top:12px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;align-items:flex-start;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" style="flex:none;margin-top:2px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><span style="font-size:12.5px;color:#F02277;line-height:1.5">{{ q.errText }}</span></div>
+<span onClick="{{ retry }}" role="button" style="align-self:flex-start;min-height:44px;display:flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE;cursor:pointer;padding-left:22px">Erneut versuchen</span>
+</div>
+</sc-if>
+<sc-if value="{{ q.canClear }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ q.onClear }}" role="button" style="margin-top:8px;margin-bottom:-8px;min-height:48px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE;cursor:pointer" style-active="transform:scale(0.97)">Antwort zurücknehmen</div>
+</sc-if>
+</div>
+</div></div>
+
+</div></div></div>
+</sc-for>
+</div>
+
+<div style="padding:28px 16px 96px;display:flex;flex-direction:column;gap:6px">
+<div style="height:1px;background:#232334;margin-bottom:10px"></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8;line-height:1.6">GENUTZT VON · BISHER KEINER AUSWERTUNG</div>
+<sc-if value="{{ hasAny }}" hint-placeholder-val="{{ false }}"><div onClick="{{ removeAll }}" role="button" style="align-self:flex-start;min-height:48px;display:flex;align-items:center;font-size:13px;font-weight:600;color:#F02277;cursor:pointer" style-active="transform:scale(0.97)">Alle Angaben entfernen</div></sc-if>
+</div>
+</div>
+
+<sc-if value="{{ snackOn }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="{{ snackStyle }}">
+<span style="flex:1;font-size:13px;color:#CDD3EA;line-height:1.45">{{ snackText }}</span>
+<span onClick="{{ undo }}" role="button" style="min-height:44px;display:flex;align-items:center;padding:0 6px;font-size:13px;font-weight:600;color:#00F2FE;cursor:pointer">Rückgängig</span>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+<span onClick="{{ reopen }}" role="button" style="min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:30px;border:1px solid rgba(0,242,254,0.45);background:rgba(0,242,254,0.08);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#00F2FE;cursor:pointer" style-active="transform:scale(0.97)">SEITE NEU ÖFFNEN</span>
+<span onClick="{{ resetAll }}" role="button" style="min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:30px;border:1px solid #232334;background:#14141D;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#94A3B8;cursor:pointer" style-active="transform:scale(0.97)">AUF LEER STELLEN</span>
+</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#94A3B8">MODUS: {{ modeLabel }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Erster Aufruf: sechs Blöcke offen, keiner vorgewählt. „Einheiten je Woche" und „Feste Tage" erscheinen erst mit der Antwort auf „Was trainierst du?" — unterhalb, nie oberhalb der Stelle, an der man gerade ist. Kein Speichern-Knopf: jede Wahl ist sofort geschrieben.</div>
+</div>
+
+<div style="width:362px;flex:none;display:flex;flex-direction:column;gap:28px">
+
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A2 · HALB AUSGEFÜLLT — SPÄTER WIEDER GEÖFFNET</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="height:56px;display:flex;align-items:center;padding:0 4px;border-bottom:1px solid #232334"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#AB6BF0"><span style="width:6px;height:6px;border-radius:50%;background:#AB6BF0;box-shadow:0 0 8px #AB6BF0"></span>HYBRID · EINSTELLUNGEN</span></div>
+<div style="padding:18px 16px 0"><div style="display:flex;align-items:center;gap:2px"><span style="font-size:22px;font-weight:600">Trainingsangaben</span><span style="width:48px;height:48px;margin:-12px 0;display:flex;align-items:center;justify-content:center"><span style="width:20px;height:20px;border-radius:50%;border:1.5px solid #00F2FE;color:#00F2FE;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box">i</span></span></div><div style="margin-top:6px;font-size:13px;color:#94A3B8">Freiwillig. Jede Antwort gilt für sich.</div><div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">ZULETZT GEÄNDERT · 2. SEPT</div></div>
+<div style="padding:16px 16px 20px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ halfRows }}" as="r" hint-placeholder-count="6">
+<div style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:11px 4px 11px 14px;display:flex;align-items:center;gap:12px;box-sizing:border-box"><span style="position:relative;width:36px;height:36px;border-radius:10px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="{{ r.icon }}" stroke="{{ r.iconC }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;box-sizing:border-box;background:{{ r.dotBg }};border:1.5px solid {{ r.dotBd }};box-shadow:0 0 0 2px #14141D"></span></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#94A3B8">{{ r.t }}</span><span style="font-size:14px;line-height:1.4;color:{{ r.c }}">{{ r.a }}</span></div><span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Beantwortet und offen sehen gleich aus — gleiche Zeilenhöhe, gleicher Chevron, gleiches Gewicht. Unterschied: gefüllter Punkt + Antwort in Weiss gegen Ring + das Wort „Offen". Auch innerhalb einer Frage: „Cardio offen" ist eine Teilantwort, keine Null. Kein Zähler, keine Reihenfolge nach „fehlt noch".</div>
+</div>
+
+</div>
+
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A3 · VOLLSTÄNDIG — WIEDERANSEHEN, EINE ZEILE AUFGEKLAPPT</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="height:56px;display:flex;align-items:center;padding:0 4px;border-bottom:1px solid #232334"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#AB6BF0"><span style="width:6px;height:6px;border-radius:50%;background:#AB6BF0;box-shadow:0 0 8px #AB6BF0"></span>HYBRID · EINSTELLUNGEN</span></div>
+<div style="padding:18px 16px 0"><div style="display:flex;align-items:center;gap:2px"><span style="font-size:22px;font-weight:600">Trainingsangaben</span><span style="width:48px;height:48px;margin:-12px 0;display:flex;align-items:center;justify-content:center"><span style="width:20px;height:20px;border-radius:50%;border:1.5px solid #00F2FE;color:#00F2FE;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box">i</span></span></div><div style="margin-top:6px;font-size:13px;color:#94A3B8">Freiwillig. Jede Antwort gilt für sich.</div><div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">ZULETZT GEÄNDERT · 14. SEPT</div></div>
+<div style="padding:16px 16px 0;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ fullRowsA }}" as="r" hint-placeholder-count="1">
+<div style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:11px 4px 11px 14px;display:flex;align-items:center;gap:12px;box-sizing:border-box"><span style="position:relative;width:36px;height:36px;border-radius:10px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="{{ r.icon }}" stroke="{{ r.iconC }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;box-sizing:border-box;background:{{ r.dotBg }};border:1.5px solid {{ r.dotBd }};box-shadow:0 0 0 2px #14141D"></span></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#94A3B8">{{ r.t }}</span><span style="font-size:14px;line-height:1.4;color:{{ r.c }}">{{ r.a }}</span></div><span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</sc-for>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><span style="font-size:15px;font-weight:600;line-height:1.4">Wie viele Einheiten in einer üblichen Woche?</span><span style="width:44px;height:44px;margin:-10px -10px -10px 0;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+<div style="margin-top:4px;font-size:12px;color:#94A3B8;line-height:1.5">Einheiten, nicht Tage: zwei an einem Tag zählen zwei.</div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#94A3B8;margin-bottom:8px">Kraft</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 3px">
+<sc-for list="{{ chipsK }}" as="o" hint-placeholder-count="8"><div style="position:relative;min-width:48px;min-height:48px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:14px;background:{{ o.bg }};border:1.5px solid {{ o.bdC }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:{{ o.fw }};color:{{ o.txtC }}">{{ o.label }}<span style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div></sc-for>
+</div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#94A3B8;margin-bottom:8px">Cardio</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 3px">
+<sc-for list="{{ chipsC }}" as="o" hint-placeholder-count="8"><div style="position:relative;min-width:48px;min-height:48px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:14px;background:{{ o.bg }};border:1.5px solid {{ o.bdC }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:{{ o.fw }};color:{{ o.txtC }}">{{ o.label }}<span style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div></sc-for>
+</div>
+<div style="margin-top:8px;margin-bottom:-8px;min-height:48px;display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE">Antwort zurücknehmen</div>
+</div>
+<sc-for list="{{ fullRowsB }}" as="r" hint-placeholder-count="4">
+<div style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:11px 4px 11px 14px;display:flex;align-items:center;gap:12px;box-sizing:border-box"><span style="position:relative;width:36px;height:36px;border-radius:10px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="{{ r.icon }}" stroke="{{ r.iconC }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;box-sizing:border-box;background:{{ r.dotBg }};border:1.5px solid {{ r.dotBd }};box-shadow:0 0 0 2px #14141D"></span></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#94A3B8">{{ r.t }}</span><span style="font-size:14px;line-height:1.4;color:{{ r.c }}">{{ r.a }}</span></div><span style="width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</sc-for>
+</div>
+<div style="padding:24px 16px 20px"><div style="height:1px;background:#232334;margin-bottom:14px"></div><div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#94A3B8">GENUTZT VON · BISHER KEINER AUSWERTUNG</div><div style="min-height:48px;display:flex;align-items:center;font-size:13px;font-weight:600;color:#F02277">Alle Angaben entfernen</div></div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Antwort auf „Zusammenfassung oder Formular?": <strong style="color:#CDD3EA">beides, dieselbe Seite</strong>. Sobald mindestens eine Antwort existiert, öffnet die Seite gefaltet; eine Zeile antippen klappt genau diesen Block auf, der vorher offene schliesst. Keine zweite Ansicht, die mit dem Formular auseinanderlaufen kann.</div>
+</div>
+
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start;margin-top:36px">
+
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A4 · LÄDT</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="height:56px;display:flex;align-items:center;padding:0 4px;border-bottom:1px solid #232334"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#AB6BF0"><span style="width:6px;height:6px;border-radius:50%;background:#AB6BF0;box-shadow:0 0 8px #AB6BF0"></span>HYBRID · EINSTELLUNGEN</span></div>
+<div style="padding:18px 16px 0"><div style="display:flex;align-items:center;gap:2px"><span style="font-size:22px;font-weight:600">Trainingsangaben</span><span style="width:48px;height:48px;margin:-12px 0;display:flex;align-items:center;justify-content:center"><span style="width:20px;height:20px;border-radius:50%;border:1.5px solid #00F2FE;color:#00F2FE;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box">i</span></span></div><div style="margin-top:6px;font-size:13px;color:#94A3B8">Freiwillig. Jede Antwort gilt für sich.</div></div>
+<div style="padding:16px 16px 24px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ skel }}" as="s" hint-placeholder-count="4">
+<div style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;box-sizing:border-box"><span style="width:10px;height:10px;border-radius:50%;background:#1A1A26;flex:none"></span><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="height:9px;width:{{ s.w1 }};border-radius:4px;background:linear-gradient(90deg,#1A1A26 0%,#1A1A26 35%,#232334 50%,#1A1A26 65%,#1A1A26 100%);background-size:250% 100%;animation:{{ skelAnim }}"></div><div style="height:12px;width:{{ s.w2 }};border-radius:4px;background:linear-gradient(90deg,#1A1A26 0%,#1A1A26 35%,#232334 50%,#1A1A26 65%,#1A1A26 100%);background-size:250% 100%;animation:{{ skelAnim }}"></div></div></div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Skelett ab 300 ms, in Zeilenform — nicht in Blockform, weil die meisten Aufrufe nach dem ersten in Zeilen enden. Titel und Hinweis stehen sofort, sie brauchen keine Daten. <code style="color:#CDD3EA">liveRegion: polite</code> „Angaben werden geladen".</div>
+</div>
+
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">A5 · FEHLER BEIM LADEN</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="height:56px;display:flex;align-items:center;padding:0 4px;border-bottom:1px solid #232334"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#AB6BF0"><span style="width:6px;height:6px;border-radius:50%;background:#AB6BF0;box-shadow:0 0 8px #AB6BF0"></span>HYBRID · EINSTELLUNGEN</span></div>
+<div style="padding:18px 16px 0"><div style="display:flex;align-items:center;gap:2px"><span style="font-size:22px;font-weight:600">Trainingsangaben</span><span style="width:48px;height:48px;margin:-12px 0;display:flex;align-items:center;justify-content:center"><span style="width:20px;height:20px;border-radius:50%;border:1.5px solid #00F2FE;color:#00F2FE;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box">i</span></span></div><div style="margin-top:6px;font-size:13px;color:#94A3B8">Freiwillig. Jede Antwort gilt für sich.</div></div>
+<div style="padding:16px 16px 24px">
+<div style="background:#14141D;border:1px solid rgba(240,34,119,0.4);border-radius:20px;padding:16px">
+<div style="display:flex;align-items:flex-start;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" style="flex:none;margin-top:3px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><div><div style="font-size:15px;font-weight:600;line-height:1.4">Angaben konnten nicht geladen werden.</div><div style="margin-top:4px;font-size:12.5px;color:#CDD3EA;line-height:1.55">Bis sie geladen sind, zeigt die Seite keine Fragen.</div></div></div>
+<div style="margin-top:12px;min-height:48px;border-radius:14px;border:1.5px solid rgba(0,242,254,0.45);background:rgba(0,242,254,0.08);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#00F2FE">Erneut versuchen</div>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6"><strong style="color:#CDD3EA">Keine leeren Fragen als Rückfall.</strong> Ein leeres Formular sähe aus wie „nichts beantwortet" — wer dann antwortet, überschreibt womöglich eine gespeicherte Angabe mit einer anderen. Der Satz unter dem Titel sagt genau das, in einer Zeile. Offline mit Cache: gecachte Antworten stehen, Schreiben wird eingereiht.</div>
+</div>
+
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">A6 · FEHLER BEIM SPEICHERN — ZURÜCK INS FORMULAR</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="padding:16px">
+<div style="min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:11px 4px 11px 14px;display:flex;align-items:center;gap:12px;box-sizing:border-box;opacity:0.9"><span style="width:10px;height:10px;border-radius:50%;flex:none;background:#CDD3EA"></span><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#94A3B8">Was du trainierst</span><span style="font-size:14px;color:#FFFFFF">Kraft und Cardio</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+<div style="margin-top:12px;background:#14141D;border:1px solid rgba(240,34,119,0.45);border-radius:20px;padding:16px">
+<div style="font-size:15px;font-weight:600;line-height:1.4">Wie viele Einheiten in einer üblichen Woche?</div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.06em;color:#94A3B8;margin-bottom:8px">Kraft</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 3px">
+<sc-for list="{{ chipsErr }}" as="o" hint-placeholder-count="8"><div style="position:relative;min-width:48px;min-height:48px;padding:0 12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:14px;background:{{ o.bg }};border:1.5px {{ o.bs }} {{ o.bdC }};font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:{{ o.fw }};color:{{ o.txtC }}">{{ o.label }}<span style="position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }})"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div></sc-for>
+</div>
+<div style="margin-top:12px;background:rgba(240,34,119,0.06);border:1px solid rgba(240,34,119,0.4);border-radius:14px;padding:10px 12px">
+<div style="display:flex;align-items:flex-start;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" style="flex:none;margin-top:2px"><path d="M12 3L22 20H2z" fill="none" stroke="#F02277" stroke-width="1.8" stroke-linejoin="round"></path><line x1="12" y1="10" x2="12" y2="14.5" stroke="#F02277" stroke-width="1.8" stroke-linecap="round"></line><circle cx="12" cy="17.2" r="1.1" fill="#F02277"></circle></svg><span style="font-size:12.5px;color:#F02277;line-height:1.5">„Kraft 4×" nicht gespeichert — der Server hat abgelehnt. Gilt weiter: 3×.</span></div>
+<div style="min-height:44px;display:flex;align-items:center;font-size:13px;font-weight:600;color:#00F2FE;padding-left:22px">Erneut versuchen</div>
+</div>
+</div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Optimistisch: „4" war sofort gewählt. Lehnt der Server ab, springt die Auswahl sichtbar auf den gespeicherten Wert zurück, der abgelehnte Chip trägt 2 s lang einen gestrichelten Rand, der Block klappt auf (auch aus der Zeile heraus) und nennt beide Werte. Kein Toast — der Fehler steht dort, wo die Antwort steht, bis zum nächsten Tippen.</div>
+</div>
+
+<div style="width:322px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">A7 · 200 % SYSTEMSCHRIFT AUF 320 DP</div>
+<div style="margin-top:8px;width:320px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden">
+<div style="padding:16px">
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px">
+<div style="font-size:30px;font-weight:600;line-height:1.3">Trainierst du an festen Tagen?</div>
+<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+<div style="min-height:52px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;box-sizing:border-box;background:rgba(0,242,254,0.08);border:1.5px solid #00F2FE"><span style="width:28px;height:28px;border-radius:50%;box-sizing:border-box;border:2.5px solid #00F2FE;display:flex;align-items:center;justify-content:center;flex:none"><span style="width:14px;height:14px;border-radius:50%;background:#00F2FE"></span></span><span style="font-size:28px;line-height:1.3;font-weight:600">Ja, meist an denselben Tagen</span></div>
+<div style="min-height:52px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;box-sizing:border-box;background:#1A1A26;border:1.5px solid #232334"><span style="width:28px;height:28px;border-radius:50%;box-sizing:border-box;border:2.5px solid #94A3B8;flex:none"></span><span style="font-size:28px;line-height:1.3;color:#CDD3EA">Nein, wie es passt</span></div>
+</div>
+<div style="margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:24px;color:#94A3B8;margin-bottom:10px">Kraft an</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;padding:0 4px">
+<sc-for list="{{ daysBig }}" as="o" hint-placeholder-count="7"><div style="position:relative;min-width:64px;min-height:64px;padding:0 10px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:14px;background:{{ o.bg }};border:1.5px solid {{ o.bdC }};font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:{{ o.fw }};color:{{ o.txtC }}">{{ o.label }}<span style="position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;background:#00F2FE;display:flex;align-items:center;justify-content:center;transform:scale({{ o.dot }})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div></sc-for>
+</div>
+</div>
+<div style="margin-top:12px;min-height:64px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:14px 4px 14px 14px;display:flex;align-items:center;gap:12px;box-sizing:border-box"><span style="width:14px;height:14px;border-radius:50%;flex:none;background:#CDD3EA"></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:24px;color:#94A3B8;line-height:1.3">Einheiten je Woche</span><span style="font-size:28px;line-height:1.3">Kraft 3× · Cardio 3×</span></div><span style="width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#00F2FE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Die Sieben-Tage-Reihe ist nie eine Reihe, sondern ein <code style="color:#CDD3EA">Wrap</code>: sieben Chips brauchen 7 × 48 + 6 × 8 = 384 dp, der Block bietet auf 360 dp nur 290 — schon bei 100 % zwei Zeilen (gewollt), bei 200 % drei. Kürzel bleiben zweistellig, kein Kürzen auf einen Buchstaben (Mi/Mo, Sa/So wären gleich). Antworten brechen, Chevron bleibt oben rechts.</div>
+</div>
+
+<div style="width:362px;flex:none">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">A8 · WO MAN ES FINDET — EINSTELLUNGEN, GRUPPE „TRAINING"</div>
+<div style="margin-top:8px;width:360px;background:#050507;border:1px solid #232334;border-radius:28px;overflow:hidden;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+<sc-for list="{{ settingsVariants }}" as="v" hint-placeholder-count="2">
+<div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:#94A3B8;margin-bottom:8px">{{ v.cap }}</div>
+<div style="background:#14141D;border:1px solid #232334;border-radius:20px;overflow:hidden">
+<sc-for list="{{ v.rows }}" as="r" hint-placeholder-count="3">
+<div style="min-height:56px;display:flex;align-items:center;gap:10px;padding:8px 6px 8px 14px;border-top:1px solid {{ r.line }}"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;color:#FFFFFF">{{ r.t }}</span><span style="font-size:12px;color:{{ r.mc }}">{{ r.m }}</span></div><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">Heute der einzige Einstieg, weil es die Planungsseite (Board 19) noch nicht gibt. Die Metazeile zeigt den Inhalt, nicht den Füllstand: „Nicht angegeben" ist ein Zustand, kein Auftrag — kein Punkt, kein Badge, keine Farbe. Im Hybrid-Tab erscheint nichts.</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="B Die Fragen" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">B · DIE ACHT FRAGEN — IN DIESER REIHENFOLGE, WEIL ABHÄNGIGKEITEN NUR NACH UNTEN ZEIGEN</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Prüfregel je Frage: <strong style="color:#CDD3EA">welche zwei realen Menschen wären ohne sie gleich?</strong> Reihenfolgeregel: <strong style="color:#CDD3EA">keine Antwort verändert eine Frage oberhalb.</strong> Deshalb steht das Wochenmuster vor der Anzahl — wer „zwei Wochen wechseln sich ab" wählt, bekommt die Anzahl gleich zweispaltig und muss nicht zurück.</div>
+<div style="margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:6px">
+<sc-for list="{{ questionCards }}" as="c" hint-placeholder-count="8">
+<div style="display:flex;align-items:center;gap:6px"><div style="display:flex;align-items:center;gap:8px;background:#14141D;border:1px solid #232334;border-radius:30px;padding:5px 12px 5px 5px"><span style="width:28px;height:28px;border-radius:50%;background:#1A1A26;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="{{ c.icon }}" stroke="#CDD3EA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#00F2FE">{{ c.n }}</span></div><svg width="14" height="10" viewBox="0 0 14 10"><path d="M0 5h12M8 1l4 4-4 4" stroke="#232334" stroke-width="1.5" fill="none"></path></svg></div>
+</sc-for>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#94A3B8">ENDE</span>
+</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px">
+<sc-for list="{{ questionCards }}" as="c" hint-placeholder-count="8">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:12px"><span style="width:44px;height:44px;border-radius:12px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="{{ c.icon }}" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><div style="min-width:0"><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;color:#00F2FE">FRAGE {{ c.n }}</div><div style="font-size:14px;font-weight:600;line-height:1.35">{{ c.q }}</div></div></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="3"><span style="font-size:11.5px;color:#CDD3EA;background:#14141D;border:1px solid #232334;border-radius:30px;padding:4px 10px">{{ o }}</span></sc-for></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.06em;color:{{ c.depC }}">↳ {{ c.dep }}</div>
+<div style="font-size:12px;color:#94A3B8;line-height:1.6">{{ c.why }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">FARBE AN SYMBOLEN = WELCHE SPUR ES BETRIFFT · NIE STATUS, NIE WERTUNG</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+<sc-for list="{{ toneLegend }}" as="t" hint-placeholder-count="5">
+<div style="display:flex;align-items:flex-start;gap:10px"><span style="width:40px;height:40px;border-radius:10px;background:{{ t.bg }};flex:none;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="{{ t.icon }}" stroke="{{ t.ic }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><div><div style="font-size:13px;font-weight:600">{{ t.t }}</div><div style="margin-top:2px;font-size:11.5px;color:#94A3B8;line-height:1.5">{{ t.d }}</div></div></div>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
+<sc-for list="{{ struck }}" as="s" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:16px;padding:14px 16px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#F02277">GESTRICHEN</div>
+<div style="margin-top:6px;font-size:13px;font-weight:600;color:#FFFFFF;text-decoration:line-through;text-decoration-color:#94A3B8">{{ s.q }}</div>
+<div style="margin-top:5px;font-size:12px;color:#94A3B8;line-height:1.6">{{ s.why }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="C Drei Werte" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">C · DREI WERTE JE ANTWORT — UND WIE EINE SPÄTERE ABLEITUNG SIE LIEST</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+<sc-for list="{{ threeValues }}" as="v" hint-placeholder-count="3">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:12px;height:12px;border-radius:50%;box-sizing:border-box;background:{{ v.dotBg }};border:1.5px solid {{ v.dotBd }};flex:none"></span><span style="font-size:15px;font-weight:600">{{ v.name }}</span></div>
+<div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">SICHTBAR</div>
+<div style="margin-top:3px;font-size:12.5px;color:#CDD3EA;line-height:1.55">{{ v.seen }}</div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">GESPEICHERT</div>
+<div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#00F2FE;line-height:1.55">{{ v.stored }}</div>
+<div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">EINE ABLEITUNG LIEST</div>
+<div style="margin-top:3px;font-size:12.5px;color:#CDD3EA;line-height:1.55">{{ v.read }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">VORSCHLAG FÜR userProfiles/{uid}/planning · ABZUGLEICHEN MIT 04-firestore-schema.md</div>
+<pre style="margin:10px 0 0;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.75;color:#CDD3EA;white-space:pre-wrap">briefing {
+  modalities       ['strength' | 'cardio']        fehlt = offen
+  perWeek          { strength?: 1–8, cardio?: 1–8 }  8 = „8+"
+  weekPattern      'same' | 'alternating' | 'irregular'
+  perWeekB         { strength?, cardio? }         nur bei alternating
+  anchorWeekStart  Datum, Montag einer Woche A    nur bei alternating
+  schedule         'fixed' | 'free'
+  days             { strength?: [1–7], cardio?: [1–7] }   ISO-Wochentag
+  multiPerDay      'no' | 'some' | 'most'
+  dayparts         { strength?: [..], cardio?: [..] }  morning · midday · evening
+  places           ['home' | 'gym' | 'outdoor']   Mehrfachwahl
+  goals            ['weight' | 'endurance' | 'mobility' | 'fitness' |
+                    'health' | 'strength' | 'muscle']   ungeordnet
+  describes        'current' | 'intended'
+  answeredAt       { &lt;feld&gt;: timestamp }          je Feld, nie fürs Ganze
+}</pre>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px;font-size:12.5px;color:#94A3B8;line-height:1.7">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8;margin-bottom:8px">DREI SCHREIBREGELN</div>
+<div><strong style="color:#CDD3EA">1 · Offen heisst: der Schlüssel fehlt.</strong> Kein Feld wird je auf <code style="color:#CDD3EA">null</code> oder <code style="color:#CDD3EA">0</code> gesetzt. „Zurücknehmen" löscht den Schlüssel samt <code style="color:#CDD3EA">answeredAt</code>.</div>
+<div style="margin-top:8px"><strong style="color:#CDD3EA">2 · Abhängiges geht mit.</strong> Wer „nur Kraft" wählt, löscht im selben Schreibvorgang alles unter <code style="color:#CDD3EA">cardio</code>. Snackbar 6 s mit „Rückgängig" — nur wenn dort etwas stand.</div>
+<div style="margin-top:8px"><strong style="color:#CDD3EA">3 · Jede Antwort ist ein eigener Schreibvorgang.</strong> Feld-Update mit Merge, optimistisch; eine Ablehnung setzt genau dieses Feld zurück, nie das Dokument.</div>
+</div>
+</div>
+</div>
+
+<div data-screen-label="D Vier Menschen" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">D · VIER MENSCHEN UND ZWEI VARIANTEN — AUSGEFÜLLT, WIEDERANGESEHEN</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Oben je Karte das <strong style="color:#CDD3EA">Wochenbild</strong> — die Antworten als Bild: ein Kästchen je angegebener Einheit (Amber Kraft, Violet Cardio), bei festen Tagen die Woche, dazu Ort und Ziele. Darunter die Zeilen, wie die Person sie sieht, und der gespeicherte Datensatz. Keine zwei Bilder sind gleich; bei „Nur Kraft" und „Nur Cardio" taucht die andere Spur nirgends auf.</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px">
+<sc-for list="{{ personaVis }}" as="p" hint-placeholder-count="6">
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 18px 16px;display:flex;flex-direction:column">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:{{ p.kc }}">{{ p.kicker }}</div>
+<div style="margin-top:4px;font-size:15px;font-weight:600">{{ p.name }}</div>
+<div style="margin-top:12px;background:#14141D;border:1px solid #232334;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ p.lanes }}" as="l" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:62px;flex:none;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#94A3B8">{{ l.l }}</span><div style="flex:1;display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ l.pips }}" as="x" hint-placeholder-count="3"><span style="width:16px;height:16px;border-radius:4px;background:{{ x.c }}"></span></sc-for></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#CDD3EA;white-space:nowrap">{{ l.n }}</span></div>
+</sc-for>
+<sc-if value="{{ p.hasWeek }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:2px">
+<sc-for list="{{ p.week }}" as="w" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;height:30px;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;gap:2px"><span style="flex:1;background:{{ w.top }}"></span><span style="flex:1;background:{{ w.bot }}"></span></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#94A3B8">{{ w.d }}</span></div></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ p.hasRhythm }}" hint-placeholder-val="{{ false }}"><div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.08em;color:#CDD3EA">{{ p.rhythm }}</div></sc-if>
+<div style="display:flex;flex-wrap:wrap;gap:6px;padding-top:4px;border-top:1px solid #1A1A26">
+<sc-for list="{{ p.tags }}" as="g" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:30px;background:#0B0B0E;border:1px solid #232334"><span style="width:22px;height:22px;border-radius:50%;background:{{ g.bg }};display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="{{ g.icon }}" stroke="{{ g.ic }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:11.5px;color:#CDD3EA">{{ g.label }}</span></span></sc-for>
+</div>
+</div>
+<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ p.rows }}" as="r" hint-placeholder-count="8">
+<div style="min-height:52px;background:#14141D;border:1px solid #232334;border-radius:14px;padding:7px 12px 7px 8px;display:flex;align-items:center;gap:10px;box-sizing:border-box"><span style="position:relative;width:32px;height:32px;border-radius:9px;background:#1A1A26;flex:none;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="{{ r.icon }}" stroke="{{ r.iconC }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;box-sizing:border-box;background:{{ r.dotBg }};border:1.5px solid {{ r.dotBd }};box-shadow:0 0 0 2px #14141D"></span></span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-size:12px;color:#94A3B8">{{ r.t }}</span><span style="font-size:13px;line-height:1.4;color:{{ r.c }}">{{ r.a }}</span></div></div>
+</sc-for>
+</div>
+<div style="margin-top:12px;padding-top:10px;border-top:1px solid #16161F;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:#CDD3EA;white-space:pre-wrap">{{ p.record }}</div>
+<div style="margin-top:8px;font-size:11.5px;color:#94A3B8;line-height:1.6">{{ p.note }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="E Spezifikation" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">E · SPEZIFIKATION — MASSE, ABSTÄNDE, FLÄCHEN, TYPO, TAP-ZIELE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:190px 130px 1fr 1fr 170px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>HÖHE / MASS</span><span>FLÄCHE</span><span>TYPO</span><span>TAP-ZIEL</span>
+</div>
+<sc-for list="{{ spec }}" as="s" hint-placeholder-count="18">
+<div style="display:grid;grid-template-columns:190px 130px 1fr 1fr 170px;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ s.el }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px">{{ s.h }}</span><span style="color:#94A3B8">{{ s.surface }}</span><span style="color:#94A3B8">{{ s.type }}</span><span style="color:{{ s.tapC }}">{{ s.tap }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="F0 Motion live" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · MOTION LIVE — SIEBEN EFFEKTE, IN SCHLEIFE ALLE 3,2 S</div>
+<div style="margin-top:10px;font-size:12.5px;color:#94A3B8;line-height:1.7;max-width:940px">Glow ist bei ATEM <strong style="color:#CDD3EA">Quittung, nicht Dekor</strong>: er antwortet auf eine Handlung und ist danach weg. Die einzige Dauerschleife ist die Aurora hinter dem Titel — sie trägt den Ort (Hybrid) und steht bei „Animationen reduzieren" still. In A1 laufen alle sieben echt mit; hier einzeln.</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px">
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:150px;border-radius:14px;background:#050507;border:1px solid #16161F;display:flex;align-items:center;justify-content:center;padding:0 22px">
+<div style="width:100%;min-height:52px;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;box-sizing:border-box;background:rgba(0,242,254,0.08);border:1.5px solid #00F2FE;animation:{{ demoBloom }}"><span style="width:40px;height:40px;border-radius:10px;background:rgba(255,176,32,0.14);display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11" stroke="#FFB020" stroke-width="1.9" stroke-linecap="round"></path></svg></span><span style="flex:1;font-size:14px;font-weight:600">Kraft</span><span style="width:20px;height:20px;border-radius:50%;box-sizing:border-box;border:2px solid #00F2FE;display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:#00F2FE;box-shadow:0 0 10px rgba(0,242,254,0.9);animation:{{ demoPop }}"></span></span></div>
+</div>
+<div style="font-size:13px;font-weight:600">1 · Auswahl-Bloom</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Cyan-Schein blüht aus der gewählten Fläche und löst sich auf. Kern springt mit Überschwinger.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">620 ms · cubic(0.22,1,0.36,1) · reduziert: aus</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:150px;border-radius:14px;background:#050507;border:1px solid #16161F;display:flex;align-items:center;justify-content:center;gap:10px">
+<div style="position:relative;width:56px;height:56px;border-radius:14px;background:#1A1A26;border:1.5px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:16px;color:#CDD3EA">2</div>
+<div style="position:relative;width:56px;height:56px;border-radius:14px;background:rgba(0,242,254,0.08);border:1.5px solid #00F2FE;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;animation:{{ demoBloom }}">3<span style="position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:#00F2FE;box-shadow:0 0 12px rgba(0,242,254,0.9);display:flex;align-items:center;justify-content:center;animation:{{ demoPop }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#050507" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:22;animation:{{ demoCheck }}"></path></svg></span></div>
+<div style="position:relative;width:56px;height:56px;border-radius:14px;background:#1A1A26;border:1.5px solid #232334;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:16px;color:#CDD3EA">4</div>
+</div>
+<div style="font-size:13px;font-weight:600">2 · Häkchen zeichnet sich</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Ecke poppt, dann zieht sich der Haken als Strich — das Häkchen ist der Nicht-Farb-Träger und darf deshalb auftreten.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">380 + 360 ms · easeOutBack / cubic(0.65,0,0.35,1) · reduziert: steht sofort</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:150px;border-radius:14px;background:#050507;border:1px solid #16161F;display:flex;align-items:center;justify-content:center;padding:0 22px">
+<div style="position:relative;width:100%;background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px">
+<span aria-hidden="true" style="position:absolute;inset:-1px;border-radius:20px;padding:1.5px;background:conic-gradient(from var(--sweep), rgba(0,242,254,0) 0deg, rgba(0,242,254,0) 230deg, #00F2FE 292deg, #AB6BF0 332deg, rgba(171,107,240,0) 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;animation:{{ demoSweep }}"></span>
+<div style="font-size:14px;font-weight:600">Trainierst du an festen Tagen?</div>
+<div style="margin-top:10px;height:10px;width:70%;border-radius:4px;background:#1A1A26"></div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:600">3 · Lichtkante</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Ein Lichtbogen (Cyan → #AB6BF0) läuft einmal um einen Block, der gerade erscheint oder aufklappt. Danach Standardrand — keine Gradient-Karte.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">1200 ms · cubic(0.45,0,0.2,1) · reduziert: aus</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:150px;border-radius:14px;background:#050507;border:1px solid #16161F;display:flex;align-items:center;justify-content:center;padding:0 22px">
+<div style="position:relative;width:100%;background:#14141D;border:1px solid #232334;border-radius:20px;padding:16px">
+<span aria-hidden="true" style="position:absolute;left:20px;right:20px;top:-1px;height:2px;overflow:hidden"><span style="position:absolute;top:0;left:0;width:34%;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(0,242,254,0),#00F2FE,rgba(0,242,254,0));box-shadow:0 0 10px #00F2FE;opacity:0;animation:{{ demoScan }}"></span></span>
+<div style="font-size:14px;font-weight:600">Wie viele Einheiten?</div>
+<div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#CDD3EA">Kraft 3× · Cardio 3×</div>
+</div>
+</div>
+<div style="font-size:13px;font-weight:600">4 · Speicher-Scan</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Ein Lichtpunkt läuft über die Oberkante des Blocks, dessen Antwort gerade geschrieben wurde. Ersetzt ein „Gespeichert"-Wort. Kommt eine Ablehnung, folgt das Flackern.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">760 ms · cubic(0.22,1,0.36,1) · reduziert: aus</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="position:relative;isolation:isolate;height:150px;border-radius:14px;background:#050507;border:1px solid #16161F;overflow:hidden;display:flex;align-items:center;padding:0 22px">
+<div aria-hidden="true" style="position:absolute;left:-40px;right:-40px;top:-20px;height:190px;z-index:-1;background:radial-gradient(110px 70px at 22% 58%, rgba(0,242,254,0.20), rgba(0,242,254,0) 70%), radial-gradient(150px 80px at 78% 42%, rgba(171,107,240,0.22), rgba(171,107,240,0) 70%), radial-gradient(140px 70px at 50% 88%, rgba(122,43,219,0.30), rgba(122,43,219,0) 70%);animation:{{ auroraAnim }}"></div>
+<span style="font-size:22px;font-weight:600;background:linear-gradient(100deg,#FFFFFF 0%,#FFFFFF 42%,#AB6BF0 49%,#00F2FE 53%,#FFFFFF 60%,#FFFFFF 100%);background-size:260% 100%;background-position:0% 0;-webkit-background-clip:text;background-clip:text;color:transparent;animation:{{ demoSheen }}">Trainingsangaben</span>
+</div>
+<div style="font-size:13px;font-weight:600">5 · Aurora + Titel-Glanz</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Drei weiche Radialflächen (Cyan, #AB6BF0, Violet) treiben hinter dem Titel; unter der Glasleiste werden sie beim Scrollen mitgeblurrt. Der Titel glänzt einmal beim Öffnen.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">16 s Loop · ease-in-out · Glanz 1400 ms · reduziert: steht</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:150px;border-radius:14px;background:#050507;border:1px solid #16161F;display:flex;flex-direction:column;justify-content:center;padding:0 22px;gap:0">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;color:#94A3B8">Cardio</div>
+<div style="display:grid;grid-template-rows:{{ demoRows }};opacity:{{ demoOp }};transition:{{ demoTr }}"><div style="overflow:hidden;min-height:0"><div style="padding-top:8px;display:flex;gap:6px"><span style="width:40px;height:40px;border-radius:12px;background:#1A1A26;border:1.5px solid #232334"></span><span style="width:40px;height:40px;border-radius:12px;background:#1A1A26;border:1.5px solid #232334"></span><span style="width:40px;height:40px;border-radius:12px;background:rgba(0,242,254,0.08);border:1.5px solid #00F2FE"></span><span style="width:40px;height:40px;border-radius:12px;background:#1A1A26;border:1.5px solid #232334"></span></div></div></div>
+<div style="margin-top:10px;height:1px;background:#232334"></div>
+<div style="margin-top:8px;font-size:12px;color:#94A3B8">Inhalt darunter rückt nach</div>
+</div>
+<div style="font-size:13px;font-weight:600">6 · Folgefrage öffnet / schliesst</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Höhe und Deckkraft, Öffnen langsamer als Schliessen; Schliessen blendet zuerst aus, dann schrumpft es.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">320 / 120 + 240 ms · reduziert: sofort</div>
+</div>
+
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px">
+<div style="height:150px;border-radius:14px;background:#050507;border:1px solid #16161F;display:flex;flex-direction:column;justify-content:center;padding:0 22px;gap:10px">
+<div style="height:12px;width:48%;border-radius:4px;background:linear-gradient(90deg,#1A1A26 0%,#1A1A26 35%,#232334 50%,#1A1A26 65%,#1A1A26 100%);background-size:250% 100%;animation:{{ skelAnim }}"></div>
+<div style="height:16px;width:78%;border-radius:4px;background:linear-gradient(90deg,#1A1A26 0%,#1A1A26 35%,#232334 50%,#1A1A26 65%,#1A1A26 100%);background-size:250% 100%;animation:{{ skelAnim }}"></div>
+<div style="height:12px;width:62%;border-radius:4px;background:linear-gradient(90deg,#1A1A26 0%,#1A1A26 35%,#232334 50%,#1A1A26 65%,#1A1A26 100%);background-size:250% 100%;animation:{{ skelAnim }}"></div>
+</div>
+<div style="font-size:13px;font-weight:600">7 · Skelett-Schimmer</div>
+<div style="font-size:11.5px;color:#94A3B8;line-height:1.55">Ein heller Streifen (#232334) läuft über die #1A1A26-Balken — ersetzt den Puls aus Modul 2 auf diesem Bildschirm.</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#CDD3EA">1400 ms Loop · linear · reduziert: steht</div>
+</div>
+
+</div>
+</div>
+
+<div data-screen-label="F Motion" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">F · MOTION — AUSLÖSER, EIGENSCHAFT, DAUER, KURVE, RUHELAGE, REDUZIERT</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px">
+<div style="background:rgba(0,242,254,0.05);border:1px solid rgba(0,242,254,0.35);border-radius:20px;padding:18px 20px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#00F2FE">DIE ORCHESTRIERTE SEQUENZ · „NUR KRAFT" GEWÄHLT, VORHER „KRAFT UND CARDIO"</div>
+<sc-for list="{{ sequence }}" as="s" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:84px 1fr;gap:12px;margin-top:10px;font-size:12px;line-height:1.55"><span style="font-family:'JetBrains Mono',monospace;color:#00F2FE">{{ s.t }}</span><span style="color:#CDD3EA">{{ s.d }}</span></div>
+</sc-for>
+</div>
+<div style="background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:18px 20px;font-size:12.5px;color:#94A3B8;line-height:1.7">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8;margin-bottom:6px">WAS DIE BEWEGUNG SAGT</div>
+<div><strong style="color:#CDD3EA">Öffnen ist langsamer als Schliessen</strong> (320 gegen 240 ms): Neues soll gelesen werden, Wegfallendes nur bemerkt. <strong style="color:#CDD3EA">Schliessen blendet zuerst aus, dann schrumpft</strong> — sonst sieht man Text zusammengequetscht. <strong style="color:#CDD3EA">Der gewählte Punkt überschiesst</strong> (Kurve mit Überschwinger), weil er die einzige Bewegung ist, die „das hast du gesagt" heisst. <strong style="color:#CDD3EA">Keine Bewegung wandert zur nächsten Frage</strong> — kein Auto-Scroll, kein Weiterschieben. Wer antwortet, bleibt, wo er ist.</div>
+<div style="margin-top:8px">Flutter: <code style="color:#CDD3EA">AnimatedSize</code> + <code style="color:#CDD3EA">AnimatedOpacity</code> je Gruppe, <code style="color:#CDD3EA">Interval</code> für den Versatz; Punkt: <code style="color:#CDD3EA">ScaleTransition</code> mit <code style="color:#CDD3EA">Curves.easeOutBack</code>. Reduziert: <code style="color:#CDD3EA">MediaQuery.disableAnimations</code>.</div>
+</div>
+</div>
+<div style="margin-top:14px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:170px 150px 1fr 80px 150px 120px 170px;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>AUSLÖSER</span><span>EIGENSCHAFT</span><span>DAUER</span><span>KURVE</span><span>RUHELAGE</span><span>REDUZIERT</span>
+</div>
+<sc-for list="{{ motion }}" as="m" hint-placeholder-count="10">
+<div style="display:grid;grid-template-columns:170px 150px 1fr 80px 150px 120px 170px;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.5">
+<span style="font-weight:600;color:#FFFFFF">{{ m.el }}</span><span style="color:#94A3B8">{{ m.trigger }}</span><span style="color:#94A3B8">{{ m.prop }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px">{{ m.dur }}</span><span style="color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:10.5px">{{ m.curve }}</span><span style="color:#94A3B8">{{ m.rest }}</span><span style="color:#00FF87">{{ m.reduced }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="G Stringtabelle" style="margin-top:64px;max-width:1100px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">G · STRINGTABELLE</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:280px 1fr 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>KEY</span><span>DEUTSCH</span><span>ENGLISCH</span>
+</div>
+<sc-for list="{{ strings }}" as="s" hint-placeholder-count="30">
+<div style="display:grid;grid-template-columns:280px 1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #16161F;font-size:12px;align-items:baseline;line-height:1.5">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00F2FE;word-break:break-all">{{ s.key }}</span><span style="color:#CDD3EA">{{ s.de }}</span><span style="color:#94A3B8">{{ s.en }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="H A11y" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">H · A11Y-NOTIZEN</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>ELEMENT</span><span>SEMANTICS-LABEL</span><span>ROLLE</span><span>ZUSTAND / LIVE-REGION</span>
+</div>
+<sc-for list="{{ a11y }}" as="a" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:190px 1fr 150px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;color:#CDD3EA;align-items:baseline;line-height:1.55">
+<span style="font-weight:600;color:#FFFFFF">{{ a.el }}</span><span style="color:#94A3B8">{{ a.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#00F2FE">{{ a.role }}</span><span style="color:#94A3B8">{{ a.state }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="I Wiederverwendung" style="margin-top:64px;max-width:1240px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">I · WIEDERVERWENDUNG UND WAS WIRKLICH NEU IST</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:6px 24px 18px">
+<div style="display:grid;grid-template-columns:110px 280px 1fr;gap:12px;padding:14px 0 10px;border-bottom:1px solid #232334;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#94A3B8">
+<span>HERKUNFT</span><span>BAUSTEIN</span><span>VERWENDUNG HIER</span>
+</div>
+<sc-for list="{{ reuse }}" as="r" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:110px 280px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #16161F;font-size:11.5px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:{{ r.c }}">{{ r.m }}</span><span style="color:#FFFFFF;font-weight:600">{{ r.b }}</span><span style="color:#94A3B8;line-height:1.6">{{ r.use }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="J Entscheidungsprotokoll" style="margin-top:64px;max-width:980px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">J · ENTSCHEIDUNGSPROTOKOLL — ZUERST DIE DREI FRAGEN DES AUFTRAGS</div>
+<div style="margin-top:16px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ decisions }}" as="d" hint-placeholder-count="12">
+<div style="background:#0B0B0E;border:1px solid {{ d.cardBd }};border-radius:20px;padding:20px 24px;display:grid;grid-template-columns:40px 1fr;gap:16px;align-items:start">
+<div style="width:40px;height:36px;border-radius:12px;background:{{ d.bg }};border:1px solid {{ d.border }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:{{ d.c }}">{{ d.n }}</div>
+<div>
+<div style="font-size:13.5px;font-weight:600;line-height:1.45">{{ d.title }}</div>
+<div style="margin-top:5px;font-size:12.5px;color:#94A3B8;line-height:1.7;text-wrap:pretty">{{ d.body }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div data-screen-label="K Vorausgesetzt" style="margin-top:64px;max-width:980px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.16em;color:#94A3B8">K · WAS BOARD 19 UND 20 HIERVON VORAUSSETZEN — FESTGEHALTEN, NICHT ENTWORFEN</div>
+<div style="margin-top:16px;background:#0B0B0E;border:1px solid #232334;border-radius:20px;padding:8px 24px 14px">
+<sc-for list="{{ prereq }}" as="p" hint-placeholder-count="6">
+<div style="display:grid;grid-template-columns:56px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid #16161F;font-size:12.5px;line-height:1.65;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#AB6BF0">{{ p.b }}</span><span style="color:#CDD3EA">{{ p.t }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Leer&quot;,&quot;options&quot;:[&quot;Leer&quot;,&quot;Halb ausgefüllt&quot;,&quot;Vollständig&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Artboard A1&quot;},&quot;saveFailure&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Artboard A1&quot;},&quot;reducedMotion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Artboard A1&quot;}}">
+class Component extends DCLogic {
+  state = this.initial(this.props.startState ?? 'Leer');
+
+  empty() {
+    return { arten: null, fk: null, fc: null, fkB: null, fcB: null, muster: null, anker: null, tage: null, dk: [], dc: [], mehr: null, zk: [], zc: [], ort: [], ziele: [], gilt: null };
+  }
+
+  initial(s) {
+    const a = this.empty();
+    if (s === 'Halb ausgefüllt') Object.assign(a, { arten: 'kc', fk: '3', mehr: 'nein', ort: ['Gym'] });
+    if (s === 'Vollständig') Object.assign(a, { arten: 'kc', fk: '3', fc: '3', muster: 'gleich', tage: 'fest', dk: ['Mo', 'Mi', 'Fr'], dc: ['Di', 'Do', 'Sa'], mehr: 'nein', ort: ['Gym', 'Draußen'], ziele: ['Ausdauer verbessern', 'Kraft steigern'], gilt: 'jetzt' });
+    return { a, mode: s === 'Leer' ? 'first' : 'review', open: null, explain: false, err: null, snack: null, saved: null, demo: (this.state && this.state.demo) || 0 };
+  }
+
+  componentDidUpdate(pp) {
+    if ((pp.startState ?? 'Leer') !== (this.props.startState ?? 'Leer')) this.setState(this.initial(this.props.startState ?? 'Leer'));
+  }
+
+  componentDidMount() { this._demoT = setInterval(() => { if (!(this.props.reducedMotion ?? false)) this.setState(s => ({ demo: s.demo + 1 })); }, 3200); }
+  componentWillUnmount() { clearTimeout(this._snackT); clearTimeout(this._failT); clearInterval(this._demoT); }
+
+  anyAnswer(a) { return Object.values(a).some(v => Array.isArray(v) ? v.length > 0 : v != null); }
+
+  commit(patch, label, q, forcedSnack) {
+    const prev = this.state.a;
+    let next = { ...prev, ...patch };
+    const has = (x, art) => x === 'kc' || x === art;
+    let snackText = null;
+    if ('arten' in patch) {
+      const gone = [];
+      if (!has(next.arten, 'k') && (prev.fk || prev.fkB || prev.dk.length || prev.zk.length)) { next = { ...next, fk: null, fkB: null, dk: [], zk: [] }; gone.push('Kraft'); }
+      if (!has(next.arten, 'c') && (prev.fc || prev.fcB || prev.dc.length || prev.zc.length)) { next = { ...next, fc: null, fcB: null, dc: [], zc: [] }; gone.push('Cardio'); }
+      if (gone.length) snackText = gone.join('- und ') + '-Angaben entfernt';
+    }
+    if ('muster' in patch && next.muster !== 'ab' && (prev.fkB || prev.fcB || prev.anker)) { next = { ...next, fkB: null, fcB: null, anker: null }; snackText = snackText || 'Angaben für Woche B entfernt'; }
+    if ('tage' in patch && next.tage !== 'fest' && (prev.dk.length || prev.dc.length)) { next = { ...next, dk: [], dc: [] }; snackText = snackText || 'Gewählte Tage entfernt'; }
+    if ('mehr' in patch && (next.mehr === 'nein' || next.mehr == null) && (prev.zk.length || prev.zc.length)) { next = { ...next, zk: [], zc: [] }; snackText = snackText || 'Tageszeiten entfernt'; }
+    if (forcedSnack) snackText = forcedSnack;
+    clearTimeout(this._snackT);
+    this.setState({ a: next, err: null, snack: snackText ? { text: snackText, prev } : null, saved: { q, n: ((this.state.saved && this.state.saved.n) || 0) + 1 } });
+    if (snackText) this._snackT = setTimeout(() => this.setState({ snack: null }), 6000);
+    if ((this.props.saveFailure ?? false) && !this._retrying) {
+      clearTimeout(this._failT);
+      this._failT = setTimeout(() => {
+        const mode = this.state.mode;
+        this.setState({ a: prev, snack: null, open: mode === 'review' ? q : this.state.open, err: { q, patch, label, forcedSnack, text: '„' + label + '" nicht gespeichert — der Server hat abgelehnt.' } });
+      }, 700);
+    }
+  }
+
+  retry = () => {
+    const e = this.state.err; if (!e) return;
+    this._retrying = true; this.commit(e.patch, e.label, e.q, e.forcedSnack); this._retrying = false;
+  };
+  undo = () => { const s = this.state.snack; if (!s) return; clearTimeout(this._snackT); this.setState({ a: s.prev, snack: null }); };
+
+  renderVals() {
+    const { a, mode, open, err, snack } = this.state;
+    const first = mode === 'first';
+    const rm = this.props.reducedMotion ?? false;
+    const hasK = a.arten === 'k' || a.arten === 'kc';
+    const hasC = a.arten === 'c' || a.arten === 'kc';
+    const alt = a.muster === 'ab';
+    const EASE = 'cubic-bezier(0.22,1,0.36,1)';
+    const trOpen = (d = 0) => rm ? 'none' : `grid-template-rows 320ms ${EASE} ${d}ms, opacity 240ms ease-out ${d}ms`;
+    const trClose = () => rm ? 'none' : 'grid-template-rows 240ms cubic-bezier(0.4,0,1,1) 60ms, opacity 120ms ease-in 0ms';
+    const tr = (vis, d) => vis ? trOpen(d) : trClose();
+    const optTr = rm ? 'none' : 'background 200ms ease-out, border-color 200ms ease-out, transform 200ms ease-out, box-shadow 200ms ease-out';
+    const dotTr = rm ? 'none' : 'transform 220ms cubic-bezier(0.34,1.56,0.64,1)';
+    const GOALS = ['Abnehmen', 'Ausdauer verbessern', 'Beweglicher werden', 'Fitter werden', 'Gesund bleiben', 'Kraft steigern', 'Muskeln aufbauen'];
+    const PLACES = ['Zuhause', 'Gym', 'Draußen'];
+    const ORDER = { dk: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'], dc: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'], zk: ['Morgens', 'Mittags', 'Abends'], zc: ['Morgens', 'Mittags', 'Abends'], ort: PLACES, ziele: GOALS };
+    const I = {
+      kraft: 'M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11',
+      cardio: 'M3 12h4l2.5-6 4 12 2.5-6H21',
+      both: 'M3 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0M11 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0',
+      muster: 'M17 3l3 3-3 3M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3M20 13v2a3 3 0 0 1-3 3H4',
+      count: 'M5 9h14M5 15h14M10 4L8 20M16 4l-2 16',
+      tage: 'M4 6h16v14H4zM4 10h16M9 3v4M15 3v4M9 15l2 2 4-4',
+      mehr: 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M12 7v5l3 2',
+      ort: 'M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11zM10 10a2 2 0 1 0 4 0a2 2 0 1 0 -4 0',
+      ziel: 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0',
+      gilt: 'M5 21V4h11l-2 4 2 4H5',
+      Zuhause: 'M4 11l8-6 8 6v9h-6v-5h-4v5H4z', Gym: 'M2 12h20M5 8v8M8 6v12M16 6v12M19 8v8', 'Draußen': 'M3 19l6-9 4 5 3-3 5 7zM16 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0',
+      'Abnehmen': 'M4 4h16v16H4zM8 10a4 4 0 0 1 8 0M12 10l2-2.5', 'Ausdauer verbessern': 'M3 12h4l2.5-6 4 12 2.5-6H21', 'Beweglicher werden': 'M3 12c3-5 6 5 9 0s6 5 9 0',
+      'Fitter werden': 'M13 3L5 14h6l-1 7 8-11h-6z', 'Gesund bleiben': 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
+      'Kraft steigern': 'M6.5 10v8M17.5 10v8M4 12v4M20 12v4M6.5 14h11M12 3v5M9.5 5.5L12 3l2.5 2.5', 'Muskeln aufbauen': 'M4 19h16M6 15h12M8 11h8M10 7h4',
+      jetzt: 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0M10 8.5l5 3.5-5 3.5z', vorhaben: 'M5 21V4h11l-2 4 2 4H5',
+      Morgens: 'M4 18h16M7 18a5 5 0 0 1 10 0M12 6v3M5.6 10.6l1.8 1.4M18.4 10.6l-1.8 1.4', Mittags: 'M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0M12 3v2M12 19v2M3 12h2M19 12h2', Abends: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z'
+    };
+    const T = { kraft: { bg: 'rgba(255,176,32,0.14)', ic: '#FFB020' }, cardio: { bg: '#7A2BDB', ic: '#FFFFFF' }, hyb: { bg: 'rgba(171,107,240,0.16)', ic: '#AB6BF0' }, neu: { bg: '#0B0B0E', ic: '#CDD3EA' } };
+    const GT = { 'Abnehmen': T.hyb, 'Ausdauer verbessern': T.cardio, 'Beweglicher werden': T.hyb, 'Fitter werden': T.hyb, 'Gesund bleiben': T.hyb, 'Kraft steigern': T.kraft, 'Muskeln aufbauen': T.kraft };
+    const withIcon = (o, icon, t) => ({ ...o, hasIcon: true, icon, iconBg: t.bg, iconC: t.ic });
+    const N = ['1', '2', '3', '4', '5', '6', '7', '8+'];
+
+    const look = (sel) => ({ anim: sel && !rm ? 'selBloom 620ms cubic-bezier(0.22,1,0.36,1)' : 'none', chk: sel && !rm ? 'checkDraw 360ms 120ms cubic-bezier(0.65,0,0.35,1) both' : 'none', bg: sel ? 'rgba(0,242,254,0.08)' : '#1A1A26', bdC: sel ? '#00F2FE' : '#232334', ringC: sel ? '#00F2FE' : '#94A3B8', dot: sel ? 1 : 0, txtC: sel ? '#FFFFFF' : '#CDD3EA', fw: sel ? 600 : 400, aria: sel ? 'true' : 'false', tr: optTr, dotTr });
+    const listOpt = (field, v, label, q) => {
+      const sel = a[field] === v;
+      return { label, ...look(sel), onClick: () => { if (!sel) this.commit({ [field]: v }, label, q); } };
+    };
+    const chip = (field, v, q, multi, prefix) => {
+      const sel = multi ? a[field].includes(v) : a[field] === v;
+      const lab = (prefix ? prefix + ' ' : '') + v + (field.startsWith('f') ? '×' : '');
+      return {
+        label: v, role: multi ? 'checkbox' : 'radio', ...look(sel),
+        onClick: () => {
+          if (multi) {
+            const arr = sel ? a[field].filter(x => x !== v) : [...a[field], v];
+            arr.sort((x, y) => ORDER[field].indexOf(x) - ORDER[field].indexOf(y));
+            this.commit({ [field]: arr }, lab, q);
+          } else if (!sel) this.commit({ [field]: v }, lab, q);
+        }
+      };
+    };
+    const grp = (vis, label, kind, options, d = 0, basis = '90px') => ({ rows: vis ? '1fr' : '0fr', op: vis ? 1 : 0, tr: tr(vis, d), label: label || '', hasLabel: !!label, isList: kind === 'list', isChips: kind === 'chips', isTiles: kind === 'tiles', basis, options });
+
+    const multi = a.mehr === 'manchmal' || a.mehr === 'oft';
+    const x = v => v ? v + '×' : 'offen';
+    const S = {};
+    S.q1 = { k: 'Kraft', c: 'Cardio', kc: 'Kraft und Cardio' }[a.arten] || null;
+    { const p = []; if (hasK) p.push('Kraft ' + (alt ? x(a.fk) + ' / ' + x(a.fkB) : x(a.fk))); if (hasC) p.push('Cardio ' + (alt ? x(a.fc) + ' / ' + x(a.fcB) : x(a.fc)));
+      S.q2 = (a.fk || a.fc || a.fkB || a.fcB) ? p.join(' · ') + (alt ? ' (Woche A / B)' : '') + (a.muster === 'irr' ? ' im Schnitt' : '') : null; }
+    S.q3 = a.muster ? ({ gleich: 'Ja, meist ähnlich', ab: 'Zwei Wochen wechseln sich ab', irr: 'Nein, jede Woche anders' }[a.muster] + (alt && a.anker ? ' · diese Woche: ' + a.anker : '')) : null;
+    if (a.tage === 'frei') S.q4 = 'Nein, wie es passt';
+    else if (a.tage === 'fest') { const p = []; if (hasK) p.push('Kraft ' + (a.dk.join(' ') || 'Tage offen')); if (hasC) p.push('Cardio ' + (a.dc.join(' ') || 'Tage offen')); S.q4 = p.join(' · ') || 'Ja, meist an denselben Tagen'; }
+    else S.q4 = null;
+    if (a.mehr) { const p = [{ nein: 'Nein', manchmal: 'Ja, an manchen Tagen', oft: 'Ja, an den meisten Tagen' }[a.mehr]]; if (hasK && a.zk.length) p.push('Kraft ' + a.zk.join('/').toLowerCase()); if (hasC && a.zc.length) p.push('Cardio ' + a.zc.join('/').toLowerCase()); S.q5 = p.join(' · '); } else S.q5 = null;
+    S.q6 = a.gilt ? ({ jetzt: 'So trainiere ich gerade', vorhaben: 'So will ich wieder trainieren · seit heute' }[a.gilt]) : null;
+
+    const defs = [
+      { key: 'q1', title: 'Was trainierst du?', short: 'Was du trainierst', vis: true, d: 0, hint: '',
+        groups: [grp(true, '', 'list', [['k', 'Kraft'], ['c', 'Cardio'], ['kc', 'Kraft und Cardio']].map(([v, l]) => listOpt('arten', v, l, 'q1')))],
+        clear: () => this.commit({ arten: null }, 'Zurücknehmen', 'q1', 'Antwort zurückgenommen') },
+      { key: 'q2', title: 'Wie viele Einheiten in einer üblichen Woche?', short: 'Einheiten je Woche', vis: hasK || hasC, d: 0,
+        hint: a.muster === 'irr' ? 'Im Schnitt — grob reicht.' : 'Einheiten, nicht Tage: zwei an einem Tag zählen zwei.',
+        groups: [
+          grp(hasK, alt ? 'Kraft · Woche A' : 'Kraft', 'chips', N.map(v => chip('fk', v, 'q2', false, 'Kraft'))),
+          grp(hasK && alt, 'Kraft · Woche B', 'chips', N.map(v => chip('fkB', v, 'q2', false, 'Kraft Woche B')), 60),
+          grp(hasC, alt ? 'Cardio · Woche A' : 'Cardio', 'chips', N.map(v => chip('fc', v, 'q2', false, 'Cardio')), 40),
+          grp(hasC && alt, 'Cardio · Woche B', 'chips', N.map(v => chip('fcB', v, 'q2', false, 'Cardio Woche B')), 100)
+        ],
+        clear: () => this.commit({ fk: null, fc: null, fkB: null, fcB: null }, 'Zurücknehmen', 'q2', 'Antwort zurückgenommen') },
+      { key: 'q3', title: 'Sieht jede Woche ähnlich aus?', short: 'Wochenmuster', vis: true, d: 0, hint: '',
+        groups: [
+          grp(true, '', 'list', [['gleich', 'Ja, meist ähnlich'], ['ab', 'Zwei Wochen wechseln sich ab'], ['irr', 'Nein, jede Woche anders']].map(([v, l]) => listOpt('muster', v, l, 'q3'))),
+          grp(alt, 'Diese Woche ist', 'chips', ['Woche A', 'Woche B'].map(v => chip('anker', v, 'q3', false, 'Diese Woche:')))
+        ],
+        clear: () => this.commit({ muster: null }, 'Zurücknehmen', 'q3', 'Antwort zurückgenommen') },
+      { key: 'q4', title: 'Trainierst du an festen Tagen?', short: 'Feste Tage', vis: hasK || hasC, d: 80, hint: '',
+        groups: [
+          grp(true, '', 'list', [['fest', 'Ja, meist an denselben Tagen'], ['frei', 'Nein, wie es passt']].map(([v, l]) => listOpt('tage', v, l, 'q4'))),
+          grp(a.tage === 'fest' && hasK, 'Kraft an', 'chips', ORDER.dk.map(v => chip('dk', v, 'q4', true, 'Kraft'))),
+          grp(a.tage === 'fest' && hasC, 'Cardio an', 'chips', ORDER.dc.map(v => chip('dc', v, 'q4', true, 'Cardio')), 60)
+        ],
+        clear: () => this.commit({ tage: null }, 'Zurücknehmen', 'q4', 'Antwort zurückgenommen') },
+      { key: 'q5', title: 'Trainierst du manchmal mehrmals am Tag?', short: 'Mehrmals am Tag', vis: true, d: 0, hint: 'Morgens Lauf, abends Kraft zählt als mehrmals.',
+        groups: [
+          grp(true, '', 'list', [['nein', 'Nein'], ['manchmal', 'Ja, an manchen Tagen'], ['oft', 'Ja, an den meisten Tagen']].map(([v, l]) => listOpt('mehr', v, l, 'q5'))),
+          grp(multi && hasK, 'Kraft meist', 'chips', ORDER.zk.map(v => chip('zk', v, 'q5', true, 'Kraft'))),
+          grp(multi && hasC, 'Cardio meist', 'chips', ORDER.zc.map(v => chip('zc', v, 'q5', true, 'Cardio')), 60)
+        ],
+        clear: () => this.commit({ mehr: null }, 'Zurücknehmen', 'q5', 'Antwort zurückgenommen') },
+      { key: 'q6', title: 'Beschreibt das dein Training gerade?', short: 'Jetzt oder Vorhaben', vis: true, d: 0, hint: 'Wichtig nach einer Pause: dann zeigt der Verlauf noch nicht, was du angibst.',
+        groups: [grp(true, '', 'list', [['jetzt', 'Ja, so trainiere ich gerade'], ['vorhaben', 'Nein, so will ich wieder trainieren']].map(([v, l]) => listOpt('gilt', v, l, 'q6')))],
+        clear: () => this.commit({ gilt: null }, 'Zurücknehmen', 'q6', 'Antwort zurückgenommen') }
+    ];
+
+    S.qo = a.ort.length ? a.ort.join(' · ') : null;
+    S.qz = a.ziele.length ? a.ziele.join(' · ') : null;
+    const byKey = Object.fromEntries(defs.map(d => [d.key, d]));
+    byKey.q1.groups[0].options = byKey.q1.groups[0].options.map((o, i) => withIcon(o, [I.kraft, I.cardio, I.both][i], [T.kraft, T.cardio, T.hyb][i]));
+    byKey.q6.groups[0].options = byKey.q6.groups[0].options.map((o, i) => withIcon(o, [I.jetzt, I.vorhaben][i], T.neu));
+    byKey.q5.groups.slice(1).forEach(g => { g.options = g.options.map(o => withIcon(o, I[o.label], T.neu)); g.isChips = false; g.isTiles = true; g.basis = '84px'; });
+    const qOrt = { key: 'qo', title: 'Wo trainierst du?', short: 'Wo du trainierst', vis: true, d: 0, hint: 'Mehrere möglich.',
+      groups: [grp(true, '', 'tiles', PLACES.map(v => withIcon(chip('ort', v, 'qo', true, 'Ort'), I[v], T.neu)), 0, '84px')],
+      clear: () => this.commit({ ort: [] }, 'Zurücknehmen', 'qo', 'Antwort zurückgenommen') };
+    const qZiele = { key: 'qz', title: 'Worauf trainierst du hin?', short: 'Worauf du hintrainierst', vis: true, d: 0, hint: 'Mehrere möglich, keins steht über dem anderen.',
+      groups: [grp(true, '', 'tiles', GOALS.map(v => withIcon(chip('ziele', v, 'qz', true, 'Ziel'), I[v], GT[v])), 0, '130px')],
+      clear: () => this.commit({ ziele: [] }, 'Zurücknehmen', 'qz', 'Antwort zurückgenommen') };
+    const QI = { q1: I.both, q2: I.count, q3: I.muster, q4: I.tage, q5: I.mehr, qo: I.ort, qz: I.ziel, q6: I.gilt };
+    const ordered = [byKey.q1, byKey.q3, byKey.q2, byKey.q4, byKey.q5, qOrt, qZiele, byKey.q6];
+
+    const saved = this.state.saved;
+    const qs = ordered.map((q, idx) => {
+      const ans = S[q.key];
+      const shown = q.vis && (first || open === q.key);
+      const dly = first ? idx * 70 : 0;
+      const isOpen = first || open === q.key;
+      const hasErr = !!(err && err.q === q.key);
+      return {
+        key: q.key, title: q.title, short: q.short, hint: q.hint, hasHint: !!q.hint, groups: q.groups, qIcon: QI[q.key], qIconC: ans ? '#FFFFFF' : '#94A3B8',
+        rows: q.vis ? '1fr' : '0fr', op: q.vis ? 1 : 0, tr: tr(q.vis, q.d), trIn: rm ? 'none' : `grid-template-rows 320ms ${EASE}, opacity 200ms ease-out`,
+        rowRows: isOpen ? '0fr' : '1fr', rowOp: isOpen ? 0 : 1, blockRows: isOpen ? '1fr' : '0fr', blockOp: isOpen ? 1 : 0,
+        summary: ans || 'Offen', ansC: ans ? '#FFFFFF' : '#94A3B8', dotBg: ans ? '#CDD3EA' : '#14141D', dotBd: ans ? '#CDD3EA' : '#94A3B8',
+        rowLabel: q.short + ', ' + (ans || 'offen') + '. ' + (ans ? 'Ändern' : 'Beantworten'),
+        onOpen: () => this.setState({ open: q.key }),
+        onClose: () => { if (!first) this.setState({ open: null }); },
+        titleCursor: first ? 'default' : 'pointer',
+        isReview: !first, canClear: !!ans, onClear: q.clear,
+        intro: rm || !shown ? 'none' : `blockIn 520ms cubic-bezier(0.22,1,0.36,1) ${dly}ms both`,
+        sweep: rm || !shown ? 'none' : `edgeSweep 1200ms cubic-bezier(0.45,0,0.2,1) ${dly + 120}ms both`,
+        scan: !rm && saved && saved.q === q.key ? `scan${saved.n % 2 ? 'A' : 'B'} 760ms cubic-bezier(0.22,1,0.36,1) both` : 'none',
+        hasErr, errText: hasErr ? err.text : '', cardBd: hasErr ? 'rgba(240,34,119,0.45)' : '#232334'
+      };
+    });
+
+    const hasAny = this.anyAnswer(a);
+    const RI = { 'Was du trainierst': I.both, 'Wochenmuster': I.muster, 'Einheiten je Woche': I.count, 'Feste Tage': I.tage, 'Mehrmals am Tag': I.mehr, 'Wo du trainierst': I.ort, 'Worauf du hintrainierst': I.ziel, 'Jetzt oder Vorhaben': I.gilt };
+    const row = (t, v) => v == null ? { t, a: 'Offen', c: '#94A3B8', dotBg: '#14141D', dotBd: '#94A3B8', icon: RI[t], iconC: '#94A3B8' } : { t, a: v, c: '#FFFFFF', dotBg: '#CDD3EA', dotBd: '#CDD3EA', icon: RI[t], iconC: '#FFFFFF' };
+    const pip = (n, c) => Array.from({ length: n }, () => ({ c }));
+    const K = '#FFB020', C = '#7A2BDB';
+    const wk = (map) => ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map(d => ({ d, top: map[d] && map[d].includes('k') ? K : '#16161F', bot: map[d] && map[d].includes('c') ? C : '#16161F' }));
+    const tag = (v) => ({ label: v, icon: I[v], bg: (GT[v] || T.neu).bg, ic: (GT[v] || T.neu).ic });
+    const chipSet = (sel, list = N) => list.map(v => ({ label: v, ...look(v === sel) }));
+    const multiSet = (sel, list) => list.map(v => ({ label: v, ...look(sel.includes(v)) }));
+
+    return {
+      qs, hasAny,
+      auroraAnim: rm ? 'none' : 'auroraDrift 16s ease-in-out infinite',
+      sheenAnim: rm ? 'none' : 'titleSheen 1400ms 250ms cubic-bezier(0.45,0,0.2,1) both',
+      errAnim: rm ? 'none' : 'errFlicker 320ms ease-out',
+      demoBloom: rm ? 'none' : `selBloom${this.state.demo % 2 ? '2' : ''} 900ms cubic-bezier(0.22,1,0.36,1) 300ms both`,
+      demoPop: rm ? 'none' : `popIn${this.state.demo % 2 ? '2' : ''} 380ms cubic-bezier(0.34,1.56,0.64,1) 300ms both`,
+      demoCheck: rm ? 'none' : `checkDraw${this.state.demo % 2 ? '2' : ''} 360ms cubic-bezier(0.65,0,0.35,1) 560ms both`,
+      demoSweep: rm ? 'none' : `edgeSweep${this.state.demo % 2 ? '2' : ''} 1300ms cubic-bezier(0.45,0,0.2,1) 200ms both`,
+      demoScan: rm ? 'none' : `scan${this.state.demo % 2 ? 'A' : 'B'} 900ms cubic-bezier(0.22,1,0.36,1) 300ms both`,
+      demoSheen: rm ? 'none' : `titleSheen${this.state.demo % 2 ? '2' : ''} 1400ms 300ms cubic-bezier(0.45,0,0.2,1) both`,
+      demoRows: this.state.demo % 2 ? '1fr' : '0fr', demoOp: this.state.demo % 2 ? 1 : 0,
+      demoTr: rm ? 'none' : (this.state.demo % 2 ? `grid-template-rows 320ms ${EASE}, opacity 240ms ease-out` : 'grid-template-rows 240ms cubic-bezier(0.4,0,1,1) 60ms, opacity 120ms ease-in'),
+      modeLabel: first ? 'ERSTER AUFRUF — BLÖCKE OFFEN' : 'WIEDERANSEHEN — ZEILEN, EINE AUFKLAPPBAR',
+      trBase: rm ? 'none' : `grid-template-rows 240ms ${EASE}, opacity 200ms ease-out`,
+      explainRows: this.state.explain ? '1fr' : '0fr', explainOp: this.state.explain ? 1 : 0,
+      toggleExplain: () => this.setState(s => ({ explain: !s.explain })),
+      retry: this.retry, undo: this.undo,
+      snackOn: !!snack, snackText: snack ? snack.text : '',
+      snackStyle: 'position:absolute;left:12px;right:12px;bottom:14px;z-index:3;min-height:52px;display:flex;align-items:center;gap:8px;padding:4px 8px 4px 16px;border-radius:14px;background:#1A1A26;border:1px solid #232334;box-shadow:0 10px 30px rgba(0,0,0,0.6);' + (rm ? '' : 'animation:snackGlow 420ms cubic-bezier(0.22,1,0.36,1) both'),
+      removeAll: () => { clearTimeout(this._snackT); const prev = a; this.setState({ a: this.empty(), snack: { text: 'Alle Angaben entfernt', prev }, err: null, open: null }); this._snackT = setTimeout(() => this.setState({ snack: null }), 6000); },
+      reopen: () => this.setState(s => ({ mode: this.anyAnswer(s.a) ? 'review' : 'first', open: null, err: null, explain: false, snack: null })),
+      resetAll: () => this.setState(this.initial('Leer')),
+      skelAnim: rm ? 'none' : 'skelShimmer 1400ms linear infinite',
+
+      halfRows: [row('Was du trainierst', 'Kraft und Cardio'), row('Wochenmuster', null), row('Einheiten je Woche', 'Kraft 3× · Cardio offen'), row('Feste Tage', null), row('Mehrmals am Tag', 'Nein'), row('Wo du trainierst', 'Gym'), row('Worauf du hintrainierst', null), row('Jetzt oder Vorhaben', null)],
+      fullRowsA: [row('Was du trainierst', 'Kraft und Cardio'), row('Wochenmuster', 'Ja, meist ähnlich')],
+      fullRowsB: [row('Feste Tage', 'Kraft Mo Mi Fr · Cardio Di Do Sa'), row('Mehrmals am Tag', 'Nein'), row('Wo du trainierst', 'Gym · Draußen'), row('Worauf du hintrainierst', 'Ausdauer verbessern · Kraft steigern'), row('Jetzt oder Vorhaben', 'So trainiere ich gerade')],
+      chipsK: chipSet('3'), chipsC: chipSet('3'),
+      chipsErr: N.map(v => ({ label: v, ...look(v === '3'), bs: v === '4' ? 'dashed' : 'solid', ...(v === '4' ? { bdC: '#F02277' } : {}) })),
+      daysBig: multiSet(['Mo', 'Mi', 'Fr'], ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']),
+      skel: [{ w1: '38%', w2: '62%' }, { w1: '46%', w2: '54%' }, { w1: '32%', w2: '70%' }, { w1: '42%', w2: '48%' }],
+      settingsVariants: [
+        { cap: 'TRAINING · NIE AUSGEFÜLLT', rows: [{ t: 'Pausenzeit', m: '90 s', mc: '#94A3B8', line: 'transparent' }, { t: 'Einheitensystem', m: 'Metrisch · kg, km', mc: '#94A3B8', line: '#232334' }, { t: 'Trainingsangaben', m: 'Nicht angegeben', mc: '#94A3B8', line: '#232334' }] },
+        { cap: 'TRAINING · TEILWEISE BEANTWORTET', rows: [{ t: 'Pausenzeit', m: '90 s', mc: '#94A3B8', line: 'transparent' }, { t: 'Einheitensystem', m: 'Metrisch · kg, km', mc: '#94A3B8', line: '#232334' }, { t: 'Trainingsangaben', m: 'Kraft und Cardio · Kraft 3×', mc: '#CDD3EA', line: '#232334' }] }
+      ],
+
+      questionTable: [
+        { n: '1', q: 'Was trainierst du?', a: 'Kraft · Cardio · Kraft und Cardio (Tab-Reihenfolge)', dep: 'öffnet 2 und 4; blendet Art-Gruppen in 2, 4, 5 ein/aus', why: '„Nur Kraft" und „Nur Cardio" — und damit, ob Cardio überhaupt gefragt werden darf. Einfachauswahl statt zwei Häkchen, damit „beides" eine eigene, gesagte Antwort ist.' },
+        { n: '2', q: 'Wie viele Einheiten in einer üblichen Woche?', a: 'je Art: 1 · 2 · 3 · 4 · 5 · 6 · 7 · 8+ (aufsteigend). Keine 0 — wer 0 meint, hat in 1 die Art nicht gewählt.', dep: 'bei „wechseln sich ab" je Art Woche A und B; bei „jede Woche anders" Hinweis „im Schnitt"', why: '3 + 3 gegen 5 + 6. Zählt Einheiten, nicht Tage — sonst hätte Person 4 keine richtige Antwort.' },
+        { n: '3', q: 'Sieht jede Woche ähnlich aus?', a: 'Ja, meist ähnlich · Zwei Wochen wechseln sich ab · Nein, jede Woche anders', dep: 'bei „wechseln": „Diese Woche ist A · B" (Anker)', why: 'Schichtarbeit oder Kinder-Wochen gegen eine feste Woche. Ohne Anker wüsste später keine Woche, ob sie A oder B ist.' },
+        { n: '4', q: 'Trainierst du an festen Tagen?', a: 'Ja, meist an denselben Tagen · Nein, wie es passt', dep: 'bei „Ja": Tage je Art, Mo–So, Mehrfachwahl, als Wrap', why: 'Person 1 (feste Tage) gegen jemanden mit gleicher Anzahl, aber freiem Rhythmus. „Meist" nimmt den Anspruch auf Exaktheit heraus.' },
+        { n: '5', q: 'Trainierst du manchmal mehrmals am Tag?', a: 'Nein · Ja, an manchen Tagen · Ja, an den meisten Tagen (aufsteigend)', dep: 'bei „Ja": Tageszeit je Art (Morgens · Mittags · Abends)', why: 'Person 4 gegen Person 1. Die Tageszeit trennt „morgens Lauf, abends Kraft" von zwei Kraftblöcken.' },
+        { n: '6', q: 'Beschreibt das dein Training gerade?', a: 'Ja, so trainiere ich gerade · Nein, so will ich wieder trainieren', dep: '—', why: 'Neuanfang nach Pause gegen dieselben Zahlen im laufenden Training. Ersetzt trainingLevel: fragt nach Zeit, nicht nach Selbsteinschätzung.' }
+      ],
+      struck: [
+        { q: 'Was soll die App nicht tun?', why: 'Schalter für Dinge, die ATEM ohnehin nie tut (mahnen, bewerten, erinnern), würden unterstellen, sie täte sie — und den Nutzer die Haltung der App verwalten lassen.' },
+        { q: 'trainingLevel (Selbsteinschätzung)', why: 'Was davon für eine Woche zählt — steht jemand am Anfang? — fragt Frage 8 als Zeitpunkt, nicht als Stufe.' },
+        { q: 'trainingStyle als Übernahme', why: 'Gerät · Eigengewicht · Hybrid mischte Ort, Ausstattung und Art. Neu gefragt wird nur der Ort (Frage 6); die Art steckt in Frage 1. Keine Datenübernahme aus der Vorgänger-App.' },
+        { q: 'Regeneration je Woche', why: '11 von 12 Einheiten ohne Angabe, trägt keine Last (Modul 11). Eine Frage dafür wäre ein Formular für Daten, die niemand plant.' }
+      ],
+      threeValues: [
+        { name: 'Beantwortet', dotBg: '#CDD3EA', dotBd: '#CDD3EA', seen: 'Punkt gefüllt, Antwort in Weiss: „Kraft 3×".', stored: 'perWeek.strength: 3 · answeredAt.perWeek.strength', read: 'Den Wert, als Grundlage benannt mit Datum: „laut deiner Angabe vom 14. Sept".' },
+        { name: 'Offen', dotBg: 'transparent', dotBd: '#94A3B8', seen: 'Ring, das Wort „Offen" in #94A3B8 — gleiche Grösse wie eine Antwort. Kein Zähler.', stored: 'Schlüssel fehlt. Nie null, nie 0.', read: 'Nichts. Braucht eine Ableitung diese Angabe, fällt sie aus — der Block rendert nicht. Sie ergänzt nie aus Nachbarantworten.' },
+        { name: 'Nicht Teil deines Trainings', dotBg: 'transparent', dotBd: 'transparent', seen: 'Unsichtbar. Bei „nur Kraft" erscheint Cardio nirgends — keine Zeile, kein „0×", keine Frage.', stored: 'modalities: [\'strength\'] — perWeek.cardio fehlt und wird nie gefragt', read: 'Echte 0, weil gesagt: „laut deiner Angabe nur Kraft". Die einzige Null, die das Briefing erzeugt.' }
+      ],
+      personaVis: [
+        { kicker: 'PERSON 1', kc: '#00F2FE', name: 'Drei Kraft, drei Cardio, feste Tage', lanes: [{ l: 'KRAFT', n: '3×', pips: pip(3, K) }, { l: 'CARDIO', n: '3×', pips: pip(3, C) }], hasWeek: true, week: wk({ Mo: 'k', Di: 'c', Mi: 'k', Do: 'c', Fr: 'k', Sa: 'c' }), rhythm: '', hasRhythm: false, tags: [tag('Gym'), tag('Draußen'), tag('Ausdauer verbessern'), tag('Kraft steigern')], rows: [row('Was du trainierst', 'Kraft und Cardio'), row('Wochenmuster', 'Ja, meist ähnlich'), row('Einheiten je Woche', 'Kraft 3× · Cardio 3×'), row('Feste Tage', 'Kraft Mo Mi Fr · Cardio Di Do Sa'), row('Mehrmals am Tag', 'Nein'), row('Wo du trainierst', 'Gym · Draußen'), row('Worauf du hintrainierst', 'Ausdauer verbessern · Kraft steigern'), row('Jetzt oder Vorhaben', 'So trainiere ich gerade')], record: 'modalities [strength, cardio] · pattern same\nperWeek { strength 3, cardio 3 }\nschedule fixed · days { s [1,3,5], c [2,4,6] }\nplaces [gym, outdoor] · goals [endurance, strength]', note: 'Der vollständige Normalfall — acht Zeilen, alle gefüllt.' },
+        { kicker: 'PERSON 2', kc: '#00F2FE', name: 'Nur Kraft, zu Hause', lanes: [{ l: 'KRAFT', n: '4×', pips: pip(4, K) }], hasWeek: false, week: [], hasRhythm: true, rhythm: 'FREIER RHYTHMUS', tags: [tag('Zuhause'), tag('Muskeln aufbauen')], rows: [row('Was du trainierst', 'Kraft'), row('Wochenmuster', 'Ja, meist ähnlich'), row('Einheiten je Woche', 'Kraft 4×'), row('Feste Tage', 'Nein, wie es passt'), row('Mehrmals am Tag', 'Nein'), row('Wo du trainierst', 'Zuhause'), row('Worauf du hintrainierst', 'Muskeln aufbauen'), row('Jetzt oder Vorhaben', 'So trainiere ich gerade')], record: 'modalities [strength] · perWeek { strength 4 }\nschedule free · places [home] · goals [muscle]\ncardio: nicht Teil — nie gefragt', note: 'Das Wort „Cardio" steht nur in der Antwortliste von Frage 1. Keine Nachfrage, kein „warum nicht". Zuhause statt Gym trennt sie von einer sonst gleichen Person.' },
+        { kicker: 'PERSON 3', kc: '#00F2FE', name: 'Nur Cardio, draussen', lanes: [{ l: 'CARDIO', n: '5× Ø', pips: pip(5, C) }], hasWeek: false, week: [], hasRhythm: true, rhythm: 'JEDE WOCHE ANDERS · IM SCHNITT', tags: [tag('Draußen'), tag('Ausdauer verbessern'), tag('Gesund bleiben')], rows: [row('Was du trainierst', 'Cardio'), row('Wochenmuster', 'Nein, jede Woche anders'), row('Einheiten je Woche', 'Cardio 5× im Schnitt'), row('Feste Tage', 'Nein, wie es passt'), row('Mehrmals am Tag', 'Nein'), row('Wo du trainierst', 'Draußen'), row('Worauf du hintrainierst', 'Ausdauer verbessern · Gesund bleiben'), row('Jetzt oder Vorhaben', 'So trainiere ich gerade')], record: 'modalities [cardio] · pattern irregular\nperWeek { cardio 5 } · schedule free\nplaces [outdoor] · goals [endurance, health]', note: '„Im Schnitt" folgt aus dem Wochenmuster, das jetzt vor der Anzahl steht — die Zahl behauptet keine feste Woche. Der leere Kraft-Tab ist damit eine Aussage.' },
+        { kicker: 'PERSON 4', kc: '#00F2FE', name: 'Mehrmals am Tag', lanes: [{ l: 'KRAFT', n: '5× · abends', pips: pip(5, K) }, { l: 'CARDIO', n: '6× · morgens', pips: pip(6, C) }], hasWeek: false, week: [], hasRhythm: true, rhythm: 'AN DEN MEISTEN TAGEN ZWEIMAL', tags: [tag('Gym'), tag('Draußen'), tag('Fitter werden'), tag('Kraft steigern')], rows: [row('Was du trainierst', 'Kraft und Cardio'), row('Wochenmuster', 'Ja, meist ähnlich'), row('Einheiten je Woche', 'Kraft 5× · Cardio 6×'), row('Feste Tage', 'Nein, wie es passt'), row('Mehrmals am Tag', 'Ja, an den meisten Tagen · Kraft abends · Cardio morgens'), row('Wo du trainierst', 'Gym · Draußen'), row('Worauf du hintrainierst', 'Fitter werden · Kraft steigern'), row('Jetzt oder Vorhaben', 'So trainiere ich gerade')], record: 'perWeek { strength 5, cardio 6 } · multiPerDay most\ndayparts { s [evening], c [morning] }\nplaces [gym, outdoor] · goals [fitness, strength]', note: '11 Einheiten bei 7 Tagen sind kein Widerspruch, weil gezählt wird, was stattfindet, nicht an welchen Tagen.' },
+        { kicker: 'VARIANTE · WECHSELWOCHEN', kc: '#AB6BF0', name: 'Schicht: jede zweite Woche anders', lanes: [{ l: 'WOCHE A', n: 'K 3 · C 2', pips: pip(3, K).concat(pip(2, C)) }, { l: 'WOCHE B', n: 'K 2 · C 4', pips: pip(2, K).concat(pip(4, C)) }], hasWeek: false, week: [], hasRhythm: true, rhythm: 'DIESE WOCHE: A', tags: [tag('Zuhause'), tag('Gym')], rows: [row('Was du trainierst', 'Kraft und Cardio'), row('Wochenmuster', 'Zwei Wochen wechseln sich ab · diese Woche: Woche A'), row('Einheiten je Woche', 'Kraft 3× / 2× · Cardio 2× / 4× (Woche A / B)'), row('Feste Tage', 'Nein, wie es passt'), row('Mehrmals am Tag', null), row('Wo du trainierst', 'Zuhause · Gym'), row('Worauf du hintrainierst', null), row('Jetzt oder Vorhaben', 'So trainiere ich gerade')], record: 'pattern alternating · anchorWeekStart 2026-09-21\nperWeek { s 3, c 2 } · perWeekB { s 2, c 4 }\nmultiPerDay — · goals — (offen)', note: 'Zwei offene Fragen, und keine Zeile tut so, als wäre es „Nein" oder „kein Ziel". Weil das Muster zuerst kommt, öffnet die Anzahl gleich zweispaltig — nichts oberhalb ändert sich.' },
+        { kicker: 'VARIANTE · NACH EINER PAUSE', kc: '#AB6BF0', name: 'Fängt nach vier Monaten wieder an', lanes: [{ l: 'KRAFT', n: '2×', pips: pip(2, K) }, { l: 'CARDIO', n: '2×', pips: pip(2, C) }], hasWeek: true, week: wk({ Di: 'k', Fr: 'k', So: 'c' }), hasRhythm: true, rhythm: 'VORGENOMMEN SEIT 23. SEPT', tags: [tag('Zuhause'), tag('Draußen'), tag('Abnehmen'), tag('Fitter werden')], rows: [row('Was du trainierst', 'Kraft und Cardio'), row('Wochenmuster', 'Ja, meist ähnlich'), row('Einheiten je Woche', 'Kraft 2× · Cardio 2×'), row('Feste Tage', 'Kraft Di Fr · Cardio So'), row('Mehrmals am Tag', 'Nein'), row('Wo du trainierst', 'Zuhause · Draußen'), row('Worauf du hintrainierst', 'Abnehmen · Fitter werden'), row('Jetzt oder Vorhaben', 'So will ich wieder trainieren · seit 23. Sept')], record: 'perWeek { s 2, c 2 } · days { s [2,5], c [7] }\nplaces [home, outdoor] · goals [weight, fitness]\ndescribes intended · answeredAt 2026-09-23', note: 'Dieselben Zahlen wie bei jemandem im Training — nur „Vorhaben" und sein Datum sagen, dass der Verlauf sie noch nicht zeigen kann. „Abnehmen" färbt den Gewichtsverlauf nicht (Modul 14 bleibt neutral).' }
+      ],
+      questionCards: [
+        { n: '1', icon: I.both, q: 'Was trainierst du?', opts: ['Kraft', 'Cardio', 'Kraft und Cardio'], dep: 'steuert 3, 4, 5', depC: '#AB6BF0', why: '„Nur Kraft" gegen „Nur Cardio" — und ob Cardio überhaupt gefragt werden darf. Einfachauswahl, damit „beides" eine gesagte Antwort ist.' },
+        { n: '2', icon: I.muster, q: 'Sieht jede Woche ähnlich aus?', opts: ['Ja, meist ähnlich', 'Zwei Wochen wechseln sich ab', 'Nein, jede Woche anders'], dep: 'steuert 3 · Anker A/B', depC: '#AB6BF0', why: 'Schicht- oder Kinderwochen gegen eine feste Woche. Steht vor der Anzahl, weil es deren Form bestimmt.' },
+        { n: '3', icon: I.count, q: 'Wie viele Einheiten in einer üblichen Woche?', opts: ['1', '2', '3', '4', '5', '6', '7', '8+'], dep: 'hängt an 1 und 2', depC: '#94A3B8', why: '3 + 3 gegen 5 + 6. Zählt Einheiten, nicht Tage — sonst hätte Person 4 keine richtige Antwort.' },
+        { n: '4', icon: I.tage, q: 'Trainierst du an festen Tagen?', opts: ['Ja, meist an denselben Tagen', 'Nein, wie es passt'], dep: 'hängt an 1 · Tage je Art', depC: '#94A3B8', why: 'Gleiche Anzahl, einmal an festen Tagen, einmal frei.' },
+        { n: '5', icon: I.mehr, q: 'Trainierst du manchmal mehrmals am Tag?', opts: ['Nein', 'Ja, an manchen Tagen', 'Ja, an den meisten Tagen'], dep: 'Tageszeit je Art aus 1', depC: '#94A3B8', why: 'Person 4 gegen Person 1; die Tageszeit trennt „morgens Lauf, abends Kraft" von zwei Kraftblöcken.' },
+        { n: '6', icon: I.ort, q: 'Wo trainierst du?', opts: ['Zuhause', 'Gym', 'Draußen'], dep: 'unabhängig · Mehrfachwahl', depC: '#94A3B8', why: 'Gleicher Rhythmus, andere Möglichkeiten: wer zu Hause trainiert, braucht später andere Übungen als im Gym. Ort, nicht Ausstattungsliste.' },
+        { n: '7', icon: I.ziel, q: 'Worauf trainierst du hin?', opts: ['Abnehmen', 'Ausdauer verbessern', 'Beweglicher werden', 'Fitter werden', 'Gesund bleiben', 'Kraft steigern', 'Muskeln aufbauen'], dep: 'unabhängig · Mehrfachwahl', depC: '#94A3B8', why: 'Dieselbe Woche kann auf Muskeln oder aufs Abnehmen zielen. Alphabetisch, ohne Hauptziel, ohne Messgrösse dahinter.' },
+        { n: '8', icon: I.gilt, q: 'Beschreibt das dein Training gerade?', opts: ['Ja, so trainiere ich gerade', 'Nein, so will ich wieder trainieren'], dep: 'bezieht sich auf alles darüber', depC: '#94A3B8', why: 'Neuanfang nach Pause gegen dieselben Zahlen im laufenden Training. Deshalb am Ende: sie qualifiziert die Antworten davor.' }
+      ],
+      toneLegend: [{ bg: T.kraft.bg, ic: T.kraft.ic, icon: I.kraft, t: 'Kraft', d: 'Amber #FFB020 — Bereichston des Kraft-Tabs, als Symbolfarbe' }, { bg: T.cardio.bg, ic: T.cardio.ic, icon: I.cardio, t: 'Cardio', d: 'Violet #7A2BDB — nur als Kastenfläche, Symbol weiss' }, { bg: T.hyb.bg, ic: T.hyb.ic, icon: I.both, t: 'Beides / übergreifend', d: '#AB6BF0 — Hybrid-Ton, für Ziele, die keine Spur allein betreffen' }, { bg: T.neu.bg, ic: T.neu.ic, icon: I.ort, t: 'Neutral', d: '#0B0B0E-Kasten, #CDD3EA — Ort, Tageszeit, Zeitbezug' }, { bg: 'rgba(0,242,254,0.08)', ic: '#00F2FE', icon: 'M5 12.5l4.2 4.2L19 7', t: 'Gewählt', d: 'Cyan-Rand + Häkchen / Kern — immer Handlung, nie Kategorie' }],
+      sequence: [
+        { t: '0 ms', d: 'Tipp auf „Kraft". Druck: scale 0,97 + Cyan-Schein. Punkt in „Kraft" wächst 0 → 1 mit Überschwinger, Punkt in „Kraft und Cardio" schrumpft gleichzeitig 1 → 0.' },
+        { t: '0–120 ms', d: 'Alle Cardio-Gruppen (Frage 3, 4, 5) blenden gleichzeitig aus — Deckkraft 1 → 0. Nichts bewegt sich noch in der Höhe.' },
+        { t: '60–300 ms', d: 'Dieselben Gruppen schrumpfen auf 0 (Höhe), Inhalte darunter rücken nach. Kraft-Gruppen bleiben stehen, ohne zu zucken.' },
+        { t: '300 ms', d: 'Snackbar „Cardio-Angaben entfernt · Rückgängig" fährt 12 dp hoch — nur wenn dort Antworten standen. Steht 6 s.' },
+        { t: 'Rückgängig', d: 'Umgekehrte Reihenfolge mit der Öffnungskurve: Höhe 320 ms, Deckkraft 240 ms, Gruppen je 40–60 ms versetzt, von oben nach unten.' }
+      ],
+      spec: [
+        { el: 'Bildschirm', h: '360 dp Referenz', surface: 'Grund #050507, Rand 16 dp', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Kopfleiste', h: '56 dp, sticky', surface: '#050507 @ 0,82 + BackdropFilter 14 — der einzige', type: 'Ortszeile Mono 11 +0,14 em #AB6BF0, Punkt 6 dp mit Schein 8', tap: 'Zurück 48 × 48', tapC: '#00FF87' },
+        { el: 'Titel + ⓘ (AtemExplainHeader)', h: 'Inhalt', surface: '—', type: 'Titel 22/600 weiss · ⓘ 20 dp Ring 1,5 cyan', tap: 'ⓘ 48 × 48', tapC: '#00FF87' },
+        { el: 'Erklärblock (aufgeklappt)', h: 'Inhalt', surface: '#0B0B0E, Rand #232334, R 14', type: '13/1,6 #CDD3EA', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Hinweiszeile unter Titel', h: 'Inhalt', surface: '—', type: '13 #94A3B8', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Metazeile „Zuletzt geändert"', h: 'Inhalt', surface: '—', type: 'Mono 11 +0,08 em #94A3B8', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Frageblock', h: 'Inhalt', surface: '#14141D, Rand #232334, R 20, Innenabstand 16', type: 'Frage 15/600 weiss · Hinweis 12 #94A3B8, höchstens eine Zeile', tap: 'Titel nur im Wiederansehen (zuklappen)', tapC: '#94A3B8' },
+        { el: 'Abstand zwischen Blöcken', h: '12 dp', surface: '—', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Antwortzeile (Liste)', h: '≥ 52 dp', surface: '#1A1A26, Rand 1,5 #232334, R 14 · gewählt: cyan @ 0,08, Rand cyan', type: '14 #CDD3EA · gewählt 14/600 weiss', tap: 'volle Breite × 52', tapC: '#00FF87' },
+        { el: '· Auswahlring', h: '20 dp', surface: 'Ring 2 dp #94A3B8 · gewählt Ring cyan + Kern 10 dp cyan', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Chip (Zahl, Tag, Tageszeit, Woche)', h: '≥ 48 × 48 dp', surface: 'wie Antwortzeile, R 14', type: 'Mono 14 · gewählt 600 weiss', tap: '48 × 48, Spalt 8', tapC: '#00FF87' },
+        { el: 'Antwort-Kachel (Ort, Ziel, Tageszeit)', h: '≥ 92 dp, Basis 84 / 130 dp', surface: 'wie Antwortzeile, R 14; Symbolkasten 40 dp R 10 im Spurton', type: '13,5 #CDD3EA · gewählt 600 weiss', tap: 'ganze Kachel, Wrap, Spalt 8', tapC: '#00FF87' },
+        { el: '· Symbolkasten in Antwortzeile', h: '40 dp', surface: 'Kraft Amber @ 0,14 · Cardio #7A2BDB · Beides #AB6BF0 @ 0,16 · neutral #0B0B0E', type: 'Glyph 22 dp, Strich 1,9', tap: '—', tapC: '#94A3B8' },
+        { el: '· Fragesymbol (Block + Zeile)', h: '32 / 36 dp', surface: '#1A1A26, R 10; Statuspunkt 10 dp an der Ecke', type: 'Glyph #CDD3EA · Zeile: weiss beantwortet, #94A3B8 offen', tap: '—', tapC: '#94A3B8' },
+        { el: '· Häkchen-Ecke', h: '16 dp', surface: 'Kreis cyan, Haken #050507, 6 dp über der Ecke', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: 'Gruppenlabel (je Art)', h: 'Inhalt + 8 dp', surface: '—', type: 'Mono 12 +0,06 em #94A3B8', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Zeile (Wiederansehen)', h: '≥ 64 dp', surface: '#14141D, Rand #232334, R 16', type: 'Frage 12 #94A3B8 · Antwort 14 weiss / „Offen" 14 #94A3B8', tap: 'volle Zeile, Chevron 44 × 44', tapC: '#00FF87' },
+        { el: '· Statuspunkt', h: '10 dp', surface: 'beantwortet gefüllt #CDD3EA · offen Ring 1,5 #94A3B8', type: '—', tap: '—', tapC: '#94A3B8' },
+        { el: '„Antwort zurücknehmen"', h: '48 dp', surface: 'Textaktion', type: '13/600 cyan', tap: 'Textbreite × 48', tapC: '#00FF87' },
+        { el: 'Speicherfehler im Block', h: 'Inhalt + 44 dp Aktion', surface: 'Magenta @ 0,06, Rand Magenta @ 0,4, R 14; Blockrand Magenta @ 0,45', type: '12,5 #F02277 + Dreieck · Aktion 13/600 cyan', tap: 'Erneut versuchen 44 dp', tapC: '#00FF87' },
+        { el: 'Registerzeile „Genutzt von"', h: 'Inhalt', surface: 'über Hairline #232334', type: 'Mono 11 +0,08 em #94A3B8', tap: 'keines', tapC: '#94A3B8' },
+        { el: '„Alle Angaben entfernen"', h: '48 dp', surface: 'Textaktion, nur mit ≥ 1 Antwort', type: '13/600 Magenta', tap: 'Textbreite × 48', tapC: '#00FF87' },
+        { el: 'Snackbar', h: '≥ 52 dp', surface: '#1A1A26, Rand #232334, R 14, 12 dp über Rand', type: '13 #CDD3EA · Rückgängig 13/600 cyan', tap: 'Rückgängig 44 dp', tapC: '#00FF87' },
+        { el: 'Skelettzeile', h: '64 dp', surface: '#14141D; Balken #1A1A26 9 / 12 dp, R 4', type: '—', tap: 'keines', tapC: '#94A3B8' },
+        { el: 'Gradient-Karte', h: '—', surface: 'keine auf diesem Bildschirm', type: '—', tap: '—', tapC: '#94A3B8' }
+      ],
+      motion: [
+        { el: 'Bildschirm öffnet', trigger: 'Seite erscheint', prop: 'Blöcke translateY 10 → 0 + Deckkraft, je 70 ms versetzt; Lichtkante folgt je Block 120 ms später', dur: '520 / 1200', curve: 'cubic(0.22,1,0.36,1)', rest: 'alle Blöcke still', reduced: 'sofort da, keine Kante' },
+        { el: 'Titel-Glanz', trigger: 'Seite erscheint (einmal)', prop: 'Verlauf #AB6BF0 → Cyan wandert durch das Wort, endet weiss', dur: '1400', curve: 'cubic(0.45,0,0.2,1)', rest: 'Weiss', reduced: 'Weiss ohne Glanz' },
+        { el: 'Aurora', trigger: '— (einzige Dauerschleife)', prop: 'drei RadialGradients treiben (translate + rotate); unter der Glasleiste mitgeblurrt', dur: '16 s Loop', curve: 'ease-in-out', rest: '— (Loop)', reduced: 'steht still, bleibt sichtbar' },
+        { el: 'Folgefrage öffnet', trigger: 'Antwort, die sie freischaltet', prop: 'Höhe (AnimatedSize) + Deckkraft, Gruppen 40–60 ms versetzt; ganzer Block zusätzlich mit Lichtkante', dur: '320 / 240', curve: 'cubic(0.22,1,0.36,1)', rest: 'offen', reduced: 'sofort da' },
+        { el: 'Folgefrage schliesst', trigger: 'Antwort, die sie ausschliesst', prop: 'Deckkraft 1 → 0, danach Höhe → 0', dur: '120 + 240', curve: 'ease-in / cubic(0.4,0,1,1)', rest: 'entfernt', reduced: 'sofort weg' },
+        { el: 'Auswahl-Bloom', trigger: 'Antwort gewählt', prop: 'boxShadow cyan: Ring 0 → 10 dp + Schein 28 dp, klingt auf 0 aus', dur: '620', curve: 'cubic(0.22,1,0.36,1)', rest: 'kein Schein, nur Rand', reduced: 'aus — Rand + Kern tragen allein' },
+        { el: 'Kern / Häkchen', trigger: 'Antwort gewählt', prop: 'Kern scale 0 → 1 mit Überschwinger + Dauerschein 10 dp; Häkchen zeichnet sich (Strichlänge 22)', dur: '220 / 360', curve: 'easeOutBack / cubic(0.65,0,0.35,1)', rest: 'gewählt', reduced: 'sofort sichtbar' },
+        { el: 'Lichtkante', trigger: 'Block erscheint oder klappt aus Zeile auf', prop: 'SweepGradient Cyan → #AB6BF0 läuft einmal 360° um den Rand (CustomPainter, RRect-Strich 1,5)', dur: '1200', curve: 'cubic(0.45,0,0.2,1)', rest: 'Standardrand #232334', reduced: 'aus' },
+        { el: 'Speicher-Scan', trigger: 'Antwort geschrieben (optimistisch)', prop: 'Lichtpunkt 34 % Breite läuft über die Oberkante, Schein 10 dp', dur: '760', curve: 'cubic(0.22,1,0.36,1)', rest: 'weg', reduced: 'aus — nichts ersetzt ihn, weil Speichern nie ausbleibt ohne Fehlerzeile' },
+        { el: 'Speicher-Ablehnung', trigger: 'Server lehnt ab', prop: 'Auswahl springt zurück, Fehlerzeile flackert zweimal in Magenta (Störung), abgelehnter Chip 2 s gestrichelt', dur: '320', curve: 'ease-out', rest: 'Fehler steht bis zum nächsten Tipp', reduced: 'kein Flackern, gestrichelt bleibt' },
+        { el: 'Gedrückt', trigger: 'Pointer down', prop: 'scale 0,97 + Schein cyan 18 dp', dur: '200', curve: 'ease-out', rest: 'scale 1', reduced: 'nur Schein' },
+        { el: 'Zeile → Block', trigger: 'Tipp auf Zeile (Wiederansehen)', prop: 'Zeile blendet aus, Block wächst mit Lichtkante; zuvor offener Block schliesst gleichzeitig', dur: '320', curve: 'cubic(0.22,1,0.36,1)', rest: 'ein Block offen', reduced: 'harter Wechsel' },
+        { el: 'Snackbar', trigger: 'Abhängiges entfernt · Zurücknehmen · Alle entfernen', prop: 'translateY 12 → 0, Cyan-Schein blüht und geht in den Schatten über', dur: '420, steht 6 s', curve: 'cubic(0.22,1,0.36,1)', rest: 'weg nach 6 s', reduced: 'nur Deckkraft' },
+        { el: 'Skelett-Schimmer', trigger: 'Laden > 300 ms', prop: 'Streifen #232334 wandert über #1A1A26 (LinearGradient, animierte Stops)', dur: '1400 Loop', curve: 'linear', rest: '— (Loop)', reduced: 'steht, #1A1A26 flach' }
+      ],
+      strings: [
+        { key: 'briefing.title', de: 'Trainingsangaben', en: 'Training details' },
+        { key: 'briefing.area', de: 'HYBRID · EINSTELLUNGEN', en: 'HYBRID · SETTINGS' },
+        { key: 'briefing.hint', de: 'Freiwillig. Jede Antwort gilt für sich.', en: 'Optional. Each answer stands on its own.' },
+        { key: 'briefing.explain_title', de: 'Über diese Angaben', en: 'About these details' },
+        { key: 'briefing.explain_body', de: 'Hier beschreibst du dein Training in eigenen Worten. Jede Antwort wird sofort gespeichert und gilt für sich; was du offen lässt, bleibt offen und zählt nirgends als Null. Bisher rechnet keine Auswertung mit diesen Angaben — nutzt eine sie später, nennt sie deine Angabe als Grundlage.', en: 'Describe your training in your own words. Each answer is saved right away and stands on its own; anything you leave open stays open and never counts as zero. No analysis uses these details yet — if one does later, it will name your answer as its basis.' },
+        { key: 'briefing.last_changed', de: 'Zuletzt geändert · {date}', en: 'Last changed · {date}' },
+        { key: 'briefing.used_by_none', de: 'Genutzt von · bisher keiner Auswertung', en: 'Used by · no analysis yet' },
+        { key: 'briefing.used_by', de: 'Genutzt von · {list}', en: 'Used by · {list}' },
+        { key: 'briefing.q.modality', de: 'Was trainierst du?', en: 'What do you train?' },
+        { key: 'briefing.q.modality.short', de: 'Was du trainierst', en: 'What you train' },
+        { key: 'briefing.opt.strength', de: 'Kraft', en: 'Strength' },
+        { key: 'briefing.opt.cardio', de: 'Cardio', en: 'Cardio' },
+        { key: 'briefing.opt.both', de: 'Kraft und Cardio', en: 'Strength and cardio' },
+        { key: 'briefing.q.per_week', de: 'Wie viele Einheiten in einer üblichen Woche?', en: 'How many sessions in a typical week?' },
+        { key: 'briefing.q.per_week.short', de: 'Einheiten je Woche', en: 'Sessions per week' },
+        { key: 'briefing.q.per_week.hint', de: 'Einheiten, nicht Tage: zwei an einem Tag zählen zwei.', en: 'Sessions, not days: two in one day count as two.' },
+        { key: 'briefing.q.per_week.hint_irregular', de: 'Im Schnitt — grob reicht.', en: 'On average — roughly is fine.' },
+        { key: 'briefing.per_week.value', de: '{art} {n}×', en: '{art} {n}×' },
+        { key: 'briefing.per_week.more', de: '8+', en: '8+' },
+        { key: 'briefing.per_week.a11y_one', de: '{art}, {n} Einheit je Woche', en: '{art}, {n} session per week' },
+        { key: 'briefing.per_week.a11y_other', de: '{art}, {n} Einheiten je Woche', en: '{art}, {n} sessions per week' },
+        { key: 'briefing.per_week.a11y_more', de: '{art}, 8 oder mehr Einheiten je Woche', en: '{art}, 8 or more sessions per week' },
+        { key: 'briefing.per_week.average', de: 'im Schnitt', en: 'on average' },
+        { key: 'briefing.group.week_a', de: '{art} · Woche A', en: '{art} · week A' },
+        { key: 'briefing.group.week_b', de: '{art} · Woche B', en: '{art} · week B' },
+        { key: 'briefing.q.pattern', de: 'Sieht jede Woche ähnlich aus?', en: 'Does each week look similar?' },
+        { key: 'briefing.q.pattern.short', de: 'Wochenmuster', en: 'Weekly pattern' },
+        { key: 'briefing.opt.pattern_same', de: 'Ja, meist ähnlich', en: 'Yes, mostly similar' },
+        { key: 'briefing.opt.pattern_alt', de: 'Zwei Wochen wechseln sich ab', en: 'Two weeks alternate' },
+        { key: 'briefing.opt.pattern_irregular', de: 'Nein, jede Woche anders', en: 'No, every week is different' },
+        { key: 'briefing.anchor.label', de: 'Diese Woche ist', en: 'This week is' },
+        { key: 'briefing.anchor.a', de: 'Woche A', en: 'Week A' },
+        { key: 'briefing.anchor.b', de: 'Woche B', en: 'Week B' },
+        { key: 'briefing.anchor.summary', de: 'diese Woche: {week}', en: 'this week: {week}' },
+        { key: 'briefing.q.days', de: 'Trainierst du an festen Tagen?', en: 'Do you train on set days?' },
+        { key: 'briefing.q.days.short', de: 'Feste Tage', en: 'Set days' },
+        { key: 'briefing.opt.days_fixed', de: 'Ja, meist an denselben Tagen', en: 'Yes, mostly the same days' },
+        { key: 'briefing.opt.days_free', de: 'Nein, wie es passt', en: 'No, whenever it fits' },
+        { key: 'briefing.days.group', de: '{art} an', en: '{art} on' },
+        { key: 'briefing.days.open', de: 'Tage offen', en: 'days open' },
+        { key: 'briefing.q.multi', de: 'Trainierst du manchmal mehrmals am Tag?', en: 'Do you sometimes train more than once a day?' },
+        { key: 'briefing.q.multi.short', de: 'Mehrmals am Tag', en: 'More than once a day' },
+        { key: 'briefing.q.multi.hint', de: 'Morgens Lauf, abends Kraft zählt als mehrmals.', en: 'A morning run and evening lifting counts.' },
+        { key: 'briefing.opt.multi_no', de: 'Nein', en: 'No' },
+        { key: 'briefing.opt.multi_some', de: 'Ja, an manchen Tagen', en: 'Yes, on some days' },
+        { key: 'briefing.opt.multi_most', de: 'Ja, an den meisten Tagen', en: 'Yes, on most days' },
+        { key: 'briefing.daypart.group', de: '{art} meist', en: '{art} usually' },
+        { key: 'briefing.daypart.morning', de: 'Morgens', en: 'Mornings' },
+        { key: 'briefing.daypart.midday', de: 'Mittags', en: 'Midday' },
+        { key: 'briefing.daypart.evening', de: 'Abends', en: 'Evenings' },
+        { key: 'briefing.q.place', de: 'Wo trainierst du?', en: 'Where do you train?' },
+        { key: 'briefing.q.place.short', de: 'Wo du trainierst', en: 'Where you train' },
+        { key: 'briefing.q.place.hint', de: 'Mehrere möglich.', en: 'Choose any.' },
+        { key: 'briefing.opt.place_home', de: 'Zuhause', en: 'At home' },
+        { key: 'briefing.opt.place_gym', de: 'Gym', en: 'Gym' },
+        { key: 'briefing.opt.place_outdoor', de: 'Draußen', en: 'Outdoors' },
+        { key: 'briefing.q.goals', de: 'Worauf trainierst du hin?', en: 'What are you training towards?' },
+        { key: 'briefing.q.goals.short', de: 'Worauf du hintrainierst', en: 'What you train towards' },
+        { key: 'briefing.q.goals.hint', de: 'Mehrere möglich, keins steht über dem anderen.', en: 'Choose any — none ranks above another.' },
+        { key: 'briefing.goal.weight', de: 'Abnehmen', en: 'Lose weight' },
+        { key: 'briefing.goal.endurance', de: 'Ausdauer verbessern', en: 'Build endurance' },
+        { key: 'briefing.goal.mobility', de: 'Beweglicher werden', en: 'Get more mobile' },
+        { key: 'briefing.goal.fitness', de: 'Fitter werden', en: 'Get fitter' },
+        { key: 'briefing.goal.health', de: 'Gesund bleiben', en: 'Stay healthy' },
+        { key: 'briefing.goal.strength', de: 'Kraft steigern', en: 'Get stronger' },
+        { key: 'briefing.goal.muscle', de: 'Muskeln aufbauen', en: 'Build muscle' },
+        { key: 'briefing.q.describes', de: 'Beschreibt das dein Training gerade?', en: 'Does this describe your training right now?' },
+        { key: 'briefing.q.describes.short', de: 'Jetzt oder Vorhaben', en: 'Now or intended' },
+        { key: 'briefing.q.describes.hint', de: 'Wichtig nach einer Pause: dann zeigt der Verlauf noch nicht, was du angibst.', en: 'Matters after a break: your history won\'t show what you describe yet.' },
+        { key: 'briefing.opt.describes_now', de: 'Ja, so trainiere ich gerade', en: 'Yes, this is how I train now' },
+        { key: 'briefing.opt.describes_intended', de: 'Nein, so will ich wieder trainieren', en: 'No, this is how I want to train again' },
+        { key: 'briefing.describes.since', de: '{answer} · seit {date}', en: '{answer} · since {date}' },
+        { key: 'briefing.row.open', de: 'Offen', en: 'Open' },
+        { key: 'briefing.row.a11y_answered', de: '{question}, {answer}. Ändern', en: '{question}, {answer}. Change' },
+        { key: 'briefing.row.a11y_open', de: '{question}, offen. Beantworten', en: '{question}, open. Answer' },
+        { key: 'briefing.clear', de: 'Antwort zurücknehmen', en: 'Clear answer' },
+        { key: 'briefing.clear_all', de: 'Alle Angaben entfernen', en: 'Remove all details' },
+        { key: 'briefing.snack.cleared', de: 'Antwort zurückgenommen', en: 'Answer cleared' },
+        { key: 'briefing.snack.dependent', de: '{art}-Angaben entfernt', en: '{art} details removed' },
+        { key: 'briefing.snack.week_b', de: 'Angaben für Woche B entfernt', en: 'Week B details removed' },
+        { key: 'briefing.snack.days', de: 'Gewählte Tage entfernt', en: 'Selected days removed' },
+        { key: 'briefing.snack.dayparts', de: 'Tageszeiten entfernt', en: 'Times of day removed' },
+        { key: 'briefing.snack.all', de: 'Alle Angaben entfernt', en: 'All details removed' },
+        { key: 'briefing.snack.undo', de: 'Rückgängig', en: 'Undo' },
+        { key: 'briefing.save_error', de: '„{answer}" nicht gespeichert — der Server hat abgelehnt.', en: '"{answer}" not saved — the server declined it.' },
+        { key: 'briefing.save_error.kept', de: 'Gilt weiter: {previous}.', en: 'Still saved: {previous}.' },
+        { key: 'briefing.retry', de: 'Erneut versuchen', en: 'Try again' },
+        { key: 'briefing.load_error', de: 'Angaben konnten nicht geladen werden.', en: 'Couldn\'t load your details.' },
+        { key: 'briefing.load_error.body', de: 'Bis sie geladen sind, zeigt die Seite keine Fragen.', en: 'Until they load, this page shows no questions.' },
+        { key: 'briefing.loading', de: 'Angaben werden geladen', en: 'Loading details' },
+        { key: 'settings.row.briefing', de: 'Trainingsangaben', en: 'Training details' },
+        { key: 'settings.row.briefing_empty', de: 'Nicht angegeben', en: 'Not provided' },
+        { key: 'settings.row.briefing_summary', de: '{modality} · {per_week}', en: '{modality} · {per_week}' }
+      ],
+      a11y: [
+        { el: 'Seitentitel', label: 'briefing.title', role: 'header', state: 'erster Fokus nach dem Öffnen' },
+        { el: 'ⓘ neben dem Titel', label: '„Erklärung zu Trainingsangaben"', role: 'button', state: 'expanded true/false; Erklärblock folgt direkt im Fokus' },
+        { el: 'Frage (Blocktitel)', label: 'Fragetext, z. B. „Was trainierst du?"', role: 'header', state: 'im Wiederansehen zusätzlich button „zuklappen", expanded true' },
+        { el: 'Antwortliste', label: 'Gruppe mit Fragetext als Name', role: 'radiogroup', state: 'nichts ausgewählt beim ersten Aufruf — kein initial fokussierter Radio' },
+        { el: 'Antwortzeile', label: '„Kraft und Cardio"', role: 'radio', state: 'selected true/false — Ring/Kern excludeSemantics' },
+        { el: 'Zahl-Chip', label: 'briefing.per_week.a11y_other → „Kraft, 3 Einheiten je Woche"; 8+ → a11y_more', role: 'radio (Gruppe je Art)', state: 'selected; Häkchen-Ecke excludeSemantics' },
+        { el: 'Tag-Chip / Tageszeit', label: '„Kraft am Montag" (Wochentag ausgeschrieben, nie „Mo")', role: 'checkbox', state: 'checked true/false' },
+        { el: 'Antwort-Kachel', label: '„Ziel: Kraft steigern" / „Ort: Zuhause"', role: 'checkbox', state: 'checked; Symbolkasten excludeSemantics — Farbe trägt keine Aussage' },
+        { el: 'Zeile (Wiederansehen)', label: 'briefing.row.a11y_answered / a11y_open — „Einheiten je Woche, Kraft 3 mal, Cardio offen. Ändern."', role: 'button · mergeSemantics', state: 'expanded false; ein Knoten, nicht drei; Punkt excludeSemantics — „offen" steht im Label' },
+        { el: 'Neu erscheinende Folgefrage', label: '„Neue Frage: {Fragetext}"', role: 'liveRegion polite', state: 'einmal je Erscheinen; Fokus bleibt auf der gewählten Antwort' },
+        { el: 'Antwort zurücknehmen', label: '„Antwort zurücknehmen: {Frage}"', role: 'button', state: 'nur vorhanden, wenn beantwortet' },
+        { el: 'Speicherfehler', label: 'briefing.save_error + briefing.save_error.kept', role: 'liveRegion assertive', state: 'einmalige Ansage; Fokus springt auf „Erneut versuchen"' },
+        { el: 'Laden', label: 'briefing.loading', role: 'liveRegion polite', state: 'Skelett excludeSemantics' },
+        { el: 'Ladefehler', label: 'briefing.load_error + body', role: 'text + button', state: '„Erneut versuchen" ist erster Fokus nach dem Titel' },
+        { el: 'Registerzeile', label: '„Genutzt von: bisher keiner Auswertung"', role: 'text', state: '—' },
+        { el: 'Alle Angaben entfernen', label: '„Alle Angaben entfernen. Kann 6 Sekunden lang rückgängig gemacht werden."', role: 'button', state: 'nur mit ≥ 1 Antwort' },
+        { el: 'Snackbar', label: 'Text + „Rückgängig"', role: 'liveRegion polite', state: 'mit aktivem Screenreader (accessibleNavigation) bleibt sie, bis sie geschlossen wird' },
+        { el: 'Einstellungszeile', label: '„Trainingsangaben, nicht angegeben" / „…, Kraft und Cardio, Kraft 3 mal"', role: 'button', state: 'kein Badge, kein Status ausser dem Inhalt' }
+      ],
+      reuse: [
+        { m: 'MODUL 04', b: 'Leitsatz „Ins Onboarding gehört eine Angabe nur, wenn ohne sie eine falsche Zahl entsteht"', use: 'Hält: das Briefing kommt nicht ins Onboarding. Ein fehlendes Ziel erzeugt keine falsche Zahl.', c: '#00F2FE' },
+        { m: 'MODUL 07', b: 'Segmentauswahl ohne Vorbelegung (difficulty)', use: 'Antwortliste: Einfachauswahl, beim Öffnen nichts gewählt, gewählt = Ring mit Kern', c: '#00F2FE' },
+        { m: 'MODUL 07', b: 'Optimistisch schreiben, Fehler zurück ins Formular', use: 'Je Antwort ein Schreibvorgang; Ablehnung setzt genau diese Antwort zurück, Fehler im Block', c: '#00F2FE' },
+        { m: 'MODUL 07', b: 'Deaktivierter Knopf mit Grund im Label', use: 'BEWUSST NICHT VERWENDET — es gibt keinen Speichern-Knopf, also keinen Zustand „noch 3 Angaben nötig"', c: '#F02277' },
+        { m: 'MODUL 08', b: 'Gruppe + Zeile mit Chevron', use: 'Einstieg „Trainingsangaben" in der Gruppe Training; Metazeile zeigt den Inhalt', c: '#94A3B8' },
+        { m: 'MODUL 02', b: 'Snackbar', use: '6 s, eine Aktion „Rückgängig" — für abhängiges Entfernen, Zurücknehmen, Alle entfernen', c: '#94A3B8' },
+        { m: 'MODUL 02', b: 'Skelett in Inhaltsform', use: 'Ladezustand in Zeilenform, #1A1A26-Balken', c: '#94A3B8' },
+        { m: 'MODUL 03', b: 'Pille / Chip, Achse „Betonung"', use: 'Grundform der Zahl-, Tag- und Tageszeit-Chips; neu nur die Häkchen-Ecke als Nicht-Farb-Träger', c: '#94A3B8' },
+        { m: 'MODUL 13', b: 'Ortszeile', use: 'Kopfleiste nennt den Ort in #AB6BF0 mit Punkt — keine Reiterleiste, kein Schrittzähler', c: '#CDD3EA' },
+        { m: 'MODUL 14', b: 'AtemExplainHeader (Titel + ⓘ)', use: 'Titel der Seite; Erklärung klappt im Block auf', c: '#CDD3EA' },
+        { m: 'MODUL 17', b: 'Angehobene Fläche #1A1A26', use: 'Antwortflächen innerhalb der Frageblock-Karte', c: '#CDD3EA' },
+        { m: 'NEU', b: 'AtemAnswerRow', use: 'Frage-Zeile mit Statuspunkt (gefüllt / Ring), Antwort oder „Offen", klappt zum Block auf. Kandidat für jede künftige Profilzusammenfassung.', c: '#FFFFFF' },
+        { m: 'NEU', b: 'AtemChoiceChip (Häkchen-Ecke)', use: 'Chip mit 16-dp-Häkchen als Träger von „gewählt" ohne Farbe — Zahl, Tag, Tageszeit, Woche A/B', c: '#FFFFFF' },
+        { m: 'MODUL 13', b: 'Bereichston Kraft Amber #FFB020 · Cardio Violet · Hybrid #AB6BF0', use: 'Symbolkästen: welche Spur eine Antwort betrifft. Cardio-Violet nur als Kastenfläche mit weissem Glyph.', c: '#CDD3EA' },
+        { m: 'NEU', b: 'AtemChoiceTile', use: 'Kachel mit Symbolkasten + Wort, Mehrfachwahl, Häkchen-Ecke — Ort, Ziel, Tageszeit', c: '#FFFFFF' },
+        { m: 'NEU', b: 'AtemRevealGroup', use: 'Folgefrage/Gruppe, die ein- und ausfährt: AnimatedSize + AnimatedOpacity mit festen Kurven aus F', c: '#FFFFFF' }
+      ],
+      decisions: [
+        { n: 'F1', title: 'Was passiert mit einem halb ausgefüllten Briefing? — Es gibt keins. Es gibt einzelne Antworten, und jede gilt.', body: 'Das Briefing ist kein Dokument mit Status, sondern acht Felder mit je eigenem answeredAt. Eine Antwort gilt ab dem Moment, in dem sie gegeben ist; eine offene gilt nicht und wird nie ergänzt — weder als 0 noch aus Nachbarantworten (Kraft 3× + Tage Mo Mi Fr ergibt nicht „Cardio 0"). Eine spätere Ableitung nennt die Antworten, auf die sie sich stützt, und fällt aus, wenn eine davon fehlt. Sichtbar ist Offenes beim Wiederansehen als Zeile mit Ring und dem Wort „Offen" — gleiche Grösse, gleicher Chevron wie Beantwortetes, kein Zähler, keine Sortierung nach „fehlt". Verworfen: eine Schwelle („gilt ab 4 von 6"), weil sie einen Sollumfang setzt; ein Entwurf/Veröffentlichen-Zustand, weil er einen Knopf braucht, dessen Nicht-Drücken ein Mangel wäre.', bg: 'rgba(0,242,254,0.08)', border: 'rgba(0,242,254,0.4)', c: '#00F2FE', cardBd: 'rgba(0,242,254,0.35)' },
+        { n: 'F2', title: 'Wofür die Antworten gebraucht werden — die Wahrheit von heute, als Register.', body: 'Der Bildschirm sagt nur, was stimmt: „Bisher rechnet keine Auswertung mit diesen Angaben — nutzt eine sie später, nennt sie deine Angabe als Grundlage." Das steht im ⓘ; sichtbar bleibt die Mono-Fusszeile „Genutzt von · bisher keiner Auswertung". Diese Zeile ist ein Register, kein Werbetext: sobald Board 19 liefert, steht dort „Woche (Planung)" — die Zeile wächst mit dem Produkt, statt dass der Bildschirm vorab etwas ankündigt. Verworfen: „Damit wir dir bald Pläne vorschlagen können" (Versprechen auf Board 20); gar kein Satz (lässt raten, ob die Antworten irgendwo hingehen, und klingt nach Datensammeln); ein „Bald verfügbar"-Hinweis (dieselbe Ankündigung in kleiner).', bg: 'rgba(0,242,254,0.08)', border: 'rgba(0,242,254,0.4)', c: '#00F2FE', cardBd: 'rgba(0,242,254,0.35)' },
+        { n: 'F3', title: 'Darf die App die Woche an der eigenen Aussage messen? — Ja, als Auskunft, unter fünf Bedingungen. Board 19 erbt sie.', body: '(a) Nur wenn die Häufigkeit für diese Art beantwortet ist — offen heisst: kein Vergleich. (b) Zwei Tatsachen nebeneinander, „2 Kraft-Einheiten · angegeben 3", nie als Bruch „2/3", Ring oder Balken, der sich zum Nenner hin füllt. (c) Mehr und Weniger sehen gleich aus: kein „übertroffen", kein „noch 1", keine Farbänderung beim Erreichen, dieselbe Textfarbe #CDD3EA. (d) Die Herkunft steht dabei: „deine Angabe vom 14. Sept". (e) Bei „so will ich wieder trainieren" heisst sie „vorgenommen", nicht „angegeben". Der Grund: ein Nenner vom Nutzer macht die Zahl nicht urteilsfrei — die Darstellung entscheidet. Ein sich füllender Balken urteilt, egal wer den Nenner gesetzt hat. Verworfen: gar kein Vergleich (verschweigt dem Nutzer den Bezug, den er selbst hergestellt hat); Vergleich als Fortschritt (verwandelt eine Beschreibung in ein Soll).', bg: 'rgba(0,242,254,0.08)', border: 'rgba(0,242,254,0.4)', c: '#00F2FE', cardBd: 'rgba(0,242,254,0.35)' },
+        { n: '4', title: 'Gewählt: eine Seite mit Blöcken — verworfen: eine Frage je Schritt', body: 'Ein Assistent braucht einen Schrittzähler („2 von 6"), und der ist ein Fortschrittsbalken, der zum Ausfüllen drängt. „Überspringen" wird bei Schritten zur Handlung mit Beigeschmack; auf einer Seite ist Nicht-Antworten einfach Nicht-Tippen. Ausserdem brauchte das Wiederansehen dann eine zweite Form. Mit acht Fragen passt der erste Aufruf auf rund drei Bildschirmhöhen — lang genug, dass die Reihenfolge zählt (Entscheidung 21), kurz genug ohne Schritte.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '5', title: 'Gewählt: Formular und Zusammenfassung sind dieselbe Seite', body: 'Beim ersten Aufruf sind die Blöcke offen. Sobald eine Antwort existiert, öffnet die Seite gefaltet: jede Frage eine Zeile, eine aufklappbar. Verworfen: eine eigene Zusammenfassungskarte mit „Bearbeiten"-Knopf — zwei Ansichten desselben Inhalts laufen auseinander, und „Bearbeiten" macht aus einer Aussage einen Vorgang.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '6', title: 'Gewählt: kein Speichern-Knopf, kein Magenta-CTA', body: 'Jede Wahl ist sofort geschrieben (reversibel → optimistisch). Ein „Fertig" würde einen Zustand „vollständig" erfinden, den es nicht gibt, und als deaktivierter Knopf („noch 3 Angaben nötig") eine Pflicht behaupten. Magenta erscheint nur als Eingriff: „Alle Angaben entfernen" und Fehler.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '7', title: 'Gewählt: Einheiten zählen, nicht Tage', body: '„An wie vielen Tagen trainierst du?" hätte für Person 4 keine richtige Antwort. Die Häufigkeit zählt Einheiten je Art; die Tage sind eine eigene, optionale Frage. 5 + 6 Einheiten bei 7 Tagen sind so kein Widerspruch, und es gibt keine Validierung dagegen.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '8', title: 'Gewählt: Zahl-Chips 1–7 und 8+ — verworfen: Stepper und Schieberegler', body: 'Ein Stepper braucht einen Startwert, und jeder Startwert ist eine Vorbelegung (0 wäre sogar eine Aussage). Ein Regler hat eine Ruhelage. Chips haben keine: acht gleichwertige Flächen, aufsteigend, keine markiert. 0 fehlt, weil „nicht diese Art" in Frage 1 gesagt wird.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '9', title: 'Gewählt: Wochentage als Wrap — verworfen: eine Siebener-Reihe', body: 'Sieben Chips à 48 dp brauchen 384 dp — schon bei 100 % auf 360 dp zu breit, bei 200 % unmöglich. Der Wrap bricht auf zwei (100 %) bzw. zwei bis drei Zeilen (200 %). Kürzel bleiben zweistellig; Einbuchstaben-Kürzel machen Mo/Mi und Sa/So ununterscheidbar. Die Woche beginnt nach Gebietsschema (DE: Montag).', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '10', title: 'Gewählt: Antwort auf „Was trainierst du?" als Einfachauswahl mit drei Werten', body: 'Zwei Häkchen (Kraft, Cardio) hätten den Zustand „beide leer" — nicht unterscheidbar von „nicht beantwortet". Drei Radios machen „Kraft und Cardio" zur ausgesprochenen Antwort. Reihenfolge = Tab-Reihenfolge, nicht Beliebtheit.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '11', title: 'Gewählt: Abhängiges wird entfernt, nicht versteckt aufbewahrt', body: 'Wer von „Kraft und Cardio" auf „nur Kraft" wechselt, löscht im selben Schreibvorgang alles unter Cardio. Versteckt aufbewahrte Werte würden in eine spätere Ableitung durchsickern — ein halbes Profil, das so tut, als wäre es ganz. Die Snackbar mit „Rückgängig" (6 s) macht den Wechsel trotzdem gefahrlos.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '12', title: 'Gewählt: Tippen auf die gewählte Antwort tut nichts — Zurücknehmen ist ein eigener Weg', body: 'Abwählen durch erneutes Tippen ist bei Radios unerwartet und passiert aus Versehen; ein versehentlich offenes Feld ist schlimmer als ein bewusstes. „Antwort zurücknehmen" steht nur unter beantworteten Blöcken und führt ausdrücklich zurück zu „Offen".', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '13', title: 'Gewählt: „Beschreibt das dein Training gerade?" — verworfen: trainingLevel', body: 'Wer nach einer Pause anfängt, gibt dieselben Zahlen an wie jemand mitten im Training; nur der Zeitbezug unterscheidet sie. Das ist eine Frage nach dem Jetzt, nicht nach dem Können — sie läuft mit ihrem Datum ab, statt jemanden auf eine Stufe festzulegen.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '14', title: 'Gewählt: Einstieg in den Einstellungen — jetzt; die Planungsseite verlinkt später dieselbe Seite', body: 'Nicht im Onboarding: der Leitsatz aus Board 04 hält, ein fehlendes Ziel erzeugt keine falsche Zahl. Nicht im Hybrid-Tab: dort wäre jede Karte ein Aufruf. Einstellungen ist über das Profilbild im Hybrid-Header erreichbar, liegt also im Hybrid-Stapel — daher der Ortston #AB6BF0. Wer die App nur zum Mitschreiben nutzt, sieht das Briefing nie.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '15', title: 'Gewählt: keine Gradient-Karte auf diesem Bildschirm', body: 'Der Gradient-Rand markiert den einen Gegenstand, um den es jetzt geht (Startblock, Modul 17). Hier gibt es keinen — jede Frage ist gleich wichtig bzw. gleich unwichtig. Einen Block hervorzuheben wäre eine Rangfolge der Fragen.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '16', title: 'Gewählt: Ladefehler zeigt keine Fragen', body: 'Ein leeres Formular als Rückfall sähe aus wie „nie beantwortet" und würde dazu einladen, eine gespeicherte Antwort mit einer anderen zu überschreiben. Speichern ist gesperrt, bis geladen ist; mit Offline-Cache stehen die gecachten Antworten.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '17', title: 'Verworfen: automatisches Weiterscrollen nach einer Antwort', body: 'Funnel-Muster: die Seite schiebt einen zur nächsten Frage und macht Weiterantworten zum Standard. Wer antwortet, bleibt, wo er ist; die nächste Frage ist ohnehin sichtbar.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277', cardBd: '#232334' },
+        { n: '18', title: 'Verworfen: „Nicht angegeben" als Hinweis im Hybrid-Tab oder Punkt am Profilbild', body: 'Ein übersprungenes Briefing ist kein Mangel. Jede Markierung ausserhalb der Seite wäre eine Erinnerung.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277', cardBd: '#232334' },
+        { n: '19', title: 'Gewählt: Ziele als Mehrfachwahl — mit vier Leitplanken', body: 'Die Zielfrage kommt auf Wunsch zurück, weil dieselbe Woche auf Muskeln oder aufs Abnehmen zielen kann und ein späterer Vorschlag das unterscheiden muss. Leitplanken: (1) Mehrfachwahl ohne Obergrenze und ohne „Hauptziel" — keine Rangfolge. (2) Alphabetisch je Sprache sortiert, nicht nach Beliebtheit. (3) An kein Ziel ist eine Messgrösse gebunden: „Abnehmen" macht den Gewichtsverlauf nicht wertend, „Kraft steigern" färbt keinen Bestwert. (4) Die App meldet nie „Ziel erreicht" oder „nicht erreicht". Ein Ziel ist ein Wort des Nutzers, kein Sollwert der App.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '20', title: 'Gewählt: Ort als Mehrfachwahl — verworfen: Ausstattungsliste', body: 'Zuhause · Gym · Draußen trennt zwei Menschen mit gleichem Rhythmus, die später andere Übungen brauchen. Eine Liste vorhandener Geräte (Kurzhanteln, Stange, Band …) wäre genauer, aber ein Formular für eine Frage, die heute niemand stellt — sie gehört, wenn überhaupt, in Board 20.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '21', title: 'Gewählt: Wochenmuster vor der Anzahl — Abhängigkeiten zeigen nur nach unten', body: 'In der ersten Fassung stand die Anzahl vor dem Muster: wer danach „zwei Wochen wechseln sich ab" wählte, sah den Block darüber umspringen und musste zurück. Regel jetzt: keine Antwort verändert eine Frage oberhalb. Art → Muster → Anzahl → Tage → mehrmals; Ort und Ziele sind unabhängig; „Jetzt oder Vorhaben" steht am Ende, weil es alles davor einordnet.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '22', title: 'Gewählt: Symbole in Spurfarbe, Auswahl immer cyan', body: 'Jede Antwort trägt ein Symbol; Kraft Amber, Cardio Violet (als Fläche), Übergreifendes #AB6BF0, der Rest neutral. Die Farbe sagt nur, welche Spur eine Antwort betrifft — gewählt/nicht gewählt trägt ausschliesslich Cyan-Rand plus Häkchen bzw. Kern. So bleibt Cyan die einzige Farbe, die „tippbar / gewählt" heisst, und keine Kategorie sieht aus wie eine Empfehlung.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '24', title: 'Gewählt: Glow als Quittung — einmal, dann weg', body: 'Jeder Schein antwortet auf etwas: gewählt (Bloom), erschienen (Lichtkante), geschrieben (Scan), abgelehnt (Flackern in Magenta). Keiner bleibt stehen, keiner pulsiert, um Aufmerksamkeit zu holen — ein pulsierender offener Block wäre eine Erinnerung. Die einzige Schleife ist die Aurora; sie steht für den Ort, nicht für eine Aufgabe, und steht bei „Animationen reduzieren" still.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '25', title: 'Gewählt: Lichtkante ist keine Gradient-Karte', body: 'Der Gradient-Rand markiert dauerhaft den einen Gegenstand eines Bildschirms (Modul 17). Die Lichtkante läuft 1,2 s und endet im Standardrand; sie markiert einen Moment („das ist neu"), keinen Rang. Performance: ein CustomPainter je sichtbarem Block, nur während des Laufs; kein zusätzlicher BackdropFilter — die Aurora wird vom bestehenden Filter der Kopfleiste mitgeblurrt.', bg: 'rgba(0,255,135,0.06)', border: 'rgba(0,255,135,0.35)', c: '#00FF87', cardBd: '#232334' },
+        { n: '26', title: 'Verworfen: rotierender Gradient-Rand um offene Fragen, schimmernde Fortschrittsleiste', body: 'Beides typische „KI-Glow"-Muster — und beides drängt: ein leuchtender offener Block sagt „hier fehlt noch was", eine schimmernde Leiste zählt. Der Glow bleibt bei Antworten, nie bei Lücken.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277', cardBd: '#232334' },
+        { n: '23', title: 'Verworfen: Fotos in den Antwortkacheln', body: 'Ein Gym- oder Laufbild würde eine bestimmte Art zu trainieren zeigen — und damit nahelegen, wie „richtig" aussieht. Die App hat ausserdem keine Bild-Assets (README §10). Symbole tragen die Bedeutung ohne Körperbild.', bg: 'rgba(240,34,119,0.08)', border: 'rgba(240,34,119,0.4)', c: '#F02277', cardBd: '#232334' }
+      ],
+      prereq: [
+        { b: 'SCHEMA', t: 'Feldnamen aus Sektion C gegen docs/contracts/04-firestore-schema.md, § userProfiles/{uid}/planning abgleichen. Nicht verhandelbar daran: offen = Schlüssel fehlt; answeredAt je Feld; keine 0 ausser über modalities.' },
+        { b: '19', t: 'Die Woche übernimmt die Messregel aus F3 unverändert — Darstellung als zwei Tatsachen, keine Füllung, kein Farbwechsel am Nenner.' },
+        { b: '19', t: 'Wechselwochen brauchen anchorWeekStart, um eine Kalenderwoche als A oder B zu erkennen. Hier erfragt, dort gerechnet.' },
+        { b: '19', t: 'Die Planungsseite verlinkt diese Seite (gleiche Route), sie baut keine zweite Eingabeform. Die Registerzeile „Genutzt von" wird dann zu „Woche (Planung)"; die Liste der Abnehmer ist eine Code-Konstante, keine Laufzeitschätzung.' },
+        { b: '20', t: 'Ein Vorschlag darf nur aus beantworteten Feldern ableiten und nennt sie als Grundlage. describes = intended heisst: der Vorschlag spricht von einem Vorhaben, nicht vom Ist, und vergleicht nicht mit dem Verlauf.' },
+        { b: 'RELEASE', t: 'Empfehlung: mit oder nach Board 19 ausliefern. Vorher ist die Seite ehrlich (Registerzeile), aber ohne Abnehmer.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
