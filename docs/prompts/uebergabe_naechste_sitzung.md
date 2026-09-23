@@ -1,6 +1,7 @@
 # Übergabe an eine neue Sitzung
 
-**Stand:** 20.09.2026, Commit `6b61094`, Branch `flutter/foundation`, Arbeitsbaum sauber.
+**Stand:** 23.09.2026, Commit `2e51f60`, Branch `flutter/foundation`, Arbeitsbaum
+sauber, nichts unveröffentlicht. **1312 Tests grün.**
 Alles ab der Trennlinie in ein neues Claude-Code-Terminal im Repo-Wurzelverzeichnis einfügen.
 
 ---
@@ -10,78 +11,130 @@ Du übernimmst die Arbeit an **ATEM Hybrid** (Flutter, Android). Lies zuerst, da
 ## Wo alles steht
 
 1. **`CLAUDE.md` im Repo-Wurzelverzeichnis** — die Arbeitsanweisung. Sie hat Vorrang vor
-   allem, was ich hier schreibe: Tokens, Textstufen, 48-dp-Trefferflächen, 200 % Schrift auf
+   allem, was hier steht: Tokens, Textstufen, 48-dp-Trefferflächen, 200 % Schrift auf
    320 dp, keine Ampelfarben, jede Zahl mit Nenner, Zustände sind Pflicht. Lies sie ganz,
    bevor du eine Zeile änderst.
-2. **`docs/gemini_produktstrategie_2026-09-18.md`** — der Fahrplan. Abschnitt 6 nennt die
-   Reihenfolge, Abschnitt 7 den Stand der Play-Store-Freigabe, **Abschnitt 8 die drei neuen
-   Vorhaben** vom 20.09.2026. Erledigtes ist im Dokument mit ✅ und Datum markiert; trag
-   nach, was du fertigstellst.
-3. **`docs/contracts/`** — die verbindlichen Verträge: A11y, i18n, Architektur, Firestore-
+2. **`docs/design-prompts/`** — die Gespräche mit Claude Design, aufsteigend nummeriert.
+   Zuletzt `16b-nachtrag-herkunft-und-pulskurve.md` (zweimal durchgelaufen, vollständig
+   umgesetzt).
+3. **`design_handoff_atem_app/design_refs/`** — die Spezifikations-Boards. **01–11 und 16**
+   liegen als `.dc.html` im Repo und sind mit `python3 tool/read_board.py 16` ohne Browser
+   lesbar. **12–15 und 17 fehlen noch** — sie liegen nur in Claude Design (Projekt
+   `14523979-ed88-4a5a-ac09-cacf10614050`, lesbar nach `/design-login` über
+   `DesignSync get_file`). Das Spiegeln dieser fünf ist eine offene Aufgabe (siehe unten).
+4. **`docs/contracts/`** — die verbindlichen Verträge: A11y, i18n, Architektur, Firestore-
    Schema. Bei Datenmodell-Änderungen gehört ein Absatz in `04-firestore-schema.md`.
-4. **`docs/design-prompts/`** — die Gespräche mit Claude Design, aufsteigend nummeriert.
-5. **`design_handoff_atem_app/`** — die Spezifikations-Boards der Module 1–11.
+5. **`docs/gemini_produktstrategie_2026-09-18.md`** — der alte Fahrplan. **Er ist
+   abgearbeitet und nicht mehr gepflegt**: Abschnitt 2 steht vollständig, Abschnitt 8
+   ebenso, und alles ab Board 15 fehlt darin. Als Bestandsaufnahme brauchbar, als
+   Wegweiser nicht mehr.
+6. **`~/.claude/plans/bitte-schaue-dir-unsere-zazzy-cookie.md`** — der Arbeitsplan vom
+   22.09. mit den zwei Gleisen, der Modellzuordnung und den offenen Nutzerentscheidungen.
 
-## Was gerade fertig geworden ist
+## Was gerade fertig geworden ist (22./23.09.2026)
 
-- 2.1 Weighted Calisthenics, 2.2 Satz-RPE mit Seiten und harten Sätzen, 2.4 Scheibenrechner,
-  2.3 RIR-Umschalter — alle vier ✅ im Fahrplan.
-- Der Kraft-Tab ist seit dem 20.09. **ein durchgehender One-Pager** mit
-  `AtemSectionNav` (vier Abschnitte: Trainieren, Verlauf, Auswertung, Pläne).
-- Der Runner springt nach dem letzten Satz einer Übung sofort weiter; eine fehlende
-  Anstrengung lässt sich über „+ Anstrengung eintragen" nachtragen.
+- **Gesundheitswerte in der Belastungssteuerung** (A1 des Plans, vier Commits). Fehlt eine
+  eingetragene Anstrengung, speist der gemessene Pulsverlauf sie — für **Cardio**, nicht
+  für Kraft. Reihenfolge: eingetragen schlägt gemessen schlägt Ersatzwert. Ein gemessener
+  leichter Lauf zählt jetzt als aktive Erholung.
+- **Der Nachtrag zu Board 16 ist vollständig**: Lastkachel mit Grundlagenzeile
+  („gerechnet · ○ gemessen 3 von 5"), Pulsverlauf mit Zonenfarben, neutralem Gitter,
+  Wertpunkten, Taktstreifen, Slider-Semantik und Wechselmarke; Zonenzeilen mit Farbpunkt.
+- **Der Pulsverlauf wird alle zehn Sekunden abgelegt** statt je Minute
+  (`pulseCurveSlot` im Schema). Vorhandene Kurven bleiben minutengenau; eine Minutenkurve
+  wird einmal neu gelesen, solange die Uhr die Rohwerte hergibt.
+- **Ein Zonensystem statt zwei** — `cardio_intensity.dart` fragt jetzt die festgelegten
+  Grenzen statt einer eigenen Prozenttabelle.
+- **Der Cardio-Tab steht wieder in der Leiste.** Regeneration bleibt draussen (drei Plätze).
 
 ## Was als Nächstes ansteht
 
 **In dieser Reihenfolge, solange der Nutzer nichts anderes sagt:**
 
-1. **Gewichtstracking im Hybrid-Tab** (Abschnitt 8.1). **Nicht anfangen zu bauen, bevor das
-   Design-Board da ist.** Der Prompt dafür liegt fertig in
-   `docs/design-prompts/14-gewichtstracking.md`; der Nutzer lässt ihn in Claude Design
-   durchlaufen. Wenn er sagt, das Board sei fertig: über `DesignSync get_file` lesen
-   (Projekt `14523979-ed88-4a5a-ac09-cacf10614050`, vorher `/design-login`) und **gegen das
-   Board** bauen, nicht gegen die Beschreibung. Fehlt dir der Zugang, sag es ihm — bau nicht
-   ersatzweise drauflos.
-   Offene Entscheidung, die dabei fällt: Das Profil führt heute genau **einen**
-   `bodyWeight`-Wert; eine Kurve braucht eine Reihe (Vorschlag im Dokument:
-   `userProfiles/{uid}/bodyWeights/{datum}` mit `kg`, `date`, `source`).
-2. **Health Connect** (8.2), klein anfangen: nur Gewicht lesen, das speist Punkt 1. Google
-   Fit ist abgeschaltet und keine Option. Der Aufwand steckt in Googles Freigabe je
-   Datentyp, nicht im Code.
-3. **Garmin** (8.3) **nicht** direkt anbinden. Garmin Connect schreibt nach Health Connect;
-   damit erledigt Punkt 2 Garmin, Fitbit und Withings in einem Zug.
-4. **Skill-Tree** (2.5) bleibt zurückgestellt — er braucht zuerst ausgearbeitete
-   Übungsketten vom Nutzer, das ist Redaktionsarbeit.
-5. **Tempo/TUT** (2.6) **nicht bauen**, solange niemand danach fragt.
-6. **Play Store** (Abschnitt 7) ruht. Der Deploy ist ausdrücklich der **letzte** Schritt.
-   Nicht von selbst an Rechtstexten, Registrierungs-Öffnung oder Paywall weiterarbeiten.
+1. **Boards 12–15 und 17 ins Repo spiegeln.** Aus Claude Design nach
+   `design_handoff_atem_app/design_refs/NN_Titel.dc.html`, danach `CLAUDE.md` von
+   „`design_refs/01`–`10`" auf den wirklichen Stand berichtigen. Ohne das ist die
+   Spezifikation der halben Oberfläche nur mit `/design-login` einsehbar — und keine
+   Sonnet-Sitzung kann gegen ein Board arbeiten.
+2. **CI einrichten.** `.github/workflows/` gibt es nicht, obwohl beide Tore existieren und
+   im Vertrag als „CI-Tor" beschrieben sind: `flutter analyze lib test` · `flutter test` ·
+   `dart tool/check_conventions.dart` · `flutter gen-l10n && git diff --exit-code
+   lib/l10n/gen`. Die Tags `render` und `debt` bleiben draussen.
+3. **Modul 18 — das Zielbriefing.** Der grösste offene Brocken, und der erste Schritt der
+   Wochenplanung. **Entschieden am 22.09.:** Die Planung lebt als **eigene Unterseite aus
+   dem Hybrid-Tab**, mit einem kleinen Widget im Tab, das „Was wird heute trainiert"
+   beantwortet. Reihenfolge: **Zielbriefing → Woche von Hand → Vorschlag** (Boards 18, 19,
+   20). Ein generierter Plan ohne Zielbriefing wäre das Sollverhältnis, das `CLAUDE.md`
+   verbietet.
+   **Vor dem Prompt** gehört ein Absatz ins Firestore-Schema: Ein Wochenplan ist kein
+   `Plan` (der ist eine Übungsliste). Und Board 04 hat entschieden „Nur was ohne Angabe
+   eine falsche Zahl erzeugt, darf den Einstieg blockieren" — ein Zielbriefing gehört
+   deshalb **nicht** in das Onboarding.
+4. **Store-Vorlauf**, sobald der Nutzer die Gewerbefrage entschieden hat. Die
+   Datenschutzseite ist für die Health-Connect-Freigabe Pflicht und braucht fünf Angaben,
+   die nur er hat. Persönliche Play-Konten von nach dem 13.11.2023 brauchen ausserdem
+   **12 Tester über 14 Tage** — das hat Vorlauf.
+5. **Muskelvisualisierung**, **8.2 Schritt 3** (Einheiten nach Health Connect
+   zurückschreiben), **Lockscreen-Timer**, **KI-Empfehlungen** — in dieser Reihenfolge,
+   alles später.
+
+**Nicht bauen**, solange niemand fragt: Skill-Tree (Redaktionsarbeit am Übungskatalog),
+Tempo/TUT.
+
+## Offene Entscheidungen, die nur der Nutzer treffen kann
+
+- **Gewerbe ja/nein** — entscheidet, ob die Paywall kommen kann und ob das Play-Konto
+  persönlich oder eine Organisation wird.
+- Die **fünf Platzhalter** in `web/legal/datenschutz.html` und `index.html`.
+- Der **Free/Pro-Schnitt** und der Preis (zwei widersprüchliche Vorschläge liegen vor).
+- **Bekommt Kraft auch eine pulsgespeiste Anstrengung?** Heute nur Cardio. Die
+  Beschränkung steht an einer einzigen Stelle: `MeasuredEfforts.of`.
 
 ## Wie hier gearbeitet wird
 
 - **Sprache:** Deutsch, im Code, in Kommentaren, in Commit-Nachrichten, im Gespräch.
-- **Zeichenketten** nie von Hand in die ARB-Dateien schreiben. Es gibt ein Hilfsskript im
-  Scratchpad der Sitzung (`add_strings.py <json>`); frag den Nutzer danach, wenn du es nicht
-  findest. Danach `flutter gen-l10n`.
-- **Tests:** `flutter analyze lib test` und `flutter test` müssen grün sein, bevor du
-  committest. Zurzeit 929 Tests. Neue Funktionen brauchen Tests, A11y eingeschlossen.
-- **Bilder statt Raten:** `test/render/` schreibt mit `ATEM_RENDER_DIR=/pfad flutter test
-  test/render/…` echte PNG mit richtigen Schriften. Sieh dir an, was du gebaut hast.
-- **`dart format` nie über ganze Ordner** — das Repo ist mit einer älteren Formatierung
-  geschrieben, und der Befehl bricht hunderte fremde Zeilen um. Eigene Zeilen von Hand
-  umbrechen, danach `git diff` lesen: Jede Zeile darin muss zur Aufgabe gehören.
-- **Vor jedem Commit `git status`.** An diesem Arbeitsverzeichnis arbeiten zeitweise mehrere
-  Sitzungen gleichzeitig. Fremde uncommittete Arbeit nicht mit einsammeln, und eine Datei
-  niemals aus `HEAD` neu aufbauen, wenn sie fremde Änderungen trägt — dabei ist am 20.09.
-  schon einmal Arbeit verloren gegangen. Zwei getrennte Commits sind richtig.
+- **Zwei Gleise in git-Worktrees.** `../atem-neben` auf `flutter/neben` existiert bereits.
+  Am Arbeitsverzeichnis arbeiten zeitweise mehrere Sitzungen; am 20.09. ist dabei Arbeit
+  verloren gegangen. **Vor jedem Commit `git status`**, fremde Änderungen nicht mit
+  einsammeln, eine Datei nie aus `HEAD` neu aufbauen, wenn sie fremde Änderungen trägt.
+- **Zeichenketten** nie von Hand in die ARB-Dateien schreiben:
+  `python3 tool/i18n/add_strings.py neue.json`, dann `flutter gen-l10n`.
+  **Platzhalter immer ausdrücklich deklarieren** — ohne `placeholders` ordnet `gen-l10n`
+  die Parameter **alphabetisch**, und `„{span} · {resolution}"` wird zu
+  `f(resolution, span)`. Genau so stand am 22.09. „je Minute ein Wert · 100–175 bpm" auf
+  dem Schirm.
+  **`tool/board_strings.py NN --write` nur mit Bedacht** — für Board 16 hätte es 13
+  bestehende Schlüssel überschrieben, darunter bewusst geänderte.
+- **Tests:** `flutter analyze lib test`, `flutter test` und
+  `dart tool/check_conventions.dart` müssen grün sein, bevor du committest. Zurzeit 1312
+  Tests. Neue Funktionen brauchen Tests, A11y eingeschlossen. Bei Änderungen an der
+  Lastrechnung muss `test/history/scoring_oracle_test.dart` **unverändert** grün bleiben.
+- **Bilder statt Raten:** `ATEM_RENDER_DIR=/pfad flutter test --tags render
+  test/render/…` schreibt echte PNG mit den richtigen Schriften. **Sieh sie dir an** — in
+  dieser Runde kamen vier Fehler nur so ans Licht: vertauschte Platzhalter, ein doppelter
+  Satzpunkt, „Aus 53 von 52 min Aufzeichnung", und Wertpunkte, die bei feiner Ablage die
+  Zonenfarben vollständig überdeckten.
+- **`dart format` nie über ganze Ordner.** Eigene Zeilen von Hand umbrechen, danach
+  `git diff` lesen: Jede Zeile darin muss zur Aufgabe gehören.
 - **Aufs Gerät:** `flutter build apk --release`, dann
   `~/Library/Android/sdk/platform-tools/adb install -r build/app/outputs/flutter-apk/app-release.apk`.
-  Danach starten und `adb logcat` auf Abstürze prüfen. Screenshots vom Honor gehen **nicht**
-  über `screencap` (liefert Schwarz), sondern über `adb shell input keyevent 120` und
-  anschliessendes Ziehen aus `/sdcard/Pictures/Screenshots`.
+  **Falle:** `adb` braucht USB-Zugriff. Wird der adb-Server aus einer Sandbox heraus
+  gestartet, sieht er **kein Gerät** — `adb devices` bleibt leer, obwohl das Telefon
+  hängt. Dann `adb kill-server` und den nächsten Aufruf **ohne Sandbox** ausführen.
+  `system_profiler SPUSBDataType` liefert aus der Sandbox ebenfalls nichts; seine Leere
+  ist **kein** Beweis, dass nichts angeschlossen ist.
+  Screenshots vom Honor gehen nicht über `screencap` (liefert Schwarz), sondern über
+  `adb shell input keyevent 120` und Ziehen aus `/sdcard/Pictures/Screenshots`.
+  Ziehgesten für den Schieber: `adb shell input motionevent DOWN/MOVE/UP`.
+- **Design-Ablauf:** Prompt nach `docs/design-prompts/NN-thema.md` (mit eigenem
+  Motion-Abschnitt) → der Nutzer lässt ihn in Claude Design laufen → **gegen das Board**
+  bauen, nicht gegen die Beschreibung → **das Board ins Repo spiegeln**. Fehlt dir der
+  Zugang, sag es ihm; bau nicht ersatzweise drauflos.
+  Weicht das Board von `CLAUDE.md` ab, gewinnt `CLAUDE.md` — und die Abweichung gehört
+  mit Grund in die Commit-Nachricht.
 - **Nie committen:** `android/key.properties`, `android/app/atem-upload-key.jks`.
-- **Nie erfinden:** echte Identitätsdaten für Impressum oder Datenschutz. Die fünf
-  Platzhalter kann nur der Nutzer füllen.
+- **Nie erfinden:** echte Identitätsdaten für Impressum oder Datenschutz.
 - **Kein Bezug zu Keyperformance** — nirgends, auch nicht in Store-Texten.
 
-Beginne damit, `CLAUDE.md` und die Abschnitte 6 bis 8 der Produktstrategie zu lesen, und sag
-dann in drei Sätzen, was du als Nächstes tun willst.
+Beginne damit, `CLAUDE.md` zu lesen und `git status` sowie `git worktree list` zu prüfen,
+und sag dann in drei Sätzen, was du als Nächstes tun willst.
