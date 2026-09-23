@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../theme/theme.dart';
+import 'atem_answer.dart' show AtemSelectBloom;
 import 'atem_tappable.dart';
 
 /// Eine Auswahl auf einer kleinen ganzzahligen Skala: **fünf gleich breite
@@ -216,12 +217,20 @@ class _ScaleField extends StatelessWidget {
       semanticLabel: semanticLabel,
       selected: selected,
       inMutuallyExclusiveGroup: true,
+      haptic: AtemHaptic.selection,
       minTapSize: const Size(0, AtemScaleChoice._tapHeight),
       // Gedrückt heisst leuchten: scale 0,97 aus AtemTappable, der Glow in
       // der Stufenfarbe hier — 200 ms, kein Ripple.
+      //
+      // Bloom beim Wählen (Board 18b, C3) — und **keine Füllung der Felder
+      // links davon**: Eine Skala ist eine Antwort, kein Fortschritt, und 3
+      // ist kein „noch 2 bis 5".
       pressBuilder: (context, pressed) => SizedBox(
         width: double.infinity,
-        child: AnimatedContainer(
+        child: AtemSelectBloom(
+          active: selected,
+          radius: AtemRadii.statBox,
+          child: AnimatedContainer(
           duration: AtemMotion.duration(context, AtemMotion.fast),
           curve: AtemMotion.curve,
           constraints: BoxConstraints(minHeight: visibleHeight),
@@ -233,14 +242,37 @@ class _ScaleField extends StatelessWidget {
             border: Border.all(color: borderColor, width: selected ? 1.5 : 1),
             boxShadow: pressed ? AtemGlow.soft(glowColor, opacity: 0.55) : null,
           ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: AtemType.valueMedium.of(context).copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: numberColor,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: AtemType.valueMedium.of(context).copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: numberColor,
+                    ),
+              ),
+              const SizedBox(height: 3),
+              // Der Kern unter der Ziffer: der Träger von „gewählt", der
+              // ohne Farbe funktioniert. Er poppt mit Überschwinger.
+              AnimatedScale(
+                scale: selected ? 1 : 0,
+                duration: AtemMotion.duration(
+                    context, selected ? AtemMotion.dKern : AtemMotion.dOff),
+                curve: selected ? AtemMotion.pop : AtemMotion.exit,
+                child: Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: numberColor,
+                  ),
                 ),
+              ),
+            ],
           ),
+        ),
         ),
       ),
       child: const SizedBox.shrink(),

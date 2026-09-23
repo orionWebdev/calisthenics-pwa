@@ -142,12 +142,17 @@ class FocusChoice extends StatelessWidget {
     return Semantics(
       container: true,
       label: l10n.formFocus,
-      child: Wrap(
+      child: Padding(
+        // Luft für die Häkchen-Ecke, die 6 dp herausragt (Board 18b, C1).
+        padding: const EdgeInsets.only(top: 6, right: 6),
+        child: Wrap(
         spacing: 8,
         runSpacing: 8,
         children: [
           for (final focus in WorkoutFocus.values)
             AtemChoiceChip(
+              // Der Chip hält eine Angabe fest: Bloom und Ecke.
+              receipt: AtemChipReceipt.choice,
               label: workoutFocusName(l10n, focus),
               semanticLabel:
                   '${l10n.formFocus}, ${workoutFocusName(l10n, focus)}',
@@ -155,6 +160,7 @@ class FocusChoice extends StatelessWidget {
               onTap: () => onChanged(focus == value ? null : focus),
             ),
         ],
+      ),
       ),
     );
   }

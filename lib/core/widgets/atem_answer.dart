@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../theme/theme.dart';
 import 'atem_glyph.dart';
 import 'atem_receipts.dart';
+import 'atem_tappable.dart' show AtemHaptic;
 
 /// Bausteine für Fragen, die jemand über sich beantwortet (Board 18).
 ///
@@ -1147,7 +1148,11 @@ class _AnswerPressState extends State<_AnswerPress> {
           onTapDown: (_) => _set(true),
           onTapUp: (_) => _set(false),
           onTapCancel: () => _set(false),
-          onTap: widget.onTap,
+          onTap: () {
+            // Eine Raste für jede Wahl, in beide Richtungen (Board 18b, G).
+            if (widget.checked != null) AtemHaptic.selection.fire();
+            widget.onTap();
+          },
           child: AnimatedScale(
             scale: _pressed && !reduced ? 0.97 : 1,
             duration: AtemMotion.fast,

@@ -87,16 +87,19 @@ class ExerciseFilterRow extends StatelessWidget {
     // Eine waagerechte Liste braucht eine feste Höhe — die darf aber nicht
     // fest bleiben: Bei 200 % Schrift wachsen die Chips, und 48 dp liefen um
     // 25 px über. Die Höhe folgt deshalb der Schriftskalierung.
+    // Dazu 6 dp oben: Die Häkchen-Ecke eines gewählten Chips ragt 6 dp
+    // heraus, und die Liste schneidet ab (Board 18b, C1).
     final height = math.max(
-      48.0,
-      MediaQuery.textScalerOf(context).scale(20) + 28,
-    );
+          48.0,
+          MediaQuery.textScalerOf(context).scale(20) + 28,
+        ) +
+        6;
 
     return SizedBox(
       height: height,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: padding,
+        padding: padding.copyWith(top: padding.top + 6),
         children: [
           AtemChoiceChip(
             label: l10n.exercisesFilterAll,

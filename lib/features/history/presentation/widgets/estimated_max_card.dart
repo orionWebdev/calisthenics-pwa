@@ -123,6 +123,9 @@ class _EstimatedMaxCardState extends State<EstimatedMaxCard> {
             child: LayoutBuilder(
               builder: (context, constraints) => SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
+                // Luft für die Häkchen-Ecke, die 6 dp herausragt; die
+                // Scrollansicht schneidet sonst ab (Board 18b, C1).
+                padding: const EdgeInsets.only(top: 6, right: 6),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

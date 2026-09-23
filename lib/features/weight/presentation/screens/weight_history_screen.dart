@@ -208,13 +208,16 @@ class _RangePills extends StatelessWidget {
     final widest = WeightRange.values
         .map((range) => widthOf(WeightUi.rangeLabel(l10n, range)))
         .reduce((a, b) => a > b ? a : b);
-    // 28 dp Innenpolster der Kapsel, 20 dp für Häkchen und Abstand.
+    // 28 dp Innenpolster der Kapsel, 20 dp Luft. Das Häkchen sitzt seit
+    // Board 18b an der Ecke und ragt 6 dp heraus — dafür der Innenrand unten.
     final needed = widest + 28 + 20;
 
     return Semantics(
       container: true,
       label: l10n.weightRangeGroup,
-      child: LayoutBuilder(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 6, right: 6),
+        child: LayoutBuilder(
         builder: (context, constraints) {
           var columns = 4;
           while (columns > 1 &&
@@ -242,6 +245,7 @@ class _RangePills extends StatelessWidget {
             ],
           );
         },
+      ),
       ),
     );
   }

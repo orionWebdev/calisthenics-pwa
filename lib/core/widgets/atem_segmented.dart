@@ -66,16 +66,19 @@ class AtemSegmented<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      for (final segment in segments)
-        _Segment<T>(
-          segment: segment,
-          selected: segment.value == value,
-          enabled: enabled,
-          expand: expand,
-          onTap: () => onChanged(segment.value),
-        ),
-    ];
+    List<Widget> itemsFor({required bool glide}) => [
+          for (final segment in segments)
+            _Segment<T>(
+              segment: segment,
+              selected: segment.value == value,
+              enabled: enabled,
+              expand: expand,
+              glide: glide,
+              onTap: () => onChanged(segment.value),
+            ),
+        ];
+    final items = itemsFor(glide: false);
+    final selectedIndex = segments.indexWhere((s) => s.value == value);
 
     return Semantics(
       container: true,
@@ -88,13 +91,11 @@ class AtemSegmented<T> extends StatelessWidget {
                   context,
                   constraints.maxWidth,
                 )
-                    ? Row(
-                        children: [
-                          for (var i = 0; i < items.length; i++) ...[
-                            if (i > 0) const SizedBox(width: _gap),
-                            Expanded(child: items[i]),
-                          ],
-                        ],
+                    ? _glidingRow(
+                        context,
+                        constraints.maxWidth,
+                        itemsFor(glide: true),
+                        selectedIndex,
                       )
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -116,6 +117,52 @@ class AtemSegmented<T> extends StatelessWidget {
             // es umbrechen statt zu reißen.
             : Wrap(spacing: _gap, runSpacing: _gap, children: items),
       ),
+    );
+  }
+
+  /// Nebeneinander gleitet **ein** Schieber zum gewählten Segment (Board 18b,
+  /// C2): 240 ms, `settle`. Kein Bloom — ein Segment schaltet eine Ansicht,
+  /// der wechselnde Inhalt darunter ist die Quittung. Bei „Animationen
+  /// reduzieren" springt er. Im Umbruch gibt es keinen Schieber: Über eine
+  /// Zeilengrenze kann nichts gleiten, dort wechselt die Fläche je Segment.
+  Widget _glidingRow(
+    BuildContext context,
+    double width,
+    List<Widget> items,
+    int selected,
+  ) {
+    final share = (width - _gap * (items.length - 1)) / items.length;
+    return Stack(
+      children: [
+        if (selected >= 0)
+          AnimatedPositioned(
+            duration: AtemMotion.duration(context, AtemMotion.dSegment),
+            curve: AtemMotion.settle,
+            left: selected * (share + _gap),
+            width: share,
+            top: 4,
+            bottom: 4,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AtemColors.cyan.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(AtemRadii.pill),
+                  border: Border.all(
+                    color: AtemColors.cyan.withValues(alpha: 0.4),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        Row(
+          children: [
+            for (var i = 0; i < items.length; i++) ...[
+              if (i > 0) const SizedBox(width: _gap),
+              Expanded(child: items[i]),
+            ],
+          ],
+        ),
+      ],
     );
   }
 
@@ -148,6 +195,7 @@ class _Segment<T> extends StatelessWidget {
     required this.enabled,
     required this.expand,
     required this.onTap,
+    this.glide = false,
   });
 
   final AtemSegment<T> segment;
@@ -155,6 +203,10 @@ class _Segment<T> extends StatelessWidget {
   final bool enabled;
   final bool expand;
   final VoidCallback onTap;
+
+  /// Der Schieber hinter der Reihe trägt die gewählte Fläche; das Segment
+  /// selbst bleibt dann durchsichtig und zeigt nur Rand, Haken und Text.
+  final bool glide;
 
   /// Seitlicher Innenabstand. Geteilt etwas enger: Die Breite ist dann
   /// knapp, und die Segmente stehen ohnehin nicht mehr eng am Text.
@@ -174,6 +226,7 @@ class _Segment<T> extends StatelessWidget {
       selected: selected,
       inMutuallyExclusiveGroup: true,
       pressScale: AtemPressScale.strong,
+      haptic: AtemHaptic.selection,
       child: AnimatedContainer(
         duration: AtemMotion.duration(context, AtemMotion.fast),
         curve: AtemMotion.curve,
@@ -186,13 +239,15 @@ class _Segment<T> extends StatelessWidget {
           vertical: 6,
         ),
         decoration: BoxDecoration(
-          color: selected
+          color: selected && !glide
               ? AtemColors.cyan.withValues(alpha: 0.08)
               : const Color(0x00000000),
           borderRadius: BorderRadius.circular(AtemRadii.pill),
           border: Border.all(
             color: selected
-                ? AtemColors.cyan.withValues(alpha: 0.4)
+                ? (glide
+                    ? const Color(0x00000000)
+                    : AtemColors.cyan.withValues(alpha: 0.4))
                 : AtemColors.border,
           ),
         ),
