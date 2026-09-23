@@ -23,12 +23,22 @@ import 'atem_tappable.dart';
 /// Bildfläche einer Plankarte, ohne eine Schleife in eine Kartenreihe zu
 /// legen (entschieden am 23.09.2026).
 class AtemAurora extends StatefulWidget {
-  const AtemAurora({super.key, required this.tone, this.moving = true});
+  const AtemAurora({
+    super.key,
+    required this.tone,
+    this.moving = true,
+    this.spread = 1,
+  });
 
   /// Der Bereichston — oder die Farbe der Körperregion auf einer Plankarte.
   /// `null`: Seiten ohne Bereich, nur die Violett-Fläche.
   final Color? tone;
   final bool moving;
+
+  /// Wie weit die Flächen reichen, relativ zur Grösse. Der Kopf einer
+  /// Unterseite ist 460 dp breit und kommt mit 1 aus; auf einer 260-dp-Karte
+  /// zerfiele dasselbe Rezept in drei Flecken und braucht rund das Doppelte.
+  final double spread;
 
   @override
   State<AtemAurora> createState() => _AtemAuroraState();
@@ -57,7 +67,7 @@ class _AtemAuroraState extends State<AtemAurora>
 
   @override
   Widget build(BuildContext context) {
-    final painter = _AuroraPainter(widget.tone);
+    final painter = _AuroraPainter(widget.tone, widget.spread);
     return IgnorePointer(
       child: ExcludeSemantics(
         // Einmal gemalt; die Bewegung ist eine Verschiebung der fertigen
@@ -83,15 +93,18 @@ class _AtemAuroraState extends State<AtemAurora>
 }
 
 class _AuroraPainter extends CustomPainter {
-  _AuroraPainter(this.tone);
+  _AuroraPainter(this.tone, this.spread);
 
   final Color? tone;
+  final double spread;
 
   @override
   void paint(Canvas canvas, Size size) {
     void blob(Offset center, Size r, Color c) {
       final rect = Rect.fromCenter(
-          center: center, width: r.width * 2, height: r.height * 2);
+          center: center,
+          width: r.width * 2 * spread,
+          height: r.height * 2 * spread);
       canvas.drawOval(
         rect,
         Paint()
@@ -116,7 +129,8 @@ class _AuroraPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_AuroraPainter old) => old.tone != tone;
+  bool shouldRepaint(_AuroraPainter old) =>
+      old.tone != tone || old.spread != spread;
 }
 
 /// Der Titelglanz: Weiss → Bereichston → Weiss wandert einmal durch den

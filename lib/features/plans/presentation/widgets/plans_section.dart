@@ -177,6 +177,7 @@ class _Own extends StatelessWidget {
             plans: plans,
             horizontalPadding: 0,
             musclesOf: (plan) => _musclesOf(plan, exercisesById),
+            leadOf: (plan) => planLeadRegion(plan, exercisesById),
             onOpen: onOpen,
             onStart: onStartPlan,
           ),
@@ -272,4 +273,32 @@ class _DashedBorder extends CustomPainter {
 
   @override
   bool shouldRepaint(_DashedBorder old) => false;
+}
+
+/// Die Hauptregion eines Plans — sie färbt die Aurora seiner Karte
+/// (entschieden am 23.09.2026).
+///
+/// Gezählt werden **Hauptmuskeln**, gewichtet nach Sätzen: Bankdrücken
+/// mit vier Sätzen zählt viermal Brust, nicht einmal Brust, Trizeps und
+/// Schulter. Eigene Übungen kennen noch keinen Hauptmuskel; bis Board 21
+/// festlegt, wie sie unterschieden werden, zählt ihr erster Muskel. Bei
+/// Gleichstand gewinnt die Region, die im Plan zuerst vorkommt.
+MuscleRegion? planLeadRegion(
+    Plan plan, Map<String, Exercise> exercisesById) {
+  final weight = <MuscleRegion, int>{};
+  final order = <MuscleRegion>[];
+  for (final item in plan.items) {
+    final exercise = exercisesById[item.exerciseId];
+    if (exercise == null) continue;
+    final lead = exercise.primaryMuscles.isNotEmpty
+        ? exercise.primaryMuscles
+        : exercise.displayMuscles.take(1);
+    for (final m in lead) {
+      final region = m.region;
+      if (!weight.containsKey(region)) order.add(region);
+      weight[region] = (weight[region] ?? 0) + (item.sets ?? 3);
+    }
+  }
+  if (order.isEmpty) return null;
+  return order.reduce((a, b) => weight[b]! > weight[a]! ? b : a);
 }

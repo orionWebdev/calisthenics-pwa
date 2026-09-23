@@ -39,6 +39,7 @@ class PlanCard extends StatelessWidget {
     required this.onStart,
     this.description,
     this.muscles = const [],
+    this.lead,
     this.image,
     this.width = defaultWidth,
     this.fillHeight = false,
@@ -53,6 +54,9 @@ class PlanCard extends StatelessWidget {
 
   /// Höchstens drei werden gezeigt.
   final List<MuscleGroup> muscles;
+
+  /// Die Hauptregion — ihre Farbe trägt die Aurora der Bildfläche.
+  final MuscleRegion? lead;
 
   /// Späteres Planbild. Ohne Bild wird die Fläche gezeichnet.
   final ImageProvider? image;
@@ -98,6 +102,7 @@ class PlanCard extends StatelessWidget {
           text: text,
           textIsMeta: !hasDescription,
           muscles: shown,
+          lead: lead,
         ),
       ),
       child: _Body(
@@ -106,6 +111,7 @@ class PlanCard extends StatelessWidget {
         text: text,
         textIsMeta: !hasDescription,
         muscles: shown,
+        lead: lead,
       ),
     );
     final button = Padding(
@@ -156,6 +162,7 @@ class _Body extends StatelessWidget {
     required this.text,
     required this.textIsMeta,
     required this.muscles,
+    required this.lead,
   });
 
   final Plan plan;
@@ -166,6 +173,7 @@ class _Body extends StatelessWidget {
   /// Stelle — dann in der dritten Textstufe, nicht als Lesetext.
   final bool textIsMeta;
   final List<MuscleGroup> muscles;
+  final MuscleRegion? lead;
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +187,10 @@ class _Body extends StatelessWidget {
             aspectRatio: 16 / 9,
             child: image != null
                 ? Image(image: image!, fit: BoxFit.cover)
-                : _DrawnCover(initials: PlanCard.initialsOf(plan.name)),
+                : _DrawnCover(
+                    initials: PlanCard.initialsOf(plan.name),
+                    tone: lead?.color,
+                  ),
           ),
         ),
         Padding(
@@ -243,66 +254,46 @@ class _Body extends StatelessWidget {
 }
 
 /// Die gezeichnete Bildfläche — Verlauf, schräge Linien, Kürzel.
+/// Die Bildfläche ohne Bild: eine **stehende** Aurora in der Farbe der
+/// Hauptregion (entschieden am 23.09.2026, Rezept aus Board 18b, C7).
+///
+/// Stehend, nicht treibend: In einer Kartenreihe wären sonst mehrere
+/// Dauerschleifen gleichzeitig im Bild — genau die Tapete, die Board 18b
+/// verhindert (F4). Die Farbe sagt, welche Körperregion der Plan trägt,
+/// nicht, ob er gut ist (Board 05: Farbe kodiert die Region). Ohne Region —
+/// ein Plan ohne bekannte Übungen — bleibt nur die Violett-Fläche.
 class _DrawnCover extends StatelessWidget {
-  const _DrawnCover({required this.initials});
+  const _DrawnCover({required this.initials, required this.tone});
 
   final String initials;
+  final Color? tone;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AtemColors.surfaceRaised,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AtemColors.tabStrength.withValues(alpha: 0.22),
-            AtemColors.surfaceRaised,
-          ],
-        ),
-      ),
-      child: CustomPaint(
-        painter: const _StripesPainter(),
-        child: Center(
-          child: Text(
-            initials,
-            // Die Schrift skaliert nicht mit: Das Kürzel ist Dekor, die
-            // Fläche hat eine feste Höhe aus dem Seitenverhältnis.
-            textScaler: TextScaler.noScaling,
-            style: AtemType.valueLarge.of(context).copyWith(
-                  fontSize: 34,
-                  color: AtemColors.tabStrength.withValues(alpha: 0.85),
-                  letterSpacing: 2,
-                ),
+    return ColoredBox(
+      color: AtemColors.surfaceRaised,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          AtemAurora(tone: tone, moving: false, spread: 1.9),
+          Center(
+            child: Text(
+              initials,
+              // Die Schrift skaliert nicht mit: Das Kürzel ist Dekor, die
+              // Fläche hat eine feste Höhe aus dem Seitenverhältnis.
+              textScaler: TextScaler.noScaling,
+              style: AtemType.valueLarge.of(context).copyWith(
+                    fontSize: 34,
+                    color: (tone ?? AtemColors.textSecondary)
+                        .withValues(alpha: 0.85),
+                    letterSpacing: 2,
+                  ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
-}
-
-class _StripesPainter extends CustomPainter {
-  const _StripesPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AtemColors.textPrimary.withValues(alpha: 0.06)
-      ..strokeWidth = 1;
-    const gap = 14.0;
-    final extent = size.width + size.height;
-    for (var x = -size.height; x < extent; x += gap) {
-      canvas.drawLine(
-        Offset(x, size.height),
-        Offset(x + size.height, 0),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_StripesPainter oldDelegate) => false;
 }
 
 /// Die seitliche Reihe der Plan-Karten.
@@ -317,6 +308,7 @@ class PlanCardRow extends StatelessWidget {
     required this.onOpen,
     required this.onStart,
     this.musclesOf,
+    this.leadOf,
     this.horizontalPadding = AtemSpacing.screenPadding,
   });
 
@@ -324,6 +316,9 @@ class PlanCardRow extends StatelessWidget {
   final ValueChanged<Plan> onOpen;
   final ValueChanged<Plan> onStart;
   final List<MuscleGroup> Function(Plan plan)? musclesOf;
+
+  /// Die Hauptregion je Plan, für die Farbe der Bildfläche.
+  final MuscleRegion? Function(Plan plan)? leadOf;
 
   /// Das Polster des Bildschirms — die Reihe läuft bis an den Rand, beginnt
   /// aber bündig mit dem Inhalt darüber.
@@ -356,6 +351,7 @@ class PlanCardRow extends StatelessWidget {
                       width: width,
                       fillHeight: true,
                       muscles: musclesOf?.call(plans[i]) ?? const [],
+                      lead: leadOf?.call(plans[i]),
                       onOpen: () => onOpen(plans[i]),
                       onStart: () => onStart(plans[i]),
                     ),
