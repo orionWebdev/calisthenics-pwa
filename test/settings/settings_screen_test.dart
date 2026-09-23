@@ -1,4 +1,5 @@
 import 'package:atem/core/widgets/widgets.dart';
+import 'package:atem/features/planning/presentation/screens/training_goal_screen.dart';
 import 'package:atem/features/settings/domain/user_settings.dart';
 import 'package:atem/features/settings/presentation/screens/account_deletion_screen.dart';
 import 'package:atem/features/settings/presentation/screens/effort_scale_screen.dart';
@@ -148,6 +149,20 @@ void main() {
     expect(find.byType(EffortScaleScreen), findsOneWidget);
     expect(find.byType(AtemSegmented<EffortScale>), findsOneWidget);
     expect(find.text(l10n.settingsEffortScaleExplain), findsOneWidget);
+  });
+
+  testWidgets('Trainingsangaben: der Inhalt als Wert, kein Füllstand',
+      (tester) async {
+    final l10n = await _pump(tester, const SettingsScreen());
+
+    // Nichts angegeben ist ein Zustand, kein Auftrag (Board 18, A8).
+    expect(find.text(l10n.settingsRowBriefingEmpty), findsOneWidget);
+    await tester.ensureVisible(find.text(l10n.settingsRowBriefing));
+    await tester.tap(find.text(l10n.settingsRowBriefing));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TrainingGoalScreen), findsOneWidget);
+    expect(find.text(l10n.briefingQModality), findsOneWidget);
   });
 
   testWidgets('Löschen bleibt gesperrt, bis das Wort getippt ist',

@@ -244,6 +244,25 @@ service cloud.firestore {
         // disappearance — the record belongs to Health Connect, not to us.
         allow delete: if isAuthenticated() && request.auth.uid == userId;
       }
+
+      /**
+       * planning subcollection (board 18, later board 19)
+       * - `goal`: the training details, one answer per field, each with its
+       *   own `answeredAt`. `week`: the weekly rhythm (board 19).
+       * - Only these two document ids. Anything else would be a second
+       *   briefing nobody reads.
+       * - Rules do NOT cascade in Firestore: without this block the
+       *   subcollection would fall through to the default deny below.
+       */
+      match /planning/{docId} {
+        allow read, delete: if isAuthenticated() &&
+          request.auth.uid == userId &&
+          docId in ['goal', 'week'];
+        allow create, update: if isAuthenticated() &&
+          request.auth.uid == userId &&
+          docId in ['goal', 'week'] &&
+          request.resource.data.updatedAt is timestamp;
+      }
     }
 
     // ==================== DEFAULT DENY ====================

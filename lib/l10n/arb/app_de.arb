@@ -8536,5 +8536,605 @@
         "type": "String"
       }
     }
+  },
+  "briefingAnchorA": "Woche A",
+  "@briefingAnchorA": {
+    "description": "briefing.anchor.a"
+  },
+  "briefingAnchorB": "Woche B",
+  "@briefingAnchorB": {
+    "description": "briefing.anchor.b"
+  },
+  "briefingAnchorLabel": "Diese Woche ist",
+  "@briefingAnchorLabel": {
+    "description": "briefing.anchor.label"
+  },
+  "briefingAnchorSummary": "diese Woche: {week}",
+  "@briefingAnchorSummary": {
+    "description": "briefing.anchor.summary",
+    "placeholders": {
+      "week": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingArea": "HYBRID · EINSTELLUNGEN",
+  "@briefingArea": {
+    "description": "briefing.area"
+  },
+  "briefingClear": "Antwort zurücknehmen",
+  "@briefingClear": {
+    "description": "briefing.clear"
+  },
+  "briefingClearAll": "Alle Angaben entfernen",
+  "@briefingClearAll": {
+    "description": "briefing.clear_all"
+  },
+  "briefingDaypartEvening": "Abends",
+  "@briefingDaypartEvening": {
+    "description": "briefing.daypart.evening"
+  },
+  "briefingDaypartGroup": "{art} meist",
+  "@briefingDaypartGroup": {
+    "description": "briefing.daypart.group",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingDaypartMidday": "Mittags",
+  "@briefingDaypartMidday": {
+    "description": "briefing.daypart.midday"
+  },
+  "briefingDaypartMorning": "Morgens",
+  "@briefingDaypartMorning": {
+    "description": "briefing.daypart.morning"
+  },
+  "briefingDaysGroup": "{art} an",
+  "@briefingDaysGroup": {
+    "description": "briefing.days.group",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingDaysOpen": "Tage offen",
+  "@briefingDaysOpen": {
+    "description": "briefing.days.open"
+  },
+  "briefingDescribesSince": "{answer} · seit {date}",
+  "@briefingDescribesSince": {
+    "description": "briefing.describes.since",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingExplainBody": "Hier beschreibst du dein Training in eigenen Worten. Jede Antwort wird sofort gespeichert und gilt für sich; was du offen lässt, bleibt offen und zählt nirgends als Null. Bisher rechnet keine Auswertung mit diesen Angaben — nutzt eine sie später, nennt sie deine Angabe als Grundlage.",
+  "@briefingExplainBody": {
+    "description": "briefing.explain_body"
+  },
+  "briefingExplainTitle": "Über diese Angaben",
+  "@briefingExplainTitle": {
+    "description": "briefing.explain_title"
+  },
+  "briefingGoalEndurance": "Ausdauer verbessern",
+  "@briefingGoalEndurance": {
+    "description": "briefing.goal.endurance"
+  },
+  "briefingGoalFitness": "Fitter werden",
+  "@briefingGoalFitness": {
+    "description": "briefing.goal.fitness"
+  },
+  "briefingGoalHealth": "Gesund bleiben",
+  "@briefingGoalHealth": {
+    "description": "briefing.goal.health"
+  },
+  "briefingGoalMobility": "Beweglicher werden",
+  "@briefingGoalMobility": {
+    "description": "briefing.goal.mobility"
+  },
+  "briefingGoalMuscle": "Muskeln aufbauen",
+  "@briefingGoalMuscle": {
+    "description": "briefing.goal.muscle"
+  },
+  "briefingGoalStrength": "Kraft steigern",
+  "@briefingGoalStrength": {
+    "description": "briefing.goal.strength"
+  },
+  "briefingGoalWeight": "Abnehmen",
+  "@briefingGoalWeight": {
+    "description": "briefing.goal.weight"
+  },
+  "briefingGroupWeekA": "{art} · Woche A",
+  "@briefingGroupWeekA": {
+    "description": "briefing.group.week_a",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingGroupWeekB": "{art} · Woche B",
+  "@briefingGroupWeekB": {
+    "description": "briefing.group.week_b",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingHint": "Freiwillig. Jede Antwort gilt für sich.",
+  "@briefingHint": {
+    "description": "briefing.hint"
+  },
+  "briefingLastChanged": "Zuletzt geändert · {date}",
+  "@briefingLastChanged": {
+    "description": "briefing.last_changed",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingLoadError": "Angaben konnten nicht geladen werden.",
+  "@briefingLoadError": {
+    "description": "briefing.load_error"
+  },
+  "briefingLoadErrorBody": "Bis sie geladen sind, zeigt die Seite keine Fragen.",
+  "@briefingLoadErrorBody": {
+    "description": "briefing.load_error.body"
+  },
+  "briefingLoading": "Angaben werden geladen",
+  "@briefingLoading": {
+    "description": "briefing.loading"
+  },
+  "briefingOptBoth": "Kraft und Cardio",
+  "@briefingOptBoth": {
+    "description": "briefing.opt.both"
+  },
+  "briefingOptCardio": "Cardio",
+  "@briefingOptCardio": {
+    "description": "briefing.opt.cardio"
+  },
+  "briefingOptDaysFixed": "Ja, meist an denselben Tagen",
+  "@briefingOptDaysFixed": {
+    "description": "briefing.opt.days_fixed"
+  },
+  "briefingOptDaysFree": "Nein, wie es passt",
+  "@briefingOptDaysFree": {
+    "description": "briefing.opt.days_free"
+  },
+  "briefingOptDescribesIntended": "Nein, so will ich wieder trainieren",
+  "@briefingOptDescribesIntended": {
+    "description": "briefing.opt.describes_intended"
+  },
+  "briefingOptDescribesNow": "Ja, so trainiere ich gerade",
+  "@briefingOptDescribesNow": {
+    "description": "briefing.opt.describes_now"
+  },
+  "briefingOptMultiMost": "Ja, an den meisten Tagen",
+  "@briefingOptMultiMost": {
+    "description": "briefing.opt.multi_most"
+  },
+  "briefingOptMultiNo": "Nein",
+  "@briefingOptMultiNo": {
+    "description": "briefing.opt.multi_no"
+  },
+  "briefingOptMultiSome": "Ja, an manchen Tagen",
+  "@briefingOptMultiSome": {
+    "description": "briefing.opt.multi_some"
+  },
+  "briefingOptPatternAlt": "Zwei Wochen wechseln sich ab",
+  "@briefingOptPatternAlt": {
+    "description": "briefing.opt.pattern_alt"
+  },
+  "briefingOptPatternIrregular": "Nein, jede Woche anders",
+  "@briefingOptPatternIrregular": {
+    "description": "briefing.opt.pattern_irregular"
+  },
+  "briefingOptPatternSame": "Ja, meist ähnlich",
+  "@briefingOptPatternSame": {
+    "description": "briefing.opt.pattern_same"
+  },
+  "briefingOptPlaceGym": "Gym",
+  "@briefingOptPlaceGym": {
+    "description": "briefing.opt.place_gym"
+  },
+  "briefingOptPlaceHome": "Zuhause",
+  "@briefingOptPlaceHome": {
+    "description": "briefing.opt.place_home"
+  },
+  "briefingOptPlaceOutdoor": "Draußen",
+  "@briefingOptPlaceOutdoor": {
+    "description": "briefing.opt.place_outdoor"
+  },
+  "briefingOptStrength": "Kraft",
+  "@briefingOptStrength": {
+    "description": "briefing.opt.strength"
+  },
+  "briefingPerWeekA11yMore": "{art}, 8 oder mehr Einheiten je Woche",
+  "@briefingPerWeekA11yMore": {
+    "description": "briefing.per_week.a11y_more",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingPerWeekA11yOne": "{art}, {n} Einheit je Woche",
+  "@briefingPerWeekA11yOne": {
+    "description": "briefing.per_week.a11y_one",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "briefingPerWeekA11yOther": "{art}, {n} Einheiten je Woche",
+  "@briefingPerWeekA11yOther": {
+    "description": "briefing.per_week.a11y_other",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "briefingPerWeekAverage": "im Schnitt",
+  "@briefingPerWeekAverage": {
+    "description": "briefing.per_week.average"
+  },
+  "briefingPerWeekMore": "8+",
+  "@briefingPerWeekMore": {
+    "description": "briefing.per_week.more"
+  },
+  "briefingPerWeekValue": "{art} {n}×",
+  "@briefingPerWeekValue": {
+    "description": "briefing.per_week.value",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "briefingQDays": "Trainierst du an festen Tagen?",
+  "@briefingQDays": {
+    "description": "briefing.q.days"
+  },
+  "briefingQDaysShort": "Feste Tage",
+  "@briefingQDaysShort": {
+    "description": "briefing.q.days.short"
+  },
+  "briefingQDescribes": "Beschreibt das dein Training gerade?",
+  "@briefingQDescribes": {
+    "description": "briefing.q.describes"
+  },
+  "briefingQDescribesHint": "Wichtig nach einer Pause: dann zeigt der Verlauf noch nicht, was du angibst.",
+  "@briefingQDescribesHint": {
+    "description": "briefing.q.describes.hint"
+  },
+  "briefingQDescribesShort": "Jetzt oder Vorhaben",
+  "@briefingQDescribesShort": {
+    "description": "briefing.q.describes.short"
+  },
+  "briefingQGoals": "Worauf trainierst du hin?",
+  "@briefingQGoals": {
+    "description": "briefing.q.goals"
+  },
+  "briefingQGoalsHint": "Mehrere möglich, keins steht über dem anderen.",
+  "@briefingQGoalsHint": {
+    "description": "briefing.q.goals.hint"
+  },
+  "briefingQGoalsShort": "Worauf du hintrainierst",
+  "@briefingQGoalsShort": {
+    "description": "briefing.q.goals.short"
+  },
+  "briefingQModality": "Was trainierst du?",
+  "@briefingQModality": {
+    "description": "briefing.q.modality"
+  },
+  "briefingQModalityShort": "Was du trainierst",
+  "@briefingQModalityShort": {
+    "description": "briefing.q.modality.short"
+  },
+  "briefingQMulti": "Trainierst du manchmal mehrmals am Tag?",
+  "@briefingQMulti": {
+    "description": "briefing.q.multi"
+  },
+  "briefingQMultiHint": "Morgens Lauf, abends Kraft zählt als mehrmals.",
+  "@briefingQMultiHint": {
+    "description": "briefing.q.multi.hint"
+  },
+  "briefingQMultiShort": "Mehrmals am Tag",
+  "@briefingQMultiShort": {
+    "description": "briefing.q.multi.short"
+  },
+  "briefingQPattern": "Sieht jede Woche ähnlich aus?",
+  "@briefingQPattern": {
+    "description": "briefing.q.pattern"
+  },
+  "briefingQPatternShort": "Wochenmuster",
+  "@briefingQPatternShort": {
+    "description": "briefing.q.pattern.short"
+  },
+  "briefingQPerWeek": "Wie viele Einheiten in einer üblichen Woche?",
+  "@briefingQPerWeek": {
+    "description": "briefing.q.per_week"
+  },
+  "briefingQPerWeekHint": "Einheiten, nicht Tage: zwei an einem Tag zählen zwei.",
+  "@briefingQPerWeekHint": {
+    "description": "briefing.q.per_week.hint"
+  },
+  "briefingQPerWeekHintIrregular": "Im Schnitt — grob reicht.",
+  "@briefingQPerWeekHintIrregular": {
+    "description": "briefing.q.per_week.hint_irregular"
+  },
+  "briefingQPerWeekShort": "Einheiten je Woche",
+  "@briefingQPerWeekShort": {
+    "description": "briefing.q.per_week.short"
+  },
+  "briefingQPlace": "Wo trainierst du?",
+  "@briefingQPlace": {
+    "description": "briefing.q.place"
+  },
+  "briefingQPlaceHint": "Mehrere möglich.",
+  "@briefingQPlaceHint": {
+    "description": "briefing.q.place.hint"
+  },
+  "briefingQPlaceShort": "Wo du trainierst",
+  "@briefingQPlaceShort": {
+    "description": "briefing.q.place.short"
+  },
+  "briefingRetry": "Erneut versuchen",
+  "@briefingRetry": {
+    "description": "briefing.retry"
+  },
+  "briefingRowA11yAnswered": "{question}, {answer}. Ändern",
+  "@briefingRowA11yAnswered": {
+    "description": "briefing.row.a11y_answered",
+    "placeholders": {
+      "question": {
+        "type": "String"
+      },
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingRowA11yOpen": "{question}, offen. Beantworten",
+  "@briefingRowA11yOpen": {
+    "description": "briefing.row.a11y_open",
+    "placeholders": {
+      "question": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingRowOpen": "Offen",
+  "@briefingRowOpen": {
+    "description": "briefing.row.open"
+  },
+  "briefingSaveError": "„{answer}“ nicht gespeichert — der Server hat abgelehnt.",
+  "@briefingSaveError": {
+    "description": "briefing.save_error",
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingSaveErrorKept": "Gilt weiter: {previous}.",
+  "@briefingSaveErrorKept": {
+    "description": "briefing.save_error.kept",
+    "placeholders": {
+      "previous": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingSnackAll": "Alle Angaben entfernt",
+  "@briefingSnackAll": {
+    "description": "briefing.snack.all"
+  },
+  "briefingSnackCleared": "Antwort zurückgenommen",
+  "@briefingSnackCleared": {
+    "description": "briefing.snack.cleared"
+  },
+  "briefingSnackDayparts": "Tageszeiten entfernt",
+  "@briefingSnackDayparts": {
+    "description": "briefing.snack.dayparts"
+  },
+  "briefingSnackDays": "Gewählte Tage entfernt",
+  "@briefingSnackDays": {
+    "description": "briefing.snack.days"
+  },
+  "briefingSnackDependent": "{art}-Angaben entfernt",
+  "@briefingSnackDependent": {
+    "description": "briefing.snack.dependent",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingSnackUndo": "Rückgängig",
+  "@briefingSnackUndo": {
+    "description": "briefing.snack.undo"
+  },
+  "briefingSnackWeekB": "Angaben für Woche B entfernt",
+  "@briefingSnackWeekB": {
+    "description": "briefing.snack.week_b"
+  },
+  "briefingTitle": "Trainings\u00ADangaben",
+  "@briefingTitle": {
+    "description": "briefing.title"
+  },
+  "briefingUsedBy": "Genutzt von · {list}",
+  "@briefingUsedBy": {
+    "description": "briefing.used_by",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingUsedByNone": "Genutzt von · bisher keiner Auswertung",
+  "@briefingUsedByNone": {
+    "description": "briefing.used_by_none"
+  },
+  "settingsRowBriefing": "Trainingsangaben",
+  "@settingsRowBriefing": {
+    "description": "settings.row.briefing"
+  },
+  "settingsRowBriefingEmpty": "Nicht angegeben",
+  "@settingsRowBriefingEmpty": {
+    "description": "settings.row.briefing_empty"
+  },
+  "settingsRowBriefingSummary": "{modality} · {per_week}",
+  "@settingsRowBriefingSummary": {
+    "description": "settings.row.briefing_summary",
+    "placeholders": {
+      "modality": {
+        "type": "String"
+      },
+      "per_week": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingNewQuestionA11y": "Neue Frage: {question}",
+  "@briefingNewQuestionA11y": {
+    "description": "Board 18 · A11y, liveRegion beim Erscheinen einer Folgefrage",
+    "placeholders": {
+      "question": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingClearA11y": "Antwort zurücknehmen: {question}",
+  "@briefingClearA11y": {
+    "description": "Board 18 · A11y",
+    "placeholders": {
+      "question": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingClearAllA11y": "Alle Angaben entfernen. Kann 6 Sekunden lang rückgängig gemacht werden.",
+  "@briefingClearAllA11y": {
+    "description": "Board 18 · A11y"
+  },
+  "briefingDayA11y": "{art} am {day}",
+  "@briefingDayA11y": {
+    "description": "Board 18 · A11y, Wochentag ausgeschrieben",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingDaypartA11y": "{art} meist {daypart}",
+  "@briefingDaypartA11y": {
+    "description": "Board 18 · A11y",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      },
+      "daypart": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingPlaceA11y": "Ort: {place}",
+  "@briefingPlaceA11y": {
+    "description": "Board 18 · A11y",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingGoalA11y": "Ziel: {goal}",
+  "@briefingGoalA11y": {
+    "description": "Board 18 · A11y",
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingAnchorA11y": "Diese Woche ist {week}",
+  "@briefingAnchorA11y": {
+    "description": "Board 18 · A11y",
+    "placeholders": {
+      "week": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingSnackBothLanes": "Kraft- und Cardio-Angaben entfernt",
+  "@briefingSnackBothLanes": {
+    "description": "Board 18 · Snackbar, wenn Frage 1 zurückgenommen wird"
+  },
+  "briefingLaneValue": "{art} {value}",
+  "@briefingLaneValue": {
+    "description": "Board 18 · Zusammenfassung je Spur",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingPerWeekPair": "{art} {first} / {second}",
+  "@briefingPerWeekPair": {
+    "description": "Board 18 · Anzahl bei Wechselwochen, Woche A / B",
+    "placeholders": {
+      "art": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "briefingWeeksAbSuffix": "(Woche A / B)",
+  "@briefingWeeksAbSuffix": {
+    "description": "Board 18 · Zusammenfassung"
+  },
+  "briefingOpenLower": "offen",
+  "@briefingOpenLower": {
+    "description": "Board 18 · Teilantwort in der Zusammenfassung"
+  },
+  "briefingDescribesNowShort": "So trainiere ich gerade",
+  "@briefingDescribesNowShort": {
+    "description": "Board 18 · Zusammenfassung Frage 8"
+  },
+  "briefingDescribesIntendedShort": "So will ich wieder trainieren",
+  "@briefingDescribesIntendedShort": {
+    "description": "Board 18 · Zusammenfassung Frage 8"
   }
 }

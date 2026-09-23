@@ -63,7 +63,16 @@ Du übernimmst die Arbeit an **ATEM Hybrid** (Flutter, Android). Lies zuerst, da
    im Vertrag als „CI-Tor" beschrieben sind: `flutter analyze lib test` · `flutter test` ·
    `dart tool/check_conventions.dart` · `flutter gen-l10n && git diff --exit-code
    lib/l10n/gen`. Die Tags `render` und `debt` bleiben draussen.
-3. **Modul 18 — das Zielbriefing.** Der grösste offene Brocken, und der erste Schritt der
+3. ~~Modul 18 — das Zielbriefing~~ — **gebaut am 23.09.** gegen Board 18
+   (`design_refs/18_Zielbriefing.dc.html`): Einstellungen → Training →
+   „Trainingsangaben", Daten unter `userProfiles/{uid}/planning/goal`.
+   **Offen:** `firebase deploy --only firestore:rules` — ohne den neuen
+   `planning`-Block lehnt der Server jede Antwort ab (die Seite zeigt dann
+   die Speicherfehlerzeile). Das Board empfiehlt, die Seite **mit oder nach
+   Board 19** auszuliefern; bis dahin ist sie ehrlich („Genutzt von · bisher
+   keiner Auswertung"), aber ohne Abnehmer. **Als Nächstes: Board 19, die
+   Woche von Hand** — Sektion K von Board 18 hält fest, was es voraussetzt.
+   Ursprünglicher Auftrag: **Modul 18 — das Zielbriefing.** Der grösste offene Brocken, und der erste Schritt der
    Wochenplanung. **Entschieden am 22.09.:** Die Planung lebt als **eigene Unterseite aus
    dem Hybrid-Tab**, mit einem kleinen Widget im Tab, das „Was wird heute trainiert"
    beantwortet. Reihenfolge: **Zielbriefing → Woche von Hand → Vorschlag** (Boards 18, 19,
@@ -106,7 +115,11 @@ Tempo/TUT.
   die Parameter **alphabetisch**, und `„{span} · {resolution}"` wird zu
   `f(resolution, span)`. Genau so stand am 22.09. „je Minute ein Wert · 100–175 bpm" auf
   dem Schirm.
-  **`tool/board_strings.py NN --write` nur mit Bedacht** — für Board 16 hätte es 13
+  **`tool/board_strings.py NN --write` sortiert die ganze ARB-Datei
+  alphabetisch um** — der Inhalt stimmt, der Diff ist aber Rauschen über
+  11 000 Zeilen. Danach die Reihenfolge aus `HEAD` wiederherstellen und nur
+  die neuen Schlüssel anhängen (so geschehen am 23.09. für Board 18).
+  **Und nur mit Bedacht** — für Board 16 hätte es 13
   bestehende Schlüssel überschrieben, darunter bewusst geänderte.
 - **Tests:** `flutter analyze lib test`, `flutter test` und
   `dart tool/check_conventions.dart` müssen grün sein, bevor du committest. Zurzeit 1312

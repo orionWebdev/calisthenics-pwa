@@ -13,6 +13,9 @@ import '../../../exercises/application/exercise_providers.dart';
 import '../../../history/application/history_providers.dart';
 import '../../../history/domain/training_session.dart';
 import '../../../history/presentation/session_ui.dart';
+import '../../../planning/application/training_goal_providers.dart';
+import '../../../planning/presentation/briefing_ui.dart';
+import '../../../planning/presentation/screens/training_goal_screen.dart';
 import '../../../plans/application/plan_providers.dart';
 import '../../../pulse/presentation/screens/heart_rate_zones_screen.dart';
 import '../../../weight/application/weight_providers.dart';
@@ -252,6 +255,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 // eine Erklärung, eine Richtung („hoch ist schwer" gegen
                 // „niedrig ist schwer") und zwei Namen — das ist eine Seite
                 // Inhalt, keine Zeile.
+                const _BriefingRow(),
+                const SettingsRule(),
                 SettingsRow(
                   label: l10n.settingsEffortScale,
                   value: settings.effortScale == EffortScale.rir
@@ -878,6 +883,37 @@ class _DangerRow extends StatelessWidget {
   }
 }
 
+
+/// Die Zeile „Trainingsangaben" (Board 18, A8).
+///
+/// Heute der einzige Einstieg ins Zielbriefing. Die Metazeile zeigt den
+/// Inhalt, nicht den Füllstand: „Nicht angegeben" ist ein Zustand, kein
+/// Auftrag — kein Punkt, kein Badge, keine Farbe (Entscheidung 18).
+class _BriefingRow extends ConsumerWidget {
+  const _BriefingRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppL10n.of(context);
+    final goal = ref.watch(trainingGoalProvider).value;
+    final summary = goal == null
+        ? null
+        : BriefingWords(context).settingsSummary(goal, DateTime.now());
+    final value = goal == null
+        ? l10n.commonLoading
+        : summary ?? l10n.settingsRowBriefingEmpty;
+
+    return SettingsRow(
+      label: l10n.settingsRowBriefing,
+      value: value,
+      quiet: summary == null,
+      semanticLabel: '${l10n.settingsRowBriefing}, $value',
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const TrainingGoalScreen()),
+      ),
+    );
+  }
+}
 
 /// Die Zeile „Herzfrequenzzonen" im Einstellungsbaum (Board 16, D).
 class _ZonesRow extends StatelessWidget {

@@ -8167,6 +8167,654 @@ abstract class AppL10n {
   /// In de, this message translates to:
   /// **'{first}, ab {time} {second}'**
   String pulseCurveResolutionMixed(String first, String time, String second);
+
+  /// briefing.anchor.a
+  ///
+  /// In de, this message translates to:
+  /// **'Woche A'**
+  String get briefingAnchorA;
+
+  /// briefing.anchor.b
+  ///
+  /// In de, this message translates to:
+  /// **'Woche B'**
+  String get briefingAnchorB;
+
+  /// briefing.anchor.label
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche ist'**
+  String get briefingAnchorLabel;
+
+  /// briefing.anchor.summary
+  ///
+  /// In de, this message translates to:
+  /// **'diese Woche: {week}'**
+  String briefingAnchorSummary(String week);
+
+  /// briefing.area
+  ///
+  /// In de, this message translates to:
+  /// **'HYBRID · EINSTELLUNGEN'**
+  String get briefingArea;
+
+  /// briefing.clear
+  ///
+  /// In de, this message translates to:
+  /// **'Antwort zurücknehmen'**
+  String get briefingClear;
+
+  /// briefing.clear_all
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Angaben entfernen'**
+  String get briefingClearAll;
+
+  /// briefing.daypart.evening
+  ///
+  /// In de, this message translates to:
+  /// **'Abends'**
+  String get briefingDaypartEvening;
+
+  /// briefing.daypart.group
+  ///
+  /// In de, this message translates to:
+  /// **'{art} meist'**
+  String briefingDaypartGroup(String art);
+
+  /// briefing.daypart.midday
+  ///
+  /// In de, this message translates to:
+  /// **'Mittags'**
+  String get briefingDaypartMidday;
+
+  /// briefing.daypart.morning
+  ///
+  /// In de, this message translates to:
+  /// **'Morgens'**
+  String get briefingDaypartMorning;
+
+  /// briefing.days.group
+  ///
+  /// In de, this message translates to:
+  /// **'{art} an'**
+  String briefingDaysGroup(String art);
+
+  /// briefing.days.open
+  ///
+  /// In de, this message translates to:
+  /// **'Tage offen'**
+  String get briefingDaysOpen;
+
+  /// briefing.describes.since
+  ///
+  /// In de, this message translates to:
+  /// **'{answer} · seit {date}'**
+  String briefingDescribesSince(String answer, String date);
+
+  /// briefing.explain_body
+  ///
+  /// In de, this message translates to:
+  /// **'Hier beschreibst du dein Training in eigenen Worten. Jede Antwort wird sofort gespeichert und gilt für sich; was du offen lässt, bleibt offen und zählt nirgends als Null. Bisher rechnet keine Auswertung mit diesen Angaben — nutzt eine sie später, nennt sie deine Angabe als Grundlage.'**
+  String get briefingExplainBody;
+
+  /// briefing.explain_title
+  ///
+  /// In de, this message translates to:
+  /// **'Über diese Angaben'**
+  String get briefingExplainTitle;
+
+  /// briefing.goal.endurance
+  ///
+  /// In de, this message translates to:
+  /// **'Ausdauer verbessern'**
+  String get briefingGoalEndurance;
+
+  /// briefing.goal.fitness
+  ///
+  /// In de, this message translates to:
+  /// **'Fitter werden'**
+  String get briefingGoalFitness;
+
+  /// briefing.goal.health
+  ///
+  /// In de, this message translates to:
+  /// **'Gesund bleiben'**
+  String get briefingGoalHealth;
+
+  /// briefing.goal.mobility
+  ///
+  /// In de, this message translates to:
+  /// **'Beweglicher werden'**
+  String get briefingGoalMobility;
+
+  /// briefing.goal.muscle
+  ///
+  /// In de, this message translates to:
+  /// **'Muskeln aufbauen'**
+  String get briefingGoalMuscle;
+
+  /// briefing.goal.strength
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft steigern'**
+  String get briefingGoalStrength;
+
+  /// briefing.goal.weight
+  ///
+  /// In de, this message translates to:
+  /// **'Abnehmen'**
+  String get briefingGoalWeight;
+
+  /// briefing.group.week_a
+  ///
+  /// In de, this message translates to:
+  /// **'{art} · Woche A'**
+  String briefingGroupWeekA(String art);
+
+  /// briefing.group.week_b
+  ///
+  /// In de, this message translates to:
+  /// **'{art} · Woche B'**
+  String briefingGroupWeekB(String art);
+
+  /// briefing.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Freiwillig. Jede Antwort gilt für sich.'**
+  String get briefingHint;
+
+  /// briefing.last_changed
+  ///
+  /// In de, this message translates to:
+  /// **'Zuletzt geändert · {date}'**
+  String briefingLastChanged(String date);
+
+  /// briefing.load_error
+  ///
+  /// In de, this message translates to:
+  /// **'Angaben konnten nicht geladen werden.'**
+  String get briefingLoadError;
+
+  /// briefing.load_error.body
+  ///
+  /// In de, this message translates to:
+  /// **'Bis sie geladen sind, zeigt die Seite keine Fragen.'**
+  String get briefingLoadErrorBody;
+
+  /// briefing.loading
+  ///
+  /// In de, this message translates to:
+  /// **'Angaben werden geladen'**
+  String get briefingLoading;
+
+  /// briefing.opt.both
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft und Cardio'**
+  String get briefingOptBoth;
+
+  /// briefing.opt.cardio
+  ///
+  /// In de, this message translates to:
+  /// **'Cardio'**
+  String get briefingOptCardio;
+
+  /// briefing.opt.days_fixed
+  ///
+  /// In de, this message translates to:
+  /// **'Ja, meist an denselben Tagen'**
+  String get briefingOptDaysFixed;
+
+  /// briefing.opt.days_free
+  ///
+  /// In de, this message translates to:
+  /// **'Nein, wie es passt'**
+  String get briefingOptDaysFree;
+
+  /// briefing.opt.describes_intended
+  ///
+  /// In de, this message translates to:
+  /// **'Nein, so will ich wieder trainieren'**
+  String get briefingOptDescribesIntended;
+
+  /// briefing.opt.describes_now
+  ///
+  /// In de, this message translates to:
+  /// **'Ja, so trainiere ich gerade'**
+  String get briefingOptDescribesNow;
+
+  /// briefing.opt.multi_most
+  ///
+  /// In de, this message translates to:
+  /// **'Ja, an den meisten Tagen'**
+  String get briefingOptMultiMost;
+
+  /// briefing.opt.multi_no
+  ///
+  /// In de, this message translates to:
+  /// **'Nein'**
+  String get briefingOptMultiNo;
+
+  /// briefing.opt.multi_some
+  ///
+  /// In de, this message translates to:
+  /// **'Ja, an manchen Tagen'**
+  String get briefingOptMultiSome;
+
+  /// briefing.opt.pattern_alt
+  ///
+  /// In de, this message translates to:
+  /// **'Zwei Wochen wechseln sich ab'**
+  String get briefingOptPatternAlt;
+
+  /// briefing.opt.pattern_irregular
+  ///
+  /// In de, this message translates to:
+  /// **'Nein, jede Woche anders'**
+  String get briefingOptPatternIrregular;
+
+  /// briefing.opt.pattern_same
+  ///
+  /// In de, this message translates to:
+  /// **'Ja, meist ähnlich'**
+  String get briefingOptPatternSame;
+
+  /// briefing.opt.place_gym
+  ///
+  /// In de, this message translates to:
+  /// **'Gym'**
+  String get briefingOptPlaceGym;
+
+  /// briefing.opt.place_home
+  ///
+  /// In de, this message translates to:
+  /// **'Zuhause'**
+  String get briefingOptPlaceHome;
+
+  /// briefing.opt.place_outdoor
+  ///
+  /// In de, this message translates to:
+  /// **'Draußen'**
+  String get briefingOptPlaceOutdoor;
+
+  /// briefing.opt.strength
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft'**
+  String get briefingOptStrength;
+
+  /// briefing.per_week.a11y_more
+  ///
+  /// In de, this message translates to:
+  /// **'{art}, 8 oder mehr Einheiten je Woche'**
+  String briefingPerWeekA11yMore(String art);
+
+  /// briefing.per_week.a11y_one
+  ///
+  /// In de, this message translates to:
+  /// **'{art}, {n} Einheit je Woche'**
+  String briefingPerWeekA11yOne(String art, int n);
+
+  /// briefing.per_week.a11y_other
+  ///
+  /// In de, this message translates to:
+  /// **'{art}, {n} Einheiten je Woche'**
+  String briefingPerWeekA11yOther(String art, int n);
+
+  /// briefing.per_week.average
+  ///
+  /// In de, this message translates to:
+  /// **'im Schnitt'**
+  String get briefingPerWeekAverage;
+
+  /// briefing.per_week.more
+  ///
+  /// In de, this message translates to:
+  /// **'8+'**
+  String get briefingPerWeekMore;
+
+  /// briefing.per_week.value
+  ///
+  /// In de, this message translates to:
+  /// **'{art} {n}×'**
+  String briefingPerWeekValue(String art, int n);
+
+  /// briefing.q.days
+  ///
+  /// In de, this message translates to:
+  /// **'Trainierst du an festen Tagen?'**
+  String get briefingQDays;
+
+  /// briefing.q.days.short
+  ///
+  /// In de, this message translates to:
+  /// **'Feste Tage'**
+  String get briefingQDaysShort;
+
+  /// briefing.q.describes
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibt das dein Training gerade?'**
+  String get briefingQDescribes;
+
+  /// briefing.q.describes.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Wichtig nach einer Pause: dann zeigt der Verlauf noch nicht, was du angibst.'**
+  String get briefingQDescribesHint;
+
+  /// briefing.q.describes.short
+  ///
+  /// In de, this message translates to:
+  /// **'Jetzt oder Vorhaben'**
+  String get briefingQDescribesShort;
+
+  /// briefing.q.goals
+  ///
+  /// In de, this message translates to:
+  /// **'Worauf trainierst du hin?'**
+  String get briefingQGoals;
+
+  /// briefing.q.goals.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere möglich, keins steht über dem anderen.'**
+  String get briefingQGoalsHint;
+
+  /// briefing.q.goals.short
+  ///
+  /// In de, this message translates to:
+  /// **'Worauf du hintrainierst'**
+  String get briefingQGoalsShort;
+
+  /// briefing.q.modality
+  ///
+  /// In de, this message translates to:
+  /// **'Was trainierst du?'**
+  String get briefingQModality;
+
+  /// briefing.q.modality.short
+  ///
+  /// In de, this message translates to:
+  /// **'Was du trainierst'**
+  String get briefingQModalityShort;
+
+  /// briefing.q.multi
+  ///
+  /// In de, this message translates to:
+  /// **'Trainierst du manchmal mehrmals am Tag?'**
+  String get briefingQMulti;
+
+  /// briefing.q.multi.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Morgens Lauf, abends Kraft zählt als mehrmals.'**
+  String get briefingQMultiHint;
+
+  /// briefing.q.multi.short
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrmals am Tag'**
+  String get briefingQMultiShort;
+
+  /// briefing.q.pattern
+  ///
+  /// In de, this message translates to:
+  /// **'Sieht jede Woche ähnlich aus?'**
+  String get briefingQPattern;
+
+  /// briefing.q.pattern.short
+  ///
+  /// In de, this message translates to:
+  /// **'Wochenmuster'**
+  String get briefingQPatternShort;
+
+  /// briefing.q.per_week
+  ///
+  /// In de, this message translates to:
+  /// **'Wie viele Einheiten in einer üblichen Woche?'**
+  String get briefingQPerWeek;
+
+  /// briefing.q.per_week.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten, nicht Tage: zwei an einem Tag zählen zwei.'**
+  String get briefingQPerWeekHint;
+
+  /// briefing.q.per_week.hint_irregular
+  ///
+  /// In de, this message translates to:
+  /// **'Im Schnitt — grob reicht.'**
+  String get briefingQPerWeekHintIrregular;
+
+  /// briefing.q.per_week.short
+  ///
+  /// In de, this message translates to:
+  /// **'Einheiten je Woche'**
+  String get briefingQPerWeekShort;
+
+  /// briefing.q.place
+  ///
+  /// In de, this message translates to:
+  /// **'Wo trainierst du?'**
+  String get briefingQPlace;
+
+  /// briefing.q.place.hint
+  ///
+  /// In de, this message translates to:
+  /// **'Mehrere möglich.'**
+  String get briefingQPlaceHint;
+
+  /// briefing.q.place.short
+  ///
+  /// In de, this message translates to:
+  /// **'Wo du trainierst'**
+  String get briefingQPlaceShort;
+
+  /// briefing.retry
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut versuchen'**
+  String get briefingRetry;
+
+  /// briefing.row.a11y_answered
+  ///
+  /// In de, this message translates to:
+  /// **'{question}, {answer}. Ändern'**
+  String briefingRowA11yAnswered(String question, String answer);
+
+  /// briefing.row.a11y_open
+  ///
+  /// In de, this message translates to:
+  /// **'{question}, offen. Beantworten'**
+  String briefingRowA11yOpen(String question);
+
+  /// briefing.row.open
+  ///
+  /// In de, this message translates to:
+  /// **'Offen'**
+  String get briefingRowOpen;
+
+  /// briefing.save_error
+  ///
+  /// In de, this message translates to:
+  /// **'„{answer}“ nicht gespeichert — der Server hat abgelehnt.'**
+  String briefingSaveError(String answer);
+
+  /// briefing.save_error.kept
+  ///
+  /// In de, this message translates to:
+  /// **'Gilt weiter: {previous}.'**
+  String briefingSaveErrorKept(String previous);
+
+  /// briefing.snack.all
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Angaben entfernt'**
+  String get briefingSnackAll;
+
+  /// briefing.snack.cleared
+  ///
+  /// In de, this message translates to:
+  /// **'Antwort zurückgenommen'**
+  String get briefingSnackCleared;
+
+  /// briefing.snack.dayparts
+  ///
+  /// In de, this message translates to:
+  /// **'Tageszeiten entfernt'**
+  String get briefingSnackDayparts;
+
+  /// briefing.snack.days
+  ///
+  /// In de, this message translates to:
+  /// **'Gewählte Tage entfernt'**
+  String get briefingSnackDays;
+
+  /// briefing.snack.dependent
+  ///
+  /// In de, this message translates to:
+  /// **'{art}-Angaben entfernt'**
+  String briefingSnackDependent(String art);
+
+  /// briefing.snack.undo
+  ///
+  /// In de, this message translates to:
+  /// **'Rückgängig'**
+  String get briefingSnackUndo;
+
+  /// briefing.snack.week_b
+  ///
+  /// In de, this message translates to:
+  /// **'Angaben für Woche B entfernt'**
+  String get briefingSnackWeekB;
+
+  /// briefing.title
+  ///
+  /// In de, this message translates to:
+  /// **'Trainings­angaben'**
+  String get briefingTitle;
+
+  /// briefing.used_by
+  ///
+  /// In de, this message translates to:
+  /// **'Genutzt von · {list}'**
+  String briefingUsedBy(String list);
+
+  /// briefing.used_by_none
+  ///
+  /// In de, this message translates to:
+  /// **'Genutzt von · bisher keiner Auswertung'**
+  String get briefingUsedByNone;
+
+  /// settings.row.briefing
+  ///
+  /// In de, this message translates to:
+  /// **'Trainingsangaben'**
+  String get settingsRowBriefing;
+
+  /// settings.row.briefing_empty
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht angegeben'**
+  String get settingsRowBriefingEmpty;
+
+  /// settings.row.briefing_summary
+  ///
+  /// In de, this message translates to:
+  /// **'{modality} · {per_week}'**
+  String settingsRowBriefingSummary(String modality, String per_week);
+
+  /// Board 18 · A11y, liveRegion beim Erscheinen einer Folgefrage
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Frage: {question}'**
+  String briefingNewQuestionA11y(String question);
+
+  /// Board 18 · A11y
+  ///
+  /// In de, this message translates to:
+  /// **'Antwort zurücknehmen: {question}'**
+  String briefingClearA11y(String question);
+
+  /// Board 18 · A11y
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Angaben entfernen. Kann 6 Sekunden lang rückgängig gemacht werden.'**
+  String get briefingClearAllA11y;
+
+  /// Board 18 · A11y, Wochentag ausgeschrieben
+  ///
+  /// In de, this message translates to:
+  /// **'{art} am {day}'**
+  String briefingDayA11y(String art, String day);
+
+  /// Board 18 · A11y
+  ///
+  /// In de, this message translates to:
+  /// **'{art} meist {daypart}'**
+  String briefingDaypartA11y(String art, String daypart);
+
+  /// Board 18 · A11y
+  ///
+  /// In de, this message translates to:
+  /// **'Ort: {place}'**
+  String briefingPlaceA11y(String place);
+
+  /// Board 18 · A11y
+  ///
+  /// In de, this message translates to:
+  /// **'Ziel: {goal}'**
+  String briefingGoalA11y(String goal);
+
+  /// Board 18 · A11y
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Woche ist {week}'**
+  String briefingAnchorA11y(String week);
+
+  /// Board 18 · Snackbar, wenn Frage 1 zurückgenommen wird
+  ///
+  /// In de, this message translates to:
+  /// **'Kraft- und Cardio-Angaben entfernt'**
+  String get briefingSnackBothLanes;
+
+  /// Board 18 · Zusammenfassung je Spur
+  ///
+  /// In de, this message translates to:
+  /// **'{art} {value}'**
+  String briefingLaneValue(String art, String value);
+
+  /// Board 18 · Anzahl bei Wechselwochen, Woche A / B
+  ///
+  /// In de, this message translates to:
+  /// **'{art} {first} / {second}'**
+  String briefingPerWeekPair(String art, String first, String second);
+
+  /// Board 18 · Zusammenfassung
+  ///
+  /// In de, this message translates to:
+  /// **'(Woche A / B)'**
+  String get briefingWeeksAbSuffix;
+
+  /// Board 18 · Teilantwort in der Zusammenfassung
+  ///
+  /// In de, this message translates to:
+  /// **'offen'**
+  String get briefingOpenLower;
+
+  /// Board 18 · Zusammenfassung Frage 8
+  ///
+  /// In de, this message translates to:
+  /// **'So trainiere ich gerade'**
+  String get briefingDescribesNowShort;
+
+  /// Board 18 · Zusammenfassung Frage 8
+  ///
+  /// In de, this message translates to:
+  /// **'So will ich wieder trainieren'**
+  String get briefingDescribesIntendedShort;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

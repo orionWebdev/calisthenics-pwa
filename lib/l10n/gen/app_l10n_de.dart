@@ -5649,4 +5649,390 @@ class AppL10nDe extends AppL10n {
   String pulseCurveResolutionMixed(String first, String time, String second) {
     return '$first, ab $time $second';
   }
+
+  @override
+  String get briefingAnchorA => 'Woche A';
+
+  @override
+  String get briefingAnchorB => 'Woche B';
+
+  @override
+  String get briefingAnchorLabel => 'Diese Woche ist';
+
+  @override
+  String briefingAnchorSummary(String week) {
+    return 'diese Woche: $week';
+  }
+
+  @override
+  String get briefingArea => 'HYBRID · EINSTELLUNGEN';
+
+  @override
+  String get briefingClear => 'Antwort zurücknehmen';
+
+  @override
+  String get briefingClearAll => 'Alle Angaben entfernen';
+
+  @override
+  String get briefingDaypartEvening => 'Abends';
+
+  @override
+  String briefingDaypartGroup(String art) {
+    return '$art meist';
+  }
+
+  @override
+  String get briefingDaypartMidday => 'Mittags';
+
+  @override
+  String get briefingDaypartMorning => 'Morgens';
+
+  @override
+  String briefingDaysGroup(String art) {
+    return '$art an';
+  }
+
+  @override
+  String get briefingDaysOpen => 'Tage offen';
+
+  @override
+  String briefingDescribesSince(String answer, String date) {
+    return '$answer · seit $date';
+  }
+
+  @override
+  String get briefingExplainBody =>
+      'Hier beschreibst du dein Training in eigenen Worten. Jede Antwort wird sofort gespeichert und gilt für sich; was du offen lässt, bleibt offen und zählt nirgends als Null. Bisher rechnet keine Auswertung mit diesen Angaben — nutzt eine sie später, nennt sie deine Angabe als Grundlage.';
+
+  @override
+  String get briefingExplainTitle => 'Über diese Angaben';
+
+  @override
+  String get briefingGoalEndurance => 'Ausdauer verbessern';
+
+  @override
+  String get briefingGoalFitness => 'Fitter werden';
+
+  @override
+  String get briefingGoalHealth => 'Gesund bleiben';
+
+  @override
+  String get briefingGoalMobility => 'Beweglicher werden';
+
+  @override
+  String get briefingGoalMuscle => 'Muskeln aufbauen';
+
+  @override
+  String get briefingGoalStrength => 'Kraft steigern';
+
+  @override
+  String get briefingGoalWeight => 'Abnehmen';
+
+  @override
+  String briefingGroupWeekA(String art) {
+    return '$art · Woche A';
+  }
+
+  @override
+  String briefingGroupWeekB(String art) {
+    return '$art · Woche B';
+  }
+
+  @override
+  String get briefingHint => 'Freiwillig. Jede Antwort gilt für sich.';
+
+  @override
+  String briefingLastChanged(String date) {
+    return 'Zuletzt geändert · $date';
+  }
+
+  @override
+  String get briefingLoadError => 'Angaben konnten nicht geladen werden.';
+
+  @override
+  String get briefingLoadErrorBody =>
+      'Bis sie geladen sind, zeigt die Seite keine Fragen.';
+
+  @override
+  String get briefingLoading => 'Angaben werden geladen';
+
+  @override
+  String get briefingOptBoth => 'Kraft und Cardio';
+
+  @override
+  String get briefingOptCardio => 'Cardio';
+
+  @override
+  String get briefingOptDaysFixed => 'Ja, meist an denselben Tagen';
+
+  @override
+  String get briefingOptDaysFree => 'Nein, wie es passt';
+
+  @override
+  String get briefingOptDescribesIntended =>
+      'Nein, so will ich wieder trainieren';
+
+  @override
+  String get briefingOptDescribesNow => 'Ja, so trainiere ich gerade';
+
+  @override
+  String get briefingOptMultiMost => 'Ja, an den meisten Tagen';
+
+  @override
+  String get briefingOptMultiNo => 'Nein';
+
+  @override
+  String get briefingOptMultiSome => 'Ja, an manchen Tagen';
+
+  @override
+  String get briefingOptPatternAlt => 'Zwei Wochen wechseln sich ab';
+
+  @override
+  String get briefingOptPatternIrregular => 'Nein, jede Woche anders';
+
+  @override
+  String get briefingOptPatternSame => 'Ja, meist ähnlich';
+
+  @override
+  String get briefingOptPlaceGym => 'Gym';
+
+  @override
+  String get briefingOptPlaceHome => 'Zuhause';
+
+  @override
+  String get briefingOptPlaceOutdoor => 'Draußen';
+
+  @override
+  String get briefingOptStrength => 'Kraft';
+
+  @override
+  String briefingPerWeekA11yMore(String art) {
+    return '$art, 8 oder mehr Einheiten je Woche';
+  }
+
+  @override
+  String briefingPerWeekA11yOne(String art, int n) {
+    return '$art, $n Einheit je Woche';
+  }
+
+  @override
+  String briefingPerWeekA11yOther(String art, int n) {
+    return '$art, $n Einheiten je Woche';
+  }
+
+  @override
+  String get briefingPerWeekAverage => 'im Schnitt';
+
+  @override
+  String get briefingPerWeekMore => '8+';
+
+  @override
+  String briefingPerWeekValue(String art, int n) {
+    return '$art $n×';
+  }
+
+  @override
+  String get briefingQDays => 'Trainierst du an festen Tagen?';
+
+  @override
+  String get briefingQDaysShort => 'Feste Tage';
+
+  @override
+  String get briefingQDescribes => 'Beschreibt das dein Training gerade?';
+
+  @override
+  String get briefingQDescribesHint =>
+      'Wichtig nach einer Pause: dann zeigt der Verlauf noch nicht, was du angibst.';
+
+  @override
+  String get briefingQDescribesShort => 'Jetzt oder Vorhaben';
+
+  @override
+  String get briefingQGoals => 'Worauf trainierst du hin?';
+
+  @override
+  String get briefingQGoalsHint =>
+      'Mehrere möglich, keins steht über dem anderen.';
+
+  @override
+  String get briefingQGoalsShort => 'Worauf du hintrainierst';
+
+  @override
+  String get briefingQModality => 'Was trainierst du?';
+
+  @override
+  String get briefingQModalityShort => 'Was du trainierst';
+
+  @override
+  String get briefingQMulti => 'Trainierst du manchmal mehrmals am Tag?';
+
+  @override
+  String get briefingQMultiHint =>
+      'Morgens Lauf, abends Kraft zählt als mehrmals.';
+
+  @override
+  String get briefingQMultiShort => 'Mehrmals am Tag';
+
+  @override
+  String get briefingQPattern => 'Sieht jede Woche ähnlich aus?';
+
+  @override
+  String get briefingQPatternShort => 'Wochenmuster';
+
+  @override
+  String get briefingQPerWeek => 'Wie viele Einheiten in einer üblichen Woche?';
+
+  @override
+  String get briefingQPerWeekHint =>
+      'Einheiten, nicht Tage: zwei an einem Tag zählen zwei.';
+
+  @override
+  String get briefingQPerWeekHintIrregular => 'Im Schnitt — grob reicht.';
+
+  @override
+  String get briefingQPerWeekShort => 'Einheiten je Woche';
+
+  @override
+  String get briefingQPlace => 'Wo trainierst du?';
+
+  @override
+  String get briefingQPlaceHint => 'Mehrere möglich.';
+
+  @override
+  String get briefingQPlaceShort => 'Wo du trainierst';
+
+  @override
+  String get briefingRetry => 'Erneut versuchen';
+
+  @override
+  String briefingRowA11yAnswered(String question, String answer) {
+    return '$question, $answer. Ändern';
+  }
+
+  @override
+  String briefingRowA11yOpen(String question) {
+    return '$question, offen. Beantworten';
+  }
+
+  @override
+  String get briefingRowOpen => 'Offen';
+
+  @override
+  String briefingSaveError(String answer) {
+    return '„$answer“ nicht gespeichert — der Server hat abgelehnt.';
+  }
+
+  @override
+  String briefingSaveErrorKept(String previous) {
+    return 'Gilt weiter: $previous.';
+  }
+
+  @override
+  String get briefingSnackAll => 'Alle Angaben entfernt';
+
+  @override
+  String get briefingSnackCleared => 'Antwort zurückgenommen';
+
+  @override
+  String get briefingSnackDayparts => 'Tageszeiten entfernt';
+
+  @override
+  String get briefingSnackDays => 'Gewählte Tage entfernt';
+
+  @override
+  String briefingSnackDependent(String art) {
+    return '$art-Angaben entfernt';
+  }
+
+  @override
+  String get briefingSnackUndo => 'Rückgängig';
+
+  @override
+  String get briefingSnackWeekB => 'Angaben für Woche B entfernt';
+
+  @override
+  String get briefingTitle => 'Trainings­angaben';
+
+  @override
+  String briefingUsedBy(String list) {
+    return 'Genutzt von · $list';
+  }
+
+  @override
+  String get briefingUsedByNone => 'Genutzt von · bisher keiner Auswertung';
+
+  @override
+  String get settingsRowBriefing => 'Trainingsangaben';
+
+  @override
+  String get settingsRowBriefingEmpty => 'Nicht angegeben';
+
+  @override
+  String settingsRowBriefingSummary(String modality, String per_week) {
+    return '$modality · $per_week';
+  }
+
+  @override
+  String briefingNewQuestionA11y(String question) {
+    return 'Neue Frage: $question';
+  }
+
+  @override
+  String briefingClearA11y(String question) {
+    return 'Antwort zurücknehmen: $question';
+  }
+
+  @override
+  String get briefingClearAllA11y =>
+      'Alle Angaben entfernen. Kann 6 Sekunden lang rückgängig gemacht werden.';
+
+  @override
+  String briefingDayA11y(String art, String day) {
+    return '$art am $day';
+  }
+
+  @override
+  String briefingDaypartA11y(String art, String daypart) {
+    return '$art meist $daypart';
+  }
+
+  @override
+  String briefingPlaceA11y(String place) {
+    return 'Ort: $place';
+  }
+
+  @override
+  String briefingGoalA11y(String goal) {
+    return 'Ziel: $goal';
+  }
+
+  @override
+  String briefingAnchorA11y(String week) {
+    return 'Diese Woche ist $week';
+  }
+
+  @override
+  String get briefingSnackBothLanes => 'Kraft- und Cardio-Angaben entfernt';
+
+  @override
+  String briefingLaneValue(String art, String value) {
+    return '$art $value';
+  }
+
+  @override
+  String briefingPerWeekPair(String art, String first, String second) {
+    return '$art $first / $second';
+  }
+
+  @override
+  String get briefingWeeksAbSuffix => '(Woche A / B)';
+
+  @override
+  String get briefingOpenLower => 'offen';
+
+  @override
+  String get briefingDescribesNowShort => 'So trainiere ich gerade';
+
+  @override
+  String get briefingDescribesIntendedShort => 'So will ich wieder trainieren';
 }

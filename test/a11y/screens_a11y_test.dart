@@ -45,11 +45,16 @@ import 'package:atem/features/health_import/domain/health_session_repository.dar
 import 'package:atem/features/health_import/presentation/widgets/health_permissions.dart';
 import 'package:atem/features/health_import/presentation/widgets/review_sheet.dart';
 import 'package:atem/features/exercises/presentation/exercise_picker.dart';
+import 'package:atem/features/planning/application/training_goal_providers.dart';
+import 'package:atem/features/planning/domain/training_goal.dart';
+import 'package:atem/features/planning/presentation/screens/training_goal_screen.dart';
 import 'package:atem/features/plans/presentation/widgets/plans_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/a11y.dart';
+import '../support/fake_auth.dart';
+import '../support/fake_training_goal.dart';
 
 void main() {
   testWidgets('Dashboard erfüllt den A11y-Vertrag', (tester) async {
@@ -92,6 +97,44 @@ void main() {
 
   testWidgets('Gewichtsverlauf erfüllt den A11y-Vertrag', (tester) async {
     await expectA11y(tester, const WeightHistoryScreen());
+  });
+
+  // ------------------------------------------------------------- Modul 18
+
+  testWidgets('Trainingsangaben, erster Aufruf, erfüllen den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(tester, TrainingGoalScreen(today: DateTime(2026, 9, 23)));
+  });
+
+  testWidgets('Trainingsangaben, ausgefüllt, erfüllen den A11y-Vertrag',
+      (tester) async {
+    await expectA11y(
+      tester,
+      TrainingGoalScreen(today: DateTime(2026, 9, 23)),
+      // Die Seite braucht nur Anmeldung und Angaben; die Fixtures setzen den
+      // Angaben-Ersatz schon, ein zweites Überschreiben wäre verboten.
+      baseOverrides: [
+        authRepositoryProvider.overrideWithValue(
+          FakeAuthRepository(user: const AuthUser(uid: 'u', email: 'a@b.c')),
+        ),
+        trainingGoalRepositoryProvider.overrideWithValue(
+          FakeTrainingGoalRepository(
+            initial: TrainingGoal.empty
+                .withLanes({Lane.strength, Lane.cardio})
+                .withWeekPattern(WeekPattern.alternating)
+                .withCurrentWeek(isA: true, today: DateTime(2026, 9, 23))
+                .withPerWeek(Lane.strength, 3)
+                .withPerWeek(Lane.cardio, 8, weekB: true)
+                .withSchedule(DaySchedule.fixed)
+                .withDays(Lane.strength, {1, 3, 5})
+                .withMultiPerDay(MultiPerDay.most)
+                .withDayparts(Lane.cardio, {Daypart.morning})
+                .withGoals(TrainingAim.values.toSet())
+                .withDescribes(Describes.intended),
+          ),
+        ),
+      ],
+    );
   });
 
   // ------------------------------------------------------------- Modul 11
